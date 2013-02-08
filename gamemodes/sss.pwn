@@ -419,7 +419,6 @@ Float:	gPlayerFP				[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
-		gPlayerArmedWeapon		[MAX_PLAYERS],
 
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Timer:	gScreenFadeTimer		[MAX_PLAYERS],
