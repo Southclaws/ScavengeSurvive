@@ -859,11 +859,6 @@ public OnGameModeInit()
 }
 public OnGameModeExit()
 {
-	RestartGamemode();
-	return 1;
-}
-RestartGamemode()
-{
 	PlayerLoop(i)
 	{
 		SavePlayerData(i);
@@ -877,8 +872,11 @@ RestartGamemode()
 	db_close(gAccounts);
 	for(new i;i<2048;i++)TextDrawDestroy(Text:i);
 	
+	return 1;
+}
+RestartGamemode()
+{
 	t:bServerGlobalSettings<Restarting>;
-	
 	SendRconCommand("gmx");
 }
 
