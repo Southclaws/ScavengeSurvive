@@ -112,7 +112,7 @@ public OnButtonPress(playerid, buttonid)
 				EditSign(playerid, i);
 
 			else
-				SendClientMessage(playerid, YELLOW, "You cannot edit someone elses sign!");
+				SendClientMessage(playerid, YELLOW, "You cannot edit someone else's sign!");
 
 			break;
 		}

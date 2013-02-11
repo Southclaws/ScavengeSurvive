@@ -23,9 +23,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0)
 					{
-						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0); // cuff
+						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
 						ShowPlayerProgressBar(playerid, ActionBar);
 						cuf_UpdateProgress[playerid] = 0.0;
+						stop cuf_UpdateTimer[playerid];
 						cuf_UpdateTimer[playerid] = repeat ApplyHandcuffs(playerid, i, itemid);
 						return 1;
 					}
@@ -61,13 +62,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
+StopApplyingHandcuffs(playerid)
+{
+	stop cuf_UpdateTimer[playerid];
+	cuf_UpdateProgress[playerid] = 0.0;
+	HidePlayerProgressBar(playerid, ActionBar);
+	ClearAnimations(playerid);
+}
+
 timer ApplyHandcuffs[100](playerid, targetid, itemid)
 {
 	if(cuf_UpdateProgress[playerid] == 20.0)
 	{
-		SetPlayerCuffs(targetid, true);
-		DestroyItem(itemid);
 		StopApplyingHandcuffs(playerid);
+		DestroyItem(itemid);
+		SetPlayerCuffs(targetid, true);
 		return;
 	}
 	if(!IsPlayerInPlayerArea(playerid, targetid))
@@ -82,13 +91,6 @@ timer ApplyHandcuffs[100](playerid, targetid, itemid)
 
 	cuf_UpdateProgress[playerid] += 1.0;
 	return;
-}
-StopApplyingHandcuffs(playerid)
-{
-	stop cuf_UpdateTimer[playerid];
-	cuf_UpdateProgress[playerid] = 0.0;
-	HidePlayerProgressBar(playerid, ActionBar);
-	ClearAnimations(playerid);
 }
 
 public OnPlayerPickUpItem(playerid, itemid)

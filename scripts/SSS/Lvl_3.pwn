@@ -89,18 +89,6 @@ ACMD:mapname[3](playerid,params[])
 }
 ACMD:gmx[3](playerid, params[])
 {
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, HORIZONTAL_RULE);
-	MsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
-	MsgAll(BLUE, HORIZONTAL_RULE);
-
 	RestartGamemode();
 	return 1;
 }

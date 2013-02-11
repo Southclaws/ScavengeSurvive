@@ -10,7 +10,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		if(IsPlayerIdle(playerid))
+		if(IsPlayerIdle(playerid) || GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
 		{
 			if(newkeys == KEY_CROUCH)
 			{

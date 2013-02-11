@@ -19,6 +19,8 @@
 #undef MAX_PLAYERS
 #define MAX_PLAYERS	(32)
 
+native IsValidVehicle(vehicleid);
+
 #include <YSI\y_utils>				// By Y_Less:				http://forum.sa-mp.com/showthread.php?p=1696956
 #include <YSI\y_va>
 #include <YSI\y_timers>
@@ -31,7 +33,7 @@
 #include <geoip>					// By Totto8492:			http://forum.sa-mp.com/showthread.php?t=32509
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
-#include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
+#include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054 - FIX: http://pastebin.com/zZ9bLs7K OR http://pastebin.com/2sJA38Kg
 #include <IniFiles>					// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=262795
 #include <bar>						// By Torbido:				http://forum.sa-mp.com/showthread.php?t=113443
 #include <playerbar>				// By Torbido/Southclaw:	http://pastebin.com/ZuLPd1K6
@@ -52,6 +54,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(16)
 #define MAX_PASSWORD_LEN			(129)
+#define MAX_SERVER_UPTIME			(25200)
 
 
 // Files
@@ -340,14 +343,14 @@ new
 
 //=====================Menus and Textdraws
 new
-Text:			DeathText			= INVALID_TEXT_DRAW,
-Text:			DeathButton			= INVALID_TEXT_DRAW,
-Text:			ClockText			= INVALID_TEXT_DRAW,
-Text:			RestartCount		= INVALID_TEXT_DRAW,
-Text:			MapCover1			= INVALID_TEXT_DRAW,
-Text:			MapCover2			= INVALID_TEXT_DRAW,
-Text:			HitMark_centre		= INVALID_TEXT_DRAW,
-Text:			HitMark_offset		= INVALID_TEXT_DRAW,
+Text:			DeathText			= Text:INVALID_TEXT_DRAW,
+Text:			DeathButton			= Text:INVALID_TEXT_DRAW,
+Text:			ClockText			= Text:INVALID_TEXT_DRAW,
+Text:			RestartCount		= Text:INVALID_TEXT_DRAW,
+Text:			MapCover1			= Text:INVALID_TEXT_DRAW,
+Text:			MapCover2			= Text:INVALID_TEXT_DRAW,
+Text:			HitMark_centre		= Text:INVALID_TEXT_DRAW,
+Text:			HitMark_offset		= Text:INVALID_TEXT_DRAW,
 
 PlayerText:		ClassBackGround		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ClassButtonMale		= PlayerText:INVALID_TEXT_DRAW,
@@ -440,6 +443,7 @@ Timer:	TankHeatUpdateTimer		[MAX_PLAYERS];
 
 forward OnLoad();
 forward OnDeath(playerid, killerid, reason);
+forward RestartGamemode();
 
 
 //======================Library Predefinitions
@@ -859,36 +863,46 @@ public OnGameModeInit()
 }
 public OnGameModeExit()
 {
-	PlayerLoop(i)
-	{
-		SavePlayerData(i);
-		ResetVariables(i);
-		UnloadPlayerTextDraws(i);
-	}
-
 	SaveAllSafeboxes();
 	UnloadVehicles();
 
 	db_close(gAccounts);
-	for(new i;i<2048;i++)TextDrawDestroy(Text:i);
-	
+
 	return 1;
 }
-RestartGamemode()
+public RestartGamemode()
 {
+	PlayerLoop(i)
+	{
+		SavePlayerData(i);
+		ResetVariables(i);
+	}
+
 	t:bServerGlobalSettings<Restarting>;
 	SendRconCommand("gmx");
+
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, " ");
+	MsgAll(BLUE, HORIZONTAL_RULE);
+	MsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
+	MsgAll(BLUE, HORIZONTAL_RULE);
 }
 
 task GameUpdate[1000]()
 {
-	if(gServerUptime > 25200)
+	if(gServerUptime > MAX_SERVER_UPTIME)
 		RestartGamemode();
 
-	if(gServerUptime > 25200)
+	if(gServerUptime > MAX_SERVER_UPTIME - 3600)
 	{
 		new str[36];
-		format(str, 36, "Server Restarting In:~n~%d", 25200 - gServerUptime);
+		format(str, 36, "Server Restarting In:~n~%02d:%02d", (MAX_SERVER_UPTIME - gServerUptime) / 60, (MAX_SERVER_UPTIME - gServerUptime) % 60);
 		TextDrawSetString(RestartCount, str);
 		TextDrawShowForAll(RestartCount);
 	}
@@ -1052,19 +1066,19 @@ ptask FoodUpdate[1000](playerid)
 
 	if(animidx == 43) // Sitting
 	{
-		gPlayerFP[playerid] -= 0.0001;
+		gPlayerFP[playerid] -= 0.00001;
 	}
 	else if(animidx == 1159) // Crouching
 	{
-		gPlayerFP[playerid] -= 0.001;
+		gPlayerFP[playerid] -= 0.0003;
 	}
 	else if(animidx == 1195) // Jumping
 	{
-		gPlayerFP[playerid] -= 0.05;	
+		gPlayerFP[playerid] -= 0.0022;	
 	}
 	else if(animidx == 1231) // Running
 	{
-		gPlayerFP[playerid] -= 0.02;
+		gPlayerFP[playerid] -= 0.0008;
 	}
 	else // Idle
 	{
@@ -1073,19 +1087,19 @@ ptask FoodUpdate[1000](playerid)
 
 		if(k & KEY_WALK) // Walking
 		{
-			gPlayerFP[playerid] -= 0.005;
+			gPlayerFP[playerid] -= 0.0001;
 		}
 		else if(k & KEY_SPRINT) // Sprinting
 		{
-			gPlayerFP[playerid] -= 0.03;
+			gPlayerFP[playerid] -= 0.0012;
 		}
 		else if(k & KEY_JUMP) // Jump
 		{
-			gPlayerFP[playerid] -= 0.05;
+			gPlayerFP[playerid] -= 0.0022;
 		}
 		else // Anything else
 		{
-			gPlayerFP[playerid] -= 0.001;
+			gPlayerFP[playerid] -= 0.0005;
 		}
 	}
 
@@ -1425,8 +1439,17 @@ SavePlayerData(playerid)
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerFacingAngle(playerid, a);
 
+		print("Check dist to pos");
+
 		if(Distance(x, y, z, -907.5452, 272.7235, 1014.1449) < 50.0)
 			return 0;
+
+		print("Check null");
+
+		if(x == 0.0 && y == 0.0 && z == 0.0)
+			return 0;
+
+		print("Saving");
 
 		format(tmpQuery, sizeof(tmpQuery),
 			"UPDATE `Player` SET \
@@ -1695,12 +1718,18 @@ ClearPlayerInventoryFile(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	if(bServerGlobalSettings & Restarting)return 0;
-	if(bPlayerGameSettings[playerid] & LoggedIn)SavePlayerData(playerid);
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	printf("pos %f, %,f, %f", x, y, z);
+
+	if(bPlayerGameSettings[playerid] & LoggedIn)
+		SavePlayerData(playerid);
 
 	ResetVariables(playerid);
-
 	UnloadPlayerTextDraws(playerid);
+
+	if(bServerGlobalSettings & Restarting)
+		return 0;
 
 	switch(reason)
 	{
@@ -2107,6 +2136,9 @@ internal_OnPlayerDeath(playerid, killerid, reason)
 	GetPlayerPos(playerid, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2]);
 	GetPlayerFacingAngle(playerid, gPlayerDeathPos[playerid][3]);
 
+	if(IsPlayerInAnyVehicle(playerid))
+		gPlayerDeathPos[playerid][2] += 0.1;
+
 	f:bPlayerGameSettings[playerid]<Alive>;
 	tick_LastDeath[playerid] = tickcount();
 
@@ -2260,7 +2292,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 
 internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 {
-	if(weaponid == WEAPON_DESERTEAGLE)
+	if(weaponid == WEAPON_DEAGLE)
 	{
 		if(tickcount() - tick_WeaponHit[playerid] < 400)
 			return 0;
