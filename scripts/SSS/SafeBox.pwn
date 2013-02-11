@@ -12,29 +12,35 @@ enum E_SAFEBOX_TYPE_DATA
 {
 			box_name[MAX_SAFEBOX_NAME],
 ItemType:	box_itemtype,
-			box_size
+			box_size,
+			box_maxMed,
+			box_maxLarge,
+			box_maxCarry
 }
 
 
 new
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
-Iterator:	box_Index<MAX_SAFEBOX>;
+Iterator:	box_Index<ITM_MAX>;
 
 new
 			box_CurrentBox[MAX_PLAYERS],
-			box_PickUpTick[MAX_SAFEBOX],
+			box_PickUpTick[MAX_PLAYERS],
 Timer:		box_PickUpTimer[MAX_PLAYERS];
 
 
-DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size)
+DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE-1)
 		return -1;
 
-	box_TypeData[box_TypeTotal][box_name] = name;
-	box_TypeData[box_TypeTotal][box_itemtype] = itemtype;
-	box_TypeData[box_TypeTotal][box_size] = size;
+	box_TypeData[box_TypeTotal][box_name]		= name;
+	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
+	box_TypeData[box_TypeTotal][box_size]		= size;
+	box_TypeData[box_TypeTotal][box_maxMed]		= max_med;
+	box_TypeData[box_TypeTotal][box_maxLarge]	= max_large;
+	box_TypeData[box_TypeTotal][box_maxCarry]	= max_carry;
 
 	return box_TypeTotal++;
 }
@@ -163,7 +169,16 @@ public OnItemCreate(itemid)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
 		{
-			new containerid = CreateContainer(box_TypeData[i][box_name], box_TypeData[i][box_size], .virtual = 1);
+			new containerid;
+
+			containerid = CreateContainer(
+				box_TypeData[i][box_name],
+				box_TypeData[i][box_size],
+				.virtual = 1,
+				.max_med = box_TypeData[i][box_maxMed],
+				.max_large = box_TypeData[i][box_maxLarge],
+				.max_carry = box_TypeData[i][box_maxCarry]);
+
 			SetItemExtraData(itemid, containerid);
 			Iter_Add(box_Index, itemid);
 			break;
@@ -254,8 +269,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(IsValidItem(box_CurrentBox[playerid]))
 			{
 				DisplayContainerInventory(playerid, GetItemExtraData(box_CurrentBox[playerid]));
+				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0); // BOM_Plant_2Idle
 				stop box_PickUpTimer[playerid];
-				box_CurrentBox[playerid] = INVALID_ITEM_ID;
 				box_PickUpTick[playerid] = 0;
 			}
 		}
@@ -299,3 +314,21 @@ timer box_PickUp[250](playerid, itemid)
 
 	return;
 }
+
+public OnPlayerCloseContainer(playerid, containerid)
+{
+	if(IsValidItem(box_CurrentBox[playerid]))
+	{
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_2Idle", 4.0, 0, 0, 0, 0, 0);
+		box_CurrentBox[playerid] = INVALID_ITEM_ID;
+	}
+
+	return CallLocalFunction("box_OnPlayerCloseContainer", "dd", playerid, containerid);
+}
+#if defined _ALS_OnPlayerCloseContainer
+	#undef OnPlayerCloseContainer
+#else
+	#define _ALS_OnPlayerCloseContainer
+#endif
+#define OnPlayerCloseContainer box_OnPlayerCloseContainer
+forward box_OnPlayerCloseContainer(playerid, containerid);

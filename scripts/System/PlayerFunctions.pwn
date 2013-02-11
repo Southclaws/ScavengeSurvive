@@ -102,7 +102,7 @@ stock MsgAllEx(exceptionid, colour, string[])
 
 stock MsgF(playerid, colour, fmat[], va_args<>)
 {
-    va_formatex(gs_Buffer, _, fmat, va_start<3>);
+    va_format(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
     Msg(playerid, colour, gs_Buffer);
 
     return 1;
@@ -110,7 +110,7 @@ stock MsgF(playerid, colour, fmat[], va_args<>)
 
 stock MsgAllF(colour, fmat[], va_args<>)
 {
-    va_formatex(gs_Buffer, _, fmat, va_start<2>);
+    va_format(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
     MsgAll(colour, gs_Buffer);
 
     return 1;
@@ -118,7 +118,7 @@ stock MsgAllF(colour, fmat[], va_args<>)
 
 stock MsgAdminsF(level, colour, fmat[], va_args<>)
 {
-    va_formatex(gs_Buffer, _, fmat, va_start<3>);
+    va_format(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
     MsgAdmins(level, colour, gs_Buffer);
 
     return 1;
@@ -126,7 +126,7 @@ stock MsgAdminsF(level, colour, fmat[], va_args<>)
 
 stock MsgTeamF(team, colour, fmat[], va_args<>)
 {
-    va_formatex(gs_Buffer, _, fmat, va_start<3>);
+    va_format(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
     MsgTeam(team, colour, gs_Buffer);
 
     return 1;
@@ -134,7 +134,7 @@ stock MsgTeamF(team, colour, fmat[], va_args<>)
 
 stock MsgDeathmatchF(colour, fmat[], va_args<>)
 {
-    va_formatex(gs_Buffer, _, fmat, va_start<2>);
+    va_format(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
     MsgDeathmatch(colour, gs_Buffer);
 
     return 1;

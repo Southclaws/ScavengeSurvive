@@ -722,7 +722,7 @@ public OnGameModeInit()
 
 	item_Briefcase		= DefineItemType("Briefcase",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
 	item_Backpack		= DefineItemType("Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
-	item_Satchel		= DefineItemType("Patrol Pack",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
+	item_Satchel		= DefineItemType("Small Bag",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
 	item_Canister1		= DefineItemType("Canister",		1008,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0,	0.303921, 0.033764, -0.105052, 0.000000, 0.000000, 0.000000);
 	item_Canister2		= DefineItemType("Canister",		1009,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0,	0.314470, 0.022019, -0.013475, 0.000000, 0.000000, 0.000000);
@@ -739,11 +739,11 @@ public OnGameModeInit()
 	item_GasCan			= DefineItemType("Petrol Can",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_Clothes		= DefineItemType("Clothes",			2891,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HelmArmy		= DefineItemType("Army Helmet",		19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045);
-	item_SmallBox		= DefineItemType("Small Box",		3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
-	item_AmmoBox1		= DefineItemType("Ammo Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
+	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
+	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
 
-	item_AmmoBox2		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_AmmoBox3		= DefineItemType("Ammo Box",		2040,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
+	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
+	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
 	item_DeadArm		= DefineItemType("Arm",				2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
@@ -839,11 +839,11 @@ public OnGameModeInit()
 	skin_ArmyF	= DefineSkinItem(191,	"Military",			0, 0.2);
 	skin_IndiF	= DefineSkinItem(131,	"Indian",			0, 0.1);
 
-	DefineSafeboxType("Small Box", 		item_SmallBox,		6);
-	DefineSafeboxType("Ammo Box", 		item_AmmoBox1,		6);
-	DefineSafeboxType("Ammo Box", 		item_AmmoBox2,		8);
-	DefineSafeboxType("Ammo Box", 		item_AmmoBox3,		4);
-	DefineSafeboxType("Capsule", 		item_Capsule,		4);
+	DefineSafeboxType("Box", 			item_MediumBox,		6, 6, 3, 2);
+	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);
+	DefineSafeboxType("Ammo Box", 		item_AmmoBox,		6, 6, 4, 0);
+	DefineSafeboxType("Ammo Tin", 		item_AmmoTin,		2, 2, 0, 0);
+	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
 
 	CallLocalFunction("OnLoad", "");
@@ -1907,8 +1907,6 @@ public OnPlayerSpawn(playerid)
 
 	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
 
-	print("OnPlayerSpawn");
-
 	if(bPlayerGameSettings[playerid] & Dying)
 	{
 		TogglePlayerSpectating(playerid, true);
@@ -1925,9 +1923,7 @@ public OnPlayerSpawn(playerid)
 		TextDrawShowForPlayer(playerid, DeathText);
 		TextDrawShowForPlayer(playerid, DeathButton);
 		SelectTextDraw(playerid, 0xFFFFFF88);
-		gPlayerHP[playerid] = 100.0;
-		gPlayerAP[playerid] = 0.0;
-		gPlayerFP[playerid] = 80.0;
+		gPlayerHP[playerid] = 1.0;
 	}
 	else
 	{

@@ -61,7 +61,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_MotionSense,					0.7);
 	AddItemToLootIndex(loot_Industrial,		item_GasCan,						0.3);
 	AddItemToLootIndex(loot_Industrial,		item_Clothes,						0.8);
-	AddItemToLootIndex(loot_Industrial,		item_SmallBox,						0.4);
+	AddItemToLootIndex(loot_Industrial,		item_MediumBox,						0.4);
 
 
 	// loot_Police
@@ -101,10 +101,10 @@ public OnLoad()
 	AddItemToLootIndex(loot_Military,		item_CapMine,						0.1);
 	AddItemToLootIndex(loot_Military,		item_Clothes,						0.4);
 	AddItemToLootIndex(loot_Military,		item_HelmArmy,						0.6);
-	AddItemToLootIndex(loot_Military,		item_SmallBox,						0.3);
-	AddItemToLootIndex(loot_Military,		item_AmmoBox1,						0.3);
-	AddItemToLootIndex(loot_Military,		item_AmmoBox2,						0.2);
-	AddItemToLootIndex(loot_Military,		item_AmmoBox3,						0.1);
+	AddItemToLootIndex(loot_Military,		item_MediumBox,						0.3);
+	AddItemToLootIndex(loot_Military,		item_SmallBox,						0.4);
+	AddItemToLootIndex(loot_Military,		item_AmmoBox,						0.2);
+	AddItemToLootIndex(loot_Military,		item_AmmoTin,						0.4);
 
 	// loot_Medical
 	AddItemToLootIndex(loot_Medical,		item_Medkit,						1.0);
@@ -166,7 +166,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_MotionSense,					0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_GasCan,						0.5);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Clothes,						0.7);
-	AddItemToLootIndex(loot_CarIndustrial,	item_SmallBox,						0.3);
+	AddItemToLootIndex(loot_CarIndustrial,	item_MediumBox,						0.3);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_COLT45,				0.9);
@@ -207,6 +207,9 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarMilitary,	item_explosive,						0.6);
 	AddItemToLootIndex(loot_CarMilitary,	item_Backpack,						0.7);
 	AddItemToLootIndex(loot_CarMilitary,	item_Clothes,						0.4);
+	AddItemToLootIndex(loot_CarMilitary,	item_SmallBox,						0.3);
+	AddItemToLootIndex(loot_CarMilitary,	item_AmmoBox,						0.2);
+	AddItemToLootIndex(loot_CarMilitary,	item_AmmoTin,						0.4);
 
 	// loot_Survivor
 	AddItemToLootIndex(loot_Survivor,		ItemType:WEAPON_KATANA,				0.1);
@@ -244,6 +247,10 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_DeadLeg,						0.7);
 	AddItemToLootIndex(loot_Survivor,		item_DeadArm,						0.7);
 	AddItemToLootIndex(loot_Survivor,		item_Barbecue,						0.5);
+	AddItemToLootIndex(loot_Survivor,		item_MediumBox,						0.3);
+	AddItemToLootIndex(loot_Survivor,		item_SmallBox,						0.3);
+	AddItemToLootIndex(loot_Survivor,		item_AmmoBox,						0.2);
+	AddItemToLootIndex(loot_Survivor,		item_AmmoTin,						0.4);
 
 
 	return CallLocalFunction("loot_OnLoad", "");
