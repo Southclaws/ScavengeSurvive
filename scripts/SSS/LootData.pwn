@@ -44,7 +44,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_Clothes,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Briefcase,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Barbecue,						0.7);
-	AddItemToLootIndex(loot_Civilian,		item_DeagleLol,						0.8);
 
 	// loot_Industrial
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_CHAINSAW,			0.2);

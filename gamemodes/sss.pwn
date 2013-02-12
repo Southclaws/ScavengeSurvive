@@ -200,6 +200,7 @@ enum
 	d_Stats,
 	d_SignEdit,
 	d_Tires,
+	d_Lights,
 
 	d_NotebookPage,
 	d_NotebookEdit,
@@ -503,6 +504,7 @@ forward RestartGamemode();
 #include "../scripts/Items/armyhelm.pwn"
 #include "../scripts/Items/crowbar.pwn"
 #include "../scripts/Items/zorromask.pwn"
+#include "../scripts/Items/headlight.pwn"
 
 //======================Data Load and Setup
 
@@ -687,7 +689,7 @@ public OnGameModeInit()
 	item_HardDrive		= DefineItemType("Hard Drive",		328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
 	item_Key			= DefineItemType("Key",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 
-	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",			327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_timer			= DefineItemType("Timer Device",	19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
@@ -758,7 +760,7 @@ public OnGameModeInit()
 	item_Nailbat		= DefineItemType("Nailbat",			2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
 	item_ZorroMask		= DefineItemType("Zorro Mask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
 	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
-	item_DeagleLol		= DefineItemType("Deagle",			348,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0);
+	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
 
 //	item_Wood		= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
 //	item_Dynamite	= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
@@ -2027,8 +2029,15 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == Text:65535)
 	{
-		TextDrawShowForPlayer(playerid, MapCover1);
-		TextDrawShowForPlayer(playerid, MapCover2);
+		if(bPlayerGameSettings[playerid] & Dying)
+		{
+			SelectTextDraw(playerid, 0xFFFFFF88);
+		}
+		else
+		{
+			TextDrawShowForPlayer(playerid, MapCover1);
+			TextDrawShowForPlayer(playerid, MapCover2);
+		}
 	}
 	if(clickedid == DeathButton)
 	{
@@ -3367,10 +3376,6 @@ public OnButtonPress(playerid, buttonid)
 
 public OnPlayerPickedUpItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_DeagleLol)
-	{
-		Msg(playerid, YELLOW, "IT'S CALLED A "#C_BLUE"DESERT EAGLE "#C_YELLOW"NOT A BLOODY "#C_RED"DEAGLE"#C_YELLOW"!!!");
-	}
 }
 
 public OnPlayerActivateCheckpoint(playerid, checkpointid)

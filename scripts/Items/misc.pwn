@@ -41,6 +41,5 @@ new stock
 	ItemType:item_Mailbox		= INVALID_ITEM_TYPE,
 	ItemType:item_Pumpkin		= INVALID_ITEM_TYPE,
 	ItemType:item_Nailbat		= INVALID_ITEM_TYPE,
-	ItemType:item_Barbecue		= INVALID_ITEM_TYPE,
-	ItemType:item_DeagleLol		= INVALID_ITEM_TYPE;
+	ItemType:item_Barbecue		= INVALID_ITEM_TYPE;
 

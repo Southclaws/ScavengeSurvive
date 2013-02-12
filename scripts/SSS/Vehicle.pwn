@@ -84,10 +84,17 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
 					{
 						ShowTireList(playerid, i);
+						SetPlayerPos(playerid, px, py, pz);
 					}
 					else if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
 					{
 						StartRefuellingVehicle(playerid, i);
+						SetPlayerPos(playerid, px, py, pz);
+					}
+					else if(GetItemType(GetPlayerItem(playerid)) == item_Headlight)
+					{
+						ShowLightList(playerid, i);
+						SetPlayerPos(playerid, px, py, pz);
 					}
 					else
 					{
