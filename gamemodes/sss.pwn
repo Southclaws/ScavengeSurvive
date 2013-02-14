@@ -310,14 +310,6 @@ new
 		{17, "EXTRASUNNY_DESERT"},
 		{18, "SUNNY_DESERT"},
 		{19, "SANDSTORM_DESERT"}
-	},
-	TimeData[5][E_TIME_DATA]=
-	{
-		{00, "Midnight"},
-		{05, "Morning"},
-		{12, "Midday"},
-		{15, "Afternoon"},
-		{20, "Dusk"}
 	};
 
 //=====================Loot Types
@@ -337,8 +329,6 @@ enum
 
 //=====================Clock and Timers
 new
-				gTimeHour,
-				gTimeMinute,
 				gWeatherID,
 				gLastWeatherChange;
 
@@ -385,6 +375,10 @@ enum (<<= 1) // 14
 		HelpTips,
 		GlobalChat,
 
+		PillEffect_Aspirin,
+		PillEffect_Painkill,
+		PillEffect_Ecstasy,
+
 		HangingOutWindow,
 
 		RegenHP,
@@ -428,10 +422,11 @@ Float:	gCurrentVelocity		[MAX_PLAYERS],
 Timer:	gScreenFadeTimer		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
+		gPlayerPillUseTick		[MAX_PLAYERS][3],
+
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_LastDeath			[MAX_PLAYERS],
 		tick_LastDamg			[MAX_PLAYERS],
-		tick_StartRegenHP		[MAX_PLAYERS],
 		tick_StartRegenAP		[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
@@ -490,7 +485,6 @@ forward RestartGamemode();
 #include "../scripts/Items/beer.pwn"
 #include "../scripts/Items/timebomb.pwn"
 #include "../scripts/Items/Sign.pwn"
-#include "../scripts/Items/adrenaline.pwn"
 #include "../scripts/Items/electroap.pwn"
 #include "../scripts/Items/briefcase.pwn"
 #include "../scripts/Items/backpack.pwn"
@@ -505,6 +499,8 @@ forward RestartGamemode();
 #include "../scripts/Items/crowbar.pwn"
 #include "../scripts/Items/zorromask.pwn"
 #include "../scripts/Items/headlight.pwn"
+#include "../scripts/Items/pills.pwn"
+#include "../scripts/Items/dice.pwn"
 
 //======================Data Load and Setup
 
@@ -650,8 +646,6 @@ public OnGameModeInit()
 	t:bServerGlobalSettings<ServerTimeFlow>;
 	t:bServerGlobalSettings<Realtime>;
 
-	gTimeMinute			= random(60);
-	gTimeHour			= random(24);
 	gWeatherID			= WeatherData[random(sizeof(WeatherData))][weather_id];
 	gLastWeatherChange	= tickcount();
 
@@ -696,9 +690,9 @@ public OnGameModeInit()
 	item_timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
 	item_fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_Beer			= DefineItemType("Beer",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	60376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
+	item_Beer			= DefineItemType("Beer",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.60376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
 	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
-	item_HealthRegen	= DefineItemType("Adrenaline",		1575,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
+	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 
 	item_ArmourRegen	= DefineItemType("ElectroArmour",	19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 	item_FishRod		= DefineItemType("Fishing Rod",		18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
@@ -761,6 +755,13 @@ public OnGameModeInit()
 	item_ZorroMask		= DefineItemType("Zorro Mask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
 	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
+	item_Pills			= DefineItemType("Pills",			2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
+	item_AutoInjec		= DefineItemType("Injector",		2711,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
+	item_BurgerBag		= DefineItemType("Burger",			2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
+	item_CanDrink		= DefineItemType("Can",				2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
+
+	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
+	item_Dice			= DefineItemType("Dice",			1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
 
 //	item_Wood		= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
 //	item_Dynamite	= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
@@ -784,10 +785,11 @@ public OnGameModeInit()
 */
 
 	DefineFoodItem(item_HotDog,			30.0);
-	DefineFoodItem(item_Pizza,			50.0);
-	DefineFoodItem(item_Burger,			25.0);
-	DefineFoodItem(item_BurgerBox,		25.0);
-	DefineFoodItem(item_Taco,			20.0);
+	DefineFoodItem(item_Pizza,			60.0);
+	DefineFoodItem(item_Burger,			35.0);
+	DefineFoodItem(item_BurgerBox,		35.0);
+	DefineFoodItem(item_Taco,			30.0);
+	DefineFoodItem(item_BurgerBag,		45.0);
 
 
 	DefineItemCombo(item_timer, item_explosive, item_timebomb);
@@ -899,7 +901,9 @@ public RestartGamemode()
 task GameUpdate[1000]()
 {
 	if(gServerUptime > MAX_SERVER_UPTIME)
+	{
 		RestartGamemode();
+	}
 
 	if(gServerUptime > MAX_SERVER_UPTIME - 3600)
 	{
@@ -914,49 +918,49 @@ task GameUpdate[1000]()
 	if(bServerGlobalSettings & ServerTimeFlow)
 	{
 		new
-			szClockText[6],
-			szMinute[3],
-			szHour[3],
+			str[6],
 			hour,
-			minute,
-			second;
+			minute;
 
-		gettime(hour, minute, second);
+		gettime(hour, minute);
 
-		if(bServerGlobalSettings & Realtime)
+		format(str, 6, "%02d:%02d", hour, minute);
+		TextDrawSetString(ClockText, str);
+
+		PlayerLoop(i)
 		{
-			gTimeMinute = minute;
-			gTimeHour = hour;
-		}
-		else
-		{
-			gTimeMinute++;
-			if(gTimeMinute == 60)
+			if(bPlayerGameSettings[i] & PillEffect_Ecstasy)
 			{
-				gTimeMinute = 0;
-				if(gTimeHour == 24)gTimeHour = 0;
-				gTimeHour++;
+				SetPlayerTime(i, 22, 3);
+				SetPlayerWeather(i, 33);
+
+				if(tickcount() - gPlayerPillUseTick[i][PILL_TYPE_ECSTASY] > 60000)
+					f:bPlayerGameSettings[i]<PillEffect_Ecstasy>;
+			}
+			else
+			{
+				SetPlayerTime(i, hour, minute);
 			}
 		}
-		format(szMinute, 5, "%02d", gTimeMinute);
-		format(szHour, 5, "%02d", gTimeHour);
-		format(szClockText, 6, "%s:%s", szHour, szMinute);
-		TextDrawSetString(ClockText, szClockText);
 	}
 
 	if(tickcount() - gLastWeatherChange > 600000 && RandomCondition(5))
 	{
-		new id = random(sizeof(WeatherData));
 		gLastWeatherChange = tickcount();
-		gWeatherID = WeatherData[id][weather_id];
+		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
+
 		PlayerLoop(i)
 		{
-			if(GetPlayerVirtualWorld(i) == 0)
-			{
+			if(!(bPlayerGameSettings[i] & PillEffect_Ecstasy))
 				SetPlayerWeather(i, WeatherData[gWeatherID][weather_id]);
-			}
 		}
 	}
+}
+
+CMD:stoptime(playerid, params[])
+{
+	f:bServerGlobalSettings<ServerTimeFlow>;
+	return 1;
 }
 
 task GlobalAnnouncement[600000]()
@@ -968,14 +972,15 @@ ptask PlayerUpdate[100](playerid)
 {
 	ResetPlayerMoney(playerid);
 
-	if(bPlayerGameSettings[playerid] & RegenHP)
+/*	if(bPlayerGameSettings[playerid] & RegenHP)
 	{
 		if(tickcount() - tick_StartRegenHP[playerid] > REGEN_HP_TIME)
 			f:bPlayerGameSettings[playerid]<RegenHP>;
 
 		if(tickcount() - tick_LastDamg[playerid] > 6000)
 			gPlayerHP[playerid] += 0.1;
-	}
+	}*/
+
 	if(bPlayerGameSettings[playerid] & RegenAP)
 	{
 		if(tickcount() - tick_StartRegenAP[playerid] > REGEN_AP_TIME)
@@ -1048,16 +1053,24 @@ ptask PlayerUpdate[100](playerid)
 	{
 		if(gPlayerHP[playerid] < 40.0)
 		{
-			PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerHP[playerid]) * 4.4));
-			PlayerTextDrawShow(playerid, ClassBackGround);
+			if(bPlayerGameSettings[playerid] & PillEffect_Painkill)
+			{
+				PlayerTextDrawHide(playerid, ClassBackGround);
+
+				if(tickcount() - gPlayerPillUseTick[playerid][PILL_TYPE_PAINKILL] > 60000)
+					f:bPlayerGameSettings[playerid]<PillEffect_Painkill>;
+			}
+			else
+			{
+				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerHP[playerid]) * 4.4));
+				PlayerTextDrawShow(playerid, ClassBackGround);
+			}
 		}
 		else
 		{
 			PlayerTextDrawHide(playerid, ClassBackGround);
 		}
 	}
-
-	SetPlayerTime(playerid, gTimeHour, gTimeMinute);
 
 	return 1;
 }
@@ -1109,7 +1122,19 @@ ptask FoodUpdate[1000](playerid)
 		gPlayerFP[playerid] = 100.0;
 
 	if(gPlayerFP[playerid] < 30.0)
-		SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerFP[playerid]) * 300.0));
+	{
+		if(bPlayerGameSettings[playerid] & PillEffect_Aspirin)
+		{
+			SetPlayerDrunkLevel(playerid, 0);
+
+			if(tickcount() - gPlayerPillUseTick[playerid][PILL_TYPE_ASPIRIN] > 60000)
+				f:bPlayerGameSettings[playerid]<PillEffect_Aspirin>;
+		}
+		else
+		{
+			SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerFP[playerid]) * 300.0));
+		}
+	}
 
 	else
 		SetPlayerDrunkLevel(playerid, 0);
@@ -1774,8 +1799,12 @@ LogMessage(playerid)
 	new
 		str1[800],
 		str2[400],
+		hour,
+		minute,
 		admins[48],
 		admincount;
+
+	gettime(hour, minute);
 
 	PlayerLoop(i)
 	{
@@ -1806,8 +1835,8 @@ LogMessage(playerid)
 		The current weather is "#C_YELLOW"%s"#C_WHITE"\n\n\n\
 		Type /help to access this menu, type /g to toggle chat channel\n\n\n\
 		%s",
-		gTimeHour,
-		gTimeMinute,
+		hour,
+		minute,
 		WeatherData[gWeatherID][weather_name],
 		admins,
 		HORIZONTAL_RULE);
@@ -2608,7 +2637,7 @@ CMD:g(playerid, params[])
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, 1);
+		PlayerSendChat(playerid, params, 0);
 	}
 	return 1;
 }
@@ -2621,7 +2650,7 @@ CMD:l(playerid, params[])
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, 0);
+		PlayerSendChat(playerid, params, 1);
 	}
 	return 1;
 }
@@ -2668,7 +2697,7 @@ public OnPlayerText(playerid, text[])
 
 	tick_LastChatMessage[playerid] = tickcount();
 
-	PlayerSendChat(playerid, text, (bPlayerGameSettings[playerid] & GlobalChat) ? 1 : 0);
+	PlayerSendChat(playerid, text, (bPlayerGameSettings[playerid] & GlobalChat) ? 0 : 1);
 
 	return 0;
 }
@@ -2677,7 +2706,7 @@ PlayerSendChat(playerid, textInput[], range)
 	new
 		text[256];
 
-	if(range == 1)
+	if(range == 0)
 	{
 		format(text, 256, "[Global] (%d) %P"#C_WHITE": %s",
 			playerid,
@@ -2712,7 +2741,7 @@ PlayerSendChat(playerid, textInput[], range)
 		strcat(text2, text[splitpos]);
 		text[splitpos] = 0;
 
-		if(bPlayerGameSettings[playerid] & GlobalChat)
+		if(range == 0)
 		{
 			foreach(new i : Player)
 			{
@@ -2741,7 +2770,7 @@ PlayerSendChat(playerid, textInput[], range)
 	}
 	else
 	{
-		if(bPlayerGameSettings[playerid] & GlobalChat)
+		if(range == 0)
 		{
 			foreach(new i : Player)
 			{

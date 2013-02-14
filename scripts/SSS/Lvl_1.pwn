@@ -175,52 +175,6 @@ ACMD:warn[1](playerid, params[])
 	return 1;
 }
 
-ACMD:time[1](playerid, params[])
-{
-	new hour, minute;
-	if(!sscanf(params, "dD(0)", hour, minute))
-	{
-		if(! (0 <= hour <= 24) ) return Msg(playerid, RED, " >  Hour  must be between 0 and 24.");
-		if(! (0 <= minute < 60) ) return Msg(playerid, RED, " >  Minute  must be between 0 and 59.");
-
-		MsgAllF(YELLOW, " >  Time set to "#C_BLUE"%02d:%02d", hour, minute);
-		gTimeHour = hour;
-		gTimeMinute = minute;
-
-		return 1;
-	}
-	else if(strlen(params) > 2)
-	{
-		if(!strcmp(params, "stop"))
-		{
-			Msg(playerid, YELLOW, " >  Time has been "#C_BLUE"stopped.");
-			f:bServerGlobalSettings<ServerTimeFlow>;
-			return 1;
-		}
-		if(!strcmp(params, "start"))
-		{
-			Msg(playerid, YELLOW, " >  Time has been "#C_BLUE"started.");
-			t:bServerGlobalSettings<ServerTimeFlow>;
-			return 1;
-		}
-		for(new i;i<sizeof(TimeData);i++)
-		{
-			if(strfind(TimeData[i][time_name], params, true) != -1)
-			{
-				PlayerLoop(j)
-					MsgF(j, YELLOW, " >  Time set to "#C_BLUE"%s (%d:00)", TimeData[i][time_name], TimeData[i][time_hour]);
-
-				gTimeHour = TimeData[i][time_hour];
-				gTimeMinute = 0;
-				return 1;
-			}
-		}
-		Msg(playerid, RED, " >  Invalid time!");
-		return 1;
-	}
-	Msg(playerid, YELLOW, " >  Usage: /time [Hour] [Optional:Minute]");
-	return 1;
-}
 ACMD:weather[1](playerid, params[])
 {
 	if(strlen(params) > 2)

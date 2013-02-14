@@ -108,9 +108,6 @@ ptask ToolTipUpdate[1000](playerid)
 					else if(itemtype == item_Sign)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Place sign");
 
-					else if(itemtype == item_HealthRegen)
-						AddToolTipText(playerid, KEYTEXT_INTERACT, "Take adrenaline");
-
 					else if(itemtype == item_Shield)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Place shield");
 

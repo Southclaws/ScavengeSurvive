@@ -4,8 +4,16 @@ public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Beer)
 	{
-		ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
-		SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 400);
+		if(GetItemExtraData(itemid) > 0)
+		{
+			ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
+			SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 400);
+			SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
+		}
+		else
+		{
+			ShowMsgBox(playerid, "Empty", 2000, 70);
+		}
 	}
     return CallLocalFunction("beer_OnPlayerUseItem", "dd", playerid, itemid);
 }
