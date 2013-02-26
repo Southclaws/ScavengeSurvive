@@ -112,7 +112,13 @@ ACMD:get[1](playerid, params[])
 
 	if(pAdmin(targetid) > 0)
 	{
-		Msg(playerid, RED, " >  You cannot teleport to another administrator.");
+		Msg(playerid, RED, " >  You cannot teleport another administrator.");
+		return 1;
+	}
+
+	if(GetPlayerDist3D(playerid, targetid) > 40.0)
+	{
+		Msg(playerid, RED, " >  You cannot teleport someone that far away to your position, move closer to them.");
 		return 1;
 	}
 

@@ -317,27 +317,7 @@ stock GetPlayer3DZone(playerid)
 	if(x >= Zones[i][zone_area][0]&&x<=Zones[i][zone_area][3]&&y>=Zones[i][zone_area][1]&&y<=Zones[i][zone_area][4]&&z>=Zones[i][zone_area][2]&&z<=Zones[i][zone_area][5])format(zone,sizeof(Zones),Zones[i][zone_name]);
 	return zone;
 }
-stock IsPlayerInTheZone(playerid, zone[])
-{
-	new TmpZone[MAX_ZONE_NAME];
-	GetPlayer3DZone(playerid, TmpZone, sizeof(TmpZone));
-	for(new i = 0; i != sizeof(Zones); i++)if(strfind(TmpZone, zone, true) != -1)return 1;
-	return 0;
-}
 
-forward Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance);
-stock Float:GetXYInFrontOfPlayer(playerid, &Float:x, &Float:y, Float:distance)
-{
-    new Float:a;
-    GetPlayerPos(playerid, x, y, a);
-    if (IsPlayerInAnyVehicle(playerid))
-        GetVehicleZAngle(GetPlayerVehicleID(playerid), a);
-    else
-        GetPlayerFacingAngle(playerid, a);
-    x += (distance * floatsin(-a, degrees));
-    y += (distance * floatcos(-a, degrees));
-    return a;
-}
 stock GetClosestPlayer(playerid)
 {
 	new Float:dis,Float:dis2,player;
