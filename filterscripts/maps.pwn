@@ -207,6 +207,9 @@ CMD:removeobjects(playerid, params[])
 
 RemoveObjects(playerid)
 {
+// Naval Base TEMP
+	RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.25);
+
 //	Mall
     
 	RemoveBuildingForPlayer(playerid, 6130, 1117.5859, -1490.0078, 32.7188, 10.0); // Mall

@@ -1,5 +1,3 @@
-
-
 ACMD:setadmin[2](playerid, params[])
 {
 	new
@@ -41,8 +39,8 @@ ACMD:ban[2](playerid, params[])
 
 	if(!sscanf(params, "dS(None)[64]", id, reason))
 	{
-	    if(strlen(reason) > 64)
-	        return Msg(playerid, RED, " >  Reason must be below 64 characters");
+		if(strlen(reason) > 64)
+			return Msg(playerid, RED, " >  Reason must be below 64 characters");
 
 		if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
 			return 2;
@@ -92,7 +90,7 @@ ACMD:unban[2](playerid, params[])
 		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
 
 	new
-	    tmpQuery[128];
+		tmpQuery[128];
 
 	format(tmpQuery, 128, "DELETE FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
 	

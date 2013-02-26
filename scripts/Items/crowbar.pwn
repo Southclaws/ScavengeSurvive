@@ -1,9 +1,17 @@
+#include <YSI\y_hooks>
+
+
 new
 ItemType:	item_Crowbar = INVALID_ITEM_TYPE,
 Timer:		LockBreakTimer[MAX_PLAYERS],
 			LockBreakCurrentVehicle[MAX_PLAYERS],
 			LockBreakProgress[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	LockBreakCurrentVehicle[playerid] = INVALID_VEHICLE_ID;
+}
 
 StartBreakingVehicleLock(playerid, vehicleid, type)
 {
@@ -50,6 +58,7 @@ StopBreakingVehicleLock(playerid)
 		return 0;
 
 	stop LockBreakTimer[playerid];
+	LockBreakCurrentVehicle[playerid] = -1;
 	HidePlayerProgressBar(playerid, ActionBar);
 	ClearAnimations(playerid);
 

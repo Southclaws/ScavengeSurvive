@@ -19,7 +19,7 @@ enum E_LADDER_DATA
 
 new
 	ldr_Data[MAX_LADDER][E_LADDER_DATA],
-    Iterator:ldr_Iterator<MAX_LADDER>,
+	Iterator:ldr_Iterator<MAX_LADDER>,
 
 	ldr_currentAnim[MAX_PLAYERS],
 	ldr_currentLadder[MAX_PLAYERS],
@@ -27,42 +27,17 @@ new
 
 
 #if defined FILTERSCRIPT
-
-public OnFilterScriptInit()
+hook OnFilterScriptInit()
+#else
+hook OnGameModeInit()
+#endif
 {
 	for(new i;i<MAX_PLAYERS;i++)
 	{
 		ldr_currentLadder[i]=-1;
 	}
-    return CallLocalFunction("ldr_OnFilterScriptInit", "");
 }
-#if defined _ALS_OnFilterScriptInit
-    #undef OnFilterScriptInit
-#else
-    #define _ALS_OnFilterScriptInit
-#endif
-#define OnFilterScriptInit ldr_OnFilterScriptInit
-forward ldr_OnFilterScriptInit();
 
-#else
-
-public OnGameModeInit()
-{
-	for(new i;i<MAX_PLAYERS;i++)
-	{
-		ldr_currentLadder[i]=-1;
-	}
-    return CallLocalFunction("ldr_OnGameModeInit", "");
-}
-#if defined _ALS_OnGameModeInit
-    #undef OnGameModeInit
-#else
-    #define _ALS_OnGameModeInit
-#endif
-#define OnGameModeInit ldr_OnGameModeInit
-forward ldr_OnGameModeInit();
-
-#endif
 
 
 stock CreateLadder(Float:x, Float:y, Float:z, Float:height, Float:angle, world = -1, interior = -1)
@@ -84,16 +59,30 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & 16)
 	{
+		if(ldr_currentLadder[playerid] != -1)
+		{
+			ExitLadder(playerid);
+			return 1;
+		}
+
 		foreach(new i : ldr_Iterator)
 		{
-		    if(IsPlayerInDynamicArea(playerid, ldr_Data[i][ldr_areaID]))
-		    {
-		        if(ldr_currentLadder[playerid]==-1)EnterLadder(playerid, i);
-		        else ExitLadder(playerid);
-		    }
+			if(IsPlayerInDynamicArea(playerid, ldr_Data[i][ldr_areaID]))
+			{
+				if(ldr_currentLadder[playerid] == -1)
+				{
+					new
+						Float:z;
+
+					GetPlayerPos(playerid, z, z, z);
+
+					if(z < ldr_Data[i][ldr_top] + 2.0 && z > ldr_Data[i][ldr_base] - 1.0)
+						EnterLadder(playerid, i);
+				}
+			}
 		}
 	}
-    return 1;
+	return 1;
 }
 
 
@@ -119,8 +108,8 @@ EnterLadder(playerid, ladder)
 	SetPlayerPos(playerid, ldr_Data[ladder][ldr_posX], ldr_Data[ladder][ldr_posY], zOffset);
 
 	ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
-    ldr_enterLadderTick[playerid] = GetTickCount();
-    ldr_currentLadder[playerid] = ladder;
+	ldr_enterLadderTick[playerid] = GetTickCount();
+	ldr_currentLadder[playerid] = ladder;
 }
 ExitLadder(playerid)
 {
@@ -131,24 +120,30 @@ ExitLadder(playerid)
 		0.1*floatsin(-ldr_Data[ldr_currentLadder[playerid]][ldr_ang], degrees),
 		0.1*floatcos(-ldr_Data[ldr_currentLadder[playerid]][ldr_ang], degrees), 0.1);
 
-    ldr_currentLadder[playerid] = -1;
-    return 1;
+	ldr_currentLadder[playerid] = -1;
+	return 1;
 }
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
 	foreach(new i : ldr_Iterator)
 	{
-	    if(areaid == ldr_Data[i][ldr_areaID])
-	    {
-	        ShowMsgBox(playerid, "Press F to climb", 0, 120);
-	    }
+		if(areaid == ldr_Data[i][ldr_areaID])
+		{
+			new
+				Float:z;
+
+			GetPlayerPos(playerid, z, z, z);
+
+			if(z < ldr_Data[i][ldr_top] + 2.0 && z > ldr_Data[i][ldr_base] - 1.0)
+				ShowMsgBox(playerid, "Press F to climb", 0, 120);
+		}
 	}
-    return CallLocalFunction("ldr_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	return CallLocalFunction("ldr_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
-    #undef OnPlayerEnterDynamicArea
+	#undef OnPlayerEnterDynamicArea
 #else
-    #define _ALS_OnPlayerEnterDynamicArea
+	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea ldr_OnPlayerEnterDynamicArea
 forward ldr_OnPlayerEnterDynamicArea(playerid, areaid);
@@ -157,12 +152,12 @@ forward ldr_OnPlayerEnterDynamicArea(playerid, areaid);
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
 	HideMsgBox(playerid);
-    return CallLocalFunction("ldr_OnPlayerLeaveDynamicArea", "dd", playerid, areaid);
+	return CallLocalFunction("ldr_OnPlayerLeaveDynamicArea", "dd", playerid, areaid);
 }
 #if defined _ALS_OnPlayerLeaveDynamicArea
-    #undef OnPlayerLeaveDynamicArea
+	#undef OnPlayerLeaveDynamicArea
 #else
-    #define _ALS_OnPlayerLeaveDynamicArea
+	#define _ALS_OnPlayerLeaveDynamicArea
 #endif
 #define OnPlayerLeaveDynamicArea ldr_OnPlayerLeaveDynamicArea
 forward ldr_OnPlayerLeaveDynamicArea(playerid, areaid);
@@ -194,14 +189,14 @@ public OnPlayerUpdate(playerid)
 			{
 				ApplyAnimation(playerid, "FINALE", "FIN_HANG_LOOP", 4.0, 1, 0, 0, 0, 0);
 	//		    ApplyAnimation(playerid, "PED", "CLIMB_JUMP", 3.0, 0, 0, 0, 1, 0, 1);
-			    ldr_currentAnim[playerid]=0;
+				ldr_currentAnim[playerid]=0;
 				SetPlayerVelocity(playerid, 0.0, 0.0, CLIMB_SPEED);
 			}
 			else
 			{
 	//		    ApplyAnimation(playerid, "FINALE", "FIN_HANG_LOOP", 4.0, 1, 0, 0, 0, 0);
-			    ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
-			    ldr_currentAnim[playerid]=1;
+				ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
+				ldr_currentAnim[playerid]=1;
 			}
 		}
 		else if(ud == KEY_DOWN)
@@ -210,31 +205,31 @@ public OnPlayerUpdate(playerid)
 			{
 				ApplyAnimation(playerid, "FINALE", "FIN_HANG_LOOP", 4.0, 1, 0, 0, 0, 0);
 	//		    ApplyAnimation(playerid, "PED", "CLIMB_JUMP", 3.0, 0, 0, 0, 1, 0, 1);
-			    ldr_currentAnim[playerid]=0;
+				ldr_currentAnim[playerid]=0;
 			}
 			else
 			{
 	//			ApplyAnimation(playerid, "FINALE", "FIN_HANG_LOOP", 4.0, 1, 0, 0, 0, 0);
-			    ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
-			    ldr_currentAnim[playerid]=1;
+				ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
+				ldr_currentAnim[playerid]=1;
 				SetPlayerVelocity(playerid, 0.0, 0.0, -(CLIMB_SPEED*0.7));
 			}
 		}
 		else
 		{
-		    ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
+			ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 3.0, 0, 0, 0, 1, 0, 1);
 			SetPlayerVelocity(playerid, 0.0, 0.0, IDLE_SPEED);
 		}
 	}
 	
 	end:
 	
-    return CallLocalFunction("ldr_OnPlayerUpdate", "d", playerid);
+	return CallLocalFunction("ldr_OnPlayerUpdate", "d", playerid);
 }
 #if defined _ALS_OnPlayerUpdate
-    #undef OnPlayerUpdate
+	#undef OnPlayerUpdate
 #else
-    #define _ALS_OnPlayerUpdate
+	#define _ALS_OnPlayerUpdate
 #endif
 #define OnPlayerUpdate ldr_OnPlayerUpdate
 forward ldr_OnPlayerUpdate(playerid);

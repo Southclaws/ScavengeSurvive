@@ -1,5 +1,5 @@
 #define MAX_LOOT_INDEX			(11)
-#define MAX_LOOT_INDEX_ITEMS	(128)
+#define MAX_LOOT_INDEX_ITEMS	(256)
 
 
 enum E_LOOT_INDEX_ITEM_DATA
@@ -46,21 +46,38 @@ AddItemToLootIndex(index, ItemType:itemtype, Float:spawnchance, exdata = -1)
 ItemType:GenerateLoot(index, &exdata)
 {
 	if(index > loot_IndexUpper)
+	{
+		print("ERROR: GenerateLoot: parameter 'index' exceeds loot index upper bound.");
 		return INVALID_ITEM_TYPE;		
+	}
+
+	if(loot_IndexSize[index] == 0)
+	{
+		print("ERROR: Specified index is empty.");
+		return INVALID_ITEM_TYPE;
+	}
 
 	new
 		idx,
 		list[MAX_LOOT_INDEX_ITEMS],
 		ItemType:itemtype,
+		cell,
 		lootid;
 
-	for(new i; i < loot_IndexSize[index]; i++)
+	generate_retry:
+
+	for(new i; i < loot_IndexSize[index] && idx < MAX_LOOT_INDEX_ITEMS; i++)
 	{
 		if(frandom(1.0) < loot_IndexItems[index][i][loot_spawnChance])
 			list[idx++] = i;
 	}
 
-	lootid = list[random(idx)];
+	cell = random(idx);
+
+	if(cell > MAX_LOOT_INDEX_ITEMS)
+		goto generate_retry;
+
+	lootid = list[cell];
 
 	itemtype = loot_IndexItems[index][lootid][loot_itemType];
 	exdata = loot_IndexItems[index][lootid][loot_exData];

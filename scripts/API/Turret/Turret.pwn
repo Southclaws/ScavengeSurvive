@@ -115,7 +115,7 @@ hook OnGameModeInit()
 
 
 
-CreateTurret(Float:x, Float:y, Float:z, Float:buttonPos = 0.0, type = TURRET_TYPE_TRAJ)
+stock CreateTurret(Float:x, Float:y, Float:z, Float:buttonPos = 0.0, type = TURRET_TYPE_TRAJ)
 {
 	new id = Iter_Free(tur_Index);
 
@@ -161,7 +161,7 @@ stock DestroyTurret(id)
 	
 	return 1;
 }
-SetTurretAngles(id, Float:rotation, Float:elevation)
+stock SetTurretAngles(id, Float:rotation, Float:elevation)
 {
 	if(elevation < 0.0)elevation = 0.0;
 
@@ -476,7 +476,6 @@ forward tur_OnDynamicObjectMoved(objectid);
 
 public OnButtonPress(playerid, buttonid)
 {
-	print("OnButtonPress <Turret Script>");
 	foreach(new i : tur_Index)
 	{
 		if(buttonid == tur_btnEnter[i])

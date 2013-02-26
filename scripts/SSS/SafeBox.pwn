@@ -30,6 +30,11 @@ new
 Timer:		box_PickUpTimer[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	box_CurrentBox[playerid] = INVALID_ITEM_ID;
+}
+
 DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE-1)
@@ -87,7 +92,7 @@ LoadSafeboxes()
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				if(data[0] < 98)
+				if(data[0] < _:item_MediumBox)
 				{
 					data[0] = _:box_TypeData[data[0]][box_itemtype];
 				}
@@ -249,16 +254,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & 16)
 	{
-		foreach(new i : box_Index)
-		{
-			if(GetPlayerButtonID(playerid) == GetItemButtonID(i))
-			{
-				box_CurrentBox[playerid] = i;
-				box_PickUpTick[playerid] = tickcount();
-				stop box_PickUpTimer[playerid];
+		new buttonid = GetPlayerButtonID(playerid);
 
-				if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-					box_PickUpTimer[playerid] = defer box_PickUp(playerid, i);
+		if(IsValidButton(buttonid))
+		{
+			foreach(new i : box_Index)
+			{
+				if(buttonid == GetItemButtonID(i))
+				{
+					box_CurrentBox[playerid] = i;
+					box_PickUpTick[playerid] = tickcount();
+					stop box_PickUpTimer[playerid];
+
+					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+						box_PickUpTimer[playerid] = defer box_PickUp(playerid, i);
+				}
 			}
 		}
 	}
@@ -269,7 +279,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(IsValidItem(box_CurrentBox[playerid]))
 			{
 				DisplayContainerInventory(playerid, GetItemExtraData(box_CurrentBox[playerid]));
-				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0); // BOM_Plant_2Idle
+				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
 				stop box_PickUpTimer[playerid];
 				box_PickUpTick[playerid] = 0;
 			}

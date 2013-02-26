@@ -36,7 +36,8 @@ enum E_PLAYER_VEHICLE_DATA
 	pv_panels,
 	pv_doors,
 	pv_lights,
-	pv_tires
+	pv_tires,
+	pv_armour
 }
 
 
@@ -49,10 +50,12 @@ Float:		gVehicleFuel[MAX_VEHICLES],
 			gVehicleTrunkLocked[MAX_VEHICLES],
 			gVehicleArea[MAX_VEHICLES],
 			gVehicleContainer[MAX_VEHICLES],
-			gCurrentContainerVehicle[MAX_VEHICLES],
 			gVehicleOwner[MAX_VEHICLES][MAX_PLAYER_NAME],
 			gVehicleColours[MAX_VEHICLES][2],
 			gPlayerVehicleData[MAX_VEHICLES][E_PLAYER_VEHICLE_DATA];
+
+new
+			gCurrentContainerVehicle[MAX_PLAYERS];
 
 
 new gModelGroup[13][78]=
@@ -268,7 +271,6 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				}
 			}
 
-
 			tmpid = CreateVehicle(model, posX, posY, posZ, rotZ, -1, -1, 86400000);
 
 			if(IsValidVehicle(tmpid))
@@ -279,8 +281,8 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				{
 					case 416, 433, 523, 427, 490, 528, 407, 544, 596, 597, 598, 599, 432, 601:
 					{
-						gVehicleColours[tmpid][0] = -1;
-						gVehicleColours[tmpid][1] = -1;
+						gVehicleColours[tmpid][0] = 0;
+						gVehicleColours[tmpid][1] = 0;
 					}
 					default:
 					{
@@ -323,7 +325,7 @@ LoadPlayerVehicles(bool:prints = true)
 		if(type == FM_FILE)
 		{
 			new
-				array[13 + (CNT_MAX_SLOTS * 2)],
+				array[14 + (CNT_MAX_SLOTS * 2)],
 				itemid;
 
 			filedir = "SSS/Vehicles/";
@@ -332,11 +334,14 @@ LoadPlayerVehicles(bool:prints = true)
 			fblockread(file, array, sizeof(array));
 			fclose(file);
 
+			if(Float:array[1] < 255.5)
+				continue;
+
 			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400000);
 
 			sscanf(item, "p<.>s[24]{s[24]}", gVehicleOwner[vehicleid]);
 
-			printf("Loading vehicle %d for %s", vehicleid, gVehicleOwner[vehicleid]);
+			printf("[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
 
 			if(IsValidVehicle(vehicleid))
 			{
@@ -350,18 +355,19 @@ LoadPlayerVehicles(bool:prints = true)
 				gPlayerVehicleData[vehicleid][pv_doors]		= array[10];
 				gPlayerVehicleData[vehicleid][pv_lights]	= array[11];
 				gPlayerVehicleData[vehicleid][pv_tires]		= array[12];
+				gPlayerVehicleData[vehicleid][pv_armour]	= array[13];
 
 				if(VehicleFuelData[array[0]-400][veh_trunkSize] > 0)
 				{
 					gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[array[0]-400][veh_trunkSize], .virtual = 1);
 					for(new i, j; j < CNT_MAX_SLOTS; i += 2, j++)
 					{
-						if(IsValidItemType(ItemType:array[13 + i]))
+						if(IsValidItemType(ItemType:array[14 + i]))
 						{
-							itemid = CreateItem(ItemType:array[13 + i], 0.0, 0.0, 0.0);
+							itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
 
-							if(!IsItemTypeSafebox(ItemType:array[13 + i]) && !IsItemTypeBag(ItemType:array[13 + i]))
-								SetItemExtraData(itemid, array[13 + i + 1]);
+							if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
+								SetItemExtraData(itemid, array[14 + i + 1]);
 
 							AddItemToContainer(gVehicleContainer[vehicleid], itemid);
 						}
@@ -378,28 +384,36 @@ LoadPlayerVehicles(bool:prints = true)
 
 	if(prints)
 		printf("Loaded %d Player vehicles", gTotalVehicles);
+
+	return;
 }
 
 SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 {
-	printf("Saving vehicle %d for %s", vehicleid, name);
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	new
 		File:file,
 		filename[MAX_PLAYER_NAME + 18],
-		array[13 + (CNT_MAX_SLOTS * 2)],
+		array[14 + (CNT_MAX_SLOTS * 2)],
 		itemid;
 
 	array[0] = GetVehicleModel(vehicleid);
 	GetVehicleHealth(vehicleid, Float:array[1]);
+
+	if(Float:array[1] < 255.5)
+		return 0;
+
 	array[2] = _:gVehicleFuel[vehicleid];
 	GetVehiclePos(vehicleid, Float:array[3], Float:array[4], Float:array[5]);
 	GetVehicleZAngle(vehicleid, Float:array[6]);
 	array[7] = gVehicleColours[vehicleid][0];
 	array[8] = gVehicleColours[vehicleid][1];
 	GetVehicleDamageStatus(vehicleid, array[9], array[10], array[11], array[12]);
+	array[13] = 0;
+
+	printf("[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], name);
 
 	if(IsValidContainer(gVehicleContainer[vehicleid]))
 	{
@@ -408,13 +422,13 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 			if(IsContainerSlotUsed(gVehicleContainer[vehicleid], j))
 			{
 				itemid = GetContainerSlotItem(gVehicleContainer[vehicleid], j);
-				array[13 + i] = _:GetItemType(itemid);
-				array[13 + i + 1] = GetItemExtraData(itemid);
+				array[14 + i] = _:GetItemType(itemid);
+				array[14 + i + 1] = GetItemExtraData(itemid);
 			}
 			else
 			{
-				array[13 + i] = -1;
-				array[13 + i + 1] = 0;
+				array[14 + i] = -1;
+				array[14 + i + 1] = 0;
 			}
 		}
 	}
@@ -464,6 +478,9 @@ ApplyVehicleData(vehicleid)
 		Float:sy,
 		Float:sz;
 
+	if(!(400 <= model < 612))
+		return 0;
+
 	if(bVehicleSettings[vehicleid] & v_Player)
 	{
 		SetVehicleHealth(vehicleid, gPlayerVehicleData[vehicleid][pv_health]);
@@ -490,13 +507,13 @@ ApplyVehicleData(vehicleid)
 			tires;
 
 		if(chance < 1)
-			SetVehicleHealth(vehicleid, 700 + random(300));
+			SetVehicleHealth(vehicleid, 500 + random(200));
 
 		else if(chance < 5)
-			SetVehicleHealth(vehicleid, 400 + random(300));
+			SetVehicleHealth(vehicleid, 400 + random(200));
 
 		else
-			SetVehicleHealth(vehicleid, 300 + random(300));
+			SetVehicleHealth(vehicleid, 300 + random(200));
 
 		chance = random(100);
 
@@ -513,8 +530,12 @@ ApplyVehicleData(vehicleid)
 			gVehicleFuel[vehicleid] = frandom(1.0);
 
 
-		panels	= encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4));
-		doors	= encode_doors(random(5), random(5), random(5), random(5), random(5), random(5));
+		if(random(100) < 60)
+			panels	= encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4));
+
+		if(random(100) < 60)
+			doors	= encode_doors(random(5), random(5), random(5), random(5), random(5), random(5));
+
 		lights	= encode_lights(random(2), random(2), random(2), random(2));
 		tires	= encode_tires(random(2), random(2), random(2), random(2));
 

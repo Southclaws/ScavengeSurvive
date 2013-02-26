@@ -12,7 +12,7 @@ ptask ToolTipUpdate[1000](playerid)
 		return;		
 	}
 
-	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT)
+	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && bPlayerGameSettings[playerid] & ShowHUD)
 	{
 		if(GetPlayerWeapon(playerid) > 0)
 		{
@@ -120,17 +120,20 @@ ptask ToolTipUpdate[1000](playerid)
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "HandCuff player");
 					}
 
-					else if(itemtype == item_Flag)
-						AddToolTipText(playerid, KEYTEXT_INTERACT, "Place flag");
-
 					else if(itemtype == item_Briefcase)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Open briefcase");
 
 					else if(itemtype == item_Satchel)
+					{
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Open satchel");
+						AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Wear");
+					}
 
 					else if(itemtype == item_Backpack)
+					{
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Open backpack");
+						AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Wear");
+					}
 
 					if(itemtype == item_GasCan)
 					{

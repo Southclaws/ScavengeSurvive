@@ -83,18 +83,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
 					{
-						ShowTireList(playerid, i);
 						SetPlayerPos(playerid, px, py, pz);
+						ShowTireList(playerid, i);
 					}
 					else if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
 					{
-						StartRefuellingVehicle(playerid, i);
 						SetPlayerPos(playerid, px, py, pz);
+						StartRefuellingVehicle(playerid, i);
 					}
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Headlight)
 					{
-						ShowLightList(playerid, i);
 						SetPlayerPos(playerid, px, py, pz);
+						ShowLightList(playerid, i);
 					}
 					else
 					{
@@ -266,6 +266,28 @@ public OnPlayerCloseContainer(playerid, containerid)
 #endif
 #define OnPlayerCloseContainer veh_OnPlayerCloseContainer
 forward veh_OnPlayerCloseContainer(playerid, containerid);
+
+public OnPlayerUseItem(playerid, itemid)
+{
+	foreach(new i : gVehicleIndex)
+	{
+		if(IsPlayerInDynamicArea(playerid, gVehicleArea[i]))
+		{
+			return 1;
+		}
+	}
+
+	return CallLocalFunction("veh_OnPlayerUseItem", "dd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerUseItem
+	#undef OnPlayerUseItem
+#else
+	#define _ALS_OnPlayerUseItem
+#endif
+#define OnPlayerUseItem veh_OnPlayerUseItem
+forward veh_OnPlayerUseItem(playerid, itemid);
+
+
 
 forward Float:GetVehicleFuelCapacity(vehicleid);
 Float:GetVehicleFuelCapacity(vehicleid)

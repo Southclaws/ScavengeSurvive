@@ -4,7 +4,7 @@ new stock
 	ItemType:item_battery		= INVALID_ITEM_TYPE, // required for some crafting
 	ItemType:item_fusebox		= INVALID_ITEM_TYPE, // required for some crafting
 	ItemType:item_Armour		= INVALID_ITEM_TYPE,
-
+	ItemType:item_ArmourRegen	= INVALID_ITEM_TYPE, // NEEDS TO BE CHANGED!
 	ItemType:item_FishRod		= INVALID_ITEM_TYPE, // fishing?
 	ItemType:item_Taser			= INVALID_ITEM_TYPE, // stuns players (needs anim, or just other hand)
 	ItemType:item_LaserPoint	= INVALID_ITEM_TYPE, // combine with explosives to make trip mine
@@ -19,9 +19,6 @@ new stock
 	ItemType:item_Flag			= INVALID_ITEM_TYPE, // marking territory
 	ItemType:item_CapCase		= INVALID_ITEM_TYPE, // For encasing motion sensor mines
 	ItemType:item_MotionSense	= INVALID_ITEM_TYPE, // Used to create mines
-	ItemType:item_Canister1		= INVALID_ITEM_TYPE,
-	ItemType:item_Canister2		= INVALID_ITEM_TYPE,
-	ItemType:item_Canister3		= INVALID_ITEM_TYPE,
 	ItemType:item_Clothes		= INVALID_ITEM_TYPE,
 	ItemType:item_Pizza			= INVALID_ITEM_TYPE,
 	ItemType:item_Burger		= INVALID_ITEM_TYPE,
@@ -33,7 +30,7 @@ new stock
 	ItemType:item_AmmoTin		= INVALID_ITEM_TYPE,
 	ItemType:item_Meat			= INVALID_ITEM_TYPE,
 	ItemType:item_DeadLeg		= INVALID_ITEM_TYPE,
-	ItemType:item_DeadArm		= INVALID_ITEM_TYPE,
+	ItemType:item_Torso			= INVALID_ITEM_TYPE,
 	ItemType:item_LongPlank		= INVALID_ITEM_TYPE,
 	ItemType:item_GreenGloop	= INVALID_ITEM_TYPE,
 	ItemType:item_Capsule		= INVALID_ITEM_TYPE,

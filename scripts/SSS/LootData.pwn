@@ -8,7 +8,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SHOVEL,				0.8);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_FLOWER,				0.4);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_CANE,				0.7);
-	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_COLT45,				0.3);
+	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_COLT45,				0.4);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_DEAGLE,				0.2);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SHOTGUN,			0.3);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SAWEDOFF,			0.1);
@@ -67,15 +67,15 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_Headlight,						0.4);
 
 	// loot_Police
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				1.0);
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_SHOTGUN,			1.0);
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_RIFLE,				1.0);
-	AddItemToLootIndex(loot_Police,			item_HandCuffs,						1.0);
-	AddItemToLootIndex(loot_Police,			item_Taser,							1.0);
-	AddItemToLootIndex(loot_Police,			item_Medkit,						1.0);
-	AddItemToLootIndex(loot_Police,			item_GasMask,						1.0);
-	AddItemToLootIndex(loot_Police,			item_Flashlight,					1.0);
-	AddItemToLootIndex(loot_Police,			item_Shield,						1.0);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				0.8);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_SHOTGUN,			0.7);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_RIFLE,				0.6);
+	AddItemToLootIndex(loot_Police,			item_HandCuffs,						0.4);
+	AddItemToLootIndex(loot_Police,			item_Taser,							0.6);
+	AddItemToLootIndex(loot_Police,			item_Medkit,						0.6);
+	AddItemToLootIndex(loot_Police,			item_GasMask,						0.7);
+	AddItemToLootIndex(loot_Police,			item_Flashlight,					0.9);
+	AddItemToLootIndex(loot_Police,			item_Shield,						0.7);
 	AddItemToLootIndex(loot_Police,			item_Clothes,						0.6);
 	AddItemToLootIndex(loot_Police,			item_Headlight,						0.1);
 
@@ -97,7 +97,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Military,		ItemType:45,						0.0);
 	AddItemToLootIndex(loot_Military,		item_explosive,						0.4);
 	AddItemToLootIndex(loot_Military,		item_ArmourRegen,					0.2);
-	AddItemToLootIndex(loot_Military,		item_Shield,						0.3);
+	AddItemToLootIndex(loot_Military,		item_Shield,						0.2);
 	AddItemToLootIndex(loot_Military,		item_Backpack,						0.2);
 	AddItemToLootIndex(loot_Military,		item_CapCase,						0.2);
 	AddItemToLootIndex(loot_Military,		item_CapMineBad,					0.3);
@@ -110,8 +110,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Military,		item_AmmoTin,						0.4);
 
 	// loot_Medical
-	AddItemToLootIndex(loot_Medical,		item_Medkit,						1.0);
-	AddItemToLootIndex(loot_Medical,		item_Clothes,						0.9);
+	AddItemToLootIndex(loot_Medical,		item_Medkit,						0.9);
 	AddItemToLootIndex(loot_Medical,		item_Pills,							0.6);
 	AddItemToLootIndex(loot_Medical,		item_AutoInjec,						0.5);
 	AddItemToLootIndex(loot_Medical,		item_Detergent,						0.1);
@@ -203,7 +202,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarMilitary,	ItemType:WEAPON_MP5,				0.8);
 	AddItemToLootIndex(loot_CarMilitary,	ItemType:WEAPON_M4,					0.7);
 	AddItemToLootIndex(loot_CarMilitary,	ItemType:WEAPON_SNIPER,				0.9);
-	AddItemToLootIndex(loot_CarMilitary,	ItemType:WEAPON_ROCKETLAUNCHER,		0.2);
 	AddItemToLootIndex(loot_CarMilitary,	ItemType:44,						0.5);
 	AddItemToLootIndex(loot_CarMilitary,	ItemType:45,						0.4);
 	AddItemToLootIndex(loot_CarMilitary,	item_battery,						0.4);
@@ -255,7 +253,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_Capsule,						0.5);
 	AddItemToLootIndex(loot_Survivor,		item_Meat,							0.5);
 	AddItemToLootIndex(loot_Survivor,		item_DeadLeg,						0.7);
-	AddItemToLootIndex(loot_Survivor,		item_DeadArm,						0.7);
+	AddItemToLootIndex(loot_Survivor,		item_Torso,							0.7);
 	AddItemToLootIndex(loot_Survivor,		item_Barbecue,						0.5);
 	AddItemToLootIndex(loot_Survivor,		item_MediumBox,						0.3);
 	AddItemToLootIndex(loot_Survivor,		item_SmallBox,						0.3);

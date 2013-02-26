@@ -1,5 +1,6 @@
-public OnLoad()
+LoadGen_Bone()
 {
+	print("Loading Bone County");
 	new
 		buttonid[2];
 
@@ -13,18 +14,7 @@ public OnLoad()
 	AddSprayTag(-2662.95, 2121.44, 2.14, 0.00, 0.00, 180.00);
 	AddSprayTag(146.92, 1831.78, 18.02, 0.00, 0.00, 90.00);
 
-	CreateTurret(287.0, 2047.0, 17.5, 270.0, .type = 1);
-	CreateTurret(335.0, 1843.0, 17.5, 270.0, .type = 1);
-	CreateTurret(10.0, 1805.0, 17.40, 180.0, .type = 1);
-
-	return CallLocalFunction("gendes_OnLoad", "");
+//	CreateTurret(287.0, 2047.0, 17.5, 270.0, .type = 1);
+//	CreateTurret(335.0, 1843.0, 17.5, 270.0, .type = 1);
+//	CreateTurret(10.0, 1805.0, 17.40, 180.0, .type = 1);
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad gendes_OnLoad
-forward gendes_OnLoad();
-
-

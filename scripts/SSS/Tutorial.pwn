@@ -29,7 +29,7 @@ public OnPlayerOpenInventory(playerid)
 	}
 	if(TutorialState[playerid] == 8)
 	{
-		ShowHelpTip(playerid, "Open the options menu for the M9 in your inventory.");
+		ShowHelpTip(playerid, "Open the options menu for the Medkit in your inventory.");
 		TutorialState[playerid] = 9;
 	}
 
@@ -49,7 +49,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	{
 		if(TutorialState[playerid] == 2)
 		{
-			ShowHelpTip(playerid, "This is your starting gear. Now double click the M9 in your bag.");
+			ShowHelpTip(playerid, "This is your starting gear. Now double click the Medkit in your bag.");
 			TutorialState[playerid] = 3;
 		}
 	}
@@ -70,9 +70,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	{
 		if(TutorialState[playerid] == 3)
 		{
-			if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == ItemType:WEAPON_COLT45)
+			if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Medkit)
 			{
-				ShowHelpTip(playerid, "Now click \"Equip\" to remove the M9 from your bag and put it in your hands.");
+				ShowHelpTip(playerid, "Now click \"Equip\" to remove the Medkit from your bag and put it in your hands.");
 				TutorialState[playerid] = 4;
 			}
 		}
@@ -94,7 +94,7 @@ public OnPlayerTakeFromContainer(playerid, containerid, slotid)
 	{
 		if(TutorialState[playerid] == 4)
 		{
-			if(GetItemType(GetContainerSlotItem(containerid, slotid)) == ItemType:WEAPON_COLT45)
+			if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Medkit)
 			{
 				ShowHelpTip(playerid, "Great! Now you can shoot hostile players, but what if you're feeling friendly? Press N to drop your current item or weapon.");
 				TutorialState[playerid] = 5;
@@ -110,13 +110,13 @@ public OnPlayerTakeFromContainer(playerid, containerid, slotid)
 	#define _ALS_OnPlayerTakeFromContainer
 #endif
 #define OnPlayerTakeFromContainer tut_OnPlayerTakeFromContainer
-forward tut_OnPlayerTakeFromContainer(playerid, slotid);
+forward tut_OnPlayerTakeFromContainer(playerid, containerid, slotid);
 
 public OnPlayerDropItem(playerid, itemid)
 {
 	if(TutorialState[playerid] == 5)
 	{
-		if(GetItemType(itemid) == ItemType:WEAPON_COLT45)
+		if(GetItemType(itemid) == item_Medkit)
 		{
 			ShowHelpTip(playerid, "Good, you should grab that again though, you might need it! Press F to pick up items.");
 			TutorialState[playerid] = 6;
@@ -137,7 +137,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(TutorialState[playerid] == 6)
 	{
-		if(GetItemType(itemid) == ItemType:WEAPON_COLT45)
+		if(GetItemType(itemid) == item_Medkit)
 		{
 			ShowHelpTip(playerid, "You can't go around carrying everything by hand! Put your current item in your inventory by pressing Y");
 			TutorialState[playerid] = 7;
@@ -176,7 +176,7 @@ public OnPlayerViewInventoryOpt(playerid)
 {
 	if(TutorialState[playerid] == 9)
 	{
-		ShowHelpTip(playerid, "Now press the \"Remove\" button to remove that item from your inventory and put it in your bag.");
+		ShowHelpTip(playerid, "Now press the \"Move to bag\" button to remove that item from your inventory and put it in your bag.");
 		TutorialState[playerid] = 10;
 	}
 

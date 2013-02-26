@@ -1,5 +1,7 @@
-public OnLoad()
+LoadGen_SF()
 {
+	print("Loading San Fierro");
+
 	CreateLadder(-1164.6187, 370.0174, 1.9609, 14.1484, 221.1218);
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);
 	CreateLadder(-1736.4494, -445.9549, 1.9609, 14.1484, 270.7138);
@@ -41,17 +43,7 @@ public OnLoad()
 	CreateItem(item_Barbecue, -2430.86, 2368.72, 3.96,   0.00, 0.00, -168.30, .zoffset = FLOOR_OFFSET);
 	CreateItem(item_Barbecue, -2479.55, 2483.86, 16.77,   0.00, 0.00, -203.28, .zoffset = FLOOR_OFFSET);
 	CreateItem(item_Barbecue, -2446.11, 2512.45, 14.69,   0.00, 0.00, -132.60, .zoffset = FLOOR_OFFSET);
-
-	return CallLocalFunction("gensf_OnLoad", "");
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad gensf_OnLoad
-forward gensf_OnLoad();
-
 
 
 District_Housing1()
@@ -156,6 +148,10 @@ District_Housing2()
 	CreateZipline(
 		-2674.76, 867.24, 82.52,
 		-2674.28, 820.22, 73.14);
+
+	CreateFuelOutlet(-2410.80, 970.85, 44.48, 2.0, 100.0, float(random(100)));
+	CreateFuelOutlet(-2410.80, 976.19, 44.48, 2.0, 100.0, float(random(100)));
+	CreateFuelOutlet(-2410.80, 981.52, 44.48, 2.0, 100.0, float(random(100)));
 
 	CreateLootSpawn(-2865.719970, 684.940002, 22.549999,	3, 30, loot_Civilian);
 	CreateLootSpawn(-2873.159912, 701.070007, 22.540000,	3, 30, loot_Civilian);
@@ -525,6 +521,15 @@ District_Police()
 }
 District_Industrial()
 {
+	CreateFuelOutlet(-1679.3594, 403.0547, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1675.2188, 407.1953, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1669.9063, 412.5313, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1665.5234, 416.9141, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1685.9688, 409.6406, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1681.8281, 413.7813, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1676.5156, 419.1172, 6.3828, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-1672.1328, 423.5000, 6.3828, 2.0, 100.0, float(random(130)));
+
 	CreateLootSpawn(-2221.239990, -143.350006, 34.400001,	3, 40, loot_Civilian);
 	CreateLootSpawn(-2227.459960, -109.550003, 34.400001,	3, 40, loot_Civilian);
 	CreateLootSpawn(-2224.100097, -306.670013, 34.639999,	3, 40, loot_Civilian);

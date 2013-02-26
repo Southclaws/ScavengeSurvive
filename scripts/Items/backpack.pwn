@@ -217,16 +217,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & 16)
 	{
-		foreach(new i : bag_Index)
-		{
-			if(GetPlayerButtonID(playerid) == GetItemButtonID(i))
-			{
-				bag_CurrentBag[playerid] = i;
-				bag_PickUpTick[playerid] = tickcount();
-				stop bag_PickUpTimer[playerid];
+		new buttonid = GetPlayerButtonID(playerid);
 
-				if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-					bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, i);
+		if(IsValidButton(buttonid))
+		{
+			foreach(new i : bag_Index)
+			{
+				if(buttonid == GetItemButtonID(i))
+				{
+					bag_CurrentBag[playerid] = i;
+					bag_PickUpTick[playerid] = tickcount();
+					stop bag_PickUpTimer[playerid];
+
+					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+						bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, i);
+				}
 			}
 		}
 	}
@@ -388,7 +393,6 @@ forward bag_PlayerSelectInventoryOpt(playerid, option);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	print("OnPlayerViewContainerOpt");
 	if(IsValidItem(gPlayerBackpack[playerid]) && containerid != GetItemExtraData(gPlayerBackpack[playerid]))
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");

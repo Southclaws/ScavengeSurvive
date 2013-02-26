@@ -1,5 +1,7 @@
-public OnLoad()
+LoadGen_LS()
 {
+	print("Loading Los Santos");
+
 	CreateZipline(
 		2159.08, -986.47, 70.59,
 		2063.30, -993.57, 59.38, .worldid = 3);
@@ -18,15 +20,4 @@ public OnLoad()
 	AddSprayTag(1118.51, -1540.14, 24.66, 0.00, 0.00, 178.46);
 	AddSprayTag(1202.11, -1201.55, 20.47, 0.00, 0.00, 90.00);
 	AddSprayTag(1264.15, -1270.28, 15.16, 0.00, 0.00, 270.00);
-
-	return CallLocalFunction("genls_OnLoad", "");
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad genls_OnLoad
-forward genls_OnLoad();
-
-

@@ -102,8 +102,8 @@ native WP_Hash(buffer[], len, const str[]);
 // Functions
 #define PlayerLoop(%0)				foreach(new %0 : Player)
 
-#define t:%1<%2>					((%1)|=(%2))								// I had this idea at a later date!
-#define f:%1<%2>					((%1)&=~(%2))								// So there's a mix of both these methods just to add confusion! Don't worry, they do the same thing, just quicker to write.
+#define t:%1<%2>					((%1)|=(%2))
+#define f:%1<%2>					((%1)&=~(%2))
 
 #define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
 #define GetFile(%0,%1)				format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
@@ -367,6 +367,7 @@ enum (<<= 1) // 14
 		HasAccount = 1,
 		IsVip,
 		LoggedIn,
+		AdminDuty,
 		Gender,
 		Alive,
 		Dying,
@@ -374,6 +375,7 @@ enum (<<= 1) // 14
 		FirstSpawn,
 		HelpTips,
 		GlobalChat,
+		ShowHUD,
 
 		PillEffect_Aspirin,
 		PillEffect_Painkill,
@@ -381,8 +383,6 @@ enum (<<= 1) // 14
 
 		HangingOutWindow,
 
-		RegenHP,
-		RegenAP,
 		Frozen,
 		Muted,
 
@@ -425,9 +425,6 @@ Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 		gPlayerPillUseTick		[MAX_PLAYERS][3],
 
 		tick_WeaponHit			[MAX_PLAYERS],
-		tick_LastDeath			[MAX_PLAYERS],
-		tick_LastDamg			[MAX_PLAYERS],
-		tick_StartRegenAP		[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
 		ChatMessageStreak		[MAX_PLAYERS],
@@ -438,8 +435,7 @@ Timer:	TankHeatUpdateTimer		[MAX_PLAYERS];
 
 
 forward OnLoad();
-forward OnDeath(playerid, killerid, reason);
-forward RestartGamemode();
+forward SetRestart(seconds);
 
 
 //======================Library Predefinitions
@@ -476,7 +472,7 @@ forward RestartGamemode();
 #include "../scripts/API/Line/Line.pwn"
 #include "../scripts/API/Zipline/Zipline.pwn"
 #include "../scripts/API/Ladder/Ladder.pwn"
-#include "../scripts/API/Turret/Turret.pwn"
+//#include "../scripts/API/Turret/Turret.pwn"
 #include "../scripts/API/SprayTag/SprayTag.pwn"
 
 #include "../scripts/Items/misc.pwn"
@@ -485,7 +481,6 @@ forward RestartGamemode();
 #include "../scripts/Items/beer.pwn"
 #include "../scripts/Items/timebomb.pwn"
 #include "../scripts/Items/Sign.pwn"
-#include "../scripts/Items/electroap.pwn"
 #include "../scripts/Items/briefcase.pwn"
 #include "../scripts/Items/backpack.pwn"
 #include "../scripts/Items/repair.pwn"
@@ -527,24 +522,28 @@ forward RestartGamemode();
 #include "../scripts/SSS/TipText.pwn"
 #include "../scripts/SSS/ToolTipEvents.pwn"
 
-#include "../scripts/SSS/Lvl_1.pwn"
-#include "../scripts/SSS/Lvl_2.pwn"
-#include "../scripts/SSS/Lvl_3.pwn"
-#include "../scripts/SSS/Admin.pwn"
+#include "../scripts/SSS/Cmds/Core.pwn"
+#include "../scripts/SSS/Cmds/Commands.pwn"
+#include "../scripts/SSS/Cmds/Moderator.pwn"
+#include "../scripts/SSS/Cmds/Administrator.pwn"
+#include "../scripts/SSS/Cmds/Dev.pwn"
+#include "../scripts/SSS/Cmds/Duty.pwn"
 
 //======================Map Scripts
 
-#include "../scripts/SSS/Maps/Gen_LS.pwn"
-#include "../scripts/SSS/Maps/Gen_SF.pwn"
-#include "../scripts/SSS/Maps/Gen_LV.pwn"
-#include "../scripts/SSS/Maps/Gen_Red.pwn"
-#include "../scripts/SSS/Maps/Gen_Flint.pwn"
-#include "../scripts/SSS/Maps/Gen_Des.pwn"
+#include "../scripts/SSS/Maps/santos.pwn"
+#include "../scripts/SSS/Maps/fierro.pwn"
+#include "../scripts/SSS/Maps/venturas.pwn"
+#include "../scripts/SSS/Maps/redcounty.pwn"
+#include "../scripts/SSS/Maps/flintcounty.pwn"
+#include "../scripts/SSS/Maps/bonecounty.pwn"
+#include "../scripts/SSS/Maps/robada.pwn"
+
+#include "../scripts/SSS/Maps/LockboxLV.pwn"
+
 #include "../scripts/SSS/Maps/Area69.pwn"
 #include "../scripts/SSS/Maps/Ranch.pwn"
 #include "../scripts/SSS/Maps/MtChill.pwn"
-
-
 
 
 main()
@@ -720,16 +719,13 @@ public OnGameModeInit()
 	item_Backpack		= DefineItemType("Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
 	item_Satchel		= DefineItemType("Small Bag",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
-	item_Canister1		= DefineItemType("Canister",		1008,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0,	0.303921, 0.033764, -0.105052, 0.000000, 0.000000, 0.000000);
-	item_Canister2		= DefineItemType("Canister",		1009,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0,	0.314470, 0.022019, -0.013475, 0.000000, 0.000000, 0.000000);
-	item_Canister3		= DefineItemType("Canister",		1010,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0,	0.301039, 0.077488, 0.022019, 90.000000, 0.000000, 0.000000);
 	item_MotionSense	= DefineItemType("Motion Sensor",	327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_CapCase		= DefineItemType("Cap Case",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
 	item_CapMineBad		= DefineItemType("Bad Cap Mine",	1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
-
 	item_CapMine		= DefineItemType("Cap Mine",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
 	item_Pizza			= DefineItemType("Pizza",			1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
 	item_Burger			= DefineItemType("Burger",			2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
+
 	item_BurgerBox		= DefineItemType("Burger",			2768,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.107883, 0.093265, 0.029676, 91.010627, 7.522015, 0.000000);
 	item_Taco			= DefineItemType("Taco",			2769,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.069803, 0.057707, 0.039241, 0.000000, 78.877342, 0.000000);
 	item_GasCan			= DefineItemType("Petrol Can",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
@@ -737,21 +733,21 @@ public OnGameModeInit()
 	item_HelmArmy		= DefineItemType("Army Helmet",		19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045);
 	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
-
 	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
 	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
+
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
-	item_DeadArm		= DefineItemType("Arm",				2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
+	item_Torso			= DefineItemType("Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
 	item_LongPlank		= DefineItemType("Plank",			2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
 	item_GreenGloop		= DefineItemType("Unknown",			2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105);
 	item_Capsule		= DefineItemType("Capsule",			3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777);
 	item_RadioPole		= DefineItemType("Receiver",		3221,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 	item_SignShot		= DefineItemType("Sign",			3265,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
-
 	item_Mailbox		= DefineItemType("Mailbox",			3407,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 	item_Pumpkin		= DefineItemType("Pumpkin",			19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000);
 	item_Nailbat		= DefineItemType("Nailbat",			2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
+
 	item_ZorroMask		= DefineItemType("Zorro Mask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
 	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
@@ -759,12 +755,11 @@ public OnGameModeInit()
 	item_AutoInjec		= DefineItemType("Injector",		2711,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
 	item_BurgerBag		= DefineItemType("Burger",			2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
 	item_CanDrink		= DefineItemType("Can",				2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
-
 	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
 	item_Dice			= DefineItemType("Dice",			1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
 
-//	item_Wood		= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
-//	item_Dynamite	= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
+//	item_Wood			= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
+//	item_Dynamite		= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
 
 /*
 	DefineAnimationSet()
@@ -779,9 +774,6 @@ public OnGameModeInit()
 	DefineItemDamage(item_Screwdriver,	23.0,	anim_Attack);
 	DefineItemDamage(item_Cane,			23.0,	anim_Attack);
 	DefineItemDamage(item_Rake,			23.0,	anim_Attack);
-	DefineItemDamage(item_Canister1,	23.0,	anim_Attack);
-	DefineItemDamage(item_Canister2,	23.0,	anim_Attack);
-	DefineItemDamage(item_Canister3,	23.0,	anim_Attack);
 */
 
 	DefineFoodItem(item_HotDog,			30.0);
@@ -807,20 +799,6 @@ public OnGameModeInit()
 	DefineLootIndex(loot_CarPolice);
 	DefineLootIndex(loot_CarMilitary);
 	DefineLootIndex(loot_Survivor);
-
-
-	CreateFuelOutlet(-1679.3594, 403.0547, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1675.2188, 407.1953, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1669.9063, 412.5313, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1665.5234, 416.9141, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1685.9688, 409.6406, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1681.8281, 413.7813, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1676.5156, 419.1172, 6.3828, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1672.1328, 423.5000, 6.3828, 2.0, 100.0, float(random(100)));
-
-	CreateFuelOutlet(-2410.80, 970.85, 44.48, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-2410.80, 976.19, 44.48, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-2410.80, 981.52, 44.48, 2.0, 100.0, float(random(100)));
 
 
 	skin_MainM	= DefineSkinItem(60,	"Civilian", 1, 0.0);
@@ -849,9 +827,15 @@ public OnGameModeInit()
 	DefineSafeboxType("Ammo Tin", 		item_AmmoTin,		2, 2, 0, 0);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
-
 	CallLocalFunction("OnLoad", "");
 
+	LoadGen_LS();
+	LoadGen_SF();
+	LoadGen_LV();
+	LoadGen_Red();
+	LoadGen_Flint();
+	LoadGen_Rob();
+	LoadGen_Bone();
 
 	LoadVehicles();
 	LoadTextDraws();
@@ -874,7 +858,13 @@ public OnGameModeExit()
 
 	return 1;
 }
-public RestartGamemode()
+public SetRestart(seconds)
+{
+	printf("Restarting server in: %ds", seconds);
+	gServerUptime = MAX_SERVER_UPTIME - seconds;
+}
+
+RestartGamemode()
 {
 	PlayerLoop(i)
 	{
@@ -896,6 +886,37 @@ public RestartGamemode()
 	MsgAll(BLUE, HORIZONTAL_RULE);
 	MsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
 	MsgAll(BLUE, HORIZONTAL_RULE);
+}
+
+task AutoSave[300000]()
+{
+	print("Autosaving...");
+
+	PlayerLoop(i)
+	{
+		SavePlayerData(i);
+	}
+
+	defer AutoSave_Safeboxes();
+}
+
+timer AutoSave_Safeboxes[100]()
+{
+	SaveAllSafeboxes();
+	defer AutoSave_Vehicles();
+}
+
+timer AutoSave_Vehicles[100]()
+{
+	for(new i; i < MAX_VEHICLES; i++)
+	{
+		if(IsValidVehicle(i))
+		{
+			if(!isnull(gVehicleOwner[i]))
+				SavePlayerVehicle(i, gVehicleOwner[i]);
+		}
+	}
+	print("Autosave Complete.");
 }
 
 task GameUpdate[1000]()
@@ -965,30 +986,12 @@ CMD:stoptime(playerid, params[])
 
 task GlobalAnnouncement[600000]()
 {
-	MsgAll(YELLOW, "[SERVER] >  Confused? Check out the Wiki: "#C_ORANGE"scavenge-survive.wikia.com "#C_YELLOW"or: "#C_ORANGE"empire-bay.com");
+	MsgAll(YELLOW, " >  Confused? Check out the Wiki: "#C_ORANGE"scavenge-survive.wikia.com "#C_YELLOW"or: "#C_ORANGE"empire-bay.com");
 }
 
 ptask PlayerUpdate[100](playerid)
 {
 	ResetPlayerMoney(playerid);
-
-/*	if(bPlayerGameSettings[playerid] & RegenHP)
-	{
-		if(tickcount() - tick_StartRegenHP[playerid] > REGEN_HP_TIME)
-			f:bPlayerGameSettings[playerid]<RegenHP>;
-
-		if(tickcount() - tick_LastDamg[playerid] > 6000)
-			gPlayerHP[playerid] += 0.1;
-	}*/
-
-	if(bPlayerGameSettings[playerid] & RegenAP)
-	{
-		if(tickcount() - tick_StartRegenAP[playerid] > REGEN_AP_TIME)
-			f:bPlayerGameSettings[playerid]<RegenAP>;
-
-		if(tickcount() - tick_LastDamg[playerid] > 6000)
-			gPlayerAP[playerid] += 0.1;
-	}
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -1042,7 +1045,7 @@ ptask PlayerUpdate[100](playerid)
 
 			if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 35.0 : 30.0))
 			{
-				GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.3));
+				GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.2));
 			}
 
 			gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
@@ -1145,10 +1148,12 @@ ptask FoodUpdate[1000](playerid)
 	if(gPlayerFP[playerid] < 0.0)
 		gPlayerFP[playerid] = 0.0;
 
-
-	PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerFP[playerid] / 10.0));
-	PlayerTextDrawShow(playerid, HungerBarBackground);
-	PlayerTextDrawShow(playerid, HungerBarForeground);
+	if(bPlayerGameSettings[playerid] & ShowHUD)
+	{
+		PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerFP[playerid] / 10.0));
+		PlayerTextDrawShow(playerid, HungerBarBackground);
+		PlayerTextDrawShow(playerid, HungerBarForeground);
+	}
 }
 
 timer TankHeatUpdate[100](playerid)
@@ -1333,6 +1338,8 @@ public OnPlayerConnect(playerid)
 
 	t:bPlayerGameSettings[playerid]<HelpTips>;
 	t:bPlayerGameSettings[playerid]<GlobalChat>;
+	t:bPlayerGameSettings[playerid]<ShowHUD>;
+
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
 	SpawnPlayer(playerid);
 
@@ -1424,6 +1431,7 @@ CreateNewUserfile(playerid, password[])
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
 }
+
 Login(playerid)
 {
 	new
@@ -1442,12 +1450,22 @@ Login(playerid)
 		}
 	}
 
-	if(pAdmin(playerid)>0)MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
+	if(pAdmin(playerid) > 0)
+		MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	IncorrectPass[playerid]=0;
 
 	LogMessage(playerid);
+
+	stop gScreenFadeTimer[playerid];
+	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
+
+	SetPlayerPos(playerid,
+		gPlayerData[playerid][ply_posX],
+		gPlayerData[playerid][ply_posY],
+		gPlayerData[playerid][ply_posZ]);
+
 }
 
 SavePlayerData(playerid)
@@ -1455,7 +1473,7 @@ SavePlayerData(playerid)
 	new
 		tmpQuery[256];
 
-	if(bPlayerGameSettings[playerid] & Alive)
+	if(bPlayerGameSettings[playerid] & Alive && bPlayerGameSettings[playerid] & AdminDuty)
 	{
 		new
 			Float:x,
@@ -1466,17 +1484,11 @@ SavePlayerData(playerid)
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerFacingAngle(playerid, a);
 
-		print("Check dist to pos");
-
 		if(Distance(x, y, z, -907.5452, 272.7235, 1014.1449) < 50.0)
 			return 0;
 
-		print("Check null");
-
 		if(x == 0.0 && y == 0.0 && z == 0.0)
 			return 0;
-
-		print("Saving");
 
 		format(tmpQuery, sizeof(tmpQuery),
 			"UPDATE `Player` SET \
@@ -1491,6 +1503,11 @@ SavePlayerData(playerid)
 			gPlayerName[playerid]);
 
 		SavePlayerInventory(playerid);
+
+		if(IsPlayerInAnyVehicle(playerid))
+		{
+			SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid]);
+		}
 	}
 	else
 	{
@@ -1642,7 +1659,7 @@ LoadPlayerInventory(playerid)
 	}
 
 	fblockread(file, helditems, 2);
-	printf("[LOAD]: helditems: %d %d", helditems[0], helditems[1]);
+	printf("[LOAD]: holding: %d %d", helditems[0], helditems[1]);
 	if(helditems[0] != -1)
 	{
 		if(0 < helditems[0] <= WEAPON_PARACHUTE)
@@ -1707,7 +1724,7 @@ LoadPlayerInventory(playerid)
 		{
 			itemid = CreateItem(item_Backpack, 0.0, 0.0, 0.0);
 			containerid = GetItemExtraData(itemid);
-			printf("Created player backpack ContainerID: %d", containerid);
+
 			GivePlayerBackpack(playerid, itemid);
 
 			for(new i = 1; i < 16; i += 2)
@@ -1747,9 +1764,8 @@ public OnPlayerDisconnect(playerid, reason)
 {
 	new Float:x, Float:y, Float:z;
 	GetPlayerPos(playerid, x, y, z);
-	printf("pos %f, %,f, %f", x, y, z);
 
-	if(bPlayerGameSettings[playerid] & LoggedIn)
+	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))
 		SavePlayerData(playerid);
 
 	ResetVariables(playerid);
@@ -1958,6 +1974,10 @@ public OnPlayerSpawn(playerid)
 	}
 	else
 	{
+		gScreenBoxFadeLevel[playerid] = 255;
+		PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
+		PlayerTextDrawShow(playerid, ClassBackGround);
+
 		if(bPlayerGameSettings[playerid] & Alive)
 		{
 			LoadPlayerInventory(playerid);
@@ -1967,11 +1987,6 @@ public OnPlayerSpawn(playerid)
 
 			SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 
-			SetPlayerPos(playerid,
-				gPlayerData[playerid][ply_posX],
-				gPlayerData[playerid][ply_posY],
-				gPlayerData[playerid][ply_posZ]);
-
 			SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
 			SetCameraBehindPlayer(playerid);
 			TogglePlayerControllable(playerid, true);
@@ -1980,6 +1995,17 @@ public OnPlayerSpawn(playerid)
 			GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
 			TextDrawShowForPlayer(playerid, MapCover1);
 			TextDrawShowForPlayer(playerid, MapCover2);
+
+			if(bPlayerGameSettings[playerid] & LoggedIn)
+			{
+				stop gScreenFadeTimer[playerid];
+				gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
+
+				SetPlayerPos(playerid,
+					gPlayerData[playerid][ply_posX],
+					gPlayerData[playerid][ply_posY],
+					gPlayerData[playerid][ply_posZ]);
+			}
 		}
 		else
 		{
@@ -2011,9 +2037,6 @@ PlayerCreateNewCharacter(playerid)
 	SetPlayerCameraPos(playerid, -907.4642, 277.0962, 1014.1492);
 	Streamer_UpdateEx(playerid, -907.5452, 272.7235, 1014.1449);
 
-	gScreenBoxFadeLevel[playerid] = 255;
-	PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
-	PlayerTextDrawShow(playerid, ClassBackGround);
 	PlayerTextDrawShow(playerid, ClassButtonMale);
 	PlayerTextDrawShow(playerid, ClassButtonFemale);
 	SelectTextDraw(playerid, 0xFFFFFF88);
@@ -2134,7 +2157,6 @@ OnPlayerSelectGender(playerid)
 	}
 
 	Tutorial_Start(playerid);
-
 }
 
 timer FadeScreen[100](playerid)
@@ -2151,18 +2173,8 @@ timer FadeScreen[100](playerid)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-	print("OnPlayerDeath");
-
-	if(tickcount() - tick_LastDeath[playerid] > 3000)
-		return internal_OnPlayerDeath(playerid, killerid, reason);
-
-	return 1;
-}
-
-internal_OnPlayerDeath(playerid, killerid, reason)
-{
-	new backpackitem = GetPlayerBackpackItem(playerid);
-	print("internal_OnPlayerDeath");
+	if(!(bPlayerGameSettings[playerid] & Alive))
+		return 0;
 
 	f:bPlayerGameSettings[playerid]<Spawned>;
 	t:bPlayerGameSettings[playerid]<Dying>;
@@ -2174,7 +2186,6 @@ internal_OnPlayerDeath(playerid, killerid, reason)
 		gPlayerDeathPos[playerid][2] += 0.1;
 
 	f:bPlayerGameSettings[playerid]<Alive>;
-	tick_LastDeath[playerid] = tickcount();
 
 	stop TankHeatUpdateTimer[playerid];
 
@@ -2184,63 +2195,100 @@ internal_OnPlayerDeath(playerid, killerid, reason)
 	if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 432)
 		HidePlayerProgressBar(playerid, TankHeatBar);
 
-	if(GetPlayerHolsteredWeapon(playerid) > 0)
-	{
-		new itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid),
-			gPlayerDeathPos[playerid][0] + floatsin(195.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(195.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET);
+	DropItems(playerid);
+	SpawnPlayer(playerid);
 
-		SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
+	return 1;
+}
 
-		ClearPlayerHolsterWeapon(playerid);
-	}
+DropItems(playerid)
+{
+	new
+		backpackitem = GetPlayerBackpackItem(playerid),
+		itemid;
 
 	if(IsValidItem(GetPlayerItem(playerid)))
 	{
+		itemid = CreateItemInWorld(GetPlayerItem(playerid),
+			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+
 		RemoveCurrentItem(playerid);
 	}
-	else if(GetPlayerWeapon(playerid) > 0)
+	else if(GetPlayerWeapon(playerid) > 0 && GetPlayerAmmo(playerid) > 0)
 	{
-		new itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
-			gPlayerDeathPos[playerid][0] + floatsin(45.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(45.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET);
+		itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
+			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
 
 		SetItemExtraData(itemid, GetPlayerAmmo(playerid));
 	}
 
+	if(GetPlayerHolsteredWeapon(playerid) > 0 && GetPlayerHolsteredWeaponAmmo(playerid) > 0)
+	{
+		itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid),
+			gPlayerDeathPos[playerid][0] + floatsin(15.0, degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(15.0, degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+
+		SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
+
+		RemovePlayerHolsterWeapon(playerid);
+	}
+
 	for(new i; i < INV_MAX_SLOTS; i++)
 	{
-		new itemid = GetInventorySlotItem(playerid, 0);
+		itemid = GetInventorySlotItem(playerid, 0);
 
 		if(!IsValidItem(itemid))
 			break;
 
 		RemoveItemFromInventory(playerid, 0);
 		CreateItemInWorld(itemid,
-			gPlayerDeathPos[playerid][0] + floatsin( (360.0 / 4.0) * float(i), degrees),
-			gPlayerDeathPos[playerid][1] + floatcos( (360.0 / 4.0) * float(i), degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][0] + floatsin(45.0 + (90.0 * float(i)), degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(45.0 + (90.0 * float(i)), degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
 	}
 
 	if(IsValidItem(backpackitem))
 	{
 		RemovePlayerBackpack(playerid);
-		SetItemPos(backpackitem, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2] - FLOOR_OFFSET);
+
+		SetItemPos(backpackitem,
+			gPlayerDeathPos[playerid][0] + floatsin(180.0, degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(180.0, degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+
 		SetItemRot(backpackitem, 0.0, 0.0, 0.0, true);
 	}
 
+	itemid = CreateItem(item_Clothes,
+		gPlayerDeathPos[playerid][0] + floatsin(90.0, degrees),
+		gPlayerDeathPos[playerid][1] + floatcos(90.0, degrees),
+		gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+
+	SetItemExtraData(itemid, GetPlayerClothes(playerid));
+
+	if(IsValidItem(GetPlayerHat(playerid)))
+	{
+		CreateItem(GetItemTypeFromHat(GetPlayerHat(playerid)),
+			gPlayerDeathPos[playerid][0] + floatsin(270.0, degrees),
+			gPlayerDeathPos[playerid][1] + floatcos(270.0, degrees),
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+
+		RemovePlayerHat(playerid);
+	}
+
 	gPlayerArmedWeapon[playerid] = 0;
-
-	SpawnPlayer(playerid);
-
-	return CallLocalFunction("OnDeath", "ddd", playerid, killerid, reason);
 }
 
 public OnPlayerUpdate(playerid)
 {
-	if(bPlayerGameSettings[playerid] & Frozen)return 0;
+	if(bPlayerGameSettings[playerid] & Frozen)
+		return 0;
+
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		static
@@ -2271,8 +2319,15 @@ public OnPlayerUpdate(playerid)
 		}
 	}
 
-	SetPlayerHealth(playerid, gPlayerHP[playerid]);
-	SetPlayerArmour(playerid, gPlayerAP[playerid]);
+	if(bPlayerGameSettings[playerid] & Alive)
+	{
+		SetPlayerHealth(playerid, gPlayerHP[playerid]);
+		SetPlayerArmour(playerid, gPlayerAP[playerid]);
+	}
+	else
+	{
+		SetPlayerHealth(playerid, 100.0);		
+	}
 
 	return 1;
 }
@@ -2289,22 +2344,27 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		if(weaponid == 53)
-			GivePlayerHP(playerid, -(amount*0.5), .weaponid = weaponid);
+			GivePlayerHP(playerid, -(amount * 0.1), weaponid);
 
 		else
-			GivePlayerHP(playerid, -(amount*2), .weaponid = weaponid);
+			GivePlayerHP(playerid, -(amount * 1.5), weaponid);
+
 		return 1;
 	}
+
 	switch(weaponid)
 	{
 		case 31:
 		{
 			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
-			if(model == 447 || model == 476)internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+
+			if(model == 447 || model == 476)
+				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 38:
 		{
-			if(GetVehicleModel(gPlayerVehicleID[issuerid]) == 425)internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+			if(GetVehicleModel(gPlayerVehicleID[issuerid]) == 425)
+				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 49:
 		{
@@ -2313,11 +2373,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		case 51:
 		{
 			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
-			if(model == 432 || model == 520 || model == 425)internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
+
+			if(model == 432 || model == 520 || model == 425)
+				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
 		}
 	}
 	return 1;
 }
+
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
 	internal_HitPlayer(playerid, damagedid, weaponid);
@@ -2395,7 +2458,7 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 		}
 	}
 
-	GivePlayerHP(targetid, -HpLoss, playerid, weaponid);
+	GivePlayerHP(targetid, -HpLoss, weaponid);
 	ShowHitMarker(playerid, weaponid);
 
 
@@ -2408,7 +2471,7 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	
 	return 1;
 }
-GivePlayerHP(playerid, Float:hp, shooterid = INVALID_PLAYER_ID, weaponid = 54)
+GivePlayerHP(playerid, Float:hp, weaponid = 54)
 {
 	if(gPlayerAP[playerid] > 0.0)
 	{
@@ -2423,10 +2486,10 @@ GivePlayerHP(playerid, Float:hp, shooterid = INVALID_PLAYER_ID, weaponid = 54)
 			case 33, 34:
 				hp *= 0.99;
 		}
-		gPlayerAP[playerid] = hp / 2.0;
+		gPlayerAP[playerid] += hp / 2.0;
 	}
 
-	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp), shooterid, weaponid);
+	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
 
 	if(hp > 0.0)
 	{
@@ -2447,11 +2510,8 @@ timer HideHPText[2000](playerid)
 	PlayerTextDrawHide(playerid, AddHPText);
 }
 
-SetPlayerHP(playerid, Float:hp, shooterid = INVALID_PLAYER_ID, weaponid = 54)
+SetPlayerHP(playerid, Float:hp)
 {
-	if(hp < 0.0 && bPlayerGameSettings[playerid] & Spawned)
-		internal_OnPlayerDeath(playerid, shooterid, weaponid);
-
 	if(hp > 100.0)
 		hp = 100.0;
 
@@ -3030,52 +3090,66 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	new
 		cmd[30],
 		params[98],
-		szFuncName[64],
+		cmdfunction[64],
 		result = 1;
 
-	printf("[cmmd] [%p]: %s", playerid, cmdtext);
+	printf("[comm] [%p]: %s", playerid, cmdtext);
 
 	sscanf(cmdtext, "s[30]s[98]", cmd, params);
 
-	for (new i; i < strlen(cmd); i++)
+	for (new i, j = strlen(cmd); i < j; i++)
 		cmd[i] = tolower(cmd[i]);
 
-	format(szFuncName, 64, "cmd_%s", cmd[1]); // Format the standard command function name
-	if(funcidx(szFuncName) == -1) // If it doesn't exist, all hope is not lost! It might be defined as an admin command which has the admin level after the command name
+	format(cmdfunction, 64, "cmd_%s", cmd[1]); // Format the standard command function name
+
+	if(funcidx(cmdfunction) == -1) // If it doesn't exist, all hope is not lost! It might be defined as an admin command which has the admin level after the command name
 	{
 		new
 			iLvl = pAdmin(playerid), // The player's admin level
 			iLoop = 4; // The highest admin level
 
-		while(iLoop>0) // Loop backwards through admin levels, from 4 to 1
+		while(iLoop > 0) // Loop backwards through admin levels, from 4 to 1
 		{
-			format(szFuncName, 64, "cmd_%s_%d", cmd[1], iLoop); // format the function to include the admin variable
-			if(funcidx(szFuncName) != -1)break; // if this function exists, break the loop, at this point iLoop can never be worth 0
+			format(cmdfunction, 64, "cmd_%s_%d", cmd[1], iLoop); // format the function to include the admin variable
+
+			if(funcidx(cmdfunction) != -1)
+				break; // if this function exists, break the loop, at this point iLoop can never be worth 0
+
 			iLoop--; // otherwise just advance to the next iteration, iLoop can become 0 here and thus break the loop at the next iteration
 		}
+
 		// If iLoop was 0 after the loop that means it above completed it's last itteration and never found an existing function
-		if(iLoop==0)result = 0;
+
+		if(iLoop == 0)
+			result = 0;
+
 		// If the players level was below where the loop found the existing function,
 		// that means the number in the function is higher than the player id
 		// Give a 'not high enough admin level' error
-		if(iLvl<iLoop)result = 5;
+
+		if(iLvl < iLoop)
+			result = 5;
 	}
 	if(result == 1)
 	{
-		if(isnull(params))result = CallLocalFunction(szFuncName, "is", playerid, "\1");
-		else result = CallLocalFunction(szFuncName, "is", playerid, params);
+		if(isnull(params))result = CallLocalFunction(cmdfunction, "is", playerid, "\1");
+		else result = CallLocalFunction(cmdfunction, "is", playerid, params);
 	}
 
-	// Return values for commands, instead of writing these
-	// messages on the commands themselves, I can just
-	// write them here and return different values on the commands.
+/*
+	Return values for commands.
 
-	if		(result == 0) Msg(playerid, ORANGE, " >  That is not a recognized command. Check the "#C_BLUE"/help "#C_ORANGE"menu for a list of commands.");
-//	if		(result == 1) -- valid command, do nothing.
+	Instead of writing these messages on the commands themselves, I can just
+	write them here and return different values on the commands.
+*/
+
+	if		(result == 0) Msg(playerid, ORANGE, " >  That is not a recognized command. Check the "#C_BLUE"/help "#C_ORANGE"dialog.");
+	else if	(result == 1) return 1; // valid command, do nothing.
 	else if	(result == 2) Msg(playerid, ORANGE, " >  You cannot use that command right now.");
 	else if	(result == 3) Msg(playerid, RED, " >  You cannot use that command on that player right now.");
 	else if	(result == 4) Msg(playerid, RED, " >  Invalid ID");
-	else if (result == 5) Msg(playerid, RED, " >  You have insufficient authority to use that command.");
+	else if	(result == 5) Msg(playerid, RED, " >  You have insufficient authority to use that command.");
+	else if	(result == 6) Msg(playerid, RED, " >  You can only use that command while on "#C_BLUE"administrator duty"#C_RED".");
 
 	return 1;
 }
@@ -3399,7 +3473,6 @@ forward OnPlayerCloseContainer(playerid);
 
 public OnButtonPress(playerid, buttonid)
 {
-	print("OnButtonPress <Main Script>");
 	return 0;
 }
 

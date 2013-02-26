@@ -4,8 +4,7 @@ new gAdminCommandList_Lvl1[] =
 	/(un)freeze [id] (seconds) - freeze/unfreeze a player\n\
 	/(un)mute [id] (seconds) - mute/unmute a player\n\
 	/warn [id] - give a player a warning\n\
-	/time [hour] [optional:minute] - set the server time\n\
-	/weather [optional:weather id/name] - set the weather or open the weather menu\n\
+	/weather [weather id/name] - set the weather\n\
 	/msg [message] - send a chat message\n"
 };
 new gAdminCommandList_Lvl2[] =

@@ -60,7 +60,7 @@ public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Pills)
 	{
-		ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 300, 1);
+		ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 500, 1);
 		defer TakePills(playerid, itemid);
 	}
 
@@ -74,7 +74,7 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem pil_OnPlayerUseItem
 forward pil_OnPlayerUseItem(playerid, itemid);
 
-timer TakePills[300](playerid, itemid)
+timer TakePills[500](playerid, itemid)
 {
 	switch(GetItemExtraData(itemid) & 0b111)
 	{
@@ -95,10 +95,4 @@ timer TakePills[300](playerid, itemid)
 		}
 	}
 	DestroyItem(itemid);
-}
-
-CMD:setfp(playerid, params[])
-{
-	sscanf(params, "f", gPlayerFP[playerid]);
-	return 1;
 }

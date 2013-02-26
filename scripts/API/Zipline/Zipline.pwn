@@ -32,6 +32,7 @@ new
 
 new
 		zip_currentZipline[MAX_PLAYERS],
+Timer:	zip_UpdateTimer[MAX_PLAYERS],
 Float:	zip_PlayerSpeedMult[MAX_PLAYERS];
 
 /*
@@ -149,19 +150,35 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						Float:x,
 						Float:y,
 						Float:z,
-						Float:dist;
-
+						Float:angleto,
+						Float:angleof,
+						Float:anglesum;
+				
 					GetPlayerPos(playerid, x, y, z);
 
-					dist = GetDistancePointLine(
-						zip_Data[i][zip_startPosX], zip_Data[i][zip_startPosY], zip_Data[i][zip_startPosZ]-1.0,
-						zip_Data[i][zip_vecX], zip_Data[i][zip_vecY], zip_Data[i][zip_vecZ],
-						x, y, z);
+					angleto = GetAngleToPoint(zip_Data[i][zip_startPosX], zip_Data[i][zip_startPosY], x, y);
+					angleof = absoluteangle(-(90-(atan2(zip_Data[i][zip_vecY], zip_Data[i][zip_vecX]))));
+					anglesum = absoluteangle(angleto - angleof);
 
-					if(dist < 2.0)
+					if(anglesum > 270.0 || anglesum < 90.0)
 					{
-						EnterZipline(playerid, i);
-						return 1;
+						angleto = GetAngleToPoint(zip_Data[i][zip_endPosX], zip_Data[i][zip_endPosY], x, y);
+						angleof = absoluteangle((-(90-(atan2(zip_Data[i][zip_vecY], zip_Data[i][zip_vecX])))) - 180.0);
+						anglesum = absoluteangle(angleto - angleof);
+
+						if(anglesum > 270.0 || anglesum < 90.0)
+						{
+							new Float:dist = GetDistancePointLine(
+								zip_Data[i][zip_startPosX], zip_Data[i][zip_startPosY], zip_Data[i][zip_startPosZ]-1.0,
+								zip_Data[i][zip_vecX], zip_Data[i][zip_vecY], zip_Data[i][zip_vecZ],
+								x, y, z);
+
+							if(dist < 2.0)
+							{
+								EnterZipline(playerid, i);
+								return 1;
+							}
+						}
 					}
 				}
 			}
@@ -194,6 +211,8 @@ EnterZipline(playerid, id)
 	ApplyAnimation(playerid, "PED", "CLIMB_IDLE", 4.0, 1, 0, 0, 0, 0, 1);
 	zip_currentZipline[playerid] = id;
 
+	zip_UpdateTimer[playerid] = repeat ZiplineUpdate(playerid);
+
 	return 1;
 }
 ExitZipline(playerid)
@@ -208,11 +227,14 @@ ExitZipline(playerid)
 		zip_Data[tmpid][zip_vecY] * zip_PlayerSpeedMult[playerid],
 		(zip_Data[tmpid][zip_vecZ] + 0.05) * zip_PlayerSpeedMult[playerid]);
 
+	stop zip_UpdateTimer[playerid];
+
 	return 1;
 }
 
 
-hook OnPlayerUpdate(playerid)
+//hook OnPlayerUpdate(playerid)
+timer ZiplineUpdate[50](playerid)
 {
 	if(zip_currentZipline[playerid] != -1)
 	{
@@ -221,7 +243,7 @@ hook OnPlayerUpdate(playerid)
 			Float:y,
 			Float:z,
 			Float:dist,
-			Float:heightmult = 0.027;
+			Float:heightmult = 0.03;
 
 		GetPlayerPos(playerid, x, y, z);
 
@@ -236,7 +258,7 @@ hook OnPlayerUpdate(playerid)
 
 		if(dist > 0.5)
 		{
-			heightmult = 0.02;
+			heightmult = 0.04;
 			return 1;
 		}
 
