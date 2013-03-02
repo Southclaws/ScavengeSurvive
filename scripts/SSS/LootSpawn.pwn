@@ -43,24 +43,23 @@ AddItemToLootIndex(index, ItemType:itemtype, Float:spawnchance, exdata = -1)
 	return 1;
 }
 
-ItemType:GenerateLoot(index, &exdata)
+GenerateLoot(index, &ItemType:itemtype, &exdata)
 {
 	if(index > loot_IndexUpper)
 	{
 		print("ERROR: GenerateLoot: parameter 'index' exceeds loot index upper bound.");
-		return INVALID_ITEM_TYPE;		
+		return 0;		
 	}
 
 	if(loot_IndexSize[index] == 0)
 	{
 		print("ERROR: Specified index is empty.");
-		return INVALID_ITEM_TYPE;
+		return 0;
 	}
 
 	new
 		idx,
 		list[MAX_LOOT_INDEX_ITEMS],
-		ItemType:itemtype,
 		cell,
 		lootid;
 
@@ -85,60 +84,73 @@ ItemType:GenerateLoot(index, &exdata)
 	if(!IsValidItemType(itemtype))
 	{
 		printf("ERROR: Invalid item type in loot table %d: ID: %d", index, _:itemtype);
-		return INVALID_ITEM_TYPE;		
+		return 0;		
 	}
 
-	return itemtype;
+	return 1;
 }
 
+CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zoffset = 0.7, ItemType:exception = INVALID_ITEM_TYPE)
+{
+	new
+		ItemType:itemtype,
+		itemid,
+		exdata;
+
+	if(GenerateLoot(lootindex, itemtype, exdata) == 0)
+		return INVALID_ITEM_ID;
+
+	if(itemtype == exception)
+		return INVALID_ITEM_ID;
+
+	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset);
+
+	if(0 < _:itemtype <= WEAPON_PARACHUTE)
+		SetItemExtraData(itemid, (GetWeaponMagSize(_:itemtype) * (random(3))) + random(GetWeaponMagSize(_:itemtype)));
+	
+	if(exdata != -1)
+		SetItemExtraData(itemid, exdata);
+
+	if(itemtype == item_Satchel || itemtype == item_Backpack)
+	{
+		FillContainerWithLoot(GetItemExtraData(itemid), random(3), lootindex);
+	}
+
+	return itemid;
+}
 
 CreateLootSpawn(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
 {
-	new ItemType:itemtype;
+	new
+		ItemType:itemtype,
+		itemid;
 
 	for(new i; i < size; i++)
 	{
 		if(!(random(100) < spawnchance))
 			continue;
 
-		new
-			ItemType:tmpitem,
-			itemid,
-			exdata;
+		itemid = CreateLootItem(lootindex,
+			x + floatsin((360 / size) * i, degrees),
+			y + floatcos((360 / size) * i, degrees),
+			z, 0.7, itemtype);
 
-		tmpitem = GenerateLoot(lootindex, exdata);
-
-		if(tmpitem == itemtype)
-			continue;
-
-		itemtype = tmpitem;
-
-		itemid = CreateItem(tmpitem,
-			x + floatsin((360/size) * i, degrees),
-			y + floatcos((360/size) * i, degrees),
-			z, .zoffset = 0.7);
-
-		if(0 < _:tmpitem <= WEAPON_PARACHUTE)
-			SetItemExtraData(itemid, (WepData[_:tmpitem][MagSize] * (random(3))) + random(WepData[_:tmpitem][MagSize]-1) + 1);
-		
-		if(exdata != -1)
-			SetItemExtraData(itemid, exdata);
-
-		if(tmpitem == item_Satchel || tmpitem == item_Backpack)
-		{
-			tmpitem = GenerateLoot(lootindex, exdata);
-			itemid = CreateItem(tmpitem, 0.0, 0.0, 0.0);
-
-			if(0 < _:tmpitem <= WEAPON_PARACHUTE)
-			{
-				SetItemExtraData(itemid, (WepData[_:tmpitem][MagSize] * (random(3))) + random(WepData[_:tmpitem][MagSize]));
-			}
-			else if(!IsItemTypeSafebox(tmpitem) && !IsItemTypeBag(tmpitem))
-			{
-				SetItemExtraData(itemid, exdata);
-			}
-
-			AddItemToContainer(GetItemExtraData(itemid), itemid);
-		}
+		itemtype = GetItemType(itemid);
 	}
+}
+
+FillContainerWithLoot(containerid, slots, lootindex)
+{
+	new
+		containersize = GetContainerSize(containerid);
+
+	if(slots > containersize)
+		return 0;
+
+	for(new i; i < slots; i++)
+	{
+		AddItemToContainer(containerid, CreateLootItem(lootindex));
+	}
+
+	return 1;
 }

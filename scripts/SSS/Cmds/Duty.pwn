@@ -15,9 +15,9 @@ ACMD:duty[1](playerid, params[])
 	}
 	else
 	{
-		t:bPlayerGameSettings[playerid]<AdminDuty>;
-
 		SavePlayerData(playerid);
+
+		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
 		GetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],

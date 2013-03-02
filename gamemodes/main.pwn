@@ -1,8 +1,5 @@
 #include <a_samp>
 
-new something[45];
-
-#include <something>
 
 main()
 {

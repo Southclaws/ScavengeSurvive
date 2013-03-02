@@ -19,42 +19,6 @@ CMD:adminlvl(playerid, params[])
 
 //==============================================================================Player
 
-ACMD:setvip[3](playerid, params[])
-{
-	new id, toggle;
-
-	if(sscanf(params, "dd", id, toggle))
-		return Msg(playerid, YELLOW, " >  Usage: /setvip [playerid]");
-
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
-		return 3;
-
-	if(toggle)
-	{
-		t:bPlayerGameSettings[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You gave VIP status to %P", id);
-	}
-	else
-	{
-		f:bPlayerGameSettings[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You removed VIP status from %P", id);
-	}
-	return 1;
-}
-ACMD:view[3](playerid, params[])
-{
-	new id;
-
-	if(sscanf(params, "d", id))
-		return Msg(playerid, YELLOW, " >  Usage: /view [playerid]");
-
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
-		return 3;
-
-	SetPlayerMarkerForPlayer(playerid, id, ColourData[id][colour_value]);
-
-	return 1;
-}
 ACMD:gamename[3](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -65,6 +29,7 @@ ACMD:gamename[3](playerid,params[])
 
 	return 1;
 }
+
 ACMD:hostname[3](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -78,6 +43,7 @@ ACMD:hostname[3](playerid,params[])
 
 	return 1;
 }
+
 ACMD:mapname[3](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -87,11 +53,13 @@ ACMD:mapname[3](playerid,params[])
 
 	return 1;
 }
+
 ACMD:gmx[3](playerid, params[])
 {
 	RestartGamemode();
 	return 1;
 }
+
 ACMD:loadfs[3](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -104,6 +72,7 @@ ACMD:loadfs[3](playerid, params[])
 
 	return 1;
 }
+
 ACMD:reloadfs[3](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -116,6 +85,7 @@ ACMD:reloadfs[3](playerid, params[])
 
 	return 1;
 }
+
 ACMD:unloadfs[3](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -128,6 +98,7 @@ ACMD:unloadfs[3](playerid, params[])
 
 	return 1;
 }
+
 ACMD:additem[3](playerid, params[])
 {
 	new
@@ -156,7 +127,7 @@ ACMD:additem[3](playerid, params[])
 	else
 	{
 		if(0 < _:type <= WEAPON_PARACHUTE)
-			SetItemExtraData(itemid, WepData[_:type][MagSize]);
+			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
 	}
 
 	return 1;

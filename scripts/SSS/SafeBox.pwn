@@ -252,6 +252,9 @@ forward box_OnPlayerPickUpItem(playerid, itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
+		return 1;
+
 	if(newkeys & 16)
 	{
 		new buttonid = GetPlayerButtonID(playerid);
@@ -262,12 +265,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			{
 				if(buttonid == GetItemButtonID(i))
 				{
-					box_CurrentBox[playerid] = i;
 					box_PickUpTick[playerid] = tickcount();
+					box_CurrentBox[playerid] = i;
 					stop box_PickUpTimer[playerid];
 
 					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
 						box_PickUpTimer[playerid] = defer box_PickUp(playerid, i);
+
 				}
 			}
 		}
@@ -285,6 +289,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
+
+	return 1;
 }
 
 IsItemTypeSafebox(ItemType:itemtype)

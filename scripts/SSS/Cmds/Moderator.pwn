@@ -48,7 +48,7 @@ ACMD:freeze[1](playerid, params[])
 	
 	if(delay > 0)
 	{
-		defer CmdDelay_unfreeze(playerid, delay * 1000);
+		defer CmdDelay_unfreeze(id, delay * 1000);
 		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", id, delay);
 		MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Frozen you for %d seconds", playerid, delay);
 	}
@@ -110,7 +110,7 @@ ACMD:mute[1](playerid, params[])
 
 	if(delay > 0)
 	{
-		defer CmdDelay_unmute(playerid, delay * 1000);
+		defer CmdDelay_unmute(id, delay * 1000);
 		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Muted %P"#C_YELLOW" for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: %s", playerid, id, delay, reason);
 	}
 	else

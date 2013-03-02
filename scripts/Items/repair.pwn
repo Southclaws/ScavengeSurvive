@@ -46,6 +46,9 @@ StopRepairingVehicle(playerid)
 	if(gPlayerFixTarget[playerid] == INVALID_VEHICLE_ID)
 		return 0;
 
+	if(gPlayerFixProgress[playerid] > 1000.0)
+		SetVehicleHealth(gPlayerFixTarget[playerid], 1000.0);
+
 	new
 		engine,
 		lights,

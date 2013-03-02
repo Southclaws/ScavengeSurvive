@@ -1,4 +1,4 @@
-LoadGen_Bone()
+public OnLoad()
 {
 	print("Loading Bone County");
 	new
@@ -17,4 +17,13 @@ LoadGen_Bone()
 //	CreateTurret(287.0, 2047.0, 17.5, 270.0, .type = 1);
 //	CreateTurret(335.0, 1843.0, 17.5, 270.0, .type = 1);
 //	CreateTurret(10.0, 1805.0, 17.40, 180.0, .type = 1);
+
+	return CallLocalFunction("bonecounty_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+    #undef OnLoad
+#else
+    #define _ALS_OnLoad
+#endif
+#define OnLoad bonecounty_OnLoad
+forward bonecounty_OnLoad();

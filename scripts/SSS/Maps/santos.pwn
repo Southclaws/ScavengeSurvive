@@ -1,4 +1,4 @@
-LoadGen_LS()
+public OnLoad()
 {
 	print("Loading Los Santos");
 
@@ -20,4 +20,13 @@ LoadGen_LS()
 	AddSprayTag(1118.51, -1540.14, 24.66, 0.00, 0.00, 178.46);
 	AddSprayTag(1202.11, -1201.55, 20.47, 0.00, 0.00, 90.00);
 	AddSprayTag(1264.15, -1270.28, 15.16, 0.00, 0.00, 270.00);
+
+	return CallLocalFunction("santos_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+    #undef OnLoad
+#else
+    #define _ALS_OnLoad
+#endif
+#define OnLoad santos_OnLoad
+forward santos_OnLoad();

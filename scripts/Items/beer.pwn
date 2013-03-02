@@ -15,12 +15,12 @@ public OnPlayerUseItem(playerid, itemid)
 			ShowMsgBox(playerid, "Empty", 2000, 70);
 		}
 	}
-    return CallLocalFunction("beer_OnPlayerUseItem", "dd", playerid, itemid);
+	return CallLocalFunction("beer_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
+	#undef OnPlayerUseItem
 #else
-    #define _ALS_OnPlayerUseItem
+	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem beer_OnPlayerUseItem
 forward beer_OnPlayerUseItem(playerid, itemid);

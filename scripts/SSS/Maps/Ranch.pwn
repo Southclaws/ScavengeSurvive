@@ -155,6 +155,7 @@ public OnButtonPress(playerid, buttonid)
 	{
 	    SetPlayerVirtualWorld(playerid, 0);
 		SetPlayerPos(playerid, 495.451873, 780.096191, -21.747426);
+		FreezePlayer(playerid, 1000);
 	}
 	if(buttonid==CaveLiftButtonT)
 	{
@@ -237,23 +238,4 @@ timer AttachRanchHdd[2500](playerid)
 		   I've hidden the key there, they won't find it\n\
 		   I dont know how long it will be before they find me",
 		OBJECT_MATERIAL_SIZE_512x512, "Courier New", 16, 1, -1, 0, 0);
-}
-
-public OnDoorStateChange(doorid, doorstate)
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetDoorPos(doorid, x, y, z);
-
-	if(doorstate == DR_STATE_OPENING || doorstate == DR_STATE_CLOSING)
-	{
-		PlaySound(6000, x, y, z);
-	}
-	if(doorstate == DR_STATE_OPEN || doorstate == DR_STATE_CLOSED)
-	{
-		PlaySound(6002, x, y, z);
-	}
 }

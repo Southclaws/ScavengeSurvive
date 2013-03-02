@@ -281,8 +281,8 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				{
 					case 416, 433, 523, 427, 490, 528, 407, 544, 596, 597, 598, 599, 432, 601:
 					{
-						gVehicleColours[tmpid][0] = 0;
-						gVehicleColours[tmpid][1] = 0;
+						gVehicleColours[tmpid][0] = 1;
+						gVehicleColours[tmpid][1] = 1;
 					}
 					default:
 					{
@@ -561,50 +561,8 @@ ApplyVehicleData(vehicleid)
 
 		if(VehicleFuelData[model - 400][veh_lootIndex] != -1 && 0 < VehicleFuelData[model - 400][veh_trunkSize] <= CNT_MAX_SLOTS)
 		{
-			new
-				itemid,
-				ItemType:itemtype,
-				Float:x,
-				Float:y,
-				Float:z,
-				lootindex,
-				exdata;
-
-			GetVehicleModelInfo(model, VEHICLE_MODEL_INFO_SIZE, x, y, z);
-
 			gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[model-400][veh_trunkSize], .virtual = 1);
-
-			for(new i = 1; i <= 4; i++)
-			{
-				lootindex = VehicleFuelData[model-400][veh_lootIndex];
-
-				if(random(100) < 100 / i )
-				{
-					itemtype = GenerateLoot(lootindex, exdata);
-					itemid = CreateItem(itemtype, 0.0, 0.0, 0.0);
-					AddItemToContainer(gVehicleContainer[vehicleid], itemid);
-
-					if(0 < _:itemtype <= WEAPON_PARACHUTE)
-						SetItemExtraData(itemid, (WepData[_:itemtype][MagSize] * (random(3))) + random(WepData[_:itemtype][MagSize]));
-
-					if(exdata != -1)
-						SetItemExtraData(itemid, exdata);
-
-					if(itemtype == item_Satchel || itemtype == item_Backpack)
-					{
-						itemtype = GenerateLoot(lootindex, exdata);
-						itemid = CreateItem(itemtype, 0.0, 0.0, 0.0);
-
-						if(0 < _:itemtype <= WEAPON_PARACHUTE)
-							SetItemExtraData(itemid, (WepData[_:itemtype][MagSize] * (random(3))) + random(WepData[_:itemtype][MagSize]));
-
-						else
-							SetItemExtraData(itemid, exdata);
-
-						AddItemToContainer(GetItemExtraData(itemid), itemid);
-					}
-				}
-			}
+			FillContainerWithLoot(gVehicleContainer[vehicleid], random(4), VehicleFuelData[model-400][veh_lootIndex]);
 		}
 		else
 		{
@@ -614,7 +572,7 @@ ApplyVehicleData(vehicleid)
 
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
 
-	gVehicleArea[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, sy, 0);
+	gVehicleArea[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (sy / 2.0) + 3.0, 0);
 	AttachDynamicAreaToVehicle(gVehicleArea[vehicleid], vehicleid);
 
 	SetVehicleNumberPlate(vehicleid, RandomNumberPlateString());

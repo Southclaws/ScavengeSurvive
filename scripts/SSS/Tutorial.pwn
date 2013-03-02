@@ -24,7 +24,7 @@ public OnPlayerOpenInventory(playerid)
 {
 	if(TutorialState[playerid] == 1)
 	{
-		ShowHelpTip(playerid, "Great! From here you can access your items and bag if you have one. Click your bag on the right side of the screen now. It is labeled \"Patrol Pack\".");
+		ShowHelpTip(playerid, "Great! From here you can access your items and bag if you have one. Click your bag on the right side of the screen now. It is labeled \"Small Bag\".");
 		TutorialState[playerid] = 2;
 	}
 	if(TutorialState[playerid] == 8)
@@ -196,7 +196,7 @@ public OnPlayerAddToContainer(playerid, containerid, itemid)
 	{
 		if(TutorialState[playerid] == 10)
 		{
-			ShowHelpTip(playerid, "This works both ways, in your bag item options \"Take\" moves an item from your bag to your inventory.");
+			ShowHelpTip(playerid, "This works both ways, in your bag item options \"Move to inventory\" moves an item from your bag to your inventory.");
 			TutorialState[playerid] = 11;
 		}
 	}

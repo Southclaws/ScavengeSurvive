@@ -3,7 +3,6 @@ new stock
 	ItemType:item_explosive		= INVALID_ITEM_TYPE, // can be crafted with phone to make remote explosive
 	ItemType:item_battery		= INVALID_ITEM_TYPE, // required for some crafting
 	ItemType:item_fusebox		= INVALID_ITEM_TYPE, // required for some crafting
-	ItemType:item_Armour		= INVALID_ITEM_TYPE,
 	ItemType:item_ArmourRegen	= INVALID_ITEM_TYPE, // NEEDS TO BE CHANGED!
 	ItemType:item_FishRod		= INVALID_ITEM_TYPE, // fishing?
 	ItemType:item_Taser			= INVALID_ITEM_TYPE, // stuns players (needs anim, or just other hand)
@@ -43,5 +42,6 @@ new stock
 	ItemType:item_AutoInjec		= INVALID_ITEM_TYPE,
 	ItemType:item_BurgerBag		= INVALID_ITEM_TYPE,
 	ItemType:item_CanDrink		= INVALID_ITEM_TYPE,
-	ItemType:item_Detergent		= INVALID_ITEM_TYPE;
+	ItemType:item_Detergent		= INVALID_ITEM_TYPE,
+	ItemType:item_Dynamite		= INVALID_ITEM_TYPE;
 

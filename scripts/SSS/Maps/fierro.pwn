@@ -1,4 +1,4 @@
-LoadGen_SF()
+public OnLoad()
 {
 	print("Loading San Fierro");
 
@@ -43,7 +43,16 @@ LoadGen_SF()
 	CreateItem(item_Barbecue, -2430.86, 2368.72, 3.96,   0.00, 0.00, -168.30, .zoffset = FLOOR_OFFSET);
 	CreateItem(item_Barbecue, -2479.55, 2483.86, 16.77,   0.00, 0.00, -203.28, .zoffset = FLOOR_OFFSET);
 	CreateItem(item_Barbecue, -2446.11, 2512.45, 14.69,   0.00, 0.00, -132.60, .zoffset = FLOOR_OFFSET);
+
+	return CallLocalFunction("fierro_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+    #undef OnLoad
+#else
+    #define _ALS_OnLoad
+#endif
+#define OnLoad fierro_OnLoad
+forward fierro_OnLoad();
 
 
 District_Housing1()

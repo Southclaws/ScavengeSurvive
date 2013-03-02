@@ -12,7 +12,10 @@ new
 	PlayerText:GearSlot_Tors[3],
 	PlayerText:GearSlot_Back[3],
 	PlayerText:GearSlot_Hols[3],
-	PlayerText:GearSlot_Skin[3];
+	PlayerText:GearSlot_Skin[3],
+
+	inv_TempContainerID[MAX_PLAYERS],
+	inv_InventoryOptionID[MAX_PLAYERS];
 
 
 forward CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item, Float:x, Float:y, Float:width, Float:height, colour, overlaycolour);
@@ -125,8 +128,9 @@ UpdatePlayerGear(playerid, show = 1)
 	{
 		if(gPlayerArmedWeapon[playerid] != 0)
 		{
-			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], WepData[gPlayerArmedWeapon[playerid]][WepName]);
-			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], WepData[gPlayerArmedWeapon[playerid]][WepModel]);
+			GetWeaponName(gPlayerArmedWeapon[playerid], tmp);
+			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
+			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(gPlayerArmedWeapon[playerid]));
 			PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 		}
 		else
@@ -166,8 +170,9 @@ UpdatePlayerGear(playerid, show = 1)
 	itemid = GetPlayerHolsteredWeapon(playerid);
 	if(0 < itemid < WEAPON_PARACHUTE)
 	{
-		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], "none");
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], WepData[itemid][WepModel]);
+		GetWeaponName(itemid, tmp);
+		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetWeaponModel(itemid));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -466,10 +471,22 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			if(GetPlayerCurrentContainer(playerid) == GetItemExtraData(itemid))
 			{
 				ClosePlayerContainer(playerid);
-				DisplayPlayerInventory(playerid);
+
+				if(IsValidContainer(inv_TempContainerID[playerid]))
+				{
+					DisplayContainerInventory(playerid, inv_TempContainerID[playerid]);
+				}
+				else
+				{
+					DisplayPlayerInventory(playerid);
+				}
+
+				inv_TempContainerID[playerid] = INVALID_CONTAINER_ID;
 			}
 			else
 			{
+				inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
+
 				DisplayContainerInventory(playerid, GetItemExtraData(itemid));
 			}
 		}
@@ -556,3 +573,89 @@ public OnPlayerPickUpItem(playerid, itemid)
 #endif
 #define OnPlayerPickUpItem inv_OnPlayerPickUpItem
 forward inv_OnPlayerPickUpItem(playerid, itemid);
+
+
+public OnPlayerViewContainerOpt(playerid, containerid)
+{
+	if(containerid == GetItemExtraData(gPlayerBackpack[playerid]))
+	{
+		if(IsValidContainer(inv_TempContainerID[playerid]))
+		{
+			new
+				name[CNT_MAX_NAME],
+				str[9 + CNT_MAX_NAME];
+
+			GetContainerName(inv_TempContainerID[playerid], name);
+			format(str, sizeof(str), "Move to %s", name);
+
+			inv_InventoryOptionID[playerid] = AddContainerOption(playerid, str);
+		}
+	}
+
+	return CallLocalFunction("inv_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+}
+#if defined _ALS_OnPlayerViewContainerOpt
+	#undef OnPlayerViewContainerOpt
+#else
+	#define _ALS_OnPlayerViewContainerOpt
+#endif
+#define OnPlayerViewContainerOpt inv_OnPlayerViewContainerOpt
+forward inv_OnPlayerViewContainerOpt(playerid, containerid);
+
+public OnPlayerSelectContainerOpt(playerid, containerid, option)
+{
+	if(containerid == GetItemExtraData(gPlayerBackpack[playerid]))
+	{
+		if(IsValidContainer(inv_TempContainerID[playerid]))
+		{
+			if(option == inv_InventoryOptionID[playerid])
+			{
+				new
+					slot,
+					itemid;
+
+				slot = GetPlayerContainerSlot(playerid);
+				itemid = GetContainerSlotItem(containerid, slot);
+
+				if(!IsValidItem(itemid))
+				{
+					DisplayContainerInventory(playerid, containerid);
+					return 0;
+				}
+
+				if(IsContainerFull(inv_TempContainerID[playerid]))
+				{
+					new
+						str[CNT_MAX_NAME + 6],
+						name[CNT_MAX_NAME];
+
+					GetContainerName(inv_TempContainerID[playerid], name);
+					format(str, sizeof(str), "%s full", name);
+					ShowMsgBox(playerid, str, 3000, 100);
+					DisplayContainerInventory(playerid, containerid);
+					return 0;
+				}
+
+				if(!WillItemTypeFitInContainer(inv_TempContainerID[playerid], GetItemType(itemid)))
+				{
+					ShowMsgBox(playerid, "Item won't fit", 3000, 140);
+					DisplayContainerInventory(playerid, containerid);
+					return 0;
+				}
+
+				RemoveItemFromContainer(containerid, slot);
+				AddItemToContainer(inv_TempContainerID[playerid], itemid, playerid);
+				DisplayContainerInventory(playerid, containerid);
+			}
+		}
+	}
+
+	return CallLocalFunction("inv_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
+}
+#if defined _ALS_OnPlayerSelectContainerOpt
+	#undef OnPlayerSelectContainerOpt
+#else
+	#define _ALS_OnPlayerSelectContainerOpt
+#endif
+#define OnPlayerSelectContainerOpt inv_OnPlayerSelectContainerOpt
+forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);

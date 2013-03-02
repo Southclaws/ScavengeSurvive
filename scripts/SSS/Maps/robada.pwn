@@ -1,4 +1,4 @@
-LoadGen_Rob()
+public OnLoad()
 {
 	print("Loading Tierra Robada");
 	CreateFuelOutlet(-1465.4766, 1868.2734, 32.8203, 2.0, 100.0, float(random(100)));
@@ -16,7 +16,17 @@ LoadGen_Rob()
 	District_Barancas();
 	District_Sherman();
 	District_Gen();
+
+	return CallLocalFunction("robada_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+    #undef OnLoad
+#else
+    #define _ALS_OnLoad
+#endif
+#define OnLoad robada_OnLoad
+forward robada_OnLoad();
+
 
 District_Bayside()
 {

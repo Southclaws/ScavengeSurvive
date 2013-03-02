@@ -215,6 +215,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
+		return 1;
+
 	if(newkeys & 16)
 	{
 		new buttonid = GetPlayerButtonID(playerid);
@@ -225,12 +228,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			{
 				if(buttonid == GetItemButtonID(i))
 				{
-					bag_CurrentBag[playerid] = i;
 					bag_PickUpTick[playerid] = tickcount();
 					stop bag_PickUpTimer[playerid];
 
 					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+					{
+						bag_CurrentBag[playerid] = i;
 						bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, i);
+					}
 				}
 			}
 		}
@@ -324,7 +329,6 @@ forward bag_OnPlayerGiveItem(playerid, targetid, itemid);
 
 public OnPlayerViewInventoryOpt(playerid)
 {
-	print("OnPlayerViewInventoryOpt");
 	if(IsValidItem(gPlayerBackpack[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
@@ -342,8 +346,7 @@ forward bag_PlayerViewInventoryOpt(playerid);
 
 public OnPlayerSelectInventoryOpt(playerid, option)
 {
-	print("OnPlayerSelectInventoryOpt");
-	if(IsValidItem(gPlayerBackpack[playerid]))
+	if(IsValidItem(gPlayerBackpack[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
@@ -410,7 +413,7 @@ forward bag_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(IsValidItem(gPlayerBackpack[playerid]))
+	if(IsValidItem(gPlayerBackpack[playerid]) && containerid != GetItemExtraData(gPlayerBackpack[playerid]))
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{

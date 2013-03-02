@@ -7,14 +7,17 @@ new gAdminCommandList_Lvl1[] =
 	/weather [weather id/name] - set the weather\n\
 	/msg [message] - send a chat message\n"
 };
+
 new gAdminCommandList_Lvl2[] =
 {
 	"/setadmin [id] [level] - set a player's admin level\n\
+	/setvip [id] [toggle] - toggle a player's VIP status\n\
 	/(un)ban - ban/unban a player from the server\n\
 	/clearchat - clear the chatbox\n\
 	/ann [text] - send an on-screen announcement to everyone\n\
 	/motd [text] - set the message of the day\n"
 };
+
 
 MsgAdmins(level, colour, string[])
 {

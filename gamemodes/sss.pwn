@@ -41,6 +41,7 @@ native IsValidVehicle(vehicleid);
 #include <CameraMover>				// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=329813
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
+#include <WeaponData>				// By Southclaw:			(Not released yet, will be)
 
 
 native WP_Hash(buffer[], len, const str[]);
@@ -163,7 +164,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_BLACK						"{000000}"
 #define C_WHITE						"{FFFFFF}"
 
-
 #define C_SPECIAL					"{0025AA}"
 
 
@@ -194,13 +194,13 @@ enum
 
 	d_Login,
 	d_Register,
-	d_WelcomeMsg,
-	d_LogMsg,
+	d_WelcomeMessage,
 
 	d_Stats,
 	d_SignEdit,
 	d_Tires,
 	d_Lights,
+	d_Radio,
 
 	d_NotebookPage,
 	d_NotebookEdit,
@@ -350,6 +350,9 @@ PlayerText:		HungerBarBackground	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HungerBarForeground	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ToolTip				= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HelpTipText			= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		VehicleFuelText		= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		VehicleDamageText	= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		VehicleEngineText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleNameText		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleSpeedText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		AddHPText			= PlayerText:INVALID_TEXT_DRAW,
@@ -367,6 +370,7 @@ enum (<<= 1) // 14
 		HasAccount = 1,
 		IsVip,
 		LoggedIn,
+		CanExitWelcome,
 		AdminDuty,
 		Gender,
 		Alive,
@@ -374,7 +378,6 @@ enum (<<= 1) // 14
 		Spawned,
 		FirstSpawn,
 		HelpTips,
-		GlobalChat,
 		ShowHUD,
 
 		PillEffect_Aspirin,
@@ -413,7 +416,7 @@ DB:		gAccounts,
 Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
-		gPlayerColour			[MAX_PLAYERS],
+Float:	gPlayerFrequency		[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
@@ -440,24 +443,18 @@ forward SetRestart(seconds);
 
 //======================Library Predefinitions
 
-#define NOTEBOOK_FILE "SSS/Notebook/%s.dat"
-#define MAX_FILE_NAME (MAX_PLAYER_NAME + 18)
-
-//======================Libraries of Resources
-
-#include "../scripts/Resources/VehicleResources.pwn"
-#include "../scripts/Resources/PlayerResources.pwn"
-#include "../scripts/Resources/WeaponResources.pwn"
-#include "../scripts/Resources/EnvironmentResources.pwn"
-#include "../scripts/Resources/Specifiers.pwn"
+#define NOTEBOOK_FILE			"SSS/Notebook/%s.dat"
+#define MAX_NOTEBOOK_FILE_NAME	(MAX_PLAYER_NAME + 18)
 
 //======================Libraries of Functions
 
-#include "../scripts/System/Functions.pwn"
-#include "../scripts/System/MathFunctions.pwn"
-#include "../scripts/System/PlayerFunctions.pwn"
-#include "../scripts/System/VehicleFunctions.pwn"
-#include "../scripts/System/Trajectory.pwn"
+#include "../scripts/utils/math.pwn"
+#include "../scripts/utils/misc.pwn"
+#include "../scripts/utils/camera.pwn"
+#include "../scripts/utils/message.pwn"
+#include "../scripts/utils/vehicle.pwn"
+#include "../scripts/utils/vehicledata.pwn"
+#include "../scripts/utils/zones.pwn"
 
 //======================API Scripts
 
@@ -496,6 +493,8 @@ forward SetRestart(seconds);
 #include "../scripts/Items/headlight.pwn"
 #include "../scripts/Items/pills.pwn"
 #include "../scripts/Items/dice.pwn"
+#include "../scripts/Items/armour.pwn"
+#include "../scripts/Items/defenses.pwn"
 
 //======================Data Load and Setup
 
@@ -517,10 +516,14 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Inventory.pwn"
 #include "../scripts/SSS/SafeBox.pwn"
 #include "../scripts/SSS/SitDown.pwn"
+#include "../scripts/SSS/Radio.pwn"
+#include "../scripts/SSS/Defenses.pwn"
 
 #include "../scripts/SSS/Tutorial.pwn"
+#include "../scripts/SSS/WelcomeMessage.pwn"
 #include "../scripts/SSS/TipText.pwn"
 #include "../scripts/SSS/ToolTipEvents.pwn"
+#include "../scripts/SSS/TextTags.pwn"
 
 #include "../scripts/SSS/Cmds/Core.pwn"
 #include "../scripts/SSS/Cmds/Commands.pwn"
@@ -757,9 +760,21 @@ public OnGameModeInit()
 	item_CanDrink		= DefineItemType("Can",				2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
 	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
 	item_Dice			= DefineItemType("Dice",			1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
+	item_Dynamite		= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
+
+	item_Door			= DefineItemType("Door",			1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
+	item_MetPanel		= DefineItemType("Metal Panel",		1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
+	item_SurfBoard		= DefineItemType("Surfboard",		2410,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
+	item_CrateDoor		= DefineItemType("Crate Door",		2678,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
+	item_CorPanel		= DefineItemType("Metal Sheet",		2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
+	item_ShipDoor		= DefineItemType("Ship Door",		2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
+	item_MetalPlate		= DefineItemType("Metal Sheet",		2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
+	item_MetalStand		= DefineItemType("Metal Plate",		2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
+	item_WoodDoor		= DefineItemType("Wood Panel",		3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
+	item_WoodPanel		= DefineItemType("Wood Panel",		5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
+
 
 //	item_Wood			= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
-//	item_Dynamite		= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
 
 /*
 	DefineAnimationSet()
@@ -828,14 +843,6 @@ public OnGameModeInit()
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
 	CallLocalFunction("OnLoad", "");
-
-	LoadGen_LS();
-	LoadGen_SF();
-	LoadGen_LV();
-	LoadGen_Red();
-	LoadGen_Flint();
-	LoadGen_Rob();
-	LoadGen_Bone();
 
 	LoadVehicles();
 	LoadTextDraws();
@@ -1006,12 +1013,12 @@ ptask PlayerUpdate[100](playerid)
 			
 			if(300.0 < health < 500.0)
 			{
-				if(v_Engine(vehicleid) && gPlayerVelocity[playerid] > 30.0)
+				if(VehicleEngineState(vehicleid) && gPlayerVelocity[playerid] > 30.0)
 				{
 					if(random(100) < (50 - ((health - 400.0) / 4)))
 					{
 						if(health < 400.0)
-							v_Engine(vehicleid, 0);
+							VehicleEngineState(vehicleid, 0);
 		
 						SetVehicleHealth(vehicleid, health - (((200 - (health - 300.0)) / 100.0) / 2.0));
 					}
@@ -1021,27 +1028,44 @@ ptask PlayerUpdate[100](playerid)
 					if(random(100) < 100 - (50 - ((health - 400.0) / 4)))
 					{
 						if(health < 400.0)
-							v_Engine(vehicleid, 1);
+							VehicleEngineState(vehicleid, 1);
 					}
 				}
 			}
-			if(v_Engine(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
+			if(VehicleEngineState(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
 			{
 				if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0)
-					v_Engine(vehicleid, 0);
-
-				if(gVehicleFuel[vehicleid] > 0.0)
 				{
-					gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
+					VehicleEngineState(vehicleid, 0);
+					PlayerTextDrawColor(playerid, VehicleEngineText, RED);
 				}
+				else
+				{
+					if(gVehicleFuel[vehicleid] > 0.0)
+					{
+						gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
+					}
 
-				if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-					SetPlayerArmedWeapon(playerid, 0);
+					if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+						SetPlayerArmedWeapon(playerid, 0);
+
+					PlayerTextDrawColor(playerid, VehicleEngineText, YELLOW);
+				}
+			}
+			else
+			{
+				PlayerTextDrawColor(playerid, VehicleEngineText, RED);
 			}
 
-			new str[64];
-			format(str, 64, "Fuel: %.3fL/%.3fL~n~Health: %f", gVehicleFuel[vehicleid], VehicleFuelData[model - 400][veh_maxFuel], health);
-			ShowMsgBox(playerid, str, 0, 160);
+			new str[18];
+			format(str, 18, "%.2fL/%.2f", gVehicleFuel[vehicleid], VehicleFuelData[model - 400][veh_maxFuel]);
+			PlayerTextDrawSetString(playerid, VehicleFuelText, str);
+
+			PlayerTextDrawColor(playerid, VehicleDamageText, (255 << 24 | floatround(health * 0.256) << 16 | floatround(health * 0.256) << 8 | 255));
+
+			PlayerTextDrawShow(playerid, VehicleFuelText);
+			PlayerTextDrawShow(playerid, VehicleDamageText);
+			PlayerTextDrawShow(playerid, VehicleEngineText);
 
 			if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 35.0 : 30.0))
 			{
@@ -1168,7 +1192,6 @@ timer TankHeatUpdate[100](playerid)
 
 public OnPlayerConnect(playerid)
 {
-	gPlayerColour[playerid] = playerid;
 	SetPlayerColor(playerid, 0xB8B8B800);
 	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
 	GetPlayerName(playerid, gPlayerName[playerid], MAX_PLAYER_NAME);
@@ -1258,12 +1281,10 @@ public OnPlayerConnect(playerid)
 
 		if(strval(tmpField) == 0)
 		{
-			print("Female");
 			f:bPlayerGameSettings[playerid]<Gender>;
 		}
 		else
 		{
-			print("Male");
 			t:bPlayerGameSettings[playerid]<Gender>;
 		}
 
@@ -1337,7 +1358,6 @@ public OnPlayerConnect(playerid)
 	file_Close();
 
 	t:bPlayerGameSettings[playerid]<HelpTips>;
-	t:bPlayerGameSettings[playerid]<GlobalChat>;
 	t:bPlayerGameSettings[playerid]<ShowHUD>;
 
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
@@ -1456,8 +1476,6 @@ Login(playerid)
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	IncorrectPass[playerid]=0;
 
-	LogMessage(playerid);
-
 	stop gScreenFadeTimer[playerid];
 	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
 
@@ -1466,6 +1484,7 @@ Login(playerid)
 		gPlayerData[playerid][ply_posY],
 		gPlayerData[playerid][ply_posZ]);
 
+	FreezePlayer(playerid, 2000);
 }
 
 SavePlayerData(playerid)
@@ -1473,7 +1492,7 @@ SavePlayerData(playerid)
 	new
 		tmpQuery[256];
 
-	if(bPlayerGameSettings[playerid] & Alive && bPlayerGameSettings[playerid] & AdminDuty)
+	if(bPlayerGameSettings[playerid] & Alive && !(bPlayerGameSettings[playerid] & AdminDuty))
 	{
 		new
 			Float:x,
@@ -1808,63 +1827,9 @@ ResetVariables(playerid)
 }
 
 
-
-
-LogMessage(playerid)
-{
-	new
-		str1[800],
-		str2[400],
-		hour,
-		minute,
-		admins[48],
-		admincount;
-
-	gettime(hour, minute);
-
-	PlayerLoop(i)
-	{
-		if(pAdmin(i)>0)
-			admincount++;
-	}
-
-	if(admincount > 0)
-		format(admins, 48, "Admins currently online: "#C_GREEN"%d", admincount);
-
-	else
-		admins = "There are no admins online";
-
-	format(str1, 400,
-		""#C_WHITE"%s\n\n\
-		Welcome to "#C_BLUE"Scavenge and Survive!\n\n\n\
-		"#C_WHITE"The object is to survive for as long as possible.\n\n\
-		You will have a better chance if you are in a group.\n\n\
-		But be careful who you trust.\n\n\
-		Items can be found scattered around.\n\n",
-		HORIZONTAL_RULE);
-
-	format(str2, 400,
-		"Weapons are rare so conserve your ammunition.\n\n\
-		And last but not least...\n\n\
-		"#C_RED"NEVER "#C_WHITE"attack an unarmed player.\n\n\n\
-		"#C_WHITE"The current time is "#C_YELLOW"%02d:%02d"#C_WHITE"\n\
-		The current weather is "#C_YELLOW"%s"#C_WHITE"\n\n\n\
-		Type /help to access this menu, type /g to toggle chat channel\n\n\n\
-		%s",
-		hour,
-		minute,
-		WeatherData[gWeatherID][weather_name],
-		admins,
-		HORIZONTAL_RULE);
-
-	strcat(str1, str2);
-
-	ShowPlayerDialog(playerid, d_LogMsg, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str1, "Accept", "");
-}
-
 CMD:help(playerid, params[])
 {
-	LogMessage(playerid);
+	ShowWelcomeMessage(playerid, 0);
 	return 1;
 }
 
@@ -2018,6 +1983,7 @@ public OnPlayerSpawn(playerid)
 		}
 	}
 
+	gPlayerFrequency[playerid] = 108.0;
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
 	PreloadPlayerAnims(playerid);
 
@@ -2109,11 +2075,45 @@ OnPlayerSelectGender(playerid)
 		containerid,
 		tmpitem;
 
-	if(bPlayerGameSettings[playerid] & Gender)
-		SetPlayerClothes(playerid, skin_MainM);
+	if(bPlayerGameSettings[playerid] & IsVip)
+	{
+		if(bPlayerGameSettings[playerid] & Gender)
+		{
+			switch(random(6))
+			{
+				case 0: gPlayerData[playerid][ply_Skin] = skin_Civ1M;
+				case 1: gPlayerData[playerid][ply_Skin] = skin_Civ2M;
+				case 2: gPlayerData[playerid][ply_Skin] = skin_Civ3M;
+				case 3: gPlayerData[playerid][ply_Skin] = skin_Civ4M;
+				case 4: gPlayerData[playerid][ply_Skin] = skin_MechM;
+				case 5: gPlayerData[playerid][ply_Skin] = skin_BikeM;
 
+			}
+		}
+
+		else
+		{
+			switch(random(6))
+			{
+				case 0: gPlayerData[playerid][ply_Skin] = skin_Civ1F;
+				case 1: gPlayerData[playerid][ply_Skin] = skin_Civ2F;
+				case 2: gPlayerData[playerid][ply_Skin] = skin_Civ3F;
+				case 3: gPlayerData[playerid][ply_Skin] = skin_Civ4F;
+				case 4: gPlayerData[playerid][ply_Skin] = skin_ArmyF;
+				case 5: gPlayerData[playerid][ply_Skin] = skin_IndiF;
+			}
+		}
+	}
 	else
-		SetPlayerClothes(playerid, skin_MainF);
+	{
+		if(bPlayerGameSettings[playerid] & Gender)
+			gPlayerData[playerid][ply_Skin] = skin_MainM;
+
+		else
+			gPlayerData[playerid][ply_Skin] = skin_MainF;
+	}
+
+	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 
 	SetPlayerPos(playerid, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
 	SetPlayerFacingAngle(playerid, gSpawns[r][3]);
@@ -2176,16 +2176,16 @@ public OnPlayerDeath(playerid, killerid, reason)
 	if(!(bPlayerGameSettings[playerid] & Alive))
 		return 0;
 
-	f:bPlayerGameSettings[playerid]<Spawned>;
 	t:bPlayerGameSettings[playerid]<Dying>;
+	f:bPlayerGameSettings[playerid]<Spawned>;
+	f:bPlayerGameSettings[playerid]<AdminDuty>;
+	f:bPlayerGameSettings[playerid]<Alive>;
 
 	GetPlayerPos(playerid, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2]);
 	GetPlayerFacingAngle(playerid, gPlayerDeathPos[playerid][3]);
 
 	if(IsPlayerInAnyVehicle(playerid))
 		gPlayerDeathPos[playerid][2] += 0.1;
-
-	f:bPlayerGameSettings[playerid]<Alive>;
 
 	stop TankHeatUpdateTimer[playerid];
 
@@ -2310,7 +2310,7 @@ public OnPlayerUpdate(playerid)
 			id,
 			ammo;
 
-		GetPlayerWeaponData(playerid, WepData[gPlayerArmedWeapon[playerid]][GtaSlot], id, ammo);
+		GetPlayerWeaponData(playerid, GetWeaponSlot(gPlayerArmedWeapon[playerid]), id, ammo);
 
 		if(ammo == 0 && gPlayerArmedWeapon[playerid] == id && id != 0)
 		{
@@ -2419,26 +2419,24 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 		Float:tx,
 		Float:ty,
 		Float:tz,
-		Float:trgDist,
-		Float:HpLoss;
+		Float:distance,
+		Float:hploss;
 
 	GetPlayerPos(playerid, px, py, pz);
 	GetPlayerPos(targetid, tx, ty, tz);
 
-	trgDist = Distance(px, py, pz, tx, ty, tz);
+	distance = Distance(px, py, pz, tx, ty, tz);
 
 	if(type == 0)
 	{
-		if(trgDist < WepData[weaponid][MinDis])HpLoss = WepData[weaponid][MaxDam];
-		if(trgDist > WepData[weaponid][MaxDis])HpLoss = WepData[weaponid][MinDam];
-		else HpLoss = ((WepData[weaponid][MinDam]-WepData[weaponid][MaxDam])/(WepData[weaponid][MaxDis]-WepData[weaponid][MinDis])) * (trgDist-WepData[weaponid][MaxDis]) + WepData[weaponid][MinDam];
+		hploss = GetWeaponDamageFromDistance(weaponid, distance);
 
 		if(head)
-			HpLoss *= 1.5;
+			hploss *= 1.5;
 	}
 	else if(type == 1)
 	{
-		HpLoss = itd_Data[weaponid][itd_damage];
+		hploss = itd_Data[weaponid][itd_damage];
 	}
 
 	if(GetItemType(GetPlayerItem(targetid)) == item_Shield)
@@ -2454,18 +2452,18 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 		if(225.0 < angleto < 315.0)
 		{
 			GameTextForPlayer(targetid, "Shield!", 1000, 5);
-			HpLoss *= 0.2;
+			hploss *= 0.2;
 		}
 	}
 
-	GivePlayerHP(targetid, -HpLoss, weaponid);
+	GivePlayerHP(targetid, -hploss, weaponid);
 	ShowHitMarker(playerid, weaponid);
 
 
 	if(pAdmin(playerid) >= 3)
 	{
 		new str[32];
-		format(str, 32, "did %.2f", HpLoss);
+		format(str, 32, "did %.2f", hploss);
 		ShowMsgBox(playerid, str, 1000, 120);
 	}
 	
@@ -2634,21 +2632,24 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
-			new Float:health;
-			GetVehicleHealth(gPlayerVehicleID[playerid], health);
-
-			if(health >= 300.0)
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			{
-				if(VehicleFuelData[GetVehicleModel(gPlayerVehicleID[playerid])-400][veh_maxFuel] > 0.0 && gVehicleFuel[gPlayerVehicleID[playerid]] > 0.0)
-					v_Engine(gPlayerVehicleID[playerid], !v_Engine(gPlayerVehicleID[playerid]));
+				new Float:health;
+				GetVehicleHealth(gPlayerVehicleID[playerid], health);
 
-				else
-					v_Engine(gPlayerVehicleID[playerid], !v_Engine(gPlayerVehicleID[playerid]));
+				if(health >= 300.0)
+				{
+					if(VehicleFuelData[GetVehicleModel(gPlayerVehicleID[playerid])-400][veh_maxFuel] > 0.0 && gVehicleFuel[gPlayerVehicleID[playerid]] > 0.0)
+						VehicleEngineState(gPlayerVehicleID[playerid], !VehicleEngineState(gPlayerVehicleID[playerid]));
+
+					else
+						VehicleEngineState(gPlayerVehicleID[playerid], !VehicleEngineState(gPlayerVehicleID[playerid]));
+				}
 			}
 		}
 		if(newkeys & KEY_NO)
 		{
-			v_Lights(gPlayerVehicleID[playerid], !v_Lights(gPlayerVehicleID[playerid]));
+			VehicleLightsState(gPlayerVehicleID[playerid], !VehicleLightsState(gPlayerVehicleID[playerid]));
 		}
 		if(newkeys & KEY_CROUCH)
 		{
@@ -2692,12 +2693,12 @@ CMD:g(playerid, params[])
 {
 	if(isnull(params))
 	{
-		t:bPlayerGameSettings[playerid]<GlobalChat>;
-		Msg(playerid, WHITE, " >  Your text chat is now global.");
+		gPlayerFrequency[playerid] = 108.0;
+		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, 0);
+		PlayerSendChat(playerid, params, 108.0);
 	}
 	return 1;
 }
@@ -2705,26 +2706,26 @@ CMD:l(playerid, params[])
 {
 	if(isnull(params))
 	{
-		f:bPlayerGameSettings[playerid]<GlobalChat>;
-		Msg(playerid, WHITE, " >  Your text chat is now local only.");
+		gPlayerFrequency[playerid] = 0.0;
+		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, 1);
+		PlayerSendChat(playerid, params, 0.0);
 	}
 	return 1;
 }
 CMD:c(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & GlobalChat)
+	if(gPlayerFrequency[playerid] != 0.0)
 	{
-		f:bPlayerGameSettings[playerid]<GlobalChat>;
-		Msg(playerid, WHITE, " >  Your text chat is now local only.");
+		gPlayerFrequency[playerid] = 0.0;
+		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
 	{
-		t:bPlayerGameSettings[playerid]<GlobalChat>;
-		Msg(playerid, WHITE, " >  Your text chat is now global.");
+		gPlayerFrequency[playerid] = 108.0;
+		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	return 1;
 }
@@ -2757,25 +2758,35 @@ public OnPlayerText(playerid, text[])
 
 	tick_LastChatMessage[playerid] = tickcount();
 
-	PlayerSendChat(playerid, text, (bPlayerGameSettings[playerid] & GlobalChat) ? 0 : 1);
+	PlayerSendChat(playerid, text, gPlayerFrequency[playerid]);
 
 	return 0;
 }
-PlayerSendChat(playerid, textInput[], range)
+PlayerSendChat(playerid, textInput[], Float:frequency)
 {
 	new
-		text[256];
+		text[256],
+		text2[128],
+		sendsecondline;
 
-	if(range == 0)
+	if(frequency == 108.0)
 	{
 		format(text, 256, "[Global] (%d) %P"#C_WHITE": %s",
 			playerid,
 			playerid,
 			TagScan(textInput));
 	}
-	else
+	else if(frequency == 0.0)
 	{
 		format(text, 256, "[Local] (%d) %P"#C_WHITE": %s",
+			playerid,
+			playerid,
+			TagScan(textInput));
+	}
+	else
+	{
+		format(text, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
+			frequency,
 			playerid,
 			playerid,
 			TagScan(textInput));
@@ -2785,8 +2796,9 @@ PlayerSendChat(playerid, textInput[], range)
 
 	if(strlen(text) > 127)
 	{
+		sendsecondline = 1;
+
 		new
-			text2[128],
 			splitpos;
 
 		for(new c = 128; c > 0; c--)
@@ -2800,58 +2812,48 @@ PlayerSendChat(playerid, textInput[], range)
 
 		strcat(text2, text[splitpos]);
 		text[splitpos] = 0;
+	}
 
-		if(range == 0)
+	if(frequency == 108.0)
+	{
+		foreach(new i : Player)
 		{
-			foreach(new i : Player)
+			SendClientMessage(i, WHITE, text);
+
+			if(sendsecondline)
+				SendClientMessage(i, WHITE, text2);
+		}
+	}
+	else if(frequency == 0.0)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(playerid, x, y, z);
+
+		foreach(new i : Player)
+		{
+			if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
 			{
 				SendClientMessage(i, WHITE, text);
-				SendClientMessage(i, WHITE, text2);
-			}
-		}
-		else
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
 
-			GetPlayerPos(playerid, x, y, z);
-
-			foreach(new i : Player)
-			{
-				if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
-				{
-					SendClientMessage(i, WHITE, text);
+				if(sendsecondline)
 					SendClientMessage(i, WHITE, text2);
-				}
 			}
 		}
 	}
 	else
 	{
-		if(range == 0)
+		foreach(new i : Player)
 		{
-			foreach(new i : Player)
+			if(-0.1 < frequency - gPlayerFrequency[i] < 0.1)
 			{
 				SendClientMessage(i, WHITE, text);
-			}
-		}
-		else
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
 
-			GetPlayerPos(playerid, x, y, z);
-
-			foreach(new i : Player)
-			{
-				if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
-				{
-					SendClientMessage(i, WHITE, text);
-				}
+				if(sendsecondline)
+					SendClientMessage(i, WHITE, text2);
 			}
 		}
 	}
@@ -2859,96 +2861,6 @@ PlayerSendChat(playerid, textInput[], range)
 	return 1;
 }
 
-enum E_COLOUR_EMBED_DATA
-{
-	ce_char,
-	ce_colour[9]
-}
-new EmbedColours[9][E_COLOUR_EMBED_DATA]=
-{
-	{'r', #C_RED},
-	{'g', #C_GREEN},
-	{'b', #C_BLUE},
-	{'y', #C_YELLOW},
-	{'p', #C_PINK},
-	{'w', #C_WHITE},
-	{'o', #C_ORANGE},
-	{'n', #C_NAVY},
-	{'a', #C_AQUA}
-};
-stock TagScan(chat[], colour = WHITE)
-{
-	new
-		text[256],
-		length,
-		a,
-		tags;
-
-	strcpy(text, chat, 256);
-	length = strlen(chat);
-	
-	while(a < (length - 1) && tags < 3)
-	{
-		if(text[a]=='@')
-		{
-			if(IsCharNumeric(text[a+1]))
-			{
-				new
-					id,
-					tmp[3];
-
-				strmid(tmp, text, a+1, a+3);
-				id = strval(tmp);
-
-				if(IsPlayerConnected(id))
-				{
-					new
-						tmpName[MAX_PLAYER_NAME+17];
-
-					format(tmpName, MAX_PLAYER_NAME+17, "%P%C", id, colour);
-
-					if(id<10)
-						strdel(text[a], 0, 2);
-
-					else
-						strdel(text[a], 0, 3);
-
-					strins(text[a], tmpName, 0);
-
-					length += strlen(tmpName);
-					a += strlen(tmpName);
-					tags++;
-					continue;
-				}
-				else a++;
-			}
-			else a++;
-		}
-		else if(text[a]=='&')
-		{
-			if(IsCharAlphabetic(text[a+1]))
-			{
-				new replacements;
-				for(new i;i<sizeof(EmbedColours);i++)
-				{
-					if(text[a+1] == EmbedColours[i][ce_char])
-					{
-						strdel(text[a], 0, 2);
-						strins(text[a], EmbedColours[i][ce_colour], 0);
-						length+=8;
-						a+=8;
-						replacements++;
-						break;
-					}
-				}
-				if(replacements==0)a++;
-			}
-			else a++;
-		}
-		else a++;
-	}
-	return text;
-}
 
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
@@ -2980,6 +2892,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawSetString(playerid, VehicleNameText, VehicleNames[model-400]);
 		PlayerTextDrawShow(playerid, VehicleNameText);
 		PlayerTextDrawShow(playerid, VehicleSpeedText);
+		PlayerTextDrawShow(playerid, VehicleFuelText);
+		PlayerTextDrawShow(playerid, VehicleDamageText);
+		PlayerTextDrawShow(playerid, VehicleEngineText);
 	}
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
@@ -2989,6 +2904,9 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		PlayerTextDrawHide(playerid, VehicleNameText);
 		PlayerTextDrawHide(playerid, VehicleSpeedText);
+		PlayerTextDrawHide(playerid, VehicleFuelText);
+		PlayerTextDrawHide(playerid, VehicleDamageText);
+		PlayerTextDrawHide(playerid, VehicleEngineText);
 		HidePlayerProgressBar(playerid, TankHeatBar);
 		stop TankHeatUpdateTimer[playerid];
 	}
@@ -3065,21 +2983,13 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CreateNewUserfile(playerid, buffer);
 
-			ShowPlayerDialog(playerid, d_WelcomeMsg, DIALOG_STYLE_MSGBOX, "Welcome to "#C_RED"Hellfire Server",
-				"\n"#C_WHITE"Your new account has been created!\n\
-				If you want to know more about the game, visit the Wikia site:\n\n\
-				\t"#C_YELLOW"scavenge-survive.wikia.com\n\n\
-				"#C_WHITE"Enjoy your time playing! Remember, don't attack people without a reason!", "Close", "");
+			ShowWelcomeMessage(playerid, 20);
 		}
 		else
 		{
 			MsgAllF(GREY, " >  %s left the server without registering.", gPlayerName[playerid]);
 			Kick(playerid);
 		}
-	}
-	if(dialogid == d_WelcomeMsg && response)
-	{
-		LogMessage(playerid);
 	}
 
 	return 1;
@@ -3371,6 +3281,33 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawColor				(playerid, VehicleSpeedText, -1);
 	PlayerTextDrawSetOutline		(playerid, VehicleSpeedText, 1);
 	PlayerTextDrawSetProportional	(playerid, VehicleSpeedText, 1);
+
+	VehicleFuelText					=CreatePlayerTextDraw(playerid, 620.000000, 386.000000, "0.0/0.0L");
+	PlayerTextDrawAlignment			(playerid, VehicleFuelText, 3);
+	PlayerTextDrawBackgroundColor	(playerid, VehicleFuelText, 255);
+	PlayerTextDrawFont				(playerid, VehicleFuelText, 2);
+	PlayerTextDrawLetterSize		(playerid, VehicleFuelText, 0.250000, 1.599999);
+	PlayerTextDrawColor				(playerid, VehicleFuelText, -1);
+	PlayerTextDrawSetOutline		(playerid, VehicleFuelText, 1);
+	PlayerTextDrawSetProportional	(playerid, VehicleFuelText, 1);
+
+	VehicleDamageText				=CreatePlayerTextDraw(playerid, 620.000000, 371.000000, "DMG");
+	PlayerTextDrawAlignment			(playerid, VehicleDamageText, 3);
+	PlayerTextDrawBackgroundColor	(playerid, VehicleDamageText, 255);
+	PlayerTextDrawFont				(playerid, VehicleDamageText, 2);
+	PlayerTextDrawLetterSize		(playerid, VehicleDamageText, 0.250000, 1.599999);
+	PlayerTextDrawColor				(playerid, VehicleDamageText, RED);
+	PlayerTextDrawSetOutline		(playerid, VehicleDamageText, 1);
+	PlayerTextDrawSetProportional	(playerid, VehicleDamageText, 1);
+
+	VehicleEngineText				=CreatePlayerTextDraw(playerid, 620.000000, 356.000000, "ENG");
+	PlayerTextDrawAlignment			(playerid, VehicleEngineText, 3);
+	PlayerTextDrawBackgroundColor	(playerid, VehicleEngineText, 255);
+	PlayerTextDrawFont				(playerid, VehicleEngineText, 2);
+	PlayerTextDrawLetterSize		(playerid, VehicleEngineText, 0.250000, 1.599999);
+	PlayerTextDrawColor				(playerid, VehicleEngineText, RED);
+	PlayerTextDrawSetOutline		(playerid, VehicleEngineText, 1);
+	PlayerTextDrawSetProportional	(playerid, VehicleEngineText, 1);
 
 
 //======================================================================Stat GUI

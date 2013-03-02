@@ -1,5 +1,11 @@
-enum zone_data{zone_name[28],Float:zone_area[6]};
-stock static const Zones[365][zone_data] = {
+enum E_ZONE_DATA
+{
+	zone_name[28],
+	Float:zone_area[6]
+};
+
+stock const Zones[365][E_ZONE_DATA] =
+{
 //	NAME                            AREA (Xmin,Ymin,Zmin,Xmax,Ymax,Zmax)
 	{"The Big Ear",	                {-410.00,1403.30,-3.00,-137.90,1681.20,200.00}},
 	{"Aldea Malvada",               {-1372.10,2498.50,0.00,-1277.50,2615.30,200.00}},

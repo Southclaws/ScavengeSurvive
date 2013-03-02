@@ -1,4 +1,4 @@
-LoadGen_Flint()
+public OnLoad()
 {
 	print("Loading Flint County");
 
@@ -27,4 +27,13 @@ LoadGen_Flint()
 	CreateLadder(-1099.8262, -719.3637, 32.0078, 54.7115, 180.0);
 	CreateLadder(-1055.5986, -719.3712, 32.0078, 54.7115, 180.0);
 	CreateLadder(-1013.4467, -719.3651, 32.0078, 54.7115, 180.0);
+
+	return CallLocalFunction("flintcounty_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+    #undef OnLoad
+#else
+    #define _ALS_OnLoad
+#endif
+#define OnLoad flintcounty_OnLoad
+forward flintcounty_OnLoad();

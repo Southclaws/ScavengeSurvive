@@ -31,9 +31,9 @@ public OnLoad()
 	return CallLocalFunction("army_OnLoad", "");
 }
 #if defined _ALS_OnLoad
-    #undef OnLoad
+	#undef OnLoad
 #else
-    #define _ALS_OnLoad
+	#define _ALS_OnLoad
 #endif
 #define OnLoad army_OnLoad
 forward army_OnLoad();

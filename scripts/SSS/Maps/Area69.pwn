@@ -76,9 +76,9 @@ public OnLoad()
 	return CallLocalFunction("a69_OnLoad", "");
 }
 #if defined _ALS_OnLoad
-    #undef OnLoad
+	#undef OnLoad
 #else
-    #define _ALS_OnLoad
+	#define _ALS_OnLoad
 #endif
 #define OnLoad a69_OnLoad
 forward a69_OnLoad();
