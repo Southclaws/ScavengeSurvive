@@ -5,7 +5,11 @@ ACMD:kick[1](playerid, params[])
 		reason[64],
 		highestAdminID;
 
-	PlayerLoop(i)if(pAdmin(i) > pAdmin(highestAdminID)) highestAdminID = i;
+	foreach(new i : Player)
+	{
+		if(pAdmin(i) > pAdmin(highestAdminID))
+			highestAdminID = i;
+	}
 
 	if(sscanf(params, "ds[64]", id, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
@@ -183,7 +187,7 @@ ACMD:weather[1](playerid, params[])
 		{
 			if(strfind(WeatherData[i][weather_name], params, true) != -1)
 			{
-				PlayerLoop(j)
+				foreach(new j : Player)
 				{
 					SetPlayerWeather(j, WeatherData[i][weather_id]);
 					MsgF(j, YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i][weather_name]);

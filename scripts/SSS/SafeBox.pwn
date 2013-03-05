@@ -50,12 +50,12 @@ DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_
 	return box_TypeTotal++;
 }
 
-SaveAllSafeboxes()
+SaveAllSafeboxes(prints = false)
 {
 	foreach(new i : box_Index)
 	{
 		if(!IsContainerEmpty(GetItemExtraData(i)) && IsItemInWorld(i))
-			SaveSafeboxItem(i);
+			SaveSafeboxItem(i, prints);
 	}
 }
 
@@ -121,7 +121,7 @@ LoadSafeboxes()
 	dir_close(direc);
 }
 
-SaveSafeboxItem(itemid)
+SaveSafeboxItem(itemid, prints = false)
 {
 	new
 		Float:x,
@@ -146,7 +146,8 @@ SaveSafeboxItem(itemid)
 
 	if(file)
 	{
-		printf("[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), x, y, z, r);
+		if(prints)
+			printf("[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), x, y, z, r);
 
 		data[0] = _:GetItemType(itemid);
 

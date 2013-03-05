@@ -41,7 +41,7 @@ native IsValidVehicle(vehicleid);
 #include <CameraMover>				// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=329813
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
-#include <WeaponData>				// By Southclaw:			(Not released yet, will be)
+#include <WeaponData>				// By Southclaw:			http://pastebin.com/ZGTr32Fv
 
 
 native WP_Hash(buffer[], len, const str[]);
@@ -101,8 +101,6 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Functions
-#define PlayerLoop(%0)				foreach(new %0 : Player)
-
 #define t:%1<%2>					((%1)|=(%2))
 #define f:%1<%2>					((%1)&=~(%2))
 
@@ -183,6 +181,16 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_ENGINE				"~k~~CONVERSATION_YES~"
 #define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
 
+enum
+{
+	DRUG_TYPE_ASPIRIN,		// Remove shaky screen
+	DRUG_TYPE_PAINKILL,		// Add 10 HP, remove dark screen for 1 minute
+	DRUG_TYPE_LSD,			// Weather effects
+	DRUG_TYPE_AIR,			// Health loss and death
+	DRUG_TYPE_MORPHINE,		// Shaky screen and health gain
+	DRUG_TYPE_ADRENALINE,	// Slow health gain
+	DRUG_TYPE_HEROINE		// Low visibility
+}
 
 
 //==============================================================SERVER VARIABLES
@@ -273,6 +281,10 @@ new
 	skin_ArmyF,
 	skin_IndiF;
 
+new
+	anim_Blunt;
+
+
 enum E_WEATHER_DATA
 {
 	weather_id,
@@ -360,6 +372,7 @@ PlayerText:		AddScoreText		= PlayerText:INVALID_TEXT_DRAW,
 
 PlayerBar:		TankHeatBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
+PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 				MiniMapOverlay;
 
 //==============================================================PLAYER VARIABLES
@@ -379,10 +392,8 @@ enum (<<= 1) // 14
 		FirstSpawn,
 		HelpTips,
 		ShowHUD,
-
-		PillEffect_Aspirin,
-		PillEffect_Painkill,
-		PillEffect_Ecstasy,
+		KnockedOut,
+		Bleeding,
 
 		HangingOutWindow,
 
@@ -416,6 +427,7 @@ DB:		gAccounts,
 Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
+		gPlayerArmedWeapon		[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
@@ -424,8 +436,7 @@ Float:	gCurrentVelocity		[MAX_PLAYERS],
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Timer:	gScreenFadeTimer		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
-
-		gPlayerPillUseTick		[MAX_PLAYERS][3],
+		gPlayerKnockOutTick		[MAX_PLAYERS],
 
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
@@ -456,10 +467,12 @@ forward SetRestart(seconds);
 #include "../scripts/utils/vehicledata.pwn"
 #include "../scripts/utils/zones.pwn"
 
+//======================Hooks
+
+#include "../scripts/SSS/DisallowActions.pwn"
+
 //======================API Scripts
 
-#include <SIF/Modules/WeaponItems.pwn>
-#include <SIF/Modules/NewMelee.pwn>
 #include <SIF/Modules/Craft.pwn>
 #include <SIF/Modules/Notebook.pwn>
 
@@ -495,6 +508,8 @@ forward SetRestart(seconds);
 #include "../scripts/Items/dice.pwn"
 #include "../scripts/Items/armour.pwn"
 #include "../scripts/Items/defenses.pwn"
+#include "../scripts/Items/injector.pwn"
+#include "../scripts/Items/bandage.pwn"
 
 //======================Data Load and Setup
 
@@ -507,6 +522,7 @@ forward SetRestart(seconds);
 
 //======================Gameplay Mechanics
 
+#include "../scripts/SSS/Weapons.pwn"
 #include "../scripts/SSS/Vehicle.pwn"
 #include "../scripts/SSS/Fuel.pwn"
 #include "../scripts/SSS/Food.pwn"
@@ -518,6 +534,8 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/SitDown.pwn"
 #include "../scripts/SSS/Radio.pwn"
 #include "../scripts/SSS/Defenses.pwn"
+#include "../scripts/SSS/Drugs.pwn"
+#include "../scripts/SSS/MeleeItems.pwn"
 
 #include "../scripts/SSS/Tutorial.pwn"
 #include "../scripts/SSS/WelcomeMessage.pwn"
@@ -696,7 +714,7 @@ public OnGameModeInit()
 	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 
-	item_ArmourRegen	= DefineItemType("ElectroArmour",	19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
+	item_Bandage		= DefineItemType("Bandage",			1575,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_FishRod		= DefineItemType("Fishing Rod",		18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
 	item_Wrench			= DefineItemType("Wrench",			18633,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
 	item_Crowbar		= DefineItemType("Crowbar",			18634,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
@@ -755,7 +773,7 @@ public OnGameModeInit()
 	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
 	item_Pills			= DefineItemType("Pills",			2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
-	item_AutoInjec		= DefineItemType("Injector",		2711,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
+	item_AutoInjec		= DefineItemType("Injector",		2711,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
 	item_BurgerBag		= DefineItemType("Burger",			2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
 	item_CanDrink		= DefineItemType("Can",				2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
 	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
@@ -776,10 +794,16 @@ public OnGameModeInit()
 
 //	item_Wood			= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
 
-/*
-	DefineAnimationSet()
+	anim_Blunt = DefineAnimSet();
 
-	DefineItemDamage(item_Beer,			9.0,	anim_Attack);
+	AddAnimToSet(anim_Blunt, 17, 22, 7.0);
+	AddAnimToSet(anim_Blunt, 18, 23, 9.0);
+	AddAnimToSet(anim_Blunt, 19, 24, 11.0);
+	AddAnimToSet(anim_Blunt, 20, 1150, 14.0);
+
+	SetItemAnimSet(item_Wrench, anim_Blunt);
+
+/*
 	DefineItemDamage(item_Sign,			23.0,	anim_Attack);
 	DefineItemDamage(item_FishRod,		23.0,	anim_Attack);
 	DefineItemDamage(item_Shield,		23.0,	anim_Attack);
@@ -816,8 +840,8 @@ public OnGameModeInit()
 	DefineLootIndex(loot_Survivor);
 
 
-	skin_MainM	= DefineSkinItem(60,	"Civilian", 1, 0.0);
-	skin_MainF	= DefineSkinItem(192,	"Civilian", 0, 0.0);
+	skin_MainM	= DefineSkinItem(60,	"Civilian",			1, 0.0);
+	skin_MainF	= DefineSkinItem(192,	"Civilian",			0, 0.0);
 
 	skin_Civ1M	= DefineSkinItem(170,	"Civilian",			1, 1.0);
 	skin_Civ2M	= DefineSkinItem(188,	"Civilian",			1, 1.0);
@@ -873,7 +897,7 @@ public SetRestart(seconds)
 
 RestartGamemode()
 {
-	PlayerLoop(i)
+	foreach(new i : Player)
 	{
 		SavePlayerData(i);
 		ResetVariables(i);
@@ -895,13 +919,13 @@ RestartGamemode()
 	MsgAll(BLUE, HORIZONTAL_RULE);
 }
 
-task AutoSave[300000]()
+task AutoSave[60000]()
 {
 	print("Autosaving...");
 
-	PlayerLoop(i)
+	foreach(new i : Player)
 	{
-		SavePlayerData(i);
+		SavePlayerData(i, false);
 	}
 
 	defer AutoSave_Safeboxes();
@@ -909,7 +933,7 @@ task AutoSave[300000]()
 
 timer AutoSave_Safeboxes[100]()
 {
-	SaveAllSafeboxes();
+	SaveAllSafeboxes(false);
 	defer AutoSave_Vehicles();
 }
 
@@ -920,7 +944,7 @@ timer AutoSave_Vehicles[100]()
 		if(IsValidVehicle(i))
 		{
 			if(!isnull(gVehicleOwner[i]))
-				SavePlayerVehicle(i, gVehicleOwner[i]);
+				SavePlayerVehicle(i, gVehicleOwner[i], false);
 		}
 	}
 	print("Autosave Complete.");
@@ -943,45 +967,47 @@ task GameUpdate[1000]()
 
 	gServerUptime++;
 
-	if(bServerGlobalSettings & ServerTimeFlow)
-	{
-		new
-			str[6],
-			hour,
-			minute;
+	new
+		str[6],
+		hour,
+		minute,
+		weather;
 
-		gettime(hour, minute);
+	gettime(hour, minute);
 
-		format(str, 6, "%02d:%02d", hour, minute);
-		TextDrawSetString(ClockText, str);
-
-		PlayerLoop(i)
-		{
-			if(bPlayerGameSettings[i] & PillEffect_Ecstasy)
-			{
-				SetPlayerTime(i, 22, 3);
-				SetPlayerWeather(i, 33);
-
-				if(tickcount() - gPlayerPillUseTick[i][PILL_TYPE_ECSTASY] > 60000)
-					f:bPlayerGameSettings[i]<PillEffect_Ecstasy>;
-			}
-			else
-			{
-				SetPlayerTime(i, hour, minute);
-			}
-		}
-	}
+	format(str, 6, "%02d:%02d", hour, minute);
+	TextDrawSetString(ClockText, str);
 
 	if(tickcount() - gLastWeatherChange > 600000 && RandomCondition(5))
 	{
 		gLastWeatherChange = tickcount();
 		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
+		weather = WeatherData[gWeatherID][weather_id];
+	}
 
-		PlayerLoop(i)
+	foreach(new i : Player)
+	{
+		if(IsPlayerUnderDrugEffect(i, DRUG_TYPE_LSD))
 		{
-			if(!(bPlayerGameSettings[i] & PillEffect_Ecstasy))
-				SetPlayerWeather(i, WeatherData[gWeatherID][weather_id]);
+			hour = 22;
+			minute = 3;
+			weather = 33;
+
+			if(tickcount() - GetPlayerDrugUseTick(i, DRUG_TYPE_LSD) > 120000)
+				RemoveDrug(i, DRUG_TYPE_LSD);
 		}
+		else if(IsPlayerUnderDrugEffect(i, DRUG_TYPE_HEROINE))
+		{
+			hour = 22;
+			minute = 30;
+			weather = 33;
+
+			if(tickcount() - GetPlayerDrugUseTick(i, DRUG_TYPE_HEROINE) > 120000)
+				RemoveDrug(i, DRUG_TYPE_HEROINE);
+		}
+
+		SetPlayerTime(i, hour, minute);
+		SetPlayerWeather(i, weather);
 	}
 }
 
@@ -1007,7 +1033,7 @@ ptask PlayerUpdate[100](playerid)
 			model = GetVehicleModel(vehicleid),
 			Float:health;
 
-		if(GetVehicleType(model) != VTYPE_BMX)
+		if(GetVehicleType(model) != VTYPE_BMX && model != 0)
 		{
 			GetVehicleHealth(vehicleid, health);
 			
@@ -1034,7 +1060,7 @@ ptask PlayerUpdate[100](playerid)
 			}
 			if(VehicleEngineState(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
 			{
-				if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0)
+				if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0 || bPlayerGameSettings[playerid] & KnockedOut)
 				{
 					VehicleEngineState(vehicleid, 0);
 					PlayerTextDrawColor(playerid, VehicleEngineText, RED);
@@ -1076,27 +1102,127 @@ ptask PlayerUpdate[100](playerid)
 		}
 	}
 
-	if(gScreenBoxFadeLevel[playerid] == 0)
+	if(gScreenBoxFadeLevel[playerid] <= 0)
 	{
-		if(gPlayerHP[playerid] < 40.0)
+		if(gPlayerHP[playerid] < 40.0 || IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD) || IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
 		{
-			if(bPlayerGameSettings[playerid] & PillEffect_Painkill)
+			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
 				PlayerTextDrawHide(playerid, ClassBackGround);
 
-				if(tickcount() - gPlayerPillUseTick[playerid][PILL_TYPE_PAINKILL] > 60000)
-					f:bPlayerGameSettings[playerid]<PillEffect_Painkill>;
+				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_PAINKILL) > 60000)
+					RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
+			}
+			else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+			{
+				PlayerTextDrawHide(playerid, ClassBackGround);
 			}
 			else
 			{
 				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerHP[playerid]) * 4.4));
 				PlayerTextDrawShow(playerid, ClassBackGround);
+
+				if(GetPlayerAnimationIndex(playerid) == 1207 || GetPlayerAnimationIndex(playerid) == 1018)
+				{
+					SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - gPlayerKnockOutTick[playerid]);
+					SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
+					UpdatePlayerProgressBar(playerid, KnockoutBar);
+
+					if(tickcount() - gPlayerKnockOutTick[playerid] > 1000 * (40.0 - gPlayerHP[playerid]))
+					{
+						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
+						{
+							HidePlayerProgressBar(playerid, KnockoutBar);
+
+							if(IsPlayerInAnyVehicle(playerid))
+								ClearAnimations(playerid);
+
+							else
+								ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
+
+							gPlayerKnockOutTick[playerid] = tickcount();
+							f:bPlayerGameSettings[playerid]<KnockedOut>;
+						}
+					}
+				}
+				else
+				{
+					if(tickcount() - gPlayerKnockOutTick[playerid] > 2000 * gPlayerHP[playerid])
+					{
+						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
+						{
+							SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - gPlayerKnockOutTick[playerid]);
+							SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
+							ShowPlayerProgressBar(playerid, KnockoutBar);
+
+							if(IsPlayerInAnyVehicle(playerid))
+								ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+
+							else
+								ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
+
+							gPlayerKnockOutTick[playerid] = tickcount();
+							t:bPlayerGameSettings[playerid]<KnockedOut>;
+						}
+						else
+						{
+							HidePlayerProgressBar(playerid, KnockoutBar);
+							f:bPlayerGameSettings[playerid]<KnockedOut>;
+						}
+					}
+					else
+					{
+						HidePlayerProgressBar(playerid, KnockoutBar);
+						f:bPlayerGameSettings[playerid]<KnockedOut>;
+					}
+				}
 			}
 		}
 		else
 		{
 			PlayerTextDrawHide(playerid, ClassBackGround);
 		}
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+	{
+		if(gPlayerHP[playerid] < 0.0)
+			RemoveDrug(playerid, DRUG_TYPE_AIR);
+
+		SetPlayerDrunkLevel(playerid, 100000);
+
+		if(random(100) < 50)
+			GivePlayerHP(playerid, -0.5);
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
+	{
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 120000 || gPlayerHP[playerid] >= 100.0)
+			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
+
+		SetPlayerDrunkLevel(playerid, 2200);
+
+		if(random(100) < 80)
+			GivePlayerHP(playerid, 0.05, .msg = false);
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+	{
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 120000 || gPlayerHP[playerid] >= 100.0)
+			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
+
+		GivePlayerHP(playerid, 0.01, .msg = false);
+	}
+
+	if(bPlayerGameSettings[playerid] & Bleeding)
+	{
+		if(random(100) < 60)
+			GivePlayerHP(playerid, -0.01, .msg = false);
+	}
+
+	if(gPlayerArmedWeapon[playerid] == 0 && GetPlayerWeapon(playerid))
+	{
+		ResetPlayerWeapons(playerid);
 	}
 
 	return 1;
@@ -1148,23 +1274,27 @@ ptask FoodUpdate[1000](playerid)
 	if(gPlayerFP[playerid] > 100.0)
 		gPlayerFP[playerid] = 100.0;
 
-	if(gPlayerFP[playerid] < 30.0)
+	if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
-		if(bPlayerGameSettings[playerid] & PillEffect_Aspirin)
+		if(gPlayerFP[playerid] < 30.0)
 		{
-			SetPlayerDrunkLevel(playerid, 0);
+			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ASPIRIN))
+			{
+				SetPlayerDrunkLevel(playerid, 0);
 
-			if(tickcount() - gPlayerPillUseTick[playerid][PILL_TYPE_ASPIRIN] > 60000)
-				f:bPlayerGameSettings[playerid]<PillEffect_Aspirin>;
+				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ASPIRIN) > 120000)
+					RemoveDrug(playerid, DRUG_TYPE_ASPIRIN);
+			}
+			else
+			{
+				SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerFP[playerid]) * 300.0));
+			}
 		}
 		else
 		{
-			SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerFP[playerid]) * 300.0));
+			SetPlayerDrunkLevel(playerid, 0);
 		}
 	}
-
-	else
-		SetPlayerDrunkLevel(playerid, 0);
 
 	if(gPlayerFP[playerid] < 20.0)
 		gPlayerHP[playerid] -= (20.0 - gPlayerFP[playerid]) / 10.0;
@@ -1446,7 +1576,9 @@ CreateNewUserfile(playerid, password[])
 			break;
 		}
 	}
-	if(pAdmin(playerid)>0)MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
+
+	if(pAdmin(playerid) > 0)
+		MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
@@ -1487,7 +1619,7 @@ Login(playerid)
 	FreezePlayer(playerid, 2000);
 }
 
-SavePlayerData(playerid)
+SavePlayerData(playerid, prints = false)
 {
 	new
 		tmpQuery[256];
@@ -1521,7 +1653,7 @@ SavePlayerData(playerid)
 			(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0,
 			gPlayerName[playerid]);
 
-		SavePlayerInventory(playerid);
+		SavePlayerInventory(playerid, prints);
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -1548,7 +1680,7 @@ SavePlayerData(playerid)
 	return 1;
 }
 
-SavePlayerInventory(playerid)
+SavePlayerInventory(playerid, prints = false)
 {
 	new
 		filename[MAX_PLAYER_FILE],
@@ -1567,7 +1699,8 @@ SavePlayerInventory(playerid)
 	characterdata[3] = GetPlayerClothes(playerid);
 	characterdata[4] = GetPlayerHat(playerid);
 
-	printf("[SAVE]: H: %f A: %f F: %f S: %d H: %d", characterdata[0], characterdata[1], characterdata[2], characterdata[3], characterdata[4]);
+	if(prints)
+		printf("[SAVE] %s HP: %f", characterdata[0], characterdata[1]);
 
 	fblockwrite(file, characterdata, 5);
 
@@ -1583,7 +1716,6 @@ SavePlayerInventory(playerid)
 		helditems[1] = 0;
 		fblockwrite(file, helditems, 2);
 	}
-	printf("[SAVE]: holster %d %d", helditems[0], helditems[1]);
 
 	if(GetPlayerWeapon(playerid) > 0)
 	{
@@ -1606,7 +1738,6 @@ SavePlayerInventory(playerid)
 			fblockwrite(file, helditems, 2);
 		}
 	}
-	printf("[SAVE]: holding %d %d", helditems[0], helditems[1]);
 
 	for(new i, j; j < 4; i += 2, j++)
 	{
@@ -1659,6 +1790,9 @@ LoadPlayerInventory(playerid)
 	fblockread(file, characterdata, 5);
 
 	printf("[LOAD]: H: %f A: %f F: %f S: %d H: %d", characterdata[0], characterdata[1], characterdata[2], characterdata[3], characterdata[4]);
+
+	if(Float:characterdata[0] <= 0.0)
+		characterdata[0] = _:1.0;
 
 	gPlayerHP[playerid] = Float:characterdata[0];
 	gPlayerAP[playerid] = Float:characterdata[1];
@@ -2402,17 +2536,8 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 
 	tick_WeaponHit[playerid] = tickcount();
 
-	new head;
-	
-	if(!IsPlayerInAnyVehicle(playerid))
-	{
-		switch(weaponid)
-		{
-			case 25, 27, 30, 31, 33, 34:head = IsPlayerAimingAtHead(playerid, targetid);
-		}
-	}
-
 	new
+		head,
 		Float:px,
 		Float:py,
 		Float:pz,
@@ -2436,7 +2561,12 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	}
 	else if(type == 1)
 	{
-		hploss = itd_Data[weaponid][itd_damage];
+		hploss = anm_Anims[weaponid][anm_CurrentAnim[playerid]][anm_damage];
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+	{
+		hploss *= 0.9;
 	}
 
 	if(GetItemType(GetPlayerItem(targetid)) == item_Shield)
@@ -2451,14 +2581,38 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 
 		if(225.0 < angleto < 315.0)
 		{
-			GameTextForPlayer(targetid, "Shield!", 1000, 5);
 			hploss *= 0.2;
+		}
+	}
+	else
+	{
+		if(!IsPlayerInAnyVehicle(playerid))
+		{
+			switch(weaponid)
+			{
+				case 25, 27, 30, 31, 33, 34:head = IsPlayerAimingAtHead(playerid, targetid);
+			}
+			switch(weaponid)
+			{
+				case 0..3, 5..7, 10..18, 39:
+				{
+					if(random(100) < 40)
+						t:bPlayerGameSettings[playerid]<Bleeding>;
+				}
+				case 40..46:
+				{
+					// Unused
+				}
+				default:
+				{
+					t:bPlayerGameSettings[playerid]<Bleeding>;
+				}
+			}
 		}
 	}
 
 	GivePlayerHP(targetid, -hploss, weaponid);
 	ShowHitMarker(playerid, weaponid);
-
 
 	if(pAdmin(playerid) >= 3)
 	{
@@ -2469,7 +2623,7 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	
 	return 1;
 }
-GivePlayerHP(playerid, Float:hp, weaponid = 54)
+GivePlayerHP(playerid, Float:hp, weaponid = 54, msg = true)
 {
 	if(gPlayerAP[playerid] > 0.0)
 	{
@@ -2489,7 +2643,7 @@ GivePlayerHP(playerid, Float:hp, weaponid = 54)
 
 	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
 
-	if(hp > 0.0)
+	if(hp > 0.0 && msg)
 	{
 		new
 			tmpstr[16];
@@ -2672,6 +2826,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 			ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,0,1,1,0,0);
 
+/*
 		if(newkeys & KEY_FIRE)
 		{
 			new iWepState = GetPlayerWeaponState(playerid);
@@ -2679,14 +2834,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if((iWepState != WEAPONSTATE_RELOADING && iWepState != WEAPONSTATE_NO_BULLETS))
 				OnPlayerShoot(playerid);
 		}
+*/
 	}
 
 	return 1;
-}
-
-OnPlayerShoot(playerid)
-{
-	#pragma unused playerid
 }
 
 CMD:g(playerid, params[])
@@ -2914,7 +3065,37 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 }
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
+	if(ispassenger)
+	{
+		new
+			Float:px,
+			Float:py,
+			Float:pz,
+			Float:vx,
+			Float:vy,
+			Float:vz,
+			Float:sx,
+			Float:sy,
+			Float:sz;
+
+		GetPlayerPos(playerid, px, py, pz);
+		GetVehiclePos(vehicleid, vx, vy, vz);
+		GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
+
+		if(Distance(px, py, pz, vx, vy, vz) > sy + sx / 2)
+		{
+			CancelPlayerMovement(playerid);
+			return 0;
+		}
+	}
+
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+	{
+		return 0;
+	}
+
 	gCurrentVelocity[playerid] = 0.0;
+
 	return 1;
 }
 public OnPlayerExitVehicle(playerid, vehicleid)
@@ -3332,6 +3513,7 @@ LoadPlayerTextDraws(playerid)
 
 	ActionBar						= CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
 	TankHeatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
+	KnockoutBar						= CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
 }
 UnloadPlayerTextDraws(playerid)
 {
@@ -3346,6 +3528,7 @@ UnloadPlayerTextDraws(playerid)
 
 	DestroyPlayerProgressBar(playerid, TankHeatBar);
 	DestroyPlayerProgressBar(playerid, ActionBar);
+	DestroyPlayerProgressBar(playerid, KnockoutBar);
 }
 
 public OnPlayerOpenInventory(playerid)
@@ -3431,7 +3614,7 @@ public OnDynamicObjectMoved(objectid)
 stock GetPlayersOnline()
 {
 	new p;
-	PlayerLoop(i)p++;
+	foreach(new i : Player)p++;
 	return p;
 }
 SetMapName(MapName[])
@@ -3578,8 +3761,9 @@ PreloadPlayerAnims(playerid)
 	PreloadAnimLib(playerid, "RUNNINGMAN");
 }
 
-stock CancelPlayerMovement(playerid)
+stock CancelPlayerMovement(playerid, from = -1)
 {
+	printf("Canceled movement from %d", from);
 	new
 		Float:x,
 		Float:y,
@@ -3587,6 +3771,7 @@ stock CancelPlayerMovement(playerid)
 
 	GetPlayerPos(playerid, x, y, z);
 	SetPlayerPos(playerid, x, y, z);
+	ClearAnimations(playerid);
 }
 FreezePlayer(playerid, time)
 {

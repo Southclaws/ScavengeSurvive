@@ -1,6 +1,6 @@
 #define PILL_TYPE_ASPIRIN	(0)
 #define PILL_TYPE_PAINKILL	(1)
-#define PILL_TYPE_ECSTASY	(2)
+#define PILL_TYPE_LSD		(2)
 
 
 new
@@ -37,7 +37,7 @@ public OnItemNameRender(itemid)
 			{
 				case PILL_TYPE_ASPIRIN:		SetItemNameExtra(itemid, "Aspirin");
 				case PILL_TYPE_PAINKILL:	SetItemNameExtra(itemid, "Painkiller");
-				case PILL_TYPE_ECSTASY:		SetItemNameExtra(itemid, "Ecstasy");
+				case PILL_TYPE_LSD:			SetItemNameExtra(itemid, "LSD");
 			}
 		}
 		else
@@ -79,20 +79,13 @@ timer TakePills[500](playerid, itemid)
 	switch(GetItemExtraData(itemid) & 0b111)
 	{
 		case PILL_TYPE_ASPIRIN:
-		{
-			gPlayerPillUseTick[playerid][0] = tickcount();
-			t:bPlayerGameSettings[playerid]<PillEffect_Aspirin>;
-		}
+			ApplyDrug(playerid, DRUG_TYPE_ASPIRIN);
+
 		case PILL_TYPE_PAINKILL:
-		{
-			gPlayerPillUseTick[playerid][1] = tickcount();
-			t:bPlayerGameSettings[playerid]<PillEffect_Painkill>;
-		}
-		case PILL_TYPE_ECSTASY:
-		{
-			gPlayerPillUseTick[playerid][2] = tickcount();
-			t:bPlayerGameSettings[playerid]<PillEffect_Ecstasy>;
-		}
+			ApplyDrug(playerid, DRUG_TYPE_PAINKILL);
+
+		case PILL_TYPE_LSD:
+			ApplyDrug(playerid, DRUG_TYPE_LSD);
 	}
 	DestroyItem(itemid);
 }

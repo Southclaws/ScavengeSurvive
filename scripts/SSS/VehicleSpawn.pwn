@@ -155,7 +155,7 @@ UnloadVehicles()
 		if(IsValidVehicle(i))
 		{
 			if(!isnull(gVehicleOwner[i]))
-				SavePlayerVehicle(i, gVehicleOwner[i]);
+				SavePlayerVehicle(i, gVehicleOwner[i], true);
 
 			DestroyVehicle(i);
 			DestroyContainer(gVehicleContainer[i]);
@@ -325,7 +325,7 @@ LoadPlayerVehicles(bool:prints = true)
 		if(type == FM_FILE)
 		{
 			new
-				array[14 + (CNT_MAX_SLOTS * 2)],
+				array[14 + (CNT_MAX_SLOTS * 3)],
 				itemid;
 
 			filedir = "SSS/Vehicles/";
@@ -335,11 +335,14 @@ LoadPlayerVehicles(bool:prints = true)
 			fclose(file);
 
 			if(Float:array[1] < 255.5)
+			{
+				fremove(filedir);
 				continue;
+			}
 
 			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400000);
 
-			sscanf(item, "p<.>s[24]{s[24]}", gVehicleOwner[vehicleid]);
+			strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);
 
 			printf("[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
 
@@ -360,16 +363,19 @@ LoadPlayerVehicles(bool:prints = true)
 				if(VehicleFuelData[array[0]-400][veh_trunkSize] > 0)
 				{
 					gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[array[0]-400][veh_trunkSize], .virtual = 1);
-					for(new i, j; j < CNT_MAX_SLOTS; i += 2, j++)
+					for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
 					{
 						if(IsValidItemType(ItemType:array[14 + i]))
 						{
 							itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
 
-							if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
-								SetItemExtraData(itemid, array[14 + i + 1]);
+							if(array[14 + i + 1] == 1)
+							{
+								if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
+									SetItemExtraData(itemid, array[14 + i + 1]);
 
-							AddItemToContainer(gVehicleContainer[vehicleid], itemid);
+								AddItemToContainer(gVehicleContainer[vehicleid], itemid);
+							}
 						}
 					}
 				}
@@ -388,7 +394,7 @@ LoadPlayerVehicles(bool:prints = true)
 	return;
 }
 
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
+SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -396,14 +402,11 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 	new
 		File:file,
 		filename[MAX_PLAYER_NAME + 18],
-		array[14 + (CNT_MAX_SLOTS * 2)],
+		array[14 + (CNT_MAX_SLOTS * 3)],
 		itemid;
 
 	array[0] = GetVehicleModel(vehicleid);
 	GetVehicleHealth(vehicleid, Float:array[1]);
-
-	if(Float:array[1] < 255.5)
-		return 0;
 
 	array[2] = _:gVehicleFuel[vehicleid];
 	GetVehiclePos(vehicleid, Float:array[3], Float:array[4], Float:array[5]);
@@ -413,22 +416,25 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 	GetVehicleDamageStatus(vehicleid, array[9], array[10], array[11], array[12]);
 	array[13] = 0;
 
-	printf("[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], name);
+	if(prints)
+		printf("[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], name);
 
 	if(IsValidContainer(gVehicleContainer[vehicleid]))
 	{
-		for(new i, j; j < CNT_MAX_SLOTS; i += 2, j++)
+		for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
 		{
 			if(IsContainerSlotUsed(gVehicleContainer[vehicleid], j))
 			{
 				itemid = GetContainerSlotItem(gVehicleContainer[vehicleid], j);
 				array[14 + i] = _:GetItemType(itemid);
-				array[14 + i + 1] = GetItemExtraData(itemid);
+				array[14 + i + 1] = 1;
+				array[14 + i + 2] = GetItemExtraData(itemid);
 			}
 			else
 			{
 				array[14 + i] = -1;
-				array[14 + i + 1] = 0;
+				array[14 + i + 1] = 1;
+				array[14 + i + 2] = 0;
 			}
 		}
 	}
@@ -439,6 +445,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 
 		if(fexist(filename))
 			fremove(filename);
+
 	}
 
 	gVehicleOwner[vehicleid] = name;
@@ -601,7 +608,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
 		SetCameraBehindPlayer(playerid);
-		SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid]);
+		SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid], true);
 	}
 }
 
@@ -613,7 +620,7 @@ public OnPlayerAddedToContainer(playerid, containerid, itemid)
 		{
 			if(!isnull(gVehicleOwner[gCurrentContainerVehicle[playerid]]) && !strcmp(gVehicleOwner[gCurrentContainerVehicle[playerid]], gPlayerName[playerid]))
 			{
-				SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid]);
+				SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid], true);
 			}
 		}
 	}
@@ -636,7 +643,7 @@ public OnPlayerTakenFromContainer(playerid, containerid, slotid)
 		{
 			if(!isnull(gVehicleOwner[gCurrentContainerVehicle[playerid]]) && !strcmp(gVehicleOwner[gCurrentContainerVehicle[playerid]], gPlayerName[playerid]))
 			{
-				SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid]);
+				SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid], true);
 			}
 		}
 	}

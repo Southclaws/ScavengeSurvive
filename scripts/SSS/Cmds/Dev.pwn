@@ -231,7 +231,7 @@ ACMD:sound[3](playerid, params[])
 		Float:y,
 		Float:z;
 
-	PlayerLoop(i)
+	foreach(new i : Player)
 	{
 		if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))PlayerPlaySound(i, soundid, x, y, z);
 	}

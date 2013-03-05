@@ -6,7 +6,7 @@ new IsAtVehicleBonnet[MAX_PLAYERS];
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(IsPlayerInAnyVehicle(playerid))
+	if(IsPlayerInAnyVehicle(playerid) || bPlayerGameSettings[playerid] & KnockedOut)
 		return 0;
 
 	if(newkeys == 16)

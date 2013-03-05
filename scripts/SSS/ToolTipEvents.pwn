@@ -12,6 +12,12 @@ ptask ToolTipUpdate[1000](playerid)
 		return;		
 	}
 
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+	{
+		HidePlayerToolTip(playerid);
+		return;		
+	}
+
 	if(GetPlayerState(playerid) == PLAYER_STATE_ONFOOT && bPlayerGameSettings[playerid] & ShowHUD)
 	{
 		if(GetPlayerWeapon(playerid) > 0)

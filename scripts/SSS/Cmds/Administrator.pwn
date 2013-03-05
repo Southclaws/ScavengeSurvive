@@ -60,7 +60,11 @@ ACMD:ban[2](playerid, params[])
 		reason[64],
 		highestAdminID;
 
-	PlayerLoop(i)if(pAdmin(i) > pAdmin(highestAdminID)) highestAdminID = i;
+	foreach(new i : Player)
+	{
+		if(pAdmin(i) > pAdmin(highestAdminID))
+			highestAdminID = i;
+	}
 
 	if(!sscanf(params, "dS(None)[64]", id, reason))
 	{
@@ -91,22 +95,6 @@ ACMD:ban[2](playerid, params[])
 	return 1;
 }
 
-BanPlayer(playerid, reason[], byid)
-{
-	new tmpQuery[256];
-
-	format(tmpQuery, sizeof(tmpQuery), "\
-		INSERT INTO `Bans`\
-		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
-		VALUES('%p', '%d', '%d', '%s', '%p')",
-		playerid, gPlayerData[playerid][ply_IP], gettime(), reason, byid);
-
-	print(tmpQuery);
-
-	db_free_result(db_query(gAccounts, tmpQuery));
-	Kick(playerid);
-}
-
 ACMD:unban[2](playerid, params[])
 {
 	new name[24];
@@ -131,7 +119,9 @@ ACMD:unban[2](playerid, params[])
 
 ACMD:clearchat[2](playerid, params[])
 {
-	for(new i;i<100;i++)MsgAll(WHITE, " ");
+	for(new i;i<100;i++)
+		MsgAll(WHITE, " ");
+
 	return 1;
 }
 

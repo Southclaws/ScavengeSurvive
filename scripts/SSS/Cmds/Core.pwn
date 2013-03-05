@@ -42,7 +42,7 @@ MsgAdmins(level, colour, string[])
 		strcat(string2, string[splitpos]);
 		string[splitpos] = EOS;
 
-	    PlayerLoop(i)
+	    foreach(new i : Player)
 	    {
 	        if(pAdmin(i) < level)
 				continue;
@@ -53,7 +53,7 @@ MsgAdmins(level, colour, string[])
 	}
 	else
 	{
-	    PlayerLoop(i)
+	    foreach(new i : Player)
 	    {
 	        if(pAdmin(i) < level)
 				continue;
@@ -215,3 +215,18 @@ CMD:acmds(playerid, params[])
 	return 1;
 }
 
+BanPlayer(playerid, reason[], byid)
+{
+	new tmpQuery[256];
+
+	format(tmpQuery, sizeof(tmpQuery), "\
+		INSERT INTO `Bans`\
+		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
+		VALUES('%p', '%d', '%d', '%s', '%p')",
+		playerid, gPlayerData[playerid][ply_IP], gettime(), reason, byid);
+
+	print(tmpQuery);
+
+	db_free_result(db_query(gAccounts, tmpQuery));
+	Kick(playerid);
+}

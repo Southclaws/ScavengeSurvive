@@ -18,10 +18,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(newkeys == 16)
 		{
-		    gPlayerMedkitTarget[playerid] = playerid;
+			if(bPlayerGameSettings[playerid] & KnockedOut)
+				return 0;
+
+			gPlayerMedkitTarget[playerid] = playerid;
 			foreach(new i : Character)
 			{
-			    if(i == playerid)continue;
+				if(i == playerid)continue;
 
 				if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]) && !IsPlayerInAnyVehicle(i))
 				{
@@ -35,7 +38,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			stop gPlayerMedkitTimer[playerid];
 			if(Bit1_Get(gPlayerUsingMedkit, playerid))
 			{
-	        	Bit1_Set(gPlayerUsingMedkit, playerid, false);
+				Bit1_Set(gPlayerUsingMedkit, playerid, false);
 				HidePlayerProgressBar(playerid, ActionBar);
 				if(gPlayerMedkitTarget[playerid] != playerid)
 				{
@@ -46,41 +49,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-    return 1;
+	return 1;
 }
-
-
-public OnPlayerEnterPlayerArea(playerid, targetid)
-{
-	if(GetItemType(GetPlayerItem(playerid)) == item_Medkit)
-	{
-		ShowMsgBox(playerid, "Press N to give~n~Hold F to heal");
-	}
-    return CallLocalFunction("med_OnPlayerEnterPlayerArea", "dd", playerid, targetid);
-}
-#if defined _ALS_OnPlayerEnterPlayerArea
-    #undef OnPlayerEnterPlayerArea
-#else
-    #define _ALS_OnPlayerEnterPlayerArea
-#endif
-#define OnPlayerEnterPlayerArea med_OnPlayerEnterPlayerArea
-forward med_OnPlayerEnterPlayerArea(playerid, targetid);
-
-
-public OnPlayerLeavePlayerArea(playerid, targetid)
-{
-	HideMsgBox(playerid);
-
-    return CallLocalFunction("med_OnPlayerLeavePlayerArea", "dd", playerid, targetid);
-}
-#if defined _ALS_OnPlayerLeavePlayerArea
-    #undef OnPlayerLeavePlayerArea
-#else
-    #define _ALS_OnPlayerLeavePlayerArea
-#endif
-#define OnPlayerLeavePlayerArea med_OnPlayerLeavePlayerArea
-forward med_OnPlayerLeavePlayerArea(playerid, targetid);
-
 
 
 timer MedkitStartUse[100](playerid)
@@ -95,7 +65,12 @@ timer MedkitStartUse[100](playerid)
 		SetPlayerProgressBarMaxValue(gPlayerMedkitTarget[playerid], ActionBar, MEDKIT_PROGRESS_MAX);
 		SetPlayerProgressBarValue(gPlayerMedkitTarget[playerid], ActionBar, 0.0);
 
-		ApplyAnimation(playerid, "PED", "ATM", 4.0, 0, 0, 0, 0, 0);
+		if(bPlayerGameSettings[gPlayerMedkitTarget[playerid]] & KnockedOut)
+			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 0, 0, 0, 0, 0);
+
+		else
+			ApplyAnimation(playerid, "PED", "ATM", 4.0, 0, 0, 0, 0, 0);
+
 		gPlayerMedkitTimer[playerid] = repeat MedkitHealUpdate(playerid);
 	}
 	else
@@ -143,14 +118,16 @@ timer MedkitHealUpdate[100](playerid)
 		{
 			HidePlayerProgressBar(gPlayerMedkitTarget[playerid], ActionBar);
 			ClearAnimations(gPlayerMedkitTarget[playerid]);
-			
-			MsgF(playerid, YELLOW, " >  You healed %P", gPlayerMedkitTarget[playerid]);
-			
+
+			if(bPlayerGameSettings[gPlayerMedkitTarget[playerid]] & KnockedOut)
+			{
+				ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
+				f:bPlayerGameSettings[gPlayerMedkitTarget[playerid]]<KnockedOut>;
+			}
 		}
-		else Msg(playerid, YELLOW, " >  You healed yourself");
 
 		ClearAnimations(playerid);
-		GivePlayerHP(gPlayerMedkitTarget[playerid], 50.0);
+		GivePlayerHP(gPlayerMedkitTarget[playerid], 40.0);
 		DestroyItem(GetPlayerItem(playerid));
 		HideMsgBox(playerid);
 

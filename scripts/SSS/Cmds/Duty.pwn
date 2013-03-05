@@ -127,6 +127,32 @@ ACMD:get[1](playerid, params[])
 	return 1;
 }
 
+ACMD:spec[3](playerid, params[])
+{
+	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+	{
+		Msg(playerid, RED, " >  You can only use that command while on admin duty.");
+		return 1;
+	}
+
+	if(isnull(params))
+	{
+		TogglePlayerSpectating(playerid, false);
+	}
+	else
+	{
+		new id = strval(params);
+
+		if(IsPlayerConnected(id) && id != playerid)
+		{
+			TogglePlayerSpectating(playerid, true);
+			PlayerSpectatePlayer(playerid, id);
+		}
+	}
+
+	return 1;
+}
+
 TeleportPlayerToPlayer(playerid, targetid)
 {
 	new
@@ -177,82 +203,3 @@ TeleportPlayerToPlayer(playerid, targetid)
 	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }
-
-
-// Hooks to disable the use of items while on duty.
-
-
-public OnPlayerPickUpItem(playerid, itemid)
-{
-	if(bPlayerGameSettings[playerid] & AdminDuty)
-		return 1;
-
-	return CallLocalFunction("duty_OnPlayerPickUpItem", "dd", playerid, itemid);
-}
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem duty_OnPlayerPickUpItem
-forward duty_OnPlayerPickUpItem(playerid, itemid);
-
-public OnPlayerGiveItem(playerid, targetid, itemid)
-{
-	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED)
-		return 1;
-
-	return CallLocalFunction("duty_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);
-}
-#if defined _ALS_OnPlayerGiveItem
-	#undef OnPlayerGiveItem
-#else
-	#define _ALS_OnPlayerGiveItem
-#endif
-#define OnPlayerGiveItem duty_OnPlayerGiveItem
-forward duty_OnPlayerGiveItem(playerid, targetid, itemid);
-
-public OnPlayerTakeFromContainer(playerid, containerid, slotid)
-{
-	if(bPlayerGameSettings[playerid] & AdminDuty)
-		return 1;
-
-	return CallLocalFunction("duty_OnPlayerTakeFromContainer", "ddd", playerid, containerid, slotid);
-}
-#if defined _ALS_OnPlayerTakeFromContainer
-	#undef OnPlayerTakeFromContainer
-#else
-	#define _ALS_OnPlayerTakeFromContainer
-#endif
-#define OnPlayerTakeFromContainer duty_OnPlayerTakeFromContainer
-forward duty_OnPlayerTakeFromContainer(playerid, containerid, slotid);
-
-public OnPlayerOpenInventory(playerid)
-{
-	if(bPlayerGameSettings[playerid] & AdminDuty)
-		return 1;
-
-	return CallLocalFunction("duty_OnPlayerOpenInventory", "d", playerid);
-}
-#if defined _ALS_OnPlayerOpenInventory
-	#undef OnPlayerOpenInventory
-#else
-	#define _ALS_OnPlayerOpenInventory
-#endif
-#define OnPlayerOpenInventory duty_OnPlayerOpenInventory
-forward duty_OnPlayerOpenInventory(playerid);
-
-public OnPlayerOpenContainer(playerid, containerid)
-{
-	if(bPlayerGameSettings[playerid] & AdminDuty)
-		return 1;
-
-	return CallLocalFunction("duty_OnPlayerOpenContainer", "dd", playerid, containerid);
-}
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer duty_OnPlayerOpenContainer
-forward duty_OnPlayerOpenContainer(playerid, containerid);
