@@ -921,6 +921,9 @@ RestartGamemode()
 
 task AutoSave[60000]()
 {
+	if(Iter_Count(Player) == 0)
+		return;
+
 	print("Autosaving...");
 
 	foreach(new i : Player)
@@ -931,13 +934,14 @@ task AutoSave[60000]()
 	defer AutoSave_Safeboxes();
 }
 
-timer AutoSave_Safeboxes[100]()
+timer AutoSave_Safeboxes[333]()
 {
 	SaveAllSafeboxes(false);
+
 	defer AutoSave_Vehicles();
 }
 
-timer AutoSave_Vehicles[100]()
+timer AutoSave_Vehicles[333]()
 {
 	for(new i; i < MAX_VEHICLES; i++)
 	{
@@ -947,6 +951,7 @@ timer AutoSave_Vehicles[100]()
 				SavePlayerVehicle(i, gVehicleOwner[i], false);
 		}
 	}
+
 	print("Autosave Complete.");
 }
 

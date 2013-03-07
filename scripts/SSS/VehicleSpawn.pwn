@@ -336,6 +336,7 @@ LoadPlayerVehicles(bool:prints = true)
 
 			if(Float:array[1] < 255.5)
 			{
+				printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[array[0]-400], item);
 				fremove(filedir);
 				continue;
 			}
@@ -441,11 +442,16 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 
 	if(!isnull(gVehicleOwner[vehicleid]))
 	{
-		format(filename, sizeof(filename), "SSS/Vehicles/%s.dat", gVehicleOwner[vehicleid]);
+		if(strcmp(gVehicleOwner[vehicleid], name, true))
+		{
+			format(filename, sizeof(filename), "SSS/Vehicles/%s.dat", gVehicleOwner[vehicleid]);
 
-		if(fexist(filename))
-			fremove(filename);
-
+			if(fexist(filename))
+			{
+				printf("[DELT] Removing vehicle: %s for player: %s", VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
+				fremove(filename);
+			}
+		}
 	}
 
 	gVehicleOwner[vehicleid] = name;
