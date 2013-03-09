@@ -49,7 +49,7 @@ hook OnGameModeInit()
 		size,
 		name[32];
 
-	DefineItemType("Flare", 354, ITEM_SIZE_SMALL);
+	DefineItemType("NULL", 0, ITEM_SIZE_SMALL);
 
 	ShiftItemTypeIndex(ItemType:1, 46);
 

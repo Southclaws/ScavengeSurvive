@@ -252,13 +252,12 @@ hook OnGameModeExit()
 		if(file)
 		{
 			fblockwrite(file, sgn_Data[i][sgn_text], MAX_SIGN_TEXT);
+			fclose(file);
 		}
 		else
 		{
 			printf("ERROR: Saving sign, filename: '%s'", filename);
 		}
-
-		fclose(file);
 	}
 	return 1;
 }

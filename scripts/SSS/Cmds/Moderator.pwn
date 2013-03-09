@@ -3,25 +3,25 @@ ACMD:kick[1](playerid, params[])
 	new
 		id,
 		reason[64],
-		highestAdminID;
+		highestadmin;
 
 	foreach(new i : Player)
 	{
-		if(pAdmin(i) > pAdmin(highestAdminID))
-			highestAdminID = i;
+		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
+			highestadmin = i;
 	}
 
 	if(sscanf(params, "ds[64]", id, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
 
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
 	if(!IsPlayerConnected(id))
 		return 4;
 
-	if(pAdmin(playerid)!=pAdmin(highestAdminID))
-		return MsgF(highestAdminID, YELLOW, " >  %P"#C_YELLOW" Is trying to kick %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
+	if(gPlayerData[playerid][ply_Admin]!=gPlayerData[highestadmin][ply_Admin])
+		return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to kick %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
 
 	if(playerid == id)
@@ -41,7 +41,7 @@ ACMD:freeze[1](playerid, params[])
 	if(sscanf(params, "dD(0)", id, delay))
 		return Msg(playerid, YELLOW, " >  Usage: /freeze [playerid] (seconds)");
 
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
 	if(!IsPlayerConnected(id))
@@ -104,7 +104,7 @@ ACMD:mute[1](playerid, params[])
 	if(!IsPlayerConnected(id))
 		return Msg(playerid,RED, " >  Invalid ID");
 
-	if(pAdmin(id) >= pAdmin(playerid))
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin])
 		return 3;
 
 	if(bPlayerGameSettings[id]&Muted)
@@ -142,7 +142,7 @@ ACMD:unmute[1](playerid, params[])
 	if(sscanf(params, "d", id))
 		return Msg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
 
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
 	if(!IsPlayerConnected(id))
@@ -165,7 +165,7 @@ ACMD:warn[1](playerid, params[])
 	if(!IsPlayerConnected(id))
 		return Msg(playerid,RED, " >  Invalid ID");
 
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
 	Warnings[id]++;

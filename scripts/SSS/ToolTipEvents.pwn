@@ -88,6 +88,10 @@ ptask ToolTipUpdate[1000](playerid)
 					else
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Use item");
 				}
+				else if(IsPlayerAtAnyVehicleTrunk(playerid))
+				{
+					AddToolTipText(playerid, KEYTEXT_INTERACT, "Open Trunk");
+				}
 				else
 				{
 					if(itemtype == item_Clothes)
@@ -141,7 +145,7 @@ ptask ToolTipUpdate[1000](playerid)
 						AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Wear");
 					}
 
-					if(itemtype == item_GasCan)
+					else if(itemtype == item_GasCan)
 					{
 						if(IsPlayerAtAnyFuelOutlet(playerid))
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "Fill fuel can");
@@ -152,7 +156,7 @@ ptask ToolTipUpdate[1000](playerid)
 				}
 
 				if(GetItemTypeSize(itemtype) == ITEM_SIZE_SMALL)
-					AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Put in inventory");
+					AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Put away");
 
 				if(inplayerarea > -1)
 					AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "Give item");
@@ -231,60 +235,3 @@ public OnPlayerOpenContainer(playerid, containerid)
 #endif
 #define OnPlayerOpenContainer tip_OnPlayerOpenContainer
 forward tip_OnPlayerOpenContainer(playerid, containerid);
-
-
-
-
-#endinput 
-
-
-item_Medkit			
-item_HardDrive		
-item_Key			
-item_FireworkBox	
-item_FireLighter	
-item_timer			
-item_explosive		
-item_timebomb		
-item_battery		
-item_fusebox		
-item_Beer			
-item_Sign			
-item_HealthRegen	
-item_ArmourRegen	
-item_FishRod		
-item_Wrench			
-item_Crowbar		
-item_Hammer			
-item_Shield			
-item_Flashlight		
-item_Taser			
-item_LaserPoint		
-item_Screwdriver	
-item_MobilePhone	
-item_Pager			
-item_Rake			
-item_HotDog			
-item_EasterEgg		
-item_Cane			
-item_HandCuffs		
-item_Bucket			
-item_GasMask		
-item_Flag			
-item_Briefcase		
-item_Backpack		
-item_Satchel		
-item_Wheel			
-item_Canister1		
-item_Canister2		
-item_Canister3		
-item_MotionSense	
-item_CapCase		
-item_CapMineBad		
-item_CapMine		
-item_Pizza			
-item_Burger			
-item_BurgerBox		
-item_Taco			
-item_GasCan			
-item_Clothes		

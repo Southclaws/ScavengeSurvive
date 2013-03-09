@@ -1,9 +1,6 @@
 #include <YSI\y_hooks>
 
 
-new IsAtVehicleBonnet[MAX_PLAYERS];
-
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(IsPlayerInAnyVehicle(playerid) || bPlayerGameSettings[playerid] & KnockedOut)
@@ -160,80 +157,106 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
-{
-	foreach(new i : gVehicleIndex)
-	{
-		if(areaid == gVehicleArea[i])
-		{
-			new
-				Float:vx,
-				Float:vy,
-				Float:vz,
-				Float:px,
-				Float:py,
-				Float:pz,
-				Float:sx,
-				Float:sy,
-				Float:sz,
-				Float:vr,
-				Float:angle;
-
-			GetVehiclePos(i, vx, vy, vz);
-			GetPlayerPos(playerid, px, py, pz);
-			GetVehicleModelInfo(GetVehicleModel(i), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
-
-			GetVehicleZAngle(i, vr);
-
-			angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
-
-			if(155.0 < angle < 205.0)
-			{
-				if(IsValidContainer(gVehicleContainer[i]))
-					ShowMsgBox(playerid, "Press ~k~~VEHICLE_ENTER_EXIT~ to open trunk", 3000, 100);
-			}
-			if(-25.0 < angle < 25.0 || 335.0 < angle < 385.0)
-			{
-				IsAtVehicleBonnet[playerid] = 1;
-			}
-		}
-	}
-
-	return CallLocalFunction("veh_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
-}
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define OnPlayerEnterDynamicArea veh_OnPlayerEnterDynamicArea
-forward veh_OnPlayerEnterDynamicArea(playerid, containerid);
-
-public OnPlayerLeaveDynamicArea(playerid, areaid)
-{
-	foreach(new i : gVehicleIndex)
-	{
-		if(areaid == gVehicleArea[i])
-		{
-			IsAtVehicleBonnet[playerid] = 0;
-		}
-	}
-	return CallLocalFunction("veh_OnPlayerLeaveDynamicArea", "dd", playerid, areaid);
-}
-#if defined _ALS_OnPlayerLeaveDynamicArea
-	#undef OnPlayerLeaveDynamicArea
-#else
-	#define _ALS_OnPlayerLeaveDynamicArea
-#endif
-#define OnPlayerLeaveDynamicArea veh_OnPlayerLeaveDynamicArea
-forward veh_OnPlayerLeaveDynamicArea(playerid, containerid);
-
-IsPlayerAtAnyVehicleBonnet(playerid)
+IsPlayerAtVehicleTrunk(playerid, vehicleid)
 {
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
-	return IsAtVehicleBonnet[playerid];
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(!IsPlayerInDynamicArea(playerid, gVehicleArea[vehicleid]))
+		return 0;
+
+	new
+		Float:vx,
+		Float:vy,
+		Float:vz,
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:sx,
+		Float:sy,
+		Float:sz,
+		Float:vr,
+		Float:angle;
+
+	GetVehiclePos(vehicleid, vx, vy, vz);
+	GetPlayerPos(playerid, px, py, pz);
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
+
+	GetVehicleZAngle(vehicleid, vr);
+
+	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
+
+	if(155.0 < angle < 205.0)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+IsPlayerAtVehicleBonnet(playerid, vehicleid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS))
+		return 0;
+
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(!IsPlayerInDynamicArea(playerid, gVehicleArea[vehicleid]))
+		return 0;
+
+	new
+		Float:vx,
+		Float:vy,
+		Float:vz,
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:sx,
+		Float:sy,
+		Float:sz,
+		Float:vr,
+		Float:angle;
+
+	GetVehiclePos(vehicleid, vx, vy, vz);
+	GetPlayerPos(playerid, px, py, pz);
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
+
+	GetVehicleZAngle(vehicleid, vr);
+
+	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
+
+	if(-25.0 < angle < 25.0 || 335.0 < angle < 385.0)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+IsPlayerAtAnyVehicleTrunk(playerid)
+{
+	foreach(new i : gVehicleIndex)
+	{
+		if(IsPlayerAtVehicleTrunk(playerid, i))
+			return 1;
+	}
+
+	return 0;
+}
+
+IsPlayerAtAnyVehicleBonnet(playerid)
+{
+	foreach(new i : gVehicleIndex)
+	{
+		if(IsPlayerAtVehicleBonnet(playerid, i))
+			return 1;
+	}
+
+	return 0;
 }
 
 public OnPlayerCloseContainer(playerid, containerid)

@@ -77,7 +77,7 @@ ACMD:goto[1](playerid, params[])
 		return 1;
 	}
 
-	if(pAdmin(targetid) > 0)
+	if(gPlayerData[targetid][ply_Admin] > 0)
 	{
 		Msg(playerid, RED, " >  You cannot teleport to another administrator.");
 		return 1;
@@ -110,7 +110,7 @@ ACMD:get[1](playerid, params[])
 		return 1;
 	}
 
-	if(pAdmin(targetid) > 0)
+	if(gPlayerData[targetid][ply_Admin] > 0)
 	{
 		Msg(playerid, RED, " >  You cannot teleport another administrator.");
 		return 1;

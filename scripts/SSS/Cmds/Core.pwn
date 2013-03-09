@@ -44,7 +44,7 @@ MsgAdmins(level, colour, string[])
 
 	    foreach(new i : Player)
 	    {
-	        if(pAdmin(i) < level)
+	        if(gPlayerData[i][ply_Admin] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -55,7 +55,7 @@ MsgAdmins(level, colour, string[])
 	{
 	    foreach(new i : Player)
 	    {
-	        if(pAdmin(i) < level)
+	        if(gPlayerData[i][ply_Admin] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -74,7 +74,7 @@ CMD:admins(playerid, params[])
 		j,
 		bool:isonline;
 
-	for(new i; i<gTotalAdmins; i++)
+	for(new i; i < gTotalAdmins; i++)
 	{
 	    isonline = false;
 		foreach(j : Player)
@@ -89,7 +89,7 @@ CMD:admins(playerid, params[])
 		{
 			format(tmpstr, 64, "%P %C(level %d - %s)\n",
 				j,
-				AdminColours[pAdmin(i)],
+				AdminColours[gPlayerData[i][ply_Admin]],
 				gAdminData[i][admin_Level],
 				AdminName[gAdminData[i][admin_Level]]);
 
@@ -120,7 +120,7 @@ SetPlayerAdminLevel(playerid, level)
 {
 	if(!(0 <= level <= 4))return 0;
 
-	pAdmin(playerid) = level;
+	gPlayerData[playerid][ply_Admin] = level;
 	if(level == 0)
 	{
 	    new bool:updated = false;
@@ -193,12 +193,12 @@ CMD:acmds(playerid, params[])
 
 	strcat(str, "/a (level) [message] - level specific admin chat channel\n\n");
 
-	if(pAdmin(playerid) >= 2)
+	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
 	    strcat(str, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
 	    strcat(str, gAdminCommandList_Lvl2);
 	}
-	if(pAdmin(playerid) >= 1)
+	if(gPlayerData[playerid][ply_Admin] >= 1)
 	{
 	    strcat(str, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
 	    strcat(str, gAdminCommandList_Lvl1);
@@ -206,7 +206,7 @@ CMD:acmds(playerid, params[])
 	
 	printf("%d", strlen(str));
 	
-	if(pAdmin(playerid) > 0)
+	if(gPlayerData[playerid][ply_Admin] > 0)
 		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", str, "Close", "");
 
 	else

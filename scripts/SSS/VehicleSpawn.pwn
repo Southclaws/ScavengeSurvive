@@ -366,18 +366,19 @@ LoadPlayerVehicles(bool:prints = true)
 					gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[array[0]-400][veh_trunkSize], .virtual = 1);
 					for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
 					{
-						if(IsValidItemType(ItemType:array[14 + i]))
+						if(!IsValidItemType(ItemType:array[14 + i]) || array[i + 14] == 0)
+							continue;
+
+						itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
+
+						if(array[14 + i + 1] == 1)
 						{
-							itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
+							if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
+								SetItemExtraData(itemid, array[14 + i + 1]);
 
-							if(array[14 + i + 1] == 1)
-							{
-								if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
-									SetItemExtraData(itemid, array[14 + i + 1]);
-
-								AddItemToContainer(gVehicleContainer[vehicleid], itemid);
-							}
+							AddItemToContainer(gVehicleContainer[vehicleid], itemid);
 						}
+
 					}
 				}
 
@@ -430,6 +431,9 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 				array[14 + i] = _:GetItemType(itemid);
 				array[14 + i + 1] = 1;
 				array[14 + i + 2] = GetItemExtraData(itemid);
+
+				if(array[14 + i] == 0)
+					return 0;
 			}
 			else
 			{

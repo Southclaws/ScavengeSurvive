@@ -10,7 +10,7 @@ ACMD:setadmin[2](playerid, params[])
 	if(playerid == id)
 		return Msg(playerid, RED, " >  You cannot set your own level");
 
-	if(pAdmin(id) >= pAdmin(playerid) && pAdmin(playerid) < 3)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && gPlayerData[playerid][ply_Admin] < 3)
 		return 3;
 
 	if(!IsPlayerConnected(id))
@@ -33,7 +33,7 @@ ACMD:setvip[2](playerid, params[])
 	if(sscanf(params, "dd", id, toggle))
 		return Msg(playerid, YELLOW, " >  Usage: /setvip [playerid]");
 
-	if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
 	if(toggle)
@@ -58,12 +58,12 @@ ACMD:ban[2](playerid, params[])
 	new
 		id = -1,
 		reason[64],
-		highestAdminID;
+		highestadmin;
 
 	foreach(new i : Player)
 	{
-		if(pAdmin(i) > pAdmin(highestAdminID))
-			highestAdminID = i;
+		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
+			highestadmin = i;
 	}
 
 	if(!sscanf(params, "dS(None)[64]", id, reason))
@@ -71,7 +71,7 @@ ACMD:ban[2](playerid, params[])
 		if(strlen(reason) > 64)
 			return Msg(playerid, RED, " >  Reason must be below 64 characters");
 
-		if(pAdmin(id) >= pAdmin(playerid) && playerid != id)
+		if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 			return 2;
 
 		if(!IsPlayerConnected(id))
@@ -80,8 +80,8 @@ ACMD:ban[2](playerid, params[])
 		if(playerid == id)
 			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-		if(pAdmin(playerid)!=pAdmin(highestAdminID))
-			return MsgF(highestAdminID, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
+		if(gPlayerData[playerid][ply_Admin]!=gPlayerData[highestadmin][ply_Admin])
+			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
 		BanPlayer(id, reason, playerid);
 

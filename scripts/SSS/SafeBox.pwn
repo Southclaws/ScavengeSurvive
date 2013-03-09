@@ -104,15 +104,15 @@ LoadSafeboxes()
 
 				for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
 				{
-					if(IsValidItemType(ItemType:data[i]))
-					{
-						itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
+					if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
+						continue;
 
-						if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
-							SetItemExtraData(itemid, data[i + 1]);
+					itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
 
-						AddItemToContainer(containerid, itemid);
-					}
+					if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
+						SetItemExtraData(itemid, data[i + 1]);
+
+					AddItemToContainer(containerid, itemid);
 				}
 			}
 		}
@@ -155,6 +155,9 @@ SaveSafeboxItem(itemid, prints = false)
 		{
 			data[i] = _:GetItemType(GetContainerSlotItem(containerid, j));
 			data[i + 1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
+
+			if(data[i] == 0)
+				return 0;
 		}
 		fblockwrite(file, data, sizeof(data));
 	}

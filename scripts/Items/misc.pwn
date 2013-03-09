@@ -41,5 +41,5 @@ new stock
 	ItemType:item_BurgerBag		= INVALID_ITEM_TYPE,
 	ItemType:item_CanDrink		= INVALID_ITEM_TYPE,
 	ItemType:item_Detergent		= INVALID_ITEM_TYPE,
-	ItemType:item_Dynamite		= INVALID_ITEM_TYPE;
-
+	ItemType:item_Dynamite		= INVALID_ITEM_TYPE,
+	ItemType:item_Flare			= INVALID_ITEM_TYPE;

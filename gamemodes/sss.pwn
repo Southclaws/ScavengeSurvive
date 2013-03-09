@@ -12,8 +12,6 @@
 ==============================================================================*/
 
 
-//=================================================================Include Files
-
 #include <a_samp>
 
 #undef MAX_PLAYERS
@@ -74,52 +72,23 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_ALIVE					"alive"
 #define ROW_SPAWN					"spawn"
 #define ROW_ISVIP					"vip"
-
 #define ROW_DATE					"date"
 #define ROW_REAS					"reason"
 #define ROW_BNBY					"by"
 
 
-// Constants
-#define SKIN_M_NORMAL				(60)
-#define SKIN_M_HERO					(133)
-#define SKIN_M_MECH					(33)
-#define SKIN_M_BANDIT				(50)
-
-#define SKIN_F_NORMAL				(192)
-#define SKIN_F_HERO					(191)
-#define SKIN_F_MECH					(298)
-#define SKIN_F_BANDIT				(131)
-
-#define RUN_VELOCITY				(20)
-#define CROUCH_VELOCITY				(20)
-
-#define MAX_RUN_ALPHA				(255)
-#define MIN_RUN_ALPHA				(100)
-#define MAX_CROUCH_ALPHA			(35)
-#define MIN_CROUCH_ALPHA			(0)
-
-
-// Functions
+// Macros
 #define t:%1<%2>					((%1)|=(%2))
 #define f:%1<%2>					((%1)&=~(%2))
 
 #define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
 #define GetFile(%0,%1)				format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
-#define RandomBounds(%1,%2)			(random((%2)-(%1))+(%1))
-#define RandomCondition(%1)			(random(100)<(%1))
-#define pAdmin(%1)					gPlayerData[%1][ply_Admin]
-
-#define KEY_RELEASED(%0)			(((newkeys&(%0))!=(%0))&&((oldkeys&(%0))==(%0)))
-#define KEY_PRESSING(%0)			(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
-#define KEY_HOLDING(%0)				((newkeys & (%0)) == (%0))
-#define KEY_AIMFIRE					(132)
 
 #define CMD:%1(%2)					forward cmd_%1(%2);\
-									public cmd_%1(%2)							// I wrote my own command processor to fit my needs!
+									public cmd_%1(%2)
 
 #define ACMD:%1[%2](%3)				forward cmd_%1_%2(%3);\
-									public cmd_%1_%2(%3)						// Admin only commands, the [parameter] in the brackets is the admin level.
+									public cmd_%1_%2(%3)
 
 // Colours
 #define YELLOW						0xFFFF00AA
@@ -181,6 +150,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_ENGINE				"~k~~CONVERSATION_YES~"
 #define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
 
+
 enum
 {
 	DRUG_TYPE_ASPIRIN,		// Remove shaky screen
@@ -226,13 +196,12 @@ new const AdminName[4][14]=
 	"Administrator",	// 2
 	"Developer"			// 3
 },
-AdminColours[5]=
+AdminColours[4]=
 {
-	0xFFFFFFFF,		// 0
-	0x5DFC0AFF,		// 1
-	0x33CCFFAA,		// 2
-	0x6600FFFF,		// 3
-	0x6600FFFF		// 4
+	0xFFFFFFFF,			// 0
+	0x5DFC0AFF,			// 1
+	0x33CCFFAA,			// 2
+	0x6600FFFF			// 3
 };
 
 
@@ -282,7 +251,8 @@ new
 	skin_IndiF;
 
 new
-	anim_Blunt;
+	anim_Blunt,
+	anim_Stab;
 
 
 enum E_WEATHER_DATA
@@ -791,29 +761,25 @@ public OnGameModeInit()
 	item_WoodDoor		= DefineItemType("Wood Panel",		3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
 	item_WoodPanel		= DefineItemType("Wood Panel",		5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 
+	item_Flare			= DefineItemType("Flare",			345,	ITEM_SIZE_SMALL);
 
-//	item_Wood			= DefineItemType("Wood",			1463,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000 ); // DYN_WOODPILE2 - wood
 
 	anim_Blunt = DefineAnimSet();
-
 	AddAnimToSet(anim_Blunt, 17, 22, 7.0);
 	AddAnimToSet(anim_Blunt, 18, 23, 9.0);
 	AddAnimToSet(anim_Blunt, 19, 24, 11.0);
-	AddAnimToSet(anim_Blunt, 20, 1150, 14.0);
 
-	SetItemAnimSet(item_Wrench, anim_Blunt);
+	anim_Stab = DefineAnimSet();
+	AddAnimToSet(anim_Stab, 751, 756, 37.8);
 
-/*
-	DefineItemDamage(item_Sign,			23.0,	anim_Attack);
-	DefineItemDamage(item_FishRod,		23.0,	anim_Attack);
-	DefineItemDamage(item_Shield,		23.0,	anim_Attack);
-	DefineItemDamage(item_Wrench,		23.0,	anim_Attack);
-	DefineItemDamage(item_Crowbar,		23.0,	anim_Attack);
-	DefineItemDamage(item_Hammer,		23.0,	anim_Attack);
-	DefineItemDamage(item_Screwdriver,	23.0,	anim_Attack);
-	DefineItemDamage(item_Cane,			23.0,	anim_Attack);
-	DefineItemDamage(item_Rake,			23.0,	anim_Attack);
-*/
+	SetItemAnimSet(item_Wrench,			anim_Blunt);
+	SetItemAnimSet(item_Crowbar,		anim_Blunt);
+	SetItemAnimSet(item_Hammer,			anim_Blunt);
+	SetItemAnimSet(item_Rake,			anim_Blunt);
+	SetItemAnimSet(item_Cane,			anim_Blunt);
+	SetItemAnimSet(item_Taser,			anim_Stab);
+	SetItemAnimSet(item_Screwdriver,	anim_Stab);
+
 
 	DefineFoodItem(item_HotDog,			30.0);
 	DefineFoodItem(item_Pizza,			60.0);
@@ -924,8 +890,6 @@ task AutoSave[60000]()
 	if(Iter_Count(Player) == 0)
 		return;
 
-	print("Autosaving...");
-
 	foreach(new i : Player)
 	{
 		SavePlayerData(i, false);
@@ -951,8 +915,6 @@ timer AutoSave_Vehicles[333]()
 				SavePlayerVehicle(i, gVehicleOwner[i], false);
 		}
 	}
-
-	print("Autosave Complete.");
 }
 
 task GameUpdate[1000]()
@@ -983,7 +945,7 @@ task GameUpdate[1000]()
 	format(str, 6, "%02d:%02d", hour, minute);
 	TextDrawSetString(ClockText, str);
 
-	if(tickcount() - gLastWeatherChange > 600000 && RandomCondition(5))
+	if(tickcount() - gLastWeatherChange > 600000 && random(100) < 5)
 	{
 		gLastWeatherChange = tickcount();
 		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
@@ -1577,13 +1539,13 @@ CreateNewUserfile(playerid, password[])
 	{
 		if(!strcmp(gPlayerName[playerid], gAdminData[idx][admin_Name]) && !isnull(gPlayerName[playerid]))
 		{
-			pAdmin(playerid) = gAdminData[idx][admin_Level];
+			gPlayerData[playerid][ply_Admin] = gAdminData[idx][admin_Level];
 			break;
 		}
 	}
 
-	if(pAdmin(playerid) > 0)
-		MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
+	if(gPlayerData[playerid][ply_Admin] > 0)
+		MsgF(playerid, BLUE, " >  Your admin level: %d", gPlayerData[playerid][ply_Admin]);
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
@@ -1602,13 +1564,13 @@ Login(playerid)
 
 		if(!strcmp(gPlayerName[playerid], gAdminData[idx][admin_Name]))
 		{
-			pAdmin(playerid) = gAdminData[idx][admin_Level];
+			gPlayerData[playerid][ply_Admin] = gAdminData[idx][admin_Level];
 			break;
 		}
 	}
 
-	if(pAdmin(playerid) > 0)
-		MsgF(playerid, BLUE, " >  Your admin level: %d", pAdmin(playerid));
+	if(gPlayerData[playerid][ply_Admin] > 0)
+		MsgF(playerid, BLUE, " >  Your admin level: %d", gPlayerData[playerid][ply_Admin]);
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	IncorrectPass[playerid]=0;
@@ -1840,7 +1802,7 @@ LoadPlayerInventory(playerid)
 
 	for(new i; i < 8; i += 2)
 	{
-		if(inventoryitems[i] == _:INVALID_ITEM_TYPE)
+		if(!IsValidItemType(ItemType:inventoryitems[i]) || inventoryitems[i] == 0)
 			continue;
 
 		itemid = CreateItem(ItemType:inventoryitems[i], 0.0, 0.0, 0.0);
@@ -1944,18 +1906,16 @@ public OnPlayerDisconnect(playerid, reason)
 
 ResetVariables(playerid)
 {
-	gPlayerHP[playerid] = 100.0;
-	gPlayerAP[playerid] = 0.0;
-	gPlayerFP[playerid] = 80.0;
+	bPlayerGameSettings[playerid]		= 0;
 
-	bPlayerGameSettings[playerid]			= 0;
-
-	pAdmin(playerid)						= 0,
-	gPlayerData[playerid][ply_Skin]			= 0,
-
-	gPlayerVehicleID[playerid]				= INVALID_VEHICLE_ID,
-	Warnings[playerid]						= 0;
-	IncorrectPass[playerid]					= 0;
+	gPlayerData[playerid][ply_Admin]	= 0,
+	gPlayerData[playerid][ply_Skin]		= 0,
+	gPlayerHP[playerid]					= 100.0;
+	gPlayerAP[playerid]					= 0.0;
+	gPlayerFP[playerid]					= 80.0;
+	gPlayerVehicleID[playerid]			= INVALID_VEHICLE_ID,
+	Warnings[playerid]					= 0;
+	IncorrectPass[playerid]				= 0;
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
@@ -2473,7 +2433,7 @@ public OnPlayerUpdate(playerid)
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
 /*
-	if(pAdmin(playerid) >= 4)
+	if(gPlayerData[playerid][ply_Admin] >= 4)
 	{
 		new str[64];
 		format(str, 64, "took %.2f~n~from %p~n~weap %d", amount, issuerid, weaponid);
@@ -2566,7 +2526,28 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	}
 	else if(type == 1)
 	{
-		hploss = anm_Anims[weaponid][anm_CurrentAnim[playerid]][anm_damage];
+		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
+		{
+			t:bPlayerGameSettings[targetid]<KnockedOut>;
+			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz, 0.0, 0.0, 0.0));
+		}
+		else
+		{
+			hploss = anm_Anims[weaponid][anm_CurrentAnim[targetid]][anm_damage];
+		}
+
+		if(weaponid == anim_Blunt)
+		{
+			if(random(100) < 30)
+				t:bPlayerGameSettings[targetid]<KnockedOut>;
+
+			if(random(100) < 50)
+				t:bPlayerGameSettings[targetid]<Bleeding>;
+		}
+		if(weaponid == anim_Stab)
+		{
+			t:bPlayerGameSettings[targetid]<Bleeding>;
+		}
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
@@ -2619,7 +2600,7 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	GivePlayerHP(targetid, -hploss, weaponid);
 	ShowHitMarker(playerid, weaponid);
 
-	if(pAdmin(playerid) >= 3)
+	if(gPlayerData[playerid][ply_Admin] >= 3)
 	{
 		new str[32];
 		format(str, 32, "did %.2f", hploss);
@@ -2627,6 +2608,10 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	}
 	
 	return 1;
+}
+timer DestroyDynamicObject_Delay[1000](objectid)
+{
+	DestroyDynamicObject(objectid);
 }
 GivePlayerHP(playerid, Float:hp, weaponid = 54, msg = true)
 {
@@ -3201,7 +3186,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	if(funcidx(cmdfunction) == -1) // If it doesn't exist, all hope is not lost! It might be defined as an admin command which has the admin level after the command name
 	{
 		new
-			iLvl = pAdmin(playerid), // The player's admin level
+			iLvl = gPlayerData[playerid][ply_Admin], // The player's admin level
 			iLoop = 4; // The highest admin level
 
 		while(iLoop > 0) // Loop backwards through admin levels, from 4 to 1

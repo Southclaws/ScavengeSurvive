@@ -96,7 +96,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					lib[32],
 					anim[32];
 
-				if(anm_CurrentAnim[playerid] >= anm_Data[anm_MeleeItems[i][anm_animSet]][anm_anims])
+				if(anm_CurrentAnim[playerid] >= anm_Data[anm_MeleeItems[i][anm_animSet]][anm_anims] || tickcount() - anm_AttackTick[playerid] > 1000)
 					anm_CurrentAnim[playerid] = 0;
 
 				GetAnimationName(anm_Anims[anm_MeleeItems[i][anm_animSet]][anm_CurrentAnim[playerid]][anm_attackIdx], lib, 32, anim, 32);
@@ -127,8 +127,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						GetPlayerFacingAngle(playerid, pa);
 						angle = absoluteangle(pa - GetAngleToPoint(px, py, ix, iy));
-
-						printf("Angle: %f", angle);
 
 						if(angle > 315.0 || angle < 45.0)
 						{
