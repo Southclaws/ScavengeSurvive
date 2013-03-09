@@ -2615,7 +2615,7 @@ timer DestroyDynamicObject_Delay[1000](objectid)
 }
 GivePlayerHP(playerid, Float:hp, weaponid = 54, msg = true)
 {
-	if(gPlayerAP[playerid] > 0.0)
+	if(gPlayerAP[playerid] > 0.0 && hp < 0.0)
 	{
 		switch(weaponid)
 		{
