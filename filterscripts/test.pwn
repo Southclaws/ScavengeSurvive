@@ -5,6 +5,21 @@
 #include <YSI\y_timers>
 
 
+public OnFilterScriptInit()
+{
+	new
+		File:file,
+		data[3];
+
+	data[0] = _:0.0;
+	data[1] = _:0.0;
+	data[2] = _:4.0;
+
+	file = fopen("test.dat", io_write);
+	fblockwrite(file, data, 3);
+	fclose(file);
+}
+
 CMD:carry(playerid, params[])
 {
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
@@ -277,3 +292,5 @@ ACMD:armourcar[3](playerid, params[])
 
 	return 1;
 }
+
+

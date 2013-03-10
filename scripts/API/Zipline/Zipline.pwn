@@ -273,3 +273,15 @@ timer ZiplineUpdate[50](playerid)
 	return 1;
 }
 
+
+
+stock IsPlayerOnZipline(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(zip_currentZipline[playerid] == -1)
+		return 0;
+
+	return 1;
+}

@@ -25,6 +25,8 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 
+#include "../scripts/SSS/MovementDetection.pwn"
+
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -848,7 +850,7 @@ public OnGameModeInit()
 }
 public OnGameModeExit()
 {
-	SaveAllSafeboxes();
+	SaveAllSafeboxes(true);
 	UnloadVehicles();
 
 	db_close(gAccounts);
@@ -865,7 +867,7 @@ RestartGamemode()
 {
 	foreach(new i : Player)
 	{
-		SavePlayerData(i);
+		SavePlayerData(i, true);
 		ResetVariables(i);
 	}
 
@@ -949,7 +951,6 @@ task GameUpdate[1000]()
 	{
 		gLastWeatherChange = tickcount();
 		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
-		weather = WeatherData[gWeatherID][weather_id];
 	}
 
 	foreach(new i : Player)
@@ -971,6 +972,10 @@ task GameUpdate[1000]()
 
 			if(tickcount() - GetPlayerDrugUseTick(i, DRUG_TYPE_HEROINE) > 120000)
 				RemoveDrug(i, DRUG_TYPE_HEROINE);
+		}
+		else
+		{
+			weather = WeatherData[gWeatherID][weather_id];
 		}
 
 		SetPlayerTime(i, hour, minute);

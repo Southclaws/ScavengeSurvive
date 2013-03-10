@@ -1,6 +1,6 @@
 forward Float:GetDistancePointLine(Float:line_x,Float:line_y,Float:line_z,Float:vector_x,Float:vector_y,Float:vector_z,Float:point_x,Float:point_y,Float:point_z);
-forward Float:GetDist3D(Float:x, Float:y, Float:z, Float:x2, Float:y2, Float:z2);
-forward Float:GetDist2D(Float:x, Float:y, Float:x2, Float:y2);
+forward Float:Distance(Float:x1, Float:y1, Float:z1, Float:x2, Float:y2, Float:z2);
+forward Float:Distance2D(Float:x1, Float:y1, Float:x2, Float:y2);
 forward Float:absoluteangle(Float:angle);
 
 /*
