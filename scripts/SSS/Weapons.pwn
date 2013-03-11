@@ -418,3 +418,46 @@ IsPlayerIdle(playerid)
 	}
 	return 0;
 }
+
+public OnPlayerAddToInventory(playerid, itemid)
+{
+	if(0 <= _:GetItemType(itemid) <= WEAPON_PARACHUTE)
+	{
+		UpdateWeaponItemNameExtra(itemid);
+	}
+
+	return CallLocalFunction("wep_OnPlayerAddToInventory", "dd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerAddToInventory
+	#undef OnPlayerAddToInventory
+#else
+	#define _ALS_OnPlayerAddToInventory
+#endif
+#define OnPlayerAddToInventory wep_OnPlayerAddToInventory
+forward wep_OnPlayerAddToInventory(playerid, itemid);
+
+public OnItemAddToContainer(containerid, itemid, playerid)
+{
+	new weaponid = _:GetItemType(itemid);
+	if(0 <= weaponid <= WEAPON_PARACHUTE)
+	{
+		if(GetWeaponMagSize(weaponid) > 1)
+			UpdateWeaponItemNameExtra(itemid);
+	}
+
+	return CallLocalFunction("wep_OnItemAddToContainer", "ddd", containerid, itemid, playerid);
+}
+#if defined _ALS_OnItemAddToContainer
+	#undef OnItemAddToContainer
+#else
+	#define _ALS_OnItemAddToContainer
+#endif
+#define OnItemAddToContainer wep_OnItemAddToContainer
+forward wep_OnItemAddToContainer(containerid, itemid, playerid);
+
+UpdateWeaponItemNameExtra(itemid)
+{
+	new exname[5];
+	valstr(exname, GetItemExtraData(itemid));
+	SetItemNameExtra(itemid, exname);
+}

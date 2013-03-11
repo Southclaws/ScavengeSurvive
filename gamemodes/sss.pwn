@@ -172,19 +172,20 @@ enum
 {
 	d_NULL,
 
+// Internal Dialogs
 	d_Login,
 	d_Register,
 	d_WelcomeMessage,
 
-	d_Stats,
+// External Dialogs
+	d_NotebookPage,
+	d_NotebookEdit,
+	d_NotebookError,
 	d_SignEdit,
 	d_Tires,
 	d_Lights,
 	d_Radio,
-
-	d_NotebookPage,
-	d_NotebookEdit,
-	d_NotebookError
+	d_GraveStone
 }
 
 
@@ -442,6 +443,7 @@ forward SetRestart(seconds);
 //======================Hooks
 
 #include "../scripts/SSS/DisallowActions.pwn"
+#include "../scripts/SSS/DataCollection.pwn"
 
 //======================API Scripts
 
@@ -508,6 +510,8 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Defenses.pwn"
 #include "../scripts/SSS/Drugs.pwn"
 #include "../scripts/SSS/MeleeItems.pwn"
+#include "../scripts/SSS/KnockOut.pwn"
+#include "../scripts/SSS/GraveStone.pwn"
 
 #include "../scripts/SSS/Tutorial.pwn"
 #include "../scripts/SSS/WelcomeMessage.pwn"
@@ -731,7 +735,7 @@ public OnGameModeInit()
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
-	item_Torso			= DefineItemType("Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
+	item_Torso			= DefineItemType("Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
 	item_LongPlank		= DefineItemType("Plank",			2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
 	item_GreenGloop		= DefineItemType("Unknown",			2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105);
 	item_Capsule		= DefineItemType("Capsule",			3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777);
@@ -1104,16 +1108,7 @@ ptask PlayerUpdate[100](playerid)
 					{
 						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
 						{
-							HidePlayerProgressBar(playerid, KnockoutBar);
-
-							if(IsPlayerInAnyVehicle(playerid))
-								ClearAnimations(playerid);
-
-							else
-								ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
-
-							gPlayerKnockOutTick[playerid] = tickcount();
-							f:bPlayerGameSettings[playerid]<KnockedOut>;
+							WakeUpPlayer(playerid);
 						}
 					}
 				}
@@ -1121,20 +1116,9 @@ ptask PlayerUpdate[100](playerid)
 				{
 					if(tickcount() - gPlayerKnockOutTick[playerid] > 2000 * gPlayerHP[playerid])
 					{
-						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
+						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2) || bPlayerGameSettings[playerid] & KnockedOut)
 						{
-							SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - gPlayerKnockOutTick[playerid]);
-							SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
-							ShowPlayerProgressBar(playerid, KnockoutBar);
-
-							if(IsPlayerInAnyVehicle(playerid))
-								ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
-
-							else
-								ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
-
-							gPlayerKnockOutTick[playerid] = tickcount();
-							t:bPlayerGameSettings[playerid]<KnockedOut>;
+							KnockOutPlayer(playerid);
 						}
 						else
 						{
@@ -1158,9 +1142,6 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
-		if(gPlayerHP[playerid] < 0.0)
-			RemoveDrug(playerid, DRUG_TYPE_AIR);
-
 		SetPlayerDrunkLevel(playerid, 100000);
 
 		if(random(100) < 50)
@@ -2280,6 +2261,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 	if(!(bPlayerGameSettings[playerid] & Alive))
 		return 0;
 
+	new deathreason[256];
+
 	t:bPlayerGameSettings[playerid]<Dying>;
 	f:bPlayerGameSettings[playerid]<Spawned>;
 	f:bPlayerGameSettings[playerid]<AdminDuty>;
@@ -2302,6 +2285,61 @@ public OnPlayerDeath(playerid, killerid, reason)
 	DropItems(playerid);
 	SpawnPlayer(playerid);
 
+	RemoveDrug(playerid, DRUG_TYPE_AIR);
+
+	if(IsPlayerConnected(killerid))
+	{
+		switch(reason)
+		{
+			case 0..3, 5..7, 10..15:
+				deathreason = "They were beaten to death.";
+
+			case 16, 39, 35, 36, 255:
+				deathreason = "They suffered massive concussion due to an explosion.";
+
+			case 18, 37:
+				deathreason = "The entire body is charred and burnt.";
+
+			case 22..34, 38:
+				deathreason = "They died of blood loss.";
+
+			case 41, 42:
+				deathreason = "They were sprayed and suffocated by a high pressure liquid.";
+
+			case 44, 45:
+				deathreason = "Somehow, they were killed by goggles.";
+
+			case 43:
+				deathreason = "Somehow, they were killed by a camera.";
+
+			default:
+				deathreason = "They died for an unknown reason.";
+
+		}
+	}
+	else
+	{
+		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+		{
+			deathreason = "They died of air embolism (injecting oxygen into their bloodsteam).";
+		}
+		else
+		{
+			switch(reason)
+			{
+				case 53:
+					deathreason = "They drowned.";	
+
+				case 54:
+					deathreason = "Most bones are broken, looks like they fell from a great height.";	
+			}
+		}
+	}
+
+	printf("Death Reason: %d", reason);
+
+	CreateGravestone(playerid, deathreason, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, gPlayerDeathPos[playerid][3]);
+
 	return 1;
 }
 
@@ -2316,7 +2354,7 @@ DropItems(playerid)
 		itemid = CreateItemInWorld(GetPlayerItem(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 		RemoveCurrentItem(playerid);
 	}
@@ -2325,7 +2363,7 @@ DropItems(playerid)
 		itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 		SetItemExtraData(itemid, GetPlayerAmmo(playerid));
 	}
@@ -2335,7 +2373,7 @@ DropItems(playerid)
 		itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(15.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(15.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 		SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
 
@@ -2353,7 +2391,7 @@ DropItems(playerid)
 		CreateItemInWorld(itemid,
 			gPlayerDeathPos[playerid][0] + floatsin(45.0 + (90.0 * float(i)), degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(45.0 + (90.0 * float(i)), degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 	}
 
 	if(IsValidItem(backpackitem))
@@ -2363,7 +2401,7 @@ DropItems(playerid)
 		SetItemPos(backpackitem,
 			gPlayerDeathPos[playerid][0] + floatsin(180.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(180.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 		SetItemRot(backpackitem, 0.0, 0.0, 0.0, true);
 	}
@@ -2371,7 +2409,7 @@ DropItems(playerid)
 	itemid = CreateItem(item_Clothes,
 		gPlayerDeathPos[playerid][0] + floatsin(90.0, degrees),
 		gPlayerDeathPos[playerid][1] + floatcos(90.0, degrees),
-		gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+		gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 	SetItemExtraData(itemid, GetPlayerClothes(playerid));
 
@@ -2380,7 +2418,7 @@ DropItems(playerid)
 		CreateItem(GetItemTypeFromHat(GetPlayerHat(playerid)),
 			gPlayerDeathPos[playerid][0] + floatsin(270.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(270.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = FLOOR_OFFSET);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 
 		RemovePlayerHat(playerid);
 	}
@@ -2533,8 +2571,8 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
 		{
-			t:bPlayerGameSettings[targetid]<KnockedOut>;
-			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz, 0.0, 0.0, 0.0));
+			KnockOutPlayer(targetid);
+			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0));
 		}
 		else
 		{
@@ -3756,9 +3794,8 @@ PreloadPlayerAnims(playerid)
 	PreloadAnimLib(playerid, "RUNNINGMAN");
 }
 
-stock CancelPlayerMovement(playerid, from = -1)
+stock CancelPlayerMovement(playerid)
 {
-	printf("Canceled movement from %d", from);
 	new
 		Float:x,
 		Float:y,

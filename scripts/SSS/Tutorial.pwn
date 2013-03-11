@@ -88,29 +88,32 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 #define OnPlayerViewContainerOpt tut_OnPlayerViewContainerOpt
 forward tut_OnPlayerViewContainerOpt(playerid, containerid);
 
-public OnPlayerTakeFromContainer(playerid, containerid, slotid)
+public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(IsPlayerConnected(playerid))
 	{
-		if(TutorialState[playerid] == 4)
+		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
 		{
-			if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Medkit)
+			if(TutorialState[playerid] == 4)
 			{
-				ShowHelpTip(playerid, "Great! Now you can shoot hostile players, but what if you're feeling friendly? Press N to drop your current item or weapon.");
-				TutorialState[playerid] = 5;
+				if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Medkit)
+				{
+					ShowHelpTip(playerid, "Great! Now you can heal yourself or other players. Press N to drop/give your current item or weapon.");
+					TutorialState[playerid] = 5;
+				}
 			}
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerTakeFromContainer", "dd", playerid, slotid);
+	return CallLocalFunction("tut_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
 }
-#if defined _ALS_OnPlayerTakeFromContainer
-	#undef OnPlayerTakeFromContainer
+#if defined _ALS_OnItemRemoveFromContainer
+	#undef OnItemRemoveFromContainer
 #else
-	#define _ALS_OnPlayerTakeFromContainer
+	#define _ALS_OnItemRemoveFromContainer
 #endif
-#define OnPlayerTakeFromContainer tut_OnPlayerTakeFromContainer
-forward tut_OnPlayerTakeFromContainer(playerid, containerid, slotid);
+#define OnItemRemoveFromContainer tut_OnItemRemoveFromContainer
+forward tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 public OnPlayerDropItem(playerid, itemid)
 {
@@ -190,26 +193,29 @@ public OnPlayerViewInventoryOpt(playerid)
 #define OnPlayerViewInventoryOpt tut_OnPlayerViewInventoryOpt
 forward OnPlayerViewInventoryOpt(playerid);
 
-public OnPlayerAddToContainer(playerid, containerid, itemid)
+public OnItemAddToContainer(containerid, itemid, playerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(IsPlayerConnected(playerid))
 	{
-		if(TutorialState[playerid] == 10)
+		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
 		{
-			ShowHelpTip(playerid, "This works both ways, in your bag item options \"Move to inventory\" moves an item from your bag to your inventory.");
-			TutorialState[playerid] = 11;
+			if(TutorialState[playerid] == 10)
+			{
+				ShowHelpTip(playerid, "This works both ways, in your bag item options \"Move to inventory\" moves an item from your bag to your inventory.");
+				TutorialState[playerid] = 11;
+			}
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerAddToContainer", "dd", playerid, itemid);
+	return CallLocalFunction("tut_OnItemAddToContainer", "ddd", containerid, itemid, playerid);
 }
-#if defined _ALS_OnPlayerAddToContainer
-	#undef OnPlayerAddToContainer
+#if defined _ALS_OnItemAddToContainer
+	#undef OnItemAddToContainer
 #else
-	#define _ALS_OnPlayerAddToContainer
+	#define _ALS_OnItemAddToContainer
 #endif
-#define OnPlayerAddToContainer tut_OnPlayerAddToContainer
-forward tut_OnPlayerAddToContainer(playerid, itemid);
+#define OnItemAddToContainer tut_OnItemAddToContainer
+forward tut_OnItemAddToContainer(containerid, itemid, playerid);
 
 public OnPlayerCloseContainer(playerid, containerid)
 {

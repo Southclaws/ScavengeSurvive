@@ -622,9 +622,9 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 }
 
-public OnPlayerAddedToContainer(playerid, containerid, itemid)
+public OnItemAddedToContainer(containerid, itemid, playerid)
 {
-	if(0 <= playerid < MAX_PLAYERS)
+	if(IsPlayerConnected(playerid))
 	{
 		if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
 		{
@@ -635,38 +635,41 @@ public OnPlayerAddedToContainer(playerid, containerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("veh_OnPlayerAddedToContainer", "dd", playerid, containerid, itemid);
+	return CallLocalFunction("veh_OnItemAddedToContainer", "ddd", containerid, itemid, playerid);
 }
-#if defined _ALS_OnPlayerAddedToContainer
-	#undef OnPlayerAddedToContainer
+#if defined _ALS_OnItemAddedToContainer
+	#undef OnItemAddedToContainer
 #else
-	#define _ALS_OnPlayerAddedToContainer
+	#define _ALS_OnItemAddedToContainer
 #endif
-#define OnPlayerAddedToContainer veh_OnPlayerAddedToContainer
-forward veh_OnPlayerAddedToContainer(playerid, containerid, itemid);
+#define OnItemAddedToContainer veh_OnItemAddedToContainer
+forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
 
-public OnPlayerTakenFromContainer(playerid, containerid, slotid)
+public OnItemRemovedFromContainer(containerid, slotid, playerid)
 {
-	if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
+	if(IsPlayerConnected(playerid))
 	{
 		if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
 		{
-			if(!isnull(gVehicleOwner[gCurrentContainerVehicle[playerid]]) && !strcmp(gVehicleOwner[gCurrentContainerVehicle[playerid]], gPlayerName[playerid]))
+			if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
 			{
-				SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid], true);
+				if(!isnull(gVehicleOwner[gCurrentContainerVehicle[playerid]]) && !strcmp(gVehicleOwner[gCurrentContainerVehicle[playerid]], gPlayerName[playerid]))
+				{
+					SavePlayerVehicle(gCurrentContainerVehicle[playerid], gPlayerName[playerid], true);
+				}
 			}
 		}
 	}
 
-	return CallLocalFunction("veh_OnPlayerTakenFromContainer", "ddd", playerid, containerid, slotid);
+	return CallLocalFunction("veh_OnItemRemovedFromContainer", "ddd", containerid, slotid, playerid);
 }
-#if defined _ALS_OnPlayerTakenFromContainer
-	#undef OnPlayerTakenFromContainer
+#if defined _ALS_OnItemRemovedFromContainer
+	#undef OnItemRemovedFromContainer
 #else
-	#define _ALS_OnPlayerTakenFromContainer
+	#define _ALS_OnItemRemovedFromContainer
 #endif
-#define OnPlayerTakenFromContainer veh_OnPlayerTakenFromContainer
-forward veh_OnPlayerTakenFromContainer(playerid, containerid, slotid);
+#define OnItemRemovedFromContainer veh_OnItemRemovedFromContainer
+forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
 
 
 IsPlayerInVehicleArea(playerid, vehicleid)

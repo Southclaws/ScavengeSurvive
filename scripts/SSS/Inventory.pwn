@@ -257,22 +257,25 @@ public OnPlayerCloseContainer(playerid, containerid)
 #define OnPlayerCloseContainer app_OnPlayerCloseContainer
 forward app_OnPlayerCloseContainer(playerid, containerid);
 
-public OnPlayerTakeFromContainer(playerid, containerid, slotid)
+public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(IsPlayerConnected(playerid))
 	{
-		UpdatePlayerGear(playerid);
+		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+		{
+			UpdatePlayerGear(playerid);
+		}
 	}
 
-	return CallLocalFunction("app_OnPlayerTakeFromContainer", "ddd", playerid, containerid, slotid);
+	return CallLocalFunction("app_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
 }
-#if defined _ALS_OnPlayerTakeFromContainer
-	#undef OnPlayerTakeFromContainer
+#if defined _ALS_OnItemRemoveFromContainer
+	#undef OnItemRemoveFromContainer
 #else
-	#define _ALS_OnPlayerTakeFromContainer
+	#define _ALS_OnItemRemoveFromContainer
 #endif
-#define OnPlayerTakeFromContainer app_OnPlayerTakeFromContainer
-forward app_OnPlayerTakeFromContainer(playerid, containerid, slotid);
+#define OnItemRemoveFromContainer app_OnItemRemoveFromContainer
+forward app_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 public OnPlayerRemoveFromInventory(playerid, slotid)
 {
@@ -342,7 +345,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				RemovePlayerHat(playerid);
 
 				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-				AddItemToContainer(containerid, itemid);
+				AddItemToContainer(containerid, itemid, playerid);
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
@@ -380,7 +383,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					return 1;
 				}
 
-				AddItemToContainer(containerid, itemid);
+				AddItemToContainer(containerid, itemid, playerid);
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
@@ -425,7 +428,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 
 				SetItemExtraData(itemid, GetPlayerAmmo(playerid));
-				AddItemToContainer(containerid, itemid);
+				AddItemToContainer(containerid, itemid, playerid);
 				RemovePlayerWeapon(playerid, _:gPlayerArmedWeapon[playerid]);
 				gPlayerArmedWeapon[playerid] = 0;
 
@@ -516,7 +519,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				new itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid), 0.0, 0.0, 0.0);
 
 				SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
-				AddItemToContainer(containerid, itemid);
+				AddItemToContainer(containerid, itemid, playerid);
 				RemoveHolsterWeapon(playerid);
 
 				UpdatePlayerGear(playerid);

@@ -28,20 +28,23 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 #define OnPlayerGiveItem dis_OnPlayerGiveItem
 forward dis_OnPlayerGiveItem(playerid, targetid, itemid);
 
-public OnPlayerTakeFromContainer(playerid, containerid, slotid)
+public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
-		return 1;
+	if(IsPlayerConnected(playerid))
+	{
+		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+			return 1;
+	}
 
-	return CallLocalFunction("dis_OnPlayerTakeFromContainer", "ddd", playerid, containerid, slotid);
+	return CallLocalFunction("dis_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
 }
-#if defined _ALS_OnPlayerTakeFromContainer
-	#undef OnPlayerTakeFromContainer
+#if defined _ALS_OnItemRemoveFromContainer
+	#undef OnItemRemoveFromContainer
 #else
-	#define _ALS_OnPlayerTakeFromContainer
+	#define _ALS_OnItemRemoveFromContainer
 #endif
-#define OnPlayerTakeFromContainer dis_OnPlayerTakeFromContainer
-forward dis_OnPlayerTakeFromContainer(playerid, containerid, slotid);
+#define OnItemRemoveFromContainer dis_OnItemRemoveFromContainer
+forward dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 public OnPlayerOpenInventory(playerid)
 {

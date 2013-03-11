@@ -317,7 +317,7 @@ timer box_PickUp[250](playerid, itemid)
 	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
 		return;
 
-	PlayerPickUpItem(playerid, itemid, 0);
+	PlayerPickUpItem(playerid, itemid);
 
 	new
 		Float:x,
