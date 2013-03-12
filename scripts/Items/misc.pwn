@@ -16,6 +16,7 @@ new stock
 	ItemType:item_GasMask		= INVALID_ITEM_TYPE, // anti poison gas? (need poison gass wep/item!)
 	ItemType:item_Flag			= INVALID_ITEM_TYPE, // marking territory
 	ItemType:item_CapCase		= INVALID_ITEM_TYPE, // For encasing motion sensor mines
+	ItemType:item_CapMine		= INVALID_ITEM_TYPE,
 	ItemType:item_MotionSense	= INVALID_ITEM_TYPE, // Used to create mines
 	ItemType:item_Clothes		= INVALID_ITEM_TYPE,
 	ItemType:item_Pizza			= INVALID_ITEM_TYPE,

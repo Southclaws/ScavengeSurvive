@@ -4,6 +4,7 @@
 new
 	ItemType:item_Backpack = INVALID_ITEM_TYPE,
 	ItemType:item_Satchel = INVALID_ITEM_TYPE,
+	ItemType:item_ParaBag = INVALID_ITEM_TYPE,
 	gPlayerBackpack[MAX_PLAYERS],
 	bag_InventoryOptionID[MAX_PLAYERS],
 	bool:gTakingOffBag[MAX_PLAYERS];
@@ -26,6 +27,12 @@ stock GivePlayerBackpack(playerid, itemid)
 		RemoveItemFromWorld(itemid);
 	}
 	else if(GetItemType(itemid) == item_Satchel)
+	{
+		gPlayerBackpack[playerid] = itemid;
+		SetPlayerAttachedObject(playerid, 1, 363, 1, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+		RemoveItemFromWorld(itemid);
+	}
+	else if(GetItemType(itemid) == item_ParaBag)
 	{
 		gPlayerBackpack[playerid] = itemid;
 		SetPlayerAttachedObject(playerid, 1, 363, 1, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
@@ -82,6 +89,11 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, CreateContainer("Small Bag", 4, .virtual = 1, .max_med = 2, .max_large = 1, .max_carry = 0));
 		Iter_Add(bag_Index, itemid);
 	}
+	if(GetItemType(itemid) == item_ParaBag)
+	{
+		SetItemExtraData(itemid, CreateContainer("Parachute Bag", 6, .virtual = 1, .max_med = 4, .max_large = 2, .max_carry = 0));
+		Iter_Add(bag_Index, itemid);
+	}
 
 	return CallLocalFunction("bag_OnItemCreate", "d", itemid);
 }
@@ -97,7 +109,7 @@ public OnItemDestroy(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(itemtype == item_Satchel || itemtype == item_Backpack)
+	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
 		new containerid = GetItemExtraData(itemid);
 
@@ -122,7 +134,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(itemtype == item_Satchel || itemtype == item_Backpack)
+	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
 		return 1;
 	}
@@ -139,7 +151,9 @@ forward bag_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel)
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(itemtype == item_Backpack || itemtype == item_Satchel || itemtype == item_ParaBag)
 	{
 		CancelPlayerMovement(playerid);
 		DisplayContainerInventory(playerid, GetItemExtraData(itemid));
@@ -210,7 +224,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			new itemid = GetPlayerItem(playerid);
 
-			if(GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_Backpack)
+			if(GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_ParaBag)
 				GivePlayerBackpack(playerid, itemid);
 		}
 	}
@@ -287,7 +301,7 @@ forward bag_OnPlayerCloseContainer(playerid, containerid);
 
 public OnPlayerDropItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel)
+	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_ParaBag)
 	{
 		if(gTakingOffBag[playerid])
 		{
@@ -308,7 +322,7 @@ forward bag_OnPlayerDropItem(playerid, itemid);
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel)
+	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_ParaBag)
 	{
 		if(gTakingOffBag[playerid])
 		{

@@ -8,11 +8,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys == 16)
 	{
-		new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
-
-		if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_Briefcase)
-			return 1;
-
 		foreach(new i : gVehicleIndex)
 		{
 			if(IsPlayerInDynamicArea(playerid, gVehicleArea[i]))

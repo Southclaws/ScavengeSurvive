@@ -461,16 +461,13 @@ forward SetRestart(seconds);
 
 #include "../scripts/Items/misc.pwn"
 #include "../scripts/Items/firework.pwn"
-#include "../scripts/Items/medkit.pwn"
 #include "../scripts/Items/beer.pwn"
 #include "../scripts/Items/timebomb.pwn"
 #include "../scripts/Items/Sign.pwn"
-#include "../scripts/Items/briefcase.pwn"
 #include "../scripts/Items/backpack.pwn"
 #include "../scripts/Items/repair.pwn"
 #include "../scripts/Items/shield.pwn"
 #include "../scripts/Items/handcuffs.pwn"
-#include "../scripts/Items/capmine.pwn"
 #include "../scripts/Items/wheel.pwn"
 #include "../scripts/Items/gascan.pwn"
 #include "../scripts/Items/flashlight.pwn"
@@ -483,7 +480,9 @@ forward SetRestart(seconds);
 #include "../scripts/Items/armour.pwn"
 #include "../scripts/Items/defenses.pwn"
 #include "../scripts/Items/injector.pwn"
-#include "../scripts/Items/bandage.pwn"
+#include "../scripts/Items/medical.pwn"
+#include "../scripts/Items/phonebomb.pwn"
+#include "../scripts/Items/motionmine.pwn"
 
 //======================Data Load and Setup
 
@@ -682,7 +681,7 @@ public OnGameModeInit()
 	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",			327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_timer			= DefineItemType("Timer Device",	19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
 	item_fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
@@ -712,13 +711,13 @@ public OnGameModeInit()
 	item_GasMask		= DefineItemType("Gas Mask",		19472,	ITEM_SIZE_SMALL,	180.0, 0.0, 0.0,		0.0,	0.062216, 0.055396, 0.001138, 90.000000, 0.000000, 180.000000);
 	item_Flag			= DefineItemType("Flag",			2993,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
 
-	item_Briefcase		= DefineItemType("Briefcase",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
+	item_DoctorBag		= DefineItemType("Doctor's Bag",	1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
 	item_Backpack		= DefineItemType("Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
 	item_Satchel		= DefineItemType("Small Bag",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
 	item_MotionSense	= DefineItemType("Motion Sensor",	327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_CapCase		= DefineItemType("Cap Case",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
-	item_CapMineBad		= DefineItemType("Bad Cap Mine",	1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
+	item_MotionMine		= DefineItemType("Motion Mine",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_CapMine		= DefineItemType("Cap Mine",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
 	item_Pizza			= DefineItemType("Pizza",			1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
 	item_Burger			= DefineItemType("Burger",			2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
@@ -768,6 +767,8 @@ public OnGameModeInit()
 	item_WoodPanel		= DefineItemType("Wood Panel",		5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 
 	item_Flare			= DefineItemType("Flare",			345,	ITEM_SIZE_SMALL);
+	item_PhoneBomb		= DefineItemType("Phone Bomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	0.0, 90.0, 0.0);
 
 
 	anim_Blunt = DefineAnimSet();
@@ -795,9 +796,11 @@ public OnGameModeInit()
 	DefineFoodItem(item_BurgerBag,		45.0);
 
 
-	DefineItemCombo(item_timer, item_explosive, item_timebomb);
-	DefineItemCombo(item_explosive, item_MotionSense, item_CapMineBad);
-	DefineItemCombo(item_CapMineBad, item_CapCase, item_CapMine);
+	DefineItemCombo(item_timer,					item_explosive,		item_timebomb);
+	DefineItemCombo(item_explosive,				item_MotionSense,	item_MotionMine);
+	DefineItemCombo(item_Medkit,				item_Bandage,		item_DoctorBag);
+	DefineItemCombo(item_MobilePhone,			item_explosive,		item_PhoneBomb);
+	DefineItemCombo(ItemType:WEAPON_PARACHUTE,	ItemType:4,			item_ParaBag,		.returnitem2 = 1);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -843,6 +846,7 @@ public OnGameModeInit()
 	LoadVehicles();
 	LoadTextDraws();
 	LoadSafeboxes();
+	LoadDefenses();
 
 
 	for(new i; i < MAX_PLAYERS; i++)
@@ -856,6 +860,7 @@ public OnGameModeExit()
 {
 	SaveAllSafeboxes(true);
 	UnloadVehicles();
+	SaveAllDefenses();
 
 	db_close(gAccounts);
 
@@ -904,14 +909,14 @@ task AutoSave[60000]()
 	defer AutoSave_Safeboxes();
 }
 
-timer AutoSave_Safeboxes[333]()
+timer AutoSave_Safeboxes[250]()
 {
 	SaveAllSafeboxes(false);
 
 	defer AutoSave_Vehicles();
 }
 
-timer AutoSave_Vehicles[333]()
+timer AutoSave_Vehicles[250]()
 {
 	for(new i; i < MAX_VEHICLES; i++)
 	{
@@ -921,7 +926,14 @@ timer AutoSave_Vehicles[333]()
 				SavePlayerVehicle(i, gVehicleOwner[i], false);
 		}
 	}
+	defer AutoSave_Defenses();
 }
+
+timer AutoSave_Defenses[250]()
+{
+	SaveAllDefenses();
+}
+
 
 task GameUpdate[1000]()
 {
@@ -2285,8 +2297,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 	DropItems(playerid);
 	SpawnPlayer(playerid);
 
-	RemoveDrug(playerid, DRUG_TYPE_AIR);
-
 	if(IsPlayerConnected(killerid))
 	{
 		switch(reason)
@@ -2328,17 +2338,23 @@ public OnPlayerDeath(playerid, killerid, reason)
 			switch(reason)
 			{
 				case 53:
-					deathreason = "They drowned.";	
+					deathreason = "They drowned.";
 
 				case 54:
-					deathreason = "Most bones are broken, looks like they fell from a great height.";	
+					deathreason = "Most bones are broken, looks like they fell from a great height.";
+
+				case 255:
+					deathreason = "They suffered massive concussion due to an explosion.";
+
+				default:
+				deathreason = "They died for an unknown reason.";
 			}
 		}
 	}
 
-	printf("Death Reason: %d", reason);
-
 	CreateGravestone(playerid, deathreason, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, gPlayerDeathPos[playerid][3]);
+
+	RemoveDrug(playerid, DRUG_TYPE_AIR);
 
 	return 1;
 }

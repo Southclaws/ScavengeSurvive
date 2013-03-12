@@ -100,7 +100,7 @@ ptask ToolTipUpdate[1000](playerid)
 					else if(itemtype == item_HotDog || itemtype == item_Burger || itemtype == item_BurgerBox || itemtype == item_Pizza || itemtype == item_Taco)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Eat");
 
-					else if(itemtype == item_Medkit)
+					else if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
 					{
 						if(inplayerarea > -1)
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "Heal player");
@@ -129,9 +129,6 @@ ptask ToolTipUpdate[1000](playerid)
 						if(inplayerarea > -1)
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "HandCuff player");
 					}
-
-					else if(itemtype == item_Briefcase)
-						AddToolTipText(playerid, KEYTEXT_INTERACT, "Open briefcase");
 
 					else if(itemtype == item_Satchel)
 					{

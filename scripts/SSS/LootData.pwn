@@ -32,6 +32,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_Flashlight,					1.0);
 	AddItemToLootIndex(loot_Civilian,		item_LaserPoint,					1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Screwdriver,					1.0);
+	AddItemToLootIndex(loot_Civilian,		item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_Civilian,		item_Rake,							0.9);
 	AddItemToLootIndex(loot_Civilian,		item_HotDog,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_EasterEgg,						0.01);
@@ -44,7 +45,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_BurgerBox,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Taco,							1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Clothes,						1.0);
-	AddItemToLootIndex(loot_Civilian,		item_Briefcase,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Barbecue,						0.7);
 	AddItemToLootIndex(loot_Civilian,		item_Pills,							0.4);
 	AddItemToLootIndex(loot_Civilian,		item_Detergent,						0.5);
@@ -54,6 +54,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_CHAINSAW,			0.2);
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_COLT45,				0.3);
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_SAWEDOFF,			0.04);
+	AddItemToLootIndex(loot_Industrial,		item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_Industrial,		item_Bandage,						0.3);
 	AddItemToLootIndex(loot_Industrial,		item_GasMask,						0.5);
 	AddItemToLootIndex(loot_Industrial,		item_timer,							0.3);
@@ -71,6 +72,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_RIFLE,				0.3);
 	AddItemToLootIndex(loot_Police,			item_Medkit,						0.6);
 	AddItemToLootIndex(loot_Police,			item_Bandage,						0.6);
+	AddItemToLootIndex(loot_Police,			item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_Police,			item_HandCuffs,						0.4);
 	AddItemToLootIndex(loot_Police,			item_Taser,							0.6);
 	AddItemToLootIndex(loot_Police,			item_GasMask,						0.7);
@@ -100,8 +102,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_Military,		item_Shield,						0.2);
 	AddItemToLootIndex(loot_Military,		item_Backpack,						0.1);
 	AddItemToLootIndex(loot_Military,		item_CapCase,						0.2);
-	AddItemToLootIndex(loot_Military,		item_CapMineBad,					0.3);
-	AddItemToLootIndex(loot_Military,		item_CapMine,						0.1);
 	AddItemToLootIndex(loot_Military,		item_HelmArmy,						0.6);
 	AddItemToLootIndex(loot_Military,		item_MediumBox,						0.3);
 	AddItemToLootIndex(loot_Military,		item_SmallBox,						0.4);
@@ -111,6 +111,7 @@ public OnLoad()
 	// loot_Medical
 	AddItemToLootIndex(loot_Medical,		item_Bandage,						0.9);
 	AddItemToLootIndex(loot_Medical,		item_Medkit,						0.8);
+	AddItemToLootIndex(loot_Medical,		item_DoctorBag,						0.1);
 	AddItemToLootIndex(loot_Medical,		item_Pills,							0.6);
 	AddItemToLootIndex(loot_Medical,		item_AutoInjec,						0.5);
 	AddItemToLootIndex(loot_Medical,		item_Detergent,						0.1);
@@ -137,6 +138,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_Flashlight,					1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_LaserPoint,					1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Screwdriver,					0.8);
+	AddItemToLootIndex(loot_CarCivilian,	item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_CarCivilian,	item_HotDog,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Bucket,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Satchel,						1.0);
@@ -151,7 +153,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_Taco,							1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_GasCan,						0.4);
 	AddItemToLootIndex(loot_CarCivilian,	item_Clothes,						0.9);
-	AddItemToLootIndex(loot_CarCivilian,	item_Briefcase,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Barbecue,						0.7);
 	AddItemToLootIndex(loot_CarCivilian,	item_Headlight,						0.8);
 	AddItemToLootIndex(loot_CarCivilian,	item_Pills,							0.3);
@@ -246,8 +247,6 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_Taco,							0.9);
 	AddItemToLootIndex(loot_Survivor,		item_GasMask,						0.7);
 	AddItemToLootIndex(loot_Survivor,		item_CapCase,						0.6);
-	AddItemToLootIndex(loot_Survivor,		item_CapMineBad,					0.6);
-	AddItemToLootIndex(loot_Survivor,		item_CapMine,						0.6);
 	AddItemToLootIndex(loot_Survivor,		item_FireLighter,					1.0);
 	AddItemToLootIndex(loot_Survivor,		item_FishRod,						0.8);
 	AddItemToLootIndex(loot_Survivor,		item_Clothes,						0.8);
