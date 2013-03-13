@@ -23,19 +23,19 @@ stock GivePlayerBackpack(playerid, itemid)
 	if(GetItemType(itemid) == item_Backpack)
 	{
 		gPlayerBackpack[playerid] = itemid;
-		SetPlayerAttachedObject(playerid, 1, 3026, 1, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, 3026, 1, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 		RemoveItemFromWorld(itemid);
 	}
 	else if(GetItemType(itemid) == item_Satchel)
 	{
 		gPlayerBackpack[playerid] = itemid;
-		SetPlayerAttachedObject(playerid, 1, 363, 1, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, 363, 1, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 		RemoveItemFromWorld(itemid);
 	}
 	else if(GetItemType(itemid) == item_ParaBag)
 	{
 		gPlayerBackpack[playerid] = itemid;
-		SetPlayerAttachedObject(playerid, 1, 363, 1, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, 371, 1, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 		RemoveItemFromWorld(itemid);
 	}
 	else
@@ -48,7 +48,7 @@ stock GivePlayerBackpack(playerid, itemid)
 
 stock RemovePlayerBackpack(playerid)
 {
-	RemovePlayerAttachedObject(playerid, 1);
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(gPlayerBackpack[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 	gPlayerBackpack[playerid] = INVALID_ITEM_ID;
 }
@@ -66,7 +66,7 @@ stock IsItemTypeBag(ItemType:itemtype)
 	if(!IsValidItemType(itemtype))
 		return 0;
 
-	if(itemtype == item_Satchel || itemtype == item_Backpack)
+	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 		return 1;
 
 	return 0;
@@ -179,7 +179,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
 			{
-				RemovePlayerAttachedObject(playerid, 1);
+				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 				CreateItemInWorld(gPlayerBackpack[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 				GiveWorldItemToPlayer(playerid, gPlayerBackpack[playerid], 1);
 				gPlayerBackpack[playerid] = INVALID_ITEM_ID;

@@ -53,7 +53,7 @@ hook OnGameModeInit()
 
 	ShiftItemTypeIndex(ItemType:1, 46);
 
-	for(new i = 1; i < 47; i++)
+	for(new i = 1; i < 46; i++)
 	{
 		GetWeaponName(i, name);
 
@@ -84,7 +84,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	new ItemType:type = GetItemType(itemid);
 
-	if(0 < _:type <= WEAPON_PARACHUTE)
+	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new weaponid = GetPlayerWeapon(playerid);
 		if(weaponid != 0)
@@ -113,7 +113,7 @@ forward wep_OnPlayerPickUpItem(playerid, itemid);
 public OnPlayerPickedUpItem(playerid, itemid)
 {
 	new ItemType:type = GetItemType(itemid);
-	if(0 < _:type <= WEAPON_PARACHUTE)
+	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new weaponid = GetPlayerWeapon(playerid);
 		if(weaponid == 0 || weaponid == _:type)
@@ -150,7 +150,7 @@ forward wep_OnPlayerPickedUpItem(playerid, itemid);
 public OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	new ItemType:type = GetItemType(itemid);
-	if(0 < _:type <= WEAPON_PARACHUTE)
+	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new ammo = GetItemExtraData(itemid);
 
@@ -223,7 +223,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		new ItemType:type = ItemType:gPlayerArmedWeapon[playerid];
 
-		if(0 < _:type <= WEAPON_PARACHUTE)
+		if(0 < _:type < WEAPON_PARACHUTE)
 		{
 			new ammo = GetPlayerAmmo(playerid);
 
@@ -361,7 +361,7 @@ PlayerDropWeapon(playerid)
 {
 	new ItemType:type = ItemType:GetPlayerWeapon(playerid);
 
-	if(0 < _:type <= WEAPON_PARACHUTE)
+	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new
 			ammo = GetPlayerAmmo(playerid),
@@ -391,7 +391,7 @@ PlayerGiveWeapon(playerid, targetid)
 {
 	new ItemType:type = ItemType:GetPlayerWeapon(playerid);
 
-	if(0 < _:type <= WEAPON_PARACHUTE)
+	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new
 			ammo = GetPlayerAmmo(playerid),
@@ -421,7 +421,7 @@ IsPlayerIdle(playerid)
 
 public OnPlayerAddToInventory(playerid, itemid)
 {
-	if(0 <= _:GetItemType(itemid) <= WEAPON_PARACHUTE)
+	if(0 <= _:GetItemType(itemid) < WEAPON_PARACHUTE)
 	{
 		UpdateWeaponItemNameExtra(itemid);
 	}
@@ -439,7 +439,7 @@ forward wep_OnPlayerAddToInventory(playerid, itemid);
 public OnItemAddToContainer(containerid, itemid, playerid)
 {
 	new weaponid = _:GetItemType(itemid);
-	if(0 <= weaponid <= WEAPON_PARACHUTE)
+	if(0 <= weaponid < WEAPON_PARACHUTE)
 	{
 		if(GetWeaponMagSize(weaponid) > 1)
 			UpdateWeaponItemNameExtra(itemid);

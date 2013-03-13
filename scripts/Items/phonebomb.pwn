@@ -23,7 +23,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_PhoneBomb)
 	{
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
 		SetItemExtraData(itemid, withitemid);
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}

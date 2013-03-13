@@ -113,6 +113,14 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright)
 
 stock DestroyDefense(defenseid)
 {
+	if(!Iter_Contains(def_Index, defenseid))
+		return 0;
+
+	new filename[64];
+
+	format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenseid][def_posX], def_Data[defenseid][def_posY], def_Data[defenseid][def_posZ], def_Data[defenseid][def_rotZ]);
+	fremove(filename);
+
 	DestroyDynamicObject(def_Data[defenseid][def_objectId]);
 	DestroyDynamicArea(def_Data[defenseid][def_areaId]);
 
@@ -122,6 +130,10 @@ stock DestroyDefense(defenseid)
 	def_Data[defenseid][def_posY]		= 0.0;
 	def_Data[defenseid][def_posZ]		= 0.0;
 	def_Data[defenseid][def_rotZ]		= 0.0;
+
+	Iter_Remove(def_Index, defenseid);
+
+	return 1;
 }
 
 public OnPlayerPickedUpItem(playerid, itemid)

@@ -25,8 +25,6 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 
-#include "../scripts/SSS/MovementDetection.pwn"
-
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -137,12 +135,13 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 #define ATTACHSLOT_ITEM				(0)
-#define ATTACHSLOT_USE				(1)
-#define ATTACHSLOT_HOLSTER			(2)
-#define ATTACHSLOT_HOLD				(3)
-#define ATTACHSLOT_CUFFS			(4)
-#define ATTACHSLOT_TORCH			(5)
-#define ATTACHSLOT_HAT				(6)
+#define ATTACHSLOT_BAG				(1)
+#define ATTACHSLOT_USE				(2)
+#define ATTACHSLOT_HOLSTER			(3)
+#define ATTACHSLOT_HOLD				(4)
+#define ATTACHSLOT_CUFFS			(5)
+#define ATTACHSLOT_TORCH			(6)
+#define ATTACHSLOT_HAT				(7)
 
 
 #define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
@@ -483,6 +482,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/medical.pwn"
 #include "../scripts/Items/phonebomb.pwn"
 #include "../scripts/Items/motionmine.pwn"
+#include "../scripts/Items/parachute.pwn"
 
 //======================Data Load and Setup
 
@@ -674,6 +674,7 @@ public OnGameModeInit()
 		SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
 	}
 
+	item_Parachute		= DefineItemType("Parachute",		371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",			1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HardDrive		= DefineItemType("Hard Drive",		328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
 	item_Key			= DefineItemType("Key",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
@@ -768,7 +769,7 @@ public OnGameModeInit()
 
 	item_Flare			= DefineItemType("Flare",			345,	ITEM_SIZE_SMALL);
 	item_PhoneBomb		= DefineItemType("Phone Bomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	0.0, 90.0, 0.0);
+	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 
 
 	anim_Blunt = DefineAnimSet();
@@ -796,11 +797,11 @@ public OnGameModeInit()
 	DefineFoodItem(item_BurgerBag,		45.0);
 
 
-	DefineItemCombo(item_timer,					item_explosive,		item_timebomb);
-	DefineItemCombo(item_explosive,				item_MotionSense,	item_MotionMine);
-	DefineItemCombo(item_Medkit,				item_Bandage,		item_DoctorBag);
-	DefineItemCombo(item_MobilePhone,			item_explosive,		item_PhoneBomb);
-	DefineItemCombo(ItemType:WEAPON_PARACHUTE,	ItemType:4,			item_ParaBag,		.returnitem2 = 1);
+	DefineItemCombo(item_timer,				item_explosive,		item_timebomb);
+	DefineItemCombo(item_explosive,			item_MotionSense,	item_MotionMine);
+	DefineItemCombo(item_Medkit,			item_Bandage,		item_DoctorBag);
+	DefineItemCombo(item_MobilePhone,		item_explosive,		item_PhoneBomb);
+	DefineItemCombo(item_Parachute,			ItemType:4,			item_ParaBag,		.returnitem2 = 1);
 
 
 	DefineLootIndex(loot_Civilian);
