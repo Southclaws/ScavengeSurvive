@@ -6,6 +6,8 @@ ACMD:duty[1](playerid, params[])
 
 		LoadPlayerInventory(playerid);
 
+		MsgF(playerid, YELLOW, " >  Loaded off-duty character data. Health: %.2f", gPlayerHP[playerid]);
+
 		SetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
@@ -16,6 +18,8 @@ ACMD:duty[1](playerid, params[])
 	else
 	{
 		SavePlayerData(playerid);
+
+		MsgF(playerid, YELLOW, " >  Saved off-duty character data. Health: %.2f", gPlayerHP[playerid]);
 
 		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
@@ -55,7 +59,7 @@ ACMD:duty[1](playerid, params[])
 	return 1;
 }
 
-ACMD:goto[1](playerid, params[])
+ACMD:goto[3](playerid, params[])
 {
 	new targetid;
 

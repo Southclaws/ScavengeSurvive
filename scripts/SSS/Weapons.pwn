@@ -181,6 +181,9 @@ forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+		return 1;
+
 	if(IsPlayerInAnyVehicle(playerid))
 		return 1;
 

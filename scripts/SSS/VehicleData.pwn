@@ -29,7 +29,7 @@ new const VehicleFuelData[212][E_VEHICLE_DATA] =
 	{50.0,	24.0,	loot_CarIndustrial,		20}, // 414		----	Mule
 	{60.0,	15.0,	loot_CarCivilian,		12}, // 415		----	Cheetah
 	{80.0,	13.0,	loot_Medical,			16}, // 416		----	Ambulance
-	{185.0,	143.0,	loot_CarCivilian,		12}, // 417		----	Leviathan
+	{1600.0,143.0,	loot_CarCivilian,		12}, // 417		----	Leviathan
 	{60.0,	18.0,	loot_CarCivilian,		12}, // 418		----	Moonbeam
 	{55.0,	17.0,	loot_CarCivilian,		12}, // 419		----	Esperanto
 
@@ -173,7 +173,7 @@ new const VehicleFuelData[212][E_VEHICLE_DATA] =
 	{60.0,	13.0,	loot_CarCivilian,		12}, // 545		----	Hustler
 	{60.0,	13.0,	loot_CarCivilian,		12}, // 546		----	Intruder
 	{60.0,	13.0,	loot_CarCivilian,		12}, // 547		----	Primo
-	{2000.0,441.0,	loot_CarMilitary,		24}, // 548		----	Cargobob
+	{2000.0,341.0,	loot_CarMilitary,		24}, // 548		----	Cargobob
 	{60.0,	13.0,	loot_CarCivilian,		12}, // 549		----	Tampa
 
 	{60.0,	13.0,	loot_CarCivilian,		12}, // 550		----	Sunrise

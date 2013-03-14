@@ -25,6 +25,8 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 
+#include "../scripts/SSS/MovementDetection.pwn"
+
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -408,7 +410,6 @@ Float:	gCurrentVelocity		[MAX_PLAYERS],
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Timer:	gScreenFadeTimer		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
-		gPlayerKnockOutTick		[MAX_PLAYERS],
 
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
@@ -801,7 +802,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_explosive,			item_MotionSense,	item_MotionMine);
 	DefineItemCombo(item_Medkit,			item_Bandage,		item_DoctorBag);
 	DefineItemCombo(item_MobilePhone,		item_explosive,		item_PhoneBomb);
-	DefineItemCombo(item_Parachute,			ItemType:4,			item_ParaBag,		.returnitem2 = 1);
+	DefineItemCombo(ItemType:4,				item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -1113,11 +1114,11 @@ ptask PlayerUpdate[100](playerid)
 
 				if(GetPlayerAnimationIndex(playerid) == 1207 || GetPlayerAnimationIndex(playerid) == 1018)
 				{
-					SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - gPlayerKnockOutTick[playerid]);
-					SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
+					SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - GetPlayerKnockOutTick(playerid));
+					SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
 					UpdatePlayerProgressBar(playerid, KnockoutBar);
 
-					if(tickcount() - gPlayerKnockOutTick[playerid] > 1000 * (40.0 - gPlayerHP[playerid]))
+					if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
 					{
 						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
 						{
@@ -1127,22 +1128,15 @@ ptask PlayerUpdate[100](playerid)
 				}
 				else
 				{
-					if(tickcount() - gPlayerKnockOutTick[playerid] > 2000 * gPlayerHP[playerid])
+					f:bPlayerGameSettings[playerid]<KnockedOut>;
+					HidePlayerProgressBar(playerid, KnockoutBar);
+
+					if(tickcount() - GetPlayerKnockOutTick(playerid) > 2000 * gPlayerHP[playerid])
 					{
-						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2) || bPlayerGameSettings[playerid] & KnockedOut)
+						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
 						{
-							KnockOutPlayer(playerid);
+							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid])));
 						}
-						else
-						{
-							HidePlayerProgressBar(playerid, KnockoutBar);
-							f:bPlayerGameSettings[playerid]<KnockedOut>;
-						}
-					}
-					else
-					{
-						HidePlayerProgressBar(playerid, KnockoutBar);
-						f:bPlayerGameSettings[playerid]<KnockedOut>;
 					}
 				}
 			}
@@ -1587,10 +1581,13 @@ Login(playerid)
 
 SavePlayerData(playerid, prints = false)
 {
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
+
 	new
 		tmpQuery[256];
 
-	if(bPlayerGameSettings[playerid] & Alive && !(bPlayerGameSettings[playerid] & AdminDuty))
+	if(bPlayerGameSettings[playerid] & Alive)
 	{
 		new
 			Float:x,
@@ -2017,6 +2014,13 @@ public OnPlayerSpawn(playerid)
 
 	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
 
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+	{
+		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
+		gPlayerHP[playerid] = 100.0;
+		return 1;
+	}
+
 	if(bPlayerGameSettings[playerid] & Dying)
 	{
 		TogglePlayerSpectating(playerid, true);
@@ -2271,8 +2275,12 @@ timer FadeScreen[100](playerid)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-	if(!(bPlayerGameSettings[playerid] & Alive))
+	if(!(bPlayerGameSettings[playerid] & Alive) || bPlayerGameSettings[playerid] & AdminDuty)
+	{
+		SpawnPlayer(playerid);
 		return 0;
+	}
+
 
 	new deathreason[256];
 
@@ -2300,10 +2308,21 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(IsPlayerConnected(killerid))
 	{
+		MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
+
 		switch(reason)
 		{
 			case 0..3, 5..7, 10..15:
 				deathreason = "They were beaten to death.";
+
+			case 4:
+				deathreason = "They suffered small lacerations on the torso, possibly from a knife.";
+
+			case 8:
+				deathreason = "Large lacerations cover the torso and head, looks like a finely sharpened sword.";
+
+			case 9:
+				deathreason = "There's bits everywhere, probably suffered a chainsaw to the torso.";
 
 			case 16, 39, 35, 36, 255:
 				deathreason = "They suffered massive concussion due to an explosion.";
@@ -2330,6 +2349,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	else
 	{
+		MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
+
 		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 		{
 			deathreason = "They died of air embolism (injecting oxygen into their bloodsteam).";
@@ -2503,10 +2524,17 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		if(weaponid == 53)
+		{
 			GivePlayerHP(playerid, -(amount * 0.1), weaponid);
+		}
 
 		else
-			GivePlayerHP(playerid, -(amount * 1.5), weaponid);
+		{
+			GivePlayerHP(playerid, -(amount * 1.3), weaponid);
+
+			if(amount > 10.0 && random(100) < amount)
+				KnockOutPlayer(playerid, 5000);
+		}
 
 		return 1;
 	}
@@ -2588,7 +2616,7 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
 		{
-			KnockOutPlayer(targetid);
+			KnockOutPlayer(targetid, 30000);
 			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0));
 		}
 		else
@@ -2636,14 +2664,15 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 		{
 			switch(weaponid)
 			{
-				case 25, 27, 30, 31, 33, 34:head = IsPlayerAimingAtHead(playerid, targetid);
+				case 25, 27, 30, 31, 33, 34:
+					head = IsPlayerAimingAtHead(playerid, targetid);
 			}
 			switch(weaponid)
 			{
 				case 0..3, 5..7, 10..18, 39:
 				{
 					if(random(100) < 40)
-						t:bPlayerGameSettings[playerid]<Bleeding>;
+						t:bPlayerGameSettings[targetid]<Bleeding>;
 				}
 				case 40..46:
 				{
@@ -2651,7 +2680,19 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 				}
 				default:
 				{
-					t:bPlayerGameSettings[playerid]<Bleeding>;
+					t:bPlayerGameSettings[targetid]<Bleeding>;
+
+					MsgF(playerid, YELLOW, "Health pred: %f, hp before: %f, hploss: %f", gPlayerHP[playerid] - hploss, gPlayerHP[playerid], hploss);
+
+					if(gPlayerHP[playerid] - hploss <= 40.0)
+					{
+						Msg(playerid, YELLOW, "HP below 40, knockout chance");
+						if(random(100) < 70)
+						{
+							MsgF(playerid, YELLOW, "duration: %d", floatround(2000 * (40.0 - gPlayerHP[playerid])));
+							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid])));
+						}
+					}
 				}
 			}
 		}
@@ -2675,36 +2716,40 @@ timer DestroyDynamicObject_Delay[1000](objectid)
 }
 GivePlayerHP(playerid, Float:hp, weaponid = 54, msg = true)
 {
-	if(gPlayerAP[playerid] > 0.0 && hp < 0.0)
+	if(hp < 0.0)
 	{
-		switch(weaponid)
+		if(gPlayerAP[playerid] > 0.0)
 		{
-			case 0..7, 10..15:
-				hp *= 0.8;
+			switch(weaponid)
+			{
+				case 0..7, 10..15:
+					hp *= 0.6;
 
-			case 22..32, 38:
-				hp *= 0.7;
+				case 22..32, 38:
+					hp *= 0.5;
 
-			case 33, 34:
-				hp *= 0.99;
+				case 33, 34:
+					hp *= 0.8;
+			}
+			gPlayerAP[playerid] += hp / 2.0;
 		}
-		gPlayerAP[playerid] += hp / 2.0;
 	}
-
-	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
-
-	if(hp > 0.0 && msg)
+	else
 	{
-		new
-			tmpstr[16];
+		if(msg)
+		{
+			new
+				tmpstr[16];
 
-		format(tmpstr, 16, "+%.1fHP", hp);
+			format(tmpstr, 16, "+%.1fHP", hp);
 
-		PlayerTextDrawSetString(playerid, AddHPText, tmpstr);
-		PlayerTextDrawShow(playerid, AddHPText);
+			PlayerTextDrawSetString(playerid, AddHPText, tmpstr);
+			PlayerTextDrawShow(playerid, AddHPText);
 
-		defer HideHPText(playerid);
+			defer HideHPText(playerid);
+		}
 	}
+	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
 }
 
 timer HideHPText[2000](playerid)
@@ -2827,7 +2872,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					GetVehiclePos(tmp_vID, tmp_vX, tmp_vY, tmp_vZ);
 					if( (Distance(tmp_vX, tmp_vY, tmp_vZ, Player_vX, Player_vY, Player_vZ)<7.0) && (tmp_vID != iPlayerVehicleID) )
 					{
-						if(IsTrailerAttachedToVehicle(iPlayerVehicleID))DetachTrailerFromVehicle(iPlayerVehicleID);
+						if(IsTrailerAttachedToVehicle(iPlayerVehicleID))
+							DetachTrailerFromVehicle(iPlayerVehicleID);
+
 						AttachTrailerToVehicle(tmp_vID, iPlayerVehicleID);
 						break;
 					}

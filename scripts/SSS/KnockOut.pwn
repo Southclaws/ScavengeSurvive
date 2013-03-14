@@ -1,6 +1,11 @@
-KnockOutPlayer(playerid)
+static
+	knockout_Tick[MAX_PLAYERS],
+	knockout_Duration[MAX_PLAYERS];
+
+
+KnockOutPlayer(playerid, duration)
 {
-	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - gPlayerKnockOutTick[playerid]);
+	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - knockout_Tick[playerid]);
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
@@ -10,7 +15,8 @@ KnockOutPlayer(playerid)
 	else
 		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
 
-	gPlayerKnockOutTick[playerid] = tickcount();
+	knockout_Tick[playerid] = tickcount();
+	knockout_Duration[playerid] = duration;
 	t:bPlayerGameSettings[playerid]<KnockedOut>;
 }
 
@@ -24,6 +30,17 @@ WakeUpPlayer(playerid)
 	else
 		ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
 
-	gPlayerKnockOutTick[playerid] = tickcount();
+	knockout_Tick[playerid] = tickcount();
 	f:bPlayerGameSettings[playerid]<KnockedOut>;
 }
+
+GetPlayerKnockOutTick(playerid)
+{
+	return knockout_Tick[playerid];
+}
+
+GetPlayerKnockoutDuration(playerid)
+{
+	return knockout_Duration[playerid];
+}
+

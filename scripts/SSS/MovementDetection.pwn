@@ -5,8 +5,7 @@ new
 	SetPosTick[MAX_PLAYERS],
 	Float:CurPos[MAX_PLAYERS][3],
 	Float:SetPos[MAX_PLAYERS][3],
-	PosReportTick[MAX_PLAYERS],
-	PosReportStrike[MAX_PLAYERS];
+	PosReportTick[MAX_PLAYERS];
 
 
 Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -23,6 +22,7 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 
 hook OnPlayerSpawn(playerid)
 {
+	SetPosTick[playerid] = tickcount();
 	GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
 }
 
@@ -34,15 +34,11 @@ ptask PositionCheck[1000](playerid)
 	new
 		Float:x,
 		Float:y,
-		Float:z,
-		Float:vx,
-		Float:vy,
-		Float:vz;
+		Float:z;
 
 	GetPlayerPos(playerid, x, y, z);
-	GetPlayerVelocity(playerid, vx, vy, vz);
 
-	if(!(-8.0 < (Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]) - (floatsqroot((vx*vx)+(vy*vy)) * 54.0)) < 8.0))
+	if(Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]) > 20.0)
 	{
 		if(tickcount() - SetPosTick[playerid] > 2000)
 		{
@@ -51,33 +47,34 @@ ptask PositionCheck[1000](playerid)
 				new name[24];
 				GetPlayerName(playerid, name, 24);
 
-				if(PosReportStrike[playerid] == 5)
-				{
-					MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: "#C_BLUE"%s", name);
-					PosReportStrike[playerid] = 0;
-				}
-				printf("[WARN] Possible teleport hack, player: %s", name);
+				MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
+					name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
 
-				PosReportStrike[playerid]++;
+				printf("[WARN] Possible teleport hack, player: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
+					name, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2], x, y, z,
+					Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
+
 				PosReportTick[playerid] = tickcount();
 			}
 		}
 		else
 		{
-			if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > 15.0)
+			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
-				new name[24];
-				GetPlayerName(playerid, name, 24);
-
-				if(PosReportStrike[playerid] == 5)
+				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > 20.0)
 				{
-					MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: "#C_BLUE"%s", name);
-					PosReportStrike[playerid] = 0;
-				}
-				printf("[WARN] Possible teleport hack, player: %s", name);
+					new name[24];
+					GetPlayerName(playerid, name, 24);
 
-				PosReportStrike[playerid]++;
-				PosReportTick[playerid] = tickcount();
+					MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
+						name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
+
+					printf("[WARN] Possible teleport hack, player: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
+						name, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2], x, y, z,
+						Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
+
+					PosReportTick[playerid] = tickcount();
+				}
 			}
 		}
 	}
