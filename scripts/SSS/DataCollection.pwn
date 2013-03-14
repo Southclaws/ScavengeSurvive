@@ -27,9 +27,3 @@ hook OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 }
-
-CMD:stat(playerid, params[])
-{
-	UpdateStatistic("UnarmedKills", 1);
-	return 1;
-}
