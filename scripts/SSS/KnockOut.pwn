@@ -10,10 +10,39 @@ KnockOutPlayer(playerid, duration)
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
 	if(IsPlayerInAnyVehicle(playerid))
+	{
 		ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
 
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		{
+			new vehicleid = GetPlayerVehicleID(playerid);
+
+			switch(GetVehicleType(GetVehicleModel(vehicleid)))
+			{
+				case VTYPE_BIKE, VTYPE_QUAD, VTYPE_BMX:
+				{
+					new
+						Float:x,
+						Float:y,
+						Float:z;
+
+					GetVehiclePos(vehicleid, x, y, z);
+					RemovePlayerFromVehicle(playerid);
+					SetPlayerPos(playerid, x, y, z);
+					ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, 0, 1, 1, 0, 0, 1);
+				}
+
+				default:
+				{
+					VehicleEngineState(vehicleid, 0);
+				}
+			}
+		}
+	}
 	else
+	{
 		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
+	}
 
 	knockout_Tick[playerid] = tickcount();
 	knockout_Duration[playerid] = duration;
@@ -24,14 +53,50 @@ WakeUpPlayer(playerid)
 {
 	HidePlayerProgressBar(playerid, KnockoutBar);
 
-	if(IsPlayerInAnyVehicle(playerid))
-		ClearAnimations(playerid);
-
-	else
-		ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
 
 	knockout_Tick[playerid] = tickcount();
 	f:bPlayerGameSettings[playerid]<KnockedOut>;
+}
+
+KnockOutUpdate(playerid)
+{
+	if(bPlayerGameSettings[playerid] & Dying)
+	{
+		f:bPlayerGameSettings[playerid]<KnockedOut>;
+		HidePlayerProgressBar(playerid, KnockoutBar);
+		return;
+	}
+
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+	{
+		new animidx = GetPlayerAnimationIndex(playerid);
+		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
+			KnockOutPlayer(playerid, GetPlayerKnockoutDuration(playerid) - (tickcount() - GetPlayerKnockOutTick(playerid)));
+
+		SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - GetPlayerKnockOutTick(playerid));
+		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
+		UpdatePlayerProgressBar(playerid, KnockoutBar);
+
+		if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
+		{
+			WakeUpPlayer(playerid);
+		}
+	}
+	else
+	{
+		f:bPlayerGameSettings[playerid]<KnockedOut>;
+		HidePlayerProgressBar(playerid, KnockoutBar);
+
+		if(tickcount() - GetPlayerKnockOutTick(playerid) > 2000 * gPlayerHP[playerid] && gPlayerHP[playerid] > 40.0)
+		{
+			if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
+			{
+				KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid]) + frandom(200 * (40.0 - gPlayerHP[playerid]))));
+			}
+		}
+	}
+	return;
 }
 
 GetPlayerKnockOutTick(playerid)
@@ -44,3 +109,8 @@ GetPlayerKnockoutDuration(playerid)
 	return knockout_Duration[playerid];
 }
 
+CMD:knockout(playerid, params[])
+{
+	KnockOutPlayer(playerid, strval(params));
+	return 1;
+}

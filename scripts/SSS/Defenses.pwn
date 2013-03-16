@@ -131,9 +131,9 @@ stock DestroyDefense(defenseid)
 	def_Data[defenseid][def_posZ]		= 0.0;
 	def_Data[defenseid][def_rotZ]		= 0.0;
 
-	Iter_Remove(def_Index, defenseid);
+	Iter_SafeRemove(def_Index, defenseid, defenseid);
 
-	return 1;
+	return defenseid;
 }
 
 public OnPlayerPickedUpItem(playerid, itemid)
@@ -336,7 +336,7 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
 
 			if(def_Data[i][def_hitPoints] <= 0)
 			{
-				DestroyDefense(i);
+				i = DestroyDefense(i);
 			}
 		}
 	}

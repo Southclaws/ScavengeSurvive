@@ -1050,7 +1050,7 @@ ptask PlayerUpdate[100](playerid)
 			}
 			if(VehicleEngineState(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
 			{
-				if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0 || bPlayerGameSettings[playerid] & KnockedOut)
+				if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0)
 				{
 					VehicleEngineState(vehicleid, 0);
 					PlayerTextDrawColor(playerid, VehicleEngineText, RED);
@@ -1111,34 +1111,6 @@ ptask PlayerUpdate[100](playerid)
 			{
 				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerHP[playerid]) * 4.4));
 				PlayerTextDrawShow(playerid, ClassBackGround);
-
-				if(GetPlayerAnimationIndex(playerid) == 1207 || GetPlayerAnimationIndex(playerid) == 1018)
-				{
-					SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - GetPlayerKnockOutTick(playerid));
-					SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
-					UpdatePlayerProgressBar(playerid, KnockoutBar);
-
-					if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
-					{
-						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
-						{
-							WakeUpPlayer(playerid);
-						}
-					}
-				}
-				else
-				{
-					f:bPlayerGameSettings[playerid]<KnockedOut>;
-					HidePlayerProgressBar(playerid, KnockoutBar);
-
-					if(tickcount() - GetPlayerKnockOutTick(playerid) > 2000 * gPlayerHP[playerid])
-					{
-						if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
-						{
-							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid])));
-						}
-					}
-				}
 			}
 		}
 		else
@@ -1146,6 +1118,8 @@ ptask PlayerUpdate[100](playerid)
 			PlayerTextDrawHide(playerid, ClassBackGround);
 		}
 	}
+
+	KnockOutUpdate(playerid);
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
@@ -2268,8 +2242,16 @@ timer FadeScreen[100](playerid)
 
 	gScreenBoxFadeLevel[playerid] -= 4;
 
-	if(gScreenBoxFadeLevel[playerid] <= 0)
-		stop gScreenFadeTimer[playerid];
+	if(gPlayerHP[playerid] <= 40.0)
+	{
+		if(gScreenBoxFadeLevel[playerid] <= floatround((40.0 - gPlayerHP[playerid]) * 4.4))
+			stop gScreenFadeTimer[playerid];
+	}
+	else
+	{
+		if(gScreenBoxFadeLevel[playerid] <= 0)
+			stop gScreenFadeTimer[playerid];
+	}
 }
 
 
@@ -2682,15 +2664,11 @@ internal_HitPlayer(playerid, targetid, weaponid, type = 0)
 				{
 					t:bPlayerGameSettings[targetid]<Bleeding>;
 
-					MsgF(playerid, YELLOW, "Health pred: %f, hp before: %f, hploss: %f", gPlayerHP[playerid] - hploss, gPlayerHP[playerid], hploss);
-
 					if(gPlayerHP[playerid] - hploss <= 40.0)
 					{
-						Msg(playerid, YELLOW, "HP below 40, knockout chance");
 						if(random(100) < 70)
 						{
-							MsgF(playerid, YELLOW, "duration: %d", floatround(2000 * (40.0 - gPlayerHP[playerid])));
-							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid])));
+							KnockOutPlayer(targetid, floatround(2000 * (40.0 - gPlayerHP[targetid])));
 						}
 					}
 				}
@@ -3885,4 +3863,14 @@ forward sffa_msgbox(playerid, message[], time, width);
 public sffa_msgbox(playerid, message[], time, width)
 {
 	ShowMsgBox(playerid, message, time, width);
+}
+
+IsPlayerDead(playerid)
+{
+	return bPlayerGameSettings[playerid] & Dying;
+}
+
+GetPlayerVehicleExitTick(playerid)
+{
+	return tick_ExitVehicle[playerid];
 }

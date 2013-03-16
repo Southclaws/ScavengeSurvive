@@ -2,6 +2,7 @@
 
 
 #define HEAL_PROGRESS_MAX (40.0)
+#define REVIVE_PROGRESS_MAX (80.0)
 
 
 new
@@ -78,24 +79,25 @@ PlayerStopHeal(playerid)
 	{
 		Bit1_Set(gPlayerUsingHeal, playerid, false);
 		HidePlayerProgressBar(playerid, ActionBar);
+
 		if(gPlayerHealTarget[playerid] != playerid)
-		{
 			HidePlayerProgressBar(gPlayerHealTarget[playerid], ActionBar);
-			ClearAnimations(gPlayerHealTarget[playerid]);
-		}
+
 		ClearAnimations(playerid);
 	}
 }
 
 timer HealHealUpdate[100](playerid)
 {
+	new	Float:progresscap = HEAL_PROGRESS_MAX;
+
 	gPlayerHealProgress[playerid] += 1.0;
 	
-	SetPlayerProgressBarValue(playerid, ActionBar, gPlayerHealProgress[playerid]);
-	ShowPlayerProgressBar(playerid, ActionBar);
-
 	if(gPlayerHealTarget[playerid] != playerid)
 	{
+		if(bPlayerGameSettings[gPlayerHealTarget[playerid]] & KnockedOut)
+			progresscap = REVIVE_PROGRESS_MAX;
+
 		new
 			Float:x1,
 			Float:y1,
@@ -108,11 +110,18 @@ timer HealHealUpdate[100](playerid)
 		GetPlayerPos(gPlayerHealTarget[playerid], x2, y2, z2);
 		SetPlayerFacingAngle(playerid, GetAngleToPoint(x1, y1, x2, y2));
 
+		SetPlayerProgressBarMaxValue(gPlayerHealTarget[playerid], ActionBar, progresscap);
 		SetPlayerProgressBarValue(gPlayerHealTarget[playerid], ActionBar, gPlayerHealProgress[playerid]);
 		ShowPlayerProgressBar(gPlayerHealTarget[playerid], ActionBar);
+
 	}
 
-	if(gPlayerHealProgress[playerid] >= HEAL_PROGRESS_MAX)
+	SetPlayerProgressBarMaxValue(playerid, ActionBar, progresscap);
+	SetPlayerProgressBarValue(playerid, ActionBar, gPlayerHealProgress[playerid]);
+	ShowPlayerProgressBar(playerid, ActionBar);
+
+
+	if(gPlayerHealProgress[playerid] >= progresscap)
 	{
 		PlayerStopHeal(playerid);
 
@@ -120,8 +129,7 @@ timer HealHealUpdate[100](playerid)
 		{
 			if(bPlayerGameSettings[gPlayerHealTarget[playerid]] & KnockedOut)
 			{
-				ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
-				f:bPlayerGameSettings[gPlayerHealTarget[playerid]]<KnockedOut>;
+				WakeUpPlayer(gPlayerHealTarget[playerid]);
 			}
 		}
 

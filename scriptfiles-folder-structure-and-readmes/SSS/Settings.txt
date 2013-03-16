@@ -1,0 +1,2 @@
+Connections=0
+motd=Welcome to Scavenge and Survive! Created by Southclaw :)

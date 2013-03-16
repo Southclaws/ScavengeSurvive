@@ -5,10 +5,11 @@ new
 	SetPosTick[MAX_PLAYERS],
 	Float:CurPos[MAX_PLAYERS][3],
 	Float:SetPos[MAX_PLAYERS][3],
-	PosReportTick[MAX_PLAYERS];
+	PosReportTick[MAX_PLAYERS],
+	DetectDelay[MAX_PLAYERS];
 
 
-Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
+Defect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
 	SetPlayerPos(playerid, x, y, z);
 
@@ -17,19 +18,30 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 	SetPos[playerid][1] = y;
 	SetPos[playerid][2] = z;
 }
-#define SetPlayerPos Detect_SetPlayerPos
+#define SetPlayerPos Defect_SetPlayerPos
 
 
 hook OnPlayerSpawn(playerid)
 {
 	SetPosTick[playerid] = tickcount();
+	DetectDelay[playerid] = tickcount();
 	GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
 }
 
 ptask PositionCheck[1000](playerid)
 {
-	if(IsPlayerInAnyVehicle(playerid) || IsPlayerOnZipline(playerid))
+	if(IsPlayerInAnyVehicle(playerid) || IsPlayerOnZipline(playerid) || tickcount() - GetPlayerVehicleExitTick(playerid) < 4000 || IsPlayerDead(playerid))
+	{
+		GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
+		DetectDelay[playerid] = tickcount();
 		return;
+	}
+
+	if(tickcount() - DetectDelay[playerid] < 10000)
+	{
+		GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
+		return;
+	}
 
 	new
 		Float:x,
@@ -40,7 +52,7 @@ ptask PositionCheck[1000](playerid)
 
 	if(Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]) > 20.0)
 	{
-		if(tickcount() - SetPosTick[playerid] > 2000)
+		if(tickcount() - SetPosTick[playerid] > 5000)
 		{
 			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
@@ -50,7 +62,7 @@ ptask PositionCheck[1000](playerid)
 				MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
 					name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
 
-				printf("[WARN] Possible teleport hack, player: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
+				printf("[WARN] Possible teleport hack, player: %s moved: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
 					name, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2], x, y, z,
 					Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
 
