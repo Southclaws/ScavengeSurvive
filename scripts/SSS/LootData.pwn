@@ -176,6 +176,16 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_Clothes,						0.7);
 	AddItemToLootIndex(loot_CarIndustrial,	item_MediumBox,						0.3);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Headlight,						0.8);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Door,							0.4);
+	AddItemToLootIndex(loot_CarIndustrial,	item_MetPanel,						0.2);
+	AddItemToLootIndex(loot_CarIndustrial,	item_SurfBoard,						0.3);
+	AddItemToLootIndex(loot_CarIndustrial,	item_CrateDoor,						0.2);
+	AddItemToLootIndex(loot_CarIndustrial,	item_CorPanel,						0.3);
+	AddItemToLootIndex(loot_CarIndustrial,	item_ShipDoor,						0.1);
+	AddItemToLootIndex(loot_CarIndustrial,	item_MetalPlate,					0.1);
+	AddItemToLootIndex(loot_CarIndustrial,	item_MetalStand,					0.12);
+	AddItemToLootIndex(loot_CarIndustrial,	item_WoodDoor,						0.23);
+	AddItemToLootIndex(loot_CarIndustrial,	item_WoodPanel,						0.31);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_COLT45,				0.6);

@@ -59,7 +59,7 @@ ptask PositionCheck[1000](playerid)
 				new name[24];
 				GetPlayerName(playerid, name, 24);
 
-				MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
+				MsgAdminsF(3, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
 					name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
 
 				printf("[WARN] Possible teleport hack, player: %s moved: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
@@ -78,7 +78,7 @@ ptask PositionCheck[1000](playerid)
 					new name[24];
 					GetPlayerName(playerid, name, 24);
 
-					MsgAdminsF(1, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
+					MsgAdminsF(3, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
 						name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
 
 					printf("[WARN] Possible teleport hack, player: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
