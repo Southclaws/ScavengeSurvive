@@ -214,10 +214,7 @@ enum (<<=1)
 {
 	ChatLocked = 1,
 	ServerLocked,
-	Restarting,
-
-	Realtime,
-	ServerTimeFlow
+	Restarting
 }
 enum e_admin_data
 {
@@ -639,9 +636,6 @@ public OnGameModeInit()
 	DisableInteriorEnterExits();
 	ShowNameTags(true);
 
-	t:bServerGlobalSettings<ServerTimeFlow>;
-	t:bServerGlobalSettings<Realtime>;
-
 	gWeatherID			= WeatherData[random(sizeof(WeatherData))][weather_id];
 	gLastWeatherChange	= tickcount();
 
@@ -1001,12 +995,6 @@ task GameUpdate[1000]()
 	}
 }
 
-CMD:stoptime(playerid, params[])
-{
-	f:bServerGlobalSettings<ServerTimeFlow>;
-	return 1;
-}
-
 task GlobalAnnouncement[600000]()
 {
 	MsgAll(YELLOW, " >  Confused? Check out the Wiki: "#C_ORANGE"scavenge-survive.wikia.com "#C_YELLOW"or: "#C_ORANGE"empire-bay.com");
@@ -1014,6 +1002,13 @@ task GlobalAnnouncement[600000]()
 
 ptask PlayerUpdate[100](playerid)
 {
+	if(GetPlayerPing(playerid) > 350)
+	{
+		MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 350.", GetPlayerPing(playerid));
+		Kick(playerid);
+		return;
+	}
+
 	ResetPlayerMoney(playerid);
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -1026,7 +1021,7 @@ ptask PlayerUpdate[100](playerid)
 		if(GetVehicleType(model) != VTYPE_BMX && model != 0)
 		{
 			GetVehicleHealth(vehicleid, health);
-			
+
 			if(300.0 < health < 500.0)
 			{
 				if(VehicleEngineState(vehicleid) && gPlayerVelocity[playerid] > 30.0)
@@ -1159,7 +1154,7 @@ ptask PlayerUpdate[100](playerid)
 		ResetPlayerWeapons(playerid);
 	}
 
-	return 1;
+	return;
 }
 
 ptask FoodUpdate[1000](playerid)
@@ -1550,7 +1545,7 @@ Login(playerid)
 		gPlayerData[playerid][ply_posY],
 		gPlayerData[playerid][ply_posZ]);
 
-	FreezePlayer(playerid, 2000);
+	FreezePlayer(playerid, 3000);
 }
 
 SavePlayerData(playerid, prints = false)
