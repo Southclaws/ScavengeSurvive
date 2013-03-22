@@ -2398,7 +2398,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 					deathreason = "They suffered massive concussion due to an explosion.";
 
 				default:
-				deathreason = "They died for an unknown reason.";
+					deathreason = "They died for an unknown reason.";
 			}
 		}
 	}
@@ -2554,15 +2554,15 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		if(weaponid == 53)
 		{
-			GivePlayerHP(playerid, -(amount * 0.1), weaponid);
+			GivePlayerHP(playerid, -(amount * 0.1), 53);
 		}
-
 		else
 		{
-			GivePlayerHP(playerid, -(amount * 1.3), weaponid);
-
 			if(amount > 10.0 && random(100) < amount)
+			{
+				GivePlayerHP(playerid, -(amount * 1.1), weaponid);
 				KnockOutPlayer(playerid, 5000);
+			}
 		}
 
 		return 1;
@@ -2575,23 +2575,23 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
 
 			if(model == 447 || model == 476)
-				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 38:
 		{
 			if(GetVehicleModel(gPlayerVehicleID[issuerid]) == 425)
-				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 49:
 		{
-			internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_COLLISION);
+			DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_COLLISION);
 		}
 		case 51:
 		{
 			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
 
 			if(model == 432 || model == 520 || model == 425)
-				internal_HitPlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
 		}
 	}
 	return 1;
@@ -2599,11 +2599,11 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
-	internal_HitPlayer(playerid, damagedid, weaponid);
+	DamagePlayer(playerid, damagedid, weaponid);
 	return 1;
 }
 
-internal_HitPlayer(playerid, targetid, weaponid, type = 0)
+DamagePlayer(playerid, targetid, weaponid, type = 0)
 {
 	if(weaponid == WEAPON_DEAGLE)
 	{

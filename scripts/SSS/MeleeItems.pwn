@@ -132,7 +132,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						{
 							GetAnimationName(anm_Anims[anm_MeleeItems[i][anm_animSet]][anm_CurrentAnim[playerid]][anm_hitIdx], lib, 32, anim, 32);
 							ApplyAnimation(j, lib, anim, 4.1, 0, 1, 1, 0, 0, 1);
-							internal_HitPlayer(playerid, j, anm_MeleeItems[i][anm_animSet], 1);
+							DamagePlayer(playerid, j, anm_MeleeItems[i][anm_animSet], 1);
 						}
 					}
 				}
