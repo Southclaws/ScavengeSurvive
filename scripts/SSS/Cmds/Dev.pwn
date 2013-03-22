@@ -19,6 +19,57 @@ CMD:adminlvl(playerid, params[])
 
 //==============================================================================Player
 
+ACMD:setadmin[3](playerid, params[])
+{
+	new
+		id,
+		level;
+
+	if (sscanf(params, "dd", id, level))
+		return Msg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
+
+	if(playerid == id)
+		return Msg(playerid, RED, " >  You cannot set your own level");
+
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && gPlayerData[playerid][ply_Admin] < 3)
+		return 3;
+
+	if(!IsPlayerConnected(id))
+		return 4;
+
+	if(!SetPlayerAdminLevel(id, level))
+		return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
+
+
+	MsgF(playerid, YELLOW, " >  You made %P"#C_YELLOW" a Level %d Admin", id, level);
+	MsgF(id, YELLOW, " >  %P"#C_YELLOW" Made you a Level %d Admin", playerid, level);
+
+	return 1;
+}
+
+ACMD:setvip[3](playerid, params[])
+{
+	new id, toggle;
+
+	if(sscanf(params, "dd", id, toggle))
+		return Msg(playerid, YELLOW, " >  Usage: /setvip [playerid]");
+
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+		return 3;
+
+	if(toggle)
+	{
+		t:bPlayerGameSettings[id]<IsVip>;
+		MsgF(playerid, YELLOW, " >  You gave VIP status to %P", id);
+	}
+	else
+	{
+		f:bPlayerGameSettings[id]<IsVip>;
+		MsgF(playerid, YELLOW, " >  You removed VIP status from %P", id);
+	}
+	return 1;
+}
+
 ACMD:gamename[3](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))

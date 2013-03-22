@@ -22,9 +22,17 @@ static
 Timer:		rip_PickUpTimer[MAX_PLAYERS],
 			rip_CurrentStone[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	rip_CurrentStone[playerid] = -1;
+}
+
+
 stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, Float:zoffset = ITEM_BTN_OFFSET_Z)
 {
 	new id = Iter_Free(rip_Index);
+
 	if(id == -1)
 		return INVALID_RIP_ID;
 

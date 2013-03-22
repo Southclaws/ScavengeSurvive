@@ -15,7 +15,7 @@ public OnLoad()
 	District_Quebrados();
 	District_Barancas();
 	District_Sherman();
-	District_Gen();
+	District_RobadaGen();
 
 	return CallLocalFunction("robada_OnLoad", "");
 }
@@ -206,7 +206,7 @@ District_Sherman()
 
 }
 
-District_Gen()
+District_RobadaGen()
 {
 	CreateLootSpawn(-2084.18799, 2308.36963, 22.98837,	3, 25, loot_Civilian);
 	CreateLootSpawn(-1957.37402, 2391.17017, 48.48126,	3, 25, loot_Civilian);

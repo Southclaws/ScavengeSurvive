@@ -1,62 +1,10 @@
-ACMD:setadmin[2](playerid, params[])
-{
-	new
-		id,
-		level;
-
-	if (sscanf(params, "dd", id, level))
-		return Msg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
-
-	if(playerid == id)
-		return Msg(playerid, RED, " >  You cannot set your own level");
-
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && gPlayerData[playerid][ply_Admin] < 3)
-		return 3;
-
-	if(!IsPlayerConnected(id))
-		return 4;
-
-	if(!SetPlayerAdminLevel(id, level))
-		return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
-
-
-	MsgF(playerid, YELLOW, " >  You made %P"#C_YELLOW" a Level %d Admin", id, level);
-	MsgF(id, YELLOW, " >  %P"#C_YELLOW" Made you a Level %d Admin", playerid, level);
-
-	return 1;
-}
-
-ACMD:setvip[2](playerid, params[])
-{
-	new id, toggle;
-
-	if(sscanf(params, "dd", id, toggle))
-		return Msg(playerid, YELLOW, " >  Usage: /setvip [playerid]");
-
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
-		return 3;
-
-	if(toggle)
-	{
-		t:bPlayerGameSettings[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You gave VIP status to %P", id);
-	}
-	else
-	{
-		f:bPlayerGameSettings[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You removed VIP status from %P", id);
-	}
-	return 1;
-}
-
-
-
 //==========================================================================Player Control
 
 ACMD:ban[2](playerid, params[])
 {
 	new
 		id = -1,
+		playername[MAX_PLAYER_NAME],
 		reason[64],
 		highestadmin;
 
@@ -80,12 +28,36 @@ ACMD:ban[2](playerid, params[])
 		if(playerid == id)
 			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-		if(gPlayerData[playerid][ply_Admin]!=gPlayerData[highestadmin][ply_Admin])
+		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
 			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
 		BanPlayer(id, reason, playerid);
 
-		MsgAllF(YELLOW, " >  %P"#C_YELLOW" banned %P"#C_YELLOW" Reason: "#C_BLUE"%s", playerid, id, reason);
+		return 1;
+	}
+	if(!sscanf(params, "sS(None)[64]", playername, reason))
+	{
+		if(strlen(reason) > 64)
+			return Msg(playerid, RED, " >  Reason must be below 64 characters");
+
+		for(new idx; idx<gTotalAdmins; idx++)
+		{
+			if(!strcmp(playername, gAdminData[idx][admin_Name]))
+			{
+				return 2;
+			}
+		}
+
+		if(!IsPlayerConnected(id))
+			return 4;
+
+		if(playerid == id)
+			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
+
+		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);
+
+		BanPlayerByName(playername, reason, playerid);
 
 		return 1;
 	}

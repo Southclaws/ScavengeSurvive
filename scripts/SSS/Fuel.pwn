@@ -156,7 +156,10 @@ timer RefuelCanUpdate[500](playerid)
 
 	new
 		itemid = GetPlayerItem(playerid),
-		amount;
+		amount,
+		Float:px,
+		Float:py,
+		Float:pz;
 
 	amount = GetItemExtraData(itemid);
 
@@ -165,6 +168,10 @@ timer RefuelCanUpdate[500](playerid)
 		StopRefuellingFuelCan(playerid);
 		return;
 	}
+
+
+	GetPlayerPos(playerid, px, py, pz);
+	SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, fuel_Data[fuel_CurrentFuelOutlet[playerid]][fuel_posX], fuel_Data[fuel_CurrentFuelOutlet[playerid]][fuel_posY]));
 
 	SetPlayerProgressBarValue(playerid, ActionBar, float(amount));
 	SetPlayerProgressBarMaxValue(playerid, ActionBar, FUEL_CAN_CAPACITY);
@@ -237,13 +244,12 @@ timer RefuelVehicleUpdate[500](playerid, vehicleid)
 		return;
 	}
 
-
 	SetPlayerProgressBarValue(playerid, ActionBar, vehiclefuel);
 	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleFuelCapacity(vehicleid));
 	ShowPlayerProgressBar(playerid, ActionBar);
 
-	GetVehiclePos(vehicleid, vx, vy, vz);
 	GetPlayerPos(playerid, px, py, pz);
+	GetVehiclePos(vehicleid, vx, vy, vz);
 	SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
 
 	SetItemExtraData(itemid, canfuel - 1);

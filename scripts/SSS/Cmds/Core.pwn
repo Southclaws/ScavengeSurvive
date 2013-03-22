@@ -4,15 +4,14 @@ new gAdminCommandList_Lvl1[] =
 	/(un)freeze [id] (seconds) - freeze/unfreeze a player\n\
 	/(un)mute [id] (seconds) - mute/unmute a player\n\
 	/warn [id] - give a player a warning\n\
+	/aliases [id] - check aliases\n\
 	/weather [weather id/name] - set the weather\n\
 	/msg [message] - send a chat message\n"
 };
 
 new gAdminCommandList_Lvl2[] =
 {
-	"/setadmin [id] [level] - set a player's admin level\n\
-	/setvip [id] [toggle] - toggle a player's VIP status\n\
-	/(un)ban - ban/unban a player from the server\n\
+	"/(un)ban - ban/unban a player from the server\n\
 	/clearchat - clear the chatbox\n\
 	/ann [text] - send an on-screen announcement to everyone\n\
 	/motd [text] - set the message of the day\n"
@@ -222,11 +221,57 @@ BanPlayer(playerid, reason[], byid)
 	format(tmpQuery, sizeof(tmpQuery), "\
 		INSERT INTO `Bans`\
 		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
-		VALUES('%p', '%d', '%d', '%s', '%p')",
-		playerid, gPlayerData[playerid][ply_IP], gettime(), reason, byid);
-
-	print(tmpQuery);
+		VALUES('%s', '%d', '%d', '%s', '%p')",
+		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP], gettime(), reason, byid);
 
 	db_free_result(db_query(gAccounts, tmpQuery));
-	Kick(playerid);
+
+	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"By: "#C_BLUE"%p"#C_YELLOW", reason: "#C_BLUE"%s", byid, reason);
+	defer KickPlayerDelay(playerid);
+}
+
+BanPlayerByName(name[], reason[], byid = -1)
+{
+	new
+		id,
+		ip,
+		by[24],
+		bool:online,
+		tmpQuery[256];
+
+	if(byid == -1)
+		by = "Server";
+
+	else
+		GetPlayerName(byid, by, 24);
+
+	foreach(new i : Player)
+	{
+		if(!strcmp(gPlayerName[i], name))
+		{
+			id = i;
+			ip = gPlayerData[id][ply_IP];
+			online = true;
+		}
+	}
+
+	format(tmpQuery, sizeof(tmpQuery), "\
+		INSERT INTO `Bans`\
+		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
+		VALUES('%s', '%d', '%d', '%s', '%s')",
+		strtolower(name), ip, gettime(), reason, by);
+
+	db_free_result(db_query(gAccounts, tmpQuery));
+
+	if(online)
+	{
+		MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"By: "#C_BLUE"%s"#C_YELLOW", reason: "#C_BLUE"%s", by, reason);
+		defer KickPlayerDelay(id);
+	}
+}
+
+forward external_BanPlayer(name[], reason[]);
+public external_BanPlayer(name[], reason[])
+{
+	BanPlayerByName(name, reason);
 }

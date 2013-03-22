@@ -131,7 +131,7 @@ ACMD:get[1](playerid, params[])
 	return 1;
 }
 
-ACMD:spec[3](playerid, params[])
+ACMD:spec[2](playerid, params[])
 {
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
 	{

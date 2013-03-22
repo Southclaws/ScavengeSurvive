@@ -179,6 +179,53 @@ ACMD:warn[1](playerid, params[])
 	return 1;
 }
 
+ACMD:aliases[1](playerid, params[])
+{
+	new id;
+
+	if(sscanf(params, "d", id))
+		return Msg(playerid, YELLOW, " >  Usage: /aliases [playerid]");
+
+	if(!IsPlayerConnected(id))
+		return Msg(playerid,RED, " >  Invalid ID");
+
+	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+		return 3;
+
+	new
+		rowCount,
+		tmpIpQuery[128],
+		tmpIpField[32],
+		DBResult:tmpIpResult,
+		tmpNameList[128];
+
+	format(tmpIpQuery, 128,
+		"SELECT * FROM `Player` WHERE `"#ROW_IPV4"` = '%d' AND `"#ROW_NAME"` != '%s'",
+		gPlayerData[id][ply_IP], gPlayerName[playerid]);
+
+	tmpIpResult = db_query(gAccounts, tmpIpQuery);
+
+	rowCount = db_num_rows(tmpIpResult);
+
+	if(rowCount > 0)
+	{
+		for(new i; i < rowCount && i < 5;i++)
+		{
+			db_get_field(tmpIpResult, 0, tmpIpField, 128);
+
+			if(i > 0)
+				strcat(tmpNameList, ", ");
+
+			strcat(tmpNameList, tmpIpField);
+			db_next_row(tmpIpResult);
+		}
+		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", rowCount, tmpNameList);
+	}
+	db_free_result(tmpIpResult);
+
+	return 1;
+}
+
 ACMD:weather[1](playerid, params[])
 {
 	if(strlen(params) > 2)

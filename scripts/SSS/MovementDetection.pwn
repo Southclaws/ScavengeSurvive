@@ -30,7 +30,14 @@ hook OnPlayerSpawn(playerid)
 
 ptask PositionCheck[1000](playerid)
 {
-	if(IsPlayerInAnyVehicle(playerid) || IsPlayerOnZipline(playerid) || tickcount() - GetPlayerVehicleExitTick(playerid) < 4000 || IsPlayerDead(playerid))
+	if(
+		IsPlayerInAnyVehicle(playerid) ||
+		IsPlayerOnZipline(playerid) ||
+		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
+		tickcount() - GetPlayerServerJoinTick(playerid) < 10000 ||
+		IsPlayerDead(playerid) ||
+		IsPlayerOnAdminDuty(playerid) ||
+		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)))
 	{
 		GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
 		DetectDelay[playerid] = tickcount();
@@ -46,25 +53,25 @@ ptask PositionCheck[1000](playerid)
 	new
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		Float:distance;
 
 	GetPlayerPos(playerid, x, y, z);
+	distance = Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]);
 
-	if(Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]) > 20.0)
+	if(distance > 25.0)
 	{
 		if(tickcount() - SetPosTick[playerid] > 5000)
 		{
 			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
-				new name[24];
+				new
+					name[24],
+					reason[32];
+
 				GetPlayerName(playerid, name, 24);
-
-				MsgAdminsF(3, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
-					name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
-
-				printf("[WARN] Possible teleport hack, player: %s moved: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
-					name, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2], x, y, z,
-					Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
+				format(reason, sizeof(reason), "Moved %.2fm in 1 second", distance);
+				ReportPlayer(name, reason, -1);
 
 				PosReportTick[playerid] = tickcount();
 			}
@@ -73,7 +80,7 @@ ptask PositionCheck[1000](playerid)
 		{
 			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
-				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > 20.0)
+				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > 25.0)
 				{
 					new name[24];
 					GetPlayerName(playerid, name, 24);

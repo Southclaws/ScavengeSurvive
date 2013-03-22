@@ -77,6 +77,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_DATE					"date"
 #define ROW_REAS					"reason"
 #define ROW_BNBY					"by"
+#define ROW_READ					"read"
 
 
 // Macros
@@ -186,7 +187,10 @@ enum
 	d_Tires,
 	d_Lights,
 	d_Radio,
-	d_GraveStone
+	d_GraveStone,
+	d_ReportList,
+	d_Report,
+	d_ReportOptions
 }
 
 
@@ -354,6 +358,7 @@ enum (<<= 1) // 14
 		HasAccount = 1,
 		IsVip,
 		LoggedIn,
+		IsNewPlayer,
 		CanExitWelcome,
 		AdminDuty,
 		Gender,
@@ -408,6 +413,7 @@ Float:	gCurrentVelocity		[MAX_PLAYERS],
 Timer:	gScreenFadeTimer		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
+		tick_ServerJoin			[MAX_PLAYERS],
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
@@ -522,6 +528,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Cmds/Administrator.pwn"
 #include "../scripts/SSS/Cmds/Dev.pwn"
 #include "../scripts/SSS/Cmds/Duty.pwn"
+#include "../scripts/SSS/Cmds/Report.pwn"
 
 //======================Map Scripts
 
@@ -554,6 +561,7 @@ main()
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`)"));
 
 	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
 	rowCount = db_num_rows(tmpResult);
@@ -1002,11 +1010,23 @@ task GlobalAnnouncement[600000]()
 
 ptask PlayerUpdate[100](playerid)
 {
-	if(GetPlayerPing(playerid) > 350)
+	if(Iter_Count(Player) > 10)
 	{
-		MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 350.", GetPlayerPing(playerid));
-		Kick(playerid);
-		return;
+		if(GetPlayerPing(playerid) > 400 && tickcount() - tick_ServerJoin[playerid] > 10000)
+		{
+			MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 400 while 10 or more players are online.", GetPlayerPing(playerid));
+			defer KickPlayerDelay(playerid);
+			return;
+		}
+	}
+	else
+	{
+		if(GetPlayerPing(playerid) > 600 && tickcount() - tick_ServerJoin[playerid] > 10000)
+		{
+			MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 600 while 9 or less players are online.", GetPlayerPing(playerid));
+			defer KickPlayerDelay(playerid);
+			return;
+		}
 	}
 
 	ResetPlayerMoney(playerid);
@@ -1078,9 +1098,9 @@ ptask PlayerUpdate[100](playerid)
 			PlayerTextDrawShow(playerid, VehicleDamageText);
 			PlayerTextDrawShow(playerid, VehicleEngineText);
 
-			if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 35.0 : 30.0))
+			if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 55.0 : 45.0))
 			{
-				GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.2));
+				GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.1));
 			}
 
 			gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
@@ -1257,6 +1277,8 @@ public OnPlayerConnect(playerid)
 
 	if(IsPlayerNPC(playerid))return 1;
 
+	tick_ServerJoin[playerid] = tickcount();
+
 	new
 		tmpadminlvl,
 		tmpIP[16],
@@ -1270,11 +1292,11 @@ public OnPlayerConnect(playerid)
 	sscanf(tmpIP, "p<.>a<d>[4]", tmpByte);
 	gPlayerData[playerid][ply_IP] = ((tmpByte[0] << 24) | (tmpByte[1] << 16) | (tmpByte[2] << 8) | tmpByte[3]) ;
 
-	format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = %d",
-		gPlayerName[playerid], gPlayerData[playerid][ply_IP]);
+	format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'",
+		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP]);
 
 	tmpResult = db_query(gAccounts, tmpQuery);
-	
+
 	if(db_num_rows(tmpResult) > 0)
 	{
 		new
@@ -1295,11 +1317,19 @@ public OnPlayerConnect(playerid)
 		format(str, 256, "\
 			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
 			"#C_YELLOW"By:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", timestampstr, reason, bannedby);
+			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", timestampstr, bannedby, reason);
 
 		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Banned", str, "Close", "");
 
-		Kick(playerid);
+		defer KickPlayerDelay(playerid);
+
+		db_free_result(tmpResult);
+
+		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Bans` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'",
+			gPlayerData[playerid][ply_IP], strtolower(gPlayerName[playerid]));
+
+		db_free_result(db_query(gAccounts, tmpQuery));
+
 		return 1;
 	}
 
@@ -1390,6 +1420,8 @@ public OnPlayerConnect(playerid)
 		new str[150];
 		format(str, 150, ""#C_WHITE"Hello %P"#C_WHITE", You must be new here!\nPlease create an account by entering a "#C_BLUE"password"#C_WHITE" below:", playerid);
 		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
+
+		t:bPlayerGameSettings[playerid]<IsNewPlayer>;
 	}
 	if(bServerGlobalSettings & ServerLocked)
 	{
@@ -1427,6 +1459,11 @@ public OnPlayerConnect(playerid)
 	return 1;
 }
 
+timer KickPlayerDelay[100](playerid)
+{
+	Kick(playerid);
+}
+
 CheckForExtraAccounts(playerid, name[])
 {
 	new
@@ -1434,7 +1471,11 @@ CheckForExtraAccounts(playerid, name[])
 		tmpIpQuery[128],
 		tmpIpField[32],
 		DBResult:tmpIpResult,
-		tmpNameList[128];
+		tmpNameList[128],
+		msglevel = 1;
+
+	if(gPlayerData[playerid][ply_Admin] > 1)
+		msglevel = gPlayerData[playerid][ply_Admin];
 
 	format(tmpIpQuery, 128,
 		"SELECT * FROM `Player` WHERE `"#ROW_IPV4"` = '%d' AND `"#ROW_NAME"` != '%s'",
@@ -1446,14 +1487,14 @@ CheckForExtraAccounts(playerid, name[])
 
 	if(rowCount > 0)
 	{
-		for(new i;i<rowCount && i < 5;i++)
+		for(new i; i < rowCount && i < 5;i++)
 		{
 			db_get_field(tmpIpResult, 0, tmpIpField, 128);
 			if(i>0)strcat(tmpNameList, ", ");
 			strcat(tmpNameList, tmpIpField);
 			db_next_row(tmpIpResult);
 		}
-		MsgAdminsF(1, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", rowCount, tmpNameList);
+		MsgAdminsF(msglevel, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", rowCount, tmpNameList);
 	}
 	db_free_result(tmpIpResult);
 }
@@ -1532,7 +1573,15 @@ Login(playerid)
 	}
 
 	if(gPlayerData[playerid][ply_Admin] > 0)
+	{
+		new
+			reports = GetUnreadReports();
+
 		MsgF(playerid, BLUE, " >  Your admin level: %d", gPlayerData[playerid][ply_Admin]);
+
+		if(reports > 0)
+			MsgF(playerid, YELLOW, " >  %d unread reports, type "#C_BLUE"/reports "#C_YELLOW"to view.", reports);
+	}
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	IncorrectPass[playerid]=0;
@@ -1632,7 +1681,7 @@ SavePlayerInventory(playerid, prints = false)
 	characterdata[4] = GetPlayerHat(playerid);
 
 	if(prints)
-		printf("[SAVE] %s HP: %f", characterdata[0], characterdata[1]);
+		printf("[SAVE] Player: %p HP: %.2f", playerid, characterdata[0]);
 
 	fblockwrite(file, characterdata, 5);
 
@@ -1690,7 +1739,7 @@ SavePlayerInventory(playerid, prints = false)
 		for(new i = 1, j; j < GetContainerSize(containerid); i += 2, j++)
 		{
 			bagdata[i] = _:GetItemType(GetContainerSlotItem(containerid, j));
-			bagdata[i+1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
+			bagdata[i + 1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
 		}
 		fblockwrite(file, bagdata, 17);
 	}
@@ -1721,7 +1770,7 @@ LoadPlayerInventory(playerid)
 
 	fblockread(file, characterdata, 5);
 
-	printf("[LOAD]: H: %f A: %f F: %f S: %d H: %d", characterdata[0], characterdata[1], characterdata[2], characterdata[3], characterdata[4]);
+	printf("[LOAD]: %p HP: %f", playerid, characterdata[0]);
 
 	if(Float:characterdata[0] <= 0.0)
 		characterdata[0] = _:1.0;
@@ -2063,6 +2112,8 @@ public OnPlayerSpawn(playerid)
 	Streamer_Update(playerid);
 	SetAllWeaponSkills(playerid, 500);
 
+	RemoveAllDrugs(playerid);
+
 	return 1;
 }
 
@@ -2227,7 +2278,8 @@ OnPlayerSelectGender(playerid)
 		AddItemToInventory(playerid, tmpitem);
 	}
 
-	Tutorial_Start(playerid);
+	if(bPlayerGameSettings[playerid] & IsNewPlayer)
+		Tutorial_Start(playerid);
 }
 
 timer FadeScreen[100](playerid)
@@ -3868,4 +3920,14 @@ IsPlayerDead(playerid)
 GetPlayerVehicleExitTick(playerid)
 {
 	return tick_ExitVehicle[playerid];
+}
+
+IsPlayerOnAdminDuty(playerid)
+{
+	return bPlayerGameSettings[playerid] & AdminDuty;
+}
+
+GetPlayerServerJoinTick(playerid)
+{
+	return tick_ServerJoin[playerid];
 }

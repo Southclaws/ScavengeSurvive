@@ -374,7 +374,9 @@ LoadPlayerVehicles(bool:prints = true)
 						if(array[14 + i + 1] == 1)
 						{
 							if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
-								SetItemExtraData(itemid, array[14 + i + 1]);
+							{
+								SetItemExtraData(itemid, array[14 + i + 2]);
+							}
 
 							AddItemToContainer(gVehicleContainer[vehicleid], itemid);
 						}

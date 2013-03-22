@@ -1,9 +1,9 @@
 stock returnOrdinal(number)
 {
-    new
-        ordinal[4][3] = { "st", "nd", "rd", "th" };
-    number = number < 0 ? -number : number;
-    return (((10 < (number % 100) < 14)) ? ordinal[3] : (0 < (number % 10) < 4) ? ordinal[((number % 10) - 1)] : ordinal[3]);
+	new
+		ordinal[4][3] = { "st", "nd", "rd", "th" };
+	number = number < 0 ? -number : number;
+	return (((10 < (number % 100) < 14)) ? ordinal[3] : (0 < (number % 10) < 4) ? ordinal[((number % 10) - 1)] : ordinal[3]);
 }
 
 stock IsNumeric(const string[])
@@ -22,19 +22,61 @@ stock IsCharAlphabetic(c)
 	return 0;
 }
 
+stock strtolower(string[])
+{
+	new
+		retStr[128],
+		i,
+		j;
+
+	while ((j = string[i])) retStr[i++] = tolower(j);
+	retStr[i] = '\0';
+
+	return retStr;
+}
 stock UnderscoreToSpace(name[])
 {
 	new pos = strfind(name, "_", true);
 
 	if(pos != -1)
-    {
-        name[pos] = ' ';
-        return 1;
-    }
+	{
+		name[pos] = ' ';
+		return 1;
+	}
 
-    return 0;
+	return 0;
 }
 
+stock db_escape(text[])
+{
+	new
+		ret[256],
+		ch,
+		i,
+		j;
+
+	while ((ch = text[i++]) && j < sizeof (ret))
+	{
+		if (ch == '\'')
+		{
+			if (j < sizeof (ret) - 2)
+			{
+				ret[j++] = '\'';
+				ret[j++] = '\'';
+			}
+		}
+		else if (j < sizeof (ret))
+		{
+			ret[j++] = ch;
+		}
+		else
+		{
+			j++;
+		}
+	}
+	ret[sizeof (ret) - 1] = '\0';
+	return ret;
+}
 stock MsToString(ms, mode = 0)
 {
 	new
@@ -174,26 +216,26 @@ static const SkinArray[] =
 
 stock GetSkinGender(skinID)
 {
-    for(new i; i<sizeof(SkinArray); i++)
-    {
-        if(SkinArray[i] == skinID)
-        {
-		    switch(i)
-		    {
-		        case 0..14: return 0;
-		        case 15..221: return 1;
+	for(new i; i<sizeof(SkinArray); i++)
+	{
+		if(SkinArray[i] == skinID)
+		{
+			switch(i)
+			{
+				case 0..14: return 0;
+				case 15..221: return 1;
 				case 222..299: return 2;
-		    }
-		    break;
+			}
+			break;
 		}
-    }
-    return 0;
+	}
+	return 0;
 }
 
 stock IsValidSkin(skinid)
 {
-    if(skinid == 74 || skinid > 299 || skinid < 0)
-        return 0;
-        
-    return 1;
+	if(skinid == 74 || skinid > 299 || skinid < 0)
+		return 0;
+		
+	return 1;
 }

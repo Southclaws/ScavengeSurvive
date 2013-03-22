@@ -2,31 +2,36 @@
 
 
 new
-		gPlayerDrugUseTick[MAX_PLAYERS][MAX_DRUG_TYPE],
-		bPlayerDrugEffects[MAX_PLAYERS];
+		drug_PlayerDrugUseTick[MAX_PLAYERS][MAX_DRUG_TYPE],
+		drug_bPlayerDrugEffects[MAX_PLAYERS];
 
 
 ApplyDrug(playerid, drugtype)
 {
-	gPlayerDrugUseTick[playerid][drugtype] = tickcount();
-	t:bPlayerDrugEffects[playerid]<(1 << drugtype)>;
+	drug_PlayerDrugUseTick[playerid][drugtype] = tickcount();
+	t:drug_bPlayerDrugEffects[playerid]<(1 << drugtype)>;
 }
 
 RemoveDrug(playerid, drugtype)
 {
-	gPlayerDrugUseTick[playerid][drugtype] = 0;
-	f:bPlayerDrugEffects[playerid]<(1 << drugtype)>;
+	drug_PlayerDrugUseTick[playerid][drugtype] = 0;
+	f:drug_bPlayerDrugEffects[playerid]<(1 << drugtype)>;
 }
 
 GetPlayerDrugUseTick(playerid, drugtype)
 {
-	return gPlayerDrugUseTick[playerid][drugtype];
+	return drug_PlayerDrugUseTick[playerid][drugtype];
 }
 
 IsPlayerUnderDrugEffect(playerid, drugtype)
 {
-	if(bPlayerDrugEffects[playerid] & (1 << drugtype))
+	if(drug_bPlayerDrugEffects[playerid] & (1 << drugtype))
 		return 1;
 
 	return 0;
+}
+
+RemoveAllDrugs(playerid)
+{
+	drug_bPlayerDrugEffects[playerid] = 0;
 }

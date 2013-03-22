@@ -140,11 +140,10 @@ UpdatePlayerGear(playerid, show = 1)
 		}
 	}
 
-	itemid = INVALID_ITEM_ID;
-	if(IsValidItem(itemid))
+	if(gPlayerAP[playerid] > 0.0)
 	{
-		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], "none");
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 23);
+		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], "Armour");
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 19515);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Tors[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -463,7 +462,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 	if(playertextid == GearSlot_Tors[UI_ELEMENT_TILE])
 	{
-		Msg(playerid, YELLOW, "Torso");
 	}
 	if(playertextid == GearSlot_Back[UI_ELEMENT_TILE])
 	{
