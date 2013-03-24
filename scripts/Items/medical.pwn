@@ -57,16 +57,16 @@ PlayerStartHeal(playerid, target)
 		SetPlayerProgressBarValue(target, ActionBar, 0.0);
 
 		if(bPlayerGameSettings[target] & KnockedOut)
-			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 1, 1, 0, 0);
+			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
 
 		else
-			ApplyAnimation(playerid, "PED", "ATM", 4.0, 1, 1, 1, 0, 0);
+			ApplyAnimation(playerid, "PED", "ATM", 4.0, 1, 0, 0, 0, 0);
 
 		gPlayerHealTimer[playerid] = repeat HealHealUpdate(playerid);
 	}
 	else
 	{
-		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 1, 1, 0, 0);
+		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
 		gPlayerHealTimer[playerid] = repeat HealHealUpdate(playerid);
 	}
 }

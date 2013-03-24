@@ -1874,6 +1874,27 @@ LoadPlayerInventory(playerid)
 				AddItemToContainer(containerid, itemid);
 			}
 		}
+
+		if(bagdata[0] == _:item_ParaBag)
+		{
+			itemid = CreateItem(item_ParaBag, 0.0, 0.0, 0.0);
+			containerid = GetItemExtraData(itemid);
+
+			GivePlayerBackpack(playerid, itemid);
+
+			for(new i = 1; i < 12; i += 2)
+			{
+				if(bagdata[i] == _:INVALID_ITEM_TYPE)
+					continue;
+
+				itemid = CreateItem(ItemType:bagdata[i], 0.0, 0.0, 0.0);
+
+				if(!IsItemTypeSafebox(ItemType:bagdata[i]) && !IsItemTypeBag(ItemType:bagdata[i]))
+					SetItemExtraData(itemid, bagdata[i+1]);
+
+				AddItemToContainer(containerid, itemid);
+			}
+		}
 	}
 
 	fclose(file);
@@ -1937,92 +1958,6 @@ ResetVariables(playerid)
 
 	for(new i; i < 10; i++)
 		RemovePlayerAttachedObject(playerid, i);
-}
-
-
-CMD:help(playerid, params[])
-{
-	ShowWelcomeMessage(playerid, 0);
-	return 1;
-}
-
-CMD:changename(playerid, params[])
-{
-	new newname[24];
-	if (sscanf(params, "s[24]", newname)) Msg(playerid, YELLOW, "Usage: /changename [new name]");
-	else
-	{
-		new
-			tmpQuery[128],
-			DBResult:tmpResult,
-			file[MAX_PLAYER_FILE];
-
-		GetFile(newname, file);
-
-		format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Player` WHERE `"#ROW_NAME"` = '%s'", newname);
-		tmpResult = db_query(gAccounts, tmpQuery);
-
-		if(db_num_rows(tmpResult) == 1 || fexist(file))
-		{
-			Msg(playerid, ORANGE, " >  That name already exists");
-			return 1;
-		}
-
-		db_free_result(tmpResult);
-
-		MsgF(playerid, YELLOW, " >  your new name is %s", newname);
-		MsgAllF(YELLOW, " >  %s has changed their name to %s", gPlayerName[playerid], newname);
-
-		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Player` SET `"#ROW_NAME"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
-			newname, gPlayerName[playerid]);
-
-		db_free_result(db_query(gAccounts, tmpQuery));
-
-		SetPlayerName(playerid, newname);
-		gPlayerName[playerid] = newname;
-
-		CreateNewUserfile(playerid, gPlayerData[playerid][ply_Password]);
-	}
-	return 1;
-}
-
-CMD:changepass(playerid,params[])
-{
-	new
-		oldpass[32],
-		newpass[32],
-		buffer[MAX_PASSWORD_LEN];
-
-	if(!(bPlayerGameSettings[playerid] & LoggedIn))
-		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
-
-	if(sscanf(params, "s[32]s[32]", oldpass, newpass)) return Msg(playerid, YELLOW, "Usage: /changepass [old pass] [new pass]");
-	else
-	{
-		WP_Hash(buffer, MAX_PASSWORD_LEN, oldpass);
-		
-		if(!strcmp(buffer, gPlayerData[playerid][ply_Password]))
-		{
-			new
-				tmpQuery[256];
-
-			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
-
-			format(tmpQuery, 256, "UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
-			buffer, gPlayerName[playerid]);
-
-			db_free_result(db_query(gAccounts, tmpQuery));
-			
-			gPlayerData[playerid][ply_Password] = buffer;
-
-			MsgF(playerid, YELLOW, " >  Password succesfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
-		}
-		else
-		{
-			Msg(playerid, RED, " >  The entered password you typed doesn't match your current password.");
-		}
-	}
-	return 1;
 }
 
 public OnPlayerSpawn(playerid)
@@ -2264,9 +2199,6 @@ OnPlayerSelectGender(playerid)
 
 	tmpitem = CreateItem(ItemType:WEAPON_KNIFE, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
 	SetItemExtraData(tmpitem, 1);
-	AddItemToContainer(containerid, tmpitem);
-
-	tmpitem = CreateItem(item_Medkit, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
 	AddItemToContainer(containerid, tmpitem);
 
 	tmpitem = CreateItem(item_Wrench, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
@@ -3286,7 +3218,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			CreateNewUserfile(playerid, buffer);
 
-			ShowWelcomeMessage(playerid, 20);
+			ShowWelcomeMessage(playerid, 10);
 		}
 		else
 		{

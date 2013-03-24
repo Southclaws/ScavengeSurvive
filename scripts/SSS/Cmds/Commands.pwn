@@ -69,24 +69,60 @@ CMD:bug(playerid, params[])
 	return 1;
 }
 
-ACMD:hud[3](playerid, params[])
+CMD:help(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & ShowHUD)
-	{
-		PlayerTextDrawHide(playerid, HungerBarBackground);
-		PlayerTextDrawHide(playerid, HungerBarForeground);
-		TextDrawHideForPlayer(playerid, ClockText);
-		TextDrawHideForPlayer(playerid, MapCover1);
-		TextDrawHideForPlayer(playerid, MapCover2);
-		f:bPlayerGameSettings[playerid]<ShowHUD>;
-	}
+	ShowWelcomeMessage(playerid, 0);
+	return 1;
+}
+
+CMD:rules(playerid, params[])
+{
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules",
+		""#C_YELLOW"Server Rules:\n\n\n"#C_WHITE"\
+		\tNo hacking, cheating or client modifications that give you advantages.\n\n\
+		\tNo exploiting of map bugs such as hiding inside collision-less models.\n\n\
+		\tNo exploiting server bugs, report them using the "#C_BLUE"/bug "#C_WHITE"command.\n\n\
+		\tOnly English in the Chat Box. Please use the radio feature inside your inventory for private chat.\n\n\
+		\tNo flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.",
+		"Close", "");
+	return 1;
+}
+
+CMD:changepass(playerid,params[])
+{
+	new
+		oldpass[32],
+		newpass[32],
+		buffer[MAX_PASSWORD_LEN];
+
+	if(!(bPlayerGameSettings[playerid] & LoggedIn))
+		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
+
+	if(sscanf(params, "s[32]s[32]", oldpass, newpass)) return Msg(playerid, YELLOW, "Usage: /changepass [old pass] [new pass]");
 	else
 	{
-		PlayerTextDrawShow(playerid, HungerBarBackground);
-		PlayerTextDrawShow(playerid, HungerBarForeground);
-		TextDrawShowForPlayer(playerid, ClockText);
-		TextDrawShowForPlayer(playerid, MapCover1);
-		TextDrawShowForPlayer(playerid, MapCover2);
-		t:bPlayerGameSettings[playerid]<ShowHUD>;
+		WP_Hash(buffer, MAX_PASSWORD_LEN, oldpass);
+		
+		if(!strcmp(buffer, gPlayerData[playerid][ply_Password]))
+		{
+			new
+				tmpQuery[256];
+
+			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
+
+			format(tmpQuery, 256, "UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
+			buffer, gPlayerName[playerid]);
+
+			db_free_result(db_query(gAccounts, tmpQuery));
+			
+			gPlayerData[playerid][ply_Password] = buffer;
+
+			MsgF(playerid, YELLOW, " >  Password succesfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
+		}
+		else
+		{
+			Msg(playerid, RED, " >  The entered password you typed doesn't match your current password.");
+		}
 	}
+	return 1;
 }

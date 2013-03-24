@@ -31,6 +31,8 @@ ACMD:ban[2](playerid, params[])
 		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
 			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
+		MsgF(playerid, YELLOW, " >  Banned %P"#C_YELLOW" reason: "#C_BLUE"%s", id, reason);
+
 		BanPlayer(id, reason, playerid);
 
 		return 1;
@@ -48,14 +50,10 @@ ACMD:ban[2](playerid, params[])
 			}
 		}
 
-		if(!IsPlayerConnected(id))
-			return 4;
-
-		if(playerid == id)
-			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
-
 		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
 			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);
+
+		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
 
 		BanPlayerByName(playername, reason, playerid);
 

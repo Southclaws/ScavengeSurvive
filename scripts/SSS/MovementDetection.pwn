@@ -1,6 +1,9 @@
 #include <YSI\y_hooks>
 
 
+#define DETECTION_DISTANCE (30.0)
+
+
 new
 	SetPosTick[MAX_PLAYERS],
 	Float:CurPos[MAX_PLAYERS][3],
@@ -59,7 +62,7 @@ ptask PositionCheck[1000](playerid)
 	GetPlayerPos(playerid, x, y, z);
 	distance = Distance2D(x, y, CurPos[playerid][0], CurPos[playerid][1]);
 
-	if(distance > 25.0)
+	if(distance > DETECTION_DISTANCE)
 	{
 		if(tickcount() - SetPosTick[playerid] > 5000)
 		{
@@ -80,7 +83,7 @@ ptask PositionCheck[1000](playerid)
 		{
 			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
-				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > 25.0)
+				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > DETECTION_DISTANCE)
 				{
 					new name[24];
 					GetPlayerName(playerid, name, 24);
