@@ -74,7 +74,7 @@ stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:z
 	return id;
 }
 
-CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright)
+CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright, hitpoints = -1)
 {
 	new id = Iter_Free(def_Index);
 
@@ -100,7 +100,13 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright)
 
 	def_Data[id][def_areaId] = CreateDynamicSphere(x, y, z + def_TypeData[type][def_placeOffsetZ], 10.0);
 	def_Data[id][def_upright] = upright;
-	def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
+
+	if(hitpoints == -1)
+		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
+
+	else
+		def_Data[id][def_hitPoints] = hitpoints;
+
 	def_Data[id][def_posX] = x;
 	def_Data[id][def_posY] = y;
 	def_Data[id][def_posZ] = z;
@@ -116,7 +122,9 @@ stock DestroyDefense(defenseid)
 	if(!Iter_Contains(def_Index, defenseid))
 		return 0;
 
-	new filename[64];
+	new
+		filename[64],
+		next;
 
 	format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenseid][def_posX], def_Data[defenseid][def_posY], def_Data[defenseid][def_posZ], def_Data[defenseid][def_rotZ]);
 	fremove(filename);
@@ -131,9 +139,9 @@ stock DestroyDefense(defenseid)
 	def_Data[defenseid][def_posZ]		= 0.0;
 	def_Data[defenseid][def_rotZ]		= 0.0;
 
-	Iter_SafeRemove(def_Index, defenseid, defenseid);
+	Iter_SafeRemove(def_Index, defenseid, next);
 
-	return defenseid;
+	return next;
 }
 
 public OnPlayerPickedUpItem(playerid, itemid)
@@ -268,7 +276,7 @@ LoadDefenses()
 		File:file,
 		filedir[64],
 
-		data[2],
+		data[3],
 		Float:x,
 		Float:y,
 		Float:z,
@@ -289,7 +297,7 @@ LoadDefenses()
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1]);
+				CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2]);
 			}
 		}
 	}
@@ -304,7 +312,7 @@ SaveAllDefenses()
 		new
 			filename[64],
 			File:file,
-			data[2];
+			data[3];
 
 		format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ], def_Data[i][def_rotZ]);
 		file = fopen(filename, io_write);
@@ -313,6 +321,7 @@ SaveAllDefenses()
 		{
 			data[0] = def_Data[i][def_type];
 			data[1] = def_Data[i][def_upright];
+			data[2] = def_Data[i][def_hitPoints];
 			fblockwrite(file, data, sizeof(data));
 			fclose(file);
 		}

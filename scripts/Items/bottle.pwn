@@ -18,8 +18,6 @@ public OnItemCreate(itemid)
 			b = random(10);
 
 		SetItemExtraData(itemid, a << 8 | (b));
-
-		printf("[CREA] First: %d Second: %d", (GetItemExtraData(itemid) >> 8) & 0xFF, GetItemExtraData(itemid) & 0xFF);
 	}
 
 	return CallLocalFunction("bot_OnItemCreate", "d", itemid);
@@ -38,8 +36,6 @@ public OnItemNameRender(itemid)
 	if(GetItemType(itemid) == item_Bottle)
 	{
 		new data = GetItemExtraData(itemid);
-
-		printf("[NAME] First: %d Second: %d", (data >> 8) & 0xFF, data & 0xFF);
 
 		if(data & 0xFF > 0)
 		{
@@ -76,8 +72,6 @@ public OnPlayerUseItem(playerid, itemid)
 	if(GetItemType(itemid) == item_Bottle)
 	{
 		new data = GetItemExtraData(itemid);
-
-		printf("[USEI] First: %d Second: %d", (data >> 8) & 0xFF, data & 0xFF);
 
 		if(data & 0xFF > 0)
 		{
