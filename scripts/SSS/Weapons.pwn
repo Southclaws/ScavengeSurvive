@@ -229,8 +229,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(0 < _:type < WEAPON_PARACHUTE)
 		{
 			new ammo = GetPlayerAmmo(playerid);
-
-			if(GetItemTypeSize(type) == ITEM_SIZE_SMALL)
+/*
+			if()
 			{
 				if(IsPlayerInventoryFull(playerid))
 				{
@@ -249,31 +249,27 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
 				}
 			}
-			else
+*/
+			switch(type)
 			{
-				holster_wep:
-
-				switch(type)
+				case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
 				{
-					case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-					{
-						SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-						ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
-						defer HolsterWeapon(playerid, _:type, ammo, 300);
-						tick_LastHolstered[playerid] = tickcount();
-					}
-					case 25, 27, 29, 30, 31, 33, 34, 35, 36:
-					{
-						SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-						ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
-						defer HolsterWeapon(playerid, _:type, ammo, 800);
-						tick_LastHolstered[playerid] = tickcount();
-					}
-					default:
-					{
-						ShowMsgBox(playerid, "That item is too big", 3000, 120);
-						return 0;
-					}
+					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+					ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
+					defer HolsterWeapon(playerid, _:type, ammo, 300);
+					tick_LastHolstered[playerid] = tickcount();
+				}
+				case 25, 27, 29, 30, 31, 33, 34, 35, 36:
+				{
+					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+					ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
+					defer HolsterWeapon(playerid, _:type, ammo, 800);
+					tick_LastHolstered[playerid] = tickcount();
+				}
+				default:
+				{
+					ShowMsgBox(playerid, "That item is too big", 3000, 120);
+					return 0;
 				}
 			}
 		}

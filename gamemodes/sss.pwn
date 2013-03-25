@@ -1175,6 +1175,15 @@ ptask PlayerUpdate[100](playerid)
 		ResetPlayerWeapons(playerid);
 	}
 
+	if(IsPlayerConnected(bag_LookingInBag[playerid]))
+	{
+		if(GetPlayerDist3D(playerid, bag_LookingInBag[playerid]) > 1.0)
+		{
+			ClosePlayerContainer(playerid);
+			CancelSelectTextDraw(playerid);
+		}
+	}
+
 	return;
 }
 

@@ -578,7 +578,7 @@ forward inv_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(gPlayerBackpack[playerid]))
+	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{
@@ -605,7 +605,7 @@ forward inv_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(containerid == GetItemExtraData(gPlayerBackpack[playerid]))
+	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{
