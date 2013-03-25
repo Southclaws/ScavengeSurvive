@@ -490,6 +490,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/motionmine.pwn"
 #include "../scripts/Items/parachute.pwn"
 #include "../scripts/Items/molotov.pwn"
+#include "../scripts/Items/screwdriver.pwn"
 
 //======================Data Load and Setup
 

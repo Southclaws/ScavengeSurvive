@@ -11,12 +11,12 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 	}
-	return CallLocalFunction("bot_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	return CallLocalFunction("mol_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
 #else
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
-#define OnPlayerUseItemWithItem bot_OnPlayerUseItemWithItem
-forward bot_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#define OnPlayerUseItemWithItem mol_OnPlayerUseItemWithItem
+forward mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
