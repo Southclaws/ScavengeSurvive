@@ -416,18 +416,14 @@ ACMD:hud[3](playerid, params[])
 	{
 		PlayerTextDrawHide(playerid, HungerBarBackground);
 		PlayerTextDrawHide(playerid, HungerBarForeground);
-		TextDrawHideForPlayer(playerid, ClockText);
-		TextDrawHideForPlayer(playerid, MapCover1);
-		TextDrawHideForPlayer(playerid, MapCover2);
+		HideWatch(playerid);
 		f:bPlayerGameSettings[playerid]<ShowHUD>;
 	}
 	else
 	{
 		PlayerTextDrawShow(playerid, HungerBarBackground);
 		PlayerTextDrawShow(playerid, HungerBarForeground);
-		TextDrawShowForPlayer(playerid, ClockText);
-		TextDrawShowForPlayer(playerid, MapCover1);
-		TextDrawShowForPlayer(playerid, MapCover2);
+		ShowWatch(playerid);
 		t:bPlayerGameSettings[playerid]<ShowHUD>;
 	}
 }

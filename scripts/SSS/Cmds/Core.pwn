@@ -63,7 +63,7 @@ MsgAdmins(level, colour, string[])
 }
 
 
-CMD:admins(playerid, params[])
+ACMD:admins[3](playerid, params[])
 {
     new
         title[20],

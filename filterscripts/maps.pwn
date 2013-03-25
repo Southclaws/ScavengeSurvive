@@ -155,9 +155,12 @@ LoadMapsFromFolder(folder[])
 		}
 		if(type == FM_FILE)
 		{
-			filename[0] = EOS;
-			format(filename, sizeof(filename), "%s/%s", folder, item);
-			LoadMap(filename);
+			if(!strcmp(item[strlen(item) - 4], ".map"))
+			{
+				filename[0] = EOS;
+				format(filename, sizeof(filename), "%s/%s", folder, item);
+				LoadMap(filename);
+			}
 		}
 	}
 

@@ -82,8 +82,7 @@ public OnItemCreate(itemid)
 		new
 			list[MAX_SKINS],
 			idx,
-			skinid,
-			exname[32];
+			skinid;
 
 		for(new i; i < skin_Total; i++)
 		{
@@ -96,16 +95,6 @@ public OnItemCreate(itemid)
 		skinid = list[random(idx)];
 
 		SetItemExtraData(itemid, skinid);
-
-		strcat(exname, skin_Data[skinid][skin_name]);
-
-		if(skin_Data[skinid][skin_gender] == 1)
-			strcat(exname, " male");
-
-		else
-			strcat(exname, " female");
-
-		SetItemNameExtra(itemid, exname);
 	}
 
 	return CallLocalFunction("skin_OnItemCreate", "d", itemid);
@@ -117,6 +106,36 @@ public OnItemCreate(itemid)
 #endif
 #define OnItemCreate skin_OnItemCreate
 forward skin_OnItemCreate(itemid);
+
+
+public OnItemNameRender(itemid)
+{
+	if(GetItemType(itemid) == item_Clothes)
+	{
+		new
+			exname[32];
+
+		if(skin_Data[GetItemExtraData(itemid)][skin_gender] == 1)
+			strcat(exname, "Male ");
+
+		else
+			strcat(exname, "Female ");
+
+		strcat(exname, skin_Data[GetItemExtraData(itemid)][skin_name]);
+
+		SetItemNameExtra(itemid, exname);
+	}
+
+	return CallLocalFunction("clo_OnItemNameRender", "d", itemid);
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender clo_OnItemNameRender
+forward clo_OnItemNameRender(itemid);
+
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

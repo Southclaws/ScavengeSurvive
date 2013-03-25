@@ -112,7 +112,7 @@ ptask ToolTipUpdate[1000](playerid)
 					else if(itemtype == item_timebomb)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Arm timebomb");
 
-					else if(itemtype == item_Beer)
+					else if(itemtype == item_Bottle)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Drink");
 
 					else if(itemtype == item_Sign)

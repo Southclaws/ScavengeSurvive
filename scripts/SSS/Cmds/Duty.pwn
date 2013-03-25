@@ -1,3 +1,5 @@
+static tick_AdminDuty[MAX_PLAYERS];
+
 ACMD:duty[1](playerid, params[])
 {
 	if(bPlayerGameSettings[playerid] & AdminDuty)
@@ -6,20 +8,24 @@ ACMD:duty[1](playerid, params[])
 
 		LoadPlayerInventory(playerid);
 
-		MsgF(playerid, YELLOW, " >  Loaded off-duty character data. Health: %.2f", gPlayerHP[playerid]);
-
 		SetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
 
 		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
+
+		tick_AdminDuty[playerid] = tickcount();
 	}
 	else
 	{
-		SavePlayerData(playerid);
+		if(tickcount() - tick_AdminDuty[playerid] < 10000)
+		{
+			Msg(playerid, YELLOW, " >  Please don't use the duty ability that frequently.");
+			return 1;
+		}
 
-		MsgF(playerid, YELLOW, " >  Saved off-duty character data. Health: %.2f", gPlayerHP[playerid]);
+		SavePlayerData(playerid);
 
 		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
@@ -29,7 +35,7 @@ ACMD:duty[1](playerid, params[])
 			gPlayerData[playerid][ply_posZ]);
 
 		ResetPlayerWeapons(playerid);
-		RemoveCurrentItem(playerid);
+		DestroyItem(GetPlayerItem(playerid));
 		RemovePlayerHolsterWeapon(playerid);
 
 		for(new i; i < INV_MAX_SLOTS; i++)
@@ -142,6 +148,7 @@ ACMD:spec[2](playerid, params[])
 	if(isnull(params))
 	{
 		TogglePlayerSpectating(playerid, false);
+		f:bPlayerGameSettings[playerid]<Spectating>;
 	}
 	else
 	{
@@ -151,6 +158,7 @@ ACMD:spec[2](playerid, params[])
 		{
 			TogglePlayerSpectating(playerid, true);
 			PlayerSpectatePlayer(playerid, id);
+			t:bPlayerGameSettings[playerid]<Spectating>;
 		}
 	}
 

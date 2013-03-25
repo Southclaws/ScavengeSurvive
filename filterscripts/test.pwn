@@ -20,6 +20,14 @@ public OnFilterScriptInit()
 	fclose(file);
 }
 
+CMD:hat(playerid, params)
+{
+	SendClientMessage(playerid, 0xFFFFFFFF, "SERVER: You now edit your attached object on index slot 0!");
+	SetPlayerAttachedObject(playerid, 0, 19352, 2);
+	EditAttachedObject(playerid, 0);
+	return 1;
+}
+
 CMD:carry(playerid, params[])
 {
 	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);

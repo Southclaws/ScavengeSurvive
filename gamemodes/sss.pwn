@@ -323,10 +323,7 @@ new
 new
 Text:			DeathText			= Text:INVALID_TEXT_DRAW,
 Text:			DeathButton			= Text:INVALID_TEXT_DRAW,
-Text:			ClockText			= Text:INVALID_TEXT_DRAW,
 Text:			RestartCount		= Text:INVALID_TEXT_DRAW,
-Text:			MapCover1			= Text:INVALID_TEXT_DRAW,
-Text:			MapCover2			= Text:INVALID_TEXT_DRAW,
 Text:			HitMark_centre		= Text:INVALID_TEXT_DRAW,
 Text:			HitMark_offset		= Text:INVALID_TEXT_DRAW,
 
@@ -335,6 +332,10 @@ PlayerText:		ClassButtonMale		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ClassButtonFemale	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HungerBarBackground	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HungerBarForeground	= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		WatchBackground		= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		WatchTime			= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		WatchBear			= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		WatchFreq			= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ToolTip				= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HelpTipText			= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleFuelText		= PlayerText:INVALID_TEXT_DRAW,
@@ -361,6 +362,7 @@ enum (<<= 1) // 14
 		IsNewPlayer,
 		CanExitWelcome,
 		AdminDuty,
+		Spectating,
 		Gender,
 		Alive,
 		Dying,
@@ -464,7 +466,7 @@ forward SetRestart(seconds);
 
 #include "../scripts/Items/misc.pwn"
 #include "../scripts/Items/firework.pwn"
-#include "../scripts/Items/beer.pwn"
+#include "../scripts/Items/bottle.pwn"
 #include "../scripts/Items/timebomb.pwn"
 #include "../scripts/Items/Sign.pwn"
 #include "../scripts/Items/backpack.pwn"
@@ -515,6 +517,8 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/MeleeItems.pwn"
 #include "../scripts/SSS/KnockOut.pwn"
 #include "../scripts/SSS/GraveStone.pwn"
+#include "../scripts/SSS/Watch.pwn"
+#include "../scripts/SSS/Disarm.pwn"
 
 #include "../scripts/SSS/Tutorial.pwn"
 #include "../scripts/SSS/WelcomeMessage.pwn"
@@ -689,7 +693,7 @@ public OnGameModeInit()
 	item_timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
 	item_fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_Beer			= DefineItemType("Beer",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.60376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
+	item_Bottle			= DefineItemType("Bottle",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
 	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 
@@ -805,6 +809,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_Medkit,			item_Bandage,		item_DoctorBag);
 	DefineItemCombo(item_MobilePhone,		item_explosive,		item_PhoneBomb);
 	DefineItemCombo(ItemType:4,				item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
+	DefineItemCombo(item_Bottle,			item_Bandage,		ItemType:18);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -956,50 +961,11 @@ task GameUpdate[1000]()
 
 	gServerUptime++;
 
-	new
-		str[6],
-		hour,
-		minute,
-		weather;
-
-	gettime(hour, minute);
-
-	format(str, 6, "%02d:%02d", hour, minute);
-	TextDrawSetString(ClockText, str);
 
 	if(tickcount() - gLastWeatherChange > 600000 && random(100) < 5)
 	{
 		gLastWeatherChange = tickcount();
 		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
-	}
-
-	foreach(new i : Player)
-	{
-		if(IsPlayerUnderDrugEffect(i, DRUG_TYPE_LSD))
-		{
-			hour = 22;
-			minute = 3;
-			weather = 33;
-
-			if(tickcount() - GetPlayerDrugUseTick(i, DRUG_TYPE_LSD) > 120000)
-				RemoveDrug(i, DRUG_TYPE_LSD);
-		}
-		else if(IsPlayerUnderDrugEffect(i, DRUG_TYPE_HEROINE))
-		{
-			hour = 22;
-			minute = 30;
-			weather = 33;
-
-			if(tickcount() - GetPlayerDrugUseTick(i, DRUG_TYPE_HEROINE) > 120000)
-				RemoveDrug(i, DRUG_TYPE_HEROINE);
-		}
-		else
-		{
-			weather = WeatherData[gWeatherID][weather_id];
-		}
-
-		SetPlayerTime(i, hour, minute);
-		SetPlayerWeather(i, weather);
 	}
 }
 
@@ -1010,6 +976,11 @@ task GlobalAnnouncement[600000]()
 
 ptask PlayerUpdate[100](playerid)
 {
+	new
+		hour,
+		minute,
+		weather;
+
 	if(Iter_Count(Player) > 10)
 	{
 		if(GetPlayerPing(playerid) > 400 && tickcount() - tick_ServerJoin[playerid] > 10000)
@@ -1135,6 +1106,34 @@ ptask PlayerUpdate[100](playerid)
 	}
 
 	KnockOutUpdate(playerid);
+
+	gettime(hour, minute);
+
+	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD))
+	{
+		hour = 22;
+		minute = 3;
+		weather = 33;
+
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD) > 120000)
+			RemoveDrug(playerid, DRUG_TYPE_LSD);
+	}
+	else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
+	{
+		hour = 22;
+		minute = 30;
+		weather = 33;
+
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE) > 120000)
+			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
+	}
+	else
+	{
+		weather = WeatherData[gWeatherID][weather_id];
+	}
+
+	SetPlayerTime(playerid, hour, minute);
+	SetPlayerWeather(playerid, weather);
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
@@ -1355,8 +1354,6 @@ public OnPlayerConnect(playerid)
 		GetCountryName(tmpIP, tmpCountry);
 	
 	if(isnull(tmpCountry))tmpCountry = "Unknown";
-
-	TextDrawShowForPlayer(playerid, ClockText);
 
 	if(db_num_rows(tmpResult) >= 1)
 	{
@@ -1921,7 +1918,10 @@ public OnPlayerDisconnect(playerid, reason)
 	GetPlayerPos(playerid, x, y, z);
 
 	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))
+	{
 		SavePlayerData(playerid);
+		DestroyItem(GetPlayerItem(playerid));
+	}
 
 	ResetVariables(playerid);
 	UnloadPlayerTextDraws(playerid);
@@ -2013,8 +2013,7 @@ public OnPlayerSpawn(playerid)
 			t:bPlayerGameSettings[playerid]<Spawned>;
 
 			GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
-			TextDrawShowForPlayer(playerid, MapCover1);
-			TextDrawShowForPlayer(playerid, MapCover2);
+			ShowWatch(playerid);
 
 			if(bPlayerGameSettings[playerid] & LoggedIn)
 			{
@@ -2110,8 +2109,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 		}
 		else
 		{
-			TextDrawShowForPlayer(playerid, MapCover1);
-			TextDrawShowForPlayer(playerid, MapCover2);
+			ShowWatch(playerid);
 		}
 	}
 	if(clickedid == DeathButton)
@@ -2178,8 +2176,7 @@ OnPlayerSelectGender(playerid)
 	TogglePlayerControllable(playerid, true);
 	SetAllWeaponSkills(playerid, 500);
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
-	TextDrawShowForPlayer(playerid, MapCover1);
-	TextDrawShowForPlayer(playerid, MapCover2);
+	ShowWatch(playerid);
 
 	CancelSelectTextDraw(playerid);
 	PlayerTextDrawHide(playerid, ClassButtonMale);
@@ -2258,8 +2255,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	stop TankHeatUpdateTimer[playerid];
 
-	TextDrawHideForPlayer(playerid, MapCover1);
-	TextDrawHideForPlayer(playerid, MapCover2);
+	HideWatch(playerid);
 
 	if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 432)
 		HidePlayerProgressBar(playerid, TankHeatBar);
@@ -2647,7 +2643,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 					{
 						if(random(100) < 70)
 						{
-							KnockOutPlayer(targetid, floatround(2000 * (40.0 - gPlayerHP[targetid])));
+							KnockOutPlayer(targetid, floatround(2000 * (40.0 - (gPlayerHP[targetid] - hploss))));
 						}
 					}
 				}
@@ -2878,7 +2874,22 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	else
 	{
 		if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
-			ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff",4.1,0,1,1,0,0);
+		{
+			ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff", 4.1, 0, 1, 1, 0, 0);
+		}
+
+		if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
+		{
+			if(!(bPlayerGameSettings[playerid] & KnockedOut))
+			{
+				if(GetPlayerAnimationIndex(playerid) == 1381)
+					ClearAnimations(playerid);
+
+				else
+					ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+			}
+		}
+
 
 /*
 		if(newkeys & KEY_FIRE)
@@ -3333,16 +3344,6 @@ LoadTextDraws()
 	TextDrawSetSelectable		(DeathButton, true);
 
 //=========================================================================Clock
-	ClockText					=TextDrawCreate(605.0, 25.0, "00:00");
-	TextDrawUseBox				(ClockText, 0);
-	TextDrawFont				(ClockText, 3);
-	TextDrawSetShadow			(ClockText, 0);
-	TextDrawSetOutline			(ClockText, 2);
-	TextDrawBackgroundColor		(ClockText, 0x000000FF);
-	TextDrawColor				(ClockText, 0xFFFFFFFF);
-	TextDrawAlignment			(ClockText, 3);
-	TextDrawLetterSize			(ClockText, 0.5, 1.6);
-
 	RestartCount				=TextDrawCreate(430.000000, 10.000000, "Server Restart In:~n~00:00");
 	TextDrawAlignment			(RestartCount, 2);
 	TextDrawBackgroundColor		(RestartCount, 255);
@@ -3352,27 +3353,6 @@ LoadTextDraws()
 	TextDrawSetOutline			(RestartCount, 1);
 	TextDrawSetProportional		(RestartCount, 1);
 
-
-//=====================================================================Map Cover
-	MapCover1					=TextDrawCreate(87.000000, 316.000000, "O");
-	TextDrawAlignment			(MapCover1, 2);
-	TextDrawBackgroundColor		(MapCover1, 255);
-	TextDrawFont				(MapCover1, 1);
-	TextDrawLetterSize			(MapCover1, 4.159998, 13.600000);
-	TextDrawColor				(MapCover1, 255);
-	TextDrawSetOutline			(MapCover1, 0);
-	TextDrawSetProportional		(MapCover1, 1);
-	TextDrawSetShadow			(MapCover1, 0);
-
-	MapCover2					=TextDrawCreate(87.000000, 345.000000, "O");
-	TextDrawAlignment			(MapCover2, 2);
-	TextDrawBackgroundColor		(MapCover2, 255);
-	TextDrawFont				(MapCover2, 1);
-	TextDrawLetterSize			(MapCover2, 2.169998, 7.699997);
-	TextDrawColor				(MapCover2, 255);
-	TextDrawSetOutline			(MapCover2, 0);
-	TextDrawSetProportional		(MapCover2, 1);
-	TextDrawSetShadow			(MapCover2, 0);
 
 //=====================================================================HitMarker
 	new hm[14];
@@ -3482,6 +3462,48 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawTextSize			(playerid, HungerBarForeground, 617.000000, 10.000000);
 
 
+//=========================================================================Watch
+
+	WatchBackground					=CreatePlayerTextDraw(playerid, 33.000000, 338.000000, "LD_POOL:ball");
+	PlayerTextDrawBackgroundColor	(playerid, WatchBackground, 255);
+	PlayerTextDrawFont				(playerid, WatchBackground, 4);
+	PlayerTextDrawLetterSize		(playerid, WatchBackground, 0.500000, 0.000000);
+	PlayerTextDrawColor				(playerid, WatchBackground, 255);
+	PlayerTextDrawSetOutline		(playerid, WatchBackground, 0);
+	PlayerTextDrawSetProportional	(playerid, WatchBackground, 1);
+	PlayerTextDrawSetShadow			(playerid, WatchBackground, 1);
+	PlayerTextDrawUseBox			(playerid, WatchBackground, 1);
+	PlayerTextDrawBoxColor			(playerid, WatchBackground, 255);
+	PlayerTextDrawTextSize			(playerid, WatchBackground, 108.000000, 89.000000);
+
+	WatchTime						=CreatePlayerTextDraw(playerid, 87.000000, 372.000000, "69:69");
+	PlayerTextDrawAlignment			(playerid, WatchTime, 2);
+	PlayerTextDrawBackgroundColor	(playerid, WatchTime, 255);
+	PlayerTextDrawFont				(playerid, WatchTime, 2);
+	PlayerTextDrawLetterSize		(playerid, WatchTime, 0.500000, 2.000000);
+	PlayerTextDrawColor				(playerid, WatchTime, -1);
+	PlayerTextDrawSetOutline		(playerid, WatchTime, 1);
+	PlayerTextDrawSetProportional	(playerid, WatchTime, 1);
+
+	WatchBear						=CreatePlayerTextDraw(playerid, 87.000000, 358.000000, "45 Deg");
+	PlayerTextDrawAlignment			(playerid, WatchBear, 2);
+	PlayerTextDrawBackgroundColor	(playerid, WatchBear, 255);
+	PlayerTextDrawFont				(playerid, WatchBear, 2);
+	PlayerTextDrawLetterSize		(playerid, WatchBear, 0.300000, 1.500000);
+	PlayerTextDrawColor				(playerid, WatchBear, -1);
+	PlayerTextDrawSetOutline		(playerid, WatchBear, 1);
+	PlayerTextDrawSetProportional	(playerid, WatchBear, 1);
+
+	WatchFreq						=CreatePlayerTextDraw(playerid, 87.000000, 391.000000, "88.8");
+	PlayerTextDrawAlignment			(playerid, WatchFreq, 2);
+	PlayerTextDrawBackgroundColor	(playerid, WatchFreq, 255);
+	PlayerTextDrawFont				(playerid, WatchFreq, 2);
+	PlayerTextDrawLetterSize		(playerid, WatchFreq, 0.300000, 1.500000);
+	PlayerTextDrawColor				(playerid, WatchFreq, -1);
+	PlayerTextDrawSetOutline		(playerid, WatchFreq, 1);
+	PlayerTextDrawSetProportional	(playerid, WatchFreq, 1);
+
+
 //======================================================================HelpTips
 
 	HelpTipText						=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
@@ -3584,66 +3606,6 @@ UnloadPlayerTextDraws(playerid)
 	DestroyPlayerProgressBar(playerid, ActionBar);
 	DestroyPlayerProgressBar(playerid, KnockoutBar);
 }
-
-public OnPlayerOpenInventory(playerid)
-{
-	TextDrawHideForPlayer(playerid, MapCover1);
-	TextDrawHideForPlayer(playerid, MapCover2);
-
-	return CallLocalFunction("SSS_OnPlayerOpenInventory", "d", playerid);
-}
-#if defined _ALS_OnPlayerOpenInventory
-	#undef OnPlayerOpenInventory
-#else
-	#define _ALS_OnPlayerOpenInventory
-#endif
-#define OnPlayerOpenInventory SSS_OnPlayerOpenInventory
-forward OnPlayerOpenInventory(playerid);
-
-public OnPlayerCloseInventory(playerid)
-{
-	TextDrawShowForPlayer(playerid, MapCover1);
-	TextDrawShowForPlayer(playerid, MapCover2);
-
-	return CallLocalFunction("SSS_OnPlayerCloseInventory", "d", playerid);
-}
-#if defined _ALS_OnPlayerCloseInventory
-	#undef OnPlayerCloseInventory
-#else
-	#define _ALS_OnPlayerCloseInventory
-#endif
-#define OnPlayerCloseInventory SSS_OnPlayerCloseInventory
-forward OnPlayerCloseInventory(playerid);
-
-public OnPlayerOpenContainer(playerid)
-{
-	TextDrawHideForPlayer(playerid, MapCover1);
-	TextDrawHideForPlayer(playerid, MapCover2);
-
-	return CallLocalFunction("SSS_OnPlayerOpenContainer", "d", playerid);
-}
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer SSS_OnPlayerOpenContainer
-forward OnPlayerOpenContainer(playerid);
-
-public OnPlayerCloseContainer(playerid)
-{
-	TextDrawShowForPlayer(playerid, MapCover1);
-	TextDrawShowForPlayer(playerid, MapCover2);
-
-	return CallLocalFunction("SSS_OnPlayerCloseContainer", "d", playerid);
-}
-#if defined _ALS_OnPlayerCloseContainer
-	#undef OnPlayerCloseContainer
-#else
-	#define _ALS_OnPlayerCloseContainer
-#endif
-#define OnPlayerCloseContainer SSS_OnPlayerCloseContainer
-forward OnPlayerCloseContainer(playerid);
 
 public OnButtonPress(playerid, buttonid)
 {

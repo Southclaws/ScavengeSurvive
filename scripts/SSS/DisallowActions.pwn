@@ -1,6 +1,6 @@
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerPickUpItem", "dd", playerid, itemid);
@@ -15,7 +15,7 @@ forward dis_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);
@@ -32,7 +32,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 			return 1;
 	}
 
@@ -48,7 +48,7 @@ forward dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 public OnPlayerOpenInventory(playerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerOpenInventory", "d", playerid);
@@ -63,7 +63,7 @@ forward dis_OnPlayerOpenInventory(playerid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerOpenContainer", "dd", playerid, containerid);
@@ -78,6 +78,9 @@ forward dis_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+		return 1;
+
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return 1;
 

@@ -22,7 +22,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_FireworkBox,					0.4);
 	AddItemToLootIndex(loot_Civilian,		item_FireLighter,					1.0);
 	AddItemToLootIndex(loot_Civilian,		item_fusebox,						0.8);
-	AddItemToLootIndex(loot_Civilian,		item_Beer,							1.0);
+	AddItemToLootIndex(loot_Civilian,		item_Bottle,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Sign,							0.4);
 	AddItemToLootIndex(loot_Civilian,		item_Bandage,						0.4);
 	AddItemToLootIndex(loot_Civilian,		item_FishRod,						1.0);
@@ -144,7 +144,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_Satchel,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Backpack,						0.1);
 	AddItemToLootIndex(loot_CarCivilian,	item_fusebox,						1.0);
-	AddItemToLootIndex(loot_CarCivilian,	item_Beer,							1.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_Bottle,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_battery,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Wheel,							0.4);
 	AddItemToLootIndex(loot_CarCivilian,	item_Pizza,							0.7);
@@ -161,7 +161,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_Bandage,						0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_battery,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Wheel,							0.4);
-	AddItemToLootIndex(loot_CarIndustrial,	item_Beer,							1.0);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Bottle,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Wrench,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Crowbar,						0.8);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Hammer,						0.9);
@@ -194,7 +194,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarPolice,		item_Bandage,						0.4);
 	AddItemToLootIndex(loot_CarPolice,		item_battery,						1.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Wheel,							0.5);
-	AddItemToLootIndex(loot_CarPolice,		item_Beer,							0.2);
+	AddItemToLootIndex(loot_CarPolice,		item_Bottle,						0.2);
 	AddItemToLootIndex(loot_CarPolice,		item_Wrench,						0.6);
 	AddItemToLootIndex(loot_CarPolice,		item_Crowbar,						0.6);
 	AddItemToLootIndex(loot_CarPolice,		item_Hammer,						0.6);
@@ -219,7 +219,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarMilitary,	item_Bandage,						0.4);
 	AddItemToLootIndex(loot_CarMilitary,	item_battery,						0.4);
 	AddItemToLootIndex(loot_CarMilitary,	item_Wheel,							0.6);
-	AddItemToLootIndex(loot_CarMilitary,	item_Beer,							0.5);
+	AddItemToLootIndex(loot_CarMilitary,	item_Bottle,						0.5);
 	AddItemToLootIndex(loot_CarMilitary,	item_Wrench,						1.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_Crowbar,						1.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_Hammer,						1.0);
@@ -244,7 +244,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_Bandage,						0.8);
 	AddItemToLootIndex(loot_Survivor,		item_Backpack,						0.8);
 	AddItemToLootIndex(loot_Survivor,		item_Wheel,							0.5);
-	AddItemToLootIndex(loot_Survivor,		item_Beer,							1.0);
+	AddItemToLootIndex(loot_Survivor,		item_Bottle,						1.0);
 	AddItemToLootIndex(loot_Survivor,		item_Wrench,						1.0);
 	AddItemToLootIndex(loot_Survivor,		item_Crowbar,						1.0);
 	AddItemToLootIndex(loot_Survivor,		item_Hammer,						1.0);

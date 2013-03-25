@@ -136,6 +136,15 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
+		bag_PickUpTick[playerid] = tickcount();
+		stop bag_PickUpTimer[playerid];
+
+		if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+		{
+			bag_CurrentBag[playerid] = itemid;
+			bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
+		}
+
 		return 1;
 	}
 
@@ -177,7 +186,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(newkeys & KEY_NO)
 		{
-			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0 && !IsValidItem(GetPlayerInteractingItem(playerid)))
 			{
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 				CreateItemInWorld(gPlayerBackpack[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
@@ -188,31 +197,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
-			if(IsPlayerInventoryFull(playerid))
+			new itemid = GetPlayerItem(playerid);
+
+			if(IsPlayerInventoryFull(playerid) || GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_MEDIUM)
 			{
-				new
-					itemid = GetPlayerItem(playerid),
-					containerid = GetItemExtraData(gPlayerBackpack[playerid]);
+				new containerid = GetItemExtraData(gPlayerBackpack[playerid]);
 
 				if(IsValidContainer(containerid) && IsValidItem(itemid))
 				{
-					new containername[CNT_MAX_NAME];
-
-					GetContainerName(containerid, containername);
-
-					if(AddItemToContainer(containerid, itemid, playerid))
+					if(IsContainerFull(containerid))
 					{
-						new str[32];
-						format(str, 32, "Item added to %s", containername);
-						ShowMsgBox(playerid, str, 3000, 150);
-						return 1;
+						ShowMsgBox(playerid, "Bag full", 3000, 150);
 					}
 					else
 					{
-						new str[32];
-						format(str, 32, "%s full", containername);
-						ShowMsgBox(playerid, str, 3000, 100);
-						return 1;
+						ShowMsgBox(playerid, "Item added to bag", 3000, 150);
+						ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
+						defer bag_PutItemIn(playerid, itemid, containerid);
 					}
 				}
 			}
@@ -232,6 +233,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 		return 1;
 
+/*
 	if(newkeys & 16)
 	{
 		new buttonid = GetPlayerButtonID(playerid);
@@ -242,18 +244,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			{
 				if(buttonid == GetItemButtonID(i))
 				{
-					bag_PickUpTick[playerid] = tickcount();
-					stop bag_PickUpTimer[playerid];
-
-					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-					{
-						bag_CurrentBag[playerid] = i;
-						bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, i);
-					}
 				}
 			}
 		}
 	}
+*/
 	if(oldkeys & 16)
 	{
 		if(tickcount() - bag_PickUpTick[playerid] < 200)
@@ -281,11 +276,17 @@ timer bag_PickUp[250](playerid, itemid)
 	return;
 }
 
+timer bag_PutItemIn[300](playerid, itemid, containerid)
+{
+	AddItemToContainer(containerid, itemid, playerid);
+}
+
 public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(bag_CurrentBag[playerid]))
 	{
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_2Idle", 4.0, 0, 0, 0, 0, 0);
+//		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_2Idle", 4.0, 0, 0, 0, 0, 0);
+		ClearAnimations(playerid);
 		bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 	}
 
