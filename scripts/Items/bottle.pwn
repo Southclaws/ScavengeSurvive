@@ -1,6 +1,3 @@
-new ItemType:item_Bottle = INVALID_ITEM_TYPE;
-
-
 #define BOTTLE_CONTENTS_WATER		(0)
 #define BOTTLE_CONTENTS_BEER		(1)
 

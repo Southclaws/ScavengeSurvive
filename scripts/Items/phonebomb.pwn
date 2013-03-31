@@ -1,7 +1,3 @@
-new
-	ItemType:item_PhoneBomb = INVALID_ITEM_TYPE;
-
-
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone)

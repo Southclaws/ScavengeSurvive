@@ -2,9 +2,6 @@
 
 
 new
-ItemType:	item_Wrench				= INVALID_ITEM_TYPE,
-ItemType:	item_Hammer				= INVALID_ITEM_TYPE,
-ItemType:	item_Screwdriver		= INVALID_ITEM_TYPE,
 Timer:		gPlayerFixTimer			[MAX_PLAYERS],
 Float:		gPlayerFixProgress		[MAX_PLAYERS],
 			gPlayerFixTarget		[MAX_PLAYERS];

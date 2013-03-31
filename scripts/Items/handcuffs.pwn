@@ -2,7 +2,6 @@
 
 
 new
-ItemType:	item_HandCuffs = INVALID_ITEM_TYPE,
 Timer:		cuf_UpdateTimer[MAX_PLAYERS],
 Float:		cuf_UpdateProgress[MAX_PLAYERS];
 

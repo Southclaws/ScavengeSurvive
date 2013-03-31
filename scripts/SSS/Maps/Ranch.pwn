@@ -1,7 +1,4 @@
 new
-	ItemType:item_HardDrive = INVALID_ITEM_TYPE,
-	ItemType:item_Key = INVALID_ITEM_TYPE,
-
 	RanchPcButton,
 	RanchHdd,
 	RanchPcState,

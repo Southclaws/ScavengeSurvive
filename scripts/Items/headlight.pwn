@@ -2,7 +2,6 @@
 
 
 new
-	ItemType:item_Headlight = INVALID_ITEM_TYPE,
 	gCurrentLightFixVehicle[MAX_PLAYERS],
 	gLightData[MAX_PLAYERS][4];
 
@@ -17,8 +16,6 @@ ShowLightList(playerid, vehicleid)
 		str[22 * 4];
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
-
-	printf("Lights: %08b", lights);
 
 	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BIKE)
 	{

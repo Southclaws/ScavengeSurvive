@@ -1,7 +1,3 @@
-new
-	ItemType:item_HelmArmy = INVALID_ITEM_TYPE;
-
-
 public OnLoad()
 {
 	new tmp;

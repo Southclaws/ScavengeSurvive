@@ -6,9 +6,6 @@
 
 
 new
-ItemType:	item_Medkit = INVALID_ITEM_TYPE,
-ItemType:	item_Bandage = INVALID_ITEM_TYPE,
-ItemType:	item_DoctorBag = INVALID_ITEM_TYPE,
 Timer:		gPlayerHealTimer[MAX_PLAYERS],
 Float:		gPlayerHealProgress[MAX_PLAYERS],
 			gPlayerHealTarget[MAX_PLAYERS],

@@ -2,7 +2,6 @@
 
 
 new
-	ItemType:item_Parachute = INVALID_ITEM_TYPE,
 	bool:para_TakingOff[MAX_PLAYERS];
 
 

@@ -54,12 +54,11 @@ SaveAllSafeboxes(prints = false)
 {
 	foreach(new i : box_Index)
 	{
-		if(!IsContainerEmpty(GetItemExtraData(i)) && IsItemInWorld(i))
-			SaveSafeboxItem(i, prints);
+		SaveSafeboxItem(i, prints);
 	}
 }
 
-LoadSafeboxes()
+LoadSafeboxes(prints = false)
 {
 	new
 		dir:direc = dir_open(SAFEBOX_DIRECTORY),
@@ -71,7 +70,8 @@ LoadSafeboxes()
 		Float:y,
 		Float:z,
 		Float:r,
-		containerid;
+		containerid, 
+		count;
 
 	while(dir_list(direc, item, type))
 	{
@@ -87,20 +87,23 @@ LoadSafeboxes()
 
 			if(file)
 			{
+				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
+
+				if(x == 0.0 && y == 0.0 && z == 0.0)
+				{
+					fremove(filedir);
+					continue;
+				}
+
 				fblockread(file, data, sizeof(data));
 				fclose(file);
 
-				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
-
-				if(data[0] < _:item_MediumBox)
-				{
-					data[0] = _:box_TypeData[data[0]][box_itemtype];
-				}
 
 				itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
 				containerid = GetItemExtraData(itemid);
 
-				printf("[LOAD] Savebox type %d at %f, %f, %f", data[0], x, y, z);
+				if(prints)
+					printf("[LOAD] Savebox type %d at %f, %f, %f", data[0], x, y, z);
 
 				for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
 				{
@@ -114,15 +117,22 @@ LoadSafeboxes()
 
 					AddItemToContainer(containerid, itemid);
 				}
+
+				count++;
 			}
 		}
 	}
 
 	dir_close(direc);
+
+	printf("Loaded %d Safeboxes", count);
 }
 
 SaveSafeboxItem(itemid, prints = false)
 {
+	if(!IsItemInWorld(itemid))
+		return 0;
+
 	new
 		Float:x,
 		Float:y,
@@ -133,13 +143,16 @@ SaveSafeboxItem(itemid, prints = false)
 		File:file,
 		data[1 + (CNT_MAX_SLOTS * 2)];
 
+	containerid = GetItemExtraData(itemid);
+
+	if(IsContainerEmpty(containerid))
+		return 0;
+
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, r, r, r);
 
 	if(x == 0.0 && y == 0.0 && z == 0.0)
 		return print("ERROR: Safebox save at null coordinates");
-
-	containerid = GetItemExtraData(itemid);
 
 	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
 	file = fopen(filename, io_write);

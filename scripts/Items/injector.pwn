@@ -4,10 +4,6 @@
 #define INJECT_TYPE_HEROINE		(3)
 
 
-new
-	ItemType:item_AutoInjec = INVALID_ITEM_TYPE;
-
-
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_AutoInjec)

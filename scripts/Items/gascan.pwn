@@ -1,5 +1,3 @@
-new ItemType:item_GasCan = INVALID_ITEM_TYPE;
-
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_GasCan)

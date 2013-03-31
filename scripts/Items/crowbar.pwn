@@ -2,7 +2,6 @@
 
 
 new
-ItemType:	item_Crowbar = INVALID_ITEM_TYPE,
 Timer:		LockBreakTimer[MAX_PLAYERS],
 			LockBreakCurrentVehicle[MAX_PLAYERS],
 			LockBreakProgress[MAX_PLAYERS];

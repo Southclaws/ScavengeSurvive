@@ -18,6 +18,9 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
+	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[targetid] & AdminDuty || bPlayerGameSettings[targetid] & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || bPlayerGameSettings[targetid] & Spectating)
+		return 1;
+
 	return CallLocalFunction("dis_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);
 }
 #if defined _ALS_OnPlayerGiveItem

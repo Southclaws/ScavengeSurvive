@@ -4,12 +4,22 @@
 #define DETECTION_DISTANCE (30.0)
 
 
+ptask AntiCheatUpdate[1000](playerid)
+{
+	PositionCheck(playerid);
+	WeaponCheck(playerid);
+}
+
+
+// Anti-teleport
+
+
 new
-	SetPosTick[MAX_PLAYERS],
-	Float:CurPos[MAX_PLAYERS][3],
-	Float:SetPos[MAX_PLAYERS][3],
-	PosReportTick[MAX_PLAYERS],
-	DetectDelay[MAX_PLAYERS];
+		SetPosTick		[MAX_PLAYERS],
+Float:	CurPos			[MAX_PLAYERS][3],
+Float:	SetPos			[MAX_PLAYERS][3],
+		PosReportTick	[MAX_PLAYERS],
+		DetectDelay		[MAX_PLAYERS];
 
 
 Defect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -31,7 +41,7 @@ hook OnPlayerSpawn(playerid)
 	GetPlayerPos(playerid, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]);
 }
 
-ptask PositionCheck[1000](playerid)
+PositionCheck(playerid)
 {
 	if(
 		IsPlayerInAnyVehicle(playerid) ||
@@ -83,17 +93,16 @@ ptask PositionCheck[1000](playerid)
 		{
 			if(tickcount() - PosReportTick[playerid] > 10000)
 			{
-				if(Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]) > DETECTION_DISTANCE)
+				distance = Distance(x, y, z, SetPos[playerid][0], SetPos[playerid][1], SetPos[playerid][2]);
+				if(distance > DETECTION_DISTANCE)
 				{
-					new name[24];
+					new
+						name[24],
+						reason[32];
+
 					GetPlayerName(playerid, name, 24);
-
-					MsgAdminsF(3, 0xFFFF00FF, " >  Possible teleport hack, player: {33CCFF}%s Moved %.2fm in 1 second",
-						name, Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
-
-					printf("[WARN] Possible teleport hack, player: %.2f, %.2f, %.2f to %.2f, %.2f, %.2f (%.2fm)",
-						name, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2], x, y, z,
-						Distance(x, y, z, CurPos[playerid][0], CurPos[playerid][1], CurPos[playerid][2]));
+					format(reason, sizeof(reason), "Moved %.2fm in 1 second", distance);
+					ReportPlayer(name, reason, -1);
 
 					PosReportTick[playerid] = tickcount();
 				}
@@ -106,4 +115,47 @@ ptask PositionCheck[1000](playerid)
 	CurPos[playerid][2] = z;
 
 	return;
+}
+
+
+// Anti-weapon spawn
+
+
+#define WEAPON_OFFENSE_MAX (3)
+
+
+new
+	WeaponOffenseStrike[MAX_PLAYERS];
+
+WeaponCheck(playerid)
+{
+	new weaponid = GetPlayerWeapon(playerid);
+
+	if(weaponid != 0)
+	{
+		if(weaponid != GetPlayerCurrentWeapon(playerid))
+		{
+			WeaponOffenseStrike[playerid]++;
+
+			if(WeaponOffenseStrike[playerid] == WEAPON_OFFENSE_MAX)
+			{
+				new
+					name[24],
+					weaponname1[32],
+					weaponname2[32],
+					reason[128];
+
+				GetPlayerName(playerid, name, 24);
+				GetWeaponName(weaponid, weaponname1, 32);
+				GetWeaponName(GetPlayerCurrentWeapon(playerid), weaponname2, 32);
+
+				format(reason, sizeof(reason), "%p Used %s when should have %s", playerid, weaponname1, weaponname2);
+
+				//ReportPlayer(name, reason, -1);
+				MsgAdmins(3, 0xFFFF00FF, reason);
+
+				WeaponOffenseStrike[playerid] = 0;
+			}
+		}
+	}
 }

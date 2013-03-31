@@ -22,9 +22,7 @@ Float:		fwk_distance,	// C
 new
 			fwk_Data[MAX_PROJECTILE][E_FIREWORK_PROJECTILE_DATA],
 Iterator:	fwk_ProjectileIndex<MAX_PROJECTILE>,
-			fwk_CooldownTick,
-ItemType:	item_FireworkBox = INVALID_ITEM_TYPE,
-ItemType:	item_FireLighter = INVALID_ITEM_TYPE;
+			fwk_CooldownTick;
 
 new
 	fwk_ExplosionTypes[][E_EXPLOSION_TYPE_DATA]=

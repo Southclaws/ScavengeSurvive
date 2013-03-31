@@ -1,9 +1,14 @@
 #include <YSI\y_hooks>
 
 
+#define MAX_REPORTS (32)
+
+
 new
 	report_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME],
-	report_CurrentReason[MAX_PLAYER_NAME][96];
+	report_CurrentReason[MAX_PLAYER_NAME][96],
+	report_CurrentItem[MAX_PLAYER_NAME],
+	report_TimestampIndex[MAX_REPORTS];
 
 
 CMD:report(playerid, params[])
@@ -38,7 +43,13 @@ CMD:report(playerid, params[])
 
 ACMD:reports[1](playerid, params[])
 {
-	ShowListOfReports(playerid);
+	new ret;
+
+	ret = ShowListOfReports(playerid);
+
+	if(ret == 0)
+		Msg(playerid, YELLOW, " >  There are no reports to show.");
+
 	return 1;
 }
 
@@ -74,14 +85,17 @@ ShowListOfReports(playerid)
 	{
 		new
 			field[MAX_PLAYER_NAME + 1],
-			list[(MAX_PLAYER_NAME + 1 + 8) * 10];
+			list[(MAX_PLAYER_NAME + 1 + 8) * MAX_REPORTS];
 
-		for(new i; i < rowcount && i < 10; i++)
+		for(new i; i < rowcount && i < MAX_REPORTS; i++)
 		{
 			db_get_field(result, 3, field, 2);
 
 			if(field[0] == '0')
 				strcat(list, "{FFFF00}");
+
+			db_get_field(result, 2, field, 12);
+			report_TimestampIndex[i] = strval(field);
 
 			db_get_field(result, 0, field, MAX_PLAYER_NAME + 1);
 			strcat(list, field);
@@ -92,7 +106,7 @@ ShowListOfReports(playerid)
 		ShowPlayerDialog(playerid, d_ReportList, DIALOG_STYLE_LIST, "Reports", list, "Open", "Close");
 
 		db_free_result(result);
-	
+
 		return 1;
 	}
 	else
@@ -131,7 +145,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		strtrim(inputtext);
 	
-		format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", inputtext);
+		format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
 		result = db_query(gAccounts, tmpQuery);
 
 		db_get_field(result, 1, reason, 96);
@@ -153,16 +167,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, inputtext, message, "Options", "Back");
 
-		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Reports` SET `"#ROW_READ"` = '1' WHERE `"#ROW_NAME"` = '%s'", inputtext);
+		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Reports` SET `"#ROW_READ"` = '1' WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
 		result = db_query(gAccounts, tmpQuery);
 		db_free_result(result);
+
+		report_CurrentItem[playerid] = listitem;
 	}
 
 	if(dialogid == d_Report)
 	{
 		if(response)
 		{
-			ShowPlayerDialog(playerid, d_ReportOptions, DIALOG_STYLE_LIST, report_CurrentName[playerid], "Ban\nDelete\nMark Unread", "Select", "Back");
+			ShowPlayerDialog(playerid, d_ReportOptions, DIALOG_STYLE_LIST, report_CurrentName[playerid], "Ban\nDelete\nDelete all reports of this player\nMark Unread", "Select", "Back");
 		}
 		else
 		{
@@ -187,12 +203,22 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					new
 						tmpQuery[128];
 
-					format(tmpQuery, sizeof(tmpQuery), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
+					format(tmpQuery, sizeof(tmpQuery), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", report_CurrentName[playerid], report_TimestampIndex[report_CurrentItem[playerid]]);
 					db_free_result(db_query(gAccounts, tmpQuery));
 
 					ShowListOfReports(playerid);
 				}
 				case 2:
+				{
+					new
+						tmpQuery[128];
+
+					format(tmpQuery, sizeof(tmpQuery), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
+					db_free_result(db_query(gAccounts, tmpQuery));
+
+					ShowListOfReports(playerid);
+				}
+				case 3:
 				{
 					new
 						tmpQuery[128];

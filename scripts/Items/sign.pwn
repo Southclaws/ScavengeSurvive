@@ -30,9 +30,6 @@ static
 Timer:		sgn_PickUpTimer[MAX_PLAYERS],
 			sgn_PressSignTick[MAX_SIGN_TEXT];
 
-new
-ItemType:	item_Sign = INVALID_ITEM_TYPE;
-
 
 stock CreateSign(text[MAX_SIGN_TEXT], Float:x, Float:y, Float:z, Float:rot)
 {

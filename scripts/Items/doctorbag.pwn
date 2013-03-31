@@ -5,7 +5,6 @@
 
 
 new
-ItemType:	item_DoctorBag = INVALID_ITEM_TYPE,
 Timer:		gPlayerDocBagTimer[MAX_PLAYERS],
 Float:		gPlayerDocBagProgress[MAX_PLAYERS],
 			gPlayerDocBagTarget[MAX_PLAYERS],

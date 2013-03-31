@@ -2,9 +2,6 @@
 
 
 new
-	ItemType:item_Backpack = INVALID_ITEM_TYPE,
-	ItemType:item_Satchel = INVALID_ITEM_TYPE,
-	ItemType:item_ParaBag = INVALID_ITEM_TYPE,
 	bag_PlayerBagID[MAX_PLAYERS],
 	bag_InventoryOptionID[MAX_PLAYERS],
 	bool:gTakingOffBag[MAX_PLAYERS];
@@ -15,6 +12,7 @@ Iterator:	bag_Index<ITM_MAX>,
 			bag_CurrentBag[MAX_PLAYERS],
 			bag_PickUpTick[MAX_PLAYERS],
 Timer:		bag_PickUpTimer[MAX_PLAYERS],
+Timer:		bag_OtherPlayerEnter[MAX_PLAYERS],
 			bag_LookingInBag[MAX_PLAYERS];
 
 
@@ -138,14 +136,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
-		bag_PickUpTick[playerid] = tickcount();
 		stop bag_PickUpTimer[playerid];
+		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
 
-		if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-		{
-			bag_CurrentBag[playerid] = itemid;
-			bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
-		}
+		bag_PickUpTick[playerid] = tickcount();
+		bag_CurrentBag[playerid] = itemid;
 
 		return 1;
 	}
@@ -159,6 +154,31 @@ public OnPlayerPickUpItem(playerid, itemid)
 #endif
 #define OnPlayerPickUpItem bag_OnPlayerPickUpItem
 forward bag_OnPlayerPickUpItem(playerid, itemid);
+
+public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	new ItemType:itemtype = GetItemType(withitemid);
+
+	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
+	{
+		stop bag_PickUpTimer[playerid];
+		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, withitemid);
+
+		bag_PickUpTick[playerid] = tickcount();
+		bag_CurrentBag[playerid] = withitemid;
+
+		return 1;
+	}
+
+	return CallLocalFunction("bag_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+}
+#if defined _ALS_OnPlayerUseItemWithItem
+	#undef OnPlayerUseItemWithItem
+#else
+	#define _ALS_OnPlayerUseItemWithItem
+#endif
+#define OnPlayerUseItemWithItem bag_OnPlayerUseItemWithItem
+forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -243,8 +263,27 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			{
 				if(IsValidItem(bag_PlayerBagID[i]))
 				{
-					DisplayContainerInventory(playerid, GetItemExtraData(bag_PlayerBagID[i]));
-					bag_LookingInBag[playerid] = i;
+					new
+						Float:px,
+						Float:py,
+						Float:pz,
+						Float:tx,
+						Float:ty,
+						Float:tz,
+						Float:tr,
+						Float:angle;
+
+					GetPlayerPos(playerid, px, py, pz);
+					GetPlayerPos(i, tx, ty, tz);
+					GetPlayerFacingAngle(i, tr);
+
+					angle = absoluteangle(tr - GetAngleToPoint(tx, ty, px, py));
+
+					if(155.0 < angle < 205.0)
+					{
+						bag_OtherPlayerEnter[playerid] = defer bag_EnterOtherPlayer(playerid, i);
+						break;
+					}
 				}
 			}
 		}
@@ -252,6 +291,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(oldkeys & 16)
 	{
+		stop bag_OtherPlayerEnter[playerid];
+
 		if(tickcount() - bag_PickUpTick[playerid] < 200)
 		{
 			if(IsValidItem(bag_CurrentBag[playerid]))
@@ -280,6 +321,12 @@ timer bag_PickUp[250](playerid, itemid)
 timer bag_PutItemIn[300](playerid, itemid, containerid)
 {
 	AddItemToContainer(containerid, itemid, playerid);
+}
+
+timer bag_EnterOtherPlayer[250](playerid, targetid)
+{
+	DisplayContainerInventory(playerid, GetItemExtraData(bag_PlayerBagID[targetid]));
+	bag_LookingInBag[playerid] = targetid;
 }
 
 public OnPlayerCloseContainer(playerid, containerid)

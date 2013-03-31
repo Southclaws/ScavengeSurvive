@@ -14,7 +14,9 @@ Float:		def_placeRotX,
 Float:		def_placeRotY,
 Float:		def_placeRotZ,
 Float:		def_placeOffsetZ,
-			def_maxHitPoints
+			def_maxHitPoints,
+			def_buildVertical,
+			def_buildHorizont
 }
 
 enum E_DEFENSE_DATA
@@ -36,7 +38,7 @@ static
 Iterator:	def_TypeIndex<MAX_DEFENSE_ITEM>,
 			def_ItemTypeBounds[2] = {65535, 0};
 
-static
+new
 			def_Data[MAX_DEFENSE][E_DEFENSE_DATA],
 Iterator:	def_Index<MAX_DEFENSE>;
 
@@ -52,7 +54,7 @@ hook OnPlayerConnect(playerid)
 }
 
 
-stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:zoffset, maxhitpoints)
+stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:zoffset, maxhitpoints, vert, horiz)
 {
 	new id = Iter_Free(def_TypeIndex);
 
@@ -62,6 +64,8 @@ stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:z
 	def_TypeData[id][def_placeRotZ] = rz;
 	def_TypeData[id][def_placeOffsetZ] = zoffset;
 	def_TypeData[id][def_maxHitPoints] = maxhitpoints;
+	def_TypeData[id][def_buildVertical] = vert;
+	def_TypeData[id][def_buildHorizont] = horiz;
 
 	if(_:itemtype < def_ItemTypeBounds[0])
 		def_ItemTypeBounds[0] = _:itemtype;
@@ -85,6 +89,9 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright, hitpoints = -1
 
 	if(upright == 1)
 	{
+		if(!def_TypeData[type][def_buildVertical])
+			return -1;
+
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
 			def_TypeData[type][def_placeRotX],
 			def_TypeData[type][def_placeRotY],
@@ -92,6 +99,9 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, upright, hitpoints = -1
 	}
 	else
 	{
+		if(!def_TypeData[type][def_buildHorizont])
+			return -1;
+
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 			def_TypeData[type][def_placeRotX] + 90.0,
 			def_TypeData[type][def_placeRotY],
@@ -154,7 +164,7 @@ public OnPlayerPickedUpItem(playerid, itemid)
 		{
 			if(itemtype == def_TypeData[i][def_itemtype])
 			{
-				ShowHelpTip(playerid, "Use a tool with this while it's on the floor to construct a permanent defense.", 10000);
+				ShowHelpTip(playerid, "Use a screwdriver with this while dropped to construct a permanent wall. Or use a hammer to construct a permanent floor.", 10000);
 			}
 		}
 	}
@@ -204,12 +214,48 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 StartBuildingDefense(playerid, itemid)
 {
-	def_BuildTimer[playerid] = repeat BuildDefenseUpdate(playerid);
+	new type = -1;
+
+	foreach(new i : def_TypeIndex)
+	{
+		if(GetItemType(itemid) == def_TypeData[i][def_itemtype])
+		{
+			type = i;
+			break;
+		}
+	}
+
+	if(type == -1)
+		return 0;
+
+	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+	if(itemtype == item_Screwdriver)
+	{
+		if(!def_TypeData[type][def_buildVertical])
+		{
+			ShowMsgBox(playerid, "You cannot build that part vertically.", 6000);
+			return 0;
+		}
+	}
+
+	if(itemtype == item_Hammer)
+	{
+		if(!def_TypeData[type][def_buildHorizont])
+		{
+			ShowMsgBox(playerid, "You cannot build that part horizontally.", 6000);
+			return 0;
+		}
+	}
+
+	def_BuildTimer[playerid] = repeat BuildDefenseUpdate(playerid, type);
 	def_CurrentDefense[playerid] = itemid;
 	def_BuildProgress[playerid] = 0.0;
 
 	ShowPlayerProgressBar(playerid, ActionBar);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+
+	return 1;
 }
 
 StopBuildingDefense(playerid)
@@ -223,35 +269,27 @@ StopBuildingDefense(playerid)
 	}
 }
 
-timer BuildDefenseUpdate[100](playerid)
+timer BuildDefenseUpdate[100](playerid, type)
 {
 	if(def_BuildProgress[playerid] == 100.0)
 	{
-		foreach(new i : def_TypeIndex)
-		{
-			if(GetItemType(def_CurrentDefense[playerid]) == def_TypeData[i][def_itemtype])
-			{
-				new
-					Float:x,
-					Float:y,
-					Float:z,
-					Float:angle,
-					ItemType:playeritemtype = GetItemType(GetPlayerItem(playerid));
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:angle,
+			ItemType:playeritemtype = GetItemType(GetPlayerItem(playerid));
 
-				GetItemPos(def_CurrentDefense[playerid], x, y, z);
-				GetItemRot(def_CurrentDefense[playerid], angle, angle, angle);
+		GetItemPos(def_CurrentDefense[playerid], x, y, z);
+		GetItemRot(def_CurrentDefense[playerid], angle, angle, angle);
 
-				DestroyItem(def_CurrentDefense[playerid]);
+		DestroyItem(def_CurrentDefense[playerid]);
 
-				if(playeritemtype == item_Screwdriver)
-					CreateDefense(i, x, y, z, angle, 1);
+		if(playeritemtype == item_Screwdriver)
+			CreateDefense(type, x, y, z, angle, 1);
 
-				if(playeritemtype == item_Hammer)
-					CreateDefense(i, x, y, z, angle, 0);
-
-				break;
-			}
-		}
+		if(playeritemtype == item_Hammer)
+			CreateDefense(type, x, y, z, angle, 0);
 
 		StopBuildingDefense(playerid);
 
@@ -280,7 +318,8 @@ LoadDefenses()
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:r;
+		Float:r,
+		count;
 
 	while(dir_list(direc, item, type))
 	{
@@ -298,39 +337,48 @@ LoadDefenses()
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
 				CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2]);
+
+				count++;
 			}
 		}
 	}
 
 	dir_close(direc);
+
+	printf("Loaded %d Defense items", count);
 }
 
 SaveAllDefenses()
 {
 	foreach(new i : def_Index)
 	{
-		new
-			filename[64],
-			File:file,
-			data[3];
-
-		format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ], def_Data[i][def_rotZ]);
-		file = fopen(filename, io_write);
-
-		if(file)
-		{
-			data[0] = def_Data[i][def_type];
-			data[1] = def_Data[i][def_upright];
-			data[2] = def_Data[i][def_hitPoints];
-			fblockwrite(file, data, sizeof(data));
-			fclose(file);
-		}
-		else
-		{
-			printf("ERROR: Saving defense, filename: '%s'", filename);
-		}
+		SaveDefenseItem(i);
 	}
 	return 1;
+}
+
+SaveDefenseItem(id)
+{
+	new
+		filename[64],
+		File:file,
+		data[3];
+
+	format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
+	file = fopen(filename, io_write);
+
+	if(file)
+	{
+		data[0] = def_Data[id][def_type];
+		data[1] = def_Data[id][def_upright];
+		data[2] = def_Data[id][def_hitPoints];
+		fblockwrite(file, data, sizeof(data));
+		fclose(file);
+	}
+	else
+	{
+		printf("ERROR: Saving defense, filename: '%s'", filename);
+	}
 }
 
 CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)

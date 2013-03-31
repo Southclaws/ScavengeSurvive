@@ -28,7 +28,8 @@ enum (<<=1)
 {
 	v_Used = 1,
 	v_Occupied,
-	v_Player
+	v_Player,
+	v_Dead
 }
 enum E_PLAYER_VEHICLE_DATA
 {
@@ -132,7 +133,7 @@ new gModelGroup[13][78]=
 	// VEHICLE_GROUP_BOAT,
 	{
 	    472,473,493,595,484,430,453,452,
-		446,454,0,...
+		446,454,460,447,0,...
 	}
 };
 
@@ -271,7 +272,7 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				}
 			}
 
-			tmpid = CreateVehicle(model, posX, posY, posZ, rotZ, -1, -1, 86400000);
+			tmpid = CreateVehicle(model, posX, posY, posZ, rotZ, -1, -1, 86400);
 
 			if(IsValidVehicle(tmpid))
 			{
@@ -341,7 +342,7 @@ LoadPlayerVehicles(bool:prints = true)
 				continue;
 			}
 
-			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400000);
+			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400);
 
 			strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);
 
@@ -601,19 +602,31 @@ ApplyVehicleData(vehicleid)
 
 public OnVehicleDeath(vehicleid)
 {
-	if(IsValidContainer(gVehicleContainer[vehicleid]))
-	{
-		for(new i; i < CNT_MAX_SLOTS; i++)
-		{
-			DestroyItem(GetContainerSlotItem(gVehicleContainer[vehicleid], i));
-		}
-		DestroyContainer(gVehicleContainer[vehicleid]);
-	}
-
-	DestroyDynamicArea(gVehicleArea[vehicleid]);
-	DestroyVehicle(vehicleid);
-	Iter_Remove(gVehicleIndex, vehicleid);
+	t:bVehicleSettings[vehicleid]<v_Dead>;
+	print("Vehicle Died");
 }
+
+public OnVehicleSpawn(vehicleid)
+{
+	if(bVehicleSettings[vehicleid] & v_Dead)
+	{
+		print("Dead Vehicle Spawned");
+
+		if(IsValidContainer(gVehicleContainer[vehicleid]))
+		{
+			for(new i; i < CNT_MAX_SLOTS; i++)
+			{
+				DestroyItem(GetContainerSlotItem(gVehicleContainer[vehicleid], i));
+			}
+			DestroyContainer(gVehicleContainer[vehicleid]);
+		}
+
+		DestroyDynamicArea(gVehicleArea[vehicleid]);
+		DestroyVehicle(vehicleid);
+		Iter_Remove(gVehicleIndex, vehicleid);
+	}
+}
+
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {

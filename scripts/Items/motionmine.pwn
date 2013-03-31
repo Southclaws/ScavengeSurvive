@@ -2,7 +2,6 @@
 
 
 new
-	ItemType:item_MotionMine = INVALID_ITEM_TYPE,
 	motm_ContainerOption[MAX_PLAYERS];
 
 

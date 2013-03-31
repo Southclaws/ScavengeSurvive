@@ -1,7 +1,3 @@
-new
-	ItemType:item_ZorroMask = INVALID_ITEM_TYPE;
-
-
 public OnLoad()
 {
 	new tmp;

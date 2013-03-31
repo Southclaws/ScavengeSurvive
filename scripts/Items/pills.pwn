@@ -3,10 +3,6 @@
 #define PILL_TYPE_LSD		(2)
 
 
-new
-	ItemType:item_Pills = INVALID_ITEM_TYPE;
-
-
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_Pills)

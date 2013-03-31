@@ -248,6 +248,30 @@ District_Housing2()
 	CreateLootSpawn(-2681.168458, 821.994737, 72.984374,	3, 40, loot_Survivor);
 	CreateLootSpawn(-2632.018458, 600.744737, 65.154374,	3, 40, loot_Survivor);
 	CreateLootSpawn(-2687.028458, 566.274737, 47.744374,	3, 40, loot_Survivor);
+	CreateLootSpawn(-2886.236083, 733.934997, 35.324878,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2876.267089, 697.207458, 31.315910,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2890.229003, 998.771545, 49.240909,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2706.065917, 833.276000, 72.859443,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2645.362792, 943.932250, 82.868766,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2867.237060, 829.848144, 45.652069,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2411.010009, 966.022827, 50.659019,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2410.520507, 986.809570, 50.665370,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2350.280517, 1007.932739, 54.922580,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2421.767578, 1025.393920, 57.249450,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2435.979492, 1014.319030, 57.251171,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2424.120361, 973.048156, 49.286979,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2718.520263, -316.485931, 56.483760,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2719.678710, -321.517150, 56.480880,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2716.296142, -321.320007, 56.482120,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2718.261962, -323.316436, 56.482421,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2721.492431, -320.216705, 56.482051,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2714.705810, -320.121429, 56.485260,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2641.839355, 562.990478, 47.608409,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2697.316406, 822.339538, 72.864700,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2688.914062, 831.070434, 72.860137,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2719.969970, -318.457824, 56.481571,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2716.626708, -318.528839, 56.481620,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2686.596435, 575.859375, 47.615821,	3, 30, loot_Survivor);
 
 }
 District_Bayfront()
@@ -489,6 +513,10 @@ District_City2()
 	CreateLootSpawn(-1668.020019, 878.099975, 135.169998,	5, 10, loot_Survivor);
 	CreateLootSpawn(-1649.579956, 874.489990, 135.160003,	5, 10, loot_Survivor);
 	CreateLootSpawn(-1683.380004, 897.469970, 135.169998,	5, 10, loot_Survivor);
+	CreateLootSpawn(-1705.384277, 1005.410888, 16.573249,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1704.886718, 1008.051330, 16.574590,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1685.362304, 1060.684814, 16.574239,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1688.958374, 1058.720458, 16.575769,	3, 30, loot_Survivor);
 }
 District_Naval()
 {
@@ -620,6 +648,41 @@ District_Industrial()
 	CreateLootSpawn(-1677.599975, 437.440002, 6.269999,		3, 40, loot_Industrial);
 	CreateLootSpawn(-1617.550048, -80.620002, 1.039999,		3, 40, loot_Industrial);
 	CreateLootSpawn(-1760.050048, -188.470001, 1.039999,	3, 40, loot_Industrial);
+
+	CreateLootSpawn(-1426.129272, -966.460998, 199.837814,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1435.656250, -959.542846, 199.946502,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1427.453491, -959.672424, 200.085449,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1432.990722, -965.091735, 199.961883,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1597.391479, 14.271209, 26.847660,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1585.873168, 21.918960, 33.054111,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1601.096679, 29.551740, 35.781711,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1592.966796, 30.497619, 35.781829,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1609.609252, 32.343601, 26.852989,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1604.519531, 41.764350, 33.060951,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1601.014282, 25.439979, 31.027650,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1738.221435, -22.317970, 14.751179,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1836.454223, 3.203059, 88.162078,		3, 30, loot_Survivor);
+	CreateLootSpawn(-2196.316894, -274.095184, 34.311920,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2334.700439, -160.179428, 39.577770,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1845.781372, 3.016479, 88.161537,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1725.477539, -9.086099, 14.751170,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1851.608642, -149.832702, 20.639789,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1864.016479, -162.968460, 20.635780,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1961.556274, 258.980041, 46.680431,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1682.343017, 430.694000, 11.408100,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1679.729492, 406.736816, 11.413530,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1932.248046, 301.513366, 46.661540,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2105.155761, 136.726531, 42.346359,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2135.142578, 197.030914, 50.590980,	3, 30, loot_Survivor);
+	CreateLootSpawn(-2041.598266, 307.133911, 50.286491,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1665.119384, 417.425231, 11.404919,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1615.957763, 15.085200, 23.151849,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1610.534423, 4.103499, 19.880670,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1621.125244, 15.134679, 19.884929,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1610.671997, 9.615260, 23.149129,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1693.037963, 417.812377, 11.415559,	3, 30, loot_Survivor);
+	CreateLootSpawn(-1619.546264, -1.509310, 16.307559,		3, 30, loot_Survivor);
+	CreateLootSpawn(-1626.177001, 8.094010, 16.311029,		3, 30, loot_Survivor);
 }
 District_Airport()
 {

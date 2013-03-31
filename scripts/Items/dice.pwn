@@ -1,5 +1,3 @@
-new ItemType:item_Dice = INVALID_ITEM_TYPE;
-
 public OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Dice)

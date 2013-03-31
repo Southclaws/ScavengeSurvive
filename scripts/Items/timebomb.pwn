@@ -1,6 +1,3 @@
-new ItemType:item_timebomb = INVALID_ITEM_TYPE;
-
-
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_timebomb)

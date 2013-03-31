@@ -2,7 +2,6 @@
 
 
 new
-	ItemType:item_Wheel = INVALID_ITEM_TYPE,
 	gCurrentWheelFixVehicle[MAX_PLAYERS],
 	gTireData[MAX_PLAYERS][4];
 
