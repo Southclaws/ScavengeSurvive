@@ -53,6 +53,38 @@ CMD:heli(playerid, params[])
 	return 1;
 }
 
+CMD:tow(playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	CreateVehicle(525, x, y, z, 0.0, -1, -1, 100);
+
+	return 1;
+}
+
+CMD:tank(playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	CreateVehicle(432, x, y, z, 0.0, -1, -1, 100);
+
+	return 1;
+}
+
+CMD:vhp(playerid, params[])
+{
+	SetVehicleHealth(GetPlayerVehicleID(playerid), strval(params));
+	return 1;
+}
+
 CMD:wep(playerid, params[])
 {
 	GivePlayerWeapon(playerid, 31, 1000);
