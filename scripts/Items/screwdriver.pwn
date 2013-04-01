@@ -1,8 +1,7 @@
 #include <YSI\y_hooks>
 
 
-static
-		scr_TargetItem[MAX_PLAYERS];
+static scr_TargetItem[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
@@ -48,9 +47,14 @@ public OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(scr_TargetItem[playerid]))
 	{
+		ClearAnimations(playerid);
 		SetItemExtraData(scr_TargetItem[playerid], 0);
 		scr_TargetItem[playerid] = INVALID_ITEM_ID;
+
+		return 1;
 	}
+
+	return CallLocalFunction("scr_OnHoldActionFinish", "d", playerid);
 }
 
 
@@ -62,5 +66,5 @@ public OnHoldActionFinish(playerid)
 #else
 	#define _ALS_OnHoldActionFinish
 #endif
-#define OnHoldActionFinish med_OnHoldActionFinish
-forward med_OnHoldActionFinish(playerid);
+#define OnHoldActionFinish scr_OnHoldActionFinish
+forward scr_OnHoldActionFinish(playerid);
