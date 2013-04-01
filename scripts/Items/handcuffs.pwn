@@ -1,9 +1,13 @@
 #include <YSI\y_hooks>
 
 
-new
-Timer:		cuf_UpdateTimer[MAX_PLAYERS],
-Float:		cuf_UpdateProgress[MAX_PLAYERS];
+new cuf_TargetPlayer[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
+}
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -23,10 +27,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0)
 					{
 						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
-						ShowPlayerProgressBar(playerid, ActionBar);
-						cuf_UpdateProgress[playerid] = 0.0;
-						stop cuf_UpdateTimer[playerid];
-						cuf_UpdateTimer[playerid] = repeat ApplyHandcuffs(playerid, i, itemid);
+						StartHoldAction(playerid, 3000);
+
+						cuf_TargetPlayer[playerid] = i;
+
 						return 1;
 					}
 				}
@@ -43,9 +47,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED)
 					{
-						SetPlayerCuffs(i, false);
-						itemid = CreateItem(item_HandCuffs, 0.0, 0.0, 0.0);
-						GiveWorldItemToPlayer(playerid, itemid, 0);
+						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == 0)
+						{
+							SetPlayerCuffs(i, false);
+							itemid = CreateItem(item_HandCuffs);
+							GiveWorldItemToPlayer(playerid, itemid, 0);
+						}
 					}
 				}
 			}
@@ -53,49 +60,74 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	if(oldkeys & 16)
 	{
-		if(cuf_UpdateProgress[playerid] > 0.0)
-		{
-			StopApplyingHandcuffs(playerid);
-		}
+		StopApplyingHandcuffs(playerid);
 	}
 	return 1;
 }
 
 StopApplyingHandcuffs(playerid)
 {
-	stop cuf_UpdateTimer[playerid];
-	cuf_UpdateProgress[playerid] = 0.0;
-	HidePlayerProgressBar(playerid, ActionBar);
-	ClearAnimations(playerid);
+	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
+	{
+		cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
+		ClearAnimations(playerid);
+		StopHoldAction(playerid);
+	}
 }
 
-timer ApplyHandcuffs[100](playerid, targetid, itemid)
+public OnHoldActionUpdate(playerid, progress)
 {
-	if(cuf_UpdateProgress[playerid] == 20.0)
+	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
-		StopApplyingHandcuffs(playerid);
-		DestroyItem(itemid);
-		SetPlayerCuffs(targetid, true);
-		return;
-	}
-	if(!IsPlayerInPlayerArea(playerid, targetid))
-	{
-		StopApplyingHandcuffs(playerid);
-		return;
+		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]))
+		{
+			StopApplyingHandcuffs(playerid);
+			return 1;
+		}
 	}
 
-	SetPlayerProgressBarValue(playerid, ActionBar, cuf_UpdateProgress[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	UpdatePlayerProgressBar(playerid, ActionBar);
-
-	cuf_UpdateProgress[playerid] += 1.0;
-	return;
+	return CallLocalFunction("cuf_OnHoldActionUpdate", "dd", playerid, progress);
 }
+
+public OnHoldActionFinish(playerid)
+{
+	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
+	{
+		DestroyItem(GetPlayerItem(playerid));
+		SetPlayerCuffs(cuf_TargetPlayer[playerid], true);
+		StopApplyingHandcuffs(playerid);
+
+		return 1;
+	}
+
+	return CallLocalFunction("cuf_OnHoldActionFinish", "d", playerid);
+}
+
+
+// Hooks
+
+
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate cuf_OnHoldActionUpdate
+forward cuf_OnHoldActionUpdate(playerid, progress);
+
+
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish cuf_OnHoldActionFinish
+forward cuf_OnHoldActionFinish(playerid);
 
 
 /*
 	Credits to MP2 on SA:MP forum for a handcuff object offset for each skin
-	(300, that's a lot of hard work!) Thanks Mike!
+	(300 skins that's a lot of hard work!) Thanks Mike!
 */
 
 new Float:gCuffSkinData[][] =

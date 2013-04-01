@@ -36,7 +36,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 					if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 					{
-						if(250.0 <= vehiclehealth < 450.0 || 800.0 <= vehiclehealth < 1000.0)
+						if(250.0 <= vehiclehealth <= 450.0 || 800.0 <= vehiclehealth <= 1000.0)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);
@@ -49,7 +49,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
 					{
-						if(450.0 <= vehiclehealth < 650.0)
+						if(450.0 <= vehiclehealth <= 650.0)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);
@@ -62,7 +62,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 					{
-						if(650.0 <= vehiclehealth < 800.0)
+						if(650.0 <= vehiclehealth <= 800.0)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);

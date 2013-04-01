@@ -2,8 +2,11 @@
 
 
 new stock gHolsterWeaponData[MAX_PLAYERS][2];
-new
-	tick_LastHolstered[MAX_PLAYERS];
+new tick_LastHolstered[MAX_PLAYERS];
+
+
+forward OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
+
 
 stock GetPlayerHolsteredWeapon(playerid)
 {
@@ -87,6 +90,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	if(0 < _:type < WEAPON_PARACHUTE)
 	{
 		new weaponid = GetPlayerWeapon(playerid);
+
 		if(weaponid != 0)
 		{
 			if(weaponid != _:type)
@@ -98,8 +102,13 @@ public OnPlayerPickUpItem(playerid, itemid)
 	else
 	{
 		if(GetPlayerWeapon(playerid) != 0)
+		{
+			CallLocalFunction("OnPlayerUseWeaponWithItem", "ddd", playerid, GetPlayerWeapon(playerid), itemid);
+
 			return 1;
+		}
 	}
+
 	return CallLocalFunction("wep_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem

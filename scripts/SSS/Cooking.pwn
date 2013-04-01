@@ -96,7 +96,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 					}
 				}
 
-				if(itemtype == item_Pizza || itemtype == item_Burger || itemtype == item_BurgerBox || itemtype == item_Taco || itemtype == item_HotDog)
+				if(IsItemTypeFood(itemtype))
 				{
 					new
 						Float:x,

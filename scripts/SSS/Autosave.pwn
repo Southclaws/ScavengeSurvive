@@ -50,6 +50,15 @@ AutosaveSafeboxes()
 
 	foreach(new i : box_Index)
 	{
+		if(!IsItemInWorld(i))
+			continue;
+
+		if(!IsValidContainer(GetItemExtraData(i)))
+			continue;
+
+		if(IsContainerEmpty(GetItemExtraData(i)))
+			continue;
+
 		autosave_Block[idx] = i;
 		idx++;
 	}
@@ -67,7 +76,7 @@ timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
 	{
-		if(i == autosave_Max)
+		if(i >= autosave_Max)
 			return;
 
 		SaveSafeboxItem(autosave_Block[i], false);

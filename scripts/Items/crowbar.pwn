@@ -2,14 +2,13 @@
 
 
 new
-Timer:		LockBreakTimer[MAX_PLAYERS],
-			LockBreakCurrentVehicle[MAX_PLAYERS],
-			LockBreakProgress[MAX_PLAYERS];
+	cbr_TargetVehicle[MAX_PLAYERS],
+	cbr_OpenType[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
-	LockBreakCurrentVehicle[playerid] = INVALID_VEHICLE_ID;
+	cbr_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
 StartBreakingVehicleLock(playerid, vehicleid, type)
@@ -23,98 +22,100 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 		boot,
 		objective;
 
-	stop LockBreakTimer[playerid];
-
 	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 
 	if(type == 0)
 	{
 		if(doors == 0)
 			return 0;
+
+		cbr_OpenType[playerid] = 0;
 	}
 	if(type == 1)
 	{
 		if(IsVehicleTrunkLocked(vehicleid) == 0)
 			return 0;
+
+		cbr_OpenType[playerid] = 1;
 	}
 
-	LockBreakTimer[playerid] = repeat BreakVehicleLockUpdate(playerid, vehicleid, type);
-
-	SetPlayerProgressBarValue(playerid, ActionBar, 0.0);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
-
-	LockBreakProgress[playerid] = 0;
-	LockBreakCurrentVehicle[playerid] = vehicleid;
+	cbr_TargetVehicle[playerid] = vehicleid;
 	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, 1, 1, 1, 0, 0);
+
+	StartHoldAction(playerid, 3000);
 
 	return 1;
 }
 
 StopBreakingVehicleLock(playerid)
 {
-	if(!IsValidVehicle(LockBreakCurrentVehicle[playerid]))
+	if(cbr_TargetVehicle[playerid] == INVALID_VEHICLE_ID)
 		return 0;
 
-	stop LockBreakTimer[playerid];
-	LockBreakCurrentVehicle[playerid] = -1;
-	HidePlayerProgressBar(playerid, ActionBar);
 	ClearAnimations(playerid);
+	StopHoldAction(playerid);
+
+	cbr_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 
 	return 1;
 }
 
-timer BreakVehicleLockUpdate[100](playerid, vehicleid, type)
+public OnHoldActionUpdate(playerid, progress)
 {
-	if(LockBreakProgress[playerid] >= 20)
+	if(cbr_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(type == 0)
+		if(!IsValidVehicle(cbr_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cbr_TargetVehicle[playerid]))
 		{
-			new
-				engine,
-				lights,
-				alarm,
-				doors,
-				bonnet,
-				boot,
-				objective;
-
-			GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(vehicleid, engine, lights, 1, 0, bonnet, boot, objective);
+			StopBreakingVehicleLock(playerid);
+			return 1;
 		}
-		if(type == 1)
+
+		SetPlayerToFaceVehicle(playerid, cbr_TargetVehicle[playerid]);
+
+		return 1;
+	}
+
+	return CallLocalFunction("crow_OnHoldActionUpdate", "dd", playerid, progress);
+}
+
+public OnHoldActionFinish(playerid)
+{
+	if(cbr_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
+	{
+		if(cbr_OpenType[playerid] == 0)
 		{
-			SetVehicleTrunkLock(vehicleid, 0);
+			VehicleDoorsState(cbr_TargetVehicle[playerid], 0);
+		}
+		if(cbr_OpenType[playerid] == 1)
+		{
+			SetVehicleTrunkLock(cbr_TargetVehicle[playerid], 0);
 		}
 
 		StopBreakingVehicleLock(playerid);			
 
-		return;
+		return 1;
 	}
 
-	if(!IsValidVehicle(vehicleid) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, vehicleid))
-	{
-		StopBreakingVehicleLock(playerid);
-		return;
-	}
-
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:vx,
-		Float:vy,
-		Float:vz;
-
-	SetPlayerProgressBarValue(playerid, ActionBar, LockBreakProgress[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
-
-	GetVehiclePos(vehicleid, vx, vy, vz);
-	GetPlayerPos(playerid, px, py, pz);
-	SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
-
-	LockBreakProgress[playerid]++;
-
-	return;
+	return CallLocalFunction("crow_OnHoldActionFinish", "d", playerid);
 }
+
+
+// Hooks
+
+
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate crow_OnHoldActionUpdate
+forward crow_OnHoldActionUpdate(playerid, progress);
+
+
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish crow_OnHoldActionFinish
+forward crow_OnHoldActionFinish(playerid);

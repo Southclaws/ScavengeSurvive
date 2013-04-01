@@ -342,6 +342,13 @@ LoadPlayerVehicles(bool:prints = true)
 				continue;
 			}
 
+			if(GetVehicleType(array[0]) == VTYPE_TRAIN)
+			{
+				printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[array[0]-400], item);
+				fremove(filedir);
+				continue;
+			}
+
 			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400);
 
 			strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);
@@ -411,6 +418,10 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 		itemid;
 
 	array[0] = GetVehicleModel(vehicleid);
+
+	if(GetVehicleType(array[0]) == VTYPE_TRAIN)
+		return 0;
+
 	GetVehicleHealth(vehicleid, Float:array[1]);
 
 	array[2] = _:gVehicleFuel[vehicleid];
@@ -603,14 +614,14 @@ ApplyVehicleData(vehicleid)
 public OnVehicleDeath(vehicleid)
 {
 	t:bVehicleSettings[vehicleid]<v_Dead>;
-	print("Vehicle Died");
+	printf("Vehicle %d Died", vehicleid);
 }
 
 public OnVehicleSpawn(vehicleid)
 {
 	if(bVehicleSettings[vehicleid] & v_Dead)
 	{
-		print("Dead Vehicle Spawned");
+		printf("Dead Vehicle %d Spawned", vehicleid);
 
 		if(IsValidContainer(gVehicleContainer[vehicleid]))
 		{

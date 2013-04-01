@@ -161,7 +161,37 @@ ACMD:additem[3](playerid, params[])
 		Float:z,
 		Float:r;
 
-	sscanf(params, "dD(0)", _:type, exdata);
+	if(sscanf(params, "dD(0)", _:type, exdata) == -1)
+	{
+		new
+			itemname[32],
+			tmp[32];
+
+		sscanf(params, "s[32]D(0)", itemname, exdata);
+
+		if(isnull(itemname))
+		{
+			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname] [extradata]");
+			return 1;
+		}
+
+		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+		{
+			GetItemTypeName(i, tmp);
+
+			if(strfind(tmp, itemname, true) != -1)
+			{
+				type = i;
+				break;
+			}
+		}
+	}
+
+	if(type == ItemType:0)
+	{
+		Msg(playerid, RED, " >  Cannot create item type 0");
+		return 1;
+	}
 
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
@@ -180,6 +210,7 @@ ACMD:additem[3](playerid, params[])
 		if(0 < _:type <= WEAPON_PARACHUTE)
 			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
 	}
+
 
 	return 1;
 }

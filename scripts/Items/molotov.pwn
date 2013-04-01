@@ -6,6 +6,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		{
 			if(GetItemExtraData(withitemid) == 0)
 			{
+				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
+				ShowMsgBox(playerid, "Fuel poured in bottle", 3000);
 				SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 				SetItemExtraData(withitemid, 1);
 			}

@@ -131,7 +131,7 @@ LoadSafeboxes(prints = false)
 SaveSafeboxItem(itemid, prints = false)
 {
 	if(!IsItemInWorld(itemid))
-		return 0;
+		return -1;
 
 	new
 		Float:x,
@@ -145,8 +145,11 @@ SaveSafeboxItem(itemid, prints = false)
 
 	containerid = GetItemExtraData(itemid);
 
+	if(!IsValidContainer(containerid))
+		return -2;
+
 	if(IsContainerEmpty(containerid))
-		return 0;
+		return -3;
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, r, r, r);
@@ -173,15 +176,15 @@ SaveSafeboxItem(itemid, prints = false)
 				return 0;
 		}
 		fblockwrite(file, data, sizeof(data));
+		fclose(file);
+
+		return 1;
 	}
 	else
 	{
 		printf("ERROR: Saving safebox, filename: '%s'", filename);
+		return 0;
 	}
-
-	fclose(file);
-
-	return 1;
 }
 
 public OnItemCreate(itemid)

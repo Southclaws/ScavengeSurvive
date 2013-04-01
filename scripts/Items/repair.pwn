@@ -1,111 +1,102 @@
 #include <YSI\y_hooks>
 
 
-new
-Timer:		gPlayerFixTimer			[MAX_PLAYERS],
-Float:		gPlayerFixProgress		[MAX_PLAYERS],
-			gPlayerFixTarget		[MAX_PLAYERS];
+static
+		fix_TargetVehicle[MAX_PLAYERS],
+Float:	fix_Progress[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
-	gPlayerFixTarget[playerid] = INVALID_VEHICLE_ID;
+	fix_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
 
 StartRepairingVehicle(playerid, vehicleid)
 {
-	new
-		engine,
-		lights,
-		alarm,
-		doors,
-		bonnet,
-		boot,
-		objective;
+	GetVehicleHealth(vehicleid, fix_Progress[playerid]);
 
-	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-	SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, 1, boot, objective);
-	GetVehicleHealth(vehicleid, gPlayerFixProgress[playerid]);
+	if(fix_Progress[playerid] >= 1000.0)
+	{
+		return 0;
+	}
+
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
+	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
+	StartHoldAction(playerid, 50000, floatround(fix_Progress[playerid] * 50));
 
-	stop gPlayerFixTimer[playerid];
-	gPlayerFixTimer[playerid] = repeat PlayerFixVehicleUpdate(playerid);
-	gPlayerFixTarget[playerid] = vehicleid;
+
+
+	fix_TargetVehicle[playerid] = vehicleid;
 
 	return 1;
 }
 
 StopRepairingVehicle(playerid)
 {
-	stop gPlayerFixTimer[playerid];
-
-	if(gPlayerFixTarget[playerid] == INVALID_VEHICLE_ID)
+	if(fix_TargetVehicle[playerid] == INVALID_VEHICLE_ID)
 		return 0;
 
-	if(gPlayerFixProgress[playerid] > 1000.0)
-		SetVehicleHealth(gPlayerFixTarget[playerid], 1000.0);
+	if(fix_Progress[playerid] > 1000.0)
+	{
+		SetVehicleHealth(fix_TargetVehicle[playerid], 1000.0);
+	}
 
-	new
-		engine,
-		lights,
-		alarm,
-		doors,
-		bonnet,
-		boot,
-		objective;
-
-	GetVehicleParamsEx(gPlayerFixTarget[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
-	SetVehicleParamsEx(gPlayerFixTarget[playerid], engine, lights, alarm, doors, 0, boot, objective);
-
-	gPlayerFixTarget[playerid] = INVALID_VEHICLE_ID;
-
-	HidePlayerProgressBar(playerid, ActionBar);
+	VehicleBonnetState(fix_TargetVehicle[playerid], 0);
 	ClearAnimations(playerid);
+	StopHoldAction(playerid);
+
+	fix_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 
 	return 1;
 }
 
-timer PlayerFixVehicleUpdate[100](playerid)
+public OnHoldActionUpdate(playerid, progress)
 {
-	if(!IsPlayerInVehicleArea(playerid, gPlayerFixTarget[playerid]) || !IsValidVehicle(gPlayerFixTarget[playerid]))
-		return StopRepairingVehicle(playerid);
+	if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
+	{
+		StopRepairingVehicle(playerid);
+		return 1;
+	}
 
 	if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 	{
-		if(!(250.0 <= gPlayerFixProgress[playerid] < 450.0) && !(800.0 <= gPlayerFixProgress[playerid] < 1000.0))
-			return StopRepairingVehicle(playerid);
+		if(!(250.0 <= fix_Progress[playerid] <= 450.0) && !(800.0 <= fix_Progress[playerid] <= 1000.0))
+		{
+			StopRepairingVehicle(playerid);
+			return 1;
+		}
 	}
 	if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
 	{
-		if(!(450.0 <= gPlayerFixProgress[playerid] < 650.0))
-			return StopRepairingVehicle(playerid);
+		if(!(450.0 <= fix_Progress[playerid] <= 650.0))
+		{
+			StopRepairingVehicle(playerid);
+			return 1;
+		}
 	}
 	if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 	{
-		if(!(650.0 <= gPlayerFixProgress[playerid] < 800.0))
-			return StopRepairingVehicle(playerid);
+		if(!(650.0 <= fix_Progress[playerid] <= 800.0))
+		{
+			StopRepairingVehicle(playerid);
+			return 1;
+		}
 	}
 
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:vx,
-		Float:vy,
-		Float:vz;
-
-	gPlayerFixProgress[playerid] += frandom(3.0);
+	fix_Progress[playerid] += 2.0;
 	
-	SetPlayerProgressBarValue(playerid, ActionBar, gPlayerFixProgress[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 1000.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
+	SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
+	SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);
 
-	SetVehicleHealth(gPlayerFixTarget[playerid], gPlayerFixProgress[playerid]);
-
-	GetVehiclePos(gPlayerFixTarget[playerid], vx, vy, vz);
-	GetPlayerPos(playerid, px, py, pz);
-	SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
-
-	return 1;
+	return CallLocalFunction("rep_OnHoldActionUpdate", "dd", playerid, progress);
 }
+
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate rep_OnHoldActionUpdate
+forward rep_OnHoldActionUpdate(playerid, progress);
+

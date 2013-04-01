@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define DETECTION_DISTANCE (30.0)
+#define DETECTION_DISTANCE (40.0)
 
 
 ptask AntiCheatUpdate[1000](playerid)
@@ -149,7 +149,7 @@ WeaponCheck(playerid)
 				GetWeaponName(weaponid, weaponname1, 32);
 				GetWeaponName(GetPlayerCurrentWeapon(playerid), weaponname2, 32);
 
-				format(reason, sizeof(reason), "%p Used %s when should have %s", playerid, weaponname1, weaponname2);
+				format(reason, sizeof(reason), " >  '%s' Used '%s' when should have '%s'.", name, weaponname1, weaponname2);
 
 				//ReportPlayer(name, reason, -1);
 				MsgAdmins(3, 0xFFFF00FF, reason);

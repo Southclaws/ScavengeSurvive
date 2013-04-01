@@ -1,16 +1,17 @@
 #include <YSI\y_hooks>
 
 
-#define HEAL_PROGRESS_MAX (40.0)
-#define REVIVE_PROGRESS_MAX (80.0)
+#define HEAL_PROGRESS_MAX (4000)
+#define REVIVE_PROGRESS_MAX (8000)
 
 
-new
-Timer:		gPlayerHealTimer[MAX_PLAYERS],
-Float:		gPlayerHealProgress[MAX_PLAYERS],
-			gPlayerHealTarget[MAX_PLAYERS],
-Bit1:		gPlayerUsingHeal<MAX_PLAYERS>;
+new med_HealTarget[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	med_HealTarget[playerid] = INVALID_PLAYER_ID;
+}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -23,13 +24,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(bPlayerGameSettings[playerid] & KnockedOut)
 				return 0;
 
-			gPlayerHealTarget[playerid] = playerid;
+			med_HealTarget[playerid] = playerid;
 			foreach(new i : Character)
 			{
 				if(IsPlayerInPlayerArea(playerid, i) && !IsPlayerInAnyVehicle(i))
-					gPlayerHealTarget[playerid] = i;
+					med_HealTarget[playerid] = i;
 			}
-			PlayerStartHeal(playerid, gPlayerHealTarget[playerid]);
+			PlayerStartHeal(playerid, med_HealTarget[playerid]);
 		}
 		if(oldkeys == 16)
 		{
@@ -42,94 +43,79 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 PlayerStartHeal(playerid, target)
 {
-	Bit1_Set(gPlayerUsingHeal, playerid, true);
-	gPlayerHealProgress[playerid] = 0.0;
-	gPlayerHealTarget[playerid] = target;
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, HEAL_PROGRESS_MAX);
-	SetPlayerProgressBarValue(playerid, ActionBar, 0.0);
+	new duration = HEAL_PROGRESS_MAX;
+
+	med_HealTarget[playerid] = target;
 
 	if(target != playerid)
 	{
-		SetPlayerProgressBarMaxValue(target, ActionBar, HEAL_PROGRESS_MAX);
-		SetPlayerProgressBarValue(target, ActionBar, 0.0);
-
 		if(bPlayerGameSettings[target] & KnockedOut)
+		{
 			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
-
+			duration = REVIVE_PROGRESS_MAX;
+		}
 		else
+		{
 			ApplyAnimation(playerid, "PED", "ATM", 4.0, 1, 0, 0, 0, 0);
+		}
 
-		gPlayerHealTimer[playerid] = repeat HealHealUpdate(playerid);
+		SetPlayerProgressBarMaxValue(target, ActionBar, duration);
+		SetPlayerProgressBarValue(target, ActionBar, 0.0);
 	}
 	else
 	{
 		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
-		gPlayerHealTimer[playerid] = repeat HealHealUpdate(playerid);
 	}
+
+	StartHoldAction(playerid, duration);
 }
 
 PlayerStopHeal(playerid)
 {
-	stop gPlayerHealTimer[playerid];
-
-	if(Bit1_Get(gPlayerUsingHeal, playerid))
+	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
-		Bit1_Set(gPlayerUsingHeal, playerid, false);
-		HidePlayerProgressBar(playerid, ActionBar);
+		if(med_HealTarget[playerid] != playerid)
+			HidePlayerProgressBar(med_HealTarget[playerid], ActionBar);
 
-		if(gPlayerHealTarget[playerid] != playerid)
-			HidePlayerProgressBar(gPlayerHealTarget[playerid], ActionBar);
-
+		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+
+		med_HealTarget[playerid] = INVALID_PLAYER_ID;
 	}
 }
 
-timer HealHealUpdate[100](playerid)
+public OnHoldActionUpdate(playerid, progress)
 {
-	new	Float:progresscap = HEAL_PROGRESS_MAX;
-
-	gPlayerHealProgress[playerid] += 1.0;
-	
-	if(gPlayerHealTarget[playerid] != playerid)
+	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
-		if(bPlayerGameSettings[gPlayerHealTarget[playerid]] & KnockedOut)
-			progresscap = REVIVE_PROGRESS_MAX;
-
-		new
-			Float:x1,
-			Float:y1,
-			Float:z1,
-			Float:x2,
-			Float:y2,
-			Float:z2;
-
-		GetPlayerPos(playerid, x1, y1, z1);
-		GetPlayerPos(gPlayerHealTarget[playerid], x2, y2, z2);
-		SetPlayerFacingAngle(playerid, GetAngleToPoint(x1, y1, x2, y2));
-
-		SetPlayerProgressBarMaxValue(gPlayerHealTarget[playerid], ActionBar, progresscap);
-		SetPlayerProgressBarValue(gPlayerHealTarget[playerid], ActionBar, gPlayerHealProgress[playerid]);
-		ShowPlayerProgressBar(gPlayerHealTarget[playerid], ActionBar);
-
-	}
-
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, progresscap);
-	SetPlayerProgressBarValue(playerid, ActionBar, gPlayerHealProgress[playerid]);
-	ShowPlayerProgressBar(playerid, ActionBar);
-
-
-	if(gPlayerHealProgress[playerid] >= progresscap)
-	{
-		PlayerStopHeal(playerid);
-
-		if(gPlayerHealTarget[playerid] != playerid)
+		if(med_HealTarget[playerid] != playerid)
 		{
-			if(bPlayerGameSettings[gPlayerHealTarget[playerid]] & KnockedOut)
+			if(!IsPlayerInPlayerArea(playerid, med_HealTarget[playerid]))
 			{
-				WakeUpPlayer(gPlayerHealTarget[playerid]);
+				StopHoldAction(playerid);
+				return 1;
 			}
+
+			new progresscap = HEAL_PROGRESS_MAX;
+
+			if(bPlayerGameSettings[med_HealTarget[playerid]] & KnockedOut)
+				progresscap = REVIVE_PROGRESS_MAX;
+
+			SetPlayerToFacePlayer(playerid, med_HealTarget[playerid]);
+			SetPlayerProgressBarMaxValue(med_HealTarget[playerid], ActionBar, progresscap);
+			SetPlayerProgressBarValue(med_HealTarget[playerid], ActionBar, progress);
+			ShowPlayerProgressBar(med_HealTarget[playerid], ActionBar);
 		}
 
+		return 1;
+	}
+	return CallLocalFunction("med_OnHoldActionUpdate", "dd", playerid, progress);
+}
+
+public OnHoldActionFinish(playerid)
+{
+	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
+	{
 		new
 			itemid,
 			ItemType:itemtype;
@@ -137,18 +123,50 @@ timer HealHealUpdate[100](playerid)
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
 
+		if(med_HealTarget[playerid] != playerid)
+		{
+			if(bPlayerGameSettings[med_HealTarget[playerid]] & KnockedOut)
+			{
+				WakeUpPlayer(med_HealTarget[playerid]);
+			}
+		}
+
 		if(itemtype == item_Medkit)
-			GivePlayerHP(gPlayerHealTarget[playerid], 40.0);
+			GivePlayerHP(med_HealTarget[playerid], 40.0);
 
 		if(itemtype == item_Bandage)
-			GivePlayerHP(gPlayerHealTarget[playerid], 20.0);
+			GivePlayerHP(med_HealTarget[playerid], 20.0);
 
 		if(itemtype == item_DoctorBag)
-			GivePlayerHP(gPlayerHealTarget[playerid], 70.0);
+			GivePlayerHP(med_HealTarget[playerid], 70.0);
 
-		f:bPlayerGameSettings[gPlayerHealTarget[playerid]]<Bleeding>;
+		f:bPlayerGameSettings[med_HealTarget[playerid]]<Bleeding>;
 		DestroyItem(GetPlayerItem(playerid));
 
-		gPlayerHealTarget[playerid] = INVALID_PLAYER_ID;
+		PlayerStopHeal(playerid);
+
+		return 1;
 	}
+	return CallLocalFunction("med_OnHoldActionFinish", "d", playerid);
 }
+
+
+// Hooks
+
+
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate med_OnHoldActionUpdate
+forward med_OnHoldActionUpdate(playerid, progress);
+
+
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish med_OnHoldActionFinish
+forward med_OnHoldActionFinish(playerid);

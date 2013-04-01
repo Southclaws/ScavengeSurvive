@@ -541,6 +541,7 @@ forward SetRestart(seconds);
 #include "../scripts/utils/vehicle.pwn"
 #include "../scripts/utils/vehicledata.pwn"
 #include "../scripts/utils/zones.pwn"
+#include "../scripts/utils/player.pwn"
 
 //======================Hooks
 
@@ -561,33 +562,6 @@ forward SetRestart(seconds);
 //#include "../scripts/API/Turret/Turret.pwn"
 #include "../scripts/API/SprayTag/SprayTag.pwn"
 
-#include "../scripts/Items/firework.pwn"
-#include "../scripts/Items/bottle.pwn"
-#include "../scripts/Items/timebomb.pwn"
-#include "../scripts/Items/Sign.pwn"
-#include "../scripts/Items/backpack.pwn"
-#include "../scripts/Items/repair.pwn"
-#include "../scripts/Items/shield.pwn"
-#include "../scripts/Items/handcuffs.pwn"
-#include "../scripts/Items/wheel.pwn"
-#include "../scripts/Items/gascan.pwn"
-#include "../scripts/Items/flashlight.pwn"
-#include "../scripts/Items/armyhelm.pwn"
-#include "../scripts/Items/crowbar.pwn"
-#include "../scripts/Items/zorromask.pwn"
-#include "../scripts/Items/headlight.pwn"
-#include "../scripts/Items/pills.pwn"
-#include "../scripts/Items/dice.pwn"
-#include "../scripts/Items/armour.pwn"
-#include "../scripts/Items/defenses.pwn"
-#include "../scripts/Items/injector.pwn"
-#include "../scripts/Items/medical.pwn"
-#include "../scripts/Items/phonebomb.pwn"
-#include "../scripts/Items/motionmine.pwn"
-#include "../scripts/Items/parachute.pwn"
-#include "../scripts/Items/molotov.pwn"
-#include "../scripts/Items/screwdriver.pwn"
-
 //======================Data Load and Setup
 
 #include "../scripts/SSS/Spawns.pwn"
@@ -599,6 +573,7 @@ forward SetRestart(seconds);
 
 //======================Gameplay Mechanics
 
+#include "../scripts/SSS/HoldAction.pwn"
 #include "../scripts/SSS/Weapons.pwn"
 #include "../scripts/SSS/Vehicle.pwn"
 #include "../scripts/SSS/Fuel.pwn"
@@ -627,6 +602,8 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/ToolTipEvents.pwn"
 #include "../scripts/SSS/TextTags.pwn"
 
+//======================Admin code
+
 #include "../scripts/SSS/Cmds/Core.pwn"
 #include "../scripts/SSS/Cmds/Commands.pwn"
 #include "../scripts/SSS/Cmds/Moderator.pwn"
@@ -634,6 +611,35 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Cmds/Dev.pwn"
 #include "../scripts/SSS/Cmds/Duty.pwn"
 #include "../scripts/SSS/Cmds/Report.pwn"
+
+//======================Items
+
+#include "../scripts/Items/firework.pwn"
+#include "../scripts/Items/bottle.pwn"
+#include "../scripts/Items/timebomb.pwn"
+#include "../scripts/Items/Sign.pwn"
+#include "../scripts/Items/backpack.pwn"
+#include "../scripts/Items/repair.pwn"
+#include "../scripts/Items/shield.pwn"
+#include "../scripts/Items/handcuffs.pwn"
+#include "../scripts/Items/wheel.pwn"
+#include "../scripts/Items/gascan.pwn"
+#include "../scripts/Items/flashlight.pwn"
+#include "../scripts/Items/armyhelm.pwn"
+#include "../scripts/Items/crowbar.pwn"
+#include "../scripts/Items/zorromask.pwn"
+#include "../scripts/Items/headlight.pwn"
+#include "../scripts/Items/pills.pwn"
+#include "../scripts/Items/dice.pwn"
+#include "../scripts/Items/armour.pwn"
+#include "../scripts/Items/injector.pwn"
+#include "../scripts/Items/medical.pwn"
+#include "../scripts/Items/phonebomb.pwn"
+#include "../scripts/Items/motionmine.pwn"
+#include "../scripts/Items/parachute.pwn"
+#include "../scripts/Items/molotov.pwn"
+#include "../scripts/Items/screwdriver.pwn"
+#include "../scripts/Items/torso.pwn"
 
 //======================Map Scripts
 
@@ -881,11 +887,11 @@ public OnGameModeInit()
 
 
 	anim_Blunt = DefineAnimSet();
+	anim_Stab = DefineAnimSet();
+
 	AddAnimToSet(anim_Blunt, 17, 22, 7.0);
 	AddAnimToSet(anim_Blunt, 18, 23, 9.0);
 	AddAnimToSet(anim_Blunt, 19, 24, 11.0);
-
-	anim_Stab = DefineAnimSet();
 	AddAnimToSet(anim_Stab, 751, 756, 37.8);
 
 	SetItemAnimSet(item_Wrench,			anim_Blunt);
@@ -906,12 +912,24 @@ public OnGameModeInit()
 	DefineFoodItem(item_Meat,			75.0);
 
 
-	DefineItemCombo(item_timer,				item_explosive,		item_timebomb);
-	DefineItemCombo(item_explosive,			item_MotionSense,	item_MotionMine);
-	DefineItemCombo(item_Medkit,			item_Bandage,		item_DoctorBag);
-	DefineItemCombo(item_MobilePhone,		item_explosive,		item_PhoneBomb);
-	DefineItemCombo(ItemType:4,				item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
-	DefineItemCombo(item_Bottle,			item_Bandage,		ItemType:18);
+	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		1, 1, 0);
+	DefineDefenseItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		2, 1, 1);
+	DefineDefenseItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		1, 1, 1);
+	DefineDefenseItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		3, 1, 1);
+	DefineDefenseItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		2, 1, 1);
+	DefineDefenseItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		4, 1, 1);
+	DefineDefenseItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		4, 1, 1);
+	DefineDefenseItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		3, 1, 1);
+	DefineDefenseItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		1, 1, 0);
+	DefineDefenseItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		3, 1, 1);
+
+
+	DefineItemCombo(item_timer,			item_explosive,		item_timebomb);
+	DefineItemCombo(item_explosive,		item_MotionSense,	item_MotionMine);
+	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
+	DefineItemCombo(item_MobilePhone,	item_explosive,		item_PhoneBomb);
+	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
+	DefineItemCombo(item_Bottle,		item_Bandage,		ItemType:18);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -1919,9 +1937,6 @@ ClearPlayerInventoryFile(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	new Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
-
 	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))
 	{
 		SavePlayerData(playerid);
@@ -1936,8 +1951,14 @@ public OnPlayerDisconnect(playerid, reason)
 
 	switch(reason)
 	{
-		case 0:MsgAllF(GREY, " >  %s lost connection.", gPlayerName[playerid]);
-		case 1:MsgAllF(GREY, " >  %s left the server.", gPlayerName[playerid]);
+		case 0:
+			MsgAllF(GREY, " >  %p lost connection.", playerid);
+
+		case 1:
+			MsgAllF(GREY, " >  %p left the server.", playerid);
+
+		case 2:
+			MsgAllF(GREY, " >  %p was kicked.", playerid);
 	}
 
 	return 1;

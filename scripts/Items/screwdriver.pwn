@@ -2,8 +2,13 @@
 
 
 static
-Timer:	scr_Timer[MAX_PLAYERS],
-Float:	scr_Progress[MAX_PLAYERS];
+		scr_TargetItem[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	scr_TargetItem[playerid] = INVALID_ITEM_ID;
+}
 
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -12,7 +17,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	{
 		if(GetItemExtraData(withitemid) == 1)
 		{
-			scr_StartDisarmingBomb(playerid, withitemid);
+			StartHoldAction(playerid, 2000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			scr_TargetItem[playerid] = withitemid;
 		}
 	}
 	return CallLocalFunction("scr_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
@@ -30,53 +37,30 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16)
 	{
-		scr_StopDisarmingBomb(playerid);
+		if(IsValidItem(scr_TargetItem[playerid]))
+			StopHoldAction(playerid);
 	}
 
 	return 1;
 }
 
-
-scr_StartDisarmingBomb(playerid, bombid)
+public OnHoldActionFinish(playerid)
 {
-	stop scr_Timer[playerid];
-	scr_Timer[playerid] = repeat scr_Update(playerid, bombid);
-	scr_Progress[playerid] = 1.0;
-
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	SetPlayerProgressBarValue(playerid, ActionBar, 0.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
-}
-
-scr_StopDisarmingBomb(playerid)
-{
-	stop scr_Timer[playerid];
-
-	if(scr_Progress[playerid] > 0.0)
+	if(IsValidItem(scr_TargetItem[playerid]))
 	{
-		scr_Progress[playerid] = 0.0;
-
-		ClearAnimations(playerid);
-		HidePlayerProgressBar(playerid, ActionBar);
+		SetItemExtraData(scr_TargetItem[playerid], 0);
+		scr_TargetItem[playerid] = INVALID_ITEM_ID;
 	}
 }
 
 
-timer scr_Update[100](playerid, bombid)
-{
-	if(scr_Progress[playerid] == 20)
-	{
-		scr_StopDisarmingBomb(playerid);
-		SetItemExtraData(bombid, 0);
-		return;
-	}
+// Hooks
 
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	SetPlayerProgressBarValue(playerid, ActionBar, scr_Progress[playerid]);
-	ShowPlayerProgressBar(playerid, ActionBar);
 
-	scr_Progress[playerid] += 1.0;
-
-	return;
-}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish med_OnHoldActionFinish
+forward med_OnHoldActionFinish(playerid);

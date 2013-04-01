@@ -11,6 +11,9 @@ timer TankHeatUpdate[100](playerid)
 	if(GetVehicleModel(gPlayerVehicleID[playerid]) != 432)
 		stop TankHeatUpdateTimer[playerid];
 
+	if(TankHeat[playerid] > 30.0)
+		TankHeat[playerid] = 30.0;
+
 	if(TankHeat[playerid] > 0.0)
 		TankHeat[playerid] -= 1.0;
 
