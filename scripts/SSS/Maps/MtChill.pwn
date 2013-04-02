@@ -3,6 +3,7 @@
 
 // Entities
 
+
 new
 	ch_gate,
 	ch_doorBtn,
@@ -13,7 +14,9 @@ new
 	ch_keypad,
 	ch_keypadprt;
 
+
 // Variables
+
 
 new
 	bool:ch_doorstate = false;

@@ -32,6 +32,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
 			}
 		}
+		if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
+		{
+			if(random(100) < 60)
+				ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff", 4.1, 0, 1, 1, 0, 0);
+		}
+		if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
+		{
+			if(!(bPlayerGameSettings[playerid] & KnockedOut))
+			{
+				if(GetPlayerAnimationIndex(playerid) == 1381)
+					ClearAnimations(playerid);
+
+				else
+					ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+			}
+		}
 	}
 }
 

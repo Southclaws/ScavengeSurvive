@@ -368,3 +368,47 @@ public OnPlayerCloseContainer(playerid, containerid)
 #endif
 #define OnPlayerCloseContainer box_OnPlayerCloseContainer
 forward box_OnPlayerCloseContainer(playerid, containerid);
+
+
+AutosaveSafeboxes()
+{
+	new idx;
+
+	foreach(new i : box_Index)
+	{
+		if(!IsItemInWorld(i))
+			continue;
+
+		if(!IsValidContainer(GetItemExtraData(i)))
+			continue;
+
+		if(IsContainerEmpty(GetItemExtraData(i)))
+			continue;
+
+		autosave_Block[idx] = i;
+		idx++;
+	}
+	autosave_Max = idx;
+
+	defer Safebox_BlockSave(0);
+}
+
+timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
+{
+	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+		return;
+
+	new i;
+
+	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
+	{
+		if(i >= autosave_Max)
+			return;
+
+		SaveSafeboxItem(autosave_Block[i], false);
+	}
+
+	defer Safebox_BlockSave(i);
+
+	return;
+}

@@ -79,13 +79,16 @@ LoadMap(filename[])
 		if(!loadedmeta)
 		{
 			if(!sscanf(str, "p<,>ddd", world, interior, streamdist))
+			{
 				loadedmeta = true;
+			}
 
 			if(line > 1)
 			{
 				world = -1;
 				interior = -1;
 				streamdist = 350;
+				loadedmeta = true;
 
 				printf("ERROR: Map file '%s' metadata must be defined on first line. Defaults loaded.", filename);
 			}

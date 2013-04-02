@@ -26,13 +26,13 @@ ItemType:	anm_itemType,
 }
 
 new
-		anm_Data[MAX_ANIMSET][E_ANIMSET_DATA],
-		anm_Anims[MAX_ANIMSET][MAX_ANIMS_PER_SET][E_ANIM_DATA],
-		anm_MeleeItems[MAX_MELEE_ITEM][E_MELEE_ITEM_DATA],
-		anm_TotalMeleeItems;
+			anm_Data[MAX_ANIMSET][E_ANIMSET_DATA],
+			anm_Anims[MAX_ANIMSET][MAX_ANIMS_PER_SET][E_ANIM_DATA],
+			anm_MeleeItems[MAX_MELEE_ITEM][E_MELEE_ITEM_DATA],
+			anm_TotalMeleeItems;
 new
-		anm_AttackTick[MAX_PLAYERS],
-		anm_CurrentAnim[MAX_PLAYERS];
+			anm_AttackTick[MAX_PLAYERS],
+			anm_CurrentAnim[MAX_PLAYERS];
 
 
 DefineAnimSet()
@@ -140,4 +140,15 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 	return 1;
+}
+
+forward Float:GetMeleeDamage(weaponid, animation);
+Float:GetMeleeDamage(weaponid, animation)
+{
+	return anm_Anims[weaponid][animation][anm_damage];
+}
+
+GetCurrentMeleeAnim(playerid)
+{
+	return anm_CurrentAnim[playerid];
 }

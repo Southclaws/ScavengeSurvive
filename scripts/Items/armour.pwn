@@ -5,7 +5,7 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, random(100) + 1);
 	}
 
-	return CallLocalFunction("bag_OnItemCreate", "d", itemid);
+	return CallLocalFunction("armour_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate

@@ -398,3 +398,37 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
 		}
 	}
 }
+
+AutosaveDefenses()
+{
+	new idx;
+
+	foreach(new i : def_Index)
+	{
+		autosave_Block[idx] = i;
+		idx++;
+	}
+	autosave_Max = idx;
+
+	defer Defense_BlockSave(0);
+}
+
+timer Defense_BlockSave[SAVE_BLOCK_INTERVAL](index)
+{
+	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+		return;
+
+	new i;
+
+	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
+	{
+		if(i == autosave_Max)
+			return;
+
+		SaveDefenseItem(autosave_Block[i]);
+	}
+
+	defer Defense_BlockSave(i);
+
+	return;
+}

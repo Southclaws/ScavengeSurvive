@@ -329,6 +329,20 @@ timer bag_EnterOtherPlayer[250](playerid, targetid)
 	bag_LookingInBag[playerid] = targetid;
 }
 
+PlayerBagUpdate(playerid)
+{
+	if(IsPlayerConnected(bag_LookingInBag[playerid]))
+	{
+		if(GetPlayerDist3D(playerid, bag_LookingInBag[playerid]) > 1.0)
+		{
+			ClosePlayerContainer(playerid);
+			CancelSelectTextDraw(playerid);
+			bag_LookingInBag[playerid] = -1;
+		}
+	}
+}
+
+
 public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(bag_CurrentBag[playerid]))

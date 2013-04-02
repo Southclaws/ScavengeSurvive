@@ -152,6 +152,101 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
+PlayerVehicleUpdate(playerid)
+{
+	new
+		vehicleid = GetPlayerVehicleID(playerid),
+		model = GetVehicleModel(vehicleid),
+		Float:health;
+
+	if(GetVehicleType(model) != VTYPE_BMX && model != 0)
+	{
+		GetVehicleHealth(vehicleid, health);
+
+		if(health > 1000.0)
+		{
+			SetVehicleHealth(vehicleid, 1000.0);
+			health = 1000.0;
+		}
+
+		if(0.0 < health <= 300.0)
+			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF0000FF);
+
+		if(300.0 < health <= 450.0)
+			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF3F00FF);
+
+		if(450.0 < health <= 650.0)
+			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF7F00FF);
+
+		if(650.0 < health <= 800.0)
+			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFFBF00FF);
+
+		if(800.0 < health <= 1000.0)
+			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFFFF00FF);
+
+		if(300.0 < health < 500.0)
+		{
+			if(VehicleEngineState(vehicleid) && gPlayerVelocity[playerid] > 30.0)
+			{
+				if(random(100) < (50 - ((health - 400.0) / 4)))
+				{
+					if(health < 400.0)
+						VehicleEngineState(vehicleid, 0);
+	
+					SetVehicleHealth(vehicleid, health - (((200 - (health - 300.0)) / 100.0) / 2.0));
+				}
+			}
+			else
+			{
+				if(random(100) < 100 - (50 - ((health - 400.0) / 4)))
+				{
+					if(health < 400.0)
+						VehicleEngineState(vehicleid, 1);
+				}
+			}
+		}
+		if(VehicleEngineState(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
+		{
+			if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0)
+			{
+				VehicleEngineState(vehicleid, 0);
+				PlayerTextDrawColor(playerid, VehicleEngineText, RED);
+			}
+			else
+			{
+				if(gVehicleFuel[vehicleid] > 0.0)
+				{
+					gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
+				}
+
+				if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+					SetPlayerArmedWeapon(playerid, 0);
+
+				PlayerTextDrawColor(playerid, VehicleEngineText, YELLOW);
+			}
+		}
+		else
+		{
+			PlayerTextDrawColor(playerid, VehicleEngineText, RED);
+		}
+
+		new str[18];
+		format(str, 18, "%.2fL/%.2f", gVehicleFuel[vehicleid], VehicleFuelData[model - 400][veh_maxFuel]);
+		PlayerTextDrawSetString(playerid, VehicleFuelText, str);
+
+		PlayerTextDrawShow(playerid, VehicleFuelText);
+		PlayerTextDrawShow(playerid, VehicleDamageText);
+		PlayerTextDrawShow(playerid, VehicleEngineText);
+
+		if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 55.0 : 45.0))
+		{
+			GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.1));
+		}
+
+		gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
+	}
+}
+
 IsPlayerAtVehicleTrunk(playerid, vehicleid)
 {
 	if(!(0 <= playerid < MAX_PLAYERS))

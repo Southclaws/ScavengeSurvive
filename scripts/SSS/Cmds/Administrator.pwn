@@ -79,7 +79,7 @@ ACMD:unban[2](playerid, params[])
 	
 	db_free_result(db_query(gAccounts, tmpQuery));
 	
-	MsgF(playerid, YELLOW, " >  Banned "#C_BLUE"%s "#C_YELLOW"from the server.", name);
+	MsgF(playerid, YELLOW, " >  Unbanned "#C_BLUE"%s "#C_YELLOW".", name);
 
 	return 1;
 }

@@ -95,11 +95,14 @@ ACMD:unfreeze[1](playerid, params[])
 }
 ACMD:mute[1](playerid, params[])
 {
-	new id, reason[128], delay;
+	new
+		id,
+		delay,
+		reason[128];
 
 
-	if(sscanf(params, "ds[128]D(0)", id, reason, delay))
-		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [reason] (seconds)");
+	if(sscanf(params, "dds[128]", id, delay, reason))
+		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason]");
 
 	if(!IsPlayerConnected(id))
 		return Msg(playerid,RED, " >  Invalid ID");

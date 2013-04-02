@@ -75,9 +75,6 @@ public OnLoad()
 					GetDynamicObjectRot(i, object_rx, object_ry, object_rz);
 					for(new k; k < 4; k++)
 					{
-						if(random(100) < 50)
-							continue;
-
 						if(LootOffsets[j][k][0] == 0.0)
 							break;
 
