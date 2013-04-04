@@ -259,7 +259,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(gScreenBoxFadeLevel[playerid] <= 0)
 	{
-		if(gPlayerHP[playerid] < 40.0 || IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD) || IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
+		if(gPlayerHP[playerid] < 40.0)
 		{
 			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{

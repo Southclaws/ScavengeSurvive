@@ -595,6 +595,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/World/GraveStone.pwn"
 #include "../scripts/SSS/World/Vehicle.pwn"
 #include "../scripts/SSS/World/SafeBox.pwn"
+#include "../scripts/SSS/World/Carmour.pwn"
 
 //======================UI
 

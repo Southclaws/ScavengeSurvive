@@ -20,11 +20,15 @@ public OnFilterScriptInit()
 	fclose(file);
 }
 
-CMD:hat(playerid, params)
+CMD:car(playerid, params[])
 {
-	SendClientMessage(playerid, 0xFFFFFFFF, "SERVER: You now edit your attached object on index slot 0!");
-	SetPlayerAttachedObject(playerid, 0, 19352, 2);
-	EditAttachedObject(playerid, 0);
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	CreateVehicle(strval(params), x, y, z, 0.0, -1, -1, 100);
 	return 1;
 }
 
