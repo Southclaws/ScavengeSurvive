@@ -597,6 +597,16 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/World/SafeBox.pwn"
 #include "../scripts/SSS/World/Carmour.pwn"
 
+//======================Per-Area Item Spawning
+
+#include "../scripts/SSS/Areas/LS.pwn"
+#include "../scripts/SSS/Areas/SF.pwn"
+#include "../scripts/SSS/Areas/LV.pwn"
+#include "../scripts/SSS/Areas/RC.pwn"
+#include "../scripts/SSS/Areas/FC.pwn"
+#include "../scripts/SSS/Areas/BC.pwn"
+#include "../scripts/SSS/Areas/TR.pwn"
+
 //======================UI
 
 #include "../scripts/SSS/UI/HoldAction.pwn"
@@ -661,13 +671,6 @@ forward SetRestart(seconds);
 
 //======================Map Scripts
 
-#include "../scripts/SSS/Maps/santos.pwn"
-#include "../scripts/SSS/Maps/fierro.pwn"
-#include "../scripts/SSS/Maps/venturas.pwn"
-#include "../scripts/SSS/Maps/redcounty.pwn"
-#include "../scripts/SSS/Maps/flintcounty.pwn"
-#include "../scripts/SSS/Maps/bonecounty.pwn"
-#include "../scripts/SSS/Maps/robada.pwn"
 #include "../scripts/SSS/Maps/LockboxLV.pwn"
 #include "../scripts/SSS/Maps/Area69.pwn"
 #include "../scripts/SSS/Maps/Ranch.pwn"
