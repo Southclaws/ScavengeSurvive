@@ -3,7 +3,7 @@ static
 
 Tutorial_Start(playerid)
 {
-	ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press H to open your inventory now.~n~~n~~w~/skip to close the tutorial.");
+	ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.~n~~n~~w~/skip to close the tutorial.");
 
 	TutorialState[playerid] = 1;
 }
@@ -29,7 +29,7 @@ public OnPlayerOpenInventory(playerid)
 	}
 	if(TutorialState[playerid] == 8)
 	{
-		ShowHelpTip(playerid, "Open the options menu for the Medkit in your inventory.");
+		ShowHelpTip(playerid, "Open the options menu for the Wrench in your inventory.");
 		TutorialState[playerid] = 9;
 	}
 
@@ -49,7 +49,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	{
 		if(TutorialState[playerid] == 2)
 		{
-			ShowHelpTip(playerid, "This is your starting gear. Now double click the Medkit in your bag.");
+			ShowHelpTip(playerid, "This is your starting gear. Now double click the Wrench in your bag.");
 			TutorialState[playerid] = 3;
 		}
 	}
@@ -70,9 +70,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	{
 		if(TutorialState[playerid] == 3)
 		{
-			if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Medkit)
+			if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
 			{
-				ShowHelpTip(playerid, "Now click \"Equip\" to remove the Medkit from your bag and put it in your hands.");
+				ShowHelpTip(playerid, "Now click \"Equip\" to remove the Wrench from your bag and put it in your hands.");
 				TutorialState[playerid] = 4;
 			}
 		}
@@ -96,9 +96,9 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 		{
 			if(TutorialState[playerid] == 4)
 			{
-				if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Medkit)
+				if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Wrench)
 				{
-					ShowHelpTip(playerid, "Great! Now you can heal yourself or other players. Press N to drop/give your current item or weapon.");
+					ShowHelpTip(playerid, "Wrenches can be used to repair vehicles, but it will only repair so much, you'll need more tools to repair a vehicle fully. Press "KEYTEXT_DROP_ITEM" to drop/give your current item or weapon.");
 					TutorialState[playerid] = 5;
 				}
 			}
@@ -119,9 +119,9 @@ public OnPlayerDropItem(playerid, itemid)
 {
 	if(TutorialState[playerid] == 5)
 	{
-		if(GetItemType(itemid) == item_Medkit)
+		if(GetItemType(itemid) == item_Wrench)
 		{
-			ShowHelpTip(playerid, "Good, you should grab that again though, you might need it! Press F to pick up items.");
+			ShowHelpTip(playerid, "Good, you should grab that again though, you might need it! Press "KEYTEXT_INTERACT" to pick up items.");
 			TutorialState[playerid] = 6;
 		}
 	}
@@ -140,9 +140,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(TutorialState[playerid] == 6)
 	{
-		if(GetItemType(itemid) == item_Medkit)
+		if(GetItemType(itemid) == item_Wrench)
 		{
-			ShowHelpTip(playerid, "You can't go around carrying everything by hand! Put your current item in your inventory by pressing Y");
+			ShowHelpTip(playerid, "You can't go around carrying everything by hand! Put your current item in your inventory by pressing "KEYTEXT_PUT_AWAY"");
 			TutorialState[playerid] = 7;
 		}
 	}
@@ -161,7 +161,7 @@ public OnPlayerAddToInventory(playerid, itemid)
 {
 	if(TutorialState[playerid] == 7)
 	{
-		ShowHelpTip(playerid, "You put it in your inventory, you can move items between your inventory and your bag, open your inventory again with H.");
+		ShowHelpTip(playerid, "You put it in your inventory, you can move items between your inventory and your bag, open your inventory again with "KEYTEXT_INVENTORY".");
 		TutorialState[playerid] = 8;
 	}
 
@@ -221,7 +221,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(TutorialState[playerid] == 11)
 	{
-		ShowHelpTip(playerid, "Great! You now know how to use your inventory and bag, you can remove your bag by pressing N and it behaves just like an item.~n~~n~This concludes the tutorial, you can access it at any time by typing /tutorial. Good luck!", 30000);
+		ShowHelpTip(playerid, "Great! You now know how to use your inventory and bag, you can remove your bag by pressing "KEYTEXT_DROP_ITEM" and it behaves just like an item.~n~~n~This concludes the tutorial, you can access it at any time by typing /tutorial. Good luck!", 30000);
 		TutorialState[playerid] = 0;
 	}
 
@@ -239,7 +239,7 @@ public OnPlayerCloseInventory(playerid)
 {
 	if(TutorialState[playerid] == 11)
 	{
-		ShowHelpTip(playerid, "Great! You now know how to use your inventory and bag, you can remove your bag by pressing N and it behaves just like an item.~n~~n~This concludes the tutorial, you can access it at any time by typing /tutorial. Good luck!", 30000);
+		ShowHelpTip(playerid, "Great! You now know how to use your inventory and bag, you can remove your bag by pressing "KEYTEXT_DROP_ITEM" and it behaves just like an item.~n~~n~This concludes the tutorial, you can access it at any time by typing /tutorial. Good luck!", 30000);
 		TutorialState[playerid] = 0;
 	}
 

@@ -1,7 +1,9 @@
 #include <YSI\y_hooks>
 
 
-static gut_TargetItem[MAX_PLAYERS];
+static
+		gut_TargetItem[MAX_PLAYERS],
+Timer:	gut_PickUpTimer[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
@@ -33,19 +35,57 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 #define OnPlayerUseWeaponWithItem tor_OnPlayerUseWeaponWithItem
 forward tor_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
 
+public OnPlayerPickUpItem(playerid, itemid)
+{
+	if(GetItemType(itemid) == item_Torso)
+	{
+		if(GetItemExtraData(itemid) != -1)
+		{
+			gut_PickUpTimer[playerid] = defer PickUpTorso(playerid);
+			gut_TargetItem[playerid] = itemid;
+			return 1;
+		}
+	}
+
+	return CallLocalFunction("tor_OnPlayerPickUpItem", "dd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerPickUpItem
+	#undef OnPlayerPickUpItem
+#else
+	#define _ALS_OnPlayerPickUpItem
+#endif
+#define OnPlayerPickUpItem tor_OnPlayerPickUpItem
+forward tor_OnPlayerPickUpItem(playerid, itemid);
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(oldkeys & 16)
+	if(oldkeys == 16)
 	{
 		if(IsValidItem(gut_TargetItem[playerid]))
 		{
 			StopHoldAction(playerid);
 			ClearAnimations(playerid);
+
+			if(GetPlayerWeapon(playerid) != 4)
+			{
+				ShowGravestoneMsg(playerid, GetItemExtraData(gut_TargetItem[playerid]));
+				stop gut_PickUpTimer[playerid];
+				gut_TargetItem[playerid] = INVALID_ITEM_ID;
+			}
 		}
 	}
-
-	return 1;
 }
+
+timer PickUpTorso[250](playerid)
+{
+	if(GetPlayerWeapon(playerid) == 0)
+	{
+		PlayerPickUpItem(playerid, gut_TargetItem[playerid]);
+		SetItemExtraData(gut_TargetItem[playerid], 0);
+		gut_TargetItem[playerid] = INVALID_ITEM_ID;
+	}
+}
+
 
 public OnHoldActionFinish(playerid)
 {

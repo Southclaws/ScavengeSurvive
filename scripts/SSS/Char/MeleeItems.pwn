@@ -78,6 +78,9 @@ SetItemAnimSet(ItemType:itemtype, animset)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+		return 1;
+
 	if(newkeys & KEY_FIRE)
 	{
 		if(tickcount() - anm_AttackTick[playerid] < 800)

@@ -320,13 +320,13 @@ District_City1()
 	buttonid[1] = CreateButton(-2208.2561, 584.4679, 35.7653, "Press F to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2211.40, 581.99, 36.37,   0.00, 0.00, 90.00,
-		-2211.40, 581.99, 39.61,   0.00, 0.00, 90.00);
+		-2211.40, 581.99, 39.61,   0.00, 0.00, 90.00, .movesound = 6000, .stopsound = 6002);
 
 	buttonid[0] = CreateButton(-2243.0400, 640.7287, 49.9911, "Press F to activate", 0);
 	buttonid[1] = CreateButton(-2238.6035, 641.0287, 49.9911, "Press F to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2241.90, 643.55, 50.69,   0.00, 0.00, 0.00,
-		-2241.90, 643.55, 53.96,   0.00, 0.00, 0.00);
+		-2241.90, 643.55, 53.96,   0.00, 0.00, 0.00, .movesound = 6000, .stopsound = 6002);
 
 
 	CreateZipline(

@@ -98,6 +98,11 @@ LoadSafeboxes(prints = false)
 				fblockread(file, data, sizeof(data));
 				fclose(file);
 
+				if(!IsItemTypeSafebox(ItemType:data[0]))
+				{
+					fremove(filedir);
+					continue;
+				}
 
 				itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
 				containerid = GetItemExtraData(itemid);
@@ -132,6 +137,9 @@ SaveSafeboxItem(itemid, prints = false)
 {
 	if(!IsItemInWorld(itemid))
 		return -1;
+
+	if(!IsItemTypeSafebox(GetItemType(itemid)))
+		return -2;
 
 	new
 		Float:x,
@@ -383,6 +391,9 @@ AutosaveSafeboxes()
 			continue;
 
 		if(IsContainerEmpty(GetItemExtraData(i)))
+			continue;
+
+		if(!IsItemTypeSafebox(GetItemType(i)))
 			continue;
 
 		autosave_Block[idx] = i;

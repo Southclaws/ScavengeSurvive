@@ -226,7 +226,7 @@ BanPlayer(playerid, reason[], byid)
 
 	db_free_result(db_query(gAccounts, tmpQuery));
 
-	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"By: "#C_BLUE"%p"#C_YELLOW", reason: "#C_BLUE"%s", byid, reason);
+	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
 	defer KickPlayerDelay(playerid);
 }
 
@@ -265,7 +265,7 @@ BanPlayerByName(name[], reason[], byid = -1)
 
 	if(online)
 	{
-		MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"By: "#C_BLUE"%s"#C_YELLOW", reason: "#C_BLUE"%s", by, reason);
+		MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
 		defer KickPlayerDelay(id);
 	}
 }

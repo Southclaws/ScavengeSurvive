@@ -2,11 +2,18 @@ static tick_AdminDuty[MAX_PLAYERS];
 
 ACMD:duty[1](playerid, params[])
 {
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+	{
+		Msg(playerid, YELLOW, " >  You cannot do that while spectating.");
+		return 1;
+	}
+
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 	{
 		f:bPlayerGameSettings[playerid]<AdminDuty>;
 
 		LoadPlayerInventory(playerid);
+		LoadPlayerChar(playerid);
 
 		SetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
@@ -157,7 +164,13 @@ ACMD:spec[2](playerid, params[])
 		if(IsPlayerConnected(id) && id != playerid)
 		{
 			TogglePlayerSpectating(playerid, true);
-			PlayerSpectatePlayer(playerid, id);
+
+			if(IsPlayerInAnyVehicle(id))
+				PlayerSpectateVehicle(playerid, GetPlayerVehicleID(id));
+
+			else
+				PlayerSpectatePlayer(playerid, id);
+
 			t:bPlayerGameSettings[playerid]<Spectating>;
 		}
 	}

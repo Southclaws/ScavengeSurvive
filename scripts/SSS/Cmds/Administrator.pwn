@@ -37,7 +37,7 @@ ACMD:ban[2](playerid, params[])
 
 		return 1;
 	}
-	if(!sscanf(params, "sS(None)[64]", playername, reason))
+	if(!sscanf(params, "s[24]S(None)[64]", playername, reason))
 	{
 		if(strlen(reason) > 64)
 			return Msg(playerid, RED, " >  Reason must be below 64 characters");
@@ -75,7 +75,7 @@ ACMD:unban[2](playerid, params[])
 	new
 		tmpQuery[128];
 
-	format(tmpQuery, 128, "DELETE FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
+	format(tmpQuery, 128, "DELETE FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", strtolower(name));
 	
 	db_free_result(db_query(gAccounts, tmpQuery));
 	

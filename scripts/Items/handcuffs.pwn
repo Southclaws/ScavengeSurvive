@@ -79,7 +79,7 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
-		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]))
+		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]) || GetPlayerWeapon(cuf_TargetPlayer[playerid]) != 0 || GetPlayerItem(cuf_TargetPlayer[playerid]) != INVALID_ITEM_ID)
 		{
 			StopApplyingHandcuffs(playerid);
 			return 1;

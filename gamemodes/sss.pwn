@@ -25,7 +25,7 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 
-#include "../scripts/SSS/Server/MovementDetection.pwn"
+#include "../scripts/SSS/Server/HackDetect.pwn"
 
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -53,13 +53,14 @@ native WP_Hash(buffer[], len, const str[]);
 // Limits
 #define MAX_MOTD_LEN				(128)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
-#define MAX_ADMIN					(16)
+#define MAX_ADMIN					(32)
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_SERVER_UPTIME			(3600 * 5)
 
 
 // Files
-#define PLAYER_DATA_FILE			"SSS/Player/%s.inv"
+#define PLAYER_DATA_FILE			"SSS/Player/%s.dat"
+#define PLAYER_ITEM_FILE			"SSS/Inventory/%s.inv"
 #define SPAWNS_DATA					"SSS/Spawns/%s.dat"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
 #define SETTINGS_FILE				"SSS/Settings.txt"
@@ -86,6 +87,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 #define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
 #define GetFile(%0,%1)				format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
+#define GetInvFile(%0,%1)			format(%1, MAX_PLAYER_FILE, PLAYER_ITEM_FILE, %0)
 
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
@@ -190,7 +192,9 @@ enum
 	d_GraveStone,
 	d_ReportList,
 	d_Report,
-	d_ReportOptions
+	d_ReportOptions,
+	d_DefenseSetPass,
+	d_DefenseEnterPass
 }
 
 
@@ -411,7 +415,8 @@ ItemType:		item_WoodPanel		= INVALID_ITEM_TYPE,
 
 ItemType:		item_Flare			= INVALID_ITEM_TYPE,
 ItemType:		item_PhoneBomb		= INVALID_ITEM_TYPE,
-ItemType:		item_ParaBag		= INVALID_ITEM_TYPE;
+ItemType:		item_ParaBag		= INVALID_ITEM_TYPE,
+ItemType:		item_Keypad			= INVALID_ITEM_TYPE;
 
 //=====================Clock and Timers
 new
@@ -445,7 +450,7 @@ PlayerText:		VehicleSpeedText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		AddHPText			= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		AddScoreText		= PlayerText:INVALID_TEXT_DRAW,
 
-PlayerBar:		TankHeatBar			= INVALID_PLAYER_BAR_ID,
+PlayerBar:		OverheatBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 				MiniMapOverlay;
@@ -471,8 +476,6 @@ enum (<<= 1) // 14
 		ShowHUD,
 		KnockedOut,
 		Bleeding,
-
-		HangingOutWindow,
 
 		Frozen,
 		Muted,
@@ -565,6 +568,7 @@ forward SetRestart(seconds);
 
 #include "../scripts/SSS/Player/Core.pwn"
 #include "../scripts/SSS/Player/Accounts.pwn"
+#include "../scripts/SSS/Player/SaveLoad.pwn"
 #include "../scripts/SSS/Player/Spawn.pwn"
 #include "../scripts/SSS/Player/Damage.pwn"
 #include "../scripts/SSS/Player/Death.pwn"
@@ -586,26 +590,6 @@ forward SetRestart(seconds);
 
 #include "../scripts/SSS/Loot/Spawn.pwn"
 #include "../scripts/SSS/Vehicle/Spawn.pwn"
-
-//======================World
-
-#include "../scripts/SSS/World/Fuel.pwn"
-#include "../scripts/SSS/World/Cooking.pwn"
-#include "../scripts/SSS/World/Defenses.pwn"
-#include "../scripts/SSS/World/GraveStone.pwn"
-#include "../scripts/SSS/World/Vehicle.pwn"
-#include "../scripts/SSS/World/SafeBox.pwn"
-#include "../scripts/SSS/World/Carmour.pwn"
-
-//======================Per-Area Item Spawning
-
-#include "../scripts/SSS/Areas/LS.pwn"
-#include "../scripts/SSS/Areas/SF.pwn"
-#include "../scripts/SSS/Areas/LV.pwn"
-#include "../scripts/SSS/Areas/RC.pwn"
-#include "../scripts/SSS/Areas/FC.pwn"
-#include "../scripts/SSS/Areas/BC.pwn"
-#include "../scripts/SSS/Areas/TR.pwn"
 
 //======================UI
 
@@ -629,6 +613,26 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Char/Disarm.pwn"
 #include "../scripts/SSS/Char/Overheat.pwn"
 #include "../scripts/SSS/Char/Towtruck.pwn"
+
+//======================World
+
+#include "../scripts/SSS/World/Fuel.pwn"
+#include "../scripts/SSS/World/Cooking.pwn"
+#include "../scripts/SSS/World/Defenses.pwn"
+#include "../scripts/SSS/World/GraveStone.pwn"
+#include "../scripts/SSS/World/Vehicle.pwn"
+#include "../scripts/SSS/World/SafeBox.pwn"
+#include "../scripts/SSS/World/Carmour.pwn"
+
+//======================Per-Area Item Spawning
+
+#include "../scripts/SSS/Areas/LS.pwn"
+#include "../scripts/SSS/Areas/SF.pwn"
+#include "../scripts/SSS/Areas/LV.pwn"
+#include "../scripts/SSS/Areas/RC.pwn"
+#include "../scripts/SSS/Areas/FC.pwn"
+#include "../scripts/SSS/Areas/BC.pwn"
+#include "../scripts/SSS/Areas/TR.pwn"
 
 //======================Admin code
 
@@ -681,11 +685,7 @@ main()
 {
 	new
 		DBResult:tmpResult,
-		rowCount,
-		tmpCurPass[MAX_PASSWORD_LEN],
-		tmpName[MAX_PLAYER_NAME],
-		tmpHashPass[MAX_PASSWORD_LEN],
-		tmpQuery[512];
+		rowCount;
 
 	gAccounts = db_open(ACCOUNT_DATABASE);
 
@@ -696,27 +696,7 @@ main()
 	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
 	rowCount = db_num_rows(tmpResult);
 
-	if(rowCount > 0)
-	{
-		for(new i;i<rowCount;i++)
-		{
-			db_get_field_assoc(tmpResult, #ROW_PASS, tmpCurPass, MAX_PASSWORD_LEN);
-			db_get_field_assoc(tmpResult, #ROW_NAME, tmpName, MAX_PASSWORD_LEN);
-			if(strlen(tmpCurPass) < 128)
-			{
-				WP_Hash(tmpHashPass, MAX_PASSWORD_LEN, tmpCurPass);
-
-				format(tmpQuery, 512,
-					"UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
-					tmpHashPass, tmpName);
-
-				db_free_result(db_query(gAccounts, tmpQuery));
-			}
-			db_next_row(tmpResult);
-		}
-	}
 	db_free_result(tmpResult);
-
 
 	file_Open(SETTINGS_FILE);
 
@@ -811,10 +791,10 @@ public OnGameModeInit()
 	item_Medkit			= DefineItemType("Medkit",			1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HardDrive		= DefineItemType("Hard Drive",		328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
 	item_Key			= DefineItemType("Key",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-
+// 50
 	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",			327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-	item_timer			= DefineItemType("Timer Device",	19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
+	item_timer			= DefineItemType("Timer Device",	2922,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
 	item_explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
@@ -822,7 +802,7 @@ public OnGameModeInit()
 	item_Bottle			= DefineItemType("Bottle",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
 	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
-
+// 60
 	item_Bandage		= DefineItemType("Bandage",			1575,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_FishRod		= DefineItemType("Fishing Rod",		18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
 	item_Wrench			= DefineItemType("Wrench",			18633,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
@@ -833,7 +813,7 @@ public OnGameModeInit()
 	item_Taser			= DefineItemType("Taser",			18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
 	item_LaserPoint		= DefineItemType("Laser Pointer",	18643,	ITEM_SIZE_SMALL,	0.0, 0.0, 90.0,			0.0,	0.066244, 0.010838, -0.000024, 6.443027, 287.441467, 0.000000);
 	item_Screwdriver	= DefineItemType("Screwdriver",		18644,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.099341, 0.021018, 0.009145, 193.644195, 0.000000, 0.000000);
-
+// 70
 	item_MobilePhone	= DefineItemType("Mobile Phone",	18865,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Pager			= DefineItemType("Pager",			18875,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.097277, 0.027625, 0.013023, 90.819244, 191.427993, 0.000000);
 	item_Rake			= DefineItemType("Rake",			18890,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	-0.002599, 0.003984, 0.026356, 190.231231, 0.222518, 271.565185);
@@ -844,7 +824,7 @@ public OnGameModeInit()
 	item_Bucket			= DefineItemType("Bucket",			19468,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.293691, -0.074108, 0.020810, 148.961685, 280.067260, 151.782791);
 	item_GasMask		= DefineItemType("Gas Mask",		19472,	ITEM_SIZE_SMALL,	180.0, 0.0, 0.0,		0.0,	0.062216, 0.055396, 0.001138, 90.000000, 0.000000, 180.000000);
 	item_Flag			= DefineItemType("Flag",			2993,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
-
+// 80
 	item_DoctorBag		= DefineItemType("Doctor's Bag",	1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
 	item_Backpack		= DefineItemType("Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
 	item_Satchel		= DefineItemType("Small Bag",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
@@ -855,7 +835,7 @@ public OnGameModeInit()
 	item_CapMine		= DefineItemType("Cap Mine",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
 	item_Pizza			= DefineItemType("Pizza",			1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
 	item_Burger			= DefineItemType("Burger",			2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
-
+// 90
 	item_BurgerBox		= DefineItemType("Burger",			2768,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.107883, 0.093265, 0.029676, 91.010627, 7.522015, 0.000000);
 	item_Taco			= DefineItemType("Taco",			2769,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.069803, 0.057707, 0.039241, 0.000000, 78.877342, 0.000000);
 	item_GasCan			= DefineItemType("Petrol Can",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
@@ -866,7 +846,7 @@ public OnGameModeInit()
 	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
 	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
-
+// 100
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
 	item_Torso			= DefineItemType("Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
 	item_LongPlank		= DefineItemType("Plank",			2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
@@ -877,7 +857,7 @@ public OnGameModeInit()
 	item_Mailbox		= DefineItemType("Mailbox",			3407,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 	item_Pumpkin		= DefineItemType("Pumpkin",			19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000);
 	item_Nailbat		= DefineItemType("Nailbat",			2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
-
+// 110
 	item_ZorroMask		= DefineItemType("Zorro Mask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
 	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
@@ -888,7 +868,7 @@ public OnGameModeInit()
 	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
 	item_Dice			= DefineItemType("Dice",			1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
 	item_Dynamite		= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
-
+// 120
 	item_Door			= DefineItemType("Door",			1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
 	item_MetPanel		= DefineItemType("Metal Panel",		1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
 	item_SurfBoard		= DefineItemType("Surfboard",		2410,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
@@ -899,10 +879,11 @@ public OnGameModeInit()
 	item_MetalStand		= DefineItemType("Metal Plate",		2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
 	item_WoodDoor		= DefineItemType("Wood Panel",		3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
 	item_WoodPanel		= DefineItemType("Wood Panel",		5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
-
+// 130
 	item_Flare			= DefineItemType("Flare",			345,	ITEM_SIZE_SMALL);
 	item_PhoneBomb		= DefineItemType("Phone Bomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_Keypad			= DefineItemType("Keypad",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 
 
 	anim_Blunt = DefineAnimSet();
@@ -1026,7 +1007,7 @@ RestartGamemode()
 {
 	foreach(new i : Player)
 	{
-		SavePlayerData(i, true);
+		SavePlayerData(i);
 		ResetVariables(i);
 	}
 
@@ -1211,26 +1192,9 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			VehicleLightsState(gPlayerVehicleID[playerid], !VehicleLightsState(gPlayerVehicleID[playerid]));
 		}
-		if(newkeys & KEY_CROUCH)
-		{
-			if(GetPlayerState(playerid) == PLAYER_STATE_PASSENGER)
-			{
-				if(bPlayerGameSettings[playerid] & HangingOutWindow)
-				{
-					//PutPlayerInVehicle(playerid, GetPlayerVehicleID(playerid), GetPlayerVehicleSeat(playerid));
-					ClearAnimations(playerid);
-					f:bPlayerGameSettings[playerid]<HangingOutWindow>;
-				}
-				else
-				{
-					t:bPlayerGameSettings[playerid]<HangingOutWindow>;
-				}
-			}
-		}
 	}
 	else
 	{
-
 /*
 		if(newkeys & KEY_FIRE)
 		{
@@ -1444,12 +1408,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		if(newstate == PLAYER_STATE_DRIVER)
 		{
 			SetPlayerArmedWeapon(playerid, 0);
-
-			if(model == 432)
-			{
-				TankHeatUpdateTimer[playerid] = repeat TankHeatUpdate(playerid);
-				ShowPlayerProgressBar(playerid, TankHeatBar);
-			}
 		}
 
 		gPlayerVehicleID[playerid] = vehicleid;
@@ -1460,9 +1418,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawSetString(playerid, VehicleNameText, VehicleNames[model-400]);
 		PlayerTextDrawShow(playerid, VehicleNameText);
 		PlayerTextDrawShow(playerid, VehicleSpeedText);
-		PlayerTextDrawShow(playerid, VehicleFuelText);
-		PlayerTextDrawShow(playerid, VehicleDamageText);
-		PlayerTextDrawShow(playerid, VehicleEngineText);
+
+		if(GetVehicleType(model) != VTYPE_BMX)
+		{
+			PlayerTextDrawShow(playerid, VehicleFuelText);
+			PlayerTextDrawShow(playerid, VehicleDamageText);
+			PlayerTextDrawShow(playerid, VehicleEngineText);
+		}
 	}
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
@@ -1475,37 +1437,11 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawHide(playerid, VehicleFuelText);
 		PlayerTextDrawHide(playerid, VehicleDamageText);
 		PlayerTextDrawHide(playerid, VehicleEngineText);
-		HidePlayerProgressBar(playerid, TankHeatBar);
-		stop TankHeatUpdateTimer[playerid];
 	}
 	return 1;
 }
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	if(ispassenger)
-	{
-		new
-			Float:px,
-			Float:py,
-			Float:pz,
-			Float:vx,
-			Float:vy,
-			Float:vz,
-			Float:sx,
-			Float:sy,
-			Float:sz;
-
-		GetPlayerPos(playerid, px, py, pz);
-		GetVehiclePos(vehicleid, vx, vy, vz);
-		GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
-
-		if(Distance(px, py, pz, vx, vy, vz) > sy + sx / 2)
-		{
-			CancelPlayerMovement(playerid);
-			return 0;
-		}
-	}
-
 	if(bPlayerGameSettings[playerid] & KnockedOut)
 	{
 		return 0;
@@ -1518,9 +1454,6 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 public OnPlayerExitVehicle(playerid, vehicleid)
 {
 	gCurrentVelocity[playerid] = 0.0;
-
-	if(GetVehicleModel(vehicleid) == 432)
-		HidePlayerProgressBar(playerid, TankHeatBar);
 
 	tick_ExitVehicle[playerid] = tickcount();
 
@@ -1940,7 +1873,7 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawSetOutline		(playerid, AddScoreText, 1);
 
 	ActionBar						= CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
-	TankHeatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
+	OverheatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
 	KnockoutBar						= CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
 }
 UnloadPlayerTextDraws(playerid)
@@ -1954,7 +1887,7 @@ UnloadPlayerTextDraws(playerid)
 	PlayerTextDrawDestroy(playerid, AddHPText);
 	PlayerTextDrawDestroy(playerid, AddScoreText);
 
-	DestroyPlayerProgressBar(playerid, TankHeatBar);
+	DestroyPlayerProgressBar(playerid, OverheatBar);
 	DestroyPlayerProgressBar(playerid, ActionBar);
 	DestroyPlayerProgressBar(playerid, KnockoutBar);
 }

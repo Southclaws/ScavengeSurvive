@@ -40,8 +40,6 @@ StopHoldAction(playerid)
 
 	HidePlayerProgressBar(playerid, ActionBar);
 
-	CallLocalFunction("OnHoldActionFinish", "d", playerid);
-
 	return 1;
 }
 
@@ -50,6 +48,7 @@ timer HoldActionUpdate[100](playerid)
 	if(HoldActionProgress[playerid] >= HoldActionLimit[playerid])
 	{
 		StopHoldAction(playerid);
+		CallLocalFunction("OnHoldActionFinish", "d", playerid);
 		return;
 	}
 

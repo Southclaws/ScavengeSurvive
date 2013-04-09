@@ -2,7 +2,7 @@
 
 
 #define HEAL_PROGRESS_MAX (4000)
-#define REVIVE_PROGRESS_MAX (8000)
+#define REVIVE_PROGRESS_MAX (6000)
 
 
 new med_HealTarget[MAX_PLAYERS];

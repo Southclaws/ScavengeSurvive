@@ -27,6 +27,7 @@ hook OnGameModeInit()
 PlayerSpawnExistingCharacter(playerid)
 {
 	LoadPlayerInventory(playerid);
+	LoadPlayerChar(playerid);
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);

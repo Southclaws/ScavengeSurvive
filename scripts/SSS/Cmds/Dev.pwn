@@ -458,3 +458,18 @@ ACMD:hud[3](playerid, params[])
 		t:bPlayerGameSettings[playerid]<ShowHUD>;
 	}
 }
+
+ACMD:vowner[3](playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
+	{
+		Msg(playerid, RED, " >  You are not in a vehicle.");
+		return 1;
+	}
+
+	MsgF(playerid, YELLOW, " >  Vehicle owner: '%s'", gVehicleOwner[vehicleid]);
+
+	return 1;
+}

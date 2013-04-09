@@ -1,25 +1,64 @@
 #include <YSI\y_hooks>
 
 
+#define HEAT_MAX (40.0)
+
+
 new
-Float:	TankHeat				[MAX_PLAYERS],
-Timer:	TankHeatUpdateTimer		[MAX_PLAYERS];
+Float:	Overheat				[MAX_PLAYERS],
+Timer:	OverheatUpdateTimer		[MAX_PLAYERS];
 
 
-timer TankHeatUpdate[100](playerid)
+timer OverheatUpdate[100](playerid)
 {
-	if(GetVehicleModel(gPlayerVehicleID[playerid]) != 432)
-		stop TankHeatUpdateTimer[playerid];
+	new
+		model = GetVehicleModel(gPlayerVehicleID[playerid]),
+		k, ud, lr;
 
-	if(TankHeat[playerid] > 30.0)
-		TankHeat[playerid] = 30.0;
+	GetPlayerKeys(playerid, k, ud, lr);
 
-	if(TankHeat[playerid] > 0.0)
-		TankHeat[playerid] -= 1.0;
+	if(model != 432 && model != 425 && model != 520)
+		stop OverheatUpdateTimer[playerid];
 
-	SetPlayerProgressBarMaxValue(playerid, TankHeatBar, 30.0);
-	SetPlayerProgressBarValue(playerid, TankHeatBar, TankHeat[playerid]);
-	UpdatePlayerProgressBar(playerid, TankHeatBar);
+	if(model == 425)
+	{
+		if(k & 1)
+		{
+			if(VehicleEngineState(gPlayerVehicleID[playerid]))
+				Overheat[playerid] += 1.0;
+		}
+		else
+		{
+			if(Overheat[playerid] > 0.0)
+				Overheat[playerid] -= 1.0;
+		}
+	}
+	else
+	{
+		if(Overheat[playerid] > 0.0)
+			Overheat[playerid] -= 1.0;
+	}
+
+	if(Overheat[playerid] > HEAT_MAX * 0.8)
+	{
+		GameTextForPlayer(playerid, "~n~~r~Overheating!", 3000, 5);
+	}
+
+	if(Overheat[playerid] > HEAT_MAX)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetVehiclePos(gPlayerVehicleID[playerid], x, y, z);
+		CreateExplosion(x, y, z, 11, 5.0);
+		Overheat[playerid] = 0.0;
+	}
+
+	SetPlayerProgressBarMaxValue(playerid, OverheatBar, HEAT_MAX);
+	SetPlayerProgressBarValue(playerid, OverheatBar, Overheat[playerid]);
+	UpdatePlayerProgressBar(playerid, OverheatBar);
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -27,40 +66,43 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(GetVehicleModel(gPlayerVehicleID[playerid]) != 432)
+	if(!VehicleEngineState(gPlayerVehicleID[playerid]))
+		return 1;		
+
+	new model = GetVehicleModel(gPlayerVehicleID[playerid]);
+
+	if(model != 432 && model != 425 && model != 520)
 		return 1;
 
-	if(newkeys & 1 || newkeys & 4)
+	if(newkeys & 4)
 	{
-		TankHeat[playerid] += 20.0;
-
-		SetPlayerProgressBarMaxValue(playerid, TankHeatBar, 30.0);
-		SetPlayerProgressBarValue(playerid, TankHeatBar, TankHeat[playerid]);
-		UpdatePlayerProgressBar(playerid, TankHeatBar);
-
-		if(TankHeat[playerid] >= 30.0)
-		{
-			GameTextForPlayer(playerid, "~n~~r~Overheating!", 3000, 5);
-		}
-
-		if(TankHeat[playerid] >= 40.0)
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetVehiclePos(gPlayerVehicleID[playerid], x, y, z);
-			CreateExplosion(x, y, z, 11, 5.0);
-			TankHeat[playerid] = 0.0;
-		}
+		Overheat[playerid] += 20.0;
 	}
 
 	return 1;
 }
 
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(newstate == PLAYER_STATE_DRIVER)
+	{
+		new model = GetVehicleModel(GetPlayerVehicleID(playerid));
+
+		if(model == 432 || model == 425 || model == 520)
+		{
+			OverheatUpdateTimer[playerid] = repeat OverheatUpdate(playerid);
+			ShowPlayerProgressBar(playerid, OverheatBar);
+		}
+	}
+	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
+	{
+		stop OverheatUpdateTimer[playerid];
+		HidePlayerProgressBar(playerid, OverheatBar);
+	}
+}
+
 hook OnPlayerDeath(playerid, killerid, reason)
 {
-	stop TankHeatUpdateTimer[playerid];
-	HidePlayerProgressBar(playerid, TankHeatBar);
+	stop OverheatUpdateTimer[playerid];
+	HidePlayerProgressBar(playerid, OverheatBar);
 }

@@ -75,6 +75,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_MetalStand,					0.12);
 	AddItemToLootIndex(loot_Industrial,		item_WoodDoor,						0.23);
 	AddItemToLootIndex(loot_Industrial,		item_WoodPanel,						0.02);
+	AddItemToLootIndex(loot_Industrial,		item_Keypad,						0.4);
 
 	// loot_Police
 	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				0.6);
@@ -194,6 +195,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_MetalStand,					0.12);
 	AddItemToLootIndex(loot_CarIndustrial,	item_WoodDoor,						0.23);
 	AddItemToLootIndex(loot_CarIndustrial,	item_WoodPanel,						0.31);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Keypad,						0.4);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_COLT45,				0.6);

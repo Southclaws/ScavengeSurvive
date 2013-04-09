@@ -25,8 +25,6 @@ StartRepairingVehicle(playerid, vehicleid)
 	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
 	StartHoldAction(playerid, 50000, floatround(fix_Progress[playerid] * 50));
 
-
-
 	fix_TargetVehicle[playerid] = vehicleid;
 
 	return 1;
@@ -43,8 +41,8 @@ StopRepairingVehicle(playerid)
 	}
 
 	VehicleBonnetState(fix_TargetVehicle[playerid], 0);
-	ClearAnimations(playerid);
 	StopHoldAction(playerid);
+	ClearAnimations(playerid);
 
 	fix_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 

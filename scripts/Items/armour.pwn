@@ -24,7 +24,7 @@ public OnPlayerUseItem(playerid, itemid)
 		if(data > 0)
 		{
 			DestroyItem(itemid);
-			gPlayerAP[playerid] = Float:data;
+			gPlayerAP[playerid] = float(data);
 		}
 	}
     return CallLocalFunction("armour_OnPlayerUseItem", "dd", playerid, itemid);

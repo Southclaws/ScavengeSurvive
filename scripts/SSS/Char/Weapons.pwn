@@ -2,10 +2,14 @@
 
 
 new stock gHolsterWeaponData[MAX_PLAYERS][2];
-new tick_LastHolstered[MAX_PLAYERS];
+new
+	tick_LastHolstered[MAX_PLAYERS];
 
 
 forward OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
+
+
+// Core
 
 
 stock GetPlayerHolsteredWeapon(playerid)
@@ -45,6 +49,14 @@ stock RemoveHolsterWeapon(playerid)
 
 	return 1;
 }
+stock GetPlayerWeaponSwapTick(playerid)
+{
+	return tick_LastHolstered[playerid];
+}
+
+
+// Hooks and Internal
+
 
 hook OnGameModeInit()
 {
@@ -218,6 +230,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					continue;
 
 				if(!IsPlayerIdle(playerid) || !IsPlayerIdle(i))
+					continue;
+
+				if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[i] & AdminDuty || bPlayerGameSettings[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
 					continue;
 
 				PlayerGiveWeapon(playerid, i);

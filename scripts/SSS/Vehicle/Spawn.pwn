@@ -289,6 +289,10 @@ LoadPlayerVehicles(bool:prints = true)
 
 					}
 				}
+				else
+				{
+					gVehicleContainer[vehicleid] = INVALID_CONTAINER_ID;
+				}
 
 				t:bVehicleSettings[vehicleid]<v_Player>;
 				gTotalVehicles++;
@@ -410,6 +414,13 @@ ApplyVehicleData(vehicleid)
 	if(!(400 <= model < 612))
 		return 0;
 
+	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
+
+	gVehicleArea[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (sy / 2.0) + 3.0, 0);
+	AttachDynamicAreaToVehicle(gVehicleArea[vehicleid], vehicleid);
+
+	SetVehicleNumberPlate(vehicleid, RandomNumberPlateString());
+
 	if(bVehicleSettings[vehicleid] & v_Player)
 	{
 		SetVehicleHealth(vehicleid, gPlayerVehicleData[vehicleid][pv_health]);
@@ -487,7 +498,6 @@ ApplyVehicleData(vehicleid)
 			SetVehicleParamsEx(vehicleid, 0, random(2), !random(100), locked, random(2), random(2), 0);
 		}
 
-
 		if(VehicleFuelData[model - 400][veh_lootIndex] != -1 && 0 < VehicleFuelData[model - 400][veh_trunkSize] <= CNT_MAX_SLOTS)
 		{
 			gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[model-400][veh_trunkSize], .virtual = 1);
@@ -498,13 +508,6 @@ ApplyVehicleData(vehicleid)
 			gVehicleContainer[vehicleid] = INVALID_CONTAINER_ID;
 		}
 	}
-
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
-
-	gVehicleArea[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (sy / 2.0) + 3.0, 0);
-	AttachDynamicAreaToVehicle(gVehicleArea[vehicleid], vehicleid);
-
-	SetVehicleNumberPlate(vehicleid, RandomNumberPlateString());
 
 	return 1;
 }

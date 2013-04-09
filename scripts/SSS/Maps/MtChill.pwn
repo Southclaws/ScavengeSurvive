@@ -86,8 +86,15 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		}
 	}
 
-	return 0;
+	return CallLocalFunction("ch_OnPlayerActivateDoor", "ddd", playerid, doorid, newstate);
 }
+#if defined _ALS_OnPlayerActivateDoor
+	#undef OnPlayerActivateDoor
+#else
+	#define _ALS_OnPlayerActivateDoor
+#endif
+#define OnPlayerActivateDoor ch_OnPlayerActivateDoor
+forward ch_OnPlayerActivateDoor(playerid, doorid, newstate);
 
 
 public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
