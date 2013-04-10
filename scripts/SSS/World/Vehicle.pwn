@@ -219,8 +219,14 @@ PlayerVehicleUpdate(playerid)
 					gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
 				}
 
-				if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-					SetPlayerArmedWeapon(playerid, 0);
+				switch(GetPlayerWeapon(playerid))
+				{
+					case 28, 29, 32:
+					{
+						if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+							SetPlayerArmedWeapon(playerid, 0);
+					}
+				}
 
 				PlayerTextDrawColor(playerid, VehicleEngineText, YELLOW);
 			}

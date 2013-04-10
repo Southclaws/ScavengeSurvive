@@ -49,9 +49,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == 0)
 						{
-							SetPlayerCuffs(i, false);
-							itemid = CreateItem(item_HandCuffs);
-							GiveWorldItemToPlayer(playerid, itemid, 0);
+							ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
+							StartHoldAction(playerid, 3000);
+
+							cuf_TargetPlayer[playerid] = i;
+
+							return 1;
 						}
 					}
 				}
@@ -93,9 +96,18 @@ public OnHoldActionFinish(playerid)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
-		DestroyItem(GetPlayerItem(playerid));
-		SetPlayerCuffs(cuf_TargetPlayer[playerid], true);
-		StopApplyingHandcuffs(playerid);
+		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
+		{
+			new itemid = CreateItem(item_HandCuffs);
+			SetPlayerCuffs(cuf_TargetPlayer[playerid], false);
+			GiveWorldItemToPlayer(playerid, itemid, 0);
+		}
+		else
+		{
+			DestroyItem(GetPlayerItem(playerid));
+			SetPlayerCuffs(cuf_TargetPlayer[playerid], true);
+			StopApplyingHandcuffs(playerid);
+		}
 
 		return 1;
 	}
@@ -459,7 +471,7 @@ stock SetPlayerCuffs(playerid, bool:toggle)
 	}
 }
 
-stock IsPlayerHandcuffed(playerid)
+stock IsPlayerCuffed(playerid)
 {
 	return IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_CUFFS);
 }

@@ -9,6 +9,9 @@ enum
 	PLY_CELL_HOLSTEX,
 	PLY_CELL_HELD,
 	PLY_CELL_HELDEX,
+	PLY_CELL_STANCE,
+	PLY_CELL_BLEEDING,
+	PLY_CELL_CUFFED,
 	PLY_CELL_END
 }
 
@@ -25,7 +28,8 @@ SavePlayerChar(playerid)
 	new
 		filename[MAX_PLAYER_FILE],
 		File:file,
-		data[PLY_CELL_END];
+		data[PLY_CELL_END],
+		animidx = GetPlayerAnimationIndex(playerid);
 
 	GetFile(gPlayerName[playerid], filename);
 
@@ -46,17 +50,17 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_HOLSTEX] = -1;
 	}
 
-	if(GetPlayerWeapon(playerid) > 0)
+	if(IsValidItem(GetPlayerItem(playerid)))
 	{
-		data[PLY_CELL_HELD] = GetPlayerWeapon(playerid);
-		data[PLY_CELL_HELDEX] = GetPlayerAmmo(playerid);
+		data[PLY_CELL_HELD] = _:GetItemType(GetPlayerItem(playerid));
+		data[PLY_CELL_HELDEX] = GetItemExtraData(GetPlayerItem(playerid));
 	}
 	else
 	{
-		if(IsValidItem(GetPlayerItem(playerid)))
+		if(GetPlayerWeapon(playerid) > 0)
 		{
-			data[PLY_CELL_HELD] = _:GetItemType(GetPlayerItem(playerid));
-			data[PLY_CELL_HELDEX] = GetItemExtraData(GetPlayerItem(playerid));
+			data[PLY_CELL_HELD] = GetPlayerWeapon(playerid);
+			data[PLY_CELL_HELDEX] = GetPlayerAmmo(playerid);
 		}
 		else
 		{
@@ -65,9 +69,31 @@ SavePlayerChar(playerid)
 		}
 	}
 
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
+	{
+		data[PLY_CELL_STANCE] = 1;
+	}
+	else if(animidx == 43)
+	{
+		data[PLY_CELL_STANCE] = 2;
+	}
+	else if(animidx == 1381)
+	{
+		data[PLY_CELL_STANCE] = 3;
+	}
+
+	data[PLY_CELL_BLEEDING] = (bPlayerGameSettings[playerid] & Bleeding);
+
+	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
+
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
+}
+ACMD:wepinfo[3](playerid, params[])
+{
+	MsgF(playerid, YELLOW, "Wep: %d Ammo: %d", gPlayerArmedWeapon[playerid], gPlayerArmedAmmo[playerid]);
+	return 1;
 }
 SavePlayerInventory(playerid)
 {
@@ -150,6 +176,30 @@ LoadPlayerChar(playerid)
 			GiveWorldItemToPlayer(playerid, itemid, false);
 		}
 	}
+
+	if(data[PLY_CELL_STANCE] == 1)
+	{
+		 SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DUCK);
+	}
+	else if(data[PLY_CELL_STANCE] == 2)
+	{
+		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+	}
+	else if(data[PLY_CELL_STANCE] == 3)
+	{
+		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+	}
+
+	if(data[PLY_CELL_BLEEDING])
+	{
+		t:bPlayerGameSettings[playerid]<Bleeding>;
+	}
+
+	if(data[PLY_CELL_CUFFED])
+	{
+		SetPlayerCuffs(playerid, true);
+	}
+
 }
 LoadPlayerInventory(playerid)
 {

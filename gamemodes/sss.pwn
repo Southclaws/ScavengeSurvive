@@ -508,6 +508,7 @@ Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
 		gPlayerArmedWeapon		[MAX_PLAYERS],
+		gPlayerArmedAmmo		[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
@@ -1407,7 +1408,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(newstate == PLAYER_STATE_DRIVER)
 		{
-			SetPlayerArmedWeapon(playerid, 0);
+			switch(GetPlayerWeapon(playerid))
+			{
+				case 28, 29, 32:
+				{
+					gPlayerArmedAmmo[playerid] = GetPlayerAmmo(playerid);
+				}
+			}
 		}
 
 		gPlayerVehicleID[playerid] = vehicleid;
@@ -1429,7 +1436,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
 		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
-
+		gPlayerArmedAmmo[playerid] = 0;
 		f:bVehicleSettings[vehicleid]<v_Occupied>;
 
 		PlayerTextDrawHide(playerid, VehicleNameText);

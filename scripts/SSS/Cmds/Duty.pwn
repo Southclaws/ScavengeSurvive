@@ -12,13 +12,13 @@ ACMD:duty[1](playerid, params[])
 	{
 		f:bPlayerGameSettings[playerid]<AdminDuty>;
 
-		LoadPlayerInventory(playerid);
-		LoadPlayerChar(playerid);
-
 		SetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
+
+		LoadPlayerInventory(playerid);
+		LoadPlayerChar(playerid);
 
 		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 

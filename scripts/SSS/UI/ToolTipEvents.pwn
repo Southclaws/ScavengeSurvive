@@ -179,7 +179,7 @@ ptask ToolTipUpdate[1000](playerid)
 					}
 				}
 
-				if(IsPlayerHandcuffed(inplayerarea))
+				if(IsPlayerCuffed(inplayerarea))
 				{
 					AddToolTipText(playerid, KEYTEXT_INTERACT, "Remove handcuffs");
 					ShowPlayerToolTip(playerid);

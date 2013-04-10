@@ -26,6 +26,11 @@ hook OnGameModeInit()
 
 PlayerSpawnExistingCharacter(playerid)
 {
+	SetPlayerPos(playerid,
+		gPlayerData[playerid][ply_posX],
+		gPlayerData[playerid][ply_posY],
+		gPlayerData[playerid][ply_posZ]);
+
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);
 
@@ -38,16 +43,8 @@ PlayerSpawnExistingCharacter(playerid)
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
 	ShowWatch(playerid);
 
-	if(bPlayerGameSettings[playerid] & LoggedIn)
-	{
-		stop gScreenFadeTimer[playerid];
-		gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
-
-		SetPlayerPos(playerid,
-			gPlayerData[playerid][ply_posX],
-			gPlayerData[playerid][ply_posY],
-			gPlayerData[playerid][ply_posZ]);
-	}
+	stop gScreenFadeTimer[playerid];
+	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
 }
 
 PlayerCreateNewCharacter(playerid)

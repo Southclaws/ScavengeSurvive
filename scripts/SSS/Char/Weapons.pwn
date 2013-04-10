@@ -484,3 +484,15 @@ UpdateWeaponItemNameExtra(itemid)
 	valstr(exname, GetItemExtraData(itemid));
 	SetItemNameExtra(itemid, exname);
 }
+
+stock IsWeaponDriveby(weaponid)
+{
+	switch(weaponid)
+	{
+		case 28, 29, 32:
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
