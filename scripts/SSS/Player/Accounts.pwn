@@ -62,7 +62,7 @@ Login(playerid)
 	}
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
-	IncorrectPass[playerid]=0;
+	gPlayerPassAttempts[playerid]=0;
 
 	stop gScreenFadeTimer[playerid];
 	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);

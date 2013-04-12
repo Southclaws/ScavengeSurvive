@@ -363,7 +363,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(box_CurrentBox[playerid]))
 	{
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_2Idle", 4.0, 0, 0, 0, 0, 0);
+		ClearAnimations(playerid);
 		box_CurrentBox[playerid] = INVALID_ITEM_ID;
 	}
 

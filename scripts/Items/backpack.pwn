@@ -347,7 +347,6 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(bag_CurrentBag[playerid]))
 	{
-//		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_2Idle", 4.0, 0, 0, 0, 0, 0);
 		ClearAnimations(playerid);
 		bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 		bag_LookingInBag[playerid] = -1;

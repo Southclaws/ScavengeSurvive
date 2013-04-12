@@ -190,6 +190,4 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(135.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
 	}
-
-	gPlayerArmedWeapon[playerid] = 0;
 }

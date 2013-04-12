@@ -2,6 +2,14 @@ public OnLoad()
 {
 	print("Loading Bone County");
 
+	CreateFuelOutlet(603.48438, 1707.23438, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(606.89844, 1702.21875, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(610.25000, 1697.26563, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(613.71875, 1692.26563, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(617.12500, 1687.45313, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(620.53125, 1682.46094, 6.17969, 2.0, 130.0, float(random(130)));
+	CreateFuelOutlet(624.04688, 1677.60156, 6.17969, 2.0, 130.0, float(random(130)));
+
 	new
 		buttonid[2];
 

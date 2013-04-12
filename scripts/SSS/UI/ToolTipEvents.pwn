@@ -97,7 +97,7 @@ ptask ToolTipUpdate[1000](playerid)
 					if(itemtype == item_Clothes)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Wear clothes");
 
-					else if(itemtype == item_HotDog || itemtype == item_Burger || itemtype == item_BurgerBox || itemtype == item_Pizza || itemtype == item_Taco)
+					else if(IsItemTypeFood(itemtype))
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Eat");
 
 					else if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
@@ -109,7 +109,7 @@ ptask ToolTipUpdate[1000](playerid)
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "Heal yourself");
 					}
 
-					else if(itemtype == item_timebomb)
+					else if(itemtype == item_Timebomb)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Arm timebomb");
 
 					else if(itemtype == item_Bottle)

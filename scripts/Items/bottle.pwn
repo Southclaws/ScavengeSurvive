@@ -1,8 +1,8 @@
 #define BOTTLE_CONTENTS_WATER		(0)
 #define BOTTLE_CONTENTS_BEER		(1)
 
-#define BOTTLE_DATA_CONTENTS(%0)	((%0 >> 8) & 0xFF)
-#define BOTTLE_DATA_AMOUNT(%0)		(%0 & 0xFF)
+#define BOTTLE_DATA_CONTENTS(%0)	((%0 >> 8) & 0xFFFF)
+#define BOTTLE_DATA_AMOUNT(%0)		(%0 & 0xFFFF)
 
 
 public OnItemCreate(itemid)
@@ -14,7 +14,7 @@ public OnItemCreate(itemid)
 			a = random(2),
 			b = random(10);
 
-		SetItemExtraData(itemid, a << 8 | (b));
+		SetItemExtraData(itemid, a << 8 | b);
 	}
 
 	return CallLocalFunction("bot_OnItemCreate", "d", itemid);
@@ -34,20 +34,20 @@ public OnItemNameRender(itemid)
 	{
 		new data = GetItemExtraData(itemid);
 
-		if(data & 0xFF > 0)
+		if(data & 0xFFFF > 0)
 		{
 			new str[12];
 
-			switch((data >> 8) & 0xFF)
+			switch((data >> 8) & 0xFFFF)
 			{
 				case BOTTLE_CONTENTS_WATER:
-					format(str, sizeof(str), "Water %d", data & 0xFF);
+					format(str, sizeof(str), "Water %d", data & 0xFFFF);
 
 				case BOTTLE_CONTENTS_BEER:
-					format(str, sizeof(str), "Beer %d", data & 0xFF);
+					format(str, sizeof(str), "Beer %d", data & 0xFFFF);
 
 				default:
-					format(str, sizeof(str), "Unknown %d", data & 0xFF);
+					format(str, sizeof(str), "Unknown %d", data & 0xFFFF);
 			}
 			SetItemNameExtra(itemid, str);
 		}
@@ -70,11 +70,11 @@ public OnPlayerUseItem(playerid, itemid)
 	{
 		new data = GetItemExtraData(itemid);
 
-		if(data & 0xFF > 0)
+		if(data & 0xFFFF > 0)
 		{
 			ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
 			SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 400);
-			SetItemExtraData(itemid, ((data >> 8) & 0xFF) << 8 | ((data & 0xFF) - 1));
+			SetItemExtraData(itemid, ((data >> 8) & 0xFFFF) << 8 | ((data & 0xFFFF) - 1));
 		}
 		else
 		{

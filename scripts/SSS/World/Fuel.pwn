@@ -1,6 +1,6 @@
 #include <YSI\y_hooks>
 
-#define MAX_FUEL_LOCATIONS	(32)
+#define MAX_FUEL_LOCATIONS	(48)
 #define FUEL_CAN_CAPACITY	(20)
 
 

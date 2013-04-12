@@ -135,22 +135,6 @@ stock SetAllWeaponSkills(playerid, skill)
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SNIPERRIFLE,		skill);
 }
 
-stock RemovePlayerWeapon(playerid, weaponid)
-{
-	new weapondata[12][2];
-
-	for(new i = 0; i < 12; i++)
-	{
-		GetPlayerWeaponData(playerid, i, weapondata[i][0], weapondata[i][1]);
-		if(weapondata[i][0] == weaponid)weapondata[i][0] = 0;
-	}
-
-	ResetPlayerWeapons(playerid);
-
-	for(new i = 0; i != 12; i++)
-		GivePlayerWeapon(playerid, weapondata[i][0], weapondata[i][1]);
-}
-
 stock PlaySoundForAll(sound, Float:x, Float:y, Float:z, Float:range = -1.0)
 {
 	PlayerLoop(i)

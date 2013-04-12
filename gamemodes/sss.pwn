@@ -27,6 +27,7 @@ native IsValidVehicle(vehicleid);
 
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
+//#include <MegaHooks>				// By Unicode:				http://forum.sa-mp.com/showthread.php?t=428948
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -324,18 +325,18 @@ ItemType:		item_Parachute		= INVALID_ITEM_TYPE,
 ItemType:		item_Medkit			= INVALID_ITEM_TYPE,
 ItemType:		item_HardDrive		= INVALID_ITEM_TYPE,
 ItemType:		item_Key			= INVALID_ITEM_TYPE,
-
+// 50
 ItemType:		item_FireworkBox	= INVALID_ITEM_TYPE,
 ItemType:		item_FireLighter	= INVALID_ITEM_TYPE,
-ItemType:		item_timer			= INVALID_ITEM_TYPE,
-ItemType:		item_explosive		= INVALID_ITEM_TYPE,
-ItemType:		item_timebomb		= INVALID_ITEM_TYPE,
-ItemType:		item_battery		= INVALID_ITEM_TYPE,
-ItemType:		item_fusebox		= INVALID_ITEM_TYPE,
+ItemType:		item_Timer			= INVALID_ITEM_TYPE,
+ItemType:		item_Explosive		= INVALID_ITEM_TYPE,
+ItemType:		item_Timebomb		= INVALID_ITEM_TYPE,
+ItemType:		item_Battery		= INVALID_ITEM_TYPE,
+ItemType:		item_Fusebox		= INVALID_ITEM_TYPE,
 ItemType:		item_Bottle			= INVALID_ITEM_TYPE,
 ItemType:		item_Sign			= INVALID_ITEM_TYPE,
 ItemType:		item_Armour			= INVALID_ITEM_TYPE,
-
+// 60
 ItemType:		item_Bandage		= INVALID_ITEM_TYPE,
 ItemType:		item_FishRod		= INVALID_ITEM_TYPE,
 ItemType:		item_Wrench			= INVALID_ITEM_TYPE,
@@ -346,7 +347,7 @@ ItemType:		item_Flashlight		= INVALID_ITEM_TYPE,
 ItemType:		item_Taser			= INVALID_ITEM_TYPE,
 ItemType:		item_LaserPoint		= INVALID_ITEM_TYPE,
 ItemType:		item_Screwdriver	= INVALID_ITEM_TYPE,
-
+// 70
 ItemType:		item_MobilePhone	= INVALID_ITEM_TYPE,
 ItemType:		item_Pager			= INVALID_ITEM_TYPE,
 ItemType:		item_Rake			= INVALID_ITEM_TYPE,
@@ -357,7 +358,7 @@ ItemType:		item_HandCuffs		= INVALID_ITEM_TYPE,
 ItemType:		item_Bucket			= INVALID_ITEM_TYPE,
 ItemType:		item_GasMask		= INVALID_ITEM_TYPE,
 ItemType:		item_Flag			= INVALID_ITEM_TYPE,
-
+// 80
 ItemType:		item_DoctorBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Backpack		= INVALID_ITEM_TYPE,
 ItemType:		item_Satchel		= INVALID_ITEM_TYPE,
@@ -368,7 +369,7 @@ ItemType:		item_MotionMine		= INVALID_ITEM_TYPE,
 ItemType:		item_CapMine		= INVALID_ITEM_TYPE,
 ItemType:		item_Pizza			= INVALID_ITEM_TYPE,
 ItemType:		item_Burger			= INVALID_ITEM_TYPE,
-
+// 90
 ItemType:		item_BurgerBox		= INVALID_ITEM_TYPE,
 ItemType:		item_Taco			= INVALID_ITEM_TYPE,
 ItemType:		item_GasCan			= INVALID_ITEM_TYPE,
@@ -379,7 +380,7 @@ ItemType:		item_SmallBox		= INVALID_ITEM_TYPE,
 ItemType:		item_AmmoBox		= INVALID_ITEM_TYPE,
 ItemType:		item_AmmoTin		= INVALID_ITEM_TYPE,
 ItemType:		item_Meat			= INVALID_ITEM_TYPE,
-
+// 100
 ItemType:		item_DeadLeg		= INVALID_ITEM_TYPE,
 ItemType:		item_Torso			= INVALID_ITEM_TYPE,
 ItemType:		item_LongPlank		= INVALID_ITEM_TYPE,
@@ -390,7 +391,7 @@ ItemType:		item_SignShot		= INVALID_ITEM_TYPE,
 ItemType:		item_Mailbox		= INVALID_ITEM_TYPE,
 ItemType:		item_Pumpkin		= INVALID_ITEM_TYPE,
 ItemType:		item_Nailbat		= INVALID_ITEM_TYPE,
-
+// 110
 ItemType:		item_ZorroMask		= INVALID_ITEM_TYPE,
 ItemType:		item_Barbecue		= INVALID_ITEM_TYPE,
 ItemType:		item_Headlight		= INVALID_ITEM_TYPE,
@@ -401,7 +402,7 @@ ItemType:		item_CanDrink		= INVALID_ITEM_TYPE,
 ItemType:		item_Detergent		= INVALID_ITEM_TYPE,
 ItemType:		item_Dice			= INVALID_ITEM_TYPE,
 ItemType:		item_Dynamite		= INVALID_ITEM_TYPE,
-
+// 120
 ItemType:		item_Door			= INVALID_ITEM_TYPE,
 ItemType:		item_MetPanel		= INVALID_ITEM_TYPE,
 ItemType:		item_SurfBoard		= INVALID_ITEM_TYPE,
@@ -412,7 +413,7 @@ ItemType:		item_MetalPlate		= INVALID_ITEM_TYPE,
 ItemType:		item_MetalStand		= INVALID_ITEM_TYPE,
 ItemType:		item_WoodDoor		= INVALID_ITEM_TYPE,
 ItemType:		item_WoodPanel		= INVALID_ITEM_TYPE,
-
+// 130
 ItemType:		item_Flare			= INVALID_ITEM_TYPE,
 ItemType:		item_PhoneBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_ParaBag		= INVALID_ITEM_TYPE,
@@ -434,6 +435,7 @@ Text:			HitMark_offset		= Text:INVALID_TEXT_DRAW,
 PlayerText:		ClassBackGround		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ClassButtonMale		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ClassButtonFemale	= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		WeaponAmmo			= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HungerBarBackground	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		HungerBarForeground	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		WatchBackground		= PlayerText:INVALID_TEXT_DRAW,
@@ -497,8 +499,8 @@ Float:	ply_rotZ
 
 new
 DB:		gAccounts,
-		IncorrectPass			[MAX_PLAYERS],
-		Warnings				[MAX_PLAYERS],
+		gPlayerPassAttempts		[MAX_PLAYERS],
+		gPlayerWarnings			[MAX_PLAYERS],
 
 		gPlayerData				[MAX_PLAYERS][E_PLAYER_DATA],
 		bPlayerGameSettings		[MAX_PLAYERS],
@@ -507,8 +509,6 @@ DB:		gAccounts,
 Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
-		gPlayerArmedWeapon		[MAX_PLAYERS],
-		gPlayerArmedAmmo		[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
@@ -583,12 +583,14 @@ forward SetRestart(seconds);
 
 //======================Data Load
 
+#include "../scripts/SSS/Weapon/Data.pwn"
 #include "../scripts/SSS/Loot/Data.pwn"
 #include "../scripts/SSS/Loot/HouseLoot.pwn"
 #include "../scripts/SSS/Vehicle/Data.pwn"
 
 //======================Data Setup
 
+#include "../scripts/SSS/Weapon/Core.pwn"
 #include "../scripts/SSS/Loot/Spawn.pwn"
 #include "../scripts/SSS/Vehicle/Spawn.pwn"
 
@@ -602,7 +604,6 @@ forward SetRestart(seconds);
 
 //======================Character
 
-#include "../scripts/SSS/Char/Weapons.pwn"
 #include "../scripts/SSS/Char/Food.pwn"
 #include "../scripts/SSS/Char/Clothes.pwn"
 #include "../scripts/SSS/Char/Hats.pwn"
@@ -673,6 +674,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/molotov.pwn"
 #include "../scripts/Items/screwdriver.pwn"
 #include "../scripts/Items/torso.pwn"
+#include "../scripts/Items/ammotin.pwn"
 
 //======================Map Scripts
 
@@ -795,11 +797,11 @@ public OnGameModeInit()
 // 50
 	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",			327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-	item_timer			= DefineItemType("Timer Device",	2922,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
-	item_explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
-	item_fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
+	item_Timer			= DefineItemType("Timer Device",	2922,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
+	item_Explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
+	item_Battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
+	item_Fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_Bottle			= DefineItemType("Bottle",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
 	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
@@ -845,7 +847,7 @@ public OnGameModeInit()
 	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
 	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
+	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
@@ -925,10 +927,10 @@ public OnGameModeInit()
 	DefineDefenseItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		3, 1, 1);
 
 
-	DefineItemCombo(item_timer,			item_explosive,		item_timebomb);
-	DefineItemCombo(item_explosive,		item_MotionSense,	item_MotionMine);
+	DefineItemCombo(item_Explosive,		item_Timer,			item_Timebomb);
+	DefineItemCombo(item_Explosive,		item_MotionSense,	item_MotionMine);
+	DefineItemCombo(item_Explosive,		item_MobilePhone,	item_PhoneBomb);
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
-	DefineItemCombo(item_MobilePhone,	item_explosive,		item_PhoneBomb);
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		ItemType:18);
 
@@ -968,7 +970,6 @@ public OnGameModeInit()
 	DefineSafeboxType("Box", 			item_MediumBox,		6, 6, 3, 2);
 	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);
 	DefineSafeboxType("Ammo Box", 		item_AmmoBox,		6, 6, 4, 0);
-	DefineSafeboxType("Ammo Tin", 		item_AmmoTin,		2, 2, 0, 0);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
 	CallLocalFunction("OnLoad", "");
@@ -1068,8 +1069,8 @@ ResetVariables(playerid)
 	gPlayerAP[playerid]					= 0.0;
 	gPlayerFP[playerid]					= 80.0;
 	gPlayerVehicleID[playerid]			= INVALID_VEHICLE_ID,
-	Warnings[playerid]					= 0;
-	IncorrectPass[playerid]				= 0;
+	gPlayerWarnings[playerid]			= 0;
+	gPlayerPassAttempts[playerid]		= 0;
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
@@ -1406,17 +1407,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new model = GetVehicleModel(vehicleid);
 
-		if(newstate == PLAYER_STATE_DRIVER)
-		{
-			switch(GetPlayerWeapon(playerid))
-			{
-				case 28, 29, 32:
-				{
-					gPlayerArmedAmmo[playerid] = GetPlayerAmmo(playerid);
-				}
-			}
-		}
-
 		gPlayerVehicleID[playerid] = vehicleid;
 
 		t:bVehicleSettings[vehicleid]<v_Used>;
@@ -1436,7 +1426,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
 		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
-		gPlayerArmedAmmo[playerid] = 0;
 		f:bVehicleSettings[vehicleid]<v_Occupied>;
 
 		PlayerTextDrawHide(playerid, VehicleNameText);
@@ -1487,12 +1476,11 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				new str[64];
-				IncorrectPass[playerid]++;
-				format(str, 64, "Incorrect password! %d out of 5 tries", IncorrectPass[playerid]);
+				gPlayerPassAttempts[playerid]++;
+				format(str, 64, "Incorrect password! %d out of 5 tries", gPlayerPassAttempts[playerid]);
 				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Quit");
-				if(IncorrectPass[playerid] == 5)
+				if(gPlayerPassAttempts[playerid] == 5)
 				{
-					IncorrectPass[playerid] = 0;
 					Kick(playerid);
 					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
 				}
@@ -1674,6 +1662,7 @@ LoadTextDraws()
 LoadPlayerTextDraws(playerid)
 {
 //==============================================================Character Create
+
 	ClassBackGround					=CreatePlayerTextDraw(playerid, 0.000000, 0.000000, "_");
 	PlayerTextDrawBackgroundColor	(playerid, ClassBackGround, 255);
 	PlayerTextDrawFont				(playerid, ClassBackGround, 1);
@@ -1713,6 +1702,21 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale, 255);
 	PlayerTextDrawTextSize			(playerid, ClassButtonFemale, 300.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale, true);
+
+
+//===================================================================Weapon Ammo
+
+	WeaponAmmo						=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
+	PlayerTextDrawAlignment			(playerid, WeaponAmmo, 2);
+	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmo, 255);
+	PlayerTextDrawFont				(playerid, WeaponAmmo, 1);
+	PlayerTextDrawLetterSize		(playerid, WeaponAmmo, 0.210000, 1.000000);
+	PlayerTextDrawColor				(playerid, WeaponAmmo, -1);
+	PlayerTextDrawSetOutline		(playerid, WeaponAmmo, 1);
+	PlayerTextDrawSetProportional	(playerid, WeaponAmmo, 1);
+	PlayerTextDrawUseBox			(playerid, WeaponAmmo, 1);
+	PlayerTextDrawBoxColor			(playerid, WeaponAmmo, 255);
+	PlayerTextDrawTextSize			(playerid, WeaponAmmo, 548.000000, 40.000000);
 
 
 //======================================================================Tooltips
@@ -1869,15 +1873,6 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawSetProportional	(playerid, AddHPText, 1);
 	PlayerTextDrawSetShadow			(playerid, AddHPText, 0);
 	PlayerTextDrawSetOutline		(playerid, AddHPText, 1);
-
-	AddScoreText					=CreatePlayerTextDraw(playerid, 160.000000, 260.000000, "<+P>");
-	PlayerTextDrawColor				(playerid, AddScoreText, YELLOW);
-	PlayerTextDrawBackgroundColor	(playerid, AddScoreText, 255);
-	PlayerTextDrawFont				(playerid, AddScoreText, 1);
-	PlayerTextDrawLetterSize		(playerid, AddScoreText, 0.300000, 1.000000);
-	PlayerTextDrawSetProportional	(playerid, AddScoreText, 1);
-	PlayerTextDrawSetShadow			(playerid, AddScoreText, 0);
-	PlayerTextDrawSetOutline		(playerid, AddScoreText, 1);
 
 	ActionBar						= CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
 	OverheatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
@@ -2116,9 +2111,4 @@ IsPlayerOnAdminDuty(playerid)
 GetPlayerServerJoinTick(playerid)
 {
 	return tick_ServerJoin[playerid];
-}
-
-GetPlayerCurrentWeapon(playerid)
-{
-	return gPlayerArmedWeapon[playerid];
 }

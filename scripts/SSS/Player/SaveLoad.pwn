@@ -12,15 +12,16 @@ enum
 	PLY_CELL_STANCE,
 	PLY_CELL_BLEEDING,
 	PLY_CELL_CUFFED,
+	PLY_CELL_WARNS,
 	PLY_CELL_END
 }
 
 enum
 {
-	INV_CELL_ITEMS,
-	INV_CELL_BAGTYPE = INV_CELL_ITEMS + 8,
-	INV_CELL_BAGITEMS,
-	INV_CELL_END = INV_CELL_BAGITEMS + 16
+	INV_CELL_ITEMS[8],
+	INV_CELL_BAGTYPE,
+	INV_CELL_BAGITEMS[16],
+	INV_CELL_END
 }
 
 SavePlayerChar(playerid)
@@ -57,10 +58,10 @@ SavePlayerChar(playerid)
 	}
 	else
 	{
-		if(GetPlayerWeapon(playerid) > 0)
+		if(GetPlayerCurrentWeapon(playerid) > 0)
 		{
-			data[PLY_CELL_HELD] = GetPlayerWeapon(playerid);
-			data[PLY_CELL_HELDEX] = GetPlayerAmmo(playerid);
+			data[PLY_CELL_HELD] = GetPlayerCurrentWeapon(playerid);
+			data[PLY_CELL_HELDEX] = GetPlayerTotalAmmo(playerid);
 		}
 		else
 		{
@@ -86,14 +87,11 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 
+	data[PLY_CELL_WARNS] = gPlayerWarnings[playerid];
+
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
-}
-ACMD:wepinfo[3](playerid, params[])
-{
-	MsgF(playerid, YELLOW, "Wep: %d Ammo: %d", gPlayerArmedWeapon[playerid], gPlayerArmedAmmo[playerid]);
-	return 1;
 }
 SavePlayerInventory(playerid)
 {
@@ -163,8 +161,7 @@ LoadPlayerChar(playerid)
 	{
 		if(0 < data[PLY_CELL_HELD] <= WEAPON_PARACHUTE)
 		{
-			GivePlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
-			gPlayerArmedWeapon[playerid] = data[PLY_CELL_HELD];
+			SetPlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
 		}
 		else
 		{
@@ -200,6 +197,7 @@ LoadPlayerChar(playerid)
 		SetPlayerCuffs(playerid, true);
 	}
 
+	gPlayerWarnings[playerid] = data[PLY_CELL_WARNS];
 }
 LoadPlayerInventory(playerid)
 {
@@ -296,11 +294,6 @@ hook OnGameModeInit()
 }
 timer UpdateAccounts[1000]()
 {
-	printf("%d = INV_CELL_ITEMS", INV_CELL_ITEMS);
-	printf("%d = INV_CELL_BAGTYPE", INV_CELL_BAGTYPE);
-	printf("%d = INV_CELL_BAGITEMS", INV_CELL_BAGITEMS);
-	printf("%d = INV_CELL_END", INV_CELL_END);
-
 	new
 		name[24],
 		DBResult:result,
@@ -313,7 +306,6 @@ timer UpdateAccounts[1000]()
 
 	for(new i; i < numrows; i++)
 	{
-		printf("Converting record: %d", i);
 		db_get_field(result, 0, name, 24);
 		db_next_row(result);
 

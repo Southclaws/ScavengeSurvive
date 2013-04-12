@@ -347,9 +347,9 @@ ptask PlayerUpdate[100](playerid)
 			GivePlayerHP(playerid, -0.01, .msg = false);
 	}
 
-	if(gPlayerArmedWeapon[playerid] == 0 && GetPlayerWeapon(playerid))
+	if(GetPlayerCurrentWeapon(playerid) == 0 && GetPlayerWeapon(playerid))
 	{
-		ResetPlayerWeapons(playerid);
+		RemovePlayerWeapon(playerid);
 	}
 
 	PlayerBagUpdate(playerid);
@@ -460,22 +460,6 @@ public OnPlayerUpdate(playerid)
 		gPlayerVelocity[playerid] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 		format(str, 32, "%.0fkm/h", gPlayerVelocity[playerid]);
 		PlayerTextDrawSetString(playerid, VehicleSpeedText, str);
-	}
-	else
-	{
-		SetPlayerArmedWeapon(playerid, gPlayerArmedWeapon[playerid]);
-
-		new
-			id,
-			ammo;
-
-		GetPlayerWeaponData(playerid, GetWeaponSlot(gPlayerArmedWeapon[playerid]), id, ammo);
-
-		if(ammo == 0 && gPlayerArmedWeapon[playerid] == id && id != 0)
-		{
-			SetPlayerArmedWeapon(playerid, 0);
-			gPlayerArmedWeapon[playerid] = 0;
-		}
 	}
 
 	if(bPlayerGameSettings[playerid] & Alive)

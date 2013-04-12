@@ -14,8 +14,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(!IsValidItem(GetPlayerBackpackItem(playerid)))
 			{
-				gPlayerArmedWeapon[playerid] = 46;
-				GivePlayerWeapon(playerid, 46, 1);
+				SetPlayerWeapon(playerid, 46, 1);
 				DestroyItem(GetPlayerItem(playerid));
 			}
 		}
@@ -27,7 +26,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
 				para_TakingOff[playerid] = true;
-				ResetPlayerWeapons(playerid);
+				RemovePlayerWeapon(playerid);
 				GiveWorldItemToPlayer(playerid, CreateItem(item_Parachute, 0.0, 0.0, 0.0));
 			}
 		}

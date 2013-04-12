@@ -41,7 +41,7 @@ ACMD:duty[1](playerid, params[])
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
 
-		ResetPlayerWeapons(playerid);
+		RemovePlayerWeapon(playerid);
 		DestroyItem(GetPlayerItem(playerid));
 		RemovePlayerHolsterWeapon(playerid);
 
@@ -60,8 +60,6 @@ ACMD:duty[1](playerid, params[])
 		{
 			RemovePlayerHat(playerid);
 		}
-
-		gPlayerArmedWeapon[playerid] = 0;
 
 		if(bPlayerGameSettings[playerid] & Gender)
 			SetPlayerSkin(playerid, 217);

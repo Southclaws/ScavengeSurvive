@@ -1,6 +1,6 @@
 public OnPlayerUseItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_timebomb)
+	if(GetItemType(itemid) == item_Timebomb)
 	{
 		PlayerDropItem(playerid);
 		defer TimeBombExplode(itemid);

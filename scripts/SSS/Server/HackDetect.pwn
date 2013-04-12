@@ -22,16 +22,6 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 		tp_DetectDelay		[MAX_PLAYERS];
 
 
-// Anti-teleport
-
-
-new
-		wp_DetectDelay		[MAX_PLAYERS];
-
-
-// Anti-teleport
-
-
 Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
 	tp_SetPosTick[playerid] = tickcount();
@@ -42,15 +32,6 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 	return SetPlayerPos(playerid, x, y, z);
 }
 #define SetPlayerPos Detect_SetPlayerPos
-
-Detect_GivePlayerWeapon(playerid, weaponid, ammo)
-{
-	wp_DetectDelay[playerid] = tickcount();
-
-	return GivePlayerWeapon(playerid, weaponid, ammo);
-}
-#define GivePlayerWeapon Detect_GivePlayerWeapon
-
 
 hook OnPlayerSpawn(playerid)
 {
@@ -154,7 +135,7 @@ new
 
 WeaponCheck(playerid)
 {
-	if(tickcount() - wp_DetectDelay[playerid] < 3000)
+	if(tickcount() - GetPlayerWeaponSwapTick(playerid))
 		return;
 
 	new

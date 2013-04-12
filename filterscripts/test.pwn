@@ -20,6 +20,13 @@ public OnFilterScriptInit()
 	fclose(file);
 }
 
+public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	new str[128];
+	format(str, 128, "NewkKeys: %d Oldkeys: %d", newkeys, oldkeys);
+	SendClientMessage(playerid, -1, str);
+}
+
 CMD:car(playerid, params[])
 {
 	new

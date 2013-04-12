@@ -2,7 +2,7 @@
 
 
 #define MAX_FOOD_ITEM (8)
-#define IDLE_FOOD_RATE (0.001)
+#define IDLE_FOOD_RATE (0.004)
 
 
 enum E_FOOD_DATA

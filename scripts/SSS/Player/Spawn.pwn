@@ -34,6 +34,14 @@ PlayerSpawnExistingCharacter(playerid)
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);
 
+	if(gPlayerWarnings[playerid] > 0)
+	{
+		if(gPlayerWarnings[playerid] >= 5)	
+			gPlayerWarnings[playerid] = 0;
+
+		MsgF(playerid, YELLOW, " >  You have %d/5 warnings.", gPlayerWarnings[playerid]);
+	}
+
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
 	SetCameraBehindPlayer(playerid);

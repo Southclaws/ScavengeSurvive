@@ -37,10 +37,8 @@ DisarmPlayer(playerid, i)
 		new
 			ammo = GetPlayerAmmo(i);
 
-		RemovePlayerWeapon(i, weaponid);
-		GivePlayerWeapon(playerid, weaponid, ammo);
-		gPlayerArmedWeapon[i] = 0;
-		gPlayerArmedWeapon[playerid] = weaponid;
+		RemovePlayerWeapon(i);
+		SetPlayerWeapon(playerid, weaponid, ammo);
 
 		return 1;
 	}
@@ -54,8 +52,7 @@ DisarmPlayer(playerid, i)
 				ammo = GetPlayerHolsteredWeaponAmmo(i);
 
 			RemovePlayerHolsterWeapon(i);
-			GivePlayerWeapon(playerid, weaponid, ammo);
-			gPlayerArmedWeapon[playerid] = weaponid;
+			SetPlayerWeapon(playerid, weaponid, ammo);
 
 			return 1;
 		}

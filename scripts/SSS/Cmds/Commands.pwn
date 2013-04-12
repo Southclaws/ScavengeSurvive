@@ -1,12 +1,12 @@
 CMD:die(playerid, params[])
 {
-	GivePlayerWeapon(playerid, 4, 1);
-	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
+	SetPlayerWeapon(playerid, 4, 1);
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 1.0, 0, 0, 0, 0, 0);
 	defer Suicide(playerid);
 
 	return 1;
 }
-timer Suicide[1000](playerid)
+timer Suicide[5000](playerid)
 {
 	SetPlayerHP(playerid, 0.0);
 }

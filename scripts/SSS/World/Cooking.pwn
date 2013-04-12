@@ -74,11 +74,13 @@ forward bbq_OnItemDestroy(itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(GetItemType(withitemid) == item_Barbecue)
+	new ItemType:withitemtype = GetItemType(withitemid);
+
+	if(withitemtype == item_Barbecue || IsItemTypeFood(withitemtype))
 	{
 		foreach(new i : bbq_Index)
 		{
-			if(withitemid == bbq_Data[i][bbq_itemId])
+			if(withitemid == bbq_Data[i][bbq_itemId] || withitemid == bbq_Data[i][bbq_grillItem][0] || withitemid == bbq_Data[i][bbq_grillItem][1])
 			{
 				new ItemType:itemtype = GetItemType(itemid);
 
@@ -86,8 +88,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				{
 					if(GetItemExtraData(itemid) > 0)
 					{
-						SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 						bbq_Data[i][bbq_fuel] += 10;
+						SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 						ShowMsgBox(playerid, "1 Liter of petrol added", 3000);
 					}
 					else
@@ -104,8 +106,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						Float:z,
 						Float:r;
 
-					GetItemPos(withitemid, x, y, z);
-					GetItemRot(withitemid, r, r, r);
+					GetItemPos(bbq_Data[i][bbq_itemId], x, y, z);
+					GetItemRot(bbq_Data[i][bbq_itemId], r, r, r);
 
 					if(bbq_Data[i][bbq_grillItem][0] == INVALID_ITEM_ID)
 					{
@@ -143,8 +145,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						Float:z,
 						Float:r;
 
-					GetItemPos(withitemid, x, y, z);
-					GetItemRot(withitemid, r, r, r);
+					GetItemPos(bbq_Data[i][bbq_itemId], x, y, z);
+					GetItemRot(bbq_Data[i][bbq_itemId], r, r, r);
 
 					bbq_Data[i][bbq_grillPart][0] = CreateDynamicObject(18701,
 						x + (0.25 * floatsin(-r + 90.0, degrees)),
@@ -197,7 +199,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	{
 		foreach(new i : bbq_Index)
 		{
-			if(itemid == bbq_Data[i][bbq_itemId])
+			if(itemid == bbq_Data[i][bbq_itemId] || itemid == bbq_Data[i][bbq_grillItem][0] || itemid == bbq_Data[i][bbq_grillItem][1])
 			{
 				if(bbq_Data[i][bbq_state] != COOKER_STATE_NONE)
 					return 1;

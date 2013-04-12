@@ -53,7 +53,8 @@ Iterator:	def_Index<MAX_DEFENSE>;
 
 static
 			def_CurrentDefenseItem[MAX_PLAYERS],
-			def_CurrentDefense[MAX_PLAYERS];
+			def_CurrentDefenseEdit[MAX_PLAYERS],
+			def_CurrentDefenseOpen[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
@@ -324,9 +325,9 @@ StopBuildingDefense(playerid)
 		ClearAnimations(playerid);
 		return;
 	}
-	if(def_CurrentDefense[playerid] != -1)
+	if(def_CurrentDefenseEdit[playerid] != -1)
 	{
-		def_CurrentDefense[playerid] = -1;
+		def_CurrentDefenseEdit[playerid] = -1;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
 		return;
@@ -349,7 +350,7 @@ public OnButtonPress(playerid, buttonid)
 
 				if(155.0 < angle < 205.0)
 				{	
-					def_CurrentDefense[playerid] = i;
+					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					break;
@@ -362,7 +363,7 @@ public OnButtonPress(playerid, buttonid)
 
 				if(155.0 < angle < 205.0)
 				{	
-					def_CurrentDefense[playerid] = i;
+					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					break;
@@ -371,7 +372,7 @@ public OnButtonPress(playerid, buttonid)
 
 			if(def_Data[i][def_mode] == DEFENSE_MODE_OPENABLE)
 			{
-				def_CurrentDefense[playerid] = i;
+				def_CurrentDefenseOpen[playerid] = i;
 				ShowPlayerDialog(playerid, d_DefenseEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
 				break;
 			}
@@ -425,30 +426,30 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	if(def_CurrentDefense[playerid] != -1)
+	if(def_CurrentDefenseEdit[playerid] != -1)
 	{
 		new itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_Keypad)
 		{
 			ShowPlayerDialog(playerid, d_DefenseSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
-			def_Data[def_CurrentDefense[playerid]][def_mode] = DEFENSE_MODE_OPENABLE;
+			def_Data[def_CurrentDefenseEdit[playerid]][def_mode] = DEFENSE_MODE_OPENABLE;
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
 
 		if(GetItemType(itemid) == item_Crowbar)
 		{
-			CreateItem(def_TypeData[def_Data[def_CurrentDefense[playerid]][def_type]][def_itemtype],
-				def_Data[def_CurrentDefense[playerid]][def_posX],
-				def_Data[def_CurrentDefense[playerid]][def_posY],
-				def_Data[def_CurrentDefense[playerid]][def_posZ],
-				.rz = def_Data[def_CurrentDefense[playerid]][def_rotZ],
+			CreateItem(def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype],
+				def_Data[def_CurrentDefenseEdit[playerid]][def_posX],
+				def_Data[def_CurrentDefenseEdit[playerid]][def_posY],
+				def_Data[def_CurrentDefenseEdit[playerid]][def_posZ],
+				.rz = def_Data[def_CurrentDefenseEdit[playerid]][def_rotZ],
 				.zoffset = ITEM_BTN_OFFSET_Z);
 
-			DestroyDefense(def_CurrentDefense[playerid]);
+			DestroyDefense(def_CurrentDefenseEdit[playerid]);
 			ClearAnimations(playerid);
-			def_CurrentDefense[playerid] = -1;
+			def_CurrentDefenseEdit[playerid] = -1;
 		}
 	}
 
@@ -473,7 +474,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 
 			if(1000 <= pass < 10000)
 			{
-				def_Data[def_CurrentDefense[playerid]][def_pass] = pass;
+				def_Data[def_CurrentDefenseEdit[playerid]][def_pass] = pass;
 			}
 			else
 			{
@@ -488,13 +489,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 		{
 			new pass = strval(intputtext);
 
-			if(def_Data[def_CurrentDefense[playerid]][def_pass] == pass)
+			if(def_Data[def_CurrentDefenseOpen[playerid]][def_pass] == pass)
 			{
-				if(def_Data[def_CurrentDefense[playerid]][def_open])
-					CloseDefense(def_CurrentDefense[playerid]);
+				if(def_Data[def_CurrentDefenseOpen[playerid]][def_open])
+					CloseDefense(def_CurrentDefenseOpen[playerid]);
 
 				else
-					OpenDefense(def_CurrentDefense[playerid]);
+					OpenDefense(def_CurrentDefenseOpen[playerid]);
 			}
 			else
 			{

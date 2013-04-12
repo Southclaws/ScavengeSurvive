@@ -160,7 +160,9 @@ ACMD:unmute[1](playerid, params[])
 }
 ACMD:warn[1](playerid, params[])
 {
-	new id, reason[128];
+	new
+		id,
+		reason[128];
 
 	if(sscanf(params, "ds[128]", id, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /warn [playerid] [reason]");
@@ -171,11 +173,14 @@ ACMD:warn[1](playerid, params[])
 	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
 		return 3;
 
-	Warnings[id]++;
-	MsgAllF(ORANGE, "%P"#C_YELLOW" Has been warned (%d/5) for: %s", id, Warnings[id], reason);
-	if(Warnings[id] >= 5)
+	gPlayerWarnings[id]++;
+
+	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", id, gPlayerWarnings[id], reason);
+	MsgF(id, ORANGE, " >  You been warned (%d/5) for: %s", id, gPlayerWarnings[id], reason);
+
+	if(gPlayerWarnings[id] >= 5)
 	{
-		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Has been kicked for having too many warnings", id);
+		Msg(id, YELLOW, " >  Kicked for having too many warnings.");
 		Kick(id);
 	}
 

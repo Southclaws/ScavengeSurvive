@@ -126,11 +126,11 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 	else
 	{
-		if(gPlayerArmedWeapon[playerid] != 0)
+		if(GetPlayerCurrentWeapon(playerid) != 0)
 		{
-			GetWeaponName(gPlayerArmedWeapon[playerid], tmp);
+			GetWeaponName(GetPlayerCurrentWeapon(playerid), tmp);
 			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
-			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(gPlayerArmedWeapon[playerid]));
+			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(GetPlayerCurrentWeapon(playerid)));
 			PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 		}
 		else
@@ -330,6 +330,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			new
 				containerid = GetPlayerCurrentContainer(playerid),
 				itemid;
+
 			if(IsValidContainer(containerid))
 			{
 				if(IsContainerFull(containerid))
@@ -404,7 +405,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				DisplayPlayerInventory(playerid);
 			}
 		}
-		else if(gPlayerArmedWeapon[playerid] != 0)
+		else if(GetPlayerCurrentWeapon(playerid) != 0)
 		{
 			new containerid = GetPlayerCurrentContainer(playerid);
 			if(IsValidContainer(containerid))
@@ -418,18 +419,17 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					return 1;
 				}
 
-				itemid = CreateItem(ItemType:gPlayerArmedWeapon[playerid], 0.0, 0.0, 0.0);
+				itemid = CreateItem(ItemType:GetPlayerCurrentWeapon(playerid), 0.0, 0.0, 0.0);
 
-				if(!WillItemTypeFitInContainer(containerid, ItemType:gPlayerArmedWeapon[playerid]))
+				if(!WillItemTypeFitInContainer(containerid, ItemType:GetPlayerCurrentWeapon(playerid)))
 				{
 					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
 					return 1;
 				}
 
-				SetItemExtraData(itemid, GetPlayerAmmo(playerid));
+				SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
 				AddItemToContainer(containerid, itemid, playerid);
-				RemovePlayerWeapon(playerid, _:gPlayerArmedWeapon[playerid]);
-				gPlayerArmedWeapon[playerid] = 0;
+				RemovePlayerWeapon(playerid);
 
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
@@ -441,16 +441,15 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					ShowMsgBox(playerid, "Inventory full", 3000, 150);
 					return 1;
 				}
-				switch(gPlayerArmedWeapon[playerid])
+				switch(GetPlayerCurrentWeapon(playerid))
 				{
 					case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
 					{
-						itemid = CreateItem(ItemType:gPlayerArmedWeapon[playerid], 0.0, 0.0, 0.0);
+						itemid = CreateItem(ItemType:GetPlayerCurrentWeapon(playerid), 0.0, 0.0, 0.0);
 
-						SetItemExtraData(itemid, GetPlayerAmmo(playerid));
+						SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
 						AddItemToInventory(playerid, itemid);
-						RemovePlayerWeapon(playerid, _:gPlayerArmedWeapon[playerid]);
-						gPlayerArmedWeapon[playerid] = 0;
+						RemovePlayerWeapon(playerid);
 
 						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
 					}
@@ -518,7 +517,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 				SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
 				AddItemToContainer(containerid, itemid, playerid);
-				RemoveHolsterWeapon(playerid);
+				RemovePlayerHolsterWeapon(playerid);
 
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
@@ -538,7 +537,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 						SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
 						AddItemToInventory(playerid, itemid);
-						RemoveHolsterWeapon(playerid);
+						RemovePlayerHolsterWeapon(playerid);
 
 						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
 					}
