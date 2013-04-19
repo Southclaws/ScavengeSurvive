@@ -93,6 +93,7 @@ SetSignText(signid, text[])
 
 EditSign(playerid, signid)
 {
+	CancelPlayerMovement(playerid);
 	ShowPlayerDialog(playerid, d_SignEdit, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\n' will start a new line.", "Accept", "Close");
 	sgn_CurrentSign[playerid] = signid;
 }
@@ -186,12 +187,12 @@ public OnPlayerUseItem(playerid, itemid)
 
 		return 1;
 	}
-    return CallLocalFunction("sgn_OnPlayerUseItem", "dd", playerid, itemid);
+	return CallLocalFunction("sgn_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
+	#undef OnPlayerUseItem
 #else
-    #define _ALS_OnPlayerUseItem
+	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem sgn_OnPlayerUseItem
 forward sgn_OnPlayerUseItem(playerid, itemid);
@@ -243,7 +244,9 @@ hook OnGameModeExit()
 			filename[64],
 			File:file;
 
-		format(filename, sizeof(filename), ""#SIGN_DATA_FOLDER"%d_%d_%d_%d", sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ], sgn_Data[i][sgn_rotZ]);
+		format(filename, sizeof(filename), ""#SIGN_DATA_FOLDER"%d_%d_%d_%d",
+			sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ], sgn_Data[i][sgn_rotZ]);
+
 		file = fopen(filename, io_write);
 
 		if(file)

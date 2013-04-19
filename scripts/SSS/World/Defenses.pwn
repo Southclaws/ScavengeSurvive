@@ -353,7 +353,7 @@ public OnButtonPress(playerid, buttonid)
 					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
-					break;
+					return 1;
 				}
 			}
 
@@ -366,7 +366,7 @@ public OnButtonPress(playerid, buttonid)
 					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
-					break;
+					return 1;
 				}
 			}
 
@@ -374,7 +374,7 @@ public OnButtonPress(playerid, buttonid)
 			{
 				def_CurrentDefenseOpen[playerid] = i;
 				ShowPlayerDialog(playerid, d_DefenseEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
-				break;
+				return 1;
 			}
 		}
 	}
@@ -633,15 +633,13 @@ timer Defense_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	new i;
 
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
+	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
 	{
-		if(i == autosave_Max)
-			return;
-
 		SaveDefenseItem(autosave_Block[i]);
 	}
 
-	defer Defense_BlockSave(i);
+	if(index < autosave_Max)
+		defer Defense_BlockSave(i);
 
 	return;
 }

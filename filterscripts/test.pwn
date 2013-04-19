@@ -7,25 +7,47 @@
 
 public OnFilterScriptInit()
 {
-	new
-		File:file,
-		data[3];
-
-	data[0] = _:0.0;
-	data[1] = _:0.0;
-	data[2] = _:4.0;
-
-	file = fopen("test.dat", io_write);
-	fblockwrite(file, data, 3);
-	fclose(file);
+	ssmsg("Kicking 89.166.166.42 because they didn't logon to the game.");
+	ssmsg("Kicking 89.166.166.43 because they didn't logon to the game.");
+	ssmsg("Kicking 89.167.166.42 because they didn't logon to the game.");
+	ssmsg("Kicking 90.167.166.42 because they didn't logon to the game.");
 }
 
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+#define MAX_INVALID_LOGIN 5
+
+static
+	IpList[MAX_INVALID_LOGIN][1 char],
+	IpListIdx;
+
+ssmsg(const msg[])
 {
-	new str[128];
-	format(str, 128, "NewkKeys: %d Oldkeys: %d", newkeys, oldkeys);
-	SendClientMessage(playerid, -1, str);
+	if(IpListIdx >= MAX_INVALID_LOGIN)
+		return 0;
+
+	if(!sscanf(msg, "{'Kicking'} p<.>dddd {'because they didn't logon to the game'}", IpList[IpListIdx]{0}, IpList[IpListIdx]{1}, IpList[IpListIdx]{2}, IpList[IpListIdx]{3}))
+	{
+		for(new i; i < IpListIdx; i++)
+		{
+			if(IpList[i][0] == 0)
+				continue;
+
+			printf("%d == %d", IpList[IpListIdx][0], IpList[i][0]);
+
+			if(IpList[IpListIdx][0] == IpList[i][0])
+				return 0;
+		}
+
+		IpListIdx++;
+
+		if(IpListIdx == MAX_INVALID_LOGIN)
+		{
+			print("SERVER CRASH - AUTO RESTART");
+			return 1;
+		}
+	}
+	return 1;
 }
+
 
 CMD:car(playerid, params[])
 {
@@ -39,81 +61,32 @@ CMD:car(playerid, params[])
 	return 1;
 }
 
-CMD:carry(playerid, params[])
+CMD:tp(playerid, params[])
 {
-	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
-	return 1;
-}
+	new id1, id2;
+	sscanf(params, "dd", id1, id2);
 
-CMD:none(playerid, params[])
-{
-	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-	return 1;
-}
-
-CMD:heli(playerid, params[])
-{
 	new
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		Float:rz;
 
-	GetPlayerPos(playerid, x, y, z);
-	CreateVehicle(487, x, y, z, 0.0, -1, -1, 100);
-
-	return 1;
-}
-
-CMD:tow(playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-	CreateVehicle(525, x, y, z, 0.0, -1, -1, 100);
+	GetPlayerPos(id2, x, y, z);
+	GetPlayerFacingAngle(id2, rz);
+	SetPlayerPos(id1, x + floatsin(-rz, degrees), y + floatcos(-rz, degrees), z);
 
 	return 1;
 }
 
-CMD:tank(playerid, params[])
+public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-	CreateVehicle(432, x, y, z, 0.0, -1, -1, 100);
-
-	return 1;
+	return 0;
 }
 
-CMD:vhp(playerid, params[])
+public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	SetVehicleHealth(GetPlayerVehicleID(playerid), strval(params));
-	return 1;
-}
-
-CMD:wep(playerid, params[])
-{
-	GivePlayerWeapon(playerid, 31, 1000);
-	return 1;
-}
-
-
-
-CMD:up(playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-	SetPlayerPos(playerid, x, y, z + strval(params));
-	return 1;
+	return 0;
 }
 
 #endinput

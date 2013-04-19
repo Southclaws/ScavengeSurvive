@@ -131,6 +131,46 @@ stock RemovePlayerHolsterWeapon(playerid)
 
 	return 1;
 }
+stock IsWeaponMelee(weaponid)
+{
+	switch(weaponid)
+	{
+		case 1..15:
+			return 1;
+	}
+	return 0;
+}
+stock IsWeaponThrowable(weaponid)
+{
+	switch(weaponid)
+	{
+		case 16..18, 39:
+			return 1;
+	}
+	return 0;
+}
+stock IsWeaponClipBased(weaponid)
+{
+	switch(weaponid)
+	{
+		case 22..38, 41..43:
+			return 1;
+	}
+	return 0;
+}
+stock IsWeaponOneShot(weaponid)
+{
+	switch(weaponid)
+	{
+		case :
+			return 1;
+	}
+	return 0;
+}
+stock GetAmmunitionRemainder(weaponid, startammo, ammunition)
+{
+	return startammo + ammunition - (GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
+}
 
 
 // Hooks and Internal
@@ -138,11 +178,16 @@ stock RemovePlayerHolsterWeapon(playerid)
 
 SetPlayerWeapon(playerid, weaponid, ammo)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	if(wep_CurrentWeapon[playerid] == 0)
 	{
 		if(ammo > GetWeaponMagSize(weaponid))
 		{
-			wep_ReserveAmmo[playerid] += ammo - GetWeaponMagSize(weaponid);
+			if(GetWeaponAmmoMax(weaponid) > 0)
+				wep_ReserveAmmo[playerid] += ammo - GetWeaponMagSize(weaponid);
+
 			ammo = GetWeaponMagSize(weaponid);
 		}
 
@@ -202,7 +247,10 @@ hook OnPlayerUpdate(playerid)
 
 		if(ammo == 0 && wep_CurrentWeapon[playerid] == id && id != 0)
 		{
-			ReloadWeapon(playerid);
+			if(ReloadWeapon(playerid) == -1)
+			{
+				RemovePlayerWeapon(playerid);
+			}
 		}
 	}
 
@@ -214,11 +262,11 @@ ReloadWeapon(playerid)
 	if(tickcount() - tick_LastReload[playerid] < 1000)
 		return 0;
 
-	if(!(22 <= wep_CurrentWeapon[playerid] <= 38))
-		return 0;
+	if(!IsWeaponClipBased(wep_CurrentWeapon[playerid]))
+		return -1;
 
 	if(GetPlayerAmmo(playerid) == GetWeaponMagSize(wep_CurrentWeapon[playerid]))
-		return 0;
+		return -2;
 
 	if(wep_ReserveAmmo[playerid] <= 0)
 	{
@@ -254,6 +302,7 @@ ReloadWeapon(playerid)
 			ApplyAnimation(playerid, "COLT45", "COLT45_RELOAD", 4.1, 0, 1, 1, 0, 0);
 	}
 
+	ResetPlayerWeapons(playerid);
 	GivePlayerWeapon(playerid, wep_CurrentWeapon[playerid], ammo);
 	UpdateWeaponUI(playerid);
 
@@ -264,13 +313,19 @@ ReloadWeapon(playerid)
 
 UpdateWeaponUI(playerid)
 {
-	if(22 <= wep_CurrentWeapon[playerid] <= 38)
+	if(IsWeaponClipBased(wep_CurrentWeapon[playerid]))
 	{
 		if(GetPlayerAmmo(playerid) > GetWeaponMagSize(wep_CurrentWeapon[playerid]))
 			SetPlayerAmmo(playerid, wep_CurrentWeapon[playerid], GetWeaponMagSize(wep_CurrentWeapon[playerid]));
 
 		new str[8];
-		format(str, 8, "%d/%d", GetPlayerAmmo(playerid), wep_ReserveAmmo[playerid]);
+
+		if(GetWeaponAmmoMax(wep_CurrentWeapon[playerid]) > 0)
+			format(str, 8, "%d/%d", GetPlayerAmmo(playerid), wep_ReserveAmmo[playerid]);
+
+		else
+			format(str, 8, "%d", GetPlayerAmmo(playerid));
+
 		PlayerTextDrawSetString(playerid, WeaponAmmo, str);
 		PlayerTextDrawShow(playerid, WeaponAmmo);
 	}
@@ -279,24 +334,67 @@ UpdateWeaponUI(playerid)
 		PlayerTextDrawHide(playerid, WeaponAmmo);
 	}
 }
-/*
+
 ConvertPlayerItemToWeapon(playerid)
 {
+	new
+		itemid,
+		ItemType:itemtype,
+		ammo;
 
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+	ammo = GetItemExtraData(itemid);
+
+	if(!(1 <= _:itemtype <= 46))
+		return 0;
+
+	if(ammo <= 0)
+		return 0;
+
+	DestroyItem(itemid);
+	SetPlayerWeapon(playerid, _:itemtype, ammo);
+
+	return 1;
 }
 
 ConvertPlayerWeaponToItem(playerid)
 {
+	new
+		weaponid,
+		ammo,
+		itemid;
 
+	weaponid = wep_CurrentWeapon[playerid];
+	ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
+
+	if(weaponid == 0)
+		return 0;
+
+	RemovePlayerWeapon(playerid);
+
+	itemid = CreateItem(ItemType:weaponid);
+	GiveWorldItemToPlayer(playerid, itemid);
+	SetItemExtraData(itemid, ammo);
+
+	return 1;
 }
-*/
+
 public OnPlayerPickUpItem(playerid, itemid)
 {
 	new ItemType:type = GetItemType(itemid);
 
 	if(0 < _:type < WEAPON_PARACHUTE)
 	{
-		if(22 <= wep_CurrentWeapon[playerid] <= 38)
+		if(wep_CurrentWeapon[playerid] == 0)
+		{
+			if(GetItemExtraData(itemid) > 0)
+			{
+				PlayerPickUpWeapon(playerid, itemid);
+				return 1;
+			}
+		}
+		else if(IsWeaponClipBased(wep_CurrentWeapon[playerid]))
 		{
 			if(wep_CurrentWeapon[playerid] != _:type)
 			{
@@ -311,13 +409,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 				return 1;
 			}
 		}
-		else if(wep_CurrentWeapon[playerid] == 0)
+		else
 		{
-			if(GetItemExtraData(itemid) > 0)
-			{
-				PlayerPickUpWeapon(playerid, itemid);
-				return 1;
-			}
+			return 1;
 		}
 	}
 	else
@@ -444,35 +538,37 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & KEY_NO && !(newkeys & 128))
 	{
-		foreach(new i : Player)
-		{
-			if(i == playerid)
-				continue;
-
-			if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]))
-			{
-				if(tickcount() - tick_LastHolstered[i] < 1000)
-					continue;
-
-				if(GetPlayerWeapon(i) != 0)
-					continue;
-
-				if(GetPlayerItem(playerid) != INVALID_ITEM_ID || GetPlayerItem(i) != INVALID_ITEM_ID)
-					continue;
-
-				if(!IsPlayerIdle(playerid) || !IsPlayerIdle(i))
-					continue;
-
-				if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[i] & AdminDuty || bPlayerGameSettings[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
-					continue;
-
-				PlayerGiveWeapon(playerid, i);
-				return 1;
-			}
-		}
-
 		if(IsPlayerIdle(playerid) && wep_CurrentWeapon[playerid] != 0)
+		{
+			foreach(new i : Player)
+			{
+				if(i == playerid)
+					continue;
+
+				if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]))
+				{
+					if(tickcount() - tick_LastHolstered[i] < 1000)
+						continue;
+
+					if(GetPlayerWeapon(i) != 0)
+						continue;
+
+					if(GetPlayerItem(playerid) != INVALID_ITEM_ID || GetPlayerItem(i) != INVALID_ITEM_ID)
+						continue;
+
+					if(!IsPlayerIdle(i))
+						continue;
+
+					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[i] & AdminDuty || bPlayerGameSettings[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
+						continue;
+
+					PlayerGiveWeapon(playerid, i);
+					return 1;
+				}
+			}
+
 			PlayerDropWeapon(playerid);
+		}
 	}
 	if(newkeys & KEY_YES)
 	{
@@ -627,7 +723,13 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 	{
 		if(wep_CurrentWeapon[playerid] == 0)
 		{
-			new ammo = GetItemExtraData(itemid);
+			new ammo;
+
+			if(IsWeaponClipBased(_:type))
+				ammo = GetItemExtraData(itemid);
+
+			else
+				ammo = 1;
 
 			if(ammo > 0)
 			{
@@ -659,6 +761,9 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 
 PlayerDropWeapon(playerid)
 {
+	ConvertPlayerWeaponToItem(playerid);
+	PlayerDropItem(playerid);
+/*
 	if(wep_CurrentWeapon[playerid] > 0)
 	{
 		new
@@ -669,24 +774,25 @@ PlayerDropWeapon(playerid)
 
 		if(GiveWorldItemToPlayer(playerid, itemid, .call = 0))
 		{
+			SetItemExtraData(itemid, ammo);
 			PlayerDropItem(playerid);
 
-			switch(GetWeaponSlot(wep_CurrentWeapon[playerid]))
-			{
-				case 0, 1, 10, 11, 12: ammo = 1;
-			}
+			return itemid;
 		}
-		SetItemExtraData(itemid, ammo);
-
-		return itemid;
 	}
 	return INVALID_ITEM_ID;
+*/
 }
 
 PlayerGiveWeapon(playerid, targetid)
 {
 	if(wep_CurrentWeapon[playerid] > 0)
 	{
+		ConvertPlayerItemToWeapon(playerid);
+		PlayerGiveItem(playerid, targetid, 1);
+		wep_CurrentWeapon[targetid] = wep_CurrentWeapon[playerid];
+
+		/*
 		new
 			ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid],
 			itemid = CreateItem(ItemType:wep_CurrentWeapon[playerid]);
@@ -696,6 +802,7 @@ PlayerGiveWeapon(playerid, targetid)
 		GiveWorldItemToPlayer(playerid, itemid, .call = 0);
 		PlayerGiveItem(playerid, targetid, 1);
 		wep_CurrentWeapon[targetid] = wep_CurrentWeapon[playerid];
+		*/
 	}
 }
 

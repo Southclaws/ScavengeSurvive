@@ -20,11 +20,14 @@ public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Armour)
 	{
-		new data = GetItemExtraData(itemid);
-		if(data > 0)
+		if(gPlayerAP[playerid] <= 0.0)
 		{
-			DestroyItem(itemid);
-			gPlayerAP[playerid] = float(data);
+			new data = GetItemExtraData(itemid);
+			if(data > 0)
+			{
+				DestroyItem(itemid);
+				gPlayerAP[playerid] = float(data);
+			}
 		}
 	}
     return CallLocalFunction("armour_OnPlayerUseItem", "dd", playerid, itemid);

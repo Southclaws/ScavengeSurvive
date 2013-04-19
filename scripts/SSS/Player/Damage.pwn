@@ -1,13 +1,13 @@
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
-/*
-	if(gPlayerData[playerid][ply_Admin] >= 4)
+
+	if(gPlayerData[playerid][ply_Admin] >= 3)
 	{
 		new str[64];
 		format(str, 64, "took %.2f~n~from %p~n~weap %d", amount, issuerid, weaponid);
 		ShowMsgBox(playerid, str, 1000, 120);
 	}
-*/
+
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		if(weaponid == 53)
@@ -16,10 +16,20 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		}
 		else
 		{
-			if(amount > 10.0 && random(100) < amount)
+			switch(weaponid)
 			{
-				GivePlayerHP(playerid, -(amount * 1.1), weaponid);
-				KnockOutPlayer(playerid, 5000);
+				case 37:
+				{
+					GivePlayerHP(playerid, -amount, weaponid);
+				}
+				default:
+				{
+					if(amount > 10.0 && random(100) < amount)
+					{
+						GivePlayerHP(playerid, -(amount * 1.1), weaponid);
+						KnockOutPlayer(playerid, 5000);
+					}
+				}
 			}
 		}
 

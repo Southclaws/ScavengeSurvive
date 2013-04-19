@@ -28,10 +28,12 @@ native IsValidVehicle(vehicleid);
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
 //#include <MegaHooks>				// By Unicode:				http://forum.sa-mp.com/showthread.php?t=428948
+#include <fixes2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=375925
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
-#include <geoip>					// By Totto8492:			http://forum.sa-mp.com/showthread.php?t=32509
+#include <GeoIP>					// By Whitetiger:			http://forum.sa-mp.com/showthread.php?t=296171
+// IMPORTANT: Rename global variable 'result' inside GeoIP include by Whitetiger. Absolutely terrible name for a global variable I must say.
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054 - FIX: http://pastebin.com/zZ9bLs7K OR http://pastebin.com/2sJA38Kg
@@ -237,7 +239,8 @@ new
 	gServerUptime,
 	gMessageOfTheDay[MAX_MOTD_LEN],
 	gAdminData[MAX_ADMIN][e_admin_data],
-	gTotalAdmins;
+	gTotalAdmins,
+	gPingLimit = 600;
 
 new
 	skin_MainM,
@@ -265,43 +268,33 @@ new
 	anim_Stab;
 
 
-enum E_WEATHER_DATA
-{
-	weather_id,
-	weather_name[24]
-}
-enum E_TIME_DATA
-{
-	time_hour,
-	time_name[11]
-}
 new
-	WeatherData[20][E_WEATHER_DATA]=
+	WeatherData[20][23]=
 	{
-		{0, "EXTRASUNNY_LS"},
-		{1, "SUNNY_LS"},
-		{2, "EXTRASUNNY_SMOG_LS"},
-		{3, "SUNNY_SMOG_LS"},
-		{4, "CLOUDY_LS"},
+		"EXTRASUNNY_LS",			// 00
+		"SUNNY_LS",					// 01
+		"EXTRASUNNY_SMOG_LS",		// 02
+		"SUNNY_SMOG_LS",			// 03
+		"CLOUDY_LS",				// 04
 
-		{5, "SUNNY_SF"},
-		{6, "EXTRASUNNY_SF"},
-		{7, "CLOUDY_SF"},
-		{8, "RAINY_SF"},
-		{9, "FOGGY_SF"},
+		"SUNNY_SF",					// 05
+		"EXTRASUNNY_SF",			// 06
+		"CLOUDY_SF",				// 07
+		"RAINY_SF",					// 08
+		"FOGGY_SF",					// 09
 
-		{10, "SUNNY_LV"},
-		{11, "EXTRASUNNY_LV"},
-		{12, "CLOUDY_LV"},
+		"SUNNY_LV",					// 10
+		"EXTRASUNNY_LV",			// 11
+		"CLOUDY_LV",				// 12
 
-		{13, "EXTRASUNNY_COUNTRYSIDE"},
-		{14, "SUNNY_COUNTRYSIDE"},
-		{15, "CLOUDY_COUNTRYSIDE"},
-		{16, "RAINY_COUNTRYSIDE"},
+		"EXTRASUNNY_COUNTRYSIDE",	// 13
+		"SUNNY_COUNTRYSIDE",		// 14
+		"CLOUDY_COUNTRYSIDE",		// 15
+		"RAINY_COUNTRYSIDE",		// 16
 
-		{17, "EXTRASUNNY_DESERT"},
-		{18, "SUNNY_DESERT"},
-		{19, "SANDSTORM_DESERT"}
+		"EXTRASUNNY_DESERT",		// 17
+		"SUNNY_DESERT",				// 18
+		"SANDSTORM_DESERT"			// 19
 	};
 
 //=====================Loot Types
@@ -417,7 +410,9 @@ ItemType:		item_WoodPanel		= INVALID_ITEM_TYPE,
 ItemType:		item_Flare			= INVALID_ITEM_TYPE,
 ItemType:		item_PhoneBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_ParaBag		= INVALID_ITEM_TYPE,
-ItemType:		item_Keypad			= INVALID_ITEM_TYPE;
+ItemType:		item_Keypad			= INVALID_ITEM_TYPE,
+ItemType:		item_TentPack		= INVALID_ITEM_TYPE,
+ItemType:		item_Campfire		= INVALID_ITEM_TYPE;
 
 //=====================Clock and Timers
 new
@@ -580,6 +575,7 @@ forward SetRestart(seconds);
 
 #include "../scripts/SSS/Server/Autosave.pwn"
 #include "../scripts/SSS/Server/TextTags.pwn"
+#include "../scripts/SSS/Server/GlitchRestart.pwn"
 
 //======================Data Load
 
@@ -593,6 +589,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Weapon/Core.pwn"
 #include "../scripts/SSS/Loot/Spawn.pwn"
 #include "../scripts/SSS/Vehicle/Spawn.pwn"
+#include "../scripts/SSS/Vehicle/Core.pwn"
 
 //======================UI
 
@@ -622,9 +619,10 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/World/Cooking.pwn"
 #include "../scripts/SSS/World/Defenses.pwn"
 #include "../scripts/SSS/World/GraveStone.pwn"
-#include "../scripts/SSS/World/Vehicle.pwn"
 #include "../scripts/SSS/World/SafeBox.pwn"
 #include "../scripts/SSS/World/Carmour.pwn"
+#include "../scripts/SSS/World/Tent.pwn"
+#include "../scripts/SSS/World/Campfire.pwn"
 
 //======================Per-Area Item Spawning
 
@@ -675,6 +673,8 @@ forward SetRestart(seconds);
 #include "../scripts/Items/screwdriver.pwn"
 #include "../scripts/Items/torso.pwn"
 #include "../scripts/Items/ammotin.pwn"
+#include "../scripts/Items/tentpack.pwn"
+#include "../scripts/Items/campfire.pwn"
 
 //======================Map Scripts
 
@@ -757,7 +757,7 @@ public OnGameModeInit()
 	DisableInteriorEnterExits();
 	ShowNameTags(true);
 
-	gWeatherID			= WeatherData[random(sizeof(WeatherData))][weather_id];
+	gWeatherID			= random(sizeof(WeatherData));
 	gLastWeatherChange	= tickcount();
 
 	MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
@@ -847,7 +847,7 @@ public OnGameModeInit()
 	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
 	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.094383, -0.174175, 252.006393, 354.746368, 167.069869);
+	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
@@ -887,6 +887,8 @@ public OnGameModeInit()
 	item_PhoneBomb		= DefineItemType("Phone Bomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Keypad			= DefineItemType("Keypad",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
+	item_TentPack		= DefineItemType("Tent Pack",		1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_Campfire		= DefineItemType("Campfire",		19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 
 
 	anim_Blunt = DefineAnimSet();
@@ -1050,7 +1052,7 @@ task GameUpdate[1000]()
 	if(tickcount() - gLastWeatherChange > 600000 && random(100) < 5)
 	{
 		gLastWeatherChange = tickcount();
-		gWeatherID = WeatherData[random(sizeof(WeatherData))][weather_id];
+		gWeatherID = random(sizeof(WeatherData));
 	}
 }
 
@@ -1443,6 +1445,25 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		return 0;
 	}
 
+	if(ispassenger)
+	{
+		new driverid = -1;
+
+		foreach(new i : Player)
+		{
+			if(IsPlayerInVehicle(i, vehicleid))
+			{
+				if(GetPlayerState(i) == PLAYER_STATE_DRIVER)
+				{
+					driverid = i;
+				}
+			}
+		}
+
+		if(driverid == -1)
+			CancelPlayerMovement(playerid);
+	}
+
 	gCurrentVelocity[playerid] = 0.0;
 
 	return 1;
@@ -1589,7 +1610,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	return 1;
 }
-
 
 LoadTextDraws()
 {

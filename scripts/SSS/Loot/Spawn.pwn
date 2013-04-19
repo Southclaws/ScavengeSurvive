@@ -105,8 +105,14 @@ CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zof
 
 	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset);
 
-	if(0 < _:itemtype <= WEAPON_PARACHUTE)
-		SetItemExtraData(itemid, (GetWeaponMagSize(_:itemtype) * (random(3))) + random(GetWeaponMagSize(_:itemtype)));
+	if(1 <= _:itemtype <= 46)
+	{
+		if(22 <= _:itemtype <= 38)
+			SetItemExtraData(itemid, random(GetWeaponMagSize(_:itemtype)));
+
+		else
+			SetItemExtraData(itemid, 1);
+	}
 	
 	if(exdata != -1)
 		SetItemExtraData(itemid, exdata);

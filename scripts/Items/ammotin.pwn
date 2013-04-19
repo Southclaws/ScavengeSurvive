@@ -2,6 +2,39 @@ new
 	ammo_ContainerOption[MAX_PLAYERS];
 
 
+stock SetAmmoTinType(itemid, type)
+{
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new
+		data,
+		amount;
+
+	data = GetItemExtraData(itemid);
+	amount = data & 0xFF;
+
+	SetItemExtraData(itemid, type << 8 | amount);
+
+	return 1;
+}
+stock SetAmmoTinAmount(itemid, amount)
+{
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new
+		data,
+		type;
+
+	data = GetItemExtraData(itemid);
+	type = (data >> 8) & 0xFF;
+
+	SetItemExtraData(itemid, type << 8 | amount);
+
+	return 1;
+}
+
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_AmmoTin)
@@ -14,7 +47,7 @@ public OnItemCreate(itemid)
 
 		weaponid = 22 + random(17);
 		type = GetWeaponAmmoType(weaponid);
-		amount = random(GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
+		amount = random((random(1) + 1) * GetWeaponMagSize(weaponid));
 
 		SetItemExtraData(itemid, type << 8 | amount);
 	}
@@ -57,47 +90,65 @@ forward ammo_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	new
-		slot,
-		itemid;
-
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
-
-	if(GetItemType(itemid) == item_AmmoTin)
+	if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_AmmoTin)
 	{
 		if(option == ammo_ContainerOption[playerid])
 		{
 			new
-				data,
-				type,
-				amount,
-				remainder;
+				slot,
+				itemid;
 
-			data = GetItemExtraData(itemid);
-			type = (data >> 8) & 0xFF;
-			amount = data & 0xFF;
+			slot = GetPlayerContainerSlot(playerid);
+			itemid = GetContainerSlotItem(containerid, slot);
 
-			if(GetWeaponAmmoType(GetPlayerCurrentWeapon(playerid)) != type)
+			if(GetItemType(itemid) == item_AmmoTin)
 			{
-				DisplayContainerInventory(playerid, containerid);
-				return 1;
-			}
+				if(option == ammo_ContainerOption[playerid])
+				{
+					new
+						data,
+						type,
+						amount,
+						weaponid,
+						remainder;
 
-			remainder = GivePlayerAmmo(playerid, amount);
+					data = GetItemExtraData(itemid);
+					type = (data >> 8) & 0xFF;
+					amount = data & 0xFF;
+					weaponid = GetPlayerCurrentWeapon(playerid);
 
-			if(remainder > 0)
-			{
-				data = type << 8 | remainder;
-				SetItemExtraData(itemid, data);
+					if(weaponid > 0)
+					{
+						if(GetWeaponAmmoType(weaponid) != type)
+						{
+							DisplayContainerInventory(playerid, containerid);
+							return 1;
+						}
+
+						remainder = GivePlayerAmmo(playerid, amount);
+
+						data = type << 8 | remainder;
+						SetItemExtraData(itemid, data);
+					}
+					else
+					{
+						weaponid = _:GetItemType(GetPlayerItem(playerid));
+
+						if(IsWeaponClipBased(weaponid))
+						{
+							remainder = GetAmmunitionRemainder(weaponid, 0, amount);
+							SetItemExtraData(GetPlayerItem(playerid), amount - remainder);
+							ConvertPlayerItemToWeapon(playerid);
+
+							data = type << 8 | remainder;
+							SetItemExtraData(itemid, data);
+						}
+					}
+				}
 			}
-			else
-			{
-				DestroyItem(itemid);
-			}
+			DisplayContainerInventory(playerid, containerid);
 		}
 	}
-	DisplayContainerInventory(playerid, containerid);
 
 	return CallLocalFunction("ammo_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
 }
@@ -119,7 +170,7 @@ public OnItemNameRender(itemid)
 			name[9],
 			str[16];
 
-		if(amount == 0)
+		if(amount <= 0 || type > AMMO_TYPE_5MM)
 		{
 			str = "Empty";
 		}

@@ -4,7 +4,7 @@
 public OnPlayerConnect(playerid)
 {
 	SetPlayerColor(playerid, 0xB8B8B800);
-	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
+	SetPlayerWeather(playerid, gWeatherID);
 	GetPlayerName(playerid, gPlayerName[playerid], MAX_PLAYER_NAME);
 
 	if(IsPlayerNPC(playerid))
@@ -85,8 +85,8 @@ public OnPlayerConnect(playerid)
 		tmpCountry = "Localhost";
 
 	else
-		GetCountryName(tmpIP, tmpCountry);
-	
+		GetPlayerCountry(playerid, tmpCountry);
+
 	if(isnull(tmpCountry))tmpCountry = "Unknown";
 
 	if(db_num_rows(tmpResult) >= 1)
@@ -187,6 +187,17 @@ public OnPlayerConnect(playerid)
 
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
 
+	if(Iter_Count(Player) > 10 && gPingLimit != 350)
+	{
+		gPingLimit = 350;
+		MsgAll(YELLOW, " >  Ping limit has been updated to 350 while more than 10 players are online.");
+	}
+	else if(gPingLimit != 600)
+	{
+		gPingLimit = 600;
+		MsgAll(YELLOW, " >  Ping limit has been updated to 600 while less than 10 players are online.");
+	}
+
 	return 1;
 }
 
@@ -231,23 +242,11 @@ ptask PlayerUpdate[100](playerid)
 		minute,
 		weather;
 
-	if(Iter_Count(Player) > 10)
+	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 30000)
 	{
-		if(GetPlayerPing(playerid) > 400 && tickcount() - tick_ServerJoin[playerid] > 10000)
-		{
-			MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 400 while 10 or more players are online.", GetPlayerPing(playerid));
-			defer KickPlayerDelay(playerid);
-			return;
-		}
-	}
-	else
-	{
-		if(GetPlayerPing(playerid) > 600 && tickcount() - tick_ServerJoin[playerid] > 10000)
-		{
-			MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of 600 while 9 or less players are online.", GetPlayerPing(playerid));
-			defer KickPlayerDelay(playerid);
-			return;
-		}
+		MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of %d.", GetPlayerPing(playerid), gPingLimit);
+		defer KickPlayerDelay(playerid);
+		return;
 	}
 
 	ResetPlayerMoney(playerid);
@@ -308,7 +307,7 @@ ptask PlayerUpdate[100](playerid)
 	}
 	else
 	{
-		weather = WeatherData[gWeatherID][weather_id];
+		weather = gWeatherID;
 	}
 
 	SetPlayerTime(playerid, hour, minute);
@@ -383,7 +382,7 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
-	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
+	SetPlayerWeather(playerid, gWeatherID);
 
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 	{
@@ -433,7 +432,7 @@ public OnPlayerSpawn(playerid)
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
 	PreloadPlayerAnims(playerid);
 
-	SetPlayerWeather(playerid, WeatherData[gWeatherID][weather_id]);
+	SetPlayerWeather(playerid, gWeatherID);
 
 	Streamer_Update(playerid);
 	SetAllWeaponSkills(playerid, 500);

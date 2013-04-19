@@ -45,8 +45,8 @@ new
 LoadVehicles(bool:prints = true)
 {
 	LoadPlayerVehicles(prints);
-	LoadAllVehicles(prints);
-	LoadStaticVehiclesFromFile("vehicles/special/trains.dat", prints);
+	LoadAllVehicles();
+	LoadStaticVehiclesFromFile("vehicles/special/trains.dat");
 
 	defer ApplyVehicleConditionToAll();
 
@@ -59,11 +59,18 @@ UnloadVehicles()
 	{
 		if(IsValidVehicle(i))
 		{
-			if(!isnull(gVehicleOwner[i]))
+			if(strlen(gVehicleOwner[i]) >= 3)
 				SavePlayerVehicle(i, gVehicleOwner[i], true);
 
 			DestroyVehicle(i);
 			DestroyContainer(gVehicleContainer[i]);
+
+			continue;
+		}
+		else
+		{
+			if(strlen(gVehicleOwner[i]) >= 3)
+				RemovePlayerVehicle(i);
 		}
 	}
 
@@ -76,7 +83,7 @@ ReloadVehicles()
 }
 
 
-LoadAllVehicles(bool:prints = true)
+LoadAllVehicles(bool:prints = false)
 {
 	new
 	    File:f=fopen(VEHICLE_INDEX_FILE, io_read),
@@ -92,7 +99,7 @@ LoadAllVehicles(bool:prints = true)
 
 	fclose(f);
 }
-LoadStaticVehiclesFromFile(file[], bool:prints = true)
+LoadStaticVehiclesFromFile(file[], bool:prints = false)
 {
 	if(!fexist(file))return print("VEHICLE FILE NOT FOUND");
 
@@ -126,18 +133,24 @@ LoadStaticVehiclesFromFile(file[], bool:prints = true)
 	fclose(f);
 
 	if(prints)
-		printf("\t-Loaded %d vehicles from %s", count, file);
+		printf("Loaded %d vehicles from %s", count, file);
 
 	return 1;
 }
 
 
-LoadVehiclesFromFile(file[], bool:prints = true)
+LoadVehiclesFromFile(file[], bool:prints = false)
 {
-	if(!fexist(file))return print("VEHICLE FILE NOT FOUND");
+	if(!fexist(file))
+	{
+		print("VEHICLE FILE NOT FOUND");
+		return 0;
+	}
+
 	new
-	    File:f=fopen(file, io_read),
+	    File:f = fopen(file, io_read),
 		line[128],
+		modelgroupname[28],
 		Float:posX,
 		Float:posY,
 		Float:posZ,
@@ -152,13 +165,26 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 			if(tmpid >= MAX_SPAWNED_VEHICLES)
 				break;
 
-		    if(random(100) < 95)continue;
+			if(random(100) < 95)
+				continue;
 
 			if(model == -1)
+			{
 				model = PickRandomVehicleFromGroup(gCurModelGroup);
-
+			}
 			else if(0 <= model <= 12)
+			{
 				model = PickRandomVehicleFromGroup(model);
+			}
+			else if(400 <= model < 612)
+			{
+				if(frandom(1.0) > VehicleFuelData[model - 400][veh_spawnRate])
+					continue;
+			}
+			else
+			{
+				continue;
+			}
 
 			switch(model)
 			{
@@ -170,7 +196,7 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 
 			switch(gCurModelGroup)
 			{
-				case VEHICLE_GROUP_CASUAL, VEHICLE_GROUP_OFFROAD, VEHICLE_GROUP_SPORT, VEHICLE_GROUP_BIKE, VEHICLE_GROUP_FASTBIKE:
+				case VEHICLE_GROUP_CASUAL, VEHICLE_GROUP_TRUCK_S, VEHICLE_GROUP_SPORT, VEHICLE_GROUP_BIKE:
 				{
 					rotZ += random(2) ? 0.0 : 180.0;
 				}
@@ -186,8 +212,8 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				{
 					case 416, 433, 523, 427, 490, 528, 407, 544, 596, 597, 598, 599, 432, 601:
 					{
-						gVehicleColours[tmpid][0] = 1;
-						gVehicleColours[tmpid][1] = 1;
+						gVehicleColours[tmpid][0] = -1;
+						gVehicleColours[tmpid][1] = -1;
 					}
 					default:
 					{
@@ -199,7 +225,23 @@ LoadVehiclesFromFile(file[], bool:prints = true)
 				gTotalVehicles++;
 			}
 		}
-		else if(sscanf(line, "'MODELGROUP:'d", gCurModelGroup) && strlen(line) > 3)print("LINE ERROR");
+		else
+		{
+			if(!sscanf(line, "'MODELGROUP:'s[28]", modelgroupname))
+			{
+				strtrim(modelgroupname);
+
+				new newgroup = GetVehicleGroupFromName(modelgroupname);
+
+				if(newgroup != -1 && newgroup != gCurModelGroup)
+					gCurModelGroup = newgroup;
+			}
+			else
+			{
+				if(strlen(line) > 3)
+					print("LINE ERROR");
+			}
+		}
 	}
 	fclose(f);
 
@@ -230,72 +272,97 @@ LoadPlayerVehicles(bool:prints = true)
 			filedir = "SSS/Vehicles/";
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
-			fblockread(file, array, sizeof(array));
-			fclose(file);
 
-			if(Float:array[1] < 255.5)
+			if(file)
 			{
-				printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[array[0]-400], item);
-				fremove(filedir);
-				continue;
-			}
-
-			if(GetVehicleType(array[0]) == VTYPE_TRAIN)
-			{
-				printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[array[0]-400], item);
-				fremove(filedir);
-				continue;
-			}
-
-			vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400);
-
-			strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);
-
-			printf("[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
-
-			if(IsValidVehicle(vehicleid))
-			{
-				Iter_Add(gVehicleIndex, vehicleid);
-
-				gVehicleFuel[vehicleid] = Float:array[2];
-				gVehicleColours[vehicleid][0] = array[7];
-				gVehicleColours[vehicleid][1] = array[8];
-				gPlayerVehicleData[vehicleid][pv_health]	= Float:array[1];
-				gPlayerVehicleData[vehicleid][pv_panels]	= array[9];
-				gPlayerVehicleData[vehicleid][pv_doors]		= array[10];
-				gPlayerVehicleData[vehicleid][pv_lights]	= array[11];
-				gPlayerVehicleData[vehicleid][pv_tires]		= array[12];
-				gPlayerVehicleData[vehicleid][pv_armour]	= array[13];
-
-				if(VehicleFuelData[array[0]-400][veh_trunkSize] > 0)
+				if(strlen(item) <= 4)
 				{
-					gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[array[0]-400][veh_trunkSize], .virtual = 1);
-					for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
+					fclose(file);
+					fremove(filedir);
+					continue;
+				}
+				fblockread(file, array, sizeof(array));
+				fclose(file);
+
+				if(!(400 <= array[0] <= 612))
+				{
+					printf("ERROR: Removing Vehicle file: %s. Invalid model ID.", item);
+					fremove(filedir);
+					continue;
+				}
+
+				if(Float:array[1] < 255.5)
+				{
+					printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[array[0]-400], item);
+					fremove(filedir);
+					continue;
+				}
+
+				if(GetVehicleType(array[0]) == VTYPE_TRAIN)
+				{
+					printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[array[0]-400], item);
+					fremove(filedir);
+					continue;
+				}
+
+				vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400);
+
+				strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);
+
+				if(strlen(gVehicleOwner[vehicleid]) < 3)
+				{
+					printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", gVehicleOwner[vehicleid], strlen(gVehicleOwner[vehicleid]));
+					DestroyVehicle(vehicleid);
+					fremove(filedir);
+					continue;
+				}
+
+				printf("[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
+
+				if(IsValidVehicle(vehicleid))
+				{
+					Iter_Add(gVehicleIndex, vehicleid);
+
+					gVehicleFuel[vehicleid] = Float:array[2];
+					gVehicleColours[vehicleid][0] = array[7];
+					gVehicleColours[vehicleid][1] = array[8];
+					gPlayerVehicleData[vehicleid][pv_health]	= Float:array[1];
+					gPlayerVehicleData[vehicleid][pv_panels]	= array[9];
+					gPlayerVehicleData[vehicleid][pv_doors]		= array[10];
+					gPlayerVehicleData[vehicleid][pv_lights]	= array[11];
+					gPlayerVehicleData[vehicleid][pv_tires]		= array[12];
+					gPlayerVehicleData[vehicleid][pv_armour]	= array[13];
+
+					if(VehicleFuelData[array[0]-400][veh_trunkSize] > 0)
 					{
-						if(!IsValidItemType(ItemType:array[14 + i]) || array[i + 14] == 0)
-							continue;
-
-						itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
-
-						if(array[14 + i + 1] == 1)
+						gVehicleContainer[vehicleid] = CreateContainer("Trunk", VehicleFuelData[array[0]-400][veh_trunkSize], .virtual = 1);
+						for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
 						{
-							if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
+							if(!IsValidItemType(ItemType:array[14 + i]) || array[i + 14] == 0)
+								continue;
+
+							itemid = CreateItem(ItemType:array[14 + i], 0.0, 0.0, 0.0);
+
+							if(array[14 + i + 1] == 1)
 							{
-								SetItemExtraData(itemid, array[14 + i + 2]);
+								if(!IsItemTypeSafebox(ItemType:array[14 + i]) && !IsItemTypeBag(ItemType:array[14 + i]))
+								{
+									SetItemExtraData(itemid, array[14 + i + 2]);
+								}
+
+								AddItemToContainer(gVehicleContainer[vehicleid], itemid);
 							}
 
-							AddItemToContainer(gVehicleContainer[vehicleid], itemid);
 						}
-
 					}
-				}
-				else
-				{
-					gVehicleContainer[vehicleid] = INVALID_CONTAINER_ID;
-				}
+					else
+					{
+						gVehicleContainer[vehicleid] = INVALID_CONTAINER_ID;
+					}
 
-				t:bVehicleSettings[vehicleid]<v_Player>;
-				gTotalVehicles++;
+					t:bVehicleSettings[vehicleid]<v_Player>;
+					gTotalVehicles++;
+				}
 			}
 		}
 	}
@@ -311,6 +378,9 @@ LoadPlayerVehicles(bool:prints = true)
 SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 {
 	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(isnull(name))
 		return 0;
 
 	new
@@ -391,6 +461,21 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 	fblockwrite(file, array, sizeof(array));
 
 	fclose(file);
+
+	return 1;
+}
+
+RemovePlayerVehicle(vehicleid)
+{
+	if(isnull(gVehicleOwner[vehicleid]))
+		return 0;
+
+	printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, gVehicleOwner[vehicleid]);
+
+	new filename[MAX_PLAYER_NAME + 18];
+
+	format(filename, sizeof(filename), "SSS/Vehicles/%s.dat", gVehicleOwner[vehicleid]);
+	fremove(filename);
 
 	return 1;
 }
@@ -637,7 +722,7 @@ AutosaveVehicles()
 
 	foreach(new i : gVehicleIndex)
 	{
-		if(!isnull(gVehicleOwner[i]))
+		if(strlen(gVehicleOwner[i]) >= 3 && IsValidVehicle(i))
 		{
 			autosave_Block[idx] = i;
 			idx++;
@@ -655,15 +740,13 @@ timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	new i;
 
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
+	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
 	{
-		if(i == autosave_Max)
-			return;
-
 		SavePlayerVehicle(autosave_Block[i], gVehicleOwner[autosave_Block[i]], false);
 	}
 
-	defer Vehicle_BlockSave(i);
+	if(index < autosave_Max)
+		defer Vehicle_BlockSave(i);
 
 	return;
 }

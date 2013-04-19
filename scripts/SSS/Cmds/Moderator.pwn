@@ -28,7 +28,7 @@ ACMD:kick[1](playerid, params[])
 		MsgAllF(PINK, " >  %P"#C_PINK" failed and kicked themselves", playerid);
 
 	else
-		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Kicked %P"#C_YELLOW" Reason: %s", playerid, id, reason);
+		MsgF(id, YELLOW, " >  You were kicked, reason: %s", reason);
 
 	Kick(id);
 
@@ -240,14 +240,16 @@ ACMD:weather[1](playerid, params[])
 	{
 		for(new i;i<sizeof(WeatherData);i++)
 		{
-			if(strfind(WeatherData[i][weather_name], params, true) != -1)
+			if(strfind(WeatherData[i], params, true) != -1)
 			{
 				foreach(new j : Player)
 				{
-					SetPlayerWeather(j, WeatherData[i][weather_id]);
-					MsgF(j, YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i][weather_name]);
+					SetPlayerWeather(j, i);
 				}
-				gWeatherID = WeatherData[i][weather_id];
+
+				gWeatherID = i;
+				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i]);
+
 				return 1;
 			}
 		}

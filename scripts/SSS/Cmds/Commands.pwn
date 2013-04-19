@@ -6,7 +6,7 @@ CMD:die(playerid, params[])
 
 	return 1;
 }
-timer Suicide[5000](playerid)
+timer Suicide[3000](playerid)
 {
 	SetPlayerHP(playerid, 0.0);
 }

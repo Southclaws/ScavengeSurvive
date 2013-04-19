@@ -411,15 +411,13 @@ timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	new i;
 
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK; i++)
+	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
 	{
-		if(i >= autosave_Max)
-			return;
-
 		SaveSafeboxItem(autosave_Block[i], false);
 	}
 
-	defer Safebox_BlockSave(i);
+	if(index < autosave_Max)
+		defer Safebox_BlockSave(i);
 
 	return;
 }

@@ -70,6 +70,22 @@ ACMD:setvip[3](playerid, params[])
 	return 1;
 }
 
+ACMD:setpinglimit[3](playerid, params[])
+{
+	new val = strval(params);
+
+	if(!(100 < val < 1000))
+	{
+		Msg(playerid, YELLOW, " >  Ping limit must be between 100 and 1000");
+		return 1;
+	}
+
+	gPingLimit = strval(params);
+	MsgF(playerid, YELLOW, " >  Ping limit has been updated to %d.", gPingLimit);
+
+	return 1;
+}
+
 ACMD:gamename[3](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
@@ -470,6 +486,21 @@ ACMD:vowner[3](playerid, params[])
 	}
 
 	MsgF(playerid, YELLOW, " >  Vehicle owner: '%s'", gVehicleOwner[vehicleid]);
+
+	return 1;
+}
+
+ACMD:vdelete[3](playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
+	{
+		Msg(playerid, RED, " >  You are not in a vehicle.");
+		return 1;
+	}
+
+	DestroyVehicle(vehicleid);
 
 	return 1;
 }

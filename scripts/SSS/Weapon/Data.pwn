@@ -91,16 +91,16 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 	{AMMO_TYPE_308,		14},	// Rifle			// 33
 	{AMMO_TYPE_308,		14},	// Sniper			// 34
 
-	{AMMO_TYPE_ROCKET,	3},		// RPG-7			// 35
-	{AMMO_TYPE_ROCKET,	3},		// Heatseek			// 36
+	{AMMO_TYPE_ROCKET,	0},		// RPG-7			// 35
+	{AMMO_TYPE_ROCKET,	0},		// Heatseek			// 36
 	{AMMO_TYPE_FUEL,	4},		// Flamer			// 37
 	{AMMO_TYPE_5MM,		2},		// Chaingun			// 38
 
 	{AMMO_TYPE_NONE,	1},		// {"C4				// 39
 	{AMMO_TYPE_NONE,	1},		// {"Detonator		// 40
-	{AMMO_TYPE_NONE,	1},		// {"Spray Paint	// 41
-	{AMMO_TYPE_NONE,	1},		// {"Extinguisher	// 42
-	{AMMO_TYPE_NONE,	1},		// {"Camera			// 43
+	{AMMO_TYPE_NONE,	0},		// {"Spray Paint	// 41
+	{AMMO_TYPE_NONE,	0},		// {"Extinguisher	// 42
+	{AMMO_TYPE_NONE,	4},		// {"Camera			// 43
 	{AMMO_TYPE_NONE,	1},		// {"Night Vision	// 44
 	{AMMO_TYPE_NONE,	1},		// {"Thermal Vision	// 45
 	{AMMO_TYPE_NONE,	1},		// {"Parachute		// 46
