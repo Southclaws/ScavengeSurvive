@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SPAWNS (5)
+#define MAX_SPAWNS (4)
 
 
 new Float:gSpawns[MAX_SPAWNS][4];
@@ -51,8 +51,18 @@ PlayerSpawnExistingCharacter(playerid)
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
 	ShowWatch(playerid);
 
-	stop gScreenFadeTimer[playerid];
-	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
+	if(gPlayerData[playerid][ply_stance] == 1)
+	{
+		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+	}
+	else if(gPlayerData[playerid][ply_stance] == 2)
+	{
+		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+	}
+	else if(gPlayerData[playerid][ply_stance] == 3)
+	{
+		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+	}
 }
 
 PlayerCreateNewCharacter(playerid)
@@ -148,8 +158,6 @@ PlayerSpawnNewCharacter(playerid)
 	f:bPlayerGameSettings[playerid]<KnockedOut>;
 
 	gScreenBoxFadeLevel[playerid] = 255;
-	stop gScreenFadeTimer[playerid];
-	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
 
 	backpackitem = CreateItem(item_Satchel, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
 	containerid = GetItemExtraData(backpackitem);
@@ -171,23 +179,4 @@ PlayerSpawnNewCharacter(playerid)
 
 	if(bPlayerGameSettings[playerid] & IsNewPlayer)
 		Tutorial_Start(playerid);
-}
-
-timer FadeScreen[100](playerid)
-{
-	PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
-	PlayerTextDrawShow(playerid, ClassBackGround);
-
-	gScreenBoxFadeLevel[playerid] -= 4;
-
-	if(gPlayerHP[playerid] <= 40.0)
-	{
-		if(gScreenBoxFadeLevel[playerid] <= floatround((40.0 - gPlayerHP[playerid]) * 4.4))
-			stop gScreenFadeTimer[playerid];
-	}
-	else
-	{
-		if(gScreenBoxFadeLevel[playerid] <= 0)
-			stop gScreenFadeTimer[playerid];
-	}
 }

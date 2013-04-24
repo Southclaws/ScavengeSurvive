@@ -16,7 +16,6 @@ Timer:		bag_OtherPlayerEnter[MAX_PLAYERS],
 			bag_LookingInBag[MAX_PLAYERS];
 
 
-
 stock GivePlayerBackpack(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Backpack)
@@ -132,18 +131,8 @@ forward bag_OnItemDestroy(itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
-	{
-		stop bag_PickUpTimer[playerid];
-		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
-
-		bag_PickUpTick[playerid] = tickcount();
-		bag_CurrentBag[playerid] = itemid;
-
+	if(BagInteractionCheck(playerid, itemid))
 		return 1;
-	}
 
 	return CallLocalFunction("bag_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
@@ -157,18 +146,8 @@ forward bag_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	new ItemType:itemtype = GetItemType(withitemid);
-
-	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
-	{
-		stop bag_PickUpTimer[playerid];
-		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, withitemid);
-
-		bag_PickUpTick[playerid] = tickcount();
-		bag_CurrentBag[playerid] = withitemid;
-
+	if(BagInteractionCheck(playerid, withitemid))
 		return 1;
-	}
 
 	return CallLocalFunction("bag_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
@@ -179,6 +158,40 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #endif
 #define OnPlayerUseItemWithItem bag_OnPlayerUseItemWithItem
 forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+
+public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
+{
+	if(BagInteractionCheck(playerid, itemid))
+		return 1;
+
+	return CallLocalFunction("bag_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
+}
+#if defined _ALS_OnPlayerUseWeaponWithItem
+	#undef OnPlayerUseWeaponWithItem
+#else
+	#define _ALS_OnPlayerUseWeaponWithItem
+#endif
+#define OnPlayerUseWeaponWithItem bag_OnPlayerUseWeaponWithItem
+forward bag_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
+
+BagInteractionCheck(playerid, itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
+	{
+		stop bag_PickUpTimer[playerid];
+		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
+
+		bag_PickUpTick[playerid] = tickcount();
+		bag_CurrentBag[playerid] = itemid;
+
+		return 1;
+	}
+
+	return 0;
+}
+
 
 public OnPlayerUseItem(playerid, itemid)
 {

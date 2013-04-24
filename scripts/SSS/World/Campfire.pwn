@@ -7,7 +7,6 @@
 
 enum E_CAMPFIRE_DATA
 {
-			cmp_buttonId,
 			cmp_objMid1,
 			cmp_objMid2,
 			cmp_objMid3,
@@ -37,8 +36,6 @@ Iterator:	cmp_Index<MAX_CAMPFIRE>;
 stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(cmp_Index);
-
-	cmp_Data[id][cmp_buttonId] = CreateButton(x, y, z, "Press "#KEYTEXT_INTERACT" to interact");
 
 	cmp_Data[id][cmp_objMid1] = CreateDynamicObject(19475, x, y, z, 10.0, 90.0, rz + 18.0);
 	cmp_Data[id][cmp_objMid2] = CreateDynamicObject(19475, x, y, z, -10.0, 90.0, rz + 36.0);
@@ -118,7 +115,7 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 
 	Iter_Add(cmp_Index, id);
 
-	return 1;
+	return id;
 }
 
 stock DestroyCampfire(fireid)
@@ -126,7 +123,6 @@ stock DestroyCampfire(fireid)
 	if(!Iter_Contains(cmp_Index, fireid))
 		return 0;
 
-	DestroyButton(cmp_Data[fireid][cmp_buttonId]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid1]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid2]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid3]);
@@ -141,7 +137,6 @@ stock DestroyCampfire(fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick8]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
 
-	cmp_Data[fireid][cmp_buttonId] = INVALID_BUTTON_ID;
 	cmp_Data[fireid][cmp_objMid1] = INVALID_OBJECT_ID;
 	cmp_Data[fireid][cmp_objMid2] = INVALID_OBJECT_ID;
 	cmp_Data[fireid][cmp_objMid3] = INVALID_OBJECT_ID;
@@ -190,74 +185,75 @@ stock SetCampfireState(fireid, bool:toggle)
 	return 1;
 }
 
+#endinput
+
 public OnButtonPress(playerid, buttonid)
 {
-	foreach(new i : cmp_Index)
-	{
-		if(buttonid == cmp_Data[i][cmp_buttonId])
-		{
-			if(!IsValidDynamicObject(cmp_Data[i][cmp_objFlame]))
-			{
-				new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
 
-				if(!IsValidItemType(itemtype))
+	if(itemtype == item_GasCan || itemtype == item_FireLighter)
+	{
+		foreach(new i : cmp_Index)
+		{
+			if(buttonid == cmp_Data[i][cmp_buttonId])
+			{
+				if(!IsValidDynamicObject(cmp_Data[i][cmp_objFlame]))
 				{
-					ApplyAnimation(playerid, "CARRY", "liftup", 5.0, 0, 0, 0, 0, 400);
-					defer PickUpCampfire(playerid, i);
-				}
-				if(itemtype == item_GasCan)
-				{
-					if(cmp_Data[i][cmp_fueled])
+					if(itemtype == item_GasCan)
 					{
-						ShowMsgBox(playerid, "Campfire already fueled");
+						if(cmp_Data[i][cmp_fueled])
+						{
+							ShowMsgBox(playerid, "Campfire already fueled");
+						}
+						else
+						{
+							ShowMsgBox(playerid, "1L of petrol added");
+							cmp_Data[i][cmp_fueled] = 1;
+						}
 					}
-					else
+
+					if(itemtype == item_FireLighter)
 					{
-						ShowMsgBox(playerid, "1L of petrol added");
-						cmp_Data[i][cmp_fueled] = 1;
-					}
-				}
-				if(itemtype == item_FireLighter)
-				{
-					if(gWeatherID == 8 || gWeatherID == 16)
-					{
-						if(random(100) < 40)
+						if(gWeatherID == 8 || gWeatherID == 16)
+						{
+							if(random(100) < 40)
+							{
+								if(cmp_Data[i][cmp_fueled])
+								{
+									SetCampfireState(i, true);
+									cmp_Data[i][cmp_fueled] = 0;
+									defer CampfireBurnOut(i, 120000);
+								}
+								else
+								{
+									if(random(1000) < 5)
+									{
+										SetCampfireState(i, true);
+										defer CampfireBurnOut(i, 120000);
+									}
+								}
+							}
+						}
+						else
 						{
 							if(cmp_Data[i][cmp_fueled])
 							{
 								SetCampfireState(i, true);
 								cmp_Data[i][cmp_fueled] = 0;
-								defer CampfireBurnOut(i, 120000);
+								defer CampfireBurnOut(i, 600000);
 							}
 							else
 							{
 								if(random(1000) < 5)
 								{
 									SetCampfireState(i, true);
-									defer CampfireBurnOut(i, 120000);
+									defer CampfireBurnOut(i, 600000);
 								}
 							}
 						}
 					}
-					else
-					{
-						if(cmp_Data[i][cmp_fueled])
-						{
-							SetCampfireState(i, true);
-							cmp_Data[i][cmp_fueled] = 0;
-							defer CampfireBurnOut(i, 600000);
-						}
-						else
-						{
-							if(random(1000) < 5)
-							{
-								SetCampfireState(i, true);
-								defer CampfireBurnOut(i, 600000);
-							}
-						}
-					}
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -271,12 +267,6 @@ public OnButtonPress(playerid, buttonid)
 #endif
 #define OnButtonPress cmp_OnButtonPress
 forward cmp_OnButtonPress(playerid, buttonid);
-
-timer PickUpCampfire[400](playerid, fireid)
-{
-	DestroyCampfire(fireid);
-	GiveWorldItemToPlayer(playerid, CreateItem(item_Campfire));
-}
 
 timer CampfireBurnOut[time](fireid, time)
 {

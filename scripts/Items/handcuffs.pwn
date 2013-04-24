@@ -80,13 +80,28 @@ StopApplyingHandcuffs(playerid)
 
 public OnHoldActionUpdate(playerid, progress)
 {
-	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
+	if(cuf_TargetPlayer[playerid] == INVALID_PLAYER_ID)
 	{
-		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]) || GetPlayerWeapon(cuf_TargetPlayer[playerid]) != 0 || GetPlayerItem(cuf_TargetPlayer[playerid]) != INVALID_ITEM_ID)
-		{
-			StopApplyingHandcuffs(playerid);
-			return 1;
-		}
+		StopApplyingHandcuffs(playerid);
+		return 1;
+	}
+
+	if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]))
+	{
+		StopApplyingHandcuffs(playerid);
+		return 1;
+	}
+
+	if(GetPlayerWeapon(cuf_TargetPlayer[playerid]) != 0)
+	{
+		StopApplyingHandcuffs(playerid);
+		return 1;
+	}
+
+	if(GetPlayerItem(cuf_TargetPlayer[playerid]) != INVALID_ITEM_ID)
+	{
+		StopApplyingHandcuffs(playerid);
+		return 1;
 	}
 
 	return CallLocalFunction("cuf_OnHoldActionUpdate", "dd", playerid, progress);

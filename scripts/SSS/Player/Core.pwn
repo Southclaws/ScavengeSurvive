@@ -140,11 +140,7 @@ public OnPlayerConnect(playerid)
 			Login(playerid);
 
 		else
-		{
-			new str[128];
-			format(str, 128, ""C_WHITE"Welcome Back %P"#C_WHITE", Please log into to your account below!\n\n"#C_YELLOW"Enjoy your stay :)", playerid);
-			ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
-		}
+			DisplayLoginPrompt(playerid);
 	}
 	else
 	{
@@ -256,7 +252,20 @@ ptask PlayerUpdate[100](playerid)
 		PlayerVehicleUpdate(playerid);
 	}
 
-	if(gScreenBoxFadeLevel[playerid] <= 0)
+	if(gScreenBoxFadeLevel[playerid] > 0)
+	{
+		PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
+		PlayerTextDrawShow(playerid, ClassBackGround);
+
+		gScreenBoxFadeLevel[playerid] -= 4;
+
+		if(gPlayerHP[playerid] <= 40.0)
+		{
+			if(gScreenBoxFadeLevel[playerid] <= floatround((40.0 - gPlayerHP[playerid]) * 4.4))
+				gScreenBoxFadeLevel[playerid] = 0;
+		}
+	}
+	else
 	{
 		if(gPlayerHP[playerid] < 40.0)
 		{
@@ -279,7 +288,8 @@ ptask PlayerUpdate[100](playerid)
 		}
 		else
 		{
-			PlayerTextDrawHide(playerid, ClassBackGround);
+			if(bPlayerGameSettings[playerid] & Spawned)
+				PlayerTextDrawHide(playerid, ClassBackGround);
 		}
 	}
 
@@ -343,7 +353,27 @@ ptask PlayerUpdate[100](playerid)
 	if(bPlayerGameSettings[playerid] & Bleeding)
 	{
 		if(random(100) < 60)
-			GivePlayerHP(playerid, -0.01, .msg = false);
+			GivePlayerHP(playerid, -0.01);
+
+		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
+		{
+			if(random(100) < gPlayerHP[playerid])
+			{
+				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
+			}
+		}
+		else
+		{
+			if(random(100) < 100-gPlayerHP[playerid])
+			{
+				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
+			}
+		}
+	}
+	else
+	{
+		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
+			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 	}
 
 	if(GetPlayerCurrentWeapon(playerid) == 0 && GetPlayerWeapon(playerid))
@@ -411,31 +441,36 @@ public OnPlayerSpawn(playerid)
 	}
 	else
 	{
-		gScreenBoxFadeLevel[playerid] = 255;
-		PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
+		PlayerTextDrawBoxColor(playerid, ClassBackGround, 255);
 		PlayerTextDrawShow(playerid, ClassBackGround);
 
 		if(bPlayerGameSettings[playerid] & Alive)
 		{
-			PlayerSpawnExistingCharacter(playerid);
+			if(bPlayerGameSettings[playerid] & LoggedIn)
+			{
+				FreezePlayer(playerid, 3000);
+				PlayerSpawnExistingCharacter(playerid);
+				gScreenBoxFadeLevel[playerid] = 255;
+			}
+			else
+			{
+				DisplayLoginPrompt(playerid);
+			}
 		}
 		else
 		{
 			gPlayerHP[playerid] = 100.0;
 			gPlayerAP[playerid] = 0.0;
 			gPlayerFP[playerid] = 80.0;
+			gPlayerFrequency[playerid] = 108.0;
 			PlayerCreateNewCharacter(playerid);
 		}
 	}
 
-	gPlayerFrequency[playerid] = 108.0;
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
 	PreloadPlayerAnims(playerid);
-
-	SetPlayerWeather(playerid, gWeatherID);
-
-	Streamer_Update(playerid);
 	SetAllWeaponSkills(playerid, 500);
+	Streamer_Update(playerid);
 
 	RemoveAllDrugs(playerid);
 
@@ -471,5 +506,11 @@ public OnPlayerUpdate(playerid)
 		SetPlayerHealth(playerid, 100.0);		
 	}
 
+	return 1;
+}
+
+CMD:bleed(playerid, params[])
+{
+	t:bPlayerGameSettings[playerid]<Bleeding>;
 	return 1;
 }

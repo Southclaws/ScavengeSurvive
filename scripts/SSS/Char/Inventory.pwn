@@ -375,8 +375,14 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		if(IsValidItem(itemid))
 		{
 			new containerid = GetPlayerCurrentContainer(playerid);
+
 			if(IsValidContainer(containerid))
 			{
+				if(IsItemTypeBag(GetItemType(itemid)))
+				{
+					if(containerid == GetItemExtraData(itemid))
+						return 1;
+				}
 				if(!WillItemTypeFitInContainer(containerid, GetItemType(itemid)))
 				{
 					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
@@ -553,27 +559,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 	return 1;
 }
-
-public OnPlayerPickUpItem(playerid, itemid)
-{
-	if(GetItemType(itemid) == ItemType:35)
-	{
-		if(GetItemExtraData(itemid) > 2)
-		{
-			SetItemExtraData(itemid, 2);
-		}
-	}
-
-	return CallLocalFunction("inv_OnPlayerPickUpItem", "dd", playerid, itemid);
-}
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem inv_OnPlayerPickUpItem
-forward inv_OnPlayerPickUpItem(playerid, itemid);
-
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {

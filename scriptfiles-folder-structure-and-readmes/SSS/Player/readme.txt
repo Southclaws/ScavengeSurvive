@@ -8,3 +8,6 @@ files save characters, binary files just save pure data to cells.
 
 This also speeds up the reading/writing process, as an integer
 variable will not need to be converted to a string and vice versa.
+
+The files in this folder contain player character data (not inventory/bag data)
+This includes values such as health, armour, food, stance or held/holstered weapons.

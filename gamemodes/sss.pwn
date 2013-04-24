@@ -28,7 +28,7 @@ native IsValidVehicle(vehicleid);
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
 //#include <MegaHooks>				// By Unicode:				http://forum.sa-mp.com/showthread.php?t=428948
-#include <fixes2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=375925
+//#include <fixes2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=375925
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -150,6 +150,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define ATTACHSLOT_CUFFS			(5)
 #define ATTACHSLOT_TORCH			(6)
 #define ATTACHSLOT_HAT				(7)
+#define ATTACHSLOT_BLOOD			(8)
 
 
 #define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
@@ -196,6 +197,9 @@ enum
 	d_ReportList,
 	d_Report,
 	d_ReportOptions,
+	d_IssueSubmit,
+	d_IssueList,
+	d_Issue,
 	d_DefenseSetPass,
 	d_DefenseEnterPass
 }
@@ -488,7 +492,8 @@ enum E_PLAYER_DATA
 Float:	ply_posX,
 Float:	ply_posY,
 Float:	ply_posZ,
-Float:	ply_rotZ
+Float:	ply_rotZ,
+		ply_stance
 }
 
 
@@ -510,7 +515,6 @@ Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
 
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
-Timer:	gScreenFadeTimer		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
 		tick_ServerJoin			[MAX_PLAYERS],
@@ -546,6 +550,7 @@ forward SetRestart(seconds);
 
 #include "../scripts/SSS/Server/DisallowActions.pwn"
 #include "../scripts/SSS/Server/DataCollection.pwn"
+#include "../scripts/SSS/Server/BugReport.pwn"
 
 //======================API Scripts
 
@@ -575,7 +580,7 @@ forward SetRestart(seconds);
 
 #include "../scripts/SSS/Server/Autosave.pwn"
 #include "../scripts/SSS/Server/TextTags.pwn"
-#include "../scripts/SSS/Server/GlitchRestart.pwn"
+//#include "../scripts/SSS/Server/GlitchRestart.pwn"
 
 //======================Data Load
 
@@ -695,6 +700,7 @@ main()
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
 
 	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
 	rowCount = db_num_rows(tmpResult);
@@ -1613,8 +1619,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 LoadTextDraws()
 {
-	print("- Loading TextDraws...");
-
 //=========================================================================Death
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
 	TextDrawAlignment			(DeathText, 2);

@@ -1,6 +1,5 @@
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
-
 	if(gPlayerData[playerid][ply_Admin] >= 3)
 	{
 		new str[64];
@@ -111,33 +110,70 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	}
 	else if(type == 1)
 	{
-		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
-		{
-			KnockOutPlayer(targetid, 30000);
-			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0));
-		}
-		else
-		{
-			hploss = GetMeleeDamage(weaponid, GetCurrentMeleeAnim(targetid));
-		}
+		hploss = GetMeleeDamage(weaponid, GetCurrentMeleeAnim(targetid));
 
 		if(weaponid == anim_Blunt)
 		{
-			if(random(100) < 30)
-				t:bPlayerGameSettings[targetid]<KnockedOut>;
+			if(random(100) < 40)
+				KnockOutPlayer(targetid, KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerHP[targetid] - hploss)))));
 
-			if(random(100) < 50)
+			if(random(100) < 30)
+			{
 				t:bPlayerGameSettings[targetid]<Bleeding>;
+			}
 		}
 		if(weaponid == anim_Stab)
 		{
 			t:bPlayerGameSettings[targetid]<Bleeding>;
+		}
+
+		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
+		{
+			KnockOutPlayer(targetid, 60000);
+			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0));
+			hploss = 0.0;
+			f:bPlayerGameSettings[targetid]<Bleeding>;
 		}
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
 		hploss *= 0.9;
+	}
+
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		switch(weaponid)
+		{
+			case 25, 27, 30, 31, 33, 34:
+				head = IsPlayerAimingAtHead(playerid, targetid);
+		}
+		switch(weaponid)
+		{
+			case 1..3, 5..7, 10..18, 39:
+			{
+				if(random(100) < 40)
+				{
+					t:bPlayerGameSettings[targetid]<Bleeding>;
+				}
+			}
+			case 0, 40..46:
+			{
+				// Unused
+			}
+			default:
+			{
+				t:bPlayerGameSettings[targetid]<Bleeding>;
+
+				if(gPlayerHP[playerid] - hploss <= 40.0)
+				{
+					if(random(100) < 70)
+					{
+						KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
+					}
+				}
+			}
+		}
 	}
 
 	if(GetItemType(GetPlayerItem(targetid)) == item_Shield)
@@ -154,41 +190,8 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		{
 			hploss *= 0.2;
 		}
-	}
-	else
-	{
-		if(!IsPlayerInAnyVehicle(playerid))
-		{
-			switch(weaponid)
-			{
-				case 25, 27, 30, 31, 33, 34:
-					head = IsPlayerAimingAtHead(playerid, targetid);
-			}
-			switch(weaponid)
-			{
-				case 0..3, 5..7, 10..18, 39:
-				{
-					if(random(100) < 40)
-						t:bPlayerGameSettings[targetid]<Bleeding>;
-				}
-				case 40..46:
-				{
-					// Unused
-				}
-				default:
-				{
-					t:bPlayerGameSettings[targetid]<Bleeding>;
 
-					if(gPlayerHP[playerid] - hploss <= 40.0)
-					{
-						if(random(100) < 70)
-						{
-							KnockOutPlayer(targetid, floatround(2000 * (40.0 - (gPlayerHP[targetid] - hploss))));
-						}
-					}
-				}
-			}
-		}
+		f:bPlayerGameSettings[targetid]<Bleeding>;
 	}
 
 	GivePlayerHP(targetid, -hploss, weaponid);

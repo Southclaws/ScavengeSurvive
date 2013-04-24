@@ -8,6 +8,9 @@ ptask AntiCheatUpdate[1000](playerid)
 {
 	PositionCheck(playerid);
 	WeaponCheck(playerid);
+
+	if(GetPlayerMoney(playerid) > 0)
+		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
 }
 
 
@@ -44,7 +47,7 @@ PositionCheck(playerid)
 {
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
 	{
-		BanPlayer(playerid, "Jetpack Hack", -1);
+		BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
 		return;
 	}
 

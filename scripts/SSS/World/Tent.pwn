@@ -2,6 +2,7 @@
 
 
 #define MAX_TENT			(1024)
+#define MAX_TENT_ITEMS		(8)
 #define INVALID_TENT_ID		(-1)
 #define TENT_DATA_FOLDER	"SSS/Tents/"
 #define TENT_DATA_DIR		"./scriptfiles/SSS/Tents/"
@@ -22,6 +23,17 @@ Float:		tnt_posX,
 Float:		tnt_posY,
 Float:		tnt_posZ,
 Float:		tnt_rotZ
+}
+
+enum
+{
+			TENT_CELL_ITEMTYPE,
+			TENT_CELL_EXDATA,
+			TENT_CELL_POSX,
+			TENT_CELL_POSY,
+			TENT_CELL_POSZ,
+			TENT_CELL_ROTZ,
+			TENT_CELL_END
 }
 
 static
@@ -206,7 +218,7 @@ forward tnt2_OnHoldActionFinish(playerid);
 // Save and Load
 
 
-hook OnGameModeInit()
+public OnLoad()
 {
 	new
 		dir:direc = dir_open(TENT_DATA_DIR),
@@ -218,7 +230,9 @@ hook OnGameModeInit()
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:r;
+		Float:r,
+		data[MAX_TENT_ITEMS * TENT_CELL_END],
+		itemid;
 
 	while(dir_list(direc, item, type))
 	{
@@ -230,17 +244,45 @@ hook OnGameModeInit()
 
 			if(file)
 			{
+				new idx;
+
+				fblockread(file, data, MAX_TENT_ITEMS * TENT_CELL_END);
 				fclose(file);
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				CreateTent(Float:x, Float:y, Float:z, Float:r);
+				itemid = CreateTent(Float:x, Float:y, Float:z, Float:r);
+
+				while(idx < sizeof(data))
+				{
+					CreateItem(ItemType:data[idx + TENT_CELL_ITEMTYPE],
+						Float:data[idx + TENT_CELL_POSX],
+						Float:data[idx + TENT_CELL_POSY],
+						Float:data[idx + TENT_CELL_POSZ],
+						.rz = Float:data[idx + TENT_CELL_ROTZ],
+						.zoffset = FLOOR_OFFSET);
+
+					if(!IsItemTypeSafebox(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && !IsItemTypeBag(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && ItemType:data[idx + TENT_CELL_ITEMTYPE] != item_Campfire)
+						SetItemExtraData(itemid, data[idx + TENT_CELL_EXDATA]);
+
+					idx += TENT_CELL_END;
+				}
 			}
 		}
 	}
 
 	dir_close(direc);
+
+	return CallLocalFunction("tnt2_OnLoad", "");
 }
+#if defined _ALS_OnLoad
+	#undef OnLoad
+#else
+	#define _ALS_OnLoad
+#endif
+#define OnLoad tnt2_OnLoad
+forward tnt2_OnLoad();
+
 
 hook OnGameModeExit()
 {
@@ -248,7 +290,8 @@ hook OnGameModeExit()
 	{
 		new
 			filename[64],
-			File:file;
+			File:file,
+			data[MAX_TENT_ITEMS * TENT_CELL_END];
 
 		format(filename, sizeof(filename), ""#TENT_DATA_FOLDER"%d_%d_%d_%d",
 			tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], tnt_Data[i][tnt_rotZ]);
@@ -257,6 +300,42 @@ hook OnGameModeExit()
 
 		if(file)
 		{
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				Float:r,
+				ItemType:itemtype,
+				exdata,
+				idx;
+
+			foreach(new j : itm_Index)
+			{
+				itemtype = GetItemType(j);
+				exdata = GetItemExtraData(j);
+
+				if(IsItemTypeSafebox(itemtype))
+					continue;
+
+				GetItemPos(j, x, y, z);
+				GetItemRot(j, r, r, r);
+
+				if(Distance(tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], x, y, z) < 2.0)
+				{
+					if(idx > sizeof(data))
+						break;
+
+					data[idx + TENT_CELL_ITEMTYPE] = _:itemtype;
+					data[idx + TENT_CELL_EXDATA] = exdata;
+					data[idx + TENT_CELL_POSX] = _:x;
+					data[idx + TENT_CELL_POSY] = _:y;
+					data[idx + TENT_CELL_POSZ] = _:z;
+					data[idx + TENT_CELL_ROTZ] = _:r;
+
+					idx += TENT_CELL_END;
+				}
+			}
+			fblockwrite(file, data);
 			fclose(file);
 		}
 		else

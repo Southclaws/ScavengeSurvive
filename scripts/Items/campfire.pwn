@@ -1,7 +1,33 @@
+public OnItemCreateInWorld(itemid)
+{
+	if(GetItemType(itemid) == item_Campfire)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:rz;
+
+		GetItemPos(itemid, x, y, z);
+		GetItemRot(itemid, rz, rz, rz);
+		SetItemExtraData(itemid, CreateCampfire(x, y, z, rz));
+	}
+
+	return CallLocalFunction("cmp_OnItemCreateInWorld", "d", itemid);
+}
+#if defined _ALS_OnItemCreateInWorld
+	#undef OnItemCreateInWorld
+#else
+	#define _ALS_OnItemCreateInWorld
+#endif
+#define OnItemCreateInWorld cmp_OnItemCreateInWorld
+forward cmp_OnItemCreateInWorld(itemid);
+
 public OnPlayerPickedUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
+		DestroyCampfire(GetItemExtraData(itemid));
 		defer AttachWoodLogs(playerid);
 	}
 
@@ -15,36 +41,24 @@ public OnPlayerPickedUpItem(playerid, itemid)
 #define OnPlayerPickedUpItem cmp_OnPlayerPickedUpItem
 forward cmp_OnPlayerPickedUpItem(playerid, itemid);
 
-timer AttachWoodLogs[0](playerid)
-{
-	SetPlayerAttachedObject(playerid, ITM_ATTACH_INDEX, 1463, 6, 0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000);
-}
-
-public OnPlayerDroppedItem(playerid, itemid)
+public OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:rz;
-
-		GetPlayerPos(playerid, x, y, z);
-		GetPlayerFacingAngle(playerid, rz);
-		DestroyItem(itemid);
-		CreateCampfire(x + (0.5 * floatsin(-rz, degrees)), y + (0.5 * floatcos(-rz, degrees)), z - FLOOR_OFFSET, rz);
-
-		return 1;
+		defer AttachWoodLogs(targetid);
 	}
 
-	return CallLocalFunction("cmp_OnPlayerDroppedItem", "dd", playerid, itemid);
+	return CallLocalFunction("cmp_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
+#if defined _ALS_OnPlayerGivenItem
+	#undef OnPlayerGivenItem
 #else
-	#define _ALS_OnPlayerDroppedItem
+	#define _ALS_OnPlayerGivenItem
 #endif
-#define OnPlayerDroppedItem cmp_OnPlayerDroppedItem
-forward cmp_OnPlayerDroppedItem(playerid, itemid);
+#define OnPlayerGivenItem cmp_OnPlayerGivenItem
+forward cmp_OnPlayerGivenItem(playerid, targetid, itemid);
 
+timer AttachWoodLogs[0](playerid)
+{
+	SetPlayerAttachedObject(playerid, ITM_ATTACH_INDEX, 1463, 6, 0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000);		
+}

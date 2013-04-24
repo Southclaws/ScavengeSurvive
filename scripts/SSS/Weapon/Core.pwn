@@ -63,119 +63,6 @@ hook OnPlayerDeath(playerid, killerid, reason)
 // Core
 
 
-stock GetPlayerCurrentWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_CurrentWeapon[playerid];
-}
-stock GetPlayerHolsteredWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_HolsterData[playerid][0];
-}
-stock GetPlayerTotalAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
-}
-stock GetPlayerClipAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return GetPlayerAmmo(playerid);
-}
-stock GetPlayerReserveAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_ReserveAmmo[playerid];
-}
-stock GetPlayerHolsteredWeaponAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_HolsterData[playerid][1];
-}
-stock GetPlayerWeaponSwapTick(playerid)
-{
-	return tick_LastHolstered[playerid];
-}
-stock RemovePlayerWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ResetPlayerWeapons(playerid);
-	wep_CurrentWeapon[playerid] = 0;
-	wep_ReserveAmmo[playerid] = 0;
-
-	return 1;
-}
-stock RemovePlayerHolsterWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER);
-	wep_HolsterData[playerid][0] = 0;
-	wep_HolsterData[playerid][1] = 0;
-
-	return 1;
-}
-stock IsWeaponMelee(weaponid)
-{
-	switch(weaponid)
-	{
-		case 1..15:
-			return 1;
-	}
-	return 0;
-}
-stock IsWeaponThrowable(weaponid)
-{
-	switch(weaponid)
-	{
-		case 16..18, 39:
-			return 1;
-	}
-	return 0;
-}
-stock IsWeaponClipBased(weaponid)
-{
-	switch(weaponid)
-	{
-		case 22..38, 41..43:
-			return 1;
-	}
-	return 0;
-}
-stock IsWeaponOneShot(weaponid)
-{
-	switch(weaponid)
-	{
-		case :
-			return 1;
-	}
-	return 0;
-}
-stock GetAmmunitionRemainder(weaponid, startammo, ammunition)
-{
-	return startammo + ammunition - (GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
-}
-
-
-// Hooks and Internal
-
-
 SetPlayerWeapon(playerid, weaponid, ammo)
 {
 	if(!IsPlayerConnected(playerid))
@@ -190,6 +77,9 @@ SetPlayerWeapon(playerid, weaponid, ammo)
 
 			ammo = GetWeaponMagSize(weaponid);
 		}
+		else
+		{
+		}
 
 		UpdateWeaponUI(playerid);
 	}
@@ -202,9 +92,8 @@ SetPlayerWeapon(playerid, weaponid, ammo)
 		ammo = 0;
 	}
 
-	wep_CurrentWeapon[playerid] = weaponid;
-
 	ResetPlayerWeapons(playerid);
+	wep_CurrentWeapon[playerid] = weaponid;
 	return GivePlayerWeapon(playerid, weaponid, ammo);
 }
 
@@ -226,6 +115,156 @@ GivePlayerAmmo(playerid, amount)
 		return 0;
 	}
 }
+
+SetPlayerHolsterWeapon(playerid, weaponid, ammo)
+{
+	switch(weaponid)
+	{
+		case 2, 3, 5, 6, 7, 8, 15:
+			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 1.000000, 1.000000, 1.000000);
+
+		case 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
+			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 1.000000, 1.000000, 1.000000 ); // tec9 - small
+
+		case 25, 27, 29, 30, 31, 33, 34:
+			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 1.000000, 1.000000, 1.000000 ); // ak47 - ak
+
+		case 35, 36:
+			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.181966, -0.238397, -0.094830, 252.791229, 353.893859, 357.529418, 1.000000, 1.000000, 1.000000 ); // rocketla - rpg
+
+		default: return 0;
+	}
+
+	wep_HolsterData[playerid][0] = weaponid;
+	wep_HolsterData[playerid][1] = ammo;
+
+	return 1;
+}
+
+stock GetPlayerCurrentWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return wep_CurrentWeapon[playerid];
+}
+
+stock GetPlayerHolsteredWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return wep_HolsterData[playerid][0];
+}
+
+stock GetPlayerTotalAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
+}
+
+stock GetPlayerClipAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return GetPlayerAmmo(playerid);
+}
+
+stock GetPlayerReserveAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return wep_ReserveAmmo[playerid];
+}
+
+stock GetPlayerHolsteredWeaponAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return wep_HolsterData[playerid][1];
+}
+
+stock GetPlayerWeaponSwapTick(playerid)
+{
+	return tick_LastHolstered[playerid];
+}
+
+stock RemovePlayerWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	ResetPlayerWeapons(playerid);
+	wep_CurrentWeapon[playerid] = 0;
+	wep_ReserveAmmo[playerid] = 0;
+
+	return 1;
+}
+
+stock RemovePlayerHolsterWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER);
+	wep_HolsterData[playerid][0] = 0;
+	wep_HolsterData[playerid][1] = 0;
+
+	return 1;
+}
+
+stock IsWeaponMelee(weaponid)
+{
+	switch(weaponid)
+	{
+		case 1..15:
+			return 1;
+	}
+	return 0;
+}
+
+stock IsWeaponThrowable(weaponid)
+{
+	switch(weaponid)
+	{
+		case 16..18, 39:
+			return 1;
+	}
+	return 0;
+}
+
+stock IsWeaponClipBased(weaponid)
+{
+	switch(weaponid)
+	{
+		case 22..38, 41..43:
+			return 1;
+	}
+	return 0;
+}
+
+stock IsWeaponOneShot(weaponid)
+{
+	switch(weaponid)
+	{
+		case :
+			return 1;
+	}
+	return 0;
+}
+
+stock GetAmmunitionRemainder(weaponid, startammo, ammunition)
+{
+	return startammo + ammunition - (GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
+}
+
+
+// Hooks and Internal
 
 
 hook OnPlayerUpdate(playerid)
@@ -267,6 +306,9 @@ ReloadWeapon(playerid)
 
 	if(GetPlayerAmmo(playerid) == GetWeaponMagSize(wep_CurrentWeapon[playerid]))
 		return -2;
+
+	if(wep_CurrentWeapon[playerid] == 0)
+		return -3;
 
 	if(wep_ReserveAmmo[playerid] <= 0)
 	{
@@ -575,52 +617,56 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(tickcount() - tick_LastHolstered[playerid] < 1000)
 			return 1;
 
-		new ItemType:type = ItemType:wep_CurrentWeapon[playerid];
+		if(IsValidItem(GetPlayerItem(playerid)))
+			return 1;
 
-		if(0 < _:type < WEAPON_PARACHUTE)
+		if(0 < wep_CurrentWeapon[playerid] < WEAPON_PARACHUTE)
 		{
 			new ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
 
-			switch(type)
+			switch(wep_CurrentWeapon[playerid])
 			{
 				case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
 				{
-					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(wep_CurrentWeapon[playerid]), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 					ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
-					defer HolsterWeapon(playerid, _:type, ammo, 300);
+					defer HolsterWeaponDelay(playerid, wep_CurrentWeapon[playerid], ammo, 300);
 					tick_LastHolstered[playerid] = tickcount();
 				}
 				case 25, 27, 29, 30, 31, 33, 34, 35, 36:
 				{
-					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(_:type), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
+					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(wep_CurrentWeapon[playerid]), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 					ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
-					defer HolsterWeapon(playerid, _:type, ammo, 800);
+					defer HolsterWeaponDelay(playerid, wep_CurrentWeapon[playerid], ammo, 800);
 					tick_LastHolstered[playerid] = tickcount();
 				}
 				default:
 				{
-					ShowMsgBox(playerid, "That item is too big", 3000, 120);
+					ShowMsgBox(playerid, "Weapon too big", 3000, 120);
 					return 0;
 				}
 			}
 		}
-		if(_:type == 0 && GetPlayerItem(playerid) == INVALID_ITEM_ID && wep_CurrentWeapon[playerid] == 0)
+		else if(wep_CurrentWeapon[playerid] == 0)
 		{
-			if(wep_HolsterData[playerid][0] != 0)
+			if(wep_CurrentWeapon[playerid] == 0)
 			{
-				switch(wep_HolsterData[playerid][0])
+				if(wep_HolsterData[playerid][0] != 0)
 				{
-					case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
+					switch(wep_HolsterData[playerid][0])
 					{
-						ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
-						defer UnholsterWeapon(playerid, 300);
-						tick_LastHolstered[playerid] = tickcount();
-					}
-					case 25, 27, 29, 30, 31, 33, 34, 35, 36:
-					{
-						ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
-						defer UnholsterWeapon(playerid, 800);
-						tick_LastHolstered[playerid] = tickcount();
+						case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
+						{
+							ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
+							defer UnholsterWeaponDelay(playerid, 300);
+							tick_LastHolstered[playerid] = tickcount();
+						}
+						case 25, 27, 29, 30, 31, 33, 34, 35, 36:
+						{
+							ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
+							defer UnholsterWeaponDelay(playerid, 800);
+							tick_LastHolstered[playerid] = tickcount();
+						}
 					}
 				}
 			}
@@ -629,52 +675,48 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-timer HolsterWeapon[time](playerid, type, ammo, time)
+timer HolsterWeaponDelay[time](playerid, weaponid, ammo, time)
 {
 	#pragma unused time
-	switch(type)
-	{
-		case 2, 3, 5, 6, 7, 8, 15:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(type), 1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 1.000000, 1.000000, 1.000000);
+	HolsterWeapon(playerid, weaponid, ammo);
+}
 
-		case 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(type), 8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 1.000000, 1.000000, 1.000000 ); // tec9 - small
+timer UnholsterWeaponDelay[time](playerid, time)
+{
+	#pragma unused time
+	UnholsterWeapon(playerid);
+}
 
-		case 25, 27, 29, 30, 31, 33, 34:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(type), 1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 1.000000, 1.000000, 1.000000 ); // ak47 - ak
 
-		case 35, 36:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(type), 1, 0.181966, -0.238397, -0.094830, 252.791229, 353.893859, 357.529418, 1.000000, 1.000000, 1.000000 ); // rocketla - rpg
+HolsterWeapon(playerid, weaponid, ammo)
+{
+	if(wep_CurrentWeapon[playerid] == 0)
+		return 1;
 
-		default: return 0;
-	}
+	new
+		curweap = wep_HolsterData[playerid][0],
+		curammo = wep_HolsterData[playerid][1];
 
+	SetPlayerHolsterWeapon(playerid, weaponid, ammo);
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLD);
+	ClearAnimations(playerid);
 	RemovePlayerWeapon(playerid);
-	if(wep_HolsterData[playerid][0] == 0)
+
+	if(curweap == 0)
 	{
 		ShowMsgBox(playerid, "Weapon Holstered", 3000, 120);
-		wep_CurrentWeapon[playerid] = 0;
-		wep_ReserveAmmo[playerid] = 0;
 	}
 	else
 	{
-		SetPlayerWeapon(playerid, wep_HolsterData[playerid][0], wep_HolsterData[playerid][1]);
+		SetPlayerWeapon(playerid, curweap, curammo);
 		ShowMsgBox(playerid, "Weapon Swapped", 3000, 110);
-		wep_CurrentWeapon[playerid] = wep_HolsterData[playerid][0];
 	}
-
-	wep_HolsterData[playerid][0] = type;
-	wep_HolsterData[playerid][1] = ammo;
-
-	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLD);
-	ClearAnimations(playerid);
 
 	return 1;
 }
-timer UnholsterWeapon[time](playerid, time)
-{
-	#pragma unused time
 
+UnholsterWeapon(playerid)
+{
 	SetPlayerWeapon(playerid, wep_HolsterData[playerid][0], wep_HolsterData[playerid][1]);
 	wep_CurrentWeapon[playerid] = wep_HolsterData[playerid][0];
 
@@ -763,25 +805,6 @@ PlayerDropWeapon(playerid)
 {
 	ConvertPlayerWeaponToItem(playerid);
 	PlayerDropItem(playerid);
-/*
-	if(wep_CurrentWeapon[playerid] > 0)
-	{
-		new
-			ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid],
-			itemid = CreateItem(ItemType:wep_CurrentWeapon[playerid]);
-
-		RemovePlayerWeapon(playerid);
-
-		if(GiveWorldItemToPlayer(playerid, itemid, .call = 0))
-		{
-			SetItemExtraData(itemid, ammo);
-			PlayerDropItem(playerid);
-
-			return itemid;
-		}
-	}
-	return INVALID_ITEM_ID;
-*/
 }
 
 PlayerGiveWeapon(playerid, targetid)
@@ -791,18 +814,6 @@ PlayerGiveWeapon(playerid, targetid)
 		ConvertPlayerItemToWeapon(playerid);
 		PlayerGiveItem(playerid, targetid, 1);
 		wep_CurrentWeapon[targetid] = wep_CurrentWeapon[playerid];
-
-		/*
-		new
-			ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid],
-			itemid = CreateItem(ItemType:wep_CurrentWeapon[playerid]);
-
-		RemovePlayerWeapon(playerid);
-		SetItemExtraData(itemid, ammo);
-		GiveWorldItemToPlayer(playerid, itemid, .call = 0);
-		PlayerGiveItem(playerid, targetid, 1);
-		wep_CurrentWeapon[targetid] = wep_CurrentWeapon[playerid];
-		*/
 	}
 }
 

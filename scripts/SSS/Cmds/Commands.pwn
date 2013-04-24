@@ -40,35 +40,6 @@ CMD:idea(playerid, params[])
 	return 1;
 }
 
-CMD:bug(playerid, params[])
-{
-	new bug[128];
-	if(sscanf(params, "s[128]", bug))
-	{
-		Msg(playerid, YELLOW, "Usage: /bug [bug]");
-		return 1;
-	}
-
-	new
-		File:tmpfile,
-		str[128+MAX_PLAYER_NAME+5];
-	
-	format(str, sizeof(str), "%p : %s\r\n", playerid, bug);
-
-	if(!fexist("bugs.txt"))
-		tmpfile = fopen("bugs.txt", io_write);
-
-	else
-		tmpfile = fopen("bugs.txt", io_append);
-
-	fwrite(tmpfile, str);
-	fclose(tmpfile);
-	
-	Msg(playerid, YELLOW, " >  Your bug report has been submitted! "#C_BLUE"Southclaw "#C_YELLOW"will fix this when he can.");
-
-	return 1;
-}
-
 CMD:help(playerid, params[])
 {
 	ShowWelcomeMessage(playerid, 0);
@@ -85,6 +56,30 @@ CMD:rules(playerid, params[])
 		\tOnly English in the Chat Box. Please use the radio feature inside your inventory for private chat.\n\n\
 		\tNo flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.",
 		"Close", "");
+
+	return 1;
+}
+
+CMD:restartinfo(playerid, params[])
+{
+	new str[626];
+
+	strcat(str,
+		""#C_WHITE"The server restarts "#C_YELLOW"every 5 hours."#C_WHITE"\n\n\
+		Your character data such as position, clothes etc will be saved just like when you log out.\n\
+		All your held items, holstered weapon, inventory and bag items will be saved.\n\
+		The last car you exited will be saved along with all items inside.\n");
+
+	strcat(str,
+		"Items within containers within containers "#C_RED"WILL NOT SAVE!"#C_WHITE"\n\
+		Items on the floor "#C_RED"WILL NOT SAVE! "#C_WHITE"Ensure you put everything you want to keep inside a box.\n\n\n\
+		Recap on All Saved Things: Your last vehicle, Boxes, Fort Parts, Tents, Signs.\n\n\
+		Thank you for reading this message, good luck out there survivors!");
+
+	printf("%d", strlen(str));
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
+
 	return 1;
 }
 

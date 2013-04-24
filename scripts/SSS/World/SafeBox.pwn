@@ -258,15 +258,8 @@ forward box_OnItemDestroy(itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
-	for(new i; i < box_TypeTotal; i++)
-	{
-		if(itemtype == box_TypeData[i][box_itemtype])
-		{
-			return 1;
-		}
-	}
+	if(SafeBoxInteractionCheck(playerid, itemid))
+		return 1;
 
 	return CallLocalFunction("box_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
@@ -278,32 +271,64 @@ public OnPlayerPickUpItem(playerid, itemid)
 #define OnPlayerPickUpItem box_OnPlayerPickUpItem
 forward box_OnPlayerPickUpItem(playerid, itemid);
 
+public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	if(SafeBoxInteractionCheck(playerid, withitemid))
+		return 1;
+
+	return CallLocalFunction("box_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+}
+#if defined _ALS_OnPlayerUseItemWithItem
+	#undef OnPlayerUseItemWithItem
+#else
+	#define _ALS_OnPlayerUseItemWithItem
+#endif
+#define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
+forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+
+public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
+{
+	if(SafeBoxInteractionCheck(playerid, itemid))
+		return 1;
+
+	return CallLocalFunction("box_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
+}
+#if defined _ALS_OnPlayerUseWeaponWithItem
+	#undef OnPlayerUseWeaponWithItem
+#else
+	#define _ALS_OnPlayerUseWeaponWithItem
+#endif
+#define OnPlayerUseWeaponWithItem box_OnPlayerUseWeaponWithItem
+forward box_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
+
+
+SafeBoxInteractionCheck(playerid, itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	for(new i; i < box_TypeTotal; i++)
+	{
+		if(itemtype == box_TypeData[i][box_itemtype])
+		{
+			box_PickUpTick[playerid] = tickcount();
+			box_CurrentBox[playerid] = itemid;
+			stop box_PickUpTimer[playerid];
+
+			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+				box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
+
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 		return 1;
 
-	if(newkeys & 16)
-	{
-		new buttonid = GetPlayerButtonID(playerid);
-
-		if(IsValidButton(buttonid))
-		{
-			foreach(new i : box_Index)
-			{
-				if(buttonid == GetItemButtonID(i))
-				{
-					box_PickUpTick[playerid] = tickcount();
-					box_CurrentBox[playerid] = i;
-					stop box_PickUpTimer[playerid];
-
-					if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-						box_PickUpTimer[playerid] = defer box_PickUp(playerid, i);
-
-				}
-			}
-		}
-	}
 	if(oldkeys & 16)
 	{
 		if(tickcount() - box_PickUpTick[playerid] < 200)

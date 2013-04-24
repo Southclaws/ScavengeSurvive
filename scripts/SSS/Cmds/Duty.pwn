@@ -17,6 +17,7 @@ ACMD:duty[1](playerid, params[])
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
 
+		RemovePlayerWeapon(playerid);
 		LoadPlayerInventory(playerid);
 		LoadPlayerChar(playerid);
 
@@ -41,16 +42,15 @@ ACMD:duty[1](playerid, params[])
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
 
-		RemovePlayerWeapon(playerid);
 		DestroyItem(GetPlayerItem(playerid));
 		RemovePlayerHolsterWeapon(playerid);
+		RemovePlayerWeapon(playerid);
 
-		for(new i; i < INV_MAX_SLOTS; i++)
+		for(new i, j = INV_MAX_SLOTS - GetInventoryFreeSlots(playerid); i < j; i++)
 		{
-			if(IsValidItem(GetInventorySlotItem(playerid, 0)))
-				RemoveItemFromInventory(playerid, 0);
+			DestroyItem(GetInventorySlotItem(playerid, i));
 		}
-
+		
 		if(IsValidItem(GetPlayerBackpackItem(playerid)))
 		{
 			RemovePlayerBackpack(playerid);

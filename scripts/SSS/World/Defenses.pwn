@@ -343,7 +343,6 @@ public OnButtonPress(playerid, buttonid)
 		{
 			new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
 
-
 			if(itemtype == item_Crowbar)
 			{
 				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));

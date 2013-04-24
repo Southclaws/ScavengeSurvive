@@ -13,6 +13,7 @@ enum
 	PLY_CELL_BLEEDING,
 	PLY_CELL_CUFFED,
 	PLY_CELL_WARNS,
+	PLY_CELL_FREQ,
 	PLY_CELL_END
 }
 
@@ -56,18 +57,15 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_HELD] = _:GetItemType(GetPlayerItem(playerid));
 		data[PLY_CELL_HELDEX] = GetItemExtraData(GetPlayerItem(playerid));
 	}
+	else if(GetPlayerCurrentWeapon(playerid) > 0)
+	{
+		data[PLY_CELL_HELD] = GetPlayerCurrentWeapon(playerid);
+		data[PLY_CELL_HELDEX] = GetPlayerTotalAmmo(playerid);
+	}
 	else
 	{
-		if(GetPlayerCurrentWeapon(playerid) > 0)
-		{
-			data[PLY_CELL_HELD] = GetPlayerCurrentWeapon(playerid);
-			data[PLY_CELL_HELDEX] = GetPlayerTotalAmmo(playerid);
-		}
-		else
-		{
-			data[PLY_CELL_HELD] = -1;
-			data[PLY_CELL_HELDEX] = -1;
-		}
+		data[PLY_CELL_HELD] = -1;
+		data[PLY_CELL_HELDEX] = -1;
 	}
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
@@ -88,6 +86,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 
 	data[PLY_CELL_WARNS] = gPlayerWarnings[playerid];
+
+	data[PLY_CELL_FREQ] = _:gPlayerFrequency[playerid];
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -149,23 +149,23 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_Skin] = data[PLY_CELL_SKIN];
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
-	if(0 < data[PLY_CELL_HOLST] <= WEAPON_PARACHUTE)
+	if(0 < data[PLY_CELL_HOLST] < WEAPON_PARACHUTE)
 	{
 		if(data[PLY_CELL_HOLSTEX] > 0)
 		{
-			HolsterWeapon(playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], 800);
+			SetPlayerHolsterWeapon(playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX]);
 		}
 	}
 
 	if(data[PLY_CELL_HELD] != -1)
 	{
-		if(0 < data[PLY_CELL_HELD] <= WEAPON_PARACHUTE)
+		if(0 < data[PLY_CELL_HELD] < WEAPON_PARACHUTE)
 		{
 			SetPlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
 		}
 		else
 		{
-			itemid = CreateItem(ItemType:data[PLY_CELL_HELD], 0.0, 0.0, 0.0);
+			itemid = CreateItem(ItemType:data[PLY_CELL_HELD]);
 
 			if(!IsItemTypeSafebox(ItemType:data[PLY_CELL_HELD]) && !IsItemTypeBag(ItemType:data[PLY_CELL_HELD]))
 				SetItemExtraData(itemid, data[PLY_CELL_HELDEX]);
@@ -174,18 +174,7 @@ LoadPlayerChar(playerid)
 		}
 	}
 
-	if(data[PLY_CELL_STANCE] == 1)
-	{
-		 SetPlayerSpecialAction(playerid, SPECIAL_ACTION_DUCK);
-	}
-	else if(data[PLY_CELL_STANCE] == 2)
-	{
-		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
-	}
-	else if(data[PLY_CELL_STANCE] == 3)
-	{
-		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
-	}
+	gPlayerData[playerid][ply_stance] = data[PLY_CELL_STANCE];
 
 	if(data[PLY_CELL_BLEEDING])
 	{
@@ -198,6 +187,8 @@ LoadPlayerChar(playerid)
 	}
 
 	gPlayerWarnings[playerid] = data[PLY_CELL_WARNS];
+
+	gPlayerFrequency[playerid] = Float:data[PLY_CELL_FREQ];
 }
 LoadPlayerInventory(playerid)
 {
@@ -302,7 +293,6 @@ timer UpdateAccounts[1000]()
 	result = db_query(gAccounts, "SELECT * FROM `Player`");
 	numrows = db_num_rows(result);
 
-	printf("Rows: %d", numrows);
 
 	for(new i; i < numrows; i++)
 	{

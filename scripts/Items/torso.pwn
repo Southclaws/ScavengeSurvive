@@ -91,6 +91,9 @@ public OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{
+		if(GetItemExtraData(gut_TargetItem[playerid]) == -1)
+			return 1;
+
 		new
 			Float:x,
 			Float:y,

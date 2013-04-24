@@ -32,6 +32,13 @@ CreateNewUserfile(playerid, password[])
 	t:bPlayerGameSettings[playerid]<HasAccount>;
 }
 
+DisplayLoginPrompt(playerid)
+{
+	new str[128];
+	format(str, 128, ""C_WHITE"Welcome Back %P"#C_WHITE", Please log into to your account below!\n\n"#C_YELLOW"Enjoy your stay :)", playerid);
+	ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
+}
+
 Login(playerid)
 {
 	new
@@ -53,26 +60,24 @@ Login(playerid)
 	if(gPlayerData[playerid][ply_Admin] > 0)
 	{
 		new
-			reports = GetUnreadReports();
+			reports = GetUnreadReports(),
+			issues = GetBugReports();
 
 		MsgF(playerid, BLUE, " >  Your admin level: %d", gPlayerData[playerid][ply_Admin]);
 
 		if(reports > 0)
 			MsgF(playerid, YELLOW, " >  %d unread reports, type "#C_BLUE"/reports "#C_YELLOW"to view.", reports);
+
+		if(issues > 0)
+			MsgF(playerid, YELLOW, " >  %d issues, type "#C_BLUE"/issues "#C_YELLOW"to view.", issues);
 	}
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
-	gPlayerPassAttempts[playerid]=0;
+	gPlayerPassAttempts[playerid] = 0;
+	gPlayerFrequency[playerid] = 108.0;
+	gScreenBoxFadeLevel[playerid] = 255;
 
-	stop gScreenFadeTimer[playerid];
-	gScreenFadeTimer[playerid] = repeat FadeScreen(playerid);
-
-	SetPlayerPos(playerid,
-		gPlayerData[playerid][ply_posX],
-		gPlayerData[playerid][ply_posY],
-		gPlayerData[playerid][ply_posZ]);
-
-	FreezePlayer(playerid, 3000);
+	SpawnPlayer(playerid);
 }
 
 CheckForExtraAccounts(playerid, name[])

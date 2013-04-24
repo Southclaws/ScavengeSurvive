@@ -14,13 +14,13 @@ Float:		skin_lootSpawnChance
 }
 
 
-new
-			gPlayerCurrentSkin[MAX_PLAYERS],
-Timer:		skin_UpdateTimer[MAX_PLAYERS],
-			skin_CurrentlyUsing[MAX_PLAYERS],
-Float:		skin_UseProgress[MAX_PLAYERS],
+static
 			skin_Total,
 			skin_Data[MAX_SKINS][E_SKIN_DATA];
+
+static
+			skin_CurrentSkin[MAX_PLAYERS],
+			skin_CurrentlyUsing[MAX_PLAYERS];
 
 
 DefineSkinItem(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
@@ -45,7 +45,7 @@ stock GetPlayerClothes(playerid)
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
-	return gPlayerCurrentSkin[playerid];
+	return skin_CurrentSkin[playerid];
 }
 stock SetPlayerClothes(playerid, skinid)
 {
@@ -53,7 +53,7 @@ stock SetPlayerClothes(playerid, skinid)
 		return 0;
 
 	SetPlayerSkin(playerid, skin_Data[skinid][skin_model]);
-	gPlayerCurrentSkin[playerid] = skinid;
+	skin_CurrentSkin[playerid] = skinid;
 
 	return 1;
 }
@@ -136,13 +136,12 @@ public OnItemNameRender(itemid)
 #define OnItemNameRender clo_OnItemNameRender
 forward clo_OnItemNameRender(itemid);
 
-
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys == 16)
 	{
 		new itemid = GetPlayerItem(playerid);
+
 		if(GetItemType(itemid) == item_Clothes)
 		{
 			new skinid = GetItemExtraData(itemid);
@@ -156,61 +155,50 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	if(oldkeys == 16)
 	{
-		if(skin_CurrentlyUsing[playerid])
+		if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 		{
 			StopUsingClothes(playerid);
 		}
 	}
+
+	return 1;
 }
 
 StartUsingClothes(playerid, itemid)
 {
-	SetPlayerProgressBarValue(playerid, ActionBar, 0.0);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
+	StartHoldAction(playerid, 3000);
 	CancelPlayerMovement(playerid);
-
-	skin_CurrentlyUsing[playerid] = 1;
-	skin_UseProgress[playerid] = 0.0;
-	stop skin_UpdateTimer[playerid];
-	skin_UpdateTimer[playerid] = repeat UseClothesUpdate(playerid, itemid);
+	skin_CurrentlyUsing[playerid] = itemid;
 }
 StopUsingClothes(playerid)
 {
-	HidePlayerProgressBar(playerid, ActionBar);
-
-	skin_CurrentlyUsing[playerid] = 0;
-	skin_UseProgress[playerid] = 0.0;
-	stop skin_UpdateTimer[playerid];
+	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
+	{
+		StopHoldAction(playerid);
+		ClearAnimations(playerid);
+		skin_CurrentlyUsing[playerid] = INVALID_ITEM_ID;
+	}
 }
 
-timer UseClothesUpdate[100](playerid, itemid)
+public OnHoldActionFinish(playerid)
 {
-	if(skin_UseProgress[playerid] == 20.0)
+	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{
-		new currentclothes = gPlayerCurrentSkin[playerid];
-		SetPlayerClothes(playerid, GetItemExtraData(itemid));
-		SetItemExtraData(itemid, currentclothes);
+		new currentclothes = skin_CurrentSkin[playerid];
+		SetPlayerClothes(playerid, GetItemExtraData(skin_CurrentlyUsing[playerid]));
+		SetItemExtraData(skin_CurrentlyUsing[playerid], currentclothes);
 		StopUsingClothes(playerid);
-		return;
+
+		return 1;
 	}
 
-	SetPlayerProgressBarValue(playerid, ActionBar, skin_UseProgress[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 20.0);
-	ShowPlayerProgressBar(playerid, ActionBar);
-
-	skin_UseProgress[playerid] += 1.0;
-	return;
+	return CallLocalFunction("clo_OnHoldActionFinish", "d", playerid);
 }
 
-
-CMD:getexdat(playerid, params[])
-{
-	new id = strval(params);
-
-	if(IsValidItem(id))
-	{
-		printf("EXTRA DATA FOR %d: %d", id, GetItemExtraData(id));
-	}
-	return 1;
-}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish clo_OnHoldActionFinish
+forward clo_OnHoldActionFinish(playerid);

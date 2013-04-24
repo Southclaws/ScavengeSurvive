@@ -11,22 +11,26 @@ new
 
 CMD:fly(playerid, params[])
 {
-    usefly[playerid] = !usefly[playerid];
-    return 1;
+	usefly[playerid] = !usefly[playerid];
+
+	if(usefly[playerid])
+		SendClientMessage(playerid, -1, "Press ~k~~PED_JUMPING~ and ~k~~VEHICLE_ENTER_EXIT~ together to fly");
+ 
+	return 1;
 }
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & KEY_JUMP && newkeys & 16 && usefly[playerid])
 	{
-	    if(fly[playerid])
+		if(fly[playerid])
 		{
-		    fly[playerid] = false;
-		    ClearAnimations(playerid);
+			fly[playerid] = false;
+			ClearAnimations(playerid);
 		}
 		else
 		{
-		    fly[playerid] = true;
-		    ClearAnimations(playerid);
+			fly[playerid] = true;
+			ClearAnimations(playerid);
 			ApplyAnimation(playerid, "PARACHUTE", "FALL_SKYDIVE", 4.0, 1, 0, 0, 0, 0, 1);
 		}
 	}
@@ -36,9 +40,9 @@ public OnPlayerUpdate(playerid)
 {
 	if(!fly[playerid])return 1;
 
-    new
+	new
 		k, ud, lr,
-        Float:hMult = 0.01,
+		Float:hMult = 0.01,
 		Float:angle,
 		Float:forwd;
 
@@ -74,6 +78,6 @@ public OnPlayerUpdate(playerid)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-    fly[playerid] = false;
+	fly[playerid] = false;
 }
 

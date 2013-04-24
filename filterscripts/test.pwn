@@ -5,50 +5,11 @@
 #include <YSI\y_timers>
 
 
-public OnFilterScriptInit()
+CMD:bleed(playerid, params[])
 {
-	ssmsg("Kicking 89.166.166.42 because they didn't logon to the game.");
-	ssmsg("Kicking 89.166.166.43 because they didn't logon to the game.");
-	ssmsg("Kicking 89.167.166.42 because they didn't logon to the game.");
-	ssmsg("Kicking 90.167.166.42 because they didn't logon to the game.");
-}
-
-#define MAX_INVALID_LOGIN 5
-
-static
-	IpList[MAX_INVALID_LOGIN][1 char],
-	IpListIdx;
-
-ssmsg(const msg[])
-{
-	if(IpListIdx >= MAX_INVALID_LOGIN)
-		return 0;
-
-	if(!sscanf(msg, "{'Kicking'} p<.>dddd {'because they didn't logon to the game'}", IpList[IpListIdx]{0}, IpList[IpListIdx]{1}, IpList[IpListIdx]{2}, IpList[IpListIdx]{3}))
-	{
-		for(new i; i < IpListIdx; i++)
-		{
-			if(IpList[i][0] == 0)
-				continue;
-
-			printf("%d == %d", IpList[IpListIdx][0], IpList[i][0]);
-
-			if(IpList[IpListIdx][0] == IpList[i][0])
-				return 0;
-		}
-
-		IpListIdx++;
-
-		if(IpListIdx == MAX_INVALID_LOGIN)
-		{
-			print("SERVER CRASH - AUTO RESTART");
-			return 1;
-		}
-	}
+	SetPlayerAttachedObject(playerid, 9, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
 	return 1;
 }
-
-
 CMD:car(playerid, params[])
 {
 	new
