@@ -135,13 +135,14 @@ District_Verdant()
 	CreateLootSpawn(316.000061, 2539.791748, 15.800450,		3, 30, loot_Industrial);
 	CreateLootSpawn(300.391143, 2534.761474, 15.809490,		3, 30, loot_Industrial);
 	CreateLootSpawn(299.802062, 2551.362548, 15.804080,		3, 30, loot_Industrial);
-	CreateLootSpawn(412.760131, 2543.074218, 25.582199,		3, 10, loot_Military);
 	CreateLootSpawn(412.859893, 2542.858154, 27.911420,		3, 30, loot_Survivor);
 	CreateLootSpawn(415.271728, 2531.437988, 18.169780,		3, 30, loot_Survivor);
 	CreateLootSpawn(428.595092, 2466.588867, 24.125110,		3, 30, loot_Survivor);
 	CreateLootSpawn(385.826263, 2601.038085, 15.471960,		3, 30, loot_Survivor);
 	CreateLootSpawn(405.649749, 2449.825195, 15.490610,		3, 30, loot_Survivor);
 	CreateLootSpawn(380.857299, 2445.670410, 24.118299,		3, 30, loot_Survivor);
+
+	CreateHackerTrap(7412.60131, 2543.074218, 25.582199,	3, 10, loot_Military);
 }
 District_Area69()
 {
@@ -218,28 +219,6 @@ District_Area69()
 	CreateLootSpawn(266.772521, 1895.137084, 32.888198,		3, 10, loot_Military);
 	CreateLootSpawn(167.880004, 1850.185302, 24.485120,		3, 10, loot_Military);
 	CreateLootSpawn(268.052581, 1895.066406, 24.487150,		3, 10, loot_Military);
-	CreateLootSpawn(250.966644, 1777.734375, 4.161170,		3, 10, loot_Military);
-	CreateLootSpawn(252.487274, 1785.738159, 4.164050,		3, 10, loot_Military);
-	CreateLootSpawn(251.883483, 1783.548706, 4.163259,		3, 10, loot_Military);
-	CreateLootSpawn(252.522598, 1785.029907, 4.163790,		3, 10, loot_Military);
-	CreateLootSpawn(253.905334, 1785.449951, 4.163949,		3, 10, loot_Military);
-	CreateLootSpawn(253.226806, 1783.215087, 4.163139,		3, 10, loot_Military);
-	CreateLootSpawn(251.440322, 1785.401123, 4.163919,		3, 10, loot_Military);
-	CreateLootSpawn(246.760894, 1787.169311, 4.164539,		3, 10, loot_Military);
-	CreateLootSpawn(248.001358, 1787.676757, 4.164720,		3, 10, loot_Military);
-	CreateLootSpawn(247.618255, 1785.863647, 4.164070,		3, 10, loot_Military);
-	CreateLootSpawn(249.861343, 1785.931396, 4.164100,		3, 10, loot_Military);
-	CreateLootSpawn(248.888107, 1785.989746, 4.164120,		3, 10, loot_Military);
-	CreateLootSpawn(254.268676, 1784.390625, 4.163579,		3, 10, loot_Military);
-	CreateLootSpawn(247.033706, 1784.185424, 4.163459,		3, 10, loot_Military);
-	CreateLootSpawn(248.984436, 1784.533447, 4.163599,		3, 10, loot_Military);
-	CreateLootSpawn(246.312789, 1780.512939, 4.162129,		3, 10, loot_Military);
-	CreateLootSpawn(249.651947, 1777.317626, 4.161009,		3, 10, loot_Military);
-	CreateLootSpawn(246.838943, 1777.742797, 4.161149,		3, 10, loot_Military);
-	CreateLootSpawn(251.380920, 1781.127563, 4.162370,		3, 10, loot_Military);
-	CreateLootSpawn(252.917343, 1781.226562, 4.162409,		3, 10, loot_Military);
-	CreateLootSpawn(254.308044, 1781.366699, 4.162489,		3, 10, loot_Military);
-	CreateLootSpawn(249.463699, 1782.034301, 4.162690,		3, 10, loot_Military);
 	CreateLootSpawn(273.727447, 1879.394897, -31.398050,	3, 10, loot_Military);
 	CreateLootSpawn(273.706054, 1887.101196, -31.396299,	3, 10, loot_Military);
 	CreateLootSpawn(263.613555, 1878.852905, -31.397949,	3, 10, loot_Military);
@@ -261,6 +240,29 @@ District_Area69()
 	CreateLootSpawn(295.534362, 1814.649291, 3.706389,		3, 20, loot_Survivor);
 	CreateLootSpawn(261.293182, 1816.288208, 0.359880,		3, 20, loot_Survivor);
 	CreateLootSpawn(263.455413, 1886.542968, -31.396120,	3, 20, loot_Survivor);
+
+	CreateHackerTrap(250.966644, 1777.734375, 4.161170,		3, 20, loot_Military);
+	CreateHackerTrap(252.487274, 1785.738159, 4.164050,		3, 20, loot_Military);
+	CreateHackerTrap(251.883483, 1783.548706, 4.163259,		3, 20, loot_Military);
+	CreateHackerTrap(252.522598, 1785.029907, 4.163790,		3, 20, loot_Military);
+	CreateHackerTrap(253.905334, 1785.449951, 4.163949,		3, 20, loot_Military);
+	CreateHackerTrap(253.226806, 1783.215087, 4.163139,		3, 20, loot_Military);
+	CreateHackerTrap(251.440322, 1785.401123, 4.163919,		3, 20, loot_Military);
+	CreateHackerTrap(246.760894, 1787.169311, 4.164539,		3, 20, loot_Military);
+	CreateHackerTrap(248.001358, 1787.676757, 4.164720,		3, 20, loot_Military);
+	CreateHackerTrap(247.618255, 1785.863647, 4.164070,		3, 20, loot_Military);
+	CreateHackerTrap(249.861343, 1785.931396, 4.164100,		3, 20, loot_Military);
+	CreateHackerTrap(248.888107, 1785.989746, 4.164120,		3, 20, loot_Military);
+	CreateHackerTrap(254.268676, 1784.390625, 4.163579,		3, 20, loot_Military);
+	CreateHackerTrap(247.033706, 1784.185424, 4.163459,		3, 20, loot_Military);
+	CreateHackerTrap(248.984436, 1784.533447, 4.163599,		3, 20, loot_Military);
+	CreateHackerTrap(246.312789, 1780.512939, 4.162129,		3, 20, loot_Military);
+	CreateHackerTrap(249.651947, 1777.317626, 4.161009,		3, 20, loot_Military);
+	CreateHackerTrap(246.838943, 1777.742797, 4.161149,		3, 20, loot_Military);
+	CreateHackerTrap(251.380920, 1781.127563, 4.162370,		3, 20, loot_Military);
+	CreateHackerTrap(252.917343, 1781.226562, 4.162409,		3, 20, loot_Military);
+	CreateHackerTrap(254.308044, 1781.366699, 4.162489,		3, 20, loot_Military);
+	CreateHackerTrap(249.463699, 1782.034301, 4.162690,		3, 20, loot_Military);
 }
 District_BoneEast()
 {

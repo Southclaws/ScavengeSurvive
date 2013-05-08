@@ -8,6 +8,7 @@ CMD:die(playerid, params[])
 }
 timer Suicide[3000](playerid)
 {
+	RemovePlayerWeapon(playerid);
 	SetPlayerHP(playerid, 0.0);
 }
 
@@ -40,29 +41,49 @@ CMD:idea(playerid, params[])
 	return 1;
 }
 
-CMD:help(playerid, params[])
+CMD:welcome(playerid, params[])
 {
 	ShowWelcomeMessage(playerid, 0);
 	return 1;
 }
 
+CMD:help(playerid, params[])
+{
+	new str[577];
+
+	strcat(str,
+		""#C_YELLOW"General Information:\n\n\n"#C_WHITE"\
+		\t"#C_RED"/rules for a list of server rules.\n\n\
+		\t"#C_BLUE"/chatinfo for information on chat.\n\n\
+		\t"#C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\n\
+		"#C_WHITE"Server script coded and owned by "#C_GREEN"Southclaw "#C_WHITE"(jaz636@gmail.com) all rights reserved.");
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", str, "Close", "");
+}
+
 CMD:rules(playerid, params[])
 {
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules",
+	new str[577];
+
+	strcat(str,
 		""#C_YELLOW"Server Rules:\n\n\n"#C_WHITE"\
+		\tNo global chat use if local or radio is available. ("#C_BLUE"/chatinfo"#C_WHITE") You'll be muted for global spam.\n\n\
 		\tNo hacking, cheating or client modifications that give you advantages.\n\n\
-		\tNo exploiting of map bugs such as hiding inside collision-less models.\n\n\
-		\tNo exploiting server bugs, report them using the "#C_BLUE"/bug "#C_WHITE"command.\n\n\
-		\tOnly English in the Chat Box. Please use the radio feature inside your inventory for private chat.\n\n\
-		\tNo flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.",
-		"Close", "");
+		\tNo exploiting of map bugs such as hiding inside collision-less models.\n\n");
+
+	strcat(str,
+		"\tNo exploiting server bugs, report them using the "#C_BLUE"/bug "#C_WHITE"command.\n\n\
+		\tOnly English in global chat. Please use the radio ("#C_BLUE"/chatinfo"#C_WHITE") for other languages.\n\n\
+		\tNo flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.");
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", str, "Close", "");
 
 	return 1;
 }
 
 CMD:restartinfo(playerid, params[])
 {
-	new str[626];
+	new str[471];
 
 	strcat(str,
 		""#C_WHITE"The server restarts "#C_YELLOW"every 5 hours."#C_WHITE"\n\n\
@@ -76,7 +97,27 @@ CMD:restartinfo(playerid, params[])
 		Recap on All Saved Things: Your last vehicle, Boxes, Fort Parts, Tents, Signs.\n\n\
 		Thank you for reading this message, good luck out there survivors!");
 
-	printf("%d", strlen(str));
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
+
+	return 1;
+}
+
+CMD:chatinfo(playerid, params[])
+{
+	new str[638];
+
+	strcat(str,
+		""#C_YELLOW"Communication Information:\n\n\n"#C_WHITE"\
+		Chat is split into 3 types: Global, Local and Radio.\n\n\
+		\t"#C_GREEN"Global chat (/G) is chat everyone can see at all times and write into\n\n\
+		\t"#C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
+		\t"#C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
+
+	strcat(str,
+		""#C_WHITE"You can type the command on it's own to switch to that mode\n\
+		Or type the command followed by some text to send a message to that specific chat.\n\n\
+		If you are talking to someone next to you, "#C_YELLOW"USE LOCAL OR RADIO!\n\
+		"#C_WHITE"If you send unnecessary chat to global, you will be muted.");
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
 
@@ -93,7 +134,11 @@ CMD:changepass(playerid,params[])
 	if(!(bPlayerGameSettings[playerid] & LoggedIn))
 		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
 
-	if(sscanf(params, "s[32]s[32]", oldpass, newpass)) return Msg(playerid, YELLOW, "Usage: /changepass [old pass] [new pass]");
+	if(sscanf(params, "s[32]s[32]", oldpass, newpass))
+	{
+		Msg(playerid, YELLOW, "Usage: /changepass [old pass] [new pass]");
+		return 1;
+	}
 	else
 	{
 		WP_Hash(buffer, MAX_PASSWORD_LEN, oldpass);
@@ -101,14 +146,14 @@ CMD:changepass(playerid,params[])
 		if(!strcmp(buffer, gPlayerData[playerid][ply_Password]))
 		{
 			new
-				tmpQuery[256];
+				query[256];
 
 			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
 
-			format(tmpQuery, 256, "UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
+			format(query, 256, "UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
 			buffer, gPlayerName[playerid]);
 
-			db_free_result(db_query(gAccounts, tmpQuery));
+			db_free_result(db_query(gAccounts, query));
 			
 			gPlayerData[playerid][ply_Password] = buffer;
 
@@ -119,5 +164,47 @@ CMD:changepass(playerid,params[])
 			Msg(playerid, RED, " >  The entered password you typed doesn't match your current password.");
 		}
 	}
+	return 1;
+}
+
+CMD:country(playerid, params[])
+{
+	new id;
+
+	if(sscanf(params, "d", id))
+		return 4;
+
+	new country[32];
+
+	if(gPlayerData[id][ply_Admin] > gPlayerData[playerid][ply_Admin])
+		country = "Unknown";
+
+	else
+		GetPlayerCountry(id, country);
+
+	MsgF(playerid, YELLOW, " >  %P"#C_YELLOW"'s current GeoIP location: "#C_BLUE"%s", id, country);
+
+	return 1;
+}
+
+CMD:allcountry(playerid, params[])
+{
+	new
+		country[32],
+		list[(MAX_PLAYER_NAME + 3 + 32 + 1) * MAX_PLAYERS];
+
+	foreach(new i : Player)
+	{
+		if(gPlayerData[i][ply_Admin] > gPlayerData[playerid][ply_Admin])
+			country = "Unknown";
+
+		else
+			GetPlayerCountry(i, country);
+
+		format(list, sizeof(list), "%s%p - %s\n", list, i, country);
+	}
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
+
 	return 1;
 }

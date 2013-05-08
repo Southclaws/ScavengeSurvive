@@ -33,33 +33,14 @@ ACMD:duty[1](playerid, params[])
 			return 1;
 		}
 
-		SavePlayerData(playerid);
-
-		t:bPlayerGameSettings[playerid]<AdminDuty>;
-
 		GetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
 
-		DestroyItem(GetPlayerItem(playerid));
-		RemovePlayerHolsterWeapon(playerid);
-		RemovePlayerWeapon(playerid);
+		Logout(playerid);
 
-		for(new i, j = INV_MAX_SLOTS - GetInventoryFreeSlots(playerid); i < j; i++)
-		{
-			DestroyItem(GetInventorySlotItem(playerid, i));
-		}
-		
-		if(IsValidItem(GetPlayerBackpackItem(playerid)))
-		{
-			RemovePlayerBackpack(playerid);
-		}
-
-		if(IsValidItem(GetPlayerHat(playerid)))
-		{
-			RemovePlayerHat(playerid);
-		}
+		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
 		if(bPlayerGameSettings[playerid] & Gender)
 			SetPlayerSkin(playerid, 217);
@@ -70,7 +51,7 @@ ACMD:duty[1](playerid, params[])
 	return 1;
 }
 
-ACMD:goto[3](playerid, params[])
+ACMD:goto[1](playerid, params[])
 {
 	new targetid;
 
@@ -89,12 +70,6 @@ ACMD:goto[3](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 	{
 		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	if(gPlayerData[targetid][ply_Admin] > 0)
-	{
-		Msg(playerid, RED, " >  You cannot teleport to another administrator.");
 		return 1;
 	}
 
@@ -115,7 +90,7 @@ ACMD:get[1](playerid, params[])
 
 	if(sscanf(params, "d", targetid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /goto [playerid]");
+		Msg(playerid, YELLOW, " >  Usage: /get [playerid]");
 		return 1;
 	}
 
@@ -125,16 +100,13 @@ ACMD:get[1](playerid, params[])
 		return 1;
 	}
 
-	if(gPlayerData[targetid][ply_Admin] > 0)
+	if(gPlayerData[playerid][ply_Admin] == 1)
 	{
-		Msg(playerid, RED, " >  You cannot teleport another administrator.");
-		return 1;
-	}
-
-	if(GetPlayerDist3D(playerid, targetid) > 40.0)
-	{
-		Msg(playerid, RED, " >  You cannot teleport someone that far away to your position, move closer to them.");
-		return 1;
+		if(GetPlayerDist3D(playerid, targetid) > 50.0)
+		{
+			Msg(playerid, RED, " >  You cannot teleport someone that far away from you, move closer to them.");
+			return 1;
+		}
 	}
 
 	TeleportPlayerToPlayer(targetid, playerid);

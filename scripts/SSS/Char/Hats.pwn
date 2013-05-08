@@ -108,6 +108,29 @@ stock RemovePlayerHat(playerid)
 	hat_CurrentHat[playerid] = -1;
 }
 
+TogglePlayerHeadwear(playerid, bool:toggle)
+{
+	if(hat_CurrentHat[playerid] == -1)
+		return 0;
+
+	if(toggle)
+	{
+		new skinid = GetPlayerClothes(playerid);
+
+		SetPlayerAttachedObject(
+			playerid, ATTACHSLOT_HAT, GetItemTypeModel(hat_ItemType[hat_CurrentHat[playerid]]), 2,
+			hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetZ],
+			hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotZ],
+			hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleZ]);
+	}
+	else
+	{
+		RemovePlayerAttachedObject(playerid, ATTACHSLOT_HAT);
+	}
+
+	return 1;
+}
+
 
 // Hooks and Internal
 

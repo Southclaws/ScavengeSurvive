@@ -56,7 +56,7 @@ PlayerStartHeal(playerid, target)
 		}
 		else
 		{
-			ApplyAnimation(playerid, "PED", "ATM", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 		}
 
 		SetPlayerProgressBarMaxValue(target, ActionBar, duration);

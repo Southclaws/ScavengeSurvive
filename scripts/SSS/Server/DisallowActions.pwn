@@ -21,7 +21,7 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[targetid] & AdminDuty || bPlayerGameSettings[targetid] & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || bPlayerGameSettings[targetid] & Spectating)
 		return 1;
 
-	if(GetPlayerWeapon(playerid) != 0)
+	if(GetPlayerWeapon(targetid) != 0)
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);

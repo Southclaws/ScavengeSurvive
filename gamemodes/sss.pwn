@@ -37,10 +37,12 @@ native IsValidVehicle(vehicleid);
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054 - FIX: http://pastebin.com/zZ9bLs7K OR http://pastebin.com/2sJA38Kg
+// IMPORTANT: CTime conflicts with local variables named "time" because it declares a function with that same name (This conflicts with y_timers) Download the FIX version to avoid this.
 #include <IniFiles>					// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=262795
 #include <bar>						// By Torbido:				http://forum.sa-mp.com/showthread.php?t=113443
 #include <playerbar>				// By Torbido/Southclaw:	http://pastebin.com/ZuLPd1K6
 #include <rbits>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=275142
+// IMPORTANT: rbits conflicts with y_bit Bit_Get/Set functions.
 #include <CameraMover>				// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=329813
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
@@ -159,6 +161,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_INVENTORY			"~k~~GROUP_CONTROL_BWD~"
 #define KEYTEXT_ENGINE				"~k~~CONVERSATION_YES~"
 #define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
+#define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
+#define KEYTEXT_RADIO				"R"
 
 
 enum
@@ -416,7 +420,14 @@ ItemType:		item_PhoneBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_ParaBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Keypad			= INVALID_ITEM_TYPE,
 ItemType:		item_TentPack		= INVALID_ITEM_TYPE,
-ItemType:		item_Campfire		= INVALID_ITEM_TYPE;
+ItemType:		item_Campfire		= INVALID_ITEM_TYPE,
+ItemType:		item_CowboyHat		= INVALID_ITEM_TYPE,
+ItemType:		item_TruckCap		= INVALID_ITEM_TYPE,
+ItemType:		item_BoaterHat		= INVALID_ITEM_TYPE,
+ItemType:		item_BowlerHat		= INVALID_ITEM_TYPE,
+// 140
+ItemType:		item_PoliceCap		= INVALID_ITEM_TYPE,
+ItemType:		item_TopHat			= INVALID_ITEM_TYPE;
 
 //=====================Clock and Timers
 new
@@ -446,6 +457,7 @@ PlayerText:		HelpTipText			= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleFuelText		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleDamageText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleEngineText	= PlayerText:INVALID_TEXT_DRAW,
+PlayerText:		VehicleDoorsText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleNameText		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleSpeedText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		AddHPText			= PlayerText:INVALID_TEXT_DRAW,
@@ -464,6 +476,7 @@ enum (<<= 1) // 14
 		HasAccount = 1,
 		IsVip,
 		LoggedIn,
+		LoadedData,
 		IsNewPlayer,
 		CanExitWelcome,
 		AdminDuty,
@@ -495,6 +508,12 @@ Float:	ply_posZ,
 Float:	ply_rotZ,
 		ply_stance
 }
+enum
+{
+	CHAT_MODE_LOCAL,
+	CHAT_MODE_GLOBAL,
+	CHAT_MODE_RADIO
+}
 
 
 new
@@ -510,6 +529,7 @@ Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
+Bit2:	gPlayerChatMode			<MAX_PLAYERS>,
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
@@ -576,12 +596,6 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Player/Tutorial.pwn"
 #include "../scripts/SSS/Player/WelcomeMessage.pwn"
 
-//======================Server Core
-
-#include "../scripts/SSS/Server/Autosave.pwn"
-#include "../scripts/SSS/Server/TextTags.pwn"
-//#include "../scripts/SSS/Server/GlitchRestart.pwn"
-
 //======================Data Load
 
 #include "../scripts/SSS/Weapon/Data.pwn"
@@ -617,17 +631,19 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Char/Disarm.pwn"
 #include "../scripts/SSS/Char/Overheat.pwn"
 #include "../scripts/SSS/Char/Towtruck.pwn"
+#include "../scripts/SSS/Char/Holster.pwn"
 
 //======================World
 
 #include "../scripts/SSS/World/Fuel.pwn"
-#include "../scripts/SSS/World/Cooking.pwn"
+#include "../scripts/SSS/World/Barbecue.pwn"
 #include "../scripts/SSS/World/Defenses.pwn"
 #include "../scripts/SSS/World/GraveStone.pwn"
 #include "../scripts/SSS/World/SafeBox.pwn"
 #include "../scripts/SSS/World/Carmour.pwn"
 #include "../scripts/SSS/World/Tent.pwn"
 #include "../scripts/SSS/World/Campfire.pwn"
+#include "../scripts/SSS/World/HackTrap.pwn"
 
 //======================Per-Area Item Spawning
 
@@ -680,6 +696,12 @@ forward SetRestart(seconds);
 #include "../scripts/Items/ammotin.pwn"
 #include "../scripts/Items/tentpack.pwn"
 #include "../scripts/Items/campfire.pwn"
+#include "../scripts/Items/cowboyhat.pwn"
+#include "../scripts/Items/truckcap.pwn"
+#include "../scripts/Items/boaterhat.pwn"
+#include "../scripts/Items/bowlerhat.pwn"
+#include "../scripts/Items/policecap.pwn"
+#include "../scripts/Items/tophat.pwn"
 
 //======================Map Scripts
 
@@ -687,6 +709,11 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Maps/Area69.pwn"
 #include "../scripts/SSS/Maps/Ranch.pwn"
 #include "../scripts/SSS/Maps/MtChill.pwn"
+
+//======================Server Core
+
+#include "../scripts/SSS/Server/Autosave.pwn"
+#include "../scripts/SSS/Server/TextTags.pwn"
 
 
 main()
@@ -757,11 +784,11 @@ public OnGameModeInit()
 
 	EnableStuntBonusForAll(false);
 	ManualVehicleEngineAndLights();
-	SetNameTagDrawDistance(1.0);
+	SetNameTagDrawDistance(0.0);
 	UsePlayerPedAnims();
 	AllowInteriorWeapons(true);
 	DisableInteriorEnterExits();
-	ShowNameTags(true);
+	ShowNameTags(false);
 
 	gWeatherID			= random(sizeof(WeatherData));
 	gLastWeatherChange	= tickcount();
@@ -849,11 +876,11 @@ public OnGameModeInit()
 	item_Taco			= DefineItemType("Taco",			2769,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.069803, 0.057707, 0.039241, 0.000000, 78.877342, 0.000000);
 	item_GasCan			= DefineItemType("Petrol Can",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_Clothes		= DefineItemType("Clothes",			2891,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_HelmArmy		= DefineItemType("Army Helmet",		19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045);
+	item_HelmArmy		= DefineItemType("Army Helmet",		19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045,	0.184999, -0.007999, 0.046999, 94.199989, 22.700027, 4.799994);
 	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
 	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
 	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
@@ -895,8 +922,14 @@ public OnGameModeInit()
 	item_Keypad			= DefineItemType("Keypad",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 	item_TentPack		= DefineItemType("Tent Pack",		1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Campfire		= DefineItemType("Campfire",		19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_CowboyHat		= DefineItemType("Cowboy Hat",		18962,	ITEM_SIZE_MEDIUM,	0.0, 270.0, 0.0,		0.0427,	0.232999, 0.032000, 0.016000, 0.000000, 2.700027, -67.300010);
+	item_TruckCap		= DefineItemType("Trucker Cap",		18961,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.01,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
+	item_BoaterHat		= DefineItemType("Boater Hat",		18946,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
+	item_BowlerHat		= DefineItemType("Bowler Hat",		18947,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.01,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
 
-
+	item_PoliceCap		= DefineItemType("Police Cap",		18636,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.318,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
+	item_TopHat			= DefineItemType("Top Hat",			19352,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
+	
 	anim_Blunt = DefineAnimSet();
 	anim_Stab = DefineAnimSet();
 
@@ -941,6 +974,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		ItemType:18);
+	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -980,6 +1014,24 @@ public OnGameModeInit()
 	DefineSafeboxType("Ammo Box", 		item_AmmoBox,		6, 6, 4, 0);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
+	for(new i; i < _:item_Parachute; i++)
+	{
+		switch(i)
+		{
+			case 2, 3, 5, 6, 7, 8, 15:
+				SetItemTypeHolsterable(ItemType:i, 1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED", "PHONE_IN"); // Small arms
+
+			case 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
+				SetItemTypeHolsterable(ItemType:i, 8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300, "PED", "PHONE_IN"); // Small arms
+
+			case 25, 27, 29, 30, 31, 33, 34:
+				SetItemTypeHolsterable(ItemType:i, 1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800, "GOGGLES", "GOGGLES_PUT_ON"); // Two handed
+
+			case 35, 36:
+				SetItemTypeHolsterable(ItemType:i, 1, 0.181966, -0.238397, -0.094830, 252.791229, 353.893859, 357.529418, 800, "GOGGLES", "GOGGLES_PUT_ON"); // Rocket
+		}
+	}
+
 	CallLocalFunction("OnLoad", "");
 
 	LoadVehicles();
@@ -992,6 +1044,8 @@ public OnGameModeInit()
 	{
 		ResetVariables(i);
 	}
+
+	defer AutoSave();
 
 	return 1;
 }
@@ -1017,7 +1071,7 @@ RestartGamemode()
 {
 	foreach(new i : Player)
 	{
-		SavePlayerData(i);
+		Logout(i);
 		ResetVariables(i);
 	}
 
@@ -1202,9 +1256,38 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			VehicleLightsState(gPlayerVehicleID[playerid], !VehicleLightsState(gPlayerVehicleID[playerid]));
 		}
+		if(newkeys & KEY_CTRL_BACK)//262144)
+		{
+			ShowRadioUI(playerid);
+		}
+		if(newkeys & KEY_SUBMISSION)
+		{
+			VehicleDoorsState(gPlayerVehicleID[playerid], !VehicleDoorsState(gPlayerVehicleID[playerid]));
+		}
 	}
 	else
 	{
+		new weaponid = GetPlayerCurrentWeapon(playerid);
+		if(weaponid == 34 || weaponid == 35 || weaponid == 43)
+		{
+			if(newkeys & 128)
+			{
+				TogglePlayerHeadwear(playerid, false);
+				/*
+				switch(GetPlayerCameraMode(playerid))
+				{
+					case CAMERA_MODE_AIM_SNIPER, CAMERA_MODE_AIM_ROCKETLAUNCHER, CAMERA_MODE_FIXED_CARBUMPER, CAMERA_MODE_AIM_CAMERA, CAMERA_MODE_AIM_HEATSEEKER:
+					{
+						TogglePlayerHeadwear(playerid, false);
+					}
+				}
+				*/
+			}
+			if(oldkeys & 128)
+			{
+				TogglePlayerHeadwear(playerid, true);
+			}
+	}
 /*
 		if(newkeys & KEY_FIRE)
 		{
@@ -1229,26 +1312,20 @@ CMD:g(playerid, params[])
 
 	if(isnull(params))
 	{
-		gPlayerFrequency[playerid] = 108.0;
+		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
 		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, 108.0);
+		PlayerSendChat(playerid, params, 1.0);
 	}
 	return 1;
 }
 CMD:l(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & Muted)
-	{
-		Msg(playerid, RED, " >  You are muted");
-		return 1;
-	}
-
 	if(isnull(params))
 	{
-		gPlayerFrequency[playerid] = 0.0;
+		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_LOCAL);
 		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
@@ -1257,17 +1334,16 @@ CMD:l(playerid, params[])
 	}
 	return 1;
 }
-CMD:c(playerid, params[])
+CMD:r(playerid, params[])
 {
-	if(gPlayerFrequency[playerid] != 0.0)
+	if(isnull(params))
 	{
-		gPlayerFrequency[playerid] = 0.0;
-		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
+		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", gPlayerFrequency[playerid]);
 	}
 	else
 	{
-		gPlayerFrequency[playerid] = 108.0;
-		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
+		PlayerSendChat(playerid, params, gPlayerFrequency[playerid]);
 	}
 	return 1;
 }
@@ -1300,7 +1376,14 @@ public OnPlayerText(playerid, text[])
 
 	tick_LastChatMessage[playerid] = tickcount();
 
-	PlayerSendChat(playerid, text, gPlayerFrequency[playerid]);
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+		PlayerSendChat(playerid, text, 0.0);
+
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
+		PlayerSendChat(playerid, text, 1.0);
+
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
+		PlayerSendChat(playerid, text, gPlayerFrequency[playerid]);
 
 	return 0;
 }
@@ -1311,16 +1394,16 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 		text2[128],
 		sendsecondline;
 
-	if(frequency == 108.0)
+	if(frequency == 0.0)
 	{
-		format(text, 256, "[Global] (%d) %P"#C_WHITE": %s",
+		format(text, 256, "[Local] (%d) %P"#C_WHITE": %s",
 			playerid,
 			playerid,
 			TagScan(textInput));
 	}
-	else if(frequency == 0.0)
+	else if(frequency == 1.0)
 	{
-		format(text, 256, "[Local] (%d) %P"#C_WHITE": %s",
+		format(text, 256, "[Global] (%d) %P"#C_WHITE": %s",
 			playerid,
 			playerid,
 			TagScan(textInput));
@@ -1334,7 +1417,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 			TagScan(textInput));
 	}
 
-	SetPlayerChatBubble(playerid, textInput, WHITE, 40.0, 10000);
+	SetPlayerChatBubble(playerid, TagScan(textInput), WHITE, 40.0, 10000);
 
 	if(strlen(text) > 127)
 	{
@@ -1356,17 +1439,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 		text[splitpos] = 0;
 	}
 
-	if(frequency == 108.0)
-	{
-		foreach(new i : Player)
-		{
-			SendClientMessage(i, WHITE, text);
-
-			if(sendsecondline)
-				SendClientMessage(i, WHITE, text2);
-		}
-	}
-	else if(frequency == 0.0)
+	if(frequency == 0.0)
 	{
 		new
 			Float:x,
@@ -1384,6 +1457,16 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 				if(sendsecondline)
 					SendClientMessage(i, WHITE, text2);
 			}
+		}
+	}
+	else if(frequency == 1.0)
+	{
+		foreach(new i : Player)
+		{
+			SendClientMessage(i, WHITE, text);
+
+			if(sendsecondline)
+				SendClientMessage(i, WHITE, text2);
 		}
 	}
 	else
@@ -1429,10 +1512,13 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 			PlayerTextDrawShow(playerid, VehicleFuelText);
 			PlayerTextDrawShow(playerid, VehicleDamageText);
 			PlayerTextDrawShow(playerid, VehicleEngineText);
+			PlayerTextDrawShow(playerid, VehicleDoorsText);
 		}
 	}
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
+		VehicleDoorsState(gPlayerVehicleID[playerid], 0);
+
 		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
 		f:bVehicleSettings[vehicleid]<v_Occupied>;
 
@@ -1441,6 +1527,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawHide(playerid, VehicleFuelText);
 		PlayerTextDrawHide(playerid, VehicleDamageText);
 		PlayerTextDrawHide(playerid, VehicleEngineText);
+		PlayerTextDrawHide(playerid, VehicleDoorsText);
 	}
 	return 1;
 }
@@ -1508,8 +1595,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Quit");
 				if(gPlayerPassAttempts[playerid] == 5)
 				{
-					Kick(playerid);
 					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+					Kick(playerid);
 				}
 			}
 		}
@@ -1885,6 +1972,15 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawColor				(playerid, VehicleEngineText, RED);
 	PlayerTextDrawSetOutline		(playerid, VehicleEngineText, 1);
 	PlayerTextDrawSetProportional	(playerid, VehicleEngineText, 1);
+
+	VehicleDoorsText				=CreatePlayerTextDraw(playerid, 620.000000, 341.000000, "DOR");
+	PlayerTextDrawAlignment			(playerid, VehicleDoorsText, 3);
+	PlayerTextDrawBackgroundColor	(playerid, VehicleDoorsText, 255);
+	PlayerTextDrawFont				(playerid, VehicleDoorsText, 2);
+	PlayerTextDrawLetterSize		(playerid, VehicleDoorsText, 0.250000, 1.599999);
+	PlayerTextDrawColor				(playerid, VehicleDoorsText, RED);
+	PlayerTextDrawSetOutline		(playerid, VehicleDoorsText, 1);
+	PlayerTextDrawSetProportional	(playerid, VehicleDoorsText, 1);
 
 
 //======================================================================Stat GUI

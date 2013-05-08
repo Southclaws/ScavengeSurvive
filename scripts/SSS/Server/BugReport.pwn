@@ -145,10 +145,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			reporter, bug, date);
 
 		if(gPlayerData[playerid][ply_Admin] > 1)
-			ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "Delete");
+			ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "Delete");
 
 		else
-			ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "");
+			ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "");
 
 		issue_CurrentItem[playerid] = listitem;
 	}

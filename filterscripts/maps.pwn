@@ -53,7 +53,7 @@ LoadMap(filename[])
 		tmpObjAlign,
 
 		matSizeTable[MAX_MATERIAL_SIZE][MAX_MATERIAL_LEN] =
-	    {
+		{
 			"32x32",
 			"64x32",
 			"64x64",
@@ -68,7 +68,7 @@ LoadMap(filename[])
 			"512x128",
 			"512x256",
 			"512x512"
-	    };
+		};
 
 	if(!fexist(filename))
 		return printf("ERROR: file: \"%s\" NOT FOUND", filename);
@@ -105,7 +105,7 @@ LoadMap(filename[])
 		}
 		else if(!sscanf(str, "'objtxt(' p<\">{s[1]}s[32]p<,>{s[1]} ds[32]p<\">{s[1]}s[32]p<,>{s[1]}ddddp<)>d", tmpObjText, tmpObjIdx, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign))
 		{
-		    new len = strlen(tmpObjText);
+			new len = strlen(tmpObjText);
 
 			for(new i;i<sizeof matSizeTable;i++)
 				if(strfind(tmpObjResName, matSizeTable[i]) != -1)
@@ -113,15 +113,15 @@ LoadMap(filename[])
 
 			for(new c;c<len;c++)
 			{ // The end bit on this statement prevents invalid memory access, for instance if this loop reaches the last cell and tries to access c+1
-			    if(tmpObjText[c] == '\\' && c != len-1)
+				if(tmpObjText[c] == '\\' && c != len-1)
 				{
-				    if(tmpObjText[c+1] == 'n')
-				    {
+					if(tmpObjText[c+1] == 'n')
+					{
 						strdel(tmpObjText, c, c+1);
 						tmpObjText[c] = '\n';
-				    }
-				    // I will add more if needed, like the \t or any others that people suggest!
-			    }
+					}
+					// I will add more if needed, like the \t or any others that people suggest!
+				}
 			}
 
 			SetDynamicObjectMaterialText(tmpObjID, tmpObjIdx, tmpObjText, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign);
@@ -175,14 +175,15 @@ public OnFilterScriptInit()
 	print("\n---------------------------");
 	print(" Object Placement Script Loaded");
 
-    LoadMapsFromFolder("Maps");
+	LoadMapsFromFolder("Maps");
 	LoadObjects();
 
 	print("  ----  Object Data  ----  ");
 	printf("   %d\t- Total Objects", CountDynamicObjects());
 	print("---------------------------\n");
 
-	for(new i;i<MAX_PLAYERS;i++)RemoveObjects(i);
+	for(new i; i < MAX_PLAYERS; i++)
+		RemoveObjects(i);
 
 	return 1;
 }
@@ -207,17 +208,17 @@ CMD:reob(playerid, params[])
 
 CMD:removeobjects(playerid, params[])
 {
-    RemoveObjects(playerid);
-    return 1;
+	RemoveObjects(playerid);
+	return 1;
 }
 
 RemoveObjects(playerid)
 {
 // Naval Base TEMP
-	RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.25);
+	RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.01);
 
 //	Mall
-    
+	
 	RemoveBuildingForPlayer(playerid, 6130, 1117.5859, -1490.0078, 32.7188, 10.0); // Mall
 	RemoveBuildingForPlayer(playerid, 6255, 1117.5859, -1490.0078, 32.7188, 10.0); // LOD
 	RemoveBuildingForPlayer(playerid, 762, 1175.3594, -1420.1875, 19.8828, 0.25); // Tree
@@ -236,52 +237,56 @@ RemoveObjects(playerid)
 	RemoveBuildingForPlayer(playerid, 1267, 498.2578, -1363.0625, 30.0547, 0.25);
 
 // Houses (Los Santos)
-    RemoveBuildingForPlayer(playerid, 3589, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3592, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3648, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3647, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3646, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3706, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3642, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3720, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3555, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3563, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 5626, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 5664, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3590, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3591, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 3649, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 3654, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
-    RemoveBuildingForPlayer(playerid, 5416, 0.0, 0.0, 0.0, 10000.0); // LS house
-    RemoveBuildingForPlayer(playerid, 5672, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3589, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3592, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3648, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3647, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3646, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3706, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3642, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3720, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3555, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3563, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 5626, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 5664, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3590, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3591, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 3649, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 3654, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
+	RemoveBuildingForPlayer(playerid, 5416, 0.0, 0.0, 0.0, 10000.0); // LS house
+	RemoveBuildingForPlayer(playerid, 5672, 0.0, 0.0, 0.0, 10000.0); // LS house LOD
 
 // Houses (San Fierro)
-    RemoveBuildingForPlayer(playerid, 3821, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3832, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3824, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3835, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3827, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3838, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3825, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3841, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3826, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3840, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3822, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3833, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3844, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3848, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
-    RemoveBuildingForPlayer(playerid, 3830, 0.0, 0.0, 0.0, 10000.0); // SF house
-    RemoveBuildingForPlayer(playerid, 3836, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3821, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3832, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3824, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3835, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3827, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3838, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3825, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3841, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3826, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3840, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3822, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3833, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3844, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3848, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
+	RemoveBuildingForPlayer(playerid, 3830, 0.0, 0.0, 0.0, 10000.0); // SF house
+	RemoveBuildingForPlayer(playerid, 3836, 0.0, 0.0, 0.0, 10000.0); // SF house LOD
 
 // Houses (Las Venturas)
-    RemoveBuildingForPlayer(playerid, 3464, 0.0, 0.0, 0.0, 10000.0); // LV house
-    RemoveBuildingForPlayer(playerid, 3536, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
-    RemoveBuildingForPlayer(playerid, 3445, 0.0, 0.0, 0.0, 10000.0); // LV house
-    RemoveBuildingForPlayer(playerid, 3546, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
-    RemoveBuildingForPlayer(playerid, 3446, 0.0, 0.0, 0.0, 10000.0); // LV house
-    RemoveBuildingForPlayer(playerid, 3547, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
-    RemoveBuildingForPlayer(playerid, 3443, 0.0, 0.0, 0.0, 10000.0); // LV house
-    RemoveBuildingForPlayer(playerid, 3548, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
+	RemoveBuildingForPlayer(playerid, 3464, 0.0, 0.0, 0.0, 10000.0); // LV house
+	RemoveBuildingForPlayer(playerid, 3536, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
+	RemoveBuildingForPlayer(playerid, 3445, 0.0, 0.0, 0.0, 10000.0); // LV house
+	RemoveBuildingForPlayer(playerid, 3546, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
+	RemoveBuildingForPlayer(playerid, 3446, 0.0, 0.0, 0.0, 10000.0); // LV house
+	RemoveBuildingForPlayer(playerid, 3547, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
+	RemoveBuildingForPlayer(playerid, 3443, 0.0, 0.0, 0.0, 10000.0); // LV house
+	RemoveBuildingForPlayer(playerid, 3548, 0.0, 0.0, 0.0, 10000.0); // LV house LOD
+
+// K.A.C.C.
+	RemoveBuildingForPlayer(playerid, 985, 2497.36523438, 2777.06933594, 11.55891800, 40.0);
+	RemoveBuildingForPlayer(playerid, 986, 2497.35888672, 2769.11181641, 11.55891800, 40.0);
 }
 
 LoadObjects()
@@ -294,7 +299,7 @@ LoadObjects()
 	CreateDynamicObject(19323, 1117.580, -1490.01, 32.72,   0.00, 0.00, 0.00);
 
 	// Mall windows
-    CreateDynamicObject(19325, 1155.40, -1434.89, 16.49,   0.00, 0.00, 0.30);
+	CreateDynamicObject(19325, 1155.40, -1434.89, 16.49,   0.00, 0.00, 0.30);
 	CreateDynamicObject(19325, 1155.37, -1445.41, 16.31,   0.00, 0.00, 0.00);
 	CreateDynamicObject(19325, 1155.29, -1452.38, 16.31,   0.00, 0.00, 0.00);
 	CreateDynamicObject(19325, 1157.36, -1468.35, 16.31,   0.00, 0.00, 18.66);

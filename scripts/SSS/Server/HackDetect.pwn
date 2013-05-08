@@ -4,25 +4,54 @@
 #define DETECTION_DISTANCE (40.0)
 
 
-ptask AntiCheatUpdate[1000](playerid)
-{
-	PositionCheck(playerid);
-	WeaponCheck(playerid);
-
-	if(GetPlayerMoney(playerid) > 0)
-		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
-}
-
-
-// Anti-teleport
-
-
 new
+// Teleport
 		tp_SetPosTick		[MAX_PLAYERS],
 Float:	tp_CurPos			[MAX_PLAYERS][3],
 Float:	tp_SetPos			[MAX_PLAYERS][3],
 		tp_PosReportTick	[MAX_PLAYERS],
-		tp_DetectDelay		[MAX_PLAYERS];
+		tp_DetectDelay		[MAX_PLAYERS],
+// Swim-fly
+		sf_ReportTick		[MAX_PLAYERS],
+// Height gain
+		hg_ReportTick		[MAX_PLAYERS],
+// Vehicle Health
+		vh_ReportTick		[MAX_PLAYERS];
+
+
+ptask AntiCheatUpdate[1000](playerid)
+{
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		PositionCheck(playerid);
+		WeaponCheck(playerid);
+		SwimFlyCheck(playerid);
+		FastHeightGainCheck(playerid);
+	}
+	else
+	{
+		VehicleHealthCheck(playerid);	
+	}
+
+	if(GetPlayerMoney(playerid) > 0)
+		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
+
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
+		BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
+}
+
+hook OnPlayerSpawn(playerid)
+{
+	tp_SetPosTick[playerid] = tickcount();
+	tp_DetectDelay[playerid] = tickcount();
+	sf_ReportTick[playerid] = tickcount();
+	hg_ReportTick[playerid] = tickcount();
+	vh_ReportTick[playerid] = tickcount();
+	GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+}
+
+
+// Anti-teleport
 
 
 Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -36,24 +65,10 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 }
 #define SetPlayerPos Detect_SetPlayerPos
 
-hook OnPlayerSpawn(playerid)
-{
-	tp_SetPosTick[playerid] = tickcount();
-	tp_DetectDelay[playerid] = tickcount();
-	GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-}
-
 PositionCheck(playerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
-	{
-		BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
-		return;
-	}
-
 	if(
 		IsAutoSaving() ||
-		IsPlayerInAnyVehicle(playerid) ||
 		IsPlayerOnZipline(playerid) ||
 		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
 		tickcount() - GetPlayerServerJoinTick(playerid) < 10000 ||
@@ -79,6 +94,17 @@ PositionCheck(playerid)
 		Float:distance;
 
 	GetPlayerPos(playerid, x, y, z);
+	if(z < -50.0)
+	{
+		new
+			name[24],
+			reason[32];
+
+		GetPlayerName(playerid, name, 24);
+		format(reason, sizeof(reason), "Below -50.0m in world (Impossible)", distance);
+		ReportPlayer(name, reason, -1);
+		return;
+	}
 	distance = Distance2D(x, y, tp_CurPos[playerid][0], tp_CurPos[playerid][1]);
 
 	if(distance > DETECTION_DISTANCE)
@@ -127,14 +153,9 @@ PositionCheck(playerid)
 }
 
 
-// Anti-weapon spawn
+// Anti-weapon hack
 
 
-#define WEAPON_OFFENSE_MAX (3)
-
-
-new
-	WeaponOffenseStrike[MAX_PLAYERS];
 
 WeaponCheck(playerid)
 {
@@ -149,29 +170,136 @@ WeaponCheck(playerid)
 	{
 		if(actualweapon != itemweapon)
 		{
-			WeaponOffenseStrike[playerid]++;
+			new
+				name[24],
+				weaponname1[32],
+				weaponname2[32],
+				reason[128];
 
-			if(WeaponOffenseStrike[playerid] == WEAPON_OFFENSE_MAX)
-			{
-				new
-					name[24],
-					weaponname1[32],
-					weaponname2[32],
-					reason[128];
+			GetPlayerName(playerid, name, 24);
+			GetItemTypeName(ItemType:actualweapon, weaponname1);
+			GetItemTypeName(ItemType:itemweapon, weaponname2);
 
-				GetPlayerName(playerid, name, 24);
-				GetItemTypeName(ItemType:actualweapon, weaponname1);
-				GetItemTypeName(ItemType:itemweapon, weaponname2);
+			format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, itemweapon, weaponname2);
 
-				format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, itemweapon, weaponname2);
-
-				//ReportPlayer(name, reason, -1);
-				MsgAdmins(2, 0xFFFF00FF, reason);
-
-				WeaponOffenseStrike[playerid] = 0;
-			}
+			//ReportPlayer(name, reason, -1);
+			MsgAdmins(2, 0xFFFF00FF, reason);
 		}
 	}
 
 	return;
+}
+
+
+// Anti-swim-fly
+
+
+SwimFlyCheck(playerid)
+{
+	if(tickcount() - sf_ReportTick[playerid] < 10000)
+		return 0;
+
+	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
+		return 0;
+
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+		return 0;
+
+	if(IsPlayerDead(playerid))
+	{
+		sf_ReportTick[playerid] = tickcount();
+		return 0;
+	}
+
+    new
+    	animlib[32],
+    	animname[32];
+
+    GetAnimationName(GetPlayerAnimationIndex(playerid), animlib, sizeof(animlib), animname, sizeof(animname));
+	
+	if(!strcmp(animlib, "SWIM"))
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(playerid, x, y, z);
+
+		if(x == 0.0 && y == 0.0 && z == 0.0)
+			return 0;
+
+		if(!IsPlayerInWater(playerid))
+		{
+			new
+				name[24],
+				reason[64];
+
+			GetPlayerName(playerid, name, 24);
+			format(reason, sizeof(reason), "Used swimming animation at %.2f, %.2f, %.2f", x, y, z);
+			ReportPlayer(name, reason, -1);
+
+			sf_ReportTick[playerid] = tickcount();
+		}
+	}
+
+	return 1;
+}
+
+
+// Anti-raise
+
+
+FastHeightGainCheck(playerid)
+{
+	if(tickcount() - hg_ReportTick[playerid] < 10000)
+		return 0;
+
+	new Float:z;
+
+	GetPlayerVelocity(playerid, z, z, z);
+
+	if(!(-1.18 < z < 0.25))
+	{
+		new
+			name[24],
+			reason[64];
+
+		GetPlayerName(playerid, name, 24);
+		format(reason, sizeof(reason), "Traveling at a Z velocity of %.2f", z);
+		ReportPlayer(name, reason, -1);
+
+		hg_ReportTick[playerid] = tickcount();
+	}
+
+	return 1;
+}
+
+
+// Anti-vehicle health
+
+
+VehicleHealthCheck(playerid)
+{
+	if(tickcount() - vh_ReportTick[playerid] < 10000)
+		return 0;
+
+	new Float:hp;
+
+	GetVehicleHealth(GetPlayerVehicleID(playerid), hp);
+
+	if(hp > 990.0)
+	{
+		new
+			name[24],
+			reason[64];
+
+		GetPlayerName(playerid, name, 24);
+		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
+		ReportPlayer(name, reason, -1);
+
+		vh_ReportTick[playerid] = tickcount();
+	}
+
+	return 1;
 }

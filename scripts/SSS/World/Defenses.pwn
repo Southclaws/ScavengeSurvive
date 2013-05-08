@@ -47,7 +47,7 @@ static
 			def_TypeIndex,
 			def_ItemTypeBounds[2] = {65535, 0};
 
-static
+new
 			def_Data[MAX_DEFENSE][E_DEFENSE_DATA],
 Iterator:	def_Index<MAX_DEFENSE>;
 
@@ -609,36 +609,4 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
 			}
 		}
 	}
-}
-
-AutosaveDefenses()
-{
-	new idx;
-
-	foreach(new i : def_Index)
-	{
-		autosave_Block[idx] = i;
-		idx++;
-	}
-	autosave_Max = idx;
-
-	defer Defense_BlockSave(0);
-}
-
-timer Defense_BlockSave[SAVE_BLOCK_INTERVAL](index)
-{
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
-		return;
-
-	new i;
-
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
-	{
-		SaveDefenseItem(autosave_Block[i]);
-	}
-
-	if(index < autosave_Max)
-		defer Defense_BlockSave(i);
-
-	return;
 }

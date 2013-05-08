@@ -7,6 +7,7 @@
 
 enum E_CAMPFIRE_DATA
 {
+			cmp_itemId,
 			cmp_objMid1,
 			cmp_objMid2,
 			cmp_objMid3,
@@ -24,13 +25,15 @@ Float:		cmp_posY,
 Float:		cmp_posZ,
 Float:		cmp_rotZ,
 			cmp_objFlame,
+			cmp_foodItem,
 			cmp_fueled
 }
 
 
 static
 			cmp_Data[MAX_CAMPFIRE][E_CAMPFIRE_DATA],
-Iterator:	cmp_Index<MAX_CAMPFIRE>;
+Iterator:	cmp_Index<MAX_CAMPFIRE>,
+Timer:		cmp_CookTimer[MAX_CAMPFIRE];
 
 
 stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
@@ -112,6 +115,8 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 	cmp_Data[id][cmp_rotZ] = rz;
 
 	cmp_Data[id][cmp_objFlame] = INVALID_OBJECT_ID;
+	cmp_Data[id][cmp_foodItem] = INVALID_ITEM_ID;
+	cmp_Data[id][cmp_itemId] = INVALID_ITEM_ID;
 
 	Iter_Add(cmp_Index, id);
 
@@ -154,8 +159,18 @@ stock DestroyCampfire(fireid)
 	cmp_Data[fireid][cmp_posZ] = 0.0;
 	cmp_Data[fireid][cmp_rotZ] = 0.0;
 	cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
+	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
+	cmp_Data[fireid][cmp_itemId] = INVALID_ITEM_ID;
 
 	Iter_Remove(cmp_Index, fireid);
+
+	return 1;
+}
+
+stock IsValidCampfire(fireid)
+{
+	if(!Iter_Contains(cmp_Index, fireid))
+		return 0;
 
 	return 1;
 }
@@ -185,91 +200,147 @@ stock SetCampfireState(fireid, bool:toggle)
 	return 1;
 }
 
-#endinput
-
-public OnButtonPress(playerid, buttonid)
+public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
-
-	if(itemtype == item_GasCan || itemtype == item_FireLighter)
+	if(GetItemType(withitemid) == item_Campfire)
 	{
-		foreach(new i : cmp_Index)
-		{
-			if(buttonid == cmp_Data[i][cmp_buttonId])
-			{
-				if(!IsValidDynamicObject(cmp_Data[i][cmp_objFlame]))
-				{
-					if(itemtype == item_GasCan)
-					{
-						if(cmp_Data[i][cmp_fueled])
-						{
-							ShowMsgBox(playerid, "Campfire already fueled");
-						}
-						else
-						{
-							ShowMsgBox(playerid, "1L of petrol added");
-							cmp_Data[i][cmp_fueled] = 1;
-						}
-					}
+		new fireid = GetItemExtraData(withitemid);
 
-					if(itemtype == item_FireLighter)
+		if(IsValidCampfire(fireid))
+		{
+			if(!IsValidDynamicObject(cmp_Data[fireid][cmp_objFlame]))
+			{
+				new ItemType:itemtype = GetItemType(itemid);
+
+				if(itemtype == item_GasCan)
+				{
+					if(cmp_Data[fireid][cmp_fueled])
 					{
-						if(gWeatherID == 8 || gWeatherID == 16)
+						ShowMsgBox(playerid, "Campfire already fueled");
+					}
+					else
+					{
+						ShowMsgBox(playerid, "1L of petrol added");
+						cmp_Data[fireid][cmp_fueled] = 1;
+					}
+				}
+
+				if(itemtype == item_FireLighter)
+				{
+					if(gWeatherID == 8 || gWeatherID == 16)
+					{
+						if(random(100) < 40)
 						{
-							if(random(100) < 40)
+							if(cmp_Data[fireid][cmp_fueled])
 							{
-								if(cmp_Data[i][cmp_fueled])
-								{
-									SetCampfireState(i, true);
-									cmp_Data[i][cmp_fueled] = 0;
-									defer CampfireBurnOut(i, 120000);
-								}
-								else
-								{
-									if(random(1000) < 5)
-									{
-										SetCampfireState(i, true);
-										defer CampfireBurnOut(i, 120000);
-									}
-								}
-							}
-						}
-						else
-						{
-							if(cmp_Data[i][cmp_fueled])
-							{
-								SetCampfireState(i, true);
-								cmp_Data[i][cmp_fueled] = 0;
-								defer CampfireBurnOut(i, 600000);
+								SetCampfireState(fireid, true);
+								cmp_Data[fireid][cmp_fueled] = 0;
+								defer CampfireBurnOut(fireid, 120000);
 							}
 							else
 							{
 								if(random(1000) < 5)
 								{
-									SetCampfireState(i, true);
-									defer CampfireBurnOut(i, 600000);
+									SetCampfireState(fireid, true);
+									defer CampfireBurnOut(fireid, 120000);
 								}
 							}
 						}
 					}
-					break;
+					else
+					{
+						if(cmp_Data[fireid][cmp_fueled])
+						{
+							SetCampfireState(fireid, true);
+							cmp_Data[fireid][cmp_fueled] = 0;
+							defer CampfireBurnOut(fireid, 600000);
+						}
+						else
+						{
+							if(random(1000) < 5)
+							{
+								SetCampfireState(fireid, true);
+								defer CampfireBurnOut(fireid, 600000);
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				if(IsItemTypeFood(GetItemType(itemid)))
+				{
+					if(!IsValidItem(cmp_Data[fireid][cmp_foodItem]))
+					{
+						new
+							Float:x,
+							Float:y,
+							Float:z,
+							Float:r;
+
+						GetItemPos(withitemid, x, y, z);
+						GetItemRot(withitemid, r, r, r);
+
+						CreateItemInWorld(itemid,
+							x,
+							y,
+							z + 0.3,
+							.rz = r);
+
+						cmp_Data[fireid][cmp_foodItem] = itemid;
+						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
+						ShowMsgBox(playerid, "Food added", 3000);
+					}
 				}
 			}
 		}
 	}
 
-	return CallLocalFunction("cmp_OnButtonPress", "dd", playerid, buttonid);
+	return CallLocalFunction("cmp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
+#if defined _ALS_OnPlayerUseItemWithItem
+	#undef OnPlayerUseItemWithItem
 #else
-	#define _ALS_OnButtonPress
+	#define _ALS_OnPlayerUseItemWithItem
 #endif
-#define OnButtonPress cmp_OnButtonPress
-forward cmp_OnButtonPress(playerid, buttonid);
+#define OnPlayerUseItemWithItem cmp_OnPlayerUseItemWithItem
+forward cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 timer CampfireBurnOut[time](fireid, time)
 {
 	#pragma unused time
 	DestroyCampfire(fireid);
 }
+
+timer cmp_FinishCooking[60000](fireid)
+{
+	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
+}
+
+public OnPlayerPickedUpItem(playerid, itemid)
+{
+	if(GetItemType(itemid) == item_Campfire)
+	{
+		new fireid = GetItemExtraData(itemid);
+
+		if(IsValidCampfire(fireid))
+		{
+			if(IsValidItem(cmp_Data[fireid][cmp_foodItem]))
+			{
+				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
+				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
+				return 1;
+			}
+		}
+	}
+
+	return CallLocalFunction("cmp2_OnPlayerPickedUpItem", "dd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerPickedUpItem
+	#undef OnPlayerPickedUpItem
+#else
+	#define _ALS_OnPlayerPickedUpItem
+#endif
+#define OnPlayerPickedUpItem cmp2_OnPlayerPickedUpItem
+forward cmp2_OnPlayerPickedUpItem(playerid, itemid);
+

@@ -46,9 +46,33 @@ stock GivePlayerBackpack(playerid, itemid)
 
 stock RemovePlayerBackpack(playerid)
 {
+	if(!(0 < playerid < MAX_PLAYERS))
+		return 0;
+
+	if(!IsValidItem(bag_PlayerBagID[playerid]))
+		return 0;
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
+
+	return 1;
+}
+
+stock DestroyPlayerBackpack(playerid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS))
+		return 0;
+
+	if(!IsValidItem(bag_PlayerBagID[playerid]))
+		return 0;
+
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
+	DestroyContainer(GetItemExtraData(bag_PlayerBagID[playerid]));
+	DestroyItem(bag_PlayerBagID[playerid]);
+	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
+
+	return 1;
 }
 
 stock GetPlayerBackpackItem(playerid)
@@ -235,6 +259,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
+			if(tickcount() - GetPlayerWeaponSwapTick(playerid) < 1000)
+				return 0;
+
 			new itemid = GetPlayerItem(playerid);
 
 			if(IsPlayerInventoryFull(playerid) || GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_MEDIUM)
@@ -294,6 +321,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 					if(155.0 < angle < 205.0)
 					{
+						CancelPlayerMovement(playerid);
 						bag_OtherPlayerEnter[playerid] = defer bag_EnterOtherPlayer(playerid, i);
 						break;
 					}
@@ -338,6 +366,7 @@ timer bag_PutItemIn[300](playerid, itemid, containerid)
 
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
+	CancelPlayerMovement(playerid);
 	DisplayContainerInventory(playerid, GetItemExtraData(bag_PlayerBagID[targetid]));
 	bag_LookingInBag[playerid] = targetid;
 }

@@ -139,7 +139,7 @@ SaveSafeboxItem(itemid, prints = false)
 		return -1;
 
 	if(!IsItemTypeSafebox(GetItemType(itemid)))
-		return -2;
+		return -1;
 
 	new
 		Float:x,
@@ -154,18 +154,24 @@ SaveSafeboxItem(itemid, prints = false)
 	containerid = GetItemExtraData(itemid);
 
 	if(!IsValidContainer(containerid))
-		return -2;
-
-	if(IsContainerEmpty(containerid))
-		return -3;
+		return -1;
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, r, r, r);
 
-	if(x == 0.0 && y == 0.0 && z == 0.0)
-		return print("ERROR: Safebox save at null coordinates");
+	if(x == 0.0 && y == 0.0 && z == 0.0 || r == 0.0)
+	{
+		return -2;
+	}
 
 	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+
+	if(IsContainerEmpty(containerid))
+	{
+		fremove(filename);
+		return -1;
+	}
+
 	file = fopen(filename, io_write);
 
 	if(file)
@@ -186,12 +192,12 @@ SaveSafeboxItem(itemid, prints = false)
 		fblockwrite(file, data, sizeof(data));
 		fclose(file);
 
-		return 1;
+		return itemid;
 	}
 	else
 	{
 		printf("ERROR: Saving safebox, filename: '%s'", filename);
-		return 0;
+		return -1;
 	}
 }
 
@@ -236,13 +242,20 @@ public OnItemDestroy(itemid)
 		if(itemtype == box_TypeData[i][box_itemtype])
 		{
 			new containerid = GetItemExtraData(itemid);
-			for(new j; j < GetContainerSize(containerid); j++)
+			if(IsValidContainer(containerid))
 			{
-				DestroyItem(GetContainerSlotItem(containerid, j));
+				for(new j; j < GetContainerSize(containerid); j++)
+					DestroyItem(GetContainerSlotItem(containerid, j));
+
+				DestroyContainer(containerid);
+				Iter_Remove(box_Index, itemid);
+
+				break;
 			}
-			DestroyContainer(containerid);
-			Iter_Remove(box_Index, itemid);
-			break;
+			else
+			{
+				break;
+			}
 		}
 	}
 
@@ -401,48 +414,3 @@ public OnPlayerCloseContainer(playerid, containerid)
 #endif
 #define OnPlayerCloseContainer box_OnPlayerCloseContainer
 forward box_OnPlayerCloseContainer(playerid, containerid);
-
-
-AutosaveSafeboxes()
-{
-	new idx;
-
-	foreach(new i : box_Index)
-	{
-		if(!IsItemInWorld(i))
-			continue;
-
-		if(!IsValidContainer(GetItemExtraData(i)))
-			continue;
-
-		if(IsContainerEmpty(GetItemExtraData(i)))
-			continue;
-
-		if(!IsItemTypeSafebox(GetItemType(i)))
-			continue;
-
-		autosave_Block[idx] = i;
-		idx++;
-	}
-	autosave_Max = idx;
-
-	defer Safebox_BlockSave(0);
-}
-
-timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
-{
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
-		return;
-
-	new i;
-
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
-	{
-		SaveSafeboxItem(autosave_Block[i], false);
-	}
-
-	if(index < autosave_Max)
-		defer Safebox_BlockSave(i);
-
-	return;
-}

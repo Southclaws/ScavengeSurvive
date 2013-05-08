@@ -55,15 +55,15 @@ ACMD:reports[1](playerid, params[])
 
 ReportPlayer(name[], reason[], reporter)
 {
-	new tmpQuery[256];
+	new query[256];
 
-	format(tmpQuery, sizeof(tmpQuery), "\
+	format(query, sizeof(query), "\
 		INSERT INTO `Reports`\
 		(`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`)\
 		VALUES('%s', '%s', '%d', '0')",
 		name, db_escape(reason), gettime());
 
-	db_free_result(db_query(gAccounts, tmpQuery));
+	db_free_result(db_query(gAccounts, query));
 
 	if(reporter == -1)
 		MsgAdminsF(1, YELLOW, " >  Server reported %s, reason: %s", name, reason);
@@ -135,7 +135,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == d_ReportList && response)
 	{
 		new
-			tmpQuery[128],
+			query[128],
 			DBResult:result,
 			reason[96],
 			timeval[12],
@@ -145,8 +145,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		strtrim(inputtext);
 	
-		format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
-		result = db_query(gAccounts, tmpQuery);
+		format(query, sizeof(query), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
+		result = db_query(gAccounts, query);
 
 		db_get_field(result, 1, reason, 96);
 		db_get_field(result, 2, timeval, 12);
@@ -167,8 +167,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 		ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, inputtext, message, "Options", "Back");
 
-		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Reports` SET `"#ROW_READ"` = '1' WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
-		result = db_query(gAccounts, tmpQuery);
+		format(query, sizeof(query), "UPDATE `Reports` SET `"#ROW_READ"` = '1' WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", inputtext, report_TimestampIndex[listitem]);
+		result = db_query(gAccounts, query);
 		db_free_result(result);
 
 		report_CurrentItem[playerid] = listitem;
@@ -201,30 +201,30 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				case 1:
 				{
 					new
-						tmpQuery[128];
+						query[128];
 
-					format(tmpQuery, sizeof(tmpQuery), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", report_CurrentName[playerid], report_TimestampIndex[report_CurrentItem[playerid]]);
-					db_free_result(db_query(gAccounts, tmpQuery));
+					format(query, sizeof(query), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", report_CurrentName[playerid], report_TimestampIndex[report_CurrentItem[playerid]]);
+					db_free_result(db_query(gAccounts, query));
 
 					ShowListOfReports(playerid);
 				}
 				case 2:
 				{
 					new
-						tmpQuery[128];
+						query[128];
 
-					format(tmpQuery, sizeof(tmpQuery), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
-					db_free_result(db_query(gAccounts, tmpQuery));
+					format(query, sizeof(query), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
+					db_free_result(db_query(gAccounts, query));
 
 					ShowListOfReports(playerid);
 				}
 				case 3:
 				{
 					new
-						tmpQuery[128];
+						query[128];
 
-					format(tmpQuery, sizeof(tmpQuery), "UPDATE `Reports` SET `"#ROW_READ"` = '0' WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
-					db_free_result(db_query(gAccounts, tmpQuery));
+					format(query, sizeof(query), "UPDATE `Reports` SET `"#ROW_READ"` = '0' WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
+					db_free_result(db_query(gAccounts, query));
 
 					ShowListOfReports(playerid);
 				}

@@ -13,24 +13,23 @@ public OnPlayerConnect(playerid)
 	tick_ServerJoin[playerid] = tickcount();
 
 	new
-		tmpadminlvl,
-		tmpIP[16],
-		tmpByte[4],
-		tmpCountry[32],
-		tmpQuery[128],
-		DBResult:tmpResult;
+		adminlevel,
+		ipstring[16],
+		ipbyte[4],
+		query[128],
+		DBResult:result;
 
-	GetPlayerIp(playerid, tmpIP, 16);
+	GetPlayerIp(playerid, ipstring, 16);
 
-	sscanf(tmpIP, "p<.>a<d>[4]", tmpByte);
-	gPlayerData[playerid][ply_IP] = ((tmpByte[0] << 24) | (tmpByte[1] << 16) | (tmpByte[2] << 8) | tmpByte[3]) ;
+	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
+	gPlayerData[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]) ;
 
-	format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'",
+	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'",
 		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP]);
 
-	tmpResult = db_query(gAccounts, tmpQuery);
+	result = db_query(gAccounts, query);
 
-	if(db_num_rows(tmpResult) > 0)
+	if(db_num_rows(result) > 0)
 	{
 		new
 			str[256],
@@ -40,9 +39,9 @@ public OnPlayerConnect(playerid)
 			reason[64],
 			bannedby[24];
 
-		db_get_field(tmpResult, 2, tmptime, 12);
-		db_get_field(tmpResult, 3, reason, 64);
-		db_get_field(tmpResult, 4, bannedby, 24);
+		db_get_field(result, 2, tmptime, 12);
+		db_get_field(result, 3, reason, 64);
+		db_get_field(result, 4, bannedby, 24);
 		
 		localtime(Time:strval(tmptime), timestamp);
 		strftime(timestampstr, 64, "%A %b %d %Y at %X", timestamp);
@@ -56,12 +55,12 @@ public OnPlayerConnect(playerid)
 
 		defer KickPlayerDelay(playerid);
 
-		db_free_result(tmpResult);
+		db_free_result(result);
 
-		format(tmpQuery, sizeof(tmpQuery), "UPDATE `Bans` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'",
+		format(query, sizeof(query), "UPDATE `Bans` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'",
 			gPlayerData[playerid][ply_IP], strtolower(gPlayerName[playerid]));
 
-		db_free_result(db_query(gAccounts, tmpQuery));
+		db_free_result(db_query(gAccounts, query));
 
 		return 1;
 	}
@@ -70,34 +69,26 @@ public OnPlayerConnect(playerid)
 	{
 		if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
 		{
-			tmpadminlvl = gAdminData[i][admin_Level];
-			if(tmpadminlvl > 3) tmpadminlvl = 3;
+			adminlevel = gAdminData[i][admin_Level];
+			if(adminlevel > 3) adminlevel = 3;
 			break;
 		}
 	}
 
-	format(tmpQuery, sizeof(tmpQuery), "SELECT * FROM `Player` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
-	tmpResult = db_query(gAccounts, tmpQuery);
+	format(query, sizeof(query), "SELECT * FROM `Player` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
+	result = db_query(gAccounts, query);
 
 	ResetVariables(playerid);
 
-	if(gPlayerData[playerid][ply_IP] == 2130706433)
-		tmpCountry = "Localhost";
-
-	else
-		GetPlayerCountry(playerid, tmpCountry);
-
-	if(isnull(tmpCountry))tmpCountry = "Unknown";
-
-	if(db_num_rows(tmpResult) >= 1)
+	if(db_num_rows(result) >= 1)
 	{
 		new
 			tmpField[50],
 			dbIP;
 
-		db_get_field_assoc(tmpResult, #ROW_PASS, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
+		db_get_field_assoc(result, #ROW_PASS, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
 
-		db_get_field_assoc(tmpResult, #ROW_GEND, tmpField, 2);
+		db_get_field_assoc(result, #ROW_GEND, tmpField, 2);
 
 		if(strval(tmpField) == 0)
 		{
@@ -108,10 +99,10 @@ public OnPlayerConnect(playerid)
 			t:bPlayerGameSettings[playerid]<Gender>;
 		}
 
-		db_get_field_assoc(tmpResult, #ROW_IPV4, tmpField, 12);
+		db_get_field_assoc(result, #ROW_IPV4, tmpField, 12);
 		dbIP = strval(tmpField);
 
-		db_get_field_assoc(tmpResult, #ROW_ALIVE, tmpField, 2);
+		db_get_field_assoc(result, #ROW_ALIVE, tmpField, 2);
 
 		if(tmpField[0] == '1')
 			t:bPlayerGameSettings[playerid]<Alive>;
@@ -119,14 +110,14 @@ public OnPlayerConnect(playerid)
 		else
 			f:bPlayerGameSettings[playerid]<Alive>;
 
-		db_get_field_assoc(tmpResult, #ROW_SPAWN, tmpField, 50);
+		db_get_field_assoc(result, #ROW_SPAWN, tmpField, 50);
 		sscanf(tmpField, "ffff",
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ],
 			gPlayerData[playerid][ply_rotZ]);
 
-		db_get_field_assoc(tmpResult, #ROW_ISVIP, tmpField, 2);
+		db_get_field_assoc(result, #ROW_ISVIP, tmpField, 2);
 
 		if(tmpField[0] == '1')
 			t:bPlayerGameSettings[playerid]<IsVip>;
@@ -154,11 +145,11 @@ public OnPlayerConnect(playerid)
 	{
 		Msg(playerid, RED, " >  Server Locked by an admin "#C_WHITE"- Please try again soon.");
 		MsgAdminsF(1, RED, " >  %s attempted to join the server while it was locked.", gPlayerName[playerid]);
-		Kick(playerid);
-		return false;
+		KickPlayer(playerid, "Joining server while locked");
+		return 0;
 	}
 
-	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined [Country: %s]", playerid, playerid, tmpCountry);
+	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 
 	CheckForExtraAccounts(playerid, gPlayerName[playerid]);
 
@@ -168,7 +159,7 @@ public OnPlayerConnect(playerid)
 	Streamer_ToggleIdleUpdate(playerid, true);
 
 
-	db_free_result(tmpResult);
+	db_free_result(result);
 
 	file_Open(SETTINGS_FILE);
 	file_IncVal("Connections", 1);
@@ -183,6 +174,7 @@ public OnPlayerConnect(playerid)
 
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
 
+/*
 	if(Iter_Count(Player) > 10 && gPingLimit != 350)
 	{
 		gPingLimit = 350;
@@ -193,28 +185,22 @@ public OnPlayerConnect(playerid)
 		gPingLimit = 600;
 		MsgAll(YELLOW, " >  Ping limit has been updated to 600 while less than 10 players are online.");
 	}
-
+*/
 	return 1;
-}
-
-timer KickPlayerDelay[100](playerid)
-{
-	Kick(playerid);
 }
 
 public OnPlayerDisconnect(playerid, reason)
 {
+	if(bServerGlobalSettings & Restarting)
+		return 0;
+
 	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))
 	{
-		SavePlayerData(playerid);
-		DestroyItem(GetPlayerItem(playerid));
+		Logout(playerid);
 	}
 
 	ResetVariables(playerid);
 	UnloadPlayerTextDraws(playerid);
-
-	if(bServerGlobalSettings & Restarting)
-		return 0;
 
 	switch(reason)
 	{
@@ -223,9 +209,6 @@ public OnPlayerDisconnect(playerid, reason)
 
 		case 1:
 			MsgAllF(GREY, " >  %p left the server.", playerid);
-
-		case 2:
-			MsgAllF(GREY, " >  %p was kicked.", playerid);
 	}
 
 	return 1;
@@ -240,12 +223,11 @@ ptask PlayerUpdate[100](playerid)
 
 	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 30000)
 	{
-		MsgF(playerid, YELLOW, " >  You have been kicked for having a ping of %d which is over the limit of %d.", GetPlayerPing(playerid), gPingLimit);
-		defer KickPlayerDelay(playerid);
+		new str[128];
+		format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
+		KickPlayer(playerid, str);
 		return;
 	}
-
-	ResetPlayerMoney(playerid);
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -396,6 +378,7 @@ public OnPlayerRequestClass(playerid, classid)
 
 	return 0;
 }
+
 public OnPlayerRequestSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))return 1;
@@ -413,6 +396,7 @@ public OnPlayerSpawn(playerid)
 		return 1;
 
 	SetPlayerWeather(playerid, gWeatherID);
+	SetPlayerTeam(playerid, 0);
 
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 	{
@@ -441,7 +425,8 @@ public OnPlayerSpawn(playerid)
 	}
 	else
 	{
-		PlayerTextDrawBoxColor(playerid, ClassBackGround, 255);
+		gScreenBoxFadeLevel[playerid] = 0;
+		PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
 		PlayerTextDrawShow(playerid, ClassBackGround);
 
 		if(bPlayerGameSettings[playerid] & Alive)

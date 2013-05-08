@@ -62,20 +62,23 @@ public OnHoldActionFinish(playerid)
 {
 	if(tnt_CurrentTentItem[playerid] != INVALID_ITEM_ID)
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:rz;
+		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				Float:rz;
 
-		GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
-		GetItemRot(tnt_CurrentTentItem[playerid], rz, rz, rz);
+			GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
+			GetItemRot(tnt_CurrentTentItem[playerid], rz, rz, rz);
 
-		CreateTent(x, y, z + 0.4, rz);
-		DestroyItem(tnt_CurrentTentItem[playerid]);
-		ClearAnimations(playerid);
+			CreateTent(x, y, z + 0.4, rz);
+			DestroyItem(tnt_CurrentTentItem[playerid]);
+			ClearAnimations(playerid);
 
-		tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
+			tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
+		}
 	}
 
 	return CallLocalFunction("tnt1_OnHoldActionFinish", "d", playerid);

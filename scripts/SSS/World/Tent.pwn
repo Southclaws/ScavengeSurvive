@@ -44,6 +44,12 @@ static
 			tnt_CurrentTentID[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+}
+
+
 stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(tnt_Index);
@@ -191,17 +197,20 @@ public OnHoldActionFinish(playerid)
 {
 	if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
 	{
-		CreateItem(item_TentPack,
-			tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
-			tnt_Data[tnt_CurrentTentID[playerid]][tnt_posY],
-			tnt_Data[tnt_CurrentTentID[playerid]][tnt_posZ] - 0.4,
-			.rz = tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
-			.zoffset = FLOOR_OFFSET);
+		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+		{
+			CreateItem(item_TentPack,
+				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
+				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posY],
+				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posZ] - 0.4,
+				.rz = tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
+				.zoffset = FLOOR_OFFSET);
 
-		DestroyTent(tnt_CurrentTentID[playerid]);
-		ClearAnimations(playerid);
+			DestroyTent(tnt_CurrentTentID[playerid]);
+			ClearAnimations(playerid);
 
-		tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+		}
 	}
 
 	return CallLocalFunction("tnt2_OnHoldActionFinish", "d", playerid);
@@ -322,9 +331,6 @@ hook OnGameModeExit()
 
 				if(Distance(tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], x, y, z) < 2.0)
 				{
-					if(idx > sizeof(data))
-						break;
-
 					data[idx + TENT_CELL_ITEMTYPE] = _:itemtype;
 					data[idx + TENT_CELL_EXDATA] = exdata;
 					data[idx + TENT_CELL_POSX] = _:x;
@@ -333,6 +339,9 @@ hook OnGameModeExit()
 					data[idx + TENT_CELL_ROTZ] = _:r;
 
 					idx += TENT_CELL_END;
+
+					if(idx >= sizeof(data))
+						break;
 				}
 			}
 			fblockwrite(file, data);

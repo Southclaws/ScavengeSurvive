@@ -214,19 +214,25 @@ CMD:acmds(playerid, params[])
 	return 1;
 }
 
+KickPlayer(playerid, reason[])
+{
+	MsgAllF(GREY, " >  %P kicked, reason: "#C_BLUE"%s", playerid, reason);
+	defer KickPlayerDelay(playerid);
+}
+
 BanPlayer(playerid, reason[], byid)
 {
-	new tmpQuery[256];
+	new query[256];
 
-	format(tmpQuery, sizeof(tmpQuery), "\
+	format(query, sizeof(query), "\
 		INSERT INTO `Bans`\
 		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
 		VALUES('%s', '%d', '%d', '%s', '%p')",
 		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP], gettime(), reason, byid);
 
-	db_free_result(db_query(gAccounts, tmpQuery));
+	db_free_result(db_query(gAccounts, query));
 
-	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
+	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"Reason: "#C_BLUE"%s", reason);
 	defer KickPlayerDelay(playerid);
 }
 
@@ -237,7 +243,7 @@ BanPlayerByName(name[], reason[], byid = -1)
 		ip,
 		by[24],
 		bool:online,
-		tmpQuery[256];
+		query[256];
 
 	if(byid == -1)
 		by = "Server";
@@ -255,19 +261,24 @@ BanPlayerByName(name[], reason[], byid = -1)
 		}
 	}
 
-	format(tmpQuery, sizeof(tmpQuery), "\
+	format(query, sizeof(query), "\
 		INSERT INTO `Bans`\
 		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
 		VALUES('%s', '%d', '%d', '%s', '%s')",
 		strtolower(name), ip, gettime(), reason, by);
 
-	db_free_result(db_query(gAccounts, tmpQuery));
+	db_free_result(db_query(gAccounts, query));
 
 	if(online)
 	{
 		MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
 		defer KickPlayerDelay(id);
 	}
+}
+
+timer KickPlayerDelay[100](playerid)
+{
+	Kick(playerid);
 }
 
 forward external_BanPlayer(name[], reason[]);

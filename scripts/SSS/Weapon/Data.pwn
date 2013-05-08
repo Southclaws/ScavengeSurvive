@@ -18,14 +18,14 @@ enum
 new AmmoTypeName[MAX_AMMO_TYPE][MAX_AMMO_TYPE_NAME]=
 {
 	"None",
-	"9mm",
-	".50",
-	"Buckshot",
-	"5.56",
-	".308",
-	"Rocket",
-	"Fuel",
-	"5mm"
+	"9mm",		// 2037
+	".50",		// 2037
+	"Buckshot",	// 2038
+	"5.56",		// 2040
+	".308",		// 2039
+	"Rocket",	// 2061
+	"Fuel",		// item_GasCan
+	"5mm"		// 3016
 };
 
 stock GetAmmoTypeName(ammotype, name[])

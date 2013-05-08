@@ -310,7 +310,6 @@ District_Farms()
 	CreateLootSpawn(-1058.154052, -1195.552490, 128.163452,	3, 30, loot_Industrial);
 	CreateLootSpawn(-366.704284, -1420.110839, 28.636390,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1108.527832, -1621.807861, 75.379409,	3, 30, loot_Survivor);
-	CreateLootSpawn(-362.127227, -1060.984008, 58.241569,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1113.576782, -1635.856323, 75.382713,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1084.973999, -1621.516479, 75.376350,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1435.873168, -1574.493530, 104.122497,	3, 30, loot_Survivor);
@@ -324,6 +323,8 @@ District_Farms()
 	CreateLootSpawn(-1439.449096, -1575.944458, 100.755867,	3, 30, loot_CarIndustrial);
 	CreateLootSpawn(-1172.178344, -1138.864746, 128.208404,	3, 30, loot_CarIndustrial);
 	CreateLootSpawn(-1423.444946, -1500.048461, 100.668792,	3, 30, loot_CarIndustrial);
+
+	CreateHackerTrap(-362.127227, -1060.984008, 58.241569,	3, 30, loot_Survivor);
 }
 District_EasterChem()
 {
@@ -426,18 +427,7 @@ District_EasterChem()
 	CreateLootSpawn(-1066.117187, -607.453735, 43.203941,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1107.432617, -696.394653, 55.328479,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1062.294189, -696.081542, 55.329341,	3, 30, loot_Survivor);
-	CreateLootSpawn(-576.137084, -1484.566040, 13.333109,	3, 30, loot_Survivor);
-	CreateLootSpawn(-957.291442, -972.272766, 129.660018,	3, 30, loot_Survivor);
-	CreateLootSpawn(-967.204162, -968.669494, 129.710342,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1054.786010, -603.592224, 95.747810,	3, 30, loot_Survivor);
-	CreateLootSpawn(-362.127227, -1060.984008, 58.241569,	3, 30, loot_Survivor);
-	CreateLootSpawn(-366.704284, -1420.110839, 28.636390,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1113.576782, -1635.856323, 75.382713,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1084.973999, -1621.516479, 75.376350,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1108.527832, -1621.807861, 75.379409,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1420.233520, -1480.234741, 104.028648,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1435.873168, -1574.493530, 104.122497,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1447.719116, -1578.769531, 104.120742,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1054.732666, -606.378906, 91.912322,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1038.810546, -699.887695, 63.518711,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1038.837158, -706.721740, 63.517200,	3, 30, loot_Survivor);
@@ -451,11 +441,6 @@ District_EasterChem()
 	CreateLootSpawn(-1056.549194, -601.297363, 91.912406,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1054.842041, -620.321838, 128.858871,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1058.432495, -696.342041, 66.116462,	3, 30, loot_Survivor);
-	CreateLootSpawn(-1423.444946, -1500.048461, 100.668792,	3, 30, loot_CarIndustrial);
-	CreateLootSpawn(-1172.178344, -1138.864746, 128.208404,	3, 30, loot_CarIndustrial);
-	CreateLootSpawn(-1439.449096, -1575.944458, 100.755867,	3, 30, loot_CarIndustrial);
-	CreateLootSpawn(-1113.154907, -1619.511108, 75.379676,	3, 30, loot_CarIndustrial);
-	CreateLootSpawn(-1453.311035, -1578.309692, 100.755798,	3, 30, loot_CarIndustrial);
 }
 District_FallenTree()
 {

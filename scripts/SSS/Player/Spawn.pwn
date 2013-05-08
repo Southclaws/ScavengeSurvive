@@ -33,6 +33,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);
+	t:bPlayerGameSettings[playerid]<LoadedData>;
 
 	if(gPlayerWarnings[playerid] > 0)
 	{
@@ -73,9 +74,13 @@ PlayerCreateNewCharacter(playerid)
 	SetPlayerCameraPos(playerid, -907.4642, 277.0962, 1014.1492);
 	Streamer_UpdateEx(playerid, -907.5452, 272.7235, 1014.1449);
 
+	PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
+	PlayerTextDrawShow(playerid, ClassBackGround);
 	PlayerTextDrawShow(playerid, ClassButtonMale);
 	PlayerTextDrawShow(playerid, ClassButtonFemale);
 	SelectTextDraw(playerid, 0xFFFFFF88);
+
+	t:bPlayerGameSettings[playerid]<LoadedData>;
 }
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)

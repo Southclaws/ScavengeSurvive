@@ -8,11 +8,12 @@
 static
 	rad_InventoryItem[MAX_PLAYERS],
 	rad_ViewingRadio[MAX_PLAYERS],
+	rad_OldMode[MAX_PLAYERS],
 	PlayerText:RadioUI_Main,
 	PlayerText:RadioUI_Strip,
 	PlayerText:RadioUI_KnobL,
 	PlayerText:RadioUI_KnobR,
-	PlayerText:RadioUI_Glob,
+	PlayerText:RadioUI_Mode,
 	PlayerText:RadioUI_Freq,
 	PlayerText:RadioUI_Power,
 	PlayerText:RadioUI_Back;
@@ -24,7 +25,7 @@ ShowRadioUI(playerid)
 	PlayerTextDrawShow(playerid, RadioUI_Strip);
 	PlayerTextDrawShow(playerid, RadioUI_KnobL);
 	PlayerTextDrawShow(playerid, RadioUI_KnobR);
-	PlayerTextDrawShow(playerid, RadioUI_Glob);
+	PlayerTextDrawShow(playerid, RadioUI_Mode);
 	PlayerTextDrawShow(playerid, RadioUI_Freq);
 	PlayerTextDrawShow(playerid, RadioUI_Power);
 	PlayerTextDrawShow(playerid, RadioUI_Back);
@@ -41,12 +42,16 @@ HideRadioUI(playerid)
 	PlayerTextDrawHide(playerid, RadioUI_Strip);
 	PlayerTextDrawHide(playerid, RadioUI_KnobL);
 	PlayerTextDrawHide(playerid, RadioUI_KnobR);
-	PlayerTextDrawHide(playerid, RadioUI_Glob);
+	PlayerTextDrawHide(playerid, RadioUI_Mode);
 	PlayerTextDrawHide(playerid, RadioUI_Freq);
 	PlayerTextDrawHide(playerid, RadioUI_Power);
 	PlayerTextDrawHide(playerid, RadioUI_Back);
 
-	DisplayPlayerInventory(playerid);
+	if(!IsPlayerInAnyVehicle(playerid))
+		DisplayPlayerInventory(playerid);
+
+	else
+		CancelSelectTextDraw(playerid);
 
 	rad_ViewingRadio[playerid] = false;
 }
@@ -55,21 +60,38 @@ UpdateRadioUI(playerid)
 {
 	new str[18];
 
-	if(gPlayerFrequency[playerid] == 0.0)
-		PlayerTextDrawSetString(playerid, RadioUI_Power, "off");
-
-	else
-		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
-
 	format(str, 18, "Frequency: %.2f", gPlayerFrequency[playerid]);
 	PlayerTextDrawSetString(playerid, RadioUI_Freq, str);
+
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+	{
+		PlayerTextDrawSetString(playerid, RadioUI_Power, "off");
+
+		if(rad_OldMode[playerid] == CHAT_MODE_GLOBAL)
+			PlayerTextDrawSetString(playerid, RadioUI_Mode, "global");
+
+		else
+			PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
+	}
+
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
+	{
+		PlayerTextDrawSetString(playerid, RadioUI_Mode, "global");
+		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
+	}
+
+	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
+	{
+		PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
+		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
+	}
 }
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 {
 	if(clickedid == RadioUI_KnobL)
 	{
-		gPlayerFrequency[playerid] += 0.5;
+		gPlayerFrequency[playerid] -= 0.5;
 
 		if(gPlayerFrequency[playerid] > MAX_RADIO_FREQ)
 			gPlayerFrequency[playerid] = MIN_RADIO_FREQ;
@@ -78,16 +100,21 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_KnobR)
 	{
-		gPlayerFrequency[playerid] -= 0.5;
+		gPlayerFrequency[playerid] += 0.5;
 
 		if(gPlayerFrequency[playerid] < MIN_RADIO_FREQ)
 			gPlayerFrequency[playerid] = MAX_RADIO_FREQ;
 
 		UpdateRadioUI(playerid);
 	}
-	if(clickedid == RadioUI_Glob)
+	if(clickedid == RadioUI_Mode)
 	{
-		gPlayerFrequency[playerid] = 108.0;
+		if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
+			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+
+		else if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
+			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
+
 		UpdateRadioUI(playerid);
 	}
 	if(clickedid == RadioUI_Freq)
@@ -96,7 +123,20 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_Power)
 	{
-		gPlayerFrequency[playerid] = 0.0;
+		if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+		{
+			if(rad_OldMode[playerid] == CHAT_MODE_GLOBAL)
+				Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
+
+			else
+				Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+		}
+		else
+		{
+			rad_OldMode[playerid] = Bit2_Get(gPlayerChatMode, playerid);
+			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_LOCAL);
+		}
+
 		UpdateRadioUI(playerid);
 	}
 	if(clickedid == RadioUI_Back)
@@ -219,19 +259,19 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawTextSize			(playerid, RadioUI_KnobR, 30.000000, 30.000000);
 	PlayerTextDrawSetSelectable		(playerid, RadioUI_KnobR, true);
 
-	RadioUI_Glob					= CreatePlayerTextDraw(playerid, 238.000000, 251.000000, "global");
-	PlayerTextDrawAlignment			(playerid, RadioUI_Glob, 2);
-	PlayerTextDrawBackgroundColor	(playerid, RadioUI_Glob, 255);
-	PlayerTextDrawFont				(playerid, RadioUI_Glob, 1);
-	PlayerTextDrawLetterSize		(playerid, RadioUI_Glob, 0.300000, 1.499999);
-	PlayerTextDrawColor				(playerid, RadioUI_Glob, 16777215);
-	PlayerTextDrawSetOutline		(playerid, RadioUI_Glob, 0);
-	PlayerTextDrawSetProportional	(playerid, RadioUI_Glob, 1);
-	PlayerTextDrawSetShadow			(playerid, RadioUI_Glob, 1);
-	PlayerTextDrawUseBox			(playerid, RadioUI_Glob, 1);
-	PlayerTextDrawBoxColor			(playerid, RadioUI_Glob, 255);
-	PlayerTextDrawTextSize			(playerid, RadioUI_Glob, 20.000000, 30.000000);
-	PlayerTextDrawSetSelectable		(playerid, RadioUI_Glob, true);
+	RadioUI_Mode					= CreatePlayerTextDraw(playerid, 238.000000, 251.000000, "global");
+	PlayerTextDrawAlignment			(playerid, RadioUI_Mode, 2);
+	PlayerTextDrawBackgroundColor	(playerid, RadioUI_Mode, 255);
+	PlayerTextDrawFont				(playerid, RadioUI_Mode, 1);
+	PlayerTextDrawLetterSize		(playerid, RadioUI_Mode, 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, RadioUI_Mode, 16777215);
+	PlayerTextDrawSetOutline		(playerid, RadioUI_Mode, 0);
+	PlayerTextDrawSetProportional	(playerid, RadioUI_Mode, 1);
+	PlayerTextDrawSetShadow			(playerid, RadioUI_Mode, 1);
+	PlayerTextDrawUseBox			(playerid, RadioUI_Mode, 1);
+	PlayerTextDrawBoxColor			(playerid, RadioUI_Mode, 255);
+	PlayerTextDrawTextSize			(playerid, RadioUI_Mode, 20.000000, 30.000000);
+	PlayerTextDrawSetSelectable		(playerid, RadioUI_Mode, true);
 
 	RadioUI_Freq					= CreatePlayerTextDraw(playerid, 320.000000, 251.000000, "Frequency: 00.00");
 	PlayerTextDrawAlignment			(playerid, RadioUI_Freq, 2);
@@ -261,7 +301,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawTextSize			(playerid, RadioUI_Power, 20.000000, 30.000000);
 	PlayerTextDrawSetSelectable		(playerid, RadioUI_Power, true);
 
-	RadioUI_Back					= CreatePlayerTextDraw(playerid, 320.000000, 274.000000, "Back to inventory");
+	RadioUI_Back					= CreatePlayerTextDraw(playerid, 320.000000, 274.000000, "Close");
 	PlayerTextDrawAlignment			(playerid, RadioUI_Back, 2);
 	PlayerTextDrawBackgroundColor	(playerid, RadioUI_Back, 255);
 	PlayerTextDrawFont				(playerid, RadioUI_Back, 1);
@@ -284,7 +324,7 @@ hook OnPlayerDisconnect(playerid)
 	PlayerTextDrawDestroy(playerid, RadioUI_Strip);
 	PlayerTextDrawDestroy(playerid, RadioUI_KnobL);
 	PlayerTextDrawDestroy(playerid, RadioUI_KnobR);
-	PlayerTextDrawDestroy(playerid, RadioUI_Glob);
+	PlayerTextDrawDestroy(playerid, RadioUI_Mode);
 	PlayerTextDrawDestroy(playerid, RadioUI_Freq);
 	PlayerTextDrawDestroy(playerid, RadioUI_Power);
 	PlayerTextDrawDestroy(playerid, RadioUI_Back);

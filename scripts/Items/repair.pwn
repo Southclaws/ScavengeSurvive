@@ -16,7 +16,7 @@ StartRepairingVehicle(playerid, vehicleid)
 {
 	GetVehicleHealth(vehicleid, fix_Progress[playerid]);
 
-	if(fix_Progress[playerid] >= 1000.0)
+	if(fix_Progress[playerid] >= 990.0)
 	{
 		return 0;
 	}
@@ -35,9 +35,9 @@ StopRepairingVehicle(playerid)
 	if(fix_TargetVehicle[playerid] == INVALID_VEHICLE_ID)
 		return 0;
 
-	if(fix_Progress[playerid] > 1000.0)
+	if(fix_Progress[playerid] > 990.0)
 	{
-		SetVehicleHealth(fix_TargetVehicle[playerid], 1000.0);
+		SetVehicleHealth(fix_TargetVehicle[playerid], 990.0);
 	}
 
 	VehicleBonnetState(fix_TargetVehicle[playerid], 0);
@@ -51,41 +51,44 @@ StopRepairingVehicle(playerid)
 
 public OnHoldActionUpdate(playerid, progress)
 {
-	if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
+	if(fix_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		StopRepairingVehicle(playerid);
-		return 1;
-	}
+		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
+		{
+			StopRepairingVehicle(playerid);
+			return 1;
+		}
 
-	if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
-	{
-		if(!(250.0 <= fix_Progress[playerid] <= 450.0) && !(800.0 <= fix_Progress[playerid] <= 1000.0))
+		if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 		{
-			StopRepairingVehicle(playerid);
-			return 1;
+			if(!(250.0 <= fix_Progress[playerid] <= 450.0) && !(750.0 <= fix_Progress[playerid] <= 990.0))
+			{
+				StopRepairingVehicle(playerid);
+				return 1;
+			}
 		}
-	}
-	if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
-	{
-		if(!(450.0 <= fix_Progress[playerid] <= 650.0))
+		if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
 		{
-			StopRepairingVehicle(playerid);
-			return 1;
+			if(!(450.0 <= fix_Progress[playerid] <= 600.0))
+			{
+				StopRepairingVehicle(playerid);
+				return 1;
+			}
 		}
-	}
-	if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
-	{
-		if(!(650.0 <= fix_Progress[playerid] <= 800.0))
+		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 		{
-			StopRepairingVehicle(playerid);
-			return 1;
+			if(!(600.0 <= fix_Progress[playerid] <= 750.0))
+			{
+				StopRepairingVehicle(playerid);
+				return 1;
+			}
 		}
-	}
 
-	fix_Progress[playerid] += 2.0;
-	
-	SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
-	SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);
+		fix_Progress[playerid] += 2.0;
+		
+		SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
+		SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);
+	}
 
 	return CallLocalFunction("rep_OnHoldActionUpdate", "dd", playerid, progress);
 }

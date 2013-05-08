@@ -29,7 +29,7 @@ stock TagScan(chat[], colour = WHITE)
 
 	strcpy(text, chat, 256);
 	length = strlen(chat);
-	
+
 	while(a < (length - 1) && tags < 3)
 	{
 		if(text[a]=='@')

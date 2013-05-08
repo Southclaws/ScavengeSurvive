@@ -72,6 +72,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 		{
 			deathreason = "They died of air embolism (injecting oxygen into their bloodstream).";
+			RemoveDrug(playerid, DRUG_TYPE_AIR);
 		}
 		else
 		{
@@ -94,14 +95,13 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	CreateGravestone(playerid, deathreason, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, gPlayerDeathPos[playerid][3]);
 
-	RemoveDrug(playerid, DRUG_TYPE_AIR);
-
 	return 1;
 }
 
 DropItems(playerid)
 {
 	new
+		interior = GetPlayerInterior(playerid),
 		backpackitem = GetPlayerBackpackItem(playerid),
 		itemid,
 		clothes = GetPlayerClothes(playerid);
@@ -111,30 +111,37 @@ DropItems(playerid)
 		itemid = CreateItemInWorld(GetPlayerItem(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
 		RemoveCurrentItem(playerid);
 	}
-	else if(GetPlayerWeapon(playerid) > 0 && GetPlayerAmmo(playerid) > 0)
+	else if(GetPlayerWeapon(playerid) > 0 && GetPlayerTotalAmmo(playerid) > 0)
 	{
 		itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
-		SetItemExtraData(itemid, GetPlayerAmmo(playerid));
+		SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
 	}
 
-	if(GetPlayerHolsteredWeapon(playerid) > 0 && GetPlayerHolsteredWeaponAmmo(playerid) > 0)
+	if(IsValidItem(GetPlayerHolsterItem(playerid)))
 	{
-		itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid),
+		CreateItemInWorld(GetPlayerHolsterItem(playerid),
 			gPlayerDeathPos[playerid][0] + floatsin(15.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(15.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
-		SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
-
-		RemovePlayerHolsterWeapon(playerid);
+		RemovePlayerHolsterItem(playerid);
 	}
 
 	for(new i; i < INV_MAX_SLOTS; i++)
@@ -148,19 +155,25 @@ DropItems(playerid)
 		CreateItemInWorld(itemid,
 			gPlayerDeathPos[playerid][0] + floatsin(45.0 + (90.0 * float(i)), degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(45.0 + (90.0 * float(i)), degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 	}
 
 	if(IsValidItem(backpackitem))
 	{
 		RemovePlayerBackpack(playerid);
 
-		SetItemPos(backpackitem,
+		CreateItemInWorld(backpackitem,
 			gPlayerDeathPos[playerid][0] + floatsin(180.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(180.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
-		SetItemRot(backpackitem, 0.0, 0.0, 0.0, true);
+		SetItemRot(backpackitem, 0.0, 0.0, gPlayerDeathPos[playerid][3], true);
 	}
 
 	if(clothes != skin_MainM && clothes != skin_MainF)
@@ -168,7 +181,10 @@ DropItems(playerid)
 		itemid = CreateItem(item_Clothes,
 			gPlayerDeathPos[playerid][0] + floatsin(90.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(90.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
 		SetItemExtraData(itemid, clothes);
 	}
@@ -178,7 +194,10 @@ DropItems(playerid)
 		CreateItem(GetItemTypeFromHat(GetPlayerHat(playerid)),
 			gPlayerDeathPos[playerid][0] + floatsin(270.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(270.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 
 		RemovePlayerHat(playerid);
 	}
@@ -188,6 +207,9 @@ DropItems(playerid)
 		CreateItem(item_HandCuffs,
 			gPlayerDeathPos[playerid][0] + floatsin(135.0, degrees),
 			gPlayerDeathPos[playerid][1] + floatcos(135.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, .zoffset = ITEM_BTN_OFFSET_Z);
+			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
+			.rz = gPlayerDeathPos[playerid][3],
+			.zoffset = ITEM_BTN_OFFSET_Z,
+			.interior = interior);
 	}
 }

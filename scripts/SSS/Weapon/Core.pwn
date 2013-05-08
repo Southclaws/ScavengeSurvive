@@ -2,10 +2,8 @@
 
 
 new
-		wep_HolsterData[MAX_PLAYERS][2],
 		wep_CurrentWeapon[MAX_PLAYERS],
 		wep_ReserveAmmo[MAX_PLAYERS],
-		tick_LastHolstered[MAX_PLAYERS],
 		tick_LastReload[MAX_PLAYERS];
 
 
@@ -19,8 +17,7 @@ hook OnGameModeInit()
 {
 	new
 		size,
-		name[32],
-		ItemType:itemtype;
+		name[32];
 
 	DefineItemType("NULL", 0, ITEM_SIZE_SMALL);
 
@@ -41,17 +38,15 @@ hook OnGameModeInit()
 			default: size = ITEM_SIZE_LARGE;
 		}
 
-		itemtype = DefineItemType(name, GetWeaponModel(i), size, .rotx = 90.0);
-		DefineItemCombo(itemtype, itemtype, itemtype);
+		DefineItemType(name, GetWeaponModel(i), size, .rotx = 90.0);
 	}
 	print("Loaded weapon item data");
 	return 1;
 }
 hook OnPlayerConnect(playerid)
 {
-	wep_HolsterData[playerid][0] = 0;
-	wep_HolsterData[playerid][1] = 0;
-	return 1;
+	wep_CurrentWeapon[playerid] = 0;
+	wep_ReserveAmmo[playerid] = 0;
 }
 hook OnPlayerDeath(playerid, killerid, reason)
 {
@@ -76,9 +71,6 @@ SetPlayerWeapon(playerid, weaponid, ammo)
 				wep_ReserveAmmo[playerid] += ammo - GetWeaponMagSize(weaponid);
 
 			ammo = GetWeaponMagSize(weaponid);
-		}
-		else
-		{
 		}
 
 		UpdateWeaponUI(playerid);
@@ -116,45 +108,12 @@ GivePlayerAmmo(playerid, amount)
 	}
 }
 
-SetPlayerHolsterWeapon(playerid, weaponid, ammo)
-{
-	switch(weaponid)
-	{
-		case 2, 3, 5, 6, 7, 8, 15:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 1.000000, 1.000000, 1.000000);
-
-		case 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 1.000000, 1.000000, 1.000000 ); // tec9 - small
-
-		case 25, 27, 29, 30, 31, 33, 34:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 1.000000, 1.000000, 1.000000 ); // ak47 - ak
-
-		case 35, 36:
-			SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetWeaponModel(weaponid), 1, 0.181966, -0.238397, -0.094830, 252.791229, 353.893859, 357.529418, 1.000000, 1.000000, 1.000000 ); // rocketla - rpg
-
-		default: return 0;
-	}
-
-	wep_HolsterData[playerid][0] = weaponid;
-	wep_HolsterData[playerid][1] = ammo;
-
-	return 1;
-}
-
 stock GetPlayerCurrentWeapon(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return wep_CurrentWeapon[playerid];
-}
-
-stock GetPlayerHolsteredWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_HolsterData[playerid][0];
 }
 
 stock GetPlayerTotalAmmo(playerid)
@@ -181,19 +140,6 @@ stock GetPlayerReserveAmmo(playerid)
 	return wep_ReserveAmmo[playerid];
 }
 
-stock GetPlayerHolsteredWeaponAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return wep_HolsterData[playerid][1];
-}
-
-stock GetPlayerWeaponSwapTick(playerid)
-{
-	return tick_LastHolstered[playerid];
-}
-
 stock RemovePlayerWeapon(playerid)
 {
 	if(!IsPlayerConnected(playerid))
@@ -202,18 +148,6 @@ stock RemovePlayerWeapon(playerid)
 	ResetPlayerWeapons(playerid);
 	wep_CurrentWeapon[playerid] = 0;
 	wep_ReserveAmmo[playerid] = 0;
-
-	return 1;
-}
-
-stock RemovePlayerHolsterWeapon(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER);
-	wep_HolsterData[playerid][0] = 0;
-	wep_HolsterData[playerid][1] = 0;
 
 	return 1;
 }
@@ -419,6 +353,9 @@ ConvertPlayerWeaponToItem(playerid)
 	GiveWorldItemToPlayer(playerid, itemid);
 	SetItemExtraData(itemid, ammo);
 
+	wep_CurrentWeapon[playerid] = 0;
+	wep_ReserveAmmo[playerid] = 0;
+
 	return 1;
 }
 
@@ -476,41 +413,34 @@ public OnPlayerPickUpItem(playerid, itemid)
 #define OnPlayerPickUpItem wep_OnPlayerPickUpItem
 forward wep_OnPlayerPickUpItem(playerid, itemid);
 
-public OnPlayerGivenItem(playerid, targetid, itemid)
+public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(wep_CurrentWeapon[targetid] != 0)
-		return 1;
+	new
+		ItemType:itemtype,
+		ItemType:withitemtype;
 
-	new ItemType:type = GetItemType(itemid);
+	itemtype = GetItemType(itemid);
+	withitemtype = GetItemType(withitemid);
 
-	if(0 < _:type < WEAPON_PARACHUTE)
+	if(0 < _:itemtype < WEAPON_PARACHUTE)
 	{
-		new ammo = GetItemExtraData(itemid);
-
-		if(ammo > 0)
+		if(itemtype == withitemtype)
 		{
-			SetPlayerWeapon(targetid, _:type, ammo);
-			DestroyItem(itemid);
-			wep_CurrentWeapon[targetid] = _:type;
+			PlayerPickUpWeapon(playerid, withitemid);
 			return 1;
 		}
-		else if(GetWeaponSlot(_:type) == 0)
-		{
-			SetPlayerWeapon(playerid, _:type, 1);
-			DestroyItem(itemid);
-			wep_CurrentWeapon[playerid] = _:type;
-		}
-		else return 0;
 	}
-	return CallLocalFunction("wep_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
+
+	return CallLocalFunction("wep_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
-#if defined _ALS_OnPlayerGivenItem
-	#undef OnPlayerGivenItem
+#if defined _ALS_OnPlayerUseItemWithItem
+	#undef OnPlayerUseItemWithItem
 #else
-	#define _ALS_OnPlayerGivenItem
+	#define _ALS_OnPlayerUseItemWithItem
 #endif
-#define OnPlayerGivenItem wep_OnPlayerGivenItem
-forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
+#define OnPlayerUseItemWithItem wep_OnPlayerUseItemWithItem
+forward wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+
 
 public OnPlayerRemoveFromInventory(playerid, slotid)
 {
@@ -539,17 +469,20 @@ forward OnPlayerRemoveFromInventory(playerid, slotid);
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetContainerSlotItem(containerid, slotid);
-	itemtype = GetItemType(itemid);
-
-	if(0 < _:itemtype < WEAPON_PARACHUTE)
+	if(IsPlayerConnected(playerid))
 	{
-		SetPlayerWeapon(playerid, _:itemtype, GetItemExtraData(itemid));
-		DestroyItem(itemid);
+		new
+			itemid,
+			ItemType:itemtype;
+
+		itemid = GetContainerSlotItem(containerid, slotid);
+		itemtype = GetItemType(itemid);
+
+		if(0 < _:itemtype < WEAPON_PARACHUTE)
+		{
+			SetPlayerWeapon(playerid, _:itemtype, GetItemExtraData(itemid));
+			DestroyItem(itemid);
+		}
 	}
 
 	return CallLocalFunction("wep_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
@@ -589,7 +522,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]))
 				{
-					if(tickcount() - tick_LastHolstered[i] < 1000)
+					if(tickcount() - GetPlayerWeaponSwapTick(i) < 1000)
 						continue;
 
 					if(GetPlayerWeapon(i) != 0)
@@ -612,120 +545,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			PlayerDropWeapon(playerid);
 		}
 	}
-	if(newkeys & KEY_YES)
-	{
-		if(tickcount() - tick_LastHolstered[playerid] < 1000)
-			return 1;
-
-		if(IsValidItem(GetPlayerItem(playerid)))
-			return 1;
-
-		if(0 < wep_CurrentWeapon[playerid] < WEAPON_PARACHUTE)
-		{
-			new ammo = GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
-
-			switch(wep_CurrentWeapon[playerid])
-			{
-				case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-				{
-					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(wep_CurrentWeapon[playerid]), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-					ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
-					defer HolsterWeaponDelay(playerid, wep_CurrentWeapon[playerid], ammo, 300);
-					tick_LastHolstered[playerid] = tickcount();
-				}
-				case 25, 27, 29, 30, 31, 33, 34, 35, 36:
-				{
-					SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLD, GetWeaponModel(wep_CurrentWeapon[playerid]), 6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
-					ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
-					defer HolsterWeaponDelay(playerid, wep_CurrentWeapon[playerid], ammo, 800);
-					tick_LastHolstered[playerid] = tickcount();
-				}
-				default:
-				{
-					ShowMsgBox(playerid, "Weapon too big", 3000, 120);
-					return 0;
-				}
-			}
-		}
-		else if(wep_CurrentWeapon[playerid] == 0)
-		{
-			if(wep_CurrentWeapon[playerid] == 0)
-			{
-				if(wep_HolsterData[playerid][0] != 0)
-				{
-					switch(wep_HolsterData[playerid][0])
-					{
-						case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-						{
-							ApplyAnimation(playerid, "PED", "PHONE_IN", 1.7, 0, 0, 0, 0, 700);
-							defer UnholsterWeaponDelay(playerid, 300);
-							tick_LastHolstered[playerid] = tickcount();
-						}
-						case 25, 27, 29, 30, 31, 33, 34, 35, 36:
-						{
-							ApplyAnimation(playerid, "GOGGLES", "GOGGLES_PUT_ON", 1.7, 0, 0, 0, 0, 0);
-							defer UnholsterWeaponDelay(playerid, 800);
-							tick_LastHolstered[playerid] = tickcount();
-						}
-					}
-				}
-			}
-		}
-	}
-	return 1;
-}
-
-timer HolsterWeaponDelay[time](playerid, weaponid, ammo, time)
-{
-	#pragma unused time
-	HolsterWeapon(playerid, weaponid, ammo);
-}
-
-timer UnholsterWeaponDelay[time](playerid, time)
-{
-	#pragma unused time
-	UnholsterWeapon(playerid);
-}
-
-
-HolsterWeapon(playerid, weaponid, ammo)
-{
-	if(wep_CurrentWeapon[playerid] == 0)
-		return 1;
-
-	new
-		curweap = wep_HolsterData[playerid][0],
-		curammo = wep_HolsterData[playerid][1];
-
-	SetPlayerHolsterWeapon(playerid, weaponid, ammo);
-	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLD);
-	ClearAnimations(playerid);
-	RemovePlayerWeapon(playerid);
-
-	if(curweap == 0)
-	{
-		ShowMsgBox(playerid, "Weapon Holstered", 3000, 120);
-	}
-	else
-	{
-		SetPlayerWeapon(playerid, curweap, curammo);
-		ShowMsgBox(playerid, "Weapon Swapped", 3000, 110);
-	}
-
-	return 1;
-}
-
-UnholsterWeapon(playerid)
-{
-	SetPlayerWeapon(playerid, wep_HolsterData[playerid][0], wep_HolsterData[playerid][1]);
-	wep_CurrentWeapon[playerid] = wep_HolsterData[playerid][0];
-
-	wep_HolsterData[playerid][0] = 0;
-	wep_HolsterData[playerid][1] = 0;
-
-	ShowMsgBox(playerid, "Weapon Equipped", 3000, 110);
-	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER);
-
 	return 1;
 }
 
@@ -775,8 +594,19 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 
 			if(ammo > 0)
 			{
+				new curitem = GetPlayerItem(playerid);
+
+				if(IsValidItem(curitem))
+				{
+					DestroyItem(curitem);
+					SetItemExtraData(itemid, 0);
+				}
+				else
+				{
+					DestroyItem(itemid);					
+				}
+
 				SetPlayerWeapon(playerid, _:type, ammo);
-				DestroyItem(itemid);
 				wep_CurrentWeapon[playerid] = _:type;
 			}
 		}
@@ -788,14 +618,7 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 			{
 				new remainder = GivePlayerAmmo(playerid, ammo);
 
-				if(remainder == 0)
-				{
-					DestroyItem(itemid);
-				}
-				else
-				{
-					SetItemExtraData(itemid, remainder);
-				}
+				SetItemExtraData(itemid, remainder);
 			}
 		}
 	}
@@ -803,19 +626,44 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 
 PlayerDropWeapon(playerid)
 {
-	ConvertPlayerWeaponToItem(playerid);
-	PlayerDropItem(playerid);
+	if(wep_CurrentWeapon[playerid] > 0)
+	{
+		ConvertPlayerWeaponToItem(playerid);
+		PlayerDropItem(playerid);
+	}
 }
 
 PlayerGiveWeapon(playerid, targetid)
 {
-	if(wep_CurrentWeapon[playerid] > 0)
+	if(wep_CurrentWeapon[playerid] > 0 && wep_CurrentWeapon[targetid] == 0)
 	{
-		ConvertPlayerItemToWeapon(playerid);
-		PlayerGiveItem(playerid, targetid, 1);
-		wep_CurrentWeapon[targetid] = wep_CurrentWeapon[playerid];
+		ConvertPlayerWeaponToItem(playerid);
+		PlayerGiveItem(playerid, targetid);
 	}
 }
+
+public OnPlayerGivenItem(playerid, targetid, itemid)
+{
+	if(wep_CurrentWeapon[targetid] != 0)
+		return 1;
+
+	new ItemType:type = GetItemType(itemid);
+
+	if(0 < _:type < WEAPON_PARACHUTE)
+	{
+		ConvertPlayerItemToWeapon(targetid);
+	}
+
+	return CallLocalFunction("wep_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
+}
+#if defined _ALS_OnPlayerGivenItem
+	#undef OnPlayerGivenItem
+#else
+	#define _ALS_OnPlayerGivenItem
+#endif
+#define OnPlayerGivenItem wep_OnPlayerGivenItem
+forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
+
 
 IsPlayerIdle(playerid)
 {

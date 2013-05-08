@@ -1,3 +1,8 @@
+new
+	Timer:UnfreezeTimer[MAX_PLAYERS],
+	Timer:UnmuteTimer[MAX_PLAYERS];
+
+
 ACMD:kick[1](playerid, params[])
 {
 	new
@@ -23,14 +28,10 @@ ACMD:kick[1](playerid, params[])
 	if(gPlayerData[playerid][ply_Admin]!=gPlayerData[highestadmin][ply_Admin])
 		return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to kick %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
-
 	if(playerid == id)
 		MsgAllF(PINK, " >  %P"#C_PINK" failed and kicked themselves", playerid);
 
-	else
-		MsgF(id, YELLOW, " >  You were kicked, reason: %s", reason);
-
-	Kick(id);
+	KickPlayer(id, reason);
 
 	return 1;
 }
@@ -52,7 +53,8 @@ ACMD:freeze[1](playerid, params[])
 	
 	if(delay > 0)
 	{
-		defer CmdDelay_unfreeze(id, delay * 1000);
+		stop UnfreezeTimer[id];
+		UnfreezeTimer[id] = defer CmdDelay_unfreeze(id, delay * 1000);
 		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", id, delay);
 		MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Frozen you for %d seconds", playerid, delay);
 	}
@@ -87,6 +89,7 @@ ACMD:unfreeze[1](playerid, params[])
 
 	TogglePlayerControllable(id, true);
 	f:bPlayerGameSettings[id]<Frozen>;
+	stop UnfreezeTimer[id];
 
 	MsgF(playerid, YELLOW, " >  Unfrozen %P", id);
 	MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Unfrozen you", playerid);
@@ -110,14 +113,15 @@ ACMD:mute[1](playerid, params[])
 	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin])
 		return 3;
 
-	if(bPlayerGameSettings[id]&Muted)
-		return Msg(playerid, YELLOW, " >  Player Aready Muted");
+	if(bPlayerGameSettings[id] & Muted)
+		return Msg(playerid, YELLOW, " >  Player Already Muted");
 
 	t:bPlayerGameSettings[id]<Muted>;
 
 	if(delay > 0)
 	{
-		defer CmdDelay_unmute(id, delay * 1000);
+		stop UnmuteTimer[id];
+		UnmuteTimer[id] = defer CmdDelay_unmute(id, delay * 1000);
 		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Muted %P"#C_YELLOW" for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: %s", playerid, id, delay, reason);
 	}
 	else
@@ -152,6 +156,7 @@ ACMD:unmute[1](playerid, params[])
 		return 4;
 
 	f:bPlayerGameSettings[id]<Muted>;
+	stop UnmuteTimer[id];
 
 	MsgF(playerid, YELLOW, " >  Un-muted %P", id);
 	MsgF(id, YELLOW, " >  %P"#C_YELLOW" has un-muted you.", id);
@@ -180,8 +185,7 @@ ACMD:warn[1](playerid, params[])
 
 	if(gPlayerWarnings[id] >= 5)
 	{
-		Msg(id, YELLOW, " >  Kicked for having too many warnings.");
-		Kick(id);
+		KickPlayer(id, "Too many warnings");
 	}
 
 	return 1;
@@ -198,7 +202,10 @@ ACMD:aliases[1](playerid, params[])
 		return Msg(playerid,RED, " >  Invalid ID");
 
 	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
-		return 3;
+	{
+		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", id);
+		return 1;
+	}
 
 	new
 		rowCount,

@@ -4,7 +4,11 @@
 #include <streamer>
 #include <YSI\y_timers>
 
-
+CMD:skin(playerid, params[])
+{
+	SetPlayerSkin(playerid, strval(params));
+	return 1;
+}
 CMD:bleed(playerid, params[])
 {
 	SetPlayerAttachedObject(playerid, 9, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
@@ -19,6 +23,17 @@ CMD:car(playerid, params[])
 
 	GetPlayerPos(playerid, x, y, z);
 	CreateVehicle(strval(params), x, y, z, 0.0, -1, -1, 100);
+	return 1;
+}
+CMD:wep(playerid, params[])
+{
+	new str[128];
+	new wep = GetPlayerWeapon(playerid);
+
+	format(str, 128, "Weapon: %d", wep);
+
+	SendClientMessage(playerid, -1, str);
+
 	return 1;
 }
 
@@ -40,6 +55,12 @@ CMD:tp(playerid, params[])
 	return 1;
 }
 
+public OnPlayerText(playerid, text[])
+{
+	printf("%d", strlen(text));
+	return 1;
+}
+
 public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	return 0;
@@ -50,6 +71,15 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	return 0;
 }
 
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	return 0;
+}
+
+public OnPlayerEditAttachedObject(playerid, response, index, modelid, boneid, Float:fOffsetX, Float:fOffsetY, Float:fOffsetZ, Float:fRotX, Float:fRotY, Float:fRotZ, Float:fScaleX, Float:fScaleY, Float:fScaleZ)
+{
+	return 0;
+}
 #endinput
 
 new distobj[MAX_PLAYERS];

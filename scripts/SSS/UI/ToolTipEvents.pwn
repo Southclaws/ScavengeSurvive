@@ -195,6 +195,8 @@ ptask ToolTipUpdate[1000](playerid)
 		ClearToolTipText(playerid);
 		AddToolTipText(playerid, KEYTEXT_ENGINE, "Toggle engine");
 		AddToolTipText(playerid, KEYTEXT_LIGHTS, "Toggle lights");
+		AddToolTipText(playerid, KEYTEXT_DOORS, "Toggle locks");
+		AddToolTipText(playerid, KEYTEXT_RADIO, "Open radio");
 		ShowPlayerToolTip(playerid);
 	}
 	else

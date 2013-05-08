@@ -104,7 +104,7 @@ LoadStaticVehiclesFromFile(file[], bool:prints = false)
 	if(!fexist(file))return print("VEHICLE FILE NOT FOUND");
 
 	new
-	    File:f=fopen(file, io_read),
+	    File:f = fopen(file, io_read),
 		line[128],
 		Float:posX,
 		Float:posY,
@@ -120,7 +120,7 @@ LoadStaticVehiclesFromFile(file[], bool:prints = false)
 			new id;
 			id = AddStaticVehicle(model, posX, posY, posZ, rotZ, -1, -1);
 
-			if(model == 449)
+			if(GetVehicleType(model) == VTYPE_TRAIN)
 			{
 				Iter_Add(gVehicleIndex, id);
 				ApplyVehicleData(id);
@@ -322,6 +322,9 @@ LoadPlayerVehicles(bool:prints = true)
 				if(IsValidVehicle(vehicleid))
 				{
 					Iter_Add(gVehicleIndex, vehicleid);
+
+					if(Float:array[1] > 990.0)
+						array[1] = _:990.0;
 
 					gVehicleFuel[vehicleid] = Float:array[2];
 					gVehicleColours[vehicleid][0] = array[7];
@@ -713,40 +716,4 @@ CMD:reloadvehicles(playerid, params[])
 	ReloadVehicles();
 	Msg(playerid, YELLOW, " >  Reloading Vehicles...");
 	return 1;
-}
-
-
-AutosaveVehicles()
-{
-	new idx;
-
-	foreach(new i : gVehicleIndex)
-	{
-		if(strlen(gVehicleOwner[i]) >= 3 && IsValidVehicle(i))
-		{
-			autosave_Block[idx] = i;
-			idx++;
-		}
-	}
-	autosave_Max = idx;
-
-	defer Vehicle_BlockSave(0);
-}
-
-timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
-{
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
-		return;
-
-	new i;
-
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK && i < autosave_Max; i++)
-	{
-		SavePlayerVehicle(autosave_Block[i], gVehicleOwner[autosave_Block[i]], false);
-	}
-
-	if(index < autosave_Max)
-		defer Vehicle_BlockSave(i);
-
-	return;
 }

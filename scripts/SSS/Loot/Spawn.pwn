@@ -103,7 +103,7 @@ CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zof
 	if(itemtype == exception)
 		return INVALID_ITEM_ID;
 
-	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset);
+	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
 
 	if(1 <= _:itemtype <= 46)
 	{
@@ -129,7 +129,8 @@ CreateLootSpawn(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
 {
 	new
 		ItemType:itemtype,
-		itemid;
+		itemid,
+		Float:rot = frandom(360.0);
 
 	for(new i; i < size; i++)
 	{
@@ -137,8 +138,8 @@ CreateLootSpawn(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
 			continue;
 
 		itemid = CreateLootItem(lootindex,
-			x + floatsin((360 / size) * i, degrees),
-			y + floatcos((360 / size) * i, degrees),
+			x + (frandom(1.0) * floatsin(((360 / size) * i) + rot, degrees)),
+			y + (frandom(1.0) * floatcos(((360 / size) * i) + rot, degrees)),
 			z, 0.7, itemtype);
 
 		itemtype = GetItemType(itemid);

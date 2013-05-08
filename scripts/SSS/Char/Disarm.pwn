@@ -3,7 +3,7 @@
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(GetPlayerWeapon(playerid) != 0 && IsValidItem(GetPlayerItem(playerid)))
+	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
 		return 1;
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
@@ -28,11 +28,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 DisarmPlayer(playerid, i)
 {
-	new
-		weaponid = GetPlayerWeapon(i),
-		itemid = GetPlayerItem(i);
+	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
+		return 0;
 
-	if(weaponid != 0)
+	new
+		weaponid = GetPlayerCurrentWeapon(i),
+		itemid;
+
+	if(weaponid> 0)
 	{
 		new
 			ammo = GetPlayerAmmo(i);
@@ -44,22 +47,24 @@ DisarmPlayer(playerid, i)
 	}
 	else
 	{
-		weaponid = GetPlayerHolsteredWeapon(i);
+		itemid = GetPlayerItem(i);
 
-		if(weaponid != 0)
-		{
-			new
-				ammo = GetPlayerHolsteredWeaponAmmo(i);
-
-			RemovePlayerHolsterWeapon(i);
-			SetPlayerWeapon(playerid, weaponid, ammo);
-
-			return 1;
-		}
-		else if(IsValidItem(itemid))
+		if(IsValidItem(itemid))
 		{
 			RemoveCurrentItem(i);
 			GiveWorldItemToPlayer(playerid, itemid);
+
+			return 1;
+		}
+
+		itemid = GetPlayerHolsterItem(i);
+
+		if(IsValidItem(itemid))
+		{
+			RemovePlayerHolsterItem(i);
+			CreateItemInWorld(itemid);
+			GiveWorldItemToPlayer(playerid, itemid);
+			ConvertPlayerItemToWeapon(playerid);
 
 			return 1;
 		}

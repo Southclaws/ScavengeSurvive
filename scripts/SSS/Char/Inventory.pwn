@@ -166,12 +166,12 @@ UpdatePlayerGear(playerid, show = 1)
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Back[UI_ELEMENT_TILE], 19300);
 	}
 
-	itemid = GetPlayerHolsteredWeapon(playerid);
-	if(0 < itemid < WEAPON_PARACHUTE)
+	itemid = GetPlayerHolsterItem(playerid);
+	if(IsValidItem(itemid))
 	{
-		GetWeaponName(itemid, tmp);
+		GetItemName(itemid, tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetWeaponModel(itemid));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -335,36 +335,61 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsContainerFull(containerid))
 				{
-					new str[CNT_MAX_NAME + 6];
-					GetContainerName(containerid, str);
-					strcat(str, " full");
-					ShowMsgBox(playerid, str, 3000, 150);
-					return 1;
+					RemovePlayerHat(playerid);
+
+					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+					GiveWorldItemToPlayer(playerid, itemid);
+					UpdatePlayerGear(playerid);
+
+					ShowMsgBox(playerid, "Hat removed", 3000, 150);
 				}
+				else
+				{
+					RemovePlayerHat(playerid);
 
-				RemovePlayerHat(playerid);
+					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+					if(AddItemToContainer(containerid, itemid, playerid))
+					{
+						UpdatePlayerGear(playerid);
+						DisplayContainerInventory(playerid, containerid);
 
-				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-				AddItemToContainer(containerid, itemid, playerid);
-				UpdatePlayerGear(playerid);
-				DisplayContainerInventory(playerid, containerid);
+						ShowMsgBox(playerid, "Hat removed", 3000, 150);
+					}
+					else
+					{
+						DestroyItem(itemid);
+					}
+				}
 			}
 			else
 			{
 				if(IsPlayerInventoryFull(playerid))
 				{
-					ShowMsgBox(playerid, "Inventory full", 3000, 150);
-					return 1;
+					RemovePlayerHat(playerid);
+
+					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+					GiveWorldItemToPlayer(playerid, itemid);
+					UpdatePlayerGear(playerid);
+
+					ShowMsgBox(playerid, "Hat removed", 3000, 150);
 				}
+				else
+				{
+					RemovePlayerHat(playerid);
 
-				RemovePlayerHat(playerid);
+					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+					if(AddItemToInventory(playerid, itemid))
+					{
+						UpdatePlayerGear(playerid);
+						DisplayPlayerInventory(playerid);
 
-				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-				AddItemToInventory(playerid, itemid);
-				UpdatePlayerGear(playerid);
-				DisplayPlayerInventory(playerid);
-
-				ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
+						ShowMsgBox(playerid, "Hat removed", 3000, 150);
+					}
+					else
+					{
+						DestroyItem(itemid);
+					}
+				}
 			}
 		}
 	}
@@ -397,7 +422,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
 				{
-					ShowMsgBox(playerid, "That item is too big for your inventory", 3000, 140);
+					ShowMsgBox(playerid, "Item too big", 3000, 140);
 				}
 				else
 				{
@@ -414,18 +439,19 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		else if(GetPlayerCurrentWeapon(playerid) != 0)
 		{
 			new containerid = GetPlayerCurrentContainer(playerid);
+
 			if(IsValidContainer(containerid))
 			{
 				if(IsContainerFull(containerid))
 				{
 					new str[CNT_MAX_NAME + 6];
+
 					GetContainerName(containerid, str);
 					strcat(str, " full");
 					ShowMsgBox(playerid, str, 3000, 150);
+
 					return 1;
 				}
-
-				itemid = CreateItem(ItemType:GetPlayerCurrentWeapon(playerid), 0.0, 0.0, 0.0);
 
 				if(!WillItemTypeFitInContainer(containerid, ItemType:GetPlayerCurrentWeapon(playerid)))
 				{
@@ -433,12 +459,20 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					return 1;
 				}
 
-				SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
-				AddItemToContainer(containerid, itemid, playerid);
-				RemovePlayerWeapon(playerid);
+				if(ConvertPlayerWeaponToItem(playerid))
+				{
+					new str[CNT_MAX_NAME + 17];
 
-				UpdatePlayerGear(playerid);
-				DisplayContainerInventory(playerid, containerid);
+					if(AddItemToContainer(containerid, GetPlayerItem(playerid), playerid))
+					{
+						UpdatePlayerGear(playerid);
+						DisplayContainerInventory(playerid, containerid);
+
+						GetContainerName(containerid, str);
+						format(str, sizeof(str), "Weapon added to %s", str, 150);
+						ShowMsgBox(playerid, str, 3000, 150);
+					}
+				}
 			}
 			else
 			{
@@ -447,21 +481,28 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					ShowMsgBox(playerid, "Inventory full", 3000, 150);
 					return 1;
 				}
-				switch(GetPlayerCurrentWeapon(playerid))
+
+				if(GetItemTypeSize(ItemType:GetPlayerCurrentWeapon(playerid)) != ITEM_SIZE_SMALL)
 				{
-					case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
+					ShowMsgBox(playerid, "Item too big", 3000, 140);
+				}
+				else
+				{
+					if(ConvertPlayerWeaponToItem(playerid))
 					{
-						itemid = CreateItem(ItemType:GetPlayerCurrentWeapon(playerid), 0.0, 0.0, 0.0);
-
-						SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
-						AddItemToInventory(playerid, itemid);
-						RemovePlayerWeapon(playerid);
-
-						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
+						if(AddItemToInventory(playerid, GetPlayerItem(playerid)))
+						{
+							UpdatePlayerGear(playerid);
+							DisplayPlayerInventory(playerid);
+							ShowMsgBox(playerid, "Weapon added to inventory", 3000, 150);
+						}
+						else
+						{
+							ConvertPlayerItemToWeapon(playerid);
+							ShowMsgBox(playerid, "Weapon won't fit", 3000, 150);
+						}
 					}
 				}
-				UpdatePlayerGear(playerid);
-				DisplayPlayerInventory(playerid);
 			}
 		}
 	}
@@ -499,9 +540,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 	if(playertextid == GearSlot_Hols[UI_ELEMENT_TILE])
 	{
-		if(0 < GetPlayerHolsteredWeapon(playerid) < WEAPON_PARACHUTE)
+		new itemid = GetPlayerHolsterItem(playerid);
+		if(IsValidItem(itemid))
 		{
-			new containerid = GetPlayerCurrentContainer(playerid);
+			new
+				containerid = GetPlayerCurrentContainer(playerid),
+				ItemType:itemtype = GetItemType(itemid);
+
 			if(IsValidContainer(containerid))
 			{
 				if(IsContainerFull(containerid))
@@ -513,40 +558,30 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					return 1;
 				}
 
-				if(!WillItemTypeFitInContainer(containerid, ItemType:GetPlayerHolsteredWeapon(playerid)))
+				if(!WillItemTypeFitInContainer(containerid, itemtype))
 				{
 					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
 					return 1;
 				}
 
-				new itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid), 0.0, 0.0, 0.0);
-
-				SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
 				AddItemToContainer(containerid, itemid, playerid);
-				RemovePlayerHolsterWeapon(playerid);
-
+				RemovePlayerHolsterItem(playerid);
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
 			else
 			{
-				if(IsPlayerInventoryFull(playerid))
+				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
 				{
-					ShowMsgBox(playerid, "Inventory full", 3000, 150);
-					return 1;
+					ShowMsgBox(playerid, "That item is too big for your inventory", 3000, 140);
 				}
-				switch(GetPlayerHolsteredWeapon(playerid))
+				else
 				{
-					case 2, 3, 5, 6, 7, 8, 15, 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-					{
-						new itemid = CreateItem(ItemType:GetPlayerHolsteredWeapon(playerid), 0.0, 0.0, 0.0);
-
-						SetItemExtraData(itemid, GetPlayerHolsteredWeaponAmmo(playerid));
-						AddItemToInventory(playerid, itemid);
-						RemovePlayerHolsterWeapon(playerid);
-
+					if(AddItemToInventory(playerid, itemid))
 						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
-					}
+
+					else
+						ShowMsgBox(playerid, "Inventory full", 3000, 100);
 				}
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);

@@ -12,13 +12,16 @@ hook OnPlayerConnect(playerid)
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(GetItemType(itemid) == item_Screwdriver && GetItemType(withitemid) == item_PhoneBomb)
+	if(GetItemType(itemid) == item_Screwdriver)
 	{
-		if(GetItemExtraData(withitemid) == 1)
+		if(GetItemType(withitemid) == item_PhoneBomb || GetItemType(withitemid) == item_MotionMine)
 		{
-			StartHoldAction(playerid, 2000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-			scr_TargetItem[playerid] = withitemid;
+			if(GetItemExtraData(withitemid) == 1)
+			{
+				StartHoldAction(playerid, 2000);
+				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				scr_TargetItem[playerid] = withitemid;
+			}
 		}
 	}
 	return CallLocalFunction("scr_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);

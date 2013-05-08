@@ -1,3 +1,6 @@
+//#define SAVELOAD_DEBUG
+
+
 enum
 {
 	PLY_CELL_HEALTH,
@@ -14,6 +17,7 @@ enum
 	PLY_CELL_CUFFED,
 	PLY_CELL_WARNS,
 	PLY_CELL_FREQ,
+	PLY_CELL_CHATMODE,
 	PLY_CELL_END
 }
 
@@ -41,15 +45,15 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
 
-	if(GetPlayerHolsteredWeapon(playerid) != 0)
+	if(IsValidItem(GetPlayerHolsterItem(playerid)))
 	{
-		data[PLY_CELL_HOLST] = GetPlayerHolsteredWeapon(playerid);
-		data[PLY_CELL_HOLSTEX] = GetPlayerHolsteredWeaponAmmo(playerid);
+		data[PLY_CELL_HOLST] = _:GetItemType(GetPlayerHolsterItem(playerid));
+		data[PLY_CELL_HOLSTEX] = GetItemExtraData(GetPlayerHolsterItem(playerid));
 	}
 	else
 	{
-		data[PLY_CELL_HOLST] = -1;
-		data[PLY_CELL_HOLSTEX] = -1;
+		data[PLY_CELL_HOLST] = _:INVALID_ITEM_TYPE;
+		data[PLY_CELL_HOLSTEX] = 0;
 	}
 
 	if(IsValidItem(GetPlayerItem(playerid)))
@@ -64,8 +68,8 @@ SavePlayerChar(playerid)
 	}
 	else
 	{
-		data[PLY_CELL_HELD] = -1;
-		data[PLY_CELL_HELDEX] = -1;
+		data[PLY_CELL_HELD] = _:INVALID_ITEM_TYPE;
+		data[PLY_CELL_HELDEX] = 0;
 	}
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
@@ -88,6 +92,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_WARNS] = gPlayerWarnings[playerid];
 
 	data[PLY_CELL_FREQ] = _:gPlayerFrequency[playerid];
+
+	data[PLY_CELL_CHATMODE] = Bit2_Get(gPlayerChatMode, playerid);
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -124,6 +130,10 @@ SavePlayerInventory(playerid)
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
+
+	#if defined SAVELOAD_DEBUG
+	printf("[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
+	#endif
 }
 
 LoadPlayerChar(playerid)
@@ -147,14 +157,14 @@ LoadPlayerChar(playerid)
 	gPlayerAP[playerid] = Float:data[PLY_CELL_ARMOUR];
 	gPlayerFP[playerid] = Float:data[PLY_CELL_FOOD];
 	gPlayerData[playerid][ply_Skin] = data[PLY_CELL_SKIN];
+	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
-	if(0 < data[PLY_CELL_HOLST] < WEAPON_PARACHUTE)
+	if(data[PLY_CELL_HOLST] != -1)
 	{
-		if(data[PLY_CELL_HOLSTEX] > 0)
-		{
-			SetPlayerHolsterWeapon(playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX]);
-		}
+		itemid = CreateItem(ItemType:data[PLY_CELL_HOLST]);
+		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
+		SetPlayerHolsterItem(playerid, itemid);
 	}
 
 	if(data[PLY_CELL_HELD] != -1)
@@ -189,6 +199,8 @@ LoadPlayerChar(playerid)
 	gPlayerWarnings[playerid] = data[PLY_CELL_WARNS];
 
 	gPlayerFrequency[playerid] = Float:data[PLY_CELL_FREQ];
+
+	Bit2_Set(gPlayerChatMode, playerid, data[PLY_CELL_CHATMODE]);
 }
 LoadPlayerInventory(playerid)
 {
@@ -241,6 +253,10 @@ LoadPlayerInventory(playerid)
 		AddItemToContainer(containerid, itemid);
 	}
 
+	#if defined SAVELOAD_DEBUG
+	printf("[LOAD] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
+	#endif
+
 	return 1;
 }
 
@@ -249,12 +265,13 @@ ClearPlayerInventoryFile(playerid)
 {
 	new
 		filename[MAX_PLAYER_FILE],
-		File:file;
+		File:file,
+		data[PLY_CELL_END];
 
 	GetFile(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_write);
-	fblockwrite(file, {0}, 1);
+	fblockwrite(file, data, 1);
 	fclose(file);
 }
 
@@ -277,7 +294,7 @@ enum
 }
 
 #endinput
-
+/*
 #include <YSI\y_hooks>
 hook OnGameModeInit()
 {
@@ -360,3 +377,4 @@ ConvertUserFile(name[])
 
 	return 1;
 }
+*/

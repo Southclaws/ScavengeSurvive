@@ -520,6 +520,16 @@ District_City2()
 }
 District_Naval()
 {
+	new buttonid[1];
+
+	buttonid[0] = CreateButton(-1520.4270, 482.1193, 7.6727, "Press "#KEYTEXT_INTERACT" to activate gate");
+
+	CreateDoor(968, buttonid,
+		-1526.4375, 481.3828, 7.02, 356.8584, 270.00, 0.0,
+		-1526.4375, 481.3828, 7.00, 356.8584, 0.0000, 0.0,
+		.closedelay = -1, .maxbuttons = 1, .movespeed = 0.01, .movesound = 0, .stopsound = 0);
+
+
 	CreateLootSpawn(-1346.540039, 492.079986, 10.279999,	3, 25, loot_Civilian);
 
 	CreateLootSpawn(-1465.579956, 339.299987, 6.280000,		3, 25, loot_Military);
@@ -683,6 +693,12 @@ District_Industrial()
 	CreateLootSpawn(-1693.037963, 417.812377, 11.415559,	3, 30, loot_Survivor);
 	CreateLootSpawn(-1619.546264, -1.509310, 16.307559,		3, 30, loot_Survivor);
 	CreateLootSpawn(-1626.177001, 8.094010, 16.311029,		3, 30, loot_Survivor);
+
+	CreateHackerTrap(-1844.83752, -101.30441, 4.64848,		3, 30, loot_Military);
+	CreateHackerTrap(-1842.06116, -103.07392, 4.64540,		3, 30, loot_Military);
+	CreateHackerTrap(-1849.03284, -103.55869, 4.64305,		3, 30, loot_Military);
+	CreateHackerTrap(-1848.35547, -98.46133, 4.64475,		3, 30, loot_Military);
+	CreateHackerTrap(-1842.68433, -98.32790, 4.64715,		3, 30, loot_Military);
 }
 District_Airport()
 {
@@ -708,14 +724,15 @@ District_Airport()
 	CreateLootSpawn(-1195.130004, -134.399993, 13.220000,	3, 34, loot_Industrial);
 	CreateLootSpawn(-1127.510009, -150.220001, 13.230000,	3, 34, loot_Industrial);
 
-	CreateLootSpawn(-1542.140014, -443.559997, 5.190000,	3, 30, loot_Police);
-	CreateLootSpawn(-1229.810058, 53.180000, 13.319999,		3, 30, loot_Police);
 	CreateLootSpawn(-1270.199951, 47.240001, 13.230000,		3, 30, loot_Police);
 	CreateLootSpawn(-1674.810058, -628.690002, 13.230000,	3, 30, loot_Police);
 	CreateLootSpawn(-1369.390014, 1.743399, 5.079999,		3, 30, loot_Police);
 	CreateLootSpawn(-1455.650024, -206.649993, 5.079999,	3, 30, loot_Police);
 	CreateLootSpawn(-1444.380004, -101.510002, 5.079999,	3, 30, loot_Police);
 	CreateLootSpawn(-1355.150024, -101.680000, 5.079999,	3, 30, loot_Police);
+
+	CreateHackerTrap(1229.78259, 53.58940, 13.23220,		3, 60, loot_Police);
+	CreateHackerTrap(-1542.14001, -443.55999, 5.19000,		3, 60, loot_Police);
 }
 District_MontFoster()
 {

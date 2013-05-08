@@ -2,19 +2,19 @@ CreateNewUserfile(playerid, password[])
 {
 	new
 		file[MAX_PLAYER_FILE],
-		tmpQuery[300];
+		query[300];
 
 	GetFile(gPlayerName[playerid], file);
 
 	fclose(fopen(file, io_write));
 
-	format(tmpQuery, 300,
+	format(query, 300,
 		"INSERT INTO `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`) \
 		VALUES('%s', '%s', '%d', '0', '0.0, 0.0, 0.0, 0.0', '%d')",
 		gPlayerName[playerid], password, gPlayerData[playerid][ply_IP],
 		(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
 
-	db_free_result(db_query(gAccounts, tmpQuery));
+	db_free_result(db_query(gAccounts, query));
 
 	for(new idx; idx<gTotalAdmins; idx++)
 	{
@@ -42,10 +42,10 @@ DisplayLoginPrompt(playerid)
 Login(playerid)
 {
 	new
-		tmpQuery[256];
+		query[256];
 
-	format(tmpQuery, sizeof(tmpQuery), "UPDATE `Player` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'", gPlayerData[playerid][ply_IP], gPlayerName[playerid]);
-	db_free_result(db_query(gAccounts, tmpQuery));
+	format(query, sizeof(query), "UPDATE `Player` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'", gPlayerData[playerid][ply_IP], gPlayerName[playerid]);
+	db_free_result(db_query(gAccounts, query));
 
 	for(new idx; idx<gTotalAdmins; idx++)
 	{
@@ -132,32 +132,63 @@ CheckForExtraAccounts(playerid, name[])
 	return 1;
 }
 
+Logout(playerid)
+{
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
+
+	SavePlayerData(playerid);
+
+	if(bPlayerGameSettings[playerid] & Alive)
+	{
+		DestroyItem(GetPlayerItem(playerid));
+		RemovePlayerHolsterItem(playerid);
+		RemovePlayerWeapon(playerid);
+		DestroyPlayerBackpack(playerid);
+
+		for(new i; i < INV_MAX_SLOTS; i++)
+		{
+			DestroyItem(GetInventorySlotItem(playerid, 0));
+			RemoveItemFromInventory(playerid, 0);
+		}
+
+		if(IsValidItem(GetPlayerHat(playerid)))
+			RemovePlayerHat(playerid);
+
+		if(IsPlayerInAnyVehicle(playerid))
+			SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid]);
+	}
+
+	return 1;
+}
+
 SavePlayerData(playerid)
 {
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 		return 0;
 
+	if(!(bPlayerGameSettings[playerid] & LoadedData))
+		return 0;
+
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+		return 0;
+
 	new
-		tmpQuery[256];
+		query[256],
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:a;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, a);
+
+	if(IsPlayerInAnyVehicle(playerid))
+		z += 2.5;
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:a;
-
-		GetPlayerPos(playerid, x, y, z);
-		GetPlayerFacingAngle(playerid, a);
-
-		if(Distance(x, y, z, -907.5452, 272.7235, 1014.1449) < 50.0)
-			return 0;
-
-		if(x == 0.0 && y == 0.0 && z == 0.0)
-			return 0;
-
-		format(tmpQuery, sizeof(tmpQuery),
+		format(query, sizeof(query),
 			"UPDATE `Player` SET \
 			`"#ROW_ALIVE"` = '1', \
 			`"#ROW_GEND"` = '%d', \
@@ -171,15 +202,10 @@ SavePlayerData(playerid)
 
 		SavePlayerInventory(playerid);
 		SavePlayerChar(playerid);
-
-		if(IsPlayerInAnyVehicle(playerid))
-		{
-			SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid]);
-		}
 	}
 	else
 	{
-		format(tmpQuery, sizeof(tmpQuery),
+		format(query, sizeof(query),
 			"UPDATE `Player` SET \
 			`"#ROW_ALIVE"` = '0', \
 			`"#ROW_GEND"` = '0', \
@@ -192,8 +218,7 @@ SavePlayerData(playerid)
 		ClearPlayerInventoryFile(playerid);
 	}
 
-	db_free_result(db_query(gAccounts, tmpQuery));
+	db_free_result(db_query(gAccounts, query));
 
 	return 1;
 }
-
