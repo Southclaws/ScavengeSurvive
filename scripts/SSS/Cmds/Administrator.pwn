@@ -72,12 +72,7 @@ ACMD:unban[2](playerid, params[])
 	if(sscanf(params, "s[24]", name))
 		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
 
-	new
-		query[128];
-
-	format(query, 128, "DELETE FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", strtolower(name));
-	
-	db_free_result(db_query(gAccounts, query));
+	UnBanPlayer(name);
 	
 	MsgF(playerid, YELLOW, " >  Unbanned "#C_BLUE"%s"#C_YELLOW".", name);
 

@@ -1,15 +1,15 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SAVES_PER_BLOCK_PLAYERS (8)
-#define MAX_SAVES_PER_BLOCK_SAFEBOX (32)
-#define MAX_SAVES_PER_BLOCK_VEHICLE (16)
-#define MAX_SAVES_PER_BLOCK_DEFENSE (32)
+#define MAX_SAVES_PER_BLOCK_PLAYERS (1)
+#define MAX_SAVES_PER_BLOCK_SAFEBOX (8)
+#define MAX_SAVES_PER_BLOCK_VEHICLE (8)
 #define SAVE_BLOCK_INTERVAL	(50)
 //#define AUTOSAVE_DEBUG
 
 new
 #if defined AUTOSAVE_DEBUG
+		autosave_TickTotal,
 		autosave_Tick,
 #endif
 		autosave_Block[ITM_MAX],
@@ -20,7 +20,7 @@ bool:	autosave_Active;
 timer AutoSave[60000]()
 {
 	#if defined AUTOSAVE_DEBUG
-	autosave_Tick = tickcount();
+	autosave_TickTotal = tickcount();
 	#endif
 
 	if(Iter_Count(Player) == 0)
@@ -44,7 +44,8 @@ Autosave_End()
 	defer AutoSave();
 
 	#if defined AUTOSAVE_DEBUG
-	printf("AUTOSAVE COMPLETE time: %d", tickcount() - autosave_Tick);
+	printf("Vehicle tick: %d", tickcount() - autosave_Tick);
+	printf("AUTOSAVE COMPLETE time: %d", tickcount() - autosave_TickTotal);
 	#endif
 }
 
@@ -60,6 +61,7 @@ AutoSave_Player()
 {
 	#if defined AUTOSAVE_DEBUG
 	print("AutoSave_Player");
+	autosave_Tick = tickcount();
 	#endif
 
 	new idx;
@@ -76,6 +78,10 @@ AutoSave_Player()
 
 timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 {
+	#if defined AUTOSAVE_DEBUG
+	autosave_Tick = tickcount();
+	#endif
+
 	autosave_Active = true;
 
 	if(gServerUptime > MAX_SERVER_UPTIME - 20)
@@ -110,7 +116,9 @@ timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 timer AutoSave_Safebox[3000]()
 {
 	#if defined AUTOSAVE_DEBUG
+	printf("Player tick: %d", tickcount() - autosave_Tick);
 	print("AutoSave_Safebox");
+	autosave_Tick = tickcount();
 	#endif
 
 	new idx;
@@ -172,7 +180,9 @@ timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
 timer AutoSave_Vehicles[3000]()
 {
 	#if defined AUTOSAVE_DEBUG
+	printf("Safebox tick: %d", tickcount() - autosave_Tick);
 	print("AutoSave_Vehicles");
+	autosave_Tick = tickcount();
 	#endif
 
 	new idx;
@@ -208,64 +218,12 @@ timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
 		defer Vehicle_BlockSave(i);
 
 	else
-		Autosave_Defense();
-
-	autosave_Active = false;
-
-	return;
-}
-
-
-/*==============================================================================
-
-	Defense
-
-==============================================================================*/
-
-
-timer Autosave_Defense[3000]()
-{
-	#if defined AUTOSAVE_DEBUG
-	print("Autosave_Defense");
-	#endif
-
-	new idx;
-
-	foreach(new i : def_Index)
-	{
-		autosave_Block[idx] = i;
-		idx++;
-	}
-	autosave_Max = idx;
-
-	defer Defense_BlockSave(0);
-}
-
-timer Defense_BlockSave[SAVE_BLOCK_INTERVAL](index)
-{
-	autosave_Active = true;
-
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
-		return;
-
-	new i;
-
-	for(i = index; i < index + MAX_SAVES_PER_BLOCK_DEFENSE && i < autosave_Max; i++)
-	{
-		SaveDefenseItem(autosave_Block[i]);
-	}
-
-	if(i < autosave_Max)
-		defer Defense_BlockSave(i);
-
-	else
 		Autosave_End();
 
 	autosave_Active = false;
 
 	return;
 }
-
 
 
 /*==============================================================================
@@ -278,4 +236,11 @@ timer Defense_BlockSave[SAVE_BLOCK_INTERVAL](index)
 stock IsAutoSaving()
 {
 	return autosave_Active;
+}
+
+
+ACMD:autosave[3](playerid, params[])
+{
+	AutoSave();
+	return 1;
 }

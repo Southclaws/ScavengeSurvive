@@ -578,10 +578,14 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				else
 				{
 					if(AddItemToInventory(playerid, itemid))
+					{
+						RemovePlayerHolsterItem(playerid);
 						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
-
+					}
 					else
+					{
 						ShowMsgBox(playerid, "Inventory full", 3000, 100);
+					}
 				}
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);

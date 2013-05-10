@@ -241,31 +241,6 @@ ACMD:aliases[1](playerid, params[])
 	return 1;
 }
 
-ACMD:weather[1](playerid, params[])
-{
-	if(strlen(params) > 2)
-	{
-		for(new i;i<sizeof(WeatherData);i++)
-		{
-			if(strfind(WeatherData[i], params, true) != -1)
-			{
-				foreach(new j : Player)
-				{
-					SetPlayerWeather(j, i);
-				}
-
-				gWeatherID = i;
-				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i]);
-
-				return 1;
-			}
-		}
-		Msg(playerid, RED, " >  Invalid weather!");
-	}
-
-	return 1;
-}
-
 ACMD:msg[1](playerid, params[])
 {
 	if(!(0 < strlen(params) < 128))
@@ -276,5 +251,11 @@ ACMD:msg[1](playerid, params[])
 	strcat(str, TagScan(params));
 
 	MsgAll(YELLOW, str);
+	return 1;
+}
+
+ACMD:banlist[1](playerid, params[])
+{
+	ShowListOfBans(playerid, 0);
 	return 1;
 }

@@ -1,12 +1,11 @@
 new gAdminCommandList_Lvl1[] =
 {
 	"/kick [id] - kick a player from the server\n\
-	/(un)freeze [id] (seconds) - freeze/unfreeze a player\n\
-	/(un)mute [id] (seconds) - mute/unmute a player\n\
+	/(un)freeze (seconds) [id] - freeze/unfreeze a player\n\
+	/(un)mute (seconds) [id] - mute/unmute a player\n\
 	/warn [id] - give a player a warning\n\
 	/aliases [id] - check aliases\n\
-	/weather [weather id/name] - set the weather\n\
-	/msg [message] - send a chat message\n"
+	/msg [message] - send a chat announcement\n"
 };
 
 new gAdminCommandList_Lvl2[] =
@@ -172,25 +171,11 @@ SetPlayerAdminLevel(playerid, level)
 	return 1;
 }
 
-CMD:adminlist(playerid, params[])
-{
-	new list[500];
-	for(new i; i<gTotalAdmins; i++)
-	{
-	    strcat(list, "---");
-		strcat(list, gAdminData[i][admin_Name]);
-	    strcat(list, "\n");
-	}
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Administrators", list, "Close", "");
-	return 1;
-}
-
-
 CMD:acmds(playerid, params[])
 {
 	new str[768];
 
-	strcat(str, "/a (level) [message] - level specific admin chat channel\n\n");
+//	strcat(str, "/a (level) [message] - level specific admin chat channel\n\n");
 
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
@@ -220,69 +205,8 @@ KickPlayer(playerid, reason[])
 	defer KickPlayerDelay(playerid);
 }
 
-BanPlayer(playerid, reason[], byid)
-{
-	new query[256];
-
-	format(query, sizeof(query), "\
-		INSERT INTO `Bans`\
-		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
-		VALUES('%s', '%d', '%d', '%s', '%p')",
-		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP], gettime(), reason, byid);
-
-	db_free_result(db_query(gAccounts, query));
-
-	MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"Reason: "#C_BLUE"%s", reason);
-	defer KickPlayerDelay(playerid);
-}
-
-BanPlayerByName(name[], reason[], byid = -1)
-{
-	new
-		id,
-		ip,
-		by[24],
-		bool:online,
-		query[256];
-
-	if(byid == -1)
-		by = "Server";
-
-	else
-		GetPlayerName(byid, by, 24);
-
-	foreach(new i : Player)
-	{
-		if(!strcmp(gPlayerName[i], name))
-		{
-			id = i;
-			ip = gPlayerData[id][ply_IP];
-			online = true;
-		}
-	}
-
-	format(query, sizeof(query), "\
-		INSERT INTO `Bans`\
-		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
-		VALUES('%s', '%d', '%d', '%s', '%s')",
-		strtolower(name), ip, gettime(), reason, by);
-
-	db_free_result(db_query(gAccounts, query));
-
-	if(online)
-	{
-		MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
-		defer KickPlayerDelay(id);
-	}
-}
-
 timer KickPlayerDelay[100](playerid)
 {
 	Kick(playerid);
 }
 
-forward external_BanPlayer(name[], reason[]);
-public external_BanPlayer(name[], reason[])
-{
-	BanPlayerByName(name, reason);
-}

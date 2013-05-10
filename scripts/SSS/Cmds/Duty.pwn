@@ -53,13 +53,10 @@ ACMD:duty[1](playerid, params[])
 
 ACMD:goto[1](playerid, params[])
 {
-	new targetid;
-
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-	{
-		Msg(playerid, RED, " >  You can only use that command while on admin duty.");
-		return 1;
-	}
+		return 6;
+
+	new targetid;
 
 	if(sscanf(params, "d", targetid))
 	{
@@ -80,13 +77,10 @@ ACMD:goto[1](playerid, params[])
 
 ACMD:get[1](playerid, params[])
 {
-	new targetid;
-
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-	{
-		Msg(playerid, RED, " >  You can only use that command while on admin duty.");
-		return 1;
-	}
+		return 6;
+
+	new targetid;
 
 	if(sscanf(params, "d", targetid))
 	{
@@ -117,10 +111,7 @@ ACMD:get[1](playerid, params[])
 ACMD:spec[2](playerid, params[])
 {
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-	{
-		Msg(playerid, RED, " >  You can only use that command while on admin duty.");
-		return 1;
-	}
+		return 6;
 
 	if(isnull(params))
 	{
@@ -144,6 +135,46 @@ ACMD:spec[2](playerid, params[])
 			t:bPlayerGameSettings[playerid]<Spectating>;
 		}
 	}
+
+	return 1;
+}
+
+ACMD:up[1](playerid, params[])
+{
+	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		return 6;
+
+	new
+		Float:distance = float(strval(params)),
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	SetPlayerPos(playerid, x, y, z + distance);
+
+	return 1;
+}
+
+ACMD:ford[1](playerid, params[])
+{
+	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		return 6;
+
+	new
+		Float:distance = float(strval(params)),
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:a;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, a);
+
+	SetPlayerPos(playerid,
+		x + (distance * floatsin(-a, degrees)),
+		y + (distance * floatcos(-a, degrees)),
+		z);
 
 	return 1;
 }

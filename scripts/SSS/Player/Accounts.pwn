@@ -162,6 +162,7 @@ Logout(playerid)
 	return 1;
 }
 
+
 SavePlayerData(playerid)
 {
 	if(bPlayerGameSettings[playerid] & AdminDuty)
@@ -171,7 +172,10 @@ SavePlayerData(playerid)
 		return 0;
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
-		return 0;
+	{
+		if(!(bServerGlobalSettings & Restarting))
+			return 0;
+	}
 
 	new
 		query[256],
@@ -188,6 +192,7 @@ SavePlayerData(playerid)
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
+
 		format(query, sizeof(query),
 			"UPDATE `Player` SET \
 			`"#ROW_ALIVE"` = '1', \

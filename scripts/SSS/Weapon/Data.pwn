@@ -10,9 +10,7 @@ enum
 	AMMO_TYPE_BUCK,
 	AMMO_TYPE_556,
 	AMMO_TYPE_308,
-	AMMO_TYPE_ROCKET,
-	AMMO_TYPE_FUEL,
-	AMMO_TYPE_5MM
+	AMMO_TYPE_ROCKET
 }
 
 new AmmoTypeName[MAX_AMMO_TYPE][MAX_AMMO_TYPE_NAME]=
@@ -93,8 +91,8 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 
 	{AMMO_TYPE_ROCKET,	0},		// RPG-7			// 35
 	{AMMO_TYPE_ROCKET,	0},		// Heatseek			// 36
-	{AMMO_TYPE_FUEL,	4},		// Flamer			// 37
-	{AMMO_TYPE_5MM,		2},		// Chaingun			// 38
+	{AMMO_TYPE_NONE,	4},		// Flamer			// 37
+	{AMMO_TYPE_556,		2},		// Chaingun			// 38
 
 	{AMMO_TYPE_NONE,	1},		// {"C4				// 39
 	{AMMO_TYPE_NONE,	1},		// {"Detonator		// 40
@@ -116,6 +114,34 @@ stock GetWeaponAmmoType(weaponid)
 		return 0;
 
 	return WeaponAmmoData[weaponid][weapon_ammoType];
+}
+
+stock ItemType:GetWeaponAmmoTypeItem(weaponid)
+{
+	if(!(0 < weaponid < MAX_WEAPONS))
+		return INVALID_ITEM_TYPE;
+
+	switch(WeaponAmmoData[weaponid][weapon_ammoType])
+	{
+		case AMMO_TYPE_9MM:
+			return item_Ammo9mm;
+
+		case AMMO_TYPE_50:
+			return item_Ammo50;
+
+		case AMMO_TYPE_BUCK:
+			return item_AmmoBuck;
+
+		case AMMO_TYPE_556:
+			return item_Ammo556;
+
+		case AMMO_TYPE_308:
+			return item_Ammo338;
+
+		case AMMO_TYPE_ROCKET:
+			return item_AmmoRocket;
+	}
+	return INVALID_ITEM_TYPE;
 }
 
 stock GetWeaponAmmoMax(weaponid)

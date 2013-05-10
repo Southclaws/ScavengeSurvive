@@ -21,12 +21,29 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 
 ptask AntiCheatUpdate[1000](playerid)
 {
+	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
+	{
+		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+		tp_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
+	if(tickcount() - GetPlayerSpawnTick(playerid) < 1000)
+	{
+		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+		tp_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
 		PositionCheck(playerid);
 		WeaponCheck(playerid);
 		SwimFlyCheck(playerid);
 		FastHeightGainCheck(playerid);
+
+		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
+			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
 	}
 	else
 	{
@@ -36,8 +53,7 @@ ptask AntiCheatUpdate[1000](playerid)
 	if(GetPlayerMoney(playerid) > 0)
 		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
 
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
-		BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
+	return;
 }
 
 hook OnPlayerSpawn(playerid)
@@ -47,11 +63,11 @@ hook OnPlayerSpawn(playerid)
 	sf_ReportTick[playerid] = tickcount();
 	hg_ReportTick[playerid] = tickcount();
 	vh_ReportTick[playerid] = tickcount();
-	GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+	GetPlayerSpawnPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 }
 
 
-// Anti-teleport
+// teleport
 
 
 Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -71,7 +87,7 @@ PositionCheck(playerid)
 		IsAutoSaving() ||
 		IsPlayerOnZipline(playerid) ||
 		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
-		tickcount() - GetPlayerServerJoinTick(playerid) < 10000 ||
+		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
 		IsPlayerDead(playerid) ||
 		IsPlayerOnAdminDuty(playerid) ||
 		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)))
@@ -94,17 +110,7 @@ PositionCheck(playerid)
 		Float:distance;
 
 	GetPlayerPos(playerid, x, y, z);
-	if(z < -50.0)
-	{
-		new
-			name[24],
-			reason[32];
 
-		GetPlayerName(playerid, name, 24);
-		format(reason, sizeof(reason), "Below -50.0m in world (Impossible)", distance);
-		ReportPlayer(name, reason, -1);
-		return;
-	}
 	distance = Distance2D(x, y, tp_CurPos[playerid][0], tp_CurPos[playerid][1]);
 
 	if(distance > DETECTION_DISTANCE)
@@ -115,10 +121,10 @@ PositionCheck(playerid)
 			{
 				new
 					name[24],
-					reason[32];
+					reason[128];
 
 				GetPlayerName(playerid, name, 24);
-				format(reason, sizeof(reason), "Moved %.2fm in 1 second", distance);
+				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f to %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], x, y);
 				ReportPlayer(name, reason, -1);
 
 				tp_PosReportTick[playerid] = tickcount();
@@ -133,10 +139,10 @@ PositionCheck(playerid)
 				{
 					new
 						name[24],
-						reason[32];
+						reason[128];
 
 					GetPlayerName(playerid, name, 24);
-					format(reason, sizeof(reason), "Moved %.2fm in 1 second", distance);
+					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f to %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], x, y);
 					ReportPlayer(name, reason, -1);
 
 					tp_PosReportTick[playerid] = tickcount();
@@ -153,7 +159,7 @@ PositionCheck(playerid)
 }
 
 
-// Anti-weapon hack
+// weapon hack
 
 
 
@@ -191,7 +197,7 @@ WeaponCheck(playerid)
 }
 
 
-// Anti-swim-fly
+// swim-fly
 
 
 SwimFlyCheck(playerid)
@@ -247,7 +253,7 @@ SwimFlyCheck(playerid)
 }
 
 
-// Anti-raise
+// raise
 
 
 FastHeightGainCheck(playerid)
@@ -276,7 +282,7 @@ FastHeightGainCheck(playerid)
 }
 
 
-// Anti-vehicle health
+// vehicle health
 
 
 VehicleHealthCheck(playerid)

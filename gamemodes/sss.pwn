@@ -205,7 +205,12 @@ enum
 	d_IssueList,
 	d_Issue,
 	d_DefenseSetPass,
-	d_DefenseEnterPass
+	d_DefenseEnterPass,
+	d_TransferAmmoToGun,
+	d_TransferAmmoToBox,
+	d_TransferAmmoGun2Gun,
+	d_BanList,
+	d_BanInfo
 }
 
 
@@ -427,7 +432,14 @@ ItemType:		item_BoaterHat		= INVALID_ITEM_TYPE,
 ItemType:		item_BowlerHat		= INVALID_ITEM_TYPE,
 // 140
 ItemType:		item_PoliceCap		= INVALID_ITEM_TYPE,
-ItemType:		item_TopHat			= INVALID_ITEM_TYPE;
+ItemType:		item_TopHat			= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo9mm		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo50			= INVALID_ITEM_TYPE,
+ItemType:		item_AmmoBuck		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo556		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo338		= INVALID_ITEM_TYPE,
+ItemType:		item_AmmoRocket		= INVALID_ITEM_TYPE,
+ItemType:		item_MolotovEmpty	= INVALID_ITEM_TYPE;
 
 //=====================Clock and Timers
 new
@@ -538,6 +550,7 @@ Float:	gCurrentVelocity		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
 		tick_ServerJoin			[MAX_PLAYERS],
+		tick_Spawn				[MAX_PLAYERS],
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
@@ -664,6 +677,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Cmds/Dev.pwn"
 #include "../scripts/SSS/Cmds/Duty.pwn"
 #include "../scripts/SSS/Cmds/Report.pwn"
+#include "../scripts/SSS/Cmds/Ban.pwn"
 
 //======================Items
 
@@ -929,7 +943,15 @@ public OnGameModeInit()
 
 	item_PoliceCap		= DefineItemType("Police Cap",		18636,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.318,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
 	item_TopHat			= DefineItemType("Top Hat",			19352,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-	
+	item_Ammo9mm		= DefineItemType("9mm Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo50			= DefineItemType(".50 Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoBuck		= DefineItemType("Buckshot Shells",	2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo556		= DefineItemType("5.56 Rounds",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo338		= DefineItemType(".338 Rounds",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoRocket		= DefineItemType("Rockets",			2061,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_MolotovEmpty	= DefineItemType("Empty Molotov",	344,	ITEM_SIZE_SMALL);
+
+
 	anim_Blunt = DefineAnimSet();
 	anim_Stab = DefineAnimSet();
 
@@ -973,7 +995,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_Explosive,		item_MobilePhone,	item_PhoneBomb);
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
-	DefineItemCombo(item_Bottle,		item_Bandage,		ItemType:18);
+	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);
 
 
@@ -1069,13 +1091,14 @@ public SetRestart(seconds)
 
 RestartGamemode()
 {
+	t:bServerGlobalSettings<Restarting>;
+
 	foreach(new i : Player)
 	{
 		Logout(i);
 		ResetVariables(i);
 	}
 
-	t:bServerGlobalSettings<Restarting>;
 	SendRconCommand("gmx");
 
 	MsgAll(BLUE, " ");
@@ -2231,4 +2254,9 @@ IsPlayerOnAdminDuty(playerid)
 GetPlayerServerJoinTick(playerid)
 {
 	return tick_ServerJoin[playerid];
+}
+
+GetPlayerSpawnTick(playerid)
+{
+	return tick_Spawn[playerid];
 }

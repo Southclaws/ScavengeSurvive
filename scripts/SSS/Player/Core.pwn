@@ -395,8 +395,11 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
+	tick_Spawn[playerid] = tickcount();
+
 	SetPlayerWeather(playerid, gWeatherID);
 	SetPlayerTeam(playerid, 0);
+	ResetPlayerMoney(playerid);
 
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 	{
@@ -494,8 +497,14 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-CMD:bleed(playerid, params[])
+GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
 {
-	t:bPlayerGameSettings[playerid]<Bleeding>;
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	x = gPlayerData[playerid][ply_posX];
+	z = gPlayerData[playerid][ply_posY];
+	x = gPlayerData[playerid][ply_posZ];
+
 	return 1;
 }

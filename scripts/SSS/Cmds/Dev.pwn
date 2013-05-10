@@ -439,24 +439,6 @@ ACMD:setint[3](playerid, params[])
 	return 1;
 }
 
-ACMD:up[3](playerid, params[])
-{
-	new Float:d=float(strval(params)), Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
-	SetPlayerPos(playerid, x, y, z+d);
-	return 1;
-}
-
-ACMD:ford[3](playerid, params[])
-{
-	new Float:d=float(strval(params)), Float:x, Float:y, Float:z, Float:a;
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, a);
-	GetXYFromAngle(x, y, a, d);
-	SetPlayerPos(playerid, x, y, z);
-	return 1;
-}
-
 ACMD:hud[3](playerid, params[])
 {
 	if(bPlayerGameSettings[playerid] & ShowHUD)
@@ -501,6 +483,31 @@ ACMD:vdelete[3](playerid, params[])
 	}
 
 	DestroyVehicle(vehicleid);
+
+	return 1;
+}
+
+ACMD:weather[1](playerid, params[])
+{
+	if(strlen(params) > 2)
+	{
+		for(new i;i<sizeof(WeatherData);i++)
+		{
+			if(strfind(WeatherData[i], params, true) != -1)
+			{
+				foreach(new j : Player)
+				{
+					SetPlayerWeather(j, i);
+				}
+
+				gWeatherID = i;
+				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i]);
+
+				return 1;
+			}
+		}
+		Msg(playerid, RED, " >  Invalid weather!");
+	}
 
 	return 1;
 }

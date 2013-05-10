@@ -398,7 +398,8 @@ public OnHoldActionFinish(playerid)
 			Float:z,
 			Float:angle,
 			ItemType:itemtype = GetItemType(GetPlayerItem(playerid)),
-			type;
+			type,
+			id;
 
 		GetItemPos(def_CurrentDefenseItem[playerid], x, y, z);
 		GetItemRot(def_CurrentDefenseItem[playerid], angle, angle, angle);
@@ -415,11 +416,12 @@ public OnHoldActionFinish(playerid)
 		DestroyItem(def_CurrentDefenseItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
-			CreateDefense(type, x, y, z, angle, DEFENSE_MODE_VERTICAL);
+			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_VERTICAL);
 
 		if(itemtype == item_Hammer)
-			CreateDefense(type, x, y, z, angle, DEFENSE_MODE_HORIZONTAL);
+			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_HORIZONTAL);
 
+		SaveDefenseItem(id);
 		StopBuildingDefense(playerid);
 
 		return 1;
@@ -433,6 +435,7 @@ public OnHoldActionFinish(playerid)
 		{
 			ShowPlayerDialog(playerid, d_DefenseSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
 			def_Data[def_CurrentDefenseEdit[playerid]][def_mode] = DEFENSE_MODE_OPENABLE;
+			SaveDefenseItem(def_CurrentDefenseEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
