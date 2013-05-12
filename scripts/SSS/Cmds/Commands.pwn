@@ -59,6 +59,8 @@ CMD:help(playerid, params[])
 		"#C_WHITE"Server script coded and owned by "#C_GREEN"Southclaw "#C_WHITE"(jaz636@gmail.com) all rights reserved.");
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", str, "Close", "");
+
+	return 1;
 }
 
 CMD:rules(playerid, params[])

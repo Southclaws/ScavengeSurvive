@@ -51,7 +51,7 @@ PlayerSpawnExistingCharacter(playerid)
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
 	SetCameraBehindPlayer(playerid);
-	TogglePlayerControllable(playerid, true);
+	FreezePlayer(playerid, 3000);
 	t:bPlayerGameSettings[playerid]<Spawned>;
 
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
