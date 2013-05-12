@@ -90,7 +90,8 @@ PositionCheck(playerid)
 		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
 		IsPlayerDead(playerid) ||
 		IsPlayerOnAdminDuty(playerid) ||
-		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)))
+		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		tp_DetectDelay[playerid] = tickcount();
@@ -260,6 +261,18 @@ FastHeightGainCheck(playerid)
 {
 	if(tickcount() - hg_ReportTick[playerid] < 10000)
 		return 0;
+
+	if(IsValidVehicle(GetPlayerSurfingVehicleID(playerid)))
+	{
+		hg_ReportTick[playerid] = tickcount();
+		return 0;
+	}
+
+	if(IsValidObject(GetPlayerSurfingObjectID(playerid)))
+	{
+		hg_ReportTick[playerid] = tickcount();
+		return 0;
+	}
 
 	new Float:z;
 

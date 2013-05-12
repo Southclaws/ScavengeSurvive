@@ -119,6 +119,9 @@ StopEating(playerid)
 
 ptask FoodUpdate[1000](playerid)
 {
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return;
+
 	new
 		animidx = GetPlayerAnimationIndex(playerid),
 		k,
@@ -163,8 +166,6 @@ ptask FoodUpdate[1000](playerid)
 		gPlayerFP[playerid] -= IDLE_FOOD_RATE;
 	}
 
-
-
 	if(gPlayerFP[playerid] > 100.0)
 		gPlayerFP[playerid] = 100.0;
 
@@ -202,4 +203,6 @@ ptask FoodUpdate[1000](playerid)
 		PlayerTextDrawShow(playerid, HungerBarBackground);
 		PlayerTextDrawShow(playerid, HungerBarForeground);
 	}
+
+	return;
 }
