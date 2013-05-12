@@ -188,6 +188,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				itemid = GetContainerSlotItem(containerid, slot);
 				weaponid = GetPlayerCurrentWeapon(playerid);
 
+				if(amount > GetItemExtraData(itemid))
+				{
+					DisplayContainerInventory(playerid, containerid);
+					return 1;
+				}
+
 				if(weaponid > 0)
 				{
 					if(GetWeaponAmmoTypeItem(weaponid) != GetItemType(itemid) && GetWeaponAmmoType(_:GetItemType(itemid)) != GetWeaponAmmoType(weaponid))
@@ -241,15 +247,18 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				itemid = GetContainerSlotItem(containerid, slot);
 				total = GetItemExtraData(itemid);
 
-				if(amount <= total)
+				if(amount > total)
 				{
-					helditem = GetPlayerItem(playerid);
+					DisplayContainerInventory(playerid, containerid);
+					return 1;
+				}
 
-					if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)) || GetWeaponAmmoType(_:GetItemType(helditem)) == GetWeaponAmmoType(_:GetItemType(itemid)))
-					{
-						SetItemExtraData(helditem, GetItemExtraData(helditem) + amount);
-						SetItemExtraData(itemid, total - amount);
-					}
+				helditem = GetPlayerItem(playerid);
+
+				if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)) || GetWeaponAmmoType(_:GetItemType(helditem)) == GetWeaponAmmoType(_:GetItemType(itemid)))
+				{
+					SetItemExtraData(helditem, GetItemExtraData(helditem) + amount);
+					SetItemExtraData(itemid, total - amount);
 				}
 			}
 		}

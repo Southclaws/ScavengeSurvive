@@ -540,6 +540,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 			if(1000 <= pass < 10000)
 			{
 				def_Data[def_CurrentDefenseEdit[playerid]][def_pass] = pass;
+				SaveDefenseItem(def_CurrentDefenseEdit[playerid]);
 			}
 			else
 			{

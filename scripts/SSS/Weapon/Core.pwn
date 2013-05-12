@@ -194,7 +194,12 @@ stock IsWeaponOneShot(weaponid)
 
 stock GetAmmunitionRemainder(weaponid, startammo, ammunition)
 {
-	return startammo + ammunition - (GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
+	new remainder = startammo + ammunition - (GetWeaponAmmoMax(weaponid) * GetWeaponMagSize(weaponid));
+
+	if(remainder < 0)
+		return 0;
+
+	return remainder;
 }
 
 

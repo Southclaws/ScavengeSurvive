@@ -348,7 +348,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					RemovePlayerHat(playerid);
 
 					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					if(AddItemToContainer(containerid, itemid, playerid))
+					if(AddItemToContainer(containerid, itemid, playerid) == 1)
 					{
 						UpdatePlayerGear(playerid);
 						DisplayContainerInventory(playerid, containerid);
@@ -378,7 +378,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					RemovePlayerHat(playerid);
 
 					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					if(AddItemToInventory(playerid, itemid))
+					if(AddItemToInventory(playerid, itemid) == 1)
 					{
 						UpdatePlayerGear(playerid);
 						DisplayPlayerInventory(playerid);
@@ -463,7 +463,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				{
 					new str[CNT_MAX_NAME + 17];
 
-					if(AddItemToContainer(containerid, GetPlayerItem(playerid), playerid))
+					if(AddItemToContainer(containerid, GetPlayerItem(playerid), playerid) == 1)
 					{
 						UpdatePlayerGear(playerid);
 						DisplayContainerInventory(playerid, containerid);
@@ -490,7 +490,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				{
 					if(ConvertPlayerWeaponToItem(playerid))
 					{
-						if(AddItemToInventory(playerid, GetPlayerItem(playerid)))
+						if(AddItemToInventory(playerid, GetPlayerItem(playerid)) == 1)
 						{
 							UpdatePlayerGear(playerid);
 							DisplayPlayerInventory(playerid);
@@ -541,6 +541,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	if(playertextid == GearSlot_Hols[UI_ELEMENT_TILE])
 	{
 		new itemid = GetPlayerHolsterItem(playerid);
+
 		if(IsValidItem(itemid))
 		{
 			new
@@ -574,19 +575,19 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
 				{
 					ShowActionText(playerid, "That item is too big for your inventory", 3000, 140);
+					return 1;
+				}
+
+				if(AddItemToInventory(playerid, itemid) == 1)
+				{
+					RemovePlayerHolsterItem(playerid);
+					ShowActionText(playerid, "Item added to inventory", 3000, 150);
 				}
 				else
 				{
-					if(AddItemToInventory(playerid, itemid))
-					{
-						RemovePlayerHolsterItem(playerid);
-						ShowActionText(playerid, "Item added to inventory", 3000, 150);
-					}
-					else
-					{
-						ShowActionText(playerid, "Inventory full", 3000, 100);
-					}
+					ShowActionText(playerid, "Inventory full", 3000, 100);
 				}
+
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
 			}
