@@ -1,4 +1,4 @@
-#define MAX_AMMO_TYPE		(9)
+#define MAX_AMMO_TYPE		(7)
 #define MAX_AMMO_TYPE_NAME	(9)
 
 
@@ -20,10 +20,8 @@ new AmmoTypeName[MAX_AMMO_TYPE][MAX_AMMO_TYPE_NAME]=
 	".50",		// 2037
 	"Buckshot",	// 2038
 	"5.56",		// 2040
-	".308",		// 2039
-	"Rocket",	// 2061
-	"Fuel",		// item_GasCan
-	"5mm"		// 3016
+	".338",		// 2039
+	"Rocket"	// 2061
 };
 
 stock GetAmmoTypeName(ammotype, name[])
@@ -111,7 +109,7 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 stock GetWeaponAmmoType(weaponid)
 {
 	if(!(0 < weaponid < MAX_WEAPONS))
-		return 0;
+		return AMMO_TYPE_NONE;
 
 	return WeaponAmmoData[weaponid][weapon_ammoType];
 }

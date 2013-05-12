@@ -341,7 +341,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					GiveWorldItemToPlayer(playerid, itemid);
 					UpdatePlayerGear(playerid);
 
-					ShowMsgBox(playerid, "Hat removed", 3000, 150);
+					ShowActionText(playerid, "Hat removed", 3000, 150);
 				}
 				else
 				{
@@ -353,7 +353,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						UpdatePlayerGear(playerid);
 						DisplayContainerInventory(playerid, containerid);
 
-						ShowMsgBox(playerid, "Hat removed", 3000, 150);
+						ShowActionText(playerid, "Hat removed", 3000, 150);
 					}
 					else
 					{
@@ -371,7 +371,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					GiveWorldItemToPlayer(playerid, itemid);
 					UpdatePlayerGear(playerid);
 
-					ShowMsgBox(playerid, "Hat removed", 3000, 150);
+					ShowActionText(playerid, "Hat removed", 3000, 150);
 				}
 				else
 				{
@@ -383,7 +383,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						UpdatePlayerGear(playerid);
 						DisplayPlayerInventory(playerid);
 
-						ShowMsgBox(playerid, "Hat removed", 3000, 150);
+						ShowActionText(playerid, "Hat removed", 3000, 150);
 					}
 					else
 					{
@@ -410,7 +410,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				if(!WillItemTypeFitInContainer(containerid, GetItemType(itemid)))
 				{
-					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
+					ShowActionText(playerid, "Item won't fit", 3000, 150);
 					return 1;
 				}
 
@@ -422,15 +422,15 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
 				{
-					ShowMsgBox(playerid, "Item too big", 3000, 140);
+					ShowActionText(playerid, "Item too big", 3000, 140);
 				}
 				else
 				{
 					if(AddItemToInventory(playerid, itemid) == 1)
-						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
+						ShowActionText(playerid, "Item added to inventory", 3000, 150);
 
 					else
-						ShowMsgBox(playerid, "Inventory full", 3000, 100);
+						ShowActionText(playerid, "Inventory full", 3000, 100);
 				}
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
@@ -448,14 +448,14 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 					GetContainerName(containerid, str);
 					strcat(str, " full");
-					ShowMsgBox(playerid, str, 3000, 150);
+					ShowActionText(playerid, str, 3000, 150);
 
 					return 1;
 				}
 
 				if(!WillItemTypeFitInContainer(containerid, ItemType:GetPlayerCurrentWeapon(playerid)))
 				{
-					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
+					ShowActionText(playerid, "Item won't fit", 3000, 150);
 					return 1;
 				}
 
@@ -470,7 +470,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 						GetContainerName(containerid, str);
 						format(str, sizeof(str), "Weapon added to %s", str, 150);
-						ShowMsgBox(playerid, str, 3000, 150);
+						ShowActionText(playerid, str, 3000, 150);
 					}
 				}
 			}
@@ -478,13 +478,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsPlayerInventoryFull(playerid))
 				{
-					ShowMsgBox(playerid, "Inventory full", 3000, 150);
+					ShowActionText(playerid, "Inventory full", 3000, 150);
 					return 1;
 				}
 
 				if(GetItemTypeSize(ItemType:GetPlayerCurrentWeapon(playerid)) != ITEM_SIZE_SMALL)
 				{
-					ShowMsgBox(playerid, "Item too big", 3000, 140);
+					ShowActionText(playerid, "Item too big", 3000, 140);
 				}
 				else
 				{
@@ -494,12 +494,12 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						{
 							UpdatePlayerGear(playerid);
 							DisplayPlayerInventory(playerid);
-							ShowMsgBox(playerid, "Weapon added to inventory", 3000, 150);
+							ShowActionText(playerid, "Weapon added to inventory", 3000, 150);
 						}
 						else
 						{
 							ConvertPlayerItemToWeapon(playerid);
-							ShowMsgBox(playerid, "Weapon won't fit", 3000, 150);
+							ShowActionText(playerid, "Weapon won't fit", 3000, 150);
 						}
 					}
 				}
@@ -554,13 +554,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 					new str[CNT_MAX_NAME + 6];
 					GetContainerName(containerid, str);
 					strcat(str, " full");
-					ShowMsgBox(playerid, str, 3000, 150);
+					ShowActionText(playerid, str, 3000, 150);
 					return 1;
 				}
 
 				if(!WillItemTypeFitInContainer(containerid, itemtype))
 				{
-					ShowMsgBox(playerid, "Item won't fit", 3000, 150);
+					ShowActionText(playerid, "Item won't fit", 3000, 150);
 					return 1;
 				}
 
@@ -573,18 +573,18 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
 				{
-					ShowMsgBox(playerid, "That item is too big for your inventory", 3000, 140);
+					ShowActionText(playerid, "That item is too big for your inventory", 3000, 140);
 				}
 				else
 				{
 					if(AddItemToInventory(playerid, itemid))
 					{
 						RemovePlayerHolsterItem(playerid);
-						ShowMsgBox(playerid, "Item added to inventory", 3000, 150);
+						ShowActionText(playerid, "Item added to inventory", 3000, 150);
 					}
 					else
 					{
-						ShowMsgBox(playerid, "Inventory full", 3000, 100);
+						ShowActionText(playerid, "Inventory full", 3000, 100);
 					}
 				}
 				UpdatePlayerGear(playerid);
@@ -655,14 +655,14 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 
 					GetContainerName(inv_TempContainerID[playerid], name);
 					format(str, sizeof(str), "%s full", name);
-					ShowMsgBox(playerid, str, 3000, 100);
+					ShowActionText(playerid, str, 3000, 100);
 					DisplayContainerInventory(playerid, containerid);
 					return 0;
 				}
 
 				if(!WillItemTypeFitInContainer(inv_TempContainerID[playerid], GetItemType(itemid)))
 				{
-					ShowMsgBox(playerid, "Item won't fit", 3000, 140);
+					ShowActionText(playerid, "Item won't fit", 3000, 140);
 					DisplayContainerInventory(playerid, containerid);
 					return 0;
 				}

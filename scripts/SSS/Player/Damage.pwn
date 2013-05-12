@@ -4,7 +4,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		new str[64];
 		format(str, 64, "took %.2f~n~from %p~n~weap %d", amount, issuerid, weaponid);
-		ShowMsgBox(playerid, str, 1000, 120);
+		ShowActionText(playerid, str, 1000, 120);
 	}
 
 	if(issuerid == INVALID_PLAYER_ID)
@@ -201,7 +201,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	{
 		new str[32];
 		format(str, 32, "did %.2f", hploss);
-		ShowMsgBox(playerid, str, 1000, 120);
+		ShowActionText(playerid, str, 1000, 120);
 	}
 	
 	return 1;

@@ -26,10 +26,15 @@ hook OnGameModeInit()
 
 PlayerSpawnExistingCharacter(playerid)
 {
+	new Float:z;
+
+	if(gPlayerData[playerid][ply_posX] > 3000.0 || gPlayerData[playerid][ply_posX] < -3000.0 && gPlayerData[playerid][ply_posY] > 3000.0 || gPlayerData[playerid][ply_posY])
+		z += 2.0;
+
 	SetPlayerPos(playerid,
 		gPlayerData[playerid][ply_posX],
 		gPlayerData[playerid][ply_posY],
-		gPlayerData[playerid][ply_posZ]);
+		gPlayerData[playerid][ply_posZ] + z);
 
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);

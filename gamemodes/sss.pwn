@@ -1642,7 +1642,6 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				buffer[MAX_PASSWORD_LEN];
 
 			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
-			GivePlayerMoney(playerid, 500);
 
 			CreateNewUserfile(playerid, buffer);
 
@@ -2233,7 +2232,7 @@ timer UnfreezePlayer[time](playerid, time)
 forward sffa_msgbox(playerid, message[], time, width);
 public sffa_msgbox(playerid, message[], time, width)
 {
-	ShowMsgBox(playerid, message, time, width);
+	ShowActionText(playerid, message, time, width);
 }
 
 IsPlayerDead(playerid)

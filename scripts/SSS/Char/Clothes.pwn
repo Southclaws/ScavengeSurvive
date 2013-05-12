@@ -1,3 +1,4 @@
+
 #include <YSI\y_hooks>
 
 
@@ -150,7 +151,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				StartUsingClothes(playerid, itemid);
 
 			else
-				ShowMsgBox(playerid, "Wrong gender for clothes", 3000, 130);
+				ShowActionText(playerid, "Wrong gender for clothes", 3000, 130);
 		}
 	}
 	if(oldkeys == 16)

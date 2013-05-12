@@ -90,11 +90,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 					{
 						bbq_Data[i][bbq_fuel] += 10;
 						SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
-						ShowMsgBox(playerid, "1 Liter of petrol added", 3000);
+						ShowActionText(playerid, "1 Liter of petrol added", 3000);
 					}
 					else
 					{
-						ShowMsgBox(playerid, "Petrol can empty", 3000);
+						ShowActionText(playerid, "Petrol can empty", 3000);
 					}
 				}
 
@@ -118,7 +118,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][0] = itemid;
-						ShowMsgBox(playerid, "Food added", 3000);
+						ShowActionText(playerid, "Food added", 3000);
 					}
 					else if(bbq_Data[i][bbq_grillItem][1] == INVALID_ITEM_ID)
 					{
@@ -129,7 +129,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][1] = itemid;
-						ShowMsgBox(playerid, "Food added", 3000);
+						ShowActionText(playerid, "Food added", 3000);
 					}
 					else
 					{
@@ -160,7 +160,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						z - 0.668,
 						0.0, 0.0, r);
 
-					ShowMsgBox(playerid, "BBQ Lit", 3000);
+					ShowActionText(playerid, "BBQ Lit", 3000);
 					bbq_CookTimer[i] = defer bbq_FinishCooking(i);
 					bbq_Data[i][bbq_state] = COOKER_STATE_COOK;
 				}

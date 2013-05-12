@@ -378,7 +378,7 @@ timer TurretRotationUpdate[100](playerid)
 	if(camR != tur_rotation[id] || camE != tur_elevation[id])SetTurretAngles(id, camR, camE);
 
 //	format(str, 128, "Rotation: %f~n~Elevation: %f~n~Velocity: %f", camR, camE, tur_velocity[id]);
-//	ShowMsgBox(tur_userID[id], str, 0, 200);
+//	ShowActionText(tur_userID[id], str, 0, 200);
 }
 
 

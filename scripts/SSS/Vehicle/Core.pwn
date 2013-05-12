@@ -44,7 +44,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						}
 						else
 						{
-							ShowMsgBox(playerid, "You need another tool", 3000, 100);
+							ShowActionText(playerid, "You need another tool", 3000, 100);
 						}
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
@@ -57,7 +57,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						}
 						else
 						{
-							ShowMsgBox(playerid, "You need another tool", 3000, 100);
+							ShowActionText(playerid, "You need another tool", 3000, 100);
 						}
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
@@ -70,7 +70,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						}
 						else
 						{
-							ShowMsgBox(playerid, "You need another tool", 3000, 100);
+							ShowActionText(playerid, "You need another tool", 3000, 100);
 						}
 					}
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
@@ -90,7 +90,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}
 					else
 					{
-						ShowMsgBox(playerid, "You don't have the right tool", 3000, 100);
+						ShowActionText(playerid, "You don't have the right tool", 3000, 100);
 					}
 				}
 				if(155.0 < angle < 205.0)

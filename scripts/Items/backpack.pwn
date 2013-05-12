@@ -272,11 +272,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(IsContainerFull(containerid))
 					{
-						ShowMsgBox(playerid, "Bag full", 3000, 150);
+						ShowActionText(playerid, "Bag full", 3000, 150);
 					}
 					else
 					{
-						ShowMsgBox(playerid, "Item added to bag", 3000, 150);
+						ShowActionText(playerid, "Item added to bag", 3000, 150);
 						ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
 						defer bag_PutItemIn(playerid, itemid, containerid);
 					}
@@ -492,7 +492,7 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 
 				GetContainerName(containerid, name);
 				format(str, sizeof(str), "%s full", name);
-				ShowMsgBox(playerid, str, 3000, 100);
+				ShowActionText(playerid, str, 3000, 100);
 				DisplayPlayerInventory(playerid);
 				return 0;
 			}
@@ -559,14 +559,14 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 
 				GetContainerName(bagcontainerid, name);
 				format(str, sizeof(str), "%s full", name);
-				ShowMsgBox(playerid, str, 3000, 100);
+				ShowActionText(playerid, str, 3000, 100);
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
 
 			if(!WillItemTypeFitInContainer(bagcontainerid, GetItemType(itemid)))
 			{
-				ShowMsgBox(playerid, "Item won't fit", 3000, 140);
+				ShowActionText(playerid, "Item won't fit", 3000, 140);
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}

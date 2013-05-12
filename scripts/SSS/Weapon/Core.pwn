@@ -444,17 +444,20 @@ forward wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerRemoveFromInventory(playerid, slotid)
 {
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetInventorySlotItem(playerid, slotid);
-	itemtype = GetItemType(itemid);
-
-	if(0 < _:itemtype < WEAPON_PARACHUTE)
+	if(!IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
-		SetPlayerWeapon(playerid, _:itemtype, GetItemExtraData(itemid));
-		DestroyItem(itemid);
+		new
+			itemid,
+			ItemType:itemtype;
+
+		itemid = GetInventorySlotItem(playerid, slotid);
+		itemtype = GetItemType(itemid);
+
+		if(0 < _:itemtype < WEAPON_PARACHUTE)
+		{
+			SetPlayerWeapon(playerid, _:itemtype, GetItemExtraData(itemid));
+			DestroyItem(itemid);
+		}
 	}
 
 	return CallLocalFunction("wep_OnPlayerRemoveFromInv", "dd", playerid, slotid);
@@ -478,9 +481,9 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 		itemid = GetContainerSlotItem(containerid, slotid);
 		itemtype = GetItemType(itemid);
 
-		if(0 < _:itemtype < WEAPON_PARACHUTE)
+		if(0 < _:itemtype < 46)
 		{
-			SetPlayerWeapon(playerid, _:itemtype, GetItemExtraData(itemid));
+			SetPlayerWeapon(playerid, _:GetItemType(itemid), GetItemExtraData(itemid));
 			DestroyItem(itemid);
 		}
 	}

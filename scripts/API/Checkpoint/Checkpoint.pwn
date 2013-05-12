@@ -137,7 +137,7 @@ stock IsValidCheckPoint(id)
 
 Internal_ActivateCheckpoint(playerid, id)
 {
-	if(CheckPointData[id][cp_boolSet]&b_msg)ShowMsgBox(playerid, CheckPointData[id][cp_msg], CheckPointData[id][cp_optData][i_msgTime]);
+	if(CheckPointData[id][cp_boolSet]&b_msg)ShowActionText(playerid, CheckPointData[id][cp_msg], CheckPointData[id][cp_optData][i_msgTime]);
 	OnPlayerActivateCheckpoint(playerid, id);
 	if(CheckPointData[id][cp_boolSet]&b_delete)DestroyCheckPoint(id);
 }
@@ -147,7 +147,7 @@ Internal_ActivateCheckpoint(playerid, id)
 stock SetCheckPointMessage(buttonid, Msg[])
 {
 	strcpy(CheckPointData[id][cp_msg], Msg);
-	PlayerLoop(i)if(bPlayerGameSettings[i]&vMsgBox)PlayerTextDrawSetString(i, MsgBox, Msg);
+	PlayerLoop(i)if(bPlayerGameSettings[i]&vActionText)PlayerTextDrawSetString(i, ActionText, Msg);
 }
 
 

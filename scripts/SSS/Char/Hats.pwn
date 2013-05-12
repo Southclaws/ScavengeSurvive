@@ -137,14 +137,17 @@ TogglePlayerHeadwear(playerid, bool:toggle)
 
 public OnPlayerUseItem(playerid, itemid)
 {
-	foreach(new i : hat_Index)
+	if(hat_CurrentHat[playerid] == -1)
 	{
-		if(GetItemType(itemid) == hat_ItemType[i])
+		foreach(new i : hat_Index)
 		{
-			SetPlayerHat(playerid, i);
-			DestroyItem(itemid);
-			CancelPlayerMovement(playerid);
-			break;
+			if(GetItemType(itemid) == hat_ItemType[i])
+			{
+				SetPlayerHat(playerid, i);
+				DestroyItem(itemid);
+				CancelPlayerMovement(playerid);
+				break;
+			}
 		}
 	}
 

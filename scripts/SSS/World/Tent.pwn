@@ -178,7 +178,7 @@ public OnButtonPress(playerid, buttonid)
 				tnt_CurrentTentID[playerid] = i;
 				StartHoldAction(playerid, 15000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				break;
+				return 1;
 			}
 		}
 	}
@@ -192,6 +192,21 @@ public OnButtonPress(playerid, buttonid)
 #endif
 #define OnButtonPress tnt_OnButtonPress
 forward tnt_OnButtonPress(playerid, buttonid);
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(oldkeys & 16)
+	{
+		if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
+		{
+			StopHoldAction(playerid);
+			ClearAnimations(playerid);
+			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+		}
+	}
+
+	return 1;
+}
 
 public OnHoldActionFinish(playerid)
 {

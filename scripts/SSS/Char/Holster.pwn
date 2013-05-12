@@ -224,11 +224,11 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 		CreateItemInWorld(curitem);
 		GiveWorldItemToPlayer(playerid, curitem);
 		ConvertPlayerItemToWeapon(playerid);
-		ShowMsgBox(playerid, "Swapped", 3000, 70);
+		ShowActionText(playerid, "Swapped", 3000, 70);
 	}
 	else
 	{
-		ShowMsgBox(playerid, "Holstered", 3000, 70);
+		ShowActionText(playerid, "Holstered", 3000, 70);
 	}
 
 	return 1;
@@ -271,7 +271,7 @@ timer UnholsterItemDelay[time](playerid, time)
 	ConvertPlayerItemToWeapon(playerid);
 
 	RemovePlayerHolsterItem(playerid);
-	ShowMsgBox(playerid, "Equipped", 3000, 70);
+	ShowActionText(playerid, "Equipped", 3000, 70);
 
 	return 1;
 }

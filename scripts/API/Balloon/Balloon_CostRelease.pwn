@@ -100,7 +100,7 @@ public OnButtonPress(playerid, buttonid)
 				BLN_Frame[i]=BLN_FRAME_LIFTOFF;
 				MoveBalloon(i);
 			}
-			else ShowMsgBox(playerid, "Balloon isn't here yet", 3000);
+			else ShowActionText(playerid, "Balloon isn't here yet", 3000);
 			break;
 		}
 	}

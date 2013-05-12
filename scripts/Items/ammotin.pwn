@@ -92,7 +92,7 @@ timer ConvertOldAmmoTin[5](itemid)
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(IsValidItem(GetPlayerItem(playerid)) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
+	if(IsWeaponClipBased(_:GetItemType(GetPlayerItem(playerid))) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
 	{
 		new
 			itemid,
@@ -109,7 +109,7 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 		else if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)))
 			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo to ammo tin");
 
-		else if(GetItemType(itemid) == ItemType:weaponid)
+		else if(GetWeaponAmmoType(_:GetItemType(itemid)) == GetWeaponAmmoType(weaponid))
 			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo to gun");
 
 		else if(GetItemType(helditem) == GetItemType(itemid))
@@ -129,7 +129,7 @@ forward ammo_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(IsValidItem(GetPlayerItem(playerid)) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
+	if(IsWeaponClipBased(_:GetItemType(GetPlayerItem(playerid))) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
 	{
 		if(option == ammo_ContainerOption[playerid])
 		{
@@ -148,7 +148,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 			else if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)))
 				ShowPlayerDialog(playerid, d_TransferAmmoToBox, DIALOG_STYLE_INPUT, "Transfer Ammo to ammo tin", "Enter the amount of ammo to transfer", "Accept", "Cancel");
 
-			else if(GetItemType(itemid) == ItemType:weaponid)
+			else if(GetWeaponAmmoType(_:GetItemType(itemid)) == GetWeaponAmmoType(weaponid))
 				ShowPlayerDialog(playerid, d_TransferAmmoToGun, DIALOG_STYLE_INPUT, "Transfer Ammo to gun", "Enter the amount of ammo to transfer", "Accept", "Cancel");
 
 			else if(GetItemType(helditem) == GetItemType(itemid))
@@ -190,7 +190,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				if(weaponid > 0)
 				{
-					if(GetWeaponAmmoTypeItem(weaponid) != GetItemType(itemid) && GetItemType(itemid) != ItemType:weaponid)
+					if(GetWeaponAmmoTypeItem(weaponid) != GetItemType(itemid) && GetWeaponAmmoType(_:GetItemType(itemid)) != GetWeaponAmmoType(weaponid))
 					{
 						DisplayContainerInventory(playerid, containerid);
 						return 1;
@@ -203,7 +203,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					weaponid = _:GetItemType(GetPlayerItem(playerid));
 
-					if(GetWeaponAmmoTypeItem(weaponid) != GetItemType(itemid) && GetItemType(itemid) != ItemType:weaponid)
+					if(GetWeaponAmmoTypeItem(weaponid) != GetItemType(itemid) && GetWeaponAmmoType(_:GetItemType(itemid)) != GetWeaponAmmoType(weaponid))
 					{
 						DisplayContainerInventory(playerid, containerid);
 						return 1;
@@ -245,7 +245,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				{
 					helditem = GetPlayerItem(playerid);
 
-					if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)) || GetItemType(helditem) == GetItemType(itemid))
+					if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)) || GetWeaponAmmoType(_:GetItemType(helditem)) == GetWeaponAmmoType(_:GetItemType(itemid)))
 					{
 						SetItemExtraData(helditem, GetItemExtraData(helditem) + amount);
 						SetItemExtraData(itemid, total - amount);

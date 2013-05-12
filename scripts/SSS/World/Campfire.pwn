@@ -216,11 +216,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				{
 					if(cmp_Data[fireid][cmp_fueled])
 					{
-						ShowMsgBox(playerid, "Campfire already fueled");
+						ShowActionText(playerid, "Campfire already fueled");
 					}
 					else
 					{
-						ShowMsgBox(playerid, "1L of petrol added");
+						ShowActionText(playerid, "1L of petrol added");
 						cmp_Data[fireid][cmp_fueled] = 1;
 					}
 				}
@@ -289,7 +289,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 						cmp_Data[fireid][cmp_foodItem] = itemid;
 						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
-						ShowMsgBox(playerid, "Food added", 3000);
+						ShowActionText(playerid, "Food added", 3000);
 					}
 				}
 			}

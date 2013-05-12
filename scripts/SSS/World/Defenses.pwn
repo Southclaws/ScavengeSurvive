@@ -54,12 +54,16 @@ Iterator:	def_Index<MAX_DEFENSE>;
 static
 			def_CurrentDefenseItem[MAX_PLAYERS],
 			def_CurrentDefenseEdit[MAX_PLAYERS],
+			def_CurrentDefenseMove[MAX_PLAYERS],
 			def_CurrentDefenseOpen[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
 	def_CurrentDefenseItem[playerid] = INVALID_ITEM_ID;
+	def_CurrentDefenseEdit[playerid] = -1;
+	def_CurrentDefenseMove[playerid] = -1;
+	def_CurrentDefenseOpen[playerid] = -1;
 }
 
 
@@ -136,10 +140,10 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	}
 
 	if(mode == DEFENSE_MODE_OPENABLE)
-		def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], ""KEYTEXT_INTERACT" to open");
+		def_Data[id][def_buttonId] = CreateButton(x, y, z, ""KEYTEXT_INTERACT" to open", .areasize = 1.5);
 
 	else
-		def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], ""KEYTEXT_INTERACT" to modify");
+		def_Data[id][def_buttonId] = CreateButton(x, y, z, ""KEYTEXT_INTERACT" to modify", .areasize = 1.5);
 
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
@@ -187,7 +191,62 @@ stock DestroyDefense(defenseid)
 	return next;
 }
 
-OpenDefense(defenseid)
+/*
+EditDefense(playerid, defenseid)
+{
+	if(!Iter_Contains(def_Index, defenseid))
+		return 0;
+
+	TogglePlayerControllable(playerid, false);
+	Streamer_Update(playerid);
+	EditDynamicObject(playerid, def_Data[defenseid][def_objectId]);
+	def_CurrentDefenseMove[playerid] = defenseid;
+
+	return 1;
+}
+*/
+
+public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	if(def_CurrentDefenseMove[playerid] != -1)
+	{
+		if(objectid == def_Data[def_CurrentDefenseMove[playerid]][def_objectId])
+		{
+			if(response == 1)
+			{
+				new filename[64];
+
+				format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ], def_Data[def_CurrentDefenseMove[playerid]][def_rotZ]);
+				fremove(filename);
+
+				def_Data[def_CurrentDefenseMove[playerid]][def_posX] = x;
+				def_Data[def_CurrentDefenseMove[playerid]][def_posY] = y;
+				def_Data[def_CurrentDefenseMove[playerid]][def_posZ] = z;
+				SaveDefenseItem(def_CurrentDefenseMove[playerid]);
+				TogglePlayerControllable(playerid, true);
+			}
+			if(response == 2)
+			{
+				if(Distance(x, y, z, def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ]) > 2.0)
+				{
+					CancelEdit(playerid);
+					SetDynamicObjectPos(objectid, def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ]);
+					defer RetryEdit(playerid, objectid);
+					return 1;
+				}
+			}
+		}
+	}
+
+	return 1;
+}
+
+timer RetryEdit[100](playerid, objectid)
+{
+	EditDynamicObject(playerid, objectid);
+}
+
+timer OpenDefense[1500](defenseid)
 {
 	MoveDynamicObject(def_Data[defenseid][def_objectId],
 		def_Data[defenseid][def_posX],
@@ -199,7 +258,7 @@ OpenDefense(defenseid)
 
 	def_Data[defenseid][def_open] = true;
 }
-CloseDefense(defenseid)
+timer CloseDefense[1500](defenseid)
 {
 	MoveDynamicObject(def_Data[defenseid][def_objectId],
 		def_Data[defenseid][def_posX],
@@ -292,7 +351,7 @@ StartBuildingDefense(playerid, itemid)
 	{
 		if(!def_TypeData[type][def_buildVertical])
 		{
-			ShowMsgBox(playerid, "You cannot build that part vertically.", 6000);
+			ShowActionText(playerid, "You cannot build that part vertically.", 6000);
 			return 0;
 		}
 	}
@@ -301,7 +360,7 @@ StartBuildingDefense(playerid, itemid)
 	{
 		if(!def_TypeData[type][def_buildHorizont])
 		{
-			ShowMsgBox(playerid, "You cannot build that part horizontally.", 6000);
+			ShowActionText(playerid, "You cannot build that part horizontally.", 6000);
 			return 0;
 		}
 	}
@@ -347,7 +406,7 @@ public OnButtonPress(playerid, buttonid)
 			{
 				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
-				if(155.0 < angle < 205.0)
+				if(90.0 < angle < 270.0)
 				{	
 					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 10000);
@@ -360,7 +419,7 @@ public OnButtonPress(playerid, buttonid)
 			{
 				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
-				if(155.0 < angle < 205.0)
+				if(90.0 < angle < 270.0)
 				{	
 					def_CurrentDefenseEdit[playerid] = i;
 					StartHoldAction(playerid, 6000);
@@ -415,14 +474,17 @@ public OnHoldActionFinish(playerid)
 
 		DestroyItem(def_CurrentDefenseItem[playerid]);
 
+
 		if(itemtype == item_Screwdriver)
 			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_VERTICAL);
 
 		if(itemtype == item_Hammer)
 			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_HORIZONTAL);
 
+
 		SaveDefenseItem(id);
 		StopBuildingDefense(playerid);
+		//EditDefense(playerid, id);
 
 		return 1;
 	}
@@ -453,8 +515,9 @@ public OnHoldActionFinish(playerid)
 			ClearAnimations(playerid);
 			def_CurrentDefenseEdit[playerid] = -1;
 		}
-	}
 
+		return 1;
+	}
 
 	return CallLocalFunction("def_OnHoldActionFinish", "d", playerid);
 }
@@ -494,10 +557,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 			if(def_Data[def_CurrentDefenseOpen[playerid]][def_pass] == pass)
 			{
 				if(def_Data[def_CurrentDefenseOpen[playerid]][def_open])
-					CloseDefense(def_CurrentDefenseOpen[playerid]);
+					defer CloseDefense(def_CurrentDefenseOpen[playerid]);
 
 				else
-					OpenDefense(def_CurrentDefenseOpen[playerid]);
+					defer OpenDefense(def_CurrentDefenseOpen[playerid]);
 			}
 			else
 			{

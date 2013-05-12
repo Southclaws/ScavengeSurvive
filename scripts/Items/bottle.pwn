@@ -78,7 +78,7 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 		else
 		{
-			ShowMsgBox(playerid, "Empty", 2000, 70);
+			ShowActionText(playerid, "Empty", 2000, 70);
 		}
 	}
 	return CallLocalFunction("bot_OnPlayerUseItem", "dd", playerid, itemid);

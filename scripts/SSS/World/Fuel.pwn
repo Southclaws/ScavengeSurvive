@@ -114,13 +114,13 @@ StartRefuellingFuelCan(playerid, outletid)
 {
 	if(GetItemType(GetPlayerItem(playerid)) != item_GasCan)
 	{
-		ShowMsgBox(playerid, "You need a petrol can", 3000, 120);
+		ShowActionText(playerid, "You need a petrol can", 3000, 120);
 		return 0;
 	}
 
 	if(fuel_Data[outletid][fuel_amount] <= 0.0)
 	{
-		ShowMsgBox(playerid, "Empty", 3000, 80);
+		ShowActionText(playerid, "Empty", 3000, 80);
 		return 0;
 	}
 

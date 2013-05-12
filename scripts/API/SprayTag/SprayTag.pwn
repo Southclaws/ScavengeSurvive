@@ -79,17 +79,17 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	    {
 	        if(!strcmp(spt_Data[i][spt_text], gPlayerName[playerid]))
 	        {
-				ShowMsgBox(playerid, "You have already tagged this", 3000, 150);
+				ShowActionText(playerid, "You have already tagged this", 3000, 150);
 				return 1;
 			}
 
 			if(GetPlayerWeapon(playerid) == WEAPON_SPRAYCAN)
 			{
-				ShowMsgBox(playerid, "Hold ~b~FIRE ~w~to spray your tag", 3000, 150);
+				ShowActionText(playerid, "Hold ~b~FIRE ~w~to spray your tag", 3000, 150);
 			}
 			else
 			{
-				ShowMsgBox(playerid, "~r~You need a spray can.", 3000, 140);
+				ShowActionText(playerid, "~r~You need a spray can.", 3000, 140);
 			}
 
 	    }
