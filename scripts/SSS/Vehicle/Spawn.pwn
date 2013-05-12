@@ -305,6 +305,15 @@ LoadPlayerVehicles(bool:prints = true)
 					continue;
 				}
 
+				if(GetVehicleType(array[0]) != VTYPE_BOAT)
+				{
+					if(Float:array[3] > 3000.0 ||
+						Float:array[3] < -3000.0 ||
+						Float:array[4] > 3000.0 ||
+						Float:array[4] < -3000.0)
+						array[5] = _:(Float:array[5] + 2.0);
+				}
+
 				vehicleid = CreateVehicle(array[0], Float:array[3], Float:array[4], Float:array[5], Float:array[6], array[7], array[8], 86400);
 
 				strmid(gVehicleOwner[vehicleid], item, 0, strlen(item) - 4);

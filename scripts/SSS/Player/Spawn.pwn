@@ -28,7 +28,10 @@ PlayerSpawnExistingCharacter(playerid)
 {
 	new Float:z;
 
-	if(gPlayerData[playerid][ply_posX] > 3000.0 || gPlayerData[playerid][ply_posX] < -3000.0 && gPlayerData[playerid][ply_posY] > 3000.0 || gPlayerData[playerid][ply_posY])
+	if(gPlayerData[playerid][ply_posX] > 3000.0 ||
+		gPlayerData[playerid][ply_posX] < -3000.0 ||
+		gPlayerData[playerid][ply_posY] > 3000.0 ||
+		gPlayerData[playerid][ply_posY] < -3000.0)
 		z += 2.0;
 
 	SetPlayerPos(playerid,

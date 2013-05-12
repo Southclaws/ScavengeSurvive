@@ -101,7 +101,7 @@ new const VehicleFuelData[212][E_VEHICLE_DATA] =
 	{80.0,	48.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 444		----	Monster
 	{35.0,	10.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 445		----	Admiral
 	{50.0,	31.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_BOAT},		// 446		----	Squalo
-	{80.0,	46.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_HELI_S},		// 447		----	Seasparrow
+	{80.0,	46.0,	loot_CarCivilian,		6,		0.1,	VEHICLE_GROUP_HELI_S},		// 447		----	Seasparrow
 	{8.0,	3.0,	loot_CarCivilian,		6,		1.0,	VEHICLE_GROUP_BIKE},		// 448		----	Pizzaboy
 	{0.0,	0.0,	loot_CarCivilian,		10,		1.0,	VEHICLE_GROUP_UNIQUE},		// 449		----	Tram
 
@@ -125,7 +125,7 @@ new const VehicleFuelData[212][E_VEHICLE_DATA] =
 	{45.0,	11.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 466		----	Glendale
 	{45.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 467		----	Oceanic
 	{10.0,	6.0,	loot_CarCivilian,		8,		1.0,	VEHICLE_GROUP_BIKE},		// 468		----	Sanchez
-	{190.0,	68.0,	loot_CarIndustrial,		16,		0.3,	VEHICLE_GROUP_HELI_S},		// 469		----	Sparrow
+	{190.0,	68.0,	loot_CarIndustrial,		6,		0.3,	VEHICLE_GROUP_HELI_S},		// 469		----	Sparrow
 
 	{94.0,	26.0,	loot_CarMilitary,		12,		1.0,	VEHICLE_GROUP_MILITARY},	// 470		----	Patriot
 	{9.0,	13.0,	loot_CarCivilian,		8,		1.0,	VEHICLE_GROUP_BIKE},		// 471		----	Quad
