@@ -40,13 +40,15 @@ ptask AntiCheatUpdate[1000](playerid)
 		PositionCheck(playerid);
 		WeaponCheck(playerid);
 		SwimFlyCheck(playerid);
-		FastHeightGainCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
 			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
 	}
 	else
 	{
+		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+		tp_DetectDelay[playerid] = tickcount();
+
 		VehicleHealthCheck(playerid);	
 	}
 
@@ -125,7 +127,7 @@ PositionCheck(playerid)
 					reason[128];
 
 				GetPlayerName(playerid, name, 24);
-				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f to %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], x, y);
+				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 				ReportPlayer(name, reason, -1);
 
 				tp_PosReportTick[playerid] = tickcount();
@@ -143,7 +145,7 @@ PositionCheck(playerid)
 						reason[128];
 
 					GetPlayerName(playerid, name, 24);
-					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f to %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], x, y);
+					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 					ReportPlayer(name, reason, -1);
 
 					tp_PosReportTick[playerid] = tickcount();
@@ -166,7 +168,7 @@ PositionCheck(playerid)
 
 WeaponCheck(playerid)
 {
-	if(tickcount() - GetPlayerWeaponSwapTick(playerid))
+	if(tickcount() - GetPlayerWeaponSwapTick(playerid) < 1000)
 		return;
 
 	new
@@ -243,52 +245,11 @@ SwimFlyCheck(playerid)
 				reason[64];
 
 			GetPlayerName(playerid, name, 24);
-			format(reason, sizeof(reason), "Used swimming animation at %.2f, %.2f, %.2f", x, y, z);
+			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
 			ReportPlayer(name, reason, -1);
 
 			sf_ReportTick[playerid] = tickcount();
 		}
-	}
-
-	return 1;
-}
-
-
-// raise
-
-
-FastHeightGainCheck(playerid)
-{
-	if(tickcount() - hg_ReportTick[playerid] < 10000)
-		return 0;
-
-	if(IsValidVehicle(GetPlayerSurfingVehicleID(playerid)))
-	{
-		hg_ReportTick[playerid] = tickcount();
-		return 0;
-	}
-
-	if(IsValidObject(GetPlayerSurfingObjectID(playerid)))
-	{
-		hg_ReportTick[playerid] = tickcount();
-		return 0;
-	}
-
-	new Float:z;
-
-	GetPlayerVelocity(playerid, z, z, z);
-
-	if(!(-1.18 < z < 0.25))
-	{
-		new
-			name[24],
-			reason[64];
-
-		GetPlayerName(playerid, name, 24);
-		format(reason, sizeof(reason), "Traveling at a Z velocity of %.2f", z);
-		ReportPlayer(name, reason, -1);
-
-		hg_ReportTick[playerid] = tickcount();
 	}
 
 	return 1;
@@ -316,6 +277,8 @@ VehicleHealthCheck(playerid)
 		GetPlayerName(playerid, name, 24);
 		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
 		ReportPlayer(name, reason, -1);
+
+		SetVehicleHealth(GetPlayerVehicleID(playerid), 990.0);
 
 		vh_ReportTick[playerid] = tickcount();
 	}

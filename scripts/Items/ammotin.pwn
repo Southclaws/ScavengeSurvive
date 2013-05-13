@@ -90,31 +90,114 @@ timer ConvertOldAmmoTin[5](itemid)
 	}
 }
 
+stock IsItemTypeAmmoTin(ItemType:itemtype)
+{
+	if(itemtype == item_Ammo9mm)
+		return 1;
+
+	if(itemtype == item_Ammo50)
+		return 1;
+
+	if(itemtype == item_AmmoBuck)
+		return 1;
+
+	if(itemtype == item_Ammo556)
+		return 1;
+
+	if(itemtype == item_Ammo338)
+		return 1;
+
+	if(itemtype == item_AmmoRocket)
+		return 1;
+
+	return 0;
+}
+
+stock GetAmmoTinAmmoType(ItemType:itemtype)
+{
+	if(itemtype == item_Ammo9mm)
+		return AMMO_TYPE_9MM;
+
+	if(itemtype == item_Ammo50)
+		return AMMO_TYPE_50;
+
+	if(itemtype == item_AmmoBuck)
+		return AMMO_TYPE_BUCK;
+
+	if(itemtype == item_Ammo556)
+		return AMMO_TYPE_556;
+
+	if(itemtype == item_Ammo338)
+		return AMMO_TYPE_308;
+
+	if(itemtype == item_AmmoRocket)
+		return AMMO_TYPE_ROCKET;
+
+	return AMMO_TYPE_NONE;
+}
+
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(IsWeaponClipBased(_:GetItemType(GetPlayerItem(playerid))) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
+	new selecteditemtype = _:GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid)));
+
+	if(IsWeaponClipBased(selecteditemtype) || IsItemTypeAmmoTin(ItemType:selecteditemtype))
 	{
 		new
-			itemid,
-			weaponid,
-			helditem;
+			helditemtype = _:GetItemType(GetPlayerItem(playerid)),
+			selectedammotype,
+			heldammotype;
 
-		itemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
-		weaponid = GetPlayerCurrentWeapon(playerid);
-		helditem = GetPlayerItem(playerid);
+		helditemtype = _:GetItemType(GetPlayerItem(playerid));
 
-		if(GetItemType(itemid) == GetWeaponAmmoTypeItem(weaponid))
-			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer ammo to gun");
+		if(IsItemTypeAmmoTin(ItemType:helditemtype))
+		{
+			heldammotype = GetAmmoTinAmmoType(ItemType:helditemtype);
+		}
+		else
+		{
+			if(IsWeaponClipBased(helditemtype))
+			{
+				heldammotype = GetWeaponAmmoType(helditemtype);
+			}
+			else
+			{
+				helditemtype = GetPlayerCurrentWeapon(playerid);
 
-		else if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)))
-			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo to ammo tin");
+				if(IsWeaponClipBased(helditemtype))
+				{
+					heldammotype = GetWeaponAmmoType(helditemtype);
+				}
+			}
+		}
 
-		else if(GetWeaponAmmoType(_:GetItemType(itemid)) == GetWeaponAmmoType(weaponid))
-			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo to gun");
+		if(IsItemTypeAmmoTin(ItemType:selecteditemtype))
+		{
+			selectedammotype = GetAmmoTinAmmoType(ItemType:selecteditemtype);
+		}
+		else
+		{
+			if(IsWeaponClipBased(selecteditemtype))
+			{
+				selectedammotype = GetWeaponAmmoType(selecteditemtype);
+			}
+		}
 
-		else if(GetItemType(helditem) == GetItemType(itemid))
-			ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo to ammo tin");
+		if(AMMO_TYPE_NONE < selectedammotype <= AMMO_TYPE_ROCKET && AMMO_TYPE_NONE < heldammotype <= AMMO_TYPE_ROCKET)
+		{
+			if(selecteditemtype == _:GetWeaponAmmoTypeItem(helditemtype))
+				ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer ammo from tin to gun");			// TIN TO GUN
+
+			else if(helditemtype == selecteditemtype)
+				ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo from tin to ammo tin");	// TIN TO TIN
+
+			else if(_:GetWeaponAmmoTypeItem(selecteditemtype) == helditemtype)
+				ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo from gun to ammo tin");	// GUN TO TIN
+
+			else if(GetWeaponAmmoType(selecteditemtype) == GetWeaponAmmoType(helditemtype))
+				ammo_ContainerOption[playerid] = AddContainerOption(playerid, "Transfer Ammo from gun to gun");			// GUN TO GUN
+		}
 	}
+
 
 	return CallLocalFunction("ammo_OnPlayerViewContainerOpt", "dd", playerid, containerid);
 }
@@ -129,30 +212,63 @@ forward ammo_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(IsWeaponClipBased(_:GetItemType(GetPlayerItem(playerid))) || IsWeaponClipBased(GetPlayerCurrentWeapon(playerid)))
+	new selecteditemtype = _:GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid)));
+
+	if(IsWeaponClipBased(selecteditemtype) || IsItemTypeAmmoTin(ItemType:selecteditemtype))
 	{
-		if(option == ammo_ContainerOption[playerid])
+		new
+			helditemtype = _:GetItemType(GetPlayerItem(playerid)),
+			selectedammotype,
+			heldammotype;
+
+		helditemtype = _:GetItemType(GetPlayerItem(playerid));
+
+		if(IsItemTypeAmmoTin(ItemType:helditemtype))
 		{
-			new
-				itemid,
-				weaponid,
-				helditem;
+			heldammotype = GetAmmoTinAmmoType(ItemType:helditemtype);
+		}
+		else
+		{
+			if(IsWeaponClipBased(helditemtype))
+			{
+				heldammotype = GetWeaponAmmoType(helditemtype);
+			}
+			else
+			{
+				helditemtype = GetPlayerCurrentWeapon(playerid);
 
-			itemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
-			weaponid = GetPlayerCurrentWeapon(playerid);
-			helditem = GetPlayerItem(playerid);
+				if(IsWeaponClipBased(helditemtype))
+				{
+					heldammotype = GetWeaponAmmoType(helditemtype);
+				}
+			}
+		}
 
-			if(GetItemType(itemid) == GetWeaponAmmoTypeItem(weaponid))
-				ShowPlayerDialog(playerid, d_TransferAmmoToGun, DIALOG_STYLE_INPUT, "Transfer Ammo to gun", "Enter the amount of ammo to transfer", "Accept", "Cancel");
+		if(IsItemTypeAmmoTin(ItemType:selecteditemtype))
+		{
+			selectedammotype = GetAmmoTinAmmoType(ItemType:selecteditemtype);
+		}
+		else
+		{
+			if(IsWeaponClipBased(selecteditemtype))
+			{
+				selectedammotype = GetWeaponAmmoType(selecteditemtype);
+			}
+		}
 
-			else if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)))
-				ShowPlayerDialog(playerid, d_TransferAmmoToBox, DIALOG_STYLE_INPUT, "Transfer Ammo to ammo tin", "Enter the amount of ammo to transfer", "Accept", "Cancel");
+		if(AMMO_TYPE_NONE < selectedammotype <= AMMO_TYPE_ROCKET && AMMO_TYPE_NONE < heldammotype <= AMMO_TYPE_ROCKET)
+		{
+			if(selecteditemtype == _:GetWeaponAmmoTypeItem(helditemtype))
+				ShowPlayerDialog(playerid, d_TransferAmmoToGun, DIALOG_STYLE_INPUT, "Transfer Ammo from tin to gun", "Enter the amount of ammo to transfer", "Accept", "Cancel");
 
-			else if(GetWeaponAmmoType(_:GetItemType(itemid)) == GetWeaponAmmoType(weaponid))
-				ShowPlayerDialog(playerid, d_TransferAmmoToGun, DIALOG_STYLE_INPUT, "Transfer Ammo to gun", "Enter the amount of ammo to transfer", "Accept", "Cancel");
+			else if(helditemtype == selecteditemtype)
+				ShowPlayerDialog(playerid, d_TransferAmmoToBox, DIALOG_STYLE_INPUT, "Transfer Ammo from tin to ammo tin", "Enter the amount of ammo to transfer", "Accept", "Cancel");
 
-			else if(GetItemType(helditem) == GetItemType(itemid))
-				ShowPlayerDialog(playerid, d_TransferAmmoToBox, DIALOG_STYLE_INPUT, "Transfer Ammo to ammo tin", "Enter the amount of ammo to transfer", "Accept", "Cancel");
+			else if(_:GetWeaponAmmoTypeItem(selecteditemtype) == helditemtype)
+				ShowPlayerDialog(playerid, d_TransferAmmoToBox, DIALOG_STYLE_INPUT, "Transfer Ammo from gun to ammo tin", "Enter the amount of ammo to transfer", "Accept", "Cancel");
+
+			else if(GetWeaponAmmoType(selecteditemtype) == GetWeaponAmmoType(helditemtype))
+				ShowPlayerDialog(playerid, d_TransferAmmoToGun, DIALOG_STYLE_INPUT, "Transfer Ammo from gun to gun", "Enter the amount of ammo to transfer", "Accept", "Cancel");
 		}
 	}
 
@@ -239,13 +355,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				new
 					slot,
-					itemid,
+					selecteditemid,
 					total,
-					helditem;
+					helditemid;
 
 				slot = GetPlayerContainerSlot(playerid);
-				itemid = GetContainerSlotItem(containerid, slot);
-				total = GetItemExtraData(itemid);
+				selecteditemid = GetContainerSlotItem(containerid, slot);
+				total = GetItemExtraData(selecteditemid);
 
 				if(amount > total)
 				{
@@ -253,12 +369,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					return 1;
 				}
 
-				helditem = GetPlayerItem(playerid);
+				helditemid = GetPlayerItem(playerid);
 
-				if(GetItemType(helditem) == GetWeaponAmmoTypeItem(_:GetItemType(itemid)) || GetWeaponAmmoType(_:GetItemType(helditem)) == GetWeaponAmmoType(_:GetItemType(itemid)))
+				if(GetItemType(helditemid) == GetWeaponAmmoTypeItem(_:GetItemType(selecteditemid)) ||
+					GetWeaponAmmoType(_:GetItemType(helditemid)) == GetWeaponAmmoType(_:GetItemType(selecteditemid)) ||
+					GetItemType(helditemid) == GetItemType(selecteditemid))
 				{
-					SetItemExtraData(helditem, GetItemExtraData(helditem) + amount);
-					SetItemExtraData(itemid, total - amount);
+					SetItemExtraData(helditemid, GetItemExtraData(helditemid) + amount);
+					SetItemExtraData(selecteditemid, total - amount);
 				}
 			}
 		}

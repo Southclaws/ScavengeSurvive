@@ -551,6 +551,7 @@ Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
 		tick_ServerJoin			[MAX_PLAYERS],
 		tick_Spawn				[MAX_PLAYERS],
+		tick_LastDamaged		[MAX_PLAYERS],
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
@@ -608,6 +609,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Player/Death.pwn"
 #include "../scripts/SSS/Player/Tutorial.pwn"
 #include "../scripts/SSS/Player/WelcomeMessage.pwn"
+#include "../scripts/SSS/Player/CombatLog.pwn"
 
 //======================Data Load
 
