@@ -28,22 +28,6 @@ public OnLoad()
 		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
 		CreateButton(-1857.1831, -169.5322, 9.1358, "Press F to open", 0));
 
-
-	CreateItem(item_Barbecue, -2772.98, -94.21, 6.17,   0.00, 0.00, -76.08, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2663.80, -168.83, 3.31,   0.00, 0.00, -103.56, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2643.64, -98.28, 3.31,   0.00, 0.00, -123.48, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2668.34, 118.92, 3.47,   0.00, 0.00, -61.26, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2620.68, 259.43, 3.32,   0.00, 0.00, -113.76, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2702.96, 846.41, 69.70,   0.00, 0.00, -217.20, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2680.39, 931.05, 78.69,   0.00, 0.00, 58.74, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2646.92, 850.75, 63.01,   0.00, 0.00, -17.22, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2670.67, 790.34, 48.97,   0.00, 0.00, -194.16, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2532.54, 2230.10, 3.98,   0.00, 0.00, -226.44, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2558.33, 2256.55, 4.06,   0.00, 0.00, -231.24, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2430.86, 2368.72, 3.96,   0.00, 0.00, -168.30, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2479.55, 2483.86, 16.77,   0.00, 0.00, -203.28, .zoffset = FLOOR_OFFSET);
-	CreateItem(item_Barbecue, -2446.11, 2512.45, 14.69,   0.00, 0.00, -132.60, .zoffset = FLOOR_OFFSET);
-
 	return CallLocalFunction("fierro_OnLoad", "");
 }
 #if defined _ALS_OnLoad
@@ -158,9 +142,9 @@ District_Housing2()
 		-2674.76, 867.24, 82.52,
 		-2674.28, 820.22, 73.14);
 
-	CreateFuelOutlet(-2410.80, 970.85, 44.48, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-2410.80, 976.19, 44.48, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-2410.80, 981.52, 44.48, 2.0, 100.0, float(random(100)));
+	CreateFuelOutlet(-2410.80, 970.85, 44.48, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-2410.80, 976.19, 44.48, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-2410.80, 981.52, 44.48, 2.0, 100.0, frandom(100.0));
 
 	CreateLootSpawn(-2865.719970, 684.940002, 22.549999,	3, 30, loot_Civilian);
 	CreateLootSpawn(-2873.159912, 701.070007, 22.540000,	3, 30, loot_Civilian);

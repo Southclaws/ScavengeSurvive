@@ -754,7 +754,7 @@ forward SetRestart(seconds);
 
 //======================Map Scripts
 
-#include "../scripts/SSS/Maps/LockboxLV.pwn"
+//#include "../scripts/SSS/Maps/LockboxLV.pwn"
 #include "../scripts/SSS/Maps/Area69.pwn"
 #include "../scripts/SSS/Maps/Ranch.pwn"
 #include "../scripts/SSS/Maps/MtChill.pwn"

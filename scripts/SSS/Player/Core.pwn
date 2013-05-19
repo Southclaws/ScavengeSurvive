@@ -132,6 +132,8 @@ public OnPlayerConnect(playerid)
 
 		else
 			DisplayLoginPrompt(playerid);
+
+		f:bPlayerGameSettings[playerid]<IsNewPlayer>;
 	}
 	else
 	{

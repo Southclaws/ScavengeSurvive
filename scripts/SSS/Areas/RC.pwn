@@ -2,6 +2,16 @@ public OnLoad()
 {
 	print("Loading Red County");
 
+	CreateFuelOutlet(1378.96094, 461.03906, 19.32813, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(1380.63281, 460.27344, 19.32813, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(1383.39844, 459.07031, 19.32813, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(1385.07813, 458.29688, 19.32813, 2.0, 100.0, frandom(100.0));
+
+	CreateFuelOutlet(655.66406, -558.92969, 15.35938, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(655.66406, -560.54688, 15.35938, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(655.66406, -569.60156, 15.35938, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(655.66406, -571.21094, 15.35938, 2.0, 100.0, frandom(100.0));
+
 	District_LogCamp();
 	District_BlueberryAcres();
 	District_BlueberryTown();

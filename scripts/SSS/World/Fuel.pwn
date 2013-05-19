@@ -1,6 +1,6 @@
 #include <YSI\y_hooks>
 
-#define MAX_FUEL_LOCATIONS	(48)
+#define MAX_FUEL_LOCATIONS	(72)
 #define FUEL_CAN_CAPACITY	(20)
 
 
@@ -33,6 +33,12 @@ hook OnPlayerConnect(playerid)
 stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity, Float:startamount)
 {
 	new id = Iter_Free(fuel_Index);
+
+	if(id == -1)
+	{
+		print("ERROR: MAX_FUEL_LOCATIONS limit reached!");
+		return -1;
+	}
 
 	fuel_Data[id][fuel_areaId]		= CreateDynamicSphere(x, y, z, areasize);
 

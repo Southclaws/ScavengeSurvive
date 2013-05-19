@@ -168,6 +168,7 @@ PlayerSpawnNewCharacter(playerid)
 	t:bPlayerGameSettings[playerid]<Spawned>;
 	t:bPlayerGameSettings[playerid]<Alive>;
 	f:bPlayerGameSettings[playerid]<Bleeding>;
+	f:bPlayerGameSettings[playerid]<Infected>;
 	f:bPlayerGameSettings[playerid]<KnockedOut>;
 
 	gScreenBoxFadeLevel[playerid] = 255;

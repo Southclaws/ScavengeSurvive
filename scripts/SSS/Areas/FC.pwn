@@ -4,18 +4,18 @@ public OnLoad()
 
 	CreateBalloon(-2237.60, -1711.45, 479.88, 0.0, 1529.81, -1358.07, 328.37, 0.0);
 
-	CreateFuelOutlet(-2246.7031, -2559.7109, 31.0625, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-2241.7188, -2562.2891, 31.0625, 2.0, 100.0, float(random(100)));
+	CreateFuelOutlet(-2246.7031, -2559.7109, 31.0625, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-2241.7188, -2562.2891, 31.0625, 2.0, 100.0, frandom(100.0));
 
-	CreateFuelOutlet(-1600.6719, -2707.8047, 47.9297, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1603.9922, -2712.2031, 47.9297, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1607.3047, -2716.6016, 47.9297, 2.0, 100.0, float(random(100)));
-	CreateFuelOutlet(-1610.6172, -2721.0000, 47.9297, 2.0, 100.0, float(random(100)));
+	CreateFuelOutlet(-1600.6719, -2707.8047, 47.9297, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-1603.9922, -2712.2031, 47.9297, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-1607.3047, -2716.6016, 47.9297, 2.0, 100.0, frandom(100.0));
+	CreateFuelOutlet(-1610.6172, -2721.0000, 47.9297, 2.0, 100.0, frandom(100.0));
 
-	CreateFuelOutlet(-85.2422, -1165.0313, 2.6328, 2.0, 100.0, float(random(130)));
-	CreateFuelOutlet(-90.1406, -1176.6250, 2.6328, 2.0, 100.0, float(random(130)));
-	CreateFuelOutlet(-92.1016, -1161.7891, 2.9609, 2.0, 100.0, float(random(130)));
-	CreateFuelOutlet(-97.0703, -1173.7500, 3.0313, 2.0, 100.0, float(random(130)));
+	CreateFuelOutlet(-85.2422, -1165.0313, 2.6328, 2.0, 130.0, frandom(130.0));
+	CreateFuelOutlet(-90.1406, -1176.6250, 2.6328, 2.0, 130.0, frandom(130.0));
+	CreateFuelOutlet(-92.1016, -1161.7891, 2.9609, 2.0, 130.0, frandom(130.0));
+	CreateFuelOutlet(-97.0703, -1173.7500, 3.0313, 2.0, 130.0, frandom(130.0));
 
 
 	CreateLadder(-1056.0153, -628.1323, 32.0012, 130.1213, 180.0);
