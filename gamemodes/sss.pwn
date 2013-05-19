@@ -532,6 +532,7 @@ enum (<<= 1) // 14
 		KnockedOut,
 		Bleeding,
 		Infected,
+		GlobalQuiet,
 
 		Frozen,
 		Muted,
@@ -1376,6 +1377,21 @@ CMD:r(playerid, params[])
 	}
 	return 1;
 }
+CMD:quiet(playerid, params[])
+{
+	if(bPlayerGameSettings[playerid] & GlobalQuiet)
+	{
+		f:bPlayerGameSettings[playerid]<GlobalQuiet>;
+		Msg(playerid, WHITE, " >  You turn on your radio's global receiver, you will now see all global chat.");
+	}
+	else
+	{
+		t:bPlayerGameSettings[playerid]<GlobalQuiet>;
+		Msg(playerid, WHITE, " >  You turn off your radio's global receiver, you will not see any global chat.");
+	}
+
+	return 1;
+}
 
 public OnPlayerText(playerid, text[])
 {
@@ -1492,6 +1508,9 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 	{
 		foreach(new i : Player)
 		{
+			if(bPlayerGameSettings[i] & GlobalQuiet)
+				continue;
+
 			SendClientMessage(i, WHITE, text);
 
 			if(sendsecondline)

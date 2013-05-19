@@ -106,12 +106,12 @@ CMD:restartinfo(playerid, params[])
 
 CMD:chatinfo(playerid, params[])
 {
-	new str[638];
+	new str[651];
 
 	strcat(str,
 		""#C_YELLOW"Communication Information:\n\n\n"#C_WHITE"\
 		Chat is split into 3 types: Global, Local and Radio.\n\n\
-		\t"#C_GREEN"Global chat (/G) is chat everyone can see at all times and write into\n\n\
+		\t"#C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "#C_WHITE"/quiet\n\n\
 		\t"#C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
 		\t"#C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
 

@@ -11,16 +11,16 @@ public OnItemCreated(itemid)
 	}
 
 	if(GetItemType(itemid) == item_Ammo9mm)
-		SetItemExtraData(itemid, random(30));
+		SetItemExtraData(itemid, random(14));
 
 	if(GetItemType(itemid) == item_AmmoBuck)
-		SetItemExtraData(itemid, random(15));
+		SetItemExtraData(itemid, random(7));
 
 	if(GetItemType(itemid) == item_Ammo556)
-		SetItemExtraData(itemid, random(50));
+		SetItemExtraData(itemid, random(35));
 
 	if(GetItemType(itemid) == item_Ammo357)
-		SetItemExtraData(itemid, random(10));
+		SetItemExtraData(itemid, random(4));
 
 	if(GetItemType(itemid) == item_AmmoRocket)
 		SetItemExtraData(itemid, random(1));
