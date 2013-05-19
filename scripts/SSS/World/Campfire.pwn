@@ -25,6 +25,7 @@ Float:		cmp_posY,
 Float:		cmp_posZ,
 Float:		cmp_rotZ,
 			cmp_objFlame,
+			cmp_objSmoke,
 			cmp_foodItem,
 			cmp_fueled
 }
@@ -141,6 +142,7 @@ stock DestroyCampfire(fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick7]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick8]);
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
+	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 
 	cmp_Data[fireid][cmp_objMid1] = INVALID_OBJECT_ID;
 	cmp_Data[fireid][cmp_objMid2] = INVALID_OBJECT_ID;
@@ -159,8 +161,10 @@ stock DestroyCampfire(fireid)
 	cmp_Data[fireid][cmp_posZ] = 0.0;
 	cmp_Data[fireid][cmp_rotZ] = 0.0;
 	cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
+	cmp_Data[fireid][cmp_objSmoke] = INVALID_OBJECT_ID;
 	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 	cmp_Data[fireid][cmp_itemId] = INVALID_ITEM_ID;
+	stop cmp_CookTimer[fireid];
 
 	Iter_Remove(cmp_Index, fireid);
 
@@ -194,7 +198,10 @@ stock SetCampfireState(fireid, bool:toggle)
 			return -1;
 
 		DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
+		DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 		cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
+		cmp_Data[fireid][cmp_objSmoke] = INVALID_OBJECT_ID;
+		stop cmp_CookTimer[fireid];
 	}
 
 	return 1;
@@ -224,8 +231,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						cmp_Data[fireid][cmp_fueled] = 1;
 					}
 				}
-
-				if(itemtype == item_FireLighter)
+				else if(itemtype == item_FireLighter)
 				{
 					if(gWeatherID == 8 || gWeatherID == 16)
 					{
@@ -281,15 +287,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						GetItemPos(withitemid, x, y, z);
 						GetItemRot(withitemid, r, r, r);
 
-						CreateItemInWorld(itemid,
-							x,
-							y,
-							z + 0.3,
-							.rz = r);
+						CreateItemInWorld(itemid, x, y, z + 0.3, .rz = r);
 
 						cmp_Data[fireid][cmp_foodItem] = itemid;
 						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
-						ShowActionText(playerid, "Food added", 3000);
+						ShowActionText(playerid, "Food added~n~1 minute cook time", 3000);
 					}
 				}
 			}
@@ -314,7 +316,15 @@ timer CampfireBurnOut[time](fireid, time)
 
 timer cmp_FinishCooking[60000](fireid)
 {
+	cmp_Data[fireid][cmp_objSmoke] = CreateDynamicObject(18726, cmp_Data[fireid][cmp_posX], cmp_Data[fireid][cmp_posY], cmp_Data[fireid][cmp_posZ] - 1.0, 0.0, 0.0, 0.0);
+	defer cmp_DestroySmoke(fireid);
+
 	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
+}
+
+timer cmp_DestroySmoke[1000](fireid)
+{
+	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
 
 public OnPlayerPickedUpItem(playerid, itemid)
@@ -330,6 +340,20 @@ public OnPlayerPickedUpItem(playerid, itemid)
 				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
 				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 				return 1;
+			}
+		}
+	}
+	else
+	{
+		foreach(new i : cmp_Index)
+		{
+			if(itemid == cmp_Data[i][cmp_foodItem])
+			{
+				DestroyDynamicObject(cmp_Data[i][cmp_objSmoke]);
+				cmp_Data[i][cmp_foodItem] = INVALID_ITEM_ID;
+				cmp_Data[i][cmp_objSmoke] = INVALID_OBJECT_ID;
+				stop cmp_CookTimer[i];
+				break;
 			}
 		}
 	}

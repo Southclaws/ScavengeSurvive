@@ -213,3 +213,24 @@ ptask FoodUpdate[1000](playerid)
 
 	return;
 }
+
+public OnItemNameRender(itemid)
+{
+	if(IsItemTypeFood(GetItemType(itemid)))
+	{
+		if(GetItemExtraData(itemid) == 1)
+			SetItemNameExtra(itemid, "Cooked");
+
+		else
+			SetItemNameExtra(itemid, "Uncooked");
+	}
+
+	return CallLocalFunction("bbq_OnItemNameRender", "d", itemid);
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender bbq_OnItemNameRender
+forward bbq_OnItemNameRender(itemid);

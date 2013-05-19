@@ -17,7 +17,8 @@ Float:		bbq_fuel,
 new
 			bbq_Data[MAX_BBQ][E_BBQ_DATA],
 Iterator:	bbq_Index<MAX_BBQ>,
-Timer:		bbq_CookTimer[MAX_BBQ];
+Timer:		bbq_CookTimer[MAX_BBQ],
+			bbq_PlaceFoodTick[MAX_PLAYERS];
 
 
 public OnItemCreate(itemid)
@@ -90,7 +91,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 					{
 						bbq_Data[i][bbq_fuel] += 10;
 						SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
-						ShowActionText(playerid, "1 Liter of petrol added", 3000);
+						ShowActionText(playerid, "1L of petrol added~n~10 BBQ uses", 3000);
 					}
 					else
 					{
@@ -100,6 +101,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 				if(IsItemTypeFood(itemtype))
 				{
+					if(GetItemExtraData(itemid) != 0)
+						return 1;
+
 					new
 						Float:x,
 						Float:y,
@@ -118,7 +122,10 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][0] = itemid;
+						bbq_PlaceFoodTick[playerid] = tickcount();
 						ShowActionText(playerid, "Food added", 3000);
+
+						return 1;
 					}
 					else if(bbq_Data[i][bbq_grillItem][1] == INVALID_ITEM_ID)
 					{
@@ -129,7 +136,10 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][1] = itemid;
+						bbq_PlaceFoodTick[playerid] = tickcount();
 						ShowActionText(playerid, "Food added", 3000);
+
+						return 1;
 					}
 					else
 					{
@@ -151,19 +161,22 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 					bbq_Data[i][bbq_grillPart][0] = CreateDynamicObject(18701,
 						x + (0.25 * floatsin(-r + 90.0, degrees)),
 						y + (0.25 * floatcos(-r + 90.0, degrees)),
-						z - 0.668,
+						z - 0.6,
 						0.0, 0.0, r);
 
 					bbq_Data[i][bbq_grillPart][1] = CreateDynamicObject(18701,
 						x + (0.25 * floatsin(-r + 270.0, degrees)),
 						y + (0.25 * floatcos(-r + 270.0, degrees)),
-						z - 0.668,
+						z - 0.6,
 						0.0, 0.0, r);
 
-					ShowActionText(playerid, "BBQ Lit", 3000);
+					ShowActionText(playerid, "BBQ Lit~n~Cook time: 30 seconds", 3000);
 					bbq_CookTimer[i] = defer bbq_FinishCooking(i);
 					bbq_Data[i][bbq_state] = COOKER_STATE_COOK;
+
+					return 1;
 				}
+				break;
 			}
 		}
 	}
@@ -197,6 +210,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Barbecue)
 	{
+		if(tickcount() - bbq_PlaceFoodTick[playerid] < 1000)
+			return 1;
+
 		foreach(new i : bbq_Index)
 		{
 			if(itemid == bbq_Data[i][bbq_itemId] || itemid == bbq_Data[i][bbq_grillItem][0] || itemid == bbq_Data[i][bbq_grillItem][1])
@@ -210,9 +226,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 					bbq_Data[i][bbq_grillItem][0] = INVALID_ITEM_ID;
 					return 1;
 				}
-				if(IsValidItem(bbq_Data[i][bbq_grillItem][0]))
+				if(IsValidItem(bbq_Data[i][bbq_grillItem][1]))
 				{
-					GiveWorldItemToPlayer(playerid, bbq_Data[i][bbq_grillItem][0], 1);
+					GiveWorldItemToPlayer(playerid, bbq_Data[i][bbq_grillItem][1], 1);
 					bbq_Data[i][bbq_grillItem][1] = INVALID_ITEM_ID;
 					return 1;
 				}
@@ -240,24 +256,3 @@ public OnPlayerPickUpItem(playerid, itemid)
 #endif
 #define OnPlayerPickUpItem bbq_OnPlayerPickUpItem
 forward bbq_OnPlayerPickUpItem(playerid, itemid);
-
-public OnItemNameRender(itemid)
-{
-	if(IsItemTypeFood(GetItemType(itemid)))
-	{
-		if(GetItemExtraData(itemid) == 1)
-			SetItemNameExtra(itemid, "Cooked");
-
-		else
-			SetItemNameExtra(itemid, "Uncooked");
-	}
-
-	return CallLocalFunction("bbq_OnItemNameRender", "d", itemid);
-}
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender bbq_OnItemNameRender
-forward bbq_OnItemNameRender(itemid);
