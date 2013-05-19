@@ -1042,6 +1042,8 @@ public OnGameModeInit()
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);
+	DefineItemCombo(item_SmallBox,		item_MediumBox,		item_Campfire);
+	DefineItemCombo(item_SmallBox,		item_SmallBox,		item_Campfire);
 	DefineItemCombo(item_Battery,		item_Fusebox,		item_PowerSupply);
 	DefineItemCombo(item_Timer,			item_HardDrive,		item_StorageUnit);
 	DefineItemCombo(item_Taser,			item_RadioPole,		item_Fluctuator);
@@ -1049,6 +1051,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_PowerSupply,	item_Fluctuator,	item_FluxCap);
 	DefineItemCombo(item_StorageUnit,	item_IoUnit,		item_DataInterface);
 	DefineItemCombo(item_FluxCap,		item_DataInterface,	item_HackDevice);
+	//WriteAllCombosToFile();
 
 
 	DefineLootIndex(loot_Civilian);
