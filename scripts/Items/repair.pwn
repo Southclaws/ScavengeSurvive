@@ -61,7 +61,7 @@ public OnHoldActionUpdate(playerid, progress)
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 		{
-			if(!(250.0 <= fix_Progress[playerid] <= 450.0) && !(750.0 <= fix_Progress[playerid] <= 990.0))
+			if(!(VEHICLE_HEALTH_MIN <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_2) && !(VEHICLE_HEALTH_CHUNK_4 <= fix_Progress[playerid] <= VEHICLE_HEALTH_MAX))
 			{
 				StopRepairingVehicle(playerid);
 				return 1;
@@ -69,7 +69,7 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 		if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
 		{
-			if(!(450.0 <= fix_Progress[playerid] <= 600.0))
+			if(!(VEHICLE_HEALTH_CHUNK_2 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_3))
 			{
 				StopRepairingVehicle(playerid);
 				return 1;
@@ -77,7 +77,7 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 		{
-			if(!(600.0 <= fix_Progress[playerid] <= 750.0))
+			if(!(VEHICLE_HEALTH_CHUNK_3 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_4))
 			{
 				StopRepairingVehicle(playerid);
 				return 1;

@@ -1,14 +1,13 @@
-#define PILL_TYPE_ASPIRIN	(0)
-#define PILL_TYPE_PAINKILL	(1)
-#define PILL_TYPE_LSD		(2)
+#define PILL_TYPE_ANTIBIOTICS	(0)
+#define PILL_TYPE_PAINKILL		(1)
+#define PILL_TYPE_LSD			(2)
 
 
 public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_Pills)
 	{
-		// First 3 bits represent the type (0, 1 or 2) 4th bit determines whether it's labeled or not
-		SetItemExtraData(itemid, random(3) | (random(2) << 3));
+		SetItemExtraData(itemid, random(3));
 	}
 
 	return CallLocalFunction("pil_OnItemCreate", "d", itemid);
@@ -25,20 +24,12 @@ public OnItemNameRender(itemid)
 {
 	if(GetItemType(itemid) == item_Pills)
 	{
-		new data = GetItemExtraData(itemid);
-
-		if(data & 0b1000)
+		switch(GetItemExtraData(itemid))
 		{
-			switch(data & 0b111)
-			{
-				case PILL_TYPE_ASPIRIN:		SetItemNameExtra(itemid, "Aspirin");
-				case PILL_TYPE_PAINKILL:	SetItemNameExtra(itemid, "Painkiller");
-				case PILL_TYPE_LSD:			SetItemNameExtra(itemid, "LSD");
-			}
-		}
-		else
-		{
-			SetItemNameExtra(itemid, "Unlabeled");
+			case PILL_TYPE_ANTIBIOTICS:			SetItemNameExtra(itemid, "Antibiotics");
+			case PILL_TYPE_PAINKILL:		SetItemNameExtra(itemid, "Painkiller");
+			case PILL_TYPE_LSD:				SetItemNameExtra(itemid, "LSD");
+			default:						SetItemNameExtra(itemid, "Empty");
 		}
 	}
 
@@ -72,16 +63,21 @@ forward pil_OnPlayerUseItem(playerid, itemid);
 
 timer TakePills[500](playerid, itemid)
 {
-	switch(GetItemExtraData(itemid) & 0b111)
+	switch(GetItemExtraData(itemid))
 	{
-		case PILL_TYPE_ASPIRIN:
-			ApplyDrug(playerid, DRUG_TYPE_ASPIRIN);
-
+		case PILL_TYPE_ANTIBIOTICS:
+		{
+			f:bPlayerGameSettings[playerid]<Infected>;
+		}
 		case PILL_TYPE_PAINKILL:
+		{
+			GivePlayerHP(playerid, 10.0);
 			ApplyDrug(playerid, DRUG_TYPE_PAINKILL);
-
+		}
 		case PILL_TYPE_LSD:
+		{
 			ApplyDrug(playerid, DRUG_TYPE_LSD);
+		}
 	}
 	DestroyItem(itemid);
 }

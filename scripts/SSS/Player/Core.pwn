@@ -233,6 +233,18 @@ ptask PlayerUpdate[100](playerid)
 	{
 		PlayerVehicleUpdate(playerid);
 	}
+	else
+	{
+		if(IsValidVehicle(gPlayerVehicleID[playerid]))
+		{
+			new Float:health;
+
+			GetVehicleHealth(gPlayerVehicleID[playerid], health);
+
+			if(health < 300.0)
+				SetVehicleHealth(gPlayerVehicleID[playerid], 299.0);
+		}
+	}
 
 	if(gScreenBoxFadeLevel[playerid] > 0)
 	{
@@ -285,7 +297,7 @@ ptask PlayerUpdate[100](playerid)
 		minute = 3;
 		weather = 33;
 
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD) > 120000)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_LSD);
 	}
 	else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
@@ -294,7 +306,7 @@ ptask PlayerUpdate[100](playerid)
 		minute = 30;
 		weather = 33;
 
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE) > 120000)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
 	}
 	else
@@ -315,7 +327,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 120000 || gPlayerHP[playerid] >= 100.0)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 300000 || gPlayerHP[playerid] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
 
 		SetPlayerDrunkLevel(playerid, 2200);
@@ -326,7 +338,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 120000 || gPlayerHP[playerid] >= 100.0)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000 || gPlayerHP[playerid] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 
 		GivePlayerHP(playerid, 0.01, .msg = false);
@@ -334,19 +346,27 @@ ptask PlayerUpdate[100](playerid)
 
 	if(bPlayerGameSettings[playerid] & Bleeding)
 	{
-		if(random(100) < 60)
-			GivePlayerHP(playerid, -0.01);
+		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
+		{
+			if(random(100) < 30)
+				GivePlayerHP(playerid, -0.01);
+		}
+		else
+		{
+			if(random(100) < 60)
+				GivePlayerHP(playerid, -0.01);
+		}
 
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 		{
-			if(random(100) < gPlayerHP[playerid])
+			if(frandom(100.0) < gPlayerHP[playerid])
 			{
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 			}
 		}
 		else
 		{
-			if(random(100) < 100-gPlayerHP[playerid])
+			if(frandom(100.0) < 100 - gPlayerHP[playerid])
 			{
 				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
 			}
@@ -356,6 +376,29 @@ ptask PlayerUpdate[100](playerid)
 	{
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
+	}
+
+	if(bPlayerGameSettings[playerid] & Infected)
+	{
+		if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+		{
+			if(GetPlayerDrunkLevel(playerid) == 0)
+			{
+				if(tickcount() - tick_LastInfectionFX[playerid] > 500 * gPlayerHP[playerid])
+				{
+					tick_LastInfectionFX[playerid] = tickcount();
+					SetPlayerDrunkLevel(playerid, 5000);
+				}
+			}
+			else
+			{
+				if(tickcount() - tick_LastInfectionFX[playerid] > 100 * (120 - gPlayerHP[playerid]) || 1 < GetPlayerDrunkLevel(playerid) < 2000)
+				{
+					tick_LastInfectionFX[playerid] = tickcount();
+					SetPlayerDrunkLevel(playerid, 0);
+				}
+			}
+		}
 	}
 
 	if(GetPlayerCurrentWeapon(playerid) == 0 && GetPlayerWeapon(playerid))

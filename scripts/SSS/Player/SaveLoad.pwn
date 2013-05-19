@@ -18,6 +18,7 @@ enum
 	PLY_CELL_WARNS,
 	PLY_CELL_FREQ,
 	PLY_CELL_CHATMODE,
+	PLY_CELL_INFECTED,
 	PLY_CELL_END
 }
 
@@ -94,6 +95,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_FREQ] = _:gPlayerFrequency[playerid];
 
 	data[PLY_CELL_CHATMODE] = Bit2_Get(gPlayerChatMode, playerid);
+
+	data[PLY_CELL_INFECTED] = (bPlayerGameSettings[playerid] & Infected);
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -201,6 +204,11 @@ LoadPlayerChar(playerid)
 	gPlayerFrequency[playerid] = Float:data[PLY_CELL_FREQ];
 
 	Bit2_Set(gPlayerChatMode, playerid, data[PLY_CELL_CHATMODE]);
+
+	if(data[PLY_CELL_INFECTED])
+	{
+		t:bPlayerGameSettings[playerid]<Infected>;
+	}
 }
 LoadPlayerInventory(playerid)
 {

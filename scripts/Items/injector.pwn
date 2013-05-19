@@ -8,8 +8,7 @@ public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_AutoInjec)
 	{
-		// First 3 bits represent the type (0, 1, 2, or 4) 4th bit determines whether it's empty or not
-		SetItemExtraData(itemid, random(4) | (random(2) << 3));
+		SetItemExtraData(itemid, 1 + random(3));
 	}
 
 	return CallLocalFunction("inj_OnItemCreate", "d", itemid);
@@ -26,21 +25,13 @@ public OnItemNameRender(itemid)
 {
 	if(GetItemType(itemid) == item_AutoInjec)
 	{
-		new data = GetItemExtraData(itemid);
-
-		if(data & 0b1000)
+		switch(GetItemExtraData(itemid))
 		{
-			switch(data & 0b111)
-			{
-				case INJECT_TYPE_EMPTY:			SetItemNameExtra(itemid, "Empty");
-				case INJECT_TYPE_MORPHINE:		SetItemNameExtra(itemid, "Morphine");
-				case INJECT_TYPE_ADRENALINE:	SetItemNameExtra(itemid, "Adrenaline");
-				case INJECT_TYPE_HEROINE:		SetItemNameExtra(itemid, "Heroine");
-			}
-		}
-		else
-		{
-			SetItemNameExtra(itemid, "Unlabeled");
+			case INJECT_TYPE_EMPTY:			SetItemNameExtra(itemid, "Empty");
+			case INJECT_TYPE_MORPHINE:		SetItemNameExtra(itemid, "Morphine");
+			case INJECT_TYPE_ADRENALINE:	SetItemNameExtra(itemid, "Adrenaline");
+			case INJECT_TYPE_HEROINE:		SetItemNameExtra(itemid, "Heroine");
+			default:						SetItemNameExtra(itemid, "Empty");
 		}
 	}
 
@@ -85,7 +76,7 @@ forward inj_OnPlayerUseItem(playerid, itemid);
 timer Inject[500](playerid, targetid, itemid)
 {
 	ApplyAnimation(playerid, "PED", "IDLE_ARMED", 4.0, 0, 1, 1, 0, 500, 1);
-	switch(GetItemExtraData(itemid) & 0b111)
+	switch(GetItemExtraData(itemid))
 	{
 		case INJECT_TYPE_EMPTY:
 			ApplyDrug(targetid, DRUG_TYPE_AIR);

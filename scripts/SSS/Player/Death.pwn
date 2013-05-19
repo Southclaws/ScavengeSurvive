@@ -21,6 +21,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	HideWatch(playerid);
 	DropItems(playerid);
+	RemovePlayerWeapon(playerid);
 	SpawnPlayer(playerid);
 
 	if(IsPlayerConnected(killerid))

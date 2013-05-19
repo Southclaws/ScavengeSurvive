@@ -4,16 +4,32 @@
 #include <streamer>
 #include <YSI\y_timers>
 
+
+public OnFilterScriptInit()
+{
+}
+
+CMD:rt(playerid, params[])
+{
+	RemoveBuildingForPlayer(playerid, 713, -1679.5469, 657.7500, 17.1484, 0.25);
+	RemoveBuildingForPlayer(playerid, 731, -1653.7422, 657.9922, 9.2734, 0.25);
+	RemoveBuildingForPlayer(playerid, 733, -1664.4531, 672.0000, 13.7109, 0.25);
+	RemoveBuildingForPlayer(playerid, 715, -1673.3828, 638.9531, 25.3359, 0.25);
+	return 1;
+}
+
 CMD:skin(playerid, params[])
 {
 	SetPlayerSkin(playerid, strval(params));
 	return 1;
 }
-CMD:bleed(playerid, params[])
+
+CMD:carry(playerid, params[])
 {
-	SetPlayerAttachedObject(playerid, 9, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
+	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CARRY);
 	return 1;
 }
+
 CMD:car(playerid, params[])
 {
 	new
@@ -25,6 +41,7 @@ CMD:car(playerid, params[])
 	CreateVehicle(strval(params), x, y, z, 0.0, -1, -1, 100);
 	return 1;
 }
+
 CMD:wep(playerid, params[])
 {
 	new str[128];

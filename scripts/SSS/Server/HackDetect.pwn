@@ -171,13 +171,16 @@ WeaponCheck(playerid)
 	if(tickcount() - GetPlayerWeaponSwapTick(playerid) < 1000)
 		return;
 
+	if(IsPlayerDead(playerid))
+		return;
+
 	new
 		actualweapon = GetPlayerWeapon(playerid),
-		itemweapon = GetPlayerCurrentWeapon(playerid);
+		weapon = GetPlayerCurrentWeapon(playerid);
 
-	if(actualweapon != 0)
+	if(actualweapon > 0)
 	{
-		if(actualweapon != itemweapon)
+		if(actualweapon != weapon)
 		{
 			new
 				name[24],
@@ -187,12 +190,12 @@ WeaponCheck(playerid)
 
 			GetPlayerName(playerid, name, 24);
 			GetItemTypeName(ItemType:actualweapon, weaponname1);
-			GetItemTypeName(ItemType:itemweapon, weaponname2);
+			GetItemTypeName(ItemType:weapon, weaponname2);
 
-			format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, itemweapon, weaponname2);
+			format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, weapon, weaponname2);
 
 			//ReportPlayer(name, reason, -1);
-			MsgAdmins(2, 0xFFFF00FF, reason);
+			MsgAdmins(3, 0xFFFF00FF, reason);
 		}
 	}
 
@@ -236,6 +239,9 @@ SwimFlyCheck(playerid)
 		GetPlayerPos(playerid, x, y, z);
 
 		if(x == 0.0 && y == 0.0 && z == 0.0)
+			return 0;
+
+		if(-1.0 < (x - DEFAULT_POS_X) < 1.0 && -1.0 < (y - DEFAULT_POS_Y) < 1.0 && -1.0 < (z - DEFAULT_POS_Z) < 1.0)
 			return 0;
 
 		if(!IsPlayerInWater(playerid))

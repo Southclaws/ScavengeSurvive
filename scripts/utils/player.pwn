@@ -28,7 +28,7 @@ SetPlayerToFaceVehicle(playerid, vehicleid, Float:offset = 0.0)
 	SetPlayerFacingAngle(playerid, GetAngleToPoint(x1, y1, x2, y2) + offset);
 }
 
-new Float:water_places[17][] =
+new Float:water_places[18][] =
 {
 	{25.0,			2313.0,		-1417.0,	23.0},
 	{15.0,			1280.0,		-773.0,		1082.0},
@@ -43,10 +43,11 @@ new Float:water_places[17][] =
 	{45.0,			2150.0,		1132.0,		8.0},
 	{55.0,			2089.0,		1915.0,		10.0},
 	{32.0,			2531.0,		1567.0,		9.0},
-	{21.0,			2582.0,		2385.0,		16.0},
+	{21.0,			2582.0,		2385.0,		17.0},
 	{33.0,			1768.0,		2853.0,		10.0},
-	{47.0,			-2721.0,	-466.0,		2.0},
-	{210.0,			-671.0,		-1898.0,	6.0}
+	{47.0,			-2721.0,	-466.0,		3.0},
+	{210.0,			-671.0,		-1898.0,	6.0},
+	{45.0,			1240.0,		-2381.0,	9.0}
 };
 
 stock IsPlayerInWater(playerid)

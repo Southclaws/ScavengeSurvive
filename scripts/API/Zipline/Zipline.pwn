@@ -243,22 +243,22 @@ timer ZiplineUpdate[50](playerid)
 			Float:y,
 			Float:z,
 			Float:dist,
-			Float:heightmult = 0.03;
+			Float:heightmult = 0.05;
 
 		GetPlayerPos(playerid, x, y, z);
 
 		dist = GetDistancePointLine(
 			zip_Data[zip_currentZipline[playerid]][zip_startPosX],
 			zip_Data[zip_currentZipline[playerid]][zip_startPosY],
-			zip_Data[zip_currentZipline[playerid]][zip_startPosZ]-1.0,
+			zip_Data[zip_currentZipline[playerid]][zip_startPosZ]-1.2,
 			zip_Data[zip_currentZipline[playerid]][zip_vecX],
 			zip_Data[zip_currentZipline[playerid]][zip_vecY],
 			zip_Data[zip_currentZipline[playerid]][zip_vecZ],
 			x, y, z);
 
-		if(dist > 0.5)
+		if(dist > 0.2)
 		{
-			heightmult = 0.04;
+			heightmult = 0.03;
 			return 1;
 		}
 

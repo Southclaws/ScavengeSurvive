@@ -1,9 +1,13 @@
 #define MAX_DRUG_TYPE (7)
 
+//#define 
+
+
+
 
 new
-		drug_PlayerDrugUseTick[MAX_PLAYERS][MAX_DRUG_TYPE],
-		drug_bPlayerDrugEffects[MAX_PLAYERS];
+	drug_PlayerDrugUseTick[MAX_PLAYERS][MAX_DRUG_TYPE],
+	drug_bPlayerDrugEffects[MAX_PLAYERS];
 
 
 ApplyDrug(playerid, drugtype)

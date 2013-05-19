@@ -25,8 +25,15 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 				{
 					if(amount > 10.0 && random(100) < amount)
 					{
-						GivePlayerHP(playerid, -(amount * 1.1), weaponid);
-						KnockOutPlayer(playerid, 5000);
+						if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+						{
+							GivePlayerHP(playerid, -(amount * 0.5), weaponid);
+						}
+						else
+						{
+							GivePlayerHP(playerid, -(amount * 1.1), weaponid);
+							KnockOutPlayer(playerid, 5000);
+						}
 					}
 				}
 			}
@@ -152,7 +159,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		{
 			case 1..3, 5..7, 10..18, 39:
 			{
-				if(random(100) < 40)
+				if(random(100) < 30)
 				{
 					t:bPlayerGameSettings[targetid]<Bleeding>;
 				}
@@ -165,11 +172,12 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 			{
 				t:bPlayerGameSettings[targetid]<Bleeding>;
 
-				if(gPlayerHP[playerid] - hploss <= 40.0)
+				if((gPlayerHP[playerid] - hploss) < 40.0)
 				{
 					if(random(100) < 70)
 					{
-						KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
+						if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+							KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
 					}
 				}
 			}

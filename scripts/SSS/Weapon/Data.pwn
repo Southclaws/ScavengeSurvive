@@ -1,4 +1,4 @@
-#define MAX_AMMO_TYPE		(7)
+#define MAX_AMMO_TYPE		(6)
 #define MAX_AMMO_TYPE_NAME	(9)
 
 
@@ -6,10 +6,9 @@ enum
 {
 	AMMO_TYPE_NONE,
 	AMMO_TYPE_9MM,
-	AMMO_TYPE_50,
 	AMMO_TYPE_BUCK,
 	AMMO_TYPE_556,
-	AMMO_TYPE_308,
+	AMMO_TYPE_357,
 	AMMO_TYPE_ROCKET
 }
 
@@ -17,7 +16,6 @@ new AmmoTypeName[MAX_AMMO_TYPE][MAX_AMMO_TYPE_NAME]=
 {
 	"None",
 	"9mm",		// 2037
-	".50",		// 2037
 	"Buckshot",	// 2038
 	"5.56",		// 2040
 	".338",		// 2039
@@ -72,7 +70,7 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 
 	{AMMO_TYPE_9MM,		10},	// M9				// 22
 	{AMMO_TYPE_9MM,		10},	// M9 SD			// 23
-	{AMMO_TYPE_50,		10},	// Desert Eagle		// 24
+	{AMMO_TYPE_357,		10},	// Desert Eagle		// 24
 
 	{AMMO_TYPE_BUCK,	12},	// Shotgun			// 25
 	{AMMO_TYPE_BUCK,	12},	// Sawnoff			// 26
@@ -84,8 +82,8 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 	{AMMO_TYPE_556,		6},		// M4-A1			// 31
 	{AMMO_TYPE_9MM,		8},		// Tec 9			// 32
 
-	{AMMO_TYPE_308,		14},	// Rifle			// 33
-	{AMMO_TYPE_308,		14},	// Sniper			// 34
+	{AMMO_TYPE_357,		14},	// Rifle			// 33
+	{AMMO_TYPE_357,		14},	// Sniper			// 34
 
 	{AMMO_TYPE_ROCKET,	0},		// RPG-7			// 35
 	{AMMO_TYPE_ROCKET,	0},		// Heatseek			// 36
@@ -124,17 +122,14 @@ stock ItemType:GetWeaponAmmoTypeItem(weaponid)
 		case AMMO_TYPE_9MM:
 			return item_Ammo9mm;
 
-		case AMMO_TYPE_50:
-			return item_Ammo50;
-
 		case AMMO_TYPE_BUCK:
 			return item_AmmoBuck;
 
 		case AMMO_TYPE_556:
 			return item_Ammo556;
 
-		case AMMO_TYPE_308:
-			return item_Ammo338;
+		case AMMO_TYPE_357:
+			return item_Ammo357;
 
 		case AMMO_TYPE_ROCKET:
 			return item_AmmoRocket;

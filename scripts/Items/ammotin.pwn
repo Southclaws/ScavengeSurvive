@@ -11,22 +11,19 @@ public OnItemCreated(itemid)
 	}
 
 	if(GetItemType(itemid) == item_Ammo9mm)
-		SetItemExtraData(itemid, random(60));
-
-	if(GetItemType(itemid) == item_Ammo50)
-		SetItemExtraData(itemid, random(20));
+		SetItemExtraData(itemid, random(30));
 
 	if(GetItemType(itemid) == item_AmmoBuck)
-		SetItemExtraData(itemid, random(50));
+		SetItemExtraData(itemid, random(15));
 
 	if(GetItemType(itemid) == item_Ammo556)
-		SetItemExtraData(itemid, random(200));
+		SetItemExtraData(itemid, random(50));
 
-	if(GetItemType(itemid) == item_Ammo338)
+	if(GetItemType(itemid) == item_Ammo357)
 		SetItemExtraData(itemid, random(10));
 
 	if(GetItemType(itemid) == item_AmmoRocket)
-		SetItemExtraData(itemid, random(2));
+		SetItemExtraData(itemid, random(1));
 
 	return CallLocalFunction("ammo_OnItemCreated", "d", itemid);
 }
@@ -55,17 +52,14 @@ timer ConvertOldAmmoTin[5](itemid)
 		case AMMO_TYPE_9MM:
 			itemtype = item_Ammo9mm;
 
-		case AMMO_TYPE_50:
-			itemtype = item_Ammo50;
-
 		case AMMO_TYPE_BUCK:
 			itemtype = item_AmmoBuck;
 
 		case AMMO_TYPE_556:
 			itemtype = item_Ammo556;
 
-		case AMMO_TYPE_308:
-			itemtype = item_Ammo338;
+		case AMMO_TYPE_357:
+			itemtype = item_Ammo357;
 
 		case AMMO_TYPE_ROCKET:
 			itemtype = item_AmmoRocket;
@@ -104,7 +98,7 @@ stock IsItemTypeAmmoTin(ItemType:itemtype)
 	if(itemtype == item_Ammo556)
 		return 1;
 
-	if(itemtype == item_Ammo338)
+	if(itemtype == item_Ammo357)
 		return 1;
 
 	if(itemtype == item_AmmoRocket)
@@ -118,17 +112,14 @@ stock GetAmmoTinAmmoType(ItemType:itemtype)
 	if(itemtype == item_Ammo9mm)
 		return AMMO_TYPE_9MM;
 
-	if(itemtype == item_Ammo50)
-		return AMMO_TYPE_50;
-
 	if(itemtype == item_AmmoBuck)
 		return AMMO_TYPE_BUCK;
 
 	if(itemtype == item_Ammo556)
 		return AMMO_TYPE_556;
 
-	if(itemtype == item_Ammo338)
-		return AMMO_TYPE_308;
+	if(itemtype == item_Ammo357)
+		return AMMO_TYPE_357;
 
 	if(itemtype == item_AmmoRocket)
 		return AMMO_TYPE_ROCKET;
@@ -391,7 +382,7 @@ public OnItemNameRender(itemid)
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(itemtype == item_Ammo9mm || itemtype == item_Ammo50 || itemtype == item_AmmoBuck ||
-		itemtype == item_Ammo556 || itemtype == item_Ammo338 || itemtype == item_AmmoRocket)
+		itemtype == item_Ammo556 || itemtype == item_Ammo357 || itemtype == item_AmmoRocket)
 	{
 		new
 			amount = GetItemExtraData(itemid),

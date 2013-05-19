@@ -8,24 +8,24 @@
 enum E_FOOD_DATA
 {
 ItemType:	food_itemType,
-Float:		food_foodValue
+Float:		food_foodValue,
+			food_canRawInfect
 }
 
 
 new
 			food_Data[MAX_FOOD_ITEM][E_FOOD_DATA],
 Iterator:	food_Index<MAX_FOOD_ITEM>,
-			food_CurrentlyEating[MAX_PLAYERS],
-Float:		food_EatProgress[MAX_PLAYERS],
-Timer:		food_UpdateTimer[MAX_PLAYERS];
+			food_CurrentlyEating[MAX_PLAYERS];
 
 
-DefineFoodItem(ItemType:itemtype, Float:foodvalue)
+DefineFoodItem(ItemType:itemtype, Float:foodvalue, canrawinfect)
 {
 	new id = Iter_Free(food_Index);
 
 	food_Data[id][food_itemType] = itemtype;
 	food_Data[id][food_foodValue] = foodvalue;
+	food_Data[id][food_canRawInfect] = canrawinfect;
 
 	Iter_Add(food_Index, id);
 
@@ -73,48 +73,48 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 StartEating(playerid, foodtype)
 {
 	food_CurrentlyEating[playerid] = foodtype;
-	stop food_UpdateTimer[playerid];
-	food_UpdateTimer[playerid] = repeat EatUpdate(playerid);
 	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
-}
-timer EatUpdate[100](playerid)
-{
-	if(!IsValidItem(GetPlayerItem(playerid)))
-	{
-		StopEating(playerid);
-		return;
-	}
-
-	if(food_EatProgress[playerid] == 32.0)
-	{
-		if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
-			gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4;
-
-		else
-			gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue];
-
-		DestroyItem(GetPlayerItem(playerid));
-		StopEating(playerid);
-		return;
-	}
-
-	SetPlayerProgressBarValue(playerid, ActionBar, food_EatProgress[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, 30.0);
-	UpdatePlayerProgressBar(playerid, ActionBar);
-
-	food_EatProgress[playerid] += 1.0;
-
-	return;
+	StartHoldAction(playerid, 3200);
 }
 
 StopEating(playerid)
 {
-	stop food_UpdateTimer[playerid];
-	food_EatProgress[playerid] = 0.0;
 	food_CurrentlyEating[playerid] = -1;
-	HidePlayerProgressBar(playerid, ActionBar);
 	ClearAnimations(playerid);
+	StopHoldAction(playerid);
 }
+
+public OnHoldActionFinish(playerid)
+{
+	if(Iter_Contains(food_Index, food_CurrentlyEating[playerid]))
+	{
+		if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
+		{
+			gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4;
+
+			if(food_Data[food_CurrentlyEating[playerid]][food_canRawInfect])
+				t:bPlayerGameSettings[playerid]<Infected>;
+		}
+		else
+		{
+			gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue];
+		}
+
+		DestroyItem(GetPlayerItem(playerid));
+		StopEating(playerid);
+
+		return 1;
+	}
+
+	return CallLocalFunction("food_OnHoldActionFinish", "d", playerid);
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish food_OnHoldActionFinish
+forward food_OnHoldActionFinish(playerid);
 
 
 ptask FoodUpdate[1000](playerid)
@@ -129,6 +129,11 @@ ptask FoodUpdate[1000](playerid)
 		lr;
 
 	GetPlayerKeys(playerid, k, ud, lr);
+
+	if(bPlayerGameSettings[playerid] & Infected)
+	{
+		gPlayerFP[playerid] -= IDLE_FOOD_RATE;
+	}
 
 	if(animidx == 43) // Sitting
 	{
@@ -173,12 +178,13 @@ ptask FoodUpdate[1000](playerid)
 	{
 		if(gPlayerFP[playerid] < 30.0)
 		{
-			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ASPIRIN))
+			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 			{
-				SetPlayerDrunkLevel(playerid, 0);
+				if(!(bPlayerGameSettings[playerid] & Infected))
+					SetPlayerDrunkLevel(playerid, 0);
 
-				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ASPIRIN) > 120000)
-					RemoveDrug(playerid, DRUG_TYPE_ASPIRIN);
+				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000)
+					RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 			}
 			else
 			{
@@ -187,7 +193,8 @@ ptask FoodUpdate[1000](playerid)
 		}
 		else
 		{
-			SetPlayerDrunkLevel(playerid, 0);
+			if(!(bPlayerGameSettings[playerid] & Infected))
+				SetPlayerDrunkLevel(playerid, 0);
 		}
 	}
 

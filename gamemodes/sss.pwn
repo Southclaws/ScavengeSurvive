@@ -25,6 +25,10 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 
+#define DEFAULT_POS_X				(-907.5452)
+#define DEFAULT_POS_Y				(272.7235)
+#define DEFAULT_POS_Z				(1014.1449)
+
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
 //#include <MegaHooks>				// By Unicode:				http://forum.sa-mp.com/showthread.php?t=428948
@@ -144,15 +148,29 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_SPECIAL					"{0025AA}"
 
 
-#define ATTACHSLOT_ITEM				(0)
-#define ATTACHSLOT_BAG				(1)
-#define ATTACHSLOT_USE				(2)
-#define ATTACHSLOT_HOLSTER			(3)
-#define ATTACHSLOT_HOLD				(4)
-#define ATTACHSLOT_CUFFS			(5)
-#define ATTACHSLOT_TORCH			(6)
-#define ATTACHSLOT_HAT				(7)
-#define ATTACHSLOT_BLOOD			(8)
+enum
+{
+	ATTACHSLOT_ITEM,		// 0
+	ATTACHSLOT_BAG,			// 1
+	ATTACHSLOT_USE,			// 2
+	ATTACHSLOT_HOLSTER,		// 3
+	ATTACHSLOT_HOLD,		// 4
+	ATTACHSLOT_CUFFS,		// 5
+	ATTACHSLOT_TORCH,		// 6
+	ATTACHSLOT_HAT,			// 7
+	ATTACHSLOT_BLOOD		// 8
+}
+
+enum
+{
+	DRUG_TYPE_ANTIBIOTIC,	// 0 - Remove infection
+	DRUG_TYPE_PAINKILL,		// 1 - +10 HP, 5 minutes no darkness or knockouts from low HP
+	DRUG_TYPE_LSD,			// 2 - Weather effects
+	DRUG_TYPE_AIR,			// 3 - Health loss and death
+	DRUG_TYPE_MORPHINE,		// 4 - Shaky screen and health regen
+	DRUG_TYPE_ADRENALINE,	// 5 - No knockouts, camera shaking and slow health regen
+	DRUG_TYPE_HEROINE		// 6 - Weather effects
+}
 
 
 #define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
@@ -165,21 +183,10 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_RADIO				"R"
 
 
-enum
-{
-	DRUG_TYPE_ASPIRIN,		// Remove shaky screen
-	DRUG_TYPE_PAINKILL,		// Add 10 HP, remove dark screen for 1 minute
-	DRUG_TYPE_LSD,			// Weather effects
-	DRUG_TYPE_AIR,			// Health loss and death
-	DRUG_TYPE_MORPHINE,		// Shaky screen and health gain
-	DRUG_TYPE_ADRENALINE,	// Slow health gain
-	DRUG_TYPE_HEROINE		// Low visibility
-}
-
-
 //==============================================================SERVER VARIABLES
 
 
+// Dialog IDs
 enum
 {
 	d_NULL,
@@ -211,6 +218,17 @@ enum
 	d_TransferAmmoGun2Gun,
 	d_BanList,
 	d_BanInfo
+}
+
+// Keypad IDs
+enum
+{
+	k_ControlTower,
+	k_MainGate,
+	k_AirstripGate,
+	k_BlastDoor,
+	k_Storage,
+	k_StorageWatch
 }
 
 
@@ -383,7 +401,7 @@ ItemType:		item_Clothes		= INVALID_ITEM_TYPE,
 ItemType:		item_HelmArmy		= INVALID_ITEM_TYPE,
 ItemType:		item_MediumBox		= INVALID_ITEM_TYPE,
 ItemType:		item_SmallBox		= INVALID_ITEM_TYPE,
-ItemType:		item_AmmoBox		= INVALID_ITEM_TYPE,
+ItemType:		item_LargeBox		= INVALID_ITEM_TYPE,
 ItemType:		item_AmmoTin		= INVALID_ITEM_TYPE,
 ItemType:		item_Meat			= INVALID_ITEM_TYPE,
 // 100
@@ -437,9 +455,20 @@ ItemType:		item_Ammo9mm		= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo50			= INVALID_ITEM_TYPE,
 ItemType:		item_AmmoBuck		= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo556		= INVALID_ITEM_TYPE,
-ItemType:		item_Ammo338		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo357		= INVALID_ITEM_TYPE,
 ItemType:		item_AmmoRocket		= INVALID_ITEM_TYPE,
-ItemType:		item_MolotovEmpty	= INVALID_ITEM_TYPE;
+ItemType:		item_MolotovEmpty	= INVALID_ITEM_TYPE,
+ItemType:		item_Money			= INVALID_ITEM_TYPE,
+// 150
+ItemType:		item_PowerSupply	= INVALID_ITEM_TYPE,
+ItemType:		item_StorageUnit	= INVALID_ITEM_TYPE,
+ItemType:		item_Fluctuator		= INVALID_ITEM_TYPE,
+ItemType:		item_IoUnit			= INVALID_ITEM_TYPE,
+ItemType:		item_FluxCap		= INVALID_ITEM_TYPE,
+ItemType:		item_DataInterface	= INVALID_ITEM_TYPE,
+ItemType:		item_HackDevice		= INVALID_ITEM_TYPE,
+ItemType:		item_PlantPot		= INVALID_ITEM_TYPE;
+
 
 //=====================Clock and Timers
 new
@@ -502,11 +531,12 @@ enum (<<= 1) // 14
 		ShowHUD,
 		KnockedOut,
 		Bleeding,
+		Infected,
 
 		Frozen,
 		Muted,
 
-		DebugMode,
+		DebugMode
 }
 enum E_PLAYER_DATA
 {
@@ -555,6 +585,7 @@ Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 		tick_WeaponHit			[MAX_PLAYERS],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
+		tick_LastInfectionFX	[MAX_PLAYERS],
 		ChatMessageStreak		[MAX_PLAYERS],
 		ChatMuteTick			[MAX_PLAYERS];
 
@@ -605,6 +636,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Player/Accounts.pwn"
 #include "../scripts/SSS/Player/SaveLoad.pwn"
 #include "../scripts/SSS/Player/Spawn.pwn"
+#include "../scripts/SSS/Player/Drugs.pwn"
 #include "../scripts/SSS/Player/Damage.pwn"
 #include "../scripts/SSS/Player/Death.pwn"
 #include "../scripts/SSS/Player/Tutorial.pwn"
@@ -632,6 +664,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/UI/TipText.pwn"
 #include "../scripts/SSS/UI/ToolTipEvents.pwn"
 #include "../scripts/SSS/UI/Watch.pwn"
+#include "../scripts/SSS/UI/Keypad.pwn"
 
 //======================Character
 
@@ -640,7 +673,6 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Char/Hats.pwn"
 #include "../scripts/SSS/Char/Inventory.pwn"
 #include "../scripts/SSS/Char/Animations.pwn"
-#include "../scripts/SSS/Char/Drugs.pwn"
 #include "../scripts/SSS/Char/MeleeItems.pwn"
 #include "../scripts/SSS/Char/KnockOut.pwn"
 #include "../scripts/SSS/Char/Disarm.pwn"
@@ -839,119 +871,129 @@ public OnGameModeInit()
 		SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
 	}
 
-	item_Parachute		= DefineItemType("Parachute",		371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
-	item_Medkit			= DefineItemType("Medkit",			1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_HardDrive		= DefineItemType("Hard Drive",		328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
-	item_Key			= DefineItemType("Key",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_HardDrive		= DefineItemType("Hard Drive",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
+	item_Key			= DefineItemType("Key",					327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 // 50
-	item_FireworkBox	= DefineItemType("Fireworks",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
-	item_FireLighter	= DefineItemType("Lighter",			327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-	item_Timer			= DefineItemType("Timer Device",	2922,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
-	item_Explosive		= DefineItemType("Explosive",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_Timebomb		= DefineItemType("Time Bomb",		1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_Battery		= DefineItemType("Battery",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
-	item_Fusebox		= DefineItemType("Fuse Box",		2038,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_Bottle			= DefineItemType("Bottle",			1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
-	item_Sign			= DefineItemType("Sign",			19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
-	item_Armour			= DefineItemType("Armour",			19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
+	item_FireworkBox	= DefineItemType("Fireworks",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
+	item_FireLighter	= DefineItemType("Lighter",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_Timer			= DefineItemType("Timer Device",		2922,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
+	item_Explosive		= DefineItemType("Explosive",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Timebomb		= DefineItemType("Time Bomb",			1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
+	item_Battery		= DefineItemType("Battery",				2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082);
+	item_Fusebox		= DefineItemType("Fuse Box",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
+	item_Bottle			= DefineItemType("Bottle",				1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
+	item_Sign			= DefineItemType("Sign",				19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
+	item_Armour			= DefineItemType("Armour",				19515,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 // 60
-	item_Bandage		= DefineItemType("Bandage",			1575,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_FishRod		= DefineItemType("Fishing Rod",		18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
-	item_Wrench			= DefineItemType("Wrench",			18633,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
-	item_Crowbar		= DefineItemType("Crowbar",			18634,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
-	item_Hammer			= DefineItemType("Hammer",			18635,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.000000, -0.008230, 0.000000, 6.428617, 0.000000, 0.000000);
-	item_Shield			= DefineItemType("Shield",			18637,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.262389, 0.016478, -0.151046, 103.597534, 6.474381, 38.321765);
-	item_Flashlight		= DefineItemType("Flashlight",		18641,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.061910, 0.022700, 0.039052, 190.938354, 0.000000, 0.000000);
-	item_Taser			= DefineItemType("Taser",			18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
-	item_LaserPoint		= DefineItemType("Laser Pointer",	18643,	ITEM_SIZE_SMALL,	0.0, 0.0, 90.0,			0.0,	0.066244, 0.010838, -0.000024, 6.443027, 287.441467, 0.000000);
-	item_Screwdriver	= DefineItemType("Screwdriver",		18644,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.099341, 0.021018, 0.009145, 193.644195, 0.000000, 0.000000);
+	item_Bandage		= DefineItemType("Bandage",				1575,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_FishRod		= DefineItemType("Fishing Rod",			18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
+	item_Wrench			= DefineItemType("Wrench",				18633,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
+	item_Crowbar		= DefineItemType("Crowbar",				18634,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
+	item_Hammer			= DefineItemType("Hammer",				18635,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.000000, -0.008230, 0.000000, 6.428617, 0.000000, 0.000000);
+	item_Shield			= DefineItemType("Shield",				18637,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.262389, 0.016478, -0.151046, 103.597534, 6.474381, 38.321765);
+	item_Flashlight		= DefineItemType("Flashlight",			18641,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.061910, 0.022700, 0.039052, 190.938354, 0.000000, 0.000000);
+	item_Taser			= DefineItemType("Taser",				18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
+	item_LaserPoint		= DefineItemType("Laser Pointer",		18643,	ITEM_SIZE_SMALL,	0.0, 0.0, 90.0,			0.0,	0.066244, 0.010838, -0.000024, 6.443027, 287.441467, 0.000000);
+	item_Screwdriver	= DefineItemType("Screwdriver",			18644,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.099341, 0.021018, 0.009145, 193.644195, 0.000000, 0.000000);
 // 70
-	item_MobilePhone	= DefineItemType("Mobile Phone",	18865,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
-	item_Pager			= DefineItemType("Pager",			18875,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.097277, 0.027625, 0.013023, 90.819244, 191.427993, 0.000000);
-	item_Rake			= DefineItemType("Rake",			18890,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	-0.002599, 0.003984, 0.026356, 190.231231, 0.222518, 271.565185);
-	item_HotDog			= DefineItemType("Hotdog",			19346,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.088718, 0.035828, 0.008570, 272.851745, 354.704772, 9.342185);
-	item_EasterEgg		= DefineItemType("Easter Egg",		19345,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.000000, 0.000000, 0.000000, 0.000000, 90.000000, 0.000000);
-	item_Cane			= DefineItemType("Cane",			19348,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.041865, 0.022883, -0.079726, 4.967216, 10.411237, 0.000000);
-	item_HandCuffs		= DefineItemType("Handcuffs",		19418,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.077635, 0.011612, 0.000000, 0.000000, 90.000000, 0.000000);
-	item_Bucket			= DefineItemType("Bucket",			19468,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.293691, -0.074108, 0.020810, 148.961685, 280.067260, 151.782791);
-	item_GasMask		= DefineItemType("Gas Mask",		19472,	ITEM_SIZE_SMALL,	180.0, 0.0, 0.0,		0.0,	0.062216, 0.055396, 0.001138, 90.000000, 0.000000, 180.000000);
-	item_Flag			= DefineItemType("Flag",			2993,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
+	item_MobilePhone	= DefineItemType("Mobile Phone",		18865,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
+	item_Pager			= DefineItemType("Pager",				18875,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.097277, 0.027625, 0.013023, 90.819244, 191.427993, 0.000000);
+	item_Rake			= DefineItemType("Rake",				18890,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	-0.002599, 0.003984, 0.026356, 190.231231, 0.222518, 271.565185);
+	item_HotDog			= DefineItemType("Hotdog",				19346,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.088718, 0.035828, 0.008570, 272.851745, 354.704772, 9.342185);
+	item_EasterEgg		= DefineItemType("Easter Egg",			19345,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.000000, 0.000000, 0.000000, 0.000000, 90.000000, 0.000000);
+	item_Cane			= DefineItemType("Cane",				19348,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.041865, 0.022883, -0.079726, 4.967216, 10.411237, 0.000000);
+	item_HandCuffs		= DefineItemType("Handcuffs",			19418,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.077635, 0.011612, 0.000000, 0.000000, 90.000000, 0.000000);
+	item_Bucket			= DefineItemType("Bucket",				19468,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.293691, -0.074108, 0.020810, 148.961685, 280.067260, 151.782791);
+	item_GasMask		= DefineItemType("Gas Mask",			19472,	ITEM_SIZE_SMALL,	180.0, 0.0, 0.0,		0.0,	0.062216, 0.055396, 0.001138, 90.000000, 0.000000, 180.000000);
+	item_Flag			= DefineItemType("Flag",				2993,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
 // 80
-	item_DoctorBag		= DefineItemType("Doctor's Bag",	1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
-	item_Backpack		= DefineItemType("Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
-	item_Satchel		= DefineItemType("Small Bag",		363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
-	item_Wheel			= DefineItemType("Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
-	item_MotionSense	= DefineItemType("Motion Sensor",	327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
-	item_CapCase		= DefineItemType("Cap Case",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
-	item_MotionMine		= DefineItemType("Motion Mine",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_CapMine		= DefineItemType("Cap Mine",		1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
-	item_Pizza			= DefineItemType("Pizza",			1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
-	item_Burger			= DefineItemType("Burger",			2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
+	item_DoctorBag		= DefineItemType("Doctor's Bag",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
+	item_Backpack		= DefineItemType("Backpack",			3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
+	item_Satchel		= DefineItemType("Small Bag",			363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
+	item_Wheel			= DefineItemType("Wheel",				1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
+	item_MotionSense	= DefineItemType("Motion Sensor",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
+	item_CapCase		= DefineItemType("Cap Case",			1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
+	item_MotionMine		= DefineItemType("Motion Mine",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_CapMine		= DefineItemType("Cap Mine",			1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
+	item_Pizza			= DefineItemType("Pizza",				1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
+	item_Burger			= DefineItemType("Burger",				2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
 // 90
-	item_BurgerBox		= DefineItemType("Burger",			2768,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.107883, 0.093265, 0.029676, 91.010627, 7.522015, 0.000000);
-	item_Taco			= DefineItemType("Taco",			2769,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.069803, 0.057707, 0.039241, 0.000000, 78.877342, 0.000000);
-	item_GasCan			= DefineItemType("Petrol Can",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
-	item_Clothes		= DefineItemType("Clothes",			2891,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_HelmArmy		= DefineItemType("Army Helmet",		19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045,	0.184999, -0.007999, 0.046999, 94.199989, 22.700027, 4.799994);
-	item_MediumBox		= DefineItemType("Box",				3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
-	item_SmallBox		= DefineItemType("Small Box",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
-	item_AmmoBox		= DefineItemType("Ammo Box",		2358,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_AmmoTin		= DefineItemType("Ammo Tin",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_Meat			= DefineItemType("Meat",			2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
+	item_BurgerBox		= DefineItemType("Burger",				2768,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.107883, 0.093265, 0.029676, 91.010627, 7.522015, 0.000000);
+	item_Taco			= DefineItemType("Taco",				2769,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.069803, 0.057707, 0.039241, 0.000000, 78.877342, 0.000000);
+	item_GasCan			= DefineItemType("Petrol Can",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
+	item_Clothes		= DefineItemType("Clothes",				2891,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_HelmArmy		= DefineItemType("Army Helmet",			19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045,	0.184999, -0.007999, 0.046999, 94.199989, 22.700027, 4.799994);
+	item_MediumBox		= DefineItemType("Medium Box",			3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
+	item_SmallBox		= DefineItemType("Small Box",			2969,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
+	item_LargeBox		= DefineItemType("Large Box",			1271,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3112,	0.050000, 0.334999, -0.327000,  -23.900018, -10.200002, 11.799987);
+	item_AmmoTin		= DefineItemType("Ammo Tin",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Meat			= DefineItemType("Meat",				2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
-	item_DeadLeg		= DefineItemType("Leg",				2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
-	item_Torso			= DefineItemType("Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
-	item_LongPlank		= DefineItemType("Plank",			2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
-	item_GreenGloop		= DefineItemType("Unknown",			2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105);
-	item_Capsule		= DefineItemType("Capsule",			3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777);
-	item_RadioPole		= DefineItemType("Receiver",		3221,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
-	item_SignShot		= DefineItemType("Sign",			3265,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
-	item_Mailbox		= DefineItemType("Mailbox",			3407,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
-	item_Pumpkin		= DefineItemType("Pumpkin",			19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000);
-	item_Nailbat		= DefineItemType("Nailbat",			2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
+	item_DeadLeg		= DefineItemType("Leg",					2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
+	item_Torso			= DefineItemType("Torso",				2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
+	item_LongPlank		= DefineItemType("Plank",				2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
+	item_GreenGloop		= DefineItemType("Unknown",				2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105);
+	item_Capsule		= DefineItemType("Capsule",				3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777);
+	item_RadioPole		= DefineItemType("Receiver",			3221,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
+	item_SignShot		= DefineItemType("Sign",				3265,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
+	item_Mailbox		= DefineItemType("Mailbox",				3407,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
+	item_Pumpkin		= DefineItemType("Pumpkin",				19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000);
+	item_Nailbat		= DefineItemType("Nailbat",				2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
 // 110
-	item_ZorroMask		= DefineItemType("Zorro Mask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
-	item_Barbecue		= DefineItemType("BBQ",				1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
-	item_Headlight		= DefineItemType("Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
-	item_Pills			= DefineItemType("Pills",			2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
-	item_AutoInjec		= DefineItemType("Injector",		2711,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
-	item_BurgerBag		= DefineItemType("Burger",			2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
-	item_CanDrink		= DefineItemType("Can",				2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
-	item_Detergent		= DefineItemType("Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
-	item_Dice			= DefineItemType("Dice",			1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
-	item_Dynamite		= DefineItemType("Dynamite",		1654,	ITEM_SIZE_MEDIUM);
+	item_ZorroMask		= DefineItemType("Zorro Mask",			18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
+	item_Barbecue		= DefineItemType("BBQ",					1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_Headlight		= DefineItemType("Headlight",			19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
+	item_Pills			= DefineItemType("Pills",				2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
+	item_AutoInjec		= DefineItemType("Injector",			2711,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
+	item_BurgerBag		= DefineItemType("Burger",				2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
+	item_CanDrink		= DefineItemType("Can",					2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
+	item_Detergent		= DefineItemType("Detergent",			1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
+	item_Dice			= DefineItemType("Dice",				1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
+	item_Dynamite		= DefineItemType("Dynamite",			1654,	ITEM_SIZE_MEDIUM);
 // 120
-	item_Door			= DefineItemType("Door",			1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
-	item_MetPanel		= DefineItemType("Metal Panel",		1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
-	item_SurfBoard		= DefineItemType("Surfboard",		2410,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
-	item_CrateDoor		= DefineItemType("Crate Door",		2678,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
-	item_CorPanel		= DefineItemType("Metal Sheet",		2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
-	item_ShipDoor		= DefineItemType("Ship Door",		2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
-	item_MetalPlate		= DefineItemType("Metal Sheet",		2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
-	item_MetalStand		= DefineItemType("Metal Plate",		2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
-	item_WoodDoor		= DefineItemType("Wood Panel",		3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
-	item_WoodPanel		= DefineItemType("Wood Panel",		5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
+	item_Door			= DefineItemType("Door",				1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
+	item_MetPanel		= DefineItemType("Metal Panel",			1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
+	item_SurfBoard		= DefineItemType("Surfboard",			2410,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
+	item_CrateDoor		= DefineItemType("Crate Door",			2678,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
+	item_CorPanel		= DefineItemType("Metal Sheet",			2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
+	item_ShipDoor		= DefineItemType("Ship Door",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
+	item_MetalPlate		= DefineItemType("Metal Sheet",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
+	item_MetalStand		= DefineItemType("Metal Plate",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
+	item_WoodDoor		= DefineItemType("Wood Panel",			3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
+	item_WoodPanel		= DefineItemType("Wood Panel",			5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 // 130
-	item_Flare			= DefineItemType("Flare",			345,	ITEM_SIZE_SMALL);
-	item_PhoneBomb		= DefineItemType("Phone Bomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_ParaBag		= DefineItemType("Parachute Bag",	371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
-	item_Keypad			= DefineItemType("Keypad",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
-	item_TentPack		= DefineItemType("Tent Pack",		1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
-	item_Campfire		= DefineItemType("Campfire",		19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
-	item_CowboyHat		= DefineItemType("Cowboy Hat",		18962,	ITEM_SIZE_MEDIUM,	0.0, 270.0, 0.0,		0.0427,	0.232999, 0.032000, 0.016000, 0.000000, 2.700027, -67.300010);
-	item_TruckCap		= DefineItemType("Trucker Cap",		18961,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.01,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-	item_BoaterHat		= DefineItemType("Boater Hat",		18946,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-	item_BowlerHat		= DefineItemType("Bowler Hat",		18947,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.01,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-
-	item_PoliceCap		= DefineItemType("Police Cap",		18636,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.318,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-	item_TopHat			= DefineItemType("Top Hat",			19352,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000,  81.799942, 7.699998, 179.999954);
-	item_Ammo9mm		= DefineItemType("9mm Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_Ammo50			= DefineItemType(".50 Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_AmmoBuck		= DefineItemType("Buckshot Shells",	2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_Ammo556		= DefineItemType("5.56 Rounds",		2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_Ammo338		= DefineItemType(".338 Rounds",		2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_AmmoRocket		= DefineItemType("Rockets",			2061,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_MolotovEmpty	= DefineItemType("Empty Molotov",	344,	ITEM_SIZE_SMALL);
+	item_Flare			= DefineItemType("Flare",				345,	ITEM_SIZE_SMALL);
+	item_PhoneBomb		= DefineItemType("Phone Bomb",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_ParaBag		= DefineItemType("Parachute Bag",		371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_Keypad			= DefineItemType("Keypad",				19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
+	item_TentPack		= DefineItemType("Tent Pack",			1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_Campfire		= DefineItemType("Campfire",			19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_CowboyHat		= DefineItemType("Cowboy Hat",			18962,	ITEM_SIZE_MEDIUM,	0.0, 270.0, 0.0,		0.0427,	0.232999, 0.032000, 0.016000, 0.000000, 2.700027, -67.300010);
+	item_TruckCap		= DefineItemType("Trucker Cap",			18961,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.01,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
+	item_BoaterHat		= DefineItemType("Boater Hat",			18946,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
+	item_BowlerHat		= DefineItemType("Bowler Hat",			18947,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.01,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
+//140
+	item_PoliceCap		= DefineItemType("Police Cap",			18636,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
+	item_TopHat			= DefineItemType("Top Hat",				19352,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
+	item_Ammo9mm		= DefineItemType("9mm Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo50			= DefineItemType(".50 Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoBuck		= DefineItemType("Buckshot Shells",		2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo556		= DefineItemType("5.56 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo357		= DefineItemType(".338 Rounds",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoRocket		= DefineItemType("Rockets",				3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
+	item_MolotovEmpty	= DefineItemType("Empty Molotov",		344,	ITEM_SIZE_SMALL,	-4.0, 0.0, 0.0,			0.1728,	0.000000, -0.004999, 0.000000,  0.000000, 0.000000, 0.000000);
+	item_Money			= DefineItemType("Pre-War Money",		1212,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.133999, 0.022000, 0.018000,  -90.700004, -11.199998, -101.600013);
+// 150
+	item_PowerSupply	= DefineItemType("Power Supply",		3016,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.255000, -0.054000, 0.032000, -87.499984, -7.599999, -7.999998);
+	item_StorageUnit	= DefineItemType("Storage Unit",		328,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_Fluctuator		= DefineItemType("Fluctuator Unit",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_IoUnit			= DefineItemType("I/O Unit",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
+	item_FluxCap		= DefineItemType("Flux Capacitor",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_DataInterface	= DefineItemType("Data Interface",		19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
+	item_HackDevice		= DefineItemType("Hack Interface",		364,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.134000, 0.080000, -0.037000,  84.299949, 3.399998, 9.400002);
+	item_PlantPot		= DefineItemType("Plant Pot",			2203,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 
 
 	anim_Blunt = DefineAnimSet();
@@ -971,13 +1013,13 @@ public OnGameModeInit()
 	SetItemAnimSet(item_Screwdriver,	anim_Stab);
 
 
-	DefineFoodItem(item_HotDog,			30.0);
-	DefineFoodItem(item_Pizza,			60.0);
-	DefineFoodItem(item_Burger,			35.0);
-	DefineFoodItem(item_BurgerBox,		35.0);
-	DefineFoodItem(item_Taco,			30.0);
-	DefineFoodItem(item_BurgerBag,		45.0);
-	DefineFoodItem(item_Meat,			75.0);
+	DefineFoodItem(item_HotDog,			30.0, 1);
+	DefineFoodItem(item_Pizza,			60.0, 0);
+	DefineFoodItem(item_Burger,			35.0, 1);
+	DefineFoodItem(item_BurgerBox,		35.0, 0);
+	DefineFoodItem(item_Taco,			30.0, 0);
+	DefineFoodItem(item_BurgerBag,		45.0, 0);
+	DefineFoodItem(item_Meat,			75.0, 1);
 
 
 	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		1, 1, 0);
@@ -999,6 +1041,13 @@ public OnGameModeInit()
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);
+	DefineItemCombo(item_Battery,		item_Fusebox,		item_PowerSupply);
+	DefineItemCombo(item_Timer,			item_HardDrive,		item_StorageUnit);
+	DefineItemCombo(item_Taser,			item_RadioPole,		item_Fluctuator);
+	DefineItemCombo(item_MobilePhone,	item_Keypad,		item_IoUnit);
+	DefineItemCombo(item_PowerSupply,	item_Fluctuator,	item_FluxCap);
+	DefineItemCombo(item_StorageUnit,	item_IoUnit,		item_DataInterface);
+	DefineItemCombo(item_FluxCap,		item_DataInterface,	item_HackDevice);
 
 
 	DefineLootIndex(loot_Civilian);
@@ -1033,9 +1082,9 @@ public OnGameModeInit()
 	skin_ArmyF	= DefineSkinItem(191,	"Military",			0, 0.2);
 	skin_IndiF	= DefineSkinItem(131,	"Indian",			0, 0.1);
 
-	DefineSafeboxType("Box", 			item_MediumBox,		6, 6, 3, 2);
+	DefineSafeboxType("Medium Box",		item_MediumBox,		6, 6, 3, 2);
 	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);
-	DefineSafeboxType("Ammo Box", 		item_AmmoBox,		6, 6, 4, 0);
+	DefineSafeboxType("Large Box", 		item_LargeBox,		10, 8, 6, 6);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
 	for(new i; i < _:item_Parachute; i++)
@@ -1211,53 +1260,8 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 }
 
-
-
-
-/* Weapon Knockback
-
-	if(weaponid==34)
-	{
-		new
-			Float:pX,
-			Float:pY,
-			Float:pZ,
-			Float:iX,
-			Float:iY,
-			Float:iZ,
-
-			Float:vX,
-			Float:vY,
-			Float:vZ,
-
-			Float:pA;
-
-		GetPlayerPos(playerid, pX, pY, pZ);
-		GetPlayerPos(playerid, iX, iY, iZ);
-		GetPlayerPos(playerid, vX, vY, vZ);
-
-		pA = GetAngleToPoint(iX, iY, pX, pY);
-		GetXYFromAngle(vX, vY, pA, 0.35);
-
-		pX-=vX;
-		pY-=pY;
-
-		SetPlayerVelocity(playerid, pX, pY, -0.2);
-		ApplyAnimation(playerid, "PED", "FALL_back", 4.0, 0, 1, 1, 1, 0, 1);
-		defer GetUp(playerid);
-	}
-}
-timer GetUp[1000](playerid)
-{
-	ApplyAnimation(playerid, "PED", "getup", 4.0, 0, 1, 1, 0, 0, 1);
-}
-*/
-
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(bPlayerGameSettings[playerid] & DebugMode)
-		MsgF(playerid, YELLOW, "Newkeys: %d, OldKeys: %d", newkeys, oldkeys);
-
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		if(newkeys & KEY_YES)
@@ -1498,7 +1502,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 	{
 		foreach(new i : Player)
 		{
-			if(-0.1 < frequency - gPlayerFrequency[i] < 0.1)
+			if(-0.05 < frequency - gPlayerFrequency[i] < 0.05)
 			{
 				SendClientMessage(i, WHITE, text);
 
@@ -1515,9 +1519,6 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 public OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
-
-	if(bPlayerGameSettings[playerid] & DebugMode)
-		MsgF(playerid, YELLOW, "Newstate: %d, Oldstate: %d", newstate, oldstate);
 
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{

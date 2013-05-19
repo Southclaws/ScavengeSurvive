@@ -85,17 +85,29 @@ KnockOutUpdate(playerid)
 	}
 	else
 	{
-		f:bPlayerGameSettings[playerid]<KnockedOut>;
 		HidePlayerProgressBar(playerid, KnockoutBar);
 
-		if(tickcount() - GetPlayerKnockOutTick(playerid) > 2000 * gPlayerHP[playerid] && gPlayerHP[playerid] > 40.0)
+		if(gPlayerHP[playerid] < 50.0)
 		{
-			if(random(100) < floatround((40.0 - gPlayerHP[playerid]) * 2))
+			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid]) + frandom(200 * (40.0 - gPlayerHP[playerid]))));
+				if(tickcount() - GetPlayerKnockOutTick(playerid) > 5000 * gPlayerHP[playerid])
+				{
+					if(bPlayerGameSettings[playerid] & Bleeding)
+					{
+						if(frandom(40.0) < (50.0 - gPlayerHP[playerid]))
+							KnockOutPlayer(playerid, floatround(2000 * (50.0 - gPlayerHP[playerid]) + frandom(200 * (50.0 - gPlayerHP[playerid]))));
+					}
+					else
+					{
+						if(frandom(40.0) < (40.0 - gPlayerHP[playerid]))
+							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid]) + frandom(200 * (40.0 - gPlayerHP[playerid]))));
+					}
+				}
 			}
 		}
 	}
+
 	return;
 }
 

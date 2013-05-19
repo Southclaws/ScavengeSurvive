@@ -1,6 +1,19 @@
 #include <YSI\y_hooks>
 
 
+#define VEHICLE_HEALTH_MIN		(250.0)
+#define VEHICLE_HEALTH_CHUNK_1	(300.0)
+#define VEHICLE_HEALTH_CHUNK_2	(450.0)
+#define VEHICLE_HEALTH_CHUNK_3	(650.0)
+#define VEHICLE_HEALTH_CHUNK_4	(800.0)
+#define VEHICLE_HEALTH_MAX		(990.0)
+
+
+
+
+new Float:PlayerVehicleCurHP[MAX_PLAYERS];
+
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(IsPlayerInAnyVehicle(playerid) || bPlayerGameSettings[playerid] & KnockedOut)
@@ -36,7 +49,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 					if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 					{
-						if(250.0 <= vehiclehealth <= 450.0 || 750.0 <= vehiclehealth <= 990.0)
+						if(VEHICLE_HEALTH_MIN <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_2 || VEHICLE_HEALTH_CHUNK_4 <= vehiclehealth <= VEHICLE_HEALTH_MAX)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);
@@ -49,7 +62,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
 					{
-						if(450.0 <= vehiclehealth <= 600.0)
+						if(VEHICLE_HEALTH_CHUNK_2 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_3)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);
@@ -62,7 +75,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}	
 					else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 					{
-						if(600.0 <= vehiclehealth <= 750.0)
+						if(VEHICLE_HEALTH_CHUNK_3 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_4)
 						{
 							SetPlayerPos(playerid, px, py, pz);
 							StartRepairingVehicle(playerid, i);
@@ -163,28 +176,33 @@ PlayerVehicleUpdate(playerid)
 	{
 		GetVehicleHealth(vehicleid, health);
 
-		if(health > 1000.0)
+		if(PlayerVehicleCurHP[playerid] > 300.0)
 		{
-			SetVehicleHealth(vehicleid, 1000.0);
-			health = 1000.0;
+			new Float:diff = PlayerVehicleCurHP[playerid] - health;
+
+			if(diff > 0.0 && PlayerVehicleCurHP[playerid] < VEHICLE_HEALTH_MAX)
+			{
+				health += diff * 0.9;
+				SetVehicleHealth(vehicleid, health);
+			}
 		}
 
-		if(0.0 < health <= 300.0)
+		if(0.0 < health <= VEHICLE_HEALTH_CHUNK_1)
 			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF0000FF);
 
-		if(300.0 < health <= 450.0)
+		if(300.0 < health <= VEHICLE_HEALTH_CHUNK_2)
 			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF3F00FF);
 
-		if(450.0 < health <= 650.0)
+		if(VEHICLE_HEALTH_CHUNK_2 < health <= VEHICLE_HEALTH_CHUNK_3)
 			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFF7F00FF);
 
-		if(650.0 < health <= 800.0)
+		if(VEHICLE_HEALTH_CHUNK_3 < health <= VEHICLE_HEALTH_CHUNK_4)
 			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFFBF00FF);
 
-		if(800.0 < health <= 1000.0)
+		if(VEHICLE_HEALTH_CHUNK_4 < health <= VEHICLE_HEALTH_MAX)
 			PlayerTextDrawColor(playerid, VehicleDamageText, 0xFFFF00FF);
 
-		if(300.0 < health < 500.0)
+		if(VEHICLE_HEALTH_CHUNK_1 < health < VEHICLE_HEALTH_CHUNK_2)
 		{
 			if(VehicleEngineState(vehicleid) && gPlayerVelocity[playerid] > 30.0)
 			{
@@ -206,30 +224,38 @@ PlayerVehicleUpdate(playerid)
 			}
 		}
 
-		if(VehicleEngineState(vehicleid) && VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
+		if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
 		{
-			if(health < 300.0 || gVehicleFuel[vehicleid] <= 0.0)
+			if(health < VEHICLE_HEALTH_CHUNK_1)
 			{
 				VehicleEngineState(vehicleid, 0);
 				PlayerTextDrawColor(playerid, VehicleEngineText, RED);
+
+				health = 299.0;
+
+				SetVehicleHealth(vehicleid, health);
+			}
+
+			if(VehicleEngineState(vehicleid))
+			{
+				if(gVehicleFuel[vehicleid] <= 0.0)
+				{
+					VehicleEngineState(vehicleid, 0);
+					PlayerTextDrawColor(playerid, VehicleEngineText, RED);
+				}
+				else
+				{
+					if(gVehicleFuel[vehicleid] > 0.0)
+					{
+						gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
+					}
+
+					PlayerTextDrawColor(playerid, VehicleEngineText, 0xFFFF00FF);
+				}
 			}
 			else
 			{
-				if(gVehicleFuel[vehicleid] > 0.0)
-				{
-					gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
-				}
-
-				switch(GetPlayerWeapon(playerid))
-				{
-					case 28, 29, 32:
-					{
-						if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-							SetPlayerArmedWeapon(playerid, 0);
-					}
-				}
-
-				PlayerTextDrawColor(playerid, VehicleEngineText, 0xFFFF00FF);
+				PlayerTextDrawColor(playerid, VehicleEngineText, RED);
 			}
 		}
 		else
@@ -260,7 +286,17 @@ PlayerVehicleUpdate(playerid)
 			GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.1));
 		}
 
+		switch(GetPlayerWeapon(playerid))
+		{
+			case 28, 29, 32:
+			{
+				if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+					SetPlayerArmedWeapon(playerid, 0);
+			}
+		}
+
 		gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
+		PlayerVehicleCurHP[playerid] = health;
 	}
 }
 

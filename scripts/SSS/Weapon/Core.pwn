@@ -251,7 +251,7 @@ ReloadWeapon(playerid)
 
 	if(wep_ReserveAmmo[playerid] <= 0)
 	{
-		if(GetPlayerAmmo(playerid) <= 0)
+		if(GetPlayerAmmo(playerid) <= 0 && !IsWeaponThrowable(wep_CurrentWeapon[playerid]))
 		{
 			GiveWorldItemToPlayer(playerid, CreateItem(ItemType:wep_CurrentWeapon[playerid]));
 			ResetPlayerWeapons(playerid);

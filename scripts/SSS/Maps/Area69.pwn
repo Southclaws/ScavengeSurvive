@@ -1,7 +1,20 @@
 new
+	code_ControlTower,
+	code_MainGate,
+	code_AirstripGate,
+	code_BlastDoor,
+	code_Inner,
+	code_Storage,
+	code_StorageWatch,
+
+	btn_ControlTower,
+	btn_StorageWatch,
+
+	lock_ControlTower,
+	lock_StorageWatch,
+
 	door_Main,
 	door_Airstrip,
-	door_Side,
 	door_BlastDoor1,
 	door_BlastDoor2,
 	door_Storage,
@@ -17,6 +30,20 @@ public OnLoad()
 {
 	new
 		buttonid[2];
+
+	code_ControlTower	= 1000 + random(8999);
+	code_MainGate		= 1000 + random(8999);
+	code_AirstripGate	= 1000 + random(8999);
+	code_BlastDoor		= 1000 + random(8999);
+	code_Inner			= 1000 + random(8999);
+	code_Storage		= 1000 + random(8999);
+	code_StorageWatch	= 1000 + random(8999);
+
+	lock_ControlTower = 1;
+	lock_StorageWatch = 1;
+
+	btn_ControlTower = CreateButton(211.6015, 1812.2878, 21.8594, "Press "KEYTEXT_INTERACT" to interact");
+	btn_StorageWatch = CreateButton(246.4888, 1861.1544, 14.0840, "Press "KEYTEXT_INTERACT" to interact");
 
 	// Main Gate Block
 	CreateObject(971, 96.88655, 1923.33936, 17.58039, 0.00000, 0.00000, 90.00000);
@@ -125,27 +152,99 @@ public OnLoad()
 #define OnLoad a69_OnLoad
 forward a69_OnLoad();
 
+public OnButtonPress(playerid, buttonid)
+{
+	if(buttonid == btn_ControlTower)
+	{
+		if(lock_ControlTower)
+		{
+			ShowKeypad(playerid, k_ControlTower, code_ControlTower);
+
+			if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+				HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+		}
+		else
+		{
+			ShowCodeList1(playerid);
+		}
+	}
+
+	if(buttonid == btn_StorageWatch)
+	{
+		if(lock_StorageWatch)
+		{
+			ShowKeypad(playerid, k_StorageWatch, code_StorageWatch);
+
+			if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+				HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+		}
+		else
+		{
+
+		}
+	}
+
+	return CallLocalFunction("a69_OnButtonPress", "dd", playerid, buttonid);
+}
+#if defined _ALS_OnButtonPress
+	#undef OnButtonPress
+#else
+	#define _ALS_OnButtonPress
+#endif
+#define OnButtonPress a69_OnButtonPress
+forward a69_OnButtonPress(playerid, buttonid);
+
 public OnPlayerActivateDoor(playerid, doorid, newstate)
 {
-	// TODO: Puzzle to get into these doors.
-
 	if(doorid == door_Main)
-		return 0;
+	{
+		ShowKeypad(playerid, k_MainGate, code_MainGate);
+
+		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+
+		return 1;
+	}
 
 	if(doorid == door_Airstrip)
-		return 0;
+	{
+		ShowKeypad(playerid, k_AirstripGate, code_AirstripGate);
 
-	if(doorid == door_Side)
-		return 0;
+		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+
+		return 1;
+	}
 
 	if(doorid == door_BlastDoor1)
+	{
+		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
+
+		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+
 		return 1;
+	}
 
 	if(doorid == door_BlastDoor2)
+	{
+		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
+
+		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+
 		return 1;
+	}
 
 	if(doorid == door_Storage)
+	{
+		ShowKeypad(playerid, k_Storage, code_Storage);
+
+		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+
 		return 1;
+	}
 
 	if(doorid == door_Generator)
 		return 1;
@@ -178,3 +277,70 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 #endif
 #define OnPlayerActivateDoor a69_OnPlayerActivateDoor
 forward a69_OnPlayerActivateDoor(playerid, doorid, newstate);
+
+public OnPlayerKeypadEnter(playerid, keypadid, success)
+{
+	if(keypadid == k_ControlTower)
+	{
+		if(success)
+		{
+			lock_ControlTower = 0;
+			ShowCodeList1(playerid);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_MainGate)
+	{
+		if(success)
+		{
+			OpenDoor(door_Main);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_AirstripGate)
+	{
+		if(success)
+		{
+			OpenDoor(door_Airstrip);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_BlastDoor)
+	{
+		if(success)
+		{
+			OpenDoor(door_BlastDoor1);
+			OpenDoor(door_BlastDoor2);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_Storage)
+	{
+		if(success)
+		{
+			OpenDoor(door_Storage);
+			HideKeypad(playerid);
+		}
+	}
+}
+
+ShowCodeList1(playerid)
+{
+	new str[258];
+	format(str, 258,
+		""#C_ORANGE"Keycodes for security system:\n\n\
+		\t"#C_WHITE"Control Tower:"#C_YELLOW"\t%d\n\
+		\t"#C_WHITE"Main gate:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Airstrip Gate:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Blast Door:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Inner Door 1:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Inner Door 2:"#C_YELLOW"\t\t%d",
+		code_ControlTower,
+		code_MainGate,
+		code_AirstripGate,
+		code_BlastDoor,
+		code_Inner,
+		code_Storage);
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
+}
