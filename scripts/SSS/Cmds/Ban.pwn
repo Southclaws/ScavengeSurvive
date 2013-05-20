@@ -6,7 +6,8 @@
 
 new
 	ban_CurrentIndex[MAX_PLAYERS],
-	ban_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME];
+	ban_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME],
+	ban_ItemsOnPage[MAX_PLAYERS];
 
 
 BanPlayer(playerid, reason[], byid)
@@ -81,10 +82,12 @@ ShowListOfBans(playerid, index = 0)
 		DBResult:result,
 		rowcount;
 
-	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` ORDER BY `"#ROW_DATE"` ASC LIMIT %d, %d", index, MAX_BANS_PER_PAGE);
+	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` ORDER BY `"#ROW_DATE"` DESC LIMIT %d, %d", index, MAX_BANS_PER_PAGE);
 
 	result = db_query(gAccounts, query);
 	rowcount = db_num_rows(result);
+
+	ban_ItemsOnPage[playerid] = 0;
 
 	if(rowcount > 0)
 	{
@@ -92,7 +95,7 @@ ShowListOfBans(playerid, index = 0)
 			field[MAX_PLAYER_NAME + 1],
 			list[((MAX_PLAYER_NAME + 1) * MAX_BANS_PER_PAGE) + 24],
 			total,
-			title[20];
+			title[22];
 
 		for(new i; i < rowcount && i < MAX_BANS_PER_PAGE; i++)
 		{
@@ -100,6 +103,7 @@ ShowListOfBans(playerid, index = 0)
 
 			strcat(list, field);
 			strcat(list, "\n");
+			ban_ItemsOnPage[playerid]++;
 
 			db_next_row(result);
 		}
@@ -158,7 +162,7 @@ DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
 		"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s",
 		timestampstr, bannedby, reason);
 
-	ShowPlayerDialog(playerid, d_BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Back", "Un-ban");
+	ShowPlayerDialog(playerid, d_BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Un-ban", "Back");
 
 	db_free_result(result);
 
@@ -171,11 +175,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(listitem == MAX_BANS_PER_PAGE)
+			if(listitem == ban_ItemsOnPage[playerid])
 			{
 				ShowListOfBans(playerid, ban_CurrentIndex[playerid] + MAX_BANS_PER_PAGE);
 			}
-			else if(listitem == MAX_BANS_PER_PAGE + 1)
+			else if(listitem == ban_ItemsOnPage[playerid] + 1)
 			{
 				ShowListOfBans(playerid, ban_CurrentIndex[playerid] - MAX_BANS_PER_PAGE);
 			}
@@ -191,14 +195,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == d_BanInfo)
 	{
 		if(response)
-		{
-			ShowListOfBans(playerid, ban_CurrentIndex[playerid]);
-		}
-		else
-		{
 			UnBanPlayer(ban_CurrentName[playerid]);
-			ShowListOfBans(playerid, ban_CurrentIndex[playerid]);
-		}
+
+		ShowListOfBans(playerid, ban_CurrentIndex[playerid]);
 	}
 
 	return 1;
@@ -208,4 +207,22 @@ forward external_BanPlayer(name[], reason[]);
 public external_BanPlayer(name[], reason[])
 {
 	BanPlayerByName(name, reason);
+}
+
+IsPlayerBanned(name[])
+{
+	new
+		query[128],
+		DBResult:result,
+		numrows;
+
+	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
+	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
+	db_free_result(result);
+
+	if(numrows > 0)
+		return 1;
+
+	return 0;
 }

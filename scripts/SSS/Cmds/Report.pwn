@@ -85,19 +85,27 @@ ShowListOfReports(playerid)
 	{
 		new
 			field[MAX_PLAYER_NAME + 1],
-			list[(MAX_PLAYER_NAME + 1 + 8) * MAX_REPORTS];
+			list[(MAX_PLAYER_NAME + 1 + 8) * MAX_REPORTS],
+			read;
 
 		for(new i; i < rowcount && i < MAX_REPORTS; i++)
 		{
 			db_get_field(result, 3, field, 2);
 
 			if(field[0] == '0')
-				strcat(list, "{FFFF00}");
+				read = 1;
 
 			db_get_field(result, 2, field, 12);
 			report_TimestampIndex[i] = strval(field);
 
 			db_get_field(result, 0, field, MAX_PLAYER_NAME + 1);
+
+			if(IsPlayerBanned(field))
+				strcat(list, "{FF0000}");
+
+			else if(read)
+				strcat(list, "{FFFF00}");
+
 			strcat(list, field);
 			strcat(list, "\n");
 			db_next_row(result);
