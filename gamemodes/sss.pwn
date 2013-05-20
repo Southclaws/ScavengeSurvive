@@ -1264,6 +1264,11 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 }
 
+public OnPlayerClickPlayer(playerid, clickedplayerid, source)
+{
+	return 1;
+}
+
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(IsPlayerInAnyVehicle(playerid))

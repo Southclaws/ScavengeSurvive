@@ -90,6 +90,7 @@ HideKeypad(playerid)
 	PlayerTextDrawHide(playerid, kp_Display);
 	CancelSelectTextDraw(playerid);
 
+	kp_CurrentID[playerid] = -1;
 	kp_Value[playerid] = 0;
 	kp_Match[playerid] = 0;
 }
@@ -196,22 +197,25 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 
 	if(clickedid == kp_Key9)
 		KeypadAddNumber(playerid, 9);
-
-	if(clickedid == PlayerText:65535)
-		SelectTextDraw(playerid, 0xFF0000FF);
 }
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
+	if(kp_CurrentID[playerid] != -1)
+	{
+		if(clickedid == Text:65535)
+			SelectTextDraw(playerid, 0xFF0000FF);
+	}
 
+	return 1;
 }
 
 KeypadEnter(playerid)
 {
 	if(kp_Value[playerid] == kp_Match[playerid])
 	{
-		HideKeypad(playerid);
 		CallLocalFunction("OnPlayerKeypadEnter", "ddd", playerid, kp_CurrentID[playerid], 1);
+		HideKeypad(playerid);
 	}
 	else
 	{
@@ -240,6 +244,8 @@ KeypadUpdateDisplay(playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	kp_CurrentID[playerid] = -1;
+
 	kp_Background					=CreatePlayerTextDraw(playerid, 320.000000, 204.000000, "_");
 	PlayerTextDrawAlignment			(playerid, kp_Background, 2);
 	PlayerTextDrawBackgroundColor	(playerid, kp_Background, -1);
