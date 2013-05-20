@@ -95,16 +95,28 @@ ShowListOfReports(playerid)
 			if(field[0] == '0')
 				read = 1;
 
+			else
+				read = 0;
+
 			db_get_field(result, 2, field, 12);
 			report_TimestampIndex[i] = strval(field);
 
 			db_get_field(result, 0, field, MAX_PLAYER_NAME + 1);
 
 			if(IsPlayerBanned(field))
+			{
+				printf("%s is banned", field);
 				strcat(list, "{FF0000}");
+			}
+			else
+			{
+				printf("%s is NOT banned", field);
+				if(read)
+					strcat(list, "{FFFF00}");
 
-			else if(read)
-				strcat(list, "{FFFF00}");
+				else
+					strcat(list, "{FFFFFF}");
+			}
 
 			strcat(list, field);
 			strcat(list, "\n");

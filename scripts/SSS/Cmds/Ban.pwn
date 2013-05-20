@@ -216,10 +216,12 @@ IsPlayerBanned(name[])
 		DBResult:result,
 		numrows;
 
-	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
+	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", strtolower(name));
 	result = db_query(gAccounts, query);
 	numrows = db_num_rows(result);
 	db_free_result(result);
+
+	printf("\t%s - \t\tnumrows: %d", name, numrows);
 
 	if(numrows > 0)
 		return 1;
