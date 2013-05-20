@@ -281,6 +281,12 @@ ClearPlayerInventoryFile(playerid)
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, 1);
 	fclose(file);
+
+	GetInvFile(gPlayerName[playerid], filename);
+
+	file = fopen(filename, io_write);
+	fblockwrite(file, data, 1);
+	fclose(file);
 }
 
 

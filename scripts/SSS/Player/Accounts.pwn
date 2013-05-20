@@ -171,12 +171,6 @@ SavePlayerData(playerid)
 	if(!(bPlayerGameSettings[playerid] & LoadedData))
 		return 0;
 
-	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
-	{
-		if(!(bServerGlobalSettings & Restarting))
-			return 0;
-	}
-
 	new
 		query[256],
 		Float:x,
@@ -192,6 +186,11 @@ SavePlayerData(playerid)
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
+		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+		{
+			if(!(bServerGlobalSettings & Restarting))
+				return 0;
+		}
 
 		format(query, sizeof(query),
 			"UPDATE `Player` SET \
