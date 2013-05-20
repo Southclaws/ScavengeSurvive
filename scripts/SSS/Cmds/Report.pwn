@@ -105,12 +105,10 @@ ShowListOfReports(playerid)
 
 			if(IsPlayerBanned(field))
 			{
-				printf("%s is banned", field);
 				strcat(list, "{FF0000}");
 			}
 			else
 			{
-				printf("%s is NOT banned", field);
 				if(read)
 					strcat(list, "{FFFF00}");
 

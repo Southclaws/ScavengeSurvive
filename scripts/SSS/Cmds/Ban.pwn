@@ -221,8 +221,6 @@ IsPlayerBanned(name[])
 	numrows = db_num_rows(result);
 	db_free_result(result);
 
-	printf("\t%s - \t\tnumrows: %d", name, numrows);
-
 	if(numrows > 0)
 		return 1;
 
