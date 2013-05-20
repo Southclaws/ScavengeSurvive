@@ -154,8 +154,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new Float:frequency;
 			if(!sscanf(inputtext, "f", frequency))
 			{
-				gPlayerFrequency[playerid] = frequency;
-				UpdateRadioUI(playerid);
+				if(MIN_RADIO_FREQ < frequency < MAX_RADIO_FREQ)
+				{
+					gPlayerFrequency[playerid] = frequency;
+					UpdateRadioUI(playerid);
+				}
+				else
+				{
+					ShowPlayerDialog(playerid, d_Radio, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
+				}
 			}
 			else
 			{
