@@ -228,6 +228,9 @@ SwimFlyCheck(playerid)
     	animname[32];
 
     GetAnimationName(GetPlayerAnimationIndex(playerid), animlib, sizeof(animlib), animname, sizeof(animname));
+
+    if(isnull(animlib))
+    	return 0;
 	
 	if(!strcmp(animlib, "SWIM"))
 	{
@@ -241,7 +244,7 @@ SwimFlyCheck(playerid)
 		if(x == 0.0 && y == 0.0 && z == 0.0)
 			return 0;
 
-		if(-1.0 < (x - DEFAULT_POS_X) < 1.0 && -1.0 < (y - DEFAULT_POS_Y) < 1.0 && -1.0 < (z - DEFAULT_POS_Z) < 1.0)
+		if(-5.0 < (x - DEFAULT_POS_X) < 5.0 && -5.0 < (y - DEFAULT_POS_Y) < 5.0 && -5.0 < (z - DEFAULT_POS_Z) < 5.0)
 			return 0;
 
 		if(!IsPlayerInWater(playerid))
