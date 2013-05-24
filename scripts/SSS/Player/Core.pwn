@@ -22,7 +22,7 @@ public OnPlayerConnect(playerid)
 	GetPlayerIp(playerid, ipstring, 16);
 
 	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
-	gPlayerData[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]) ;
+	gPlayerData[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
 	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'",
 		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP]);
@@ -36,31 +36,27 @@ public OnPlayerConnect(playerid)
 			tmptime[12],
 			tm<timestamp>,
 			timestampstr[64],
-			reason[64],
-			bannedby[24];
+			reason[64];
 
 		db_get_field(result, 2, tmptime, 12);
 		db_get_field(result, 3, reason, 64);
-		db_get_field(result, 4, bannedby, 24);
+		db_free_result(result);
 		
 		localtime(Time:strval(tmptime), timestamp);
 		strftime(timestampstr, 64, "%A %b %d %Y at %X", timestamp);
 
 		format(str, 256, "\
 			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"By:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", timestampstr, bannedby, reason);
+			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", timestampstr, reason);
 
 		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Banned", str, "Close", "");
-
-		defer KickPlayerDelay(playerid);
-
-		db_free_result(result);
 
 		format(query, sizeof(query), "UPDATE `Bans` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'",
 			gPlayerData[playerid][ply_IP], strtolower(gPlayerName[playerid]));
 
 		db_free_result(db_query(gAccounts, query));
+
+		defer KickPlayerDelay(playerid);
 
 		return 1;
 	}
@@ -176,18 +172,18 @@ public OnPlayerConnect(playerid)
 
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
 
-/*
-	if(Iter_Count(Player) > 10 && gPingLimit != 350)
+
+	if(gPingLimit == 600)
 	{
-		gPingLimit = 350;
-		MsgAll(YELLOW, " >  Ping limit has been updated to 350 while more than 10 players are online.");
+		if(Iter_Count(Player) >= 10)
+			gPingLimit = 400;
 	}
-	else if(gPingLimit != 600)
+	else if(gPingLimit == 400)
 	{
-		gPingLimit = 600;
-		MsgAll(YELLOW, " >  Ping limit has been updated to 600 while less than 10 players are online.");
+		if(Iter_Count(Player) < 10)
+			gPingLimit = 600;
 	}
-*/
+
 	return 1;
 }
 
@@ -218,18 +214,26 @@ public OnPlayerDisconnect(playerid, reason)
 
 ptask PlayerUpdate[100](playerid)
 {
+	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 10000)
+	{
+		gPingLimitStrikes[playerid]++;
+
+		if(gPingLimitStrikes[playerid] == 3)
+		{
+			new str[128];
+			format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
+			KickPlayer(playerid, str);
+
+			gPingLimitStrikes[playerid] = 0;
+
+			return;
+		}
+	}
+
 	new
 		hour,
 		minute,
 		weather;
-
-	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 30000)
-	{
-		new str[128];
-		format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
-		KickPlayer(playerid, str);
-		return;
-	}
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{

@@ -63,7 +63,7 @@ UpdateRadioUI(playerid)
 	format(str, 18, "Frequency: %.2f", gPlayerFrequency[playerid]);
 	PlayerTextDrawSetString(playerid, RadioUI_Freq, str);
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "off");
 
@@ -74,13 +74,13 @@ UpdateRadioUI(playerid)
 			PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
 	}
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Mode, "global");
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
 	}
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
@@ -109,11 +109,11 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_Mode)
 	{
-		if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
-			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+		if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
+			gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
 
-		else if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
-			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
+		else if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
+			gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
 
 		UpdateRadioUI(playerid);
 	}
@@ -123,18 +123,18 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_Power)
 	{
-		if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+		if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
 		{
 			if(rad_OldMode[playerid] == CHAT_MODE_GLOBAL)
-				Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
+				gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
 
 			else
-				Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+				gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
 		}
 		else
 		{
-			rad_OldMode[playerid] = Bit2_Get(gPlayerChatMode, playerid);
-			Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_LOCAL);
+			rad_OldMode[playerid] = gPlayerChatMode[playerid];
+			gPlayerChatMode[playerid] = CHAT_MODE_LOCAL;
 		}
 
 		UpdateRadioUI(playerid);

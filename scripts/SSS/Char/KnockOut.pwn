@@ -9,33 +9,36 @@ KnockOutPlayer(playerid, duration)
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
+	knockout_Tick[playerid] = tickcount();
+	knockout_Duration[playerid] = duration;
+	t:bPlayerGameSettings[playerid]<KnockedOut>;
+
 	if(IsPlayerInAnyVehicle(playerid))
 	{
-		ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+		new vehicleid = GetPlayerVehicleID(playerid);
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			VehicleEngineState(vehicleid, 0);
+
+		switch(GetVehicleType(GetVehicleModel(vehicleid)))
 		{
-			new vehicleid = GetPlayerVehicleID(playerid);
-
-			switch(GetVehicleType(GetVehicleModel(vehicleid)))
+			case VTYPE_BIKE, VTYPE_QUAD, VTYPE_BMX:
 			{
-				case VTYPE_BIKE, VTYPE_QUAD, VTYPE_BMX:
-				{
-					new
-						Float:x,
-						Float:y,
-						Float:z;
+				new
+					Float:x,
+					Float:y,
+					Float:z;
 
-					GetVehiclePos(vehicleid, x, y, z);
-					RemovePlayerFromVehicle(playerid);
-					SetPlayerPos(playerid, x, y, z);
-					ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, 0, 1, 1, 0, 0, 1);
-				}
+				GetVehiclePos(vehicleid, x, y, z);
+				RemovePlayerFromVehicle(playerid);
+				SetPlayerPos(playerid, x, y, z);
+				ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, 0, 1, 1, 0, 0, 1);
+			}
 
-				default:
-				{
-					VehicleEngineState(vehicleid, 0);
-				}
+			default:
+			{
+				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+
 			}
 		}
 	}
@@ -43,10 +46,6 @@ KnockOutPlayer(playerid, duration)
 	{
 		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
 	}
-
-	knockout_Tick[playerid] = tickcount();
-	knockout_Duration[playerid] = duration;
-	t:bPlayerGameSettings[playerid]<KnockedOut>;
 }
 
 WakeUpPlayer(playerid)
@@ -71,12 +70,16 @@ KnockOutUpdate(playerid)
 	if(bPlayerGameSettings[playerid] & KnockedOut)
 	{
 		new animidx = GetPlayerAnimationIndex(playerid);
+
 		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
 			KnockOutPlayer(playerid, GetPlayerKnockoutDuration(playerid) - (tickcount() - GetPlayerKnockOutTick(playerid)));
 
 		SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - GetPlayerKnockOutTick(playerid));
 		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
+
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			VehicleEngineState(GetPlayerVehicleID(playerid), 0);
 
 		if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
 		{

@@ -17,7 +17,7 @@ public OnItemCreated(itemid)
 		SetItemExtraData(itemid, random(7));
 
 	if(GetItemType(itemid) == item_Ammo556)
-		SetItemExtraData(itemid, random(35));
+		SetItemExtraData(itemid, random(25));
 
 	if(GetItemType(itemid) == item_Ammo357)
 		SetItemExtraData(itemid, random(4));

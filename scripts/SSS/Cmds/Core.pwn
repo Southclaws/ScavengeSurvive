@@ -201,11 +201,12 @@ CMD:acmds(playerid, params[])
 
 KickPlayer(playerid, reason[])
 {
-	MsgAllF(GREY, " >  %P kicked, reason: "#C_BLUE"%s", playerid, reason);
+	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
+	MsgF(playerid, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
 	defer KickPlayerDelay(playerid);
 }
 
-timer KickPlayerDelay[100](playerid)
+timer KickPlayerDelay[50](playerid)
 {
 	Kick(playerid);
 }

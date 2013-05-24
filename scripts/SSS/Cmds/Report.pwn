@@ -256,3 +256,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 	return 1;
 }
+
+IsPlayerReported(name[])
+{
+	new
+		query[128],
+		DBResult:result,
+		numrows;
+
+	format(query, sizeof(query), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", name);
+	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
+	db_free_result(result);
+
+	if(numrows > 0)
+		return 1;
+
+	return 0;
+}

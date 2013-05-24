@@ -31,22 +31,24 @@ native IsValidVehicle(vehicleid);
 
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
-//#include <MegaHooks>				// By Unicode:				http://forum.sa-mp.com/showthread.php?t=428948
-//#include <fixes2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=375925
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
+
+#define result GeoIP_result
 #include <GeoIP>					// By Whitetiger:			http://forum.sa-mp.com/showthread.php?t=296171
-// IMPORTANT: Rename global variable 'result' inside GeoIP include by Whitetiger. Absolutely terrible name for a global variable I must say.
+#undef result
+
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
-#include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054 - FIX: http://pastebin.com/zZ9bLs7K OR http://pastebin.com/2sJA38Kg
-// IMPORTANT: CTime conflicts with local variables named "time" because it declares a function with that same name (This conflicts with y_timers) Download the FIX version to avoid this.
+
+#define time ctime_time
+#include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
+#undef time
+
 #include <IniFiles>					// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=262795
 #include <bar>						// By Torbido:				http://forum.sa-mp.com/showthread.php?t=113443
 #include <playerbar>				// By Torbido/Southclaw:	http://pastebin.com/ZuLPd1K6
-#include <rbits>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=275142
-// IMPORTANT: rbits conflicts with y_bit Bit_Get/Set functions.
 #include <CameraMover>				// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=329813
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
@@ -271,7 +273,7 @@ new
 	gMessageOfTheDay[MAX_MOTD_LEN],
 	gAdminData[MAX_ADMIN][e_admin_data],
 	gTotalAdmins,
-	gPingLimit = 600;
+	gPingLimit = 400;
 
 new
 	skin_MainM,
@@ -298,35 +300,6 @@ new
 	anim_Blunt,
 	anim_Stab;
 
-
-new
-	WeatherData[20][23]=
-	{
-		"EXTRASUNNY_LS",			// 00
-		"SUNNY_LS",					// 01
-		"EXTRASUNNY_SMOG_LS",		// 02
-		"SUNNY_SMOG_LS",			// 03
-		"CLOUDY_LS",				// 04
-
-		"SUNNY_SF",					// 05
-		"EXTRASUNNY_SF",			// 06
-		"CLOUDY_SF",				// 07
-		"RAINY_SF",					// 08
-		"FOGGY_SF",					// 09
-
-		"SUNNY_LV",					// 10
-		"EXTRASUNNY_LV",			// 11
-		"CLOUDY_LV",				// 12
-
-		"EXTRASUNNY_COUNTRYSIDE",	// 13
-		"SUNNY_COUNTRYSIDE",		// 14
-		"CLOUDY_COUNTRYSIDE",		// 15
-		"RAINY_COUNTRYSIDE",		// 16
-
-		"EXTRASUNNY_DESERT",		// 17
-		"SUNNY_DESERT",				// 18
-		"SANDSTORM_DESERT"			// 19
-	};
 
 //=====================Loot Types
 enum
@@ -470,11 +443,6 @@ ItemType:		item_HackDevice		= INVALID_ITEM_TYPE,
 ItemType:		item_PlantPot		= INVALID_ITEM_TYPE;
 
 
-//=====================Clock and Timers
-new
-				gWeatherID,
-				gLastWeatherChange;
-
 //=====================Menus and Textdraws
 new
 Text:			DeathText			= Text:INVALID_TEXT_DRAW,
@@ -572,10 +540,11 @@ Float:	gPlayerHP				[MAX_PLAYERS],
 Float:	gPlayerAP				[MAX_PLAYERS],
 Float:	gPlayerFP				[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
-Bit2:	gPlayerChatMode			<MAX_PLAYERS>,
+		gPlayerChatMode			[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
+		gPingLimitStrikes		[MAX_PLAYERS],
 
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
@@ -617,6 +586,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Server/DisallowActions.pwn"
 #include "../scripts/SSS/Server/DataCollection.pwn"
 #include "../scripts/SSS/Server/BugReport.pwn"
+#include "../scripts/SSS/Server/Weather.pwn"
 
 //======================API Scripts
 
@@ -839,14 +809,12 @@ public OnGameModeInit()
 	DisableInteriorEnterExits();
 	ShowNameTags(false);
 
-	gWeatherID			= random(sizeof(WeatherData));
-	gLastWeatherChange	= tickcount();
-
 	MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
 
 	if(!fexist(SETTINGS_FILE))
+	{
 		file_Create(SETTINGS_FILE);
-
+	}
 	else
 	{
 		file_Open(SETTINGS_FILE);
@@ -855,8 +823,9 @@ public OnGameModeInit()
 	}
 
 	if(!fexist(ADMIN_DATA_FILE))
+	{
 		file_Create(ADMIN_DATA_FILE);
-
+	}
 	else
 	{
 		new
@@ -1184,14 +1153,9 @@ task GameUpdate[1000]()
 		TextDrawShowForAll(RestartCount);
 	}
 
+	WeatherUpdate();
+
 	gServerUptime++;
-
-
-	if(tickcount() - gLastWeatherChange > 600000 && random(100) < 5)
-	{
-		gLastWeatherChange = tickcount();
-		gWeatherID = random(sizeof(WeatherData));
-	}
 }
 
 task GlobalAnnouncement[600000]()
@@ -1266,6 +1230,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 
 public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 {
+	MsgF(playerid, -1, " >  Player %P", clickedplayerid);
 	return 1;
 }
 
@@ -1350,7 +1315,7 @@ CMD:g(playerid, params[])
 
 	if(isnull(params))
 	{
-		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_GLOBAL);
+		gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
 		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	else
@@ -1363,7 +1328,7 @@ CMD:l(playerid, params[])
 {
 	if(isnull(params))
 	{
-		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_LOCAL);
+		gPlayerChatMode[playerid] = CHAT_MODE_LOCAL;
 		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
@@ -1376,7 +1341,7 @@ CMD:r(playerid, params[])
 {
 	if(isnull(params))
 	{
-		Bit2_Set(gPlayerChatMode, playerid, CHAT_MODE_RADIO);
+		gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
 		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", gPlayerFrequency[playerid]);
 	}
 	else
@@ -1410,32 +1375,38 @@ public OnPlayerText(playerid, text[])
 		Msg(playerid, RED, " >  You are muted");
 		return 0;
 	}
-	if(tmpMuteTime < 10000)
+
+	if(tmpMuteTime < 30000)
 	{
-		MsgF(playerid, RED, " >  You are muted for chat flooding, %s remaining.", MsToString(10000-tmpMuteTime, 2));
+		Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_YELLOW"seconds, Reason: "#C_BLUE"chat flooding");
 		return 0;
 	}
 
 	if(tickcount() - tick_LastChatMessage[playerid] < 1000)
 	{
 		ChatMessageStreak[playerid]++;
-		if(ChatMessageStreak[playerid] == 5)
+		if(ChatMessageStreak[playerid] == 3)
 		{
+			Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_YELLOW"seconds, Reason: "#C_BLUE"chat flooding");
 			ChatMuteTick[playerid] = tickcount();
 			return 0;
 		}
 	}
-	else ChatMessageStreak[playerid]--;
+	else
+	{
+		if(ChatMessageStreak[playerid] > 0)
+			ChatMessageStreak[playerid]--;
+	}
 
 	tick_LastChatMessage[playerid] = tickcount();
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_LOCAL)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
 		PlayerSendChat(playerid, text, 0.0);
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_GLOBAL)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
 		PlayerSendChat(playerid, text, 1.0);
 
-	if(Bit2_Get(gPlayerChatMode, playerid) == CHAT_MODE_RADIO)
+	if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
 		PlayerSendChat(playerid, text, gPlayerFrequency[playerid]);
 
 	return 0;
@@ -1573,6 +1544,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		VehicleDoorsState(gPlayerVehicleID[playerid], 0);
 
 		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
+		PlayerVehicleCurHP[playerid] = 0.0;
 		f:bVehicleSettings[vehicleid]<v_Occupied>;
 
 		PlayerTextDrawHide(playerid, VehicleNameText);
@@ -1691,13 +1663,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 {
 	new
 		cmd[30],
-		params[98],
+		params[127],
 		cmdfunction[64],
 		result = 1;
 
 	printf("[comm] [%p]: %s", playerid, cmdtext);
 
-	sscanf(cmdtext, "s[30]s[98]", cmd, params);
+	sscanf(cmdtext, "s[30]s[127]", cmd, params);
 
 	for (new i, j = strlen(cmd); i < j; i++)
 		cmd[i] = tolower(cmd[i]);

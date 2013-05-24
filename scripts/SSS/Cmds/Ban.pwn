@@ -212,11 +212,28 @@ public external_BanPlayer(name[], reason[])
 IsPlayerBanned(name[])
 {
 	new
-		query[128],
+		query[90],
 		DBResult:result,
 		numrows;
 
 	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", strtolower(name));
+	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
+	db_free_result(result);
+
+	if(numrows > 0)
+		return 1;
+
+	return 0;
+}
+stock IsNameOrIpBanned(name[], ip)
+{
+	new
+		query[90],
+		DBResult:result,
+		numrows;
+
+	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'", strtolower(name), ip);
 	result = db_query(gAccounts, query);
 	numrows = db_num_rows(result);
 	db_free_result(result);

@@ -1,4 +1,6 @@
-static tick_AdminDuty[MAX_PLAYERS];
+static
+	tick_AdminDuty[MAX_PLAYERS],
+	tick_UnstickUsage[MAX_PLAYERS];
 
 ACMD:duty[1](playerid, params[])
 {
@@ -51,64 +53,7 @@ ACMD:duty[1](playerid, params[])
 	return 1;
 }
 
-ACMD:goto[1](playerid, params[])
-{
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-		return 6;
-
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /goto [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	TeleportPlayerToPlayer(playerid, targetid);
-
-	return 1;
-}
-
-ACMD:get[1](playerid, params[])
-{
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-		return 6;
-
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /get [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	if(gPlayerData[playerid][ply_Admin] == 1)
-	{
-		if(GetPlayerDist3D(playerid, targetid) > 50.0)
-		{
-			Msg(playerid, RED, " >  You cannot teleport someone that far away from you, move closer to them.");
-			return 1;
-		}
-	}
-
-	TeleportPlayerToPlayer(targetid, playerid);
-
-	return 1;
-}
-
-ACMD:spec[2](playerid, params[])
+ACMD:spec[1](playerid, params[])
 {
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
 		return 6;
@@ -120,17 +65,26 @@ ACMD:spec[2](playerid, params[])
 	}
 	else
 	{
-		new id = strval(params);
+		new targetid = strval(params);
 
-		if(IsPlayerConnected(id) && id != playerid)
+		if(IsPlayerConnected(targetid) && targetid != playerid)
 		{
+			if(gPlayerData[playerid][ply_Admin] == 1)
+			{
+				if(!IsPlayerReported(gPlayerName[targetid]))
+				{
+					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
+					return 1;
+				}
+			}
+
 			TogglePlayerSpectating(playerid, true);
 
-			if(IsPlayerInAnyVehicle(id))
-				PlayerSpectateVehicle(playerid, GetPlayerVehicleID(id));
+			if(IsPlayerInAnyVehicle(targetid))
+				PlayerSpectateVehicle(playerid, GetPlayerVehicleID(targetid));
 
 			else
-				PlayerSpectatePlayer(playerid, id);
+				PlayerSpectatePlayer(playerid, targetid);
 
 			t:bPlayerGameSettings[playerid]<Spectating>;
 		}
@@ -139,93 +93,37 @@ ACMD:spec[2](playerid, params[])
 	return 1;
 }
 
-ACMD:up[1](playerid, params[])
+ACMD:unstick[1](playerid, params[])
 {
 	if(!(bPlayerGameSettings[playerid] & AdminDuty))
 		return 6;
 
+	if(tickcount() - tick_UnstickUsage[playerid] < 1000)
+	{
+		Msg(playerid, RED, " >  You cannot use that command that often.");
+		return 1;
+	}
+
+	new targetid;
+
+	if(sscanf(params, "d", targetid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /unstick [playerid]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
 	new
-		Float:distance = float(strval(params)),
 		Float:x,
 		Float:y,
 		Float:z;
 
-	GetPlayerPos(playerid, x, y, z);
-	SetPlayerPos(playerid, x, y, z + distance);
+	GetPlayerPos(targetid, x, y, z);
+	SetPlayerPos(targetid, x, y, z + 1.0);
+
+	tick_UnstickUsage[playerid] = tickcount();
 
 	return 1;
-}
-
-ACMD:ford[1](playerid, params[])
-{
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-		return 6;
-
-	new
-		Float:distance = float(strval(params)),
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:a;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, a);
-
-	SetPlayerPos(playerid,
-		x + (distance * floatsin(-a, degrees)),
-		y + (distance * floatcos(-a, degrees)),
-		z);
-
-	return 1;
-}
-
-TeleportPlayerToPlayer(playerid, targetid)
-{
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:ang,
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		interior = GetPlayerInterior(targetid);
-
-	if(IsPlayerInAnyVehicle(targetid))
-	{
-		new vehicleid = GetPlayerVehicleID(targetid);
-
-		GetVehiclePos(vehicleid, px, py, pz);
-		GetVehicleZAngle(vehicleid, ang);
-		GetVehicleVelocity(vehicleid, vx, vy, vz);
-		pz += 2.0;
-	}
-	else
-	{
-		GetPlayerPos(targetid, px, py, pz);
-		GetPlayerFacingAngle(targetid, ang);
-		GetPlayerVelocity(targetid, vx, vy, vz);
-		px -= floatsin(-ang, degrees);
-		py -= floatcos(-ang, degrees);
-	}
-
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-
-		SetVehiclePos(vehicleid, px, py, pz);
-		SetVehicleZAngle(vehicleid, ang);
-		SetVehicleVelocity(vehicleid, vx, vy, vz);
-		LinkVehicleToInterior(vehicleid, interior);
-	}
-	else
-	{
-		SetPlayerPos(playerid, px, py, pz);
-		SetPlayerFacingAngle(playerid, ang);
-		SetPlayerVelocity(playerid, vx, vy, vz);
-		SetPlayerInterior(playerid, interior);
-	}
-
-	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
-	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }

@@ -6,7 +6,7 @@ new
 ACMD:kick[1](playerid, params[])
 {
 	new
-		id,
+		targetid,
 		reason[64],
 		highestadmin;
 
@@ -16,52 +16,52 @@ ACMD:kick[1](playerid, params[])
 			highestadmin = i;
 	}
 
-	if(sscanf(params, "ds[64]", id, reason))
+	if(sscanf(params, "ds[64]", targetid, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 		return 3;
 
-	if(!IsPlayerConnected(id))
+	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	if(gPlayerData[playerid][ply_Admin]!=gPlayerData[highestadmin][ply_Admin])
-		return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to kick %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
+	if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
 
-	if(playerid == id)
+	if(playerid == targetid)
 		MsgAllF(PINK, " >  %P"#C_PINK" failed and kicked themselves", playerid);
 
-	KickPlayer(id, reason);
+	KickPlayer(targetid, reason);
 
 	return 1;
 }
 ACMD:freeze[1](playerid, params[])
 {
-	new id, delay;
+	new targetid, delay;
 
-	if(sscanf(params, "dD(0)", id, delay))
+	if(sscanf(params, "dD(0)", targetid, delay))
 		return Msg(playerid, YELLOW, " >  Usage: /freeze [playerid] (seconds)");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 		return 3;
 
-	if(!IsPlayerConnected(id))
+	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	TogglePlayerControllable(id, false);
-	t:bPlayerGameSettings[id]<Frozen>;
+	TogglePlayerControllable(targetid, false);
+	t:bPlayerGameSettings[targetid]<Frozen>;
 	
 	if(delay > 0)
 	{
-		stop UnfreezeTimer[id];
-		UnfreezeTimer[id] = defer CmdDelay_unfreeze(id, delay * 1000);
-		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", id, delay);
-		MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Frozen you for %d seconds", playerid, delay);
+		stop UnfreezeTimer[targetid];
+		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
+		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
+		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
 	}
 	else
 	{
-		MsgF(playerid, YELLOW, " >  Frozen %P", id);
-		MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Frozen you", playerid);
+		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
+		Msg(targetid, YELLOW, " >  Frozen by admin");
 	}
 
 	return 1;
@@ -79,54 +79,56 @@ timer CmdDelay_unfreeze[time](playerid, time)
 
 ACMD:unfreeze[1](playerid, params[])
 {
-	new id;
+	new targetid;
 
-	if(sscanf(params, "d", id))
+	if(sscanf(params, "d", targetid))
 		return Msg(playerid, YELLOW, " >  Usage: /unfreeze [playerid]");
 
-	if(!IsPlayerConnected(id))
+	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	TogglePlayerControllable(id, true);
-	f:bPlayerGameSettings[id]<Frozen>;
-	stop UnfreezeTimer[id];
+	TogglePlayerControllable(targetid, true);
+	f:bPlayerGameSettings[targetid]<Frozen>;
+	stop UnfreezeTimer[targetid];
 
-	MsgF(playerid, YELLOW, " >  Unfrozen %P", id);
-	MsgF(id, YELLOW, " >  %P"#C_YELLOW" has Unfrozen you", playerid);
+	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
+	Msg(playerid, YELLOW, " >  Unfrozen");
 
 	return 1;
 }
 ACMD:mute[1](playerid, params[])
 {
 	new
-		id,
+		targetid,
 		delay,
 		reason[128];
 
 
-	if(sscanf(params, "dds[128]", id, delay, reason))
+	if(sscanf(params, "dds[128]", targetid, delay, reason))
 		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason]");
 
-	if(!IsPlayerConnected(id))
-		return Msg(playerid,RED, " >  Invalid ID");
+	if(!IsPlayerConnected(targetid))
+		return Msg(playerid,RED, " >  Invalid targetid");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin])
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin])
 		return 3;
 
-	if(bPlayerGameSettings[id] & Muted)
+	if(bPlayerGameSettings[targetid] & Muted)
 		return Msg(playerid, YELLOW, " >  Player Already Muted");
 
-	t:bPlayerGameSettings[id]<Muted>;
+	t:bPlayerGameSettings[targetid]<Muted>;
 
 	if(delay > 0)
 	{
-		stop UnmuteTimer[id];
-		UnmuteTimer[id] = defer CmdDelay_unmute(id, delay * 1000);
-		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Muted %P"#C_YELLOW" for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: %s", playerid, id, delay, reason);
+		stop UnmuteTimer[targetid];
+		UnmuteTimer[targetid] = defer CmdDelay_unmute(targetid, delay * 1000);
+		MsgF(targetid, YELLOW, " >  Muted from global chat for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: "#C_BLUE"%s", delay, reason);
+		MsgF(playerid, YELLOW, " >  Muted player %P "#C_WHITE"for %d seconds.", targetid, delay);
 	}
 	else
 	{
-		MsgAllF(YELLOW, " >  %P"#C_YELLOW" Muted %P"#C_YELLOW", Reason: %s", playerid, id, reason);
+		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "#C_BLUE"%s", reason);
+		MsgF(playerid, YELLOW, " >  Muted player %P", targetid);
 	}
 
 	return 1;
@@ -144,48 +146,48 @@ timer CmdDelay_unmute[time](playerid, time)
 
 ACMD:unmute[1](playerid, params[])
 {
-	new id;
+	new targetid;
 
-	if(sscanf(params, "d", id))
+	if(sscanf(params, "d", targetid))
 		return Msg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 		return 3;
 
-	if(!IsPlayerConnected(id))
+	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	f:bPlayerGameSettings[id]<Muted>;
-	stop UnmuteTimer[id];
+	f:bPlayerGameSettings[targetid]<Muted>;
+	stop UnmuteTimer[targetid];
 
-	MsgF(playerid, YELLOW, " >  Un-muted %P", id);
-	MsgF(id, YELLOW, " >  %P"#C_YELLOW" has un-muted you.", id);
+	MsgF(playerid, YELLOW, " >  Un-muted %P", targetid);
+	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" has un-muted you.", targetid);
 
 	return 1;
 }
 ACMD:warn[1](playerid, params[])
 {
 	new
-		id,
+		targetid,
 		reason[128];
 
-	if(sscanf(params, "ds[128]", id, reason))
+	if(sscanf(params, "ds[128]", targetid, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /warn [playerid] [reason]");
 
-	if(!IsPlayerConnected(id))
-		return Msg(playerid,RED, " >  Invalid ID");
+	if(!IsPlayerConnected(targetid))
+		return Msg(playerid,RED, " >  Invalid targetid");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 		return 3;
 
-	gPlayerWarnings[id]++;
+	gPlayerWarnings[targetid]++;
 
-	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", id, gPlayerWarnings[id], reason);
-	MsgF(id, ORANGE, " >  You been warned (%d/5) for: %s", id, gPlayerWarnings[id], reason);
+	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
+	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
 
-	if(gPlayerWarnings[id] >= 5)
+	if(gPlayerWarnings[targetid] >= 5)
 	{
-		KickPlayer(id, "Too many warnings");
+		KickPlayer(targetid, "Too many warnings");
 	}
 
 	return 1;
@@ -193,17 +195,17 @@ ACMD:warn[1](playerid, params[])
 
 ACMD:aliases[1](playerid, params[])
 {
-	new id;
+	new targetid;
 
-	if(sscanf(params, "d", id))
+	if(sscanf(params, "d", targetid))
 		return Msg(playerid, YELLOW, " >  Usage: /aliases [playerid]");
 
-	if(!IsPlayerConnected(id))
-		return Msg(playerid,RED, " >  Invalid ID");
+	if(!IsPlayerConnected(targetid))
+		return Msg(playerid,RED, " >  Invalid targetid");
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 	{
-		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", id);
+		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", targetid);
 		return 1;
 	}
 
@@ -216,7 +218,7 @@ ACMD:aliases[1](playerid, params[])
 
 	format(tmpIpQuery, 128,
 		"SELECT * FROM `Player` WHERE `"#ROW_IPV4"` = '%d' AND `"#ROW_NAME"` != '%s'",
-		gPlayerData[id][ply_IP], gPlayerName[playerid]);
+		gPlayerData[targetid][ply_IP], gPlayerName[playerid]);
 
 	tmpIpResult = db_query(gAccounts, tmpIpQuery);
 

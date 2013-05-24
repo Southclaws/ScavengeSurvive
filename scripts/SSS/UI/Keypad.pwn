@@ -160,43 +160,45 @@ timer kp_PrtDestroy[2000](playerid)
 	DestroyDynamicObject(kp_HackFailParticle[playerid]);
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
+hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	if(clickedid == kp_KeyEnter)
+	if(playertextid == kp_KeyEnter)
 		KeypadEnter(playerid);
 
-	if(clickedid == kp_KeyCancel)
+	if(playertextid == kp_KeyCancel)
 		HideKeypad(playerid);
 
-	if(clickedid == kp_Key0)
+	if(playertextid == kp_Key0)
 		KeypadAddNumber(playerid, 0);
 
-	if(clickedid == kp_Key1)
+	if(playertextid == kp_Key1)
 		KeypadAddNumber(playerid, 1);
 
-	if(clickedid == kp_Key2)
+	if(playertextid == kp_Key2)
 		KeypadAddNumber(playerid, 2);
 
-	if(clickedid == kp_Key3)
+	if(playertextid == kp_Key3)
 		KeypadAddNumber(playerid, 3);
 
-	if(clickedid == kp_Key4)
+	if(playertextid == kp_Key4)
 		KeypadAddNumber(playerid, 4);
 
-	if(clickedid == kp_Key5)
+	if(playertextid == kp_Key5)
 		KeypadAddNumber(playerid, 5);
 
-	if(clickedid == kp_Key6)
+	if(playertextid == kp_Key6)
 		KeypadAddNumber(playerid, 6);
 
-	if(clickedid == kp_Key7)
+	if(playertextid == kp_Key7)
 		KeypadAddNumber(playerid, 7);
 
-	if(clickedid == kp_Key8)
+	if(playertextid == kp_Key8)
 		KeypadAddNumber(playerid, 8);
 
-	if(clickedid == kp_Key9)
+	if(playertextid == kp_Key9)
 		KeypadAddNumber(playerid, 9);
+
+	return 1;
 }
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)

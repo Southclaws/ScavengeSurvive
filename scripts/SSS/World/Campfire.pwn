@@ -276,7 +276,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			{
 				if(IsItemTypeFood(GetItemType(itemid)))
 				{
-					if(!IsValidItem(cmp_Data[fireid][cmp_foodItem]))
+					if(cmp_Data[fireid][cmp_foodItem] == INVALID_ITEM_ID)
 					{
 						new
 							Float:x,
@@ -320,6 +320,7 @@ timer cmp_FinishCooking[60000](fireid)
 	defer cmp_DestroySmoke(fireid);
 
 	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
+	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 }
 
 timer cmp_DestroySmoke[1000](fireid)
@@ -327,6 +328,7 @@ timer cmp_DestroySmoke[1000](fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
 
+#endinput
 public OnPlayerPickedUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
@@ -340,20 +342,6 @@ public OnPlayerPickedUpItem(playerid, itemid)
 				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
 				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 				return 1;
-			}
-		}
-	}
-	else
-	{
-		foreach(new i : cmp_Index)
-		{
-			if(itemid == cmp_Data[i][cmp_foodItem])
-			{
-				DestroyDynamicObject(cmp_Data[i][cmp_objSmoke]);
-				cmp_Data[i][cmp_foodItem] = INVALID_ITEM_ID;
-				cmp_Data[i][cmp_objSmoke] = INVALID_OBJECT_ID;
-				stop cmp_CookTimer[i];
-				break;
 			}
 		}
 	}

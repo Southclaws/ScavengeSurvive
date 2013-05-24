@@ -94,7 +94,7 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_FREQ] = _:gPlayerFrequency[playerid];
 
-	data[PLY_CELL_CHATMODE] = Bit2_Get(gPlayerChatMode, playerid);
+	data[PLY_CELL_CHATMODE] = gPlayerChatMode[playerid];
 
 	data[PLY_CELL_INFECTED] = (bPlayerGameSettings[playerid] & Infected);
 
@@ -203,7 +203,7 @@ LoadPlayerChar(playerid)
 
 	gPlayerFrequency[playerid] = Float:data[PLY_CELL_FREQ];
 
-	Bit2_Set(gPlayerChatMode, playerid, data[PLY_CELL_CHATMODE]);
+	gPlayerChatMode[playerid] = data[PLY_CELL_CHATMODE];
 
 	if(data[PLY_CELL_INFECTED])
 	{
