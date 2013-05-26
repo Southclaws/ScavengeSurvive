@@ -50,6 +50,10 @@ hook OnPlayerConnect(playerid)
 }
 hook OnPlayerDeath(playerid, killerid, reason)
 {
+	defer ResetAmmoData(playerid);
+}
+timer ResetAmmoData[100](playerid)
+{
 	wep_CurrentWeapon[playerid] = 0;
 	wep_ReserveAmmo[playerid] = 0;
 }
@@ -120,6 +124,8 @@ stock GetPlayerTotalAmmo(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
+
+	printf("reserve: %d", wep_ReserveAmmo[playerid]);
 
 	return GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
 }

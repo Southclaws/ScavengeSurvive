@@ -129,6 +129,7 @@ PositionCheck(playerid)
 				GetPlayerName(playerid, name, 24);
 				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 				ReportPlayer(name, reason, -1);
+				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 				tp_PosReportTick[playerid] = tickcount();
 			}
@@ -147,6 +148,7 @@ PositionCheck(playerid)
 					GetPlayerName(playerid, name, 24);
 					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 					ReportPlayer(name, reason, -1);
+					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 					tp_PosReportTick[playerid] = tickcount();
 				}

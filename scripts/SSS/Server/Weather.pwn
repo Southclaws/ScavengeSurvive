@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 #define MAX_WEATHER_TYPES	(20)
 
 

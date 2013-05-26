@@ -60,8 +60,7 @@ ACMD:spec[1](playerid, params[])
 
 	if(isnull(params))
 	{
-		TogglePlayerSpectating(playerid, false);
-		f:bPlayerGameSettings[playerid]<Spectating>;
+		ExitSpectateMode(playerid);
 	}
 	else
 	{
@@ -78,15 +77,7 @@ ACMD:spec[1](playerid, params[])
 				}
 			}
 
-			TogglePlayerSpectating(playerid, true);
-
-			if(IsPlayerInAnyVehicle(targetid))
-				PlayerSpectateVehicle(playerid, GetPlayerVehicleID(targetid));
-
-			else
-				PlayerSpectatePlayer(playerid, targetid);
-
-			t:bPlayerGameSettings[playerid]<Spectating>;
+			EnterSpectateMode(playerid, targetid);
 		}
 	}
 

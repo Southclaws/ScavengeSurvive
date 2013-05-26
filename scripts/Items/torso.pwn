@@ -18,11 +18,15 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 
 	if(weapon == 4 && itemtype == item_Torso)
 	{
-		if(GetItemExtraData(itemid) != -1)
+		new exdata = GetItemExtraData(itemid);
+		if(IsValidGraveStone(exdata))
 		{
-			StartHoldAction(playerid, 3000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-			gut_TargetItem[playerid] = itemid;
+			if(tickcount() - rip_Data[exdata][rip_spawnTick] < 300000)
+			{
+				StartHoldAction(playerid, 3000);
+				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				gut_TargetItem[playerid] = itemid;
+			}
 		}
 	}
 	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
@@ -106,11 +110,6 @@ public OnHoldActionFinish(playerid)
 		CreateItem(item_Meat,
 			x + (0.5 * floatsin(-r + 90.0, degrees)),
 			y + (0.5 * floatcos(-r + 90.0, degrees)),
-			z, .rz = r);
-
-		CreateItem(item_Meat,
-			x + (0.5 * floatsin(-r + 270.0, degrees)),
-			y + (0.5 * floatcos(-r + 270.0, degrees)),
 			z, .rz = r);
 
 		SetItemExtraData(gut_TargetItem[playerid], -1);

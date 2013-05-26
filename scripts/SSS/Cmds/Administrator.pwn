@@ -79,6 +79,32 @@ ACMD:unban[2](playerid, params[])
 	return 1;
 }
 
+ACMD:whitelist[2](playerid, params[])
+{
+	new
+		command[7],
+		name[MAX_PLAYER_NAME];
+
+	if(sscanf(params, "s[7]s[24]", command, name))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove] [name]");
+		return 1;
+	}
+
+	if(!strcmp(command, "add", true))
+	{
+		MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
+		AddNameToWhitelist(name);
+	}
+	else if(!strcmp(command, "remove", true))
+	{
+		MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
+		RemoveNameFromWhitelist(name);
+	}
+
+	return 1;
+}
+
 
 //==========================================================================Server Control
 

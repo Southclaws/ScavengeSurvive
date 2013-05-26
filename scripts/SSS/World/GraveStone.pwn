@@ -9,7 +9,8 @@
 enum E_RIP_DATA
 {
 			rip_name[MAX_PLAYER_NAME],
-			rip_reason[MAX_RIP_REASON]
+			rip_reason[MAX_RIP_REASON],
+			rip_spawnTick
 }
 
 
@@ -37,6 +38,7 @@ stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, 
 	GetPlayerName(playerid, rip_Data[id][rip_name], MAX_PLAYER_NAME);
 	rip_Data[id][rip_reason][0] = EOS;
 	strcat(rip_Data[id][rip_reason], reason, MAX_RIP_REASON);
+	rip_Data[id][rip_spawnTick] = tickcount();
 
 	Iter_Add(rip_Index, id);
 
@@ -65,6 +67,14 @@ ShowGravestoneMsg(playerid, id)
 		return 0;
 
 	ShowPlayerDialog(playerid, d_GraveStone, DIALOG_STYLE_MSGBOX, rip_Data[id][rip_name], rip_Data[id][rip_reason], "Close", "");
+
+	return 1;
+}
+
+IsValidGraveStone(id)
+{
+	if(!Iter_Contains(rip_Index, id))
+		return 0;
 
 	return 1;
 }

@@ -243,7 +243,7 @@ timer ZiplineUpdate[50](playerid)
 			Float:y,
 			Float:z,
 			Float:dist,
-			Float:heightmult = 0.05;
+			Float:heightmult = 0.06;
 
 		GetPlayerPos(playerid, x, y, z);
 

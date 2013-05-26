@@ -18,7 +18,7 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
-	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[targetid] & AdminDuty || bPlayerGameSettings[targetid] & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || bPlayerGameSettings[targetid] & Spectating)
+	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[targetid] & AdminDuty || bPlayerGameSettings[targetid] & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || gPlayerSpecTarget[playerid] != INVALID_PLAYER_ID)
 		return 1;
 
 	if(GetPlayerWeapon(targetid) != 0)

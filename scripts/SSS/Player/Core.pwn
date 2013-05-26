@@ -17,7 +17,8 @@ public OnPlayerConnect(playerid)
 		ipstring[16],
 		ipbyte[4],
 		query[128],
-		DBResult:result;
+		DBResult:result,
+		numrows;
 
 	GetPlayerIp(playerid, ipstring, 16);
 
@@ -28,8 +29,9 @@ public OnPlayerConnect(playerid)
 		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP]);
 
 	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
 
-	if(db_num_rows(result) > 0)
+	if(numrows > 0)
 	{
 		new
 			str[256],
@@ -55,6 +57,27 @@ public OnPlayerConnect(playerid)
 			gPlayerData[playerid][ply_IP], strtolower(gPlayerName[playerid]));
 
 		db_free_result(db_query(gAccounts, query));
+
+		defer KickPlayerDelay(playerid);
+
+		return 1;
+	}
+	db_free_result(result);
+
+	format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
+	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
+	db_free_result(result);
+
+	if(numrows == 0)
+	{
+		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
+			""#C_YELLOW"You are not on the whitelist for this server.\n\
+			This is in force to provide the best gameplay experience for all players.\n\n\
+			"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
+			Applications are always accepted as soon as possible\n\
+			There are no requirements, just follow the rules.\n\
+			Failure to do so will result in permanent removal from the whitelist.", "Close", "");
 
 		defer KickPlayerDelay(playerid);
 
@@ -214,6 +237,12 @@ public OnPlayerDisconnect(playerid, reason)
 
 ptask PlayerUpdate[100](playerid)
 {
+	if(gPlayerSpecTarget[playerid] != INVALID_PLAYER_ID)
+	{
+		UpdateSpectateMode(playerid);
+		return;
+	}
+
 	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 10000)
 	{
 		gPingLimitStrikes[playerid]++;

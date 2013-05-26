@@ -489,7 +489,6 @@ enum (<<= 1) // 14
 		IsNewPlayer,
 		CanExitWelcome,
 		AdminDuty,
-		Spectating,
 		Gender,
 		Alive,
 		Dying,
@@ -545,6 +544,7 @@ Float:	gPlayerFrequency		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
 Float:	gCurrentVelocity		[MAX_PLAYERS],
 		gPingLimitStrikes		[MAX_PLAYERS],
+		gPlayerSpecTarget		[MAX_PLAYERS],
 
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
@@ -586,7 +586,6 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Server/DisallowActions.pwn"
 #include "../scripts/SSS/Server/DataCollection.pwn"
 #include "../scripts/SSS/Server/BugReport.pwn"
-#include "../scripts/SSS/Server/Weather.pwn"
 
 //======================API Scripts
 
@@ -600,6 +599,12 @@ forward SetRestart(seconds);
 #include "../scripts/API/Ladder/Ladder.pwn"
 //#include "../scripts/API/Turret/Turret.pwn"
 #include "../scripts/API/SprayTag/SprayTag.pwn"
+
+//======================Server Core
+
+#include "../scripts/SSS/Server/TextTags.pwn"
+#include "../scripts/SSS/Server/Weather.pwn"
+#include "../scripts/SSS/Server/Whitelist.pwn"
 
 //======================Player Core
 
@@ -683,6 +688,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Cmds/Duty.pwn"
 #include "../scripts/SSS/Cmds/Report.pwn"
 #include "../scripts/SSS/Cmds/Ban.pwn"
+#include "../scripts/SSS/Cmds/Spectate.pwn"
 
 //======================Items
 
@@ -729,10 +735,9 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Maps/Ranch.pwn"
 #include "../scripts/SSS/Maps/MtChill.pwn"
 
-//======================Server Core
+//======================Post-code
 
 #include "../scripts/SSS/Server/Autosave.pwn"
-#include "../scripts/SSS/Server/TextTags.pwn"
 
 
 main()
@@ -747,6 +752,7 @@ main()
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Whitelist` (`"#ROW_NAME"`)"));
 
 	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
 	rowCount = db_num_rows(tmpResult);
@@ -1240,7 +1246,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(newkeys & KEY_YES)
 		{
-			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !(bPlayerGameSettings[playerid] & KnockedOut))
 			{
 				new Float:health;
 				GetVehicleHealth(gPlayerVehicleID[playerid], health);
