@@ -125,8 +125,6 @@ stock GetPlayerTotalAmmo(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	printf("reserve: %d", wep_ReserveAmmo[playerid]);
-
 	return GetPlayerAmmo(playerid) + wep_ReserveAmmo[playerid];
 }
 

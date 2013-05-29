@@ -73,6 +73,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
+	gLastHitBy[damagedid] = gPlayerName[playerid];
 	DamagePlayer(playerid, damagedid, weaponid);
 	return 1;
 }

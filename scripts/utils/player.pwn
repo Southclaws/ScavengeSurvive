@@ -105,3 +105,43 @@ stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 	}
 	return 0;
 }
+
+GetClosestPlayerFromPlayer(playerid, Float:range = 10000.0)
+{
+	new
+		Float:x1,
+		Float:y1,
+		Float:z1,
+		Float:x2,
+		Float:y2,
+		Float:z2,
+		Float:lowestdistance = range,
+		Float:distance,
+		closestplayer = -1;
+
+	GetPlayerPos(playerid, x1, y1, z1);
+
+	foreach(new i : Player)
+	{
+		if(i == playerid)
+			continue;
+
+		GetPlayerPos(i, x2, y2, z2);
+
+		if(x2 == 0.0 && y2 == 0.0 && z2 == 0.0)
+			continue;
+
+		distance = Distance(x1, y1, z1, x2, y2, z1);
+
+		if(distance < range)
+		{
+			if(distance < lowestdistance)
+			{
+				lowestdistance = distance;
+				closestplayer = i;
+			}
+		}
+	}
+
+	return closestplayer;
+}

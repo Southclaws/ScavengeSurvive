@@ -19,6 +19,13 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 		vh_ReportTick		[MAX_PLAYERS];
 
 
+/*==============================================================================
+
+	Main timer
+
+==============================================================================*/
+
+
 ptask AntiCheatUpdate[1000](playerid)
 {
 	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
@@ -69,7 +76,11 @@ hook OnPlayerSpawn(playerid)
 }
 
 
-// teleport
+/*==============================================================================
+
+	Teleport
+
+==============================================================================*/
 
 
 Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
@@ -114,6 +125,13 @@ PositionCheck(playerid)
 
 	GetPlayerPos(playerid, x, y, z);
 
+	if(z < -50.0)
+	{
+		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+		tp_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
 	distance = Distance2D(x, y, tp_CurPos[playerid][0], tp_CurPos[playerid][1]);
 
 	if(distance > DETECTION_DISTANCE)
@@ -128,7 +146,7 @@ PositionCheck(playerid)
 
 				GetPlayerName(playerid, name, 24);
 				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-				ReportPlayer(name, reason, -1);
+				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 				tp_PosReportTick[playerid] = tickcount();
@@ -147,7 +165,7 @@ PositionCheck(playerid)
 
 					GetPlayerName(playerid, name, 24);
 					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-					ReportPlayer(name, reason, -1);
+					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 					tp_PosReportTick[playerid] = tickcount();
@@ -164,8 +182,11 @@ PositionCheck(playerid)
 }
 
 
-// weapon hack
+/*==============================================================================
 
+	Weapons
+
+==============================================================================*/
 
 
 WeaponCheck(playerid)
@@ -196,7 +217,7 @@ WeaponCheck(playerid)
 
 			format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, weapon, weaponname2);
 
-			//ReportPlayer(name, reason, -1);
+			//ReportPlayer(name, reason, -1, REPORT_TYPE_WEAPONS);
 			MsgAdmins(3, 0xFFFF00FF, reason);
 		}
 	}
@@ -205,7 +226,11 @@ WeaponCheck(playerid)
 }
 
 
-// swim-fly
+/*==============================================================================
+
+	Swim-fly
+
+==============================================================================*/
 
 
 SwimFlyCheck(playerid)
@@ -257,7 +282,7 @@ SwimFlyCheck(playerid)
 
 			GetPlayerName(playerid, name, 24);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
-			ReportPlayer(name, reason, -1);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY);
 
 			sf_ReportTick[playerid] = tickcount();
 		}
@@ -267,13 +292,17 @@ SwimFlyCheck(playerid)
 }
 
 
-// vehicle health
+/*==============================================================================
+
+	Vehicle Health
+
+==============================================================================*/
 
 
 VehicleHealthCheck(playerid)
 {
-	if(tickcount() - vh_ReportTick[playerid] < 10000)
-		return 0;
+//	if(tickcount() - vh_ReportTick[playerid] < 10000)
+//		return 0;
 
 	new Float:hp;
 
@@ -282,12 +311,16 @@ VehicleHealthCheck(playerid)
 	if(hp > 990.0)
 	{
 		new
+			Float:x,
+			Float:y,
+			Float:z,
 			name[24],
 			reason[64];
 
+		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, 24);
 		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
-		ReportPlayer(name, reason, -1);
+		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z);
 
 		SetVehicleHealth(GetPlayerVehicleID(playerid), 990.0);
 

@@ -26,6 +26,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(IsPlayerConnected(killerid))
 	{
+		gLastKilledBy[playerid] = gPlayerName[killerid];
+
 		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
 
 		switch(reason)
@@ -67,6 +69,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	else
 	{
+		gLastKilledBy[playerid][0] = EOS;
+
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
 
 		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))

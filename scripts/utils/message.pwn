@@ -111,48 +111,6 @@ stock MsgAll(colour, string[])
 
 	return 1;
 }
-stock MsgAllEx(exceptionid, colour, string[])
-{
-	if(strlen(string) > 127)
-	{
-		new
-			string2[128],
-			splitpos;
-
-		for(new c = 128; c>0; c--)
-		{
-			if(string[c] == ' ' || string[c] ==  ',' || string[c] ==  '.')
-			{
-				splitpos = c;
-				break;
-			}
-		}
-
-		strcat(string2, string[splitpos]);
-		string[splitpos] = EOS;
-
-		PlayerLoop(i)
-		{
-			if(i == exceptionid)
-				continue;
-
-			SendClientMessage(i, colour, string);
-			SendClientMessage(i, colour, string2);
-		}
-	}
-	else
-	{
-		PlayerLoop(i)
-		{
-			if(i == exceptionid)
-				continue;
-
-			SendClientMessageToAll(i, colour, string);
-		}
-	}
-
-	return 1;
-}
 
 
 stock MsgF(playerid, colour, fmat[], va_args<>)

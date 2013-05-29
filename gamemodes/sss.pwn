@@ -29,6 +29,15 @@ native IsValidVehicle(vehicleid);
 #define DEFAULT_POS_Y				(272.7235)
 #define DEFAULT_POS_Z				(1014.1449)
 
+enum
+{
+	REPORT_TYPE_PLAYER,
+	REPORT_TYPE_TELEPORT,
+	REPORT_TYPE_WEAPONS,
+	REPORT_TYPE_SWIMFLY,
+	REPORT_TYPE_VHEALTH
+}
+
 #include "../scripts/SSS/Server/HackDetect.pwn"
 
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
@@ -90,6 +99,10 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_REAS					"reason"
 #define ROW_BNBY					"by"
 #define ROW_READ					"read"
+#define ROW_TYPE					"type"
+#define ROW_POSX					"posx"
+#define ROW_POSY					"posy"
+#define ROW_POSZ					"posz"
 
 
 // Macros
@@ -202,22 +215,33 @@ enum
 	d_NotebookPage,
 	d_NotebookEdit,
 	d_NotebookError,
+
 	d_SignEdit,
 	d_Tires,
 	d_Lights,
 	d_Radio,
 	d_GraveStone,
+
+	d_ReportMenu,
+	d_ReportPlayerList,
+	d_ReportNameInput,
+	d_ReportReason,
+
 	d_ReportList,
 	d_Report,
 	d_ReportOptions,
+
 	d_IssueSubmit,
 	d_IssueList,
 	d_Issue,
+
 	d_DefenseSetPass,
 	d_DefenseEnterPass,
+
 	d_TransferAmmoToGun,
 	d_TransferAmmoToBox,
 	d_TransferAmmoGun2Gun,
+
 	d_BanList,
 	d_BanInfo
 }
@@ -556,6 +580,8 @@ Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 		tick_ExitVehicle		[MAX_PLAYERS],
 		tick_LastChatMessage	[MAX_PLAYERS],
 		tick_LastInfectionFX	[MAX_PLAYERS],
+		gLastHitBy				[MAX_PLAYERS][MAX_PLAYER_NAME],
+		gLastKilledBy			[MAX_PLAYERS][MAX_PLAYER_NAME],
 		ChatMessageStreak		[MAX_PLAYERS],
 		ChatMuteTick			[MAX_PLAYERS];
 
@@ -750,7 +776,7 @@ main()
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Whitelist` (`"#ROW_NAME"`)"));
 
@@ -763,10 +789,9 @@ main()
 
 	print("\n-------------------------------------");
 	print(" Southclaw's Scavenge And Survive");
-	print("  ----  Server Data  ----");
-	printf("   %d\t- Visitors",			file_GetVal("Connections"));
-	printf("   %d\t- Accounts",			rowCount);
-	printf("   %d\t- Administrators",	gTotalAdmins);
+	printf("\t%d\t- Visitors",			file_GetVal("Connections"));
+	printf("\t%d\t\t- Accounts",		rowCount);
+	printf("\t%d\t\t- Administrators",	gTotalAdmins);
 	print("-------------------------------------\n");
 
 	file_Close();
