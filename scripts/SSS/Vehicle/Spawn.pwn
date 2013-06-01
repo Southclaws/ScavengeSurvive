@@ -636,12 +636,18 @@ public OnVehicleSpawn(vehicleid)
 	}
 }
 
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	new modelid = GetVehicleModel(vehicleid);
+	if(modelid == 449 || modelid == 537 || modelid == 538 || modelid == 569 || modelid == 570 || modelid == 590) {
+		SetCameraBehindPlayer(playerid);
+	}
+}
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
-		SetCameraBehindPlayer(playerid);
 		SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid], true);
 	}
 }
