@@ -1,6 +1,4 @@
-static
-	tick_AdminDuty[MAX_PLAYERS],
-	tick_UnstickUsage[MAX_PLAYERS];
+static tick_AdminDuty[MAX_PLAYERS];
 
 ACMD:duty[1](playerid, params[])
 {
@@ -84,37 +82,3 @@ ACMD:spec[1](playerid, params[])
 	return 1;
 }
 
-ACMD:unstick[1](playerid, params[])
-{
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-		return 6;
-
-	if(tickcount() - tick_UnstickUsage[playerid] < 1000)
-	{
-		Msg(playerid, RED, " >  You cannot use that command that often.");
-		return 1;
-	}
-
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /unstick [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-		return 4;
-
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(targetid, x, y, z);
-	SetPlayerPos(targetid, x, y, z + 1.0);
-
-	tick_UnstickUsage[playerid] = tickcount();
-
-	return 1;
-}

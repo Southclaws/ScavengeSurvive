@@ -1,26 +1,7 @@
-new gAdminCommandList_Lvl1[] =
-{
-	"/kick [id] - kick a player from the server\n\
-	/(un)freeze (seconds) [id] - freeze/unfreeze a player\n\
-	/(un)mute (seconds) [id] - mute/unmute a player\n\
-	/warn [id] - give a player a warning\n\
-	/aliases [id] - check aliases\n\
-	/msg [message] - send a chat announcement\n"
-};
-
-new gAdminCommandList_Lvl2[] =
-{
-	"/(un)ban - ban/unban a player from the server\n\
-	/clearchat - clear the chatbox\n\
-	/ann [text] - send an on-screen announcement to everyone\n\
-	/motd [text] - set the message of the day\n"
-};
-
-
 MsgAdmins(level, colour, string[])
 {
 	if(level == 0)
-	    print("ERROR: MsgAdmins paramter 'level' cannot be 0");
+		print("ERROR: MsgAdmins paramter 'level' cannot be 0");
 
 	if(strlen(string) > 127)
 	{
@@ -32,17 +13,17 @@ MsgAdmins(level, colour, string[])
 		{
 			if(string[c] == ' ' || string[c] ==  ',' || string[c] ==  '.')
 			{
-			    splitpos = c;
-			    break;
+				splitpos = c;
+				break;
 			}
 		}
 
 		strcat(string2, string[splitpos]);
 		string[splitpos] = EOS;
 
-	    foreach(new i : Player)
-	    {
-	        if(gPlayerData[i][ply_Admin] < level)
+		foreach(new i : Player)
+		{
+			if(gPlayerData[i][ply_Admin] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -51,9 +32,9 @@ MsgAdmins(level, colour, string[])
 	}
 	else
 	{
-	    foreach(new i : Player)
-	    {
-	        if(gPlayerData[i][ply_Admin] < level)
+		foreach(new i : Player)
+		{
+			if(gPlayerData[i][ply_Admin] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -64,8 +45,8 @@ MsgAdmins(level, colour, string[])
 
 ACMD:admins[3](playerid, params[])
 {
-    new
-        title[20],
+	new
+		title[20],
 		list[(64+1)*MAX_ADMIN + 22],
 		offline[(64+1)*MAX_ADMIN],
 		tmpstr[64],
@@ -74,7 +55,7 @@ ACMD:admins[3](playerid, params[])
 
 	for(new i; i < gTotalAdmins; i++)
 	{
-	    isonline = false;
+		isonline = false;
 		foreach(j : Player)
 		{
 			if(!strcmp(gAdminData[i][admin_Name], gPlayerName[j]) && !isnull(gAdminData[i][admin_Name]))
@@ -121,14 +102,14 @@ SetPlayerAdminLevel(playerid, level)
 	gPlayerData[playerid][ply_Admin] = level;
 	if(level == 0)
 	{
-	    new bool:updated = false;
+		new bool:updated = false;
 
 		for(new i; i<gTotalAdmins; i++)
 		{
-		    if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))updated = true;
+			if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))updated = true;
 
-		    if(updated && i < MAX_ADMIN-1)
-		    {
+			if(updated && i < MAX_ADMIN-1)
+			{
 				format(gAdminData[i][admin_Name], 24, gAdminData[i+1][admin_Name]);
 				gAdminData[i][admin_Level] = gAdminData[i+1][admin_Level];
 			}
@@ -147,8 +128,8 @@ SetPlayerAdminLevel(playerid, level)
 		{
 			if(!isnull(gAdminData[i][admin_Name]))
 			{
-			    if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
-			    {
+				if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
+				{
 					gAdminData[i][admin_Name] = gPlayerName[playerid];
 					gAdminData[i][admin_Level] = level;
 					break;
@@ -173,19 +154,24 @@ SetPlayerAdminLevel(playerid, level)
 
 CMD:acmds(playerid, params[])
 {
-	new str[768];
+	new str[800];
 
-//	strcat(str, "/a (level) [message] - level specific admin chat channel\n\n");
+	strcat(str, "/a [message] - Staff chat channel");
 
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-	    strcat(str, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
-	    strcat(str, gAdminCommandList_Lvl2);
+		strcat(str, "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
+		strcat(str, gAdminCommandList_Lvl3);
+	}
+	if(gPlayerData[playerid][ply_Admin] >= 2)
+	{
+		strcat(str, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
+		strcat(str, gAdminCommandList_Lvl2);
 	}
 	if(gPlayerData[playerid][ply_Admin] >= 1)
 	{
-	    strcat(str, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
-	    strcat(str, gAdminCommandList_Lvl1);
+		strcat(str, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
+		strcat(str, gAdminCommandList_Lvl1);
 	}
 	
 	printf("%d", strlen(str));
@@ -195,6 +181,22 @@ CMD:acmds(playerid, params[])
 
 	else
 		return 0;
+
+	return 1;
+}
+
+ACMD:a[1](playerid, params[])
+{
+	if(isnull(params))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /a [message] - Sends a message to all admins");
+	}
+
+	foreach(new i : Player)
+	{
+		if(gPlayerData[i][ply_Admin] > 0)
+			MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", AdminColours[gPlayerData[playerid][ply_Admin]], playerid, TagScan(params));
+	}
 
 	return 1;
 }
@@ -210,4 +212,3 @@ timer KickPlayerDelay[50](playerid)
 {
 	Kick(playerid);
 }
-

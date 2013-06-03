@@ -19,7 +19,7 @@ CMD:adminlvl(playerid, params[])
 
 //==============================================================================Player
 
-ACMD:setadmin[3](playerid, params[])
+ACMD:setadmin[4](playerid, params[])
 {
 	new
 		id,
@@ -47,7 +47,7 @@ ACMD:setadmin[3](playerid, params[])
 	return 1;
 }
 
-ACMD:setvip[3](playerid, params[])
+ACMD:setvip[4](playerid, params[])
 {
 	new id, toggle;
 
@@ -70,7 +70,7 @@ ACMD:setvip[3](playerid, params[])
 	return 1;
 }
 
-ACMD:setpinglimit[3](playerid, params[])
+ACMD:setpinglimit[4](playerid, params[])
 {
 	new val = strval(params);
 
@@ -121,13 +121,13 @@ ACMD:mapname[3](playerid,params[])
 	return 1;
 }
 
-ACMD:gmx[3](playerid, params[])
+ACMD:gmx[4](playerid, params[])
 {
 	RestartGamemode();
 	return 1;
 }
 
-ACMD:loadfs[3](playerid, params[])
+ACMD:loadfs[4](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
@@ -140,7 +140,7 @@ ACMD:loadfs[3](playerid, params[])
 	return 1;
 }
 
-ACMD:reloadfs[3](playerid, params[])
+ACMD:reloadfs[4](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
@@ -153,7 +153,7 @@ ACMD:reloadfs[3](playerid, params[])
 	return 1;
 }
 
-ACMD:unloadfs[3](playerid, params[])
+ACMD:unloadfs[4](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
@@ -166,7 +166,7 @@ ACMD:unloadfs[3](playerid, params[])
 	return 1;
 }
 
-ACMD:additem[3](playerid, params[])
+ACMD:additem[4](playerid, params[])
 {
 	new
 		ItemType:type,
@@ -233,7 +233,7 @@ ACMD:additem[3](playerid, params[])
 
 //==============================================================================Utilities
 
-ACMD:sp[3](playerid, params[])
+ACMD:sp[4](playerid, params[])
 {
 	new PositionName[128];
 
@@ -274,7 +274,7 @@ ACMD:sp[3](playerid, params[])
 	return 1;
 }
 
-ACMD:tp[3](playerid, params[])
+ACMD:tp[4](playerid, params[])
 {
 	new PositionName[128];
 
@@ -321,7 +321,7 @@ ACMD:tp[3](playerid, params[])
 	return 1;
 }
 
-ACMD:sound[3](playerid, params[])
+ACMD:sound[4](playerid, params[])
 {
 	new
 		soundid = strval(params),
@@ -337,7 +337,7 @@ ACMD:sound[3](playerid, params[])
 	return 1;
 }
 
-ACMD:anim[3](playerid, params[])
+ACMD:anim[4](playerid, params[])
 {
 	new
 		lib[20],
@@ -356,7 +356,7 @@ ACMD:anim[3](playerid, params[])
 	return 1;
 }
 
-ACMD:gotopos[3](playerid, params[])
+ACMD:gotopos[4](playerid, params[])
 {
 	new
 		Float:x,
@@ -372,7 +372,7 @@ ACMD:gotopos[3](playerid, params[])
 	return 1;
 }
 
-ACMD:getanim[3](playerid, params[])
+ACMD:getanim[4](playerid, params[])
 {
 	new
 		animlib[32],
@@ -385,19 +385,19 @@ ACMD:getanim[3](playerid, params[])
 	return 1;
 }
 
-ACMD:visob[3](playerid, params[])
+ACMD:visob[4](playerid, params[])
 {
 	MsgF(playerid, YELLOW, "Current Visible Objects: %d", Streamer_CountVisibleItems(playerid, STREAMER_TYPE_OBJECT));
 	return 1;
 }
 
-ACMD:ActionText[3](playerid, params[])
+ACMD:ActionText[4](playerid, params[])
 {
 	ShowActionText(playerid, "This is a message~n~This is a new line~n~~g~h~r~e~b~l~y~l~p~o ~g~w~r~o~y~r~b~l~p~d~y~!", 3000);
 	return 1;
 }
 
-ACMD:decam[3](playerid, params[])
+ACMD:decam[4](playerid, params[])
 {
 	new Float:cx, Float:cy, Float:cz, Float:px, Float:py, Float:pz;
 	GetPlayerCameraPos(playerid, cx, cy, cz);
@@ -407,13 +407,13 @@ ACMD:decam[3](playerid, params[])
 	return 1;
 }
 
-ACMD:recam[3](playerid, params[])
+ACMD:recam[4](playerid, params[])
 {
 	SetCameraBehindPlayer(playerid);
 	return 1;
 }
 
-ACMD:cob[3](playerid, params[])
+ACMD:cob[4](playerid, params[])
 {
 	new o;
 	if(!sscanf(params,"d",o))
@@ -427,19 +427,19 @@ ACMD:cob[3](playerid, params[])
 
 //==============================================================================World Movement Commands
 
-ACMD:setvw[3](playerid, params[])
+ACMD:setvw[4](playerid, params[])
 {
 	SetPlayerVirtualWorld(playerid, strval(params));
 	return 1;
 }
 
-ACMD:setint[3](playerid, params[])
+ACMD:setint[4](playerid, params[])
 {
 	SetPlayerInterior(playerid, strval(params));
 	return 1;
 }
 
-ACMD:hud[3](playerid, params[])
+ACMD:hud[4](playerid, params[])
 {
 	if(bPlayerGameSettings[playerid] & ShowHUD)
 	{
@@ -457,7 +457,7 @@ ACMD:hud[3](playerid, params[])
 	}
 }
 
-ACMD:vowner[3](playerid, params[])
+ACMD:vowner[4](playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
@@ -472,7 +472,7 @@ ACMD:vowner[3](playerid, params[])
 	return 1;
 }
 
-ACMD:vdelete[3](playerid, params[])
+ACMD:vdelete[4](playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
@@ -487,7 +487,7 @@ ACMD:vdelete[3](playerid, params[])
 	return 1;
 }
 
-ACMD:weather[3](playerid, params[])
+ACMD:weather[4](playerid, params[])
 {
 	if(strlen(params) > 2)
 	{
@@ -510,140 +510,4 @@ ACMD:weather[3](playerid, params[])
 	}
 
 	return 1;
-}
-
-ACMD:up[3](playerid, params[])
-{
-	new
-		Float:distance = float(strval(params)),
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-	SetPlayerPos(playerid, x, y, z + distance);
-
-	return 1;
-}
-
-ACMD:ford[3](playerid, params[])
-{
-	new
-		Float:distance = float(strval(params)),
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:a;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, a);
-
-	SetPlayerPos(playerid,
-		x + (distance * floatsin(-a, degrees)),
-		y + (distance * floatcos(-a, degrees)),
-		z);
-
-	return 1;
-}
-
-ACMD:goto[3](playerid, params[])
-{
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /goto [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	TeleportPlayerToPlayer(playerid, targetid);
-
-	return 1;
-}
-
-ACMD:get[3](playerid, params[])
-{
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /get [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	if(gPlayerData[playerid][ply_Admin] == 1)
-	{
-		if(GetPlayerDist3D(playerid, targetid) > 50.0)
-		{
-			Msg(playerid, RED, " >  You cannot teleport someone that far away from you, move closer to them.");
-			return 1;
-		}
-	}
-
-	TeleportPlayerToPlayer(targetid, playerid);
-
-	return 1;
-}
-
-TeleportPlayerToPlayer(playerid, targetid)
-{
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:ang,
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		interior = GetPlayerInterior(targetid);
-
-	if(IsPlayerInAnyVehicle(targetid))
-	{
-		new vehicleid = GetPlayerVehicleID(targetid);
-
-		GetVehiclePos(vehicleid, px, py, pz);
-		GetVehicleZAngle(vehicleid, ang);
-		GetVehicleVelocity(vehicleid, vx, vy, vz);
-		pz += 2.0;
-	}
-	else
-	{
-		GetPlayerPos(targetid, px, py, pz);
-		GetPlayerFacingAngle(targetid, ang);
-		GetPlayerVelocity(targetid, vx, vy, vz);
-		px -= floatsin(-ang, degrees);
-		py -= floatcos(-ang, degrees);
-	}
-
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-
-		SetVehiclePos(vehicleid, px, py, pz);
-		SetVehicleZAngle(vehicleid, ang);
-		SetVehicleVelocity(vehicleid, vx, vy, vz);
-		LinkVehicleToInterior(vehicleid, interior);
-	}
-	else
-	{
-		SetPlayerPos(playerid, px, py, pz);
-		SetPlayerFacingAngle(playerid, ang);
-		SetPlayerVelocity(playerid, vx, vy, vz);
-		SetPlayerInterior(playerid, interior);
-	}
-
-	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
-	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }

@@ -9,6 +9,17 @@ public OnFilterScriptInit()
 {
 }
 
+CMD:cmode(playerid, params[])
+{
+	new mode = GetPlayerCameraMode(playerid);
+
+	new str[128];
+	format(str, 128, "Cam mode: %d", mode);
+	SendClientMessage(playerid, -1, str);
+
+	return 1;
+}
+
 CMD:rt(playerid, params[])
 {
 	RemoveBuildingForPlayer(playerid, 713, -1679.5469, 657.7500, 17.1484, 0.25);

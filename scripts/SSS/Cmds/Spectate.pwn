@@ -63,8 +63,9 @@ UpdateSpectateMode(playerid)
 	{
 		new
 			invehicleas[24],
-			wepname[32];
-		
+			wepname[32],
+			cameramodename[37];
+
 		if(GetPlayerState(gPlayerSpecTarget[playerid]) == PLAYER_STATE_DRIVER)
 			invehicleas = "Driver";
 
@@ -72,10 +73,11 @@ UpdateSpectateMode(playerid)
 			invehicleas = "Passenger";
 
 		GetWeaponName(GetPlayerWeapon(gPlayerSpecTarget[playerid]), wepname);
+		GetCameraModeName(GetPlayerCameraMode(playerid), cameramodename);
 
 		format(str, 128, "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
-			Vehicle %d As %s",
+			Camera: %s Vehicle %d As %s",
 			gPlayerHP[gPlayerSpecTarget[playerid]],
 			gPlayerAP[gPlayerSpecTarget[playerid]],
 			gPlayerFP[gPlayerSpecTarget[playerid]],
@@ -84,17 +86,22 @@ UpdateSpectateMode(playerid)
 			wepname,
 			GetPlayerAmmo(gPlayerSpecTarget[playerid]),
 			GetPlayerReserveAmmo(gPlayerSpecTarget[playerid]),
+			cameramodename,
 			gPlayerVehicleID[gPlayerSpecTarget[playerid]],
 			invehicleas);
 	}
 	else
 	{
-		new wepname[32];
+		new
+			wepname[32],
+			cameramodename[37];
 
 		GetWeaponName(GetPlayerWeapon(gPlayerSpecTarget[playerid]), wepname);
+		GetCameraModeName(GetPlayerCameraMode(playerid), cameramodename);
 
 		format(str, 128, "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~",
+			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
+			Camera: %s",
 			gPlayerHP[gPlayerSpecTarget[playerid]],
 			gPlayerAP[gPlayerSpecTarget[playerid]],
 			gPlayerFP[gPlayerSpecTarget[playerid]],
@@ -102,7 +109,8 @@ UpdateSpectateMode(playerid)
 			bPlayerGameSettings[gPlayerSpecTarget[playerid]] & Bleeding ? 1 : 0,
 			wepname,
 			GetPlayerAmmo(gPlayerSpecTarget[playerid]),
-			GetPlayerReserveAmmo(gPlayerSpecTarget[playerid]));
+			GetPlayerReserveAmmo(gPlayerSpecTarget[playerid]),
+			cameramodename);
 	}
 
 	PlayerTextDrawSetString(playerid, spec_Name, gPlayerName[gPlayerSpecTarget[playerid]]);

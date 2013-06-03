@@ -1,12 +1,22 @@
-new
-	Timer:UnfreezeTimer[MAX_PLAYERS],
-	Timer:UnmuteTimer[MAX_PLAYERS];
+// 8 commands
+
+new gAdminCommandList_Lvl2[] =
+{
+	"/(un)ban - ban/unban a player from the server\n\
+	/banlist - show a list of banned players\n\
+	/whitelist - add/remove a player from the whitelist\n\
+	/aliases - check aliases\n\
+	/clearchat - clear the chatbox\n\
+	/ann - send an on-screen announcement to everyone\n\
+	/motd - set the message of the day\n"
+};
 
 
-ACMD:kick[1](playerid, params[])
+ACMD:ban[2](playerid, params[])
 {
 	new
-		targetid,
+		id = -1,
+		playername[MAX_PLAYER_NAME],
 		reason[64],
 		highestadmin;
 
@@ -16,184 +26,108 @@ ACMD:kick[1](playerid, params[])
 			highestadmin = i;
 	}
 
-	if(sscanf(params, "ds[64]", targetid, reason))
-		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
+	if(!sscanf(params, "dS(None)[64]", id, reason))
+	{
+		if(strlen(reason) > 64)
+			return Msg(playerid, RED, " >  Reason must be below 64 characters");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
-		return 3;
+		if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+			return 2;
 
-	if(!IsPlayerConnected(targetid))
-		return 4;
+		if(!IsPlayerConnected(id))
+			return 4;
 
-	if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
-		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
+		if(playerid == id)
+			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-	if(playerid == targetid)
-		MsgAllF(PINK, " >  %P"#C_PINK" failed and kicked themselves", playerid);
+		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
 
-	KickPlayer(targetid, reason);
+		MsgF(playerid, YELLOW, " >  Banned %P"#C_YELLOW" reason: "#C_BLUE"%s", id, reason);
+
+		BanPlayer(id, reason, playerid);
+
+		return 1;
+	}
+	if(!sscanf(params, "s[24]S(None)[64]", playername, reason))
+	{
+		if(strlen(reason) > 64)
+			return Msg(playerid, RED, " >  Reason must be below 64 characters");
+
+		for(new idx; idx<gTotalAdmins; idx++)
+		{
+			if(!strcmp(playername, gAdminData[idx][admin_Name]))
+			{
+				return 2;
+			}
+		}
+
+		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);
+
+		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
+
+		BanPlayerByName(playername, reason, playerid);
+
+		return 1;
+	}
+
+	Msg(playerid, YELLOW, " >  Usage: /ban [playerid] [reason]");
 
 	return 1;
 }
-ACMD:freeze[1](playerid, params[])
+
+
+ACMD:banlist[2](playerid, params[])
 {
-	new targetid, delay;
+	ShowListOfBans(playerid, 0);
+	return 1;
+}
 
-	if(sscanf(params, "dD(0)", targetid, delay))
-		return Msg(playerid, YELLOW, " >  Usage: /freeze [playerid] (seconds)");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
-		return 3;
+ACMD:unban[2](playerid, params[])
+{
+	new name[24];
 
-	if(!IsPlayerConnected(targetid))
-		return 4;
+	if(sscanf(params, "s[24]", name))
+		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
 
-	TogglePlayerControllable(targetid, false);
-	t:bPlayerGameSettings[targetid]<Frozen>;
+	UnBanPlayer(name);
 	
-	if(delay > 0)
-	{
-		stop UnfreezeTimer[targetid];
-		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
-		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
-		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
-	}
-	else
-	{
-		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
-		Msg(targetid, YELLOW, " >  Frozen by admin");
-	}
+	MsgF(playerid, YELLOW, " >  Unbanned "#C_BLUE"%s"#C_YELLOW".", name);
 
 	return 1;
 }
 
-timer CmdDelay_unfreeze[time](playerid, time)
-{
-	#pragma unused time
 
-	TogglePlayerControllable(playerid, true);
-	f:bPlayerGameSettings[playerid]<Frozen>;
-
-	Msg(playerid, YELLOW, " >  You are now unfrozen.");
-}
-
-ACMD:unfreeze[1](playerid, params[])
-{
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-		return Msg(playerid, YELLOW, " >  Usage: /unfreeze [playerid]");
-
-	if(!IsPlayerConnected(targetid))
-		return 4;
-
-	TogglePlayerControllable(targetid, true);
-	f:bPlayerGameSettings[targetid]<Frozen>;
-	stop UnfreezeTimer[targetid];
-
-	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
-	Msg(playerid, YELLOW, " >  Unfrozen");
-
-	return 1;
-}
-ACMD:mute[1](playerid, params[])
+ACMD:whitelist[2](playerid, params[])
 {
 	new
-		targetid,
-		delay,
-		reason[128];
+		command[7],
+		name[MAX_PLAYER_NAME];
 
-
-	if(sscanf(params, "dds[128]", targetid, delay, reason))
-		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason]");
-
-	if(!IsPlayerConnected(targetid))
-		return Msg(playerid,RED, " >  Invalid targetid");
-
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin])
-		return 3;
-
-	if(bPlayerGameSettings[targetid] & Muted)
-		return Msg(playerid, YELLOW, " >  Player Already Muted");
-
-	t:bPlayerGameSettings[targetid]<Muted>;
-
-	if(delay > 0)
+	if(sscanf(params, "s[7]s[24]", command, name))
 	{
-		stop UnmuteTimer[targetid];
-		UnmuteTimer[targetid] = defer CmdDelay_unmute(targetid, delay * 1000);
-		MsgF(targetid, YELLOW, " >  Muted from global chat for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: "#C_BLUE"%s", delay, reason);
-		MsgF(playerid, YELLOW, " >  Muted player %P "#C_WHITE"for %d seconds.", targetid, delay);
+		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove] [name]");
+		return 1;
 	}
-	else
+
+	if(!strcmp(command, "add", true))
 	{
-		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "#C_BLUE"%s", reason);
-		MsgF(playerid, YELLOW, " >  Muted player %P", targetid);
+		MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
+		AddNameToWhitelist(name);
+	}
+	else if(!strcmp(command, "remove", true))
+	{
+		MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
+		RemoveNameFromWhitelist(name);
 	}
 
 	return 1;
 }
 
-timer CmdDelay_unmute[time](playerid, time)
-{
-	#pragma unused time
-	
-	f:bPlayerGameSettings[playerid]<Muted>;
 
-	Msg(playerid, YELLOW, " >  You are now un-muted.");
-
-}
-
-ACMD:unmute[1](playerid, params[])
-{
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-		return Msg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
-
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
-		return 3;
-
-	if(!IsPlayerConnected(targetid))
-		return 4;
-
-	f:bPlayerGameSettings[targetid]<Muted>;
-	stop UnmuteTimer[targetid];
-
-	MsgF(playerid, YELLOW, " >  Un-muted %P", targetid);
-	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" has un-muted you.", targetid);
-
-	return 1;
-}
-ACMD:warn[1](playerid, params[])
-{
-	new
-		targetid,
-		reason[128];
-
-	if(sscanf(params, "ds[128]", targetid, reason))
-		return Msg(playerid, YELLOW, " >  Usage: /warn [playerid] [reason]");
-
-	if(!IsPlayerConnected(targetid))
-		return Msg(playerid,RED, " >  Invalid targetid");
-
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
-		return 3;
-
-	gPlayerWarnings[targetid]++;
-
-	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
-	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
-
-	if(gPlayerWarnings[targetid] >= 5)
-	{
-		KickPlayer(targetid, "Too many warnings");
-	}
-
-	return 1;
-}
-
-ACMD:aliases[1](playerid, params[])
+ACMD:aliases[2](playerid, params[])
 {
 	new targetid;
 
@@ -243,21 +177,37 @@ ACMD:aliases[1](playerid, params[])
 	return 1;
 }
 
-ACMD:msg[1](playerid, params[])
+
+ACMD:clearchat[2](playerid, params[])
 {
-	if(!(0 < strlen(params) < 128))
-		Msg(playerid,YELLOW," >  Usage: /msg [Message]");
+	for(new i;i<100;i++)
+		MsgAll(WHITE, " ");
 
-	new str[130] = {" >  "#C_BLUE""};
-
-	strcat(str, TagScan(params));
-
-	MsgAll(YELLOW, str);
 	return 1;
 }
 
-ACMD:banlist[1](playerid, params[])
+
+ACMD:ann[2](playerid, params[])
 {
-	ShowListOfBans(playerid, 0);
+	if(!(0 < strlen(params) < 64))
+		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
+
+	GameTextForAll(params, 5000, 5);
+
+	return 1;
+}
+
+
+ACMD:motd[2](playerid, params[])
+{
+	if(sscanf(params, "s[128]", gMessageOfTheDay))
+		return Msg(playerid, YELLOW, " >  Usage: /motd [message]");
+
+	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
+	file_Open(SETTINGS_FILE);
+	file_SetStr("motd", gMessageOfTheDay);
+	file_Save(SETTINGS_FILE);
+	file_Close();
+
 	return 1;
 }

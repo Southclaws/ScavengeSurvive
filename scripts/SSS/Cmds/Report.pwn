@@ -335,6 +335,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 						strcat(options, "Go to teleport destination\n");
 					}
+					case REPORT_TYPE_CAMDIST:
+					{
+						new pos = strfind(report_CurrentReason[playerid], "at");
+
+						sscanf(report_CurrentReason[playerid][pos+2], "p<,>ffp<)>f",
+							report_CurrentReportPos2[playerid][0], report_CurrentReportPos2[playerid][1], report_CurrentReportPos2[playerid][2]);
+
+						strcat(options, "Go to camera location\n");
+					}
 				}
 			}
 			else
@@ -404,6 +413,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					switch(report_CurrentType[playerid])
 					{
 						case REPORT_TYPE_TELEPORT:
+						{
+							if(bPlayerGameSettings[playerid] & AdminDuty)
+							{
+								SetPlayerPos(playerid, report_CurrentReportPos2[playerid][0], report_CurrentReportPos2[playerid][1], report_CurrentReportPos2[playerid][2]);
+							}
+						}
+						case REPORT_TYPE_CAMDIST:
 						{
 							if(bPlayerGameSettings[playerid] & AdminDuty)
 							{

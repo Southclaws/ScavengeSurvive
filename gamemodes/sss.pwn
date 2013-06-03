@@ -35,7 +35,8 @@ enum
 	REPORT_TYPE_TELEPORT,
 	REPORT_TYPE_WEAPONS,
 	REPORT_TYPE_SWIMFLY,
-	REPORT_TYPE_VHEALTH
+	REPORT_TYPE_VHEALTH,
+	REPORT_TYPE_CAMDIST
 }
 
 #include "../scripts/SSS/Server/HackDetect.pwn"
@@ -95,6 +96,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_ALIVE					"alive"
 #define ROW_SPAWN					"spawn"
 #define ROW_ISVIP					"vip"
+#define ROW_KARMA					"karma"										// TODO
+#define ROW_LASTLOG					"lastlog"									// TODO
 #define ROW_DATE					"date"
 #define ROW_REAS					"reason"
 #define ROW_BNBY					"by"
@@ -261,19 +264,21 @@ enum
 new HORIZONTAL_RULE[] = {"-------------------------------------------------------------------------------------------------------------------------"};
 
 //=====================Player Tag Names
-new const AdminName[4][14]=
+new const AdminName[5][14]=
 {
 	"Player",			// 0
-	"Moderator",		// 1
-	"Administrator",	// 2
-	"Developer"			// 3
+	"Game Master",		// 1
+	"Moderator",		// 2
+	"Administrator",	// 3
+	"Developer"			// 4
 },
-AdminColours[4]=
+AdminColours[5]=
 {
 	0xFFFFFFFF,			// 0
 	0x5DFC0AFF,			// 1
 	0x33CCFFAA,			// 2
-	0x6600FFFF			// 3
+	0x6600FFFF,			// 3
+	0x6600FFFF			// 4
 };
 
 
@@ -540,7 +545,8 @@ Float:	ply_posX,
 Float:	ply_posY,
 Float:	ply_posZ,
 Float:	ply_rotZ,
-		ply_stance
+		ply_stance,
+		ply_karma
 }
 enum
 {
@@ -706,8 +712,8 @@ forward SetRestart(seconds);
 
 //======================Admin code
 
-#include "../scripts/SSS/Cmds/Core.pwn"
 #include "../scripts/SSS/Cmds/Commands.pwn"
+#include "../scripts/SSS/Cmds/GameMaster.pwn"
 #include "../scripts/SSS/Cmds/Moderator.pwn"
 #include "../scripts/SSS/Cmds/Administrator.pwn"
 #include "../scripts/SSS/Cmds/Dev.pwn"
@@ -715,6 +721,7 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/Cmds/Report.pwn"
 #include "../scripts/SSS/Cmds/Ban.pwn"
 #include "../scripts/SSS/Cmds/Spectate.pwn"
+#include "../scripts/SSS/Cmds/Core.pwn"
 
 //======================Items
 
@@ -774,7 +781,7 @@ main()
 
 	gAccounts = db_open(ACCOUNT_DATABASE);
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));

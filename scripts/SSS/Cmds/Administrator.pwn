@@ -1,141 +1,169 @@
-//==========================================================================Player Control
+// 4 commands
 
-ACMD:ban[2](playerid, params[])
+new gAdminCommandList_Lvl3[] =
 {
-	new
-		id = -1,
-		playername[MAX_PLAYER_NAME],
-		reason[64],
-		highestadmin;
+	"/up - move up (Duty only)\n\
+	/ford - move forward (Duty only)\n\
+	/goto - teleport to a player (Duty only)\n\
+	/get - teleport a player to you (Duty only)\n"
+};
 
-	foreach(new i : Player)
+ACMD:up[3](playerid, params[])
+{
+	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
-			highestadmin = i;
+		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+			return 6;
 	}
 
-	if(!sscanf(params, "dS(None)[64]", id, reason))
+	new
+		Float:distance = float(strval(params)),
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	SetPlayerPos(playerid, x, y, z + distance);
+
+	return 1;
+}
+
+ACMD:ford[3](playerid, params[])
+{
+	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(strlen(reason) > 64)
-			return Msg(playerid, RED, " >  Reason must be below 64 characters");
+		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+			return 6;
+	}
 
-		if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
-			return 2;
+	new
+		Float:distance = float(strval(params)),
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:a;
 
-		if(!IsPlayerConnected(id))
-			return 4;
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, a);
 
-		if(playerid == id)
-			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
+	SetPlayerPos(playerid,
+		x + (distance * floatsin(-a, degrees)),
+		y + (distance * floatcos(-a, degrees)),
+		z);
 
-		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
-			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
+	return 1;
+}
 
-		MsgF(playerid, YELLOW, " >  Banned %P"#C_YELLOW" reason: "#C_BLUE"%s", id, reason);
+ACMD:goto[3](playerid, params[])
+{
+	if(gPlayerData[playerid][ply_Admin] == 3)
+	{
+		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+			return 6;
+	}
 
-		BanPlayer(id, reason, playerid);
+	new targetid;
 
+	if(sscanf(params, "d", targetid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /goto [playerid]");
 		return 1;
 	}
-	if(!sscanf(params, "s[24]S(None)[64]", playername, reason))
-	{
-		if(strlen(reason) > 64)
-			return Msg(playerid, RED, " >  Reason must be below 64 characters");
 
-		for(new idx; idx<gTotalAdmins; idx++)
+	if(!IsPlayerConnected(targetid))
+	{
+		Msg(playerid, RED, " >  Invalid ID");
+		return 1;
+	}
+
+	TeleportPlayerToPlayer(playerid, targetid);
+
+	return 1;
+}
+
+ACMD:get[3](playerid, params[])
+{
+	if(gPlayerData[playerid][ply_Admin] == 3)
+	{
+		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+			return 6;
+	}
+
+	new targetid;
+
+	if(sscanf(params, "d", targetid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /get [playerid]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(targetid))
+	{
+		Msg(playerid, RED, " >  Invalid ID");
+		return 1;
+	}
+
+	if(gPlayerData[playerid][ply_Admin] == 1)
+	{
+		if(GetPlayerDist3D(playerid, targetid) > 50.0)
 		{
-			if(!strcmp(playername, gAdminData[idx][admin_Name]))
-			{
-				return 2;
-			}
+			Msg(playerid, RED, " >  You cannot teleport someone that far away from you, move closer to them.");
+			return 1;
 		}
-
-		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
-			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);
-
-		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
-
-		BanPlayerByName(playername, reason, playerid);
-
-		return 1;
 	}
 
-	Msg(playerid, YELLOW, " >  Usage: /ban [playerid] [reason]");
+	TeleportPlayerToPlayer(targetid, playerid);
 
 	return 1;
 }
 
-ACMD:unban[2](playerid, params[])
-{
-	new name[24];
-
-	if(sscanf(params, "s[24]", name))
-		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
-
-	UnBanPlayer(name);
-	
-	MsgF(playerid, YELLOW, " >  Unbanned "#C_BLUE"%s"#C_YELLOW".", name);
-
-	return 1;
-}
-
-ACMD:whitelist[2](playerid, params[])
+TeleportPlayerToPlayer(playerid, targetid)
 {
 	new
-		command[7],
-		name[MAX_PLAYER_NAME];
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:ang,
+		Float:vx,
+		Float:vy,
+		Float:vz,
+		interior = GetPlayerInterior(targetid);
 
-	if(sscanf(params, "s[7]s[24]", command, name))
+	if(IsPlayerInAnyVehicle(targetid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove] [name]");
-		return 1;
+		new vehicleid = GetPlayerVehicleID(targetid);
+
+		GetVehiclePos(vehicleid, px, py, pz);
+		GetVehicleZAngle(vehicleid, ang);
+		GetVehicleVelocity(vehicleid, vx, vy, vz);
+		pz += 2.0;
+	}
+	else
+	{
+		GetPlayerPos(targetid, px, py, pz);
+		GetPlayerFacingAngle(targetid, ang);
+		GetPlayerVelocity(targetid, vx, vy, vz);
+		px -= floatsin(-ang, degrees);
+		py -= floatcos(-ang, degrees);
 	}
 
-	if(!strcmp(command, "add", true))
+	if(IsPlayerInAnyVehicle(playerid))
 	{
-		MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
-		AddNameToWhitelist(name);
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		SetVehiclePos(vehicleid, px, py, pz);
+		SetVehicleZAngle(vehicleid, ang);
+		SetVehicleVelocity(vehicleid, vx, vy, vz);
+		LinkVehicleToInterior(vehicleid, interior);
 	}
-	else if(!strcmp(command, "remove", true))
+	else
 	{
-		MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
-		RemoveNameFromWhitelist(name);
+		SetPlayerPos(playerid, px, py, pz);
+		SetPlayerFacingAngle(playerid, ang);
+		SetPlayerVelocity(playerid, vx, vy, vz);
+		SetPlayerInterior(playerid, interior);
 	}
 
-	return 1;
-}
-
-
-//==========================================================================Server Control
-
-ACMD:clearchat[2](playerid, params[])
-{
-	for(new i;i<100;i++)
-		MsgAll(WHITE, " ");
-
-	return 1;
-}
-
-ACMD:ann[2](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
-
-	GameTextForAll(params, 5000, 5);
-
-	return 1;
-}
-
-ACMD:motd[2](playerid, params[])
-{
-	if(sscanf(params, "s[128]", gMessageOfTheDay))
-		return Msg(playerid, YELLOW, " >  Usage: /motd [message]");
-
-	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
-	file_Open(SETTINGS_FILE);
-	file_SetStr("motd", gMessageOfTheDay);
-	file_Save(SETTINGS_FILE);
-	file_Close();
-
-	return 1;
+	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
+	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }

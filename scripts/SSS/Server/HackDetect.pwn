@@ -16,7 +16,10 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 // Height gain
 		hg_ReportTick		[MAX_PLAYERS],
 // Vehicle Health
-		vh_ReportTick		[MAX_PLAYERS];
+		vh_ReportTick		[MAX_PLAYERS],
+// Camera Distance
+		cd_ReportTick		[MAX_PLAYERS],
+		cd_DetectDelay		[MAX_PLAYERS];
 
 
 /*==============================================================================
@@ -59,6 +62,8 @@ ptask AntiCheatUpdate[1000](playerid)
 		VehicleHealthCheck(playerid);	
 	}
 
+	CameraDistanceCheck(playerid);
+
 	if(GetPlayerMoney(playerid) > 0)
 		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
 
@@ -89,6 +94,8 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 	tp_SetPos[playerid][0] = x;
 	tp_SetPos[playerid][1] = y;
 	tp_SetPos[playerid][2] = z;
+
+	cd_DetectDelay[playerid] = tickcount();
 
 	return SetPlayerPos(playerid, x, y, z);
 }
@@ -328,4 +335,126 @@ VehicleHealthCheck(playerid)
 	}
 
 	return 1;
+}
+
+
+/*==============================================================================
+
+	Camera Distance
+
+==============================================================================*/
+
+
+CameraDistanceCheck(playerid)
+{
+	if(
+		IsAutoSaving() ||
+		IsPlayerOnZipline(playerid) ||
+		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
+		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
+		IsPlayerDead(playerid) ||
+		IsPlayerOnAdminDuty(playerid) ||
+		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidObject(GetPlayerSurfingObjectID(playerid)))
+	{
+		cd_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
+	if(tickcount() - cd_DetectDelay[playerid] < 5000)
+	{
+		return;
+	}
+
+	if(tickcount() - cd_ReportTick[playerid] < 3000)
+	{
+		return;
+	}
+
+	new
+		Float:vx,
+		Float:vy,
+		Float:vz;
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		GetVehicleVelocity(GetPlayerVehicleID(playerid), vx, vy, vz);
+
+		if(vz < -1.0)
+			return;
+	}
+	else
+	{
+		GetPlayerVelocity(playerid, vx, vy, vz);
+
+		if(vz < -1.0)
+			return;
+	}
+
+	new
+		Float:cx,
+		Float:cy,
+		Float:cz,
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:distance,
+		Float:cmp;
+
+	GetPlayerCameraPos(playerid, cx, cy, cz);
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new cameramode = GetPlayerCameraMode(playerid);
+		GetVehiclePos(GetPlayerVehicleID(playerid), px, py, pz);
+
+		distance = Distance(px, py, pz, cx, cy, cz);
+
+		if(cameramode == 56)
+		{
+			cmp = 210.0;
+		}
+		else if(cameramode == 57)
+		{
+			cmp = 210.0;
+		}
+		else if(cameramode == 15)
+		{
+			cmp = 75.0;
+		}
+		else
+		{
+			cmp = 45.0;
+		}
+
+		if(distance > cmp)
+		{
+			new
+				name[24],
+				reason[128];
+
+			GetPlayerName(playerid, name, 24);
+			format(reason, 128, "Camera distance from player %.1f (at %.0f, %.0f, %.0f)", distance, cx, cy, cz);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz);
+			cd_ReportTick[playerid] = tickcount();
+		}
+	}
+	else
+	{
+		GetPlayerPos(playerid, px, py, pz);
+
+		distance = Distance(px, py, pz, cx, cy, cz);
+
+		if(distance > 16.0)
+		{
+			new
+				name[24],
+				reason[128];
+
+			GetPlayerName(playerid, name, 24);
+			format(reason, 128, "Camera distance from player %.1f (at %.0f, %.0f, %.0f)", distance, cx, cy, cz);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz);
+			cd_ReportTick[playerid] = tickcount();
+		}
+	}
 }

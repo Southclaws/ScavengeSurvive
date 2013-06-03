@@ -1,46 +1,3 @@
-CMD:die(playerid, params[])
-{
-	SetPlayerWeapon(playerid, 4, 1);
-	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 1.0, 0, 0, 0, 0, 0);
-	defer Suicide(playerid);
-
-	return 1;
-}
-timer Suicide[3000](playerid)
-{
-	RemovePlayerWeapon(playerid);
-	SetPlayerHP(playerid, 0.0);
-}
-
-CMD:idea(playerid, params[])
-{
-	new idea[128];
-	if(sscanf(params, "s[128]", idea))
-	{
-		Msg(playerid, YELLOW, "Usage: /idea [idea]");
-		return 1;
-	}
-
-	new
-		File:tmpfile,
-		str[128+MAX_PLAYER_NAME+5];
-
-	format(str, sizeof(str), "%p : %s\r\n", playerid, idea);
-
-	if(!fexist("ideas.txt"))
-		tmpfile = fopen("ideas.txt", io_write);
-
-	else
-		tmpfile = fopen("ideas.txt", io_append);
-
-	fwrite(tmpfile, str);
-	fclose(tmpfile);
-
-	Msg(playerid, YELLOW, " >  Your idea has been submitted, thank you!");
-
-	return 1;
-}
-
 CMD:welcome(playerid, params[])
 {
 	ShowWelcomeMessage(playerid, 0);
@@ -124,6 +81,23 @@ CMD:chatinfo(playerid, params[])
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
 
 	return 1;
+}
+
+CMD:die(playerid, params[])
+{
+	if(tickcount() - GetPlayerSpawnTick(playerid) < 60000)
+		return 2;
+
+	SetPlayerWeapon(playerid, 4, 1);
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 1.0, 0, 0, 0, 0, 0);
+	defer Suicide(playerid);
+
+	return 1;
+}
+timer Suicide[3000](playerid)
+{
+	RemovePlayerWeapon(playerid);
+	SetPlayerHP(playerid, 0.0);
 }
 
 CMD:changepass(playerid,params[])

@@ -9,8 +9,8 @@ CreateNewUserfile(playerid, password[])
 	fclose(fopen(file, io_write));
 
 	format(query, 300,
-		"INSERT INTO `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`) \
-		VALUES('%s', '%s', '%d', '0', '0.0, 0.0, 0.0, 0.0', '%d')",
+		"INSERT INTO `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`) \
+		VALUES('%s', '%s', '%d', '0', '0.0, 0.0, 0.0, 0.0', '%d', '0')",
 		gPlayerName[playerid], password, gPlayerData[playerid][ply_IP],
 		(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
 
@@ -197,11 +197,13 @@ SavePlayerData(playerid)
 			`"#ROW_ALIVE"` = '1', \
 			`"#ROW_GEND"` = '%d', \
 			`"#ROW_SPAWN"` = '%f %f %f %f', \
-			`"#ROW_ISVIP"` = '%d' \
+			`"#ROW_ISVIP"` = '%d', \
+			`"#ROW_KARMA"` = '%d' \
 			WHERE `"#ROW_NAME"` = '%s'",
 			(bPlayerGameSettings[playerid] & Gender) ? 1 : 0,
 			x, y, z, a,
 			(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0,
+			gPlayerData[playerid][ply_karma],
 			gPlayerName[playerid]);
 
 		SavePlayerInventory(playerid);
@@ -214,9 +216,11 @@ SavePlayerData(playerid)
 			`"#ROW_ALIVE"` = '0', \
 			`"#ROW_GEND"` = '0', \
 			`"#ROW_SPAWN"` = '0.0 0.0 0.0 0.0', \
-			`"#ROW_ISVIP"` = '%d' \
+			`"#ROW_ISVIP"` = '%d', \
+			`"#ROW_KARMA"` = '%d' \
 			WHERE `"#ROW_NAME"` = '%s'",
 			(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0,
+			gPlayerData[playerid][ply_karma],
 			gPlayerName[playerid]);
 
 		ClearPlayerInventoryFile(playerid);
