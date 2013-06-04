@@ -1,28 +1,6 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SPAWNS (4)
-
-
-new Float:gSpawns[MAX_SPAWNS][4];
-
-
-hook OnGameModeInit()
-{
-	new
-		File:file,
-		line[128],
-		idx;
-
-	file = fopen("SSS/Spawns.dat", io_read);
-
-	while(fread(file, line))
-	{
-		sscanf(line, "p<,>ffff", gSpawns[idx][0], gSpawns[idx][1], gSpawns[idx][2], gSpawns[idx][3]);
-		idx++;
-	}
-}
-
 PlayerSpawnExistingCharacter(playerid)
 {
 	new Float:z;
@@ -107,10 +85,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 PlayerSpawnNewCharacter(playerid)
 {
 	new
-		r = random(MAX_SPAWNS),
 		backpackitem,
 		containerid,
-		tmpitem;
+		tmpitem,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
 
 	if(bPlayerGameSettings[playerid] & IsVip)
 	{
@@ -150,10 +131,12 @@ PlayerSpawnNewCharacter(playerid)
 			gPlayerData[playerid][ply_Skin] = skin_MainF;
 	}
 
+	GenerateSpawnPoint(x, y, z, r);
+
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 
-	SetPlayerPos(playerid, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
-	SetPlayerFacingAngle(playerid, gSpawns[r][3]);
+	SetPlayerPos(playerid, x, y, z);
+	SetPlayerFacingAngle(playerid, r);
 	SetCameraBehindPlayer(playerid);
 	TogglePlayerControllable(playerid, true);
 	SetAllWeaponSkills(playerid, 500);
@@ -172,21 +155,21 @@ PlayerSpawnNewCharacter(playerid)
 
 	gScreenBoxFadeLevel[playerid] = 255;
 
-	backpackitem = CreateItem(item_Satchel, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
+	backpackitem = CreateItem(item_Satchel);
 	containerid = GetItemExtraData(backpackitem);
 
 	GivePlayerBackpack(playerid, backpackitem);
 
-	tmpitem = CreateItem(ItemType:WEAPON_KNIFE, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
+	tmpitem = CreateItem(ItemType:WEAPON_KNIFE);
 	SetItemExtraData(tmpitem, 1);
 	AddItemToContainer(containerid, tmpitem);
 
-	tmpitem = CreateItem(item_Wrench, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
+	tmpitem = CreateItem(item_Wrench);
 	AddItemToContainer(containerid, tmpitem);
 
 	if(bPlayerGameSettings[playerid] & IsVip)
 	{
-		tmpitem = CreateItem(item_ZorroMask, gSpawns[r][0], gSpawns[r][1], gSpawns[r][2]);
+		tmpitem = CreateItem(item_ZorroMask);
 		AddItemToInventory(playerid, tmpitem);
 	}
 

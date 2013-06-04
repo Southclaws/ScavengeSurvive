@@ -34,7 +34,7 @@ Timer:	kp_HackTimer[MAX_PLAYERS],
 forward OnPlayerKeypadEnter(playerid, keypadid, success);
 
 
-ShowKeypad(playerid, keypadid, match)
+stock ShowKeypad(playerid, keypadid, match)
 {
 	PlayerTextDrawShow(playerid, kp_Background);
 	PlayerTextDrawShow(playerid, kp_EdgeL);
@@ -62,7 +62,7 @@ ShowKeypad(playerid, keypadid, match)
 	KeypadUpdateDisplay(playerid);
 }
 
-HideKeypad(playerid)
+stock HideKeypad(playerid)
 {
 	if(kp_Hacking[playerid])
 	{
@@ -95,7 +95,7 @@ HideKeypad(playerid)
 	kp_Match[playerid] = 0;
 }
 
-HackKeypad(playerid, keypadid, match, itemid)
+stock HackKeypad(playerid, keypadid, match, itemid)
 {
 	kp_Hacking[playerid] = 1;
 	kp_HackTimer[playerid] = repeat HackKeypadUpdate(playerid, keypadid, match, itemid);

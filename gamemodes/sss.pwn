@@ -106,6 +106,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_POSX					"posx"
 #define ROW_POSY					"posy"
 #define ROW_POSZ					"posz"
+#define ROW_LEVEL					"level"
 
 
 // Macros
@@ -703,16 +704,6 @@ forward SetRestart(seconds);
 #include "../scripts/SSS/World/Campfire.pwn"
 #include "../scripts/SSS/World/HackTrap.pwn"
 
-//======================Per-Area Item Spawning
-
-#include "../scripts/SSS/Areas/LS.pwn"
-#include "../scripts/SSS/Areas/SF.pwn"
-#include "../scripts/SSS/Areas/LV.pwn"
-#include "../scripts/SSS/Areas/RC.pwn"
-#include "../scripts/SSS/Areas/FC.pwn"
-#include "../scripts/SSS/Areas/BC.pwn"
-#include "../scripts/SSS/Areas/TR.pwn"
-
 //======================Admin code
 
 #include "../scripts/SSS/Cmds/Commands.pwn"
@@ -764,16 +755,13 @@ forward SetRestart(seconds);
 #include "../scripts/Items/policecap.pwn"
 #include "../scripts/Items/tophat.pwn"
 
-//======================Map Scripts
-
-//#include "../scripts/SSS/Maps/LockboxLV.pwn"
-#include "../scripts/SSS/Maps/Area69.pwn"
-#include "../scripts/SSS/Maps/Ranch.pwn"
-#include "../scripts/SSS/Maps/MtChill.pwn"
-
 //======================Post-code
 
 #include "../scripts/SSS/Server/Autosave.pwn"
+
+//======================World
+
+#include "../scripts/SanAndreas/SanAndreas.pwn"
 
 
 main()
@@ -789,11 +777,13 @@ main()
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Whitelist` (`"#ROW_NAME"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Admins` (`"#ROW_NAME"`, `"#ROW_LEVEL"`)"));
 
 	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
 	rowCount = db_num_rows(tmpResult);
 
 	db_free_result(tmpResult);
+	LoadAdminData();
 
 	file_Open(SETTINGS_FILE);
 
@@ -861,25 +851,6 @@ public OnGameModeInit()
 		file_Open(SETTINGS_FILE);
 		file_GetStr("motd", gMessageOfTheDay);
 		file_Close();
-	}
-
-	if(!fexist(ADMIN_DATA_FILE))
-	{
-		file_Create(ADMIN_DATA_FILE);
-	}
-	else
-	{
-		new
-			File:tmpFile = fopen(ADMIN_DATA_FILE, io_read),
-			line[MAX_PLAYER_NAME + 4];
-
-		while(fread(tmpFile, line))
-		{
-			sscanf(line, "p<=>s[24]d", gAdminData[gTotalAdmins][admin_Name], gAdminData[gTotalAdmins][admin_Level]);
-			gTotalAdmins++;
-		}
-		fclose(tmpFile);
-		SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
 	}
 
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);

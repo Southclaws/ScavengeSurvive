@@ -1,15 +1,18 @@
 #include <YSI\y_hooks>
 
 
+#define MAX_HOUSE_TYPES		(4)
+#define MAX_LOOT_POSITIONS	(4)
+
 new
-	LootHouseModels[4] =
+	LootHouseModels[MAX_HOUSE_TYPES] =
 	{
 		19490,
 		19492,
 		19494,
 		19496
 	},
-	Float:LootOffsets[4][4][3] =
+	Float:LootOffsets[MAX_HOUSE_TYPES][MAX_LOOT_POSITIONS][3] =
 	{
 		// 19490
 		{
@@ -64,7 +67,7 @@ public OnLoad()
 		{
 			object_id = Streamer_GetIntData(STREAMER_TYPE_OBJECT, i, E_STREAMER_MODEL_ID);
 
-			for(new j; j < 4; j++)
+			for(new j; j < MAX_HOUSE_TYPES; j++)
 			{
 				if(random(100) < 50)
 					continue;
@@ -73,7 +76,7 @@ public OnLoad()
 				{
 					GetDynamicObjectPos(i, object_px, object_py, object_pz);
 					GetDynamicObjectRot(i, object_rx, object_ry, object_rz);
-					for(new k; k < 4; k++)
+					for(new k; k < MAX_LOOT_POSITIONS; k++)
 					{
 						if(LootOffsets[j][k][0] == 0.0)
 							break;

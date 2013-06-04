@@ -1,0 +1,12 @@
+#include "../scripts/SanAndreas/Spawn.pwn"
+
+#include "../scripts/SanAndreas/Loot/LS.pwn"
+#include "../scripts/SanAndreas/Loot/SF.pwn"
+#include "../scripts/SanAndreas/Loot/LV.pwn"
+#include "../scripts/SanAndreas/Loot/RC.pwn"
+#include "../scripts/SanAndreas/Loot/FC.pwn"
+#include "../scripts/SanAndreas/Loot/BC.pwn"
+#include "../scripts/SanAndreas/Loot/TR.pwn"
+#include "../scripts/SanAndreas/World/Area69.pwn"
+#include "../scripts/SanAndreas/World/Ranch.pwn"
+#include "../scripts/SanAndreas/World/MtChill.pwn"
