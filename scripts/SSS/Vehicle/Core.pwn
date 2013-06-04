@@ -11,13 +11,45 @@
 
 
 
-new Float:PlayerVehicleCurHP[MAX_PLAYERS];
-
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(IsPlayerInAnyVehicle(playerid) || bPlayerGameSettings[playerid] & KnockedOut)
+	if(bPlayerGameSettings[playerid] & KnockedOut)
 		return 0;
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		if(newkeys & KEY_YES)
+		{
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !(bPlayerGameSettings[playerid] & KnockedOut))
+			{
+				new Float:health;
+				GetVehicleHealth(gPlayerVehicleID[playerid], health);
+
+				if(VehicleFuelData[GetVehicleModel(gPlayerVehicleID[playerid])-400][veh_maxFuel] > 0.0)
+				{
+					if(health >= 300.0)
+					{
+						if(gVehicleFuel[gPlayerVehicleID[playerid]] > 0.0)
+							VehicleEngineState(gPlayerVehicleID[playerid], !VehicleEngineState(gPlayerVehicleID[playerid]));
+					}
+				}
+			}
+		}
+		if(newkeys & KEY_NO)
+		{
+			VehicleLightsState(gPlayerVehicleID[playerid], !VehicleLightsState(gPlayerVehicleID[playerid]));
+		}
+		if(newkeys & KEY_CTRL_BACK)//262144)
+		{
+			ShowRadioUI(playerid);
+		}
+		if(newkeys & KEY_SUBMISSION)
+		{
+			VehicleDoorsState(gPlayerVehicleID[playerid], !VehicleDoorsState(gPlayerVehicleID[playerid]));
+		}
+
+		return 1;
+	}
 
 	if(newkeys == 16)
 	{
@@ -176,11 +208,11 @@ PlayerVehicleUpdate(playerid)
 	{
 		GetVehicleHealth(vehicleid, health);
 
-		if(PlayerVehicleCurHP[playerid] > 300.0)
+		if(gPlayerVehicleCurHP[playerid] > 300.0)
 		{
-			new Float:diff = PlayerVehicleCurHP[playerid] - health;
+			new Float:diff = gPlayerVehicleCurHP[playerid] - health;
 
-			if(diff > 0.0 && PlayerVehicleCurHP[playerid] < VEHICLE_HEALTH_MAX)
+			if(diff > 0.0 && gPlayerVehicleCurHP[playerid] < VEHICLE_HEALTH_MAX)
 			{
 				health += diff * 0.9;
 				SetVehicleHealth(vehicleid, health);
@@ -296,7 +328,7 @@ PlayerVehicleUpdate(playerid)
 		}
 
 		gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
-		PlayerVehicleCurHP[playerid] = health;
+		gPlayerVehicleCurHP[playerid] = health;
 	}
 }
 
@@ -498,5 +530,31 @@ SetVehicleTrunkLock(vehicleid, toggle)
 		return 0;
 
 	gVehicleTrunkLocked[vehicleid] = toggle;
+	return 1;
+}
+SetVehicleUsed(vehicleid, toggle)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(toggle)
+		t:bVehicleSettings[vehicleid]<v_Used>;
+
+	else
+		f:bVehicleSettings[vehicleid]<v_Used>;
+
+	return 1;
+}
+SetVehicleOccupied(vehicleid, toggle)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(toggle)
+		t:bVehicleSettings[vehicleid]<v_Occupied>;
+
+	else
+		f:bVehicleSettings[vehicleid]<v_Occupied>;
+
 	return 1;
 }

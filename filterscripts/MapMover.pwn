@@ -2,10 +2,10 @@
 #include <sscanf2>
 
 
-#define INPUT_FILE						"Maps/OCEAN/OilRig/Rig_center.txt"
-#define OUTPUT_FILE						"Maps/OCEAN/OilRig/Rig_southfar.map"
-#define ADJUSTMENT_POSITION_OFFSET_X	(0.0)
-#define ADJUSTMENT_POSITION_OFFSET_Y	(-8000.0)
+#define INPUT_FILE						"Maps/OCEAN/OilRig/development/Rig_center.txt"
+#define OUTPUT_FILE						"Maps/OCEAN/OilRig/Rig_southwest.map"
+#define ADJUSTMENT_POSITION_OFFSET_X	(4000.0)
+#define ADJUSTMENT_POSITION_OFFSET_Y	(-4000.0)
 #define ADJUSTMENT_POSITION_OFFSET_Z	(0.0)
 #define ADJUSTMENT_ROTATION_OFFSET_X	(0.0)
 #define ADJUSTMENT_ROTATION_OFFSET_Y	(0.0)

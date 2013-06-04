@@ -23,7 +23,6 @@ hook OnGameModeInit()
 	}
 }
 
-
 PlayerSpawnExistingCharacter(playerid)
 {
 	new Float:z;

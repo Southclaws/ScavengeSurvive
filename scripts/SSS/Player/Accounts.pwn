@@ -1,3 +1,78 @@
+#include <YSI\y_hooks>
+
+
+DisplayLoginPrompt(playerid)
+{
+	new str[128];
+	format(str, 128, ""C_WHITE"Welcome Back %P"#C_WHITE", Please log into to your account below!\n\n"#C_YELLOW"Enjoy your stay :)", playerid);
+	ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
+}
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid == d_Login)
+	{
+		if(response)
+		{
+			if(strlen(inputtext) < 4)
+			{
+				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", "Type your password below", "Accept", "Quit");
+				return 1;
+			}
+
+			new hash[MAX_PASSWORD_LEN];
+			WP_Hash(hash, MAX_PASSWORD_LEN, inputtext);
+
+			if(!strcmp(hash, gPlayerData[playerid][ply_Password]))
+				Login(playerid);
+
+			else
+			{
+				new str[64];
+				gPlayerPassAttempts[playerid]++;
+				format(str, 64, "Incorrect password! %d out of 5 tries", gPlayerPassAttempts[playerid]);
+				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Quit");
+				if(gPlayerPassAttempts[playerid] == 5)
+				{
+					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+					Kick(playerid);
+				}
+			}
+		}
+		else
+		{
+			MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+			Kick(playerid);
+		}
+	}
+	if(dialogid == d_Register)
+	{
+		if(response)
+		{
+			if(!(4 <= strlen(inputtext) <= 32))
+			{
+				ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, ""#C_RED"Password too short/long!\n"C_YELLOW"Password must be between 4 and 32 characters.", "Type your password below", "Accept", "Quit");
+				return 0;
+			}
+			new
+				buffer[MAX_PASSWORD_LEN];
+
+			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
+
+			CreateNewUserfile(playerid, buffer);
+
+			ShowWelcomeMessage(playerid, 10);
+		}
+		else
+		{
+			MsgAllF(GREY, " >  %s left the server without registering.", gPlayerName[playerid]);
+			Kick(playerid);
+		}
+	}
+
+	return 1;
+}
+
 CreateNewUserfile(playerid, password[])
 {
 	new
@@ -30,13 +105,6 @@ CreateNewUserfile(playerid, password[])
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
-}
-
-DisplayLoginPrompt(playerid)
-{
-	new str[128];
-	format(str, 128, ""C_WHITE"Welcome Back %P"#C_WHITE", Please log into to your account below!\n\n"#C_YELLOW"Enjoy your stay :)", playerid);
-	ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
 }
 
 Login(playerid)

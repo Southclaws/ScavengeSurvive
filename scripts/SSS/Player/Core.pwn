@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-public OnPlayerConnect(playerid)
+hook OnPlayerConnect(playerid)
 {
 	SetPlayerColor(playerid, 0xB8B8B800);
 	SetPlayerWeather(playerid, gWeatherID);
@@ -210,7 +210,7 @@ public OnPlayerConnect(playerid)
 	return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason)
+hook OnPlayerDisconnect(playerid, reason)
 {
 	if(bServerGlobalSettings & Restarting)
 		return 0;
@@ -233,6 +233,27 @@ public OnPlayerDisconnect(playerid, reason)
 	}
 
 	return 1;
+}
+
+ResetVariables(playerid)
+{
+	bPlayerGameSettings[playerid]		= 0;
+
+	gPlayerData[playerid][ply_Admin]	= 0,
+	gPlayerData[playerid][ply_Skin]		= 0,
+	gPlayerHP[playerid]					= 100.0;
+	gPlayerAP[playerid]					= 0.0;
+	gPlayerFP[playerid]					= 80.0;
+	gPlayerVehicleID[playerid]			= INVALID_VEHICLE_ID,
+	gPlayerWarnings[playerid]			= 0;
+	gPlayerPassAttempts[playerid]		= 0;
+
+	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
+	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
+	SetPlayerSkillLevel(playerid, WEAPONSKILL_MICRO_UZI,		100);
+
+	for(new i; i < 10; i++)
+		RemovePlayerAttachedObject(playerid, i);
 }
 
 ptask PlayerUpdate[100](playerid)
@@ -446,7 +467,7 @@ ptask PlayerUpdate[100](playerid)
 	return;
 }
 
-public OnPlayerRequestClass(playerid, classid)
+hook OnPlayerRequestClass(playerid, classid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
@@ -457,7 +478,7 @@ public OnPlayerRequestClass(playerid, classid)
 	return 0;
 }
 
-public OnPlayerRequestSpawn(playerid)
+hook OnPlayerRequestSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
@@ -468,7 +489,30 @@ public OnPlayerRequestSpawn(playerid)
 	return 1;
 }
 
-public OnPlayerSpawn(playerid)
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+	if(clickedid == Text:65535)
+	{
+		if(bPlayerGameSettings[playerid] & Dying)
+		{
+			SelectTextDraw(playerid, 0xFFFFFF88);
+		}
+		else
+		{
+			ShowWatch(playerid);
+		}
+	}
+	if(clickedid == DeathButton)
+	{
+		f:bPlayerGameSettings[playerid]<Dying>;
+		TogglePlayerSpectating(playerid, false);
+		CancelSelectTextDraw(playerid);
+		TextDrawHideForPlayer(playerid, DeathText);
+		TextDrawHideForPlayer(playerid, DeathButton);
+	}
+}
+
+hook OnPlayerSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))
 		return 1;
@@ -543,7 +587,28 @@ public OnPlayerSpawn(playerid)
 	return 1;
 }
 
-public OnPlayerUpdate(playerid)
+timer SetDeathCamera[50](playerid)
+{
+	InterpolateCameraPos(playerid,
+		gPlayerDeathPos[playerid][0] - floatsin(-gPlayerDeathPos[playerid][3], degrees),
+		gPlayerDeathPos[playerid][1] - floatcos(-gPlayerDeathPos[playerid][3], degrees),
+		gPlayerDeathPos[playerid][2] + 1.0,
+		gPlayerDeathPos[playerid][0] - floatsin(-gPlayerDeathPos[playerid][3], degrees),
+		gPlayerDeathPos[playerid][1] - floatcos(-gPlayerDeathPos[playerid][3], degrees),
+		gPlayerDeathPos[playerid][2] + 20.0,
+		30000, CAMERA_MOVE);
+
+	InterpolateCameraLookAt(playerid,
+		gPlayerDeathPos[playerid][0],
+		gPlayerDeathPos[playerid][1],
+		gPlayerDeathPos[playerid][2],
+		gPlayerDeathPos[playerid][0],
+		gPlayerDeathPos[playerid][1],
+		gPlayerDeathPos[playerid][2] + 1.0,
+		30000, CAMERA_MOVE);
+}
+
+hook OnPlayerUpdate(playerid)
 {
 	if(bPlayerGameSettings[playerid] & Frozen)
 		return 0;
@@ -585,4 +650,143 @@ GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
 	x = gPlayerData[playerid][ply_posZ];
 
 	return 1;
+}
+
+
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
+	{
+		new model = GetVehicleModel(vehicleid);
+
+		gPlayerVehicleID[playerid] = vehicleid;
+
+		SetVehicleUsed(vehicleid, true);
+		SetVehicleOccupied(vehicleid, true);
+
+		PlayerTextDrawSetString(playerid, VehicleNameText, VehicleNames[model-400]);
+		PlayerTextDrawShow(playerid, VehicleNameText);
+		PlayerTextDrawShow(playerid, VehicleSpeedText);
+
+		if(GetVehicleType(model) != VTYPE_BMX)
+		{
+			PlayerTextDrawShow(playerid, VehicleFuelText);
+			PlayerTextDrawShow(playerid, VehicleDamageText);
+			PlayerTextDrawShow(playerid, VehicleEngineText);
+			PlayerTextDrawShow(playerid, VehicleDoorsText);
+		}
+	}
+	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
+	{
+		VehicleDoorsState(gPlayerVehicleID[playerid], 0);
+
+		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
+		gPlayerVehicleCurHP[playerid] = 0.0;
+		SetVehicleOccupied(vehicleid, false);
+
+		PlayerTextDrawHide(playerid, VehicleNameText);
+		PlayerTextDrawHide(playerid, VehicleSpeedText);
+		PlayerTextDrawHide(playerid, VehicleFuelText);
+		PlayerTextDrawHide(playerid, VehicleDamageText);
+		PlayerTextDrawHide(playerid, VehicleEngineText);
+		PlayerTextDrawHide(playerid, VehicleDoorsText);
+	}
+	return 1;
+}
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+	{
+		return 0;
+	}
+
+	if(ispassenger)
+	{
+		new driverid = -1;
+
+		foreach(new i : Player)
+		{
+			if(IsPlayerInVehicle(i, vehicleid))
+			{
+				if(GetPlayerState(i) == PLAYER_STATE_DRIVER)
+				{
+					driverid = i;
+				}
+			}
+		}
+
+		if(driverid == -1)
+			CancelPlayerMovement(playerid);
+	}
+
+	gCurrentVelocity[playerid] = 0.0;
+
+	return 1;
+}
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	gCurrentVelocity[playerid] = 0.0;
+
+	tick_ExitVehicle[playerid] = tickcount();
+
+	return 1;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(bPlayerGameSettings[playerid] & KnockedOut)
+		return 0;
+
+	if(!IsPlayerInAnyVehicle(playerid))
+	{
+		new weaponid = GetPlayerCurrentWeapon(playerid);
+
+		if(weaponid == 34 || weaponid == 35 || weaponid == 43)
+		{
+			if(newkeys & 128)
+			{
+				TogglePlayerHeadwear(playerid, false);
+			}
+			if(oldkeys & 128)
+			{
+				TogglePlayerHeadwear(playerid, true);
+			}
+	}
+/*
+		if(newkeys & KEY_FIRE)
+		{
+			new iWepState = GetPlayerWeaponState(playerid);
+
+			if((iWepState != WEAPONSTATE_RELOADING && iWepState != WEAPONSTATE_NO_BULLETS))
+				OnPlayerShoot(playerid);
+		}
+*/
+	}
+
+	return 1;
+}
+
+
+
+IsPlayerDead(playerid)
+{
+	return bPlayerGameSettings[playerid] & Dying;
+}
+
+GetPlayerServerJoinTick(playerid)
+{
+	return tick_ServerJoin[playerid];
+}
+
+GetPlayerSpawnTick(playerid)
+{
+	return tick_Spawn[playerid];
+}
+
+GetPlayerVehicleExitTick(playerid)
+{
+	return tick_ExitVehicle[playerid];
 }

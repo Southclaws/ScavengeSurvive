@@ -116,7 +116,9 @@ ACMD:mapname[3](playerid,params[])
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid,YELLOW," >  Usage: /mapname [name]");
 
-	SetMapName(params);
+	new str[74];
+	format(str, sizeof(str), "mapname %s", params);
+	SendRconCommand(str);
 
 	return 1;
 }
