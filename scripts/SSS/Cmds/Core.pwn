@@ -275,15 +275,17 @@ LoadAdminData()
 			db_next_row(result);
 		}
 	}
+	else
+	{
+		ConvertAdminsFileToDB();
+	}
+}
 
-	printf("Admins: %d", numrows);
-
-
+ConvertAdminsFileToDB()
+{
 	new
 		File:tmpFile = fopen(ADMIN_DATA_FILE, io_read),
-		line[MAX_PLAYER_NAME + 4];
-
-	new
+		line[MAX_PLAYER_NAME + 4],
 		name[24],
 		level;
 
@@ -294,5 +296,5 @@ LoadAdminData()
 
 		UpdateAdmin(name, level);
 	}
-	fclose(tmpFile);
+	fclose(tmpFile);	
 }
