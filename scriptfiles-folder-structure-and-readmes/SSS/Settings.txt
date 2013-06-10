@@ -1,2 +1,2 @@
 Connections=0
-motd=Welcome to Scavenge and Survive! Created by Southclaw :)
+motd=Message of the day shown to players when they connect. Change me in {01CCAC}/scriptfiles/SSS/Settings.txt

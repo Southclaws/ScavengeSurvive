@@ -37,15 +37,15 @@ stock AddSprayTag(Float:posx, Float:posy, Float:posz, Float:rotx, Float:roty, Fl
 
 	spt_Data[id][spt_objID]		= CreateDynamicObject(19477, posx, posy, posz, rotx, roty, rotz);
 	spt_Data[id][spt_areaID]	= CreateDynamicSphere(posx, posy, posz, 1.5, 0, 0);
-    spt_Data[id][spt_text]		= "12345678901234567890123";
-    spt_Data[id][spt_posX]		= posx;
-    spt_Data[id][spt_posY]		= posy;
-    spt_Data[id][spt_posZ]		= posz;
-    spt_Data[id][spt_rotX]		= rotx;
-    spt_Data[id][spt_rotY]		= roty;
-    spt_Data[id][spt_rotZ]		= rotz;
+	spt_Data[id][spt_text]		= "12345678901234567890123";
+	spt_Data[id][spt_posX]		= posx;
+	spt_Data[id][spt_posY]		= posy;
+	spt_Data[id][spt_posZ]		= posz;
+	spt_Data[id][spt_rotX]		= rotx;
+	spt_Data[id][spt_rotY]		= roty;
+	spt_Data[id][spt_rotZ]		= rotz;
 
-    SetDynamicObjectMaterialText(spt_Data[id][spt_objID], 0, "HELLFIRE", OBJECT_MATERIAL_SIZE_512x256, "IMPACT", 72, 1, 0xFFFF0000, 0, 1);
+	SetDynamicObjectMaterialText(spt_Data[id][spt_objID], 0, "HELLFIRE", OBJECT_MATERIAL_SIZE_512x256, "IMPACT", 72, 1, 0xFFFF0000, 0, 1);
 
 	Iter_Add(spt_Iterator, id);
 	return id;
@@ -55,30 +55,34 @@ stock DeleteSprayTag(tagid)
 	new next;
 
 	DestroyDynamicObject(spt_Data[tagid][spt_objID]);
-    spt_Data[tagid][spt_posX] = 0.0;
-    spt_Data[tagid][spt_posY] = 0.0;
-    spt_Data[tagid][spt_posZ] = 0.0;
-    spt_Data[tagid][spt_rotX] = 0.0;
-    spt_Data[tagid][spt_rotY] = 0.0;
-    spt_Data[tagid][spt_rotZ] = 0.0;
+	spt_Data[tagid][spt_posX] = 0.0;
+	spt_Data[tagid][spt_posY] = 0.0;
+	spt_Data[tagid][spt_posZ] = 0.0;
+	spt_Data[tagid][spt_rotX] = 0.0;
+	spt_Data[tagid][spt_rotY] = 0.0;
+	spt_Data[tagid][spt_rotZ] = 0.0;
 
 	Iter_SafeRemove(spt_Iterator, tagid, next);
 	return next;
 }
 stock SetSprayTagText(tagid, text[], colour = -1, font[] = "Arial Black")
 {
-    format(spt_Data[tagid][spt_text], 24, text);
-    SetDynamicObjectMaterialText(spt_Data[tagid][spt_objID], 0, text, OBJECT_MATERIAL_SIZE_512x256, font, 72, 1, colour, 0, 1);
+	format(spt_Data[tagid][spt_text], 24, text);
+	SetDynamicObjectMaterialText(spt_Data[tagid][spt_objID], 0, text, OBJECT_MATERIAL_SIZE_512x256, font, 72, 1, colour, 0, 1);
 }
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
 	foreach(new i : spt_Iterator)
 	{
-	    if(areaid == spt_Data[i][spt_areaID])
-	    {
-	        if(!strcmp(spt_Data[i][spt_text], gPlayerName[playerid]))
-	        {
+		if(areaid == spt_Data[i][spt_areaID])
+		{
+			new name[MAX_PLAYER_NAME];
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+			if(!strcmp(spt_Data[i][spt_text], name))
+			{
 				ShowActionText(playerid, "You have already tagged this", 3000, 150);
 				return 1;
 			}
@@ -92,14 +96,14 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 				ShowActionText(playerid, "~r~You need a spray can.", 3000, 140);
 			}
 
-	    }
+		}
 	}
-    return CallLocalFunction("spt_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	return CallLocalFunction("spt_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
-    #undef OnPlayerEnterDynamicArea
+	#undef OnPlayerEnterDynamicArea
 #else
-    #define _ALS_OnPlayerEnterDynamicArea
+	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea spt_OnPlayerEnterDynamicArea
 forward spt_OnPlayerEnterDynamicArea(playerid, areaid);
@@ -108,18 +112,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & KEY_FIRE)
 	{
-	    new
+		new
 			wepState = GetPlayerWeaponState(playerid),
 			wepID = GetPlayerWeapon(playerid);
 
-	    if(wepID != WEAPON_SPRAYCAN || wepState == WEAPONSTATE_RELOADING || wepState == WEAPONSTATE_NO_BULLETS || spt_Spraying[playerid] != -1)
-	        return 0;
+		if(wepID != WEAPON_SPRAYCAN || wepState == WEAPONSTATE_RELOADING || wepState == WEAPONSTATE_NO_BULLETS || spt_Spraying[playerid] != -1)
+			return 0;
 
 		foreach(new i : spt_Iterator)
 		{
 			if(IsPlayerInDynamicArea(playerid, spt_Data[i][spt_areaID]))
 			{
-				if(!strcmp(spt_Data[i][spt_text], gPlayerName[playerid]))
+				new name[MAX_PLAYER_NAME];
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+				if(!strcmp(spt_Data[i][spt_text], name))
 					return 1;
 
 				spt_Spraying[playerid] = i;
@@ -136,13 +144,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(spt_Spraying[playerid] != -1)
 		{
-		    stop spt_SprayTimer[playerid];
+			stop spt_SprayTimer[playerid];
 			spt_Spraying[playerid] = -1;
 
-		    HidePlayerProgressBar(playerid, ActionBar);
+			HidePlayerProgressBar(playerid, ActionBar);
 		}
 	}
-    return 1;
+	return 1;
 }
 
 timer SprayTag[100](playerid, tagid)

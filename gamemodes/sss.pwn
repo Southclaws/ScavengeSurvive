@@ -39,7 +39,7 @@ enum
 	REPORT_TYPE_CAMDIST
 }
 
-#include "../scripts/SSS/Server/HackDetect.pwn"
+#include "../scripts/Core/Server/HackDetect.pwn"
 
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -298,12 +298,13 @@ enum e_admin_data
 
 
 new
-	bServerGlobalSettings,
-	gServerUptime,
-	gMessageOfTheDay[MAX_MOTD_LEN],
-	gAdminData[MAX_ADMIN][e_admin_data],
-	gTotalAdmins,
-	gPingLimit = 400;
+DB:		gAccounts,
+		bServerGlobalSettings,
+		gServerUptime,
+		gMessageOfTheDay[MAX_MOTD_LEN],
+		gAdminData[MAX_ADMIN][e_admin_data],
+		gTotalAdmins,
+		gPingLimit = 400;
 
 new
 	skin_MainM,
@@ -509,91 +510,6 @@ PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 //==============================================================PLAYER VARIABLES
 
 
-enum (<<= 1) // 14
-{
-		HasAccount = 1,
-		IsVip,
-		LoggedIn,
-		LoadedData,
-		IsNewPlayer,
-		CanExitWelcome,
-		AdminDuty,
-		Gender,
-		Alive,
-		Dying,
-		Spawned,
-		FirstSpawn,
-		HelpTips,
-		ShowHUD,
-		KnockedOut,
-		Bleeding,
-		Infected,
-		GlobalQuiet,
-
-		Frozen,
-		Muted,
-
-		DebugMode
-}
-enum E_PLAYER_DATA
-{
-		ply_Password[MAX_PASSWORD_LEN],
-		ply_Admin,
-		ply_Skin,
-		ply_IP,
-Float:	ply_posX,
-Float:	ply_posY,
-Float:	ply_posZ,
-Float:	ply_rotZ,
-		ply_stance,
-		ply_karma
-}
-enum
-{
-	CHAT_MODE_LOCAL,
-	CHAT_MODE_GLOBAL,
-	CHAT_MODE_RADIO
-}
-
-
-new
-DB:		gAccounts,
-		gPlayerPassAttempts		[MAX_PLAYERS],
-		gPlayerWarnings			[MAX_PLAYERS],
-
-		gPlayerData				[MAX_PLAYERS][E_PLAYER_DATA],
-		bPlayerGameSettings		[MAX_PLAYERS],
-
-		gPlayerName				[MAX_PLAYERS][MAX_PLAYER_NAME],
-Float:	gPlayerHP				[MAX_PLAYERS],
-Float:	gPlayerAP				[MAX_PLAYERS],
-Float:	gPlayerFP				[MAX_PLAYERS],
-Float:	gPlayerFrequency		[MAX_PLAYERS],
-		gPlayerChatMode			[MAX_PLAYERS],
-		gPlayerVehicleID		[MAX_PLAYERS],
-Float:	gPlayerVehicleCurHP		[MAX_PLAYERS],
-Float:	gPlayerVelocity			[MAX_PLAYERS],
-Float:	gCurrentVelocity		[MAX_PLAYERS],
-		gPingLimitStrikes		[MAX_PLAYERS],
-		gPlayerSpecTarget		[MAX_PLAYERS],
-
-		gScreenBoxFadeLevel		[MAX_PLAYERS],
-Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
-
-		tick_ServerJoin			[MAX_PLAYERS],
-		tick_Spawn				[MAX_PLAYERS],
-		tick_LastDamaged		[MAX_PLAYERS],
-		tick_WeaponHit			[MAX_PLAYERS],
-		tick_ExitVehicle		[MAX_PLAYERS],
-		tick_LastChatMessage	[MAX_PLAYERS],
-		tick_LastInfectionFX	[MAX_PLAYERS],
-		gLastHitBy				[MAX_PLAYERS][MAX_PLAYER_NAME],
-		gLastKilledBy			[MAX_PLAYERS][MAX_PLAYER_NAME],
-		ChatMessageStreak		[MAX_PLAYERS],
-		ChatMuteTick			[MAX_PLAYERS];
-
-
-
 forward OnLoad();
 forward SetRestart(seconds);
 
@@ -614,12 +530,6 @@ forward SetRestart(seconds);
 #include "../scripts/utils/zones.pwn"
 #include "../scripts/utils/player.pwn"
 
-//======================Hooks
-
-#include "../scripts/SSS/Server/DisallowActions.pwn"
-#include "../scripts/SSS/Server/DataCollection.pwn"
-#include "../scripts/SSS/Server/BugReport.pwn"
-
 //======================API Scripts
 
 #include <SIF/Modules/Craft.pwn>
@@ -629,93 +539,95 @@ forward SetRestart(seconds);
 #include "../scripts/API/Line/Line.pwn"
 #include "../scripts/API/Zipline/Zipline.pwn"
 #include "../scripts/API/Ladder/Ladder.pwn"
-//#include "../scripts/API/Turret/Turret.pwn"
 #include "../scripts/API/SprayTag/SprayTag.pwn"
 
 //======================Server Core
 
-#include "../scripts/SSS/Server/TextTags.pwn"
-#include "../scripts/SSS/Server/Weather.pwn"
-#include "../scripts/SSS/Server/Whitelist.pwn"
+#include "../scripts/Core/Server/DataCollection.pwn"
+#include "../scripts/Core/Server/TextTags.pwn"
+#include "../scripts/Core/Server/Weather.pwn"
+#include "../scripts/Core/Server/Whitelist.pwn"
 
 //======================Player Core
 
-#include "../scripts/SSS/Player/Core.pwn"
-#include "../scripts/SSS/Player/Accounts.pwn"
-#include "../scripts/SSS/Player/SaveLoad.pwn"
-#include "../scripts/SSS/Player/Spawn.pwn"
-#include "../scripts/SSS/Player/Drugs.pwn"
-#include "../scripts/SSS/Player/Damage.pwn"
-#include "../scripts/SSS/Player/Death.pwn"
-#include "../scripts/SSS/Player/Tutorial.pwn"
-#include "../scripts/SSS/Player/WelcomeMessage.pwn"
-#include "../scripts/SSS/Player/CombatLog.pwn"
-#include "../scripts/SSS/Player/Chat.pwn"
-#include "../scripts/SSS/Player/Command.pwn"
+#include "../scripts/Core/Player/Core.pwn"
+#include "../scripts/Core/Player/Accounts.pwn"
+#include "../scripts/Core/Player/SaveLoad.pwn"
+#include "../scripts/Core/Player/Spawn.pwn"
+#include "../scripts/Core/Player/Drugs.pwn"
+#include "../scripts/Core/Player/Damage.pwn"
+#include "../scripts/Core/Player/Death.pwn"
+#include "../scripts/Core/Player/Tutorial.pwn"
+#include "../scripts/Core/Player/WelcomeMessage.pwn"
+#include "../scripts/Core/Player/AntiCombatLog.pwn"
+#include "../scripts/Core/Player/Chat.pwn"
+#include "../scripts/Core/Player/AfkCheck.pwn"
+#include "../scripts/Core/Player/DisallowActions.pwn"
 
 //======================Data Load
 
-#include "../scripts/SSS/Weapon/Data.pwn"
-#include "../scripts/SSS/Loot/Data.pwn"
-#include "../scripts/SSS/Loot/HouseLoot.pwn"
-#include "../scripts/SSS/Vehicle/Data.pwn"
+#include "../scripts/Data/Weapon.pwn"
+#include "../scripts/Data/Loot.pwn"
+#include "../scripts/Data/Vehicle.pwn"
 
 //======================Data Setup
 
-#include "../scripts/SSS/Weapon/Core.pwn"
-#include "../scripts/SSS/Loot/Spawn.pwn"
-#include "../scripts/SSS/Vehicle/Spawn.pwn"
-#include "../scripts/SSS/Vehicle/Core.pwn"
+#include "../scripts/Core/Weapon/Core.pwn"
+#include "../scripts/Core/Loot/Spawn.pwn"
+#include "../scripts/Core/Loot/HouseLoot.pwn"
+#include "../scripts/Core/Vehicle/Spawn.pwn"
+#include "../scripts/Core/Vehicle/Core.pwn"
 
 //======================UI
 
-#include "../scripts/SSS/UI/PlayerUI.pwn"
-#include "../scripts/SSS/UI/GlobalUI.pwn"
-#include "../scripts/SSS/UI/HoldAction.pwn"
-#include "../scripts/SSS/UI/Radio.pwn"
-#include "../scripts/SSS/UI/TipText.pwn"
-#include "../scripts/SSS/UI/ToolTipEvents.pwn"
-#include "../scripts/SSS/UI/Watch.pwn"
-#include "../scripts/SSS/UI/Keypad.pwn"
+#include "../scripts/Core/UI/PlayerUI.pwn"
+#include "../scripts/Core/UI/GlobalUI.pwn"
+#include "../scripts/Core/UI/HoldAction.pwn"
+#include "../scripts/Core/UI/Radio.pwn"
+#include "../scripts/Core/UI/TipText.pwn"
+#include "../scripts/Core/UI/ToolTipEvents.pwn"
+#include "../scripts/Core/UI/Watch.pwn"
+#include "../scripts/Core/UI/Keypad.pwn"
 
 //======================Character
 
-#include "../scripts/SSS/Char/Food.pwn"
-#include "../scripts/SSS/Char/Clothes.pwn"
-#include "../scripts/SSS/Char/Hats.pwn"
-#include "../scripts/SSS/Char/Inventory.pwn"
-#include "../scripts/SSS/Char/Animations.pwn"
-#include "../scripts/SSS/Char/MeleeItems.pwn"
-#include "../scripts/SSS/Char/KnockOut.pwn"
-#include "../scripts/SSS/Char/Disarm.pwn"
-#include "../scripts/SSS/Char/Overheat.pwn"
-#include "../scripts/SSS/Char/Towtruck.pwn"
-#include "../scripts/SSS/Char/Holster.pwn"
+#include "../scripts/Core/Char/Food.pwn"
+#include "../scripts/Core/Char/Clothes.pwn"
+#include "../scripts/Core/Char/Hats.pwn"
+#include "../scripts/Core/Char/Inventory.pwn"
+#include "../scripts/Core/Char/Animations.pwn"
+#include "../scripts/Core/Char/MeleeItems.pwn"
+#include "../scripts/Core/Char/KnockOut.pwn"
+#include "../scripts/Core/Char/Disarm.pwn"
+#include "../scripts/Core/Char/Overheat.pwn"
+#include "../scripts/Core/Char/Towtruck.pwn"
+#include "../scripts/Core/Char/Holster.pwn"
 
 //======================World
 
-#include "../scripts/SSS/World/Fuel.pwn"
-#include "../scripts/SSS/World/Barbecue.pwn"
-#include "../scripts/SSS/World/Defenses.pwn"
-#include "../scripts/SSS/World/GraveStone.pwn"
-#include "../scripts/SSS/World/SafeBox.pwn"
-#include "../scripts/SSS/World/Carmour.pwn"
-#include "../scripts/SSS/World/Tent.pwn"
-#include "../scripts/SSS/World/Campfire.pwn"
-#include "../scripts/SSS/World/HackTrap.pwn"
+#include "../scripts/Core/World/Fuel.pwn"
+#include "../scripts/Core/World/Barbecue.pwn"
+#include "../scripts/Core/World/Defenses.pwn"
+#include "../scripts/Core/World/GraveStone.pwn"
+#include "../scripts/Core/World/SafeBox.pwn"
+#include "../scripts/Core/World/Carmour.pwn"
+#include "../scripts/Core/World/Tent.pwn"
+#include "../scripts/Core/World/Campfire.pwn"
+#include "../scripts/Core/World/HackTrap.pwn"
 
-//======================Admin code
+//======================Command Features
 
-#include "../scripts/SSS/Cmds/Commands.pwn"
-#include "../scripts/SSS/Cmds/GameMaster.pwn"
-#include "../scripts/SSS/Cmds/Moderator.pwn"
-#include "../scripts/SSS/Cmds/Administrator.pwn"
-#include "../scripts/SSS/Cmds/Dev.pwn"
-#include "../scripts/SSS/Cmds/Duty.pwn"
-#include "../scripts/SSS/Cmds/Report.pwn"
-#include "../scripts/SSS/Cmds/Ban.pwn"
-#include "../scripts/SSS/Cmds/Spectate.pwn"
-#include "../scripts/SSS/Cmds/Core.pwn"
+#include "../scripts/Core/Cmds/Commands.pwn"
+#include "../scripts/Core/Cmds/GameMaster.pwn"
+#include "../scripts/Core/Cmds/Moderator.pwn"
+#include "../scripts/Core/Cmds/Administrator.pwn"
+#include "../scripts/Core/Cmds/Dev.pwn"
+#include "../scripts/Core/Cmds/Duty.pwn"
+#include "../scripts/Core/Cmds/Report.pwn"
+#include "../scripts/Core/Cmds/Ban.pwn"
+#include "../scripts/Core/Cmds/Spectate.pwn"
+#include "../scripts/Core/Cmds/Core.pwn"
+#include "../scripts/Core/Cmds/BugReport.pwn"
 
 //======================Items
 
@@ -757,11 +669,11 @@ forward SetRestart(seconds);
 
 //======================Post-code
 
-#include "../scripts/SSS/Server/Autosave.pwn"
+#include "../scripts/Core/Server/Autosave.pwn"
 
 //======================World
 
-#include "../scripts/SanAndreas/SanAndreas.pwn"
+#include "../scripts/sa/sa.pwn"
 
 
 main()
