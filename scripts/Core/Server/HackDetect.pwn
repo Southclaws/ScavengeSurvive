@@ -2,10 +2,11 @@
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
-#define CAMERA_DISTANCE_INCAR			(85.0)
-#define CAMERA_DISTANCE_INCAR_CINEMATIC	(210.0)
-#define CAMERA_DISTANCE_INCAR_MOVING	(85.0)
-#define CAMERA_DISTANCE_ONFOOT			(25.0)
+#define CAMERA_DISTANCE_INCAR			(100.0)
+#define CAMERA_DISTANCE_INCAR_MOVING	(100.0)
+#define CAMERA_DISTANCE_INCAR_CINEMATIC	(220.0)
+#define CAMERA_DISTANCE_INCAR_CINEMOVE	(100.0)
+#define CAMERA_DISTANCE_ONFOOT			(40.0)
 
 
 new
@@ -430,11 +431,15 @@ CameraDistanceCheck(playerid)
 		}
 		else if(cameramode == 15)
 		{
-			cmp = CAMERA_DISTANCE_INCAR_MOVING;
+			cmp = CAMERA_DISTANCE_INCAR_CINEMOVE;
 		}
 		else
 		{
-			cmp = CAMERA_DISTANCE_INCAR;
+			if(vx + vy > 0.0)
+				cmp = CAMERA_DISTANCE_INCAR_MOVING;
+
+			else
+				cmp = CAMERA_DISTANCE_INCAR;
 		}
 
 		if(distance > cmp)

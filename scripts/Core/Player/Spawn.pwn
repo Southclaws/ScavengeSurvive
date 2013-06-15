@@ -61,9 +61,13 @@ PlayerCreateNewCharacter(playerid)
 
 	PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
 	PlayerTextDrawShow(playerid, ClassBackGround);
-	PlayerTextDrawShow(playerid, ClassButtonMale);
-	PlayerTextDrawShow(playerid, ClassButtonFemale);
-	SelectTextDraw(playerid, 0xFFFFFF88);
+
+	if(bPlayerGameSettings[playerid] & LoggedIn)
+	{
+		PlayerTextDrawShow(playerid, ClassButtonMale);
+		PlayerTextDrawShow(playerid, ClassButtonFemale);
+		SelectTextDraw(playerid, 0xFFFFFF88);
+	}
 
 	t:bPlayerGameSettings[playerid]<LoadedData>;
 }
@@ -123,7 +127,7 @@ PlayerSpawnNewCharacter(playerid)
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
 
-	GenerateSpawnPoint(x, y, z, r);
+	GenerateSpawnPoint(playerid, x, y, z, r);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
 

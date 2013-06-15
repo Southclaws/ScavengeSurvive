@@ -59,9 +59,8 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
 
-			CreateAccount(playerid, buffer);
-
-			ShowWelcomeMessage(playerid, 10);
+			if(CreateAccount(playerid, buffer))
+				ShowWelcomeMessage(playerid, 10);
 		}
 		else
 		{
@@ -76,20 +75,39 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 CreateAccount(playerid, password[])
 {
 	new
-		file[MAX_PLAYER_FILE],
-		query[300];
+		query[400],
+		DBResult:result,
+		numrows;
 
-	GetFile(gPlayerName[playerid], file);
-
-	fclose(fopen(file, io_write));
-
-	format(query, 300,
-		"INSERT INTO `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`) \
-		VALUES('%s', '%s', '%d', '0', '0.0, 0.0, 0.0, 0.0', '%d', '0')",
+	format(query, sizeof(query),
+		"INSERT INTO `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`) \
+		VALUES('%s', '%s', '%d', '0', '0', '0.0, 0.0, 0.0, 0.0', '%d', '0')",
 		gPlayerName[playerid], password, gPlayerData[playerid][ply_IP],
 		(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
 
+	printf("%d", strlen(query));
+
 	db_free_result(db_query(gAccounts, query));
+
+	format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
+	result = db_query(gAccounts, query);
+	numrows = db_num_rows(result);
+	db_free_result(result);
+
+	if(numrows == 0)
+	{
+		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
+			""#C_YELLOW"You are not on the whitelist for this server.\n\
+			This is in force to provide the best gameplay experience for all players.\n\n\
+			"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
+			Applications are always accepted as soon as possible\n\
+			There are no requirements, just follow the rules.\n\
+			Failure to do so will result in permanent removal from the whitelist.", "Close", "");
+
+		defer KickPlayerDelay(playerid);
+
+		return 0;
+	}
 
 	for(new i; i<gTotalAdmins; i++)
 	{
@@ -105,6 +123,10 @@ CreateAccount(playerid, password[])
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
+
+	PlayerCreateNewCharacter(playerid);
+
+	return 1;
 }
 
 DeleteAccount(name[])
