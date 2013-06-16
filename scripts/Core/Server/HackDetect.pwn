@@ -4,9 +4,14 @@
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
 #define CAMERA_DISTANCE_INCAR			(100.0)
 #define CAMERA_DISTANCE_INCAR_MOVING	(100.0)
-#define CAMERA_DISTANCE_INCAR_CINEMATIC	(220.0)
+#define CAMERA_DISTANCE_INCAR_CINEMATIC	(250.0)
 #define CAMERA_DISTANCE_INCAR_CINEMOVE	(100.0)
 #define CAMERA_DISTANCE_ONFOOT			(40.0)
+#define CAMERA_TYPE_INCAR				(1)
+#define CAMERA_TYPE_INCAR_MOVING		(2)
+#define CAMERA_TYPE_INCAR_CINEMATIC		(3)
+#define CAMERA_TYPE_INCAR_CINEMOVE		(4)
+#define CAMERA_TYPE_ONFOOT				(5)
 
 
 new
@@ -410,7 +415,8 @@ CameraDistanceCheck(playerid)
 		Float:py,
 		Float:pz,
 		Float:distance,
-		Float:cmp;
+		Float:cmp,
+		type;
 
 	GetPlayerCameraPos(playerid, cx, cy, cz);
 
@@ -423,23 +429,31 @@ CameraDistanceCheck(playerid)
 
 		if(cameramode == 56)
 		{
+			type = CAMERA_TYPE_INCAR_CINEMATIC;
 			cmp = CAMERA_DISTANCE_INCAR_CINEMATIC;
 		}
 		else if(cameramode == 57)
 		{
+			type = CAMERA_TYPE_INCAR_CINEMATIC;
 			cmp = CAMERA_DISTANCE_INCAR_CINEMATIC;
 		}
 		else if(cameramode == 15)
 		{
+			type = CAMERA_TYPE_INCAR_CINEMOVE;
 			cmp = CAMERA_DISTANCE_INCAR_CINEMOVE;
 		}
 		else
 		{
 			if(vx + vy > 0.0)
+			{
+				type = CAMERA_TYPE_INCAR_MOVING;
 				cmp = CAMERA_DISTANCE_INCAR_MOVING;
-
+			}
 			else
+			{
+				type = CAMERA_TYPE_INCAR;
 				cmp = CAMERA_DISTANCE_INCAR;
+			}
 		}
 
 		if(distance > cmp)
@@ -449,7 +463,7 @@ CameraDistanceCheck(playerid)
 				reason[128];
 
 			GetPlayerName(playerid, name, 24);
-			format(reason, 128, "Camera distance from player %.1f (at %.0f, %.0f, %.0f)", distance, cx, cy, cz);
+			format(reason, 128, "Camera distance from player %.1f (%d at %.0f, %.0f, %.0f)", distance, type, cx, cy, cz);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz);
 			cd_ReportTick[playerid] = tickcount();
 		}
@@ -458,6 +472,22 @@ CameraDistanceCheck(playerid)
 	{
 		GetPlayerPos(playerid, px, py, pz);
 
+		if(-5.0 < (px - DEFAULT_POS_X) < 5.0 && -5.0 < (py - DEFAULT_POS_Y) < 5.0 && -5.0 < (pz - DEFAULT_POS_Z) < 5.0)
+			return;
+
+		if(px == 1133.0 && py == -2038.0)
+			return;
+
+		if(px == 0.0 && py == 0.0 && pz == 0.0)
+			return;
+
+		if(-5.0 < (cx - 1093.0) < 5.0 && -5.0 < (cy - -2036.0) < 5.0 && -5.0 < (cz - 90.0) < 5.0)
+			return;
+
+		if(cx == 0.0 && cy == 0.0 && cz == 0.0)
+			return;
+
+		type = CAMERA_TYPE_ONFOOT;
 		distance = Distance(px, py, pz, cx, cy, cz);
 
 		if(distance > CAMERA_DISTANCE_ONFOOT)
@@ -472,4 +502,6 @@ CameraDistanceCheck(playerid)
 			cd_ReportTick[playerid] = tickcount();
 		}
 	}
+
+	return;
 }
