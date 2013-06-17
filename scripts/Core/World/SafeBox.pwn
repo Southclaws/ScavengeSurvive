@@ -57,12 +57,8 @@ DestroySafebox(itemid)
 
 	new containerid = GetItemExtraData(itemid);
 
-	printf("Container %d", containerid);
-
 	if(IsValidContainer(containerid))
 	{
-		print("valid container");
-
 		for(new i; i < GetContainerSize(containerid); i++)
 			DestroyItem(GetContainerSlotItem(containerid, i));
 
@@ -82,11 +78,7 @@ DestroySafebox(itemid)
 		format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
 		fremove(filename);
 
-		print("removed file");
-
 		DestroyItem(itemid);
-		print("return");
-
 		return itemid;
 	}
 
