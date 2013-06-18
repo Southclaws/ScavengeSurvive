@@ -20,8 +20,6 @@ CMD:acmds(playerid, params[])
 		strcat(str, gAdminCommandList_Lvl1);
 	}
 	
-	printf("%d", strlen(str));
-	
 	if(gPlayerData[playerid][ply_Admin] > 0)
 		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", str, "Close", "");
 

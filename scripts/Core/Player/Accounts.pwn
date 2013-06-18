@@ -85,8 +85,6 @@ CreateAccount(playerid, password[])
 		gPlayerName[playerid], password, gPlayerData[playerid][ply_IP],
 		(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
 
-	printf("%d", strlen(query));
-
 	db_free_result(db_query(gAccounts, query));
 
 	format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);

@@ -2,11 +2,11 @@
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
-#define CAMERA_DISTANCE_INCAR			(100.0)
-#define CAMERA_DISTANCE_INCAR_MOVING	(100.0)
+#define CAMERA_DISTANCE_INCAR			(150.0)
+#define CAMERA_DISTANCE_INCAR_MOVING	(150.0)
 #define CAMERA_DISTANCE_INCAR_CINEMATIC	(250.0)
-#define CAMERA_DISTANCE_INCAR_CINEMOVE	(100.0)
-#define CAMERA_DISTANCE_ONFOOT			(40.0)
+#define CAMERA_DISTANCE_INCAR_CINEMOVE	(150.0)
+#define CAMERA_DISTANCE_ONFOOT			(45.0)
 #define CAMERA_TYPE_INCAR				(1)
 #define CAMERA_TYPE_INCAR_MOVING		(2)
 #define CAMERA_TYPE_INCAR_CINEMATIC		(3)
@@ -485,6 +485,9 @@ CameraDistanceCheck(playerid)
 			return;
 
 		if(cx == 0.0 && cy == 0.0 && cz == 0.0)
+			return;
+
+		if(pz < -50.0 || cz < 50.0)
 			return;
 
 		type = CAMERA_TYPE_ONFOOT;
