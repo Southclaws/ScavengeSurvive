@@ -30,12 +30,12 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-    return CallLocalFunction("armour_OnPlayerUseItem", "dd", playerid, itemid);
+	return CallLocalFunction("armour_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
+	#undef OnPlayerUseItem
 #else
-    #define _ALS_OnPlayerUseItem
+	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem armour_OnPlayerUseItem
 forward armour_OnPlayerUseItem(playerid, itemid);

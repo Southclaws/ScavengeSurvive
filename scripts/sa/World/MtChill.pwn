@@ -62,6 +62,8 @@ public OnLoad()
 		CreateContainer("Generator", 6, -2318.9067, -1636.5662, 483.7031),
 		CreateItem(item_Medkit, -2322.9257, -1639.8038, 483.7031));
 
+	CreateItem(item_RadioPole, -2298.1316, -1634.7957, 482.8709); // For the hack device crafting.
+
 	return CallLocalFunction("mtchil_OnLoad", "");
 }
 #if defined _ALS_OnLoad

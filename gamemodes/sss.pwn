@@ -471,7 +471,8 @@ ItemType:		item_IoUnit			= INVALID_ITEM_TYPE,
 ItemType:		item_FluxCap		= INVALID_ITEM_TYPE,
 ItemType:		item_DataInterface	= INVALID_ITEM_TYPE,
 ItemType:		item_HackDevice		= INVALID_ITEM_TYPE,
-ItemType:		item_PlantPot		= INVALID_ITEM_TYPE;
+ItemType:		item_PlantPot		= INVALID_ITEM_TYPE,
+ItemType:		item_HerpDerp		= INVALID_ITEM_TYPE;
 
 
 //=====================Menus and Textdraws
@@ -666,6 +667,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/bowlerhat.pwn"
 #include "../scripts/Items/policecap.pwn"
 #include "../scripts/Items/tophat.pwn"
+#include "../scripts/Items/herpderp.pwn"
 
 //======================Post-code
 
@@ -888,6 +890,8 @@ public OnGameModeInit()
 	item_DataInterface	= DefineItemType("Data Interface",		19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 	item_HackDevice		= DefineItemType("Hack Interface",		364,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.134000, 0.080000, -0.037000,  84.299949, 3.399998, 9.400002);
 	item_PlantPot		= DefineItemType("Plant Pot",			2203,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
+	item_HerpDerp		= DefineItemType("Derpification Unit",	19513,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
+	item_Parrot			= DefineItemType("Sebastian",			19078,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
 
 
 	anim_Blunt = DefineAnimSet();

@@ -205,6 +205,12 @@ ACMD:deleteitems[3](playerid, params[])
 		return 1;
 	}
 
+	if(range > 100.0)
+	{
+		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
+		return 1;
+	}
+
 	new
 		Float:px,
 		Float:py,
@@ -246,6 +252,12 @@ ACMD:deletetents[3](playerid, params[])
 		return 1;
 	}
 
+	if(range > 100.0)
+	{
+		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
+		return 1;
+	}
+
 	new
 		Float:px,
 		Float:py,
@@ -284,6 +296,12 @@ ACMD:deletedefences[3](playerid, params[])
 	if(range == 0.0)
 	{
 		Msg(playerid, YELLOW, " >  Usage: /deletedefences [range]");
+		return 1;
+	}
+
+	if(range > 100.0)
+	{
+		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
 		return 1;
 	}
 

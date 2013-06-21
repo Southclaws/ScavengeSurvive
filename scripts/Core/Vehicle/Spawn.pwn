@@ -335,9 +335,9 @@ LoadPlayerVehicles(bool:prints = true)
 					if(Float:array[1] > 990.0)
 						array[1] = _:990.0;
 
-					gVehicleFuel[vehicleid] = Float:array[2];
-					gVehicleColours[vehicleid][0] = array[7];
-					gVehicleColours[vehicleid][1] = array[8];
+					gVehicleFuel[vehicleid]						= Float:array[2];
+					gVehicleColours[vehicleid][0]				= array[7];
+					gVehicleColours[vehicleid][1]				= array[8];
 					gPlayerVehicleData[vehicleid][pv_health]	= Float:array[1];
 					gPlayerVehicleData[vehicleid][pv_panels]	= array[9];
 					gPlayerVehicleData[vehicleid][pv_doors]		= array[10];
@@ -619,7 +619,7 @@ public OnVehicleSpawn(vehicleid)
 {
 	if(bVehicleSettings[vehicleid] & v_Dead)
 	{
-		printf("Dead Vehicle %d Spawned", vehicleid);
+		printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
 
 		if(IsValidContainer(gVehicleContainer[vehicleid]))
 		{

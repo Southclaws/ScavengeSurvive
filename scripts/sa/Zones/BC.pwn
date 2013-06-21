@@ -198,10 +198,8 @@ BC_District_Area69()
 	CreateLootSpawn(220.536560, 1818.290649, 5.410709,		3, 8, loot_Military);
 	CreateLootSpawn(272.238739, 1872.903808, 7.754749,		3, 8, loot_Military);
 	CreateLootSpawn(249.102676, 1787.627685, 4.164710,		3, 8, loot_Military);
-	CreateLootSpawn(233.445190, 1934.675292, 32.893329,		3, 8, loot_Military);
 	CreateLootSpawn(233.237854, 1934.927490, 24.491230,		3, 8, loot_Military);
 	CreateLootSpawn(162.388549, 1933.473388, 24.492790,		3, 8, loot_Military);
-	CreateLootSpawn(162.188217, 1933.567016, 32.892528,		3, 8, loot_Military);
 	CreateLootSpawn(268.802307, 1989.967529, 16.627479,		3, 8, loot_Military);
 	CreateLootSpawn(253.770767, 1776.721557, 4.160820,		3, 8, loot_Military);
 	CreateLootSpawn(252.898452, 1777.262573, 4.161009,		3, 8, loot_Military);
@@ -209,14 +207,9 @@ BC_District_Area69()
 	CreateLootSpawn(269.084136, 2011.108154, 16.629150,		3, 8, loot_Military);
 	CreateLootSpawn(224.403671, 1872.269165, 12.734829,		3, 8, loot_Military);
 	CreateLootSpawn(103.700347, 1901.312377, 24.486280,		3, 8, loot_Military);
-	CreateLootSpawn(113.202316, 1814.137573, 32.891891,		3, 8, loot_Military);
-	CreateLootSpawn(166.286407, 1850.807983, 32.886138,		3, 8, loot_Military);
 	CreateLootSpawn(113.805397, 1814.055419, 24.490510,		3, 8, loot_Military);
 	CreateLootSpawn(262.035400, 1807.495239, 24.489570,		3, 8, loot_Military);
-	CreateLootSpawn(262.209594, 1807.195312, 32.890819,		3, 8, loot_Military);
-	CreateLootSpawn(103.578598, 1901.061401, 32.887081,		3, 8, loot_Military);
 	CreateLootSpawn(269.351257, 1955.406738, 16.625820,		3, 8, loot_Military);
-	CreateLootSpawn(266.772521, 1895.137084, 32.888198,		3, 8, loot_Military);
 	CreateLootSpawn(167.880004, 1850.185302, 24.485120,		3, 8, loot_Military);
 	CreateLootSpawn(268.052581, 1895.066406, 24.487150,		3, 8, loot_Military);
 	CreateLootSpawn(273.727447, 1879.394897, -31.398050,	3, 8, loot_Military);
