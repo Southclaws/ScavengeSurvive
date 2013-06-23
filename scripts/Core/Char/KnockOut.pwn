@@ -5,6 +5,9 @@ static
 
 KnockOutPlayer(playerid, duration)
 {
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
+
 	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - knockout_Tick[playerid]);
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
@@ -38,7 +41,6 @@ KnockOutPlayer(playerid, duration)
 			default:
 			{
 				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
-
 			}
 		}
 	}
@@ -46,6 +48,8 @@ KnockOutPlayer(playerid, duration)
 	{
 		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
 	}
+
+	return 1;
 }
 
 WakeUpPlayer(playerid)
@@ -69,6 +73,9 @@ KnockOutUpdate(playerid)
 
 	if(bPlayerGameSettings[playerid] & KnockedOut)
 	{
+		if(bPlayerGameSettings[playerid] & AdminDuty)
+			WakeUpPlayer(playerid);
+
 		new animidx = GetPlayerAnimationIndex(playerid);
 
 		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
@@ -124,7 +131,7 @@ GetPlayerKnockoutDuration(playerid)
 	return knockout_Duration[playerid];
 }
 
-CMD:knockout(playerid, params[])
+ACMD:knockout[4](playerid, params[])
 {
 	KnockOutPlayer(playerid, strval(params));
 	return 1;

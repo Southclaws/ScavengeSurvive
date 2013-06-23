@@ -1,3 +1,5 @@
+new gBigString[2048];
+
 CMD:welcome(playerid, params[])
 {
 	ShowWelcomeMessage(playerid, 0);
@@ -6,85 +8,85 @@ CMD:welcome(playerid, params[])
 
 CMD:help(playerid, params[])
 {
-	new str[577];
+	gBigString[0] = EOS;
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_YELLOW"General Information:\n\n\n"#C_WHITE"\
 		\t"#C_RED"/rules for a list of server rules.\n\n\
 		\t"#C_BLUE"/chatinfo for information on chat.\n\n\
 		\t"#C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\n\
 		"#C_WHITE"Server script coded and owned by "#C_GREEN"Southclaw "#C_WHITE"(jaz636@gmail.com) all rights reserved.");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", str, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString, "Close", "");
 
 	return 1;
 }
 
 CMD:rules(playerid, params[])
 {
-	new str[1251];
+	gBigString[0] = EOS;
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_YELLOW"Server Rules:\n\n\n"\
 		""#C_WHITE"No global chat use if local or radio is available. (/chatinfo) You'll be muted for global spam.\n"#C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n"\
 		""#C_WHITE"No hacking, cheating or client modifications that give you advantages.\n"#C_BLUE"\tPunishment: Permanent ban, no appeal.\n\n");
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_WHITE"No exploiting of map bugs such as hiding/building bases inside models.\n"#C_BLUE"\tPunishment: Account and base deleted, perma-ban for second offence.\n\n"\
 		""#C_WHITE"No exploiting server bugs, report them using the /bug command.\n"#C_BLUE"\tPunishment: Week long ban.\n\n");
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_WHITE"Only English in global chat. Please use the radio (/chatinfo) for other languages.\n"#C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n"\
 		""#C_WHITE"No flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.\n"#C_BLUE"\tPunishment: Permanent ban, no appeal.\n\n");
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_WHITE"Don't kill admins on duty with the unique black skin with \"STAFF\" on the back\n"#C_BLUE"\tPunishment: Kick, ban for repeated offence.\n\n"\
 		""#C_WHITE"Report all hackers, failure to report hackers or playing with/alongside them will be punished.\n"#C_BLUE"\tPunishment: Exactly the same as hacking punishment.");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", str, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString, "Close", "");
 
 	return 1;
 }
 
 CMD:restartinfo(playerid, params[])
 {
-	new str[471];
+	gBigString[0] = EOS;
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_WHITE"The server restarts "#C_YELLOW"every 5 hours."#C_WHITE"\n\n\
 		Your character data such as position, clothes etc will be saved just like when you log out.\n\
 		All your held items, holstered weapon, inventory and bag items will be saved.\n\
 		The last car you exited will be saved along with all items inside.\n");
 
-	strcat(str,
+	strcat(gBigString,
 		"Items within containers within containers "#C_RED"WILL NOT SAVE!"#C_WHITE"\n\
-		Items on the floor "#C_RED"WILL NOT SAVE! "#C_WHITE"Ensure you put everything you want to keep inside a box.\n\n\n\
+		Items on the floor "#C_RED"WILL NOT SAVE! "#C_WHITE"Put everything you want saved inside a box or near a tent.\n\n\n\
 		Recap on All Saved Things: Your last vehicle, Boxes, Fort Parts, Tents, Signs.\n\n\
 		Thank you for reading this message, good luck out there survivors!");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", gBigString, "Close", "");
 
 	return 1;
 }
 
 CMD:chatinfo(playerid, params[])
 {
-	new str[651];
+	gBigString[0] = EOS;
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_YELLOW"Communication Information:\n\n\n"#C_WHITE"\
 		Chat is split into 3 types: Global, Local and Radio.\n\n\
 		\t"#C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "#C_WHITE"/quiet\n\n\
 		\t"#C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
 		\t"#C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
 
-	strcat(str,
+	strcat(gBigString,
 		""#C_WHITE"You can type the command on it's own to switch to that mode\n\
 		Or type the command followed by some text to send a message to that specific chat.\n\n\
 		If you are talking to someone next to you, "#C_YELLOW"USE LOCAL OR RADIO!\n\
 		"#C_WHITE"If you send unnecessary chat to global, you will be muted.");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", str, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", gBigString, "Close", "");
 
 	return 1;
 }

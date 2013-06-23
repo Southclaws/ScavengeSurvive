@@ -95,14 +95,14 @@ stock HideKeypad(playerid)
 	kp_Match[playerid] = 0;
 }
 
-stock HackKeypad(playerid, keypadid, match, itemid)
+stock HackKeypad(playerid, keypadid, match)
 {
 	kp_Hacking[playerid] = 1;
-	kp_HackTimer[playerid] = repeat HackKeypadUpdate(playerid, keypadid, match, itemid);
+	kp_HackTimer[playerid] = repeat HackKeypadUpdate(playerid, keypadid, match);
 	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 }
 
-timer HackKeypadUpdate[100](playerid, keypadid, match, itemid)
+timer HackKeypadUpdate[100](playerid, keypadid, match)
 {
 	if(kp_HackTries[playerid] >= 100)
 	{
@@ -135,7 +135,6 @@ timer HackKeypadUpdate[100](playerid, keypadid, match, itemid)
 		}
 
 		KeypadUpdateDisplay(playerid);
-		DestroyItem(itemid);
 		defer HackKeypadFinish(playerid, keypadid, success);
 
 		return;

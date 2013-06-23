@@ -67,7 +67,7 @@ public OnLoad()
 //	AddItemToLootIndex(loot_Industrial,		item_GasMask,						0.5);
 	AddItemToLootIndex(loot_Industrial,		item_Timer,							0.2);
 	AddItemToLootIndex(loot_Industrial,		item_Battery,						0.4);
-	AddItemToLootIndex(loot_Industrial,		item_Fusebox,						0.8);
+	AddItemToLootIndex(loot_Industrial,		item_Fusebox,						0.3);
 	AddItemToLootIndex(loot_Industrial,		item_Wheel,							0.3);
 	AddItemToLootIndex(loot_Industrial,		item_MotionSense,					0.3);
 	AddItemToLootIndex(loot_Industrial,		item_GasCan,						0.3);
@@ -219,7 +219,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_SHOTGUN,			0.3);
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_SHOTGSPA,			0.08);
 	AddItemToLootIndex(loot_CarPolice,		item_Bandage,						0.2);
-	AddItemToLootIndex(loot_CarPolice,		item_Battery,						1.0);
+	AddItemToLootIndex(loot_CarPolice,		item_Battery,						0.8);
 	AddItemToLootIndex(loot_CarPolice,		item_Wheel,							0.1);
 	AddItemToLootIndex(loot_CarPolice,		item_Bottle,						0.2);
 	AddItemToLootIndex(loot_CarPolice,		item_Wrench,						0.6);

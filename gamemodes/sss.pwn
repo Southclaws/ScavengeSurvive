@@ -472,7 +472,8 @@ ItemType:		item_FluxCap		= INVALID_ITEM_TYPE,
 ItemType:		item_DataInterface	= INVALID_ITEM_TYPE,
 ItemType:		item_HackDevice		= INVALID_ITEM_TYPE,
 ItemType:		item_PlantPot		= INVALID_ITEM_TYPE,
-ItemType:		item_HerpDerp		= INVALID_ITEM_TYPE;
+ItemType:		item_HerpDerp		= INVALID_ITEM_TYPE,
+ItemType:		item_Parrot			= INVALID_ITEM_TYPE;
 
 
 //=====================Menus and Textdraws
@@ -777,7 +778,7 @@ public OnGameModeInit()
 	item_Timer			= DefineItemType("Timer Device",		2922,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
 	item_Explosive		= DefineItemType("Explosive",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_Timebomb		= DefineItemType("Time Bomb",			1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
-	item_Battery		= DefineItemType("Battery",				2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Battery		= DefineItemType("Battery",				1579,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_Fusebox		= DefineItemType("Fuse Box",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
 	item_Bottle			= DefineItemType("Bottle",				1543,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.060376, 0.032063, -0.204802, 0.000000, 0.000000, 0.000000);
 	item_Sign			= DefineItemType("Sign",				19471,	ITEM_SIZE_LARGE,	0.0, 0.0, 270.0,		0.0);
@@ -893,14 +894,32 @@ public OnGameModeInit()
 	item_HerpDerp		= DefineItemType("Derpification Unit",	19513,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Parrot			= DefineItemType("Sebastian",			19078,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
 
+// 1656 - CUBOID SHAPE, CARRY ITEM
+// 1719 - SMALL COMPUTER TYPE DEVICE
+// 1898 - SMALL HOLDABLE ITEM, CLICKER
+// 1899 - SMALL DISC SHAPE
+// 1901 - SMALL CYLINDER
+// 1945 - SMALL WEIGHT, DISK SHAPE
+// 1952 - SMALL RECORD NEEDLE
+// 1960 - RECORD
+// 2006 - SMALL CYLINDER, CAMERA LENS
+// 2033 - SAWNOFF BARREL
+// 2034 - SAWNOFF HANDLE
+// 2060 - SANDBAG
+// 2277 - PICTURE OF A CAT
+// 2352 - T SHAPED SMALL OBJ
+// 2590 - SPIKEY HOOK, SCHYTHE?
+
+
 
 	anim_Blunt = DefineAnimSet();
 	anim_Stab = DefineAnimSet();
 
-	AddAnimToSet(anim_Blunt, 17, 22, 7.0);
-	AddAnimToSet(anim_Blunt, 18, 23, 9.0);
-	AddAnimToSet(anim_Blunt, 19, 24, 11.0);
-	AddAnimToSet(anim_Stab, 751, 756, 37.8);
+	AddAnimToSet(anim_Blunt, 26, 3.0);
+	AddAnimToSet(anim_Blunt, 17, 4.0);
+	AddAnimToSet(anim_Blunt, 18, 6.0);
+	AddAnimToSet(anim_Blunt, 19, 8.0);
+	AddAnimToSet(anim_Stab, 751, 18.8);
 
 	SetItemAnimSet(item_Wrench,			anim_Blunt);
 	SetItemAnimSet(item_Crowbar,		anim_Blunt);

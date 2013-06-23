@@ -447,7 +447,7 @@ ptask PlayerUpdate[100](playerid)
 		SetPlayerDrunkLevel(playerid, 2200);
 
 		if(random(100) < 80)
-			GivePlayerHP(playerid, 0.05, .msg = false);
+			GivePlayerHP(playerid, 0.05);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
@@ -455,7 +455,7 @@ ptask PlayerUpdate[100](playerid)
 		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000 || gPlayerHP[playerid] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 
-		GivePlayerHP(playerid, 0.01, .msg = false);
+		GivePlayerHP(playerid, 0.01);
 	}
 
 	if(bPlayerGameSettings[playerid] & Bleeding)
@@ -616,7 +616,7 @@ public OnPlayerSpawn(playerid)
 		{
 			if(bPlayerGameSettings[playerid] & LoggedIn)
 			{
-				FreezePlayer(playerid, 3000);
+				FreezePlayer(playerid, 5000);
 				PlayerSpawnExistingCharacter(playerid);
 				gScreenBoxFadeLevel[playerid] = 255;
 			}
@@ -687,6 +687,9 @@ public OnPlayerUpdate(playerid)
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
+		if(bPlayerGameSettings[playerid] & AdminDuty)
+			gPlayerHP[playerid] = 250.0;
+
 		SetPlayerHealth(playerid, gPlayerHP[playerid]);
 		SetPlayerArmour(playerid, gPlayerAP[playerid]);
 	}

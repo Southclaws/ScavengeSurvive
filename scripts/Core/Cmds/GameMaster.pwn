@@ -202,11 +202,11 @@ ACMD:warn[1](playerid, params[])
 	gPlayerWarnings[targetid]++;
 
 	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
-	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
+	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", gPlayerWarnings[targetid], reason);
 
 	if(gPlayerWarnings[targetid] >= 5)
 	{
-		KickPlayer(targetid, "Too many warnings");
+		BanPlayer(targetid, "Getting 5 warnings", playerid);
 	}
 
 	return 1;

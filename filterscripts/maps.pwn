@@ -23,12 +23,12 @@ stock Float:Distance(Float:x1,Float:y1,Float:z1,Float:x2,Float:y2,Float:z2)
 LoadMap(filename[])
 {
 	new
-		File:F = fopen(filename, io_read),
+		File:file = fopen(filename, io_read),
 		loadedmeta,
 		str[192],
 		
-		world,
-		interior,
+		world[1],
+		interior[1],
 		streamdist,
 
 		modelid,
@@ -73,20 +73,20 @@ LoadMap(filename[])
 	if(!fexist(filename))
 		return printf("ERROR: file: \"%s\" NOT FOUND", filename);
 
-	while(fread(F, str))
+	while(fread(file, str))
 	{
 		line++;
 		if(!loadedmeta)
 		{
-			if(!sscanf(str, "p<,>ddd", world, interior, streamdist))
+			if(!sscanf(str, "p<,>ddd", world[0], interior[0], streamdist))
 			{
 				loadedmeta = true;
 			}
 
 			if(line > 1)
 			{
-				world = -1;
-				interior = -1;
+				world[0] = -1;
+				interior[0] = -1;
 				streamdist = 350;
 				loadedmeta = true;
 
@@ -101,7 +101,7 @@ LoadMap(filename[])
 			if(d<=50)printf("obj found in '%s' id: %d", filename, modelid);
 			*/
 
-			tmpObjID = CreateDynamicObject(modelid, data[0], data[1], data[2], data[3], data[4], data[5], world, interior, _, streamdist);
+			tmpObjID = CreateDynamicObjectEx(modelid, data[0], data[1], data[2], data[3], data[4], data[5], streamdist, streamdist + 100.0, world, interior);
 		}
 		else if(!sscanf(str, "'objtxt(' p<\">{s[1]}s[32]p<,>{s[1]} ds[32]p<\">{s[1]}s[32]p<,>{s[1]}ddddp<)>d", tmpObjText, tmpObjIdx, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign))
 		{
@@ -131,7 +131,7 @@ LoadMap(filename[])
 			SetDynamicObjectMaterial(tmpObjID, tmpObjIdx, tmpObjMod, tmpObjTxd, tmpObjTex, tmpObjMatCol);
 		}
 	}
-	fclose(F);
+	fclose(file);
 
 	return line;
 }

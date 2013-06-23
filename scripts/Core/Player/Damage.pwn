@@ -11,7 +11,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		if(weaponid == 53)
 		{
-			GivePlayerHP(playerid, -(amount * 0.1), 53);
+			GivePlayerHP(playerid, -(amount * 0.1));
 		}
 		else
 		{
@@ -19,7 +19,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 			{
 				case 37:
 				{
-					GivePlayerHP(playerid, -amount, weaponid);
+					GivePlayerHP(playerid, -amount);
 				}
 				default:
 				{
@@ -27,11 +27,11 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 					{
 						if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 						{
-							GivePlayerHP(playerid, -(amount * 0.5), weaponid);
+							GivePlayerHP(playerid, -(amount * 0.5));
 						}
 						else
 						{
-							GivePlayerHP(playerid, -(amount * 1.1), weaponid);
+							GivePlayerHP(playerid, -(amount * 1.1));
 							KnockOutPlayer(playerid, 5000);
 						}
 					}
@@ -115,15 +115,32 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 		if(head)
 			hploss *= 1.5;
+
+		if(gPlayerAP[targetid] > 0.0)
+		{
+			switch(weaponid)
+			{
+				case 0..7, 10..15:
+					hploss *= 0.6;
+
+				case 22..32, 38:
+					hploss *= 0.5;
+
+				case 33, 34:
+					hploss *= 0.8;
+			}
+
+			gPlayerAP[targetid] += (hploss / 2.0);
+		}
 	}
 	else if(type == 1)
 	{
-		hploss = GetMeleeDamage(weaponid, GetCurrentMeleeAnim(targetid));
+		hploss = GetMeleeDamage(weaponid, GetCurrentMeleeAnim(playerid));
 
 		if(weaponid == anim_Blunt)
 		{
 			if(random(100) < 40)
-				KnockOutPlayer(targetid, KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerHP[targetid] - hploss)))));
+				KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerHP[targetid] - hploss))));
 
 			if(random(100) < 30)
 			{
@@ -203,7 +220,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		f:bPlayerGameSettings[targetid]<Bleeding>;
 	}
 
-	GivePlayerHP(targetid, -hploss, weaponid);
+	GivePlayerHP(targetid, -hploss);
 	ShowHitMarker(playerid, weaponid);
 
 	if(gPlayerData[playerid][ply_Admin] >= 3)
@@ -219,47 +236,10 @@ timer DestroyDynamicObject_Delay[1000](objectid)
 {
 	DestroyDynamicObject(objectid);
 }
-GivePlayerHP(playerid, Float:hp, weaponid = 54, msg = true)
+
+GivePlayerHP(playerid, Float:hp)
 {
-	if(hp < 0.0)
-	{
-		if(gPlayerAP[playerid] > 0.0)
-		{
-			switch(weaponid)
-			{
-				case 0..7, 10..15:
-					hp *= 0.6;
-
-				case 22..32, 38:
-					hp *= 0.5;
-
-				case 33, 34:
-					hp *= 0.8;
-			}
-			gPlayerAP[playerid] += hp / 2.0;
-		}
-	}
-	else
-	{
-		if(msg)
-		{
-			new
-				tmpstr[16];
-
-			format(tmpstr, 16, "+%.1fHP", hp);
-
-			PlayerTextDrawSetString(playerid, AddHPText, tmpstr);
-			PlayerTextDrawShow(playerid, AddHPText);
-
-			defer HideHPText(playerid);
-		}
-	}
 	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
-}
-
-timer HideHPText[2000](playerid)
-{
-	PlayerTextDrawHide(playerid, AddHPText);
 }
 
 SetPlayerHP(playerid, Float:hp)

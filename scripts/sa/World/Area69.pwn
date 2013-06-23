@@ -161,7 +161,7 @@ public OnButtonPress(playerid, buttonid)
 			ShowKeypad(playerid, k_ControlTower, code_ControlTower);
 
 			if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-				HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+				HackKeypad(playerid, k_ControlTower, code_ControlTower);
 		}
 		else
 		{
@@ -176,7 +176,7 @@ public OnButtonPress(playerid, buttonid)
 			ShowKeypad(playerid, k_StorageWatch, code_StorageWatch);
 
 			if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-				HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+				HackKeypad(playerid, k_ControlTower, code_ControlTower);
 		}
 		else
 		{
@@ -201,7 +201,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		ShowKeypad(playerid, k_MainGate, code_MainGate);
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+			HackKeypad(playerid, k_ControlTower, code_ControlTower);
 
 		return 1;
 	}
@@ -211,7 +211,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		ShowKeypad(playerid, k_AirstripGate, code_AirstripGate);
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+			HackKeypad(playerid, k_AirstripGate, code_AirstripGate);
 
 		return 1;
 	}
@@ -221,7 +221,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+			HackKeypad(playerid, k_BlastDoor, code_BlastDoor);
 
 		return 1;
 	}
@@ -231,7 +231,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+			HackKeypad(playerid, k_BlastDoor, code_BlastDoor);
 
 		return 1;
 	}
@@ -241,7 +241,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		ShowKeypad(playerid, k_Storage, code_Storage);
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower, GetPlayerItem(playerid));
+			HackKeypad(playerid, k_Storage, code_Storage);
 
 		return 1;
 	}
@@ -280,6 +280,11 @@ forward a69_OnPlayerActivateDoor(playerid, doorid, newstate);
 
 public OnPlayerKeypadEnter(playerid, keypadid, success)
 {
+	new itemid = GetPlayerItem(playerid);
+
+	if(GetItemType(itemid) == item_HackDevice)
+		DestroyItem(itemid);
+
 	if(keypadid == k_ControlTower)
 	{
 		if(success)

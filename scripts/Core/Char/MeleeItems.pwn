@@ -15,7 +15,6 @@ bool:		anm_used,
 enum E_ANIM_DATA
 {
 			anm_attackIdx,
-			anm_hitIdx,
 Float:		anm_damage
 }
 
@@ -51,13 +50,12 @@ DefineAnimSet()
 	return id;
 }
 
-AddAnimToSet(animset, attackidx, hitidx, Float:damage)
+AddAnimToSet(animset, attackidx, Float:damage)
 {
 	if(!anm_Data[animset][anm_used])
 		return -1;
 
 	anm_Anims[animset][anm_Data[animset][anm_anims]][anm_attackIdx] = attackidx;
-	anm_Anims[animset][anm_Data[animset][anm_anims]][anm_hitIdx] = hitidx;
 	anm_Anims[animset][anm_Data[animset][anm_anims]][anm_damage] = damage;
 
 	return anm_Data[animset][anm_anims]++;
@@ -133,8 +131,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 						if(angle > 315.0 || angle < 45.0)
 						{
-							GetAnimationName(anm_Anims[anm_MeleeItems[i][anm_animSet]][anm_CurrentAnim[playerid]][anm_hitIdx], lib, 32, anim, 32);
-							ApplyAnimation(j, lib, anim, 4.1, 0, 1, 1, 0, 0, 1);
+							GetPlayerFacingAngle(j, pa);
+							angle = absoluteangle(pa - GetAngleToPoint(ix, iy, px, py));
+
+							if(angle > 135.0 || angle < 225.0)
+								ApplyAnimation(j, "PED", "DAM_stomach_frmBK", 4.1, 0, 1, 1, 0, 0, 1); // FROM BACK
+
+							if(angle > 315.0 || angle < 45.0)
+								ApplyAnimation(j, "PED", "DAM_stomach_frmFT", 4.1, 0, 1, 1, 0, 0, 1); // FROM FRONT
+
+							if(angle > 45.0 || angle < 135.0)
+								ApplyAnimation(j, "PED", "DAM_stomach_frmLT", 4.1, 0, 1, 1, 0, 0, 1); // FROM LEFT
+
+							if(angle > 225.0 || angle < 315.0)
+								ApplyAnimation(j, "PED", "DAM_stomach_frmRT", 4.1, 0, 1, 1, 0, 0, 1); // FROM RIGHT
+
 							DamagePlayer(playerid, j, anm_MeleeItems[i][anm_animSet], 1);
 						}
 					}

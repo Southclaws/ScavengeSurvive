@@ -11,6 +11,11 @@ PlayerSpawnExistingCharacter(playerid)
 		gPlayerData[playerid][ply_posY] < -3000.0)
 		z += 2.0;
 
+	Streamer_UpdateEx(playerid,
+		gPlayerData[playerid][ply_posX],
+		gPlayerData[playerid][ply_posY],
+		gPlayerData[playerid][ply_posZ] + z, 0, 0);
+
 	SetPlayerPos(playerid,
 		gPlayerData[playerid][ply_posX],
 		gPlayerData[playerid][ply_posY],

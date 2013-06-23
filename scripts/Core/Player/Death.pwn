@@ -2,7 +2,6 @@ public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(!(bPlayerGameSettings[playerid] & Alive) || bPlayerGameSettings[playerid] & AdminDuty)
 	{
-		//SpawnPlayer(playerid);
 		return 0;
 	}
 

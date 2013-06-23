@@ -190,14 +190,16 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_stance] = data[PLY_CELL_STANCE];
 
 	if(data[PLY_CELL_BLEEDING])
-	{
 		t:bPlayerGameSettings[playerid]<Bleeding>;
-	}
+
+	else
+		f:bPlayerGameSettings[playerid]<Bleeding>;
 
 	if(data[PLY_CELL_CUFFED])
-	{
 		SetPlayerCuffs(playerid, true);
-	}
+
+	else
+		SetPlayerCuffs(playerid, false);
 
 	gPlayerWarnings[playerid] = data[PLY_CELL_WARNS];
 
@@ -206,9 +208,10 @@ LoadPlayerChar(playerid)
 	gPlayerChatMode[playerid] = data[PLY_CELL_CHATMODE];
 
 	if(data[PLY_CELL_INFECTED])
-	{
 		t:bPlayerGameSettings[playerid]<Infected>;
-	}
+
+	else
+		f:bPlayerGameSettings[playerid]<Infected>;
 }
 LoadPlayerInventory(playerid)
 {
