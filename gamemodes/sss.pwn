@@ -29,17 +29,7 @@ native IsValidVehicle(vehicleid);
 #define DEFAULT_POS_Y				(272.7235)
 #define DEFAULT_POS_Z				(1014.1449)
 
-enum
-{
-	REPORT_TYPE_PLAYER,
-	REPORT_TYPE_TELEPORT,
-	REPORT_TYPE_WEAPONS,
-	REPORT_TYPE_SWIMFLY,
-	REPORT_TYPE_VHEALTH,
-	REPORT_TYPE_CAMDIST
-}
-
-#include "../scripts/Core/Server/HackDetect.pwn"
+#include "../scripts/Core/Server/Hooks.pwn"
 
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -100,12 +90,13 @@ native WP_Hash(buffer[], len, const str[]);
 #define ROW_LASTLOG					"lastlog"									// TODO
 #define ROW_DATE					"date"
 #define ROW_REAS					"reason"
-#define ROW_BNBY					"by"
+#define ROW_BY						"by"
 #define ROW_READ					"read"
 #define ROW_TYPE					"type"
 #define ROW_POSX					"posx"
 #define ROW_POSY					"posy"
 #define ROW_POSZ					"posz"
+#define ROW_INFO					"info"
 #define ROW_LEVEL					"level"
 
 
@@ -565,6 +556,8 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Player/Chat.pwn"
 #include "../scripts/Core/Player/AfkCheck.pwn"
 #include "../scripts/Core/Player/DisallowActions.pwn"
+#include "../scripts/Core/Player/Report.pwn"
+#include "../scripts/Core/Player/HackDetect.pwn"
 
 //======================Data Load
 
@@ -625,7 +618,6 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Cmds/Administrator.pwn"
 #include "../scripts/Core/Cmds/Dev.pwn"
 #include "../scripts/Core/Cmds/Duty.pwn"
-#include "../scripts/Core/Cmds/Report.pwn"
 #include "../scripts/Core/Cmds/Ban.pwn"
 #include "../scripts/Core/Cmds/Spectate.pwn"
 #include "../scripts/Core/Cmds/Core.pwn"
@@ -688,8 +680,8 @@ main()
 	gAccounts = db_open(ACCOUNT_DATABASE);
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BY"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`, `"#ROW_INFO"`, `"#ROW_BY"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Whitelist` (`"#ROW_NAME"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Admins` (`"#ROW_NAME"`, `"#ROW_LEVEL"`)"));

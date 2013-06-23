@@ -16,7 +16,7 @@ BanPlayer(playerid, reason[], byid)
 
 	format(query, sizeof(query), "\
 		INSERT INTO `Bans`\
-		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
+		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BY"`)\
 		VALUES('%s', '%d', '%d', '%s', '%p')",
 		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP], gettime(), reason, byid);
 
@@ -53,7 +53,7 @@ BanPlayerByName(name[], reason[], byid = -1)
 
 	format(query, sizeof(query), "\
 		INSERT INTO `Bans`\
-		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BNBY"`)\
+		(`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BY"`)\
 		VALUES('%s', '%d', '%d', '%s', '%s')",
 		strtolower(name), ip, gettime(), reason, by);
 
@@ -82,7 +82,7 @@ ShowListOfBans(playerid, index = 0)
 		DBResult:result,
 		rowcount;
 
-	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` ORDER BY `"#ROW_DATE"` DESC LIMIT %d, %d", index, MAX_BANS_PER_PAGE);
+	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BY" FROM `Bans` ORDER BY `"#ROW_DATE"` DESC LIMIT %d, %d", index, MAX_BANS_PER_PAGE);
 
 	result = db_query(gAccounts, query);
 	rowcount = db_num_rows(result);
@@ -146,7 +146,7 @@ DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
 		reason[64],
 		bannedby[24];
 
-	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BNBY" FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
+	format(query, sizeof(query), "SELECT "#ROW_NAME", "#ROW_IPV4", "#ROW_DATE", "#ROW_REAS", "#ROW_BY" FROM `Bans` WHERE `"#ROW_NAME"` = '%s'", name);
 	result = db_query(gAccounts, query);
 
 	db_get_field(result, 2, tmptime, 12);

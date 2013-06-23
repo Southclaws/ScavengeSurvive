@@ -58,7 +58,6 @@ ptask AntiCheatUpdate[1000](playerid)
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
 		PositionCheck(playerid);
-		WeaponCheck(playerid);
 		SwimFlyCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
@@ -98,7 +97,7 @@ hook OnPlayerSpawn(playerid)
 ==============================================================================*/
 
 
-Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
+HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
 	tp_SetPosTick[playerid] = tickcount();
 	tp_SetPos[playerid][0] = x;
@@ -106,10 +105,8 @@ Detect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 	tp_SetPos[playerid][2] = z;
 
 	cd_DetectDelay[playerid] = tickcount();
-
-	return SetPlayerPos(playerid, x, y, z);
 }
-#define SetPlayerPos Detect_SetPlayerPos
+
 
 PositionCheck(playerid)
 {
@@ -159,11 +156,15 @@ PositionCheck(playerid)
 			{
 				new
 					name[24],
-					reason[128];
+					reason[128],
+					info[128];
 
 				GetPlayerName(playerid, name, 24);
+
 				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+				format(info, sizeof(info), "%f, %f, %f", x, y, z);
+				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
+
 				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 				tp_PosReportTick[playerid] = tickcount();
@@ -178,11 +179,15 @@ PositionCheck(playerid)
 				{
 					new
 						name[24],
-						reason[128];
+						reason[128],
+						info[128];
 
 					GetPlayerName(playerid, name, 24);
+
 					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+					format(info, sizeof(info), "%f, %f, %f", x, y, z);
+					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
+
 					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
 					tp_PosReportTick[playerid] = tickcount();
@@ -194,50 +199,6 @@ PositionCheck(playerid)
 	tp_CurPos[playerid][0] = x;
 	tp_CurPos[playerid][1] = y;
 	tp_CurPos[playerid][2] = z;
-
-	return;
-}
-
-
-/*==============================================================================
-
-	Weapons
-
-==============================================================================*/
-
-
-WeaponCheck(playerid)
-{
-	if(tickcount() - GetPlayerWeaponSwapTick(playerid) < 1000)
-		return;
-
-	if(IsPlayerDead(playerid))
-		return;
-
-	new
-		actualweapon = GetPlayerWeapon(playerid),
-		weapon = GetPlayerCurrentWeapon(playerid);
-
-	if(actualweapon > 0)
-	{
-		if(actualweapon != weapon)
-		{
-			new
-				name[24],
-				weaponname1[32],
-				weaponname2[32],
-				reason[128];
-
-			GetPlayerName(playerid, name, 24);
-			GetItemTypeName(ItemType:actualweapon, weaponname1);
-			GetItemTypeName(ItemType:weapon, weaponname2);
-
-			format(reason, sizeof(reason), " >  '%s' Used {33CCFF}%d (%s) {FFFF00}when should have {33CCFF}%d (%s){FFFF00}. (TEST REPORT)", name, actualweapon, weaponname1, weapon, weaponname2);
-
-			//ReportPlayer(name, reason, -1, REPORT_TYPE_WEAPONS);
-			MsgAdmins(3, 0xFFFF00FF, reason);
-		}
-	}
 
 	return;
 }
@@ -267,14 +228,14 @@ SwimFlyCheck(playerid)
 		return 0;
 	}
 
-    new
-    	animlib[32],
-    	animname[32];
+	new
+		animlib[32],
+		animname[32];
 
-    GetAnimationName(GetPlayerAnimationIndex(playerid), animlib, sizeof(animlib), animname, sizeof(animname));
+	GetAnimationName(GetPlayerAnimationIndex(playerid), animlib, sizeof(animlib), animname, sizeof(animname));
 
-    if(isnull(animlib))
-    	return 0;
+	if(isnull(animlib))
+		return 0;
 	
 	if(!strcmp(animlib, "SWIM"))
 	{
@@ -299,7 +260,7 @@ SwimFlyCheck(playerid)
 
 			GetPlayerName(playerid, name, 24);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
 
 			sf_ReportTick[playerid] = tickcount();
 		}
@@ -334,7 +295,7 @@ VehicleHealthCheck(playerid)
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, 24);
 		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
-		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z);
+		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
 
 		SetVehicleHealth(GetPlayerVehicleID(playerid), 990.0);
 
@@ -414,15 +375,20 @@ CameraDistanceCheck(playerid)
 		Float:px,
 		Float:py,
 		Float:pz,
+		Float:cx_vec,
+		Float:cy_vec,
+		Float:cz_vec,
 		Float:distance,
 		Float:cmp,
 		type;
 
 	GetPlayerCameraPos(playerid, cx, cy, cz);
+	GetPlayerCameraFrontVector(playerid, cx_vec, cy_vec, cz_vec);
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new cameramode = GetPlayerCameraMode(playerid);
+
 		GetVehiclePos(GetPlayerVehicleID(playerid), px, py, pz);
 
 		distance = Distance(px, py, pz, cx, cy, cz);
@@ -460,16 +426,22 @@ CameraDistanceCheck(playerid)
 		{
 			new
 				name[24],
-				reason[128];
+				reason[128],
+				info[128];
 
 			GetPlayerName(playerid, name, 24);
-			format(reason, 128, "Camera distance from player %.1f (%d at %.0f, %.0f, %.0f)", distance, type, cx, cy, cz);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz);
+
+			format(reason, sizeof(reason), "Camera distance from player %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
+			format(info, sizeof(info), "%f, %f, %f, %f, %f, %f", cx, cy, cz, vx, vy, vz);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+
 			cd_ReportTick[playerid] = tickcount();
 		}
 	}
 	else
 	{
+		new cameramode = GetPlayerCameraMode(playerid);
+
 		GetPlayerPos(playerid, px, py, pz);
 
 		if(-5.0 < (px - DEFAULT_POS_X) < 5.0 && -5.0 < (py - DEFAULT_POS_Y) < 5.0 && -5.0 < (pz - DEFAULT_POS_Z) < 5.0)
@@ -497,11 +469,15 @@ CameraDistanceCheck(playerid)
 		{
 			new
 				name[24],
-				reason[128];
+				reason[128],
+				info[128];
 
 			GetPlayerName(playerid, name, 24);
-			format(reason, 128, "Camera distance from player %.1f (at %.0f, %.0f, %.0f)", distance, cx, cy, cz);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz);
+
+			format(reason, sizeof(reason), "Camera distance from player %.0f (onfoot, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
+			format(info, sizeof(info), "%f, %f, %f, %f, %f, %f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+
 			cd_ReportTick[playerid] = tickcount();
 		}
 	}

@@ -409,7 +409,7 @@ ACMD:decam[4](playerid, params[])
 	return 1;
 }
 
-ACMD:recam[4](playerid, params[])
+ACMD:recam[1](playerid, params[])
 {
 	SetCameraBehindPlayer(playerid);
 	return 1;
