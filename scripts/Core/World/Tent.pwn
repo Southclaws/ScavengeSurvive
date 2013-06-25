@@ -355,6 +355,8 @@ hook OnGameModeExit()
 
 					idx += TENT_CELL_END;
 
+					j = DestroyItem(j);
+
 					if(idx >= sizeof(data))
 						break;
 				}

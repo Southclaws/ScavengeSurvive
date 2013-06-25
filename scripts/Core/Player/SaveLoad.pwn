@@ -319,6 +319,7 @@ hook OnGameModeInit()
 }
 timer UpdateAccounts[1000]()
 {
+	print("Updating user accounts");
 	new
 		name[24],
 		DBResult:result,
@@ -337,6 +338,8 @@ timer UpdateAccounts[1000]()
 	}
 
 	db_free_result(result);
+
+	print("Update complete");
 }
 
 ConvertUserFile(name[])

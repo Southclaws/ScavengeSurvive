@@ -1,4 +1,4 @@
-#define MAX_LINE				(32)
+#define MAX_LINE				(1024)
 #define LIN_MAX_OBJ				(512)
 #define INVALID_LINE_SEGMENT_ID	(-1)
 
@@ -40,6 +40,12 @@ stock CreateLineSegment(modelid, Float:objlength,
 	worldid = 0, interiorid = 0, Float:maxlength = 100.0)
 {
 	new id = Iter_Free(lin_Index);
+
+	if(id == -1)
+	{
+		print("ERROR: MAX_LINE limit reached.");
+		return 0;
+	}
 	
 	lin_Data[id][lin_maxLength]		= maxlength;
 	lin_Data[id][lin_model]			= modelid;
