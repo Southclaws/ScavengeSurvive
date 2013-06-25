@@ -497,7 +497,7 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 				return 0;
 			}
 
-			RemoveItemFromInventory(playerid, slot);
+			RemoveItemFromInventory(playerid, slot, 0);
 			AddItemToContainer(containerid, itemid, playerid);
 			DisplayPlayerInventory(playerid);
 		}

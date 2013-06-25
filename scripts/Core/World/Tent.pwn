@@ -341,8 +341,14 @@ hook OnGameModeExit()
 				if(IsItemTypeSafebox(itemtype))
 					continue;
 
+				if(!IsItemInWorld(j))
+					continue;
+
 				GetItemPos(j, x, y, z);
 				GetItemRot(j, r, r, r);
+
+				if(x == 0.0 && y == 0.0 && z == 0.0)
+					continue;
 
 				if(Distance(tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], x, y, z) < 2.0)
 				{

@@ -238,7 +238,7 @@ LoadPlayerInventory(playerid)
 		if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
 			SetItemExtraData(itemid, data[i + 1]);
 	
-		AddItemToInventory(playerid, itemid);
+		AddItemToInventory(playerid, itemid, 0);
 	}
 
 	if(!IsItemTypeBag(ItemType:data[INV_CELL_BAGTYPE]))
