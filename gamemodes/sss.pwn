@@ -383,9 +383,9 @@ ItemType:		item_Backpack		= INVALID_ITEM_TYPE,
 ItemType:		item_Satchel		= INVALID_ITEM_TYPE,
 ItemType:		item_Wheel			= INVALID_ITEM_TYPE,
 ItemType:		item_MotionSense	= INVALID_ITEM_TYPE,
-ItemType:		item_CapCase		= INVALID_ITEM_TYPE,
+ItemType:		item_Accelerometer	= INVALID_ITEM_TYPE,
 ItemType:		item_MotionMine		= INVALID_ITEM_TYPE,
-ItemType:		item_CapMine		= INVALID_ITEM_TYPE,
+ItemType:		item_PipeBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_Pizza			= INVALID_ITEM_TYPE,
 ItemType:		item_Burger			= INVALID_ITEM_TYPE,
 // 90
@@ -464,7 +464,22 @@ ItemType:		item_DataInterface	= INVALID_ITEM_TYPE,
 ItemType:		item_HackDevice		= INVALID_ITEM_TYPE,
 ItemType:		item_PlantPot		= INVALID_ITEM_TYPE,
 ItemType:		item_HerpDerp		= INVALID_ITEM_TYPE,
-ItemType:		item_Parrot			= INVALID_ITEM_TYPE;
+ItemType:		item_Parrot			= INVALID_ITEM_TYPE,
+// 160
+ItemType:		item_TripMine		= INVALID_ITEM_TYPE,
+ItemType:		item_IedTimebomb	= INVALID_ITEM_TYPE,
+ItemType:		item_IedMotionMine	= INVALID_ITEM_TYPE,
+ItemType:		item_IedTripMine	= INVALID_ITEM_TYPE,
+ItemType:		item_IedPhoneBomb	= INVALID_ITEM_TYPE,
+ItemType:		item_EmpTimebomb	= INVALID_ITEM_TYPE,
+ItemType:		item_EmpMotionMine	= INVALID_ITEM_TYPE,
+ItemType:		item_EmpTripMine	= INVALID_ITEM_TYPE,
+ItemType:		item_EmpPhoneBomb	= INVALID_ITEM_TYPE,
+ItemType:		item_Gyroscope		= INVALID_ITEM_TYPE,
+// 170
+ItemType:		item_Motor			= INVALID_ITEM_TYPE,
+ItemType:		item_StarterMotor	= INVALID_ITEM_TYPE,
+ItemType:		item_FlareGun		= INVALID_ITEM_TYPE;
 
 
 //=====================Menus and Textdraws
@@ -493,7 +508,6 @@ PlayerText:		VehicleEngineText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleDoorsText	= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleNameText		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		VehicleSpeedText	= PlayerText:INVALID_TEXT_DRAW,
-PlayerText:		AddHPText			= PlayerText:INVALID_TEXT_DRAW,
 
 PlayerBar:		OverheatBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
@@ -609,6 +623,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/World/Tent.pwn"
 #include "../scripts/Core/World/Campfire.pwn"
 #include "../scripts/Core/World/HackTrap.pwn"
+#include "../scripts/Core/World/Workbench.pwn"
 
 //======================Command Features
 
@@ -803,9 +818,9 @@ public OnGameModeInit()
 	item_Satchel		= DefineItemType("Small Bag",			363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",				1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
 	item_MotionSense	= DefineItemType("Motion Sensor",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
-	item_CapCase		= DefineItemType("Cap Case",			1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.191558, 0.000000, 0.040402, 90.000000, 0.000000, 0.000000);
+	item_Accelerometer	= DefineItemType("Accelerometer",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_MotionMine		= DefineItemType("Motion Mine",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
-	item_CapMine		= DefineItemType("Cap Mine",			1213,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.262021, 0.014938, 0.000000, 279.040191, 352.944946, 358.980987);
+	item_PipeBomb		= DefineItemType("Pipe Bomb",			2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
 	item_Pizza			= DefineItemType("Pizza",				1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
 	item_Burger			= DefineItemType("Burger",				2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
 // 90
@@ -885,18 +900,30 @@ public OnGameModeInit()
 	item_PlantPot		= DefineItemType("Plant Pot",			2203,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_HerpDerp		= DefineItemType("Derpification Unit",	19513,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Parrot			= DefineItemType("Sebastian",			19078,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
+// 160
+	item_TripMine		= DefineItemType("Trip Mine",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_IedTimebomb	= DefineItemType("Timebomb (IED)",		2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_IedMotionMine	= DefineItemType("Motion Mine (IED)",	2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_IedTripMine	= DefineItemType("Proximity Mine (IED)",2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_IedPhoneBomb	= DefineItemType("Phone Bomb (IED)",	2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_EmpTimebomb	= DefineItemType("Timed EMP",			343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_EmpMotionMine	= DefineItemType("Motion EMP",			343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_EmpTripMine	= DefineItemType("Proximity EMP",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_EmpPhoneBomb	= DefineItemType("Phone Trigger EMP",	343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_Gyroscope		= DefineItemType("Gyroscope Unit",		1945,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.180000, 0.085000, 0.009000,  -86.099967, -112.099975, 92.699890);
+// 170
+	item_Motor			= DefineItemType("Motor",				2006,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.129999, 0.087999, 0.009000,  -86.099967, -112.099975, 92.699890);
+	item_StarterMotor	= DefineItemType("Starter Motor",		2006,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.129999, 0.087999, 0.009000,  -86.099967, -112.099975, 92.699890);
+	item_FlareGun		= DefineItemType("Flare Gun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.160999, 0.035000, 0.058999,  84.400062, 0.000000, 0.000000);
+
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
-// 1898 - SMALL HOLDABLE ITEM, CLICKER
-// 1899 - SMALL DISC SHAPE
-// 1901 - SMALL CYLINDER
-// 1945 - SMALL WEIGHT, DISK SHAPE
+// 1898 - SMALL SPIN CLICKER
+// 1899 - VERY SMALL SINGLE CHIP
+// 1901 - SMALL BLUE CHIPS STACK
 // 1952 - SMALL RECORD NEEDLE
 // 1960 - RECORD
-// 2006 - SMALL CYLINDER, CAMERA LENS
-// 2033 - SAWNOFF BARREL
-// 2034 - SAWNOFF HANDLE
 // 2060 - SANDBAG
 // 2277 - PICTURE OF A CAT
 // 2352 - T SHAPED SMALL OBJ

@@ -1,11 +1,7 @@
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
-	if(gPlayerData[playerid][ply_Admin] >= 3)
-	{
-		new str[64];
-		format(str, 64, "took %.2f~n~from %p~n~weap %d", amount, issuerid, weaponid);
-		ShowActionText(playerid, str, 1000, 120);
-	}
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
 
 	if(issuerid == INVALID_PLAYER_ID)
 	{
@@ -73,6 +69,9 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
+
 	gLastHitBy[damagedid] = gPlayerName[playerid];
 	DamagePlayer(playerid, damagedid, weaponid);
 	return 1;
@@ -80,6 +79,9 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 
 DamagePlayer(playerid, targetid, weaponid, type = 0)
 {
+	if(bPlayerGameSettings[playerid] & AdminDuty)
+		return 0;
+
 	if(weaponid == WEAPON_DEAGLE)
 	{
 		if(tickcount() - tick_WeaponHit[playerid] < 400)
@@ -223,13 +225,6 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	GivePlayerHP(targetid, -hploss);
 	ShowHitMarker(playerid, weaponid);
 
-	if(gPlayerData[playerid][ply_Admin] >= 3)
-	{
-		new str[32];
-		format(str, 32, "did %.2f", hploss);
-		ShowActionText(playerid, str, 1000, 120);
-	}
-	
 	return 1;
 }
 timer DestroyDynamicObject_Delay[1000](objectid)

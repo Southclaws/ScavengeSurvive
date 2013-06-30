@@ -213,15 +213,6 @@ LoadPlayerTextDraws(playerid)
 
 //======================================================================Stat GUI
 
-	AddHPText						=CreatePlayerTextDraw(playerid, 160.000000, 240.000000, "<+HP>");
-	PlayerTextDrawColor				(playerid, AddHPText, RED);
-	PlayerTextDrawBackgroundColor	(playerid, AddHPText, 255);
-	PlayerTextDrawFont				(playerid, AddHPText, 1);
-	PlayerTextDrawLetterSize		(playerid, AddHPText, 0.300000, 1.000000);
-	PlayerTextDrawSetProportional	(playerid, AddHPText, 1);
-	PlayerTextDrawSetShadow			(playerid, AddHPText, 0);
-	PlayerTextDrawSetOutline		(playerid, AddHPText, 1);
-
 	ActionBar						= CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
 	OverheatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
 	KnockoutBar						= CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
@@ -233,21 +224,20 @@ UnloadPlayerTextDraws(playerid)
 	PlayerTextDrawDestroy(playerid, ClassButtonMale);
 	PlayerTextDrawDestroy(playerid, ClassButtonFemale);
 	PlayerTextDrawDestroy(playerid, WeaponAmmo);
-	PlayerTextDrawDestroy(playerid, ToolTip);
 	PlayerTextDrawDestroy(playerid, HungerBarBackground);
 	PlayerTextDrawDestroy(playerid, HungerBarForeground);
 	PlayerTextDrawDestroy(playerid, WatchBackground);
 	PlayerTextDrawDestroy(playerid, WatchTime);
 	PlayerTextDrawDestroy(playerid, WatchBear);
 	PlayerTextDrawDestroy(playerid, WatchFreq);
+	PlayerTextDrawDestroy(playerid, ToolTip);
 	PlayerTextDrawDestroy(playerid, HelpTipText);
-	PlayerTextDrawDestroy(playerid, VehicleNameText);
-	PlayerTextDrawDestroy(playerid, VehicleSpeedText);
 	PlayerTextDrawDestroy(playerid, VehicleFuelText);
 	PlayerTextDrawDestroy(playerid, VehicleDamageText);
 	PlayerTextDrawDestroy(playerid, VehicleEngineText);
 	PlayerTextDrawDestroy(playerid, VehicleDoorsText);
-	PlayerTextDrawDestroy(playerid, AddHPText);
+	PlayerTextDrawDestroy(playerid, VehicleNameText);
+	PlayerTextDrawDestroy(playerid, VehicleSpeedText);
 
 	DestroyPlayerProgressBar(playerid, OverheatBar);
 	DestroyPlayerProgressBar(playerid, ActionBar);

@@ -2,16 +2,23 @@
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
+
 #define CAMERA_DISTANCE_INCAR			(150.0)
 #define CAMERA_DISTANCE_INCAR_MOVING	(150.0)
 #define CAMERA_DISTANCE_INCAR_CINEMATIC	(250.0)
 #define CAMERA_DISTANCE_INCAR_CINEMOVE	(150.0)
 #define CAMERA_DISTANCE_ONFOOT			(45.0)
-#define CAMERA_TYPE_INCAR				(1)
-#define CAMERA_TYPE_INCAR_MOVING		(2)
-#define CAMERA_TYPE_INCAR_CINEMATIC		(3)
-#define CAMERA_TYPE_INCAR_CINEMOVE		(4)
-#define CAMERA_TYPE_ONFOOT				(5)
+
+
+enum
+{
+	CAMERA_TYPE_NONE,				// 0
+	CAMERA_TYPE_INCAR,				// 1
+	CAMERA_TYPE_INCAR_MOVING,		// 2
+	CAMERA_TYPE_INCAR_CINEMATIC,	// 3
+	CAMERA_TYPE_INCAR_CINEMOVE,		// 4
+	CAMERA_TYPE_ONFOOT				// 5
+}
 
 
 new
@@ -444,7 +451,7 @@ CameraDistanceCheck(playerid)
 
 		GetPlayerPos(playerid, px, py, pz);
 
-		if(-5.0 < (px - DEFAULT_POS_X) < 5.0 && -5.0 < (py - DEFAULT_POS_Y) < 5.0 && -5.0 < (pz - DEFAULT_POS_Z) < 5.0)
+		if(IsAtDefaultPos(px, py, pz))
 			return;
 
 		if(px == 1133.0 && py == -2038.0)
@@ -483,4 +490,12 @@ CameraDistanceCheck(playerid)
 	}
 
 	return;
+}
+
+IsAtDefaultPos(Float:x, Float:y, Float:z)
+{
+	if(-5.0 < (x - DEFAULT_POS_X) < 5.0 && -5.0 < (y - DEFAULT_POS_Y) < 5.0 && -5.0 < (z - DEFAULT_POS_Z) < 5.0)
+		return 1;
+
+	return 0;
 }
