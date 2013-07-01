@@ -167,6 +167,12 @@ stock DestroyTent(tentid)
 	return 1;
 }
 
+
+
+// Interaction
+
+
+
 public OnButtonPress(playerid, buttonid)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
@@ -239,10 +245,20 @@ public OnHoldActionFinish(playerid)
 forward tnt2_OnHoldActionFinish(playerid);
 
 
+
 // Save and Load
 
 
-public OnLoad()
+
+SaveTents(prints = false)
+{
+	foreach(new i : tnt_Index)
+	{
+		SaveTent(i, prints);
+	}
+}
+
+LoadTents(prints)
 {
 	new
 		dir:direc = dir_open(TENT_DATA_DIR),
@@ -256,7 +272,8 @@ public OnLoad()
 		Float:z,
 		Float:r,
 		data[MAX_TENT_ITEMS * TENT_CELL_END],
-		itemid;
+		itemid,
+		count;
 
 	while(dir_list(direc, item, type))
 	{
@@ -275,6 +292,9 @@ public OnLoad()
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
+				if(prints)
+					printf("\t[LOAD] Tent at %f, %f, %f", x, y, z);
+
 				itemid = CreateTent(Float:x, Float:y, Float:z, Float:r);
 
 				while(idx < sizeof(data))
@@ -286,95 +306,94 @@ public OnLoad()
 						.rz = Float:data[idx + TENT_CELL_ROTZ],
 						.zoffset = FLOOR_OFFSET);
 
-					if(!IsItemTypeSafebox(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && !IsItemTypeBag(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && ItemType:data[idx + TENT_CELL_ITEMTYPE] != item_Campfire)
+					if(!IsItemTypeBag(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && ItemType:data[idx + TENT_CELL_ITEMTYPE] != item_Campfire)
 						SetItemExtraData(itemid, data[idx + TENT_CELL_EXDATA]);
 
 					idx += TENT_CELL_END;
 				}
+
+				count++;
 			}
 		}
 	}
 
 	dir_close(direc);
 
-	return CallLocalFunction("tnt2_OnLoad", "");
+	printf("Loaded %d Tents\n", count);
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad tnt2_OnLoad
-forward tnt2_OnLoad();
 
-
-hook OnGameModeExit()
+SaveTent(tentid, prints = false)
 {
-	foreach(new i : tnt_Index)
+	if(!Iter_Contains(itm_Index, tentid))
+		return 0;
+
+	if(prints)
+		printf("\t[SAVE] Tent at %f, %f, %f", tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
+
+	new
+		filename[64],
+		File:file,
+		data[MAX_TENT_ITEMS * TENT_CELL_END];
+
+	format(filename, sizeof(filename), ""#TENT_DATA_FOLDER"%d_%d_%d_%d",
+		tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ], tnt_Data[tentid][tnt_rotZ]);
+
+	file = fopen(filename, io_write);
+
+	if(file)
 	{
 		new
-			filename[64],
-			File:file,
-			data[MAX_TENT_ITEMS * TENT_CELL_END];
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:r,
+			ItemType:itemtype,
+			exdata,
+			idx;
 
-		format(filename, sizeof(filename), ""#TENT_DATA_FOLDER"%d_%d_%d_%d",
-			tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], tnt_Data[i][tnt_rotZ]);
-
-		file = fopen(filename, io_write);
-
-		if(file)
+		foreach(new j : itm_Index)
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:r,
-				ItemType:itemtype,
-				exdata,
-				idx;
+			itemtype = GetItemType(j);
+			exdata = GetItemExtraData(j);
 
-			foreach(new j : itm_Index)
+			if(IsItemTypeSafebox(itemtype))
+				continue;
+
+			if(!IsItemInWorld(j))
+				continue;
+
+			GetItemPos(j, x, y, z);
+			GetItemRot(j, r, r, r);
+
+			if(x == 0.0 && y == 0.0 && z == 0.0)
+				continue;
+
+			if(Distance(tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ], x, y, z) < 2.0)
 			{
-				itemtype = GetItemType(j);
-				exdata = GetItemExtraData(j);
+				data[idx + TENT_CELL_ITEMTYPE] = _:itemtype;
+				data[idx + TENT_CELL_EXDATA] = exdata;
+				data[idx + TENT_CELL_POSX] = _:x;
+				data[idx + TENT_CELL_POSY] = _:y;
+				data[idx + TENT_CELL_POSZ] = _:z;
+				data[idx + TENT_CELL_ROTZ] = _:r;
 
-				if(IsItemTypeSafebox(itemtype))
-					continue;
+				idx += TENT_CELL_END;
 
-				if(!IsItemInWorld(j))
-					continue;
+				j = DestroyItem(j);
 
-				GetItemPos(j, x, y, z);
-				GetItemRot(j, r, r, r);
-
-				if(x == 0.0 && y == 0.0 && z == 0.0)
-					continue;
-
-				if(Distance(tnt_Data[i][tnt_posX], tnt_Data[i][tnt_posY], tnt_Data[i][tnt_posZ], x, y, z) < 2.0)
-				{
-					data[idx + TENT_CELL_ITEMTYPE] = _:itemtype;
-					data[idx + TENT_CELL_EXDATA] = exdata;
-					data[idx + TENT_CELL_POSX] = _:x;
-					data[idx + TENT_CELL_POSY] = _:y;
-					data[idx + TENT_CELL_POSZ] = _:z;
-					data[idx + TENT_CELL_ROTZ] = _:r;
-
-					idx += TENT_CELL_END;
-
-					j = DestroyItem(j);
-
-					if(idx >= sizeof(data))
-						break;
-				}
+				if(idx >= sizeof(data))
+					break;
 			}
-			fblockwrite(file, data);
-			fclose(file);
 		}
-		else
-		{
-			printf("ERROR: Saving tent, filename: '%s'", filename);
-		}
+		fblockwrite(file, data);
+		fclose(file);
 	}
+	else
+	{
+		printf("ERROR: Saving tent, filename: '%s'", filename);
+	}
+
+	return 1;
 }
 
 

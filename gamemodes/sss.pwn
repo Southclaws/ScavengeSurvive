@@ -1044,11 +1044,15 @@ public OnGameModeInit()
 		}
 	}
 
+	// Initiation Code
+
 	CallLocalFunction("OnLoad", "");
 
+	// Data From Files
+
 	LoadVehicles();
-	LoadTextDraws();
-	LoadSafeboxes();
+	LoadSafeboxes(true);
+	LoadTents(true);
 	LoadDefenses();
 
 
@@ -1064,9 +1068,10 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
-	SaveAllSafeboxes(false);
-	UnloadVehicles();
-	SaveAllDefenses();
+	SaveVehicles(true);
+	SaveSafeboxes(true);
+	SaveTents(true);
+	SaveDefenses();
 
 	db_close(gAccounts);
 
@@ -1129,3 +1134,37 @@ task GlobalAnnouncement[600000]()
 	MsgAll(YELLOW, " >  Confused? Check out the Wiki: "#C_ORANGE"scavenge-survive.wikia.com "#C_YELLOW"or: "#C_ORANGE"empire-bay.com");
 }
 
+/*
+
+	new h, m, s;
+	gettime(h, m, s);
+
+	if(h == 0 && m == 0 && s < 1)
+	{
+		ArchiveServerLog();
+	}
+
+ArchiveServerLog()
+{
+	#define SERVER_LOG_PATH		"./server_log.txt"
+	#define SERVER_LOG_DIR		"./logs/"
+
+	if(!file_exists(SERVER_LOG_PATH))
+	{
+		print("ERROR: Server log file not found");
+		return;
+	}
+
+	if(!dir_exists(SERVER_LOG_DIR))
+	{
+		print("ERROR: Server log archive directory not found");
+		return;
+	}
+
+	print("Archiving Server Log");
+
+	printf("Return: %d", file_move(SERVER_LOG_PATH, "./logs/server_log.txt"));
+
+	return;
+}
+*/

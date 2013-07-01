@@ -85,157 +85,6 @@ DestroySafebox(itemid)
 	return -1;
 }
 
-SaveAllSafeboxes(prints = false)
-{
-	foreach(new i : box_Index)
-	{
-		SaveSafeboxItem(i, prints);
-	}
-}
-
-LoadSafeboxes(prints = false)
-{
-	new
-		dir:direc = dir_open(SAFEBOX_DIRECTORY),
-		item[46],
-		type,
-		File:file,
-		filedir[64],
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		containerid, 
-		count;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			new
-				data[1 + (CNT_MAX_SLOTS * 2)],
-				itemid;
-
-			filedir = SAFEBOX_FOLDER;
-			strcat(filedir, item);
-			file = fopen(filedir, io_read);
-
-			if(file)
-			{
-				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
-
-				if(x == 0.0 && y == 0.0 && z == 0.0)
-				{
-					fremove(filedir);
-					continue;
-				}
-
-				fblockread(file, data, sizeof(data));
-				fclose(file);
-
-				if(!IsItemTypeSafebox(ItemType:data[0]))
-				{
-					fremove(filedir);
-					continue;
-				}
-
-				itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
-				containerid = GetItemExtraData(itemid);
-
-				if(prints)
-					printf("[LOAD] Savebox type %d at %f, %f, %f", data[0], x, y, z);
-
-				for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
-				{
-					if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
-						continue;
-
-					itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
-
-					if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
-						SetItemExtraData(itemid, data[i + 1]);
-
-					AddItemToContainer(containerid, itemid);
-				}
-
-				count++;
-			}
-		}
-	}
-
-	dir_close(direc);
-
-	printf("Loaded %d Safeboxes", count);
-}
-
-SaveSafeboxItem(itemid, prints = false)
-{
-	if(!IsItemInWorld(itemid))
-		return -1;
-
-	if(!IsItemTypeSafebox(GetItemType(itemid)))
-		return -1;
-
-	new
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		containerid,
-		filename[64],
-		File:file,
-		data[1 + (CNT_MAX_SLOTS * 2)];
-
-	containerid = GetItemExtraData(itemid);
-
-	if(!IsValidContainer(containerid))
-		return -1;
-
-	GetItemPos(itemid, x, y, z);
-	GetItemRot(itemid, r, r, r);
-
-	if(x == 0.0 && y == 0.0 && z == 0.0 || r == 0.0)
-	{
-		return -2;
-	}
-
-	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
-
-	if(IsContainerEmpty(containerid))
-	{
-		fremove(filename);
-		return -1;
-	}
-
-	file = fopen(filename, io_write);
-
-	if(file)
-	{
-		if(prints)
-			printf("[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), x, y, z, r);
-
-		data[0] = _:GetItemType(itemid);
-
-		for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
-		{
-			data[i] = _:GetItemType(GetContainerSlotItem(containerid, j));
-			data[i + 1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
-
-			if(data[i] == 0)
-				return 0;
-		}
-		fblockwrite(file, data, sizeof(data));
-		fclose(file);
-
-		return itemid;
-	}
-	else
-	{
-		printf("ERROR: Saving safebox, filename: '%s'", filename);
-		return -1;
-	}
-}
-
 public OnItemCreate(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
@@ -291,6 +140,12 @@ public OnItemDestroy(itemid)
 #endif
 #define OnItemDestroy box_OnItemDestroy
 forward box_OnItemDestroy(itemid);
+
+
+
+// Interaction
+
+
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -382,21 +237,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-IsItemTypeSafebox(ItemType:itemtype)
-{
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	for(new i; i < box_TypeTotal; i++)
-	{
-		if(itemtype == box_TypeData[i][box_itemtype])
-		{
-			return 1;
-		}
-	}
-	return 0;
-}
-
 timer box_PickUp[250](playerid, itemid)
 {
 	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
@@ -437,3 +277,181 @@ public OnPlayerCloseContainer(playerid, containerid)
 #endif
 #define OnPlayerCloseContainer box_OnPlayerCloseContainer
 forward box_OnPlayerCloseContainer(playerid, containerid);
+
+
+
+// Save and Load
+
+
+
+SaveSafeboxes(prints = false)
+{
+	foreach(new i : box_Index)
+	{
+		SaveSafeboxItem(i, prints);
+	}
+}
+
+LoadSafeboxes(prints = false)
+{
+	new
+		dir:direc = dir_open(SAFEBOX_DIRECTORY),
+		item[46],
+		type,
+		File:file,
+		filedir[64],
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r,
+		containerid, 
+		count;
+
+	while(dir_list(direc, item, type))
+	{
+		if(type == FM_FILE)
+		{
+			new
+				data[1 + (CNT_MAX_SLOTS * 2)],
+				itemid;
+
+			filedir = SAFEBOX_FOLDER;
+			strcat(filedir, item);
+			file = fopen(filedir, io_read);
+
+			if(file)
+			{
+				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
+
+				if(x == 0.0 && y == 0.0 && z == 0.0)
+				{
+					fremove(filedir);
+					continue;
+				}
+
+				fblockread(file, data, sizeof(data));
+				fclose(file);
+
+				if(!IsItemTypeSafebox(ItemType:data[0]))
+				{
+					fremove(filedir);
+					continue;
+				}
+
+				itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
+				containerid = GetItemExtraData(itemid);
+
+				if(prints)
+					printf("\t[LOAD] Safebox type %d at %f, %f, %f", data[0], x, y, z);
+
+				for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
+				{
+					if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
+						continue;
+
+					itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
+
+					if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
+						SetItemExtraData(itemid, data[i + 1]);
+
+					AddItemToContainer(containerid, itemid);
+				}
+
+				count++;
+			}
+		}
+	}
+
+	dir_close(direc);
+
+	printf("Loaded %d Safeboxes\n", count);
+}
+
+SaveSafeboxItem(itemid, prints = false)
+{
+	if(!IsItemInWorld(itemid))
+		return -1;
+
+	if(!IsItemTypeSafebox(GetItemType(itemid)))
+		return -1;
+
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r,
+		containerid,
+		filename[64],
+		File:file,
+		data[1 + (CNT_MAX_SLOTS * 2)];
+
+	containerid = GetItemExtraData(itemid);
+
+	if(!IsValidContainer(containerid))
+		return -1;
+
+	GetItemPos(itemid, x, y, z);
+	GetItemRot(itemid, r, r, r);
+
+	if(x == 0.0 && y == 0.0 && z == 0.0 || r == 0.0)
+	{
+		return -2;
+	}
+
+	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+
+	if(IsContainerEmpty(containerid))
+	{
+		fremove(filename);
+		return -1;
+	}
+
+	file = fopen(filename, io_write);
+
+	if(file)
+	{
+		if(prints)
+			printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), x, y, z, r);
+
+		data[0] = _:GetItemType(itemid);
+
+		for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
+		{
+			data[i] = _:GetItemType(GetContainerSlotItem(containerid, j));
+			data[i + 1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
+
+			if(data[i] == 0)
+				return 0;
+		}
+		fblockwrite(file, data, sizeof(data));
+		fclose(file);
+
+		return itemid;
+	}
+	else
+	{
+		printf("ERROR: Saving safebox, filename: '%s'", filename);
+		return -1;
+	}
+}
+
+
+
+// Interface
+
+
+
+stock IsItemTypeSafebox(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	for(new i; i < box_TypeTotal; i++)
+	{
+		if(itemtype == box_TypeData[i][box_itemtype])
+		{
+			return 1;
+		}
+	}
+	return 0;
+}

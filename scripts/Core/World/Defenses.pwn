@@ -623,10 +623,10 @@ LoadDefenses()
 
 	dir_close(direc);
 
-	printf("Loaded %d Defense items", count);
+	printf("Loaded %d Defense items\n", count);
 }
 
-SaveAllDefenses()
+SaveDefenses()
 {
 	foreach(new i : def_Index)
 	{

@@ -53,19 +53,14 @@ LoadVehicles(bool:prints = true)
 	if(prints)
 		printf("Total Vehicles: %d", gTotalVehicles);
 }
-UnloadVehicles()
+SaveVehicles(prints)
 {
 	for(new i; i < MAX_VEHICLES; i++)
 	{
 		if(IsValidVehicle(i))
 		{
 			if(strlen(gVehicleOwner[i]) >= 3)
-				SavePlayerVehicle(i, gVehicleOwner[i], true);
-
-			DestroyVehicle(i);
-			DestroyContainer(gVehicleContainer[i]);
-
-			continue;
+				SavePlayerVehicle(i, gVehicleOwner[i], prints);
 		}
 		else
 		{
@@ -75,11 +70,6 @@ UnloadVehicles()
 	}
 
     gTotalVehicles = 0;
-}
-ReloadVehicles()
-{
-	UnloadVehicles();
-	LoadVehicles(false);
 }
 
 
@@ -326,7 +316,7 @@ LoadPlayerVehicles(bool:prints = true)
 					continue;
 				}
 
-				printf("[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
+				printf("\t[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], gVehicleOwner[vehicleid]);
 
 				if(IsValidVehicle(vehicleid))
 				{
@@ -382,7 +372,7 @@ LoadPlayerVehicles(bool:prints = true)
 	dir_close(direc);
 
 	if(prints)
-		printf("Loaded %d Player vehicles", gTotalVehicles);
+		printf("Loaded %d Player vehicles\n", gTotalVehicles);
 
 	return;
 }
@@ -417,7 +407,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 	array[13] = 0;
 
 	if(prints)
-		printf("[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], name);
+		printf("\t[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[0]-400], name);
 
 	if(IsValidContainer(gVehicleContainer[vehicleid]))
 	{
@@ -477,12 +467,13 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 	return 1;
 }
 
-RemovePlayerVehicle(vehicleid)
+RemovePlayerVehicle(vehicleid, prints = false)
 {
 	if(isnull(gVehicleOwner[vehicleid]))
 		return 0;
 
-	printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, gVehicleOwner[vehicleid]);
+	if(prints)
+		printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, gVehicleOwner[vehicleid]);
 
 	new filename[MAX_PLAYER_NAME + 18];
 
@@ -717,12 +708,4 @@ RandomNumberPlateString()
 		str[4] = ' ';
 	}
 	return str;
-}
-
-
-CMD:reloadvehicles(playerid, params[])
-{
-	ReloadVehicles();
-	Msg(playerid, YELLOW, " >  Reloading Vehicles...");
-	return 1;
 }

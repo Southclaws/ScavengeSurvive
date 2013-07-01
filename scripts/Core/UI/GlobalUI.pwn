@@ -1,4 +1,7 @@
-LoadTextDraws()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
 //=========================================================================Death
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");

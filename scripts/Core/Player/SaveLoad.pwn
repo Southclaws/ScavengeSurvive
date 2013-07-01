@@ -135,7 +135,7 @@ SavePlayerInventory(playerid)
 	fclose(file);
 
 	#if defined SAVELOAD_DEBUG
-	printf("[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
+	printf("\t[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
 	#endif
 }
 
@@ -265,7 +265,7 @@ LoadPlayerInventory(playerid)
 	}
 
 	#if defined SAVELOAD_DEBUG
-	printf("[LOAD] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
+	printf("\t[LOAD] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
 	#endif
 
 	return 1;
