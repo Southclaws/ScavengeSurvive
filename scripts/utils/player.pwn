@@ -141,29 +141,30 @@ stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 GetClosestPlayerFromPlayer(playerid, Float:range = 10000.0)
 {
 	new
-		Float:x1,
-		Float:y1,
-		Float:z1,
-		Float:x2,
-		Float:y2,
-		Float:z2,
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+	
+	return GetClosestPlayerFromPoint(x, y, z, range);
+}
+
+GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, Float:range = 10000.0)
+{
+	new
+		Float:px,
+		Float:py,
+		Float:pz,
 		Float:lowestdistance = range,
 		Float:distance,
 		closestplayer = -1;
 
-	GetPlayerPos(playerid, x1, y1, z1);
-
 	foreach(new i : Player)
 	{
-		if(i == playerid)
-			continue;
+		GetPlayerPos(i, px, py, pz);
 
-		GetPlayerPos(i, x2, y2, z2);
-
-		if(x2 == 0.0 && y2 == 0.0 && z2 == 0.0)
-			continue;
-
-		distance = Distance(x1, y1, z1, x2, y2, z1);
+		distance = Distance(px, py, pz, x, y, z);
 
 		if(distance < range)
 		{

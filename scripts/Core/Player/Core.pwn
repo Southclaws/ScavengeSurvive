@@ -66,12 +66,9 @@ Float:	gPlayerFP				[MAX_PLAYERS],
 Float:	gPlayerFrequency		[MAX_PLAYERS],
 		gPlayerChatMode			[MAX_PLAYERS],
 		gPlayerVehicleID		[MAX_PLAYERS],
-Float:	gPlayerVehicleCurHP		[MAX_PLAYERS],
 Float:	gPlayerVelocity			[MAX_PLAYERS],
-Float:	gCurrentVelocity		[MAX_PLAYERS],
 		gPingLimitStrikes		[MAX_PLAYERS],
 		gPlayerSpecTarget		[MAX_PLAYERS],
-
 		gScreenBoxFadeLevel		[MAX_PLAYERS],
 Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
 
@@ -744,8 +741,6 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		VehicleDoorsState(gPlayerVehicleID[playerid], 0);
 
-		gPlayerVehicleID[playerid] = INVALID_VEHICLE_ID;
-		gPlayerVehicleCurHP[playerid] = 0.0;
 		SetVehicleOccupied(vehicleid, false);
 
 		PlayerTextDrawHide(playerid, VehicleNameText);
@@ -783,14 +778,10 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 			CancelPlayerMovement(playerid);
 	}
 
-	gCurrentVelocity[playerid] = 0.0;
-
 	return 1;
 }
 public OnPlayerExitVehicle(playerid, vehicleid)
 {
-	gCurrentVelocity[playerid] = 0.0;
-
 	tick_ExitVehicle[playerid] = tickcount();
 
 	return 1;
@@ -834,21 +825,49 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 IsPlayerDead(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return bPlayerGameSettings[playerid] & Dying;
+}
+
+IsPlayerKnockedOut(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return bPlayerGameSettings[playerid] & KnockedOut;
+}
+
+IsPlayerOnAdminDuty(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return bPlayerGameSettings[playerid] & AdminDuty;
 }
 
 GetPlayerServerJoinTick(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return tick_ServerJoin[playerid];
 }
 
 GetPlayerSpawnTick(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return tick_Spawn[playerid];
 }
 
 GetPlayerVehicleExitTick(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return tick_ExitVehicle[playerid];
 }
 
@@ -858,4 +877,21 @@ GetPlayerDataBitmask(playerid)
 		return 0;
 
 	return bPlayerGameSettings[playerid];
+}
+
+GetPlayerLastVehicle(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerVehicleID[playerid];
+}
+
+forward Float:GetPlayerTotalVelocity(playerid);
+Float:GetPlayerTotalVelocity(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0.0;
+
+	return gPlayerVelocity[playerid];
 }

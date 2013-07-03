@@ -9,35 +9,40 @@
 #define VEHICLE_HEALTH_MAX		(990.0)
 
 
+new
+Float:	veh_TempHealth[MAX_PLAYERS],
+Float:	veh_TempVelocity[MAX_PLAYERS];
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(bPlayerGameSettings[playerid] & KnockedOut)
+	if(IsPlayerKnockedOut(playerid))
 		return 0;
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
 		if(newkeys & KEY_YES)
 		{
-			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER && !(bPlayerGameSettings[playerid] & KnockedOut))
+			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			{
 				new Float:health;
-				GetVehicleHealth(gPlayerVehicleID[playerid], health);
+				GetVehicleHealth(vehicleid, health);
 
-				if(VehicleFuelData[GetVehicleModel(gPlayerVehicleID[playerid])-400][veh_maxFuel] > 0.0)
+				if(VehicleFuelData[GetVehicleModel(vehicleid)-400][veh_maxFuel] > 0.0)
 				{
 					if(health >= 300.0)
 					{
-						if(gVehicleFuel[gPlayerVehicleID[playerid]] > 0.0)
-							VehicleEngineState(gPlayerVehicleID[playerid], !VehicleEngineState(gPlayerVehicleID[playerid]));
+						if(GetVehicleFuel(vehicleid) > 0.0)
+							VehicleEngineState(vehicleid, !VehicleEngineState(vehicleid));
 					}
 				}
 			}
 		}
 		if(newkeys & KEY_NO)
 		{
-			VehicleLightsState(gPlayerVehicleID[playerid], !VehicleLightsState(gPlayerVehicleID[playerid]));
+			VehicleLightsState(vehicleid, !VehicleLightsState(vehicleid));
 		}
 		if(newkeys & KEY_CTRL_BACK)//262144)
 		{
@@ -45,7 +50,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_SUBMISSION)
 		{
-			VehicleDoorsState(gPlayerVehicleID[playerid], !VehicleDoorsState(gPlayerVehicleID[playerid]));
+			VehicleDoorsState(vehicleid, !VehicleDoorsState(vehicleid));
 		}
 
 		return 1;
@@ -53,9 +58,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys == 16)
 	{
-		foreach(new i : gVehicleIndex)
+		foreach(new i : veh_Index)
 		{
-			if(IsPlayerInDynamicArea(playerid, gVehicleArea[i]))
+			if(IsPlayerInDynamicArea(playerid, GetVehicleArea(i)))
 			{
 				new
 					Float:px,
@@ -140,9 +145,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 				if(155.0 < angle < 205.0)
 				{
-					if(IsValidContainer(gVehicleContainer[i]))
+					if(IsValidContainer(GetVehicleContainer(i)))
 					{
-						if(gVehicleTrunkLocked[i])
+						if(IsVehicleTrunkLocked(i))
 						{
 							if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 							{
@@ -166,7 +171,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							SetPlayerPos(playerid, px, py, pz);
 							SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
 
-							DisplayContainerInventory(playerid, gVehicleContainer[i]);
+							DisplayContainerInventory(playerid, GetVehicleContainer(i));
 							gCurrentContainerVehicle[playerid] = i;
 
 							break;
@@ -208,11 +213,11 @@ PlayerVehicleUpdate(playerid)
 	{
 		GetVehicleHealth(vehicleid, health);
 
-		if(gPlayerVehicleCurHP[playerid] > 300.0)
+		if(veh_TempHealth[playerid] > 300.0)
 		{
-			new Float:diff = gPlayerVehicleCurHP[playerid] - health;
+			new Float:diff = veh_TempHealth[playerid] - health;
 
-			if(diff > 0.0 && gPlayerVehicleCurHP[playerid] < VEHICLE_HEALTH_MAX)
+			if(diff > 0.0 && veh_TempHealth[playerid] < VEHICLE_HEALTH_MAX)
 			{
 				health += diff * 0.9;
 				SetVehicleHealth(vehicleid, health);
@@ -236,7 +241,7 @@ PlayerVehicleUpdate(playerid)
 
 		if(VEHICLE_HEALTH_CHUNK_1 < health < VEHICLE_HEALTH_CHUNK_2)
 		{
-			if(VehicleEngineState(vehicleid) && gPlayerVelocity[playerid] > 30.0)
+			if(VehicleEngineState(vehicleid) && GetPlayerTotalVelocity(playerid) > 30.0)
 			{
 				if(random(100) < (50 - ((health - 400.0) / 4)))
 				{
@@ -270,18 +275,18 @@ PlayerVehicleUpdate(playerid)
 
 			if(VehicleEngineState(vehicleid))
 			{
-				if(gVehicleFuel[vehicleid] <= 0.0)
+				new Float:fuel = GetVehicleFuel(vehicleid);
+				if(fuel <= 0.0)
 				{
 					VehicleEngineState(vehicleid, 0);
 					PlayerTextDrawColor(playerid, VehicleEngineText, RED);
 				}
 				else
 				{
-					if(gVehicleFuel[vehicleid] > 0.0)
-					{
-						gVehicleFuel[vehicleid] -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((gPlayerVelocity[playerid]/60)/60)/10) + 0.0001);
-					}
+					if(fuel > 0.0)
+						fuel -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((GetPlayerTotalVelocity(playerid)/60)/60)/10) + 0.0001);
 
+					SetVehicleFuel(vehicleid, fuel);
 					PlayerTextDrawColor(playerid, VehicleEngineText, 0xFFFF00FF);
 				}
 			}
@@ -305,7 +310,7 @@ PlayerVehicleUpdate(playerid)
 		}
 
 		new str[18];
-		format(str, 18, "%.2fL/%.2f", gVehicleFuel[vehicleid], VehicleFuelData[model - 400][veh_maxFuel]);
+		format(str, 18, "%.2fL/%.2f", GetVehicleFuel(vehicleid), VehicleFuelData[model - 400][veh_maxFuel]);
 		PlayerTextDrawSetString(playerid, VehicleFuelText, str);
 
 		PlayerTextDrawShow(playerid, VehicleFuelText);
@@ -313,23 +318,31 @@ PlayerVehicleUpdate(playerid)
 		PlayerTextDrawShow(playerid, VehicleEngineText);
 		PlayerTextDrawShow(playerid, VehicleDoorsText);
 
-		if(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) > ((GetVehicleType(model) == VTYPE_BMX) ? 55.0 : 45.0))
+		if(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) > ((GetVehicleType(model) == VTYPE_BMX) ? 55.0 : 45.0))
 		{
-			GivePlayerHP(playerid, -(floatabs(gCurrentVelocity[playerid] - gPlayerVelocity[playerid]) * 0.1));
+			GivePlayerHP(playerid, -(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) * 0.1));
 		}
 
 		switch(GetPlayerWeapon(playerid))
 		{
 			case 28, 29, 32:
 			{
-				if(tickcount() - tick_ExitVehicle[playerid] > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+				if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 					SetPlayerArmedWeapon(playerid, 0);
 			}
 		}
 
-		gCurrentVelocity[playerid] = gPlayerVelocity[playerid];
-		gPlayerVehicleCurHP[playerid] = health;
+		veh_TempVelocity[playerid] = GetPlayerTotalVelocity(playerid);
+		veh_TempHealth[playerid] = health;
 	}
+}
+
+hook OnPlayerStateChange(playerid)
+{
+	veh_TempHealth[playerid] = 0.0;
+	veh_TempVelocity[playerid] = 0.0;
+
+	return 1;
 }
 
 IsPlayerAtVehicleTrunk(playerid, vehicleid)
@@ -340,7 +353,7 @@ IsPlayerAtVehicleTrunk(playerid, vehicleid)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	if(!IsPlayerInDynamicArea(playerid, gVehicleArea[vehicleid]))
+	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
 		return 0;
 
 	new
@@ -380,7 +393,7 @@ IsPlayerAtVehicleBonnet(playerid, vehicleid)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	if(!IsPlayerInDynamicArea(playerid, gVehicleArea[vehicleid]))
+	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
 		return 0;
 
 	new
@@ -414,7 +427,7 @@ IsPlayerAtVehicleBonnet(playerid, vehicleid)
 
 IsPlayerAtAnyVehicleTrunk(playerid)
 {
-	foreach(new i : gVehicleIndex)
+	foreach(new i : veh_Index)
 	{
 		if(IsPlayerAtVehicleTrunk(playerid, i))
 			return 1;
@@ -425,7 +438,7 @@ IsPlayerAtAnyVehicleTrunk(playerid)
 
 IsPlayerAtAnyVehicleBonnet(playerid)
 {
-	foreach(new i : gVehicleIndex)
+	foreach(new i : veh_Index)
 	{
 		if(IsPlayerAtVehicleBonnet(playerid, i))
 			return 1;
@@ -438,7 +451,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
 	{
-		if(containerid == gVehicleContainer[gCurrentContainerVehicle[playerid]])
+		if(containerid == GetVehicleContainer(gCurrentContainerVehicle[playerid]))
 		{
 			new
 				engine,
@@ -467,9 +480,9 @@ forward veh_OnPlayerCloseContainer(playerid, containerid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
-	foreach(new i : gVehicleIndex)
+	foreach(new i : veh_Index)
 	{
-		if(IsPlayerInDynamicArea(playerid, gVehicleArea[i]))
+		if(IsPlayerInDynamicArea(playerid, GetVehicleArea(i)))
 		{
 			return 1;
 		}
@@ -485,76 +498,11 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem veh_OnPlayerUseItem
 forward veh_OnPlayerUseItem(playerid, itemid);
 
-
-
-forward Float:GetVehicleFuelCapacity(vehicleid);
-Float:GetVehicleFuelCapacity(vehicleid)
+public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 {
-	if(!IsValidVehicle(vehicleid))
-		return 0.0;
-
-	return VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel];
-}
-
-forward Float:GetVehicleFuel(vehicleid);
-Float:GetVehicleFuel(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0.0;
-
-	return gVehicleFuel[vehicleid];
-}
-SetVehicleFuel(vehicleid, Float:fuel)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	gVehicleFuel[vehicleid] = fuel;
-
-	if(gVehicleFuel[vehicleid] > VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel])
-		gVehicleFuel[vehicleid] = VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel];
-
-	return 1;
-}
-
-IsVehicleTrunkLocked(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	return gVehicleTrunkLocked[vehicleid];
-}
-SetVehicleTrunkLock(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	gVehicleTrunkLocked[vehicleid] = toggle;
-	return 1;
-}
-SetVehicleUsed(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(toggle)
-		t:bVehicleSettings[vehicleid]<v_Used>;
-
-	else
-		f:bVehicleSettings[vehicleid]<v_Used>;
-
-	return 1;
-}
-SetVehicleOccupied(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(toggle)
-		t:bVehicleSettings[vehicleid]<v_Occupied>;
-
-	else
-		f:bVehicleSettings[vehicleid]<v_Occupied>;
-
-	return 1;
+	GetVehicleDamageStatus(vehicleid,
+		veh_Data[vehicleid][veh_panels],
+		veh_Data[vehicleid][veh_doors],
+		veh_Data[vehicleid][veh_lights],
+		veh_Data[vehicleid][veh_tires]);
 }

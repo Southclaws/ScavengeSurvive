@@ -185,11 +185,15 @@ timer AutoSave_Vehicles[3000]()
 	autosave_Tick = tickcount();
 	#endif
 
-	new idx;
+	new
+		idx,
+		owner[MAX_PLAYER_NAME];
 
-	foreach(new i : gVehicleIndex)
+	foreach(new i : veh_Index)
 	{
-		if(strlen(gVehicleOwner[i]) >= 3 && IsValidVehicle(i))
+		GetVehicleOwner(i, owner);
+
+		if(strlen(owner) >= 3 && IsValidVehicle(i))
 		{
 			autosave_Block[idx] = i;
 			idx++;
@@ -207,11 +211,14 @@ timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
 	if(gServerUptime > MAX_SERVER_UPTIME - 20)
 		return;
 
-	new i;
+	new
+		i,
+		owner[MAX_PLAYER_NAME];
 
 	for(i = index; i < index + MAX_SAVES_PER_BLOCK_VEHICLE && i < autosave_Max; i++)
 	{
-		SavePlayerVehicle(autosave_Block[i], gVehicleOwner[autosave_Block[i]], false);
+		GetVehicleOwner(autosave_Block[i], owner);
+		SavePlayerVehicle(autosave_Block[i], owner, false);
 	}
 
 	if(i < autosave_Max)

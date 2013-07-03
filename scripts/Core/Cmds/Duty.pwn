@@ -81,8 +81,3 @@ ACMD:spec[1](playerid, params[])
 
 	return 1;
 }
-
-IsPlayerOnAdminDuty(playerid)
-{
-	return bPlayerGameSettings[playerid] & AdminDuty;
-}

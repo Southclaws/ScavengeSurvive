@@ -48,6 +48,13 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 
 ptask AntiCheatUpdate[1000](playerid)
 {
+	if(IsPlayerOnAdminDuty(playerid))
+	{
+		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
+		tp_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
 	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
@@ -66,6 +73,7 @@ ptask AntiCheatUpdate[1000](playerid)
 	{
 		PositionCheck(playerid);
 		SwimFlyCheck(playerid);
+		VehicleTeleportCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
 			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
@@ -76,6 +84,7 @@ ptask AntiCheatUpdate[1000](playerid)
 		tp_DetectDelay[playerid] = tickcount();
 
 		VehicleHealthCheck(playerid);	
+		VehicleModCheck(playerid);	
 	}
 
 	CameraDistanceCheck(playerid);
@@ -123,7 +132,6 @@ PositionCheck(playerid)
 		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
 		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
 		IsPlayerDead(playerid) ||
-		IsPlayerOnAdminDuty(playerid) ||
 		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
@@ -326,7 +334,6 @@ CameraDistanceCheck(playerid)
 		IsAutoSaving() ||
 		IsPlayerDead(playerid) ||
 		IsPlayerUnfocused(playerid) ||
-		IsPlayerOnAdminDuty(playerid) ||
 		IsPlayerOnZipline(playerid) ||
 		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
@@ -491,6 +498,166 @@ CameraDistanceCheck(playerid)
 
 	return;
 }
+
+
+/*==============================================================================
+
+	Vehicle Teleport
+
+==============================================================================*/
+
+
+new
+Float:	vt_Position[MAX_SPAWNED_VEHICLES][3],
+		vt_MovedFar[MAX_SPAWNED_VEHICLES],
+		vt_MovedFarTick[MAX_SPAWNED_VEHICLES],
+		vt_MovedFarPlayer[MAX_SPAWNED_VEHICLES],
+Float:	vt_MovedFarDistance[MAX_SPAWNED_VEHICLES];
+
+
+hook OnVehicleSpawn(vehicleid)
+{
+	GetVehiclePos(vehicleid, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+}
+
+VehicleTeleportCheck(playerid)
+{
+	foreach(new i : veh_Index)
+	{
+		if(!IsVehicleOccupied(i))
+			VehicleDistanceCheck(playerid, i);
+	}
+}
+
+VehicleDistanceCheck(playerid, vehicleid)
+{
+	if(tickcount() - vt_MovedFarTick[vehicleid] < 5000)
+	{
+		vt_ResetVehiclePosition(vehicleid);
+		return 1;
+	}
+
+	if(tickcount() - GetPlayerSpawnTick(playerid) < 15000)
+	{
+		vt_ResetVehiclePosition(vehicleid);
+		return 1;
+	}
+
+	if(tickcount() - tick_ExitVehicle[playerid] < 5000)
+	{
+		vt_ResetVehiclePosition(vehicleid);
+		return 1;
+	}
+
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:distance;
+
+	GetVehiclePos(vehicleid, x, y, z);
+
+	distance = Distance(x, y, z, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+
+	if(distance > 10.0)
+	{
+		vt_MovedFar[vehicleid] = true;
+		vt_MovedFarTick[vehicleid] = tickcount();
+		vt_MovedFarPlayer[vehicleid] = GetClosestPlayerFromPoint(x, y, z);
+		vt_MovedFarDistance[vehicleid] = distance;
+
+		MsgAdminsF(4, YELLOW, "[TEST] Vehicle %d moved %fm towards %p", vehicleid, distance, vt_MovedFarPlayer[vehicleid]);
+
+		RespawnVehicle(vehicleid);
+	}
+
+	vt_ResetVehiclePosition(vehicleid);
+
+	return 1;
+}
+
+vt_ResetVehiclePosition(vehicleid)
+{
+	GetVehiclePos(vehicleid, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+}
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(newstate == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		if(vt_MovedFar[vehicleid])
+		{
+			if(tickcount() - vt_MovedFarTick[vehicleid] < 10000)
+			{
+				if(vt_MovedFarPlayer[vehicleid] == playerid)
+				{
+					MsgAdminsF(4, YELLOW, "[TEST] %p entered vehicle %d that moved %fm", playerid, vehicleid, vt_MovedFarDistance[vehicleid]);
+				}
+			}
+		}
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Vehicle Mods
+
+==============================================================================*/
+
+
+VehicleModCheck(playerid)
+{
+	new
+		vehicleid,
+		component;
+
+	vehicleid = GetPlayerVehicleID(playerid);
+
+	component = GetVehicleComponentInSlot(vehicleid, CARMODTYPE_NITRO);
+
+	if(component == 1008 || component == 1009 || component == 1010)
+	{
+		new
+			name[24],
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerName(playerid, name, 24);
+		GetVehiclePos(vehicleid, x, y, z);
+
+		ReportPlayer(name, "Detected with Nitro vehicle component", -1, REPORT_TYPE_CARNITRO, x, y, z, "");
+	}
+
+	component = GetVehicleComponentInSlot(vehicleid, CARMODTYPE_HYDRAULICS);
+
+	if(component == 1087)
+	{
+		new
+			name[24],
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerName(playerid, name, 24);
+		GetVehiclePos(vehicleid, x, y, z);
+
+		ReportPlayer(name, "Detected with Hydraulics vehicle component", -1, REPORT_TYPE_CARHYDRO, x, y, z, "");
+	}
+}
+
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
 
 IsAtDefaultPos(Float:x, Float:y, Float:z)
 {

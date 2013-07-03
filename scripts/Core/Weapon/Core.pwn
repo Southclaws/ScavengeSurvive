@@ -509,7 +509,7 @@ forward wep_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(bPlayerGameSettings[playerid] & KnockedOut)
+	if(IsPlayerKnockedOut(playerid))
 		return 1;
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -546,7 +546,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					if(!IsPlayerIdle(i))
 						continue;
 
-					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[i] & AdminDuty || bPlayerGameSettings[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
+					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(i) || IsPlayerKnockedOut(i) || GetPlayerAnimationIndex(i) == 1381)
 						continue;
 
 					PlayerGiveWeapon(playerid, i);

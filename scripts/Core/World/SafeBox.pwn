@@ -59,9 +59,6 @@ DestroySafebox(itemid)
 
 	if(IsValidContainer(containerid))
 	{
-		for(new i; i < GetContainerSize(containerid); i++)
-			DestroyItem(GetContainerSlotItem(containerid, i));
-
 		DestroyContainer(containerid);
 		Iter_SafeRemove(box_Index, itemid, itemid);
 

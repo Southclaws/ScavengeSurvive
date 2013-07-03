@@ -7,7 +7,6 @@ new gAdminCommandList_Lvl2[] =
 	/whitelist - add/remove a player from the whitelist\n\
 	/aliases - check aliases\n\
 	/clearchat - clear the chatbox\n\
-	/ann - send an on-screen announcement to everyone\n\
 	/motd - set the message of the day\n"
 };
 
@@ -188,17 +187,6 @@ ACMD:clearchat[2](playerid, params[])
 {
 	for(new i;i<100;i++)
 		MsgAll(WHITE, " ");
-
-	return 1;
-}
-
-
-ACMD:ann[2](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
-
-	GameTextForAll(params, 5000, 5);
 
 	return 1;
 }

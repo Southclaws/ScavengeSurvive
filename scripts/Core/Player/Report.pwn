@@ -15,6 +15,8 @@ enum
 	REPORT_TYPE_SWIMFLY,
 	REPORT_TYPE_VHEALTH,
 	REPORT_TYPE_CAMDIST,
+	REPORT_TYPE_CARNITRO,
+	REPORT_TYPE_CARHYDRO,
 	REPORT_TYPE_END
 }
 
@@ -28,7 +30,9 @@ new
 			"TELE",
 			"FLY",
 			"VHP",
-			"CAM"
+			"CAM",
+			"NOS",
+			"HYDRO"
 		};
 
 

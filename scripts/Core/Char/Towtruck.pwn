@@ -21,7 +21,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		GetVehiclePos(gPlayerVehicleID[playerid], vx1, vy1, vz1);
 
-		foreach(new i : gVehicleIndex)
+		foreach(new i : veh_Index)
 		{
 			if(i == gPlayerVehicleID[playerid])
 				continue;

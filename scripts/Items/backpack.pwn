@@ -134,12 +134,7 @@ public OnItemDestroy(itemid)
 
 	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
-		new containerid = GetItemExtraData(itemid);
-
-		for(new j; j < GetContainerSize(containerid); j++)
-			DestroyItem(GetContainerSlotItem(containerid, j));
-
-		DestroyContainer(containerid);
+		DestroyContainer(GetItemExtraData(itemid));
 		Iter_Remove(bag_Index, itemid);
 	}
 

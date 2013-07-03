@@ -396,7 +396,9 @@ ACMD:hud[4](playerid, params[])
 
 ACMD:vowner[4](playerid, params[])
 {
-	new vehicleid = GetPlayerVehicleID(playerid);
+	new
+		vehicleid = GetPlayerVehicleID(playerid),
+		owner[MAX_PLAYER_NAME];
 
 	if(!IsValidVehicle(vehicleid))
 	{
@@ -404,7 +406,9 @@ ACMD:vowner[4](playerid, params[])
 		return 1;
 	}
 
-	MsgF(playerid, YELLOW, " >  Vehicle owner: '%s'", gVehicleOwner[vehicleid]);
+	GetVehicleOwner(vehicleid, owner);
+
+	MsgF(playerid, YELLOW, " >  Vehicle owner: '%s'", owner);
 
 	return 1;
 }
@@ -420,6 +424,21 @@ ACMD:vdelete[4](playerid, params[])
 	}
 
 	DestroyVehicle(vehicleid);
+
+	return 1;
+}
+
+ACMD:vrespawn[4](playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
+	{
+		Msg(playerid, RED, " >  You are not in a vehicle.");
+		return 1;
+	}
+
+	RespawnVehicle(vehicleid);
 
 	return 1;
 }
@@ -445,6 +464,16 @@ ACMD:weather[4](playerid, params[])
 		}
 		Msg(playerid, RED, " >  Invalid weather!");
 	}
+
+	return 1;
+}
+
+ACMD:ann[4](playerid, params[])
+{
+	if(!(0 < strlen(params) < 64))
+		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
+
+	GameTextForAll(params, 5000, 5);
 
 	return 1;
 }

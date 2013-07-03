@@ -34,7 +34,7 @@ new
 Iterator:	arm_Index<MAX_ARMOUR>;
 
 new
-			arm_ArmourID[MAX_VEHICLES];
+			arm_ArmourID[MAX_SPAWNED_VEHICLES];
 
 hook OnGameModeInit()
 {
@@ -165,7 +165,7 @@ CMD:allcarmour(playerid, params[])
 			y + ((10 * i) * floatcos(-r, degrees)),
 			z, r + 90.0, -1, -1, -1);
 
-		gVehicleFuel[vehicleid] = 100.0;
+		SetVehicleFuel(vehicleid, 10000.0);
 
 		ApplyArmourToVehicle(vehicleid, i);
 	}

@@ -83,7 +83,7 @@ UpdateSpectateMode(playerid)
 			gPlayerVelocity[gPlayerSpecTarget[playerid]],
 			gPlayerVehicleID[gPlayerSpecTarget[playerid]],
 			invehicleas,
-			gVehicleFuel[gPlayerVehicleID[gPlayerSpecTarget[playerid]]]);
+			GetVehicleFuel(gPlayerVehicleID[gPlayerSpecTarget[playerid]]));
 	}
 	else
 	{

@@ -67,6 +67,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_ADMIN					(32)
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_SERVER_UPTIME			(3600 * 5)
+#define MAX_SPAWNED_VEHICLES		(150)
 
 
 // Files
@@ -555,6 +556,21 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Server/Weather.pwn"
 #include "../scripts/Core/Server/Whitelist.pwn"
 
+//======================Data Load
+
+#include "../scripts/Data/Weapon.pwn"
+#include "../scripts/Data/Loot.pwn"
+#include "../scripts/Data/Vehicle.pwn"
+
+//======================Data Setup
+
+#include "../scripts/Core/Weapon/Core.pwn"
+#include "../scripts/Core/Loot/Spawn.pwn"
+#include "../scripts/Core/Loot/HouseLoot.pwn"
+#include "../scripts/Core/Vehicle/Spawn.pwn"
+#include "../scripts/Core/Vehicle/PlayerVehicle.pwn"
+#include "../scripts/Core/Vehicle/Core.pwn"
+
 //======================Player Core
 
 #include "../scripts/Core/Player/Core.pwn"
@@ -572,20 +588,6 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Player/DisallowActions.pwn"
 #include "../scripts/Core/Player/Report.pwn"
 #include "../scripts/Core/Player/HackDetect.pwn"
-
-//======================Data Load
-
-#include "../scripts/Data/Weapon.pwn"
-#include "../scripts/Data/Loot.pwn"
-#include "../scripts/Data/Vehicle.pwn"
-
-//======================Data Setup
-
-#include "../scripts/Core/Weapon/Core.pwn"
-#include "../scripts/Core/Loot/Spawn.pwn"
-#include "../scripts/Core/Loot/HouseLoot.pwn"
-#include "../scripts/Core/Vehicle/Spawn.pwn"
-#include "../scripts/Core/Vehicle/Core.pwn"
 
 //======================UI
 
@@ -1050,7 +1052,7 @@ public OnGameModeInit()
 
 	// Data From Files
 
-	LoadVehicles();
+	LoadVehicles(true);
 	LoadSafeboxes(true);
 	LoadTents(true);
 	LoadDefenses();
@@ -1068,7 +1070,7 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
-	SaveVehicles(true);
+	SavePlayerVehicles(true);
 	SaveSafeboxes(true);
 	SaveTents(true);
 	SaveDefenses();

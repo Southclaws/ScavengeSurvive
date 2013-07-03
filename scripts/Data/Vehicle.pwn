@@ -37,7 +37,7 @@ new VehicleGroupNames[MAX_VEHICLE_GROUP][24]=
 };
 
 
-enum E_VEHICLE_DATA
+enum E_VEHICLE_TYPE_DATA
 {
 Float:	veh_maxFuel,
 Float:	veh_fuelCons,
@@ -48,7 +48,7 @@ Float:	veh_spawnRate,
 }
 
 
-new const VehicleFuelData[212][E_VEHICLE_DATA] =
+new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 {
 	{90.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 400		----	Landstalker
 	{40.0,	11.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 401		----	Bravura
