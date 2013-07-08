@@ -108,7 +108,7 @@ LoadOffsetsFromFile(name[])
 
 ApplyArmourToVehicle(vehicleid, armourid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	new

@@ -17,6 +17,7 @@ enum
 	REPORT_TYPE_CAMDIST,
 	REPORT_TYPE_CARNITRO,
 	REPORT_TYPE_CARHYDRO,
+	REPORT_TYPE_CARTELE,
 	REPORT_TYPE_END
 }
 
@@ -32,7 +33,8 @@ new
 			"VHP",
 			"CAM",
 			"NOS",
-			"HYDRO"
+			"HYDRO",
+			"VTP"
 		};
 
 
@@ -247,6 +249,10 @@ ShowReportOptions(playerid)
 				strcat(options, "Go to camera location\n");
 				strcat(options, "View camera\n");
 			}
+			case REPORT_TYPE_CARTELE:
+			{
+				strcat(options, "Go to vehicle pos\n");
+			}
 		}
 	}
 	else
@@ -328,9 +334,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
 				send_TargetType[playerid] = REPORT_TYPE_PLAYER_KILLER;
 			}
-			case 3:// Player closest to me
+			case 3: // Player closest to me
 			{
-				new targetid = GetClosestPlayerFromPlayer(playerid, 100.0);
+				new
+					Float:distance = 100.0,
+					targetid;
+
+				targetid = GetClosestPlayerFromPlayer(playerid, distance);
 
 				if(!IsPlayerConnected(targetid))
 				{
@@ -491,6 +501,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									Float:z;
 
 								sscanf(report_CurrentInfo[playerid], "p<,>fff{fff}", x, y, z);
+								SetPlayerPos(playerid, x, y, z);
+							}
+						}
+						case REPORT_TYPE_CARTELE:
+						{
+							if(GetPlayerDataBitmask(playerid) & AdminDuty)
+							{
+								new
+									Float:x,
+									Float:y,
+									Float:z;
+
+								sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
 								SetPlayerPos(playerid, x, y, z);
 							}
 						}

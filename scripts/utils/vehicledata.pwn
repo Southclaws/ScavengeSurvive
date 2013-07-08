@@ -1,16 +1,20 @@
-#define VTYPE_CAR 1
-#define VTYPE_HEAVY 2
-#define VTYPE_MONSTER 3
-#define VTYPE_BIKE 4
-#define VTYPE_QUAD 5
-#define VTYPE_BMX 6
-#define VTYPE_HELI 7
-#define VTYPE_PLANE 8
-#define VTYPE_SEA 9
-#define VTYPE_TRAILER 10
-#define VTYPE_TRAIN 11
-#define VTYPE_BOAT VTYPE_SEA
-#define VTYPE_BICYCLE VTYPE_BMX
+#define MAX_VEHICLE_NAME (32)
+
+enum
+{
+	VTYPE_CAR,
+	VTYPE_HEAVY,
+	VTYPE_MONSTER,
+	VTYPE_BIKE,
+	VTYPE_QUAD,
+	VTYPE_MOTORBIKE,
+	VTYPE_BICYCLE,
+	VTYPE_HELI,
+	VTYPE_PLANE,
+	VTYPE_SEA,
+	VTYPE_TRAILER,
+	VTYPE_TRAIN
+}
 
 stock GetVehicleType(model)
 {
@@ -166,14 +170,14 @@ stock GetVehicleType(model)
 		448,   //pizzaboy,   //bike
 		468,   //sanchez  -  bike
 		586   //wayfarer,   //bike
-		: type = VTYPE_BIKE;
+		: type = VTYPE_MOTORBIKE;
 
 	// BMX
 		case
 		509,   //bike  -  bmx
 		481,   //bmx  -  bmx
 		510   //mtbike  -  bmx
-		: type = VTYPE_BMX;
+		: type = VTYPE_BICYCLE;
 
 	// QUADS
 		case
@@ -276,7 +280,7 @@ stock GetVehicleType(model)
 	return type;
 }
 
-new const VehicleNames[212][32] =
+new const VehicleNames[212][MAX_VEHICLE_NAME] =
 {
 	"Landstalker",
 	"Bravura",
@@ -491,3 +495,21 @@ new const VehicleNames[212][32] =
 	"Farm Plow",
 	"Utility Trailer"
 };
+
+GetVehicleName(model, name[MAX_VEHICLE_NAME])
+{
+	new offset;
+
+	if(400 <= model < 612)
+		offset = -400;
+
+	else if(0 <= model < 212)
+		offset = 0;
+
+	else
+		return 0;
+
+	name = VehicleNames[model+offset];
+
+	return 1;
+}

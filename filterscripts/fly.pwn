@@ -18,6 +18,7 @@ CMD:fly(playerid, params[])
  
 	return 1;
 }
+
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & KEY_JUMP && newkeys & 16 && usefly[playerid])

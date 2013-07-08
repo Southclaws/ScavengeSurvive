@@ -209,7 +209,7 @@ PlayerVehicleUpdate(playerid)
 		model = GetVehicleModel(vehicleid),
 		Float:health;
 
-	if(GetVehicleType(model) != VTYPE_BMX && model != 0)
+	if(GetVehicleType(model) != VTYPE_BICYCLE && model != 0)
 	{
 		GetVehicleHealth(vehicleid, health);
 
@@ -318,7 +318,7 @@ PlayerVehicleUpdate(playerid)
 		PlayerTextDrawShow(playerid, VehicleEngineText);
 		PlayerTextDrawShow(playerid, VehicleDoorsText);
 
-		if(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) > ((GetVehicleType(model) == VTYPE_BMX) ? 55.0 : 45.0))
+		if(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) > ((GetVehicleType(model) == VTYPE_BICYCLE) ? 55.0 : 45.0))
 		{
 			GivePlayerHP(playerid, -(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) * 0.1));
 		}
@@ -337,6 +337,38 @@ PlayerVehicleUpdate(playerid)
 	}
 }
 
+VehicleSurfingCheck(playerid)
+{
+	new
+		vehicleid = GetPlayerSurfingVehicleID(playerid),
+		Float:vx,
+		Float:vy,
+		Float:vz,
+		Float:velocity;
+
+	GetVehicleVelocity(vehicleid, vx, vy, vz);
+	velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+
+	if(velocity > 40.0)
+	{
+		if(!IsPlayerKnockedOut(playerid))
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerPos(playerid, x, y, z);
+			SetPlayerPos(playerid, x, y, z + 1.0);
+
+			SetPlayerVelocity(playerid, 0.0, 0.0, 0.0);
+			GivePlayerHP(playerid, -frandom(5.0));
+
+			KnockOutPlayer(playerid, 3000);
+		}
+	}
+}
+
 hook OnPlayerStateChange(playerid)
 {
 	veh_TempHealth[playerid] = 0.0;
@@ -350,7 +382,7 @@ IsPlayerAtVehicleTrunk(playerid, vehicleid)
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
@@ -390,7 +422,7 @@ IsPlayerAtVehicleBonnet(playerid, vehicleid)
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
@@ -449,7 +481,7 @@ IsPlayerAtAnyVehicleBonnet(playerid)
 
 public OnPlayerCloseContainer(playerid, containerid)
 {
-	if(IsValidVehicle(gCurrentContainerVehicle[playerid]))
+	if(IsValidVehicleID(gCurrentContainerVehicle[playerid]))
 	{
 		if(containerid == GetVehicleContainer(gCurrentContainerVehicle[playerid]))
 		{

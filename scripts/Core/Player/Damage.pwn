@@ -134,6 +134,42 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 			gPlayerAP[targetid] += (hploss / 2.0);
 		}
+
+		if(!IsPlayerInAnyVehicle(playerid))
+		{
+			switch(weaponid)
+			{
+				case 25, 27, 30, 31, 33, 34:
+					head = IsPlayerAimingAtHead(playerid, targetid);
+			}
+			switch(weaponid)
+			{
+				case 1..3, 5..7, 10..18, 39:
+				{
+					if(random(100) < 30)
+					{
+						t:bPlayerGameSettings[targetid]<Bleeding>;
+					}
+				}
+				case 0, 40..46:
+				{
+					// Unused
+				}
+				default:
+				{
+					t:bPlayerGameSettings[targetid]<Bleeding>;
+
+					if((gPlayerHP[playerid] - hploss) < 40.0)
+					{
+						if(random(100) < 70)
+						{
+							if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+								KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
+						}
+					}
+				}
+			}
+		}
 	}
 	else if(type == 1)
 	{
@@ -168,42 +204,6 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		hploss *= 0.9;
 	}
 
-	if(!IsPlayerInAnyVehicle(playerid))
-	{
-		switch(weaponid)
-		{
-			case 25, 27, 30, 31, 33, 34:
-				head = IsPlayerAimingAtHead(playerid, targetid);
-		}
-		switch(weaponid)
-		{
-			case 1..3, 5..7, 10..18, 39:
-			{
-				if(random(100) < 30)
-				{
-					t:bPlayerGameSettings[targetid]<Bleeding>;
-				}
-			}
-			case 0, 40..46:
-			{
-				// Unused
-			}
-			default:
-			{
-				t:bPlayerGameSettings[targetid]<Bleeding>;
-
-				if((gPlayerHP[playerid] - hploss) < 40.0)
-				{
-					if(random(100) < 70)
-					{
-						if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-							KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
-					}
-				}
-			}
-		}
-	}
-
 	if(GetItemType(GetPlayerItem(targetid)) == item_Shield)
 	{
 		new
@@ -215,9 +215,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		angleto = absoluteangle(targetangle - GetAngleToPoint(px, py, tx, ty));
 
 		if(225.0 < angleto < 315.0)
-		{
 			hploss *= 0.2;
-		}
 
 		f:bPlayerGameSettings[targetid]<Bleeding>;
 	}

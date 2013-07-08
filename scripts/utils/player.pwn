@@ -138,7 +138,7 @@ stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 	return 0;
 }
 
-GetClosestPlayerFromPlayer(playerid, Float:range = 10000.0)
+GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
 {
 	new
 		Float:x,
@@ -150,13 +150,12 @@ GetClosestPlayerFromPlayer(playerid, Float:range = 10000.0)
 	return GetClosestPlayerFromPoint(x, y, z, range);
 }
 
-GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, Float:range = 10000.0)
+GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance = 10000.0)
 {
 	new
 		Float:px,
 		Float:py,
 		Float:pz,
-		Float:lowestdistance = range,
 		Float:distance,
 		closestplayer = -1;
 
@@ -166,13 +165,10 @@ GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, Float:range = 10000.0)
 
 		distance = Distance(px, py, pz, x, y, z);
 
-		if(distance < range)
+		if(distance < lowestdistance)
 		{
-			if(distance < lowestdistance)
-			{
-				lowestdistance = distance;
-				closestplayer = i;
-			}
+			lowestdistance = distance;
+			closestplayer = i;
 		}
 	}
 

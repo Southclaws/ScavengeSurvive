@@ -1,61 +1,61 @@
-/*
- *	Simple Animation List
- *
- *	Added In Version 1
- *
- *		Simple list of animation libraries.
- *		Each library contains all it's animations.
- *		Save animations with current settings.
- *
- *	Added In Version 2
- *
- *		Added 'anim' prefix to all commands
- *		Search function /animsearch
- *		Added a browsing feature that allows clicking through animation indexes
- *
- *
- *	~Southclaw
- *		Do what you want with it, but keep my name on it :)
- */
+/*==============================================================================
 
 
-#include <a_samp>	// If you don't have this file, give up... just, give up.
-	#undef MAX_PLAYERS
-	#define MAX_PLAYERS			(16)
+	Southclaw's Simple Animation Browser
 
-#include <zcmd>		// If you don't have ZCMD, get it, don't go asking me to make a strcmp version!
+		Browse and search through the entire GTA:SA animation library with ease.
+		Do what you want with it, but keep my name on it!
+	
+		Added In Version 1
+		
+			Simple list of animation libraries.
+			Each library contains all it's animations.
+			Save animations with current settings.
+		
+		Added In Version 2
+		
+			Added 'anim' prefix to all commands
+			Search function /animsearch
+			Added a browsing feature that allows clicking through animation indexes
 
 
-#define DIALOG_INDEX			(10000)		// Default dialog index to start dialog IDs from
-#define ANIM_SAVE_FILE			"SavedAnimations.txt"
-#define MOUSE_HOVER_COLOUR      0xFFFF00FF	// Yellow
+==============================================================================*/
 
-#define MAX_ANIMS				1812		// Total amount of animations (No brackets, because it's embedded in strings)
-#define MAX_LIBRARY				(132)		// Total amount of libraries
-#define MAX_LIBANIMS    		(294)		// Largest library
-#define MAX_LIB_NAME     		(32)
-#define MAX_ANIM_NAME    		(32)		// Same as LIBNAME but just for completion!
-#define MAX_SEARCH_RESULTS		(20)		// The max amount of search results that can be shown
-#define MAX_SEARCH_RESULT_LEN	(MAX_SEARCH_RESULTS * (MAX_LIB_NAME + 1 + MAX_ANIM_NAME))
 
-#define BROWSE_MODE_NONE		(0)			// Player isn't browsing
-#define BROWSE_MODE_BROWSING	(2)			// Player is browsing
-#define BROWSE_MODE_CAMERA		(3)			// Player is moving the camera in browse mode
+#include <a_samp>
+#include <zcmd>
 
-#define PreloadAnimLib(%1,%2)	ApplyAnimation(%1,%2,"null",0.0,0,0,0,0,0)
+
+#define DIALOG_INDEX            (10000)                 // Default dialog index to start dialog IDs from
+#define ANIM_SAVE_FILE          "SavedAnimations.txt"   // File to save data in
+#define MOUSE_HOVER_COLOUR      0xFFFF00FF              // Yellow
+
+#define MAX_ANIMS               1812                    // Total amount of animations (No brackets, because it's embedded in strings)
+#define MAX_LIBRARY             (132)                   // Total amount of libraries
+#define MAX_LIBANIMS            (294)                   // Largest library
+#define MAX_LIB_NAME            (32)
+#define MAX_ANIM_NAME           (32)                    // Same as LIBNAME but just for completion!
+#define MAX_SEARCH_RESULTS      (20)                    // The max amount of search results that can be shown
+#define MAX_SEARCH_RESULT_LEN   (MAX_SEARCH_RESULTS * (MAX_LIB_NAME + 1 + MAX_ANIM_NAME))
+
+#define BROWSE_MODE_NONE        (0)                     // Player isn't browsing
+#define BROWSE_MODE_BROWSING    (2)                     // Player is browsing
+#define BROWSE_MODE_CAMERA      (3)                     // Player is moving the camera in browse mode
+
+#define PreloadAnimLib(%1,%2)   ApplyAnimation(%1,%2,"null",0.0,0,0,0,0,0)
 #define Msg                     SendClientMessage
 
 
 enum
 {
-	D_ANIM_LIBRARIES = DIALOG_INDEX,		// The list of animation libraries
-	D_ANIM_LIST,							// The list of animations in a library
-	D_ANIM_SEARCH,							// Search query dialog
-	D_ANIM_SEARCH_RESULTS,					// Search results list
-	D_ANIM_SETTINGS,						// Animation parameter setup
-	D_ANIM_SPEED,							// Animation speed parameter input
-	D_ANIM_TIME,							// Animation time parameter input
-	D_ANIM_IDX								// Animation index input
+	D_ANIM_LIBRARIES = DIALOG_INDEX,                    // The list of animation libraries
+	D_ANIM_LIST,                                        // The list of animations in a library
+	D_ANIM_SEARCH,                                      // Search query dialog
+	D_ANIM_SEARCH_RESULTS,                              // Search results list
+	D_ANIM_SETTINGS,                                    // Animation parameter setup
+	D_ANIM_SPEED,                                       // Animation speed parameter input
+	D_ANIM_TIME,                                        // Animation time parameter input
+	D_ANIM_IDX                                          // Animation index input
 }
 // anm = 3 letter prefix for animation related vars.
 enum E_ANIM_SETTINGS
@@ -98,40 +98,40 @@ new
 public OnFilterScriptInit()
 {
 	new
-	    lib[32],				// The library name.
-	    anim[32],				// The animation name.
-		tmplib[32]	= "NULL",	// The current library name to be compared.
-		curlib		= -1;		// Current library the code writes to.
+		lib[32],                // The library name.
+		anim[32],               // The animation name.
+		tmplib[32]  = "NULL",   // The current library name to be compared.
+		curlib      = -1;       // Current library the code writes to.
 
 	for(new i = 1;i<MAX_ANIMS;i++) // Loop through all animation IDs.
 	{
-	    GetAnimationName(i, lib, 32, anim, 32);
-	    
-	    // If the animation library just retrieved does not match the current
-	    // library, the following animations are in a new library so advance
-	    // the current library variable.
-	    if(strcmp(lib, tmplib))
-	    {
+		GetAnimationName(i, lib, 32, anim, 32);
+		
+		// If the animation library just retrieved does not match the current
+		// library, the following animations are in a new library so advance
+		// the current library variable.
+		if(strcmp(lib, tmplib))
+		{
 			curlib++;
 			strcat(gLibList, lib);
 			strcat(gLibList, "\n");
 			tmplib = lib;
 			strcat(gLibIndex[curlib], lib);
-	    }
-	    
-	    strcat(gAnimList[curlib], anim);
-	    strcat(gAnimList[curlib], "\n");
+		}
+		
+		strcat(gAnimList[curlib], anim);
+		strcat(gAnimList[curlib], "\n");
 
 		gAnimTotal[ curlib ]++; // Increase the total amount of animations in the current library.
 	}
 	
 	for(new i;i<MAX_PLAYERS;i++)
 	{
-	    // Default animations to avoid crashes if a user uses
-	    // /animparams before /animations.
-	    gCurrentLib[i] = "RUNNINGMAN";
-	    gCurrentAnim[i] = "DANCE_LOOP";
-	    gCurrentIdx[i] = 1811;
+		// Default animations to avoid crashes if a user uses
+		// /animparams before /animations.
+		gCurrentLib[i] = "RUNNINGMAN";
+		gCurrentAnim[i] = "DANCE_LOOP";
+		gCurrentIdx[i] = 1811;
 
 		// Default speed so the user can use /animations
 		// before needing to edit the speed in /animsettings
@@ -144,7 +144,7 @@ public OnFilterScriptExit()
 {
 	for(new i;i<MAX_PLAYERS;i++)
 	{
-	    UnloadPlayerTextDraws(i);
+		UnloadPlayerTextDraws(i);
 	}
 }
 
@@ -165,14 +165,14 @@ CMD:animbrowse(playerid, params[])
 	if(gBrowseMode[playerid] == BROWSE_MODE_NONE)
 	{
 		EnterAnimationBrowser(playerid);
-    	Msg(playerid, -1, "If you accidentally exit mouse mode with ESC, use ~k~~VEHICLE_ENTER_EXIT~ to show the mouse again.");
-    }
-    else ExitAnimationBrowser(playerid);
+		Msg(playerid, -1, "If you accidentally exit mouse mode with ESC, use ~k~~VEHICLE_ENTER_EXIT~ to show the mouse again.");
+	}
+	else ExitAnimationBrowser(playerid);
 	return 1;
 }
 CMD:animplay(playerid, params[])
 {
-    PlayCurrentAnimation(playerid);
+	PlayCurrentAnimation(playerid);
 	return 1;
 }
 CMD:animstop(playerid, params[])
@@ -182,7 +182,7 @@ CMD:animstop(playerid, params[])
 }
 CMD:animlibs(playerid, params[])
 {
-    PreloadPlayerAnims(playerid);
+	PreloadPlayerAnims(playerid);
 	ShowPlayerDialog(playerid, D_ANIM_LIBRARIES, DIALOG_STYLE_LIST, "Choose an animation library", gLibList, "Open...", "Cancel");
 	return 1;
 }
@@ -212,23 +212,23 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == D_ANIM_LIBRARIES && response)
 	{
-	    // Blank the string because strcat is used.
-	    gCurrentLib[playerid][0] = EOS;
-	    // Fortunately, inputtext will return the text of the line,
-	    // So this can just be saved as the player's current library.
-	    strcat(gCurrentLib[playerid], inputtext);
-	    // Show the right list of animations from the chosen library.
+		// Blank the string because strcat is used.
+		gCurrentLib[playerid][0] = EOS;
+		// Fortunately, inputtext will return the text of the line,
+		// So this can just be saved as the player's current library.
+		strcat(gCurrentLib[playerid], inputtext);
+		// Show the right list of animations from the chosen library.
 		ShowPlayerDialog(playerid, D_ANIM_LIST, DIALOG_STYLE_LIST, "Choose an animation", gAnimList[listitem], "Play", "Back");
 		// Preload the animations for that library
 		PreloadAnimLib(playerid, inputtext);
 	}
 	if(dialogid == D_ANIM_LIST)
 	{
-	    if(response)
-	    {
+		if(response)
+		{
 			// Blank the string because strcat is used
 			gCurrentAnim[playerid][0] = EOS;
-		    // Save the animation name to the variable (For saving)
+			// Save the animation name to the variable (For saving)
 			strcat(gCurrentAnim[playerid], inputtext);
 
 			PlayCurrentAnimation(playerid);
@@ -236,8 +236,8 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else ShowPlayerDialog(playerid, D_ANIM_LIBRARIES, DIALOG_STYLE_LIST, "Choose an animation library", gLibList, "Open...", "Cancel");
 	}
 	if(dialogid == D_ANIM_SEARCH && response)
-    {
-        new
+	{
+		new
 			result,
 			output[MAX_SEARCH_RESULTS * MAX_ANIM_NAME],
 			title[48];
@@ -253,9 +253,9 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 	if(dialogid == D_ANIM_SEARCH_RESULTS)
 	{
-	    if(!response)return ShowPlayerDialog(playerid, D_ANIM_SEARCH, DIALOG_STYLE_INPUT, "Animation search", "Type a keyword", "Open...", "Cancel");
+		if(!response)return ShowPlayerDialog(playerid, D_ANIM_SEARCH, DIALOG_STYLE_INPUT, "Animation search", "Type a keyword", "Open...", "Cancel");
 
-	    new delim = strfind(inputtext, "~");
+		new delim = strfind(inputtext, "~");
 
 		strmid(gCurrentLib[playerid], inputtext, 0, delim);
 		strmid(gCurrentAnim[playerid], inputtext, delim+1, strlen(inputtext));
@@ -268,21 +268,21 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else if(listitem == 5)ShowPlayerDialog(playerid, D_ANIM_TIME, DIALOG_STYLE_INPUT, "Animation Time", "Change the time of the animation below:", "Accept", "Back");
 		else
 		{
-		    gAnimSettings[playerid][E_ANIM_SETTINGS:listitem] = !gAnimSettings[playerid][E_ANIM_SETTINGS:listitem];
-		    PlayCurrentAnimation(playerid);
+			gAnimSettings[playerid][E_ANIM_SETTINGS:listitem] = !gAnimSettings[playerid][E_ANIM_SETTINGS:listitem];
+			PlayCurrentAnimation(playerid);
 			FormatAnimSettingsMenu(playerid);
 		}
 	}
 	if(dialogid == D_ANIM_SPEED && response)
 	{
 		gAnimSettings[playerid][anm_Speed] = floatstr(inputtext);
-    	PlayCurrentAnimation(playerid);
+		PlayCurrentAnimation(playerid);
 		FormatAnimSettingsMenu(playerid);
 	}
 	if(dialogid == D_ANIM_TIME && response)
 	{
 		gAnimSettings[playerid][anm_Time] = strval(inputtext);
-    	PlayCurrentAnimation(playerid);
+		PlayCurrentAnimation(playerid);
 		FormatAnimSettingsMenu(playerid);
 	}
 	if(dialogid == D_ANIM_IDX && response)
@@ -290,12 +290,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		new idx = strval(inputtext);
 		if(0 < idx < MAX_ANIMS)
 		{
-		    GetAnimationName(idx,
+			GetAnimationName(idx,
 				gCurrentLib[playerid], MAX_LIB_NAME,
 				gCurrentAnim[playerid], MAX_ANIM_NAME);
 
-		    gCurrentIdx[playerid] = idx;
-		    UpdateBrowserControls(playerid);
+			gCurrentIdx[playerid] = idx;
+			UpdateBrowserControls(playerid);
 			PlayCurrentAnimation(playerid);
 		}
 		else ShowPlayerDialog(playerid, D_ANIM_IDX, DIALOG_STYLE_INPUT, "Anim Index", "Enter an animation index number (idx)\nbetween 0 and "#MAX_ANIMS":", "Enter", "Cancel");
@@ -331,19 +331,19 @@ public OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 	if(playertextid == guiAnimIdx)
 	{
-	    ShowPlayerDialog(playerid, D_ANIM_IDX, DIALOG_STYLE_INPUT, "Anim Index", "Enter an animation index number (idx)\nbetween 0 and "#MAX_ANIMS":", "Enter", "Cancel");
+		ShowPlayerDialog(playerid, D_ANIM_IDX, DIALOG_STYLE_INPUT, "Anim Index", "Enter an animation index number (idx)\nbetween 0 and "#MAX_ANIMS":", "Enter", "Cancel");
 	}
 	if(playertextid == guiCamera)
 	{
-	    gBrowseMode[playerid] = BROWSE_MODE_CAMERA;
-	    PlayerTextDrawSetString(playerid, guiCamera, "~k~~VEHICLE_ENTER_EXIT~ for mouse mode");
-	    CancelSelectTextDraw(playerid);
+		gBrowseMode[playerid] = BROWSE_MODE_CAMERA;
+		PlayerTextDrawSetString(playerid, guiCamera, "~k~~VEHICLE_ENTER_EXIT~ for mouse mode");
+		CancelSelectTextDraw(playerid);
 		UpdateBrowserControls(playerid);
 		SetCameraBehindPlayer(playerid);
 	}
 	if(playertextid == guiExitBrowser)
 	{
-	    ExitAnimationBrowser(playerid);
+		ExitAnimationBrowser(playerid);
 	}
 }
 
@@ -353,7 +353,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		SelectTextDraw(playerid, MOUSE_HOVER_COLOUR);
 		gBrowseMode[playerid] = BROWSE_MODE_BROWSING;
-	    PlayerTextDrawSetString(playerid, guiCamera, "Click for camera mode");
+		PlayerTextDrawSetString(playerid, guiCamera, "Click for camera mode");
 	}
 }
 
@@ -413,7 +413,7 @@ UpdateBrowserControls(playerid)
 PlayCurrentAnimation(playerid)
 {
 	ClearAnimations(playerid);
-    ApplyAnimation(playerid,
+	ApplyAnimation(playerid,
 		gCurrentLib[playerid],
 		gCurrentAnim[playerid],
 		gAnimSettings[playerid][anm_Speed],
@@ -428,10 +428,10 @@ PlayCurrentAnimation(playerid)
 FormatAnimSettingsMenu(playerid)
 {
 	new
-	    list[128];
+		list[128];
 
 	format(list, 128,
-	    "Speed:\t\t%f\n\
+		"Speed:\t\t%f\n\
 		Loop:\t\t%d\n\
 		Lock X:\t\t%d\n\
 		Lock Y:\t\t%d\n\
@@ -511,14 +511,14 @@ AnimSearch(query[], output[])
 
 PreloadPlayerAnims(playerid)
 {
-   	PreloadAnimLib(playerid,"BOMBER");
-   	PreloadAnimLib(playerid,"RAPPING");
-   	PreloadAnimLib(playerid,"SHOP");
+	PreloadAnimLib(playerid,"BOMBER");
+	PreloadAnimLib(playerid,"RAPPING");
+	PreloadAnimLib(playerid,"SHOP");
 	PreloadAnimLib(playerid,"BEACH");
 	PreloadAnimLib(playerid,"SMOKING");
-   	PreloadAnimLib(playerid,"FOOD");
-   	PreloadAnimLib(playerid,"ON_LOOKERS");
-   	PreloadAnimLib(playerid,"DEALER");
+	PreloadAnimLib(playerid,"FOOD");
+	PreloadAnimLib(playerid,"ON_LOOKERS");
+	PreloadAnimLib(playerid,"DEALER");
 	PreloadAnimLib(playerid,"CRACK");
 	PreloadAnimLib(playerid,"CARRY");
 	PreloadAnimLib(playerid,"COP_AMBIENT");
@@ -553,98 +553,98 @@ HideBrowserControls(playerid)
 
 LoadPlayerTextDraws(playerid)
 {
-	guiBackground					=CreatePlayerTextDraw(playerid, 320.0, 336.0, "~n~");
-	PlayerTextDrawAlignment			(playerid, guiBackground, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiBackground, 255);
-	PlayerTextDrawFont				(playerid, guiBackground, 2);
-	PlayerTextDrawLetterSize		(playerid, guiBackground, 0.25, 9.8);
-	PlayerTextDrawColor				(playerid, guiBackground, -1);
-	PlayerTextDrawSetOutline		(playerid, guiBackground, 0);
-	PlayerTextDrawSetProportional	(playerid, guiBackground, 1);
-	PlayerTextDrawSetShadow			(playerid, guiBackground, 1);
-	PlayerTextDrawUseBox			(playerid, guiBackground, 1);
-	PlayerTextDrawBoxColor			(playerid, guiBackground, 80);
-	PlayerTextDrawTextSize			(playerid, guiBackground, 0.0, 220.0);
+	guiBackground                   =CreatePlayerTextDraw(playerid, 320.0, 336.0, "~n~");
+	PlayerTextDrawAlignment         (playerid, guiBackground, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiBackground, 255);
+	PlayerTextDrawFont              (playerid, guiBackground, 2);
+	PlayerTextDrawLetterSize        (playerid, guiBackground, 0.25, 9.8);
+	PlayerTextDrawColor             (playerid, guiBackground, -1);
+	PlayerTextDrawSetOutline        (playerid, guiBackground, 0);
+	PlayerTextDrawSetProportional   (playerid, guiBackground, 1);
+	PlayerTextDrawSetShadow         (playerid, guiBackground, 1);
+	PlayerTextDrawUseBox            (playerid, guiBackground, 1);
+	PlayerTextDrawBoxColor          (playerid, guiBackground, 80);
+	PlayerTextDrawTextSize          (playerid, guiBackground, 0.0, 220.0);
 
-	guiArrowL						=CreatePlayerTextDraw(playerid, 280.0, 350.0, "<");
-	PlayerTextDrawTextSize			(playerid, guiArrowL, 20.0, 20.0);
-	PlayerTextDrawAlignment			(playerid, guiArrowL, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiArrowL, 255);
-	PlayerTextDrawFont				(playerid, guiArrowL, 1);
-	PlayerTextDrawLetterSize		(playerid, guiArrowL, 0.5, 3.0);
-	PlayerTextDrawColor				(playerid, guiArrowL, -1);
-	PlayerTextDrawSetOutline		(playerid, guiArrowL, 1);
-	PlayerTextDrawSetProportional	(playerid, guiArrowL, 1);
-	PlayerTextDrawSetShadow			(playerid, guiArrowL, 0);
-	PlayerTextDrawSetSelectable		(playerid, guiArrowL, 1);
+	guiArrowL                       =CreatePlayerTextDraw(playerid, 280.0, 350.0, "<");
+	PlayerTextDrawTextSize          (playerid, guiArrowL, 20.0, 20.0);
+	PlayerTextDrawAlignment         (playerid, guiArrowL, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiArrowL, 255);
+	PlayerTextDrawFont              (playerid, guiArrowL, 1);
+	PlayerTextDrawLetterSize        (playerid, guiArrowL, 0.5, 3.0);
+	PlayerTextDrawColor             (playerid, guiArrowL, -1);
+	PlayerTextDrawSetOutline        (playerid, guiArrowL, 1);
+	PlayerTextDrawSetProportional   (playerid, guiArrowL, 1);
+	PlayerTextDrawSetShadow         (playerid, guiArrowL, 0);
+	PlayerTextDrawSetSelectable     (playerid, guiArrowL, 1);
 
-	guiArrowR						=CreatePlayerTextDraw(playerid, 360.0, 350.0, ">");
-	PlayerTextDrawTextSize			(playerid, guiArrowR, 20.0, 20.0);
-	PlayerTextDrawAlignment			(playerid, guiArrowR, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiArrowR, 255);
-	PlayerTextDrawFont				(playerid, guiArrowR, 1);
-	PlayerTextDrawLetterSize		(playerid, guiArrowR, 0.5, 3.0);
-	PlayerTextDrawColor				(playerid, guiArrowR, -1);
-	PlayerTextDrawSetOutline		(playerid, guiArrowR, 1);
-	PlayerTextDrawSetProportional	(playerid, guiArrowR, 1);
-	PlayerTextDrawSetShadow			(playerid, guiArrowR, 0);
-	PlayerTextDrawSetSelectable		(playerid, guiArrowR, 1);
+	guiArrowR                       =CreatePlayerTextDraw(playerid, 360.0, 350.0, ">");
+	PlayerTextDrawTextSize          (playerid, guiArrowR, 20.0, 20.0);
+	PlayerTextDrawAlignment         (playerid, guiArrowR, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiArrowR, 255);
+	PlayerTextDrawFont              (playerid, guiArrowR, 1);
+	PlayerTextDrawLetterSize        (playerid, guiArrowR, 0.5, 3.0);
+	PlayerTextDrawColor             (playerid, guiArrowR, -1);
+	PlayerTextDrawSetOutline        (playerid, guiArrowR, 1);
+	PlayerTextDrawSetProportional   (playerid, guiArrowR, 1);
+	PlayerTextDrawSetShadow         (playerid, guiArrowR, 0);
+	PlayerTextDrawSetSelectable     (playerid, guiArrowR, 1);
 
-	guiAnimIdx						=CreatePlayerTextDraw(playerid, 320.0, 355.0, "1800");
-	PlayerTextDrawTextSize			(playerid, guiAnimIdx, 10.0, 20.0);
-	PlayerTextDrawAlignment			(playerid, guiAnimIdx, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiAnimIdx, 255);
-	PlayerTextDrawFont				(playerid, guiAnimIdx, 2);
-	PlayerTextDrawLetterSize		(playerid, guiAnimIdx, 0.3, 1.8);
-	PlayerTextDrawColor				(playerid, guiAnimIdx, -1);
-	PlayerTextDrawSetOutline		(playerid, guiAnimIdx, 0);
-	PlayerTextDrawSetProportional	(playerid, guiAnimIdx, 1);
-	PlayerTextDrawSetShadow			(playerid, guiAnimIdx, 1);
-	PlayerTextDrawSetSelectable		(playerid, guiAnimIdx, 1);
+	guiAnimIdx                      =CreatePlayerTextDraw(playerid, 320.0, 355.0, "1800");
+	PlayerTextDrawTextSize          (playerid, guiAnimIdx, 10.0, 20.0);
+	PlayerTextDrawAlignment         (playerid, guiAnimIdx, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiAnimIdx, 255);
+	PlayerTextDrawFont              (playerid, guiAnimIdx, 2);
+	PlayerTextDrawLetterSize        (playerid, guiAnimIdx, 0.3, 1.8);
+	PlayerTextDrawColor             (playerid, guiAnimIdx, -1);
+	PlayerTextDrawSetOutline        (playerid, guiAnimIdx, 0);
+	PlayerTextDrawSetProportional   (playerid, guiAnimIdx, 1);
+	PlayerTextDrawSetShadow         (playerid, guiAnimIdx, 1);
+	PlayerTextDrawSetSelectable     (playerid, guiAnimIdx, 1);
 
-	guiAnimLib						=CreatePlayerTextDraw(playerid, 320.0, 375.0, "ANIMATION LIBRARY");
-	PlayerTextDrawAlignment			(playerid, guiAnimLib, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiAnimLib, 255);
-	PlayerTextDrawFont				(playerid, guiAnimLib, 2);
-	PlayerTextDrawLetterSize		(playerid, guiAnimLib, 0.3, 1.8);
-	PlayerTextDrawColor				(playerid, guiAnimLib, -1);
-	PlayerTextDrawSetOutline		(playerid, guiAnimLib, 0);
-	PlayerTextDrawSetProportional	(playerid, guiAnimLib, 1);
-	PlayerTextDrawSetShadow			(playerid, guiAnimLib, 1);
+	guiAnimLib                      =CreatePlayerTextDraw(playerid, 320.0, 375.0, "ANIMATION LIBRARY");
+	PlayerTextDrawAlignment         (playerid, guiAnimLib, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiAnimLib, 255);
+	PlayerTextDrawFont              (playerid, guiAnimLib, 2);
+	PlayerTextDrawLetterSize        (playerid, guiAnimLib, 0.3, 1.8);
+	PlayerTextDrawColor             (playerid, guiAnimLib, -1);
+	PlayerTextDrawSetOutline        (playerid, guiAnimLib, 0);
+	PlayerTextDrawSetProportional   (playerid, guiAnimLib, 1);
+	PlayerTextDrawSetShadow         (playerid, guiAnimLib, 1);
 
-	guiAnimName						=CreatePlayerTextDraw(playerid, 320.0, 390.0, "ANIMATION NAME");
-	PlayerTextDrawAlignment			(playerid, guiAnimName, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiAnimName, 255);
-	PlayerTextDrawFont				(playerid, guiAnimName, 2);
-	PlayerTextDrawLetterSize		(playerid, guiAnimName, 0.3, 1.8);
-	PlayerTextDrawColor				(playerid, guiAnimName, -1);
-	PlayerTextDrawSetOutline		(playerid, guiAnimName, 0);
-	PlayerTextDrawSetProportional	(playerid, guiAnimName, 1);
-	PlayerTextDrawSetShadow			(playerid, guiAnimName, 1);
+	guiAnimName                     =CreatePlayerTextDraw(playerid, 320.0, 390.0, "ANIMATION NAME");
+	PlayerTextDrawAlignment         (playerid, guiAnimName, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiAnimName, 255);
+	PlayerTextDrawFont              (playerid, guiAnimName, 2);
+	PlayerTextDrawLetterSize        (playerid, guiAnimName, 0.3, 1.8);
+	PlayerTextDrawColor             (playerid, guiAnimName, -1);
+	PlayerTextDrawSetOutline        (playerid, guiAnimName, 0);
+	PlayerTextDrawSetProportional   (playerid, guiAnimName, 1);
+	PlayerTextDrawSetShadow         (playerid, guiAnimName, 1);
 
-	guiCamera						=CreatePlayerTextDraw(playerid, 320.0, 336.0, "Click for camera mode");
-	PlayerTextDrawTextSize			(playerid, guiCamera, 10.0, 130.0);
-	PlayerTextDrawAlignment			(playerid, guiCamera, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiCamera, 255);
-	PlayerTextDrawFont				(playerid, guiCamera, 2);
-	PlayerTextDrawLetterSize		(playerid, guiCamera, 0.25, 1.5);
-	PlayerTextDrawColor				(playerid, guiCamera, -1);
-	PlayerTextDrawSetOutline		(playerid, guiCamera, 0);
-	PlayerTextDrawSetProportional	(playerid, guiCamera, 1);
-	PlayerTextDrawSetShadow			(playerid, guiCamera, 1);
-	PlayerTextDrawSetSelectable		(playerid, guiCamera, 1);
+	guiCamera                       =CreatePlayerTextDraw(playerid, 320.0, 336.0, "Click for camera mode");
+	PlayerTextDrawTextSize          (playerid, guiCamera, 10.0, 130.0);
+	PlayerTextDrawAlignment         (playerid, guiCamera, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiCamera, 255);
+	PlayerTextDrawFont              (playerid, guiCamera, 2);
+	PlayerTextDrawLetterSize        (playerid, guiCamera, 0.25, 1.5);
+	PlayerTextDrawColor             (playerid, guiCamera, -1);
+	PlayerTextDrawSetOutline        (playerid, guiCamera, 0);
+	PlayerTextDrawSetProportional   (playerid, guiCamera, 1);
+	PlayerTextDrawSetShadow         (playerid, guiCamera, 1);
+	PlayerTextDrawSetSelectable     (playerid, guiCamera, 1);
 
-	guiExitBrowser					=CreatePlayerTextDraw(playerid, 320.000000, 410.000000, "Exit");
-	PlayerTextDrawTextSize			(playerid, guiExitBrowser, 10.0, 25.0);
-	PlayerTextDrawAlignment			(playerid, guiExitBrowser, 2);
-	PlayerTextDrawBackgroundColor	(playerid, guiExitBrowser, 255);
-	PlayerTextDrawFont				(playerid, guiExitBrowser, 2);
-	PlayerTextDrawLetterSize		(playerid, guiExitBrowser, 0.250000, 1.500000);
-	PlayerTextDrawColor				(playerid, guiExitBrowser, -1);
-	PlayerTextDrawSetOutline		(playerid, guiExitBrowser, 0);
-	PlayerTextDrawSetProportional	(playerid, guiExitBrowser, 1);
-	PlayerTextDrawSetShadow			(playerid, guiExitBrowser, 1);
-	PlayerTextDrawSetSelectable		(playerid, guiExitBrowser, 1);
+	guiExitBrowser                  =CreatePlayerTextDraw(playerid, 320.000000, 410.000000, "Exit");
+	PlayerTextDrawTextSize          (playerid, guiExitBrowser, 10.0, 25.0);
+	PlayerTextDrawAlignment         (playerid, guiExitBrowser, 2);
+	PlayerTextDrawBackgroundColor   (playerid, guiExitBrowser, 255);
+	PlayerTextDrawFont              (playerid, guiExitBrowser, 2);
+	PlayerTextDrawLetterSize        (playerid, guiExitBrowser, 0.250000, 1.500000);
+	PlayerTextDrawColor             (playerid, guiExitBrowser, -1);
+	PlayerTextDrawSetOutline        (playerid, guiExitBrowser, 0);
+	PlayerTextDrawSetProportional   (playerid, guiExitBrowser, 1);
+	PlayerTextDrawSetShadow         (playerid, guiExitBrowser, 1);
+	PlayerTextDrawSetSelectable     (playerid, guiExitBrowser, 1);
 }
 
 UnloadPlayerTextDraws(playerid)
@@ -675,8 +675,8 @@ CMD:deltd(playerid, params[])
 public OnFilterScriptInit()
 {
 	new
-	    lib[32],
-	    anim[32],
+		lib[32],
+		anim[32],
 		tmplib[32] = "NULL",
 		libtotal,
 		animtotal,
@@ -684,18 +684,18 @@ public OnFilterScriptInit()
 
 	for(new i;i<MAX_ANIMS;i++)
 	{
-	    GetAnimationName(i, lib, 32, anim, 32);
-	    animtotal++;
-	    if(strcmp(lib, tmplib))
-	    {
-	        printf("Found library: '%s' anims: %d", lib, animtotal);
-	        libtotal++;
+		GetAnimationName(i, lib, 32, anim, 32);
+		animtotal++;
+		if(strcmp(lib, tmplib))
+		{
+			printf("Found library: '%s' anims: %d", lib, animtotal);
+			libtotal++;
 
-	        if(animtotal > largest) largest = animtotal;
-	        animtotal = 0;
+			if(animtotal > largest) largest = animtotal;
+			animtotal = 0;
 
-	        tmplib = lib;
-	    }
+			tmplib = lib;
+		}
 	}
 	printf("Total Libraries: %d Largest Libaray: %d", libtotal, largest);
 }

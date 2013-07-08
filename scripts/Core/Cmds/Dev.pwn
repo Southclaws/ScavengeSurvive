@@ -400,7 +400,7 @@ ACMD:vowner[4](playerid, params[])
 		vehicleid = GetPlayerVehicleID(playerid),
 		owner[MAX_PLAYER_NAME];
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 	{
 		Msg(playerid, RED, " >  You are not in a vehicle.");
 		return 1;
@@ -417,7 +417,7 @@ ACMD:vdelete[4](playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 	{
 		Msg(playerid, RED, " >  You are not in a vehicle.");
 		return 1;
@@ -432,7 +432,7 @@ ACMD:vrespawn[4](playerid, params[])
 {
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 	{
 		Msg(playerid, RED, " >  You are not in a vehicle.");
 		return 1;

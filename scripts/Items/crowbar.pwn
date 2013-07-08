@@ -64,7 +64,7 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(cbr_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(!IsValidVehicle(cbr_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cbr_TargetVehicle[playerid]))
+		if(!IsValidVehicleID(cbr_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cbr_TargetVehicle[playerid]))
 		{
 			StopBreakingVehicleLock(playerid);
 			return 1;

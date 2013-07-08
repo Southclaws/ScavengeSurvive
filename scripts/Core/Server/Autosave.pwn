@@ -193,7 +193,7 @@ timer AutoSave_Vehicles[3000]()
 	{
 		GetVehicleOwner(i, owner);
 
-		if(strlen(owner) >= 3 && IsValidVehicle(i))
+		if(strlen(owner) >= 3 && IsValidVehicleID(i))
 		{
 			autosave_Block[idx] = i;
 			idx++;

@@ -3,6 +3,7 @@
 
 #define VEHICLE_INDEX_FILE			"vehicles/index.ini"
 #define VEHICLE_DATA_FILE			"vehicles/%s.dat"
+#define VEHICLE_SPAWN_CHANCE		(4) // Percent
 
 
 enum (<<=1)
@@ -88,10 +89,9 @@ LoadStaticVehiclesFromFile(file[], bool:prints = false)
 			new id;
 			id = AddStaticVehicle(model, posX, posY, posZ, rotZ, -1, -1);
 
-			if(GetVehicleType(model) == VTYPE_TRAIN)
-			{
-				Iter_Add(veh_Index, id);
-			}
+			GenerateVehicleData(id);
+			SetVehicleData(id);
+			Iter_Add(veh_Index, id);
 
 			count++;
 		}
@@ -132,7 +132,7 @@ LoadVehiclesFromFile(file[], bool:prints = false)
 			if(tmpid - 1 >= MAX_SPAWNED_VEHICLES)
 				break;
 
-			if(random(100) < 95)
+			if(random(100) < 100 - VEHICLE_SPAWN_CHANCE)
 				continue;
 
 			if(model == -1)
@@ -171,7 +171,7 @@ LoadVehiclesFromFile(file[], bool:prints = false)
 
 			tmpid = CreateNewVehicle(model, posX, posY, posZ, rotZ);
 
-			if(!IsValidVehicle(tmpid))
+			if(!IsValidVehicleID(tmpid))
 				continue;
 
 			Iter_Add(veh_Index, tmpid);
@@ -230,11 +230,17 @@ CreateNewVehicle(model, Float:x, Float:y, Float:z, Float:r)
 
 	vehicleid = CreateVehicle(model, x, y, z, r, colour1, colour2, 86400);
 
+	if(vehicleid >= MAX_SPAWNED_VEHICLES)
+	{
+		print("ERROR: Vehicle limit reached.");
+		DestroyVehicle(vehicleid);
+		return 0;
+	}
+
 	veh_Data[vehicleid][veh_colour1] = colour1;
 	veh_Data[vehicleid][veh_colour2] = colour2;
 
 	CreateVehicleArea(vehicleid);
-
 	GenerateVehicleData(vehicleid);
 	SetVehicleData(vehicleid);
 
@@ -243,7 +249,7 @@ CreateNewVehicle(model, Float:x, Float:y, Float:z, Float:r)
 
 CreateVehicleArea(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	new
@@ -361,7 +367,7 @@ SetVehicleData(vehicleid)
 
 	UpdateVehicleDamageStatus(vehicleid, veh_Data[vehicleid][veh_panels], veh_Data[vehicleid][veh_doors], veh_Data[vehicleid][veh_lights], veh_Data[vehicleid][veh_tires]);
 
-	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BMX)
+	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BICYCLE)
 		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
 
 	else
@@ -391,10 +397,6 @@ public OnVehicleSpawn(vehicleid)
 		DestroyVehicle(vehicleid);
 		Iter_Remove(veh_Index, vehicleid);
 	}
-	// else
-	// {
-	// 	SetVehicleData(vehicleid);
-	// }
 }
 
 
@@ -437,7 +439,7 @@ stock IsPlayerInVehicleArea(playerid, vehicleid)
 	if(!(0 <= playerid < MAX_PLAYERS))
 			return 0;
 
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	return IsPlayerInDynamicArea(playerid, veh_Area[vehicleid]);
@@ -446,7 +448,7 @@ stock IsPlayerInVehicleArea(playerid, vehicleid)
 forward Float:GetVehicleFuelCapacity(vehicleid);
 stock Float:GetVehicleFuelCapacity(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0.0;
 
 	return VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel];
@@ -455,7 +457,7 @@ stock Float:GetVehicleFuelCapacity(vehicleid)
 forward Float:GetVehicleFuel(vehicleid);
 stock Float:GetVehicleFuel(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0.0;
 
 	return veh_Data[vehicleid][veh_Fuel];
@@ -463,7 +465,7 @@ stock Float:GetVehicleFuel(vehicleid)
 
 stock SetVehicleFuel(vehicleid, Float:amount)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(amount > VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel])
@@ -476,7 +478,7 @@ stock SetVehicleFuel(vehicleid, Float:amount)
 
 stock GiveVehicleFuel(vehicleid, Float:amount)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	veh_Data[vehicleid][veh_Fuel] += amount;
@@ -489,7 +491,7 @@ stock GiveVehicleFuel(vehicleid, Float:amount)
 
 stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	name = veh_Owner[vehicleid];
@@ -497,28 +499,9 @@ stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 	return 1;
 }
 
-stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	veh_Owner[vehicleid] = name;
-
-	for(new i; i < MAX_SPAWNED_VEHICLES; i++)
-	{
-		if(i == vehicleid)
-			continue;
-
-		if(!strcmp(veh_Owner[i], veh_Owner[vehicleid]))
-			veh_Owner[i][0] = EOS;
-	}
-
-	return 1;
-}
-
 stock GetVehicleContainer(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return INVALID_CONTAINER_ID;
 
 	return veh_Container[vehicleid];
@@ -526,7 +509,7 @@ stock GetVehicleContainer(vehicleid)
 
 stock SetVehicleContainer(vehicleid, containerid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	veh_Container[vehicleid] = containerid;
@@ -536,7 +519,7 @@ stock SetVehicleContainer(vehicleid, containerid)
 
 stock IsVehicleTrunkLocked(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	return veh_TrunkLock[vehicleid];
@@ -544,7 +527,7 @@ stock IsVehicleTrunkLocked(vehicleid)
 
 stock SetVehicleTrunkLock(vehicleid, toggle)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	veh_TrunkLock[vehicleid] = toggle;
@@ -553,7 +536,7 @@ stock SetVehicleTrunkLock(vehicleid, toggle)
 
 stock SetVehicleUsed(vehicleid, toggle)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(toggle)
@@ -567,7 +550,7 @@ stock SetVehicleUsed(vehicleid, toggle)
 
 stock SetVehicleOccupied(vehicleid, toggle)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(toggle)
@@ -581,7 +564,7 @@ stock SetVehicleOccupied(vehicleid, toggle)
 
 stock GetVehicleArea(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return -1;
 
 	return veh_Area[vehicleid];
@@ -589,8 +572,16 @@ stock GetVehicleArea(vehicleid)
 
 stock IsVehicleOccupied(vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	return veh_BitData[vehicleid] & veh_Occupied;
+}
+
+stock IsValidVehicleID(vehicleid)
+{
+	if(IsValidVehicle(vehicleid) && vehicleid < MAX_SPAWNED_VEHICLES)
+		return 1;
+
+	return 0;
 }

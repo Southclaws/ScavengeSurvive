@@ -25,7 +25,7 @@ KnockOutPlayer(playerid, duration)
 
 		switch(GetVehicleType(GetVehicleModel(vehicleid)))
 		{
-			case VTYPE_BIKE, VTYPE_QUAD, VTYPE_BMX:
+			case VTYPE_MOTORBIKE, VTYPE_QUAD, VTYPE_BICYCLE:
 			{
 				new
 					Float:x,

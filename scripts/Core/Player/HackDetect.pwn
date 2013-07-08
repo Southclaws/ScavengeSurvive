@@ -2,12 +2,12 @@
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
-
 #define CAMERA_DISTANCE_INCAR			(150.0)
 #define CAMERA_DISTANCE_INCAR_MOVING	(150.0)
 #define CAMERA_DISTANCE_INCAR_CINEMATIC	(250.0)
 #define CAMERA_DISTANCE_INCAR_CINEMOVE	(150.0)
 #define CAMERA_DISTANCE_ONFOOT			(45.0)
+#define VEHICLE_TELEPORT_DISTANCE		(15.0)
 
 
 enum
@@ -132,7 +132,7 @@ PositionCheck(playerid)
 		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
 		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
 		IsPlayerDead(playerid) ||
-		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
@@ -170,14 +170,14 @@ PositionCheck(playerid)
 			if(tickcount() - tp_PosReportTick[playerid] > 10000)
 			{
 				new
-					name[24],
+					name[MAX_PLAYER_NAME],
 					reason[128],
 					info[128];
 
-				GetPlayerName(playerid, name, 24);
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-				format(reason, sizeof(reason), "Moved %.2fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-				format(info, sizeof(info), "%f, %f, %f", x, y, z);
+				format(reason, sizeof(reason), "Moved %.0fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
+				format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
 				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
 
 				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
@@ -193,14 +193,14 @@ PositionCheck(playerid)
 				if(distance > TELEPORT_DETECTION_DISTANCE)
 				{
 					new
-						name[24],
+						name[MAX_PLAYER_NAME],
 						reason[128],
 						info[128];
 
-					GetPlayerName(playerid, name, 24);
+					GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-					format(reason, sizeof(reason), "Moved %.2fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
-					format(info, sizeof(info), "%f, %f, %f", x, y, z);
+					format(reason, sizeof(reason), "Moved %.0fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
+					format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
 					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
 
 					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
@@ -270,10 +270,10 @@ SwimFlyCheck(playerid)
 		if(!IsPlayerInWater(playerid))
 		{
 			new
-				name[24],
+				name[MAX_PLAYER_NAME],
 				reason[64];
 
-			GetPlayerName(playerid, name, 24);
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
 
@@ -304,11 +304,11 @@ VehicleHealthCheck(playerid)
 			Float:x,
 			Float:y,
 			Float:z,
-			name[24],
+			name[MAX_PLAYER_NAME],
 			reason[64];
 
 		GetPlayerPos(playerid, x, y, z);
-		GetPlayerName(playerid, name, 24);
+		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
 
@@ -335,7 +335,7 @@ CameraDistanceCheck(playerid)
 		IsPlayerDead(playerid) ||
 		IsPlayerUnfocused(playerid) ||
 		IsPlayerOnZipline(playerid) ||
-		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		cd_DetectDelay[playerid] = tickcount();
@@ -439,15 +439,16 @@ CameraDistanceCheck(playerid)
 		if(distance > cmp)
 		{
 			new
-				name[24],
+				name[MAX_PLAYER_NAME],
 				reason[128],
 				info[128];
 
-			GetPlayerName(playerid, name, 24);
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
 			format(reason, sizeof(reason), "Camera distance from player %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
-			format(info, sizeof(info), "%f, %f, %f, %f, %f, %f", cx, cy, cz, vx, vy, vz);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, vx, vy, vz);
+			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+			MsgAdmins(3, YELLOW, reason);
 
 			cd_ReportTick[playerid] = tickcount();
 		}
@@ -482,14 +483,14 @@ CameraDistanceCheck(playerid)
 		if(distance > CAMERA_DISTANCE_ONFOOT)
 		{
 			new
-				name[24],
+				name[MAX_PLAYER_NAME],
 				reason[128],
 				info[128];
 
-			GetPlayerName(playerid, name, 24);
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
 			format(reason, sizeof(reason), "Camera distance from player %.0f (onfoot, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
-			format(info, sizeof(info), "%f, %f, %f, %f, %f, %f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
+			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
 
 			cd_ReportTick[playerid] = tickcount();
@@ -524,7 +525,7 @@ VehicleTeleportCheck(playerid)
 {
 	foreach(new i : veh_Index)
 	{
-		if(!IsVehicleOccupied(i))
+		if(!IsVehicleOccupied(i) && IsValidVehicleID(i))
 			VehicleDistanceCheck(playerid, i);
 	}
 }
@@ -559,16 +560,36 @@ VehicleDistanceCheck(playerid, vehicleid)
 
 	distance = Distance(x, y, z, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 
-	if(distance > 10.0)
+	if(VEHICLE_TELEPORT_DISTANCE < distance < 500.0)
 	{
-		vt_MovedFar[vehicleid] = true;
-		vt_MovedFarTick[vehicleid] = tickcount();
-		vt_MovedFarPlayer[vehicleid] = GetClosestPlayerFromPoint(x, y, z);
-		vt_MovedFarDistance[vehicleid] = distance;
+		new Float:distancetoplayer = 10000.0;
 
-		MsgAdminsF(4, YELLOW, "[TEST] Vehicle %d moved %fm towards %p", vehicleid, distance, vt_MovedFarPlayer[vehicleid]);
+		vt_MovedFarPlayer[vehicleid] = GetClosestPlayerFromPoint(x, y, z, distancetoplayer);
 
-		RespawnVehicle(vehicleid);
+		if(distancetoplayer < 10.0)
+		{
+			vt_MovedFar[vehicleid] = true;
+			vt_MovedFarTick[vehicleid] = tickcount();
+			vt_MovedFarDistance[vehicleid] = distance;
+
+			new
+				name[MAX_SPAWNED_VEHICLES],
+				model,
+				vehiclename[MAX_VEHICLE_NAME],
+				reason[128],
+				info[128];
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			model = GetVehicleModel(vehicleid);
+			GetVehicleName(model, vehiclename);
+
+			format(reason, sizeof(reason), "Teleported a %s %.0fm", vehiclename, distance);
+			format(info, sizeof(info), "%f, %f, %f", vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, info);
+
+
+			// RespawnVehicle(vehicleid);
+		}
 	}
 
 	vt_ResetVehiclePosition(vehicleid);
@@ -579,27 +600,6 @@ VehicleDistanceCheck(playerid, vehicleid)
 vt_ResetVehiclePosition(vehicleid)
 {
 	GetVehiclePos(vehicleid, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
-}
-
-hook OnPlayerStateChange(playerid, newstate, oldstate)
-{
-	if(newstate == PLAYER_STATE_DRIVER)
-	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-
-		if(vt_MovedFar[vehicleid])
-		{
-			if(tickcount() - vt_MovedFarTick[vehicleid] < 10000)
-			{
-				if(vt_MovedFarPlayer[vehicleid] == playerid)
-				{
-					MsgAdminsF(4, YELLOW, "[TEST] %p entered vehicle %d that moved %fm", playerid, vehicleid, vt_MovedFarDistance[vehicleid]);
-				}
-			}
-		}
-	}
-
-	return 1;
 }
 
 
@@ -623,12 +623,12 @@ VehicleModCheck(playerid)
 	if(component == 1008 || component == 1009 || component == 1010)
 	{
 		new
-			name[24],
+			name[MAX_PLAYER_NAME],
 			Float:x,
 			Float:y,
 			Float:z;
 
-		GetPlayerName(playerid, name, 24);
+		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 		GetVehiclePos(vehicleid, x, y, z);
 
 		ReportPlayer(name, "Detected with Nitro vehicle component", -1, REPORT_TYPE_CARNITRO, x, y, z, "");
@@ -639,12 +639,12 @@ VehicleModCheck(playerid)
 	if(component == 1087)
 	{
 		new
-			name[24],
+			name[MAX_PLAYER_NAME],
 			Float:x,
 			Float:y,
 			Float:z;
 
-		GetPlayerName(playerid, name, 24);
+		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 		GetVehiclePos(vehicleid, x, y, z);
 
 		ReportPlayer(name, "Detected with Hydraulics vehicle component", -1, REPORT_TYPE_CARHYDRO, x, y, z, "");

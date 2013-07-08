@@ -19,13 +19,16 @@ stock Float:absoluteangle(Float:angle)
 }
 
 stock Float:GetAngleToPoint(Float:fPointX, Float:fPointY, Float:fDestX, Float:fDestY)
+{
 	return absoluteangle(-(90-(atan2((fDestY - fPointY), (fDestX - fPointX)))));
+}
 
 
 new
 	cam_Active[MAX_PLAYERS],
 	cam_Obj[MAX_PLAYERS],
-	Float:cam_StartPos[MAX_PLAYERS][3];
+	Float:cam_StartPos[MAX_PLAYERS][3],
+	cam_UpdateTimer[MAX_PLAYERS];
 
 CMD:freecam(playerid)
 {
@@ -77,6 +80,8 @@ EnterFreeCam(playerid)
 
 	cam_Obj[playerid] = CreateObject(19300, camX, camY, camZ, 0.0, 0.0, 0.0);
 	AttachCameraToObject(playerid, cam_Obj[playerid]);
+
+	cam_UpdateTimer[playerid] = repeat CameraUpdate(playerid);
 }
 
 ExitFreeCam(playerid)
@@ -84,10 +89,12 @@ ExitFreeCam(playerid)
     cam_Active[playerid] = false;
 	DestroyObject(cam_Obj[playerid]);
 	SetCameraBehindPlayer(playerid);
+
+	stop cam_UpdateTimer[playerid];
 }
 
 
-public OnPlayerUpdate(playerid)
+timer CameraUpdate[50](playerid)
 {
 	if(!cam_Active[playerid])
 		return 1;
@@ -96,22 +103,17 @@ public OnPlayerUpdate(playerid)
 		k,
 		ud,
 		lr,
-
 		Float:camX,
 		Float:camY,
 		Float:camZ,
 		Float:vecX,
 		Float:vecY,
 		Float:vecZ,
-
-		Float:angR,
 		Float:speed = CAM_SPEED;
 
 	GetPlayerKeys(playerid, k, ud, lr);
 	GetPlayerCameraPos(playerid, camX, camY, camZ);
 	GetPlayerCameraFrontVector(playerid, vecX, vecY, vecZ);
-
-	angR = -(atan2(vecY, vecX) - 90.0);
 
 	if(k & KEY_JUMP)
 	{
@@ -132,11 +134,13 @@ public OnPlayerUpdate(playerid)
 	}
 	if(lr == KEY_RIGHT)
 	{
-		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(angR + 90.0, degrees)), camY + (100 * floatcos(angR + 90.0, degrees)), camZ, speed);
+		new rotation = -(atan2(vecY, vecX) - 90.0);
+		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation + 90.0, degrees)), camY + (100 * floatcos(rotation + 90.0, degrees)), camZ, speed);
 	}
 	if(lr == KEY_LEFT)
 	{
-		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(angR - 90.0, degrees)), camY + (100 * floatcos(angR - 90.0, degrees)), camZ, speed);
+		new rotation = -(atan2(vecY, vecX) - 90.0);
+		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation - 90.0, degrees)), camY + (100 * floatcos(rotation - 90.0, degrees)), camZ, speed);
 	}
 	if(k & KEY_SPRINT)
 	{
@@ -146,8 +150,6 @@ public OnPlayerUpdate(playerid)
 	{
 		MoveObject(cam_Obj[playerid], camX, camY, camZ - 100.0, speed);
 	}
-
-//	SetPlayerPos(playerid, cam_StartPos[playerid][0], cam_StartPos[playerid][1], cam_StartPos[playerid][2] + 1.0);
 
 	if(ud == 0 && lr == 0)
 	{

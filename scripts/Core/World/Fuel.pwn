@@ -212,7 +212,7 @@ StopRefuellingVehicle(playerid)
 {
 	stop fuel_RefuelTimer[playerid];
 
-	if(!IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
+	if(!IsValidVehicleID(fuel_CurrentlyRefuelling[playerid]))
 		return 0;
 
 	HidePlayerProgressBar(playerid, ActionBar);
@@ -224,7 +224,7 @@ StopRefuellingVehicle(playerid)
 
 timer RefuelVehicleUpdate[500](playerid, vehicleid)
 {
-	if(!IsValidVehicle(vehicleid))
+	if(!IsValidVehicleID(vehicleid))
 	{
 		StopRefuellingVehicle(playerid);
 		return;

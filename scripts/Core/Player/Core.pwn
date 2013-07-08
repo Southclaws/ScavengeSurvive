@@ -353,9 +353,10 @@ ptask PlayerUpdate[100](playerid)
 		weather;
 
 	if(IsPlayerInAnyVehicle(playerid))
-	{
 		PlayerVehicleUpdate(playerid);
-	}
+
+	else
+		VehicleSurfingCheck(playerid);
 
 	if(gScreenBoxFadeLevel[playerid] > 0)
 	{
@@ -729,7 +730,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		PlayerTextDrawShow(playerid, VehicleNameText);
 		PlayerTextDrawShow(playerid, VehicleSpeedText);
 
-		if(GetVehicleType(model) != VTYPE_BMX)
+		if(GetVehicleType(model) != VTYPE_BICYCLE)
 		{
 			PlayerTextDrawShow(playerid, VehicleFuelText);
 			PlayerTextDrawShow(playerid, VehicleDamageText);

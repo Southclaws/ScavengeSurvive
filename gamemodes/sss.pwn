@@ -52,7 +52,7 @@ native IsValidVehicle(vehicleid);
 #include <CameraMover>				// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=329813
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
-#include <WeaponData>				// By Southclaw:			http://pastebin.com/ZGTr32Fv
+#include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
 
 
 native WP_Hash(buffer[], len, const str[]);
@@ -67,7 +67,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_ADMIN					(32)
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_SERVER_UPTIME			(3600 * 5)
-#define MAX_SPAWNED_VEHICLES		(150)
+#define MAX_SPAWNED_VEHICLES		(250)
 
 
 // Files

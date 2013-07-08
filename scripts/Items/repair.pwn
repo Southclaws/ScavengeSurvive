@@ -53,13 +53,21 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(fix_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
+		new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+		if(!IsValidItemType(itemtype))
 		{
 			StopRepairingVehicle(playerid);
 			return 1;
 		}
 
-		if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
+		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicleID(fix_TargetVehicle[playerid]))
+		{
+			StopRepairingVehicle(playerid);
+			return 1;
+		}
+
+		if(itemtype == item_Wrench)
 		{
 			if(!(VEHICLE_HEALTH_MIN <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_2) && !(VEHICLE_HEALTH_CHUNK_4 <= fix_Progress[playerid] <= VEHICLE_HEALTH_MAX))
 			{
@@ -67,7 +75,7 @@ public OnHoldActionUpdate(playerid, progress)
 				return 1;
 			}
 		}
-		if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
+		if(itemtype == item_Screwdriver)
 		{
 			if(!(VEHICLE_HEALTH_CHUNK_2 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_3))
 			{
@@ -75,7 +83,7 @@ public OnHoldActionUpdate(playerid, progress)
 				return 1;
 			}
 		}
-		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
+		if(itemtype == item_Hammer)
 		{
 			if(!(VEHICLE_HEALTH_CHUNK_3 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_4))
 			{
@@ -85,6 +93,9 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 
 		fix_Progress[playerid] += 2.0;
+
+		if(fix_Progress[playerid] > 990.0)
+			fix_Progress[playerid] = 990.0;
 		
 		SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
 		SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);

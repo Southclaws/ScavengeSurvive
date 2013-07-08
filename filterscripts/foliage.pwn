@@ -1,3 +1,16 @@
+/*==============================================================================
+
+
+	Southclaw's Terrain Painting Tool
+
+		Paint objects directly onto the terrain using the heightmap plugin from
+		Kalcor (MapAndreas). Includes a polygon selection tool for painting on
+		specific areas as well as brush size and density settings.
+
+
+==============================================================================*/
+
+
 #include <a_samp>
 #include <streamer>
 #include <sscanf2>
@@ -12,7 +25,7 @@
 #define INTERACTION_KEYTEXT "~k~~PED_LOCK_TARGET~"
 #define INTERACTION_KEYCODE (128)
 #define MAX_SELECTION_NODES (128)
-#define OUTPUT_FILE			"Foliage.pwn"
+#define OUTPUT_FILE         "Foliage.pwn"
 
 
 enum
@@ -24,24 +37,24 @@ enum
 
 enum
 {
-Float:	COORD_X,
-Float:	COORD_Y,
-Float:	COORD_Z
+Float:  COORD_X,
+Float:  COORD_Y,
+Float:  COORD_Z
 }
 
 enum E_OBJECT_TYPE_DATA
 {
 		fol_modelId,
 		fol_spawnRate,
-Float:	fol_zOffset
+Float:  fol_zOffset
 }
 
 enum E_SELECTION_NODE_DATA
 {
 		sel_objId,
-Float:	sel_posX,
-Float:	sel_posY,
-Float:	sel_posZ
+Float:  sel_posX,
+Float:  sel_posY,
+Float:  sel_posZ
 }
 
 
@@ -84,10 +97,10 @@ new
 
 new
 		fol_CreateMode[MAX_PLAYERS],
-Timer:	fol_UpdateTimer[MAX_PLAYERS],
+Timer:  fol_UpdateTimer[MAX_PLAYERS],
 		fol_ClickTick[MAX_PLAYERS],
-Float:	fol_LastPos[MAX_PLAYERS][3],
-Float:	fol_BrushSize[MAX_PLAYERS],
+Float:  fol_LastPos[MAX_PLAYERS][3],
+Float:  fol_BrushSize[MAX_PLAYERS],
 		fol_ObjAmount[MAX_PLAYERS];
 
 new

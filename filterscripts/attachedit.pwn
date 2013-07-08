@@ -1,3 +1,15 @@
+/*==============================================================================
+
+
+	Southclaw's Attachment Editor
+
+		Easily edit and save attachment offsets using the SA:MP client-side
+		on-screen controls.
+
+
+==============================================================================*/
+
+
 #include "a_samp"
 #include "zcmd"
 
@@ -307,15 +319,15 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 			switch(gCurrentAxisEdit[playerid])
 			{
-				case POS_OFFSET_X:	gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
-				case POS_OFFSET_Y:	gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
-				case POS_OFFSET_Z:	gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
-				case ROT_OFFSET_X:	gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
-				case ROT_OFFSET_Y:	gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
-				case ROT_OFFSET_Z:	gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
-				case SCALE_X:		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
-				case SCALE_Y:		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
-				case SCALE_Z:		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
+				case POS_OFFSET_X:  gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
+				case POS_OFFSET_Y:  gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
+				case POS_OFFSET_Z:  gIndexPos[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
+				case ROT_OFFSET_X:  gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
+				case ROT_OFFSET_Y:  gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
+				case ROT_OFFSET_Z:  gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
+				case SCALE_X:       gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_X] = value;
+				case SCALE_Y:       gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Y] = value;
+				case SCALE_Z:       gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Z] = value;
 			}
 
 			SetPlayerAttachedObject(playerid,

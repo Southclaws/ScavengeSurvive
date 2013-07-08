@@ -671,14 +671,12 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
 			def_Data[i][def_hitPoints] -= 1;
 
 			if(def_Data[i][def_hitPoints] <= 0)
-			{
 				i = DestroyDefense(i);
-				break;
-			}
+
+			break;
 		}
 	}
 }
-
 
 
 
