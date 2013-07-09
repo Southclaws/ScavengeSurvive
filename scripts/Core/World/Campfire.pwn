@@ -227,8 +227,16 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 					}
 					else
 					{
-						ShowActionText(playerid, "1L of petrol added");
-						cmp_Data[fireid][cmp_fueled] = 1;
+						if(GetItemExtraData(itemid) > 0)
+						{
+							ShowActionText(playerid, "1L of petrol added");
+							SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
+							cmp_Data[fireid][cmp_fueled] = 1;
+						}
+						else
+						{
+							ShowActionText(playerid, "Fuel Can Empty");
+						}
 					}
 				}
 				else if(itemtype == item_FireLighter)
@@ -316,11 +324,16 @@ timer CampfireBurnOut[time](fireid, time)
 
 timer cmp_FinishCooking[60000](fireid)
 {
+	if(!IsValidItem(cmp_Data[fireid][cmp_foodItem]))
+		return;
+
 	cmp_Data[fireid][cmp_objSmoke] = CreateDynamicObject(18726, cmp_Data[fireid][cmp_posX], cmp_Data[fireid][cmp_posY], cmp_Data[fireid][cmp_posZ] - 1.0, 0.0, 0.0, 0.0);
 	defer cmp_DestroySmoke(fireid);
 
 	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
 	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
+
+	return;
 }
 
 timer cmp_DestroySmoke[1000](fireid)
@@ -328,8 +341,7 @@ timer cmp_DestroySmoke[1000](fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
 
-#endinput
-public OnPlayerPickedUpItem(playerid, itemid)
+public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -341,18 +353,19 @@ public OnPlayerPickedUpItem(playerid, itemid)
 			{
 				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
 				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
+				stop cmp_CookTimer[fireid];
 				return 1;
 			}
 		}
 	}
 
-	return CallLocalFunction("cmp2_OnPlayerPickedUpItem", "dd", playerid, itemid);
+	return CallLocalFunction("cmp2_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
-#if defined _ALS_OnPlayerPickedUpItem
-	#undef OnPlayerPickedUpItem
+#if defined _ALS_OnPlayerPickUpItem
+	#undef OnPlayerPickUpItem
 #else
-	#define _ALS_OnPlayerPickedUpItem
+	#define _ALS_OnPlayerPickUpItem
 #endif
-#define OnPlayerPickedUpItem cmp2_OnPlayerPickedUpItem
-forward cmp2_OnPlayerPickedUpItem(playerid, itemid);
+#define OnPlayerPickUpItem cmp2_OnPlayerPickUpItem
+forward cmp2_OnPlayerPickUpItem(playerid, itemid);
 

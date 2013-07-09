@@ -77,7 +77,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	new ItemType:withitemtype = GetItemType(withitemid);
 
-	if(withitemtype == item_Barbecue || IsItemTypeFood(withitemtype))
+	if(withitemtype == item_Barbecue)
 	{
 		foreach(new i : bbq_Index)
 		{
