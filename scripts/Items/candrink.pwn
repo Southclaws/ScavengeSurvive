@@ -1,41 +1,41 @@
-#define BOTTLE_DATA_TYPE(%0)		((%0 >> 8) & 0xFF)
-#define BOTTLE_DATA_AMOUNT(%0)		(%0 & 0xFF)
-#define BOTTLE_DATA_COMBINE(%0,%1)	(%0 << 8 | %1)
+#define CAN_DATA_TYPE(%0)		((%0 >> 8) & 0xFF)
+#define CAN_DATA_AMOUNT(%0)		(%0 & 0xFF)
+#define CAN_DATA_COMBINE(%0,%1)	(%0 << 8 | %1)
 
 enum
 {
-	BOTTLE_CONTENTS_WATER,		// 0
-	BOTTLE_CONTENTS_BEER		// 1
+	CAN_CONTENTS_WATER,		// 0
+	CAN_CONTENTS_BEER		// 1
 }
 
 
 
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_Bottle)
+	if(GetItemType(itemid) == item_CanDrink)
 	{
 		// First 8 bits represent the type last 8 bits represent the amount
 		new
 			type = random(2),
 			amount = random(10);
 
-		SetItemExtraData(itemid, BOTTLE_DATA_COMBINE(type, amount));
+		SetItemExtraData(itemid, CAN_DATA_COMBINE(type, amount));
 	}
 
-	return CallLocalFunction("bot_OnItemCreate", "d", itemid);
+	return CallLocalFunction("can_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
-#define OnItemCreate bot_OnItemCreate
-forward bot_OnItemCreate(itemid);
+#define OnItemCreate can_OnItemCreate
+forward can_OnItemCreate(itemid);
 
 
 public OnItemNameRender(itemid)
 {
-	if(GetItemType(itemid) == item_Bottle)
+	if(GetItemType(itemid) == item_CanDrink)
 	{
 		new
 			data,
@@ -43,8 +43,8 @@ public OnItemNameRender(itemid)
 			amount;
 
 		data = GetItemExtraData(itemid);
-		type = BOTTLE_DATA_TYPE(data);
-		amount = BOTTLE_DATA_AMOUNT(data);
+		type = CAN_DATA_TYPE(data);
+		amount = CAN_DATA_AMOUNT(data);
 
 		if(amount > 0)
 		{
@@ -52,10 +52,10 @@ public OnItemNameRender(itemid)
 
 			switch(type)
 			{
-				case BOTTLE_CONTENTS_WATER:
+				case CAN_CONTENTS_WATER:
 					format(str, sizeof(str), "Water %d", amount);
 
-				case BOTTLE_CONTENTS_BEER:
+				case CAN_CONTENTS_BEER:
 					format(str, sizeof(str), "Beer %d", amount);
 
 				default:
@@ -70,20 +70,20 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	return CallLocalFunction("bot_OnItemNameRender", "d", itemid);
+	return CallLocalFunction("can_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
 #else
 	#define _ALS_OnItemNameRender
 #endif
-#define OnItemNameRender bot_OnItemNameRender
-forward bot_OnItemNameRender(itemid);
+#define OnItemNameRender can_OnItemNameRender
+forward can_OnItemNameRender(itemid);
 
 
 public OnPlayerEaten(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_Bottle)
+	if(GetItemType(itemid) == item_CanDrink)
 	{
 		new
 			data,
@@ -91,14 +91,14 @@ public OnPlayerEaten(playerid, itemid)
 			amount;
 
 		data = GetItemExtraData(itemid);
-		type = BOTTLE_DATA_TYPE(data);
-		amount = BOTTLE_DATA_AMOUNT(data);
+		type = CAN_DATA_TYPE(data);
+		amount = CAN_DATA_AMOUNT(data);
 
 		if(amount > 0)
 		{
-			SetItemExtraData(itemid, BOTTLE_DATA_COMBINE(type, amount - 1));
+			SetItemExtraData(itemid, CAN_DATA_COMBINE(type, amount - 1));
 
-			if(type == BOTTLE_CONTENTS_BEER)
+			if(type == CAN_CONTENTS_BEER)
 				SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 500);
 		}
 		else
@@ -106,12 +106,12 @@ public OnPlayerEaten(playerid, itemid)
 			ShowActionText(playerid, "Empty", 2000, 70);
 		}
 	}
-	return CallLocalFunction("bot_OnPlayerEaten", "dd", playerid, itemid);
+	return CallLocalFunction("can_OnPlayerEaten", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerEaten
 	#undef OnPlayerEaten
 #else
 	#define _ALS_OnPlayerEaten
 #endif
-#define OnPlayerEaten bot_OnPlayerEaten
-forward bot_OnPlayerEaten(playerid, itemid);
+#define OnPlayerEaten can_OnPlayerEaten
+forward can_OnPlayerEaten(playerid, itemid);

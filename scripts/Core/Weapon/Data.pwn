@@ -68,27 +68,27 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 	{AMMO_TYPE_NONE,	0},		// <null>			// 20
 	{AMMO_TYPE_NONE,	0},		// <null>			// 21
 
-	{AMMO_TYPE_9MM,		5},		// M9				// 22
-	{AMMO_TYPE_9MM,		5},		// M9 SD			// 23
-	{AMMO_TYPE_357,		6},		// Desert Eagle		// 24
+	{AMMO_TYPE_9MM,		2},		// M9				// 22
+	{AMMO_TYPE_9MM,		2},		// M9 SD			// 23
+	{AMMO_TYPE_357,		2},		// Desert Eagle		// 24
 
-	{AMMO_TYPE_BUCK,	6},		// Shotgun			// 25
-	{AMMO_TYPE_BUCK,	12},	// Sawnoff			// 26
-	{AMMO_TYPE_BUCK,	5},		// Spas 12			// 27
+	{AMMO_TYPE_BUCK,	3},		// Shotgun			// 25
+	{AMMO_TYPE_BUCK,	5},		// Sawnoff			// 26
+	{AMMO_TYPE_BUCK,	2},		// Spas 12			// 27
 
-	{AMMO_TYPE_9MM,		4},		// Mac 10			// 28
-	{AMMO_TYPE_9MM,		4},		// MP5				// 29
-	{AMMO_TYPE_556,		2},		// AK-47			// 30
-	{AMMO_TYPE_556,		2},		// M4-A1			// 31
-	{AMMO_TYPE_9MM,		4},		// Tec 9			// 32
+	{AMMO_TYPE_9MM,		1},		// Mac 10			// 28
+	{AMMO_TYPE_9MM,		1},		// MP5				// 29
+	{AMMO_TYPE_556,		1},		// AK-47			// 30
+	{AMMO_TYPE_556,		1},		// M4-A1			// 31
+	{AMMO_TYPE_9MM,		2},		// Tec 9			// 32
 
-	{AMMO_TYPE_357,		5},		// Rifle			// 33
-	{AMMO_TYPE_357,		5},		// Sniper			// 34
+	{AMMO_TYPE_357,		3},		// Rifle			// 33
+	{AMMO_TYPE_357,		3},		// Sniper			// 34
 
 	{AMMO_TYPE_ROCKET,	0},		// RPG-7			// 35
 	{AMMO_TYPE_ROCKET,	0},		// Heatseek			// 36
-	{AMMO_TYPE_NONE,	1},		// Flamer			// 37
-	{AMMO_TYPE_556,		1},		// Chaingun			// 38
+	{AMMO_TYPE_NONE,	0},		// Flamer			// 37
+	{AMMO_TYPE_556,		0},		// Chaingun			// 38
 
 	{AMMO_TYPE_NONE,	1},		// {"C4				// 39
 	{AMMO_TYPE_NONE,	1},		// {"Detonator		// 40

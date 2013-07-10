@@ -626,6 +626,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/World/Campfire.pwn"
 #include "../scripts/Core/World/HackTrap.pwn"
 #include "../scripts/Core/World/Workbench.pwn"
+#include "../scripts/Core/World/Food.pwn"
 
 //======================Command Features
 
@@ -678,6 +679,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/policecap.pwn"
 #include "../scripts/Items/tophat.pwn"
 #include "../scripts/Items/herpderp.pwn"
+#include "../scripts/Items/candrink.pwn"
 
 //======================Post-code
 
@@ -868,7 +870,7 @@ public OnGameModeInit()
 	item_MetalPlate		= DefineItemType("Metal Sheet",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
 	item_MetalStand		= DefineItemType("Metal Plate",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
 	item_WoodDoor		= DefineItemType("Wood Panel",			3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
-	item_WoodPanel		= DefineItemType("Wood Panel",			5153,	ITEM_SIZE_CARRY,	360.209, 23.537, 0.0,	0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
+	item_WoodPanel		= DefineItemType("Wood Panel",			5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 // 130
 	item_Flare			= DefineItemType("Flare",				345,	ITEM_SIZE_SMALL);
 	item_PhoneBomb		= DefineItemType("Phone Bomb",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
@@ -951,13 +953,15 @@ public OnGameModeInit()
 	SetItemAnimSet(item_Screwdriver,	anim_Stab);
 
 
-	DefineFoodItem(item_HotDog,			30.0, 1);
-	DefineFoodItem(item_Pizza,			60.0, 0);
-	DefineFoodItem(item_Burger,			35.0, 1);
-	DefineFoodItem(item_BurgerBox,		35.0, 0);
-	DefineFoodItem(item_Taco,			30.0, 0);
-	DefineFoodItem(item_BurgerBag,		45.0, 0);
-	DefineFoodItem(item_Meat,			75.0, 1);
+	DefineFoodItem(item_HotDog,			20.0, 1, 0);
+	DefineFoodItem(item_Pizza,			50.0, 0, 0);
+	DefineFoodItem(item_Burger,			25.0, 1, 0);
+	DefineFoodItem(item_BurgerBox,		25.0, 0, 0);
+	DefineFoodItem(item_Taco,			15.0, 0, 0);
+	DefineFoodItem(item_BurgerBag,		30.0, 0, 0);
+	DefineFoodItem(item_Meat,			65.0, 1, 0);
+	DefineFoodItem(item_Bottle,			1.0, 0, 1);
+	DefineFoodItem(item_CanDrink,		1.0, 0, 1);
 
 
 	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		1, 1, 0);
