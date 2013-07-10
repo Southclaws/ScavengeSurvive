@@ -80,7 +80,6 @@ public OnItemNameRender(itemid)
 #define OnItemNameRender bot_OnItemNameRender
 forward bot_OnItemNameRender(itemid);
 
-
 public OnPlayerEaten(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Bottle)
@@ -104,6 +103,7 @@ public OnPlayerEaten(playerid, itemid)
 		else
 		{
 			ShowActionText(playerid, "Empty", 2000, 70);
+			return 1;
 		}
 	}
 	return CallLocalFunction("bot_OnPlayerEaten", "dd", playerid, itemid);

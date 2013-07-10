@@ -679,12 +679,12 @@ forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
 
 IsPlayerIdle(playerid)
 {
-	new animidx = GetPlayerAnimationIndex(playerid);
-	switch(animidx)
+	switch(GetPlayerAnimationIndex(playerid))
 	{
-		case 320, 1164, 1183, 1188, 1189:return 1;
-		default: return 0;
+		case 320, 1164, 1183, 1188, 1189:
+			return 1;
 	}
+
 	return 0;
 }
 

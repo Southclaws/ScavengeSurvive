@@ -50,9 +50,10 @@ DefineFoodItem(ItemType:itemtype, Float:foodvalue, canrawinfect, consumetype)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(newkeys & 16)
+	if(newkeys & 16 && IsPlayerIdle(playerid))
 	{
 		new itemid = GetPlayerItem(playerid);
+
 		if(IsValidItem(itemid))
 		{
 			for(new i; i < food_Total; i++)
@@ -75,6 +76,12 @@ StartEating(playerid, foodtype, itemid)
 {
 	food_CurrentlyEating[playerid] = foodtype;
 
+	if(CallLocalFunction("OnPlayerEat", "dd", playerid, itemid))
+	{
+		food_CurrentlyEating[playerid] = -1;
+		return;
+	}
+
 	if(food_Data[foodtype][food_consumeType] == 0)
 	{
 		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
@@ -86,7 +93,7 @@ StartEating(playerid, foodtype, itemid)
 		FinishEating(playerid);
 	}
 
-	CallLocalFunction("OnPlayerEat", "dd", playerid, itemid);
+	return;
 }
 
 StopEating(playerid)
@@ -104,6 +111,12 @@ FinishEating(playerid)
 {
 	new itemid = GetPlayerItem(playerid);
 
+	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid))
+	{
+		StopEating(playerid);
+		return;
+	}
+
 	if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
 	{
 		gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4;
@@ -116,12 +129,12 @@ FinishEating(playerid)
 		gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue];
 	}
 
-	CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid);
-
 	if(food_Data[food_CurrentlyEating[playerid]][food_consumeType] == 0)
 		DestroyItem(itemid);
 
 	StopEating(playerid);
+
+	return;
 }
 
 public OnHoldActionFinish(playerid)
