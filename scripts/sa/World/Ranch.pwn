@@ -3,7 +3,6 @@ new
 	RanchHdd,
 	RanchPcState,
 	RanchPcObj,
-	RanchPcCam,
 	RanchPcPlayerViewing[MAX_PLAYERS],
 
 	QuarryDoor,
@@ -25,7 +24,6 @@ public OnLoad()
 	RanchHdd			= CreateItem(item_HardDrive, -693.1787, 942.0, 15.93, 90.0, 0.0, 37.5, .zoffset = FLOOR_OFFSET);
 	QuarryDoorKey		= CreateItem(item_Key, -2813.96, -1530.55, 140.97, 0.36, -85.14, 25.00);
 
-	RanchPcCam = LoadCameraMover("ranch");
 	CreateDynamicObject(2574, -2811.88, -1530.59, 139.84, 0.00, 0.00, 180.00, 0, 1);
 	CaveLift = CreateDynamicObject(7246, -2759.4704, 3756.8691, 6.9, 270, 180, 340.9154, 0, 1);
 
@@ -110,13 +108,14 @@ public OnButtonPress(playerid, buttonid)
 	    {
 			if(RanchPcPlayerViewing[playerid])
 			{
-			    ExitCamera(playerid);
+			    SetCameraBehindPlayer(playerid);
 			    TogglePlayerControllable(playerid, true);
 			    RanchPcPlayerViewing[playerid] = false;
 			}
 			else
 			{
-			    PlayCameraMover(playerid, RanchPcCam, .loop = true, .tp = false);
+			    SetPlayerCameraPos(playerid, -691.141845, 942.489868, 13.759174);
+			    SetPlayerCameraLookAt(playerid, -689.749084, 946.223693, 14.104162);
 			    RanchPcPlayerViewing[playerid] = true;
 			}
 	    }

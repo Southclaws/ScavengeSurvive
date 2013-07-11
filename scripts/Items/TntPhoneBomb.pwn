@@ -17,7 +17,7 @@ forward pbm_OnItemCreate(itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_PhoneBomb)
+	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_TntPhoneBomb)
 	{
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
 		SetItemExtraData(itemid, withitemid);
@@ -40,7 +40,7 @@ public OnPlayerUseItem(playerid, itemid)
 	{
 		new bombitem = GetItemExtraData(itemid);
 
-		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_PhoneBomb && GetItemExtraData(bombitem) == 1)
+		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_TntPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
 			new
 				Float:x,
@@ -48,7 +48,7 @@ public OnPlayerUseItem(playerid, itemid)
 				Float:z;
 
 			GetItemPos(bombitem, x, y, z);
-			CreateStructuralExplosion(x, y, z, 7, 8.0);
+			CreateStructuralExplosion(x, y, z, 1, 12.0);
 			DestroyItem(bombitem);
 			SetItemExtraData(itemid, INVALID_ITEM_ID);
 		}

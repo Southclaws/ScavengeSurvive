@@ -1,32 +1,28 @@
-#define MAX_CAPMINES
-
-
-new
-	motm_ContainerOption[MAX_PLAYERS];
+new empm_ContainerOption[MAX_PLAYERS];
 
 
 public OnPlayerUseItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_MotionMine)
+	if(GetItemType(itemid) == item_EmpMotionMine)
 	{
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 		Msg(playerid, YELLOW, " >  Mine primed");
 		return 1;
 	}
-	return CallLocalFunction("motm_OnPlayerUseItem", "dd", playerid, itemid);
+	return CallLocalFunction("empm_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
 #else
 	#define _ALS_OnPlayerUseItem
 #endif
-#define OnPlayerUseItem motm_OnPlayerUseItem
-forward motm_OnPlayerUseItem(playerid, itemid);
+#define OnPlayerUseItem empm_OnPlayerUseItem
+forward empm_OnPlayerUseItem(playerid, itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_MotionMine)
+	if(GetItemType(itemid) == item_EmpMotionMine)
 	{
 		if(GetItemExtraData(itemid) == 1)
 		{
@@ -36,22 +32,22 @@ public OnPlayerPickUpItem(playerid, itemid)
 				Float:z;
 
 			GetItemPos(itemid, x, y, z);
-			CreateStructuralExplosion(x, y, z, 11, 8.0);
+			CreateEmpExplosion(x, y, z, 12.0);
 
 			DestroyItem(itemid);
 
 			return 1;
 		}
 	}
-	return CallLocalFunction("motm_OnPlayerPickUpItem", "dd", playerid, itemid);
+	return CallLocalFunction("empm_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
 #else
 	#define _ALS_OnPlayerPickUpItem
 #endif
-#define OnPlayerPickUpItem motm_OnPlayerPickUpItem
-forward motm_OnPlayerPickUpItem(playerid, itemid);
+#define OnPlayerPickUpItem empm_OnPlayerPickUpItem
+forward empm_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
@@ -60,7 +56,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	{
 		itemid = GetContainerSlotItem(containerid, i);
 
-		if(GetItemType(itemid) == item_MotionMine)
+		if(GetItemType(itemid) == item_EmpMotionMine)
 		{
 			if(GetItemExtraData(itemid) == 1)
 			{
@@ -70,22 +66,22 @@ public OnPlayerOpenContainer(playerid, containerid)
 					Float:z;
 
 				GetPlayerPos(playerid, x, y, z);
-				CreateStructuralExplosion(x, y, z, 12, 5.0);
+				CreateEmpExplosion(x, y, z, 12.0);
 				RemoveItemFromContainer(containerid, i);
 				DestroyItem(itemid);
 			}
 		}
 	}
 
-	return CallLocalFunction("motm_OnPlayerOpenContainer", "dd", playerid, containerid);
+	return CallLocalFunction("empm_OnPlayerOpenContainer", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
 #else
 	#define _ALS_OnPlayerOpenContainer
 #endif
-#define OnPlayerOpenContainer motm_OnPlayerOpenContainer
-forward motm_OnPlayerOpenContainer(playerid, containerid);
+#define OnPlayerOpenContainer empm_OnPlayerOpenContainer
+forward empm_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
@@ -96,24 +92,24 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	slot = GetPlayerContainerSlot(playerid);
 	itemid = GetContainerSlotItem(containerid, slot);
 
-	if(GetItemType(itemid) == item_MotionMine)
+	if(GetItemType(itemid) == item_EmpMotionMine)
 	{
 		if(GetItemExtraData(itemid) == 0)
-			motm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Motion Mine");
+			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Motion Mine");
 
 		else
-			motm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Motion Mine");
+			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Motion Mine");
 	}
 
-	return CallLocalFunction("motm_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+	return CallLocalFunction("empm_OnPlayerViewContainerOpt", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
 #else
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
-#define OnPlayerViewContainerOpt motm_OnPlayerViewContainerOpt
-forward motm_OnPlayerViewContainerOpt(playerid, containerid);
+#define OnPlayerViewContainerOpt empm_OnPlayerViewContainerOpt
+forward empm_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
@@ -124,9 +120,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	slot = GetPlayerContainerSlot(playerid);
 	itemid = GetContainerSlotItem(containerid, slot);
 
-	if(GetItemType(itemid) == item_MotionMine)
+	if(GetItemType(itemid) == item_EmpMotionMine)
 	{
-		if(option == motm_ContainerOption[playerid])
+		if(option == empm_ContainerOption[playerid])
 		{
 			if(GetItemExtraData(itemid) == 0)
 			{
@@ -141,12 +137,12 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	return CallLocalFunction("motm_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
+	return CallLocalFunction("empm_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
 #else
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
-#define OnPlayerSelectContainerOpt motm_OnPlayerSelectContainerOpt
-forward motm_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#define OnPlayerSelectContainerOpt empm_OnPlayerSelectContainerOpt
+forward empm_OnPlayerSelectContainerOpt(playerid, containerid, option);

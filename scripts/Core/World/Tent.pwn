@@ -162,9 +162,9 @@ stock DestroyTent(tentid)
 	tnt_Data[tentid][tnt_posZ] = 0.0;
 	tnt_Data[tentid][tnt_rotZ] = 0.0;
 
-	Iter_Remove(tnt_Index, tentid);
+	Iter_SafeRemove(tnt_Index, tentid, tentid);
 
-	return 1;
+	return tentid;
 }
 
 

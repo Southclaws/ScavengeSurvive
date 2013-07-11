@@ -1,6 +1,6 @@
 public OnPlayerUseItem(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_Timebomb)
+	if(GetItemType(itemid) == item_TntTimebomb)
 	{
 		PlayerDropItem(playerid);
 		defer TimeBombExplode(itemid);
@@ -26,5 +26,5 @@ timer TimeBombExplode[5000](itemid)
 
 	GetItemPos(itemid, x, y, z);
 	DestroyItem(itemid);
-	CreateStructuralExplosion(x, y, z, 1, 8.0);
+	CreateStructuralExplosion(x, y, z, 1, 12.0);
 }

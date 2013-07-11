@@ -193,7 +193,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
 		{
 			KnockOutPlayer(targetid, 60000);
-			defer DestroyDynamicObject_Delay(CreateDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0));
+			CreateTimedDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0, 1000);
 			hploss = 0.0;
 			f:bPlayerGameSettings[targetid]<Bleeding>;
 		}
@@ -224,10 +224,6 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	ShowHitMarker(playerid, weaponid);
 
 	return 1;
-}
-timer DestroyDynamicObject_Delay[1000](objectid)
-{
-	DestroyDynamicObject(objectid);
 }
 
 GivePlayerHP(playerid, Float:hp)

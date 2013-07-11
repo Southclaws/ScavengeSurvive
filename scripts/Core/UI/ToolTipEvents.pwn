@@ -109,7 +109,7 @@ ptask ToolTipUpdate[1000](playerid)
 							AddToolTipText(playerid, KEYTEXT_INTERACT, "Heal yourself");
 					}
 
-					else if(itemtype == item_Timebomb)
+					else if(itemtype == item_TntTimebomb)
 						AddToolTipText(playerid, KEYTEXT_INTERACT, "Arm timebomb");
 
 					else if(itemtype == item_Bottle)

@@ -14,7 +14,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
-		if(GetItemType(withitemid) == item_PhoneBomb || GetItemType(withitemid) == item_MotionMine)
+		if(GetItemType(withitemid) == item_TntPhoneBomb || GetItemType(withitemid) == item_TntMotionMine)
 		{
 			if(GetItemExtraData(withitemid) == 1)
 			{

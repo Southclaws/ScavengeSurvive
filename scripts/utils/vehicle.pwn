@@ -1,3 +1,18 @@
+stock IsVehicleInRangeOfPoint(vehicleid, Float:range, Float:x, Float:y, Float:z)
+{
+	new
+		Float:vx,
+		Float:vy,
+		Float:vz;
+
+	GetVehiclePos(vehicleid, vx, vy, vz);
+
+	if(Distance(x, y, z, vx, vy, vz) < range)
+		return 1;
+
+	return 0;
+}
+
 stock GetPlayersInVehicle(vehicleid)
 {
     new amount;
