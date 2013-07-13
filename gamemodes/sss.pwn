@@ -766,7 +766,6 @@ public OnGameModeInit()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
-	file_OS();
 	SetGameModeText("Scavenge And Survive");
 	SendRconCommand("mapname San Androcalypse");
 

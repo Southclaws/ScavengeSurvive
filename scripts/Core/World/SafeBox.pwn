@@ -50,38 +50,6 @@ DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_
 	return box_TypeTotal++;
 }
 
-DestroySafebox(itemid)
-{
-	if(!IsValidItem(itemid))
-		return 0;
-
-	new containerid = GetItemExtraData(itemid);
-
-	if(IsValidContainer(containerid))
-	{
-		DestroyContainer(containerid);
-		Iter_SafeRemove(box_Index, itemid, itemid);
-
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:r,
-			filename[60];
-
-		GetItemPos(itemid, x, y, z);
-		GetItemRot(itemid, r, r, r);
-
-		format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
-		fremove(filename);
-
-		DestroyItem(itemid);
-		return itemid;
-	}
-
-	return -1;
-}
-
 public OnItemCreate(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
@@ -123,7 +91,24 @@ public OnItemDestroy(itemid)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
 		{
-			DestroySafebox(itemid);
+			printf("Destroying item %d safeboxtype: %d", itemid, i);
+
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				Float:r,
+				filename[60];
+
+			GetItemPos(itemid, x, y, z);
+			GetItemRot(itemid, r, r, r);
+
+			format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+			fremove(filename);
+
+			Iter_SafeRemove(box_Index, itemid, itemid);
+			DestroyContainer(GetItemExtraData(itemid));
+
 			break;
 		}
 	}
