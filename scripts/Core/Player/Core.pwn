@@ -246,6 +246,7 @@ public OnPlayerConnect(playerid)
 	LoadPlayerTextDraws(playerid);
 	SetPlayerScore(playerid, 0);
 	Streamer_ToggleIdleUpdate(playerid, true);
+	TextDrawShowForPlayer(playerid, Branding);
 
 
 	db_free_result(result);

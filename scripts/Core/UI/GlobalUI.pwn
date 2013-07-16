@@ -41,7 +41,6 @@ hook OnGameModeInit()
 	TextDrawSetOutline			(RestartCount, 1);
 	TextDrawSetProportional		(RestartCount, 1);
 
-
 //=====================================================================HitMarker
 	new hm[14];
 	hm[0] =92,	hm[1] =' ',hm[2] ='/',hm[3] ='~',hm[4] ='n',hm[5] ='~',	hm[6] =' ',
@@ -66,4 +65,13 @@ hook OnGameModeInit()
 	TextDrawSetOutline		(HitMark_offset, 0);
 	TextDrawSetShadow		(HitMark_offset, 0);
 
+//======================================================================Branding
+	Branding					=TextDrawCreate(638.000000, 2.000000, "SouthclawJK.wordpress.com");
+	TextDrawAlignment			(Branding, 3);
+	TextDrawBackgroundColor		(Branding, 255);
+	TextDrawFont				(Branding, 1);
+	TextDrawLetterSize			(Branding, 0.240000, 1.000000);
+	TextDrawColor				(Branding, -1);
+	TextDrawSetOutline			(Branding, 1);
+	TextDrawSetProportional		(Branding, 1);
 }

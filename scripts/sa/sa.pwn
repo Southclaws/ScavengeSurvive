@@ -10,3 +10,4 @@
 #include "../scripts/sa/World/Area69.pwn"
 #include "../scripts/sa/World/Ranch.pwn"
 #include "../scripts/sa/World/MtChill.pwn"
+#include "../scripts/sa/World/CodeHunt.pwn"

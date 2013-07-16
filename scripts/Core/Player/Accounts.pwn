@@ -295,6 +295,8 @@ SavePlayerData(playerid)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, a);
 
+	SaveBlockAreaCheck(x, y, z);
+
 	if(IsPlayerInAnyVehicle(playerid))
 		z += 2.5;
 

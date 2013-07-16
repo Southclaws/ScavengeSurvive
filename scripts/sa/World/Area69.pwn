@@ -327,7 +327,16 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 			HideKeypad(playerid);
 		}
 	}
+
+	return CallLocalFunction("a69_OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
 }
+#if defined _ALS_OnPlayerKeypadEnter
+	#undef OnPlayerKeypadEnter
+#else
+	#define _ALS_OnPlayerKeypadEnter
+#endif
+#define OnPlayerKeypadEnter a69_OnPlayerKeypadEnter
+forward a69_OnPlayerKeypadEnter(playerid, keypadid, success);
 
 ShowCodeList1(playerid)
 {

@@ -249,7 +249,8 @@ enum
 	k_AirstripGate,
 	k_BlastDoor,
 	k_Storage,
-	k_StorageWatch
+	k_StorageWatch,
+	k_Lockup
 }
 
 
@@ -480,7 +481,8 @@ ItemType:		item_Gyroscope		= INVALID_ITEM_TYPE,
 ItemType:		item_Motor			= INVALID_ITEM_TYPE,
 ItemType:		item_StarterMotor	= INVALID_ITEM_TYPE,
 ItemType:		item_FlareGun		= INVALID_ITEM_TYPE,
-ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE;
+ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE,
+ItemType:		item_CodePart		= INVALID_ITEM_TYPE;
 
 
 //=====================Menus and Textdraws
@@ -490,6 +492,7 @@ Text:			DeathButton			= Text:INVALID_TEXT_DRAW,
 Text:			RestartCount		= Text:INVALID_TEXT_DRAW,
 Text:			HitMark_centre		= Text:INVALID_TEXT_DRAW,
 Text:			HitMark_offset		= Text:INVALID_TEXT_DRAW,
+Text:			Branding			= Text:INVALID_TEXT_DRAW,
 
 PlayerText:		ClassBackGround		= PlayerText:INVALID_TEXT_DRAW,
 PlayerText:		ClassButtonMale		= PlayerText:INVALID_TEXT_DRAW,
@@ -556,6 +559,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Server/TextTags.pwn"
 #include "../scripts/Core/Server/Weather.pwn"
 #include "../scripts/Core/Server/Whitelist.pwn"
+#include "../scripts/Core/Server/SaveBlock.pwn"
 
 //======================Data Load
 
@@ -931,6 +935,7 @@ public OnGameModeInit()
 	item_StarterMotor	= DefineItemType("Starter Motor",		2006,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.129999, 0.087999, 0.009000,  -86.099967, -112.099975, 92.699890);
 	item_FlareGun		= DefineItemType("Flare Gun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.160999, 0.035000, 0.058999,  84.400062, 0.000000, 0.000000);
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
+	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM

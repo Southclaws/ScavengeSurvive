@@ -1,3 +1,6 @@
+new fierro_SpawnRoomTeleport;
+
+
 public OnLoad()
 {
 	print("Loading San Fierro");
@@ -26,7 +29,7 @@ public OnLoad()
 
 	LinkTP(
 		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
-		CreateButton(-1857.1831, -169.5322, 9.1358, "Press F to open", 0));
+		fierro_SpawnRoomTeleport = CreateButton(-1857.1831, -169.5322, 9.1358, " ", 0));
 
 	return CallLocalFunction("fierro_OnLoad", "");
 }
@@ -41,6 +44,8 @@ forward fierro_OnLoad();
 
 SF_District_Housing1()
 {
+	CreateSaveBlockArea(CreateDynamicCube(-2521.3608, 286.6024, 1035.3081, -2478.7195, 328.1099, 1039.7107), -2499.1262, 315.1892, 29.4147);
+
 	CreateLootSpawn(-2720.340087, -318.529998, 6.930000,	3, 15, loot_Civilian);
 	CreateLootSpawn(-2744.159912, -291.399993, 6.079999,	3, 15, loot_Civilian);
 	CreateLootSpawn(-2776.780029, -304.290008, 6.120000,	3, 15, loot_Civilian);
@@ -552,6 +557,7 @@ SF_District_Police()
 }
 SF_District_Industrial()
 {
+	CreateSaveBlockArea(CreateDynamicCube(-942.7619, 261.2218, 1012.6185, -898.2711, 357.5468, 1028.0460), -1857.1831, -169.5322, 9.1358);
 	CreateDynamicObject(2002, -1978.52356, 131.39619, 26.68210, 0.00000, 0.00000, 90.00000);
 	CreateDynamic3DTextLabel("XBOX ONE", YELLOW, -1978.52356, 131.39619, 28.2150, 10.0);
 	CreateWorkBench(-2124.13916, 219.68687, 34.66147, -128.63998);
@@ -785,3 +791,18 @@ SF_District_Ship2()
 	CreateLootSpawn(-1390.89, 1482.97, 0.95, 4, 8, loot_Survivor);
 	CreateLootSpawn(-1425.41, 1490.25, 0.97, 4, 8, loot_Survivor);
 }
+
+public OnButtonPress(playerid, buttonid)
+{
+	if(buttonid == fierro_SpawnRoomTeleport)
+		return 1;
+
+	return CallLocalFunction("fierro_OnButtonPress", "dd", playerid, buttonid);
+}
+#if defined _ALS_OnButtonPress
+	#undef OnButtonPress
+#else
+	#define _ALS_OnButtonPress
+#endif
+#define OnButtonPress fierro_OnButtonPress
+forward fierro_OnButtonPress(playerid, buttonid);

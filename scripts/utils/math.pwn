@@ -92,3 +92,41 @@ stock Float:absoluteangle(Float:angle)
 	while(angle > 360.0)angle -= 360.0;
 	return angle;
 }
+
+
+/*
+	Picks <sizeof(output)> numbers from a list ranging from 0 to <max>
+*/
+stock PickFromList(max, count, output[])
+{
+	new
+		idx,
+		picked[256];
+
+	if(max > 256)
+		print("ERROR: PickFromList function variable 'picked' is too small to match parameter 'max'.");
+
+	while(idx < count)
+	{
+		output[idx] = random(max);
+
+		if(picked[output[idx]] == 0)
+		{
+			picked[output[idx]] = 1;
+			idx++;
+		}
+	}
+}
+
+
+/*
+	Separates the digits from a decimal value and saves them to an array
+	Credits - RyDeR` (http://forum.sa-mp.com/showpost.php?s=df579e9e90d575ae4911cda03598929f&p=1277125&postcount=2168)
+*/
+stock GetDigits(const value, strDig[])
+{
+	valstr(strDig, value, true);
+	
+	for(new i; strDig{i} != EOS; i++)
+		strDig{i} -= '0';
+}
