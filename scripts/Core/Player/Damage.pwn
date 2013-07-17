@@ -132,7 +132,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 					hploss *= 0.8;
 			}
 
-			gPlayerAP[targetid] += (hploss / 2.0);
+			gPlayerAP[targetid] -= (hploss / 2.0);
 		}
 
 		if(!IsPlayerInAnyVehicle(playerid))

@@ -656,7 +656,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/backpack.pwn"
 #include "../scripts/Items/repair.pwn"
 #include "../scripts/Items/shield.pwn"
-#include "../scripts/Items/handcuffs.pwn"
+#include "../scripts/Items/HandCuffs.pwn"
 #include "../scripts/Items/wheel.pwn"
 #include "../scripts/Items/gascan.pwn"
 #include "../scripts/Items/flashlight.pwn"

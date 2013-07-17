@@ -572,6 +572,15 @@ VehicleDistanceCheck(playerid, vehicleid)
 			vt_MovedFarTick[vehicleid] = tickcount();
 			vt_MovedFarDistance[vehicleid] = distance;
 
+			foreach(new i : veh_Index)
+			{
+				if(GetVehicleTrailer(i) == vehicleid)
+				{
+					vt_ResetVehiclePosition(vehicleid);
+					return 1;
+				}
+			}
+
 			new
 				name[MAX_SPAWNED_VEHICLES],
 				model,
@@ -587,8 +596,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 			format(info, sizeof(info), "%f, %f, %f", vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, info);
 
-
-			// RespawnVehicle(vehicleid);
+			RespawnVehicle(vehicleid);
 		}
 	}
 

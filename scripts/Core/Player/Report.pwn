@@ -99,7 +99,7 @@ ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:pos
 	format(query, sizeof(query), "\
 		INSERT INTO `Reports`\
 		(`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`, `"#ROW_INFO"`, `"#ROW_BY"`)\
-		VALUES('%s', '%s', '%d', '0', '%d', '%.0f', '%.0f', '%.0f', '%s', '%s')",
+		VALUES('%s', '%s', '%d', '0', '%d', '%.2f', '%.2f', '%.2f', '%s', '%s')",
 		name, db_escape(reason), gettime(), type, posx, posy, posz, infostring, reportername);
 
 	db_free_result(db_query(gAccounts, query));

@@ -1,12 +1,15 @@
 #include <YSI\y_hooks>
 
 
-new cuf_TargetPlayer[MAX_PLAYERS];
+new
+	cuf_TargetPlayer[MAX_PLAYERS],
+	cuf_BeingCuffedBy[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
 	cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
+	cuf_BeingCuffedBy[playerid] = INVALID_PLAYER_ID;
 }
 
 
@@ -24,12 +27,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				if(IsPlayerInPlayerArea(playerid, i))
 				{
-					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0)
+					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0 && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
 					{
 						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
 						StartHoldAction(playerid, 3000);
 
 						cuf_TargetPlayer[playerid] = i;
+						cuf_BeingCuffedBy[i] = playerid;
 
 						return 1;
 					}
@@ -47,9 +51,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED)
 					{
-						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == 0)
+						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == 0 && cuf_BeingCuffedBy[playerid] == INVALID_PLAYER_ID)
 						{
 							cuf_TargetPlayer[playerid] = i;
+							cuf_BeingCuffedBy[i] = playerid;
 
 							ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
 							StartHoldAction(playerid, 3000);
@@ -74,6 +79,8 @@ StopApplyingHandcuffs(playerid)
 	{
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+
+		cuf_BeingCuffedBy[cuf_TargetPlayer[playerid]] = INVALID_PLAYER_ID;
 		cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
 	}
 }
