@@ -18,6 +18,7 @@ enum E_VEHICLE_DATA
 {
 Float:	veh_health,
 Float:	veh_Fuel,
+		veh_engine,
 		veh_panels,
 		veh_doors,
 		veh_lights,
@@ -274,12 +275,16 @@ RespawnVehicle(vehicleid)
 GenerateVehicleData(vehicleid)
 {
 	new
-		model = GetVehicleModel(vehicleid),
+		model,
+		type,
 		chance,
 		panels,
 		doors,
 		lights,
 		tires;
+
+	model = GetVehicleModel(vehicleid);
+	type = GetVehicleType(model);
 
 // Health
 
@@ -314,16 +319,20 @@ GenerateVehicleData(vehicleid)
 
 // Visual Damage
 
-	if(random(100) < 60)
+	if(type < VTYPE_BICYCLE)
+	{
 		veh_Data[vehicleid][veh_panels]	= encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4));
+		veh_Data[vehicleid][veh_doors]	= encode_doors(random(5), random(5), random(5), random(5));
+		veh_Data[vehicleid][veh_lights] = encode_lights(random(2), random(2), random(2), random(2));
+		veh_Data[vehicleid][veh_tires] = encode_tires(random(2), random(2), random(2), random(2));
 
-	if(random(100) < 60)
-		veh_Data[vehicleid][veh_doors]	= encode_doors(random(5), random(5), random(5), random(5), random(5), random(5));
+		UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+	}
+	if(type == VTYPE_PLANE)
+	{
+		veh_Data[vehicleid][veh_panels]	= encode_panels(0, 0, random(4), 0, random(4), 0, 0);
+	}
 
-	veh_Data[vehicleid][veh_lights] = encode_lights(random(2), random(2), random(2), random(2));
-	veh_Data[vehicleid][veh_tires] = encode_tires(random(2), random(2), random(2), random(2));
-
-	UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
 // Locks
 
@@ -585,3 +594,23 @@ stock IsValidVehicleID(vehicleid)
 
 	return 0;
 }
+
+stock GetVehicleEngine(vehicleid)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	return veh_Data[vehicleid][veh_engine];
+}
+
+stock SetVehicleEngine(vehicleid, toggle)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	veh_Data[vehicleid][veh_engine] = toggle;
+	VehicleEngineState(vehicleid, toggle);
+
+	return 1;
+}
+

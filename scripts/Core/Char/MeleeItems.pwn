@@ -76,6 +76,9 @@ SetItemAnimSet(ItemType:itemtype, animset)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	if(IsPlayerInAnyVehicle(playerid))
+		return 1;
+
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
@@ -124,6 +127,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						continue;
 
 					GetPlayerPos(j, ix, iy, iz);
+
 					if(Distance(px, py, pz, ix, iy, iz) < 2.0)
 					{
 						GetPlayerFacingAngle(playerid, pa);

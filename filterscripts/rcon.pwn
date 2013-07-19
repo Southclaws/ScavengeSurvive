@@ -23,4 +23,33 @@ public OnRconCommand(cmd[])
 			CallRemoteFunction("SetRestart", "d", strval(params));
 		}
 	}
+
+	if(!strcmp(command, "whitelist"))
+	{
+		if(params[0] == EOS)
+		{
+			print("\n\tUsage: 'whitelist <add/remove> <name>'.");
+		}
+		else
+		{
+			new
+				action[7],
+				name[MAX_PLAYER_NAME];
+
+			if(!sscanf(params, "s[7]s[24]", action, name))
+			{
+				if(!strcmp(action, "add") && action[0] != EOS && name[0] != EOS)
+				{
+					CallRemoteFunction("external_WhitelistAdd", "s", name);
+					printf("Added '%s' to whitelist.", name);
+				}
+
+				if(!strcmp(action, "remove") && action[0] != EOS && name[0] != EOS)
+				{
+					CallRemoteFunction("external_WhitelistRemove", "s", name);
+					printf("Removed '%s' from whitelist.", name);
+				}
+			}
+		}
+	}
 }

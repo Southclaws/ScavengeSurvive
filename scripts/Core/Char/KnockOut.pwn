@@ -21,7 +21,7 @@ KnockOutPlayer(playerid, duration)
 		new vehicleid = GetPlayerVehicleID(playerid);
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-			VehicleEngineState(vehicleid, 0);
+			SetVehicleEngine(vehicleid, 0);
 
 		switch(GetVehicleType(GetVehicleModel(vehicleid)))
 		{
@@ -86,7 +86,7 @@ KnockOutUpdate(playerid)
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-			VehicleEngineState(GetPlayerVehicleID(playerid), 0);
+			SetVehicleEngine(GetPlayerVehicleID(playerid), 0);
 
 		if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
 		{

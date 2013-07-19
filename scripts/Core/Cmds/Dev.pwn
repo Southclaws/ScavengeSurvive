@@ -477,3 +477,28 @@ ACMD:ann[4](playerid, params[])
 
 	return 1;
 }
+
+ACMD:createvehicle[4](playerid, params[])
+{
+	new
+		model,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r,
+		vehicleid;
+
+	model = strval(params);
+
+	if(!(400 <= model < 612))
+		return 1;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	vehicleid = CreateNewVehicle(model, x, y, z, r);
+	SetVehicleFuel(vehicleid, 100000.0);
+	SetVehicleHealth(vehicleid, 990.0);
+
+	return 1;
+}

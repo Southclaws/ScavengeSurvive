@@ -115,24 +115,24 @@ native WP_Hash(buffer[], len, const str[]);
 									public cmd_%1_%2(%3)
 
 // Colours
-#define YELLOW						0xFFFF00AA
+#define YELLOW						0xFFFF00FF
 
-#define RED							0xE85454AA
-#define GREEN						0x33AA33AA
-#define BLUE						0x33CCFFAA
+#define RED							0xE85454FF
+#define GREEN						0x33AA33FF
+#define BLUE						0x33CCFFFF
 
-#define ORANGE						0xFFAA00AA
-#define GREY						0xAFAFAFAA
-#define PINK						0xFFC0CBAA
-#define NAVY						0x000080AA
-#define GOLD						0xB8860BAA
-#define LGREEN						0x00FD4DAA
-#define TEAL						0x008080AA
-#define BROWN						0xA52A2AAA
-#define AQUA						0xF0F8FFAA
+#define ORANGE						0xFFAA00FF
+#define GREY						0xAFAFAFFF
+#define PINK						0xFFC0CBFF
+#define NAVY						0x000080FF
+#define GOLD						0xB8860BFF
+#define LGREEN						0x00FD4DFF
+#define TEAL						0x008080FF
+#define BROWN						0xA52A2AFF
+#define AQUA						0xF0F8FFFF
 
-#define BLACK						0x000000AA
-#define WHITE						0xFFFFFFAA
+#define BLACK						0x000000FF
+#define WHITE						0xFFFFFFFF
 
 
 // Embedding Colours
@@ -538,6 +538,7 @@ forward SetRestart(seconds);
 #include "../scripts/utils/message.pwn"
 #include "../scripts/utils/vehicle.pwn"
 #include "../scripts/utils/vehicledata.pwn"
+#include "../scripts/utils/vehicleparts.pwn"
 #include "../scripts/utils/zones.pwn"
 #include "../scripts/utils/player.pwn"
 #include "../scripts/utils/object.pwn"

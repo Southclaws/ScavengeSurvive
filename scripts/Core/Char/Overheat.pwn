@@ -24,7 +24,7 @@ timer OverheatUpdate[100](playerid)
 	{
 		if(k & 1)
 		{
-			if(VehicleEngineState(gPlayerVehicleID[playerid]))
+			if(GetVehicleEngine(gPlayerVehicleID[playerid]))
 				Overheat[playerid] += 1.0;
 		}
 		else
@@ -66,7 +66,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(!VehicleEngineState(gPlayerVehicleID[playerid]))
+	if(!GetVehicleEngine(gPlayerVehicleID[playerid]))
 		return 1;		
 
 	new model = GetVehicleModel(gPlayerVehicleID[playerid]);

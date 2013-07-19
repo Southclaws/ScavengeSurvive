@@ -1,3 +1,6 @@
+forward external_WhitelistAdd(name[]);
+forward external_WhitelistRemove(name[]);
+
 stock AddNameToWhitelist(name[])
 {
 	new
@@ -61,4 +64,14 @@ stock AddAllAccountsToWhitelist()
 	}
 
 	db_free_result(result);
+}
+
+public external_WhitelistAdd(name[])
+{
+	AddNameToWhitelist(name);
+}
+
+public external_WhitelistRemove(name[])
+{
+	RemoveNameFromWhitelist(name);
 }

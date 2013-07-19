@@ -14,7 +14,7 @@ CreateEmpExplosion(Float:x, Float:y, Float:z, Float:range)
 	{
 		if(IsVehicleInRangeOfPoint(i, range, x, y, z))
 		{
-			VehicleEngineState(i, false);
+			SetVehicleEngine(i, false);
 		}
 	}
 }

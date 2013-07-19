@@ -67,38 +67,16 @@ public OnHoldActionUpdate(playerid, progress)
 			return 1;
 		}
 
-		if(itemtype == item_Wrench)
+		if(CompToolHealth(itemtype, fix_Progress[playerid]))
 		{
-			if(!(VEHICLE_HEALTH_MIN <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_2) && !(VEHICLE_HEALTH_CHUNK_4 <= fix_Progress[playerid] <= VEHICLE_HEALTH_MAX))
-			{
-				StopRepairingVehicle(playerid);
-				return 1;
-			}
+			fix_Progress[playerid] += 2.0;
+			SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
+			SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);	
 		}
-		if(itemtype == item_Screwdriver)
+		else
 		{
-			if(!(VEHICLE_HEALTH_CHUNK_2 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_3))
-			{
-				StopRepairingVehicle(playerid);
-				return 1;
-			}
+			StopRepairingVehicle(playerid);
 		}
-		if(itemtype == item_Hammer)
-		{
-			if(!(VEHICLE_HEALTH_CHUNK_3 <= fix_Progress[playerid] <= VEHICLE_HEALTH_CHUNK_4))
-			{
-				StopRepairingVehicle(playerid);
-				return 1;
-			}
-		}
-
-		fix_Progress[playerid] += 2.0;
-
-		if(fix_Progress[playerid] > 990.0)
-			fix_Progress[playerid] = 990.0;
-		
-		SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
-		SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);
 	}
 
 	return CallLocalFunction("rep_OnHoldActionUpdate", "dd", playerid, progress);
@@ -112,3 +90,29 @@ public OnHoldActionUpdate(playerid, progress)
 #define OnHoldActionUpdate rep_OnHoldActionUpdate
 forward rep_OnHoldActionUpdate(playerid, progress);
 
+
+CompToolHealth(ItemType:itemtype, Float:health)
+{
+	if(health < VEHICLE_HEALTH_CHUNK_2 - 2.0)
+	{
+		if(itemtype == item_Wrench)
+			return 1;
+	}
+	else if(VEHICLE_HEALTH_CHUNK_2 - 2.0 < health < VEHICLE_HEALTH_CHUNK_3 - 2.0)
+	{
+		if(itemtype == item_Screwdriver)
+			return 1;
+	}
+	else if(VEHICLE_HEALTH_CHUNK_3 - 2.0 < health < VEHICLE_HEALTH_CHUNK_4 - 2.0)
+	{
+		if(itemtype == item_Hammer)
+			return 1;
+	}
+	else if(VEHICLE_HEALTH_CHUNK_4 - 2.0 < health < VEHICLE_HEALTH_MAX - 2.0)
+	{
+		if(itemtype == item_Wrench)
+			return 1;
+	}
+
+	return 0;
+}
