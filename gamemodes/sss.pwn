@@ -24,6 +24,7 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
+#include <YSI\y_ini>
 
 #define DEFAULT_POS_X				(-907.5452)
 #define DEFAULT_POS_Y				(272.7235)
@@ -46,7 +47,6 @@ native IsValidVehicle(vehicleid);
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <IniFiles>					// By Southclaw:			http://forum.sa-mp.com/showthread.php?t=262795
 #include <bar>						// By Torbido:				http://forum.sa-mp.com/showthread.php?t=113443
 #include <playerbar>				// By Torbido/Southclaw:	http://pastebin.com/ZuLPd1K6
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
@@ -72,10 +72,8 @@ native WP_Hash(buffer[], len, const str[]);
 // Files
 #define PLAYER_DATA_FILE			"SSS/Player/%s.dat"
 #define PLAYER_ITEM_FILE			"SSS/Inventory/%s.inv"
-#define SPAWNS_DATA					"SSS/Spawns/%s.dat"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
-#define SETTINGS_FILE				"SSS/Settings.txt"
-#define ADMIN_DATA_FILE				"SSS/AdminList.txt"
+#define SETTINGS_FILE				"SSS/settings.cfg"
 
 
 // Database Rows
@@ -276,12 +274,6 @@ AdminColours[5]=
 
 
 //=====================Server Global Settings
-enum (<<=1)
-{
-	ChatLocked = 1,
-	ServerLocked,
-	Restarting
-}
 enum e_admin_data
 {
 	admin_Name[MAX_PLAYER_NAME],
@@ -291,11 +283,20 @@ enum e_admin_data
 
 new
 DB:		gAccounts,
-		bServerGlobalSettings,
-		gServerUptime,
+
 		gMessageOfTheDay[MAX_MOTD_LEN],
+		gGameModeName[32],
+		gMapName[32],
+Float:	gNameTagDistance,
+bool:	gWhitelist,
+bool:	gPauseMap,
+bool:	gInteriorEntry,
+bool:	gPlayerAnimations,
+
 		gAdminData[MAX_ADMIN][e_admin_data],
 		gTotalAdmins,
+		gServerUptime,
+bool:	gServerRestarting,
 		gPingLimit = 400;
 
 new
@@ -556,6 +557,7 @@ forward SetRestart(seconds);
 
 //======================Server Core
 
+#include "../scripts/Core/Server/Settings.pwn"
 #include "../scripts/Core/Server/DataCollection.pwn"
 #include "../scripts/Core/Server/TextTags.pwn"
 #include "../scripts/Core/Server/Weather.pwn"
@@ -709,35 +711,20 @@ forward SetRestart(seconds);
 
 main()
 {
-	new
-		DBResult:tmpResult,
-		rowCount;
-
 	gAccounts = db_open(ACCOUNT_DATABASE);
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player` (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans` (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BY"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`, `"#ROW_INFO"`, `"#ROW_BY"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs` (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Player`    (`"#ROW_NAME"`, `"#ROW_PASS"`, `"#ROW_IPV4"`, `"#ROW_ALIVE"`, `"#ROW_GEND"`, `"#ROW_SPAWN"`, `"#ROW_ISVIP"`, `"#ROW_KARMA"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bans`      (`"#ROW_NAME"`, `"#ROW_IPV4"`, `"#ROW_DATE"`, `"#ROW_REAS"`, `"#ROW_BY"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Reports`   (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`, `"#ROW_INFO"`, `"#ROW_BY"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Bugs`      (`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)"));
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Whitelist` (`"#ROW_NAME"`)"));
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Admins` (`"#ROW_NAME"`, `"#ROW_LEVEL"`)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS `Admins`    (`"#ROW_NAME"`, `"#ROW_LEVEL"`)"));
 
-	tmpResult = db_query(gAccounts, "SELECT * FROM `Player`");
-	rowCount = db_num_rows(tmpResult);
-
-	db_free_result(tmpResult);
 	LoadAdminData();
 
-	file_Open(SETTINGS_FILE);
-
-	print("\n-------------------------------------");
-	print(" Southclaw's Scavenge And Survive");
-	printf("\t%d\t- Visitors",			file_GetVal("Connections"));
-	printf("\t%d\t\t- Accounts",		rowCount);
-	printf("\t%d\t\t- Administrators",	gTotalAdmins);
-	print("-------------------------------------\n");
-
-	file_Close();
+	print("\n\n/*==============================================================================\n\n");
+	print("    Southclaw's Scavenge and Survive");
+	print("\n\n==============================================================================*/\n\n");
 }
 
 
@@ -771,29 +758,7 @@ public OnGameModeInit()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
-	SetGameModeText("Scavenge And Survive");
-	SendRconCommand("mapname San Androcalypse");
-
-	EnableStuntBonusForAll(false);
-	ManualVehicleEngineAndLights();
-	SetNameTagDrawDistance(0.0);
-	UsePlayerPedAnims();
-	AllowInteriorWeapons(true);
-	DisableInteriorEnterExits();
-	ShowNameTags(false);
-
-	MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
-
-	if(!fexist(SETTINGS_FILE))
-	{
-		file_Create(SETTINGS_FILE);
-	}
-	else
-	{
-		file_Open(SETTINGS_FILE);
-		file_GetStr("motd", gMessageOfTheDay);
-		file_Close();
-	}
+	LoadSettings();
 
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
@@ -1124,7 +1089,7 @@ public SetRestart(seconds)
 
 RestartGamemode()
 {
-	t:bServerGlobalSettings<Restarting>;
+	gServerRestarting = true;
 
 	foreach(new i : Player)
 	{

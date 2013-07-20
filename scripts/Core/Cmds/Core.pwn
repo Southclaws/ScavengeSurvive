@@ -259,26 +259,4 @@ LoadAdminData()
 			db_next_row(result);
 		}
 	}
-	else
-	{
-		ConvertAdminsFileToDB();
-	}
-}
-
-ConvertAdminsFileToDB()
-{
-	new
-		File:tmpFile = fopen(ADMIN_DATA_FILE, io_read),
-		line[MAX_PLAYER_NAME + 4],
-		name[24],
-		level;
-
-	while(fread(tmpFile, line))
-	{
-		sscanf(line, "p<=>s[24]d", name, level);
-		gTotalAdmins++;
-
-		UpdateAdmin(name, level);
-	}
-	fclose(tmpFile);	
 }

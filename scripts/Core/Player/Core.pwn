@@ -154,19 +154,22 @@ public OnPlayerConnect(playerid)
 
 	if(db_num_rows(result) >= 1)
 	{
-		if(!IsNameInWhitelist(gPlayerName[playerid]))
+		if(gWhitelist)
 		{
-			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
-				""#C_YELLOW"You are not on the whitelist for this server.\n\
-				This is in force to provide the best gameplay experience for all players.\n\n\
-				"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
-				Applications are always accepted as soon as possible\n\
-				There are no requirements, just follow the rules.\n\
-				Failure to do so will result in permanent removal from the whitelist.", "Close", "");
+			if(!IsNameInWhitelist(gPlayerName[playerid]))
+			{
+				ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
+					""#C_YELLOW"You are not on the whitelist for this server.\n\
+					This is in force to provide the best gameplay experience for all players.\n\n\
+					"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
+					Applications are always accepted as soon as possible\n\
+					There are no requirements, just follow the rules.\n\
+					Failure to do so will result in permanent removal from the whitelist.", "Close", "");
 
-			defer KickPlayerDelay(playerid);
+				defer KickPlayerDelay(playerid);
 
-			return 1;
+				return 1;
+			}
 		}
 
 		new
@@ -230,14 +233,6 @@ public OnPlayerConnect(playerid)
 		t:bPlayerGameSettings[playerid]<IsNewPlayer>;
 	}
 
-	if(bServerGlobalSettings & ServerLocked)
-	{
-		Msg(playerid, RED, " >  Server Locked by an admin "#C_WHITE"- Please try again soon.");
-		MsgAdminsF(1, RED, " >  %s attempted to join the server while it was locked.", gPlayerName[playerid]);
-		KickPlayer(playerid, "Joining server while locked");
-		return 0;
-	}
-
 	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 
 	CheckForExtraAccounts(playerid, gPlayerName[playerid]);
@@ -250,11 +245,6 @@ public OnPlayerConnect(playerid)
 
 
 	db_free_result(result);
-
-	file_Open(SETTINGS_FILE);
-	file_IncVal("Connections", 1);
-	file_Save(SETTINGS_FILE);
-	file_Close();
 
 	t:bPlayerGameSettings[playerid]<HelpTips>;
 	t:bPlayerGameSettings[playerid]<ShowHUD>;
@@ -280,7 +270,7 @@ public OnPlayerConnect(playerid)
 
 public OnPlayerDisconnect(playerid, reason)
 {
-	if(bServerGlobalSettings & Restarting)
+	if(gServerRestarting)
 		return 0;
 
 	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))

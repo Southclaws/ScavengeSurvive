@@ -172,16 +172,17 @@ ACMD:unloadfs[4](playerid, params[])
 
 ACMD:sp[4](playerid, params[])
 {
-	new PositionName[128];
+	new posname[128];
 
-	if(!sscanf(params, "s[128]", PositionName))
+	if(!sscanf(params, "s[128]", posname))
 	{
 		new
 			string[128],
 			Float:x,
 			Float:y,
 			Float:z,
-			Float:r;
+			Float:r,
+			INI:ini = INI_Open("savedpositions.txt");
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -196,65 +197,17 @@ ACMD:sp[4](playerid, params[])
 		}
 
 		format(string, 128, "%.4f, %.4f, %.4f, %.4f", x, y, z, r);
-		file_Open("savedpositions.txt");
-		file_SetStr(PositionName, string);
-		file_Save("savedpositions.txt");
-		file_Close();
 
-		MsgF(playerid, ORANGE, " >  %s = %s "#C_BLUE"Saved!", PositionName, string);
+		INI_WriteString(ini, posname, string);
+		INI_Close(ini);
+
+		MsgF(playerid, ORANGE, " >  %s = %s "#C_BLUE"Saved!", posname, string);
 	}
 	else
 	{
 		Msg(playerid, YELLOW, " >  Usage: /sp [position name]");
 	}
  
-	return 1;
-}
-
-ACMD:tp[4](playerid, params[])
-{
-	new PositionName[128];
-
-	if(!sscanf(params, "s[128]", PositionName))
-	{
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:r,
-			data[256];
-
-		file_Open("savedpositions.txt");
-		{
-			if(!file_IsKey(PositionName))
-			{
-				Msg(playerid, RED, " >  Position not found");
-				return 1;
-			}
-		}
-		file_Close();
-
-		file_GetStr(PositionName, data);
-		sscanf(data, "p<,>ffff", x, y, z, r);
-		MsgF(playerid, YELLOW, " >  "#C_BLUE"%s = %s "#C_YELLOW"Loaded!", PositionName, data);
-
-		if(IsPlayerInAnyVehicle(playerid))
-		{
-			new vehicleid = GetPlayerVehicleID(playerid);
-			SetVehiclePos(vehicleid, x, y, z);
-			SetVehicleZAngle(vehicleid, r);
-		}
-		else
-		{
-			SetPlayerPos(playerid, x, y, z);
-			SetPlayerFacingAngle(playerid, r);
-		}
-	}
-	else
-	{
-		Msg(playerid, YELLOW, " >  Usage: /tp [position name]");
-	}
-
 	return 1;
 }
 
@@ -268,7 +221,8 @@ ACMD:sound[4](playerid, params[])
 
 	foreach(new i : Player)
 	{
-		if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))PlayerPlaySound(i, soundid, x, y, z);
+		if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
+			PlayerPlaySound(i, soundid, x, y, z);
 	}
 	
 	return 1;

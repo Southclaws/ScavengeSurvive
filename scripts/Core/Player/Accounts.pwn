@@ -87,24 +87,27 @@ CreateAccount(playerid, password[])
 
 	db_free_result(db_query(gAccounts, query));
 
-	format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
-	result = db_query(gAccounts, query);
-	numrows = db_num_rows(result);
-	db_free_result(result);
-
-	if(numrows == 0)
+	if(gWhitelist)
 	{
-		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
-			""#C_YELLOW"You are not on the whitelist for this server.\n\
-			This is in force to provide the best gameplay experience for all players.\n\n\
-			"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
-			Applications are always accepted as soon as possible\n\
-			There are no requirements, just follow the rules.\n\
-			Failure to do so will result in permanent removal from the whitelist.", "Close", "");
+		format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
+		result = db_query(gAccounts, query);
+		numrows = db_num_rows(result);
+		db_free_result(result);
 
-		defer KickPlayerDelay(playerid);
+		if(numrows == 0)
+		{
+			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
+				""#C_YELLOW"You are not on the whitelist for this server.\n\
+				This is in force to provide the best gameplay experience for all players.\n\n\
+				"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
+				Applications are always accepted as soon as possible\n\
+				There are no requirements, just follow the rules.\n\
+				Failure to do so will result in permanent removal from the whitelist.", "Close", "");
 
-		return 0;
+			defer KickPlayerDelay(playerid);
+
+			return 0;
+		}
 	}
 
 	for(new i; i<gTotalAdmins; i++)
@@ -304,7 +307,7 @@ SavePlayerData(playerid)
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
-			if(!(bServerGlobalSettings & Restarting))
+			if(!gServerRestarting)
 				return 0;
 		}
 

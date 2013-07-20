@@ -4,7 +4,7 @@ new gAdminCommandList_Lvl2[] =
 {
 	"/(un)ban - ban/unban a player from the server\n\
 	/banlist - show a list of banned players\n\
-	/whitelist - add/remove a player from the whitelist\n\
+	/whitelist - add/remove a player from the whitelist or enable/disable whitelist\n\
 	/aliases - check aliases\n\
 	/clearchat - clear the chatbox\n\
 	/motd - set the message of the day\n"
@@ -105,13 +105,13 @@ ACMD:whitelist[2](playerid, params[])
 		command[7],
 		name[MAX_PLAYER_NAME];
 
-	if(sscanf(params, "s[7]s[24]", command, name))
+	if(sscanf(params, "s[7]S()[24]", command, name))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove] [name]");
+		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name]");
 		return 1;
 	}
 
-	if(!strcmp(command, "add", true))
+	if(!strcmp(command, "add", true) && !isnull(name))
 	{
 		if(AddNameToWhitelist(name))
 			MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
@@ -119,13 +119,23 @@ ACMD:whitelist[2](playerid, params[])
 		else
 			Msg(playerid, RED, " >  An error occurred.");
 	}
-	else if(!strcmp(command, "remove", true))
+	else if(!strcmp(command, "remove", true) && !isnull(name))
 	{
 		if(RemoveNameFromWhitelist(name))
 			MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
 
 		else
 			Msg(playerid, YELLOW, " >  That name is not in the whitelist");
+	}
+	else if(!strcmp(command, "on", true))
+	{
+		Msg(playerid, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
+		gWhitelist = true;
+	}
+	else if(!strcmp(command, "off", true))
+	{
+		Msg(playerid, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
+		gWhitelist = false;
 	}
 
 	return 1;
@@ -195,13 +205,17 @@ ACMD:clearchat[2](playerid, params[])
 ACMD:motd[2](playerid, params[])
 {
 	if(sscanf(params, "s[128]", gMessageOfTheDay))
-		return Msg(playerid, YELLOW, " >  Usage: /motd [message]");
+	{
+		Msg(playerid, YELLOW, " >  Usage: /motd [message]");
+		return 1;
+	}
 
 	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
-	file_Open(SETTINGS_FILE);
-	file_SetStr("motd", gMessageOfTheDay);
-	file_Save(SETTINGS_FILE);
-	file_Close();
+
+	new INI:ini = INI_Open(SETTINGS_FILE);
+
+	INI_WriteString(ini, "motd", gMessageOfTheDay);
+	INI_Close(ini);
 
 	return 1;
 }
