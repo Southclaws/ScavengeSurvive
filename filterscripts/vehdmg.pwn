@@ -3,7 +3,7 @@ native IsValidVehicle(vehicleid);
 
 #include <zcmd>
 #include <sscanf2>
-#include "../scripts/utils/vehicledamage.pwn"
+#include "../scripts/utils/vehicleparts.pwn"
 
 CMD:panels(playerid, params[])
 {
@@ -178,7 +178,7 @@ CMD:settires(playerid, params[])
 
 		frontright,
 		backright,
-		frontright,
+		backleft,
 		frontleft;
 
 	sscanf(params, "s[24]d", type, data);
@@ -198,7 +198,7 @@ CMD:settires(playerid, params[])
 		tires = encode_tires(backright, frontright, data, frontleft);
 
 	if(!strcmp(type, "rr"))
-		tires = encode_tires(backright, frontright, frontright, data);
+		tires = encode_tires(backright, frontright, backleft, data);
 
 
 	UpdateVehicleDamageStatus(GetPlayerVehicleID(playerid), panels, doors, lights, tires);

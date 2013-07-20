@@ -39,7 +39,7 @@ LoadSettings()
 	if(gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
 
-	if(gInteriorEntry)
+	if(!gInteriorEntry)
 		DisableInteriorEnterExits();
 
 	if(gPlayerAnimations)
