@@ -18,7 +18,6 @@ LoadSettings()
 
 	printf("MoTD: %s", gMessageOfTheDay);
 	printf("Game Mode Name: %s", gGameModeName);
-	printf("Map Name: %s", gMapName);
 
 	printf("Whitelist: %d", gWhitelist);
 	printf("Pause Map: %d", gPauseMap);
@@ -36,7 +35,6 @@ LoadSettings()
 
 
 	SetGameModeText(gGameModeName);
-	SendRconCommand(sprintf("mapname %s", gMapName));
 
 	if(gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
@@ -64,7 +62,6 @@ INI:settings[](name[], value[])
 {
 	INI_String("motd", gMessageOfTheDay, MAX_MOTD_LEN);
 	INI_String("gamemodename", gGameModeName, 32);
-	INI_String("mapname", gMapName, 32);
 
 	INI_Bool("whitelist", gWhitelist);
 	INI_Bool("allow-pause-map", gPauseMap);

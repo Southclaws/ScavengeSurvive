@@ -1,2 +1,0 @@
-Connections=0
-motd=Message of the day shown to players when they connect. Change me in {01CCAC}/scriptfiles/SSS/Settings.txt

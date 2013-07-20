@@ -286,7 +286,6 @@ DB:		gAccounts,
 
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gGameModeName[32],
-		gMapName[32],
 Float:	gNameTagDistance,
 bool:	gWhitelist,
 bool:	gPauseMap,
@@ -759,6 +758,8 @@ public OnGameModeInit()
 	print("Starting Main Game Script 'SSS' ...");
 
 	LoadSettings();
+
+	SendRconCommand(sprintf("mapname %s", gMapName));
 
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
