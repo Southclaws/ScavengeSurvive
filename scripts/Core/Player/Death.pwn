@@ -22,6 +22,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	DropItems(playerid);
 	RemovePlayerWeapon(playerid);
 	SpawnPlayer(playerid);
+	ToggleArmour(playerid, false);
 
 	if(IsPlayerConnected(killerid))
 	{

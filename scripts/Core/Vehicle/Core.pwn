@@ -375,10 +375,18 @@ VehicleSurfingCheck(playerid)
 	}
 }
 
-hook OnPlayerStateChange(playerid)
+hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	veh_TempHealth[playerid] = 0.0;
 	veh_TempVelocity[playerid] = 0.0;
+
+	if(newstate == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BICYCLE)
+			VehicleEngineState(vehicleid, 1);
+	}
 
 	return 1;
 }

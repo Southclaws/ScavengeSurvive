@@ -123,16 +123,22 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 			switch(weaponid)
 			{
 				case 0..7, 10..15:
-					hploss *= 0.6;
-
-				case 22..32, 38:
 					hploss *= 0.5;
 
+				case 22..32, 38:
+					hploss *= 0.4;
+
 				case 33, 34:
-					hploss *= 0.8;
+					hploss *= 0.6;
 			}
 
 			gPlayerAP[targetid] -= (hploss / 2.0);
+
+			if(gPlayerAP[targetid] < 0.0)
+			{
+				gPlayerAP[targetid] = 0.0;
+				ToggleArmour(targetid, false);
+			}
 		}
 
 		if(!IsPlayerInAnyVehicle(playerid))

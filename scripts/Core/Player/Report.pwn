@@ -287,7 +287,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		switch(listitem)
 		{
-			case 0:// Specific player ID (who is online now)
+			case 0: // Specific player ID (who is online now)
 			{
 				new
 					name[MAX_PLAYER_NAME],
@@ -295,7 +295,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 				foreach(new i : Player)
 				{
-					GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+					GetPlayerName(i, name, MAX_PLAYER_NAME);
 					strcat(list, name);
 					strcat(list, "\n");
 				}
@@ -303,12 +303,12 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				ShowPlayerDialog(playerid, d_ReportPlayerList, DIALOG_STYLE_LIST, "Report Online Player", list, "Report", "Back");
 				send_TargetType[playerid] = REPORT_TYPE_PLAYER_ID;
 			}
-			case 1:// Specific Player Name (Who isn't online now)
+			case 1: // Specific Player Name (Who isn't online now)
 			{
 				ShowPlayerDialog(playerid, d_ReportNameInput, DIALOG_STYLE_INPUT, "Report Offline Player", "Enter name to report below", "Report", "Back");
 				send_TargetType[playerid] = REPORT_TYPE_PLAYER_NAME;
 			}
-			case 2:// Player that last killed me
+			case 2: // Player that last killed me
 			{
 				if(!isnull(gLastKilledBy[playerid]))
 				{

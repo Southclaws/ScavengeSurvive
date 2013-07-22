@@ -49,6 +49,18 @@ public OnRconCommand(cmd[])
 					CallRemoteFunction("external_WhitelistRemove", "s", name);
 					printf("Removed '%s' from whitelist.", name);
 				}
+
+				if(!strcmp(action, "on") && action[0] != EOS && name[0] != EOS)
+				{
+					CallRemoteFunction("external_WhitelistOn", "");
+					print("Whitelist turned on.");
+				}
+
+				if(!strcmp(action, "off") && action[0] != EOS && name[0] != EOS)
+				{
+					CallRemoteFunction("external_WhitelistOff", "");
+					print("Whitelist turned off.");
+				}
 			}
 		}
 	}

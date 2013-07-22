@@ -1,5 +1,8 @@
 forward external_WhitelistAdd(name[]);
 forward external_WhitelistRemove(name[]);
+forward external_WhitelistOn();
+forward external_WhitelistOff();
+
 
 stock AddNameToWhitelist(name[])
 {
@@ -74,4 +77,14 @@ public external_WhitelistAdd(name[])
 public external_WhitelistRemove(name[])
 {
 	RemoveNameFromWhitelist(name);
+}
+
+public external_WhitelistOn()
+{
+	gWhitelist = true;
+}
+
+public external_WhitelistOff()
+{
+	gWhitelist = false;
 }

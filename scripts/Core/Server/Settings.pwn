@@ -36,7 +36,7 @@ LoadSettings()
 
 	SetGameModeText(gGameModeName);
 
-	if(gPauseMap)
+	if(!gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
 
 	if(!gInteriorEntry)

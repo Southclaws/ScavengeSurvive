@@ -399,6 +399,9 @@ CameraDistanceCheck(playerid)
 	GetPlayerCameraPos(playerid, cx, cy, cz);
 	GetPlayerCameraFrontVector(playerid, cx_vec, cy_vec, cz_vec);
 
+	if(IsAtDefaultPos(cx, cy, cz))
+		return;
+
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new cameramode = GetPlayerCameraMode(playerid);

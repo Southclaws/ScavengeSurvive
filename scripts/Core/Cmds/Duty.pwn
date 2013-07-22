@@ -40,6 +40,8 @@ ACMD:duty[1](playerid, params[])
 
 		Logout(playerid);
 
+		ToggleArmour(playerid, false);
+
 		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
 		if(bPlayerGameSettings[playerid] & Gender)

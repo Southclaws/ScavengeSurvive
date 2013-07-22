@@ -163,6 +163,9 @@ LoadPlayerChar(playerid)
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
+	if(gPlayerAP[playerid] > 0.0)
+		ToggleArmour(playerid, true);
+
 	if(data[PLY_CELL_HOLST] != -1)
 	{
 		itemid = CreateItem(ItemType:data[PLY_CELL_HOLST]);
