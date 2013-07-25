@@ -128,6 +128,23 @@ public OnItemCreate(itemid)
 #define OnItemCreate bag_OnItemCreate
 forward bag_OnItemCreate(itemid);
 
+public OnItemCreateInWorld(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(itemtype == item_Backpack || itemtype == item_Satchel || itemtype == item_ParaBag)
+		SetButtonText(GetItemButtonID(itemid), "Hold "#KEYTEXT_INTERACT" to pick up~n~Press "#KEYTEXT_INTERACT" to open");
+
+	return CallLocalFunction("bag_OnItemCreateInWorld", "d", itemid);
+}
+#if defined _ALS_OnItemCreateInWorld
+	#undef OnItemCreateInWorld
+#else
+	#define _ALS_OnItemCreateInWorld
+#endif
+#define OnItemCreateInWorld bag_OnItemCreateInWorld
+forward bag_OnItemCreateInWorld(itemid);
+
 public OnItemDestroy(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);

@@ -53,6 +53,7 @@ DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_
 public OnItemCreate(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
+
 	for(new i; i < box_TypeTotal; i++)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
@@ -82,6 +83,26 @@ public OnItemCreate(itemid)
 #endif
 #define OnItemCreate box_OnItemCreate
 forward box_OnItemCreate(itemid);
+
+public OnItemCreateInWorld(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	for(new i; i < box_TypeTotal; i++)
+	{
+		if(itemtype == box_TypeData[i][box_itemtype])
+			SetButtonText(GetItemButtonID(itemid), "Hold "#KEYTEXT_INTERACT" to pick up~n~Press "#KEYTEXT_INTERACT" to open");
+	}
+
+	return CallLocalFunction("box_OnItemCreateInWorld", "d", itemid);
+}
+#if defined _ALS_OnItemCreateInWorld
+	#undef OnItemCreateInWorld
+#else
+	#define _ALS_OnItemCreateInWorld
+#endif
+#define OnItemCreateInWorld box_OnItemCreateInWorld
+forward box_OnItemCreateInWorld(itemid);
 
 public OnItemDestroy(itemid)
 {

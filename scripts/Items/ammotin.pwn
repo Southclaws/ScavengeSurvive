@@ -4,12 +4,6 @@ new
 
 public OnItemCreated(itemid)
 {
-	if(GetItemType(itemid) == item_AmmoTin)
-	{
-		defer ConvertOldAmmoTin(itemid);
-		return 1;
-	}
-
 	if(GetItemType(itemid) == item_Ammo9mm)
 		SetItemExtraData(itemid, random(14));
 
@@ -34,55 +28,6 @@ public OnItemCreated(itemid)
 #endif
 #define OnItemCreated ammo_OnItemCreated
 forward ammo_OnItemCreated(itemid);
-
-timer ConvertOldAmmoTin[5](itemid)
-{
-	new
-		type = (GetItemExtraData(itemid) >> 8) & 0xFF,
-		amount = GetItemExtraData(itemid) & 0xFF,
-		ItemType:itemtype;
-
-	if(!(0 < type <= AMMO_TYPE_ROCKET))
-	{
-		DestroyItem(itemid);
-	}
-
-	switch(type)
-	{
-		case AMMO_TYPE_9MM:
-			itemtype = item_Ammo9mm;
-
-		case AMMO_TYPE_BUCK:
-			itemtype = item_AmmoBuck;
-
-		case AMMO_TYPE_556:
-			itemtype = item_Ammo556;
-
-		case AMMO_TYPE_357:
-			itemtype = item_Ammo357;
-
-		case AMMO_TYPE_ROCKET:
-			itemtype = item_AmmoRocket;
-	}
-
-	if(itemtype > ItemType:0)
-	{
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:rx,
-			Float:ry,
-			Float:rz;
-
-		GetItemPos(itemid, x, y, z);
-		GetItemRot(itemid, rx, ry, rz);
-
-		DestroyItem(itemid);
-		itemid = CreateItem(itemtype, x, y, z, rx, ry, rz, .zoffset = FLOOR_OFFSET);
-		SetItemExtraData(itemid, amount);
-	}
-}
 
 stock IsItemTypeAmmoTin(ItemType:itemtype)
 {

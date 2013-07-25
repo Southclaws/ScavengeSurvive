@@ -139,7 +139,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			while(id >= 0 && iters <= MAX_PLAYERS)
 			{
 				iters++;
-				if(id == playerid || !IsPlayerConnected(id) || !(bPlayerGameSettings[id] & Spawned) || GetPlayerState(id) == PLAYER_STATE_SPECTATING)
+
+				if(!CanPlayerSpectate(playerid, id))
 				{
 					id--;
 
@@ -148,6 +149,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 					continue;
 				}
+
 				break;
 			}
 			EnterSpectateMode(playerid, id);
@@ -165,20 +167,36 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			while(id < MAX_PLAYERS && iters <= MAX_PLAYERS)
 			{
 				iters++;
-				if(id == playerid || !IsPlayerConnected(id) || !(bPlayerGameSettings[id] & Spawned) || GetPlayerState(id) == PLAYER_STATE_SPECTATING)
+
+				if(!CanPlayerSpectate(playerid, id))
 				{
 					id++;
 
 					if(id >= MAX_PLAYERS - 1)
-						id=0;
+						id = 0;
 
 					continue;
 				}
+
 				break;
 			}
 			EnterSpectateMode(playerid, id);
 		}
 	}
+	return 1;
+}
+
+CanPlayerSpectate(playerid, targetid)
+{
+	if(targetid == playerid || !IsPlayerConnected(targetid) || !(bPlayerGameSettings[targetid] & Spawned) || GetPlayerState(targetid) == PLAYER_STATE_SPECTATING)
+		return 0;
+
+	if(gPlayerData[playerid][ply_Admin] == 1)
+	{
+		if(!IsPlayerReported(gPlayerName[targetid]))
+			return 0;
+	}
+
 	return 1;
 }
 

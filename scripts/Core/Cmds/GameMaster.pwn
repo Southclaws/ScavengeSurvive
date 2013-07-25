@@ -7,7 +7,8 @@ new gAdminCommandList_Lvl1[] =
 	/(un)mute - mute/unmute a player\n\
 	/warn - give a player a warning\n\
 	/msg - send a chat announcement\n\
-	/unstick - move a player upwards (Duty only)"
+	/unstick - move a player upwards (Duty only)\n\
+	/spec - spectate"
 };
 
 new
@@ -258,6 +259,37 @@ ACMD:unstick[1](playerid, params[])
 	SetPlayerPos(targetid, x, y, z + 1.0);
 
 	tick_UnstickUsage[playerid] = tickcount();
+
+	return 1;
+}
+
+ACMD:spec[1](playerid, params[])
+{
+	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		return 6;
+
+	if(isnull(params))
+	{
+		ExitSpectateMode(playerid);
+	}
+	else
+	{
+		new targetid = strval(params);
+
+		if(IsPlayerConnected(targetid) && targetid != playerid)
+		{
+			if(gPlayerData[playerid][ply_Admin] == 1)
+			{
+				if(!IsPlayerReported(gPlayerName[targetid]))
+				{
+					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
+					return 1;
+				}
+			}
+
+			EnterSpectateMode(playerid, targetid);
+		}
+	}
 
 	return 1;
 }

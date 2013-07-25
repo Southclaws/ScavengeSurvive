@@ -52,34 +52,3 @@ ACMD:duty[1](playerid, params[])
 	}
 	return 1;
 }
-
-ACMD:spec[1](playerid, params[])
-{
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
-		return 6;
-
-	if(isnull(params))
-	{
-		ExitSpectateMode(playerid);
-	}
-	else
-	{
-		new targetid = strval(params);
-
-		if(IsPlayerConnected(targetid) && targetid != playerid)
-		{
-			if(gPlayerData[playerid][ply_Admin] == 1)
-			{
-				if(!IsPlayerReported(gPlayerName[targetid]))
-				{
-					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
-					return 1;
-				}
-			}
-
-			EnterSpectateMode(playerid, targetid);
-		}
-	}
-
-	return 1;
-}

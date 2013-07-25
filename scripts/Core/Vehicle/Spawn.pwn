@@ -454,6 +454,20 @@ stock IsPlayerInVehicleArea(playerid, vehicleid)
 	return IsPlayerInDynamicArea(playerid, veh_Area[vehicleid]);
 }
 
+stock GetPlayerVehicleArea(playerid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS))
+			return 0;
+
+	foreach(new i : veh_Index)
+	{
+		if(IsPlayerInDynamicArea(playerid, veh_Area[i]))
+			return i;
+	}
+
+	return INVALID_VEHICLE_ID;
+}
+
 forward Float:GetVehicleFuelCapacity(vehicleid);
 stock Float:GetVehicleFuelCapacity(vehicleid)
 {

@@ -62,7 +62,7 @@ native WP_Hash(buffer[], len, const str[]);
 // Limits
 #define MAX_MOTD_LEN				(128)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
-#define MAX_ADMIN					(32)
+#define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_SERVER_UPTIME			(3600 * 5)
 #define MAX_SPAWNED_VEHICLES		(250)

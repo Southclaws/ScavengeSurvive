@@ -2,7 +2,7 @@
 
 
 #define MAX_ANIMSET			(8)
-#define MAX_ANIMS_PER_SET	(4)
+#define MAX_ANIMS_PER_SET	(8)
 #define MAX_MELEE_ITEM		(8)
 
 

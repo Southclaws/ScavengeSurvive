@@ -391,7 +391,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	return 1;
 }
 
-IsPlayerAtVehicleTrunk(playerid, vehicleid)
+stock IsPlayerAtVehicleTrunk(playerid, vehicleid)
 {
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
@@ -431,7 +431,7 @@ IsPlayerAtVehicleTrunk(playerid, vehicleid)
 	return 0;
 }
 
-IsPlayerAtVehicleBonnet(playerid, vehicleid)
+stock IsPlayerAtVehicleBonnet(playerid, vehicleid)
 {
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
@@ -471,7 +471,7 @@ IsPlayerAtVehicleBonnet(playerid, vehicleid)
 	return 0;
 }
 
-IsPlayerAtAnyVehicleTrunk(playerid)
+stock IsPlayerAtAnyVehicleTrunk(playerid)
 {
 	foreach(new i : veh_Index)
 	{
@@ -482,7 +482,7 @@ IsPlayerAtAnyVehicleTrunk(playerid)
 	return 0;
 }
 
-IsPlayerAtAnyVehicleBonnet(playerid)
+stock IsPlayerAtAnyVehicleBonnet(playerid)
 {
 	foreach(new i : veh_Index)
 	{
