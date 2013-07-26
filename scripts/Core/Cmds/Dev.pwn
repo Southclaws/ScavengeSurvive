@@ -377,7 +377,7 @@ ACMD:vdelete[4](playerid, params[])
 		return 1;
 	}
 
-	DestroyVehicle(vehicleid);
+	DestroyVehicle(vehicleid, 0);
 
 	return 1;
 }

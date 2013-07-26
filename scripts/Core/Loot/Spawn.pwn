@@ -90,7 +90,7 @@ GenerateLoot(index, &ItemType:itemtype, &exdata)
 	return 1;
 }
 
-CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zoffset = 0.7, ItemType:exception = INVALID_ITEM_TYPE)
+CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zoffset = ITEM_BUTTON_OFFSET, ItemType:exception = INVALID_ITEM_TYPE)
 {
 	new
 		ItemType:itemtype,

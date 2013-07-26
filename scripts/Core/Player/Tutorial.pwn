@@ -8,6 +8,12 @@ Tutorial_Start(playerid)
 	TutorialState[playerid] = 1;
 }
 
+Tutorial_End(playerid)
+{
+	HideHelpTip(playerid);
+	TutorialState[playerid] = 0;
+}
+
 CMD:tutorial(playerid, params[])
 {
 	Tutorial_Start(playerid);
@@ -18,6 +24,11 @@ CMD:skip(playerid, params[])
 	ShowHelpTip(playerid, "Tutorial skipped, you can start it at any time by typing /tutorial.", 5000);
 	TutorialState[playerid] = 0;
 	return 1;
+}
+
+hook OnPlayerConnect(playerid)
+{
+
 }
 
 public OnPlayerOpenInventory(playerid)
@@ -252,3 +263,15 @@ public OnPlayerCloseInventory(playerid)
 #endif
 #define OnPlayerCloseInventory tut_OnPlayerCloseInventory
 forward OnPlayerCloseInventory(playerid);
+
+
+// Interface
+
+
+stock IsPlayerInTutorial(playerid)
+{
+	if(TutorialState[playerid] > 0)
+		return 1;
+
+	return 0;
+}

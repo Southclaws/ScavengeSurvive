@@ -124,6 +124,7 @@ CreateAccount(playerid, password[])
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
 	t:bPlayerGameSettings[playerid]<HasAccount>;
+	t:bPlayerGameSettings[playerid]<ToolTips>;
 
 	PlayerCreateNewCharacter(playerid);
 
@@ -251,6 +252,12 @@ CheckForExtraAccounts(playerid, name[])
 
 Logout(playerid)
 {
+	if(!(bPlayerGameSettings[playerid] & LoggedIn))
+		return 0;
+
+	if(!(bPlayerGameSettings[playerid] & Spawned))
+		return 0;
+
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 		return 0;
 

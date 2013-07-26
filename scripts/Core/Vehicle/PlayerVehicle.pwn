@@ -134,7 +134,7 @@ LoadPlayerVehicles(bool:prints = false)
 				if(strlen(owner) < 3)
 				{
 					printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", owner, strlen(owner));
-					DestroyVehicle(vehicleid);
+					DestroyVehicle(vehicleid, 1);
 					fremove(filedir);
 					continue;
 				}

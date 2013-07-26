@@ -509,7 +509,7 @@ public OnHoldActionFinish(playerid)
 				def_Data[def_CurrentDefenseEdit[playerid]][def_posY],
 				def_Data[def_CurrentDefenseEdit[playerid]][def_posZ],
 				.rz = def_Data[def_CurrentDefenseEdit[playerid]][def_rotZ],
-				.zoffset = ITEM_BTN_OFFSET_Z);
+				.zoffset = ITEM_BUTTON_OFFSET);
 
 			DestroyDefense(def_CurrentDefenseEdit[playerid]);
 			ClearAnimations(playerid);

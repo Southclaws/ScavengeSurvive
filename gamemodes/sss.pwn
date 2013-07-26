@@ -47,7 +47,7 @@ native IsValidVehicle(vehicleid);
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <playerbar>				// By Torbido/Southclaw:	http://pastebin.com/ZuLPd1K6
+#include <playerbar>				// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
@@ -603,7 +603,8 @@ forward SetRestart(seconds);
 #include "../scripts/Core/UI/HoldAction.pwn"
 #include "../scripts/Core/UI/Radio.pwn"
 #include "../scripts/Core/UI/TipText.pwn"
-#include "../scripts/Core/UI/ToolTipEvents.pwn"
+#include "../scripts/Core/UI/KeyActions.pwn"
+#include "../scripts/Core/UI/ToolTips.pwn"
 #include "../scripts/Core/UI/Watch.pwn"
 #include "../scripts/Core/UI/Keypad.pwn"
 

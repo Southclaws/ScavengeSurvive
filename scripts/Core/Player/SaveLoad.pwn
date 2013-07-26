@@ -19,6 +19,7 @@ enum
 	PLY_CELL_FREQ,
 	PLY_CELL_CHATMODE,
 	PLY_CELL_INFECTED,
+	PLY_CELL_TOOLTIPS,
 	PLY_CELL_END
 }
 
@@ -97,6 +98,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_CHATMODE] = gPlayerChatMode[playerid];
 
 	data[PLY_CELL_INFECTED] = (bPlayerGameSettings[playerid] & Infected);
+
+	data[PLY_CELL_TOOLTIPS] = (bPlayerGameSettings[playerid] & ToolTips);
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -215,6 +218,12 @@ LoadPlayerChar(playerid)
 
 	else
 		f:bPlayerGameSettings[playerid]<Infected>;
+
+	if(data[PLY_CELL_TOOLTIPS])
+		t:bPlayerGameSettings[playerid]<ToolTips>;
+
+	else
+		f:bPlayerGameSettings[playerid]<ToolTips>;
 }
 LoadPlayerInventory(playerid)
 {

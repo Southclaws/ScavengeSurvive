@@ -117,7 +117,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		RemoveCurrentItem(playerid);
@@ -129,7 +129,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
@@ -142,7 +142,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(15.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		RemovePlayerHolsterItem(playerid);
@@ -161,7 +161,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(45.0 + (90.0 * float(i)), degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 	}
 
@@ -174,7 +174,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(180.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		SetItemRot(backpackitem, 0.0, 0.0, gPlayerDeathPos[playerid][3], true);
@@ -187,7 +187,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(90.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		SetItemExtraData(itemid, clothes);
@@ -200,7 +200,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(270.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
 		RemovePlayerHat(playerid);
@@ -213,7 +213,7 @@ DropItems(playerid)
 			gPlayerDeathPos[playerid][1] + floatcos(135.0, degrees),
 			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
 			.rz = gPlayerDeathPos[playerid][3],
-			.zoffset = ITEM_BTN_OFFSET_Z,
+			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 	}
 }

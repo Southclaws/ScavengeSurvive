@@ -9,13 +9,15 @@ enum (<<= 1) // 23
 		LoadedData,
 		IsNewPlayer,
 		CanExitWelcome,
+
 		AdminDuty,
 		Gender,
 		Alive,
 		Dying,
 		Spawned,
 		FirstSpawn,
-		HelpTips,
+
+		ToolTips,
 		ShowHUD,
 		KnockedOut,
 		Bleeding,
@@ -223,6 +225,7 @@ public OnPlayerConnect(playerid)
 			DisplayLoginPrompt(playerid);
 
 		f:bPlayerGameSettings[playerid]<IsNewPlayer>;
+		Tutorial_End(playerid);
 	}
 	else
 	{
@@ -246,7 +249,6 @@ public OnPlayerConnect(playerid)
 
 	db_free_result(result);
 
-	t:bPlayerGameSettings[playerid]<HelpTips>;
 	t:bPlayerGameSettings[playerid]<ShowHUD>;
 
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
@@ -273,10 +275,7 @@ public OnPlayerDisconnect(playerid, reason)
 	if(gServerRestarting)
 		return 0;
 
-	if(bPlayerGameSettings[playerid] & LoggedIn && !(bPlayerGameSettings[playerid] & AdminDuty))
-	{
-		Logout(playerid);
-	}
+	Logout(playerid);
 
 	ResetVariables(playerid);
 	UnloadPlayerTextDraws(playerid);

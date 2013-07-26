@@ -234,7 +234,7 @@ CreateNewVehicle(model, Float:x, Float:y, Float:z, Float:r)
 	if(vehicleid >= MAX_SPAWNED_VEHICLES)
 	{
 		print("ERROR: Vehicle limit reached.");
-		DestroyVehicle(vehicleid);
+		DestroyVehicle(vehicleid, 2);
 		return 0;
 	}
 
@@ -403,7 +403,7 @@ public OnVehicleSpawn(vehicleid)
 			DestroyContainer(veh_Container[vehicleid]);
 
 		DestroyDynamicArea(veh_Area[vehicleid]);
-		DestroyVehicle(vehicleid);
+		DestroyVehicle(vehicleid, 3);
 		Iter_Remove(veh_Index, vehicleid);
 	}
 }

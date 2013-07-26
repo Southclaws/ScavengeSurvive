@@ -25,7 +25,7 @@ hook OnGameModeInit()
 }
 
 
-stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, Float:zoffset = ITEM_BTN_OFFSET_Z)
+stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, Float:zoffset = ITEM_BUTTON_OFFSET)
 {
 	new id = Iter_Free(rip_Index);
 

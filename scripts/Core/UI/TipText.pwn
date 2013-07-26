@@ -11,12 +11,17 @@ ShowHelpTip(playerid, text[], time = 0)
 	PlayerTextDrawShow(playerid, HelpTipText);
 
 	if(time > 0)
-		defer HideHelpTip(playerid, time);
+		defer HideHelpTip_Delay(playerid, time);
 }
 
-timer HideHelpTip[time](playerid, time)
+timer HideHelpTip_Delay[time](playerid, time)
 {
+	HideHelpTip(playerid);
 	#pragma unused time
+}
+
+HideHelpTip(playerid)
+{
 	PlayerTextDrawHide(playerid, HelpTipText);
 }
 

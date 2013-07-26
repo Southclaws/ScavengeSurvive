@@ -14,7 +14,8 @@ CMD:help(playerid, params[])
 		""#C_YELLOW"General Information:\n\n\n"#C_WHITE"\
 		\t"#C_RED"/rules for a list of server rules.\n\n\
 		\t"#C_BLUE"/chatinfo for information on chat.\n\n\
-		\t"#C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\n\
+		\t"#C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\
+		\t"#C_YELLOW"/tooltips to enable and disable helpful tooltips\n\n\n\
 		"#C_WHITE"Server script coded and owned by "#C_GREEN"Southclaw "#C_WHITE"(jaz636@gmail.com) all rights reserved.");
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString, "Close", "");
@@ -190,5 +191,20 @@ CMD:allcountry(playerid, params[])
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
 
+	return 1;
+}
+
+CMD:tooltips(playerid, params[])
+{
+	if(bPlayerGameSettings[playerid] & ToolTips)
+	{
+		Msg(playerid, YELLOW, " >  Tooltips disabled");
+		f:bPlayerGameSettings[playerid]<ToolTips>;
+	}
+	else
+	{
+		Msg(playerid, YELLOW, " >  Tooltips enabled");
+		t:bPlayerGameSettings[playerid]<ToolTips>;
+	}
 	return 1;
 }
