@@ -261,14 +261,34 @@ Logout(playerid)
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 		return 0;
 
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
+	if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
+	{
+		if(!IsContainerEmpty(GetItemExtraData(itemid)))
+		{
+			CreateItemInWorld(itemid,
+				gPlayerData[playerid][ply_posX],
+				gPlayerData[playerid][ply_posY],
+				gPlayerData[playerid][ply_posZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+
+			itemid = INVALID_ITEM_ID;
+		}
+	}
+
 	SavePlayerData(playerid);
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
-		DestroyItem(GetPlayerItem(playerid));
+		DestroyItem(itemid);
+		DestroyPlayerBackpack(playerid);
 		RemovePlayerHolsterItem(playerid);
 		RemovePlayerWeapon(playerid);
-		DestroyPlayerBackpack(playerid);
 
 		for(new i; i < INV_MAX_SLOTS; i++)
 		{
@@ -295,20 +315,15 @@ SavePlayerData(playerid)
 	if(!(bPlayerGameSettings[playerid] & LoadedData))
 		return 0;
 
-	new
-		query[256],
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:a;
+	new query[256];
 
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, a);
+	GetPlayerPos(playerid, gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ]);
+	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
 
-	SaveBlockAreaCheck(x, y, z);
+	SaveBlockAreaCheck(gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		z += 2.5;
+		gPlayerData[playerid][ply_posZ] += 2.5;
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
@@ -327,7 +342,7 @@ SavePlayerData(playerid)
 			`"#ROW_KARMA"` = '%d' \
 			WHERE `"#ROW_NAME"` = '%s'",
 			(bPlayerGameSettings[playerid] & Gender) ? 1 : 0,
-			x, y, z, a,
+			gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ], gPlayerData[playerid][ply_rotZ],
 			(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0,
 			gPlayerData[playerid][ply_karma],
 			gPlayerName[playerid]);

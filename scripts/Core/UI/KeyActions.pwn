@@ -189,11 +189,6 @@ ptask ToolTipUpdate[1000](playerid)
 
 	// Groups of items
 
-	else if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
-	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Open satchel");
-		AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Wear");
-	}
 	else if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
 	{
 		if(inplayerarea != -1)
@@ -218,7 +213,12 @@ ptask ToolTipUpdate[1000](playerid)
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Eat");
 		}
-		if(GetHatFromItem(itemtype) != -1)
+		else if(IsItemTypeBag(itemtype))
+		{
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Open satchel");
+			AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Wear");
+		}
+		else if(GetHatFromItem(itemtype) != -1)
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Wear Hat");
 		}

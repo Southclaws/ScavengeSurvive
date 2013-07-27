@@ -33,10 +33,28 @@ ACMD:duty[1](playerid, params[])
 			return 1;
 		}
 
+		new
+			itemid,
+			ItemType:itemtype;
+
+		itemid = GetPlayerItem(playerid);
+		itemtype = GetItemType(itemid);
+
 		GetPlayerPos(playerid,
 			gPlayerData[playerid][ply_posX],
 			gPlayerData[playerid][ply_posY],
 			gPlayerData[playerid][ply_posZ]);
+
+		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
+		{
+			if(!IsContainerEmpty(GetItemExtraData(itemid)))
+			{
+				CreateItemInWorld(itemid,
+					gPlayerData[playerid][ply_posX],
+					gPlayerData[playerid][ply_posY],
+					gPlayerData[playerid][ply_posZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+			}
+		}
 
 		Logout(playerid);
 
