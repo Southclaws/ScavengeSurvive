@@ -132,7 +132,7 @@ ApplyArmourToVehicle(vehicleid, armourid)
 	return 1;
 }
 
-CMD:armour(playerid, params[])
+ACMD:armour[4](playerid, params[])
 {
 	new
 		vehicleid = GetPlayerVehicleID(playerid),
@@ -146,7 +146,7 @@ CMD:armour(playerid, params[])
 	return 1;
 }
 
-CMD:allcarmour(playerid, params[])
+ACMD:allcarmour[4](playerid, params[])
 {
 	new
 		Float:x,

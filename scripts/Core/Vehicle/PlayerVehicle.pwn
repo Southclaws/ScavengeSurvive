@@ -1,6 +1,7 @@
 #include <YSI\y_hooks>
 
 
+#define PLAYER_VEHICLE_DEBUG_PRINTS	true
 #define PLAYER_VEHICLE_DIRECTORY	"./scriptfiles/SSS/Vehicles/"
 #define PLAYER_VEHICLE_FILE			"SSS/Vehicles/%s.dat"
 
@@ -24,11 +25,7 @@ enum
 }
 
 
-new
-	gCurrentContainerVehicle[MAX_PLAYERS];
-
-
-SavePlayerVehicles(prints)
+SavePlayerVehicles()
 {
 	new owner[MAX_PLAYER_NAME];
 
@@ -39,17 +36,17 @@ SavePlayerVehicles(prints)
 		if(IsValidVehicleID(i))
 		{
 			if(strlen(owner) >= 3)
-				SavePlayerVehicle(i, owner, prints);
+				SavePlayerVehicle(i, owner);
 		}
 		else
 		{
 			if(strlen(owner) >= 3)
-				RemovePlayerVehicleFile(i, true);
+				RemovePlayerVehicleFile(i);
 		}
 	}
 }
 
-LoadPlayerVehicles(bool:prints = false)
+LoadPlayerVehicles()
 {
 	new
 		dir:direc = dir_open(PLAYER_VEHICLE_DIRECTORY),
@@ -188,7 +185,7 @@ LoadPlayerVehicles(bool:prints = false)
 
 				t:veh_BitData[vehicleid]<veh_Player>;
 
-				SetVehicleData(vehicleid);
+				UpdateVehicleData(vehicleid);
 				CreateVehicleArea(vehicleid);
 			}
 		}
@@ -196,13 +193,13 @@ LoadPlayerVehicles(bool:prints = false)
 
 	dir_close(direc);
 
-	if(prints)
+	if(PLAYER_VEHICLE_DEBUG_PRINTS)
 		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
 
 	return;
 }
 
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
+SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 {
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
@@ -231,7 +228,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 	GetVehicleDamageStatus(vehicleid, array[VEH_CELL_PANELS], array[VEH_CELL_DOORS], array[VEH_CELL_LIGHTS], array[VEH_CELL_TIRES]);
 	array[VEH_CELL_ARMOUR] = 0;
 
-	if(prints)
+	if(PLAYER_VEHICLE_DEBUG_PRINTS)
 		printf("\t[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
 
 	if(IsValidContainer(GetVehicleContainer(vehicleid)))
@@ -289,7 +286,7 @@ SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 	return 1;
 }
 
-RemovePlayerVehicleFile(vehicleid, prints = false)
+RemovePlayerVehicleFile(vehicleid)
 {
 	new owner[MAX_PLAYER_NAME];
 
@@ -298,7 +295,7 @@ RemovePlayerVehicleFile(vehicleid, prints = false)
 	if(isnull(owner))
 		return 0;
 
-	if(prints)
+	if(PLAYER_VEHICLE_DEBUG_PRINTS)
 		printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, owner);
 
 	new filename[MAX_PLAYER_NAME + 18];
@@ -308,67 +305,3 @@ RemovePlayerVehicleFile(vehicleid, prints = false)
 
 	return 1;
 }
-
-public OnItemAddedToContainer(containerid, itemid, playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(IsValidVehicleID(gCurrentContainerVehicle[playerid]))
-		{
-			new
-				owner[MAX_PLAYER_NAME],
-				name[MAX_PLAYER_NAME];
-
-			GetVehicleOwner(gCurrentContainerVehicle[playerid], owner);
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-			if(!isnull(owner) && !strcmp(owner, name))
-			{
-				SavePlayerVehicle(gCurrentContainerVehicle[playerid], name, true);
-			}
-		}
-	}
-
-	return CallLocalFunction("veh_OnItemAddedToContainer", "ddd", containerid, itemid, playerid);
-}
-#if defined _ALS_OnItemAddedToContainer
-	#undef OnItemAddedToContainer
-#else
-	#define _ALS_OnItemAddedToContainer
-#endif
-#define OnItemAddedToContainer veh_OnItemAddedToContainer
-forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
-
-public OnItemRemovedFromContainer(containerid, slotid, playerid)
-{
-	if(IsPlayerConnected(playerid))
-	{
-		if(IsValidVehicleID(gCurrentContainerVehicle[playerid]))
-		{
-			if(IsValidVehicleID(gCurrentContainerVehicle[playerid]))
-			{
-				new
-					owner[MAX_PLAYER_NAME],
-					name[MAX_PLAYER_NAME];
-
-				GetVehicleOwner(gCurrentContainerVehicle[playerid], owner);
-				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-				if(!isnull(owner) && !strcmp(owner, name))
-				{
-					SavePlayerVehicle(gCurrentContainerVehicle[playerid], name, true);
-				}
-			}
-		}
-	}
-
-	return CallLocalFunction("veh_OnItemRemovedFromContainer", "ddd", containerid, slotid, playerid);
-}
-#if defined _ALS_OnItemRemovedFromContainer
-	#undef OnItemRemovedFromContainer
-#else
-	#define _ALS_OnItemRemovedFromContainer
-#endif
-#define OnItemRemovedFromContainer veh_OnItemRemovedFromContainer
-forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
-

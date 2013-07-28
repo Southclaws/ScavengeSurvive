@@ -574,9 +574,9 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Weapon/Core.pwn"
 #include "../scripts/Core/Loot/Spawn.pwn"
 #include "../scripts/Core/Loot/HouseLoot.pwn"
+#include "../scripts/Core/Vehicle/Core.pwn"
 #include "../scripts/Core/Vehicle/Spawn.pwn"
 #include "../scripts/Core/Vehicle/PlayerVehicle.pwn"
-#include "../scripts/Core/Vehicle/Core.pwn"
 
 //======================Player Core
 
