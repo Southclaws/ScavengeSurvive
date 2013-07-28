@@ -218,7 +218,7 @@ timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
 	for(i = index; i < index + MAX_SAVES_PER_BLOCK_VEHICLE && i < autosave_Max; i++)
 	{
 		GetVehicleOwner(autosave_Block[i], owner);
-		SavePlayerVehicle(autosave_Block[i], owner, false);
+		SavePlayerVehicle(autosave_Block[i], owner);
 	}
 
 	if(i < autosave_Max)

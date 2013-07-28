@@ -719,7 +719,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-		SavePlayerVehicle(GetPlayerLastVehicle(playerid), name, true);
+		SavePlayerVehicle(GetPlayerLastVehicle(playerid), name);
 		SetCameraBehindPlayer(playerid);
 	}
 
@@ -787,7 +787,7 @@ public OnItemAddedToContainer(containerid, itemid, playerid)
 
 			if(!isnull(owner) && !strcmp(owner, name))
 			{
-				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name, true);
+				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
 			}
 		}
 	}
@@ -819,7 +819,7 @@ public OnItemRemovedFromContainer(containerid, slotid, playerid)
 
 				if(!isnull(owner) && !strcmp(owner, name))
 				{
-					SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name, true);
+					SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
 				}
 			}
 		}

@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define PLAYER_VEHICLE_DEBUG_PRINTS	true
+//#define PLAYER_VEHICLE_DEBUG_PRINTS
 #define PLAYER_VEHICLE_DIRECTORY	"./scriptfiles/SSS/Vehicles/"
 #define PLAYER_VEHICLE_FILE			"SSS/Vehicles/%s.dat"
 
@@ -193,8 +193,9 @@ LoadPlayerVehicles()
 
 	dir_close(direc);
 
-	if(PLAYER_VEHICLE_DEBUG_PRINTS)
+	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
 		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
+	#endif
 
 	return;
 }
@@ -228,8 +229,9 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 	GetVehicleDamageStatus(vehicleid, array[VEH_CELL_PANELS], array[VEH_CELL_DOORS], array[VEH_CELL_LIGHTS], array[VEH_CELL_TIRES]);
 	array[VEH_CELL_ARMOUR] = 0;
 
-	if(PLAYER_VEHICLE_DEBUG_PRINTS)
+	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
 		printf("\t[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
+	#endif
 
 	if(IsValidContainer(GetVehicleContainer(vehicleid)))
 	{
@@ -295,8 +297,9 @@ RemovePlayerVehicleFile(vehicleid)
 	if(isnull(owner))
 		return 0;
 
-	if(PLAYER_VEHICLE_DEBUG_PRINTS)
+	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
 		printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, owner);
+	#endif
 
 	new filename[MAX_PLAYER_NAME + 18];
 

@@ -653,6 +653,8 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 			}
 		}
 	}
+
+	HideActionText(playerid);
 }
 
 PlayerDropWeapon(playerid)

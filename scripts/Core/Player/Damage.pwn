@@ -221,7 +221,23 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		angleto = absoluteangle(targetangle - GetAngleToPoint(px, py, tx, ty));
 
 		if(225.0 < angleto < 315.0)
-			hploss *= 0.2;
+			hploss *= 0.1;
+
+		f:bPlayerGameSettings[targetid]<Bleeding>;
+	}
+
+	if(GetItemType(GetPlayerHolsterItem(targetid)) == item_Shield)
+	{
+		new
+			Float:angleto,
+			Float:targetangle;
+
+		GetPlayerFacingAngle(targetid, targetangle);
+
+		angleto = absoluteangle(targetangle - GetAngleToPoint(px, py, tx, ty));
+
+		if(155.0 < angleto < 205.0)
+			hploss *= 0.1;
 
 		f:bPlayerGameSettings[targetid]<Bleeding>;
 	}

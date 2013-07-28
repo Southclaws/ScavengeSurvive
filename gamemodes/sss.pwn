@@ -919,6 +919,27 @@ public OnGameModeInit()
 // 2590 - SPIKEY HOOK, SCHYTHE?
 
 
+	SetItemTypeHolsterable(ItemType:03,	1, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Baton
+	SetItemTypeHolsterable(ItemType:08,	1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED",		"PHONE_IN");		// Sword
+	SetItemTypeHolsterable(ItemType:22,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9
+	SetItemTypeHolsterable(ItemType:23,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9 SD
+	SetItemTypeHolsterable(ItemType:24,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Desert Eagle
+	SetItemTypeHolsterable(ItemType:25,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shotgun
+	SetItemTypeHolsterable(ItemType:26,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Sawnoff
+	SetItemTypeHolsterable(ItemType:27,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Spas 12
+	SetItemTypeHolsterable(ItemType:28,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Mac 10
+	SetItemTypeHolsterable(ItemType:29,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// MP5
+	SetItemTypeHolsterable(ItemType:30,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// AK-47
+	SetItemTypeHolsterable(ItemType:31,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// M16
+	SetItemTypeHolsterable(ItemType:32,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Tec 9
+	SetItemTypeHolsterable(ItemType:33,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Rifle
+	SetItemTypeHolsterable(ItemType:34,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Sniper
+	SetItemTypeHolsterable(ItemType:35,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// RPG
+	SetItemTypeHolsterable(ItemType:36,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Heatseeker
+
+	SetItemTypeHolsterable(item_Taser,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Taser
+	SetItemTypeHolsterable(item_Shield,	1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 300,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+
 
 	anim_Blunt = DefineAnimSet();
 	anim_Stab = DefineAnimSet();
@@ -1031,31 +1052,13 @@ public OnGameModeInit()
 	DefineSafeboxType("Large Box", 		item_LargeBox,		10, 8, 6, 6);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
 
-	for(new i; i < _:item_Parachute; i++)
-	{
-		switch(i)
-		{
-			case 2, 3, 5, 6, 7, 8, 15:
-				SetItemTypeHolsterable(ItemType:i, 1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED", "PHONE_IN"); // Small arms
-
-			case 1, 4, 16..18, 22..24, 10..13, 26, 28, 32, 39..41, 43, 44, 45:
-				SetItemTypeHolsterable(ItemType:i, 8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300, "PED", "PHONE_IN"); // Small arms
-
-			case 25, 27, 29, 30, 31, 33, 34:
-				SetItemTypeHolsterable(ItemType:i, 1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800, "GOGGLES", "GOGGLES_PUT_ON"); // Two handed
-
-			case 35, 36:
-				SetItemTypeHolsterable(ItemType:i, 1, 0.181966, -0.238397, -0.094830, 252.791229, 353.893859, 357.529418, 800, "GOGGLES", "GOGGLES_PUT_ON"); // Rocket
-		}
-	}
-
 	// Initiation Code
 
 	CallLocalFunction("OnLoad", "");
 
 	// Data From Files
 
-	LoadVehicles(true);
+	LoadVehicles();
 	LoadSafeboxes(true);
 	LoadTents(true);
 	LoadDefenses();
@@ -1073,7 +1076,7 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
-	SavePlayerVehicles(true);
+	SavePlayerVehicles();
 	SaveSafeboxes(true);
 	SaveTents(true);
 	SaveDefenses();
