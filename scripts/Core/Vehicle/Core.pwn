@@ -217,130 +217,136 @@ PlayerVehicleUpdate(playerid)
 		model = GetVehicleModel(vehicleid),
 		Float:health;
 
-	if(GetVehicleType(model) != VTYPE_BICYCLE && model != 0)
+	if(GetVehicleType(model) == VTYPE_BICYCLE || model == 0)
+		return;
+
+	GetVehicleHealth(vehicleid, health);
+
+	if(veh_TempHealth[playerid] > 300.0)
 	{
-		GetVehicleHealth(vehicleid, health);
+		new Float:diff = veh_TempHealth[playerid] - health;
 
-		if(veh_TempHealth[playerid] > 300.0)
+		if(diff > 10.0 && veh_TempHealth[playerid] < VEHICLE_HEALTH_MAX)
 		{
-			new Float:diff = veh_TempHealth[playerid] - health;
+			health += diff * 0.8;
+			SetVehicleHealth(vehicleid, health);
+		}
+	}
 
-			if(diff > 10.0 && veh_TempHealth[playerid] < VEHICLE_HEALTH_MAX)
-			{
-				health += diff * 0.8;
-				SetVehicleHealth(vehicleid, health);
-			}
+	if(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) > ((GetVehicleType(model) == VTYPE_BICYCLE) ? 55.0 : 45.0))
+	{
+		GivePlayerHP(playerid, -(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) * 0.1));
+	}
+
+	if(health <= VEHICLE_HEALTH_CHUNK_1)
+		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
+
+	else if(health <= VEHICLE_HEALTH_CHUNK_2)
+		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
+
+	else if(health <= VEHICLE_HEALTH_CHUNK_3)
+		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_2_COLOUR);
+
+	else if(health <= VEHICLE_HEALTH_CHUNK_4)
+		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_3_COLOUR);
+
+	else if(health <= VEHICLE_HEALTH_MAX)
+		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_4_COLOUR);
+
+	if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0) // If the vehicle is a fuel powered vehicle
+	{
+		new
+			Float:fuel = GetVehicleFuel(vehicleid),
+			str[18];
+
+		if(fuel <= 0.0)
+		{
+			SetVehicleEngine(vehicleid, 0);
+			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
 		}
 
-		if(health <= VEHICLE_HEALTH_CHUNK_1)
-			PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
+		format(str, 18, "%.2fL/%.2f", GetVehicleFuel(vehicleid), VehicleFuelData[model - 400][veh_maxFuel]);
+		PlayerTextDrawSetString(playerid, VehicleFuelText, str);
+		PlayerTextDrawShow(playerid, VehicleFuelText);
 
-		else if(health <= VEHICLE_HEALTH_CHUNK_2)
-			PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
-
-		else if(health <= VEHICLE_HEALTH_CHUNK_3)
-			PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_2_COLOUR);
-
-		else if(health <= VEHICLE_HEALTH_CHUNK_4)
-			PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_3_COLOUR);
-
-		else if(health <= VEHICLE_HEALTH_MAX)
-			PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_4_COLOUR);
-
-		if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0)
+		if(GetVehicleEngine(vehicleid))
 		{
-			if(GetVehicleEngine(vehicleid))
-			{
-				new Float:fuel = GetVehicleFuel(vehicleid);
+			if(fuel > 0.0)
+				fuel -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((GetPlayerTotalVelocity(playerid)/60)/60)/10) + 0.0001);
 
-				if(fuel <= 0.0)
+			SetVehicleFuel(vehicleid, fuel);
+			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
+
+			if(health <= VEHICLE_HEALTH_CHUNK_1)
+			{
+				SetVehicleEngine(vehicleid, 0);
+				PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+			}
+			else if(health <= VEHICLE_HEALTH_CHUNK_2 && GetPlayerTotalVelocity(playerid) > 1.0)
+			{
+				new Float:enginechance = (20 - ((health - VEHICLE_HEALTH_CHUNK_2) / 3));
+
+				SetVehicleHealth(vehicleid, health - ((VEHICLE_HEALTH_CHUNK_1 - (health - VEHICLE_HEALTH_CHUNK_1)) / 1000.0));
+
+				if(VehicleEngineState(vehicleid) && GetPlayerTotalVelocity(playerid) > 30.0)
 				{
-					SetVehicleEngine(vehicleid, 0);
-					PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+					if(random(100) < enginechance)
+					{
+						VehicleEngineState(vehicleid, 0);
+						PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+					}
 				}
 				else
 				{
-					if(fuel > 0.0)
-						fuel -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((GetPlayerTotalVelocity(playerid)/60)/60)/10) + 0.0001);
-
-					SetVehicleFuel(vehicleid, fuel);
-					PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
-				}
-
-				if(health <= VEHICLE_HEALTH_CHUNK_1)
-				{
-					SetVehicleEngine(vehicleid, 0);
-					PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
-				}
-				else if(health <= VEHICLE_HEALTH_CHUNK_2 && GetPlayerTotalVelocity(playerid) > 1.0)
-				{
-					new Float:enginechance = (20 - ((health - VEHICLE_HEALTH_CHUNK_2) / 3));
-
-					SetVehicleHealth(vehicleid, health - ((VEHICLE_HEALTH_CHUNK_1 - (health - VEHICLE_HEALTH_CHUNK_1)) / 1000.0));
-
-					if(VehicleEngineState(vehicleid) && GetPlayerTotalVelocity(playerid) > 30.0)
+					if(random(100) < 100 - enginechance)
 					{
-						if(random(100) < enginechance)
-						{
-							VehicleEngineState(vehicleid, 0);
-							PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
-						}
-					}
-					else
-					{
-						if(random(100) < 100 - enginechance)
-						{
-							VehicleEngineState(vehicleid, 1);
-							PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
-						}
+						VehicleEngineState(vehicleid, 1);
+						PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
 					}
 				}
-			}
-			else
-			{
-				PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
 			}
 		}
 		else
 		{
 			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
 		}
-
-		if(VehicleDoorsState(vehicleid))
-		{
-			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_ACTIVE);
-		}
-		else
-		{
-			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_INACTIVE);
-		}
-
-		new str[18];
-		format(str, 18, "%.2fL/%.2f", GetVehicleFuel(vehicleid), VehicleFuelData[model - 400][veh_maxFuel]);
-		PlayerTextDrawSetString(playerid, VehicleFuelText, str);
-
-		PlayerTextDrawShow(playerid, VehicleFuelText);
-		PlayerTextDrawShow(playerid, VehicleDamageText);
-		PlayerTextDrawShow(playerid, VehicleEngineText);
-		PlayerTextDrawShow(playerid, VehicleDoorsText);
-
-		if(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) > ((GetVehicleType(model) == VTYPE_BICYCLE) ? 55.0 : 45.0))
-		{
-			GivePlayerHP(playerid, -(floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid)) * 0.1));
-		}
-
-		switch(GetPlayerWeapon(playerid))
-		{
-			case 28, 29, 32:
-			{
-				if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-					SetPlayerArmedWeapon(playerid, 0);
-			}
-		}
-
-		veh_TempVelocity[playerid] = GetPlayerTotalVelocity(playerid);
-		veh_TempHealth[playerid] = health;
 	}
+	else
+	{
+		PlayerTextDrawHide(playerid, VehicleFuelText);
+	}
+
+	if(VehicleHasDoors(model))
+	{
+		if(VehicleDoorsState(vehicleid))
+			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_ACTIVE);
+
+		else
+			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_INACTIVE);
+
+		PlayerTextDrawShow(playerid, VehicleDoorsText);
+	}
+	else
+	{
+		PlayerTextDrawHide(playerid, VehicleDoorsText);
+	}
+
+	PlayerTextDrawShow(playerid, VehicleDamageText);
+	PlayerTextDrawShow(playerid, VehicleEngineText);
+
+	switch(GetPlayerWeapon(playerid))
+	{
+		case 28, 29, 32:
+		{
+			if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+				SetPlayerArmedWeapon(playerid, 0);
+		}
+	}
+
+	veh_TempVelocity[playerid] = GetPlayerTotalVelocity(playerid);
+	veh_TempHealth[playerid] = health;
+
+	return;
 }
 
 VehicleSurfingCheck(playerid)

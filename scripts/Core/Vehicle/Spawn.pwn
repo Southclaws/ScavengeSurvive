@@ -483,6 +483,9 @@ stock Float:GetVehicleFuel(vehicleid)
 	if(!IsValidVehicleID(vehicleid))
 		return 0.0;
 
+	if(veh_Data[vehicleid][veh_Fuel] < 0.0)
+		veh_Data[vehicleid][veh_Fuel] = 0.0;
+
 	return veh_Data[vehicleid][veh_Fuel];
 }
 
@@ -628,3 +631,10 @@ stock SetVehicleEngine(vehicleid, toggle)
 	return 1;
 }
 
+CMD:setfuel(playerid, params[])
+{
+	new Float:fuel;
+	sscanf(params, "f", fuel);
+	SetVehicleFuel(GetPlayerVehicleID(playerid), fuel);
+	return 1;
+}

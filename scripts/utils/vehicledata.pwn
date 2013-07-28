@@ -280,6 +280,17 @@ stock GetVehicleType(model)
 	return type;
 }
 
+stock VehicleHasDoors(model)
+{
+	switch(GetVehicleType(model))
+	{
+		case VTYPE_BIKE, VTYPE_QUAD, VTYPE_MOTORBIKE, VTYPE_BICYCLE, VTYPE_SEA, VTYPE_TRAILER:
+			return 0;
+	}
+
+	return 1;
+}
+
 new const VehicleNames[212][MAX_VEHICLE_NAME] =
 {
 	"Landstalker",
