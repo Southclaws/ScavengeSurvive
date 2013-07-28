@@ -42,27 +42,27 @@ enum E_WEAPON_DATA_EXTRA
 
 new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 {
-	{AMMO_TYPE_NONE,	1},		// Fist				// 0
-	{AMMO_TYPE_NONE,	1},		// Knuckle Duster	// 1
-	{AMMO_TYPE_NONE,	1},		// Golf Club		// 2
-	{AMMO_TYPE_NONE,	1},		// Baton 			// 3
-	{AMMO_TYPE_NONE,	1},		// Knife			// 4
-	{AMMO_TYPE_NONE,	1},		// Baseball Bat		// 5
-	{AMMO_TYPE_NONE,	1},		// Spade			// 6
-	{AMMO_TYPE_NONE,	1},		// Pool Cue			// 7
-	{AMMO_TYPE_NONE,	1},		// Sword			// 8
-	{AMMO_TYPE_NONE,	1},		// Chainsaw			// 9
+	{AMMO_TYPE_NONE,	0},		// Fist				// 0
+	{AMMO_TYPE_NONE,	0},		// Knuckle Duster	// 1
+	{AMMO_TYPE_NONE,	0},		// Golf Club		// 2
+	{AMMO_TYPE_NONE,	0},		// Baton 			// 3
+	{AMMO_TYPE_NONE,	0},		// Knife			// 4
+	{AMMO_TYPE_NONE,	0},		// Baseball Bat		// 5
+	{AMMO_TYPE_NONE,	0},		// Spade			// 6
+	{AMMO_TYPE_NONE,	0},		// Pool Cue			// 7
+	{AMMO_TYPE_NONE,	0},		// Sword			// 8
+	{AMMO_TYPE_NONE,	0},		// Chainsaw			// 9
 
-	{AMMO_TYPE_NONE,	1},		// Dildo			// 10
-	{AMMO_TYPE_NONE,	1},		// Dildo			// 11
-	{AMMO_TYPE_NONE,	1},		// Dildo			// 12
-	{AMMO_TYPE_NONE,	1},		// Dildo			// 13
-	{AMMO_TYPE_NONE,	1},		// Flowers			// 14
-	{AMMO_TYPE_NONE,	1},		// Cane				// 15
+	{AMMO_TYPE_NONE,	0},		// Dildo			// 10
+	{AMMO_TYPE_NONE,	0},		// Dildo			// 11
+	{AMMO_TYPE_NONE,	0},		// Dildo			// 12
+	{AMMO_TYPE_NONE,	0},		// Dildo			// 13
+	{AMMO_TYPE_NONE,	0},		// Flowers			// 14
+	{AMMO_TYPE_NONE,	0},		// Cane				// 15
 
-	{AMMO_TYPE_NONE,	1},		// Grenade			// 16
-	{AMMO_TYPE_NONE,	1},		// Teargas			// 17
-	{AMMO_TYPE_NONE,	1},		// Molotov			// 18
+	{AMMO_TYPE_NONE,	0},		// Grenade			// 16
+	{AMMO_TYPE_NONE,	0},		// Teargas			// 17
+	{AMMO_TYPE_NONE,	0},		// Molotov			// 18
 
 	{AMMO_TYPE_NONE,	0},		// <null>			// 19
 	{AMMO_TYPE_NONE,	0},		// <null>			// 20
@@ -90,18 +90,18 @@ new WeaponAmmoData[MAX_WEAPONS][E_WEAPON_DATA_EXTRA]=
 	{AMMO_TYPE_NONE,	0},		// Flamer			// 37
 	{AMMO_TYPE_556,		0},		// Chaingun			// 38
 
-	{AMMO_TYPE_NONE,	1},		// {"C4				// 39
-	{AMMO_TYPE_NONE,	1},		// {"Detonator		// 40
-	{AMMO_TYPE_NONE,	1},		// {"Spray Paint	// 41
-	{AMMO_TYPE_NONE,	1},		// {"Extinguisher	// 42
+	{AMMO_TYPE_NONE,	0},		// {"C4				// 39
+	{AMMO_TYPE_NONE,	0},		// {"Detonator		// 40
+	{AMMO_TYPE_NONE,	0},		// {"Spray Paint	// 41
+	{AMMO_TYPE_NONE,	0},		// {"Extinguisher	// 42
 	{AMMO_TYPE_NONE,	4},		// {"Camera			// 43
-	{AMMO_TYPE_NONE,	1},		// {"Night Vision	// 44
-	{AMMO_TYPE_NONE,	1},		// {"Thermal Vision	// 45
-	{AMMO_TYPE_NONE,	1},		// {"Parachute		// 46
+	{AMMO_TYPE_NONE,	0},		// {"Night Vision	// 44
+	{AMMO_TYPE_NONE,	0},		// {"Thermal Vision	// 45
+	{AMMO_TYPE_NONE,	0},		// {"Parachute		// 46
 
-	{AMMO_TYPE_NONE,	1},		// {"Vehicle Gun	// 47
-	{AMMO_TYPE_NONE,	1},		// {"Vehicle Bomb	// 48
-	{AMMO_TYPE_NONE,	1}		// {"Vehicle		// 49
+	{AMMO_TYPE_NONE,	0},		// {"Vehicle Gun	// 47
+	{AMMO_TYPE_NONE,	0},		// {"Vehicle Bomb	// 48
+	{AMMO_TYPE_NONE,	0}		// {"Vehicle		// 49
 };
 
 stock GetWeaponAmmoType(weaponid)

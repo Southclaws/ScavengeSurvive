@@ -26,5 +26,5 @@ timer TimeBombExplode[5000](itemid)
 
 	GetItemPos(itemid, x, y, z);
 	DestroyItem(itemid);
-	CreateStructuralExplosion(x, y, z, 1, 12.0);
+	CreateStructuralExplosion(x, y, z, 1, 12.0, 2);
 }

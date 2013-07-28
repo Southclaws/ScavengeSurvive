@@ -156,6 +156,14 @@ stock RemovePlayerWeapon(playerid)
 	return 1;
 }
 
+stock IsItemTypeWeapon(ItemType:itemtype)
+{
+	if(1 <= _:itemtype <= 45)
+		return 1;
+
+	return 0;
+}
+
 stock IsWeaponMelee(weaponid)
 {
 	switch(weaponid)
@@ -186,11 +194,11 @@ stock IsWeaponClipBased(weaponid)
 	return 0;
 }
 
-stock IsWeaponOneShot(weaponid)
+stock IsWeaponNoAmmo(weaponid)
 {
 	switch(weaponid)
 	{
-		case :
+		case 1..18, 39, 40, 44..46:
 			return 1;
 	}
 	return 0;
@@ -331,11 +339,14 @@ ConvertPlayerItemToWeapon(playerid)
 	itemtype = GetItemType(itemid);
 	ammo = GetItemExtraData(itemid);
 
-	if(!(1 <= _:itemtype <= 46))
+	if(!IsItemTypeWeapon(itemtype))
 		return 0;
 
+	if(IsWeaponNoAmmo(_:itemtype))
+		ammo = 1;
+
 	if(ammo <= 0)
-		return 0;
+		return -1;
 
 	DestroyItem(itemid);
 	SetPlayerWeapon(playerid, _:itemtype, ammo);
@@ -370,30 +381,38 @@ ConvertPlayerWeaponToItem(playerid)
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	new ItemType:type = GetItemType(itemid);
+	new ItemType:itemtype = GetItemType(itemid);
 
-	if(0 < _:type < WEAPON_PARACHUTE)
+	if(0 < _:itemtype < WEAPON_PARACHUTE)
 	{
 		if(wep_CurrentWeapon[playerid] == 0)
 		{
 			if(GetItemExtraData(itemid) > 0)
 			{
 				PlayerPickUpWeapon(playerid, itemid);
+
+				return 1;
+			}
+			else if(IsWeaponNoAmmo(_:itemtype))
+			{
+				PlayerPickUpWeapon(playerid, itemid);
+
 				return 1;
 			}
 		}
 		else if(IsWeaponClipBased(wep_CurrentWeapon[playerid]))
 		{
-			if(wep_CurrentWeapon[playerid] != _:type)
-			{
-				return 1;
-			}
-			else
+			if(wep_CurrentWeapon[playerid] == _:itemtype)
 			{
 				if(GetItemExtraData(itemid) == 0)
 					return 1;
 
 				PlayerPickUpWeapon(playerid, itemid);
+
+				return 1;
+			}
+			else
+			{
 				return 1;
 			}
 		}
@@ -656,14 +675,14 @@ PlayerGiveWeapon(playerid, targetid)
 
 public OnPlayerGivenItem(playerid, targetid, itemid)
 {
-	if(wep_CurrentWeapon[targetid] != 0)
-		return 1;
-
-	new ItemType:type = GetItemType(itemid);
-
-	if(0 < _:type < WEAPON_PARACHUTE)
+	if(wep_CurrentWeapon[targetid] == 0)
 	{
-		ConvertPlayerItemToWeapon(targetid);
+		new ItemType:type = GetItemType(itemid);
+
+		if(0 < _:type < WEAPON_PARACHUTE)
+		{
+			ConvertPlayerItemToWeapon(targetid);
+		}
 	}
 
 	return CallLocalFunction("wep_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);

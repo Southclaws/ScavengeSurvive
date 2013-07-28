@@ -660,7 +660,7 @@ SaveDefenseItem(id)
 	}
 }
 
-CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
+CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
 {
 	CreateExplosion(x, y, z, type, size);
 
@@ -668,7 +668,7 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size)
 	{
 		if(Distance(x, y, z, def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ]) < size)
 		{
-			def_Data[i][def_hitPoints] -= 1;
+			def_Data[i][def_hitPoints] -= hitpoints;
 
 			if(def_Data[i][def_hitPoints] <= 0)
 				i = DestroyDefense(i);

@@ -32,7 +32,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 				Float:z;
 
 			GetItemPos(itemid, x, y, z);
-			CreateStructuralExplosion(x, y, z, 1, 12.0);
+			CreateStructuralExplosion(x, y, z, 1, 12.0, 2);
 
 			DestroyItem(itemid);
 

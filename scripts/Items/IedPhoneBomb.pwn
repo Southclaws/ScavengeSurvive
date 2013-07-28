@@ -31,7 +31,7 @@ public OnPlayerUseItem(playerid, itemid)
 				Float:z;
 
 			GetItemPos(bombitem, x, y, z);
-			CreateStructuralExplosion(x, y, z, 11, 8.0);
+			CreateStructuralExplosion(x, y, z, 11, 8.0, 1);
 			DestroyItem(bombitem);
 			SetItemExtraData(itemid, INVALID_ITEM_ID);
 		}

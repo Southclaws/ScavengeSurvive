@@ -770,7 +770,7 @@ public OnGameModeInit()
 	item_FireworkBox	= DefineItemType("Fireworks",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_Timer			= DefineItemType("Timer Device",		2922,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
-	item_Explosive		= DefineItemType("Explosive",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Explosive		= DefineItemType("TNT",					1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_TntTimebomb	= DefineItemType("Time Bomb",			1252,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0);
 	item_Battery		= DefineItemType("Battery",				1579,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_Fusebox		= DefineItemType("Fuse Box",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
@@ -949,16 +949,16 @@ public OnGameModeInit()
 	DefineFoodItem(item_CanDrink,		1.0, 0, 1);
 
 
-	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		1, 1, 0);
-	DefineDefenseItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		2, 1, 1);
-	DefineDefenseItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		1, 1, 1);
-	DefineDefenseItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		3, 1, 1);
-	DefineDefenseItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		2, 1, 1);
-	DefineDefenseItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		4, 1, 1);
-	DefineDefenseItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		4, 1, 1);
-	DefineDefenseItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		3, 1, 1);
-	DefineDefenseItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		1, 1, 0);
-	DefineDefenseItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		3, 1, 1);
+	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
+	DefineDefenseItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		4, 1, 1);
+	DefineDefenseItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		2, 1, 1);
+	DefineDefenseItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		6, 1, 1);
+	DefineDefenseItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		4, 1, 1);
+	DefineDefenseItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		8, 1, 1);
+	DefineDefenseItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
+	DefineDefenseItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		6, 1, 1);
+	DefineDefenseItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		2, 1, 0);
+	DefineDefenseItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		6, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
