@@ -43,7 +43,8 @@ Float:	veh_Fuel,
 new
 			veh_Data				[MAX_SPAWNED_VEHICLES][E_VEHICLE_DATA],
 			veh_BitData				[MAX_SPAWNED_VEHICLES],
-Iterator:	veh_Index<MAX_SPAWNED_VEHICLES>;
+Iterator:	veh_Index<MAX_SPAWNED_VEHICLES>,
+			veh_ContainerVehicle	[CNT_MAX];
 
 new
 			veh_TrunkLock			[MAX_SPAWNED_VEHICLES],
@@ -56,6 +57,13 @@ new
 			veh_CurrentTrunkVehicle	[MAX_PLAYERS],
 Float:		veh_TempHealth			[MAX_PLAYERS],
 Float:		veh_TempVelocity		[MAX_PLAYERS];
+
+
+hook OnGameModeInit()
+{
+	for(new i; i < CNT_MAX; i++)
+		veh_ContainerVehicle[i] = INVALID_VEHICLE_ID;
+}
 
 
 /*==============================================================================
@@ -224,6 +232,7 @@ GenerateVehicleData(vehicleid)
 	if(VehicleFuelData[model - 400][veh_lootIndex] != -1 && 0 < VehicleFuelData[model - 400][veh_trunkSize] <= CNT_MAX_SLOTS)
 	{
 		veh_Container[vehicleid] = CreateContainer("Trunk", VehicleFuelData[model-400][veh_trunkSize], .virtual = 1);
+		veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
 		FillContainerWithLoot(veh_Container[vehicleid], random(4), VehicleFuelData[model-400][veh_lootIndex]);
 	}
 	else
@@ -677,6 +686,12 @@ VehicleSurfingCheck(playerid)
 		Float:vz,
 		Float:velocity;
 
+	switch(GetVehicleType(GetVehicleModel(vehicleid)))
+	{
+		case VTYPE_SEA:
+			return;
+	}
+
 	GetVehicleVelocity(vehicleid, vx, vy, vz);
 	velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 
@@ -698,6 +713,8 @@ VehicleSurfingCheck(playerid)
 			KnockOutPlayer(playerid, 3000);
 		}
 	}
+
+	return;
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
@@ -775,22 +792,7 @@ forward veh_OnPlayerUseItem(playerid, itemid);
 public OnItemAddedToContainer(containerid, itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
-	{
-		if(IsValidVehicleID(veh_CurrentTrunkVehicle[playerid]))
-		{
-			new
-				owner[MAX_PLAYER_NAME],
-				name[MAX_PLAYER_NAME];
-
-			GetVehicleOwner(veh_CurrentTrunkVehicle[playerid], owner);
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-			if(!isnull(owner) && !strcmp(owner, name))
-			{
-				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
-			}
-		}
-	}
+		VehicleTrunkUpdateSave(playerid);
 
 	return CallLocalFunction("veh_OnItemAddedToContainer", "ddd", containerid, itemid, playerid);
 }
@@ -805,25 +807,7 @@ forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
 public OnItemRemovedFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
-	{
-		if(IsValidVehicleID(veh_CurrentTrunkVehicle[playerid]))
-		{
-			if(IsValidVehicleID(veh_CurrentTrunkVehicle[playerid]))
-			{
-				new
-					owner[MAX_PLAYER_NAME],
-					name[MAX_PLAYER_NAME];
-
-				GetVehicleOwner(veh_CurrentTrunkVehicle[playerid], owner);
-				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-				if(!isnull(owner) && !strcmp(owner, name))
-				{
-					SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
-				}
-			}
-		}
-	}
+		VehicleTrunkUpdateSave(playerid);
 
 	return CallLocalFunction("veh_OnItemRemovedFromContainer", "ddd", containerid, slotid, playerid);
 }
@@ -834,6 +818,26 @@ public OnItemRemovedFromContainer(containerid, slotid, playerid)
 #endif
 #define OnItemRemovedFromContainer veh_OnItemRemovedFromContainer
 forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
+
+VehicleTrunkUpdateSave(playerid)
+{
+	if(IsValidVehicleID(veh_CurrentTrunkVehicle[playerid]))
+	{
+		new owner[MAX_PLAYER_NAME];
+
+		GetVehicleOwner(veh_CurrentTrunkVehicle[playerid], owner);
+
+		if(!isnull(owner))
+		{
+			new name[MAX_PLAYER_NAME];
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+			if(!strcmp(owner, name))
+				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
+		}
+	}
+}
 
 public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 {
@@ -1064,3 +1068,10 @@ stock IsPlayerAtAnyVehicleBonnet(playerid)
 	return 0;
 }
 
+stock GetContainerTrunkVehicleID(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_VEHICLE_ID;
+
+	return veh_ContainerVehicle[containerid];
+}

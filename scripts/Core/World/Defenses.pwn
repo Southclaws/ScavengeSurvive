@@ -664,17 +664,28 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 {
 	CreateExplosion(x, y, z, type, size);
 
+	new
+		Float:smallestdistance = 9999999.9,
+		Float:tempdistance,
+		closestid;
+
 	foreach(new i : def_Index)
 	{
-		if(Distance(x, y, z, def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ]) < size)
+		tempdistance = Distance(x, y, z, def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ]);
+
+		if(tempdistance < smallestdistance)
 		{
-			def_Data[i][def_hitPoints] -= hitpoints;
-
-			if(def_Data[i][def_hitPoints] <= 0)
-				i = DestroyDefense(i);
-
-			break;
+			smallestdistance = tempdistance;
+			closestid = i;
 		}
+	}
+
+	if(smallestdistance < size)
+	{
+		def_Data[closestid][def_hitPoints] -= hitpoints;
+
+		if(def_Data[closestid][def_hitPoints] <= 0)
+			DestroyDefense(closestid);
 	}
 }
 

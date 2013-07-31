@@ -25,14 +25,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_IedPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(bombitem, x, y, z);
-			CreateStructuralExplosion(x, y, z, 11, 8.0, 1);
-			DestroyItem(bombitem);
+			SetItemToExplode(bombitem, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
 			SetItemExtraData(itemid, INVALID_ITEM_ID);
 		}
 	}

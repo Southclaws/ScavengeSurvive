@@ -286,11 +286,12 @@ DB:		gAccounts,
 
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gGameModeName[32],
-Float:	gNameTagDistance,
 bool:	gWhitelist,
 bool:	gPauseMap,
 bool:	gInteriorEntry,
 bool:	gPlayerAnimations,
+Float:	gNameTagDistance,
+		gCombatLogWindow,
 
 		gAdminData[MAX_ADMIN][e_admin_data],
 		gTotalAdmins,
@@ -385,7 +386,7 @@ ItemType:		item_Satchel		= INVALID_ITEM_TYPE,
 ItemType:		item_Wheel			= INVALID_ITEM_TYPE,
 ItemType:		item_MotionSense	= INVALID_ITEM_TYPE,
 ItemType:		item_Accelerometer	= INVALID_ITEM_TYPE,
-ItemType:		item_TntMotionMine	= INVALID_ITEM_TYPE,
+ItemType:		item_TntProxMine	= INVALID_ITEM_TYPE,
 ItemType:		item_IedBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_Pizza			= INVALID_ITEM_TYPE,
 ItemType:		item_Burger			= INVALID_ITEM_TYPE,
@@ -467,13 +468,13 @@ ItemType:		item_PlantPot		= INVALID_ITEM_TYPE,
 ItemType:		item_HerpDerp		= INVALID_ITEM_TYPE,
 ItemType:		item_Parrot			= INVALID_ITEM_TYPE,
 // 160
-ItemType:		item_TripMine		= INVALID_ITEM_TYPE,
+ItemType:		item_TntTripMine	= INVALID_ITEM_TYPE,
 ItemType:		item_IedTimebomb	= INVALID_ITEM_TYPE,
-ItemType:		item_IedMotionMine	= INVALID_ITEM_TYPE,
+ItemType:		item_IedProxMine	= INVALID_ITEM_TYPE,
 ItemType:		item_IedTripMine	= INVALID_ITEM_TYPE,
 ItemType:		item_IedPhoneBomb	= INVALID_ITEM_TYPE,
 ItemType:		item_EmpTimebomb	= INVALID_ITEM_TYPE,
-ItemType:		item_EmpMotionMine	= INVALID_ITEM_TYPE,
+ItemType:		item_EmpProxMine	= INVALID_ITEM_TYPE,
 ItemType:		item_EmpTripMine	= INVALID_ITEM_TYPE,
 ItemType:		item_EmpPhoneBomb	= INVALID_ITEM_TYPE,
 ItemType:		item_Gyroscope		= INVALID_ITEM_TYPE,
@@ -636,6 +637,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/World/Workbench.pwn"
 #include "../scripts/Core/World/Food.pwn"
 #include "../scripts/Core/World/Emp.pwn"
+#include "../scripts/Core/World/Explosive.pwn"
 
 //======================Command Features
 
@@ -673,7 +675,7 @@ forward SetRestart(seconds);
 #include "../scripts/Items/injector.pwn"
 #include "../scripts/Items/medical.pwn"
 #include "../scripts/Items/TntPhoneBomb.pwn"
-#include "../scripts/Items/TntMotionMine.pwn"
+#include "../scripts/Items/TntTripMine.pwn"
 #include "../scripts/Items/parachute.pwn"
 #include "../scripts/Items/molotov.pwn"
 #include "../scripts/Items/screwdriver.pwn"
@@ -689,14 +691,14 @@ forward SetRestart(seconds);
 #include "../scripts/Items/tophat.pwn"
 #include "../scripts/Items/herpderp.pwn"
 #include "../scripts/Items/candrink.pwn"
-#include "../scripts/Items/TntTripMine.pwn"
+#include "../scripts/Items/TntProxMine.pwn"
 #include "../scripts/Items/IedTimebomb.pwn"
-#include "../scripts/Items/IedMotionMine.pwn"
-//#include "../scripts/Items/IedTripMine.pwn"
+#include "../scripts/Items/IedTripMine.pwn"
+#include "../scripts/Items/IedProxMine.pwn"
 #include "../scripts/Items/IedPhoneBomb.pwn"
 #include "../scripts/Items/EmpTimebomb.pwn"
-#include "../scripts/Items/EmpMotionMine.pwn"
-//#include "../scripts/Items/EmpTripMine.pwn"
+#include "../scripts/Items/EmpTripMine.pwn"
+#include "../scripts/Items/EmpProxMine.pwn"
 #include "../scripts/Items/EmpPhoneBomb.pwn"
 
 
@@ -806,7 +808,7 @@ public OnGameModeInit()
 	item_Wheel			= DefineItemType("Wheel",				1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
 	item_MotionSense	= DefineItemType("Motion Sensor",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_Accelerometer	= DefineItemType("Accelerometer",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
-	item_TntMotionMine	= DefineItemType("Motion Mine",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_TntProxMine	= DefineItemType("Proximity Mine",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_IedBomb		= DefineItemType("IED",					2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
 	item_Pizza			= DefineItemType("Pizza",				1582,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.320344, 0.064041, 0.168296, 92.941909, 358.492523, 14.915378);
 	item_Burger			= DefineItemType("Burger",				2703,	ITEM_SIZE_SMALL,	-76.0, 257.0, -11.0,	0.0,	0.066739, 0.041782, 0.026828, 3.703052, 3.163064, 6.946474);
@@ -888,14 +890,14 @@ public OnGameModeInit()
 	item_HerpDerp		= DefineItemType("Derpification Unit",	19513,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Parrot			= DefineItemType("Sebastian",			19078,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
 // 160
-	item_TripMine		= DefineItemType("Proximity Mine",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_TntTripMine	= DefineItemType("Trip Mine",			1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_IedTimebomb	= DefineItemType("Timed IED",			2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
-	item_IedMotionMine	= DefineItemType("Motion IED",			2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
-	item_IedTripMine	= DefineItemType("Proximity IED",		2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_IedProxMine	= DefineItemType("Proximity IED",		2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
+	item_IedTripMine	= DefineItemType("Trip Mine IED",		2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
 	item_IedPhoneBomb	= DefineItemType("Phone Remote IED",	2033,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.100000, 0.055999, 0.000000,  -86.099967, -112.099975, 100.099891);
 	item_EmpTimebomb	= DefineItemType("Timed EMP",			343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-	item_EmpMotionMine	= DefineItemType("Motion EMP",			343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
-	item_EmpTripMine	= DefineItemType("Proximity EMP",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_EmpProxMine	= DefineItemType("Proximity EMP",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_EmpTripMine	= DefineItemType("Trip Mine EMP",		343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_EmpPhoneBomb	= DefineItemType("Phone Remote EMP",	343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_Gyroscope		= DefineItemType("Gyroscope Unit",		1945,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.180000, 0.085000, 0.009000,  -86.099967, -112.099975, 92.699890);
 // 170
@@ -987,18 +989,17 @@ public OnGameModeInit()
 	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 
 	DefineItemCombo(item_FireworkBox,	item_PowerSupply,	item_IedBomb);
-	DefineItemCombo(item_GasCan,		item_PowerSupply,	item_PetrolBomb);
 	DefineItemCombo(item_Explosive,		item_Timer,			item_TntTimebomb);
-	DefineItemCombo(item_Explosive,		item_MotionSense,	item_TripMine);
+	DefineItemCombo(item_Explosive,		item_Accelerometer,	item_TntTripMine);
+	DefineItemCombo(item_Explosive,		item_MotionSense,	item_TntProxMine);
 	DefineItemCombo(item_Explosive,		item_MobilePhone,	item_TntPhoneBomb);
-	DefineItemCombo(item_Explosive,		item_Accelerometer,	item_TntMotionMine);
 	DefineItemCombo(item_IedBomb,		item_Timer,			item_IedTimebomb);
-	DefineItemCombo(item_IedBomb,		item_Accelerometer,	item_IedMotionMine);
-	DefineItemCombo(item_IedBomb,		item_MotionSense,	item_IedTripMine);
+	DefineItemCombo(item_IedBomb,		item_Accelerometer,	item_IedTripMine);
+	DefineItemCombo(item_IedBomb,		item_MotionSense,	item_IedProxMine);
 	DefineItemCombo(item_IedBomb,		item_MobilePhone,	item_IedPhoneBomb);
 	DefineItemCombo(item_Fluctuator,	item_Timer,			item_EmpTimebomb);
-	DefineItemCombo(item_Fluctuator,	item_Accelerometer,	item_EmpMotionMine);
-	DefineItemCombo(item_Fluctuator,	item_MotionSense,	item_EmpTripMine);
+	DefineItemCombo(item_Fluctuator,	item_Accelerometer,	item_EmpTripMine);
+	DefineItemCombo(item_Fluctuator,	item_MotionSense,	item_EmpProxMine);
 	DefineItemCombo(item_Fluctuator,	item_MobilePhone,	item_EmpPhoneBomb);
 
 	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);

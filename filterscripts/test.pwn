@@ -9,6 +9,12 @@ public OnFilterScriptInit()
 {
 }
 
+CMD:sound(playerid, params[])
+{
+	PlayerPlaySound(playerid, strval(params), 0.0, 0.0, 0.0);
+	return 1;
+}
+
 CMD:cmode(playerid, params[])
 {
 	new mode = GetPlayerCameraMode(playerid);

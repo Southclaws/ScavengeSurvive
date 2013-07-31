@@ -5,15 +5,15 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, INVALID_ITEM_ID);
 	}
 
-	return CallLocalFunction("pbm_OnItemCreate", "d", itemid);
+	return CallLocalFunction("tntp_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
-#define OnItemCreate pbm_OnItemCreate
-forward pbm_OnItemCreate(itemid);
+#define OnItemCreate tntp_OnItemCreate
+forward tntp_OnItemCreate(itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
@@ -24,15 +24,15 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		SetItemExtraData(withitemid, 1);
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
-	return CallLocalFunction("pbm_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	return CallLocalFunction("tntp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
 #else
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
-#define OnPlayerUseItemWithItem pbm_OnPlayerUseItemWithItem
-forward pbm_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#define OnPlayerUseItemWithItem tntp_OnPlayerUseItemWithItem
+forward tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -42,23 +42,16 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_TntPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(bombitem, x, y, z);
-			CreateStructuralExplosion(x, y, z, 1, 12.0, 2);
-			DestroyItem(bombitem);
+			SetItemToExplode(bombitem, 10, 12.0, EXPLOSION_PRESET_STRUCTURAL, 2);
 			SetItemExtraData(itemid, INVALID_ITEM_ID);
 		}
 	}
-	return CallLocalFunction("pbm_OnPlayerUseItem", "dd", playerid, itemid);
+	return CallLocalFunction("tntp_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
 #else
 	#define _ALS_OnPlayerUseItem
 #endif
-#define OnPlayerUseItem pbm_OnPlayerUseItem
-forward pbm_OnPlayerUseItem(playerid, itemid);
+#define OnPlayerUseItem tntp_OnPlayerUseItem
+forward tntp_OnPlayerUseItem(playerid, itemid);

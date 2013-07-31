@@ -71,6 +71,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_Fusebox,						0.3);
 	AddItemToLootIndex(loot_Industrial,		item_Wheel,							0.3);
 	AddItemToLootIndex(loot_Industrial,		item_MotionSense,					0.3);
+	AddItemToLootIndex(loot_Industrial,		item_Accelerometer,					0.4);
 	AddItemToLootIndex(loot_Industrial,		item_GasCan,						0.3);
 	AddItemToLootIndex(loot_Industrial,		item_MediumBox,						0.07);
 	AddItemToLootIndex(loot_Industrial,		item_SmallBox,						0.1);
@@ -199,7 +200,8 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_Screwdriver,					0.8);
 //	AddItemToLootIndex(loot_CarIndustrial,	item_Bucket,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Satchel,						0.8);
-	AddItemToLootIndex(loot_CarIndustrial,	item_MotionSense,					0.4);
+	AddItemToLootIndex(loot_Industrial,		item_MotionSense,					0.4);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Accelerometer,					0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_GasCan,						0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_MediumBox,						0.06);
 	AddItemToLootIndex(loot_CarIndustrial,	item_SmallBox,						0.1);

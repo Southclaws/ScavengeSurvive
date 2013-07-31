@@ -19,12 +19,5 @@ forward emptbm_OnPlayerUseItem(playerid, itemid);
 
 timer EmpTimeBombExplode[5000](itemid)
 {
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetItemPos(itemid, x, y, z);
-	DestroyItem(itemid);
-	CreateEmpExplosion(x, y, z, 12.0);
+	SetItemToExplode(itemid, 0, 12.0, EXPLOSION_PRESET_EMP, 0);
 }

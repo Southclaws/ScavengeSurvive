@@ -1,23 +1,36 @@
 #include <YSI\y_hooks>
 
 
-new
-	bag_PlayerBagID[MAX_PLAYERS],
-	bag_InventoryOptionID[MAX_PLAYERS],
-	bool:gTakingOffBag[MAX_PLAYERS];
-
-
-new
+static
 Iterator:	bag_Index<ITM_MAX>,
-			bag_CurrentBag[MAX_PLAYERS],
-			bag_PickUpTick[MAX_PLAYERS],
-Timer:		bag_PickUpTimer[MAX_PLAYERS],
-Timer:		bag_OtherPlayerEnter[MAX_PLAYERS],
-			bag_LookingInBag[MAX_PLAYERS];
+			bag_ContainerItem		[CNT_MAX],
+			bag_ContainerPlayer		[CNT_MAX];
+
+static
+			bag_PlayerBagID			[MAX_PLAYERS],
+			bag_InventoryOptionID	[MAX_PLAYERS],
+bool:		bag_TakingOffBag		[MAX_PLAYERS],
+			bag_CurrentBag			[MAX_PLAYERS],
+			bag_PickUpTick			[MAX_PLAYERS],
+Timer:		bag_PickUpTimer			[MAX_PLAYERS],
+Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
+			bag_LookingInBag		[MAX_PLAYERS];
+
+
+hook OnGameModeInit()
+{
+	for(new i; i < CNT_MAX; i++)
+		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;
+}
 
 
 stock GivePlayerBackpack(playerid, itemid)
 {
+	new containerid = GetItemExtraData(itemid);
+
+	if(!IsValidContainer(containerid))
+		return 0;
+
 	if(GetItemType(itemid) == item_Backpack)
 	{
 		bag_PlayerBagID[playerid] = itemid;
@@ -41,6 +54,8 @@ stock GivePlayerBackpack(playerid, itemid)
 		return 0;
 	}
 
+	bag_ContainerPlayer[containerid] = playerid;
+
 	return 1;
 }
 
@@ -54,6 +69,8 @@ stock RemovePlayerBackpack(playerid)
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+
+	bag_ContainerPlayer[GetItemExtraData(bag_PlayerBagID[playerid])] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 
 	return 1;
@@ -67,9 +84,13 @@ stock DestroyPlayerBackpack(playerid)
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
+	new containerid = GetItemExtraData(bag_PlayerBagID[playerid]);
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
-	DestroyContainer(GetItemExtraData(bag_PlayerBagID[playerid]));
+	DestroyContainer(containerid);
 	DestroyItem(bag_PlayerBagID[playerid]);
+
+	bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 
 	return 1;
@@ -102,21 +123,25 @@ hook OnPlayerConnect(playerid)
 
 public OnItemCreate(itemid)
 {
+	new containerid;
+
 	if(GetItemType(itemid) == item_Backpack)
 	{
-		SetItemExtraData(itemid, CreateContainer("Backpack", 8, .virtual = 1, .max_med = 4, .max_large = 2, .max_carry = 0));
+		SetItemExtraData(itemid, containerid = CreateContainer("Backpack", 8, .virtual = 1, .max_med = 4, .max_large = 2, .max_carry = 0));
 		Iter_Add(bag_Index, itemid);
 	}
 	if(GetItemType(itemid) == item_Satchel)
 	{
-		SetItemExtraData(itemid, CreateContainer("Small Bag", 4, .virtual = 1, .max_med = 2, .max_large = 1, .max_carry = 0));
+		SetItemExtraData(itemid, containerid = CreateContainer("Small Bag", 4, .virtual = 1, .max_med = 2, .max_large = 1, .max_carry = 0));
 		Iter_Add(bag_Index, itemid);
 	}
 	if(GetItemType(itemid) == item_ParaBag)
 	{
-		SetItemExtraData(itemid, CreateContainer("Parachute Bag", 6, .virtual = 1, .max_med = 4, .max_large = 2, .max_carry = 0));
+		SetItemExtraData(itemid, containerid = CreateContainer("Parachute Bag", 6, .virtual = 1, .max_med = 4, .max_large = 2, .max_carry = 0));
 		Iter_Add(bag_Index, itemid);
 	}
+
+	bag_ContainerItem[containerid] = itemid;
 
 	return CallLocalFunction("bag_OnItemCreate", "d", itemid);
 }
@@ -151,7 +176,15 @@ public OnItemDestroy(itemid)
 
 	if(itemtype == item_Satchel || itemtype == item_Backpack || itemtype == item_ParaBag)
 	{
-		DestroyContainer(GetItemExtraData(itemid));
+		new containerid = GetItemExtraData(itemid);
+
+		if(IsValidContainer(containerid))
+		{
+			bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
+			bag_ContainerItem[containerid] = INVALID_ITEM_ID;
+			DestroyContainer(containerid);
+		}
+
 		Iter_Remove(bag_Index, itemid);
 	}
 
@@ -265,8 +298,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 				CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 				GiveWorldItemToPlayer(playerid, bag_PlayerBagID[playerid], 1);
+				bag_ContainerPlayer[GetItemExtraData(bag_PlayerBagID[playerid])] = INVALID_PLAYER_ID;
 				bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
-				gTakingOffBag[playerid] = true;
+				bag_TakingOffBag[playerid] = true;
 			}
 		}
 		if(newkeys & KEY_YES)
@@ -420,9 +454,9 @@ public OnPlayerDropItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_ParaBag)
 	{
-		if(gTakingOffBag[playerid])
+		if(bag_TakingOffBag[playerid])
 		{
-			gTakingOffBag[playerid] = false;
+			bag_TakingOffBag[playerid] = false;
 			return 1;
 		}
 	}
@@ -441,9 +475,9 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 {
 	if(GetItemType(itemid) == item_Backpack || GetItemType(itemid) == item_Satchel || GetItemType(itemid) == item_ParaBag)
 	{
-		if(gTakingOffBag[playerid])
+		if(bag_TakingOffBag[playerid])
 		{
-			gTakingOffBag[playerid] = false;
+			bag_TakingOffBag[playerid] = false;
 			return 1;
 		}
 	}
@@ -599,3 +633,19 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 #define OnPlayerSelectContainerOpt bag_OnPlayerSelectContainerOpt
 forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
 
+
+stock GetContainerPlayerBag(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_PLAYER_ID;
+
+	return bag_ContainerPlayer[containerid];
+}
+
+stock GetContainerBagItem(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_ITEM_ID;
+
+	return bag_ContainerItem[containerid];
+}

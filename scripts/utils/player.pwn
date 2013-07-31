@@ -51,6 +51,17 @@ SetPlayerToFaceVehicle(playerid, vehicleid, Float:offset = 0.0)
 	SetPlayerFacingAngle(playerid, GetAngleToPoint(x1, y1, x2, y2) + offset);
 }
 
+stock PlaySoundForAll(sound, Float:x, Float:y, Float:z, Float:range = -1.0)
+{
+	foreach(new i : Player)
+	{
+		if(IsPlayerInRangeOfPoint(i, range, x, y, z) || range <= 0.0)
+			PlayerPlaySound(i, sound, x, y, z);
+	}
+
+	return 1;
+}
+
 new Float:water_places[25][] =
 {
 	{25.0,			2313.0,		-1417.0,	23.0},

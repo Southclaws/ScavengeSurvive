@@ -22,7 +22,8 @@ ItemType:	box_itemtype,
 new
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
-Iterator:	box_Index<ITM_MAX>;
+Iterator:	box_Index<ITM_MAX>,
+			box_ContainerSafebox[CNT_MAX];
 
 new
 			box_CurrentBox[MAX_PLAYERS],
@@ -67,6 +68,8 @@ public OnItemCreate(itemid)
 				.max_med = box_TypeData[i][box_maxMed],
 				.max_large = box_TypeData[i][box_maxLarge],
 				.max_carry = box_TypeData[i][box_maxCarry]);
+
+			box_ContainerSafebox[containerid] = itemid;
 
 			SetItemExtraData(itemid, containerid);
 			Iter_Add(box_Index, itemid);
@@ -119,16 +122,21 @@ public OnItemDestroy(itemid)
 				Float:y,
 				Float:z,
 				Float:r,
-				filename[60];
+				filename[60],
+				containerid;
 
 			GetItemPos(itemid, x, y, z);
 			GetItemRot(itemid, r, r, r);
+			containerid = GetItemExtraData(itemid);
+
+			if(IsValidContainer(containerid))
+				box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
 
 			format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
 			fremove(filename);
 
 			Iter_SafeRemove(box_Index, itemid, itemid);
-			DestroyContainer(GetItemExtraData(itemid));
+			DestroyContainer(containerid);
 
 			break;
 		}
@@ -457,4 +465,12 @@ stock IsItemTypeSafebox(ItemType:itemtype)
 		}
 	}
 	return 0;
+}
+
+stock GetContainerSafeboxItem(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_ITEM_ID;
+
+	return box_ContainerSafebox[containerid];
 }

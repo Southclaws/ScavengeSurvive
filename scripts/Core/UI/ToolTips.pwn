@@ -107,7 +107,7 @@ public OnLoad()
 	DefineItemToolTip(item_Wheel,			"Use this to repair vehicle wheels by standing at the front and pressing "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_MotionSense,		"Used for crafting");
 	DefineItemToolTip(item_Accelerometer,	"used for crafting");
-	DefineItemToolTip(item_TntMotionMine,	"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
+	DefineItemToolTip(item_TntTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
 	DefineItemToolTip(item_IedBomb,			"Craft with various mechanical items for different types of bombs");
 	DefineItemToolTip(item_Pizza,			"Cook and eat this for food value");
 	DefineItemToolTip(item_Burger,			"Cook and eat this for food value");
@@ -181,14 +181,14 @@ public OnLoad()
 	DefineItemToolTip(item_PlantPot,		"This item has no use yet");
 	DefineItemToolTip(item_HerpDerp,		"Press "KEYTEXT_INTERACT" to derp");
 	DefineItemToolTip(item_Parrot,			"This is a parrot called Sebastian");
-	DefineItemToolTip(item_TripMine,		"This item has no use yet");
+	DefineItemToolTip(item_TntProxMine,		"This item has no use yet");
 	DefineItemToolTip(item_IedTimebomb,		"An explosive with a timed detonation of 5 seconds, press "KEYTEXT_INTERACT" to arm");
-	DefineItemToolTip(item_IedMotionMine,	"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
-	DefineItemToolTip(item_IedTripMine,		"This item has no use yet");
+	DefineItemToolTip(item_IedTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
+	DefineItemToolTip(item_IedProxMine,		"This item has no use yet");
 	DefineItemToolTip(item_IedPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_EmpTimebomb,		"A proximity taser with a timed detonation of 5 seconds, press "KEYTEXT_INTERACT" to arm");
-	DefineItemToolTip(item_EmpMotionMine,	"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
-	DefineItemToolTip(item_EmpTripMine,		"This item has no use yet");
+	DefineItemToolTip(item_EmpTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
+	DefineItemToolTip(item_EmpProxMine,		"This item has no use yet");
 	DefineItemToolTip(item_EmpPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Gyroscope,		"This item has no use yet");
 	DefineItemToolTip(item_Motor,			"This item has no use yet");

@@ -25,6 +25,7 @@ LoadSettings()
 	printf("Player Animations: %d", gPlayerAnimations);
 
 	printf("Name Distance: %f", gNameTagDistance);
+	printf("Combat Log Window: %d", gCombatLogWindow);
 
 #endif
 
@@ -69,6 +70,7 @@ INI:settings[](name[], value[])
 	INI_Bool("player-animations", gPlayerAnimations);
 
 	INI_Float("nametag-distance", gNameTagDistance);
+	INI_Int("combat-log-window", gCombatLogWindow);
 
 	return 1;
 }

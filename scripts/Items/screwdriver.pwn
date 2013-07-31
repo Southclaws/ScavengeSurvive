@@ -14,7 +14,15 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
-		if(GetItemType(withitemid) == item_TntPhoneBomb || GetItemType(withitemid) == item_TntMotionMine)
+		new ItemType:itemtype = GetItemType(withitemid);
+
+		if(
+			itemtype == item_TntPhoneBomb ||
+			itemtype == item_TntTripMine ||
+			itemtype == item_IedPhoneBomb ||
+			itemtype == item_IedTripMine ||
+			itemtype == item_EmpPhoneBomb ||
+			itemtype == item_EmpTripMine)
 		{
 			if(GetItemExtraData(withitemid) == 1)
 			{

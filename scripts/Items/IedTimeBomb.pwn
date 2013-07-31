@@ -6,25 +6,18 @@ public OnPlayerUseItem(playerid, itemid)
 		defer IedTimeBombExplode(itemid);
 		return 1;
 	}
-    return CallLocalFunction("iedtbm_OnPlayerUseItem", "dd", playerid, itemid);
+    return CallLocalFunction("iedt_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
     #undef OnPlayerUseItem
 #else
     #define _ALS_OnPlayerUseItem
 #endif
-#define OnPlayerUseItem iedtbm_OnPlayerUseItem
-forward iedtbm_OnPlayerUseItem(playerid, itemid);
+#define OnPlayerUseItem iedt_OnPlayerUseItem
+forward iedt_OnPlayerUseItem(playerid, itemid);
 
 
 timer IedTimeBombExplode[5000](itemid)
 {
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetItemPos(itemid, x, y, z);
-	DestroyItem(itemid);
-	CreateStructuralExplosion(x, y, z, 11, 8.0, 1);
+	SetItemToExplode(itemid, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
 }

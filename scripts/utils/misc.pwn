@@ -135,17 +135,6 @@ stock SetAllWeaponSkills(playerid, skill)
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SNIPERRIFLE,		skill);
 }
 
-stock PlaySoundForAll(sound, Float:x, Float:y, Float:z, Float:range = -1.0)
-{
-	PlayerLoop(i)
-	{
-		if(IsPlayerInRangeOfPoint(i, range, x, y, z) || range <= 0.0)
-			PlayerPlaySound(i, sound, x, y, z);
-	}
-
-	return 1;
-}
-
 
 //==============================================================================Location / Geometrical
 
