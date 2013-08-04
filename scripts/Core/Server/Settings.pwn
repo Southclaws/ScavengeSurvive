@@ -26,6 +26,7 @@ LoadSettings()
 
 	printf("Name Distance: %f", gNameTagDistance);
 	printf("Combat Log Window: %d", gCombatLogWindow);
+	printf("Login Freeze Time: %d", gLoginFreezeTime);
 
 #endif
 
@@ -71,6 +72,7 @@ INI:settings[](name[], value[])
 
 	INI_Float("nametag-distance", gNameTagDistance);
 	INI_Int("combat-log-window", gCombatLogWindow);
+	INI_Int("login-freeze-time", gLoginFreezeTime);
 
 	return 1;
 }

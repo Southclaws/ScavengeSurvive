@@ -81,9 +81,7 @@ ACMD:reports[1](playerid, params[])
 
 ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:posz, infostring[])
 {
-	new
-		query[512],
-		reportername[MAX_PLAYER_NAME];
+	new reportername[MAX_PLAYER_NAME];
 
 	if(reporter == -1)
 	{
@@ -96,136 +94,146 @@ ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:pos
 		GetPlayerName(reporter, reportername, MAX_PLAYER_NAME);
 	}
 
-	format(query, sizeof(query), "\
-		INSERT INTO `Reports`\
-		(`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`, `"#ROW_READ"`, `"#ROW_TYPE"`, `"#ROW_POSX"`, `"#ROW_POSY"`, `"#ROW_POSZ"`, `"#ROW_INFO"`, `"#ROW_BY"`)\
-		VALUES('%s', '%s', '%d', '0', '%d', '%.2f', '%.2f', '%.2f', '%s', '%s')",
-		name, db_escape(reason), gettime(), type, posx, posy, posz, infostring, reportername);
+	stmt_bind_value(gStmt_ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_ReportInsert, 1, DB::TYPE_STRING, reason, 128);
+	stmt_bind_value(gStmt_ReportInsert, 2, DB::TYPE_INTEGER, gettime());
+	stmt_bind_value(gStmt_ReportInsert, 3, DB::TYPE_INTEGER, type);
+	stmt_bind_value(gStmt_ReportInsert, 4, DB::TYPE_FLOAT, posx);
+	stmt_bind_value(gStmt_ReportInsert, 5, DB::TYPE_FLOAT, posy);
+	stmt_bind_value(gStmt_ReportInsert, 6, DB::TYPE_FLOAT, posz);
+	stmt_bind_value(gStmt_ReportInsert, 7, DB::TYPE_STRING, infostring, 128);
+	stmt_bind_value(gStmt_ReportInsert, 8, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
 
-	db_free_result(db_query(gAccounts, query));
+	if(stmt_execute(gStmt_ReportInsert))
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+DeleteReport(name[], timestamp)
+{
+	if(!IsPlayerReported(name))
+		return 0;
+
+	stmt_bind_value(gStmt_ReportDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_ReportDelete, 1, DB::TYPE_INTEGER, timestamp);
+
+	if(stmt_execute(gStmt_ReportDelete))
+		return 1;
+
+	return 0;
+}
+
+DeleteReportsOfPlayer(name[])
+{
+	if(!IsPlayerReported(name))
+		return 0;
+
+	stmt_bind_value(gStmt_ReportDeleteName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	if(stmt_execute(gStmt_ReportDeleteName))
+		return 1;
+
+	return 0;
 }
 
 ShowListOfReports(playerid)
 {
 	new
-		DBResult:result,
-		rowcount;
+		name[MAX_PLAYER_NAME],
+		timestamp,
+		reportread,
+		reporttype,
 
-	result = db_query(gAccounts, "SELECT * FROM `Reports`");
-	rowcount = db_num_rows(result);
+		colour[9],
+		item[(8 + MAX_PLAYER_NAME + 13 + 1)],
+		list[(8 + MAX_PLAYER_NAME + 13 + 1) * MAX_REPORTS_PER_PAGE],
+		index;
 
-	if(rowcount > 0)
+	stmt_bind_result_field(gStmt_ReportList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_ReportList, 2, DB::TYPE_INTEGER, timestamp);
+	stmt_bind_result_field(gStmt_ReportList, 3, DB::TYPE_INTEGER, reportread);
+	stmt_bind_result_field(gStmt_ReportList, 4, DB::TYPE_INTEGER, reporttype);
+	stmt_execute(gStmt_ReportList);
+
+	while(stmt_fetch_row(gStmt_ReportList) && index < MAX_REPORTS_PER_PAGE)
 	{
-		new
-			name[MAX_PLAYER_NAME],
-			timestamp[12],
-			reportread[2],
-			reporttype[10],
+		report_NameIndex[playerid][index] = name;
+		report_TimestampIndex[playerid][index] = timestamp;
 
-			colour[9],
-			item[(8 + MAX_PLAYER_NAME + 13 + 1)],
-			list[(8 + MAX_PLAYER_NAME + 13 + 1) * MAX_REPORTS_PER_PAGE],
-			read;
-
-		for(new i; i < rowcount && i < MAX_REPORTS_PER_PAGE; i++)
+		if(IsPlayerBanned(name))
 		{
-			db_get_field(result, 0, name, MAX_PLAYER_NAME + 1);
-			db_get_field(result, 2, timestamp, 12);
-			db_get_field(result, 3, reportread, 2);
-			db_get_field(result, 4, reporttype, 2);
-
-			report_NameIndex[playerid][i] = name;
-			report_TimestampIndex[playerid][i] = strval(timestamp);
-
-			if(reportread[0] == '0')
-				read = 1;
+			colour = "{FF0000}";
+		}
+		else
+		{
+			if(!reportread)
+				colour = "{FFFF00}";
 
 			else
-				read = 0;
-
-			if(IsPlayerBanned(name))
-			{
-				colour = "{FF0000}";
-			}
-			else
-			{
-				if(read)
-					colour = "{FFFF00}";
-
-				else
-					colour = "{FFFFFF}";
-			}
-
-			format(item, sizeof(item), "%s%s (%s)\n", colour, name, report_TypeNames[strval(reporttype)]);
-			strcat(list, item);
-
-			db_next_row(result);
+				colour = "{FFFFFF}";
 		}
 
-		ShowPlayerDialog(playerid, d_ReportList, DIALOG_STYLE_LIST, "Reports", list, "Open", "Close");
+		format(item, sizeof(item), "%s%s (%s)\n", colour, name, report_TypeNames[reporttype]);
+		strcat(list, item);
 
-		db_free_result(result);
+		index++;
+	}
+
+	ShowPlayerDialog(playerid, d_ReportList, DIALOG_STYLE_LIST, "Reports", list, "Open", "Close");
+
+	return 1;
+}
+
+ShowReport(playerid, name[MAX_PLAYER_NAME], timestamp)
+{
+	stmt_bind_value(gStmt_ReportInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_ReportInfo, 1, DB::TYPE_INTEGER, timestamp);
+
+	stmt_bind_result_field(gStmt_ReportInfo, 1, DB::TYPE_STRING, report_CurrentReason[playerid], 128);
+	stmt_bind_result_field(gStmt_ReportInfo, 4, DB::TYPE_INTEGER, report_CurrentType[playerid]);
+	stmt_bind_result_field(gStmt_ReportInfo, 5, DB::TYPE_FLOAT, report_CurrentPos[playerid][0]);
+	stmt_bind_result_field(gStmt_ReportInfo, 6, DB::TYPE_FLOAT, report_CurrentPos[playerid][1]);
+	stmt_bind_result_field(gStmt_ReportInfo, 7, DB::TYPE_FLOAT, report_CurrentPos[playerid][2]);
+	stmt_bind_result_field(gStmt_ReportInfo, 8, DB::TYPE_STRING, report_CurrentInfo[playerid], 128);
+	stmt_bind_result_field(gStmt_ReportInfo, 9, DB::TYPE_STRING, report_CurrentReporter[playerid], MAX_PLAYER_NAME);
+
+	if(stmt_execute(gStmt_ReportInfo))
+	{
+		stmt_fetch_row(gStmt_ReportInfo);
+
+		new message[512];
+
+		format(message, sizeof(message), "\
+			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
+			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\n\
+			"#C_YELLOW"By:\n\t\t"#C_BLUE"%s",
+			TimestampToDateTime(timestamp), report_CurrentReason[playerid], report_CurrentReporter[playerid]);
+
+		report_CurrentName[playerid] = name;
+
+		ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, name, message, "Options", "Back");
+
+		SetReportRead(name, timestamp, 1);
 
 		return 1;
 	}
-	else
-	{
-		db_free_result(result);
-	
-		return 0;
-	}
+
+	return 0;
 }
 
-ShowReport(playerid, name[], reporttimestamp)
+SetReportRead(name[], timestamp, read)
 {
-	new
-		query[128],
-		DBResult:result,
-		timeval[12],
-		reporttype[2],
-		posx[8],
-		posy[8],
-		posz[8],
-		date[32],
-		tm<timestamp>,
-		message[512];
+	stmt_bind_value(gStmt_ReportSetRead, 0, DB::TYPE_INTEGER, read);
+	stmt_bind_value(gStmt_ReportSetRead, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_ReportSetRead, 2, DB::TYPE_INTEGER, timestamp);
 
-	format(query, sizeof(query), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", name, reporttimestamp);
-	result = db_query(gAccounts, query);
+	if(stmt_execute(gStmt_ReportSetRead))
+		return 1;
 
-	db_get_field(result, 1, report_CurrentReason[playerid], 128);
-	db_get_field(result, 2, timeval, 12);
-	db_get_field(result, 4, reporttype, 2);
-	db_get_field(result, 5, posx, 8);
-	db_get_field(result, 6, posy, 8);
-	db_get_field(result, 7, posz, 8);
-	db_get_field(result, 8, report_CurrentInfo[playerid], 128);
-	db_get_field(result, 9, report_CurrentReporter[playerid], 128);
-
-	db_free_result(result);
-
-	localtime(Time:strval(timeval), timestamp);
-	strftime(date, 64, "%A %b %d %Y at %X", timestamp);
-
-	format(message, sizeof(message), "\
-		"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-		"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", date, report_CurrentReason[playerid]);
-
-	report_CurrentName[playerid][0] = EOS;
-	strcat(report_CurrentName[playerid], name);
-
-	report_CurrentType[playerid] = strval(reporttype);
-
-	report_CurrentPos[playerid][0] = floatstr(posx);
-	report_CurrentPos[playerid][1] = floatstr(posy);
-	report_CurrentPos[playerid][2] = floatstr(posz);
-
-
-	ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, name, message, "Options", "Back");
-
-	format(query, sizeof(query), "UPDATE `Reports` SET `"#ROW_READ"` = '1' WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", name, reporttimestamp);
-	result = db_query(gAccounts, query);
-	db_free_result(result);
+	return 0;
 }
 
 ShowReportOptions(playerid)
@@ -265,15 +273,13 @@ ShowReportOptions(playerid)
 
 GetUnreadReports()
 {
-	new
-		DBResult:result,
-		rowcount;
+	new count;
 
-	result = db_query(gAccounts, "SELECT * FROM `Reports` WHERE `"#ROW_READ"` = '0'");
-	rowcount = db_num_rows(result);
-	db_free_result(result);
+	stmt_bind_result_field(gStmt_ReportGetUnread, 0, DB::TYPE_INTEGER, count);	
+	stmt_execute(gStmt_ReportGetUnread);
+	stmt_fetch_row(gStmt_ReportGetUnread);
 
-	return rowcount;
+	return count;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -439,31 +445,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 1:
 				{
-					new
-						query[128];
-
-					format(query, sizeof(query), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s' AND `"#ROW_DATE"` = '%d'", report_CurrentName[playerid], report_TimestampIndex[playerid][report_CurrentItem[playerid]]);
-					db_free_result(db_query(gAccounts, query));
+					DeleteReport(report_CurrentName[playerid], report_TimestampIndex[playerid][report_CurrentItem[playerid]]);
 
 					ShowListOfReports(playerid);
 				}
 				case 2:
 				{
-					new
-						query[128];
-
-					format(query, sizeof(query), "DELETE FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
-					db_free_result(db_query(gAccounts, query));
+					DeleteReportsOfPlayer(report_CurrentName[playerid]);
 
 					ShowListOfReports(playerid);
 				}
 				case 3:
 				{
-					new
-						query[128];
-
-					format(query, sizeof(query), "UPDATE `Reports` SET `"#ROW_READ"` = '0' WHERE `"#ROW_NAME"` = '%s'", report_CurrentName[playerid]);
-					db_free_result(db_query(gAccounts, query));
+					SetReportRead(report_CurrentName[playerid], report_TimestampIndex[playerid][report_CurrentItem[playerid]], 0);
 
 					ShowListOfReports(playerid);
 				}
@@ -559,17 +553,14 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 IsPlayerReported(name[])
 {
-	new
-		query[128],
-		DBResult:result,
-		numrows;
+	new count;
 
-	format(query, sizeof(query), "SELECT * FROM `Reports` WHERE `"#ROW_NAME"` = '%s'", name);
-	result = db_query(gAccounts, query);
-	numrows = db_num_rows(result);
-	db_free_result(result);
+	stmt_bind_value(gStmt_ReportNameExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_ReportNameExists, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(gStmt_ReportNameExists);
+	stmt_fetch_row(gStmt_ReportNameExists);
 
-	if(numrows > 0)
+	if(count > 0)
 		return 1;
 
 	return 0;

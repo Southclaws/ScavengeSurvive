@@ -112,6 +112,8 @@ CreateNewVehicle(model, Float:x, Float:y, Float:z, Float:r)
 		return 0;
 	}
 
+	Iter_Add(veh_Index, vehicleid);
+
 	veh_Data[vehicleid][veh_colour1] = colour1;
 	veh_Data[vehicleid][veh_colour2] = colour2;
 
@@ -730,7 +732,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			VehicleEngineState(vehicleid, 1);
 	}
 
-	if(oldstate == PLAYER_STATE_DRIVER && IsPlayerOnAdminDuty(playerid))
+	if(oldstate == PLAYER_STATE_DRIVER && !IsPlayerOnAdminDuty(playerid))
 	{
 		new name[MAX_PLAYER_NAME];
 

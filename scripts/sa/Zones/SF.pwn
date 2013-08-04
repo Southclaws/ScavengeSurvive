@@ -9,11 +9,6 @@ public OnLoad()
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);
 	CreateLadder(-1736.4494, -445.9549, 1.9609, 14.1484, 270.7138);
 
-	AddSprayTag(-1908.91, 299.56, 41.52, 0.00, 0.00, 180.00);
-	AddSprayTag(-2636.70, 635.52, 15.63, 0.00, 0.00, 0.00);
-	AddSprayTag(-2224.75, 881.27, 84.13, 0.00, 0.00, 90.00);
-	AddSprayTag(-1788.32, 748.42, 25.36, 0.00, 0.00, 270.00);
-
 	SF_District_Housing1();
 	SF_District_Housing2();
 	SF_District_Bayfront();

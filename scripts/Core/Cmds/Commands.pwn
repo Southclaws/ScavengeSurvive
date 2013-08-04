@@ -130,19 +130,20 @@ CMD:changepass(playerid,params[])
 		
 		if(!strcmp(buffer, gPlayerData[playerid][ply_Password]))
 		{
-			new
-				query[256];
-
 			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
 
-			format(query, 256, "UPDATE `Player` SET `"#ROW_PASS"` = '%s' WHERE `"#ROW_NAME"` = '%s'",
-			buffer, gPlayerName[playerid]);
-
-			db_free_result(db_query(gAccounts, query));
+			stmt_bind_value(gStmt_AccountSetPassword, 0, DB::TYPE_STRING, buffer, MAX_PASSWORD_LEN);
+			stmt_bind_value(gStmt_AccountSetPassword, 1, DB::TYPE_PLAYER_NAME, playerid);
 			
-			gPlayerData[playerid][ply_Password] = buffer;
-
-			MsgF(playerid, YELLOW, " >  Password succesfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
+			if(stmt_execute(gStmt_AccountSetPassword))
+			{
+				gPlayerData[playerid][ply_Password] = buffer;
+				MsgF(playerid, YELLOW, " >  Password succesfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
+			}
+			else
+			{
+				Msg(playerid, RED, " >  An error occurred! Please contact an administrator");
+			}
 		}
 		else
 		{

@@ -79,10 +79,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	if(GetItemType(itemid) == item_EmpTripMine)
 	{
 		if(GetItemExtraData(itemid) == 0)
-			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Motion Mine");
+			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
 
 		else
-			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Motion Mine");
+			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
 	return CallLocalFunction("empm_OnPlayerViewContainerOpt", "dd", playerid, containerid);

@@ -218,9 +218,9 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 		GetPlayerFacingAngle(targetid, targetangle);
 
-		angleto = absoluteangle(targetangle - GetAngleToPoint(px, py, tx, ty));
+		angleto = absoluteangle(targetangle - GetAngleToPoint(tx, ty, px, py));
 
-		if(225.0 < angleto < 315.0)
+		if(45.0 < angleto < 135.0)
 			hploss *= 0.1;
 
 		f:bPlayerGameSettings[targetid]<Bleeding>;
@@ -234,7 +234,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 		GetPlayerFacingAngle(targetid, targetangle);
 
-		angleto = absoluteangle(targetangle - GetAngleToPoint(px, py, tx, ty));
+		angleto = absoluteangle(targetangle - GetAngleToPoint(tx, ty, px, py));
 
 		if(155.0 < angleto < 205.0)
 			hploss *= 0.1;

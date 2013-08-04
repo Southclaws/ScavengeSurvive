@@ -1,3 +1,15 @@
+stock TimestampToDateTime(datetime)
+{
+	new
+		str[36],
+		tm<timestamp>;
+
+	localtime(Time:datetime, timestamp);
+	strftime(str, 36, "%A %b %d %Y at %X", timestamp);
+
+	return str;
+}
+
 stock returnOrdinal(number)
 {
 	new

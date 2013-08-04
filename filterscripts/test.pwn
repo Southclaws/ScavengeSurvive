@@ -2,7 +2,6 @@
 #include <zcmd>
 #include <sscanf2>
 #include <streamer>
-#include <YSI\y_timers>
 
 
 public OnFilterScriptInit()

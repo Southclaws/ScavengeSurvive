@@ -116,8 +116,6 @@ LoadVehiclesFromFile(file[])
 			if(!IsValidVehicleID(tmpid))
 				continue;
 
-			Iter_Add(veh_Index, tmpid);
-
 			count++;
 		}
 		else

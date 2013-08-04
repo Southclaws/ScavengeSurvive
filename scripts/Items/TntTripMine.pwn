@@ -78,10 +78,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	if(GetItemType(itemid) == item_TntTripMine)
 	{
 		if(GetItemExtraData(itemid) == 0)
-			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Motion Mine");
+			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
 
 		else
-			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Motion Mine");
+			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
 	return CallLocalFunction("tntm_OnPlayerViewContainerOpt", "dd", playerid, containerid);

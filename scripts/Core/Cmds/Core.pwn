@@ -145,83 +145,66 @@ SetPlayerAdminLevel(playerid, level)
 
 	if(level == 0)
 	{
-		new bool:updated = false;
-
-		for(new i; i < gTotalAdmins; i++)
-		{
-			if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
-				updated = true;
-
-			if(updated && i < MAX_ADMIN-1)
-			{
-				format(gAdminData[i][admin_Name], 24, gAdminData[i+1][admin_Name]);
-				gAdminData[i][admin_Level] = gAdminData[i+1][admin_Level];
-			}
-		}
-
-		RemoveAdminFromDatabase(gPlayerName[playerid]);
-
-
-		gTotalAdmins--;
 	}
 	else
 	{
-		for(new i; i < gTotalAdmins + 1; i++)
-		{
-			if(!isnull(gAdminData[i][admin_Name]))
-			{
-				if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
-				{
-					gAdminData[i][admin_Name] = gPlayerName[playerid];
-					gAdminData[i][admin_Level] = level;
-					break;
-				}
-			}
-			else
-			{
-				gAdminData[i][admin_Name] = gPlayerName[playerid];
-				gAdminData[i][admin_Level] = level;
-				gTotalAdmins++;
-				break;
-			}
-		}
 
-		UpdateAdmin(gPlayerName[playerid], level);
 	}
 
-	SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
+	UpdateAdmin(gPlayerName[playerid], level);
 
 	return 1;
 }
 
-UpdateAdmin(name[], level)
+UpdateAdmin(name[MAX_PLAYER_NAME], level)
 {
-	new
-		DBResult:result,
-		query[128],
-		numrows;
+	if(level == 0)
+		RemoveAdminFromDatabase(name);
 
-	format(query, sizeof(query), "SELECT * FROM `Admins` WHERE `"#ROW_NAME"` = '%s'", name);
-	result = db_query(gAccounts, query);
-	numrows = db_num_rows(result);
+	new count;
 
-	if(numrows > 0)
+	stmt_bind_value(gStmt_AdminExists, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(gStmt_AdminExists, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(gStmt_AdminExists);
+	stmt_fetch_row(gStmt_AdminExists);
+
+	if(count == 0)
 	{
-		format(query, sizeof(query),
-			"UPDATE `Admins` SET \
-			`"#ROW_LEVEL"` = '%d' \
-			WHERE `"#ROW_NAME"` = '%s'",
-			level, name);
+		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_INTEGER, level);
+		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-		db_free_result(db_query(gAccounts, query));
+		if(stmt_execute(gStmt_AdminInsert))
+		{
+			gAdminData[gTotalAdmins][admin_Name] = name;
+			gAdminData[gTotalAdmins][admin_Level] = level;
+			gTotalAdmins++;
+
+			SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
+
+			return 1;
+		}
 	}
 	else
 	{
-		format(query, sizeof(query),
-			"INSERT INTO `Admins` (`"#ROW_NAME"`, `"#ROW_LEVEL"`) VALUES('%s', '%d')",
-			name, level);
+		stmt_bind_value(gStmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
+		stmt_bind_value(gStmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-		db_free_result(db_query(gAccounts, query));
+		if(stmt_execute(gStmt_AdminUpdate))
+		{
+			for(new i; i < gTotalAdmins; i++)
+			{
+				if(!strcmp(name, gAdminData[i][admin_Name]))
+				{
+					gAdminData[i][admin_Level] = level;
+
+					break;
+				}
+			}
+
+			SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
+
+			return 1;
+		}
 	}
 
 	return 1;
@@ -229,34 +212,63 @@ UpdateAdmin(name[], level)
 
 RemoveAdminFromDatabase(name[])
 {
-	new query[128];
+	stmt_bind_value(gStmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	format(query, sizeof(query), "DELETE FROM `Admins` WHERE `"#ROW_NAME"` = '%s'", name);
-	db_free_result(db_query(gAccounts, query));
+	if(stmt_execute(gStmt_AdminDelete))
+	{
+		gTotalAdmins--;
+
+		new bool:found = false;
+
+		for(new i; i < gTotalAdmins; i++)
+		{
+			if(!strcmp(name, gAdminData[i][admin_Name]))
+				found = true;
+
+			if(found && i < MAX_ADMIN-1)
+			{
+				format(gAdminData[i][admin_Name], 24, gAdminData[i+1][admin_Name]);
+				gAdminData[i][admin_Level] = gAdminData[i+1][admin_Level];
+			}
+		}
+
+		return 1;
+	}
+
+	return 0;
 }
 
 LoadAdminData()
 {
 	new
-		DBResult:result,
-		numrows,
-		tmp[2];
+		name[MAX_PLAYER_NAME],
+		level;
 
-	result = db_query(gAccounts, "SELECT * FROM `Admins`");
+	stmt_bind_result_field(gStmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
 
-	numrows = db_num_rows(result);
-
-	if(numrows > 0)
+	if(stmt_execute(gStmt_AdminLoadAll))
 	{
-		for(new i; i < numrows; i++)
+		while(stmt_fetch_row(gStmt_AdminLoadAll))
 		{
-			db_get_field(result, 0, gAdminData[i][admin_Name], 24);
-			db_get_field(result, 1, tmp, 2);
-			gAdminData[i][admin_Level] = strval(tmp);
+			gAdminData[gTotalAdmins][admin_Name] = name;
+			gAdminData[gTotalAdmins][admin_Level] = level;
 
 			gTotalAdmins++;
-
-			db_next_row(result);
 		}
 	}
+
+	SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
+}
+
+GetAdminLevelByName(name[MAX_PLAYER_NAME])
+{
+	new level;
+
+	stmt_bind_value(gStmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(gStmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
+	stmt_execute(gStmt_AdminGetLevel);
+	stmt_fetch_row(gStmt_AdminGetLevel);
+
+	return level;
 }

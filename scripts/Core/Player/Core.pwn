@@ -101,133 +101,21 @@ public OnPlayerConnect(playerid)
 	new
 		ipstring[16],
 		ipbyte[4],
-		query[128],
-		DBResult:result,
-		numrows;
+		loadresult;
 
 	GetPlayerIp(playerid, ipstring, 16);
 
 	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
 	gPlayerData[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
-	format(query, sizeof(query), "SELECT * FROM `Bans` WHERE `"#ROW_NAME"` = '%s' OR `"#ROW_IPV4"` = '%d'",
-		strtolower(gPlayerName[playerid]), gPlayerData[playerid][ply_IP]);
-
-	result = db_query(gAccounts, query);
-	numrows = db_num_rows(result);
-
-	if(numrows > 0)
-	{
-		new
-			str[256],
-			tmptime[12],
-			tm<timestamp>,
-			timestampstr[64],
-			reason[64];
-
-		db_get_field(result, 2, tmptime, 12);
-		db_get_field(result, 3, reason, 64);
-		db_free_result(result);
-		
-		localtime(Time:strval(tmptime), timestamp);
-		strftime(timestampstr, 64, "%A %b %d %Y at %X", timestamp);
-
-		format(str, 256, "\
-			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", timestampstr, reason);
-
-		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Banned", str, "Close", "");
-
-		format(query, sizeof(query), "UPDATE `Bans` SET `"#ROW_IPV4"` = '%d' WHERE `"#ROW_NAME"` = '%s'",
-			gPlayerData[playerid][ply_IP], strtolower(gPlayerName[playerid]));
-
-		db_free_result(db_query(gAccounts, query));
-
-		defer KickPlayerDelay(playerid);
-
-		return 1;
-	}
-	db_free_result(result);
-
-	format(query, sizeof(query), "SELECT * FROM `Player` WHERE `"#ROW_NAME"` = '%s'", gPlayerName[playerid]);
-	result = db_query(gAccounts, query);
+	if(BanCheck(playerid))
+		return 0;
 
 	ResetVariables(playerid);
 
-	if(db_num_rows(result) >= 1)
-	{
-		if(gWhitelist)
-		{
-			if(!IsNameInWhitelist(gPlayerName[playerid]))
-			{
-				ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
-					""#C_YELLOW"You are not on the whitelist for this server.\n\
-					This is in force to provide the best gameplay experience for all players.\n\n\
-					"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
-					Applications are always accepted as soon as possible\n\
-					There are no requirements, just follow the rules.\n\
-					Failure to do so will result in permanent removal from the whitelist.", "Close", "");
+	loadresult = LoadAccount(playerid);
 
-				defer KickPlayerDelay(playerid);
-
-				return 1;
-			}
-		}
-
-		new
-			tmpField[50],
-			dbIP;
-
-		db_get_field_assoc(result, #ROW_PASS, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
-		db_get_field_assoc(result, #ROW_GEND, tmpField, 2);
-
-		if(strval(tmpField) == 0)
-		{
-			f:bPlayerGameSettings[playerid]<Gender>;
-		}
-		else
-		{
-			t:bPlayerGameSettings[playerid]<Gender>;
-		}
-
-		db_get_field_assoc(result, #ROW_IPV4, tmpField, 12);
-		dbIP = strval(tmpField);
-
-		db_get_field_assoc(result, #ROW_ALIVE, tmpField, 2);
-
-		if(tmpField[0] == '1')
-			t:bPlayerGameSettings[playerid]<Alive>;
-
-		else
-			f:bPlayerGameSettings[playerid]<Alive>;
-
-		db_get_field_assoc(result, #ROW_SPAWN, tmpField, 50);
-		sscanf(tmpField, "ffff",
-			gPlayerData[playerid][ply_posX],
-			gPlayerData[playerid][ply_posY],
-			gPlayerData[playerid][ply_posZ],
-			gPlayerData[playerid][ply_rotZ]);
-
-		db_get_field_assoc(result, #ROW_ISVIP, tmpField, 2);
-
-		if(tmpField[0] == '1')
-			t:bPlayerGameSettings[playerid]<IsVip>;
-
-		else
-			f:bPlayerGameSettings[playerid]<IsVip>;
-
-		t:bPlayerGameSettings[playerid]<HasAccount>;
-
-		if(gPlayerData[playerid][ply_IP] == dbIP)
-			Login(playerid);
-
-		else
-			DisplayLoginPrompt(playerid);
-
-		f:bPlayerGameSettings[playerid]<IsNewPlayer>;
-		Tutorial_End(playerid);
-	}
-	else
+	if(loadresult == 0) // Account does not exist
 	{
 		new str[150];
 		format(str, 150, ""#C_WHITE"Hello %P"#C_WHITE", You must be new here!\nPlease create an account by entering a "#C_BLUE"password"#C_WHITE" below:", playerid);
@@ -236,25 +124,43 @@ public OnPlayerConnect(playerid)
 		t:bPlayerGameSettings[playerid]<IsNewPlayer>;
 	}
 
-	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
+	if(loadresult == 1) // Account does exist, prompt login
+	{
+		DisplayLoginPrompt(playerid);
+	}
 
-	CheckForExtraAccounts(playerid, gPlayerName[playerid]);
+	if(loadresult == 2) // Account does exist, auto login
+	{
+		Login(playerid);
+	}
+
+	if(loadresult == 3) // Account does exist, but not in whitelist
+	{
+		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
+			""#C_YELLOW"You are not on the whitelist for this server.\n\
+			This is in force to provide the best gameplay experience for all players.\n\n\
+			"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
+			Applications are always accepted as soon as possible\n\
+			There are no requirements, just follow the rules.\n\
+			Failure to do so will result in permanent removal from the whitelist.", "Close", "");
+
+		defer KickPlayerDelay(playerid);
+	}
+
+	CheckForExtraAccounts(playerid);
 
 	SetAllWeaponSkills(playerid, 500);
 	LoadPlayerTextDraws(playerid);
 	SetPlayerScore(playerid, 0);
 	Streamer_ToggleIdleUpdate(playerid, true);
 	TextDrawShowForPlayer(playerid, Branding);
-
-
-	db_free_result(result);
-
-	t:bPlayerGameSettings[playerid]<ShowHUD>;
-
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
 	SpawnPlayer(playerid);
 
+	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
+
+	t:bPlayerGameSettings[playerid]<ShowHUD>;
 
 	if(gPingLimit == 600)
 	{
@@ -604,7 +510,6 @@ public OnPlayerSpawn(playerid)
 		{
 			if(bPlayerGameSettings[playerid] & LoggedIn)
 			{
-				FreezePlayer(playerid, 5000);
 				PlayerSpawnExistingCharacter(playerid);
 				gScreenBoxFadeLevel[playerid] = 255;
 			}

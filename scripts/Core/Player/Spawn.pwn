@@ -21,6 +21,8 @@ PlayerSpawnExistingCharacter(playerid)
 		gPlayerData[playerid][ply_posY],
 		gPlayerData[playerid][ply_posZ] + z);
 
+	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
+
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);
 	t:bPlayerGameSettings[playerid]<LoadedData>;
@@ -34,9 +36,8 @@ PlayerSpawnExistingCharacter(playerid)
 	}
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
-	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
 	SetCameraBehindPlayer(playerid);
-	FreezePlayer(playerid, 3000);
+	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 	t:bPlayerGameSettings[playerid]<Spawned>;
 
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);

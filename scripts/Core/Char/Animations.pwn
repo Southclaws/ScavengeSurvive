@@ -42,10 +42,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(!(bPlayerGameSettings[playerid] & KnockedOut))
 			{
 				if(GetPlayerAnimationIndex(playerid) == 1381)
+				{
 					ClearAnimations(playerid);
-
+				}
 				else
-					ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+				{
+					if(IsPlayerIdle(playerid))
+						ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+				}
 			}
 		}
 	}

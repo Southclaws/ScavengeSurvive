@@ -2,81 +2,58 @@ forward external_WhitelistAdd(name[]);
 forward external_WhitelistRemove(name[]);
 forward external_WhitelistOn();
 forward external_WhitelistOff();
+forward external_WhitelistCheck(name[]);
 
 
 stock AddNameToWhitelist(name[])
 {
-	new
-		query[128],
-		DBResult:result;
+	if(IsNameInWhitelist(name))
+		return 0;
 
-	format(query, sizeof(query), "INSERT INTO `Whitelist` (`"#ROW_NAME"`) VALUES('%s')", name);
-	result = db_query(gAccounts, query);
-	db_free_result(result);
+	stmt_bind_value(gStmt_WhitelistInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return 1;
+	if(stmt_execute(gStmt_WhitelistInsert))
+		return 1;
+
+	return -1;
 }
 
 stock RemoveNameFromWhitelist(name[])
 {
-	new
-		query[128],
-		DBResult:result;
+	if(!IsNameInWhitelist(name))
+		return 0;
 
-	format(query, sizeof(query), "DELETE FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", name);
-	result = db_query(gAccounts, query);
-	db_free_result(result);
+	stmt_bind_value(gStmt_WhitelistDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return 1;
+	if(stmt_execute(gStmt_WhitelistDelete))
+		return 1;
+
+	return -1;
 }
 
 stock IsNameInWhitelist(name[])
 {
-	new
-		query[128],
-		DBResult:result,
-		numrows;
+	new count;
 
-	format(query, sizeof(query), "SELECT * FROM `Whitelist` WHERE `"#ROW_NAME"` = '%s'", name);
-	result = db_query(gAccounts, query);
-	numrows = db_num_rows(result);
-	db_free_result(result);
+	stmt_bind_value(gStmt_WhitelistExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_WhitelistExists, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(gStmt_WhitelistExists);
+	stmt_fetch_row(gStmt_WhitelistExists);
 
-	if(numrows > 0)
+	if(count > 0)
 		return 1;
 
 	return 0;
 }
 
-stock AddAllAccountsToWhitelist()
-{
-	new
-		DBResult:result,
-		numrows,
-		name[MAX_PLAYER_NAME];
-
-	result = db_query(gAccounts, "SELECT * FROM `Player`");
-	numrows = db_num_rows(result);
-
-	for(new i; i < numrows; i++)
-	{
-		db_get_field(result, 0, name, 24);
-		printf("Adding to whitelist: '%s'", name);
-		AddNameToWhitelist(name);
-		db_next_row(result);
-	}
-
-	db_free_result(result);
-}
-
 public external_WhitelistAdd(name[])
 {
-	AddNameToWhitelist(name);
+	return AddNameToWhitelist(name);
 }
 
 public external_WhitelistRemove(name[])
 {
-	RemoveNameFromWhitelist(name);
+	return RemoveNameFromWhitelist(name);
 }
 
 public external_WhitelistOn()
@@ -87,4 +64,9 @@ public external_WhitelistOn()
 public external_WhitelistOff()
 {
 	gWhitelist = false;
+}
+
+public external_WhitelistCheck(name[])
+{
+	return IsNameInWhitelist(name);
 }

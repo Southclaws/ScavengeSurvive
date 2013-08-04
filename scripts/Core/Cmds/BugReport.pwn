@@ -41,75 +41,60 @@ CMD:issues(playerid, params[])
 
 ReportBug(playerid, bug[])
 {
-	new query[512];
+	stmt_bind_value(gStmt_BugInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
+	stmt_bind_value(gStmt_BugInsert, 1, DB::TYPE_STRING, bug, 128);
+	stmt_bind_value(gStmt_BugInsert, 2, DB::TYPE_INTEGER, gettime());
 
-	format(query, sizeof(query), "\
-		INSERT INTO `Bugs`\
-		(`"#ROW_NAME"`, `"#ROW_REAS"`, `"#ROW_DATE"`)\
-		VALUES('%p', '%s', '%d')",
-		playerid, db_escape(bug), gettime());
-
-	db_free_result(db_query(gAccounts, query));
-
-	MsgAdminsF(1, YELLOW, " >  %P"#C_YELLOW" reported bug %s", playerid, bug);
+	if(stmt_execute(gStmt_BugInsert))
+	{
+		MsgAdminsF(1, YELLOW, " >  %P"#C_YELLOW" reported bug %s", playerid, bug);
+	}
 }
 
 ShowListOfBugs(playerid)
 {
 	new
-		DBResult:result,
-		rowcount;
+		name[MAX_PLAYER_NAME],
+		bug[128],
+		datetime;
 
-	result = db_query(gAccounts, "SELECT * FROM `Bugs`");
-	rowcount = db_num_rows(result);
+	stmt_bind_result_field(gStmt_BugList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_BugList, 1, DB::TYPE_STRING, bug, 128);
+	stmt_bind_result_field(gStmt_BugList, 2, DB::TYPE_INTEGER, datetime);
 
-	if(rowcount > 0)
+	if(stmt_execute(gStmt_BugList))
 	{
 		new
-			field[MAX_PLAYER_NAME + 16 + 1],
-			list[(MAX_PLAYER_NAME + 16 + 1) * MAX_ISSUES];
+			list[(MAX_PLAYER_NAME + 16 + 1) * MAX_ISSUES],
+			idx;
 
-		for(new i; i < rowcount && i < MAX_ISSUES; i++)
+		while(stmt_fetch_row(gStmt_BugList))
 		{
-			db_get_field(result, 0, field, MAX_PLAYER_NAME);
-			strcat(list, field);
+			strcat(list, name);
 			strcat(list, " - ");
 
-			db_get_field(result, 1, field, 13);
-			strcat(list, field);
+			strcat(list, bug);
 			strcat(list, "\n");
 
-			db_get_field(result, 2, field, 12);
-			issue_TimestampIndex[i] = strval(field);
-
-			db_next_row(result);
+			issue_TimestampIndex[idx++] = datetime;
 		}
-
 		ShowPlayerDialog(playerid, d_IssueList, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
-
-		db_free_result(result);
 
 		return 1;
 	}
-	else
-	{
-		db_free_result(result);
-	
-		return 0;
-	}
+
+	return 0;
 }
 
 GetBugReports()
 {
-	new
-		DBResult:result,
-		rowcount;
+	new count;
 
-	result = db_query(gAccounts, "SELECT * FROM `Bugs`");
-	rowcount = db_num_rows(result);
-	db_free_result(result);
+	stmt_bind_result_field(gStmt_BugTotal, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(gStmt_BugTotal);
+	stmt_fetch_row(gStmt_BugTotal);
 
-	return rowcount;
+	return count;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -117,58 +102,46 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == d_IssueList && response)
 	{
 		new
-			query[128],
-			DBResult:result,
-			reporter[MAX_PLAYER_NAME],
-			bug[96],
-			timeval[12],
-			date[32],
-			tm<timestamp>,
+			name[MAX_PLAYER_NAME],
+			bug[128],
 			message[512];
 
-		format(query, sizeof(query), "SELECT * FROM `Bugs` WHERE `"#ROW_DATE"` = '%d'", issue_TimestampIndex[listitem]);
-		result = db_query(gAccounts, query);
+		stmt_bind_value(gStmt_BugInfo, 0, DB::TYPE_INTEGER, issue_TimestampIndex[listitem]);
+		stmt_bind_result_field(gStmt_BugInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_result_field(gStmt_BugInfo, 1, DB::TYPE_STRING, bug, 128);
 
-		db_get_field(result, 0, reporter, MAX_PLAYER_NAME);
-		db_get_field(result, 1, bug, 96);
-		db_get_field(result, 2, timeval, 12);
+		if(stmt_execute(gStmt_BugInfo))
+		{
+			stmt_fetch_row(gStmt_BugInfo);
 
-		db_free_result(result);
+			format(message, sizeof(message),
+				""#C_YELLOW"Reporter:\n\t\t"#C_BLUE"%s\n\n\
+				"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\
+				"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s",
+				name, bug, TimestampToDateTime(issue_TimestampIndex[listitem]));
 
-		localtime(Time:strval(timeval), timestamp);
-		strftime(date, 64, "%A %b %d %Y at %X", timestamp);
+			if(gPlayerData[playerid][ply_Admin] > 1)
+				ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Delete", "Back");
 
-		format(message, sizeof(message),
-			""#C_YELLOW"Reporter:\n\t\t"#C_BLUE"%s\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\
-			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s",
-			reporter, bug, date);
+			else
+				ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "");
 
-		if(gPlayerData[playerid][ply_Admin] > 1)
-			ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "Delete");
-
-		else
-			ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Back", "");
-
-		issue_CurrentItem[playerid] = listitem;
+			issue_CurrentItem[playerid] = listitem;
+		}
 	}
 
 	if(dialogid == d_Issue)
 	{
 		if(response)
 		{
-			ShowListOfBugs(playerid);
+			if(gPlayerData[playerid][ply_Admin] > 1)
+			{
+				stmt_bind_value(gStmt_BugDelete, 0, DB::TYPE_INTEGER, issue_TimestampIndex[issue_CurrentItem[playerid]]);
+				stmt_execute(gStmt_BugDelete);
+			}
 		}
-		else
-		{
-			new
-				query[128];
 
-			format(query, sizeof(query), "DELETE FROM `Bugs` WHERE `"#ROW_DATE"` = '%d'", issue_TimestampIndex[issue_CurrentItem[playerid]]);
-			db_free_result(db_query(gAccounts, query));
-
-			ShowListOfBugs(playerid);
-		}
+		ShowListOfBugs(playerid);
 	}
 
 	return 1;

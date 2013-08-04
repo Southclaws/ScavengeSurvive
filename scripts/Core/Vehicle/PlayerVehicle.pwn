@@ -1,7 +1,6 @@
 #include <YSI\y_hooks>
 
 
-//#define PLAYER_VEHICLE_DEBUG_PRINTS
 #define PLAYER_VEHICLE_DIRECTORY	"./scriptfiles/SSS/Vehicles/"
 #define PLAYER_VEHICLE_FILE			"SSS/Vehicles/%s.dat"
 
@@ -111,6 +110,16 @@ LoadPlayerVehicles()
 						array[VEH_CELL_POSZ] = _:(Float:array[VEH_CELL_POSZ] + 2.0);
 				}
 
+				strmid(owner, item, 0, strlen(item) - 4);
+
+				if(strlen(owner) < 3)
+				{
+					printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", owner, strlen(owner));
+					DestroyVehicle(vehicleid, 1);
+					fremove(filedir);
+					continue;
+				}
+
 				vehicleid = CreateVehicle(
 					array[VEH_CELL_MODEL],
 					Float:array[VEH_CELL_POSX],
@@ -124,19 +133,9 @@ LoadPlayerVehicles()
 				if(!IsValidVehicleID(vehicleid))
 					continue;
 
-				strmid(owner, item, 0, strlen(item) - 4);
-
 				SetVehicleOwner(vehicleid, owner);
 
-				if(strlen(owner) < 3)
-				{
-					printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", owner, strlen(owner));
-					DestroyVehicle(vehicleid, 1);
-					fremove(filedir);
-					continue;
-				}
-
-				printf("\t[LOAD] vehicle %d: %s for %s", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner);
+				printf("\t[LOAD] vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner, array[VEH_CELL_POSX], array[VEH_CELL_POSY], array[VEH_CELL_POSZ], array[VEH_CELL_ROTZ]);
 
 				Iter_Add(veh_Index, vehicleid);
 
@@ -193,14 +192,12 @@ LoadPlayerVehicles()
 
 	dir_close(direc);
 
-	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
-		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
-	#endif
+	printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
 
 	return;
 }
 
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
+SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = true)
 {
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
@@ -229,9 +226,8 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 	GetVehicleDamageStatus(vehicleid, array[VEH_CELL_PANELS], array[VEH_CELL_DOORS], array[VEH_CELL_LIGHTS], array[VEH_CELL_TIRES]);
 	array[VEH_CELL_ARMOUR] = 0;
 
-	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
+	if(print)
 		printf("\t[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
-	#endif
 
 	if(IsValidContainer(GetVehicleContainer(vehicleid)))
 	{
@@ -266,13 +262,16 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME])
 	return 1;
 }
 
-SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
+SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], print = false)
 {
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
 	if(!isnull(veh_Owner[vehicleid]))
-		RemovePlayerVehicleFile(vehicleid);
+	{
+		if(strcmp(veh_Owner[vehicleid], name))
+			RemovePlayerVehicleFile(vehicleid, print);
+	}
 
 	veh_Owner[vehicleid] = name;
 
@@ -288,7 +287,7 @@ SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 	return 1;
 }
 
-RemovePlayerVehicleFile(vehicleid)
+RemovePlayerVehicleFile(vehicleid, print = true)
 {
 	new owner[MAX_PLAYER_NAME];
 
@@ -297,9 +296,8 @@ RemovePlayerVehicleFile(vehicleid)
 	if(isnull(owner))
 		return 0;
 
-	#if defined PLAYER_VEHICLE_DEBUG_PRINTS
+	if(print)
 		printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, owner);
-	#endif
 
 	new filename[MAX_PLAYER_NAME + 18];
 

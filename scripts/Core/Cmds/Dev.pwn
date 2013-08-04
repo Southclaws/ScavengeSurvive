@@ -23,26 +23,37 @@ ACMD:setadmin[4](playerid, params[])
 {
 	new
 		id,
+		name[24],
 		level;
 
-	if (sscanf(params, "dd", id, level))
-		return Msg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
+	if(!sscanf(params, "dd", id, level))
+	{
+		if(playerid == id)
+			return Msg(playerid, RED, " >  You cannot set your own level");
 
-	if(playerid == id)
-		return Msg(playerid, RED, " >  You cannot set your own level");
+		if(!IsPlayerConnected(id))
+			return 4;
 
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && gPlayerData[playerid][ply_Admin] < 3)
-		return 3;
+		if(!SetPlayerAdminLevel(id, level))
+			return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
 
-	if(!IsPlayerConnected(id))
-		return 4;
+		MsgF(playerid, YELLOW, " >  You made %P"#C_YELLOW" a Level %d Admin", id, level);
+		MsgF(id, YELLOW, " >  %P"#C_YELLOW" Made you a Level %d Admin", playerid, level);
+	}
+	else if(!sscanf(params, "s[24]d", name, level))
+	{
+		if(!strcmp(name, gPlayerName[playerid]))
+			return Msg(playerid, RED, " >  You cannot set your own level");
 
-	if(!SetPlayerAdminLevel(id, level))
-		return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
+		UpdateAdmin(name, level);
 
-
-	MsgF(playerid, YELLOW, " >  You made %P"#C_YELLOW" a Level %d Admin", id, level);
-	MsgF(id, YELLOW, " >  %P"#C_YELLOW" Made you a Level %d Admin", playerid, level);
+		MsgF(playerid, YELLOW, " >  You set %s to admin level %d.", name, level);
+	}
+	else
+	{
+		Msg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
+		return 1;
+	}
 
 	return 1;
 }

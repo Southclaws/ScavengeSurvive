@@ -23,6 +23,12 @@ forward OnPlayerEat(playerid, itemid);
 forward OnPlayerEaten(playerid, itemid);
 
 
+hook OnPlayerConnect(playerid)
+{
+	food_CurrentlyEating[playerid] = -1;
+}
+
+
 /*==============================================================================
 
 	Core

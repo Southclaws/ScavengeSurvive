@@ -25,6 +25,12 @@ new
 			wb_CurrentWorkbench[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	wb_CurrentWorkbench[playerid] = -1;
+}
+
+
 CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(wb_Index);

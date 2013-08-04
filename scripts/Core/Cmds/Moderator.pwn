@@ -113,19 +113,29 @@ ACMD:whitelist[2](playerid, params[])
 
 	if(!strcmp(command, "add", true) && !isnull(name))
 	{
-		if(AddNameToWhitelist(name))
+		new result = AddNameToWhitelist(name);
+
+		if(result == 1)
 			MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
 
-		else
+		if(result == 0)
+			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is already "#C_YELLOW"in the whitelist.");
+
+		if(result == -1)
 			Msg(playerid, RED, " >  An error occurred.");
 	}
 	else if(!strcmp(command, "remove", true) && !isnull(name))
 	{
-		if(RemoveNameFromWhitelist(name))
+		new result = RemoveNameFromWhitelist(name);
+
+		if(result == 1)
 			MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
 
-		else
-			Msg(playerid, YELLOW, " >  That name is not in the whitelist");
+		if(result == 0)
+			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is not "#C_YELLOW"in the whitelist.");
+
+		if(result == -1)
+			Msg(playerid, RED, " >  An error occurred.");
 	}
 	else if(!strcmp(command, "on", true))
 	{
@@ -136,6 +146,14 @@ ACMD:whitelist[2](playerid, params[])
 	{
 		Msg(playerid, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
 		gWhitelist = false;
+	}
+	else if(!strcmp(command, "?", true))
+	{
+		if(IsNameInWhitelist(name))
+			Msg(playerid, YELLOW, " >  That name "#C_BLUE"is "#C_YELLOW"in the whitelist.");
+
+		else
+			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is not "#C_YELLOW"in the whitelist");
 	}
 
 	return 1;
@@ -159,35 +177,38 @@ ACMD:aliases[2](playerid, params[])
 	}
 
 	new
-		rowCount,
-		tmpIpQuery[128],
-		tmpIpField[32],
-		DBResult:tmpIpResult,
-		tmpNameList[128];
+		list[6][MAX_PLAYER_NAME],
+		count,
+		adminlevel,
+		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	format(tmpIpQuery, 128,
-		"SELECT * FROM `Player` WHERE `"#ROW_IPV4"` = '%d' AND `"#ROW_NAME"` != '%s'",
-		gPlayerData[targetid][ply_IP], gPlayerName[playerid]);
+	GetAccountAliases(gPlayerName[playerid], gPlayerData[playerid][ply_IP], list, count, 6, adminlevel);
 
-	tmpIpResult = db_query(gAccounts, tmpIpQuery);
-
-	rowCount = db_num_rows(tmpIpResult);
-
-	if(rowCount > 0)
+	if(count == 0)
 	{
-		for(new i; i < rowCount && i < 5;i++)
-		{
-			db_get_field(tmpIpResult, 0, tmpIpField, 128);
-
-			if(i > 0)
-				strcat(tmpNameList, ", ");
-
-			strcat(tmpNameList, tmpIpField);
-			db_next_row(tmpIpResult);
-		}
-		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", rowCount, tmpNameList);
+		Msg(playerid, YELLOW, " >  No other accounts used by that players IP address.");
+		return 1;
 	}
-	db_free_result(tmpIpResult);
+
+	if(count == 1)
+	{
+		strcat(string, list[0]);
+	}
+
+	if(count > 1)
+	{
+		for(new i; i < count; i++)
+		{
+			strcat(string, list[i]);
+			strcat(string, ", ");
+		}
+	}
+
+	if(adminlevel < gPlayerData[playerid][ply_Admin])
+		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
+
+	else
+		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", targetid);
 
 	return 1;
 }
