@@ -12,7 +12,7 @@ Timer:	OverheatUpdateTimer		[MAX_PLAYERS];
 timer OverheatUpdate[100](playerid)
 {
 	new
-		model = GetVehicleModel(gPlayerVehicleID[playerid]),
+		model = GetVehicleModel(gPlayerData[playerid][ply_CurrentVehicle]),
 		k, ud, lr;
 
 	GetPlayerKeys(playerid, k, ud, lr);
@@ -24,7 +24,7 @@ timer OverheatUpdate[100](playerid)
 	{
 		if(k & 1)
 		{
-			if(GetVehicleEngine(gPlayerVehicleID[playerid]))
+			if(GetVehicleEngine(gPlayerData[playerid][ply_CurrentVehicle]))
 				Overheat[playerid] += 1.0;
 		}
 		else
@@ -51,7 +51,7 @@ timer OverheatUpdate[100](playerid)
 			Float:y,
 			Float:z;
 
-		GetVehiclePos(gPlayerVehicleID[playerid], x, y, z);
+		GetVehiclePos(gPlayerData[playerid][ply_CurrentVehicle], x, y, z);
 		CreateExplosion(x, y, z, 11, 5.0);
 		Overheat[playerid] = 0.0;
 	}
@@ -66,10 +66,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(!GetVehicleEngine(gPlayerVehicleID[playerid]))
+	if(!GetVehicleEngine(gPlayerData[playerid][ply_CurrentVehicle]))
 		return 1;		
 
-	new model = GetVehicleModel(gPlayerVehicleID[playerid]);
+	new model = GetVehicleModel(gPlayerData[playerid][ply_CurrentVehicle]);
 
 	if(model != 432 && model != 425 && model != 520)
 		return 1;

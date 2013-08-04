@@ -200,12 +200,12 @@ ACMD:warn[1](playerid, params[])
 	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
 		return 3;
 
-	gPlayerWarnings[targetid]++;
+	gPlayerData[targetid][ply_Warnings]++;
 
-	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerWarnings[targetid], reason);
-	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", gPlayerWarnings[targetid], reason);
+	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerData[targetid][ply_Warnings], reason);
+	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", gPlayerData[targetid][ply_Warnings], reason);
 
-	if(gPlayerWarnings[targetid] >= 5)
+	if(gPlayerData[targetid][ply_Warnings] >= 5)
 	{
 		BanPlayer(targetid, "Getting 5 warnings", playerid);
 	}

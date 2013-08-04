@@ -140,7 +140,7 @@ UpdatePlayerGear(playerid, show = 1)
 		}
 	}
 
-	if(gPlayerAP[playerid] > 0.0)
+	if(gPlayerData[playerid][ply_ArmourPoints] > 0.0)
 	{
 		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], "Armour");
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 19515);

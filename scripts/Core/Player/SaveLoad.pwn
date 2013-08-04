@@ -41,9 +41,9 @@ SavePlayerChar(playerid)
 
 	GetFile(gPlayerName[playerid], filename);
 
-	data[PLY_CELL_HEALTH]	= _:gPlayerHP[playerid];
-	data[PLY_CELL_ARMOUR]	= _:gPlayerAP[playerid];
-	data[PLY_CELL_FOOD]		= _:gPlayerFP[playerid];
+	data[PLY_CELL_HEALTH]	= _:gPlayerData[playerid][ply_HitPoints];
+	data[PLY_CELL_ARMOUR]	= _:gPlayerData[playerid][ply_ArmourPoints];
+	data[PLY_CELL_FOOD]		= _:gPlayerData[playerid][ply_FoodPoints];
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
 
@@ -91,11 +91,11 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 
-	data[PLY_CELL_WARNS] = gPlayerWarnings[playerid];
+	data[PLY_CELL_WARNS] = gPlayerData[playerid][ply_Warnings];
 
-	data[PLY_CELL_FREQ] = _:gPlayerFrequency[playerid];
+	data[PLY_CELL_FREQ] = _:gPlayerData[playerid][ply_RadioFrequency];
 
-	data[PLY_CELL_CHATMODE] = gPlayerChatMode[playerid];
+	data[PLY_CELL_CHATMODE] = gPlayerData[playerid][ply_ChatMode];
 
 	data[PLY_CELL_INFECTED] = (bPlayerGameSettings[playerid] & Infected);
 
@@ -159,14 +159,14 @@ LoadPlayerChar(playerid)
 	if(Float:data[0] <= 0.0)
 		data[0] = _:1.0;
 
-	gPlayerHP[playerid] = Float:data[PLY_CELL_HEALTH];
-	gPlayerAP[playerid] = Float:data[PLY_CELL_ARMOUR];
-	gPlayerFP[playerid] = Float:data[PLY_CELL_FOOD];
-	gPlayerData[playerid][ply_Skin] = data[PLY_CELL_SKIN];
+	gPlayerData[playerid][ply_HitPoints] = Float:data[PLY_CELL_HEALTH];
+	gPlayerData[playerid][ply_ArmourPoints] = Float:data[PLY_CELL_ARMOUR];
+	gPlayerData[playerid][ply_FoodPoints] = Float:data[PLY_CELL_FOOD];
+	gPlayerData[playerid][ply_Clothes] = data[PLY_CELL_SKIN];
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
-	if(gPlayerAP[playerid] > 0.0)
+	if(gPlayerData[playerid][ply_ArmourPoints] > 0.0)
 		ToggleArmour(playerid, true);
 
 	if(data[PLY_CELL_HOLST] != -1)
@@ -207,11 +207,11 @@ LoadPlayerChar(playerid)
 	else
 		SetPlayerCuffs(playerid, false);
 
-	gPlayerWarnings[playerid] = data[PLY_CELL_WARNS];
+	gPlayerData[playerid][ply_Warnings] = data[PLY_CELL_WARNS];
 
-	gPlayerFrequency[playerid] = Float:data[PLY_CELL_FREQ];
+	gPlayerData[playerid][ply_RadioFrequency] = Float:data[PLY_CELL_FREQ];
 
-	gPlayerChatMode[playerid] = data[PLY_CELL_CHATMODE];
+	gPlayerData[playerid][ply_ChatMode] = data[PLY_CELL_CHATMODE];
 
 	if(data[PLY_CELL_INFECTED])
 		t:bPlayerGameSettings[playerid]<Infected>;

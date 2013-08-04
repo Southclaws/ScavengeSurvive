@@ -547,7 +547,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 		return 1;
 	}
 
-	if(tickcount() - tick_ExitVehicle[playerid] < 5000)
+	if(tickcount() - GetPlayerVehicleExitTick(playerid) < 5000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;

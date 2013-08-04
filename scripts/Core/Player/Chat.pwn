@@ -1,8 +1,14 @@
 #include <YSI\y_hooks>
 
+
+new
+	chat_MessageStreak	[MAX_PLAYERS],
+	chat_MuteTick		[MAX_PLAYERS];
+
+
 hook OnPlayerText(playerid, text[])
 {
-	new tmpMuteTime = tickcount() - ChatMuteTick[playerid];
+	new tmpMuteTime = tickcount() - chat_MuteTick[playerid];
 
 	if(bPlayerGameSettings[playerid] & Muted)
 	{
@@ -16,34 +22,34 @@ hook OnPlayerText(playerid, text[])
 		return 0;
 	}
 
-	if(tickcount() - tick_LastChatMessage[playerid] < 1000)
+	if(tickcount() - gPlayerData[playerid][ply_LastChatMessageTick] < 1000)
 	{
-		ChatMessageStreak[playerid]++;
-		if(ChatMessageStreak[playerid] == 3)
+		chat_MessageStreak[playerid]++;
+		if(chat_MessageStreak[playerid] == 3)
 		{
 			Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_YELLOW"seconds, Reason: "#C_BLUE"chat flooding");
-			ChatMuteTick[playerid] = tickcount();
+			chat_MuteTick[playerid] = tickcount();
 			return 0;
 		}
 	}
 	else
 	{
-		if(ChatMessageStreak[playerid] > 0)
-			ChatMessageStreak[playerid]--;
+		if(chat_MessageStreak[playerid] > 0)
+			chat_MessageStreak[playerid]--;
 	}
 
-	tick_LastChatMessage[playerid] = tickcount();
+	gPlayerData[playerid][ply_LastChatMessageTick] = tickcount();
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_LOCAL)
 		PlayerSendChat(playerid, text, 0.0);
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_GLOBAL)
 		PlayerSendChat(playerid, text, 1.0);
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
-		PlayerSendChat(playerid, text, gPlayerFrequency[playerid]);
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_RADIO)
+		PlayerSendChat(playerid, text, gPlayerData[playerid][ply_RadioFrequency]);
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_ADMIN)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_ADMIN)
 	{
 		foreach(new i : Player)
 		{
@@ -143,7 +149,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 	{
 		foreach(new i : Player)
 		{
-			if(-0.05 < frequency - gPlayerFrequency[i] < 0.05)
+			if(-0.05 < frequency - gPlayerData[i][ply_RadioFrequency] < 0.05)
 			{
 				SendClientMessage(i, WHITE, text);
 
@@ -166,7 +172,7 @@ CMD:g(playerid, params[])
 
 	if(isnull(params))
 	{
-		gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
+		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_GLOBAL;
 		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	else
@@ -180,7 +186,7 @@ CMD:l(playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerChatMode[playerid] = CHAT_MODE_LOCAL;
+		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_LOCAL;
 		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
@@ -194,12 +200,12 @@ CMD:r(playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
-		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", gPlayerFrequency[playerid]);
+		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_RADIO;
+		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", gPlayerData[playerid][ply_RadioFrequency]);
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, gPlayerFrequency[playerid]);
+		PlayerSendChat(playerid, params, gPlayerData[playerid][ply_RadioFrequency]);
 	}
 
 	return 1;
@@ -223,7 +229,7 @@ ACMD:a[1](playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerChatMode[playerid] = CHAT_MODE_ADMIN;
+		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_ADMIN;
 		Msg(playerid, WHITE, " >  Admin chat activated.");
 	}
 	else

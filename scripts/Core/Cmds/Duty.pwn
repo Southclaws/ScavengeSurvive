@@ -13,15 +13,15 @@ ACMD:duty[1](playerid, params[])
 		f:bPlayerGameSettings[playerid]<AdminDuty>;
 
 		SetPlayerPos(playerid,
-			gPlayerData[playerid][ply_posX],
-			gPlayerData[playerid][ply_posY],
-			gPlayerData[playerid][ply_posZ]);
+			gPlayerData[playerid][ply_SpawnPosX],
+			gPlayerData[playerid][ply_SpawnPosY],
+			gPlayerData[playerid][ply_SpawnPosZ]);
 
 		RemovePlayerWeapon(playerid);
 		LoadPlayerInventory(playerid);
 		LoadPlayerChar(playerid);
 
-		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Skin]);
+		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
 
 		tick_AdminDuty[playerid] = tickcount();
 	}
@@ -41,18 +41,18 @@ ACMD:duty[1](playerid, params[])
 		itemtype = GetItemType(itemid);
 
 		GetPlayerPos(playerid,
-			gPlayerData[playerid][ply_posX],
-			gPlayerData[playerid][ply_posY],
-			gPlayerData[playerid][ply_posZ]);
+			gPlayerData[playerid][ply_SpawnPosX],
+			gPlayerData[playerid][ply_SpawnPosY],
+			gPlayerData[playerid][ply_SpawnPosZ]);
 
 		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
 		{
 			if(!IsContainerEmpty(GetItemExtraData(itemid)))
 			{
 				CreateItemInWorld(itemid,
-					gPlayerData[playerid][ply_posX],
-					gPlayerData[playerid][ply_posY],
-					gPlayerData[playerid][ply_posZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+					gPlayerData[playerid][ply_SpawnPosX],
+					gPlayerData[playerid][ply_SpawnPosY],
+					gPlayerData[playerid][ply_SpawnPosZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 			}
 		}
 
@@ -62,7 +62,7 @@ ACMD:duty[1](playerid, params[])
 
 		t:bPlayerGameSettings[playerid]<AdminDuty>;
 
-		if(bPlayerGameSettings[playerid] & Gender)
+		if(gPlayerData[playerid][ply_Gender] == GENDER_MALE)
 			SetPlayerSkin(playerid, 217);
 
 		else

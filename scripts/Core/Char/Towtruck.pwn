@@ -6,7 +6,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(GetVehicleModel(gPlayerVehicleID[playerid]) != 525)
+	if(GetVehicleModel(gPlayerData[playerid][ply_CurrentVehicle]) != 525)
 		return 1;
 
 	if(newkeys == KEY_ACTION)
@@ -19,21 +19,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			Float:vy2,
 			Float:vz2;
 
-		GetVehiclePos(gPlayerVehicleID[playerid], vx1, vy1, vz1);
+		GetVehiclePos(gPlayerData[playerid][ply_CurrentVehicle], vx1, vy1, vz1);
 
 		foreach(new i : veh_Index)
 		{
-			if(i == gPlayerVehicleID[playerid])
+			if(i == gPlayerData[playerid][ply_CurrentVehicle])
 				continue;
 
 			GetVehiclePos(i, vx2, vy2, vz2);
 
 			if(Distance(vx1, vy1, vz1, vx2, vy2, vz2) < 7.0)
 			{
-				if(IsTrailerAttachedToVehicle(gPlayerVehicleID[playerid]))
-					DetachTrailerFromVehicle(gPlayerVehicleID[playerid]);
+				if(IsTrailerAttachedToVehicle(gPlayerData[playerid][ply_CurrentVehicle]))
+					DetachTrailerFromVehicle(gPlayerData[playerid][ply_CurrentVehicle]);
 
-				AttachTrailerToVehicle(i, gPlayerVehicleID[playerid]);
+				AttachTrailerToVehicle(i, gPlayerData[playerid][ply_CurrentVehicle]);
 
 				break;
 			}

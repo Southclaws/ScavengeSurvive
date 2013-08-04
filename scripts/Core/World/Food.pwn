@@ -125,14 +125,14 @@ FinishEating(playerid)
 
 	if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
 	{
-		gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4;
+		gPlayerData[playerid][ply_FoodPoints] += food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4;
 
 		if(food_Data[food_CurrentlyEating[playerid]][food_canRawInfect])
 			t:bPlayerGameSettings[playerid]<Infected>;
 	}
 	else
 	{
-		gPlayerFP[playerid] += food_Data[food_CurrentlyEating[playerid]][food_foodValue];
+		gPlayerData[playerid][ply_FoodPoints] += food_Data[food_CurrentlyEating[playerid]][food_foodValue];
 	}
 
 	if(food_Data[food_CurrentlyEating[playerid]][food_consumeType] == 0)

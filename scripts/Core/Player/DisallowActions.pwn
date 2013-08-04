@@ -18,7 +18,7 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
-	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(targetid) & AdminDuty || GetPlayerDataBitmask(targetid) & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || gPlayerSpecTarget[playerid] != INVALID_PLAYER_ID)
+	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(targetid) & AdminDuty || GetPlayerDataBitmask(targetid) & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 		return 1;
 
 	if(GetPlayerWeapon(targetid) != 0)

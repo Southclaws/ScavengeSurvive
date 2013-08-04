@@ -60,10 +60,10 @@ UpdateRadioUI(playerid)
 {
 	new str[18];
 
-	format(str, 18, "Frequency: %.2f", gPlayerFrequency[playerid]);
+	format(str, 18, "Frequency: %.2f", gPlayerData[playerid][ply_RadioFrequency]);
 	PlayerTextDrawSetString(playerid, RadioUI_Freq, str);
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_LOCAL)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "off");
 
@@ -74,13 +74,13 @@ UpdateRadioUI(playerid)
 			PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
 	}
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_GLOBAL)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Mode, "global");
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
 	}
 
-	if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
+	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_RADIO)
 	{
 		PlayerTextDrawSetString(playerid, RadioUI_Mode, "freq");
 		PlayerTextDrawSetString(playerid, RadioUI_Power, "on");
@@ -91,29 +91,29 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 {
 	if(clickedid == RadioUI_KnobL)
 	{
-		gPlayerFrequency[playerid] -= 0.5;
+		gPlayerData[playerid][ply_RadioFrequency] -= 0.5;
 
-		if(gPlayerFrequency[playerid] > MAX_RADIO_FREQ)
-			gPlayerFrequency[playerid] = MIN_RADIO_FREQ;
+		if(gPlayerData[playerid][ply_RadioFrequency] > MAX_RADIO_FREQ)
+			gPlayerData[playerid][ply_RadioFrequency] = MIN_RADIO_FREQ;
 
 		UpdateRadioUI(playerid);
 	}
 	if(clickedid == RadioUI_KnobR)
 	{
-		gPlayerFrequency[playerid] += 0.5;
+		gPlayerData[playerid][ply_RadioFrequency] += 0.5;
 
-		if(gPlayerFrequency[playerid] < MIN_RADIO_FREQ)
-			gPlayerFrequency[playerid] = MAX_RADIO_FREQ;
+		if(gPlayerData[playerid][ply_RadioFrequency] < MIN_RADIO_FREQ)
+			gPlayerData[playerid][ply_RadioFrequency] = MAX_RADIO_FREQ;
 
 		UpdateRadioUI(playerid);
 	}
 	if(clickedid == RadioUI_Mode)
 	{
-		if(gPlayerChatMode[playerid] == CHAT_MODE_GLOBAL)
-			gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
+		if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_GLOBAL)
+			gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_RADIO;
 
-		else if(gPlayerChatMode[playerid] == CHAT_MODE_RADIO)
-			gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
+		else if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_RADIO)
+			gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_GLOBAL;
 
 		UpdateRadioUI(playerid);
 	}
@@ -123,18 +123,18 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_Power)
 	{
-		if(gPlayerChatMode[playerid] == CHAT_MODE_LOCAL)
+		if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_LOCAL)
 		{
 			if(rad_OldMode[playerid] == CHAT_MODE_GLOBAL)
-				gPlayerChatMode[playerid] = CHAT_MODE_GLOBAL;
+				gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_GLOBAL;
 
 			else
-				gPlayerChatMode[playerid] = CHAT_MODE_RADIO;
+				gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_RADIO;
 		}
 		else
 		{
-			rad_OldMode[playerid] = gPlayerChatMode[playerid];
-			gPlayerChatMode[playerid] = CHAT_MODE_LOCAL;
+			rad_OldMode[playerid] = gPlayerData[playerid][ply_ChatMode];
+			gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_LOCAL;
 		}
 
 		UpdateRadioUI(playerid);
@@ -156,7 +156,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				if(MIN_RADIO_FREQ < frequency < MAX_RADIO_FREQ)
 				{
-					gPlayerFrequency[playerid] = frequency;
+					gPlayerData[playerid][ply_RadioFrequency] = frequency;
 					UpdateRadioUI(playerid);
 				}
 				else

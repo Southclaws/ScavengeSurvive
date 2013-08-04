@@ -1,12 +1,16 @@
 #include <YSI\y_hooks>
 
+
+new
+	LoginPasswordAttempts[MAX_PLAYERS];
+	
+
 LoadAccount(playerid)
 {
 	new
 		exists,
 		tmp_Ipv4,		// 2
 		tmp_Alive,		// 3
-		tmp_Gender,		// 4
 		tmp_Spawn[48],	// 5
 		tmp_IsVIP;		// 6
 
@@ -25,7 +29,6 @@ LoadAccount(playerid)
 	stmt_bind_result_field(gStmt_AccountLoad, 1, DB::TYPE_STRING, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
 	stmt_bind_result_field(gStmt_AccountLoad, 2, DB::TYPE_INTEGER, tmp_Ipv4);
 	stmt_bind_result_field(gStmt_AccountLoad, 3, DB::TYPE_INTEGER, tmp_Alive);
-	stmt_bind_result_field(gStmt_AccountLoad, 4, DB::TYPE_INTEGER, tmp_Gender);
 	stmt_bind_result_field(gStmt_AccountLoad, 5, DB::TYPE_STRING, tmp_Spawn, 48);
 	stmt_bind_result_field(gStmt_AccountLoad, 6, DB::TYPE_INTEGER, tmp_IsVIP);
 
@@ -39,12 +42,6 @@ LoadAccount(playerid)
 				return 3;
 		}
 
-		if(tmp_Gender == 0)
-			f:bPlayerGameSettings[playerid]<Gender>;
-
-		else
-			t:bPlayerGameSettings[playerid]<Gender>;
-
 		if(tmp_Alive)
 			t:bPlayerGameSettings[playerid]<Alive>;
 
@@ -52,10 +49,10 @@ LoadAccount(playerid)
 			f:bPlayerGameSettings[playerid]<Alive>;
 
 		sscanf(tmp_Spawn, "ffff",
-			gPlayerData[playerid][ply_posX],
-			gPlayerData[playerid][ply_posY],
-			gPlayerData[playerid][ply_posZ],
-			gPlayerData[playerid][ply_rotZ]);
+			gPlayerData[playerid][ply_SpawnPosX],
+			gPlayerData[playerid][ply_SpawnPosY],
+			gPlayerData[playerid][ply_SpawnPosZ],
+			gPlayerData[playerid][ply_SpawnRotZ]);
 
 		if(tmp_IsVIP)
 			t:bPlayerGameSettings[playerid]<IsVip>;
@@ -177,10 +174,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else
 			{
 				new str[64];
-				gPlayerPassAttempts[playerid]++;
-				format(str, 64, "Incorrect password! %d out of 5 tries", gPlayerPassAttempts[playerid]);
+
+				format(str, 64, "Incorrect password! %d out of 5 tries", LoginPasswordAttempts[playerid]);
 				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Quit");
-				if(gPlayerPassAttempts[playerid] == 5)
+
+				LoginPasswordAttempts[playerid]++;
+
+				if(LoginPasswordAttempts[playerid] == 5)
 				{
 					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
 					Kick(playerid);
@@ -255,9 +255,9 @@ Login(playerid)
 	}
 
 	t:bPlayerGameSettings[playerid]<LoggedIn>;
-	gPlayerPassAttempts[playerid] = 0;
-	gPlayerFrequency[playerid] = 108.0;
-	gScreenBoxFadeLevel[playerid] = 255;
+	LoginPasswordAttempts[playerid] = 0;
+	gPlayerData[playerid][ply_RadioFrequency] = 108.0;
+	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 
 	SpawnPlayer(playerid);
 }
@@ -349,9 +349,9 @@ Logout(playerid)
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
 			CreateItemInWorld(itemid,
-				gPlayerData[playerid][ply_posX],
-				gPlayerData[playerid][ply_posY],
-				gPlayerData[playerid][ply_posZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+				gPlayerData[playerid][ply_SpawnPosX],
+				gPlayerData[playerid][ply_SpawnPosY],
+				gPlayerData[playerid][ply_SpawnPosZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 
 			itemid = INVALID_ITEM_ID;
 		}
@@ -376,7 +376,7 @@ Logout(playerid)
 			RemovePlayerHat(playerid);
 
 		if(IsPlayerInAnyVehicle(playerid))
-			SavePlayerVehicle(gPlayerVehicleID[playerid], gPlayerName[playerid]);
+			SavePlayerVehicle(gPlayerData[playerid][ply_CurrentVehicle], gPlayerName[playerid]);
 	}
 
 	return 1;
@@ -391,13 +391,13 @@ SavePlayerData(playerid)
 	if(!(bPlayerGameSettings[playerid] & LoadedData))
 		return 0;
 
-	GetPlayerPos(playerid, gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ]);
-	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_rotZ]);
+	GetPlayerPos(playerid, gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
+	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
 
-	SaveBlockAreaCheck(gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ]);
+	SaveBlockAreaCheck(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		gPlayerData[playerid][ply_posZ] += 2.5;
+		gPlayerData[playerid][ply_SpawnPosZ] += 2.5;
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
@@ -408,13 +408,13 @@ SavePlayerData(playerid)
 		}
 
 		new spawn[48];
-		format(spawn, 48, "%f %f %f %f", gPlayerData[playerid][ply_posX], gPlayerData[playerid][ply_posY], gPlayerData[playerid][ply_posZ], gPlayerData[playerid][ply_rotZ]);
+		format(spawn, 48, "%f %f %f %f", gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ], gPlayerData[playerid][ply_SpawnRotZ]);
 
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
-		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, (bPlayerGameSettings[playerid] & Gender) ? 1 : 0);
+		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_STRING, spawn, 48);
 		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, (bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
 		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(gStmt_AccountUpdate);
 
@@ -427,7 +427,7 @@ SavePlayerData(playerid)
 		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_STRING, "0.0, 0.0, 0.0, 0.0", 32);
 		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, (bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
 		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
 
 		stmt_execute(gStmt_AccountUpdate);

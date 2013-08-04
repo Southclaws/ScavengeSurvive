@@ -9,7 +9,7 @@ KnockOutPlayer(playerid, duration)
 		return 0;
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - knockout_Tick[playerid]);
-	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerHP[playerid]));
+	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerData[playerid][ply_HitPoints]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
 	knockout_Tick[playerid] = tickcount();
@@ -97,21 +97,21 @@ KnockOutUpdate(playerid)
 	{
 		HidePlayerProgressBar(playerid, KnockoutBar);
 
-		if(gPlayerHP[playerid] < 50.0)
+		if(gPlayerData[playerid][ply_HitPoints] < 50.0)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				if(tickcount() - GetPlayerKnockOutTick(playerid) > 5000 * gPlayerHP[playerid])
+				if(tickcount() - GetPlayerKnockOutTick(playerid) > 5000 * gPlayerData[playerid][ply_HitPoints])
 				{
 					if(bPlayerGameSettings[playerid] & Bleeding)
 					{
-						if(frandom(40.0) < (50.0 - gPlayerHP[playerid]))
-							KnockOutPlayer(playerid, floatround(2000 * (50.0 - gPlayerHP[playerid]) + frandom(200 * (50.0 - gPlayerHP[playerid]))));
+						if(frandom(40.0) < (50.0 - gPlayerData[playerid][ply_HitPoints]))
+							KnockOutPlayer(playerid, floatround(2000 * (50.0 - gPlayerData[playerid][ply_HitPoints]) + frandom(200 * (50.0 - gPlayerData[playerid][ply_HitPoints]))));
 					}
 					else
 					{
-						if(frandom(40.0) < (40.0 - gPlayerHP[playerid]))
-							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerHP[playerid]) + frandom(200 * (40.0 - gPlayerHP[playerid]))));
+						if(frandom(40.0) < (40.0 - gPlayerData[playerid][ply_HitPoints]))
+							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerData[playerid][ply_HitPoints]) + frandom(200 * (40.0 - gPlayerData[playerid][ply_HitPoints]))));
 					}
 				}
 			}

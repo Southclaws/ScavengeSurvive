@@ -16,51 +16,51 @@ ptask FoodUpdate[1000](playerid)
 
 	if(bPlayerGameSettings[playerid] & Infected)
 	{
-		gPlayerFP[playerid] -= IDLE_FOOD_RATE;
+		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE;
 	}
 
 	if(animidx == 43) // Sitting
 	{
-		gPlayerFP[playerid] -= IDLE_FOOD_RATE * 0.2;
+		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 0.2;
 	}
 	else if(animidx == 1159) // Crouching
 	{
-		gPlayerFP[playerid] -= IDLE_FOOD_RATE * 1.1;
+		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 1.1;
 	}
 	else if(animidx == 1195) // Jumping
 	{
-		gPlayerFP[playerid] -= IDLE_FOOD_RATE * 3.2;	
+		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 3.2;	
 	}
 	else if(animidx == 1231) // Running
 	{
 		if(k & KEY_WALK) // Walking
 		{
-			gPlayerFP[playerid] -= IDLE_FOOD_RATE * 1.2;
+			gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 1.2;
 		}
 		else if(k & KEY_SPRINT) // Sprinting
 		{
-			gPlayerFP[playerid] -= IDLE_FOOD_RATE * 2.2;
+			gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 2.2;
 		}
 		else if(k & KEY_JUMP) // Jump
 		{
-			gPlayerFP[playerid] -= IDLE_FOOD_RATE * 3.2;
+			gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 3.2;
 		}
 		else
 		{
-			gPlayerFP[playerid] -= IDLE_FOOD_RATE * 2.0;
+			gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE * 2.0;
 		}
 	}
 	else
 	{
-		gPlayerFP[playerid] -= IDLE_FOOD_RATE;
+		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE;
 	}
 
-	if(gPlayerFP[playerid] > 100.0)
-		gPlayerFP[playerid] = 100.0;
+	if(gPlayerData[playerid][ply_FoodPoints] > 100.0)
+		gPlayerData[playerid][ply_FoodPoints] = 100.0;
 
 	if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
-		if(gPlayerFP[playerid] < 30.0)
+		if(gPlayerData[playerid][ply_FoodPoints] < 30.0)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 			{
@@ -72,7 +72,7 @@ ptask FoodUpdate[1000](playerid)
 			}
 			else
 			{
-				SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerFP[playerid]) * 300.0));
+				SetPlayerDrunkLevel(playerid, 2000 + floatround((31.0 - gPlayerData[playerid][ply_FoodPoints]) * 300.0));
 			}
 		}
 		else
@@ -82,15 +82,15 @@ ptask FoodUpdate[1000](playerid)
 		}
 	}
 
-	if(gPlayerFP[playerid] < 20.0)
-		gPlayerHP[playerid] -= (20.0 - gPlayerFP[playerid]) / 10.0;
+	if(gPlayerData[playerid][ply_FoodPoints] < 20.0)
+		gPlayerData[playerid][ply_HitPoints] -= (20.0 - gPlayerData[playerid][ply_FoodPoints]) / 10.0;
 
-	if(gPlayerFP[playerid] < 0.0)
-		gPlayerFP[playerid] = 0.0;
+	if(gPlayerData[playerid][ply_FoodPoints] < 0.0)
+		gPlayerData[playerid][ply_FoodPoints] = 0.0;
 
 	if(bPlayerGameSettings[playerid] & ShowHUD)
 	{
-		PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerFP[playerid] / 10.0));
+		PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerData[playerid][ply_FoodPoints] / 10.0));
 		PlayerTextDrawShow(playerid, HungerBarBackground);
 		PlayerTextDrawShow(playerid, HungerBarForeground);
 	}

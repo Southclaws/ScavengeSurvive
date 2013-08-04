@@ -316,15 +316,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 2: // Player that last killed me
 			{
-				if(!isnull(gLastKilledBy[playerid]))
+				if(!isnull(gPlayerData[playerid][ply_LastKilledBy]))
 				{
-					send_TargetName[playerid] = gLastKilledBy[playerid];
+					send_TargetName[playerid][0] = EOS;
+					strcat(send_TargetName[playerid], gPlayerData[playerid][ply_LastKilledBy]);
 				}
 				else
 				{
-					if(!isnull(gLastHitBy[playerid]))	
+					if(!isnull(gPlayerData[playerid][ply_LastHitBy]))
 					{
-						send_TargetName[playerid] = gLastHitBy[playerid];						
+						send_TargetName[playerid][0] = EOS;
+						strcat(send_TargetName[playerid], gPlayerData[playerid][ply_LastHitBy]);
 					}
 					else
 					{
@@ -333,9 +335,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 
-				send_TargetPos[playerid][0] = gPlayerDeathPos[playerid][0];
-				send_TargetPos[playerid][1] = gPlayerDeathPos[playerid][1];
-				send_TargetPos[playerid][2] = gPlayerDeathPos[playerid][2];
+				send_TargetPos[playerid][0] = gPlayerData[playerid][ply_DeathPosX];
+				send_TargetPos[playerid][1] = gPlayerData[playerid][ply_DeathPosY];
+				send_TargetPos[playerid][2] = gPlayerData[playerid][ply_DeathPosZ];
 
 				ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
 				send_TargetType[playerid] = REPORT_TYPE_PLAYER_KILLER;

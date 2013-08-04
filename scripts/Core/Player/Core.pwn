@@ -11,7 +11,6 @@ enum (<<= 1) // 23
 		CanExitWelcome,
 
 		AdminDuty,
-		Gender,
 		Alive,
 		Dying,
 		Spawned,
@@ -32,59 +31,63 @@ enum (<<= 1) // 23
 
 		DebugMode
 }
+
 enum E_PLAYER_DATA
 {
+		// Account Data
 		ply_Password[MAX_PASSWORD_LEN],
-		ply_Admin,
-		ply_Skin,
 		ply_IP,
-Float:	ply_posX,
-Float:	ply_posY,
-Float:	ply_posZ,
-Float:	ply_rotZ,
+		ply_Admin,
+		ply_Warnings,
+		ply_Karma,
+
+		// Character Data
+Float:	ply_HitPoints,
+Float:	ply_ArmourPoints,
+Float:	ply_FoodPoints,
+		ply_Clothes,
+		ply_Gender,
+Float:	ply_Velocity,
+Float:	ply_SpawnPosX,
+Float:	ply_SpawnPosY,
+Float:	ply_SpawnPosZ,
+Float:	ply_SpawnRotZ,
+Float:	ply_DeathPosX,
+Float:	ply_DeathPosY,
+Float:	ply_DeathPosZ,
+Float:	ply_DeathRotZ,
+Float:	ply_RadioFrequency,
+
+		// Internal Data
+		ply_ChatMode,
+		ply_CurrentVehicle,
+		ply_LastHitBy[MAX_PLAYER_NAME],
+		ply_LastKilledBy[MAX_PLAYER_NAME],
+		ply_PingLimitStrikes,
+		ply_SpectateTarget,
+		ply_ScreenBoxFadeLevel,
 		ply_stance,
-		ply_karma
+		ply_JoinTick,
+		ply_SpawnTick,
+		ply_TookDamageTick,
+		ply_DeltDamageTick,
+		ply_ExitVehicleTick,
+		ply_LastChatMessageTick
 }
+
 enum
 {
-	CHAT_MODE_LOCAL,
-	CHAT_MODE_GLOBAL,
-	CHAT_MODE_RADIO,
-	CHAT_MODE_ADMIN
+		CHAT_MODE_LOCAL,
+		CHAT_MODE_GLOBAL,
+		CHAT_MODE_RADIO,
+		CHAT_MODE_ADMIN
 }
 
 
 new
 		gPlayerData				[MAX_PLAYERS][E_PLAYER_DATA],
 		bPlayerGameSettings		[MAX_PLAYERS],
-
-		gPlayerPassAttempts		[MAX_PLAYERS],
-		gPlayerWarnings			[MAX_PLAYERS],
-
-		gPlayerName				[MAX_PLAYERS][MAX_PLAYER_NAME],
-Float:	gPlayerHP				[MAX_PLAYERS],
-Float:	gPlayerAP				[MAX_PLAYERS],
-Float:	gPlayerFP				[MAX_PLAYERS],
-Float:	gPlayerFrequency		[MAX_PLAYERS],
-		gPlayerChatMode			[MAX_PLAYERS],
-		gPlayerVehicleID		[MAX_PLAYERS],
-Float:	gPlayerVelocity			[MAX_PLAYERS],
-		gPingLimitStrikes		[MAX_PLAYERS],
-		gPlayerSpecTarget		[MAX_PLAYERS],
-		gScreenBoxFadeLevel		[MAX_PLAYERS],
-Float:	gPlayerDeathPos			[MAX_PLAYERS][4],
-
-		tick_ServerJoin			[MAX_PLAYERS],
-		tick_Spawn				[MAX_PLAYERS],
-		tick_LastDamaged		[MAX_PLAYERS],
-		tick_WeaponHit			[MAX_PLAYERS],
-		tick_ExitVehicle		[MAX_PLAYERS],
-		tick_LastChatMessage	[MAX_PLAYERS],
-		tick_LastInfectionFX	[MAX_PLAYERS],
-		gLastHitBy				[MAX_PLAYERS][MAX_PLAYER_NAME],
-		gLastKilledBy			[MAX_PLAYERS][MAX_PLAYER_NAME],
-		ChatMessageStreak		[MAX_PLAYERS],
-		ChatMuteTick			[MAX_PLAYERS];
+		gPlayerName				[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
 public OnPlayerConnect(playerid)
@@ -96,7 +99,7 @@ public OnPlayerConnect(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
-	tick_ServerJoin[playerid] = tickcount();
+	gPlayerData[playerid][ply_JoinTick] = tickcount();
 
 	new
 		ipstring[16],
@@ -200,16 +203,14 @@ public OnPlayerDisconnect(playerid, reason)
 
 ResetVariables(playerid)
 {
-	bPlayerGameSettings[playerid]		= 0;
+	bPlayerGameSettings[playerid]				= 0;
 
-	gPlayerData[playerid][ply_Admin]	= 0,
-	gPlayerData[playerid][ply_Skin]		= 0,
-	gPlayerHP[playerid]					= 100.0;
-	gPlayerAP[playerid]					= 0.0;
-	gPlayerFP[playerid]					= 80.0;
-	gPlayerVehicleID[playerid]			= INVALID_VEHICLE_ID,
-	gPlayerWarnings[playerid]			= 0;
-	gPlayerPassAttempts[playerid]		= 0;
+	gPlayerData[playerid][ply_Admin]			= 0,
+	gPlayerData[playerid][ply_Clothes]				= 0,
+	gPlayerData[playerid][ply_HitPoints]		= 100.0;
+	gPlayerData[playerid][ply_ArmourPoints]		= 0.0;
+	gPlayerData[playerid][ply_FoodPoints]		= 80.0;
+	gPlayerData[playerid][ply_CurrentVehicle]	= INVALID_VEHICLE_ID,
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
@@ -221,26 +222,33 @@ ResetVariables(playerid)
 
 ptask PlayerUpdate[100](playerid)
 {
-	if(gPlayerSpecTarget[playerid] != INVALID_PLAYER_ID)
+	if(gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 	{
 		UpdateSpectateMode(playerid);
 		return;
 	}
 
-	if(GetPlayerPing(playerid) > gPingLimit && tickcount() - tick_ServerJoin[playerid] > 10000)
+	if(GetPlayerPing(playerid) > gPingLimit)
 	{
-		gPingLimitStrikes[playerid]++;
-
-		if(gPingLimitStrikes[playerid] == 3)
+		if(tickcount() - gPlayerData[playerid][ply_JoinTick] > 10000)
 		{
-			new str[128];
-			format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
-			KickPlayer(playerid, str);
+			gPlayerData[playerid][ply_PingLimitStrikes]++;
 
-			gPingLimitStrikes[playerid] = 0;
+			if(gPlayerData[playerid][ply_PingLimitStrikes] == 3)
+			{
+				new str[128];
+				format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
+				KickPlayer(playerid, str);
 
-			return;
+				gPlayerData[playerid][ply_PingLimitStrikes] = 0;
+
+				return;
+			}
 		}
+	}
+	else
+	{
+		gPlayerData[playerid][ply_PingLimitStrikes] = 0;
 	}
 
 	new
@@ -254,22 +262,22 @@ ptask PlayerUpdate[100](playerid)
 	else
 		VehicleSurfingCheck(playerid);
 
-	if(gScreenBoxFadeLevel[playerid] > 0)
+	if(gPlayerData[playerid][ply_ScreenBoxFadeLevel] > 0)
 	{
-		PlayerTextDrawBoxColor(playerid, ClassBackGround, gScreenBoxFadeLevel[playerid]);
+		PlayerTextDrawBoxColor(playerid, ClassBackGround, gPlayerData[playerid][ply_ScreenBoxFadeLevel]);
 		PlayerTextDrawShow(playerid, ClassBackGround);
 
-		gScreenBoxFadeLevel[playerid] -= 4;
+		gPlayerData[playerid][ply_ScreenBoxFadeLevel] -= 4;
 
-		if(gPlayerHP[playerid] <= 40.0)
+		if(gPlayerData[playerid][ply_HitPoints] <= 40.0)
 		{
-			if(gScreenBoxFadeLevel[playerid] <= floatround((40.0 - gPlayerHP[playerid]) * 4.4))
-				gScreenBoxFadeLevel[playerid] = 0;
+			if(gPlayerData[playerid][ply_ScreenBoxFadeLevel] <= floatround((40.0 - gPlayerData[playerid][ply_HitPoints]) * 4.4))
+				gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 0;
 		}
 	}
 	else
 	{
-		if(gPlayerHP[playerid] < 40.0)
+		if(gPlayerData[playerid][ply_HitPoints] < 40.0)
 		{
 			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
@@ -284,7 +292,7 @@ ptask PlayerUpdate[100](playerid)
 			}
 			else
 			{
-				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerHP[playerid]) * 4.4));
+				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerData[playerid][ply_HitPoints]) * 4.4));
 				PlayerTextDrawShow(playerid, ClassBackGround);
 			}
 		}
@@ -335,7 +343,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 300000 || gPlayerHP[playerid] >= 100.0)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
 
 		SetPlayerDrunkLevel(playerid, 2200);
@@ -346,7 +354,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000 || gPlayerHP[playerid] >= 100.0)
+		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 
 		GivePlayerHP(playerid, 0.01);
@@ -367,14 +375,14 @@ ptask PlayerUpdate[100](playerid)
 
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 		{
-			if(frandom(100.0) < gPlayerHP[playerid])
+			if(frandom(100.0) < gPlayerData[playerid][ply_HitPoints])
 			{
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 			}
 		}
 		else
 		{
-			if(frandom(100.0) < 100 - gPlayerHP[playerid])
+			if(frandom(100.0) < 100 - gPlayerData[playerid][ply_HitPoints])
 			{
 				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
 			}
@@ -388,25 +396,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(bPlayerGameSettings[playerid] & Infected)
 	{
-		if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
-		{
-			if(GetPlayerDrunkLevel(playerid) == 0)
-			{
-				if(tickcount() - tick_LastInfectionFX[playerid] > 500 * gPlayerHP[playerid])
-				{
-					tick_LastInfectionFX[playerid] = tickcount();
-					SetPlayerDrunkLevel(playerid, 5000);
-				}
-			}
-			else
-			{
-				if(tickcount() - tick_LastInfectionFX[playerid] > 100 * (120 - gPlayerHP[playerid]) || 1 < GetPlayerDrunkLevel(playerid) < 2000)
-				{
-					tick_LastInfectionFX[playerid] = tickcount();
-					SetPlayerDrunkLevel(playerid, 0);
-				}
-			}
-		}
+		PlayerInfectionUpdate(playerid);
 	}
 
 	if(GetPlayerCurrentWeapon(playerid) == 0 && GetPlayerWeapon(playerid))
@@ -469,7 +459,7 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
-	tick_Spawn[playerid] = tickcount();
+	gPlayerData[playerid][ply_SpawnTick] = tickcount();
 
 	SetPlayerWeather(playerid, gWeatherID);
 	SetPlayerTeam(playerid, 0);
@@ -478,7 +468,7 @@ public OnPlayerSpawn(playerid)
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 	{
 		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
-		gPlayerHP[playerid] = 100.0;
+		gPlayerData[playerid][ply_HitPoints] = 100.0;
 		return 1;
 	}
 
@@ -489,20 +479,20 @@ public OnPlayerSpawn(playerid)
 		defer SetDeathCamera(playerid);
 
 		SetPlayerCameraPos(playerid,
-			gPlayerDeathPos[playerid][0] - floatsin(-gPlayerDeathPos[playerid][3], degrees),
-			gPlayerDeathPos[playerid][1] - floatcos(-gPlayerDeathPos[playerid][3], degrees),
-			gPlayerDeathPos[playerid][2]);
+			gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+			gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+			gPlayerData[playerid][ply_DeathPosZ]);
 
-		SetPlayerCameraLookAt(playerid, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2]);
+		SetPlayerCameraLookAt(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
 
 		TextDrawShowForPlayer(playerid, DeathText);
 		TextDrawShowForPlayer(playerid, DeathButton);
 		SelectTextDraw(playerid, 0xFFFFFF88);
-		gPlayerHP[playerid] = 1.0;
+		gPlayerData[playerid][ply_HitPoints] = 1.0;
 	}
 	else
 	{
-		gScreenBoxFadeLevel[playerid] = 0;
+		gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 0;
 		PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
 		PlayerTextDrawShow(playerid, ClassBackGround);
 
@@ -511,7 +501,7 @@ public OnPlayerSpawn(playerid)
 			if(bPlayerGameSettings[playerid] & LoggedIn)
 			{
 				PlayerSpawnExistingCharacter(playerid);
-				gScreenBoxFadeLevel[playerid] = 255;
+				gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 			}
 			else
 			{
@@ -520,10 +510,10 @@ public OnPlayerSpawn(playerid)
 		}
 		else
 		{
-			gPlayerHP[playerid] = 100.0;
-			gPlayerAP[playerid] = 0.0;
-			gPlayerFP[playerid] = 80.0;
-			gPlayerFrequency[playerid] = 108.0;
+			gPlayerData[playerid][ply_HitPoints] = 100.0;
+			gPlayerData[playerid][ply_ArmourPoints] = 0.0;
+			gPlayerData[playerid][ply_FoodPoints] = 80.0;
+			gPlayerData[playerid][ply_RadioFrequency] = 108.0;
 			PlayerCreateNewCharacter(playerid);
 		}
 	}
@@ -541,21 +531,21 @@ public OnPlayerSpawn(playerid)
 timer SetDeathCamera[50](playerid)
 {
 	InterpolateCameraPos(playerid,
-		gPlayerDeathPos[playerid][0] - floatsin(-gPlayerDeathPos[playerid][3], degrees),
-		gPlayerDeathPos[playerid][1] - floatcos(-gPlayerDeathPos[playerid][3], degrees),
-		gPlayerDeathPos[playerid][2] + 1.0,
-		gPlayerDeathPos[playerid][0] - floatsin(-gPlayerDeathPos[playerid][3], degrees),
-		gPlayerDeathPos[playerid][1] - floatcos(-gPlayerDeathPos[playerid][3], degrees),
-		gPlayerDeathPos[playerid][2] + 20.0,
+		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
+		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosZ] + 20.0,
 		30000, CAMERA_MOVE);
 
 	InterpolateCameraLookAt(playerid,
-		gPlayerDeathPos[playerid][0],
-		gPlayerDeathPos[playerid][1],
-		gPlayerDeathPos[playerid][2],
-		gPlayerDeathPos[playerid][0],
-		gPlayerDeathPos[playerid][1],
-		gPlayerDeathPos[playerid][2] + 1.0,
+		gPlayerData[playerid][ply_DeathPosX],
+		gPlayerData[playerid][ply_DeathPosY],
+		gPlayerData[playerid][ply_DeathPosZ],
+		gPlayerData[playerid][ply_DeathPosX],
+		gPlayerData[playerid][ply_DeathPosY],
+		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
 		30000, CAMERA_MOVE);
 }
 
@@ -572,19 +562,19 @@ public OnPlayerUpdate(playerid)
 			Float:vy,
 			Float:vz;
 
-		GetVehicleVelocity(gPlayerVehicleID[playerid], vx, vy, vz);
-		gPlayerVelocity[playerid] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
-		format(str, 32, "%.0fkm/h", gPlayerVelocity[playerid]);
+		GetVehicleVelocity(gPlayerData[playerid][ply_CurrentVehicle], vx, vy, vz);
+		gPlayerData[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+		format(str, 32, "%.0fkm/h", gPlayerData[playerid][ply_Velocity]);
 		PlayerTextDrawSetString(playerid, VehicleSpeedText, str);
 	}
 
 	if(bPlayerGameSettings[playerid] & Alive)
 	{
 		if(bPlayerGameSettings[playerid] & AdminDuty)
-			gPlayerHP[playerid] = 250.0;
+			gPlayerData[playerid][ply_HitPoints] = 250.0;
 
-		SetPlayerHealth(playerid, gPlayerHP[playerid]);
-		SetPlayerArmour(playerid, gPlayerAP[playerid]);
+		SetPlayerHealth(playerid, gPlayerData[playerid][ply_HitPoints]);
+		SetPlayerArmour(playerid, gPlayerData[playerid][ply_ArmourPoints]);
 	}
 	else
 	{
@@ -599,9 +589,9 @@ GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	x = gPlayerData[playerid][ply_posX];
-	z = gPlayerData[playerid][ply_posY];
-	x = gPlayerData[playerid][ply_posZ];
+	x = gPlayerData[playerid][ply_SpawnPosX];
+	z = gPlayerData[playerid][ply_SpawnPosY];
+	x = gPlayerData[playerid][ply_SpawnPosZ];
 
 	return 1;
 }
@@ -616,7 +606,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new model = GetVehicleModel(vehicleid);
 
-		gPlayerVehicleID[playerid] = vehicleid;
+		gPlayerData[playerid][ply_CurrentVehicle] = vehicleid;
 
 		SetVehicleUsed(vehicleid, true);
 		SetVehicleOccupied(vehicleid, true);
@@ -635,7 +625,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
 	{
-		VehicleDoorsState(gPlayerVehicleID[playerid], 0);
+		VehicleDoorsState(gPlayerData[playerid][ply_CurrentVehicle], 0);
 
 		SetVehicleOccupied(vehicleid, false);
 
@@ -678,7 +668,7 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 }
 public OnPlayerExitVehicle(playerid, vehicleid)
 {
-	tick_ExitVehicle[playerid] = tickcount();
+	gPlayerData[playerid][ply_ExitVehicleTick] = tickcount();
 
 	return 1;
 }
@@ -748,7 +738,7 @@ GetPlayerServerJoinTick(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return tick_ServerJoin[playerid];
+	return gPlayerData[playerid][ply_JoinTick];
 }
 
 GetPlayerSpawnTick(playerid)
@@ -756,7 +746,7 @@ GetPlayerSpawnTick(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return tick_Spawn[playerid];
+	return gPlayerData[playerid][ply_SpawnTick];
 }
 
 GetPlayerVehicleExitTick(playerid)
@@ -764,7 +754,7 @@ GetPlayerVehicleExitTick(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return tick_ExitVehicle[playerid];
+	return gPlayerData[playerid][ply_ExitVehicleTick];
 }
 
 GetPlayerDataBitmask(playerid)
@@ -780,7 +770,7 @@ GetPlayerLastVehicle(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return gPlayerVehicleID[playerid];
+	return gPlayerData[playerid][ply_CurrentVehicle];
 }
 
 forward Float:GetPlayerTotalVelocity(playerid);
@@ -789,5 +779,5 @@ Float:GetPlayerTotalVelocity(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0.0;
 
-	return gPlayerVelocity[playerid];
+	return gPlayerData[playerid][ply_Velocity];
 }

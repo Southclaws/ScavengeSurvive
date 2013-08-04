@@ -19,7 +19,7 @@ EnterSpectateMode(playerid, targetid)
 	PlayerTextDrawShow(playerid, spec_Name);
 	PlayerTextDrawShow(playerid, spec_Info);
 
-	gPlayerSpecTarget[playerid] = targetid;
+	gPlayerData[playerid][ply_SpectateTarget] = targetid;
 	UpdateSpectateMode(playerid);
 
 	return 1;
@@ -27,16 +27,16 @@ EnterSpectateMode(playerid, targetid)
 
 ExitSpectateMode(playerid)
 {
-	if(gPlayerSpecTarget[playerid] == INVALID_PLAYER_ID)
+	if(gPlayerData[playerid][ply_SpectateTarget] == INVALID_PLAYER_ID)
 		return 0;
 
 	TogglePlayerSpectating(playerid, false);
 	PlayerTextDrawHide(playerid, spec_Name);
 	PlayerTextDrawHide(playerid, spec_Info);
 
-	gPlayerSpecTarget[playerid] = INVALID_PLAYER_ID;
+	gPlayerData[playerid][ply_SpectateTarget] = INVALID_PLAYER_ID;
 
-	if(bPlayerGameSettings[playerid] & Gender)
+	if(gPlayerData[playerid][ply_Gender] == GENDER_MALE)
 		SetPlayerSkin(playerid, 217);
 
 	else
@@ -51,39 +51,39 @@ UpdateSpectateMode(playerid)
 		name[24 + 6],
 		str[256];
 
-	if(IsPlayerInAnyVehicle(gPlayerSpecTarget[playerid]))
+	if(IsPlayerInAnyVehicle(gPlayerData[playerid][ply_SpectateTarget]))
 	{
 		new
 			invehicleas[24],
 			wepname[32],
 			cameramodename[37];
 
-		if(GetPlayerState(gPlayerSpecTarget[playerid]) == PLAYER_STATE_DRIVER)
+		if(GetPlayerState(gPlayerData[playerid][ply_SpectateTarget]) == PLAYER_STATE_DRIVER)
 			invehicleas = "Driver";
 
 		else
 			invehicleas = "Passenger";
 
-		GetWeaponName(GetPlayerWeapon(gPlayerSpecTarget[playerid]), wepname);
-		GetCameraModeName(GetPlayerCameraMode(gPlayerSpecTarget[playerid]), cameramodename);
+		GetWeaponName(GetPlayerWeapon(gPlayerData[playerid][ply_SpectateTarget]), wepname);
+		GetCameraModeName(GetPlayerCameraMode(gPlayerData[playerid][ply_SpectateTarget]), cameramodename);
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
 			Camera: %s Velocity: %.2f~n~\
 			Vehicle %d As %s Fuel: %.2f",
-			gPlayerHP[gPlayerSpecTarget[playerid]],
-			gPlayerAP[gPlayerSpecTarget[playerid]],
-			gPlayerFP[gPlayerSpecTarget[playerid]],
-			bPlayerGameSettings[gPlayerSpecTarget[playerid]] & KnockedOut ? 1 : 0,
-			bPlayerGameSettings[gPlayerSpecTarget[playerid]] & Bleeding ? 1 : 0,
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
+			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
+			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
 			wepname,
-			GetPlayerAmmo(gPlayerSpecTarget[playerid]),
-			GetPlayerReserveAmmo(gPlayerSpecTarget[playerid]),
+			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
+			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
 			cameramodename,
-			gPlayerVelocity[gPlayerSpecTarget[playerid]],
-			gPlayerVehicleID[gPlayerSpecTarget[playerid]],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_Velocity],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_CurrentVehicle],
 			invehicleas,
-			GetVehicleFuel(gPlayerVehicleID[gPlayerSpecTarget[playerid]]));
+			GetVehicleFuel(gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_CurrentVehicle]));
 	}
 	else
 	{
@@ -95,28 +95,28 @@ UpdateSpectateMode(playerid)
 			Float:vz,
 			Float:velocity;
 
-		GetWeaponName(GetPlayerWeapon(gPlayerSpecTarget[playerid]), wepname);
-		GetCameraModeName(GetPlayerCameraMode(gPlayerSpecTarget[playerid]), cameramodename);
-		GetPlayerVelocity(gPlayerSpecTarget[playerid], vx, vy, vz);
+		GetWeaponName(GetPlayerWeapon(gPlayerData[playerid][ply_SpectateTarget]), wepname);
+		GetCameraModeName(GetPlayerCameraMode(gPlayerData[playerid][ply_SpectateTarget]), cameramodename);
+		GetPlayerVelocity(gPlayerData[playerid][ply_SpectateTarget], vx, vy, vz);
 
 		velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
 			Camera: %s Velocity: %.2f",
-			gPlayerHP[gPlayerSpecTarget[playerid]],
-			gPlayerAP[gPlayerSpecTarget[playerid]],
-			gPlayerFP[gPlayerSpecTarget[playerid]],
-			bPlayerGameSettings[gPlayerSpecTarget[playerid]] & KnockedOut ? 1 : 0,
-			bPlayerGameSettings[gPlayerSpecTarget[playerid]] & Bleeding ? 1 : 0,
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
+			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
+			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
+			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
 			wepname,
-			GetPlayerAmmo(gPlayerSpecTarget[playerid]),
-			GetPlayerReserveAmmo(gPlayerSpecTarget[playerid]),
+			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
+			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
 			cameramodename,
 			velocity);
 	}
 
-	format(name, sizeof(name), "%s (%d)", gPlayerName[gPlayerSpecTarget[playerid]], gPlayerSpecTarget[playerid]);
+	format(name, sizeof(name), "%s (%d)", gPlayerName[gPlayerData[playerid][ply_SpectateTarget]], gPlayerData[playerid][ply_SpectateTarget]);
 
 	PlayerTextDrawSetString(playerid, spec_Name, name);
 	PlayerTextDrawSetString(playerid, spec_Info, str);
@@ -125,12 +125,12 @@ UpdateSpectateMode(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(gPlayerSpecTarget[playerid] != INVALID_PLAYER_ID)
+	if(gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 	{
 		if(newkeys == 4)
 		{
 			new
-				id = gPlayerSpecTarget[playerid] - 1,
+				id = gPlayerData[playerid][ply_SpectateTarget] - 1,
 				iters;
 
 			if(id < 0)
@@ -158,7 +158,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(newkeys == 128)
 		{
 			new
-				id = gPlayerSpecTarget[playerid] + 1,
+				id = gPlayerData[playerid][ply_SpectateTarget] + 1,
 				iters;
 
 			if(id == MAX_PLAYERS)
@@ -202,7 +202,7 @@ CanPlayerSpectate(playerid, targetid)
 
 hook OnPlayerConnect(playerid)
 {
-	gPlayerSpecTarget[playerid] = INVALID_PLAYER_ID;
+	gPlayerData[playerid][ply_SpectateTarget] = INVALID_PLAYER_ID;
 
 	spec_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
 	PlayerTextDrawAlignment			(playerid, spec_Name, 2);

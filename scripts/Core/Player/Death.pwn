@@ -12,11 +12,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 	f:bPlayerGameSettings[playerid]<AdminDuty>;
 	f:bPlayerGameSettings[playerid]<Alive>;
 
-	GetPlayerPos(playerid, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2]);
-	GetPlayerFacingAngle(playerid, gPlayerDeathPos[playerid][3]);
+	GetPlayerPos(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
+	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_DeathRotZ]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		gPlayerDeathPos[playerid][2] += 0.1;
+		gPlayerData[playerid][ply_DeathPosZ] += 0.1;
 
 	HideWatch(playerid);
 	DropItems(playerid);
@@ -26,7 +26,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(IsPlayerConnected(killerid))
 	{
-		gLastKilledBy[playerid] = gPlayerName[killerid];
+		gPlayerData[playerid][ply_LastKilledBy] = gPlayerName[killerid];
 
 		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
 
@@ -69,7 +69,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	else
 	{
-		gLastKilledBy[playerid][0] = EOS;
+		gPlayerData[playerid][ply_LastKilledBy][0] = EOS;
 
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
 
@@ -97,7 +97,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 
-	CreateGravestone(playerid, deathreason, gPlayerDeathPos[playerid][0], gPlayerDeathPos[playerid][1], gPlayerDeathPos[playerid][2] - FLOOR_OFFSET, gPlayerDeathPos[playerid][3]);
+	CreateGravestone(playerid, deathreason, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET, gPlayerData[playerid][ply_DeathRotZ]);
 
 	return 1;
 }
@@ -113,10 +113,10 @@ DropItems(playerid)
 	if(IsValidItem(GetPlayerItem(playerid)))
 	{
 		itemid = CreateItemInWorld(GetPlayerItem(playerid),
-			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(345.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(345.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
@@ -125,10 +125,10 @@ DropItems(playerid)
 	else if(GetPlayerWeapon(playerid) > 0 && GetPlayerTotalAmmo(playerid) > 0)
 	{
 		itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
-			gPlayerDeathPos[playerid][0] + floatsin(345.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(345.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(345.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(345.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
@@ -138,10 +138,10 @@ DropItems(playerid)
 	if(IsValidItem(GetPlayerHolsterItem(playerid)))
 	{
 		CreateItemInWorld(GetPlayerHolsterItem(playerid),
-			gPlayerDeathPos[playerid][0] + floatsin(15.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(15.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(15.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(15.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
@@ -157,10 +157,10 @@ DropItems(playerid)
 
 		RemoveItemFromInventory(playerid, 0);
 		CreateItemInWorld(itemid,
-			gPlayerDeathPos[playerid][0] + floatsin(45.0 + (90.0 * float(i)), degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(45.0 + (90.0 * float(i)), degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(45.0 + (90.0 * float(i)), degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(45.0 + (90.0 * float(i)), degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 	}
@@ -170,23 +170,23 @@ DropItems(playerid)
 		RemovePlayerBackpack(playerid);
 
 		CreateItemInWorld(backpackitem,
-			gPlayerDeathPos[playerid][0] + floatsin(180.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(180.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(180.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(180.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
-		SetItemRot(backpackitem, 0.0, 0.0, gPlayerDeathPos[playerid][3], true);
+		SetItemRot(backpackitem, 0.0, 0.0, gPlayerData[playerid][ply_DeathRotZ], true);
 	}
 
 	if(clothes != skin_MainM && clothes != skin_MainF)
 	{
 		itemid = CreateItem(item_Clothes,
-			gPlayerDeathPos[playerid][0] + floatsin(90.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(90.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(90.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(90.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
@@ -196,10 +196,10 @@ DropItems(playerid)
 	if(IsValidItem(GetPlayerHat(playerid)))
 	{
 		CreateItem(GetItemTypeFromHat(GetPlayerHat(playerid)),
-			gPlayerDeathPos[playerid][0] + floatsin(270.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(270.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(270.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(270.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 
@@ -209,10 +209,10 @@ DropItems(playerid)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 	{
 		CreateItem(item_HandCuffs,
-			gPlayerDeathPos[playerid][0] + floatsin(135.0, degrees),
-			gPlayerDeathPos[playerid][1] + floatcos(135.0, degrees),
-			gPlayerDeathPos[playerid][2] - FLOOR_OFFSET,
-			.rz = gPlayerDeathPos[playerid][3],
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(135.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(135.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 	}

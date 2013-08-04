@@ -194,6 +194,9 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_SPECIAL					"{0025AA}"
 
 
+#define GENDER_MALE					(0)
+#define GENDER_FEMALE				(1)
+
 enum
 {
 	ATTACHSLOT_ITEM,		// 0
@@ -690,6 +693,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Player/WelcomeMessage.pwn"
 #include "../scripts/Core/Player/AntiCombatLog.pwn"
 #include "../scripts/Core/Player/Chat.pwn"
+#include "../scripts/Core/Player/Command.pwn"
 #include "../scripts/Core/Player/AfkCheck.pwn"
 #include "../scripts/Core/Player/DisallowActions.pwn"
 #include "../scripts/Core/Player/Report.pwn"
@@ -720,6 +724,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Char/Overheat.pwn"
 #include "../scripts/Core/Char/Towtruck.pwn"
 #include "../scripts/Core/Char/Holster.pwn"
+#include "../scripts/Core/Char/Infection.pwn"
 
 //======================World
 
@@ -1227,25 +1232,25 @@ public OnGameModeInit()
 	DefineLootIndex(loot_Survivor);
 
 
-	skin_MainM	= DefineSkinItem(60,	"Civilian",			1, 0.0);
-	skin_MainF	= DefineSkinItem(192,	"Civilian",			0, 0.0);
+	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);
+	skin_MainF	= DefineClothesType(192,	"Civilian",			1, 0.0);
 
-	skin_Civ1M	= DefineSkinItem(170,	"Civilian",			1, 1.0);
-	skin_Civ2M	= DefineSkinItem(188,	"Civilian",			1, 1.0);
-	skin_Civ3M	= DefineSkinItem(44,	"Civilian",			1, 1.0);
-	skin_Civ4M	= DefineSkinItem(206,	"Civilian",			1, 1.0);
-	skin_MechM	= DefineSkinItem(50,	"Mechanic",			1, 0.6);
-	skin_BikeM	= DefineSkinItem(254,	"Biker",			1, 0.3);
-	skin_ArmyM	= DefineSkinItem(287,	"Military",			1, 0.2);
-	skin_ClawM	= DefineSkinItem(101,	"Southclaw",		1, 0.1);
-	skin_FreeM	= DefineSkinItem(156,	"Morgan Freeman",	1, 0.01);
+	skin_Civ1M	= DefineClothesType(170,	"Civilian",			0, 1.0);
+	skin_Civ2M	= DefineClothesType(188,	"Civilian",			0, 1.0);
+	skin_Civ3M	= DefineClothesType(44,		"Civilian",			0, 1.0);
+	skin_Civ4M	= DefineClothesType(206,	"Civilian",			0, 1.0);
+	skin_MechM	= DefineClothesType(50,		"Mechanic",			0, 0.6);
+	skin_BikeM	= DefineClothesType(254,	"Biker",			0, 0.3);
+	skin_ArmyM	= DefineClothesType(287,	"Military",			0, 0.2);
+	skin_ClawM	= DefineClothesType(101,	"Southclaw",		0, 0.1);
+	skin_FreeM	= DefineClothesType(156,	"Morgan Freeman",	0, 0.01);
 
-	skin_Civ1F	= DefineSkinItem(65,	"Civilian",			0, 0.8);
-	skin_Civ2F	= DefineSkinItem(93,	"Civilian",			0, 0.8);
-	skin_Civ3F	= DefineSkinItem(233,	"Civilian",			0, 0.8);
-	skin_Civ4F	= DefineSkinItem(193,	"Civilian",			0, 0.8);
-	skin_ArmyF	= DefineSkinItem(191,	"Military",			0, 0.2);
-	skin_IndiF	= DefineSkinItem(131,	"Indian",			0, 0.1);
+	skin_Civ1F	= DefineClothesType(65,		"Civilian",			1, 0.8);
+	skin_Civ2F	= DefineClothesType(93,		"Civilian",			1, 0.8);
+	skin_Civ3F	= DefineClothesType(233,	"Civilian",			1, 0.8);
+	skin_Civ4F	= DefineClothesType(193,	"Civilian",			1, 0.8);
+	skin_ArmyF	= DefineClothesType(191,	"Military",			1, 0.2);
+	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.1);
 
 	DefineSafeboxType("Medium Box",		item_MediumBox,		6, 6, 3, 2);
 	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);

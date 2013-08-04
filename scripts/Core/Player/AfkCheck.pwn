@@ -15,7 +15,7 @@ ptask AfkCheckUpdate[3000](playerid)
 		{
 			if(!(bPlayerGameSettings[playerid] & IsAfk))
 			{
-				if(tickcount() - tick_ExitVehicle[playerid] > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
+				if(tickcount() - GetPlayerVehicleExitTick(playerid) > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
 				{
 					t:bPlayerGameSettings[playerid]<IsAfk>;
 				}

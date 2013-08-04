@@ -24,56 +24,13 @@ static
 			skin_CurrentlyUsing[MAX_PLAYERS];
 
 
-DefineSkinItem(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
+DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
 {
 	skin_Data[skin_Total][skin_model] = modelid;
 	skin_Data[skin_Total][skin_name] = name;
 	skin_Data[skin_Total][skin_gender] = gender;
 	skin_Data[skin_Total][skin_lootSpawnChance] = spawnchance;
 	return skin_Total++;
-}
-
-stock IsValidClothes(skinid)
-{
-	if(!(0 <= skinid < skin_Total))
-		return 0;
-
-	return 1;
-}
-
-stock GetPlayerClothes(playerid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
-		return 0;
-
-	return skin_CurrentSkin[playerid];
-}
-stock SetPlayerClothes(playerid, skinid)
-{
-	if(!(0 <= skinid < skin_Total))
-		return 0;
-
-	SetPlayerSkin(playerid, skin_Data[skinid][skin_model]);
-	skin_CurrentSkin[playerid] = skinid;
-
-	return 1;
-}
-stock GetClothesModel(skinid)
-{
-	if(!(0 <= skinid < skin_Total))
-		return -1;
-
-	return skin_Data[skinid][skin_model];
-}
-stock GetClothesName(skinid, name[])
-{
-	if(!(0 <= skinid < skin_Total))
-		return 0;
-
-	name[0] = EOS;
-	strcat(name, skin_Data[skinid][skin_name], MAX_SKIN_NAME);
-
-	return 1;
 }
 
 public OnItemCreate(itemid)
@@ -147,7 +104,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			new skinid = GetItemExtraData(itemid);
 
-			if((skin_Data[skinid][skin_gender] == 1 && bPlayerGameSettings[playerid] & Gender) || (skin_Data[skinid][skin_gender] == 0 && !(bPlayerGameSettings[playerid] & Gender)))
+			if(skin_Data[skinid][skin_gender] == gPlayerData[playerid][ply_Gender])
 				StartUsingClothes(playerid, itemid);
 
 			else
@@ -203,3 +160,55 @@ public OnHoldActionFinish(playerid)
 #endif
 #define OnHoldActionFinish clo_OnHoldActionFinish
 forward clo_OnHoldActionFinish(playerid);
+
+
+stock IsValidClothes(skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return 0;
+
+	return 1;
+}
+
+stock GetPlayerClothes(playerid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS))
+		return 0;
+
+	return skin_CurrentSkin[playerid];
+}
+stock SetPlayerClothes(playerid, skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return 0;
+
+	SetPlayerSkin(playerid, skin_Data[skinid][skin_model]);
+	skin_CurrentSkin[playerid] = skinid;
+
+	return 1;
+}
+stock GetClothesModel(skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return -1;
+
+	return skin_Data[skinid][skin_model];
+}
+stock GetClothesName(skinid, name[])
+{
+	if(!(0 <= skinid < skin_Total))
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, skin_Data[skinid][skin_name], MAX_SKIN_NAME);
+
+	return 1;
+}
+
+stock GetClothesGender(skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return -1;
+
+	return skin_Data[skinid][skin_gender];
+}

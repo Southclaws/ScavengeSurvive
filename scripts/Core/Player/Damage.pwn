@@ -42,14 +42,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		case 31:
 		{
-			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
+			new model = GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]);
 
 			if(model == 447 || model == 476)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 38:
 		{
-			if(GetVehicleModel(gPlayerVehicleID[issuerid]) == 425)
+			if(GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]) == 425)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 49:
@@ -58,7 +58,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		}
 		case 51:
 		{
-			new model = GetVehicleModel(gPlayerVehicleID[issuerid]);
+			new model = GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]);
 
 			if(model == 432 || model == 520 || model == 425)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
@@ -72,7 +72,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	if(bPlayerGameSettings[playerid] & AdminDuty)
 		return 0;
 
-	gLastHitBy[damagedid] = gPlayerName[playerid];
+	gPlayerData[damagedid][ply_LastHitBy] = gPlayerName[playerid];
 	DamagePlayer(playerid, damagedid, weaponid);
 	return 1;
 }
@@ -84,16 +84,16 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 	if(weaponid == WEAPON_DEAGLE)
 	{
-		if(tickcount() - tick_WeaponHit[playerid] < 400)
+		if(tickcount() - gPlayerData[playerid][ply_DeltDamageTick] < 400)
 			return 0;
 	}
 	else
 	{
-		if(tickcount() - tick_WeaponHit[playerid] < 100)
+		if(tickcount() - gPlayerData[playerid][ply_DeltDamageTick] < 100)
 			return 0;
 	}
 
-	tick_WeaponHit[playerid] = tickcount();
+	gPlayerData[playerid][ply_DeltDamageTick] = tickcount();
 
 	new
 		head,
@@ -118,7 +118,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(head)
 			hploss *= 1.5;
 
-		if(gPlayerAP[targetid] > 0.0)
+		if(gPlayerData[targetid][ply_ArmourPoints] > 0.0)
 		{
 			switch(weaponid)
 			{
@@ -132,11 +132,11 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 					hploss *= 0.6;
 			}
 
-			gPlayerAP[targetid] -= (hploss / 2.0);
+			gPlayerData[targetid][ply_ArmourPoints] -= (hploss / 2.0);
 
-			if(gPlayerAP[targetid] < 0.0)
+			if(gPlayerData[targetid][ply_ArmourPoints] < 0.0)
 			{
-				gPlayerAP[targetid] = 0.0;
+				gPlayerData[targetid][ply_ArmourPoints] = 0.0;
 				ToggleArmour(targetid, false);
 			}
 		}
@@ -165,12 +165,12 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 				{
 					t:bPlayerGameSettings[targetid]<Bleeding>;
 
-					if((gPlayerHP[playerid] - hploss) < 40.0)
+					if((gPlayerData[playerid][ply_HitPoints] - hploss) < 40.0)
 					{
 						if(random(100) < 70)
 						{
 							if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-								KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerHP[targetid] - hploss))));
+								KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerData[targetid][ply_HitPoints] - hploss))));
 						}
 					}
 				}
@@ -184,7 +184,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(weaponid == anim_Blunt)
 		{
 			if(random(100) < 40)
-				KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerHP[targetid] - hploss))));
+				KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerData[targetid][ply_HitPoints] - hploss))));
 
 			if(random(100) < 30)
 			{
@@ -250,7 +250,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 GivePlayerHP(playerid, Float:hp)
 {
-	SetPlayerHP(playerid, (gPlayerHP[playerid] + hp));
+	SetPlayerHP(playerid, (gPlayerData[playerid][ply_HitPoints] + hp));
 }
 
 SetPlayerHP(playerid, Float:hp)
@@ -258,7 +258,7 @@ SetPlayerHP(playerid, Float:hp)
 	if(hp > 100.0)
 		hp = 100.0;
 
-	gPlayerHP[playerid] = hp;
+	gPlayerData[playerid][ply_HitPoints] = hp;
 }
 
 ShowHitMarker(playerid, weapon)
