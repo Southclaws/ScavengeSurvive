@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-enum (<<= 1) // 23
+enum E_PLAYER_BIT_DATA:(<<= 1) // 23
 {
 		HasAccount = 1,
 		IsVip,
@@ -34,12 +34,17 @@ enum (<<= 1) // 23
 
 enum E_PLAYER_DATA
 {
-		// Account Data
+		// Database Account Data
 		ply_Password[MAX_PASSWORD_LEN],
 		ply_IP,
-		ply_Admin,
-		ply_Warnings,
 		ply_Karma,
+		ply_RegisterTimestamp,
+		ply_LastLogin,
+		ply_TotalSpawns,
+		ply_Warnings,
+
+		// Other Account Data
+		ply_Admin,
 
 		// Character Data
 Float:	ply_HitPoints,
@@ -57,6 +62,7 @@ Float:	ply_DeathPosY,
 Float:	ply_DeathPosZ,
 Float:	ply_DeathRotZ,
 Float:	ply_RadioFrequency,
+		ply_CreationTimestamp,
 
 		// Internal Data
 		ply_ChatMode,
@@ -85,9 +91,10 @@ enum
 
 
 new
-		gPlayerData				[MAX_PLAYERS][E_PLAYER_DATA],
-		bPlayerGameSettings		[MAX_PLAYERS],
-		gPlayerName				[MAX_PLAYERS][MAX_PLAYER_NAME];
+E_PLAYER_BIT_DATA:
+		gPlayerBitData	[MAX_PLAYERS],
+		gPlayerData		[MAX_PLAYERS][E_PLAYER_DATA],
+		gPlayerName		[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
 public OnPlayerConnect(playerid)
@@ -98,6 +105,8 @@ public OnPlayerConnect(playerid)
 
 	if(IsPlayerNPC(playerid))
 		return 1;
+
+	ResetVariables(playerid);
 
 	gPlayerData[playerid][ply_JoinTick] = tickcount();
 
@@ -114,8 +123,6 @@ public OnPlayerConnect(playerid)
 	if(BanCheck(playerid))
 		return 0;
 
-	ResetVariables(playerid);
-
 	loadresult = LoadAccount(playerid);
 
 	if(loadresult == 0) // Account does not exist
@@ -124,7 +131,7 @@ public OnPlayerConnect(playerid)
 		format(str, 150, ""#C_WHITE"Hello %P"#C_WHITE", You must be new here!\nPlease create an account by entering a "#C_BLUE"password"#C_WHITE" below:", playerid);
 		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
 
-		t:bPlayerGameSettings[playerid]<IsNewPlayer>;
+		t:gPlayerBitData[playerid]<IsNewPlayer>;
 	}
 
 	if(loadresult == 1) // Account does exist, prompt login
@@ -139,15 +146,7 @@ public OnPlayerConnect(playerid)
 
 	if(loadresult == 3) // Account does exist, but not in whitelist
 	{
-		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
-			""#C_YELLOW"You are not on the whitelist for this server.\n\
-			This is in force to provide the best gameplay experience for all players.\n\n\
-			"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
-			Applications are always accepted as soon as possible\n\
-			There are no requirements, just follow the rules.\n\
-			Failure to do so will result in permanent removal from the whitelist.", "Close", "");
-
-		defer KickPlayerDelay(playerid);
+		WhitelistKick(playerid);
 	}
 
 	CheckForExtraAccounts(playerid);
@@ -163,7 +162,7 @@ public OnPlayerConnect(playerid)
 	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
 
-	t:bPlayerGameSettings[playerid]<ShowHUD>;
+	t:gPlayerBitData[playerid]<ShowHUD>;
 
 	if(gPingLimit == 600)
 	{
@@ -203,14 +202,44 @@ public OnPlayerDisconnect(playerid, reason)
 
 ResetVariables(playerid)
 {
-	bPlayerGameSettings[playerid]				= 0;
+	gPlayerBitData[playerid]						= E_PLAYER_BIT_DATA:0;
 
-	gPlayerData[playerid][ply_Admin]			= 0,
-	gPlayerData[playerid][ply_Clothes]				= 0,
-	gPlayerData[playerid][ply_HitPoints]		= 100.0;
-	gPlayerData[playerid][ply_ArmourPoints]		= 0.0;
-	gPlayerData[playerid][ply_FoodPoints]		= 80.0;
-	gPlayerData[playerid][ply_CurrentVehicle]	= INVALID_VEHICLE_ID,
+	gPlayerData[playerid][ply_Password][0]			= EOS;
+	gPlayerData[playerid][ply_IP]					= 0;
+	gPlayerData[playerid][ply_Admin]				= 0;
+	gPlayerData[playerid][ply_Warnings]				= 0;
+	gPlayerData[playerid][ply_Karma]				= 0;
+
+	gPlayerData[playerid][ply_HitPoints]			= 100.0;
+	gPlayerData[playerid][ply_ArmourPoints]			= 0.0;
+	gPlayerData[playerid][ply_FoodPoints]			= 80.0;
+	gPlayerData[playerid][ply_Clothes]				= 0;
+	gPlayerData[playerid][ply_Gender]				= 0;
+	gPlayerData[playerid][ply_Velocity]				= 0.0;
+	gPlayerData[playerid][ply_SpawnPosX]			= 0.0;
+	gPlayerData[playerid][ply_SpawnPosY]			= 0.0;
+	gPlayerData[playerid][ply_SpawnPosZ]			= 0.0;
+	gPlayerData[playerid][ply_SpawnRotZ]			= 0.0;
+	gPlayerData[playerid][ply_DeathPosX]			= 0.0;
+	gPlayerData[playerid][ply_DeathPosY]			= 0.0;
+	gPlayerData[playerid][ply_DeathPosZ]			= 0.0;
+	gPlayerData[playerid][ply_DeathRotZ]			= 0.0;
+	gPlayerData[playerid][ply_RadioFrequency]		= 0.0;
+
+	gPlayerData[playerid][ply_ChatMode]				= 0;
+	gPlayerData[playerid][ply_CurrentVehicle]		= 0;
+	gPlayerData[playerid][ply_LastHitBy][0]			= EOS;
+	gPlayerData[playerid][ply_LastKilledBy][0]		= EOS;
+	gPlayerData[playerid][ply_PingLimitStrikes]		= 0;
+	gPlayerData[playerid][ply_SpectateTarget]		= INVALID_PLAYER_ID;
+	gPlayerData[playerid][ply_ScreenBoxFadeLevel]	= 0;
+	gPlayerData[playerid][ply_stance]				= 0;
+	gPlayerData[playerid][ply_JoinTick]				= 0;
+	gPlayerData[playerid][ply_SpawnTick]			= 0;
+	gPlayerData[playerid][ply_TookDamageTick]		= 0;
+	gPlayerData[playerid][ply_DeltDamageTick]		= 0;
+	gPlayerData[playerid][ply_ExitVehicleTick]		= 0;
+	gPlayerData[playerid][ply_LastChatMessageTick]	= 0;
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
@@ -298,7 +327,7 @@ ptask PlayerUpdate[100](playerid)
 		}
 		else
 		{
-			if(bPlayerGameSettings[playerid] & Spawned)
+			if(gPlayerBitData[playerid] & Spawned)
 				PlayerTextDrawHide(playerid, ClassBackGround);
 		}
 	}
@@ -360,7 +389,7 @@ ptask PlayerUpdate[100](playerid)
 		GivePlayerHP(playerid, 0.01);
 	}
 
-	if(bPlayerGameSettings[playerid] & Bleeding)
+	if(gPlayerBitData[playerid] & Bleeding)
 	{
 		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
 		{
@@ -394,7 +423,7 @@ ptask PlayerUpdate[100](playerid)
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 	}
 
-	if(bPlayerGameSettings[playerid] & Infected)
+	if(gPlayerBitData[playerid] & Infected)
 	{
 		PlayerInfectionUpdate(playerid);
 	}
@@ -413,7 +442,7 @@ public OnPlayerRequestClass(playerid, classid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	t:bPlayerGameSettings[playerid]<FirstSpawn>;
+	t:gPlayerBitData[playerid]<FirstSpawn>;
 
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
 
@@ -424,7 +453,7 @@ public OnPlayerRequestSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	t:bPlayerGameSettings[playerid]<FirstSpawn>;
+	t:gPlayerBitData[playerid]<FirstSpawn>;
 
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
 
@@ -435,7 +464,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == Text:65535)
 	{
-		if(bPlayerGameSettings[playerid] & Dying)
+		if(gPlayerBitData[playerid] & Dying)
 		{
 			SelectTextDraw(playerid, 0xFFFFFF88);
 		}
@@ -446,7 +475,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 	if(clickedid == DeathButton)
 	{
-		f:bPlayerGameSettings[playerid]<Dying>;
+		f:gPlayerBitData[playerid]<Dying>;
 		TogglePlayerSpectating(playerid, false);
 		CancelSelectTextDraw(playerid);
 		TextDrawHideForPlayer(playerid, DeathText);
@@ -465,14 +494,14 @@ public OnPlayerSpawn(playerid)
 	SetPlayerTeam(playerid, 0);
 	ResetPlayerMoney(playerid);
 
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 	{
 		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
 		gPlayerData[playerid][ply_HitPoints] = 100.0;
 		return 1;
 	}
 
-	if(bPlayerGameSettings[playerid] & Dying)
+	if(gPlayerBitData[playerid] & Dying)
 	{
 		TogglePlayerSpectating(playerid, true);
 
@@ -496,9 +525,9 @@ public OnPlayerSpawn(playerid)
 		PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
 		PlayerTextDrawShow(playerid, ClassBackGround);
 
-		if(bPlayerGameSettings[playerid] & Alive)
+		if(gPlayerBitData[playerid] & Alive)
 		{
-			if(bPlayerGameSettings[playerid] & LoggedIn)
+			if(gPlayerBitData[playerid] & LoggedIn)
 			{
 				PlayerSpawnExistingCharacter(playerid);
 				gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
@@ -551,7 +580,7 @@ timer SetDeathCamera[50](playerid)
 
 public OnPlayerUpdate(playerid)
 {
-	if(bPlayerGameSettings[playerid] & Frozen)
+	if(gPlayerBitData[playerid] & Frozen)
 		return 0;
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -568,9 +597,9 @@ public OnPlayerUpdate(playerid)
 		PlayerTextDrawSetString(playerid, VehicleSpeedText, str);
 	}
 
-	if(bPlayerGameSettings[playerid] & Alive)
+	if(gPlayerBitData[playerid] & Alive)
 	{
-		if(bPlayerGameSettings[playerid] & AdminDuty)
+		if(gPlayerBitData[playerid] & AdminDuty)
 			gPlayerData[playerid][ply_HitPoints] = 250.0;
 
 		SetPlayerHealth(playerid, gPlayerData[playerid][ply_HitPoints]);
@@ -640,7 +669,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 }
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	if(bPlayerGameSettings[playerid] & KnockedOut)
+	if(gPlayerBitData[playerid] & KnockedOut)
 	{
 		return 0;
 	}
@@ -675,7 +704,7 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(bPlayerGameSettings[playerid] & KnockedOut)
+	if(gPlayerBitData[playerid] & KnockedOut)
 		return 0;
 
 	if(!IsPlayerInAnyVehicle(playerid))
@@ -714,7 +743,15 @@ IsPlayerDead(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return bPlayerGameSettings[playerid] & Dying;
+	return _:(gPlayerBitData[playerid] & Dying);
+}
+
+IsPlayerAlive(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Alive);
 }
 
 IsPlayerKnockedOut(playerid)
@@ -722,7 +759,7 @@ IsPlayerKnockedOut(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return bPlayerGameSettings[playerid] & KnockedOut;
+	return _:(gPlayerBitData[playerid] & KnockedOut);
 }
 
 IsPlayerOnAdminDuty(playerid)
@@ -730,7 +767,15 @@ IsPlayerOnAdminDuty(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return bPlayerGameSettings[playerid] & AdminDuty;
+	return _:(gPlayerBitData[playerid] & AdminDuty);
+}
+
+IsPlayerBleeding(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Bleeding);
 }
 
 GetPlayerServerJoinTick(playerid)
@@ -757,12 +802,12 @@ GetPlayerVehicleExitTick(playerid)
 	return gPlayerData[playerid][ply_ExitVehicleTick];
 }
 
-GetPlayerDataBitmask(playerid)
+E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return 0;
+		return E_PLAYER_BIT_DATA:0;
 
-	return bPlayerGameSettings[playerid];
+	return gPlayerBitData[playerid];
 }
 
 GetPlayerLastVehicle(playerid)

@@ -116,7 +116,7 @@ CMD:changepass(playerid,params[])
 		newpass[32],
 		buffer[MAX_PASSWORD_LEN];
 
-	if(!(bPlayerGameSettings[playerid] & LoggedIn))
+	if(!(gPlayerBitData[playerid] & LoggedIn))
 		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
 
 	if(sscanf(params, "s[32]s[32]", oldpass, newpass))
@@ -158,7 +158,15 @@ CMD:country(playerid, params[])
 	new id;
 
 	if(sscanf(params, "d", id))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /country [id]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(id))
+	{
 		return 4;
+	}
 
 	new country[32];
 
@@ -197,15 +205,15 @@ CMD:allcountry(playerid, params[])
 
 CMD:tooltips(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & ToolTips)
+	if(gPlayerBitData[playerid] & ToolTips)
 	{
 		Msg(playerid, YELLOW, " >  Tooltips disabled");
-		f:bPlayerGameSettings[playerid]<ToolTips>;
+		f:gPlayerBitData[playerid]<ToolTips>;
 	}
 	else
 	{
 		Msg(playerid, YELLOW, " >  Tooltips enabled");
-		t:bPlayerGameSettings[playerid]<ToolTips>;
+		t:gPlayerBitData[playerid]<ToolTips>;
 	}
 	return 1;
 }

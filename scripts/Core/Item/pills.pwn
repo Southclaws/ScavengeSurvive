@@ -67,7 +67,7 @@ timer TakePills[500](playerid, itemid)
 	{
 		case PILL_TYPE_ANTIBIOTICS:
 		{
-			f:bPlayerGameSettings[playerid]<Infected>;
+			f:gPlayerBitData[playerid]<Infected>;
 		}
 		case PILL_TYPE_PAINKILL:
 		{

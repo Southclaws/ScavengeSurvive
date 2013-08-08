@@ -10,7 +10,7 @@ hook OnPlayerText(playerid, text[])
 {
 	new tmpMuteTime = tickcount() - chat_MuteTick[playerid];
 
-	if(bPlayerGameSettings[playerid] & Muted)
+	if(gPlayerBitData[playerid] & Muted)
 	{
 		Msg(playerid, RED, " >  You are muted");
 		return 0;
@@ -136,7 +136,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 	{
 		foreach(new i : Player)
 		{
-			if(bPlayerGameSettings[i] & GlobalQuiet)
+			if(gPlayerBitData[i] & GlobalQuiet)
 				continue;
 
 			SendClientMessage(i, WHITE, text);
@@ -164,7 +164,7 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 
 CMD:g(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & Muted)
+	if(gPlayerBitData[playerid] & Muted)
 	{
 		Msg(playerid, RED, " >  You are muted");
 		return 1;
@@ -212,14 +212,14 @@ CMD:r(playerid, params[])
 }
 CMD:quiet(playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & GlobalQuiet)
+	if(gPlayerBitData[playerid] & GlobalQuiet)
 	{
-		f:bPlayerGameSettings[playerid]<GlobalQuiet>;
+		f:gPlayerBitData[playerid]<GlobalQuiet>;
 		Msg(playerid, WHITE, " >  You turn on your radio's global receiver, you will now see all global chat.");
 	}
 	else
 	{
-		t:bPlayerGameSettings[playerid]<GlobalQuiet>;
+		t:gPlayerBitData[playerid]<GlobalQuiet>;
 		Msg(playerid, WHITE, " >  You turn off your radio's global receiver, you will not see any global chat.");
 	}
 

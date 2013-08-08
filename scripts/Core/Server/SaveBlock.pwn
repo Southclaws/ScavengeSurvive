@@ -14,7 +14,7 @@ new
 		saveblock_Total;
 
 
-CreateSaveBlockArea(areaid, Float:resetX, Float:resetY, Float:resetZ)
+stock CreateSaveBlockArea(areaid, Float:resetX, Float:resetY, Float:resetZ)
 {
 	saveblock_Data[saveblock_Total][saveblock_areaId] = areaid;
 	saveblock_Data[saveblock_Total][saveblock_resetX] = resetX;

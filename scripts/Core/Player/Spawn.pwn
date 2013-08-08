@@ -25,7 +25,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 	LoadPlayerInventory(playerid);
 	LoadPlayerChar(playerid);
-	t:bPlayerGameSettings[playerid]<LoadedData>;
+	t:gPlayerBitData[playerid]<LoadedData>;
 
 	gPlayerData[playerid][ply_Gender] = GetClothesGender(GetPlayerClothes(playerid));
 
@@ -40,7 +40,7 @@ PlayerSpawnExistingCharacter(playerid)
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
 	SetCameraBehindPlayer(playerid);
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
-	t:bPlayerGameSettings[playerid]<Spawned>;
+	t:gPlayerBitData[playerid]<Spawned>;
 
 	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
 	ShowWatch(playerid);
@@ -70,30 +70,40 @@ PlayerCreateNewCharacter(playerid)
 	PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
 	PlayerTextDrawShow(playerid, ClassBackGround);
 
-	if(bPlayerGameSettings[playerid] & LoggedIn)
+	if(gPlayerBitData[playerid] & LoggedIn)
 	{
 		PlayerTextDrawShow(playerid, ClassButtonMale);
 		PlayerTextDrawShow(playerid, ClassButtonFemale);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
 
-	t:bPlayerGameSettings[playerid]<LoadedData>;
+	t:gPlayerBitData[playerid]<LoadedData>;
 }
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
 	if(playertextid == ClassButtonMale)
 	{
-		PlayerSpawnNewCharacter(playerid, 1);
+		PlayerSpawnNewCharacter(playerid, GENDER_MALE);
 	}
 	if(playertextid == ClassButtonFemale)
 	{
-		PlayerSpawnNewCharacter(playerid, 0);
+		PlayerSpawnNewCharacter(playerid, GENDER_FEMALE);
 	}
 }
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
+	gPlayerData[playerid][ply_TotalSpawns]++;
+
+	stmt_bind_value(gStmt_AccountSetSpawnTime, 0, DB::TYPE_INTEGER, gettime());
+	stmt_bind_value(gStmt_AccountSetSpawnTime, 1, DB::TYPE_PLAYER_NAME, playerid);
+	stmt_execute(gStmt_AccountSetSpawnTime);
+
+	stmt_bind_value(gStmt_AccountSetTotalSpawns, 0, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
+	stmt_bind_value(gStmt_AccountSetTotalSpawns, 1, DB::TYPE_PLAYER_NAME, playerid);
+	stmt_execute(gStmt_AccountSetTotalSpawns);
+
 	new
 		backpackitem,
 		containerid,
@@ -147,11 +157,11 @@ PlayerSpawnNewCharacter(playerid, gender)
 	PlayerTextDrawHide(playerid, ClassButtonMale);
 	PlayerTextDrawHide(playerid, ClassButtonFemale);
 
-	t:bPlayerGameSettings[playerid]<Spawned>;
-	t:bPlayerGameSettings[playerid]<Alive>;
-	f:bPlayerGameSettings[playerid]<Bleeding>;
-	f:bPlayerGameSettings[playerid]<Infected>;
-	f:bPlayerGameSettings[playerid]<KnockedOut>;
+	t:gPlayerBitData[playerid]<Spawned>;
+	t:gPlayerBitData[playerid]<Alive>;
+	f:gPlayerBitData[playerid]<Bleeding>;
+	f:gPlayerBitData[playerid]<Infected>;
+	f:gPlayerBitData[playerid]<KnockedOut>;
 
 	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 
@@ -163,12 +173,12 @@ PlayerSpawnNewCharacter(playerid, gender)
 	tmpitem = CreateItem(item_Wrench);
 	AddItemToContainer(containerid, tmpitem);
 
-	if(bPlayerGameSettings[playerid] & IsVip)
+	if(gPlayerBitData[playerid] & IsVip)
 	{
 		tmpitem = CreateItem(item_ZorroMask);
 		AddItemToInventory(playerid, tmpitem);
 	}
 
-	if(bPlayerGameSettings[playerid] & IsNewPlayer)
+	if(gPlayerBitData[playerid] & IsNewPlayer)
 		Tutorial_Start(playerid);
 }

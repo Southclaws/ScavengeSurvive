@@ -84,7 +84,10 @@ ACMD:admins[3](playerid, params[])
 MsgAdmins(level, colour, string[])
 {
 	if(level == 0)
-		print("ERROR: MsgAdmins paramter 'level' cannot be 0");
+	{
+		print("ERROR: MsgAdmins parameter 'level' cannot be 0");
+		return 0;
+	}
 
 	if(strlen(string) > 127)
 	{
@@ -123,6 +126,8 @@ MsgAdmins(level, colour, string[])
 			SendClientMessage(i, colour, string);
 		}
 	}
+
+	return 1;
 }
 
 KickPlayer(playerid, reason[])
@@ -271,4 +276,16 @@ GetAdminLevelByName(name[MAX_PLAYER_NAME])
 	stmt_fetch_row(gStmt_AdminGetLevel);
 
 	return level;
+}
+
+CheckAdminLevel(playerid)
+{
+	for(new i; i < gTotalAdmins; i++)
+	{
+		if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
+		{
+			gPlayerData[playerid][ply_Admin] = gAdminData[i][admin_Level];
+			break;
+		}
+	}
 }

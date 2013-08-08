@@ -1,16 +1,16 @@
 public OnPlayerDeath(playerid, killerid, reason)
 {
-	if(!(bPlayerGameSettings[playerid] & Alive) || bPlayerGameSettings[playerid] & AdminDuty)
+	if(!(gPlayerBitData[playerid] & Alive) || gPlayerBitData[playerid] & AdminDuty)
 	{
 		return 0;
 	}
 
 	new deathreason[256];
 
-	t:bPlayerGameSettings[playerid]<Dying>;
-	f:bPlayerGameSettings[playerid]<Spawned>;
-	f:bPlayerGameSettings[playerid]<AdminDuty>;
-	f:bPlayerGameSettings[playerid]<Alive>;
+	t:gPlayerBitData[playerid]<Dying>;
+	f:gPlayerBitData[playerid]<Spawned>;
+	f:gPlayerBitData[playerid]<AdminDuty>;
+	f:gPlayerBitData[playerid]<Alive>;
 
 	GetPlayerPos(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
 	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_DeathRotZ]);

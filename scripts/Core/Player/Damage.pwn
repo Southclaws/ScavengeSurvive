@@ -1,6 +1,6 @@
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
 	if(issuerid == INVALID_PLAYER_ID)
@@ -69,7 +69,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
 	gPlayerData[damagedid][ply_LastHitBy] = gPlayerName[playerid];
@@ -79,7 +79,7 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 
 DamagePlayer(playerid, targetid, weaponid, type = 0)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
 	if(weaponid == WEAPON_DEAGLE)
@@ -154,7 +154,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 				{
 					if(random(100) < 30)
 					{
-						t:bPlayerGameSettings[targetid]<Bleeding>;
+						t:gPlayerBitData[targetid]<Bleeding>;
 					}
 				}
 				case 0, 40..46:
@@ -163,7 +163,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 				}
 				default:
 				{
-					t:bPlayerGameSettings[targetid]<Bleeding>;
+					t:gPlayerBitData[targetid]<Bleeding>;
 
 					if((gPlayerData[playerid][ply_HitPoints] - hploss) < 40.0)
 					{
@@ -188,12 +188,12 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 			if(random(100) < 30)
 			{
-				t:bPlayerGameSettings[targetid]<Bleeding>;
+				t:gPlayerBitData[targetid]<Bleeding>;
 			}
 		}
 		if(weaponid == anim_Stab)
 		{
-			t:bPlayerGameSettings[targetid]<Bleeding>;
+			t:gPlayerBitData[targetid]<Bleeding>;
 		}
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
@@ -201,7 +201,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 			KnockOutPlayer(targetid, 60000);
 			CreateTimedDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0, 1000);
 			hploss = 0.0;
-			f:bPlayerGameSettings[targetid]<Bleeding>;
+			f:gPlayerBitData[targetid]<Bleeding>;
 		}
 	}
 
@@ -223,7 +223,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(45.0 < angleto < 135.0)
 			hploss *= 0.1;
 
-		f:bPlayerGameSettings[targetid]<Bleeding>;
+		f:gPlayerBitData[targetid]<Bleeding>;
 	}
 
 	if(GetItemType(GetPlayerHolsterItem(targetid)) == item_Shield)
@@ -239,7 +239,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(155.0 < angleto < 205.0)
 			hploss *= 0.1;
 
-		f:bPlayerGameSettings[targetid]<Bleeding>;
+		f:gPlayerBitData[targetid]<Bleeding>;
 	}
 
 	GivePlayerHP(targetid, -hploss);

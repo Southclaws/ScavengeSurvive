@@ -1,3 +1,23 @@
+stock GetPlayerIDFromName(name[], bool:ignorecase = false)
+{
+	new
+		playerid = INVALID_PLAYER_ID,
+		comparison[MAX_PLAYER_NAME];
+
+	foreach(new i : Player)
+	{
+		GetPlayerName(i, comparison, MAX_PLAYER_NAME);
+
+		if(!strcmp(name, comparison, ignorecase))
+		{
+			playerid = i;
+			break;
+		}
+	}
+
+	return playerid;
+}
+
 stock CancelPlayerMovement(playerid)
 {
 	new

@@ -21,7 +21,7 @@ LoadAccount(playerid)
 	{
 		stmt_fetch_row(gStmt_AccountExists);
 
-		if(!exists)
+		if(exists == 0)
 			return 0;
 	}
 
@@ -29,8 +29,13 @@ LoadAccount(playerid)
 	stmt_bind_result_field(gStmt_AccountLoad, 1, DB::TYPE_STRING, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
 	stmt_bind_result_field(gStmt_AccountLoad, 2, DB::TYPE_INTEGER, tmp_Ipv4);
 	stmt_bind_result_field(gStmt_AccountLoad, 3, DB::TYPE_INTEGER, tmp_Alive);
-	stmt_bind_result_field(gStmt_AccountLoad, 5, DB::TYPE_STRING, tmp_Spawn, 48);
-	stmt_bind_result_field(gStmt_AccountLoad, 6, DB::TYPE_INTEGER, tmp_IsVIP);
+	stmt_bind_result_field(gStmt_AccountLoad, 4, DB::TYPE_STRING, tmp_Spawn, 48);
+	stmt_bind_result_field(gStmt_AccountLoad, 5, DB::TYPE_INTEGER, tmp_IsVIP);
+	stmt_bind_result_field(gStmt_AccountLoad, 7, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, 8, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
+	stmt_bind_result_field(gStmt_AccountLoad, 9, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, 10, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
+	stmt_bind_result_field(gStmt_AccountLoad, 11, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
 
 	if(stmt_execute(gStmt_AccountLoad))
 	{
@@ -43,10 +48,10 @@ LoadAccount(playerid)
 		}
 
 		if(tmp_Alive)
-			t:bPlayerGameSettings[playerid]<Alive>;
+			t:gPlayerBitData[playerid]<Alive>;
 
 		else
-			f:bPlayerGameSettings[playerid]<Alive>;
+			f:gPlayerBitData[playerid]<Alive>;
 
 		sscanf(tmp_Spawn, "ffff",
 			gPlayerData[playerid][ply_SpawnPosX],
@@ -55,13 +60,13 @@ LoadAccount(playerid)
 			gPlayerData[playerid][ply_SpawnRotZ]);
 
 		if(tmp_IsVIP)
-			t:bPlayerGameSettings[playerid]<IsVip>;
+			t:gPlayerBitData[playerid]<IsVip>;
 
 		else
-			f:bPlayerGameSettings[playerid]<IsVip>;
+			f:gPlayerBitData[playerid]<IsVip>;
 
-		t:bPlayerGameSettings[playerid]<HasAccount>;
-		f:bPlayerGameSettings[playerid]<IsNewPlayer>;
+		t:gPlayerBitData[playerid]<HasAccount>;
+		f:gPlayerBitData[playerid]<IsNewPlayer>;
 
 		Tutorial_End(playerid);
 
@@ -80,8 +85,10 @@ CreateAccount(playerid, password[])
 {
 	stmt_bind_value(gStmt_AccountCreate, 0, DB::TYPE_STRING,	gPlayerName[playerid], MAX_PLAYER_NAME);
 	stmt_bind_value(gStmt_AccountCreate, 1, DB::TYPE_STRING,	password, MAX_PASSWORD_LEN);
-	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INT,		gPlayerData[playerid][ply_IP]);
-	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INT,		(bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
+	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INTEGER,	gPlayerData[playerid][ply_IP]);
+	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	(gPlayerBitData[playerid] & IsVip) ? 1 : 0);
+	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime());
+	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_INTEGER,	gettime());
 
 	stmt_execute(gStmt_AccountCreate);
 
@@ -89,35 +96,19 @@ CreateAccount(playerid, password[])
 	{
 		if(!IsNameInWhitelist(gPlayerName[playerid]))
 		{
-			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist",
-				""#C_YELLOW"You are not on the whitelist for this server.\n\
-				This is in force to provide the best gameplay experience for all players.\n\n\
-				"#C_WHITE"Please apply on "#C_BLUE"Empire-Bay.com"#C_WHITE".\n\
-				Applications are always accepted as soon as possible\n\
-				There are no requirements, just follow the rules.\n\
-				Failure to do so will result in permanent removal from the whitelist.", "Close", "");
-
-			defer KickPlayerDelay(playerid);
-
+			WhitelistKick(playerid);
 			return 0;
 		}
 	}
 
-	for(new i; i < gTotalAdmins; i++)
-	{
-		if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]) && !isnull(gPlayerName[playerid]))
-		{
-			gPlayerData[playerid][ply_Admin] = gAdminData[i][admin_Level];
-			break;
-		}
-	}
+	CheckAdminLevel(playerid);
 
 	if(gPlayerData[playerid][ply_Admin] > 0)
 		MsgF(playerid, BLUE, " >  Your admin level: %d", gPlayerData[playerid][ply_Admin]);
 
-	t:bPlayerGameSettings[playerid]<LoggedIn>;
-	t:bPlayerGameSettings[playerid]<HasAccount>;
-	t:bPlayerGameSettings[playerid]<ToolTips>;
+	t:gPlayerBitData[playerid]<LoggedIn>;
+	t:gPlayerBitData[playerid]<HasAccount>;
+	t:gPlayerBitData[playerid]<ToolTips>;
 
 	PlayerCreateNewCharacter(playerid);
 
@@ -230,14 +221,7 @@ Login(playerid)
 	stmt_bind_value(gStmt_AccountSetLastLog, 1, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_execute(gStmt_AccountSetLastLog);
 
-	for(new i; i < gTotalAdmins; i++)
-	{
-		if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
-		{
-			gPlayerData[playerid][ply_Admin] = gAdminData[i][admin_Level];
-			break;
-		}
-	}
+	CheckAdminLevel(playerid);
 
 	if(gPlayerData[playerid][ply_Admin] > 0)
 	{
@@ -254,8 +238,9 @@ Login(playerid)
 			MsgF(playerid, YELLOW, " >  %d issues, type "#C_BLUE"/issues "#C_YELLOW"to view.", issues);
 	}
 
-	t:bPlayerGameSettings[playerid]<LoggedIn>;
+	t:gPlayerBitData[playerid]<LoggedIn>;
 	LoginPasswordAttempts[playerid] = 0;
+
 	gPlayerData[playerid][ply_RadioFrequency] = 108.0;
 	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 
@@ -321,6 +306,9 @@ CheckForExtraAccounts(playerid)
 		}
 	}
 
+	if(adminlevel == 0)
+		adminlevel = 1;
+
 	MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
 
 	return 1;
@@ -328,13 +316,13 @@ CheckForExtraAccounts(playerid)
 
 Logout(playerid)
 {
-	if(!(bPlayerGameSettings[playerid] & LoggedIn))
+	if(!(gPlayerBitData[playerid] & LoggedIn))
 		return 0;
 
-	if(!(bPlayerGameSettings[playerid] & Spawned))
+	if(!(gPlayerBitData[playerid] & Spawned))
 		return 0;
 
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
 	new
@@ -359,7 +347,7 @@ Logout(playerid)
 
 	SavePlayerData(playerid);
 
-	if(bPlayerGameSettings[playerid] & Alive)
+	if(gPlayerBitData[playerid] & Alive)
 	{
 		DestroyItem(itemid);
 		DestroyPlayerBackpack(playerid);
@@ -385,10 +373,10 @@ Logout(playerid)
 
 SavePlayerData(playerid)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
-	if(!(bPlayerGameSettings[playerid] & LoadedData))
+	if(!(gPlayerBitData[playerid] & LoadedData))
 		return 0;
 
 	GetPlayerPos(playerid, gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
@@ -399,7 +387,7 @@ SavePlayerData(playerid)
 	if(IsPlayerInAnyVehicle(playerid))
 		gPlayerData[playerid][ply_SpawnPosZ] += 2.5;
 
-	if(bPlayerGameSettings[playerid] & Alive)
+	if(gPlayerBitData[playerid] & Alive)
 	{
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
@@ -410,11 +398,18 @@ SavePlayerData(playerid)
 		new spawn[48];
 		format(spawn, 48, "%f %f %f %f", gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ], gPlayerData[playerid][ply_SpawnRotZ]);
 
+		// FIELD_PLAYER_ALIVE		0
+		// FIELD_PLAYER_SPAWN		1
+		// FIELD_PLAYER_ISVIP		2
+		// FIELD_PLAYER_KARMA		3
+		// FIELD_PLAYER_WARNINGS	4
+		// FIELD_PLAYER_NAME		5
+
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
-		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_STRING, spawn, 48);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, (bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, spawn, 48);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, (gPlayerBitData[playerid] & IsVip) ? 1 : 0);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
 		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(gStmt_AccountUpdate);
 
@@ -424,10 +419,10 @@ SavePlayerData(playerid)
 	else
 	{
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_STRING, "0.0, 0.0, 0.0, 0.0", 32);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, (bPlayerGameSettings[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, "0.0, 0.0, 0.0, 0.0", 32);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, (gPlayerBitData[playerid] & IsVip) ? 1 : 0);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
 		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
 
 		stmt_execute(gStmt_AccountUpdate);
@@ -436,4 +431,26 @@ SavePlayerData(playerid)
 	}
 
 	return 1;
+}
+
+
+// Interface
+
+
+AccountExists(name[])
+{
+	new exists;
+
+	stmt_bind_value(gStmt_AccountExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountExists, 0, DB::TYPE_INTEGER, exists);
+
+	if(stmt_execute(gStmt_AccountExists))
+	{
+		stmt_fetch_row(gStmt_AccountExists);
+
+		if(exists)
+			return 1;
+	}
+
+	return 0;
 }

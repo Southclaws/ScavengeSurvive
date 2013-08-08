@@ -20,6 +20,10 @@ enum
 	PLY_CELL_CHATMODE,
 	PLY_CELL_INFECTED,
 	PLY_CELL_TOOLTIPS,
+	PLY_CELL_SPAWN_X,
+	PLY_CELL_SPAWN_Y,
+	PLY_CELL_SPAWN_Z,
+	PLY_CELL_SPAWN_R,
 	PLY_CELL_END
 }
 
@@ -87,7 +91,7 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_STANCE] = 3;
 	}
 
-	data[PLY_CELL_BLEEDING] = (bPlayerGameSettings[playerid] & Bleeding);
+	data[PLY_CELL_BLEEDING] = IsPlayerBleeding(playerid);
 
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 
@@ -97,9 +101,14 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_CHATMODE] = gPlayerData[playerid][ply_ChatMode];
 
-	data[PLY_CELL_INFECTED] = (bPlayerGameSettings[playerid] & Infected);
+	data[PLY_CELL_INFECTED] = _:(gPlayerBitData[playerid] & Infected);
 
-	data[PLY_CELL_TOOLTIPS] = (bPlayerGameSettings[playerid] & ToolTips);
+	data[PLY_CELL_TOOLTIPS] = _:(gPlayerBitData[playerid] & ToolTips);
+
+	data[PLY_CELL_SPAWN_X] = _:gPlayerData[playerid][ply_SpawnPosX];
+	data[PLY_CELL_SPAWN_Y] = _:gPlayerData[playerid][ply_SpawnPosY];
+	data[PLY_CELL_SPAWN_Z] = _:gPlayerData[playerid][ply_SpawnPosZ];
+	data[PLY_CELL_SPAWN_R] = _:gPlayerData[playerid][ply_SpawnRotZ];
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -159,10 +168,10 @@ LoadPlayerChar(playerid)
 	if(Float:data[0] <= 0.0)
 		data[0] = _:1.0;
 
-	gPlayerData[playerid][ply_HitPoints] = Float:data[PLY_CELL_HEALTH];
-	gPlayerData[playerid][ply_ArmourPoints] = Float:data[PLY_CELL_ARMOUR];
-	gPlayerData[playerid][ply_FoodPoints] = Float:data[PLY_CELL_FOOD];
-	gPlayerData[playerid][ply_Clothes] = data[PLY_CELL_SKIN];
+	gPlayerData[playerid][ply_HitPoints]	= Float:data[PLY_CELL_HEALTH];
+	gPlayerData[playerid][ply_ArmourPoints]	= Float:data[PLY_CELL_ARMOUR];
+	gPlayerData[playerid][ply_FoodPoints]	= Float:data[PLY_CELL_FOOD];
+	gPlayerData[playerid][ply_Clothes]		= data[PLY_CELL_SKIN];
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
@@ -196,10 +205,10 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_stance] = data[PLY_CELL_STANCE];
 
 	if(data[PLY_CELL_BLEEDING])
-		t:bPlayerGameSettings[playerid]<Bleeding>;
+		t:gPlayerBitData[playerid]<Bleeding>;
 
 	else
-		f:bPlayerGameSettings[playerid]<Bleeding>;
+		f:gPlayerBitData[playerid]<Bleeding>;
 
 	if(data[PLY_CELL_CUFFED])
 		SetPlayerCuffs(playerid, true);
@@ -214,16 +223,23 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_ChatMode] = data[PLY_CELL_CHATMODE];
 
 	if(data[PLY_CELL_INFECTED])
-		t:bPlayerGameSettings[playerid]<Infected>;
+		t:gPlayerBitData[playerid]<Infected>;
 
 	else
-		f:bPlayerGameSettings[playerid]<Infected>;
+		f:gPlayerBitData[playerid]<Infected>;
 
 	if(data[PLY_CELL_TOOLTIPS])
-		t:bPlayerGameSettings[playerid]<ToolTips>;
+		t:gPlayerBitData[playerid]<ToolTips>;
 
 	else
-		f:bPlayerGameSettings[playerid]<ToolTips>;
+		f:gPlayerBitData[playerid]<ToolTips>;
+
+/*
+	gPlayerData[playerid][ply_SpawnPosX] = Float:data[PLY_CELL_SPAWN_X];
+	gPlayerData[playerid][ply_SpawnPosY] = Float:data[PLY_CELL_SPAWN_Y];
+	gPlayerData[playerid][ply_SpawnPosZ] = Float:data[PLY_CELL_SPAWN_Z];
+	gPlayerData[playerid][ply_SpawnRotZ] = Float:data[PLY_CELL_SPAWN_R];
+*/
 }
 LoadPlayerInventory(playerid)
 {

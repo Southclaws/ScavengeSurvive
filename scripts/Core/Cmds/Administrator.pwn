@@ -12,7 +12,7 @@ ACMD:up[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -32,7 +32,7 @@ ACMD:ford[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -58,7 +58,7 @@ ACMD:goto[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -85,7 +85,7 @@ ACMD:get[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -191,7 +191,7 @@ ACMD:deleteitems[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -238,7 +238,7 @@ ACMD:deletetents[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 
@@ -285,7 +285,7 @@ ACMD:deletedefences[3](playerid, params[])
 {
 	if(gPlayerData[playerid][ply_Admin] == 3)
 	{
-		if(!(bPlayerGameSettings[playerid] & AdminDuty))
+		if(!(gPlayerBitData[playerid] & AdminDuty))
 			return 6;
 	}
 

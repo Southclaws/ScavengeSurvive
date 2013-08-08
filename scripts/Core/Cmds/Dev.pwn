@@ -70,12 +70,12 @@ ACMD:setvip[4](playerid, params[])
 
 	if(toggle)
 	{
-		t:bPlayerGameSettings[id]<IsVip>;
+		t:gPlayerBitData[id]<IsVip>;
 		MsgF(playerid, YELLOW, " >  You gave VIP status to %P", id);
 	}
 	else
 	{
-		f:bPlayerGameSettings[id]<IsVip>;
+		f:gPlayerBitData[id]<IsVip>;
 		MsgF(playerid, YELLOW, " >  You removed VIP status from %P", id);
 	}
 	return 1;
@@ -343,19 +343,19 @@ ACMD:setint[4](playerid, params[])
 
 ACMD:hud[4](playerid, params[])
 {
-	if(bPlayerGameSettings[playerid] & ShowHUD)
+	if(gPlayerBitData[playerid] & ShowHUD)
 	{
 		PlayerTextDrawHide(playerid, HungerBarBackground);
 		PlayerTextDrawHide(playerid, HungerBarForeground);
 		HideWatch(playerid);
-		f:bPlayerGameSettings[playerid]<ShowHUD>;
+		f:gPlayerBitData[playerid]<ShowHUD>;
 	}
 	else
 	{
 		PlayerTextDrawShow(playerid, HungerBarBackground);
 		PlayerTextDrawShow(playerid, HungerBarForeground);
 		ShowWatch(playerid);
-		t:bPlayerGameSettings[playerid]<ShowHUD>;
+		t:gPlayerBitData[playerid]<ShowHUD>;
 	}
 }
 

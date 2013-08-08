@@ -8,9 +8,9 @@ ACMD:duty[1](playerid, params[])
 		return 1;
 	}
 
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 	{
-		f:bPlayerGameSettings[playerid]<AdminDuty>;
+		f:gPlayerBitData[playerid]<AdminDuty>;
 
 		SetPlayerPos(playerid,
 			gPlayerData[playerid][ply_SpawnPosX],
@@ -60,7 +60,7 @@ ACMD:duty[1](playerid, params[])
 
 		ToggleArmour(playerid, false);
 
-		t:bPlayerGameSettings[playerid]<AdminDuty>;
+		t:gPlayerBitData[playerid]<AdminDuty>;
 
 		if(gPlayerData[playerid][ply_Gender] == GENDER_MALE)
 			SetPlayerSkin(playerid, 217);

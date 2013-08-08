@@ -65,7 +65,7 @@ ACMD:freeze[1](playerid, params[])
 		return 4;
 
 	TogglePlayerControllable(targetid, false);
-	t:bPlayerGameSettings[targetid]<Frozen>;
+	t:gPlayerBitData[targetid]<Frozen>;
 	
 	if(delay > 0)
 	{
@@ -88,7 +88,7 @@ timer CmdDelay_unfreeze[time](playerid, time)
 	#pragma unused time
 
 	TogglePlayerControllable(playerid, true);
-	f:bPlayerGameSettings[playerid]<Frozen>;
+	f:gPlayerBitData[playerid]<Frozen>;
 
 	Msg(playerid, YELLOW, " >  You are now unfrozen.");
 }
@@ -104,7 +104,7 @@ ACMD:unfreeze[1](playerid, params[])
 		return 4;
 
 	TogglePlayerControllable(targetid, true);
-	f:bPlayerGameSettings[targetid]<Frozen>;
+	f:gPlayerBitData[targetid]<Frozen>;
 	stop UnfreezeTimer[targetid];
 
 	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
@@ -131,10 +131,10 @@ ACMD:mute[1](playerid, params[])
 	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin])
 		return 3;
 
-	if(bPlayerGameSettings[targetid] & Muted)
+	if(gPlayerBitData[targetid] & Muted)
 		return Msg(playerid, YELLOW, " >  Player Already Muted");
 
-	t:bPlayerGameSettings[targetid]<Muted>;
+	t:gPlayerBitData[targetid]<Muted>;
 
 	if(delay > 0)
 	{
@@ -156,7 +156,7 @@ timer CmdDelay_unmute[time](playerid, time)
 {
 	#pragma unused time
 	
-	f:bPlayerGameSettings[playerid]<Muted>;
+	f:gPlayerBitData[playerid]<Muted>;
 
 	Msg(playerid, YELLOW, " >  You are now un-muted.");
 
@@ -175,7 +175,7 @@ ACMD:unmute[1](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	f:bPlayerGameSettings[targetid]<Muted>;
+	f:gPlayerBitData[targetid]<Muted>;
 	stop UnmuteTimer[targetid];
 
 	MsgF(playerid, YELLOW, " >  Un-muted %P", targetid);
@@ -230,7 +230,7 @@ ACMD:msg[1](playerid, params[])
 
 ACMD:unstick[1](playerid, params[])
 {
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+	if(!(gPlayerBitData[playerid] & AdminDuty))
 		return 6;
 
 	if(tickcount() - tick_UnstickUsage[playerid] < 1000)
@@ -265,7 +265,7 @@ ACMD:unstick[1](playerid, params[])
 
 ACMD:spec[1](playerid, params[])
 {
-	if(!(bPlayerGameSettings[playerid] & AdminDuty))
+	if(!(gPlayerBitData[playerid] & AdminDuty))
 		return 6;
 
 	if(isnull(params))

@@ -74,8 +74,8 @@ UpdateSpectateMode(playerid)
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
-			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
-			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
+			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
+			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
 			wepname,
 			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
 			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
@@ -107,8 +107,8 @@ UpdateSpectateMode(playerid)
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
 			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
-			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
-			bPlayerGameSettings[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
+			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & KnockedOut ? 1 : 0,
+			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
 			wepname,
 			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
 			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
@@ -188,7 +188,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 CanPlayerSpectate(playerid, targetid)
 {
-	if(targetid == playerid || !IsPlayerConnected(targetid) || !(bPlayerGameSettings[targetid] & Spawned) || GetPlayerState(targetid) == PLAYER_STATE_SPECTATING)
+	if(targetid == playerid || !IsPlayerConnected(targetid) || !(gPlayerBitData[targetid] & Spawned) || GetPlayerState(targetid) == PLAYER_STATE_SPECTATING)
 		return 0;
 
 	if(gPlayerData[playerid][ply_Admin] == 1)

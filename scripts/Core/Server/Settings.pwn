@@ -3,7 +3,7 @@
 
 LoadSettings()
 {
-	print("Loading Settings...");
+	print("\nLoading Settings...");
 
 
 /*
@@ -14,19 +14,25 @@ LoadSettings()
 	INI_Load(SETTINGS_FILE);
 
 
+/*
+	Printing setting values to console
+*/
+
+
 #if defined PRINT_SETTINGS
 
-	printf("MoTD: %s", gMessageOfTheDay);
-	printf("Game Mode Name: %s", gGameModeName);
+	printf(" MoTD: %s", gMessageOfTheDay);
+	printf(" Web URL: %s", gWebsiteURL);
+	printf(" Game Mode Name: %s", gGameModeName);
 
-	printf("Whitelist: %d", gWhitelist);
-	printf("Pause Map: %d", gPauseMap);
-	printf("Interior Entry: %d", gInteriorEntry);
-	printf("Player Animations: %d", gPlayerAnimations);
+	printf(" Whitelist: %d", gWhitelist);
+	printf(" Pause Map: %d", gPauseMap);
+	printf(" Interior Entry: %d", gInteriorEntry);
+	printf(" Player Animations: %d", gPlayerAnimations);
 
-	printf("Name Distance: %f", gNameTagDistance);
-	printf("Combat Log Window: %d", gCombatLogWindow);
-	printf("Login Freeze Time: %d", gLoginFreezeTime);
+	printf(" Name Distance: %f", gNameTagDistance);
+	printf(" Combat Log Window: %d", gCombatLogWindow);
+	printf(" Login Freeze Time: %d", gLoginFreezeTime);
 
 #endif
 
@@ -58,11 +64,14 @@ LoadSettings()
 	EnableStuntBonusForAll(false);
 	ManualVehicleEngineAndLights();
 	AllowInteriorWeapons(true);
+
+	print("\n");
 }
 
 INI:settings[](name[], value[])
 {
 	INI_String("motd", gMessageOfTheDay, MAX_MOTD_LEN);
+	INI_String("website", gWebsiteURL, MAX_WEBSITE_NAME);
 	INI_String("gamemodename", gGameModeName, 32);
 
 	INI_Bool("whitelist", gWhitelist);

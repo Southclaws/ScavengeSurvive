@@ -33,7 +33,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(!IsPlayerInTutorial(playerid))
 	{
-		if(bPlayerGameSettings[playerid] & ToolTips)
+		if(gPlayerBitData[playerid] & ToolTips)
 			ShowItemToolTip(playerid, GetItemType(itemid));
 	}
 
@@ -51,7 +51,7 @@ public OnPlayerDropItem(playerid, itemid)
 {
 	if(!IsPlayerInTutorial(playerid))
 	{
-		if(bPlayerGameSettings[playerid] & ToolTips)
+		if(gPlayerBitData[playerid] & ToolTips)
 			HideHelpTip(playerid);
 	}
 

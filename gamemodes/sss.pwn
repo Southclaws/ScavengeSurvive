@@ -65,6 +65,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Limits
 #define MAX_MOTD_LEN				(128)
+#define MAX_WEBSITE_NAME			(64)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
@@ -90,50 +91,58 @@ native WP_Hash(buffer[], len, const str[]);
 #define WORLD_TABLE_SPRAYTAG		"SprayTag"
 
 // Player
-#define FIELD_PLAYER_NAME			"name"
-#define FIELD_PLAYER_PASS			"pass"
-#define FIELD_PLAYER_GEND			"gend"
-#define FIELD_PLAYER_IPV4			"ipv4"
-#define FIELD_PLAYER_ALIVE			"alive"
-#define FIELD_PLAYER_SPAWN			"spawn"
-#define FIELD_PLAYER_ISVIP			"vip"
-#define FIELD_PLAYER_KARMA			"karma"
-#define FIELD_PLAYER_LASTLOG		"lastlog"									// TODO
-#define FIELD_PLAYER_REGDATE		"regdate"									// TODO
+#define FIELD_PLAYER_NAME			"name"		// 00
+#define FIELD_PLAYER_PASS			"pass"		// 01
+#define FIELD_PLAYER_IPV4			"ipv4"		// 02
+#define FIELD_PLAYER_ALIVE			"alive"		// 03
+#define FIELD_PLAYER_SPAWN			"spawn"		// 04
+#define FIELD_PLAYER_ISVIP			"vip"		// 05
+#define FIELD_PLAYER_KARMA			"karma"		// 06
+#define FIELD_PLAYER_REGDATE		"regdate"	// 07
+#define FIELD_PLAYER_LASTLOG		"lastlog"	// 08
+#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 09
+#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 10
+#define FIELD_PLAYER_WARNINGS		"warnings"	// 11
+
 // Bans
-#define FIELD_BANS_NAME				"name"
-#define FIELD_BANS_IPV4				"ipv4"
-#define FIELD_BANS_DATE				"date"
-#define FIELD_BANS_REASON			"reason"
-#define FIELD_BANS_BY				"by"
+#define FIELD_BANS_NAME				"name"		// 00
+#define FIELD_BANS_IPV4				"ipv4"		// 01
+#define FIELD_BANS_DATE				"date"		// 02
+#define FIELD_BANS_REASON			"reason"	// 03
+#define FIELD_BANS_BY				"by"		// 04
+
 // Reports
-#define FIELD_REPORTS_NAME			"name"
-#define FIELD_REPORTS_REASON		"reason"
-#define FIELD_REPORTS_DATE			"date"
-#define FIELD_REPORTS_READ			"read"
-#define FIELD_REPORTS_TYPE			"type"
-#define FIELD_REPORTS_POSX			"posx"
-#define FIELD_REPORTS_POSY			"posy"
-#define FIELD_REPORTS_POSZ			"posz"
-#define FIELD_REPORTS_INFO			"info"
-#define FIELD_REPORTS_BY			"by"
+#define FIELD_REPORTS_NAME			"name"		// 00
+#define FIELD_REPORTS_REASON		"reason"	// 01
+#define FIELD_REPORTS_DATE			"date"		// 02
+#define FIELD_REPORTS_READ			"read"		// 03
+#define FIELD_REPORTS_TYPE			"type"		// 04
+#define FIELD_REPORTS_POSX			"posx"		// 05
+#define FIELD_REPORTS_POSY			"posy"		// 06
+#define FIELD_REPORTS_POSZ			"posz"		// 07
+#define FIELD_REPORTS_INFO			"info"		// 08
+#define FIELD_REPORTS_BY			"by"		// 09
+
 // Bugs
-#define FIELD_BUGS_NAME				"name"
-#define FIELD_BUGS_REASON			"reason"
-#define FIELD_BUGS_DATE				"date"
+#define FIELD_BUGS_NAME				"name"		// 00
+#define FIELD_BUGS_REASON			"reason"	// 01
+#define FIELD_BUGS_DATE				"date"		// 02
+
 // Whitelist
-#define FIELD_WHITELIST_NAME		"name"
+#define FIELD_WHITELIST_NAME		"name"		// 00
+
 // Admins
-#define FIELD_ADMINS_NAME			"name"
-#define FIELD_ADMINS_LEVEL			"level"
+#define FIELD_ADMINS_NAME			"name"		// 00
+#define FIELD_ADMINS_LEVEL			"level"		// 01
+
 // SprayTag
-#define FIELD_SPRAYTAG_NAME			"name"
-#define FIELD_SPRAYTAG_POSX			"posx"
-#define FIELD_SPRAYTAG_POSY			"posy"
-#define FIELD_SPRAYTAG_POSZ			"posz"
-#define FIELD_SPRAYTAG_ROTX			"rotx"
-#define FIELD_SPRAYTAG_ROTY			"roty"
-#define FIELD_SPRAYTAG_ROTZ			"rotz"
+#define FIELD_SPRAYTAG_NAME			"name"		// 00
+#define FIELD_SPRAYTAG_POSX			"posx"		// 01
+#define FIELD_SPRAYTAG_POSY			"posy"		// 02
+#define FIELD_SPRAYTAG_POSZ			"posz"		// 03
+#define FIELD_SPRAYTAG_ROTX			"rotx"		// 04
+#define FIELD_SPRAYTAG_ROTY			"roty"		// 05
+#define FIELD_SPRAYTAG_ROTZ			"rotz"		// 06
 
 
 // Macros
@@ -326,6 +335,7 @@ enum e_admin_data
 new
 DB:				gAccounts,
 DB:				gWorld,
+
 // ACCOUNTS_TABLE_PLAYER
 DBStatement:	gStmt_AccountExists,
 DBStatement:	gStmt_AccountCreate,
@@ -335,6 +345,8 @@ DBStatement:	gStmt_AccountDelete,
 DBStatement:	gStmt_AccountSetPassword,
 DBStatement:	gStmt_AccountSetIpv4,
 DBStatement:	gStmt_AccountSetLastLog,
+DBStatement:	gStmt_AccountSetSpawnTime,
+DBStatement:	gStmt_AccountSetTotalSpawns,
 DBStatement:	gStmt_AccountGetAliases,
 
 // ACCOUNTS_TABLE_BANS
@@ -386,6 +398,7 @@ DBStatement:	gStmt_SprayTagSave;
 
 new
 		gMessageOfTheDay[MAX_MOTD_LEN],
+		gWebsiteURL[MAX_WEBSITE_NAME],
 		gGameModeName[32],
 bool:	gWhitelist,
 bool:	gPauseMap,
@@ -698,6 +711,7 @@ forward SetRestart(seconds);
 #include "../scripts/Core/Player/DisallowActions.pwn"
 #include "../scripts/Core/Player/Report.pwn"
 #include "../scripts/Core/Player/HackDetect.pwn"
+#include "../scripts/Core/Player/Profile.pwn"
 
 //======================UI
 
@@ -758,52 +772,52 @@ forward SetRestart(seconds);
 
 //======================Items
 
-#include "../scripts/Items/firework.pwn"
-#include "../scripts/Items/bottle.pwn"
-#include "../scripts/Items/TntTimeBomb.pwn"
-#include "../scripts/Items/Sign.pwn"
-#include "../scripts/Items/backpack.pwn"
-#include "../scripts/Items/repair.pwn"
-#include "../scripts/Items/shield.pwn"
-#include "../scripts/Items/HandCuffs.pwn"
-#include "../scripts/Items/wheel.pwn"
-#include "../scripts/Items/gascan.pwn"
-#include "../scripts/Items/flashlight.pwn"
-#include "../scripts/Items/armyhelm.pwn"
-#include "../scripts/Items/crowbar.pwn"
-#include "../scripts/Items/zorromask.pwn"
-#include "../scripts/Items/headlight.pwn"
-#include "../scripts/Items/pills.pwn"
-#include "../scripts/Items/dice.pwn"
-#include "../scripts/Items/armour.pwn"
-#include "../scripts/Items/injector.pwn"
-#include "../scripts/Items/medical.pwn"
-#include "../scripts/Items/TntPhoneBomb.pwn"
-#include "../scripts/Items/TntTripMine.pwn"
-#include "../scripts/Items/parachute.pwn"
-#include "../scripts/Items/molotov.pwn"
-#include "../scripts/Items/screwdriver.pwn"
-#include "../scripts/Items/torso.pwn"
-#include "../scripts/Items/ammotin.pwn"
-#include "../scripts/Items/tentpack.pwn"
-#include "../scripts/Items/campfire.pwn"
-#include "../scripts/Items/cowboyhat.pwn"
-#include "../scripts/Items/truckcap.pwn"
-#include "../scripts/Items/boaterhat.pwn"
-#include "../scripts/Items/bowlerhat.pwn"
-#include "../scripts/Items/policecap.pwn"
-#include "../scripts/Items/tophat.pwn"
-#include "../scripts/Items/herpderp.pwn"
-#include "../scripts/Items/candrink.pwn"
-#include "../scripts/Items/TntProxMine.pwn"
-#include "../scripts/Items/IedTimebomb.pwn"
-#include "../scripts/Items/IedTripMine.pwn"
-#include "../scripts/Items/IedProxMine.pwn"
-#include "../scripts/Items/IedPhoneBomb.pwn"
-#include "../scripts/Items/EmpTimebomb.pwn"
-#include "../scripts/Items/EmpTripMine.pwn"
-#include "../scripts/Items/EmpProxMine.pwn"
-#include "../scripts/Items/EmpPhoneBomb.pwn"
+#include "../scripts/Core/Item/firework.pwn"
+#include "../scripts/Core/Item/bottle.pwn"
+#include "../scripts/Core/Item/TntTimeBomb.pwn"
+#include "../scripts/Core/Item/Sign.pwn"
+#include "../scripts/Core/Item/backpack.pwn"
+#include "../scripts/Core/Item/repair.pwn"
+#include "../scripts/Core/Item/shield.pwn"
+#include "../scripts/Core/Item/HandCuffs.pwn"
+#include "../scripts/Core/Item/wheel.pwn"
+#include "../scripts/Core/Item/gascan.pwn"
+#include "../scripts/Core/Item/flashlight.pwn"
+#include "../scripts/Core/Item/armyhelm.pwn"
+#include "../scripts/Core/Item/crowbar.pwn"
+#include "../scripts/Core/Item/zorromask.pwn"
+#include "../scripts/Core/Item/headlight.pwn"
+#include "../scripts/Core/Item/pills.pwn"
+#include "../scripts/Core/Item/dice.pwn"
+#include "../scripts/Core/Item/armour.pwn"
+#include "../scripts/Core/Item/injector.pwn"
+#include "../scripts/Core/Item/medical.pwn"
+#include "../scripts/Core/Item/TntPhoneBomb.pwn"
+#include "../scripts/Core/Item/TntTripMine.pwn"
+#include "../scripts/Core/Item/parachute.pwn"
+#include "../scripts/Core/Item/molotov.pwn"
+#include "../scripts/Core/Item/screwdriver.pwn"
+#include "../scripts/Core/Item/torso.pwn"
+#include "../scripts/Core/Item/ammotin.pwn"
+#include "../scripts/Core/Item/tentpack.pwn"
+#include "../scripts/Core/Item/campfire.pwn"
+#include "../scripts/Core/Item/cowboyhat.pwn"
+#include "../scripts/Core/Item/truckcap.pwn"
+#include "../scripts/Core/Item/boaterhat.pwn"
+#include "../scripts/Core/Item/bowlerhat.pwn"
+#include "../scripts/Core/Item/policecap.pwn"
+#include "../scripts/Core/Item/tophat.pwn"
+#include "../scripts/Core/Item/herpderp.pwn"
+#include "../scripts/Core/Item/candrink.pwn"
+#include "../scripts/Core/Item/TntProxMine.pwn"
+#include "../scripts/Core/Item/IedTimebomb.pwn"
+#include "../scripts/Core/Item/IedTripMine.pwn"
+#include "../scripts/Core/Item/IedProxMine.pwn"
+#include "../scripts/Core/Item/IedPhoneBomb.pwn"
+#include "../scripts/Core/Item/EmpTimebomb.pwn"
+#include "../scripts/Core/Item/EmpTripMine.pwn"
+#include "../scripts/Core/Item/EmpProxMine.pwn"
+#include "../scripts/Core/Item/EmpPhoneBomb.pwn"
 
 
 //======================Post-code
@@ -812,8 +826,15 @@ forward SetRestart(seconds);
 
 //======================World
 
-#include "../scripts/sa/sa.pwn"
+#include "../scripts/World/World.pwn"
 
+#if !defined gMapName
+	#error World script MUST have a "gMapName" variable!
+#endif
+
+#if !defined GenerateSpawnPoint
+	#error World script MUST have a "GenerateSpawnPoint" function!
+#endif
 
 main()
 {
@@ -861,10 +882,14 @@ public OnGameModeInit()
 		"FIELD_PLAYER_PASS" TEXT, \
 		"FIELD_PLAYER_IPV4" INTEGER, \
 		"FIELD_PLAYER_ALIVE" INTEGER, \
-		"FIELD_PLAYER_GEND" INTEGER, \
 		"FIELD_PLAYER_SPAWN" TEXT, \
 		"FIELD_PLAYER_ISVIP" INTEGER, \
-		"FIELD_PLAYER_KARMA" INTEGER \
+		"FIELD_PLAYER_KARMA" INTEGER, \
+		"FIELD_PLAYER_REGDATE" INTEGER, \
+		"FIELD_PLAYER_LASTLOG" INTEGER, \
+		"FIELD_PLAYER_SPAWNTIME" INTEGER, \
+		"FIELD_PLAYER_TOTALSPAWNS" INTEGER, \
+		"FIELD_PLAYER_WARNINGS" INTEGER \
 		)"));
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" ( \
@@ -915,13 +940,15 @@ public OnGameModeInit()
 		)"));
 
 	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, '0', '0', '0.0, 0.0, 0.0, 0.0', ?, '0')");
+	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, '0', '0', '0.0, 0.0, 0.0, 0.0', ?, '0', ?, ?)");
 	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_GEND" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_ISVIP" = ?, "FIELD_PLAYER_KARMA" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_ISVIP" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountGetAliases		= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ?");
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO Bans VALUES(?, ?, ?, ?, ?)");
@@ -1288,6 +1315,8 @@ public OnGameModeExit()
 	SaveTents(true);
 	SaveDefenses();
 	SaveSprayTags();
+
+	print("\nSave Complete! Safe to shut down.");
 
 	return 1;
 }

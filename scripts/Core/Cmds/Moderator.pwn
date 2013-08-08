@@ -182,7 +182,7 @@ ACMD:aliases[2](playerid, params[])
 		adminlevel,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	GetAccountAliases(gPlayerName[playerid], gPlayerData[playerid][ply_IP], list, count, 6, adminlevel);
+	GetAccountAliases(gPlayerName[targetid], gPlayerData[targetid][ply_IP], list, count, 6, adminlevel);
 
 	if(count == 0)
 	{

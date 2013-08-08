@@ -31,7 +31,7 @@ hook OnPlayerConnect(playerid)
 }
 
 
-CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
+stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(wb_Index);
 

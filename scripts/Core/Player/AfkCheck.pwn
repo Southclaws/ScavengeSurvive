@@ -1,40 +1,40 @@
 hook OnPlayerUpdate(playerid)
 {
-	f:bPlayerGameSettings[playerid]<AfkCheck>;
+	f:gPlayerBitData[playerid]<AfkCheck>;
 	return 1;
 }
 
 ptask AfkCheckUpdate[3000](playerid)
 {
-	if(bPlayerGameSettings[playerid] & Spawned)
+	if(gPlayerBitData[playerid] & Spawned)
 	{
 	    new
 			playerstate = GetPlayerState(playerid);
 
-		if(bPlayerGameSettings[playerid] & AfkCheck)
+		if(gPlayerBitData[playerid] & AfkCheck)
 		{
-			if(!(bPlayerGameSettings[playerid] & IsAfk))
+			if(!(gPlayerBitData[playerid] & IsAfk))
 			{
 				if(tickcount() - GetPlayerVehicleExitTick(playerid) > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
 				{
-					t:bPlayerGameSettings[playerid]<IsAfk>;
+					t:gPlayerBitData[playerid]<IsAfk>;
 				}
 			}
 		}
 	}
 
-	if(!(bPlayerGameSettings[playerid] & AfkCheck))
+	if(!(gPlayerBitData[playerid] & AfkCheck))
 	{
-		if(bPlayerGameSettings[playerid] & IsAfk)
+		if(gPlayerBitData[playerid] & IsAfk)
 		{
-			f:bPlayerGameSettings[playerid]<IsAfk>;
+			f:gPlayerBitData[playerid]<IsAfk>;
 		}
 	}
 
-	t:bPlayerGameSettings[playerid]<AfkCheck>;
+	t:gPlayerBitData[playerid]<AfkCheck>;
 }
 
 IsPlayerUnfocused(playerid)
 {
-	return bPlayerGameSettings[playerid] & IsAfk ? 1 : 0;
+	return gPlayerBitData[playerid] & IsAfk ? 1 : 0;
 }

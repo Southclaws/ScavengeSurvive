@@ -5,7 +5,7 @@ static
 
 KnockOutPlayer(playerid, duration)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - knockout_Tick[playerid]);
@@ -14,7 +14,7 @@ KnockOutPlayer(playerid, duration)
 
 	knockout_Tick[playerid] = tickcount();
 	knockout_Duration[playerid] = duration;
-	t:bPlayerGameSettings[playerid]<KnockedOut>;
+	t:gPlayerBitData[playerid]<KnockedOut>;
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -59,21 +59,21 @@ WakeUpPlayer(playerid)
 	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
 
 	knockout_Tick[playerid] = tickcount();
-	f:bPlayerGameSettings[playerid]<KnockedOut>;
+	f:gPlayerBitData[playerid]<KnockedOut>;
 }
 
 KnockOutUpdate(playerid)
 {
-	if(bPlayerGameSettings[playerid] & Dying)
+	if(gPlayerBitData[playerid] & Dying)
 	{
-		f:bPlayerGameSettings[playerid]<KnockedOut>;
+		f:gPlayerBitData[playerid]<KnockedOut>;
 		HidePlayerProgressBar(playerid, KnockoutBar);
 		return;
 	}
 
-	if(bPlayerGameSettings[playerid] & KnockedOut)
+	if(gPlayerBitData[playerid] & KnockedOut)
 	{
-		if(bPlayerGameSettings[playerid] & AdminDuty)
+		if(gPlayerBitData[playerid] & AdminDuty)
 			WakeUpPlayer(playerid);
 
 		new animidx = GetPlayerAnimationIndex(playerid);
@@ -103,7 +103,7 @@ KnockOutUpdate(playerid)
 			{
 				if(tickcount() - GetPlayerKnockOutTick(playerid) > 5000 * gPlayerData[playerid][ply_HitPoints])
 				{
-					if(bPlayerGameSettings[playerid] & Bleeding)
+					if(gPlayerBitData[playerid] & Bleeding)
 					{
 						if(frandom(40.0) < (50.0 - gPlayerData[playerid][ply_HitPoints]))
 							KnockOutPlayer(playerid, floatround(2000 * (50.0 - gPlayerData[playerid][ply_HitPoints]) + frandom(200 * (50.0 - gPlayerData[playerid][ply_HitPoints]))));

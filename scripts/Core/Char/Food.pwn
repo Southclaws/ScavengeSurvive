@@ -3,7 +3,7 @@
 
 ptask FoodUpdate[1000](playerid)
 {
-	if(bPlayerGameSettings[playerid] & AdminDuty)
+	if(gPlayerBitData[playerid] & AdminDuty)
 		return;
 
 	new
@@ -14,7 +14,7 @@ ptask FoodUpdate[1000](playerid)
 
 	GetPlayerKeys(playerid, k, ud, lr);
 
-	if(bPlayerGameSettings[playerid] & Infected)
+	if(gPlayerBitData[playerid] & Infected)
 	{
 		gPlayerData[playerid][ply_FoodPoints] -= IDLE_FOOD_RATE;
 	}
@@ -64,7 +64,7 @@ ptask FoodUpdate[1000](playerid)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 			{
-				if(!(bPlayerGameSettings[playerid] & Infected))
+				if(!(gPlayerBitData[playerid] & Infected))
 					SetPlayerDrunkLevel(playerid, 0);
 
 				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000)
@@ -77,7 +77,7 @@ ptask FoodUpdate[1000](playerid)
 		}
 		else
 		{
-			if(!(bPlayerGameSettings[playerid] & Infected))
+			if(!(gPlayerBitData[playerid] & Infected))
 				SetPlayerDrunkLevel(playerid, 0);
 		}
 	}
@@ -88,7 +88,7 @@ ptask FoodUpdate[1000](playerid)
 	if(gPlayerData[playerid][ply_FoodPoints] < 0.0)
 		gPlayerData[playerid][ply_FoodPoints] = 0.0;
 
-	if(bPlayerGameSettings[playerid] & ShowHUD)
+	if(gPlayerBitData[playerid] & ShowHUD)
 	{
 		PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerData[playerid][ply_FoodPoints] / 10.0));
 		PlayerTextDrawShow(playerid, HungerBarBackground);

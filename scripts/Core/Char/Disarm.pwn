@@ -6,7 +6,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
 		return 1;
 
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || bPlayerGameSettings[playerid] & AdminDuty || bPlayerGameSettings[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || gPlayerBitData[playerid] & AdminDuty || gPlayerBitData[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	if(newkeys & 16)
@@ -15,7 +15,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsPlayerInPlayerArea(playerid, i))
 			{
-				if(bPlayerGameSettings[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
+				if(gPlayerBitData[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
 				{
 					DisarmPlayer(playerid, i);
 				}

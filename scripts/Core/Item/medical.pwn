@@ -21,7 +21,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(newkeys == 16)
 		{
-			if(bPlayerGameSettings[playerid] & KnockedOut)
+			if(gPlayerBitData[playerid] & KnockedOut)
 				return 0;
 
 			med_HealTarget[playerid] = playerid;
@@ -49,7 +49,7 @@ PlayerStartHeal(playerid, target)
 
 	if(target != playerid)
 	{
-		if(bPlayerGameSettings[target] & KnockedOut)
+		if(gPlayerBitData[target] & KnockedOut)
 		{
 			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
 			duration = REVIVE_PROGRESS_MAX;
@@ -98,7 +98,7 @@ public OnHoldActionUpdate(playerid, progress)
 
 			new progresscap = HEAL_PROGRESS_MAX;
 
-			if(bPlayerGameSettings[med_HealTarget[playerid]] & KnockedOut)
+			if(gPlayerBitData[med_HealTarget[playerid]] & KnockedOut)
 				progresscap = REVIVE_PROGRESS_MAX;
 
 			SetPlayerToFacePlayer(playerid, med_HealTarget[playerid]);
@@ -125,7 +125,7 @@ public OnHoldActionFinish(playerid)
 
 		if(med_HealTarget[playerid] != playerid)
 		{
-			if(bPlayerGameSettings[med_HealTarget[playerid]] & KnockedOut)
+			if(gPlayerBitData[med_HealTarget[playerid]] & KnockedOut)
 			{
 				WakeUpPlayer(med_HealTarget[playerid]);
 			}
@@ -140,7 +140,7 @@ public OnHoldActionFinish(playerid)
 		if(itemtype == item_DoctorBag)
 			GivePlayerHP(med_HealTarget[playerid], 70.0);
 
-		f:bPlayerGameSettings[med_HealTarget[playerid]]<Bleeding>;
+		f:gPlayerBitData[med_HealTarget[playerid]]<Bleeding>;
 		DestroyItem(GetPlayerItem(playerid));
 
 		PlayerStopHeal(playerid);

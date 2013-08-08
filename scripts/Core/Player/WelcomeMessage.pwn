@@ -10,7 +10,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == d_WelcomeMessage)
 	{
-		if(!(bPlayerGameSettings[playerid] & CanExitWelcome))
+		if(!(gPlayerBitData[playerid] & CanExitWelcome))
 		{
 			ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
 		}
@@ -39,7 +39,7 @@ timer ShowWelcomeMessage[1000](playerid, count)
 	{
 		button = "Accept";
 
-		t:bPlayerGameSettings[playerid]<CanExitWelcome>;
+		t:gPlayerBitData[playerid]<CanExitWelcome>;
 	}
 	else
 	{
@@ -49,7 +49,7 @@ timer ShowWelcomeMessage[1000](playerid, count)
 		stop WelcomeMessageTimer[playerid];
 		WelcomeMessageTimer[playerid] = defer ShowWelcomeMessage(playerid, count);
 
-		f:bPlayerGameSettings[playerid]<CanExitWelcome>;
+		f:gPlayerBitData[playerid]<CanExitWelcome>;
 	}
 
 	WelcomeMessageCount[playerid] = count;

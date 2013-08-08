@@ -39,7 +39,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
 		{
-			if(!(bPlayerGameSettings[playerid] & KnockedOut))
+			if(!(gPlayerBitData[playerid] & KnockedOut))
 			{
 				if(GetPlayerAnimationIndex(playerid) == 1381)
 				{
