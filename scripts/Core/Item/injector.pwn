@@ -6,9 +6,12 @@
 
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_AutoInjec)
+	if(IsItemLoot(itemid))
 	{
-		SetItemExtraData(itemid, 1 + random(3));
+		if(GetItemType(itemid) == item_AutoInjec)
+		{
+			SetItemExtraData(itemid, 1 + random(3));
+		}
 	}
 
 	return CallLocalFunction("inj_OnItemCreate", "d", itemid);

@@ -352,11 +352,11 @@ DBStatement:	gStmt_AccountGetAliases,
 // ACCOUNTS_TABLE_BANS
 DBStatement:	gStmt_BanInsert,
 DBStatement:	gStmt_BanDelete,
+DBStatement:	gStmt_BanGetFromNameIp,
 DBStatement:	gStmt_BanGetList,
 DBStatement:	gStmt_BanGetTotal,
 DBStatement:	gStmt_BanGetInfo,
 DBStatement:	gStmt_BanNameCheck,
-DBStatement:	gStmt_BanNameIpCheck,
 DBStatement:	gStmt_BanUpdateIpv4,
 
 // ACCOUNTS_TABLE_REPORTS
@@ -672,7 +672,6 @@ forward SetRestart(seconds);
 //======================Server Core
 
 #include "../scripts/Core/Server/Settings.pwn"
-#include "../scripts/Core/Server/DataCollection.pwn"
 #include "../scripts/Core/Server/TextTags.pwn"
 #include "../scripts/Core/Server/Weather.pwn"
 #include "../scripts/Core/Server/Whitelist.pwn"
@@ -953,11 +952,11 @@ public OnGameModeInit()
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO Bans VALUES(?, ?, ?, ?, ?)");
 	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM Bans WHERE "FIELD_BANS_NAME" = ?");
+	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON" FROM Bans WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
 	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM Bans ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ?");
 	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bans");
 	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM Bans WHERE "FIELD_BANS_NAME" = ?");
 	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bans WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanNameIpCheck		= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bans WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
 	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE Bans SET "FIELD_BANS_IPV4" = ? WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
 
 	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO Reports VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");

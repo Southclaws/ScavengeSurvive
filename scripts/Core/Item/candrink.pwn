@@ -12,14 +12,17 @@ enum
 
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_CanDrink)
+	if(IsItemLoot(itemid))
 	{
-		// First 8 bits represent the type last 8 bits represent the amount
-		new
-			type = random(2),
-			amount = random(10);
+		if(GetItemType(itemid) == item_CanDrink)
+		{
+			// First 8 bits represent the type last 8 bits represent the amount
+			new
+				type = random(2),
+				amount = random(10);
 
-		SetItemExtraData(itemid, CAN_DATA_COMBINE(type, amount));
+			SetItemExtraData(itemid, CAN_DATA_COMBINE(type, amount));
+		}
 	}
 
 	return CallLocalFunction("can_OnItemCreate", "d", itemid);

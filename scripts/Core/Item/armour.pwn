@@ -1,8 +1,11 @@
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_Armour)
+	if(IsItemLoot(itemid))
 	{
-		SetItemExtraData(itemid, random(100) + 1);
+		if(GetItemType(itemid) == item_Armour)
+		{
+			SetItemExtraData(itemid, random(100) + 1);
+		}
 	}
 
 	return CallLocalFunction("armour_OnItemCreate", "d", itemid);

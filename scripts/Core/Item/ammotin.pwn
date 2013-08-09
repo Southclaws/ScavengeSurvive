@@ -4,20 +4,23 @@ new
 
 public OnItemCreated(itemid)
 {
-	if(GetItemType(itemid) == item_Ammo9mm)
-		SetItemExtraData(itemid, random(14));
+	if(IsItemLoot(itemid))
+	{
+		if(GetItemType(itemid) == item_Ammo9mm)
+			SetItemExtraData(itemid, random(14));
 
-	if(GetItemType(itemid) == item_AmmoBuck)
-		SetItemExtraData(itemid, random(7));
+		if(GetItemType(itemid) == item_AmmoBuck)
+			SetItemExtraData(itemid, random(7));
 
-	if(GetItemType(itemid) == item_Ammo556)
-		SetItemExtraData(itemid, random(25));
+		if(GetItemType(itemid) == item_Ammo556)
+			SetItemExtraData(itemid, random(25));
 
-	if(GetItemType(itemid) == item_Ammo357)
-		SetItemExtraData(itemid, random(4));
+		if(GetItemType(itemid) == item_Ammo357)
+			SetItemExtraData(itemid, random(4));
 
-	if(GetItemType(itemid) == item_AmmoRocket)
-		SetItemExtraData(itemid, random(1));
+		if(GetItemType(itemid) == item_AmmoRocket)
+			SetItemExtraData(itemid, random(1));
+	}
 
 	return CallLocalFunction("ammo_OnItemCreated", "d", itemid);
 }

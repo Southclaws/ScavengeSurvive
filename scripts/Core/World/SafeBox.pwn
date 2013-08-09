@@ -362,7 +362,7 @@ LoadSafeboxes(prints = false)
 
 					itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
 
-					if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
+					if(!IsItemTypeExtraDataDependent(ItemType:data[i]))
 						SetItemExtraData(itemid, data[i + 1]);
 
 					AddItemToContainer(containerid, itemid);
@@ -473,4 +473,18 @@ stock GetContainerSafeboxItem(containerid)
 		return INVALID_ITEM_ID;
 
 	return box_ContainerSafebox[containerid];
+}
+
+stock IsItemTypeExtraDataDependent(ItemType:itemtype)
+{
+	if(IsItemTypeBag(itemtype))
+		return 1;
+
+	if(IsItemTypeSafebox(itemtype))
+		return 1;
+
+	if(itemtype == item_Campfire)
+		return 1;
+
+	return 0;
 }

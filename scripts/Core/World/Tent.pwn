@@ -295,18 +295,21 @@ LoadTents(prints)
 				if(prints)
 					printf("\t[LOAD] Tent at %f, %f, %f", x, y, z);
 
-				itemid = CreateTent(Float:x, Float:y, Float:z, Float:r);
+				CreateTent(Float:x, Float:y, Float:z, Float:r);
 
 				while(idx < sizeof(data))
 				{
-					CreateItem(ItemType:data[idx + TENT_CELL_ITEMTYPE],
+					if(!IsValidItemType(ItemType:data[idx + TENT_CELL_ITEMTYPE]))
+						break;
+
+					itemid = CreateItem(ItemType:data[idx + TENT_CELL_ITEMTYPE],
 						Float:data[idx + TENT_CELL_POSX],
 						Float:data[idx + TENT_CELL_POSY],
 						Float:data[idx + TENT_CELL_POSZ],
 						.rz = Float:data[idx + TENT_CELL_ROTZ],
 						.zoffset = FLOOR_OFFSET);
 
-					if(!IsItemTypeBag(ItemType:data[idx + TENT_CELL_ITEMTYPE]) && ItemType:data[idx + TENT_CELL_ITEMTYPE] != item_Campfire)
+					if(!IsItemTypeExtraDataDependent(ItemType:data[idx + TENT_CELL_ITEMTYPE]))
 						SetItemExtraData(itemid, data[idx + TENT_CELL_EXDATA]);
 
 					idx += TENT_CELL_END;

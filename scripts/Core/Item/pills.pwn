@@ -5,9 +5,12 @@
 
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_Pills)
+	if(IsItemLoot(itemid))
 	{
-		SetItemExtraData(itemid, random(3));
+		if(GetItemType(itemid) == item_Pills)
+		{
+			SetItemExtraData(itemid, random(3));
+		}
 	}
 
 	return CallLocalFunction("pil_OnItemCreate", "d", itemid);

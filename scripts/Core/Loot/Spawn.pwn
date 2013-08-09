@@ -12,7 +12,8 @@ Float:		loot_spawnChance
 new
 			loot_IndexUpper,
 			loot_IndexSize[MAX_LOOT_INDEX],
-			loot_IndexItems[MAX_LOOT_INDEX][MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA];
+			loot_IndexItems[MAX_LOOT_INDEX][MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
+			loot_IsItemLoot[ITM_MAX];
 
 
 DefineLootIndex(indexvalue)
@@ -105,6 +106,8 @@ CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zof
 
 	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
 
+	loot_IsItemLoot[itemid] = 1;
+
 	if(IsItemTypeWeapon(itemtype))
 	{
 		SetItemExtraData(itemid, random(GetWeaponMagSize(_:itemtype)));
@@ -156,4 +159,16 @@ FillContainerWithLoot(containerid, slots, lootindex)
 	}
 
 	return 1;
+}
+
+
+//
+
+
+stock IsItemLoot(itemid)
+{
+	if(!IsValidItem(itemid))
+		return 0;
+
+	return loot_IsItemLoot[itemid];
 }

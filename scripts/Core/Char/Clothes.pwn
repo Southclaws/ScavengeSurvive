@@ -73,7 +73,7 @@ public OnItemNameRender(itemid)
 		new
 			exname[32];
 
-		if(skin_Data[GetItemExtraData(itemid)][skin_gender] == 1)
+		if(skin_Data[GetItemExtraData(itemid)][skin_gender] == GENDER_MALE)
 			strcat(exname, "Male ");
 
 		else

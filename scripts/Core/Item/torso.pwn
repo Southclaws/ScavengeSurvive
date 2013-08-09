@@ -44,6 +44,10 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 				gut_TargetItem[playerid] = itemid;
 			}
+			else
+			{
+				ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
+			}
 		}
 	}
 	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
@@ -89,7 +93,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			if(GetPlayerWeapon(playerid) != 4)
 			{
-				ShowGravestoneMsg(playerid, GetItemExtraData(gut_TargetItem[playerid]));
+				if(!ShowGravestoneMsg(playerid, GetItemExtraData(gut_TargetItem[playerid])))
+					ShowActionText(playerid, "The body has decomposed too much to make an identification", 3000);
+
 				stop gut_PickUpTimer[playerid];
 				gut_TargetItem[playerid] = INVALID_ITEM_ID;
 			}

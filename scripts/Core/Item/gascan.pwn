@@ -1,8 +1,11 @@
 public OnItemCreate(itemid)
 {
-	if(GetItemType(itemid) == item_GasCan)
+	if(IsItemLoot(itemid))
 	{
-		SetItemExtraData(itemid, random(10));
+		if(GetItemType(itemid) == item_GasCan)
+		{
+			SetItemExtraData(itemid, random(10));
+		}
 	}
 
 	return CallLocalFunction("gas_OnItemCreate", "d", itemid);

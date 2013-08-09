@@ -10,10 +10,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & KEY_YES)
 	{
 		new itemid = GetPlayerItem(playerid);
+
 		if(GetItemType(itemid) == item_Parachute)
 		{
 			if(!IsValidItem(GetPlayerBackpackItem(playerid)))
 			{
+				RemovePlayerWeapon(playerid);
 				SetPlayerWeapon(playerid, 46, 1);
 				DestroyItem(GetPlayerItem(playerid));
 			}
