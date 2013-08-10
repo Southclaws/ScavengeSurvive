@@ -143,27 +143,6 @@ LoadVehiclesFromFile(file[])
 	return 1;
 }
 
-public OnVehicleDeath(vehicleid)
-{
-	t:veh_BitData[vehicleid]<veh_Dead>;
-	printf("Vehicle %d Died", vehicleid);
-}
-
-public OnVehicleSpawn(vehicleid)
-{
-	if(veh_BitData[vehicleid] & veh_Dead)
-	{
-		printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
-
-		if(IsValidContainer(veh_Container[vehicleid]))
-			DestroyContainer(veh_Container[vehicleid]);
-
-		DestroyDynamicArea(veh_Area[vehicleid]);
-		DestroyVehicle(vehicleid, 3);
-		Iter_Remove(veh_Index, vehicleid);
-	}
-}
-
 RandomNumberPlateString()
 {
 	new str[9];

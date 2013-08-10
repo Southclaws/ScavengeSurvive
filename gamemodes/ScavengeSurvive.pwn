@@ -938,7 +938,7 @@ public OnGameModeInit()
 		)"));
 
 	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, '0', '0', '0.0, 0.0, 0.0, 0.0', ?, '0', ?, ?)");
+	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, 0, '0.0, 0.0, 0.0, 0.0', ?, 0, ?, ?, 0, 0, 0)");
 	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_ISVIP" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM Player WHERE "FIELD_PLAYER_NAME" = ?");

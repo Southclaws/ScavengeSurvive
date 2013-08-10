@@ -1,3 +1,19 @@
+stock IsPointInMapBounds(Float:x, Float:y, Float:z)
+{
+	if(-3000.0 <= x <= 3000.0)
+	{
+		if(-3000.0 <= y <= 3000.0)
+		{
+			if(-100.0 <= z <= 1000.0)
+			{
+				return 1;
+			}
+		}
+	}
+
+	return 0;
+}
+
 stock TimestampToDateTime(datetime)
 {
 	new

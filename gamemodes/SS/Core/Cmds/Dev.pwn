@@ -408,6 +408,21 @@ ACMD:vrespawn[4](playerid, params[])
 	return 1;
 }
 
+ACMD:vreset[4](playerid, params[])
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicleID(vehicleid))
+	{
+		Msg(playerid, RED, " >  You are not in a vehicle.");
+		return 1;
+	}
+
+	ResetVehicle(vehicleid);
+
+	return 1;
+}
+
 ACMD:weather[4](playerid, params[])
 {
 	if(strlen(params) > 2)

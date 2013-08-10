@@ -374,7 +374,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #define OnPlayerUseItemWithItem wep_OnPlayerUseItemWithItem
 forward wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
-
+/*
 public OnPlayerRemoveFromInventory(playerid, slotid)
 {
 	if(!IsValidContainer(GetPlayerCurrentContainer(playerid)))
@@ -430,6 +430,21 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 #endif
 #define OnItemRemoveFromContainer wep_OnItemRemoveFromContainer
 forward wep_OnItemRemoveFromContainer(containerid, slotid, playerid);
+*/
+
+public OnPlayerPickedUpItem(playerid, itemid)
+{
+	ConvertPlayerItemToWeapon(playerid);
+
+	return CallLocalFunction("wep_OnPlayerPickedUpItem", "ddd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerPickedUpItem
+	#undef OnPlayerPickedUpItem
+#else
+	#define _ALS_OnPlayerPickedUpItem
+#endif
+#define OnPlayerPickedUpItem wep_OnPlayerPickedUpItem
+forward wep_OnPlayerPickedUpItem(playerid, itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

@@ -271,32 +271,6 @@ timer CloseDefense[1500](defenseid)
 	def_Data[defenseid][def_open] = false;
 }
 
-public OnPlayerPickedUpItem(playerid, itemid)
-{
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(def_ItemTypeBounds[0] <= _:itemtype <= def_ItemTypeBounds[1])
-	{
-		for(new i; i < def_TypeIndex; i++)
-		{
-			if(itemtype == def_TypeData[i][def_itemtype])
-			{
-				ShowHelpTip(playerid, "Use a screwdriver with this while dropped to construct a permanent wall. Or use a hammer to construct a permanent floor.", 10000);
-			}
-		}
-	}
-
-	return CallLocalFunction("def_OnPlayerPickedUpItem", "dd", playerid, itemid);
-}
-#if defined _ALS_OnPlayerPickedUpItem
-	#undef OnPlayerPickedUpItem
-#else
-	#define _ALS_OnPlayerPickedUpItem
-#endif
-#define OnPlayerPickedUpItem def_OnPlayerPickedUpItem
-forward def_OnPlayerPickedUpItem(playerid, itemid);
-
-
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);

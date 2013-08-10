@@ -89,7 +89,6 @@ CreateAccount(playerid, password[])
 	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	(gPlayerBitData[playerid] & IsVip) ? 1 : 0);
 	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime());
 	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_INTEGER,	gettime());
-
 	stmt_execute(gStmt_AccountCreate);
 
 	if(gWhitelist)
@@ -397,13 +396,6 @@ SavePlayerData(playerid)
 
 		new spawn[48];
 		format(spawn, 48, "%f %f %f %f", gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ], gPlayerData[playerid][ply_SpawnRotZ]);
-
-		// FIELD_PLAYER_ALIVE		0
-		// FIELD_PLAYER_SPAWN		1
-		// FIELD_PLAYER_ISVIP		2
-		// FIELD_PLAYER_KARMA		3
-		// FIELD_PLAYER_WARNINGS	4
-		// FIELD_PLAYER_NAME		5
 
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
 		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, spawn, 48);

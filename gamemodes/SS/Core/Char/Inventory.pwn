@@ -128,7 +128,7 @@ UpdatePlayerGear(playerid, show = 1)
 	{
 		if(GetPlayerCurrentWeapon(playerid) != 0)
 		{
-			if(GetPlayerWeapon(playerid) == 0)
+			if(GetPlayerWeapon(playerid) == 0 && GetPlayerCurrentWeapon(playerid) == WEAPON_PARACHUTE)
 			{
 				PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], "<Empty>");
 				PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], 19300);
@@ -138,13 +138,11 @@ UpdatePlayerGear(playerid, show = 1)
 
 				return;
 			}
-			else
-			{
-				GetWeaponName(GetPlayerCurrentWeapon(playerid), tmp);
-				PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
-				PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(GetPlayerCurrentWeapon(playerid)));
-				PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
-			}
+
+			GetWeaponName(GetPlayerCurrentWeapon(playerid), tmp);
+			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
+			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(GetPlayerCurrentWeapon(playerid)));
+			PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 		}
 		else
 		{

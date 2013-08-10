@@ -36,7 +36,11 @@ Float:	veh_Fuel,
 		veh_tires,
 		veh_armour,
 		veh_colour1,
-		veh_colour2
+		veh_colour2,
+Float:	veh_spawnX,
+Float:	veh_spawnY,
+Float:	veh_spawnZ,
+Float:	veh_spawnR
 }
 
 
@@ -120,6 +124,7 @@ CreateNewVehicle(model, Float:x, Float:y, Float:z, Float:r)
 	CreateVehicleArea(vehicleid);
 	GenerateVehicleData(vehicleid);
 	UpdateVehicleData(vehicleid);
+	SetVehicleSpawnPoint(vehicleid, x, y, z, r);
 
 	return vehicleid;
 }
@@ -734,11 +739,16 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	if(oldstate == PLAYER_STATE_DRIVER && !IsPlayerOnAdminDuty(playerid))
 	{
-		new name[MAX_PLAYER_NAME];
+		new
+			name[MAX_PLAYER_NAME],
+			vehicleid;
 
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+		vehicleid = GetPlayerLastVehicle(playerid);
 
-		SavePlayerVehicle(GetPlayerLastVehicle(playerid), name);
+		SavePlayerVehicle(vehicleid, name);
+		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 		SetCameraBehindPlayer(playerid);
 	}
 
@@ -836,7 +846,11 @@ VehicleTrunkUpdateSave(playerid)
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
 			if(!strcmp(owner, name))
+			{
 				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
+				GetVehiclePos(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnX], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnY], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnZ]);
+				GetVehicleZAngle(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnR]);
+			}
 		}
 	}
 }
@@ -848,6 +862,77 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 		veh_Data[vehicleid][veh_doors],
 		veh_Data[vehicleid][veh_lights],
 		veh_Data[vehicleid][veh_tires]);
+}
+
+IsVehicleValidOutOfBounds(vehicleid)
+{
+	new vehicletype = GetVehicleType(GetVehicleModel(vehicleid));
+
+	if(!IsPointInMapBounds(veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]))
+	{
+		switch(vehicletype)
+		{
+			case VTYPE_SEA, VTYPE_HELI, VTYPE_PLANE:
+				return 1;
+
+			default:
+				return 0;
+		}
+	}
+
+	return 0;
+}
+
+ResetVehicle(vehicleid)
+{
+	new modelid = GetVehicleModel(vehicleid);
+
+	DestroyVehicle(vehicleid, 4);
+	CreateVehicle(modelid,
+		veh_Data[vehicleid][veh_spawnX],
+		veh_Data[vehicleid][veh_spawnY],
+		veh_Data[vehicleid][veh_spawnZ],
+		veh_Data[vehicleid][veh_spawnR],
+		veh_Data[vehicleid][veh_colour1],
+		veh_Data[vehicleid][veh_colour2], 86400);
+
+	UpdateVehicleData(vehicleid);
+}
+
+public OnVehicleDeath(vehicleid)
+{
+	GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+	t:veh_BitData[vehicleid]<veh_Dead>;
+	printf("Vehicle %d Died", vehicleid);
+}
+
+public OnVehicleSpawn(vehicleid)
+{
+	if(veh_BitData[vehicleid] & veh_Dead)
+	{
+		if(IsVehicleValidOutOfBounds(vehicleid))
+		{
+			printf("Dead Vehicle %d Spawned, is valid out-of-bounds vehicle, resetting.", vehicleid);
+
+			f:veh_BitData[vehicleid]<veh_Dead>;
+			ResetVehicle(vehicleid);
+		}
+		else
+		{
+			printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
+
+			if(IsValidContainer(veh_Container[vehicleid]))
+				DestroyContainer(veh_Container[vehicleid]);
+
+			DestroyDynamicArea(veh_Area[vehicleid]);
+			DestroyVehicle(vehicleid, 3);
+			Iter_Remove(veh_Index, vehicleid);
+
+			RemovePlayerVehicleFile(vehicleid);
+		}
+	}
+
+	return 1;
 }
 
 
@@ -1076,4 +1161,30 @@ stock GetContainerTrunkVehicleID(containerid)
 		return INVALID_VEHICLE_ID;
 
 	return veh_ContainerVehicle[containerid];
+}
+
+stock SetVehicleSpawnPoint(vehicleid, Float:x, Float:y, Float:z, Float:r)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	veh_Data[vehicleid][veh_spawnX] = x;
+	veh_Data[vehicleid][veh_spawnY] = y;
+	veh_Data[vehicleid][veh_spawnZ] = z;
+	veh_Data[vehicleid][veh_spawnR] = r;
+
+	return 1;
+}
+
+stock GetVehicleSpawnPoint(vehicleid, &Float:x, &Float:y, &Float:z, &Float:r)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	x = veh_Data[vehicleid][veh_spawnX];
+	y = veh_Data[vehicleid][veh_spawnY];
+	z = veh_Data[vehicleid][veh_spawnZ];
+	r = veh_Data[vehicleid][veh_spawnR];
+
+	return 1;
 }
