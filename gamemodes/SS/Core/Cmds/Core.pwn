@@ -175,8 +175,8 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 
 	if(count == 0)
 	{
-		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_INTEGER, level);
-		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
 
 		if(stmt_execute(gStmt_AdminInsert))
 		{

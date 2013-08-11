@@ -275,8 +275,8 @@ ConvertPlayerWeaponToItem(playerid)
 	RemovePlayerWeapon(playerid);
 
 	itemid = CreateItem(ItemType:weaponid);
-	GiveWorldItemToPlayer(playerid, itemid);
 	SetItemExtraData(itemid, ammo);
+	GiveWorldItemToPlayer(playerid, itemid, false);
 
 	wep_CurrentWeapon[playerid] = 0;
 	wep_ReserveAmmo[playerid] = 0;

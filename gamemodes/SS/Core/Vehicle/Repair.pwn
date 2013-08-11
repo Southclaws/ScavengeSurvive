@@ -93,22 +93,22 @@ forward rep_OnHoldActionUpdate(playerid, progress);
 
 CompToolHealth(ItemType:itemtype, Float:health)
 {
-	if(health < VEHICLE_HEALTH_CHUNK_2 - 2.0)
+	if(health <= VEHICLE_HEALTH_CHUNK_2 - 2.0)
 	{
 		if(itemtype == item_Wrench)
 			return 1;
 	}
-	else if(VEHICLE_HEALTH_CHUNK_2 - 2.0 < health < VEHICLE_HEALTH_CHUNK_3 - 2.0)
+	else if(VEHICLE_HEALTH_CHUNK_2 - 2.0 <= health <= VEHICLE_HEALTH_CHUNK_3 - 2.0)
 	{
 		if(itemtype == item_Screwdriver)
 			return 1;
 	}
-	else if(VEHICLE_HEALTH_CHUNK_3 - 2.0 < health < VEHICLE_HEALTH_CHUNK_4 - 2.0)
+	else if(VEHICLE_HEALTH_CHUNK_3 - 2.0 <= health <= VEHICLE_HEALTH_CHUNK_4 - 2.0)
 	{
 		if(itemtype == item_Hammer)
 			return 1;
 	}
-	else if(VEHICLE_HEALTH_CHUNK_4 - 2.0 < health < VEHICLE_HEALTH_MAX - 2.0)
+	else if(VEHICLE_HEALTH_CHUNK_4 - 2.0 <= health <= VEHICLE_HEALTH_MAX - 2.0)
 	{
 		if(itemtype == item_Wrench)
 			return 1;
