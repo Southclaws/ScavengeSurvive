@@ -60,8 +60,8 @@ native IsValidVehicle(vehicleid);
 #include <Zipline>					// By Southclaw:			(Not uploaded yet)
 #include <Ladder>					// By Southclaw:			(Not uploaded yet)
 
-
 native WP_Hash(buffer[], len, const str[]);
+									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
 
 
 //===================================================================Definitions

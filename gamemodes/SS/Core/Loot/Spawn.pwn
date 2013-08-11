@@ -104,14 +104,17 @@ CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zof
 	if(itemtype == exception)
 		return INVALID_ITEM_ID;
 
-	itemid = CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
+	itemid = GetNextItemID();
+
+	if(!(0 <= itemid < ITM_MAX))
+		return INVALID_ITEM_ID;
 
 	loot_IsItemLoot[itemid] = 1;
 
+	CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
+
 	if(IsItemTypeWeapon(itemtype))
-	{
 		SetItemExtraData(itemid, random(GetWeaponMagSize(_:itemtype)));
-	}
 	
 	if(exdata != -1)
 		SetItemExtraData(itemid, exdata);
