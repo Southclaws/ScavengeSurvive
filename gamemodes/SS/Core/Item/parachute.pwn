@@ -13,7 +13,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if(GetItemType(itemid) == item_Parachute)
 		{
-			if(!IsValidItem(GetPlayerBackpackItem(playerid)))
+			if(!IsValidItem(GetPlayerBagItem(playerid)))
 			{
 				RemovePlayerWeapon(playerid);
 				SetPlayerWeapon(playerid, 46, 1);

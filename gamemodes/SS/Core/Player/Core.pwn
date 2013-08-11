@@ -81,14 +81,6 @@ Float:	ply_RadioFrequency,
 		ply_LastChatMessageTick
 }
 
-enum
-{
-		CHAT_MODE_LOCAL,
-		CHAT_MODE_GLOBAL,
-		CHAT_MODE_RADIO,
-		CHAT_MODE_ADMIN
-}
-
 
 new
 E_PLAYER_BIT_DATA:
@@ -737,87 +729,22 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 }
 
 
+// ply_Password
+// ply_IP
+// ply_Karma
+// ply_RegisterTimestamp
+// ply_LastLogin
+// ply_TotalSpawns
+// ply_Warnings
 
-IsPlayerDead(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
+// ply_Admin
 
-	return _:(gPlayerBitData[playerid] & Dying);
-}
-
-IsPlayerAlive(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & Alive);
-}
-
-IsPlayerKnockedOut(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & KnockedOut);
-}
-
-IsPlayerOnAdminDuty(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & AdminDuty);
-}
-
-IsPlayerBleeding(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & Bleeding);
-}
-
-GetPlayerServerJoinTick(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return gPlayerData[playerid][ply_JoinTick];
-}
-
-GetPlayerSpawnTick(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return gPlayerData[playerid][ply_SpawnTick];
-}
-
-GetPlayerVehicleExitTick(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return gPlayerData[playerid][ply_ExitVehicleTick];
-}
-
-E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return E_PLAYER_BIT_DATA:0;
-
-	return gPlayerBitData[playerid];
-}
-
-GetPlayerLastVehicle(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return gPlayerData[playerid][ply_CurrentVehicle];
-}
-
+// ply_HitPoints
+// ply_ArmourPoints
+// ply_FoodPoints
+// ply_Clothes
+// ply_Gender
+// ply_Velocity
 forward Float:GetPlayerTotalVelocity(playerid);
 Float:GetPlayerTotalVelocity(playerid)
 {
@@ -825,4 +752,186 @@ Float:GetPlayerTotalVelocity(playerid)
 		return 0.0;
 
 	return gPlayerData[playerid][ply_Velocity];
+}
+
+// ply_SpawnPosX
+// ply_SpawnPosY
+// ply_SpawnPosZ
+// ply_SpawnRotZ
+// ply_DeathPosX
+// ply_DeathPosY
+// ply_DeathPosZ
+// ply_DeathRotZ
+// ply_RadioFrequency
+forward Float:GetPlayerRadioFrequency(playerid);
+stock Float:GetPlayerRadioFrequency(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0.0;
+
+	return gPlayerData[playerid][ply_RadioFrequency];
+}
+stock SetPlayerRadioFrequency(playerid, Float:frequency)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	gPlayerData[playerid][ply_RadioFrequency] = frequency;
+
+	return 1;
+}
+
+// ply_CreationTimestamp
+
+// ply_ChatMode
+stock GetPlayerChatMode(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_ChatMode];
+}
+stock SetPlayerChatMode(playerid, chatmode)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	gPlayerData[playerid][ply_ChatMode] = chatmode;
+
+	return 1;
+}
+
+// ply_CurrentVehicle
+stock GetPlayerLastVehicle(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_CurrentVehicle];
+}
+
+// ply_LastHitBy
+// ply_LastKilledBy
+// ply_PingLimitStrikes
+// ply_SpectateTarget
+// ply_ScreenBoxFadeLevel
+// ply_stance
+// ply_JoinTick
+stock GetPlayerServerJoinTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_JoinTick];
+}
+
+// ply_SpawnTick
+stock GetPlayerSpawnTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_SpawnTick];
+}
+
+// ply_TookDamageTick
+stock GetPlayerTookDamageTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_TookDamageTick];
+}
+
+// ply_DeltDamageTick
+stock GetPlayerDeltDamageTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_DeltDamageTick];
+}
+
+// ply_ExitVehicleTick
+stock GetPlayerVehicleExitTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_ExitVehicleTick];
+}
+
+// ply_LastChatMessageTick
+stock GetPlayerLastChatTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_LastChatMessageTick];
+}
+
+
+stock E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return E_PLAYER_BIT_DATA:0;
+
+	return gPlayerBitData[playerid];
+}
+
+
+stock IsPlayerDead(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Dying);
+}
+
+stock IsPlayerAlive(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Alive);
+}
+
+stock IsPlayerKnockedOut(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & KnockedOut);
+}
+
+stock IsPlayerOnAdminDuty(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & AdminDuty);
+}
+
+stock IsPlayerBleeding(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Bleeding);
+}
+
+stock IsPlayerHudOn(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & ShowHUD);
+}
+
+stock IsPlayerToolTipsOn(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & ToolTips);
 }

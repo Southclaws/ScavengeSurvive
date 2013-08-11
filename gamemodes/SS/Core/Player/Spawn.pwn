@@ -168,7 +168,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	backpackitem = CreateItem(item_Satchel);
 	containerid = GetItemExtraData(backpackitem);
 
-	GivePlayerBackpack(playerid, backpackitem);
+	GivePlayerBag(playerid, backpackitem);
 
 	tmpitem = CreateItem(item_Wrench);
 	AddItemToContainer(containerid, tmpitem);

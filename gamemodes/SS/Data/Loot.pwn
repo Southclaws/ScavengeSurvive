@@ -125,6 +125,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Military,		item_Ammo556,						0.2);
 	AddItemToLootIndex(loot_Military,		item_Ammo357,						0.09);
 	AddItemToLootIndex(loot_Military,		item_AmmoRocket,					0.05);
+	AddItemToLootIndex(loot_Military,		item_LargeBackpack,					0.07);
 
 	// loot_Medical
 	AddItemToLootIndex(loot_Medical,		item_Bandage,						0.5);
@@ -258,6 +259,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarMilitary,	item_Ammo556,						0.1);
 	AddItemToLootIndex(loot_CarMilitary,	item_Ammo357,						0.06);
 	AddItemToLootIndex(loot_CarMilitary,	item_AmmoRocket,					0.01);
+	AddItemToLootIndex(loot_CarMilitary,	item_LargeBackpack,					0.08);
 
 	// loot_Survivor
 	AddItemToLootIndex(loot_Survivor,		ItemType:WEAPON_KATANA,				0.1);

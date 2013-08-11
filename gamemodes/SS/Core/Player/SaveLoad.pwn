@@ -29,9 +29,9 @@ enum
 
 enum
 {
-	INV_CELL_ITEMS[8],
+	INV_CELL_ITEMS[4 * 2],
 	INV_CELL_BAGTYPE,
-	INV_CELL_BAGITEMS[16],
+	INV_CELL_BAGITEMS[9 * 2],
 	INV_CELL_END
 }
 
@@ -129,11 +129,11 @@ SavePlayerInventory(playerid)
 		data[i + 1] = GetItemExtraData(GetInventorySlotItem(playerid, j));
 	}
 
-	if(IsValidItem(GetPlayerBackpackItem(playerid)))
+	if(IsValidItem(GetPlayerBagItem(playerid)))
 	{
-		new containerid = GetItemExtraData(GetPlayerBackpackItem(playerid));
+		new containerid = GetItemExtraData(GetPlayerBagItem(playerid));
 
-		data[INV_CELL_BAGTYPE] = _:GetItemType(GetPlayerBackpackItem(playerid));
+		data[INV_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
 		for(new i = INV_CELL_BAGITEMS, j; j < GetContainerSize(containerid); i += 2, j++)
 		{
@@ -274,7 +274,7 @@ LoadPlayerInventory(playerid)
 
 	itemid = CreateItem(ItemType:data[INV_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 	containerid = GetItemExtraData(itemid);
-	GivePlayerBackpack(playerid, itemid);
+	GivePlayerBag(playerid, itemid);
 
 	for(new i = INV_CELL_BAGITEMS; i < INV_CELL_BAGITEMS + (GetContainerSize(containerid) * 2); i += 2)
 	{

@@ -163,7 +163,7 @@ UpdatePlayerGear(playerid, show = 1)
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 19300);
 	}
 
-	itemid = GetPlayerBackpackItem(playerid);
+	itemid = GetPlayerBagItem(playerid);
 	if(IsValidItem(itemid))
 	{
 		GetItemName(itemid, tmp);
@@ -273,7 +273,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 		{
 			UpdatePlayerGear(playerid);
 		}
@@ -524,7 +524,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 	if(playertextid == GearSlot_Back[UI_ELEMENT_TILE])
 	{
-		new itemid = GetPlayerBackpackItem(playerid);
+		new itemid = GetPlayerBagItem(playerid);
 
 		if(IsValidItem(itemid))
 		{
@@ -615,7 +615,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{
@@ -642,7 +642,7 @@ forward inv_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{

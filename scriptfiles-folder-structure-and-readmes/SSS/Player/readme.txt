@@ -1,4 +1,4 @@
-This is where player inventory files are stored. They are stored
+This is where player character data files are stored. They are stored
 in binary non-encoded format (unlike "ini" files) to minimise
 the ease of tampering with player's inventory data.
 This also makes saving and loading data faster than encoded files

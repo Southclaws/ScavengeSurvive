@@ -12,13 +12,13 @@ ptask ToolTipUpdate[1000](playerid)
 		return;		
 	}
 
-	if(gPlayerBitData[playerid] & KnockedOut)
+	if(IsPlayerKnockedOut(playerid))
 	{
 		HidePlayerToolTip(playerid);
 		return;		
 	}
 
-	if(!(gPlayerBitData[playerid] & ShowHUD))
+	if(!IsPlayerHudOn(playerid))
 	{
 		HidePlayerToolTip(playerid);
 		return;		

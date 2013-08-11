@@ -38,7 +38,7 @@ hook OnPlayerConnect(playerid)
 
 DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry)
 {
-	if(box_TypeTotal == MAX_SAFEBOX_TYPE-1)
+	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
 
 	box_TypeData[box_TypeTotal][box_name]		= name;

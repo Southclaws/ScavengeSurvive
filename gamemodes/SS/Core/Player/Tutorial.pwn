@@ -56,7 +56,7 @@ forward tut_OnPlayerOpenInventory(playerid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 	{
 		if(TutorialState[playerid] == 2)
 		{
@@ -77,7 +77,7 @@ forward tut_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 	{
 		if(TutorialState[playerid] == 3)
 		{
@@ -103,7 +103,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 		{
 			if(TutorialState[playerid] == 4)
 			{
@@ -208,7 +208,7 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBackpackItem(playerid)))
+		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
 		{
 			if(TutorialState[playerid] == 10)
 			{

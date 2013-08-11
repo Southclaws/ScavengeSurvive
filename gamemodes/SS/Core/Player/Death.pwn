@@ -106,7 +106,7 @@ DropItems(playerid)
 {
 	new
 		interior = GetPlayerInterior(playerid),
-		backpackitem = GetPlayerBackpackItem(playerid),
+		backpackitem = GetPlayerBagItem(playerid),
 		itemid,
 		clothes = GetPlayerClothes(playerid);
 
@@ -167,7 +167,7 @@ DropItems(playerid)
 
 	if(IsValidItem(backpackitem))
 	{
-		RemovePlayerBackpack(playerid);
+		RemovePlayerBag(playerid);
 
 		CreateItemInWorld(backpackitem,
 			gPlayerData[playerid][ply_DeathPosX] + floatsin(180.0, degrees),

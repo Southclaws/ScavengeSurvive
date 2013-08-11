@@ -349,7 +349,7 @@ Logout(playerid)
 	if(gPlayerBitData[playerid] & Alive)
 	{
 		DestroyItem(itemid);
-		DestroyPlayerBackpack(playerid);
+		DestroyPlayerBag(playerid);
 		RemovePlayerHolsterItem(playerid);
 		RemovePlayerWeapon(playerid);
 

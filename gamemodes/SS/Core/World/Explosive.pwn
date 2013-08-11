@@ -108,7 +108,7 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			GetPlayerPos(playerid, x, y, z);
 			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
 			DestroyItem(itemid);
-			DestroyPlayerBackpack(playerid);
+			DestroyPlayerBag(playerid);
 
 			return 1;
 		}

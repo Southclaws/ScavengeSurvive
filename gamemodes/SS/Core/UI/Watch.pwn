@@ -25,7 +25,7 @@ ptask UpdateWatch[1000](playerid)
 	gettime(hour, minute);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		GetVehicleZAngle(gPlayerData[playerid][ply_CurrentVehicle], angle);
+		GetVehicleZAngle(GetPlayerLastVehicle(playerid), angle);
 
 	else
 		GetPlayerFacingAngle(playerid, angle);
@@ -36,6 +36,6 @@ ptask UpdateWatch[1000](playerid)
 	format(str, 12, "%.0f DEG", 360 - angle);
 	PlayerTextDrawSetString(playerid, WatchBear, str);
 
-	format(str, 7, "%.2f", gPlayerData[playerid][ply_RadioFrequency]);
+	format(str, 7, "%.2f", GetPlayerRadioFrequency(playerid));
 	PlayerTextDrawSetString(playerid, WatchFreq, str);
 }

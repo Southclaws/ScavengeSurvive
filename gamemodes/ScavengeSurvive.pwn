@@ -212,16 +212,16 @@ native WP_Hash(buffer[], len, const str[]);
 
 enum
 {
-	ATTACHSLOT_ITEM,		// 0
-	ATTACHSLOT_BAG,			// 1
-	ATTACHSLOT_USE,			// 2
-	ATTACHSLOT_HOLSTER,		// 3
-	ATTACHSLOT_HOLD,		// 4
-	ATTACHSLOT_CUFFS,		// 5
-	ATTACHSLOT_TORCH,		// 6
-	ATTACHSLOT_HAT,			// 7
-	ATTACHSLOT_BLOOD,		// 8
-	ATTACHSLOT_ARMOUR		// 9
+	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
+	ATTACHSLOT_BAG,			// 1 - Bag on back
+	ATTACHSLOT_USE,			// 2 - Item use temp slot
+	ATTACHSLOT_HOLSTER,		// 3 - Item holstering
+	ATTACHSLOT_HOLD,		// 4 - Unused
+	ATTACHSLOT_CUFFS,		// 5 - Handcuff slot
+	ATTACHSLOT_TORCH,		// 6 - Torch light slot
+	ATTACHSLOT_HAT,			// 7 - Head-wear slot
+	ATTACHSLOT_BLOOD,		// 8 - Bleeding particle effect
+	ATTACHSLOT_ARMOUR		// 9 - Armour model slot
 }
 
 enum
@@ -233,6 +233,14 @@ enum
 	DRUG_TYPE_MORPHINE,		// 4 - Shaky screen and health regen
 	DRUG_TYPE_ADRENALINE,	// 5 - No knockouts, camera shaking and slow health regen
 	DRUG_TYPE_HEROINE		// 6 - Weather effects
+}
+
+enum
+{
+	CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
+	CHAT_MODE_GLOBAL,		// 1 - Speak to all players
+	CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
+	CHAT_MODE_ADMIN			// 3 - Speak to admins
 }
 
 
@@ -602,7 +610,8 @@ ItemType:		item_Motor			= INVALID_ITEM_TYPE,
 ItemType:		item_StarterMotor	= INVALID_ITEM_TYPE,
 ItemType:		item_FlareGun		= INVALID_ITEM_TYPE,
 ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE,
-ItemType:		item_CodePart		= INVALID_ITEM_TYPE;
+ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
+ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE;
 
 
 //=====================Menus and Textdraws
@@ -650,7 +659,7 @@ forward SetRestart(seconds);
 #define NOTEBOOK_FILE			"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME	(MAX_PLAYER_NAME + 18)
 
-//======================Libraries of Functions
+//======================Utilities
 
 #include "SS/utils/math.pwn"
 #include "SS/utils/misc.pwn"
@@ -663,7 +672,7 @@ forward SetRestart(seconds);
 #include "SS/utils/player.pwn"
 #include "SS/utils/object.pwn"
 
-//======================API Scripts
+//======================SIF Module Scripts
 
 #include <SIF/Modules/Craft.pwn>
 #include <SIF/Modules/Notebook.pwn>
@@ -676,20 +685,39 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/Whitelist.pwn"
 #include "SS/Core/Server/SaveBlock.pwn"
 
-//======================Data Load
+//======================UI
 
+#include "SS/Core/UI/PlayerUI.pwn"
+#include "SS/Core/UI/GlobalUI.pwn"
+#include "SS/Core/UI/HoldAction.pwn"
+#include "SS/Core/UI/Radio.pwn"
+#include "SS/Core/UI/TipText.pwn"
+#include "SS/Core/UI/KeyActions.pwn"
+#include "SS/Core/UI/ToolTips.pwn"
+#include "SS/Core/UI/Watch.pwn"
+#include "SS/Core/UI/Keypad.pwn"
+
+//======================Game Data
+
+#include "SS/Data/Vehicle.pwn"
 #include "SS/Data/Weapon.pwn"
 #include "SS/Data/Loot.pwn"
-#include "SS/Data/Vehicle.pwn"
 
-//======================Data Setup
+//======================Vehicle
 
-#include "SS/Core/Weapon/Core.pwn"
-#include "SS/Core/Loot/Spawn.pwn"
-#include "SS/Core/Loot/HouseLoot.pwn"
 #include "SS/Core/Vehicle/Core.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
+#include "SS/Core/Vehicle/Repair.pwn"
+
+//======================Weapon
+
+#include "SS/Core/Weapon/Core.pwn"
+
+//======================Loot
+
+#include "SS/Core/Loot/Spawn.pwn"
+#include "SS/Core/Loot/HouseLoot.pwn"
 
 //======================Player Core
 
@@ -711,18 +739,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/HackDetect.pwn"
 #include "SS/Core/Player/Profile.pwn"
 
-//======================UI
-
-#include "SS/Core/UI/PlayerUI.pwn"
-#include "SS/Core/UI/GlobalUI.pwn"
-#include "SS/Core/UI/HoldAction.pwn"
-#include "SS/Core/UI/Radio.pwn"
-#include "SS/Core/UI/TipText.pwn"
-#include "SS/Core/UI/KeyActions.pwn"
-#include "SS/Core/UI/ToolTips.pwn"
-#include "SS/Core/UI/Watch.pwn"
-#include "SS/Core/UI/Keypad.pwn"
-
 //======================Character
 
 #include "SS/Core/Char/Food.pwn"
@@ -737,6 +753,9 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/Towtruck.pwn"
 #include "SS/Core/Char/Holster.pwn"
 #include "SS/Core/Char/Infection.pwn"
+#include "SS/Core/Char/Backpack.pwn"
+#include "SS/Core/Char/HandCuffs.pwn"
+#include "SS/Core/Char/Medical.pwn"
 
 //======================World
 
@@ -754,6 +773,7 @@ forward SetRestart(seconds);
 #include "SS/Core/World/Emp.pwn"
 #include "SS/Core/World/Explosive.pwn"
 #include "SS/Core/World/SprayTag.pwn"
+#include "SS/Core/World/Sign.pwn"
 
 //======================Command Features
 
@@ -774,8 +794,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/bottle.pwn"
 #include "SS/Core/Item/TntTimeBomb.pwn"
 #include "SS/Core/Item/Sign.pwn"
-#include "SS/Core/Item/backpack.pwn"
-#include "SS/Core/Item/repair.pwn"
 #include "SS/Core/Item/shield.pwn"
 #include "SS/Core/Item/HandCuffs.pwn"
 #include "SS/Core/Item/wheel.pwn"
@@ -789,7 +807,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/dice.pwn"
 #include "SS/Core/Item/armour.pwn"
 #include "SS/Core/Item/injector.pwn"
-#include "SS/Core/Item/medical.pwn"
 #include "SS/Core/Item/TntPhoneBomb.pwn"
 #include "SS/Core/Item/TntTripMine.pwn"
 #include "SS/Core/Item/parachute.pwn"
@@ -1135,6 +1152,7 @@ public OnGameModeInit()
 	item_FlareGun		= DefineItemType("Flare Gun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.160999, 0.035000, 0.058999,  84.400062, 0.000000, 0.000000);
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
+	item_LargeBackpack	= DefineItemType("Large Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
@@ -1281,6 +1299,12 @@ public OnGameModeInit()
 	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);
 	DefineSafeboxType("Large Box", 		item_LargeBox,		10, 8, 6, 6);
 	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
+
+	DefineBagType("Backpack", 			item_Backpack,		8, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag", 			item_Satchel,		4, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Parachute Bag", 		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Large Backpack",		item_LargeBackpack,	9, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
+
 
 	// Initiation Code
 
