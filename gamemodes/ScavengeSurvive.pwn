@@ -112,13 +112,13 @@ native WP_Hash(buffer[], len, const str[]);
 #define FIELD_PLAYER_IPV4			"ipv4"		// 02
 #define FIELD_PLAYER_ALIVE			"alive"		// 03
 #define FIELD_PLAYER_SPAWN			"spawn"		// 04
-#define FIELD_PLAYER_ISVIP			"vip"		// 05
-#define FIELD_PLAYER_KARMA			"karma"		// 06
-#define FIELD_PLAYER_REGDATE		"regdate"	// 07
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 08
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 09
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 10
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 11
+#define FIELD_PLAYER_KARMA			"karma"		// 05
+#define FIELD_PLAYER_REGDATE		"regdate"	// 06
+#define FIELD_PLAYER_LASTLOG		"lastlog"	// 07
+#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 08
+#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 19
+#define FIELD_PLAYER_WARNINGS		"warnings"	// 10
+#define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 11
 
 // Bans
 #define FIELD_BANS_NAME				"name"		// 00
@@ -372,6 +372,7 @@ DBStatement:	gStmt_AccountSetLastLog,
 DBStatement:	gStmt_AccountSetSpawnTime,
 DBStatement:	gStmt_AccountSetTotalSpawns,
 DBStatement:	gStmt_AccountGetAliases,
+DBStatement:	gStmt_AccountSetAimShout,
 
 // ACCOUNTS_TABLE_BANS
 DBStatement:	gStmt_BanInsert,
@@ -768,6 +769,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/Backpack.pwn"
 #include "SS/Core/Char/HandCuffs.pwn"
 #include "SS/Core/Char/Medical.pwn"
+#include "SS/Core/Char/AimShout.pwn"
 
 //======================World
 
@@ -905,18 +907,18 @@ public OnGameModeInit()
 	gWorld = db_open_persistent(WORLD_DATABASE);
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" ( \
-		"FIELD_PLAYER_NAME" TEXT, \
-		"FIELD_PLAYER_PASS" TEXT, \
-		"FIELD_PLAYER_IPV4" INTEGER, \
-		"FIELD_PLAYER_ALIVE" INTEGER, \
-		"FIELD_PLAYER_SPAWN" TEXT, \
-		"FIELD_PLAYER_ISVIP" INTEGER, \
-		"FIELD_PLAYER_KARMA" INTEGER, \
-		"FIELD_PLAYER_REGDATE" INTEGER, \
-		"FIELD_PLAYER_LASTLOG" INTEGER, \
-		"FIELD_PLAYER_SPAWNTIME" INTEGER, \
-		"FIELD_PLAYER_TOTALSPAWNS" INTEGER, \
-		"FIELD_PLAYER_WARNINGS" INTEGER \
+		"FIELD_PLAYER_NAME" TEXT,\
+		"FIELD_PLAYER_PASS" TEXT,\
+		"FIELD_PLAYER_IPV4" INTEGER,\
+		"FIELD_PLAYER_ALIVE" INTEGER,\
+		"FIELD_PLAYER_SPAWN" TEXT,\
+		"FIELD_PLAYER_KARMA" INTEGER,\
+		"FIELD_PLAYER_REGDATE" INTEGER,\
+		"FIELD_PLAYER_LASTLOG" INTEGER,\
+		"FIELD_PLAYER_SPAWNTIME" INTEGER,\
+		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
+		"FIELD_PLAYER_WARNINGS" INTEGER,\
+		"FIELD_PLAYER_AIMSHOUT" TEXT\
 		)"));
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" ( \
@@ -967,9 +969,9 @@ public OnGameModeInit()
 		)"));
 
 	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, 0, '0.0, 0.0, 0.0, 0.0', ?, 0, ?, ?, 0, 0, 0)");
+	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, 0, '0.0, 0.0, 0.0, 0.0', 0, ?, ?, 0, 0, 0, ?)");
 	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_ISVIP" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ?");
@@ -977,6 +979,7 @@ public OnGameModeInit()
 	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountGetAliases		= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ?");
+	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO Bans VALUES(?, ?, ?, ?, ?)");
 	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM Bans WHERE "FIELD_BANS_NAME" = ?");

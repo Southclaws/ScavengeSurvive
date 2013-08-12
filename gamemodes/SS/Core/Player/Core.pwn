@@ -63,6 +63,7 @@ Float:	ply_DeathPosZ,
 Float:	ply_DeathRotZ,
 Float:	ply_RadioFrequency,
 		ply_CreationTimestamp,
+		ply_AimShoutText[128],
 
 		// Internal Data
 		ply_ChatMode,
@@ -217,6 +218,7 @@ ResetVariables(playerid)
 	gPlayerData[playerid][ply_DeathPosZ]			= 0.0;
 	gPlayerData[playerid][ply_DeathRotZ]			= 0.0;
 	gPlayerData[playerid][ply_RadioFrequency]		= 0.0;
+	gPlayerData[playerid][ply_AimShoutText][0]		= EOS;
 
 	gPlayerData[playerid][ply_ChatMode]				= 0;
 	gPlayerData[playerid][ply_CurrentVehicle]		= 0;
@@ -782,6 +784,28 @@ stock SetPlayerRadioFrequency(playerid, Float:frequency)
 }
 
 // ply_CreationTimestamp
+
+// ply_AimShoutText
+stock GetPlayerAimShoutText(playerid, string[])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	string[0] = EOS;
+	strcat(string, gPlayerData[playerid][ply_AimShoutText], 128);
+
+	return 1;
+}
+stock SetPlayerAimShoutText(playerid, string[128])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	gPlayerData[playerid][ply_AimShoutText] = string;
+
+	return 1;
+}
+
 
 // ply_ChatMode
 stock GetPlayerChatMode(playerid)

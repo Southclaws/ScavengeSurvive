@@ -30,12 +30,12 @@ LoadAccount(playerid)
 	stmt_bind_result_field(gStmt_AccountLoad, 2, DB::TYPE_INTEGER, tmp_Ipv4);
 	stmt_bind_result_field(gStmt_AccountLoad, 3, DB::TYPE_INTEGER, tmp_Alive);
 	stmt_bind_result_field(gStmt_AccountLoad, 4, DB::TYPE_STRING, tmp_Spawn, 48);
-	stmt_bind_result_field(gStmt_AccountLoad, 5, DB::TYPE_INTEGER, tmp_IsVIP);
-	stmt_bind_result_field(gStmt_AccountLoad, 7, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
-	stmt_bind_result_field(gStmt_AccountLoad, 8, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
-	stmt_bind_result_field(gStmt_AccountLoad, 9, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
-	stmt_bind_result_field(gStmt_AccountLoad, 10, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
-	stmt_bind_result_field(gStmt_AccountLoad, 11, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+	stmt_bind_result_field(gStmt_AccountLoad, 6, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, 7, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
+	stmt_bind_result_field(gStmt_AccountLoad, 8, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, 9, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
+	stmt_bind_result_field(gStmt_AccountLoad, 10, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+	stmt_bind_result_field(gStmt_AccountLoad, 11, DB::TYPE_STRING, gPlayerData[playerid][ply_AimShoutText], 128);
 
 	if(stmt_execute(gStmt_AccountLoad))
 	{
@@ -86,10 +86,12 @@ CreateAccount(playerid, password[])
 	stmt_bind_value(gStmt_AccountCreate, 0, DB::TYPE_STRING,	gPlayerName[playerid], MAX_PLAYER_NAME);
 	stmt_bind_value(gStmt_AccountCreate, 1, DB::TYPE_STRING,	password, MAX_PASSWORD_LEN);
 	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INTEGER,	gPlayerData[playerid][ply_IP]);
-	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	(gPlayerBitData[playerid] & IsVip) ? 1 : 0);
+	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime());
 	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime());
-	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_INTEGER,	gettime());
+	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_STRING,	"Drop your weapon!", 18);
 	stmt_execute(gStmt_AccountCreate);
+
+	strcat(gPlayerData[playerid][ply_AimShoutText], "Drop your weapon!");
 
 	if(gWhitelist)
 	{
@@ -405,10 +407,9 @@ SavePlayerData(playerid)
 
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
 		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, spawn, 48);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, (gPlayerBitData[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
-		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(gStmt_AccountUpdate);
 
 		SavePlayerInventory(playerid);
@@ -418,10 +419,9 @@ SavePlayerData(playerid)
 	{
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, "0.0, 0.0, 0.0, 0.0", 32);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, (gPlayerBitData[playerid] & IsVip) ? 1 : 0);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
-		stmt_bind_value(gStmt_AccountUpdate, 5, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_PLAYER_NAME, playerid);
 
 		stmt_execute(gStmt_AccountUpdate);
 
