@@ -10,10 +10,15 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	combatlog_LastWeapon[damagedid] = weaponid;
 }
 
-hook OnPlayerDisconnect(playerid, reason)
+IsPlayerCombatLogging(playerid, &lastattacker, &lastweapon)
 {
 	if(tickcount() - gPlayerData[playerid][ply_TookDamageTick] < gCombatLogWindow * 1000 && IsPlayerConnected(combatlog_LastAttacker[playerid]))
 	{
-		OnPlayerDeath(playerid, combatlog_LastAttacker[playerid], combatlog_LastWeapon[playerid]);
+		lastattacker = combatlog_LastAttacker[playerid];
+		lastweapon = combatlog_LastWeapon[playerid];
+		return 1;
 	}
+
+	return 0;
 }
+

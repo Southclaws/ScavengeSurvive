@@ -14,6 +14,12 @@
 
 #include <a_samp>
 
+/*==============================================================================
+
+	Library Predefinitions
+
+==============================================================================*/
+
 #undef MAX_PLAYERS
 #define MAX_PLAYERS	(32)
 
@@ -21,6 +27,12 @@ native IsValidVehicle(vehicleid);
 
 //#define DB_DEBUG true
 #define DB_MAX_STATEMENTS (48)
+
+/*==============================================================================
+
+	Libraries and respective links to their release pages
+
+==============================================================================*/
 
 #include <YSI\y_utils>				// By Y_Less:				http://forum.sa-mp.com/showthread.php?p=1696956
 #include <YSI\y_va>

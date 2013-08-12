@@ -8,13 +8,13 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SHOVEL,				0.7);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_FLOWER,				0.4);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_CANE,				0.7);
-	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_COLT45,				0.4);
-	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_DEAGLE,				0.08);
-	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SHOTGUN,			0.1);
+	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_COLT45,				0.5);
+	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_DEAGLE,				0.1);
+	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SHOTGUN,			0.3);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SAWEDOFF,			0.2);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_UZI,				0.04);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_TEC9,				0.04);
-	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_RIFLE,				0.07);
+	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_RIFLE,				0.1);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SPRAYCAN,			0.4);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_FIREEXTINGUISHER,	0.6);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_CAMERA,				0.6);
@@ -86,9 +86,9 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_AmmoBuck,						0.06);
 
 	// loot_Police
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				0.4);
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_SHOTGUN,			0.2);
-	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_RIFLE,				0.1);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				0.5);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_SHOTGUN,			0.3);
+	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_RIFLE,				0.2);
 	AddItemToLootIndex(loot_Police,			item_Medkit,						0.1);
 	AddItemToLootIndex(loot_Police,			item_Bandage,						0.2);
 	AddItemToLootIndex(loot_Police,			item_MobilePhone,					0.4);
@@ -136,13 +136,13 @@ public OnLoad()
 //	AddItemToLootIndex(loot_Medical,		item_Detergent,						0.1);
 
 	// loot_CarCivilian
-	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_COLT45,				0.4);
-	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_DEAGLE,				0.1);
-	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_SHOTGUN,			0.09);
-	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_SAWEDOFF,			0.08);
+	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_COLT45,				0.5);
+	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_DEAGLE,				0.2);
+	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_SHOTGUN,			0.3);
+	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_SAWEDOFF,			0.1);
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_UZI,				0.02);
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_TEC9,				0.01);
-	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_RIFLE,				0.1);
+	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_RIFLE,				0.2);
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_SPRAYCAN,			0.6);
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_FIREEXTINGUISHER,	0.6);
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_CAMERA,				0.7);

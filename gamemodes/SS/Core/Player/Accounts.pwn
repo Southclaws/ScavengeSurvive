@@ -318,11 +318,17 @@ Logout(playerid)
 	if(!(gPlayerBitData[playerid] & LoggedIn))
 		return 0;
 
-	if(!(gPlayerBitData[playerid] & Spawned))
-		return 0;
-
 	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
+
+	new
+		lastattacker,
+		lastweapon;
+
+	if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+	{
+		OnPlayerDeath(playerid, lastattacker, lastweapon);
+	}
 
 	new
 		itemid,
