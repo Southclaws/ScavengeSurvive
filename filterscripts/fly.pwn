@@ -11,6 +11,12 @@ new
 
 CMD:fly(playerid, params[])
 {
+	if(!IsPlayerAdmin(playerid))
+	{
+		SendClientMessage(playerid, -1, "Admin only command");
+		return 1;
+	}
+
 	usefly[playerid] = !usefly[playerid];
 
 	if(usefly[playerid])
