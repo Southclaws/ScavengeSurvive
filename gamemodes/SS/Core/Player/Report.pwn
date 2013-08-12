@@ -62,11 +62,6 @@ CMD:report(playerid, params[])
 	return 1;
 }
 
-ShowReportMenu(playerid)
-{	
-	ShowPlayerDialog(playerid, d_ReportMenu, DIALOG_STYLE_LIST, "Report a player", "Specific player ID (who is online now)\nSpecific Player Name (Who isn't online now)\nPlayer that last killed me\nPlayer closest to me", "Send", "Cancel");
-}
-
 ACMD:reports[1](playerid, params[])
 {
 	new ret;
@@ -77,6 +72,11 @@ ACMD:reports[1](playerid, params[])
 		Msg(playerid, YELLOW, " >  There are no reports to show.");
 
 	return 1;
+}
+
+ShowReportMenu(playerid)
+{	
+	ShowPlayerDialog(playerid, d_ReportMenu, DIALOG_STYLE_LIST, "Report a player", "Specific player ID (who is online now)\nSpecific Player Name (Who isn't online now)\nPlayer that last killed me\nPlayer closest to me", "Send", "Cancel");
 }
 
 ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:posz, infostring[])
@@ -269,17 +269,6 @@ ShowReportOptions(playerid)
 	}
 
 	ShowPlayerDialog(playerid, d_ReportOptions, DIALOG_STYLE_LIST, report_CurrentName[playerid], options, "Select", "Back");
-}
-
-GetUnreadReports()
-{
-	new count;
-
-	stmt_bind_result_field(gStmt_ReportGetUnread, 0, DB::TYPE_INTEGER, count);	
-	stmt_execute(gStmt_ReportGetUnread);
-	stmt_fetch_row(gStmt_ReportGetUnread);
-
-	return count;
 }
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
@@ -551,6 +540,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	}
 
 	return 1;
+}
+
+GetUnreadReports()
+{
+	new count;
+
+	stmt_bind_result_field(gStmt_ReportGetUnread, 0, DB::TYPE_INTEGER, count);	
+	stmt_execute(gStmt_ReportGetUnread);
+	stmt_fetch_row(gStmt_ReportGetUnread);
+
+	return count;
 }
 
 IsPlayerReported(name[])

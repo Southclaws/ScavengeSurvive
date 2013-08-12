@@ -789,16 +789,16 @@ forward SetRestart(seconds);
 
 //======================Command Features
 
-#include "SS/Core/Cmds/Commands.pwn"
-#include "SS/Core/Cmds/GameMaster.pwn"
-#include "SS/Core/Cmds/Moderator.pwn"
-#include "SS/Core/Cmds/Administrator.pwn"
-#include "SS/Core/Cmds/Dev.pwn"
-#include "SS/Core/Cmds/Duty.pwn"
-#include "SS/Core/Cmds/Ban.pwn"
-#include "SS/Core/Cmds/Spectate.pwn"
-#include "SS/Core/Cmds/Core.pwn"
-#include "SS/Core/Cmds/BugReport.pwn"
+#include "SS/Core/Admin/Commands.pwn"
+#include "SS/Core/Admin/GameMaster.pwn"
+#include "SS/Core/Admin/Moderator.pwn"
+#include "SS/Core/Admin/Administrator.pwn"
+#include "SS/Core/Admin/Dev.pwn"
+#include "SS/Core/Admin/Duty.pwn"
+#include "SS/Core/Admin/Ban.pwn"
+#include "SS/Core/Admin/Spectate.pwn"
+#include "SS/Core/Admin/Core.pwn"
+#include "SS/Core/Admin/BugReport.pwn"
 
 //======================Items
 
@@ -994,7 +994,7 @@ public OnGameModeInit()
 	gStmt_ReportList			= db_prepare(gAccounts, "SELECT * FROM Reports");
 	gStmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM Reports WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
 	gStmt_ReportSetRead			= db_prepare(gAccounts, "UPDATE Reports SET "FIELD_REPORTS_READ" = ? WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportGetUnread		= db_prepare(gAccounts, "SELECT * FROM Reports WHERE "FIELD_REPORTS_READ" = '0'");
+	gStmt_ReportGetUnread		= db_prepare(gAccounts, "SELECT COUNT(*) FROM Reports WHERE "FIELD_REPORTS_READ" = 0");
 
 	gStmt_BugInsert				= db_prepare(gAccounts, "INSERT INTO Bugs VALUES(?, ?, ?)");
 	gStmt_BugDelete				= db_prepare(gAccounts, "DELETE FROM Bugs WHERE "FIELD_BUGS_DATE" = ?");
