@@ -801,6 +801,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Spectate.pwn"
 #include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/BugReport.pwn"
+#include "SS/Core/Admin/DetectionField.pwn"
 
 //======================Items
 

@@ -740,6 +740,13 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 // ply_Warnings
 
 // ply_Admin
+GetPlayerAdminLevel(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_Admin];
+}
 
 // ply_HitPoints
 // ply_ArmourPoints
