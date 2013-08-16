@@ -327,6 +327,41 @@ ACMD:deletedefences[3](playerid, params[])
 
 	return 1;
 }
+ACMD:deletesigns[3](playerid, params[])
+{
+	if(gPlayerData[playerid][ply_Admin] == 3)
+	{
+		if(!(gPlayerBitData[playerid] & AdminDuty))
+			return 6;
+	}
+
+	new Float:range;
+
+	sscanf(params, "f", range);
+
+	if(range == 0.0)
+	{
+		Msg(playerid, YELLOW, " >  Usage: /deletedefences [range]");
+		return 1;
+	}
+
+	if(range > 100.0)
+	{
+		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
+		return 1;
+	}
+
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+	DestroySignsInRangeOfPoint(x, y, z, range);
+
+	return 1;
+}
 
 ACMD:additem[3](playerid, params[])
 {

@@ -68,6 +68,8 @@ stock DestroySign(signid)
 	if(!Iter_Contains(sgn_Index, signid))
 		return 0;
 
+	new next;
+
 	DestroyDynamicObject(sgn_Data[signid][sgn_object]);
 	DestroyButton(sgn_Data[signid][sgn_button]);
 
@@ -77,9 +79,9 @@ stock DestroySign(signid)
 	sgn_Data[signid][sgn_posZ] = 0.0;
 	sgn_Data[signid][sgn_rotZ] = 0.0;
 
-	Iter_Remove(sgn_Index, signid);
+	Iter_SafeRemove(sgn_Index, signid, next);
 
-	return 1;
+	return next;
 }
 
 
@@ -251,4 +253,24 @@ hook OnGameModeExit()
 		}
 	}
 	return 1;
+}
+
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+stock DestroySignsInRangeOfPoint(Float:x, Float:y, Float:z, Float:range)
+{
+	foreach(new i : sgn_Index)
+	{
+		if(Distance(x, y, z, sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ]) < range)
+		{
+			i = DestroySign(i);
+		}
+	}
+
 }

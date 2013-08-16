@@ -14,6 +14,30 @@ stock IsPointInMapBounds(Float:x, Float:y, Float:z)
 	return 0;
 }
 
+stock TimestampToTime(datetime)
+{
+	new
+		str[36],
+		tm<timestamp>;
+
+	localtime(Time:datetime, timestamp);
+	strftime(str, 36, "%X", timestamp);
+
+	return str;
+}
+
+stock TimestampToDate(datetime)
+{
+	new
+		str[36],
+		tm<timestamp>;
+
+	localtime(Time:datetime, timestamp);
+	strftime(str, 36, "%A %b %d %Y", timestamp);
+
+	return str;
+}
+
 stock TimestampToDateTime(datetime)
 {
 	new

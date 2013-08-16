@@ -30,6 +30,15 @@ public OnPlayerUseItem(playerid, itemid)
 		{
 			if(tickcount() - iedp_SyncTick[playerid] > 1000)
 			{
+				new
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetItemPos(bombitem, x, y, z);
+
+				logf("[EXPLOSIVE] IED PHONEBOMB detonated by %p at %f, %f, %f", playerid, x, y, z);
+
 				SetItemToExplode(bombitem, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
 				SetItemExtraData(itemid, INVALID_ITEM_ID);
 			}

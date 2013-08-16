@@ -697,6 +697,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/Weather.pwn"
 #include "SS/Core/Server/Whitelist.pwn"
 #include "SS/Core/Server/SaveBlock.pwn"
+#include "SS/Core/Server/ActivityLog.pwn"
 
 //======================UI
 
