@@ -67,10 +67,10 @@ native IsValidVehicle(vehicleid);
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
-#include <Balloon>					// By Southclaw:			(Not uploaded yet)
-#include <Line>						// By Southclaw:			(Not uploaded yet)
-#include <Zipline>					// By Southclaw:			(Not uploaded yet)
-#include <Ladder>					// By Southclaw:			(Not uploaded yet)
+#include <Balloon>					// By Southclaw:			https://gist.github.com/Southclaw/6254507
+#include <Line>						// By Southclaw:			https://gist.github.com/Southclaw/6254512
+#include <Zipline>					// By Southclaw:			https://gist.github.com/Southclaw/6254523
+#include <Ladder>					// By Southclaw:			https://gist.github.com/Southclaw/6254527
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
