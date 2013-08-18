@@ -47,6 +47,9 @@ native IsValidVehicle(vehicleid);
 
 #include "SS/Core/Server/Hooks.pwn"
 
+#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
+#include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
+
 #include <sqlitei>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -56,14 +59,11 @@ native IsValidVehicle(vehicleid);
 #include <GeoIP>					// By Whitetiger:			http://forum.sa-mp.com/showthread.php?t=296171
 #undef result
 
-#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
-
 #define time ctime_time
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <playerbar>				// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
+#include <playerprogress>			// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397

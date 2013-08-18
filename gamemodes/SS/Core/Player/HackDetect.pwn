@@ -588,14 +588,21 @@ VehicleDistanceCheck(playerid, vehicleid)
 				name[MAX_SPAWNED_VEHICLES],
 				model,
 				vehiclename[MAX_VEHICLE_NAME],
+				owner[MAX_PLAYER_NAME],
 				reason[128],
 				info[128];
 
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			model = GetVehicleModel(vehicleid);
 			GetVehicleName(model, vehiclename);
+			GetVehicleOwner(vehicleid, owner);
 
-			format(reason, sizeof(reason), "Teleported a %s %.0fm", vehiclename, distance);
+			if(isnull(owner))
+				format(reason, sizeof(reason), "Teleported a %s %.0fm", vehiclename, distance);
+
+			else
+				format(reason, sizeof(reason), "Teleported a %s (%s's) %.0fm", vehiclename, owner, distance);
+
 			format(info, sizeof(info), "%f, %f, %f", vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, info);
 
