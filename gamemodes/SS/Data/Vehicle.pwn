@@ -52,7 +52,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 {
 	{90.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 400		----	Landstalker
 	{40.0,	11.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 401		----	Bravura
-	{60.0,	15.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 402		----	Buffalo
+	{60.0,	15.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 402		----	Buffalo
 	{120.0,	60.0,	loot_CarIndustrial,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 403		----	Linerunner
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 404		----	Pereniel
 	{50.0,	14.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 405		----	Sentinel
@@ -62,11 +62,11 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 409		----	Stretch
 
 	{40.0,	9.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 410		----	Manana
-	{50.0,	18.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 411		----	Infernus
+	{50.0,	18.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 411		----	Infernus
 	{50.0,	17.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 412		----	Voodoo
 	{50.0,	15.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 413		----	Pony
 	{50.0,	24.0,	loot_CarIndustrial,		20,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 414		----	Mule
-	{60.0,	15.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 415		----	Cheetah
+	{60.0,	15.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 415		----	Cheetah
 	{80.0,	13.0,	loot_Medical,			16,		1.0,	VEHICLE_GROUP_UNIQUE},		// 416		----	Ambulance
 	{1600.0,143.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_HELI_L},		// 417		----	Leviathan
 	{60.0,	18.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 418		----	Moonbeam
@@ -81,13 +81,13 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{55.0,	12.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 426		----	Premier
 	{90.0,	36.0,	loot_CarPolice,			12,		0.5,	VEHICLE_GROUP_POLICE},		// 427		----	Enforcer
 	{90.0,	31.0,	loot_CarPolice,			12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 428		----	Securicar
-	{40.0,	18.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 429		----	Banshee
+	{40.0,	18.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 429		----	Banshee
 
 	{70.0,	31.0,	loot_CarPolice,			12,		1.0,	VEHICLE_GROUP_BOAT},		// 430		----	Predator
 	{70.0,	24.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 431		----	Bus
 	{1900.0,392.0,	loot_CarMilitary,		10,		0.01,	VEHICLE_GROUP_MILITARY},	// 432		----	Rhino
 	{200.0,	77.0,	loot_CarMilitary,		22,		0.4,	VEHICLE_GROUP_MILITARY},	// 433		----	Barracks
-	{50.0,	8.0,	loot_CarCivilian,		12,		0.5,	VEHICLE_GROUP_SPORT},		// 434		----	Hotknife
+	{50.0,	8.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 434		----	Hotknife
 	{0.0,	0.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 435		----	Trailer
 	{35.0,	8.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 436		----	Previon
 	{70.0,	24.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 437		----	Coach
@@ -106,7 +106,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{0.0,	0.0,	loot_CarCivilian,		10,		1.0,	VEHICLE_GROUP_UNIQUE},		// 449		----	Tram
 
 	{0.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 450		----	Trailer
-	{50.0,	25.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 451		----	Turismo
+	{50.0,	25.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 451		----	Turismo
 	{60.0,	30.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_BOAT},		// 452		----	Speeder
 	{60.0,	34.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_BOAT},		// 453		----	Reefer
 	{60.0,	36.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_BOAT},		// 454		----	Tropic
@@ -134,11 +134,11 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{40.0,	16.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 474		----	Hermes
 	{60.0,	15.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 475		----	Sabre
 	{88.0,	19.0,	loot_CarCivilian,		6,		0.2,	VEHICLE_GROUP_PLANE_S},		// 476		----	Rustler
-	{50.0,	14.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 477		----	ZR 350
+	{50.0,	14.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 477		----	ZR 350
 	{60.0,	26.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 478		----	Walton
 	{55.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 479		----	Regina
 
-	{50.0,	12.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 480		----	Comet
+	{50.0,	12.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 480		----	Comet
 	{0.0,	0.0,	loot_InvalidLoot,		0,		1.0,	VEHICLE_GROUP_BIKE},		// 481		----	BMX
 	{70.0,	13.0,	loot_CarIndustrial,		20,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 482		----	Burrito
 	{80.0,	26.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 483		----	Camper
@@ -153,7 +153,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{45.0,	11.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 491		----	Virgo
 	{55.0,	12.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 492		----	Greenwood
 	{90.0,	21.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_BOAT},		// 493		----	Jetmax
-	{80.0,	28.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 494		----	Hotring
+	{80.0,	28.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 494		----	Hotring
 	{120.0,	31.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 495		----	Sandking
 	{40.0,	12.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 496		----	Blista Compact
 	{240.0,	76.0,	loot_CarCivilian,		12,		0.05,	VEHICLE_GROUP_HELI_S},		// 497		----	Police Maverick
@@ -162,11 +162,11 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 
 	{77.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 500		----	Mesa
 	{0.0,	0.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 501		----	RC Goblin
-	{80.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 502		----	Hotring Racer A
-	{80.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 503		----	Hotring Racer B
+	{80.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 502		----	Hotring Racer A
+	{80.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 503		----	Hotring Racer B
 	{65.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 504		----	Bloodring Banger
 	{70.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 505		----	Rancher
-	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 506		----	Super GT
+	{50.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 506		----	Super GT
 	{35.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 507		----	Elegant
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 508		----	Journey
 	{0.0,	13.0,	loot_InvalidLoot,		0,		1.0,	VEHICLE_GROUP_BIKE},		// 509		----	Bike
@@ -205,7 +205,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{60.0,	13.0,	loot_CarCivilian,		6,		1.0,	VEHICLE_GROUP_BOAT},		// 539		----	Vortex
 
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 540		----	Vincent
-	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 541		----	Bullet
+	{50.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 541		----	Bullet
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 542		----	Clover
 	{60.0,	13.0,	loot_CarCivilian,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 543		----	Sadler
 	{70.0,	13.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_UNIQUE},		// 544		----	Firetruck
@@ -224,11 +224,11 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{40.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 556		----	Monster A
 	{40.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 557		----	Monster B
 	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 558		----	Uranus
-	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 559		----	Jester
+	{50.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 559		----	Jester
 
-	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 560		----	Sultan
+	{60.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 560		----	Sultan
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 561		----	Stratum
-	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 562		----	Elegy
+	{60.0,	13.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 562		----	Elegy
 	{200.0,	13.0,	loot_CarCivilian,		12,		0.08,	VEHICLE_GROUP_HELI_L},		// 563		----	Raindance
 	{0.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_UNIQUE},		// 564		----	RC Tiger
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 565		----	Flash
@@ -272,7 +272,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 
 	{86.0,	14.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 600		----	Picador
 	{90.0,	16.0,	loot_CarMilitary,		12,		0.4,	VEHICLE_GROUP_POLICE},		// 601		----	S.W.A.T. Van
-	{73.0,	14.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_SPORT},		// 602		----	Alpha
+	{73.0,	14.0,	loot_CarCivilian,		12,		0.1,	VEHICLE_GROUP_SPORT},		// 602		----	Alpha
 	{65.0,	14.5,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 603		----	Phoenix
 	{68.0,	15.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 604		----	Glendale
 	{78.0,	19.0,	loot_CarCivilian,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 605		----	Sadler
