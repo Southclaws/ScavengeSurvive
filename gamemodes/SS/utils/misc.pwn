@@ -129,23 +129,71 @@ stock db_escape(text[])
 	ret[sizeof (ret) - 1] = '\0';
 	return ret;
 }
-stock MsToString(ms, mode = 0)
+
+stock MsToString(millisecond, format[])
 {
 	new
-		tmpStr[20],
-		h,
-		m,
-		s;
+		tmp[4],
+		result[64],
+		hour,
+		minute,
+		second,
+		format_char,
+		result_lenght,
+		len = strlen(format);
 
-	h=(ms/(1000*60*60));
-	m=(ms%(1000*60*60))/(1000*60);
-	s=((ms%(1000*60*60))%(1000*60))/1000;
-	ms=ms-(h*60*60*1000)-(m*60*1000)-(s*1000);
+	hour			= (millisecond / (1000 * 60 * 60));
+	minute			= (millisecond % (1000 * 60 * 60)) / (1000 * 60);
+	second			= ((millisecond % (1000 * 60 * 60)) % (1000 * 60)) / 1000;
+	millisecond		= millisecond - (hour * 60 * 60 * 1000) - (minute * 60 * 1000) - (second * 1000);
 
-	if(mode == 0)format(tmpStr, 20, "%d:%02d:%02d.%03d", h, m, s, ms);	// HMS
-	if(mode == 1)format(tmpStr, 20, "%02d:%02d.%03d", m, s, ms);		// MS
-	if(mode == 2)format(tmpStr, 20, "%02d.%03d", s, ms);				// S
-	return tmpStr;
+	while(format_char < len)
+	{
+		if(format[format_char] == '%')
+		{
+			format_char++;
+
+			switch(format[format_char])
+			{
+				case 'h':
+				{
+					valstr(tmp, hour);
+					strcat(result, tmp);
+					result_lenght = strlen(result);
+				}
+
+				case 'm':
+				{
+					valstr(tmp, minute);
+					strcat(result, tmp);
+					result_lenght = strlen(result);
+				}
+
+				case 's':
+				{
+					valstr(tmp, second);
+					strcat(result, tmp);
+					result_lenght = strlen(result);
+				}
+
+				case 'd':
+				{
+					valstr(tmp, millisecond);
+					strcat(result, tmp);
+					result_lenght = strlen(result);
+				}
+			}
+		}
+		else
+		{
+			result[result_lenght] = format[format_char];
+			result_lenght++;
+		}
+
+		format_char++;
+	}
+
+	return result;
 }
 
 stock RGBAToHex(r, g, b, a)

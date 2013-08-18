@@ -45,7 +45,15 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnPlayerUpdate(playerid)
 {
-	if(!fly[playerid])return 1;
+	if(!fly[playerid])
+		return 1;
+
+	if(!IsPlayerAdmin(playerid))
+	{
+		fly[playerid] = false;
+		return 1;
+	}
+
 
 	new
 		k, ud, lr,
@@ -88,3 +96,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 	fly[playerid] = false;
 }
 
+public OnPlayerConnect(playerid)
+{
+	fly[playerid] = false;
+}
