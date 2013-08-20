@@ -133,7 +133,7 @@ MsgAdmins(level, colour, string[])
 KickPlayer(playerid, reason[])
 {
 	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
-	MsgF(playerid, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
+	MsgF(playerid, GREY, " >  Kicked, reason: "#C_BLUE"%s", reason);
 	defer KickPlayerDelay(playerid);
 }
 

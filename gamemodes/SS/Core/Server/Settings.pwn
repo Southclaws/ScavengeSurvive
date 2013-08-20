@@ -33,6 +33,7 @@ LoadSettings()
 	printf(" Name Distance: %f", gNameTagDistance);
 	printf(" Combat Log Window: %d", gCombatLogWindow);
 	printf(" Login Freeze Time: %d", gLoginFreezeTime);
+	printf(" Max Tab-out Time: %d", gMaxTaboutTime);
 
 #endif
 
@@ -82,6 +83,7 @@ INI:settings[](name[], value[])
 	INI_Float("nametag-distance", gNameTagDistance);
 	INI_Int("combat-log-window", gCombatLogWindow);
 	INI_Int("login-freeze-time", gLoginFreezeTime);
+	INI_Int("max-tab-out-time", gMaxTaboutTime);
 
 	return 1;
 }

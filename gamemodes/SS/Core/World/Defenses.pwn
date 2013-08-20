@@ -448,7 +448,6 @@ public OnHoldActionFinish(playerid)
 
 		DestroyItem(def_CurrentDefenseItem[playerid]);
 
-
 		if(itemtype == item_Screwdriver)
 			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_VERTICAL);
 
@@ -611,6 +610,9 @@ SaveDefenses()
 
 SaveDefenseItem(id)
 {
+	if(Iter_Contains(def_Index, id))
+		return 0;
+
 	new
 		filename[64],
 		File:file,
@@ -632,6 +634,8 @@ SaveDefenseItem(id)
 	{
 		printf("ERROR: Saving defense, filename: '%s'", filename);
 	}
+
+	return 1;
 }
 
 CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)

@@ -117,7 +117,7 @@ EditSign(playerid, signid)
 
 public OnButtonPress(playerid, buttonid)
 {
-	if(!IsValidItem(GetPlayerItem(playerid)))
+	if(!IsValidItem(GetPlayerItem(playerid)) && !IsValidItem(GetPlayerInteractingItem(playerid)))
 	{
 		foreach(new i : sgn_Index)
 		{
@@ -128,6 +128,7 @@ public OnButtonPress(playerid, buttonid)
 
 				stop sgn_PickUpTimer[playerid];
 				sgn_PickUpTimer[playerid] = defer PickUpSign(playerid);
+
 				break;
 			}
 		}
@@ -157,6 +158,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 timer PickUpSign[250](playerid)
 {
+	if(IsValidItem(GetPlayerItem(playerid)) && IsValidItem(GetPlayerInteractingItem(playerid)))
+		return;
+
 	new filename[64];
 
 	format(filename, sizeof(filename), ""#SIGN_DATA_FOLDER"%d_%d_%d_%d",

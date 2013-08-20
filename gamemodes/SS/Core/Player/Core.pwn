@@ -23,9 +23,6 @@ enum E_PLAYER_BIT_DATA:(<<= 1) // 23
 		Infected,
 		GlobalQuiet,
 
-		IsAfk,
-		AfkCheck,
-
 		Frozen,
 		Muted,
 
@@ -731,6 +728,103 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 }
 
 
+stock E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return E_PLAYER_BIT_DATA:0;
+
+	return gPlayerBitData[playerid];
+}
+
+// HasAccount
+// IsVip
+// LoggedIn
+// LoadedData
+// IsNewPlayer
+// CanExitWelcome
+
+// AdminDuty
+stock IsPlayerOnAdminDuty(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & AdminDuty);
+}
+
+// Alive
+stock IsPlayerAlive(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Alive);
+}
+
+// Dying
+stock IsPlayerDead(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Dying);
+}
+
+// Spawned
+stock IsPlayerSpawned(playerid)
+{
+	return _:(gPlayerBitData[playerid] & Spawned);
+}
+
+// FirstSpawn
+
+// ToolTips
+stock IsPlayerToolTipsOn(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & ToolTips);
+}
+
+// ShowHUD
+stock IsPlayerHudOn(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & ShowHUD);
+}
+
+// KnockedOut
+stock IsPlayerKnockedOut(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & KnockedOut);
+}
+
+// Bleeding
+stock IsPlayerBleeding(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & Bleeding);
+}
+
+// Infected
+// GlobalQuiet
+
+// Frozen
+// Muted
+
+// DebugMode
+
+
+
+
 // ply_Password
 // ply_IP
 // ply_Karma
@@ -899,70 +993,4 @@ stock GetPlayerLastChatTick(playerid)
 		return 0;
 
 	return gPlayerData[playerid][ply_LastChatMessageTick];
-}
-
-
-stock E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return E_PLAYER_BIT_DATA:0;
-
-	return gPlayerBitData[playerid];
-}
-
-
-stock IsPlayerDead(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & Dying);
-}
-
-stock IsPlayerAlive(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & Alive);
-}
-
-stock IsPlayerKnockedOut(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & KnockedOut);
-}
-
-stock IsPlayerOnAdminDuty(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & AdminDuty);
-}
-
-stock IsPlayerBleeding(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & Bleeding);
-}
-
-stock IsPlayerHudOn(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & ShowHUD);
-}
-
-stock IsPlayerToolTipsOn(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & ToolTips);
 }

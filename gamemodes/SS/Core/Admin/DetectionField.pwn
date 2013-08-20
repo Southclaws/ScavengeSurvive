@@ -48,8 +48,6 @@ stock CreateDetectionField(name[MAX_DETECTION_FIELD_NAME], Float:x, Float:y, Flo
 
 	Iter_Add(det_Index, id);
 
-	printf("Created detection field. ID %d Name: %s Pos: %f, %f, %f Range: %f", id, name, x, y, z, range);
-
 	return id;
 }
 
@@ -109,11 +107,9 @@ stock RemoveDetectionField(id)
 	if(!file_exists(filename))
 		return -1;
 
-	new ret = file_delete(filename);
+	file_delete(filename);
 
 	DestroyDetectionField(id);
-
-	printf("Removed detection field '%s' ret: %d", filename, ret);
 
 	return 1;
 }
@@ -149,6 +145,20 @@ stock ShowDetectionFieldLog(playerid, id)
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, det_Data[id][det_name], list, "Close", "");
 
 	return 1;
+}
+
+ShowDetectionFieldList(playerid)
+{
+	new
+		list[MAX_DETECTION_FIELD * (MAX_DETECTION_FIELD_NAME + 1)];
+
+	foreach(new i : det_Index)
+	{
+		strcat(list, det_Data[i][det_name]);
+		strcat(list, "\n");
+	}
+
+	ShowPlayerDialog(playerid, d_DetFieldList, DIALOG_STYLE_LIST, "Detection Fields", list, "View", "Close");
 }
 
 
@@ -209,6 +219,18 @@ DetectionFieldLogPlayer(playerid, id)
 	return 1;
 }
 
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(dialogid == d_DetFieldList)
+	{
+		if(response)
+		{
+			ShowDetectionFieldLog(playerid, listitem);
+		}
+	}
+
+	return 1;
+}
 
 hook OnGameModeInit()
 {
@@ -266,7 +288,6 @@ GetDetectionFieldIdFromName(name[], bool:ignorecase = false)
 	{
 		if(!strcmp(name, det_Data[i][det_name], ignorecase))
 		{
-			printf("'%s' matches ID %d", name, i);
 			return i;
 		}
 	}
@@ -366,6 +387,11 @@ ACMD:field[3](playerid, params[])
 		MsgF(playerid, YELLOW, " >  Displaying log entries for detection field '%s'.", name);
 
 		ShowDetectionFieldLog(playerid, id);
+	}
+
+	if(!strcmp(params, "list", true, 4))
+	{
+		ShowDetectionFieldList(playerid);
 	}
 
 	return 1;

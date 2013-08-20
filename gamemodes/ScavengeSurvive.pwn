@@ -120,12 +120,37 @@ native WP_Hash(buffer[], len, const str[]);
 #define FIELD_PLAYER_WARNINGS		"warnings"	// 10
 #define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 11
 
+enum
+{
+	FIELD_ID_PLAYER_NAME,
+	FIELD_ID_PLAYER_PASS,
+	FIELD_ID_PLAYER_IPV4,
+	FIELD_ID_PLAYER_ALIVE,
+	FIELD_ID_PLAYER_SPAWN,
+	FIELD_ID_PLAYER_KARMA,
+	FIELD_ID_PLAYER_REGDATE,
+	FIELD_ID_PLAYER_LASTLOG,
+	FIELD_ID_PLAYER_SPAWNTIME,
+	FIELD_ID_PLAYER_TOTALSPAWNS,
+	FIELD_ID_PLAYER_WARNINGS,
+	FIELD_ID_PLAYER_AIMSHOUT
+}
+
 // Bans
 #define FIELD_BANS_NAME				"name"		// 00
 #define FIELD_BANS_IPV4				"ipv4"		// 01
 #define FIELD_BANS_DATE				"date"		// 02
 #define FIELD_BANS_REASON			"reason"	// 03
 #define FIELD_BANS_BY				"by"		// 04
+
+enum
+{
+	FIELD_ID_BANS_NAME,
+	FIELD_ID_BANS_IPV4,
+	FIELD_ID_BANS_DATE,
+	FIELD_ID_BANS_REASON,
+	FIELD_ID_BANS_BY
+}
 
 // Reports
 #define FIELD_REPORTS_NAME			"name"		// 00
@@ -139,10 +164,31 @@ native WP_Hash(buffer[], len, const str[]);
 #define FIELD_REPORTS_INFO			"info"		// 08
 #define FIELD_REPORTS_BY			"by"		// 09
 
+enum
+{
+	FIELD_ID_REPORTS_NAME,
+	FIELD_ID_REPORTS_REASON,
+	FIELD_ID_REPORTS_DATE,
+	FIELD_ID_REPORTS_READ,
+	FIELD_ID_REPORTS_TYPE,
+	FIELD_ID_REPORTS_POSX,
+	FIELD_ID_REPORTS_POSY,
+	FIELD_ID_REPORTS_POSZ,
+	FIELD_ID_REPORTS_INFO,
+	FIELD_ID_REPORTS_BY
+}
+
 // Bugs
 #define FIELD_BUGS_NAME				"name"		// 00
 #define FIELD_BUGS_REASON			"reason"	// 01
 #define FIELD_BUGS_DATE				"date"		// 02
+
+enum
+{
+	FIELD_ID_BUGS_NAME,
+	FIELD_ID_BUGS_REASON,
+	FIELD_ID_BUGS_DATE
+}
 
 // Whitelist
 #define FIELD_WHITELIST_NAME		"name"		// 00
@@ -159,6 +205,17 @@ native WP_Hash(buffer[], len, const str[]);
 #define FIELD_SPRAYTAG_ROTX			"rotx"		// 04
 #define FIELD_SPRAYTAG_ROTY			"roty"		// 05
 #define FIELD_SPRAYTAG_ROTZ			"rotz"		// 06
+
+enum
+{
+	FIELD_ID_SPRAYTAG_NAME,
+	FIELD_ID_SPRAYTAG_POSX,
+	FIELD_ID_SPRAYTAG_POSY,
+	FIELD_ID_SPRAYTAG_POSZ,
+	FIELD_ID_SPRAYTAG_ROTX,
+	FIELD_ID_SPRAYTAG_ROTY,
+	FIELD_ID_SPRAYTAG_ROTZ
+}
 
 
 // Macros
@@ -311,7 +368,9 @@ enum
 	d_TransferAmmoGun2Gun,
 
 	d_BanList,
-	d_BanInfo
+	d_BanInfo,
+
+	d_DetFieldList
 }
 
 // Keypad IDs
@@ -432,6 +491,7 @@ bool:	gPlayerAnimations,
 Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
+		gMaxTaboutTime,
 
 		gAdminData[MAX_ADMIN][e_admin_data],
 		gTotalAdmins,
@@ -748,6 +808,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Chat.pwn"
 #include "SS/Core/Player/Command.pwn"
 #include "SS/Core/Player/AfkCheck.pwn"
+#include "SS/Core/Player/AltTabCheck.pwn"
 #include "SS/Core/Player/DisallowActions.pwn"
 #include "SS/Core/Player/Report.pwn"
 #include "SS/Core/Player/HackDetect.pwn"

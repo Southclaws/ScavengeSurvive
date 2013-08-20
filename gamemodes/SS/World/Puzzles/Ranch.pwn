@@ -84,8 +84,7 @@ public OnLoad()
 	buttonid[1] = CreateButton(265.862182, -170.113632, -50.204307, "Press F to activate", 0, 1);
 	CreateDoor(5779, buttonid,
 		265.0330, -168.9362, -49.9792, 0.0, 0.0, 0.0,
-		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0,
-		.worldid = 0);
+		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0);
 
 
 	return CallLocalFunction("ranch_OnLoad", "");
