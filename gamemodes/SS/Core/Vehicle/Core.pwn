@@ -550,21 +550,27 @@ PlayerVehicleUpdate(playerid)
 	new
 		vehicleid = GetPlayerVehicleID(playerid),
 		model = GetVehicleModel(vehicleid),
-		Float:health;
+		Float:health,
+		playerstate;
 
 	if(GetVehicleType(model) == VTYPE_BICYCLE || model == 0)
 		return;
 
-	GetVehicleHealth(vehicleid, health);
+	if(GetPlayerState(playerid))
 
-	if(veh_TempHealth[playerid] > 300.0)
+	playerstate = GetVehicleHealth(vehicleid, health);
+
+	if(playerstate == PLAYER_STATE_DRIVER)
 	{
-		new Float:diff = veh_TempHealth[playerid] - health;
-
-		if(diff > 10.0 && veh_TempHealth[playerid] < VEHICLE_HEALTH_MAX)
+		if(veh_TempHealth[playerid] > 300.0)
 		{
-			health += diff * 0.8;
-			SetVehicleHealth(vehicleid, health);
+			new Float:diff = veh_TempHealth[playerid] - health;
+
+			if(diff > 10.0 && veh_TempHealth[playerid] < VEHICLE_HEALTH_MAX)
+			{
+				health += diff * 0.8;
+				SetVehicleHealth(vehicleid, health);
+			}
 		}
 	}
 
@@ -673,7 +679,7 @@ PlayerVehicleUpdate(playerid)
 	{
 		case 28, 29, 32:
 		{
-			if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && playerstate == PLAYER_STATE_DRIVER)
 				SetPlayerArmedWeapon(playerid, 0);
 		}
 	}

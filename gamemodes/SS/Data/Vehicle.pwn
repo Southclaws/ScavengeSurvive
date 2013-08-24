@@ -187,7 +187,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{45.0,	13.0,	loot_CarCivilian,		6,		0.5,	VEHICLE_GROUP_BIKE},		// 522		----	NRG-500
 	{60.0,	13.0,	loot_CarPolice,			8,		0.8,	VEHICLE_GROUP_BIKE},		// 523		----	HPV1000
 	{60.0,	13.0,	loot_CarIndustrial,		10,		1.0,	VEHICLE_GROUP_TRUCK_L},		// 524		----	Cement Truck
-	{50.0,	13.0,	loot_CarIndustrial,		16,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 525		----	Tow Truck
+	{50.0,	13.0,	loot_CarIndustrial,		16,		0.0,	VEHICLE_GROUP_TRUCK_S},		// 525		----	Tow Truck
 	{45.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 526		----	Fortune
 	{30.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 527		----	Cadrona
 	{80.0,	13.0,	loot_CarPolice,			12,		1.0,	VEHICLE_GROUP_POLICE},		// 528		----	FBI Truck

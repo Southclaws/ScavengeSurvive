@@ -41,10 +41,10 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(cmp_Index);
 
-	cmp_Data[id][cmp_objMid1] = CreateDynamicObject(19475, x, y, z, 10.0, 90.0, rz + 18.0);
-	cmp_Data[id][cmp_objMid2] = CreateDynamicObject(19475, x, y, z, -10.0, 90.0, rz + 36.0);
-	cmp_Data[id][cmp_objMid3] = CreateDynamicObject(19475, x, y, z, 0.0, 100.0, rz + 54.0);
-	cmp_Data[id][cmp_objMid4] = CreateDynamicObject(19475, x, y, z, 0.0, 80.0, rz + 72.0);
+	cmp_Data[id][cmp_objMid1] = CreateDynamicObject(19475, x, y, z, 10.0, 90.0, rz + 18.0, .streamdistance = 50.0);
+	cmp_Data[id][cmp_objMid2] = CreateDynamicObject(19475, x, y, z, -10.0, 90.0, rz + 36.0, .streamdistance = 10.0);
+	cmp_Data[id][cmp_objMid3] = CreateDynamicObject(19475, x, y, z, 0.0, 100.0, rz + 54.0, .streamdistance = 50.0);
+	cmp_Data[id][cmp_objMid4] = CreateDynamicObject(19475, x, y, z, 0.0, 80.0, rz + 72.0, .streamdistance = 10.0);
 
 
 	cmp_Data[id][cmp_objStick1] = CreateDynamicObject(19475,
@@ -57,43 +57,43 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 		x + (0.1 * floatsin(-rz - 90.0, degrees)),
 		y + (0.1 * floatcos(-rz - 90.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 90.0);
+		10.0, 80.0, rz + 45.0 + 90.0, .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick3] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 180.0, degrees)),
 		y + (0.1 * floatcos(-rz - 180.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 180.0);
+		10.0, 80.0, rz + 45.0 + 180.0, .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick4] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 270.0, degrees)),
 		y + (0.1 * floatcos(-rz - 270.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 270.0);
+		10.0, 80.0, rz + 45.0 + 270.0, .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick5] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz, degrees)),
 		y + (0.1 * floatcos(-rz, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + random(90));
+		10.0, 80.0, rz + random(90), .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick6] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 90.0, degrees)),
 		y + (0.1 * floatcos(-rz - 90.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + random(90) + 90.0);
+		10.0, 80.0, rz + random(90) + 90.0, .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick7] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 180.0, degrees)),
 		y + (0.1 * floatcos(-rz - 180.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + random(90) + 180.0);
+		10.0, 80.0, rz + random(90) + 180.0, .streamdistance = 10.0);
 
 	cmp_Data[id][cmp_objStick8] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 270.0, degrees)),
 		y + (0.1 * floatcos(-rz - 270.0, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + random(90) + 270.0);
+		10.0, 80.0, rz + random(90) + 270.0, .streamdistance = 10.0);
 
 	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid1], 0, TEXTURE_1, 0);
 	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid2], 0, TEXTURE_1, 0);
@@ -190,7 +190,10 @@ stock SetCampfireState(fireid, bool:toggle)
 			return -1;
 
 		cmp_Data[fireid][cmp_objFlame] = CreateDynamicObject(18693,
-			cmp_Data[fireid][cmp_posX], cmp_Data[fireid][cmp_posY], cmp_Data[fireid][cmp_posZ] - 1.5, 0.0, 0.0, cmp_Data[fireid][cmp_rotZ]);
+			cmp_Data[fireid][cmp_posX],
+			cmp_Data[fireid][cmp_posY],
+			cmp_Data[fireid][cmp_posZ] - 1.5,
+			0.0, 0.0, cmp_Data[fireid][cmp_rotZ], .streamdistance = 500.0);
 	}
 	else
 	{
@@ -199,8 +202,10 @@ stock SetCampfireState(fireid, bool:toggle)
 
 		DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
 		DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
+
 		cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
 		cmp_Data[fireid][cmp_objSmoke] = INVALID_OBJECT_ID;
+
 		stop cmp_CookTimer[fireid];
 	}
 

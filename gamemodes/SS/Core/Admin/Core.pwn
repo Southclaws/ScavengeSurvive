@@ -33,15 +33,16 @@ ACMD:admins[3](playerid, params[])
 {
 	new
 		title[20],
-		list[(64+1)*MAX_ADMIN + 22],
-		offline[(64+1)*MAX_ADMIN],
-		tmpstr[64],
+		line[52],
 		j,
 		bool:isonline;
+
+	format(title, 20, "Administrators (%d)", gTotalAdmins);
 
 	for(new i; i < gTotalAdmins; i++)
 	{
 		isonline = false;
+
 		foreach(j : Player)
 		{
 			if(!strcmp(gAdminData[i][admin_Name], gPlayerName[j]) && !isnull(gAdminData[i][admin_Name]))
@@ -50,34 +51,31 @@ ACMD:admins[3](playerid, params[])
 				break;
 			}
 		}
+
 		if(isonline)
 		{
-			format(tmpstr, 64, "%P %C(level %d - %s)\n",
+			format(line, sizeof(line), "%P %C(%d-%s)\n",
 				j,
-				AdminColours[gPlayerData[i][ply_Admin]],
-				gAdminData[i][admin_Level],
-				AdminName[gAdminData[i][admin_Level]]);
+				AdminColours[gPlayerData[j][ply_Admin]],
+				gAdminData[j][admin_Level],
+				AdminName[gAdminData[j][admin_Level]]);
 
-			strcat(list, tmpstr);
+			strcat(gBigString, line);
 		}
 		else
 		{
-			format(tmpstr, 64, ""#C_WHITE"%s %C(level %d - %s)\n",
+			format(line, 64, ""#C_WHITE"%s %C(%d-%s)\n",
 				gAdminData[i][admin_Name],
 				AdminColours[gAdminData[i][admin_Level]],
 				gAdminData[i][admin_Level],
 				AdminName[gAdminData[i][admin_Level]]);
 
-			strcat(offline, tmpstr);
+			strcat(gBigString, line);
 		}
 	}
 	
-	strcat(list, "\n\n"#C_YELLOW"Offline:\n\n");
-	strcat(list, offline);
-	
-	format(title, 20, "Administrators (%d)", gTotalAdmins);
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, title, gBigString, "Close", "");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, title, list, "Close", "");
 	return 1;
 }
 

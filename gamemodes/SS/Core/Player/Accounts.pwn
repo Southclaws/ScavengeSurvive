@@ -392,7 +392,7 @@ SavePlayerData(playerid)
 	SaveBlockAreaCheck(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		gPlayerData[playerid][ply_SpawnPosZ] += 2.5;
+		gPlayerData[playerid][ply_SpawnPosZ] += 1.5;
 
 	if(gPlayerBitData[playerid] & Alive)
 	{

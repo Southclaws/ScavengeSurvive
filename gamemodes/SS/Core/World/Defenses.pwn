@@ -487,6 +487,8 @@ public OnHoldActionFinish(playerid)
 			DestroyDefense(def_CurrentDefenseEdit[playerid]);
 			ClearAnimations(playerid);
 			def_CurrentDefenseEdit[playerid] = -1;
+
+			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f", playerid, _:def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenseEdit[playerid]][def_posX], def_Data[def_CurrentDefenseEdit[playerid]][def_posY], def_Data[def_CurrentDefenseEdit[playerid]][def_posZ]);
 		}
 
 		return 1;
@@ -663,7 +665,11 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 		def_Data[closestid][def_hitPoints] -= hitpoints;
 
 		if(def_Data[closestid][def_hitPoints] <= 0)
+		{
+			logf("[DESTRUCTION] DEFENCE TYPE %d DESTROYED AT %f, %f, %f", _:def_TypeData[def_Data[closestid][def_type]][def_itemtype], def_Data[closestid][def_posX], def_Data[closestid][def_posY], def_Data[closestid][def_posZ]);
+
 			DestroyDefense(closestid);
+		}
 	}
 }
 

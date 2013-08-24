@@ -65,12 +65,14 @@ LoadVehiclesFromFile(file[])
 		Float:rotZ,
 		model,
 		tmpid,
-		count;
+		count,
+		total;
 
 	while(fread(f, line))
 	{
 		if(!sscanf(line, "p<,>ffffD(-1)", posX, posY, posZ, rotZ, model))
 		{
+			total++;
 			if(tmpid - 1 >= MAX_SPAWNED_VEHICLES)
 				break;
 
@@ -138,7 +140,7 @@ LoadVehiclesFromFile(file[])
 	}
 	fclose(f);
 
-	printf("\t[LOAD] %d vehicles from %s", count, file);
+	printf("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
 
 	return 1;
 }
