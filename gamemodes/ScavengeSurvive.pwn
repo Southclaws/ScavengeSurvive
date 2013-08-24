@@ -382,6 +382,13 @@ enum
 	k_BlastDoor,
 	k_Storage,
 	k_StorageWatch,
+	k_Generator,
+	k_PassageTop,
+	k_PassageBottom,
+	k_Catwalk,
+	k_Headquarters1,
+	k_Headquarters2,
+	k_Shaft,
 	k_Lockup
 }
 
@@ -744,6 +751,7 @@ forward SetRestart(seconds);
 #include "SS/utils/zones.pwn"
 #include "SS/utils/player.pwn"
 #include "SS/utils/object.pwn"
+#include "SS/utils/tickcountfix.pwn"
 
 //======================SIF Module Scripts
 
@@ -1265,7 +1273,7 @@ public OnGameModeInit()
 	SetItemTypeHolsterable(ItemType:36,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Heatseeker
 
 	SetItemTypeHolsterable(item_Taser,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Taser
-	SetItemTypeHolsterable(item_Shield,	1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 300,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+	SetItemTypeHolsterable(item_Shield,	1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
 
 
 	anim_Blunt = DefineAnimSet();

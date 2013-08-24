@@ -6,6 +6,12 @@ new
 	code_Inner,
 	code_Storage,
 	code_StorageWatch,
+	code_Generator,
+	code_PassageTop,
+	code_PassageBottom,
+	code_Catwalk,
+	code_Headquarters,
+	code_Shaft,
 
 	btn_ControlTower,
 	btn_StorageWatch,
@@ -38,6 +44,12 @@ public OnLoad()
 	code_Inner			= 1000 + random(8999);
 	code_Storage		= 1000 + random(8999);
 	code_StorageWatch	= 1000 + random(8999);
+	code_Generator		= 1000 + random(8999);
+	code_PassageTop		= 1000 + random(8999);
+	code_PassageBottom	= 1000 + random(8999);
+	code_Catwalk		= 1000 + random(8999);
+	code_Headquarters	= 1000 + random(8999);
+	code_Shaft			= 1000 + random(8999);
 
 	lock_ControlTower = 1;
 	lock_StorageWatch = 1;
@@ -180,7 +192,7 @@ public OnButtonPress(playerid, buttonid)
 		}
 		else
 		{
-
+			ShowCodeList2(playerid);
 		}
 	}
 
@@ -197,75 +209,40 @@ forward a69_OnButtonPress(playerid, buttonid);
 public OnPlayerActivateDoor(playerid, doorid, newstate)
 {
 	if(doorid == door_Main)
-	{
-		ShowKeypad(playerid, k_MainGate, code_MainGate);
-
-		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_ControlTower, code_ControlTower);
-
-		return 1;
-	}
+		return PlayerActivateDoorButton(playerid, k_MainGate, code_ControlTower);
 
 	if(doorid == door_Airstrip)
-	{
-		ShowKeypad(playerid, k_AirstripGate, code_AirstripGate);
-
-		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_AirstripGate, code_AirstripGate);
-
-		return 1;
-	}
+		return PlayerActivateDoorButton(playerid, k_AirstripGate, code_AirstripGate);
 
 	if(doorid == door_BlastDoor1)
-	{
-		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
-
-		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_BlastDoor, code_BlastDoor);
-
-		return 1;
-	}
+		return PlayerActivateDoorButton(playerid, k_BlastDoor, code_BlastDoor);
 
 	if(doorid == door_BlastDoor2)
-	{
-		ShowKeypad(playerid, k_BlastDoor, code_BlastDoor);
-
-		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_BlastDoor, code_BlastDoor);
-
-		return 1;
-	}
+		return PlayerActivateDoorButton(playerid, k_BlastDoor, code_BlastDoor);
 
 	if(doorid == door_Storage)
-	{
-		ShowKeypad(playerid, k_Storage, code_Storage);
-
-		if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-			HackKeypad(playerid, k_Storage, code_Storage);
-
-		return 1;
-	}
+		return PlayerActivateDoorButton(playerid, k_Storage, code_Storage);
 
 	if(doorid == door_Generator)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_Generator, code_Generator);
 
 	if(doorid == door_PassageTop)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_PassageTop, code_PassageTop);
 
 	if(doorid == door_PassageBottom)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_PassageBottom, code_PassageBottom);
 
 	if(doorid == door_Catwalk)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_Catwalk, code_Catwalk);
 
 	if(doorid == door_Headquarters1)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_Headquarters1, code_Headquarters);
 
 	if(doorid == door_Headquarters2)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_Headquarters2, code_Headquarters);
 
 	if(doorid == door_Shaft)
-		return 1;
+		return PlayerActivateDoorButton(playerid, k_Shaft, code_Shaft);
 
 
 	return CallLocalFunction("a69_OnPlayerActivateDoor", "ddd", playerid, doorid, newstate);
@@ -277,6 +254,16 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 #endif
 #define OnPlayerActivateDoor a69_OnPlayerActivateDoor
 forward a69_OnPlayerActivateDoor(playerid, doorid, newstate);
+
+PlayerActivateDoorButton(playerid, keypad, code)
+{
+	ShowKeypad(playerid, keypad, code);
+
+	if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
+		HackKeypad(playerid, keypad, code);
+
+	return 1;
+}
 
 public OnPlayerKeypadEnter(playerid, keypadid, success)
 {
@@ -327,6 +314,62 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 			HideKeypad(playerid);
 		}
 	}
+	if(keypadid == k_Generator)
+	{
+		if(success)
+		{
+			OpenDoor(door_Generator);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_PassageTop)
+	{
+		if(success)
+		{
+			OpenDoor(door_PassageTop);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_PassageBottom)
+	{
+		if(success)
+		{
+			OpenDoor(door_PassageBottom);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_Catwalk)
+	{
+		if(success)
+		{
+			OpenDoor(door_Catwalk);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_Headquarters1)
+	{
+		if(success)
+		{
+			OpenDoor(door_Headquarters1);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_Headquarters2)
+	{
+		if(success)
+		{
+			OpenDoor(door_Headquarters2);
+			HideKeypad(playerid);
+		}
+	}
+	if(keypadid == k_Shaft)
+	{
+		if(success)
+		{
+			OpenDoor(door_Shaft);
+			HideKeypad(playerid);
+		}
+	}
 
 	return CallLocalFunction("a69_OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
 }
@@ -342,7 +385,7 @@ ShowCodeList1(playerid)
 {
 	new str[258];
 	format(str, 258,
-		""#C_ORANGE"Keycodes for security system:\n\n\
+		""#C_ORANGE"Keycodes for security system. SECTOR 01:\n\n\
 		\t"#C_WHITE"Control Tower:"#C_YELLOW"\t%d\n\
 		\t"#C_WHITE"Main gate:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Airstrip Gate:"#C_YELLOW"\t\t%d\n\
@@ -355,6 +398,27 @@ ShowCodeList1(playerid)
 		code_BlastDoor,
 		code_Inner,
 		code_Storage);
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
+}
+
+ShowCodeList2(playerid)
+{
+	new str[258];
+	format(str, 258,
+		""#C_ORANGE"Keycodes for security system. SECTOR 02:\n\n\
+		\t"#C_WHITE"Generator:"#C_YELLOW"\t%d\n\
+		\t"#C_WHITE"Passage 1:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Passage 2:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Catwalk:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Headquarters:"#C_YELLOW"\t\t%d\n\
+		\t"#C_WHITE"Shaft:"#C_YELLOW"\t\t%d",
+		code_Generator,
+		code_PassageTop,
+		code_PassageBottom,
+		code_Catwalk,
+		code_Headquarters,
+		code_Shaft);
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
 }
