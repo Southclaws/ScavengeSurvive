@@ -121,7 +121,7 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	if(mode == DEFENSE_MODE_HORIZONTAL)
 	{
 		if(!def_TypeData[type][def_buildHorizont])
-			return -1;
+			return -2;
 
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 			def_TypeData[type][def_placeRotX] + 90.0,
@@ -131,7 +131,7 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	else
 	{
 		if(!def_TypeData[type][def_buildVertical])
-			return -1;
+			return -3;
 
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
 			def_TypeData[type][def_placeRotX],
@@ -148,11 +148,10 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
 
-	if(hitpoints == -1)
-		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
+	if(hitpoints <= 0)
+		return -4;
 
-	else
-		def_Data[id][def_hitPoints] = hitpoints;
+	def_Data[id][def_hitPoints] = hitpoints;
 
 	def_Data[id][def_posX] = x;
 	def_Data[id][def_posY] = y;
@@ -484,11 +483,11 @@ public OnHoldActionFinish(playerid)
 				.rz = def_Data[def_CurrentDefenseEdit[playerid]][def_rotZ],
 				.zoffset = ITEM_BUTTON_OFFSET);
 
+			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f", playerid, _:def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenseEdit[playerid]][def_posX], def_Data[def_CurrentDefenseEdit[playerid]][def_posY], def_Data[def_CurrentDefenseEdit[playerid]][def_posZ]);
+
 			DestroyDefense(def_CurrentDefenseEdit[playerid]);
 			ClearAnimations(playerid);
 			def_CurrentDefenseEdit[playerid] = -1;
-
-			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f", playerid, _:def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenseEdit[playerid]][def_posX], def_Data[def_CurrentDefenseEdit[playerid]][def_posY], def_Data[def_CurrentDefenseEdit[playerid]][def_posZ]);
 		}
 
 		return 1;
@@ -565,8 +564,7 @@ LoadDefenses(printeach = false, printtotal = false)
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:r,
-		count;
+		Float:r;
 
 	while(dir_list(direc, item, type))
 	{
@@ -583,18 +581,18 @@ LoadDefenses(printeach = false, printtotal = false)
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				if(!IsValidDefenseType(data[0]))
+				new ret = CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
+
+				if(ret > -1)
+				{
+					if(printeach)
+						printf("\t[LOAD] Defence at %f, %f, %f", x, y, z);
+				}
+				else
 				{
 					fremove(filedir);
-					continue;
+					printf("ERROR: Loading defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
 				}
-
-				if(printeach)
-					printf("\t[LOAD] Defence at %f, %f, %f", x, y, z);
-
-				CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
-
-				count++;
 			}
 		}
 	}
@@ -602,26 +600,23 @@ LoadDefenses(printeach = false, printtotal = false)
 	dir_close(direc);
 
 	if(printtotal)
-		printf("Loaded %d Defense items\n", count);
+		printf("Loaded %d Defense items\n", Iter_Count(def_Index));
 }
 
 SaveDefenses(printeach = false, printtotal = false)
 {
-	new count;
-
 	foreach(new i : def_Index)
 	{
-		if(SaveDefenseItem(i, printeach))
-			count++;
+		SaveDefenseItem(i, printeach);
 	}
 
 	if(printtotal)
-		printf("Saved %d Defences\n", count);
+		printf("Saved %d Defences\n", Iter_Count(def_Index));
 }
 
 SaveDefenseItem(id, prints = false)
 {
-	if(Iter_Contains(def_Index, id))
+	if(!Iter_Contains(def_Index, id))
 		return 0;
 
 	new
@@ -644,6 +639,7 @@ SaveDefenseItem(id, prints = false)
 	else
 	{
 		printf("ERROR: Saving defense, filename: '%s'", filename);
+		return 0;
 	}
 
 	if(prints)

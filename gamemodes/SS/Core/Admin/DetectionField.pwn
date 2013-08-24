@@ -3,7 +3,7 @@
 
 #define MAX_DETECTION_FIELD			(32)
 #define MAX_DETECTION_FIELD_NAME	(24)
-#define MAX_DETECTION_FIELD_ENTRIES	(64)
+#define MAX_DETECTION_FIELD_ENTRIES	(32)
 #define DET_DATA_FOLDER				"SSS/DetField/"
 #define DET_DATA_DIR				"./scriptfiles/SSS/DetField/"
 

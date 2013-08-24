@@ -1400,7 +1400,7 @@ public OnGameModeInit()
 
 	LoadAdminData();
 
-	LoadVehicles	(false, true);
+	LoadVehicles	(true, true);
 	LoadSafeboxes	(false, true);
 	LoadTents		(false, true);
 	LoadDefenses	(false, true);
@@ -1423,7 +1423,7 @@ public OnGameModeExit()
 	// First param: print each individual entity when it's saved
 	// Second param: print the total amount of entities saved
 
-	SavePlayerVehicles	(false, true);
+	SavePlayerVehicles	(true, true);
 	SaveSafeboxes		(false, true);
 	SaveTents			(false, true);
 	SaveDefenses		(false, true);

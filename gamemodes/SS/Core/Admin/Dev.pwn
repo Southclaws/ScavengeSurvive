@@ -482,3 +482,17 @@ ACMD:createvehicle[4](playerid, params[])
 
 	return 1;
 }
+
+ACMD:pos[4](playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+	MsgF(playerid, YELLOW, " >  Position: "#C_BLUE"%.2f, %.2f, %.2f", x, y, z);
+
+	return 1;
+}

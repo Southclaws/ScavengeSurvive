@@ -22,7 +22,7 @@ stock log(text[])
 		return 0;
 	}
 
-	format(string, 256, "[%s] %s", TimestampToDateTime(gettime(), CTIME_TIME_SHORT), text);
+	format(string, 256, "[%s] %s\r\n", TimestampToDateTime(gettime(), CTIME_TIME_SHORT), text);
 
 	fwrite(file, string);
 	fclose(file);
