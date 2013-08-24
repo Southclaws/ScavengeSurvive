@@ -515,8 +515,7 @@ new
 Float:	vt_Position[MAX_SPAWNED_VEHICLES][3],
 		vt_MovedFar[MAX_SPAWNED_VEHICLES],
 		vt_MovedFarTick[MAX_SPAWNED_VEHICLES],
-		vt_MovedFarPlayer[MAX_SPAWNED_VEHICLES],
-Float:	vt_MovedFarDistance[MAX_SPAWNED_VEHICLES];
+		vt_MovedFarPlayer[MAX_SPAWNED_VEHICLES];
 
 
 hook OnVehicleSpawn(vehicleid)
@@ -573,7 +572,6 @@ VehicleDistanceCheck(playerid, vehicleid)
 		{
 			vt_MovedFar[vehicleid] = true;
 			vt_MovedFarTick[vehicleid] = tickcount();
-			vt_MovedFarDistance[vehicleid] = distance;
 
 			foreach(new i : veh_Index)
 			{
@@ -585,14 +583,14 @@ VehicleDistanceCheck(playerid, vehicleid)
 			}
 
 			new
-				name[MAX_SPAWNED_VEHICLES],
+				name[MAX_PLAYER_NAME],
 				model,
 				vehiclename[MAX_VEHICLE_NAME],
 				owner[MAX_PLAYER_NAME],
 				reason[128],
 				info[128];
 
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerName(vt_MovedFarPlayer[vehicleid], name, MAX_PLAYER_NAME);
 			model = GetVehicleModel(vehicleid);
 			GetVehicleName(model, vehiclename);
 			GetVehicleOwner(vehicleid, owner);
