@@ -295,15 +295,21 @@ forward box_OnPlayerCloseContainer(playerid, containerid);
 
 
 
-SaveSafeboxes(prints = false)
+SaveSafeboxes(printeach = false, printtotal = false)
 {
+	new count;
+
 	foreach(new i : box_Index)
 	{
-		SaveSafeboxItem(i, prints);
+		if(SaveSafeboxItem(i, printeach) > 0)
+			count++;
 	}
+
+	if(printtotal)
+		printf("Saved %d Safeboxes\n", count);
 }
 
-LoadSafeboxes(prints = false)
+LoadSafeboxes(printeach = false, printtotal = false)
 {
 	new
 		dir:direc = dir_open(SAFEBOX_DIRECTORY),
@@ -352,7 +358,7 @@ LoadSafeboxes(prints = false)
 				itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
 				containerid = GetItemExtraData(itemid);
 
-				if(prints)
+				if(printeach)
 					printf("\t[LOAD] Safebox type %d at %f, %f, %f", data[0], x, y, z);
 
 				for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
@@ -375,7 +381,8 @@ LoadSafeboxes(prints = false)
 
 	dir_close(direc);
 
-	printf("Loaded %d Safeboxes\n", count);
+	if(printtotal)
+		printf("Loaded %d Safeboxes\n", count);
 }
 
 SaveSafeboxItem(itemid, prints = false)

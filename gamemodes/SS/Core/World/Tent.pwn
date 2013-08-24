@@ -250,15 +250,21 @@ forward tnt2_OnHoldActionFinish(playerid);
 
 
 
-SaveTents(prints = false)
+SaveTents(printeach = false, printtotal = false)
 {
+	new count;
+
 	foreach(new i : tnt_Index)
 	{
-		SaveTent(i, prints);
+		if(SaveTent(i, printeach))
+			count++;
 	}
+
+	if(printtotal)
+		printf("Saved %d Tents\n", count);
 }
 
-LoadTents(prints)
+LoadTents(printeach = false, printtotal = false)
 {
 	new
 		dir:direc = dir_open(TENT_DATA_DIR),
@@ -292,7 +298,7 @@ LoadTents(prints)
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				if(prints)
+				if(printeach)
 					printf("\t[LOAD] Tent at %f, %f, %f", x, y, z);
 
 				CreateTent(Float:x, Float:y, Float:z, Float:r);
@@ -322,7 +328,8 @@ LoadTents(prints)
 
 	dir_close(direc);
 
-	printf("Loaded %d Tents\n", count);
+	if(printtotal)
+		printf("Loaded %d Tents\n", count);
 }
 
 SaveTent(tentid, prints = false)
@@ -394,6 +401,7 @@ SaveTent(tentid, prints = false)
 	else
 	{
 		printf("ERROR: Saving tent, filename: '%s'", filename);
+		return 0;
 	}
 
 	return 1;

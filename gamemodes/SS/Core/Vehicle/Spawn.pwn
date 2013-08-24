@@ -5,15 +5,15 @@
 #define VEHICLE_SPAWN_CHANCE		(4) // Percent
 
 
-LoadVehicles()
+LoadVehicles(printeach = false, printtotal = false)
 {
-	LoadPlayerVehicles();
-	LoadVehiclesFromFolder(VEHICLE_FOLDER);
+	LoadPlayerVehicles(printeach, printtotal);
+	LoadVehiclesFromFolder(VEHICLE_FOLDER, printeach);
 
-	printf("Total Vehicles: %d\n", Iter_Count(veh_Index));
+	printf("Loaded %d Vehicles\n", Iter_Count(veh_Index));
 }
 
-LoadVehiclesFromFolder(folder[])
+LoadVehiclesFromFolder(folder[], prints)
 {
 	new
 		foldername[256],
@@ -31,7 +31,7 @@ LoadVehiclesFromFolder(folder[])
 		{
 			filename[0] = EOS;
 			format(filename, sizeof(filename), "%s/%s", folder, item);
-			LoadVehiclesFromFolder(filename);
+			LoadVehiclesFromFolder(filename, prints);
 		}
 		if(type == FM_FILE)
 		{
@@ -39,7 +39,7 @@ LoadVehiclesFromFolder(folder[])
 			{
 				filename[0] = EOS;
 				format(filename, sizeof(filename), "%s/%s", folder, item);
-				LoadVehiclesFromFile(filename);
+				LoadVehiclesFromFile(filename, prints);
 			}
 		}
 	}
@@ -47,7 +47,7 @@ LoadVehiclesFromFolder(folder[])
 	dir_close(dirhandle);
 }
 
-LoadVehiclesFromFile(file[])
+LoadVehiclesFromFile(file[], prints)
 {
 	if(!fexist(file))
 	{
@@ -140,7 +140,8 @@ LoadVehiclesFromFile(file[])
 	}
 	fclose(f);
 
-	printf("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
+	if(prints)
+		printf("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
 
 	return 1;
 }

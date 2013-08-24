@@ -1,99 +1,62 @@
 #include <a_samp>
 
+enum
+{
+	loot_Civilian,
+	loot_Industrial,
+	loot_Police,
+	loot_Military,
+	loot_Medical,
+	loot_CarCivilian,
+	loot_CarIndustrial,
+	loot_CarPolice,
+	loot_CarMilitary,
+	loot_Survivor
+}
+
+forward OnLoad();
+
+#include "/temp/SF.pwn"
+#include "/temp/LS.pwn"
+#include "/temp/LV.pwn"
+#include "/temp/BC.pwn"
+#include "/temp/FC.pwn"
+#include "/temp/TR.pwn"
+#include "/temp/RC.pwn"
+
+new
+	File:output,
+	count;
+
 main()
 {
-	SetTimer("tctest", 100, true);
+	output = fopen("loot.txt", io_write);
+	
+	LoadSF();
+	LoadTR();
+	LoadFC();
+	LoadBC();
+	LoadRC();
+	LoadLV();
+	LoadLS();
+
+	fclose(output);
+
+	printf("Done, count: %d", count);
 }
 
-forward tctest();
-public tctest()
+CreateLootSpawn(Float:x, Float:y, Float:z,	amount, chance, type)
 {
-	print("Testing tickcount vs GetTickcount");
-	new
-		tc,
-		gtc;
+	#pragma unused amount, chance, type, z
 
-	tc = tickcount();
-	gtc = GetTickCount();
+	new str[128];
 
-	printf("tc:   %d", tc);
-	printf("gtc:  %d", gtc);
+	format(str, 128, "\t\t\t\t{%d, %d},\r\n", floatround(x), floatround(y));
 
-	printf("tc:   %s", MsToString(tc, "%h:%m:%s.%d"));
-	printf("gtc:  %s", MsToString(gtc, "%h:%m:%s.%d"));
+	fwrite(output, str);
 
-	printf("diff: %d", gtc-tc);
-
-	print("\n");
+	count++;
 }
-
-stock MsToString(millisecond, format[])
-{
-	new
-		tmp[4],
-		result[64],
-		hour,
-		minute,
-		second,
-		format_char,
-		result_lenght,
-		len = strlen(format);
-
-	hour			= (millisecond / (1000 * 60 * 60));
-	minute			= (millisecond % (1000 * 60 * 60)) / (1000 * 60);
-	second			= ((millisecond % (1000 * 60 * 60)) % (1000 * 60)) / 1000;
-	millisecond		= millisecond - (hour * 60 * 60 * 1000) - (minute * 60 * 1000) - (second * 1000);
-
-	while(format_char < len)
-	{
-		if(format[format_char] == '%')
-		{
-			format_char++;
-
-			switch(format[format_char])
-			{
-				case 'h':
-				{
-					valstr(tmp, hour);
-					strcat(result, tmp);
-					result_lenght = strlen(result);
-				}
-
-				case 'm':
-				{
-					valstr(tmp, minute);
-					strcat(result, tmp);
-					result_lenght = strlen(result);
-				}
-
-				case 's':
-				{
-					valstr(tmp, second);
-					strcat(result, tmp);
-					result_lenght = strlen(result);
-				}
-
-				case 'd':
-				{
-					valstr(tmp, millisecond);
-					strcat(result, tmp);
-					result_lenght = strlen(result);
-				}
-			}
-		}
-		else
-		{
-			result[result_lenght] = format[format_char];
-			result_lenght++;
-		}
-
-		format_char++;
-	}
-
-	return result;
-}
-
-
 
 public OnPlayerSpawn(playerid)
 {

@@ -552,7 +552,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 // Save and Load
 
 
-LoadDefenses()
+LoadDefenses(printeach = false, printtotal = false)
 {
 	new
 		dir:direc = dir_open(DEFENSE_DATA_DIR),
@@ -589,6 +589,9 @@ LoadDefenses()
 					continue;
 				}
 
+				if(printeach)
+					printf("\t[LOAD] Defence at %f, %f, %f", x, y, z);
+
 				CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
 
 				count++;
@@ -598,19 +601,25 @@ LoadDefenses()
 
 	dir_close(direc);
 
-	printf("Loaded %d Defense items\n", count);
+	if(printtotal)
+		printf("Loaded %d Defense items\n", count);
 }
 
-SaveDefenses()
+SaveDefenses(printeach = false, printtotal = false)
 {
+	new count;
+
 	foreach(new i : def_Index)
 	{
-		SaveDefenseItem(i);
+		if(SaveDefenseItem(i, printeach))
+			count++;
 	}
-	return 1;
+
+	if(printtotal)
+		printf("Saved %d Defences\n", count);
 }
 
-SaveDefenseItem(id)
+SaveDefenseItem(id, prints = false)
 {
 	if(Iter_Contains(def_Index, id))
 		return 0;
@@ -636,6 +645,9 @@ SaveDefenseItem(id)
 	{
 		printf("ERROR: Saving defense, filename: '%s'", filename);
 	}
+
+	if(prints)
+		printf("\t[SAVE] Defence at %f, %f, %f", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ]);
 
 	return 1;
 }

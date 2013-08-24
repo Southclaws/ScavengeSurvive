@@ -24,9 +24,11 @@ enum
 }
 
 
-SavePlayerVehicles()
+SavePlayerVehicles(printeach = false, printtotal = false)
 {
-	new owner[MAX_PLAYER_NAME];
+	new
+		count,
+		owner[MAX_PLAYER_NAME];
 
 	for(new i; i < MAX_SPAWNED_VEHICLES; i++)
 	{
@@ -35,7 +37,10 @@ SavePlayerVehicles()
 		if(IsValidVehicleID(i))
 		{
 			if(strlen(owner) >= 3)
-				SavePlayerVehicle(i, owner);
+			{
+				SavePlayerVehicle(i, owner, printeach);
+				count++;
+			}
 		}
 		else
 		{
@@ -43,9 +48,12 @@ SavePlayerVehicles()
 				RemovePlayerVehicleFile(i);
 		}
 	}
+
+	if(printtotal)
+		printf("Saved %d Player vehicles\n", count);
 }
 
-LoadPlayerVehicles()
+LoadPlayerVehicles(printeach = false, printtotal = false)
 {
 	new
 		dir:direc = dir_open(PLAYER_VEHICLE_DIRECTORY),
@@ -56,18 +64,19 @@ LoadPlayerVehicles()
 	{
 		if(type == FM_FILE)
 		{
-			LoadPlayerVehicle(item);
+			LoadPlayerVehicle(item, printeach);
 		}
 	}
 
 	dir_close(direc);
 
-	printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
+	if(printtotal)
+		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
 
 	return;
 }
 
-LoadPlayerVehicle(filename[])
+LoadPlayerVehicle(filename[], prints)
 {
 	new
 		File:file,
@@ -169,7 +178,8 @@ LoadPlayerVehicle(filename[])
 
 	SetVehicleOwner(vehicleid, owner);
 
-	printf("\t[LOAD] vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner, array[VEH_CELL_POSX], array[VEH_CELL_POSY], array[VEH_CELL_POSZ], array[VEH_CELL_ROTZ]);
+	if(prints)
+		printf("\t[LOAD] vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner, array[VEH_CELL_POSX], array[VEH_CELL_POSY], array[VEH_CELL_POSZ], array[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -222,7 +232,7 @@ LoadPlayerVehicle(filename[])
 	return 1;
 }
 
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = true)
+SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 {
 	if(!IsValidVehicleID(vehicleid))
 		return 0;

@@ -1399,10 +1399,12 @@ public OnGameModeInit()
 	// Data From Files
 
 	LoadAdminData();
-	LoadVehicles();
-	LoadSafeboxes(true);
-	LoadTents(true);
-	LoadDefenses();
+
+	LoadVehicles	(false, true);
+	LoadSafeboxes	(false, true);
+	LoadTents		(false, true);
+	LoadDefenses	(false, true);
+
 	LoadSprayTags();
 
 
@@ -1418,10 +1420,14 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
-	SavePlayerVehicles();
-	SaveSafeboxes(true);
-	SaveTents(true);
-	SaveDefenses();
+	// First param: print each individual entity when it's saved
+	// Second param: print the total amount of entities saved
+
+	SavePlayerVehicles	(false, true);
+	SaveSafeboxes		(false, true);
+	SaveTents			(false, true);
+	SaveDefenses		(false, true);
+
 	SaveSprayTags();
 
 	print("\nSave Complete! Safe to shut down.");
