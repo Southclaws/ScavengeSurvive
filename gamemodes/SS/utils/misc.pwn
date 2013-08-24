@@ -1,3 +1,20 @@
+#define CTIME_DATE_TIME			"%A %b %d %Y at %X"
+#define CTIME_DATE_FILENAME		"%d-%m-%Y (%a-%d-%b)"
+#define CTIME_DATE_SHORT		"%x"
+#define CTIME_TIME_SHORT		"%X"
+
+stock TimestampToDateTime(datetime, format[] = CTIME_DATE_TIME)
+{
+	new
+		str[64],
+		tm<timestamp>;
+
+	localtime(Time:datetime, timestamp);
+	strftime(str, 64, format, timestamp);
+
+	return str;
+}
+
 stock IsPointInMapBounds(Float:x, Float:y, Float:z)
 {
 	if(-3000.0 <= x <= 3000.0)
@@ -12,42 +29,6 @@ stock IsPointInMapBounds(Float:x, Float:y, Float:z)
 	}
 
 	return 0;
-}
-
-stock TimestampToTime(datetime)
-{
-	new
-		str[36],
-		tm<timestamp>;
-
-	localtime(Time:datetime, timestamp);
-	strftime(str, 36, "%X", timestamp);
-
-	return str;
-}
-
-stock TimestampToDate(datetime)
-{
-	new
-		str[36],
-		tm<timestamp>;
-
-	localtime(Time:datetime, timestamp);
-	strftime(str, 36, "%A %b %d %Y", timestamp);
-
-	return str;
-}
-
-stock TimestampToDateTime(datetime)
-{
-	new
-		str[36],
-		tm<timestamp>;
-
-	localtime(Time:datetime, timestamp);
-	strftime(str, 36, "%A %b %d %Y at %X", timestamp);
-
-	return str;
 }
 
 stock returnOrdinal(number)

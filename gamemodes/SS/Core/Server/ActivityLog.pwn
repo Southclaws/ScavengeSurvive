@@ -8,7 +8,7 @@ stock log(text[])
 		File:file,
 		filename[64];
 
-	format(filename, 64, LOG_FILE, TimestampToDate(gettime()));
+	format(filename, 64, LOG_FILE, TimestampToDateTime(gettime(), CTIME_DATE_FILENAME));
 
 	if(fexist(filename))
 		file = fopen(filename, io_append);
@@ -22,8 +22,7 @@ stock log(text[])
 		return 0;
 	}
 
-	strcat(string, text);
-	strcat(string, "\r\n");
+	format(string, 256, "[%s] %s", TimestampToDateTime(gettime(), CTIME_TIME_SHORT), text);
 
 	fwrite(file, string);
 	fclose(file);
