@@ -360,8 +360,8 @@ enum
 	d_IssueList,
 	d_Issue,
 
-	d_DefenseSetPass,
-	d_DefenseEnterPass,
+	d_DefenceSetPass,
+	d_DefenceEnterPass,
 
 	d_TransferAmmoToGun,
 	d_TransferAmmoToBox,
@@ -845,7 +845,7 @@ forward SetRestart(seconds);
 
 #include "SS/Core/World/Fuel.pwn"
 #include "SS/Core/World/Barbecue.pwn"
-#include "SS/Core/World/Defenses.pwn"
+#include "SS/Core/World/Defences.pwn"
 #include "SS/Core/World/GraveStone.pwn"
 #include "SS/Core/World/SafeBox.pwn"
 #include "SS/Core/World/Carmour.pwn"
@@ -1305,16 +1305,16 @@ public OnGameModeInit()
 	DefineFoodItem(item_CanDrink,		1.0, 0, 1);
 
 
-	DefineDefenseItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
-	DefineDefenseItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		4, 1, 1);
-	DefineDefenseItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		2, 1, 1);
-	DefineDefenseItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		6, 1, 1);
-	DefineDefenseItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		4, 1, 1);
-	DefineDefenseItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		8, 1, 1);
-	DefineDefenseItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
-	DefineDefenseItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		6, 1, 1);
-	DefineDefenseItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		2, 1, 0);
-	DefineDefenseItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		6, 1, 1);
+	DefineDefenceItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
+	DefineDefenceItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		4, 1, 1);
+	DefineDefenceItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		2, 1, 1);
+	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		6, 1, 1);
+	DefineDefenceItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		4, 1, 1);
+	DefineDefenceItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		8, 1, 1);
+	DefineDefenceItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
+	DefineDefenceItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		6, 1, 1);
+	DefineDefenceItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		2, 1, 0);
+	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		6, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
@@ -1403,7 +1403,7 @@ public OnGameModeInit()
 	LoadVehicles	(true, true);
 	LoadSafeboxes	(false, true);
 	LoadTents		(false, true);
-	LoadDefenses	(false, true);
+	LoadDefences	(false, true);
 
 	LoadSprayTags();
 
@@ -1426,7 +1426,7 @@ public OnGameModeExit()
 	SavePlayerVehicles	(true, true);
 	SaveSafeboxes		(false, true);
 	SaveTents			(false, true);
-	SaveDefenses		(false, true);
+	SaveDefences		(false, true);
 
 	SaveSprayTags();
 

@@ -321,7 +321,7 @@ ACMD:deletedefences[3](playerid, params[])
 
 		if(Distance(px, py, pz, ix, iy, iz) < range)
 		{
-			i = DestroyDefense(i);
+			i = DestroyDefence(i);
 		}
 	}
 

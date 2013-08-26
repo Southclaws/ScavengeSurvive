@@ -1,20 +1,20 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_DEFENSE_ITEM	(10)
-#define MAX_DEFENSE			(1024)
-#define DEFENSE_DATA_FOLDER	"SSS/Defenses/"
-#define DEFENSE_DATA_DIR	"./scriptfiles/SSS/Defenses/"
+#define MAX_DEFENCE_ITEM	(10)
+#define MAX_DEFENCE			(1024)
+#define DEFENCE_DATA_FOLDER	"SSS/Defences/"
+#define DEFENCE_DATA_DIR	"./scriptfiles/SSS/Defences/"
 
 
 enum
 {
-	DEFENSE_MODE_HORIZONTAL,
-	DEFENSE_MODE_VERTICAL,
-	DEFENSE_MODE_OPENABLE,
+	DEFENCE_MODE_HORIZONTAL,
+	DEFENCE_MODE_VERTICAL,
+	DEFENCE_MODE_OPENABLE,
 }
 
-enum E_DEFENSE_ITEM_DATA
+enum E_DEFENCE_ITEM_DATA
 {
 ItemType:	def_itemtype,
 Float:		def_placeRotX,
@@ -26,7 +26,7 @@ Float:		def_placeOffsetZ,
 			def_buildHorizont
 }
 
-enum E_DEFENSE_DATA
+enum E_DEFENCE_DATA
 {
 			def_type,
 			def_objectId,
@@ -43,31 +43,31 @@ Float:		def_rotZ
 
 
 static
-			def_TypeData[MAX_DEFENSE_ITEM][E_DEFENSE_ITEM_DATA],
+			def_TypeData[MAX_DEFENCE_ITEM][E_DEFENCE_ITEM_DATA],
 			def_TypeIndex,
 			def_ItemTypeBounds[2] = {65535, 0};
 
 new
-			def_Data[MAX_DEFENSE][E_DEFENSE_DATA],
-Iterator:	def_Index<MAX_DEFENSE>;
+			def_Data[MAX_DEFENCE][E_DEFENCE_DATA],
+Iterator:	def_Index<MAX_DEFENCE>;
 
 static
-			def_CurrentDefenseItem[MAX_PLAYERS],
-			def_CurrentDefenseEdit[MAX_PLAYERS],
-			def_CurrentDefenseMove[MAX_PLAYERS],
-			def_CurrentDefenseOpen[MAX_PLAYERS];
+			def_CurrentDefenceItem[MAX_PLAYERS],
+			def_CurrentDefenceEdit[MAX_PLAYERS],
+			def_CurrentDefenceMove[MAX_PLAYERS],
+			def_CurrentDefenceOpen[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
-	def_CurrentDefenseItem[playerid] = INVALID_ITEM_ID;
-	def_CurrentDefenseEdit[playerid] = -1;
-	def_CurrentDefenseMove[playerid] = -1;
-	def_CurrentDefenseOpen[playerid] = -1;
+	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
+	def_CurrentDefenceEdit[playerid] = -1;
+	def_CurrentDefenceMove[playerid] = -1;
+	def_CurrentDefenceOpen[playerid] = -1;
 }
 
 
-stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:zoffset, maxhitpoints, vert, horiz)
+stock DefineDefenceItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:zoffset, maxhitpoints, vert, horiz)
 {
 	new id = def_TypeIndex;
 
@@ -89,7 +89,7 @@ stock DefineDefenseItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:z
 	return def_TypeIndex++;
 }
 
-stock IsValidDefenseType(type)
+stock IsValidDefenceType(type)
 {
 	if(0 <= type < def_TypeIndex)
 		return 1;
@@ -97,7 +97,7 @@ stock IsValidDefenseType(type)
 	return 0;
 }
 
-stock IsItemTypeDefenseItem(ItemType:itemtype)
+stock IsItemTypeDefenceItem(ItemType:itemtype)
 {
 	for(new i; i < def_TypeIndex; i++)
 	{
@@ -109,7 +109,7 @@ stock IsItemTypeDefenseItem(ItemType:itemtype)
 	return false;
 }
 
-CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, pass = 0)
+CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, pass = 0)
 {
 	new id = Iter_Free(def_Index);
 
@@ -118,7 +118,7 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 
 	def_Data[id][def_type] = type;
 
-	if(mode == DEFENSE_MODE_HORIZONTAL)
+	if(mode == DEFENCE_MODE_HORIZONTAL)
 	{
 		if(!def_TypeData[type][def_buildHorizont])
 			return -2;
@@ -139,7 +139,7 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			def_TypeData[type][def_placeRotZ] + rz);
 	}
 
-	if(mode == DEFENSE_MODE_OPENABLE)
+	if(mode == DEFENCE_MODE_OPENABLE)
 		def_Data[id][def_buttonId] = CreateButton(x, y, z, ""KEYTEXT_INTERACT" to open", .areasize = 1.5);
 
 	else
@@ -148,10 +148,11 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
 
-	if(hitpoints <= 0)
-		return -4;
+	if(hitpoints == -1)
+		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
 
-	def_Data[id][def_hitPoints] = hitpoints;
+	else
+		def_Data[id][def_hitPoints] = hitpoints;
 
 	def_Data[id][def_posX] = x;
 	def_Data[id][def_posY] = y;
@@ -163,43 +164,43 @@ CreateDefense(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	return id;
 }
 
-stock DestroyDefense(defenseid)
+stock DestroyDefence(defenceid)
 {
-	if(!Iter_Contains(def_Index, defenseid))
+	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
 
 	new
 		filename[64],
 		next;
 
-	format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenseid][def_posX], def_Data[defenseid][def_posY], def_Data[defenseid][def_posZ], def_Data[defenseid][def_rotZ]);
+	format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
 	fremove(filename);
 
-	DestroyDynamicObject(def_Data[defenseid][def_objectId]);
-	DestroyButton(def_Data[defenseid][def_buttonId]);
+	DestroyDynamicObject(def_Data[defenceid][def_objectId]);
+	DestroyButton(def_Data[defenceid][def_buttonId]);
 
-	def_Data[defenseid][def_mode]		= 0;
-	def_Data[defenseid][def_hitPoints]	= 0;
-	def_Data[defenseid][def_posX]		= 0.0;
-	def_Data[defenseid][def_posY]		= 0.0;
-	def_Data[defenseid][def_posZ]		= 0.0;
-	def_Data[defenseid][def_rotZ]		= 0.0;
+	def_Data[defenceid][def_mode]		= 0;
+	def_Data[defenceid][def_hitPoints]	= 0;
+	def_Data[defenceid][def_posX]		= 0.0;
+	def_Data[defenceid][def_posY]		= 0.0;
+	def_Data[defenceid][def_posZ]		= 0.0;
+	def_Data[defenceid][def_rotZ]		= 0.0;
 
-	Iter_SafeRemove(def_Index, defenseid, next);
+	Iter_SafeRemove(def_Index, defenceid, next);
 
 	return next;
 }
 
 /*
-EditDefense(playerid, defenseid)
+EditDefence(playerid, defenceid)
 {
-	if(!Iter_Contains(def_Index, defenseid))
+	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
 
 	TogglePlayerControllable(playerid, false);
 	Streamer_Update(playerid);
-	EditDynamicObject(playerid, def_Data[defenseid][def_objectId]);
-	def_CurrentDefenseMove[playerid] = defenseid;
+	EditDynamicObject(playerid, def_Data[defenceid][def_objectId]);
+	def_CurrentDefenceMove[playerid] = defenceid;
 
 	return 1;
 }
@@ -207,29 +208,29 @@ EditDefense(playerid, defenseid)
 
 public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
-	if(def_CurrentDefenseMove[playerid] != -1)
+	if(def_CurrentDefenceMove[playerid] != -1)
 	{
-		if(objectid == def_Data[def_CurrentDefenseMove[playerid]][def_objectId])
+		if(objectid == def_Data[def_CurrentDefenceMove[playerid]][def_objectId])
 		{
 			if(response == 1)
 			{
 				new filename[64];
 
-				format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ], def_Data[def_CurrentDefenseMove[playerid]][def_rotZ]);
+				format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ], def_Data[def_CurrentDefenceMove[playerid]][def_rotZ]);
 				fremove(filename);
 
-				def_Data[def_CurrentDefenseMove[playerid]][def_posX] = x;
-				def_Data[def_CurrentDefenseMove[playerid]][def_posY] = y;
-				def_Data[def_CurrentDefenseMove[playerid]][def_posZ] = z;
-				SaveDefenseItem(def_CurrentDefenseMove[playerid]);
+				def_Data[def_CurrentDefenceMove[playerid]][def_posX] = x;
+				def_Data[def_CurrentDefenceMove[playerid]][def_posY] = y;
+				def_Data[def_CurrentDefenceMove[playerid]][def_posZ] = z;
+				SaveDefenceItem(def_CurrentDefenceMove[playerid]);
 				TogglePlayerControllable(playerid, true);
 			}
 			if(response == 2)
 			{
-				if(Distance(x, y, z, def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ]) > 2.0)
+				if(Distance(x, y, z, def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ]) > 2.0)
 				{
 					CancelEdit(playerid);
-					SetDynamicObjectPos(objectid, def_Data[def_CurrentDefenseMove[playerid]][def_posX], def_Data[def_CurrentDefenseMove[playerid]][def_posY], def_Data[def_CurrentDefenseMove[playerid]][def_posZ]);
+					SetDynamicObjectPos(objectid, def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ]);
 					defer RetryEdit(playerid, objectid);
 					return 1;
 				}
@@ -245,29 +246,29 @@ timer RetryEdit[100](playerid, objectid)
 	EditDynamicObject(playerid, objectid);
 }
 
-timer OpenDefense[1500](defenseid)
+timer OpenDefence[1500](defenceid)
 {
-	MoveDynamicObject(def_Data[defenseid][def_objectId],
-		def_Data[defenseid][def_posX],
-		def_Data[defenseid][def_posY],
-		def_Data[defenseid][def_posZ], 0.5,
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotX] + 90.0,
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotY],
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotZ] + def_Data[defenseid][def_rotZ]);
+	MoveDynamicObject(def_Data[defenceid][def_objectId],
+		def_Data[defenceid][def_posX],
+		def_Data[defenceid][def_posY],
+		def_Data[defenceid][def_posZ], 0.5,
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotX] + 90.0,
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
 
-	def_Data[defenseid][def_open] = true;
+	def_Data[defenceid][def_open] = true;
 }
-timer CloseDefense[1500](defenseid)
+timer CloseDefence[1500](defenceid)
 {
-	MoveDynamicObject(def_Data[defenseid][def_objectId],
-		def_Data[defenseid][def_posX],
-		def_Data[defenseid][def_posY],
-		def_Data[defenseid][def_posZ] + def_TypeData[def_Data[defenseid][def_type]][def_placeOffsetZ], 0.5,
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotX],
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotY],
-		def_TypeData[def_Data[defenseid][def_type]][def_placeRotZ] + def_Data[defenseid][def_rotZ]);
+	MoveDynamicObject(def_Data[defenceid][def_objectId],
+		def_Data[defenceid][def_posX],
+		def_Data[defenceid][def_posY],
+		def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotX],
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
+		def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
 
-	def_Data[defenseid][def_open] = false;
+	def_Data[defenceid][def_open] = false;
 }
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -280,7 +281,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 		if(def_ItemTypeBounds[0] <= _:withitemtype <= def_ItemTypeBounds[1])
 		{
-			StartBuildingDefense(playerid, withitemid);
+			StartBuildingDefence(playerid, withitemid);
 		}
 	}
 
@@ -298,11 +299,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16)
 	{
-		StopBuildingDefense(playerid);
+		StopBuildingDefence(playerid);
 	}
 }
 
-StartBuildingDefense(playerid, itemid)
+StartBuildingDefence(playerid, itemid)
 {
 	new type = -1;
 
@@ -338,28 +339,28 @@ StartBuildingDefense(playerid, itemid)
 		}
 	}
 
-	def_CurrentDefenseItem[playerid] = itemid;
+	def_CurrentDefenceItem[playerid] = itemid;
 	StartHoldAction(playerid, 10000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 
 	return 1;
 }
 
-StopBuildingDefense(playerid)
+StopBuildingDefence(playerid)
 {
 	if(!IsValidItem(GetPlayerItem(playerid)))
 		return;
 
-	if(def_CurrentDefenseItem[playerid] != INVALID_ITEM_ID)
+	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
-		def_CurrentDefenseItem[playerid] = INVALID_ITEM_ID;
+		def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
 		return;
 	}
-	if(def_CurrentDefenseEdit[playerid] != -1)
+	if(def_CurrentDefenceEdit[playerid] != -1)
 	{
-		def_CurrentDefenseEdit[playerid] = -1;
+		def_CurrentDefenceEdit[playerid] = -1;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
 		return;
@@ -381,7 +382,7 @@ public OnButtonPress(playerid, buttonid)
 
 				if(90.0 < angle < 270.0)
 				{	
-					def_CurrentDefenseEdit[playerid] = i;
+					def_CurrentDefenceEdit[playerid] = i;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					return 1;
@@ -394,17 +395,17 @@ public OnButtonPress(playerid, buttonid)
 
 				if(90.0 < angle < 270.0)
 				{	
-					def_CurrentDefenseEdit[playerid] = i;
+					def_CurrentDefenceEdit[playerid] = i;
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					return 1;
 				}
 			}
 
-			if(def_Data[i][def_mode] == DEFENSE_MODE_OPENABLE)
+			if(def_Data[i][def_mode] == DEFENCE_MODE_OPENABLE)
 			{
-				def_CurrentDefenseOpen[playerid] = i;
-				ShowPlayerDialog(playerid, d_DefenseEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
+				def_CurrentDefenceOpen[playerid] = i;
+				ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
 				return 1;
 			}
 		}
@@ -422,7 +423,7 @@ forward def_OnButtonPress(playerid, buttonid);
 
 public OnHoldActionFinish(playerid)
 {
-	if(def_CurrentDefenseItem[playerid] != INVALID_ITEM_ID)
+	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		new
 			Float:x,
@@ -433,61 +434,61 @@ public OnHoldActionFinish(playerid)
 			type,
 			id;
 
-		GetItemPos(def_CurrentDefenseItem[playerid], x, y, z);
-		GetItemRot(def_CurrentDefenseItem[playerid], angle, angle, angle);
+		GetItemPos(def_CurrentDefenceItem[playerid], x, y, z);
+		GetItemRot(def_CurrentDefenceItem[playerid], angle, angle, angle);
 
 		for(new i; i < def_TypeIndex; i++)
 		{
-			if(GetItemType(def_CurrentDefenseItem[playerid]) == def_TypeData[i][def_itemtype])
+			if(GetItemType(def_CurrentDefenceItem[playerid]) == def_TypeData[i][def_itemtype])
 			{
 				type = i;
 				break;
 			}
 		}
 
-		DestroyItem(def_CurrentDefenseItem[playerid]);
+		DestroyItem(def_CurrentDefenceItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
-			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_VERTICAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_MODE_VERTICAL);
 
 		if(itemtype == item_Hammer)
-			id = CreateDefense(type, x, y, z, angle, DEFENSE_MODE_HORIZONTAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_MODE_HORIZONTAL);
 
 
-		SaveDefenseItem(id);
-		StopBuildingDefense(playerid);
-		//EditDefense(playerid, id);
+		SaveDefenceItem(id);
+		StopBuildingDefence(playerid);
+		//EditDefence(playerid, id);
 
 		return 1;
 	}
 
-	if(def_CurrentDefenseEdit[playerid] != -1)
+	if(def_CurrentDefenceEdit[playerid] != -1)
 	{
 		new itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_Keypad)
 		{
-			ShowPlayerDialog(playerid, d_DefenseSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
-			def_Data[def_CurrentDefenseEdit[playerid]][def_mode] = DEFENSE_MODE_OPENABLE;
-			SaveDefenseItem(def_CurrentDefenseEdit[playerid]);
+			ShowPlayerDialog(playerid, d_DefenceSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
+			def_Data[def_CurrentDefenceEdit[playerid]][def_mode] = DEFENCE_MODE_OPENABLE;
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
 
 		if(GetItemType(itemid) == item_Crowbar)
 		{
-			CreateItem(def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype],
-				def_Data[def_CurrentDefenseEdit[playerid]][def_posX],
-				def_Data[def_CurrentDefenseEdit[playerid]][def_posY],
-				def_Data[def_CurrentDefenseEdit[playerid]][def_posZ],
-				.rz = def_Data[def_CurrentDefenseEdit[playerid]][def_rotZ],
+			CreateItem(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
+				def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
+				def_Data[def_CurrentDefenceEdit[playerid]][def_posY],
+				def_Data[def_CurrentDefenceEdit[playerid]][def_posZ],
+				.rz = def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ],
 				.zoffset = ITEM_BUTTON_OFFSET);
 
-			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f", playerid, _:def_TypeData[def_Data[def_CurrentDefenseEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenseEdit[playerid]][def_posX], def_Data[def_CurrentDefenseEdit[playerid]][def_posY], def_Data[def_CurrentDefenseEdit[playerid]][def_posZ]);
+			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f", playerid, _:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenceEdit[playerid]][def_posX], def_Data[def_CurrentDefenceEdit[playerid]][def_posY], def_Data[def_CurrentDefenceEdit[playerid]][def_posZ]);
 
-			DestroyDefense(def_CurrentDefenseEdit[playerid]);
+			DestroyDefence(def_CurrentDefenceEdit[playerid]);
 			ClearAnimations(playerid);
-			def_CurrentDefenseEdit[playerid] = -1;
+			def_CurrentDefenceEdit[playerid] = -1;
 		}
 
 		return 1;
@@ -505,7 +506,7 @@ forward def_OnHoldActionFinish(playerid);
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 {
-	if(dialogid == d_DefenseSetPass)
+	if(dialogid == d_DefenceSetPass)
 	{
 		if(response)
 		{
@@ -513,33 +514,33 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 
 			if(1000 <= pass < 10000)
 			{
-				def_Data[def_CurrentDefenseEdit[playerid]][def_pass] = pass;
-				SaveDefenseItem(def_CurrentDefenseEdit[playerid]);
+				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
+				SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_DefenseSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Passcode must be a 4 digit number", "Enter", "");
+				ShowPlayerDialog(playerid, d_DefenceSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Passcode must be a 4 digit number", "Enter", "");
 			}
 		}
 	}
 
-	if(dialogid == d_DefenseEnterPass)
+	if(dialogid == d_DefenceEnterPass)
 	{
 		if(response)
 		{
 			new pass = strval(intputtext);
 
-			if(def_Data[def_CurrentDefenseOpen[playerid]][def_pass] == pass)
+			if(def_Data[def_CurrentDefenceOpen[playerid]][def_pass] == pass)
 			{
-				if(def_Data[def_CurrentDefenseOpen[playerid]][def_open])
-					defer CloseDefense(def_CurrentDefenseOpen[playerid]);
+				if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
+					defer CloseDefence(def_CurrentDefenceOpen[playerid]);
 
 				else
-					defer OpenDefense(def_CurrentDefenseOpen[playerid]);
+					defer OpenDefence(def_CurrentDefenceOpen[playerid]);
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_DefenseEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Incorrect passcode!", "Enter", "Cancel");
+				ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Incorrect passcode!", "Enter", "Cancel");
 			}
 		}
 	}
@@ -551,10 +552,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 // Save and Load
 
 
-LoadDefenses(printeach = false, printtotal = false)
+LoadDefences(printeach = false, printtotal = false)
 {
 	new
-		dir:direc = dir_open(DEFENSE_DATA_DIR),
+		dir:direc = dir_open(DEFENCE_DATA_DIR),
 		item[46],
 		type,
 		File:file,
@@ -570,7 +571,7 @@ LoadDefenses(printeach = false, printtotal = false)
 	{
 		if(type == FM_FILE)
 		{
-			filedir = DEFENSE_DATA_FOLDER;
+			filedir = DEFENCE_DATA_FOLDER;
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
 
@@ -581,7 +582,7 @@ LoadDefenses(printeach = false, printtotal = false)
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				new ret = CreateDefense(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
+				new ret = CreateDefence(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
 
 				if(ret > -1)
 				{
@@ -600,21 +601,21 @@ LoadDefenses(printeach = false, printtotal = false)
 	dir_close(direc);
 
 	if(printtotal)
-		printf("Loaded %d Defense items\n", Iter_Count(def_Index));
+		printf("Loaded %d Defence items\n", Iter_Count(def_Index));
 }
 
-SaveDefenses(printeach = false, printtotal = false)
+SaveDefences(printeach = false, printtotal = false)
 {
 	foreach(new i : def_Index)
 	{
-		SaveDefenseItem(i, printeach);
+		SaveDefenceItem(i, printeach);
 	}
 
 	if(printtotal)
 		printf("Saved %d Defences\n", Iter_Count(def_Index));
 }
 
-SaveDefenseItem(id, prints = false)
+SaveDefenceItem(id, prints = false)
 {
 	if(!Iter_Contains(def_Index, id))
 		return 0;
@@ -624,7 +625,7 @@ SaveDefenseItem(id, prints = false)
 		File:file,
 		data[4];
 
-	format(filename, sizeof(filename), ""#DEFENSE_DATA_FOLDER"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
+	format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
 	file = fopen(filename, io_write);
 
 	if(file)
@@ -638,7 +639,7 @@ SaveDefenseItem(id, prints = false)
 	}
 	else
 	{
-		printf("ERROR: Saving defense, filename: '%s'", filename);
+		printf("ERROR: Saving defence, filename: '%s'", filename);
 		return 0;
 	}
 
@@ -676,7 +677,7 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 		{
 			logf("[DESTRUCTION] DEFENCE TYPE %d DESTROYED AT %f, %f, %f", _:def_TypeData[def_Data[closestid][def_type]][def_itemtype], def_Data[closestid][def_posX], def_Data[closestid][def_posY], def_Data[closestid][def_posZ]);
 
-			DestroyDefense(closestid);
+			DestroyDefence(closestid);
 		}
 	}
 }
@@ -687,14 +688,14 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 
 
 
-stock GetDefencePos(defenseid, &Float:x, &Float:y, &Float:z)
+stock GetDefencePos(defenceid, &Float:x, &Float:y, &Float:z)
 {
-	if(!Iter_Contains(def_Index, defenseid))
+	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
 
-	x = def_Data[defenseid][def_posX];
-	y = def_Data[defenseid][def_posY];
-	z = def_Data[defenseid][def_posZ];
+	x = def_Data[defenceid][def_posX];
+	y = def_Data[defenceid][def_posY];
+	z = def_Data[defenceid][def_posZ];
 
 	return 1;
 }
