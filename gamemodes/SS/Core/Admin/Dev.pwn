@@ -345,15 +345,15 @@ ACMD:hud[4](playerid, params[])
 {
 	if(gPlayerBitData[playerid] & ShowHUD)
 	{
-		PlayerTextDrawHide(playerid, HungerBarBackground);
-		PlayerTextDrawHide(playerid, HungerBarForeground);
+		PlayerTextDrawHide(playerid, HungerBarBackground[playerid]);
+		PlayerTextDrawHide(playerid, HungerBarForeground[playerid]);
 		HideWatch(playerid);
 		f:gPlayerBitData[playerid]<ShowHUD>;
 	}
 	else
 	{
-		PlayerTextDrawShow(playerid, HungerBarBackground);
-		PlayerTextDrawShow(playerid, HungerBarForeground);
+		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
+		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
 		ShowWatch(playerid);
 		t:gPlayerBitData[playerid]<ShowHUD>;
 	}

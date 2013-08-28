@@ -32,7 +32,7 @@ ptask AfkCheckUpdate[3000](playerid)
 			{
 				if(gMaxTaboutTime == 0)
 				{
-					KickPlayer(playerid, sprintf("Unfocused from the game. Kicked to prevent starving and save server resources", gMaxTaboutTime));
+					KickPlayer(playerid, "Unfocused from the game, could stave and cause bugs");
 					return;
 				}
 
@@ -45,7 +45,7 @@ ptask AfkCheckUpdate[3000](playerid)
 		{
 			if(tickcount() - tab_TabOutTick[playerid] > gMaxTaboutTime * 1000)
 			{
-				KickPlayer(playerid, sprintf("Unfocused for over %d seconds. Kicked to prevent starving and save server resources", gMaxTaboutTime));
+				KickPlayer(playerid, sprintf("Unfocused for over %d seconds, could starve or cause bugs", gMaxTaboutTime));
 				return;
 			}
 		}

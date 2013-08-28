@@ -176,7 +176,6 @@ public OnPlayerDisconnect(playerid, reason)
 	Logout(playerid);
 
 	ResetVariables(playerid);
-	UnloadPlayerTextDraws(playerid);
 
 	switch(reason)
 	{
@@ -284,8 +283,8 @@ ptask PlayerUpdate[100](playerid)
 
 	if(gPlayerData[playerid][ply_ScreenBoxFadeLevel] > 0)
 	{
-		PlayerTextDrawBoxColor(playerid, ClassBackGround, gPlayerData[playerid][ply_ScreenBoxFadeLevel]);
-		PlayerTextDrawShow(playerid, ClassBackGround);
+		PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], gPlayerData[playerid][ply_ScreenBoxFadeLevel]);
+		PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 
 		gPlayerData[playerid][ply_ScreenBoxFadeLevel] -= 4;
 
@@ -301,25 +300,25 @@ ptask PlayerUpdate[100](playerid)
 		{
 			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				PlayerTextDrawHide(playerid, ClassBackGround);
+				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 
 				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_PAINKILL) > 60000)
 					RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
 			}
 			else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 			{
-				PlayerTextDrawHide(playerid, ClassBackGround);
+				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 			}
 			else
 			{
-				PlayerTextDrawBoxColor(playerid, ClassBackGround, floatround((40.0 - gPlayerData[playerid][ply_HitPoints]) * 4.4));
-				PlayerTextDrawShow(playerid, ClassBackGround);
+				PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], floatround((40.0 - gPlayerData[playerid][ply_HitPoints]) * 4.4));
+				PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 			}
 		}
 		else
 		{
 			if(gPlayerBitData[playerid] & Spawned)
-				PlayerTextDrawHide(playerid, ClassBackGround);
+				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 		}
 	}
 
@@ -513,8 +512,8 @@ public OnPlayerSpawn(playerid)
 	else
 	{
 		gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 0;
-		PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
-		PlayerTextDrawShow(playerid, ClassBackGround);
+		PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
+		PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 
 		if(gPlayerBitData[playerid] & Alive)
 		{
@@ -585,7 +584,7 @@ public OnPlayerUpdate(playerid)
 		GetVehicleVelocity(gPlayerData[playerid][ply_CurrentVehicle], vx, vy, vz);
 		gPlayerData[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 		format(str, 32, "%.0fkm/h", gPlayerData[playerid][ply_Velocity]);
-		PlayerTextDrawSetString(playerid, VehicleSpeedText, str);
+		PlayerTextDrawSetString(playerid, VehicleSpeedText[playerid], str);
 	}
 
 	if(gPlayerBitData[playerid] & Alive)
@@ -631,16 +630,16 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 		SetVehicleUsed(vehicleid, true);
 		SetVehicleOccupied(vehicleid, true);
 
-		PlayerTextDrawSetString(playerid, VehicleNameText, VehicleNames[model-400]);
-		PlayerTextDrawShow(playerid, VehicleNameText);
-		PlayerTextDrawShow(playerid, VehicleSpeedText);
+		PlayerTextDrawSetString(playerid, VehicleNameText[playerid], VehicleNames[model-400]);
+		PlayerTextDrawShow(playerid, VehicleNameText[playerid]);
+		PlayerTextDrawShow(playerid, VehicleSpeedText[playerid]);
 
 		if(GetVehicleType(model) != VTYPE_BICYCLE)
 		{
-			PlayerTextDrawShow(playerid, VehicleFuelText);
-			PlayerTextDrawShow(playerid, VehicleDamageText);
-			PlayerTextDrawShow(playerid, VehicleEngineText);
-			PlayerTextDrawShow(playerid, VehicleDoorsText);
+			PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
 		}
 	}
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
@@ -649,12 +648,12 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleOccupied(vehicleid, false);
 
-		PlayerTextDrawHide(playerid, VehicleNameText);
-		PlayerTextDrawHide(playerid, VehicleSpeedText);
-		PlayerTextDrawHide(playerid, VehicleFuelText);
-		PlayerTextDrawHide(playerid, VehicleDamageText);
-		PlayerTextDrawHide(playerid, VehicleEngineText);
-		PlayerTextDrawHide(playerid, VehicleDoorsText);
+		PlayerTextDrawHide(playerid, VehicleNameText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleSpeedText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleDamageText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleEngineText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
 	}
 	return 1;
 }

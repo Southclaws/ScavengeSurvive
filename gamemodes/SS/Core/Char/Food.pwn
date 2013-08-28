@@ -90,9 +90,9 @@ ptask FoodUpdate[1000](playerid)
 
 	if(gPlayerBitData[playerid] & ShowHUD)
 	{
-		PlayerTextDrawLetterSize(playerid, HungerBarForeground, 0.500000, -(gPlayerData[playerid][ply_FoodPoints] / 10.0));
-		PlayerTextDrawShow(playerid, HungerBarBackground);
-		PlayerTextDrawShow(playerid, HungerBarForeground);
+		PlayerTextDrawLetterSize(playerid, HungerBarForeground[playerid], 0.500000, -(gPlayerData[playerid][ply_FoodPoints] / 10.0));
+		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
+		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
 	}
 
 	return;

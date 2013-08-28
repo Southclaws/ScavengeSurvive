@@ -67,13 +67,13 @@ PlayerCreateNewCharacter(playerid)
 	SetPlayerCameraPos(playerid, -907.4642, 277.0962, 1014.1492);
 	Streamer_UpdateEx(playerid, -907.5452, 272.7235, 1014.1449);
 
-	PlayerTextDrawBoxColor(playerid, ClassBackGround, 0x000000FF);
-	PlayerTextDrawShow(playerid, ClassBackGround);
+	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
+	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 
 	if(gPlayerBitData[playerid] & LoggedIn)
 	{
-		PlayerTextDrawShow(playerid, ClassButtonMale);
-		PlayerTextDrawShow(playerid, ClassButtonFemale);
+		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
+		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
 
@@ -82,11 +82,11 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	if(playertextid == ClassButtonMale)
+	if(playertextid == ClassButtonMale[playerid])
 	{
 		PlayerSpawnNewCharacter(playerid, GENDER_MALE);
 	}
-	if(playertextid == ClassButtonFemale)
+	if(playertextid == ClassButtonFemale[playerid])
 	{
 		PlayerSpawnNewCharacter(playerid, GENDER_FEMALE);
 	}
@@ -154,8 +154,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	ShowWatch(playerid);
 
 	CancelSelectTextDraw(playerid);
-	PlayerTextDrawHide(playerid, ClassButtonMale);
-	PlayerTextDrawHide(playerid, ClassButtonFemale);
+	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
+	PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
 
 	t:gPlayerBitData[playerid]<Spawned>;
 	t:gPlayerBitData[playerid]<Alive>;

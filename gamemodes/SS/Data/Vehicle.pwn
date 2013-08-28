@@ -20,20 +20,20 @@ enum
 }
 
 new VehicleGroupNames[MAX_VEHICLE_GROUP][24]=
-{
-	"VEHICLE_GROUP_CASUAL",
-	"VEHICLE_GROUP_TRUCK_L",
-	"VEHICLE_GROUP_TRUCK_S",
-	"VEHICLE_GROUP_SPORT",
-	"VEHICLE_GROUP_BIKE",
-	"VEHICLE_GROUP_MILITARY",
-	"VEHICLE_GROUP_POLICE",
-	"VEHICLE_GROUP_PLANE_L",
-	"VEHICLE_GROUP_PLANE_S",
-	"VEHICLE_GROUP_HELI_L",
-	"VEHICLE_GROUP_HELI_S",
-	"VEHICLE_GROUP_BOAT",
-	"VEHICLE_GROUP_UNIQUE"
+{		
+	"VEHICLE_GROUP_CASUAL",			// 0
+	"VEHICLE_GROUP_TRUCK_L",		// 1
+	"VEHICLE_GROUP_TRUCK_S",		// 2
+	"VEHICLE_GROUP_SPORT",			// 3
+	"VEHICLE_GROUP_BIKE",			// 4
+	"VEHICLE_GROUP_MILITARY",		// 5
+	"VEHICLE_GROUP_POLICE",			// 6
+	"VEHICLE_GROUP_PLANE_L",		// 7
+	"VEHICLE_GROUP_PLANE_S",		// 8
+	"VEHICLE_GROUP_HELI_L",			// 9
+	"VEHICLE_GROUP_HELI_S",			// 10
+	"VEHICLE_GROUP_BOAT",			// 11
+	"VEHICLE_GROUP_UNIQUE"			// 12
 };
 
 
@@ -193,7 +193,7 @@ new const VehicleFuelData[212][E_VEHICLE_TYPE_DATA] =
 	{80.0,	13.0,	loot_CarPolice,			12,		1.0,	VEHICLE_GROUP_POLICE},		// 528		----	FBI Truck
 	{50.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 529		----	Willard
 
-	{25.0,	13.0,	loot_CarCivilian,		6,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 530		----	Forklift
+	{25.0,	13.0,	loot_CarCivilian,		6,		0.0,	VEHICLE_GROUP_TRUCK_S},		// 530		----	Forklift
 	{50.0,	13.0,	loot_CarCivilian,		14,		1.0,	VEHICLE_GROUP_TRUCK_S},		// 531		----	Tractor
 	{60.0,	13.0,	loot_InvalidLoot,		0,		1.0,	VEHICLE_GROUP_UNIQUE},		// 532		----	Combine
 	{60.0,	13.0,	loot_CarCivilian,		12,		1.0,	VEHICLE_GROUP_CASUAL},		// 533		----	Feltzer

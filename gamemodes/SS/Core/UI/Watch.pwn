@@ -1,17 +1,17 @@
 ShowWatch(playerid)
 {
-	PlayerTextDrawShow(playerid, WatchBackground);
-	PlayerTextDrawShow(playerid, WatchTime);
-	PlayerTextDrawShow(playerid, WatchBear);
-	PlayerTextDrawShow(playerid, WatchFreq);
+	PlayerTextDrawShow(playerid, WatchBackground[playerid]);
+	PlayerTextDrawShow(playerid, WatchTime[playerid]);
+	PlayerTextDrawShow(playerid, WatchBear[playerid]);
+	PlayerTextDrawShow(playerid, WatchFreq[playerid]);
 }
 
 HideWatch(playerid)
 {
-	PlayerTextDrawHide(playerid, WatchBackground);
-	PlayerTextDrawHide(playerid, WatchTime);
-	PlayerTextDrawHide(playerid, WatchBear);
-	PlayerTextDrawHide(playerid, WatchFreq);
+	PlayerTextDrawHide(playerid, WatchBackground[playerid]);
+	PlayerTextDrawHide(playerid, WatchTime[playerid]);
+	PlayerTextDrawHide(playerid, WatchBear[playerid]);
+	PlayerTextDrawHide(playerid, WatchFreq[playerid]);
 }
 
 ptask UpdateWatch[1000](playerid)
@@ -31,11 +31,11 @@ ptask UpdateWatch[1000](playerid)
 		GetPlayerFacingAngle(playerid, angle);
 
 	format(str, 6, "%02d:%02d", hour, minute);
-	PlayerTextDrawSetString(playerid, WatchTime, str);
+	PlayerTextDrawSetString(playerid, WatchTime[playerid], str);
 
 	format(str, 12, "%.0f DEG", 360 - angle);
-	PlayerTextDrawSetString(playerid, WatchBear, str);
+	PlayerTextDrawSetString(playerid, WatchBear[playerid], str);
 
 	format(str, 7, "%.2f", GetPlayerRadioFrequency(playerid));
-	PlayerTextDrawSetString(playerid, WatchFreq, str);
+	PlayerTextDrawSetString(playerid, WatchFreq[playerid], str);
 }

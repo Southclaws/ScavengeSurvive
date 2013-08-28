@@ -421,115 +421,118 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
 
-				if(angle < 25.0 || angle > 335.0)
+				if(floatabs(vz - pz) < 2.0)
 				{
-					new Float:vehiclehealth;
+					if(angle < 25.0 || angle > 335.0)
+					{
+						new Float:vehiclehealth;
 
-					GetVehicleHealth(i, vehiclehealth);
+						GetVehicleHealth(i, vehiclehealth);
 
-					if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
-					{
-						if(vehiclehealth <= VEHICLE_HEALTH_CHUNK_2 || VEHICLE_HEALTH_CHUNK_4 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_MAX)
+						if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
 						{
-							SetPlayerPos(playerid, px, py, pz);
-							StartRepairingVehicle(playerid, i);
-							break;
-						}
-						else
-						{
-							ShowActionText(playerid, "You need another tool", 3000, 100);
-						}
-					}	
-					else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
-					{
-						if(VEHICLE_HEALTH_CHUNK_2 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_3)
-						{
-							SetPlayerPos(playerid, px, py, pz);
-							StartRepairingVehicle(playerid, i);
-							break;
-						}
-						else
-						{
-							ShowActionText(playerid, "You need another tool", 3000, 100);
-						}
-					}	
-					else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
-					{
-						if(VEHICLE_HEALTH_CHUNK_3 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_4)
-						{
-							SetPlayerPos(playerid, px, py, pz);
-							StartRepairingVehicle(playerid, i);
-							break;
-						}
-						else
-						{
-							ShowActionText(playerid, "You need another tool", 3000, 100);
-						}
-					}
-					else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
-					{
-						SetPlayerPos(playerid, px, py, pz);
-						ShowTireList(playerid, i);
-					}
-					else if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
-					{
-						SetPlayerPos(playerid, px, py, pz);
-						StartRefuellingVehicle(playerid, i);
-					}
-					else if(GetItemType(GetPlayerItem(playerid)) == item_Headlight)
-					{
-						SetPlayerPos(playerid, px, py, pz);
-						ShowLightList(playerid, i);
-					}
-					else
-					{
-						ShowActionText(playerid, "You don't have the right tool", 3000, 100);
-					}
-				}
-				if(155.0 < angle < 205.0)
-				{
-					if(IsValidContainer(GetVehicleContainer(i)))
-					{
-						if(IsVehicleTrunkLocked(i))
-						{
-							if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+							if(vehiclehealth <= VEHICLE_HEALTH_CHUNK_2 || VEHICLE_HEALTH_CHUNK_4 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_MAX)
 							{
-								StartBreakingVehicleLock(playerid, i, 1);
+								SetPlayerPos(playerid, px, py, pz);
+								StartRepairingVehicle(playerid, i);
+								break;
+							}
+							else
+							{
+								ShowActionText(playerid, "You need another tool", 3000, 100);
+							}
+						}	
+						else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
+						{
+							if(VEHICLE_HEALTH_CHUNK_2 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_3)
+							{
+								SetPlayerPos(playerid, px, py, pz);
+								StartRepairingVehicle(playerid, i);
+								break;
+							}
+							else
+							{
+								ShowActionText(playerid, "You need another tool", 3000, 100);
+							}
+						}	
+						else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
+						{
+							if(VEHICLE_HEALTH_CHUNK_3 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_4)
+							{
+								SetPlayerPos(playerid, px, py, pz);
+								StartRepairingVehicle(playerid, i);
+								break;
+							}
+							else
+							{
+								ShowActionText(playerid, "You need another tool", 3000, 100);
 							}
 						}
+						else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
+						{
+							SetPlayerPos(playerid, px, py, pz);
+							ShowTireList(playerid, i);
+						}
+						else if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
+						{
+							SetPlayerPos(playerid, px, py, pz);
+							StartRefuellingVehicle(playerid, i);
+						}
+						else if(GetItemType(GetPlayerItem(playerid)) == item_Headlight)
+						{
+							SetPlayerPos(playerid, px, py, pz);
+							ShowLightList(playerid, i);
+						}
 						else
 						{
-							new
-								engine,
-								lights,
-								alarm,
-								doors,
-								bonnet,
-								boot,
-								objective;
-
-							GetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, boot, objective);
-							SetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, 1, objective);
-
-							SetPlayerPos(playerid, px, py, pz);
-							SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
-
-							DisplayContainerInventory(playerid, GetVehicleContainer(i));
-							veh_CurrentTrunkVehicle[playerid] = i;
-
-							break;
+							ShowActionText(playerid, "You don't have the right tool", 3000, 100);
 						}
 					}
-				}
-				if(225.0 < angle < 315.0)
-				{
-					if(GetVehicleModel(i) == 449)
+					if(155.0 < angle < 205.0)
 					{
-						PutPlayerInVehicle(playerid, i, 0);
+						if(IsValidContainer(GetVehicleContainer(i)))
+						{
+							if(IsVehicleTrunkLocked(i))
+							{
+								if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+								{
+									StartBreakingVehicleLock(playerid, i, 1);
+								}
+							}
+							else
+							{
+								new
+									engine,
+									lights,
+									alarm,
+									doors,
+									bonnet,
+									boot,
+									objective;
+
+								GetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, boot, objective);
+								SetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, 1, objective);
+
+								SetPlayerPos(playerid, px, py, pz);
+								SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
+
+								DisplayContainerInventory(playerid, GetVehicleContainer(i));
+								veh_CurrentTrunkVehicle[playerid] = i;
+
+								break;
+							}
+						}
 					}
-					if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+					if(225.0 < angle < 315.0)
 					{
-						StartBreakingVehicleLock(playerid, i, 0);
+						if(GetVehicleModel(i) == 449)
+						{
+							PutPlayerInVehicle(playerid, i, 0);
+						}
+						if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+						{
+							StartBreakingVehicleLock(playerid, i, 0);
+						}
 					}
 				}
 			}
@@ -580,19 +583,19 @@ PlayerVehicleUpdate(playerid)
 	}
 
 	if(health <= VEHICLE_HEALTH_CHUNK_1)
-		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
+		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_1_COLOUR);
 
 	else if(health <= VEHICLE_HEALTH_CHUNK_2)
-		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_1_COLOUR);
+		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_1_COLOUR);
 
 	else if(health <= VEHICLE_HEALTH_CHUNK_3)
-		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_2_COLOUR);
+		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_2_COLOUR);
 
 	else if(health <= VEHICLE_HEALTH_CHUNK_4)
-		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_3_COLOUR);
+		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_3_COLOUR);
 
 	else if(health <= VEHICLE_HEALTH_MAX)
-		PlayerTextDrawColor(playerid, VehicleDamageText, VEHICLE_HEALTH_CHUNK_4_COLOUR);
+		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_4_COLOUR);
 
 	if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0) // If the vehicle is a fuel powered vehicle
 	{
@@ -603,12 +606,12 @@ PlayerVehicleUpdate(playerid)
 		if(fuel <= 0.0)
 		{
 			SetVehicleEngine(vehicleid, 0);
-			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+			PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_INACTIVE);
 		}
 
 		format(str, 18, "%.2fL/%.2f", GetVehicleFuel(vehicleid), VehicleFuelData[model - 400][veh_maxFuel]);
-		PlayerTextDrawSetString(playerid, VehicleFuelText, str);
-		PlayerTextDrawShow(playerid, VehicleFuelText);
+		PlayerTextDrawSetString(playerid, VehicleFuelText[playerid], str);
+		PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
 
 		if(GetVehicleEngine(vehicleid))
 		{
@@ -616,12 +619,12 @@ PlayerVehicleUpdate(playerid)
 				fuel -= ((VehicleFuelData[model - 400][veh_fuelCons] / 100) * (((GetPlayerTotalVelocity(playerid)/60)/60)/10) + 0.0001);
 
 			SetVehicleFuel(vehicleid, fuel);
-			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
+			PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_ACTIVE);
 
 			if(health <= VEHICLE_HEALTH_CHUNK_1)
 			{
 				SetVehicleEngine(vehicleid, 0);
-				PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+				PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_INACTIVE);
 			}
 			else if(health <= VEHICLE_HEALTH_CHUNK_2 && GetPlayerTotalVelocity(playerid) > 1.0)
 			{
@@ -634,7 +637,7 @@ PlayerVehicleUpdate(playerid)
 					if(random(100) < enginechance)
 					{
 						VehicleEngineState(vehicleid, 0);
-						PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+						PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_INACTIVE);
 					}
 				}
 				else
@@ -642,38 +645,38 @@ PlayerVehicleUpdate(playerid)
 					if(random(100) < 100 - enginechance)
 					{
 						VehicleEngineState(vehicleid, 1);
-						PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_ACTIVE);
+						PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_ACTIVE);
 					}
 				}
 			}
 		}
 		else
 		{
-			PlayerTextDrawColor(playerid, VehicleEngineText, VEHICLE_UI_INACTIVE);
+			PlayerTextDrawColor(playerid, VehicleEngineText[playerid], VEHICLE_UI_INACTIVE);
 		}
 	}
 	else
 	{
-		PlayerTextDrawHide(playerid, VehicleFuelText);
+		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
 	}
 
 	if(VehicleHasDoors(model))
 	{
 		if(VehicleDoorsState(vehicleid))
-			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_ACTIVE);
+			PlayerTextDrawColor(playerid, VehicleDoorsText[playerid], VEHICLE_UI_ACTIVE);
 
 		else
-			PlayerTextDrawColor(playerid, VehicleDoorsText, VEHICLE_UI_INACTIVE);
+			PlayerTextDrawColor(playerid, VehicleDoorsText[playerid], VEHICLE_UI_INACTIVE);
 
-		PlayerTextDrawShow(playerid, VehicleDoorsText);
+		PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
 	}
 	else
 	{
-		PlayerTextDrawHide(playerid, VehicleDoorsText);
+		PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
 	}
 
-	PlayerTextDrawShow(playerid, VehicleDamageText);
-	PlayerTextDrawShow(playerid, VehicleEngineText);
+	PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
+	PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
 
 	switch(GetPlayerWeapon(playerid))
 	{

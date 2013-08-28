@@ -224,12 +224,12 @@ UpdateWeaponUI(playerid)
 		else
 			format(str, 8, "%d", GetPlayerAmmo(playerid));
 
-		PlayerTextDrawSetString(playerid, WeaponAmmo, str);
-		PlayerTextDrawShow(playerid, WeaponAmmo);
+		PlayerTextDrawSetString(playerid, WeaponAmmo[playerid], str);
+		PlayerTextDrawShow(playerid, WeaponAmmo[playerid]);
 	}
 	else
 	{
-		PlayerTextDrawHide(playerid, WeaponAmmo);
+		PlayerTextDrawHide(playerid, WeaponAmmo[playerid]);
 	}
 }
 

@@ -7,8 +7,8 @@ new
 
 ShowHelpTip(playerid, text[], time = 0)
 {
-	PlayerTextDrawSetString(playerid, HelpTipText, text);
-	PlayerTextDrawShow(playerid, HelpTipText);
+	PlayerTextDrawSetString(playerid, HelpTipText[playerid], text);
+	PlayerTextDrawShow(playerid, HelpTipText[playerid]);
 
 	if(time > 0)
 		defer HideHelpTip_Delay(playerid, time);
@@ -22,7 +22,7 @@ timer HideHelpTip_Delay[time](playerid, time)
 
 HideHelpTip(playerid)
 {
-	PlayerTextDrawHide(playerid, HelpTipText);
+	PlayerTextDrawHide(playerid, HelpTipText[playerid]);
 }
 
 
@@ -43,11 +43,11 @@ AddToolTipText(playerid, key[], use[])
 
 ShowPlayerToolTip(playerid)
 {
-	PlayerTextDrawSetString(playerid, ToolTip, gToolTipText[playerid]);
-	PlayerTextDrawShow(playerid, ToolTip);
+	PlayerTextDrawSetString(playerid, ToolTip[playerid], gToolTipText[playerid]);
+	PlayerTextDrawShow(playerid, ToolTip[playerid]);
 }
 
 HidePlayerToolTip(playerid)
 {
-	PlayerTextDrawHide(playerid, ToolTip);
+	PlayerTextDrawHide(playerid, ToolTip[playerid]);
 }
