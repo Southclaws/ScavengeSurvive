@@ -23,6 +23,18 @@ PlayerSpawnExistingCharacter(playerid)
 
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
 
+	if(!LoadPlayerInventory(playerid))
+	{
+		PlayerCreateNewCharacter(playerid);
+		return 0;
+	}
+
+	if(!LoadPlayerChar(playerid))
+	{
+		PlayerCreateNewCharacter(playerid);
+		return 0;
+	}
+
 	t:gPlayerBitData[playerid]<LoadedData>;
 
 	gPlayerData[playerid][ply_Gender] = GetClothesGender(GetPlayerClothes(playerid));
@@ -55,6 +67,8 @@ PlayerSpawnExistingCharacter(playerid)
 	{
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
+
+	return 1;
 }
 
 PlayerCreateNewCharacter(playerid)
