@@ -46,6 +46,9 @@ DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float
 
 timer SupplyDropTimer[SUPPLY_CRATE_INTERVAL]()
 {
+	if(Iter_Count(Player) < 2)
+		return;
+
 	new location = random(sup_TotalLocations);
 
 	while(sup_DropLocationData[location][sup_used])
@@ -57,6 +60,8 @@ timer SupplyDropTimer[SUPPLY_CRATE_INTERVAL]()
 	sup_DropLocationData[location][sup_used] = true;
 
 	defer SupplyDropTimer();
+
+	return;
 }
 
 SupplyCrateDrop(Float:x, Float:y, Float:z)
