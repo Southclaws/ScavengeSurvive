@@ -286,6 +286,9 @@ ConvertPlayerWeaponToItem(playerid)
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
+		return 1;
+
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeWeapon(itemtype))
@@ -348,6 +351,9 @@ forward wep_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
+		return 1;
+
 	new
 		ItemType:itemtype,
 		ItemType:withitemtype;

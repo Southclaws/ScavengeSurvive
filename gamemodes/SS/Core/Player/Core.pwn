@@ -727,6 +727,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 }
 
 
+forward E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid);
 stock E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
 {
 	if(!IsPlayerConnected(playerid))

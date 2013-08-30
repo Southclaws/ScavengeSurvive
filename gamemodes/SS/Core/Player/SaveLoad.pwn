@@ -162,6 +162,10 @@ LoadPlayerChar(playerid)
 	GetFile(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_read);
+
+	if(!file)
+		return 0;
+
 	fblockread(file, data, sizeof(data));
 	fclose(file);
 
@@ -240,6 +244,8 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_SpawnPosZ] = Float:data[PLY_CELL_SPAWN_Z];
 	gPlayerData[playerid][ply_SpawnRotZ] = Float:data[PLY_CELL_SPAWN_R];
 */
+
+	return 1;
 }
 LoadPlayerInventory(playerid)
 {
@@ -253,6 +259,10 @@ LoadPlayerInventory(playerid)
 	GetInvFile(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_read);
+
+	if(!file)
+		return 0;
+
 	fblockread(file, data, sizeof(data));
 	fclose(file);
 
@@ -270,7 +280,7 @@ LoadPlayerInventory(playerid)
 	}
 
 	if(!IsItemTypeBag(ItemType:data[INV_CELL_BAGTYPE]))
-		return 0;
+		return 1;
 
 	itemid = CreateItem(ItemType:data[INV_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 	containerid = GetItemExtraData(itemid);

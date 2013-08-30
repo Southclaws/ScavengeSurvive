@@ -245,6 +245,12 @@ Login(playerid)
 	gPlayerData[playerid][ply_RadioFrequency] = 108.0;
 	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 
+	if(!LoadPlayerInventory(playerid))
+		f:gPlayerBitData[playerid]<Alive>;
+
+	if(!LoadPlayerChar(playerid))
+		f:gPlayerBitData[playerid]<Alive>;
+
 	SpawnPlayer(playerid);
 }
 

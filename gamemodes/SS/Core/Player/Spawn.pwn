@@ -23,8 +23,6 @@ PlayerSpawnExistingCharacter(playerid)
 
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
 
-	LoadPlayerInventory(playerid);
-	LoadPlayerChar(playerid);
 	t:gPlayerBitData[playerid]<LoadedData>;
 
 	gPlayerData[playerid][ply_Gender] = GetClothesGender(GetPlayerClothes(playerid));
