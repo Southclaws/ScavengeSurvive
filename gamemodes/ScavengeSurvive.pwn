@@ -217,6 +217,15 @@ enum
 	FIELD_ID_SPRAYTAG_ROTZ
 }
 
+enum
+{
+	STAFF_LEVEL_NONE,						// 0
+	STAFF_LEVEL_GAME_MASTER,				// 1
+	STAFF_LEVEL_MODERATOR,					// 2
+	STAFF_LEVEL_ADMINISTRATOR,				// 3
+	STAFF_LEVEL_DEVELOPER,					// 4
+	STAFF_LEVEL_SECRET						// 5
+}
 
 // Macros
 #define t:%1<%2>					((%1)|=(%2))
@@ -396,13 +405,14 @@ enum
 new HORIZONTAL_RULE[] = {"-------------------------------------------------------------------------------------------------------------------------"};
 
 //=====================Player Tag Names
-new const AdminName[5][14]=
+new const AdminName[6][14]=
 {
 	"Player",			// 0
 	"Game Master",		// 1
 	"Moderator",		// 2
 	"Administrator",	// 3
-	"Developer"			// 4
+	"Developer",		// 4
+	"Secret"			// 5
 },
 AdminColours[5]=
 {

@@ -211,6 +211,20 @@ CMD:allcountry(playerid, params[])
 	return 1;
 }
 
+CMD:admins(playerid, params[])
+{
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admins",
+		""#C_YELLOW"Server Staff:\n\n\n"#C_WHITE"\
+		\t"#C_BLUE"Southclaw - Developer\n\n\
+		\t"#C_BLUE"Dogmeat - Admin\n\n\
+		\t"#C_BLUE"Tezza - Admin\n\n\
+		\t"#C_BLUE"Cagatay - Admin\n\n\
+		\t"#C_BLUE"Prolama - Mod\n\n\
+		\t"#C_BLUE"Civod - Mod", "Close", "");
+
+	return 1;
+}
+
 CMD:tooltips(playerid, params[])
 {
 	if(gPlayerBitData[playerid] & ToolTips)

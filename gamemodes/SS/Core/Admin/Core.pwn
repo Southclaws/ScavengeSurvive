@@ -29,52 +29,34 @@ CMD:acmds(playerid, params[])
 	return 1;
 }
 
-ACMD:admins[3](playerid, params[])
+ACMD:adminlist[3](playerid, params[])
 {
 	new
 		title[20],
-		line[52],
-		j,
-		bool:isonline;
+		line[52];
+
+	gBigString[0] = EOS;
 
 	format(title, 20, "Administrators (%d)", gTotalAdmins);
 
 	for(new i; i < gTotalAdmins; i++)
 	{
-		isonline = false;
+		if(gAdminData[i][admin_Level] == STAFF_LEVEL_SECRET)
+			continue;
 
-		foreach(j : Player)
-		{
-			if(!strcmp(gAdminData[i][admin_Name], gPlayerName[j]) && !isnull(gAdminData[i][admin_Name]))
-			{
-				isonline = true;
-				break;
-			}
-		}
+		format(line, sizeof(line), "%s %C(%d-%s)\n",
+			gAdminData[i][admin_Name],
+			AdminColours[gAdminData[i][admin_Level]],
+			gAdminData[i][admin_Level],
+			AdminName[gAdminData[i][admin_Level]]);
 
-		if(isonline)
-		{
-			format(line, sizeof(line), "%P %C(%d-%s)\n",
-				j,
-				AdminColours[gPlayerData[j][ply_Admin]],
-				gAdminData[j][admin_Level],
-				AdminName[gAdminData[j][admin_Level]]);
+		if(GetPlayerIDFromName(gAdminData[i][admin_Name]) != INVALID_PLAYER_ID)
+			strcat(gBigString, " >  ");
 
-			strcat(gBigString, line);
-		}
-		else
-		{
-			format(line, 64, ""#C_WHITE"%s %C(%d-%s)\n",
-				gAdminData[i][admin_Name],
-				AdminColours[gAdminData[i][admin_Level]],
-				gAdminData[i][admin_Level],
-				AdminName[gAdminData[i][admin_Level]]);
-
-			strcat(gBigString, line);
-		}
+		strcat(gBigString, line);
 	}
-	
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, title, gBigString, "Close", "");
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString, "Close", "");
 
 	return 1;
 }
