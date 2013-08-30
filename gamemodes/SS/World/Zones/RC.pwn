@@ -20,6 +20,11 @@ public OnLoad()
 	RC_District_Palomino();
 	RC_District_RedGen();
 
+	DefineSupplyDropPos("Fisher's Lagoon", 1906.07385, -501.28192, 16.93526);
+	DefineSupplyDropPos("Montgomery", 1332.75269, 346.71506, 18.34710);
+	DefineSupplyDropPos("Dillimore", 642.83069, -594.28088, 15.15962);
+	DefineSupplyDropPos("Blueberry", 204.94981, -261.21274, 0.52650);
+
 	return CallLocalFunction("redcounty_OnLoad", "");
 }
 #if defined _ALS_OnLoad

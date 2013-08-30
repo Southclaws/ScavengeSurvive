@@ -868,6 +868,7 @@ forward SetRestart(seconds);
 #include "SS/Core/World/Explosive.pwn"
 #include "SS/Core/World/SprayTag.pwn"
 #include "SS/Core/World/Sign.pwn"
+#include "SS/Core/World/SupplyCrate.pwn"
 
 //======================Command Features
 

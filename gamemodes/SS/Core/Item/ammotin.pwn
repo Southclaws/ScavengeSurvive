@@ -7,19 +7,19 @@ public OnItemCreated(itemid)
 	if(IsItemLoot(itemid))
 	{
 		if(GetItemType(itemid) == item_Ammo9mm)
-			SetItemExtraData(itemid, random(14));
+			SetItemExtraData(itemid, 1 + random(14));
 
 		if(GetItemType(itemid) == item_AmmoBuck)
-			SetItemExtraData(itemid, random(7));
+			SetItemExtraData(itemid, 1 + random(7));
 
 		if(GetItemType(itemid) == item_Ammo556)
-			SetItemExtraData(itemid, random(25));
+			SetItemExtraData(itemid, 1 + random(25));
 
 		if(GetItemType(itemid) == item_Ammo357)
-			SetItemExtraData(itemid, random(4));
+			SetItemExtraData(itemid, 1 + random(4));
 
 		if(GetItemType(itemid) == item_AmmoRocket)
-			SetItemExtraData(itemid, random(1));
+			SetItemExtraData(itemid, 1 + random(1));
 	}
 
 	return CallLocalFunction("ammo_OnItemCreated", "d", itemid);

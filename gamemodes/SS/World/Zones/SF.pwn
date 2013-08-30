@@ -26,6 +26,13 @@ public OnLoad()
 		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
 		fierro_SpawnRoomTeleport = CreateButton(-1857.1831, -169.5322, 9.1358, " ", 0));
 
+	DefineSupplyDropPos("San Fierro Airport", -1312.81885, -16.52664, 13.08027);
+	DefineSupplyDropPos("San Fierro Driving School", -2055.64697, -200.37950, 34.24461);
+	DefineSupplyDropPos("San Fierro Country Club", -2767.39209, -287.28488, 5.98262);
+	DefineSupplyDropPos("San Fierro Hospital", -2569.96948, 653.26270, 26.74425);
+	DefineSupplyDropPos("San Fierro Square", -1980.58887, 884.61041, 44.17714);
+	DefineSupplyDropPos("San Fierro Promenade", -1587.81201, 1180.50891, 5.97472);
+
 	return CallLocalFunction("fierro_OnLoad", "");
 }
 #if defined _ALS_OnLoad

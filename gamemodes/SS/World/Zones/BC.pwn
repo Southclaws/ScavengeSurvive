@@ -38,6 +38,11 @@ public OnLoad()
 	BC_District_BoneGen();
 
 
+	DefineSupplyDropPos("Fort Carson", 7.24142, 959.94550, 18.55249);
+	DefineSupplyDropPos("Bone County East", 631.26288, 1587.61060, 6.64180);
+	DefineSupplyDropPos("Bone County Canyons", -301.43231, 1877.09180, 41.23884);
+	DefineSupplyDropPos("Verdant Meadows", 373.16586, 2511.17383, 15.47215);
+
 	return CallLocalFunction("bonecounty_OnLoad", "");
 }
 #if defined _ALS_OnLoad

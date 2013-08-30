@@ -36,6 +36,13 @@ public OnLoad()
 	FC_District_FallenTree();
 	FC_District_FlintGen();
 
+	DefineSupplyDropPos("Back-o-Beyond", -638.19598, -2442.45068, 30.10299);
+	DefineSupplyDropPos("Flint Range", -519.18439, -1633.60962, 8.71135);
+	DefineSupplyDropPos("Flint County Fallen Tree", -587.47852, -484.26419, 24.47583);
+	DefineSupplyDropPos("The Farm Flint County", -1114.30457, -974.00067, 128.16339);
+	DefineSupplyDropPos("Angel Pine", -2165.39160, -2395.42017, 29.44930);
+	DefineSupplyDropPos("Mount Chilliad", -2335.43652, -1652.50720, 482.67642);
+
 	return CallLocalFunction("flintcounty_OnLoad", "");
 }
 #if defined _ALS_OnLoad

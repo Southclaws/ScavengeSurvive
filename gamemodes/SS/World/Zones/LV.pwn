@@ -43,6 +43,13 @@ public OnLoad()
 	LV_District_Industrial1();
 	LV_District_Industrial2();
 
+	DefineSupplyDropPos("Las Venturas Stadium", 1344.11108, 2149.04517, 9.93602);
+	DefineSupplyDropPos("Las Venturas North Strip Motel", 2080.01758, 2172.97900, 9.76857);
+	DefineSupplyDropPos("Las Venturas East Shopping Mall", 2614.95264, 1766.20935, 9.74024);
+	DefineSupplyDropPos("Las Venturas East Building Roof", 2644.05469, 1211.56506, 25.86082);
+	DefineSupplyDropPos("Las Venturas South Industrial", 1692.09644, 956.23187, 9.69593);
+	DefineSupplyDropPos("Las Venturas Airport", 1346.64453, 1591.55396, 9.70243);
+
 	return CallLocalFunction("venturas_OnLoad", "");
 }
 #if defined _ALS_OnLoad

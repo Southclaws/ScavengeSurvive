@@ -32,6 +32,14 @@ public OnLoad()
 	LS_District_City2();
 	LS_District_City3();
 
+	DefineSupplyDropPos("Los Santos Docks", 2760.28491, -2443.92456, 12.47645);
+	DefineSupplyDropPos("Los Santos Airport", 2092.42188, -2219.47021, 12.50092);
+	DefineSupplyDropPos("Los Santos Verdant Bluffs", 1134.69092, -2037.15295, 67.97311);
+	DefineSupplyDropPos("Los Santos Pier", 370.06274, -2025.17505, 6.64495);
+	DefineSupplyDropPos("Los Santos Market Station", 801.16882, -1322.54480, 12.35861);
+	DefineSupplyDropPos("Los Santos North Car Park", 1711.01563, -1053.82056, 22.97256);
+	DefineSupplyDropPos("Los Santos Jefferson Motel", 2217.05444, -1163.08008, 24.70885);
+
 	return CallLocalFunction("santos_OnLoad", "");
 }
 #if defined _ALS_OnLoad
