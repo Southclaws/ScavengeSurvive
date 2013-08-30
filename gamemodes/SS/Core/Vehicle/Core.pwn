@@ -1050,6 +1050,7 @@ stock SetVehicleContainer(vehicleid, containerid)
 		return 0;
 
 	veh_Container[vehicleid] = containerid;
+	veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
 
 	return 1;
 }

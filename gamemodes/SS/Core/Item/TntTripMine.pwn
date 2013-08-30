@@ -52,6 +52,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 			if(GetItemExtraData(itemid) == 1)
 			{
 				SetItemToExplode(itemid, 10, 12.0, EXPLOSION_PRESET_STRUCTURAL, 2);
+				break;
 			}
 		}
 	}

@@ -31,6 +31,12 @@ new
 Timer:		box_PickUpTimer[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	for(new i; i < CNT_MAX; i++)
+		box_ContainerSafebox[i] = INVALID_ITEM_ID;
+}
+
 hook OnPlayerConnect(playerid)
 {
 	box_CurrentBox[playerid] = INVALID_ITEM_ID;

@@ -52,7 +52,10 @@ Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 hook OnGameModeInit()
 {
 	for(new i; i < CNT_MAX; i++)
+	{
 		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;
+		bag_ContainerItem[i] = INVALID_ITEM_ID;
+	}
 }
 
 hook OnPlayerConnect(playerid)

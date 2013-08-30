@@ -115,7 +115,7 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 	}
 
 	new playerid = GetItemPlayerInventory(itemid);
-	
+
 	if(IsPlayerConnected(playerid))
 	{
 		new
