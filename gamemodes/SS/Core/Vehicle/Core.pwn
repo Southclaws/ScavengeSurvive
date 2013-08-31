@@ -370,15 +370,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			{
-				new Float:health;
+				new
+					Float:health,
+					model = GetVehicleModel(vehicleid)-400;
+
 				GetVehicleHealth(vehicleid, health);
 
-				if(VehicleFuelData[GetVehicleModel(vehicleid)-400][veh_maxFuel] > 0.0)
+				if(model < 212)
 				{
-					if(health >= 300.0)
+					if(VehicleFuelData[model][veh_maxFuel] > 0.0)
 					{
-						if(GetVehicleFuel(vehicleid) > 0.0)
-							SetVehicleEngine(vehicleid, !GetVehicleEngine(vehicleid));
+						if(health >= 300.0)
+						{
+							if(GetVehicleFuel(vehicleid) > 0.0)
+								SetVehicleEngine(vehicleid, !GetVehicleEngine(vehicleid));
+						}
 					}
 				}
 			}

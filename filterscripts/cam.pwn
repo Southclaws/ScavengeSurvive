@@ -1,15 +1,15 @@
 #include <a_samp>
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS 16
+#define MAX_PLAYERS (32)
 
 #include <zcmd>
+#include <YSI\y_timers>
 
 
 #define CAM_HI_SPEED	(30.0)
 #define CAM_SPEED		(10.0)
 #define CAM_LO_SPEED	(0.5)
-
 
 stock Float:absoluteangle(Float:angle)
 {
@@ -25,10 +25,10 @@ stock Float:GetAngleToPoint(Float:fPointX, Float:fPointY, Float:fDestX, Float:fD
 
 
 new
-	cam_Active[MAX_PLAYERS],
-	cam_Obj[MAX_PLAYERS],
-	Float:cam_StartPos[MAX_PLAYERS][3],
-	cam_UpdateTimer[MAX_PLAYERS];
+		cam_Active		[MAX_PLAYERS],
+		cam_Obj			[MAX_PLAYERS],
+Float:	cam_StartPos	[MAX_PLAYERS][3],
+Timer:	cam_UpdateTimer	[MAX_PLAYERS];
 
 CMD:freecam(playerid)
 {
@@ -134,12 +134,12 @@ timer CameraUpdate[50](playerid)
 	}
 	if(lr == KEY_RIGHT)
 	{
-		new rotation = -(atan2(vecY, vecX) - 90.0);
+		new Float:rotation = -(atan2(vecY, vecX) - 90.0);
 		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation + 90.0, degrees)), camY + (100 * floatcos(rotation + 90.0, degrees)), camZ, speed);
 	}
 	if(lr == KEY_LEFT)
 	{
-		new rotation = -(atan2(vecY, vecX) - 90.0);
+		new Float:rotation = -(atan2(vecY, vecX) - 90.0);
 		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation - 90.0, degrees)), camY + (100 * floatcos(rotation - 90.0, degrees)), camZ, speed);
 	}
 	if(k & KEY_SPRINT)
