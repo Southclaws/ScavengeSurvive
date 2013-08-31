@@ -238,8 +238,8 @@ enum
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
 
-#define ACMD:%1[%2](%3)				forward cmd_%1_%2(%3);\
-									public cmd_%1_%2(%3)
+#define ACMD:%1[%2](%3)				forward acmd_%1_%2(%3);\
+									public acmd_%1_%2(%3)
 
 // Colours
 #define YELLOW						0xFFFF00FF

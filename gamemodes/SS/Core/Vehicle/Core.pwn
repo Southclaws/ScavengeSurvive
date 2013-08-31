@@ -715,7 +715,7 @@ VehicleSurfingCheck(playerid)
 	}
 
 	GetVehicleVelocity(vehicleid, vx, vy, vz);
-	velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+	velocity = floatsqroot( (vx * vx) + (vy * vy) + (vz * vz) ) * 150.0;
 
 	if(velocity > 40.0)
 	{
@@ -727,7 +727,7 @@ VehicleSurfingCheck(playerid)
 				Float:z;
 
 			GetPlayerPos(playerid, x, y, z);
-			SetPlayerPos(playerid, x, y, z + 1.0);
+			SetPlayerPos(playerid, x - (vx * 2.0), y - (vy * 2.0), z - 0.5);
 
 			SetPlayerVelocity(playerid, 0.0, 0.0, 0.0);
 			GivePlayerHP(playerid, -frandom(5.0));

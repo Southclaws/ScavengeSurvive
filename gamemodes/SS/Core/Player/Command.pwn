@@ -23,7 +23,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 		while(iLoop > 0) // Loop backwards through admin levels, from 4 to 1
 		{
-			format(cmdfunction, 64, "cmd_%s_%d", cmd[1], iLoop); // format the function to include the admin variable
+			format(cmdfunction, 64, "acmd_%s_%d", cmd[1], iLoop); // format the function to include the admin variable
 
 			if(funcidx(cmdfunction) != -1)
 				break; // if this function exists, break the loop, at this point iLoop can never be worth 0
