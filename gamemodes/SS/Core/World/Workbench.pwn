@@ -180,7 +180,7 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish wb_OnHoldActionFinish
 forward wb_OnHoldActionFinish(playerid);
 
-CMD:wbtest(playerid, params[])
+ACMD:wbtest[3](playerid, params[])
 {
 	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
 	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
