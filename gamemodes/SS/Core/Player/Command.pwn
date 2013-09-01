@@ -66,3 +66,22 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 	return 1;
 }
+
+public OnRconLoginAttempt(ip[], password[], success)
+{
+	if(!success)
+	{
+		new ipstring[16];
+
+		printf("[RCON] Failed login by %s password: %s", ip, password);
+
+		foreach(new i : Player)
+		{
+			GetPlayerIp(i, ipstring, sizeof(ipstring));
+
+			if(!strcmp(ip, ipstring, true))
+				MsgAdminsF(1, YELLOW, " >  Failed login by %p password: %s", i, password);
+		}
+	}
+	return 1;
+}

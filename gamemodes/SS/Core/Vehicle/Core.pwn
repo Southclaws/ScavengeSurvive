@@ -376,7 +376,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				GetVehicleHealth(vehicleid, health);
 
-				if(model < 212)
+				if(0 <= model < 212)
 				{
 					if(VehicleFuelData[model][veh_maxFuel] > 0.0)
 					{

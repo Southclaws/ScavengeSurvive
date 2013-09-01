@@ -179,7 +179,7 @@ LoadPlayerVehicle(filename[], prints)
 	SetVehicleOwner(vehicleid, owner);
 
 	if(prints)
-		printf("\t[LOAD] vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner, array[VEH_CELL_POSX], array[VEH_CELL_POSY], array[VEH_CELL_POSZ], array[VEH_CELL_ROTZ]);
+		printf("\t[LOAD] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], owner, array[VEH_CELL_POSX], array[VEH_CELL_POSY], array[VEH_CELL_POSZ], array[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -235,13 +235,28 @@ LoadPlayerVehicle(filename[], prints)
 SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 {
 	if(!IsValidVehicleID(vehicleid))
+	{
+		if(print)
+			printf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", vehicleid, name);
+
 		return 0;
+	}
 
 	if(isnull(name))
+	{
+		if(print)
+			printf("ERROR: Saving vehicle ID %d for %s. Name is null", vehicleid, name);
+
 		return 0;
+	}
 
 	if(veh_BitData[vehicleid] & veh_Dead)
+	{
+		if(print)
+			printf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", vehicleid, name);
+
 		return 0;
+	}
 
 	new
 		File:file,
@@ -265,7 +280,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	array[VEH_CELL_ARMOUR] = 0;
 
 	if(print)
-		printf("\t[SAVE] Vehicle %d: %s for %s", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
+		printf("\t[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
 
 	if(IsValidContainer(GetVehicleContainer(vehicleid)))
 	{
