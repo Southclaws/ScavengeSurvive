@@ -347,6 +347,7 @@ ACMD:hud[4](playerid, params[])
 	{
 		PlayerTextDrawHide(playerid, HungerBarBackground[playerid]);
 		PlayerTextDrawHide(playerid, HungerBarForeground[playerid]);
+		TextDrawHideForPlayer(playerid, Branding);
 		HideWatch(playerid);
 		f:gPlayerBitData[playerid]<ShowHUD>;
 	}
@@ -354,6 +355,7 @@ ACMD:hud[4](playerid, params[])
 	{
 		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
 		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
+		TextDrawShowForPlayer(playerid, Branding);
 		ShowWatch(playerid);
 		t:gPlayerBitData[playerid]<ShowHUD>;
 	}
