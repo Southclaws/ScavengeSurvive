@@ -18,7 +18,7 @@ hook OnPlayerText(playerid, text[])
 
 	if(tmpMuteTime < 30000)
 	{
-		Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_YELLOW"seconds, Reason: "#C_BLUE"chat flooding");
+		Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_RED"seconds for chat flooding");
 		return 0;
 	}
 
@@ -27,7 +27,7 @@ hook OnPlayerText(playerid, text[])
 		chat_MessageStreak[playerid]++;
 		if(chat_MessageStreak[playerid] == 3)
 		{
-			Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_YELLOW"seconds, Reason: "#C_BLUE"chat flooding");
+			Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_RED"seconds for chat flooding");
 			chat_MuteTick[playerid] = tickcount();
 			return 0;
 		}
@@ -60,57 +60,15 @@ hook OnPlayerText(playerid, text[])
 
 	return 0;
 }
-PlayerSendChat(playerid, textInput[], Float:frequency)
+PlayerSendChat(playerid, chat[], Float:frequency)
 {
+	logf("[CHAT] [%p](%.2f): %s", playerid, frequency, chat);
+
 	new
-		text[256],
-		text2[128],
-		sendsecondline;
+		line1[256],
+		line2[128];
 
-	if(frequency == 0.0)
-	{
-		format(text, 256, "[Local] (%d) %P"#C_WHITE": %s",
-			playerid,
-			playerid,
-			TagScan(textInput));
-	}
-	else if(frequency == 1.0)
-	{
-		format(text, 256, "[Global] (%d) %P"#C_WHITE": %s",
-			playerid,
-			playerid,
-			TagScan(textInput));
-	}
-	else
-	{
-		format(text, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
-			frequency,
-			playerid,
-			playerid,
-			TagScan(textInput));
-	}
-
-	SetPlayerChatBubble(playerid, TagScan(textInput), WHITE, 40.0, 10000);
-
-	if(strlen(text) > 127)
-	{
-		sendsecondline = 1;
-
-		new
-			splitpos;
-
-		for(new c = 128; c > 0; c--)
-		{
-			if(text[c] == ' ' || text[c] ==  ',' || text[c] ==  '.')
-			{
-				splitpos = c;
-				break;
-			}
-		}
-
-		strcat(text2, text[splitpos]);
-		text[splitpos] = 0;
-	}
+	SetPlayerChatBubble(playerid, TagScan(chat), WHITE, 40.0, 10000);
 
 	if(frequency == 0.0)
 	{
@@ -121,40 +79,62 @@ PlayerSendChat(playerid, textInput[], Float:frequency)
 
 		GetPlayerPos(playerid, x, y, z);
 
+		format(line1, 256, "[Local] (%d) %P"#C_WHITE": %s",
+			playerid,
+			playerid,
+			TagScan(chat));
+
+		TruncateChatMessage(line1, line2);
+
 		foreach(new i : Player)
 		{
 			if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
 			{
-				SendClientMessage(i, WHITE, text);
+				SendClientMessage(i, WHITE, line1);
 
-				if(sendsecondline)
-					SendClientMessage(i, WHITE, text2);
+				if(!isnull(line2))
+					SendClientMessage(i, WHITE, line2);
 			}
 		}
 	}
 	else if(frequency == 1.0)
 	{
+		format(line1, 256, "[Global] (%d) %P"#C_WHITE": %s",
+			playerid,
+			playerid,
+			TagScan(chat));
+
+		TruncateChatMessage(line1, line2);
+
 		foreach(new i : Player)
 		{
 			if(gPlayerBitData[i] & GlobalQuiet)
 				continue;
 
-			SendClientMessage(i, WHITE, text);
+			SendClientMessage(i, WHITE, line1);
 
-			if(sendsecondline)
-				SendClientMessage(i, WHITE, text2);
+			if(!isnull(line2))
+				SendClientMessage(i, WHITE, line2);
 		}
 	}
 	else
 	{
+		format(line1, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
+			frequency,
+			playerid,
+			playerid,
+			TagScan(chat));
+
+		TruncateChatMessage(line1, line2);
+
 		foreach(new i : Player)
 		{
 			if(-0.05 < frequency - gPlayerData[i][ply_RadioFrequency] < 0.05)
 			{
-				SendClientMessage(i, WHITE, text);
+				SendClientMessage(i, WHITE, line1);
 
-				if(sendsecondline)
-					SendClientMessage(i, WHITE, text2);
+				if(!isnull(line2))
+					SendClientMessage(i, WHITE, line2);
 			}
 		}
 	}

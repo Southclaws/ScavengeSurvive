@@ -293,3 +293,27 @@ stock IsValidSkin(skinid)
 		
 	return 1;
 }
+
+stock TruncateChatMessage(input[], output[])
+{
+	if(strlen(input) > 127)
+	{
+		new splitpos;
+
+		for(new i = 128; i > 0; i--)
+		{
+			if(input[i] == ' ' || input[i] ==  ',' || input[i] ==  '.')
+			{
+				splitpos = i;
+				break;
+			}
+		}
+
+		strcat(output, input[splitpos], 128);
+		input[splitpos] = 0;
+
+		return 1;
+	}
+
+	return 0;
+}

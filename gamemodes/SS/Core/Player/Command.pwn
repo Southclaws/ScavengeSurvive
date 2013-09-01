@@ -7,6 +7,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		result = 1;
 
 	printf("[comm] [%p]: %s", playerid, cmdtext);
+	logf("[COMMAND] [%p]: %s", playerid, cmdtext);
 
 	sscanf(cmdtext, "s[30]s[127]", cmd, params);
 

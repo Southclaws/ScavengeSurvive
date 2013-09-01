@@ -34,6 +34,7 @@ native IsValidVehicle(vehicleid);
 
 ==============================================================================*/
 
+#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <YSI\y_utils>				// By Y_Less:				http://forum.sa-mp.com/showthread.php?p=1696956
 #include <YSI\y_va>
 #include <YSI\y_timers>
@@ -47,7 +48,6 @@ native IsValidVehicle(vehicleid);
 
 #include "SS/Core/Server/Hooks.pwn"
 
-#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 
 #include <sqlitei>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=303682

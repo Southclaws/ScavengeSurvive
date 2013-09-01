@@ -161,56 +161,6 @@ CMD:changepass(playerid,params[])
 	return 1;
 }
 
-CMD:country(playerid, params[])
-{
-	new id;
-
-	if(sscanf(params, "d", id))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /country [id]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(id))
-	{
-		return 4;
-	}
-
-	new country[32];
-
-	if(gPlayerData[id][ply_Admin] > gPlayerData[playerid][ply_Admin])
-		country = "Unknown";
-
-	else
-		GetPlayerCountry(id, country);
-
-	MsgF(playerid, YELLOW, " >  %P"#C_YELLOW"'s current GeoIP location: "#C_BLUE"%s", id, country);
-
-	return 1;
-}
-
-CMD:allcountry(playerid, params[])
-{
-	new
-		country[32],
-		list[(MAX_PLAYER_NAME + 3 + 32 + 1) * MAX_PLAYERS];
-
-	foreach(new i : Player)
-	{
-		if(gPlayerData[i][ply_Admin] > gPlayerData[playerid][ply_Admin])
-			country = "Unknown";
-
-		else
-			GetPlayerCountry(i, country);
-
-		format(list, sizeof(list), "%s%p - %s\n", list, i, country);
-	}
-
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
-
-	return 1;
-}
-
 CMD:admins(playerid, params[])
 {
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admins",
