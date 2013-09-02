@@ -169,7 +169,7 @@ timer PickUpSign[250](playerid)
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_posZ],
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_rotZ]);
 
-	fremove(filename);
+	file_delete(filename);
 
 	DestroySign(sgn_CurrentSign[playerid]);
 	GiveWorldItemToPlayer(playerid, CreateItem(item_Sign, 0.0, 0.0, 0.0), true);
@@ -195,7 +195,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+LoadSigns(printeach = false, printtotal = false)
 {
 	new
 		dir:direc = dir_open(SIGN_DATA_DIR),
@@ -225,15 +225,23 @@ hook OnGameModeInit()
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
+				if(printeach)
+					printf("\t[LOAD] Sign '%s' at %f, %f, %f", text, x, y, z);
+
 				CreateSign(text, Float:x, Float:y, Float:z, Float:r);
 			}
 		}
 	}
 
 	dir_close(direc);
+
+	if(printtotal)
+		printf("Loaded %d Signs\n", Iter_Count(sgn_Index));
+
+	return 1;
 }
 
-hook OnGameModeExit()
+SaveSigns(printeach = false, printtotal = false)
 {
 	foreach(new i : sgn_Index)
 	{
@@ -248,6 +256,9 @@ hook OnGameModeExit()
 
 		if(file)
 		{
+			if(printeach)
+				printf("\t[SAVE] Sign '%s' at %f, %f, %f", sgn_Data[i][sgn_text], sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ]);
+
 			fblockwrite(file, sgn_Data[i][sgn_text], MAX_SIGN_TEXT);
 			fclose(file);
 		}
@@ -256,6 +267,10 @@ hook OnGameModeExit()
 			printf("ERROR: Saving sign, filename: '%s'", filename);
 		}
 	}
+
+	if(printtotal)
+		printf("Saved %d Signs\n", Iter_Count(sgn_Index));
+
 	return 1;
 }
 

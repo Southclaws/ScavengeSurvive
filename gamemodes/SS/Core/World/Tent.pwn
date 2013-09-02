@@ -135,7 +135,7 @@ stock DestroyTent(tentid)
 		tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ], tnt_Data[tentid][tnt_rotZ]);
 
 	if(fexist(filename))
-		fremove(filename);
+		file_delete(filename);
 
 
 	DestroyButton(tnt_Data[tentid][tnt_buttonId]);

@@ -124,16 +124,16 @@ DeleteAccount(name[])
 	stmt_execute(gStmt_AccountDelete);
 
 	GetFile(name, file);
-	fremove(file);
+	file_delete(file);
 
 	GetInvFile(name, file);
-	fremove(file);
+	file_delete(file);
 
 	format(file, sizeof(file), "SSS/Vehicles/%s.dat", name);
-	fremove(file);
+	file_delete(file);
 
 	format(file, sizeof(file), NOTEBOOK_FILE, name);
-	fremove(file);
+	file_delete(file);
 
 	return 1;
 }

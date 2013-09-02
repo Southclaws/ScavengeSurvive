@@ -174,7 +174,7 @@ stock DestroyDefence(defenceid)
 		next;
 
 	format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
-	fremove(filename);
+	file_delete(filename);
 
 	DestroyDynamicObject(def_Data[defenceid][def_objectId]);
 	DestroyButton(def_Data[defenceid][def_buttonId]);
@@ -217,7 +217,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 				new filename[64];
 
 				format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ], def_Data[def_CurrentDefenceMove[playerid]][def_rotZ]);
-				fremove(filename);
+				file_delete(filename);
 
 				def_Data[def_CurrentDefenceMove[playerid]][def_posX] = x;
 				def_Data[def_CurrentDefenceMove[playerid]][def_posY] = y;
@@ -591,7 +591,7 @@ LoadDefences(printeach = false, printtotal = false)
 				}
 				else
 				{
-					fremove(filedir);
+					file_delete(filedir);
 					printf("ERROR: Loading defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
 				}
 			}

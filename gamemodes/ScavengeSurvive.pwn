@@ -89,6 +89,20 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_SPAWNED_VEHICLES		(250)
 
 
+// Directories
+#define DIRECTORY_SCIPTFILES		"./scriptfiles/"
+#define DIRECTORY_VEHICLESPAWNS		"./scriptfiles/Vehicles/"
+#define DIRECTORY_MAIN				"./scriptfiles/SSS/"
+#define DIRECTORY_DEFENCES			"./scriptfiles/SSS/Defences/"
+#define DIRECTORY_DETFIELD			"./scriptfiles/SSS/Detfield/"
+#define DIRECTORY_INVENTORY			"./scriptfiles/SSS/Inventory/"
+#define DIRECTORY_LOGS				"./scriptfiles/SSS/Logs/"
+#define DIRECTORY_NOTEBOOK			"./scriptfiles/SSS/Notebook/"
+#define DIRECTORY_PLAYER			"./scriptfiles/SSS/Player/"
+#define DIRECTORY_SAFEBOX			"./scriptfiles/SSS/Safebox/"
+#define DIRECTORY_SIGNS				"./scriptfiles/SSS/Signs/"
+#define DIRECTORY_VEHICLES			"./scriptfiles/SSS/Vehicles/"
+
 // Files
 #define PLAYER_DATA_FILE			"SSS/Player/%s.dat"
 #define PLAYER_ITEM_FILE			"SSS/Inventory/%s.inv"
@@ -985,6 +999,72 @@ public OnGameModeInit()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
+	if(!dir_exists(DIRECTORY_SCIPTFILES))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCIPTFILES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCIPTFILES);
+	}
+
+	if(!dir_exists(DIRECTORY_MAIN))
+	{
+		print("ERROR: Directory '"DIRECTORY_MAIN"' not found. Creating directory.");
+		dir_create(DIRECTORY_MAIN);
+	}
+
+	if(!dir_exists(DIRECTORY_DEFENCES))
+	{
+		print("ERROR: Directory '"DIRECTORY_DEFENCES"' not found. Creating directory.");
+		dir_create(DIRECTORY_DEFENCES);
+	}
+
+	if(!dir_exists(DIRECTORY_DETFIELD))
+	{
+		print("ERROR: Directory '"DIRECTORY_DETFIELD"' not found. Creating directory.");
+		dir_create(DIRECTORY_DETFIELD);
+	}
+
+	if(!dir_exists(DIRECTORY_INVENTORY))
+	{
+		print("ERROR: Directory '"DIRECTORY_INVENTORY"' not found. Creating directory.");
+		dir_create(DIRECTORY_INVENTORY);
+	}
+
+	if(!dir_exists(DIRECTORY_LOGS))
+	{
+		print("ERROR: Directory '"DIRECTORY_LOGS"' not found. Creating directory.");
+		dir_create(DIRECTORY_LOGS);
+	}
+
+	if(!dir_exists(DIRECTORY_NOTEBOOK))
+	{
+		print("ERROR: Directory '"DIRECTORY_NOTEBOOK"' not found. Creating directory.");
+		dir_create(DIRECTORY_NOTEBOOK);
+	}
+
+	if(!dir_exists(DIRECTORY_PLAYER))
+	{
+		print("ERROR: Directory '"DIRECTORY_PLAYER"' not found. Creating directory.");
+		dir_create(DIRECTORY_PLAYER);
+	}
+
+	if(!dir_exists(DIRECTORY_SAFEBOX))
+	{
+		print("ERROR: Directory '"DIRECTORY_SAFEBOX"' not found. Creating directory.");
+		dir_create(DIRECTORY_SAFEBOX);
+	}
+
+	if(!dir_exists(DIRECTORY_SIGNS))
+	{
+		print("ERROR: Directory '"DIRECTORY_SIGNS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SIGNS);
+	}
+
+	if(!dir_exists(DIRECTORY_VEHICLES))
+	{
+		print("ERROR: Directory '"DIRECTORY_VEHICLES"' not found. Creating directory.");
+		dir_create(DIRECTORY_VEHICLES);
+	}
+
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gWorld = db_open_persistent(WORLD_DATABASE);
 
@@ -1415,6 +1495,7 @@ public OnGameModeInit()
 	LoadSafeboxes	(false, true);
 	LoadTents		(false, true);
 	LoadDefences	(false, true);
+	LoadSigns		(false, true);
 
 	LoadSprayTags();
 
@@ -1438,6 +1519,7 @@ public OnGameModeExit()
 	SaveSafeboxes		(false, true);
 	SaveTents			(false, true);
 	SaveDefences		(false, true);
+	SaveSigns			(false, true);
 
 	SaveSprayTags();
 

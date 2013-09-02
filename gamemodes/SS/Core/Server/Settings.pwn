@@ -10,8 +10,44 @@ LoadSettings()
 	Setting Loading
 */
 
+	if(fexist(SETTINGS_FILE))
+	{
+		INI_Load(SETTINGS_FILE);
+	}
+	else
+	{
+		print("ERROR: Settings file '"SETTINGS_FILE"' not found. Creating with default values.");
 
-	INI_Load(SETTINGS_FILE);
+		new INI:ini = INI_Open(SETTINGS_FILE);
+
+		gMessageOfTheDay	= "Message of the day. Please change this inside "SETTINGS_FILE"";
+		gWebsiteURL			= "southclawjk.wordpress.com";
+		gGameModeName		= "Southclaw's Scavenge & Survive";
+		gWhitelist			= false;
+		gPauseMap			= false;
+		gInteriorEntry		= false;
+		gPlayerAnimations	= true;
+		gNameTagDistance	= 3.0;
+		gCombatLogWindow	= 10;
+		gLoginFreezeTime	= 5;
+		gMaxTaboutTime		= 60;
+
+		INI_WriteString(ini, "motd", gMessageOfTheDay);
+		INI_WriteString(ini, "website", gWebsiteURL);
+		INI_WriteString(ini, "gamemodename", gGameModeName);
+
+		INI_WriteBool(ini, "whitelist", gWhitelist);
+		INI_WriteBool(ini, "allow-pause-map", gPauseMap);
+		INI_WriteBool(ini, "interior-entry", gInteriorEntry);
+		INI_WriteBool(ini, "player-animations", gPlayerAnimations);
+
+		INI_WriteFloat(ini, "nametag-distance", gNameTagDistance);
+		INI_WriteInt(ini, "combat-log-window", gCombatLogWindow);
+		INI_WriteInt(ini, "login-freeze-time", gLoginFreezeTime);
+		INI_WriteInt(ini, "max-tab-out-time", gMaxTaboutTime);
+
+		INI_Close(ini);
+	}
 
 
 /*
