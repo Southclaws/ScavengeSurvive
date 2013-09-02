@@ -27,18 +27,21 @@ CMD:fly(playerid, params[])
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(newkeys & KEY_JUMP && newkeys & 16 && usefly[playerid])
+	if(IsPlayerAdmin(playerid))
 	{
-		if(fly[playerid])
+		if(newkeys & KEY_JUMP && newkeys & 16 && usefly[playerid])
 		{
-			fly[playerid] = false;
-			ClearAnimations(playerid);
-		}
-		else
-		{
-			fly[playerid] = true;
-			ClearAnimations(playerid);
-			ApplyAnimation(playerid, "PARACHUTE", "FALL_SKYDIVE", 4.0, 1, 0, 0, 0, 0, 1);
+			if(fly[playerid])
+			{
+				fly[playerid] = false;
+				ClearAnimations(playerid);
+			}
+			else
+			{
+				fly[playerid] = true;
+				ClearAnimations(playerid);
+				ApplyAnimation(playerid, "PARACHUTE", "FALL_SKYDIVE", 4.0, 1, 0, 0, 0, 0, 1);
+			}
 		}
 	}
 }
