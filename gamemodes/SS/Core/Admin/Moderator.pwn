@@ -53,13 +53,8 @@ ACMD:ban[2](playerid, params[])
 		if(strlen(reason) > 64)
 			return Msg(playerid, RED, " >  Reason must be below 64 characters");
 
-		for(new idx; idx<gTotalAdmins; idx++)
-		{
-			if(!strcmp(playername, gAdminData[idx][admin_Name]))
-			{
-				return 2;
-			}
-		}
+		if(GetAdminLevelByName(playername) > 0)
+			return 2;
 
 		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
 			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);

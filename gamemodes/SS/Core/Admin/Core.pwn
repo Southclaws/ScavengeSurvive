@@ -1,65 +1,174 @@
-CMD:acmds(playerid, params[])
+#define MAX_ADMIN_LEVELS (5)
+
+enum e_admin_data
 {
-	new str[800];
-
-	strcat(str, "/a [message] - Staff chat channel");
-
-	if(gPlayerData[playerid][ply_Admin] >= 2)
-	{
-		strcat(str, "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
-		strcat(str, gAdminCommandList_Lvl3);
-	}
-	if(gPlayerData[playerid][ply_Admin] >= 2)
-	{
-		strcat(str, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
-		strcat(str, gAdminCommandList_Lvl2);
-	}
-	if(gPlayerData[playerid][ply_Admin] >= 1)
-	{
-		strcat(str, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
-		strcat(str, gAdminCommandList_Lvl1);
-	}
-	
-	if(gPlayerData[playerid][ply_Admin] > 0)
-		ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", str, "Close", "");
-
-	else
-		return 0;
-
-	return 1;
+	admin_Name[MAX_PLAYER_NAME],
+	admin_Rank
 }
 
-ACMD:adminlist[3](playerid, params[])
+
+static
+	admin_Data[MAX_ADMIN][e_admin_data],
+	admin_Total,
+	admin_Names[MAX_ADMIN_LEVELS][14] =
+	{
+		"Player",			// 0 (Unused)
+		"Game Master",		// 1
+		"Moderator",		// 2
+		"Administrator",	// 3
+		"Developer"			// 4
+	},
+	admin_Colours[MAX_ADMIN_LEVELS] =
+	{
+		0xFFFFFFFF,			// 0 (Unused)
+		0x5DFC0AFF,			// 1
+		0x33CCFFAA,			// 2
+		0x6600FFFF,			// 3
+		0xFF0000FF			// 4
+	};
+
+
+LoadAdminData()
 {
 	new
-		title[20],
-		line[52];
+		name[MAX_PLAYER_NAME],
+		level;
 
-	gBigString[0] = EOS;
+	stmt_bind_result_field(gStmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
 
-	format(title, 20, "Administrators (%d)", gTotalAdmins);
-
-	for(new i; i < gTotalAdmins; i++)
+	if(stmt_execute(gStmt_AdminLoadAll))
 	{
-		if(gAdminData[i][admin_Level] == STAFF_LEVEL_SECRET)
-			continue;
+		while(stmt_fetch_row(gStmt_AdminLoadAll))
+		{
+			admin_Data[admin_Total][admin_Name] = name;
+			admin_Data[admin_Total][admin_Rank] = level;
 
-		format(line, sizeof(line), "%s %C(%d-%s)\n",
-			gAdminData[i][admin_Name],
-			AdminColours[gAdminData[i][admin_Level]],
-			gAdminData[i][admin_Level],
-			AdminName[gAdminData[i][admin_Level]]);
-
-		if(GetPlayerIDFromName(gAdminData[i][admin_Name]) != INVALID_PLAYER_ID)
-			strcat(gBigString, " >  ");
-
-		strcat(gBigString, line);
+			admin_Total++;
+		}
 	}
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString, "Close", "");
+	SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
+}
+
+SetPlayerAdminLevel(playerid, level)
+{
+	if(!(0 <= level < MAX_ADMIN_LEVELS))
+		return 0;
+
+	gPlayerData[playerid][ply_Admin] = level;
+
+	UpdateAdmin(gPlayerName[playerid], level);
 
 	return 1;
 }
+
+UpdateAdmin(name[MAX_PLAYER_NAME], level)
+{
+	if(level == 0)
+		RemoveAdminFromDatabase(name);
+
+	new count;
+
+	stmt_bind_value(gStmt_AdminExists, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(gStmt_AdminExists, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(gStmt_AdminExists);
+	stmt_fetch_row(gStmt_AdminExists);
+
+	if(count == 0)
+	{
+		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
+
+		if(stmt_execute(gStmt_AdminInsert))
+		{
+			admin_Data[admin_Total][admin_Name] = name;
+			admin_Data[admin_Total][admin_Rank] = level;
+			admin_Total++;
+
+			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
+
+			return 1;
+		}
+	}
+	else
+	{
+		stmt_bind_value(gStmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
+		stmt_bind_value(gStmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+		if(stmt_execute(gStmt_AdminUpdate))
+		{
+			for(new i; i < admin_Total; i++)
+			{
+				if(!strcmp(name, admin_Data[i][admin_Name]))
+				{
+					admin_Data[i][admin_Rank] = level;
+
+					break;
+				}
+			}
+
+			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
+
+			return 1;
+		}
+	}
+
+	return 1;
+}
+
+RemoveAdminFromDatabase(name[])
+{
+	stmt_bind_value(gStmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	if(stmt_execute(gStmt_AdminDelete))
+	{
+		admin_Total--;
+
+		new bool:found = false;
+
+		for(new i; i < admin_Total; i++)
+		{
+			if(!strcmp(name, admin_Data[i][admin_Name]))
+				found = true;
+
+			if(found && i < MAX_ADMIN-1)
+			{
+				format(admin_Data[i][admin_Name], 24, admin_Data[i+1][admin_Name]);
+				admin_Data[i][admin_Rank] = admin_Data[i+1][admin_Rank];
+			}
+		}
+
+		return 1;
+	}
+
+	return 0;
+}
+
+CheckAdminLevel(playerid)
+{
+	for(new i; i < admin_Total; i++)
+	{
+		if(!strcmp(gPlayerName[playerid], admin_Data[i][admin_Name]))
+		{
+			gPlayerData[playerid][ply_Admin] = admin_Data[i][admin_Rank];
+			break;
+		}
+	}
+}
+
+KickPlayer(playerid, reason[])
+{
+	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
+	MsgF(playerid, GREY, " >  Kicked, reason: "#C_BLUE"%s", reason);
+	defer KickPlayerDelay(playerid);
+}
+
+timer KickPlayerDelay[50](playerid)
+{
+	Kick(playerid);
+}
+
 
 MsgAdmins(level, colour, string[])
 {
@@ -110,143 +219,65 @@ MsgAdmins(level, colour, string[])
 	return 1;
 }
 
-KickPlayer(playerid, reason[])
+
+ACMD:acmds[1](playerid, params[])
 {
-	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
-	MsgF(playerid, GREY, " >  Kicked, reason: "#C_BLUE"%s", reason);
-	defer KickPlayerDelay(playerid);
-}
+	strcat(gBigString, "/a [message] - Staff chat channel");
 
-timer KickPlayerDelay[50](playerid)
-{
-	Kick(playerid);
-}
-
-SetPlayerAdminLevel(playerid, level)
-{
-	if(!(0 <= level <= 4))return 0;
-
-	gPlayerData[playerid][ply_Admin] = level;
-
-	if(level == 0)
+	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
+		strcat(gBigString, "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
+		strcat(gBigString, gAdminCommandList_Lvl3);
 	}
-	else
+	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-
+		strcat(gBigString, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
+		strcat(gBigString, gAdminCommandList_Lvl2);
 	}
-
-	UpdateAdmin(gPlayerName[playerid], level);
+	if(gPlayerData[playerid][ply_Admin] >= 1)
+	{
+		strcat(gBigString, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
+		strcat(gBigString, gAdminCommandList_Lvl1);
+	}
+	
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString, "Close", "");
 
 	return 1;
 }
 
-UpdateAdmin(name[MAX_PLAYER_NAME], level)
-{
-	if(level == 0)
-		RemoveAdminFromDatabase(name);
-
-	new count;
-
-	stmt_bind_value(gStmt_AdminExists, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(gStmt_AdminExists, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(gStmt_AdminExists);
-	stmt_fetch_row(gStmt_AdminExists);
-
-	if(count == 0)
-	{
-		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
-
-		if(stmt_execute(gStmt_AdminInsert))
-		{
-			gAdminData[gTotalAdmins][admin_Name] = name;
-			gAdminData[gTotalAdmins][admin_Level] = level;
-			gTotalAdmins++;
-
-			SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-	else
-	{
-		stmt_bind_value(gStmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
-		stmt_bind_value(gStmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-		if(stmt_execute(gStmt_AdminUpdate))
-		{
-			for(new i; i < gTotalAdmins; i++)
-			{
-				if(!strcmp(name, gAdminData[i][admin_Name]))
-				{
-					gAdminData[i][admin_Level] = level;
-
-					break;
-				}
-			}
-
-			SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-
-	return 1;
-}
-
-RemoveAdminFromDatabase(name[])
-{
-	stmt_bind_value(gStmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(stmt_execute(gStmt_AdminDelete))
-	{
-		gTotalAdmins--;
-
-		new bool:found = false;
-
-		for(new i; i < gTotalAdmins; i++)
-		{
-			if(!strcmp(name, gAdminData[i][admin_Name]))
-				found = true;
-
-			if(found && i < MAX_ADMIN-1)
-			{
-				format(gAdminData[i][admin_Name], 24, gAdminData[i+1][admin_Name]);
-				gAdminData[i][admin_Level] = gAdminData[i+1][admin_Level];
-			}
-		}
-
-		return 1;
-	}
-
-	return 0;
-}
-
-LoadAdminData()
+ACMD:adminlist[3](playerid, params[])
 {
 	new
-		name[MAX_PLAYER_NAME],
-		level;
+		title[20],
+		line[52];
 
-	stmt_bind_result_field(gStmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
+	gBigString[0] = EOS;
 
-	if(stmt_execute(gStmt_AdminLoadAll))
+	format(title, 20, "Administrators (%d)", admin_Total);
+
+	for(new i; i < admin_Total; i++)
 	{
-		while(stmt_fetch_row(gStmt_AdminLoadAll))
-		{
-			gAdminData[gTotalAdmins][admin_Name] = name;
-			gAdminData[gTotalAdmins][admin_Level] = level;
+		if(admin_Data[i][admin_Rank] == STAFF_LEVEL_SECRET)
+			continue;
 
-			gTotalAdmins++;
-		}
+		format(line, sizeof(line), "%s %C(%d-%s)\n",
+			admin_Data[i][admin_Name],
+			admin_Colours[admin_Data[i][admin_Rank]],
+			admin_Data[i][admin_Rank],
+			admin_Names[admin_Data[i][admin_Rank]]);
+
+		if(GetPlayerIDFromName(admin_Data[i][admin_Name]) != INVALID_PLAYER_ID)
+			strcat(gBigString, " >  ");
+
+		strcat(gBigString, line);
 	}
 
-	SortDeepArray(gAdminData, admin_Level, .order = SORT_DESC);
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString, "Close", "");
+
+	return 1;
 }
 
-GetAdminLevelByName(name[MAX_PLAYER_NAME])
+stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
 {
 	new level;
 
@@ -258,14 +289,24 @@ GetAdminLevelByName(name[MAX_PLAYER_NAME])
 	return level;
 }
 
-CheckAdminLevel(playerid)
+stock GetAdminTotal()
 {
-	for(new i; i < gTotalAdmins; i++)
-	{
-		if(!strcmp(gPlayerName[playerid], gAdminData[i][admin_Name]))
-		{
-			gPlayerData[playerid][ply_Admin] = gAdminData[i][admin_Level];
-			break;
-		}
-	}
+	return admin_Total;
 }
+
+stock GetAdminRankName(rank)
+{
+	if(!(0 < rank < MAX_ADMIN_LEVELS))
+		return admin_Names[0];
+
+	return admin_Names[rank];
+}
+
+stock GetAdminRankColour(rank)
+{
+	if(!(0 < rank < MAX_ADMIN_LEVELS))
+		return admin_Colours[0];
+
+	return admin_Colours[rank];
+}
+

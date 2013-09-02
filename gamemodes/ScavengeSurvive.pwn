@@ -25,8 +25,10 @@
 
 native IsValidVehicle(vehicleid);
 
-//#define DB_DEBUG true
-#define DB_MAX_STATEMENTS (48)
+#define DB_DEBUG					false
+#define DB_MAX_STATEMENTS			(48)
+#define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
+#define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
 
 /*==============================================================================
 
@@ -63,9 +65,12 @@ native IsValidVehicle(vehicleid);
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
+#include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
+#include <SIF/Modules/Craft>
+#include <SIF/Modules/Notebook>
+
 #include <playerprogress>			// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
-#include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
 #include <Balloon>					// By Southclaw:			https://gist.github.com/Southclaw/6254507
 #include <Line>						// By Southclaw:			https://gist.github.com/Southclaw/6254512
@@ -76,7 +81,11 @@ native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
 
 
-//===================================================================Definitions
+/*==============================================================================
+
+	Definitions
+
+==============================================================================*/
 
 
 // Limits
@@ -345,10 +354,6 @@ enum
 #define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
 #define KEYTEXT_RADIO				"R"
 
-
-//==============================================================SERVER VARIABLES
-
-
 // Dialog IDs
 enum
 {
@@ -360,10 +365,6 @@ enum
 	d_WelcomeMessage,
 
 // External Dialogs
-	d_NotebookPage,
-	d_NotebookEdit,
-	d_NotebookError,
-
 	d_SignEdit,
 	d_Tires,
 	d_Lights,
@@ -416,36 +417,14 @@ enum
 }
 
 
-new HORIZONTAL_RULE[] = {"-------------------------------------------------------------------------------------------------------------------------"};
+/*==============================================================================
 
-//=====================Player Tag Names
-new const AdminName[6][14]=
-{
-	"Player",			// 0
-	"Game Master",		// 1
-	"Moderator",		// 2
-	"Administrator",	// 3
-	"Developer",		// 4
-	"Secret"			// 5
-},
-AdminColours[5]=
-{
-	0xFFFFFFFF,			// 0
-	0x5DFC0AFF,			// 1
-	0x33CCFFAA,			// 2
-	0x6600FFFF,			// 3
-	0xFF0000FF			// 4
-};
+	Global Variables
+
+==============================================================================*/
 
 
-//=====================Server Global Settings
-enum e_admin_data
-{
-	admin_Name[MAX_PLAYER_NAME],
-	admin_Level
-}
-
-
+// DATABASES AND STATEMENTS
 new
 DB:				gAccounts,
 DB:				gWorld,
@@ -511,6 +490,7 @@ DBStatement:	gStmt_SprayTagLoad,
 DBStatement:	gStmt_SprayTagSave;
 
 
+// SERVER SETTINGS (INI LOADED)
 new
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gWebsiteURL[MAX_WEBSITE_NAME],
@@ -523,13 +503,15 @@ Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
 		gMaxTaboutTime,
+		gPingLimit;
 
-		gAdminData[MAX_ADMIN][e_admin_data],
-		gTotalAdmins,
+// INTERNAL
+new
 		gServerUptime,
 bool:	gServerRestarting,
-		gPingLimit = 400;
+		gBigString[2048];
 
+// SKINS/CLOTHES
 new
 	skin_MainM,
 	skin_MainF,
@@ -551,12 +533,13 @@ new
 	skin_ArmyF,
 	skin_IndiF;
 
+// ITEM ATTACK ANIMATION HANDLES
 new
 	anim_Blunt,
 	anim_Stab;
 
 
-//=====================Loot Types
+// LOOT INDEXES
 enum
 {
 	loot_Civilian,
@@ -571,7 +554,7 @@ enum
 	loot_Survivor
 }
 
-//=====================Item Types
+// ITEM TYPES
 new stock
 ItemType:		item_Parachute		= INVALID_ITEM_TYPE,
 ItemType:		item_Medkit			= INVALID_ITEM_TYPE,
@@ -718,7 +701,7 @@ ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
 ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE;
 
 
-//=====================Menus and Textdraws
+// UI HANDLES
 new
 Text:			DeathText			= Text:INVALID_TEXT_DRAW,
 Text:			DeathButton			= Text:INVALID_TEXT_DRAW,
@@ -751,20 +734,19 @@ PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 				MiniMapOverlay;
 
-//==============================================================PLAYER VARIABLES
-
 
 forward OnLoad();
 forward SetRestart(seconds);
 
 
-//======================Library Predefinitions
+/*==============================================================================
 
-#define NOTEBOOK_FILE			"SSS/Notebook/%s.dat"
-#define MAX_NOTEBOOK_FILE_NAME	(MAX_PLAYER_NAME + 18)
+	Gamemode Scripts
 
-//======================Utilities
+==============================================================================*/
 
+
+// UTILITIES
 #include "SS/utils/math.pwn"
 #include "SS/utils/misc.pwn"
 #include "SS/utils/camera.pwn"
@@ -777,13 +759,7 @@ forward SetRestart(seconds);
 #include "SS/utils/object.pwn"
 #include "SS/utils/tickcountfix.pwn"
 
-//======================SIF Module Scripts
-
-#include <SIF/Modules/Craft.pwn>
-#include <SIF/Modules/Notebook.pwn>
-
-//======================Server Core
-
+// SERVER CORE
 #include "SS/Core/Server/Settings.pwn"
 #include "SS/Core/Server/TextTags.pwn"
 #include "SS/Core/Server/Weather.pwn"
@@ -791,8 +767,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/SaveBlock.pwn"
 #include "SS/Core/Server/ActivityLog.pwn"
 
-//======================UI
-
+// UI
 #include "SS/Core/UI/PlayerUI.pwn"
 #include "SS/Core/UI/GlobalUI.pwn"
 #include "SS/Core/UI/HoldAction.pwn"
@@ -803,30 +778,25 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/Watch.pwn"
 #include "SS/Core/UI/Keypad.pwn"
 
-//======================Game Data
-
+// GAME DATA
 #include "SS/Data/Vehicle.pwn"
 #include "SS/Data/Weapon.pwn"
 #include "SS/Data/Loot.pwn"
 
-//======================Vehicle
-
+// VEHICLE
 #include "SS/Core/Vehicle/Core.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
 #include "SS/Core/Vehicle/Repair.pwn"
 
-//======================Weapon
-
+// WEAPON
 #include "SS/Core/Weapon/Core.pwn"
 
-//======================Loot
-
+// LOOT
 #include "SS/Core/Loot/Spawn.pwn"
 #include "SS/Core/Loot/HouseLoot.pwn"
 
-//======================Player Core
-
+// PLAYER INTERNAL SCRIPTS
 #include "SS/Core/Player/Core.pwn"
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
@@ -846,8 +816,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/HackDetect.pwn"
 #include "SS/Core/Player/Profile.pwn"
 
-//======================Character
-
+// CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
 #include "SS/Core/Char/Clothes.pwn"
 #include "SS/Core/Char/Hats.pwn"
@@ -865,8 +834,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/Medical.pwn"
 #include "SS/Core/Char/AimShout.pwn"
 
-//======================World
-
+// WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
 #include "SS/Core/World/Barbecue.pwn"
 #include "SS/Core/World/Defences.pwn"
@@ -884,8 +852,7 @@ forward SetRestart(seconds);
 #include "SS/Core/World/Sign.pwn"
 #include "SS/Core/World/SupplyCrate.pwn"
 
-//======================Command Features
-
+// ADMINISTRATION TOOLS
 #include "SS/Core/Admin/Commands.pwn"
 #include "SS/Core/Admin/GameMaster.pwn"
 #include "SS/Core/Admin/Moderator.pwn"
@@ -898,8 +865,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/BugReport.pwn"
 #include "SS/Core/Admin/DetectionField.pwn"
 
-//======================Items
-
+// ITEMS
 #include "SS/Core/Item/firework.pwn"
 #include "SS/Core/Item/bottle.pwn"
 #include "SS/Core/Item/TntTimeBomb.pwn"
@@ -945,11 +911,11 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/EmpPhoneBomb.pwn"
 
 
-//======================Post-code
+// POST-CODE
 
 #include "SS/Core/Server/Autosave.pwn"
 
-//======================World
+// WORLD
 
 #include "SS/World/World.pwn"
 
@@ -960,6 +926,7 @@ forward SetRestart(seconds);
 #if !defined GenerateSpawnPoint
 	#error World script MUST have a "GenerateSpawnPoint" function!
 #endif
+
 
 main()
 {
@@ -1554,9 +1521,9 @@ RestartGamemode()
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, " ");
-	MsgAll(BLUE, HORIZONTAL_RULE);
+	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
 	MsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
-	MsgAll(BLUE, HORIZONTAL_RULE);
+	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
 }
 
 task GameUpdate[1000]()

@@ -1,5 +1,3 @@
-new gBigString[2048];
-
 CMD:welcome(playerid, params[])
 {
 	ShowWelcomeMessage(playerid, 0);

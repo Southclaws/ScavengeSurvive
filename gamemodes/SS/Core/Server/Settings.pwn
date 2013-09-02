@@ -31,6 +31,7 @@ LoadSettings()
 		gCombatLogWindow	= 10;
 		gLoginFreezeTime	= 5;
 		gMaxTaboutTime		= 60;
+		gPingLimit			= 400;
 
 		INI_WriteString(ini, "motd", gMessageOfTheDay);
 		INI_WriteString(ini, "website", gWebsiteURL);
@@ -45,6 +46,7 @@ LoadSettings()
 		INI_WriteInt(ini, "combat-log-window", gCombatLogWindow);
 		INI_WriteInt(ini, "login-freeze-time", gLoginFreezeTime);
 		INI_WriteInt(ini, "max-tab-out-time", gMaxTaboutTime);
+		INI_WriteInt(ini, "ping-limit", gPingLimit);
 
 		INI_Close(ini);
 	}
@@ -70,6 +72,7 @@ LoadSettings()
 	printf(" Combat Log Window: %d", gCombatLogWindow);
 	printf(" Login Freeze Time: %d", gLoginFreezeTime);
 	printf(" Max Tab-out Time: %d", gMaxTaboutTime);
+	printf(" Max Ping: %d", gPingLimit);
 
 #endif
 
@@ -120,6 +123,7 @@ INI:settings[](name[], value[])
 	INI_Int("combat-log-window", gCombatLogWindow);
 	INI_Int("login-freeze-time", gLoginFreezeTime);
 	INI_Int("max-tab-out-time", gMaxTaboutTime);
+	INI_Int("ping-limit", gPingLimit);
 
 	return 1;
 }
