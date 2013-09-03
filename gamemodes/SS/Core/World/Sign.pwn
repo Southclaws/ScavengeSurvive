@@ -169,7 +169,7 @@ timer PickUpSign[250](playerid)
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_posZ],
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_rotZ]);
 
-	file_delete(filename);
+	fremove(filename);
 
 	DestroySign(sgn_CurrentSign[playerid]);
 	GiveWorldItemToPlayer(playerid, CreateItem(item_Sign, 0.0, 0.0, 0.0), true);

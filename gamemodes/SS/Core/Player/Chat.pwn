@@ -54,7 +54,10 @@ hook OnPlayerText(playerid, text[])
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
+			{
+				logf("[CHAT] [ADMIN] [%p]: %s", playerid, text);
 				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(text));
+			}
 		}
 	}
 
@@ -62,8 +65,6 @@ hook OnPlayerText(playerid, text[])
 }
 PlayerSendChat(playerid, chat[], Float:frequency)
 {
-	logf("[CHAT] [%p](%.2f): %s", playerid, frequency, chat);
-
 	new
 		line1[256],
 		line2[128];
@@ -72,6 +73,8 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 	if(frequency == 0.0)
 	{
+		logf("[CHAT] [LOCAL] [%p]: %s", playerid, chat);
+
 		new
 			Float:x,
 			Float:y,
@@ -99,6 +102,8 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	}
 	else if(frequency == 1.0)
 	{
+		logf("[CHAT] [GLOBAL] [%p]: %s", playerid, chat);
+
 		format(line1, 256, "[Global] (%d) %P"#C_WHITE": %s",
 			playerid,
 			playerid,
@@ -119,6 +124,8 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	}
 	else
 	{
+		logf("[CHAT] [%.2f] [%p]: %s", frequency, playerid, chat);
+
 		format(line1, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
 			frequency,
 			playerid,
@@ -147,7 +154,7 @@ CMD:g(playerid, params[])
 	if(gPlayerBitData[playerid] & Muted)
 	{
 		Msg(playerid, RED, " >  You are muted");
-		return 1;
+		return 7;
 	}
 
 	if(isnull(params))
@@ -160,8 +167,9 @@ CMD:g(playerid, params[])
 		PlayerSendChat(playerid, params, 1.0);
 	}
 
-	return 1;
+	return 7;
 }
+
 CMD:l(playerid, params[])
 {
 	if(isnull(params))
@@ -174,8 +182,9 @@ CMD:l(playerid, params[])
 		PlayerSendChat(playerid, params, 0.0);
 	}
 
-	return 1;
+	return 7;
 }
+
 CMD:r(playerid, params[])
 {
 	if(isnull(params))
@@ -188,8 +197,9 @@ CMD:r(playerid, params[])
 		PlayerSendChat(playerid, params, gPlayerData[playerid][ply_RadioFrequency]);
 	}
 
-	return 1;
+	return 7;
 }
+
 CMD:quiet(playerid, params[])
 {
 	if(gPlayerBitData[playerid] & GlobalQuiet)
@@ -205,6 +215,7 @@ CMD:quiet(playerid, params[])
 
 	return 1;
 }
+
 ACMD:a[1](playerid, params[])
 {
 	if(isnull(params))
@@ -217,9 +228,12 @@ ACMD:a[1](playerid, params[])
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
+			{
+				logf("[CHAT] [ADMIN] [%p]: %s", playerid, params);
 				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(params));
+			}
 		}
 	}
 
-	return 1;
+	return 7;
 }

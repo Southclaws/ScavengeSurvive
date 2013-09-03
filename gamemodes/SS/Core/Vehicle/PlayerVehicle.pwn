@@ -99,7 +99,7 @@ LoadPlayerVehicle(filename[], prints)
 	if(strlen(filename) <= 4)
 	{
 		fclose(file);
-		file_delete(filedir);
+		fremove(filedir);
 		return 0;
 	}
 
@@ -111,21 +111,21 @@ LoadPlayerVehicle(filename[], prints)
 	if(!(400 <= array[VEH_CELL_MODEL] <= 612))
 	{
 		printf("ERROR: Removing Vehicle file: %s. Invalid model ID.", filename);
-		file_delete(filedir);
+		fremove(filedir);
 		return 0;
 	}
 
 	if(Float:array[VEH_CELL_HEALTH] < 255.5)
 	{
 		printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[array[VEH_CELL_MODEL]-400], filename);
-		file_delete(filedir);
+		fremove(filedir);
 		return 0;
 	}
 
 	if(vehicletype == VTYPE_TRAIN)
 	{
 		printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[array[VEH_CELL_MODEL]-400], filename);
-		file_delete(filedir);
+		fremove(filedir);
 		return 0;
 	}
 
@@ -140,7 +140,7 @@ LoadPlayerVehicle(filename[], prints)
 			else
 			{
 				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", VehicleNames[array[VEH_CELL_MODEL]-400], filename);
-				file_delete(filedir);
+				fremove(filedir);
 
 				return 0;
 			}
@@ -153,7 +153,7 @@ LoadPlayerVehicle(filename[], prints)
 	{
 		printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", owner, strlen(owner));
 		DestroyVehicle(vehicleid, 1);
-		file_delete(filedir);
+		fremove(filedir);
 		return 0;
 	}
 
@@ -355,7 +355,7 @@ RemovePlayerVehicleFile(vehicleid, print = true)
 	new filename[MAX_PLAYER_NAME + 18];
 
 	format(filename, sizeof(filename), "SSS/Vehicles/%s.dat", owner);
-	file_delete(filename);
+	fremove(filename);
 
 	return 1;
 }

@@ -107,7 +107,7 @@ stock RemoveDetectionField(id)
 	if(!file_exists(filename))
 		return -1;
 
-	file_delete(filename);
+	fremove(filename);
 
 	DestroyDetectionField(id);
 

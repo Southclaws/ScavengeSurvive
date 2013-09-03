@@ -7,7 +7,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		result = 1;
 
 	printf("[comm] [%p]: %s", playerid, cmdtext);
-	logf("[COMMAND] [%p]: %s", playerid, cmdtext);
 
 	sscanf(cmdtext, "s[30]s[127]", cmd, params);
 
@@ -56,6 +55,12 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	Instead of writing these messages on the commands themselves, I can just
 	write them here and return different values on the commands.
 */
+
+	// Only log successful commands
+	// If a command returns 7, don't log it.
+
+	if(0 < result < 7)
+		logf("[COMMAND] [%p]: %s", playerid, cmdtext);
 
 	if		(result == 0) Msg(playerid, ORANGE, " >  That is not a recognized command. Check the "#C_BLUE"/help "#C_ORANGE"dialog.");
 	else if	(result == 1) return 1; // valid command, do nothing.
