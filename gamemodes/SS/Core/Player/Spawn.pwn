@@ -3,26 +3,6 @@
 
 PlayerSpawnExistingCharacter(playerid)
 {
-	new Float:z;
-
-	if(gPlayerData[playerid][ply_SpawnPosX] > 3000.0 ||
-		gPlayerData[playerid][ply_SpawnPosX] < -3000.0 ||
-		gPlayerData[playerid][ply_SpawnPosY] > 3000.0 ||
-		gPlayerData[playerid][ply_SpawnPosY] < -3000.0)
-		z += 2.0;
-
-	Streamer_UpdateEx(playerid,
-		gPlayerData[playerid][ply_SpawnPosX],
-		gPlayerData[playerid][ply_SpawnPosY],
-		gPlayerData[playerid][ply_SpawnPosZ] + z, 0, 0);
-
-	SetPlayerPos(playerid,
-		gPlayerData[playerid][ply_SpawnPosX],
-		gPlayerData[playerid][ply_SpawnPosY],
-		gPlayerData[playerid][ply_SpawnPosZ] + z);
-
-	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
-
 	if(!LoadPlayerInventory(playerid))
 	{
 		PlayerCreateNewCharacter(playerid);
@@ -34,6 +14,23 @@ PlayerSpawnExistingCharacter(playerid)
 		PlayerCreateNewCharacter(playerid);
 		return 0;
 	}
+
+	new Float:z;
+
+	if(!IsPointInMapBounds(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
+		z += 1.0;
+
+	Streamer_UpdateEx(playerid,
+		gPlayerData[playerid][ply_SpawnPosX],
+		gPlayerData[playerid][ply_SpawnPosY],
+		gPlayerData[playerid][ply_SpawnPosZ], 0, 0);
+
+	SetPlayerPos(playerid,
+		gPlayerData[playerid][ply_SpawnPosX],
+		gPlayerData[playerid][ply_SpawnPosY],
+		gPlayerData[playerid][ply_SpawnPosZ] + z);
+
+	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
 
 	t:gPlayerBitData[playerid]<LoadedData>;
 

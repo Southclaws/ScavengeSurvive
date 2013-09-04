@@ -40,7 +40,9 @@ hook OnGameModeInit()
 
 		DefineItemType(name, GetWeaponModel(i), size, .rotx = 90.0);
 	}
+
 	print("Loaded weapon item data");
+
 	return 1;
 }
 hook OnPlayerConnect(playerid)
@@ -307,10 +309,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 				return 1;
 			}
+			else
+			{
+				return 0;
+			}
 		}
 		else if(IsWeaponClipBased(wep_CurrentWeapon[playerid]))
 		{
-			if(wep_CurrentWeapon[playerid] == _:itemtype)
+			if(GetWeaponAmmoType(_:itemtype) == GetWeaponAmmoType(wep_CurrentWeapon[playerid]))
 			{
 				if(GetItemExtraData(itemid) == 0)
 					return 1;
@@ -319,24 +325,57 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 				return 1;
 			}
-			else
-			{
-				return 1;
-			}
 		}
-		else
-		{
-			return 1;
-		}
+
+		return 1;
 	}
-	else
+
+	if(IsItemTypeAmmoTin(itemtype))
 	{
-		if(GetPlayerWeapon(playerid) != 0)
+		if(IsWeaponClipBased(wep_CurrentWeapon[playerid]))
 		{
-			CallLocalFunction("OnPlayerUseWeaponWithItem", "ddd", playerid, GetPlayerWeapon(playerid), itemid);
+			if(GetAmmoTinAmmoType(itemtype) == GetWeaponAmmoType(wep_CurrentWeapon[playerid]))
+			{
+				new ammo = GetItemExtraData(itemid);
+
+				if(ammo > 0)
+				{
+					new
+						remainder,
+						Float:x,
+						Float:y,
+						Float:z,
+						Float:ix,
+						Float:iy,
+						Float:iz;
+
+					remainder = GivePlayerAmmo(playerid, ammo);
+					GetPlayerPos(playerid, x, y, z);
+					GetItemPos(itemid, ix, iy, iz);
+					SetPlayerFacingAngle(playerid, GetAngleToPoint(x, y, ix, iy));
+
+					SetItemExtraData(itemid, remainder);
+
+					if((z - iz) < 0.3)
+					{
+						ApplyAnimation(playerid, "CASINO", "SLOT_PLYR", 4.0, 0, 0, 0, 0, 0);
+					}
+					else
+					{
+						ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 0, 450);
+					}
+				}
+			}
 
 			return 1;
 		}
+	}
+
+	if(GetPlayerWeapon(playerid) != 0)
+	{
+		CallLocalFunction("OnPlayerUseWeaponWithItem", "ddd", playerid, GetPlayerWeapon(playerid), itemid);
+
+		return 1;
 	}
 
 	return CallLocalFunction("wep_OnPlayerPickUpItem", "dd", playerid, itemid);
@@ -363,10 +402,21 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(IsItemTypeWeapon(itemtype))
 	{
-		if(itemtype == withitemtype)
+		if(IsItemTypeWeapon(withitemtype))
 		{
-			PlayerPickUpWeapon(playerid, withitemid);
-			return 1;
+			if(GetWeaponAmmoType(_:itemtype) == GetWeaponAmmoType(_:withitemtype))
+			{
+				PlayerPickUpWeapon(playerid, withitemid);
+				return 1;
+			}
+		}
+		if(IsItemTypeAmmoTin(withitemtype))
+		{
+			if(GetWeaponAmmoType(_:itemtype) == GetAmmoTinAmmoType(withitemtype))
+			{
+				PlayerPickUpWeapon(playerid, withitemid);
+				return 1;
+			}
 		}
 	}
 
@@ -541,33 +591,68 @@ timer PickUpWeaponDelay[400](playerid, itemid, animtype)
 	{
 		if(wep_CurrentWeapon[playerid] == 0)
 		{
-			new ammo;
+			new
+				curitem,
+				ItemType:curitemtype;
 
-			if(IsWeaponClipBased(_:itemtype))
-				ammo = GetItemExtraData(itemid);
+			curitem = GetPlayerItem(playerid);
+			curitemtype = GetItemType(curitem);
 
-			else
-				ammo = 1;
-
-			if(ammo > 0)
+			if(IsItemTypeWeapon(curitemtype))
 			{
-				new curitem = GetPlayerItem(playerid);
-
-				if(IsValidItem(curitem))
+				if(GetWeaponAmmoType(_:curitemtype) == GetWeaponAmmoType(_:itemtype))
 				{
-					DestroyItem(curitem);
-					SetItemExtraData(itemid, 0);
+					new ammo;
+
+					if(IsWeaponClipBased(_:itemtype))
+						ammo = GetItemExtraData(itemid);
+
+					else
+						ammo = 1;
+
+					if(ammo > 0)
+					{
+						if(IsValidItem(curitem))
+						{
+							DestroyItem(curitem);
+							SetItemExtraData(itemid, 0);
+						}
+						else
+						{
+							DestroyItem(itemid);					
+						}
+
+						SetPlayerWeapon(playerid, _:curitemtype, ammo);
+					}
 				}
+			}
+			else
+			{
+				new ammo;
+
+				if(IsWeaponClipBased(_:itemtype))
+					ammo = GetItemExtraData(itemid);
+
 				else
-				{
-					DestroyItem(itemid);					
-				}
+					ammo = 1;
 
-				SetPlayerWeapon(playerid, _:itemtype, ammo);
-				wep_CurrentWeapon[playerid] = _:itemtype;
+				if(ammo > 0)
+				{
+					if(IsValidItem(curitem))
+					{
+						DestroyItem(curitem);
+						SetItemExtraData(itemid, 0);
+					}
+					else
+					{
+						DestroyItem(itemid);					
+					}
+
+					SetPlayerWeapon(playerid, _:itemtype, ammo);
+				}
 			}
 		}
-		else if(wep_CurrentWeapon[playerid] == _:itemtype)
+		else if(GetWeaponAmmoType(_:itemtype) == GetWeaponAmmoType(wep_CurrentWeapon[playerid]))
 		{
 			new ammo = GetItemExtraData(itemid);
 

@@ -246,29 +246,51 @@ timer RetryEdit[100](playerid, objectid)
 	EditDynamicObject(playerid, objectid);
 }
 
-timer OpenDefence[1500](defenceid)
+timer MoveDefence[1500](defenceid, playerid)
 {
-	MoveDynamicObject(def_Data[defenceid][def_objectId],
-		def_Data[defenceid][def_posX],
-		def_Data[defenceid][def_posY],
-		def_Data[defenceid][def_posZ], 0.5,
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotX] + 90.0,
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+	new
+		Float:x,
+		Float:y,
+		Float:z;
 
-	def_Data[defenceid][def_open] = true;
-}
-timer CloseDefence[1500](defenceid)
-{
-	MoveDynamicObject(def_Data[defenceid][def_objectId],
-		def_Data[defenceid][def_posX],
-		def_Data[defenceid][def_posY],
-		def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotX],
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
-		def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+	foreach(new i : Player)
+	{
+		GetPlayerPos(i, x, y, z);
 
-	def_Data[defenceid][def_open] = false;
+		if(Distance(x, y, z, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]) < 2.0)
+		{
+			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+
+			return;
+		}
+	}
+
+	if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
+	{
+		MoveDynamicObject(def_Data[defenceid][def_objectId],
+			def_Data[defenceid][def_posX],
+			def_Data[defenceid][def_posY],
+			def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotX],
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+
+		def_Data[defenceid][def_open] = false;
+	}
+	else
+	{
+		MoveDynamicObject(def_Data[defenceid][def_objectId],
+			def_Data[defenceid][def_posX],
+			def_Data[defenceid][def_posY],
+			def_Data[defenceid][def_posZ], 0.5,
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotX] + 90.0,
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+
+		def_Data[defenceid][def_open] = true;
+	}
+
+	return;
 }
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -532,11 +554,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 
 			if(def_Data[def_CurrentDefenceOpen[playerid]][def_pass] == pass)
 			{
-				if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
-					defer CloseDefence(def_CurrentDefenceOpen[playerid]);
-
-				else
-					defer OpenDefence(def_CurrentDefenceOpen[playerid]);
+				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
 			}
 			else
 			{
@@ -601,7 +619,7 @@ LoadDefences(printeach = false, printtotal = false)
 	dir_close(direc);
 
 	if(printtotal)
-		printf("Loaded %d Defence items\n", Iter_Count(def_Index));
+		printf("Loaded %d Defences\n", Iter_Count(def_Index));
 }
 
 SaveDefences(printeach = false, printtotal = false)

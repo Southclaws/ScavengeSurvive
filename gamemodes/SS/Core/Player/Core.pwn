@@ -139,8 +139,6 @@ public OnPlayerConnect(playerid)
 		WhitelistKick(playerid);
 	}
 
-	CheckForExtraAccounts(playerid);
-
 	SetAllWeaponSkills(playerid, 500);
 	LoadPlayerTextDraws(playerid);
 	SetPlayerScore(playerid, 0);
@@ -152,18 +150,9 @@ public OnPlayerConnect(playerid)
 	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
 
-	t:gPlayerBitData[playerid]<ShowHUD>;
+	CheckForExtraAccounts(playerid);
 
-	if(gPingLimit == 600)
-	{
-		if(Iter_Count(Player) >= 10)
-			gPingLimit = 400;
-	}
-	else if(gPingLimit == 400)
-	{
-		if(Iter_Count(Player) < 10)
-			gPingLimit = 600;
-	}
+	t:gPlayerBitData[playerid]<ShowHUD>;
 
 	return 1;
 }
@@ -247,7 +236,9 @@ ptask PlayerUpdate[100](playerid)
 		return;
 	}
 
-	if(GetPlayerPing(playerid) > gPingLimit)
+	new pinglimit = (Iter_Count(Player) > 10) ? (gPingLimit) : (gPingLimit + 100);
+
+	if(GetPlayerPing(playerid) > pinglimit)
 	{
 		if(tickcount() - gPlayerData[playerid][ply_JoinTick] > 10000)
 		{
@@ -255,9 +246,7 @@ ptask PlayerUpdate[100](playerid)
 
 			if(gPlayerData[playerid][ply_PingLimitStrikes] == 3)
 			{
-				new str[128];
-				format(str, 128, "Having a ping of: %d limit: %d.", GetPlayerPing(playerid), gPingLimit);
-				KickPlayer(playerid, str);
+				KickPlayer(playerid, sprintf("Having a ping of: %d limit: %d.", GetPlayerPing(playerid), pinglimit));
 
 				gPlayerData[playerid][ply_PingLimitStrikes] = 0;
 

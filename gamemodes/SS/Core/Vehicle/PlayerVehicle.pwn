@@ -135,7 +135,7 @@ LoadPlayerVehicle(filename[], prints)
 		{
 			if(vehicletype == VTYPE_HELI || vehicletype == VTYPE_PLANE)
 			{
-				array[VEH_CELL_POSZ] = _:(Float:array[VEH_CELL_POSZ] + 2.0);
+				array[VEH_CELL_POSZ] = _:(Float:array[VEH_CELL_POSZ] + 10.0);
 			}
 			else
 			{
@@ -280,7 +280,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	array[VEH_CELL_ARMOUR] = 0;
 
 	if(print)
-		printf("\t[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name);
+		printf("\t[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name, Float:array[VEH_CELL_POSX], Float:array[VEH_CELL_POSY], Float:array[VEH_CELL_POSZ]);
 
 	if(IsValidContainer(GetVehicleContainer(vehicleid)))
 	{
