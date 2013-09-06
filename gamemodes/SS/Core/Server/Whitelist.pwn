@@ -72,12 +72,16 @@ WhitelistKick(playerid)
 
 public external_WhitelistAdd(name[])
 {
-	return AddNameToWhitelist(name);
+	new string[MAX_PLAYER_NAME];
+	format(string, sizeof(string), name);
+	return AddNameToWhitelist(string);
 }
 
 public external_WhitelistRemove(name[])
 {
-	return RemoveNameFromWhitelist(name);
+	new string[MAX_PLAYER_NAME];
+	format(string, sizeof(string), name);
+	return RemoveNameFromWhitelist(string);
 }
 
 public external_WhitelistOn()
@@ -92,5 +96,7 @@ public external_WhitelistOff()
 
 public external_WhitelistCheck(name[])
 {
-	return IsNameInWhitelist(name);
+	new string[MAX_PLAYER_NAME];
+	format(string, sizeof(string), name);
+	return IsNameInWhitelist(string);
 }

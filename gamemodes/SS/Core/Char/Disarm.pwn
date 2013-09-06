@@ -38,7 +38,7 @@ DisarmPlayer(playerid, i)
 	if(weaponid> 0)
 	{
 		new
-			ammo = GetPlayerAmmo(i);
+			ammo = GetPlayerTotalAmmo(i);
 
 		RemovePlayerWeapon(i);
 		SetPlayerWeapon(playerid, weaponid, ammo);

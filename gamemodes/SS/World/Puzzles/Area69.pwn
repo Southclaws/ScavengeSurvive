@@ -188,7 +188,7 @@ public OnButtonPress(playerid, buttonid)
 			ShowKeypad(playerid, k_StorageWatch, code_StorageWatch);
 
 			if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
-				HackKeypad(playerid, k_ControlTower, code_ControlTower);
+				HackKeypad(playerid, k_StorageWatch, code_ControlTower);
 		}
 		else
 		{
@@ -314,6 +314,15 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 			HideKeypad(playerid);
 		}
 	}
+	if(keypadid == k_StorageWatch)
+	{
+		if(success)
+		{
+			lock_StorageWatch = 0;
+			ShowCodeList2(playerid);
+			HideKeypad(playerid);
+		}
+	}
 	if(keypadid == k_Generator)
 	{
 		if(success)
@@ -351,6 +360,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 		if(success)
 		{
 			OpenDoor(door_Headquarters1);
+			OpenDoor(door_Headquarters2);
 			HideKeypad(playerid);
 		}
 	}
@@ -358,6 +368,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	{
 		if(success)
 		{
+			OpenDoor(door_Headquarters1);
 			OpenDoor(door_Headquarters2);
 			HideKeypad(playerid);
 		}
@@ -383,8 +394,9 @@ forward a69_OnPlayerKeypadEnter(playerid, keypadid, success);
 
 ShowCodeList1(playerid)
 {
-	new str[258];
-	format(str, 258,
+	new str[268];
+
+	format(str, 268,
 		""#C_ORANGE"Keycodes for security system. SECTOR 01:\n\n\
 		\t"#C_WHITE"Control Tower:"#C_YELLOW"\t%d\n\
 		\t"#C_WHITE"Main gate:"#C_YELLOW"\t\t%d\n\
@@ -404,15 +416,16 @@ ShowCodeList1(playerid)
 
 ShowCodeList2(playerid)
 {
-	new str[258];
-	format(str, 258,
+	new str[268];
+
+	format(str, 268,
 		""#C_ORANGE"Keycodes for security system. SECTOR 02:\n\n\
-		\t"#C_WHITE"Generator:"#C_YELLOW"\t%d\n\
+		\t"#C_WHITE"Generator:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Passage 1:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Passage 2:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Catwalk:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Headquarters:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Shaft:"#C_YELLOW"\t\t%d",
+		\t"#C_WHITE"Shaft:"#C_YELLOW"\t\t\t%d",
 		code_Generator,
 		code_PassageTop,
 		code_PassageBottom,

@@ -205,7 +205,7 @@ ResetVariables(playerid)
 	gPlayerData[playerid][ply_RadioFrequency]		= 0.0;
 	gPlayerData[playerid][ply_AimShoutText][0]		= EOS;
 
-	gPlayerData[playerid][ply_ChatMode]				= 0;
+	gPlayerData[playerid][ply_ChatMode]				= CHAT_MODE_GLOBAL;
 	gPlayerData[playerid][ply_CurrentVehicle]		= 0;
 	gPlayerData[playerid][ply_LastHitBy][0]			= EOS;
 	gPlayerData[playerid][ply_LastKilledBy][0]		= EOS;

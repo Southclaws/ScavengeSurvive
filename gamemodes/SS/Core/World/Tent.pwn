@@ -184,6 +184,8 @@ public OnButtonPress(playerid, buttonid)
 				tnt_CurrentTentID[playerid] = i;
 				StartHoldAction(playerid, 15000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				ShowActionText(playerid, "Removing Tent");
+
 				return 1;
 			}
 		}
@@ -207,6 +209,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			StopHoldAction(playerid);
 			ClearAnimations(playerid);
+			HideActionText(playerid);
 			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
 		}
 	}
@@ -229,6 +232,7 @@ public OnHoldActionFinish(playerid)
 
 			DestroyTent(tnt_CurrentTentID[playerid]);
 			ClearAnimations(playerid);
+			HideActionText(playerid);
 
 			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
 		}

@@ -307,10 +307,11 @@ CheckForExtraAccounts(playerid)
 		}
 	}
 
-	if(adminlevel == 0)
-		adminlevel = 1;
+	if(adminlevel < 3)
+		MsgAllF(YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
 
-	MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
+	else
+		MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
 
 	return 1;
 }
@@ -344,8 +345,8 @@ Logout(playerid)
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
 			CreateItemInWorld(itemid,
-				gPlayerData[playerid][ply_SpawnPosX],
-				gPlayerData[playerid][ply_SpawnPosY],
+				gPlayerData[playerid][ply_SpawnPosX] + floatsin(-gPlayerData[playerid][ply_SpawnRotZ], degrees),
+				gPlayerData[playerid][ply_SpawnPosY] + floatcos(-gPlayerData[playerid][ply_SpawnRotZ], degrees),
 				gPlayerData[playerid][ply_SpawnPosZ] - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 
 			itemid = INVALID_ITEM_ID;

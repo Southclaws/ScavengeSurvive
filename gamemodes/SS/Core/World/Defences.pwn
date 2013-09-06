@@ -139,11 +139,15 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			def_TypeData[type][def_placeRotZ] + rz);
 	}
 
+	new	itemtypename[ITM_MAX_NAME];
+
+	GetItemTypeName(def_TypeData[type][def_itemtype], itemtypename);
+
 	if(mode == DEFENCE_MODE_OPENABLE)
-		def_Data[id][def_buttonId] = CreateButton(x, y, z, ""KEYTEXT_INTERACT" to open", .areasize = 1.5);
+		def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), .areasize = 1.5);
 
 	else
-		def_Data[id][def_buttonId] = CreateButton(x, y, z, ""KEYTEXT_INTERACT" to modify", .areasize = 1.5);
+		def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), .areasize = 1.5);
 
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
@@ -361,9 +365,14 @@ StartBuildingDefence(playerid, itemid)
 		}
 	}
 
+	new itemtypename[ITM_MAX_NAME];
+
+	GetItemTypeName(def_TypeData[type][def_itemtype], itemtypename);
+
 	def_CurrentDefenceItem[playerid] = itemid;
 	StartHoldAction(playerid, 10000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ShowActionText(playerid, sprintf("Building %s...", itemtypename));
 
 	return 1;
 }
@@ -373,11 +382,14 @@ StopBuildingDefence(playerid)
 	if(!IsValidItem(GetPlayerItem(playerid)))
 		return;
 
+	HideActionText(playerid);
+
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+
 		return;
 	}
 	if(def_CurrentDefenceEdit[playerid] != -1)
@@ -385,8 +397,10 @@ StopBuildingDefence(playerid)
 		def_CurrentDefenceEdit[playerid] = -1;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+		
 		return;
 	}
+
 	return;
 }
 
@@ -403,10 +417,16 @@ public OnButtonPress(playerid, buttonid)
 				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
 				if(90.0 < angle < 270.0)
-				{	
+				{
+					new itemtypename[ITM_MAX_NAME];
+
+					GetItemTypeName(def_TypeData[def_Data[i][def_type]][def_itemtype], itemtypename);
+
 					def_CurrentDefenceEdit[playerid] = i;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+					ShowActionText(playerid, sprintf("Removing %s", itemtypename));
+
 					return 1;
 				}
 			}
@@ -417,9 +437,16 @@ public OnButtonPress(playerid, buttonid)
 
 				if(90.0 < angle < 270.0)
 				{	
+					new itemtypename[ITM_MAX_NAME];
+
+					GetItemTypeName(def_TypeData[def_Data[i][def_type]][def_itemtype], itemtypename);
+
 					def_CurrentDefenceEdit[playerid] = i;
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+
+					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+
 					return 1;
 				}
 			}
