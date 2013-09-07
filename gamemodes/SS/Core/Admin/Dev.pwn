@@ -265,7 +265,7 @@ ACMD:gotopos[4](playerid, params[])
 		Float:y,
 		Float:z;
 
-	if(sscanf(params, "fff", x, y, z) || sscanf(params, "p<,>fff", x, y, z))
+	if(sscanf(params, "fff", x, y, z) && sscanf(params, "p<,>fff", x, y, z))
 		return Msg(playerid, YELLOW, "Usage: /gotopos x, y, z (With or without commas)");
 
 	MsgF(playerid, YELLOW, " >  Teleported to %f, %f, %f", x, y, z);

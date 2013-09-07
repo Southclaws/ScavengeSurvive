@@ -1,11 +1,17 @@
-// 4 commands
+// 10 commands
 
 new gAdminCommandList_Lvl3[] =
 {
 	"/up - move up (Duty only)\n\
 	/ford - move forward (Duty only)\n\
-	/goto - teleport to a player (Duty only)\n\
-	/get - teleport a player to you (Duty only)\n"
+	/goto - teleport to player (Duty only)\n\
+	/get - teleport player to you (Duty only)\n\
+	/deleteaccount\n\
+	/deleteitems\n\
+	/deletetents\n\
+	/deletedefences\n\
+	/deletesigns\n\
+	/additem - spawn item by ID/name"
 };
 
 ACMD:up[3](playerid, params[])

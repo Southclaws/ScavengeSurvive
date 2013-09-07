@@ -73,8 +73,6 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 	if(frequency == 0.0)
 	{
-		logf("[CHAT] [LOCAL] [%p]: %s", playerid, chat);
-
 		new
 			Float:x,
 			Float:y,
@@ -94,16 +92,18 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
 			{
 				SendClientMessage(i, WHITE, line1);
+				logf("[CHAT] [LOCAL] [%p]: %s", playerid, line1);
 
 				if(!isnull(line2))
+				{
 					SendClientMessage(i, WHITE, line2);
+					logf("[CHAT] [LOCAL] [%p]: %s", playerid, line2);
+				}
 			}
 		}
 	}
 	else if(frequency == 1.0)
 	{
-		logf("[CHAT] [GLOBAL] [%p]: %s", playerid, chat);
-
 		format(line1, 256, "[Global] (%d) %P"#C_WHITE": %s",
 			playerid,
 			playerid,
@@ -117,15 +117,17 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 				continue;
 
 			SendClientMessage(i, WHITE, line1);
+			logf("[CHAT] [GLOBAL] [%p]: %s", playerid, line1);
 
 			if(!isnull(line2))
+			{
 				SendClientMessage(i, WHITE, line2);
+				logf("[CHAT] [GLOBAL] [%p]: %s", playerid, line2);
+			}
 		}
 	}
 	else
 	{
-		logf("[CHAT] [%.2f] [%p]: %s", frequency, playerid, chat);
-
 		format(line1, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
 			frequency,
 			playerid,
@@ -139,9 +141,13 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			if(-0.05 < frequency - gPlayerData[i][ply_RadioFrequency] < 0.05)
 			{
 				SendClientMessage(i, WHITE, line1);
+				logf("[CHAT] [%.2f] [%p]: %s", frequency, playerid, line1);
 
 				if(!isnull(line2))
+				{
 					SendClientMessage(i, WHITE, line2);
+					logf("[CHAT] [%.2f] [%p]: %s", frequency, playerid, line2);
+				}
 			}
 		}
 	}

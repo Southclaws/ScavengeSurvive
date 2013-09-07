@@ -1,14 +1,15 @@
-// 8 commands
+// 9 commands
 
 new gAdminCommandList_Lvl1[] =
 {
-	"/kick - kick a player from the server\n\
-	/(un)freeze - freeze/unfreeze a player\n\
-	/(un)mute - mute/unmute a player\n\
-	/warn - give a player a warning\n\
-	/msg - send a chat announcement\n\
-	/unstick - move a player upwards (Duty only)\n\
-	/spec - spectate"
+	"/kick - kick from the server\n\
+	/(un)freeze - freeze/unfreeze player\n\
+	/(un)mute - mute/unmute player\n\
+	/warn - warn a player\n\
+	/msg - send chat announcement\n\
+	/unstick - move player up\n\
+	/spec - spectate\n\
+	/(all)country - show country data"
 };
 
 new
@@ -108,7 +109,7 @@ ACMD:unfreeze[1](playerid, params[])
 	stop UnfreezeTimer[targetid];
 
 	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
-	Msg(playerid, YELLOW, " >  Unfrozen");
+	Msg(targetid, YELLOW, " >  Unfrozen");
 
 	return 1;
 }

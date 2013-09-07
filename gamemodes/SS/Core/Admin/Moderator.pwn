@@ -1,10 +1,10 @@
-// 8 commands
+// 6 commands
 
 new gAdminCommandList_Lvl2[] =
 {
 	"/(un)ban - ban/unban a player from the server\n\
 	/banlist - show a list of banned players\n\
-	/whitelist - add/remove a player from the whitelist or enable/disable whitelist\n\
+	/whitelist - add/remove name or turn whitelist on/off\n\
 	/aliases - check aliases\n\
 	/clearchat - clear the chatbox\n\
 	/motd - set the message of the day\n"
