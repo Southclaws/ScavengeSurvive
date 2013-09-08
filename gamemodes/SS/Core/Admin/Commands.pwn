@@ -66,10 +66,11 @@ CMD:restartinfo(playerid, params[])
 		The last car you exited will be saved along with all items inside.\n");
 
 	strcat(gBigString,
-		"Items within containers within containers "#C_RED"WILL NOT SAVE!"#C_WHITE"\n\
-		Items on the floor "#C_RED"WILL NOT SAVE! "#C_WHITE"Put everything you want saved inside a box or near a tent.\n\n\n\
-		Recap on All Saved Things: Your last vehicle, Boxes, Fort Parts, Tents, Signs.\n\n\
-		Thank you for reading this message, good luck out there survivors!");
+		"Box items save over restarts only if they are not empty.\n\
+		Tents save 8 items that are placed inside.\n\n\
+		The contents of bags saved in tents / boxes "#C_RED"WILL NOT SAVE!"#C_WHITE"\n\
+		Items within containers within containers "#C_RED"WILL NOT SAVE!"#C_WHITE"\n\
+		Items on the floor "#C_RED"WILL NOT SAVE!");
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "#C_BLUE"Server Restarts", gBigString, "Close", "");
 

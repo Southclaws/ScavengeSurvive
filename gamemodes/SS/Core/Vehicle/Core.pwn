@@ -746,10 +746,23 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
+		new
+			vehicleid,
+			vehiclemodel,
+			vehiclename[32],
+			Float:x,
+			Float:y,
+			Float:z;
+
+		vehicleid = GetPlayerVehicleID(playerid);
+		vehiclemodel = GetVehicleModel(vehicleid);
+		GetVehicleName(vehiclemodel, vehiclename);
+		GetVehiclePos(vehicleid, x, y, z);
 
 		if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BICYCLE)
 			VehicleEngineState(vehicleid, 1);
+
+		logf("[VEHICLE] %p entered vehicle %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_DRIVER && !IsPlayerOnAdminDuty(playerid))
