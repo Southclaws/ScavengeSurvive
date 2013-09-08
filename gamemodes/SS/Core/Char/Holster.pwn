@@ -134,7 +134,7 @@ CanItemTypeBeHolstered(ItemType:itemtype)
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(IsPlayerInAnyVehicle(playerid))
-		return 0;
+		return 1;
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || gPlayerBitData[playerid] & AdminDuty || gPlayerBitData[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
@@ -142,6 +142,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & KEY_YES)
 	{
 		if(tickcount() - hols_LastHolster[playerid] < 1000)
+			return 1;
+
+		if(!IsPlayerIdle(playerid))
 			return 1;
 
 		new weaponid = GetPlayerCurrentWeapon(playerid);

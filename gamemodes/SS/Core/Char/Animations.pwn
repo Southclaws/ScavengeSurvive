@@ -10,13 +10,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		if(IsPlayerIdle(playerid) || GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
+		if(GetPlayerTotalVelocity(playerid) == 0.0)
 		{
 			if(newkeys == KEY_CROUCH)
 			{
 				tick_CrouchKey[playerid] = tickcount();
 				SitDownTimer[playerid] = defer SitDown(playerid);
 			}
+
 			if(oldkeys == KEY_CROUCH)
 			{
 				if(tickcount() - tick_CrouchKey[playerid] < 250)
@@ -47,8 +48,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 				else
 				{
-					if(IsPlayerIdle(playerid))
-						ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+					ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 				}
 			}
 		}
