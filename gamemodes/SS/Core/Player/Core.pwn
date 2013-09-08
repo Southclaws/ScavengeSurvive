@@ -575,6 +575,16 @@ public OnPlayerUpdate(playerid)
 		format(str, 32, "%.0fkm/h", gPlayerData[playerid][ply_Velocity]);
 		PlayerTextDrawSetString(playerid, VehicleSpeedText[playerid], str);
 	}
+	else
+	{
+		static
+			Float:vx,
+			Float:vy,
+			Float:vz;
+
+		GetPlayerVelocity(playerid, vx, vy, vz);
+		gPlayerData[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+	}
 
 	if(gPlayerBitData[playerid] & Alive)
 	{
@@ -833,6 +843,39 @@ GetPlayerAdminLevel(playerid)
 
 // ply_HitPoints
 // ply_ArmourPoints
+forward Float:GetPlayerAP(playerid);
+stock Float:GetPlayerAP(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0.0;
+
+	return gPlayerData[playerid][ply_ArmourPoints];
+}
+
+stock SetPlayerAP(playerid, Float:amount)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(amount <= 0.0)
+	{
+		amount = 0.0;
+
+		ToggleArmour(playerid, false);
+	}
+	else
+	{
+		if(amount > 100.0)
+			amount = 100.0;
+
+		ToggleArmour(playerid, false);
+	}
+
+	gPlayerData[playerid][ply_ArmourPoints] = amount;
+
+	return 1;
+}
+
 // ply_FoodPoints
 // ply_Clothes
 // ply_Gender

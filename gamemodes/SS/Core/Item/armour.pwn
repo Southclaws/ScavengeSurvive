@@ -44,6 +44,31 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem armour_OnPlayerUseItem
 forward armour_OnPlayerUseItem(playerid, itemid);
 
+public OnItemNameRender(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(itemtype == item_Armour)
+	{
+		new
+			amount = GetItemExtraData(itemid),
+			str[11];
+
+		valstr(str, amount);
+		
+		SetItemNameExtra(itemid, str);
+	}
+
+	return CallLocalFunction("armour_OnItemNameRender", "d", itemid);
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender armour_OnItemNameRender
+forward armour_OnItemNameRender(itemid);
+
 
 new Float:ArmourSkinData[17][9]=
 {

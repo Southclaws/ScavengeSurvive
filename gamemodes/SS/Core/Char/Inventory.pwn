@@ -8,11 +8,11 @@
 
 new
 	PlayerText:GearSlot_Head[3],
+	PlayerText:GearSlot_Face[3],
 	PlayerText:GearSlot_Hand[3],
+	PlayerText:GearSlot_Hols[3],
 	PlayerText:GearSlot_Tors[3],
 	PlayerText:GearSlot_Back[3],
-	PlayerText:GearSlot_Hols[3],
-	PlayerText:GearSlot_Skin[3],
 
 	inv_TempContainerID[MAX_PLAYERS],
 	inv_InventoryOptionID[MAX_PLAYERS];
@@ -24,18 +24,18 @@ forward CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerT
 hook OnPlayerConnect(playerid)
 {
 	CreatePlayerTile(playerid, GearSlot_Head[0], GearSlot_Head[1], GearSlot_Head[2], 490.0, 120.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Hand[0], GearSlot_Hand[1], GearSlot_Hand[2], 560.0, 120.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Tors[0], GearSlot_Tors[1], GearSlot_Tors[2], 490.0, 210.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Back[0], GearSlot_Back[1], GearSlot_Back[2], 560.0, 210.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Hols[0], GearSlot_Hols[1], GearSlot_Hols[2], 490.0, 300.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Skin[0], GearSlot_Skin[1], GearSlot_Skin[2], 560.0, 300.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Face[0], GearSlot_Face[1], GearSlot_Face[2], 560.0, 120.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Hand[0], GearSlot_Hand[1], GearSlot_Hand[2], 490.0, 210.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Hols[0], GearSlot_Hols[1], GearSlot_Hols[2], 560.0, 210.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Tors[0], GearSlot_Tors[1], GearSlot_Tors[2], 490.0, 300.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Back[0], GearSlot_Back[1], GearSlot_Back[2], 560.0, 300.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
 
 	PlayerTextDrawSetString(playerid, GearSlot_Head[0], "Head");
+	PlayerTextDrawSetString(playerid, GearSlot_Face[0], "Face");
 	PlayerTextDrawSetString(playerid, GearSlot_Hand[0], "Hand");
+	PlayerTextDrawSetString(playerid, GearSlot_Hols[0], "Holster");
 	PlayerTextDrawSetString(playerid, GearSlot_Tors[0], "Torso");
 	PlayerTextDrawSetString(playerid, GearSlot_Back[0], "Back");
-	PlayerTextDrawSetString(playerid, GearSlot_Hols[0], "Holster");
-	PlayerTextDrawSetString(playerid, GearSlot_Skin[0], "Clothes");
 }
 
 
@@ -74,11 +74,11 @@ ShowPlayerGear(playerid)
 	for(new i; i < 3; i++)
 	{
 		PlayerTextDrawShow(playerid, GearSlot_Head[i]);
+		PlayerTextDrawShow(playerid, GearSlot_Face[i]);
 		PlayerTextDrawShow(playerid, GearSlot_Hand[i]);
+		PlayerTextDrawShow(playerid, GearSlot_Hols[i]);
 		PlayerTextDrawShow(playerid, GearSlot_Tors[i]);
 		PlayerTextDrawShow(playerid, GearSlot_Back[i]);
-		PlayerTextDrawShow(playerid, GearSlot_Hols[i]);
-		PlayerTextDrawShow(playerid, GearSlot_Skin[i]);
 	}
 }
 
@@ -87,11 +87,11 @@ HidePlayerGear(playerid)
 	for(new i; i < 3; i++)
 	{
 		PlayerTextDrawHide(playerid, GearSlot_Head[i]);
+		PlayerTextDrawHide(playerid, GearSlot_Face[i]);
 		PlayerTextDrawHide(playerid, GearSlot_Hand[i]);
+		PlayerTextDrawHide(playerid, GearSlot_Hols[i]);
 		PlayerTextDrawHide(playerid, GearSlot_Tors[i]);
 		PlayerTextDrawHide(playerid, GearSlot_Back[i]);
-		PlayerTextDrawHide(playerid, GearSlot_Hols[i]);
-		PlayerTextDrawHide(playerid, GearSlot_Skin[i]);
 	}
 }
 
@@ -114,6 +114,20 @@ UpdatePlayerGear(playerid, show = 1)
 	{
 		PlayerTextDrawSetString(playerid, GearSlot_Head[UI_ELEMENT_ITEM], "<Empty>");
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], 19300);
+	}
+
+	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
+	if(IsValidItemType(ItemType:itemid))
+	{
+		GetItemTypeName(ItemType:itemid, tmp);
+		PlayerTextDrawSetString(playerid, GearSlot_Face[UI_ELEMENT_ITEM], tmp);
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], GetItemTypeModel(ItemType:itemid));
+		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Face[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
+	}
+	else
+	{
+		PlayerTextDrawSetString(playerid, GearSlot_Face[UI_ELEMENT_ITEM], "<Empty>");
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], 19300);
 	}
 
 	itemid = GetPlayerItem(playerid);
@@ -151,9 +165,23 @@ UpdatePlayerGear(playerid, show = 1)
 		}
 	}
 
+	itemid = GetPlayerHolsterItem(playerid);
+	if(IsValidItem(itemid))
+	{
+		GetItemName(itemid, tmp);
+		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
+	}
+	else
+	{
+		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], "<Empty>");
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], 19300);
+	}
+
 	if(gPlayerData[playerid][ply_ArmourPoints] > 0.0)
 	{
-		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], "Armour");
+		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], sprintf("Armour (%.0f)", gPlayerData[playerid][ply_ArmourPoints]));
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 19515);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Tors[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
@@ -175,34 +203,6 @@ UpdatePlayerGear(playerid, show = 1)
 	{
 		PlayerTextDrawSetString(playerid, GearSlot_Back[UI_ELEMENT_ITEM], "<Empty>");
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Back[UI_ELEMENT_TILE], 19300);
-	}
-
-	itemid = GetPlayerHolsterItem(playerid);
-	if(IsValidItem(itemid))
-	{
-		GetItemName(itemid, tmp);
-		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
-		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
-	}
-	else
-	{
-		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], "<Empty>");
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], 19300);
-	}
-
-	itemid = GetPlayerClothes(playerid);
-	if(IsValidClothes(itemid))
-	{
-		GetClothesName(itemid, tmp);
-		PlayerTextDrawSetString(playerid, GearSlot_Skin[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Skin[UI_ELEMENT_TILE], GetClothesModel(itemid));
-		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Skin[UI_ELEMENT_TILE], 0.0, 0.0, 0.0, 1.0);
-	}
-	else
-	{
-		PlayerTextDrawSetString(playerid, GearSlot_Skin[UI_ELEMENT_ITEM], "<Empty>");
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Skin[UI_ELEMENT_TILE], 19300);
 	}
 
 	if(show)
@@ -406,6 +406,12 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 		}
 	}
+
+	if(playertextid == GearSlot_Face[UI_ELEMENT_TILE])
+	{
+		Msg(playerid, YELLOW, "Face");
+	}
+
 	if(playertextid == GearSlot_Hand[UI_ELEMENT_TILE])
 	{
 		new itemid = GetPlayerItem(playerid);
@@ -519,38 +525,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 		}
 	}
-	if(playertextid == GearSlot_Tors[UI_ELEMENT_TILE])
-	{
-	}
-	if(playertextid == GearSlot_Back[UI_ELEMENT_TILE])
-	{
-		new itemid = GetPlayerBagItem(playerid);
 
-		if(IsValidItem(itemid))
-		{
-			if(GetPlayerCurrentContainer(playerid) == GetItemExtraData(itemid))
-			{
-				ClosePlayerContainer(playerid);
-
-				if(IsValidContainer(inv_TempContainerID[playerid]))
-				{
-					DisplayContainerInventory(playerid, inv_TempContainerID[playerid]);
-				}
-				else
-				{
-					DisplayPlayerInventory(playerid);
-				}
-
-				inv_TempContainerID[playerid] = INVALID_CONTAINER_ID;
-			}
-			else
-			{
-				inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
-
-				DisplayContainerInventory(playerid, GetItemExtraData(itemid));
-			}
-		}
-	}
 	if(playertextid == GearSlot_Hols[UI_ELEMENT_TILE])
 	{
 		new itemid = GetPlayerHolsterItem(playerid);
@@ -580,6 +555,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 				AddItemToContainer(containerid, itemid, playerid);
 				RemovePlayerHolsterItem(playerid);
+
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
@@ -606,10 +582,73 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 		}
 	}
-	if(playertextid == GearSlot_Skin[UI_ELEMENT_TILE])
+
+	if(playertextid == GearSlot_Tors[UI_ELEMENT_TILE])
 	{
-		Msg(playerid, YELLOW, "Clothes");
+		if(GetPlayerAP(playerid) > 0.0)
+		{
+			new
+				containerid = GetPlayerCurrentContainer(playerid);
+
+			if(IsValidContainer(containerid))
+			{
+				if(IsContainerFull(containerid))
+				{
+					new str[CNT_MAX_NAME + 6];
+					GetContainerName(containerid, str);
+					strcat(str, " full");
+					ShowActionText(playerid, str, 3000, 150);
+					return 1;
+				}
+
+				if(!WillItemTypeFitInContainer(containerid, item_Armour))
+				{
+					ShowActionText(playerid, "Item won't fit", 3000, 150);
+					return 1;
+				}
+
+				new itemid = CreateItem(item_Armour);
+
+				SetItemExtraData(itemid, floatround(gPlayerData[playerid][ply_ArmourPoints]));
+				AddItemToContainer(containerid, itemid, playerid);
+				SetPlayerAP(playerid, 0.0);
+
+				UpdatePlayerGear(playerid);
+				DisplayContainerInventory(playerid, containerid);
+			}
+		}
 	}
+
+	if(playertextid == GearSlot_Back[UI_ELEMENT_TILE])
+	{
+		new itemid = GetPlayerBagItem(playerid);
+
+		if(IsValidItem(itemid))
+		{
+			if(GetPlayerCurrentContainer(playerid) == GetItemExtraData(itemid))
+			{
+				ClosePlayerContainer(playerid);
+
+				if(IsValidContainer(inv_TempContainerID[playerid]))
+				{
+					DisplayContainerInventory(playerid, inv_TempContainerID[playerid]);
+				}
+				else
+				{
+					DisplayPlayerInventory(playerid);
+				}
+
+				inv_TempContainerID[playerid] = INVALID_CONTAINER_ID;
+			}
+			else
+			{
+				inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
+
+				DisplayContainerInventory(playerid, GetItemExtraData(itemid));
+			}
+		}
+	}
+
 	return 1;
 }
 
