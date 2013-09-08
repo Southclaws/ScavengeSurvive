@@ -27,6 +27,7 @@ native IsValidVehicle(vehicleid);
 
 #define DB_DEBUG					false
 #define DB_MAX_STATEMENTS			(48)
+#define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
 
