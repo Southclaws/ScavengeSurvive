@@ -20,7 +20,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			if(oldkeys == KEY_CROUCH)
 			{
-				if(tickcount() - tick_CrouchKey[playerid] < 250)
+				if(GetTickCountDifference(tickcount(), tick_CrouchKey[playerid]) < 250)
 				{
 					stop SitDownTimer[playerid];
 				}

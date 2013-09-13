@@ -27,7 +27,7 @@ ACMD:duty[1](playerid, params[])
 	}
 	else
 	{
-		if(tickcount() - tick_AdminDuty[playerid] < 10000)
+		if(GetTickCountDifference(tickcount(), tick_AdminDuty[playerid]) < 10000)
 		{
 			Msg(playerid, YELLOW, " >  Please don't use the duty ability that frequently.");
 			return 1;

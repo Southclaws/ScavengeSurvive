@@ -148,7 +148,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16)
 	{
-		if(tickcount() - sgn_PressSignTick[playerid] < 250)
+		if(GetTickCountDifference(tickcount(), sgn_PressSignTick[playerid]) < 250)
 		{
 			EditSign(playerid, sgn_CurrentSign[playerid]);
 			stop sgn_PickUpTimer[playerid];

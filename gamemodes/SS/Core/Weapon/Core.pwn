@@ -156,7 +156,7 @@ hook OnPlayerUpdate(playerid)
 
 ReloadWeapon(playerid)
 {
-	if(tickcount() - tick_LastReload[playerid] < 1000)
+	if(GetTickCountDifference(tickcount(), tick_LastReload[playerid]) < 1000)
 		return 0;
 
 	if(!IsWeaponClipBased(wep_CurrentWeapon[playerid]))
@@ -529,7 +529,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]))
 				{
-					if(tickcount() - GetPlayerWeaponSwapTick(i) < 1000)
+					if(GetTickCountDifference(tickcount(), GetPlayerWeaponSwapTick(i)) < 1000)
 						continue;
 
 					if(GetPlayerWeapon(i) != 0)

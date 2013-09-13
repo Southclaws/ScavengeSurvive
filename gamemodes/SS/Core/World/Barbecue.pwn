@@ -210,7 +210,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Barbecue)
 	{
-		if(tickcount() - bbq_PlaceFoodTick[playerid] < 1000)
+		if(GetTickCountDifference(tickcount(), bbq_PlaceFoodTick[playerid]) < 1000)
 			return 1;
 
 		foreach(new i : bbq_Index)

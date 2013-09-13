@@ -369,7 +369,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
-			if(tickcount() - GetPlayerWeaponSwapTick(playerid) < 1000)
+			if(GetTickCountDifference(tickcount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
 				return 0;
 
 			new itemid = GetPlayerItem(playerid);
@@ -444,7 +444,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		stop bag_OtherPlayerEnter[playerid];
 
-		if(tickcount() - bag_PickUpTick[playerid] < 200)
+		if(GetTickCountDifference(tickcount(), bag_PickUpTick[playerid]) < 200)
 		{
 			if(IsValidItem(bag_CurrentBag[playerid]))
 			{

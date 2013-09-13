@@ -28,7 +28,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_EmpPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			if(tickcount() - empp_SyncTick[playerid] > 1000)
+			if(GetTickCountDifference(tickcount(), empp_SyncTick[playerid]) > 1000)
 			{
 				SetItemToExplode(bombitem, 0, 12.0, EXPLOSION_PRESET_EMP, 0);
 				SetItemExtraData(itemid, INVALID_ITEM_ID);

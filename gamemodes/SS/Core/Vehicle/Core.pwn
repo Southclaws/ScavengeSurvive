@@ -688,7 +688,7 @@ PlayerVehicleUpdate(playerid)
 	{
 		case 28, 29, 32:
 		{
-			if(tickcount() - GetPlayerVehicleExitTick(playerid) > 3000 && playerstate == PLAYER_STATE_DRIVER)
+			if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
 				SetPlayerArmedWeapon(playerid, 0);
 		}
 	}

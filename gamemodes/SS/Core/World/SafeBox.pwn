@@ -239,7 +239,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(oldkeys & 16)
 	{
-		if(tickcount() - box_PickUpTick[playerid] < 200)
+		if(GetTickCountDifference(tickcount(), box_PickUpTick[playerid]) < 200)
 		{
 			if(IsValidItem(box_CurrentBox[playerid]))
 			{

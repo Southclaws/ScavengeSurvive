@@ -52,7 +52,7 @@ hook OnGameModeInit()
 
 WeatherUpdate()
 {
-	if(tickcount() - gLastWeatherChange > 600000 && random(100) < 10)
+	if(GetTickCountDifference(tickcount(), gLastWeatherChange) > 600000 && random(100) < 10)
 	{
 		new
 			list[MAX_WEATHER_TYPES],

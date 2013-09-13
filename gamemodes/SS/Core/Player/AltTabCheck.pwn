@@ -19,7 +19,7 @@ ptask AfkCheckUpdate[3000](playerid)
 	if(!IsPlayerSpawned(playerid))
 		return;
 
-	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
+	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 10000)
 		return;
 
 	if(tab_Check[playerid])
@@ -28,7 +28,7 @@ ptask AfkCheckUpdate[3000](playerid)
 		{
 			new playerstate = GetPlayerState(playerid);
 
-			if(tickcount() - GetPlayerVehicleExitTick(playerid) > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
+			if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
 			{
 				if(gMaxTaboutTime == 0)
 				{
@@ -43,7 +43,7 @@ ptask AfkCheckUpdate[3000](playerid)
 
 		if(!IsPlayerOnAdminDuty(playerid))
 		{
-			if(tickcount() - tab_TabOutTick[playerid] > gMaxTaboutTime * 1000)
+			if(GetTickCountDifference(tickcount(), tab_TabOutTick[playerid]) > gMaxTaboutTime * 1000)
 			{
 				KickPlayer(playerid, sprintf("Unfocused for over %d seconds, could starve or cause bugs", gMaxTaboutTime));
 				return;

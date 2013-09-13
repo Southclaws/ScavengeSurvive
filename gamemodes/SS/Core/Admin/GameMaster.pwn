@@ -234,7 +234,7 @@ ACMD:unstick[1](playerid, params[])
 	if(!(gPlayerBitData[playerid] & AdminDuty))
 		return 6;
 
-	if(tickcount() - tick_UnstickUsage[playerid] < 1000)
+	if(GetTickCountDifference(tickcount(), tick_UnstickUsage[playerid]) < 1000)
 	{
 		Msg(playerid, RED, " >  You cannot use that command that often.");
 		return 1;

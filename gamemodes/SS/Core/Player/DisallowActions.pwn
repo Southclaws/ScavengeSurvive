@@ -1,6 +1,8 @@
+#define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(%0) & AdminDuty || GetPlayerDataBitmask(%0) & KnockedOut || GetPlayerAnimationIndex(%0) == 1381
+
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(IsBadInteract(playerid))
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerPickUpItem", "dd", playerid, itemid);
@@ -15,10 +17,10 @@ forward dis_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(IsBadInteract(playerid))
 		return 1;
 
-	if(GetPlayerSpecialAction(targetid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(targetid) & AdminDuty || GetPlayerDataBitmask(targetid) & KnockedOut || GetPlayerAnimationIndex(targetid) == 1381 || gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
+	if(IsBadInteract(targetid) || gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 		return 1;
 
 	if(GetPlayerWeapon(targetid) != 0)
@@ -38,7 +40,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+		if(IsBadInteract(playerid))
 			return 1;
 	}
 
@@ -54,7 +56,7 @@ forward dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
 public OnPlayerOpenInventory(playerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(IsBadInteract(playerid))
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerOpenInventory", "d", playerid);
@@ -69,7 +71,7 @@ forward dis_OnPlayerOpenInventory(playerid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(IsBadInteract(playerid))
 		return 1;
 
 	return CallLocalFunction("dis_OnPlayerOpenContainer", "dd", playerid, containerid);
@@ -84,7 +86,7 @@ forward dis_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(playerid) & AdminDuty || GetPlayerDataBitmask(playerid) & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(IsBadInteract(playerid))
 		return 1;
 
 	if(IsPlayerAtAnyVehicleTrunk(playerid))

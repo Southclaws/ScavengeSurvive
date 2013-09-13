@@ -38,7 +38,7 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 		new exdata = GetItemExtraData(itemid);
 		if(IsValidGraveStone(exdata))
 		{
-			if(tickcount() - rip_Data[exdata][rip_spawnTick] < 300000)
+			if(GetTickCountDifference(tickcount(), rip_Data[exdata][rip_spawnTick]) < 300000)
 			{
 				StartHoldAction(playerid, 3000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);

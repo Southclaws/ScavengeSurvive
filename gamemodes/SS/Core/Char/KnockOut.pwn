@@ -8,7 +8,7 @@ KnockOutPlayer(playerid, duration)
 	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
-	SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - knockout_Tick[playerid]);
+	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerData[playerid][ply_HitPoints]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
@@ -79,16 +79,16 @@ KnockOutUpdate(playerid)
 		new animidx = GetPlayerAnimationIndex(playerid);
 
 		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
-			KnockOutPlayer(playerid, GetPlayerKnockoutDuration(playerid) - (tickcount() - GetPlayerKnockOutTick(playerid)));
+			KnockOutPlayer(playerid, GetPlayerKnockoutDuration(playerid) - GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)));
 
-		SetPlayerProgressBarValue(playerid, KnockoutBar, tickcount() - GetPlayerKnockOutTick(playerid));
+		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)));
 		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			SetVehicleEngine(GetPlayerVehicleID(playerid), 0);
 
-		if(tickcount() - GetPlayerKnockOutTick(playerid) >= GetPlayerKnockoutDuration(playerid))
+		if(GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)) >= GetPlayerKnockoutDuration(playerid))
 		{
 			WakeUpPlayer(playerid);
 		}
@@ -101,7 +101,7 @@ KnockOutUpdate(playerid)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				if(tickcount() - GetPlayerKnockOutTick(playerid) > 5000 * gPlayerData[playerid][ply_HitPoints])
+				if(GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)) > 5000 * gPlayerData[playerid][ply_HitPoints])
 				{
 					if(gPlayerBitData[playerid] & Bleeding)
 					{

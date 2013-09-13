@@ -55,14 +55,14 @@ ptask AntiCheatUpdate[1000](playerid)
 		return;
 	}
 
-	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
+	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 10000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		tp_DetectDelay[playerid] = tickcount();
 		return;
 	}
 
-	if(tickcount() - GetPlayerSpawnTick(playerid) < 1000)
+	if(GetTickCountDifference(tickcount(), GetPlayerSpawnTick(playerid)) < 1000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		tp_DetectDelay[playerid] = tickcount();
@@ -129,8 +129,8 @@ PositionCheck(playerid)
 	if(
 		IsAutoSaving() ||
 		IsPlayerOnZipline(playerid) ||
-		tickcount() - GetPlayerVehicleExitTick(playerid) < 5000 ||
-		tickcount() - GetPlayerServerJoinTick(playerid) < 20000 ||
+		GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000 ||
+		GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 20000 ||
 		IsPlayerDead(playerid) ||
 		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
@@ -140,7 +140,7 @@ PositionCheck(playerid)
 		return;
 	}
 
-	if(tickcount() - tp_DetectDelay[playerid] < 10000)
+	if(GetTickCountDifference(tickcount(), tp_DetectDelay[playerid]) < 10000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		return;
@@ -165,9 +165,9 @@ PositionCheck(playerid)
 
 	if(distance > TELEPORT_DETECTION_DISTANCE)
 	{
-		if(tickcount() - tp_SetPosTick[playerid] > 5000)
+		if(GetTickCountDifference(tickcount(), tp_SetPosTick[playerid]) > 5000)
 		{
-			if(tickcount() - tp_PosReportTick[playerid] > 10000)
+			if(GetTickCountDifference(tickcount(), tp_PosReportTick[playerid]) > 10000)
 			{
 				new
 					name[MAX_PLAYER_NAME],
@@ -187,7 +187,7 @@ PositionCheck(playerid)
 		}
 		else
 		{
-			if(tickcount() - tp_PosReportTick[playerid] > 10000)
+			if(GetTickCountDifference(tickcount(), tp_PosReportTick[playerid]) > 10000)
 			{
 				distance = Distance(x, y, z, tp_SetPos[playerid][0], tp_SetPos[playerid][1], tp_SetPos[playerid][2]);
 				if(distance > TELEPORT_DETECTION_DISTANCE)
@@ -228,10 +228,10 @@ PositionCheck(playerid)
 
 SwimFlyCheck(playerid)
 {
-	if(tickcount() - sf_ReportTick[playerid] < 10000)
+	if(GetTickCountDifference(tickcount(), sf_ReportTick[playerid]) < 10000)
 		return 0;
 
-	if(tickcount() - GetPlayerServerJoinTick(playerid) < 10000)
+	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 10000)
 		return 0;
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
@@ -342,22 +342,22 @@ CameraDistanceCheck(playerid)
 		return;
 	}
 
-	if(tickcount() - GetPlayerVehicleExitTick(playerid) < 5000)
+	if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000)
 	{
 		return;
 	}
 
-	if(tickcount() - GetPlayerServerJoinTick(playerid) < 20000)
+	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 20000)
 	{
 		return;
 	}
 
-	if(tickcount() - cd_DetectDelay[playerid] < 5000)
+	if(GetTickCountDifference(tickcount(), cd_DetectDelay[playerid]) < 5000)
 	{
 		return;
 	}
 
-	if(tickcount() - cd_ReportTick[playerid] < 3000)
+	if(GetTickCountDifference(tickcount(), cd_ReportTick[playerid]) < 3000)
 	{
 		return;
 	}
@@ -534,19 +534,19 @@ VehicleTeleportCheck(playerid)
 
 VehicleDistanceCheck(playerid, vehicleid)
 {
-	if(tickcount() - vt_MovedFarTick[vehicleid] < 5000)
+	if(GetTickCountDifference(tickcount(), vt_MovedFarTick[vehicleid]) < 5000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
 	}
 
-	if(tickcount() - GetPlayerSpawnTick(playerid) < 15000)
+	if(GetTickCountDifference(tickcount(), GetPlayerSpawnTick(playerid)) < 15000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
 	}
 
-	if(tickcount() - GetPlayerVehicleExitTick(playerid) < 5000)
+	if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;

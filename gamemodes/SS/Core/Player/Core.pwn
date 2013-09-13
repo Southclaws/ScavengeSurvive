@@ -240,7 +240,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(GetPlayerPing(playerid) > pinglimit)
 	{
-		if(tickcount() - gPlayerData[playerid][ply_JoinTick] > 10000)
+		if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_JoinTick]) > 10000)
 		{
 			gPlayerData[playerid][ply_PingLimitStrikes]++;
 
@@ -291,7 +291,7 @@ ptask PlayerUpdate[100](playerid)
 			{
 				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 
-				if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_PAINKILL) > 60000)
+				if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_PAINKILL)) > 60000)
 					RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
 			}
 			else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
@@ -321,7 +321,7 @@ ptask PlayerUpdate[100](playerid)
 		minute = 3;
 		weather = 33;
 
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD) > 300000)
+		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD)) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_LSD);
 	}
 	else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
@@ -330,7 +330,7 @@ ptask PlayerUpdate[100](playerid)
 		minute = 30;
 		weather = 33;
 
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE) > 300000)
+		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE)) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
 	}
 	else
@@ -351,7 +351,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
+		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE)) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
 
 		SetPlayerDrunkLevel(playerid, 2200);
@@ -362,7 +362,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
-		if(tickcount() - GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
+		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE)) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
 			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 
 		GivePlayerHP(playerid, 0.01);

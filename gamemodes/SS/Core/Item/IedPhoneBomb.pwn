@@ -28,7 +28,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_IedPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			if(tickcount() - iedp_SyncTick[playerid] > 1000)
+			if(GetTickCountDifference(tickcount(), iedp_SyncTick[playerid]) > 1000)
 			{
 				new
 					Float:x,

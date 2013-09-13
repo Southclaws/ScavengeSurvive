@@ -141,7 +141,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & KEY_YES)
 	{
-		if(tickcount() - hols_LastHolster[playerid] < 1000)
+		if(GetTickCountDifference(tickcount(), hols_LastHolster[playerid]) < 1000)
 			return 1;
 
 		if(!IsPlayerIdle(playerid))

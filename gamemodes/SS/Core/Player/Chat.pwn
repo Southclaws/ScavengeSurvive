@@ -8,7 +8,7 @@ new
 
 hook OnPlayerText(playerid, text[])
 {
-	new tmpMuteTime = tickcount() - chat_MuteTick[playerid];
+	new tmpMuteTime = GetTickCountDifference(tickcount(), chat_MuteTick[playerid]);
 
 	if(gPlayerBitData[playerid] & Muted)
 	{
@@ -22,7 +22,7 @@ hook OnPlayerText(playerid, text[])
 		return 0;
 	}
 
-	if(tickcount() - gPlayerData[playerid][ply_LastChatMessageTick] < 1000)
+	if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
 	{
 		chat_MessageStreak[playerid]++;
 		if(chat_MessageStreak[playerid] == 3)
