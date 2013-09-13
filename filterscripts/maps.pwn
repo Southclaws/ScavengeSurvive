@@ -85,7 +85,7 @@ LoadMapsFromFolder(folder[])
 LoadMap(filename[])
 {
 	new
-		File:file = fopen(filename, io_read),
+		File:file,
 		loadedmeta,
 		str[192],
 		
@@ -133,7 +133,18 @@ LoadMap(filename[])
 		};
 
 	if(!fexist(filename))
-		return printf("ERROR: file: \"%s\" NOT FOUND", filename);
+	{
+		printf("ERROR: file: \"%s\" NOT FOUND", filename);
+		return 0;
+	}
+
+	file = fopen(filename, io_read);
+
+	if(!file)
+	{
+		printf("ERROR: file: \"%s\" NOT LOADED", filename);
+		return 0;
+	}
 
 	while(fread(file, str))
 	{

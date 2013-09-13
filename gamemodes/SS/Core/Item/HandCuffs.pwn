@@ -15,9 +15,13 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	if(IsBadInteract(playerid))
+		return 1;
+
 	if(newkeys & 16)
 	{
 		new itemid = GetPlayerItem(playerid);
+
 		if(GetItemType(itemid) == item_HandCuffs)
 		{
 			foreach(new i : Character)
@@ -89,19 +93,7 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
-		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]))
-		{
-			StopApplyingHandcuffs(playerid);
-			return 1;
-		}
-
-		if(GetPlayerWeapon(cuf_TargetPlayer[playerid]) != 0)
-		{
-			StopApplyingHandcuffs(playerid);
-			return 1;
-		}
-
-		if(GetPlayerItem(cuf_TargetPlayer[playerid]) != INVALID_ITEM_ID)
+		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
 		{
 			StopApplyingHandcuffs(playerid);
 			return 1;
@@ -122,7 +114,7 @@ public OnHoldActionFinish(playerid)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
-		if(!IsPlayerInPlayerArea(playerid, cuf_TargetPlayer[playerid]))
+		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
 		{
 			StopApplyingHandcuffs(playerid);
 			return 1;
@@ -131,12 +123,14 @@ public OnHoldActionFinish(playerid)
 		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
 		{
 			new itemid = CreateItem(item_HandCuffs);
+
 			SetPlayerCuffs(cuf_TargetPlayer[playerid], false);
 			GiveWorldItemToPlayer(playerid, itemid, 0);
 		}
 		else
 		{
 			DestroyItem(GetPlayerItem(playerid));
+
 			SetPlayerCuffs(cuf_TargetPlayer[playerid], true);
 			StopApplyingHandcuffs(playerid);
 		}
@@ -153,3 +147,17 @@ public OnHoldActionFinish(playerid)
 #endif
 #define OnHoldActionFinish cuf_OnHoldActionFinish
 forward cuf_OnHoldActionFinish(playerid);
+
+CanPlayerHandcuffPlayer(playerid, targetid)
+{
+	if(!IsPlayerInPlayerArea(playerid, targetid))
+		return 0;
+
+	if(GetPlayerWeapon(targetid) != 0)
+		return 0;
+
+	if(IsValidItem(GetPlayerItem(targetid)))
+		return 0;
+
+	return 1;
+}
