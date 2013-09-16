@@ -116,7 +116,7 @@ UpdatePlayerGear(playerid, show = 1)
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], 19300);
 	}
 
-	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
+	itemid = _:GetItemTypeFromMask(GetPlayerMask(playerid));
 	if(IsValidItemType(ItemType:itemid))
 	{
 		GetItemTypeName(ItemType:itemid, tmp);
@@ -409,7 +409,75 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 	if(playertextid == GearSlot_Face[UI_ELEMENT_TILE])
 	{
-		Msg(playerid, YELLOW, "Face");
+		new maskid = GetPlayerMask(playerid);
+
+		if(IsValidMask(maskid))
+		{
+			new
+				containerid = GetPlayerCurrentContainer(playerid),
+				itemid;
+
+			if(IsValidContainer(containerid))
+			{
+				if(IsContainerFull(containerid))
+				{
+					RemovePlayerMask(playerid);
+
+					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+					GiveWorldItemToPlayer(playerid, itemid);
+					UpdatePlayerGear(playerid);
+
+					ShowActionText(playerid, "Mask removed", 3000, 150);
+				}
+				else
+				{
+					RemovePlayerMask(playerid);
+
+					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+					if(AddItemToContainer(containerid, itemid, playerid) == 1)
+					{
+						UpdatePlayerGear(playerid);
+						DisplayContainerInventory(playerid, containerid);
+
+						ShowActionText(playerid, "Mask removed", 3000, 150);
+					}
+					else
+					{
+						DestroyItem(itemid);
+					}
+				}
+			}
+			else
+			{
+				if(IsPlayerInventoryFull(playerid))
+				{
+					RemovePlayerMask(playerid);
+
+					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+					GiveWorldItemToPlayer(playerid, itemid);
+					UpdatePlayerGear(playerid);
+
+					ShowActionText(playerid, "Mask removed", 3000, 150);
+				}
+				else
+				{
+					RemovePlayerMask(playerid);
+
+					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+					if(AddItemToInventory(playerid, itemid) == 1)
+					{
+						UpdatePlayerGear(playerid);
+						DisplayPlayerInventory(playerid);
+
+						ShowActionText(playerid, "Mask removed", 3000, 150);
+					}
+					else
+					{
+						DestroyItem(itemid);
+					}
+				}
+			}
+		}
 	}
 
 	if(playertextid == GearSlot_Hand[UI_ELEMENT_TILE])

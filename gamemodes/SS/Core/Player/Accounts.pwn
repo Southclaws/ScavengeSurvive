@@ -371,6 +371,9 @@ Logout(playerid)
 		if(IsValidItem(GetPlayerHat(playerid)))
 			RemovePlayerHat(playerid);
 
+		if(IsValidItem(GetPlayerMask(playerid)))
+			RemovePlayerMask(playerid);
+
 		if(IsPlayerInAnyVehicle(playerid))
 			SavePlayerVehicle(gPlayerData[playerid][ply_CurrentVehicle], gPlayerName[playerid]);
 	}

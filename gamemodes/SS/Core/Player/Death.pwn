@@ -206,6 +206,19 @@ DropItems(playerid)
 		RemovePlayerHat(playerid);
 	}
 
+	if(IsValidItem(GetPlayerMask(playerid)))
+	{
+		CreateItem(GetItemTypeFromMask(GetPlayerMask(playerid)),
+			gPlayerData[playerid][ply_DeathPosX] + floatsin(280.0, degrees),
+			gPlayerData[playerid][ply_DeathPosY] + floatcos(280.0, degrees),
+			gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET,
+			.rz = gPlayerData[playerid][ply_DeathRotZ],
+			.zoffset = ITEM_BUTTON_OFFSET,
+			.interior = interior);
+
+		RemovePlayerMask(playerid);
+	}
+
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 	{
 		CreateItem(item_HandCuffs,

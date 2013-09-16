@@ -28,7 +28,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_Wrench,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Crowbar,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Hammer,						1.0);
-	AddItemToLootIndex(loot_Civilian,		item_Flashlight,					1.0);
+//	AddItemToLootIndex(loot_Civilian,		item_Flashlight,					1.0);
 //	AddItemToLootIndex(loot_Civilian,		item_LaserPoint,					1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Screwdriver,					1.0);
 	AddItemToLootIndex(loot_Civilian,		item_MobilePhone,					0.4);
@@ -54,18 +54,20 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_TruckCap,						0.2);
 	AddItemToLootIndex(loot_Civilian,		item_BoaterHat,						0.1);
 	AddItemToLootIndex(loot_Civilian,		item_BowlerHat,						0.1);
+	AddItemToLootIndex(loot_Civilian,		item_TopHat,						0.2);
 	AddItemToLootIndex(loot_Civilian,		item_Ammo9mm,						0.1);
 	AddItemToLootIndex(loot_Civilian,		item_AmmoBuck,						0.09);
 	AddItemToLootIndex(loot_Civilian,		item_Ammo357,						0.05);
 	AddItemToLootIndex(loot_Civilian,		item_PlantPot,						0.5);
 	AddItemToLootIndex(loot_Civilian,		item_HerpDerp,						0.1);
 	AddItemToLootIndex(loot_Civilian,		item_CanDrink,						1.0);
+	AddItemToLootIndex(loot_Civilian,		item_HockeyMask,					0.3);
 
 	// loot_Industrial
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_CHAINSAW,			0.01);
 	AddItemToLootIndex(loot_Industrial,		item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_Industrial,		item_Bandage,						0.1);
-//	AddItemToLootIndex(loot_Industrial,		item_GasMask,						0.5);
+	AddItemToLootIndex(loot_Industrial,		item_GasMask,						0.5);
 	AddItemToLootIndex(loot_Industrial,		item_Timer,							0.2);
 	AddItemToLootIndex(loot_Industrial,		item_Battery,						0.4);
 	AddItemToLootIndex(loot_Industrial,		item_Fusebox,						0.3);
@@ -94,8 +96,8 @@ public OnLoad()
 	AddItemToLootIndex(loot_Police,			item_MobilePhone,					0.4);
 	AddItemToLootIndex(loot_Police,			item_HandCuffs,						0.4);
 	AddItemToLootIndex(loot_Police,			item_Taser,							0.6);
-//	AddItemToLootIndex(loot_Police,			item_GasMask,						0.7);
-	AddItemToLootIndex(loot_Police,			item_Flashlight,					0.9);
+	AddItemToLootIndex(loot_Police,			item_GasMask,						0.7);
+//	AddItemToLootIndex(loot_Police,			item_Flashlight,					0.9);
 	AddItemToLootIndex(loot_Police,			item_Shield,						0.7);
 	AddItemToLootIndex(loot_Police,			item_Headlight,						0.1);
 	AddItemToLootIndex(loot_Police,			item_CowboyHat,						0.1);
@@ -154,7 +156,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_Wrench,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Crowbar,						1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Hammer,						0.9);
-	AddItemToLootIndex(loot_CarCivilian,	item_Flashlight,					1.0);
+//	AddItemToLootIndex(loot_CarCivilian,	item_Flashlight,					1.0);
 //	AddItemToLootIndex(loot_CarCivilian,	item_LaserPoint,					1.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Screwdriver,					0.8);
 	AddItemToLootIndex(loot_CarCivilian,	item_MobilePhone,					0.4);
@@ -181,11 +183,13 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_TruckCap,						0.2);
 	AddItemToLootIndex(loot_CarCivilian,	item_BoaterHat,						0.1);
 	AddItemToLootIndex(loot_CarCivilian,	item_BowlerHat,						0.1);
+	AddItemToLootIndex(loot_CarCivilian,	item_TopHat,						0.1);
 	AddItemToLootIndex(loot_CarCivilian,	item_Ammo9mm,						0.1);
 	AddItemToLootIndex(loot_CarCivilian,	item_AmmoBuck,						0.06);
 	AddItemToLootIndex(loot_CarCivilian,	item_PlantPot,						0.5);
 	AddItemToLootIndex(loot_CarCivilian,	item_HerpDerp,						0.1);
 	AddItemToLootIndex(loot_CarCivilian,	item_CanDrink,						1.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_HockeyMask,					0.3);
 
 	// loot_CarIndustrial
 	AddItemToLootIndex(loot_CarIndustrial,	item_Bandage,						0.1);
@@ -196,12 +200,12 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_Wrench,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Crowbar,						0.8);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Hammer,						0.9);
-	AddItemToLootIndex(loot_CarIndustrial,	item_Flashlight,					1.0);
+//	AddItemToLootIndex(loot_CarIndustrial,	item_Flashlight,					1.0);
 //	AddItemToLootIndex(loot_CarIndustrial,	item_LaserPoint,					1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Screwdriver,					0.8);
 //	AddItemToLootIndex(loot_CarIndustrial,	item_Bucket,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Satchel,						0.8);
-	AddItemToLootIndex(loot_Industrial,		item_MotionSense,					0.4);
+	AddItemToLootIndex(loot_CarIndustrial,	item_MotionSense,					0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Accelerometer,					0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_GasCan,						0.4);
 	AddItemToLootIndex(loot_CarIndustrial,	item_MediumBox,						0.06);
@@ -219,6 +223,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_TruckCap,						0.7);
 	AddItemToLootIndex(loot_CarIndustrial,	item_AmmoBuck,						0.05);
 	AddItemToLootIndex(loot_CarIndustrial,	item_CanDrink,						0.9);
+	AddItemToLootIndex(loot_CarIndustrial,	item_GasMask,						0.7);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_COLT45,				0.4);
@@ -234,7 +239,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarPolice,		item_HandCuffs,						0.7);
 	AddItemToLootIndex(loot_CarPolice,		item_Taser,							0.7);
 	AddItemToLootIndex(loot_CarPolice,		item_Medkit,						0.1);
-	AddItemToLootIndex(loot_CarPolice,		item_Flashlight,					1.0);
+//	AddItemToLootIndex(loot_CarPolice,		item_Flashlight,					1.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Headlight,						0.6);
 	AddItemToLootIndex(loot_CarPolice,		item_PoliceCap,						0.5);
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo9mm,						0.2);
@@ -282,7 +287,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_GasCan,						0.5);
 	AddItemToLootIndex(loot_Survivor,		item_Pizza,							0.1);
 	AddItemToLootIndex(loot_Survivor,		item_Burger,						0.1);
-//	AddItemToLootIndex(loot_Survivor,		item_GasMask,						0.3);
+	AddItemToLootIndex(loot_Survivor,		item_GasMask,						0.3);
 	AddItemToLootIndex(loot_Survivor,		item_FireLighter,					0.7);
 	AddItemToLootIndex(loot_Survivor,		item_Meat,							0.09);
 	AddItemToLootIndex(loot_Survivor,		item_Pills,							0.6);

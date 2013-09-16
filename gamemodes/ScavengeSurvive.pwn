@@ -95,7 +95,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
-#define MAX_SERVER_UPTIME			(3600 * 5)
+#define MAX_SERVER_UPTIME			(3600 * 9)
 #define MAX_SPAWNED_VEHICLES		(250)
 
 
@@ -320,8 +320,8 @@ enum
 	ATTACHSLOT_HOLSTER,		// 3 - Item holstering
 	ATTACHSLOT_HOLD,		// 4 - Unused
 	ATTACHSLOT_CUFFS,		// 5 - Handcuff slot
-	ATTACHSLOT_TORCH,		// 6 - Torch light slot
-	ATTACHSLOT_HAT,			// 7 - Head-wear slot
+	ATTACHSLOT_HAT,			// 6 - Head-wear slot
+	ATTACHSLOT_FACE,		// 7 - Face-wear slot
 	ATTACHSLOT_BLOOD,		// 8 - Bleeding particle effect
 	ATTACHSLOT_ARMOUR		// 9 - Armour model slot
 }
@@ -614,7 +614,7 @@ ItemType:		item_HelmArmy		= INVALID_ITEM_TYPE,
 ItemType:		item_MediumBox		= INVALID_ITEM_TYPE,
 ItemType:		item_SmallBox		= INVALID_ITEM_TYPE,
 ItemType:		item_LargeBox		= INVALID_ITEM_TYPE,
-ItemType:		item_AmmoTin		= INVALID_ITEM_TYPE,
+ItemType:		item_HockeyMask		= INVALID_ITEM_TYPE,
 ItemType:		item_Meat			= INVALID_ITEM_TYPE,
 // 100
 ItemType:		item_DeadLeg		= INVALID_ITEM_TYPE,
@@ -834,6 +834,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/HandCuffs.pwn"
 #include "SS/Core/Char/Medical.pwn"
 #include "SS/Core/Char/AimShout.pwn"
+#include "SS/Core/Char/Masks.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
@@ -875,7 +876,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/HandCuffs.pwn"
 #include "SS/Core/Item/wheel.pwn"
 #include "SS/Core/Item/gascan.pwn"
-#include "SS/Core/Item/flashlight.pwn"
 #include "SS/Core/Item/armyhelm.pwn"
 #include "SS/Core/Item/crowbar.pwn"
 #include "SS/Core/Item/zorromask.pwn"
@@ -910,6 +910,8 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/EmpTripMine.pwn"
 #include "SS/Core/Item/EmpProxMine.pwn"
 #include "SS/Core/Item/EmpPhoneBomb.pwn"
+#include "SS/Core/Item/GasMask.pwn"
+#include "SS/Core/Item/HockeyMask.pwn"
 
 
 // POST-CODE
@@ -1212,7 +1214,7 @@ public OnGameModeInit()
 	item_MediumBox		= DefineItemType("Medium Box",			3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
 	item_SmallBox		= DefineItemType("Small Box",			2969,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
 	item_LargeBox		= DefineItemType("Large Box",			1271,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3112,	0.050000, 0.334999, -0.327000,  -23.900018, -10.200002, 11.799987);
-	item_AmmoTin		= DefineItemType("Ammo Tin",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_HockeyMask		= DefineItemType("Hockey Mask",			19036,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Meat			= DefineItemType("Meat",				2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
 	item_DeadLeg		= DefineItemType("Leg",					2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);

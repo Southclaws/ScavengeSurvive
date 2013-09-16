@@ -14,6 +14,9 @@
 #include "zcmd"
 
 
+#define OUTPUT_FILE "SavedAttachments.txt"
+
+
 enum
 {
 	DIALOG_MAIN = 7000,
@@ -66,19 +69,19 @@ new
 	};
 
 new
-	gCurrentAttachIndex[MAX_PLAYERS],
-	bool:gIndexUsed[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
-	gIndexModel[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
-	gIndexBone[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
-	Float:gIndexPos[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
-	Float:gIndexRot[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
-	Float:gIndexSca[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
-	gCurrentAxisEdit[MAX_PLAYERS];
+bool:	gEditingAttachments		[MAX_PLAYERS],
+		gCurrentAttachIndex		[MAX_PLAYERS],
+bool:	gIndexUsed				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
+		gIndexModel				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
+		gIndexBone				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS],
+Float:	gIndexPos				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
+Float:	gIndexRot				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
+Float:	gIndexSca				[MAX_PLAYERS][MAX_PLAYER_ATTACHED_OBJECTS][3],
+		gCurrentAxisEdit		[MAX_PLAYERS];
 	
 
 public OnFilterScriptInit()
 {
-	print("Script loading");
 	for(new i; i < MAX_PLAYERS; i++)
 	{
 		gCurrentAttachIndex[i] = 0;
@@ -95,8 +98,23 @@ public OnFilterScriptInit()
 	}
 }
 
+public OnFilterScriptExit()
+{
+	for(new i; i < MAX_PLAYERS; i++)
+	{
+		if(gEditingAttachments[i])
+		{
+			for(new j; j < MAX_PLAYER_ATTACHED_OBJECTS; j++)
+			{
+				if(gIndexUsed[i][j])
+					RemovePlayerAttachedObject(i, j);
+			}
+		}
+	}
+}
 
-CMD:hold(playerid,params[])
+
+CMD:attachedit(playerid,params[])
 {
 	ShowMainEditMenu(playerid);
 	return 1;
@@ -104,7 +122,7 @@ CMD:hold(playerid,params[])
 
 ShowMainEditMenu(playerid)
 {
-	new string[300];
+	new string[312];
 
 	format(string, sizeof(string),
 		"Select Index (%d)\n\
@@ -121,7 +139,7 @@ ShowMainEditMenu(playerid)
 		Z Scale (%.4f)\n\
 		Edit\n\
 		Clear Index\n\
-		Save Attachments",
+		Save Attachment",
 		gCurrentAttachIndex[playerid],
 		gIndexModel[playerid][gCurrentAttachIndex[playerid]],
 		gIndexBone[playerid][gCurrentAttachIndex[playerid]],
@@ -136,6 +154,8 @@ ShowMainEditMenu(playerid)
 		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Z]);
 
 	ShowPlayerDialog(playerid, DIALOG_MAIN, DIALOG_STYLE_LIST, "Attachment Editor / Main Menu", string, "Accept", "Cancel");
+
+	gEditingAttachments[playerid] = true;
 }
 
 ShowIndexList(playerid)
@@ -226,9 +246,23 @@ ClearCurrentIndex(playerid)
 
 SaveAttachedObjects(playerid)
 {
-	SendClientMessage(playerid, -1, "Not implemented");
+	new
+		str[256],
+		File:file;
 
-	printf("SetPlayerAttachedObject(playerid, %d, %d, %d,  %f, %f, %f,  %f, %f, %f,  %f, %f, %f);",
+	if(!fexist(OUTPUT_FILE))
+		file = fopen(OUTPUT_FILE, io_write);
+
+	else
+		file = fopen(OUTPUT_FILE, io_append);
+
+	if(!file)
+	{
+		print("ERROR: Opening file "OUTPUT_FILE"");
+		return 0;
+	}
+
+	format(str, 256, "SetPlayerAttachedObject(playerid, %d, %d, %d,  %f, %f, %f,  %f, %f, %f,  %f, %f, %f); // %d\r\n",
 		gCurrentAttachIndex[playerid],
 		gIndexModel[playerid][gCurrentAttachIndex[playerid]],
 		gIndexBone[playerid][gCurrentAttachIndex[playerid]],
@@ -240,9 +274,15 @@ SaveAttachedObjects(playerid)
 		gIndexRot[playerid][gCurrentAttachIndex[playerid]][COORD_Z],
 		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_X],
 		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Y],
-		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Z]);
+		gIndexSca[playerid][gCurrentAttachIndex[playerid]][COORD_Z],
+		GetPlayerSkin(playerid));
+
+	fwrite(file, str);
+	fclose(file);
 
 	ShowMainEditMenu(playerid);
+
+	return 1;
 }
 
 

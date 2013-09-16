@@ -24,6 +24,7 @@ enum
 	PLY_CELL_SPAWN_Y,
 	PLY_CELL_SPAWN_Z,
 	PLY_CELL_SPAWN_R,
+	PLY_CELL_MASK,
 	PLY_CELL_END
 }
 
@@ -109,6 +110,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_SPAWN_Y] = _:gPlayerData[playerid][ply_SpawnPosY];
 	data[PLY_CELL_SPAWN_Z] = _:gPlayerData[playerid][ply_SpawnPosZ];
 	data[PLY_CELL_SPAWN_R] = _:gPlayerData[playerid][ply_SpawnRotZ];
+
+	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 
 	file = fopen(filename, io_write);
 	fblockwrite(file, data, sizeof(data));
@@ -238,15 +241,16 @@ LoadPlayerChar(playerid)
 	else
 		f:gPlayerBitData[playerid]<ToolTips>;
 
-/*
 	gPlayerData[playerid][ply_SpawnPosX] = Float:data[PLY_CELL_SPAWN_X];
 	gPlayerData[playerid][ply_SpawnPosY] = Float:data[PLY_CELL_SPAWN_Y];
 	gPlayerData[playerid][ply_SpawnPosZ] = Float:data[PLY_CELL_SPAWN_Z];
 	gPlayerData[playerid][ply_SpawnRotZ] = Float:data[PLY_CELL_SPAWN_R];
-*/
+
+	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
 
 	return 1;
 }
+
 LoadPlayerInventory(playerid)
 {
 	new
@@ -329,110 +333,3 @@ ClearPlayerInventoryFile(playerid)
 	fblockwrite(file, data, 1);
 	fclose(file);
 }
-
-
-enum
-{
-	OLD_HEALTH,								// 0
-	OLD_ARMOUR,								// 1
-	OLD_FOOD,								// 2
-	OLD_SKIN,								// 3
-	OLD_HAT,								// 4
-	OLD_HOLST,								// 5
-	OLD_HOLSTEX,							// 6
-	OLD_HELD,								// 7
-	OLD_HELDEX,								// 8
-	OLD_INVENTORY,							// 9
-	OLD_BAGTYPE = OLD_INVENTORY + 8,		// 17
-	OLD_BAG,								// 18
-	OLD_END = OLD_BAG + 16					// 34
-}
-
-#endinput
-/*
-#include <YSI\y_hooks>
-hook OnGameModeInit()
-{
-	defer UpdateAccounts();
-}
-timer UpdateAccounts[1000]()
-{
-	print("Updating user accounts");
-	new
-		name[24],
-		DBResult:result,
-		numrows;
-
-	result = db_query(gAccounts, "SELECT * FROM `Player`");
-	numrows = db_num_rows(result);
-
-
-	for(new i; i < numrows; i++)
-	{
-		db_get_field(result, 0, name, 24);
-		db_next_row(result);
-
-		ConvertUserFile(name);
-	}
-
-	db_free_result(result);
-
-	print("Update complete");
-}
-
-ConvertUserFile(name[])
-{
-	new
-		filename[MAX_PLAYER_FILE],
-		File:file,
-		data[OLD_END],
-		data1[PLY_CELL_END],
-		data2[INV_CELL_END];
-
-	format(filename, MAX_PLAYER_FILE, "SSS/Player/%s.inv", name);
-
-	if(!fexist(filename))
-		return 0;
-
-	file = fopen(filename, io_read);
-	fblockread(file, data, sizeof(data));
-	fclose(file);
-	fremove(filename);
-
-	data1[PLY_CELL_HEALTH]	= data[OLD_HEALTH];
-	data1[PLY_CELL_ARMOUR]	= data[OLD_ARMOUR];
-	data1[PLY_CELL_FOOD]	= data[OLD_FOOD];
-	data1[PLY_CELL_SKIN]	= data[OLD_SKIN];
-	data1[PLY_CELL_HAT]		= data[OLD_HAT];
-	data1[PLY_CELL_HOLST]	= data[OLD_HOLST];
-	data1[PLY_CELL_HOLSTEX]	= data[OLD_HOLSTEX];
-	data1[PLY_CELL_HELD]	= data[OLD_HELD];
-	data1[PLY_CELL_HELDEX]	= data[OLD_HELDEX];
-
-	format(filename, MAX_PLAYER_FILE, PLAYER_DATA_FILE, name);
-	file = fopen(filename, io_write);
-	fblockwrite(file, data1, sizeof(data1));
-	fclose(file);
-
-	for(new i; i < 8; i += 2)
-	{
-		data2[i] = data[i + OLD_INVENTORY];
-		data2[i + 1] = data[i + OLD_INVENTORY + 1];
-	}
-
-	data2[INV_CELL_BAGTYPE] = data[OLD_BAGTYPE];
-
-	for(new i; i < 16; i += 2)
-	{
-		data2[INV_CELL_BAGITEMS + i] = data[i + OLD_BAG];
-		data2[INV_CELL_BAGITEMS + i + 1] = data[i + OLD_BAG + 1];
-	}
-
-	format(filename, MAX_PLAYER_FILE, PLAYER_ITEM_FILE, name);
-	file = fopen(filename, io_write);
-	fblockwrite(file, data2, sizeof(data2));
-	fclose(file);
-
-	return 1;
-}
-*/

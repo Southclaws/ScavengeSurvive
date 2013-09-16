@@ -99,7 +99,7 @@ public OnLoad()
 	DefineItemToolTip(item_Cane,			"This has no use yet");
 	DefineItemToolTip(item_HandCuffs,		"Hold "KEYTEXT_INTERACT" at a player to handcuff them");
 	DefineItemToolTip(item_Bucket,			"This has no use yet");
-	DefineItemToolTip(item_GasMask,			"This has no use yet");
+	DefineItemToolTip(item_GasMask,			"Wear this by pressing "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Flag,			"This has no use yet");
 	DefineItemToolTip(item_DoctorBag,		"You can heal yourself or others with this");
 	DefineItemToolTip(item_Backpack,		"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
@@ -119,7 +119,7 @@ public OnLoad()
 	DefineItemToolTip(item_MediumBox,		"Store items inside this to save them over restarts, read more: /restartinfo");
 	DefineItemToolTip(item_SmallBox,		"Store items inside this to save them over restarts, read more: /restartinfo");
 	DefineItemToolTip(item_LargeBox,		"Store items inside this to save them over restarts, read more: /restartinfo");
-	DefineItemToolTip(item_AmmoTin,			"Old item type, this shouldn't even spawn anymore");
+	DefineItemToolTip(item_HockeyMask,		"Wear this by pressing "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Meat,			"Cook and eat this for food value");
 	DefineItemToolTip(item_DeadLeg,			"Tasty human leg...");
 	DefineItemToolTip(item_Torso,			"Tasty human torso... the original owner might not be happy");
@@ -196,6 +196,7 @@ public OnLoad()
 	DefineItemToolTip(item_FlareGun,		"This item has no use yet");
 	DefineItemToolTip(item_PetrolBomb,		"This item has no use yet");
 	DefineItemToolTip(item_CodePart,		"A puzzle item, the number displayed next to the item name is part of a 4 digit code used to open a door somewhere");
+	DefineItemToolTip(item_LargeBackpack,	"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
 
 	return CallLocalFunction("tip_OnLoad", "");
 }

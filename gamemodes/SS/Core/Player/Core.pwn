@@ -705,10 +705,12 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(newkeys & 128)
 			{
 				TogglePlayerHeadwear(playerid, false);
+				TogglePlayerMask(playerid, false);
 			}
 			if(oldkeys & 128)
 			{
 				TogglePlayerHeadwear(playerid, true);
+				TogglePlayerMask(playerid, true);
 			}
 	}
 /*
