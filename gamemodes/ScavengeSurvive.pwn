@@ -111,7 +111,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define DIRECTORY_PLAYER			"./scriptfiles/SSS/Player/"
 #define DIRECTORY_SAFEBOX			"./scriptfiles/SSS/Safebox/"
 #define DIRECTORY_SIGNS				"./scriptfiles/SSS/Signs/"
-#define DIRECTORY_VEHICLES			"./scriptfiles/SSS/Vehicles/"
+#define DIRECTORY_VEHICLE_DAT		"./scriptfiles/SSS/VehicleDat/"
+#define DIRECTORY_VEHICLE_INV		"./scriptfiles/SSS/VehicleInv/"
 
 // Files
 #define PLAYER_DATA_FILE			"SSS/Player/%s.dat"
@@ -699,7 +700,8 @@ ItemType:		item_StarterMotor	= INVALID_ITEM_TYPE,
 ItemType:		item_FlareGun		= INVALID_ITEM_TYPE,
 ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
-ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE;
+ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE,
+ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE;
 
 
 // UI HANDLES
@@ -782,7 +784,7 @@ forward SetRestart(seconds);
 // GAME DATA
 #include "SS/Data/Vehicle.pwn"
 #include "SS/Data/Weapon.pwn"
-#include "SS/Data/Loot.pwn"
+#include "SS/Data/Loot_dm.pwn"
 
 // VEHICLE
 #include "SS/Core/Vehicle/Core.pwn"
@@ -1029,10 +1031,16 @@ public OnGameModeInit()
 		dir_create(DIRECTORY_SIGNS);
 	}
 
-	if(!dir_exists(DIRECTORY_VEHICLES))
+	if(!dir_exists(DIRECTORY_VEHICLE_DAT))
 	{
-		print("ERROR: Directory '"DIRECTORY_VEHICLES"' not found. Creating directory.");
-		dir_create(DIRECTORY_VEHICLES);
+		print("ERROR: Directory '"DIRECTORY_VEHICLE_DAT"' not found. Creating directory.");
+		dir_create(DIRECTORY_VEHICLE_DAT);
+	}
+
+	if(!dir_exists(DIRECTORY_VEHICLE_INV))
+	{
+		print("ERROR: Directory '"DIRECTORY_VEHICLE_INV"' not found. Creating directory.");
+		dir_create(DIRECTORY_VEHICLE_INV);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -1300,6 +1308,7 @@ public OnGameModeInit()
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
 	item_LargeBackpack	= DefineItemType("Large Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
+	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
@@ -1307,7 +1316,7 @@ public OnGameModeInit()
 // 1898 - SMALL SPIN CLICKER
 // 1899 - VERY SMALL SINGLE CHIP
 // 1901 - SMALL BLUE CHIPS STACK
-// 1952 - SMALL RECORD NEEDLE
+// 1952 - SMALL RECORD NEEDLE - POSSIBLY KEY
 // 1960 - RECORD
 // 2060 - SANDBAG
 // 2277 - PICTURE OF A CAT
