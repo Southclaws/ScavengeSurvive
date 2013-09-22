@@ -1,4 +1,3 @@
-#define LOG_FILE "SSS/Logs/%s.txt"
 #define logf(%1,%2) log(sprintf(%1,%2))
 
 stock log(text[])
@@ -8,7 +7,7 @@ stock log(text[])
 		File:file,
 		filename[64];
 
-	format(filename, 64, LOG_FILE, TimestampToDateTime(gettime(), CTIME_DATE_FILENAME));
+	format(filename, 64, DIRECTORY_LOGS"%s.txt", TimestampToDateTime(gettime(), CTIME_DATE_FILENAME));
 
 	if(fexist(filename))
 		file = fopen(filename, io_append);

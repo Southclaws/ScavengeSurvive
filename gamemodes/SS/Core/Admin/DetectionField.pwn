@@ -4,8 +4,6 @@
 #define MAX_DETECTION_FIELD			(32)
 #define MAX_DETECTION_FIELD_NAME	(24)
 #define MAX_DETECTION_FIELD_ENTRIES	(32)
-#define DET_DATA_FOLDER				"SSS/DetField/"
-#define DET_DATA_DIR				"./scriptfiles/SSS/DetField/"
 
 
 enum E_DETECTION_FIELD_DATA
@@ -74,7 +72,7 @@ stock AddDetectionField(name[MAX_DETECTION_FIELD_NAME], Float:x, Float:y, Float:
 		filename[64],
 		line[MAX_PLAYER_NAME + 36 + 2];
 
-	format(filename, 64, ""DET_DATA_FOLDER"%s.txt", name);
+	format(filename, 64, ""DIRECTORY_DETFIELD"%s.txt", name);
 
 	if(fexist(filename))
 		return -1;
@@ -102,9 +100,9 @@ stock RemoveDetectionField(id)
 
 	new filename[64];
 
-	format(filename, 64, ""DET_DATA_DIR"%s.txt", det_Data[id][det_name]);
+	format(filename, 64, DIRECTORY_DETFIELD"%s.txt", det_Data[id][det_name]);
 
-	if(!file_exists(filename))
+	if(!fexist(filename))
 		return -1;
 
 	fremove(filename);
@@ -123,7 +121,7 @@ stock ShowDetectionFieldLog(playerid, id)
 		list[MAX_DETECTION_FIELD_ENTRIES * sizeof(line)],
 		idx;
 
-	format(filename, 64, ""DET_DATA_FOLDER"%s.txt", det_Data[id][det_name]);
+	format(filename, 64, ""DIRECTORY_DETFIELD"%s.txt", det_Data[id][det_name]);
 
 	file = fopen(filename, io_read);
 
@@ -199,7 +197,7 @@ DetectionFieldLogPlayer(playerid, id)
 		filename[64],
 		line[MAX_PLAYER_NAME + 36 + 2];
 
-	format(filename, 64, ""DET_DATA_FOLDER"%s.txt", det_Data[id][det_name]);
+	format(filename, 64, ""DIRECTORY_DETFIELD"%s.txt", det_Data[id][det_name]);
 
 	file = fopen(filename, io_append);
 
@@ -235,7 +233,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 hook OnGameModeInit()
 {
 	new
-		dir:direc = dir_open(DET_DATA_DIR),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD),
 		item[46],
 		type,
 
@@ -253,7 +251,7 @@ hook OnGameModeInit()
 	{
 		if(type == FM_FILE)
 		{
-			filename = DET_DATA_FOLDER;
+			filename = DIRECTORY_DETFIELD;
 			strcat(filename, item);
 			file = fopen(filename, io_read);
 

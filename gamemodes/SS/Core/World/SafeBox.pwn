@@ -4,8 +4,6 @@
 #define MAX_SAFEBOX			ITM_MAX
 #define MAX_SAFEBOX_TYPE	(8)
 #define MAX_SAFEBOX_NAME	(32)
-#define SAFEBOX_FOLDER		"SSS/Safebox/"
-#define SAFEBOX_DIRECTORY	"./scriptfiles/SSS/Safebox/"
 
 
 enum E_SAFEBOX_TYPE_DATA
@@ -138,7 +136,7 @@ public OnItemDestroy(itemid)
 			if(IsValidContainer(containerid))
 				box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
 
-			format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+			format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"%d_%d_%d_%d", x, y, z, r);
 			fremove(filename);
 
 			Iter_SafeRemove(box_Index, itemid, itemid);
@@ -271,7 +269,7 @@ timer box_PickUp[250](playerid, itemid)
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, r, r, r);
 
-	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"%d_%d_%d_%d", x, y, z, r);
 	fremove(filename);
 
 	return;
@@ -318,7 +316,7 @@ SaveSafeboxes(printeach = false, printtotal = false)
 LoadSafeboxes(printeach = false, printtotal = false)
 {
 	new
-		dir:direc = dir_open(SAFEBOX_DIRECTORY),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX),
 		item[46],
 		type,
 		File:file,
@@ -338,7 +336,7 @@ LoadSafeboxes(printeach = false, printtotal = false)
 				data[1 + (CNT_MAX_SLOTS * 2)],
 				itemid;
 
-			filedir = SAFEBOX_FOLDER;
+			filedir = DIRECTORY_SAFEBOX;
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
 
@@ -422,7 +420,7 @@ SaveSafeboxItem(itemid, prints = false)
 		return -2;
 	}
 
-	format(filename, sizeof(filename), ""#SAFEBOX_FOLDER"%d_%d_%d_%d", x, y, z, r);
+	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"%d_%d_%d_%d", x, y, z, r);
 
 	if(IsContainerEmpty(containerid))
 	{

@@ -3,7 +3,7 @@
 
 #define MAX_DEFENCE_ITEM	(10)
 #define MAX_DEFENCE			(1024)
-#define DEFENCE_DATA_FOLDER	"SSS/Defences/"
+#define DIRECTORY_DEFENCES	"SSS/Defences/"
 #define DEFENCE_DATA_DIR	"./scriptfiles/SSS/Defences/"
 
 
@@ -177,7 +177,7 @@ stock DestroyDefence(defenceid)
 		filename[64],
 		next;
 
-	format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
+	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
 	fremove(filename);
 
 	DestroyDynamicObject(def_Data[defenceid][def_objectId]);
@@ -220,7 +220,7 @@ public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y,
 			{
 				new filename[64];
 
-				format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ], def_Data[def_CurrentDefenceMove[playerid]][def_rotZ]);
+				format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ], def_Data[def_CurrentDefenceMove[playerid]][def_rotZ]);
 				fremove(filename);
 
 				def_Data[def_CurrentDefenceMove[playerid]][def_posX] = x;
@@ -600,7 +600,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 LoadDefences(printeach = false, printtotal = false)
 {
 	new
-		dir:direc = dir_open(DEFENCE_DATA_DIR),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
 		item[46],
 		type,
 		File:file,
@@ -616,7 +616,7 @@ LoadDefences(printeach = false, printtotal = false)
 	{
 		if(type == FM_FILE)
 		{
-			filedir = DEFENCE_DATA_FOLDER;
+			filedir = DIRECTORY_DEFENCES;
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
 
@@ -670,7 +670,7 @@ SaveDefenceItem(id, prints = false)
 		File:file,
 		data[4];
 
-	format(filename, sizeof(filename), ""#DEFENCE_DATA_FOLDER"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
+	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
 	file = fopen(filename, io_write);
 
 	if(file)

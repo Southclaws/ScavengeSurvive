@@ -5,7 +5,6 @@
 #define MAX_SIGN_TEXT		(128)
 #define INVALID_SIGN_ID		(-1)
 
-#define SIGN_DATA_FOLDER	"SSS/Signs/"
 #define SIGN_DATA_DIR		"./scriptfiles/SSS/Signs/"
 
 
@@ -163,7 +162,7 @@ timer PickUpSign[250](playerid)
 
 	new filename[64];
 
-	format(filename, sizeof(filename), ""#SIGN_DATA_FOLDER"%d_%d_%d_%d",
+	format(filename, sizeof(filename), ""DIRECTORY_SIGNS"%d_%d_%d_%d",
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_posX],
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_posY],
 		sgn_Data[sgn_CurrentSign[playerid]][sgn_posZ],
@@ -198,7 +197,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 LoadSigns(printeach = false, printtotal = false)
 {
 	new
-		dir:direc = dir_open(SIGN_DATA_DIR),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS),
 		item[46],
 		type,
 		File:file,
@@ -214,7 +213,7 @@ LoadSigns(printeach = false, printtotal = false)
 	{
 		if(type == FM_FILE)
 		{
-			filedir = SIGN_DATA_FOLDER;
+			filedir = DIRECTORY_SIGNS;
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
 
@@ -249,7 +248,7 @@ SaveSigns(printeach = false, printtotal = false)
 			filename[64],
 			File:file;
 
-		format(filename, sizeof(filename), ""#SIGN_DATA_FOLDER"%d_%d_%d_%d",
+		format(filename, sizeof(filename), ""DIRECTORY_SIGNS"%d_%d_%d_%d",
 			sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ], sgn_Data[i][sgn_rotZ]);
 
 		file = fopen(filename, io_write);

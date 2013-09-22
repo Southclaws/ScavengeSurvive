@@ -8,7 +8,7 @@
 LoadVehicles(printeach = false, printtotal = false)
 {
 	LoadPlayerVehicles(printeach, printtotal);
-	LoadVehiclesFromFolder(VEHICLE_FOLDER, printeach);
+	LoadVehiclesFromFolder(DIRECTORY_SCRIPTFILES VEHICLE_FOLDER, printeach);
 
 	printf("Loaded %d Vehicles\n", Iter_Count(veh_Index));
 }
@@ -22,7 +22,7 @@ LoadVehiclesFromFolder(folder[], prints)
 		type,
 		filename[256];
 
-	format(foldername, sizeof(foldername), "./scriptfiles/%s/", folder);
+	format(foldername, sizeof(foldername), DIRECTORY_SCRIPTFILES"%s/", folder);
 	dirhandle = dir_open(foldername);
 
 	while(dir_list(dirhandle, item, type))

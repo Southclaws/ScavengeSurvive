@@ -1,8 +1,6 @@
 #include <YSI\y_hooks>
 
 
-#define ARMOUR_DATA_FOLDER	"vehicles/Mods/"
-#define ARMOUR_DATA_DIR		"./scriptfiles/vehicles/Mods/"
 #define MAX_ARMOUR			(16)
 #define MAX_ARMOUR_PARTS	(32)
 #define MAX_ARMOUR_VEHICLES	(8)
@@ -39,7 +37,7 @@ new
 hook OnGameModeInit()
 {
 	new
-		dir:direc = dir_open(ARMOUR_DATA_DIR),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR),
 		item[46],
 		type;
 
@@ -70,7 +68,7 @@ LoadOffsetsFromFile(name[])
 		Float:rz,
 		listindex;
 
-	filedir = ARMOUR_DATA_FOLDER;
+	filedir = DIRECTORY_CARMOUR;
 	strcat(filedir, name);
 
 	if(!fexist(filedir))

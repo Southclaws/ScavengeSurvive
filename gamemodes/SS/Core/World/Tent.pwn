@@ -4,8 +4,6 @@
 #define MAX_TENT			(1024)
 #define MAX_TENT_ITEMS		(8)
 #define INVALID_TENT_ID		(-1)
-#define TENT_DATA_FOLDER	"SSS/Tents/"
-#define TENT_DATA_DIR		"./scriptfiles/SSS/Tents/"
 
 
 enum E_TENT_DATA
@@ -54,7 +52,7 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(tnt_Index);
 
-	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "#KEYTEXT_INTERACT" with crowbar to dismantle", .label = 0);
+	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", .label = 0);
 
 	tnt_Data[id][tnt_objSideR1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 270.0, degrees)),
@@ -131,7 +129,7 @@ stock DestroyTent(tentid)
 
 	new filename[64];
 
-	format(filename, sizeof(filename), ""#TENT_DATA_FOLDER"%d_%d_%d_%d",
+	format(filename, sizeof(filename), ""DIRECTORY_TENT"%d_%d_%d_%d",
 		tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ], tnt_Data[tentid][tnt_rotZ]);
 
 	if(fexist(filename))
@@ -271,7 +269,7 @@ SaveTents(printeach = false, printtotal = false)
 LoadTents(printeach = false, printtotal = false)
 {
 	new
-		dir:direc = dir_open(TENT_DATA_DIR),
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
 		item[46],
 		type,
 		File:file,
@@ -289,7 +287,7 @@ LoadTents(printeach = false, printtotal = false)
 	{
 		if(type == FM_FILE)
 		{
-			filedir = TENT_DATA_FOLDER;
+			filedir = DIRECTORY_TENT;
 			strcat(filedir, item);
 			file = fopen(filedir, io_read);
 
@@ -349,7 +347,7 @@ SaveTent(tentid, prints = false)
 		File:file,
 		data[MAX_TENT_ITEMS * TENT_CELL_END];
 
-	format(filename, sizeof(filename), ""#TENT_DATA_FOLDER"%d_%d_%d_%d",
+	format(filename, sizeof(filename), ""DIRECTORY_TENT"%d_%d_%d_%d",
 		tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ], tnt_Data[tentid][tnt_rotZ]);
 
 	file = fopen(filename, io_write);

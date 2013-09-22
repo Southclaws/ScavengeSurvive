@@ -100,22 +100,27 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Directories
-#define DIRECTORY_SCIPTFILES		"./scriptfiles/"
-#define DIRECTORY_VEHICLESPAWNS		"./scriptfiles/Vehicles/"
-#define DIRECTORY_MAIN				"./scriptfiles/SSS/"
-#define DIRECTORY_DEFENCES			"./scriptfiles/SSS/Defences/"
-#define DIRECTORY_DETFIELD			"./scriptfiles/SSS/Detfield/"
-#define DIRECTORY_INVENTORY			"./scriptfiles/SSS/Inventory/"
-#define DIRECTORY_LOGS				"./scriptfiles/SSS/Logs/"
-#define DIRECTORY_NOTEBOOK			"./scriptfiles/SSS/Notebook/"
-#define DIRECTORY_PLAYER			"./scriptfiles/SSS/Player/"
-#define DIRECTORY_SAFEBOX			"./scriptfiles/SSS/Safebox/"
-#define DIRECTORY_SIGNS				"./scriptfiles/SSS/Signs/"
-#define DIRECTORY_VEHICLES			"./scriptfiles/SSS/Vehicles/"
+#define DIRECTORY_SCRIPTFILES		"./scriptfiles/"
+#define DIRECTORY_MAIN				"SSS/"
+#define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
+#define DIRECTORY_CARMOUR			"vehicles/Mods/"
+#define DIRECTORY_LOGS				"SSS/Logs/"
+#define DIRECTORY_PLAYER			"SSS/Player/"
+#define DIRECTORY_INVENTORY			"SSS/Inventory/"
+#define DIRECTORY_NOTEBOOK			"SSS/Notebook/"
+#define DIRECTORY_VEHICLE_DAT		"SSS/VehicleDat/"
+#define DIRECTORY_VEHICLE_INV		"SSS/VehicleInv/"
+#define DIRECTORY_SAFEBOX			"SSS/Safebox/"
+#define DIRECTORY_TENT				"SSS/Tents/"
+#define DIRECTORY_DEFENCES			"SSS/Defences/"
+#define DIRECTORY_SIGNS				"SSS/Signs/"
+#define DIRECTORY_DETFIELD			"SSS/Detfield/"
+
+
 
 // Files
-#define PLAYER_DATA_FILE			"SSS/Player/%s.dat"
-#define PLAYER_ITEM_FILE			"SSS/Inventory/%s.inv"
+#define PLAYER_DATA_FILE			DIRECTORY_SCRIPTFILES"%s.dat"
+#define PLAYER_ITEM_FILE			DIRECTORY_SCRIPTFILES"%s.inv"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
 #define WORLD_DATABASE				"SSS/World.db"
 #define SETTINGS_FILE				"SSS/settings.cfg"
@@ -699,7 +704,8 @@ ItemType:		item_StarterMotor	= INVALID_ITEM_TYPE,
 ItemType:		item_FlareGun		= INVALID_ITEM_TYPE,
 ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
-ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE;
+ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE,
+ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE;
 
 
 // UI HANDLES
@@ -969,70 +975,76 @@ public OnGameModeInit()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
-	if(!dir_exists(DIRECTORY_SCIPTFILES))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCIPTFILES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCIPTFILES);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES);
 	}
 
-	if(!dir_exists(DIRECTORY_MAIN))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		print("ERROR: Directory '"DIRECTORY_MAIN"' not found. Creating directory.");
-		dir_create(DIRECTORY_MAIN);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	if(!dir_exists(DIRECTORY_DEFENCES))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES))
 	{
-		print("ERROR: Directory '"DIRECTORY_DEFENCES"' not found. Creating directory.");
-		dir_create(DIRECTORY_DEFENCES);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
 	}
 
-	if(!dir_exists(DIRECTORY_DETFIELD))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD))
 	{
-		print("ERROR: Directory '"DIRECTORY_DETFIELD"' not found. Creating directory.");
-		dir_create(DIRECTORY_DETFIELD);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD);
 	}
 
-	if(!dir_exists(DIRECTORY_INVENTORY))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY))
 	{
-		print("ERROR: Directory '"DIRECTORY_INVENTORY"' not found. Creating directory.");
-		dir_create(DIRECTORY_INVENTORY);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY);
 	}
 
-	if(!dir_exists(DIRECTORY_LOGS))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS))
 	{
-		print("ERROR: Directory '"DIRECTORY_LOGS"' not found. Creating directory.");
-		dir_create(DIRECTORY_LOGS);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_LOGS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
 	}
 
-	if(!dir_exists(DIRECTORY_NOTEBOOK))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK))
 	{
-		print("ERROR: Directory '"DIRECTORY_NOTEBOOK"' not found. Creating directory.");
-		dir_create(DIRECTORY_NOTEBOOK);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK);
 	}
 
-	if(!dir_exists(DIRECTORY_PLAYER))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER))
 	{
-		print("ERROR: Directory '"DIRECTORY_PLAYER"' not found. Creating directory.");
-		dir_create(DIRECTORY_PLAYER);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
 	}
 
-	if(!dir_exists(DIRECTORY_SAFEBOX))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX))
 	{
-		print("ERROR: Directory '"DIRECTORY_SAFEBOX"' not found. Creating directory.");
-		dir_create(DIRECTORY_SAFEBOX);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX);
 	}
 
-	if(!dir_exists(DIRECTORY_SIGNS))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS))
 	{
-		print("ERROR: Directory '"DIRECTORY_SIGNS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SIGNS);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS);
 	}
 
-	if(!dir_exists(DIRECTORY_VEHICLES))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT))
 	{
-		print("ERROR: Directory '"DIRECTORY_VEHICLES"' not found. Creating directory.");
-		dir_create(DIRECTORY_VEHICLES);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -1300,6 +1312,7 @@ public OnGameModeInit()
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
 	item_LargeBackpack	= DefineItemType("Large Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
+	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
