@@ -22,7 +22,7 @@ LoadSettings()
 
 		gMessageOfTheDay	= "Message of the day. Please change this inside "SETTINGS_FILE"";
 		gWebsiteURL			= "southclawjk.wordpress.com";
-		gGameModeName		= "Southclaw's Scavenge & Survive";
+		gGameModeName		= "Southclaw's Scavenge + Survive";
 		gWhitelist			= false;
 		gPauseMap			= false;
 		gInteriorEntry		= false;

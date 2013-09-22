@@ -191,7 +191,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		{
 			if(!(4 <= strlen(inputtext) <= 32))
 			{
-				ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, ""#C_RED"Password too short/long!\n"C_YELLOW"Password must be between 4 and 32 characters.", "Type your password below", "Accept", "Quit");
+				ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, ""C_RED"Password too short/long!\n"C_YELLOW"Password must be between 4 and 32 characters.", "Type your password below", "Accept", "Quit");
 				return 0;
 			}
 

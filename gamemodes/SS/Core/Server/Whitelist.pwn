@@ -58,7 +58,7 @@ WhitelistKick(playerid)
 	new str[512];
 
 	format(str, 512,
-		""#C_YELLOW"You are not on the whitelist for this server.\n\
+		""C_YELLOW"You are not on the whitelist for this server.\n\
 		This is in force to provide the best gameplay experience for all players.\n\n\
 		"#C_WHITE"Please apply on "#C_BLUE"%s"#C_WHITE".\n\
 		Applications are always accepted as soon as possible\n\

@@ -117,10 +117,10 @@ ShowListOfBans(playerid, index = 0)
 		format(title, sizeof(title), "Bans (%d-%d of %d)", index, index + MAX_BANS_PER_PAGE, total);
 
 		if(index + MAX_BANS_PER_PAGE < total)
-			strcat(list, ""#C_YELLOW"Next\n");
+			strcat(list, ""C_YELLOW"Next\n");
 
 		if(index >= MAX_BANS_PER_PAGE)
-			strcat(list, ""#C_YELLOW"Prev");
+			strcat(list, ""C_YELLOW"Prev");
 
 		ShowPlayerDialog(playerid, d_BanList, DIALOG_STYLE_LIST, title, list, "Open", "Close");
 		ban_CurrentIndex[playerid] = index;

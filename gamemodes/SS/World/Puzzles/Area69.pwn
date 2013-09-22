@@ -397,7 +397,7 @@ ShowCodeList1(playerid)
 	new str[268];
 
 	format(str, 268,
-		""#C_ORANGE"Keycodes for security system. SECTOR 01:\n\n\
+		""C_ORANGE"Keycodes for security system. SECTOR 01:\n\n\
 		\t"#C_WHITE"Control Tower:"#C_YELLOW"\t%d\n\
 		\t"#C_WHITE"Main gate:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Airstrip Gate:"#C_YELLOW"\t\t%d\n\
@@ -419,7 +419,7 @@ ShowCodeList2(playerid)
 	new str[268];
 
 	format(str, 268,
-		""#C_ORANGE"Keycodes for security system. SECTOR 02:\n\n\
+		""C_ORANGE"Keycodes for security system. SECTOR 02:\n\n\
 		\t"#C_WHITE"Generator:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Passage 1:"#C_YELLOW"\t\t%d\n\
 		\t"#C_WHITE"Passage 2:"#C_YELLOW"\t\t%d\n\

@@ -9,7 +9,7 @@ CMD:help(playerid, params[])
 	gBigString[0] = EOS;
 
 	strcat(gBigString,
-		""#C_YELLOW"General Information:\n\n\n"#C_WHITE"\
+		""C_YELLOW"General Information:\n\n\n"#C_WHITE"\
 		\t"#C_RED"/rules for a list of server rules.\n\n\
 		\t"#C_BLUE"/chatinfo for information on chat.\n\n\
 		\t"#C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\
@@ -26,26 +26,26 @@ CMD:rules(playerid, params[])
 	gBigString[0] = EOS;
 
 	strcat(gBigString,
-		""#C_YELLOW"Server Rules:\n\n\n"\
-		""#C_WHITE"1. No global chat use if local or radio is available. (/chatinfo) You'll be muted for global spam.\n\
+		""C_YELLOW"Server Rules:\n\n\n"\
+		""C_WHITE"1. No global chat use if local or radio is available. (/chatinfo) You'll be muted for global spam.\n\
 		"#C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n\
 		"#C_WHITE"2. No hacking, cheating or client modifications that give you advantages.\n\
 		"#C_BLUE"\tPunishment: Permanent ban.\n\n");
 
 	strcat(gBigString,
-		""#C_WHITE"3. No exploiting of map bugs such as hiding/building bases inside models.\n\
+		""C_WHITE"3. No exploiting of map bugs such as hiding/building bases inside models.\n\
 		"#C_BLUE"\tPunishment: Account and base deleted, perma-ban for second offence.\n\n\
 		"#C_WHITE"4. No exploiting server bugs, report them using the /bug command.\n\
 		"#C_BLUE"\tPunishment: Week long ban.\n\n");
 
 	strcat(gBigString,
-		""#C_WHITE"5. Only English in global chat. Please use the radio (/chatinfo) for other languages.\n\
+		""C_WHITE"5. Only English in global chat. Please use the radio (/chatinfo) for other languages.\n\
 		"#C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n\
 		"#C_WHITE"6. No flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.\n\
 		"#C_BLUE"\tPunishment: Permanent ban, no appeal.\n\n");
 
 	strcat(gBigString,
-		""#C_WHITE"7. Don't kill admins on duty with the unique black skin with \"STAFF\" on the back\n\
+		""C_WHITE"7. Don't kill admins on duty with the unique black skin with \"STAFF\" on the back\n\
 		"#C_BLUE"\tPunishment: Kick, ban for repeated offence.\n\n\
 		"#C_WHITE"8. Report all hackers, failure to report hackers or playing with/alongside them will be punished.\n\
 		"#C_BLUE"\tPunishment: Exactly the same as hacking punishment.");
@@ -60,7 +60,7 @@ CMD:restartinfo(playerid, params[])
 	gBigString[0] = EOS;
 
 	strcat(gBigString,
-		""#C_WHITE"The server restarts "#C_YELLOW"every 5 hours."#C_WHITE"\n\n\
+		""C_WHITE"The server restarts "#C_YELLOW"every 5 hours."#C_WHITE"\n\n\
 		Your character data such as position, clothes etc will be saved just like when you log out.\n\
 		All your held items, holstered weapon, inventory and bag items will be saved.\n\
 		The last car you exited will be saved along with all items inside.\n");
@@ -82,14 +82,14 @@ CMD:chatinfo(playerid, params[])
 	gBigString[0] = EOS;
 
 	strcat(gBigString,
-		""#C_YELLOW"Communication Information:\n\n\n"#C_WHITE"\
+		""C_YELLOW"Communication Information:\n\n\n"#C_WHITE"\
 		Chat is split into 3 types: Global, Local and Radio.\n\n\
 		\t"#C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "#C_WHITE"/quiet\n\n\
 		\t"#C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
 		\t"#C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
 
 	strcat(gBigString,
-		""#C_WHITE"You can type the command on it's own to switch to that mode\n\
+		""C_WHITE"You can type the command on it's own to switch to that mode\n\
 		Or type the command followed by some text to send a message to that specific chat.\n\n\
 		If you are talking to someone next to you, "#C_YELLOW"USE LOCAL OR RADIO!\n\
 		"#C_WHITE"If you send unnecessary chat to global, you will be muted.");
@@ -163,7 +163,7 @@ CMD:changepass(playerid,params[])
 CMD:admins(playerid, params[])
 {
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admins",
-		""#C_YELLOW"Server Staff:\n\n\n"#C_WHITE"\
+		""C_YELLOW"Server Staff:\n\n\n"#C_WHITE"\
 		\t"#C_BLUE"Southclaw - Developer\n\n\
 		\t"#C_BLUE"Dogmeat - Admin\n\n\
 		\t"#C_BLUE"Tezza - Admin\n\n\

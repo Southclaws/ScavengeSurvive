@@ -115,7 +115,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			stmt_fetch_row(gStmt_BugInfo);
 
 			format(message, sizeof(message),
-				""#C_YELLOW"Reporter:\n\t\t"#C_BLUE"%s\n\n\
+				""C_YELLOW"Reporter:\n\t\t"#C_BLUE"%s\n\n\
 				"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\
 				"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s",
 				name, bug, TimestampToDateTime(issue_TimestampIndex[listitem]));
