@@ -25,6 +25,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					stop SitDownTimer[playerid];
 				}
 			}
+
+			if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
+			{
+				if(!(gPlayerBitData[playerid] & KnockedOut))
+				{
+					if(GetPlayerAnimationIndex(playerid) == 1381)
+					{
+						ClearAnimations(playerid);
+					}
+					else
+					{
+						ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+					}
+				}
+			}
 		}
 		if(newkeys & KEY_CROUCH || newkeys & KEY_SPRINT || newkeys & KEY_JUMP)
 		{
@@ -37,20 +52,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(random(100) < 60)
 				ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff", 4.1, 0, 1, 1, 0, 0);
-		}
-		if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
-		{
-			if(!(gPlayerBitData[playerid] & KnockedOut))
-			{
-				if(GetPlayerAnimationIndex(playerid) == 1381)
-				{
-					ClearAnimations(playerid);
-				}
-				else
-				{
-					ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
-				}
-			}
 		}
 	}
 }
