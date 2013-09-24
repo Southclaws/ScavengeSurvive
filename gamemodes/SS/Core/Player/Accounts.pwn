@@ -9,10 +9,10 @@ LoadAccount(playerid)
 {
 	new
 		exists,
-		tmp_Ipv4,		// 2
-		tmp_Alive,		// 3
-		tmp_Spawn[48],	// 5
-		tmp_IsVIP;		// 6
+		tmp_Ipv4,
+		tmp_Alive,
+		tmp_Spawn[48],
+		tmp_IsVIP;
 
 	stmt_bind_value(gStmt_AccountExists, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
 	stmt_bind_result_field(gStmt_AccountExists, 0, DB::TYPE_INTEGER, exists);
@@ -24,61 +24,60 @@ LoadAccount(playerid)
 		if(exists == 0)
 			return 0;
 	}
-
-	stmt_bind_value(gStmt_AccountLoad, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountLoad, 1, DB::TYPE_STRING, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
-	stmt_bind_result_field(gStmt_AccountLoad, 2, DB::TYPE_INTEGER, tmp_Ipv4);
-	stmt_bind_result_field(gStmt_AccountLoad, 3, DB::TYPE_INTEGER, tmp_Alive);
-	stmt_bind_result_field(gStmt_AccountLoad, 4, DB::TYPE_STRING, tmp_Spawn, 48);
-	stmt_bind_result_field(gStmt_AccountLoad, 6, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
-	stmt_bind_result_field(gStmt_AccountLoad, 7, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
-	stmt_bind_result_field(gStmt_AccountLoad, 8, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
-	stmt_bind_result_field(gStmt_AccountLoad, 9, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
-	stmt_bind_result_field(gStmt_AccountLoad, 10, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
-	stmt_bind_result_field(gStmt_AccountLoad, 11, DB::TYPE_STRING, gPlayerData[playerid][ply_AimShoutText], 128);
-
-	if(stmt_execute(gStmt_AccountLoad))
+	else
 	{
-		stmt_fetch_row(gStmt_AccountLoad);
-
-		if(gWhitelist)
-		{
-			if(!IsNameInWhitelist(gPlayerName[playerid]))
-				return 3;
-		}
-
-		if(tmp_Alive)
-			t:gPlayerBitData[playerid]<Alive>;
-
-		else
-			f:gPlayerBitData[playerid]<Alive>;
-
-		sscanf(tmp_Spawn, "ffff",
-			gPlayerData[playerid][ply_SpawnPosX],
-			gPlayerData[playerid][ply_SpawnPosY],
-			gPlayerData[playerid][ply_SpawnPosZ],
-			gPlayerData[playerid][ply_SpawnRotZ]);
-
-		if(tmp_IsVIP)
-			t:gPlayerBitData[playerid]<IsVip>;
-
-		else
-			f:gPlayerBitData[playerid]<IsVip>;
-
-		t:gPlayerBitData[playerid]<HasAccount>;
-		f:gPlayerBitData[playerid]<IsNewPlayer>;
-
-		Tutorial_End(playerid);
-
-		if(gPlayerData[playerid][ply_IP] == tmp_Ipv4)
-			return 2;
-		
-		return 1;
+		print("ERROR: [LoadAccount] executing statement 'gStmt_AccountExists'.");
+		return 0;
 	}
 
-	printf("ERROR: Loading player account for '%p' from database", playerid);
+	stmt_bind_value(gStmt_AccountLoad, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_IPV4, DB::TYPE_INTEGER, tmp_Ipv4);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, tmp_Alive);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWN, DB::TYPE_STRING, tmp_Spawn, 48);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_REGDATE, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_LASTLOG, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_AIMSHOUT, DB::TYPE_STRING, gPlayerData[playerid][ply_AimShoutText], 128);
 
-	return 0;
+	if(!stmt_execute(gStmt_AccountLoad))
+	{
+		printf("ERROR: Loading player account for '%p' from database", playerid);
+
+		return 0;
+	}
+
+	stmt_fetch_row(gStmt_AccountLoad);
+
+	if(gWhitelist)
+	{
+		if(!IsNameInWhitelist(gPlayerName[playerid]))
+			return 3;
+	}
+
+	if(tmp_Alive)
+		t:gPlayerBitData[playerid]<Alive>;
+
+	else
+		f:gPlayerBitData[playerid]<Alive>;
+
+	if(tmp_IsVIP)
+		t:gPlayerBitData[playerid]<IsVip>;
+
+	else
+		f:gPlayerBitData[playerid]<IsVip>;
+
+	t:gPlayerBitData[playerid]<HasAccount>;
+	f:gPlayerBitData[playerid]<IsNewPlayer>;
+
+	Tutorial_End(playerid);
+
+	if(gPlayerData[playerid][ply_IP] == tmp_Ipv4)
+		return 2;
+	
+	return 1;
 }
 
 CreateAccount(playerid, password[])
@@ -123,10 +122,10 @@ DeleteAccount(name[])
 	stmt_bind_value(gStmt_AccountDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_execute(gStmt_AccountDelete);
 
-	GetFile(name, file);
+	PLAYER_DAT_FILE(name, file);
 	fremove(file);
 
-	GetInvFile(name, file);
+	PLAYER_INV_FILE(name, file);
 	fremove(file);
 
 	format(file, sizeof(file), "SSS/Vehicles/%s.dat", name);
@@ -375,7 +374,17 @@ Logout(playerid)
 			RemovePlayerMask(playerid);
 
 		if(IsPlayerInAnyVehicle(playerid))
-			SavePlayerVehicle(gPlayerData[playerid][ply_CurrentVehicle], gPlayerName[playerid]);
+		{
+			new Float:health;
+
+			GetVehicleHealth(gPlayerData[playerid][ply_CurrentVehicle], health);
+
+			if(health < VEHICLE_HEALTH_MIN)
+				DestroyVehicle(gPlayerData[playerid][ply_CurrentVehicle]);
+
+			else
+				SavePlayerVehicle(gPlayerData[playerid][ply_CurrentVehicle], gPlayerName[playerid]);
+		}
 	}
 
 	return 1;

@@ -44,7 +44,7 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_END],
 		animidx = GetPlayerAnimationIndex(playerid);
 
-	GetFile(gPlayerName[playerid], filename);
+	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
 	data[PLY_CELL_HEALTH]	= _:gPlayerData[playerid][ply_HitPoints];
 	data[PLY_CELL_ARMOUR]	= _:gPlayerData[playerid][ply_ArmourPoints];
@@ -114,8 +114,17 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 
 	file = fopen(filename, io_write);
+
+	if(!file)
+	{
+		printf("ERROR: [SavePlayerChar] Opening file '%s'.", filename);
+		return 0;
+	}
+
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
+
+	return 1;
 }
 SavePlayerInventory(playerid)
 {
@@ -124,7 +133,7 @@ SavePlayerInventory(playerid)
 		File:file,
 		data[INV_CELL_END];
 
-	GetInvFile(gPlayerName[playerid], filename);
+	PLAYER_INV_FILE(gPlayerName[playerid], filename);
 
 	for(new i = INV_CELL_ITEMS, j; j < 4; i += 2, j++)
 	{
@@ -146,12 +155,21 @@ SavePlayerInventory(playerid)
 	}
 
 	file = fopen(filename, io_write);
+
+	if(!file)
+	{
+		printf("ERROR: [SavePlayerInventory] Opening file '%s'.", filename);
+		return 0;
+	}
+
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
 
 	#if defined SAVELOAD_DEBUG
 	printf("\t[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
 	#endif
+
+	return 1;
 }
 
 LoadPlayerChar(playerid)
@@ -162,12 +180,15 @@ LoadPlayerChar(playerid)
 		data[PLY_CELL_END],
 		itemid;
 
-	GetFile(gPlayerName[playerid], filename);
+	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_read);
 
 	if(!file)
+	{
+		printf("ERROR: [LoadPlayerChar] Opening file '%s'.", filename);
 		return 0;
+	}
 
 	fblockread(file, data, sizeof(data));
 	fclose(file);
@@ -260,12 +281,15 @@ LoadPlayerInventory(playerid)
 		itemid,
 		containerid;
 
-	GetInvFile(gPlayerName[playerid], filename);
+	PLAYER_INV_FILE(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_read);
 
 	if(!file)
+	{
+		printf("ERROR: [LoadPlayerInventory] Opening file '%s'.", filename);
 		return 0;
+	}
 
 	fblockread(file, data, sizeof(data));
 	fclose(file);
@@ -321,15 +345,31 @@ ClearPlayerInventoryFile(playerid)
 		File:file,
 		data[PLY_CELL_END];
 
-	GetFile(gPlayerName[playerid], filename);
+	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_write);
+
+	if(!file)
+	{
+		printf("ERROR: [ClearPlayerInventoryFile] Opening file '%s'.", filename);
+		return 0;
+	}
+
 	fblockwrite(file, data, 1);
 	fclose(file);
 
-	GetInvFile(gPlayerName[playerid], filename);
+	PLAYER_INV_FILE(gPlayerName[playerid], filename);
 
 	file = fopen(filename, io_write);
+
+	if(!file)
+	{
+		printf("ERROR: [ClearPlayerInventoryFile] Opening file '%s'.", filename);
+		return 0;
+	}
+
 	fblockwrite(file, data, 1);
 	fclose(file);
+
+	return 1;
 }

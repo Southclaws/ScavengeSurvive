@@ -31,6 +31,10 @@ native IsValidVehicle(vehicleid);
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
 
+#define DEFAULT_POS_X				(-907.5452)
+#define DEFAULT_POS_Y				(272.7235)
+#define DEFAULT_POS_Z				(1014.1449)
+
 /*==============================================================================
 
 	Libraries and respective links to their release pages
@@ -44,10 +48,6 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
-
-#define DEFAULT_POS_X				(-907.5452)
-#define DEFAULT_POS_Y				(272.7235)
-#define DEFAULT_POS_Z				(1014.1449)
 
 #include "SS/Core/Server/Hooks.pwn"
 
@@ -119,8 +119,8 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Files
-#define PLAYER_DATA_FILE			DIRECTORY_SCRIPTFILES"%s.dat"
-#define PLAYER_ITEM_FILE			DIRECTORY_SCRIPTFILES"%s.inv"
+#define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
+#define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.inv"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
 #define WORLD_DATABASE				"SSS/World.db"
 #define SETTINGS_FILE				"SSS/settings.cfg"
@@ -261,8 +261,8 @@ enum
 #define f:%1<%2>					((%1)&=~(%2))
 
 #define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
-#define GetFile(%0,%1)				format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
-#define GetInvFile(%0,%1)			format(%1, MAX_PLAYER_FILE, PLAYER_ITEM_FILE, %0)
+#define PLAYER_DAT_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
+#define PLAYER_INV_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_ITEM_FILE, %0)
 
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
