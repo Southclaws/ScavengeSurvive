@@ -66,7 +66,9 @@ Float:	ply_RadioFrequency,
 		ply_ChatMode,
 		ply_CurrentVehicle,
 		ply_LastHitBy[MAX_PLAYER_NAME],
+		ply_LastHitById,
 		ply_LastKilledBy[MAX_PLAYER_NAME],
+		ply_LastKilledById,
 		ply_PingLimitStrikes,
 		ply_SpectateTarget,
 		ply_ScreenBoxFadeLevel,
@@ -970,7 +972,41 @@ stock GetPlayerLastVehicle(playerid)
 }
 
 // ply_LastHitBy
+stock GetLastHitBy(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_LastHitBy];
+}
+
+// ply_LastHitById
+stock GetLastHitById(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_LastHitById];
+}
+
 // ply_LastKilledBy
+stock GetLastKilledBy(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_LastKilledBy];
+}
+
+// ply_LastKilledById
+stock GetLastKilledById(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return gPlayerData[playerid][ply_LastKilledById];
+}
+
 // ply_PingLimitStrikes
 // ply_SpectateTarget
 // ply_ScreenBoxFadeLevel

@@ -1,5 +1,23 @@
 public OnPlayerDeath(playerid, killerid, reason)
 {
+	if(killerid == INVALID_PLAYER_ID)
+	{
+		if(GetTickCountDifference(tickcount(), GetPlayerTookDamageTick(playerid)) < 1000)
+		{
+			killerid = GetLastHitById(playerid);
+
+			if(!IsPlayerConnected(killerid))
+				killerid = INVALID_PLAYER_ID;
+		}
+	}
+
+	OnDeath(playerid, killerid, reason);
+
+	return 1;
+}
+
+OnDeath(playerid, killerid, reason)
+{
 	if(!(gPlayerBitData[playerid] & Alive) || gPlayerBitData[playerid] & AdminDuty)
 	{
 		return 0;
@@ -26,7 +44,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(IsPlayerConnected(killerid))
 	{
+		logf("[KILL] %p killed %p with %d", killerid, playerid, reason);
+		printf("[KILL] %p killed %p with %d", killerid, playerid, reason);
+
 		gPlayerData[playerid][ply_LastKilledBy] = gPlayerName[killerid];
+		gPlayerData[playerid][ply_LastKilledById] = killerid;
 
 		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
 
@@ -69,7 +91,11 @@ public OnPlayerDeath(playerid, killerid, reason)
 	}
 	else
 	{
+		logf("[DEATH] %p died because of %d", playerid, reason);
+		printf("[DEATH] %p died because of %d", playerid, reason);
+
 		gPlayerData[playerid][ply_LastKilledBy][0] = EOS;
+		gPlayerData[playerid][ply_LastKilledById] = INVALID_PLAYER_ID;
 
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
 

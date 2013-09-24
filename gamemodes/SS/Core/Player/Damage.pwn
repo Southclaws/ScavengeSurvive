@@ -72,8 +72,11 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
-	gPlayerData[damagedid][ply_LastHitBy] = gPlayerName[playerid];
+	GetPlayerName(playerid, gPlayerData[damagedid][ply_LastHitBy], MAX_PLAYER_NAME);
+	gPlayerData[damagedid][ply_LastHitById] = playerid;
+
 	DamagePlayer(playerid, damagedid, weaponid);
+
 	return 1;
 }
 
