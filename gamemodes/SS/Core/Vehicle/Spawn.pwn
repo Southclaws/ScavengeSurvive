@@ -60,7 +60,7 @@ LoadVehiclesFromFile(file[], prints)
 {
 	if(!fexist(file))
 	{
-		print("ERROR: [LoadVehiclesFromFile] File '%s' not found.", file);
+		printf("ERROR: [LoadVehiclesFromFile] File '%s' not found.", file);
 		return 0;
 	}
 

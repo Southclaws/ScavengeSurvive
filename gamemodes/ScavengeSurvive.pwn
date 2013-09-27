@@ -66,12 +66,13 @@ native IsValidVehicle(vehicleid);
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
+#include <playerprogress>			// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
+#include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
+#include <djson>					// By DracoBlue:			http://forum.sa-mp.com/showthread.php?t=48439
+
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <SIF/Modules/Craft>
 #include <SIF/Modules/Notebook>
-
-#include <playerprogress>			// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
-#include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
 #include <Balloon>					// By Southclaw:			https://gist.github.com/Southclaw/6254507
 #include <Line>						// By Southclaw:			https://gist.github.com/Southclaw/6254512
@@ -92,6 +93,8 @@ native WP_Hash(buffer[], len, const str[]);
 // Limits
 #define MAX_MOTD_LEN				(128)
 #define MAX_WEBSITE_NAME			(64)
+#define MAX_INFO_MESSAGE			(8)
+#define MAX_INFO_MESSAGE_LEN		(128)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
@@ -123,7 +126,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.inv"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
 #define WORLD_DATABASE				"SSS/World.db"
-#define SETTINGS_FILE				"SSS/settings.cfg"
+#define SETTINGS_FILE				"SSS/settings.json"
 
 
 // Database
@@ -496,12 +499,14 @@ DBStatement:	gStmt_SprayTagLoad,
 DBStatement:	gStmt_SprayTagSave;
 
 
-// SERVER SETTINGS (INI LOADED)
+// SERVER SETTINGS (JSON LOADED)
 new
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gWebsiteURL[MAX_WEBSITE_NAME],
 		gGameModeName[32],
+		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 bool:	gWhitelist,
+
 bool:	gPauseMap,
 bool:	gInteriorEntry,
 bool:	gPlayerAnimations,
@@ -515,7 +520,9 @@ Float:	gNameTagDistance,
 new
 		gServerUptime,
 bool:	gServerRestarting,
-		gBigString[2048];
+		gBigString[2048],
+		gTotalInfoMessage,
+		gCurrentInfoMessage;
 
 // SKINS/CLOTHES
 new
@@ -976,6 +983,8 @@ public OnGameModeInit()
 	print("Starting Main Game Script 'SSS' ...");
 
 	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode initializing...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
+
+	djson_GameModeInit();
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
@@ -1499,6 +1508,8 @@ public OnGameModeExit()
 {
 	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode exiting...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
 
+	djson_GameModeExit();
+
 	// First param: print each individual entity when it's saved
 	// Second param: print the total amount of entities saved
 
@@ -1567,7 +1578,12 @@ task GameUpdate[1000]()
 	gServerUptime++;
 }
 
-task GlobalAnnouncement[600000]()
+task InfoMessage[600000]()
 {
-	MsgAll(YELLOW, " >  Confused? Check out the Wiki: "#C_ORANGE"scavenge-survive.wikia.com "#C_YELLOW"or: "#C_ORANGE"empire-bay.com");
+	if(gCurrentInfoMessage >= gTotalInfoMessage)
+		gCurrentInfoMessage = 0;
+
+	MsgAll(YELLOW, gInfoMessage[gCurrentInfoMessage]);
+
+	gCurrentInfoMessage++;
 }

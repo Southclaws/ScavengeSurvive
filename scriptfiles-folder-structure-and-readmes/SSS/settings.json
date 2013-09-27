@@ -1,0 +1,23 @@
+{
+  "player":{
+    "allow-pause-map":0,
+    "combat-log-window":10,
+    "interior-entry":0,
+    "login-freeze-time":5,
+    "max-tab-out-time":60,
+    "nametag-distance":3.000000,
+    "ping-limit":400,
+    "player-animations":1
+  },
+  "server":{
+    "gamemodename":"Southclaw's Scavenge + Survive",
+    "infomsgs":[
+      "(info 1) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
+      "(info 2) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
+      "(info 3) Please update the 'server/infomsgs' array in 'SSS/settings.json'."
+    ],
+    "motd":"Please update the 'server/motd' string in SSS/settings.json",
+    "website":"southclawjk.wordpress.com",
+    "whitelist":0
+  }
+}

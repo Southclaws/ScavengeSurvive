@@ -10,19 +10,57 @@ LoadSettings()
 	Setting Loading
 */
 
+
 	if(fexist(SETTINGS_FILE))
 	{
-		INI_Load(SETTINGS_FILE);
+		new tmp[64];
+
+		// server
+
+		strcat(gMessageOfTheDay, dj(SETTINGS_FILE, "server/motd"));
+		strcat(gWebsiteURL, dj(SETTINGS_FILE, "server/website"));
+		strcat(gGameModeName, dj(SETTINGS_FILE, "server/gamemodename"));
+
+		for(new i, j = djCount(SETTINGS_FILE, "server/infomsgs"); i < j; i++)
+		{
+			if(i >= MAX_INFO_MESSAGE)
+			{
+				print("ERROR: MAX_INFO_MESSAGE limit reached while loading infomsgs from '"SETTINGS_FILE"'.");
+				break;
+			}
+
+			format(tmp, sizeof(tmp), "server/infomsgs/%d", i);
+			strcat(gInfoMessage[i], dj(SETTINGS_FILE, tmp));
+			gTotalInfoMessage++;
+		}
+
+		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
+
+		// player
+
+		gPauseMap = bool:djInt(SETTINGS_FILE, "player/allow-pause-map");
+		gInteriorEntry = bool:djInt(SETTINGS_FILE, "player/interior-entry");
+		gPlayerAnimations = bool:djInt(SETTINGS_FILE, "player/player-animations");
+		gNameTagDistance = djFloat(SETTINGS_FILE, "player/nametag-distance");
+		gCombatLogWindow = djInt(SETTINGS_FILE, "player/combat-log-window");
+		gLoginFreezeTime = djInt(SETTINGS_FILE, "player/login-freeze-time");
+		gMaxTaboutTime = djInt(SETTINGS_FILE, "player/max-tab-out-time");
+		gPingLimit = djInt(SETTINGS_FILE, "player/ping-limit");
 	}
 	else
 	{
 		print("ERROR: Settings file '"SETTINGS_FILE"' not found. Creating with default values.");
 
-		new INI:ini = INI_Open(SETTINGS_FILE);
+		djCreateFile(SETTINGS_FILE);
+		djStyled(true);
+		// Speed isn't an issue here, and this file should be easy on the eye.
 
-		gMessageOfTheDay	= "Message of the day. Please change this inside "SETTINGS_FILE"";
+		gMessageOfTheDay	= "Please update the 'server/motd' string in "SETTINGS_FILE"";
 		gWebsiteURL			= "southclawjk.wordpress.com";
 		gGameModeName		= "Southclaw's Scavenge + Survive";
+		gInfoMessage[0]		= "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gInfoMessage[1]		= "(info 2) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gInfoMessage[2]		= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gWhitelist			= false;
 		gPauseMap			= false;
 		gInteriorEntry		= false;
@@ -33,28 +71,28 @@ LoadSettings()
 		gMaxTaboutTime		= 60;
 		gPingLimit			= 400;
 
-		INI_WriteString(ini, "motd", gMessageOfTheDay);
-		INI_WriteString(ini, "website", gWebsiteURL);
-		INI_WriteString(ini, "gamemodename", gGameModeName);
+		djAutocommit(false);
 
-		INI_WriteBool(ini, "whitelist", gWhitelist);
-		INI_WriteBool(ini, "allow-pause-map", gPauseMap);
-		INI_WriteBool(ini, "interior-entry", gInteriorEntry);
-		INI_WriteBool(ini, "player-animations", gPlayerAnimations);
+		djSet(SETTINGS_FILE, "server/motd", gMessageOfTheDay);
+		djSet(SETTINGS_FILE, "server/website", gWebsiteURL);
+		djSet(SETTINGS_FILE, "server/gamemodename", gGameModeName);
+		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[0]);
+		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[1]);
+		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
+		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
 
-		INI_WriteFloat(ini, "nametag-distance", gNameTagDistance);
-		INI_WriteInt(ini, "combat-log-window", gCombatLogWindow);
-		INI_WriteInt(ini, "login-freeze-time", gLoginFreezeTime);
-		INI_WriteInt(ini, "max-tab-out-time", gMaxTaboutTime);
-		INI_WriteInt(ini, "ping-limit", gPingLimit);
+		djSetInt(SETTINGS_FILE, "player/allow-pause-map", gPauseMap);
+		djSetInt(SETTINGS_FILE, "player/interior-entry", gInteriorEntry);
+		djSetInt(SETTINGS_FILE, "player/player-animations", gPlayerAnimations);
+		djSetFloat(SETTINGS_FILE, "player/nametag-distance", gNameTagDistance);
+		djSetInt(SETTINGS_FILE, "player/combat-log-window", gCombatLogWindow);
+		djSetInt(SETTINGS_FILE, "player/login-freeze-time", gLoginFreezeTime);
+		djSetInt(SETTINGS_FILE, "player/max-tab-out-time", gMaxTaboutTime);
+		djSetInt(SETTINGS_FILE, "player/ping-limit", gPingLimit);
 
-		INI_Close(ini);
+		djCommit(SETTINGS_FILE);
+		djAutocommit(true);
 	}
-
-
-/*
-	Printing setting values to console
-*/
 
 
 #if defined PRINT_SETTINGS
@@ -63,11 +101,14 @@ LoadSettings()
 	printf(" Web URL: %s", gWebsiteURL);
 	printf(" Game Mode Name: %s", gGameModeName);
 
+	for(new i; i < gTotalInfoMessage; i++)
+		printf(" Info%d: %s", i, gInfoMessage[i]);
+
 	printf(" Whitelist: %d", gWhitelist);
+
 	printf(" Pause Map: %d", gPauseMap);
 	printf(" Interior Entry: %d", gInteriorEntry);
 	printf(" Player Animations: %d", gPlayerAnimations);
-
 	printf(" Name Distance: %f", gNameTagDistance);
 	printf(" Combat Log Window: %d", gCombatLogWindow);
 	printf(" Login Freeze Time: %d", gLoginFreezeTime);
@@ -106,24 +147,4 @@ LoadSettings()
 	AllowInteriorWeapons(true);
 
 	print("\n");
-}
-
-INI:settings[](name[], value[])
-{
-	INI_String("motd", gMessageOfTheDay, MAX_MOTD_LEN);
-	INI_String("website", gWebsiteURL, MAX_WEBSITE_NAME);
-	INI_String("gamemodename", gGameModeName, 32);
-
-	INI_Bool("whitelist", gWhitelist);
-	INI_Bool("allow-pause-map", gPauseMap);
-	INI_Bool("interior-entry", gInteriorEntry);
-	INI_Bool("player-animations", gPlayerAnimations);
-
-	INI_Float("nametag-distance", gNameTagDistance);
-	INI_Int("combat-log-window", gCombatLogWindow);
-	INI_Int("login-freeze-time", gLoginFreezeTime);
-	INI_Int("max-tab-out-time", gMaxTaboutTime);
-	INI_Int("ping-limit", gPingLimit);
-
-	return 1;
 }
