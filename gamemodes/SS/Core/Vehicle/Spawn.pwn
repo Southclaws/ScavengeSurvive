@@ -1,57 +1,66 @@
 #include <YSI\y_hooks>
 
 
-#define VEHICLE_FOLDER				"Vehicles"
 #define VEHICLE_SPAWN_CHANCE		(4) // Percent
 
 
 LoadVehicles(printeach = false, printtotal = false)
 {
 	LoadPlayerVehicles(printeach, printtotal);
-	LoadVehiclesFromFolder(DIRECTORY_SCRIPTFILES VEHICLE_FOLDER, printeach);
+	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
 
 	printf("Loaded %d Vehicles\n", Iter_Count(veh_Index));
 }
 
-LoadVehiclesFromFolder(folder[], prints)
+LoadVehiclesFromFolder(foldername[], prints)
 {
 	new
-		foldername[256],
 		dir:dirhandle,
+		directory_with_root[256],
 		item[64],
 		type,
-		filename[256];
+		next_path[256];
 
-	format(foldername, sizeof(foldername), DIRECTORY_SCRIPTFILES"%s/", folder);
-	dirhandle = dir_open(foldername);
+	strcat(directory_with_root, DIRECTORY_SCRIPTFILES);
+	strcat(directory_with_root, foldername);
+
+	dirhandle = dir_open(directory_with_root);
+
+	if(!dirhandle)
+	{
+		printf("ERROR: [LoadVehiclesFromFolder] Reading directory '%s'.", foldername);
+		return 0;
+	}
 
 	while(dir_list(dirhandle, item, type))
 	{
 		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
 		{
-			filename[0] = EOS;
-			format(filename, sizeof(filename), "%s/%s", folder, item);
-			LoadVehiclesFromFolder(filename, prints);
+			next_path[0] = EOS;
+			format(next_path, sizeof(next_path), "%s%s", foldername, item);
+			LoadVehiclesFromFolder(next_path, prints);
 		}
 		if(type == FM_FILE)
 		{
 			if(!strcmp(item[strlen(item) - 4], ".dat"))
 			{
-				filename[0] = EOS;
-				format(filename, sizeof(filename), "%s/%s", folder, item);
-				LoadVehiclesFromFile(filename, prints);
+				next_path[0] = EOS;
+				format(next_path, sizeof(next_path), "%s%s", foldername, item);
+				LoadVehiclesFromFile(next_path, prints);
 			}
 		}
 	}
 
 	dir_close(dirhandle);
+
+	return 1;
 }
 
 LoadVehiclesFromFile(file[], prints)
 {
 	if(!fexist(file))
 	{
-		print("VEHICLE FILE NOT FOUND");
+		print("ERROR: [LoadVehiclesFromFile] File '%s' not found.", file);
 		return 0;
 	}
 
