@@ -141,13 +141,13 @@ public OnPlayerConnect(playerid)
 		WhitelistKick(playerid);
 	}
 
-	SetAllWeaponSkills(playerid, 500);
-	LoadPlayerTextDraws(playerid);
-	SetPlayerScore(playerid, 0);
+	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
 	TextDrawShowForPlayer(playerid, Branding);
 	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
 	SpawnPlayer(playerid);
+
+	LoadPlayerTextDraws(playerid);
 
 	MsgAllF(WHITE, " >  %P (%d)"#C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "#C_BLUE"%s", gMessageOfTheDay);
@@ -471,6 +471,7 @@ public OnPlayerSpawn(playerid)
 
 	gPlayerData[playerid][ply_SpawnTick] = tickcount();
 
+	SetAllWeaponSkills(playerid, 500);
 	SetPlayerWeather(playerid, gWeatherID);
 	SetPlayerTeam(playerid, 0);
 	ResetPlayerMoney(playerid);

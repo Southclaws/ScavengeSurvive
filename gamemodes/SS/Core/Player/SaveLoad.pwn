@@ -267,6 +267,9 @@ LoadPlayerChar(playerid)
 	gPlayerData[playerid][ply_SpawnPosZ] = Float:data[PLY_CELL_SPAWN_Z];
 	gPlayerData[playerid][ply_SpawnRotZ] = Float:data[PLY_CELL_SPAWN_R];
 
+	if(!IsPointInMapBounds(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
+		gPlayerData[playerid][ply_SpawnPosZ] += 1.0;
+
 	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
 
 	return 1;

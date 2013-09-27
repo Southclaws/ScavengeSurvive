@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SIGN			(128)
+#define MAX_SIGN			(1024)
 #define MAX_SIGN_TEXT		(128)
 #define INVALID_SIGN_ID		(-1)
 

@@ -1,6 +1,19 @@
 #include <YSI\y_hooks>
 
 
+PrepareForSpawn(playerid)
+{
+	t:gPlayerBitData[playerid]<Spawned>;
+
+	TogglePlayerControllable(playerid, true);
+	SetCameraBehindPlayer(playerid);
+	SetAllWeaponSkills(playerid, 500);
+
+	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
+	ShowWatch(playerid);
+	CancelSelectTextDraw(playerid);
+}
+
 PlayerSpawnExistingCharacter(playerid)
 {
 	if(!LoadPlayerInventory(playerid))
@@ -15,11 +28,6 @@ PlayerSpawnExistingCharacter(playerid)
 		return 0;
 	}
 
-	new Float:z;
-
-	if(!IsPointInMapBounds(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
-		z += 1.0;
-
 	Streamer_UpdateEx(playerid,
 		gPlayerData[playerid][ply_SpawnPosX],
 		gPlayerData[playerid][ply_SpawnPosY],
@@ -28,7 +36,7 @@ PlayerSpawnExistingCharacter(playerid)
 	SetPlayerPos(playerid,
 		gPlayerData[playerid][ply_SpawnPosX],
 		gPlayerData[playerid][ply_SpawnPosY],
-		gPlayerData[playerid][ply_SpawnPosZ] + z);
+		gPlayerData[playerid][ply_SpawnPosZ]);
 
 	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
 
@@ -45,20 +53,17 @@ PlayerSpawnExistingCharacter(playerid)
 	}
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
-	SetCameraBehindPlayer(playerid);
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
-	t:gPlayerBitData[playerid]<Spawned>;
 
-	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
-	ShowWatch(playerid);
+	PrepareForSpawn(playerid);
 
 	if(gPlayerData[playerid][ply_stance] == 1)
 	{
-		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
 	}
 	else if(gPlayerData[playerid][ply_stance] == 2)
 	{
-		ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
 	}
 	else if(gPlayerData[playerid][ply_stance] == 3)
 	{
@@ -78,6 +83,7 @@ PlayerCreateNewCharacter(playerid)
 
 	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
 	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
+	TogglePlayerControllable(playerid, false);
 
 	if(gPlayerBitData[playerid] & LoggedIn)
 	{
@@ -122,6 +128,11 @@ PlayerSpawnNewCharacter(playerid, gender)
 		Float:z,
 		Float:r;
 
+	GenerateSpawnPoint(playerid, x, y, z, r);
+	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
+	SetPlayerPos(playerid, x, y, z);
+	SetPlayerFacingAngle(playerid, r);
+
 	if(gender == GENDER_MALE)
 	{
 		switch(random(6))
@@ -152,27 +163,15 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
 
-	GenerateSpawnPoint(playerid, x, y, z, r);
-	SetPlayerPos(playerid, x, y, z);
-	SetPlayerFacingAngle(playerid, r);
-
-	SetCameraBehindPlayer(playerid);
-	TogglePlayerControllable(playerid, true);
-	SetAllWeaponSkills(playerid, 500);
-	GangZoneShowForPlayer(playerid, MiniMapOverlay, 0x000000FF);
-	ShowWatch(playerid);
-
-	CancelSelectTextDraw(playerid);
-	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
-	PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
-
-	t:gPlayerBitData[playerid]<Spawned>;
 	t:gPlayerBitData[playerid]<Alive>;
 	f:gPlayerBitData[playerid]<Bleeding>;
 	f:gPlayerBitData[playerid]<Infected>;
 	f:gPlayerBitData[playerid]<KnockedOut>;
 
-	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
+	PrepareForSpawn(playerid);
+
+	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
+	PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
 
 	backpackitem = CreateItem(item_Satchel);
 	containerid = GetItemExtraData(backpackitem);
@@ -190,4 +189,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	if(gPlayerBitData[playerid] & IsNewPlayer)
 		Tutorial_Start(playerid);
+
+	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 }

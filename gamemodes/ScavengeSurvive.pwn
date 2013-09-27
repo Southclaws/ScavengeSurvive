@@ -975,6 +975,8 @@ public OnGameModeInit()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
+	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode initializing...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
+
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
@@ -1495,6 +1497,8 @@ public OnGameModeInit()
 
 public OnGameModeExit()
 {
+	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode exiting...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
+
 	// First param: print each individual entity when it's saved
 	// Second param: print the total amount of entities saved
 
@@ -1519,6 +1523,7 @@ public SetRestart(seconds)
 
 RestartGamemode()
 {
+	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode restarting...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
