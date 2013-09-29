@@ -16,14 +16,7 @@ ACMD:ban[2](playerid, params[])
 	new
 		id = -1,
 		playername[MAX_PLAYER_NAME],
-		reason[64],
-		highestadmin;
-
-	foreach(new i : Player)
-	{
-		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
-			highestadmin = i;
-	}
+		reason[64];
 
 	if(!sscanf(params, "dS(None)[64]", id, reason))
 	{
@@ -39,9 +32,6 @@ ACMD:ban[2](playerid, params[])
 		if(playerid == id)
 			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
-			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban %P"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, id);
-
 		MsgF(playerid, YELLOW, " >  Banned %P"#C_YELLOW" reason: "#C_BLUE"%s", id, reason);
 
 		BanPlayer(id, reason, playerid);
@@ -55,9 +45,6 @@ ACMD:ban[2](playerid, params[])
 
 		if(GetAdminLevelByName(playername) > 0)
 			return 2;
-
-		if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
-			return MsgF(highestadmin, YELLOW, " >  %P"#C_YELLOW" Is trying to ban "#C_BLUE"%s"#C_YELLOW", You are the highest online admin, it's your decision.", playerid, playername);
 
 		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
 
@@ -102,7 +89,7 @@ ACMD:whitelist[2](playerid, params[])
 
 	if(sscanf(params, "s[7]S()[24]", command, name))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name]");
+		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", gWhitelist ? ("on") : ("off"));
 		return 1;
 	}
 
@@ -134,12 +121,12 @@ ACMD:whitelist[2](playerid, params[])
 	}
 	else if(!strcmp(command, "on", true))
 	{
-		Msg(playerid, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
+		MsgAdmins(1, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
 		gWhitelist = true;
 	}
 	else if(!strcmp(command, "off", true))
 	{
-		Msg(playerid, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
+		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
 		gWhitelist = false;
 	}
 	else if(!strcmp(command, "?", true))

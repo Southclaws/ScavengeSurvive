@@ -35,6 +35,7 @@ LoadSettings()
 		}
 
 		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
+		gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
 
 		// player
 
@@ -55,21 +56,22 @@ LoadSettings()
 		djStyled(true);
 		// Speed isn't an issue here, and this file should be easy on the eye.
 
-		gMessageOfTheDay	= "Please update the 'server/motd' string in "SETTINGS_FILE"";
-		gWebsiteURL			= "southclawjk.wordpress.com";
-		gGameModeName		= "Southclaw's Scavenge + Survive";
-		gInfoMessage[0]		= "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
-		gInfoMessage[1]		= "(info 2) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
-		gInfoMessage[2]		= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
-		gWhitelist			= false;
-		gPauseMap			= false;
-		gInteriorEntry		= false;
-		gPlayerAnimations	= true;
-		gNameTagDistance	= 3.0;
-		gCombatLogWindow	= 10;
-		gLoginFreezeTime	= 5;
-		gMaxTaboutTime		= 60;
-		gPingLimit			= 400;
+		gMessageOfTheDay		= "Please update the 'server/motd' string in "SETTINGS_FILE"";
+		gWebsiteURL				= "southclawjk.wordpress.com";
+		gGameModeName			= "Southclaw's Scavenge + Survive";
+		gInfoMessage[0]			= "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gInfoMessage[1]			= "(info 2) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gInfoMessage[2]			= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gWhitelist				= false;
+		gInfoMessageInterval	= 5;
+		gPauseMap				= false;
+		gInteriorEntry			= false;
+		gPlayerAnimations		= true;
+		gNameTagDistance		= 3.0;
+		gCombatLogWindow		= 10;
+		gLoginFreezeTime		= 5;
+		gMaxTaboutTime			= 60;
+		gPingLimit				= 400;
 
 		djAutocommit(false);
 
@@ -80,6 +82,7 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[1]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
+		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 
 		djSetInt(SETTINGS_FILE, "player/allow-pause-map", gPauseMap);
 		djSetInt(SETTINGS_FILE, "player/interior-entry", gInteriorEntry);
@@ -105,6 +108,7 @@ LoadSettings()
 		printf(" Info%d: %s", i, gInfoMessage[i]);
 
 	printf(" Whitelist: %d", gWhitelist);
+	printf(" InfoMsg Interval: %d", gInfoMessageInterval);
 
 	printf(" Pause Map: %d", gPauseMap);
 	printf(" Interior Entry: %d", gInteriorEntry);

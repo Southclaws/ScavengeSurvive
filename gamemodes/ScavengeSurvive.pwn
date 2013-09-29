@@ -66,18 +66,18 @@ native IsValidVehicle(vehicleid);
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <playerprogress>			// By Torbido/Southclaw:	https://gist.github.com/Southclaw/5979661
+#include <playerprogress>			// By Torbido/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 #include <djson>					// By DracoBlue:			http://forum.sa-mp.com/showthread.php?t=48439
 
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <SIF/Modules/Craft>
 #include <SIF/Modules/Notebook>
-#include <WeaponData>				// By Southclaw:			https://gist.github.com/Southclaw/5934397
-#include <Balloon>					// By Southclaw:			https://gist.github.com/Southclaw/6254507
-#include <Line>						// By Southclaw:			https://gist.github.com/Southclaw/6254512
-#include <Zipline>					// By Southclaw:			https://gist.github.com/Southclaw/6254523
-#include <Ladder>					// By Southclaw:			https://gist.github.com/Southclaw/6254527
+#include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
+#include <Balloon>					// By Southclaw:			https://github.com/Southclaw/Balloon
+#include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
+#include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
+#include <Ladder>					// By Southclaw:			https://github.com/Southclaw/Ladder
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
@@ -506,6 +506,7 @@ new
 		gGameModeName[32],
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 bool:	gWhitelist,
+		gInfoMessageInterval,
 
 bool:	gPauseMap,
 bool:	gInteriorEntry,
@@ -520,7 +521,7 @@ Float:	gNameTagDistance,
 new
 		gServerUptime,
 bool:	gServerRestarting,
-		gBigString[2048],
+		gBigString[MAX_PLAYERS][2048],
 		gTotalInfoMessage,
 		gCurrentInfoMessage;
 
@@ -1578,7 +1579,7 @@ task GameUpdate[1000]()
 	gServerUptime++;
 }
 
-task InfoMessage[600000]()
+task InfoMessage[gInfoMessageInterval * 60 * 1000]()
 {
 	if(gCurrentInfoMessage >= gTotalInfoMessage)
 		gCurrentInfoMessage = 0;

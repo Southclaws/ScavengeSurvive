@@ -222,25 +222,25 @@ MsgAdmins(level, colour, string[])
 
 ACMD:acmds[1](playerid, params[])
 {
-	strcat(gBigString, "/a [message] - Staff chat channel");
+	strcat(gBigString[playerid], "/a [message] - Staff chat channel");
 
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-		strcat(gBigString, "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
-		strcat(gBigString, gAdminCommandList_Lvl3);
+		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
+		strcat(gBigString[playerid], gAdminCommandList_Lvl3);
 	}
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-		strcat(gBigString, "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
-		strcat(gBigString, gAdminCommandList_Lvl2);
+		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
+		strcat(gBigString[playerid], gAdminCommandList_Lvl2);
 	}
 	if(gPlayerData[playerid][ply_Admin] >= 1)
 	{
-		strcat(gBigString, "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
-		strcat(gBigString, gAdminCommandList_Lvl1);
+		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
+		strcat(gBigString[playerid], gAdminCommandList_Lvl1);
 	}
 	
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -251,7 +251,7 @@ ACMD:adminlist[3](playerid, params[])
 		title[20],
 		line[52];
 
-	gBigString[0] = EOS;
+	gBigString[playerid][0] = EOS;
 
 	format(title, 20, "Administrators (%d)", admin_Total);
 
@@ -267,12 +267,12 @@ ACMD:adminlist[3](playerid, params[])
 			admin_Names[admin_Data[i][admin_Rank]]);
 
 		if(GetPlayerIDFromName(admin_Data[i][admin_Name]) != INVALID_PLAYER_ID)
-			strcat(gBigString, " >  ");
+			strcat(gBigString[playerid], " >  ");
 
-		strcat(gBigString, line);
+		strcat(gBigString[playerid], line);
 	}
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString, "Close", "");
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString[playerid], "Close", "");
 
 	return 1;
 }
