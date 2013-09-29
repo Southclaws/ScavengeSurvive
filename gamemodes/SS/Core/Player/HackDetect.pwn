@@ -76,7 +76,7 @@ ptask AntiCheatUpdate[1000](playerid)
 		VehicleTeleportCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
-			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must have been hacked)", -1);
+			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must be a hack)", -1);
 	}
 	else
 	{
@@ -158,6 +158,16 @@ PositionCheck(playerid)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		tp_DetectDelay[playerid] = tickcount();
+		return;
+	}
+
+	if(IsAtDefaultPos(x, y, z))
+	{
+		return;
+	}
+
+	if(IsAtDefaultPos(tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]))
+	{
 		return;
 	}
 
@@ -276,6 +286,7 @@ SwimFlyCheck(playerid)
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
+			BanPlayer(playerid, reason, -1);
 
 			sf_ReportTick[playerid] = tickcount();
 		}
@@ -309,8 +320,9 @@ VehicleHealthCheck(playerid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		format(reason, sizeof(reason), "Vehicle health of %.2f, (above server limit of 990)", hp);
+		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server gameplay mechanics)", hp);
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
+		BanPlayer(playerid, reason, -1);
 
 		SetVehicleHealth(GetPlayerVehicleID(playerid), 990.0);
 
@@ -638,32 +650,14 @@ VehicleModCheck(playerid)
 
 	if(component == 1008 || component == 1009 || component == 1010)
 	{
-		new
-			name[MAX_PLAYER_NAME],
-			Float:x,
-			Float:y,
-			Float:z;
-
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		GetVehiclePos(vehicleid, x, y, z);
-
-		ReportPlayer(name, "Detected with Nitro vehicle component", -1, REPORT_TYPE_CARNITRO, x, y, z, "");
+		BanPlayer(playerid, "Detected Nitro vehicle component.", -1);
 	}
 
 	component = GetVehicleComponentInSlot(vehicleid, CARMODTYPE_HYDRAULICS);
 
 	if(component == 1087)
 	{
-		new
-			name[MAX_PLAYER_NAME],
-			Float:x,
-			Float:y,
-			Float:z;
-
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		GetVehiclePos(vehicleid, x, y, z);
-
-		ReportPlayer(name, "Detected with Hydraulics vehicle component", -1, REPORT_TYPE_CARHYDRO, x, y, z, "");
+		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1);
 	}
 }
 

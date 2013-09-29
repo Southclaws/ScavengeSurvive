@@ -51,13 +51,12 @@ hook OnPlayerText(playerid, text[])
 
 	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_ADMIN)
 	{
+		logf("[CHAT] [ADMIN] [%p]: %s", playerid, text);
+
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
-			{
-				logf("[CHAT] [ADMIN] [%p]: %s", playerid, text);
 				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(text));
-			}
 		}
 	}
 
@@ -225,13 +224,12 @@ ACMD:a[1](playerid, params[])
 	}
 	else
 	{
+		logf("[CHAT] [ADMIN] [%p]: %s", playerid, params);
+
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
-			{
-				logf("[CHAT] [ADMIN] [%p]: %s", playerid, params);
 				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(params));
-			}
 		}
 	}
 
