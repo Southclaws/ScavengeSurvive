@@ -200,6 +200,17 @@ CanPlayerSpectate(playerid, targetid)
 	return 1;
 }
 
+hook OnPlayerDisconnect(playerid)
+{
+	foreach(new i : Player)
+	{
+		if(gPlayerData[i][ply_SpectateTarget] == playerid)
+		{
+			ExitSpectateMode(i);
+		}
+	}
+}
+
 hook OnPlayerConnect(playerid)
 {
 	gPlayerData[playerid][ply_SpectateTarget] = INVALID_PLAYER_ID;

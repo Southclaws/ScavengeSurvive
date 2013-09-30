@@ -76,22 +76,29 @@ KnockOutUpdate(playerid)
 		if(gPlayerBitData[playerid] & AdminDuty)
 			WakeUpPlayer(playerid);
 
-		new animidx = GetPlayerAnimationIndex(playerid);
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		{
+			SetVehicleEngine(GetPlayerVehicleID(playerid), 0);	
+		}
+		else
+		{
+			new animidx = GetPlayerAnimationIndex(playerid);
 
-		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
-			KnockOutPlayer(playerid, GetPlayerKnockoutDuration(playerid) - GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)));
+			if(animidx != 1207 && animidx != 1018 && animidx != 1001)
+			{
+				KnockOutPlayer(playerid, knockout_Duration[playerid] - GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
+				return;
+			}
+		}
 
-		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)));
-		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, GetPlayerKnockoutDuration(playerid));
+		printf("%f / %f", GetTickCountDifference(tickcount(), knockout_Tick[playerid]), knockout_Duration[playerid]);
+
+		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
+		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
 
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-			SetVehicleEngine(GetPlayerVehicleID(playerid), 0);
-
-		if(GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)) >= GetPlayerKnockoutDuration(playerid))
-		{
+		if(GetTickCountDifference(tickcount(), knockout_Tick[playerid]) >= knockout_Duration[playerid])
 			WakeUpPlayer(playerid);
-		}
 	}
 	else
 	{
@@ -101,7 +108,7 @@ KnockOutUpdate(playerid)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				if(GetTickCountDifference(tickcount(), GetPlayerKnockOutTick(playerid)) > 5000 * gPlayerData[playerid][ply_HitPoints])
+				if(GetTickCountDifference(tickcount(), knockout_Tick[playerid]) > 5000 * gPlayerData[playerid][ply_HitPoints])
 				{
 					if(gPlayerBitData[playerid] & Bleeding)
 					{
@@ -121,12 +128,12 @@ KnockOutUpdate(playerid)
 	return;
 }
 
-GetPlayerKnockOutTick(playerid)
+stock GetPlayerKnockOutTick(playerid)
 {
 	return knockout_Tick[playerid];
 }
 
-GetPlayerKnockoutDuration(playerid)
+stock GetPlayerKnockoutDuration(playerid)
 {
 	return knockout_Duration[playerid];
 }

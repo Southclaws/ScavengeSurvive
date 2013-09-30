@@ -162,6 +162,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	}
 
 	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
+	gPlayerData[playerid][ply_Gender] = gender;
 
 	t:gPlayerBitData[playerid]<Alive>;
 	f:gPlayerBitData[playerid]<Bleeding>;

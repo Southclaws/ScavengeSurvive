@@ -1501,6 +1501,7 @@ public OnGameModeInit()
 	}
 
 	defer AutoSave();
+	defer InfoMessage();
 
 	return 1;
 }
@@ -1579,7 +1580,7 @@ task GameUpdate[1000]()
 	gServerUptime++;
 }
 
-task InfoMessage[gInfoMessageInterval * 60 * 1000]()
+timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
 {
 	if(gCurrentInfoMessage >= gTotalInfoMessage)
 		gCurrentInfoMessage = 0;
@@ -1587,4 +1588,6 @@ task InfoMessage[gInfoMessageInterval * 60 * 1000]()
 	MsgAll(YELLOW, gInfoMessage[gCurrentInfoMessage]);
 
 	gCurrentInfoMessage++;
+
+	defer InfoMessage();
 }

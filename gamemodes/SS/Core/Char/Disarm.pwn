@@ -18,6 +18,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(gPlayerBitData[i] & KnockedOut || GetPlayerAnimationIndex(i) == 1381)
 				{
 					DisarmPlayer(playerid, i);
+					break;
 				}
 			}
 		}

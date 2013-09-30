@@ -1,8 +1,5 @@
 #include <a_samp>
-#include <formatex>
-#include <zcmd>
-#include <streamer>
-#include <colours>
+#include <SIF/SIF>
 
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 16
@@ -21,21 +18,17 @@ public OnPlayerUpdate(playerid)
 
 	GetAnimationName(idx, animlib, 32, animname, 32);
 	format(str, 78, "AnimIDX:%d~n~AnimName:%s~n~AnimLib:%s", idx, animname, animlib);
-	CallRemoteFunction("sffa_msgbox", "dsdd", playerid, str, 0, 150);
+	ShowActionText(playerid, str, 0);
 
 	if(idx != curAnim)
 	{
-	    curAnim = idx;
-	    OnAnimChange(playerid);
+		format(str, 128, "AnimTime: %d", GetTickCount() - animTick);
+		SendClientMessage(playerid, -1, str);
+
+		animTick = GetTickCount();
+
+		curAnim = idx;
 	}
 
-}
-
-OnAnimChange(playerid)
-{
-	new str[128];
-	format(str, 128, "AnimTime: %d", GetTickCount() - animTick);
-	SendClientMessage(playerid, YELLOW, str);
-
-	animTick = GetTickCount();
+	return 1;
 }
