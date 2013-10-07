@@ -82,6 +82,8 @@ native IsValidVehicle(vehicleid);
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
 
+native gpci(playerid, serial[], len);
+
 
 /*==============================================================================
 
@@ -143,14 +145,14 @@ native WP_Hash(buffer[], len, const str[]);
 #define FIELD_PLAYER_PASS			"pass"		// 01
 #define FIELD_PLAYER_IPV4			"ipv4"		// 02
 #define FIELD_PLAYER_ALIVE			"alive"		// 03
-#define FIELD_PLAYER_SPAWN			"spawn"		// 04
-#define FIELD_PLAYER_KARMA			"karma"		// 05
-#define FIELD_PLAYER_REGDATE		"regdate"	// 06
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 07
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 08
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 19
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 10
-#define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 11
+#define FIELD_PLAYER_KARMA			"karma"		// 04
+#define FIELD_PLAYER_REGDATE		"regdate"	// 05
+#define FIELD_PLAYER_LASTLOG		"lastlog"	// 06
+#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 07
+#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 08
+#define FIELD_PLAYER_WARNINGS		"warnings"	// 09
+#define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 10
+#define FIELD_PLAYER_GPCI			"gpci"		// 11
 
 enum
 {
@@ -158,14 +160,14 @@ enum
 	FIELD_ID_PLAYER_PASS,
 	FIELD_ID_PLAYER_IPV4,
 	FIELD_ID_PLAYER_ALIVE,
-	FIELD_ID_PLAYER_SPAWN,
 	FIELD_ID_PLAYER_KARMA,
 	FIELD_ID_PLAYER_REGDATE,
 	FIELD_ID_PLAYER_LASTLOG,
 	FIELD_ID_PLAYER_SPAWNTIME,
 	FIELD_ID_PLAYER_TOTALSPAWNS,
 	FIELD_ID_PLAYER_WARNINGS,
-	FIELD_ID_PLAYER_AIMSHOUT
+	FIELD_ID_PLAYER_AIMSHOUT,
+	FIELD_ID_PLAYER_GPCI
 }
 
 // Bans
@@ -446,6 +448,7 @@ DBStatement:	gStmt_AccountUpdate,
 DBStatement:	gStmt_AccountDelete,
 DBStatement:	gStmt_AccountSetPassword,
 DBStatement:	gStmt_AccountSetIpv4,
+DBStatement:	gStmt_AccountSetGpci,
 DBStatement:	gStmt_AccountSetLastLog,
 DBStatement:	gStmt_AccountSetSpawnTime,
 DBStatement:	gStmt_AccountSetTotalSpawns,
@@ -550,7 +553,8 @@ new
 // ITEM ATTACK ANIMATION HANDLES
 new
 	anim_Blunt,
-	anim_Stab;
+	anim_Stab,
+	anim_Heavy;
 
 
 // LOOT INDEXES
@@ -803,6 +807,8 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
 #include "SS/Core/Vehicle/Repair.pwn"
+#include "SS/Core/Vehicle/LockBreak.pwn"
+#include "SS/Core/Vehicle/Locksmith.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/Core.pwn"
@@ -891,7 +897,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/wheel.pwn"
 #include "SS/Core/Item/gascan.pwn"
 #include "SS/Core/Item/armyhelm.pwn"
-#include "SS/Core/Item/crowbar.pwn"
 #include "SS/Core/Item/zorromask.pwn"
 #include "SS/Core/Item/headlight.pwn"
 #include "SS/Core/Item/pills.pwn"
@@ -1062,120 +1067,114 @@ public OnGameModeInit()
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gWorld = db_open_persistent(WORLD_DATABASE);
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" ( \
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
 		"FIELD_PLAYER_PASS" TEXT,\
 		"FIELD_PLAYER_IPV4" INTEGER,\
+		"FIELD_PLAYER_GPCI" TEXT,\
 		"FIELD_PLAYER_ALIVE" INTEGER,\
-		"FIELD_PLAYER_SPAWN" TEXT,\
 		"FIELD_PLAYER_KARMA" INTEGER,\
 		"FIELD_PLAYER_REGDATE" INTEGER,\
 		"FIELD_PLAYER_LASTLOG" INTEGER,\
 		"FIELD_PLAYER_SPAWNTIME" INTEGER,\
 		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
 		"FIELD_PLAYER_WARNINGS" INTEGER,\
-		"FIELD_PLAYER_AIMSHOUT" TEXT\
-		)"));
+		"FIELD_PLAYER_AIMSHOUT" TEXT)"));
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" ( \
-		"FIELD_BANS_NAME" TEXT, \
-		"FIELD_BANS_IPV4" INTEGER, \
-		"FIELD_BANS_DATE" INTEGER, \
-		"FIELD_BANS_REASON" TEXT, \
-		"FIELD_BANS_BY" TEXT \
-		)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" (\
+		"FIELD_BANS_NAME" TEXT,\
+		"FIELD_BANS_IPV4" INTEGER,\
+		"FIELD_BANS_DATE" INTEGER,\
+		"FIELD_BANS_REASON" TEXT,\
+		"FIELD_BANS_BY" TEXT)"));
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" ( \
-		"FIELD_REPORTS_NAME" TEXT, \
-		"FIELD_REPORTS_REASON" TEXT, \
-		"FIELD_REPORTS_DATE" INTEGER, \
-		"FIELD_REPORTS_READ" INTEGER, \
-		"FIELD_REPORTS_TYPE" INTEGER, \
-		"FIELD_REPORTS_POSX" REAL, \
-		"FIELD_REPORTS_POSY" REAL, \
-		"FIELD_REPORTS_POSZ" REAL, \
-		"FIELD_REPORTS_INFO" TEXT, \
-		"FIELD_REPORTS_BY" TEXT \
-		)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
+		"FIELD_REPORTS_NAME" TEXT,\
+		"FIELD_REPORTS_REASON" TEXT,\
+		"FIELD_REPORTS_DATE" INTEGER,\
+		"FIELD_REPORTS_READ" INTEGER,\
+		"FIELD_REPORTS_TYPE" INTEGER,\
+		"FIELD_REPORTS_POSX" REAL,\
+		"FIELD_REPORTS_POSY" REAL,\
+		"FIELD_REPORTS_POSZ" REAL,\
+		"FIELD_REPORTS_INFO" TEXT,\
+		"FIELD_REPORTS_BY" TEXT)"));
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BUGS" ( \
-		"FIELD_BUGS_NAME" TEXT, \
-		"FIELD_BUGS_REASON" TEXT, \
-		"FIELD_BUGS_DATE" INTEGER \
-		)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BUGS" (\
+		"FIELD_BUGS_NAME" TEXT,\
+		"FIELD_BUGS_REASON" TEXT,\
+		"FIELD_BUGS_DATE" INTEGER)"));
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" ( \
-		"FIELD_WHITELIST_NAME" TEXT \
-		)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
+		"FIELD_WHITELIST_NAME" TEXT)"));
 
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" ( \
-		"FIELD_ADMINS_NAME" TEXT, \
-		"FIELD_ADMINS_LEVEL" INTEGER \
-		)"));
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
+		"FIELD_ADMINS_NAME" TEXT,\
+		"FIELD_ADMINS_LEVEL" INTEGER)"));
 
 
-	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" ( \
-		"FIELD_SPRAYTAG_NAME" TEXT, \
-		"FIELD_SPRAYTAG_POSX" REAL, \
-		"FIELD_SPRAYTAG_POSY" REAL, \
-		"FIELD_SPRAYTAG_POSZ" REAL, \
-		"FIELD_SPRAYTAG_ROTX" REAL, \
-		"FIELD_SPRAYTAG_ROTY" REAL, \
-		"FIELD_SPRAYTAG_ROTZ" REAL \
-		)"));
+	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" (\
+		"FIELD_SPRAYTAG_NAME" TEXT,\
+		"FIELD_SPRAYTAG_POSX" REAL,\
+		"FIELD_SPRAYTAG_POSY" REAL,\
+		"FIELD_SPRAYTAG_POSZ" REAL,\
+		"FIELD_SPRAYTAG_ROTX" REAL,\
+		"FIELD_SPRAYTAG_ROTY" REAL,\
+		"FIELD_SPRAYTAG_ROTZ" REAL)"));
 
-	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO Player VALUES(?, ?, ?, 0, '0.0, 0.0, 0.0, 0.0', 0, ?, ?, 0, 0, 0, ?)");
-	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_SPAWN" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM Player WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountGetAliases		= db_prepare(gAccounts, "SELECT * FROM Player WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ?");
-	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE Player SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?, ?, ?, ?, 0, 0, ?, ?, 0, 0, 0, ?)");
+	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetGpci		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountGetAliases		= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ?");
+	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ?");
 
-	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO Bans VALUES(?, ?, ?, ?, ?)");
-	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM Bans WHERE "FIELD_BANS_NAME" = ?");
-	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON" FROM Bans WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM Bans ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ?");
-	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bans");
-	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM Bans WHERE "FIELD_BANS_NAME" = ?");
-	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bans WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE Bans SET "FIELD_BANS_IPV4" = ? WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?)");
+	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ?");
+	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON" FROM "ACCOUNTS_TABLE_BANS" WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ?");
+	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS"");
+	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ?");
+	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS" WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) ORDER BY "FIELD_BANS_DATE" DESC");
 
-	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO Reports VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");
-	gStmt_ReportDelete			= db_prepare(gAccounts, "DELETE FROM Reports WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportDeleteName		= db_prepare(gAccounts, "DELETE FROM Reports WHERE "FIELD_REPORTS_NAME" = ?");
-	gStmt_ReportNameExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM Reports WHERE "FIELD_REPORTS_NAME" = ?");
-	gStmt_ReportList			= db_prepare(gAccounts, "SELECT * FROM Reports");
-	gStmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM Reports WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportSetRead			= db_prepare(gAccounts, "UPDATE Reports SET "FIELD_REPORTS_READ" = ? WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportGetUnread		= db_prepare(gAccounts, "SELECT COUNT(*) FROM Reports WHERE "FIELD_REPORTS_READ" = 0");
+	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");
+	gStmt_ReportDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
+	gStmt_ReportDeleteName		= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
+	gStmt_ReportNameExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
+	gStmt_ReportList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS"");
+	gStmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
+	gStmt_ReportSetRead			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_READ" = ? WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
+	gStmt_ReportGetUnread		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_READ" = 0");
 
-	gStmt_BugInsert				= db_prepare(gAccounts, "INSERT INTO Bugs VALUES(?, ?, ?)");
-	gStmt_BugDelete				= db_prepare(gAccounts, "DELETE FROM Bugs WHERE "FIELD_BUGS_DATE" = ?");
-	gStmt_BugList				= db_prepare(gAccounts, "SELECT * FROM Bugs");
-	gStmt_BugTotal				= db_prepare(gAccounts, "SELECT COUNT(*) FROM Bugs");
-	gStmt_BugInfo				= db_prepare(gAccounts, "SELECT * FROM Bugs WHERE "FIELD_BUGS_DATE" = ?");
+	gStmt_BugInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BUGS" VALUES(?, ?, ?)");
+	gStmt_BugDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BUGS" WHERE "FIELD_BUGS_DATE" = ?");
+	gStmt_BugList				= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS"");
+	gStmt_BugTotal				= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BUGS"");
+	gStmt_BugInfo				= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS" WHERE "FIELD_BUGS_DATE" = ?");
 
-	gStmt_WhitelistExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM Whitelist WHERE "FIELD_WHITELIST_NAME" = ?");
-	gStmt_WhitelistInsert		= db_prepare(gAccounts, "INSERT INTO Whitelist ("FIELD_WHITELIST_NAME") VALUES(?)");
-	gStmt_WhitelistDelete		= db_prepare(gAccounts, "DELETE FROM Whitelist WHERE "FIELD_WHITELIST_NAME" = ?");
+	gStmt_WhitelistExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
+	gStmt_WhitelistInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_WHITELIST" ("FIELD_WHITELIST_NAME") VALUES(?)");
+	gStmt_WhitelistDelete		= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
 
-	gStmt_AdminLoadAll			= db_prepare(gAccounts, "SELECT * FROM Admins");
-	gStmt_AdminExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM Admins WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminInsert			= db_prepare(gAccounts, "INSERT INTO Admins VALUES(?, ?)");
-	gStmt_AdminUpdate			= db_prepare(gAccounts, "UPDATE Admins SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminDelete			= db_prepare(gAccounts, "DELETE FROM Admins WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminGetLevel			= db_prepare(gAccounts, "SELECT * FROM Admins WHERE "FIELD_ADMINS_NAME" = ?");
+	gStmt_AdminLoadAll			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS"");
+	gStmt_AdminExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+	gStmt_AdminInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
+	gStmt_AdminUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
+	gStmt_AdminDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+	gStmt_AdminGetLevel			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
 
-	gStmt_SprayTagExists		= db_prepare(gWorld, "SELECT COUNT(*) FROM SprayTag WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
-	gStmt_SprayTagInsert		= db_prepare(gWorld, "INSERT INTO SprayTag VALUES(?, ?, ?, ?, ?, ?, ?)");
-	gStmt_SprayTagLoad			= db_prepare(gWorld, "SELECT * FROM SprayTag");
-	gStmt_SprayTagSave			= db_prepare(gWorld, "UPDATE SprayTag SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ? ");
+	gStmt_SprayTagExists		= db_prepare(gWorld, "SELECT COUNT(*) FROM "WORLD_TABLE_SPRAYTAG" WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
+	gStmt_SprayTagInsert		= db_prepare(gWorld, "INSERT INTO "WORLD_TABLE_SPRAYTAG" VALUES(?, ?, ?, ?, ?, ?, ?)");
+	gStmt_SprayTagLoad			= db_prepare(gWorld, "SELECT * FROM "WORLD_TABLE_SPRAYTAG"");
+	gStmt_SprayTagSave			= db_prepare(gWorld, "UPDATE "WORLD_TABLE_SPRAYTAG" SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ? ");
 
 	LoadSettings();
 
@@ -1340,36 +1339,41 @@ public OnGameModeInit()
 // 2590 - SPIKEY HOOK, SCHYTHE?
 
 
-	SetItemTypeHolsterable(ItemType:03,	1, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Baton
-	SetItemTypeHolsterable(ItemType:08,	1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED",		"PHONE_IN");		// Sword
-	SetItemTypeHolsterable(ItemType:22,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9
-	SetItemTypeHolsterable(ItemType:23,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9 SD
-	SetItemTypeHolsterable(ItemType:24,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Desert Eagle
-	SetItemTypeHolsterable(ItemType:25,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shotgun
-	SetItemTypeHolsterable(ItemType:26,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Sawnoff
-	SetItemTypeHolsterable(ItemType:27,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Spas 12
-	SetItemTypeHolsterable(ItemType:28,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Mac 10
-	SetItemTypeHolsterable(ItemType:29,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// MP5
-	SetItemTypeHolsterable(ItemType:30,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// AK-47
-	SetItemTypeHolsterable(ItemType:31,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// M16
-	SetItemTypeHolsterable(ItemType:32,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Tec 9
-	SetItemTypeHolsterable(ItemType:33,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Rifle
-	SetItemTypeHolsterable(ItemType:34,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Sniper
-	SetItemTypeHolsterable(ItemType:35,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// RPG
-	SetItemTypeHolsterable(ItemType:36,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Heatseeker
+	SetItemTypeHolsterable(ItemType:03,		1, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Baton
+	SetItemTypeHolsterable(ItemType:08,		1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED",		"PHONE_IN");		// Sword
+	SetItemTypeHolsterable(ItemType:22,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9
+	SetItemTypeHolsterable(ItemType:23,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9 SD
+	SetItemTypeHolsterable(ItemType:24,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Desert Eagle
+	SetItemTypeHolsterable(ItemType:25,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shotgun
+	SetItemTypeHolsterable(ItemType:26,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Sawnoff
+	SetItemTypeHolsterable(ItemType:27,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Spas 12
+	SetItemTypeHolsterable(ItemType:28,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Mac 10
+	SetItemTypeHolsterable(ItemType:29,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// MP5
+	SetItemTypeHolsterable(ItemType:30,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// AK-47
+	SetItemTypeHolsterable(ItemType:31,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// M16
+	SetItemTypeHolsterable(ItemType:32,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Tec 9
+	SetItemTypeHolsterable(ItemType:33,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Rifle
+	SetItemTypeHolsterable(ItemType:34,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Sniper
+	SetItemTypeHolsterable(ItemType:35,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// RPG
+	SetItemTypeHolsterable(ItemType:36,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Heatseeker
 
-	SetItemTypeHolsterable(item_Taser,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Taser
-	SetItemTypeHolsterable(item_Shield,	1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+	SetItemTypeHolsterable(item_Taser,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Taser
+	SetItemTypeHolsterable(item_Shield,		1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+	SetItemTypeHolsterable(item_Mailbox,	1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+
 
 
 	anim_Blunt = DefineAnimSet();
 	anim_Stab = DefineAnimSet();
+	anim_Heavy = DefineAnimSet();
 
 	AddAnimToSet(anim_Blunt, 26, 3.0);
 	AddAnimToSet(anim_Blunt, 17, 4.0);
 	AddAnimToSet(anim_Blunt, 18, 6.0);
 	AddAnimToSet(anim_Blunt, 19, 8.0);
 	AddAnimToSet(anim_Stab, 751, 18.8);
+	AddAnimToSet(anim_Heavy, 19, 8.0);
+	AddAnimToSet(anim_Heavy, 20, 8.0);
 
 	SetItemAnimSet(item_Wrench,			anim_Blunt);
 	SetItemAnimSet(item_Crowbar,		anim_Blunt);
@@ -1378,6 +1382,7 @@ public OnGameModeInit()
 	SetItemAnimSet(item_Cane,			anim_Blunt);
 	SetItemAnimSet(item_Taser,			anim_Stab);
 	SetItemAnimSet(item_Screwdriver,	anim_Stab);
+	SetItemAnimSet(item_Mailbox,		anim_Heavy);
 
 
 	DefineFoodItem(item_HotDog,			20.0, 1, 0);

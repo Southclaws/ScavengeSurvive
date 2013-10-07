@@ -11,7 +11,6 @@ LoadAccount(playerid)
 		exists,
 		tmp_Ipv4,
 		tmp_Alive,
-		tmp_Spawn[48],
 		tmp_IsVIP;
 
 	stmt_bind_value(gStmt_AccountExists, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
@@ -34,7 +33,6 @@ LoadAccount(playerid)
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, gPlayerData[playerid][ply_Password], MAX_PASSWORD_LEN);
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_IPV4, DB::TYPE_INTEGER, tmp_Ipv4);
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, tmp_Alive);
-	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWN, DB::TYPE_STRING, tmp_Spawn, 48);
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_REGDATE, DB::TYPE_INTEGER, gPlayerData[playerid][ply_RegisterTimestamp]);
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_LASTLOG, DB::TYPE_INTEGER, gPlayerData[playerid][ply_LastLogin]);
 	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, gPlayerData[playerid][ply_CreationTimestamp]);
@@ -82,12 +80,17 @@ LoadAccount(playerid)
 
 CreateAccount(playerid, password[])
 {
+	new serial[129];
+
+	gpci(playerid, serial, 129);
+
 	stmt_bind_value(gStmt_AccountCreate, 0, DB::TYPE_STRING,	gPlayerName[playerid], MAX_PLAYER_NAME);
 	stmt_bind_value(gStmt_AccountCreate, 1, DB::TYPE_STRING,	password, MAX_PASSWORD_LEN);
 	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INTEGER,	gPlayerData[playerid][ply_IP]);
-	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime());
+	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_STRING,	serial);
 	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime());
-	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_STRING,	"Drop your weapon!", 18);
+	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_INTEGER,	gettime());
+	stmt_bind_value(gStmt_AccountCreate, 6, DB::TYPE_STRING,	"Drop your weapon!", 18);
 	stmt_execute(gStmt_AccountCreate);
 
 	strcat(gPlayerData[playerid][ply_AimShoutText], "Drop your weapon!");
@@ -213,9 +216,17 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 
 Login(playerid)
 {
+	new serial[129];
+
+	gpci(playerid, serial, 129);
+
 	stmt_bind_value(gStmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
 	stmt_bind_value(gStmt_AccountSetIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_execute(gStmt_AccountSetIpv4);
+
+	stmt_bind_value(gStmt_AccountSetGpci, 0, DB::TYPE_STRING, serial);
+	stmt_bind_value(gStmt_AccountSetGpci, 1, DB::TYPE_PLAYER_NAME, playerid);
+	stmt_execute(gStmt_AccountSetGpci);
 
 	stmt_bind_value(gStmt_AccountSetLastLog, 0, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_AccountSetLastLog, 1, DB::TYPE_PLAYER_NAME, playerid);
@@ -415,14 +426,10 @@ SavePlayerData(playerid)
 				return 0;
 		}
 
-		new spawn[48];
-		format(spawn, 48, "%f %f %f %f", gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ], gPlayerData[playerid][ply_SpawnRotZ]);
-
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
-		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, spawn, 48);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(gStmt_AccountUpdate);
 
 		SavePlayerInventory(playerid);
@@ -431,10 +438,9 @@ SavePlayerData(playerid)
 	else
 	{
 		stmt_bind_value(gStmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_STRING, "0.0, 0.0, 0.0, 0.0", 32);
-		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
-		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
-		stmt_bind_value(gStmt_AccountUpdate, 4, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(gStmt_AccountUpdate, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Karma]);
+		stmt_bind_value(gStmt_AccountUpdate, 2, DB::TYPE_INTEGER, gPlayerData[playerid][ply_Warnings]);
+		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 
 		stmt_execute(gStmt_AccountUpdate);
 
