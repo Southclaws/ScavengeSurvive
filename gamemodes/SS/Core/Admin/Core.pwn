@@ -161,10 +161,13 @@ KickPlayer(playerid, reason[])
 {
 	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
 	MsgF(playerid, GREY, " >  Kicked, reason: "#C_BLUE"%s", reason);
+
 	defer KickPlayerDelay(playerid);
+
+	logf("[PART] %p (kick: %s)", playerid, reason);
 }
 
-timer KickPlayerDelay[50](playerid)
+timer KickPlayerDelay[10](playerid)
 {
 	Kick(playerid);
 }

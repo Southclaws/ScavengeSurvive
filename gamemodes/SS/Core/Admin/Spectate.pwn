@@ -2,6 +2,9 @@ new
 	PlayerText:spec_Name,
 	PlayerText:spec_Info;
 
+static
+	spectate_ClickTick[MAX_PLAYERS];
+
 
 EnterSpectateMode(playerid, targetid)
 {
@@ -21,6 +24,8 @@ EnterSpectateMode(playerid, targetid)
 
 	gPlayerData[playerid][ply_SpectateTarget] = targetid;
 	UpdateSpectateMode(playerid);
+
+	logf("[SPECTATE] %p watches %p", playerid, targetid);
 
 	return 1;
 }
@@ -127,6 +132,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 	{
+		if(GetTickCountDifference(tickcount(), spectate_ClickTick[playerid]) < 1000)
+			return 1;
+
+		spectate_ClickTick[playerid] = tickcount();
+
 		if(newkeys == 4)
 		{
 			new

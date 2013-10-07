@@ -320,7 +320,7 @@ VehicleHealthCheck(playerid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server gameplay mechanics)", hp);
+		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server)", hp);
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
 		BanPlayer(playerid, reason, -1);
 

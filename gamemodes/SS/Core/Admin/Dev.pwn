@@ -97,7 +97,7 @@ ACMD:setpinglimit[4](playerid, params[])
 	return 1;
 }
 
-ACMD:gamename[3](playerid,params[])
+ACMD:gamename[4](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid,YELLOW," >  Usage: /gamename [name]");
@@ -108,7 +108,7 @@ ACMD:gamename[3](playerid,params[])
 	return 1;
 }
 
-ACMD:hostname[3](playerid,params[])
+ACMD:hostname[4](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid,YELLOW," >  Usage: /hostname [name]");
@@ -122,7 +122,7 @@ ACMD:hostname[3](playerid,params[])
 	return 1;
 }
 
-ACMD:mapname[3](playerid,params[])
+ACMD:mapname[4](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
 		return Msg(playerid,YELLOW," >  Usage: /mapname [name]");
@@ -456,6 +456,71 @@ ACMD:ann[4](playerid, params[])
 		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
 
 	GameTextForAll(params, 5000, 5);
+
+	return 1;
+}
+
+ACMD:additem[4](playerid, params[])
+{
+	new
+		ItemType:type,
+		exdata,
+		itemid,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	if(sscanf(params, "dD(0)", _:type, exdata) == -1)
+	{
+		new
+			itemname[32],
+			tmp[32];
+
+		sscanf(params, "s[32]D(0)", itemname, exdata);
+
+		if(isnull(itemname))
+		{
+			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname] [extradata]");
+			return 1;
+		}
+
+		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+		{
+			GetItemTypeName(i, tmp);
+
+			if(strfind(tmp, itemname, true) != -1)
+			{
+				type = i;
+				break;
+			}
+		}
+	}
+
+	if(type == ItemType:0)
+	{
+		Msg(playerid, RED, " >  Cannot create item type 0");
+		return 1;
+	}
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	itemid = CreateItem(type,
+			x + (0.5 * floatsin(-r, degrees)),
+			y + (0.5 * floatcos(-r, degrees)),
+			z - 0.8568, .rz = r, .zoffset = 0.7);
+
+	if(exdata != 0)
+	{
+		SetItemExtraData(itemid, exdata);	
+	}
+	else
+	{
+		if(0 < _:type <= WEAPON_PARACHUTE)
+			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
+	}
+
 
 	return 1;
 }

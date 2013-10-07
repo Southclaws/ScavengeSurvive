@@ -124,21 +124,29 @@ public OnPlayerConnect(playerid)
 		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
 
 		t:gPlayerBitData[playerid]<IsNewPlayer>;
+
+		logf("[JOIN] %p (account does not exist)", playerid);
 	}
 
 	if(loadresult == 1) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
+
+		logf("[JOIN] %p (account exists, prompting login)", playerid);
 	}
 
 	if(loadresult == 2) // Account does exist, auto login
 	{
 		Login(playerid);
+
+		logf("[JOIN] %p (account exists, auto login)", playerid);
 	}
 
 	if(loadresult == 3) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
+
+		logf("[JOIN] %p (account not whitelisted)", playerid);
 	}
 
 	TogglePlayerControllable(playerid, false);
@@ -171,10 +179,15 @@ public OnPlayerDisconnect(playerid, reason)
 	switch(reason)
 	{
 		case 0:
+		{
 			MsgAllF(GREY, " >  %p lost connection.", playerid);
-
+			logf("[PART] %p (lost connection)", playerid);
+		}
 		case 1:
+		{
 			MsgAllF(GREY, " >  %p left the server.", playerid);
+			logf("[PART] %p (quit)", playerid);
+		}
 	}
 
 	return 1;
@@ -267,10 +280,23 @@ ptask PlayerUpdate[100](playerid)
 		weather;
 
 	if(IsPlayerInAnyVehicle(playerid))
+	{
 		PlayerVehicleUpdate(playerid);
-
+	}
 	else
+	{
 		VehicleSurfingCheck(playerid);
+
+		if(IsValidVehicle(gPlayerData[playerid][ply_CurrentVehicle]))
+		{
+			new Float:health;
+
+			GetVehicleHealth(gPlayerData[playerid][ply_CurrentVehicle], health);
+
+			if(health < 299.0)
+				SetVehicleHealth(gPlayerData[playerid][ply_CurrentVehicle], 299.0);
+		}
+	}
 
 	if(gPlayerData[playerid][ply_ScreenBoxFadeLevel] > 0)
 	{

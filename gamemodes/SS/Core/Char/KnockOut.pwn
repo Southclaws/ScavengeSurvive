@@ -91,8 +91,6 @@ KnockOutUpdate(playerid)
 			}
 		}
 
-		printf("%f / %f", GetTickCountDifference(tickcount(), knockout_Tick[playerid]), knockout_Duration[playerid]);
-
 		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
 		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
