@@ -143,6 +143,7 @@ StartRefuellingFuelCan(playerid, outletid)
 
 	return 1;
 }
+
 StopRefuellingFuelCan(playerid)
 {
 	HidePlayerProgressBar(playerid, ActionBar);
@@ -208,6 +209,7 @@ StartRefuellingVehicle(playerid, vehicleid)
 
 	return 1;
 }
+
 StopRefuellingVehicle(playerid)
 {
 	stop fuel_RefuelTimer[playerid];

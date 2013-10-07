@@ -382,13 +382,12 @@ StopBuildingDefence(playerid)
 	if(!IsValidItem(GetPlayerItem(playerid)))
 		return;
 
-	HideActionText(playerid);
-
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+		HideActionText(playerid);
 
 		return;
 	}
@@ -397,6 +396,7 @@ StopBuildingDefence(playerid)
 		def_CurrentDefenceEdit[playerid] = -1;
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
+		HideActionText(playerid);
 		
 		return;
 	}

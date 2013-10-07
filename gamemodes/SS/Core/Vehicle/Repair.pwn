@@ -11,6 +11,95 @@ hook OnPlayerConnect(playerid)
 	fix_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
+public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+{
+	if(angle < 25.0 || angle > 335.0)
+	{
+		new
+			Float:vehiclehealth,
+			ItemType:itemtype;
+
+		GetVehicleHealth(vehicleid, vehiclehealth);
+		itemtype = GetItemType(GetPlayerItem(playerid));
+
+		if(itemtype == item_Wrench)
+		{
+			if(vehiclehealth <= VEHICLE_HEALTH_CHUNK_2 || VEHICLE_HEALTH_CHUNK_4 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_MAX)
+			{
+				CancelPlayerMovement(playerid);
+				StartRepairingVehicle(playerid, vehicleid);
+				return 1;
+			}
+			else
+			{
+				ShowActionText(playerid, "You need another tool", 3000, 100);
+			}
+		}	
+		else if(itemtype == item_Screwdriver)
+		{
+			if(VEHICLE_HEALTH_CHUNK_2 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_3)
+			{
+				CancelPlayerMovement(playerid);
+				StartRepairingVehicle(playerid, vehicleid);
+				return 1;
+			}
+			else
+			{
+				ShowActionText(playerid, "You need another tool", 3000, 100);
+			}
+		}	
+		else if(itemtype == item_Hammer)
+		{
+			if(VEHICLE_HEALTH_CHUNK_3 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_4)
+			{
+				CancelPlayerMovement(playerid);
+				StartRepairingVehicle(playerid, vehicleid);
+				return 1;
+			}
+			else
+			{
+				ShowActionText(playerid, "You need another tool", 3000, 100);
+			}
+		}
+		else if(itemtype == item_Wheel)
+		{
+			CancelPlayerMovement(playerid);
+			ShowTireList(playerid, vehicleid);
+		}
+		else if(itemtype == item_GasCan)
+		{
+			CancelPlayerMovement(playerid);
+			StartRefuellingVehicle(playerid, vehicleid);
+		}
+		else if(itemtype == item_Headlight)
+		{
+			CancelPlayerMovement(playerid);
+			ShowLightList(playerid, vehicleid);
+		}
+		else
+		{
+			ShowActionText(playerid, "You don't have the right tool", 3000, 100);
+		}
+	}
+
+	return CallLocalFunction("rep_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+}
+#if defined _ALS_OnPlayerInteractVehicle
+	#undef OnPlayerInteractVehicle
+#else
+	#define _ALS_OnPlayerInteractVehicle
+#endif
+#define OnPlayerInteractVehicle rep_OnPlayerInteractVehicle
+forward rep_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(oldkeys & 16)
+	{
+		StopRepairingVehicle(playerid);
+		StopRefuellingVehicle(playerid);
+	}
+}
 
 StartRepairingVehicle(playerid, vehicleid)
 {

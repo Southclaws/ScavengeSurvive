@@ -29,6 +29,7 @@ enum E_VEHICLE_DATA
 {
 Float:	veh_health,
 Float:	veh_Fuel,
+		veh_key,
 		veh_engine,
 		veh_panels,
 		veh_doors,
@@ -61,6 +62,9 @@ new
 			veh_CurrentTrunkVehicle	[MAX_PLAYERS],
 Float:		veh_TempHealth			[MAX_PLAYERS],
 Float:		veh_TempVelocity		[MAX_PLAYERS];
+
+
+forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 
 hook OnGameModeInit()
@@ -407,148 +411,72 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys == 16)
 	{
-		foreach(new i : veh_Index)
+		new vehicleid = GetPlayerVehicleArea(playerid);
+
+		if(IsValidVehicleID(vehicleid))
 		{
-			if(IsPlayerInDynamicArea(playerid, GetVehicleArea(i)))
+			new
+				Float:px,
+				Float:py,
+				Float:pz,
+				Float:vx,
+				Float:vy,
+				Float:vz,
+				Float:vr,
+				Float:angle;
+
+			GetPlayerPos(playerid, px, py, pz);
+			GetVehiclePos(vehicleid, vx, vy, vz);
+			GetVehicleZAngle(vehicleid, vr);
+
+			angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
+
+			if( (vz - 1.0) < pz < (vz + 2.0) )
 			{
-				new
-					Float:px,
-					Float:py,
-					Float:pz,
-					Float:vx,
-					Float:vy,
-					Float:vz,
-					Float:vr,
-					Float:angle;
+				if(CallLocalFunction("OnPlayerInteractVehicle", "ddf", playerid, vehicleid, angle))
+					return 1;
 
-				GetPlayerPos(playerid, px, py, pz);
-				GetVehiclePos(i, vx, vy, vz);
-				GetVehicleZAngle(i, vr);
-
-				angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
-
-				if(floatabs(vz - pz) < 2.0)
+				if(155.0 < angle < 205.0)
 				{
-					if(angle < 25.0 || angle > 335.0)
+					if(IsValidContainer(GetVehicleContainer(vehicleid)))
 					{
-						new Float:vehiclehealth;
+						if(IsVehicleTrunkLocked(vehicleid))
+						{
+							ShowActionText(playerid, "Trunk locked", 3000);
+							return 1;
+						}
 
-						GetVehicleHealth(i, vehiclehealth);
+						new
+							engine,
+							lights,
+							alarm,
+							doors,
+							bonnet,
+							boot,
+							objective;
 
-						if(GetItemType(GetPlayerItem(playerid)) == item_Wrench)
-						{
-							if(vehiclehealth <= VEHICLE_HEALTH_CHUNK_2 || VEHICLE_HEALTH_CHUNK_4 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_MAX)
-							{
-								SetPlayerPos(playerid, px, py, pz);
-								StartRepairingVehicle(playerid, i);
-								break;
-							}
-							else
-							{
-								ShowActionText(playerid, "You need another tool", 3000, 100);
-							}
-						}	
-						else if(GetItemType(GetPlayerItem(playerid)) == item_Screwdriver)
-						{
-							if(VEHICLE_HEALTH_CHUNK_2 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_3)
-							{
-								SetPlayerPos(playerid, px, py, pz);
-								StartRepairingVehicle(playerid, i);
-								break;
-							}
-							else
-							{
-								ShowActionText(playerid, "You need another tool", 3000, 100);
-							}
-						}	
-						else if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
-						{
-							if(VEHICLE_HEALTH_CHUNK_3 - 2.0 <= vehiclehealth <= VEHICLE_HEALTH_CHUNK_4)
-							{
-								SetPlayerPos(playerid, px, py, pz);
-								StartRepairingVehicle(playerid, i);
-								break;
-							}
-							else
-							{
-								ShowActionText(playerid, "You need another tool", 3000, 100);
-							}
-						}
-						else if(GetItemType(GetPlayerItem(playerid)) == item_Wheel)
-						{
-							SetPlayerPos(playerid, px, py, pz);
-							ShowTireList(playerid, i);
-						}
-						else if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
-						{
-							SetPlayerPos(playerid, px, py, pz);
-							StartRefuellingVehicle(playerid, i);
-						}
-						else if(GetItemType(GetPlayerItem(playerid)) == item_Headlight)
-						{
-							SetPlayerPos(playerid, px, py, pz);
-							ShowLightList(playerid, i);
-						}
-						else
-						{
-							ShowActionText(playerid, "You don't have the right tool", 3000, 100);
-						}
+						GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
+						SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 1, objective);
+
+						SetPlayerPos(playerid, px, py, pz);
+						SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
+
+						DisplayContainerInventory(playerid, GetVehicleContainer(vehicleid));
+						veh_CurrentTrunkVehicle[playerid] = vehicleid;
+
+						return 1;
 					}
-					if(155.0 < angle < 205.0)
+				}
+
+				if(225.0 < angle < 315.0)
+				{
+					if(GetVehicleModel(vehicleid) == 449)
 					{
-						if(IsValidContainer(GetVehicleContainer(i)))
-						{
-							if(IsVehicleTrunkLocked(i))
-							{
-								if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
-								{
-									StartBreakingVehicleLock(playerid, i, 1);
-								}
-							}
-							else
-							{
-								new
-									engine,
-									lights,
-									alarm,
-									doors,
-									bonnet,
-									boot,
-									objective;
-
-								GetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, boot, objective);
-								SetVehicleParamsEx(i, engine, lights, alarm, doors, bonnet, 1, objective);
-
-								SetPlayerPos(playerid, px, py, pz);
-								SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
-
-								DisplayContainerInventory(playerid, GetVehicleContainer(i));
-								veh_CurrentTrunkVehicle[playerid] = i;
-
-								break;
-							}
-						}
-					}
-					if(225.0 < angle < 315.0)
-					{
-						if(GetVehicleModel(i) == 449)
-						{
-							PutPlayerInVehicle(playerid, i, 0);
-						}
-						if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
-						{
-							StartBreakingVehicleLock(playerid, i, 0);
-						}
+						PutPlayerInVehicle(playerid, vehicleid, 0);
 					}
 				}
 			}
 		}
-	}
-	if(oldkeys == 16)
-	{
-		StopRepairingVehicle(playerid);
-		StopRefuellingVehicle(playerid);
-		StopBreakingVehicleLock(playerid);
 	}
 
 	return 1;
@@ -580,6 +508,10 @@ PlayerVehicleUpdate(playerid)
 				health += diff * 0.8;
 				SetVehicleHealth(vehicleid, health);
 			}
+		}
+		else
+		{
+			SetVehicleHealth(vehicleid, 299.0);
 		}
 	}
 
@@ -900,7 +832,7 @@ IsVehicleValidOutOfBounds(vehicleid)
 	{
 		switch(vehicletype)
 		{
-			case VTYPE_SEA, VTYPE_HELI, VTYPE_PLANE:
+			case VTYPE_HELI, VTYPE_PLANE:
 				return 1;
 
 			default:
@@ -1041,6 +973,24 @@ stock GiveVehicleFuel(vehicleid, Float:amount)
 
 	if(veh_Data[vehicleid][veh_Fuel] > VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel])
 		veh_Data[vehicleid][veh_Fuel] = VehicleFuelData[GetVehicleModel(vehicleid) - 400][veh_maxFuel];
+
+	return 1;
+}
+
+stock GetVehicleKey(vehicleid)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return -1;
+
+	return veh_Data[vehicleid][veh_key];
+}
+
+stock SetVehicleKey(vehicleid, key)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	veh_Data[vehicleid][veh_key] = key;
 
 	return 1;
 }
