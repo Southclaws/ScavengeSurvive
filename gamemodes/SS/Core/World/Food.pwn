@@ -58,15 +58,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & 16 && IsPlayerIdle(playerid))
 	{
-		new itemid = GetPlayerItem(playerid);
-
-		if(IsValidItem(itemid))
+		if(!IsPlayerAtAnyVehicleTrunk(playerid))
 		{
-			for(new i; i < food_Total; i++)
+			new itemid = GetPlayerItem(playerid);
+
+			if(IsValidItem(itemid))
 			{
-				if(GetItemType(itemid) == food_Data[i][food_itemType])
+				for(new i; i < food_Total; i++)
 				{
-					StartEating(playerid, i, itemid);
+					if(GetItemType(itemid) == food_Data[i][food_itemType])
+					{
+						StartEating(playerid, i, itemid);
+					}
 				}
 			}
 		}

@@ -1,4 +1,14 @@
+#include <YSI\y_hooks>
+
+
 #define MAX_TOOLTIP_TEXT (256)
+
+
+/*==============================================================================
+
+	Items
+
+==============================================================================*/
 
 
 static
@@ -207,3 +217,44 @@ public OnLoad()
 #endif
 #define OnLoad tip_OnLoad
 forward tip_OnLoad();
+
+
+/*==============================================================================
+
+	Vehicles
+
+==============================================================================*/
+
+#endinput
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if(ispassenger)
+		return 1;
+
+	if(IsPlayerToolTipsOn(playerid))
+		return 1;
+
+	new
+		Float:health,
+		panels,
+		doors,
+		lights,
+		tires;
+
+	GetVehicleHealth(vehicleid, health);
+	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+
+	if(health <= VEHICLE_HEALTH_CHUNK_2)
+		ShowHelpTip(playerid, "This vehicle is very broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+
+	else if(health <= VEHICLE_HEALTH_CHUNK_3)
+		ShowHelpTip(playerid, "This vehicle is broken! To fix, equip a screwdriver and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+
+	else if(health <= VEHICLE_HEALTH_CHUNK_4)
+		ShowHelpTip(playerid, "This vehicle is a bit broken! To fix, equip a hammer and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+
+	else if(health <= VEHICLE_HEALTH_MAX)
+		ShowHelpTip(playerid, "This vehicle is slightly broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+
+	return 1;
+}
