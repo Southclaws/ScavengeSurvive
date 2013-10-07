@@ -28,6 +28,8 @@ stock CancelPlayerMovement(playerid)
 	GetPlayerPos(playerid, x, y, z);
 	SetPlayerPos(playerid, x, y, z);
 	ClearAnimations(playerid);
+	TogglePlayerControllable(playerid, false);
+	TogglePlayerControllable(playerid, true);
 }
 
 FreezePlayer(playerid, time)

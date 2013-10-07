@@ -5,7 +5,6 @@ PrepareForSpawn(playerid)
 {
 	t:gPlayerBitData[playerid]<Spawned>;
 
-	TogglePlayerControllable(playerid, true);
 	SetCameraBehindPlayer(playerid);
 	SetAllWeaponSkills(playerid, 500);
 
@@ -169,6 +168,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	f:gPlayerBitData[playerid]<Infected>;
 	f:gPlayerBitData[playerid]<KnockedOut>;
 
+	FreezePlayer(playerid, 1000);
 	PrepareForSpawn(playerid);
 
 	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
