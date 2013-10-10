@@ -215,10 +215,7 @@ ACMD:motd[2](playerid, params[])
 
 	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
 
-	new INI:ini = INI_Open(SETTINGS_FILE);
-
-	INI_WriteString(ini, "motd", gMessageOfTheDay);
-	INI_Close(ini);
+	djSet(SETTINGS_FILE, "server/motd", gMessageOfTheDay);
 
 	return 1;
 }

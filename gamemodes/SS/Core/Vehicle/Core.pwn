@@ -1018,8 +1018,15 @@ stock SetVehicleContainer(vehicleid, containerid)
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
-	veh_Container[vehicleid] = containerid;
-	veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
+	if(IsValidContainer(containerid))
+	{
+		veh_Container[vehicleid] = containerid;
+		veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
+	}
+	else
+	{
+		veh_Container[vehicleid] = -1;
+	}
 
 	return 1;
 }

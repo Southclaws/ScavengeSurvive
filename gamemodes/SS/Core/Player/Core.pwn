@@ -172,6 +172,9 @@ public OnPlayerDisconnect(playerid, reason)
 	if(gServerRestarting)
 		return 0;
 
+	if(IsValidVehicle(gPlayerData[playerid][ply_CurrentVehicle]))
+		VehicleDoorsState(gPlayerData[playerid][ply_CurrentVehicle], 0);
+
 	Logout(playerid);
 
 	ResetVariables(playerid);
