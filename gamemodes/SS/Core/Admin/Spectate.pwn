@@ -154,7 +154,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					id--;
 
-					if(id <= 0)
+					if(id < 0)
 						id = MAX_PLAYERS - 1;
 
 					continue;

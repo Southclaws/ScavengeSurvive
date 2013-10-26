@@ -41,10 +41,17 @@ LoadAdminData()
 	{
 		while(stmt_fetch_row(gStmt_AdminLoadAll))
 		{
-			admin_Data[admin_Total][admin_Name] = name;
-			admin_Data[admin_Total][admin_Rank] = level;
+			if(level > 0 && !isnull(name))
+			{
+				admin_Data[admin_Total][admin_Name] = name;
+				admin_Data[admin_Total][admin_Rank] = level;
 
-			admin_Total++;
+				admin_Total++;
+			}
+			else
+			{
+				RemoveAdminFromDatabase(name);
+			}
 		}
 	}
 
@@ -66,7 +73,7 @@ SetPlayerAdminLevel(playerid, level)
 UpdateAdmin(name[MAX_PLAYER_NAME], level)
 {
 	if(level == 0)
-		RemoveAdminFromDatabase(name);
+		return RemoveAdminFromDatabase(name);
 
 	new count;
 
@@ -123,8 +130,6 @@ RemoveAdminFromDatabase(name[])
 
 	if(stmt_execute(gStmt_AdminDelete))
 	{
-		admin_Total--;
-
 		new bool:found = false;
 
 		for(new i; i < admin_Total; i++)
@@ -138,6 +143,8 @@ RemoveAdminFromDatabase(name[])
 				admin_Data[i][admin_Rank] = admin_Data[i+1][admin_Rank];
 			}
 		}
+
+		admin_Total--;
 
 		return 1;
 	}
