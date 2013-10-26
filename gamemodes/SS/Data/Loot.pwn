@@ -18,6 +18,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_SPRAYCAN,			0.4);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_FIREEXTINGUISHER,	0.6);
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_CAMERA,				0.6);
+	AddItemToLootIndex(loot_Civilian,		item_Key,							0.5);
 	AddItemToLootIndex(loot_Civilian,		item_Medkit,						0.1);
 	AddItemToLootIndex(loot_Civilian,		item_FireworkBox,					0.4);
 	AddItemToLootIndex(loot_Civilian,		item_FireLighter,					1.0);

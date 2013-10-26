@@ -28,24 +28,39 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 		if(itemtype == item_Key)
 		{
-			if(GetItemExtraData(itemid) == GetVehicleKey(vehicleid))
-			{
-				CancelPlayerMovement(playerid);
+			new
+				extradata = GetItemExtraData(itemid),
+				vehiclekey = GetVehicleKey(vehicleid);
 
-				if(VehicleDoorsState(vehicleid))
-				{
-					VehicleDoorsState(vehicleid, 0);
-					ShowActionText(playerid, "Unlocked", 3000);
-				}
-				else
-				{
-					VehicleDoorsState(vehicleid, 1);
-					ShowActionText(playerid, "Locked", 3000);
-				}
+			if(extradata == 0)
+			{
+				ShowActionText(playerid, "That key hasn't been cut yet.", 3000);
+				return 1;
+			}
+
+			if(vehiclekey == 0)
+			{
+				ShowActionText(playerid, "That vehicle lock hasn't been set up for a key yet. Use a Locksmith Kit to set it up.", 3000);
+				return 1;
+			}
+
+			if(extradata != vehiclekey)
+			{
+				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
+				return 1;
+			}
+
+			CancelPlayerMovement(playerid);
+
+			if(VehicleDoorsState(vehicleid))
+			{
+				VehicleDoorsState(vehicleid, 0);
+				ShowActionText(playerid, "Unlocked", 3000);
 			}
 			else
 			{
-				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
+				VehicleDoorsState(vehicleid, 1);
+				ShowActionText(playerid, "Locked", 3000);
 			}
 		}
 	}
@@ -122,7 +137,7 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_LocksmithKit)
 		{
-			new key = random(2147483648);
+			new key = 1 + random(2147483646);
 
 			DestroyItem(itemid);
 			itemid = CreateItem(item_Key);

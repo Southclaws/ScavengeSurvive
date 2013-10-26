@@ -232,7 +232,7 @@ GenerateVehicleData(vehicleid)
 		if(doors == 0)
 			locked = random(2);
 
-		if(panels == 0)
+		if(panels)
 			veh_TrunkLock[vehicleid] = random(2);
 
 		SetVehicleParamsEx(vehicleid, 0, random(2), !random(100), locked, random(2), random(2), 0);
