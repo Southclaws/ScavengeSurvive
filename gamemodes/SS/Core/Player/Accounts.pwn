@@ -258,20 +258,128 @@ Login(playerid)
 	SpawnPlayer(playerid);
 }
 
-GetAccountAliases(name[], ip, list[][], &count, max, &adminlevel)
+GetAccountAliasesByIP(name[], list[][], &count, max, &adminlevel)
 {
 	new
+		ip,
 		tempname[MAX_PLAYER_NAME],
+		tempserial[41],
 		templevel;
 
-	stmt_bind_value(gStmt_AccountGetAliases, 0, DB::TYPE_INTEGER, ip);
-	stmt_bind_value(gStmt_AccountGetAliases, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAliases, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_IPV4, DB::TYPE_INTEGER, ip);
 
-	stmt_execute(gStmt_AccountGetAliases);
+	if(!stmt_execute(gStmt_AccountLoad))
+		return 0;
 
-	while(stmt_fetch_row(gStmt_AccountGetAliases))
+	stmt_fetch_row(gStmt_AccountLoad);
+
+	stmt_bind_value(gStmt_AccountGetAliasesIp, 0, DB::TYPE_INTEGER, ip);
+	stmt_bind_value(gStmt_AccountGetAliasesIp, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesIp, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesIp, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, tempserial, 41);
+
+	if(!stmt_execute(gStmt_AccountGetAliasesIp))
+		return 0;
+
+	while(stmt_fetch_row(gStmt_AccountGetAliasesIp))
 	{
+		if(tempserial[0] == '0')
+			continue;
+
+		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
+
+		templevel = GetAdminLevelByName(tempname);
+
+		if(templevel > adminlevel)
+			adminlevel = templevel;
+
+		count++;
+
+		if(count == max)
+			break;
+	}
+
+	return 1;
+}
+
+GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
+{
+	new
+		pass[129],
+		tempname[MAX_PLAYER_NAME],
+		tempserial[41],
+		templevel;
+
+	stmt_bind_value(gStmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, pass, 129);
+
+	if(!stmt_execute(gStmt_AccountLoad))
+		return 0;
+
+	stmt_fetch_row(gStmt_AccountLoad);
+
+	stmt_bind_value(gStmt_AccountGetAliasesPass, 0, DB::TYPE_STRING, pass, 129);
+	stmt_bind_value(gStmt_AccountGetAliasesPass, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesPass, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesPass, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, tempserial, 41);
+
+	if(!stmt_execute(gStmt_AccountGetAliasesPass))
+		return 0;
+
+	while(stmt_fetch_row(gStmt_AccountGetAliasesPass))
+	{
+		if(tempserial[0] == '0')
+			continue;
+
+		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
+
+		templevel = GetAdminLevelByName(tempname);
+
+		if(templevel > adminlevel)
+			adminlevel = templevel;
+
+		count++;
+
+		if(count == max)
+			break;
+	}
+
+	return 1;
+}
+
+GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
+{
+	new
+		serial[41],
+		tempname[MAX_PLAYER_NAME],
+		tempserial[41],
+		templevel;
+
+	stmt_bind_value(gStmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, serial, 41);
+
+	if(!stmt_execute(gStmt_AccountLoad))
+		return 0;
+
+	stmt_fetch_row(gStmt_AccountLoad);
+
+	if(isnull(serial))
+		return 0;
+
+	stmt_bind_value(gStmt_AccountGetAliasesHash, 0, DB::TYPE_STRING, serial, 41);
+	stmt_bind_value(gStmt_AccountGetAliasesHash, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesHash, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+	stmt_bind_result_field(gStmt_AccountGetAliasesHash, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, tempserial, 41);
+
+	if(!stmt_execute(gStmt_AccountGetAliasesHash))
+		return 0;
+
+	while(stmt_fetch_row(gStmt_AccountGetAliasesHash))
+	{
+		if(tempserial[0] == '0')
+			continue;
+
 		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
@@ -296,17 +404,13 @@ CheckForExtraAccounts(playerid)
 		adminlevel,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	GetAccountAliases(gPlayerName[playerid], gPlayerData[playerid][ply_IP], list, count, 6, adminlevel);
+	GetAccountAliasesByIP(gPlayerName[playerid], list, count, 6, adminlevel);
 
 	if(count == 0)
-	{
 		return 0;
-	}
 
 	if(count == 1)
-	{
 		strcat(string, list[0]);
-	}
 
 	if(count > 1)
 	{
@@ -319,9 +423,6 @@ CheckForExtraAccounts(playerid)
 
 	if(adminlevel < 3)
 		MsgAllF(YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
-
-	else
-		MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
 
 	return 1;
 }

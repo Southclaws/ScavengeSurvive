@@ -26,7 +26,7 @@
 native IsValidVehicle(vehicleid);
 
 #define DB_DEBUG					false
-#define DB_MAX_STATEMENTS			(48)
+#define DB_MAX_STATEMENTS			(52)
 #define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
@@ -452,7 +452,9 @@ DBStatement:	gStmt_AccountSetGpci,
 DBStatement:	gStmt_AccountSetLastLog,
 DBStatement:	gStmt_AccountSetSpawnTime,
 DBStatement:	gStmt_AccountSetTotalSpawns,
-DBStatement:	gStmt_AccountGetAliases,
+DBStatement:	gStmt_AccountGetAliasesIp,
+DBStatement:	gStmt_AccountGetAliasesPass,
+DBStatement:	gStmt_AccountGetAliasesHash,
 DBStatement:	gStmt_AccountSetAimShout,
 
 // ACCOUNTS_TABLE_BANS
@@ -1122,19 +1124,22 @@ public OnGameModeInit()
 		"FIELD_SPRAYTAG_ROTY" REAL,\
 		"FIELD_SPRAYTAG_ROTZ" REAL)"));
 
-	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
+
+	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?, ?, ?, 0, 0, 0, ?, ?, 0, 0, ?, ?)");
-	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetGpci		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ?");
-	gStmt_AccountGetAliases		= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ?");
-	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ?");
+	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountSetGpci		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesIp	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesPass	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?)");
 	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ?");
@@ -1160,11 +1165,11 @@ public OnGameModeInit()
 	gStmt_BugTotal				= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BUGS"");
 	gStmt_BugInfo				= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS" WHERE "FIELD_BUGS_DATE" = ?");
 
-	gStmt_WhitelistExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
+	gStmt_WhitelistExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ? COLLATE NOCASE");
 	gStmt_WhitelistInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_WHITELIST" ("FIELD_WHITELIST_NAME") VALUES(?)");
 	gStmt_WhitelistDelete		= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
 
-	gStmt_AdminLoadAll			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS"");
+	gStmt_AdminLoadAll			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" ORDER BY "FIELD_ADMINS_LEVEL" DESC");
 	gStmt_AdminExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
 	gStmt_AdminInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
 	gStmt_AdminUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
@@ -1183,7 +1188,7 @@ public OnGameModeInit()
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HardDrive		= DefineItemType("Hard Drive",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
-	item_Key			= DefineItemType("Key",					327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
+	item_Key			= DefineItemType("Key",					327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0, .colour = 0xFFCCCCCC);
 // 50
 	item_FireworkBox	= DefineItemType("Fireworks",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
@@ -1437,6 +1442,9 @@ public OnGameModeInit()
 	DefineItemCombo(item_PowerSupply,	item_Fluctuator,	item_FluxCap);
 	DefineItemCombo(item_StorageUnit,	item_IoUnit,		item_DataInterface);
 	DefineItemCombo(item_FluxCap,		item_DataInterface,	item_HackDevice);
+	DefineItemCombo(item_PowerSupply,	item_Timer,			item_Motor);
+	DefineItemCombo(item_Key,			item_Motor,			item_LocksmithKit);
+	DefineItemCombo(item_Motor,			item_Fluctuator,	item_StarterMotor);
 	//WriteAllCombosToFile();
 
 

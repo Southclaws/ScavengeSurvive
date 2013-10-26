@@ -8,6 +8,12 @@ public OnFilterScriptInit()
 {
 }
 
+CMD:mouse(playerid, params[])
+{
+	SelectTextDraw(playerid, -1);
+	return 1;
+}
+
 CMD:sound(playerid, params[])
 {
 	PlayerPlaySound(playerid, strval(params), 0.0, 0.0, 0.0);

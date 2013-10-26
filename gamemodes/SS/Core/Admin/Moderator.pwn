@@ -144,31 +144,85 @@ ACMD:whitelist[2](playerid, params[])
 
 ACMD:aliases[2](playerid, params[])
 {
-	new targetid;
+	new
+		name[MAX_PLAYER_NAME],
+		type[7];
 
-	if(sscanf(params, "d", targetid))
-		return Msg(playerid, YELLOW, " >  Usage: /aliases [playerid]");
-
-	if(!IsPlayerConnected(targetid))
-		return Msg(playerid,RED, " >  Invalid targetid");
-
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+	if(sscanf(params, "s[24]S(byip)[7]", name, type))
 	{
-		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", targetid);
+		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [byip/bypass/byhash]");
 		return 1;
 	}
 
+	if(isnumeric(name))
+	{
+		new targetid = strval(name);
+
+		if(!IsPlayerConnected(targetid))
+			return Msg(playerid,RED, " >  Invalid ID");
+
+		GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+	}
+	else
+	{
+		if(!AccountExists(name))
+		{
+			Msg(playerid, YELLOW, " >  That account does not exist.");
+			return 1;
+		}
+	}
+
+	if(GetAdminLevelByName(name) > gPlayerData[playerid][ply_Admin])
+	{
+		new playername[MAX_PLAYER_NAME];
+
+		GetPlayerName(playerid, playername, MAX_PLAYER_NAME);
+
+		if(strcmp(name, playername))
+		{
+			MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+			return 1;
+		}
+	}
+
 	new
+		ret,
 		list[6][MAX_PLAYER_NAME],
 		count,
 		adminlevel,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	GetAccountAliases(gPlayerName[targetid], gPlayerData[targetid][ply_IP], list, count, 6, adminlevel);
+	if(!strcmp(type, "byip", true))
+	{
+		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
+	}
+	else if(!strcmp(type, "bypass", true))
+	{
+		// ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
+		Msg(playerid, YELLOW, " >  Lookup type unavailable.");
+		return 1;
+	}
+	else if(!strcmp(type, "byhash", true))
+	{
+		// ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
+		Msg(playerid, YELLOW, " >  Lookup type unavailable.");
+		return 1;
+	}
+	else
+	{
+		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'byip', 'bypass', 'byhash'");
+		return 1;
+	}
+
+	if(ret == 0)
+	{
+		Msg(playerid, RED, " >  An error occurred.");
+		return 1;
+	}
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  No other accounts used by that players IP address.");
+		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
 		return 1;
 	}
 
@@ -182,15 +236,17 @@ ACMD:aliases[2](playerid, params[])
 		for(new i; i < count; i++)
 		{
 			strcat(string, list[i]);
-			strcat(string, ", ");
+
+			if(i < count - 1)
+				strcat(string, ", ");
 		}
 	}
 
-	if(adminlevel < gPlayerData[playerid][ply_Admin])
+	if(adminlevel <= gPlayerData[playerid][ply_Admin])
 		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
 
 	else
-		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(1)"#C_ORANGE" %p", targetid);
+		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
 
 	return 1;
 }
