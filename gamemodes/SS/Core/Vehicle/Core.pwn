@@ -493,9 +493,8 @@ PlayerVehicleUpdate(playerid)
 	if(GetVehicleType(model) == VTYPE_BICYCLE || model == 0)
 		return;
 
-	if(GetPlayerState(playerid))
-
-	playerstate = GetVehicleHealth(vehicleid, health);
+	GetVehicleHealth(vehicleid, health);
+	playerstate = GetPlayerState(playerid);
 
 	if(playerstate == PLAYER_STATE_DRIVER)
 	{
@@ -616,13 +615,10 @@ PlayerVehicleUpdate(playerid)
 	PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
 	PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
 
-	switch(GetPlayerWeapon(playerid))
+	if(IsWeaponDriveby(GetPlayerWeapon(playerid)))
 	{
-		case 28, 29, 32:
-		{
-			if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
-				SetPlayerArmedWeapon(playerid, 0);
-		}
+		if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
+			SetPlayerArmedWeapon(playerid, 0);
 	}
 
 	veh_TempVelocity[playerid] = GetPlayerTotalVelocity(playerid);

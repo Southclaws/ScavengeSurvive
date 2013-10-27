@@ -13,6 +13,7 @@ ShowPlayerProfile(playerid, name[])
 		regdate,
 		lastlog,
 		spawntimestamp,
+		dayslived,
 		spawns,
 		warnings;
 
@@ -42,11 +43,12 @@ ShowPlayerProfile(playerid, name[])
 		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
 	}
 
+	dayslived = (gettime() > spawntimestamp) ? ((gettime() - spawntimestamp) / 86400) : (0);
+
 	stmt_execute(gStmt_AccountLoad);
 	stmt_fetch_row(gStmt_AccountLoad);
 
 	format(body, sizeof(body), "\
-		IP:\t\t\t%s\n\
 		Alive:\t\t\t%s\n\
 		Karma:\t\t\t%d\n\
 		Registered:\t\t%s\n\
@@ -55,12 +57,11 @@ ShowPlayerProfile(playerid, name[])
 		Lives Lived:\t\t%d\n\
 		Warnings:\t\t%d",
 
-		IpIntToStr(ipv4),
 		alive ? ("Yes") : ("No"),
 		karma,
 		TimestampToDateTime(regdate),
 		TimestampToDateTime(lastlog),
-		(gettime()-spawntimestamp) / 86400,
+		dayslived,
 		spawns,
 		warnings);
 

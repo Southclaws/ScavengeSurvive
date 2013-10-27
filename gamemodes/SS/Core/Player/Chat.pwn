@@ -123,7 +123,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	}
 	else
 	{
-		logf("[CHAT] [%.2f] [%p]: %s", frequency, playerid, chat);
+		logf("[CHAT] [RADIO] [%p]: %s", playerid, chat);
 
 		format(line1, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
 			frequency,

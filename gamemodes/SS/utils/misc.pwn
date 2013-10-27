@@ -1,5 +1,5 @@
 #define CTIME_DATE_TIME			"%A %b %d %Y at %X"
-#define CTIME_DATE_FILENAME		"%d-%m-%Y (%a-%d-%b)"
+#define CTIME_DATE_FILENAME		"%Y-%m-%d (%a-%d-%b)"
 #define CTIME_DATE_SHORT		"%x"
 #define CTIME_TIME_SHORT		"%X"
 

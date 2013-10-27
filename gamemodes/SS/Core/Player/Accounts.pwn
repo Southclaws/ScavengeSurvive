@@ -84,13 +84,13 @@ CreateAccount(playerid, password[])
 
 	gpci(playerid, serial, 129);
 
-	stmt_bind_value(gStmt_AccountCreate, 0, DB::TYPE_STRING,	gPlayerName[playerid], MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_AccountCreate, 1, DB::TYPE_STRING,	password, MAX_PASSWORD_LEN);
-	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INTEGER,	gPlayerData[playerid][ply_IP]);
-	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime());
-	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime());
-	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_STRING,	"Drop your weapon!", 18);
-	stmt_bind_value(gStmt_AccountCreate, 6, DB::TYPE_STRING,	serial);
+	stmt_bind_value(gStmt_AccountCreate, 0, DB::TYPE_STRING,	gPlayerName[playerid], MAX_PLAYER_NAME); 
+	stmt_bind_value(gStmt_AccountCreate, 1, DB::TYPE_STRING,	password, MAX_PASSWORD_LEN); 
+	stmt_bind_value(gStmt_AccountCreate, 2, DB::TYPE_INTEGER,	gPlayerData[playerid][ply_IP]); 
+	stmt_bind_value(gStmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime()); 
+	stmt_bind_value(gStmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime()); 
+	stmt_bind_value(gStmt_AccountCreate, 5, DB::TYPE_STRING,	"Drop your weapon!", 18); 
+	stmt_bind_value(gStmt_AccountCreate, 6, DB::TYPE_STRING,	serial); 
 	stmt_execute(gStmt_AccountCreate);
 
 	strcat(gPlayerData[playerid][ply_AimShoutText], "Drop your weapon!");
@@ -303,7 +303,7 @@ GetAccountAliasesByIP(name[], list[][], &count, max, &adminlevel)
 	return 1;
 }
 
-GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
+stock GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
 {
 	new
 		pass[129],
@@ -348,7 +348,7 @@ GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
 	return 1;
 }
 
-GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
+stock GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
 {
 	new
 		serial[41],

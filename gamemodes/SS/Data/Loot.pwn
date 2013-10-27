@@ -63,6 +63,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		item_HerpDerp,						0.1);
 	AddItemToLootIndex(loot_Civilian,		item_CanDrink,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_HockeyMask,					0.3);
+	AddItemToLootIndex(loot_Civilian,		item_Pumpkin,						0.1);
 
 	// loot_Industrial
 	AddItemToLootIndex(loot_Industrial,		ItemType:WEAPON_CHAINSAW,			0.01);
