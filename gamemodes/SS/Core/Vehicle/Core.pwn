@@ -498,7 +498,7 @@ PlayerVehicleUpdate(playerid)
 
 	if(playerstate == PLAYER_STATE_DRIVER)
 	{
-		if(veh_TempHealth[playerid] > 300.0)
+		if(health > 300.0)
 		{
 			new Float:diff = veh_TempHealth[playerid] - health;
 

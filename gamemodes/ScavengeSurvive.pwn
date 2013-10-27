@@ -24,6 +24,7 @@
 #define MAX_PLAYERS	(32)
 
 native IsValidVehicle(vehicleid);
+native gpci(playerid, serial[], len);
 
 #define DB_DEBUG					false
 #define DB_MAX_STATEMENTS			(52)
@@ -49,7 +50,7 @@ native IsValidVehicle(vehicleid);
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
 
-#include "SS/Core/Server/Hooks.pwn"
+#include "SS/Core/Server/Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 
@@ -81,8 +82,6 @@ native IsValidVehicle(vehicleid);
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
-
-native gpci(playerid, serial[], len);
 
 
 /*==============================================================================
@@ -1377,8 +1376,8 @@ public OnGameModeInit()
 	AddAnimToSet(anim_Blunt, 18, 6.0);
 	AddAnimToSet(anim_Blunt, 19, 8.0);
 	AddAnimToSet(anim_Stab, 751, 18.8);
-	AddAnimToSet(anim_Heavy, 19, 8.0);
-	AddAnimToSet(anim_Heavy, 20, 8.0);
+	AddAnimToSet(anim_Heavy, 19, 16.0);
+	AddAnimToSet(anim_Heavy, 20, 21.0);
 
 	SetItemAnimSet(item_Wrench,			anim_Blunt);
 	SetItemAnimSet(item_Crowbar,		anim_Blunt);

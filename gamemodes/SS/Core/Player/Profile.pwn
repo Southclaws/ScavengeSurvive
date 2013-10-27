@@ -43,10 +43,10 @@ ShowPlayerProfile(playerid, name[])
 		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
 	}
 
-	dayslived = (gettime() > spawntimestamp) ? ((gettime() - spawntimestamp) / 86400) : (0);
-
 	stmt_execute(gStmt_AccountLoad);
 	stmt_fetch_row(gStmt_AccountLoad);
+
+	dayslived = (gettime() > spawntimestamp) ? (0) : ((gettime() - spawntimestamp) / 86400);
 
 	format(body, sizeof(body), "\
 		Alive:\t\t\t%s\n\
