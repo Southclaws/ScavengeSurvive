@@ -18,13 +18,11 @@ enum E_PLAYER_BIT_DATA:(<<= 1) // 23
 
 		ToolTips,
 		ShowHUD,
-		KnockedOut,
 		Bleeding,
 		Infected,
 		GlobalQuiet,
 
 		Frozen,
-		Muted,
 
 		DebugMode
 }
@@ -690,7 +688,7 @@ public OnPlayerStateChange(playerid, newstate, oldstate)
 }
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	if(gPlayerBitData[playerid] & KnockedOut)
+	if(IsPlayerKnockedOut(playerid))
 	{
 		return 0;
 	}
@@ -725,7 +723,7 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(gPlayerBitData[playerid] & KnockedOut)
+	if(IsPlayerKnockedOut(playerid))
 		return 0;
 
 	if(!IsPlayerInAnyVehicle(playerid))
@@ -829,15 +827,6 @@ stock IsPlayerHudOn(playerid)
 	return _:(gPlayerBitData[playerid] & ShowHUD);
 }
 
-// KnockedOut
-stock IsPlayerKnockedOut(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(gPlayerBitData[playerid] & KnockedOut);
-}
-
 // Bleeding
 stock IsPlayerBleeding(playerid)
 {
@@ -851,7 +840,6 @@ stock IsPlayerBleeding(playerid)
 // GlobalQuiet
 
 // Frozen
-// Muted
 
 // DebugMode
 

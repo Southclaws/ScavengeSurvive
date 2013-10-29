@@ -10,9 +10,14 @@ hook OnPlayerText(playerid, text[])
 {
 	new tmpMuteTime = GetTickCountDifference(tickcount(), chat_MuteTick[playerid]);
 
-	if(gPlayerBitData[playerid] & Muted)
+	if(IsPlayerMuted(playerid))
 	{
-		Msg(playerid, RED, " >  You are muted");
+		if(GetPlayerMuteRemainder(playerid) == -1)
+			Msg(playerid, RED, " >  You are muted permanently.");
+
+		else
+			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid), "%1h:%1m:%1s"));
+
 		return 0;
 	}
 
@@ -150,7 +155,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 CMD:g(playerid, params[])
 {
-	if(gPlayerBitData[playerid] & Muted)
+	if(IsPlayerMuted(playerid))
 	{
 		Msg(playerid, RED, " >  You are muted");
 		return 7;

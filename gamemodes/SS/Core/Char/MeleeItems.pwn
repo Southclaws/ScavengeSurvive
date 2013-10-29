@@ -79,7 +79,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || gPlayerBitData[playerid] & AdminDuty || gPlayerBitData[playerid] & KnockedOut || GetPlayerAnimationIndex(playerid) == 1381)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || gPlayerBitData[playerid] & AdminDuty || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	if(newkeys & KEY_FIRE)

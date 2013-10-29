@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 LoadPlayerTextDraws(playerid)
 {
 //==============================================================Character Create
@@ -216,4 +219,11 @@ LoadPlayerTextDraws(playerid)
 	ActionBar						= CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
 	OverheatBar						= CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
 	KnockoutBar						= CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	DestroyPlayerProgressBar(playerid, ActionBar);
+	DestroyPlayerProgressBar(playerid, OverheatBar);
+	DestroyPlayerProgressBar(playerid, KnockoutBar);
 }

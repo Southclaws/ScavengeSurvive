@@ -887,6 +887,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/BugReport.pwn"
 #include "SS/Core/Admin/DetectionField.pwn"
+#include "SS/Core/Admin/Mute.pwn"
 
 // ITEMS
 #include "SS/Core/Item/firework.pwn"

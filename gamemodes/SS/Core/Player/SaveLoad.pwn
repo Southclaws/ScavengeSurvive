@@ -25,6 +25,8 @@ enum
 	PLY_CELL_SPAWN_Z,
 	PLY_CELL_SPAWN_R,
 	PLY_CELL_MASK,
+	PLY_CELL_MUTE_TIME,
+	PLY_CELL_KNOCKOUT,
 	PLY_CELL_END
 }
 
@@ -112,6 +114,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_SPAWN_R] = _:gPlayerData[playerid][ply_SpawnRotZ];
 
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
+	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);
+	data[PLY_CELL_KNOCKOUT] = GetPlayerKnockOutRemainder(playerid);
 
 	file = fopen(filename, io_write);
 
@@ -271,6 +275,12 @@ LoadPlayerChar(playerid)
 		gPlayerData[playerid][ply_SpawnPosZ] += 1.0;
 
 	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
+
+	if(data[PLY_CELL_MUTE_TIME] > 0)
+		TogglePlayerMute(playerid, true, data[PLY_CELL_MUTE_TIME]);
+
+	if(data[PLY_CELL_KNOCKOUT] > 0)
+		KnockOutPlayer(playerid, data[PLY_CELL_KNOCKOUT]);
 
 	return 1;
 }

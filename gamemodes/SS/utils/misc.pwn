@@ -121,6 +121,7 @@ stock MsToString(millisecond, format[])
 		second,
 		format_char,
 		result_lenght,
+		bool:padding,
 		len = strlen(format);
 
 	hour			= (millisecond / (1000 * 60 * 60));
@@ -134,11 +135,28 @@ stock MsToString(millisecond, format[])
 		{
 			format_char++;
 
+			if(format[format_char] == '1')
+			{
+				padding = true;
+				format_char++;
+			}
+			else
+			{
+				padding = false;
+			}
+
 			switch(format[format_char])
 			{
 				case 'h':
 				{
 					valstr(tmp, hour);
+
+					if(padding)
+					{
+						if(hour < 10)
+							strcat(result, "0");
+					}
+
 					strcat(result, tmp);
 					result_lenght = strlen(result);
 				}
@@ -146,6 +164,13 @@ stock MsToString(millisecond, format[])
 				case 'm':
 				{
 					valstr(tmp, minute);
+
+					if(padding)
+					{
+						if(minute < 10)
+							strcat(result, "0");
+					}
+
 					strcat(result, tmp);
 					result_lenght = strlen(result);
 				}
@@ -153,6 +178,13 @@ stock MsToString(millisecond, format[])
 				case 's':
 				{
 					valstr(tmp, second);
+
+					if(padding)
+					{
+						if(second < 10)
+							strcat(result, "0");
+					}
+
 					strcat(result, tmp);
 					result_lenght = strlen(result);
 				}
@@ -160,6 +192,16 @@ stock MsToString(millisecond, format[])
 				case 'd':
 				{
 					valstr(tmp, millisecond);
+
+					if(padding)
+					{
+						if(millisecond < 10)
+							strcat(result, "00");
+
+						else if(millisecond < 100)
+							strcat(result, "0");
+					}
+
 					strcat(result, tmp);
 					result_lenght = strlen(result);
 				}

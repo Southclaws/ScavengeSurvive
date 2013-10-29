@@ -14,7 +14,6 @@ new gAdminCommandList_Lvl1[] =
 
 new
 	Timer:UnfreezeTimer[MAX_PLAYERS],
-	Timer:UnmuteTimer[MAX_PLAYERS],
 	tick_UnstickUsage[MAX_PLAYERS];
 
 
@@ -122,9 +121,8 @@ ACMD:mute[1](playerid, params[])
 		delay,
 		reason[128];
 
-
 	if(sscanf(params, "dds[128]", targetid, delay, reason))
-		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason]");
+		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason] - use -1 as a seconds duration for a permanent mute.");
 
 	if(!IsPlayerConnected(targetid))
 		return Msg(playerid,RED, " >  Invalid targetid");
@@ -132,35 +130,23 @@ ACMD:mute[1](playerid, params[])
 	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin])
 		return 3;
 
-	if(gPlayerBitData[targetid] & Muted)
+	if(IsPlayerMuted(targetid))
 		return Msg(playerid, YELLOW, " >  Player Already Muted");
-
-	t:gPlayerBitData[targetid]<Muted>;
 
 	if(delay > 0)
 	{
-		stop UnmuteTimer[targetid];
-		UnmuteTimer[targetid] = defer CmdDelay_unmute(targetid, delay * 1000);
-		MsgF(targetid, YELLOW, " >  Muted from global chat for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: "#C_BLUE"%s", delay, reason);
+		TogglePlayerMute(targetid, true, delay * 1000);
 		MsgF(playerid, YELLOW, " >  Muted player %P "#C_WHITE"for %d seconds.", targetid, delay);
+		MsgF(targetid, YELLOW, " >  Muted from global chat for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: "#C_BLUE"%s", delay, reason);
 	}
 	else
 	{
-		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "#C_BLUE"%s", reason);
+		TogglePlayerMute(targetid, true);
 		MsgF(playerid, YELLOW, " >  Muted player %P", targetid);
+		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "#C_BLUE"%s", reason);
 	}
 
 	return 1;
-}
-
-timer CmdDelay_unmute[time](playerid, time)
-{
-	#pragma unused time
-	
-	f:gPlayerBitData[playerid]<Muted>;
-
-	Msg(playerid, YELLOW, " >  You are now un-muted.");
-
 }
 
 ACMD:unmute[1](playerid, params[])
@@ -176,11 +162,10 @@ ACMD:unmute[1](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	f:gPlayerBitData[targetid]<Muted>;
-	stop UnmuteTimer[targetid];
+	TogglePlayerMute(targetid, false);
 
 	MsgF(playerid, YELLOW, " >  Un-muted %P", targetid);
-	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" has un-muted you.", targetid);
+	Msg(targetid, YELLOW, " >  You are now un-muted.");
 
 	return 1;
 }

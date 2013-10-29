@@ -271,6 +271,7 @@ ACMD:motd[2](playerid, params[])
 
 	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
 
+	djStyled(true);
 	djSet(SETTINGS_FILE, "server/motd", gMessageOfTheDay);
 
 	return 1;

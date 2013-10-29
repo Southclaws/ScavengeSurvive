@@ -12,7 +12,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 
 IsPlayerCombatLogging(playerid, &lastattacker, &lastweapon)
 {
-	if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_TookDamageTick]) < gCombatLogWindow * 1000 && IsPlayerConnected(combatlog_LastAttacker[playerid]))
+	if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_TookDamageTick]) < gCombatLogWindow * 1000 && IsPlayerConnected(combatlog_LastAttacker[playerid]) && !gServerRestarting)
 	{
 		lastattacker = combatlog_LastAttacker[playerid];
 		lastweapon = combatlog_LastWeapon[playerid];

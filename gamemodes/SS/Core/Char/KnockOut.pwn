@@ -1,4 +1,8 @@
+#include <YSI\y_hooks>
+
+
 static
+	knockout_KnockedOut[MAX_PLAYERS],
 	knockout_Tick[MAX_PLAYERS],
 	knockout_Duration[MAX_PLAYERS];
 
@@ -14,7 +18,7 @@ KnockOutPlayer(playerid, duration)
 
 	knockout_Tick[playerid] = tickcount();
 	knockout_Duration[playerid] = duration;
-	t:gPlayerBitData[playerid]<KnockedOut>;
+	knockout_KnockedOut[playerid] = true;
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -59,19 +63,19 @@ WakeUpPlayer(playerid)
 	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
 
 	knockout_Tick[playerid] = tickcount();
-	f:gPlayerBitData[playerid]<KnockedOut>;
+	knockout_KnockedOut[playerid] = false;
 }
 
 KnockOutUpdate(playerid)
 {
 	if(gPlayerBitData[playerid] & Dying)
 	{
-		f:gPlayerBitData[playerid]<KnockedOut>;
+		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
 		return;
 	}
 
-	if(gPlayerBitData[playerid] & KnockedOut)
+	if(knockout_KnockedOut[playerid])
 	{
 		if(gPlayerBitData[playerid] & AdminDuty)
 			WakeUpPlayer(playerid);
@@ -126,14 +130,53 @@ KnockOutUpdate(playerid)
 	return;
 }
 
+hook OnPlayerDisconnect(playerid)
+{
+	if(gServerRestarting)
+		return 1;
+
+	if(knockout_KnockedOut[playerid])
+	{
+		print("waking");
+		WakeUpPlayer(playerid);
+	}
+
+	return 1;
+}
+
 stock GetPlayerKnockOutTick(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return knockout_Tick[playerid];
 }
 
 stock GetPlayerKnockoutDuration(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return knockout_Duration[playerid];
+}
+
+stock GetPlayerKnockOutRemainder(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(!knockout_KnockedOut[playerid])
+		return 0;
+
+	return GetTickCountDifference((knockout_Tick[playerid] + knockout_Duration[playerid]), tickcount());
+}
+
+stock IsPlayerKnockedOut(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return knockout_KnockedOut[playerid];
 }
 
 ACMD:knockout[4](playerid, params[])

@@ -21,7 +21,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(newkeys == 16)
 		{
-			if(gPlayerBitData[playerid] & KnockedOut)
+			if(IsPlayerKnockedOut(playerid))
 				return 0;
 
 			med_HealTarget[playerid] = playerid;
@@ -49,7 +49,7 @@ PlayerStartHeal(playerid, target)
 
 	if(target != playerid)
 	{
-		if(gPlayerBitData[target] & KnockedOut)
+		if(IsPlayerKnockedOut(target))
 		{
 			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
 			duration = REVIVE_PROGRESS_MAX;
@@ -98,7 +98,7 @@ public OnHoldActionUpdate(playerid, progress)
 
 			new progresscap = HEAL_PROGRESS_MAX;
 
-			if(gPlayerBitData[med_HealTarget[playerid]] & KnockedOut)
+			if(IsPlayerKnockedOut(med_HealTarget[playerid]))
 				progresscap = REVIVE_PROGRESS_MAX;
 
 			SetPlayerToFacePlayer(playerid, med_HealTarget[playerid]);
@@ -125,7 +125,7 @@ public OnHoldActionFinish(playerid)
 
 		if(med_HealTarget[playerid] != playerid)
 		{
-			if(gPlayerBitData[med_HealTarget[playerid]] & KnockedOut)
+			if(IsPlayerKnockedOut(med_HealTarget[playerid]))
 			{
 				WakeUpPlayer(med_HealTarget[playerid]);
 			}

@@ -28,7 +28,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			if(newkeys & KEY_SPRINT && newkeys & KEY_CROUCH)
 			{
-				if(!(gPlayerBitData[playerid] & KnockedOut))
+				if(!IsPlayerKnockedOut(playerid))
 				{
 					if(GetPlayerAnimationIndex(playerid) == 1381)
 					{

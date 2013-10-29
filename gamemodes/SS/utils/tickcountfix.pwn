@@ -24,5 +24,4 @@ stock GetTickCountDifference(a, b)
 	}
 
 	return intdiffabs(a, b);
-
 }

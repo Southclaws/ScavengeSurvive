@@ -1,4 +1,4 @@
-#define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(%0) & AdminDuty || GetPlayerDataBitmask(%0) & KnockedOut || GetPlayerAnimationIndex(%0) == 1381
+#define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(%0) & AdminDuty || IsPlayerKnockedOut(%0) || GetPlayerAnimationIndex(%0) == 1381
 
 public OnPlayerPickUpItem(playerid, itemid)
 {

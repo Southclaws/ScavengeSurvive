@@ -166,7 +166,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 	t:gPlayerBitData[playerid]<Alive>;
 	f:gPlayerBitData[playerid]<Bleeding>;
 	f:gPlayerBitData[playerid]<Infected>;
-	f:gPlayerBitData[playerid]<KnockedOut>;
 
 	FreezePlayer(playerid, 1000);
 	PrepareForSpawn(playerid);
