@@ -157,6 +157,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				if(MIN_RADIO_FREQ < frequency < MAX_RADIO_FREQ)
 				{
 					SetPlayerRadioFrequency(playerid, frequency);
+					logf("%p updated frequency to %.2f", playerid, frequency);
 					UpdateRadioUI(playerid);
 				}
 				else

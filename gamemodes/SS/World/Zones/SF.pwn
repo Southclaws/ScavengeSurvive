@@ -1,6 +1,3 @@
-new fierro_SpawnRoomTeleport;
-
-
 public OnLoad()
 {
 	print("Loading San Fierro");
@@ -24,7 +21,7 @@ public OnLoad()
 
 	LinkTP(
 		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
-		fierro_SpawnRoomTeleport = CreateButton(-1857.1831, -169.5322, 9.1358, " ", 0));
+		CreateButton(-1857.1831, -169.5322, 9.1358, "Press F to open", 0));
 
 	DefineSupplyDropPos("San Fierro Airport", -1312.81885, -16.52664, 13.08027);
 	DefineSupplyDropPos("San Fierro Driving School", -2055.64697, -200.37950, 34.24461);
@@ -793,18 +790,3 @@ SF_District_Ship2()
 	CreateLootSpawn(-1390.89, 1482.97, 0.95, 4, 8, loot_Survivor);
 	CreateLootSpawn(-1425.41, 1490.25, 0.97, 4, 8, loot_Survivor);
 }
-
-public OnButtonPress(playerid, buttonid)
-{
-	if(buttonid == fierro_SpawnRoomTeleport)
-		return 1;
-
-	return CallLocalFunction("fierro_OnButtonPress", "dd", playerid, buttonid);
-}
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress fierro_OnButtonPress
-forward fierro_OnButtonPress(playerid, buttonid);

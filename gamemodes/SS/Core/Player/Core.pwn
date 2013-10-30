@@ -150,7 +150,7 @@ public OnPlayerConnect(playerid)
 	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
 	TextDrawShowForPlayer(playerid, Branding);
-	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
+	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
 
 	LoadPlayerTextDraws(playerid);
@@ -452,7 +452,7 @@ public OnPlayerRequestClass(playerid, classid)
 
 	t:gPlayerBitData[playerid]<FirstSpawn>;
 
-	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
+	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 
 	return 0;
 }
@@ -463,7 +463,7 @@ public OnPlayerRequestSpawn(playerid)
 
 	t:gPlayerBitData[playerid]<FirstSpawn>;
 
-	SetSpawn(playerid, -907.5452, 272.7235, 1014.1449, 0.0);
+	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 
 	return 1;
 }

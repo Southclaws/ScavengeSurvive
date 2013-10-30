@@ -324,12 +324,17 @@ VehicleHealthCheck(playerid)
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
 		BanPlayer(playerid, reason, -1);
 
-		SetVehicleHealth(GetPlayerVehicleID(playerid), 990.0);
+		defer vh_ResetVehiclePosition(GetPlayerVehicleID(playerid));
 
 		vh_ReportTick[playerid] = tickcount();
 	}
 
 	return 1;
+}
+
+timer vh_ResetVehiclePosition[1000](vehicleid)
+{
+	SetVehicleHealth(vehicleid, 990.0);
 }
 
 

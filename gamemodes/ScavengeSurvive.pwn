@@ -32,9 +32,9 @@ native gpci(playerid, serial[], len);
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
 
-#define DEFAULT_POS_X				(-907.5452)
-#define DEFAULT_POS_Y				(272.7235)
-#define DEFAULT_POS_Z				(1014.1449)
+#define DEFAULT_POS_X				(10000.0)
+#define DEFAULT_POS_Y				(10000.0)
+#define DEFAULT_POS_Z				(1.0)
 
 /*==============================================================================
 

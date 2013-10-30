@@ -74,11 +74,11 @@ PlayerSpawnExistingCharacter(playerid)
 
 PlayerCreateNewCharacter(playerid)
 {
-	SetPlayerPos(playerid, -907.5452, 272.7235, 1014.1449);
+	SetPlayerPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
-	SetPlayerCameraLookAt(playerid, -907.5452, 272.7235, 1014.1449);
-	SetPlayerCameraPos(playerid, -907.4642, 277.0962, 1014.1492);
-	Streamer_UpdateEx(playerid, -907.5452, 272.7235, 1014.1449);
+	SetPlayerCameraLookAt(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
+	SetPlayerCameraPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z + 1.0);
+	Streamer_UpdateEx(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 
 	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
 	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
