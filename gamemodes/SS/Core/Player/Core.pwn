@@ -693,6 +693,9 @@ public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		return 0;
 	}
 
+	if(GetPlayerSurfingVehicleID(playerid) == vehicleid)
+		CancelPlayerMovement(playerid);
+
 	if(ispassenger)
 	{
 		new driverid = -1;

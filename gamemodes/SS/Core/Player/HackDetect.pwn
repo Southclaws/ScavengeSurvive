@@ -334,7 +334,7 @@ VehicleHealthCheck(playerid)
 
 timer vh_ResetVehiclePosition[1000](vehicleid)
 {
-	SetVehicleHealth(vehicleid, 990.0);
+	SetVehicleHealth(vehicleid, 300.0);
 }
 
 
