@@ -1,8 +1,10 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_REPORTS_PER_PAGE	(32)
-#define MAX_REPORT_TYPES		(5)
+#define MAX_REPORT_REASON_LENGTH	(128)
+#define MAX_REPORT_INFO_LENGTH		(128)
+#define MAX_REPORTS_PER_PAGE		(32)
+#define MAX_REPORT_TYPES			(5)
 
 
 enum
@@ -44,10 +46,10 @@ new
 Float:	send_TargetPos				[MAX_PLAYERS][3],
 
 		report_CurrentName			[MAX_PLAYERS][MAX_PLAYER_NAME],
-		report_CurrentReason		[MAX_PLAYERS][128],
+		report_CurrentReason		[MAX_PLAYERS][MAX_REPORT_REASON_LENGTH],
 		report_CurrentType			[MAX_PLAYERS],
 Float:	report_CurrentPos			[MAX_PLAYERS][3],
-		report_CurrentInfo			[MAX_PLAYERS][128],
+		report_CurrentInfo			[MAX_PLAYERS][MAX_REPORT_INFO_LENGTH],
 		report_CurrentReporter		[MAX_PLAYERS][MAX_PLAYER_NAME],
 
 		report_CurrentItem			[MAX_PLAYERS],
@@ -95,13 +97,13 @@ ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:pos
 	}
 
 	stmt_bind_value(gStmt_ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_ReportInsert, 1, DB::TYPE_STRING, reason, 128);
+	stmt_bind_value(gStmt_ReportInsert, 1, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH);
 	stmt_bind_value(gStmt_ReportInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_ReportInsert, 3, DB::TYPE_INTEGER, type);
 	stmt_bind_value(gStmt_ReportInsert, 4, DB::TYPE_FLOAT, posx);
 	stmt_bind_value(gStmt_ReportInsert, 5, DB::TYPE_FLOAT, posy);
 	stmt_bind_value(gStmt_ReportInsert, 6, DB::TYPE_FLOAT, posz);
-	stmt_bind_value(gStmt_ReportInsert, 7, DB::TYPE_STRING, infostring, 128);
+	stmt_bind_value(gStmt_ReportInsert, 7, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH);
 	stmt_bind_value(gStmt_ReportInsert, 8, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
 
 	if(stmt_execute(gStmt_ReportInsert))
@@ -192,12 +194,12 @@ ShowReport(playerid, name[MAX_PLAYER_NAME], timestamp)
 	stmt_bind_value(gStmt_ReportInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_value(gStmt_ReportInfo, 1, DB::TYPE_INTEGER, timestamp);
 
-	stmt_bind_result_field(gStmt_ReportInfo, 1, DB::TYPE_STRING, report_CurrentReason[playerid], 128);
+	stmt_bind_result_field(gStmt_ReportInfo, 1, DB::TYPE_STRING, report_CurrentReason[playerid], MAX_REPORT_REASON_LENGTH);
 	stmt_bind_result_field(gStmt_ReportInfo, 4, DB::TYPE_INTEGER, report_CurrentType[playerid]);
 	stmt_bind_result_field(gStmt_ReportInfo, 5, DB::TYPE_FLOAT, report_CurrentPos[playerid][0]);
 	stmt_bind_result_field(gStmt_ReportInfo, 6, DB::TYPE_FLOAT, report_CurrentPos[playerid][1]);
 	stmt_bind_result_field(gStmt_ReportInfo, 7, DB::TYPE_FLOAT, report_CurrentPos[playerid][2]);
-	stmt_bind_result_field(gStmt_ReportInfo, 8, DB::TYPE_STRING, report_CurrentInfo[playerid], 128);
+	stmt_bind_result_field(gStmt_ReportInfo, 8, DB::TYPE_STRING, report_CurrentInfo[playerid], MAX_REPORT_INFO_LENGTH);
 	stmt_bind_result_field(gStmt_ReportInfo, 9, DB::TYPE_STRING, report_CurrentReporter[playerid], MAX_PLAYER_NAME);
 
 	if(stmt_execute(gStmt_ReportInfo))

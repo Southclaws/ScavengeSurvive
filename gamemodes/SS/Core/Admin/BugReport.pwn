@@ -1,28 +1,18 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_ISSUES (32)
+#define MAX_ISSUE_LENGTH	(128)
+#define MAX_ISSUES_PER_PAGE (32)
 
 
 new
 	issue_CurrentItem[MAX_PLAYER_NAME],
-	issue_TimestampIndex[MAX_ISSUES];
+	issue_TimestampIndex[MAX_ISSUES_PER_PAGE];
 
 
 CMD:bug(playerid, params[])
 {
-	new bug[98];
-
-	if(!sscanf(params, "s[98]", bug))
-	{
-		ReportBug(playerid, bug);
-
-		Msg(playerid, YELLOW, " >  Your bug report has been submitted! Thank you for your feedback! You can view a list of current issues with /issues.");
-	}
-	else
-	{
-		Msg(playerid, YELLOW, " >  Usage: /bug [description of bug or steps to reproduce, only 98 characters will fit here but feel free to submit multiple reports]");
-	}
+	ShowPlayerDialog(playerid, d_IssueSubmit, DIALOG_STYLE_INPUT, "Bug report", "Please give a good description of the bug and/or steps to reproduce (char limit: 128 feel free to submit multiple reports)", "Submit", "Cancel");
 
 	return 1;
 }
@@ -42,7 +32,7 @@ CMD:issues(playerid, params[])
 ReportBug(playerid, bug[])
 {
 	stmt_bind_value(gStmt_BugInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_bind_value(gStmt_BugInsert, 1, DB::TYPE_STRING, bug, 128);
+	stmt_bind_value(gStmt_BugInsert, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
 	stmt_bind_value(gStmt_BugInsert, 2, DB::TYPE_INTEGER, gettime());
 
 	if(stmt_execute(gStmt_BugInsert))
@@ -55,17 +45,17 @@ ShowListOfBugs(playerid)
 {
 	new
 		name[MAX_PLAYER_NAME],
-		bug[128],
+		bug[MAX_ISSUE_LENGTH],
 		datetime;
 
 	stmt_bind_result_field(gStmt_BugList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_BugList, 1, DB::TYPE_STRING, bug, 128);
+	stmt_bind_result_field(gStmt_BugList, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
 	stmt_bind_result_field(gStmt_BugList, 2, DB::TYPE_INTEGER, datetime);
 
 	if(stmt_execute(gStmt_BugList))
 	{
 		new
-			list[(MAX_PLAYER_NAME + 16 + 1) * MAX_ISSUES],
+			list[(MAX_PLAYER_NAME + 16 + 1) * MAX_ISSUES_PER_PAGE],
 			idx;
 
 		while(stmt_fetch_row(gStmt_BugList))
@@ -99,16 +89,22 @@ GetBugReports()
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
+	if(dialogid == d_IssueSubmit && response)
+	{
+		ReportBug(playerid, inputtext);
+		Msg(playerid, YELLOW, " >  Your bug report has been submitted! Thank you for your feedback! You can view a list of current issues with /issues.");
+	}
+
 	if(dialogid == d_IssueList && response)
 	{
 		new
 			name[MAX_PLAYER_NAME],
-			bug[128],
+			bug[MAX_ISSUE_LENGTH],
 			message[512];
 
 		stmt_bind_value(gStmt_BugInfo, 0, DB::TYPE_INTEGER, issue_TimestampIndex[listitem]);
 		stmt_bind_result_field(gStmt_BugInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_result_field(gStmt_BugInfo, 1, DB::TYPE_STRING, bug, 128);
+		stmt_bind_result_field(gStmt_BugInfo, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
 
 		if(stmt_execute(gStmt_BugInfo))
 		{
