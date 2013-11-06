@@ -119,8 +119,6 @@ public OnItemDestroy(itemid)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
 		{
-			printf("Destroying item %d safeboxtype: %d", itemid, i);
-
 			new
 				Float:x,
 				Float:y,
@@ -255,6 +253,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 timer box_PickUp[250](playerid, itemid)
 {
 	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
+		return;
+
+	if(!IsItemInWorld(itemid))
 		return;
 
 	PlayerPickUpItem(playerid, itemid);

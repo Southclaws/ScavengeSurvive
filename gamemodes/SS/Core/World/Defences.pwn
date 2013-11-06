@@ -3,8 +3,6 @@
 
 #define MAX_DEFENCE_ITEM	(10)
 #define MAX_DEFENCE			(1024)
-#define DIRECTORY_DEFENCES	"SSS/Defences/"
-#define DEFENCE_DATA_DIR	"./scriptfiles/SSS/Defences/"
 
 
 enum
@@ -49,7 +47,8 @@ static
 
 new
 			def_Data[MAX_DEFENCE][E_DEFENCE_DATA],
-Iterator:	def_Index<MAX_DEFENCE>;
+Iterator:	def_Index<MAX_DEFENCE>,
+			def_ButtonDefence[BTN_MAX];
 
 static
 			def_CurrentDefenceItem[MAX_PLAYERS],
@@ -57,6 +56,12 @@ static
 			def_CurrentDefenceMove[MAX_PLAYERS],
 			def_CurrentDefenceOpen[MAX_PLAYERS];
 
+
+hook OnGameModeInit()
+{
+	for(new i; i < BTN_MAX; i++)
+		def_ButtonDefence[i] = -1;
+}
 
 hook OnPlayerConnect(playerid)
 {
@@ -149,6 +154,8 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	else
 		def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), .areasize = 1.5);
 
+	def_ButtonDefence[def_Data[id][def_buttonId]] = id;
+
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
 
@@ -180,8 +187,14 @@ stock DestroyDefence(defenceid)
 	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
 	fremove(filename);
 
+	if(IsValidButton(def_Data[defenceid][def_buttonId]))
+		def_ButtonDefence[def_Data[defenceid][def_buttonId]] = INVALID_ITEM_ID;
+
 	DestroyDynamicObject(def_Data[defenceid][def_objectId]);
 	DestroyButton(def_Data[defenceid][def_buttonId]);
+
+	def_Data[defenceid][def_objectId] = INVALID_OBJECT_ID;
+	def_Data[defenceid][def_buttonId] = INVALID_BUTTON_ID;
 
 	def_Data[defenceid][def_mode]		= 0;
 	def_Data[defenceid][def_hitPoints]	= 0;
@@ -406,23 +419,25 @@ StopBuildingDefence(playerid)
 
 public OnButtonPress(playerid, buttonid)
 {
-	foreach(new i : def_Index)
+	if(def_ButtonDefence[buttonid] != -1)
 	{
-		if(buttonid == def_Data[i][def_buttonId])
+		new id = def_ButtonDefence[buttonid];
+
+		if(buttonid == def_Data[id][def_buttonId])
 		{
 			new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
 
 			if(itemtype == item_Crowbar)
 			{
-				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
+				new Float:angle = absoluteangle(def_Data[id][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
 				if(90.0 < angle < 270.0)
 				{
 					new itemtypename[ITM_MAX_NAME];
 
-					GetItemTypeName(def_TypeData[def_Data[i][def_type]][def_itemtype], itemtypename);
+					GetItemTypeName(def_TypeData[def_Data[id][def_type]][def_itemtype], itemtypename);
 
-					def_CurrentDefenceEdit[playerid] = i;
+					def_CurrentDefenceEdit[playerid] = id;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					ShowActionText(playerid, sprintf("Removing %s", itemtypename));
@@ -433,15 +448,15 @@ public OnButtonPress(playerid, buttonid)
 
 			if(itemtype == item_Keypad)
 			{
-				new Float:angle = absoluteangle(def_Data[i][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
+				new Float:angle = absoluteangle(def_Data[id][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
 				if(90.0 < angle < 270.0)
 				{	
 					new itemtypename[ITM_MAX_NAME];
 
-					GetItemTypeName(def_TypeData[def_Data[i][def_type]][def_itemtype], itemtypename);
+					GetItemTypeName(def_TypeData[def_Data[id][def_type]][def_itemtype], itemtypename);
 
-					def_CurrentDefenceEdit[playerid] = i;
+					def_CurrentDefenceEdit[playerid] = id;
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
@@ -451,10 +466,13 @@ public OnButtonPress(playerid, buttonid)
 				}
 			}
 
-			if(def_Data[i][def_mode] == DEFENCE_MODE_OPENABLE)
+			if(def_Data[id][def_mode] == DEFENCE_MODE_OPENABLE)
 			{
-				def_CurrentDefenceOpen[playerid] = i;
+				def_CurrentDefenceOpen[playerid] = id;
+
 				ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
+				CancelPlayerMovement(playerid);
+
 				return 1;
 			}
 		}
@@ -470,10 +488,30 @@ public OnButtonPress(playerid, buttonid)
 #define OnButtonPress def_OnButtonPress
 forward def_OnButtonPress(playerid, buttonid);
 
+public OnHoldActionUpdate(playerid, progress)
+{
+	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
+	{
+		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
+			StopHoldAction(playerid);
+	}
+	return CallLocalFunction("def_OnHoldActionUpdate", "d", playerid, progress);
+}
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate def_OnHoldActionUpdate
+forward def_OnHoldActionUpdate(playerid, progress);
+
 public OnHoldActionFinish(playerid)
 {
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
+		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
+			return 1;
+
 		new
 			Float:x,
 			Float:y,

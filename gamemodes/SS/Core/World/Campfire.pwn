@@ -336,7 +336,6 @@ timer cmp_FinishCooking[60000](fireid)
 	defer cmp_DestroySmoke(fireid);
 
 	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
-	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 
 	return;
 }
