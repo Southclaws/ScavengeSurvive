@@ -11,13 +11,14 @@ new
 	ban_ItemsOnPage[MAX_PLAYERS];
 
 
-BanPlayer(playerid, reason[], byid)
+BanPlayer(playerid, reason[], byid, duration)
 {
 	stmt_bind_value(gStmt_BanInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_bind_value(gStmt_BanInsert, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
 	stmt_bind_value(gStmt_BanInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON);
 	stmt_bind_value(gStmt_BanInsert, 4, DB::TYPE_PLAYER_NAME, byid);
+	stmt_bind_value(gStmt_BanInsert, 5, DB::TYPE_INTEGER, duration);
 
 	if(stmt_execute(gStmt_BanInsert))
 	{
@@ -30,7 +31,7 @@ BanPlayer(playerid, reason[], byid)
 	return 0;
 }
 
-BanPlayerByName(name[], reason[], byid = -1)
+BanPlayerByName(name[], reason[], byid, duration)
 {
 	new
 		id,
@@ -59,6 +60,7 @@ BanPlayerByName(name[], reason[], byid = -1)
 	stmt_bind_value(gStmt_BanInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON);
 	stmt_bind_value(gStmt_BanInsert, 4, DB::TYPE_STRING, by, MAX_PLAYER_NAME);
+	stmt_bind_value(gStmt_BanInsert, 5, DB::TYPE_INTEGER, duration);
 
 	if(stmt_execute(gStmt_BanInsert))
 	{
@@ -205,7 +207,8 @@ BanCheck(playerid)
 	new
 		banned,
 		timestamp,
-		reason[MAX_BAN_REASON];
+		reason[MAX_BAN_REASON],
+		duration;
 
 	stmt_bind_value(gStmt_BanGetFromNameIp, 0, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_bind_value(gStmt_BanGetFromNameIp, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
@@ -213,6 +216,7 @@ BanCheck(playerid)
 	stmt_bind_result_field(gStmt_BanGetFromNameIp, 0, DB::TYPE_INTEGER, banned);
 	stmt_bind_result_field(gStmt_BanGetFromNameIp, 1, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_result_field(gStmt_BanGetFromNameIp, 2, DB::TYPE_STRING, reason, MAX_BAN_REASON);
+	stmt_bind_result_field(gStmt_BanGetFromNameIp, 3, DB::TYPE_INTEGER, duration);
 
 	if(stmt_execute(gStmt_BanGetFromNameIp))
 	{
@@ -220,11 +224,24 @@ BanCheck(playerid)
 
 		if(banned)
 		{
+			if(gettime() > (timestamp + duration))
+			{
+				new name[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				UnBanPlayer(name);
+
+				return 0;
+			}
+
 			new string[256];
 
 			format(string, 256, "\
-				"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-				"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s", TimestampToDateTime(timestamp), reason);
+				"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\
+				"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
+				"C_YELLOW"Unban:\n\t\t"C_BLUE"%s",
+				TimestampToDateTime(timestamp),
+				reason,
+				duration ? (TimestampToDateTime(timestamp + duration)) : "Never");
 
 			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
 
@@ -241,10 +258,10 @@ BanCheck(playerid)
 	return 0;
 }
 
-forward external_BanPlayer(name[], reason[]);
-public external_BanPlayer(name[], reason[])
+forward external_BanPlayer(name[], reason[], duration);
+public external_BanPlayer(name[], reason[], duration)
 {
-	BanPlayerByName(name, reason);
+	BanPlayerByName(name, reason, -1, duration);
 }
 
 stock IsPlayerBanned(name[])

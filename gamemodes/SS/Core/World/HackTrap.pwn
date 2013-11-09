@@ -44,5 +44,5 @@ forward hak_OnPlayerPickUpItem(playerid, itemid);
 
 TheTrapHasSprung(playerid)
 {
-	BanPlayer(playerid, "Sprung the hacker trap by picking up an unreachable item!", -1);
+	BanPlayer(playerid, "Sprung the hacker trap by picking up an unreachable item!", -1, 0);
 }

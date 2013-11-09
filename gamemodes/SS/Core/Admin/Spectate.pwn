@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 new
 	PlayerText:spec_Name,
 	PlayerText:spec_Info;
@@ -191,6 +194,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				break;
 			}
 			EnterSpectateMode(playerid, id);
+		}
+
+		if(newkeys == 512)
+		{
+			EnterSpectateMode(playerid, gPlayerData[playerid][ply_SpectateTarget]);
 		}
 	}
 	return 1;

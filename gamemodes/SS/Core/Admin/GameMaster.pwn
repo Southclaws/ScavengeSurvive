@@ -193,7 +193,7 @@ ACMD:warn[1](playerid, params[])
 
 	if(gPlayerData[targetid][ply_Warnings] >= 5)
 	{
-		BanPlayer(targetid, "Getting 5 warnings", playerid);
+		BanPlayer(targetid, "Getting 5 warnings", playerid, 86400);
 	}
 
 	return 1;

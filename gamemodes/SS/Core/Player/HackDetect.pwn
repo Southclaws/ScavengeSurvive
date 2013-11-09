@@ -76,7 +76,7 @@ ptask AntiCheatUpdate[1000](playerid)
 		VehicleTeleportCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
-			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must be a hack)", -1);
+			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must be a hack)", -1, 0);
 	}
 	else
 	{
@@ -90,7 +90,7 @@ ptask AntiCheatUpdate[1000](playerid)
 	CameraDistanceCheck(playerid);
 
 	if(GetPlayerMoney(playerid) > 0)
-		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1);
+		BanPlayer(playerid, "Having over 0 money (Money can't be obtained in the server, must be a hack)", -1, 0);
 
 	return;
 }
@@ -286,7 +286,7 @@ SwimFlyCheck(playerid)
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
-			BanPlayer(playerid, reason, -1);
+			BanPlayer(playerid, reason, -1, 0);
 
 			sf_ReportTick[playerid] = tickcount();
 		}
@@ -322,7 +322,7 @@ VehicleHealthCheck(playerid)
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server)", hp);
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
-		BanPlayer(playerid, reason, -1);
+		BanPlayer(playerid, reason, -1, 0);
 
 		defer vh_ResetVehiclePosition(GetPlayerVehicleID(playerid));
 
@@ -579,6 +579,12 @@ VehicleDistanceCheck(playerid, vehicleid)
 
 	distance = Distance(x, y, z, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 
+	if(distance == 0xFFC00000)
+	{
+		RespawnVehicle(vehicleid);
+		return 1;
+	}
+
 	if(VEHICLE_TELEPORT_DISTANCE < distance < 500.0)
 	{
 		new Float:distancetoplayer = 10000.0;
@@ -655,14 +661,14 @@ VehicleModCheck(playerid)
 
 	if(component == 1008 || component == 1009 || component == 1010)
 	{
-		BanPlayer(playerid, "Detected Nitro vehicle component.", -1);
+		BanPlayer(playerid, "Detected Nitro vehicle component.", -1, 0);
 	}
 
 	component = GetVehicleComponentInSlot(vehicleid, CARMODTYPE_HYDRAULICS);
 
 	if(component == 1087)
 	{
-		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1);
+		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1, 0);
 	}
 }
 

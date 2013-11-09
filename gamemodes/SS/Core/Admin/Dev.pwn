@@ -563,3 +563,19 @@ ACMD:pos[4](playerid, params[])
 
 	return 1;
 }
+
+ACMD:dropall[4](playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	DropItems(playerid, x, y, z, r);
+
+	return 1;
+}

@@ -432,9 +432,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			{
 				case 0:
 				{
-					BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid);
-
-					ShowListOfReports(playerid);
+					ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
+						"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
+						"Continue", "Cancel");
 				}
 				case 1:
 				{
@@ -538,6 +538,69 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 		else
 		{
 			ShowListOfReports(playerid);
+		}
+	}
+
+	if(dialogid == d_ReportBanDuration)
+	{
+		if(response)
+		{
+			if(!strcmp(inputtext, "forever", true))
+			{
+				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, 0);
+				ShowListOfReports(playerid);
+
+				return 1;
+			}
+
+			new
+				value,
+				type[16];
+
+			if(sscanf(inputtext, "ds[16]", value, type))
+			{
+				ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
+					"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
+					"Continue", "Cancel");
+
+				return 1;
+			}
+
+			if(value <= 0)
+			{
+				ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
+					"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
+					"Continue", "Cancel");
+
+				return 1;
+			}
+
+			if(!strcmp(type, "day", true, 3))
+			{
+				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 86400);
+				ShowListOfReports(playerid);
+
+				return 1;
+			}
+
+			if(!strcmp(type, "week", true, 4))
+			{
+				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 604800);
+				ShowListOfReports(playerid);
+
+				return 1;
+			}
+
+			if(!strcmp(type, "month", true, 5))
+			{
+				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 2628000);
+				ShowListOfReports(playerid);
+				return 1;
+			}
+		}
+		else
+		{
+			ShowReportOptions(playerid);
 		}
 	}
 

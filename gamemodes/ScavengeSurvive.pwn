@@ -175,6 +175,7 @@ enum
 #define FIELD_BANS_DATE				"date"		// 02
 #define FIELD_BANS_REASON			"reason"	// 03
 #define FIELD_BANS_BY				"by"		// 04
+#define FIELD_BANS_DURATION			"duration"	// 05
 
 enum
 {
@@ -182,7 +183,8 @@ enum
 	FIELD_ID_BANS_IPV4,
 	FIELD_ID_BANS_DATE,
 	FIELD_ID_BANS_REASON,
-	FIELD_ID_BANS_BY
+	FIELD_ID_BANS_BY,
+	FIELD_ID_BANS_DURATION
 }
 
 // Reports
@@ -389,6 +391,7 @@ enum
 	d_ReportList,
 	d_Report,
 	d_ReportOptions,
+	d_ReportBanDuration,
 
 	d_IssueSubmit,
 	d_IssueList,
@@ -401,6 +404,9 @@ enum
 	d_TransferAmmoToBox,
 	d_TransferAmmoGun2Gun,
 
+	d_BanReason,
+	d_BanDuration,
+	d_BanOptions,
 	d_BanList,
 	d_BanInfo,
 
@@ -883,6 +889,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Dev.pwn"
 #include "SS/Core/Admin/Duty.pwn"
 #include "SS/Core/Admin/Ban.pwn"
+#include "SS/Core/Admin/BanCommand.pwn"
 #include "SS/Core/Admin/Spectate.pwn"
 #include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/BugReport.pwn"
@@ -1088,7 +1095,8 @@ public OnGameModeInit()
 		"FIELD_BANS_IPV4" INTEGER,\
 		"FIELD_BANS_DATE" INTEGER,\
 		"FIELD_BANS_REASON" TEXT,\
-		"FIELD_BANS_BY" TEXT)"));
+		"FIELD_BANS_BY" TEXT,\
+		"FIELD_BANS_DURATION" INTEGER)"));
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
 		"FIELD_REPORTS_NAME" TEXT,\
@@ -1141,9 +1149,9 @@ public OnGameModeInit()
 	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
 	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 
-	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?)");
+	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?, ?)");
 	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ?");
-	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON" FROM "ACCOUNTS_TABLE_BANS" WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON", "FIELD_BANS_DURATION" FROM "ACCOUNTS_TABLE_BANS" WHERE LOWER("FIELD_BANS_NAME") = LOWER(?) OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
 	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ?");
 	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS"");
 	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ?");

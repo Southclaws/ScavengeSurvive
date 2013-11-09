@@ -18,12 +18,9 @@ ACMD:ban[2](playerid, params[])
 		playername[MAX_PLAYER_NAME],
 		reason[64];
 
-	if(!sscanf(params, "dS(None)[64]", id, reason))
+	if(!sscanf(params, "d", id))
 	{
-		if(strlen(reason) > 64)
-			return Msg(playerid, RED, " >  Reason must be below 64 characters");
-
-		if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
+		if(gPlayerData[id][ply_Admin] > 0)
 			return 2;
 
 		if(!IsPlayerConnected(id))
@@ -32,13 +29,14 @@ ACMD:ban[2](playerid, params[])
 		if(playerid == id)
 			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-		MsgF(playerid, YELLOW, " >  Banned %P"#C_YELLOW" reason: "#C_BLUE"%s", id, reason);
+		MsgF(playerid, YELLOW, " >  Banned %P", id);
 
-		BanPlayer(id, reason, playerid);
+		BanPlayerByCommand(playerid, id);
 
 		return 1;
 	}
-	if(!sscanf(params, "s[24]S(None)[64]", playername, reason))
+
+	if(!sscanf(params, "s[24]s[64]", playername, reason))
 	{
 		if(strlen(reason) > 64)
 			return Msg(playerid, RED, " >  Reason must be below 64 characters");
@@ -48,7 +46,7 @@ ACMD:ban[2](playerid, params[])
 
 		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
 
-		BanPlayerByName(playername, reason, playerid);
+		BanPlayerByName(playername, reason, playerid, 0);
 
 		return 1;
 	}
