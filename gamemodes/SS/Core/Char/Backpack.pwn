@@ -165,7 +165,7 @@ stock GivePlayerBag(playerid, itemid)
 
 stock RemovePlayerBag(playerid)
 {
-	if(!(0 < playerid < MAX_PLAYERS))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	if(!IsValidItem(bag_PlayerBagID[playerid]))

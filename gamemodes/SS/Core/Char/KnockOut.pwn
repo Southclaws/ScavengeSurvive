@@ -68,7 +68,7 @@ WakeUpPlayer(playerid)
 
 KnockOutUpdate(playerid)
 {
-	if(gPlayerBitData[playerid] & Dying)
+	if(gPlayerBitData[playerid] & Dying || GetTickCountDifference(GetPlayerSpawnTick(playerid), tickcount()) < 1000 || !IsPlayerSpawned(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
@@ -142,6 +142,11 @@ hook OnPlayerDisconnect(playerid)
 	}
 
 	return 1;
+}
+
+hook OnPlayerSpawn(playerid)
+{
+	knockout_KnockedOut[playerid] = false;
 }
 
 stock GetPlayerKnockOutTick(playerid)
