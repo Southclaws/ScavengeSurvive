@@ -18,8 +18,8 @@ ACMD:duty[1](playerid, params[])
 			gPlayerData[playerid][ply_SpawnPosZ]);
 
 		RemovePlayerWeapon(playerid);
-		LoadPlayerInventory(playerid);
 		LoadPlayerChar(playerid);
+		LoadPlayerInventory(playerid);
 
 		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
 

@@ -15,13 +15,13 @@ PrepareForSpawn(playerid)
 
 PlayerSpawnExistingCharacter(playerid)
 {
-	if(!LoadPlayerInventory(playerid))
+	if(!LoadPlayerChar(playerid))
 	{
 		PlayerCreateNewCharacter(playerid);
 		return 0;
 	}
 
-	if(!LoadPlayerChar(playerid))
+	if(!LoadPlayerInventory(playerid))
 	{
 		PlayerCreateNewCharacter(playerid);
 		return 0;

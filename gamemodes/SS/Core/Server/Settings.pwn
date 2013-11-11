@@ -36,6 +36,7 @@ LoadSettings()
 
 		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
 		gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
+		gPerformFileCheck = djInt(SETTINGS_FILE, "server/file-check");
 
 		// player
 
@@ -64,6 +65,8 @@ LoadSettings()
 		gInfoMessage[2]			= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gWhitelist				= false;
 		gInfoMessageInterval	= 5;
+		gPerformFileCheck		= false;
+
 		gPauseMap				= false;
 		gInteriorEntry			= false;
 		gPlayerAnimations		= true;
@@ -83,6 +86,7 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
+		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
 
 		djSetInt(SETTINGS_FILE, "player/allow-pause-map", gPauseMap);
 		djSetInt(SETTINGS_FILE, "player/interior-entry", gInteriorEntry);
@@ -109,6 +113,7 @@ LoadSettings()
 
 	printf(" Whitelist: %d", gWhitelist);
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);
+	printf(" File Check: %d", gPerformFileCheck);
 
 	printf(" Pause Map: %d", gPauseMap);
 	printf(" Interior Entry: %d", gInteriorEntry);

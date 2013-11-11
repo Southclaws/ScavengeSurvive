@@ -124,7 +124,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Files
 #define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
-#define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.inv"
+#define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.dat"
 #define ACCOUNT_DATABASE			"SSS/Accounts.db"
 #define WORLD_DATABASE				"SSS/World.db"
 #define SETTINGS_FILE				"SSS/settings.json"
@@ -517,6 +517,7 @@ new
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 bool:	gWhitelist,
 		gInfoMessageInterval,
+		gPerformFileCheck,
 
 bool:	gPauseMap,
 bool:	gInteriorEntry,
@@ -792,6 +793,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/Whitelist.pwn"
 #include "SS/Core/Server/SaveBlock.pwn"
 #include "SS/Core/Server/ActivityLog.pwn"
+#include "SS/Core/Server/FileCheck.pwn"
 
 // UI
 #include "SS/Core/UI/PlayerUI.pwn"
@@ -1515,6 +1517,8 @@ public OnGameModeInit()
 
 	LoadSprayTags();
 
+	if(gPerformFileCheck)
+		PerformGlobalPlayerFileCheck();
 
 	for(new i; i < MAX_PLAYERS; i++)
 	{

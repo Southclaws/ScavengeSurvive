@@ -1,8 +1,11 @@
-//#define SAVELOAD_DEBUG
+// #define SAVELOAD_DEBUG_FUNCTIONS
+// #define SAVELOAD_DEBUG_INVENTORY
 
+#define CHARACTER_DATA_FILE_VERSION 10
 
 enum
 {
+	PLY_CELL_FILE_VERSION,
 	PLY_CELL_HEALTH,
 	PLY_CELL_ARMOUR,
 	PLY_CELL_FOOD,
@@ -27,14 +30,14 @@ enum
 	PLY_CELL_MASK,
 	PLY_CELL_MUTE_TIME,
 	PLY_CELL_KNOCKOUT,
+	PLY_CELL_BAGTYPE,
 	PLY_CELL_END
 }
 
 enum
 {
-	INV_CELL_ITEMS[4 * 2],
-	INV_CELL_BAGTYPE,
-	INV_CELL_BAGITEMS[9 * 2],
+	INV_CELL_ITEMS[4 * 3],
+	INV_CELL_BAGITEMS[9 * 3],
 	INV_CELL_END
 }
 
@@ -47,6 +50,8 @@ SavePlayerChar(playerid)
 		animidx = GetPlayerAnimationIndex(playerid);
 
 	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
+
+	data[PLY_CELL_FILE_VERSION] = CHARACTER_DATA_FILE_VERSION;
 
 	data[PLY_CELL_HEALTH]	= _:gPlayerData[playerid][ply_HitPoints];
 	data[PLY_CELL_ARMOUR]	= _:gPlayerData[playerid][ply_ArmourPoints];
@@ -95,17 +100,11 @@ SavePlayerChar(playerid)
 	}
 
 	data[PLY_CELL_BLEEDING] = IsPlayerBleeding(playerid);
-
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
-
 	data[PLY_CELL_WARNS] = gPlayerData[playerid][ply_Warnings];
-
 	data[PLY_CELL_FREQ] = _:gPlayerData[playerid][ply_RadioFrequency];
-
 	data[PLY_CELL_CHATMODE] = gPlayerData[playerid][ply_ChatMode];
-
 	data[PLY_CELL_INFECTED] = _:(gPlayerBitData[playerid] & Infected);
-
 	data[PLY_CELL_TOOLTIPS] = _:(gPlayerBitData[playerid] & ToolTips);
 
 	data[PLY_CELL_SPAWN_X] = _:gPlayerData[playerid][ply_SpawnPosX];
@@ -116,6 +115,9 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);
 	data[PLY_CELL_KNOCKOUT] = GetPlayerKnockOutRemainder(playerid);
+
+	if(IsValidItem(GetPlayerBagItem(playerid)))
+		data[PLY_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
 	file = fopen(filename, io_write);
 
@@ -130,6 +132,7 @@ SavePlayerChar(playerid)
 
 	return 1;
 }
+
 SavePlayerInventory(playerid)
 {
 	new
@@ -139,22 +142,30 @@ SavePlayerInventory(playerid)
 
 	PLAYER_INV_FILE(gPlayerName[playerid], filename);
 
-	for(new i = INV_CELL_ITEMS, j; j < 4; i += 2, j++)
+	for(new i = INV_CELL_ITEMS, j; j < 4; i += 3, j++)
 	{
 		data[i] = _:GetItemType(GetInventorySlotItem(playerid, j));
-		data[i + 1] = GetItemExtraData(GetInventorySlotItem(playerid, j));
+		data[i + 1] = 1; // extra data size, for future use
+		data[i + 2] = GetItemExtraData(GetInventorySlotItem(playerid, j));
+
+		#if defined SAVELOAD_DEBUG_INVENTORY
+		printf("\t[SAVE] INV %d, %d, %d", data[i], data[i + 1], data[i + 2]);
+		#endif
 	}
 
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 	{
 		new containerid = GetItemExtraData(GetPlayerBagItem(playerid));
 
-		data[INV_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
-
-		for(new i = INV_CELL_BAGITEMS, j; j < GetContainerSize(containerid); i += 2, j++)
+		for(new i = INV_CELL_BAGITEMS, j; j < GetContainerSize(containerid); i += 3, j++)
 		{
 			data[i] = _:GetItemType(GetContainerSlotItem(containerid, j));
-			data[i + 1] = GetItemExtraData(GetContainerSlotItem(containerid, j));
+			data[i + 1] = 1; // extra data size, for future use
+			data[i + 2] = GetItemExtraData(GetContainerSlotItem(containerid, j));
+
+			#if defined SAVELOAD_DEBUG_INVENTORY
+			printf("\t[SAVE] BAG %d, %d, %d", data[i], data[i + 1], data[i + 2]);
+			#endif
 		}
 	}
 
@@ -169,12 +180,13 @@ SavePlayerInventory(playerid)
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
 
-	#if defined SAVELOAD_DEBUG
+	#if defined SAVELOAD_DEBUG_FUNCTIONS
 	printf("\t[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
 	#endif
 
 	return 1;
 }
+
 
 LoadPlayerChar(playerid)
 {
@@ -197,8 +209,14 @@ LoadPlayerChar(playerid)
 	fblockread(file, data, sizeof(data));
 	fclose(file);
 
-	if(Float:data[0] <= 0.0)
-		data[0] = _:1.0;
+	if(data[PLY_CELL_FILE_VERSION] != CHARACTER_DATA_FILE_VERSION)
+	{
+		print("ERROR: [LoadPlayerChar] Opening file '%s'. Incompatible file version.");
+		return 0;
+	}
+
+	if(Float:data[PLY_CELL_HEALTH] <= 0.0)
+		data[PLY_CELL_HEALTH] = _:1.0;
 
 	gPlayerData[playerid][ply_HitPoints]	= Float:data[PLY_CELL_HEALTH];
 	gPlayerData[playerid][ply_ArmourPoints]	= Float:data[PLY_CELL_ARMOUR];
@@ -282,6 +300,12 @@ LoadPlayerChar(playerid)
 	if(data[PLY_CELL_KNOCKOUT] > 0)
 		KnockOutPlayer(playerid, data[PLY_CELL_KNOCKOUT]);
 
+	if(IsItemTypeBag(ItemType:data[PLY_CELL_BAGTYPE]))
+	{
+		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
+		GivePlayerBag(playerid, itemid);
+	}
+
 	return 1;
 }
 
@@ -307,7 +331,7 @@ LoadPlayerInventory(playerid)
 	fblockread(file, data, sizeof(data));
 	fclose(file);
 
-	for(new i; i < INV_MAX_SLOTS * 2; i += 2)
+	for(new i; i < INV_MAX_SLOTS * 3; i += 3)
 	{
 		if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
 			break;
@@ -315,35 +339,42 @@ LoadPlayerInventory(playerid)
 		itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
 
 		if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
-			SetItemExtraData(itemid, data[i + 1]);
+			SetItemExtraData(itemid, data[i + 2]);
 	
 		AddItemToInventory(playerid, itemid, 0);
+
+		#if defined SAVELOAD_DEBUG_INVENTORY
+		printf("\t[LOAD] INV %d, %d, %d", data[i], data[i + 1], data[i + 2]);
+		#endif
+
 	}
 
-	if(!IsItemTypeBag(ItemType:data[INV_CELL_BAGTYPE]))
-		return 1;
+	containerid = GetItemExtraData(GetPlayerBagItem(playerid));
 
-	itemid = CreateItem(ItemType:data[INV_CELL_BAGTYPE], 0.0, 0.0, 0.0);
-	containerid = GetItemExtraData(itemid);
-	GivePlayerBag(playerid, itemid);
-
-	for(new i = INV_CELL_BAGITEMS; i < INV_CELL_BAGITEMS + (GetContainerSize(containerid) * 2); i += 2)
+	if(IsValidContainer(containerid))
 	{
-		if(data[i] == _:INVALID_ITEM_TYPE)
-			continue;
+		for(new i = INV_CELL_BAGITEMS; i < INV_CELL_BAGITEMS + (GetContainerSize(containerid) * 3); i += 3)
+		{
+			if(data[i] == _:INVALID_ITEM_TYPE)
+				continue;
 
-		if(data[i] == 0)
-			continue;
+			if(data[i] == 0)
+				continue;
 
-		itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
+			itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
 
-		if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
-			SetItemExtraData(itemid, data[i + 1]);
+			if(!IsItemTypeSafebox(ItemType:data[i]) && !IsItemTypeBag(ItemType:data[i]))
+				SetItemExtraData(itemid, data[i + 2]);
 
-		AddItemToContainer(containerid, itemid);
+			AddItemToContainer(containerid, itemid);
+
+			#if defined SAVELOAD_DEBUG_INVENTORY
+			printf("\t[LOAD] BAG %d, %d, %d", data[i], data[i + 1], data[i + 2]);
+			#endif
+		}
 	}
 
-	#if defined SAVELOAD_DEBUG
+	#if defined SAVELOAD_DEBUG_FUNCTIONS
 	printf("\t[LOAD] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
 	#endif
 
