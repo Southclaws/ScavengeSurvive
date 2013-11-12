@@ -153,13 +153,13 @@ public OnLoad()
 	DefineItemToolTip(item_Dynamite,		"This item has no use yet");
 	DefineItemToolTip(item_Door,			"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_MetPanel,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
-	DefineItemToolTip(item_SurfBoard,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
+	DefineItemToolTip(item_MetalGate,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_CrateDoor,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_CorPanel,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_ShipDoor,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
-	DefineItemToolTip(item_MetalPlate,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
+	DefineItemToolTip(item_RustyDoor,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_MetalStand,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
-	DefineItemToolTip(item_WoodDoor,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
+	DefineItemToolTip(item_RustyMetal,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_WoodPanel,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_Flare,			"This item has no use yet");
 	DefineItemToolTip(item_TntPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");

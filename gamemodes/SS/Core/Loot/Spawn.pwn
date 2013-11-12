@@ -6,7 +6,7 @@ enum E_LOOT_INDEX_ITEM_DATA
 {
 ItemType:	loot_itemType,
 			loot_exData,
-Float:		loot_spawnChance
+			loot_spawnChance
 }
 
 new
@@ -27,7 +27,7 @@ DefineLootIndex(indexvalue)
 	loot_IndexUpper++;
 }
 
-AddItemToLootIndex(index, ItemType:itemtype, Float:spawnchance, exdata = -1)
+AddItemToLootIndex(index, ItemType:itemtype, spawnchance, exdata = -1)
 {
 	if(index > loot_IndexUpper)
 		return 0;
@@ -68,7 +68,7 @@ GenerateLoot(index, &ItemType:itemtype, &exdata)
 
 	for(new i; i < loot_IndexSize[index] && idx < MAX_LOOT_INDEX_ITEMS; i++)
 	{
-		if(frandom(1.0) < loot_IndexItems[index][i][loot_spawnChance])
+		if(random(100) < loot_IndexItems[index][i][loot_spawnChance])
 			list[idx++] = i;
 	}
 

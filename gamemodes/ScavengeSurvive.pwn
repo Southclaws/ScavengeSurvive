@@ -666,13 +666,13 @@ ItemType:		item_Dynamite		= INVALID_ITEM_TYPE,
 // 120
 ItemType:		item_Door			= INVALID_ITEM_TYPE,
 ItemType:		item_MetPanel		= INVALID_ITEM_TYPE,
-ItemType:		item_SurfBoard		= INVALID_ITEM_TYPE,
+ItemType:		item_MetalGate		= INVALID_ITEM_TYPE,
 ItemType:		item_CrateDoor		= INVALID_ITEM_TYPE,
 ItemType:		item_CorPanel		= INVALID_ITEM_TYPE,
 ItemType:		item_ShipDoor		= INVALID_ITEM_TYPE,
-ItemType:		item_MetalPlate		= INVALID_ITEM_TYPE,
+ItemType:		item_RustyDoor		= INVALID_ITEM_TYPE,
 ItemType:		item_MetalStand		= INVALID_ITEM_TYPE,
-ItemType:		item_WoodDoor		= INVALID_ITEM_TYPE,
+ItemType:		item_RustyMetal		= INVALID_ITEM_TYPE,
 ItemType:		item_WoodPanel		= INVALID_ITEM_TYPE,
 // 130
 ItemType:		item_Flare			= INVALID_ITEM_TYPE,
@@ -1279,14 +1279,14 @@ public OnGameModeInit()
 // 120
 	item_Door			= DefineItemType("Door",				1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
 	item_MetPanel		= DefineItemType("Metal Panel",			1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
-	item_SurfBoard		= DefineItemType("Surfboard",			2410,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
-	item_CrateDoor		= DefineItemType("Crate Door",			2678,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
-	item_CorPanel		= DefineItemType("Metal Sheet",			2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
+	item_MetalGate		= DefineItemType("Metal Gate",			19303,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
+	item_CrateDoor		= DefineItemType("Crate Door",			3062,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
+	item_CorPanel		= DefineItemType("Corrugated Metal",	2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
 	item_ShipDoor		= DefineItemType("Ship Door",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
-	item_MetalPlate		= DefineItemType("Metal Sheet",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
-	item_MetalStand		= DefineItemType("Metal Plate",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
-	item_WoodDoor		= DefineItemType("Wood Panel",			3093,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
-	item_WoodPanel		= DefineItemType("Wood Panel",			5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
+	item_RustyDoor		= DefineItemType("Metal Panel",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
+	item_MetalStand		= DefineItemType("Metal Stand",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	16637,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
+	item_WoodPanel		= DefineItemType("Wood Ramp",			5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 // 130
 	item_Flare			= DefineItemType("Flare",				345,	ITEM_SIZE_SMALL);
 	item_TntPhoneBomb	= DefineItemType("Phone Remote TNT",	1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
@@ -1413,14 +1413,14 @@ public OnGameModeInit()
 
 	DefineDefenceItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
 	DefineDefenceItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		4, 1, 1);
-	DefineDefenceItem(item_SurfBoard,	90.0000, 0.0000, 0.0000, 0.2650,		2, 1, 1);
-	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000, 0.7287,		6, 1, 1);
+	DefineDefenceItem(item_MetalGate,	0.0000, 0.0000, 0.0000, 1.2007,			2, 1, 1);
+	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000,  1.4738,		6, 1, 1);
 	DefineDefenceItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		4, 1, 1);
 	DefineDefenceItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		8, 1, 1);
-	DefineDefenceItem(item_MetalPlate,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
+	DefineDefenceItem(item_RustyDoor,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
 	DefineDefenceItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		6, 1, 1);
-	DefineDefenceItem(item_WoodDoor,	90.0000, 90.0000, 0.0000, -0.0160,		2, 1, 0);
-	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 20.0000, 1.0284,		6, 1, 1);
+	DefineDefenceItem(item_RustyMetal,	0.0000, 0.0000, 270.0000, 1.4401,		2, 1, 1);
+	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 23.5000, 1.0284,		6, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
