@@ -198,8 +198,6 @@ LoadPlayerVehicle(filename[], prints)
 	veh_Data[vehicleid][veh_key]				= array_data[VEH_CELL_KEY];
 	veh_Data[vehicleid][veh_locked]				= array_data[VEH_CELL_LOCKED];
 
-	printf("%d %d", array_data[VEH_CELL_KEY], veh_Data[vehicleid][veh_locked]);
-
 	SetVehicleExternalLock(vehicleid, veh_Data[vehicleid][veh_locked]);
 
 	if(VehicleFuelData[array_data[VEH_CELL_MODEL]-400][veh_trunkSize] > 0)
@@ -301,8 +299,6 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	array_data[VEH_CELL_ARMOUR] = 0;
 	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 	array_data[VEH_CELL_LOCKED] = veh_Data[vehicleid][veh_locked];
-
-	printf("%d %d", array_data[VEH_CELL_KEY], array_data[VEH_CELL_LOCKED]);
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE_DAT"%s.dat", name);
 	file = fopen(filename, io_write);
