@@ -16,7 +16,10 @@ enum
 	VEH_CELL_DOORS,		// 10
 	VEH_CELL_LIGHTS,	// 11
 	VEH_CELL_TIRES,		// 12
-	VEH_CELL_ARMOUR		// 13
+	VEH_CELL_ARMOUR,	// 13
+	VEH_CELL_KEY,		// 14
+	VEH_CELL_LOCKED,	// 15
+	VEH_CELL_END
 }
 
 
@@ -81,7 +84,7 @@ LoadPlayerVehicle(filename[], prints)
 		vehicletype,
 		owner[MAX_PLAYER_NAME],
 		containerid,
-		array_data[VEH_CELL_ARMOUR + 1],
+		array_data[VEH_CELL_END],
 		array_inv[CNT_MAX_SLOTS * 3],
 		itemid;
 
@@ -192,6 +195,12 @@ LoadPlayerVehicle(filename[], prints)
 	veh_Data[vehicleid][veh_armour]				= array_data[VEH_CELL_ARMOUR];
 	veh_Data[vehicleid][veh_colour1]			= array_data[VEH_CELL_COL1];
 	veh_Data[vehicleid][veh_colour2]			= array_data[VEH_CELL_COL2];
+	veh_Data[vehicleid][veh_key]				= array_data[VEH_CELL_KEY];
+	veh_Data[vehicleid][veh_locked]				= array_data[VEH_CELL_LOCKED];
+
+	printf("%d %d", array_data[VEH_CELL_KEY], veh_Data[vehicleid][veh_locked]);
+
+	SetVehicleExternalLock(vehicleid, veh_Data[vehicleid][veh_locked]);
 
 	if(VehicleFuelData[array_data[VEH_CELL_MODEL]-400][veh_trunkSize] > 0)
 	{
@@ -272,7 +281,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	new
 		File:file,
 		filename[MAX_PLAYER_NAME + 22],
-		array_data[VEH_CELL_ARMOUR + 1],
+		array_data[VEH_CELL_END],
 		array_inv[CNT_MAX_SLOTS * 3],
 		itemid;
 
@@ -290,6 +299,10 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	array_data[VEH_CELL_COL2] = veh_Data[vehicleid][veh_colour2];
 	GetVehicleDamageStatus(vehicleid, array_data[VEH_CELL_PANELS], array_data[VEH_CELL_DOORS], array_data[VEH_CELL_LIGHTS], array_data[VEH_CELL_TIRES]);
 	array_data[VEH_CELL_ARMOUR] = 0;
+	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
+	array_data[VEH_CELL_LOCKED] = veh_Data[vehicleid][veh_locked];
+
+	printf("%d %d", array_data[VEH_CELL_KEY], array_data[VEH_CELL_LOCKED]);
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE_DAT"%s.dat", name);
 	file = fopen(filename, io_write);

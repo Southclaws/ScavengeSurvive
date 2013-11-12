@@ -30,6 +30,7 @@ enum E_VEHICLE_DATA
 Float:	veh_health,
 Float:	veh_Fuel,
 		veh_key,
+		veh_locked,
 		veh_engine,
 		veh_panels,
 		veh_doors,
@@ -266,7 +267,7 @@ UpdateVehicleData(vehicleid)
 		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
 
 	else
-		SetVehicleParamsEx(vehicleid, 0, 0, 0, 0, 0, 0, 0);
+		SetVehicleParamsEx(vehicleid, 0, 0, 0, veh_Data[vehicleid][veh_locked], 0, 0, 0);
 
 	return 1;
 }
@@ -403,7 +404,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_SUBMISSION)
 		{
-			VehicleDoorsState(vehicleid, !VehicleDoorsState(vehicleid));
+			if(VehicleDoorsState(vehicleid))
+			{
+				SetVehicleExternalLock(vehicleid, 0);
+			}
+			else
+			{
+				VehicleDoorsState(vehicleid, 1);
+			}
 		}
 
 		return 1;
@@ -987,6 +995,25 @@ stock SetVehicleKey(vehicleid, key)
 		return 0;
 
 	veh_Data[vehicleid][veh_key] = key;
+
+	return 1;
+}
+
+stock GetVehicleExternalLock(vehicleid)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return -1;
+
+	return veh_Data[vehicleid][veh_locked];
+}
+
+stock SetVehicleExternalLock(vehicleid, status)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	veh_Data[vehicleid][veh_locked] = status;
+	VehicleDoorsState(vehicleid, status);
 
 	return 1;
 }

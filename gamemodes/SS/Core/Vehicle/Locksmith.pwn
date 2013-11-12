@@ -52,14 +52,14 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			CancelPlayerMovement(playerid);
 
-			if(VehicleDoorsState(vehicleid))
+			if(GetVehicleExternalLock(vehicleid))
 			{
-				VehicleDoorsState(vehicleid, 0);
+				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);
 			}
 			else
 			{
-				VehicleDoorsState(vehicleid, 1);
+				SetVehicleExternalLock(vehicleid, 1);
 				ShowActionText(playerid, "Locked", 3000);
 			}
 		}

@@ -15,6 +15,9 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
+		if(GetVehicleExternalLock(vehicleid))
+			return 1;
+
 		if(225.0 < angle < 315.0)
 		{
 			return StartBreakingVehicleLock(playerid, vehicleid, 0);
