@@ -136,15 +136,16 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(tickcount(), hols_LastHolster[playerid]) < 1000)
 		return 1;
 
 	if(newkeys & KEY_YES)
 	{
-		if(GetTickCountDifference(tickcount(), hols_LastHolster[playerid]) < 1000)
-			return 1;
+		new Float:z;
 
-		if(!IsPlayerIdle(playerid))
+		GetPlayerVelocity(playerid, z, z, z);
+
+		if(!(-0.01 < z < 0.01))
 			return 1;
 
 		new weaponid = GetPlayerCurrentWeapon(playerid);
