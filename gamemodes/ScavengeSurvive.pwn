@@ -276,6 +276,11 @@ enum
 #define ACMD:%1[%2](%3)				forward acmd_%1_%2(%3);\
 									public acmd_%1_%2(%3)
 
+#define HOLDING(%0)					((newkeys & (%0)) == (%0))
+#define RELEASED(%0)				(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
+#define PRESSED(%0)					(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
+
+
 // Colours
 #define YELLOW						0xFFFF00FF
 
@@ -1412,15 +1417,15 @@ public OnGameModeInit()
 
 
 	DefineDefenceItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
-	DefineDefenceItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		4, 1, 1);
-	DefineDefenceItem(item_MetalGate,	0.0000, 0.0000, 0.0000, 1.2007,			2, 1, 1);
-	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000,  1.4738,		6, 1, 1);
-	DefineDefenceItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		4, 1, 1);
-	DefineDefenceItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		8, 1, 1);
-	DefineDefenceItem(item_RustyDoor,	90.0000, 90.0000, 0.0000, 2.1143,		8, 1, 1);
-	DefineDefenceItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		6, 1, 1);
-	DefineDefenceItem(item_RustyMetal,	0.0000, 0.0000, 270.0000, 1.4401,		2, 1, 1);
-	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 23.5000, 1.0284,		6, 1, 1);
+	DefineDefenceItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		5, 1, 1);
+	DefineDefenceItem(item_MetalGate,	0.0000, 0.0000, 0.0000, 1.2007,			4, 1, 1);
+	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000,  1.4738,		5, 1, 1);
+	DefineDefenceItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		6, 1, 1);
+	DefineDefenceItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		9, 1, 1);
+	DefineDefenceItem(item_RustyDoor,	90.0000, 90.0000, 0.0000, 2.1143,		7, 1, 1);
+	DefineDefenceItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		7, 1, 1);
+	DefineDefenceItem(item_RustyMetal,	0.0000, 0.0000, 270.0000, 1.4401,		5, 1, 1);
+	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 23.5000, 1.0284,		7, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);

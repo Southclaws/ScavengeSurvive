@@ -20,7 +20,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Civilian,		ItemType:WEAPON_CAMERA,				60);
 	AddItemToLootIndex(loot_Civilian,		item_Key,							50);
 	AddItemToLootIndex(loot_Civilian,		item_Medkit,						10);
-	AddItemToLootIndex(loot_Civilian,		item_FireworkBox,					40);
+	AddItemToLootIndex(loot_Civilian,		item_FireworkBox,					10);
 	AddItemToLootIndex(loot_Civilian,		item_FireLighter,					100);
 	AddItemToLootIndex(loot_Civilian,		item_Bottle,						100);
 	AddItemToLootIndex(loot_Civilian,		item_Sign,							40);
@@ -157,7 +157,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	ItemType:WEAPON_CAMERA,				70);
 	AddItemToLootIndex(loot_CarCivilian,	item_Bandage,						20);
 	AddItemToLootIndex(loot_CarCivilian,	item_Medkit,						10);
-	AddItemToLootIndex(loot_CarCivilian,	item_FireworkBox,					80);
+	AddItemToLootIndex(loot_CarCivilian,	item_FireworkBox,					15);
 	AddItemToLootIndex(loot_CarCivilian,	item_FireLighter,					100);
 //	AddItemToLootIndex(loot_CarCivilian,	item_FishRod,						100);
 	AddItemToLootIndex(loot_CarCivilian,	item_Wrench,						100);
