@@ -6,6 +6,7 @@ new gAdminCommandList_Lvl3[] =
 	/ford - move forward (Duty only)\n\
 	/goto - teleport to player (Duty only)\n\
 	/get - teleport player to you (Duty only)\n\
+	/resetpassword\n\
 	/deleteaccount\n\
 	/deleteitems\n\
 	/deletetents\n\
@@ -171,6 +172,30 @@ TeleportPlayerToPlayer(playerid, targetid)
 
 	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
+}
+
+ACMD:resetpassword[3](playerid, params[])
+{
+	if(isnull(params))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /resetpassword [account user-name]");
+		return 1;
+	}
+
+	new buffer[129];
+
+	WP_Hash(buffer, MAX_PASSWORD_LEN, "password");
+
+	stmt_bind_value(gStmt_AccountSetPassword, 0, DB::TYPE_STRING, buffer, MAX_PASSWORD_LEN);
+	stmt_bind_value(gStmt_AccountSetPassword, 1, DB::TYPE_STRING, params, MAX_PLAYER_NAME);
+	
+	if(stmt_execute(gStmt_AccountSetPassword))
+		MsgF(playerid, YELLOW, " >  Password for '%s' reset.", params);
+
+	else
+		Msg(playerid, RED, " >  An error occurred.");
+
+	return 1;
 }
 
 ACMD:deleteaccount[3](playerid, params[])

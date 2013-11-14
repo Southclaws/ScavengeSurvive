@@ -56,75 +56,94 @@ ExitSpectateMode(playerid)
 UpdateSpectateMode(playerid)
 {
 	new
+		targetid = gPlayerData[playerid][ply_SpectateTarget],
 		name[24 + 6],
 		str[256];
 
-	if(IsPlayerInAnyVehicle(gPlayerData[playerid][ply_SpectateTarget]))
+	if(IsPlayerInAnyVehicle(targetid))
 	{
 		new
 			invehicleas[24],
 			wepname[32],
 			cameramodename[37];
 
-		if(GetPlayerState(gPlayerData[playerid][ply_SpectateTarget]) == PLAYER_STATE_DRIVER)
+		if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
 			invehicleas = "Driver";
 
 		else
 			invehicleas = "Passenger";
 
-		GetWeaponName(GetPlayerWeapon(gPlayerData[playerid][ply_SpectateTarget]), wepname);
-		GetCameraModeName(GetPlayerCameraMode(gPlayerData[playerid][ply_SpectateTarget]), cameramodename);
+		GetWeaponName(GetPlayerWeapon(targetid), wepname);
+		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
 			Camera: %s Velocity: %.2f~n~\
-			Vehicle %d As %s Fuel: %.2f",
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
-			IsPlayerKnockedOut(gPlayerData[playerid][ply_SpectateTarget]) ? 1 : 0,
-			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
+			Vehicle %d As %s Fuel: %.2f Locked: %d",
+			gPlayerData[targetid][ply_HitPoints],
+			gPlayerData[targetid][ply_ArmourPoints],
+			gPlayerData[targetid][ply_FoodPoints],
+			IsPlayerKnockedOut(targetid) ? 1 : 0,
+			gPlayerBitData[targetid] & Bleeding ? 1 : 0,
 			wepname,
-			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
-			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
+			GetPlayerAmmo(targetid),
+			GetPlayerReserveAmmo(targetid),
 			cameramodename,
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_Velocity],
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_CurrentVehicle],
+			gPlayerData[targetid][ply_Velocity],
+			gPlayerData[targetid][ply_CurrentVehicle],
 			invehicleas,
-			GetVehicleFuel(gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_CurrentVehicle]));
+			GetVehicleFuel(gPlayerData[targetid][ply_CurrentVehicle]),
+			IsVehicleLocked(gPlayerData[targetid][ply_CurrentVehicle]));
 	}
 	else
 	{
 		new
 			wepname[32],
+			ammo[16],
+			holsteritemname[32],
 			cameramodename[37],
 			Float:vx,
 			Float:vy,
 			Float:vz,
 			Float:velocity;
 
-		GetWeaponName(GetPlayerWeapon(gPlayerData[playerid][ply_SpectateTarget]), wepname);
-		GetCameraModeName(GetPlayerCameraMode(gPlayerData[playerid][ply_SpectateTarget]), cameramodename);
-		GetPlayerVelocity(gPlayerData[playerid][ply_SpectateTarget], vx, vy, vz);
+		if(GetPlayerWeapon(targetid))
+		{
+			GetWeaponName(GetPlayerWeapon(targetid), wepname);
+			format(ammo, sizeof(ammo), "%d/%d", GetPlayerAmmo(targetid), GetPlayerReserveAmmo(targetid));
+		}
+		else
+		{
+			new itemid = GetPlayerItem(targetid);
+
+			GetItemName(itemid, wepname);
+			valstr(ammo, GetItemExtraData(itemid));
+		}
+
+		GetItemName(GetPlayerHolsterItem(targetid), holsteritemname);
+
+		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
+		GetPlayerVelocity(targetid, vx, vy, vz);
 
 		velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
-			Camera: %s Velocity: %.2f",
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_HitPoints],
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_ArmourPoints],
-			gPlayerData[gPlayerData[playerid][ply_SpectateTarget]][ply_FoodPoints],
-			IsPlayerKnockedOut(gPlayerData[playerid][ply_SpectateTarget]) ? 1 : 0,
-			gPlayerBitData[gPlayerData[playerid][ply_SpectateTarget]] & Bleeding ? 1 : 0,
-			wepname,
-			GetPlayerAmmo(gPlayerData[playerid][ply_SpectateTarget]),
-			GetPlayerReserveAmmo(gPlayerData[playerid][ply_SpectateTarget]),
+			Knockedout: %d Bleeding: %d Camera: %s Velocity: %.2f~n~\
+			Item/Weapon: %s Ammo/Ex: %s Holster: %s Ammo/Ex: %d",
+			gPlayerData[targetid][ply_HitPoints],
+			gPlayerData[targetid][ply_ArmourPoints],
+			gPlayerData[targetid][ply_FoodPoints],
+			IsPlayerKnockedOut(targetid) ? 1 : 0,
+			gPlayerBitData[targetid] & Bleeding ? 1 : 0,
 			cameramodename,
-			velocity);
+			velocity,
+			wepname,
+			ammo,
+			holsteritemname,
+			GetItemExtraData(GetPlayerHolsterItem(targetid)));
 	}
 
-	format(name, sizeof(name), "%s (%d)", gPlayerName[gPlayerData[playerid][ply_SpectateTarget]], gPlayerData[playerid][ply_SpectateTarget]);
+	format(name, sizeof(name), "%s (%d)", gPlayerName[targetid], targetid);
 
 	PlayerTextDrawSetString(playerid, spec_Name, name);
 	PlayerTextDrawSetString(playerid, spec_Info, str);

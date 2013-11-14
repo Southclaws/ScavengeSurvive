@@ -145,7 +145,7 @@ CMD:changepass(playerid,params[])
 			if(stmt_execute(gStmt_AccountSetPassword))
 			{
 				gPlayerData[playerid][ply_Password] = buffer;
-				MsgF(playerid, YELLOW, " >  Password succesfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
+				MsgF(playerid, YELLOW, " >  Password successfully changed to "#C_BLUE"%s"#C_YELLOW"!", newpass);
 			}
 			else
 			{
