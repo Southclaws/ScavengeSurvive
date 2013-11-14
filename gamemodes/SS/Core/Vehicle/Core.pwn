@@ -62,7 +62,8 @@ new
 new
 			veh_CurrentTrunkVehicle	[MAX_PLAYERS],
 Float:		veh_TempHealth			[MAX_PLAYERS],
-Float:		veh_TempVelocity		[MAX_PLAYERS];
+Float:		veh_TempVelocity		[MAX_PLAYERS],
+			veh_Entering			[MAX_PLAYERS];
 
 
 forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
@@ -410,6 +411,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 			else
 			{
+				veh_Data[vehicleid][veh_locked] = 1;
 				VehicleDoorsState(vehicleid, 1);
 			}
 		}
@@ -466,7 +468,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
 						SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 1, objective);
 
-						SetPlayerPos(playerid, px, py, pz);
+						CancelPlayerMovement(playerid);
 						SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
 
 						DisplayContainerInventory(playerid, GetVehicleContainer(vehicleid));
@@ -483,6 +485,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 						PutPlayerInVehicle(playerid, vehicleid, 0);
 					}
 				}
+			}
+		}
+	}
+ 
+	if(HOLDING(KEY_SPRINT) || PRESSED(KEY_SPRINT) || RELEASED(KEY_SPRINT))
+	{
+		if(veh_Entering[playerid] > -1)
+		{
+			foreach(new i : Player)
+			{
+				if(i == playerid)
+					continue;
+
+				if(GetPlayerVehicleID(i) == veh_Entering[playerid])
+					CancelPlayerMovement(playerid);
 			}
 		}
 	}
@@ -679,6 +696,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	veh_TempHealth[playerid] = 0.0;
 	veh_TempVelocity[playerid] = 0.0;
+	veh_Entering[playerid] = -1;
 
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
@@ -698,23 +716,66 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BICYCLE)
 			VehicleEngineState(vehicleid, 1);
 
+		SetVehicleUsed(vehicleid, true);
+		SetVehicleOccupied(vehicleid, true);
+
+		PlayerTextDrawSetString(playerid, VehicleNameText[playerid], VehicleNames[vehiclemodel-400]);
+		PlayerTextDrawShow(playerid, VehicleNameText[playerid]);
+		PlayerTextDrawShow(playerid, VehicleSpeedText[playerid]);
+
+		if(GetVehicleType(vehiclemodel) != VTYPE_BICYCLE)
+		{
+			PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
+			PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
+		}
+
 		logf("[VEHICLE] %p entered vehicle %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
-	if(oldstate == PLAYER_STATE_DRIVER && !IsPlayerOnAdminDuty(playerid))
+	if(oldstate == PLAYER_STATE_DRIVER)
 	{
-		new
-			name[MAX_PLAYER_NAME],
-			vehicleid;
+		new vehicleid = GetPlayerVehicleID(playerid);
 
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		vehicleid = GetPlayerLastVehicle(playerid);
+		if(!IsPlayerOnAdminDuty(playerid))
+		{
+			new name[MAX_PLAYER_NAME];
 
-		SavePlayerVehicle(vehicleid, name);
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+			SavePlayerVehicle(vehicleid, name);
+		}
+
 		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 		SetCameraBehindPlayer(playerid);
+
+		VehicleDoorsState(GetPlayerLastVehicle(playerid), 0);
+
+		SetVehicleOccupied(vehicleid, false);
+
+		PlayerTextDrawHide(playerid, VehicleNameText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleSpeedText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleDamageText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleEngineText[playerid]);
+		PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
 	}
+
+	return 1;
+}
+
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if(veh_Data[vehicleid][veh_locked])
+	{
+		CancelPlayerMovement(playerid);
+		ShowActionText(playerid, "Door Locked", 3000);
+	}
+
+	if(!ispassenger)
+		veh_Entering[playerid] = vehicleid;
 
 	return 1;
 }
@@ -999,7 +1060,7 @@ stock SetVehicleKey(vehicleid, key)
 	return 1;
 }
 
-stock GetVehicleExternalLock(vehicleid)
+stock IsVehicleLocked(vehicleid)
 {
 	if(!IsValidVehicleID(vehicleid))
 		return -1;
@@ -1012,6 +1073,7 @@ stock SetVehicleExternalLock(vehicleid, status)
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
+	veh_Data[vehicleid][veh_locked] = status;
 	veh_Data[vehicleid][veh_locked] = status;
 	VehicleDoorsState(vehicleid, status);
 

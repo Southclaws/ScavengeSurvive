@@ -646,52 +646,17 @@ GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
 
 
 
-public OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	new vehicleid = GetPlayerVehicleID(playerid);
-
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
-	{
-		new model = GetVehicleModel(vehicleid);
+		gPlayerData[playerid][ply_CurrentVehicle] = GetPlayerVehicleID(playerid);
 
-		gPlayerData[playerid][ply_CurrentVehicle] = vehicleid;
-
-		SetVehicleUsed(vehicleid, true);
-		SetVehicleOccupied(vehicleid, true);
-
-		PlayerTextDrawSetString(playerid, VehicleNameText[playerid], VehicleNames[model-400]);
-		PlayerTextDrawShow(playerid, VehicleNameText[playerid]);
-		PlayerTextDrawShow(playerid, VehicleSpeedText[playerid]);
-
-		if(GetVehicleType(model) != VTYPE_BICYCLE)
-		{
-			PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
-		}
-	}
-	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
-	{
-		VehicleDoorsState(gPlayerData[playerid][ply_CurrentVehicle], 0);
-
-		SetVehicleOccupied(vehicleid, false);
-
-		PlayerTextDrawHide(playerid, VehicleNameText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleSpeedText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleDamageText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleEngineText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
-	}
 	return 1;
 }
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	if(IsPlayerKnockedOut(playerid))
-	{
 		return 0;
-	}
 
 	if(GetPlayerSurfingVehicleID(playerid) == vehicleid)
 		CancelPlayerMovement(playerid);

@@ -52,7 +52,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			CancelPlayerMovement(playerid);
 
-			if(GetVehicleExternalLock(vehicleid))
+			if(IsVehicleLocked(vehicleid))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);
