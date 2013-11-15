@@ -120,6 +120,9 @@ CreateAccount(playerid, password[])
 
 DeleteAccount(name[])
 {
+	if(!AccountExists(name))
+		return 0;
+
 	new file[MAX_PLAYER_FILE];
 
 	stmt_bind_value(gStmt_AccountDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);

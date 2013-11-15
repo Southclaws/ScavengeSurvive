@@ -244,7 +244,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer tut_OnPlayerCloseContainer
-forward OnPlayerCloseContainer(playerid, containerid);
+forward tut_OnPlayerCloseContainer(playerid, containerid);
 
 public OnPlayerCloseInventory(playerid)
 {
