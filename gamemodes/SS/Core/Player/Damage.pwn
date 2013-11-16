@@ -190,16 +190,18 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		}
 		if(weaponid == anim_Stab)
 		{
-			t:gPlayerBitData[targetid]<Bleeding>;
+			if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
+			{
+				KnockOutPlayer(targetid, 60000);
+				CreateTimedDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0, 1000);
+				hploss = 0.0;
+			}
+			else
+			{
+				t:gPlayerBitData[targetid]<Bleeding>;
+			}
 		}
 
-		if(GetItemType(GetPlayerItem(playerid)) == item_Taser)
-		{
-			KnockOutPlayer(targetid, 60000);
-			CreateTimedDynamicObject(18724, tx, ty, tz-1.0, 0.0, 0.0, 0.0, 1000);
-			hploss = 0.0;
-			f:gPlayerBitData[targetid]<Bleeding>;
-		}
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))

@@ -56,9 +56,8 @@ public OnPlayerUseItem(playerid, itemid)
 		{
 			if(IsPlayerInPlayerArea(playerid, i))
 			{
-				ApplyAnimation(playerid, "ROCKET", "IDLE_ROCKET", 4.0, 0, 1, 1, 0, 500, 1);
-				defer Inject(playerid, i, itemid);
-				return 0;
+				InjectPlayer(playerid, i, itemid);
+				return 1;
 			}
 		}
 
@@ -76,22 +75,50 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem inj_OnPlayerUseItem
 forward inj_OnPlayerUseItem(playerid, itemid);
 
-timer Inject[500](playerid, targetid, itemid)
+InjectPlayer(playerid, targetid, itemid)
 {
-	ApplyAnimation(playerid, "PED", "IDLE_ARMED", 4.0, 0, 1, 1, 0, 500, 1);
+	if(IsPlayerKnockedOut(targetid))
+	{
+		ApplyAnimation(playerid, "KNIFE", "KNIFE_G", 2.0, 0, 0, 0, 0, 0);
+		defer Inject(playerid, targetid, itemid, 0);
+	}
+	else
+	{
+		ApplyAnimation(playerid, "ROCKET", "IDLE_ROCKET", 4.0, 0, 1, 1, 0, 500, 1);
+		defer Inject(playerid, targetid, itemid, 1);
+	}
+}
+
+timer Inject[500](playerid, targetid, itemid, anim)
+{
+	if(anim)
+		ApplyAnimation(playerid, "PED", "IDLE_ARMED", 4.0, 0, 1, 1, 0, 500, 1);
+
 	switch(GetItemExtraData(itemid))
 	{
 		case INJECT_TYPE_EMPTY:
+		{
 			ApplyDrug(targetid, DRUG_TYPE_AIR);
+		}
 
 		case INJECT_TYPE_MORPHINE:
+		{
 			ApplyDrug(targetid, DRUG_TYPE_MORPHINE);
+		}
 
 		case INJECT_TYPE_ADRENALINE:
+		{
 			ApplyDrug(targetid, DRUG_TYPE_ADRENALINE);
 
+			if(IsPlayerKnockedOut(targetid))
+				WakeUpPlayer(targetid);
+		}
+
 		case INJECT_TYPE_HEROINE:
+		{
 			ApplyDrug(targetid, DRUG_TYPE_HEROINE);
+		}
 	}
-	SetItemExtraData(itemid, INJECT_TYPE_EMPTY | (1 << 3));
+
+	SetItemExtraData(itemid, INJECT_TYPE_EMPTY);
 }

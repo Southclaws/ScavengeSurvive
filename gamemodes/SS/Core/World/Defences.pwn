@@ -127,6 +127,12 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 
 	GetItemTypeName(def_TypeData[type][def_itemtype], itemtypename);
 
+	if(hitpoints == -1)
+		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
+
+	else
+		def_Data[id][def_hitPoints] = hitpoints;
+
 	if(mode == DEFENCE_MODE_HORIZONTAL)
 	{
 		if(!def_TypeData[type][def_buildHorizont])
@@ -138,10 +144,10 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			def_TypeData[type][def_placeRotZ] + rz);
 
 		if(mode == DEFENCE_MODE_OPENABLE)
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", hitpoints, def_TypeData[type][def_maxHitPoints]), 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 
 		else
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", hitpoints, def_TypeData[type][def_maxHitPoints]), 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 	}
 	else
 	{
@@ -154,22 +160,16 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			def_TypeData[type][def_placeRotZ] + rz);
 
 		if(mode == DEFENCE_MODE_OPENABLE)
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", hitpoints, def_TypeData[type][def_maxHitPoints]));
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 
 		else
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", hitpoints, def_TypeData[type][def_maxHitPoints]));
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 	}
 
 	def_ButtonDefence[def_Data[id][def_buttonId]] = id;
 
 	def_Data[id][def_mode] = mode;
 	def_Data[id][def_pass] = pass;
-
-	if(hitpoints == -1)
-		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
-
-	else
-		def_Data[id][def_hitPoints] = hitpoints;
 
 	def_Data[id][def_posX] = x;
 	def_Data[id][def_posY] = y;

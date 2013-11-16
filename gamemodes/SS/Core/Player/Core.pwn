@@ -470,14 +470,8 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 			ShowWatch(playerid);
 		}
 	}
-	if(clickedid == DeathButton)
-	{
-		f:gPlayerBitData[playerid]<Dying>;
-		TogglePlayerSpectating(playerid, false);
-		CancelSelectTextDraw(playerid);
-		TextDrawHideForPlayer(playerid, DeathText);
-		TextDrawHideForPlayer(playerid, DeathButton);
-	}
+
+	return 1;
 }
 
 public OnPlayerSpawn(playerid)
@@ -495,29 +489,10 @@ public OnPlayerSpawn(playerid)
 	if(gPlayerBitData[playerid] & AdminDuty)
 	{
 		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
-		gPlayerData[playerid][ply_HitPoints] = 100.0;
 		return 1;
 	}
 
-	if(gPlayerBitData[playerid] & Dying)
-	{
-		TogglePlayerSpectating(playerid, true);
-
-		defer SetDeathCamera(playerid);
-
-		SetPlayerCameraPos(playerid,
-			gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-			gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-			gPlayerData[playerid][ply_DeathPosZ]);
-
-		SetPlayerCameraLookAt(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
-
-		TextDrawShowForPlayer(playerid, DeathText);
-		TextDrawShowForPlayer(playerid, DeathButton);
-		SelectTextDraw(playerid, 0xFFFFFF88);
-		gPlayerData[playerid][ply_HitPoints] = 1.0;
-	}
-	else
+	if(!(gPlayerBitData[playerid] & Dying))
 	{
 		gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 0;
 		PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
@@ -553,27 +528,6 @@ public OnPlayerSpawn(playerid)
 	RemoveAllDrugs(playerid);
 
 	return 1;
-}
-
-timer SetDeathCamera[50](playerid)
-{
-	InterpolateCameraPos(playerid,
-		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
-		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosZ] + 20.0,
-		30000, CAMERA_MOVE);
-
-	InterpolateCameraLookAt(playerid,
-		gPlayerData[playerid][ply_DeathPosX],
-		gPlayerData[playerid][ply_DeathPosY],
-		gPlayerData[playerid][ply_DeathPosZ],
-		gPlayerData[playerid][ply_DeathPosX],
-		gPlayerData[playerid][ply_DeathPosY],
-		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
-		30000, CAMERA_MOVE);
 }
 
 public OnPlayerUpdate(playerid)
@@ -621,20 +575,6 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	x = gPlayerData[playerid][ply_SpawnPosX];
-	z = gPlayerData[playerid][ply_SpawnPosY];
-	x = gPlayerData[playerid][ply_SpawnPosZ];
-
-	return 1;
-}
-
-
-
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
@@ -642,6 +582,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	return 1;
 }
+
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	if(IsPlayerKnockedOut(playerid))
@@ -871,6 +812,18 @@ Float:GetPlayerTotalVelocity(playerid)
 // ply_SpawnPosX
 // ply_SpawnPosY
 // ply_SpawnPosZ
+GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	x = gPlayerData[playerid][ply_SpawnPosX];
+	z = gPlayerData[playerid][ply_SpawnPosY];
+	x = gPlayerData[playerid][ply_SpawnPosZ];
+
+	return 1;
+}
+
 // ply_SpawnRotZ
 // ply_DeathPosX
 // ply_DeathPosY

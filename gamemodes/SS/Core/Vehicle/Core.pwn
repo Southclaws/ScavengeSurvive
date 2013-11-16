@@ -751,7 +751,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 		SetCameraBehindPlayer(playerid);
 
-		VehicleDoorsState(GetPlayerLastVehicle(playerid), 0);
+		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
 
 		SetVehicleOccupied(vehicleid, false);
 

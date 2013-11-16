@@ -5,7 +5,7 @@
 #define REVIVE_PROGRESS_MAX (6000)
 
 
-new med_HealTarget[MAX_PLAYERS];
+static med_HealTarget[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
@@ -15,7 +15,12 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
 
 	if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
 	{
@@ -30,6 +35,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(IsPlayerInPlayerArea(playerid, i) && !IsPlayerInAnyVehicle(i))
 					med_HealTarget[playerid] = i;
 			}
+
 			PlayerStartHeal(playerid, med_HealTarget[playerid]);
 		}
 		if(oldkeys == 16)
@@ -37,6 +43,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			PlayerStopHeal(playerid);
 		}
 	}
+
 	return 1;
 }
 
@@ -123,22 +130,15 @@ public OnHoldActionFinish(playerid)
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
 
-		if(med_HealTarget[playerid] != playerid)
+		if(itemtype == item_Medkit)
 		{
-			if(IsPlayerKnockedOut(med_HealTarget[playerid]))
-			{
-				WakeUpPlayer(med_HealTarget[playerid]);
-			}
+			ApplyDrug(med_HealTarget[playerid], DRUG_TYPE_PAINKILL);
 		}
 
-		if(itemtype == item_Medkit)
-			GivePlayerHP(med_HealTarget[playerid], 40.0);
-
-		if(itemtype == item_Bandage)
-			GivePlayerHP(med_HealTarget[playerid], 20.0);
-
 		if(itemtype == item_DoctorBag)
-			GivePlayerHP(med_HealTarget[playerid], 70.0);
+		{
+			GivePlayerHP(med_HealTarget[playerid], 50.0);
+		}
 
 		f:gPlayerBitData[med_HealTarget[playerid]]<Bleeding>;
 		DestroyItem(GetPlayerItem(playerid));

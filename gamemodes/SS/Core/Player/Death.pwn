@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(killerid == INVALID_PLAYER_ID)
@@ -256,4 +259,61 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
 	}
+}
+
+hook OnPlayerSpawn(playerid)
+{
+	if(gPlayerBitData[playerid] & Dying)
+	{
+		TogglePlayerSpectating(playerid, true);
+
+		defer SetDeathCamera(playerid);
+
+		SetPlayerCameraPos(playerid,
+			gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+			gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+			gPlayerData[playerid][ply_DeathPosZ]);
+
+		SetPlayerCameraLookAt(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
+
+		TextDrawShowForPlayer(playerid, DeathText);
+		TextDrawShowForPlayer(playerid, DeathButton);
+		SelectTextDraw(playerid, 0xFFFFFF88);
+		gPlayerData[playerid][ply_HitPoints] = 1.0;
+	}
+}
+
+timer SetDeathCamera[50](playerid)
+{
+	InterpolateCameraPos(playerid,
+		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
+		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
+		gPlayerData[playerid][ply_DeathPosZ] + 20.0,
+		30000, CAMERA_MOVE);
+
+	InterpolateCameraLookAt(playerid,
+		gPlayerData[playerid][ply_DeathPosX],
+		gPlayerData[playerid][ply_DeathPosY],
+		gPlayerData[playerid][ply_DeathPosZ],
+		gPlayerData[playerid][ply_DeathPosX],
+		gPlayerData[playerid][ply_DeathPosY],
+		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
+		30000, CAMERA_MOVE);
+}
+
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+	if(clickedid == DeathButton)
+	{
+		f:gPlayerBitData[playerid]<Dying>;
+		TogglePlayerSpectating(playerid, false);
+		CancelSelectTextDraw(playerid);
+		TextDrawHideForPlayer(playerid, DeathText);
+		TextDrawHideForPlayer(playerid, DeathButton);
+	}
+
+	return 1;
 }
