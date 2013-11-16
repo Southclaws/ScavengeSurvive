@@ -2,8 +2,10 @@
 	WORK IN PROGRESS!
 */
 
-static
-	// Variable statistics that change
+
+// Variable statistics that change
+enum E_STATISTIC_VARIABLE_DATA
+{
 	statVar_Players,
 	statVar_Items,
 	statVar_Boxes,
@@ -11,9 +13,12 @@ static
 	statVar_Defences,
 	statVar_Signs,
 	statVar_VehPlayer,
-	statVar_VehWorld,
+	statVar_VehWorld
+}
 
-	// Statistics that only increment
+// Statistics that only increment
+enum E_STATISTIC_INCREMENT_DATA
+{
 	statInc_ConnectsNew,
 	statInc_ConnectsExisting,
 	statInc_ConnectsUnwhite,
@@ -21,7 +26,13 @@ static
 	statInc_Kicks,
 	statInc_Bans,
 	statInc_Crashes,
-	statInc_Restarts;
+	statInc_Restarts
+}
+
+
+static
+	statVar_Data[E_STATISTIC_VARIABLE_DATA],
+	statInc_Data[E_STATISTIC_INCREMENT_DATA];
 
 
 hook OnGameModeInit()
@@ -29,7 +40,7 @@ hook OnGameModeInit()
 
 }
 
-UpdateStatistic(name[])
+UpdateVariableStatistics()
 {
 	statVar_Players = Iter_Count(Player);
 	statVar_Items = Iter_Count(itm_Index);
@@ -46,24 +57,14 @@ UpdateStatistic(name[])
 		if(GetVehicleOwner(i))
 			statVar_VehPlayer++;
 
-		else
-			statVar_VehWorld++;
+		statVar_VehWorld++;
 	}
-
-	statInc_ConnectsNew
-	statInc_ConnectsExisting
-	statInc_ConnectsUnwhite
-	statInc_Quits
-	statInc_Kicks
-	statInc_Bans
-	statInc_Crashes
-	statInc_Restarts
 
 	return 1;
 }
 
 
-IncrementStatistic()
+IncrementStatistic(E_STATISTIC_INCREMENT_DATA:type, amount = 1)
 {
-
+	statInc_Data[type] += amount;
 }

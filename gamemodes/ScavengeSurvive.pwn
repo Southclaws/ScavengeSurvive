@@ -781,6 +781,7 @@ forward SetRestart(seconds);
 // UTILITIES
 #include "SS/utils/math.pwn"
 #include "SS/utils/misc.pwn"
+#include "SS/utils/time.pwn"
 #include "SS/utils/camera.pwn"
 #include "SS/utils/message.pwn"
 #include "SS/utils/vehicle.pwn"
