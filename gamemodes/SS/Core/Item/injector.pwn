@@ -62,7 +62,7 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 
 		ApplyAnimation(playerid, "PED", "IDLE_CSAW", 4.0, 0, 1, 1, 0, 500, 1);
-		defer Inject(playerid, playerid, itemid);
+		defer Inject(playerid, playerid, itemid, 1);
 	}
 
 	return CallLocalFunction("inj_OnPlayerUseItem", "dd", playerid, itemid);
@@ -110,7 +110,7 @@ timer Inject[500](playerid, targetid, itemid, anim)
 		{
 			ApplyDrug(targetid, DRUG_TYPE_ADRENALINE);
 
-			if(IsPlayerKnockedOut(targetid))
+			if(IsPlayerKnockedOut(targetid) && targetid != playerid)
 				WakeUpPlayer(targetid);
 		}
 
