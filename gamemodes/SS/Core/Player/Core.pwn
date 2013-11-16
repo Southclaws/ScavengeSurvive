@@ -319,9 +319,6 @@ ptask PlayerUpdate[100](playerid)
 			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
 				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
-
-				if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_PAINKILL)) > 60000)
-					RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
 			}
 			else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 			{
@@ -341,6 +338,7 @@ ptask PlayerUpdate[100](playerid)
 	}
 
 	KnockOutUpdate(playerid);
+	DrugsUpdate(playerid);
 
 	gettime(hour, minute);
 
@@ -349,18 +347,12 @@ ptask PlayerUpdate[100](playerid)
 		hour = 22;
 		minute = 3;
 		weather = 33;
-
-		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_LSD)) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_LSD);
 	}
 	else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
 	{
 		hour = 22;
 		minute = 30;
 		weather = 33;
-
-		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_HEROINE)) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
 	}
 	else
 	{
@@ -375,25 +367,11 @@ ptask PlayerUpdate[100](playerid)
 		SetPlayerDrunkLevel(playerid, 100000);
 
 		if(random(100) < 50)
-			GivePlayerHP(playerid, -0.5);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
-	{
-		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_MORPHINE)) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
-			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
-
-		SetPlayerDrunkLevel(playerid, 2200);
-
-		if(random(100) < 80)
-			GivePlayerHP(playerid, 0.05);
+			GivePlayerHP(playerid, -0.1);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
-		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE)) > 300000 || gPlayerData[playerid][ply_HitPoints] >= 100.0)
-			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
-
 		GivePlayerHP(playerid, 0.01);
 	}
 
@@ -429,6 +407,17 @@ ptask PlayerUpdate[100](playerid)
 	{
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
+
+		GivePlayerHP(playerid, 0.000925925); // One third of the health bar regenerates each real-time hour
+
+		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
+		{
+			SetPlayerDrunkLevel(playerid, 2200);
+
+			if(random(100) < 80)
+				GivePlayerHP(playerid, 0.05);
+		}
+
 	}
 
 	if(gPlayerBitData[playerid] & Infected)

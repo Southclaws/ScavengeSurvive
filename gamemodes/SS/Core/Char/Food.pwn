@@ -66,9 +66,6 @@ ptask FoodUpdate[1000](playerid)
 			{
 				if(!(gPlayerBitData[playerid] & Infected))
 					SetPlayerDrunkLevel(playerid, 0);
-
-				if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ADRENALINE)) > 300000)
-					RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 			}
 			else
 			{
