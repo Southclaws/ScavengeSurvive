@@ -23,7 +23,7 @@ hook OnPlayerText(playerid, text[])
 
 	if(tmpMuteTime < 30000)
 	{
-		Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_RED"seconds for chat flooding");
+		Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
 		return 0;
 	}
 
@@ -32,7 +32,7 @@ hook OnPlayerText(playerid, text[])
 		chat_MessageStreak[playerid]++;
 		if(chat_MessageStreak[playerid] == 3)
 		{
-			Msg(playerid, RED, " >  Muted from global chat for "#C_ORANGE"30 "#C_RED"seconds for chat flooding");
+			Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
 			chat_MuteTick[playerid] = tickcount();
 			return 0;
 		}
@@ -61,7 +61,7 @@ hook OnPlayerText(playerid, text[])
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
-				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(text));
+				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(text));
 		}
 	}
 
@@ -86,7 +86,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		GetPlayerPos(playerid, x, y, z);
 
-		format(line1, 256, "[Local] (%d) %P"#C_WHITE": %s",
+		format(line1, 256, "[Local] (%d) %P"C_WHITE": %s",
 			playerid,
 			playerid,
 			TagScan(chat));
@@ -108,7 +108,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	{
 		logf("[CHAT] [GLOBAL] [%p]: %s", playerid, chat);
 
-		format(line1, 256, "[Global] (%d) %P"#C_WHITE": %s",
+		format(line1, 256, "[Global] (%d) %P"C_WHITE": %s",
 			playerid,
 			playerid,
 			TagScan(chat));
@@ -130,7 +130,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	{
 		logf("[CHAT] [RADIO] [%p]: %s", playerid, chat);
 
-		format(line1, 256, "[%.2f] (%d) %P"#C_WHITE": %s",
+		format(line1, 256, "[%.2f] (%d) %P"C_WHITE": %s",
 			frequency,
 			playerid,
 			playerid,
@@ -234,7 +234,7 @@ ACMD:a[1](playerid, params[])
 		foreach(new i : Player)
 		{
 			if(gPlayerData[i][ply_Admin] > 0)
-				MsgF(i, WHITE, "%C(A) %P"#C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(params));
+				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(params));
 		}
 	}
 

@@ -62,13 +62,13 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	if(0 < result < 7)
 		logf("[COMMAND] [%p]: %s", playerid, cmdtext);
 
-	if		(result == 0) Msg(playerid, ORANGE, " >  That is not a recognized command. Check the "#C_BLUE"/help "#C_ORANGE"dialog.");
+	if		(result == 0) Msg(playerid, ORANGE, " >  That is not a recognized command. Check the "C_BLUE"/help "C_ORANGE"dialog.");
 	else if	(result == 1) return 1; // valid command, do nothing.
 	else if	(result == 2) Msg(playerid, ORANGE, " >  You cannot use that command right now.");
 	else if	(result == 3) Msg(playerid, RED, " >  You cannot use that command on that player right now.");
 	else if	(result == 4) Msg(playerid, RED, " >  Invalid ID");
 	else if	(result == 5) Msg(playerid, RED, " >  You have insufficient authority to use that command.");
-	else if	(result == 6) Msg(playerid, RED, " >  You can only use that command while on "#C_BLUE"administrator duty"#C_RED".");
+	else if	(result == 6) Msg(playerid, RED, " >  You can only use that command while on "C_BLUE"administrator duty"C_RED".");
 
 	return 1;
 }

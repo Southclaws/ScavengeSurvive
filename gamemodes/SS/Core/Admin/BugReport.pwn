@@ -37,7 +37,7 @@ ReportBug(playerid, bug[])
 
 	if(stmt_execute(gStmt_BugInsert))
 	{
-		MsgAdminsF(1, YELLOW, " >  %P"#C_YELLOW" reported bug %s", playerid, bug);
+		MsgAdminsF(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
 	}
 }
 
@@ -111,9 +111,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			stmt_fetch_row(gStmt_BugInfo);
 
 			format(message, sizeof(message),
-				""C_YELLOW"Reporter:\n\t\t"#C_BLUE"%s\n\n\
-				"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\
-				"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s",
+				""C_YELLOW"Reporter:\n\t\t"C_BLUE"%s\n\n\
+				"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
+				"C_YELLOW"Date:\n\t\t"C_BLUE"%s",
 				name, bug, TimestampToDateTime(issue_TimestampIndex[listitem]));
 
 			if(gPlayerData[playerid][ply_Admin] > 1)

@@ -43,7 +43,7 @@ ACMD:kick[1](playerid, params[])
 		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
 
 	if(playerid == targetid)
-		MsgAllF(PINK, " >  %P"#C_PINK" failed and kicked themselves", playerid);
+		MsgAllF(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
 
 	KickPlayer(targetid, reason);
 
@@ -136,14 +136,14 @@ ACMD:mute[1](playerid, params[])
 	if(delay > 0)
 	{
 		TogglePlayerMute(targetid, true, delay * 1000);
-		MsgF(playerid, YELLOW, " >  Muted player %P "#C_WHITE"for %d seconds.", targetid, delay);
-		MsgF(targetid, YELLOW, " >  Muted from global chat for "#C_ORANGE"%d "#C_YELLOW"seconds, Reason: "#C_BLUE"%s", delay, reason);
+		MsgF(playerid, YELLOW, " >  Muted player %P "C_WHITE"for %d seconds.", targetid, delay);
+		MsgF(targetid, YELLOW, " >  Muted from global chat for "C_ORANGE"%d "C_YELLOW"seconds, Reason: "C_BLUE"%s", delay, reason);
 	}
 	else
 	{
 		TogglePlayerMute(targetid, true);
 		MsgF(playerid, YELLOW, " >  Muted player %P", targetid);
-		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "#C_BLUE"%s", reason);
+		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "C_BLUE"%s", reason);
 	}
 
 	return 1;
@@ -188,7 +188,7 @@ ACMD:warn[1](playerid, params[])
 
 	gPlayerData[targetid][ply_Warnings]++;
 
-	MsgF(playerid, ORANGE, " >  %P"#C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerData[targetid][ply_Warnings], reason);
+	MsgF(playerid, ORANGE, " >  %P"C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerData[targetid][ply_Warnings], reason);
 	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", gPlayerData[targetid][ply_Warnings], reason);
 
 	if(gPlayerData[targetid][ply_Warnings] >= 5)
@@ -205,7 +205,7 @@ ACMD:msg[1](playerid, params[])
 	if(!(0 < strlen(params) < 128))
 		Msg(playerid,YELLOW," >  Usage: /msg [Message]");
 
-	new str[130] = {" >  "#C_BLUE""};
+	new str[130] = {" >  "C_BLUE""};
 
 	strcat(str, TagScan(params));
 
@@ -303,7 +303,7 @@ ACMD:country[1](playerid, params[])
 	else
 		GetPlayerCountry(id, country);
 
-	MsgF(playerid, YELLOW, " >  %P"#C_YELLOW"'s current GeoIP location: "#C_BLUE"%s", id, country);
+	MsgF(playerid, YELLOW, " >  %P"C_YELLOW"'s current GeoIP location: "C_BLUE"%s", id, country);
 
 	return 1;
 }

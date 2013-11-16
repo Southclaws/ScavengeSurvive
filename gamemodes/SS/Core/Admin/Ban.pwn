@@ -22,7 +22,7 @@ BanPlayer(playerid, reason[], byid, duration)
 
 	if(stmt_execute(gStmt_BanInsert))
 	{
-		MsgF(playerid, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW"Reason: "#C_BLUE"%s", reason);
+		MsgF(playerid, YELLOW, " >  "C_RED"You are banned! "C_YELLOW"Reason: "C_BLUE"%s", reason);
 		defer KickPlayerDelay(playerid);
 
 		return 1;
@@ -66,7 +66,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 	{
 		if(online)
 		{
-			MsgF(id, YELLOW, " >  "#C_RED"You are banned! "#C_YELLOW", reason: "#C_BLUE"%s", reason);
+			MsgF(id, YELLOW, " >  "C_RED"You are banned! "C_YELLOW", reason: "C_BLUE"%s", reason);
 			defer KickPlayerDelay(id);
 		}
 
@@ -153,9 +153,9 @@ DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
 		new str[256];
 
 		format(str, 256, "\
-			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"By:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s",
+			"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\n\
+			"C_YELLOW"By:\n\t\t"C_BLUE"%s\n\n\n\
+			"C_YELLOW"Reason:\n\t\t"C_BLUE"%s",
 			TimestampToDateTime(timestamp), bannedby, reason);
 
 		ShowPlayerDialog(playerid, d_BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Un-ban", "Back");

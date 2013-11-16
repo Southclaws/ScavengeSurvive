@@ -37,8 +37,8 @@ ACMD:setadmin[4](playerid, params[])
 		if(!SetPlayerAdminLevel(id, level))
 			return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
 
-		MsgF(playerid, YELLOW, " >  You made %P"#C_YELLOW" a Level %d Admin", id, level);
-		MsgF(id, YELLOW, " >  %P"#C_YELLOW" Made you a Level %d Admin", playerid, level);
+		MsgF(playerid, YELLOW, " >  You made %P"C_YELLOW" a Level %d Admin", id, level);
+		MsgF(id, YELLOW, " >  %P"C_YELLOW" Made you a Level %d Admin", playerid, level);
 	}
 	else if(!sscanf(params, "s[24]d", name, level))
 	{
@@ -103,7 +103,7 @@ ACMD:gamename[4](playerid,params[])
 		return Msg(playerid,YELLOW," >  Usage: /gamename [name]");
 
 	SetGameModeText(params);
-	MsgF(playerid, YELLOW, " >  GameMode name set to "#C_BLUE"%s", params);
+	MsgF(playerid, YELLOW, " >  GameMode name set to "C_BLUE"%s", params);
 
 	return 1;
 }
@@ -117,7 +117,7 @@ ACMD:hostname[4](playerid,params[])
 	format(str, sizeof(str), "hostname %s", params);
 	SendRconCommand(str);
 
-	MsgF(playerid, YELLOW, " >  Hostname set to "#C_BLUE"%s", params);
+	MsgF(playerid, YELLOW, " >  Hostname set to "C_BLUE"%s", params);
 
 	return 1;
 }
@@ -148,7 +148,7 @@ ACMD:loadfs[4](playerid, params[])
 	new str[64];
 	format(str, sizeof(str), "loadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Loading Filterscript: "#C_BLUE"'%s'", params);
+	MsgF(playerid, YELLOW, " >  Loading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -161,7 +161,7 @@ ACMD:reloadfs[4](playerid, params[])
 	new str[64];
 	format(str, sizeof(str), "reloadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Reloading Filterscript: "#C_BLUE"'%s'", params);
+	MsgF(playerid, YELLOW, " >  Reloading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -174,7 +174,7 @@ ACMD:unloadfs[4](playerid, params[])
 	new str[64];
 	format(str, sizeof(str), "unloadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Unloading Filterscript: "#C_BLUE"'%s'", params);
+	MsgF(playerid, YELLOW, " >  Unloading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -212,7 +212,7 @@ ACMD:sp[4](playerid, params[])
 		INI_WriteString(ini, posname, string);
 		INI_Close(ini);
 
-		MsgF(playerid, ORANGE, " >  %s = %s "#C_BLUE"Saved!", posname, string);
+		MsgF(playerid, ORANGE, " >  %s = %s "C_BLUE"Saved!", posname, string);
 	}
 	else
 	{
@@ -439,7 +439,7 @@ ACMD:weather[4](playerid, params[])
 				}
 
 				gWeatherID = i;
-				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "#C_BLUE"%s", WeatherData[i]);
+				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
 
 				return 1;
 			}
@@ -559,7 +559,7 @@ ACMD:pos[4](playerid, params[])
 
 	GetPlayerPos(playerid, x, y, z);
 
-	MsgF(playerid, YELLOW, " >  Position: "#C_BLUE"%.2f, %.2f, %.2f", x, y, z);
+	MsgF(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
 
 	return 1;
 }

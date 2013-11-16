@@ -44,7 +44,7 @@ ACMD:ban[2](playerid, params[])
 		if(GetAdminLevelByName(playername) > 0)
 			return 2;
 
-		MsgF(playerid, YELLOW, " >  Banned "#C_ORANGE"%s"#C_YELLOW" reason: "#C_BLUE"%s", playername, reason);
+		MsgF(playerid, YELLOW, " >  Banned "C_ORANGE"%s"C_YELLOW" reason: "C_BLUE"%s", playername, reason);
 
 		BanPlayerByName(playername, reason, playerid, 0);
 
@@ -73,7 +73,7 @@ ACMD:unban[2](playerid, params[])
 
 	UnBanPlayer(name);
 	
-	MsgF(playerid, YELLOW, " >  Unbanned "#C_BLUE"%s"#C_YELLOW".", name);
+	MsgF(playerid, YELLOW, " >  Unbanned "C_BLUE"%s"C_YELLOW".", name);
 
 	return 1;
 }
@@ -96,10 +96,10 @@ ACMD:whitelist[2](playerid, params[])
 		new result = AddNameToWhitelist(name);
 
 		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Added "#C_BLUE"%s "#C_YELLOW"to whitelist.", name);
+			MsgF(playerid, YELLOW, " >  Added "C_BLUE"%s "C_YELLOW"to whitelist.", name);
 
 		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is already "#C_YELLOW"in the whitelist.");
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is already "C_YELLOW"in the whitelist.");
 
 		if(result == -1)
 			Msg(playerid, RED, " >  An error occurred.");
@@ -109,10 +109,10 @@ ACMD:whitelist[2](playerid, params[])
 		new result = RemoveNameFromWhitelist(name);
 
 		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Removed "#C_BLUE"%s "#C_YELLOW"from whitelist.", name);
+			MsgF(playerid, YELLOW, " >  Removed "C_BLUE"%s "C_YELLOW"from whitelist.", name);
 
 		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is not "#C_YELLOW"in the whitelist.");
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist.");
 
 		if(result == -1)
 			Msg(playerid, RED, " >  An error occurred.");
@@ -130,10 +130,10 @@ ACMD:whitelist[2](playerid, params[])
 	else if(!strcmp(command, "?", true))
 	{
 		if(IsNameInWhitelist(name))
-			Msg(playerid, YELLOW, " >  That name "#C_BLUE"is "#C_YELLOW"in the whitelist.");
+			Msg(playerid, YELLOW, " >  That name "C_BLUE"is "C_YELLOW"in the whitelist.");
 
 		else
-			Msg(playerid, YELLOW, " >  That name "#C_ORANGE"is not "#C_YELLOW"in the whitelist");
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist");
 	}
 
 	return 1;
@@ -241,7 +241,7 @@ ACMD:aliases[2](playerid, params[])
 	}
 
 	if(adminlevel <= gPlayerData[playerid][ply_Admin])
-		MsgF(playerid, YELLOW, " >  Aliases: "#C_BLUE"(%d)"#C_ORANGE" %s", count, string);
+		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
 
 	else
 		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
@@ -267,7 +267,7 @@ ACMD:motd[2](playerid, params[])
 		return 1;
 	}
 
-	MsgAllF(YELLOW, " >  MOTD updated: "#C_BLUE"%s", gMessageOfTheDay);
+	MsgAllF(YELLOW, " >  MOTD updated: "C_BLUE"%s", gMessageOfTheDay);
 
 	djStyled(true);
 	djSet(SETTINGS_FILE, "server/motd", gMessageOfTheDay);

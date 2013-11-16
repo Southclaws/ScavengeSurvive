@@ -55,7 +55,7 @@ timer SupplyDropTimer[SUPPLY_CRATE_INTERVAL]()
 		location = random(sup_TotalLocations);
 
 	SupplyCrateDrop(sup_DropLocationData[location][sup_posX], sup_DropLocationData[location][sup_posY], sup_DropLocationData[location][sup_posZ]);
-	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP INCOMING AT LOCATION: "#C_BLUE"'%s'", sup_DropLocationData[location][sup_name]);
+	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP INCOMING AT LOCATION: "C_BLUE"'%s'", sup_DropLocationData[location][sup_name]);
 
 	sup_DropLocationData[location][sup_used] = true;
 

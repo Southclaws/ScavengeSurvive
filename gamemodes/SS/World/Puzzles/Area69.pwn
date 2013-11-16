@@ -398,12 +398,12 @@ ShowCodeList1(playerid)
 
 	format(str, 268,
 		""C_ORANGE"Keycodes for security system. SECTOR 01:\n\n\
-		\t"#C_WHITE"Control Tower:"#C_YELLOW"\t%d\n\
-		\t"#C_WHITE"Main gate:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Airstrip Gate:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Blast Door:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Inner Door 1:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Inner Door 2:"#C_YELLOW"\t\t%d",
+		\t"C_WHITE"Control Tower:"C_YELLOW"\t%d\n\
+		\t"C_WHITE"Main gate:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Airstrip Gate:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Blast Door:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Inner Door 1:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Inner Door 2:"C_YELLOW"\t\t%d",
 		code_ControlTower,
 		code_MainGate,
 		code_AirstripGate,
@@ -420,12 +420,12 @@ ShowCodeList2(playerid)
 
 	format(str, 268,
 		""C_ORANGE"Keycodes for security system. SECTOR 02:\n\n\
-		\t"#C_WHITE"Generator:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Passage 1:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Passage 2:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Catwalk:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Headquarters:"#C_YELLOW"\t\t%d\n\
-		\t"#C_WHITE"Shaft:"#C_YELLOW"\t\t\t%d",
+		\t"C_WHITE"Generator:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Passage 1:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Passage 2:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Catwalk:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Headquarters:"C_YELLOW"\t\t%d\n\
+		\t"C_WHITE"Shaft:"C_YELLOW"\t\t\t%d",
 		code_Generator,
 		code_PassageTop,
 		code_PassageBottom,

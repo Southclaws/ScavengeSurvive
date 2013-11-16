@@ -170,7 +170,7 @@ TeleportPlayerToPlayer(playerid, targetid)
 		SetPlayerInterior(playerid, interior);
 	}
 
-	MsgF(targetid, YELLOW, " >  %P"#C_YELLOW" Has teleported to you", playerid);
+	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", playerid);
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }
 

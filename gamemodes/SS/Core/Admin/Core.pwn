@@ -166,8 +166,8 @@ CheckAdminLevel(playerid)
 
 KickPlayer(playerid, reason[])
 {
-	MsgAdminsF(1, GREY, " >  %P"#C_GREY" kicked, reason: "#C_BLUE"%s", playerid, reason);
-	MsgF(playerid, GREY, " >  Kicked, reason: "#C_BLUE"%s", reason);
+	MsgAdminsF(1, GREY, " >  %P"C_GREY" kicked, reason: "C_BLUE"%s", playerid, reason);
+	MsgF(playerid, GREY, " >  Kicked, reason: "C_BLUE"%s", reason);
 
 	defer KickPlayerDelay(playerid);
 
@@ -236,17 +236,17 @@ ACMD:acmds[1](playerid, params[])
 
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Administrator (level 3)"#C_BLUE"\n");
+		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 3)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl3);
 	}
 	if(gPlayerData[playerid][ply_Admin] >= 2)
 	{
-		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Administrator (level 2)"#C_BLUE"\n");
+		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 2)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl2);
 	}
 	if(gPlayerData[playerid][ply_Admin] >= 1)
 	{
-		strcat(gBigString[playerid], "\n\n"#C_YELLOW"Game Master (level 1)"#C_BLUE"\n");
+		strcat(gBigString[playerid], "\n\n"C_YELLOW"Game Master (level 1)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl1);
 	}
 	

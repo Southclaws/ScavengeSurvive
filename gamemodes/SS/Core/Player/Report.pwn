@@ -209,9 +209,9 @@ ShowReport(playerid, name[MAX_PLAYER_NAME], timestamp)
 		new message[512];
 
 		format(message, sizeof(message), "\
-			"#C_YELLOW"Date:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"Reason:\n\t\t"#C_BLUE"%s\n\n\n\
-			"#C_YELLOW"By:\n\t\t"#C_BLUE"%s",
+			"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\n\
+			"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\n\
+			"C_YELLOW"By:\n\t\t"C_BLUE"%s",
 			TimestampToDateTime(timestamp), report_CurrentReason[playerid], report_CurrentReporter[playerid]);
 
 		report_CurrentName[playerid] = name;

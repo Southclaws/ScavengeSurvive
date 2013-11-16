@@ -81,7 +81,7 @@ CMD:profile(playerid, params[])
 	}
 
 	if(ShowPlayerProfile(playerid, name))
-		MsgF(playerid, YELLOW, " >  Displaying character profile information for "#C_BLUE"%s"#C_YELLOW".", name);
+		MsgF(playerid, YELLOW, " >  Displaying character profile information for "C_BLUE"%s"C_YELLOW".", name);
 
 	else
 		Msg(playerid, YELLOW, " >  That account does not exist.");

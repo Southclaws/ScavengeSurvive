@@ -26,14 +26,14 @@ timer ShowWelcomeMessage[1000](playerid, count)
 		button[7];
 
 	strcat(str,
-		"\n\n\n"#C_WHITE"You have to fight to survive in an apocalyptic wasteland.\n\n\
+		"\n\n\n"C_WHITE"You have to fight to survive in an apocalyptic wasteland.\n\n\
 		You will have a better chance in a group, but be careful who you trust.\n\n\
 		Supplies can be found scattered around, weapons are rare though.\n\n");
 
 	strcat(str,
 		"Avoid attacking unarmed players, they frighten easily but will return, and in greater numbers...\n\n\n\n\n\
-		"#C_TEAL"Please take some time to look at the "#C_BLUE"/rules "#C_TEAL"and "#C_BLUE"/help "#C_TEAL"before diving into the game.\n\n\n\
-		Visit "#C_YELLOW"scavenge-survive.wikia.com "#C_TEAL"for more information.\n\n\n");
+		"C_TEAL"Please take some time to look at the "C_BLUE"/rules "C_TEAL"and "C_BLUE"/help "C_TEAL"before diving into the game.\n\n\n\
+		Visit "C_YELLOW"scavenge-survive.wikia.com "C_TEAL"for more information.\n\n\n");
 
 	if(count == 0)
 	{
