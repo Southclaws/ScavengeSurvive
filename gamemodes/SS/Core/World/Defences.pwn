@@ -15,9 +15,12 @@ enum
 enum E_DEFENCE_ITEM_DATA
 {
 ItemType:	def_itemtype,
-Float:		def_placeRotX,
-Float:		def_placeRotY,
-Float:		def_placeRotZ,
+Float:		def_verticalRotX,
+Float:		def_verticalRotY,
+Float:		def_verticalRotZ,
+Float:		def_horizontalRotX,
+Float:		def_horizontalRotY,
+Float:		def_horizontalRotZ,
 Float:		def_placeOffsetZ,
 			def_maxHitPoints,
 			def_buildVertical,
@@ -72,14 +75,17 @@ hook OnPlayerConnect(playerid)
 }
 
 
-stock DefineDefenceItem(ItemType:itemtype, Float:rx, Float:ry, Float:rz, Float:zoffset, maxhitpoints, vert, horiz)
+stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset, maxhitpoints, vert, horiz)
 {
 	new id = def_TypeIndex;
 
 	def_TypeData[id][def_itemtype] = itemtype;
-	def_TypeData[id][def_placeRotX] = rx;
-	def_TypeData[id][def_placeRotY] = ry;
-	def_TypeData[id][def_placeRotZ] = rz;
+	def_TypeData[id][def_verticalRotX] = v_rx;
+	def_TypeData[id][def_verticalRotY] = v_ry;
+	def_TypeData[id][def_verticalRotZ] = v_rz;
+	def_TypeData[id][def_horizontalRotX] = h_rx;
+	def_TypeData[id][def_horizontalRotY] = h_ry;
+	def_TypeData[id][def_horizontalRotZ] = h_rz;
 	def_TypeData[id][def_placeOffsetZ] = zoffset;
 	def_TypeData[id][def_maxHitPoints] = maxhitpoints;
 	def_TypeData[id][def_buildVertical] = vert;
@@ -139,9 +145,9 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			return -2;
 
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
-			def_TypeData[type][def_placeRotX] + 90.0,
-			def_TypeData[type][def_placeRotY],
-			def_TypeData[type][def_placeRotZ] + rz);
+			def_TypeData[type][def_horizontalRotX],
+			def_TypeData[type][def_horizontalRotY],
+			def_TypeData[type][def_horizontalRotZ] + rz);
 
 		if(mode == DEFENCE_MODE_OPENABLE)
 			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
@@ -155,9 +161,9 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 			return -3;
 
 		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
-			def_TypeData[type][def_placeRotX],
-			def_TypeData[type][def_placeRotY],
-			def_TypeData[type][def_placeRotZ] + rz);
+			def_TypeData[type][def_verticalRotX],
+			def_TypeData[type][def_verticalRotY],
+			def_TypeData[type][def_verticalRotZ] + rz);
 
 		if(mode == DEFENCE_MODE_OPENABLE)
 			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
@@ -294,9 +300,9 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_Data[defenceid][def_posX],
 			def_Data[defenceid][def_posY],
 			def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotX],
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotX],
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotZ] + def_Data[defenceid][def_rotZ]);
 
 		def_Data[defenceid][def_open] = false;
 	}
@@ -306,9 +312,9 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_Data[defenceid][def_posX],
 			def_Data[defenceid][def_posY],
 			def_Data[defenceid][def_posZ], 0.5,
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotX] + 90.0,
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotY],
-			def_TypeData[def_Data[defenceid][def_type]][def_placeRotZ] + def_Data[defenceid][def_rotZ]);
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotX],
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotZ] + def_Data[defenceid][def_rotZ]);
 
 		def_Data[defenceid][def_open] = true;
 	}

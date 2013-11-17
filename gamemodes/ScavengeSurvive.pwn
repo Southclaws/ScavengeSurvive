@@ -1285,13 +1285,13 @@ public OnGameModeInit()
 // 120
 	item_Door			= DefineItemType("Door",				1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
 	item_MetPanel		= DefineItemType("Metal Panel",			1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
-	item_MetalGate		= DefineItemType("Metal Gate",			19303,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.033293, 0.167523, -0.333268, 79.455276, 123.749847, 77.635063);
-	item_CrateDoor		= DefineItemType("Crate Door",			3062,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.077393, 0.015846, -0.013984, 337.887634, 172.861953, 68.495330);
+	item_MetalGate		= DefineItemType("Metal Gate",			19303,	ITEM_SIZE_CARRY,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079);
+	item_CrateDoor		= DefineItemType("Crate Door",			3062,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079);
 	item_CorPanel		= DefineItemType("Corrugated Metal",	2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
 	item_ShipDoor		= DefineItemType("Ship Door",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
 	item_RustyDoor		= DefineItemType("Metal Panel",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
 	item_MetalStand		= DefineItemType("Metal Stand",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
-	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	16637,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.117928, -0.025927, -0.203919, 339.650421, 168.808807, 337.216766);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	16637,	ITEM_SIZE_CARRY,	0.0, 90.0, 270.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097);
 	item_WoodPanel		= DefineItemType("Wood Ramp",			5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 // 130
 	item_Flare			= DefineItemType("Flare",				345,	ITEM_SIZE_SMALL);
@@ -1417,16 +1417,16 @@ public OnGameModeInit()
 	DefineFoodItem(item_CanDrink,		1.0, 0, 1);
 
 
-	DefineDefenceItem(item_Door,		180.0000, 90.0000, 0.0000, -0.0331,		2, 1, 0);
-	DefineDefenceItem(item_MetPanel,	90.0000, 90.0000, 0.0000, -0.0092,		5, 1, 1);
-	DefineDefenceItem(item_MetalGate,	0.0000, 0.0000, 0.0000, 1.2007,			4, 1, 1);
-	DefineDefenceItem(item_CrateDoor,	0.0000, 90.0000, 0.0000,  1.4738,		5, 1, 1);
-	DefineDefenceItem(item_CorPanel,	0.0000, 90.0000, 0.0000, 1.1859,		6, 1, 1);
-	DefineDefenceItem(item_ShipDoor,	90.0000, 90.0000, 0.0000, 1.3966,		9, 1, 1);
-	DefineDefenceItem(item_RustyDoor,	90.0000, 90.0000, 0.0000, 2.1143,		7, 1, 1);
-	DefineDefenceItem(item_MetalStand,	90.0000, 0.0000, 0.0000, 0.5998,		7, 1, 1);
-	DefineDefenceItem(item_RustyMetal,	0.0000, 0.0000, 270.0000, 1.4401,		5, 1, 1);
-	DefineDefenceItem(item_WoodPanel,	90.0000, 0.0000, 23.5000, 1.0284,		7, 1, 1);
+	DefineDefenceItem(item_Door,		180.0, 90.0, 0.0,	0.0, 0.0, 0.0,	-0.0331,	2, 1, 0);
+	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0, 	0.0, 0.0, 0.0,	-0.0092,	5, 1, 1);
+	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0, 		0.0, 0.0, 0.0,	1.2007,		4, 1, 1);
+	DefineDefenceItem(item_CrateDoor,	0.0, 90.0, 0.0,  	0.0, 0.0, 0.0,	1.4738,		5, 1, 1);
+	DefineDefenceItem(item_CorPanel,	0.0, 90.0, 0.0, 	0.0, 0.0, 0.0,	1.1859,		6, 1, 1);
+	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0, 	0.0, 0.0, 0.0,	1.3966,		9, 1, 1);
+	DefineDefenceItem(item_RustyDoor,	90.0, 90.0, 0.0, 	0.0, 0.0, 0.0,	2.1143,		7, 1, 1);
+	DefineDefenceItem(item_MetalStand,	90.0, 0.0, 0.0, 	0.0, 0.0, 0.0,	0.5998,		7, 1, 1);
+	DefineDefenceItem(item_RustyMetal,	0.0, 0.0, 270.0, 	0.0, 0.0, 0.0,	1.4401,		5, 1, 1);
+	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5, 	0.0, 0.0, 0.0,	1.0284,		7, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);

@@ -82,9 +82,9 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_LargeBox,						3);
 	AddItemToLootIndex(loot_Industrial,		item_Headlight,						40);
 	AddItemToLootIndex(loot_Industrial,		item_MetPanel,						3);
-	AddItemToLootIndex(loot_Industrial,		item_MetalGate,						3);
+	AddItemToLootIndex(loot_Industrial,		item_MetalGate,						4);
 	AddItemToLootIndex(loot_Industrial,		item_CrateDoor,						4);
-	AddItemToLootIndex(loot_Industrial,		item_CorPanel,						4);
+	AddItemToLootIndex(loot_Industrial,		item_CorPanel,						3);
 	AddItemToLootIndex(loot_Industrial,		item_ShipDoor,						1);
 	AddItemToLootIndex(loot_Industrial,		item_RustyDoor,						5);
 	AddItemToLootIndex(loot_Industrial,		item_MetalStand,					2);
