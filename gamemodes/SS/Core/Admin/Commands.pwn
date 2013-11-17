@@ -23,35 +23,9 @@ CMD:help(playerid, params[])
 
 CMD:rules(playerid, params[])
 {
-	gBigString[playerid][0] = EOS;
-
-	strcat(gBigString[playerid],
-		""C_YELLOW"Server Rules:\n\n\n"\
-		""C_WHITE"1. No global chat use if local or radio is available. (/chatinfo) You'll be muted for global spam.\n\
-		"C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n\
-		"C_WHITE"2. No hacking, cheating or client modifications that give you advantages.\n\
-		"C_BLUE"\tPunishment: Permanent ban.\n\n");
-
-	strcat(gBigString[playerid],
-		""C_WHITE"3. No exploiting of map bugs such as hiding/building bases inside models.\n\
-		"C_BLUE"\tPunishment: Account and base deleted, perma-ban for second offence.\n\n\
-		"C_WHITE"4. No exploiting server bugs, report them using the /bug command.\n\
-		"C_BLUE"\tPunishment: Week long ban.\n\n");
-
-	strcat(gBigString[playerid],
-		""C_WHITE"5. Only English in global chat. Please use the radio (/chatinfo) for other languages.\n\
-		"C_BLUE"\tPunishment: Mute, kick for repeated offence, ban for further repeated offence.\n\n\
-		"C_WHITE"6. No flaming, racism, discrimination towards players or admins. However friendly trash talk is allowed.\n\
-		"C_BLUE"\tPunishment: Permanent ban, no appeal.\n\n");
-
-	strcat(gBigString[playerid],
-		""C_WHITE"7. Don't kill admins on duty with the unique black skin with \"STAFF\" on the back\n\
-		"C_BLUE"\tPunishment: Kick, ban for repeated offence.\n\n\
-		"C_WHITE"8. Report all hackers, failure to report hackers or playing with/alongside them will be punished.\n\
-		"C_BLUE"\tPunishment: Exactly the same as hacking punishment.");
-
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString[playerid], "Close", "");
-
+	for(new i; i < gTotalRules; i++)
+		Msg(playerid, YELLOW, sprintf(" >  "C_BLUE"%s", gRuleList[i]));
+	
 	return 1;
 }
 

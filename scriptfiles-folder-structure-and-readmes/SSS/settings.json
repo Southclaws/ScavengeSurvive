@@ -10,13 +10,20 @@
     "player-animations":1
   },
   "server":{
+    "file-check":0,
     "gamemodename":"Southclaw's Scavenge + Survive",
+    "infomsg-interval":5,
     "infomsgs":[
       "(info 1) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
       "(info 2) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
       "(info 3) Please update the 'server/infomsgs' array in 'SSS/settings.json'."
     ],
     "motd":"Please update the 'server/motd' string in SSS/settings.json",
+    "rules":[
+      "(info 1) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
+      "(info 2) Please update the 'server/infomsgs' array in 'SSS/settings.json'.",
+      "(info 3) Please update the 'server/infomsgs' array in 'SSS/settings.json'."
+    ],
     "website":"southclawjk.wordpress.com",
     "whitelist":0
   }

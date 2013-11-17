@@ -34,6 +34,19 @@ LoadSettings()
 			gTotalInfoMessage++;
 		}
 
+		for(new i, j = djCount(SETTINGS_FILE, "server/rules"); i < j; i++)
+		{
+			if(i >= MAX_RULE)
+			{
+				print("ERROR: MAX_RULE limit reached while loading infomsgs from '"SETTINGS_FILE"'.");
+				break;
+			}
+
+			format(tmp, sizeof(tmp), "server/rules/%d", i);
+			strcat(gRuleList[i], dj(SETTINGS_FILE, tmp));
+			gTotalRules++;
+		}
+
 		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
 		gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
 		gPerformFileCheck = djInt(SETTINGS_FILE, "server/file-check");
@@ -63,6 +76,11 @@ LoadSettings()
 		gInfoMessage[0]			= "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gInfoMessage[1]			= "(info 2) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gInfoMessage[2]			= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+		gTotalInfoMessage		= 3;
+		gRuleList[0]			= "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+		gRuleList[1]			= "(Rule 2) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+		gRuleList[2]			= "(Rule 3) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+		gTotalRules				= 3;
 		gWhitelist				= false;
 		gInfoMessageInterval	= 5;
 		gPerformFileCheck		= false;
@@ -84,6 +102,9 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[0]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[1]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
+		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[0]);
+		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[1]);
+		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
@@ -110,6 +131,9 @@ LoadSettings()
 
 	for(new i; i < gTotalInfoMessage; i++)
 		printf(" Info%d: %s", i, gInfoMessage[i]);
+
+	for(new i; i < gTotalRules; i++)
+		printf(" Rule%d: %s", i, gRuleList[i]);
 
 	printf(" Whitelist: %d", gWhitelist);
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);

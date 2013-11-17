@@ -96,6 +96,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_WEBSITE_NAME			(64)
 #define MAX_INFO_MESSAGE			(8)
 #define MAX_INFO_MESSAGE_LEN		(128)
+#define MAX_RULE					(8)
+#define MAX_RULE_LEN				(128)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
@@ -520,6 +522,7 @@ new
 		gWebsiteURL[MAX_WEBSITE_NAME],
 		gGameModeName[32],
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
+		gRuleList[MAX_RULE][MAX_RULE_LEN],
 bool:	gWhitelist,
 		gInfoMessageInterval,
 		gPerformFileCheck,
@@ -539,6 +542,7 @@ new
 bool:	gServerRestarting,
 		gBigString[MAX_PLAYERS][2048],
 		gTotalInfoMessage,
+		gTotalRules,
 		gCurrentInfoMessage;
 
 // SKINS/CLOTHES
@@ -1616,7 +1620,7 @@ timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
 	if(gCurrentInfoMessage >= gTotalInfoMessage)
 		gCurrentInfoMessage = 0;
 
-	MsgAll(YELLOW, gInfoMessage[gCurrentInfoMessage]);
+	MsgAll(YELLOW, sprintf(" >  "C_BLUE"%s", gInfoMessage[gCurrentInfoMessage]));
 
 	gCurrentInfoMessage++;
 
