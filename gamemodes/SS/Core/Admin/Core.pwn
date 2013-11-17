@@ -232,6 +232,8 @@ MsgAdmins(level, colour, string[])
 
 ACMD:acmds[1](playerid, params[])
 {
+	gBigString[playerid][0] = EOS;
+
 	strcat(gBigString[playerid], "/a [message] - Staff chat channel");
 
 	if(gPlayerData[playerid][ply_Admin] >= 2)
