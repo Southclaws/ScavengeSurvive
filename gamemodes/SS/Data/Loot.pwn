@@ -93,6 +93,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_Industrial,		item_Keypad,						5);
 	AddItemToLootIndex(loot_Industrial,		item_AmmoBuck,						6);
 	AddItemToLootIndex(loot_Industrial,		item_RadioPole,						6);
+	AddItemToLootIndex(loot_Industrial,		item_Motor,							15);
 
 	// loot_Police
 	AddItemToLootIndex(loot_Police,			ItemType:WEAPON_COLT45,				50);
@@ -197,6 +198,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarCivilian,	item_HerpDerp,						10);
 	AddItemToLootIndex(loot_CarCivilian,	item_CanDrink,						100);
 	AddItemToLootIndex(loot_CarCivilian,	item_HockeyMask,					30);
+	AddItemToLootIndex(loot_CarCivilian,	item_Motor,							10);
 
 	// loot_CarIndustrial
 	AddItemToLootIndex(loot_CarIndustrial,	item_Bandage,						10);
@@ -233,6 +235,7 @@ public OnLoad()
 	AddItemToLootIndex(loot_CarIndustrial,	item_AmmoBuck,						5);
 	AddItemToLootIndex(loot_CarIndustrial,	item_CanDrink,						90);
 	AddItemToLootIndex(loot_CarIndustrial,	item_GasMask,						70);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Motor,							25);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		ItemType:WEAPON_COLT45,				40);

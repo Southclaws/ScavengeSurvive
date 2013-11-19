@@ -713,23 +713,13 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		GetVehicleName(vehiclemodel, vehiclename);
 		GetVehiclePos(vehicleid, x, y, z);
 
-		if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BICYCLE)
+		if(GetVehicleType(vehiclemodel) == VTYPE_BICYCLE)
 			VehicleEngineState(vehicleid, 1);
 
 		SetVehicleUsed(vehicleid, true);
 		SetVehicleOccupied(vehicleid, true);
 
-		PlayerTextDrawSetString(playerid, VehicleNameText[playerid], VehicleNames[vehiclemodel-400]);
-		PlayerTextDrawShow(playerid, VehicleNameText[playerid]);
-		PlayerTextDrawShow(playerid, VehicleSpeedText[playerid]);
-
-		if(GetVehicleType(vehiclemodel) != VTYPE_BICYCLE)
-		{
-			PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
-			PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
-		}
+		ShowVehicleUI(playerid, vehiclemodel);
 
 		logf("[VEHICLE] %p entered vehicle %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
@@ -755,15 +745,46 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleOccupied(vehicleid, false);
 
-		PlayerTextDrawHide(playerid, VehicleNameText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleSpeedText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleDamageText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleEngineText[playerid]);
-		PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
+		HideVehicleUI(playerid);
+	}
+
+	if(newstate == PLAYER_STATE_PASSENGER)
+	{
+		ShowVehicleUI(playerid, GetVehicleModel(GetPlayerVehicleID(playerid)));
+	}
+
+	if(oldstate == PLAYER_STATE_PASSENGER)
+	{
+		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
+		HideVehicleUI(playerid);
 	}
 
 	return 1;
+}
+
+ShowVehicleUI(playerid, model)
+{
+	PlayerTextDrawSetString(playerid, VehicleNameText[playerid], VehicleNames[model-400]);
+	PlayerTextDrawShow(playerid, VehicleNameText[playerid]);
+	PlayerTextDrawShow(playerid, VehicleSpeedText[playerid]);
+
+	if(GetVehicleType(model) != VTYPE_BICYCLE)
+	{
+		PlayerTextDrawShow(playerid, VehicleFuelText[playerid]);
+		PlayerTextDrawShow(playerid, VehicleDamageText[playerid]);
+		PlayerTextDrawShow(playerid, VehicleEngineText[playerid]);
+		PlayerTextDrawShow(playerid, VehicleDoorsText[playerid]);
+	}
+}
+
+HideVehicleUI(playerid)
+{
+	PlayerTextDrawHide(playerid, VehicleNameText[playerid]);
+	PlayerTextDrawHide(playerid, VehicleSpeedText[playerid]);
+	PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
+	PlayerTextDrawHide(playerid, VehicleDamageText[playerid]);
+	PlayerTextDrawHide(playerid, VehicleEngineText[playerid]);
+	PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
 }
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
