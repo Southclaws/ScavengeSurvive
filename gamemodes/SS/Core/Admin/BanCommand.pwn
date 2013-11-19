@@ -224,10 +224,18 @@ FinaliseBan(playerid)
 		DestroyVehicle(GetPlayerLastVehicle(targetid));
 	}
 
-	BanPlayerByName(name, ban_CurrentReason[playerid], playerid, ban_CurrentDuration[playerid]);
+	if(!BanPlayerByName(name, ban_CurrentReason[playerid], playerid, ban_CurrentDuration[playerid]))
+	{
+		Msg(playerid, RED, " >  An error occurred.");
+		return 0;
+	}
 
 	if(ban_CurrentOptions[playerid] & BAN_DELETE_ACCOUNT)
 	{
 		DeleteAccount(name);
 	}
+
+	MsgF(playerid, YELLOW, " >  Banned "C_BLUE"%s", name);
+
+	return 1;
 }

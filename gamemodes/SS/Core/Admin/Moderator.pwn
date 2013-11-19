@@ -29,7 +29,7 @@ ACMD:ban[2](playerid, params[])
 		if(playerid == id)
 			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
 
-		MsgF(playerid, YELLOW, " >  Banned %P", id);
+		MsgF(playerid, YELLOW, " >  Preparing ban for %P", id);
 
 		BanPlayerByCommand(playerid, id);
 
