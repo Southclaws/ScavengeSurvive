@@ -42,7 +42,9 @@ Float:	veh_Fuel,
 Float:	veh_spawnX,
 Float:	veh_spawnY,
 Float:	veh_spawnZ,
-Float:	veh_spawnR
+Float:	veh_spawnR,
+
+		veh_lastUsed
 }
 
 
@@ -665,6 +667,9 @@ VehicleSurfingCheck(playerid)
 	{
 		case VTYPE_SEA:
 			return;
+
+		case VTYPE_TRAIN:
+			return;
 	}
 
 	GetVehicleVelocity(vehicleid, vx, vy, vz);
@@ -721,42 +726,78 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, vehiclemodel);
 
-		logf("[VEHICLE] %p entered vehicle %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p entered vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
+		new
+			vehicleid,
+			vehiclemodel,
+			vehiclename[32];
+
+		vehicleid = GetPlayerLastVehicle(playerid);
+		vehiclemodel = GetVehicleModel(vehicleid);
+		GetVehicleName(vehiclemodel, vehiclename);
+		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 
 		if(!IsPlayerOnAdminDuty(playerid))
 		{
 			new name[MAX_PLAYER_NAME];
 
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 
 			SavePlayerVehicle(vehicleid, name);
 		}
 
-		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
-		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
-		SetCameraBehindPlayer(playerid);
-
-		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
-
+		SetVehicleExternalLock(vehicleid, 0);
 		SetVehicleOccupied(vehicleid, false);
-
+		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
+
+		logf("[VEHICLE] %p exited vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	}
 
 	if(newstate == PLAYER_STATE_PASSENGER)
 	{
+		new
+			vehicleid,
+			vehiclemodel,
+			vehiclename[32],
+			Float:x,
+			Float:y,
+			Float:z;
+
+		vehicleid = GetPlayerVehicleID(playerid);
+		vehiclemodel = GetVehicleModel(vehicleid);
+		GetVehicleName(vehiclemodel, vehiclename);
+		GetVehiclePos(vehicleid, x, y, z);
+
 		ShowVehicleUI(playerid, GetVehicleModel(GetPlayerVehicleID(playerid)));
+
+		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
+		logf("[VEHICLE] %p entered vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_PASSENGER)
 	{
+		new
+			vehicleid,
+			vehiclemodel,
+			vehiclename[32],
+			Float:x,
+			Float:y,
+			Float:z;
+
+		vehicleid = GetPlayerVehicleID(playerid);
+		vehiclemodel = GetVehicleModel(vehicleid);
+		GetVehicleName(vehiclemodel, vehiclename);
+		GetVehiclePos(vehicleid, x, y, z);
+
 		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
 		HideVehicleUI(playerid);
+		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	}
 
 	return 1;
@@ -1279,4 +1320,12 @@ stock GetVehicleSpawnPoint(vehicleid, &Float:x, &Float:y, &Float:z, &Float:r)
 	r = veh_Data[vehicleid][veh_spawnR];
 
 	return 1;
+}
+
+stock GetVehicleLastUseTick(vehicleid)
+{
+	if(!IsValidVehicleID(vehicleid))
+		return 0;
+
+	return veh_Data[vehicleid][veh_lastUsed];
 }

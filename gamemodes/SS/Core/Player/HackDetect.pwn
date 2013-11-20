@@ -21,7 +21,7 @@ enum
 }
 
 
-new
+static
 // Teleport
 		tp_SetPosTick		[MAX_PLAYERS],
 Float:	tp_CurPos			[MAX_PLAYERS][3],
@@ -528,7 +528,7 @@ CameraDistanceCheck(playerid)
 ==============================================================================*/
 
 
-new
+static
 Float:	vt_Position[MAX_SPAWNED_VEHICLES][3],
 		vt_MovedFar[MAX_SPAWNED_VEHICLES],
 		vt_MovedFarTick[MAX_SPAWNED_VEHICLES],
@@ -544,8 +544,10 @@ VehicleTeleportCheck(playerid)
 {
 	foreach(new i : veh_Index)
 	{
-		if(!IsVehicleOccupied(i) && IsValidVehicleID(i))
-			VehicleDistanceCheck(playerid, i);
+		if(!IsValidVehicleID(i))
+			continue;
+
+		VehicleDistanceCheck(playerid, i);
 	}
 }
 
@@ -564,6 +566,18 @@ VehicleDistanceCheck(playerid, vehicleid)
 	}
 
 	if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000)
+	{
+		vt_ResetVehiclePosition(vehicleid);
+		return 1;
+	}
+
+	if(GetTickCountDifference(tickcount(), GetVehicleLastUseTick(vehicleid)) < 1000)
+	{
+		vt_ResetVehiclePosition(vehicleid);
+		return 1;
+	}
+
+	if(IsVehicleOccupied(vehicleid))
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
