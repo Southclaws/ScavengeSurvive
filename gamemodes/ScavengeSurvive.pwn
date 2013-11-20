@@ -1169,12 +1169,12 @@ public OnGameModeInit()
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?, ?)");
 	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON", "FIELD_BANS_DURATION" FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC COLLATE NOCASE");
-	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ? COLLATE NOCASE");
+	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON", "FIELD_BANS_DURATION" FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? OR "FIELD_BANS_IPV4" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ?");
 	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS"");
 	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? ORDER BY "FIELD_BANS_DATE" DESC COLLATE NOCASE");
-	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE "FIELD_BANS_NAME" = ? ORDER BY "FIELD_BANS_DATE" DESC COLLATE NOCASE");
+	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
 
 	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");
 	gStmt_ReportDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
@@ -1435,7 +1435,7 @@ public OnGameModeInit()
 	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0, 	180.0, 90.0, 0.0,	1.3966,		9, 1, 1);
 	DefineDefenceItem(item_RustyDoor,	90.0, 90.0, 0.0, 	180.0, 90.0, 0.0,	2.1143,		7, 1, 1);
 	DefineDefenceItem(item_MetalStand,	90.0, 0.0, 0.0, 	0.0, 0.0, 0.0,		0.5998,		7, 1, 1);
-	DefineDefenceItem(item_RustyMetal,	0.0, 0.0, 270.0, 	0.0, 90.0, 270.0,	1.4401,		5, 1, 1);
+	DefineDefenceItem(item_RustyMetal,	0.0, 0.0, 0.0, 		0.0, 90.0, 0.0,		1.4401,		5, 1, 1);
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5, 	0.0, 0.0, 0.0,		1.0161,		7, 1, 1);
 
 

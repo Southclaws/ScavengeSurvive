@@ -13,11 +13,19 @@ new
 
 BanPlayer(playerid, reason[], byid, duration)
 {
+	new name[MAX_PLAYER_NAME];
+
+	if(byid == -1)
+		name = "Server";
+
+	else
+		GetPlayerName(byid, name, MAX_PLAYER_NAME);
+
 	stmt_bind_value(gStmt_BanInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_bind_value(gStmt_BanInsert, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
 	stmt_bind_value(gStmt_BanInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON);
-	stmt_bind_value(gStmt_BanInsert, 4, DB::TYPE_PLAYER_NAME, byid);
+	stmt_bind_value(gStmt_BanInsert, 4, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_value(gStmt_BanInsert, 5, DB::TYPE_INTEGER, duration);
 
 	if(stmt_execute(gStmt_BanInsert))
