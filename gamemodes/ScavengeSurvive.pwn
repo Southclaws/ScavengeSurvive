@@ -1283,7 +1283,7 @@ public OnGameModeInit()
 	item_Nailbat		= DefineItemType("Nailbat",				2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
 // 110
 	item_ZorroMask		= DefineItemType("Zorro Mask",			18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
-	item_Barbecue		= DefineItemType("BBQ",					1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0, 			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_Barbecue		= DefineItemType("BBQ",					1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
 	item_Headlight		= DefineItemType("Headlight",			19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
 	item_Pills			= DefineItemType("Pills",				2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
 	item_AutoInjec		= DefineItemType("Injector",			2711,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
@@ -1301,7 +1301,7 @@ public OnGameModeInit()
 	item_ShipDoor		= DefineItemType("Ship Door",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
 	item_RustyDoor		= DefineItemType("Metal Panel",			2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
 	item_MetalStand		= DefineItemType("Metal Stand",			2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
-	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	16637,	ITEM_SIZE_CARRY,	0.0, 90.0, 270.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	16637,	ITEM_SIZE_CARRY,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097);
 	item_WoodPanel		= DefineItemType("Wood Ramp",			5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
 // 130
 	item_Flare			= DefineItemType("Flare",				345,	ITEM_SIZE_SMALL);
@@ -1428,15 +1428,15 @@ public OnGameModeInit()
 
 
 	DefineDefenceItem(item_Door,		180.0, 90.0, 0.0,	90.0, 90.0, 0.0,	-0.0331,	2, 1, 0);
-	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0, 	0.0, 90.0, 0.0,		-0.0092,	5, 1, 1);
-	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0, 		270.0, 0.0, 0.0,	1.2007,		4, 1, 1);
-	DefineDefenceItem(item_CrateDoor,	0.0, 90.0, 0.0,  	90.0, 90.0, 0.0,	1.4738,		5, 1, 1);
-	DefineDefenceItem(item_CorPanel,	0.0, 90.0, 0.0, 	90.0, 90.0, 0.0,	1.1859,		6, 1, 1);
-	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0, 	180.0, 90.0, 0.0,	1.3966,		9, 1, 1);
-	DefineDefenceItem(item_RustyDoor,	90.0, 90.0, 0.0, 	180.0, 90.0, 0.0,	2.1143,		7, 1, 1);
-	DefineDefenceItem(item_MetalStand,	90.0, 0.0, 0.0, 	0.0, 0.0, 0.0,		0.5998,		7, 1, 1);
-	DefineDefenceItem(item_RustyMetal,	0.0, 0.0, 0.0, 		0.0, 90.0, 0.0,		1.4401,		5, 1, 1);
-	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5, 	0.0, 0.0, 0.0,		1.0161,		7, 1, 1);
+	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0,	0.0, 90.0, 0.0,		-0.0092,	5, 1, 1);
+	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0,		270.0, 0.0, 0.0,	1.2007,		4, 1, 1);
+	DefineDefenceItem(item_CrateDoor,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.4738,		5, 1, 1);
+	DefineDefenceItem(item_CorPanel,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.1859,		6, 1, 1);
+	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0,	180.0, 90.0, 0.0,	1.3966,		9, 1, 1);
+	DefineDefenceItem(item_RustyDoor,	90.0, 90.0, 0.0,	180.0, 90.0, 0.0,	2.1143,		7, 1, 1);
+	DefineDefenceItem(item_MetalStand,	90.0, 0.0, 0.0,		0.0, 0.0, 0.0,		0.5998,		7, 1, 1);
+	DefineDefenceItem(item_RustyMetal,	0.0, 180.0, 90.0,	0.0, 270.0, 90.0,	1.4401,		5, 1, 1);
+	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7, 1, 1);
 
 
 	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
@@ -1507,13 +1507,13 @@ public OnGameModeInit()
 	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.1);
 
 	DefineSafeboxType("Medium Box",		item_MediumBox,		6, 6, 3, 2);
-	DefineSafeboxType("Small Box", 		item_SmallBox,		4, 2, 1, 0);
-	DefineSafeboxType("Large Box", 		item_LargeBox,		10, 8, 6, 6);
-	DefineSafeboxType("Capsule", 		item_Capsule,		2, 2, 0, 0);
+	DefineSafeboxType("Small Box",		item_SmallBox,		4, 2, 1, 0);
+	DefineSafeboxType("Large Box",		item_LargeBox,		10, 8, 6, 6);
+	DefineSafeboxType("Capsule",		item_Capsule,		2, 2, 0, 0);
 
-	DefineBagType("Backpack", 			item_Backpack,		8, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag", 			item_Satchel,		4, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Parachute Bag", 		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Backpack",			item_Backpack,		8, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag",			item_Satchel,		4, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Parachute Bag",		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Large Backpack",		item_LargeBackpack,	9, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
 
 

@@ -196,7 +196,12 @@ stock DestroyDefence(defenceid)
 		filename[64],
 		next;
 
-	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_rotZ]);
+	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d",
+		def_Data[defenceid][def_posX],
+		def_Data[defenceid][def_posY],
+		def_Data[defenceid][def_posZ],
+		def_Data[defenceid][def_rotZ]);
+
 	fremove(filename);
 
 	if(IsValidButton(def_Data[defenceid][def_buttonId]))
@@ -218,108 +223,6 @@ stock DestroyDefence(defenceid)
 	Iter_SafeRemove(def_Index, defenceid, next);
 
 	return next;
-}
-
-/*
-EditDefence(playerid, defenceid)
-{
-	if(!Iter_Contains(def_Index, defenceid))
-		return 0;
-
-	TogglePlayerControllable(playerid, false);
-	Streamer_Update(playerid);
-	EditDynamicObject(playerid, def_Data[defenceid][def_objectId]);
-	def_CurrentDefenceMove[playerid] = defenceid;
-
-	return 1;
-}
-*/
-
-public OnPlayerEditDynamicObject(playerid, objectid, response, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
-{
-	if(def_CurrentDefenceMove[playerid] != -1)
-	{
-		if(objectid == def_Data[def_CurrentDefenceMove[playerid]][def_objectId])
-		{
-			if(response == 1)
-			{
-				new filename[64];
-
-				format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ], def_Data[def_CurrentDefenceMove[playerid]][def_rotZ]);
-				fremove(filename);
-
-				def_Data[def_CurrentDefenceMove[playerid]][def_posX] = x;
-				def_Data[def_CurrentDefenceMove[playerid]][def_posY] = y;
-				def_Data[def_CurrentDefenceMove[playerid]][def_posZ] = z;
-				SaveDefenceItem(def_CurrentDefenceMove[playerid]);
-				TogglePlayerControllable(playerid, true);
-			}
-			if(response == 2)
-			{
-				if(Distance(x, y, z, def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ]) > 2.0)
-				{
-					CancelEdit(playerid);
-					SetDynamicObjectPos(objectid, def_Data[def_CurrentDefenceMove[playerid]][def_posX], def_Data[def_CurrentDefenceMove[playerid]][def_posY], def_Data[def_CurrentDefenceMove[playerid]][def_posZ]);
-					defer RetryEdit(playerid, objectid);
-					return 1;
-				}
-			}
-		}
-	}
-
-	return 1;
-}
-
-timer RetryEdit[100](playerid, objectid)
-{
-	EditDynamicObject(playerid, objectid);
-}
-
-timer MoveDefence[1500](defenceid, playerid)
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	foreach(new i : Player)
-	{
-		GetPlayerPos(i, x, y, z);
-
-		if(Distance(x, y, z, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]) < 2.0)
-		{
-			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
-
-			return;
-		}
-	}
-
-	if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
-	{
-		MoveDynamicObject(def_Data[defenceid][def_objectId],
-			def_Data[defenceid][def_posX],
-			def_Data[defenceid][def_posY],
-			def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
-			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotX],
-			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotY],
-			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotZ] + def_Data[defenceid][def_rotZ]);
-
-		def_Data[defenceid][def_open] = false;
-	}
-	else
-	{
-		MoveDynamicObject(def_Data[defenceid][def_objectId],
-			def_Data[defenceid][def_posX],
-			def_Data[defenceid][def_posY],
-			def_Data[defenceid][def_posZ], 0.5,
-			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotX],
-			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotY],
-			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotZ] + def_Data[defenceid][def_rotZ]);
-
-		def_Data[defenceid][def_open] = true;
-	}
-
-	return;
 }
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -641,6 +544,53 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 	}
 
 	return 1;
+}
+
+timer MoveDefence[1500](defenceid, playerid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	foreach(new i : Player)
+	{
+		GetPlayerPos(i, x, y, z);
+
+		if(Distance(x, y, z, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]) < 2.0)
+		{
+			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+
+			return;
+		}
+	}
+
+	if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
+	{
+		MoveDynamicObject(def_Data[defenceid][def_objectId],
+			def_Data[defenceid][def_posX],
+			def_Data[defenceid][def_posY],
+			def_Data[defenceid][def_posZ] + def_TypeData[def_Data[defenceid][def_type]][def_placeOffsetZ], 0.5,
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotX],
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotZ] + def_Data[defenceid][def_rotZ]);
+
+		def_Data[defenceid][def_open] = false;
+	}
+	else
+	{
+		MoveDynamicObject(def_Data[defenceid][def_objectId],
+			def_Data[defenceid][def_posX],
+			def_Data[defenceid][def_posY],
+			def_Data[defenceid][def_posZ], 0.5,
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotX],
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotY],
+			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotZ] + def_Data[defenceid][def_rotZ]);
+
+		def_Data[defenceid][def_open] = true;
+	}
+
+	return;
 }
 
 
