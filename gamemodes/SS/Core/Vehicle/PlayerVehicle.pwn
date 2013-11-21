@@ -29,7 +29,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 		count,
 		owner[MAX_PLAYER_NAME];
 
-	for(new i; i < MAX_SPAWNED_VEHICLES; i++)
+	for(new i = 1; i < MAX_SPAWNED_VEHICLES; i++)
 	{
 		GetVehicleOwner(i, owner);
 
@@ -276,6 +276,14 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 		return 0;
 	}
 
+	SetVehicleOwner(vehicleid, name, print);
+	UpdateVehicleFile(vehicleid, print);
+
+	return 1;
+}
+
+UpdateVehicleFile(vehicleid, print)
+{
 	new
 		File:file,
 		filename[MAX_PLAYER_NAME + 22],
@@ -299,10 +307,13 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	array_data[VEH_CELL_ARMOUR] = 0;
 	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
+	if(print)
+		printf("[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
+
 	if(!IsVehicleOccupied(vehicleid))
 		array_data[VEH_CELL_LOCKED] = veh_Data[vehicleid][veh_locked];
 
-	format(filename, sizeof(filename), DIRECTORY_VEHICLE_DAT"%s.dat", name);
+	format(filename, sizeof(filename), DIRECTORY_VEHICLE_DAT"%s.dat", veh_Owner[vehicleid]);
 	file = fopen(filename, io_write);
 
 	if(!file)
@@ -313,8 +324,6 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 
 	fblockwrite(file, array_data, sizeof(array_data));
 	fclose(file);
-
-	SetVehicleOwner(vehicleid, name);
 
 	if(!IsValidContainer(GetVehicleContainer(vehicleid)))
 		return 1;
@@ -339,7 +348,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 		}
 	}
 
-	format(filename, sizeof(filename), DIRECTORY_VEHICLE_INV"%s.dat", name);
+	format(filename, sizeof(filename), DIRECTORY_VEHICLE_INV"%s.dat", veh_Owner[vehicleid]);
 	file = fopen(filename, io_write);
 	fblockwrite(file, array_inv, sizeof(array_inv));
 	fclose(file);
@@ -352,22 +361,27 @@ SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
-	if(!isnull(veh_Owner[vehicleid]))
+	if(!isnull(veh_Owner[vehicleid]) && strcmp(name, veh_Owner[vehicleid]))
 	{
-		if(strcmp(veh_Owner[vehicleid], name))
-			RemovePlayerVehicleFile(vehicleid, print);
+		new lastvehicleid;
+
+		for(new i = 1; i < MAX_SPAWNED_VEHICLES; i++)
+		{
+			if(!strcmp(veh_Owner[i], name))
+			{
+				lastvehicleid = i;
+				break;
+			}
+		}
+
+		if(IsValidVehicleID(lastvehicleid))
+		{
+			veh_Owner[lastvehicleid] = veh_Owner[vehicleid];
+			UpdateVehicleFile(lastvehicleid, print);
+		}
 	}
 
 	veh_Owner[vehicleid] = name;
-
-	for(new i; i < MAX_SPAWNED_VEHICLES; i++)
-	{
-		if(i == vehicleid)
-			continue;
-
-		if(!strcmp(veh_Owner[i], veh_Owner[vehicleid]))
-			veh_Owner[i][0] = EOS;
-	}
 
 	return 1;
 }
@@ -394,91 +408,3 @@ RemovePlayerVehicleFile(vehicleid, print = true)
 
 	return 1;
 }
-
-
-// OLD METHOD
-
-/*
-LoadPlayerVehicles_OLD(printeach = false, printtotal = false)
-{
-	new
-		dir:direc = dir_open(PLAYER_VEHICLE_DIRECTORY),
-		item[28],
-		type;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			LoadPlayerVehicle(item, printeach);
-		}
-	}
-
-	dir_close(direc);
-
-	if(printtotal)
-		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
-
-	return;
-}
-
-SavePlayerVehicle_OLD(vehicleid, name[MAX_PLAYER_NAME], print = false)
-{
-	new
-		File:file,
-		filename[MAX_PLAYER_NAME + 22],
-		array[VEH_CELL_INV + (CNT_MAX_SLOTS * 3)],
-		itemid;
-
-	array[VEH_CELL_MODEL] = GetVehicleModel(vehicleid);
-
-	if(GetVehicleType(array[VEH_CELL_MODEL]) == VTYPE_TRAIN)
-		return 0;
-
-	GetVehicleHealth(vehicleid, Float:array[1]);
-
-	array[VEH_CELL_FUEL] = _:GetVehicleFuel(vehicleid);
-	GetVehiclePos(vehicleid, Float:array[VEH_CELL_POSX], Float:array[VEH_CELL_POSY], Float:array[VEH_CELL_POSZ]);
-	GetVehicleZAngle(vehicleid, Float:array[VEH_CELL_ROTZ]);
-	array[VEH_CELL_COL1] = veh_Data[vehicleid][veh_colour1];
-	array[VEH_CELL_COL2] = veh_Data[vehicleid][veh_colour2];
-	GetVehicleDamageStatus(vehicleid, array[VEH_CELL_PANELS], array[VEH_CELL_DOORS], array[VEH_CELL_LIGHTS], array[VEH_CELL_TIRES]);
-	array[VEH_CELL_ARMOUR] = 0;
-
-	if(print)
-		printf("\t[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array[VEH_CELL_MODEL]-400], name, Float:array[VEH_CELL_POSX], Float:array[VEH_CELL_POSY], Float:array[VEH_CELL_POSZ]);
-
-	if(IsValidContainer(GetVehicleContainer(vehicleid)))
-	{
-		for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
-		{
-			if(IsContainerSlotUsed(GetVehicleContainer(vehicleid), j))
-			{
-				itemid = GetContainerSlotItem(GetVehicleContainer(vehicleid), j);
-				array[VEH_CELL_INV + i] = _:GetItemType(itemid);
-				array[VEH_CELL_INV + i + 1] = 1;
-				array[VEH_CELL_INV + i + 2] = GetItemExtraData(itemid);
-
-				if(array[VEH_CELL_INV + i] == 0)
-					return 0;
-			}
-			else
-			{
-				array[VEH_CELL_INV + i] = -1;
-				array[VEH_CELL_INV + i + 1] = 1;
-				array[VEH_CELL_INV + i + 2] = 0;
-			}
-		}
-	}
-
-	SetVehicleOwner(vehicleid, name);
-
-	format(filename, sizeof(filename), PLAYER_VEHICLE_FILE, name);
-	file = fopen(filename, io_write);
-	fblockwrite(file, array, sizeof(array));
-	fclose(file);
-
-	return 1;
-}
-
-*/
