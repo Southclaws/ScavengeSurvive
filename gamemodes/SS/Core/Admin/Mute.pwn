@@ -16,7 +16,7 @@ TogglePlayerMute(playerid, bool:toggle, duration = -1)
 	if(toggle)
 	{
 		mute_Muted[playerid] = true;
-		mute_StartTick[playerid] = tickcount();
+		mute_StartTick[playerid] = GetTickCount();
 		mute_Duration[playerid] = duration;
 
 		if(duration > 0)
@@ -94,7 +94,7 @@ stock GetPlayerMuteRemainder(playerid)
 	if(mute_Duration[playerid] == -1)
 		return -1;
 
-	return GetTickCountDifference((mute_StartTick[playerid] + mute_Duration[playerid]), tickcount());
+	return GetTickCountDifference((mute_StartTick[playerid] + mute_Duration[playerid]), GetTickCount());
 }
 
 CMD:testmute(playerid, params[])

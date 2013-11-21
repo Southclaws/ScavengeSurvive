@@ -87,16 +87,16 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 	if(weaponid == WEAPON_DEAGLE)
 	{
-		if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_DeltDamageTick]) < 400)
+		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_DeltDamageTick]) < 400)
 			return 0;
 	}
 	else
 	{
-		if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_DeltDamageTick]) < 100)
+		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_DeltDamageTick]) < 100)
 			return 0;
 	}
 
-	gPlayerData[playerid][ply_DeltDamageTick] = tickcount();
+	gPlayerData[playerid][ply_DeltDamageTick] = GetTickCount();
 
 	new
 		head,

@@ -12,7 +12,7 @@ new
 
 ApplyDrug(playerid, drugtype)
 {
-	drug_PlayerDrugUseTick[playerid][drugtype] = tickcount();
+	drug_PlayerDrugUseTick[playerid][drugtype] = GetTickCount();
 	t:drug_bPlayerDrugEffects[playerid]<(1 << drugtype)>;
 }
 
@@ -27,43 +27,43 @@ DrugsUpdate(playerid)
 {
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ANTIBIOTIC))
 	{
-		if(GetTickCountDifference(tickcount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ANTIBIOTIC)) > 300000)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ANTIBIOTIC)) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_ANTIBIOTIC);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_PAINKILL]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_PAINKILL]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_LSD]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_LSD]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_LSD);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_AIR]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_AIR]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_AIR);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_MORPHINE]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_MORPHINE]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_ADRENALINE]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_ADRENALINE]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
 	{
-		if(GetTickCountDifference(tickcount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_HEROINE]) > 300000)
+		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_HEROINE]) > 300000)
 			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
 	}
 }

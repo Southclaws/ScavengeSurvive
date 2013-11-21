@@ -8,7 +8,7 @@ new
 
 hook OnPlayerText(playerid, text[])
 {
-	new tmpMuteTime = GetTickCountDifference(tickcount(), chat_MuteTick[playerid]);
+	new tmpMuteTime = GetTickCountDifference(GetTickCount(), chat_MuteTick[playerid]);
 
 	if(IsPlayerMuted(playerid))
 	{
@@ -27,13 +27,13 @@ hook OnPlayerText(playerid, text[])
 		return 0;
 	}
 
-	if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
+	if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
 	{
 		chat_MessageStreak[playerid]++;
 		if(chat_MessageStreak[playerid] == 3)
 		{
 			Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
-			chat_MuteTick[playerid] = tickcount();
+			chat_MuteTick[playerid] = GetTickCount();
 			return 0;
 		}
 	}
@@ -43,7 +43,7 @@ hook OnPlayerText(playerid, text[])
 			chat_MessageStreak[playerid]--;
 	}
 
-	gPlayerData[playerid][ply_LastChatMessageTick] = tickcount();
+	gPlayerData[playerid][ply_LastChatMessageTick] = GetTickCount();
 
 	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_LOCAL)
 		PlayerSendChat(playerid, text, 0.0);

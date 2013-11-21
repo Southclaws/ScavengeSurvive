@@ -136,7 +136,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(tickcount(), hols_LastHolster[playerid]) < 1000)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return 1;
 
 	if(newkeys & KEY_YES)
@@ -202,7 +202,7 @@ HolsterItem(playerid)
 
 		ApplyAnimation(playerid, hols_TypeData[holsterid][hols_animLib], hols_TypeData[holsterid][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[holsterid][hols_time]);
 		defer HolsterItemDelay(playerid, itemid, hols_TypeData[holsterid][hols_time]);
-		hols_LastHolster[playerid] = tickcount();
+		hols_LastHolster[playerid] = GetTickCount();
 
 		return 1;
 	}
@@ -258,7 +258,7 @@ UnholsterItem(playerid)
 
 	ApplyAnimation(playerid, hols_TypeData[holsterid][hols_animLib], hols_TypeData[holsterid][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[holsterid][hols_time]);
 	defer UnholsterItemDelay(playerid, hols_TypeData[holsterid][hols_time]);
-	hols_LastHolster[playerid] = tickcount();
+	hols_LastHolster[playerid] = GetTickCount();
 
 	return 0;
 }

@@ -7,7 +7,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
 		SetItemExtraData(itemid, withitemid);
 		SetItemExtraData(withitemid, 1);
-		iedp_SyncTick[playerid] = tickcount();
+		iedp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
 	return CallLocalFunction("iedp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
@@ -28,7 +28,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_IedPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			if(GetTickCountDifference(tickcount(), iedp_SyncTick[playerid]) > 1000)
+			if(GetTickCountDifference(GetTickCount(), iedp_SyncTick[playerid]) > 1000)
 			{
 				new
 					Float:x,

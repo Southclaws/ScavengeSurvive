@@ -156,7 +156,7 @@ hook OnPlayerUpdate(playerid)
 
 ReloadWeapon(playerid)
 {
-	if(GetTickCountDifference(tickcount(), tick_LastReload[playerid]) < 1000)
+	if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1000)
 		return 0;
 
 	if(!IsWeaponClipBased(wep_CurrentWeapon[playerid]))
@@ -206,7 +206,7 @@ ReloadWeapon(playerid)
 	GivePlayerWeapon(playerid, wep_CurrentWeapon[playerid], ammo);
 	UpdateWeaponUI(playerid);
 
-	tick_LastReload[playerid] = tickcount();
+	tick_LastReload[playerid] = GetTickCount();
 
 	return 1;
 }
@@ -529,7 +529,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				if(IsPlayerInDynamicArea(playerid, gPlayerArea[i]))
 				{
-					if(GetTickCountDifference(tickcount(), GetPlayerWeaponSwapTick(i)) < 1000)
+					if(GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(i)) < 1000)
 						continue;
 
 					if(GetPlayerWeapon(i) != 0)

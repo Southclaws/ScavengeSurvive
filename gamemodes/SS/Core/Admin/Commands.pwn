@@ -75,7 +75,7 @@ CMD:chatinfo(playerid, params[])
 
 CMD:die(playerid, params[])
 {
-	if(GetTickCountDifference(tickcount(), GetPlayerSpawnTick(playerid)) < 60000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 60000)
 		return 2;
 
 	SetPlayerWeapon(playerid, 4, 1);

@@ -7,7 +7,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
 		SetItemExtraData(itemid, withitemid);
 		SetItemExtraData(withitemid, 1);
-		tntp_SyncTick[playerid] = tickcount();
+		tntp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
 	return CallLocalFunction("tntp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
@@ -28,7 +28,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidItem(bombitem) && GetItemType(bombitem) == item_TntPhoneBomb && GetItemExtraData(bombitem) == 1)
 		{
-			if(GetTickCountDifference(tickcount(), tntp_SyncTick[playerid]) > 1000)
+			if(GetTickCountDifference(GetTickCount(), tntp_SyncTick[playerid]) > 1000)
 			{
 				new
 					Float:x,

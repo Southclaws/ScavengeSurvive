@@ -154,10 +154,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
 	{
-		if(GetTickCountDifference(tickcount(), spectate_ClickTick[playerid]) < 1000)
+		if(GetTickCountDifference(GetTickCount(), spectate_ClickTick[playerid]) < 1000)
 			return 1;
 
-		spectate_ClickTick[playerid] = tickcount();
+		spectate_ClickTick[playerid] = GetTickCount();
 
 		if(newkeys == 4)
 		{

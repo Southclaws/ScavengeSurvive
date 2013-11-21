@@ -122,7 +122,7 @@ public OnButtonPress(playerid, buttonid)
 		{
 			if(buttonid == sgn_Data[i][sgn_button])
 			{
-				sgn_PressSignTick[playerid] = tickcount();
+				sgn_PressSignTick[playerid] = GetTickCount();
 				sgn_CurrentSign[playerid] = i;
 
 				stop sgn_PickUpTimer[playerid];
@@ -147,7 +147,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16)
 	{
-		if(GetTickCountDifference(tickcount(), sgn_PressSignTick[playerid]) < 250)
+		if(GetTickCountDifference(GetTickCount(), sgn_PressSignTick[playerid]) < 250)
 		{
 			EditSign(playerid, sgn_CurrentSign[playerid]);
 			stop sgn_PickUpTimer[playerid];

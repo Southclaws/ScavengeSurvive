@@ -644,7 +644,7 @@ PlayerVehicleUpdate(playerid)
 
 	if(IsWeaponDriveby(GetPlayerWeapon(playerid)))
 	{
-		if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
 			SetPlayerArmedWeapon(playerid, 0);
 	}
 

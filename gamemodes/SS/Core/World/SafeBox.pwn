@@ -214,7 +214,7 @@ SafeBoxInteractionCheck(playerid, itemid)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
 		{
-			box_PickUpTick[playerid] = tickcount();
+			box_PickUpTick[playerid] = GetTickCount();
 			box_CurrentBox[playerid] = itemid;
 			stop box_PickUpTimer[playerid];
 
@@ -235,7 +235,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(oldkeys & 16)
 	{
-		if(GetTickCountDifference(tickcount(), box_PickUpTick[playerid]) < 200)
+		if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 200)
 		{
 			if(IsValidItem(box_CurrentBox[playerid]))
 			{

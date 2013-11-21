@@ -98,7 +98,7 @@ public OnPlayerConnect(playerid)
 
 	ResetVariables(playerid);
 
-	gPlayerData[playerid][ply_JoinTick] = tickcount();
+	gPlayerData[playerid][ply_JoinTick] = GetTickCount();
 
 	new
 		ipstring[16],
@@ -256,7 +256,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(GetPlayerPing(playerid) > pinglimit)
 	{
-		if(GetTickCountDifference(tickcount(), gPlayerData[playerid][ply_JoinTick]) > 10000)
+		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_JoinTick]) > 10000)
 		{
 			gPlayerData[playerid][ply_PingLimitStrikes]++;
 
@@ -479,7 +479,7 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
-	gPlayerData[playerid][ply_SpawnTick] = tickcount();
+	gPlayerData[playerid][ply_SpawnTick] = GetTickCount();
 
 	SetAllWeaponSkills(playerid, 500);
 	SetPlayerWeather(playerid, gWeatherID);
@@ -581,7 +581,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		gPlayerData[playerid][ply_CurrentVehicle] = GetPlayerVehicleID(playerid);
 
 	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
-		gPlayerData[playerid][ply_ExitVehicleTick] = tickcount();
+		gPlayerData[playerid][ply_ExitVehicleTick] = GetTickCount();
 
 	return 1;
 }

@@ -122,7 +122,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][0] = itemid;
-						bbq_PlaceFoodTick[playerid] = tickcount();
+						bbq_PlaceFoodTick[playerid] = GetTickCount();
 						ShowActionText(playerid, "Food added", 3000);
 
 						return 1;
@@ -136,7 +136,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 							.rz = r);
 
 						bbq_Data[i][bbq_grillItem][1] = itemid;
-						bbq_PlaceFoodTick[playerid] = tickcount();
+						bbq_PlaceFoodTick[playerid] = GetTickCount();
 						ShowActionText(playerid, "Food added", 3000);
 
 						return 1;
@@ -210,7 +210,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Barbecue)
 	{
-		if(GetTickCountDifference(tickcount(), bbq_PlaceFoodTick[playerid]) < 1000)
+		if(GetTickCountDifference(GetTickCount(), bbq_PlaceFoodTick[playerid]) < 1000)
 			return 1;
 
 		foreach(new i : bbq_Index)

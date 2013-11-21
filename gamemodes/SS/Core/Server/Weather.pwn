@@ -47,12 +47,12 @@ new
 hook OnGameModeInit()
 {
 	gWeatherID = random(sizeof(WeatherData));
-	gLastWeatherChange = tickcount();
+	gLastWeatherChange = GetTickCount();
 }
 
 WeatherUpdate()
 {
-	if(GetTickCountDifference(tickcount(), gLastWeatherChange) > 600000 && random(100) < 10)
+	if(GetTickCountDifference(GetTickCount(), gLastWeatherChange) > 600000 && random(100) < 10)
 	{
 		new
 			list[MAX_WEATHER_TYPES],
@@ -65,6 +65,6 @@ WeatherUpdate()
 		}
 
 		gWeatherID = list[random(idx)];
-		gLastWeatherChange = tickcount();
+		gLastWeatherChange = GetTickCount();
 	}
 }

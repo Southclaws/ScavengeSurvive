@@ -5,7 +5,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(killerid == INVALID_PLAYER_ID)
 	{
-		if(GetTickCountDifference(tickcount(), GetPlayerTookDamageTick(playerid)) < 1000)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerTookDamageTick(playerid)) < 1000)
 		{
 			killerid = GetLastHitById(playerid);
 

@@ -20,7 +20,7 @@ bool:	autosave_Active;
 timer AutoSave[60000]()
 {
 	#if defined AUTOSAVE_DEBUG
-	autosave_TickTotal = tickcount();
+	autosave_TickTotal = GetTickCount();
 	#endif
 
 	if(Iter_Count(Player) == 0)
@@ -44,8 +44,8 @@ Autosave_End()
 	defer AutoSave();
 
 	#if defined AUTOSAVE_DEBUG
-	printf("Vehicle tick: %d", GetTickCountDifference(tickcount(), autosave_Tick));
-	printf("AUTOSAVE COMPLETE time: %d", GetTickCountDifference(tickcount(), autosave_TickTotal));
+	printf("Vehicle tick: %d", GetTickCountDifference(GetTickCount(), autosave_Tick));
+	printf("AUTOSAVE COMPLETE time: %d", GetTickCountDifference(GetTickCount(), autosave_TickTotal));
 	#endif
 }
 
@@ -61,7 +61,7 @@ AutoSave_Player()
 {
 	#if defined AUTOSAVE_DEBUG
 	print("AutoSave_Player");
-	autosave_Tick = tickcount();
+	autosave_Tick = GetTickCount();
 	#endif
 
 	new idx;
@@ -79,7 +79,7 @@ AutoSave_Player()
 timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 {
 	#if defined AUTOSAVE_DEBUG
-	autosave_Tick = tickcount();
+	autosave_Tick = GetTickCount();
 	#endif
 
 	autosave_Active = true;
@@ -116,9 +116,9 @@ timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 timer AutoSave_Safebox[3000]()
 {
 	#if defined AUTOSAVE_DEBUG
-	printf("Player tick: %d", GetTickCountDifference(tickcount(), autosave_Tick));
+	printf("Player tick: %d", GetTickCountDifference(GetTickCount(), autosave_Tick));
 	print("AutoSave_Safebox");
-	autosave_Tick = tickcount();
+	autosave_Tick = GetTickCount();
 	#endif
 
 	new idx;
@@ -180,9 +180,9 @@ timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
 timer AutoSave_Vehicles[3000]()
 {
 	#if defined AUTOSAVE_DEBUG
-	printf("Safebox tick: %d", GetTickCountDifference(tickcount(), autosave_Tick));
+	printf("Safebox tick: %d", GetTickCountDifference(GetTickCount(), autosave_Tick));
 	print("AutoSave_Vehicles");
-	autosave_Tick = tickcount();
+	autosave_Tick = GetTickCount();
 	#endif
 
 	new

@@ -51,21 +51,21 @@ ptask AntiCheatUpdate[1000](playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 10000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 10000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerSpawnTick(playerid)) < 1000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
@@ -81,7 +81,7 @@ ptask AntiCheatUpdate[1000](playerid)
 	else
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 
 		VehicleHealthCheck(playerid);	
 		VehicleModCheck(playerid);	
@@ -97,11 +97,11 @@ ptask AntiCheatUpdate[1000](playerid)
 
 hook OnPlayerSpawn(playerid)
 {
-	tp_SetPosTick[playerid] = tickcount();
-	tp_DetectDelay[playerid] = tickcount();
-	sf_ReportTick[playerid] = tickcount();
-	hg_ReportTick[playerid] = tickcount();
-	vh_ReportTick[playerid] = tickcount();
+	tp_SetPosTick[playerid] = GetTickCount();
+	tp_DetectDelay[playerid] = GetTickCount();
+	sf_ReportTick[playerid] = GetTickCount();
+	hg_ReportTick[playerid] = GetTickCount();
+	vh_ReportTick[playerid] = GetTickCount();
 	GetPlayerSpawnPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 }
 
@@ -115,12 +115,12 @@ hook OnPlayerSpawn(playerid)
 
 HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
-	tp_SetPosTick[playerid] = tickcount();
+	tp_SetPosTick[playerid] = GetTickCount();
 	tp_SetPos[playerid][0] = x;
 	tp_SetPos[playerid][1] = y;
 	tp_SetPos[playerid][2] = z;
 
-	cd_DetectDelay[playerid] = tickcount();
+	cd_DetectDelay[playerid] = GetTickCount();
 }
 
 
@@ -129,18 +129,18 @@ PositionCheck(playerid)
 	if(
 		IsAutoSaving() ||
 		IsPlayerOnZipline(playerid) ||
-		GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000 ||
-		GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 20000 ||
+		GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 5000 ||
+		GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 20000 ||
 		IsPlayerDead(playerid) ||
 		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), tp_DetectDelay[playerid]) < 10000)
+	if(GetTickCountDifference(GetTickCount(), tp_DetectDelay[playerid]) < 10000)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 		return;
@@ -157,7 +157,7 @@ PositionCheck(playerid)
 	if(z < -50.0)
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
-		tp_DetectDelay[playerid] = tickcount();
+		tp_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
@@ -175,9 +175,9 @@ PositionCheck(playerid)
 
 	if(distance > TELEPORT_DETECTION_DISTANCE)
 	{
-		if(GetTickCountDifference(tickcount(), tp_SetPosTick[playerid]) > 5000)
+		if(GetTickCountDifference(GetTickCount(), tp_SetPosTick[playerid]) > 5000)
 		{
-			if(GetTickCountDifference(tickcount(), tp_PosReportTick[playerid]) > 10000)
+			if(GetTickCountDifference(GetTickCount(), tp_PosReportTick[playerid]) > 10000)
 			{
 				new
 					name[MAX_PLAYER_NAME],
@@ -192,12 +192,12 @@ PositionCheck(playerid)
 
 				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
-				tp_PosReportTick[playerid] = tickcount();
+				tp_PosReportTick[playerid] = GetTickCount();
 			}
 		}
 		else
 		{
-			if(GetTickCountDifference(tickcount(), tp_PosReportTick[playerid]) > 10000)
+			if(GetTickCountDifference(GetTickCount(), tp_PosReportTick[playerid]) > 10000)
 			{
 				distance = Distance(x, y, z, tp_SetPos[playerid][0], tp_SetPos[playerid][1], tp_SetPos[playerid][2]);
 				if(distance > TELEPORT_DETECTION_DISTANCE)
@@ -215,7 +215,7 @@ PositionCheck(playerid)
 
 					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
-					tp_PosReportTick[playerid] = tickcount();
+					tp_PosReportTick[playerid] = GetTickCount();
 				}
 			}
 		}
@@ -238,10 +238,10 @@ PositionCheck(playerid)
 
 SwimFlyCheck(playerid)
 {
-	if(GetTickCountDifference(tickcount(), sf_ReportTick[playerid]) < 10000)
+	if(GetTickCountDifference(GetTickCount(), sf_ReportTick[playerid]) < 10000)
 		return 0;
 
-	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 10000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 10000)
 		return 0;
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
@@ -249,7 +249,7 @@ SwimFlyCheck(playerid)
 
 	if(IsPlayerDead(playerid))
 	{
-		sf_ReportTick[playerid] = tickcount();
+		sf_ReportTick[playerid] = GetTickCount();
 		return 0;
 	}
 
@@ -288,7 +288,7 @@ SwimFlyCheck(playerid)
 			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
 			BanPlayer(playerid, reason, -1, 0);
 
-			sf_ReportTick[playerid] = tickcount();
+			sf_ReportTick[playerid] = GetTickCount();
 		}
 	}
 
@@ -326,7 +326,7 @@ VehicleHealthCheck(playerid)
 
 		defer vh_ResetVehiclePosition(GetPlayerVehicleID(playerid));
 
-		vh_ReportTick[playerid] = tickcount();
+		vh_ReportTick[playerid] = GetTickCount();
 	}
 
 	return 1;
@@ -355,26 +355,26 @@ CameraDistanceCheck(playerid)
 		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
-		cd_DetectDelay[playerid] = tickcount();
+		cd_DetectDelay[playerid] = GetTickCount();
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 5000)
 	{
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerServerJoinTick(playerid)) < 20000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 20000)
 	{
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), cd_DetectDelay[playerid]) < 5000)
+	if(GetTickCountDifference(GetTickCount(), cd_DetectDelay[playerid]) < 5000)
 	{
 		return;
 	}
 
-	if(GetTickCountDifference(tickcount(), cd_ReportTick[playerid]) < 3000)
+	if(GetTickCountDifference(GetTickCount(), cd_ReportTick[playerid]) < 3000)
 	{
 		return;
 	}
@@ -470,7 +470,7 @@ CameraDistanceCheck(playerid)
 			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
 			MsgAdmins(3, YELLOW, reason);
 
-			cd_ReportTick[playerid] = tickcount();
+			cd_ReportTick[playerid] = GetTickCount();
 		}
 	}
 	else
@@ -513,7 +513,7 @@ CameraDistanceCheck(playerid)
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
 
-			cd_ReportTick[playerid] = tickcount();
+			cd_ReportTick[playerid] = GetTickCount();
 		}
 	}
 
@@ -553,25 +553,25 @@ VehicleTeleportCheck(playerid)
 
 VehicleDistanceCheck(playerid, vehicleid)
 {
-	if(GetTickCountDifference(tickcount(), vt_MovedFarTick[vehicleid]) < 5000)
+	if(GetTickCountDifference(GetTickCount(), vt_MovedFarTick[vehicleid]) < 5000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerSpawnTick(playerid)) < 15000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 15000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetPlayerVehicleExitTick(playerid)) < 5000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 5000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
 	}
 
-	if(GetTickCountDifference(tickcount(), GetVehicleLastUseTick(vehicleid)) < 1000)
+	if(GetTickCountDifference(GetTickCount(), GetVehicleLastUseTick(vehicleid)) < 1000)
 	{
 		vt_ResetVehiclePosition(vehicleid);
 		return 1;
@@ -608,7 +608,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 		if(distancetoplayer < 10.0)
 		{
 			vt_MovedFar[vehicleid] = true;
-			vt_MovedFarTick[vehicleid] = tickcount();
+			vt_MovedFarTick[vehicleid] = GetTickCount();
 
 			foreach(new i : veh_Index)
 			{

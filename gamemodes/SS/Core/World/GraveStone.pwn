@@ -38,7 +38,7 @@ stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, 
 	GetPlayerName(playerid, rip_Data[id][rip_name], MAX_PLAYER_NAME);
 	rip_Data[id][rip_reason][0] = EOS;
 	strcat(rip_Data[id][rip_reason], reason, MAX_RIP_REASON);
-	rip_Data[id][rip_spawnTick] = tickcount();
+	rip_Data[id][rip_spawnTick] = GetTickCount();
 
 	Iter_Add(rip_Index, id);
 

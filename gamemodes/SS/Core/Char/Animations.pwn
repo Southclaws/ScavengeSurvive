@@ -14,13 +14,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(newkeys == KEY_CROUCH)
 			{
-				tick_CrouchKey[playerid] = tickcount();
+				tick_CrouchKey[playerid] = GetTickCount();
 				SitDownTimer[playerid] = defer SitDown(playerid);
 			}
 
 			if(oldkeys == KEY_CROUCH)
 			{
-				if(GetTickCountDifference(tickcount(), tick_CrouchKey[playerid]) < 250)
+				if(GetTickCountDifference(GetTickCount(), tick_CrouchKey[playerid]) < 250)
 				{
 					stop SitDownTimer[playerid];
 				}

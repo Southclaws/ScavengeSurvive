@@ -84,7 +84,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & KEY_FIRE)
 	{
-		if(GetTickCountDifference(tickcount(), anm_AttackTick[playerid]) < 800)
+		if(GetTickCountDifference(GetTickCount(), anm_AttackTick[playerid]) < 800)
 			return 1;
 
 		new itemid = GetPlayerItem(playerid);
@@ -100,14 +100,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					lib[32],
 					anim[32];
 
-				if(anm_CurrentAnim[playerid] >= anm_Data[anm_MeleeItems[i][anm_animSet]][anm_anims] || GetTickCountDifference(tickcount(), anm_AttackTick[playerid]) > 1000)
+				if(anm_CurrentAnim[playerid] >= anm_Data[anm_MeleeItems[i][anm_animSet]][anm_anims] || GetTickCountDifference(GetTickCount(), anm_AttackTick[playerid]) > 1000)
 					anm_CurrentAnim[playerid] = 0;
 
 				GetAnimationName(anm_Anims[anm_MeleeItems[i][anm_animSet]][anm_CurrentAnim[playerid]][anm_attackIdx], lib, 32, anim, 32);
 				ApplyAnimation(playerid, lib, anim, 4.1, 0, 1, 1, 0, 0, 1);
 
 				anm_CurrentAnim[playerid]++;
-				anm_AttackTick[playerid] = tickcount();
+				anm_AttackTick[playerid] = GetTickCount();
 
 				new
 					Float:px,

@@ -336,7 +336,7 @@ BagInteractionCheck(playerid, itemid)
 		stop bag_PickUpTimer[playerid];
 		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
 
-		bag_PickUpTick[playerid] = tickcount();
+		bag_PickUpTick[playerid] = GetTickCount();
 		bag_CurrentBag[playerid] = itemid;
 
 		return 1;
@@ -347,7 +347,7 @@ BagInteractionCheck(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(tickcount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
 		return 1;
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -369,7 +369,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
-			if(GetTickCountDifference(tickcount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
+			if(GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
 				return 0;
 
 			new itemid = GetPlayerItem(playerid);
@@ -444,7 +444,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		stop bag_OtherPlayerEnter[playerid];
 
-		if(GetTickCountDifference(tickcount(), bag_PickUpTick[playerid]) < 200)
+		if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
 		{
 			if(IsValidItem(bag_CurrentBag[playerid]))
 			{

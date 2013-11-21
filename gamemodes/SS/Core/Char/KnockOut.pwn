@@ -12,11 +12,11 @@ KnockOutPlayer(playerid, duration)
 	if(gPlayerBitData[playerid] & AdminDuty)
 		return 0;
 
-	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
+	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerData[playerid][ply_HitPoints]));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
-	knockout_Tick[playerid] = tickcount();
+	knockout_Tick[playerid] = GetTickCount();
 	knockout_Duration[playerid] = duration;
 	knockout_KnockedOut[playerid] = true;
 
@@ -62,13 +62,13 @@ WakeUpPlayer(playerid)
 
 	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
 
-	knockout_Tick[playerid] = tickcount();
+	knockout_Tick[playerid] = GetTickCount();
 	knockout_KnockedOut[playerid] = false;
 }
 
 KnockOutUpdate(playerid)
 {
-	if(gPlayerBitData[playerid] & Dying || GetTickCountDifference(GetPlayerSpawnTick(playerid), tickcount()) < 1000 || !IsPlayerSpawned(playerid))
+	if(gPlayerBitData[playerid] & Dying || GetTickCountDifference(GetPlayerSpawnTick(playerid), GetTickCount()) < 1000 || !IsPlayerSpawned(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
@@ -90,16 +90,16 @@ KnockOutUpdate(playerid)
 
 			if(animidx != 1207 && animidx != 1018 && animidx != 1001)
 			{
-				KnockOutPlayer(playerid, knockout_Duration[playerid] - GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
+				KnockOutPlayer(playerid, knockout_Duration[playerid] - GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
 				return;
 			}
 		}
 
-		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(tickcount(), knockout_Tick[playerid]));
+		SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
 		SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
 		UpdatePlayerProgressBar(playerid, KnockoutBar);
 
-		if(GetTickCountDifference(tickcount(), knockout_Tick[playerid]) >= knockout_Duration[playerid])
+		if(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]) >= knockout_Duration[playerid])
 			WakeUpPlayer(playerid);
 	}
 	else
@@ -110,7 +110,7 @@ KnockOutUpdate(playerid)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				if(GetTickCountDifference(tickcount(), knockout_Tick[playerid]) > 5000 * gPlayerData[playerid][ply_HitPoints])
+				if(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]) > 5000 * gPlayerData[playerid][ply_HitPoints])
 				{
 					if(gPlayerBitData[playerid] & Bleeding)
 					{
@@ -173,7 +173,7 @@ stock GetPlayerKnockOutRemainder(playerid)
 	if(!knockout_KnockedOut[playerid])
 		return 0;
 
-	return GetTickCountDifference((knockout_Tick[playerid] + knockout_Duration[playerid]), tickcount());
+	return GetTickCountDifference((knockout_Tick[playerid] + knockout_Duration[playerid]), GetTickCount());
 }
 
 stock IsPlayerKnockedOut(playerid)

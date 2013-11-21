@@ -15,17 +15,17 @@ PlayerInfectionUpdate(playerid)
 
 	if(GetPlayerDrunkLevel(playerid) == 0)
 	{
-		if(GetTickCountDifference(tickcount(), infect_LastShake[playerid]) > 500 * gPlayerData[playerid][ply_HitPoints])
+		if(GetTickCountDifference(GetTickCount(), infect_LastShake[playerid]) > 500 * gPlayerData[playerid][ply_HitPoints])
 		{
-			infect_LastShake[playerid] = tickcount();
+			infect_LastShake[playerid] = GetTickCount();
 			SetPlayerDrunkLevel(playerid, 5000);
 		}
 	}
 	else
 	{
-		if(GetTickCountDifference(tickcount(), infect_LastShake[playerid]) > 100 * (120 - gPlayerData[playerid][ply_HitPoints]) || 1 < GetPlayerDrunkLevel(playerid) < 2000)
+		if(GetTickCountDifference(GetTickCount(), infect_LastShake[playerid]) > 100 * (120 - gPlayerData[playerid][ply_HitPoints]) || 1 < GetPlayerDrunkLevel(playerid) < 2000)
 		{
-			infect_LastShake[playerid] = tickcount();
+			infect_LastShake[playerid] = GetTickCount();
 			SetPlayerDrunkLevel(playerid, 0);
 		}
 	}
