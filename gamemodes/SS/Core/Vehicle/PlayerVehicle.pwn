@@ -250,11 +250,11 @@ LoadPlayerVehicle(filename[], prints)
 	return 1;
 }
 
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
+SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 {
 	if(!IsValidVehicleID(vehicleid))
 	{
-		if(print)
+		if(prints)
 			printf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", vehicleid, name);
 
 		return 0;
@@ -262,7 +262,7 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 
 	if(isnull(name))
 	{
-		if(print)
+		if(prints)
 			printf("ERROR: Saving vehicle ID %d for %s. Name is null", vehicleid, name);
 
 		return 0;
@@ -270,19 +270,19 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], print = false)
 
 	if(veh_BitData[vehicleid] & veh_Dead)
 	{
-		if(print)
+		if(prints)
 			printf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", vehicleid, name);
 
 		return 0;
 	}
 
-	SetVehicleOwner(vehicleid, name, print);
-	UpdateVehicleFile(vehicleid, print);
+	SetVehicleOwner(vehicleid, name, prints);
+	UpdateVehicleFile(vehicleid, prints);
 
 	return 1;
 }
 
-UpdateVehicleFile(vehicleid, print)
+UpdateVehicleFile(vehicleid, prints)
 {
 	new
 		File:file,
@@ -307,7 +307,7 @@ UpdateVehicleFile(vehicleid, print)
 	array_data[VEH_CELL_ARMOUR] = 0;
 	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
-	if(print)
+	if(prints)
 		printf("[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
@@ -356,28 +356,38 @@ UpdateVehicleFile(vehicleid, print)
 	return 1;
 }
 
-SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], print = false)
+SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 {
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
-	if(!isnull(veh_Owner[vehicleid]) && strcmp(name, veh_Owner[vehicleid]))
+	new lastvehicleid;
+
+	for(new i = 1; i < MAX_SPAWNED_VEHICLES; i++)
 	{
-		new lastvehicleid;
+		if(i == vehicleid)
+			continue;
 
-		for(new i = 1; i < MAX_SPAWNED_VEHICLES; i++)
+		if(isnull(veh_Owner[i]))
+			continue;
+
+		if(!strcmp(veh_Owner[i], name))
 		{
-			if(!strcmp(veh_Owner[i], name))
-			{
-				lastvehicleid = i;
-				break;
-			}
+			lastvehicleid = i;
+			break;
 		}
+	}
 
-		if(IsValidVehicleID(lastvehicleid))
+	if(IsValidVehicleID(lastvehicleid))
+	{
+		if(!isnull(veh_Owner[vehicleid]) && strcmp(name, veh_Owner[vehicleid]))
 		{
 			veh_Owner[lastvehicleid] = veh_Owner[vehicleid];
-			UpdateVehicleFile(lastvehicleid, print);
+			UpdateVehicleFile(lastvehicleid, prints);
+		}
+		else
+		{
+			veh_Owner[lastvehicleid][0] = EOS;
 		}
 	}
 
@@ -386,7 +396,7 @@ SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], print = false)
 	return 1;
 }
 
-RemovePlayerVehicleFile(vehicleid, print = true)
+RemovePlayerVehicleFile(vehicleid, prints = true)
 {
 	new owner[MAX_PLAYER_NAME];
 
@@ -395,7 +405,7 @@ RemovePlayerVehicleFile(vehicleid, print = true)
 	if(isnull(owner))
 		return 0;
 
-	if(print)
+	if(prints)
 		printf("[DELT] Removing vehicle: %d for player: %s", vehicleid, owner);
 
 	new filename[MAX_PLAYER_NAME + 22];
