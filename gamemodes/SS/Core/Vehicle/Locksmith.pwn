@@ -22,6 +22,9 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		
 		if(itemtype == item_LocksmithKit)
 		{
+			if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
+				return 1;
+
 			CancelPlayerMovement(playerid);
 			StartCraftingKey(playerid, vehicleid);
 		}
@@ -52,7 +55,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			CancelPlayerMovement(playerid);
 
-			if(IsVehicleLocked(vehicleid))
+			if(IsVehicleLocked(vehicleid) && VehicleHasDoors(GetVehicleModel(vehicleid)))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);

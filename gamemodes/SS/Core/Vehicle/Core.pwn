@@ -458,6 +458,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							return 1;
 						}
 
+						if(veh_Data[vehicleid][veh_locked])
+						{
+							ShowActionText(playerid, "Trunk locked", 3000);
+							return 1;
+						}
+
 						new
 							engine,
 							lights,
@@ -751,6 +757,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			SavePlayerVehicle(vehicleid, name);
 		}
 
+		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
+
 		SetVehicleExternalLock(vehicleid, 0);
 		SetVehicleOccupied(vehicleid, false);
 		SetCameraBehindPlayer(playerid);
@@ -776,7 +784,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, GetVehicleModel(GetPlayerVehicleID(playerid)));
 
-		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 		logf("[VEHICLE] %p entered vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
@@ -828,7 +835,7 @@ HideVehicleUI(playerid)
 	PlayerTextDrawHide(playerid, VehicleDoorsText[playerid]);
 }
 
-hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	if(veh_Data[vehicleid][veh_locked])
 	{
@@ -840,6 +847,11 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		veh_Entering[playerid] = vehicleid;
 
 	return 1;
+}
+
+public OnPlayerExitVehicle(playerid, vehicleid)
+{
+	veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 }
 
 public OnPlayerCloseContainer(playerid, containerid)
@@ -934,7 +946,7 @@ VehicleTrunkUpdateSave(playerid)
 
 			if(!strcmp(owner, name))
 			{
-				SavePlayerVehicle(veh_CurrentTrunkVehicle[playerid], name);
+				UpdateVehicleFile(veh_CurrentTrunkVehicle[playerid]);
 				GetVehiclePos(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnX], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnY], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnZ]);
 				GetVehicleZAngle(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnR]);
 			}
@@ -1015,7 +1027,7 @@ public OnVehicleSpawn(vehicleid)
 			DestroyVehicle(vehicleid, 3);
 			Iter_Remove(veh_Index, vehicleid);
 
-			RemovePlayerVehicleFile(vehicleid);
+			RemoveVehicleFileByID(vehicleid);
 		}
 	}
 
@@ -1135,7 +1147,13 @@ stock SetVehicleExternalLock(vehicleid, status)
 	if(!IsValidVehicleID(vehicleid))
 		return 0;
 
-	veh_Data[vehicleid][veh_locked] = status;
+	if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
+	{
+		veh_Data[vehicleid][veh_locked] = false;
+		VehicleDoorsState(vehicleid, false);
+		return 1;
+	}
+
 	veh_Data[vehicleid][veh_locked] = status;
 	VehicleDoorsState(vehicleid, status);
 
