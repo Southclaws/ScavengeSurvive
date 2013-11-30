@@ -2,14 +2,11 @@
 
 
 new
-	chat_MessageStreak	[MAX_PLAYERS],
-	chat_MuteTick		[MAX_PLAYERS];
+	chat_MessageStreak	[MAX_PLAYERS];
 
 
 hook OnPlayerText(playerid, text[])
 {
-	new tmpMuteTime = GetTickCountDifference(GetTickCount(), chat_MuteTick[playerid]);
-
 	if(IsPlayerMuted(playerid))
 	{
 		if(GetPlayerMuteRemainder(playerid) == -1)
@@ -20,27 +17,23 @@ hook OnPlayerText(playerid, text[])
 
 		return 0;
 	}
-
-	if(tmpMuteTime < 30000)
-	{
-		Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
-		return 0;
-	}
-
-	if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
-	{
-		chat_MessageStreak[playerid]++;
-		if(chat_MessageStreak[playerid] == 3)
-		{
-			Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
-			chat_MuteTick[playerid] = GetTickCount();
-			return 0;
-		}
-	}
 	else
 	{
-		if(chat_MessageStreak[playerid] > 0)
-			chat_MessageStreak[playerid]--;
+		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
+		{
+			chat_MessageStreak[playerid]++;
+			if(chat_MessageStreak[playerid] == 3)
+			{
+				TogglePlayerMute(playerid, true, 30000);
+				Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
+				return 0;
+			}
+		}
+		else
+		{
+			if(chat_MessageStreak[playerid] > 0)
+				chat_MessageStreak[playerid]--;
+		}
 	}
 
 	gPlayerData[playerid][ply_LastChatMessageTick] = GetTickCount();
@@ -97,10 +90,10 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 		{
 			if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
 			{
-				SendClientMessage(i, WHITE, line1);
+				SendClientMessage(i, CHAT_LOCAL, line1);
 
 				if(!isnull(line2))
-					SendClientMessage(i, WHITE, line2);
+					SendClientMessage(i, CHAT_LOCAL, line2);
 			}
 		}
 	}
@@ -142,10 +135,10 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 		{
 			if(-0.05 < frequency - gPlayerData[i][ply_RadioFrequency] < 0.05)
 			{
-				SendClientMessage(i, WHITE, line1);
+				SendClientMessage(i, CHAT_RADIO, line1);
 
 				if(!isnull(line2))
-					SendClientMessage(i, WHITE, line2);
+					SendClientMessage(i, CHAT_RADIO, line2);
 			}
 		}
 	}
@@ -157,7 +150,12 @@ CMD:g(playerid, params[])
 {
 	if(IsPlayerMuted(playerid))
 	{
-		Msg(playerid, RED, " >  You are muted");
+		if(GetPlayerMuteRemainder(playerid) == -1)
+			Msg(playerid, RED, " >  You are muted permanently.");
+
+		else
+			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid), "%1h:%1m:%1s"));
+
 		return 7;
 	}
 

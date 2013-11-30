@@ -302,6 +302,8 @@ enum
 
 #define BLACK						0x000000FF
 #define WHITE						0xFFFFFFFF
+#define CHAT_LOCAL					0xADABD1FF
+#define CHAT_RADIO					0xCFD1ABFF
 
 
 // Embedding Colours
@@ -895,10 +897,10 @@ forward SetRestart(seconds);
 
 // ADMINISTRATION TOOLS
 #include "SS/Core/Admin/Commands.pwn"
-#include "SS/Core/Admin/GameMaster.pwn"
-#include "SS/Core/Admin/Moderator.pwn"
-#include "SS/Core/Admin/Administrator.pwn"
-#include "SS/Core/Admin/Dev.pwn"
+#include "SS/Core/Admin/Level1.pwn"
+#include "SS/Core/Admin/Level2.pwn"
+#include "SS/Core/Admin/Level3.pwn"
+#include "SS/Core/Admin/Level4.pwn"
 #include "SS/Core/Admin/Duty.pwn"
 #include "SS/Core/Admin/Ban.pwn"
 #include "SS/Core/Admin/BanCommand.pwn"

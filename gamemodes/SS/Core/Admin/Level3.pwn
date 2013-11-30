@@ -1,18 +1,74 @@
-// 10 commands
+// 6 commands
 
 new gAdminCommandList_Lvl3[] =
 {
-	"/up - move up (Duty only)\n\
+	"/whitelist - add/remove name or turn whitelist on/off\n\
+	/up - move up (Duty only)\n\
 	/ford - move forward (Duty only)\n\
 	/goto - teleport to player (Duty only)\n\
 	/get - teleport player to you (Duty only)\n\
-	/resetpassword\n\
-	/deleteaccount\n\
-	/deleteitems\n\
-	/deletetents\n\
-	/deletedefences\n\
-	/deletesigns"
+	/resetpassword\n"
 };
+
+ACMD:whitelist[3](playerid, params[])
+{
+	new
+		command[7],
+		name[MAX_PLAYER_NAME];
+
+	if(sscanf(params, "s[7]S()[24]", command, name))
+	{
+		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", gWhitelist ? ("on") : ("off"));
+		return 1;
+	}
+
+	if(!strcmp(command, "add", true) && !isnull(name))
+	{
+		new result = AddNameToWhitelist(name);
+
+		if(result == 1)
+			MsgF(playerid, YELLOW, " >  Added "C_BLUE"%s "C_YELLOW"to whitelist.", name);
+
+		if(result == 0)
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is already "C_YELLOW"in the whitelist.");
+
+		if(result == -1)
+			Msg(playerid, RED, " >  An error occurred.");
+	}
+	else if(!strcmp(command, "remove", true) && !isnull(name))
+	{
+		new result = RemoveNameFromWhitelist(name);
+
+		if(result == 1)
+			MsgF(playerid, YELLOW, " >  Removed "C_BLUE"%s "C_YELLOW"from whitelist.", name);
+
+		if(result == 0)
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist.");
+
+		if(result == -1)
+			Msg(playerid, RED, " >  An error occurred.");
+	}
+	else if(!strcmp(command, "on", true))
+	{
+		MsgAdmins(1, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
+		gWhitelist = true;
+	}
+	else if(!strcmp(command, "off", true))
+	{
+		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
+		gWhitelist = false;
+	}
+	else if(!strcmp(command, "?", true))
+	{
+		if(IsNameInWhitelist(name))
+			Msg(playerid, YELLOW, " >  That name "C_BLUE"is "C_YELLOW"in the whitelist.");
+
+		else
+			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist");
+	}
+
+	return 1;
+}
 
 ACMD:up[3](playerid, params[])
 {

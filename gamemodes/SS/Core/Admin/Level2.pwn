@@ -1,15 +1,183 @@
-// 6 commands
+// 9 commands
 
 new gAdminCommandList_Lvl2[] =
 {
-	"/(un)ban - ban/unban a player from the server\n\
+	"/duty - go on admin duty\n\
+	/spec - spectate\n\
+	/unstick - move player up\n\
+	/(un)freeze - freeze/unfreeze player\n\
+	/kick - kick from the server\n\
+	/(un)ban - ban/unban a player from the server\n\
 	/banlist - show a list of banned players\n\
-	/whitelist - add/remove name or turn whitelist on/off\n\
 	/aliases - check aliases\n\
-	/clearchat - clear the chatbox\n\
 	/motd - set the message of the day\n"
 };
 
+new
+	Timer:UnfreezeTimer[MAX_PLAYERS],
+	tick_UnstickUsage[MAX_PLAYERS];
+
+
+ACMD:spec[2](playerid, params[])
+{
+	if(!(gPlayerBitData[playerid] & AdminDuty))
+		return 6;
+
+	if(isnull(params))
+	{
+		ExitSpectateMode(playerid);
+	}
+	else
+	{
+		new targetid = strval(params);
+
+		if(IsPlayerConnected(targetid) && targetid != playerid)
+		{
+			if(gPlayerData[playerid][ply_Admin] == 1)
+			{
+				if(!IsPlayerReported(gPlayerName[targetid]))
+				{
+					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
+					return 1;
+				}
+			}
+
+			EnterSpectateMode(playerid, targetid);
+		}
+	}
+
+	return 1;
+}
+
+ACMD:unstick[2](playerid, params[])
+{
+	if(!(gPlayerBitData[playerid] & AdminDuty))
+		return 6;
+
+	if(GetTickCountDifference(GetTickCount(), tick_UnstickUsage[playerid]) < 1000)
+	{
+		Msg(playerid, RED, " >  You cannot use that command that often.");
+		return 1;
+	}
+
+	new targetid;
+
+	if(sscanf(params, "d", targetid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /unstick [playerid]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(targetid, x, y, z);
+	SetPlayerPos(targetid, x, y, z + 1.0);
+
+	tick_UnstickUsage[playerid] = GetTickCount();
+
+	return 1;
+}
+
+ACMD:freeze[2](playerid, params[])
+{
+	new targetid, delay;
+
+	if(sscanf(params, "dD(0)", targetid, delay))
+		return Msg(playerid, YELLOW, " >  Usage: /freeze [playerid] (seconds)");
+
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+		return 3;
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
+	TogglePlayerControllable(targetid, false);
+	t:gPlayerBitData[targetid]<Frozen>;
+	
+	if(delay > 0)
+	{
+		stop UnfreezeTimer[targetid];
+		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
+		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
+		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
+	}
+	else
+	{
+		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
+		Msg(targetid, YELLOW, " >  Frozen by admin");
+	}
+
+	return 1;
+}
+
+timer CmdDelay_unfreeze[time](playerid, time)
+{
+	#pragma unused time
+
+	TogglePlayerControllable(playerid, true);
+	f:gPlayerBitData[playerid]<Frozen>;
+
+	Msg(playerid, YELLOW, " >  You are now unfrozen.");
+}
+
+ACMD:unfreeze[2](playerid, params[])
+{
+	new targetid;
+
+	if(sscanf(params, "d", targetid))
+		return Msg(playerid, YELLOW, " >  Usage: /unfreeze [playerid]");
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
+	TogglePlayerControllable(targetid, true);
+	f:gPlayerBitData[targetid]<Frozen>;
+	stop UnfreezeTimer[targetid];
+
+	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
+	Msg(targetid, YELLOW, " >  Unfrozen");
+
+	return 1;
+}
+
+ACMD:kick[2](playerid, params[])
+{
+	new
+		targetid,
+		reason[64],
+		highestadmin;
+
+	foreach(new i : Player)
+	{
+		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
+			highestadmin = i;
+	}
+
+	if(sscanf(params, "ds[64]", targetid, reason))
+		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
+
+	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+		return 3;
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
+	if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
+
+	if(playerid == targetid)
+		MsgAllF(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
+
+	KickPlayer(targetid, reason);
+
+	return 1;
+}
 
 ACMD:ban[2](playerid, params[])
 {
@@ -56,14 +224,6 @@ ACMD:ban[2](playerid, params[])
 	return 1;
 }
 
-
-ACMD:banlist[2](playerid, params[])
-{
-	ShowListOfBans(playerid, 0);
-	return 1;
-}
-
-
 ACMD:unban[2](playerid, params[])
 {
 	new name[24];
@@ -78,67 +238,11 @@ ACMD:unban[2](playerid, params[])
 	return 1;
 }
 
-
-ACMD:whitelist[2](playerid, params[])
+ACMD:banlist[2](playerid, params[])
 {
-	new
-		command[7],
-		name[MAX_PLAYER_NAME];
-
-	if(sscanf(params, "s[7]S()[24]", command, name))
-	{
-		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", gWhitelist ? ("on") : ("off"));
-		return 1;
-	}
-
-	if(!strcmp(command, "add", true) && !isnull(name))
-	{
-		new result = AddNameToWhitelist(name);
-
-		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Added "C_BLUE"%s "C_YELLOW"to whitelist.", name);
-
-		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is already "C_YELLOW"in the whitelist.");
-
-		if(result == -1)
-			Msg(playerid, RED, " >  An error occurred.");
-	}
-	else if(!strcmp(command, "remove", true) && !isnull(name))
-	{
-		new result = RemoveNameFromWhitelist(name);
-
-		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Removed "C_BLUE"%s "C_YELLOW"from whitelist.", name);
-
-		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist.");
-
-		if(result == -1)
-			Msg(playerid, RED, " >  An error occurred.");
-	}
-	else if(!strcmp(command, "on", true))
-	{
-		MsgAdmins(1, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
-		gWhitelist = true;
-	}
-	else if(!strcmp(command, "off", true))
-	{
-		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
-		gWhitelist = false;
-	}
-	else if(!strcmp(command, "?", true))
-	{
-		if(IsNameInWhitelist(name))
-			Msg(playerid, YELLOW, " >  That name "C_BLUE"is "C_YELLOW"in the whitelist.");
-
-		else
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist");
-	}
-
+	ShowListOfBans(playerid, 0);
 	return 1;
 }
-
 
 ACMD:aliases[2](playerid, params[])
 {
@@ -248,16 +352,6 @@ ACMD:aliases[2](playerid, params[])
 
 	return 1;
 }
-
-
-ACMD:clearchat[2](playerid, params[])
-{
-	for(new i;i<100;i++)
-		MsgAll(WHITE, " ");
-
-	return 1;
-}
-
 
 ACMD:motd[2](playerid, params[])
 {

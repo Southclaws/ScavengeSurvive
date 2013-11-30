@@ -385,11 +385,15 @@ ACMD:vdelete[4](playerid, params[])
 	new vehicleid = GetPlayerVehicleID(playerid);
 
 	if(!IsValidVehicleID(vehicleid))
+		vehicleid = strval(params);
+
+	if(!IsValidVehicleID(vehicleid))
 	{
 		Msg(playerid, RED, " >  You are not in a vehicle.");
 		return 1;
 	}
 
+	RemoveVehicleFileByID(vehicleid);
 	DestroyVehicle(vehicleid, 0);
 
 	return 1;
@@ -576,6 +580,29 @@ ACMD:dropall[4](playerid, params[])
 	GetPlayerFacingAngle(playerid, r);
 
 	DropItems(playerid, x, y, z, r);
+
+	return 1;
+}
+
+ACMD:vlock[4](playerid, params[])
+{
+	new
+		vehicleid,
+		status;
+
+	if(sscanf(params, "dd", vehicleid, status))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /vlock [vehicleid] [lock status: 0/1]");
+		return 1;
+	}
+
+	if(!IsValidVehicleID(vehicleid))
+	{
+		Msg(playerid, YELLOW, " >  Invalid vehicle ID");
+		return 1;
+	}
+
+	SetVehicleExternalLock(vehicleid, status);
 
 	return 1;
 }
