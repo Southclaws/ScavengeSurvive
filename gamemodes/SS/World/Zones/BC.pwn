@@ -531,25 +531,25 @@ BC_District_Carson()
 	CreateLootSpawn(-215.235107, 1119.215820, 34.648849,	3, 10, loot_Survivor);
 	CreateLootSpawn(53.950950, 1217.278808, 22.652080,		3, 10, loot_Survivor);
 	CreateLootSpawn(-52.753311, 1185.876586, 23.080619,		3, 10, loot_Survivor);
-	CreateLootSpawn(-315.828460, 1134.307739, 18.729959,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-306.247711, 1163.030151, 18.635370,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-374.772430, 1128.111694, 18.664449,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-360.997985, 1198.928222, 18.738489,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-339.770843, 1176.718627, 18.722009,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-305.888977, 1118.847412, 18.727710,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-0.394650, 1126.914672, 18.661199,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-26.157819, 1119.407714, 18.716949,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-50.896221, 1128.907226, 18.713079,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-46.246780, 1051.903808, 18.663030,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-29.474679, 1069.872314, 18.716640,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(6.758530, 1083.380981, 18.719419,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-246.328918, 1185.205078, 18.721729,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-245.698181, 1059.426513, 18.726419,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-239.647338, 997.336547, 18.724409,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-264.953338, 990.264404, 18.676839,		3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-255.290832, 1159.561767, 18.724609,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-245.331588, 1133.955078, 18.640810,	3, 20, loot_CarIndustrial);
-	CreateLootSpawn(-245.723236, 1068.867797, 18.658399,	3, 20, loot_CarIndustrial);
+	CreateLootSpawn(-315.828460, 1134.307739, 18.729959,	3, 20, loot_Industrial);
+	CreateLootSpawn(-306.247711, 1163.030151, 18.635370,	3, 20, loot_Industrial);
+	CreateLootSpawn(-374.772430, 1128.111694, 18.664449,	3, 20, loot_Industrial);
+	CreateLootSpawn(-360.997985, 1198.928222, 18.738489,	3, 20, loot_Industrial);
+	CreateLootSpawn(-339.770843, 1176.718627, 18.722009,	3, 20, loot_Industrial);
+	CreateLootSpawn(-305.888977, 1118.847412, 18.727710,	3, 20, loot_Industrial);
+	CreateLootSpawn(-0.394650, 1126.914672, 18.661199,		3, 20, loot_Industrial);
+	CreateLootSpawn(-26.157819, 1119.407714, 18.716949,		3, 20, loot_Industrial);
+	CreateLootSpawn(-50.896221, 1128.907226, 18.713079,		3, 20, loot_Industrial);
+	CreateLootSpawn(-46.246780, 1051.903808, 18.663030,		3, 20, loot_Industrial);
+	CreateLootSpawn(-29.474679, 1069.872314, 18.716640,		3, 20, loot_Industrial);
+	CreateLootSpawn(6.758530, 1083.380981, 18.719419,		3, 20, loot_Industrial);
+	CreateLootSpawn(-246.328918, 1185.205078, 18.721729,	3, 20, loot_Industrial);
+	CreateLootSpawn(-245.698181, 1059.426513, 18.726419,	3, 20, loot_Industrial);
+	CreateLootSpawn(-239.647338, 997.336547, 18.724409,		3, 20, loot_Industrial);
+	CreateLootSpawn(-264.953338, 990.264404, 18.676839,		3, 20, loot_Industrial);
+	CreateLootSpawn(-255.290832, 1159.561767, 18.724609,	3, 20, loot_Industrial);
+	CreateLootSpawn(-245.331588, 1133.955078, 18.640810,	3, 20, loot_Industrial);
+	CreateLootSpawn(-245.723236, 1068.867797, 18.658399,	3, 20, loot_Industrial);
 
 }
 BC_District_Hunter()
