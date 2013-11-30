@@ -6,9 +6,9 @@
 
 
 new
-	ban_CurrentIndex[MAX_PLAYERS],
-	ban_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME],
-	ban_ItemsOnPage[MAX_PLAYERS];
+	banlist_CurrentIndex[MAX_PLAYERS],
+	banlist_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME],
+	banlist_ItemsOnPage[MAX_PLAYERS];
 
 
 BanPlayer(playerid, reason[], byid, duration)
@@ -104,7 +104,7 @@ ShowListOfBans(playerid, index = 0)
 	stmt_bind_value(gStmt_BanGetList, 1, DB::TYPE_INTEGER, MAX_BANS_PER_PAGE);
 	stmt_bind_result_field(gStmt_BanGetList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME + 1);
 
-	ban_ItemsOnPage[playerid] = 0;
+	banlist_ItemsOnPage[playerid] = 0;
 
 	if(stmt_execute(gStmt_BanGetList))
 	{
@@ -117,7 +117,7 @@ ShowListOfBans(playerid, index = 0)
 		{
 			strcat(list, name);
 			strcat(list, "\n");
-			ban_ItemsOnPage[playerid]++;
+			banlist_ItemsOnPage[playerid]++;
 		}
 
 		stmt_bind_result_field(gStmt_BanGetTotal, 0, DB::TYPE_INTEGER, total);
@@ -133,7 +133,7 @@ ShowListOfBans(playerid, index = 0)
 			strcat(list, ""C_YELLOW"Prev");
 
 		ShowPlayerDialog(playerid, d_BanList, DIALOG_STYLE_LIST, title, list, "Open", "Close");
-		ban_CurrentIndex[playerid] = index;
+		banlist_CurrentIndex[playerid] = index;
 
 		return 1;
 	}
@@ -168,7 +168,7 @@ DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
 
 		ShowPlayerDialog(playerid, d_BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Un-ban", "Back");
 
-		ban_CurrentName[playerid] = name;
+		banlist_CurrentName[playerid] = name;
 
 		return 1;
 	}
@@ -182,13 +182,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(listitem == ban_ItemsOnPage[playerid])
+			if(listitem == banlist_ItemsOnPage[playerid])
 			{
-				ShowListOfBans(playerid, ban_CurrentIndex[playerid] + MAX_BANS_PER_PAGE);
+				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] + MAX_BANS_PER_PAGE);
 			}
-			else if(listitem == ban_ItemsOnPage[playerid] + 1)
+			else if(listitem == banlist_ItemsOnPage[playerid] + 1)
 			{
-				ShowListOfBans(playerid, ban_CurrentIndex[playerid] - MAX_BANS_PER_PAGE);
+				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] - MAX_BANS_PER_PAGE);
 			}
 			else
 			{
@@ -202,9 +202,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	if(dialogid == d_BanInfo)
 	{
 		if(response)
-			UnBanPlayer(ban_CurrentName[playerid]);
+			UnBanPlayer(banlist_CurrentName[playerid]);
 
-		ShowListOfBans(playerid, ban_CurrentIndex[playerid]);
+		ShowListOfBans(playerid, banlist_CurrentIndex[playerid]);
 	}
 
 	return 1;
@@ -232,13 +232,18 @@ BanCheck(playerid)
 
 		if(banned)
 		{
-			if(gettime() > (timestamp + duration))
+			if(duration > 0)
 			{
-				new name[MAX_PLAYER_NAME];
-				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-				UnBanPlayer(name);
+				if(gettime() > (timestamp + duration))
+				{
+					new name[MAX_PLAYER_NAME];
+					GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+					UnBanPlayer(name);
 
-				return 0;
+					MsgF(playerid, YELLOW, " >  Your ban from %s has been lifted. Do not break the rules again.", TimestampToDateTime(timestamp));
+
+					return 0;
+				}
 			}
 
 			new string[256];
