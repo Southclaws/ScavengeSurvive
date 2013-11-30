@@ -17,10 +17,10 @@ ShowLightList(playerid, vehicleid)
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
-	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_BIKE)
+	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_MOTORBIKE)
 	{
 		gLightData[playerid][0] = lights & 0b0001;
-		gLightData[playerid][1] = lights & 0b0010;
+		gLightData[playerid][1] = 1;//lights & 0b0010; // Rear lights never break
 
 		if(gLightData[playerid][0]) // back
 			strcat(str, "{FF0000}Back\n");
