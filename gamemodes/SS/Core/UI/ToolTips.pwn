@@ -78,7 +78,7 @@ forward tip_OnPlayerDropItem(playerid, itemid);
 public OnLoad()
 {
 	DefineItemToolTip(item_Parachute,		"Press "KEYTEXT_PUT_AWAY" to equip, you can't wear this while you are wearing a bag");
-	DefineItemToolTip(item_Medkit,			"You can heal yourself or others with this");
+	DefineItemToolTip(item_Medkit,			"You can stop bleeding and prevent knockouts/darkness on yourself or other players with this");
 	DefineItemToolTip(item_HardDrive,		"Used for crafting and some puzzles");
 	DefineItemToolTip(item_Key,				"Used in a puzzle");
 	DefineItemToolTip(item_FireworkBox,		"Use a lighter with this to see some fireworks! Or craft explosives with it");
@@ -91,7 +91,7 @@ public OnLoad()
 	DefineItemToolTip(item_Bottle,			"Can be drunk for food value");
 	DefineItemToolTip(item_Sign,			"Press "KEYTEXT_INTERACT" to place and write on");
 	DefineItemToolTip(item_Armour,			"Press "KEYTEXT_INTERACT" to wear for protection");
-	DefineItemToolTip(item_Bandage,			"You can heal yourself or others with this");
+	DefineItemToolTip(item_Bandage,			"You can bandage wounds and stop bleeding on yourself or other players with this");
 	DefineItemToolTip(item_FishRod,			"This has no use yet");
 	DefineItemToolTip(item_Wrench,			"Use this to repair vehicles by standing at the front and holding "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Crowbar,			"Use this to break defences and tents or open locked car doors and trunks");

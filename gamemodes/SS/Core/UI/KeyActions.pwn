@@ -96,6 +96,10 @@ ptask ToolTipUpdate[1000](playerid)
 		}
 
 		AddToolTipText(playerid, KEYTEXT_INVENTORY, "Open inventory");
+
+		if(IsValidItem(GetPlayerBagItem(playerid)))
+			AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "Remove bag");
+
 		ShowPlayerToolTip(playerid);
 
 		return;
