@@ -580,9 +580,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 		gPlayerData[playerid][ply_CurrentVehicle] = GetPlayerVehicleID(playerid);
 
-	if(oldstate == PLAYER_STATE_DRIVER || oldstate == PLAYER_STATE_PASSENGER)
-		gPlayerData[playerid][ply_ExitVehicleTick] = GetTickCount();
-
 	return 1;
 }
 
@@ -614,6 +611,11 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	}
 
 	return 1;
+}
+
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	gPlayerData[playerid][ply_ExitVehicleTick] = GetTickCount();
 }
 
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

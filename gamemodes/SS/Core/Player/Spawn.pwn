@@ -192,3 +192,27 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
 }
+
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+IsAtDefaultPos(Float:x, Float:y, Float:z)
+{
+	if(-5.0 < (x - DEFAULT_POS_X) < 5.0 && -5.0 < (y - DEFAULT_POS_Y) < 5.0 && -5.0 < (z - DEFAULT_POS_Z) < 5.0)
+		return 1;
+
+	return 0;
+}
+
+IsAtConnectionPos(Float:x, Float:y, Float:z)
+{
+	if(x == 1133.05 && y == -2038.40 && z == 69.09)
+		return 1;
+
+	return 0;
+}

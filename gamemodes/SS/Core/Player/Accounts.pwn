@@ -407,6 +407,8 @@ CheckForExtraAccounts(playerid)
 		adminlevel,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
+	adminlevel = GetPlayerAdminLevel(playerid);
+
 	GetAccountAliasesByIP(gPlayerName[playerid], list, count, 6, adminlevel);
 
 	if(count == 0)
@@ -498,7 +500,7 @@ Logout(playerid)
 				DestroyVehicle(gPlayerData[playerid][ply_CurrentVehicle]);
 
 			else
-				SavePlayerVehicle(gPlayerData[playerid][ply_CurrentVehicle], gPlayerName[playerid]);
+				UpdateVehicleFile(gPlayerData[playerid][ply_CurrentVehicle]);
 		}
 	}
 
@@ -516,6 +518,12 @@ SavePlayerData(playerid)
 
 	GetPlayerPos(playerid, gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
 	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
+
+	if(IsAtDefaultPos(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
+		return 0;
+
+	if(IsAtConnectionPos(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
+		return 0;
 
 	SaveBlockAreaCheck(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]);
 

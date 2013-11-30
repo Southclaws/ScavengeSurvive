@@ -1,6 +1,9 @@
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
-	if(gPlayerBitData[playerid] & AdminDuty)
+	if(IsPlayerOnAdminDuty(playerid))
+		return 0;
+
+	if(!IsPlayerSpawned(playerid))
 		return 0;
 
 	if(issuerid == INVALID_PLAYER_ID)
@@ -69,7 +72,10 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 
 public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
-	if(gPlayerBitData[playerid] & AdminDuty)
+	if(IsPlayerOnAdminDuty(playerid))
+		return 0;
+
+	if(!IsPlayerSpawned(playerid))
 		return 0;
 
 	GetPlayerName(playerid, gPlayerData[damagedid][ply_LastHitBy], MAX_PLAYER_NAME);
@@ -82,7 +88,16 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 
 DamagePlayer(playerid, targetid, weaponid, type = 0)
 {
-	if(gPlayerBitData[playerid] & AdminDuty)
+	if(IsPlayerOnAdminDuty(playerid))
+		return 0;
+
+	if(IsPlayerOnAdminDuty(targetid))
+		return 0;
+
+	if(!IsPlayerSpawned(playerid))
+		return 0;
+
+	if(!IsPlayerSpawned(targetid))
 		return 0;
 
 	if(weaponid == WEAPON_DEAGLE)
