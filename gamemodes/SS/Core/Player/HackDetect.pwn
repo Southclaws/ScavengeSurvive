@@ -593,7 +593,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 
 	distance = Distance(x, y, z, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 
-	if(distance == 0xFFC00000)
+	if(IsNaN(distance))
 	{
 		RespawnVehicle(vehicleid);
 		return 1;
@@ -684,20 +684,4 @@ VehicleModCheck(playerid)
 	{
 		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1, 0);
 	}
-}
-
-
-/*==============================================================================
-
-	Interface
-
-==============================================================================*/
-
-
-IsAtDefaultPos(Float:x, Float:y, Float:z)
-{
-	if(-5.0 < (x - DEFAULT_POS_X) < 5.0 && -5.0 < (y - DEFAULT_POS_Y) < 5.0 && -5.0 < (z - DEFAULT_POS_Z) < 5.0)
-		return 1;
-
-	return 0;
 }

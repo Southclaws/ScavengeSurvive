@@ -130,3 +130,13 @@ stock GetDigits(const value, strDig[])
 	for(new i; strDig{i} != EOS; i++)
 		strDig{i} -= '0';
 }
+
+
+/*
+	Checks if a variable is not a number
+	Credits - Y_Less (http://forum.sa-mp.com/showthread.php?t=57018)
+*/
+stock IsNaN(Float:number)
+{
+    return !(number <= 0 || number > 0);
+}
