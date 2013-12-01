@@ -83,7 +83,7 @@ SupplyCrateLand()
 {
 	FillContainerWithLoot(
 		CreateContainer("Supply Crate", 16, sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0),
-		8 + random(9), loot_Military);
+		8 + random(9), loot_SupplyCrate);
 
 	DestroyDynamicObject(sup_ObjPara);
 	sup_ObjCrate1 = INVALID_OBJECT_ID;

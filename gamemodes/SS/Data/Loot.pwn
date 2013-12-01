@@ -306,6 +306,21 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_Ammo357,						7);
 	AddItemToLootIndex(loot_Survivor,		item_CanDrink,						90);
 
+	AddItemToLootIndex(loot_SupplyCrate,	item_Medkit,						40);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Bandage,						50);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Backpack,						60);
+	AddItemToLootIndex(loot_SupplyCrate,	item_GasCan,						50);
+	AddItemToLootIndex(loot_SupplyCrate,	item_GasMask,						30);
+	AddItemToLootIndex(loot_SupplyCrate,	item_FireLighter,					70);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Meat,							10);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Pills,							40);
+	AddItemToLootIndex(loot_SupplyCrate,	item_CanDrink,						80);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Burger,						30);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Ammo9mm,						20);
+	AddItemToLootIndex(loot_SupplyCrate,	item_AmmoBuck,						16);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Ammo556,						8);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Ammo357,						10);
+
 
 	return CallLocalFunction("loot_OnLoad", "");
 }

@@ -1,4 +1,4 @@
-#define MAX_LOOT_INDEX			(11)
+#define MAX_LOOT_INDEX			(12)
 #define MAX_LOOT_INDEX_ITEMS	(256)
 
 
@@ -48,13 +48,13 @@ GenerateLoot(index, &ItemType:itemtype, &exdata)
 {
 	if(index > loot_IndexUpper)
 	{
-		print("ERROR: GenerateLoot: parameter 'index' exceeds loot index upper bound.");
+		printf("ERROR: GenerateLoot: index (%d) exceeds loot index upper bound of %d.", index, loot_IndexUpper);
 		return 0;		
 	}
 
 	if(loot_IndexSize[index] == 0)
 	{
-		print("ERROR: Specified index is empty.");
+		print("ERROR: Specified index (%d) is empty.");
 		return 0;
 	}
 

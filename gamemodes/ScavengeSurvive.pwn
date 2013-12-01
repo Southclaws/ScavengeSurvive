@@ -588,7 +588,8 @@ enum
 	loot_CarIndustrial,
 	loot_CarPolice,
 	loot_CarMilitary,
-	loot_Survivor
+	loot_Survivor,
+	loot_SupplyCrate
 }
 
 // ITEM TYPES
@@ -736,7 +737,8 @@ ItemType:		item_FlareGun		= INVALID_ITEM_TYPE,
 ItemType:		item_PetrolBomb		= INVALID_ITEM_TYPE,
 ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
 ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE,
-ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE;
+ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE,
+ItemType:		item_XmasHat		= INVALID_ITEM_TYPE;
 
 
 // UI HANDLES
@@ -954,6 +956,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/EmpPhoneBomb.pwn"
 #include "SS/Core/Item/GasMask.pwn"
 #include "SS/Core/Item/HockeyMask.pwn"
+#include "SS/Core/Item/XmasHat.pwn"
 
 
 // POST-CODE
@@ -1357,6 +1360,7 @@ public OnGameModeInit()
 	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
 	item_LargeBackpack	= DefineItemType("Large Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
 	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
+	item_XmasHat		= DefineItemType("Christmas Hat",		19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
@@ -1486,6 +1490,7 @@ public OnGameModeInit()
 	DefineLootIndex(loot_CarPolice);
 	DefineLootIndex(loot_CarMilitary);
 	DefineLootIndex(loot_Survivor);
+	DefineLootIndex(loot_SupplyCrate);
 
 
 	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);
