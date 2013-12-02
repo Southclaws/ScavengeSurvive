@@ -12,4 +12,6 @@
 #include "ss/World/Puzzles/MtChill.pwn"
 #include "ss/World/Puzzles/CodeHunt.pwn"
 
+#include "ss/World/Xmas.pwn"
+
 new gMapName[17] = 	"San Androcalypse";
