@@ -241,6 +241,7 @@ BanCheck(playerid)
 					UnBanPlayer(name);
 
 					MsgF(playerid, YELLOW, " >  Your ban from %s has been lifted. Do not break the rules again.", TimestampToDateTime(timestamp));
+					logf("[UNBAN] Ban lifted automatically for %s", name);
 
 					return 0;
 				}

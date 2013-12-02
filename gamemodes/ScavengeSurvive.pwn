@@ -466,6 +466,9 @@ DBStatement:	gStmt_AccountSetGpci,
 DBStatement:	gStmt_AccountSetLastLog,
 DBStatement:	gStmt_AccountSetSpawnTime,
 DBStatement:	gStmt_AccountSetTotalSpawns,
+DBStatement:	gStmt_AccountGetIpv4,
+DBStatement:	gStmt_AccountGetPass,
+DBStatement:	gStmt_AccountGetHash,
 DBStatement:	gStmt_AccountGetAliasesIp,
 DBStatement:	gStmt_AccountGetAliasesPass,
 DBStatement:	gStmt_AccountGetAliasesHash,
@@ -1167,9 +1170,12 @@ public OnGameModeInit()
 	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesIp	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesPass	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetIpv4		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountGetPass		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_PASS" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountGetHash		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesIp	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesPass	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
 	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?, ?)");

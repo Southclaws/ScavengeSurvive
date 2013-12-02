@@ -260,18 +260,17 @@ ACMD:aliases[2](playerid, params[])
 	{
 		new targetid = strval(name);
 
-		if(!IsPlayerConnected(targetid))
-			return Msg(playerid,RED, " >  Invalid ID");
+		if(IsPlayerConnected(targetid))
+			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
-		GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+		else
+			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
 	}
-	else
+
+	if(!AccountExists(name))
 	{
-		if(!AccountExists(name))
-		{
-			Msg(playerid, YELLOW, " >  That account does not exist.");
-			return 1;
-		}
+		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
+		return 1;
 	}
 
 	if(GetAdminLevelByName(name) > gPlayerData[playerid][ply_Admin])
@@ -300,15 +299,11 @@ ACMD:aliases[2](playerid, params[])
 	}
 	else if(!strcmp(type, "bypass", true))
 	{
-		// ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
-		Msg(playerid, YELLOW, " >  Lookup type unavailable.");
-		return 1;
+		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
 	}
 	else if(!strcmp(type, "byhash", true))
 	{
-		// ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
-		Msg(playerid, YELLOW, " >  Lookup type unavailable.");
-		return 1;
+		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
 	}
 	else
 	{
