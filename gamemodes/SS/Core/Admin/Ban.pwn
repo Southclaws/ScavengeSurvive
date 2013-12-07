@@ -84,8 +84,23 @@ BanPlayerByName(name[], reason[], byid, duration)
 	return 0;
 }
 
+UpdateBanInfo(name[], reason[], duration)
+{
+	stmt_bind_value(gStmt_BanUpdateInfo, 0, DB::TYPE_STRING, reason, MAX_BAN_REASON);
+	stmt_bind_value(gStmt_BanUpdateInfo, 1, DB::TYPE_INTEGER, duration);
+	stmt_bind_value(gStmt_BanUpdateInfo, 2, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	if(stmt_execute(gStmt_BanUpdateInfo))
+		return 1;
+	
+	return 0;
+}
+
 UnBanPlayer(name[])
 {
+	if(!IsPlayerBanned(name))
+		return 0;
+
 	stmt_bind_value(gStmt_BanDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(stmt_execute(gStmt_BanDelete))

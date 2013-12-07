@@ -27,7 +27,7 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define DB_DEBUG					false
-#define DB_MAX_STATEMENTS			(52)
+#define DB_MAX_STATEMENTS			(54)
 #define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
@@ -483,6 +483,7 @@ DBStatement:	gStmt_BanGetTotal,
 DBStatement:	gStmt_BanGetInfo,
 DBStatement:	gStmt_BanNameCheck,
 DBStatement:	gStmt_BanUpdateIpv4,
+DBStatement:	gStmt_BanUpdateInfo,
 
 // ACCOUNTS_TABLE_REPORTS
 DBStatement:	gStmt_ReportInsert,
@@ -1185,7 +1186,8 @@ public OnGameModeInit()
 	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS"");
 	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
 	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
+	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
+	gStmt_BanUpdateInfo			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_REASON" = ?, "FIELD_BANS_DURATION" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
 
 	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");
 	gStmt_ReportDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
@@ -1216,7 +1218,7 @@ public OnGameModeInit()
 	gStmt_SprayTagExists		= db_prepare(gWorld, "SELECT COUNT(*) FROM "WORLD_TABLE_SPRAYTAG" WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
 	gStmt_SprayTagInsert		= db_prepare(gWorld, "INSERT INTO "WORLD_TABLE_SPRAYTAG" VALUES(?, ?, ?, ?, ?, ?, ?)");
 	gStmt_SprayTagLoad			= db_prepare(gWorld, "SELECT * FROM "WORLD_TABLE_SPRAYTAG"");
-	gStmt_SprayTagSave			= db_prepare(gWorld, "UPDATE "WORLD_TABLE_SPRAYTAG" SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ? ");
+	gStmt_SprayTagSave			= db_prepare(gWorld, "UPDATE "WORLD_TABLE_SPRAYTAG" SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
 
 	LoadSettings();
 

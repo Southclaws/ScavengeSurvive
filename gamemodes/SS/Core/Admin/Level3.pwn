@@ -7,6 +7,7 @@ new gAdminCommandList_Lvl3[] =
 	/ford - move forward (Duty only)\n\
 	/goto - teleport to player (Duty only)\n\
 	/get - teleport player to you (Duty only)\n\
+	/vtp - teleport to vehicle\n\
 	/resetpassword\n"
 };
 
@@ -228,6 +229,27 @@ TeleportPlayerToPlayer(playerid, targetid)
 
 	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", playerid);
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
+}
+
+ACMD:vtp[3](playerid, params[])
+{
+	new id = strval(params);
+
+	if(IsValidVehicle(id))
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(id, x, y, z);
+		PutPlayerInVehicle(playerid, id, 0);
+		SetVehiclePos(id, x, y, z + 2.0);
+
+		return 1;
+	}
+
+	return 1;
 }
 
 ACMD:resetpassword[3](playerid, params[])

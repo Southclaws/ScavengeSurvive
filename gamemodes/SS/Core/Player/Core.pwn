@@ -665,6 +665,13 @@ stock E_PLAYER_BIT_DATA:GetPlayerDataBitmask(playerid)
 }
 
 // HasAccount
+stock IsPlayerRegistered(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return _:(gPlayerBitData[playerid] & HasAccount);
+}
 // IsVip
 // LoggedIn
 // LoadedData

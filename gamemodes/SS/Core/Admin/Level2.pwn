@@ -6,11 +6,12 @@ new gAdminCommandList_Lvl2[] =
 	/spec - spectate\n\
 	/unstick - move player up\n\
 	/(un)freeze - freeze/unfreeze player\n\
-	/kick - kick from the server\n\
-	/(un)ban - ban/unban a player from the server\n\
-	/banlist - show a list of banned players\n\
+	/kick - kick player\n\
+	/(un)ban - ban/unban player\n\
+	/banlist - show list of bans\n\
+	/isbanned - check if banned\n\
 	/aliases - check aliases\n\
-	/motd - set the message of the day\n"
+	/motd - set message of the day\n"
 };
 
 new
@@ -181,45 +182,37 @@ ACMD:kick[2](playerid, params[])
 
 ACMD:ban[2](playerid, params[])
 {
-	new
-		id = -1,
-		playername[MAX_PLAYER_NAME],
-		reason[64];
+	new name[MAX_PLAYER_NAME];
 
-	if(!sscanf(params, "d", id))
+	if(sscanf(params, "s[24]", name))
 	{
-		if(gPlayerData[id][ply_Admin] > 0)
-			return 2;
-
-		if(!IsPlayerConnected(id))
-			return 4;
-
-		if(playerid == id)
-			return Msg(playerid, RED, " >  You typed your own player ID and nearly banned yourself! Now that would be embarrassing!");
-
-		MsgF(playerid, YELLOW, " >  Preparing ban for %P", id);
-
-		BanPlayerByCommand(playerid, id);
-
+		Msg(playerid, YELLOW, " >  Usage: /ban [playerid/name]");
 		return 1;
 	}
 
-	if(!sscanf(params, "s[24]s[64]", playername, reason))
+	if(isnumeric(name))
 	{
-		if(strlen(reason) > 64)
-			return Msg(playerid, RED, " >  Reason must be below 64 characters");
+		new targetid = strval(name);
 
-		if(GetAdminLevelByName(playername) > 0)
-			return 2;
+		if(IsPlayerConnected(targetid))
+			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
-		MsgF(playerid, YELLOW, " >  Banned "C_ORANGE"%s"C_YELLOW" reason: "C_BLUE"%s", playername, reason);
+		else
+			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+	}
 
-		BanPlayerByName(playername, reason, playerid, 0);
-
+	if(!AccountExists(name))
+	{
+		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
 		return 1;
 	}
 
-	Msg(playerid, YELLOW, " >  Usage: /ban [playerid] [reason]");
+	if(GetAdminLevelByName(name) > 0)
+		return 2;
+
+	BanAndEnterInfo(playerid, name);
+
+	MsgF(playerid, YELLOW, " >  Preparing ban for %s", name);
 
 	return 1;
 }
@@ -231,9 +224,11 @@ ACMD:unban[2](playerid, params[])
 	if(sscanf(params, "s[24]", name))
 		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
 
-	UnBanPlayer(name);
-	
-	MsgF(playerid, YELLOW, " >  Unbanned "C_BLUE"%s"C_YELLOW".", name);
+	if(UnBanPlayer(name))
+		MsgF(playerid, YELLOW, " >  Unbanned "C_BLUE"%s"C_YELLOW".", name);
+
+	else
+		MsgF(playerid, YELLOW, " >  Player '%s' is not banned.");
 
 	return 1;
 }
@@ -241,6 +236,23 @@ ACMD:unban[2](playerid, params[])
 ACMD:banlist[2](playerid, params[])
 {
 	ShowListOfBans(playerid, 0);
+	return 1;
+}
+
+ACMD:isbanned[2](playerid, params[])
+{
+	if(!(3 < strlen(params) < MAX_PLAYER_NAME))
+	{
+		MsgF(playerid, RED, " >  Invalid player name '%s'.", params);
+		return 1;
+	}
+
+	if(IsPlayerBanned(params))
+		Msg(playerid, YELLOW, " >  Player '%s' "C_BLUE"is "C_YELLOW"banned.");
+
+	else
+		Msg(playerid, YELLOW, " >  Player '%s' "C_BLUE"isn't "C_YELLOW"banned.");
+
 	return 1;
 }
 

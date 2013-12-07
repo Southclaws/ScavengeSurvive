@@ -389,6 +389,9 @@ stock GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
 
 CheckForExtraAccounts(playerid)
 {
+	if(IsPlayerRegistered(playerid))
+		return 0;
+
 	new
 		list[6][MAX_PLAYER_NAME],
 		count,
