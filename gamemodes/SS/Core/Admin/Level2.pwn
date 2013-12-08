@@ -248,10 +248,10 @@ ACMD:isbanned[2](playerid, params[])
 	}
 
 	if(IsPlayerBanned(params))
-		Msg(playerid, YELLOW, " >  Player '%s' "C_BLUE"is "C_YELLOW"banned.");
+		MsgF(playerid, YELLOW, " >  Player '%s' "C_BLUE"is "C_YELLOW"banned.", params);
 
 	else
-		Msg(playerid, YELLOW, " >  Player '%s' "C_BLUE"isn't "C_YELLOW"banned.");
+		MsgF(playerid, YELLOW, " >  Player '%s' "C_BLUE"isn't "C_YELLOW"banned.", params);
 
 	return 1;
 }
