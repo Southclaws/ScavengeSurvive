@@ -148,6 +148,12 @@ LoadMap(filename[])
 
 	while(fread(file, str))
 	{
+		if(str[0] == ';')
+		{
+			line++;
+			continue;
+		}
+
 		if(!loadedmeta)
 		{
 			if(!sscanf(str, "p<,>ddd", world[0], interior[0], streamdist))
