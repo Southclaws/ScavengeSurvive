@@ -261,7 +261,7 @@ Login(playerid)
 	SpawnPlayer(playerid);
 }
 
-GetAccountAliasesByIP(name[], list[][], &count, max, &adminlevel)
+GetAccountAliasesByIP(name[], list[][], &count, max, &adminlevel, &isbanned)
 {
 	new
 		ip,
@@ -285,23 +285,24 @@ GetAccountAliasesByIP(name[], list[][], &count, max, &adminlevel)
 
 	while(stmt_fetch_row(gStmt_AccountGetAliasesIp))
 	{
-		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
+		if(count < max)
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
 
-		count++;
+		if(IsPlayerBanned(tempname))
+			isbanned = true;
 
-		if(count == max)
-			break;
+		count++;
 	}
 
 	return 1;
 }
 
-stock GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
+stock GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel, &isbanned)
 {
 	new
 		pass[129],
@@ -325,23 +326,24 @@ stock GetAccountAliasesByPass(name[], list[][], &count, max, &adminlevel)
 
 	while(stmt_fetch_row(gStmt_AccountGetAliasesPass))
 	{
-		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
+		if(count < max)
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
 
-		count++;
+		if(IsPlayerBanned(tempname))
+			isbanned = true;
 
-		if(count == max)
-			break;
+		count++;
 	}
 
 	return 1;
 }
 
-stock GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
+stock GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel, &isbanned)
 {
 	new
 		serial[41],
@@ -371,17 +373,18 @@ stock GetAccountAliasesByHash(name[], list[][], &count, max, &adminlevel)
 		if(serial[0] == '0')
 			continue;
 
-		strcat(list[count], tempname, max * MAX_PLAYER_NAME);
+		if(count < max)
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
 
-		count++;
+		if(IsPlayerBanned(tempname))
+			isbanned = true;
 
-		if(count == max)
-			break;
+		count++;
 	}
 
 	return 1;
@@ -396,11 +399,12 @@ CheckForExtraAccounts(playerid)
 		list[6][MAX_PLAYER_NAME],
 		count,
 		adminlevel,
+		isbanned,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
 	adminlevel = GetPlayerAdminLevel(playerid);
 
-	GetAccountAliasesByIP(gPlayerName[playerid], list, count, 6, adminlevel);
+	GetAccountAliasesByIP(gPlayerName[playerid], list, count, 6, adminlevel, isbanned);
 
 	if(count == 0)
 		return 0;
@@ -419,6 +423,9 @@ CheckForExtraAccounts(playerid)
 
 	if(adminlevel < 3)
 		MsgAllF(YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
+
+	if(isbanned)
+		MsgAdminsF(1, RED, " >  Warning: One or more of those aliases is banned!");
 
 	return 1;
 }

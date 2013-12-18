@@ -303,19 +303,20 @@ ACMD:aliases[2](playerid, params[])
 		list[6][MAX_PLAYER_NAME],
 		count,
 		adminlevel,
+		isbanned,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
 	if(!strcmp(type, "byip", true))
 	{
-		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel, isbanned);
 	}
 	else if(!strcmp(type, "bypass", true))
 	{
-		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel, isbanned);
 	}
 	else if(!strcmp(type, "byhash", true))
 	{
-		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel, isbanned);
 	}
 	else
 	{
@@ -344,6 +345,9 @@ ACMD:aliases[2](playerid, params[])
 	{
 		for(new i; i < count; i++)
 		{
+			if(i >= 6)
+				break;
+
 			strcat(string, list[i]);
 
 			if(i < count - 1)
@@ -352,10 +356,16 @@ ACMD:aliases[2](playerid, params[])
 	}
 
 	if(adminlevel <= gPlayerData[playerid][ply_Admin])
+	{
 		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
-
+		
+		if(isbanned)
+			Msg(playerid, RED, " >  Warning: One of those aliases is banned.");
+	}
 	else
+	{
 		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+	}
 
 	return 1;
 }
