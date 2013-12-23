@@ -38,13 +38,26 @@ LoadSettings()
 		{
 			if(i >= MAX_RULE)
 			{
-				print("ERROR: MAX_RULE limit reached while loading infomsgs from '"SETTINGS_FILE"'.");
+				print("ERROR: MAX_RULE limit reached while loading rules from '"SETTINGS_FILE"'.");
 				break;
 			}
 
 			format(tmp, sizeof(tmp), "server/rules/%d", i);
 			strcat(gRuleList[i], dj(SETTINGS_FILE, tmp));
 			gTotalRules++;
+		}
+
+		for(new i, j = djCount(SETTINGS_FILE, "server/staff"); i < j; i++)
+		{
+			if(i >= MAX_STAFF)
+			{
+				print("ERROR: MAX_STAFF limit reached while loading staff from '"SETTINGS_FILE"'.");
+				break;
+			}
+
+			format(tmp, sizeof(tmp), "server/staff/%d", i);
+			strcat(gStaffList[i], dj(SETTINGS_FILE, tmp));
+			gTotalStaff++;
 		}
 
 		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
@@ -81,6 +94,10 @@ LoadSettings()
 		gRuleList[1]			= "(Rule 2) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
 		gRuleList[2]			= "(Rule 3) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
 		gTotalRules				= 3;
+		gStaffList[0]			= "(Staff 1)";
+		gStaffList[1]			= "(Staff 2)";
+		gStaffList[2]			= "(Staff 3)";
+		gTotalStaff				= 3;
 		gWhitelist				= false;
 		gInfoMessageInterval	= 5;
 		gPerformFileCheck		= false;
@@ -102,9 +119,12 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[0]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[1]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
-		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[0]);
-		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[1]);
-		djAppend(SETTINGS_FILE, "server/rules", gInfoMessage[2]);
+		djAppend(SETTINGS_FILE, "server/rules", gRuleList[0]);
+		djAppend(SETTINGS_FILE, "server/rules", gRuleList[1]);
+		djAppend(SETTINGS_FILE, "server/rules", gRuleList[2]);
+		djAppend(SETTINGS_FILE, "server/staff", gStaffList[0]);
+		djAppend(SETTINGS_FILE, "server/staff", gStaffList[1]);
+		djAppend(SETTINGS_FILE, "server/staff", gStaffList[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
@@ -134,6 +154,9 @@ LoadSettings()
 
 	for(new i; i < gTotalRules; i++)
 		printf(" Rule%d: %s", i, gRuleList[i]);
+
+	for(new i; i < gTotalStaff; i++)
+		printf(" Staff%d: %s", i, gStaffList[i]);
 
 	printf(" Whitelist: %d", gWhitelist);
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);

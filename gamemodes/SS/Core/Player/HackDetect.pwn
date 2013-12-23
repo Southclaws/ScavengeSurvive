@@ -465,7 +465,7 @@ CameraDistanceCheck(playerid)
 
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-			format(reason, sizeof(reason), "Camera distance from player %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
+			format(reason, sizeof(reason), " >  %s(%d) camera distance %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", name, playerid, distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, vx, vy, vz);
 			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
 			MsgAdmins(3, YELLOW, reason);

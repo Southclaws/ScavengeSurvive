@@ -120,6 +120,9 @@ FinishEating(playerid)
 {
 	new itemid = GetPlayerItem(playerid);
 
+	if(!IsItemTypeFood(GetItemType(itemid)))
+		return;
+
 	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid))
 	{
 		StopEating(playerid);

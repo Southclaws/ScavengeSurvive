@@ -98,6 +98,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_INFO_MESSAGE_LEN		(128)
 #define MAX_RULE					(8)
 #define MAX_RULE_LEN				(128)
+#define MAX_STAFF					(8)
+#define MAX_STAFF_LEN				(24)
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
@@ -529,6 +531,7 @@ new
 		gGameModeName[32],
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
+		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
 bool:	gWhitelist,
 		gInfoMessageInterval,
 		gPerformFileCheck,
@@ -549,6 +552,7 @@ bool:	gServerRestarting,
 		gBigString[MAX_PLAYERS][2048],
 		gTotalInfoMessage,
 		gTotalRules,
+		gTotalStaff,
 		gCurrentInfoMessage;
 
 // SKINS/CLOTHES
@@ -856,7 +860,8 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/WelcomeMessage.pwn"
 #include "SS/Core/Player/AntiCombatLog.pwn"
 #include "SS/Core/Player/Chat.pwn"
-#include "SS/Core/Player/Command.pwn"
+#include "SS/Core/Player/CmdProcess.pwn"
+#include "SS/Core/Player/Commands.pwn"
 #include "SS/Core/Player/AfkCheck.pwn"
 #include "SS/Core/Player/AltTabCheck.pwn"
 #include "SS/Core/Player/DisallowActions.pwn"
@@ -902,7 +907,6 @@ forward SetRestart(seconds);
 #include "SS/Core/World/SupplyCrate.pwn"
 
 // ADMINISTRATION TOOLS
-#include "SS/Core/Admin/Commands.pwn"
 #include "SS/Core/Admin/Level1.pwn"
 #include "SS/Core/Admin/Level2.pwn"
 #include "SS/Core/Admin/Level3.pwn"

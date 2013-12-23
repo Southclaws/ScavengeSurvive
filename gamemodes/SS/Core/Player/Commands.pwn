@@ -10,10 +10,15 @@ CMD:help(playerid, params[])
 
 	strcat(gBigString[playerid],
 		""C_YELLOW"General Information:\n\n\n"C_WHITE"\
-		\t"C_RED"/rules for a list of server rules.\n\n\
-		\t"C_BLUE"/chatinfo for information on chat.\n\n\
-		\t"C_ORANGE"/restartinfo for information on server restarts and item saving\n\n\
-		\t"C_YELLOW"/tooltips to enable and disable helpful tooltips\n\n\n\
+		\t"C_RED"/rules - list of server rules\n\n\
+		\t"C_GREEN"/admins - server staff\n\n\
+		\t"C_BLUE"/chatinfo - information on chat\n\n\
+		\t"C_ORANGE"/restartinfo - information on server restarts/item saving\n\n");
+
+	strcat(gBigString[playerid],
+		"\t"C_YELLOW"/tooltips - enable and disable helpful tooltips\n\n\
+		\t"C_BROWN"/die - kill yourself\n\n\
+		\t"C_LGREEN"/changepass - change your password\n\n\n\
 		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
 
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString[playerid], "Close", "");
@@ -23,9 +28,43 @@ CMD:help(playerid, params[])
 
 CMD:rules(playerid, params[])
 {
+	MsgF(playerid, YELLOW, " >  Rules List (total: %d)", gTotalRules);
+
 	for(new i; i < gTotalRules; i++)
-		Msg(playerid, YELLOW, sprintf(" >  "C_BLUE"%s", gRuleList[i]));
+		Msg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gRuleList[i]));
 	
+	return 1;
+}
+
+CMD:admins(playerid, params[])
+{
+	MsgF(playerid, YELLOW, " >  Staff List (total: %d)", gTotalStaff);
+
+	for(new i; i < gTotalStaff; i++)
+		Msg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gStaffList[i]));
+	
+	return 1;
+}
+
+CMD:chatinfo(playerid, params[])
+{
+	gBigString[playerid][0] = EOS;
+
+	strcat(gBigString[playerid],
+		""C_YELLOW"Communication Information:\n\n\n"C_WHITE"\
+		Chat is split into 3 types: Global, Local and Radio.\n\n\
+		\t"C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "C_WHITE"/quiet\n\n\
+		\t"C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
+		\t"C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
+
+	strcat(gBigString[playerid],
+		""C_WHITE"You can type the command on it's own to switch to that mode\n\
+		Or type the command followed by some text to send a message to that specific chat.\n\n\
+		If you are talking to someone next to you, "C_YELLOW"USE LOCAL OR RADIO!\n\
+		"C_WHITE"If you send unnecessary chat to global, you will be muted.");
+
+	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
+
 	return 1;
 }
 
@@ -51,25 +90,18 @@ CMD:restartinfo(playerid, params[])
 	return 1;
 }
 
-CMD:chatinfo(playerid, params[])
+CMD:tooltips(playerid, params[])
 {
-	gBigString[playerid][0] = EOS;
-
-	strcat(gBigString[playerid],
-		""C_YELLOW"Communication Information:\n\n\n"C_WHITE"\
-		Chat is split into 3 types: Global, Local and Radio.\n\n\
-		\t"C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "C_WHITE"/quiet\n\n\
-		\t"C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
-		\t"C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
-
-	strcat(gBigString[playerid],
-		""C_WHITE"You can type the command on it's own to switch to that mode\n\
-		Or type the command followed by some text to send a message to that specific chat.\n\n\
-		If you are talking to someone next to you, "C_YELLOW"USE LOCAL OR RADIO!\n\
-		"C_WHITE"If you send unnecessary chat to global, you will be muted.");
-
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
-
+	if(gPlayerBitData[playerid] & ToolTips)
+	{
+		Msg(playerid, YELLOW, " >  Tooltips disabled");
+		f:gPlayerBitData[playerid]<ToolTips>;
+	}
+	else
+	{
+		Msg(playerid, YELLOW, " >  Tooltips enabled");
+		t:gPlayerBitData[playerid]<ToolTips>;
+	}
 	return 1;
 }
 
@@ -130,35 +162,6 @@ CMD:changepass(playerid,params[])
 		{
 			Msg(playerid, RED, " >  The entered password you typed doesn't match your current password.");
 		}
-	}
-	return 1;
-}
-
-CMD:admins(playerid, params[])
-{
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admins",
-		""C_YELLOW"Server Staff:\n\n\n"C_WHITE"\
-		\t"C_BLUE"Southclaw - Developer\n\n\
-		\t"C_BLUE"Dogmeat - Admin\n\n\
-		\t"C_BLUE"Tezza - Admin\n\n\
-		\t"C_BLUE"Cagatay - Admin\n\n\
-		\t"C_BLUE"Prolama - Mod\n\n\
-		\t"C_BLUE"Civod - Mod", "Close", "");
-
-	return 1;
-}
-
-CMD:tooltips(playerid, params[])
-{
-	if(gPlayerBitData[playerid] & ToolTips)
-	{
-		Msg(playerid, YELLOW, " >  Tooltips disabled");
-		f:gPlayerBitData[playerid]<ToolTips>;
-	}
-	else
-	{
-		Msg(playerid, YELLOW, " >  Tooltips enabled");
-		t:gPlayerBitData[playerid]<ToolTips>;
 	}
 	return 1;
 }
