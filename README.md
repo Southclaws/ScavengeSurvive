@@ -1,9 +1,8 @@
-Scavenge and Survive gamemode script for SA:MP
-==
+# Scavenge and Survive gamemode script for SA:MP
 
 
-A PvP SA:MP server script built upon the SIF framework.
---
+
+## A PvP SA:MP server script built upon the SIF framework.
 
 The aim of the game is to find supplies such as tools or weapons to help you
 survive, either alone or in a group.
@@ -20,8 +19,7 @@ with an intuitive _interaction model_ in mind with only 5 major keys required
 to access the gamemode-specific features.
 
 
-Development
---
+## Development
 
 The gamemode is written in a modular fashion, borrowing a lot of concepts from
 object-oriented programming. Removing some features can be as simple as removing
@@ -37,8 +35,7 @@ I encourage people to play around with this code, create a new map and put loot
 spawns in it, I would love to see what is made!
 
 
-Setup
---
+## Setup
 
 1. **Dependencies**
 
@@ -95,7 +92,28 @@ Setup
   * infomsgs _(string array)_ - array list of periodic information messages
   * motd _(string)_ - message of the day, displayed to players upon connecting
   * rules _(string array)_ - array list of rules
+  * staff _(string array)_ - array list of staff members
   * website _(string)_ - the website for whitelist notification message
   * whitelist _(bool)_ - enable whitelist
 
 Enjoy, do whatever you want with it, but keep my name on it :)
+
+
+## Maintenance
+
+Set "file-check" to "1" in "./scriptfiles/SSS/Settings.json" in order to perform
+a player data file check. This will remove any files that shouldn't be there
+Such as files that aren't in the "Accounts.db" player table or files with names
+that aren't valid player names.
+
+
+Run these queries to remove duplicates from the database:
+
+```sql
+
+ALTER TABLE Player RENAME TO Player_old
+CREATE TABLE Player (name TEXT,pass TEXT,ipv4 INTEGER,alive INTEGER,karma INTEGER,regdate INTEGER,lastlog INTEGER,spawntime INTEGER,spawns INTEGER,warnings INTEGER,aimshout TEXT,gpci TEXT)
+INSERT INTO Player (name,pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci) SELECT DISTINCT lower(name),pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci FROM Player_old
+
+```
+Downside: table will be re-ordered by "name" column alphabetically.
