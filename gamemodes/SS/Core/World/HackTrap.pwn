@@ -44,5 +44,15 @@ forward hak_OnPlayerPickUpItem(playerid, itemid);
 
 TheTrapHasSprung(playerid)
 {
+	new
+		name[MAX_PLAYER_NAME],
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	GetPlayerPos(playerid, x, y, z);
+
+	ReportPlayer(name, "Picked up a hack-trap", -1, REPORT_TYPE_HACKTRAP, x, y, z, "");
 	BanPlayer(playerid, "Sprung the hacker trap by picking up an unreachable item!", -1, 0);
 }
