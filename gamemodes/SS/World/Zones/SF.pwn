@@ -510,13 +510,15 @@ SF_District_Naval()
 {
 	new buttonid[1];
 
-	buttonid[0] = CreateButton(-1520.4270, 482.1193, 7.6727, "Press "#KEYTEXT_INTERACT" to activate gate");
+	// Requires "./scriptfiles/Maps/SF/Naval Base.map" to remove:
+	// RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.01);
+
+	buttonid[0] = CreateButton(-1520.4270, 482.1193, 7.6727, "Press "KEYTEXT_INTERACT" to activate gate");
 
 	CreateDoor(968, buttonid,
 		-1526.4375, 481.3828, 7.02, 356.8584, 270.00, 0.0,
 		-1526.4375, 481.3828, 7.00, 356.8584, 0.0000, 0.0,
 		.closedelay = -1, .maxbuttons = 1, .movespeed = 0.01, .movesound = 0, .stopsound = 0);
-
 
 	CreateLootSpawn(-1346.540039, 492.079986, 10.279999,	3, 15, loot_Civilian);
 
