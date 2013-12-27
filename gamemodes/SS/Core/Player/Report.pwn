@@ -37,7 +37,8 @@ new
 			"CAM",
 			"NOS",
 			"HYDRO",
-			"VTP"
+			"VTP",
+			"TRAP"
 		};
 
 
