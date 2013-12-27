@@ -663,7 +663,7 @@ LV_District_KACC()
 
 	CreateObject(19273, 2503.98120, 2780.09302, 11.36690, 0.00000, 0.00000, 90.00000);
 
-	buttonid[0] = CreateButton(2503.98120, 2780.09302, 11.36690, "Press "#KEYTEXT_INTERACT" to activate");
+	buttonid[0] = CreateButton(2503.98120, 2780.09302, 11.36690, "Press "KEYTEXT_INTERACT" to activate");
 
 	CreateDoor(985, buttonid,
 		2497.36523438, 2777.06933594, 11.55891800, 0.00000000, 0.00000000, 90.00000000,

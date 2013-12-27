@@ -245,7 +245,7 @@ public OnItemCreateInWorld(itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		SetButtonText(GetItemButtonID(itemid), "Hold "#KEYTEXT_INTERACT" to pick up~n~Press "#KEYTEXT_INTERACT" to open");
+		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
 	return CallLocalFunction("bag_OnItemCreateInWorld", "d", itemid);

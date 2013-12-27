@@ -16,7 +16,7 @@ public OnItemCreateInWorld(itemid)
 	if(GetItemType(itemid) == item_Torso)
 	{
 		if(GetItemExtraData(itemid) != -1)
-			SetButtonText(GetItemButtonID(itemid), "Hold "#KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "#KEYTEXT_INTERACT" to investigate");
+			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
 	}
 
 	return CallLocalFunction("tor_OnItemCreateInWorld", "d", itemid);

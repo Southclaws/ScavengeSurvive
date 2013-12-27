@@ -98,7 +98,7 @@ public OnItemCreateInWorld(itemid)
 	for(new i; i < box_TypeTotal; i++)
 	{
 		if(itemtype == box_TypeData[i][box_itemtype])
-			SetButtonText(GetItemButtonID(itemid), "Hold "#KEYTEXT_INTERACT" to pick up~n~Press "#KEYTEXT_INTERACT" to open");
+			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
 	return CallLocalFunction("box_OnItemCreateInWorld", "d", itemid);

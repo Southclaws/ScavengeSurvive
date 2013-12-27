@@ -151,9 +151,9 @@ forward lck_OnPlayerKeypadEnter(playerid, keypadid, success);
 LoadLockup_SF()
 {
 	new keycode = CreateLockup(
-		CreateButton(-2493.90112, 313.94443, 29.72062, "Press "#KEYTEXT_INTERACT" to interact"),
-		CreateButton(-2499.1262, 315.1892, 29.4147, "Press "#KEYTEXT_INTERACT" to go inside"),
-		CreateButton(-2499.1262, 318.6712, 1036.9948, "Press "#KEYTEXT_INTERACT" to leave"));
+		CreateButton(-2493.90112, 313.94443, 29.72062, "Press "KEYTEXT_INTERACT" to interact"),
+		CreateButton(-2499.1262, 315.1892, 29.4147, "Press "KEYTEXT_INTERACT" to go inside"),
+		CreateButton(-2499.1262, 318.6712, 1036.9948, "Press "KEYTEXT_INTERACT" to leave"));
 
 	new Float:coords[][]=
 	{

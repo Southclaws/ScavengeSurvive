@@ -42,7 +42,7 @@ stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
 	}
 
 	wb_Data[id][wb_objId] = CreateDynamicObject(936, x, y, z, 0.0, 0.0, rz);
-	wb_Data[id][wb_buttonId] = CreateButton(x, y, z, "Press "#KEYTEXT_INTERACT" to use workbench", .areasize = 2.0);
+	wb_Data[id][wb_buttonId] = CreateButton(x, y, z, "Press "KEYTEXT_INTERACT" to use workbench", .areasize = 2.0);
 	wb_Data[id][wb_labelId] = CreateDynamic3DTextLabel("Workbench", GREEN, x, y, z + 1.0, 10.0);
 	wb_Data[id][wb_posX] = x;
 	wb_Data[id][wb_posY] = y;

@@ -20,8 +20,8 @@ public OnLoad()
 	SF_District_Ship2();
 
 	LinkTP(
-		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
-		CreateButton(-1857.1831, -169.5322, 9.1358, "Press F to open", 0));
+		CreateButton(-904.7388, 335.7443, 1014.1530, "Press "KEYTEXT_INTERACT" to open", 0),
+		CreateButton(-1857.1831, -169.5322, 9.1358, "Press "KEYTEXT_INTERACT" to open", 0));
 
 	DefineSupplyDropPos("San Fierro Airport", -1312.81885, -16.52664, 13.08027);
 	DefineSupplyDropPos("San Fierro Driving School", -2055.64697, -200.37950, 34.24461);
@@ -134,8 +134,8 @@ SF_District_Housing1()
 SF_District_Housing2()
 {
 	LinkTP(
-		CreateButton(-2578.1204, 1144.8810, 40.3989, "Press F to enter"),
-		CreateButton(-2587.5229, 1162.4547, 55.5876, "Press F to enter"));
+		CreateButton(-2578.1204, 1144.8810, 40.3989, "Press "KEYTEXT_INTERACT" to enter"),
+		CreateButton(-2587.5229, 1162.4547, 55.5876, "Press "KEYTEXT_INTERACT" to enter"));
 
 	CreateItem(item_Barbecue, -2701.1328, 845.7422, 70.3828, 171.0);
 
@@ -304,14 +304,14 @@ SF_District_City1()
 	new
 		buttonid[2];
 
-	buttonid[0] = CreateButton(-2208.2568, 579.8558, 35.7653, "Press F to activate", 0);
-	buttonid[1] = CreateButton(-2208.2561, 584.4679, 35.7653, "Press F to activate", 0);
+	buttonid[0] = CreateButton(-2208.2568, 579.8558, 35.7653, "Press "KEYTEXT_INTERACT" to activate", 0);
+	buttonid[1] = CreateButton(-2208.2561, 584.4679, 35.7653, "Press "KEYTEXT_INTERACT" to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2211.40, 581.99, 36.37,   0.00, 0.00, 90.00,
 		-2211.40, 581.99, 39.61,   0.00, 0.00, 90.00, .movesound = 6000, .stopsound = 6002);
 
-	buttonid[0] = CreateButton(-2243.0400, 640.7287, 49.9911, "Press F to activate", 0);
-	buttonid[1] = CreateButton(-2238.6035, 641.0287, 49.9911, "Press F to activate", 0);
+	buttonid[0] = CreateButton(-2243.0400, 640.7287, 49.9911, "Press "KEYTEXT_INTERACT" to activate", 0);
+	buttonid[1] = CreateButton(-2238.6035, 641.0287, 49.9911, "Press "KEYTEXT_INTERACT" to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2241.90, 643.55, 50.69,   0.00, 0.00, 0.00,
 		-2241.90, 643.55, 53.96,   0.00, 0.00, 0.00, .movesound = 6000, .stopsound = 6002);
@@ -510,7 +510,7 @@ SF_District_Naval()
 {
 	new buttonid[1];
 
-	buttonid[0] = CreateButton(-1520.4270, 482.1193, 7.6727, "Press "#KEYTEXT_INTERACT" to activate gate");
+	buttonid[0] = CreateButton(-1520.4270, 482.1193, 7.6727, "Press "KEYTEXT_INTERACT" to activate gate");
 
 	CreateDoor(968, buttonid,
 		-1526.4375, 481.3828, 7.02, 356.8584, 270.00, 0.0,

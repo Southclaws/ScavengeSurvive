@@ -162,9 +162,9 @@ public OnLoad()
 	DefineItemToolTip(item_RustyMetal,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_WoodPanel,		"Use screwdriver with this to construct a permanent wall, or a hammer to construct a permanent floor, hold "KEYTEXT_INTERACT" to build");
 	DefineItemToolTip(item_Flare,			"This item has no use yet");
-	DefineItemToolTip(item_TntPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
+	DefineItemToolTip(item_TntPhoneBomb,	"Use a phone with this by pressing "KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_ParaBag,			"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
-	DefineItemToolTip(item_Keypad,			"Hold "#KEYTEXT_INTERACT" with this while at a constructed defence to turn it into a key-code protected door");
+	DefineItemToolTip(item_Keypad,			"Hold "KEYTEXT_INTERACT" with this while at a constructed defence to turn it into a key-code protected door");
 	DefineItemToolTip(item_TentPack,		"Use a hammer with this to build a tent");
 	DefineItemToolTip(item_Campfire,		"Light with petrol and a lighter, then put food on by holding the food and pressing "KEYTEXT_INTERACT" to cook it");
 	DefineItemToolTip(item_CowboyHat,		"Wear this by pressing "KEYTEXT_INTERACT"");
@@ -195,11 +195,11 @@ public OnLoad()
 	DefineItemToolTip(item_IedTimebomb,		"An explosive with a timed detonation of 5 seconds, press "KEYTEXT_INTERACT" to arm");
 	DefineItemToolTip(item_IedTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
 	DefineItemToolTip(item_IedProxMine,		"This item has no use yet");
-	DefineItemToolTip(item_IedPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
+	DefineItemToolTip(item_IedPhoneBomb,	"Use a phone with this by pressing "KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_EmpTimebomb,		"A proximity taser with a timed detonation of 5 seconds, press "KEYTEXT_INTERACT" to arm");
 	DefineItemToolTip(item_EmpTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
 	DefineItemToolTip(item_EmpProxMine,		"This item has no use yet");
-	DefineItemToolTip(item_EmpPhoneBomb,	"Use a phone with this by pressing "#KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
+	DefineItemToolTip(item_EmpPhoneBomb,	"Use a phone with this by pressing "KEYTEXT_INTERACT" to sync the phones, then use the phone to detonate with "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Gyroscope,		"This item has no use yet");
 	DefineItemToolTip(item_Motor,			"This item has no use yet");
 	DefineItemToolTip(item_StarterMotor,	"This item has no use yet");
