@@ -72,8 +72,11 @@ native gpci(playerid, serial[], len);
 #include <djson>					// By DracoBlue:			http://forum.sa-mp.com/showthread.php?t=48439
 
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
-#include <SIF/Modules/Craft>
-#include <SIF/Modules/Notebook>
+#include <SIF/extensions/InventoryDialog>
+#include <SIF/extensions/InventoryKeys>
+#include <SIF/extensions/ContainerDialog>
+#include <SIF/extensions/Craft>
+#include <SIF/extensions/Notebook>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
 #include <Balloon>					// By Southclaw:			https://github.com/Southclaw/Balloon
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
@@ -808,6 +811,11 @@ forward SetRestart(seconds);
 #include "SS/utils/object.pwn"
 #include "SS/utils/tickcountfix.pwn"
 
+// GAME DATA
+#include "SS/Data/Vehicle.pwn"
+#include "SS/Data/Weapon.pwn"
+#include "SS/Data/Loot.pwn"
+
 // SERVER CORE
 #include "SS/Core/Server/Settings.pwn"
 #include "SS/Core/Server/TextTags.pwn"
@@ -828,11 +836,6 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/Watch.pwn"
 #include "SS/Core/UI/Keypad.pwn"
 
-// GAME DATA
-#include "SS/Data/Vehicle.pwn"
-#include "SS/Data/Weapon.pwn"
-#include "SS/Data/Loot.pwn"
-
 // VEHICLE
 #include "SS/Core/Vehicle/Core.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
@@ -840,6 +843,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/Repair.pwn"
 #include "SS/Core/Vehicle/LockBreak.pwn"
 #include "SS/Core/Vehicle/Locksmith.pwn"
+#include "SS/Core/Vehicle/Carmour.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/Core.pwn"
@@ -853,7 +857,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
 #include "SS/Core/Player/Spawn.pwn"
-#include "SS/Core/Player/Drugs.pwn"
 #include "SS/Core/Player/Damage.pwn"
 #include "SS/Core/Player/Death.pwn"
 #include "SS/Core/Player/Tutorial.pwn"
@@ -865,8 +868,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/AfkCheck.pwn"
 #include "SS/Core/Player/AltTabCheck.pwn"
 #include "SS/Core/Player/DisallowActions.pwn"
-#include "SS/Core/Player/Report.pwn"
-#include "SS/Core/Player/HackDetect.pwn"
 #include "SS/Core/Player/Profile.pwn"
 
 // CHARACTER SCRIPTS
@@ -887,6 +888,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/Medical.pwn"
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
+#include "SS/Core/Char/Drugs.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
@@ -894,12 +896,9 @@ forward SetRestart(seconds);
 #include "SS/Core/World/Defences.pwn"
 #include "SS/Core/World/GraveStone.pwn"
 #include "SS/Core/World/SafeBox.pwn"
-#include "SS/Core/World/Carmour.pwn"
 #include "SS/Core/World/Tent.pwn"
 #include "SS/Core/World/Campfire.pwn"
-#include "SS/Core/World/HackTrap.pwn"
 #include "SS/Core/World/Workbench.pwn"
-#include "SS/Core/World/Food.pwn"
 #include "SS/Core/World/Emp.pwn"
 #include "SS/Core/World/Explosive.pwn"
 #include "SS/Core/World/SprayTag.pwn"
@@ -907,6 +906,9 @@ forward SetRestart(seconds);
 #include "SS/Core/World/SupplyCrate.pwn"
 
 // ADMINISTRATION TOOLS
+#include "SS/Core/Admin/Report.pwn"
+#include "SS/Core/Admin/HackDetect.pwn"
+#include "SS/Core/Admin/HackTrap.pwn"
 #include "SS/Core/Admin/Level1.pwn"
 #include "SS/Core/Admin/Level2.pwn"
 #include "SS/Core/Admin/Level3.pwn"
@@ -914,6 +916,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Duty.pwn"
 #include "SS/Core/Admin/Ban.pwn"
 #include "SS/Core/Admin/BanCommand.pwn"
+#include "SS/Core/Admin/BanList.pwn"
 #include "SS/Core/Admin/Spectate.pwn"
 #include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/BugReport.pwn"
@@ -921,6 +924,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Mute.pwn"
 
 // ITEMS
+#include "SS/Core/Item/Food.pwn"
 #include "SS/Core/Item/firework.pwn"
 #include "SS/Core/Item/bottle.pwn"
 #include "SS/Core/Item/TntTimeBomb.pwn"
