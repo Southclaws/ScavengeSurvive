@@ -101,11 +101,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(!strcmp(inputtext, "next"))
+			if(!strcmp(inputtext, "Next", false, 4))
 			{
 				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] + MAX_BANS_PER_PAGE);
 			}
-			else if(!strcmp(inputtext, "prev"))
+			else if(!strcmp(inputtext, "Prev", false, 4))
 			{
 				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] - MAX_BANS_PER_PAGE);
 			}
