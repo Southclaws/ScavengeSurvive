@@ -108,7 +108,7 @@ LoadVehiclesFromFile(file[], prints)
 
 			switch(model)
 			{
-				case 403, 443, 514, 515:
+				case 403, 443, 514, 515, 539:
 				{
 					posZ += 2.0;
 				}
