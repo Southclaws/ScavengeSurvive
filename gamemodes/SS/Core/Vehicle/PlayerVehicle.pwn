@@ -396,7 +396,7 @@ RemoveVehicleFile(owner[MAX_PLAYER_NAME], prints = true)
 		return 0;
 
 	if(prints)
-		printf("[DELT] Removing vehicle player: %s", owner);
+		printf("[DELT] Removing player vehicle. Owner: %s", owner);
 
 	new filename[MAX_PLAYER_NAME + 22];
 

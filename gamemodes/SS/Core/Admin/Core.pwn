@@ -236,7 +236,7 @@ ACMD:acmds[1](playerid, params[])
 
 	strcat(gBigString[playerid], "/a [message] - Staff chat channel");
 
-	if(gPlayerData[playerid][ply_Admin] >= 2)
+	if(gPlayerData[playerid][ply_Admin] >= 3)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 3)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl3);
