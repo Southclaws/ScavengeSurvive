@@ -414,7 +414,7 @@ CheckForExtraAccounts(playerid)
 
 	if(count > 1)
 	{
-		for(new i; i < count; i++)
+		for(new i; i < count && i < sizeof(list); i++)
 		{
 			strcat(string, list[i]);
 			strcat(string, ", ");
