@@ -170,8 +170,11 @@ public OnPlayerDisconnect(playerid, reason)
 	if(gServerRestarting)
 		return 0;
 
-	if(IsValidVehicle(gPlayerData[playerid][ply_CurrentVehicle]))
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
 		VehicleDoorsState(gPlayerData[playerid][ply_CurrentVehicle], 0);
+		SetVehicleExternalLock(gPlayerData[playerid][ply_CurrentVehicle], 0);
+	}
 
 	Logout(playerid);
 

@@ -211,7 +211,7 @@ LoadPlayerChar(playerid)
 
 	if(data[PLY_CELL_FILE_VERSION] != CHARACTER_DATA_FILE_VERSION)
 	{
-		print("ERROR: [LoadPlayerChar] Opening file '%s'. Incompatible file version.");
+		printf("ERROR: [LoadPlayerChar] Opening file '%s'. Incompatible file version.", filename);
 		return 0;
 	}
 
