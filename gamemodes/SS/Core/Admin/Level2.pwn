@@ -105,12 +105,12 @@ ACMD:freeze[2](playerid, params[])
 	{
 		stop UnfreezeTimer[targetid];
 		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
-		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
+		MsgF(playerid, YELLOW, " >  Frozen %P (%i) for %d seconds", targetid, targetid, delay);
 		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
 	}
 	else
 	{
-		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
+		MsgF(playerid, YELLOW, " >  Frozen %P (%i)", targetid, targetid);
 		Msg(targetid, YELLOW, " >  Frozen by admin");
 	}
 

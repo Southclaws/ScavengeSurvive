@@ -23,9 +23,11 @@ ACMD:duty[1](playerid, params[])
 
 		SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
 
+		//ToggleDetectionFieldLabels(playerid, false);
+
 		tick_AdminDuty[playerid] = GetTickCount();
 	}
-	else
+	else// On duty
 	{
 		if(GetTickCountDifference(GetTickCount(), tick_AdminDuty[playerid]) < 10000)
 		{
@@ -67,6 +69,8 @@ ACMD:duty[1](playerid, params[])
 
 		else
 			SetPlayerSkin(playerid, 211);
+
+		//ToggleDetectionFieldLabels(playerid, true);
 	}
 	return 1;
 }

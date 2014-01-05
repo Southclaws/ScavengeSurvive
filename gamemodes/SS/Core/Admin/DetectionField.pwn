@@ -8,11 +8,12 @@
 
 enum E_DETECTION_FIELD_DATA
 {
-			det_areaId,
-			det_name[MAX_DETECTION_FIELD_NAME],
-Float:		det_posX,
-Float:		det_posY,
-Float:		det_posZ
+		det_areaId,
+		det_name[MAX_DETECTION_FIELD_NAME],
+Float:	det_posX,
+Float:	det_posY,
+Float:	det_posZ,
+		det_buttonId
 }
 
 
@@ -38,11 +39,12 @@ stock CreateDetectionField(name[MAX_DETECTION_FIELD_NAME], Float:x, Float:y, Flo
 		return -1;
 	}
 
-	det_Data[id][det_areaId] = CreateDynamicSphere(x, y, z, range);
-	det_Data[id][det_name] = name;
-	det_Data[id][det_posX] = x;
-	det_Data[id][det_posY] = y;
-	det_Data[id][det_posZ] = z;
+	det_Data[id][det_areaId]   = CreateDynamicSphere(x, y, z, range);
+	det_Data[id][det_name]     = name;
+	det_Data[id][det_posX]     = x;
+	det_Data[id][det_posY]     = y;
+	det_Data[id][det_posZ]     = z;
+	det_Data[id][det_buttonId] = CreateButton(x, y, z, name, 0, 0, range, 1, name, ORANGE, range*2);
 
 	Iter_Add(det_Index, id);
 
@@ -56,9 +58,9 @@ stock DestroyDetectionField(id)
 
 	DestroyDynamicArea(det_Data[id][det_areaId]);
 	det_Data[id][det_name][0] = EOS;
-	det_Data[id][det_posX] = 0.0;
-	det_Data[id][det_posY] = 0.0;
-	det_Data[id][det_posZ] = 0.0;
+	det_Data[id][det_posX]    = 0.0;
+	det_Data[id][det_posY]    = 0.0;
+	det_Data[id][det_posZ]    = 0.0;
 
 	Iter_Remove(det_Index, id);
 
@@ -173,7 +175,8 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	{
 		if(areaid == det_Data[i][det_areaId])
 		{
-			DetectionFieldLogPlayer(playerid, i);
+			if(!IsPlayerOnAdminDuty(playerid))// Don't log when onduty
+				DetectionFieldLogPlayer(playerid, i);
 
 			if(GetPlayerAdminLevel(playerid) >= 3)
 				MsgF(playerid, YELLOW, " >  Entered detection field '%s'", det_Data[i][det_name]);
@@ -279,6 +282,30 @@ hook OnGameModeInit()
 
 ==============================================================================*/
 
+public OnButtonPress(playerid, buttonid)// Show DetectionField logs
+{
+/*	foreach(new i : det_Data)
+	{
+		if(det_Data[i][det_buttonId] == buttonid)
+		{
+			new name = det_Data[i][det_name];
+
+			MsgF(playerid, YELLOW, " >  Displaying log entries for detection field '%s'.", name);
+
+			return ShowDetectionFieldLog(playerid, GetDetectionFieldIdFromName(name););
+		}
+	}*/
+
+	print("OnButtonPress");
+	return CallLocalFunction("det_OnButtonPress", "dd", playerid, buttonid);
+}
+#if defined _ALS_OnButtonPress
+	#undef OnButtonPress
+#else
+	#define _ALS_OnButtonPress
+#endif
+#define OnButtonPress det_OnButtonPress
+forward det_OnButtonPress(playerid, buttonid);
 
 GetDetectionFieldIdFromName(name[], bool:ignorecase = false)
 {
@@ -297,7 +324,7 @@ ACMD:field[3](playerid, params[])
 {
 	if(isnull(params))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /field ['add' <name> <range>] / ['remove' <name>] / ['data' <name>]");
+		Msg(playerid, YELLOW, " >  Usage: /field ['add' <name> <range>] / ['remove' <name>] / ['data' <name>] / 'list'");
 		return 1;
 	}
 
