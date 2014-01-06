@@ -105,12 +105,12 @@ ACMD:freeze[2](playerid, params[])
 	{
 		stop UnfreezeTimer[targetid];
 		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
-		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
+		MsgF(playerid, YELLOW, " >  Frozen %P (%i) for %d seconds", targetid, targetid, delay);
 		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
 	}
 	else
 	{
-		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
+		MsgF(playerid, YELLOW, " >  Frozen %P (%i)", targetid, targetid);
 		Msg(targetid, YELLOW, " >  Frozen by admin");
 	}
 
@@ -187,33 +187,34 @@ ACMD:ban[2](playerid, params[])
 	if(sscanf(params, "s[24]", name))
 	{
 		Msg(playerid, YELLOW, " >  Usage: /ban [playerid/name]");
-		return 1;
 	}
-
-	if(isnumeric(name))
+	else
 	{
-		new targetid = strval(name);
+		if(isnumeric(name)) // ID given
+		{
+			new targetid = strval(name);
 
-		if(IsPlayerConnected(targetid))
-			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+			if(IsPlayerConnected(targetid))
+				GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+			else
+				MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+		}
 
+		// Hax0rs can join the game and do shit without creating an account
+		/*if(!AccountExists(name))
+		{
+			MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
+			return 1;
+		}*/
+
+		if(GetAdminLevelByName(name) == 0) // Don't ban admins
+		{
+			BanAndEnterInfo(playerid, name);
+			MsgF(playerid, YELLOW, " >  Preparing ban for %s", name);
+		}
 		else
-			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+			Msg(playerid, YELLOW, " > Can't ban admins, you silly.");
 	}
-
-	if(!AccountExists(name))
-	{
-		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
-		return 1;
-	}
-
-	if(GetAdminLevelByName(name) > 0)
-		return 2;
-
-	BanAndEnterInfo(playerid, name);
-
-	MsgF(playerid, YELLOW, " >  Preparing ban for %s", name);
-
 	return 1;
 }
 

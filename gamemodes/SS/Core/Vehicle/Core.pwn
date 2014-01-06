@@ -397,27 +397,29 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				}
 			}
 		}
+		// Headlights key
 		if(newkeys & KEY_NO)
 		{
 			VehicleLightsState(vehicleid, !VehicleLightsState(vehicleid));
 		}
+		// Incar radio key
 		if(newkeys & KEY_CTRL_BACK)//262144)
 		{
 			ShowRadioUI(playerid);
 		}
+		// Incar door locking key
 		if(newkeys & KEY_SUBMISSION)
 		{
-			if(VehicleDoorsState(vehicleid))
+			if(VehicleDoorsState(vehicleid))//Open
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 			}
-			else
+			else//closed
 			{
 				veh_Data[vehicleid][veh_locked] = 1;
 				VehicleDoorsState(vehicleid, 1);
 			}
 		}
-
 		return 1;
 	}
 
@@ -566,8 +568,9 @@ PlayerVehicleUpdate(playerid)
 
 	else if(health <= VEHICLE_HEALTH_MAX)
 		PlayerTextDrawColor(playerid, VehicleDamageText[playerid], VEHICLE_HEALTH_CHUNK_4_COLOUR);
-
-	if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0) // If the vehicle is a fuel powered vehicle
+	
+	// If the vehicle is a fuel powered vehicle
+	if(VehicleFuelData[model - 400][veh_maxFuel] > 0.0) 
 	{
 		new
 			Float:fuel = GetVehicleFuel(vehicleid),
@@ -630,11 +633,11 @@ PlayerVehicleUpdate(playerid)
 		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
 	}
 
+	// Vehicle door locking UI "DOR"
 	if(VehicleHasDoors(model))
 	{
 		if(VehicleDoorsState(vehicleid))
 			PlayerTextDrawColor(playerid, VehicleDoorsText[playerid], VEHICLE_UI_ACTIVE);
-
 		else
 			PlayerTextDrawColor(playerid, VehicleDoorsText[playerid], VEHICLE_UI_INACTIVE);
 

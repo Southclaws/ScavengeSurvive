@@ -139,7 +139,7 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 	else
 		def_Data[id][def_hitPoints] = hitpoints;
 
-	if(mode == DEFENCE_MODE_HORIZONTAL)
+	if(mode == DEFENCE_MODE_HORIZONTAL) // Horizontal placement
 	{
 		if(!def_TypeData[type][def_buildHorizont])
 			return -2;
@@ -155,7 +155,7 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 		else
 			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 	}
-	else
+	else// Vertical placement
 	{
 		if(!def_TypeData[type][def_buildVertical])
 			return -3;
@@ -724,7 +724,7 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 
 			DestroyDefence(closestid);
 		}
-		else
+		else// Update hitpoints label
 		{
 			SetButtonLabel(def_Data[closestid][def_buttonId], sprintf("%d/%d", def_Data[closestid][def_hitPoints], def_TypeData[def_Data[closestid][def_type]][def_maxHitPoints]), .range = 1.5);
 		}

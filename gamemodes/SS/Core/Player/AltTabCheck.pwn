@@ -32,7 +32,8 @@ ptask AfkCheckUpdate[3000](playerid)
 			{
 				if(gMaxTaboutTime == 0)
 				{
-					KickPlayer(playerid, "Unfocused from the game, could stave and cause bugs");
+					// TODO: Find a better algorithm for this?
+					//KickPlayer(playerid, "Unfocused from the game, could starve and cause bugs");
 					return;
 				}
 

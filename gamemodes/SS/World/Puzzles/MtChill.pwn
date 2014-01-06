@@ -1,9 +1,6 @@
 #include <YSI\y_hooks>
 
-
 // Entities
-
-
 new
 	ch_gate,
 	ch_doorBtn,
@@ -14,30 +11,25 @@ new
 	ch_keypad,
 	ch_keypadprt;
 
-
 // Variables
-
-
 new
 	bool:ch_doorstate = false;
-
 
 public OnLoad()
 {
 	new buttons[1];
 
-
-	ch_gate = CreateButton(-2307.81, -1650.67, 484.36, "Press F to activate", 0);
+	ch_gate = CreateButton(-2307.81, -1650.67, 484.36, "Press F to activate", 0); // Metal gate
 
 	buttons[0] = ch_gate;
 
 	CreateDoor(975, buttons,
 		-2312.10, -1652.69, 484.41,   0.00, 0.00, -154.50,
 		-2317.88, -1655.44, 484.41,   0.00, 0.00, -154.50,
-		.maxbuttons = 1, .movespeed = 1.0, .closedelay = -1);
+		.maxbuttons = 1, .movespeed = 1.0, .closedelay = -1); // Metal gate
 
 
-	ch_doorBtn = CreateButton(-2311.4900, -1647.7000, 484.3600, "Press F to use", 0, 0);
+	ch_doorBtn = CreateButton(-2311.4900, -1647.7000, 484.3600, "Press F to use", 0, 0); // House door button/"keypad"
 
 	buttons[0] = ch_doorBtn;
 
@@ -60,12 +52,12 @@ public OnLoad()
 
 	AddItemToContainer(
 		CreateContainer("Generator", 6, -2318.9067, -1636.5662, 483.7031),
-		CreateItem(item_Medkit, -2322.9257, -1639.8038, 483.7031));
+		CreateItem(item_Medkit, -2322.9257, -1639.8038, 483.7031)
+		);// What else can we do with this?
 
 	CreateItem(item_RadioPole, -2302.36328, -1637.42395, 483.63260, 0.00000, 90.00000, 55.14000); // For the hack device crafting.
 
-	// Building
-
+	// Building (Gates, house, etc)
 	CreateDynamicObject(1411, -2316.07, -1654.99, 484.25,   0.00, 0.00, -154.92);
 	CreateDynamicObject(1411, -2305.65, -1649.83, 484.25,   0.00, 0.00, -153.54);
 	CreateDynamicObject(1411, -2300.96, -1647.49, 484.25,   0.00, 0.00, -153.54);
@@ -228,7 +220,6 @@ public OnLoad()
 	CreateDynamicObject(19273, -2307.80, -1650.67, 484.36,   0.00, 0.00, -153.54);
 
 	// Sign
-
 	SetDynamicObjectMaterialText(
 		CreateDynamicObject(18244, -2309.60, -1646.11, 487.69,   90.00, 0.00, 25.86),
 		0, "Mt. Chill\nRadio", OBJECT_MATERIAL_SIZE_512x256, "Impact", 72, 0, -1, 4278216843, 1);
@@ -278,7 +269,7 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 			ch_fusebox = INVALID_ITEM_ID;
 			ch_doorstate = true;
 		}
-		if(itemid == ch_battery)
+		else if(itemid == ch_battery)
 		{
 			DestroyButton(ch_doorBtn);
 			ch_keypadprt = CreateDynamicObject(18724, -2311.4900, -1647.7000, 482.3600, 0.0000, 0.0000, 26.2200);

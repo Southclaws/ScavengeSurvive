@@ -9,6 +9,15 @@ hook OnPlayerConnect(playerid)
 	lsk_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
+hook OnPlayerDisconnect(playerid)
+{
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	// Unlock vehicle if player disconnects and if player was the driver
+	if(IsPlayerInAnyVehicle(playerid) && GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+		SetVehicleExternalLock(vehicleid, 0);
+}
+
 public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	if(225.0 < angle < 315.0)
