@@ -21,7 +21,7 @@ new
 
 ACMD:spec[2](playerid, params[])
 {
-	if(!(gPlayerBitData[playerid] & AdminDuty))
+	if(!(IsPlayerOnAdminDuty(playerid)))
 		return 6;
 
 	if(isnull(params))
@@ -34,7 +34,7 @@ ACMD:spec[2](playerid, params[])
 
 		if(IsPlayerConnected(targetid) && targetid != playerid)
 		{
-			if(gPlayerData[playerid][ply_Admin] == 1)
+			if(GetPlayerAdminLevel(playerid) == 1)
 			{
 				if(!IsPlayerReported(gPlayerName[targetid]))
 				{
@@ -52,7 +52,7 @@ ACMD:spec[2](playerid, params[])
 
 ACMD:unstick[2](playerid, params[])
 {
-	if(!(gPlayerBitData[playerid] & AdminDuty))
+	if(!(IsPlayerOnAdminDuty(playerid)))
 		return 6;
 
 	if(GetTickCountDifference(GetTickCount(), tick_UnstickUsage[playerid]) < 1000)
@@ -92,14 +92,14 @@ ACMD:freeze[2](playerid, params[])
 	if(sscanf(params, "dD(0)", targetid, delay))
 		return Msg(playerid, YELLOW, " >  Usage: /freeze [playerid] (seconds)");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
 
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
 	TogglePlayerControllable(targetid, false);
-	t:gPlayerBitData[targetid]<Frozen>;
+	SetPlayerBitFlag(targetid, Frozen, true);
 	
 	if(delay > 0)
 	{
@@ -122,7 +122,7 @@ timer CmdDelay_unfreeze[time](playerid, time)
 	#pragma unused time
 
 	TogglePlayerControllable(playerid, true);
-	f:gPlayerBitData[playerid]<Frozen>;
+	SetPlayerBitFlag(playerid, Frozen, false);
 
 	Msg(playerid, YELLOW, " >  You are now unfrozen.");
 }
@@ -138,7 +138,7 @@ ACMD:unfreeze[2](playerid, params[])
 		return 4;
 
 	TogglePlayerControllable(targetid, true);
-	f:gPlayerBitData[targetid]<Frozen>;
+	SetPlayerBitFlag(targetid, Frozen, false);
 	stop UnfreezeTimer[targetid];
 
 	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
@@ -156,20 +156,20 @@ ACMD:kick[2](playerid, params[])
 
 	foreach(new i : Player)
 	{
-		if(gPlayerData[i][ply_Admin] > gPlayerData[highestadmin][ply_Admin])
+		if(GetPlayerAdminLevel(i) > GetPlayerAdminLevel(highestadmin))
 			highestadmin = i;
 	}
 
 	if(sscanf(params, "ds[64]", targetid, reason))
 		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
 
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	if(gPlayerData[playerid][ply_Admin] != gPlayerData[highestadmin][ply_Admin])
+	if(GetPlayerAdminLevel(playerid) != GetPlayerAdminLevel(highestadmin))
 		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
 
 	if(playerid == targetid)
@@ -285,7 +285,7 @@ ACMD:aliases[2](playerid, params[])
 		return 1;
 	}
 
-	if(GetAdminLevelByName(name) > gPlayerData[playerid][ply_Admin])
+	if(GetAdminLevelByName(name) > GetPlayerAdminLevel(playerid))
 	{
 		new playername[MAX_PLAYER_NAME];
 
@@ -355,7 +355,7 @@ ACMD:aliases[2](playerid, params[])
 		}
 	}
 
-	if(adminlevel <= gPlayerData[playerid][ply_Admin])
+	if(adminlevel <= GetPlayerAdminLevel(playerid))
 	{
 		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
 		

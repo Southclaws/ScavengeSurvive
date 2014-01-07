@@ -73,9 +73,9 @@ ACMD:whitelist[3](playerid, params[])
 
 ACMD:up[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -93,9 +93,9 @@ ACMD:up[3](playerid, params[])
 
 ACMD:ford[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -119,9 +119,9 @@ ACMD:ford[3](playerid, params[])
 
 ACMD:goto[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -146,9 +146,9 @@ ACMD:goto[3](playerid, params[])
 
 ACMD:get[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -166,7 +166,7 @@ ACMD:get[3](playerid, params[])
 		return 1;
 	}
 
-	if(gPlayerData[playerid][ply_Admin] == 1)
+	if(GetPlayerAdminLevel(playerid) == 1)
 	{
 		if(GetPlayerDist3D(playerid, targetid) > 50.0)
 		{
@@ -297,9 +297,9 @@ ACMD:deleteaccount[3](playerid, params[])
 
 ACMD:deleteitems[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -344,9 +344,9 @@ ACMD:deleteitems[3](playerid, params[])
 
 ACMD:deletetents[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -391,9 +391,9 @@ ACMD:deletetents[3](playerid, params[])
 
 ACMD:deletedefences[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 
@@ -437,9 +437,9 @@ ACMD:deletedefences[3](playerid, params[])
 }
 ACMD:deletesigns[3](playerid, params[])
 {
-	if(gPlayerData[playerid][ply_Admin] == 3)
+	if(GetPlayerAdminLevel(playerid) == 3)
 	{
-		if(!(gPlayerBitData[playerid] & AdminDuty))
+		if(!(IsPlayerOnAdminDuty(playerid)))
 			return 6;
 	}
 

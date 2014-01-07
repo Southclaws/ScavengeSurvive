@@ -23,7 +23,7 @@ ACMD:mute[1](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return Msg(playerid,RED, " >  Invalid targetid");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin])
+	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid))
 		return 3;
 
 	if(IsPlayerMuted(targetid))
@@ -52,7 +52,7 @@ ACMD:unmute[1](playerid, params[])
 	if(sscanf(params, "d", targetid))
 		return Msg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
 
 	if(!IsPlayerConnected(targetid))
@@ -78,15 +78,17 @@ ACMD:warn[1](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return Msg(playerid,RED, " >  Invalid targetid");
 
-	if(gPlayerData[targetid][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != targetid)
+	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
 
-	gPlayerData[targetid][ply_Warnings]++;
+	new warnings = GetPlayerWarnings(targetid);
 
-	MsgF(playerid, ORANGE, " >  %P"C_YELLOW" Has been warned (%d/5) for: %s", targetid, gPlayerData[targetid][ply_Warnings], reason);
-	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", gPlayerData[targetid][ply_Warnings], reason);
+	SetPlayerWarnings(targetid, warnings + 1);
 
-	if(gPlayerData[targetid][ply_Warnings] >= 5)
+	MsgF(playerid, ORANGE, " >  %P"C_YELLOW" Has been warned (%d/5) for: %s", targetid, warnings, reason);
+	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s", warnings, reason);
+
+	if(warnings >= 5)
 	{
 		BanPlayer(targetid, "Getting 5 warnings", playerid, 86400);
 	}
@@ -124,7 +126,7 @@ ACMD:country[1](playerid, params[])
 
 	new country[32];
 
-	if(gPlayerData[id][ply_Admin] > gPlayerData[playerid][ply_Admin])
+	if(GetPlayerAdminLevel(id) > GetPlayerAdminLevel(playerid))
 		country = "Unknown";
 
 	else
@@ -143,7 +145,7 @@ ACMD:allcountry[1](playerid, params[])
 
 	foreach(new i : Player)
 	{
-		if(gPlayerData[i][ply_Admin] > gPlayerData[playerid][ply_Admin])
+		if(GetPlayerAdminLevel(i) > GetPlayerAdminLevel(playerid))
 			country = "Unknown";
 
 		else

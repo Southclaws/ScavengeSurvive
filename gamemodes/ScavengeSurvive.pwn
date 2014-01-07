@@ -855,6 +855,7 @@ forward SetRestart(seconds);
 // PLAYER INTERNAL SCRIPTS
 #include "SS/Core/Player/Core.pwn"
 #include "SS/Core/Player/Accounts.pwn"
+#include "SS/Core/Player/Aliases.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
 #include "SS/Core/Player/Spawn.pwn"
 #include "SS/Core/Player/Damage.pwn"

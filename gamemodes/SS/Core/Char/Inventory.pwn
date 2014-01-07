@@ -179,9 +179,9 @@ UpdatePlayerGear(playerid, show = 1)
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], 19300);
 	}
 
-	if(gPlayerData[playerid][ply_ArmourPoints] > 0.0)
+	if(GetPlayerAP(playerid) > 0.0)
 	{
-		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], sprintf("Armour (%.0f)", gPlayerData[playerid][ply_ArmourPoints]));
+		PlayerTextDrawSetString(playerid, GearSlot_Tors[UI_ELEMENT_ITEM], sprintf("Armour (%.0f)", GetPlayerAP(playerid)));
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Tors[UI_ELEMENT_TILE], 19515);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Tors[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
@@ -677,7 +677,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 				new itemid = CreateItem(item_Armour);
 
-				SetItemExtraData(itemid, floatround(gPlayerData[playerid][ply_ArmourPoints]));
+				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 				AddItemToContainer(containerid, itemid, playerid);
 				SetPlayerAP(playerid, 0.0);
 

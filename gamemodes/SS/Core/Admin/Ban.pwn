@@ -15,7 +15,7 @@ BanPlayer(playerid, reason[], byid, duration)
 		GetPlayerName(byid, name, MAX_PLAYER_NAME);
 
 	stmt_bind_value(gStmt_BanInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_bind_value(gStmt_BanInsert, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
+	stmt_bind_value(gStmt_BanInsert, 1, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 	stmt_bind_value(gStmt_BanInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON);
 	stmt_bind_value(gStmt_BanInsert, 4, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -51,7 +51,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 		if(!strcmp(gPlayerName[i], name))
 		{
 			id = i;
-			ip = gPlayerData[id][ply_IP];
+			ip = GetPlayerIpAsInt(id);
 			online = true;
 		}
 	}
@@ -113,7 +113,7 @@ BanCheck(playerid)
 		duration;
 
 	stmt_bind_value(gStmt_BanGetFromNameIp, 0, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_bind_value(gStmt_BanGetFromNameIp, 1, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
+	stmt_bind_value(gStmt_BanGetFromNameIp, 1, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 
 	stmt_bind_result_field(gStmt_BanGetFromNameIp, 0, DB::TYPE_INTEGER, banned);
 	stmt_bind_result_field(gStmt_BanGetFromNameIp, 1, DB::TYPE_INTEGER, timestamp);
@@ -153,7 +153,7 @@ BanCheck(playerid)
 
 			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
 
-			stmt_bind_value(gStmt_BanUpdateIpv4, 0, DB::TYPE_INTEGER, gPlayerData[playerid][ply_IP]);
+			stmt_bind_value(gStmt_BanUpdateIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 			stmt_bind_value(gStmt_BanUpdateIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);
 			stmt_execute(gStmt_BanUpdateIpv4);
 

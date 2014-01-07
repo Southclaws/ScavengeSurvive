@@ -9,11 +9,11 @@ static
 
 KnockOutPlayer(playerid, duration)
 {
-	if(gPlayerBitData[playerid] & AdminDuty)
+	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
-	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - gPlayerData[playerid][ply_HitPoints]));
+	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, 1000 * (40.0 - GetPlayerHP(playerid)));
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
 	knockout_Tick[playerid] = GetTickCount();
@@ -68,7 +68,7 @@ WakeUpPlayer(playerid)
 
 KnockOutUpdate(playerid)
 {
-	if(gPlayerBitData[playerid] & Dying || GetTickCountDifference(GetPlayerSpawnTick(playerid), GetTickCount()) < 1000 || !IsPlayerSpawned(playerid))
+	if(IsPlayerDead(playerid) || GetTickCountDifference(GetPlayerSpawnTick(playerid), GetTickCount()) < 1000 || !IsPlayerSpawned(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
@@ -77,7 +77,7 @@ KnockOutUpdate(playerid)
 
 	if(knockout_KnockedOut[playerid])
 	{
-		if(gPlayerBitData[playerid] & AdminDuty)
+		if(IsPlayerOnAdminDuty(playerid))
 			WakeUpPlayer(playerid);
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
@@ -104,23 +104,25 @@ KnockOutUpdate(playerid)
 	}
 	else
 	{
+		new Float:hp = GetPlayerHP(playerid);
+
 		HidePlayerProgressBar(playerid, KnockoutBar);
 
-		if(gPlayerData[playerid][ply_HitPoints] < 50.0)
+		if(hp < 50.0)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
 			{
-				if(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]) > 5000 * gPlayerData[playerid][ply_HitPoints])
+				if(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]) > 5000 * hp)
 				{
-					if(gPlayerBitData[playerid] & Bleeding)
+					if(IsPlayerBleeding(playerid))
 					{
-						if(frandom(40.0) < (50.0 - gPlayerData[playerid][ply_HitPoints]))
-							KnockOutPlayer(playerid, floatround(2000 * (50.0 - gPlayerData[playerid][ply_HitPoints]) + frandom(200 * (50.0 - gPlayerData[playerid][ply_HitPoints]))));
+						if(frandom(40.0) < (50.0 - hp))
+							KnockOutPlayer(playerid, floatround(2000 * (50.0 - hp) + frandom(200 * (50.0 - hp))));
 					}
 					else
 					{
-						if(frandom(40.0) < (40.0 - gPlayerData[playerid][ply_HitPoints]))
-							KnockOutPlayer(playerid, floatround(2000 * (40.0 - gPlayerData[playerid][ply_HitPoints]) + frandom(200 * (40.0 - gPlayerData[playerid][ply_HitPoints]))));
+						if(frandom(40.0) < (40.0 - hp))
+							KnockOutPlayer(playerid, floatround(2000 * (40.0 - hp) + frandom(200 * (40.0 - hp))));
 					}
 				}
 			}

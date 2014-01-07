@@ -2,8 +2,15 @@
 
 
 new
-	chat_MessageStreak	[MAX_PLAYERS];
+	chat_MessageStreak[MAX_PLAYERS],
+	chat_LastMessageTick[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	chat_LastMessageTick[playerid] = 0;
+	return 1;
+}
 
 hook OnPlayerText(playerid, text[])
 {
@@ -19,7 +26,7 @@ hook OnPlayerText(playerid, text[])
 	}
 	else
 	{
-		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_LastChatMessageTick]) < 1000)
+		if(GetTickCountDifference(GetTickCount(), chat_LastMessageTick[playerid]) < 1000)
 		{
 			chat_MessageStreak[playerid]++;
 			if(chat_MessageStreak[playerid] == 3)
@@ -36,30 +43,31 @@ hook OnPlayerText(playerid, text[])
 		}
 	}
 
-	gPlayerData[playerid][ply_LastChatMessageTick] = GetTickCount();
+	chat_LastMessageTick[playerid] = GetTickCount();
 
-	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_LOCAL)
+	if(GetPlayerChatMode(playerid) == CHAT_MODE_LOCAL)
 		PlayerSendChat(playerid, text, 0.0);
 
-	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_GLOBAL)
+	if(GetPlayerChatMode(playerid) == CHAT_MODE_GLOBAL)
 		PlayerSendChat(playerid, text, 1.0);
 
-	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_RADIO)
-		PlayerSendChat(playerid, text, gPlayerData[playerid][ply_RadioFrequency]);
+	if(GetPlayerChatMode(playerid) == CHAT_MODE_RADIO)
+		PlayerSendChat(playerid, text, GetPlayerRadioFrequency(playerid));
 
-	if(gPlayerData[playerid][ply_ChatMode] == CHAT_MODE_ADMIN)
+	if(GetPlayerChatMode(playerid) == CHAT_MODE_ADMIN)
 	{
 		logf("[CHAT] [ADMIN] [%p]: %s", playerid, text);
 
 		foreach(new i : Player)
 		{
-			if(gPlayerData[i][ply_Admin] > 0)
-				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(text));
+			if(GetPlayerAdminLevel(i) > 0)
+				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, TagScan(text));
 		}
 	}
 
 	return 0;
 }
+
 PlayerSendChat(playerid, chat[], Float:frequency)
 {
 	new
@@ -110,7 +118,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
-			if(gPlayerBitData[i] & GlobalQuiet)
+			if(GetPlayerBitFlag(i, GlobalQuiet))
 				continue;
 
 			SendClientMessage(i, WHITE, line1);
@@ -133,7 +141,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
-			if(-0.05 < frequency - gPlayerData[i][ply_RadioFrequency] < 0.05)
+			if(-0.05 < frequency - GetPlayerRadioFrequency(i) < 0.05)
 			{
 				SendClientMessage(i, CHAT_RADIO, line1);
 
@@ -161,7 +169,7 @@ CMD:g(playerid, params[])
 
 	if(isnull(params))
 	{
-		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_GLOBAL;
+		SetPlayerChatMode(playerid, CHAT_MODE_GLOBAL);
 		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
 	}
 	else
@@ -176,7 +184,7 @@ CMD:l(playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_LOCAL;
+		SetPlayerChatMode(playerid, CHAT_MODE_LOCAL);
 		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
 	}
 	else
@@ -191,12 +199,12 @@ CMD:r(playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_RADIO;
-		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", gPlayerData[playerid][ply_RadioFrequency]);
+		SetPlayerChatMode(playerid, CHAT_MODE_RADIO);
+		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", GetPlayerRadioFrequency(playerid));
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, gPlayerData[playerid][ply_RadioFrequency]);
+		PlayerSendChat(playerid, params, GetPlayerRadioFrequency(playerid));
 	}
 
 	return 7;
@@ -204,14 +212,14 @@ CMD:r(playerid, params[])
 
 CMD:quiet(playerid, params[])
 {
-	if(gPlayerBitData[playerid] & GlobalQuiet)
+	if(GetPlayerBitFlag(playerid, GlobalQuiet))
 	{
-		f:gPlayerBitData[playerid]<GlobalQuiet>;
+		SetPlayerBitFlag(playerid, GlobalQuiet, false);
 		Msg(playerid, WHITE, " >  You turn on your radio's global receiver, you will now see all global chat.");
 	}
 	else
 	{
-		t:gPlayerBitData[playerid]<GlobalQuiet>;
+		SetPlayerBitFlag(playerid, GlobalQuiet, true);
 		Msg(playerid, WHITE, " >  You turn off your radio's global receiver, you will not see any global chat.");
 	}
 
@@ -222,7 +230,7 @@ ACMD:a[1](playerid, params[])
 {
 	if(isnull(params))
 	{
-		gPlayerData[playerid][ply_ChatMode] = CHAT_MODE_ADMIN;
+		SetPlayerChatMode(playerid, CHAT_MODE_ADMIN);
 		Msg(playerid, WHITE, " >  Admin chat activated.");
 	}
 	else
@@ -231,8 +239,8 @@ ACMD:a[1](playerid, params[])
 
 		foreach(new i : Player)
 		{
-			if(gPlayerData[i][ply_Admin] > 0)
-				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(gPlayerData[playerid][ply_Admin]), playerid, TagScan(params));
+			if(GetPlayerAdminLevel(i) > 0)
+				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, TagScan(params));
 		}
 	}
 

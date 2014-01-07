@@ -27,8 +27,20 @@ static
 		0xFF0000FF			// 4
 	};
 
+static
+	admin_Level[MAX_PLAYERS],
+	admin_OnDuty[MAX_PLAYERS],
+	admin_DutyTick[MAX_PLAYERS];
 
-LoadAdminData()
+
+/*==============================================================================
+
+	Core
+
+==============================================================================*/
+
+
+LoadAdminData() // Call in OnGameModeInit
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -56,18 +68,6 @@ LoadAdminData()
 	}
 
 	SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-}
-
-SetPlayerAdminLevel(playerid, level)
-{
-	if(!(0 <= level < MAX_ADMIN_LEVELS))
-		return 0;
-
-	gPlayerData[playerid][ply_Admin] = level;
-
-	UpdateAdmin(gPlayerName[playerid], level);
-
-	return 1;
 }
 
 UpdateAdmin(name[MAX_PLAYER_NAME], level)
@@ -158,7 +158,7 @@ CheckAdminLevel(playerid)
 	{
 		if(!strcmp(gPlayerName[playerid], admin_Data[i][admin_Name]))
 		{
-			gPlayerData[playerid][ply_Admin] = admin_Data[i][admin_Rank];
+			admin_Level[playerid] = admin_Data[i][admin_Rank];
 			break;
 		}
 	}
@@ -178,7 +178,6 @@ timer KickPlayerDelay[10](playerid)
 {
 	Kick(playerid);
 }
-
 
 MsgAdmins(level, colour, string[])
 {
@@ -208,7 +207,7 @@ MsgAdmins(level, colour, string[])
 
 		foreach(new i : Player)
 		{
-			if(gPlayerData[i][ply_Admin] < level)
+			if(admin_Level[i] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -219,7 +218,7 @@ MsgAdmins(level, colour, string[])
 	{
 		foreach(new i : Player)
 		{
-			if(gPlayerData[i][ply_Admin] < level)
+			if(admin_Level[i] < level)
 				continue;
 
 			SendClientMessage(i, colour, string);
@@ -229,6 +228,138 @@ MsgAdmins(level, colour, string[])
 	return 1;
 }
 
+TogglePlayerAdminDuty(playerid, toggle)
+{
+	if(toggle)
+	{
+		new
+			itemid,
+			ItemType:itemtype,
+			Float:x,
+			Float:y,
+			Float:z;
+
+		itemid = GetPlayerItem(playerid);
+		itemtype = GetItemType(itemid);
+
+		GetPlayerPos(playerid, x, y, z);
+		SetPlayerSpawnPos(playerid, x, y, z);
+
+		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
+		{
+			if(!IsContainerEmpty(GetItemExtraData(itemid)))
+				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+		}
+
+		Logout(playerid);
+
+		ToggleArmour(playerid, false);
+
+		admin_OnDuty[playerid] = true;
+
+		if(GetPlayerGender(playerid) == GENDER_MALE)
+			SetPlayerSkin(playerid, 217);
+
+		else
+			SetPlayerSkin(playerid, 211);
+	}
+	else
+	{
+		admin_OnDuty[playerid] = false;
+
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerSpawnPos(playerid, x, y, z);
+
+		SetPlayerPos(playerid, x, y, z);
+		LoadPlayerChar(playerid);
+		LoadPlayerInventory(playerid);
+
+		SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
+
+		admin_DutyTick[playerid] = GetTickCount();
+	}
+}
+
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+stock SetPlayerAdminLevel(playerid, level)
+{
+	if(!(0 <= level < MAX_ADMIN_LEVELS))
+		return 0;
+
+	admin_Level[playerid] = level;
+
+	UpdateAdmin(gPlayerName[playerid], level);
+
+	return 1;
+}
+
+stock GetPlayerAdminLevel(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return admin_Level[playerid];
+}
+
+stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
+{
+	new level;
+
+	stmt_bind_value(gStmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(gStmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
+	stmt_execute(gStmt_AdminGetLevel);
+	stmt_fetch_row(gStmt_AdminGetLevel);
+
+	return level;
+}
+
+stock GetAdminTotal()
+{
+	return admin_Total;
+}
+
+stock GetAdminRankName(rank)
+{
+	if(!(0 < rank < MAX_ADMIN_LEVELS))
+		return admin_Names[0];
+
+	return admin_Names[rank];
+}
+
+stock GetAdminRankColour(rank)
+{
+	if(!(0 < rank < MAX_ADMIN_LEVELS))
+		return admin_Colours[0];
+
+	return admin_Colours[rank];
+}
+
+stock IsPlayerOnAdminDuty(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return admin_OnDuty[playerid];
+}
+
+
+/*==============================================================================
+
+	Commands
+
+==============================================================================*/
+
 
 ACMD:acmds[1](playerid, params[])
 {
@@ -236,17 +367,17 @@ ACMD:acmds[1](playerid, params[])
 
 	strcat(gBigString[playerid], "/a [message] - Staff chat channel");
 
-	if(gPlayerData[playerid][ply_Admin] >= 3)
+	if(admin_Level[playerid] >= 3)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 3)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl3);
 	}
-	if(gPlayerData[playerid][ply_Admin] >= 2)
+	if(admin_Level[playerid] >= 2)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 2)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl2);
 	}
-	if(gPlayerData[playerid][ply_Admin] >= 1)
+	if(admin_Level[playerid] >= 1)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Game Master (level 1)"C_BLUE"\n");
 		strcat(gBigString[playerid], gAdminCommandList_Lvl1);
@@ -289,36 +420,27 @@ ACMD:adminlist[3](playerid, params[])
 	return 1;
 }
 
-stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
+ACMD:duty[1](playerid, params[])
 {
-	new level;
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+	{
+		Msg(playerid, YELLOW, " >  You cannot do that while spectating.");
+		return 1;
+	}
 
-	stmt_bind_value(gStmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(gStmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
-	stmt_execute(gStmt_AdminGetLevel);
-	stmt_fetch_row(gStmt_AdminGetLevel);
+	if(admin_OnDuty[playerid])
+	{
+		TogglePlayerAdminDuty(playerid, false);
+	}
+	else
+	{
+		if(GetTickCountDifference(GetTickCount(), admin_DutyTick[playerid]) < 10000)
+		{
+			Msg(playerid, YELLOW, " >  Please don't use the duty ability that frequently.");
+			return 1;
+		}
 
-	return level;
+		TogglePlayerAdminDuty(playerid, true);
+	}
+	return 1;
 }
-
-stock GetAdminTotal()
-{
-	return admin_Total;
-}
-
-stock GetAdminRankName(rank)
-{
-	if(!(0 < rank < MAX_ADMIN_LEVELS))
-		return admin_Names[0];
-
-	return admin_Names[rank];
-}
-
-stock GetAdminRankColour(rank)
-{
-	if(!(0 < rank < MAX_ADMIN_LEVELS))
-		return admin_Colours[0];
-
-	return admin_Colours[rank];
-}
-

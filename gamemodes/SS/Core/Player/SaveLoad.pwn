@@ -53,9 +53,9 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_FILE_VERSION] = CHARACTER_DATA_FILE_VERSION;
 
-	data[PLY_CELL_HEALTH]	= _:gPlayerData[playerid][ply_HitPoints];
-	data[PLY_CELL_ARMOUR]	= _:gPlayerData[playerid][ply_ArmourPoints];
-	data[PLY_CELL_FOOD]		= _:gPlayerData[playerid][ply_FoodPoints];
+	data[PLY_CELL_HEALTH]	= _:GetPlayerHP(playerid);
+	data[PLY_CELL_ARMOUR]	= _:GetPlayerAP(playerid);
+	data[PLY_CELL_FOOD]		= _:GetPlayerFP(playerid);
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
 
@@ -101,16 +101,14 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_BLEEDING] = IsPlayerBleeding(playerid);
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
-	data[PLY_CELL_WARNS] = gPlayerData[playerid][ply_Warnings];
-	data[PLY_CELL_FREQ] = _:gPlayerData[playerid][ply_RadioFrequency];
-	data[PLY_CELL_CHATMODE] = gPlayerData[playerid][ply_ChatMode];
-	data[PLY_CELL_INFECTED] = _:(gPlayerBitData[playerid] & Infected);
-	data[PLY_CELL_TOOLTIPS] = _:(gPlayerBitData[playerid] & ToolTips);
+	data[PLY_CELL_WARNS] = GetPlayerWarnings(playerid);
+	data[PLY_CELL_FREQ] = _:GetPlayerRadioFrequency(playerid);
+	data[PLY_CELL_CHATMODE] = GetPlayerChatMode(playerid);
+	data[PLY_CELL_INFECTED] = _:GetPlayerBitFlag(playerid, Infected);
+	data[PLY_CELL_TOOLTIPS] = _:GetPlayerBitFlag(playerid, ToolTips);
 
-	data[PLY_CELL_SPAWN_X] = _:gPlayerData[playerid][ply_SpawnPosX];
-	data[PLY_CELL_SPAWN_Y] = _:gPlayerData[playerid][ply_SpawnPosY];
-	data[PLY_CELL_SPAWN_Z] = _:gPlayerData[playerid][ply_SpawnPosZ];
-	data[PLY_CELL_SPAWN_R] = _:gPlayerData[playerid][ply_SpawnRotZ];
+	GetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
+	GetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);
@@ -218,14 +216,14 @@ LoadPlayerChar(playerid)
 	if(Float:data[PLY_CELL_HEALTH] <= 0.0)
 		data[PLY_CELL_HEALTH] = _:1.0;
 
-	gPlayerData[playerid][ply_HitPoints]	= Float:data[PLY_CELL_HEALTH];
-	gPlayerData[playerid][ply_ArmourPoints]	= Float:data[PLY_CELL_ARMOUR];
-	gPlayerData[playerid][ply_FoodPoints]	= Float:data[PLY_CELL_FOOD];
-	gPlayerData[playerid][ply_Clothes]		= data[PLY_CELL_SKIN];
+	SetPlayerHP(playerid, Float:data[PLY_CELL_HEALTH]);
+	SetPlayerAP(playerid, Float:data[PLY_CELL_ARMOUR]);
+	SetPlayerFP(playerid, Float:data[PLY_CELL_FOOD]);
+	SetPlayerClothesID(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
 
-	if(gPlayerData[playerid][ply_ArmourPoints] > 0.0)
+	if(GetPlayerAP(playerid) > 0.0)
 		ToggleArmour(playerid, true);
 
 	if(data[PLY_CELL_HOLST] != -1)
@@ -252,45 +250,20 @@ LoadPlayerChar(playerid)
 		}
 	}
 
-	gPlayerData[playerid][ply_stance] = data[PLY_CELL_STANCE];
+	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
+	SetPlayerBitFlag(playerid, Bleeding, data[PLY_CELL_BLEEDING]);
+	SetPlayerCuffs(playerid, data[PLY_CELL_CUFFED]);
+	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
+	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
+	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
+	SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
+	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
 
-	if(data[PLY_CELL_BLEEDING])
-		t:gPlayerBitData[playerid]<Bleeding>;
+	if(!IsPointInMapBounds(Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]))
+		data[PLY_CELL_SPAWN_Z] += _:1.0;
 
-	else
-		f:gPlayerBitData[playerid]<Bleeding>;
-
-	if(data[PLY_CELL_CUFFED])
-		SetPlayerCuffs(playerid, true);
-
-	else
-		SetPlayerCuffs(playerid, false);
-
-	gPlayerData[playerid][ply_Warnings] = data[PLY_CELL_WARNS];
-
-	gPlayerData[playerid][ply_RadioFrequency] = Float:data[PLY_CELL_FREQ];
-
-	gPlayerData[playerid][ply_ChatMode] = data[PLY_CELL_CHATMODE];
-
-	if(data[PLY_CELL_INFECTED])
-		t:gPlayerBitData[playerid]<Infected>;
-
-	else
-		f:gPlayerBitData[playerid]<Infected>;
-
-	if(data[PLY_CELL_TOOLTIPS])
-		t:gPlayerBitData[playerid]<ToolTips>;
-
-	else
-		f:gPlayerBitData[playerid]<ToolTips>;
-
-	gPlayerData[playerid][ply_SpawnPosX] = Float:data[PLY_CELL_SPAWN_X];
-	gPlayerData[playerid][ply_SpawnPosY] = Float:data[PLY_CELL_SPAWN_Y];
-	gPlayerData[playerid][ply_SpawnPosZ] = Float:data[PLY_CELL_SPAWN_Z];
-	gPlayerData[playerid][ply_SpawnRotZ] = Float:data[PLY_CELL_SPAWN_R];
-
-	if(!IsPointInMapBounds(gPlayerData[playerid][ply_SpawnPosX], gPlayerData[playerid][ply_SpawnPosY], gPlayerData[playerid][ply_SpawnPosZ]))
-		gPlayerData[playerid][ply_SpawnPosZ] += 1.0;
+	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
+	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
 	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
 

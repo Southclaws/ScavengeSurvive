@@ -45,14 +45,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 	{
 		case 31:
 		{
-			new model = GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]);
+			new model = GetVehicleModel(GetPlayerLastVehicle(playerid));
 
 			if(model == 447 || model == 476)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 38:
 		{
-			if(GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]) == 425)
+			if(GetVehicleModel(GetPlayerLastVehicle(playerid)) == 425)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
 		}
 		case 49:
@@ -61,7 +61,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 		}
 		case 51:
 		{
-			new model = GetVehicleModel(gPlayerData[issuerid][ply_CurrentVehicle]);
+			new model = GetVehicleModel(GetPlayerLastVehicle(playerid));
 
 			if(model == 432 || model == 520 || model == 425)
 				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
@@ -78,8 +78,8 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	if(!IsPlayerSpawned(playerid))
 		return 0;
 
-	GetPlayerName(playerid, gPlayerData[damagedid][ply_LastHitBy], MAX_PLAYER_NAME);
-	gPlayerData[damagedid][ply_LastHitById] = playerid;
+	SetLastHitBy(damagedid, gPlayerName[playerid]);
+	SetLastHitById(damagedid, playerid);
 
 	DamagePlayer(playerid, damagedid, weaponid);
 
@@ -102,16 +102,16 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 	if(weaponid == WEAPON_DEAGLE)
 	{
-		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_DeltDamageTick]) < 400)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerDeltDamageTick(playerid)) < 400)
 			return 0;
 	}
 	else
 	{
-		if(GetTickCountDifference(GetTickCount(), gPlayerData[playerid][ply_DeltDamageTick]) < 100)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerDeltDamageTick(playerid)) < 100)
 			return 0;
 	}
 
-	gPlayerData[playerid][ply_DeltDamageTick] = GetTickCount();
+	SetPlayerDeltDamageTick(playerid, GetTickCount());
 
 	new
 		head,
@@ -166,7 +166,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 				{
 					if(random(100) < 30)
 					{
-						t:gPlayerBitData[targetid]<Bleeding>;
+						SetPlayerBitFlag(targetid, Bleeding, true);
 					}
 				}
 				case 0, 40..46:
@@ -175,14 +175,16 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 				}
 				default:
 				{
-					t:gPlayerBitData[targetid]<Bleeding>;
+					new Float:hp = GetPlayerHP(playerid);
 
-					if((gPlayerData[playerid][ply_HitPoints] - hploss) < 40.0)
+					SetPlayerBitFlag(targetid, Bleeding, true);
+
+					if((hp - hploss) < 40.0)
 					{
 						if(random(100) < 70)
 						{
 							if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-								KnockOutPlayer(targetid, floatround(4000 * (40.0 - (gPlayerData[targetid][ply_HitPoints] - hploss))));
+								KnockOutPlayer(targetid, floatround(4000 * (40.0 - (hp - hploss))));
 						}
 					}
 				}
@@ -196,11 +198,11 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(weaponid == anim_Blunt)
 		{
 			if(random(100) < 40)
-				KnockOutPlayer(targetid, floatround(120 * (100.0 - (gPlayerData[targetid][ply_HitPoints] - hploss))));
+				KnockOutPlayer(targetid, floatround(120 * (100.0 - (GetPlayerHP(playerid) - hploss))));
 
 			if(random(100) < 30)
 			{
-				t:gPlayerBitData[targetid]<Bleeding>;
+				SetPlayerBitFlag(targetid, Bleeding, true);
 			}
 		}
 		if(weaponid == anim_Stab)
@@ -213,7 +215,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 			}
 			else
 			{
-				t:gPlayerBitData[targetid]<Bleeding>;
+				SetPlayerBitFlag(targetid, Bleeding, true);
 			}
 		}
 
@@ -237,7 +239,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(45.0 < angleto < 135.0)
 			hploss *= 0.1;
 
-		f:gPlayerBitData[targetid]<Bleeding>;
+		SetPlayerBitFlag(targetid, Bleeding, false);
 	}
 
 	if(GetItemType(GetPlayerHolsterItem(targetid)) == item_Shield)
@@ -253,7 +255,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 		if(155.0 < angleto < 205.0)
 			hploss *= 0.1;
 
-		f:gPlayerBitData[targetid]<Bleeding>;
+		SetPlayerBitFlag(targetid, Bleeding, false);
 	}
 
 	GivePlayerHP(targetid, -hploss);
@@ -264,15 +266,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 GivePlayerHP(playerid, Float:hp)
 {
-	SetPlayerHP(playerid, (gPlayerData[playerid][ply_HitPoints] + hp));
-}
-
-SetPlayerHP(playerid, Float:hp)
-{
-	if(hp > 100.0)
-		hp = 100.0;
-
-	gPlayerData[playerid][ply_HitPoints] = hp;
+	SetPlayerHP(playerid, (GetPlayerHP(playerid) + hp));
 }
 
 ShowHitMarker(playerid, weapon)

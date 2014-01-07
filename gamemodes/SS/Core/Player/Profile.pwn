@@ -7,7 +7,6 @@ ShowPlayerProfile(playerid, name[])
 		body[512],
 		targetid,
 
-		ipv4,
 		alive,
 		karma,
 		regdate,
@@ -21,19 +20,17 @@ ShowPlayerProfile(playerid, name[])
 
 	if(IsPlayerConnected(targetid))
 	{
-		ipv4			= gPlayerData[targetid][ply_IP];
 		alive			= IsPlayerAlive(targetid);
-		karma			= gPlayerData[targetid][ply_Karma];
-		regdate			= gPlayerData[targetid][ply_RegisterTimestamp];
-		lastlog			= gPlayerData[targetid][ply_LastLogin];
-		spawntimestamp	= gPlayerData[targetid][ply_CreationTimestamp];
-		spawns			= gPlayerData[targetid][ply_TotalSpawns];
-		warnings		= gPlayerData[targetid][ply_Warnings];
+		karma			= GetPlayerKarma(targetid);
+		regdate			= GetPlayerRegTimestamp(targetid);
+		lastlog			= GetPlayerLastLogin(targetid);
+		spawntimestamp	= GetPlayerCreationTimestamp(targetid);
+		spawns			= GetPlayerTotalSpawns(targetid);
+		warnings		= GetPlayerWarnings(targetid);
 	}
 	else
 	{
 		stmt_bind_value(gStmt_AccountLoad, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_IPV4, DB::TYPE_INTEGER, ipv4);
 		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, alive);
 		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_KARMA, DB::TYPE_INTEGER, karma);
 		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_REGDATE, DB::TYPE_INTEGER, regdate);

@@ -23,14 +23,13 @@ public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Armour)
 	{
-		if(gPlayerData[playerid][ply_ArmourPoints] <= 0.0)
+		if(GetPlayerAP(playerid) <= 0.0)
 		{
 			new data = GetItemExtraData(itemid);
 			if(data > 0)
 			{
 				DestroyItem(itemid);
-				gPlayerData[playerid][ply_ArmourPoints] = float(data);
-				ToggleArmour(playerid, true);
+				SetPlayerAP(playerid, float(data));
 			}
 		}
 	}

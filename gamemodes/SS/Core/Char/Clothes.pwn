@@ -104,13 +104,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			new skinid = GetItemExtraData(itemid);
 
-			if(skin_Data[skinid][skin_gender] == gPlayerData[playerid][ply_Gender])
+			if(skin_Data[skinid][skin_gender] == GetPlayerGender(playerid))
 				StartUsingClothes(playerid, itemid);
 
 			else
 				ShowActionText(playerid, "Wrong gender for clothes", 3000, 130);
 		}
 	}
+
 	if(oldkeys == 16)
 	{
 		if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)

@@ -1,4 +1,4 @@
-#define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || GetPlayerDataBitmask(%0) & AdminDuty || IsPlayerKnockedOut(%0) || GetPlayerAnimationIndex(%0) == 1381
+#define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(%0) || IsPlayerKnockedOut(%0) || GetPlayerAnimationIndex(%0) == 1381
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -20,7 +20,7 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(IsBadInteract(playerid))
 		return 1;
 
-	if(IsBadInteract(targetid) || gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
+	if(IsBadInteract(targetid) || GetPlayerSpectateTarget(playerid) != INVALID_PLAYER_ID)
 		return 1;
 
 	if(GetPlayerWeapon(targetid) != 0)

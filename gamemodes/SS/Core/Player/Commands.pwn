@@ -92,15 +92,15 @@ CMD:restartinfo(playerid, params[])
 
 CMD:tooltips(playerid, params[])
 {
-	if(gPlayerBitData[playerid] & ToolTips)
+	if(GetPlayerBitFlag(playerid, ToolTips))
 	{
 		Msg(playerid, YELLOW, " >  Tooltips disabled");
-		f:gPlayerBitData[playerid]<ToolTips>;
+		SetPlayerBitFlag(playerid, ToolTips, false);
 	}
 	else
 	{
 		Msg(playerid, YELLOW, " >  Tooltips enabled");
-		t:gPlayerBitData[playerid]<ToolTips>;
+		SetPlayerBitFlag(playerid, ToolTips, true);
 	}
 	return 1;
 }
@@ -129,7 +129,7 @@ CMD:changepass(playerid,params[])
 		newpass[32],
 		buffer[MAX_PASSWORD_LEN];
 
-	if(!(gPlayerBitData[playerid] & LoggedIn))
+	if(!IsPlayerLoggedIn(playerid))
 		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
 
 	if(sscanf(params, "s[32]s[32]", oldpass, newpass))
@@ -139,9 +139,12 @@ CMD:changepass(playerid,params[])
 	}
 	else
 	{
+		new storedhash[MAX_PASSWORD_LEN];
+
+		GetPlayerPassHash(playerid, storedhash);
 		WP_Hash(buffer, MAX_PASSWORD_LEN, oldpass);
 		
-		if(!strcmp(buffer, gPlayerData[playerid][ply_Password]))
+		if(!strcmp(buffer, storedhash))
 		{
 			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
 
@@ -150,7 +153,7 @@ CMD:changepass(playerid,params[])
 			
 			if(stmt_execute(gStmt_AccountSetPassword))
 			{
-				gPlayerData[playerid][ply_Password] = buffer;
+				SetPlayerPassHash(playerid, buffer);
 				MsgF(playerid, YELLOW, " >  Password successfully changed to "C_BLUE"%s"C_YELLOW"!", newpass);
 			}
 			else

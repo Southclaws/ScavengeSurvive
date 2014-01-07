@@ -70,7 +70,7 @@ timer TakePills[500](playerid, itemid)
 	{
 		case PILL_TYPE_ANTIBIOTICS:
 		{
-			f:gPlayerBitData[playerid]<Infected>;
+			SetPlayerBitFlag(playerid, Infected, false);
 		}
 		case PILL_TYPE_PAINKILL:
 		{

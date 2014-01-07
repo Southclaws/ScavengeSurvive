@@ -2,11 +2,13 @@
 
 
 new
-	PlayerText:spec_Name,
-	PlayerText:spec_Info;
+		PlayerText:spec_Name,
+		PlayerText:spec_Info;
 
 static
-	spectate_ClickTick[MAX_PLAYERS];
+		spectate_ClickTick[MAX_PLAYERS],
+		spectate_Target[MAX_PLAYERS],
+Timer:	spectate_Timer[MAX_PLAYERS];
 
 
 EnterSpectateMode(playerid, targetid)
@@ -25,8 +27,8 @@ EnterSpectateMode(playerid, targetid)
 	PlayerTextDrawShow(playerid, spec_Name);
 	PlayerTextDrawShow(playerid, spec_Info);
 
-	gPlayerData[playerid][ply_SpectateTarget] = targetid;
-	UpdateSpectateMode(playerid);
+	spectate_Target[playerid] = targetid;
+	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
 
 	logf("[SPECTATE] %p watches %p", playerid, targetid);
 
@@ -35,16 +37,17 @@ EnterSpectateMode(playerid, targetid)
 
 ExitSpectateMode(playerid)
 {
-	if(gPlayerData[playerid][ply_SpectateTarget] == INVALID_PLAYER_ID)
+	if(spectate_Target[playerid] == INVALID_PLAYER_ID)
 		return 0;
 
 	TogglePlayerSpectating(playerid, false);
 	PlayerTextDrawHide(playerid, spec_Name);
 	PlayerTextDrawHide(playerid, spec_Info);
 
-	gPlayerData[playerid][ply_SpectateTarget] = INVALID_PLAYER_ID;
+	spectate_Target[playerid] = INVALID_PLAYER_ID;
+	stop spectate_Timer[playerid];
 
-	if(gPlayerData[playerid][ply_Gender] == GENDER_MALE)
+	if(GetPlayerGender(playerid) == GENDER_MALE)
 		SetPlayerSkin(playerid, 217);
 
 	else
@@ -53,10 +56,10 @@ ExitSpectateMode(playerid)
 	return 1;
 }
 
-UpdateSpectateMode(playerid)
+timer UpdateSpectateMode[100](playerid)
 {
 	new
-		targetid = gPlayerData[playerid][ply_SpectateTarget],
+		targetid = spectate_Target[playerid],
 		name[24 + 6],
 		str[256];
 
@@ -80,20 +83,20 @@ UpdateSpectateMode(playerid)
 			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
 			Camera: %s Velocity: %.2f~n~\
 			Vehicle %d As %s Fuel: %.2f Locked: %d",
-			gPlayerData[targetid][ply_HitPoints],
-			gPlayerData[targetid][ply_ArmourPoints],
-			gPlayerData[targetid][ply_FoodPoints],
+			GetPlayerHP(targetid),
+			GetPlayerAP(targetid),
+			GetPlayerFP(targetid),
 			IsPlayerKnockedOut(targetid) ? 1 : 0,
-			gPlayerBitData[targetid] & Bleeding ? 1 : 0,
+			IsPlayerBleeding(targetid) ? 1 : 0,
 			wepname,
 			GetPlayerAmmo(targetid),
 			GetPlayerReserveAmmo(targetid),
 			cameramodename,
-			gPlayerData[targetid][ply_Velocity],
-			gPlayerData[targetid][ply_CurrentVehicle],
+			GetPlayerTotalVelocity(targetid),
+			GetPlayerLastVehicle(playerid),
 			invehicleas,
-			GetVehicleFuel(gPlayerData[targetid][ply_CurrentVehicle]),
-			IsVehicleLocked(gPlayerData[targetid][ply_CurrentVehicle]));
+			GetVehicleFuel(GetPlayerLastVehicle(playerid)),
+			IsVehicleLocked(GetPlayerLastVehicle(playerid)));
 	}
 	else
 	{
@@ -130,11 +133,11 @@ UpdateSpectateMode(playerid)
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Camera: %s Velocity: %.2f~n~\
 			Item/Weapon: %s Ammo/Ex: %s Holster: %s Ammo/Ex: %d",
-			gPlayerData[targetid][ply_HitPoints],
-			gPlayerData[targetid][ply_ArmourPoints],
-			gPlayerData[targetid][ply_FoodPoints],
+			GetPlayerHP(targetid),
+			GetPlayerAP(targetid),
+			GetPlayerFP(targetid),
 			IsPlayerKnockedOut(targetid) ? 1 : 0,
-			gPlayerBitData[targetid] & Bleeding ? 1 : 0,
+			IsPlayerBleeding(targetid) ? 1 : 0,
 			cameramodename,
 			velocity,
 			wepname,
@@ -152,7 +155,7 @@ UpdateSpectateMode(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(gPlayerData[playerid][ply_SpectateTarget] != INVALID_PLAYER_ID)
+	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
 	{
 		if(GetTickCountDifference(GetTickCount(), spectate_ClickTick[playerid]) < 1000)
 			return 1;
@@ -162,7 +165,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(newkeys == 4)
 		{
 			new
-				id = gPlayerData[playerid][ply_SpectateTarget] - 1,
+				id = spectate_Target[playerid] - 1,
 				iters;
 
 			if(id < 0)
@@ -190,7 +193,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(newkeys == 128)
 		{
 			new
-				id = gPlayerData[playerid][ply_SpectateTarget] + 1,
+				id = spectate_Target[playerid] + 1,
 				iters;
 
 			if(id == MAX_PLAYERS)
@@ -217,7 +220,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if(newkeys == 512)
 		{
-			EnterSpectateMode(playerid, gPlayerData[playerid][ply_SpectateTarget]);
+			EnterSpectateMode(playerid, spectate_Target[playerid]);
 		}
 	}
 	return 1;
@@ -225,10 +228,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 CanPlayerSpectate(playerid, targetid)
 {
-	if(targetid == playerid || !IsPlayerConnected(targetid) || !(gPlayerBitData[targetid] & Spawned) || GetPlayerState(targetid) == PLAYER_STATE_SPECTATING)
+	if(targetid == playerid || !IsPlayerConnected(targetid) || !(IsPlayerSpawned(targetid)) || GetPlayerState(targetid) == PLAYER_STATE_SPECTATING)
 		return 0;
 
-	if(gPlayerData[playerid][ply_Admin] == 1)
+	if(GetPlayerAdminLevel(playerid) == 1)
 	{
 		if(!IsPlayerReported(gPlayerName[targetid]))
 			return 0;
@@ -239,9 +242,12 @@ CanPlayerSpectate(playerid, targetid)
 
 hook OnPlayerDisconnect(playerid)
 {
+	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
+		ExitSpectateMode(playerid);
+
 	foreach(new i : Player)
 	{
-		if(gPlayerData[i][ply_SpectateTarget] == playerid)
+		if(spectate_Target[i] == playerid)
 		{
 			ExitSpectateMode(i);
 		}
@@ -250,7 +256,7 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerConnect(playerid)
 {
-	gPlayerData[playerid][ply_SpectateTarget] = INVALID_PLAYER_ID;
+	spectate_Target[playerid] = INVALID_PLAYER_ID;
 
 	spec_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
 	PlayerTextDrawAlignment			(playerid, spec_Name, 2);
@@ -277,4 +283,12 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawUseBox			(playerid, spec_Info, 1);
 	PlayerTextDrawBoxColor			(playerid, spec_Info, 255);
 	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 240.000000);
+}
+
+GetPlayerSpectateTarget(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return INVALID_PLAYER_ID;
+
+	return spectate_Target[playerid];
 }

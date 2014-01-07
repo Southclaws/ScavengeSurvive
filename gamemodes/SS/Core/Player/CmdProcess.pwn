@@ -18,7 +18,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	if(funcidx(cmdfunction) == -1) // If it doesn't exist, all hope is not lost! It might be defined as an admin command which has the admin level after the command name
 	{
 		new
-			iLvl = gPlayerData[playerid][ply_Admin], // The player's admin level
+			iLvl = GetPlayerAdminLevel(playerid), // The player's admin level
 			iLoop = 4; // The highest admin level
 
 		while(iLoop > 0) // Loop backwards through admin levels, from 4 to 1

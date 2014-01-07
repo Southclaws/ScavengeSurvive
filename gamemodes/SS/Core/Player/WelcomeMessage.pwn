@@ -1,16 +1,17 @@
 #include <YSI\y_hooks>
 
 
-new
-	Timer:WelcomeMessageTimer[MAX_PLAYERS],
-	WelcomeMessageCount[MAX_PLAYERS];
+static
+Timer:	WelcomeMessageTimer[MAX_PLAYERS],
+		WelcomeMessageCount[MAX_PLAYERS],
+		CanLeaveWelcomeMessage[MAX_PLAYERS];
 
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == d_WelcomeMessage)
 	{
-		if(!(gPlayerBitData[playerid] & CanExitWelcome))
+		if(!CanLeaveWelcomeMessage[playerid])
 		{
 			ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
 		}
@@ -39,7 +40,7 @@ timer ShowWelcomeMessage[1000](playerid, count)
 	{
 		button = "Accept";
 
-		t:gPlayerBitData[playerid]<CanExitWelcome>;
+		CanLeaveWelcomeMessage[playerid] = true;
 	}
 	else
 	{
@@ -49,7 +50,7 @@ timer ShowWelcomeMessage[1000](playerid, count)
 		stop WelcomeMessageTimer[playerid];
 		WelcomeMessageTimer[playerid] = defer ShowWelcomeMessage(playerid, count);
 
-		f:gPlayerBitData[playerid]<CanExitWelcome>;
+		CanLeaveWelcomeMessage[playerid] = false;
 	}
 
 	WelcomeMessageCount[playerid] = count;

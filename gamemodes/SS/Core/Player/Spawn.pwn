@@ -3,7 +3,7 @@
 
 PrepareForSpawn(playerid)
 {
-	t:gPlayerBitData[playerid]<Spawned>;
+	SetPlayerBitFlag(playerid, Spawned, true);
 
 	SetCameraBehindPlayer(playerid);
 	SetAllWeaponSkills(playerid, 500);
@@ -27,44 +27,44 @@ PlayerSpawnExistingCharacter(playerid)
 		return 0;
 	}
 
-	Streamer_UpdateEx(playerid,
-		gPlayerData[playerid][ply_SpawnPosX],
-		gPlayerData[playerid][ply_SpawnPosY],
-		gPlayerData[playerid][ply_SpawnPosZ], 0, 0);
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
 
-	SetPlayerPos(playerid,
-		gPlayerData[playerid][ply_SpawnPosX],
-		gPlayerData[playerid][ply_SpawnPosY],
-		gPlayerData[playerid][ply_SpawnPosZ]);
+	GetPlayerSpawnPos(playerid, x, y, z);
+	GetPlayerSpawnRot(playerid, r);
 
-	SetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_SpawnRotZ]);
+	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
+	SetPlayerPos(playerid, x, y, z);
+	SetPlayerFacingAngle(playerid, r);
+	SetPlayerBitFlag(playerid, LoadedData, true);
 
-	t:gPlayerBitData[playerid]<LoadedData>;
+	SetPlayerGender(playerid, GetClothesGender(GetPlayerClothes(playerid)));
 
-	gPlayerData[playerid][ply_Gender] = GetClothesGender(GetPlayerClothes(playerid));
-
-	if(gPlayerData[playerid][ply_Warnings] > 0)
+	if(GetPlayerWarnings(playerid) > 0)
 	{
-		if(gPlayerData[playerid][ply_Warnings] >= 5)	
-			gPlayerData[playerid][ply_Warnings] = 0;
+		if(GetPlayerWarnings(playerid) >= 5)	
+			SetPlayerWarnings(playerid, 0);
 
-		MsgF(playerid, YELLOW, " >  You have %d/5 warnings.", gPlayerData[playerid][ply_Warnings]);
+		MsgF(playerid, YELLOW, " >  You have %d/5 warnings.", GetPlayerWarnings(playerid));
 	}
 
-	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
+	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 
 	PrepareForSpawn(playerid);
 
-	if(gPlayerData[playerid][ply_stance] == 1)
+	if(GetPlayerStance(playerid) == 1)
 	{
 		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
 	}
-	else if(gPlayerData[playerid][ply_stance] == 2)
+	else if(GetPlayerStance(playerid) == 2)
 	{
 		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
 	}
-	else if(gPlayerData[playerid][ply_stance] == 3)
+	else if(GetPlayerStance(playerid) == 3)
 	{
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
@@ -84,14 +84,14 @@ PlayerCreateNewCharacter(playerid)
 	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 	TogglePlayerControllable(playerid, false);
 
-	if(gPlayerBitData[playerid] & LoggedIn)
+	if(IsPlayerLoggedIn(playerid))
 	{
 		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
 		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
 
-	t:gPlayerBitData[playerid]<LoadedData>;
+	SetPlayerBitFlag(playerid, LoadedData, true);
 }
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
@@ -108,13 +108,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
-	gPlayerData[playerid][ply_TotalSpawns]++;
+	SetPlayerTotalSpawns(playerid, GetPlayerTotalSpawns(playerid) + 1);
 
 	stmt_bind_value(gStmt_AccountSetSpawnTime, 0, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(gStmt_AccountSetSpawnTime, 1, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_execute(gStmt_AccountSetSpawnTime);
 
-	stmt_bind_value(gStmt_AccountSetTotalSpawns, 0, DB::TYPE_INTEGER, gPlayerData[playerid][ply_TotalSpawns]);
+	stmt_bind_value(gStmt_AccountSetTotalSpawns, 0, DB::TYPE_INTEGER, GetPlayerTotalSpawns(playerid));
 	stmt_bind_value(gStmt_AccountSetTotalSpawns, 1, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_execute(gStmt_AccountSetTotalSpawns);
 
@@ -136,13 +136,13 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: gPlayerData[playerid][ply_Clothes] = skin_MainM;
-			case 1: gPlayerData[playerid][ply_Clothes] = skin_Civ1M;
-			case 2: gPlayerData[playerid][ply_Clothes] = skin_Civ2M;
-			case 3: gPlayerData[playerid][ply_Clothes] = skin_Civ3M;
-			case 4: gPlayerData[playerid][ply_Clothes] = skin_Civ4M;
-			case 5: gPlayerData[playerid][ply_Clothes] = skin_MechM;
-			case 6: gPlayerData[playerid][ply_Clothes] = skin_BikeM;
+			case 0: SetPlayerClothesID(playerid, skin_MainM);
+			case 1: SetPlayerClothesID(playerid, skin_Civ1M);
+			case 2: SetPlayerClothesID(playerid, skin_Civ2M);
+			case 3: SetPlayerClothesID(playerid, skin_Civ3M);
+			case 4: SetPlayerClothesID(playerid, skin_Civ4M);
+			case 5: SetPlayerClothesID(playerid, skin_MechM);
+			case 6: SetPlayerClothesID(playerid, skin_BikeM);
 
 		}
 	}
@@ -150,22 +150,22 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: gPlayerData[playerid][ply_Clothes] = skin_MainF;
-			case 1: gPlayerData[playerid][ply_Clothes] = skin_Civ1F;
-			case 2: gPlayerData[playerid][ply_Clothes] = skin_Civ2F;
-			case 3: gPlayerData[playerid][ply_Clothes] = skin_Civ3F;
-			case 4: gPlayerData[playerid][ply_Clothes] = skin_Civ4F;
-			case 5: gPlayerData[playerid][ply_Clothes] = skin_ArmyF;
-			case 6: gPlayerData[playerid][ply_Clothes] = skin_IndiF;
+			case 0: SetPlayerClothesID(playerid, skin_MainF);
+			case 1: SetPlayerClothesID(playerid, skin_Civ1F);
+			case 2: SetPlayerClothesID(playerid, skin_Civ2F);
+			case 3: SetPlayerClothesID(playerid, skin_Civ3F);
+			case 4: SetPlayerClothesID(playerid, skin_Civ4F);
+			case 5: SetPlayerClothesID(playerid, skin_ArmyF);
+			case 6: SetPlayerClothesID(playerid, skin_IndiF);
 		}
 	}
 
-	SetPlayerClothes(playerid, gPlayerData[playerid][ply_Clothes]);
-	gPlayerData[playerid][ply_Gender] = gender;
+	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
+	SetPlayerGender(playerid, gender);
 
-	t:gPlayerBitData[playerid]<Alive>;
-	f:gPlayerBitData[playerid]<Bleeding>;
-	f:gPlayerBitData[playerid]<Infected>;
+	SetPlayerBitFlag(playerid, Alive, true);
+	SetPlayerBitFlag(playerid, Bleeding, false);
+	SetPlayerBitFlag(playerid, Infected, false);
 
 	FreezePlayer(playerid, 1000);
 	PrepareForSpawn(playerid);
@@ -181,16 +181,10 @@ PlayerSpawnNewCharacter(playerid, gender)
 	tmpitem = CreateItem(item_Wrench);
 	AddItemToContainer(containerid, tmpitem);
 
-	if(gPlayerBitData[playerid] & IsVip)
-	{
-		tmpitem = CreateItem(item_ZorroMask);
-		AddItemToInventory(playerid, tmpitem);
-	}
-
-	if(gPlayerBitData[playerid] & IsNewPlayer)
+	if(GetPlayerBitFlag(playerid, IsNewPlayer))
 		Tutorial_Start(playerid);
 
-	gPlayerData[playerid][ply_ScreenBoxFadeLevel] = 255;
+	SetPlayerScreenFadeLevel(playerid, 255);
 }
 
 

@@ -307,11 +307,11 @@ new Float:gCuffSkinData[][] =
 	{-0.001999, 0.044999, -0.020999, -10.599922, -26.000003, 106.999954, 1.146999, 2.573997, 2.483994}
 };
 
-stock SetPlayerCuffs(playerid, bool:toggle)
+stock SetPlayerCuffs(playerid, toggle)
 {
 	if(!IsPlayerConnected(playerid)) return -1;
 	
-	if(bool:toggle)
+	if(toggle)
 	{
 		new skin = GetPlayerSkin(playerid);
 	

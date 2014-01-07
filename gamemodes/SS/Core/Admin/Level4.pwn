@@ -58,29 +58,6 @@ ACMD:setadmin[4](playerid, params[])
 	return 1;
 }
 
-ACMD:setvip[4](playerid, params[])
-{
-	new id, toggle;
-
-	if(sscanf(params, "dd", id, toggle))
-		return Msg(playerid, YELLOW, " >  Usage: /setvip [playerid]");
-
-	if(gPlayerData[id][ply_Admin] >= gPlayerData[playerid][ply_Admin] && playerid != id)
-		return 3;
-
-	if(toggle)
-	{
-		t:gPlayerBitData[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You gave VIP status to %P", id);
-	}
-	else
-	{
-		f:gPlayerBitData[id]<IsVip>;
-		MsgF(playerid, YELLOW, " >  You removed VIP status from %P", id);
-	}
-	return 1;
-}
-
 ACMD:setpinglimit[4](playerid, params[])
 {
 	new val = strval(params);
@@ -343,13 +320,13 @@ ACMD:setint[4](playerid, params[])
 
 ACMD:hud[4](playerid, params[])
 {
-	if(gPlayerBitData[playerid] & ShowHUD)
+	if(GetPlayerBitFlag(playerid, ShowHUD))
 	{
 		PlayerTextDrawHide(playerid, HungerBarBackground[playerid]);
 		PlayerTextDrawHide(playerid, HungerBarForeground[playerid]);
 		TextDrawHideForPlayer(playerid, Branding);
 		HideWatch(playerid);
-		f:gPlayerBitData[playerid]<ShowHUD>;
+		SetPlayerBitFlag(playerid, ShowHUD, false);
 	}
 	else
 	{
@@ -357,7 +334,7 @@ ACMD:hud[4](playerid, params[])
 		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
 		TextDrawShowForPlayer(playerid, Branding);
 		ShowWatch(playerid);
-		t:gPlayerBitData[playerid]<ShowHUD>;
+		SetPlayerBitFlag(playerid, ShowHUD, true);
 	}
 }
 
@@ -443,7 +420,7 @@ ACMD:weather[4](playerid, params[])
 				}
 
 				gWeatherID = i;
-				MsgAdminsF(gPlayerData[playerid][ply_Admin], YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
+				MsgAdminsF(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
 
 				return 1;
 			}

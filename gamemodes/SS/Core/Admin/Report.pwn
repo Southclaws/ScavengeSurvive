@@ -246,7 +246,7 @@ ShowReportOptions(playerid)
 
 	options = "Ban\nDelete\nDelete all reports of this player\nMark Unread\n";
 
-	if(GetPlayerDataBitmask(playerid) & AdminDuty)
+	if(IsPlayerOnAdminDuty(playerid))
 	{
 		strcat(options, "Go to position of report\n");
 
@@ -309,17 +309,23 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			case 2: // Player that last killed me
 			{
-				if(!isnull(gPlayerData[playerid][ply_LastKilledBy]))
+				new name[MAX_PLAYER_NAME];
+
+				GetLastKilledBy(playerid, name);
+
+				if(!isnull(name))
 				{
 					send_TargetName[playerid][0] = EOS;
-					strcat(send_TargetName[playerid], gPlayerData[playerid][ply_LastKilledBy]);
+					send_TargetName[playerid] = name;
 				}
 				else
 				{
-					if(!isnull(gPlayerData[playerid][ply_LastHitBy]))
+					GetLastHitBy(playerid, name);
+
+					if(!isnull(name))
 					{
 						send_TargetName[playerid][0] = EOS;
-						strcat(send_TargetName[playerid], gPlayerData[playerid][ply_LastHitBy]);
+						send_TargetName[playerid] = name;
 					}
 					else
 					{
@@ -328,9 +334,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					}
 				}
 
-				send_TargetPos[playerid][0] = gPlayerData[playerid][ply_DeathPosX];
-				send_TargetPos[playerid][1] = gPlayerData[playerid][ply_DeathPosY];
-				send_TargetPos[playerid][2] = gPlayerData[playerid][ply_DeathPosZ];
+				GetPlayerDeathPos(playerid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
 
 				ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
 				send_TargetType[playerid] = REPORT_TYPE_PLAYER_KILLER;
@@ -458,7 +462,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				case 4:
 				{
-					if(GetPlayerDataBitmask(playerid) & AdminDuty)
+					if(IsPlayerOnAdminDuty(playerid))
 					{
 						SetPlayerPos(playerid, report_CurrentPos[playerid][0], report_CurrentPos[playerid][1], report_CurrentPos[playerid][2]);
 					}
@@ -469,7 +473,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case REPORT_TYPE_TELEPORT:
 						{
-							if(GetPlayerDataBitmask(playerid) & AdminDuty)
+							if(IsPlayerOnAdminDuty(playerid))
 							{
 								new
 									Float:x,
@@ -482,7 +486,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						case REPORT_TYPE_CAMDIST:
 						{
-							if(GetPlayerDataBitmask(playerid) & AdminDuty)
+							if(IsPlayerOnAdminDuty(playerid))
 							{
 								new
 									Float:x,
@@ -495,7 +499,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 						}
 						case REPORT_TYPE_CARTELE:
 						{
-							if(GetPlayerDataBitmask(playerid) & AdminDuty)
+							if(IsPlayerOnAdminDuty(playerid))
 							{
 								new
 									Float:x,
@@ -514,7 +518,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 					{
 						case REPORT_TYPE_CAMDIST:
 						{
-							if(GetPlayerDataBitmask(playerid) & AdminDuty)
+							if(IsPlayerOnAdminDuty(playerid))
 							{
 								new
 									Float:x,

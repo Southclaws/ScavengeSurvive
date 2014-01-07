@@ -1,6 +1,13 @@
 #include <YSI\y_hooks>
 
 
+static
+Float:	death_PosX[MAX_PLAYERS],
+Float:	death_PosY[MAX_PLAYERS],
+Float:	death_PosZ[MAX_PLAYERS],
+Float:	death_RotZ[MAX_PLAYERS];
+
+
 public OnPlayerDeath(playerid, killerid, reason)
 {
 	if(killerid == INVALID_PLAYER_ID)
@@ -21,26 +28,25 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 OnDeath(playerid, killerid, reason)
 {
-	if(!(gPlayerBitData[playerid] & Alive) || gPlayerBitData[playerid] & AdminDuty)
+	if(!IsPlayerAlive(playerid) || IsPlayerOnAdminDuty(playerid))
 	{
 		return 0;
 	}
 
 	new deathreason[256];
 
-	t:gPlayerBitData[playerid]<Dying>;
-	f:gPlayerBitData[playerid]<Spawned>;
-	f:gPlayerBitData[playerid]<AdminDuty>;
-	f:gPlayerBitData[playerid]<Alive>;
+	SetPlayerBitFlag(playerid, Dying, true);
+	SetPlayerBitFlag(playerid, Spawned, false);
+	SetPlayerBitFlag(playerid, Alive, false);
 
-	GetPlayerPos(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
-	GetPlayerFacingAngle(playerid, gPlayerData[playerid][ply_DeathRotZ]);
+	GetPlayerPos(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid]);
+	GetPlayerFacingAngle(playerid, death_RotZ[playerid]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		gPlayerData[playerid][ply_DeathPosZ] += 0.1;
+		death_PosZ[playerid] += 0.1;
 
 	HideWatch(playerid);
-	DropItems(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ], gPlayerData[playerid][ply_DeathRotZ]);
+	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 	RemovePlayerWeapon(playerid);
 	SpawnPlayer(playerid);
 	ToggleArmour(playerid, false);
@@ -50,8 +56,8 @@ OnDeath(playerid, killerid, reason)
 		logf("[KILL] %p killed %p with %d", killerid, playerid, reason);
 		printf("[KILL] %p killed %p with %d", killerid, playerid, reason);
 
-		gPlayerData[playerid][ply_LastKilledBy] = gPlayerName[killerid];
-		gPlayerData[playerid][ply_LastKilledById] = killerid;
+		SetLastKilledBy(playerid, gPlayerName[killerid]);
+		SetLastKilledById(playerid, killerid);
 
 		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
 
@@ -97,8 +103,8 @@ OnDeath(playerid, killerid, reason)
 		logf("[DEATH] %p died because of %d", playerid, reason);
 		printf("[DEATH] %p died because of %d", playerid, reason);
 
-		gPlayerData[playerid][ply_LastKilledBy][0] = EOS;
-		gPlayerData[playerid][ply_LastKilledById] = INVALID_PLAYER_ID;
+		SetLastKilledBy(playerid, "");
+		SetLastKilledById(playerid, INVALID_PLAYER_ID);
 
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
 
@@ -126,7 +132,7 @@ OnDeath(playerid, killerid, reason)
 		}
 	}
 
-	CreateGravestone(playerid, deathreason, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ] - FLOOR_OFFSET, gPlayerData[playerid][ply_DeathRotZ]);
+	CreateGravestone(playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid] - FLOOR_OFFSET, death_RotZ[playerid]);
 
 	return 1;
 }
@@ -263,44 +269,44 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 
 hook OnPlayerSpawn(playerid)
 {
-	if(gPlayerBitData[playerid] & Dying)
+	if(IsPlayerDead(playerid))
 	{
 		TogglePlayerSpectating(playerid, true);
 
 		defer SetDeathCamera(playerid);
 
 		SetPlayerCameraPos(playerid,
-			gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-			gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-			gPlayerData[playerid][ply_DeathPosZ]);
+			death_PosX[playerid] - floatsin(-death_RotZ[playerid], degrees),
+			death_PosY[playerid] - floatcos(-death_RotZ[playerid], degrees),
+			death_PosZ[playerid]);
 
-		SetPlayerCameraLookAt(playerid, gPlayerData[playerid][ply_DeathPosX], gPlayerData[playerid][ply_DeathPosY], gPlayerData[playerid][ply_DeathPosZ]);
+		SetPlayerCameraLookAt(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid]);
 
 		TextDrawShowForPlayer(playerid, DeathText);
 		TextDrawShowForPlayer(playerid, DeathButton);
 		SelectTextDraw(playerid, 0xFFFFFF88);
-		gPlayerData[playerid][ply_HitPoints] = 1.0;
+		SetPlayerHP(playerid, 1.0);
 	}
 }
 
 timer SetDeathCamera[50](playerid)
 {
 	InterpolateCameraPos(playerid,
-		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
-		gPlayerData[playerid][ply_DeathPosX] - floatsin(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosY] - floatcos(-gPlayerData[playerid][ply_DeathRotZ], degrees),
-		gPlayerData[playerid][ply_DeathPosZ] + 20.0,
+		death_PosX[playerid] - floatsin(-death_RotZ[playerid], degrees),
+		death_PosY[playerid] - floatcos(-death_RotZ[playerid], degrees),
+		death_PosZ[playerid] + 1.0,
+		death_PosX[playerid] - floatsin(-death_RotZ[playerid], degrees),
+		death_PosY[playerid] - floatcos(-death_RotZ[playerid], degrees),
+		death_PosZ[playerid] + 20.0,
 		30000, CAMERA_MOVE);
 
 	InterpolateCameraLookAt(playerid,
-		gPlayerData[playerid][ply_DeathPosX],
-		gPlayerData[playerid][ply_DeathPosY],
-		gPlayerData[playerid][ply_DeathPosZ],
-		gPlayerData[playerid][ply_DeathPosX],
-		gPlayerData[playerid][ply_DeathPosY],
-		gPlayerData[playerid][ply_DeathPosZ] + 1.0,
+		death_PosX[playerid],
+		death_PosY[playerid],
+		death_PosZ[playerid],
+		death_PosX[playerid],
+		death_PosY[playerid],
+		death_PosZ[playerid] + 1.0,
 		30000, CAMERA_MOVE);
 }
 
@@ -308,12 +314,35 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == DeathButton)
 	{
-		f:gPlayerBitData[playerid]<Dying>;
+		SetPlayerBitFlag(playerid, Dying, false);
 		TogglePlayerSpectating(playerid, false);
 		CancelSelectTextDraw(playerid);
 		TextDrawHideForPlayer(playerid, DeathText);
 		TextDrawHideForPlayer(playerid, DeathButton);
 	}
+
+	return 1;
+}
+
+
+stock GetPlayerDeathPos(playerid, &Float:x, &Float:y, &Float:z)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	x = death_PosX[playerid];
+	y = death_PosY[playerid];
+	z = death_PosZ[playerid];
+
+	return 1;
+}
+
+stock GetPlayerDeathRot(playerid, &Float:r)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	r = death_RotZ;
 
 	return 1;
 }

@@ -116,7 +116,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				"C_YELLOW"Date:\n\t\t"C_BLUE"%s",
 				name, bug, TimestampToDateTime(issue_TimestampIndex[listitem]));
 
-			if(gPlayerData[playerid][ply_Admin] > 1)
+			if(GetPlayerAdminLevel(playerid) > 1)
 				ShowPlayerDialog(playerid, d_Issue, DIALOG_STYLE_MSGBOX, inputtext, message, "Delete", "Back");
 
 			else
@@ -130,7 +130,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 	{
 		if(response)
 		{
-			if(gPlayerData[playerid][ply_Admin] > 1)
+			if(GetPlayerAdminLevel(playerid) > 1)
 			{
 				stmt_bind_value(gStmt_BugDelete, 0, DB::TYPE_INTEGER, issue_TimestampIndex[issue_CurrentItem[playerid]]);
 				stmt_execute(gStmt_BugDelete);
