@@ -23,7 +23,16 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		if(itemtype == item_LocksmithKit)
 		{
 			if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
+			{
+				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
 				return 1;
+			}
+
+			if(GetVehicleKey(vehicleid) != 0)
+			{
+				ShowActionText(playerid, "That vehicle has already been locked", 3000);
+				return 1;
+			}
 
 			CancelPlayerMovement(playerid);
 			StartCraftingKey(playerid, vehicleid);
