@@ -107,8 +107,8 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_INFECTED] = _:GetPlayerBitFlag(playerid, Infected);
 	data[PLY_CELL_TOOLTIPS] = _:GetPlayerBitFlag(playerid, ToolTips);
 
-	GetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
-	GetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
+	GetPlayerPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
+	GetPlayerFacingAngle(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);

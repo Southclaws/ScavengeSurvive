@@ -28,6 +28,7 @@ EnterSpectateMode(playerid, targetid)
 	PlayerTextDrawShow(playerid, spec_Info);
 
 	spectate_Target[playerid] = targetid;
+	stop spectate_Timer[playerid];
 	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
 
 	logf("[SPECTATE] %p watches %p", playerid, targetid);
@@ -62,6 +63,12 @@ timer UpdateSpectateMode[100](playerid)
 		targetid = spectate_Target[playerid],
 		name[24 + 6],
 		str[256];
+
+	if(!IsPlayerConnected(targetid))
+	{
+		stop spectate_Timer[playerid];
+		return;
+	}
 
 	if(IsPlayerInAnyVehicle(targetid))
 	{
