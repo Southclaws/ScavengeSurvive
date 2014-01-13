@@ -264,7 +264,8 @@ ptask PlayerUpdate[100](playerid)
 	}
 	else
 	{
-		VehicleSurfingCheck(playerid);
+		if(!gVehicleSurfing)
+			VehicleSurfingCheck(playerid);
 
 		if(IsValidVehicle(ply_Data[playerid][ply_CurrentVehicle]))
 		{

@@ -78,6 +78,7 @@ spawns in it, I would love to see what is made!
   * allow-pause-map _(bool)_ - enable the map option in the pause menu
   * combat-log-window _(integer)_ - combat log time window in seconds
   * interior-entry _(bool)_ - enable interior entrances
+  * vehicle-surfing _(bool)_ - enable vehicle surfing on fast vehicles
   * login-freeze-time _(integer)_ - amount of seconds to freeze player on spawn
   * max-tab-out-time _(integer)_ - amount of seconds that a player can alt tab
   * nametag-distance _(float)_ - set the nametag render distance (0.0 for off)

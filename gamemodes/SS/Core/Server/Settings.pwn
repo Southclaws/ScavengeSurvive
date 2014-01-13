@@ -69,6 +69,7 @@ LoadSettings()
 		gPauseMap = bool:djInt(SETTINGS_FILE, "player/allow-pause-map");
 		gInteriorEntry = bool:djInt(SETTINGS_FILE, "player/interior-entry");
 		gPlayerAnimations = bool:djInt(SETTINGS_FILE, "player/player-animations");
+		gVehicleSurfing = bool:djInt(SETTINGS_FILE, "player/vehicle-surfing");
 		gNameTagDistance = djFloat(SETTINGS_FILE, "player/nametag-distance");
 		gCombatLogWindow = djInt(SETTINGS_FILE, "player/combat-log-window");
 		gLoginFreezeTime = djInt(SETTINGS_FILE, "player/login-freeze-time");
@@ -105,6 +106,7 @@ LoadSettings()
 		gPauseMap				= false;
 		gInteriorEntry			= false;
 		gPlayerAnimations		= true;
+		gVehicleSurfing			= false;
 		gNameTagDistance		= 3.0;
 		gCombatLogWindow		= 10;
 		gLoginFreezeTime		= 5;
@@ -132,6 +134,7 @@ LoadSettings()
 		djSetInt(SETTINGS_FILE, "player/allow-pause-map", gPauseMap);
 		djSetInt(SETTINGS_FILE, "player/interior-entry", gInteriorEntry);
 		djSetInt(SETTINGS_FILE, "player/player-animations", gPlayerAnimations);
+		djSetInt(SETTINGS_FILE, "player/vehicle-surfing", gVehicleSurfing);
 		djSetFloat(SETTINGS_FILE, "player/nametag-distance", gNameTagDistance);
 		djSetInt(SETTINGS_FILE, "player/combat-log-window", gCombatLogWindow);
 		djSetInt(SETTINGS_FILE, "player/login-freeze-time", gLoginFreezeTime);
@@ -165,6 +168,7 @@ LoadSettings()
 	printf(" Pause Map: %d", gPauseMap);
 	printf(" Interior Entry: %d", gInteriorEntry);
 	printf(" Player Animations: %d", gPlayerAnimations);
+	printf(" Vehicle Surfing: %d", gVehicleSurfing);
 	printf(" Name Distance: %f", gNameTagDistance);
 	printf(" Combat Log Window: %d", gCombatLogWindow);
 	printf(" Login Freeze Time: %d", gLoginFreezeTime);

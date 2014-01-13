@@ -53,6 +53,7 @@ native gpci(playerid, serial[], len);
 #include "SS/Core/Server/Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
+//#include <irc>						// By Incognito:			http://forum.sa-mp.com/showthread.php?t=98803
 
 #include <sqlitei>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
@@ -529,6 +530,7 @@ DBStatement:	gStmt_SprayTagSave;
 
 // SERVER SETTINGS (JSON LOADED)
 new
+		// player
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gWebsiteURL[MAX_WEBSITE_NAME],
 		gGameModeName[32],
@@ -539,9 +541,11 @@ bool:	gWhitelist,
 		gInfoMessageInterval,
 		gPerformFileCheck,
 
+		// server
 bool:	gPauseMap,
 bool:	gInteriorEntry,
 bool:	gPlayerAnimations,
+bool:	gVehicleSurfing,
 Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
@@ -824,6 +828,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/SaveBlock.pwn"
 #include "SS/Core/Server/ActivityLog.pwn"
 #include "SS/Core/Server/FileCheck.pwn"
+#include "SS/Core/Server/IRC.pwn"
 
 // UI
 #include "SS/Core/UI/PlayerUI.pwn"

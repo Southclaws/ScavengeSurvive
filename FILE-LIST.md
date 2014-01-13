@@ -11,6 +11,7 @@ Purely server related scripts, unrelated to players, vehicles, items, etc. Gener
 - ActivityLog - Logs strings to a file titled with the date, prefixes each log entry with the time of day.
 - FileCheck - Will probably never need to be used, cleans up the player/inventory folders (more info in the script)
 - Autosave - Efficiently autosaves vehicles and player data on a timer.
+- IRC - Connects to an IRC server and channel for chat.
 
 ### UI/
 All these scripts are related to the user interface in some way.
@@ -47,6 +48,7 @@ Scripts that manage automated item spawning.
 Player related code. Not gameplay mechanics however, these scripts are all internal and aren't really 'experienced' by end-users.
 - Core - Manages connects and disconnects, runs init and exit code for players.
 - Accounts - Everything to do with the account side of players (not character data)
+- Aliases - Contains functions that find accounts from the same owner.
 - SaveLoad - Manages the character and inventory saving/loading.
 - Spawn - Handles spawning the player in as an existing or new character.
 - Damage - Handles weapon damage code, uses the AdvancedWeaponData library.
