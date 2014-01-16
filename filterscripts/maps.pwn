@@ -28,7 +28,6 @@
 
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <zcmd>						// ZeeX						http://forum.sa-mp.com/showthread.php?t=91354
 #include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
 
 
@@ -41,6 +40,8 @@
 
 #define ROOT_FOLDER			"Maps/"
 #define CONFIG_FILE			ROOT_FOLDER"maps.cfg"
+#define SESSION_DIR			ROOT_FOLDER"session/"
+#define SESSION_NAME_LEN	(40)
 
 #define MAX_REMOVED_OBJECTS	(1000)
 #define MAX_MATERIAL_SIZE	(14)
@@ -56,7 +57,7 @@
 
 enum
 {
-	DEBUG_LEVEL_NONE,		// (-1) No prints
+	DEBUG_LEVEL_NONE = -1,	// (-1) No prints
 	DEBUG_LEVEL_INFO,		// (0) Print information messages
 	DEBUG_LEVEL_FOLDERS,	// (1) Print each folder
 	DEBUG_LEVEL_FILES,		// (2) Print each loaded file
@@ -85,6 +86,8 @@ new
 		gDebugLevel = 0,
 		gTotalLoadedObjects,
 		gModelRemoveData[MAX_REMOVED_OBJECTS][E_REMOVE_DATA],
+		gLoadedRemoveBuffer[MAX_PLAYERS][MAX_REMOVED_OBJECTS][5],
+		gLoadedRemoveIndex,
 		gTotalObjectsToRemove;
 
 
@@ -102,17 +105,21 @@ public OnFilterScriptInit()
 		LoadConfig();
 
 	if(gDebugLevel > DEBUG_LEVEL_NONE)
-		printf("DEBUG: [Init] Debug Level: %d", gDebugLevel);
+		printf("INFO: [Init] Debug Level: %d", gDebugLevel);
 
 	LoadMapsFromFolder(ROOT_FOLDER);
 
+	// Yes a standard loop is required here.
 	for(new i; i < MAX_PLAYERS; i++)
-		RemoveObjectsForPlayer(i);
+	{
+		if(IsPlayerConnected(i))
+			RemoveObjects_OnLoad(i);
+	}
 
 	if(gDebugLevel >= DEBUG_LEVEL_INFO)
 	{
-		printf("%d Total objects", gTotalLoadedObjects);
-		printf("%d Objects to remove", gTotalObjectsToRemove);
+		printf("INFO: [Init] %d Total objects", gTotalLoadedObjects);
+		printf("INFO: [Init] %d Objects to remove", gTotalObjectsToRemove);
 	}
 
 	return 1;
@@ -120,7 +127,6 @@ public OnFilterScriptInit()
 
 LoadConfig()
 {
-	print("Loading config");
 	new
 		File:file,
 		line[32];
@@ -352,7 +358,7 @@ LoadMap(filename[])
 		{
 			if(!sscanf(funcargs, "p<,>ddf", globalworld[0], globalinterior[0], globalrange))
 			{
-				if(gDebugLevel >= DEBUG_LEVEL_INFO)
+				if(gDebugLevel >= DEBUG_LEVEL_DATA)
 					printf(" DEBUG: [LoadMap] Updated options to: %d, %d, %f", globalworld[0], globalinterior[0], globalrange);
 
 				operations++;
@@ -470,13 +476,46 @@ LoadMap(filename[])
 
 public OnPlayerConnect(playerid)
 {
-	RemoveObjectsForPlayer(playerid);
+	RemoveObjects_FirstLoad(playerid);
 
 	return 1;
 }
 
-RemoveObjectsForPlayer(playerid)
+public OnPlayerDisconnect(playerid, reason)
 {
+	new
+		name[MAX_PLAYER_NAME],
+		filename[SESSION_NAME_LEN];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+
+	if(gDebugLevel >= DEBUG_LEVEL_INFO)
+		printf("INFO: [OnPlayerDisconnect] Removing session data file for %s", name);
+
+	fremove(filename);
+
+	return 1;
+}
+
+RemoveObjects_FirstLoad(playerid)
+{
+	new
+		File:file,
+		name[MAX_PLAYER_NAME],
+		filename[SESSION_NAME_LEN],
+		buffer[5];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+
+	file = fopen(filename, io_write);
+
+	if(gDebugLevel >= DEBUG_LEVEL_INFO)
+		printf("INFO: [RemoveObjects_FirstLoad] Created session data for %s", name);
+
 	for(new i; i < gTotalObjectsToRemove; i++)
 	{
 		RemoveBuildingForPlayer(playerid,
@@ -485,5 +524,114 @@ RemoveObjectsForPlayer(playerid)
 			gModelRemoveData[i][remove_PosY],
 			gModelRemoveData[i][remove_PosZ],
 			gModelRemoveData[i][remove_Range]);
+
+		// Build a list of removed objects for checking against when the script is
+		// reloaded. This way, the reload function isn't called unnecessarily.
+
+		buffer[0] = gModelRemoveData[i][remove_Model];
+		buffer[1] = _:gModelRemoveData[i][remove_PosX];
+		buffer[2] = _:gModelRemoveData[i][remove_PosY];
+		buffer[3] = _:gModelRemoveData[i][remove_PosZ];
+		buffer[4] = _:gModelRemoveData[i][remove_Range];
+
+		if(gDebugLevel >= DEBUG_LEVEL_DATA)
+			printf("INFO: [RemoveObjects_FirstLoad] Write: [%x.%x.%x.%x.%x]", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]);
+
+		fblockwrite(file, buffer);
 	}
+
+	fclose(file);
+
+	return 1;
+}
+
+RemoveObjects_OnLoad(playerid)
+{
+	new
+		File:file,
+		name[MAX_PLAYER_NAME],
+		filename[SESSION_NAME_LEN],
+		buffer[5];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+
+	if(!fexist(filename))
+	{
+		if(gDebugLevel >= DEBUG_LEVEL_INFO)
+			printf("INFO: [RemoveObjects_OnLoad] Session data for %s doesn't exist, running firstload.", name);
+
+		RemoveObjects_FirstLoad(playerid);
+
+		return 0;
+	}
+
+	file = fopen(filename, io_read);
+
+	if(gDebugLevel >= DEBUG_LEVEL_INFO)
+		printf("INFO: [RemoveObjects_OnLoad] Loading removals for %s", name);
+
+	// Build a list of existing removed objects for this player
+
+	while(fblockread(file, gLoadedRemoveBuffer[playerid][gLoadedRemoveIndex], 5))
+		gLoadedRemoveIndex++;
+
+	fclose(file);
+
+	file = fopen(filename, io_append);
+
+	for(new i; i < gTotalObjectsToRemove; i++)
+	{
+		new skip;
+
+		for(new j; j < gLoadedRemoveIndex; j++)
+		{
+			if(
+				_:gModelRemoveData[i][remove_Model] == gLoadedRemoveBuffer[playerid][j][0] &&
+				_:gModelRemoveData[i][remove_PosX] == gLoadedRemoveBuffer[playerid][j][1] &&
+				_:gModelRemoveData[i][remove_PosY] == gLoadedRemoveBuffer[playerid][j][2] &&
+				_:gModelRemoveData[i][remove_PosZ] == gLoadedRemoveBuffer[playerid][j][3] &&
+				_:gModelRemoveData[i][remove_Range] == gLoadedRemoveBuffer[playerid][j][4])
+			{
+				skip = true;
+				break;
+			}
+		}
+
+		if(skip)
+		{
+			if(gDebugLevel == DEBUG_LEVEL_DATA)
+				printf(" DEBUG: [RemoveObjects_OnLoad] Skipping object removal %d (model: %d)", i, gModelRemoveData[i][remove_Model]);
+
+			continue;
+		}
+
+		if(gDebugLevel == DEBUG_LEVEL_DATA)
+			printf(" DEBUG: [RemoveObjects_OnLoad] Removing object %d (model: %d)", i, gModelRemoveData[i][remove_Model]);
+
+		RemoveBuildingForPlayer(playerid,
+			gModelRemoveData[i][remove_Model],
+			gModelRemoveData[i][remove_PosX],
+			gModelRemoveData[i][remove_PosY],
+			gModelRemoveData[i][remove_PosZ],
+			gModelRemoveData[i][remove_Range]);
+
+		// This object is new, append it to the player's session data file.
+
+		buffer[0] = gModelRemoveData[i][remove_Model];
+		buffer[1] = _:gModelRemoveData[i][remove_PosX];
+		buffer[2] = _:gModelRemoveData[i][remove_PosY];
+		buffer[3] = _:gModelRemoveData[i][remove_PosZ];
+		buffer[4] = _:gModelRemoveData[i][remove_Range];
+
+		if(gDebugLevel >= DEBUG_LEVEL_DATA)
+			printf("INFO: [RemoveObjects_OnLoad] Append: [%x.%x.%x.%x.%x]", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4]);
+
+		fblockwrite(file, buffer);
+	}
+
+	fclose(file);
+
+	return 1;
 }
