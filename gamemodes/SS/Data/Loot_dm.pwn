@@ -70,7 +70,11 @@ public OnLoad()
 		AddItemToLootIndex(i, item_Accelerometer, 50);
 	}
 
-	return CallLocalFunction("loot_OnLoad", "");
+	#if defined loot_OnLoad
+        loot_OnLoad();
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -78,5 +82,7 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad loot_OnLoad
-forward loot_OnLoad();
+#if defined loot_OnLoad
+    forward loot_OnLoad();
+#endif
 

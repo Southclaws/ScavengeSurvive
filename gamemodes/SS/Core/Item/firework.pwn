@@ -95,7 +95,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			fwk_CooldownTick = GetTickCount();
 		}
 	}
-	return CallLocalFunction("fwk_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined fwk_OnPlayerUseItemWithItem
+        return fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -103,7 +107,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem fwk_OnPlayerUseItemWithItem
-forward fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined fwk_OnPlayerUseItemWithItem
+    forward fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 
 
@@ -175,7 +181,11 @@ public OnDynamicObjectMoved(objectid)
 			}
 		}
 	}
-	return CallLocalFunction("fwk_OnDynamicObjectMoved", "d", objectid);
+	#if defined fwk_OnDynamicObjectMoved
+        return fwk_OnDynamicObjectMoved(objectid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnDynamicObjectMoved
 	#undef OnDynamicObjectMoved
@@ -183,7 +193,9 @@ public OnDynamicObjectMoved(objectid)
 	#define _ALS_OnDynamicObjectMoved
 #endif
 #define OnDynamicObjectMoved fwk_OnDynamicObjectMoved
-forward fwk_OnDynamicObjectMoved(objectid);
+#if defined fwk_OnDynamicObjectMoved
+    forward fwk_OnDynamicObjectMoved(objectid);
+#endif
 
 
 /*

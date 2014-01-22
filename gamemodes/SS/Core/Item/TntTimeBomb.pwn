@@ -7,7 +7,11 @@ public OnPlayerUseItem(playerid, itemid)
 		logf("[EXPLOSIVE] TNT TIMEBOMB placed by %p", playerid);
 		return 1;
 	}
-    return CallLocalFunction("tntt_OnPlayerUseItem", "dd", playerid, itemid);
+    #if defined tntt_OnPlayerUseItem
+        return tntt_OnPlayerUseItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItem
     #undef OnPlayerUseItem
@@ -15,7 +19,9 @@ public OnPlayerUseItem(playerid, itemid)
     #define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem tntt_OnPlayerUseItem
-forward tntt_OnPlayerUseItem(playerid, itemid);
+#if defined tntt_OnPlayerUseItem
+    forward tntt_OnPlayerUseItem(playerid, itemid);
+#endif
 
 
 timer TimeBombExplode[5000](itemid)

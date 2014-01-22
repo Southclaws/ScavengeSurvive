@@ -22,7 +22,11 @@ public OnItemCreated(itemid)
 			SetItemExtraData(itemid, 1 + random(1));
 	}
 
-	return CallLocalFunction("ammo_OnItemCreated", "d", itemid);
+	#if defined ammo_OnItemCreated
+        return ammo_OnItemCreated(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemCreated
 	#undef OnItemCreated
@@ -30,7 +34,9 @@ public OnItemCreated(itemid)
 	#define _ALS_OnItemCreated
 #endif
 #define OnItemCreated ammo_OnItemCreated
-forward ammo_OnItemCreated(itemid);
+#if defined ammo_OnItemCreated
+    forward ammo_OnItemCreated(itemid);
+#endif
 
 stock IsItemTypeAmmoTin(ItemType:itemtype)
 {
@@ -111,7 +117,11 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 		}
 	}
 
-	return CallLocalFunction("ammo_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+	#if defined ammo_OnPlayerViewContainerOpt
+        return ammo_OnPlayerViewContainerOpt(playerid, containerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -119,7 +129,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt ammo_OnPlayerViewContainerOpt
-forward ammo_OnPlayerViewContainerOpt(playerid, containerid);
+#if defined ammo_OnPlayerViewContainerOpt
+    forward ammo_OnPlayerViewContainerOpt(playerid, containerid);
+#endif
 
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
@@ -158,7 +170,11 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	return CallLocalFunction("ammo_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
+	#if defined ammo_OnPlayerSelectContainerOpt
+        return ammo_OnPlayerSelectContainerOpt(playerid, containerid, option);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
@@ -166,7 +182,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
 #define OnPlayerSelectContainerOpt ammo_OnPlayerSelectContainerOpt
-forward ammo_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#if defined ammo_OnPlayerSelectContainerOpt
+    forward ammo_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#endif
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
@@ -296,7 +314,11 @@ public OnItemNameRender(itemid)
 		SetItemNameExtra(itemid, str);
 	}
 
-	return CallLocalFunction("ammo_OnItemNameRender", "d", itemid);
+	#if defined ammo_OnItemNameRender
+        return ammo_OnItemNameRender(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -304,4 +326,6 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender ammo_OnItemNameRender
-forward ammo_OnItemNameRender(itemid);
+#if defined ammo_OnItemNameRender
+    forward ammo_OnItemNameRender(itemid);
+#endif

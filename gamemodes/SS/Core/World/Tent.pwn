@@ -189,7 +189,11 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	return CallLocalFunction("tnt_OnButtonPress", "dd", playerid, buttonid);
+	#if defined tnt_OnButtonPress
+        return tnt_OnButtonPress(playerid, buttonid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -197,7 +201,9 @@ public OnButtonPress(playerid, buttonid)
 	#define _ALS_OnButtonPress
 #endif
 #define OnButtonPress tnt_OnButtonPress
-forward tnt_OnButtonPress(playerid, buttonid);
+#if defined tnt_OnButtonPress
+    forward tnt_OnButtonPress(playerid, buttonid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -236,7 +242,11 @@ public OnHoldActionFinish(playerid)
 		}
 	}
 
-	return CallLocalFunction("tnt2_OnHoldActionFinish", "d", playerid);
+	#if defined tnt2_OnHoldActionFinish
+        return tnt2_OnHoldActionFinish(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish

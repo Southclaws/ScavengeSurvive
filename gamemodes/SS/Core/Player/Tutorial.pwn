@@ -44,7 +44,11 @@ public OnPlayerOpenInventory(playerid)
 		TutorialState[playerid] = 9;
 	}
 
-	return CallLocalFunction("tut_OnPlayerOpenInventory", "d", playerid);
+	#if defined tut_OnPlayerOpenInventory
+        return tut_OnPlayerOpenInventory(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerOpenInventory
 	#undef OnPlayerOpenInventory
@@ -52,7 +56,9 @@ public OnPlayerOpenInventory(playerid)
 	#define _ALS_OnPlayerOpenInventory
 #endif
 #define OnPlayerOpenInventory tut_OnPlayerOpenInventory
-forward tut_OnPlayerOpenInventory(playerid);
+#if defined tut_OnPlayerOpenInventory
+    forward tut_OnPlayerOpenInventory(playerid);
+#endif
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
@@ -65,7 +71,11 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerOpenContainer", "dd", playerid, containerid);
+	#if defined tut_OnPlayerOpenContainer
+        return tut_OnPlayerOpenContainer(playerid, containerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -73,7 +83,9 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer tut_OnPlayerOpenContainer
-forward tut_OnPlayerOpenContainer(playerid, containerid);
+#if defined tut_OnPlayerOpenContainer
+    forward tut_OnPlayerOpenContainer(playerid, containerid);
+#endif
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
@@ -89,7 +101,11 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+	#if defined tut_OnPlayerViewContainerOpt
+        return tut_OnPlayerViewContainerOpt(playerid, containerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -97,7 +113,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt tut_OnPlayerViewContainerOpt
-forward tut_OnPlayerViewContainerOpt(playerid, containerid);
+#if defined tut_OnPlayerViewContainerOpt
+    forward tut_OnPlayerViewContainerOpt(playerid, containerid);
+#endif
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
@@ -116,7 +134,11 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
+	#if defined tut_OnItemRemoveFromContainer
+        return tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemRemoveFromContainer
 	#undef OnItemRemoveFromContainer
@@ -124,7 +146,9 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 	#define _ALS_OnItemRemoveFromContainer
 #endif
 #define OnItemRemoveFromContainer tut_OnItemRemoveFromContainer
-forward tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#if defined tut_OnItemRemoveFromContainer
+    forward tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#endif
 
 public OnPlayerDropItem(playerid, itemid)
 {
@@ -137,7 +161,11 @@ public OnPlayerDropItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerDropItem", "dd", playerid, itemid);
+	#if defined tut_OnPlayerDropItem
+        return tut_OnPlayerDropItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerDropItem
 	#undef OnPlayerDropItem
@@ -145,7 +173,9 @@ public OnPlayerDropItem(playerid, itemid)
 	#define _ALS_OnPlayerDropItem
 #endif
 #define OnPlayerDropItem tut_OnPlayerDropItem
-forward tut_OnPlayerDropItem(playerid, itemid);
+#if defined tut_OnPlayerDropItem
+    forward tut_OnPlayerDropItem(playerid, itemid);
+#endif
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -158,7 +188,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined tut_OnPlayerPickUpItem
+        return tut_OnPlayerPickUpItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -166,7 +200,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem tut_OnPlayerPickUpItem
-forward tut_OnPlayerPickUpItem(playerid, itemid);
+#if defined tut_OnPlayerPickUpItem
+    forward tut_OnPlayerPickUpItem(playerid, itemid);
+#endif
 
 public OnPlayerAddToInventory(playerid, itemid)
 {
@@ -176,7 +212,11 @@ public OnPlayerAddToInventory(playerid, itemid)
 		TutorialState[playerid] = 8;
 	}
 
-	return CallLocalFunction("tut_OnPlayerAddToInventory", "dd", playerid, itemid);
+	#if defined tut_OnPlayerAddToInventory
+        return tut_OnPlayerAddToInventory(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerAddToInventory
 	#undef OnPlayerAddToInventory
@@ -184,7 +224,9 @@ public OnPlayerAddToInventory(playerid, itemid)
 	#define _ALS_OnPlayerAddToInventory
 #endif
 #define OnPlayerAddToInventory tut_OnPlayerAddToInventory
-forward tut_OnPlayerAddToInventory(playerid, itemid);
+#if defined tut_OnPlayerAddToInventory
+    forward tut_OnPlayerAddToInventory(playerid, itemid);
+#endif
 
 public OnPlayerViewInventoryOpt(playerid)
 {
@@ -194,7 +236,11 @@ public OnPlayerViewInventoryOpt(playerid)
 		TutorialState[playerid] = 10;
 	}
 
-	return CallLocalFunction("tut_OnPlayerViewInventoryOpt", "d", playerid);
+	#if defined tut_OnPlayerViewInventoryOpt
+        return tut_OnPlayerViewInventoryOpt(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerViewInventoryOpt
 	#undef OnPlayerViewInventoryOpt
@@ -202,7 +248,9 @@ public OnPlayerViewInventoryOpt(playerid)
 	#define _ALS_OnPlayerViewInventoryOpt
 #endif
 #define OnPlayerViewInventoryOpt tut_OnPlayerViewInventoryOpt
-forward OnPlayerViewInventoryOpt(playerid);
+#if defined tut_OnPlayerViewInventoryOpt
+    forward tut_OnPlayerViewInventoryOpt(playerid);
+#endif
 
 public OnItemAddToContainer(containerid, itemid, playerid)
 {
@@ -218,7 +266,11 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 		}
 	}
 
-	return CallLocalFunction("tut_OnItemAddToContainer", "ddd", containerid, itemid, playerid);
+	#if defined tut_OnItemAddToContainer
+        return tut_OnItemAddToContainer(containerid, itemid, playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemAddToContainer
 	#undef OnItemAddToContainer
@@ -226,7 +278,9 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 	#define _ALS_OnItemAddToContainer
 #endif
 #define OnItemAddToContainer tut_OnItemAddToContainer
-forward tut_OnItemAddToContainer(containerid, itemid, playerid);
+#if defined tut_OnItemAddToContainer
+    forward tut_OnItemAddToContainer(containerid, itemid, playerid);
+#endif
 
 public OnPlayerCloseContainer(playerid, containerid)
 {
@@ -236,7 +290,11 @@ public OnPlayerCloseContainer(playerid, containerid)
 		TutorialState[playerid] = 0;
 	}
 
-	return CallLocalFunction("tut_OnPlayerCloseContainer", "dd", playerid, containerid);
+	#if defined tut_OnPlayerCloseContainer
+        return tut_OnPlayerCloseContainer(playerid, containerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -244,7 +302,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer tut_OnPlayerCloseContainer
-forward tut_OnPlayerCloseContainer(playerid, containerid);
+#if defined tut_OnPlayerCloseContainer
+    forward tut_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 public OnPlayerCloseInventory(playerid)
 {
@@ -254,7 +314,11 @@ public OnPlayerCloseInventory(playerid)
 		TutorialState[playerid] = 0;
 	}
 
-	return CallLocalFunction("tut_OnPlayerCloseInventory", "d", playerid);
+	#if defined tut_OnPlayerCloseInventory
+        return tut_OnPlayerCloseInventory(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerCloseInventory
 	#undef OnPlayerCloseInventory
@@ -262,7 +326,9 @@ public OnPlayerCloseInventory(playerid)
 	#define _ALS_OnPlayerCloseInventory
 #endif
 #define OnPlayerCloseInventory tut_OnPlayerCloseInventory
-forward OnPlayerCloseInventory(playerid);
+#if defined tut_OnPlayerCloseInventory
+    forward tut_OnPlayerCloseInventory(playerid);
+#endif
 
 
 // Interface

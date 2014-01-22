@@ -133,7 +133,11 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	return CallLocalFunction("sgn_OnButtonPress", "dd", playerid, buttonid);
+	#if defined sgn_OnButtonPress
+        return sgn_OnButtonPress(playerid, buttonid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -141,7 +145,9 @@ public OnButtonPress(playerid, buttonid)
 	#define _ALS_OnButtonPress
 #endif
 #define OnButtonPress sgn_OnButtonPress
-forward sgn_OnButtonPress(playerid, buttonid);
+#if defined sgn_OnButtonPress
+    forward sgn_OnButtonPress(playerid, buttonid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

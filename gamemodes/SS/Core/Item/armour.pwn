@@ -8,7 +8,11 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("armour_OnItemCreate", "d", itemid);
+	#if defined armour_OnItemCreate
+        return armour_OnItemCreate(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -16,7 +20,9 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate armour_OnItemCreate
-forward armour_OnItemCreate(itemid);
+#if defined armour_OnItemCreate
+    forward armour_OnItemCreate(itemid);
+#endif
 
 
 public OnPlayerUseItem(playerid, itemid)
@@ -33,7 +39,11 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	return CallLocalFunction("armour_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined armour_OnPlayerUseItem
+        return armour_OnPlayerUseItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -41,7 +51,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem armour_OnPlayerUseItem
-forward armour_OnPlayerUseItem(playerid, itemid);
+#if defined armour_OnPlayerUseItem
+    forward armour_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnItemNameRender(itemid)
 {
@@ -58,7 +70,11 @@ public OnItemNameRender(itemid)
 		SetItemNameExtra(itemid, str);
 	}
 
-	return CallLocalFunction("armour_OnItemNameRender", "d", itemid);
+	#if defined armour_OnItemNameRender
+        return armour_OnItemNameRender(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -66,7 +82,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender armour_OnItemNameRender
-forward armour_OnItemNameRender(itemid);
+#if defined armour_OnItemNameRender
+    forward armour_OnItemNameRender(itemid);
+#endif
 
 
 new Float:ArmourSkinData[17][9]=

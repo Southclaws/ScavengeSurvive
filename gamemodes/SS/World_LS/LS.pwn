@@ -40,7 +40,11 @@ public OnLoad()
 	DefineSupplyDropPos("Los Santos North Car Park", 1711.01563, -1053.82056, 22.97256);
 	DefineSupplyDropPos("Los Santos Jefferson Motel", 2217.05444, -1163.08008, 24.70885);
 
-	return CallLocalFunction("santos_OnLoad", "");
+	#if defined santos_OnLoad
+        santos_OnLoad();
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -48,7 +52,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad santos_OnLoad
-forward santos_OnLoad();
+#if defined santos_OnLoad
+    forward santos_OnLoad();
+#endif
 
 LS_District_Housing1()
 {

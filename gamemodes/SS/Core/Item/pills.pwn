@@ -13,7 +13,11 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("pil_OnItemCreate", "d", itemid);
+	#if defined pil_OnItemCreate
+        return pil_OnItemCreate(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -21,7 +25,9 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate pil_OnItemCreate
-forward pil_OnItemCreate(itemid);
+#if defined pil_OnItemCreate
+    forward pil_OnItemCreate(itemid);
+#endif
 
 public OnItemNameRender(itemid)
 {
@@ -36,7 +42,11 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	return CallLocalFunction("pil_OnItemNameRender", "d", itemid);
+	#if defined pil_OnItemNameRender
+        return pil_OnItemNameRender(itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -44,7 +54,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender pil_OnItemNameRender
-forward pil_OnItemNameRender(itemid);
+#if defined pil_OnItemNameRender
+    forward pil_OnItemNameRender(itemid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -54,7 +66,11 @@ public OnPlayerUseItem(playerid, itemid)
 		defer TakePills(playerid, itemid);
 	}
 
-	return CallLocalFunction("pil_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined pil_OnPlayerUseItem
+        return pil_OnPlayerUseItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -62,7 +78,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem pil_OnPlayerUseItem
-forward pil_OnPlayerUseItem(playerid, itemid);
+#if defined pil_OnPlayerUseItem
+    forward pil_OnPlayerUseItem(playerid, itemid);
+#endif
 
 timer TakePills[500](playerid, itemid)
 {

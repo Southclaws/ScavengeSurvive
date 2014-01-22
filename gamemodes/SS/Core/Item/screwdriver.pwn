@@ -32,7 +32,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 	}
-	return CallLocalFunction("scr_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined scr_OnPlayerUseItemWithItem
+        return scr_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -40,7 +44,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem scr_OnPlayerUseItemWithItem
-forward scr_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined scr_OnPlayerUseItemWithItem
+    forward scr_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -65,7 +71,11 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("scr_OnHoldActionFinish", "d", playerid);
+	#if defined scr_OnHoldActionFinish
+        return scr_OnHoldActionFinish(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 
 
@@ -78,4 +88,6 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish scr_OnHoldActionFinish
-forward scr_OnHoldActionFinish(playerid);
+#if defined scr_OnHoldActionFinish
+    forward scr_OnHoldActionFinish(playerid);
+#endif

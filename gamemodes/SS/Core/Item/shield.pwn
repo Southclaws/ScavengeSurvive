@@ -6,7 +6,11 @@ public OnPlayerUseItem(playerid, itemid)
 		defer shield_Down(playerid, itemid);
 		return 1;
 	}
-    return CallLocalFunction("shd_OnPlayerUseItem", "dd", playerid, itemid);
+    #if defined shd_OnPlayerUseItem
+        return shd_OnPlayerUseItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItem
     #undef OnPlayerUseItem
@@ -14,7 +18,9 @@ public OnPlayerUseItem(playerid, itemid)
     #define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem shd_OnPlayerUseItem
-forward shd_OnPlayerUseItem(playerid, itemid);
+#if defined shd_OnPlayerUseItem
+    forward shd_OnPlayerUseItem(playerid, itemid);
+#endif
 
 timer shield_Down[400](playerid, itemid)
 {

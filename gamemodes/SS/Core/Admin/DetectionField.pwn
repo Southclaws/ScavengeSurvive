@@ -180,7 +180,11 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		}
 	}
 
-	return CallLocalFunction("det_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	#if defined det_OnPlayerEnterDynamicArea
+        return det_OnPlayerEnterDynamicArea(playerid, areaid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
 	#undef OnPlayerEnterDynamicArea
@@ -188,7 +192,9 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea det_OnPlayerEnterDynamicArea
-forward det_OnPlayerEnterDynamicArea(playerid, areaid);
+#if defined det_OnPlayerEnterDynamicArea
+    forward det_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif
 
 DetectionFieldLogPlayer(playerid, id)
 {

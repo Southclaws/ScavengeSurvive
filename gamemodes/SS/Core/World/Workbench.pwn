@@ -73,7 +73,11 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	return CallLocalFunction("wb_OnButtonPress", "dd", playerid, buttonid);
+	#if defined wb_OnButtonPress
+        return wb_OnButtonPress(playerid, buttonid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -81,7 +85,9 @@ public OnButtonPress(playerid, buttonid)
 	#define _ALS_OnButtonPress
 #endif
 #define OnButtonPress wb_OnButtonPress
-forward wb_OnButtonPress(playerid, buttonid);
+#if defined wb_OnButtonPress
+    forward wb_OnButtonPress(playerid, buttonid);
+#endif
 
 Internal_OnPlayerUseWorkbench(playerid, workbenchid, itemid)
 {
@@ -169,7 +175,11 @@ public OnHoldActionFinish(playerid)
 		wb_CurrentWorkbench[playerid] = -1;
 	}
 
-	return CallLocalFunction("wb_OnHoldActionFinish", "d", playerid);
+	#if defined wb_OnHoldActionFinish
+        return wb_OnHoldActionFinish(playerid);
+    #elseif
+        return 0;
+    #endif
 }
 
 #if defined _ALS_OnHoldActionFinish
@@ -178,7 +188,9 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish wb_OnHoldActionFinish
-forward wb_OnHoldActionFinish(playerid);
+#if defined wb_OnHoldActionFinish
+    forward wb_OnHoldActionFinish(playerid);
+#endif
 
 ACMD:wbtest[3](playerid, params[])
 {

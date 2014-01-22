@@ -62,7 +62,11 @@ public OnPlayerUseItem(playerid, itemid)
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 	}
-	return CallLocalFunction("emppx_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined emppx_OnPlayerUseItem
+        return emppx_OnPlayerUseItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -70,7 +74,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem emppx_OnPlayerUseItem
-forward emppx_OnPlayerUseItem(playerid, itemid);
+#if defined emppx_OnPlayerUseItem
+    forward emppx_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {
@@ -82,7 +88,11 @@ public OnPlayerDroppedItem(playerid, itemid)
 			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
 		}
 	}
-	return CallLocalFunction("emppx_OnPlayerDroppedItem", "dd", playerid, itemid);
+	#if defined emppx_OnPlayerDroppedItem
+        return emppx_OnPlayerDroppedItem(playerid, itemid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerDroppedItem
 	#undef OnPlayerDroppedItem
@@ -90,7 +100,9 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#define _ALS_OnPlayerDroppedItem
 #endif
 #define OnPlayerDroppedItem emppx_OnPlayerDroppedItem
-forward emppx_OnPlayerDroppedItem(playerid, itemid);
+#if defined emppx_OnPlayerDroppedItem
+    forward emppx_OnPlayerDroppedItem(playerid, itemid);
+#endif
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
@@ -110,7 +122,11 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		}
 	}
 
-	return CallLocalFunction("emppx_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	#if defined emppx_OnPlayerEnterDynamicArea
+        return emppx_OnPlayerEnterDynamicArea(playerid, areaid);
+    #elseif
+        return 0;
+    #endif
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
 	#undef OnPlayerEnterDynamicArea
@@ -118,4 +134,6 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea emppx_OnPlayerEnterDynamicArea
-forward emppx_OnPlayerEnterDynamicArea(playerid, areaid);
+#if defined emppx_OnPlayerEnterDynamicArea
+    forward emppx_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif
