@@ -87,11 +87,7 @@ public OnLoad()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0);
 
 
-	#if defined ranch_OnLoad
-        ranch_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("ranch_OnLoad", "");
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -99,9 +95,7 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad ranch_OnLoad
-#if defined ranch_OnLoad
-    forward ranch_OnLoad();
-#endif
+forward ranch_OnLoad();
 
 
 public OnButtonPress(playerid, buttonid)
@@ -173,11 +167,7 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-    #if defined ranch_OnButtonPress
-        return ranch_OnButtonPress(playerid, buttonid);
-    #elseif
-        return 0;
-    #endif
+    return CallLocalFunction("ranch_OnButtonPress", "ddd", playerid, buttonid);
 }
 #if defined _ALS_OnButtonPress
     #undef OnButtonPress
@@ -185,9 +175,7 @@ public OnButtonPress(playerid, buttonid)
     #define _ALS_OnButtonPress
 #endif
 #define OnButtonPress ranch_OnButtonPress
-#if defined ranch_OnButtonPress
-    forward ranch_OnButtonPress(playerid, buttonid);
-#endif
+forward ranch_OnButtonPress(playerid, buttonid);
 
 
 public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
@@ -204,11 +192,7 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 	    QuarryDoorState = 1;
 	}
 
-    #if defined int_OnPlayerUseItemWithButton
-        return int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-    #elseif
-        return 0;
-    #endif
+    return CallLocalFunction("int_OnPlayerUseItemWithButton", "ddd", playerid, buttonid, itemid);
 }
 #if defined _ALS_OnPlayerUseItemWithButton
     #undef OnPlayerUseItemWithButton
@@ -216,9 +200,7 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
     #define _ALS_OnPlayerUseItemWithButton
 #endif
 #define OnPlayerUseItemWithButton int_OnPlayerUseItemWithButton
-#if defined int_OnPlayerUseItemWithButton
-    forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-#endif
+forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
 
 
 timer AttachRanchHdd[2500](playerid)

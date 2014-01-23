@@ -239,11 +239,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined def_OnPlayerUseItemWithItem
-        return def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("def_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -251,9 +247,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem def_OnPlayerUseItemWithItem
-#if defined def_OnPlayerUseItemWithItem
-    forward def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -399,11 +393,7 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined def_OnButtonPress
-        return def_OnButtonPress(playerid, buttonid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("def_OnButtonPress", "dd", playerid, buttonid);
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -411,9 +401,7 @@ public OnButtonPress(playerid, buttonid)
 	#define _ALS_OnButtonPress
 #endif
 #define OnButtonPress def_OnButtonPress
-#if defined def_OnButtonPress
-    forward def_OnButtonPress(playerid, buttonid);
-#endif
+forward def_OnButtonPress(playerid, buttonid);
 
 public OnHoldActionUpdate(playerid, progress)
 {
@@ -422,11 +410,7 @@ public OnHoldActionUpdate(playerid, progress)
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
 			StopHoldAction(playerid);
 	}
-	#if defined def_OnHoldActionUpdate
-        return def_OnHoldActionUpdate(playerid, progress);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("def_OnHoldActionUpdate", "d", playerid, progress);
 }
 #if defined _ALS_OnHoldActionUpdate
 	#undef OnHoldActionUpdate
@@ -434,9 +418,7 @@ public OnHoldActionUpdate(playerid, progress)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate def_OnHoldActionUpdate
-#if defined def_OnHoldActionUpdate
-    forward def_OnHoldActionUpdate(playerid, progress);
-#endif
+forward def_OnHoldActionUpdate(playerid, progress);
 
 public OnHoldActionFinish(playerid)
 {
@@ -514,11 +496,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined def_OnHoldActionFinish
-        return def_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("def_OnHoldActionFinish", "d", playerid);
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -526,9 +504,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish def_OnHoldActionFinish
-#if defined def_OnHoldActionFinish
-    forward def_OnHoldActionFinish(playerid);
-#endif
+forward def_OnHoldActionFinish(playerid);
 
 hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 {

@@ -249,11 +249,7 @@ public OnPlayerOpenInventory(playerid)
 {
 	HidePlayerToolTip(playerid);
 
-	#if defined tip_OnPlayerOpenInventory
-        return tip_OnPlayerOpenInventory(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tip_OnPlayerOpenInventory", "d", playerid);
 }
 #if defined _ALS_OnPlayerOpenInventory
 	#undef OnPlayerOpenInventory
@@ -261,19 +257,13 @@ public OnPlayerOpenInventory(playerid)
 	#define _ALS_OnPlayerOpenInventory
 #endif
 #define OnPlayerOpenInventory tip_OnPlayerOpenInventory
-#if defined tip_OnPlayerOpenInventory
-    forward tip_OnPlayerOpenInventory(playerid);
-#endif
+forward tip_OnPlayerOpenInventory(playerid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
 	HidePlayerToolTip(playerid);
 
-	#if defined tip_OnPlayerOpenContainer
-        return tip_OnPlayerOpenContainer(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tip_OnPlayerOpenContainer", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -281,6 +271,4 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer tip_OnPlayerOpenContainer
-#if defined tip_OnPlayerOpenContainer
-    forward tip_OnPlayerOpenContainer(playerid, containerid);
-#endif
+forward tip_OnPlayerOpenContainer(playerid, containerid);

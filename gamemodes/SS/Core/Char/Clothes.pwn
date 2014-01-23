@@ -55,11 +55,7 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, skinid);
 	}
 
-	#if defined skin_OnItemCreate
-        return skin_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("skin_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -67,9 +63,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate skin_OnItemCreate
-#if defined skin_OnItemCreate
-    forward skin_OnItemCreate(itemid);
-#endif
+forward skin_OnItemCreate(itemid);
 
 
 public OnItemNameRender(itemid)
@@ -90,11 +84,7 @@ public OnItemNameRender(itemid)
 		SetItemNameExtra(itemid, exname);
 	}
 
-	#if defined clo_OnItemNameRender
-        return clo_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("clo_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -102,9 +92,7 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender clo_OnItemNameRender
-#if defined clo_OnItemNameRender
-    forward clo_OnItemNameRender(itemid);
-#endif
+forward clo_OnItemNameRender(itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -163,11 +151,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined clo_OnHoldActionFinish
-        return clo_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("clo_OnHoldActionFinish", "d", playerid);
 }
 
 #if defined _ALS_OnHoldActionFinish
@@ -176,9 +160,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish clo_OnHoldActionFinish
-#if defined clo_OnHoldActionFinish
-    forward clo_OnHoldActionFinish(playerid);
-#endif
+forward clo_OnHoldActionFinish(playerid);
 
 
 stock IsValidClothes(skinid)

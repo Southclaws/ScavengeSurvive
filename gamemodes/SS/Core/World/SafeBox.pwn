@@ -81,11 +81,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined box_OnItemCreate
-        return box_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -93,9 +89,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate box_OnItemCreate
-#if defined box_OnItemCreate
-    forward box_OnItemCreate(itemid);
-#endif
+forward box_OnItemCreate(itemid);
 
 public OnItemCreateInWorld(itemid)
 {
@@ -107,11 +101,7 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
-	#if defined box_OnItemCreateInWorld
-        return box_OnItemCreateInWorld(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnItemCreateInWorld", "d", itemid);
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -119,9 +109,7 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld box_OnItemCreateInWorld
-#if defined box_OnItemCreateInWorld
-    forward box_OnItemCreateInWorld(itemid);
-#endif
+forward box_OnItemCreateInWorld(itemid);
 
 public OnItemDestroy(itemid)
 {
@@ -156,11 +144,7 @@ public OnItemDestroy(itemid)
 		}
 	}
 
-	#if defined box_OnItemDestroy
-        return box_OnItemDestroy(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnItemDestroy", "d", itemid);
 }
 #if defined _ALS_OnItemDestroy
 	#undef OnItemDestroy
@@ -168,9 +152,7 @@ public OnItemDestroy(itemid)
 	#define _ALS_OnItemDestroy
 #endif
 #define OnItemDestroy box_OnItemDestroy
-#if defined box_OnItemDestroy
-    forward box_OnItemDestroy(itemid);
-#endif
+forward box_OnItemDestroy(itemid);
 
 
 
@@ -183,11 +165,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	if(SafeBoxInteractionCheck(playerid, itemid))
 		return 1;
 
-	#if defined box_OnPlayerPickUpItem
-        return box_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -195,20 +173,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem box_OnPlayerPickUpItem
-#if defined box_OnPlayerPickUpItem
-    forward box_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward box_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
 		return 1;
 
-	#if defined box_OnPlayerUseItemWithItem
-        return box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -216,20 +188,14 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
-#if defined box_OnPlayerUseItemWithItem
-    forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 {
 	if(SafeBoxInteractionCheck(playerid, itemid))
 		return 1;
 
-	#if defined box_OnPlayerUseWeaponWithItem
-        return box_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
 }
 #if defined _ALS_OnPlayerUseWeaponWithItem
 	#undef OnPlayerUseWeaponWithItem
@@ -237,9 +203,7 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 	#define _ALS_OnPlayerUseWeaponWithItem
 #endif
 #define OnPlayerUseWeaponWithItem box_OnPlayerUseWeaponWithItem
-#if defined box_OnPlayerUseWeaponWithItem
-    forward box_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-#endif
+forward box_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
 
 
 SafeBoxInteractionCheck(playerid, itemid)
@@ -320,11 +284,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 		box_CurrentBox[playerid] = INVALID_ITEM_ID;
 	}
 
-	#if defined box_OnPlayerCloseContainer
-        return box_OnPlayerCloseContainer(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("box_OnPlayerCloseContainer", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -332,9 +292,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer box_OnPlayerCloseContainer
-#if defined box_OnPlayerCloseContainer
-    forward box_OnPlayerCloseContainer(playerid, containerid);
-#endif
+forward box_OnPlayerCloseContainer(playerid, containerid);
 
 
 

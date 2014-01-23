@@ -41,11 +41,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined mask_OnItemCreate
-        return mask_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("mask_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -53,9 +49,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate mask_OnItemCreate
-#if defined mask_OnItemCreate
-    forward mask_OnItemCreate(itemid);
-#endif
+forward mask_OnItemCreate(itemid);
 
 
 // Core
@@ -157,11 +151,7 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined mask_OnPlayerUseItem
-        return mask_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("mask_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -169,9 +159,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem mask_OnPlayerUseItem
-#if defined mask_OnPlayerUseItem
-    forward mask_OnPlayerUseItem(playerid, itemid);
-#endif
+forward mask_OnPlayerUseItem(playerid, itemid);
 
 
 // Interface

@@ -116,11 +116,7 @@ public OnHoldActionUpdate(playerid, progress)
 
 		return 1;
 	}
-	#if defined med_OnHoldActionUpdate
-        return med_OnHoldActionUpdate(playerid, progress);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("med_OnHoldActionUpdate", "dd", playerid, progress);
 }
 
 public OnHoldActionFinish(playerid)
@@ -151,11 +147,7 @@ public OnHoldActionFinish(playerid)
 
 		return 1;
 	}
-	#if defined med_OnHoldActionFinish
-        return med_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("med_OnHoldActionFinish", "d", playerid);
 }
 
 
@@ -168,9 +160,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate med_OnHoldActionUpdate
-#if defined med_OnHoldActionUpdate
-    forward med_OnHoldActionUpdate(playerid, progress);
-#endif
+forward med_OnHoldActionUpdate(playerid, progress);
 
 
 #if defined _ALS_OnHoldActionFinish
@@ -179,6 +169,4 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish med_OnHoldActionFinish
-#if defined med_OnHoldActionFinish
-    forward med_OnHoldActionFinish(playerid);
-#endif
+forward med_OnHoldActionFinish(playerid);

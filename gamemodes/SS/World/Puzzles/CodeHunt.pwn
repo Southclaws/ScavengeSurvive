@@ -39,11 +39,7 @@ public OnLoad()
 {
 	LoadLockup_SF();
 
-	#if defined lck_OnLoad
-        lck_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("lck_OnLoad", "");
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -51,9 +47,7 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad lck_OnLoad
-#if defined lck_OnLoad
-    forward lck_OnLoad();
-#endif
+forward lck_OnLoad();
 
 CreateCodeParts(Float:coords[][], size, keycode)
 {
@@ -123,11 +117,7 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined lck_OnButtonPress
-        return lck_OnButtonPress(playerid, buttonid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("lck_OnButtonPress", "dd", playerid, buttonid);
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -135,9 +125,7 @@ public OnButtonPress(playerid, buttonid)
 	#define _ALS_OnButtonPress
 #endif
 #define OnButtonPress lck_OnButtonPress
-#if defined lck_OnButtonPress
-    forward lck_OnButtonPress(playerid, buttonid);
-#endif
+forward lck_OnButtonPress(playerid, buttonid);
 
 public OnPlayerKeypadEnter(playerid, keypadid, success)
 {
@@ -149,11 +137,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 		}
 	}
 
-	#if defined lck_OnPlayerKeypadEnter
-        return lck_OnPlayerKeypadEnter(playerid, keypadid, success);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("lck_OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
 }
 #if defined _ALS_OnPlayerKeypadEnter
 	#undef OnPlayerKeypadEnter
@@ -161,9 +145,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	#define _ALS_OnPlayerKeypadEnter
 #endif
 #define OnPlayerKeypadEnter lck_OnPlayerKeypadEnter
-#if defined lck_OnPlayerKeypadEnter
-    forward lck_OnPlayerKeypadEnter(playerid, keypadid, success);
-#endif
+forward lck_OnPlayerKeypadEnter(playerid, keypadid, success);
 
 
 LoadLockup_SF()

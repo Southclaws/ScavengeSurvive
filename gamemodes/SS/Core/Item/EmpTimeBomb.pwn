@@ -6,11 +6,7 @@ public OnPlayerUseItem(playerid, itemid)
 		defer EmpTimeBombExplode(itemid);
 		return 1;
 	}
-    #if defined emptbm_OnPlayerUseItem
-        return emptbm_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+    return CallLocalFunction("emptbm_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
     #undef OnPlayerUseItem
@@ -18,9 +14,7 @@ public OnPlayerUseItem(playerid, itemid)
     #define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem emptbm_OnPlayerUseItem
-#if defined emptbm_OnPlayerUseItem
-    forward emptbm_OnPlayerUseItem(playerid, itemid);
-#endif
+forward emptbm_OnPlayerUseItem(playerid, itemid);
 
 
 timer EmpTimeBombExplode[5000](itemid)

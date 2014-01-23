@@ -8,11 +8,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined gas_OnItemCreate
-        return gas_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("gas_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -20,9 +16,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate gas_OnItemCreate
-#if defined gas_OnItemCreate
-    forward gas_OnItemCreate(itemid);
-#endif
+forward gas_OnItemCreate(itemid);
 
 public OnItemNameRender(itemid)
 {
@@ -34,11 +28,7 @@ public OnItemNameRender(itemid)
 		SetItemNameExtra(itemid, str);
 	}
 
-	#if defined gas_OnItemNameRender
-        return gas_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("gas_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -46,6 +36,4 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender gas_OnItemNameRender
-#if defined gas_OnItemNameRender
-    forward gas_OnItemNameRender(itemid);
-#endif
+forward gas_OnItemNameRender(itemid);

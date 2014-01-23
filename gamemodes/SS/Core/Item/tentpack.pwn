@@ -18,11 +18,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		StartBuildingTent(playerid, withitemid);
 	}
 
-	#if defined tnt_OnPlayerUseItemWithItem
-        return tnt_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tnt_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -30,9 +26,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem tnt_OnPlayerUseItemWithItem
-#if defined tnt_OnPlayerUseItemWithItem
-    forward tnt_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward tnt_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -88,11 +82,7 @@ public OnHoldActionFinish(playerid)
 		}
 	}
 
-	#if defined tnt1_OnHoldActionFinish
-        return tnt1_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tnt1_OnHoldActionFinish", "d", playerid);
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish

@@ -3,11 +3,7 @@ public OnLoad()
 	LoadTiles();
 	GenerateTerrain(285645);
 
-	#if defined ter_OnLoad
-        ter_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("ter_OnLoad", "");
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -15,6 +11,4 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad ter_OnLoad
-#if defined ter_OnLoad
-    forward ter_OnLoad();
-#endif
+forward ter_OnLoad();

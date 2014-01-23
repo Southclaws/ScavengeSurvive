@@ -10,11 +10,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		iedp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
-	#if defined iedp_OnPlayerUseItemWithItem
-        return iedp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("iedp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -22,9 +18,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem iedp_OnPlayerUseItemWithItem
-#if defined iedp_OnPlayerUseItemWithItem
-    forward iedp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward iedp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -50,11 +44,7 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined iedp_OnPlayerUseItem
-        return iedp_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("iedp_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -62,6 +52,4 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem iedp_OnPlayerUseItem
-#if defined iedp_OnPlayerUseItem
-    forward iedp_OnPlayerUseItem(playerid, itemid);
-#endif
+forward iedp_OnPlayerUseItem(playerid, itemid);

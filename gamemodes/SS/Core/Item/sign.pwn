@@ -18,11 +18,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		return 1;
 	}
-	#if defined sgn_OnPlayerUseItem
-        return sgn_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("sgn_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -30,6 +26,4 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem sgn_OnPlayerUseItem
-#if defined sgn_OnPlayerUseItem
-    forward sgn_OnPlayerUseItem(playerid, itemid);
-#endif
+forward sgn_OnPlayerUseItem(playerid, itemid);

@@ -14,11 +14,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined inj_OnItemCreate
-        return inj_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("inj_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -26,9 +22,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate inj_OnItemCreate
-#if defined inj_OnItemCreate
-    forward inj_OnItemCreate(itemid);
-#endif
+forward inj_OnItemCreate(itemid);
 
 public OnItemNameRender(itemid)
 {
@@ -44,11 +38,7 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	#if defined inj_OnItemNameRender
-        return inj_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("inj_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -56,9 +46,7 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender inj_OnItemNameRender
-#if defined inj_OnItemNameRender
-    forward inj_OnItemNameRender(itemid);
-#endif
+forward inj_OnItemNameRender(itemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -77,11 +65,7 @@ public OnPlayerUseItem(playerid, itemid)
 		defer Inject(playerid, playerid, itemid, 1);
 	}
 
-	#if defined inj_OnPlayerUseItem
-        return inj_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("inj_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -89,9 +73,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem inj_OnPlayerUseItem
-#if defined inj_OnPlayerUseItem
-    forward inj_OnPlayerUseItem(playerid, itemid);
-#endif
+forward inj_OnPlayerUseItem(playerid, itemid);
 
 InjectPlayer(playerid, targetid, itemid)
 {

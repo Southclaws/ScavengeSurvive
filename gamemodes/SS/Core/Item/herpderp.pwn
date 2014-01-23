@@ -32,11 +32,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 		}
 	}
-	#if defined derp_OnPlayerUseItem
-        return derp_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("derp_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -44,7 +40,5 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem derp_OnPlayerUseItem
-#if defined derp_OnPlayerUseItem
-    forward derp_OnPlayerUseItem(playerid, itemid);
-#endif
+forward derp_OnPlayerUseItem(playerid, itemid);
 

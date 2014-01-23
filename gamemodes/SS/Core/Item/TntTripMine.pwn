@@ -10,11 +10,7 @@ public OnPlayerUseItem(playerid, itemid)
 		Msg(playerid, YELLOW, " >  Mine primed");
 		return 1;
 	}
-	#if defined tntm_OnPlayerUseItem
-        return tntm_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntm_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -22,9 +18,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem tntm_OnPlayerUseItem
-#if defined tntm_OnPlayerUseItem
-    forward tntm_OnPlayerUseItem(playerid, itemid);
-#endif
+forward tntm_OnPlayerUseItem(playerid, itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -37,11 +31,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 			return 1;
 		}
 	}
-	#if defined tntm_OnPlayerPickUpItem
-        return tntm_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntm_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -49,9 +39,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem tntm_OnPlayerPickUpItem
-#if defined tntm_OnPlayerPickUpItem
-    forward tntm_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward tntm_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
@@ -69,11 +57,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined tntm_OnPlayerOpenContainer
-        return tntm_OnPlayerOpenContainer(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntm_OnPlayerOpenContainer", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -81,9 +65,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer tntm_OnPlayerOpenContainer
-#if defined tntm_OnPlayerOpenContainer
-    forward tntm_OnPlayerOpenContainer(playerid, containerid);
-#endif
+forward tntm_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
@@ -103,11 +85,7 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined tntm_OnPlayerViewContainerOpt
-        return tntm_OnPlayerViewContainerOpt(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntm_OnPlayerViewContainerOpt", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -115,9 +93,7 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt tntm_OnPlayerViewContainerOpt
-#if defined tntm_OnPlayerViewContainerOpt
-    forward tntm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
+forward tntm_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
@@ -145,11 +121,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined tntm_OnPlayerSelectContainerOpt
-        return tntm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntm_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
@@ -157,6 +129,4 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
 #define OnPlayerSelectContainerOpt tntm_OnPlayerSelectContainerOpt
-#if defined tntm_OnPlayerSelectContainerOpt
-    forward tntm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif
+forward tntm_OnPlayerSelectContainerOpt(playerid, containerid, option);

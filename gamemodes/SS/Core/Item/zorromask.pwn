@@ -24,11 +24,7 @@ public OnLoad()
 	SetMaskOffsetsForSkin(tmp, skin_ArmyF, 0.087324, 0.030794, -0.000001, 90.0, 90.0, 0.0, 1.200000, 1.179999, 1.0);
 	SetMaskOffsetsForSkin(tmp, skin_IndiF, 0.069696, 0.031932, -0.000001, 90.0, 90.0, 0.0, 1.100000, 1.200000, 1.0);
 
-	#if defined zor_OnLoad
-        zor_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("zor_OnLoad", "");
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -36,8 +32,6 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad zor_OnLoad
-#if defined zor_OnLoad
-    forward zor_OnLoad();
-#endif
+forward zor_OnLoad();
 
 

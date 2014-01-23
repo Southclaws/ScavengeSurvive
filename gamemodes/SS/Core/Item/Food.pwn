@@ -157,11 +157,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined food_OnHoldActionFinish
-        return food_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("food_OnHoldActionFinish", "d", playerid);
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -169,9 +165,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish food_OnHoldActionFinish
-#if defined food_OnHoldActionFinish
-    forward food_OnHoldActionFinish(playerid);
-#endif
+forward food_OnHoldActionFinish(playerid);
 
 public OnItemNameRender(itemid)
 {
@@ -189,11 +183,7 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	#if defined bbq_OnItemNameRender
-        return bbq_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bbq_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -201,9 +191,7 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender bbq_OnItemNameRender
-#if defined bbq_OnItemNameRender
-    forward bbq_OnItemNameRender(itemid);
-#endif
+forward bbq_OnItemNameRender(itemid);
 
 
 /*==============================================================================

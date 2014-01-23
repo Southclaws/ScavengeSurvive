@@ -7,11 +7,7 @@ public OnPlayerUseItem(playerid, itemid)
 		logf("[EXPLOSIVE] IED TIMEBOMB placed by %p", playerid);
 		return 1;
 	}
-    #if defined iedt_OnPlayerUseItem
-        return iedt_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+    return CallLocalFunction("iedt_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
     #undef OnPlayerUseItem
@@ -19,9 +15,7 @@ public OnPlayerUseItem(playerid, itemid)
     #define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem iedt_OnPlayerUseItem
-#if defined iedt_OnPlayerUseItem
-    forward iedt_OnPlayerUseItem(playerid, itemid);
-#endif
+forward iedt_OnPlayerUseItem(playerid, itemid);
 
 
 timer IedTimeBombExplode[5000](itemid)

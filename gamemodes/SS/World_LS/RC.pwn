@@ -25,11 +25,7 @@ public OnLoad()
 	DefineSupplyDropPos("Dillimore", 642.83069, -594.28088, 15.15962);
 	DefineSupplyDropPos("Blueberry", 204.94981, -261.21274, 0.52650);
 
-	#if defined redcounty_OnLoad
-        redcounty_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("redcounty_OnLoad", "");
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -37,9 +33,7 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad redcounty_OnLoad
-#if defined redcounty_OnLoad
-    forward redcounty_OnLoad();
-#endif
+forward redcounty_OnLoad();
 
 
 RC_District_LogCamp()

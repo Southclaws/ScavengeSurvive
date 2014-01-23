@@ -290,11 +290,7 @@ public OnPlayerAddToInventory(playerid, itemid)
 		}
 	}
 
-	#if defined hols_OnPlayerAddToInventory
-        return hols_OnPlayerAddToInventory(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("hols_OnPlayerAddToInventory", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerAddToInventory
 	#undef OnPlayerAddToInventory
@@ -302,7 +298,5 @@ public OnPlayerAddToInventory(playerid, itemid)
 	#define _ALS_OnPlayerAddToInventory
 #endif
 #define OnPlayerAddToInventory hols_OnPlayerAddToInventory
-#if defined hols_OnPlayerAddToInventory
-    forward hols_OnPlayerAddToInventory(playerid, itemid);
-#endif
+forward hols_OnPlayerAddToInventory(playerid, itemid);
 

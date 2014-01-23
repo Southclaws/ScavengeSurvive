@@ -21,11 +21,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 		defer RollDice(itemid, angle);
 	}
 
-	#if defined die_OnPlayerDroppedItem
-        return die_OnPlayerDroppedItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("die_OnPlayerDroppedItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerDroppedItem
 	#undef OnPlayerDroppedItem
@@ -33,9 +29,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#define _ALS_OnPlayerDroppedItem
 #endif
 #define OnPlayerDroppedItem die_OnPlayerDroppedItem
-#if defined die_OnPlayerDroppedItem
-    forward die_OnPlayerDroppedItem(playerid, itemid);
-#endif
+forward die_OnPlayerDroppedItem(playerid, itemid);
 
 
 timer RollDice[50](itemid, Float:direction)

@@ -10,11 +10,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		tntp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
-	#if defined tntp_OnPlayerUseItemWithItem
-        return tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -22,9 +18,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem tntp_OnPlayerUseItemWithItem
-#if defined tntp_OnPlayerUseItemWithItem
-    forward tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -50,11 +44,7 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined tntp_OnPlayerUseItem
-        return tntp_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntp_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -62,9 +52,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem tntp_OnPlayerUseItem
-#if defined tntp_OnPlayerUseItem
-    forward tntp_OnPlayerUseItem(playerid, itemid);
-#endif
+forward tntp_OnPlayerUseItem(playerid, itemid);
 
 public OnItemCreate(itemid)
 {
@@ -73,11 +61,7 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, INVALID_ITEM_ID);
 	}
 
-	#if defined tntp_OnItemCreate
-        return tntp_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tntp_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -85,6 +69,4 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate tntp_OnItemCreate
-#if defined tntp_OnItemCreate
-    forward tntp_OnItemCreate(itemid);
-#endif
+forward tntp_OnItemCreate(itemid);

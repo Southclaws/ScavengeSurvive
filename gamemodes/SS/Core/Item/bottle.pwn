@@ -25,11 +25,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined bot_OnItemCreate
-        return bot_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bot_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -37,9 +33,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate bot_OnItemCreate
-#if defined bot_OnItemCreate
-    forward bot_OnItemCreate(itemid);
-#endif
+forward bot_OnItemCreate(itemid);
 
 
 public OnItemNameRender(itemid)
@@ -79,11 +73,7 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	#if defined bot_OnItemNameRender
-        return bot_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bot_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -91,9 +81,7 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender bot_OnItemNameRender
-#if defined bot_OnItemNameRender
-    forward bot_OnItemNameRender(itemid);
-#endif
+forward bot_OnItemNameRender(itemid);
 
 public OnPlayerEaten(playerid, itemid)
 {
@@ -121,11 +109,7 @@ public OnPlayerEaten(playerid, itemid)
 			return 1;
 		}
 	}
-	#if defined bot_OnPlayerEaten
-        return bot_OnPlayerEaten(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bot_OnPlayerEaten", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerEaten
 	#undef OnPlayerEaten
@@ -133,6 +117,4 @@ public OnPlayerEaten(playerid, itemid)
 	#define _ALS_OnPlayerEaten
 #endif
 #define OnPlayerEaten bot_OnPlayerEaten
-#if defined bot_OnPlayerEaten
-    forward bot_OnPlayerEaten(playerid, itemid);
-#endif
+forward bot_OnPlayerEaten(playerid, itemid);

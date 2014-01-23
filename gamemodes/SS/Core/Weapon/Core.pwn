@@ -378,11 +378,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 		return 1;
 	}
 
-	#if defined wep_OnPlayerPickUpItem
-        return wep_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -390,9 +386,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem wep_OnPlayerPickUpItem
-#if defined wep_OnPlayerPickUpItem
-    forward wep_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward wep_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
@@ -426,11 +420,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined wep_OnPlayerUseItemWithItem
-        return wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -438,9 +428,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem wep_OnPlayerUseItemWithItem
-#if defined wep_OnPlayerUseItemWithItem
-    forward wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward wep_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 /*
 public OnPlayerRemoveFromInventory(playerid, slotid)
@@ -461,11 +449,7 @@ public OnPlayerRemoveFromInventory(playerid, slotid)
 		}
 	}
 
-	#if defined wep_OnPlayerRemoveFromInv
-        return wep_OnPlayerRemoveFromInv(playerid, slotid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnPlayerRemoveFromInv", "dd", playerid, slotid);
 }
 #if defined _ALS_OnPlayerRemoveFromInv
 	#undef OnPlayerRemoveFromInventory
@@ -473,9 +457,7 @@ public OnPlayerRemoveFromInventory(playerid, slotid)
 	#define _ALS_OnPlayerRemoveFromInv
 #endif
 #define OnPlayerRemoveFromInventory wep_OnPlayerRemoveFromInv
-#if defined wep_OnPlayerRemoveFromInv
-    forward wep_OnPlayerRemoveFromInv(playerid, slotid);
-#endif
+forward OnPlayerRemoveFromInventory(playerid, slotid);
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
@@ -495,11 +477,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 		}
 	}
 
-	#if defined wep_OnItemRemoveFromContainer
-        return wep_OnItemRemoveFromContainer(containerid, slotid, playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
 }
 #if defined _ALS_OnItemRemoveFromContainer
 	#undef OnItemRemoveFromContainer
@@ -507,20 +485,14 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 	#define _ALS_OnItemRemoveFromContainer
 #endif
 #define OnItemRemoveFromContainer wep_OnItemRemoveFromContainer
-#if defined wep_OnItemRemoveFromContainer
-    forward wep_OnItemRemoveFromContainer(containerid, slotid, playerid);
-#endif
+forward wep_OnItemRemoveFromContainer(containerid, slotid, playerid);
 */
 
 public OnPlayerPickedUpItem(playerid, itemid)
 {
 	ConvertPlayerItemToWeapon(playerid);
 
-	#if defined wep_OnPlayerPickedUpItem
-        return wep_OnPlayerPickedUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnPlayerPickedUpItem", "ddd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickedUpItem
 	#undef OnPlayerPickedUpItem
@@ -528,9 +500,7 @@ public OnPlayerPickedUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickedUpItem
 #endif
 #define OnPlayerPickedUpItem wep_OnPlayerPickedUpItem
-#if defined wep_OnPlayerPickedUpItem
-    forward wep_OnPlayerPickedUpItem(playerid, itemid);
-#endif
+forward wep_OnPlayerPickedUpItem(playerid, itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -728,11 +698,7 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 		}
 	}
 
-	#if defined wep_OnPlayerGivenItem
-        return wep_OnPlayerGivenItem(playerid, targetid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
 }
 #if defined _ALS_OnPlayerGivenItem
 	#undef OnPlayerGivenItem
@@ -740,9 +706,7 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 	#define _ALS_OnPlayerGivenItem
 #endif
 #define OnPlayerGivenItem wep_OnPlayerGivenItem
-#if defined wep_OnPlayerGivenItem
-    forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
-#endif
+forward wep_OnPlayerGivenItem(playerid, targetid, itemid);
 
 
 IsPlayerIdle(playerid)
@@ -770,11 +734,7 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	#if defined wep_OnItemNameRender
-        return wep_OnItemNameRender(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("wep_OnItemNameRender", "d", itemid);
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -782,9 +742,7 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender wep_OnItemNameRender
-#if defined wep_OnItemNameRender
-    forward wep_OnItemNameRender(itemid);
-#endif
+forward wep_OnItemNameRender(itemid);
 
 
 // Interface

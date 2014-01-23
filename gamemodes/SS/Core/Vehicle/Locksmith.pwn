@@ -133,11 +133,7 @@ public OnHoldActionUpdate(playerid, progress)
 		return 1;
 	}
 
-	#if defined lsk_OnHoldActionUpdate
-        return lsk_OnHoldActionUpdate(playerid, progress);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("lsk_OnHoldActionUpdate", "dd", playerid, progress);
 }
 
 public OnHoldActionFinish(playerid)
@@ -168,11 +164,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined lsk_OnHoldActionFinish
-        return lsk_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("lsk_OnHoldActionFinish", "d", playerid);
 }
 
 
@@ -185,9 +177,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate lsk_OnHoldActionUpdate
-#if defined lsk_OnHoldActionUpdate
-    forward lsk_OnHoldActionUpdate(playerid, progress);
-#endif
+forward lsk_OnHoldActionUpdate(playerid, progress);
 
 
 #if defined _ALS_OnHoldActionFinish
@@ -196,6 +186,4 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish lsk_OnHoldActionFinish
-#if defined lsk_OnHoldActionFinish
-    forward lsk_OnHoldActionFinish(playerid);
-#endif
+forward lsk_OnHoldActionFinish(playerid);

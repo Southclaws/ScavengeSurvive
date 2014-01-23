@@ -38,11 +38,7 @@ public OnItemCreate(itemid)
 		Iter_Add(bbq_Index, id);
 	}
 
-	#if defined bbq_OnItemCreate
-        return bbq_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bbq_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -50,9 +46,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate bbq_OnItemCreate
-#if defined bbq_OnItemCreate
-    forward bbq_OnItemCreate(itemid);
-#endif
+forward bbq_OnItemCreate(itemid);
 
 
 public OnItemDestroy(itemid)
@@ -68,11 +62,7 @@ public OnItemDestroy(itemid)
 		Iter_Add(bbq_Index, i);
 	}
 
-	#if defined bbq_OnItemDestroy
-        return bbq_OnItemDestroy(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bbq_OnItemDestroy", "d", itemid);
 }
 #if defined _ALS_OnItemDestroy
 	#undef OnItemDestroy
@@ -80,9 +70,7 @@ public OnItemDestroy(itemid)
 	#define _ALS_OnItemDestroy
 #endif
 #define OnItemDestroy bbq_OnItemDestroy
-#if defined bbq_OnItemDestroy
-    forward bbq_OnItemDestroy(itemid);
-#endif
+forward bbq_OnItemDestroy(itemid);
 
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -193,11 +181,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-    #if defined bbq_OnPlayerUseItemWithItem
-        return bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-    #elseif
-        return 0;
-    #endif
+    return CallLocalFunction("bbq_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 
 }
 #if defined _ALS_OnPlayerUseItemWithItem
@@ -206,9 +190,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
     #define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem bbq_OnPlayerUseItemWithItem
-#if defined bbq_OnPlayerUseItemWithItem
-    forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
+forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 timer bbq_FinishCooking[30000](bbqid)
 {
@@ -265,11 +247,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	#if defined bbq_OnPlayerPickUpItem
-        return bbq_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bbq_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -277,6 +255,4 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem bbq_OnPlayerPickUpItem
-#if defined bbq_OnPlayerPickUpItem
-    forward bbq_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward bbq_OnPlayerPickUpItem(playerid, itemid);

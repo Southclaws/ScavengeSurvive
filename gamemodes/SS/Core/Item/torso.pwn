@@ -19,11 +19,7 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
 	}
 
-	#if defined tor_OnItemCreateInWorld
-        return tor_OnItemCreateInWorld(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tor_OnItemCreateInWorld", "d", itemid);
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -31,9 +27,7 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld tor_OnItemCreateInWorld
-#if defined tor_OnItemCreateInWorld
-    forward tor_OnItemCreateInWorld(itemid);
-#endif
+forward tor_OnItemCreateInWorld(itemid);
 
 public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 {
@@ -56,11 +50,7 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 			}
 		}
 	}
-	#if defined tor_OnPlayerUseWeaponWithItem
-        return tor_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
 }
 #if defined _ALS_OnPlayerUseWeaponWithItem
 	#undef OnPlayerUseWeaponWithItem
@@ -68,9 +58,7 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 	#define _ALS_OnPlayerUseWeaponWithItem
 #endif
 #define OnPlayerUseWeaponWithItem tor_OnPlayerUseWeaponWithItem
-#if defined tor_OnPlayerUseWeaponWithItem
-    forward tor_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-#endif
+forward tor_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -84,11 +72,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	#if defined tor_OnPlayerPickUpItem
-        return tor_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tor_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -96,9 +80,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem tor_OnPlayerPickUpItem
-#if defined tor_OnPlayerPickUpItem
-    forward tor_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward tor_OnPlayerPickUpItem(playerid, itemid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -161,11 +143,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined gut_OnHoldActionFinish
-        return gut_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("gut_OnHoldActionFinish", "d", playerid);
 }
 
 
@@ -178,6 +156,4 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish gut_OnHoldActionFinish
-#if defined gut_OnHoldActionFinish
-    forward gut_OnHoldActionFinish(playerid);
-#endif
+forward gut_OnHoldActionFinish(playerid);

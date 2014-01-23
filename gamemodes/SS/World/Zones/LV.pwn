@@ -50,11 +50,7 @@ public OnLoad()
 	DefineSupplyDropPos("Las Venturas South Industrial", 1692.09644, 956.23187, 9.69593);
 	DefineSupplyDropPos("Las Venturas Airport", 1346.64453, 1591.55396, 9.70243);
 
-	#if defined venturas_OnLoad
-        venturas_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("venturas_OnLoad", "");
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -62,9 +58,7 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad venturas_OnLoad
-#if defined venturas_OnLoad
-    forward venturas_OnLoad();
-#endif
+forward venturas_OnLoad();
 
 LV_District_Housing1()
 {

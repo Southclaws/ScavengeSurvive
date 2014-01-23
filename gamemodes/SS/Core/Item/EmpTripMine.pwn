@@ -10,11 +10,7 @@ public OnPlayerUseItem(playerid, itemid)
 		Msg(playerid, YELLOW, " >  Mine primed");
 		return 1;
 	}
-	#if defined empm_OnPlayerUseItem
-        return empm_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("empm_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -22,9 +18,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem empm_OnPlayerUseItem
-#if defined empm_OnPlayerUseItem
-    forward empm_OnPlayerUseItem(playerid, itemid);
-#endif
+forward empm_OnPlayerUseItem(playerid, itemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -37,11 +31,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 			return 1;
 		}
 	}
-	#if defined empm_OnPlayerPickUpItem
-        return empm_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("empm_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -49,9 +39,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem empm_OnPlayerPickUpItem
-#if defined empm_OnPlayerPickUpItem
-    forward empm_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward empm_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
@@ -69,11 +57,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined empm_OnPlayerOpenContainer
-        return empm_OnPlayerOpenContainer(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("empm_OnPlayerOpenContainer", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -81,9 +65,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer empm_OnPlayerOpenContainer
-#if defined empm_OnPlayerOpenContainer
-    forward empm_OnPlayerOpenContainer(playerid, containerid);
-#endif
+forward empm_OnPlayerOpenContainer(playerid, containerid);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
@@ -103,11 +85,7 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined empm_OnPlayerViewContainerOpt
-        return empm_OnPlayerViewContainerOpt(playerid, containerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("empm_OnPlayerViewContainerOpt", "dd", playerid, containerid);
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -115,9 +93,7 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt empm_OnPlayerViewContainerOpt
-#if defined empm_OnPlayerViewContainerOpt
-    forward empm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
+forward empm_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
@@ -145,11 +121,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined empm_OnPlayerSelectContainerOpt
-        return empm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("empm_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
@@ -157,6 +129,4 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
 #define OnPlayerSelectContainerOpt empm_OnPlayerSelectContainerOpt
-#if defined empm_OnPlayerSelectContainerOpt
-    forward empm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif
+forward empm_OnPlayerSelectContainerOpt(playerid, containerid, option);

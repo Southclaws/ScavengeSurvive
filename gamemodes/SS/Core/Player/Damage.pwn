@@ -1,4 +1,4 @@
-public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
@@ -70,7 +70,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	return 1;
 }
 
-public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
+public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;

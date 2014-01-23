@@ -41,11 +41,7 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	#if defined hat_OnItemCreate
-        return hat_OnItemCreate(itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("hat_OnItemCreate", "d", itemid);
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
@@ -53,9 +49,7 @@ public OnItemCreate(itemid)
 	#define _ALS_OnItemCreate
 #endif
 #define OnItemCreate hat_OnItemCreate
-#if defined hat_OnItemCreate
-    forward hat_OnItemCreate(itemid);
-#endif
+forward hat_OnItemCreate(itemid);
 
 
 // Core
@@ -157,11 +151,7 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined hat_OnPlayerUseItem
-        return hat_OnPlayerUseItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("hat_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -169,9 +159,7 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem hat_OnPlayerUseItem
-#if defined hat_OnPlayerUseItem
-    forward hat_OnPlayerUseItem(playerid, itemid);
-#endif
+forward hat_OnPlayerUseItem(playerid, itemid);
 
 
 // Interface

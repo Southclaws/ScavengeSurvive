@@ -47,11 +47,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 			ShowItemToolTip(playerid, GetItemType(itemid));
 	}
 
-	#if defined tip_OnPlayerPickUpItem
-        return tip_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tip_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -59,9 +55,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem tip_OnPlayerPickUpItem
-#if defined tip_OnPlayerPickUpItem
-    forward tip_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward tip_OnPlayerPickUpItem(playerid, itemid);
 
 public OnPlayerDropItem(playerid, itemid)
 {
@@ -71,11 +65,7 @@ public OnPlayerDropItem(playerid, itemid)
 			HideHelpTip(playerid);
 	}
 
-	#if defined tip_OnPlayerDropItem
-        return tip_OnPlayerDropItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tip_OnPlayerDropItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerDropItem
 	#undef OnPlayerDropItem
@@ -83,9 +73,7 @@ public OnPlayerDropItem(playerid, itemid)
 	#define _ALS_OnPlayerDropItem
 #endif
 #define OnPlayerDropItem tip_OnPlayerDropItem
-#if defined tip_OnPlayerDropItem
-    forward tip_OnPlayerDropItem(playerid, itemid);
-#endif
+forward tip_OnPlayerDropItem(playerid, itemid);
 
 public OnLoad()
 {
@@ -220,11 +208,7 @@ public OnLoad()
 	DefineItemToolTip(item_CodePart,		"A puzzle item, the number displayed next to the item name is part of a 4 digit code used to open a door somewhere");
 	DefineItemToolTip(item_LargeBackpack,	"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
 
-	#if defined tip_OnLoad
-        tip_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("tip_OnLoad", "");
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -232,9 +216,7 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad tip_OnLoad
-#if defined tip_OnLoad
-    forward tip_OnLoad();
-#endif
+forward tip_OnLoad();
 
 
 /*==============================================================================

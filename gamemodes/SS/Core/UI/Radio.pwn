@@ -191,11 +191,7 @@ public OnPlayerOpenInventory(playerid)
 {
 	rad_InventoryItem[playerid] = AddInventoryListItem(playerid, "Radio");
 
-	#if defined rad_OnPlayerOpenInventory
-        return rad_OnPlayerOpenInventory(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("rad_OnPlayerOpenInventory", "d", playerid);
 }
 #if defined _ALS_OnPlayerOpenInventory
 	#undef OnPlayerOpenInventory
@@ -203,9 +199,7 @@ public OnPlayerOpenInventory(playerid)
 	#define _ALS_OnPlayerOpenInventory
 #endif
 #define OnPlayerOpenInventory rad_OnPlayerOpenInventory
-#if defined rad_OnPlayerOpenInventory
-    forward rad_OnPlayerOpenInventory(playerid);
-#endif
+forward OnPlayerOpenInventory(playerid);
 
 public OnPlayerSelectExtraItem(playerid, item)
 {
@@ -214,11 +208,7 @@ public OnPlayerSelectExtraItem(playerid, item)
 		ShowRadioUI(playerid);
 	}
 
-	#if defined rad_OnPlayerSelectExtraItem
-        return rad_OnPlayerSelectExtraItem(playerid, item);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("rad_OnPlayerSelectExtraItem", "dd", playerid, item);
 }
 #if defined _ALS_OnPlayerSelectExtraItem
 	#undef OnPlayerSelectExtraItem
@@ -226,9 +216,7 @@ public OnPlayerSelectExtraItem(playerid, item)
 	#define _ALS_OnPlayerSelectExtraItem
 #endif
 #define OnPlayerSelectExtraItem rad_OnPlayerSelectExtraItem
-#if defined rad_OnPlayerSelectExtraItem
-    forward rad_OnPlayerSelectExtraItem(playerid, item);
-#endif
+forward OnPlayerSelectExtraItem(playerid, item);
 
 
 hook OnPlayerConnect(playerid)

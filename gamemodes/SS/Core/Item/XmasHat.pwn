@@ -24,11 +24,7 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.131000, 0.008998, 0.000999,  90.000000, 98.200080, 0.000000,  1.216000, 1.178001, 1.055999);
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.090000, 0.025998, 0.003999,  90.000000, 98.200080, 0.000000,  1.055000, 1.178001, 1.055999);
 
-	#if defined xhat_OnLoad
-        xhat_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("xhat_OnLoad", "");
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -36,6 +32,4 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad xhat_OnLoad
-#if defined xhat_OnLoad
-    forward xhat_OnLoad();
-#endif
+forward xhat_OnLoad();

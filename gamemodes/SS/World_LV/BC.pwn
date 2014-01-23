@@ -43,11 +43,7 @@ public OnLoad()
 	DefineSupplyDropPos("Bone County Canyons", -301.43231, 1877.09180, 41.23884);
 	DefineSupplyDropPos("Verdant Meadows", 373.16586, 2511.17383, 15.47215);
 
-	#if defined bonecounty_OnLoad
-        bonecounty_OnLoad();
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("bonecounty_OnLoad", "");
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -55,9 +51,7 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad bonecounty_OnLoad
-#if defined bonecounty_OnLoad
-    forward bonecounty_OnLoad();
-#endif
+forward bonecounty_OnLoad();
 
 BC_District_Payasdas()
 {

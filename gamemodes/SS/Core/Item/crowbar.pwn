@@ -75,11 +75,7 @@ public OnHoldActionUpdate(playerid, progress)
 		return 1;
 	}
 
-	#if defined crow_OnHoldActionUpdate
-        return crow_OnHoldActionUpdate(playerid, progress);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("crow_OnHoldActionUpdate", "dd", playerid, progress);
 }
 
 public OnHoldActionFinish(playerid)
@@ -100,11 +96,7 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	#if defined crow_OnHoldActionFinish
-        return crow_OnHoldActionFinish(playerid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("crow_OnHoldActionFinish", "d", playerid);
 }
 
 
@@ -117,9 +109,7 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate crow_OnHoldActionUpdate
-#if defined crow_OnHoldActionUpdate
-    forward crow_OnHoldActionUpdate(playerid, progress);
-#endif
+forward crow_OnHoldActionUpdate(playerid, progress);
 
 
 #if defined _ALS_OnHoldActionFinish
@@ -128,6 +118,4 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish crow_OnHoldActionFinish
-#if defined crow_OnHoldActionFinish
-    forward crow_OnHoldActionFinish(playerid);
-#endif
+forward crow_OnHoldActionFinish(playerid);

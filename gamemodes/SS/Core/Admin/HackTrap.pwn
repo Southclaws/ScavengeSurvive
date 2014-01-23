@@ -31,11 +31,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	#if defined hak_OnPlayerPickUpItem
-        return hak_OnPlayerPickUpItem(playerid, itemid);
-    #elseif
-        return 0;
-    #endif
+	return CallLocalFunction("hak_OnPlayerPickUpItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -43,9 +39,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem hak_OnPlayerPickUpItem
-#if defined hak_OnPlayerPickUpItem
-    forward hak_OnPlayerPickUpItem(playerid, itemid);
-#endif
+forward hak_OnPlayerPickUpItem(playerid, itemid);
 
 
 TheTrapHasSprung(playerid)
