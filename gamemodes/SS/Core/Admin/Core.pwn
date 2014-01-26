@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 #define MAX_ADMIN_LEVELS (5)
 
 enum e_admin_data
@@ -31,6 +34,14 @@ static
 	admin_Level[MAX_PLAYERS],
 	admin_OnDuty[MAX_PLAYERS],
 	admin_DutyTick[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	admin_Level[playerid] = 0;
+	admin_OnDuty[playerid] = 0;
+	admin_DutyTick[playerid] = 0;
+}
 
 
 /*==============================================================================
