@@ -38,14 +38,15 @@
 ==============================================================================*/
 
 
-#define ROOT_FOLDER			"Maps/"
-#define CONFIG_FILE			ROOT_FOLDER"maps.cfg"
-#define SESSION_DIR			ROOT_FOLDER"session/"
-#define SESSION_NAME_LEN	(40)
+#define DIRECTORY_SCRIPTFILES	"./scriptfiles/"
+#define DIRECTORY_MAPS			"Maps/"
+#define DIRECTORY_SESSION		"session/"
+#define CONFIG_FILE				DIRECTORY_MAPS"maps.cfg"
 
-#define MAX_REMOVED_OBJECTS	(1000)
-#define MAX_MATERIAL_SIZE	(14)
-#define MAX_MATERIAL_LEN	(8)
+#define MAX_REMOVED_OBJECTS		(1000)
+#define MAX_MATERIAL_SIZE		(14)
+#define MAX_MATERIAL_LEN		(8)
+#define SESSION_NAME_LEN		(40)
 
 
 /*==============================================================================
@@ -87,7 +88,6 @@ new
 		gTotalLoadedObjects,
 		gModelRemoveData[MAX_REMOVED_OBJECTS][E_REMOVE_DATA],
 		gLoadedRemoveBuffer[MAX_PLAYERS][MAX_REMOVED_OBJECTS][5],
-		gLoadedRemoveIndex,
 		gTotalObjectsToRemove;
 
 
@@ -100,6 +100,24 @@ new
 
 public OnFilterScriptInit()
 {
+	if(!dir_exists(DIRECTORY_SCRIPTFILES))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAPS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION);
+	}
+
 	// Load config if exists
 	if(fexist(CONFIG_FILE))
 		LoadConfig();
@@ -107,7 +125,7 @@ public OnFilterScriptInit()
 	if(gDebugLevel > DEBUG_LEVEL_NONE)
 		printf("INFO: [Init] Debug Level: %d", gDebugLevel);
 
-	LoadMapsFromFolder(ROOT_FOLDER);
+	LoadMapsFromFolder(DIRECTORY_MAPS);
 
 	// Yes a standard loop is required here.
 	for(new i; i < MAX_PLAYERS; i++)
@@ -143,11 +161,11 @@ LoadConfig()
 
 		for(new i; i < len; i++)
 		{
-			if(line[i] == ' ')
-				continue;
-
-			if(line[i] == '-')
-				continue;
+			switch(line[i])
+			{
+				case ' ', '-', '\r', '\n':
+					continue;
+			}
 
 			if(line[i] == 'd' && (i < len - 3))
 			{
@@ -157,7 +175,11 @@ LoadConfig()
 
 				if(DEBUG_LEVEL_NONE < val <= DEBUG_LEVEL_LINES)
 					gDebugLevel = val;
+
+				continue;
 			}
+
+			printf("ERROR: Unknown option character at column %d.", i);
 
 			/*
 				Ideas for future options:
@@ -185,7 +207,7 @@ LoadMapsFromFolder(folder[])
 		type,
 		filename[256];
 
-	format(foldername, sizeof(foldername), "./scriptfiles/%s", folder);
+	format(foldername, sizeof(foldername), DIRECTORY_SCRIPTFILES"%s", folder);
 	dirhandle = dir_open(foldername);
 
 	if(gDebugLevel >= DEBUG_LEVEL_FOLDERS)
@@ -248,7 +270,7 @@ LoadMap(filename[])
 		File:file,
 		line[256],
 
-		linenumber,
+		linenumber = 1,
 		objects,
 		operations,
 		
@@ -444,22 +466,29 @@ LoadMap(filename[])
 
 		if(!strcmp(funcname, "RemoveBuildingForPlayer"))
 		{
-			if(!sscanf(funcargs, "p<,>{s[16]}dffff", modelid, posx, posy, posz, range))
+			if(gTotalObjectsToRemove < MAX_REMOVED_OBJECTS)
 			{
-				if(gDebugLevel == DEBUG_LEVEL_DATA)
+				if(!sscanf(funcargs, "p<,>{s[16]}dffff", modelid, posx, posy, posz, range))
 				{
-					printf(" DEBUG: [LoadMap] Removal: %d, %.2f, %.2f, %.2f, %.2f",
-						modelid, posx, posy, posz, range);
+					if(gDebugLevel == DEBUG_LEVEL_DATA)
+					{
+						printf(" DEBUG: [LoadMap] Removal: %d, %.2f, %.2f, %.2f, %.2f",
+							modelid, posx, posy, posz, range);
+					}
+			
+					gModelRemoveData[gTotalObjectsToRemove][remove_Model] = modelid;
+					gModelRemoveData[gTotalObjectsToRemove][remove_PosX] = posx;
+					gModelRemoveData[gTotalObjectsToRemove][remove_PosY] = posy;
+					gModelRemoveData[gTotalObjectsToRemove][remove_PosZ] = posz;
+					gModelRemoveData[gTotalObjectsToRemove][remove_Range] = range;
+			
+					gTotalObjectsToRemove++;
+					operations++;
 				}
-		
-				gModelRemoveData[gTotalObjectsToRemove][remove_Model] = modelid;
-				gModelRemoveData[gTotalObjectsToRemove][remove_PosX] = posx;
-				gModelRemoveData[gTotalObjectsToRemove][remove_PosY] = posy;
-				gModelRemoveData[gTotalObjectsToRemove][remove_PosZ] = posz;
-				gModelRemoveData[gTotalObjectsToRemove][remove_Range] = range;
-		
-				gTotalObjectsToRemove++;
-				operations++;
+			}
+			else
+			{
+				printf(" ERROR: [LoadMap] Removal on line %d failed. Removal limit reached.", linenumber);
 			}
 		}
 
@@ -489,7 +518,7 @@ public OnPlayerDisconnect(playerid, reason)
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+	format(filename, sizeof(filename), DIRECTORY_MAPS DIRECTORY_SESSION"%s.dat", name);
 
 	if(gDebugLevel >= DEBUG_LEVEL_INFO)
 		printf("INFO: [OnPlayerDisconnect] Removing session data file for %s", name);
@@ -509,9 +538,12 @@ RemoveObjects_FirstLoad(playerid)
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+	format(filename, sizeof(filename), DIRECTORY_MAPS DIRECTORY_SESSION"%s.dat", name);
 
 	file = fopen(filename, io_write);
+
+	if(!file)
+		printf("ERROR: [RemoveObjects_FirstLoad] Opening file '%s' for write.", filename);
 
 	if(gDebugLevel >= DEBUG_LEVEL_INFO)
 		printf("INFO: [RemoveObjects_FirstLoad] Created session data for %s", name);
@@ -551,11 +583,12 @@ RemoveObjects_OnLoad(playerid)
 		File:file,
 		name[MAX_PLAYER_NAME],
 		filename[SESSION_NAME_LEN],
-		buffer[5];
+		buffer[5],
+		idx;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	format(filename, sizeof(filename), SESSION_DIR"%s.dat", name);
+	format(filename, sizeof(filename), DIRECTORY_MAPS DIRECTORY_SESSION"%s.dat", name);
 
 	if(!fexist(filename))
 	{
@@ -574,8 +607,8 @@ RemoveObjects_OnLoad(playerid)
 
 	// Build a list of existing removed objects for this player
 
-	while(fblockread(file, gLoadedRemoveBuffer[playerid][gLoadedRemoveIndex], 5))
-		gLoadedRemoveIndex++;
+	while(fblockread(file, gLoadedRemoveBuffer[playerid][idx], 5))
+		idx++;
 
 	fclose(file);
 
@@ -585,7 +618,7 @@ RemoveObjects_OnLoad(playerid)
 	{
 		new skip;
 
-		for(new j; j < gLoadedRemoveIndex; j++)
+		for(new j; j < idx; j++)
 		{
 			if(
 				_:gModelRemoveData[i][remove_Model] == gLoadedRemoveBuffer[playerid][j][0] &&
