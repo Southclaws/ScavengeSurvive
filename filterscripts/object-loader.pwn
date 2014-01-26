@@ -277,9 +277,9 @@ LoadMap(filename[])
 		funcname[32],
 		funcargs[128],
 		
-		globalworld[1],
-		globalinterior[1],
-		Float:globalrange,
+		globalworld = -1,
+		globalinterior = -1,
+		Float:globalrange = 350.0,
 
 		modelid,
 		Float:posx,
@@ -326,10 +326,6 @@ LoadMap(filename[])
 			"512x256",
 			"512x512"
 		};
-
-	globalworld[0] = -1;
-	globalinterior[0] = -1;
-	globalrange = 350.0;
 
 	if(!fexist(filename))
 	{
@@ -378,10 +374,10 @@ LoadMap(filename[])
 
 		if(!strcmp(funcname, "options", false))
 		{
-			if(!sscanf(funcargs, "p<,>ddf", globalworld[0], globalinterior[0], globalrange))
+			if(!sscanf(funcargs, "p<,>ddf", globalworld, globalinterior, globalrange))
 			{
 				if(gDebugLevel >= DEBUG_LEVEL_DATA)
-					printf(" DEBUG: [LoadMap] Updated options to: %d, %d, %f", globalworld[0], globalinterior[0], globalrange);
+					printf(" DEBUG: [LoadMap] Updated options to: %d, %d, %f", globalworld, globalinterior, globalrange);
 
 				operations++;
 			}
@@ -389,22 +385,22 @@ LoadMap(filename[])
 
 		if(!strcmp(funcname, "Create", false, 6)) // Scan for any function starting with 'Create', this covers CreateObject, CreateDynamicObject, CreateStreamedObject, etc.
 		{
-			if(!sscanf(funcargs, "p<,>dffffffD(-1)D(-1){D(-1)}F(-1.0)", modelid, posx, posy, posz, rotx, roty, rotz, world[0], interior[0], range))
+			if(!sscanf(funcargs, "p<,>dffffffD(-1)D(-1){D(-1)}F(-1.0)", modelid, posx, posy, posz, rotx, roty, rotz, world, interior[0], range))
 			{
-				if(gDebugLevel == DEBUG_LEVEL_DATA)
-				{
-					printf(" DEBUG: [LoadMap] Object: %d, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f",
-						modelid, posx, posy, posz, rotx, roty, rotz);
-				}
+				if(world[0] == -1)
+					world[0] = globalworld;
+
+				if(interior[0] == -1)
+					interior[0] = globalinterior;
 
 				if(range == -1.0)
 					range = globalrange;
 
-				if(world[0] == -1)
-					world = globalworld;
-
-				if(interior[0] == -1)
-					interior = globalinterior;
+				if(gDebugLevel == DEBUG_LEVEL_DATA)
+				{
+					printf(" DEBUG: [LoadMap] Object: %d, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f (%d, %d, %f)",
+						modelid, posx, posy, posz, rotx, roty, rotz, world[0], interior[0], range);
+				}
 
 				tmpObjID = CreateDynamicObjectEx(modelid, posx, posy, posz, rotx, roty, rotz, range, range + 100.0, world, interior);
 
