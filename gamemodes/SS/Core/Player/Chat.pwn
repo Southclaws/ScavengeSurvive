@@ -61,7 +61,7 @@ hook OnPlayerText(playerid, text[])
 		foreach(new i : Player)
 		{
 			if(GetPlayerAdminLevel(i) > 0)
-				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, TagScan(text));
+				MsgF(i, WHITE, "%C[Admin] (%d) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, playerid, TagScan(text));
 		}
 	}
 
@@ -70,6 +70,9 @@ hook OnPlayerText(playerid, text[])
 
 PlayerSendChat(playerid, chat[], Float:frequency)
 {
+	if(GetTickCountDifference(GetPlayerServerJoinTick(playerid), GetTickCount()) < 1000)
+		return 0;
+
 	new
 		line1[256],
 		line2[128];

@@ -1,15 +1,24 @@
 #include <YSI\y_hooks>
 
 
+static
+	aimshout_Tick[MAX_PLAYERS];
+
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if( (newkeys & 128) && (newkeys & 512) )
 	{
-		new string[128];
+		if(GetTickCountDifference(aimshout_Tick[playerid], GetTickCount()) > 750)
+		{
+			new string[128];
 
-		GetPlayerAimShoutText(playerid, string);
+			GetPlayerAimShoutText(playerid, string);
 
-		PlayerSendChat(playerid, string, 0.0);
+			PlayerSendChat(playerid, string, 0.0);
+
+			aimshout_Tick[playerid] = GetTickCount();
+		}
 	}
 
 	return 1;
