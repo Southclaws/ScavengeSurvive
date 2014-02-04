@@ -142,12 +142,12 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 	new
 		interior = GetPlayerInterior(playerid),
 		backpackitem = GetPlayerBagItem(playerid),
-		itemid,
+		itemid = GetPlayerItem(playerid),
 		clothes = GetPlayerClothes(playerid);
 
-	if(IsValidItem(GetPlayerItem(playerid)))
+	if(IsValidItem(itemid))
 	{
-		itemid = CreateItemInWorld(GetPlayerItem(playerid),
+		CreateItemInWorld(itemid,
 			x + floatsin(345.0, degrees),
 			y + floatcos(345.0, degrees),
 			z - FLOOR_OFFSET,
@@ -171,9 +171,11 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 		RemovePlayerWeapon(playerid);
 	}
 
-	if(IsValidItem(GetPlayerHolsterItem(playerid)))
+	itemid = GetPlayerHolsterItem(playerid);
+
+	if(IsValidItem(itemid))
 	{
-		CreateItemInWorld(GetPlayerHolsterItem(playerid),
+		CreateItemInWorld(itemid,
 			x + floatsin(15.0, degrees),
 			y + floatcos(15.0, degrees),
 			z - FLOOR_OFFSET,
@@ -205,15 +207,9 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 	{
 		RemovePlayerBag(playerid);
 
-		CreateItemInWorld(backpackitem,
-			x + floatsin(180.0, degrees),
-			y + floatcos(180.0, degrees),
-			z - FLOOR_OFFSET,
-			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
-			.interior = interior);
-
+		SetItemPos(backpackitem, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 		SetItemRot(backpackitem, 0.0, 0.0, r, true);
+		SetItemInterior(backpackitem, interior);
 	}
 
 	if(clothes != skin_MainM && clothes != skin_MainF)
@@ -229,9 +225,11 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 		SetItemExtraData(itemid, clothes);
 	}
 
-	if(IsValidItem(GetPlayerHat(playerid)))
+	itemid = GetPlayerHat(playerid);
+
+	if(IsValidItem(itemid))
 	{
-		CreateItem(GetItemTypeFromHat(GetPlayerHat(playerid)),
+		CreateItem(GetItemTypeFromHat(itemid),
 			x + floatsin(270.0, degrees),
 			y + floatcos(270.0, degrees),
 			z - FLOOR_OFFSET,
@@ -242,9 +240,11 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 		RemovePlayerHat(playerid);
 	}
 
-	if(IsValidItem(GetPlayerMask(playerid)))
+	itemid = GetPlayerMask(playerid);
+
+	if(IsValidItem(itemid))
 	{
-		CreateItem(GetItemTypeFromMask(GetPlayerMask(playerid)),
+		CreateItem(GetItemTypeFromMask(itemid),
 			x + floatsin(280.0, degrees),
 			y + floatcos(280.0, degrees),
 			z - FLOOR_OFFSET,
