@@ -135,6 +135,13 @@ public OnHoldActionUpdate(playerid, progress)
 
 	return CallLocalFunction("lsk_OnHoldActionUpdate", "dd", playerid, progress);
 }
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate lsk_OnHoldActionUpdate
+forward lsk_OnHoldActionUpdate(playerid, progress);
 
 public OnHoldActionFinish(playerid)
 {
@@ -166,20 +173,6 @@ public OnHoldActionFinish(playerid)
 
 	return CallLocalFunction("lsk_OnHoldActionFinish", "d", playerid);
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate lsk_OnHoldActionUpdate
-forward lsk_OnHoldActionUpdate(playerid, progress);
-
-
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
 #else
@@ -187,3 +180,21 @@ forward lsk_OnHoldActionUpdate(playerid, progress);
 #endif
 #define OnHoldActionFinish lsk_OnHoldActionFinish
 forward lsk_OnHoldActionFinish(playerid);
+
+public OnItemNameRender(itemid)
+{
+	if(GetItemType(itemid) == item_Key)
+	{
+		if(GetItemExtraData(itemid) != 0)
+			SetItemNameExtra(itemid, "Cut");
+	}
+
+	return CallLocalFunction("lsk_OnItemNameRender", "d", itemid);
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender lsk_OnItemNameRender
+forward lsk_OnItemNameRender(itemid);
