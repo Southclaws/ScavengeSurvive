@@ -91,19 +91,21 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 {
 	if(clickedid == RadioUI_KnobL[playerid])
 	{
-		SetPlayerRadioFrequency(playerid, GetPlayerRadioFrequency(playerid) - 0.5);
-
-		if(GetPlayerRadioFrequency(playerid) > MAX_RADIO_FREQ)
+		if(GetPlayerRadioFrequency(playerid) - 0.5 <= MIN_RADIO_FREQ)
 			SetPlayerRadioFrequency(playerid, MIN_RADIO_FREQ);
+
+		else
+			SetPlayerRadioFrequency(playerid, GetPlayerRadioFrequency(playerid) - 0.5);
 
 		UpdateRadioUI(playerid);
 	}
 	if(clickedid == RadioUI_KnobR[playerid])
 	{
-		SetPlayerRadioFrequency(playerid, GetPlayerRadioFrequency(playerid) + 0.5);
-
-		if(GetPlayerRadioFrequency(playerid) < MIN_RADIO_FREQ)
+		if(GetPlayerRadioFrequency(playerid) + 0.5 >= MAX_RADIO_FREQ)
 			SetPlayerRadioFrequency(playerid, MAX_RADIO_FREQ);
+
+		else
+			SetPlayerRadioFrequency(playerid, GetPlayerRadioFrequency(playerid) + 0.5);
 
 		UpdateRadioUI(playerid);
 	}
@@ -154,7 +156,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			new Float:frequency;
 			if(!sscanf(inputtext, "f", frequency))
 			{
-				if(MIN_RADIO_FREQ < frequency < MAX_RADIO_FREQ)
+				if(MIN_RADIO_FREQ <= frequency <= MAX_RADIO_FREQ)
 				{
 					SetPlayerRadioFrequency(playerid, frequency);
 					logf("%p updated frequency to %.2f", playerid, frequency);
