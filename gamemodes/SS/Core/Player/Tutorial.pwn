@@ -168,7 +168,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 #define OnPlayerPickUpItem tut_OnPlayerPickUpItem
 forward tut_OnPlayerPickUpItem(playerid, itemid);
 
-public OnPlayerAddToInventory(playerid, itemid)
+public OnItemAddToInventory(playerid, itemid, slot)
 {
 	if(TutorialState[playerid] == 7)
 	{
@@ -176,15 +176,15 @@ public OnPlayerAddToInventory(playerid, itemid)
 		TutorialState[playerid] = 8;
 	}
 
-	return CallLocalFunction("tut_OnPlayerAddToInventory", "dd", playerid, itemid);
+	return CallLocalFunction("tut_OnItemAddToInventory", "ddd", playerid, itemid, slot);
 }
-#if defined _ALS_OnPlayerAddToInventory
-	#undef OnPlayerAddToInventory
+#if defined _ALS_OnItemAddToInventory
+	#undef OnItemAddToInventory
 #else
-	#define _ALS_OnPlayerAddToInventory
+	#define _ALS_OnItemAddToInventory
 #endif
-#define OnPlayerAddToInventory tut_OnPlayerAddToInventory
-forward tut_OnPlayerAddToInventory(playerid, itemid);
+#define OnItemAddToInventory tut_OnItemAddToInventory
+forward tut_OnItemAddToInventory(playerid, itemid, slot);
 
 public OnPlayerViewInventoryOpt(playerid)
 {
