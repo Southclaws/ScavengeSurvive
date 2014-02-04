@@ -289,33 +289,33 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 #define OnItemRemoveFromContainer app_OnItemRemoveFromContainer
 forward app_OnItemRemoveFromContainer(containerid, slotid, playerid);
 
-public OnPlayerRemoveFromInventory(playerid, slotid)
+public OnItemRemoveFromInventory(playerid, itemid, slot)
 {
 	UpdatePlayerGear(playerid, 0);
 
-	return CallLocalFunction("app_OnPlayerRemoveFromInventory", "dd", playerid, slotid);
+	return CallLocalFunction("app_OnItemRemoveFromInventory", "ddd", playerid, itemid, slot);
 }
 #if defined _ALS_OnPlayerRemoveFromInv
-	#undef OnPlayerRemoveFromInventory
+	#undef OnItemRemoveFromInventory
 #else
 	#define _ALS_OnPlayerRemoveFromInv
 #endif
-#define OnPlayerRemoveFromInventory app_OnPlayerRemoveFromInventory
-forward app_OnPlayerRemoveFromInventory(playerid, slotid);
+#define OnItemRemoveFromInventory app_OnItemRemoveFromInventory
+forward app_OnItemRemoveFromInventory(playerid, itemid, slot);
 
-public OnPlayerAddToInventory(playerid, itemid)
+public OnItemAddToInventory(playerid, itemid, slot)
 {
 	UpdatePlayerGear(playerid, 0);
 
-	return CallLocalFunction("app_OnPlayerAddToInventory", "dd", playerid, itemid);
+	return CallLocalFunction("app_OnItemAddToInventory", "ddd", playerid, itemid, slot);
 }
-#if defined _ALS_OnPlayerAddToInventory
-	#undef OnPlayerAddToInventory
+#if defined _ALS_OnItemAddToInventory
+	#undef OnItemAddToInventory
 #else
-	#define _ALS_OnPlayerAddToInventory
+	#define _ALS_OnItemAddToInventory
 #endif
-#define OnPlayerAddToInventory app_OnPlayerAddToInventory
-forward app_OnPlayerAddToInventory(playerid, itemid);
+#define OnItemAddToInventory app_OnItemAddToInventory
+forward app_OnItemAddToInventory(playerid, itemid, slot);
 
 public OnItemRemovedFromPlayer(playerid, itemid)
 {
