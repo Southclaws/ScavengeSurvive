@@ -82,7 +82,7 @@ ptask FoodUpdate[1000](playerid)
 	}
 
 	if(food < 20.0)
-		food -= (20.0 - food) / 10.0;
+		SetPlayerHP(playerid, GetPlayerHP(playerid) - (20.0 - food) / 10.0);
 
 	if(food < 0.0)
 		food = 0.0;
