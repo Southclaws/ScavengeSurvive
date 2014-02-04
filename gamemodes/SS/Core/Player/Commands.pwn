@@ -119,7 +119,7 @@ CMD:die(playerid, params[])
 timer Suicide[3000](playerid)
 {
 	RemovePlayerWeapon(playerid);
-	SetPlayerHP(playerid, 0.0);
+	SetPlayerHP(playerid, -100.0);
 }
 
 CMD:changepass(playerid,params[])
