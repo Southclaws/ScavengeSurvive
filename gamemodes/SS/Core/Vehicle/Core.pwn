@@ -496,10 +496,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
- 
+/*
 	if(HOLDING(KEY_SPRINT) || PRESSED(KEY_SPRINT) || RELEASED(KEY_SPRINT))
 	{
-		if(veh_Entering[playerid] > -1)
+		if(GetPlayerState(playerid) == PLAYER_STATE_ENTER_VEHICLE_DRIVER)
 		{
 			foreach(new i : Player)
 			{
@@ -511,7 +511,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-
+*/
 	return 1;
 }
 
