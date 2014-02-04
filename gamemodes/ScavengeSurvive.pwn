@@ -31,6 +31,7 @@ native gpci(playerid, serial[], len);
 #define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
+#define ITM_DROP_ON_DEATH			false
 
 #define DEFAULT_POS_X				(10000.0)
 #define DEFAULT_POS_Y				(10000.0)
@@ -115,19 +116,18 @@ native WP_Hash(buffer[], len, const str[]);
 #define DIRECTORY_SCRIPTFILES		"./scriptfiles/"
 #define DIRECTORY_MAIN				"SSS/"
 #define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
-#define DIRECTORY_CARMOUR			"vehicles/Mods/"
-#define DIRECTORY_LOGS				"SSS/Logs/"
-#define DIRECTORY_PLAYER			"SSS/Player/"
-#define DIRECTORY_INVENTORY			"SSS/Inventory/"
-#define DIRECTORY_NOTEBOOK			"SSS/Notebook/"
-#define DIRECTORY_VEHICLE_DAT		"SSS/VehicleDat/"
-#define DIRECTORY_VEHICLE_INV		"SSS/VehicleInv/"
-#define DIRECTORY_SAFEBOX			"SSS/Safebox/"
-#define DIRECTORY_TENT				"SSS/Tents/"
-#define DIRECTORY_DEFENCES			"SSS/Defences/"
-#define DIRECTORY_SIGNS				"SSS/Signs/"
-#define DIRECTORY_DETFIELD			"SSS/Detfield/"
-
+#define DIRECTORY_CARMOUR			DIRECTORY_VEHICLESPAWNS"Mods/"
+#define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"
+#define DIRECTORY_PLAYER			DIRECTORY_MAIN"Player/"
+#define DIRECTORY_INVENTORY			DIRECTORY_MAIN"Inventory/"
+#define DIRECTORY_NOTEBOOK			DIRECTORY_MAIN"Notebook/"
+#define DIRECTORY_VEHICLE_DAT		DIRECTORY_MAIN"VehicleDat/"
+#define DIRECTORY_VEHICLE_INV		DIRECTORY_MAIN"VehicleInv/"
+#define DIRECTORY_SAFEBOX			DIRECTORY_MAIN"Safebox/"
+#define DIRECTORY_TENT				DIRECTORY_MAIN"Tents/"
+#define DIRECTORY_DEFENCES			DIRECTORY_MAIN"Defences/"
+#define DIRECTORY_SIGNS				DIRECTORY_MAIN"Signs/"
+#define DIRECTORY_DETFIELD			DIRECTORY_MAIN"Detfield/"
 
 
 // Files
@@ -1241,7 +1241,7 @@ public OnGameModeInit()
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HardDrive		= DefineItemType("Hard Drive",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
-	item_Key			= DefineItemType("Key",					327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0, .colour = 0xFFCCCCCC);
+	item_Key			= DefineItemType("Key",					327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.01, .colour = 0xFFCCCCCC);
 // 50
 	item_FireworkBox	= DefineItemType("Fireworks",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",				327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
@@ -1258,7 +1258,7 @@ public OnGameModeInit()
 	item_FishRod		= DefineItemType("Fishing Rod",			18632,	ITEM_SIZE_LARGE,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
 	item_Wrench			= DefineItemType("Wrench",				18633,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
 	item_Crowbar		= DefineItemType("Crowbar",				18634,	ITEM_SIZE_SMALL,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
-	item_Hammer			= DefineItemType("Hammer",				18635,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.000000, -0.008230, 0.000000, 6.428617, 0.000000, 0.000000);
+	item_Hammer			= DefineItemType("Hammer",				18635,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.01,	0.000000, -0.008230, 0.000000, 6.428617, 0.000000, 0.000000);
 	item_Shield			= DefineItemType("Shield",				18637,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.262389, 0.016478, -0.151046, 103.597534, 6.474381, 38.321765);
 	item_Flashlight		= DefineItemType("Flashlight",			18641,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.061910, 0.022700, 0.039052, 190.938354, 0.000000, 0.000000);
 	item_Taser			= DefineItemType("Taser",				18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
