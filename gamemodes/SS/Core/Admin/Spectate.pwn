@@ -57,6 +57,76 @@ ExitSpectateMode(playerid)
 	return 1;
 }
 
+SpectateNextTarget(playerid)
+{
+	new
+		id = spectate_Target[playerid] + 1,
+		iters;
+
+	if(id == MAX_PLAYERS)
+		id = 0;
+
+	while(id < MAX_PLAYERS && iters <= MAX_PLAYERS)
+	{
+		iters++;
+
+		if(!CanPlayerSpectate(playerid, id))
+		{
+			id++;
+
+			if(id >= MAX_PLAYERS - 1)
+				id = 0;
+
+			continue;
+		}
+
+		break;
+	}
+
+	spectate_Target[playerid] = id;
+
+	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
+		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
+
+	else
+		PlayerSpectatePlayer(playerid, spectate_Target[playerid]);
+}
+
+SpectatePrevTarget(playerid)
+{
+	new
+		id = spectate_Target[playerid] - 1,
+		iters;
+
+	if(id < 0)
+		id = MAX_PLAYERS-1;
+
+	while(id >= 0 && iters <= MAX_PLAYERS)
+	{
+		iters++;
+
+		if(!CanPlayerSpectate(playerid, id))
+		{
+			id--;
+
+			if(id < 0)
+				id = MAX_PLAYERS - 1;
+
+			continue;
+		}
+
+		break;
+	}
+
+	spectate_Target[playerid] = id;
+
+	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
+		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
+
+	else
+		PlayerSpectatePlayer(playerid, spectate_Target[playerid]);
+}
+
 timer UpdateSpectateMode[100](playerid)
 {
 	new
@@ -169,66 +239,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		spectate_ClickTick[playerid] = GetTickCount();
 
-		if(newkeys == 4)
-		{
-			new
-				id = spectate_Target[playerid] - 1,
-				iters;
-
-			if(id < 0)
-				id = MAX_PLAYERS-1;
-
-			while(id >= 0 && iters <= MAX_PLAYERS)
-			{
-				iters++;
-
-				if(!CanPlayerSpectate(playerid, id))
-				{
-					id--;
-
-					if(id < 0)
-						id = MAX_PLAYERS - 1;
-
-					continue;
-				}
-
-				break;
-			}
-			EnterSpectateMode(playerid, id);
-		}
-
 		if(newkeys == 128)
-		{
-			new
-				id = spectate_Target[playerid] + 1,
-				iters;
+			SpectateNextTarget(playerid);
 
-			if(id == MAX_PLAYERS)
-				id = 0;
-
-			while(id < MAX_PLAYERS && iters <= MAX_PLAYERS)
-			{
-				iters++;
-
-				if(!CanPlayerSpectate(playerid, id))
-				{
-					id++;
-
-					if(id >= MAX_PLAYERS - 1)
-						id = 0;
-
-					continue;
-				}
-
-				break;
-			}
-			EnterSpectateMode(playerid, id);
-		}
+		if(newkeys == 4)
+			SpectatePrevTarget(playerid);
 
 		if(newkeys == 512)
-		{
 			EnterSpectateMode(playerid, spectate_Target[playerid]);
-		}
 	}
 	return 1;
 }
