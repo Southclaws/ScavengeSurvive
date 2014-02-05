@@ -243,7 +243,7 @@ ACMD:a[1](playerid, params[])
 		foreach(new i : Player)
 		{
 			if(GetPlayerAdminLevel(i) > 0)
-				MsgF(i, WHITE, "%C(A) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, TagScan(params));
+				MsgF(i, WHITE, "%C[Admin] (%d) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, playerid, TagScan(params));
 		}
 	}
 
