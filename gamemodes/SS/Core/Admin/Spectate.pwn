@@ -170,10 +170,10 @@ timer UpdateSpectateMode[100](playerid)
 			GetPlayerReserveAmmo(targetid),
 			cameramodename,
 			GetPlayerTotalVelocity(targetid),
-			GetPlayerLastVehicle(playerid),
+			GetPlayerLastVehicle(targetid),
 			invehicleas,
-			GetVehicleFuel(GetPlayerLastVehicle(playerid)),
-			IsVehicleLocked(GetPlayerLastVehicle(playerid)));
+			GetVehicleFuel(GetPlayerLastVehicle(targetid)),
+			IsVehicleLocked(GetPlayerLastVehicle(targetid)));
 	}
 	else
 	{
