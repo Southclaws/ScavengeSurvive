@@ -583,3 +583,37 @@ ACMD:vlock[4](playerid, params[])
 
 	return 1;
 }
+
+CMD:sifdebug(playerid, params[])
+{
+	new level = strval(params);
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, -1, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_plevel(playerid, level);
+
+	MsgF(playerid, -1, "SIF debug level: %d", level);
+
+	return 1;
+}
+
+ACMD:sifgdebug[4](playerid, params[])
+{
+	new level = strval(params);
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, -1, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_level(playerid, level);
+
+	MsgF(playerid, -1, "Global SIF debug level: %d", level);
+
+	return 1;
+}
