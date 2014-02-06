@@ -150,9 +150,11 @@ PositionCheck(playerid)
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:distance;
+		Float:distance,
+		Float:velocity;
 
 	GetPlayerPos(playerid, x, y, z);
+	velocity = GetPlayerTotalVelocity(playerid);
 
 	if(z < -50.0)
 	{
@@ -186,7 +188,7 @@ PositionCheck(playerid)
 
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-				format(reason, sizeof(reason), "Moved %.0fm (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
+				format(reason, sizeof(reason), "Moved %.0fm @%.0f (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, velocity, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 				format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
 				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
 
@@ -209,7 +211,7 @@ PositionCheck(playerid)
 
 					GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-					format(reason, sizeof(reason), "Moved %.0fm after TP (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
+					format(reason, sizeof(reason), "Moved %.0fm after TP @%.0f (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, velocity, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 					format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
 					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
 
