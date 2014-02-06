@@ -64,31 +64,31 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 		x + (0.48 * floatsin(-rz + 270.0, degrees)),
 		y + (0.48 * floatcos(-rz + 270.0, degrees)),
 		z,
-		0.0, 45.0, rz, .streamdistance = 100.0);
+		0.0, 45.0, rz, .streamdistance = 20.0);
 
 	tnt_Data[id][tnt_objSideL1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 90.0, degrees)),
 		y + (0.49 * floatcos(-rz + 90.0, degrees)),
 		z,
-		0.0, -45.0, rz, .streamdistance = 50.0);
+		0.0, -45.0, rz, .streamdistance = 100.0);
 
 	tnt_Data[id][tnt_objSideL2] = CreateDynamicObject(19477,
 		x + (0.48 * floatsin(-rz + 90.0, degrees)),
 		y + (0.48 * floatcos(-rz + 90.0, degrees)),
 		z,
-		0.0, -45.0, rz, .streamdistance = 50.0);
+		0.0, -45.0, rz, .streamdistance = 20.0);
 
 	tnt_Data[id][tnt_objEndF] = CreateDynamicObject(19475,
 		x + (1.3 * floatsin(-rz, degrees)),
 		y + (1.3 * floatcos(-rz, degrees)),
 		z + 0.17,
-		45.0, 0.0, rz + 90, .streamdistance = 10.0);
+		45.0, 0.0, rz + 90, .streamdistance = 5.0);
 
 	tnt_Data[id][tnt_objEndB] = CreateDynamicObject(19475,
 		x - (1.3 * floatsin(-rz, degrees)),
 		y - (1.3 * floatcos(-rz, degrees)),
 		z + 0.17,
-		45.0, 0.0, rz + 90, .streamdistance = 10.0);
+		45.0, 0.0, rz + 90, .streamdistance = 5.0);
 
 	tnt_Data[id][tnt_objPoleF] = CreateDynamicObject(19087,
 		x + (1.3 * floatsin(-rz, degrees)),

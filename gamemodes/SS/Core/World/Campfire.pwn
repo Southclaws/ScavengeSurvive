@@ -51,7 +51,7 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz)
 		x + (0.1 * floatsin(-rz, degrees)),
 		y + (0.1 * floatcos(-rz, degrees)),
 		z + 0.01,
-		10.0, 80.0, rz + 45.0);
+		10.0, 80.0, rz + 45.0, .streamdistance = 100.0);
 
 	cmp_Data[id][cmp_objStick2] = CreateDynamicObject(19475,
 		x + (0.1 * floatsin(-rz - 90.0, degrees)),
