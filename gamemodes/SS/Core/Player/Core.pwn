@@ -557,10 +557,11 @@ public OnPlayerUpdate(playerid)
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
+	{
 		ply_Data[playerid][ply_CurrentVehicle] = GetPlayerVehicleID(playerid);
-
-	ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, " ", " ", " ", " ");
-	HidePlayerGear(playerid);
+		ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, " ", " ", " ", " ");
+		HidePlayerGear(playerid);
+	}
 
 	return 1;
 }
