@@ -1,10 +1,3 @@
-forward external_WhitelistAdd(name[]);
-forward external_WhitelistRemove(name[]);
-forward external_WhitelistOn();
-forward external_WhitelistOff();
-forward external_WhitelistCheck(name[]);
-
-
 stock AddNameToWhitelist(name[])
 {
 	if(IsNameInWhitelist(name))
@@ -68,35 +61,4 @@ WhitelistKick(playerid)
 	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
 
 	defer KickPlayerDelay(playerid);
-}
-
-public external_WhitelistAdd(name[])
-{
-	new string[MAX_PLAYER_NAME];
-	format(string, sizeof(string), name);
-	return AddNameToWhitelist(string);
-}
-
-public external_WhitelistRemove(name[])
-{
-	new string[MAX_PLAYER_NAME];
-	format(string, sizeof(string), name);
-	return RemoveNameFromWhitelist(string);
-}
-
-public external_WhitelistOn()
-{
-	gWhitelist = true;
-}
-
-public external_WhitelistOff()
-{
-	gWhitelist = false;
-}
-
-public external_WhitelistCheck(name[])
-{
-	new string[MAX_PLAYER_NAME];
-	format(string, sizeof(string), name);
-	return IsNameInWhitelist(string);
 }
