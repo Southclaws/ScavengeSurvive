@@ -139,6 +139,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return 1;
 
+	if(IsValidItem(GetPlayerInteractingItem(playerid)))
+		return 1;
+
 	if(newkeys & KEY_YES)
 	{
 		new Float:z;
@@ -280,7 +283,7 @@ timer UnholsterItemDelay[time](playerid, time)
 	return 1;
 }
 
-public OnPlayerAddToInventory(playerid, itemid)
+public OnItemAddToInventory(playerid, itemid, slot)
 {
 	if(!IsValidContainer(GetPlayerCurrentContainer(playerid)) && !IsPlayerViewingInventory(playerid))
 	{
@@ -290,13 +293,13 @@ public OnPlayerAddToInventory(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("hols_OnPlayerAddToInventory", "dd", playerid, itemid);
+	return CallLocalFunction("hols_OnItemAddToInventory", "ddd", playerid, itemid, slot);
 }
-#if defined _ALS_OnPlayerAddToInventory
-	#undef OnPlayerAddToInventory
+#if defined _ALS_OnItemAddToInventory
+	#undef OnItemAddToInventory
 #else
-	#define _ALS_OnPlayerAddToInventory
+	#define _ALS_OnItemAddToInventory
 #endif
-#define OnPlayerAddToInventory hols_OnPlayerAddToInventory
-forward hols_OnPlayerAddToInventory(playerid, itemid);
+#define OnItemAddToInventory hols_OnItemAddToInventory
+forward hols_OnItemAddToInventory(playerid, itemid, slot);
 
