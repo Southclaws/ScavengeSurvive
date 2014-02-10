@@ -1,9 +1,0 @@
-; A simple map file just consists of CreateObject lines.
-; With a single line of metadata at the top, which indicates
-; the virtual world, interior and draw distance.
-
-0, 0, 500
-
-CreateObject(<model>, <x>, <y>, <z>, <rx>, <ry>, <rz>);
-CreateObject(<model>, <x>, <y>, <z>, <rx>, <ry>, <rz>);
-CreateObject(<model>, <x>, <y>, <z>, <rx>, <ry>, <rz>);
