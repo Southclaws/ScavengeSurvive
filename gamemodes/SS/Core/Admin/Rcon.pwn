@@ -19,6 +19,8 @@ public OnRconCommand(cmd[])
 		{
 			SetRestart(strval(params));
 		}
+
+		return 1;
 	}
 
 	if(!strcmp(command, "whitelist"))
@@ -38,24 +40,43 @@ public OnRconCommand(cmd[])
 				if(!strcmp(action, "add") && action[0] != EOS && name[0] != EOS)
 				{
 					new ret = AddNameToWhitelist(name);
-					printf("Added '%s' to whitelist ret: %d", name, ret);
+
+					if(ret == 0)
+						printf("The name '%s' is already in the whitelist.", name);
+
+					if(ret == 1)
+						printf("Added '%s' to whitelist.", name);
+
+					if(ret == -1)
+						print("A database query error occurred.");
 				}
 
 				if(!strcmp(action, "remove") && action[0] != EOS && name[0] != EOS)
 				{
 					new ret = RemoveNameFromWhitelist(name);
-					printf("Removed '%s' from whitelist.", name, ret);
+
+					if(ret == 0)
+						printf("The name '%s' is not in the whitelist.", name);
+
+					if(ret == 1)
+						printf("Removed '%s' from whitelist.", name);
+
+					if(ret == -1)
+						print("A database query error occurred.");
 				}
 
 				if(!strcmp(action, "?") && action[0] != EOS && name[0] != EOS)
 				{
 					new ret = IsNameInWhitelist(name);
 
-					if(ret)
-						print("That name is in the whitelist");
+					if(ret == 1)
+						print("That name is in the whitelist.");
 
-					else
-						print("That name is not in the whitelist");
+					if(ret == 0)
+						print("That name is not in the whitelist.");
+
+					if(ret == -1)
+						print("A database query error occurred.");
 				}
 			}
 
@@ -72,5 +93,9 @@ public OnRconCommand(cmd[])
 			}
 
 		}
+
+		return 1;
 	}
+
+	return 0;
 }
