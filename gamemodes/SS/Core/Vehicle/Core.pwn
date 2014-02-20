@@ -998,11 +998,11 @@ ResetVehicle(vehicleid)
 	UpdateVehicleData(vehicleid);
 }
 
-public OnVehicleDeath(vehicleid)
+public OnVehicleDeath(vehicleid, killerid)
 {
 	GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	t:veh_BitData[vehicleid]<veh_Dead>;
-	printf("Vehicle %d Died", vehicleid);
+	printf("[DEBUG] Vehicle %d killed by %d", vehicleid, killerid);
 }
 
 public OnVehicleSpawn(vehicleid)
