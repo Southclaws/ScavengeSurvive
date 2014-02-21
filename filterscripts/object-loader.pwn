@@ -288,8 +288,8 @@ LoadMap(filename[])
 		Float:rotx,
 		Float:roty,
 		Float:rotz,
-		world[1],
-		interior[1],
+		world,
+		interior,
 		Float:range,
 
 		tmpObjID,
@@ -385,13 +385,13 @@ LoadMap(filename[])
 
 		if(!strcmp(funcname, "Create", false, 6)) // Scan for any function starting with 'Create', this covers CreateObject, CreateDynamicObject, CreateStreamedObject, etc.
 		{
-			if(!sscanf(funcargs, "p<,>dffffffD(-1)D(-1){D(-1)}F(-1.0)", modelid, posx, posy, posz, rotx, roty, rotz, world, interior[0], range))
+			if(!sscanf(funcargs, "p<,>dffffffD(-1)D(-1){D(-1)}F(-1.0)", modelid, posx, posy, posz, rotx, roty, rotz, world, interior, range))
 			{
-				if(world[0] == -1)
-					world[0] = globalworld;
+				if(world == -1)
+					world = globalworld;
 
-				if(interior[0] == -1)
-					interior[0] = globalinterior;
+				if(interior == -1)
+					interior = globalinterior;
 
 				if(range == -1.0)
 					range = globalrange;
@@ -399,10 +399,10 @@ LoadMap(filename[])
 				if(gDebugLevel == DEBUG_LEVEL_DATA)
 				{
 					printf(" DEBUG: [LoadMap] Object: %d, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f (%d, %d, %f)",
-						modelid, posx, posy, posz, rotx, roty, rotz, world[0], interior[0], range);
+						modelid, posx, posy, posz, rotx, roty, rotz, world, interior, range);
 				}
 
-				tmpObjID = CreateDynamicObjectEx(modelid, posx, posy, posz, rotx, roty, rotz, range, range + 100.0, world, interior);
+				tmpObjID = CreateDynamicObject(modelid, posx, posy, posz, rotx, roty, rotz, world, interior, -1, range + 100.0, range);
 
 				gTotalLoadedObjects++;
 				objects++;
@@ -412,20 +412,65 @@ LoadMap(filename[])
 
 		if(!strcmp(funcname, "SetObjectMaterialText"))
 		{
-			if(!sscanf(funcargs, "p<,>{s[16]} p<\">{s[1]}s[32]p<,>{s[1]} d s[32] p<\">{s[1]}s[32]p<,>{s[1]} ddxxd", tmpObjText, tmpObjIdx, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign))
+			if(!sscanf(funcargs, "p<,>{s[32]} d p<\">{s[2]}s[32]p<,>{s[2]} s[32] p<\">{s[2]}s[32]p<,>{s[2]} ddxxd", tmpObjIdx, tmpObjText, tmpObjResName, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign))
 			{
 				if(gDebugLevel == DEBUG_LEVEL_DATA)
 				{
 					printf(" DEBUG: [LoadMap] Object Text: '%s', %d, '%s', '%s', %d, %d, %x, %x, %d",
-						tmpObjText, tmpObjIdx, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign);
+						tmpObjText, tmpObjIdx, tmpObjResName, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign);
 				}
 
 				new len = strlen(tmpObjText);
 
-				for(new i; i < sizeof(matSizeTable); i++)
+				tmpObjRes = strval(tmpObjResName[0]);
+
+				if(tmpObjRes == 0)
 				{
-					if(strfind(tmpObjResName, matSizeTable[i]) != -1)
-						tmpObjRes = (i + 1) * 10;
+					for(new i; i < sizeof(matSizeTable); i++)
+					{
+						if(strfind(tmpObjResName, matSizeTable[i]) != -1)
+							tmpObjRes = (i + 1) * 10;
+					}
+				}
+
+				for(new i; i < len; i++)
+				{
+					if(tmpObjText[i] == '\\' && i != len-1)
+					{
+						if(tmpObjText[i+1] == 'n')
+						{
+							strdel(tmpObjText, i, i+1);
+							tmpObjText[i] = '\n';
+						}
+					}
+				}
+
+				SetDynamicObjectMaterialText(tmpObjID, tmpObjIdx, tmpObjText, tmpObjRes, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign);
+				operations++;
+			}
+		}
+
+		if(!strcmp(funcname, "SetDynamicObjectMaterialText"))
+		{
+			if(!sscanf(funcargs, "p<,>{s[16]} p<\">{s[1]}s[32]p<,>{s[1]} d s[32] p<\">{s[1]}s[32]p<,>{s[1]} ddxxd", tmpObjText, tmpObjIdx, tmpObjResName, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign))
+			{
+				if(gDebugLevel == DEBUG_LEVEL_DATA)
+				{
+					printf(" DEBUG: [LoadMap] Object Text: '%s', %d, '%s', '%s', %d, %d, %x, %x, %d",
+						tmpObjText, tmpObjIdx, tmpObjResName, tmpObjFont, tmpObjFontSize, tmpObjBold, tmpObjFontCol, tmpObjBackCol, tmpObjAlign);
+				}
+
+				new len = strlen(tmpObjText);
+
+				tmpObjRes = strval(tmpObjResName[0]);
+
+				if(tmpObjRes == 0)
+				{
+					for(new i; i < sizeof(matSizeTable); i++)
+					{
+						if(strfind(tmpObjResName, matSizeTable[i]) != -1)
+							tmpObjRes = (i + 1) * 10;
+					}
 				}
 
 				for(new i; i < len; i++)
