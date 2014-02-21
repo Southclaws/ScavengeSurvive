@@ -534,7 +534,6 @@ new
 		// player
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gWebsiteURL[MAX_WEBSITE_NAME],
-		gGameModeName[32],
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
