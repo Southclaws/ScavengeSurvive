@@ -27,7 +27,7 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define DB_DEBUG					false
-#define DB_MAX_STATEMENTS			(54)
+#define DB_MAX_STATEMENTS			(69)
 #define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
@@ -50,6 +50,7 @@ native gpci(playerid, serial[], len);
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
+#include <YSI\y_dialog>
 
 #include "SS/Core/Server/Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
@@ -384,7 +385,7 @@ enum
 // Dialog IDs
 enum
 {
-	d_NULL,
+	d_NULL = 100,
 
 // Internal Dialogs
 	d_Login,
@@ -814,6 +815,7 @@ forward SetRestart(seconds);
 #include "SS/utils/player.pwn"
 #include "SS/utils/object.pwn"
 #include "SS/utils/tickcountfix.pwn"
+#include "SS/utils/string.pwn"
 
 // GAME DATA
 #include "SS/Data/Vehicle.pwn"
@@ -926,7 +928,9 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Spectate.pwn"
 #include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/BugReport.pwn"
-#include "SS/Core/Admin/DetectionField.pwn"
+#include "SS/Core/Admin/detfield.pwn"
+#include "SS/Core/Admin/detfield_cmds.pwn"
+#include "SS/Core/Admin/detfield_draw.pwn"
 #include "SS/Core/Admin/Mute.pwn"
 #include "SS/Core/Admin/Rcon.pwn"
 

@@ -1,3 +1,27 @@
+stock IsValidUsername(name[])
+{
+	new
+		i,
+		len = strlen(name);
+
+	if(len < 3)
+		return 0;
+
+	while(i < len)
+	{
+		switch(name[i])
+		{
+			case 'a'..'z', 'A'..'Z', '0'..'9', '(', ')', '[', ']', '.', '_', '$', '=', '@':
+				i++;
+
+			default:
+				return 0;
+		}
+	}
+
+	return 1;
+}
+
 stock GetPlayerIDFromName(name[], bool:ignorecase = false)
 {
 	new
