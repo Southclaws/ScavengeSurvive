@@ -19,7 +19,6 @@ LoadSettings()
 
 		strcat(gMessageOfTheDay, dj(SETTINGS_FILE, "server/motd"));
 		strcat(gWebsiteURL, dj(SETTINGS_FILE, "server/website"));
-		strcat(gGameModeName, dj(SETTINGS_FILE, "server/gamemodename"));
 
 		for(new i, j = djCount(SETTINGS_FILE, "server/infomsgs"); i < j; i++)
 		{
@@ -86,7 +85,6 @@ LoadSettings()
 
 		gMessageOfTheDay		= "Please update the 'server/motd' string in "SETTINGS_FILE"";
 		gWebsiteURL				= "southclawjk.wordpress.com";
-		gGameModeName			= "Southclaw's Scavenge + Survive";
 		gInfoMessage[0]			= "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gInfoMessage[1]			= "(info 2) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 		gInfoMessage[2]			= "(info 3) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
@@ -117,7 +115,6 @@ LoadSettings()
 
 		djSet(SETTINGS_FILE, "server/motd", gMessageOfTheDay);
 		djSet(SETTINGS_FILE, "server/website", gWebsiteURL);
-		djSet(SETTINGS_FILE, "server/gamemodename", gGameModeName);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[0]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[1]);
 		djAppend(SETTINGS_FILE, "server/infomsgs", gInfoMessage[2]);
@@ -150,7 +147,6 @@ LoadSettings()
 
 	printf(" MoTD: %s", gMessageOfTheDay);
 	printf(" Web URL: %s", gWebsiteURL);
-	printf(" Game Mode Name: %s", gGameModeName);
 
 	for(new i; i < gTotalInfoMessage; i++)
 		printf(" Info%d: %s", i, gInfoMessage[i]);
@@ -183,7 +179,7 @@ LoadSettings()
 */
 
 
-	SetGameModeText(gGameModeName);
+	SetGameModeText("Scavenge Survive by Southclaw");
 
 	if(!gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
