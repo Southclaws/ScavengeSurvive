@@ -37,6 +37,9 @@ native gpci(playerid, serial[], len);
 #define DEFAULT_POS_Y				(10000.0)
 #define DEFAULT_POS_Z				(1.0)
 
+#define BTN_MAX						(16384)
+#define ITM_MAX						(16384)
+
 /*==============================================================================
 
 	Libraries and respective links to their release pages
