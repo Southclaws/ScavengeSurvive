@@ -10,6 +10,12 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	combatlog_LastWeapon[damagedid] = weaponid;
 }
 
+hook OnPlayerSpawn(playerid)
+{
+	combatlog_LastAttacker[playerid] = -1;
+	combatlog_LastWeapon[playerid] = -1;
+}
+
 IsPlayerCombatLogging(playerid, &lastattacker, &lastweapon)
 {
 	if(GetTickCountDifference(GetTickCount(), GetPlayerTookDamageTick(playerid)) < gCombatLogWindow * 1000 && IsPlayerConnected(combatlog_LastAttacker[playerid]) && !gServerRestarting)
