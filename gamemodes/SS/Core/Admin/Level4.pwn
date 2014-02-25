@@ -611,7 +611,7 @@ ACMD:sifgdebug[4](playerid, params[])
 		return 1;
 	}
 
-	sif_debug_level(playerid, level);
+	sif_debug_level(level);
 
 	MsgF(playerid, -1, "Global SIF debug level: %d", level);
 
