@@ -32,12 +32,15 @@ ptask AfkCheckUpdate[3000](playerid)
 			{
 				if(gMaxTaboutTime == 0)
 				{
-					KickPlayer(playerid, "Unfocused from the game, could stave and cause bugs");
+					KickPlayer(playerid, "Unfocused from the game, could starve and cause bugs");
 					return;
 				}
 
 				tab_TabOutTick[playerid] = GetTickCount();
 				tab_IsTabbed[playerid] = true;
+
+				//Save player position in case player is tabbed out (issue #29)
+				SavePlayerChar(playerid);
 			}
 		}
 
