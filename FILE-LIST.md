@@ -21,7 +21,6 @@ All these scripts are related to the user interface in some way.
 - Radio - Radio interface and controls, players change their frequency with this.
 - TipText - Functions that control the displaying and hiding of tooltips.
 - KeyActions - Displays a list of context-sensitive key prompts in the upper right corner of the screen.
-- ToolTips - Script that uses 'TipText' to display information on each item.
 - Watch - Covers up the mini-map and displays the time, frequency and heading to the player.
 - Keypad - Library that adds a 10 digit clickable keypad that is used in the script similarly to dialogs.
 
@@ -63,6 +62,7 @@ Player related code. Not gameplay mechanics however, these scripts are all inter
 - AltTabCheck - Checks if the player's game is unfocused and kicks them after some time.
 - DisallowActions - Blocks the player from doing certain things when they shouldn't (picking up items while handcuffed for example)
 - Profile - Simple "/profile" command that retrieves some basic stats on a player name.
+- ToolTips - Script that uses 'TipText' to display information on each item.
 
 ### Char/
 These are all gameplay mechanic scripts. The effects of these scripts are directly 'experienced' by the player.
@@ -117,7 +117,9 @@ These scripts are all staff tools or administrative control scripts.
 - Spectate - Allows staff to watch over players and displays some basic info about the player.
 - Core - Core of the staff level system, database functions and interface.
 - BugReport - Bug reporting script for players to use.
-- DetectionField - Script that allows admins to place down 'detfields' which log player activity in the field area.
+- detfield - Manages detection field core code (database stuff, creation and deletion)
+- detfield_cmds - Extension that allows staff to create detection fields which log player activity in the field area.
+- detfield_draw - Currently unused extension that draws a detection field polygon with objects in the game world.
 - Mute - Timed muting system blocks players from using global chat.
 
 ### Item/
