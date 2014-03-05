@@ -29,7 +29,7 @@ timer AutoSave[60000]()
 		return;
 	}
 
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+	if(gServerUptime > gServerMaxUptime - 20)
 		return;
 
 	#if defined AUTOSAVE_DEBUG
@@ -84,7 +84,7 @@ timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	autosave_Active = true;
 
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+	if(gServerUptime > gServerMaxUptime - 20)
 		return;
 
 	new i;
@@ -148,7 +148,7 @@ timer Safebox_BlockSave[SAVE_BLOCK_INTERVAL](index)
 {
 	autosave_Active = true;
 
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+	if(gServerUptime > gServerMaxUptime - 20)
 		return;
 
 	new i;
@@ -208,7 +208,7 @@ timer Vehicle_BlockSave[SAVE_BLOCK_INTERVAL](index)
 {
 	autosave_Active = true;
 
-	if(gServerUptime > MAX_SERVER_UPTIME - 20)
+	if(gServerUptime > gServerMaxUptime - 20)
 		return;
 
 	new i;
