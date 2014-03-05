@@ -4,6 +4,9 @@
 #define VEHICLE_SPAWN_CHANCE		(4) // Percent
 
 
+static veh_CurrentModelGroup;
+
+
 LoadVehicles(printeach = false, printtotal = false)
 {
 	LoadPlayerVehicles(printeach, printtotal);
