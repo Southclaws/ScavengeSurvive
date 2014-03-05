@@ -58,14 +58,14 @@ new
 			veh_TrunkLock			[MAX_SPAWNED_VEHICLES],
 			veh_Area				[MAX_SPAWNED_VEHICLES],
 			veh_Container			[MAX_SPAWNED_VEHICLES],
-			veh_Owner				[MAX_SPAWNED_VEHICLES][MAX_PLAYER_NAME],
-			veh_CurrentModelGroup;
+			veh_Owner				[MAX_SPAWNED_VEHICLES][MAX_PLAYER_NAME];
 
 new
 			veh_CurrentTrunkVehicle	[MAX_PLAYERS],
 Float:		veh_TempHealth			[MAX_PLAYERS],
 Float:		veh_TempVelocity		[MAX_PLAYERS],
-			veh_Entering			[MAX_PLAYERS];
+			veh_Entering			[MAX_PLAYERS],
+			veh_EnterTick			[MAX_PLAYERS];
 
 
 forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
@@ -262,6 +262,9 @@ GenerateVehicleData(vehicleid)
 
 UpdateVehicleData(vehicleid)
 {
+	if(veh_Data[vehicleid][veh_health] > VEHICLE_HEALTH_MAX)
+		veh_Data[vehicleid][veh_health] = VEHICLE_HEALTH_CHUNK_4;
+
 	SetVehicleHealth(vehicleid, veh_Data[vehicleid][veh_health]);
 
 	UpdateVehicleDamageStatus(vehicleid, veh_Data[vehicleid][veh_panels], veh_Data[vehicleid][veh_doors], veh_Data[vehicleid][veh_lights], veh_Data[vehicleid][veh_tires]);
@@ -732,6 +735,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, vehiclemodel);
 
+		veh_EnterTick[playerid] = GetTickCount();
+
 		logf("[VEHICLE] %p entered vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
@@ -749,12 +754,15 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		if(!IsPlayerOnAdminDuty(playerid))
 		{
-			new name[MAX_PLAYER_NAME];
+			if(GetTickCountDifference(veh_EnterTick[playerid], GetTickCount()) > 1000)
+			{
+				new name[MAX_PLAYER_NAME];
 
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-			GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 
-			SavePlayerVehicle(vehicleid, name);
+				SavePlayerVehicle(vehicleid, name);
+			}
 		}
 
 		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
@@ -984,10 +992,14 @@ IsVehicleValidOutOfBounds(vehicleid)
 
 ResetVehicle(vehicleid)
 {
-	new modelid = GetVehicleModel(vehicleid);
+	new
+		modelid = GetVehicleModel(vehicleid),
+		newid;
 
 	DestroyVehicle(vehicleid, 4);
-	CreateVehicle(modelid,
+	DestroyDynamicArea(veh_Area[vehicleid]);
+
+	newid = CreateVehicle(modelid,
 		veh_Data[vehicleid][veh_spawnX],
 		veh_Data[vehicleid][veh_spawnY],
 		veh_Data[vehicleid][veh_spawnZ],
@@ -995,7 +1007,20 @@ ResetVehicle(vehicleid)
 		veh_Data[vehicleid][veh_colour1],
 		veh_Data[vehicleid][veh_colour2], 86400);
 
-	UpdateVehicleData(vehicleid);
+	if(newid != vehicleid)
+	{
+		veh_Data[newid] = veh_Data[vehicleid];
+		veh_BitData[newid] = veh_BitData[vehicleid];
+		veh_ContainerVehicle[veh_Container[vehicleid]] = newid;
+		veh_TrunkLock[newid] = veh_TrunkLock[vehicleid];
+		veh_Area[newid] = veh_Area[vehicleid];
+		veh_Container[newid] = veh_Container[vehicleid];
+		veh_Owner[newid] = veh_Owner[vehicleid];
+	}
+
+	CreateVehicleArea(newid);
+	UpdateVehicleData(newid);
+	SetVehicleSpawnPoint(newid, veh_Data[newid][veh_spawnX], veh_Data[newid][veh_spawnY], veh_Data[newid][veh_spawnZ], veh_Data[newid][veh_spawnR]);
 }
 
 public OnVehicleDeath(vehicleid, killerid)
