@@ -73,10 +73,10 @@ CMD:restartinfo(playerid, params[])
 	gBigString[playerid][0] = EOS;
 
 	strcat(gBigString[playerid],
-		""C_WHITE"The server restarts "C_YELLOW"every 5 hours."C_WHITE"\n\n\
+		sprintf(""C_WHITE"The server restarts "C_YELLOW"every %d hours."C_WHITE"\n\n\
 		Your character data such as position, clothes etc will be saved just like when you log out.\n\
 		All your held items, holstered weapon, inventory and bag items will be saved.\n\
-		The last car you exited will be saved along with all items inside.\n");
+		The last car you exited will be saved along with all items inside.\n", (gServerMaxUptime / 3600)));
 
 	strcat(gBigString[playerid],
 		"Box items save over restarts only if they are not empty.\n\
