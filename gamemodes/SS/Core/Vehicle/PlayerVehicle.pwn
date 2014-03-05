@@ -189,7 +189,7 @@ LoadPlayerVehicle(filename[], prints)
 	veh_Owner[vehicleid] = owner;
 
 	if(prints)
-		printf("\t[LOAD] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array_data[VEH_CELL_MODEL]-400], owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
+		printf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, array_data[VEH_CELL_LOCKED] ? ("L") : ("U"), VehicleNames[array_data[VEH_CELL_MODEL]-400], owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -333,7 +333,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
 	if(prints)
-		printf("[SAVE] Vehicle %d: %s for %s at %f, %f, %f", vehicleid, VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
+		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, veh_Data[vehicleid][veh_locked] ? ("L") : ("U"), VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
 		array_data[VEH_CELL_LOCKED] = veh_Data[vehicleid][veh_locked];
