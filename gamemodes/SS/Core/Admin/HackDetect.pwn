@@ -687,3 +687,56 @@ VehicleModCheck(playerid)
 		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1, 0);
 	}
 }
+
+
+/*==============================================================================
+
+	Entering locked vehicles
+
+==============================================================================*/
+
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(newstate == PLAYER_STATE_DRIVER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		if(veh_Data[vehicleid][veh_locked])
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:px,
+				Float:py,
+				Float:pz;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, px, py, pz);
+
+			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as driver", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, px, py, pz, "");
+			SetPlayerPos(playerid, px, py, pz);
+		}
+	}
+
+	if(newstate == PLAYER_STATE_PASSENGER)
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		if(veh_Data[vehicleid][veh_locked])
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, x, y, z);
+
+			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as passenger", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, x, y, z, "");
+			SetPlayerPos(playerid, x, y, z);
+		}
+	}
+
+	return 1;
+}
