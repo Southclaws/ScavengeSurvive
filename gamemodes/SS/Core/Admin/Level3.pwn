@@ -7,7 +7,7 @@ new gAdminCommandList_Lvl3[] =
 	/ford - move forward (Duty only)\n\
 	/goto - teleport to player (Duty only)\n\
 	/get - teleport player to you (Duty only)\n\
-	/vtp - teleport to vehicle\n\
+	/vehicle - vehicle control\n\
 	/resetpassword\n"
 };
 
@@ -231,23 +231,106 @@ TeleportPlayerToPlayer(playerid, targetid)
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 }
 
-ACMD:vtp[3](playerid, params[])
+ACMD:vehicle[4](playerid, params[])
 {
-	new id = strval(params);
+	if(!IsPlayerOnAdminDuty(playerid))
+		return 6;
 
-	if(IsValidVehicle(id))
+	new
+		command[8],
+		vehicleid;
+
+	if(sscanf(params, "s[8]D(-1)", command, vehicleid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /vehicle [get/enter/owner/delete/respawn/reset/lock/unlock] [id]");
+		return 1;
+	}
+
+	if(vehicleid == -1)
+		vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicleID(vehicleid))
+		return 4;
+
+	if(!strcmp(command, "get"))
 	{
 		new
 			Float:x,
 			Float:y,
 			Float:z;
 
-		GetPlayerPos(id, x, y, z);
-		PutPlayerInVehicle(playerid, id, 0);
-		SetVehiclePos(id, x, y, z + 2.0);
+		GetPlayerPos(playerid, x, y, z);
+		PutPlayerInVehicle(playerid, vehicleid, 0);
+		SetVehiclePos(vehicleid, x, y, z);
 
 		return 1;
 	}
+
+	if(!strcmp(command, "enter"))
+	{
+		PutPlayerInVehicle(playerid, vehicleid, 0);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "owner"))
+	{
+		new owner[MAX_PLAYER_NAME];
+
+		GetVehicleOwner(vehicleid, owner);
+
+		MsgF(playerid, YELLOW, " >  Vehicle owner: '%s'", owner);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "delete"))
+	{
+		RemoveVehicleFileByID(vehicleid);
+		DestroyVehicle(vehicleid, 0);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d deleted", vehicleid);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "respawn"))
+	{
+		RespawnVehicle(vehicleid);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d respawned", vehicleid);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "reset"))
+	{
+		ResetVehicle(vehicleid);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d reset", vehicleid);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "lock"))
+	{
+		SetVehicleExternalLock(vehicleid, 1);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d locked", vehicleid);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "unlock"))
+	{
+		SetVehicleExternalLock(vehicleid, 0);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d unlocked", vehicleid);
+
+		return 1;
+	}
+
+	Msg(playerid, YELLOW, " >  Usage: /vehicle [get/enter/owner/delete/respawn/reset/lock/unlock] [id]");
 
 	return 1;
 }
