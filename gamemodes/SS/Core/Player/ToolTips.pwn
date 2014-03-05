@@ -225,13 +225,13 @@ forward tip_OnLoad();
 
 ==============================================================================*/
 
-#endinput
+
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	if(ispassenger)
 		return 1;
 
-	if(IsPlayerToolTipsOn(playerid))
+	if(!IsPlayerToolTipsOn(playerid))
 		return 1;
 
 	new
