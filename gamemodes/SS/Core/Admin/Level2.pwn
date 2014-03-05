@@ -264,7 +264,7 @@ ACMD:aliases[2](playerid, params[])
 
 	if(sscanf(params, "s[24]S(byip)[7]", name, type))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [byip/bypass/byhash]");
+		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h]");
 		return 1;
 	}
 
@@ -275,8 +275,11 @@ ACMD:aliases[2](playerid, params[])
 		if(IsPlayerConnected(targetid))
 			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
-		else
+		else if(targetid > 99)
 			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+
+		else
+			return 4;
 	}
 
 	if(!AccountExists(name))
@@ -300,27 +303,30 @@ ACMD:aliases[2](playerid, params[])
 
 	new
 		ret,
-		list[6][MAX_PLAYER_NAME],
+		list[6][E_ALIAS_DATA],
 		count,
 		adminlevel,
-		isbanned,
-		string[(MAX_PLAYER_NAME + 2) * 6];
+		string[(MAX_PLAYER_NAME + 10) * 6];
 
-	if(!strcmp(type, "byip", true))
+	if(!strcmp(type, "a", true) || isnull(type))
 	{
-		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel, isbanned);
+		ret = GetAccountAliasesByAll(name, list, count, 6, adminlevel);
 	}
-	else if(!strcmp(type, "bypass", true))
+	else if(!strcmp(type, "i", true))
 	{
-		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel, isbanned);
+		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
 	}
-	else if(!strcmp(type, "byhash", true))
+	else if(!strcmp(type, "p", true))
 	{
-		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel, isbanned);
+		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
+	}
+	else if(!strcmp(type, "h", true))
+	{
+		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
 	}
 	else
 	{
-		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'byip', 'bypass', 'byhash'");
+		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'p'(password) 'h'(hash) 'a'(all)");
 		return 1;
 	}
 
@@ -338,7 +344,7 @@ ACMD:aliases[2](playerid, params[])
 
 	if(count == 1)
 	{
-		strcat(string, list[0]);
+		strcat(string, list[0][alias_Name]);
 	}
 
 	if(count > 1)
@@ -348,7 +354,13 @@ ACMD:aliases[2](playerid, params[])
 			if(i >= 6)
 				break;
 
-			strcat(string, list[i]);
+			if(list[i][alias_Banned])
+				strcat(string, C_RED);
+
+			else
+				strcat(string, C_ORANGE);
+
+			strcat(string, list[i][alias_Name]);
 
 			if(i < count - 1)
 				strcat(string, ", ");
@@ -357,10 +369,7 @@ ACMD:aliases[2](playerid, params[])
 
 	if(adminlevel <= GetPlayerAdminLevel(playerid))
 	{
-		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
-		
-		if(isbanned)
-			Msg(playerid, RED, " >  Warning: One of those aliases is banned.");
+		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d) %s", count, string);
 	}
 	else
 	{
