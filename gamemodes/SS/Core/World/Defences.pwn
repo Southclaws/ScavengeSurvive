@@ -2,7 +2,7 @@
 
 
 #define MAX_DEFENCE_ITEM	(10)
-#define MAX_DEFENCE			(1024)
+#define MAX_DEFENCE			(1280)
 
 
 enum
@@ -636,7 +636,6 @@ LoadDefences(printeach = false, printtotal = false)
 				}
 				else
 				{
-					fremove(filedir);
 					printf("ERROR: Loading defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
 				}
 			}
