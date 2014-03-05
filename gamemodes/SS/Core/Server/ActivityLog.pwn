@@ -1,7 +1,10 @@
 #define logf(%1,%2) log(sprintf(%1,%2))
 
-stock log(text[])
+stock log(text[], printtext = true)
 {
+	if(printtext)
+		print(text);
+
 	new
 		string[256],
 		File:file,
