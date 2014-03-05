@@ -27,7 +27,7 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define DB_DEBUG					false
-#define DB_MAX_STATEMENTS			(69)
+#define DB_MAX_STATEMENTS			(72)
 #define STRLIB_RETURN_SIZE			(256)
 #define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
 #define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
@@ -57,25 +57,22 @@ native gpci(playerid, serial[], len);
 
 #include "SS/Core/Server/Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
-#include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
+#include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
 //#include <irc>						// By Incognito:			http://forum.sa-mp.com/showthread.php?t=98803
 
-#include <sqlitei>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=303682
+#include <sqlitei>					// By Slice, v0.9.6:		http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
-
-#define result GeoIP_result
-#include <GeoIP>					// By Whitetiger:			http://forum.sa-mp.com/showthread.php?t=296171
-#undef result
+#include <GeoIP>					// By Whitetiger:			https://sixtytiger.com/tiger/geo_ip/geolocation.inc
 
 #define time ctime_time
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
 #include <playerprogress>			// By Torbido/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
-#include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
-#include <djson>					// By DracoBlue:			http://forum.sa-mp.com/showthread.php?t=48439
+#include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
+#include <djson>					// By DracoBlue, 1.6.2 :	http://forum.sa-mp.com/showthread.php?t=48439
 
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
 #include <SIF/extensions/InventoryDialog>
@@ -112,7 +109,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
-#define MAX_SERVER_UPTIME			(3600 * 9)
 #define MAX_SPAWNED_VEHICLES		(250)
 
 
@@ -131,15 +127,14 @@ native WP_Hash(buffer[], len, const str[]);
 #define DIRECTORY_TENT				DIRECTORY_MAIN"Tents/"
 #define DIRECTORY_DEFENCES			DIRECTORY_MAIN"Defences/"
 #define DIRECTORY_SIGNS				DIRECTORY_MAIN"Signs/"
-#define DIRECTORY_DETFIELD			DIRECTORY_MAIN"Detfield/"
 
 
 // Files
 #define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
 #define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.dat"
-#define ACCOUNT_DATABASE			"SSS/Accounts.db"
-#define WORLD_DATABASE				"SSS/World.db"
-#define SETTINGS_FILE				"SSS/settings.json"
+#define ACCOUNT_DATABASE			DIRECTORY_MAIN"Accounts.db"
+#define WORLD_DATABASE				DIRECTORY_MAIN"World.db"
+#define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
 
 
 // Database
@@ -427,9 +422,7 @@ enum
 	d_BanDuration,
 	d_BanOptions,
 	d_BanList,
-	d_BanInfo,
-
-	d_DetFieldList
+	d_BanInfo
 }
 
 // Keypad IDs
@@ -479,9 +472,11 @@ DBStatement:	gStmt_AccountSetTotalSpawns,
 DBStatement:	gStmt_AccountGetIpv4,
 DBStatement:	gStmt_AccountGetPass,
 DBStatement:	gStmt_AccountGetHash,
+DBStatement:	gStmt_AccountGetAll,
 DBStatement:	gStmt_AccountGetAliasesIp,
 DBStatement:	gStmt_AccountGetAliasesPass,
 DBStatement:	gStmt_AccountGetAliasesHash,
+DBStatement:	gStmt_AccountGetAliasesAll,
 DBStatement:	gStmt_AccountSetAimShout,
 
 // ACCOUNTS_TABLE_BANS
@@ -553,7 +548,8 @@ Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
 		gMaxTaboutTime,
-		gPingLimit;
+		gPingLimit,
+		gServerMaxUptime;
 
 // INTERNAL
 new
@@ -841,7 +837,6 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/Radio.pwn"
 #include "SS/Core/UI/TipText.pwn"
 #include "SS/Core/UI/KeyActions.pwn"
-#include "SS/Core/UI/ToolTips.pwn"
 #include "SS/Core/UI/Watch.pwn"
 #include "SS/Core/UI/Keypad.pwn"
 
@@ -879,6 +874,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/AltTabCheck.pwn"
 #include "SS/Core/Player/DisallowActions.pwn"
 #include "SS/Core/Player/Profile.pwn"
+#include "SS/Core/Player/ToolTips.pwn"
 
 // CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
@@ -1067,12 +1063,6 @@ public OnGameModeInit()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_DETFIELD);
-	}
-
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY"' not found. Creating directory.");
@@ -1195,9 +1185,11 @@ public OnGameModeInit()
 	gStmt_AccountGetIpv4		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountGetPass		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_PASS" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountGetHash		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
+	gStmt_AccountGetAll			= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4", "FIELD_PLAYER_PASS", "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountGetAliasesIp	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
 	gStmt_AccountGetAliasesPass	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
 	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
+	gStmt_AccountGetAliasesAll	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE ("FIELD_PLAYER_IPV4" = ? OR "FIELD_PLAYER_PASS" = ? OR "FIELD_PLAYER_GPCI" = ?) AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
 	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 
 	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?, ?)");
@@ -1608,7 +1600,7 @@ public OnGameModeExit()
 public SetRestart(seconds)
 {
 	printf("Restarting server in: %ds", seconds);
-	gServerUptime = MAX_SERVER_UPTIME - seconds;
+	gServerUptime = gServerMaxUptime - seconds;
 }
 
 RestartGamemode()
@@ -1639,22 +1631,25 @@ RestartGamemode()
 
 task GameUpdate[1000]()
 {
-	if(gServerUptime >= MAX_SERVER_UPTIME)
-	{
-		RestartGamemode();
-	}
-
-	if(gServerUptime >= MAX_SERVER_UPTIME - 3600)
-	{
-		new str[36];
-		format(str, 36, "Server Restarting In:~n~%02d:%02d", (MAX_SERVER_UPTIME - gServerUptime) / 60, (MAX_SERVER_UPTIME - gServerUptime) % 60);
-		TextDrawSetString(RestartCount, str);
-		TextDrawShowForAll(RestartCount);
-	}
-
 	WeatherUpdate();
 
-	gServerUptime++;
+	if(gServerMaxUptime > 0)
+	{
+		if(gServerUptime >= gServerMaxUptime)
+		{
+			RestartGamemode();
+		}
+
+		if(gServerUptime >= gServerMaxUptime - 3600)
+		{
+			new str[36];
+			format(str, 36, "Server Restarting In:~n~%02d:%02d", (gServerMaxUptime - gServerUptime) / 60, (gServerMaxUptime - gServerUptime) % 60);
+			TextDrawSetString(RestartCount, str);
+			TextDrawShowForAll(RestartCount);
+		}
+
+		gServerUptime++;
+	}
 }
 
 timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
