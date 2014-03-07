@@ -111,28 +111,28 @@ public OnPlayerConnect(playerid)
 
 		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
 
-		logf("[JOIN] %p (account does not exist)", playerid);
+		log(sprintf("[JOIN] %p (account does not exist)", playerid), 0);
 	}
 
 	if(loadresult == 1) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
 
-		logf("[JOIN] %p (account exists, prompting login)", playerid);
+		log(sprintf("[JOIN] %p (account exists, prompting login)", playerid), 0);
 	}
 
 	if(loadresult == 2) // Account does exist, auto login
 	{
 		Login(playerid);
 
-		logf("[JOIN] %p (account exists, auto login)", playerid);
+		log(sprintf("[JOIN] %p (account exists, auto login)", playerid), 0);
 	}
 
 	if(loadresult == 3) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
 
-		logf("[JOIN] %p (account not whitelisted)", playerid);
+		log(sprintf("[JOIN] %p (account not whitelisted)", playerid), 0);
 	}
 
 	TogglePlayerControllable(playerid, false);
@@ -173,12 +173,12 @@ public OnPlayerDisconnect(playerid, reason)
 		case 0:
 		{
 			MsgAllF(GREY, " >  %p lost connection.", playerid);
-			logf("[PART] %p (lost connection)", playerid);
+			log(sprintf("[PART] %p (lost connection)", playerid), 0);
 		}
 		case 1:
 		{
 			MsgAllF(GREY, " >  %p left the server.", playerid);
-			logf("[PART] %p (quit)", playerid);
+			log(sprintf("[PART] %p (quit)", playerid), 0);
 		}
 	}
 
