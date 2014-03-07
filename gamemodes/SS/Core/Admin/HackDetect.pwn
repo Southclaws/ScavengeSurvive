@@ -73,7 +73,6 @@ ptask AntiCheatUpdate[1000](playerid)
 	{
 		PositionCheck(playerid);
 		SwimFlyCheck(playerid);
-		VehicleTeleportCheck(playerid);
 
 		if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_USEJETPACK)
 			BanPlayer(playerid, "Having a jetpack (Jetpacks aren't in this server, must be a hack)", -1, 0);
@@ -531,59 +530,27 @@ CameraDistanceCheck(playerid)
 
 
 static
-Float:	vt_Position[MAX_SPAWNED_VEHICLES][3],
 		vt_MovedFar[MAX_SPAWNED_VEHICLES],
 		vt_MovedFarTick[MAX_SPAWNED_VEHICLES],
 		vt_MovedFarPlayer[MAX_SPAWNED_VEHICLES];
 
 
-hook OnVehicleSpawn(vehicleid)
-{
-	GetVehiclePos(vehicleid, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
-}
-
-VehicleTeleportCheck(playerid)
-{
-	foreach(new i : veh_Index)
-	{
-		if(!IsValidVehicleID(i))
-			continue;
-
-		VehicleDistanceCheck(playerid, i);
-	}
-}
-
-VehicleDistanceCheck(playerid, vehicleid)
+public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z)
 {
 	if(GetTickCountDifference(GetTickCount(), vt_MovedFarTick[vehicleid]) < 5000)
-	{
-		vt_ResetVehiclePosition(vehicleid);
 		return 1;
-	}
 
 	if(GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 15000)
-	{
-		vt_ResetVehiclePosition(vehicleid);
 		return 1;
-	}
 
 	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 5000)
-	{
-		vt_ResetVehiclePosition(vehicleid);
 		return 1;
-	}
 
 	if(GetTickCountDifference(GetTickCount(), GetVehicleLastUseTick(vehicleid)) < 1000)
-	{
-		vt_ResetVehiclePosition(vehicleid);
 		return 1;
-	}
 
 	if(IsVehicleOccupied(vehicleid))
-	{
-		vt_ResetVehiclePosition(vehicleid);
 		return 1;
-	}
 
 	new
 		Float:x,
@@ -593,7 +560,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 
 	GetVehiclePos(vehicleid, x, y, z);
 
-	distance = Distance(x, y, z, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+	distance = Distance(x, y, z, new_x, new_y, new_z);
 
 	if(IsNaN(distance))
 	{
@@ -615,10 +582,7 @@ VehicleDistanceCheck(playerid, vehicleid)
 			foreach(new i : veh_Index)
 			{
 				if(GetVehicleTrailer(i) == vehicleid)
-				{
-					vt_ResetVehiclePosition(vehicleid);
 					return 1;
-				}
 			}
 
 			new
@@ -640,21 +604,15 @@ VehicleDistanceCheck(playerid, vehicleid)
 			else
 				format(reason, sizeof(reason), "Teleported a %s (%s's) %.0fm", vehiclename, owner, distance);
 
-			format(info, sizeof(info), "%f, %f, %f", vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
+			format(info, sizeof(info), "%f, %f, %f", new_x, new_y, new_z);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, info);
 
-			RespawnVehicle(vehicleid);
+			// RespawnVehicle(vehicleid);
+			return 0;
 		}
 	}
 
-	vt_ResetVehiclePosition(vehicleid);
-
 	return 1;
-}
-
-vt_ResetVehiclePosition(vehicleid)
-{
-	GetVehiclePos(vehicleid, vt_Position[vehicleid][0], vt_Position[vehicleid][1], vt_Position[vehicleid][2]);
 }
 
 
@@ -737,6 +695,37 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			SetPlayerPos(playerid, x, y, z);
 		}
 	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Infinite Ammo
+
+==============================================================================*/
+
+
+static
+	ammo_LastShot[MAX_PLAYERS],
+	ammo_ShotCounter[MAX_PLAYERS];
+
+public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+{
+	if(GetTickCountDifference(ammo_LastShot[playerid], GetTickCount()) < GetWeaponShotInterval(weaponid) + 10)
+	{
+		ammo_ShotCounter[playerid]++;
+
+		if(ammo_ShotCounter[playerid] > GetWeaponMagSize(weaponid))
+			MsgAdminsF(3, YELLOW, " >  %p fired %d bullets from a %w without reloading.", playerid, ammo_ShotCounter[playerid], weaponid);
+	}
+	else
+	{
+		ammo_ShotCounter[playerid] = 1;
+	}
+
+	ammo_LastShot[playerid] = GetTickCount();
 
 	return 1;
 }
