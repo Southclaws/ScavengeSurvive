@@ -20,7 +20,6 @@
 #include <strlib>			// by Slice - github.com/oscar-broman/strlib
 #include <Line>				// by Southclaw - github.com/Southclaw/Line
 #include <ZCMD>				// by Zeex - forum.sa-mp.com/showthread.php?t=91354
-#include <VehicleMatrix>	// by Gamer_Z
 #include <Zipline>			// by Southclaw
 
 
@@ -133,6 +132,7 @@ stock IsPlayerAiming(playerid)
 
 
 static
+		gGrappleMode	[MAX_PLAYERS],
 		gVelocityTick	[MAX_PLAYERS],
 Float:	gVelocityMultX	[MAX_PLAYERS],
 Float:	gVelocityMultY	[MAX_PLAYERS],
@@ -225,16 +225,18 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			fCamPosX + (fCamVecX * 100), fCamPosY + (fCamVecY * 100), fCamPosZ + (fCamVecZ * 100),
 			.RotX = 0.0, .objlengthoffset = -(2.0/2), .maxlength = 1000.0);
 
-
-		//if(fHitVecZ != 0.0)
+		if(gGrappleMode[playerid])
 		{
-			gVelocityTick[playerid] = floatround(VectorSize(fOriginX - fHitPosX, fOriginY - fHitPosY, fOriginZ - fHitPosZ) / 2);
-			gVelocityMultX[playerid] = fCamVecX;
-			gVelocityMultY[playerid] = fCamVecY;
-			gVelocityMultZ[playerid] = fCamVecZ;
-			gVelocityDestX[playerid] = fHitPosX;
-			gVelocityDestY[playerid] = fHitPosY;
-			gVelocityDestZ[playerid] = fHitPosZ;
+			if(fHitVecZ != 0.0)
+			{
+				gVelocityTick[playerid] = floatround(VectorSize(fOriginX - fHitPosX, fOriginY - fHitPosY, fOriginZ - fHitPosZ) / 2);
+				gVelocityMultX[playerid] = fCamVecX;
+				gVelocityMultY[playerid] = fCamVecY;
+				gVelocityMultZ[playerid] = fCamVecZ;
+				gVelocityDestX[playerid] = fHitPosX;
+				gVelocityDestY[playerid] = fHitPosY;
+				gVelocityDestZ[playerid] = fHitPosZ;
+			}
 		}
 
 		return 0;
@@ -270,13 +272,16 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 public OnPlayerUpdate(playerid)
 {
-	if(gVelocityTick[playerid] > 0)
+	if(gGrappleMode[playerid])
 	{
-		if(IsPlayerInRangeOfPoint(playerid, 5.0, gVelocityDestX[playerid], gVelocityDestY[playerid], gVelocityDestZ[playerid]))
-			gVelocityTick[playerid] = 0;
+		if(gVelocityTick[playerid] > 0)
+		{
+			if(IsPlayerInRangeOfPoint(playerid, 5.0, gVelocityDestX[playerid], gVelocityDestY[playerid], gVelocityDestZ[playerid]))
+				gVelocityTick[playerid] = 0;
 
-		SetPlayerVelocity(playerid, gVelocityMultX[playerid], gVelocityMultY[playerid], gVelocityMultZ[playerid] + (GetPlayerPing(playerid) * 0.0009));
-		gVelocityTick[playerid]--;
+			SetPlayerVelocity(playerid, gVelocityMultX[playerid], gVelocityMultY[playerid], gVelocityMultZ[playerid] + (GetPlayerPing(playerid) * 0.0009));
+			gVelocityTick[playerid]--;
+		}
 	}
 
 	return 1;
@@ -321,3 +326,9 @@ CMD:w(playerid, params[])
 	return 1;
 }
 
+CMD:grapple(playerid, params[])
+{
+	gGrappleMode[playerid] = !gGrappleMode[playerid];
+	SendClientMessage(playerid, -1, sprintf("Grapple mode: %d", gGrappleMode[playerid]));
+	return 1;
+}
