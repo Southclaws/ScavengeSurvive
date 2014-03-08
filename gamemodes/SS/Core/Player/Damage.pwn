@@ -150,7 +150,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 					hploss *= 0.6;
 			}
 
-			SetPlayerAP(playerid, (GetPlayerAP(playerid) - (hploss / 2.0)));
+			SetPlayerAP(targetid, (GetPlayerAP(targetid) - (hploss / 2.0)));
 		}
 
 		if(!IsPlayerInAnyVehicle(playerid))
