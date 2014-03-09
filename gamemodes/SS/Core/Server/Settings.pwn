@@ -101,7 +101,7 @@ LoadSettings()
 		gWhitelist				= false;
 		gInfoMessageInterval	= 5;
 		gPerformFileCheck		= false;
-		gServerMaxUptime		= 3600 * 5;
+		gServerMaxUptime		= 5;
 
 		gPauseMap				= false;
 		gInteriorEntry			= false;
@@ -129,6 +129,7 @@ LoadSettings()
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
+		djSetInt(SETTINGS_FILE, "server/max-uptime", gServerMaxUptime);
 
 		djSetInt(SETTINGS_FILE, "player/allow-pause-map", gPauseMap);
 		djSetInt(SETTINGS_FILE, "player/interior-entry", gInteriorEntry);
@@ -139,7 +140,6 @@ LoadSettings()
 		djSetInt(SETTINGS_FILE, "player/login-freeze-time", gLoginFreezeTime);
 		djSetInt(SETTINGS_FILE, "player/max-tab-out-time", gMaxTaboutTime);
 		djSetInt(SETTINGS_FILE, "player/ping-limit", gPingLimit);
-		djSetInt(SETTINGS_FILE, "player/max-uptime", gServerMaxUptime);
 
 		djCommit(SETTINGS_FILE);
 		djAutocommit(true);
