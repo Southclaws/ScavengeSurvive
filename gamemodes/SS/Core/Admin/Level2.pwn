@@ -131,13 +131,15 @@ ACMD:tp[2](playerid, params[])
 
 			MsgF(playerid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", targetid);
 			MsgF(targetid, YELLOW, " >  You have teleported to %P", playerid);
+
+			return 1;
 		}
 	}
 
 	TeleportPlayerToPlayer(playerid, targetid);
 
-	MsgF(playerid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", targetid);
-	MsgF(targetid, YELLOW, " >  You have teleported to %P", playerid);
+	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
+	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", playerid);
 
 	return 1;
 }
