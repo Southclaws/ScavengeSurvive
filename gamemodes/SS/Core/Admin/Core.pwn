@@ -430,28 +430,3 @@ ACMD:adminlist[3](playerid, params[])
 
 	return 1;
 }
-
-ACMD:duty[1](playerid, params[])
-{
-	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
-	{
-		Msg(playerid, YELLOW, " >  You cannot do that while spectating.");
-		return 1;
-	}
-
-	if(admin_OnDuty[playerid])
-	{
-		TogglePlayerAdminDuty(playerid, false);
-	}
-	else
-	{
-		if(GetTickCountDifference(GetTickCount(), admin_DutyTick[playerid]) < 10000)
-		{
-			Msg(playerid, YELLOW, " >  Please don't use the duty ability that frequently.");
-			return 1;
-		}
-
-		TogglePlayerAdminDuty(playerid, true);
-	}
-	return 1;
-}

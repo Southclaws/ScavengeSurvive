@@ -1,15 +1,23 @@
-// 6 commands
+// 7 commands
 
 new gAdminCommandList_Lvl3[] =
 {
 	"/whitelist - add/remove name or turn whitelist on/off\n\
-	/up - move up (Duty only)\n\
-	/ford - move forward (Duty only)\n\
-	/goto - teleport to player (Duty only)\n\
-	/get - teleport player to you (Duty only)\n\
-	/vehicle - vehicle control\n\
-	/resetpassword\n"
+	/vehicle - vehicle control (duty only)\n\
+	/move - nudge yourself\n\
+	/additem - spawn an item\n\
+	/addvehicle - spawn a vehicle\n\
+	/resetpassword - reset a password\n\
+	/delete(items/tents/defences/signs) - delete things"
 };
+
+
+/*==============================================================================
+
+	Add to/remove from/query/toggle the whitelist feature
+
+==============================================================================*/
+
 
 ACMD:whitelist[3](playerid, params[])
 {
@@ -71,167 +79,15 @@ ACMD:whitelist[3](playerid, params[])
 	return 1;
 }
 
-ACMD:up[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
 
-	new
-		Float:distance = float(strval(params)),
-		Float:x,
-		Float:y,
-		Float:z;
+/*==============================================================================
 
-	GetPlayerPos(playerid, x, y, z);
-	SetPlayerPos(playerid, x, y, z + distance);
+	Control vehicles
 
-	return 1;
-}
+==============================================================================*/
 
-ACMD:ford[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
 
-	new
-		Float:distance = float(strval(params)),
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:a;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, a);
-
-	SetPlayerPos(playerid,
-		x + (distance * floatsin(-a, degrees)),
-		y + (distance * floatcos(-a, degrees)),
-		z);
-
-	return 1;
-}
-
-ACMD:goto[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
-
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /goto [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	TeleportPlayerToPlayer(playerid, targetid);
-
-	return 1;
-}
-
-ACMD:get[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
-
-	new targetid;
-
-	if(sscanf(params, "d", targetid))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /get [playerid]");
-		return 1;
-	}
-
-	if(!IsPlayerConnected(targetid))
-	{
-		Msg(playerid, RED, " >  Invalid ID");
-		return 1;
-	}
-
-	if(GetPlayerAdminLevel(playerid) == 1)
-	{
-		if(GetPlayerDist3D(playerid, targetid) > 50.0)
-		{
-			Msg(playerid, RED, " >  You cannot teleport someone that far away from you, move closer to them.");
-			return 1;
-		}
-	}
-
-	TeleportPlayerToPlayer(targetid, playerid);
-
-	return 1;
-}
-
-TeleportPlayerToPlayer(playerid, targetid)
-{
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:ang,
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		interior = GetPlayerInterior(targetid);
-
-	if(IsPlayerInAnyVehicle(targetid))
-	{
-		new vehicleid = GetPlayerVehicleID(targetid);
-
-		GetVehiclePos(vehicleid, px, py, pz);
-		GetVehicleZAngle(vehicleid, ang);
-		GetVehicleVelocity(vehicleid, vx, vy, vz);
-		pz += 2.0;
-	}
-	else
-	{
-		GetPlayerPos(targetid, px, py, pz);
-		GetPlayerFacingAngle(targetid, ang);
-		GetPlayerVelocity(targetid, vx, vy, vz);
-		px -= floatsin(-ang, degrees);
-		py -= floatcos(-ang, degrees);
-	}
-
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-
-		SetVehiclePos(vehicleid, px, py, pz);
-		SetVehicleZAngle(vehicleid, ang);
-		SetVehicleVelocity(vehicleid, vx, vy, vz);
-		LinkVehicleToInterior(vehicleid, interior);
-	}
-	else
-	{
-		SetPlayerPos(playerid, px, py, pz);
-		SetPlayerFacingAngle(playerid, ang);
-		SetPlayerVelocity(playerid, vx, vy, vz);
-		SetPlayerInterior(playerid, interior);
-	}
-
-	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", playerid);
-	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
-}
-
-ACMD:vehicle[4](playerid, params[])
+ACMD:vehicle[3](playerid, params[])
 {
 	if(!IsPlayerOnAdminDuty(playerid))
 		return 6;
@@ -335,6 +191,188 @@ ACMD:vehicle[4](playerid, params[])
 	return 1;
 }
 
+
+/*==============================================================================
+
+	Spawn a new item into the game world
+
+==============================================================================*/
+
+
+ACMD:move[3](playerid, params[])
+{
+	new
+		direction[10],
+		Float:amount;
+
+	if(!sscanf(params, "s[10]F(2.0)", direction, amount))
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:r;
+
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, r);
+
+		if(direction[0] == 'f') // forwards
+			x += amount * floatsin(-r, degrees), y += amount * floatcos(-r, degrees);
+
+		if(direction[0] == 'b') // backwards
+			x -= amount * floatsin(-r, degrees), y -= amount * floatcos(-r, degrees);
+
+		if(direction[0] == 'u') // up
+			z += amount;
+
+		if(direction[0] == 'd') // down
+			z -= amount;
+
+		SetPlayerPos(playerid, x, y, z);
+
+		return 1;
+	}
+
+	Msg(playerid, YELLOW, " >  Usage: /move [f/b/u/d] [optional:distance]");
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Spawn a new item into the game world
+
+==============================================================================*/
+
+
+ACMD:additem[3](playerid, params[])
+{
+	new
+		ItemType:type,
+		itemname[ITM_MAX_NAME],
+		exdata,
+		itemid,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	if(sscanf(params, "dD(0)", _:type, exdata) == -1)
+	{
+		new tmp[ITM_MAX_NAME];
+
+		if(sscanf(params, "p<,>s[32]D(0)", tmp, exdata))
+		{
+			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname], [optional:extradata]");
+			return 1;
+		}
+
+		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+		{
+			GetItemTypeName(i, itemname);
+
+			if(strfind(itemname, tmp, true) != -1)
+			{
+				type = i;
+				break;
+			}
+		}
+	}
+
+	if(type == ItemType:0)
+	{
+		Msg(playerid, RED, " >  Cannot create item type 0");
+		return 1;
+	}
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	itemid = CreateItem(type,
+		x + (0.5 * floatsin(-r, degrees)),
+		y + (0.5 * floatcos(-r, degrees)),
+		z - 0.8568, .rz = r, .zoffset = 0.7);
+
+	if(exdata != 0)
+	{
+		SetItemExtraData(itemid, exdata);	
+	}
+	else
+	{
+		if(0 < _:type <= WEAPON_PARACHUTE)
+			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
+	}
+
+	if(GetPlayerAdminLevel(playerid) < 4)
+	{
+		inline Response(pid, dialogid, response, listitem, string:inputtext[])
+		{
+			#pragma unused pid, dialogid, response, listitem
+
+			logf("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
+		}
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this item:", "Enter", "");
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Spawn a new vehicle into the game world
+
+==============================================================================*/
+
+
+ACMD:addvehicle[3](playerid, params[])
+{
+	new
+		model,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r,
+		vehicleid;
+
+	model = strval(params);
+
+	if(!(400 <= model < 612))
+	{
+		Msg(playerid, -1, " >  Usage: /addvehicle [modelid]");
+		return 1;
+	}
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	vehicleid = CreateNewVehicle(model, x, y, z, r);
+	SetVehicleFuel(vehicleid, 100000.0);
+	SetVehicleHealth(vehicleid, 990.0);
+
+	if(GetPlayerAdminLevel(playerid) < 4)
+	{
+		inline Response(pid, dialogid, response, listitem, string:inputtext[])
+		{
+			#pragma unused pid, dialogid, response, listitem
+
+			logf("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, model, inputtext);
+		}
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this vehicle:", "Enter", "");
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Reset a player's password
+
+==============================================================================*/
+
+
 ACMD:resetpassword[3](playerid, params[])
 {
 	if(isnull(params))
@@ -359,26 +397,15 @@ ACMD:resetpassword[3](playerid, params[])
 	return 1;
 }
 
-ACMD:deleteaccount[3](playerid, params[])
-{
-	if(isnull(params))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /deleteaccount [account user-name]");
-		return 1;
-	}
 
-	new ret = DeleteAccount(params);
+/*==============================================================================
 
-	if(ret)
-		Msg(playerid, YELLOW, " >  Account deleted.");
+	Delete a bunch of a specific type of entity within a radius
 
-	else
-		Msg(playerid, YELLOW, " >  That account does not exist.");
+==============================================================================*/
 
-	return 1;	
-}
 
-ACMD:deleteitems[3](playerid, params[])
+ACMD:delete[3](playerid, params[])
 {
 	if(GetPlayerAdminLevel(playerid) == 3)
 	{
@@ -386,13 +413,13 @@ ACMD:deleteitems[3](playerid, params[])
 			return 6;
 	}
 
-	new Float:range;
+	new
+		type[16],
+		Float:range;
 
-	sscanf(params, "f", range);
-
-	if(range == 0.0)
+	if(sscanf(params, "s[16]F(1.5)", type, range))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /deleteitems [range]");
+		Msg(playerid, YELLOW, " >  Usage: /delete [items/tents/defences/signs] [optional:range(1.5)]");
 		return 1;
 	}
 
@@ -412,144 +439,58 @@ ACMD:deleteitems[3](playerid, params[])
 
 	GetPlayerPos(playerid, px, py, pz);
 
-	foreach(new i : itm_Index)
+	if(!strcmp(type, "item", true, 4))
 	{
-		GetItemPos(i, ix, iy, iz);
-
-		if(Distance(px, py, pz, ix, iy, iz) < range)
+		foreach(new i : itm_Index)
 		{
-			i = DestroyItem(i);
+			GetItemPos(i, ix, iy, iz);
+
+			if(Distance(px, py, pz, ix, iy, iz) < range)
+				i = DestroyItem(i);
 		}
-	}
 
-	return 1;
-}
-
-ACMD:deletetents[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
-
-	new Float:range;
-
-	sscanf(params, "f", range);
-
-	if(range == 0.0)
-	{
-		Msg(playerid, YELLOW, " >  Usage: /deletetents [range]");
 		return 1;
 	}
-
-	if(range > 100.0)
+	else if(!strcmp(type, "tent", true, 4))
 	{
-		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
-		return 1;
-	}
-
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:ix,
-		Float:iy,
-		Float:iz;
-
-	GetPlayerPos(playerid, px, py, pz);
-
-	foreach(new i : tnt_Index)
-	{
-		GetTentPos(i, ix, iy, iz);
-
-		if(Distance(px, py, pz, ix, iy, iz) < range)
+		foreach(new i : tnt_Index)
 		{
-			i = DestroyTent(i);
+			GetTentPos(i, ix, iy, iz);
+
+			if(Distance(px, py, pz, ix, iy, iz) < range)
+				i = DestroyTent(i);
 		}
-	}
 
-	return 1;
-}
-
-ACMD:deletedefences[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
-
-	new Float:range;
-
-	sscanf(params, "f", range);
-
-	if(range == 0.0)
-	{
-		Msg(playerid, YELLOW, " >  Usage: /deletedefences [range]");
 		return 1;
 	}
-
-	if(range > 100.0)
+	else if(!strcmp(type, "defence", true, 7))
 	{
-		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
-		return 1;
-	}
-
-	new
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:ix,
-		Float:iy,
-		Float:iz;
-
-	GetPlayerPos(playerid, px, py, pz);
-
-	foreach(new i : def_Index)
-	{
-		GetDefencePos(i, ix, iy, iz);
-
-		if(Distance(px, py, pz, ix, iy, iz) < range)
+		foreach(new i : def_Index)
 		{
-			i = DestroyDefence(i);
+			GetDefencePos(i, ix, iy, iz);
+
+			if(Distance(px, py, pz, ix, iy, iz) < range)
+				i = DestroyDefence(i);
 		}
+
+		return 1;
 	}
-
-	return 1;
-}
-ACMD:deletesigns[3](playerid, params[])
-{
-	if(GetPlayerAdminLevel(playerid) == 3)
+	else if(!strcmp(type, "sign", true, 4))
 	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
+		foreach(new i : sgn_Index)
+		{
+			GetSignPos(i, ix, iy, iz);
 
-	new Float:range;
+			if(Distance(px, py, pz, ix, iy, iz) < range)
+			{
+				i = DestroySign(i);
+			}
+		}
 
-	sscanf(params, "f", range);
-
-	if(range == 0.0)
-	{
-		Msg(playerid, YELLOW, " >  Usage: /deletedefences [range]");
 		return 1;
 	}
 
-	if(range > 100.0)
-	{
-		Msg(playerid, YELLOW, " >  Range limit: 100 metres");
-		return 1;
-	}
-
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-
-	DestroySignsInRangeOfPoint(x, y, z, range);
+	Msg(playerid, YELLOW, " >  Usage: /delete [items/tents/defences/signs] [optional:range(1.5)]");
 
 	return 1;
 }
