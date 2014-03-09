@@ -672,7 +672,12 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerPos(playerid, px, py, pz);
 
 			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as driver", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, px, py, pz, "");
+			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, px, py, pz);
+
+			defer CheckIsPlayerStillInVehicle(playerid, vehicleid);
+
+			return -1;
 		}
 	}
 
@@ -692,11 +697,25 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerPos(playerid, x, y, z);
 
 			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as passenger", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, x, y, z, "");
+			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, x, y, z);
+
+			defer CheckIsPlayerStillInVehicle(playerid, vehicleid);
+
+			return -1;
 		}
 	}
 
 	return 1;
+}
+
+timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
+{
+	if(!IsPlayerConnected(playerid))
+		return;
+
+	if(IsPlayerInVehicle(playerid, vehicleid))
+		BanPlayer(playerid, "Staying in a locked vehicle", -1, 0);
 }
 
 
