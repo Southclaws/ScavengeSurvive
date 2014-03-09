@@ -48,23 +48,23 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			new model = GetVehicleModel(GetPlayerLastVehicle(playerid));
 
 			if(model == 447 || model == 476)
-				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET, bodypart);
 		}
 		case 38:
 		{
 			if(GetVehicleModel(GetPlayerLastVehicle(playerid)) == 425)
-				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_BULLET, bodypart);
 		}
 		case 49:
 		{
-			DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_COLLISION);
+			DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_COLLISION, bodypart);
 		}
 		case 51:
 		{
 			new model = GetVehicleModel(GetPlayerLastVehicle(playerid));
 
 			if(model == 432 || model == 520 || model == 425)
-				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE);
+				DamagePlayer(issuerid, playerid, WEAPON_VEHICLE_EXPLOSIVE, bodypart);
 		}
 	}
 	return 1;
@@ -81,12 +81,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	SetLastHitBy(damagedid, gPlayerName[playerid]);
 	SetLastHitById(damagedid, playerid);
 
-	DamagePlayer(playerid, damagedid, weaponid);
+	DamagePlayer(playerid, damagedid, weaponid, bodypart);
 
 	return 1;
 }
 
-DamagePlayer(playerid, targetid, weaponid, type = 0)
+DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
@@ -102,7 +102,7 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 
 	if(weaponid == WEAPON_DEAGLE)
 	{
-		if(GetTickCountDifference(GetTickCount(), GetPlayerDeltDamageTick(playerid)) < 400)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerDeltDamageTick(playerid)) < 790)
 			return 0;
 	}
 	else
@@ -114,7 +114,6 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	SetPlayerDeltDamageTick(playerid, GetTickCount());
 
 	new
-		head,
 		Float:px,
 		Float:py,
 		Float:pz,
@@ -133,10 +132,10 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 	{
 		hploss = GetWeaponDamageFromDistance(weaponid, distance);
 
-		if(head)
+		if(bodypart == 9)
 			hploss *= 1.5;
 
-		if(GetPlayerAP(playerid) > 0.0)
+		if(GetPlayerAP(targetid) > 0.0)
 		{
 			switch(weaponid)
 			{
@@ -150,16 +149,11 @@ DamagePlayer(playerid, targetid, weaponid, type = 0)
 					hploss *= 0.6;
 			}
 
-			SetPlayerAP(playerid, (GetPlayerAP(playerid) - (hploss / 2.0)));
+			SetPlayerAP(targetid, (GetPlayerAP(targetid) - (hploss / 2.0)));
 		}
 
 		if(!IsPlayerInAnyVehicle(playerid))
 		{
-			switch(weaponid)
-			{
-				case 25, 27, 30, 31, 33, 34:
-					head = IsPlayerAimingAtHead(playerid, targetid);
-			}
 			switch(weaponid)
 			{
 				case 1..3, 5..7, 10..18, 39:
