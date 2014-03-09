@@ -406,11 +406,11 @@ timer RunSobietCheckerForPlayer[4000](playerid, targetid)
 
     if(vector[2] <= -0.9958 && vector[2] >= -0.9964)
     {
-        MsgF(playerid, YELLOW, "> "C_BLUE" The sobeit detector shows "C_GREEN"positive "C_BLUE"result on "C_YELLOW"'%s'(%d)", PlayerName, targetid);
+        MsgF(playerid, YELLOW, "> "C_BLUE" The sobeit detector shows "C_RED"POSITIVE "C_BLUE"result on "C_YELLOW"'%s'(%d)", PlayerName, targetid);
     }
     else
     {
-        MsgF(playerid, YELLOW, "> "C_BLUE" The sobeit detector shows "C_RED"negative "C_BLUE"result on "C_YELLOW"'%s'(%d)", PlayerName, targetid);
+        MsgF(playerid, YELLOW, "> "C_BLUE" The sobeit detector shows "C_GREEN"NEGATIVE "C_BLUE"result on "C_YELLOW"'%s'(%d)", PlayerName, targetid);
     }
     return TogglePlayerControllable(targetid, true);
 }
