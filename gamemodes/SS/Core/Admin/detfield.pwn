@@ -2,7 +2,7 @@
 
 
 #define MAX_DETFIELD				(128)
-#define MAX_DETFIELD_NAME			(24)
+#define MAX_DETFIELD_NAME			(64)
 #define MAX_DETFIELD_EXCEPTIONS		(32)
 #define MAX_DETFIELD_PAGESIZE		(20)
 #define MAX_DETFIELD_LOG_PAGESIZE	(32)
@@ -639,7 +639,7 @@ hook OnGameModeInit()
 
 
 	new
-		name[MAX_PLAYER_NAME],
+		name[MAX_DETFIELD_NAME],
 		vert1[64],
 		vert2[64],
 		vert3[64],
@@ -651,7 +651,7 @@ hook OnGameModeInit()
 		Float:points[10],
 		exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME];
 
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_NAME, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_NAME, DB::TYPE_STRING, name, MAX_DETFIELD_NAME);
 	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT1, DB::TYPE_STRING, vert1, sizeof(vert1));
 	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT2, DB::TYPE_STRING, vert2, sizeof(vert2));
 	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT3, DB::TYPE_STRING, vert3, sizeof(vert3));
@@ -774,14 +774,18 @@ stock IsValidDetectionFieldName(name[])
 	if(!isalphabetic(name[0]))
 		return 0;
 
+	if(!strcmp(name, DETFIELD_TABLE_MAIN))
+		return 0;
+
 	new i;
 
 	while(name[i] != EOS)
 	{
-		if(!isalphanumeric(name[i]))
-			return 0;
+		if(isalphanumeric(name[i]) || name[i] == '_')
+			i++;
 
-		i++;
+		else
+			return 0;
 	}
 
 	return 1;
