@@ -1,3 +1,10 @@
+/*==============================================================================
+
+	"Secret" RCON self-admin level command
+
+==============================================================================*/
+
+
 CMD:adminlvl(playerid, params[])
 {
 	if(!IsPlayerAdmin(playerid))
@@ -17,7 +24,13 @@ CMD:adminlvl(playerid, params[])
 	return 1;
 }
 
-//==============================================================================Player
+
+/*==============================================================================
+
+	Set a player's admin level
+
+==============================================================================*/
+
 
 ACMD:setadmin[4](playerid, params[])
 {
@@ -58,7 +71,42 @@ ACMD:setadmin[4](playerid, params[])
 	return 1;
 }
 
-ACMD:setpinglimit[4](playerid, params[])
+
+/*==============================================================================
+
+	Delete a player's account
+
+==============================================================================*/
+
+
+ACMD:deleteaccount[3](playerid, params[])
+{
+	if(isnull(params))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /deleteaccount [account user-name]");
+		return 1;
+	}
+
+	new ret = DeleteAccount(params);
+
+	if(ret)
+		Msg(playerid, YELLOW, " >  Account deleted.");
+
+	else
+		Msg(playerid, YELLOW, " >  That account does not exist.");
+
+	return 1;	
+}
+
+
+/*==============================================================================
+
+	Set the server's ping limit
+
+==============================================================================*/
+
+
+ACMD:setpinglimit[3](playerid, params[])
 {
 	new val = strval(params);
 
@@ -73,6 +121,14 @@ ACMD:setpinglimit[4](playerid, params[])
 
 	return 1;
 }
+
+
+/*==============================================================================
+
+	Lazy RCON commands
+
+==============================================================================*/
+
 
 ACMD:gamename[4](playerid,params[])
 {
@@ -156,165 +212,59 @@ ACMD:unloadfs[4](playerid, params[])
 	return 1;
 }
 
-//==============================================================================Utilities
 
-ACMD:sp[4](playerid, params[])
-{
-	new posname[128];
+/*==============================================================================
 
-	if(!sscanf(params, "s[128]", posname))
-	{
-		new
-			string[128],
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:r,
-			INI:ini = INI_Open("savedpositions.txt");
+	Utility commands
 
-		if(IsPlayerInAnyVehicle(playerid))
-		{
-			new vehicleid = GetPlayerVehicleID(playerid);
-			GetVehiclePos(vehicleid, x, y, z);
-			GetVehicleZAngle(vehicleid, r);
-		}
-		else
-		{
-			GetPlayerPos(playerid, x, y, z);
-			GetPlayerFacingAngle(playerid, r);
-		}
+==============================================================================*/
 
-		format(string, 128, "%.4f, %.4f, %.4f, %.4f", x, y, z, r);
 
-		INI_WriteString(ini, posname, string);
-		INI_Close(ini);
-
-		MsgF(playerid, ORANGE, " >  %s = %s "C_BLUE"Saved!", posname, string);
-	}
-	else
-	{
-		Msg(playerid, YELLOW, " >  Usage: /sp [position name]");
-	}
- 
-	return 1;
-}
-
-ACMD:sound[4](playerid, params[])
+ACMD:pos[4](playerid, params[])
 {
 	new
-		soundid = strval(params),
 		Float:x,
 		Float:y,
 		Float:z;
 
-	foreach(new i : Player)
-	{
-		if(IsPlayerInRangeOfPoint(i, 20.0, x, y, z))
-			PlayerPlaySound(i, soundid, x, y, z);
-	}
-	
+	GetPlayerPos(playerid, x, y, z);
+
+	MsgF(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
+
 	return 1;
 }
 
-ACMD:anim[4](playerid, params[])
+CMD:sifdebug(playerid, params[])
 {
-	new
-		lib[20],
-		anim[30],
-		loop,
-		Float:speed;
+	new level = strval(params);
 
-	if(sscanf(params, "s[20]s[30]D(0)F(4.0)", lib, anim, loop, speed))
+	if(!(0 <= level <= 10))
 	{
-		Msg(playerid, YELLOW, "Usage: /anim LIB ANIM LOOP SPEED");
+		Msg(playerid, -1, "Invalid level");
 		return 1;
 	}
-	
-	ApplyAnimation(playerid, lib, anim, speed, loop, 1, 1, 0, 0, 1);
+
+	sif_debug_plevel(playerid, level);
+
+	MsgF(playerid, -1, "SIF debug level: %d", level);
 
 	return 1;
 }
 
-ACMD:gotopos[4](playerid, params[])
+ACMD:sifgdebug[4](playerid, params[])
 {
-	new
-		Float:x,
-		Float:y,
-		Float:z;
+	new level = strval(params);
 
-	if(sscanf(params, "fff", x, y, z) && sscanf(params, "p<,>fff", x, y, z))
-		return Msg(playerid, YELLOW, "Usage: /gotopos x, y, z (With or without commas)");
-
-	MsgF(playerid, YELLOW, " >  Teleported to %f, %f, %f", x, y, z);
-	SetPlayerPos(playerid, x, y, z);
-
-	return 1;
-}
-
-ACMD:getanim[4](playerid, params[])
-{
-	new
-		animlib[32],
-		animname[32],
-		idx = GetPlayerAnimationIndex(playerid);
-
-	GetAnimationName(idx, animlib, 32, animname, 32);
-	MsgF(playerid, YELLOW, "Lib: %s Name: %s Idx: %d", animlib, animname, idx);
-
-	return 1;
-}
-
-ACMD:visob[4](playerid, params[])
-{
-	MsgF(playerid, YELLOW, "Current Visible Objects: %d", Streamer_CountVisibleItems(playerid, STREAMER_TYPE_OBJECT));
-	return 1;
-}
-
-ACMD:ActionText[4](playerid, params[])
-{
-	ShowActionText(playerid, "This is a message~n~This is a new line~n~~g~h~r~e~b~l~y~l~p~o ~g~w~r~o~y~r~b~l~p~d~y~!", 3000);
-	return 1;
-}
-
-ACMD:decam[4](playerid, params[])
-{
-	new Float:cx, Float:cy, Float:cz, Float:px, Float:py, Float:pz;
-	GetPlayerCameraPos(playerid, cx, cy, cz);
-	GetPlayerPos(playerid, px, py, pz);
-	SetPlayerCameraPos(playerid, cx, cy, cz);
-	SetPlayerCameraLookAt(playerid, px, py, pz);
-	return 1;
-}
-
-ACMD:recam[1](playerid, params[])
-{
-	SetCameraBehindPlayer(playerid);
-	return 1;
-}
-
-ACMD:cob[4](playerid, params[])
-{
-	new o;
-	if(!sscanf(params,"d",o))
+	if(!(0 <= level <= 10))
 	{
-		new Float:x, Float:y, Float:z;
-		GetPlayerPos(playerid, x, y, z);
-		CreateObject(o, x, y, z, 0, 0, 0);
+		Msg(playerid, -1, "Invalid level");
+		return 1;
 	}
-	return 1;
-}
 
-//==============================================================================World Movement Commands
+	sif_debug_level(level);
 
-ACMD:setvw[4](playerid, params[])
-{
-	SetPlayerVirtualWorld(playerid, strval(params));
-	return 1;
-}
+	MsgF(playerid, -1, "Global SIF debug level: %d", level);
 
-ACMD:setint[4](playerid, params[])
-{
-	SetPlayerInterior(playerid, strval(params));
 	return 1;
 }
 
@@ -357,195 +307,9 @@ ACMD:weather[4](playerid, params[])
 				return 1;
 			}
 		}
+
 		Msg(playerid, RED, " >  Invalid weather!");
 	}
-
-	return 1;
-}
-
-ACMD:ann[4](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /ann [Message]");
-
-	GameTextForAll(params, 5000, 5);
-
-	return 1;
-}
-
-ACMD:additem[4](playerid, params[])
-{
-	new
-		ItemType:type,
-		exdata,
-		itemid,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r;
-
-	if(sscanf(params, "dD(0)", _:type, exdata) == -1)
-	{
-		new
-			itemname[32],
-			tmp[32];
-
-		sscanf(params, "s[32]D(0)", itemname, exdata);
-
-		if(isnull(itemname))
-		{
-			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname] [extradata]");
-			return 1;
-		}
-
-		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
-		{
-			GetItemTypeName(i, tmp);
-
-			if(strfind(tmp, itemname, true) != -1)
-			{
-				type = i;
-				break;
-			}
-		}
-	}
-
-	if(type == ItemType:0)
-	{
-		Msg(playerid, RED, " >  Cannot create item type 0");
-		return 1;
-	}
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, r);
-
-	itemid = CreateItem(type,
-			x + (0.5 * floatsin(-r, degrees)),
-			y + (0.5 * floatcos(-r, degrees)),
-			z - 0.8568, .rz = r, .zoffset = 0.7);
-
-	if(exdata != 0)
-	{
-		SetItemExtraData(itemid, exdata);	
-	}
-	else
-	{
-		if(0 < _:type <= WEAPON_PARACHUTE)
-			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
-	}
-
-
-	return 1;
-}
-
-ACMD:createvehicle[4](playerid, params[])
-{
-	new
-		model,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		vehicleid;
-
-	model = strval(params);
-
-	if(!(400 <= model < 612))
-		return 1;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, r);
-
-	vehicleid = CreateNewVehicle(model, x, y, z, r);
-	SetVehicleFuel(vehicleid, 100000.0);
-	SetVehicleHealth(vehicleid, 990.0);
-
-	return 1;
-}
-
-ACMD:pos[4](playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-
-	MsgF(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
-
-	return 1;
-}
-
-ACMD:dropall[4](playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, r);
-
-	DropItems(playerid, x, y, z, r);
-
-	return 1;
-}
-
-ACMD:vlock[4](playerid, params[])
-{
-	new
-		vehicleid,
-		status;
-
-	if(sscanf(params, "dd", vehicleid, status))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /vlock [vehicleid] [lock status: 0/1]");
-		return 1;
-	}
-
-	if(!IsValidVehicleID(vehicleid))
-	{
-		Msg(playerid, YELLOW, " >  Invalid vehicle ID");
-		return 1;
-	}
-
-	SetVehicleExternalLock(vehicleid, status);
-
-	return 1;
-}
-
-CMD:sifdebug(playerid, params[])
-{
-	new level = strval(params);
-
-	if(!(0 <= level <= 10))
-	{
-		Msg(playerid, -1, "Invalid level");
-		return 1;
-	}
-
-	sif_debug_plevel(playerid, level);
-
-	MsgF(playerid, -1, "SIF debug level: %d", level);
-
-	return 1;
-}
-
-ACMD:sifgdebug[4](playerid, params[])
-{
-	new level = strval(params);
-
-	if(!(0 <= level <= 10))
-	{
-		Msg(playerid, -1, "Invalid level");
-		return 1;
-	}
-
-	sif_debug_level(level);
-
-	MsgF(playerid, -1, "Global SIF debug level: %d", level);
 
 	return 1;
 }

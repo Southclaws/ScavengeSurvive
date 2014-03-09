@@ -20,7 +20,7 @@ Float:		sgn_rotZ,
 }
 
 
-static
+new
 			sgn_Data[MAX_SIGN][E_SIGN_DATA],
 Iterator:	sgn_Index<MAX_SIGN>;
 
@@ -281,14 +281,88 @@ SaveSigns(printeach = false, printtotal = false)
 ==============================================================================*/
 
 
-stock DestroySignsInRangeOfPoint(Float:x, Float:y, Float:z, Float:range)
+stock IsValidSign(signid)
 {
-	foreach(new i : sgn_Index)
-	{
-		if(Distance(x, y, z, sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ]) < range)
-		{
-			i = DestroySign(i);
-		}
-	}
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
 
+	return 1;
 }
+
+// sgn_object
+stock GetSignObjectID(signid)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return INVALID_OBJECT_ID;
+
+	return sgn_Data[signid][sgn_object];
+}
+
+// sgn_button
+stock GetSignButtonID(signid)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return INVALID_BUTTON_ID;
+
+	return sgn_Data[signid][sgn_button];
+}
+
+// sgn_text
+stock GetSignText(signid, text[MAX_SIGN_TEXT])
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
+
+	text = sgn_Data[signid][sgn_text];
+
+	return 1;
+}
+
+// sgn_posX
+// sgn_posY
+// sgn_posZ
+stock GetSignPos(signid, &Float:x, &Float:y, &Float:z)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
+
+	x = sgn_Data[signid][sgn_posX];
+	y = sgn_Data[signid][sgn_posY];
+	z = sgn_Data[signid][sgn_posZ];
+
+	return 1;
+}
+
+stock SetSignPos(signid, Float:x, Float:y, Float:z)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
+
+	sgn_Data[signid][sgn_posX] = x;
+	sgn_Data[signid][sgn_posY] = y;
+	sgn_Data[signid][sgn_posZ] = z;
+
+	return 1;
+}
+
+// sgn_rotZ
+stock GetSignRot(signid, &Float:angle)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
+
+	angle = sgn_Data[signid][sgn_rotZ];
+
+	return 1;
+}
+
+stock SetSignRot(signid, Float:angle)
+{
+	if(!Iter_Contains(sgn_Index, signid))
+		return 0;
+
+	sgn_Data[signid][sgn_rotZ] = angle;
+
+	return 1;
+}
+

@@ -4,19 +4,51 @@ new gAdminCommandList_Lvl2[] =
 {
 	"/duty - go on admin duty\n\
 	/spec - spectate\n\
-	/unstick - move player up\n\
+	/tp - teleport players or positions\n\
+	/gotopos - go to coordinates\n\
 	/(un)freeze - freeze/unfreeze player\n\
-	/kick - kick player\n\
 	/(un)ban - ban/unban player\n\
 	/banlist - show list of bans\n\
 	/isbanned - check if banned\n\
-	/aliases - check aliases\n\
 	/motd - set message of the day\n"
 };
 
-new
+
+static
 	Timer:UnfreezeTimer[MAX_PLAYERS],
 	tick_UnstickUsage[MAX_PLAYERS];
+
+
+/*==============================================================================
+
+	Enter admin duty mode, disabling normal gameplay mechanics
+
+==============================================================================*/
+
+
+ACMD:duty[2](playerid, params[])
+{
+	if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
+	{
+		Msg(playerid, YELLOW, " >  You cannot do that while spectating.");
+		return 1;
+	}
+
+	if(IsPlayerOnAdminDuty(playerid))
+		TogglePlayerAdminDuty(playerid, false);
+
+	else
+		TogglePlayerAdminDuty(playerid, true);
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Enter spectate mode on a specific player
+
+==============================================================================*/
 
 
 ACMD:spec[2](playerid, params[])
@@ -50,10 +82,27 @@ ACMD:spec[2](playerid, params[])
 	return 1;
 }
 
-ACMD:unstick[2](playerid, params[])
+ACMD:recam[2](playerid, params[])
 {
-	if(!(IsPlayerOnAdminDuty(playerid)))
-		return 6;
+	SetCameraBehindPlayer(playerid);
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Teleport players to other players or yourself to 
+
+==============================================================================*/
+
+
+ACMD:tp[2](playerid, params[])
+{
+	if(GetPlayerAdminLevel(playerid) < 4)
+	{
+		if(!(IsPlayerOnAdminDuty(playerid)))
+			return 6;
+	}
 
 	if(GetTickCountDifference(GetTickCount(), tick_UnstickUsage[playerid]) < 1000)
 	{
@@ -61,29 +110,69 @@ ACMD:unstick[2](playerid, params[])
 		return 1;
 	}
 
-	new targetid;
+	new
+		targetid,
+		command[6];
 
-	if(sscanf(params, "d", targetid))
+	if(sscanf(params, "uS()", targetid, command))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /unstick [playerid]");
+		Msg(playerid, YELLOW, " >  Usage: /tp [target] [optional:'to me']");
 		return 1;
 	}
 
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
+	if(!isnull(command))
+	{
+		if(!strcmp(command, "to me", true))
+		{
+			TeleportPlayerToPlayer(targetid, playerid);
+
+			MsgF(playerid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", targetid);
+			MsgF(targetid, YELLOW, " >  You have teleported to %P", playerid);
+		}
+	}
+
+	TeleportPlayerToPlayer(playerid, targetid);
+
+	MsgF(playerid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", targetid);
+	MsgF(targetid, YELLOW, " >  You have teleported to %P", playerid);
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Teleport to a specific position
+
+==============================================================================*/
+
+
+ACMD:gotopos[2](playerid, params[])
+{
 	new
 		Float:x,
 		Float:y,
 		Float:z;
 
-	GetPlayerPos(targetid, x, y, z);
-	SetPlayerPos(targetid, x, y, z + 1.0);
+	if(sscanf(params, "fff", x, y, z) && sscanf(params, "p<,>fff", x, y, z))
+		return Msg(playerid, YELLOW, "Usage: /gotopos x, y, z (With or without commas)");
 
-	tick_UnstickUsage[playerid] = GetTickCount();
+	MsgF(playerid, YELLOW, " >  Teleported to %f, %f, %f", x, y, z);
+	SetPlayerPos(playerid, x, y, z);
 
 	return 1;
 }
+
+
+/*==============================================================================
+
+	Freeze a player for questioning/investigation
+
+==============================================================================*/
+
 
 ACMD:freeze[2](playerid, params[])
 {
@@ -147,38 +236,13 @@ ACMD:unfreeze[2](playerid, params[])
 	return 1;
 }
 
-ACMD:kick[2](playerid, params[])
-{
-	new
-		targetid,
-		reason[64],
-		highestadmin;
 
-	foreach(new i : Player)
-	{
-		if(GetPlayerAdminLevel(i) > GetPlayerAdminLevel(highestadmin))
-			highestadmin = i;
-	}
+/*==============================================================================
 
-	if(sscanf(params, "ds[64]", targetid, reason))
-		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
+	Ban a player from the server for a set time or forever
 
-	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
-		return 3;
+==============================================================================*/
 
-	if(!IsPlayerConnected(targetid))
-		return 4;
-
-	if(GetPlayerAdminLevel(playerid) != GetPlayerAdminLevel(highestadmin))
-		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
-
-	if(playerid == targetid)
-		MsgAllF(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
-
-	KickPlayer(targetid, reason);
-
-	return 1;
-}
 
 ACMD:ban[2](playerid, params[])
 {
@@ -233,6 +297,14 @@ ACMD:unban[2](playerid, params[])
 	return 1;
 }
 
+
+/*==============================================================================
+
+	Show the list of banned players and check if someone is banned
+
+==============================================================================*/
+
+
 ACMD:banlist[2](playerid, params[])
 {
 	ShowListOfBans(playerid, 0);
@@ -256,128 +328,13 @@ ACMD:isbanned[2](playerid, params[])
 	return 1;
 }
 
-ACMD:aliases[2](playerid, params[])
-{
-	new
-		name[MAX_PLAYER_NAME],
-		type[7];
 
-	if(sscanf(params, "s[24]S(byip)[7]", name, type))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h]");
-		return 1;
-	}
+/*==============================================================================
 
-	if(isnumeric(name))
-	{
-		new targetid = strval(name);
+	Set the message of the day
 
-		if(IsPlayerConnected(targetid))
-			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+==============================================================================*/
 
-		else if(targetid > 99)
-			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
-
-		else
-			return 4;
-	}
-
-	if(!AccountExists(name))
-	{
-		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
-		return 1;
-	}
-
-	if(GetAdminLevelByName(name) > GetPlayerAdminLevel(playerid))
-	{
-		new playername[MAX_PLAYER_NAME];
-
-		GetPlayerName(playerid, playername, MAX_PLAYER_NAME);
-
-		if(strcmp(name, playername))
-		{
-			MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
-			return 1;
-		}
-	}
-
-	new
-		ret,
-		list[6][E_ALIAS_DATA],
-		count,
-		adminlevel,
-		string[(MAX_PLAYER_NAME + 10) * 6];
-
-	if(!strcmp(type, "a", true) || isnull(type))
-	{
-		ret = GetAccountAliasesByAll(name, list, count, 6, adminlevel);
-	}
-	else if(!strcmp(type, "i", true))
-	{
-		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
-	}
-	else if(!strcmp(type, "p", true))
-	{
-		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
-	}
-	else if(!strcmp(type, "h", true))
-	{
-		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
-	}
-	else
-	{
-		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'p'(password) 'h'(hash) 'a'(all)");
-		return 1;
-	}
-
-	if(ret == 0)
-	{
-		Msg(playerid, RED, " >  An error occurred.");
-		return 1;
-	}
-
-	if(count == 0)
-	{
-		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
-		return 1;
-	}
-
-	if(count == 1)
-	{
-		strcat(string, list[0][alias_Name]);
-	}
-
-	if(count > 1)
-	{
-		for(new i; i < count; i++)
-		{
-			if(i >= 6)
-				break;
-
-			if(list[i][alias_Banned])
-				strcat(string, C_RED);
-
-			else
-				strcat(string, C_ORANGE);
-
-			strcat(string, list[i][alias_Name]);
-
-			if(i < count - 1)
-				strcat(string, ", ");
-		}
-	}
-
-	if(adminlevel <= GetPlayerAdminLevel(playerid))
-	{
-		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d) %s", count, string);
-	}
-	else
-	{
-		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
-	}
-
-	return 1;
-}
 
 ACMD:motd[2](playerid, params[])
 {

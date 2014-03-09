@@ -6,8 +6,6 @@ public OnPlayerCommandText(playerid, cmdtext[])
 		cmdfunction[64],
 		result = 1;
 
-	printf("[comm] [%p]: %s", playerid, cmdtext);
-
 	sscanf(cmdtext, "s[30]s[127]", cmd, params);
 
 	for (new i, j = strlen(cmd); i < j; i++)

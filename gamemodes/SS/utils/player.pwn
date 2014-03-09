@@ -1,3 +1,51 @@
+TeleportPlayerToPlayer(playerid, targetid)
+{
+	new
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:ang,
+		Float:vx,
+		Float:vy,
+		Float:vz,
+		interior = GetPlayerInterior(targetid);
+
+	if(IsPlayerInAnyVehicle(targetid))
+	{
+		new vehicleid = GetPlayerVehicleID(targetid);
+
+		GetVehiclePos(vehicleid, px, py, pz);
+		GetVehicleZAngle(vehicleid, ang);
+		GetVehicleVelocity(vehicleid, vx, vy, vz);
+		pz += 2.0;
+	}
+	else
+	{
+		GetPlayerPos(targetid, px, py, pz);
+		GetPlayerFacingAngle(targetid, ang);
+		GetPlayerVelocity(targetid, vx, vy, vz);
+		px -= floatsin(-ang, degrees);
+		py -= floatcos(-ang, degrees);
+	}
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		new vehicleid = GetPlayerVehicleID(playerid);
+
+		SetVehiclePos(vehicleid, px, py, pz);
+		SetVehicleZAngle(vehicleid, ang);
+		SetVehicleVelocity(vehicleid, vx, vy, vz);
+		LinkVehicleToInterior(vehicleid, interior);
+	}
+	else
+	{
+		SetPlayerPos(playerid, px, py, pz);
+		SetPlayerFacingAngle(playerid, ang);
+		SetPlayerVelocity(playerid, vx, vy, vz);
+		SetPlayerInterior(playerid, interior);
+	}
+}
+
 stock IsValidUsername(name[])
 {
 	new
@@ -22,20 +70,36 @@ stock IsValidUsername(name[])
 	return 1;
 }
 
-stock GetPlayerIDFromName(name[], bool:ignorecase = false)
+stock GetPlayerIDFromName(name[], bool:ignorecase = false, bool:partialname = false)
 {
 	new
 		playerid = INVALID_PLAYER_ID,
 		comparison[MAX_PLAYER_NAME];
 
-	foreach(new i : Player)
+	if(partialname)
 	{
-		GetPlayerName(i, comparison, MAX_PLAYER_NAME);
-
-		if(!strcmp(name, comparison, ignorecase))
+		foreach(new i : Player)
 		{
-			playerid = i;
-			break;
+			GetPlayerName(i, comparison, MAX_PLAYER_NAME);
+
+			if(!strfind(comparison, name, ignorecase))
+			{
+				playerid = i;
+				break;
+			}
+		}
+	}
+	else
+	{
+		foreach(new i : Player)
+		{
+			GetPlayerName(i, comparison, MAX_PLAYER_NAME);
+
+			if(!strcmp(name, comparison, ignorecase))
+			{
+				playerid = i;
+				break;
+			}
 		}
 	}
 

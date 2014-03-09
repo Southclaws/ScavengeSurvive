@@ -39,8 +39,8 @@ new
 			"NOS",
 			"HYDRO",
 			"VTP",
-			"LCAR",
-			"TRAP"
+			"TRAP",
+			"LCAR"
 		};
 
 
