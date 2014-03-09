@@ -137,8 +137,8 @@ stock AddDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz, F
 
 	new id = CreateDetectionField(name, points, minz, maxz, exceptionlist);
 
-	if(id == -1)
-		return -3;
+	if(id < 0)
+		return -1;
 
 	new
 		vert1[32],

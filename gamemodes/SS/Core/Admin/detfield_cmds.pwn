@@ -52,7 +52,7 @@ ACMD:field[2](playerid, params[])
 			name[MAX_DETFIELD_NAME],
 			id;
 
-		if(sscanf(params, "{s[3]}s[24]", name))
+		if(sscanf(params, "{s[4]}s[24]", name))
 		{
 			Msg(playerid, YELLOW, " >  Usage: /field log [name]");
 			return 1;
@@ -591,8 +591,6 @@ AddNewDetectionFieldPoint(playerid)
 		dfm_Points[playerid][(dfm_CurrentPoint[playerid] * 2) + 1],
 		z);
 
-	MsgF(playerid, YELLOW, " >  Point %d set to %f, %f. Move to the next point and press "C_BLUE"~k~~PED_LOCK_TARGET~", dfm_CurrentPoint[playerid] + 1, dfm_Points[playerid][dfm_CurrentPoint[playerid] * 2], dfm_Points[playerid][(dfm_CurrentPoint[playerid] * 2) + 1]);
-
 	if(dfm_CurrentPoint[playerid] == 3)
 	{
 		dfm_Points[playerid][8] = dfm_Points[playerid][0];
@@ -600,9 +598,26 @@ AddNewDetectionFieldPoint(playerid)
 
 		GetPlayerName(playerid, dfm_Exceptions[playerid][0], MAX_PLAYER_NAME);
 
-		AddDetectionField(dfm_Name[playerid], dfm_Points[playerid], dfm_MinZ[playerid], dfm_MaxZ[playerid], dfm_Exceptions[playerid]);
-
 		dfm_Editing[playerid] = false;
+
+		new ret = AddDetectionField(dfm_Name[playerid], dfm_Points[playerid], dfm_MinZ[playerid], dfm_MaxZ[playerid], dfm_Exceptions[playerid]);
+
+		if(ret < 0)
+		{
+			MsgF(playerid, RED, " >  An error occurred (code: %d)", ret);
+		}
+		else
+		{
+			MsgF(playerid, YELLOW, " >  Point %d set to %f, %f. Field '%s' created.",
+				dfm_CurrentPoint[playerid] + 1,
+				dfm_Points[playerid][dfm_CurrentPoint[playerid] * 2],
+				dfm_Points[playerid][(dfm_CurrentPoint[playerid] * 2) + 1],
+				dfm_Name[playerid]);
+		}
+	}
+	else
+	{
+		MsgF(playerid, YELLOW, " >  Point %d set to %f, %f. Move to the next point and press "C_BLUE"~k~~PED_LOCK_TARGET~", dfm_CurrentPoint[playerid] + 1, dfm_Points[playerid][dfm_CurrentPoint[playerid] * 2], dfm_Points[playerid][(dfm_CurrentPoint[playerid] * 2) + 1]);
 	}
 
 	dfm_CurrentPoint[playerid]++;
