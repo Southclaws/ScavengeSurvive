@@ -7,30 +7,16 @@
 #include <YSI\y_timers>
 
 
-#define CAM_HI_SPEED	(30.0)
-#define CAM_SPEED		(10.0)
-#define CAM_LO_SPEED	(0.5)
-
-stock Float:absoluteangle(Float:angle)
-{
-	while(angle < 0.0)angle += 360.0;
-	while(angle > 360.0)angle -= 360.0;
-	return angle;
-}
-
-stock Float:GetAngleToPoint(Float:fPointX, Float:fPointY, Float:fDestX, Float:fDestY)
-{
-	return absoluteangle(-(90-(atan2((fDestY - fPointY), (fDestX - fPointX)))));
-}
-
-
-new
+static
+Float:	cam_SpeedHigh	[MAX_PLAYERS] = {50.0, ...},
+Float:	cam_SpeedNorm	[MAX_PLAYERS] = {10.0, ...},
+Float:	cam_SpeedLow	[MAX_PLAYERS] = {0.5, ...},
 		cam_Active		[MAX_PLAYERS],
 		cam_Obj			[MAX_PLAYERS],
 Float:	cam_StartPos	[MAX_PLAYERS][3],
 Timer:	cam_UpdateTimer	[MAX_PLAYERS];
 
-CMD:freecam(playerid)
+CMD:cam(playerid)
 {
 	if(!cam_Active[playerid])
 	{
@@ -39,8 +25,8 @@ CMD:freecam(playerid)
 	}
 	else
 	{
-		SetPlayerPos(playerid, cam_StartPos[playerid][0], cam_StartPos[playerid][1], cam_StartPos[playerid][2]);
 		ExitFreeCam(playerid);
+		SetPlayerPos(playerid, cam_StartPos[playerid][0], cam_StartPos[playerid][1], cam_StartPos[playerid][2]);
 	}
 	return 1;
 }
@@ -75,10 +61,9 @@ EnterFreeCam(playerid)
 
     cam_Active[playerid] = true;
 	TogglePlayerControllable(playerid, true);
-	SetCameraBehindPlayer(playerid);
-//	ApplyAnimation(playerid, "carry", "crry_prtial", 0.0, 0, 1, 1, 1, 0);
 
 	cam_Obj[playerid] = CreateObject(19300, camX, camY, camZ, 0.0, 0.0, 0.0);
+	TogglePlayerSpectating(playerid, true);
 	AttachCameraToObject(playerid, cam_Obj[playerid]);
 
 	cam_UpdateTimer[playerid] = repeat CameraUpdate(playerid);
@@ -88,7 +73,7 @@ ExitFreeCam(playerid)
 {
     cam_Active[playerid] = false;
 	DestroyObject(cam_Obj[playerid]);
-	SetCameraBehindPlayer(playerid);
+	TogglePlayerSpectating(playerid, false);
 
 	stop cam_UpdateTimer[playerid];
 }
@@ -109,7 +94,7 @@ timer CameraUpdate[50](playerid)
 		Float:vecX,
 		Float:vecY,
 		Float:vecZ,
-		Float:speed = CAM_SPEED;
+		Float:speed = cam_SpeedNorm[playerid];
 
 	GetPlayerKeys(playerid, k, ud, lr);
 	GetPlayerCameraPos(playerid, camX, camY, camZ);
@@ -117,41 +102,51 @@ timer CameraUpdate[50](playerid)
 
 	if(k & KEY_JUMP)
 	{
-	    speed = CAM_HI_SPEED;
+	    speed = cam_SpeedHigh[playerid];
 	}
 	if(k & KEY_WALK)
 	{
-	    speed = CAM_LO_SPEED;
+	    speed = cam_SpeedLow[playerid];
 	}
 
 	if(ud == KEY_UP)
 	{
-		MoveObject(cam_Obj[playerid], camX + (vecX * 100), camY + (vecY * 100), camZ + (vecZ * 100), speed);
+		camX += vecX * 100;
+		camY += vecY * 100;
+		camZ += vecZ * 100;
 	}
 	if(ud == KEY_DOWN)
 	{
-		MoveObject(cam_Obj[playerid], camX - (vecX * 100), camY - (vecY * 100), camZ - (vecZ * 100), speed);
+		camX -= vecX * 100;
+		camY -= vecY * 100;
+		camZ -= vecZ * 100;
 	}
 	if(lr == KEY_RIGHT)
 	{
 		new Float:rotation = -(atan2(vecY, vecX) - 90.0);
-		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation + 90.0, degrees)), camY + (100 * floatcos(rotation + 90.0, degrees)), camZ, speed);
+
+		camX += (100 * floatsin(rotation + 90.0, degrees));
+		camY += (100 * floatcos(rotation + 90.0, degrees));
 	}
 	if(lr == KEY_LEFT)
 	{
 		new Float:rotation = -(atan2(vecY, vecX) - 90.0);
-		MoveObject(cam_Obj[playerid], camX + (100 * floatsin(rotation - 90.0, degrees)), camY + (100 * floatcos(rotation - 90.0, degrees)), camZ, speed);
+
+		camX += (100 * floatsin(rotation - 90.0, degrees));
+		camY += (100 * floatcos(rotation - 90.0, degrees));
 	}
 	if(k & KEY_SPRINT)
 	{
-		MoveObject(cam_Obj[playerid], camX, camY, camZ + 100.0, speed);
+		camZ += 100.0;
 	}
 	if(k & KEY_CROUCH)
 	{
-		MoveObject(cam_Obj[playerid], camX, camY, camZ - 100.0, speed);
+		camZ -= 100.0;
 	}
 
-	if(ud == 0 && lr == 0)
+	MoveObject(cam_Obj[playerid], camX, camY, camZ, speed);
+
+	if(ud == 0 && lr == 0 && !(k & KEY_SPRINT) && !(k & KEY_CROUCH))
 	{
 		StopObject(cam_Obj[playerid]);
 	}
