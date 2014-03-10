@@ -931,6 +931,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/detfield_draw.pwn"
 #include "SS/Core/Admin/Mute.pwn"
 #include "SS/Core/Admin/Rcon.pwn"
+#include "SS/Core/Admin/Freeze.pwn"
 
 // ITEMS
 #include "SS/Core/Item/Food.pwn"

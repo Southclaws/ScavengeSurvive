@@ -15,7 +15,6 @@ new gAdminCommandList_Lvl2[] =
 
 
 static
-	Timer:UnfreezeTimer[MAX_PLAYERS],
 	tick_UnstickUsage[MAX_PLAYERS];
 
 
@@ -189,33 +188,20 @@ ACMD:freeze[2](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	TogglePlayerControllable(targetid, false);
-	SetPlayerBitFlag(targetid, Frozen, true);
+	FreezePlayer(targetid, delay * 1000, _, true);
 	
 	if(delay > 0)
 	{
-		stop UnfreezeTimer[targetid];
-		UnfreezeTimer[targetid] = defer CmdDelay_unfreeze(targetid, delay * 1000);
 		MsgF(playerid, YELLOW, " >  Frozen %P for %d seconds", targetid, delay);
 		MsgF(targetid, YELLOW, " >  Frozen by admin for %d seconds", delay);
 	}
 	else
 	{
-		MsgF(playerid, YELLOW, " >  Frozen %P", targetid);
+		MsgF(playerid, YELLOW, " >  Frozen %P (performing 'mod_sa' check)", targetid);
 		Msg(targetid, YELLOW, " >  Frozen by admin");
 	}
 
 	return 1;
-}
-
-timer CmdDelay_unfreeze[time](playerid, time)
-{
-	#pragma unused time
-
-	TogglePlayerControllable(playerid, true);
-	SetPlayerBitFlag(playerid, Frozen, false);
-
-	Msg(playerid, YELLOW, " >  You are now unfrozen.");
 }
 
 ACMD:unfreeze[2](playerid, params[])
@@ -228,9 +214,7 @@ ACMD:unfreeze[2](playerid, params[])
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	TogglePlayerControllable(targetid, true);
-	SetPlayerBitFlag(targetid, Frozen, false);
-	stop UnfreezeTimer[targetid];
+	UnfreezePlayer(targetid);
 
 	MsgF(playerid, YELLOW, " >  Unfrozen %P", targetid);
 	Msg(targetid, YELLOW, " >  Unfrozen");
