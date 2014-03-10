@@ -90,8 +90,7 @@ public OnPlayerConnect(playerid)
 
 	new
 		ipstring[16],
-		ipbyte[4],
-		loadresult;
+		ipbyte[4];
 
 	GetPlayerIp(playerid, ipstring, 16);
 
@@ -101,39 +100,13 @@ public OnPlayerConnect(playerid)
 	if(BanCheck(playerid))
 		return 0;
 
-	loadresult = LoadAccount(playerid);
+	defer LoadAccountDelay(playerid);
 
-	if(loadresult == 0) // Account does not exist
-	{
-		new str[150];
-		format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
-		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
+	LoadPlayerTextDraws(playerid);
 
-		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
-
-		log(sprintf("[JOIN] %p (account does not exist)", playerid), 0);
-	}
-
-	if(loadresult == 1) // Account does exist, prompt login
-	{
-		DisplayLoginPrompt(playerid);
-
-		log(sprintf("[JOIN] %p (account exists, prompting login)", playerid), 0);
-	}
-
-	if(loadresult == 2) // Account does exist, auto login
-	{
-		Login(playerid);
-
-		log(sprintf("[JOIN] %p (account exists, auto login)", playerid), 0);
-	}
-
-	if(loadresult == 3) // Account does exist, but not in whitelist
-	{
-		WhitelistKick(playerid);
-
-		log(sprintf("[JOIN] %p (account not whitelisted)", playerid), 0);
-	}
+	ply_Data[playerid][ply_ScreenBoxFadeLevel] = 0;
+	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
+	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 
 	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
@@ -141,12 +114,8 @@ public OnPlayerConnect(playerid)
 	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
 
-	LoadPlayerTextDraws(playerid);
-
 	MsgAllF(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
-
-	CheckForExtraAccounts(playerid);
 
 	t:ply_Data[playerid][ply_BitFlags]<ShowHUD>;
 
@@ -183,6 +152,66 @@ public OnPlayerDisconnect(playerid, reason)
 	}
 
 	return 1;
+}
+
+timer LoadAccountDelay[5000](playerid)
+{
+	new loadresult = LoadAccount(playerid);
+
+	if(loadresult == 0) // Account does not exist
+	{
+		new str[150];
+		format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
+		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
+
+		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
+
+		log(sprintf("[JOIN] %p (account does not exist)", playerid), 0);
+	}
+
+	if(loadresult == 1) // Account does exist, prompt login
+	{
+		DisplayLoginPrompt(playerid);
+
+		log(sprintf("[JOIN] %p (account exists, prompting login)", playerid), 0);
+	}
+
+	if(loadresult == 2) // Account does exist, auto login
+	{
+		Login(playerid);
+
+		log(sprintf("[JOIN] %p (account exists, auto login)", playerid), 0);
+	}
+
+	if(loadresult == 3) // Account does exist, but not in whitelist
+	{
+		WhitelistKick(playerid);
+
+		log(sprintf("[JOIN] %p (account not whitelisted)", playerid), 0);
+	}
+
+	if(ply_Data[playerid][ply_BitFlags] & Alive)
+	{
+		if(ply_Data[playerid][ply_BitFlags] & LoggedIn)
+		{
+			PlayerSpawnExistingCharacter(playerid);
+			ply_Data[playerid][ply_ScreenBoxFadeLevel] = 255;
+		}
+		else
+		{
+			DisplayLoginPrompt(playerid);
+		}
+	}
+	else
+	{
+		ply_Data[playerid][ply_HitPoints] = 100.0;
+		ply_Data[playerid][ply_ArmourPoints] = 0.0;
+		ply_Data[playerid][ply_FoodPoints] = 80.0;
+		ply_Data[playerid][ply_RadioFrequency] = 108.0;
+		PlayerCreateNewCharacter(playerid);
+	}
+
+	CheckForExtraAccounts(playerid);
 }
 
 ResetVariables(playerid)
@@ -469,34 +498,6 @@ public OnPlayerSpawn(playerid)
 	{
 		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
 		return 1;
-	}
-
-	if(!(ply_Data[playerid][ply_BitFlags] & Dying))
-	{
-		ply_Data[playerid][ply_ScreenBoxFadeLevel] = 0;
-		PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
-		PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
-
-		if(ply_Data[playerid][ply_BitFlags] & Alive)
-		{
-			if(ply_Data[playerid][ply_BitFlags] & LoggedIn)
-			{
-				PlayerSpawnExistingCharacter(playerid);
-				ply_Data[playerid][ply_ScreenBoxFadeLevel] = 255;
-			}
-			else
-			{
-				DisplayLoginPrompt(playerid);
-			}
-		}
-		else
-		{
-			ply_Data[playerid][ply_HitPoints] = 100.0;
-			ply_Data[playerid][ply_ArmourPoints] = 0.0;
-			ply_Data[playerid][ply_FoodPoints] = 80.0;
-			ply_Data[playerid][ply_RadioFrequency] = 108.0;
-			PlayerCreateNewCharacter(playerid);
-		}
 	}
 
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
