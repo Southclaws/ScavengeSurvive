@@ -1,4 +1,4 @@
-TeleportPlayerToPlayer(playerid, targetid)
+stock TeleportPlayerToPlayer(playerid, targetid)
 {
 	new
 		Float:px,
@@ -120,18 +120,7 @@ stock CancelPlayerMovement(playerid)
 	TogglePlayerControllable(playerid, true);
 }
 
-FreezePlayer(playerid, time)
-{
-	TogglePlayerControllable(playerid, false);
-	defer UnfreezePlayer(playerid, time);
-}
-timer UnfreezePlayer[time](playerid, time)
-{
-#pragma unused time
-	TogglePlayerControllable(playerid, true);
-}
-
-SetPlayerToFacePlayer(playerid, targetid, Float:offset = 0.0)
+stock SetPlayerToFacePlayer(playerid, targetid, Float:offset = 0.0)
 {
 	new
 		Float:x1,
@@ -146,7 +135,7 @@ SetPlayerToFacePlayer(playerid, targetid, Float:offset = 0.0)
 	SetPlayerFacingAngle(playerid, GetAngleToPoint(x1, y1, x2, y2) + offset);
 }
 
-SetPlayerToFaceVehicle(playerid, vehicleid, Float:offset = 0.0)
+stock SetPlayerToFaceVehicle(playerid, vehicleid, Float:offset = 0.0)
 {
 	new
 		Float:x1,
@@ -248,7 +237,7 @@ stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 	return 0;
 }
 
-GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
+stock GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
 {
 	new
 		Float:x,
@@ -260,7 +249,7 @@ GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
 	return GetClosestPlayerFromPoint(x, y, z, range);
 }
 
-GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance = 10000.0)
+stock GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance = 10000.0)
 {
 	new
 		Float:px,
@@ -355,7 +344,7 @@ new CameraModeNames[66][37]=
 	"MODE_AIMWEAPON_ATTACHED"
 };
 
-GetCameraModeName(cameramode, output[])
+stock GetCameraModeName(cameramode, output[])
 {
 	if(!(0 <= cameramode <= 66))
 		return 0;
@@ -367,7 +356,7 @@ GetCameraModeName(cameramode, output[])
 }
 
 #define PreloadAnimLib(%1,%2) ApplyAnimation(%1,%2,"null",0.0,0,0,0,0,0)
-PreloadPlayerAnims(playerid)
+stock PreloadPlayerAnims(playerid)
 {
 	PreloadAnimLib(playerid, "AIRPORT");
 	PreloadAnimLib(playerid, "ATTRACTORS");
