@@ -7,6 +7,13 @@ Timer:	WelcomeMessageTimer[MAX_PLAYERS],
 		CanLeaveWelcomeMessage[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	CanLeaveWelcomeMessage[playerid] = true;
+
+	return 1;
+}
+
 hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == d_WelcomeMessage)
