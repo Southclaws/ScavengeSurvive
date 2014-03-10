@@ -531,13 +531,20 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 			{
 				case 0:
 				{
-					new
-						Float:x,
-						Float:y,
-						Float:z;
+					if(IsPlayerOnAdminDuty(playerid))
+					{
+						new
+							Float:x,
+							Float:y,
+							Float:z;
 
-					GetDetectionFieldLogEntryPos(detfieldid, logentry, x, y, z);
-					SetPlayerPos(playerid, x, y, z);
+						GetDetectionFieldLogEntryPos(detfieldid, logentry, x, y, z);
+						SetPlayerPos(playerid, x, y, z);
+					}
+					else
+					{
+						Msg(playerid, RED, " >  You must be on admin duty to do that.");
+					}
 				}
 
 				case 1:

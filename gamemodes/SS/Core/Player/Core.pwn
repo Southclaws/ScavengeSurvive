@@ -1,6 +1,11 @@
 #include <YSI\y_hooks>
 
 
+#define DEFAULT_POS_X				(10000.0)
+#define DEFAULT_POS_Y				(10000.0)
+#define DEFAULT_POS_Z				(1.0)
+
+
 enum E_FLAGS:(<<= 1) // 17
 {
 		HasAccount = 1,

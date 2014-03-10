@@ -812,7 +812,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
 		HideVehicleUI(playerid);
-		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	return 1;

@@ -26,19 +26,16 @@
 native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
-#define DB_DEBUG					false
-#define DB_MAX_STATEMENTS			(72)
-#define STRLIB_RETURN_SIZE			(256)
-#define NOTEBOOK_FILE				"SSS/Notebook/%s.dat"
-#define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18)
-#define ITM_DROP_ON_DEATH			false
+#define _DEBUG						0 // YSI
+#define DB_DEBUG					false // SQLitei
+#define DB_MAX_STATEMENTS			(72) // SQLitei
+#define STRLIB_RETURN_SIZE			(256) // strlib
+#define NOTEBOOK_FILE				"SSS/Notebook/%s.dat" // SIF/ext/notebook
+#define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18) // SIF/ext/notebook
+#define ITM_DROP_ON_DEATH			false // SIF/Item
 
-#define DEFAULT_POS_X				(10000.0)
-#define DEFAULT_POS_Y				(10000.0)
-#define DEFAULT_POS_Z				(1.0)
-
-#define BTN_MAX						(16384)
-#define ITM_MAX						(16384)
+#define BTN_MAX						(16384) // SIF/Button
+#define ITM_MAX						(16384) // SIF/Item
 
 /*==============================================================================
 

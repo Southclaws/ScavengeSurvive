@@ -131,7 +131,7 @@ FinaliseBan(playerid)
 
 	MsgF(playerid, YELLOW, " >  Banned "C_BLUE"%s", ban_CurrentName[playerid]);
 
-	logf("[BAN] %s banned %s reason: %s", playerid, ban_CurrentName[playerid], ban_CurrentReason[playerid]);
+	logf("[BAN] %p banned %s reason: %s", playerid, ban_CurrentName[playerid], ban_CurrentReason[playerid]);
 
 	return 1;
 }
