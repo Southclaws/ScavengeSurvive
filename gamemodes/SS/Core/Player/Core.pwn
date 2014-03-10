@@ -190,27 +190,6 @@ timer LoadAccountDelay[5000](playerid)
 		log(sprintf("[JOIN] %p (account not whitelisted)", playerid), 0);
 	}
 
-	if(ply_Data[playerid][ply_BitFlags] & Alive)
-	{
-		if(ply_Data[playerid][ply_BitFlags] & LoggedIn)
-		{
-			PlayerSpawnExistingCharacter(playerid);
-			ply_Data[playerid][ply_ScreenBoxFadeLevel] = 255;
-		}
-		else
-		{
-			DisplayLoginPrompt(playerid);
-		}
-	}
-	else
-	{
-		ply_Data[playerid][ply_HitPoints] = 100.0;
-		ply_Data[playerid][ply_ArmourPoints] = 0.0;
-		ply_Data[playerid][ply_FoodPoints] = 80.0;
-		ply_Data[playerid][ply_RadioFrequency] = 108.0;
-		PlayerCreateNewCharacter(playerid);
-	}
-
 	CheckForExtraAccounts(playerid);
 }
 
@@ -220,20 +199,20 @@ ResetVariables(playerid)
 
 	ply_Data[playerid][ply_Password][0]			= EOS;
 	ply_Data[playerid][ply_IP]					= 0;
-	ply_Data[playerid][ply_Warnings]				= 0;
+	ply_Data[playerid][ply_Warnings]			= 0;
 	ply_Data[playerid][ply_Karma]				= 0;
 
 	ply_Data[playerid][ply_HitPoints]			= 100.0;
-	ply_Data[playerid][ply_ArmourPoints]			= 0.0;
+	ply_Data[playerid][ply_ArmourPoints]		= 0.0;
 	ply_Data[playerid][ply_FoodPoints]			= 80.0;
 	ply_Data[playerid][ply_Clothes]				= 0;
 	ply_Data[playerid][ply_Gender]				= 0;
-	ply_Data[playerid][ply_Velocity]				= 0.0;
+	ply_Data[playerid][ply_Velocity]			= 0.0;
 	ply_Data[playerid][ply_SpawnPosX]			= 0.0;
 	ply_Data[playerid][ply_SpawnPosY]			= 0.0;
 	ply_Data[playerid][ply_SpawnPosZ]			= 0.0;
 	ply_Data[playerid][ply_SpawnRotZ]			= 0.0;
-	ply_Data[playerid][ply_RadioFrequency]		= 0.0;
+	ply_Data[playerid][ply_RadioFrequency]		= 108.0;
 	ply_Data[playerid][ply_AimShoutText][0]		= EOS;
 
 	ply_Data[playerid][ply_ChatMode]			= CHAT_MODE_GLOBAL;

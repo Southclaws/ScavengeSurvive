@@ -1,6 +1,20 @@
 #include <YSI\y_hooks>
 
 
+SpawnLoggedInPlayer(playerid)
+{
+	if(IsPlayerAlive(playerid))
+	{
+		PlayerSpawnExistingCharacter(playerid);
+		SetPlayerScreenFadeLevel(playerid, 255);
+	}
+	else
+	{
+		PlayerCreateNewCharacter(playerid);
+		SetPlayerScreenFadeLevel(playerid, 0);
+	}
+}
+
 PrepareForSpawn(playerid)
 {
 	SetPlayerBitFlag(playerid, Spawned, true);
@@ -52,7 +66,7 @@ PlayerSpawnExistingCharacter(playerid)
 	}
 
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
-	FreezePlayer(playerid, gLoginFreezeTime * 1000, gLoginFreezeTime * 990);
+	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 
 	PrepareForSpawn(playerid);
 
@@ -96,13 +110,16 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	if(playertextid == ClassButtonMale[playerid])
+	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
-		PlayerSpawnNewCharacter(playerid, GENDER_MALE);
-	}
-	if(playertextid == ClassButtonFemale[playerid])
-	{
-		PlayerSpawnNewCharacter(playerid, GENDER_FEMALE);
+		if(playertextid == ClassButtonMale[playerid])
+		{
+			PlayerSpawnNewCharacter(playerid, GENDER_MALE);
+		}
+		if(playertextid == ClassButtonFemale[playerid])
+		{
+			PlayerSpawnNewCharacter(playerid, GENDER_FEMALE);
+		}
 	}
 }
 
@@ -167,7 +184,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetPlayerBitFlag(playerid, Bleeding, false);
 	SetPlayerBitFlag(playerid, Infected, false);
 
-	FreezePlayer(playerid, 5000);
+	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 	PrepareForSpawn(playerid);
 
 	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);

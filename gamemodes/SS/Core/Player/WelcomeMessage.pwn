@@ -57,3 +57,11 @@ timer ShowWelcomeMessage[1000](playerid, count)
 
 	ShowPlayerDialog(playerid, d_WelcomeMessage, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str, button, "");
 }
+
+stock CanPlayerLeaveWelcomeMessage(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return CanLeaveWelcomeMessage[playerid];
+}

@@ -269,7 +269,7 @@ Login(playerid)
 	SetPlayerRadioFrequency(playerid, 107.0);
 	SetPlayerScreenFadeLevel(playerid, 255);
 
-	SpawnPlayer(playerid);
+	SpawnLoggedInPlayer(playerid);
 }
 
 Logout(playerid)
