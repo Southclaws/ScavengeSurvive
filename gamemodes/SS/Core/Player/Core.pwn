@@ -471,18 +471,18 @@ public OnPlayerSpawn(playerid)
 	if(IsPlayerNPC(playerid))
 		return 1;
 
+	if(IsPlayerOnAdminDuty(playerid))
+	{
+		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
+		return 1;
+	}
+
 	ply_Data[playerid][ply_SpawnTick] = GetTickCount();
 
 	SetAllWeaponSkills(playerid, 500);
 	SetPlayerWeather(playerid, gWeatherID);
 	SetPlayerTeam(playerid, 0);
 	ResetPlayerMoney(playerid);
-
-	if(IsPlayerOnAdminDuty(playerid))
-	{
-		SetPlayerPos(playerid, 0.0, 0.0, 3.0);
-		return 1;
-	}
 
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
 	PreloadPlayerAnims(playerid);

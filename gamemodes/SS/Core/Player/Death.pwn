@@ -319,6 +319,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 		CancelSelectTextDraw(playerid);
 		TextDrawHideForPlayer(playerid, DeathText);
 		TextDrawHideForPlayer(playerid, DeathButton);
+		SpawnLoggedInPlayer(playerid);
 	}
 
 	return 1;

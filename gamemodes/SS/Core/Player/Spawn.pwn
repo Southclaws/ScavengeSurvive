@@ -177,6 +177,9 @@ PlayerSpawnNewCharacter(playerid, gender)
 		}
 	}
 
+	SetPlayerHP(playerid, 100.0);
+	SetPlayerAP(playerid, 0.0);
+	SetPlayerFP(playerid, 80.0);
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	SetPlayerGender(playerid, gender);
 

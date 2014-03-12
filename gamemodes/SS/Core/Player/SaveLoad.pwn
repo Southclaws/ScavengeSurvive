@@ -1,7 +1,9 @@
-// #define SAVELOAD_DEBUG_FUNCTIONS
-// #define SAVELOAD_DEBUG_INVENTORY
-
 #define CHARACTER_DATA_FILE_VERSION 10
+
+
+static
+	saveload_Debug[MAX_PLAYERS];
+
 
 enum
 {
@@ -43,6 +45,9 @@ enum
 
 SavePlayerChar(playerid)
 {
+	if(!IsPlayerOnAdminDuty(playerid))
+		return 0;
+
 	new
 		filename[MAX_PLAYER_FILE],
 		File:file,
@@ -59,6 +64,9 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
 
+	if(saveload_Debug[playerid])
+		printf("\t[SAVE:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
+
 	if(IsValidItem(GetPlayerHolsterItem(playerid)))
 	{
 		data[PLY_CELL_HOLST] = _:GetItemType(GetPlayerHolsterItem(playerid));
@@ -69,6 +77,9 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_HOLST] = _:INVALID_ITEM_TYPE;
 		data[PLY_CELL_HOLSTEX] = 0;
 	}
+
+	if(saveload_Debug[playerid])
+		printf("\t[SAVE:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], GetPlayerHolsterItem(playerid));
 
 	if(IsValidItem(GetPlayerItem(playerid)))
 	{
@@ -85,6 +96,9 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_HELD] = _:INVALID_ITEM_TYPE;
 		data[PLY_CELL_HELDEX] = 0;
 	}
+
+	if(saveload_Debug[playerid])
+		printf("\t[SAVE:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], GetPlayerCurrentWeapon(playerid));
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
 	{
@@ -117,6 +131,9 @@ SavePlayerChar(playerid)
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 		data[PLY_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
+	if(saveload_Debug[playerid])
+		printf("\t[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
+
 	file = fopen(filename, io_write);
 
 	if(!file)
@@ -133,6 +150,9 @@ SavePlayerChar(playerid)
 
 SavePlayerInventory(playerid)
 {
+	if(!IsPlayerOnAdminDuty(playerid))
+		return 0;
+
 	new
 		filename[MAX_PLAYER_FILE],
 		File:file,
@@ -146,9 +166,8 @@ SavePlayerInventory(playerid)
 		data[i + 1] = 1; // extra data size, for future use
 		data[i + 2] = GetItemExtraData(GetInventorySlotItem(playerid, j));
 
-		#if defined SAVELOAD_DEBUG_INVENTORY
-		printf("\t[SAVE] INV %d, %d, %d", data[i], data[i + 1], data[i + 2]);
-		#endif
+		if(saveload_Debug[playerid])
+			printf("\t[SAVE:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 	}
 
 	if(IsValidItem(GetPlayerBagItem(playerid)))
@@ -161,9 +180,8 @@ SavePlayerInventory(playerid)
 			data[i + 1] = 1; // extra data size, for future use
 			data[i + 2] = GetItemExtraData(GetContainerSlotItem(containerid, j));
 
-			#if defined SAVELOAD_DEBUG_INVENTORY
-			printf("\t[SAVE] BAG %d, %d, %d", data[i], data[i + 1], data[i + 2]);
-			#endif
+			if(saveload_Debug[playerid])
+				printf("\t[SAVE:%p] BAG %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 		}
 	}
 
@@ -178,9 +196,8 @@ SavePlayerInventory(playerid)
 	fblockwrite(file, data, sizeof(data));
 	fclose(file);
 
-	#if defined SAVELOAD_DEBUG_FUNCTIONS
-	printf("\t[SAVE] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
-	#endif
+	if(saveload_Debug[playerid])
+		printf("\t[SAVE:%p] %d, %d, %d, %d", playerid, data[0], data[2], data[4], data[6]);
 
 	return 1;
 }
@@ -213,6 +230,9 @@ LoadPlayerChar(playerid)
 		return 0;
 	}
 
+	if(saveload_Debug[playerid])
+		printf("\t[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
+
 	if(Float:data[PLY_CELL_HEALTH] <= 0.0)
 		data[PLY_CELL_HEALTH] = _:1.0;
 
@@ -231,6 +251,9 @@ LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_HOLST]);
 		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
 		SetPlayerHolsterItem(playerid, itemid);
+
+		if(saveload_Debug[playerid])
+			printf("\t[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
 	if(data[PLY_CELL_HELD] != -1)
@@ -248,6 +271,9 @@ LoadPlayerChar(playerid)
 
 			GiveWorldItemToPlayer(playerid, itemid, false);
 		}
+
+		if(saveload_Debug[playerid])
+			printf("\t[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
 	}
 
 	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
@@ -277,6 +303,9 @@ LoadPlayerChar(playerid)
 	{
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
+
+		if(saveload_Debug[playerid])
+			printf("\t[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
 	}
 
 	return 1;
@@ -316,10 +345,8 @@ LoadPlayerInventory(playerid)
 	
 		AddItemToInventory(playerid, itemid, 0);
 
-		#if defined SAVELOAD_DEBUG_INVENTORY
-		printf("\t[LOAD] INV %d, %d, %d", data[i], data[i + 1], data[i + 2]);
-		#endif
-
+		if(saveload_Debug[playerid])
+			printf("\t[LOAD:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 	}
 
 	containerid = GetItemExtraData(GetPlayerBagItem(playerid));
@@ -341,15 +368,13 @@ LoadPlayerInventory(playerid)
 
 			AddItemToContainer(containerid, itemid);
 
-			#if defined SAVELOAD_DEBUG_INVENTORY
-			printf("\t[LOAD] BAG %d, %d, %d", data[i], data[i + 1], data[i + 2]);
-			#endif
+			if(saveload_Debug[playerid])
+				printf("\t[LOAD:%p] BAG %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 		}
 	}
 
-	#if defined SAVELOAD_DEBUG_FUNCTIONS
-	printf("\t[LOAD] %s - %d, %d, %d, %d", gPlayerName[playerid], data[0], data[2], data[4], data[6]);
-	#endif
+	if(saveload_Debug[playerid])
+		printf("\t[LOAD:%p] %s - %d, %d, %d, %d", playerid, data[0], data[2], data[4], data[6]);
 
 	return 1;
 }
@@ -387,6 +412,17 @@ ClearPlayerInventoryFile(playerid)
 
 	fblockwrite(file, data, 1);
 	fclose(file);
+
+	return 1;
+}
+
+
+
+ACMD:iodebug[4](playerid, params[])
+{
+	saveload_Debug[playerid] = !saveload_Debug[playerid];
+
+	MsgF(playerid, YELLOW, " >  Saveload debug: %d", saveload_Debug[playerid]);
 
 	return 1;
 }
