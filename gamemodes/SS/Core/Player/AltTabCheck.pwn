@@ -38,9 +38,6 @@ ptask AfkCheckUpdate[3000](playerid)
 
 				tab_TabOutTick[playerid] = GetTickCount();
 				tab_IsTabbed[playerid] = true;
-
-				//Save player position in case player is tabbed out (issue #29)
-				SavePlayerChar(playerid);
 			}
 		}
 
