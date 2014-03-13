@@ -527,13 +527,38 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	{
 		if(areaid == det_AreaID[i])
 		{
-			if(!IsPlayerOnAdminDuty(playerid))
+			if(!IsPlayerOnAdminDuty(playerid))// If not an admin on duty
 			{
-				DetectionFieldLogPlayer(playerid, i);
+				new pName[MAX_PLAYER_NAME];
 
-				if(GetPlayerAdminLevel(playerid) >= 3)
-					MsgF(playerid, YELLOW, " >  Entered detection field '%s'", det_Name[i]);
+				GetPlayerName(playerid, pName, sizeof(pName));
+				if(!IsNameInExceptionList(areaid, pName))// If playerid is not in exception list
+				{
+					new
+						Float: 	x,
+						Float: 	y,
+						Float: 	z,
+								reason[128],
+								info[128];
+
+					/*
+					Warn the player about what he has done
+					Don't let them pickup anything
+					And log them
+					*/
+					Msg(playerid, YELLOW, " >  You've just been logged inside a base which you are not in it's exception list. You will not be able to pickup items!");
+					Logout(playerid);//Disallow item pickup
+					DetectionFieldLogPlayer(playerid, i);
+					GetPlayerPos(playerid, x,y,z);
+
+					format(reason, sizeof(reason), "Unauthorized entrance in '%s'", det_Name[i]);
+					format(info, sizeof(info), "%i", det_AreaID[i]);
+					ReportPlayer(pName, reason, -1, REPORT_TYPE_DETFIELD, x,y,z, info);
+				}
 			}
+
+			if(GetPlayerAdminLevel(playerid) >= 3)
+				MsgF(playerid, YELLOW, " >  Entered detection field '%s'", det_Name[i]);
 		}
 	}
 
@@ -546,6 +571,32 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 #endif
 #define OnPlayerEnterDynamicArea det_OnPlayerEnterDynamicArea
 forward det_OnPlayerEnterDynamicArea(playerid, areaid);
+
+public OnPlayerLeaveDynamicArea(playerid, areaid)
+{
+	if(!IsPlayerOnAdminDuty(playerid))// If not an admin on duty
+	{
+		new pName[MAX_PLAYER_NAME];
+
+		GetPlayerName(playerid, pName, sizeof(pName));
+		if(!IsNameInExceptionList(areaid, pName)) // If player is leaving an area which he was not allowed to enter
+		{
+			Msg(playerid, YELLOW, " >  You are now able to pickup items!");
+			//Allow item pickup
+			LoadPlayerChar(playerid);
+			LoadPlayerInventory(playerid);
+		}
+	}
+
+	return CallLocalFunction("det_OnPlayerLeaveDynamicArea", "dd", playerid, areaid);
+}
+#if defined _ALS_OnPlayerLeaveDynamicArea
+	#undef OnPlayerLeaveDynamicArea
+#else
+	#define _ALS_OnPlayerLeaveDynamicArea
+#endif
+#define OnPlayerLeaveDynamicArea det_OnPlayerLeaveDynamicArea
+forward det_OnPlayerLeaveDynamicArea(playerid, areaid);
 
 DetectionFieldLogPlayer(playerid, detfieldid)
 {

@@ -22,11 +22,12 @@ enum
 	REPORT_TYPE_CARTELE,
 	REPORT_TYPE_HACKTRAP,
 	REPORT_TYPE_LOCKEDCAR,
+	REPORT_TYPE_DETFIELD,
 	REPORT_TYPE_END
 }
 
 new
-		report_TypeNames			[REPORT_TYPE_END][10]=
+		report_TypeNames			[REPORT_TYPE_END][11]=
 		{
 			"PLY ID",
 			"PLY NAME",
@@ -40,7 +41,8 @@ new
 			"HYDRO",
 			"VTP",
 			"TRAP",
-			"LCAR"
+			"LCAR",
+			"DETFIELD"
 		};
 
 
@@ -266,6 +268,10 @@ ShowReportOptions(playerid)
 			case REPORT_TYPE_CARTELE:
 			{
 				strcat(options, "Go to vehicle pos\n");
+			}
+			case REPORT_TYPE_DETFIELD:
+			{
+				strcat(options, "Go to Detection Field\n");
 			}
 		}
 	}
@@ -509,6 +515,19 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 									Float:z;
 
 								sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
+								SetPlayerPos(playerid, x, y, z);
+							}
+						}
+						case REPORT_TYPE_DETFIELD:
+						{
+							if(IsPlayerOnAdminDuty(playerid))
+							{
+								new
+									Float:x,
+									Float:y,
+									Float:z;
+
+								GetDetectionFieldPos(strval(report_CurrentInfo[playerid]), x, y, z);
 								SetPlayerPos(playerid, x, y, z);
 							}
 						}

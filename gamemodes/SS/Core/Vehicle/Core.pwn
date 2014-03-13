@@ -737,7 +737,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		veh_EnterTick[playerid] = GetTickCount();
 
-		logf("[VEHICLE] %p entered vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p entered vehicle %d (%s) as driver at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_DRIVER)
@@ -772,7 +772,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
 
-		logf("[VEHICLE] %p exited vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+		logf("[VEHICLE] %p exited vehicle %d (%s) as driver at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	}
 
 	if(newstate == PLAYER_STATE_PASSENGER)
@@ -792,7 +792,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, GetVehicleModel(GetPlayerVehicleID(playerid)));
 
-		logf("[VEHICLE] %p entered vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p entered vehicle %d (%s) as passenger at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_PASSENGER)
@@ -812,7 +812,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
 		HideVehicleUI(playerid);
-		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p exited vehicle %d (%s) as passenger at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}
 
 	return 1;
