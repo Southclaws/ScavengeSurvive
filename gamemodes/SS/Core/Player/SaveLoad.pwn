@@ -45,7 +45,7 @@ enum
 
 SavePlayerChar(playerid)
 {
-	if(!IsPlayerOnAdminDuty(playerid))
+	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
 	new
@@ -150,7 +150,7 @@ SavePlayerChar(playerid)
 
 SavePlayerInventory(playerid)
 {
-	if(!IsPlayerOnAdminDuty(playerid))
+	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
 	new
