@@ -150,7 +150,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							if(angle > 225.0 || angle < 315.0)
 								ApplyAnimation(j, "PED", "DAM_stomach_frmRT", 4.1, 0, 1, 1, 0, 0, 1); // FROM RIGHT
 
-							DamagePlayer(playerid, j, anm_MeleeItems[i][anm_animSet], 1);
+							DamagePlayer(playerid, j, anm_MeleeItems[i][anm_animSet], 0, 1);
 						}
 					}
 				}
