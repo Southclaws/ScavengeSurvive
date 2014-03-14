@@ -1,10 +1,10 @@
-// 9 commands
+// 10 commands
 
 new gAdminCommandList_Lvl2[] =
 {
 	"/duty - go on admin duty\n\
 	/spec - spectate\n\
-	/tp - teleport players or positions\n\
+	/goto, /get - teleport players\n\
 	/gotopos - go to coordinates\n\
 	/(un)freeze - freeze/unfreeze player\n\
 	/(un)ban - ban/unban player\n\
@@ -12,10 +12,6 @@ new gAdminCommandList_Lvl2[] =
 	/isbanned - check if banned\n\
 	/motd - set message of the day\n"
 };
-
-
-static
-	tick_UnstickUsage[MAX_PLAYERS];
 
 
 /*==============================================================================
@@ -95,7 +91,7 @@ ACMD:recam[2](playerid, params[])
 ==============================================================================*/
 
 
-ACMD:tp[2](playerid, params[])
+ACMD:goto[2](playerid, params[])
 {
 	if(GetPlayerAdminLevel(playerid) < 4)
 	{
@@ -103,42 +99,48 @@ ACMD:tp[2](playerid, params[])
 			return 6;
 	}
 
-	if(GetTickCountDifference(GetTickCount(), tick_UnstickUsage[playerid]) < 1000)
-	{
-		Msg(playerid, RED, " >  You cannot use that command that often.");
-		return 1;
-	}
+	new targetid;
 
-	new
-		targetid,
-		command[6];
-
-	if(sscanf(params, "uS()", targetid, command))
+	if(sscanf(params, "u", targetid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /tp [target] [optional:'to me']");
+		Msg(playerid, YELLOW, " >  Usage: /goto [target]");
 		return 1;
 	}
 
 	if(!IsPlayerConnected(targetid))
 		return 4;
 
-	if(!isnull(command))
-	{
-		if(!strcmp(command, "to me", true))
-		{
-			TeleportPlayerToPlayer(targetid, playerid);
-
-			MsgF(playerid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", targetid);
-			MsgF(targetid, YELLOW, " >  You have teleported to %P", playerid);
-
-			return 1;
-		}
-	}
-
 	TeleportPlayerToPlayer(playerid, targetid);
 
 	MsgF(playerid, YELLOW, " >  You have teleported to %P", targetid);
 	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported to you", playerid);
+
+	return 1;
+}
+
+ACMD:get[2](playerid, params[])
+{
+	if(GetPlayerAdminLevel(playerid) < 4)
+	{
+		if(!(IsPlayerOnAdminDuty(playerid)))
+			return 6;
+	}
+
+	new targetid;
+
+	if(sscanf(params, "u", targetid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /goto [target]");
+		return 1;
+	}
+
+	if(!IsPlayerConnected(targetid))
+		return 4;
+
+	TeleportPlayerToPlayer(targetid, playerid);
+
+	MsgF(playerid, YELLOW, " >  You have teleported %P", targetid);
+	MsgF(targetid, YELLOW, " >  %P"C_YELLOW" Has teleported you", playerid);
 
 	return 1;
 }
