@@ -16,7 +16,8 @@ Float:		food_foodValue,
 static
 			food_Data[MAX_FOOD_ITEM][E_FOOD_DATA],
 			food_Total,
-			food_CurrentlyEating[MAX_PLAYERS];
+			food_CurrentItem[MAX_PLAYERS],
+			food_CurrentFoodType[MAX_PLAYERS];
 
 
 forward OnPlayerEat(playerid, itemid);
@@ -25,7 +26,8 @@ forward OnPlayerEaten(playerid, itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	food_CurrentlyEating[playerid] = -1;
+	food_CurrentItem[playerid] = -1;
+	food_CurrentFoodType[playerid] = -1;
 }
 
 
@@ -54,14 +56,12 @@ DefineFoodItem(ItemType:itemtype, Float:foodvalue, canrawinfect, consumetype)
 ==============================================================================*/
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+public OnPlayerUseItem(playerid, itemid)
 {
-	if(newkeys & 16 && IsPlayerIdle(playerid))
+	if(IsPlayerIdle(playerid))
 	{
 		if(!IsPlayerAtAnyVehicleTrunk(playerid))
 		{
-			new itemid = GetPlayerItem(playerid);
-
 			if(IsValidItem(itemid))
 			{
 				for(new i; i < food_Total; i++)
@@ -74,20 +74,42 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	if(oldkeys & 16 && food_CurrentlyEating[playerid] != -1)
+
+	#if defined food_OnPlayerUseItem
+		return food_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerUseItem
+	#undef OnPlayerUseItem
+#else
+	#define _ALS_OnPlayerUseItem
+#endif
+ 
+#define OnPlayerUseItem food_OnPlayerUseItem
+#if defined food_OnPlayerUseItem
+	forward food_OnPlayerUseItem(playerid, itemid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(oldkeys & 16 && food_CurrentItem[playerid] != -1)
 	{
 		StopEating(playerid);
 	}
+
 	return 1;
 }
 
 StartEating(playerid, foodtype, itemid)
 {
-	food_CurrentlyEating[playerid] = foodtype;
+	food_CurrentItem[playerid] = itemid;
+	food_CurrentFoodType[playerid] = foodtype;
 
 	if(CallLocalFunction("OnPlayerEat", "dd", playerid, itemid))
 	{
-		food_CurrentlyEating[playerid] = -1;
+		food_CurrentItem[playerid] = -1;
 		return;
 	}
 
@@ -99,7 +121,7 @@ StartEating(playerid, foodtype, itemid)
 	else
 	{
 		ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
-		FinishEating(playerid);
+		StartHoldAction(playerid, 1000);
 	}
 
 	return;
@@ -107,53 +129,53 @@ StartEating(playerid, foodtype, itemid)
 
 StopEating(playerid)
 {
-	if(food_Data[food_CurrentlyEating[playerid]][food_consumeType] == 0)
-	{
-		ClearAnimations(playerid);
-		StopHoldAction(playerid);
-	}
+	ClearAnimations(playerid);
+	StopHoldAction(playerid);
 
-	food_CurrentlyEating[playerid] = -1;
-}
-
-FinishEating(playerid)
-{
-	new itemid = GetPlayerItem(playerid);
-
-	if(!IsItemTypeFood(GetItemType(itemid)))
-		return;
-
-	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid))
-	{
-		StopEating(playerid);
-		return;
-	}
-
-	if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
-	{
-		SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentlyEating[playerid]][food_foodValue] / 4);
-
-		if(food_Data[food_CurrentlyEating[playerid]][food_canRawInfect])
-			SetPlayerBitFlag(playerid, Infected, true);
-	}
-	else
-	{
-		SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentlyEating[playerid]][food_foodValue]);
-	}
-
-	if(food_Data[food_CurrentlyEating[playerid]][food_consumeType] == 0)
-		DestroyItem(itemid);
-
-	StopEating(playerid);
-
-	return;
+	food_CurrentItem[playerid] = -1;
 }
 
 public OnHoldActionFinish(playerid)
 {
-	if(food_CurrentlyEating[playerid] != -1)
+	if(food_CurrentItem[playerid] != -1)
 	{
-		FinishEating(playerid);
+		if(!IsValidItem(food_CurrentItem[playerid]))
+			return 0;
+
+		if(GetPlayerItem(playerid) != food_CurrentItem[playerid])
+			return 0;
+
+		if(!IsItemTypeFood(GetItemType(food_CurrentItem[playerid])))
+			return 0;
+
+		if(CallLocalFunction("OnPlayerEaten", "dd", playerid, food_CurrentItem[playerid]))
+		{
+			StopEating(playerid);
+			return 0;
+		}
+
+		if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
+		{
+			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentFoodType[playerid]][food_foodValue] / 4);
+
+			if(food_Data[food_CurrentFoodType[playerid]][food_canRawInfect])
+				SetPlayerBitFlag(playerid, Infected, true);
+		}
+		else
+		{
+			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentFoodType[playerid]][food_foodValue]);
+		}
+
+		if(food_Data[food_CurrentFoodType[playerid]][food_consumeType] == 0)
+		{
+			DestroyItem(food_CurrentItem[playerid]);
+			StopEating(playerid);
+		}
+		else
+		{
+			StartEating(playerid, food_CurrentFoodType[playerid], food_CurrentItem[playerid]);
+		}
+
 		return 1;
 	}
 

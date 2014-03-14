@@ -1,8 +1,22 @@
+#include <YSI\y_hooks>
+
+
 #define INJECT_TYPE_EMPTY		(0)
 #define INJECT_TYPE_MORPHINE	(1)
 #define INJECT_TYPE_ADRENALINE	(2)
 #define INJECT_TYPE_HEROINE		(3)
 
+
+static
+	inj_CurrentItem[MAX_PLAYERS],
+	inj_CurrentTarget[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	inj_CurrentItem[playerid] = -1;
+	inj_CurrentTarget[playerid] = -1;
+}
 
 public OnItemCreate(itemid)
 {
@@ -52,17 +66,18 @@ public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_AutoInjec)
 	{
+		new targetid = playerid;
+
 		foreach(new i : Player)
 		{
 			if(IsPlayerInPlayerArea(playerid, i))
 			{
-				InjectPlayer(playerid, i, itemid);
-				return 1;
+				targetid = i;
+				break;
 			}
 		}
 
-		ApplyAnimation(playerid, "PED", "IDLE_CSAW", 4.0, 0, 1, 1, 0, 500, 1);
-		defer Inject(playerid, playerid, itemid, 1);
+		StartInjecting(playerid, targetid);
 	}
 
 	return CallLocalFunction("inj_OnPlayerUseItem", "dd", playerid, itemid);
@@ -75,50 +90,96 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem inj_OnPlayerUseItem
 forward inj_OnPlayerUseItem(playerid, itemid);
 
-InjectPlayer(playerid, targetid, itemid)
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(IsPlayerKnockedOut(targetid))
+	if(oldkeys & 16 && inj_CurrentItem[playerid] != -1)
 	{
-		ApplyAnimation(playerid, "KNIFE", "KNIFE_G", 2.0, 0, 0, 0, 0, 0);
-		defer Inject(playerid, targetid, itemid, 0);
+		StopInjecting(playerid);
 	}
+
+	return 1;
+}
+
+StartInjecting(playerid, targetid)
+{
+	if(playerid == targetid)
+	{
+		ApplyAnimation(playerid, "PED", "IDLE_CSAW", 4.0, 0, 1, 1, 0, 500, 1);
+	//	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 500, 1);
+	}
+
 	else
 	{
-		ApplyAnimation(playerid, "ROCKET", "IDLE_ROCKET", 4.0, 0, 1, 1, 0, 500, 1);
-		defer Inject(playerid, targetid, itemid, 1);
+		if(IsPlayerKnockedOut(targetid))
+			ApplyAnimation(playerid, "KNIFE", "KNIFE_G", 2.0, 0, 0, 0, 0, 0);
+
+		else
+			ApplyAnimation(playerid, "ROCKET", "IDLE_ROCKET", 4.0, 0, 1, 1, 0, 500, 1);
 	}
+
+	inj_CurrentItem[playerid] = GetPlayerItem(playerid);
+	inj_CurrentTarget[playerid] = targetid;
+
+	StartHoldAction(playerid, 1000);
 }
 
-timer Inject[500](playerid, targetid, itemid, anim)
+StopInjecting(playerid)
 {
-	if(anim)
-		ApplyAnimation(playerid, "PED", "IDLE_ARMED", 4.0, 0, 1, 1, 0, 500, 1);
+	ClearAnimations(playerid);
+	StopHoldAction(playerid);
 
-	switch(GetItemExtraData(itemid))
+	inj_CurrentItem[playerid] = -1;
+	inj_CurrentTarget[playerid] = -1;
+}
+
+public OnHoldActionFinish(playerid)
+{
+	if(inj_CurrentItem[playerid] != -1)
 	{
-		case INJECT_TYPE_EMPTY:
+		if(!IsPlayerConnected(inj_CurrentTarget[playerid]))
+			return 0;
+
+		if(!IsValidItem(inj_CurrentItem[playerid]))
+			return 0;
+
+		if(GetPlayerItem(playerid) != inj_CurrentItem[playerid])
+			return 0;
+
+		switch(GetItemExtraData(inj_CurrentItem[playerid]))
 		{
-			ApplyDrug(targetid, DRUG_TYPE_AIR);
+			case INJECT_TYPE_EMPTY:
+			{
+				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_AIR);
+			}
+
+			case INJECT_TYPE_MORPHINE:
+			{
+				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_MORPHINE);
+			}
+
+			case INJECT_TYPE_ADRENALINE:
+			{
+				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_ADRENALINE);
+
+				if(IsPlayerKnockedOut(inj_CurrentTarget[playerid]) && inj_CurrentTarget[playerid] != playerid)
+					WakeUpPlayer(inj_CurrentTarget[playerid]);
+			}
+
+			case INJECT_TYPE_HEROINE:
+			{
+				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_HEROINE);
+			}
 		}
 
-		case INJECT_TYPE_MORPHINE:
-		{
-			ApplyDrug(targetid, DRUG_TYPE_MORPHINE);
-		}
-
-		case INJECT_TYPE_ADRENALINE:
-		{
-			ApplyDrug(targetid, DRUG_TYPE_ADRENALINE);
-
-			if(IsPlayerKnockedOut(targetid) && targetid != playerid)
-				WakeUpPlayer(targetid);
-		}
-
-		case INJECT_TYPE_HEROINE:
-		{
-			ApplyDrug(targetid, DRUG_TYPE_HEROINE);
-		}
+		SetItemExtraData(inj_CurrentItem[playerid], INJECT_TYPE_EMPTY);
 	}
 
-	SetItemExtraData(itemid, INJECT_TYPE_EMPTY);
+	return CallLocalFunction("inj_OnHoldActionFinish", "d", playerid);
 }
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish inj_OnHoldActionFinish
+forward inj_OnHoldActionFinish(playerid);
