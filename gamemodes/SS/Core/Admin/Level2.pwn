@@ -130,7 +130,7 @@ ACMD:get[2](playerid, params[])
 
 	if(sscanf(params, "u", targetid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /goto [target]");
+		Msg(playerid, YELLOW, " >  Usage: /get [target]");
 		return 1;
 	}
 
