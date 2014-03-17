@@ -2,6 +2,7 @@
 
 
 static
+		death_LastDeath[MAX_PLAYERS],
 Float:	death_PosX[MAX_PLAYERS],
 Float:	death_PosY[MAX_PLAYERS],
 Float:	death_PosZ[MAX_PLAYERS],
@@ -20,6 +21,11 @@ hook OnPlayerConnect(playerid)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
+	if(GetTickCountDifference(GetTickCount(), death_LastDeath[playerid]) < 1000)
+		return -1;
+
+	death_LastDeath[playerid] = GetTickCount();
+
 	if(killerid == INVALID_PLAYER_ID)
 	{
 		if(GetTickCountDifference(GetTickCount(), GetPlayerTookDamageTick(playerid)) < 1000)
@@ -91,7 +97,7 @@ OnDeath(playerid, killerid, reason)
 				deathreason = "The entire body is charred and burnt.";
 
 			case 22..34, 38:
-				deathreason = "They died of blood loss.";
+				deathreason = "They died of blood loss caused by what looks like bullets.";
 
 			case 41, 42:
 				deathreason = "They were sprayed and suffocated by a high pressure liquid.";
