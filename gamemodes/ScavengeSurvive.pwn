@@ -836,6 +836,7 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/KeyActions.pwn"
 #include "SS/Core/UI/Watch.pwn"
 #include "SS/Core/UI/Keypad.pwn"
+#include "SS/Core/UI/DialogPages.pwn"
 
 // VEHICLE
 #include "SS/Core/Vehicle/Core.pwn"

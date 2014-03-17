@@ -3,7 +3,24 @@
 
 // dfm = detection field management
 
+enum
+{
+	DFM_MENU_DFLIST,
+	DFM_MENU_DFOPTS,
+	DFM_MENU_EXCEPTIONS,
+	DFM_MENU_EXCEPTION_OPTIONS,
+	DFM_MENU_EXCEPTION_ADD,
+	DFM_MENU_EXCEPTION_DEL,
+	DFM_MENU_DFRENAME,
+	DFM_MENU_DFDELETE,
+	DFM_MENU_DFLOG,
+	DFM_MENU_LOGOPTS
+}
+
+
 static
+		dfm_CurrentMenu		[MAX_PLAYERS],
+		dfm_CurrentDetfield	[MAX_PLAYERS],
 		// Field list
 		dfm_FieldList		[MAX_PLAYERS][MAX_DETFIELD_PAGESIZE],
 		dfm_PageIndex		[MAX_PLAYERS],
@@ -24,13 +41,16 @@ hook OnPlayerConnect(playerid)
 	for(new i; i < MAX_DETFIELD_PAGESIZE; i++)
 		dfm_FieldList[playerid][i] = -1;
 
-	dfm_LogIndex[playerid]		= 0;
-	dfm_PageIndex[playerid]		= 0;
-	dfm_Editing[playerid]		= false;
-	dfm_Name[playerid][0]		= EOS;
-	dfm_Points[playerid]		= Float:{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-	dfm_MinZ[playerid]			= 0.0;
-	dfm_MaxZ[playerid]			= 0.0;
+	dfm_CurrentMenu[playerid]		= -1;
+	dfm_CurrentDetfield[playerid]	= -1;
+
+	dfm_LogIndex[playerid]			= 0;
+	dfm_PageIndex[playerid]			= 0;
+	dfm_Editing[playerid]			= false;
+	dfm_Name[playerid][0]			= EOS;
+	dfm_Points[playerid]			= Float:{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+	dfm_MinZ[playerid]				= 0.0;
+	dfm_MaxZ[playerid]				= 0.0;
 }
 
 ACMD:field[2](playerid, params[])
@@ -43,7 +63,10 @@ ACMD:field[2](playerid, params[])
 
 	if(!strcmp(params, "list", true, 4))
 	{
-		ShowDetfieldList(playerid);
+		new ret = ShowDetfieldList(playerid);
+
+		if(ret == 0)
+			Msg(playerid, YELLOW, " >  There are no detection fields to list.");
 	}
 
 	if(!strcmp(params, "log", true, 3))
@@ -66,9 +89,14 @@ ACMD:field[2](playerid, params[])
 			return 1;
 		}
 
-		MsgF(playerid, YELLOW, " >  Displaying log entries for detection field '%s'.", name);
 
-		ShowDetfieldLog(playerid, id);
+		new ret = ShowDetfieldLog(playerid, id);
+
+		if(ret == 1)
+			MsgF(playerid, YELLOW, " >  Displaying log entries for detection field '%s'.", name);
+
+		else
+			MsgF(playerid, YELLOW, " >  There are no log entries in '%s'.", name);
 	}
 
 	if(!strcmp(params, "add", true, 3))
@@ -145,6 +173,8 @@ ACMD:field[2](playerid, params[])
 
 ShowDetfieldList(playerid)
 {
+	dfm_CurrentMenu[playerid] = DFM_MENU_DFLIST;
+
 	new
 		total,
 		count,
@@ -156,7 +186,7 @@ ShowDetfieldList(playerid)
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  There are no detection fields to list.");
+		dfm_PageIndex[playerid] = 0;
 		return 0;
 	}
 
@@ -165,13 +195,31 @@ ShowDetfieldList(playerid)
 		(count + MAX_DETFIELD_PAGESIZE > total) ? (total) : (count + MAX_DETFIELD_PAGESIZE),
 		total);
 
+	ShowPlayerPageButtons(playerid);
+
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
 		#pragma unused pid, dialogid, inputtext
 
 		if(response)
 		{
+			dfm_CurrentDetfield[playerid] = dfm_FieldList[playerid][listitem];
 			ShowDetfieldListOptions(playerid, dfm_FieldList[playerid][listitem]);
+			HidePlayerPageButtons(playerid);
+			CancelSelectTextDraw(playerid);
+		}
+		else
+		{
+			for(new i; i < MAX_DETFIELD_PAGESIZE; i++)
+				dfm_FieldList[playerid][i] = -1;
+
+			dfm_CurrentMenu[playerid]		= -1;
+			dfm_CurrentDetfield[playerid]	= -1;
+			dfm_LogIndex[playerid]			= 0;
+			dfm_PageIndex[playerid]			= 0;
+
+			HidePlayerPageButtons(playerid);
+			CancelSelectTextDraw(playerid);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Options", "Close");
@@ -183,6 +231,8 @@ ShowDetfieldListOptions(playerid, detfieldid)
 {
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
+
+	dfm_CurrentMenu[playerid] = DFM_MENU_DFOPTS;
 
 	new
 		name[MAX_DETFIELD_NAME],
@@ -201,7 +251,11 @@ ShowDetfieldListOptions(playerid, detfieldid)
 			{
 				case 0:
 				{
-					ShowDetfieldLog(playerid, detfieldid);
+					if(!ShowDetfieldLog(playerid, detfieldid))
+					{
+						MsgF(playerid, YELLOW, " >  There are no log entries in '%s'.", name);
+						ShowDetfieldListOptions(playerid, detfieldid);
+					}
 				}
 
 				case 1:
@@ -253,6 +307,8 @@ ShowDetfieldExceptions(playerid, detfieldid)
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
 
+	dfm_CurrentMenu[playerid] = DFM_MENU_EXCEPTIONS;
+
 	new
 		name[MAX_DETFIELD_NAME];
 
@@ -295,6 +351,8 @@ ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid)
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
 
+	dfm_CurrentMenu[playerid] = DFM_MENU_EXCEPTION_OPTIONS;
+
 	new name[MAX_PLAYER_NAME];
 
 	GetDetectionFieldExceptionName(detfieldid, exceptionid, name);
@@ -332,6 +390,8 @@ ShowDetfieldAddException(playerid, detfieldid, exceptionid)
 {
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
+
+	dfm_CurrentMenu[playerid] = DFM_MENU_EXCEPTION_ADD;
 
 	new
 		name[MAX_DETFIELD_NAME];
@@ -394,6 +454,8 @@ ShowDetfieldDeleteException(playerid, detfieldid, exceptionid)
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
 
+	dfm_CurrentMenu[playerid] = DFM_MENU_EXCEPTION_DEL;
+
 	new name[MAX_PLAYER_NAME];
 
 	GetDetectionFieldExceptionName(detfieldid, exceptionid, name);
@@ -416,6 +478,8 @@ ShowDetfieldRenamePrompt(playerid, detfieldid)
 {
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
+
+	dfm_CurrentMenu[playerid] = DFM_MENU_DFRENAME;
 
 	new name[MAX_DETFIELD_NAME];
 
@@ -455,6 +519,8 @@ ShowDetfieldDeletePrompt(playerid, detfieldid)
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
 
+	dfm_CurrentMenu[playerid] = DFM_MENU_DFDELETE;
+
 	new name[MAX_DETFIELD_NAME];
 
 	GetDetectionFieldName(detfieldid, name);
@@ -479,20 +545,28 @@ ShowDetfieldLog(playerid, detfieldid)
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
 
+	dfm_CurrentMenu[playerid] = DFM_MENU_DFLOG;
+
 	new
 		list[MAX_DETFIELD_LOG_PAGESIZE * (MAX_DETFIELD_NAME + 1)],
 		name[MAX_DETFIELD_NAME],
-		count;
+		title[MAX_DETFIELD_NAME + 32],
+		count,
+		total;
 
-	count = GetDetectionFieldLog(detfieldid, list, MAX_DETFIELD_PAGESIZE, dfm_LogIndex[playerid]);
+	count = GetDetectionFieldLog(detfieldid, list, MAX_DETFIELD_LOG_PAGESIZE, dfm_LogIndex[playerid]);
 	GetDetectionFieldName(detfieldid, name);
+	total = GetDetectionFieldLogEntries(detfieldid);
+
+	format(title, sizeof(title), "%s (%d-%d of %d)", name, dfm_LogIndex[playerid], dfm_LogIndex[playerid] + count, total);
 
 	if(count == 0)
 	{
-		MsgF(playerid, YELLOW, " >  There are no log entries in '%s'.", name);
-		ShowDetfieldListOptions(playerid, detfieldid);
+		dfm_LogIndex[playerid] = 0;
 		return 0;
 	}
+
+	ShowPlayerPageButtons(playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -506,8 +580,11 @@ ShowDetfieldLog(playerid, detfieldid)
 		{
 			ShowDetfieldListOptions(playerid, detfieldid);
 		}
+
+		HidePlayerPageButtons(playerid);
+		CancelSelectTextDraw(playerid);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, list, "Select", "Back");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Select", "Back");
 
 	return 1;
 }
@@ -516,6 +593,8 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 {
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
+
+	dfm_CurrentMenu[playerid] = DFM_MENU_LOGOPTS;
 
 	new name[MAX_DETFIELD_NAME];
 
@@ -574,6 +653,43 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, "Go to\nDelete\nDelete all of this name", "Select", "Close");
 
 	return 1;
+}
+
+public OnPlayerDialogPage(playerid, direction)
+{
+	if(dfm_CurrentMenu[playerid] == DFM_MENU_DFLIST)
+	{
+		if(direction == 0)
+		{
+			dfm_PageIndex[playerid] -= MAX_DETFIELD_PAGESIZE;
+
+			if(dfm_PageIndex[playerid] < 0)
+				dfm_PageIndex[playerid] = 0;
+		}
+		else
+		{
+			dfm_PageIndex[playerid] += MAX_DETFIELD_PAGESIZE;
+		}
+
+		ShowDetfieldList(playerid);
+	}
+
+	if(dfm_CurrentMenu[playerid] == DFM_MENU_DFLOG)
+	{
+		if(direction == 0)
+		{
+			dfm_LogIndex[playerid] -= MAX_DETFIELD_LOG_PAGESIZE;
+
+			if(dfm_LogIndex[playerid] < 0)
+				dfm_LogIndex[playerid] = 0;
+		}
+		else
+		{
+			dfm_LogIndex[playerid] += MAX_DETFIELD_LOG_PAGESIZE;
+		}
+
+		ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
+	}
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
