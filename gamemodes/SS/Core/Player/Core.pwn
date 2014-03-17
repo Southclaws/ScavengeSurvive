@@ -59,10 +59,6 @@ Float:	ply_RadioFrequency,
 E_FLAGS:ply_BitFlags,
 		ply_ChatMode,
 		ply_CurrentVehicle,
-		ply_LastHitBy[MAX_PLAYER_NAME],
-		ply_LastHitById,
-		ply_LastKilledBy[MAX_PLAYER_NAME],
-		ply_LastKilledById,
 		ply_PingLimitStrikes,
 		ply_ScreenBoxFadeLevel,
 		ply_stance,
@@ -222,8 +218,6 @@ ResetVariables(playerid)
 
 	ply_Data[playerid][ply_ChatMode]			= CHAT_MODE_GLOBAL;
 	ply_Data[playerid][ply_CurrentVehicle]		= 0;
-	ply_Data[playerid][ply_LastHitBy][0]		= EOS;
-	ply_Data[playerid][ply_LastKilledBy][0]		= EOS;
 	ply_Data[playerid][ply_PingLimitStrikes]	= 0;
 	ply_Data[playerid][ply_ScreenBoxFadeLevel]	= 0;
 	ply_Data[playerid][ply_stance]				= 0;
@@ -1118,87 +1112,6 @@ stock GetPlayerLastVehicle(playerid)
 		return 0;
 
 	return ply_Data[playerid][ply_CurrentVehicle];
-}
-
-// ply_LastHitBy
-stock GetLastHitBy(playerid, name[MAX_PLAYER_NAME])
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	name[0] = EOS;
-	strcat(name, ply_Data[playerid][ply_LastHitBy]);
-
-	return 1;
-}
-stock SetLastHitBy(playerid, name[MAX_PLAYER_NAME])
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_LastHitBy] = name;
-
-	return 1;
-}
-
-// ply_LastHitById
-stock GetLastHitById(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_LastHitById];
-}
-
-stock SetLastHitById(playerid, id)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_LastHitById] = id;
-
-	return 1;
-}
-
-// ply_LastKilledBy
-stock GetLastKilledBy(playerid, name[MAX_PLAYER_NAME])
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	name[0] = EOS;
-	strcat(name, ply_Data[playerid][ply_LastKilledBy]);
-
-	return 1;
-}
-
-stock SetLastKilledBy(playerid, name[MAX_PLAYER_NAME])
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_LastKilledBy] = name;
-
-	return 1;
-}
-
-// ply_LastKilledById
-stock GetLastKilledById(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_LastKilledById];
-}
-
-stock SetLastKilledById(playerid, id)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_LastKilledById] = id;
-
-	return 1;
 }
 
 // ply_PingLimitStrikes

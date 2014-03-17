@@ -456,6 +456,7 @@ public OnHoldActionFinish(playerid)
 		if(itemtype == item_Hammer)
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_MODE_HORIZONTAL);
 
+		logf("[CONSTRUCT] %p Built defence %d type %d at %f, %f, %f (%f)", playerid, id, type, x, y, z, angle);
 
 		SaveDefenceItem(id);
 		StopBuildingDefence(playerid);
@@ -486,7 +487,7 @@ public OnHoldActionFinish(playerid)
 				.rz = def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ],
 				.zoffset = ITEM_BUTTON_OFFSET);
 
-			logf("[CROWBAR] %p BROKE DEFENCE TYPE %d at %f, %f, %f (%f)", playerid, _:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenceEdit[playerid]][def_posX], def_Data[def_CurrentDefenceEdit[playerid]][def_posY], def_Data[def_CurrentDefenceEdit[playerid]][def_posZ], def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ]);
+			logf("[CROWBAR] %p broke defence %d type %d at %f, %f, %f (%f)", playerid, def_CurrentDefenceEdit[playerid], _:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenceEdit[playerid]][def_posX], def_Data[def_CurrentDefenceEdit[playerid]][def_posY], def_Data[def_CurrentDefenceEdit[playerid]][def_posZ], def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ]);
 
 			DestroyDefence(def_CurrentDefenceEdit[playerid]);
 			ClearAnimations(playerid);
@@ -576,6 +577,8 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotZ] + def_Data[defenceid][def_rotZ]);
 
 		def_Data[defenceid][def_open] = false;
+
+		logf("[DEFMOVE] Player %p moved defence %d into CLOSED position.", playerid, defenceid);
 	}
 	else
 	{
@@ -588,9 +591,101 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotZ] + def_Data[defenceid][def_rotZ]);
 
 		def_Data[defenceid][def_open] = true;
+
+		logf("[DEFMOVE] Player %p moved defence %d into OPEN position.", playerid, defenceid);
 	}
 
 	return;
+}
+
+// Experimental hack detector
+
+static
+		def_CurrentCheckDefence[MAX_PLAYERS],
+Timer:	def_AngleCheckTimer[MAX_PLAYERS];
+
+public OnPlayerEnterButtonArea(playerid, buttonid)
+{
+	if(!IsPlayerOnAdminDuty(playerid))
+	{
+		new defenceid = def_ButtonDefence[buttonid];
+
+		if(Iter_Contains(def_Index, defenceid))
+		{
+			if( (def_Data[defenceid][def_mode] == DEFENCE_MODE_OPENABLE && !def_Data[defenceid][def_open]) || (def_Data[defenceid][def_mode] == DEFENCE_MODE_VERTICAL) )
+			{
+				new Float:angle = absoluteangle(def_Data[defenceid][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
+
+				if(angle < 90.0 || angle > 270.0)
+				{
+					stop def_AngleCheckTimer[playerid];
+
+					def_CurrentCheckDefence[playerid] = defenceid;
+					def_AngleCheckTimer[playerid] = repeat DefenceAngleCheck(playerid, defenceid);
+				}
+			}
+		}
+	}
+
+	#if defined def_OnPlayerEnterButtonArea
+		return def_OnPlayerEnterButtonArea(playerid, buttonid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerEnterButtonArea
+	#undef OnPlayerEnterButtonArea
+#else
+	#define _ALS_OnPlayerEnterButtonArea
+#endif
+ 
+#define OnPlayerEnterButtonArea def_OnPlayerEnterButtonArea
+#if defined def_OnPlayerEnterButtonArea
+	forward def_OnPlayerEnterButtonArea(playerid, buttonid);
+#endif
+
+public OnPlayerLeaveButtonArea(playerid, buttonid)
+{
+	new defenceid = def_ButtonDefence[buttonid];
+
+	if(Iter_Contains(def_Index, defenceid))
+	{
+		if(def_CurrentCheckDefence[playerid] == defenceid)
+			stop def_AngleCheckTimer[playerid];
+	}
+
+	#if defined def_OnPlayerLeaveButtonArea
+		return def_OnPlayerLeaveButtonArea(playerid, buttonid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerLeaveButtonArea
+	#undef OnPlayerLeaveButtonArea
+#else
+	#define _ALS_OnPlayerLeaveButtonArea
+#endif
+ 
+#define OnPlayerLeaveButtonArea def_OnPlayerLeaveButtonArea
+#if defined def_OnPlayerLeaveButtonArea
+	forward def_OnPlayerLeaveButtonArea(playerid, buttonid);
+#endif
+
+timer DefenceAngleCheck[100](playerid, defenceid)
+{
+	new Float:angle = absoluteangle(def_Data[defenceid][def_rotZ] - GetButtonAngleToPlayer(playerid, def_Data[defenceid][def_buttonId]));
+
+	//MsgF(playerid, YELLOW, " >  Angle to defence: %f", angle);
+
+	if(120.0 < angle < 250.0)
+	{
+		MsgAdminsF(3, YELLOW, " >  [TEST] Player %p moved through defence %d at %.1f, %.1f, %.1f", playerid, defenceid,
+			def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
+
+		logf("[THRUDEF] Player %p moved through defence %d at %.1f, %.1f, %.1f", playerid, defenceid, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
+
+		stop def_AngleCheckTimer[playerid];
+	}
 }
 
 

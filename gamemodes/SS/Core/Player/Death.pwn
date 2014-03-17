@@ -5,8 +5,18 @@ static
 Float:	death_PosX[MAX_PLAYERS],
 Float:	death_PosY[MAX_PLAYERS],
 Float:	death_PosZ[MAX_PLAYERS],
-Float:	death_RotZ[MAX_PLAYERS];
+Float:	death_RotZ[MAX_PLAYERS],
+		death_LastKilledBy[MAX_PLAYERS][MAX_PLAYER_NAME],
+		death_LastKilledById[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	death_LastKilledBy[playerid][0] = EOS;
+	death_LastKilledById[playerid] = INVALID_PLAYER_ID;
+
+	return 1;
+}
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
@@ -21,7 +31,7 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 
-	OnDeath(playerid, killerid, reason);
+	OnDeath(playerid, killerid, GetLastHitByWeapon(playerid));
 
 	return 1;
 }
@@ -53,11 +63,10 @@ OnDeath(playerid, killerid, reason)
 
 	if(IsPlayerConnected(killerid))
 	{
-		logf("[KILL] %p killed %p with %d", killerid, playerid, reason);
-		printf("[KILL] %p killed %p with %d", killerid, playerid, reason);
+		logf("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
-		SetLastKilledBy(playerid, gPlayerName[killerid]);
-		SetLastKilledById(playerid, killerid);
+		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
+		death_LastKilledById[playerid] = killerid;
 
 		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
 
@@ -95,16 +104,14 @@ OnDeath(playerid, killerid, reason)
 
 			default:
 				deathreason = "They died for an unknown reason.";
-
 		}
 	}
 	else
 	{
-		logf("[DEATH] %p died because of %d", playerid, reason);
-		printf("[DEATH] %p died because of %d", playerid, reason);
+		logf("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
-		SetLastKilledBy(playerid, "");
-		SetLastKilledById(playerid, INVALID_PLAYER_ID);
+		death_LastKilledBy[playerid][0] = EOS;
+		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
 
@@ -286,6 +293,7 @@ hook OnPlayerSpawn(playerid)
 		TextDrawShowForPlayer(playerid, DeathButton);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 		SetPlayerHP(playerid, 1.0);
+		SetPlayerScreenFadeLevel(playerid, 255);
 	}
 }
 
@@ -346,4 +354,24 @@ stock GetPlayerDeathRot(playerid, &Float:r)
 	r = death_RotZ;
 
 	return 1;
+}
+
+// death_LastKilledBy
+stock GetLastKilledBy(playerid, name[MAX_PLAYER_NAME])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	name = death_LastKilledBy[playerid];
+
+	return 1;
+}
+
+// death_LastKilledById
+stock GetLastKilledById(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return death_LastKilledById[playerid];
 }

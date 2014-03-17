@@ -1,3 +1,25 @@
+#include <YSI\y_hooks>
+
+
+static
+	dmg_LastHit[MAX_PLAYERS][MAX_PLAYER_NAME],
+	dmg_LastHitId[MAX_PLAYERS],
+	dmg_LastHitWeapon[MAX_PLAYERS],
+	dmg_LastHitBy[MAX_PLAYERS][MAX_PLAYER_NAME],
+	dmg_LastHitById[MAX_PLAYERS],
+	dmg_LastHitByWeapon[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	dmg_LastHit[playerid][0] = EOS;
+	dmg_LastHitId[playerid] = INVALID_PLAYER_ID;
+	dmg_LastHitBy[playerid][0] = EOS;
+	dmg_LastHitById[playerid] = INVALID_PLAYER_ID;
+
+	return 1;
+}
+
 public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	if(IsPlayerOnAdminDuty(playerid))
@@ -77,9 +99,6 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
 	if(!IsPlayerSpawned(playerid))
 		return 0;
-
-	SetLastHitBy(damagedid, gPlayerName[playerid]);
-	SetLastHitById(damagedid, playerid);
 
 	DamagePlayer(playerid, damagedid, weaponid, bodypart);
 
@@ -252,6 +271,14 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 		SetPlayerBitFlag(targetid, Bleeding, false);
 	}
 
+	GetPlayerName(targetid, dmg_LastHit[playerid], MAX_PLAYER_NAME);
+	dmg_LastHitId[playerid] = targetid;
+	dmg_LastHitWeapon[playerid] = weaponid;
+
+	GetPlayerName(playerid, dmg_LastHitBy[targetid], MAX_PLAYER_NAME);
+	dmg_LastHitById[targetid] = playerid;
+	dmg_LastHitByWeapon[targetid] = weaponid;
+
 	GivePlayerHP(targetid, -hploss);
 	ShowHitMarker(playerid, weaponid);
 
@@ -279,4 +306,64 @@ ShowHitMarker(playerid, weapon)
 timer HideHitMark[500](playerid, Text:hitmark)
 {
 	TextDrawHideForPlayer(playerid, hitmark);
+}
+
+// dmg_LastHit
+stock GetLastHit(playerid, name[MAX_PLAYER_NAME])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, dmg_LastHit[playerid]);
+
+	return 1;
+}
+
+// dmg_LastHitId
+stock GetLastHitId(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return dmg_LastHitId[playerid];
+}
+
+// dmg_LastHitId
+stock GetLastHitWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return dmg_LastHitId[playerid];
+}
+
+// dmg_LastHitWeapon
+stock GetLastHitBy(playerid, name[MAX_PLAYER_NAME])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, dmg_LastHitWeapon[playerid]);
+
+	return 1;
+}
+
+// dmg_LastHitById
+stock GetLastHitById(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return dmg_LastHitById[playerid];
+}
+
+// dmg_LastHitByWeapon
+stock GetLastHitByWeapon(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return dmg_LastHitByWeapon[playerid];
 }

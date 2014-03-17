@@ -26,11 +26,6 @@ CMD:skip(playerid, params[])
 	return 1;
 }
 
-hook OnPlayerConnect(playerid)
-{
-
-}
-
 public OnPlayerOpenInventory(playerid)
 {
 	if(TutorialState[playerid] == 1)
