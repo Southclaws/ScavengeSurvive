@@ -31,16 +31,44 @@ static
 	};
 
 static
-	admin_Level[MAX_PLAYERS],
-	admin_OnDuty[MAX_PLAYERS],
-	admin_DutyTick[MAX_PLAYERS];
+		admin_Level[MAX_PLAYERS],
+		admin_OnDuty[MAX_PLAYERS],
+Text3D:	admin_Nametag[MAX_PLAYERS] = {Text3D:INVALID_3DTEXT_ID, ...},
+Text3D:	admin_NametagLOS[MAX_PLAYERS] = {Text3D:INVALID_3DTEXT_ID, ...};
 
 
 hook OnPlayerConnect(playerid)
 {
+	new
+		name[MAX_PLAYER_NAME],
+		players[MAX_PLAYERS],
+		maxplayers;
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	foreach(new i : Player)
+	{
+		if(admin_OnDuty[i])
+			players[maxplayers++] = i;
+	}
+
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
-	admin_DutyTick[playerid] = 0;
+	admin_Nametag[playerid] = CreateDynamic3DTextLabelEx(name, YELLOW, 0.0, 0.0, 0.5, 1000.0, playerid, _, 0, 1000.0, _, _, players, 1, 1, maxplayers);
+	admin_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[VISIBLE]", BLUE, 0.5, 0.0, 0.4, 1000.0, playerid, _, 1, 1000.0, _, _, players, 1, 1, maxplayers);
+
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	DestroyDynamic3DTextLabel(admin_Nametag[playerid]);
+	DestroyDynamic3DTextLabel(admin_NametagLOS[playerid]);
+
+	admin_Nametag[playerid] = Text3D:INVALID_3DTEXT_ID;
+	admin_NametagLOS[playerid] = Text3D:INVALID_3DTEXT_ID;
+
+	return 1;
 }
 
 
@@ -262,7 +290,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 		}
 
-		Logout(playerid);
+		Logout(playerid, 0); // docombatlogcheck = 0
 
 		ToggleArmour(playerid, false);
 
@@ -273,6 +301,15 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		else
 			SetPlayerSkin(playerid, 211);
+
+		foreach(new i : Player)
+		{
+			if(!Streamer_IsInArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_Nametag[i], E_STREAMER_PLAYER_ID, playerid))
+				Streamer_AppendArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_Nametag[i], E_STREAMER_PLAYER_ID, playerid);
+
+			if(!Streamer_IsInArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid))
+				Streamer_AppendArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid);
+		}
 	}
 	else
 	{
@@ -291,7 +328,11 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 
-		admin_DutyTick[playerid] = GetTickCount();
+		foreach(new i : Player)
+		{
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_Nametag[i], E_STREAMER_PLAYER_ID, playerid);
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid);
+		}
 	}
 }
 

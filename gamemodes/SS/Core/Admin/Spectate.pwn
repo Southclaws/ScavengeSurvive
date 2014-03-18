@@ -11,6 +11,53 @@ static
 Timer:	spectate_Timer[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	spectate_Target[playerid] = INVALID_PLAYER_ID;
+
+	spec_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
+	PlayerTextDrawAlignment			(playerid, spec_Name, 2);
+	PlayerTextDrawBackgroundColor	(playerid, spec_Name, 255);
+	PlayerTextDrawFont				(playerid, spec_Name, 1);
+	PlayerTextDrawLetterSize		(playerid, spec_Name, 0.200000, 1.000000);
+	PlayerTextDrawColor				(playerid, spec_Name, -1);
+	PlayerTextDrawSetOutline		(playerid, spec_Name, 0);
+	PlayerTextDrawSetProportional	(playerid, spec_Name, 1);
+	PlayerTextDrawSetShadow			(playerid, spec_Name, 1);
+	PlayerTextDrawUseBox			(playerid, spec_Name, 1);
+	PlayerTextDrawBoxColor			(playerid, spec_Name, 255);
+	PlayerTextDrawTextSize			(playerid, spec_Name, 100.000000, 240.000000);
+
+	spec_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
+	PlayerTextDrawAlignment			(playerid, spec_Info, 2);
+	PlayerTextDrawBackgroundColor	(playerid, spec_Info, 255);
+	PlayerTextDrawFont				(playerid, spec_Info, 1);
+	PlayerTextDrawLetterSize		(playerid, spec_Info, 0.200000, 1.000000);
+	PlayerTextDrawColor				(playerid, spec_Info, -1);
+	PlayerTextDrawSetOutline		(playerid, spec_Info, 0);
+	PlayerTextDrawSetProportional	(playerid, spec_Info, 1);
+	PlayerTextDrawSetShadow			(playerid, spec_Info, 1);
+	PlayerTextDrawUseBox			(playerid, spec_Info, 1);
+	PlayerTextDrawBoxColor			(playerid, spec_Info, 255);
+	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 240.000000);
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
+		ExitSpectateMode(playerid);
+
+	foreach(new i : Player)
+	{
+		if(spectate_Target[i] == playerid)
+		{
+			ExitSpectateMode(i);
+		}
+	}
+
+	return 1;
+}
+
 EnterSpectateMode(playerid, targetid)
 {
 	if(!IsPlayerConnected(targetid))
@@ -263,51 +310,6 @@ CanPlayerSpectate(playerid, targetid)
 	}
 
 	return 1;
-}
-
-hook OnPlayerDisconnect(playerid)
-{
-	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
-		ExitSpectateMode(playerid);
-
-	foreach(new i : Player)
-	{
-		if(spectate_Target[i] == playerid)
-		{
-			ExitSpectateMode(i);
-		}
-	}
-}
-
-hook OnPlayerConnect(playerid)
-{
-	spectate_Target[playerid] = INVALID_PLAYER_ID;
-
-	spec_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
-	PlayerTextDrawAlignment			(playerid, spec_Name, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spec_Name, 255);
-	PlayerTextDrawFont				(playerid, spec_Name, 1);
-	PlayerTextDrawLetterSize		(playerid, spec_Name, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spec_Name, -1);
-	PlayerTextDrawSetOutline		(playerid, spec_Name, 0);
-	PlayerTextDrawSetProportional	(playerid, spec_Name, 1);
-	PlayerTextDrawSetShadow			(playerid, spec_Name, 1);
-	PlayerTextDrawUseBox			(playerid, spec_Name, 1);
-	PlayerTextDrawBoxColor			(playerid, spec_Name, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Name, 100.000000, 240.000000);
-
-	spec_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
-	PlayerTextDrawAlignment			(playerid, spec_Info, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spec_Info, 255);
-	PlayerTextDrawFont				(playerid, spec_Info, 1);
-	PlayerTextDrawLetterSize		(playerid, spec_Info, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spec_Info, -1);
-	PlayerTextDrawSetOutline		(playerid, spec_Info, 0);
-	PlayerTextDrawSetProportional	(playerid, spec_Info, 1);
-	PlayerTextDrawSetShadow			(playerid, spec_Info, 1);
-	PlayerTextDrawUseBox			(playerid, spec_Info, 1);
-	PlayerTextDrawBoxColor			(playerid, spec_Info, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 240.000000);
 }
 
 GetPlayerSpectateTarget(playerid)

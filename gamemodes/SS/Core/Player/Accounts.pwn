@@ -272,7 +272,7 @@ Login(playerid)
 	SpawnLoggedInPlayer(playerid);
 }
 
-Logout(playerid)
+Logout(playerid, docombatlogcheck = 1)
 {
 	if(!GetPlayerBitFlag(playerid, LoggedIn))
 		return 0;
@@ -280,13 +280,16 @@ Logout(playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	new
-		lastattacker,
-		lastweapon;
-
-	if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+	if(docombatlogcheck)
 	{
-		OnPlayerDeath(playerid, lastattacker, lastweapon);
+		new
+			lastattacker,
+			lastweapon;
+
+		if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+		{
+			OnPlayerDeath(playerid, lastattacker, lastweapon);
+		}
 	}
 
 	new

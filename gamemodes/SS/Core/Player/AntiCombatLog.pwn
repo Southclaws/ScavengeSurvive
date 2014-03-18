@@ -5,9 +5,23 @@ new
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 {
+	if(IsPlayerOnAdminDuty(playerid))
+		return 0;
+
+	if(!IsPlayerSpawned(playerid))
+		return 0;
+
+	if(IsPlayerOnAdminDuty(damagedid))
+		return 0;
+
+	if(!IsPlayerSpawned(damagedid))
+		return 0;
+
 	SetPlayerTookDamageTick(damagedid, GetTickCount());
 	combatlog_LastAttacker[damagedid] = playerid;
 	combatlog_LastWeapon[damagedid] = weaponid;
+
+	return 1;
 }
 
 hook OnPlayerSpawn(playerid)
@@ -22,6 +36,7 @@ IsPlayerCombatLogging(playerid, &lastattacker, &lastweapon)
 	{
 		lastattacker = combatlog_LastAttacker[playerid];
 		lastweapon = combatlog_LastWeapon[playerid];
+
 		return 1;
 	}
 

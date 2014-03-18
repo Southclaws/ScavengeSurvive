@@ -28,6 +28,12 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	if(!IsPlayerSpawned(playerid))
 		return 0;
 
+	if(IsPlayerOnAdminDuty(issuerid))
+		return 0;
+
+	if(!IsPlayerSpawned(issuerid))
+		return 0;
+
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		if(weaponid == 53)
@@ -98,6 +104,12 @@ public OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 		return 0;
 
 	if(!IsPlayerSpawned(playerid))
+		return 0;
+
+	if(IsPlayerOnAdminDuty(damagedid))
+		return 0;
+
+	if(!IsPlayerSpawned(damagedid))
 		return 0;
 
 	DamagePlayer(playerid, damagedid, weaponid, bodypart);
