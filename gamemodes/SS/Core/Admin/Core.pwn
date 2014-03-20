@@ -68,6 +68,15 @@ hook OnPlayerDisconnect(playerid, reason)
 	admin_Nametag[playerid] = Text3D:INVALID_3DTEXT_ID;
 	admin_NametagLOS[playerid] = Text3D:INVALID_3DTEXT_ID;
 
+	if(admin_OnDuty[playerid])
+	{
+		foreach(new i : Player)
+		{
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_Nametag[i], E_STREAMER_PLAYER_ID, playerid);
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, admin_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid);
+		}		
+	}
+
 	return 1;
 }
 
