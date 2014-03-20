@@ -660,7 +660,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		if(veh_Data[vehicleid][veh_locked])
+		if(IsVehicleLocked(vehicleid) && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
 		{
 			new
 				name[MAX_PLAYER_NAME],
@@ -685,7 +685,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
 
-		if(veh_Data[vehicleid][veh_locked])
+		if(IsVehicleLocked(vehicleid) && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
 		{
 			new
 				name[MAX_PLAYER_NAME],

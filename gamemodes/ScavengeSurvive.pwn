@@ -846,6 +846,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/LockBreak.pwn"
 #include "SS/Core/Vehicle/Locksmith.pwn"
 #include "SS/Core/Vehicle/Carmour.pwn"
+#include "SS/Core/Vehicle/Lock.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/Core.pwn"

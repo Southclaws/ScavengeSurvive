@@ -206,9 +206,8 @@ LoadPlayerVehicle(filename[], prints)
 	veh_Data[vehicleid][veh_colour1]			= array_data[VEH_CELL_COL1];
 	veh_Data[vehicleid][veh_colour2]			= array_data[VEH_CELL_COL2];
 	veh_Data[vehicleid][veh_key]				= array_data[VEH_CELL_KEY];
-	veh_Data[vehicleid][veh_locked]				= array_data[VEH_CELL_LOCKED];
 
-	SetVehicleExternalLock(vehicleid, veh_Data[vehicleid][veh_locked]);
+	SetVehicleExternalLock(vehicleid, array_data[VEH_CELL_LOCKED]);
 
 	if(VehicleFuelData[array_data[VEH_CELL_MODEL]-400][veh_trunkSize] > 0)
 	{
@@ -333,10 +332,10 @@ UpdateVehicleFile(vehicleid, prints = false)
 	array_data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
 	if(prints)
-		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, veh_Data[vehicleid][veh_locked] ? ("L") : ("U"), VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
+		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), VehicleNames[array_data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
-		array_data[VEH_CELL_LOCKED] = veh_Data[vehicleid][veh_locked];
+		array_data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE_DAT"%s.dat", veh_Owner[vehicleid]);
 	file = fopen(filename, io_write);

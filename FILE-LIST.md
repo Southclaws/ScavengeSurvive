@@ -23,6 +23,7 @@ All these scripts are related to the user interface in some way.
 - KeyActions - Displays a list of context-sensitive key prompts in the upper right corner of the screen.
 - Watch - Covers up the mini-map and displays the time, frequency and heading to the player.
 - Keypad - Library that adds a 10 digit clickable keypad that is used in the script similarly to dialogs.
+- DialogPages - Simple clickable UI elements designed for displaying alongside dialogs for switching pages.
 
 ### Vehicle/
 Vehicle related scripts that control everything related to vehicles.
@@ -33,6 +34,7 @@ Vehicle related scripts that control everything related to vehicles.
 - LockBreak - Allows players to break into vehicles that spawned locked using a crowbar item.
 - Locksmith - Handles external locking of vehicles using a Locksmith Kit item.
 - Carmour - Allows vehicles to have attached objects.
+- Lock - Controls vehicle locking and provides API functions.
 
 ### Weapon/
 Weapon related scripts, currently only one but a folder exists in case of expansion.
@@ -121,6 +123,8 @@ These scripts are all staff tools or administrative control scripts.
 - detfield_cmds - Extension that allows staff to create detection fields which log player activity in the field area.
 - detfield_draw - Currently unused extension that draws a detection field polygon with objects in the game world.
 - Mute - Timed muting system blocks players from using global chat.
+- Rcon - Basic RCON commands for whitelist and restart control.
+- Freeze - Timed player freezing functions.
 
 ### Item/
 All these scripts are item related code, it's currently in a bit of a mess and needs sorting.

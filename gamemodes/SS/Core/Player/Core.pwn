@@ -688,6 +688,9 @@ stock IsPlayerDead(playerid)
 // Spawned
 stock IsPlayerSpawned(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	return _:(ply_Data[playerid][ply_BitFlags] & Spawned);
 }
 

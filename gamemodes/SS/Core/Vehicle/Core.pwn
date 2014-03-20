@@ -30,7 +30,6 @@ enum E_VEHICLE_DATA
 Float:	veh_health,
 Float:	veh_Fuel,
 		veh_key,
-		veh_locked,
 		veh_engine,
 		veh_panels,
 		veh_doors,
@@ -273,7 +272,7 @@ UpdateVehicleData(vehicleid)
 		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
 
 	else
-		SetVehicleParamsEx(vehicleid, 0, 0, 0, veh_Data[vehicleid][veh_locked], 0, 0, 0);
+		SetVehicleParamsEx(vehicleid, 0, 0, 0, IsVehicleLocked(vehicleid), 0, 0, 0);
 
 	return 1;
 }
@@ -408,18 +407,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			ShowRadioUI(playerid);
 		}
-		if(newkeys & KEY_SUBMISSION)
-		{
-			if(VehicleDoorsState(vehicleid))
-			{
-				SetVehicleExternalLock(vehicleid, 0);
-			}
-			else
-			{
-				veh_Data[vehicleid][veh_locked] = 1;
-				VehicleDoorsState(vehicleid, 1);
-			}
-		}
 
 		return 1;
 	}
@@ -461,7 +448,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							return 1;
 						}
 
-						if(veh_Data[vehicleid][veh_locked])
+						if(IsVehicleLocked(vehicleid))
 						{
 							ShowActionText(playerid, "Trunk locked", 3000);
 							return 1;
@@ -845,12 +832,6 @@ HideVehicleUI(playerid)
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	if(veh_Data[vehicleid][veh_locked])
-	{
-		CancelPlayerMovement(playerid);
-		ShowActionText(playerid, "Door Locked", 3000);
-	}
-
 	if(!ispassenger)
 		veh_Entering[playerid] = vehicleid;
 
@@ -1155,32 +1136,6 @@ stock SetVehicleKey(vehicleid, key)
 		return 0;
 
 	veh_Data[vehicleid][veh_key] = key;
-
-	return 1;
-}
-
-stock IsVehicleLocked(vehicleid)
-{
-	if(!IsValidVehicleID(vehicleid))
-		return -1;
-
-	return veh_Data[vehicleid][veh_locked];
-}
-
-stock SetVehicleExternalLock(vehicleid, status)
-{
-	if(!IsValidVehicleID(vehicleid))
-		return 0;
-
-	if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
-	{
-		veh_Data[vehicleid][veh_locked] = false;
-		VehicleDoorsState(vehicleid, false);
-		return 1;
-	}
-
-	veh_Data[vehicleid][veh_locked] = status;
-	VehicleDoorsState(vehicleid, status);
 
 	return 1;
 }
