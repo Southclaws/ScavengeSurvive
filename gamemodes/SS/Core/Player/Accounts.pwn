@@ -274,6 +274,17 @@ Login(playerid)
 
 Logout(playerid, docombatlogcheck = 1)
 {
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Alive: %d combat logging: %d knocked out: %d logged in: %d", playerid, x, y, z, r, IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid), GetPlayerBitFlag(playerid, LoggedIn));
+
 	if(!GetPlayerBitFlag(playerid, LoggedIn))
 		return 0;
 
@@ -303,15 +314,6 @@ Logout(playerid, docombatlogcheck = 1)
 	{
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:r;
-
-			GetPlayerPos(playerid, x, y, z);
-			GetPlayerFacingAngle(playerid, r);
-
 			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 
 			itemid = INVALID_ITEM_ID;

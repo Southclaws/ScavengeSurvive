@@ -83,11 +83,15 @@ PlayerSpawnExistingCharacter(playerid)
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
 
+	logf("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+
 	return 1;
 }
 
 PlayerCreateNewCharacter(playerid)
 {
+	logf("[NEWCHAR] %p creating new character", playerid);
+
 	SetPlayerPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
 	SetPlayerCameraLookAt(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
@@ -205,6 +209,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 		Tutorial_Start(playerid);
 
 	SetPlayerScreenFadeLevel(playerid, 255);
+
+	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 }
 
 
