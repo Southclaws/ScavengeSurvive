@@ -202,11 +202,11 @@ stock IsPlayerInWater(playerid)
 
 	for(new i; i < sizeof(water_places); i++)
 	{
-    	if(Distance2D(x, y, water_places[i][1], water_places[i][2]) <= water_places[i][0])
-    	{
+		if(Distance2D(x, y, water_places[i][1], water_places[i][2]) <= water_places[i][0])
+		{
         	if(z < water_places[i][3]) 
         		return 1;
-    	}
+		}
 	}
 
 	if(z < 1.9) 
