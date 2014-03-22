@@ -210,7 +210,7 @@ stock IsPlayerInWater(playerid)
 	}
 
 	if(z < 1.9) 
-		return !(Distance(x, y, z, 618.4129, 863.3164, 1.0839) < 200.0)));
+		return !(Distance(x, y, z, 618.4129, 863.3164, 1.0839) < 200.0);
 
 	return 0;
 }
