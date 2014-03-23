@@ -116,8 +116,6 @@ LoadPlayerVehicle(filename[], prints)
 	fblockread(file, array_data, sizeof(array_data));
 	fclose(file);
 
-	vehicletype = GetVehicleType(array_data[VEH_CELL_MODEL]);
-
 	if(!(400 <= array_data[VEH_CELL_MODEL] <= 612))
 	{
 		printf("ERROR: Removing Vehicle file: %s. Invalid model ID %d.", filename, array_data[VEH_CELL_MODEL]);
@@ -131,6 +129,8 @@ LoadPlayerVehicle(filename[], prints)
 		fremove(filedir);
 		return 0;
 	}
+	
+	vehicletype = GetVehicleType(array_data[VEH_CELL_MODEL]);
 
 	if(vehicletype == VTYPE_TRAIN)
 	{
