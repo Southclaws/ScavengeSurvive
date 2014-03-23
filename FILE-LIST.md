@@ -125,6 +125,7 @@ These scripts are all staff tools or administrative control scripts.
 - Mute - Timed muting system blocks players from using global chat.
 - Rcon - Basic RCON commands for whitelist and restart control.
 - Freeze - Timed player freezing functions.
+- NameTags - Functions for toggling nametags for admin purposes.
 
 ### Item/
 All these scripts are item related code, it's currently in a bit of a mess and needs sorting.

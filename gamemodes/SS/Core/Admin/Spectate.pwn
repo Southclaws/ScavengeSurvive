@@ -64,6 +64,7 @@ EnterSpectateMode(playerid, targetid)
 		return 0;
 
 	TogglePlayerSpectating(playerid, true);
+	ToggleNameTagsForPlayer(playerid, true);
 
 	if(IsPlayerInAnyVehicle(targetid))
 		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(targetid));

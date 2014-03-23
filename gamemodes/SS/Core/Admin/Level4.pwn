@@ -287,6 +287,13 @@ ACMD:hud[4](playerid, params[])
 		SetPlayerBitFlag(playerid, ShowHUD, true);
 	}
 }
+ACMD:nametags[4](playerid, params[])
+{
+	ToggleNameTagsForPlayer(playerid, !GetPlayerNameTagsToggle(playerid));
+	MsgF(playerid, YELLOW, " >  Nametags toggled %s", (GetPlayerNameTagsToggle(playerid)) ? ("on") : ("off"));
+
+	return 1;
+}
 
 ACMD:weather[4](playerid, params[])
 {

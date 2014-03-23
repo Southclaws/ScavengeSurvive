@@ -930,6 +930,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Mute.pwn"
 #include "SS/Core/Admin/Rcon.pwn"
 #include "SS/Core/Admin/Freeze.pwn"
+#include "SS/Core/Admin/NameTags.pwn"
 
 // ITEMS
 #include "SS/Core/Item/Food.pwn"
