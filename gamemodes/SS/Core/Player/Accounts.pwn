@@ -376,9 +376,6 @@ SavePlayerData(playerid)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	if(IsAtDefaultPos(x, y, z))
-		return 0;
-
 	if(IsAtConnectionPos(x, y, z))
 		return 0;
 
@@ -389,6 +386,9 @@ SavePlayerData(playerid)
 
 	if(IsPlayerAlive(playerid))
 	{
+		if(IsAtDefaultPos(x, y, z))
+			return 0;
+
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
 			if(!gServerRestarting)
