@@ -306,11 +306,11 @@ SwimFlyCheck(playerid)
 
 VehicleHealthCheck(playerid)
 {
-	new Float:hp;
+	new Float:vehiclehp;
 
-	GetVehicleHealth(GetPlayerVehicleID(playerid), hp);
+	GetVehicleHealth(GetPlayerVehicleID(playerid), vehiclehp);
 
-	if(hp > 990.0 && GetPlayerVehicleSeat(playerid) == 0) // Only check the driver - Checking passengers causes a false ban
+	if(vehiclehp > 990.0 && GetPlayerVehicleSeat(playerid) == 0) // Only check the driver - Checking passengers causes a false ban
 	{
 		new
 			Float:x,
@@ -321,7 +321,7 @@ VehicleHealthCheck(playerid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server)", hp);
+		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server)", vehiclehp);
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
 		BanPlayer(playerid, reason, -1, 0);
 
