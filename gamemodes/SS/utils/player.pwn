@@ -200,20 +200,14 @@ stock IsPlayerInWater(playerid)
 			return 1;
 	}
 
+	if(z < 1.9)
+		return !(Distance(x, y, z, 618.4129, 863.3164, 1.0839) < 200.0);
+
 	for(new i; i < sizeof(water_places); i++)
 	{
 		if(Distance2D(x, y, water_places[i][1], water_places[i][2]) <= water_places[i][0])
 		{
 			if(z < water_places[i][3])
-				return 1;
-		}
-
-		if(z < 1.9)
-		{
-			if(Distance(x, y, z, 618.4129, 863.3164, 1.0839) < 200.0)
-				return 0;
-
-			else 
 				return 1;
 		}
 	}
