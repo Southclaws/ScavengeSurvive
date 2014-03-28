@@ -164,8 +164,8 @@ LoadSettings()
 	for(new i; i < gTotalStaff; i++)
 		printf(" Staff%d: %s", i, gStaffList[i]);
 
-	printf(" Whitelist: %d", gWhitelist);
-	printf(" Whitelist Auto Toggle: %d", gWhitelistAutoToggle);
+	printf(" Whitelist: %s", gWhitelist ? "True", "False");
+	printf(" Whitelist Auto Toggle: %s", gWhitelistAutoToggle ? "True", "False");
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);
 	printf(" File Check: %d", gPerformFileCheck);
 	printf(" Max Uptime: %d", gServerMaxUptime);
