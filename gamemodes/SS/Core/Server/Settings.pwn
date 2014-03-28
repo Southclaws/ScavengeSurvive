@@ -11,7 +11,7 @@ LoadSettings()
 */
 
 
-	if(fexist(SETTINGS_FILE))
+	if(fexist(SETTINGS_FILE))// if the file exists, load the settings inside of it
 	{
 		new tmp[64];
 
@@ -59,24 +59,26 @@ LoadSettings()
 			gTotalStaff++;
 		}
 
-		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
+		// Load settings onto global variables
+		gWhitelist           = bool:djInt(SETTINGS_FILE, "server/whitelist");
+		gWhitelistAutoToggle = bool:djInt(SETTINGS_FILE, "server/whitelist-autotoggle");
 		gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
-		gPerformFileCheck = djInt(SETTINGS_FILE, "server/file-check");
-		gServerMaxUptime = 3600 * djInt(SETTINGS_FILE, "server/max-uptime");
+		gPerformFileCheck    = djInt(SETTINGS_FILE, "server/file-check");
+		gServerMaxUptime     = 3600 * djInt(SETTINGS_FILE, "server/max-uptime");
 
 		// player
 
-		gPauseMap = bool:djInt(SETTINGS_FILE, "player/allow-pause-map");
-		gInteriorEntry = bool:djInt(SETTINGS_FILE, "player/interior-entry");
+		gPauseMap         = bool:djInt(SETTINGS_FILE, "player/allow-pause-map");
+		gInteriorEntry    = bool:djInt(SETTINGS_FILE, "player/interior-entry");
 		gPlayerAnimations = bool:djInt(SETTINGS_FILE, "player/player-animations");
-		gVehicleSurfing = bool:djInt(SETTINGS_FILE, "player/vehicle-surfing");
-		gNameTagDistance = djFloat(SETTINGS_FILE, "player/nametag-distance");
-		gCombatLogWindow = djInt(SETTINGS_FILE, "player/combat-log-window");
-		gLoginFreezeTime = djInt(SETTINGS_FILE, "player/login-freeze-time");
-		gMaxTaboutTime = djInt(SETTINGS_FILE, "player/max-tab-out-time");
-		gPingLimit = djInt(SETTINGS_FILE, "player/ping-limit");
+		gVehicleSurfing   = bool:djInt(SETTINGS_FILE, "player/vehicle-surfing");
+		gNameTagDistance  = djFloat(SETTINGS_FILE, "player/nametag-distance");
+		gCombatLogWindow  = djInt(SETTINGS_FILE, "player/combat-log-window");
+		gLoginFreezeTime  = djInt(SETTINGS_FILE, "player/login-freeze-time");
+		gMaxTaboutTime    = djInt(SETTINGS_FILE, "player/max-tab-out-time");
+		gPingLimit        = djInt(SETTINGS_FILE, "player/ping-limit");
 	}
-	else
+	else // create a new file with default settings
 	{
 		print("ERROR: Settings file '"SETTINGS_FILE"' not found. Creating with default values.");
 
@@ -99,6 +101,7 @@ LoadSettings()
 		gStaffList[2]			= "(Staff 3)";
 		gTotalStaff				= 3;
 		gWhitelist				= false;
+		gWhitelistAutoToggle	= true;
 		gInfoMessageInterval	= 5;
 		gPerformFileCheck		= false;
 		gServerMaxUptime		= 5;
@@ -127,6 +130,7 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/staff", gStaffList[1]);
 		djAppend(SETTINGS_FILE, "server/staff", gStaffList[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
+		djSetInt(SETTINGS_FILE, "server/whitelist-autotoggle", gWhitelistAutoToggle);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
 		djSetInt(SETTINGS_FILE, "server/max-uptime", gServerMaxUptime);
@@ -161,6 +165,7 @@ LoadSettings()
 		printf(" Staff%d: %s", i, gStaffList[i]);
 
 	printf(" Whitelist: %d", gWhitelist);
+	printf(" Whitelist Auto Toggle: %d", gWhitelistAutoToggle);
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);
 	printf(" File Check: %d", gPerformFileCheck);
 	printf(" Max Uptime: %d", gServerMaxUptime);

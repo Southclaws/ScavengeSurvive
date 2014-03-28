@@ -533,7 +533,7 @@ new
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
 bool:	gWhitelist,
-bool:	gWhitelistAutoToggle = true,
+bool:	gWhitelistAutoToggle,
 		gInfoMessageInterval,
 		gPerformFileCheck,
 
