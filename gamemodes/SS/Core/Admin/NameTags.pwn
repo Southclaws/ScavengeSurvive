@@ -14,6 +14,8 @@ hook OnPlayerConnect(playerid)
 		players[MAX_PLAYERS],
 		maxplayers;
 
+	tags_Toggle[playerid] = false;
+
 	foreach(new i : Player)
 	{
 		if(tags_Toggle[i])
@@ -38,8 +40,11 @@ hook OnPlayerDisconnect(playerid, reason)
 
 	foreach(new i : Player)
 	{
-		Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, tags_Nametag[i], E_STREAMER_PLAYER_ID, playerid);
-		Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, tags_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid);
+		if(IsValidDynamic3DTextLabel(tags_Nametag[i]))
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, tags_Nametag[i], E_STREAMER_PLAYER_ID, playerid);
+
+		if(IsValidDynamic3DTextLabel(tags_NametagLOS[i]))
+			Streamer_RemoveArrayData(STREAMER_TYPE_3D_TEXT_LABEL, tags_NametagLOS[i], E_STREAMER_PLAYER_ID, playerid);
 	}		
 
 	return 1;

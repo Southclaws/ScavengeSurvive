@@ -6,11 +6,20 @@ stock log(text[], printtext = true)
 		print(text);
 
 	new
+		year,
+		month,
+		day,
+		hour,
+		minute,
+		second,
 		string[256],
 		File:file,
 		filename[64];
 
-	format(filename, 64, DIRECTORY_LOGS"%s.txt", TimestampToDateTime(gettime(), CTIME_DATE_FILENAME));
+	getdate(year, month, day);
+	gettime(hour, minute, second);
+
+	format(filename, 64, DIRECTORY_LOGS"%d-%d-%d.txt", year, month, day);
 
 	if(fexist(filename))
 		file = fopen(filename, io_append);
@@ -24,7 +33,7 @@ stock log(text[], printtext = true)
 		return 0;
 	}
 
-	format(string, 256, "[%s] %s\r\n", TimestampToDateTime(gettime(), CTIME_TIME_SHORT), text);
+	format(string, 256, "[%d:%d:%d] %s\r\n", hour, minute, second, text);
 
 	fwrite(file, string);
 	fclose(file);
