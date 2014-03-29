@@ -239,6 +239,27 @@ MsgAdmins(level, colour, string[])
 	return 1;
 }
 
+GetAdminsOnline()
+{
+	new count;
+
+	foreach(new i : Player)
+	{
+		if(GetPlayerAdminLevel(i) > 0)
+			count++;
+	}
+
+	return count;
+}
+
+AdminsOnline()
+{
+	if(GetAdminsOnline() > 0)
+		return true;
+
+	return false;
+}
+
 TogglePlayerAdminDuty(playerid, toggle)
 {
 	if(toggle)

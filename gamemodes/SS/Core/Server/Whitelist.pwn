@@ -62,3 +62,23 @@ WhitelistKick(playerid)
 
 	defer KickPlayerDelay(playerid);
 }
+
+
+// Auto toggle
+hook OnPlayerConnect(playerid)
+{
+	if(gWhitelistAutoToggle)
+	{
+		if(gWhitelist && AdminsOnline())// turn off if whitelist is on and are admins online
+			gWhitelist = false;
+	}
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	if(gWhitelistAutoToggle)
+	{
+		if(!gWhitelist && !AdminsOnline())// turn on if whitelist is off and no admins remain online
+			gWhitelist = true;
+	}
+}
