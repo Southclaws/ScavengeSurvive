@@ -340,6 +340,19 @@ stock GetAdminTotal()
 	return admin_Total;
 }
 
+stock GetAdminsOnline(from = 1, to = 4)
+{
+	new count;
+
+	foreach(new i : Player)
+	{
+		if(from <= admin_Level[i] <= to)
+			count++;
+	}
+
+	return count;
+}
+
 stock GetAdminRankName(rank)
 {
 	if(!(0 < rank < MAX_ADMIN_LEVELS))

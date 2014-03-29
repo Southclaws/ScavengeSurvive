@@ -62,3 +62,41 @@ WhitelistKick(playerid)
 
 	defer KickPlayerDelay(playerid);
 }
+
+/*
+	If auto whitelist toggle is on, turn the whitelist off when an admin joins
+	and turn it back on when there are no admins on the server.
+
+	Works for level 2 admins and higher since level 1 admins don't have any
+	anti-hack tools at disposal.
+*/
+
+hook OnPlayerConnect(playerid)
+{
+	// Used a timer here because the admin hook may be called afterwards.
+	defer Connect_AutoWhitelist();
+}
+timer Connect_AutoWhitelist[10]()
+{
+	if(gWhitelistAutoToggle)
+	{
+		if(gWhitelist && GetAdminsOnline(2)) // turn off if whitelist is on and are admins online
+			gWhitelist = false;
+	}
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	// Again, a timer in case the GetAdminsOnline func returns 1 even though
+	// that 1 admin is quitting (Admin/Core.pwn hook maybe called after this)
+	defer Disconnect_AutoWhitelist();
+}
+
+timer Disconnect_AutoWhitelist[10]()
+{
+	if(gWhitelistAutoToggle)
+	{
+		if(!gWhitelist && !GetAdminsOnline(2)) // turn on if whitelist is off and no admins remain online
+			gWhitelist = true;
+	}
+}

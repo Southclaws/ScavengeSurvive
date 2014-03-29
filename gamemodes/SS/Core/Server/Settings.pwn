@@ -60,6 +60,7 @@ LoadSettings()
 		}
 
 		gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
+		gWhitelistAutoToggle = bool:djInt(SETTINGS_FILE, "server/whitelist-auto-toggle");
 		gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
 		gPerformFileCheck = djInt(SETTINGS_FILE, "server/file-check");
 		gServerMaxUptime = 3600 * djInt(SETTINGS_FILE, "server/max-uptime");
@@ -99,6 +100,7 @@ LoadSettings()
 		gStaffList[2]			= "(Staff 3)";
 		gTotalStaff				= 3;
 		gWhitelist				= false;
+		gWhitelistAutoToggle	= false;
 		gInfoMessageInterval	= 5;
 		gPerformFileCheck		= false;
 		gServerMaxUptime		= 5;
@@ -127,6 +129,7 @@ LoadSettings()
 		djAppend(SETTINGS_FILE, "server/staff", gStaffList[1]);
 		djAppend(SETTINGS_FILE, "server/staff", gStaffList[2]);
 		djSetInt(SETTINGS_FILE, "server/whitelist", gWhitelist);
+		djSetInt(SETTINGS_FILE, "server/whitelist-auto-toggle", gWhitelistAutoToggle);
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", gInfoMessageInterval);
 		djSetInt(SETTINGS_FILE, "server/file-check", gPerformFileCheck);
 		djSetInt(SETTINGS_FILE, "server/max-uptime", gServerMaxUptime);
@@ -161,6 +164,7 @@ LoadSettings()
 		printf(" Staff%d: %s", i, gStaffList[i]);
 
 	printf(" Whitelist: %d", gWhitelist);
+	printf(" Whitelist auto toggle: %d", gWhitelistAutoToggle);
 	printf(" InfoMsg Interval: %d", gInfoMessageInterval);
 	printf(" File Check: %d", gPerformFileCheck);
 	printf(" Max Uptime: %d", gServerMaxUptime);

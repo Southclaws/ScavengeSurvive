@@ -67,6 +67,23 @@ ACMD:whitelist[3](playerid, params[])
 		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
 		gWhitelist = false;
 	}
+	else if(!strcmp(command, "auto", true))
+	{
+		if(!gWhitelistAutoToggle)
+		{
+			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle activated.");
+			gWhitelistAutoToggle = true;
+
+			// UpdateSetting("whitelist-auto-toggle", 0);
+		}
+		else
+		{
+			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle deactivated.");
+			gWhitelistAutoToggle = false;
+
+			// UpdateSetting("whitelist-auto-toggle", 0);
+		}
+	}
 	else if(!strcmp(command, "?", true))
 	{
 		if(IsNameInWhitelist(name))
