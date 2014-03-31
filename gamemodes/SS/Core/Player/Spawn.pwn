@@ -5,14 +5,17 @@ SpawnLoggedInPlayer(playerid)
 {
 	if(IsPlayerAlive(playerid))
 	{
-		PlayerSpawnExistingCharacter(playerid);
-		SetPlayerScreenFadeLevel(playerid, 255);
+		if(PlayerSpawnExistingCharacter(playerid))
+		{
+			SetPlayerScreenFadeLevel(playerid, 255);
+			return 1;
+		}
 	}
-	else
-	{
-		PlayerCreateNewCharacter(playerid);
-		SetPlayerScreenFadeLevel(playerid, 0);
-	}
+	
+	PlayerCreateNewCharacter(playerid);
+	SetPlayerScreenFadeLevel(playerid, 0);
+
+	return 0;
 }
 
 PrepareForSpawn(playerid)
@@ -29,6 +32,9 @@ PrepareForSpawn(playerid)
 
 PlayerSpawnExistingCharacter(playerid)
 {
+	if(GetPlayerBitFlag(playerid, Spawned))
+		return 0;
+
 	if(!LoadPlayerChar(playerid))
 	{
 		PlayerCreateNewCharacter(playerid);
@@ -129,6 +135,9 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
+	if(GetPlayerBitFlag(playerid, Spawned))
+		return 0;
+
 	SetPlayerTotalSpawns(playerid, GetPlayerTotalSpawns(playerid) + 1);
 
 	stmt_bind_value(gStmt_AccountSetSpawnTime, 0, DB::TYPE_INTEGER, gettime());
@@ -211,6 +220,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetPlayerScreenFadeLevel(playerid, 255);
 
 	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+
+	return 1;
 }
 
 

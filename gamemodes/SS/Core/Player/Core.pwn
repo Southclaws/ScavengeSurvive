@@ -78,6 +78,8 @@ new
 
 public OnPlayerConnect(playerid)
 {
+	logf("[JOIN] %p joined", playerid);
+
 	SetPlayerColor(playerid, 0xB8B8B800);
 	SetPlayerWeather(playerid, gWeatherID);
 	GetPlayerName(playerid, gPlayerName[playerid], MAX_PLAYER_NAME);
@@ -167,28 +169,28 @@ timer LoadAccountDelay[5000](playerid)
 
 		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
 
-		log(sprintf("[JOIN] %p (account does not exist)", playerid), 0);
+		log(sprintf("[LOAD] %p (account does not exist)", playerid), 0);
 	}
 
 	if(loadresult == 1) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
 
-		log(sprintf("[JOIN] %p (account exists, prompting login)", playerid), 0);
+		log(sprintf("[LOAD] %p (account exists, prompting login)", playerid), 0);
 	}
 
 	if(loadresult == 2) // Account does exist, auto login
 	{
 		Login(playerid);
 
-		log(sprintf("[JOIN] %p (account exists, auto login)", playerid), 0);
+		log(sprintf("[LOAD] %p (account exists, auto login)", playerid), 0);
 	}
 
 	if(loadresult == 3) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
 
-		log(sprintf("[JOIN] %p (account not whitelisted)", playerid), 0);
+		log(sprintf("[LOAD] %p (account not whitelisted)", playerid), 0);
 	}
 
 	CheckForExtraAccounts(playerid);
