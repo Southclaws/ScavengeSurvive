@@ -2,19 +2,21 @@
 
 
 new
-bool:	tab_Check[MAX_PLAYERS],
+		tab_Check[MAX_PLAYERS],
 bool:	tab_IsTabbed[MAX_PLAYERS],
 		tab_TabOutTick[MAX_PLAYERS];
 
 
+forward OnPlayerFocusChange(playerid, status);
+
 hook OnPlayerUpdate(playerid)
 {
-	tab_Check[playerid] = false;
+	tab_Check[playerid] = 0;
 	return 1;
 }
 
 
-ptask AfkCheckUpdate[3000](playerid)
+ptask AfkCheckUpdate[100](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
 		return;
@@ -22,23 +24,45 @@ ptask AfkCheckUpdate[3000](playerid)
 	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 10000)
 		return;
 
-	if(tab_Check[playerid])
+	new
+		comparison = 100,
+		Float:x,
+		Float:y,
+		Float:z,
+		playerstate;
+
+	playerstate = GetPlayerState(playerid);
+
+	if(playerstate <= 1)
+		GetPlayerVelocity(playerid, z, y, z);
+
+	else if(playerstate <= 3)
+		GetVehicleVelocity(GetPlayerVehicleID(playerid), x, y, z);
+
+	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 2000)
+		comparison = 2000;
+
+	else if((x == 0.0 && y == 0.0 && z == 0.0))
+		comparison = 1500;
+
+	// ShowActionText(playerid, sprintf("%d :: %s%d - %d", playerstate, (tab_Check[playerid] > comparison) ? ("~r~") : ("~w~"), tab_Check[playerid], comparison), 0);
+
+	if(tab_Check[playerid] > comparison)
 	{
 		if(!tab_IsTabbed[playerid])
 		{
-			new playerstate = GetPlayerState(playerid);
+			CallLocalFunction("OnPlayerFocusChange", "dd", playerid, 0);
 
-			if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) > 2000 && ((1 <= playerstate <= 3) || playerstate == 8))
+			logf("[FOCUS] %p unfocused game", playerid);
+
+			if(gMaxTaboutTime == 0)
 			{
-				if(gMaxTaboutTime == 0)
-				{
-					KickPlayer(playerid, "Unfocused from the game, could starve and cause bugs");
-					return;
-				}
-
-				tab_TabOutTick[playerid] = GetTickCount();
-				tab_IsTabbed[playerid] = true;
+				KickPlayer(playerid, "Unfocused from the game, could starve and cause bugs");
+				return;
 			}
+
+			tab_TabOutTick[playerid] = GetTickCount();
+			tab_IsTabbed[playerid] = true;
 		}
 
 		if(!IsPlayerOnAdminDuty(playerid))
@@ -55,11 +79,15 @@ ptask AfkCheckUpdate[3000](playerid)
 	{
 		if(tab_IsTabbed[playerid])
 		{
+			CallLocalFunction("OnPlayerFocusChange", "dd", playerid, 1);
+
+			logf("[FOCUS] %p focused back to game", playerid);
+
 			tab_IsTabbed[playerid] = false;
 		}
 	}
 
-	tab_Check[playerid] = true;
+	tab_Check[playerid] += 100;
 
 	return;
 }
