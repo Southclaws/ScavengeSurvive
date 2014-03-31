@@ -115,7 +115,7 @@ ACMD:vehicle[3](playerid, params[])
 
 	if(sscanf(params, "s[8]D(-1)", command, vehicleid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /vehicle [get/enter/owner/delete/respawn/reset/lock/unlock] [id]");
+		Msg(playerid, YELLOW, " >  Usage: /vehicle [get/goto/enter/owner/delete/respawn/reset/lock/unlock] [id]");
 		return 1;
 	}
 
@@ -135,6 +135,19 @@ ACMD:vehicle[3](playerid, params[])
 		GetPlayerPos(playerid, x, y, z);
 		PutPlayerInVehicle(playerid, vehicleid, 0);
 		SetVehiclePos(vehicleid, x, y, z);
+
+		return 1;
+	}
+
+	if(!strcmp(command, "goto"))
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetVehiclePos(playerid, x, y, z);
+		SetPlayerPos(vehicleid, x, y, z);
 
 		return 1;
 	}

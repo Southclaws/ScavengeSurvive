@@ -261,11 +261,11 @@ ACMD:aliases[1](playerid, params[])
 {
 	new
 		name[MAX_PLAYER_NAME],
-		type[7];
+		type;
 
-	if(sscanf(params, "s[24]S(byip)[7]", name, type))
+	if(sscanf(params, "s[24]C(a)", name, type))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h]");
+		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h/a]");
 		return 1;
 	}
 
@@ -309,19 +309,19 @@ ACMD:aliases[1](playerid, params[])
 		adminlevel,
 		string[(MAX_PLAYER_NAME + 10) * 6];
 
-	if(!strcmp(type, "a", true) || isnull(type))
+	if(type == 'a')
 	{
 		ret = GetAccountAliasesByAll(name, list, count, 6, adminlevel);
 	}
-	else if(!strcmp(type, "i", true))
+	else if(type == 'i')
 	{
 		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
 	}
-	else if(!strcmp(type, "p", true))
+	else if(type == 'p')
 	{
 		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
 	}
-	else if(!strcmp(type, "h", true))
+	else if(type == 'h')
 	{
 		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
 	}
