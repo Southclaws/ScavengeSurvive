@@ -66,10 +66,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 	if(stmt_execute(gStmt_BanInsert))
 	{
 		if(online)
-		{
-			MsgF(id, YELLOW, " >  "C_RED"You are banned! "C_YELLOW", reason: "C_BLUE"%s", reason);
 			defer KickPlayerDelay(id);
-		}
 
 		return 1;
 	}
