@@ -172,6 +172,16 @@ PositionCheck(playerid)
 		return;
 	}
 
+	if(IsAtConnectionPos(x, y, z))
+	{
+		return;
+	}
+
+	if(IsAtConnectionPos(tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]))
+	{
+		return;
+	}
+
 	distance = Distance2D(x, y, tp_CurPos[playerid][0], tp_CurPos[playerid][1]);
 
 	if(distance > TELEPORT_DETECTION_DISTANCE)
@@ -721,7 +731,7 @@ timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
 
 /*==============================================================================
 
-	Infinite Ammo
+	Infinite Ammo and Shooting Animations
 
 ==============================================================================*/
 
@@ -737,7 +747,18 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		ammo_ShotCounter[playerid]++;
 
 		if(ammo_ShotCounter[playerid] > GetWeaponMagSize(weaponid))
-			MsgAdminsF(3, YELLOW, " >  %p fired %d bullets from a %w without reloading.", playerid, ammo_ShotCounter[playerid], weaponid);
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, x, y, z);
+
+			ReportPlayer(name, sprintf("fired %d bullets from a %w without reloading", ammo_ShotCounter[playerid], weaponid), -1, REPORT_TYPE_AMMO, x, y, z, "");
+		}
 	}
 	else
 	{
@@ -745,6 +766,118 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	}
 
 	ammo_LastShot[playerid] = GetTickCount();
+
+	switch(weaponid)
+	{
+		case 27:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 222)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 222 while shooting weapon 27", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+		case 23:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 1454)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 1454 while shooting weapon 23", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+		case 25:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 1450)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 1450 while shooting weapon 25", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+		case 29:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 1645)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 1645 while shooting weapon 29", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+		case 30, 31, 33:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 1367)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 1367 while shooting weapon 30/31/33", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+		case 24:
+		{
+			if(GetPlayerAnimationIndex(playerid) == 1333)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
+
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
+
+				ReportPlayer(name, "Used animation 1333 while shooting weapon 24", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+
+				return 0;
+			}
+		}
+	}
 
 	return 1;
 }
