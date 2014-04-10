@@ -35,19 +35,15 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 
 	if(weapon == 4 && itemtype == item_Torso)
 	{
-		new exdata = GetItemExtraData(itemid);
-		if(IsValidGraveStone(exdata))
+		if(gettime() - GetItemArrayDataAtCell(itemid, 2) < 86400)
 		{
-			if(GetTickCountDifference(GetTickCount(), rip_Data[exdata][rip_spawnTick]) < 300000)
-			{
-				StartHoldAction(playerid, 3000);
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				gut_TargetItem[playerid] = itemid;
-			}
-			else
-			{
-				ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
-			}
+			StartHoldAction(playerid, 3000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			gut_TargetItem[playerid] = itemid;
+		}
+		else
+		{
+			ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
 		}
 	}
 	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
@@ -93,8 +89,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			if(GetPlayerWeapon(playerid) != 4)
 			{
-				if(!ShowGravestoneMsg(playerid, GetItemExtraData(gut_TargetItem[playerid])))
-					ShowActionText(playerid, "The body has decomposed too much to make an identification", 3000);
+				ShowTorsoDetails(playerid, gut_TargetItem[playerid]);
 
 				stop gut_PickUpTimer[playerid];
 				gut_TargetItem[playerid] = INVALID_ITEM_ID;
@@ -108,7 +103,6 @@ timer PickUpTorso[250](playerid)
 	if(GetPlayerWeapon(playerid) == 0)
 	{
 		PlayerPickUpItem(playerid, gut_TargetItem[playerid]);
-		SetItemExtraData(gut_TargetItem[playerid], 0);
 		gut_TargetItem[playerid] = INVALID_ITEM_ID;
 	}
 }
@@ -135,7 +129,7 @@ public OnHoldActionFinish(playerid)
 			y + (0.5 * floatcos(-r + 90.0, degrees)),
 			z, .rz = r);
 
-		SetItemExtraData(gut_TargetItem[playerid], -1);
+		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		ClearAnimations(playerid);
 
 		gut_TargetItem[playerid] = INVALID_ITEM_ID;

@@ -1,80 +1,60 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_RIP			(128)
-#define MAX_RIP_REASON	(128)
-#define INVALID_RIP_ID	(-1)
+#define MAX_DEATH_REASON (128)
 
 
-enum E_RIP_DATA
+enum
 {
-			rip_name[MAX_PLAYER_NAME],
-			rip_reason[MAX_RIP_REASON],
-			rip_spawnTick
-}
-
-
-new
-			rip_Data[MAX_RIP][E_RIP_DATA],
-Iterator:	rip_Index<MAX_RIP>;
-
-
-hook OnGameModeInit()
-{
-	Iter_Add(rip_Index, 0);
+	torso_canHarvest,				// 0
+	torso_spawnTime,				// 1
+	torso_nameLen,					// 2
+	torso_name[MAX_PLAYER_NAME],
+	torso_reasonLen,
+	torso_reason[MAX_DEATH_REASON],
+	torso_end
 }
 
 
 stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, Float:zoffset = ITEM_BUTTON_OFFSET)
 {
-	new id = Iter_Free(rip_Index);
+	new
+		name[MAX_PLAYER_NAME],
+		itemid;
 
-	if(id == -1)
-		return INVALID_RIP_ID;
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz, .zoffset = zoffset);
 
-	new itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz, .zoffset = zoffset);
+	SetItemArrayDataLength(itemid, 0);
 
-	SetItemExtraData(itemid, id);
-	GetPlayerName(playerid, rip_Data[id][rip_name], MAX_PLAYER_NAME);
-	rip_Data[id][rip_reason][0] = EOS;
-	strcat(rip_Data[id][rip_reason], reason, MAX_RIP_REASON);
-	rip_Data[id][rip_spawnTick] = GetTickCount();
+	AppendItemArrayCell(itemid, 1); // canHarvest
+	AppendItemArrayCell(itemid, gettime()); // spawnTime
 
-	Iter_Add(rip_Index, id);
+	AppendItemArrayCell(itemid, strlen(name)); // nameLen
+	AppendItemArray(itemid, name, strlen(name)); // name
 
-	return id;
+	AppendItemArrayCell(itemid, strlen(reason)); // reasonLen
+	AppendItemArray(itemid, reason, strlen(reason)); // reason
+
+	return itemid;
 }
 
-stock DestroyGravestone(id)
+ShowTorsoDetails(playerid, itemid)
 {
-	if(!Iter_Contains(rip_Index, id);
+	if(GetItemArrayDataSize(itemid) < 3)
 		return 0;
 
-	rip_Data[id][rip_name][0] = EOS;
-	rip_Data[id][rip_reason][0] = EOS;
+	new
+		arraydata[torso_end],
+		name[MAX_PLAYER_NAME],
+		reason[MAX_DEATH_REASON];
 
-	Iter_Remove(rip_Index, id);
+	GetItemArrayData(itemid, arraydata);
 
-	return 1;
-}
+	memcpy(name, arraydata[3], 0, arraydata[2] * 4);
+	memcpy(reason, arraydata[3 + arraydata[2] + 1], 0, arraydata[3 + arraydata[2]] * 4);
 
-ShowGravestoneMsg(playerid, id)
-{
-	if(id == 0)
-		return 0;
-
-	if(!Iter_Contains(rip_Index, id))
-		return 0;
-
-	ShowPlayerDialog(playerid, d_GraveStone, DIALOG_STYLE_MSGBOX, rip_Data[id][rip_name], rip_Data[id][rip_reason], "Close", "");
-
-	return 1;
-}
-
-IsValidGraveStone(id)
-{
-	if(!Iter_Contains(rip_Index, id))
-		return 0;
+	ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, name, reason, "Close", "");
 
 	return 1;
 }
