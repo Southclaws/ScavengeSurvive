@@ -42,6 +42,9 @@ ptask AfkCheckUpdate[100](playerid)
 	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 2000)
 		comparison = 2000;
 
+	else if(IsPlayerBeingHijacked(playerid))
+		comparison = 2800;
+
 	else if((x == 0.0 && y == 0.0 && z == 0.0))
 		comparison = 1500;
 
