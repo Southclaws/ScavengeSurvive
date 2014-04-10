@@ -10,6 +10,7 @@ static
 		autosave_Max,
 bool:	autosave_Active,
 
+		autosave_Toggle,
 		autosave_Debug,
 		autosave_TickTotal,
 		autosave_Tick;
@@ -17,6 +18,9 @@ bool:	autosave_Active,
 
 timer AutoSave[60000]()
 {
+	if(!autosave_Toggle)
+		return;
+
 	if(autosave_Debug)
 		autosave_TickTotal = GetTickCount();
 
@@ -33,6 +37,8 @@ timer AutoSave[60000]()
 		print("AUTOSAVE STARTING");
 
 	AutoSave_Player();
+
+	return;
 }
 
 Autosave_End()
@@ -187,6 +193,23 @@ ACMD:autosavedebug[4](playerid, params[])
 {
 	autosave_Debug = !autosave_Debug;
 	MsgF(playerid, YELLOW, " >  Autosave debug: %d", autosave_Debug);
+
+	return 1;
+}
+
+ACMD:autosavetoggle[4](playerid, params[])
+{
+	if(autosave_Toggle)
+	{
+		autosave_Toggle = false;
+	}
+	else
+	{
+		autosave_Toggle = true;
+		defer AutoSave();
+	}
+
+	MsgF(playerid, YELLOW, " >  Autosave toggle: %d", autosave_Toggle);
 
 	return 1;
 }
