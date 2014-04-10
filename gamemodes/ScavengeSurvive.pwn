@@ -327,14 +327,11 @@ enum
 {
 	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
 	ATTACHSLOT_BAG,			// 1 - Bag on back
-	ATTACHSLOT_USE,			// 2 - Item use temp slot
-	ATTACHSLOT_HOLSTER,		// 3 - Item holstering
-	ATTACHSLOT_HOLD,		// 4 - Unused
-	ATTACHSLOT_CUFFS,		// 5 - Handcuff slot
-	ATTACHSLOT_HAT,			// 6 - Head-wear slot
-	ATTACHSLOT_FACE,		// 7 - Face-wear slot
-	ATTACHSLOT_BLOOD,		// 8 - Bleeding particle effect
-	ATTACHSLOT_ARMOUR		// 9 - Armour model slot
+	ATTACHSLOT_HOLSTER,		// 2 - Item holstering
+	ATTACHSLOT_HAT,			// 3 - Head-wear slot
+	ATTACHSLOT_FACE,		// 4 - Face-wear slot
+	ATTACHSLOT_BLOOD,		// 5 - Bleeding particle effect
+	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
 }
 
 enum
@@ -448,7 +445,6 @@ DBStatement:	gStmt_AccountExists,
 DBStatement:	gStmt_AccountCreate,
 DBStatement:	gStmt_AccountLoad,
 DBStatement:	gStmt_AccountUpdate,
-DBStatement:	gStmt_AccountDelete,
 DBStatement:	gStmt_AccountSetPassword,
 DBStatement:	gStmt_AccountSetIpv4,
 DBStatement:	gStmt_AccountSetGpci,
@@ -1094,7 +1090,6 @@ public OnGameModeInit()
 	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?, ?, ?, 0, 0, ?, ?, 0, 0, 0, ?, ?)");
 	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ?");
 	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
 	gStmt_AccountSetGpci		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");

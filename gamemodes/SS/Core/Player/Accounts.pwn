@@ -126,6 +126,7 @@ CreateAccount(playerid, password[])
 
 DeleteAccount(name[])
 {
+	#pragma unused name
 	// Deleting accounts is removed.
 	// Disabling accounts will be used instead.
 	return 1;

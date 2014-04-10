@@ -317,7 +317,7 @@ stock SetPlayerCuffs(playerid, toggle)
 	
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_CUFFED);
 
-		SetPlayerAttachedObject(playerid, ATTACHSLOT_CUFFS, 19418, 6,
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_ITEM, 19418, 6,
 			gCuffSkinData[skin][0], gCuffSkinData[skin][1], gCuffSkinData[skin][2],
 			gCuffSkinData[skin][3], gCuffSkinData[skin][4], gCuffSkinData[skin][5],
 			gCuffSkinData[skin][6], gCuffSkinData[skin][7], gCuffSkinData[skin][8]);
@@ -327,12 +327,12 @@ stock SetPlayerCuffs(playerid, toggle)
 	else
 	{
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
-		RemovePlayerAttachedObject(playerid, ATTACHSLOT_CUFFS);
+		RemovePlayerAttachedObject(playerid, ATTACHSLOT_ITEM);
 		return 1;
 	}
 }
 
 stock IsPlayerCuffed(playerid)
 {
-	return IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_CUFFS);
+	return IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_ITEM);
 }
