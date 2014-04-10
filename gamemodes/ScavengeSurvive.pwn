@@ -896,6 +896,7 @@ forward SetRestart(seconds);
 #include "SS/Core/World/SprayTag.pwn"
 #include "SS/Core/World/Sign.pwn"
 #include "SS/Core/World/SupplyCrate.pwn"
+#include "SS/Core/World/WeaponsCache.pwn"
 
 // ADMINISTRATION TOOLS
 #include "SS/Core/Admin/Report.pwn"
