@@ -32,7 +32,7 @@ stock log(text[], printtext = true)
 	getdate(year, month, day);
 	gettime(hour, minute, second);
 
-	format(filename, 64, DIRECTORY_LOGS"%02d-%02d-%d.txt", year, month, day);
+	format(filename, 64, DIRECTORY_LOGS"%d-%02d-%02d.txt", year, month, day);
 
 	if(fexist(filename))
 		file = fopen(filename, io_append);
