@@ -114,12 +114,17 @@ hook OnPlayerSpawn(playerid)
 
 HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	tp_SetPosTick[playerid] = GetTickCount();
 	tp_SetPos[playerid][0] = x;
 	tp_SetPos[playerid][1] = y;
 	tp_SetPos[playerid][2] = z;
 
 	cd_DetectDelay[playerid] = GetTickCount();
+
+	return 1;
 }
 
 
