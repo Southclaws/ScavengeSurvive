@@ -9,23 +9,24 @@
 
 enum E_SUPPLY_DROP_LOCATION_DATA
 {
-		sup_name[MAX_SUPPLY_DROP_LOCATION_NAME],
-Float:	sup_posX,
-Float:	sup_posY,
-Float:	sup_posZ,
-bool:	sup_used
+			sup_name[MAX_SUPPLY_DROP_LOCATION_NAME],
+Float:		sup_posX,
+Float:		sup_posY,
+Float:		sup_posZ,
+bool:		sup_used
 }
 
 static
-Float:	sup_DropLocationData[MAX_SUPPLY_DROP_LOCATIONS][E_SUPPLY_DROP_LOCATION_DATA],
-		sup_TotalLocations,
+Float:		sup_DropLocationData[MAX_SUPPLY_DROP_LOCATIONS][E_SUPPLY_DROP_LOCATION_DATA],
+Iterator:	sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
+			sup_TotalLocations,
 
-		sup_ObjCrate1 = INVALID_OBJECT_ID,
-		sup_ObjCrate2 = INVALID_OBJECT_ID,
-		sup_ObjPara = INVALID_OBJECT_ID,
-Float:	sup_DropX,
-Float:	sup_DropY,
-Float:	sup_DropZ;
+			sup_ObjCrate1 = INVALID_OBJECT_ID,
+			sup_ObjCrate2 = INVALID_OBJECT_ID,
+			sup_ObjPara = INVALID_OBJECT_ID,
+Float:		sup_DropX,
+Float:		sup_DropY,
+Float:		sup_DropZ;
 
 
 hook OnGameModeInit()
@@ -36,28 +37,42 @@ hook OnGameModeInit()
 
 DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float:z)
 {
-	sup_DropLocationData[sup_TotalLocations][sup_name] = name;
-	sup_DropLocationData[sup_TotalLocations][sup_posX] = x;
-	sup_DropLocationData[sup_TotalLocations][sup_posY] = y;
-	sup_DropLocationData[sup_TotalLocations][sup_posZ] = z;
+	new id = Iter_Free(sup_Index);
 
+	if(id == -1)
+	{
+		printf("ERROR: Supply drop pos definition limit reached.");
+		return -1;
+	}
+
+	sup_DropLocationData[id][sup_name] = name;
+	sup_DropLocationData[id][sup_posX] = x;
+	sup_DropLocationData[id][sup_posY] = y;
+	sup_DropLocationData[id][sup_posZ] = z;
+
+	Iter_Add(sup_Index, id);
 	sup_TotalLocations++;
+
+	return id;
 }
 
 timer SupplyDropTimer[SUPPLY_CRATE_INTERVAL]()
 {
-	if(Iter_Count(Player) < 2)
+	if(Iter_Count(Player) < 3)
 		return;
 
-	new location = random(sup_TotalLocations);
+	if(Iter_Count(sup_Index) == 0)
+	{
+		printf("ERROR: Supply drops run out, stopping supply drop timer.");
+		return;
+	}
 
-	while(sup_DropLocationData[location][sup_used])
-		location = random(sup_TotalLocations);
+	new id = Iter_Random(sup_Index);
 
-	SupplyCrateDrop(sup_DropLocationData[location][sup_posX], sup_DropLocationData[location][sup_posY], sup_DropLocationData[location][sup_posZ]);
-	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP INCOMING AT LOCATION: "C_BLUE"'%s'", sup_DropLocationData[location][sup_name]);
+	SupplyCrateDrop(sup_DropLocationData[id][sup_posX], sup_DropLocationData[id][sup_posY], sup_DropLocationData[id][sup_posZ]);
+	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP INCOMING AT id: "C_BLUE"'%s'", sup_DropLocationData[id][sup_name]);
 
-	sup_DropLocationData[location][sup_used] = true;
+	Iter_Remove(sup_Index, id);
 
 	defer SupplyDropTimer();
 
@@ -106,7 +121,7 @@ public OnDynamicObjectMoved(objectid)
 #define OnDynamicObjectMoved sup_OnDynamicObjectMoved
 forward sup_OnDynamicObjectMoved(objectid);
 
-CMD:sc(playerid, params[])
+ACMD:sc[4](playerid, params[])
 {
 	new
 		Float:x, Float:y, Float:z;
@@ -116,4 +131,44 @@ CMD:sc(playerid, params[])
 	SupplyCrateDrop(x, y, z);
 
 	return 1;
+}
+
+
+// Interface
+
+
+stock GetSupplyDropLocationName(location, name[MAX_SUPPLY_DROP_LOCATION_NAME])
+{
+	if(location >= sup_TotalLocations)
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, sup_DropLocationData[location][sup_name]);
+
+	return 1;
+}
+
+stock GetSupplyDropLocationPos(location, &Float:x, &Float:y, &Float:z)
+{
+	if(location >= sup_TotalLocations)
+		return 0;
+
+	x = sup_DropLocationData[location][sup_posX];
+	y = sup_DropLocationData[location][sup_posY];
+	z = sup_DropLocationData[location][sup_posZ];
+
+	return 1;
+}
+
+stock IsSupplyDropLocationUsed(location)
+{
+	if(location >= sup_TotalLocations)
+		return 0;
+
+	return sup_DropLocationData[location][sup_used];
+}
+
+stock GetTotalSupplyDropLocations()
+{
+	return sup_TotalLocations;
 }
