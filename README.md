@@ -65,7 +65,7 @@ spawns in it, I would love to see what is made!
  tools and utilities, there are only *2* filterscripts you need to run on a
  public server:
 
-        filterscripts maps rcon
+        filterscripts object-loader rcon
         plugins streamer sscanf CTime Whirlpool FileManager
 
 5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
