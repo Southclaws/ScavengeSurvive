@@ -9,8 +9,10 @@
 
 #include <YSI\y_hooks>
 
-#define DIRECTORY_PLAYER_BACKUP		"SSS/Player/BACKUP/"
-#define DIRECTORY_INVENTORY_BACKUP	"SSS/Inventory/BACKUP/"
+#define DIRECTORY_PLAYER_ORIGINAL		"SSS/Player/"
+#define DIRECTORY_INVENTORY_ORIGINAL	"SSS/Inventory/"
+#define DIRECTORY_PLAYER_BACKUP			"SSS/Player/BACKUP/"
+#define DIRECTORY_INVENTORY_BACKUP		"SSS/Inventory/BACKUP/"
 
 // The old file structure
 
@@ -69,7 +71,7 @@ PerformGlobalPlayerFileCheck()
 
 	// Player char files
 
-	direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
+	direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER_ORIGINAL);
 
 	while(dir_list(direc, item, type))
 	{
@@ -95,8 +97,8 @@ CheckPlayerFile(item[])
 		ply_data[PLY_CELL_OLD_END],
 		inv_data[INV_CELL_OLD_END];
 
-	format(filename_ply, sizeof(filename_ply), DIRECTORY_PLAYER"%s", item);
-	format(filename_inv, sizeof(filename_inv), DIRECTORY_INVENTORY"%s", item);
+	format(filename_ply, sizeof(filename_ply), DIRECTORY_PLAYER_ORIGINAL"%s", item);
+	format(filename_inv, sizeof(filename_inv), DIRECTORY_INVENTORY_ORIGINAL"%s", item);
 
 	if(!fexist(filename_ply))
 	{

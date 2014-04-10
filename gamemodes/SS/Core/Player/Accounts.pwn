@@ -126,23 +126,8 @@ CreateAccount(playerid, password[])
 
 DeleteAccount(name[])
 {
-	if(!AccountExists(name))
-		return 0;
-
-	new file[MAX_PLAYER_FILE];
-
-	stmt_bind_value(gStmt_AccountDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_execute(gStmt_AccountDelete);
-
-	PLAYER_DAT_FILE(name, file);
-	fremove(file);
-
-	PLAYER_INV_FILE(name, file);
-	fremove(file);
-
-	format(file, sizeof(file), DIRECTORY_VEHICLE"%s.dat", name);
-	fremove(file);
-
+	// Deleting accounts is removed.
+	// Disabling accounts will be used instead.
 	return 1;
 }
 

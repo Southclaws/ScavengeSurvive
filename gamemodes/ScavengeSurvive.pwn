@@ -116,22 +116,9 @@ native WP_Hash(buffer[], len, const str[]);
 // Directories
 #define DIRECTORY_SCRIPTFILES		"./scriptfiles/"
 #define DIRECTORY_MAIN				"SSS/"
-#define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
-#define DIRECTORY_CARMOUR			DIRECTORY_VEHICLESPAWNS"Mods/"
-#define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"
-#define DIRECTORY_PLAYER			DIRECTORY_MAIN"Player/"
-#define DIRECTORY_INVENTORY			DIRECTORY_MAIN"Inventory/"
-#define DIRECTORY_NOTEBOOK			DIRECTORY_MAIN"Notebook/"
-#define DIRECTORY_VEHICLE			DIRECTORY_MAIN"Vehicle/"
-#define DIRECTORY_SAFEBOX			DIRECTORY_MAIN"Safebox/"
-#define DIRECTORY_TENT				DIRECTORY_MAIN"Tents/"
-#define DIRECTORY_DEFENCES			DIRECTORY_MAIN"Defences/"
-#define DIRECTORY_SIGNS				DIRECTORY_MAIN"Signs/"
 
 
 // Files
-#define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
-#define PLAYER_ITEM_FILE			DIRECTORY_INVENTORY"%s.dat"
 #define ACCOUNT_DATABASE			DIRECTORY_MAIN"Accounts.db"
 #define WORLD_DATABASE				DIRECTORY_MAIN"World.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
@@ -275,8 +262,6 @@ enum
 #define f:%1<%2>					((%1)&=~(%2))
 
 #define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
-#define PLAYER_DAT_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
-#define PLAYER_INV_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_ITEM_FILE, %0)
 
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
@@ -1045,78 +1030,6 @@ public OnGameModeInit()
 
 	djson_GameModeInit();
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_INVENTORY);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_LOGS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_NOTEBOOK);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_TENT))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_TENT"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
-	}
-
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gWorld = db_open_persistent(WORLD_DATABASE);
 
@@ -1800,4 +1713,25 @@ timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
 	gCurrentInfoMessage++;
 
 	defer InfoMessage();
+}
+
+DirectoryCheck(directory[])
+{
+	if(!dir_exists(DIRECTORY_SCRIPTFILES))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
+	}
+
+	if(!dir_exists(directory))
+	{
+		printf("ERROR: Directory '%s' not found. Creating directory.", directory);
+		dir_create(directory);
+	}
 }

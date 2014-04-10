@@ -1,6 +1,7 @@
 #include <YSI\y_hooks>
 
 
+#define DIRECTORY_TENT		DIRECTORY_MAIN"Tents/"
 #define MAX_TENT			(1024)
 #define MAX_TENT_ITEMS		(8)
 #define INVALID_TENT_ID		(-1)
@@ -61,6 +62,8 @@ hook OnGameModeInit()
 
 	tnt_GEID_Index = arr[0];
 	printf("Loaded tent GEID: %d", tnt_GEID_Index);
+
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
 	Iter_Init(tnt_ItemIndex);
 }

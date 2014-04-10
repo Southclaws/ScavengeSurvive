@@ -1,6 +1,7 @@
 #include <YSI\y_hooks>
 
 
+#define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
 #define MAX_DEFENCE_ITEM	(10)
 #define MAX_DEFENCE			(1280)
 
@@ -62,6 +63,8 @@ static
 
 hook OnGameModeInit()
 {
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
+
 	for(new i; i < BTN_MAX; i++)
 		def_ButtonDefence[i] = -1;
 }

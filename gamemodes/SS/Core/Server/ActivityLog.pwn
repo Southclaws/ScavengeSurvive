@@ -1,8 +1,17 @@
+#include <YSI\y_hooks>
 #include <YSI\y_va>
+
+
+#define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"
 
 
 static log_buffer[256];
 
+
+hook OnGameModeInit()
+{
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
+}
 
 stock log(text[], printtext = true)
 {

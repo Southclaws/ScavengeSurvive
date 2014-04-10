@@ -1,6 +1,9 @@
 #include <YSI\y_hooks>
 
 
+// Directory for storing player-saved vehicles
+#define DIRECTORY_VEHICLE			DIRECTORY_MAIN"Vehicle/"
+
 // Old directories for conversion
 #define DIRECTORY_VEHICLE_DAT		DIRECTORY_MAIN"VehicleDat/"
 #define DIRECTORY_VEHICLE_INV		DIRECTORY_MAIN"VehicleInv/"
@@ -81,6 +84,8 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 
 LoadPlayerVehicles(printeach = false, printtotal = false)
 {
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE),
 		item[28],

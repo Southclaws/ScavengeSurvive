@@ -1,7 +1,11 @@
 #include <YSI\y_hooks>
 
 
-#define VEHICLE_SPAWN_CHANCE		(4) // Percent
+// Directory from where vehicle spawn positions are loaded
+#define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
+
+// Chance that each spawn position will produce a vehicle in percent
+#define VEHICLE_SPAWN_CHANCE		(4)
 
 
 static veh_CurrentModelGroup;
@@ -9,6 +13,8 @@ static veh_CurrentModelGroup;
 
 LoadVehicles(printeach = false, printtotal = false)
 {
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
+
 	LoadPlayerVehicles(printeach, printtotal);
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
 

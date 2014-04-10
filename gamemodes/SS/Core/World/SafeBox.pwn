@@ -1,6 +1,7 @@
 #include <YSI\y_hooks>
 
 
+#define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"Safebox/"
 #define MAX_SAFEBOX			ITM_MAX
 #define MAX_SAFEBOX_TYPE	(8)
 #define MAX_SAFEBOX_NAME	(32)
@@ -57,6 +58,8 @@ hook OnGameModeInit()
 
 	box_GEID_Index = arr[0];
 	printf("Loaded safebox GEID: %d", box_GEID_Index);
+
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX);
 
 	for(new i; i < CNT_MAX; i++)
 		box_ContainerSafebox[i] = INVALID_ITEM_ID;

@@ -1,6 +1,7 @@
 #include <YSI\y_hooks>
 
 
+#define DIRECTORY_CARMOUR	DIRECTORY_VEHICLESPAWNS"Mods/"
 #define MAX_ARMOUR			(16)
 #define MAX_ARMOUR_PARTS	(32)
 #define MAX_ARMOUR_VEHICLES	(8)

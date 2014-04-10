@@ -1,5 +1,11 @@
-#define CHARACTER_DATA_FILE_VERSION 10
-#define SAVELOAD_DEBUG 1
+#include <YSI\y_hooks>
+
+
+#define DIRECTORY_PLAYER			DIRECTORY_MAIN"Player/"
+#define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
+#define PLAYER_DAT_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
+#define CHARACTER_DATA_FILE_VERSION	(10)
+#define SAVELOAD_DEBUG				(1)
 
 
 static
@@ -42,6 +48,11 @@ enum
 forward OnPlayerSave(playerid, filename[]);
 forward OnPlayerLoad(playerid, filename[]);
 
+
+hook OnGameModeInit()
+{
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
+}
 
 SavePlayerChar(playerid)
 {
@@ -383,6 +394,8 @@ LoadPlayerChar(playerid)
 
 ==============================================================================*/
 
+
+#define PLAYER_INV_FILE(%0,%1)	format(%1, MAX_PLAYER_FILE, "SSS/Inventory/%s.dat", %0)
 
 enum
 {
