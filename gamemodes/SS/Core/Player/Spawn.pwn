@@ -36,16 +36,7 @@ PlayerSpawnExistingCharacter(playerid)
 		return 0;
 
 	if(!LoadPlayerChar(playerid))
-	{
-		PlayerCreateNewCharacter(playerid);
 		return 0;
-	}
-
-	if(!LoadPlayerInventory(playerid))
-	{
-		PlayerCreateNewCharacter(playerid);
-		return 0;
-	}
 
 	new
 		Float:x,
