@@ -140,10 +140,7 @@ DeleteAccount(name[])
 	PLAYER_INV_FILE(name, file);
 	fremove(file);
 
-	format(file, sizeof(file), "SSS/Vehicles/%s.dat", name);
-	fremove(file);
-
-	format(file, sizeof(file), NOTEBOOK_FILE, name);
+	format(file, sizeof(file), DIRECTORY_VEHICLE"%s.dat", name);
 	fremove(file);
 
 	return 1;
@@ -401,7 +398,6 @@ SavePlayerData(playerid)
 		stmt_bind_value(gStmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(gStmt_AccountUpdate);
 
-		SavePlayerInventory(playerid);
 		SavePlayerChar(playerid);
 	}
 	else

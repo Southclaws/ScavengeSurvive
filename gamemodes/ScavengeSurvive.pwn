@@ -26,16 +26,18 @@
 native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
-#define _DEBUG						0 // YSI
-#define DB_DEBUG					false // SQLitei
-#define DB_MAX_STATEMENTS			(72) // SQLitei
-#define STRLIB_RETURN_SIZE			(256) // strlib
-#define NOTEBOOK_FILE				"SSS/Notebook/%s.dat" // SIF/ext/notebook
-#define MAX_NOTEBOOK_FILE_NAME		(MAX_PLAYER_NAME + 18) // SIF/ext/notebook
-#define ITM_DROP_ON_DEATH			false // SIF/Item
+#define _DEBUG							0 // YSI
+#define DB_DEBUG						false // SQLitei
+#define DB_MAX_STATEMENTS				(72) // SQLitei
+#define STRLIB_RETURN_SIZE				(256) // strlib
+#define MODIO_DEBUG						(0) // modio
+#define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
+#define MODIO_SCRIPT_EXIT_FIX			(1) // modio
+#define MAX_MODIO_SESSION				(1024) // modio
+#define ITM_DROP_ON_DEATH				false // SIF/Item
 
-#define BTN_MAX						(16384) // SIF/Button
-#define ITM_MAX						(16384) // SIF/Item
+#define BTN_MAX							(16384) // SIF/Button
+#define ITM_MAX							(16384) // SIF/Item
 
 /*==============================================================================
 
@@ -71,12 +73,14 @@ native gpci(playerid, serial[], len);
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
 #include <djson>					// By DracoBlue, 1.6.2 :	http://forum.sa-mp.com/showthread.php?t=48439
 
+#include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
+#include <SIF/extensions/ItemArrayData>
+#include <SIF/extensions/ItemList>
 #include <SIF/extensions/InventoryDialog>
 #include <SIF/extensions/InventoryKeys>
 #include <SIF/extensions/ContainerDialog>
 #include <SIF/extensions/Craft>
-#include <SIF/extensions/Notebook>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
 #include <Balloon>					// By Southclaw:			https://github.com/Southclaw/Balloon
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
@@ -118,8 +122,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define DIRECTORY_PLAYER			DIRECTORY_MAIN"Player/"
 #define DIRECTORY_INVENTORY			DIRECTORY_MAIN"Inventory/"
 #define DIRECTORY_NOTEBOOK			DIRECTORY_MAIN"Notebook/"
-#define DIRECTORY_VEHICLE_DAT		DIRECTORY_MAIN"VehicleDat/"
-#define DIRECTORY_VEHICLE_INV		DIRECTORY_MAIN"VehicleInv/"
+#define DIRECTORY_VEHICLE			DIRECTORY_MAIN"Vehicle/"
 #define DIRECTORY_SAFEBOX			DIRECTORY_MAIN"Safebox/"
 #define DIRECTORY_TENT				DIRECTORY_MAIN"Tents/"
 #define DIRECTORY_DEFENCES			DIRECTORY_MAIN"Defences/"
@@ -132,6 +135,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define ACCOUNT_DATABASE			DIRECTORY_MAIN"Accounts.db"
 #define WORLD_DATABASE				DIRECTORY_MAIN"World.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
+#define GEID_FILE					DIRECTORY_MAIN"geids.dat"
 
 
 // Database
@@ -848,6 +852,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/Locksmith.pwn"
 #include "SS/Core/Vehicle/Carmour.pwn"
 #include "SS/Core/Vehicle/Lock.pwn"
+#include "SS/Core/Vehicle/AntiNinja.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/Core.pwn"
@@ -1094,22 +1099,22 @@ public OnGameModeInit()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX);
 	}
 
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_TENT))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_TENT"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
+	}
+
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS);
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT))
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV);
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -1384,6 +1389,138 @@ public OnGameModeInit()
 	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
 	item_XmasHat		= DefineItemType("Christmas Hat",		19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 
+	SetItemTypeMaxArrayData(item_Parachute,		1);
+	SetItemTypeMaxArrayData(item_Medkit,		1);
+	SetItemTypeMaxArrayData(item_HardDrive,		1);
+	SetItemTypeMaxArrayData(item_Key,			1);
+	SetItemTypeMaxArrayData(item_FireworkBox,	1);
+	SetItemTypeMaxArrayData(item_FireLighter,	1);
+	SetItemTypeMaxArrayData(item_Timer,			1);
+	SetItemTypeMaxArrayData(item_Explosive,		1);
+	SetItemTypeMaxArrayData(item_TntTimebomb,	1);
+	SetItemTypeMaxArrayData(item_Battery,		1);
+	SetItemTypeMaxArrayData(item_Fusebox,		1);
+	SetItemTypeMaxArrayData(item_Bottle,		1);
+	SetItemTypeMaxArrayData(item_Sign,			1);
+	SetItemTypeMaxArrayData(item_Armour,		1);
+	SetItemTypeMaxArrayData(item_Bandage,		1);
+	SetItemTypeMaxArrayData(item_FishRod,		1);
+	SetItemTypeMaxArrayData(item_Wrench,		1);
+	SetItemTypeMaxArrayData(item_Crowbar,		1);
+	SetItemTypeMaxArrayData(item_Hammer,		1);
+	SetItemTypeMaxArrayData(item_Shield,		1);
+	SetItemTypeMaxArrayData(item_Flashlight,	1);
+	SetItemTypeMaxArrayData(item_Taser,			1);
+	SetItemTypeMaxArrayData(item_LaserPoint,	1);
+	SetItemTypeMaxArrayData(item_Screwdriver,	1);
+	SetItemTypeMaxArrayData(item_MobilePhone,	1);
+	SetItemTypeMaxArrayData(item_Pager,			1);
+	SetItemTypeMaxArrayData(item_Rake,			1);
+	SetItemTypeMaxArrayData(item_HotDog,		1);
+	SetItemTypeMaxArrayData(item_EasterEgg,		1);
+	SetItemTypeMaxArrayData(item_Cane,			1);
+	SetItemTypeMaxArrayData(item_HandCuffs,		1);
+	SetItemTypeMaxArrayData(item_Bucket,		1);
+	SetItemTypeMaxArrayData(item_GasMask,		1);
+	SetItemTypeMaxArrayData(item_Flag,			1);
+	SetItemTypeMaxArrayData(item_DoctorBag,		1);
+	SetItemTypeMaxArrayData(item_Backpack,		1);
+	SetItemTypeMaxArrayData(item_Satchel,		1);
+	SetItemTypeMaxArrayData(item_Wheel,			1);
+	SetItemTypeMaxArrayData(item_MotionSense,	1);
+	SetItemTypeMaxArrayData(item_Accelerometer,	1);
+	SetItemTypeMaxArrayData(item_TntProxMine,	1);
+	SetItemTypeMaxArrayData(item_IedBomb,		1);
+	SetItemTypeMaxArrayData(item_Pizza,			1);
+	SetItemTypeMaxArrayData(item_Burger,		1);
+	SetItemTypeMaxArrayData(item_BurgerBox,		1);
+	SetItemTypeMaxArrayData(item_Taco,			1);
+	SetItemTypeMaxArrayData(item_GasCan,		1);
+	SetItemTypeMaxArrayData(item_Clothes,		1);
+	SetItemTypeMaxArrayData(item_HelmArmy,		1);
+	SetItemTypeMaxArrayData(item_MediumBox,		1);
+	SetItemTypeMaxArrayData(item_SmallBox,		1);
+	SetItemTypeMaxArrayData(item_LargeBox,		1);
+	SetItemTypeMaxArrayData(item_HockeyMask,	1);
+	SetItemTypeMaxArrayData(item_Meat,			1);
+	SetItemTypeMaxArrayData(item_DeadLeg,		1);
+	SetItemTypeMaxArrayData(item_Torso,			MAX_PLAYER_NAME + 128 + 2);
+	SetItemTypeMaxArrayData(item_LongPlank,		1);
+	SetItemTypeMaxArrayData(item_GreenGloop,	1);
+	SetItemTypeMaxArrayData(item_Capsule,		1);
+	SetItemTypeMaxArrayData(item_RadioPole,		1);
+	SetItemTypeMaxArrayData(item_SignShot,		1);
+	SetItemTypeMaxArrayData(item_Mailbox,		1);
+	SetItemTypeMaxArrayData(item_Pumpkin,		1);
+	SetItemTypeMaxArrayData(item_Nailbat,		1);
+	SetItemTypeMaxArrayData(item_ZorroMask,		1);
+	SetItemTypeMaxArrayData(item_Barbecue,		1);
+	SetItemTypeMaxArrayData(item_Headlight,		1);
+	SetItemTypeMaxArrayData(item_Pills,			1);
+	SetItemTypeMaxArrayData(item_AutoInjec,		1);
+	SetItemTypeMaxArrayData(item_BurgerBag,		1);
+	SetItemTypeMaxArrayData(item_CanDrink,		1);
+	SetItemTypeMaxArrayData(item_Detergent,		1);
+	SetItemTypeMaxArrayData(item_Dice,			1);
+	SetItemTypeMaxArrayData(item_Dynamite,		1);
+	SetItemTypeMaxArrayData(item_Door,			1);
+	SetItemTypeMaxArrayData(item_MetPanel,		1);
+	SetItemTypeMaxArrayData(item_MetalGate,		1);
+	SetItemTypeMaxArrayData(item_CrateDoor,		1);
+	SetItemTypeMaxArrayData(item_CorPanel,		1);
+	SetItemTypeMaxArrayData(item_ShipDoor,		1);
+	SetItemTypeMaxArrayData(item_RustyDoor,		1);
+	SetItemTypeMaxArrayData(item_MetalStand,	1);
+	SetItemTypeMaxArrayData(item_RustyMetal,	1);
+	SetItemTypeMaxArrayData(item_WoodPanel,		1);
+	SetItemTypeMaxArrayData(item_Flare,			1);
+	SetItemTypeMaxArrayData(item_TntPhoneBomb,	1);
+	SetItemTypeMaxArrayData(item_ParaBag,		1);
+	SetItemTypeMaxArrayData(item_Keypad,		1);
+	SetItemTypeMaxArrayData(item_TentPack,		1);
+	SetItemTypeMaxArrayData(item_Campfire,		1);
+	SetItemTypeMaxArrayData(item_CowboyHat,		1);
+	SetItemTypeMaxArrayData(item_TruckCap,		1);
+	SetItemTypeMaxArrayData(item_BoaterHat,		1);
+	SetItemTypeMaxArrayData(item_BowlerHat,		1);
+	SetItemTypeMaxArrayData(item_PoliceCap,		1);
+	SetItemTypeMaxArrayData(item_TopHat,		1);
+	SetItemTypeMaxArrayData(item_Ammo9mm,		1);
+	SetItemTypeMaxArrayData(item_Ammo50,		1);
+	SetItemTypeMaxArrayData(item_AmmoBuck,		1);
+	SetItemTypeMaxArrayData(item_Ammo556,		1);
+	SetItemTypeMaxArrayData(item_Ammo357,		1);
+	SetItemTypeMaxArrayData(item_AmmoRocket,	1);
+	SetItemTypeMaxArrayData(item_MolotovEmpty,	1);
+	SetItemTypeMaxArrayData(item_Money,			1);
+	SetItemTypeMaxArrayData(item_PowerSupply,	1);
+	SetItemTypeMaxArrayData(item_StorageUnit,	1);
+	SetItemTypeMaxArrayData(item_Fluctuator,	1);
+	SetItemTypeMaxArrayData(item_IoUnit,		1);
+	SetItemTypeMaxArrayData(item_FluxCap,		1);
+	SetItemTypeMaxArrayData(item_DataInterface,	1);
+	SetItemTypeMaxArrayData(item_HackDevice,	1);
+	SetItemTypeMaxArrayData(item_PlantPot,		1);
+	SetItemTypeMaxArrayData(item_HerpDerp,		1);
+	SetItemTypeMaxArrayData(item_Parrot,		1);
+	SetItemTypeMaxArrayData(item_TntTripMine,	1);
+	SetItemTypeMaxArrayData(item_IedTimebomb,	1);
+	SetItemTypeMaxArrayData(item_IedProxMine,	1);
+	SetItemTypeMaxArrayData(item_IedTripMine,	1);
+	SetItemTypeMaxArrayData(item_IedPhoneBomb,	1);
+	SetItemTypeMaxArrayData(item_EmpTimebomb,	1);
+	SetItemTypeMaxArrayData(item_EmpProxMine,	1);
+	SetItemTypeMaxArrayData(item_EmpTripMine,	1);
+	SetItemTypeMaxArrayData(item_EmpPhoneBomb,	1);
+	SetItemTypeMaxArrayData(item_Gyroscope,		1);
+	SetItemTypeMaxArrayData(item_Motor,			1);
+	SetItemTypeMaxArrayData(item_StarterMotor,	1);
+	SetItemTypeMaxArrayData(item_FlareGun,		1);
+	SetItemTypeMaxArrayData(item_PetrolBomb,	1);
+	SetItemTypeMaxArrayData(item_CodePart,		1);
+	SetItemTypeMaxArrayData(item_LargeBackpack,	1);
+	SetItemTypeMaxArrayData(item_LocksmithKit,	1);
+	SetItemTypeMaxArrayData(item_XmasHat,		1);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1554,7 +1691,7 @@ public OnGameModeInit()
 
 	LoadAdminData();
 
-	LoadVehicles	(true, true);
+	LoadVehicles	(false, true);
 	LoadSafeboxes	(false, true);
 	LoadTents		(false, true);
 	LoadDefences	(false, true);
@@ -1611,7 +1748,7 @@ RestartGamemode()
 
 	foreach(new i : Player)
 	{
-		Logout(i);
+		SavePlayerData(i);
 		ResetVariables(i);
 	}
 

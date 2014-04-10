@@ -39,6 +39,7 @@ hook OnGameModeInit()
 		}
 
 		DefineItemType(name, GetWeaponModel(i), size, .rotx = 90.0);
+		SetItemTypeMaxArrayData(ItemType:i, 1);
 	}
 
 	print("Loaded weapon item data");

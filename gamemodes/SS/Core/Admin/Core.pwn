@@ -287,7 +287,6 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		SetPlayerPos(playerid, x, y, z);
 		LoadPlayerChar(playerid);
-		LoadPlayerInventory(playerid);
 
 		SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 
