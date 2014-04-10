@@ -247,7 +247,7 @@ ptask PlayerUpdate[100](playerid)
 		{
 			ply_Data[playerid][ply_PingLimitStrikes]++;
 
-			if(ply_Data[playerid][ply_PingLimitStrikes] == 3)
+			if(ply_Data[playerid][ply_PingLimitStrikes] == 30)
 			{
 				KickPlayer(playerid, sprintf("Having a ping of: %d limit: %d.", GetPlayerPing(playerid), pinglimit));
 
@@ -260,6 +260,12 @@ ptask PlayerUpdate[100](playerid)
 	else
 	{
 		ply_Data[playerid][ply_PingLimitStrikes] = 0;
+	}
+
+	if(NetStats_MessagesRecvPerSecond(playerid) > 60)
+	{
+		MsgAdminsF(3, YELLOW, " >  %p sending %d messages per second.", playerid, NetStats_MessagesRecvPerSecond(playerid));
+		return;
 	}
 
 	new

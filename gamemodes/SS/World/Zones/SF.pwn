@@ -558,7 +558,6 @@ SF_District_Police()
 }
 SF_District_Industrial()
 {
-	CreateSaveBlockArea(CreateDynamicCube(-942.7619, 261.2218, 1012.6185, -898.2711, 357.5468, 1028.0460), -1857.1831, -169.5322, 9.1358);
 	CreateDynamicObject(2002, -1978.52356, 131.39619, 26.68210, 0.00000, 0.00000, 90.00000);
 	CreateDynamic3DTextLabel("XBOX ONE", YELLOW, -1978.52356, 131.39619, 28.2150, 10.0);
 	CreateWorkBench(-2124.13916, 219.68687, 34.66147, -128.63998);
