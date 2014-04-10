@@ -35,15 +35,22 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 
 	if(weapon == 4 && itemtype == item_Torso)
 	{
-		if(gettime() - GetItemArrayDataAtCell(itemid, 2) < 86400)
+		if(GetItemArrayDataAtCell(itemid, 0))
 		{
-			StartHoldAction(playerid, 3000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-			gut_TargetItem[playerid] = itemid;
+			if(gettime() - GetItemArrayDataAtCell(itemid, 1) < 86400)
+			{
+				StartHoldAction(playerid, 3000);
+				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				gut_TargetItem[playerid] = itemid;
+			}
+			else
+			{
+				ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
+			}
 		}
 		else
 		{
-			ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
+			ShowActionText(playerid, "The body has already been harvested of the edible (tasty) parts", 3000);
 		}
 	}
 	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
@@ -124,10 +131,7 @@ public OnHoldActionFinish(playerid)
 		GetItemPos(gut_TargetItem[playerid], x, y, z);
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
-		CreateItem(item_Meat,
-			x + (0.5 * floatsin(-r + 90.0, degrees)),
-			y + (0.5 * floatcos(-r + 90.0, degrees)),
-			z, .rz = r);
+		CreateItem(item_Meat, x, y, z + 0.3, .rz = r, .zoffset = FLOOR_OFFSET);
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		ClearAnimations(playerid);
@@ -137,17 +141,19 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("gut_OnHoldActionFinish", "d", playerid);
+	#if defined gut_OnHoldActionFinish
+		return gut_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
 }
-
-
-// Hooks
-
-
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
 #else
 	#define _ALS_OnHoldActionFinish
 #endif
+ 
 #define OnHoldActionFinish gut_OnHoldActionFinish
-forward gut_OnHoldActionFinish(playerid);
+#if defined gut_OnHoldActionFinish
+	forward gut_OnHoldActionFinish(playerid);
+#endif
