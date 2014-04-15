@@ -182,7 +182,6 @@ CheckForExtraAccounts(playerid)
 		list[6][E_ALIAS_DATA],
 		count,
 		adminlevel,
-		isbanned,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
 	adminlevel = GetPlayerAdminLevel(playerid);
@@ -207,8 +206,16 @@ CheckForExtraAccounts(playerid)
 	if(adminlevel < 3)
 		MsgAllF(YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
 
-	if(isbanned)
-		MsgAdminsF(1, RED, " >  Warning: One or more of those aliases is banned!");
+	GetAccountAliasesByAll(gPlayerName[playerid], list, count, 6, adminlevel);
+
+	for(new i; i < count && i < sizeof(list); i++)
+	{
+		if(list[i][alias_Banned])
+		{
+			MsgAdminsF(1, RED, " >  Warning: One or more of those aliases is banned!");
+			break;
+		}
+	}
 
 	return 1;
 }

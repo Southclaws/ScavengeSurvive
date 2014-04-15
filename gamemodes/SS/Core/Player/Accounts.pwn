@@ -604,7 +604,10 @@ stock GetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 	stmt_bind_result_field(stmt_AccountGetPassword, 0, DB::TYPE_STRING, password, MAX_PASSWORD_LEN);
 	stmt_bind_value(stmt_AccountGetPassword, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetPassword);
+	if(!stmt_execute(stmt_AccountGetPassword))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetPassword);
 }
 
 stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
@@ -621,7 +624,10 @@ stock GetAccountIP(name[], ip)
 	stmt_bind_result_field(stmt_AccountGetIpv4, 0, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_AccountGetIpv4, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetIpv4);
+	if(!stmt_execute(stmt_AccountGetIpv4))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetIpv4);
 }
 
 stock SetAccountIP(name[], ip)
@@ -638,7 +644,10 @@ stock GetAccountAliveState(name[], alivestate)
 	stmt_bind_result_field(stmt_AccountGetAliveState, 0, DB::TYPE_INTEGER, alivestate);
 	stmt_bind_value(stmt_AccountGetAliveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetAliveState);
+	if(!stmt_execute(stmt_AccountGetAliveState))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetAliveState);
 }
 
 stock SetAccountAliveState(name[], alivestate)
@@ -655,7 +664,10 @@ stock GetAccountKarma(name[], karma)
 	stmt_bind_result_field(stmt_AccountGetKarma, 0, DB::TYPE_INTEGER, karma);
 	stmt_bind_value(stmt_AccountGetKarma, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetKarma);
+	if(!stmt_execute(stmt_AccountGetKarma))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetKarma);
 }
 
 stock SetAccountKarma(name[], karma)
@@ -672,7 +684,10 @@ stock GetAccountRegistrationDate(name[], timestamp)
 	stmt_bind_result_field(stmt_AccountGetRegdate, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetRegdate, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetRegdate);
+	if(!stmt_execute(stmt_AccountGetRegdate))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetRegdate);
 }
 
 stock SetAccountRegistrationDate(name[], timestamp)
@@ -689,7 +704,10 @@ stock GetAccountLastLogin(name[], timestamp)
 	stmt_bind_result_field(stmt_AccountGetLastLog, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetLastLog, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetLastLog);
+	if(!stmt_execute(stmt_AccountGetLastLog))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetLastLog);
 }
 
 stock SetAccountLastLogin(name[], timestamp)
@@ -706,7 +724,10 @@ stock GetAccountLastSpawnTimestamp(name[], timestamp)
 	stmt_bind_result_field(stmt_AccountGetSpawnTime, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetSpawnTime, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetSpawnTime);
+	if(!stmt_execute(stmt_AccountGetSpawnTime))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetSpawnTime);
 }
 
 stock SetAccountLastSpawnTimestamp(name[], timestamp)
@@ -723,7 +744,10 @@ stock GetAccountTotalSpawns(name[], spawns)
 	stmt_bind_result_field(stmt_AccountGetTotalSpawns, 0, DB::TYPE_INTEGER, spawns);
 	stmt_bind_value(stmt_AccountGetTotalSpawns, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetTotalSpawns);
+	if(!stmt_execute(stmt_AccountGetTotalSpawns))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetTotalSpawns);
 }
 
 stock SetAccountTotalSpawns(name[], spawns)
@@ -740,7 +764,10 @@ stock GetAccountWarnings(name[], warnings)
 	stmt_bind_result_field(stmt_AccountGetWarnings, 0, DB::TYPE_INTEGER, warnings);
 	stmt_bind_value(stmt_AccountGetWarnings, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetWarnings);
+	if(!stmt_execute(stmt_AccountGetWarnings))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetWarnings);
 }
 
 stock SetAccountWarnings(name[], warnings)
@@ -757,7 +784,10 @@ stock GetAccountAimshout(name[], string[128])
 	stmt_bind_result_field(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, string, 128);
 	stmt_bind_value(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetAimShout);
+	if(!stmt_execute(stmt_AccountGetAimShout))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetAimShout);
 }
 
 stock SetAccountAimshout(name[], string[128])
@@ -774,7 +804,10 @@ stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 	stmt_bind_result_field(stmt_AccountGetGpci, 0, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
 	stmt_bind_value(stmt_AccountGetGpci, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetGpci);
+	if(!stmt_execute(stmt_AccountGetGpci))
+		return 0;
+
+	return stmt_fetch_row(stmt_AccountGetGpci);
 }
 
 stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
