@@ -40,7 +40,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 
 hook OnGameModeInit()
 {
-	page_Left					=TextDrawCreate(280.0, 320.0, "<");
+	page_Left					=TextDrawCreate(280.0, 360.0, "<");
 	TextDrawAlignment			(page_Left, 2);
 	TextDrawBackgroundColor		(page_Left, 255);
 	TextDrawFont				(page_Left, 1);
@@ -54,7 +54,7 @@ hook OnGameModeInit()
 	TextDrawTextSize			(page_Left, 25.0, 75.0);
 	TextDrawSetSelectable		(page_Left, true);
 
-	page_Right					=TextDrawCreate(360.0, 320.0, ">");
+	page_Right					=TextDrawCreate(360.0, 360.0, ">");
 	TextDrawAlignment			(page_Right, 2);
 	TextDrawBackgroundColor		(page_Right, 255);
 	TextDrawFont				(page_Right, 1);
