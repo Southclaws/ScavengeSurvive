@@ -10,8 +10,8 @@ static
 		autosave_Max,
 bool:	autosave_Active,
 
-		autosave_Toggle,
-		autosave_Debug,
+bool:	autosave_Toggle = true,
+bool:	autosave_Debug,
 		autosave_TickTotal,
 		autosave_Tick;
 
