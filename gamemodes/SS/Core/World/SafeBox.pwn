@@ -215,6 +215,24 @@ public OnPlayerPickUpItem(playerid, itemid)
 #define OnPlayerPickUpItem box_OnPlayerPickUpItem
 forward box_OnPlayerPickUpItem(playerid, itemid);
 
+public OnPlayerDroppedItem(playerid, itemid)
+{
+	if(IsItemTypeSafebox(GetItemType(itemid)))
+	{
+		if(!IsContainerEmpty(GetItemExtraData(itemid)))
+			SaveSafeboxItem(itemid);
+	}
+
+	return CallLocalFunction("box_OnPlayerDroppedItem", "dd", playerid, itemid);
+}
+#if defined _ALS_OnPlayerDroppedItem
+	#undef OnPlayerDroppedItem
+#else
+	#define _ALS_OnPlayerDroppedItem
+#endif
+#define OnPlayerDroppedItem box_OnPlayerDroppedItem
+forward box_OnPlayerDroppedItem(playerid, itemid);
+
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
