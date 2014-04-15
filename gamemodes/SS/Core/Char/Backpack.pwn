@@ -36,6 +36,7 @@ Iterator:	bag_Index<ITM_MAX>,
 static
 			bag_PlayerBagID			[MAX_PLAYERS],
 			bag_InventoryOptionID	[MAX_PLAYERS],
+bool:		bag_PuttingInBag		[MAX_PLAYERS],
 bool:		bag_TakingOffBag		[MAX_PLAYERS],
 			bag_CurrentBag			[MAX_PLAYERS],
 			bag_PickUpTick			[MAX_PLAYERS],
@@ -61,6 +62,9 @@ hook OnGameModeInit()
 hook OnPlayerConnect(playerid)
 {
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
+	bag_PuttingInBag[playerid] = false;
+	bag_TakingOffBag[playerid] = false;
+	bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 	bag_LookingInBag[playerid] = INVALID_PLAYER_ID;
 }
 
@@ -369,6 +373,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 		if(newkeys & KEY_YES)
 		{
+			if(bag_PuttingInBag[playerid])
+				return 0;
+
 			if(GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
 				return 0;
 
@@ -388,6 +395,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					{
 						ShowActionText(playerid, "Item added to bag", 3000, 150);
 						ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
+						bag_PuttingInBag[playerid] = true;
 						defer bag_PutItemIn(playerid, itemid, containerid);
 					}
 				}
@@ -472,6 +480,7 @@ timer bag_PickUp[250](playerid, itemid)
 timer bag_PutItemIn[300](playerid, itemid, containerid)
 {
 	AddItemToContainer(containerid, itemid, playerid);
+	bag_PuttingInBag[playerid] = false;
 }
 
 timer bag_EnterOtherPlayer[250](playerid, targetid)
