@@ -1,7 +1,26 @@
+#include <YSI\y_hooks>
+
+
 enum E_ALIAS_DATA
 {
 		alias_Name[MAX_PLAYER_NAME],
 bool:	alias_Banned
+}
+
+
+static
+DBStatement:	stmt_AliasesFromIp,
+DBStatement:	stmt_AliasesFromPass,
+DBStatement:	stmt_AliasesFromHash,
+DBStatement:	stmt_AliasesFromAll;
+
+
+hook OnGameModeInit()
+{
+	stmt_AliasesFromIp = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4"=? AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
+	stmt_AliasesFromPass = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS"=? AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
+	stmt_AliasesFromHash = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI"=? AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
+	stmt_AliasesFromAll = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE ("FIELD_PLAYER_PASS"=? OR "FIELD_PLAYER_IPV4"=? OR "FIELD_PLAYER_GPCI" = ?) AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
 }
 
 GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
@@ -11,22 +30,16 @@ GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
 		tempname[MAX_PLAYER_NAME],
 		templevel;
 
-	stmt_bind_value(gStmt_AccountGetIpv4, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetIpv4, 0, DB::TYPE_INTEGER, ip);
+	GetAccountIP(name, ip);
 
-	if(!stmt_execute(gStmt_AccountGetIpv4))
+	stmt_bind_value(stmt_AliasesFromIp, 0, DB::TYPE_INTEGER, ip);
+	stmt_bind_value(stmt_AliasesFromIp, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_AliasesFromIp, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_AliasesFromIp))
 		return 0;
 
-	stmt_fetch_row(gStmt_AccountGetIpv4);
-
-	stmt_bind_value(gStmt_AccountGetAliasesIp, 0, DB::TYPE_INTEGER, ip);
-	stmt_bind_value(gStmt_AccountGetAliasesIp, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAliasesIp, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
-
-	if(!stmt_execute(gStmt_AccountGetAliasesIp))
-		return 0;
-
-	while(stmt_fetch_row(gStmt_AccountGetAliasesIp))
+	while(stmt_fetch_row(stmt_AliasesFromIp))
 	{
 		if(count < max)
 			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
@@ -52,22 +65,16 @@ stock GetAccountAliasesByPass(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 		tempname[MAX_PLAYER_NAME],
 		templevel;
 
-	stmt_bind_value(gStmt_AccountGetPass, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetPass, 0, DB::TYPE_STRING, pass, 129);
+	GetAccountPassword(name, pass);
 
-	if(!stmt_execute(gStmt_AccountGetPass))
+	stmt_bind_value(stmt_AliasesFromPass, 0, DB::TYPE_STRING, pass, 129);
+	stmt_bind_value(stmt_AliasesFromPass, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_AliasesFromPass, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_AliasesFromPass))
 		return 0;
 
-	stmt_fetch_row(gStmt_AccountGetPass);
-
-	stmt_bind_value(gStmt_AccountGetAliasesPass, 0, DB::TYPE_STRING, pass, 129);
-	stmt_bind_value(gStmt_AccountGetAliasesPass, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAliasesPass, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
-
-	if(!stmt_execute(gStmt_AccountGetAliasesPass))
-		return 0;
-
-	while(stmt_fetch_row(gStmt_AccountGetAliasesPass))
+	while(stmt_fetch_row(stmt_AliasesFromPass))
 	{
 		if(count < max)
 			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
@@ -93,25 +100,19 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 		tempname[MAX_PLAYER_NAME],
 		templevel;
 
-	stmt_bind_value(gStmt_AccountGetHash, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetHash, 0, DB::TYPE_STRING, serial, 41);
-
-	if(!stmt_execute(gStmt_AccountGetHash))
-		return 0;
-
-	stmt_fetch_row(gStmt_AccountGetHash);
+	GetAccountGPCI(name, serial);
 
 	if(isnull(serial))
 		return 0;
 
-	stmt_bind_value(gStmt_AccountGetAliasesHash, 0, DB::TYPE_STRING, serial, 41);
-	stmt_bind_value(gStmt_AccountGetAliasesHash, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAliasesHash, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AliasesFromHash, 0, DB::TYPE_STRING, serial, 41);
+	stmt_bind_value(stmt_AliasesFromHash, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_AliasesFromHash, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
 
-	if(!stmt_execute(gStmt_AccountGetAliasesHash))
+	if(!stmt_execute(stmt_AliasesFromHash))
 		return 0;
 
-	while(stmt_fetch_row(gStmt_AccountGetAliasesHash))
+	while(stmt_fetch_row(stmt_AliasesFromHash))
 	{
 		if(serial[0] == '0')
 			continue;
@@ -136,32 +137,24 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 stock GetAccountAliasesByAll(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
 {
 	new
-		ip,
 		pass[129],
+		ip,
 		serial[41],
 		tempname[MAX_PLAYER_NAME],
 		templevel;
 
-	stmt_bind_value(gStmt_AccountGetAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAll, 0, DB::TYPE_INTEGER, ip);
-	stmt_bind_result_field(gStmt_AccountGetAll, 1, DB::TYPE_STRING, pass, sizeof(pass));
-	stmt_bind_result_field(gStmt_AccountGetAll, 2, DB::TYPE_STRING, serial, sizeof(serial));
+	GetAccountAliasData(name, pass, ip, serial);
 
-	if(!stmt_execute(gStmt_AccountGetAll))
+	stmt_bind_value(stmt_AliasesFromAll, 0, DB::TYPE_STRING, pass, sizeof(pass));
+	stmt_bind_value(stmt_AliasesFromAll, 1, DB::TYPE_INTEGER, ip);
+	stmt_bind_value(stmt_AliasesFromAll, 2, DB::TYPE_STRING, serial, sizeof(serial));
+	stmt_bind_value(stmt_AliasesFromAll, 3, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_AliasesFromAll, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_AliasesFromAll))
 		return 0;
 
-	stmt_fetch_row(gStmt_AccountGetAll);
-
-	stmt_bind_value(gStmt_AccountGetAliasesAll, 0, DB::TYPE_INTEGER, ip);
-	stmt_bind_value(gStmt_AccountGetAliasesAll, 1, DB::TYPE_STRING, pass, sizeof(pass));
-	stmt_bind_value(gStmt_AccountGetAliasesAll, 2, DB::TYPE_STRING, serial, sizeof(serial));
-	stmt_bind_value(gStmt_AccountGetAliasesAll, 3, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AccountGetAliasesAll, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
-
-	if(!stmt_execute(gStmt_AccountGetAliasesAll))
-		return 0;
-
-	while(stmt_fetch_row(gStmt_AccountGetAliasesAll))
+	while(stmt_fetch_row(stmt_AliasesFromAll))
 	{
 		if(count < max)
 			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);

@@ -262,7 +262,7 @@ ptask PlayerUpdate[100](playerid)
 		ply_Data[playerid][ply_PingLimitStrikes] = 0;
 	}
 
-	if(NetStats_MessagesRecvPerSecond(playerid) > 60)
+	if(NetStats_MessagesRecvPerSecond(playerid) > 200)
 	{
 		MsgAdminsF(3, YELLOW, " >  %p sending %d messages per second.", playerid, NetStats_MessagesRecvPerSecond(playerid));
 		return;

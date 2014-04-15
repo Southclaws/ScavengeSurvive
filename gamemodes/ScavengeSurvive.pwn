@@ -28,7 +28,7 @@ native gpci(playerid, serial[], len);
 
 #define _DEBUG							0 // YSI
 #define DB_DEBUG						false // SQLitei
-#define DB_MAX_STATEMENTS				(72) // SQLitei
+#define DB_MAX_STATEMENTS				(128) // SQLitei
 #define STRLIB_RETURN_SIZE				(256) // strlib
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
@@ -38,6 +38,32 @@ native gpci(playerid, serial[], len);
 
 #define BTN_MAX							(16384) // SIF/Button
 #define ITM_MAX							(16384) // SIF/Item
+
+/*==============================================================================
+
+	Guaranteed first call
+
+==============================================================================*/
+
+public OnGameModeInit()
+{
+	OnGameModeInit_Pre();
+	#if defined gm_OnGameModeInit
+		return gm_OnGameModeInit();
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnGameModeInit
+	#undef OnGameModeInit
+#else
+	#define _ALS_OnGameModeInit
+#endif
+ 
+#define OnGameModeInit gm_OnGameModeInit
+#if defined gm_OnGameModeInit
+	forward gm_OnGameModeInit();
+#endif
 
 /*==============================================================================
 
@@ -110,6 +136,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_PLAYER_FILE				(MAX_PLAYER_NAME+16)
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
+#define MAX_GPCI_LEN				(41)
 #define MAX_SPAWNED_VEHICLES		(250)
 
 
@@ -119,143 +146,11 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Files
-#define ACCOUNT_DATABASE			DIRECTORY_MAIN"Accounts.db"
-#define WORLD_DATABASE				DIRECTORY_MAIN"World.db"
+#define ACCOUNT_DATABASE			DIRECTORY_MAIN"accounts.db"
+#define WORLD_DATABASE				DIRECTORY_MAIN"world.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
 #define GEID_FILE					DIRECTORY_MAIN"geids.dat"
 
-
-// Database
-#define ACCOUNTS_TABLE_PLAYER		"Player"
-#define ACCOUNTS_TABLE_BANS			"Bans"
-#define ACCOUNTS_TABLE_REPORTS		"Reports"
-#define ACCOUNTS_TABLE_BUGS			"Bugs"
-#define ACCOUNTS_TABLE_WHITELIST	"Whitelist"
-#define ACCOUNTS_TABLE_ADMINS		"Admins"
-#define WORLD_TABLE_SPRAYTAG		"SprayTag"
-
-// Player
-#define FIELD_PLAYER_NAME			"name"		// 00
-#define FIELD_PLAYER_PASS			"pass"		// 01
-#define FIELD_PLAYER_IPV4			"ipv4"		// 02
-#define FIELD_PLAYER_ALIVE			"alive"		// 03
-#define FIELD_PLAYER_KARMA			"karma"		// 04
-#define FIELD_PLAYER_REGDATE		"regdate"	// 05
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 06
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 07
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 08
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 09
-#define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 10
-#define FIELD_PLAYER_GPCI			"gpci"		// 11
-
-enum
-{
-	FIELD_ID_PLAYER_NAME,
-	FIELD_ID_PLAYER_PASS,
-	FIELD_ID_PLAYER_IPV4,
-	FIELD_ID_PLAYER_ALIVE,
-	FIELD_ID_PLAYER_KARMA,
-	FIELD_ID_PLAYER_REGDATE,
-	FIELD_ID_PLAYER_LASTLOG,
-	FIELD_ID_PLAYER_SPAWNTIME,
-	FIELD_ID_PLAYER_TOTALSPAWNS,
-	FIELD_ID_PLAYER_WARNINGS,
-	FIELD_ID_PLAYER_AIMSHOUT,
-	FIELD_ID_PLAYER_GPCI
-}
-
-// Bans
-#define FIELD_BANS_NAME				"name"		// 00
-#define FIELD_BANS_IPV4				"ipv4"		// 01
-#define FIELD_BANS_DATE				"date"		// 02
-#define FIELD_BANS_REASON			"reason"	// 03
-#define FIELD_BANS_BY				"by"		// 04
-#define FIELD_BANS_DURATION			"duration"	// 05
-
-enum
-{
-	FIELD_ID_BANS_NAME,
-	FIELD_ID_BANS_IPV4,
-	FIELD_ID_BANS_DATE,
-	FIELD_ID_BANS_REASON,
-	FIELD_ID_BANS_BY,
-	FIELD_ID_BANS_DURATION
-}
-
-// Reports
-#define FIELD_REPORTS_NAME			"name"		// 00
-#define FIELD_REPORTS_REASON		"reason"	// 01
-#define FIELD_REPORTS_DATE			"date"		// 02
-#define FIELD_REPORTS_READ			"read"		// 03
-#define FIELD_REPORTS_TYPE			"type"		// 04
-#define FIELD_REPORTS_POSX			"posx"		// 05
-#define FIELD_REPORTS_POSY			"posy"		// 06
-#define FIELD_REPORTS_POSZ			"posz"		// 07
-#define FIELD_REPORTS_INFO			"info"		// 08
-#define FIELD_REPORTS_BY			"by"		// 09
-
-enum
-{
-	FIELD_ID_REPORTS_NAME,
-	FIELD_ID_REPORTS_REASON,
-	FIELD_ID_REPORTS_DATE,
-	FIELD_ID_REPORTS_READ,
-	FIELD_ID_REPORTS_TYPE,
-	FIELD_ID_REPORTS_POSX,
-	FIELD_ID_REPORTS_POSY,
-	FIELD_ID_REPORTS_POSZ,
-	FIELD_ID_REPORTS_INFO,
-	FIELD_ID_REPORTS_BY
-}
-
-// Bugs
-#define FIELD_BUGS_NAME				"name"		// 00
-#define FIELD_BUGS_REASON			"reason"	// 01
-#define FIELD_BUGS_DATE				"date"		// 02
-
-enum
-{
-	FIELD_ID_BUGS_NAME,
-	FIELD_ID_BUGS_REASON,
-	FIELD_ID_BUGS_DATE
-}
-
-// Whitelist
-#define FIELD_WHITELIST_NAME		"name"		// 00
-
-// Admins
-#define FIELD_ADMINS_NAME			"name"		// 00
-#define FIELD_ADMINS_LEVEL			"level"		// 01
-
-// SprayTag
-#define FIELD_SPRAYTAG_NAME			"name"		// 00
-#define FIELD_SPRAYTAG_POSX			"posx"		// 01
-#define FIELD_SPRAYTAG_POSY			"posy"		// 02
-#define FIELD_SPRAYTAG_POSZ			"posz"		// 03
-#define FIELD_SPRAYTAG_ROTX			"rotx"		// 04
-#define FIELD_SPRAYTAG_ROTY			"roty"		// 05
-#define FIELD_SPRAYTAG_ROTZ			"rotz"		// 06
-
-enum
-{
-	FIELD_ID_SPRAYTAG_NAME,
-	FIELD_ID_SPRAYTAG_POSX,
-	FIELD_ID_SPRAYTAG_POSY,
-	FIELD_ID_SPRAYTAG_POSZ,
-	FIELD_ID_SPRAYTAG_ROTX,
-	FIELD_ID_SPRAYTAG_ROTY,
-	FIELD_ID_SPRAYTAG_ROTZ
-}
-
-enum
-{
-	STAFF_LEVEL_NONE,						// 0
-	STAFF_LEVEL_GAME_MASTER,				// 1
-	STAFF_LEVEL_MODERATOR,					// 2
-	STAFF_LEVEL_ADMINISTRATOR,				// 3
-	STAFF_LEVEL_DEVELOPER,					// 4
-	STAFF_LEVEL_SECRET						// 5
-}
 
 // Macros
 #define t:%1<%2>					((%1)|=(%2))
@@ -320,9 +215,53 @@ enum
 #define C_SPECIAL					"{0025AA}"
 
 
+// Report types
+#define REPORT_TYPE_PLAYER_ID			"PLY ID"
+#define REPORT_TYPE_PLAYER_NAME			"PLY NAME"
+#define REPORT_TYPE_PLAYER_CLOSE		"PLY CLOSE"
+#define REPORT_TYPE_PLAYER_KILLER		"PLY KILL"
+#define REPORT_TYPE_TELEPORT			"TELE"
+#define REPORT_TYPE_SWIMFLY				"FLY"
+#define REPORT_TYPE_VHEALTH				"VHP"
+#define REPORT_TYPE_CAMDIST				"CAM"
+#define REPORT_TYPE_CARNITRO			"NOS"
+#define REPORT_TYPE_CARHYDRO			"HYDRO"
+#define REPORT_TYPE_CARTELE				"VTP"
+#define REPORT_TYPE_HACKTRAP			"TRAP"
+#define REPORT_TYPE_LOCKEDCAR			"LCAR"
+#define REPORT_TYPE_AMMO				"AMMO"
+#define REPORT_TYPE_SHOTANIM			"ANIM"
+#define REPORT_TYPE_END
+
+
+// Genders
 #define GENDER_MALE					(0)
 #define GENDER_FEMALE				(1)
 
+
+// Key text
+#define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
+#define KEYTEXT_PUT_AWAY			"~k~~CONVERSATION_YES~"
+#define KEYTEXT_DROP_ITEM			"~k~~CONVERSATION_NO~"
+#define KEYTEXT_INVENTORY			"~k~~GROUP_CONTROL_BWD~"
+#define KEYTEXT_ENGINE				"~k~~CONVERSATION_YES~"
+#define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
+#define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
+#define KEYTEXT_RADIO				"R"
+
+
+// Staff levels
+enum
+{
+	STAFF_LEVEL_NONE,						// 0
+	STAFF_LEVEL_GAME_MASTER,				// 1
+	STAFF_LEVEL_MODERATOR,					// 2
+	STAFF_LEVEL_ADMINISTRATOR,				// 3
+	STAFF_LEVEL_DEVELOPER,					// 4
+	STAFF_LEVEL_SECRET						// 5
+}
+
+// Attachment slots
 enum
 {
 	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
@@ -334,6 +273,7 @@ enum
 	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
 }
 
+// Drug types
 enum
 {
 	DRUG_TYPE_ANTIBIOTIC,	// 0 - Remove infection
@@ -345,6 +285,7 @@ enum
 	DRUG_TYPE_HEROINE		// 6 - Weather effects
 }
 
+// Chat modes
 enum
 {
 	CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
@@ -352,16 +293,6 @@ enum
 	CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
 	CHAT_MODE_ADMIN			// 3 - Speak to admins
 }
-
-
-#define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
-#define KEYTEXT_PUT_AWAY			"~k~~CONVERSATION_YES~"
-#define KEYTEXT_DROP_ITEM			"~k~~CONVERSATION_NO~"
-#define KEYTEXT_INVENTORY			"~k~~GROUP_CONTROL_BWD~"
-#define KEYTEXT_ENGINE				"~k~~CONVERSATION_YES~"
-#define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
-#define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
-#define KEYTEXT_RADIO				"R"
 
 // Dialog IDs
 enum
@@ -380,16 +311,6 @@ enum
 	d_Radio,
 	d_GraveStone,
 
-	d_ReportMenu,
-	d_ReportPlayerList,
-	d_ReportNameInput,
-	d_ReportReason,
-
-	d_ReportList,
-	d_Report,
-	d_ReportOptions,
-	d_ReportBanDuration,
-
 	d_IssueSubmit,
 	d_IssueList,
 	d_Issue,
@@ -402,10 +323,7 @@ enum
 	d_TransferAmmoGun2Gun,
 
 	d_BanReason,
-	d_BanDuration,
-	d_BanOptions,
-	d_BanList,
-	d_BanInfo
+	d_BanDuration
 }
 
 // Keypad IDs
@@ -438,76 +356,7 @@ enum
 // DATABASES AND STATEMENTS
 new
 DB:				gAccounts,
-DB:				gWorld,
-
-// ACCOUNTS_TABLE_PLAYER
-DBStatement:	gStmt_AccountExists,
-DBStatement:	gStmt_AccountCreate,
-DBStatement:	gStmt_AccountLoad,
-DBStatement:	gStmt_AccountUpdate,
-DBStatement:	gStmt_AccountSetPassword,
-DBStatement:	gStmt_AccountSetIpv4,
-DBStatement:	gStmt_AccountSetGpci,
-DBStatement:	gStmt_AccountSetLastLog,
-DBStatement:	gStmt_AccountSetSpawnTime,
-DBStatement:	gStmt_AccountSetTotalSpawns,
-DBStatement:	gStmt_AccountGetIpv4,
-DBStatement:	gStmt_AccountGetPass,
-DBStatement:	gStmt_AccountGetHash,
-DBStatement:	gStmt_AccountGetAll,
-DBStatement:	gStmt_AccountGetAliasesIp,
-DBStatement:	gStmt_AccountGetAliasesPass,
-DBStatement:	gStmt_AccountGetAliasesHash,
-DBStatement:	gStmt_AccountGetAliasesAll,
-DBStatement:	gStmt_AccountSetAimShout,
-
-// ACCOUNTS_TABLE_BANS
-DBStatement:	gStmt_BanInsert,
-DBStatement:	gStmt_BanDelete,
-DBStatement:	gStmt_BanGetFromNameIp,
-DBStatement:	gStmt_BanGetList,
-DBStatement:	gStmt_BanGetTotal,
-DBStatement:	gStmt_BanGetInfo,
-DBStatement:	gStmt_BanNameCheck,
-DBStatement:	gStmt_BanUpdateIpv4,
-DBStatement:	gStmt_BanUpdateInfo,
-
-// ACCOUNTS_TABLE_REPORTS
-DBStatement:	gStmt_ReportInsert,
-DBStatement:	gStmt_ReportDelete,
-DBStatement:	gStmt_ReportDeleteName,
-DBStatement:	gStmt_ReportNameExists,
-DBStatement:	gStmt_ReportList,
-DBStatement:	gStmt_ReportInfo,
-DBStatement:	gStmt_ReportSetRead,
-DBStatement:	gStmt_ReportGetUnread,
-
-// ACCOUNTS_TABLE_BUGS
-DBStatement:	gStmt_BugInsert,
-DBStatement:	gStmt_BugDelete,
-DBStatement:	gStmt_BugList,
-DBStatement:	gStmt_BugTotal,
-DBStatement:	gStmt_BugInfo,
-
-// ACCOUNTS_TABLE_WHITELIST
-DBStatement:	gStmt_WhitelistExists,
-DBStatement:	gStmt_WhitelistInsert,
-DBStatement:	gStmt_WhitelistDelete,
-
-// ACCOUNTS_TABLE_ADMINS
-DBStatement:	gStmt_AdminLoadAll,
-DBStatement:	gStmt_AdminExists,
-DBStatement:	gStmt_AdminInsert,
-DBStatement:	gStmt_AdminUpdate,
-DBStatement:	gStmt_AdminDelete,
-DBStatement:	gStmt_AdminGetLevel,
-
-// WORLD_TABLE_SPRAYTAG
-DBStatement:	gStmt_SprayTagExists,
-DBStatement:	gStmt_SprayTagInsert,
-DBStatement:	gStmt_SprayTagLoad,
-DBStatement:	gStmt_SprayTagSave;
-
+DB:				gWorld;
 
 // SERVER SETTINGS (JSON LOADED)
 new
@@ -900,6 +749,7 @@ forward SetRestart(seconds);
 
 // ADMINISTRATION TOOLS
 #include "SS/Core/Admin/Report.pwn"
+#include "SS/Core/Admin/Report_cmds.pwn"
 #include "SS/Core/Admin/HackDetect.pwn"
 #include "SS/Core/Admin/HackTrap.pwn"
 #include "SS/Core/Admin/Level1.pwn"
@@ -1019,134 +869,19 @@ main()
 
 
 
-public OnGameModeInit()
+OnGameModeInit_Pre()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
+	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
+	gWorld = db_open_persistent(WORLD_DATABASE);
+}
+
+public OnGameModeInit()
+{
 	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode initializing...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
 
 	djson_GameModeInit();
-
-	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
-	gWorld = db_open_persistent(WORLD_DATABASE);
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
-		"FIELD_PLAYER_NAME" TEXT,\
-		"FIELD_PLAYER_PASS" TEXT,\
-		"FIELD_PLAYER_IPV4" INTEGER,\
-		"FIELD_PLAYER_ALIVE" INTEGER,\
-		"FIELD_PLAYER_KARMA" INTEGER,\
-		"FIELD_PLAYER_REGDATE" INTEGER,\
-		"FIELD_PLAYER_LASTLOG" INTEGER,\
-		"FIELD_PLAYER_SPAWNTIME" INTEGER,\
-		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
-		"FIELD_PLAYER_WARNINGS" INTEGER,\
-		"FIELD_PLAYER_AIMSHOUT" TEXT,\
-		"FIELD_PLAYER_GPCI" TEXT)"));
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" (\
-		"FIELD_BANS_NAME" TEXT,\
-		"FIELD_BANS_IPV4" INTEGER,\
-		"FIELD_BANS_DATE" INTEGER,\
-		"FIELD_BANS_REASON" TEXT,\
-		"FIELD_BANS_BY" TEXT,\
-		"FIELD_BANS_DURATION" INTEGER)"));
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
-		"FIELD_REPORTS_NAME" TEXT,\
-		"FIELD_REPORTS_REASON" TEXT,\
-		"FIELD_REPORTS_DATE" INTEGER,\
-		"FIELD_REPORTS_READ" INTEGER,\
-		"FIELD_REPORTS_TYPE" INTEGER,\
-		"FIELD_REPORTS_POSX" REAL,\
-		"FIELD_REPORTS_POSY" REAL,\
-		"FIELD_REPORTS_POSZ" REAL,\
-		"FIELD_REPORTS_INFO" TEXT,\
-		"FIELD_REPORTS_BY" TEXT)"));
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BUGS" (\
-		"FIELD_BUGS_NAME" TEXT,\
-		"FIELD_BUGS_REASON" TEXT,\
-		"FIELD_BUGS_DATE" INTEGER)"));
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
-		"FIELD_WHITELIST_NAME" TEXT)"));
-
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
-		"FIELD_ADMINS_NAME" TEXT,\
-		"FIELD_ADMINS_LEVEL" INTEGER)"));
-
-
-	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" (\
-		"FIELD_SPRAYTAG_NAME" TEXT,\
-		"FIELD_SPRAYTAG_POSX" REAL,\
-		"FIELD_SPRAYTAG_POSY" REAL,\
-		"FIELD_SPRAYTAG_POSZ" REAL,\
-		"FIELD_SPRAYTAG_ROTX" REAL,\
-		"FIELD_SPRAYTAG_ROTY" REAL,\
-		"FIELD_SPRAYTAG_ROTZ" REAL)"));
-
-
-	gStmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?, ?, ?, 0, 0, ?, ?, 0, 0, 0, ?, ?)");
-	gStmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE" = ?, "FIELD_PLAYER_KARMA" = ?, "FIELD_PLAYER_WARNINGS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetPassword	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetIpv4		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_IPV4" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetGpci		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetLastLog		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LASTLOG" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetSpawnTime	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_SPAWNTIME" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountSetTotalSpawns	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_TOTALSPAWNS" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetIpv4		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetPass		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_PASS" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetHash		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetAll			= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4", "FIELD_PLAYER_PASS", "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesIp	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesPass	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesHash	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_GPCI" = ? AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountGetAliasesAll	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE ("FIELD_PLAYER_IPV4" = ? OR "FIELD_PLAYER_PASS" = ? OR "FIELD_PLAYER_GPCI" = ?) AND "FIELD_PLAYER_NAME" != ? COLLATE NOCASE");
-	gStmt_AccountSetAimShout	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT" = ? WHERE "FIELD_PLAYER_NAME" = ? COLLATE NOCASE");
-
-	gStmt_BanInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BANS" VALUES(?, ?, ?, ?, ?, ?)");
-	gStmt_BanDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-	gStmt_BanGetFromNameIp		= db_prepare(gAccounts, "SELECT COUNT(*), "FIELD_BANS_DATE", "FIELD_BANS_REASON", "FIELD_BANS_DURATION" FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE OR "FIELD_BANS_IPV4" = ? ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanGetList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" ORDER BY "FIELD_BANS_DATE" DESC LIMIT ?, ? COLLATE NOCASE");
-	gStmt_BanGetTotal			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS"");
-	gStmt_BanGetInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-	gStmt_BanNameCheck			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BANS" WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE ORDER BY "FIELD_BANS_DATE" DESC");
-	gStmt_BanUpdateIpv4			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_IPV4" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-	gStmt_BanUpdateInfo			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_BANS" SET "FIELD_BANS_REASON" = ?, "FIELD_BANS_DURATION" = ? WHERE "FIELD_BANS_NAME" = ? COLLATE NOCASE");
-
-	gStmt_ReportInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?)");
-	gStmt_ReportDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportDeleteName		= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
-	gStmt_ReportNameExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
-	gStmt_ReportList			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS"");
-	gStmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportSetRead			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_READ" = ? WHERE "FIELD_REPORTS_NAME" = ? AND "FIELD_REPORTS_DATE" = ?");
-	gStmt_ReportGetUnread		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_READ" = 0");
-
-	gStmt_BugInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BUGS" VALUES(?, ?, ?)");
-	gStmt_BugDelete				= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BUGS" WHERE "FIELD_BUGS_DATE" = ?");
-	gStmt_BugList				= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS"");
-	gStmt_BugTotal				= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BUGS"");
-	gStmt_BugInfo				= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS" WHERE "FIELD_BUGS_DATE" = ?");
-
-	gStmt_WhitelistExists		= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ? COLLATE NOCASE");
-	gStmt_WhitelistInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_WHITELIST" ("FIELD_WHITELIST_NAME") VALUES(?)");
-	gStmt_WhitelistDelete		= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
-
-	gStmt_AdminLoadAll			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" ORDER BY "FIELD_ADMINS_LEVEL" DESC");
-	gStmt_AdminExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminInsert			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
-	gStmt_AdminUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminDelete			= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	gStmt_AdminGetLevel			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-
-	gStmt_SprayTagExists		= db_prepare(gWorld, "SELECT COUNT(*) FROM "WORLD_TABLE_SPRAYTAG" WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
-	gStmt_SprayTagInsert		= db_prepare(gWorld, "INSERT INTO "WORLD_TABLE_SPRAYTAG" VALUES(?, ?, ?, ?, ?, ?, ?)");
-	gStmt_SprayTagLoad			= db_prepare(gWorld, "SELECT * FROM "WORLD_TABLE_SPRAYTAG"");
-	gStmt_SprayTagSave			= db_prepare(gWorld, "UPDATE "WORLD_TABLE_SPRAYTAG" SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
 
 	LoadSettings();
 
@@ -1591,6 +1326,21 @@ public OnGameModeInit()
 	DefineBagType("Parachute Bag",		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Large Backpack",		item_LargeBackpack,	9, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
 
+	CreateNewSprayTag(-399.76999, 1514.92004, 75.26000,   0.00000, 0.00000, 0.00000);
+	CreateNewSprayTag(-229.34000, 1082.34998, 20.29000,   0.00000, 0.00000, 0.00000);
+	CreateNewSprayTag(-2442.16992, 2299.22998, 5.71000,   0.00000, 0.00000, 270.00000);
+	CreateNewSprayTag(-2662.94995, 2121.43994, 2.14000,   0.00000, 0.00000, 180.00000);
+	CreateNewSprayTag(146.92000, 1831.78003, 18.02000,   0.00000, 0.00000, 90.00000);
+	CreateNewSprayTag(1172.88086, -1313.05103, 14.24630,   10.00000, 0.00000, 180.00000);
+	CreateNewSprayTag(1237.39001, -1631.59998, 28.02000,   0.00000, 0.00000, 91.00000);
+	CreateNewSprayTag(1118.51100, -1540.14001, 23.66000,   0.00000, 0.00000, 178.46001);
+	CreateNewSprayTag(1202.10999, -1201.55005, 20.47000,   0.00000, 0.00000, 90.00000);
+	CreateNewSprayTag(1264.15002, -1270.28003, 14.26000,   0.00000, 0.00000, 270.00000);
+	CreateNewSprayTag(-1908.90003, 299.56000, 41.52000,   0.00000, 0.00000, 180.00000);
+	CreateNewSprayTag(-2636.69995, 635.52002, 15.13000,   0.00000, 0.00000, 0.00000);
+	CreateNewSprayTag(-2224.75000, 881.27002, 84.13000,   0.00000, 0.00000, 90.00000);
+	CreateNewSprayTag(-1788.31995, 748.41998, 25.36000,   0.00000, 0.00000, 270.00000);
+
 
 	// Initiation Code
 
@@ -1600,11 +1350,11 @@ public OnGameModeInit()
 
 	LoadAdminData();
 
-	LoadVehicles	(false, true);
-	LoadSafeboxes	(false, true);
-	LoadTents		(false, true);
-	LoadDefences	(false, true);
-	LoadSigns		(false, true);
+	LoadVehicles	(true, true);
+	LoadSafeboxes	(true, true);
+	LoadTents		(true, true);
+	LoadDefences	(true, true);
+	LoadSigns		(true, true);
 
 	LoadSprayTags();
 
@@ -1729,5 +1479,31 @@ DirectoryCheck(directory[])
 	{
 		printf("ERROR: Directory '%s' not found. Creating directory.", directory);
 		dir_create(directory);
+	}
+}
+
+DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
+{
+	new
+		query[96],
+		DBResult:result,
+		sql_string[256],
+		dbcolumns;
+
+	format(query, sizeof(query), "SELECT sql FROM sqlite_master WHERE tbl_name = '%s' COLLATE NOCASE", tablename);
+	result = db_query(database, query);
+	db_get_field(result, 0, sql_string, sizeof(sql_string));
+
+	dbcolumns = strcount(sql_string, ",") + 1;
+
+	if(dbcolumns != expectedcolumns)
+	{
+		printf("ERROR: Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
+		print("Please verify table structure against column list in script.");
+		print(sql_string);
+
+		// Put the server into a loop to stop it so the user can read the message.
+		// It won't function correctly with bad databases anyway.
+		for(;;){}
 	}
 }

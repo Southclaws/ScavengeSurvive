@@ -26,7 +26,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 CMD:aimshout(playerid, params[])
 {
-	new string[128];
+	new
+		string[128],
+		name[MAX_PLAYER_NAME];
 
 	if(sscanf(params, "s[128]", string))
 	{
@@ -34,11 +36,10 @@ CMD:aimshout(playerid, params[])
 		return 1;
 	}
 
-	SetPlayerAimShoutText(playerid, string);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	stmt_bind_value(gStmt_AccountSetAimShout, 0, DB::TYPE_STRING, string, 128);
-	stmt_bind_value(gStmt_AccountSetAimShout, 1, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_execute(gStmt_AccountSetAimShout);
+	SetPlayerAimShoutText(playerid, string);
+	SetAccountAimshout(name, string);
 
 	MsgF(playerid, YELLOW, " >  AimShout set to '%s'", string);
 

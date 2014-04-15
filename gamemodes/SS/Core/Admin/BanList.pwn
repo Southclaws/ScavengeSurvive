@@ -5,57 +5,74 @@
 
 
 static
+	banlist_ViewingList[MAX_PLAYERS],
 	banlist_CurrentIndex[MAX_PLAYERS],
-	banlist_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME],
-	banlist_ItemsOnPage[MAX_PLAYERS];
+	banlist_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
 ShowListOfBans(playerid, index = 0)
 {
-	new name[MAX_PLAYER_NAME + 1];
+	new
+		list[MAX_BANS_PER_PAGE][MAX_PLAYER_NAME],
+		totalbans,
+		listitems;
 
-	stmt_bind_value(gStmt_BanGetList, 0, DB::TYPE_INTEGER, index);
-	stmt_bind_value(gStmt_BanGetList, 1, DB::TYPE_INTEGER, MAX_BANS_PER_PAGE);
-	stmt_bind_result_field(gStmt_BanGetList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME + 1);
+	totalbans = GetTotalBans();
 
-	banlist_ItemsOnPage[playerid] = 0;
+	if(index > totalbans)
+		index = 0;
 
-	if(stmt_execute(gStmt_BanGetList))
+	if(index < 0)
+		index = totalbans - (totalbans % MAX_BANS_PER_PAGE);
+
+	listitems = GetBanList(list, MAX_BANS_PER_PAGE, index);
+
+	if(listitems == 0)
+		return 0;
+
+	if(listitems == -1)
+		return -1;
+
+	new
+		idx,
+		string[((MAX_PLAYER_NAME + 1) * MAX_BANS_PER_PAGE)],
+		title[22];
+
+	while(idx < listitems )
 	{
-		new
-			list[((MAX_PLAYER_NAME + 1) * MAX_BANS_PER_PAGE) + 24],
-			total,
-			title[22];
-
-		while(stmt_fetch_row(gStmt_BanGetList))
-		{
-			strcat(list, name);
-			strcat(list, "\n");
-			banlist_ItemsOnPage[playerid]++;
-		}
-
-		stmt_bind_result_field(gStmt_BanGetTotal, 0, DB::TYPE_INTEGER, total);
-		stmt_execute(gStmt_BanGetTotal);
-		stmt_fetch_row(gStmt_BanGetTotal);
-
-		format(title, sizeof(title), "Bans (%d-%d of %d)", index, index + MAX_BANS_PER_PAGE, total);
-
-		if(index + MAX_BANS_PER_PAGE < total)
-			strcat(list, ""C_YELLOW"Next\n");
-
-		if(index >= MAX_BANS_PER_PAGE)
-			strcat(list, ""C_YELLOW"Prev");
-
-		ShowPlayerDialog(playerid, d_BanList, DIALOG_STYLE_LIST, title, list, "Open", "Close");
-		banlist_CurrentIndex[playerid] = index;
-
-		return 1;
+		strcat(string, list[idx]);
+		strcat(string, "\n");
+		idx++;
 	}
 
-	return 0;
+	format(title, sizeof(title), "Bans (%d-%d of %d)", index, index + listitems, totalbans);
+
+	banlist_ViewingList[playerid] = true;
+	banlist_CurrentIndex[playerid] = index;
+
+	ShowPlayerPageButtons(playerid);
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			new name[MAX_PLAYER_NAME];
+			strmid(name, inputtext, 0, MAX_PLAYER_NAME);
+			ShowBanInfo(playerid, name);
+		}
+
+		banlist_ViewingList[playerid] = false;
+		HidePlayerPageButtons(playerid);
+		CancelSelectTextDraw(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, string, "Open", "Close");
+
+	return 1;
 }
 
-DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
+ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
 {
 	new
 		timestamp,
@@ -63,69 +80,188 @@ DisplayBanInfo(playerid, name[MAX_PLAYER_NAME])
 		bannedby[MAX_PLAYER_NAME],
 		duration;
 
-	stmt_bind_value(gStmt_BanGetInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	if(!GetBanInfo(name, timestamp, reason, bannedby, duration))
+		return 0;
 
-	stmt_bind_result_field(gStmt_BanGetInfo, FIELD_ID_BANS_DATE, DB::TYPE_INTEGER, timestamp);
-	stmt_bind_result_field(gStmt_BanGetInfo, FIELD_ID_BANS_REASON, DB::TYPE_STRING, reason, MAX_BAN_REASON);
-	stmt_bind_result_field(gStmt_BanGetInfo, FIELD_ID_BANS_BY, DB::TYPE_STRING, bannedby, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_BanGetInfo, FIELD_ID_BANS_DURATION, DB::TYPE_INTEGER, duration);
+	new str[256];
 
-	if(stmt_execute(gStmt_BanGetInfo))
+	format(str, 256, "\
+		"C_YELLOW"Date:\n\t\t"C_BLUE"%s - %s\n\n\n\
+		"C_YELLOW"By:\n\t\t"C_BLUE"%s\n\n\n\
+		"C_YELLOW"Reason:\n\t\t"C_BLUE"%s",
+		TimestampToDateTime(timestamp),
+		duration ? TimestampToDateTime(timestamp + duration) : "Never",
+		bannedby,
+		reason);
+
+	banlist_CurrentName[playerid] = name;
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
-		stmt_fetch_row(gStmt_BanGetInfo);
+		#pragma unused pid, dialogid, listitem, inputtext
 
-		new str[256];
-
-		format(str, 256, "\
-			"C_YELLOW"Date:\n\t\t"C_BLUE"%s - %s\n\n\n\
-			"C_YELLOW"By:\n\t\t"C_BLUE"%s\n\n\n\
-			"C_YELLOW"Reason:\n\t\t"C_BLUE"%s",
-			TimestampToDateTime(timestamp),
-			duration ? TimestampToDateTime(timestamp + duration) : "Never",
-			bannedby,
-			reason);
-
-		ShowPlayerDialog(playerid, d_BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Un-ban", "Back");
-
-		banlist_CurrentName[playerid] = name;
-
-		return 1;
-	}
-
-	return 0;
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	if(dialogid == d_BanList)
-	{
 		if(response)
 		{
-			if(!strcmp(inputtext, "Next", false, 4))
-			{
-				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] + MAX_BANS_PER_PAGE);
-			}
-			else if(!strcmp(inputtext, "Prev", false, 4))
-			{
-				ShowListOfBans(playerid, banlist_CurrentIndex[playerid] - MAX_BANS_PER_PAGE);
-			}
-			else
-			{
-				new name[MAX_PLAYER_NAME];
-				strmid(name, inputtext, 0, MAX_PLAYER_NAME);
-				DisplayBanInfo(playerid, name);
-			}
+			ShowBanOptions(playerid);
+		}
+		else
+		{
+			ShowListOfBans(playerid);
 		}
 	}
-
-	if(dialogid == d_BanInfo)
-	{
-		if(response)
-			UnBanPlayer(banlist_CurrentName[playerid]);
-
-		ShowListOfBans(playerid, banlist_CurrentIndex[playerid]);
-	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, name, str, "Options", "Back");
 
 	return 1;
 }
 
+ShowBanOptions(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0: // Edit reason
+					ShowBanReasonEdit(playerid);
+
+				case 1: // Edit duration
+					ShowBanDurationEdit(playerid);
+
+				case 2: // Edit set unban
+					ShowBanDateEdit(playerid);
+
+				case 3: // Unban
+					ShowUnbanPrompt(playerid);
+			}
+		}
+		else
+		{
+			ShowBanInfo(playerid, banlist_CurrentName[playerid]);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, banlist_CurrentName[playerid], "Edit reason\nEdit duration\nSet unban\nUnban\n", "Select", "Back");
+
+	return 1;
+}
+
+ShowBanReasonEdit(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			SetBanReason(banlist_CurrentName[playerid], inputtext);
+		}
+
+		ShowBanOptions(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban reason below.", "Enter", "Cancel");
+
+	return 1;
+}
+
+ShowBanDurationEdit(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			new duration;
+
+			if(!strcmp(inputtext, "forever", true))
+				duration = 0;
+
+			else
+				duration = GetDurationFromString(inputtext);
+
+			if(duration == -1)
+			{
+				Msg(playerid, YELLOW, " >  Invalid input. Please use <number> <days/weeks/months>.");
+				ShowBanDurationEdit(playerid);
+			}
+			else
+			{
+				SetBanDuration(banlist_CurrentName[playerid], duration);
+				ShowBanOptions(playerid);
+			}
+		}
+
+		ShowBanOptions(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban duration below in format <number> <days/weeks/months>", "Enter", "Cancel");
+
+	return 1;
+}
+
+ShowBanDateEdit(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			Msg(playerid, YELLOW, " >  Not implemented.");
+		}
+
+		ShowBanOptions(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit unban date", "Please enter a date in format: dd/mm/yy", "Enter", "Cancel");
+
+	return 1;
+}
+
+ShowUnbanPrompt(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			UnBanPlayer(banlist_CurrentName[playerid]);
+		}
+
+		ShowBanOptions(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Unban", "Please confirm unban.", "Enter", "Cancel");
+
+	return 1;
+}
+
+public OnPlayerDialogPage(playerid, direction)
+{
+	if(banlist_ViewingList[playerid])
+	{
+		if(direction == 0)
+			banlist_CurrentIndex[playerid] -= MAX_BANS_PER_PAGE;
+
+		else
+			banlist_CurrentIndex[playerid] += MAX_BANS_PER_PAGE;
+
+		ShowListOfBans(playerid, banlist_CurrentIndex[playerid]);
+	}
+
+	#if defined banlist_OnPlayerDialogPage
+		return banlist_OnPlayerDialogPage(playerid, direction);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerDialogPage
+	#undef OnPlayerDialogPage
+#else
+	#define _ALS_OnPlayerDialogPage
+#endif
+ 
+#define OnPlayerDialogPage banlist_OnPlayerDialogPage
+#if defined banlist_OnPlayerDialogPage
+	forward banlist_OnPlayerDialogPage(playerid, direction);
+#endif

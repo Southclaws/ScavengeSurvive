@@ -2,6 +2,25 @@
 
 #define MAX_SPRAYTAG		(32)
 #define TAG_SPRAY_TIME		(2500)
+#define WORLD_TABLE_SPRAYTAG		"SprayTag"
+#define FIELD_SPRAYTAG_NAME			"name"		// 00
+#define FIELD_SPRAYTAG_POSX			"posx"		// 01
+#define FIELD_SPRAYTAG_POSY			"posy"		// 02
+#define FIELD_SPRAYTAG_POSZ			"posz"		// 03
+#define FIELD_SPRAYTAG_ROTX			"rotx"		// 04
+#define FIELD_SPRAYTAG_ROTY			"roty"		// 05
+#define FIELD_SPRAYTAG_ROTZ			"rotz"		// 06
+
+enum
+{
+	FIELD_ID_SPRAYTAG_NAME,
+	FIELD_ID_SPRAYTAG_POSX,
+	FIELD_ID_SPRAYTAG_POSY,
+	FIELD_ID_SPRAYTAG_POSZ,
+	FIELD_ID_SPRAYTAG_ROTX,
+	FIELD_ID_SPRAYTAG_ROTY,
+	FIELD_ID_SPRAYTAG_ROTZ
+}
 
 enum E_SPRAYTAG_DATA
 {
@@ -16,73 +35,71 @@ Float:	tag_rotY,
 Float:	tag_rotZ
 }
 
-static
-		tag_Data		[MAX_SPRAYTAG][E_SPRAYTAG_DATA],
-		tag_Total;
 
 static
-		tag_CurrentTag	[MAX_PLAYERS],
-		tag_Spraying	[MAX_PLAYERS];
+				tag_Data		[MAX_SPRAYTAG][E_SPRAYTAG_DATA],
+				tag_Total,
+DBStatement:	stmt_SprayTagExists,
+DBStatement:	stmt_SprayTagInsert,
+DBStatement:	stmt_SprayTagLoad,
+DBStatement:	stmt_SprayTagSave;
 
 
-public OnLoad()
+static
+				tag_CurrentTag	[MAX_PLAYERS],
+				tag_Spraying	[MAX_PLAYERS];
+
+
+hook OnGameModeInit()
 {
+	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" (\
+		"FIELD_SPRAYTAG_NAME" TEXT,\
+		"FIELD_SPRAYTAG_POSX" REAL,\
+		"FIELD_SPRAYTAG_POSY" REAL,\
+		"FIELD_SPRAYTAG_POSZ" REAL,\
+		"FIELD_SPRAYTAG_ROTX" REAL,\
+		"FIELD_SPRAYTAG_ROTY" REAL,\
+		"FIELD_SPRAYTAG_ROTZ" REAL)"));
+
+	DatabaseTableCheck(gWorld, WORLD_TABLE_SPRAYTAG, 7);
+
+	stmt_SprayTagExists	= db_prepare(gWorld, "SELECT COUNT(*) FROM "WORLD_TABLE_SPRAYTAG" WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
+	stmt_SprayTagInsert	= db_prepare(gWorld, "INSERT INTO "WORLD_TABLE_SPRAYTAG" VALUES(?, ?, ?, ?, ?, ?, ?)");
+	stmt_SprayTagLoad	= db_prepare(gWorld, "SELECT * FROM "WORLD_TABLE_SPRAYTAG"");
+	stmt_SprayTagSave	= db_prepare(gWorld, "UPDATE "WORLD_TABLE_SPRAYTAG" SET "FIELD_SPRAYTAG_NAME" = ? WHERE "FIELD_SPRAYTAG_POSX" = ? AND "FIELD_SPRAYTAG_POSY" = ? AND "FIELD_SPRAYTAG_POSZ" = ?");
+
 	for(new i; i < MAX_PLAYERS; i++)
 	{
 		tag_CurrentTag[i] = -1;
 		tag_Spraying[i] = -1;
 	}
-
-	CreateNewSprayTag(-399.76999, 1514.92004, 75.26000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-229.34000, 1082.34998, 20.29000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-2442.16992, 2299.22998, 5.71000,   0.00000, 0.00000, 270.00000);
-	CreateNewSprayTag(-2662.94995, 2121.43994, 2.14000,   0.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(146.92000, 1831.78003, 18.02000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(1172.88086, -1313.05103, 14.24630,   10.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(1237.39001, -1631.59998, 28.02000,   0.00000, 0.00000, 91.00000);
-	CreateNewSprayTag(1118.51100, -1540.14001, 23.66000,   0.00000, 0.00000, 178.46001);
-	CreateNewSprayTag(1202.10999, -1201.55005, 20.47000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(1264.15002, -1270.28003, 14.26000,   0.00000, 0.00000, 270.00000);
-	CreateNewSprayTag(-1908.90003, 299.56000, 41.52000,   0.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(-2636.69995, 635.52002, 15.13000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-2224.75000, 881.27002, 84.13000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(-1788.31995, 748.41998, 25.36000,   0.00000, 0.00000, 270.00000);
-
-	return CallLocalFunction("tag_OnLoad", "");
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad tag_OnLoad
-forward tag_OnLoad();
 
 
 CreateNewSprayTag(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 {
 	new count;
 
-	stmt_bind_value(gStmt_SprayTagExists, 0, DB::TYPE_FLOAT, x);
-	stmt_bind_value(gStmt_SprayTagExists, 1, DB::TYPE_FLOAT, y);
-	stmt_bind_value(gStmt_SprayTagExists, 2, DB::TYPE_FLOAT, z);
-	stmt_bind_result_field(gStmt_SprayTagExists, 0, DB::TYPE_INT, count);
+	stmt_bind_value(stmt_SprayTagExists, 0, DB::TYPE_FLOAT, x);
+	stmt_bind_value(stmt_SprayTagExists, 1, DB::TYPE_FLOAT, y);
+	stmt_bind_value(stmt_SprayTagExists, 2, DB::TYPE_FLOAT, z);
+	stmt_bind_result_field(stmt_SprayTagExists, 0, DB::TYPE_INT, count);
 
-	if(stmt_execute(gStmt_SprayTagExists))
+	if(stmt_execute(stmt_SprayTagExists))
 	{
-		stmt_fetch_row(gStmt_SprayTagExists);
+		stmt_fetch_row(stmt_SprayTagExists);
 
 		if(count == 0)
 		{
-			stmt_bind_value(gStmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
-			stmt_bind_value(gStmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
-			stmt_bind_value(gStmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
-			stmt_bind_value(gStmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
-			stmt_bind_value(gStmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
-			stmt_bind_value(gStmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
-			stmt_bind_value(gStmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
+			stmt_bind_value(stmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
+			stmt_bind_value(stmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
+			stmt_bind_value(stmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
+			stmt_bind_value(stmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
+			stmt_bind_value(stmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
+			stmt_bind_value(stmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
+			stmt_bind_value(stmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
 
-			stmt_execute(gStmt_SprayTagInsert);
+			stmt_execute(stmt_SprayTagInsert);
 		}
 	}
 }
@@ -318,17 +335,17 @@ LoadSprayTags()
 		Float:ry,
 		Float:rz;
 
-	stmt_bind_result_field(gStmt_SprayTagLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 1, DB::TYPE_FLOAT, x);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 2, DB::TYPE_FLOAT, y);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 3, DB::TYPE_FLOAT, z);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 4, DB::TYPE_FLOAT, rx);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 5, DB::TYPE_FLOAT, ry);
-	stmt_bind_result_field(gStmt_SprayTagLoad, 6, DB::TYPE_FLOAT, rz);
+	stmt_bind_result_field(stmt_SprayTagLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_SprayTagLoad, 1, DB::TYPE_FLOAT, x);
+	stmt_bind_result_field(stmt_SprayTagLoad, 2, DB::TYPE_FLOAT, y);
+	stmt_bind_result_field(stmt_SprayTagLoad, 3, DB::TYPE_FLOAT, z);
+	stmt_bind_result_field(stmt_SprayTagLoad, 4, DB::TYPE_FLOAT, rx);
+	stmt_bind_result_field(stmt_SprayTagLoad, 5, DB::TYPE_FLOAT, ry);
+	stmt_bind_result_field(stmt_SprayTagLoad, 6, DB::TYPE_FLOAT, rz);
 
-	stmt_execute(gStmt_SprayTagLoad);
+	stmt_execute(stmt_SprayTagLoad);
 
-	while(stmt_fetch_row(gStmt_SprayTagLoad))
+	while(stmt_fetch_row(stmt_SprayTagLoad))
 	{
 		SetSprayTagText(AddSprayTag(x, y, z, rx, ry, rz), name, 0xFFFF00FF);
 	}
@@ -340,12 +357,12 @@ SaveSprayTags()
 {
 	for(new i; i < tag_Total; i++)
 	{
-		stmt_bind_value(gStmt_SprayTagSave, 0, DB::TYPE_STRING, tag_Data[i][tag_text], MAX_PLAYER_NAME);
-		stmt_bind_value(gStmt_SprayTagSave, 1, DB::TYPE_FLOAT, tag_Data[i][tag_posX]);
-		stmt_bind_value(gStmt_SprayTagSave, 2, DB::TYPE_FLOAT, tag_Data[i][tag_posY]);
-		stmt_bind_value(gStmt_SprayTagSave, 3, DB::TYPE_FLOAT, tag_Data[i][tag_posZ]);
+		stmt_bind_value(stmt_SprayTagSave, 0, DB::TYPE_STRING, tag_Data[i][tag_text], MAX_PLAYER_NAME);
+		stmt_bind_value(stmt_SprayTagSave, 1, DB::TYPE_FLOAT, tag_Data[i][tag_posX]);
+		stmt_bind_value(stmt_SprayTagSave, 2, DB::TYPE_FLOAT, tag_Data[i][tag_posY]);
+		stmt_bind_value(stmt_SprayTagSave, 3, DB::TYPE_FLOAT, tag_Data[i][tag_posZ]);
 
-		stmt_execute(gStmt_SprayTagSave);
+		stmt_execute(stmt_SprayTagSave);
 	}
 }
 

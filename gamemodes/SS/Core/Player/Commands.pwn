@@ -146,12 +146,13 @@ CMD:changepass(playerid,params[])
 		
 		if(!strcmp(buffer, storedhash))
 		{
-			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
+			new name[MAX_PLAYER_NAME];
 
-			stmt_bind_value(gStmt_AccountSetPassword, 0, DB::TYPE_STRING, buffer, MAX_PASSWORD_LEN);
-			stmt_bind_value(gStmt_AccountSetPassword, 1, DB::TYPE_PLAYER_NAME, playerid);
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+			WP_Hash(buffer, MAX_PASSWORD_LEN, newpass);
 			
-			if(stmt_execute(gStmt_AccountSetPassword))
+			if(SetAccountPassword(name, buffer))
 			{
 				SetPlayerPassHash(playerid, buffer);
 				MsgF(playerid, YELLOW, " >  Password successfully changed to "C_BLUE"%s"C_YELLOW"!", newpass);

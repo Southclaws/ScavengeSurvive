@@ -129,15 +129,14 @@ PlayerSpawnNewCharacter(playerid, gender)
 	if(GetPlayerBitFlag(playerid, Spawned))
 		return 0;
 
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
 	SetPlayerTotalSpawns(playerid, GetPlayerTotalSpawns(playerid) + 1);
 
-	stmt_bind_value(gStmt_AccountSetSpawnTime, 0, DB::TYPE_INTEGER, gettime());
-	stmt_bind_value(gStmt_AccountSetSpawnTime, 1, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_execute(gStmt_AccountSetSpawnTime);
-
-	stmt_bind_value(gStmt_AccountSetTotalSpawns, 0, DB::TYPE_INTEGER, GetPlayerTotalSpawns(playerid));
-	stmt_bind_value(gStmt_AccountSetTotalSpawns, 1, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_execute(gStmt_AccountSetTotalSpawns);
+	GetAccountLastSpawnTimestamp(name, gettime());
+	SetAccountTotalSpawns(name, GetPlayerTotalSpawns(playerid));
 
 	new
 		backpackitem,
@@ -164,7 +163,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 			case 4: SetPlayerClothesID(playerid, skin_Civ4M);
 			case 5: SetPlayerClothesID(playerid, skin_MechM);
 			case 6: SetPlayerClothesID(playerid, skin_BikeM);
-
 		}
 	}
 	else

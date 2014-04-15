@@ -132,3 +132,26 @@ stock MsToString(millisecond, format[])
 	return result;
 }
 
+GetDurationFromString(string[])
+{
+	new
+		value,
+		type[16];
+
+	if(sscanf(string, "ds[16]", value, type))
+		return -1;
+
+	if(value <= 0)
+		return -1;
+
+	if(!strcmp(type, "day", true, 3))
+		return value * 86400;
+
+	if(!strcmp(type, "week", true, 4))
+		return value * 604800;
+
+	if(!strcmp(type, "month", true, 5))
+		return value * 2628000;
+
+	return -1;
+}

@@ -30,18 +30,19 @@ ShowPlayerProfile(playerid, name[])
 	}
 	else
 	{
-		stmt_bind_value(gStmt_AccountLoad, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, alive);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_KARMA, DB::TYPE_INTEGER, karma);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_REGDATE, DB::TYPE_INTEGER, regdate);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_LASTLOG, DB::TYPE_INTEGER, lastlog);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntimestamp);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, spawns);
-		stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
+		return 0;
+		//stmt_bind_value(gStmt_AccountLoad, FIELD_ID_PLAYER_NAME, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, alive);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_KARMA, DB::TYPE_INTEGER, karma);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_REGDATE, DB::TYPE_INTEGER, regdate);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_LASTLOG, DB::TYPE_INTEGER, lastlog);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntimestamp);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, spawns);
+		//stmt_bind_result_field(gStmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
 	}
 
-	stmt_execute(gStmt_AccountLoad);
-	stmt_fetch_row(gStmt_AccountLoad);
+	//stmt_execute(gStmt_AccountLoad);
+	//stmt_fetch_row(gStmt_AccountLoad);
 
 	dayslived = (gettime() > spawntimestamp) ? (0) : ((gettime() - spawntimestamp) / 86400);
 

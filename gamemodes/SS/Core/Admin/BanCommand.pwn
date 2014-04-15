@@ -55,41 +55,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				return 1;
 			}
 
-			new
-				value,
-				type[16];
+			new duration = GetDurationFromString(inputtext);
 
-			if(sscanf(inputtext, "ds[16]", value, type))
+			if(duration == -1)
 			{
 				FormatBanDurationDialog(playerid);
-				return 1;
 			}
-
-			if(value <= 0)
+			else
 			{
-				FormatBanDurationDialog(playerid);
-				return 1;
-			}
-
-			if(!strcmp(type, "day", true, 3))
-			{
-				ban_CurrentDuration[playerid] = value * 86400;
+				ban_CurrentDuration[playerid] = duration;
 				FinaliseBan(playerid);
-				return 1;
-			}
-
-			if(!strcmp(type, "week", true, 4))
-			{
-				ban_CurrentDuration[playerid] = value * 604800;
-				FinaliseBan(playerid);
-				return 1;
-			}
-
-			if(!strcmp(type, "month", true, 5))
-			{
-				ban_CurrentDuration[playerid] = value * 2628000;
-				FinaliseBan(playerid);
-				return 1;
 			}
 		}
 		else

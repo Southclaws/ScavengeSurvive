@@ -2,94 +2,99 @@
 
 
 #define MAX_REPORT_REASON_LENGTH	(128)
+#define MAX_REPORT_TYPE_LENGTH		(10)
 #define MAX_REPORT_INFO_LENGTH		(128)
 #define MAX_REPORTS_PER_PAGE		(32)
 #define MAX_REPORT_TYPES			(5)
-
+#define ACCOUNTS_TABLE_REPORTS		"Reports"
+#define FIELD_REPORTS_NAME			"name"		// 00
+#define FIELD_REPORTS_REASON		"reason"	// 01
+#define FIELD_REPORTS_DATE			"date"		// 02
+#define FIELD_REPORTS_READ			"read"		// 03
+#define FIELD_REPORTS_TYPE			"type"		// 04
+#define FIELD_REPORTS_POSX			"posx"		// 05
+#define FIELD_REPORTS_POSY			"posy"		// 06
+#define FIELD_REPORTS_POSZ			"posz"		// 07
+#define FIELD_REPORTS_INFO			"info"		// 08
+#define FIELD_REPORTS_BY			"by"		// 09
+#define FIELD_REPORTS_ACTIVE		"active"	// 10
 
 enum
 {
-	REPORT_TYPE_PLAYER_ID,
-	REPORT_TYPE_PLAYER_NAME,
-	REPORT_TYPE_PLAYER_CLOSE,
-	REPORT_TYPE_PLAYER_KILLER,
-	REPORT_TYPE_TELEPORT,
-	REPORT_TYPE_SWIMFLY,
-	REPORT_TYPE_VHEALTH,
-	REPORT_TYPE_CAMDIST,
-	REPORT_TYPE_CARNITRO,
-	REPORT_TYPE_CARHYDRO,
-	REPORT_TYPE_CARTELE,
-	REPORT_TYPE_HACKTRAP,
-	REPORT_TYPE_LOCKEDCAR,
-	REPORT_TYPE_AMMO,
-	REPORT_TYPE_SHOTANIM,
-	REPORT_TYPE_END
+	FIELD_ID_REPORTS_NAME,
+	FIELD_ID_REPORTS_REASON,
+	FIELD_ID_REPORTS_DATE,
+	FIELD_ID_REPORTS_READ,
+	FIELD_ID_REPORTS_TYPE,
+	FIELD_ID_REPORTS_POSX,
+	FIELD_ID_REPORTS_POSY,
+	FIELD_ID_REPORTS_POSZ,
+	FIELD_ID_REPORTS_INFO,
+	FIELD_ID_REPORTS_BY,
+	FIELD_ID_REPORTS_ACTIVE
 }
 
-new
-		report_TypeNames			[REPORT_TYPE_END][10]=
-		{
-			"PLY ID",
-			"PLY NAME",
-			"PLY CLOSE",
-			"PLY KILL",
-			"TELE",
-			"FLY",
-			"VHP",
-			"CAM",
-			"NOS",
-			"HYDRO",
-			"VTP",
-			"TRAP",
-			"LCAR",
-			"AMMO",
-			"ANIM"
-		};
-
-
-new
-		send_TargetName				[MAX_PLAYERS][MAX_PLAYER_NAME],
-		send_TargetType				[MAX_PLAYERS],
-Float:	send_TargetPos				[MAX_PLAYERS][3],
-
-		report_CurrentName			[MAX_PLAYERS][MAX_PLAYER_NAME],
-		report_CurrentReason		[MAX_PLAYERS][MAX_REPORT_REASON_LENGTH],
-		report_CurrentType			[MAX_PLAYERS],
-Float:	report_CurrentPos			[MAX_PLAYERS][3],
-		report_CurrentInfo			[MAX_PLAYERS][MAX_REPORT_INFO_LENGTH],
-		report_CurrentReporter		[MAX_PLAYERS][MAX_PLAYER_NAME],
-
-		report_CurrentItem			[MAX_PLAYERS],
-		report_NameIndex			[MAX_PLAYERS][MAX_REPORTS_PER_PAGE][MAX_PLAYER_NAME],
-		report_TimestampIndex		[MAX_PLAYERS][MAX_REPORTS_PER_PAGE];
-
-
-CMD:report(playerid, params[])
+enum e_report_list_struct
 {
-	ShowReportMenu(playerid);
-
-	return 1;
+	report_name[MAX_PLAYER_NAME],
+	report_type[MAX_REPORT_TYPE_LENGTH],
+	report_read,
+	report_rowid
 }
+static
+DBStatement:	stmt_ReportInsert,
+DBStatement:	stmt_ReportDelete,
+DBStatement:	stmt_ReportDeleteName,
+DBStatement:	stmt_ReportNameExists,
+DBStatement:	stmt_ReportList,
+DBStatement:	stmt_ReportInfo,
+DBStatement:	stmt_ReportSetRead,
+DBStatement:	stmt_ReportGetUnread;
 
-ACMD:reports[1](playerid, params[])
+
+/*==============================================================================
+
+	Initialisation
+
+==============================================================================*/
+
+
+hook OnGameModeInit()
 {
-	new ret;
+	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
+		"FIELD_REPORTS_NAME" TEXT,\
+		"FIELD_REPORTS_REASON" TEXT,\
+		"FIELD_REPORTS_DATE" INTEGER,\
+		"FIELD_REPORTS_READ" INTEGER,\
+		"FIELD_REPORTS_TYPE" TEXT,\
+		"FIELD_REPORTS_POSX" REAL,\
+		"FIELD_REPORTS_POSY" REAL,\
+		"FIELD_REPORTS_POSZ" REAL,\
+		"FIELD_REPORTS_INFO" TEXT,\
+		"FIELD_REPORTS_BY" TEXT,\
+		"FIELD_REPORTS_ACTIVE" INTEGER)");
 
-	ret = ShowListOfReports(playerid);
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_REPORTS, 11);
 
-	if(ret == 0)
-		Msg(playerid, YELLOW, " >  There are no reports to show.");
-
-	return 1;
+	stmt_ReportInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?, 1)");
+	stmt_ReportDelete		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE rowid = ?");
+	stmt_ReportDeleteName	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE "FIELD_REPORTS_NAME" = ?");
+	stmt_ReportNameExists	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
+	stmt_ReportList			= db_prepare(gAccounts, "SELECT "FIELD_REPORTS_NAME", "FIELD_REPORTS_READ", "FIELD_REPORTS_TYPE", rowid FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_ACTIVE"=1");
+	stmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS" WHERE rowid = ?");
+	stmt_ReportSetRead		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_READ" = ? WHERE rowid = ?");
+	stmt_ReportGetUnread	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_READ" = 0");
 }
 
-ShowReportMenu(playerid)
-{	
-	ShowPlayerDialog(playerid, d_ReportMenu, DIALOG_STYLE_LIST, "Report a player", "Specific player ID (who is online now)\nSpecific Player Name (Who isn't online now)\nPlayer that last killed me\nPlayer closest to me", "Send", "Cancel");
-}
 
-ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:posz, infostring[])
+/*==============================================================================
+
+	Core
+
+==============================================================================*/
+
+
+ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, infostring[])
 {
 	new reportername[MAX_PLAYER_NAME];
 
@@ -104,17 +109,17 @@ ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:pos
 		GetPlayerName(reporter, reportername, MAX_PLAYER_NAME);
 	}
 
-	stmt_bind_value(gStmt_ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_ReportInsert, 1, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH);
-	stmt_bind_value(gStmt_ReportInsert, 2, DB::TYPE_INTEGER, gettime());
-	stmt_bind_value(gStmt_ReportInsert, 3, DB::TYPE_INTEGER, type);
-	stmt_bind_value(gStmt_ReportInsert, 4, DB::TYPE_FLOAT, posx);
-	stmt_bind_value(gStmt_ReportInsert, 5, DB::TYPE_FLOAT, posy);
-	stmt_bind_value(gStmt_ReportInsert, 6, DB::TYPE_FLOAT, posz);
-	stmt_bind_value(gStmt_ReportInsert, 7, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH);
-	stmt_bind_value(gStmt_ReportInsert, 8, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_ReportInsert, 1, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH);
+	stmt_bind_value(stmt_ReportInsert, 2, DB::TYPE_INTEGER, gettime());
+	stmt_bind_value(stmt_ReportInsert, 3, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH);
+	stmt_bind_value(stmt_ReportInsert, 4, DB::TYPE_FLOAT, posx);
+	stmt_bind_value(stmt_ReportInsert, 5, DB::TYPE_FLOAT, posy);
+	stmt_bind_value(stmt_ReportInsert, 6, DB::TYPE_FLOAT, posz);
+	stmt_bind_value(stmt_ReportInsert, 7, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH);
+	stmt_bind_value(stmt_ReportInsert, 8, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
 
-	if(stmt_execute(gStmt_ReportInsert))
+	if(stmt_execute(stmt_ReportInsert))
 	{
 		return 1;
 	}
@@ -122,522 +127,108 @@ ReportPlayer(name[], reason[], reporter, type, Float:posx, Float:posy, Float:pos
 	return 0;
 }
 
-DeleteReport(name[], timestamp)
+DeleteReport(rowid)
 {
-	if(!IsPlayerReported(name))
-		return 0;
+	stmt_bind_value(stmt_ReportDelete, 0, DB::TYPE_INTEGER, rowid);
 
-	stmt_bind_value(gStmt_ReportDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_ReportDelete, 1, DB::TYPE_INTEGER, timestamp);
-
-	if(stmt_execute(gStmt_ReportDelete))
-		return 1;
-
-	return 0;
+	return stmt_execute(stmt_ReportDelete);
 }
 
 DeleteReportsOfPlayer(name[])
 {
-	if(!IsPlayerReported(name))
-		return 0;
+	stmt_bind_value(stmt_ReportDeleteName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	stmt_bind_value(gStmt_ReportDeleteName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(stmt_execute(gStmt_ReportDeleteName))
-		return 1;
-
-	return 0;
+	return stmt_execute(stmt_ReportDeleteName);
 }
 
-ShowListOfReports(playerid)
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+stock GetReportList(list[][e_report_list_struct])
 {
 	new
 		name[MAX_PLAYER_NAME],
-		timestamp,
-		reportread,
-		reporttype,
+		type[MAX_REPORT_TYPE_LENGTH],
+		read,
+		rowid,
+		idx;
 
-		colour[9],
-		item[(8 + MAX_PLAYER_NAME + 13 + 1)],
-		list[(8 + MAX_PLAYER_NAME + 13 + 1) * MAX_REPORTS_PER_PAGE],
-		index;
+	stmt_bind_result_field(stmt_ReportList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_ReportList, 1, DB::TYPE_INTEGER, read);
+	stmt_bind_result_field(stmt_ReportList, 2, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH);
+	stmt_bind_result_field(stmt_ReportList, 3, DB::TYPE_INTEGER, rowid);
 
-	stmt_bind_result_field(gStmt_ReportList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_ReportList, 2, DB::TYPE_INTEGER, timestamp);
-	stmt_bind_result_field(gStmt_ReportList, 3, DB::TYPE_INTEGER, reportread);
-	stmt_bind_result_field(gStmt_ReportList, 4, DB::TYPE_INTEGER, reporttype);
-	stmt_execute(gStmt_ReportList);
+	if(!stmt_execute(stmt_ReportList))
+		return 0;
 
-	while(stmt_fetch_row(gStmt_ReportList) && index < MAX_REPORTS_PER_PAGE)
+	while(stmt_fetch_row(stmt_ReportList))
 	{
-		report_NameIndex[playerid][index] = name;
-		report_TimestampIndex[playerid][index] = timestamp;
-
-		if(IsPlayerBanned(name))
-		{
-			colour = "{FF0000}";
-		}
-		else
-		{
-			if(!reportread)
-				colour = "{FFFF00}";
-
-			else
-				colour = "{FFFFFF}";
-		}
-
-		format(item, sizeof(item), "%s%s (%s)\n", colour, name, report_TypeNames[reporttype]);
-		strcat(list, item);
-
-		index++;
+		list[idx][report_name] = name;
+		list[idx][report_type] = type;
+		list[idx][report_read] = read;
+		list[idx][report_rowid] = rowid;
+		idx++;
 	}
 
-	ShowPlayerDialog(playerid, d_ReportList, DIALOG_STYLE_LIST, "Reports", list, "Open", "Close");
+	return idx;
+}
+
+stock GetReportInfo(rowid, reason[], &date, type[], &Float:posx, &Float:posy, &Float:posz, info[], reporter[])
+{
+	stmt_bind_value(stmt_ReportInfo, 0, DB::TYPE_INTEGER, rowid);
+
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_REASON, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_DATE, DB::TYPE_INTEGER, date);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_TYPE, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSX, DB::TYPE_FLOAT, posx);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSY, DB::TYPE_FLOAT, posy);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSZ, DB::TYPE_FLOAT, posz);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_INFO, DB::TYPE_STRING, info, MAX_REPORT_INFO_LENGTH);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_BY, DB::TYPE_STRING, reporter, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_ReportInfo))
+		return 0;
+
+	stmt_fetch_row(stmt_ReportInfo);
 
 	return 1;
 }
 
-ShowReport(playerid, name[MAX_PLAYER_NAME], timestamp)
+stock SetReportRead(rowid, read)
 {
-	stmt_bind_value(gStmt_ReportInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_ReportInfo, 1, DB::TYPE_INTEGER, timestamp);
+	stmt_bind_value(stmt_ReportSetRead, 0, DB::TYPE_INTEGER, read);
+	stmt_bind_value(stmt_ReportSetRead, 1, DB::TYPE_INTEGER, rowid);
 
-	stmt_bind_result_field(gStmt_ReportInfo, 1, DB::TYPE_STRING, report_CurrentReason[playerid], MAX_REPORT_REASON_LENGTH);
-	stmt_bind_result_field(gStmt_ReportInfo, 4, DB::TYPE_INTEGER, report_CurrentType[playerid]);
-	stmt_bind_result_field(gStmt_ReportInfo, 5, DB::TYPE_FLOAT, report_CurrentPos[playerid][0]);
-	stmt_bind_result_field(gStmt_ReportInfo, 6, DB::TYPE_FLOAT, report_CurrentPos[playerid][1]);
-	stmt_bind_result_field(gStmt_ReportInfo, 7, DB::TYPE_FLOAT, report_CurrentPos[playerid][2]);
-	stmt_bind_result_field(gStmt_ReportInfo, 8, DB::TYPE_STRING, report_CurrentInfo[playerid], MAX_REPORT_INFO_LENGTH);
-	stmt_bind_result_field(gStmt_ReportInfo, 9, DB::TYPE_STRING, report_CurrentReporter[playerid], MAX_PLAYER_NAME);
-
-	if(stmt_execute(gStmt_ReportInfo))
-	{
-		stmt_fetch_row(gStmt_ReportInfo);
-
-		new message[512];
-
-		format(message, sizeof(message), "\
-			"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\n\
-			"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\n\
-			"C_YELLOW"By:\n\t\t"C_BLUE"%s",
-			TimestampToDateTime(timestamp), report_CurrentReason[playerid], report_CurrentReporter[playerid]);
-
-		report_CurrentName[playerid] = name;
-
-		ShowPlayerDialog(playerid, d_Report, DIALOG_STYLE_MSGBOX, name, message, "Options", "Back");
-
-		SetReportRead(name, timestamp, 1);
-
-		return 1;
-	}
-
-	return 0;
+	return stmt_execute(stmt_ReportSetRead);
 }
 
-SetReportRead(name[], timestamp, read)
-{
-	stmt_bind_value(gStmt_ReportSetRead, 0, DB::TYPE_INTEGER, read);
-	stmt_bind_value(gStmt_ReportSetRead, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(gStmt_ReportSetRead, 2, DB::TYPE_INTEGER, timestamp);
-
-	if(stmt_execute(gStmt_ReportSetRead))
-		return 1;
-
-	return 0;
-}
-
-ShowReportOptions(playerid)
-{
-	new options[128];
-
-	options = "Ban\nDelete\nDelete all reports of this player\nMark Unread\n";
-
-	if(IsPlayerOnAdminDuty(playerid))
-	{
-		strcat(options, "Go to position of report\n");
-
-		switch(report_CurrentType[playerid])
-		{
-			case REPORT_TYPE_TELEPORT:
-			{
-				strcat(options, "Go to teleport destination\n");
-			}
-			case REPORT_TYPE_CAMDIST:
-			{
-				strcat(options, "Go to camera location\n");
-				strcat(options, "View camera\n");
-			}
-			case REPORT_TYPE_CARTELE:
-			{
-				strcat(options, "Go to vehicle pos\n");
-			}
-		}
-	}
-	else
-	{
-		strcat(options, "(Go on duty to see more options)");	
-	}
-
-	ShowPlayerDialog(playerid, d_ReportOptions, DIALOG_STYLE_LIST, report_CurrentName[playerid], options, "Select", "Back");
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-
-
-	// Submitting reports
-
-
-	if(dialogid == d_ReportMenu && response)
-	{
-		switch(listitem)
-		{
-			case 0: // Specific player ID (who is online now)
-			{
-				new
-					name[MAX_PLAYER_NAME],
-					list[MAX_PLAYERS * (MAX_PLAYER_NAME + 1)];
-
-				foreach(new i : Player)
-				{
-					GetPlayerName(i, name, MAX_PLAYER_NAME);
-					strcat(list, name);
-					strcat(list, "\n");
-				}
-
-				ShowPlayerDialog(playerid, d_ReportPlayerList, DIALOG_STYLE_LIST, "Report Online Player", list, "Report", "Back");
-				send_TargetType[playerid] = REPORT_TYPE_PLAYER_ID;
-			}
-			case 1: // Specific Player Name (Who isn't online now)
-			{
-				ShowPlayerDialog(playerid, d_ReportNameInput, DIALOG_STYLE_INPUT, "Report Offline Player", "Enter name to report below", "Report", "Back");
-				send_TargetType[playerid] = REPORT_TYPE_PLAYER_NAME;
-			}
-			case 2: // Player that last killed me
-			{
-				new name[MAX_PLAYER_NAME];
-
-				GetLastKilledBy(playerid, name);
-
-				if(!isnull(name))
-				{
-					send_TargetName[playerid][0] = EOS;
-					send_TargetName[playerid] = name;
-				}
-				else
-				{
-					GetLastHitBy(playerid, name);
-
-					if(!isnull(name))
-					{
-						send_TargetName[playerid][0] = EOS;
-						send_TargetName[playerid] = name;
-					}
-					else
-					{
-						Msg(playerid, RED, " >  No player could be found.");
-						return 1;
-					}
-				}
-
-				GetPlayerDeathPos(playerid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
-
-				ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
-				send_TargetType[playerid] = REPORT_TYPE_PLAYER_KILLER;
-			}
-			case 3: // Player closest to me
-			{
-				new
-					Float:distance = 100.0,
-					targetid;
-
-				targetid = GetClosestPlayerFromPlayer(playerid, distance);
-
-				if(!IsPlayerConnected(targetid))
-				{
-					Msg(playerid, RED, " >  No player could be found within 100m");
-					return 1;
-				}
-
-				GetPlayerName(targetid, send_TargetName[playerid], MAX_PLAYER_NAME);
-				GetPlayerPos(targetid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
-	
-				ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
-				send_TargetType[playerid] = REPORT_TYPE_PLAYER_CLOSE;
-			}
-		}
-	}
-
-	if(dialogid == d_ReportPlayerList)
-	{
-		if(response)
-		{
-			GetPlayerPos(playerid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
-			strmid(send_TargetName[playerid], inputtext, 0, strlen(inputtext));
-
-			ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
-		}
-		else
-		{
-			ShowReportMenu(playerid);
-		}
-	}
-
-	if(dialogid == d_ReportNameInput)
-	{
-		if(response)
-		{
-			send_TargetName[playerid][0] = EOS;
-			strcat(send_TargetName[playerid], inputtext);
-
-			send_TargetPos[playerid][0] = 0.0;
-			send_TargetPos[playerid][1] = 0.0;
-			send_TargetPos[playerid][2] = 0.0;
-
-			ShowPlayerDialog(playerid, d_ReportReason, DIALOG_STYLE_INPUT, "Enter reason", "Enter the report reason below", "Report", "Back");
-		}
-		else
-		{
-			ShowReportMenu(playerid);
-		}
-	}
-
-	if(dialogid == d_ReportReason)
-	{
-		if(response)
-		{
-			ReportPlayer(send_TargetName[playerid], inputtext, playerid, send_TargetType[playerid], send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2], "");
-		}
-		else
-		{
-			ShowReportMenu(playerid);
-		}
-	}
-
-
-	// Reading reports
-
-
-	if(dialogid == d_ReportList && response)
-	{
-		ShowReport(playerid, report_NameIndex[playerid][listitem], report_TimestampIndex[playerid][listitem]);
-		report_CurrentItem[playerid] = listitem;
-	}
-
-	if(dialogid == d_Report)
-	{
-		if(response)
-		{
-			ShowReportOptions(playerid);
-		}
-		else
-		{
-			ShowListOfReports(playerid);
-		}
-	}
-
-	if(dialogid == d_ReportOptions)
-	{
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0:
-				{
-					ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
-						"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
-						"Continue", "Cancel");
-				}
-				case 1:
-				{
-					DeleteReport(report_CurrentName[playerid], report_TimestampIndex[playerid][report_CurrentItem[playerid]]);
-
-					ShowListOfReports(playerid);
-				}
-				case 2:
-				{
-					DeleteReportsOfPlayer(report_CurrentName[playerid]);
-
-					ShowListOfReports(playerid);
-				}
-				case 3:
-				{
-					SetReportRead(report_CurrentName[playerid], report_TimestampIndex[playerid][report_CurrentItem[playerid]], 0);
-
-					ShowListOfReports(playerid);
-				}
-				case 4:
-				{
-					if(IsPlayerOnAdminDuty(playerid))
-					{
-						SetPlayerPos(playerid, report_CurrentPos[playerid][0], report_CurrentPos[playerid][1], report_CurrentPos[playerid][2]);
-					}
-				}
-				case 5:
-				{
-					switch(report_CurrentType[playerid])
-					{
-						case REPORT_TYPE_TELEPORT:
-						{
-							if(IsPlayerOnAdminDuty(playerid))
-							{
-								new
-									Float:x,
-									Float:y,
-									Float:z;
-
-								sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
-								SetPlayerPos(playerid, x, y, z);
-							}
-						}
-						case REPORT_TYPE_CAMDIST:
-						{
-							if(IsPlayerOnAdminDuty(playerid))
-							{
-								new
-									Float:x,
-									Float:y,
-									Float:z;
-
-								sscanf(report_CurrentInfo[playerid], "p<,>fff{fff}", x, y, z);
-								SetPlayerPos(playerid, x, y, z);
-							}
-						}
-						case REPORT_TYPE_CARTELE:
-						{
-							if(IsPlayerOnAdminDuty(playerid))
-							{
-								new
-									Float:x,
-									Float:y,
-									Float:z;
-
-								sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
-								SetPlayerPos(playerid, x, y, z);
-							}
-						}
-					}
-				}
-				case 6:
-				{
-					switch(report_CurrentType[playerid])
-					{
-						case REPORT_TYPE_CAMDIST:
-						{
-							if(IsPlayerOnAdminDuty(playerid))
-							{
-								new
-									Float:x,
-									Float:y,
-									Float:z,
-									Float:vx,
-									Float:vy,
-									Float:vz;
-
-								sscanf(report_CurrentInfo[playerid], "p<,>ffffff", x, y, z, vx, vy, vz);
-
-								SetPlayerPos(playerid, report_CurrentPos[playerid][0], report_CurrentPos[playerid][1], report_CurrentPos[playerid][2]);
-								SetPlayerCameraPos(playerid, x, y, z);
-								SetPlayerCameraLookAt(playerid, x + vx, y + vy, z + vz);
-
-								Msg(playerid, YELLOW, " >  Type /recam to reset your camera");
-							}
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			ShowListOfReports(playerid);
-		}
-	}
-
-	if(dialogid == d_ReportBanDuration)
-	{
-		if(response)
-		{
-			if(!strcmp(inputtext, "forever", true))
-			{
-				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, 0);
-				ShowListOfReports(playerid);
-
-				return 1;
-			}
-
-			new
-				value,
-				type[16];
-
-			if(sscanf(inputtext, "ds[16]", value, type))
-			{
-				ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
-					"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
-					"Continue", "Cancel");
-
-				return 1;
-			}
-
-			if(value <= 0)
-			{
-				ShowPlayerDialog(playerid, d_ReportBanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
-					"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
-					"Continue", "Cancel");
-
-				return 1;
-			}
-
-			if(!strcmp(type, "day", true, 3))
-			{
-				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 86400);
-				ShowListOfReports(playerid);
-
-				return 1;
-			}
-
-			if(!strcmp(type, "week", true, 4))
-			{
-				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 604800);
-				ShowListOfReports(playerid);
-
-				return 1;
-			}
-
-			if(!strcmp(type, "month", true, 5))
-			{
-				BanPlayerByName(report_CurrentName[playerid], report_CurrentReason[playerid], playerid, value * 2628000);
-				ShowListOfReports(playerid);
-				return 1;
-			}
-		}
-		else
-		{
-			ShowReportOptions(playerid);
-		}
-	}
-
-	return 1;
-}
-
-GetUnreadReports()
+stock GetUnreadReports()
 {
 	new count;
 
-	stmt_bind_result_field(gStmt_ReportGetUnread, 0, DB::TYPE_INTEGER, count);	
-	stmt_execute(gStmt_ReportGetUnread);
-	stmt_fetch_row(gStmt_ReportGetUnread);
+	stmt_bind_result_field(stmt_ReportGetUnread, 0, DB::TYPE_INTEGER, count);	
+	stmt_execute(stmt_ReportGetUnread);
+	stmt_fetch_row(stmt_ReportGetUnread);
 
 	return count;
 }
 
-IsPlayerReported(name[])
+stock IsPlayerReported(name[])
 {
 	new count;
 
-	stmt_bind_value(gStmt_ReportNameExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_ReportNameExists, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(gStmt_ReportNameExists);
-	stmt_fetch_row(gStmt_ReportNameExists);
+	stmt_bind_value(stmt_ReportNameExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_ReportNameExists, 0, DB::TYPE_INTEGER, count);
+
+	if(!stmt_execute(stmt_ReportNameExists))
+		return 0;
+
+	stmt_fetch_row(stmt_ReportNameExists);
 
 	if(count > 0)
 		return 1;

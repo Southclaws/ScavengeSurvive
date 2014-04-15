@@ -9,7 +9,7 @@ new gAdminCommandList_Lvl2[] =
 	/(un)freeze - freeze/unfreeze player\n\
 	/(un)ban - ban/unban player\n\
 	/banlist - show list of bans\n\
-	/isbanned - check if banned\n\
+	/banned - check if banned\n\
 	/motd - set message of the day\n"
 };
 
@@ -271,7 +271,7 @@ ACMD:ban[2](playerid, params[])
 
 ACMD:unban[2](playerid, params[])
 {
-	new name[24];
+	new name[MAX_PLAYER_NAME];
 
 	if(sscanf(params, "s[24]", name))
 		return Msg(playerid, YELLOW, " >  Usage: /unban [player name]");
@@ -295,11 +295,18 @@ ACMD:unban[2](playerid, params[])
 
 ACMD:banlist[2](playerid, params[])
 {
-	ShowListOfBans(playerid, 0);
+	new ret = ShowListOfBans(playerid, 0);
+
+	if(ret == 0)
+		Msg(playerid, YELLOW, " >  No bans to list.");
+
+	if(ret == -1)
+		Msg(playerid, YELLOW, " >  An error occurred while executing 'stmt_BanGetList'.");
+
 	return 1;
 }
 
-ACMD:isbanned[2](playerid, params[])
+ACMD:banned[2](playerid, params[])
 {
 	if(!(3 < strlen(params) < MAX_PLAYER_NAME))
 	{
@@ -307,11 +314,15 @@ ACMD:isbanned[2](playerid, params[])
 		return 1;
 	}
 
-	if(IsPlayerBanned(params))
-		MsgF(playerid, YELLOW, " >  Player '%s' "C_BLUE"is "C_YELLOW"banned.", params);
+	new name[MAX_PLAYER_NAME];
+
+	strcat(name, params);
+
+	if(IsPlayerBanned(name))
+		ShowBanInfo(playerid, name);
 
 	else
-		MsgF(playerid, YELLOW, " >  Player '%s' "C_BLUE"isn't "C_YELLOW"banned.", params);
+		MsgF(playerid, YELLOW, " >  Player '%s' "C_BLUE"isn't "C_YELLOW"banned.", name);
 
 	return 1;
 }

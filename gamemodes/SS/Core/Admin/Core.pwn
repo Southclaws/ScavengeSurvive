@@ -2,6 +2,10 @@
 
 
 #define MAX_ADMIN_LEVELS (5)
+#define ACCOUNTS_TABLE_ADMINS		"Admins"
+#define FIELD_ADMINS_NAME			"name"		// 00
+#define FIELD_ADMINS_LEVEL			"level"		// 01
+
 
 enum e_admin_data
 {
@@ -11,29 +15,51 @@ enum e_admin_data
 
 
 static
-	admin_Data[MAX_ADMIN][e_admin_data],
-	admin_Total,
-	admin_Names[MAX_ADMIN_LEVELS][14] =
-	{
-		"Player",			// 0 (Unused)
-		"Game Master",		// 1
-		"Moderator",		// 2
-		"Administrator",	// 3
-		"Developer"			// 4
-	},
-	admin_Colours[MAX_ADMIN_LEVELS] =
-	{
-		0xFFFFFFFF,			// 0 (Unused)
-		0x5DFC0AFF,			// 1
-		0x33CCFFAA,			// 2
-		0x6600FFFF,			// 3
-		0xFF0000FF			// 4
-	};
+				admin_Data[MAX_ADMIN][e_admin_data],
+				admin_Total,
+				admin_Names[MAX_ADMIN_LEVELS][14] =
+				{
+					"Player",			// 0 (Unused)
+					"Game Master",		// 1
+					"Moderator",		// 2
+					"Administrator",	// 3
+					"Developer"			// 4
+				},
+				admin_Colours[MAX_ADMIN_LEVELS] =
+				{
+					0xFFFFFFFF,			// 0 (Unused)
+					0x5DFC0AFF,			// 1
+					0x33CCFFAA,			// 2
+					0x6600FFFF,			// 3
+					0xFF0000FF			// 4
+				},
+DBStatement:	stmt_AdminLoadAll,
+DBStatement:	stmt_AdminExists,
+DBStatement:	stmt_AdminInsert,
+DBStatement:	stmt_AdminUpdate,
+DBStatement:	stmt_AdminDelete,
+DBStatement:	stmt_AdminGetLevel;
 
 static
-		admin_Level[MAX_PLAYERS],
-		admin_OnDuty[MAX_PLAYERS];
+				admin_Level[MAX_PLAYERS],
+				admin_OnDuty[MAX_PLAYERS];
 
+
+hook OnGameModeInit()
+{
+	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
+		"FIELD_ADMINS_NAME" TEXT,\
+		"FIELD_ADMINS_LEVEL" INTEGER)"));
+
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_ADMINS, 2);
+
+	stmt_AdminLoadAll	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" ORDER BY "FIELD_ADMINS_LEVEL" DESC");
+	stmt_AdminExists	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+	stmt_AdminInsert	= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
+	stmt_AdminUpdate	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
+	stmt_AdminDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+	stmt_AdminGetLevel	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+}
 
 hook OnPlayerConnect(playerid)
 {
@@ -57,12 +83,12 @@ LoadAdminData() // Call in OnGameModeInit
 		name[MAX_PLAYER_NAME],
 		level;
 
-	stmt_bind_result_field(gStmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(gStmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
+	stmt_bind_result_field(stmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(stmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
 
-	if(stmt_execute(gStmt_AdminLoadAll))
+	if(stmt_execute(stmt_AdminLoadAll))
 	{
-		while(stmt_fetch_row(gStmt_AdminLoadAll))
+		while(stmt_fetch_row(stmt_AdminLoadAll))
 		{
 			if(level > 0 && !isnull(name))
 			{
@@ -88,17 +114,17 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 
 	new count;
 
-	stmt_bind_value(gStmt_AdminExists, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(gStmt_AdminExists, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(gStmt_AdminExists);
-	stmt_fetch_row(gStmt_AdminExists);
+	stmt_bind_value(stmt_AdminExists, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(stmt_AdminExists, 0, DB::TYPE_INTEGER, count);
+	stmt_execute(stmt_AdminExists);
+	stmt_fetch_row(stmt_AdminExists);
 
 	if(count == 0)
 	{
-		stmt_bind_value(gStmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_value(gStmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
+		stmt_bind_value(stmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_value(stmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
 
-		if(stmt_execute(gStmt_AdminInsert))
+		if(stmt_execute(stmt_AdminInsert))
 		{
 			admin_Data[admin_Total][admin_Name] = name;
 			admin_Data[admin_Total][admin_Rank] = level;
@@ -111,10 +137,10 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 	}
 	else
 	{
-		stmt_bind_value(gStmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
-		stmt_bind_value(gStmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+		stmt_bind_value(stmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
+		stmt_bind_value(stmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-		if(stmt_execute(gStmt_AdminUpdate))
+		if(stmt_execute(stmt_AdminUpdate))
 		{
 			for(new i; i < admin_Total; i++)
 			{
@@ -137,9 +163,9 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 
 RemoveAdminFromDatabase(name[])
 {
-	stmt_bind_value(gStmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	if(stmt_execute(gStmt_AdminDelete))
+	if(stmt_execute(stmt_AdminDelete))
 	{
 		new bool:found = false;
 
@@ -326,10 +352,10 @@ stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
 {
 	new level;
 
-	stmt_bind_value(gStmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(gStmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
-	stmt_execute(gStmt_AdminGetLevel);
-	stmt_fetch_row(gStmt_AdminGetLevel);
+	stmt_bind_value(stmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
+	stmt_bind_result_field(stmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
+	stmt_execute(stmt_AdminGetLevel);
+	stmt_fetch_row(stmt_AdminGetLevel);
 
 	return level;
 }

@@ -415,10 +415,7 @@ ACMD:resetpassword[3](playerid, params[])
 
 	WP_Hash(buffer, MAX_PASSWORD_LEN, "password");
 
-	stmt_bind_value(gStmt_AccountSetPassword, 0, DB::TYPE_STRING, buffer, MAX_PASSWORD_LEN);
-	stmt_bind_value(gStmt_AccountSetPassword, 1, DB::TYPE_STRING, params, MAX_PLAYER_NAME);
-	
-	if(stmt_execute(gStmt_AccountSetPassword))
+	if(SetAccountPassword(params, buffer))
 		MsgF(playerid, YELLOW, " >  Password for '%s' reset.", params);
 
 	else

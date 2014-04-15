@@ -690,7 +690,23 @@ public OnPlayerDialogPage(playerid, direction)
 
 		ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
 	}
+
+	#if defined dfm_OnPlayerDialogPage
+		return dfm_OnPlayerDialogPage(playerid, direction);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerDialogPage
+	#undef OnPlayerDialogPage
+#else
+	#define _ALS_OnPlayerDialogPage
+#endif
+ 
+#define OnPlayerDialogPage dfm_OnPlayerDialogPage
+#if defined dfm_OnPlayerDialogPage
+	forward dfm_OnPlayerDialogPage(playerid, direction);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
