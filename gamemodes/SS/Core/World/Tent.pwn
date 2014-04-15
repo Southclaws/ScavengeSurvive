@@ -61,7 +61,7 @@ hook OnGameModeInit()
 	modio_read(GEID_FILE, !"TENT", arr);
 
 	tnt_GEID_Index = arr[0];
-	printf("Loaded tent GEID: %d", tnt_GEID_Index);
+	// printf("Loaded tent GEID: %d", tnt_GEID_Index);
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
@@ -157,7 +157,7 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 	{
 		tnt_GEID[id] = tnt_GEID_Index;
 		tnt_GEID_Index++;
-		printf("Tent GEID Index: %d", tnt_GEID_Index);
+		// printf("Tent GEID Index: %d", tnt_GEID_Index);
 	}
 
 	return id;

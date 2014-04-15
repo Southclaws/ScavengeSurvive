@@ -130,7 +130,7 @@ public OnItemCreate(itemid)
 			{
 				box_GEID[itemid] = box_GEID_Index;
 				box_GEID_Index++;
-				printf("Safebox GEID Index: %d", box_GEID_Index);
+				// printf("Safebox GEID Index: %d", box_GEID_Index);
 			}
 		}
 	}
