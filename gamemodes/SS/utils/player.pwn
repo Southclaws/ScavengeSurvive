@@ -240,10 +240,10 @@ stock GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
 
 	GetPlayerPos(playerid, x, y, z);
 	
-	return GetClosestPlayerFromPoint(x, y, z, range);
+	return GetClosestPlayerFromPoint(x, y, z, range, playerid);
 }
 
-stock GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance = 10000.0)
+stock GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance = 10000.0, exceptionid = INVALID_PLAYER_ID)
 {
 	new
 		Float:px,
@@ -254,6 +254,9 @@ stock GetClosestPlayerFromPoint(Float:x, Float:y, Float:z, &Float:lowestdistance
 
 	foreach(new i : Player)
 	{
+		if(i == exceptionid)
+			continue;
+
 		GetPlayerPos(i, px, py, pz);
 
 		distance = Distance(px, py, pz, x, y, z);
