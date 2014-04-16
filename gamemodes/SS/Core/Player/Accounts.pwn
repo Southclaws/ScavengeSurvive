@@ -607,7 +607,9 @@ stock GetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 	if(!stmt_execute(stmt_AccountGetPassword))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetPassword);
+	stmt_fetch_row(stmt_AccountGetPassword);
+
+	return 1;
 }
 
 stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
@@ -619,7 +621,7 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 }
 
 // FIELD_ID_PLAYER_IPV4
-stock GetAccountIP(name[], ip)
+stock GetAccountIP(name[], &ip)
 {
 	stmt_bind_result_field(stmt_AccountGetIpv4, 0, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_AccountGetIpv4, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -627,7 +629,9 @@ stock GetAccountIP(name[], ip)
 	if(!stmt_execute(stmt_AccountGetIpv4))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetIpv4);
+	stmt_fetch_row(stmt_AccountGetIpv4);
+
+	return 1;
 }
 
 stock SetAccountIP(name[], ip)
@@ -639,7 +643,7 @@ stock SetAccountIP(name[], ip)
 }
 
 // FIELD_ID_PLAYER_ALIVE
-stock GetAccountAliveState(name[], alivestate)
+stock GetAccountAliveState(name[], &alivestate)
 {
 	stmt_bind_result_field(stmt_AccountGetAliveState, 0, DB::TYPE_INTEGER, alivestate);
 	stmt_bind_value(stmt_AccountGetAliveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -647,7 +651,9 @@ stock GetAccountAliveState(name[], alivestate)
 	if(!stmt_execute(stmt_AccountGetAliveState))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetAliveState);
+	stmt_fetch_row(stmt_AccountGetAliveState);
+
+	return 1;
 }
 
 stock SetAccountAliveState(name[], alivestate)
@@ -659,7 +665,7 @@ stock SetAccountAliveState(name[], alivestate)
 }
 
 // FIELD_ID_PLAYER_KARMA
-stock GetAccountKarma(name[], karma)
+stock GetAccountKarma(name[], &karma)
 {
 	stmt_bind_result_field(stmt_AccountGetKarma, 0, DB::TYPE_INTEGER, karma);
 	stmt_bind_value(stmt_AccountGetKarma, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -667,7 +673,9 @@ stock GetAccountKarma(name[], karma)
 	if(!stmt_execute(stmt_AccountGetKarma))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetKarma);
+	stmt_fetch_row(stmt_AccountGetKarma);
+
+	return 1;
 }
 
 stock SetAccountKarma(name[], karma)
@@ -679,7 +687,7 @@ stock SetAccountKarma(name[], karma)
 }
 
 // FIELD_ID_PLAYER_REGDATE
-stock GetAccountRegistrationDate(name[], timestamp)
+stock GetAccountRegistrationDate(name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetRegdate, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetRegdate, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -687,7 +695,9 @@ stock GetAccountRegistrationDate(name[], timestamp)
 	if(!stmt_execute(stmt_AccountGetRegdate))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetRegdate);
+	stmt_fetch_row(stmt_AccountGetRegdate);
+
+	return 1;
 }
 
 stock SetAccountRegistrationDate(name[], timestamp)
@@ -699,7 +709,7 @@ stock SetAccountRegistrationDate(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_LASTLOG
-stock GetAccountLastLogin(name[], timestamp)
+stock GetAccountLastLogin(name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetLastLog, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetLastLog, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -707,7 +717,9 @@ stock GetAccountLastLogin(name[], timestamp)
 	if(!stmt_execute(stmt_AccountGetLastLog))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetLastLog);
+	stmt_fetch_row(stmt_AccountGetLastLog);
+
+	return 1;
 }
 
 stock SetAccountLastLogin(name[], timestamp)
@@ -727,7 +739,9 @@ stock GetAccountLastSpawnTimestamp(name[], timestamp)
 	if(!stmt_execute(stmt_AccountGetSpawnTime))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetSpawnTime);
+	stmt_fetch_row(stmt_AccountGetSpawnTime);
+
+	return 1;
 }
 
 stock SetAccountLastSpawnTimestamp(name[], timestamp)
@@ -739,7 +753,7 @@ stock SetAccountLastSpawnTimestamp(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_TOTALSPAWNS
-stock GetAccountTotalSpawns(name[], spawns)
+stock GetAccountTotalSpawns(name[], &spawns)
 {
 	stmt_bind_result_field(stmt_AccountGetTotalSpawns, 0, DB::TYPE_INTEGER, spawns);
 	stmt_bind_value(stmt_AccountGetTotalSpawns, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -747,7 +761,9 @@ stock GetAccountTotalSpawns(name[], spawns)
 	if(!stmt_execute(stmt_AccountGetTotalSpawns))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetTotalSpawns);
+	stmt_fetch_row(stmt_AccountGetTotalSpawns);
+
+	return 1;
 }
 
 stock SetAccountTotalSpawns(name[], spawns)
@@ -759,7 +775,7 @@ stock SetAccountTotalSpawns(name[], spawns)
 }
 
 // FIELD_ID_PLAYER_WARNINGS
-stock GetAccountWarnings(name[], warnings)
+stock GetAccountWarnings(name[], &warnings)
 {
 	stmt_bind_result_field(stmt_AccountGetWarnings, 0, DB::TYPE_INTEGER, warnings);
 	stmt_bind_value(stmt_AccountGetWarnings, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -767,7 +783,9 @@ stock GetAccountWarnings(name[], warnings)
 	if(!stmt_execute(stmt_AccountGetWarnings))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetWarnings);
+	stmt_fetch_row(stmt_AccountGetWarnings);
+
+	return 1;
 }
 
 stock SetAccountWarnings(name[], warnings)
@@ -787,7 +805,9 @@ stock GetAccountAimshout(name[], string[128])
 	if(!stmt_execute(stmt_AccountGetAimShout))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetAimShout);
+	stmt_fetch_row(stmt_AccountGetAimShout);
+
+	return 1;
 }
 
 stock SetAccountAimshout(name[], string[128])
@@ -807,7 +827,9 @@ stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 	if(!stmt_execute(stmt_AccountGetGpci))
 		return 0;
 
-	return stmt_fetch_row(stmt_AccountGetGpci);
+	stmt_fetch_row(stmt_AccountGetGpci);
+
+	return 1;
 }
 
 stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
@@ -819,7 +841,7 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 }
 
 // Pass, IP and gpci
-stock GetAccountAliasData(name[], pass[129], ip, gpci[MAX_GPCI_LEN])
+stock GetAccountAliasData(name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
 {
 	stmt_bind_value(stmt_AccountGetAliasData, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountGetAliasData, 0, DB::TYPE_STRING, pass, MAX_PASSWORD_LEN);
