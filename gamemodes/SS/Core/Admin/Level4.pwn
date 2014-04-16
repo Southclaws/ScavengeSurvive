@@ -234,40 +234,6 @@ ACMD:pos[4](playerid, params[])
 	return 1;
 }
 
-CMD:sifdebug(playerid, params[])
-{
-	new level = strval(params);
-
-	if(!(0 <= level <= 10))
-	{
-		Msg(playerid, -1, "Invalid level");
-		return 1;
-	}
-
-	sif_debug_plevel(playerid, level);
-
-	MsgF(playerid, -1, "SIF debug level: %d", level);
-
-	return 1;
-}
-
-ACMD:sifgdebug[4](playerid, params[])
-{
-	new level = strval(params);
-
-	if(!(0 <= level <= 10))
-	{
-		Msg(playerid, -1, "Invalid level");
-		return 1;
-	}
-
-	sif_debug_level(level);
-
-	MsgF(playerid, -1, "Global SIF debug level: %d", level);
-
-	return 1;
-}
-
 ACMD:hud[4](playerid, params[])
 {
 	if(GetPlayerBitFlag(playerid, ShowHUD))
@@ -317,6 +283,78 @@ ACMD:weather[4](playerid, params[])
 
 		Msg(playerid, RED, " >  Invalid weather!");
 	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Debug stuff (SIF mostly)
+
+==============================================================================*/
+
+
+CMD:sifdebug(playerid, params[])
+{
+	new level = strval(params);
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, -1, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_plevel(playerid, level);
+
+	MsgF(playerid, -1, "SIF debug level: %d", level);
+
+	return 1;
+}
+
+ACMD:sifgdebug[4](playerid, params[])
+{
+	new level = strval(params);
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, -1, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_level(level);
+
+	MsgF(playerid, -1, "Global SIF debug level: %d", level);
+
+	return 1;
+}
+
+ACMD:dbl[3](playerid, params[])
+{
+	if(IsPlayerToggledAllDebugLabels(playerid))
+	{
+		HideAllDebugLabelsForPlayer(playerid);
+		Msg(playerid, YELLOW, " >  Debug labels toggled off.");
+	}
+	else
+	{
+		ShowAllDebugLabelsForPlayer(playerid);
+		Msg(playerid, YELLOW, " >  Debug labels toggled on.");
+	}
+
+	return 1;
+}
+
+ACMD:gotoitem[4](playerid, params[])
+{
+	new
+		itemid = strval(params),
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetItemPos(itemid, x, y, z);
+	SetPlayerPos(playerid, x, y, z);
 
 	return 1;
 }

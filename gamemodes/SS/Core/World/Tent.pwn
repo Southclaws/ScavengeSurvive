@@ -30,12 +30,16 @@ new
 			tnt_GEID[MAX_TENT],
 			tnt_SkipGEID,
 			tnt_Loading,
+			tnt_DebugLabelType,
+			tnt_DebugLabelID[MAX_TENT],
 			tnt_Data[MAX_TENT][E_TENT_DATA],
 			tnt_Items[MAX_TENT][MAX_TENT_ITEMS],
 Iterator:	tnt_Index<MAX_TENT>,
 Iterator:	tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
 			tnt_ItemTent[ITM_MAX] = {INVALID_ITEM_ID, ...},
-			tnt_ItemList[ITM_LST_OF_ITEMS(MAX_TENT_ITEMS)];
+			tnt_ItemList[ITM_LST_OF_ITEMS(MAX_TENT_ITEMS)],
+			tnt_ButtonTent[BTN_MAX] = {INVALID_TENT_ID, ...},
+			tnt_ItemTentTarget[ITM_MAX] = {INVALID_TENT_ID, ...};
 
 static
 			tnt_CurrentTentID[MAX_PLAYERS];
@@ -63,6 +67,8 @@ hook OnGameModeInit()
 	tnt_GEID_Index = arr[0];
 	// printf("Loaded tent GEID: %d", tnt_GEID_Index);
 
+	tnt_DebugLabelType = DefineDebugLabelType("TENT", GREEN);
+
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
 	Iter_Init(tnt_ItemIndex);
@@ -85,8 +91,9 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 {
 	new id = Iter_Free(tnt_Index);
 
-	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", .label = 0);
-	tnt_Data[id][tnt_areaId] = CreateDynamicSphere(x, y, z, 2.5);
+	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", .areasize = 1.5, .label = 0);
+
+	tnt_ButtonTent[tnt_Data[id][tnt_buttonId]] = id;
 
 	tnt_Data[id][tnt_objSideR1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 270.0, degrees)),
@@ -160,6 +167,9 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 		// printf("Tent GEID Index: %d", tnt_GEID_Index);
 	}
 
+	tnt_DebugLabelID[id] = CreateDebugLabel(tnt_DebugLabelType, id, x, y, z);
+	UpdateTentDebugLabel(id);
+
 	return id;
 }
 
@@ -176,7 +186,7 @@ stock DestroyTent(tentid)
 		fremove(filename);
 
 	DestroyButton(tnt_Data[tentid][tnt_buttonId]);
-	DestroyDynamicArea(tnt_Data[tentid][tnt_areaId]);
+	tnt_ButtonTent[tnt_Data[tentid][tnt_buttonId]] = INVALID_TENT_ID;
 
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideR1]);
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideR2]);
@@ -200,7 +210,11 @@ stock DestroyTent(tentid)
 	tnt_Data[tentid][tnt_posZ] = 0.0;
 	tnt_Data[tentid][tnt_rotZ] = 0.0;
 
+	Iter_Clear(tnt_ItemIndex[tentid]);
+
 	Iter_SafeRemove(tnt_Index, tentid, tentid);
+
+	DestroyDebugLabel(tnt_DebugLabelID[tentid]);
 
 	return tentid;
 }
@@ -242,46 +256,49 @@ AddItemToTentIndex(tentid, itemid)
 
 	SaveTent(tentid);
 
+	UpdateTentDebugLabel(tentid);
+
 	return 1;
 }
 
 RemoveItemFromTentIndex(itemid)
 {
 	if(!IsValidItem(itemid))
-		return 0;
+		return INVALID_TENT_ID;
 
 	if(tnt_ItemTent[itemid] == -1)
-		return 0;
+		return INVALID_TENT_ID;
 
-	Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
-	SaveTent(tnt_ItemTent[itemid]);
+	new
+		cell,
+		tentid;
+
+	foreach(new i : tnt_ItemIndex[tnt_ItemTent[itemid]])
+	{
+		if(tnt_Items[tnt_ItemTent[itemid]][i] == itemid)
+		{
+			cell = i;
+			break;
+		}
+	}
+
+	tentid = tnt_ItemTent[itemid];
+
+	Iter_Remove(tnt_ItemIndex[tentid], cell);
+	SaveTent(tentid);
+	UpdateTentDebugLabel(tentid);
 
 	tnt_ItemTent[itemid] = -1;
 
-	return 1;
+	return tentid;
 }
 
 public OnItemCreateInWorld(itemid)
 {
 	if(!tnt_Loading)
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z;
-
-		GetItemPos(itemid, x, y, z);
-
-		// Quick and dirty bad method until a better way is implemented.
-		// However, looping all tents is better than looping all items!
-		foreach(new i : tnt_Index)
-		{
-			if(IsPointInDynamicArea(tnt_Data[i][tnt_areaId], x, y, z))
-			{
-				AddItemToTentIndex(i, itemid);
-				break;
-			}
-		}
+		if(tnt_ItemTentTarget[itemid] != INVALID_TENT_ID)
+			AddItemToTentIndex(tnt_ItemTentTarget[itemid], itemid);
 	}
 
 	#if defined tnt_OnItemCreateInWorld
@@ -347,7 +364,10 @@ public OnItemDestroy(itemid)
 
 public OnPlayerPickedUpItem(playerid, itemid)
 {
-	RemoveItemFromTentIndex(itemid);
+	new ret = RemoveItemFromTentIndex(itemid);
+
+	if(ret != INVALID_TENT_ID)
+		MsgF(playerid, YELLOW, "Removed item %d from tent %d (GEID: %d)", itemid, ret, tnt_GEID[ret]);
 
 	#if defined tnt_OnPlayerPickedUpItem
 		return tnt_OnPlayerPickedUpItem(playerid, itemid);
@@ -365,6 +385,59 @@ public OnPlayerPickedUpItem(playerid, itemid)
 #if defined tnt_OnPlayerPickedUpItem
 	forward tnt_OnPlayerPickedUpItem(playerid, itemid);
 #endif
+
+public OnPlayerDroppedItem(playerid, itemid)
+{
+	new
+		list[BTN_MAX_INRANGE],
+		count;
+
+	GetPlayerButtonList(playerid, list, count);
+
+	for(new i; i < count; i++)
+	{
+		if(tnt_ButtonTent[list[i]] != INVALID_TENT_ID)
+		{
+			tnt_ItemTentTarget[itemid] = tnt_ButtonTent[list[i]];
+			MsgF(playerid, YELLOW, " >  Item %d added to tent %d (GEID: %d)", itemid, tnt_ButtonTent[list[i]], tnt_GEID[tnt_ButtonTent[list[i]]]);
+			break;
+		}
+	}
+
+	#if defined tnt_OnPlayerDroppedItem
+		return tnt_OnPlayerDroppedItem(playerid, itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerDroppedItem
+	#undef OnPlayerDroppedItem
+#else
+	#define _ALS_OnPlayerDroppedItem
+#endif
+ 
+#define OnPlayerDroppedItem tnt_OnPlayerDroppedItem
+#if defined tnt_OnPlayerDroppedItem
+	forward tnt_OnPlayerDroppedItem(playerid, itemid);
+#endif
+
+UpdateTentDebugLabel(tentid)
+{
+	new
+		string[64],
+		tmp[12];
+
+	format(string, sizeof(string), "GEID: %d ITEMCOUNT: %d\n", tnt_GEID[tentid], Iter_Count(tnt_ItemIndex[tentid]));
+
+	foreach(new i : tnt_ItemIndex[tentid])
+	{
+		valstr(tmp, tnt_Items[tentid][i]);
+		strcat(string, tmp);
+		strcat(string, ", ");
+	}
+
+	UpdateDebugLabelString(tnt_DebugLabelID[tentid], string);
+}
 
 
 /*==============================================================================
