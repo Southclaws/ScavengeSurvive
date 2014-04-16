@@ -389,7 +389,7 @@ Float:	gNameTagDistance,
 new
 		gServerUptime,
 bool:	gServerRestarting,
-		gBigString[MAX_PLAYERS][2048],
+		gBigString[MAX_PLAYERS][4096],
 		gTotalInfoMessage,
 		gTotalRules,
 		gTotalStaff,
@@ -697,6 +697,8 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Core.pwn"
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/Aliases.pwn"
+#include "SS/Core/Player/ipv4-log.pwn"
+#include "SS/Core/Player/gpci-log.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
 #include "SS/Core/Player/Spawn.pwn"
 #include "SS/Core/Player/Damage.pwn"
