@@ -420,7 +420,7 @@ PlayerActivateDoorButton(playerid, keypad, code)
 	return 1;
 }
 
-public OnPlayerKeypadEnter(playerid, keypadid, success)
+public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	new itemid = GetPlayerItem(playerid);
 
@@ -429,7 +429,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 
 	if(keypadid == k_ControlTower)
 	{
-		if(success)
+		if(code == match)
 		{
 			lock_ControlTower = 0;
 			ShowCodeList1(playerid);
@@ -438,7 +438,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_MainGate)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Main);
 			HideKeypad(playerid);
@@ -446,7 +446,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_AirstripGate)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Airstrip);
 			HideKeypad(playerid);
@@ -454,7 +454,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_BlastDoor)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_BlastDoor1);
 			OpenDoor(door_BlastDoor2);
@@ -463,7 +463,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Storage)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Storage);
 			HideKeypad(playerid);
@@ -471,7 +471,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_StorageWatch)
 	{
-		if(success)
+		if(code == match)
 		{
 			lock_StorageWatch = 0;
 			ShowCodeList2(playerid);
@@ -480,7 +480,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Generator)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Generator);
 			HideKeypad(playerid);
@@ -488,7 +488,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_PassageTop)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_PassageTop);
 			HideKeypad(playerid);
@@ -496,7 +496,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_PassageBottom)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_PassageBottom);
 			HideKeypad(playerid);
@@ -504,7 +504,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Catwalk)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Catwalk);
 			HideKeypad(playerid);
@@ -512,7 +512,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Headquarters1)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Headquarters1);
 			OpenDoor(door_Headquarters2);
@@ -521,7 +521,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Headquarters2)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Headquarters1);
 			OpenDoor(door_Headquarters2);
@@ -530,14 +530,14 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	}
 	if(keypadid == k_Shaft)
 	{
-		if(success)
+		if(code == match)
 		{
 			OpenDoor(door_Shaft);
 			HideKeypad(playerid);
 		}
 	}
 
-	return CallLocalFunction("a69_OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
+	return CallLocalFunction("a69_OnPlayerKeypadEnter", "ddd", playerid, keypadid, code, match);
 }
 #if defined _ALS_OnPlayerKeypadEnter
 	#undef OnPlayerKeypadEnter
@@ -545,7 +545,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	#define _ALS_OnPlayerKeypadEnter
 #endif
 #define OnPlayerKeypadEnter a69_OnPlayerKeypadEnter
-forward a69_OnPlayerKeypadEnter(playerid, keypadid, success);
+forward a69_OnPlayerKeypadEnter(playerid, keypadid, code, match);
 
 ShowCodeList1(playerid)
 {

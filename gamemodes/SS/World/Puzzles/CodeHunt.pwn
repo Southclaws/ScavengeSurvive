@@ -127,17 +127,17 @@ public OnButtonPress(playerid, buttonid)
 #define OnButtonPress lck_OnButtonPress
 forward lck_OnButtonPress(playerid, buttonid);
 
-public OnPlayerKeypadEnter(playerid, keypadid, success)
+public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == k_Lockup)
 	{
-		if(success && lck_CurrentLockup[playerid] != -1)
+		if(code == match && lck_CurrentLockup[playerid] != -1)
 		{
 			lck_Data[lck_CurrentLockup[playerid]][lck_locked] = 0;
 		}
 	}
 
-	return CallLocalFunction("lck_OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
+	return CallLocalFunction("lck_OnPlayerKeypadEnter", "ddd", playerid, keypadid, code, match);
 }
 #if defined _ALS_OnPlayerKeypadEnter
 	#undef OnPlayerKeypadEnter
@@ -145,7 +145,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, success)
 	#define _ALS_OnPlayerKeypadEnter
 #endif
 #define OnPlayerKeypadEnter lck_OnPlayerKeypadEnter
-forward lck_OnPlayerKeypadEnter(playerid, keypadid, success);
+forward lck_OnPlayerKeypadEnter(playerid, keypadid, code, match);
 
 
 LoadLockup_SF()

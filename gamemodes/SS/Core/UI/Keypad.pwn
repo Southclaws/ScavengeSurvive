@@ -1,4 +1,5 @@
 #include <YSI\y_hooks>
+#include <YSI\y_inline>
 
 
 new
@@ -25,14 +26,27 @@ new
 		kp_Value[MAX_PLAYERS],
 		kp_Match[MAX_PLAYERS],
 		kp_CurrentID[MAX_PLAYERS],
+		kp_Callback[MAX_PLAYERS][E_CALLBACK_DATA],
 		kp_Hacking[MAX_PLAYERS],
 Timer:	kp_HackTimer[MAX_PLAYERS],
 		kp_HackTries[MAX_PLAYERS],
 		kp_HackFailParticle[MAX_PLAYERS];
 
 
-forward OnPlayerKeypadEnter(playerid, keypadid, success);
+#if defined FILTERSCRIPT
+	hook OnFilterScriptInit()
+	{
+		for(new i; i < MAX_PLAYERS; i++)
+		{
+			if(IsPlayerConnected(i))
+				kp_LoadUI(i);
+		}
+		return 1;
+	}
+#endif
 
+
+forward OnPlayerKeypadEnter(playerid, keypadid, code, match);
 
 stock ShowKeypad(playerid, keypadid, match)
 {
@@ -60,6 +74,13 @@ stock ShowKeypad(playerid, keypadid, match)
 	kp_Match[playerid] = match;
 	kp_CurrentID[playerid] = keypadid;
 	KeypadUpdateDisplay(playerid);
+}
+
+stock ShowKeypad_Callback(playerid, callback:callback, match)
+{
+	Callback_Get(callback, kp_Callback[playerid]);
+
+	ShowKeypad(playerid, 0xFFFFFFFF, match);
 }
 
 stock HideKeypad(playerid)
@@ -106,8 +127,6 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 {
 	if(kp_HackTries[playerid] >= 100)
 	{
-		new success;
-
 		kp_Hacking[playerid] = 0;
 		kp_HackTries[playerid] = 0;
 		stop kp_HackTimer[playerid];
@@ -115,7 +134,6 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 		if(random(100) < 40)
 		{
 			kp_Value[playerid] = match;
-			success = 1;
 			ClearAnimations(playerid);
 		}
 		else
@@ -135,7 +153,7 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 		}
 
 		KeypadUpdateDisplay(playerid);
-		defer HackKeypadFinish(playerid, keypadid, success);
+		defer HackKeypadFinish(playerid, keypadid, match);
 
 		return;
 	}
@@ -148,10 +166,10 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 	return;
 }
 
-timer HackKeypadFinish[1000](playerid, keypadid, success)
+timer HackKeypadFinish[1000](playerid, keypadid, match)
 {
 	HideKeypad(playerid);
-	CallLocalFunction("OnPlayerKeypadEnter", "ddd", playerid, keypadid, success);
+	CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, keypadid, match, match);
 }
 
 timer kp_PrtDestroy[2000](playerid)
@@ -213,15 +231,16 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 
 KeypadEnter(playerid)
 {
-	if(kp_Value[playerid] == kp_Match[playerid])
-	{
-		CallLocalFunction("OnPlayerKeypadEnter", "ddd", playerid, kp_CurrentID[playerid], 1);
-		HideKeypad(playerid);
-	}
+	new ret;
+
+	if(kp_CurrentID[playerid] == 0xFFFFFFFF)
+		Callback_Call(kp_Callback[playerid], playerid, 0xFFFFFFFF, kp_Value[playerid], kp_Match[playerid]);
+
 	else
-	{
-		CallLocalFunction("OnPlayerKeypadEnter", "ddd", playerid, kp_CurrentID[playerid], 0);
-	}
+		ret = CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, kp_CurrentID[playerid], kp_Value[playerid], kp_Match[playerid]);
+
+	if(ret || kp_Value[playerid] == kp_Match[playerid])
+		HideKeypad(playerid);
 }
 
 KeypadAddNumber(playerid, number)
@@ -244,6 +263,11 @@ KeypadUpdateDisplay(playerid)
 }
 
 hook OnPlayerConnect(playerid)
+{
+	kp_LoadUI(playerid);
+}
+
+kp_LoadUI(playerid)
 {
 	kp_CurrentID[playerid] = -1;
 
