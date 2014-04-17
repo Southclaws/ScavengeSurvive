@@ -105,7 +105,7 @@ WeaponsCacheDrop(Float:x, Float:y, Float:z)
 	if(webc_ActiveDrop != -1)
 		return 0;
 
-	CreateDynamicObject(964, x, y, z - 0.0440, 0.0, 0.0, 0.0);
+	CreateDynamicObject(964, x, y, z - 0.0440, 0.0, 0.0, 0.0, .streamdistance = 1000.0, .drawdistance = 1000.0);
 
 	FillContainerWithLoot(
 		CreateContainer("Supply Crate", 8, x, y - 0.5, z + 1.0),
