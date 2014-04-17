@@ -75,7 +75,7 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 		date;
 
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 1, DB::TYPE_STRING, inputgpci, MAX_GPCI_LEN);
+	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 1, DB::TYPE_STRING, hash, MAX_GPCI_LEN);
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 2, DB::TYPE_INTEGER, date);
 	stmt_bind_value(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_INTEGER, inputgpci, MAX_GPCI_LEN);
 
