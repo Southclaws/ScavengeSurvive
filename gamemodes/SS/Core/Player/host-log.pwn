@@ -55,7 +55,7 @@ stock GetAccountHostHistoryFromHost(inputhost[], output[][e_host_list_output_str
 	stmt_bind_result_field(stmt_HostGetRecordsFromHost, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_HostGetRecordsFromHost, 1, DB::TYPE_STRING, host, MAX_HOST_LEN);
 	stmt_bind_result_field(stmt_HostGetRecordsFromHost, 2, DB::TYPE_INTEGER, date);
-	stmt_bind_value(stmt_HostGetRecordsFromHost, 0, DB::TYPE_INTEGER, inputhost, MAX_HOST_LEN);
+	stmt_bind_value(stmt_HostGetRecordsFromHost, 0, DB::TYPE_STRING, inputhost, MAX_HOST_LEN);
 
 	if(!stmt_execute(stmt_HostGetRecordsFromHost))
 		return 0;
@@ -110,6 +110,8 @@ ACMD:hhh[4](playerid, params[])
 	new ip;
 
 	GetAccountIP(params, ip);
+
+	MsgF(playerid, YELLOW, " >  Running DNS resolve for '%s'", IpIntToStr(ip));
 
 	rdns(IpIntToStr(ip), playerid);
 
