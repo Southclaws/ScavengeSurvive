@@ -848,5 +848,10 @@ stock GetAccountAliasData(name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
 	stmt_bind_result_field(stmt_AccountGetAliasData, 1, DB::TYPE_INTEGER, ip);
 	stmt_bind_result_field(stmt_AccountGetAliasData, 2, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
 
-	return stmt_execute(stmt_AccountGetAliasData);
+	if(!stmt_execute(stmt_AccountGetAliasData))
+		return 0;
+
+	stmt_fetch_row(stmt_AccountGetAliasData);
+
+	return 1;
 }
