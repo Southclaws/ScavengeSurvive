@@ -35,6 +35,7 @@ Vehicle related scripts that control everything related to vehicles.
 - Locksmith - Handles external locking of vehicles using a Locksmith Kit item.
 - Carmour - Allows vehicles to have attached objects.
 - Lock - Controls vehicle locking and provides API functions.
+- AntiNinja - Prevents the SA:MP bug "ninja hijack".
 
 ### Weapon/
 Weapon related scripts, currently only one but a folder exists in case of expansion.
@@ -50,6 +51,9 @@ Player related code. Not gameplay mechanics however, these scripts are all inter
 - Core - Manages connects and disconnects, runs init and exit code for players.
 - Accounts - Everything to do with the account side of players (not character data)
 - Aliases - Contains functions that find accounts from the same owner.
+- ipv4-log - Logs IP addresses for players if they change.
+- host-log - Logs hostnames for players if they change.
+- gpci-log - Logs hashes for players if they change.
 - SaveLoad - Manages the character and inventory saving/loading.
 - Spawn - Handles spawning the player in as an existing or new character.
 - Damage - Handles weapon damage code, uses the AdvancedWeaponData library.
@@ -102,10 +106,12 @@ Entities that are created in the game world and can interacted with in some way.
 - SprayTag - Creates flat planes in the world that players can spray their username onto.
 - Sign - Item extension script that allows sign items to be placed and written on.
 - SupplyCrate - Creates supply crates that contain items on a timer that drop to predefined locations.
+- WeaponsCache - A minigame/puzzle that drops weapons caches and gives players limited navigational information for finding them.
 
 ### Admin/
 These scripts are all staff tools or administrative control scripts.
-- Report - Player tool for reporting other players.
+- Report - System tool for reporting possible hackers to a database.
+- Report_cmds - Player tool for reporting other players.
 - HackDetect - Detects most hack devices and automatically reports or bans players.
 - HackTrap - Allows creation of dummy items in impossible-to-reach places that autoban on pickup.
 - Level1 - Admin level 1 commands.

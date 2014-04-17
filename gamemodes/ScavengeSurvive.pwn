@@ -85,7 +85,8 @@ public OnGameModeInit()
 #include "SS/Core/Server/Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
-//#include <irc>						// By Incognito:			http://forum.sa-mp.com/showthread.php?t=98803
+//#include <irc>						// By Incognito, 1.4.4:		http://forum.sa-mp.com/showthread.php?t=98803
+#include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
 
 #include <sqlitei>					// By Slice, v0.9.6:		http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
@@ -139,6 +140,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_ADMIN					(48)
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_GPCI_LEN				(41)
+#define MAX_HOST_LEN				(256)
 #define MAX_SPAWNED_VEHICLES		(250)
 
 
@@ -698,6 +700,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/Aliases.pwn"
 #include "SS/Core/Player/ipv4-log.pwn"
+#include "SS/Core/Player/host-log.pwn"
 #include "SS/Core/Player/gpci-log.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
 #include "SS/Core/Player/Spawn.pwn"

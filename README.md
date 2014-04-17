@@ -32,7 +32,8 @@ manipulate the gamemode without needing to edit it in any way; allowing for
 easy, conflict free updating from the master branch.
 
 I encourage people to play around with this code, create a new map and put loot
-spawns in it, I would love to see what is made!
+spawns in it or completely mod it into a new gamemode, I would love to see what
+creations are made!
 
 
 ## Setup
@@ -57,7 +58,7 @@ spawns in it, I would love to see what is made!
 
  If you set up all the dependencies correctly, there should be *no*
  errors at all. If you have a problem compiling DON'T SUBMIT AN ISSUE HERE!
- that place is reserved for actual bugs, if you need help, send me an email :)
+ that place is reserved for actual bugs.
 
 4. **Set up plugins and filterscripts in your _"./server.cfg"_ file.**
 
@@ -66,7 +67,7 @@ spawns in it, I would love to see what is made!
  public server:
 
         filterscripts object-loader rcon
-        plugins streamer sscanf CTime Whirlpool FileManager
+        plugins streamer sscanf CTime Whirlpool FileManager dns
 
 5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
 
@@ -78,24 +79,25 @@ spawns in it, I would love to see what is made!
   * allow-pause-map _(bool)_ - enable the map option in the pause menu
   * combat-log-window _(integer)_ - combat log time window in seconds
   * interior-entry _(bool)_ - enable interior entrances
-  * vehicle-surfing _(bool)_ - enable vehicle surfing on fast vehicles
   * login-freeze-time _(integer)_ - amount of seconds to freeze player on spawn
   * max-tab-out-time _(integer)_ - amount of seconds that a player can alt tab
   * nametag-distance _(float)_ - set the nametag render distance (0.0 for off)
   * ping-limit _(integer)_ - maximum ping for players
   * player-animations _(bool)_ - enable the standard CJ animations
+  * vehicle-surfing _(bool)_ - enable vehicle surfing on fast vehicles
 
  **server related settings:**
 
   * file-check _(bool)_ - perform a full file check on user files
-  * gamemodename _(string)_ - server browser gamemode name
   * infomsg-interval _(integer)_ - time between each info message in minutes
   * infomsgs _(string array)_ - array list of periodic information messages
+  * max-uptime _(integer)_ - maximum time in hours between server restarts
   * motd _(string)_ - message of the day, displayed to players upon connecting
   * rules _(string array)_ - array list of rules
   * staff _(string array)_ - array list of staff members
   * website _(string)_ - the website for whitelist notification message
   * whitelist _(bool)_ - enable whitelist
+  * whitelist-auto-toggle _(bool)_ - whitelist goes off when admins are online
 
 Enjoy, do whatever you want with it, but keep my name on it :)
 
@@ -107,6 +109,9 @@ a player data file check. This will remove any files that shouldn't be there
 Such as files that aren't in the "Accounts.db" player table or files with names
 that aren't valid player names.
 
+This option also updates files if a new file structure is used. Since the modio
+implementation however, this will likely be done from the character load code.
+
 
 Run these queries to remove duplicates from the database:
 
@@ -117,4 +122,5 @@ CREATE TABLE Player (name TEXT,pass TEXT,ipv4 INTEGER,alive INTEGER,karma INTEGE
 INSERT INTO Player (name,pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci) SELECT DISTINCT lower(name),pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci FROM Player_old
 
 ```
-Downside: table will be re-ordered by "name" column alphabetically.
+Downside: table will be re-ordered by "name" column alphabetically instead of by
+registration date and names will all be in lower case.
