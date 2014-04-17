@@ -8,9 +8,9 @@
 
 enum
 {
-	DEFENCE_MODE_HORIZONTAL,
-	DEFENCE_MODE_VERTICAL,
-	DEFENCE_MODE_OPENABLE,
+	DEFENCE_POSE_HORIZONTAL,
+	DEFENCE_POSE_VERTICAL,
+	DEFENCE_POSE_SUPPORTED,
 }
 
 enum E_DEFENCE_ITEM_DATA
@@ -23,9 +23,7 @@ Float:		def_horizontalRotX,
 Float:		def_horizontalRotY,
 Float:		def_horizontalRotZ,
 Float:		def_placeOffsetZ,
-			def_maxHitPoints,
-			def_buildVertical,
-			def_buildHorizont
+			def_maxHitPoints
 }
 
 enum E_DEFENCE_DATA
@@ -33,9 +31,11 @@ enum E_DEFENCE_DATA
 			def_type,
 			def_objectId,
 			def_buttonId,
-			def_mode,
+			def_pose,
+			def_motor,
+			def_keypad,
 			def_pass,
-			def_open,
+			def_moveState,
 			def_hitPoints,
 Float:		def_posX,
 Float:		def_posY,
@@ -43,8 +43,24 @@ Float:		def_posZ,
 Float:		def_rotZ
 }
 
+enum
+{
+	DEFENCE_CELL_TYPE,
+	DEFENCE_CELL_POSE,
+	DEFENCE_CELL_MOTOR,
+	DEFENCE_CELL_KEYPAD,
+	DEFENCE_CELL_PASS,
+	DEFENCE_CELL_MOVESTATE,
+	DEFENCE_CELL_HITPOINTS
+}
+
 
 static
+			def_GEID_Index,
+			def_GEID[MAX_DEFENCE],
+			def_SkipGEID,
+			def_DebugLabelType,
+			def_DebugLabelID[MAX_DEFENCE],
 			def_TypeData[MAX_DEFENCE_ITEM][E_DEFENCE_ITEM_DATA],
 			def_TypeIndex,
 			def_ItemTypeBounds[2] = {65535, 0};
@@ -63,6 +79,21 @@ static
 
 hook OnGameModeInit()
 {
+	if(def_GEID_Index > 0)
+	{
+		printf("ERROR: def_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");
+		for(;;){}
+	}
+
+	new arr[1];
+
+	modio_read(GEID_FILE, !"DFNC", arr);
+
+	def_GEID_Index = arr[0];
+	// printf("Loaded defence GEID: %d", def_GEID_Index);
+
+	def_DebugLabelType = DefineDebugLabelType("DEFENCE", GREEN);
+
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
 
 	for(new i; i < BTN_MAX; i++)
@@ -78,7 +109,7 @@ hook OnPlayerConnect(playerid)
 }
 
 
-stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset, maxhitpoints, vert, horiz)
+stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset, maxhitpoints)
 {
 	new id = def_TypeIndex;
 
@@ -91,8 +122,6 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	def_TypeData[id][def_horizontalRotZ] = h_rz;
 	def_TypeData[id][def_placeOffsetZ] = zoffset;
 	def_TypeData[id][def_maxHitPoints] = maxhitpoints;
-	def_TypeData[id][def_buildVertical] = vert;
-	def_TypeData[id][def_buildHorizont] = horiz;
 
 	if(_:itemtype < def_ItemTypeBounds[0])
 		def_ItemTypeBounds[0] = _:itemtype;
@@ -123,7 +152,7 @@ stock IsItemTypeDefenceItem(ItemType:itemtype)
 	return false;
 }
 
-CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, pass = 0)
+CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hitpoints = -1)
 {
 	new id = Iter_Free(def_Index);
 
@@ -136,56 +165,73 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, mode, hitpoints = -1, p
 
 	GetItemTypeName(def_TypeData[type][def_itemtype], itemtypename);
 
-	if(hitpoints == -1)
-		def_Data[id][def_hitPoints] = def_TypeData[type][def_maxHitPoints];
-
-	else
-		def_Data[id][def_hitPoints] = hitpoints;
-
-	if(mode == DEFENCE_MODE_HORIZONTAL)
-	{
-		if(!def_TypeData[type][def_buildHorizont])
-			return -2;
-
-		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
-			def_TypeData[type][def_horizontalRotX],
-			def_TypeData[type][def_horizontalRotY],
-			def_TypeData[type][def_horizontalRotZ] + rz);
-
-		if(mode == DEFENCE_MODE_OPENABLE)
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
-
-		else
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
-	}
-	else
-	{
-		if(!def_TypeData[type][def_buildVertical])
-			return -3;
-
-		def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
-			def_TypeData[type][def_verticalRotX],
-			def_TypeData[type][def_verticalRotY],
-			def_TypeData[type][def_verticalRotZ] + rz);
-
-		if(mode == DEFENCE_MODE_OPENABLE)
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
-
-		else
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
-	}
-
-	def_ButtonDefence[def_Data[id][def_buttonId]] = id;
-
-	def_Data[id][def_mode] = mode;
+	def_Data[id][def_pose] = pose;
+	def_Data[id][def_motor] = motor;
+	def_Data[id][def_keypad] = keypad;
 	def_Data[id][def_pass] = pass;
+	def_Data[id][def_moveState] = movestate;
+	def_Data[id][def_hitPoints] = ((hitpoints == -1) ? (def_TypeData[type][def_maxHitPoints]) : (hitpoints));
 
 	def_Data[id][def_posX] = x;
 	def_Data[id][def_posY] = y;
 	def_Data[id][def_posZ] = z;
 	def_Data[id][def_rotZ] = rz;
 
+	if(motor)
+	{
+		if(movestate == DEFENCE_POSE_HORIZONTAL)
+		{
+			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
+				def_TypeData[type][def_horizontalRotX],
+				def_TypeData[type][def_horizontalRotY],
+				def_TypeData[type][def_horizontalRotZ] + rz);
+
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+		}
+		else
+		{
+			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
+				def_TypeData[type][def_verticalRotX],
+				def_TypeData[type][def_verticalRotY],
+				def_TypeData[type][def_verticalRotZ] + rz);
+
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+		}
+	}
+	else
+	{
+		if(pose == DEFENCE_POSE_HORIZONTAL)
+		{
+			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
+				def_TypeData[type][def_horizontalRotX],
+				def_TypeData[type][def_horizontalRotY],
+				def_TypeData[type][def_horizontalRotZ] + rz);
+
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+		}
+		else
+		{
+			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
+				def_TypeData[type][def_verticalRotX],
+				def_TypeData[type][def_verticalRotY],
+				def_TypeData[type][def_verticalRotZ] + rz);
+
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+		}
+	}
+
+	def_ButtonDefence[def_Data[id][def_buttonId]] = id;
+
 	Iter_Add(def_Index, id);
+
+	if(!def_SkipGEID)
+	{
+		def_GEID[id] = def_GEID_Index;
+		def_GEID_Index++;
+		// printf("Defence GEID Index: %d", def_GEID_Index);
+	}
+
+	def_DebugLabelID[id] = CreateDebugLabel(def_DebugLabelType, id, x, y, z);
 
 	return id;
 }
@@ -199,24 +245,24 @@ stock DestroyDefence(defenceid)
 		filename[64],
 		next;
 
-	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d",
-		def_Data[defenceid][def_posX],
-		def_Data[defenceid][def_posY],
-		def_Data[defenceid][def_posZ],
-		def_Data[defenceid][def_rotZ]);
+	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"def_%010d.dat", def_GEID[defenceid]);
 
 	fremove(filename);
-
-	if(IsValidButton(def_Data[defenceid][def_buttonId]))
-		def_ButtonDefence[def_Data[defenceid][def_buttonId]] = INVALID_ITEM_ID;
 
 	DestroyDynamicObject(def_Data[defenceid][def_objectId]);
 	DestroyButton(def_Data[defenceid][def_buttonId]);
 
+	if(IsValidButton(def_Data[defenceid][def_buttonId]))
+		def_ButtonDefence[def_Data[defenceid][def_buttonId]] = INVALID_ITEM_ID;
+
 	def_Data[defenceid][def_objectId] = INVALID_OBJECT_ID;
 	def_Data[defenceid][def_buttonId] = INVALID_BUTTON_ID;
 
-	def_Data[defenceid][def_mode]		= 0;
+	def_Data[defenceid][def_pose]		= 0;
+	def_Data[defenceid][def_motor]		= 0;
+	def_Data[defenceid][def_keypad]		= 0;
+	def_Data[defenceid][def_pass]		= 0;
+	def_Data[defenceid][def_moveState]	= 0;
 	def_Data[defenceid][def_hitPoints]	= 0;
 	def_Data[defenceid][def_posX]		= 0.0;
 	def_Data[defenceid][def_posY]		= 0.0;
@@ -224,6 +270,8 @@ stock DestroyDefence(defenceid)
 	def_Data[defenceid][def_rotZ]		= 0.0;
 
 	Iter_SafeRemove(def_Index, defenceid, next);
+
+	DestroyDebugLabel(def_DebugLabelID[defenceid]);
 
 	return next;
 }
@@ -275,26 +323,6 @@ StartBuildingDefence(playerid, itemid)
 
 	if(type == -1)
 		return 0;
-
-	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
-
-	if(itemtype == item_Screwdriver)
-	{
-		if(!def_TypeData[type][def_buildVertical])
-		{
-			ShowActionText(playerid, "You cannot build that part vertically.", 6000);
-			return 0;
-		}
-	}
-
-	if(itemtype == item_Hammer)
-	{
-		if(!def_TypeData[type][def_buildHorizont])
-		{
-			ShowActionText(playerid, "You cannot build that part horizontally.", 6000);
-			return 0;
-		}
-	}
 
 	new itemtypename[ITM_MAX_NAME];
 
@@ -364,7 +392,7 @@ public OnButtonPress(playerid, buttonid)
 				}
 			}
 
-			if(itemtype == item_Keypad)
+			if(itemtype == item_Motor)
 			{
 				new Float:angle = absoluteangle(def_Data[id][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
@@ -384,12 +412,45 @@ public OnButtonPress(playerid, buttonid)
 				}
 			}
 
-			if(def_Data[id][def_mode] == DEFENCE_MODE_OPENABLE)
+			if(itemtype == item_Keypad)
 			{
-				def_CurrentDefenceOpen[playerid] = id;
+				new Float:angle = absoluteangle(def_Data[id][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
-				ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
-				CancelPlayerMovement(playerid);
+				if(90.0 < angle < 270.0)
+				{
+					if(!def_Data[id][def_motor])
+					{
+						ShowActionText(playerid, "You must install a motor before installing a keypad!");
+						return 1;
+					}
+
+					new itemtypename[ITM_MAX_NAME];
+
+					GetItemTypeName(def_TypeData[def_Data[id][def_type]][def_itemtype], itemtypename);
+
+					def_CurrentDefenceEdit[playerid] = id;
+					StartHoldAction(playerid, 6000);
+					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+
+					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+
+					return 1;
+				}
+			}
+
+			if(def_Data[id][def_motor])
+			{
+				if(def_Data[id][def_keypad])
+				{
+					def_CurrentDefenceOpen[playerid] = id;
+
+					ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
+					CancelPlayerMovement(playerid);
+				}
+				else
+				{
+					defer MoveDefence(id, playerid);
+				}
 
 				return 1;
 			}
@@ -454,10 +515,10 @@ public OnHoldActionFinish(playerid)
 		DestroyItem(def_CurrentDefenceItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
-			id = CreateDefence(type, x, y, z, angle, DEFENCE_MODE_VERTICAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL);
 
 		if(itemtype == item_Hammer)
-			id = CreateDefence(type, x, y, z, angle, DEFENCE_MODE_HORIZONTAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL);
 
 		logf("[CONSTRUCT] %p Built defence %d type %d at %f, %f, %f (%f)", playerid, id, type, x, y, z, angle);
 
@@ -472,10 +533,20 @@ public OnHoldActionFinish(playerid)
 	{
 		new itemid = GetPlayerItem(playerid);
 
+		if(GetItemType(itemid) == item_Motor)
+		{
+			ShowActionText(playerid, "Motor installed to defence");
+			def_Data[def_CurrentDefenceEdit[playerid]][def_motor] = true;
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			DestroyItem(itemid);
+			ClearAnimations(playerid);
+		}
+
 		if(GetItemType(itemid) == item_Keypad)
 		{
+			ShowActionText(playerid, "Keypad installed to defence");
 			ShowPlayerDialog(playerid, d_DefenceSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
-			def_Data[def_CurrentDefenceEdit[playerid]][def_mode] = DEFENCE_MODE_OPENABLE;
+			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = true;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
@@ -483,6 +554,8 @@ public OnHoldActionFinish(playerid)
 
 		if(GetItemType(itemid) == item_Crowbar)
 		{
+			ShowActionText(playerid, "Defence disassembled");
+
 			CreateItem(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posY],
@@ -561,15 +634,15 @@ timer MoveDefence[1500](defenceid, playerid)
 	{
 		GetPlayerPos(i, x, y, z);
 
-		if(Distance(x, y, z, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]) < 2.0)
+		if(Distance(x, y, z, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]) < 3.0)
 		{
-			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+			defer MoveDefence(defenceid, playerid);
 
 			return;
 		}
 	}
 
-	if(def_Data[def_CurrentDefenceOpen[playerid]][def_open])
+	if(def_Data[defenceid][def_moveState] == DEFENCE_POSE_HORIZONTAL)
 	{
 		MoveDynamicObject(def_Data[defenceid][def_objectId],
 			def_Data[defenceid][def_posX],
@@ -579,7 +652,7 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotY],
 			def_TypeData[def_Data[defenceid][def_type]][def_verticalRotZ] + def_Data[defenceid][def_rotZ]);
 
-		def_Data[defenceid][def_open] = false;
+		def_Data[defenceid][def_moveState] = DEFENCE_POSE_VERTICAL;
 
 		logf("[DEFMOVE] Player %p moved defence %d into CLOSED position.", playerid, defenceid);
 	}
@@ -593,7 +666,7 @@ timer MoveDefence[1500](defenceid, playerid)
 			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotY],
 			def_TypeData[def_Data[defenceid][def_type]][def_horizontalRotZ] + def_Data[defenceid][def_rotZ]);
 
-		def_Data[defenceid][def_open] = true;
+		def_Data[defenceid][def_moveState] = DEFENCE_POSE_HORIZONTAL;
 
 		logf("[DEFMOVE] Player %p moved defence %d into OPEN position.", playerid, defenceid);
 	}
@@ -601,7 +674,13 @@ timer MoveDefence[1500](defenceid, playerid)
 	return;
 }
 
-// Experimental hack detector
+
+/*==============================================================================
+
+	Experimental hack detector
+
+==============================================================================*/
+
 
 static
 		def_CurrentCheckDefence[MAX_PLAYERS],
@@ -615,7 +694,7 @@ public OnPlayerEnterButtonArea(playerid, buttonid)
 
 		if(Iter_Contains(def_Index, defenceid))
 		{
-			if( (def_Data[defenceid][def_mode] == DEFENCE_MODE_OPENABLE && !def_Data[defenceid][def_open]) || (def_Data[defenceid][def_mode] == DEFENCE_MODE_VERTICAL) )
+			if((!def_Data[defenceid][def_motor] && def_Data[defenceid][def_pose] == DEFENCE_POSE_VERTICAL) || (def_Data[defenceid][def_motor] && def_Data[defenceid][def_moveState] == DEFENCE_POSE_VERTICAL))
 			{
 				new Float:angle = absoluteangle(def_Data[defenceid][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
@@ -692,8 +771,33 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 }
 
 
-// Save and Load
+/*==============================================================================
 
+	Save and Load All
+
+==============================================================================*/
+
+
+SaveDefences(printeach = false, printtotal = false)
+{
+	new count;
+
+	foreach(new i : def_Index)
+	{
+		if(SaveDefenceItem(i, printeach))
+			count++;
+	}
+
+	if(printtotal)
+		printf("Saved %d Defences\n", count);
+
+	new arr[1];
+
+	arr[0] = def_GEID_Index;
+
+	modio_push(GEID_FILE, !"DFNC", 1, arr);//, true, false, false);
+	printf("Storing defence GEID: %d", def_GEID_Index);
+}
 
 LoadDefences(printeach = false, printtotal = false)
 {
@@ -701,97 +805,212 @@ LoadDefences(printeach = false, printtotal = false)
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
 		item[46],
 		type,
-		File:file,
-		filedir[64],
-
-		data[4],
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r;
+		filename[64],
+		count;
 
 	while(dir_list(direc, item, type))
 	{
 		if(type == FM_FILE)
 		{
-			filedir = DIRECTORY_DEFENCES;
-			strcat(filedir, item);
-			file = fopen(filedir, io_read);
+			filename = DIRECTORY_DEFENCES;
+			strcat(filename, item);
 
-			if(file)
-			{
-				fblockread(file, data, sizeof(data));
-				fclose(file);
-
-				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
-
-				new ret = CreateDefence(data[0], Float:x, Float:y, Float:z, Float:r, data[1], data[2], data[3]);
-
-				if(ret > -1)
-				{
-					if(printeach)
-						printf("\t[LOAD] Defence at %f, %f, %f", x, y, z);
-				}
-				else
-				{
-					printf("ERROR: Loading defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
-				}
-			}
+			count += LoadDefenceItem(filename, printeach);
 		}
 	}
 
 	dir_close(direc);
 
-	if(printtotal)
-		printf("Loaded %d Defences\n", Iter_Count(def_Index));
-}
-
-SaveDefences(printeach = false, printtotal = false)
-{
-	foreach(new i : def_Index)
-	{
-		SaveDefenceItem(i, printeach);
-	}
+	// If no defences were loaded, load the old format
+	// This should only ever happen once (upon transition to this new version)
+	if(count == 0)
+		OLD_LoadDefences(printeach, printtotal);
 
 	if(printtotal)
-		printf("Saved %d Defences\n", Iter_Count(def_Index));
+		printf("Loaded %d Defences\n", count);
 }
 
-SaveDefenceItem(id, prints = false)
+
+/*==============================================================================
+
+	Save and Load Individual
+
+==============================================================================*/
+
+
+SaveDefenceItem(defenceid, prints = false)
 {
-	if(!Iter_Contains(def_Index, id))
+	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
+
+	if(prints)
+		printf("\t[SAVE] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", def_Data[defenceid][def_type], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_pose], def_Data[defenceid][def_motor], def_Data[defenceid][def_keypad], def_Data[defenceid][def_pass], def_Data[defenceid][def_moveState], def_Data[defenceid][def_hitPoints]);
 
 	new
 		filename[64],
-		File:file,
-		data[4];
+		data[7];
 
-	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"%d_%d_%d_%d", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ], def_Data[id][def_rotZ]);
-	file = fopen(filename, io_write);
+	format(filename, sizeof(filename), ""DIRECTORY_DEFENCES"def_%010d.dat", def_GEID[defenceid]);
 
-	if(file)
-	{
-		data[0] = def_Data[id][def_type];
-		data[1] = def_Data[id][def_mode];
-		data[2] = def_Data[id][def_hitPoints];
-		data[3] = def_Data[id][def_pass];
-		fblockwrite(file, data, sizeof(data));
-		fclose(file);
-	}
-	else
-	{
-		printf("ERROR: Saving defence, filename: '%s'", filename);
-		return 0;
-	}
+	data[0] = _:def_Data[defenceid][def_posX];
+	data[1] = _:def_Data[defenceid][def_posY];
+	data[2] = _:def_Data[defenceid][def_posZ];
+	data[3] = _:def_Data[defenceid][def_rotZ];
 
-	if(prints)
-		printf("\t[SAVE] Defence at %f, %f, %f", def_Data[id][def_posX], def_Data[id][def_posY], def_Data[id][def_posZ]);
+	modio_push(filename, !"WPOS", 4, data, false, false, false);
+
+	data[DEFENCE_CELL_TYPE] = def_Data[defenceid][def_type];
+	data[DEFENCE_CELL_POSE] = def_Data[defenceid][def_pose];
+	data[DEFENCE_CELL_MOTOR] = def_Data[defenceid][def_motor];
+	data[DEFENCE_CELL_KEYPAD] = def_Data[defenceid][def_keypad];
+	data[DEFENCE_CELL_PASS] = def_Data[defenceid][def_pass];
+	data[DEFENCE_CELL_MOVESTATE] = def_Data[defenceid][def_moveState];
+	data[DEFENCE_CELL_HITPOINTS] = def_Data[defenceid][def_hitPoints];
+
+	modio_push(filename, !"DATA", 7, data, true, true, true);
 
 	return 1;
 }
 
-CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
+LoadDefenceItem(filename[], prints = false)
+{
+	new
+		length,
+		searchpos,
+		defenceid,
+		pos[4],
+		data[7];
+
+	length = modio_read(filename, !"WPOS", _:pos, false, false);
+
+	if(length == 0)
+		return 0;
+
+	if(Float:pos[0] == 0.0 && Float:pos[1] == 0.0 && Float:pos[2] == 0.0)
+		return 0;
+
+	// final 'true' param is to force close read session
+	// Because these files are read in a loop, sessions can stack up so this
+	// ensures that a new session isn't registered for each Defence.
+	length = modio_read(filename, !"DATA", _:data, true);
+
+	def_SkipGEID = true;
+
+	defenceid = CreateDefence(data[DEFENCE_CELL_TYPE], Float:pos[0], Float:pos[1], Float:pos[2], Float:pos[3],
+		data[DEFENCE_CELL_POSE], data[DEFENCE_CELL_MOTOR], data[DEFENCE_CELL_KEYPAD], data[DEFENCE_CELL_PASS], data[DEFENCE_CELL_MOVESTATE], data[DEFENCE_CELL_HITPOINTS]);
+
+	def_SkipGEID = false;
+
+	searchpos = strlen(DIRECTORY_DEFENCES) + 5;
+
+	sscanf(filename[searchpos], "p<.>d{s[5]}", def_GEID[defenceid]);
+
+	if(def_GEID[defenceid] > def_GEID_Index)
+	{
+		printf("WARNING: Defence %d GEID (%d) is greater than GEID index (%d). Updating to %d to avoid GEID collision.", defenceid, def_GEID[defenceid], def_GEID_Index, def_GEID[defenceid] + 1);
+		def_GEID_Index = def_GEID[defenceid] + 1;
+	}
+
+	if(prints)
+		printf("\t[LOAD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", data[DEFENCE_CELL_TYPE], Float:pos[0], Float:pos[1], Float:pos[2], data[DEFENCE_CELL_POSE], data[DEFENCE_CELL_MOTOR], data[DEFENCE_CELL_KEYPAD], data[DEFENCE_CELL_PASS], data[DEFENCE_CELL_MOVESTATE], data[DEFENCE_CELL_HITPOINTS]);
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Legacy format (Load only)
+
+==============================================================================*/
+
+
+OLD_LoadDefences(printeach = false, printtotal = false)
+{
+	new
+		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
+		item[46],
+		type,
+		filename[64],
+		count;
+
+	while(dir_list(direc, item, type))
+	{
+		if(type == FM_FILE)
+		{
+			filename = DIRECTORY_DEFENCES;
+			strcat(filename, item);
+
+			count += OLD_LoadDefenceItem(filename, printeach);
+		}
+	}
+
+	dir_close(direc);
+
+	SaveDefences(printeach, printtotal);
+
+	if(printtotal)
+		printf("Loaded %d Defences using old format\n", Iter_Count(def_Index));
+}
+
+OLD_LoadDefenceItem(filename[], prints = false)
+{
+	new
+		File:file,
+		data[4],
+		pose,
+		motor,
+		keypad,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	file = fopen(filename);
+
+	if(!file)
+		return 0;
+
+	fblockread(file, data, sizeof(data));
+	fclose(file);
+	fremove(filename);
+
+	sscanf(filename, "'"DIRECTORY_DEFENCES"'p<_>dddd", _:x, _:y, _:z, _:r);
+
+	pose = data[1];
+
+	if(pose == 2)
+	{
+		pose = DEFENCE_POSE_VERTICAL;
+		motor = 1;
+		keypad = 1;
+	}
+
+	new ret = CreateDefence(data[0], Float:x, Float:y, Float:z, Float:r, pose, motor, keypad, data[3], pose, data[2]);
+
+	if(ret > -1)
+	{
+		if(prints)
+			printf("\t[LOAD] [OLD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d m:%d h:%d)", data[0], x, y, z, pose, motor, keypad, data[3], pose, data[2]);
+	}
+	else
+	{
+		printf("ERROR: Creating loaded defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	(I have no idea where to put this, for now it will live right here.)
+	(Custom explosion code needs to be written that also does custom damage.)
+
+==============================================================================*/
+
+
+stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
 {
 	CreateExplosion(x, y, z, type, size);
 
@@ -829,9 +1048,11 @@ CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints
 }
 
 
+/*==============================================================================
 
-// Interface
+	Interface functions
 
+==============================================================================*/
 
 
 stock GetDefencePos(defenceid, &Float:x, &Float:y, &Float:z)
