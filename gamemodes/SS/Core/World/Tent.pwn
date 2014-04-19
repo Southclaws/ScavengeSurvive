@@ -298,7 +298,10 @@ public OnItemCreateInWorld(itemid)
 	if(!tnt_Loading)
 	{
 		if(tnt_ItemTentTarget[itemid] != INVALID_TENT_ID)
+		{
 			AddItemToTentIndex(tnt_ItemTentTarget[itemid], itemid);
+			tnt_ItemTentTarget[itemid] = INVALID_TENT_ID;
+		}
 	}
 
 	#if defined tnt_OnItemCreateInWorld
