@@ -105,7 +105,7 @@ CMD:tooltips(playerid, params[])
 	return 1;
 }
 
-CMD:die(playerid, params[])
+/*CMD:die(playerid, params[])
 {
 	if(GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 60000)
 		return 2;
@@ -121,7 +121,7 @@ timer Suicide[3000](playerid)
 	RemovePlayerWeapon(playerid);
 	SetPlayerHP(playerid, -100.0);
 }
-
+*/
 CMD:changepass(playerid,params[])
 {
 	new
