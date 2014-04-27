@@ -245,7 +245,7 @@ timer UpdateSpectateMode[100](playerid)
 			new itemid = GetPlayerItem(targetid);
 
 			GetItemName(itemid, wepname);
-			valstr(ammo, GetItemExtraData(itemid));
+			format(ammo, sizeof(ammo), "%d", GetItemExtraData(itemid));
 		}
 
 		GetItemName(GetPlayerHolsterItem(targetid), holsteritemname);
