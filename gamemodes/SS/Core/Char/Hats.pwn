@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 #define MAX_HAT_ITEMS	(22)
 #define MAX_HAT_SKINS	(22)
 
