@@ -583,13 +583,14 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish def_OnHoldActionFinish
 forward def_OnHoldActionFinish(playerid);
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
+
+hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
 	if(dialogid == d_DefenceSetPass)
 	{
 		if(response)
 		{
-			new pass = strval(intputtext);
+			new pass = strval(inputtext);
 
 			if(1000 <= pass < 10000)
 			{
@@ -607,7 +608,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, intputtext[])
 	{
 		if(response)
 		{
-			new pass = strval(intputtext);
+			new pass = strval(inputtext);
 
 			if(def_Data[def_CurrentDefenceOpen[playerid]][def_pass] == pass)
 			{
