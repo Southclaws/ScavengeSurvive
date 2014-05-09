@@ -5,7 +5,7 @@
 #define PLAYER_DATA_FILE			DIRECTORY_PLAYER"%s.dat"
 #define PLAYER_DAT_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
 #define CHARACTER_DATA_FILE_VERSION	(10)
-#define SAVELOAD_DEBUG				(1)
+#define SAVELOAD_DEBUG				(0)
 
 
 static
@@ -141,9 +141,6 @@ SavePlayerChar(playerid)
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, !"HELD", 2 + data[1], data);
 
-		for(new i; i < 2 + data[1]; i++)
-			printf("  HELD AD %d: %d", i, data[i]);
-
 		if(saveload_Debug[playerid] >= 2)
 			printf("[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
@@ -165,9 +162,6 @@ SavePlayerChar(playerid)
 		data[1] = GetItemArrayDataSize(itemid);
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, !"HOLS", 2 + data[1], data);
-
-		for(new i; i < 2 + data[1]; i++)
-			printf("  HOLS AD %d: %d", i, data[i]);
 
 		if(saveload_Debug[playerid] >= 2)
 			printf("[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
