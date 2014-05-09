@@ -251,7 +251,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+		if(containerid == GetBagItemContainerID(GetPlayerBagItem(playerid)))
 		{
 			UpdatePlayerGear(playerid);
 		}
@@ -470,7 +470,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsItemTypeBag(GetItemType(itemid)))
 				{
-					if(containerid == GetItemExtraData(itemid))
+					if(containerid == GetBagItemContainerID(itemid))
 						return 1;
 				}
 				if(!WillItemTypeFitInContainer(containerid, GetItemType(itemid)))
@@ -602,7 +602,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 		if(IsValidItem(itemid))
 		{
-			if(GetPlayerCurrentContainer(playerid) == GetItemExtraData(itemid))
+			if(GetPlayerCurrentContainer(playerid) == GetBagItemContainerID(itemid))
 			{
 				ClosePlayerContainer(playerid);
 
@@ -621,7 +621,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
 
-				DisplayContainerInventory(playerid, GetItemExtraData(itemid));
+				DisplayContainerInventory(playerid, GetBagItemContainerID(itemid));
 			}
 		}
 	}
@@ -631,7 +631,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+	if(containerid == GetBagItemContainerID(GetPlayerBagItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{
@@ -658,7 +658,7 @@ forward inv_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+	if(containerid == GetBagItemContainerID(GetPlayerBagItem(playerid)))
 	{
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{

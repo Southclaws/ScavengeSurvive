@@ -62,7 +62,7 @@ SavePlayerChar(playerid)
 	new
 		filename[MAX_PLAYER_FILE],
 		session,
-		data[PLY_CELL_END],
+		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		animidx = GetPlayerAnimationIndex(playerid),
 		itemid,
 		items[9],
@@ -213,7 +213,7 @@ SavePlayerChar(playerid)
 
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 	{
-		new containerid = GetItemExtraData(GetPlayerBagItem(playerid));
+		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
 		for(new i, j = GetContainerSize(containerid); i < j; i++)
 		{
@@ -248,7 +248,7 @@ LoadPlayerChar(playerid)
 {
 	new
 		filename[MAX_PLAYER_FILE],
-		data[PLY_CELL_END],
+		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		ItemType:itemtype,
 		itemid,
 		itemlist,
@@ -461,7 +461,7 @@ LoadPlayerChar(playerid)
 
 	if(IsItemTypeBag(ItemType:data[PLY_CELL_BAGTYPE]))
 	{
-		new containerid = GetItemExtraData(GetPlayerBagItem(playerid));
+		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
 		if(saveload_Debug[playerid] >= 4)
 			printf("[LOAD:%p] Bag items: %d (itemlist size: %d)", playerid, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
@@ -652,7 +652,7 @@ FV10_LoadPlayerInventory(playerid)
 			printf("[LOAD:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 	}
 
-	containerid = GetItemExtraData(GetPlayerBagItem(playerid));
+	containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
 	if(IsValidContainer(containerid))
 	{

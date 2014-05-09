@@ -343,60 +343,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(IsPlayerInAnyVehicle(playerid))
 		return 1;
 
-	if(IsValidItem(bag_PlayerBagID[playerid]))
+	if(newkeys & KEY_YES)
 	{
-		if(newkeys & KEY_NO)
-		{
-			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0 && !IsValidItem(GetPlayerInteractingItem(playerid)))
-			{
-				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
-				CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
-				GiveWorldItemToPlayer(playerid, bag_PlayerBagID[playerid], 1);
-				bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
-				bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
-				bag_TakingOffBag[playerid] = true;
-			}
-		}
-		if(newkeys & KEY_YES)
-		{
-			if(bag_PuttingInBag[playerid])
-				return 0;
-
-			if(GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
-				return 0;
-
-			new itemid = GetPlayerItem(playerid);
-
-			if(IsPlayerInventoryFull(playerid) || GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_MEDIUM)
-			{
-				new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
-
-				if(IsValidContainer(containerid) && IsValidItem(itemid))
-				{
-					if(IsContainerFull(containerid))
-					{
-						ShowActionText(playerid, "Bag full", 3000, 150);
-					}
-					else
-					{
-						ShowActionText(playerid, "Item added to bag", 3000, 150);
-						ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
-						bag_PuttingInBag[playerid] = true;
-						defer bag_PutItemIn(playerid, itemid, containerid);
-					}
-				}
-			}
-		}
+		_BagEquipHandler(playerid);
 	}
-	else
-	{
-		if(newkeys & KEY_YES)
-		{
-			new itemid = GetPlayerItem(playerid);
 
-			if(IsItemTypeBag(GetItemType(itemid)))
-				GivePlayerBag(playerid, itemid);
-		}
+	if(newkeys & KEY_NO)
+	{
+		_BagDropHandler(playerid);
 	}
 
 	if(newkeys & 16)
@@ -449,6 +403,69 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
+
+	return 1;
+}
+
+_BagEquipHandler(playerid)
+{
+	if(!IsValidItem(bag_PlayerBagID[playerid]))
+	{
+		new itemid = GetPlayerItem(playerid);
+
+		if(IsItemTypeBag(GetItemType(itemid)))
+			GivePlayerBag(playerid, itemid);
+
+		return 1;
+	}
+
+	if(bag_PuttingInBag[playerid])
+		return 0;
+
+	if(GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
+		return 0;
+
+	new itemid = GetPlayerItem(playerid);
+
+	if(!IsValidItem(itemid))
+		return 0;
+
+	if(!IsPlayerInventoryFull(playerid) && GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_SMALL)
+		return 0;
+
+	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+
+	if(!IsValidContainer(containerid))
+		return 0;
+
+	if(IsContainerFull(containerid))
+	{
+		ShowActionText(playerid, "Bag full", 3000, 150);
+		return 0;
+	}
+
+	ShowActionText(playerid, "Item added to bag", 3000, 150);
+	ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
+	bag_PuttingInBag[playerid] = true;
+	defer bag_PutItemIn(playerid, itemid, containerid);
+
+	return 1;
+}
+
+_BagDropHandler(playerid)
+{
+	if(IsValidItem(GetPlayerItem(playerid)))
+		return 0;
+
+	if(IsValidItem(GetPlayerInteractingItem(playerid)))
+		return 0;
+
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
+	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+	GiveWorldItemToPlayer(playerid, bag_PlayerBagID[playerid], 1);
+	bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
+	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
+	bag_TakingOffBag[playerid] = true;
 
 	return 1;
 }
@@ -741,4 +758,12 @@ stock GetContainerBagItem(containerid)
 		return INVALID_ITEM_ID;
 
 	return bag_ContainerItem[containerid];
+}
+
+stock GetBagItemContainerID(itemid)
+{
+	if(!IsItemTypeBag(GetItemType(itemid)))
+		return INVALID_CONTAINER_ID;
+
+	return GetItemArrayDataAtCell(itemid, 1);
 }
