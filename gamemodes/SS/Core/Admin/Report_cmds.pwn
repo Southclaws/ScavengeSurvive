@@ -226,7 +226,7 @@ ShowListOfReports(playerid)
 		string[(8 + MAX_PLAYER_NAME + 13 + 1) * MAX_REPORTS_PER_PAGE],
 		idx;
 
-	while(idx < totalreports)
+	while(idx < totalreports && idx < MAX_REPORTS_PER_PAGE)
 	{
 		if(IsPlayerBanned(report_CurrentReportList[playerid][idx][report_name]))
 			colour = "{FF0000}";
