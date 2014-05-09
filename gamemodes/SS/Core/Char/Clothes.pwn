@@ -1,4 +1,3 @@
-
 #include <YSI\y_hooks>
 
 
@@ -22,6 +21,12 @@ static
 static
 			skin_CurrentSkin[MAX_PLAYERS],
 			skin_CurrentlyUsing[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	skin_CurrentlyUsing[playerid] = INVALID_ITEM_ID;
+}
 
 
 DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
