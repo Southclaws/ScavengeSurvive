@@ -1630,10 +1630,10 @@ public OnGameModeExit()
 	// Second param: print the total amount of entities saved
 
 	SavePlayerVehicles	(true, true);
-	SaveSafeboxes		(false, true);
-	SaveTents			(false, true);
-	SaveDefences		(false, true);
-	SaveSigns			(false, true);
+	SaveSafeboxes		(true, true);
+	SaveTents			(true, true);
+	SaveDefences		(true, true);
+	SaveSigns			(true, true);
 
 	SaveSprayTags();
 

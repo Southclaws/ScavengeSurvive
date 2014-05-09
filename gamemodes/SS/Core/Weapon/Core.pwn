@@ -188,14 +188,14 @@ stock UpdatePlayerWeaponItem(playerid)
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 		return 0;
 
-	// Get the item type used as ammo for this weapon item
-	new ItemType:ammoitem = GetItemWeaponItemAmmoItem(itemid);
-
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
 		GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 1);
 		return 1;
 	}
+
+	// Get the item type used as ammo for this weapon item
+	new ItemType:ammoitem = GetItemWeaponItemAmmoItem(itemid);
 
 	// If it's not a valid ammo type, something is wrong.
 	if(GetItemTypeAmmoType(ammoitem) == -1)
@@ -257,6 +257,13 @@ hook OnPlayerUpdate(playerid)
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 		return 1;
 
+	_FastUpdateHandler(playerid);
+
+	return 1;
+}
+
+_FastUpdateHandler(playerid)
+{
 	new
 		itemid,
 		ItemType:itemtype;
@@ -264,37 +271,40 @@ hook OnPlayerUpdate(playerid)
 	itemid = GetPlayerItem(playerid);
 	itemtype = GetItemType(itemid);
 
-	if(IsValidItemType(itemtype))
-	{
-		if(itmw_ItemTypeWeapon[itemtype] != -1)
-		{
-			new magammo = GetItemWeaponItemMagAmmo(itemid);
-
-			if(magammo > 0)
-			{
-				SetPlayerArmedWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]);
-
-				if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER)
-				{
-					new k;
-
-					GetPlayerKeys(playerid, k, k, k);
-
-					if(k & KEY_FIRE)
-					{
-						SetItemWeaponItemMagAmmo(itemid, magammo - 1);
-					}
-				}
-			}
-		}
-	}
-	else
+	if(!IsValidItemType(itemtype))
 	{
 		if(GetPlayerWeapon(playerid) > 0)
 			RemovePlayerWeapon(playerid);
+
+		return;
 	}
 
-	return 1;
+	if(itmw_ItemTypeWeapon[itemtype] == -1)
+		return;
+
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] != NO_CALIBRE)
+		return;
+
+	new magammo = GetItemWeaponItemMagAmmo(itemid);
+
+	if(magammo <= 0)
+		return;
+
+	SetPlayerArmedWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]);
+
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER)
+	{
+		new k;
+
+		GetPlayerKeys(playerid, k, k, k);
+
+		if(k & KEY_FIRE)
+		{
+			SetItemWeaponItemMagAmmo(itemid, magammo - 1);
+		}
+	}
+
+	return;
 }
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
@@ -863,13 +873,14 @@ stock GetPlayerItemWeaponAnimSet(playerid)
 // WEAPON_ITEM_ARRAY_CELL_MAG
 stock GetItemWeaponItemMagAmmo(itemid)
 {
+	d:1:HANDLER("GetItemWeaponItemMagAmmo itemid:%d", itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_MAG);
 	return ret < 0 ? 0 : ret;
 }
 
 stock SetItemWeaponItemMagAmmo(itemid, amount)
 {
-	// d:1:HANDLER("[SetItemWeaponItemMagAmmo] set %d", amount);
+	d:1:HANDLER("SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_MAG);
@@ -878,13 +889,14 @@ stock SetItemWeaponItemMagAmmo(itemid, amount)
 // WEAPON_ITEM_ARRAY_CELL_RESERVE
 stock GetItemWeaponItemReserve(itemid)
 {
+	d:1:HANDLER("GetItemWeaponItemReserve itemid:%d", itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_RESERVE);
 	return ret < 0 ? 0 : ret;
 }
 
 stock SetItemWeaponItemReserve(itemid, amount)
 {
-	// d:1:HANDLER("[SetItemWeaponItemReserve] set %d", amount);
+	d:1:HANDLER("SetItemWeaponItemReserve itemid:%d, amount:%d", itemid, amount);
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_RESERVE);
@@ -894,11 +906,13 @@ stock SetItemWeaponItemReserve(itemid, amount)
 forward ItemType:GetItemWeaponItemAmmoItem(itemid);
 stock ItemType:GetItemWeaponItemAmmoItem(itemid)
 {
+	d:1:HANDLER("ItemType:GetItemWeaponItemAmmoItem itemid:%d", itemid);
 	return ItemType:GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
 }
 
 stock SetItemWeaponItemAmmoItem(itemid, ItemType:itemtype)
 {
+	d:1:HANDLER("SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", itemid, _:itemtype);
 	SetItemArrayDataSize(itemid, 4);
 
 	return SetItemArrayDataAtCell(itemid, _:itemtype, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
