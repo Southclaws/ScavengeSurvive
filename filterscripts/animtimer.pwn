@@ -1,3 +1,4 @@
+#define FILTERSCRIPT
 #include <a_samp>
 #include <SIF/SIF>
 
