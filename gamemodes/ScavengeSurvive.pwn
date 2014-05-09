@@ -34,10 +34,10 @@ native gpci(playerid, serial[], len);
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
 #define MAX_MODIO_SESSION				(1024) // modio
-#define ITM_DROP_ON_DEATH				false // SIF/Item
-#define DEBUG_LABELS_BUTTON				false
-#define DEBUG_LABELS_ITEM				false
-
+#define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
+#define ITM_DROP_ON_DEATH				(false) // SIF/Item
+// #define DEBUG_LABELS_BUTTON			(true) // SIF/Button
+// #define DEBUG_LABELS_ITEM			(true) // SIF/Item
 #define BTN_MAX							(16384) // SIF/Button
 #define ITM_MAX							(16384) // SIF/Item
 
@@ -104,6 +104,7 @@ public OnGameModeInit()
 
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF/SIF>					// By Southclaw:			https://github.com/Southclaw/SIF
+#include <SIF/extensions/DebugLabels>
 #include <SIF/extensions/ItemArrayData>
 #include <SIF/extensions/ItemList>
 #include <SIF/extensions/InventoryDialog>
@@ -442,8 +443,70 @@ enum
 	loot_SupplyCrate
 }
 
+// AMMO CALIBRES
+new
+				calibre_9mm,
+				calibre_50c,
+				calibre_12g,
+				calibre_556,
+				calibre_357,
+				calibre_rpg,
+				calibre_fuel,
+				calibre_film;
+
 // ITEM TYPES
 new stock
+// 00
+ItemType:		item_NULL			= INVALID_ITEM_TYPE,
+ItemType:		item_Knuckles		= INVALID_ITEM_TYPE,
+ItemType:		item_GolfClub		= INVALID_ITEM_TYPE,
+ItemType:		item_Baton			= INVALID_ITEM_TYPE,
+ItemType:		item_Knife			= INVALID_ITEM_TYPE,
+ItemType:		item_Bat			= INVALID_ITEM_TYPE,
+ItemType:		item_Spade			= INVALID_ITEM_TYPE,
+ItemType:		item_PoolCue		= INVALID_ITEM_TYPE,
+ItemType:		item_Sword			= INVALID_ITEM_TYPE,
+ItemType:		item_Chainsaw		= INVALID_ITEM_TYPE,
+// 10
+ItemType:		item_Dildo1			= INVALID_ITEM_TYPE,
+ItemType:		item_Dildo2			= INVALID_ITEM_TYPE,
+ItemType:		item_Dildo3			= INVALID_ITEM_TYPE,
+ItemType:		item_Dildo4			= INVALID_ITEM_TYPE,
+ItemType:		item_Flowers		= INVALID_ITEM_TYPE,
+ItemType:		item_WalkingCane	= INVALID_ITEM_TYPE,
+ItemType:		item_Grenade		= INVALID_ITEM_TYPE,
+ItemType:		item_Teargas		= INVALID_ITEM_TYPE,
+ItemType:		item_Molotov		= INVALID_ITEM_TYPE,
+ItemType:		item_NULL2			= INVALID_ITEM_TYPE,
+// 20
+ItemType:		item_NULL3			= INVALID_ITEM_TYPE,
+ItemType:		item_NULL4			= INVALID_ITEM_TYPE,
+ItemType:		item_M9Pistol		= INVALID_ITEM_TYPE,
+ItemType:		item_M9PistolSD		= INVALID_ITEM_TYPE,
+ItemType:		item_DesertEagle	= INVALID_ITEM_TYPE,
+ItemType:		item_PumpShotgun	= INVALID_ITEM_TYPE,
+ItemType:		item_Sawnoff		= INVALID_ITEM_TYPE,
+ItemType:		item_Spas12			= INVALID_ITEM_TYPE,
+ItemType:		item_Mac10			= INVALID_ITEM_TYPE,
+ItemType:		item_MP5			= INVALID_ITEM_TYPE,
+// 30
+ItemType:		item_AK47Rifle		= INVALID_ITEM_TYPE,
+ItemType:		item_M16Rifle		= INVALID_ITEM_TYPE,
+ItemType:		item_Tec9			= INVALID_ITEM_TYPE,
+ItemType:		item_SemiAutoRifle	= INVALID_ITEM_TYPE,
+ItemType:		item_SniperRifle	= INVALID_ITEM_TYPE,
+ItemType:		item_RocketLauncher	= INVALID_ITEM_TYPE,
+ItemType:		item_Heatseeker		= INVALID_ITEM_TYPE,
+ItemType:		item_Flamer			= INVALID_ITEM_TYPE,
+ItemType:		item_Minigun		= INVALID_ITEM_TYPE,
+ItemType:		item_RemoteBomb		= INVALID_ITEM_TYPE,
+// 40
+ItemType:		item_Detonator		= INVALID_ITEM_TYPE,
+ItemType:		item_SprayPaint		= INVALID_ITEM_TYPE,
+ItemType:		item_Extinguisher	= INVALID_ITEM_TYPE,
+ItemType:		item_Camera			= INVALID_ITEM_TYPE,
+ItemType:		item_NightVision	= INVALID_ITEM_TYPE,
+ItemType:		item_ThermalVision	= INVALID_ITEM_TYPE,
 ItemType:		item_Parachute		= INVALID_ITEM_TYPE,
 ItemType:		item_Medkit			= INVALID_ITEM_TYPE,
 ItemType:		item_HardDrive		= INVALID_ITEM_TYPE,
@@ -650,10 +713,11 @@ forward SetRestart(seconds);
 #include "SS/utils/object.pwn"
 #include "SS/utils/tickcountfix.pwn"
 #include "SS/utils/string.pwn"
+#include "SS/utils/debug.pwn"
 
 // GAME DATA
 #include "SS/Data/Vehicle.pwn"
-#include "SS/Data/Weapon.pwn"
+//#include "SS/Data/Weapon.pwn"
 #include "SS/Data/Loot.pwn"
 
 // SERVER CORE
@@ -687,9 +751,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/Carmour.pwn"
 #include "SS/Core/Vehicle/Lock.pwn"
 #include "SS/Core/Vehicle/AntiNinja.pwn"
-
-// WEAPON
-#include "SS/Core/Weapon/Core.pwn"
 
 // LOOT
 #include "SS/Core/Loot/Spawn.pwn"
@@ -737,6 +798,16 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
 #include "SS/Core/Char/Drugs.pwn"
+
+// WEAPON
+#include "SS/Core/Weapon/ammunition.pwn"
+#include "SS/Core/Weapon/core.pwn"
+#include "SS/Core/Weapon/interact.pwn"
+#include "SS/Core/Weapon/damage.core.pwn"
+#include "SS/Core/Weapon/damage.firearm.pwn"
+#include "SS/Core/Weapon/damage.melee.pwn"
+#include "SS/Core/Weapon/animset.pwn"
+#include "SS/Core/Weapon/misc.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
@@ -880,20 +951,81 @@ OnGameModeInit_Pre()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
+	if(!dir_exists(DIRECTORY_SCRIPTFILES))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
+	{
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
+	}
+
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gWorld = db_open_persistent(WORLD_DATABASE);
 }
 
 public OnGameModeInit()
 {
-	log("*\n*\n*\n*\n*\n*\n*\n*\n*\n*\nGamemode initializing...*\n*\n*\n*\n*\n*\n*\n*\n*\n*\n*");
-
 	djson_GameModeInit();
 
 	LoadSettings();
 
 	SendRconCommand(sprintf("mapname %s", gMapName));
 
+// 00
+	item_NULL			= DefineItemType("NULL",				0,		ITEM_SIZE_SMALL);
+	item_Knuckles		= DefineItemType("Knuckle Duster", 		331,	ITEM_SIZE_SMALL,	90.0);
+	item_GolfClub		= DefineItemType("Golf Club", 			333,	ITEM_SIZE_LARGE,	90.0);
+	item_Baton			= DefineItemType("Baton", 				334,	ITEM_SIZE_MEDIUM,	90.0);
+	item_Knife			= DefineItemType("Knife", 				335,	ITEM_SIZE_SMALL,	90.0);
+	item_Bat			= DefineItemType("Baseball Bat", 		336,	ITEM_SIZE_LARGE,	90.0);
+	item_Spade			= DefineItemType("Spade", 				337,	ITEM_SIZE_LARGE,	90.0);
+	item_PoolCue		= DefineItemType("Pool Cue", 			338,	ITEM_SIZE_LARGE,	90.0);
+	item_Sword			= DefineItemType("Sword", 				339,	ITEM_SIZE_LARGE,	90.0);
+	item_Chainsaw		= DefineItemType("Chainsaw", 			341,	ITEM_SIZE_LARGE,	90.0);
+// 10
+	item_Dildo1			= DefineItemType("Dildo",				321,	ITEM_SIZE_SMALL,	90.0);
+	item_Dildo2			= DefineItemType("Dildo",				322,	ITEM_SIZE_SMALL,	90.0);
+	item_Dildo3			= DefineItemType("Dildo",				323,	ITEM_SIZE_SMALL,	90.0);
+	item_Dildo4			= DefineItemType("Dildo",				324,	ITEM_SIZE_SMALL,	90.0);
+	item_Flowers		= DefineItemType("Flowers",				325,	ITEM_SIZE_MEDIUM,	90.0);
+	item_WalkingCane	= DefineItemType("Cane",				326,	ITEM_SIZE_LARGE,	90.0);
+	item_Grenade		= DefineItemType("Grenade",				342,	ITEM_SIZE_SMALL,	90.0);
+	item_Teargas		= DefineItemType("Teargas",				343,	ITEM_SIZE_SMALL,	90.0);
+	item_Molotov		= DefineItemType("Molotov",				344,	ITEM_SIZE_SMALL,	90.0);
+	item_NULL2			= DefineItemType("<null>",				000,	ITEM_SIZE_SMALL,	90.0);
+// 20
+	item_NULL3			= DefineItemType("<null>",				000,	ITEM_SIZE_SMALL,	90.0);
+	item_NULL4			= DefineItemType("<null>",				000,	ITEM_SIZE_SMALL,	90.0);
+	item_M9Pistol		= DefineItemType("M9",					346,	ITEM_SIZE_SMALL,	90.0);
+	item_M9PistolSD		= DefineItemType("M9 SD",				347,	ITEM_SIZE_SMALL,	90.0);
+	item_DesertEagle	= DefineItemType("Desert Eagle",		348,	ITEM_SIZE_SMALL,	90.0);
+	item_PumpShotgun	= DefineItemType("Shotgun",				349,	ITEM_SIZE_LARGE,	90.0);
+	item_Sawnoff		= DefineItemType("Sawnoff",				350,	ITEM_SIZE_MEDIUM,	90.0);
+	item_Spas12			= DefineItemType("Spas 12",				351,	ITEM_SIZE_LARGE,	90.0);
+	item_Mac10			= DefineItemType("Mac 10",				352,	ITEM_SIZE_MEDIUM,	90.0);
+	item_MP5			= DefineItemType("MP5",					353,	ITEM_SIZE_MEDIUM,	90.0);
+// 30
+	item_AK47Rifle		= DefineItemType("AK-47",				355,	ITEM_SIZE_LARGE,	90.0);
+	item_M16Rifle		= DefineItemType("M16",					356,	ITEM_SIZE_LARGE,	90.0);
+	item_Tec9			= DefineItemType("Tec 9",				372,	ITEM_SIZE_MEDIUM,	90.0);
+	item_SemiAutoRifle	= DefineItemType("Rifle",				357,	ITEM_SIZE_LARGE,	90.0);
+	item_SniperRifle	= DefineItemType("Sniper",				358,	ITEM_SIZE_LARGE,	90.0);
+	item_RocketLauncher	= DefineItemType("RPG",					359,	ITEM_SIZE_LARGE,	90.0);
+	item_Heatseeker		= DefineItemType("Heatseeker",			360,	ITEM_SIZE_LARGE,	90.0);
+	item_Flamer			= DefineItemType("Flamer",				361,	ITEM_SIZE_LARGE,	90.0);
+	item_Minigun		= DefineItemType("Minigun",				362,	ITEM_SIZE_LARGE,	90.0);
+	item_RemoteBomb		= DefineItemType("Remote Bomb",			363,	ITEM_SIZE_MEDIUM,	90.0);
+// 40
+	item_Detonator		= DefineItemType("Detonator",			364,	ITEM_SIZE_MEDIUM,	90.0);
+	item_SprayPaint		= DefineItemType("Spray Paint",			365,	ITEM_SIZE_SMALL,	90.0);
+	item_Extinguisher	= DefineItemType("Extinguisher",		366,	ITEM_SIZE_LARGE,	90.0);
+	item_Camera			= DefineItemType("Camera",				367,	ITEM_SIZE_SMALL,	90.0);
+	item_NightVision	= DefineItemType("Night Vision",		000,	ITEM_SIZE_MEDIUM,	90.0);
+	item_ThermalVision	= DefineItemType("Thermal Vision",		000,	ITEM_SIZE_MEDIUM,	90.0);
 	item_Parachute		= DefineItemType("Parachute",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Medkit			= DefineItemType("Medkit",				1580,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HardDrive		= DefineItemType("Hard Drive",			328,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0);
@@ -1040,6 +1172,52 @@ public OnGameModeInit()
 	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
 	item_XmasHat		= DefineItemType("Christmas Hat",		19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 
+	SetItemTypeMaxArrayData(item_NULL,			0);
+	SetItemTypeMaxArrayData(item_Knuckles,		4);
+	SetItemTypeMaxArrayData(item_GolfClub,		4);
+	SetItemTypeMaxArrayData(item_Baton,			4);
+	SetItemTypeMaxArrayData(item_Knife,			4);
+	SetItemTypeMaxArrayData(item_Bat,			4);
+	SetItemTypeMaxArrayData(item_Spade,			4);
+	SetItemTypeMaxArrayData(item_PoolCue,		4);
+	SetItemTypeMaxArrayData(item_Sword,			4);
+	SetItemTypeMaxArrayData(item_Chainsaw,		4);
+	SetItemTypeMaxArrayData(item_Dildo1,		4);
+	SetItemTypeMaxArrayData(item_Dildo2,		4);
+	SetItemTypeMaxArrayData(item_Dildo3,		4);
+	SetItemTypeMaxArrayData(item_Dildo4,		4);
+	SetItemTypeMaxArrayData(item_Flowers,		4);
+	SetItemTypeMaxArrayData(item_WalkingCane,	4);
+	SetItemTypeMaxArrayData(item_Grenade,		4);
+	SetItemTypeMaxArrayData(item_Teargas,		4);
+	SetItemTypeMaxArrayData(item_Molotov,		4);
+	SetItemTypeMaxArrayData(item_NULL2,			4);
+	SetItemTypeMaxArrayData(item_NULL3,			4);
+	SetItemTypeMaxArrayData(item_NULL4,			4);
+	SetItemTypeMaxArrayData(item_M9Pistol,		4);
+	SetItemTypeMaxArrayData(item_M9PistolSD,	4);
+	SetItemTypeMaxArrayData(item_DesertEagle,	4);
+	SetItemTypeMaxArrayData(item_PumpShotgun,	4);
+	SetItemTypeMaxArrayData(item_Sawnoff,		4);
+	SetItemTypeMaxArrayData(item_Spas12,		4);
+	SetItemTypeMaxArrayData(item_Mac10,			4);
+	SetItemTypeMaxArrayData(item_MP5,			4);
+	SetItemTypeMaxArrayData(item_AK47Rifle,		4);
+	SetItemTypeMaxArrayData(item_M16Rifle,		4);
+	SetItemTypeMaxArrayData(item_Tec9,			4);
+	SetItemTypeMaxArrayData(item_SemiAutoRifle,	4);
+	SetItemTypeMaxArrayData(item_SniperRifle,	4);
+	SetItemTypeMaxArrayData(item_RocketLauncher,4);
+	SetItemTypeMaxArrayData(item_Heatseeker,	4);
+	SetItemTypeMaxArrayData(item_Flamer,		4);
+	SetItemTypeMaxArrayData(item_Minigun,		4);
+	SetItemTypeMaxArrayData(item_RemoteBomb,	4);
+	SetItemTypeMaxArrayData(item_Detonator,		4);
+	SetItemTypeMaxArrayData(item_SprayPaint,	4);
+	SetItemTypeMaxArrayData(item_Extinguisher,	4);
+	SetItemTypeMaxArrayData(item_Camera,		4);
+	SetItemTypeMaxArrayData(item_NightVision,	4);
+	SetItemTypeMaxArrayData(item_ThermalVision,	4);
 	SetItemTypeMaxArrayData(item_Parachute,		1);
 	SetItemTypeMaxArrayData(item_Medkit,		1);
 	SetItemTypeMaxArrayData(item_HardDrive,		1);
@@ -1185,51 +1363,114 @@ public OnGameModeInit()
 // 2352 - T SHAPED SMALL OBJ
 // 2590 - SPIKEY HOOK, SCHYTHE?
 
+	//									name		bleedrate
+	calibre_9mm		= DefineAmmoCalibre("9mm",		1.0);
+	calibre_50c		= DefineAmmoCalibre(".50",		1.0);
+	calibre_12g		= DefineAmmoCalibre("12 Gauge",	1.0);
+	calibre_556		= DefineAmmoCalibre("5.56mm",	1.0);
+	calibre_357		= DefineAmmoCalibre(".357",		1.0);
+	calibre_rpg		= DefineAmmoCalibre("RPG",		1.0);
+	calibre_fuel	= DefineAmmoCalibre("Fuel",		1.0);
+	calibre_film	= DefineAmmoCalibre("Film",		1.0);
 
-	SetItemTypeHolsterable(ItemType:03,		1, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Baton
-	SetItemTypeHolsterable(ItemType:08,		1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 300, "PED",		"PHONE_IN");		// Sword
-	SetItemTypeHolsterable(ItemType:22,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9
-	SetItemTypeHolsterable(ItemType:23,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// M9 SD
-	SetItemTypeHolsterable(ItemType:24,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Desert Eagle
-	SetItemTypeHolsterable(ItemType:25,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shotgun
-	SetItemTypeHolsterable(ItemType:26,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Sawnoff
-	SetItemTypeHolsterable(ItemType:27,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Spas 12
-	SetItemTypeHolsterable(ItemType:28,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Mac 10
-	SetItemTypeHolsterable(ItemType:29,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// MP5
-	SetItemTypeHolsterable(ItemType:30,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// AK-47
-	SetItemTypeHolsterable(ItemType:31,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// M16
-	SetItemTypeHolsterable(ItemType:32,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Tec 9
-	SetItemTypeHolsterable(ItemType:33,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Rifle
-	SetItemTypeHolsterable(ItemType:34,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Sniper
-	SetItemTypeHolsterable(ItemType:35,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// RPG
-	SetItemTypeHolsterable(ItemType:36,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Heatseeker
+	anim_Blunt		= DefineAnimSet();
+	anim_Stab		= DefineAnimSet();
+	anim_Heavy		= DefineAnimSet();
 
-	SetItemTypeHolsterable(item_Taser,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");		// Taser
-	SetItemTypeHolsterable(item_Shield,		1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
-	SetItemTypeHolsterable(item_Mailbox,	1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");	// Shield
+	//							animidx
+	AddAnimToSet(anim_Blunt,	26);
+	AddAnimToSet(anim_Blunt,	17);
+	AddAnimToSet(anim_Blunt,	18);
+	AddAnimToSet(anim_Blunt,	19);
+	AddAnimToSet(anim_Stab,		751);
+	AddAnimToSet(anim_Heavy,	19);
+	AddAnimToSet(anim_Heavy,	20);
+
+	// Items with a baseweapon of 0 utilise parameters for different data.
+	// Custom melee weapons replace muzzle velocity with bleedrate and maxmags
+	// with knockout chance.
+
+	//					itemtype				baseweapon					calibre			bleedrate		kochance	animset
+	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.0,			20,			anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.1,			25,			anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.1,			30,			anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.2,			30,			anim_Blunt);
+	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.0,			0,			anim_Blunt);
+	DefineItemTypeWeapon(item_Taser,			0,							NO_CALIBRE,		0.0,			100,		anim_Stab);
+	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.5,			0,			anim_Stab);
+	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			40,			anim_Heavy);
+	//					itemtype				baseweapon					calibre			muzzvelocity	maxmags		animset
+	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Dildo4,			WEAPON_VIBRATOR2,			NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Flowers,			WEAPON_FLOWER,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Grenade,			WEAPON_GRENADE,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				NO_CALIBRE,		8.0,			0);
+	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	600.0,			1);
+	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	600.0,			1);
+	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	600.0,			1);
+	DefineItemTypeWeapon(item_PumpShotgun,		WEAPON_SHOTGUN,				calibre_12g,	600.0,			1);
+	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	600.0,			1);
+	DefineItemTypeWeapon(item_Spas12,			WEAPON_SHOTGSPA,			calibre_12g,	600.0,			1);
+	DefineItemTypeWeapon(item_Mac10,			WEAPON_UZI,					calibre_9mm,	600.0,			1);
+	DefineItemTypeWeapon(item_MP5,				WEAPON_MP5,					calibre_9mm,	600.0,			1);
+	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_556,	600.0,			1);
+	DefineItemTypeWeapon(item_M16Rifle,			WEAPON_M4,					calibre_556,	600.0,			1);
+	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	600.0,			1);
+	DefineItemTypeWeapon(item_SemiAutoRifle,	WEAPON_RIFLE,				calibre_357,	600.0,			1);
+	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	600.0,			1);
+	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	600.0,			0);
+	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	600.0,			0);
+	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	600.0,			1);
+	DefineItemTypeWeapon(item_Minigun,			WEAPON_MINIGUN,				calibre_556,	600.0,			1);
+	DefineItemTypeWeapon(item_RemoteBomb,		WEAPON_SATCHEL,				NO_CALIBRE,		600.0,			1);
+	DefineItemTypeWeapon(item_Detonator,		WEAPON_BOMB,				NO_CALIBRE,		600.0,			1);
+	DefineItemTypeWeapon(item_SprayPaint,		WEAPON_SPRAYCAN,			NO_CALIBRE,		600.0,			1);
+	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	NO_CALIBRE,		600.0,			1);
+	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	600.0,			1);
+
+	DefineItemTypeAmmo(item_Ammo9mm,			calibre_9mm,	10);
+	DefineItemTypeAmmo(item_Ammo50,				calibre_50c,	7);
+	DefineItemTypeAmmo(item_AmmoBuck,			calibre_12g,	6);
+	DefineItemTypeAmmo(item_Ammo556,			calibre_556,	30);
+	DefineItemTypeAmmo(item_Ammo357,			calibre_357,	5);
+	DefineItemTypeAmmo(item_AmmoRocket,			calibre_rpg,	1);
+	DefineItemTypeAmmo(item_GasCan,				calibre_fuel,	20);
 
 
+	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Sword,			1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 600, "GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M9Pistol,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_M9PistolSD,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_DesertEagle,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_PumpShotgun,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Sawnoff,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Spas12,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Mac10,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_MP5,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_AK47Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M16Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Tec9,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_SemiAutoRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_SniperRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_RocketLauncher,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Heatseeker,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 
-	anim_Blunt = DefineAnimSet();
-	anim_Stab = DefineAnimSet();
-	anim_Heavy = DefineAnimSet();
-
-	AddAnimToSet(anim_Blunt, 26, 3.0);
-	AddAnimToSet(anim_Blunt, 17, 4.0);
-	AddAnimToSet(anim_Blunt, 18, 6.0);
-	AddAnimToSet(anim_Blunt, 19, 8.0);
-	AddAnimToSet(anim_Stab, 751, 18.8);
-	AddAnimToSet(anim_Heavy, 19, 16.0);
-	AddAnimToSet(anim_Heavy, 20, 21.0);
-
-	SetItemAnimSet(item_Wrench,			anim_Blunt);
-	SetItemAnimSet(item_Crowbar,		anim_Blunt);
-	SetItemAnimSet(item_Hammer,			anim_Blunt);
-	SetItemAnimSet(item_Rake,			anim_Blunt);
-	SetItemAnimSet(item_Cane,			anim_Blunt);
-	SetItemAnimSet(item_Taser,			anim_Stab);
-	SetItemAnimSet(item_Screwdriver,	anim_Stab);
-	SetItemAnimSet(item_Mailbox,		anim_Heavy);
+	SetItemTypeHolsterable(item_Taser,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Shield,			1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Mailbox,		1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 
 
 	DefineFoodItem(item_HotDog,			20.0, 1, 0);
@@ -1470,18 +1711,6 @@ timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
 
 DirectoryCheck(directory[])
 {
-	if(!dir_exists(DIRECTORY_SCRIPTFILES))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
-	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
-	}
-
 	if(!dir_exists(directory))
 	{
 		printf("ERROR: Directory '%s' not found. Creating directory.", directory);

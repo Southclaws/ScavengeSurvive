@@ -64,6 +64,7 @@ SavePlayerChar(playerid)
 		session,
 		data[PLY_CELL_END],
 		animidx = GetPlayerAnimationIndex(playerid),
+		itemid,
 		items[9],
 		itemcount,
 		itemlist;
@@ -84,42 +85,11 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_FOOD]		= _:GetPlayerFP(playerid);
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
+	data[PLY_CELL_HOLST]	= -1; // depreciated
+	data[PLY_CELL_HELD]		= -1; // depreciated
 
-	if(saveload_Debug[playerid] == 1)
+	if(saveload_Debug[playerid] >= 1)
 		printf("[SAVE:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
-
-	if(IsValidItem(GetPlayerHolsterItem(playerid)))
-	{
-		data[PLY_CELL_HOLST] = _:GetItemType(GetPlayerHolsterItem(playerid));
-		data[PLY_CELL_HOLSTEX] = GetItemExtraData(GetPlayerHolsterItem(playerid));
-	}
-	else
-	{
-		data[PLY_CELL_HOLST] = _:INVALID_ITEM_TYPE;
-		data[PLY_CELL_HOLSTEX] = 0;
-	}
-
-	if(saveload_Debug[playerid] == 2)
-		printf("[SAVE:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], GetPlayerHolsterItem(playerid));
-
-	if(IsValidItem(GetPlayerItem(playerid)))
-	{
-		data[PLY_CELL_HELD] = _:GetItemType(GetPlayerItem(playerid));
-		data[PLY_CELL_HELDEX] = GetItemExtraData(GetPlayerItem(playerid));
-	}
-	else if(GetPlayerCurrentWeapon(playerid) > 0)
-	{
-		data[PLY_CELL_HELD] = GetPlayerCurrentWeapon(playerid);
-		data[PLY_CELL_HELDEX] = GetPlayerTotalAmmo(playerid);
-	}
-	else
-	{
-		data[PLY_CELL_HELD] = _:INVALID_ITEM_TYPE;
-		data[PLY_CELL_HELDEX] = 0;
-	}
-
-	if(saveload_Debug[playerid] == 2)
-		printf("[SAVE:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], GetPlayerCurrentWeapon(playerid));
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
 	{
@@ -152,10 +122,61 @@ SavePlayerChar(playerid)
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 		data[PLY_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
-	if(saveload_Debug[playerid] == 3)
+	if(saveload_Debug[playerid] >= 3)
 		printf("[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
 
 	modio_push(filename, !"CHAR", PLY_CELL_END, data);
+
+/*
+	Held item
+*/
+
+	itemid = GetPlayerItem(playerid);
+
+	if(IsValidItem(itemid))
+	{
+		data[0] = _:GetItemType(itemid);
+		data[1] = GetItemArrayDataSize(itemid);
+		printf("item array data size: %d", data[1]);
+		GetItemArrayData(itemid, data[2]);
+		modio_push(filename, !"HELD", 2 + data[1], data);
+
+		for(new i; i < 2 + data[1]; i++)
+			printf("  HELD AD %d: %d", i, data[i]);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+	}
+	else
+	{
+		data[0] = -1;
+		modio_push(filename, !"HELD", 1, data);
+	}
+
+/*
+	Holstered item
+*/
+
+	itemid = GetPlayerHolsterItem(playerid);
+
+	if(IsValidItem(itemid))
+	{
+		data[0] = _:GetItemType(itemid);
+		data[1] = GetItemArrayDataSize(itemid);
+		GetItemArrayData(itemid, data[2]);
+		modio_push(filename, !"HOLS", 2 + data[1], data);
+
+		for(new i; i < 2 + data[1]; i++)
+			printf("  HOLS AD %d: %d", i, data[i]);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+	}
+	else
+	{
+		data[0] = -1;
+		modio_push(filename, !"HOLS", 1, data);
+	}
 
 /*
 	Inventory
@@ -170,14 +191,14 @@ SavePlayerChar(playerid)
 
 		itemcount++;
 
-		if(saveload_Debug[playerid] == 4)
+		if(saveload_Debug[playerid] >= 4)
 			printf("[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 	}
 
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, saveload_ItemList);
 
-	if(saveload_Debug[playerid] == 4)
+	if(saveload_Debug[playerid] >= 4)
 		printf("[SAVE:%p] Inv items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
 
 	modio_push(filename, !"INV0", GetItemListSize(itemlist), saveload_ItemList);
@@ -203,14 +224,14 @@ SavePlayerChar(playerid)
 
 			itemcount++;
 
-			if(saveload_Debug[playerid] == 4)
+			if(saveload_Debug[playerid] >= 4)
 				printf("[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 		}
 
 		itemlist = CreateItemList(items, itemcount);
 		GetItemList(itemlist, saveload_ItemList);
 
-		if(saveload_Debug[playerid] == 4)
+		if(saveload_Debug[playerid] >= 4)
 			printf("[SAVE:%p] Bag items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
 
 		modio_push(filename, !"BAG0", GetItemListSize(itemlist), saveload_ItemList);
@@ -228,7 +249,6 @@ LoadPlayerChar(playerid)
 	new
 		filename[MAX_PLAYER_FILE],
 		data[PLY_CELL_END],
-		ret,
 		ItemType:itemtype,
 		itemid,
 		itemlist,
@@ -236,16 +256,16 @@ LoadPlayerChar(playerid)
 
 	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
-	ret = modio_read(filename, !"CHAR", data);
+	length = modio_read(filename, !"CHAR", data);
 
-	if(ret == 0)
+	if(length == 0)
 	{
-		ret = FV10_LoadPlayerChar(playerid);
-		ret += FV10_LoadPlayerInventory(playerid);
-		return ret;
+		length = FV10_LoadPlayerChar(playerid);
+		length += FV10_LoadPlayerInventory(playerid);
+		return length;
 	}
 
-	if(saveload_Debug[playerid] == 1)
+	if(saveload_Debug[playerid] >= 1)
 		printf("[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
 /*
@@ -265,34 +285,67 @@ LoadPlayerChar(playerid)
 	if(GetPlayerAP(playerid) > 0.0)
 		ToggleArmour(playerid, true);
 
-	if(data[PLY_CELL_HOLST] != -1)
-	{
-		itemid = CreateItem(ItemType:data[PLY_CELL_HOLST]);
-		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
-		SetPlayerHolsterItem(playerid, itemid);
+/*
+	Legacy code for old held/holstered item format. Depreciated because it only
+	stores 1 cell of data (extradata) with items. These items are now stored in
+	separate modio tags so the full array data is stored with them.
+*/
 
-		if(saveload_Debug[playerid] == 2)
-			printf("[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
-	}
-
-	if(data[PLY_CELL_HELD] != -1)
+	if(data[PLY_CELL_HELD] > 0)
 	{
+		itemid = CreateItem(ItemType:data[PLY_CELL_HELD]);
+
+		if(!IsItemTypeExtraDataDependent(ItemType:data[PLY_CELL_HELD]))
+			SetItemExtraData(itemid, data[PLY_CELL_HELDEX]);
+
 		if(0 < data[PLY_CELL_HELD] < WEAPON_PARACHUTE)
 		{
-			SetPlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
+			new ItemType:ammotype[1];
+
+			// Get the first ammo item type for this weapon's calibre.
+			GetAmmoItemTypesOfCalibre(GetItemTypeWeaponCalibre(ItemType:data[PLY_CELL_HELD]), ammotype, 1);
+
+			if(IsValidItemType(ammotype[0]))
+			{
+				SetItemWeaponItemAmmoItem(itemid, ammotype[0]);
+				SetItemWeaponItemMagAmmo(itemid, 0);
+				SetItemWeaponItemReserve(itemid, 0);
+				AddAmmoToWeapon(itemid, data[PLY_CELL_HELDEX]);
+			}
 		}
-		else
+
+		GiveWorldItemToPlayer(playerid, itemid);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[LOAD:%p] OLD HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+	}
+
+	if(data[PLY_CELL_HOLST] > 0)
+	{
+		itemid = CreateItem(ItemType:data[PLY_CELL_HOLST]);
+
+		if(!IsItemTypeExtraDataDependent(ItemType:data[PLY_CELL_HOLST]))
+			SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
+
+		if(0 < data[PLY_CELL_HOLST] < WEAPON_PARACHUTE)
 		{
-			itemid = CreateItem(ItemType:data[PLY_CELL_HELD]);
+			new ItemType:ammotype[1];
 
-			if(!IsItemTypeSafebox(ItemType:data[PLY_CELL_HELD]) && !IsItemTypeBag(ItemType:data[PLY_CELL_HELD]))
-				SetItemExtraData(itemid, data[PLY_CELL_HELDEX]);
+			GetAmmoItemTypesOfCalibre(GetItemTypeWeaponCalibre(ItemType:data[PLY_CELL_HOLST]), ammotype, 1);
 
-			GiveWorldItemToPlayer(playerid, itemid, false);
+			if(IsValidItemType(ammotype[0]))
+			{
+				SetItemWeaponItemAmmoItem(itemid, ammotype[0]);
+				SetItemWeaponItemMagAmmo(itemid, 0);
+				SetItemWeaponItemReserve(itemid, 0);
+				AddAmmoToWeapon(itemid, data[PLY_CELL_HOLSTEX]);
+			}
 		}
 
-		if(saveload_Debug[playerid] == 2)
-			printf("[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+		SetPlayerHolsterItem(playerid, itemid);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
 	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
@@ -323,8 +376,42 @@ LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		if(saveload_Debug[playerid] == 3)
+		if(saveload_Debug[playerid] >= 3)
 			printf("[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
+	}
+
+/*
+	Held item
+*/
+
+	length = modio_read(filename, !"HELD", data);
+
+	if(IsValidItemType(ItemType:data[0]) && length > 0)
+	{
+		itemid = CreateItem(ItemType:data[0]);
+		SetItemArrayData(itemid, data[2], data[1]);
+		GiveWorldItemToPlayer(playerid, itemid);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+	}
+
+/*
+	Holstered item
+*/
+
+	data[0] = -1;
+
+	length = modio_read(filename, !"HOLS", data);
+
+	if(IsValidItemType(ItemType:data[0]) && length > 0)
+	{
+		itemid = CreateItem(ItemType:data[0]);
+		SetItemArrayData(itemid, data[2], data[1]);
+		SetPlayerHolsterItem(playerid, itemid);
+
+		if(saveload_Debug[playerid] >= 2)
+			printf("[LOAD:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
 
 /*
@@ -335,7 +422,7 @@ LoadPlayerChar(playerid)
 
 	itemlist = ExtractItemList(saveload_ItemList, length);
 
-	if(saveload_Debug[playerid] == 4)
+	if(saveload_Debug[playerid] >= 4)
 		printf("[LOAD:%p] Inv items: %d", playerid, GetItemListItemCount(itemlist));
 
 	for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
@@ -358,7 +445,7 @@ LoadPlayerChar(playerid)
 	
 		AddItemToInventory(playerid, itemid, 0);
 
-		if(saveload_Debug[playerid] == 4)
+		if(saveload_Debug[playerid] >= 4)
 			printf("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
 	}
 
@@ -376,7 +463,7 @@ LoadPlayerChar(playerid)
 	{
 		new containerid = GetItemExtraData(GetPlayerBagItem(playerid));
 
-		if(saveload_Debug[playerid] == 4)
+		if(saveload_Debug[playerid] >= 4)
 			printf("[LOAD:%p] Bag items: %d (itemlist size: %d)", playerid, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
 
 		for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
@@ -389,7 +476,7 @@ LoadPlayerChar(playerid)
 
 			AddItemToContainer(containerid, itemid);
 
-			if(saveload_Debug[playerid] == 4)
+			if(saveload_Debug[playerid] >= 4)
 				printf("[LOAD:%p] - Bag item %d: (%d type: %d)", playerid, i, itemid, _:itemtype);
 		}
 	}
@@ -446,7 +533,7 @@ FV10_LoadPlayerChar(playerid)
 		return 0;
 	}
 
-	if(saveload_Debug[playerid] == 1)
+	if(saveload_Debug[playerid] >= 1)
 		printf("[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
 	if(Float:data[PLY_CELL_HEALTH] <= 0.0)
@@ -468,7 +555,7 @@ FV10_LoadPlayerChar(playerid)
 		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
 		SetPlayerHolsterItem(playerid, itemid);
 
-		if(saveload_Debug[playerid] == 2)
+		if(saveload_Debug[playerid] >= 2)
 			printf("[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
@@ -476,7 +563,7 @@ FV10_LoadPlayerChar(playerid)
 	{
 		if(0 < data[PLY_CELL_HELD] < WEAPON_PARACHUTE)
 		{
-			SetPlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
+			// SetPlayerWeapon(playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX]);
 		}
 		else
 		{
@@ -488,7 +575,7 @@ FV10_LoadPlayerChar(playerid)
 			GiveWorldItemToPlayer(playerid, itemid, false);
 		}
 
-		if(saveload_Debug[playerid] == 2)
+		if(saveload_Debug[playerid] >= 2)
 			printf("[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
 	}
 
@@ -520,7 +607,7 @@ FV10_LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		if(saveload_Debug[playerid] == 3)
+		if(saveload_Debug[playerid] >= 3)
 			printf("[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
 	}
 
@@ -561,7 +648,7 @@ FV10_LoadPlayerInventory(playerid)
 	
 		AddItemToInventory(playerid, itemid, 0);
 
-		if(saveload_Debug[playerid] == 4)
+		if(saveload_Debug[playerid] >= 4)
 			printf("[LOAD:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 	}
 
@@ -584,7 +671,7 @@ FV10_LoadPlayerInventory(playerid)
 
 			AddItemToContainer(containerid, itemid);
 
-			if(saveload_Debug[playerid] == 4)
+			if(saveload_Debug[playerid] >= 4)
 				printf("[LOAD:%p] BAG %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 		}
 	}

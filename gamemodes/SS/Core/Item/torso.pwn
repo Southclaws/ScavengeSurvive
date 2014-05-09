@@ -29,19 +29,17 @@ public OnItemCreateInWorld(itemid)
 #define OnItemCreateInWorld tor_OnItemCreateInWorld
 forward tor_OnItemCreateInWorld(itemid);
 
-public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
+public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(weapon == 4 && itemtype == item_Torso)
+	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
-		if(GetItemArrayDataAtCell(itemid, 0))
+		if(GetItemArrayDataAtCell(withitemid, 0))
 		{
-			if(gettime() - GetItemArrayDataAtCell(itemid, 1) < 86400)
+			if(gettime() - GetItemArrayDataAtCell(withitemid, 1) < 86400)
 			{
 				StartHoldAction(playerid, 3000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				gut_TargetItem[playerid] = itemid;
+				gut_TargetItem[playerid] = withitemid;
 			}
 			else
 			{
@@ -53,15 +51,15 @@ public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
 			ShowActionText(playerid, "The body has already been harvested of the edible (tasty) parts", 3000);
 		}
 	}
-	return CallLocalFunction("tor_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
+	return CallLocalFunction("tor_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
 }
-#if defined _ALS_OnPlayerUseWeaponWithItem
-	#undef OnPlayerUseWeaponWithItem
+#if defined _ALS_OnPlayerUseItemWithItem
+	#undef OnPlayerUseItemWithItem
 #else
-	#define _ALS_OnPlayerUseWeaponWithItem
+	#define _ALS_OnPlayerUseItemWithItem
 #endif
-#define OnPlayerUseWeaponWithItem tor_OnPlayerUseWeaponWithItem
-forward tor_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
+#define OnPlayerUseItemWithItem tor_OnPlayerUseItemWithItem
+forward tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 public OnPlayerPickUpItem(playerid, itemid)
 {

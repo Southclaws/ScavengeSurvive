@@ -1,3 +1,5 @@
+// depreciated, use ../Weapon/Core.pwn
+#endinput
 new
 	ammo_ContainerOption[MAX_PLAYERS];
 

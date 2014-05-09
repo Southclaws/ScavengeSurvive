@@ -324,15 +324,7 @@ ACMD:additem[3](playerid, params[])
 		y + (0.5 * floatcos(-r, degrees)),
 		z - 0.8568, .rz = r, .zoffset = 0.7);
 
-	if(exdata != 0)
-	{
-		SetItemExtraData(itemid, exdata);	
-	}
-	else
-	{
-		if(0 < _:type <= WEAPON_PARACHUTE)
-			SetItemExtraData(itemid, GetWeaponMagSize(_:type));
-	}
+	SetItemExtraData(itemid, exdata);	
 
 	if(GetPlayerAdminLevel(playerid) < 4)
 	{

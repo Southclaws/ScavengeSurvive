@@ -113,8 +113,8 @@ CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zof
 
 	CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
 
-	if(IsItemTypeWeapon(itemtype))
-		SetItemExtraData(itemid, random(GetWeaponMagSize(_:itemtype)));
+//	if(IsItemTypeWeapon(itemtype))
+//		SetItemExtraData(itemid, random(GetWeaponMagSize(_:itemtype)));
 	
 	if(exdata != -1)
 		SetItemExtraData(itemid, exdata);
@@ -136,7 +136,7 @@ CreateLootSpawn(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
 
 	for(new i; i < size; i++)
 	{
-		if(!(random(100) < spawnchance))
+		if(!(random(100) < spawnchance * 2))
 			continue;
 
 		itemid = CreateLootItem(lootindex,

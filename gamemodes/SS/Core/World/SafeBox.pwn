@@ -248,21 +248,6 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
 forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
-public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
-{
-	if(SafeBoxInteractionCheck(playerid, itemid))
-		return 1;
-
-	return CallLocalFunction("box_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
-}
-#if defined _ALS_OnPlayerUseWeaponWithItem
-	#undef OnPlayerUseWeaponWithItem
-#else
-	#define _ALS_OnPlayerUseWeaponWithItem
-#endif
-#define OnPlayerUseWeaponWithItem box_OnPlayerUseWeaponWithItem
-forward box_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-
 
 SafeBoxInteractionCheck(playerid, itemid)
 {

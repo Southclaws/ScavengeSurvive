@@ -126,5 +126,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 	}
+
+	return 1;
 }
 

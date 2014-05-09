@@ -318,21 +318,6 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #define OnPlayerUseItemWithItem bag_OnPlayerUseItemWithItem
 forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
-public OnPlayerUseWeaponWithItem(playerid, weapon, itemid)
-{
-	if(BagInteractionCheck(playerid, itemid))
-		return 1;
-
-	return CallLocalFunction("bag_OnPlayerUseWeaponWithItem", "ddd", playerid, weapon, itemid);
-}
-#if defined _ALS_OnPlayerUseWeaponWithItem
-	#undef OnPlayerUseWeaponWithItem
-#else
-	#define _ALS_OnPlayerUseWeaponWithItem
-#endif
-#define OnPlayerUseWeaponWithItem bag_OnPlayerUseWeaponWithItem
-forward bag_OnPlayerUseWeaponWithItem(playerid, weapon, itemid);
-
 BagInteractionCheck(playerid, itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
@@ -351,7 +336,7 @@ BagInteractionCheck(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
+	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
 		return 1;
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -376,7 +361,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(bag_PuttingInBag[playerid])
 				return 0;
 
-			if(GetTickCountDifference(GetTickCount(), GetPlayerWeaponSwapTick(playerid)) < 1000)
+			if(GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
 				return 0;
 
 			new itemid = GetPlayerItem(playerid);

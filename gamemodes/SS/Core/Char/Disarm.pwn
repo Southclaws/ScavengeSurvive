@@ -29,46 +29,28 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 DisarmPlayer(playerid, i)
 {
-	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
+	if(IsValidItem(GetPlayerItem(playerid)))
 		return 0;
 
-	new
-		weaponid = GetPlayerCurrentWeapon(i),
-		itemid;
+	new itemid = GetPlayerItem(i);
 
-	if(weaponid> 0)
+	if(IsValidItem(itemid))
 	{
-		new
-			ammo = GetPlayerTotalAmmo(i);
-
-		RemovePlayerWeapon(i);
-		SetPlayerWeapon(playerid, weaponid, ammo);
+		RemoveCurrentItem(i);
+		GiveWorldItemToPlayer(playerid, itemid);
 
 		return 1;
 	}
-	else
+
+	itemid = GetPlayerHolsterItem(i);
+
+	if(IsValidItem(itemid))
 	{
-		itemid = GetPlayerItem(i);
+		RemovePlayerHolsterItem(i);
+		CreateItemInWorld(itemid);
+		GiveWorldItemToPlayer(playerid, itemid);
 
-		if(IsValidItem(itemid))
-		{
-			RemoveCurrentItem(i);
-			GiveWorldItemToPlayer(playerid, itemid);
-
-			return 1;
-		}
-
-		itemid = GetPlayerHolsterItem(i);
-
-		if(IsValidItem(itemid))
-		{
-			RemovePlayerHolsterItem(i);
-			CreateItemInWorld(itemid);
-			GiveWorldItemToPlayer(playerid, itemid);
-			ConvertPlayerItemToWeapon(playerid);
-
-			return 1;
-		}
+		return 1;
 	}
 
 	return 0;

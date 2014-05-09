@@ -295,36 +295,110 @@ ACMD:weather[4](playerid, params[])
 ==============================================================================*/
 
 
-CMD:sifdebug(playerid, params[])
+CMD:debug(playerid, params[])
 {
-	new level = strval(params);
+	new
+		handlername[32],
+		level,
+		handler;
 
-	if(!(0 <= level <= 10))
+	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, -1, "Invalid level");
+		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
 		return 1;
 	}
 
-	sif_debug_plevel(playerid, level);
+	handler = debug_handler_search(handlername);
 
-	MsgF(playerid, -1, "SIF debug level: %d", level);
+	if(handler == -1)
+	{
+		Msg(playerid, YELLOW, "Invalid handler");
+		return 1;
+	}
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, YELLOW, "Invalid level");
+		return 1;
+	}
+
+	debug_get_handler_name(handler, handlername);
+
+	debug_set_level(handler, level);
+
+	MsgF(playerid, YELLOW, " >  SS debug level for '%s': %d", handlername, level);
+
+	return 1;
+}
+
+CMD:sifdebug(playerid, params[])
+{
+	new
+		handlername[32],
+		level,
+		handler;
+
+	if(sscanf(params, "s[32]d", handlername, level))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
+		return 1;
+	}
+
+	handler = sif_debug_handler_search(handlername);
+
+	if(handler == -1)
+	{
+		Msg(playerid, YELLOW, "Invalid handler");
+		return 1;
+	}
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, YELLOW, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_get_handler_name(handler, handlername);
+
+	sif_debug_plevel(playerid, handler, level);
+
+	MsgF(playerid, YELLOW, " >  SIF debug level for '%s': %d", handlername, level);
 
 	return 1;
 }
 
 ACMD:sifgdebug[4](playerid, params[])
 {
-	new level = strval(params);
+	new
+		handlername[32],
+		level,
+		handler;
 
-	if(!(0 <= level <= 10))
+	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, -1, "Invalid level");
+		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
 		return 1;
 	}
 
-	sif_debug_level(level);
+	handler = sif_debug_handler_search(handlername);
 
-	MsgF(playerid, -1, "Global SIF debug level: %d", level);
+	if(handler == -1)
+	{
+		Msg(playerid, YELLOW, "Invalid handler");
+		return 1;
+	}
+
+	if(!(0 <= level <= 10))
+	{
+		Msg(playerid, YELLOW, "Invalid level");
+		return 1;
+	}
+
+	sif_debug_get_handler_name(handler, handlername);
+
+	sif_debug_level(handler, level);
+
+	MsgF(playerid, YELLOW, " >  Global SIF debug level for '%s': %d", handlername, level);
 
 	return 1;
 }

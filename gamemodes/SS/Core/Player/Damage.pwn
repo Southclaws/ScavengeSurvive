@@ -218,7 +218,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 	}
 	else if(type == 1)
 	{
-		hploss = GetMeleeDamage(weaponid, GetCurrentMeleeAnim(playerid));
+		hploss = 5.0;
 
 		if(weaponid == anim_Blunt)
 		{
@@ -244,11 +244,6 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 			}
 		}
 
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-	{
-		hploss *= 0.9;
 	}
 
 	if(GetItemType(GetPlayerItem(targetid)) == item_Shield)

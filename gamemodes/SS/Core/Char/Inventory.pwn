@@ -101,7 +101,6 @@ UpdatePlayerGear(playerid, show = 1)
 		tmp[ITM_MAX_NAME],
 		itemid;
 
-
 	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
 	if(IsValidItemType(ItemType:itemid))
 	{
@@ -140,29 +139,8 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 	else
 	{
-		if(GetPlayerCurrentWeapon(playerid) != 0)
-		{
-			if(GetPlayerWeapon(playerid) == 0 && GetPlayerCurrentWeapon(playerid) == WEAPON_PARACHUTE)
-			{
-				PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], "<Empty>");
-				PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], 19300);
-
-				RemovePlayerWeapon(playerid);
-				UpdatePlayerGear(playerid, show);
-
-				return;
-			}
-
-			GetWeaponName(GetPlayerCurrentWeapon(playerid), tmp);
-			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
-			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetWeaponModel(GetPlayerCurrentWeapon(playerid)));
-			PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
-		}
-		else
-		{
-			PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], "<Empty>");
-			PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], 19300);
-		}
+		PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], "<Empty>");
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], 19300);
 	}
 
 	itemid = GetPlayerHolsterItem(playerid);
@@ -521,75 +499,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
-			}
-		}
-		else if(GetPlayerCurrentWeapon(playerid) != 0)
-		{
-			new containerid = GetPlayerCurrentContainer(playerid);
-
-			if(IsValidContainer(containerid))
-			{
-				if(IsContainerFull(containerid))
-				{
-					new str[CNT_MAX_NAME + 6];
-
-					GetContainerName(containerid, str);
-					strcat(str, " full");
-					ShowActionText(playerid, str, 3000, 150);
-
-					return 1;
-				}
-
-				if(!WillItemTypeFitInContainer(containerid, ItemType:GetPlayerCurrentWeapon(playerid)))
-				{
-					ShowActionText(playerid, "Item won't fit", 3000, 150);
-					return 1;
-				}
-
-				if(ConvertPlayerWeaponToItem(playerid))
-				{
-					new str[CNT_MAX_NAME + 17];
-
-					if(AddItemToContainer(containerid, GetPlayerItem(playerid), playerid) == 1)
-					{
-						UpdatePlayerGear(playerid);
-						DisplayContainerInventory(playerid, containerid);
-
-						GetContainerName(containerid, str);
-						format(str, sizeof(str), "Weapon added to %s", str, 150);
-						ShowActionText(playerid, str, 3000, 150);
-					}
-				}
-			}
-			else
-			{
-				if(IsPlayerInventoryFull(playerid))
-				{
-					ShowActionText(playerid, "Inventory full", 3000, 150);
-					return 1;
-				}
-
-				if(GetItemTypeSize(ItemType:GetPlayerCurrentWeapon(playerid)) != ITEM_SIZE_SMALL)
-				{
-					ShowActionText(playerid, "Item too big", 3000, 140);
-				}
-				else
-				{
-					if(ConvertPlayerWeaponToItem(playerid))
-					{
-						if(AddItemToInventory(playerid, GetPlayerItem(playerid)) == 1)
-						{
-							UpdatePlayerGear(playerid);
-							DisplayPlayerInventory(playerid);
-							ShowActionText(playerid, "Weapon added to inventory", 3000, 150);
-						}
-						else
-						{
-							ConvertPlayerItemToWeapon(playerid);
-							ShowActionText(playerid, "Weapon won't fit", 3000, 150);
-						}
-					}
-				}
 			}
 		}
 	}

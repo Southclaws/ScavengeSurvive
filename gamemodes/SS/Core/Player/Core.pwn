@@ -419,11 +419,6 @@ ptask PlayerUpdate[100](playerid)
 		PlayerInfectionUpdate(playerid);
 	}
 
-	if(GetPlayerCurrentWeapon(playerid) == 0 && GetPlayerWeapon(playerid))
-	{
-		RemovePlayerWeapon(playerid);
-	}
-
 	PlayerBagUpdate(playerid);
 
 	return;
@@ -595,7 +590,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		new weaponid = GetPlayerCurrentWeapon(playerid);
+		new weaponid = GetPlayerItemWeaponBaseWeapon(playerid);
 
 		if(weaponid == 34 || weaponid == 35 || weaponid == 43)
 		{
@@ -609,16 +604,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				TogglePlayerHeadwear(playerid, true);
 				TogglePlayerMask(playerid, true);
 			}
-	}
-/*
-		if(newkeys & KEY_FIRE)
-		{
-			new iWepState = GetPlayerWeaponState(playerid);
-
-			if((iWepState != WEAPONSTATE_RELOADING && iWepState != WEAPONSTATE_NO_BULLETS))
-				OnPlayerShoot(playerid);
 		}
-*/
 	}
 
 	return 1;

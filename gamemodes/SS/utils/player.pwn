@@ -215,6 +215,17 @@ stock IsPlayerInWater(playerid)
 	return 0;
 }
 
+stock IsPlayerIdle(playerid)
+{
+	switch(GetPlayerAnimationIndex(playerid))
+	{
+		case 320, 1164, 1183, 1188, 1189:
+			return 1;
+	}
+
+	return 0;
+}
+
 stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 {
 	new

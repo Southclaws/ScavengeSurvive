@@ -15,9 +15,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(!IsValidItem(GetPlayerBagItem(playerid)))
 			{
-				RemovePlayerWeapon(playerid);
-				SetPlayerWeapon(playerid, 46, 1);
-				DestroyItem(GetPlayerItem(playerid));
+				// Rewrite parachute equip code
 			}
 		}
 	}

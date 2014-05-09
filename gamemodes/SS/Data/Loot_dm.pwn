@@ -2,25 +2,41 @@ public OnLoad()
 {
 	for(new i; i < loot_Survivor + 1; i++)
 	{
-		// Weapons
-		AddItemToLootIndex(i, ItemType:WEAPON_COLT45, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_DEAGLE, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_SHOTGUN, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_SAWEDOFF, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_UZI, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_TEC9, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_GRENADE, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_TEARGAS, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_SILENCED, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_SHOTGSPA, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_MP5, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_AK47, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_M4, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_RIFLE, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_SNIPER, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_ROCKETLAUNCHER, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_FLAMETHROWER, 50);
-		AddItemToLootIndex(i, ItemType:WEAPON_MINIGUN, 50);
+		// Firearms
+		AddItemToLootIndex(i, item_M9Pistol, 50);
+		AddItemToLootIndex(i, item_M9PistolSD, 50);
+		AddItemToLootIndex(i, item_DesertEagle, 50);
+		AddItemToLootIndex(i, item_PumpShotgun, 50);
+		AddItemToLootIndex(i, item_Sawnoff, 50);
+		AddItemToLootIndex(i, item_Spas12, 50);
+		AddItemToLootIndex(i, item_Mac10, 50);
+		AddItemToLootIndex(i, item_MP5, 50);
+		AddItemToLootIndex(i, item_AK47Rifle, 50);
+		AddItemToLootIndex(i, item_M16Rifle, 50);
+		AddItemToLootIndex(i, item_Tec9, 50);
+		AddItemToLootIndex(i, item_SemiAutoRifle, 50);
+		AddItemToLootIndex(i, item_SniperRifle, 50);
+		AddItemToLootIndex(i, item_RocketLauncher, 10);
+		AddItemToLootIndex(i, item_Heatseeker, 10);
+		AddItemToLootIndex(i, item_Flamer, 10);
+		AddItemToLootIndex(i, item_Minigun, 10);
+
+		// Melee
+		AddItemToLootIndex(i, item_Knuckles, 50);
+		AddItemToLootIndex(i, item_GolfClub, 50);
+		AddItemToLootIndex(i, item_Baton, 50);
+		AddItemToLootIndex(i, item_Knife, 50);
+		AddItemToLootIndex(i, item_Bat, 50);
+		AddItemToLootIndex(i, item_Spade, 50);
+		AddItemToLootIndex(i, item_PoolCue, 50);
+		AddItemToLootIndex(i, item_Sword, 50);
+		AddItemToLootIndex(i, item_Chainsaw, 50);
+		AddItemToLootIndex(i, item_Dildo1, 50);
+		AddItemToLootIndex(i, item_Dildo2, 50);
+		AddItemToLootIndex(i, item_Dildo3, 50);
+		AddItemToLootIndex(i, item_Dildo4, 50);
+		AddItemToLootIndex(i, item_Flowers, 50);
+		AddItemToLootIndex(i, item_WalkingCane, 50);
 
 		// Military
 		AddItemToLootIndex(i, item_Armour, 50);
@@ -63,7 +79,7 @@ public OnLoad()
 		AddItemToLootIndex(i, item_MobilePhone, 50);
 		AddItemToLootIndex(i, item_Taco, 50);
 		AddItemToLootIndex(i, item_Barbecue, 50);
-		AddItemToLootIndex(i, item_Explosive, 50);
+		AddItemToLootIndex(i, item_Explosive, 100);
 		AddItemToLootIndex(i, item_FireLighter, 50);
 		AddItemToLootIndex(i, item_Timer, 50);
 		AddItemToLootIndex(i, item_MotionSense, 50);
