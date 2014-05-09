@@ -83,6 +83,8 @@ DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
 
+	SetItemTypeMaxArrayData(itemtype, 2);
+
 	box_TypeData[box_TypeTotal][box_name]		= name;
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;
@@ -123,7 +125,8 @@ public OnItemCreate(itemid)
 
 			box_ContainerSafebox[containerid] = itemid;
 
-			SetItemExtraData(itemid, containerid);
+			SetItemArrayDataSize(itemid, 2);
+			SetItemArrayDataAtCell(itemid, containerid, 1);
 			Iter_Add(box_Index, itemid);
 
 			if(!box_SkipGEID)
@@ -173,7 +176,7 @@ public OnItemDestroy(itemid)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
-			new containerid = GetItemExtraData(itemid);
+			new containerid = GetItemArrayDataAtCell(itemid, 1);
 
 			DestroyContainer(containerid);
 			box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
@@ -219,7 +222,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
-		if(!IsContainerEmpty(GetItemExtraData(itemid)))
+		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
 			SaveSafeboxItem(itemid);
 	}
 
@@ -282,7 +285,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsValidItem(box_CurrentBoxItem[playerid]))
 			{
-				DisplayContainerInventory(playerid, GetItemExtraData(box_CurrentBoxItem[playerid]));
+				DisplayContainerInventory(playerid, GetItemArrayDataAtCell(box_CurrentBoxItem[playerid], 1));
 				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
 				stop box_PickUpTimer[playerid];
 				box_PickUpTick[playerid] = 0;
@@ -413,7 +416,7 @@ SaveSafeboxItem(itemid, prints = false)
 
 	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"box_%010d.dat", box_GEID[itemid]);
 
-	containerid = GetItemExtraData(itemid);
+	containerid = GetItemArrayDataAtCell(itemid, 1);
 
 	if(!IsValidContainer(containerid) || IsContainerEmpty(containerid))
 	{
@@ -484,7 +487,7 @@ LoadSafeboxItem(filename[], prints = false)
 	itemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .zoffset = FLOOR_OFFSET);
 	box_SkipGEID = false;
 
-	containerid = GetItemExtraData(itemid);
+	containerid = GetItemArrayDataAtCell(itemid, 1);
 
 	sscanf(filename, "'"DIRECTORY_SAFEBOX"box_'p<.>d{s[5]}", box_GEID[itemid]);
 
@@ -617,7 +620,7 @@ OLD_LoadSafeboxItem(filename[], prints = false)
 	}
 
 	itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
-	containerid = GetItemExtraData(itemid);
+	containerid = GetItemArrayDataAtCell(itemid, 1);
 
 	if(prints)
 		printf("\t[LOAD] [OLD] Safebox type %d at %f, %f, %f", data[0], x, y, z);

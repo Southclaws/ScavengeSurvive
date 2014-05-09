@@ -133,7 +133,7 @@ stock GivePlayerBag(playerid, itemid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new containerid = GetItemExtraData(itemid);
+	new containerid = GetItemArrayDataAtCell(itemid, 1);
 
 	if(!IsValidContainer(containerid))
 		return 0;
@@ -178,7 +178,7 @@ stock RemovePlayerBag(playerid)
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 
-	bag_ContainerPlayer[GetItemExtraData(bag_PlayerBagID[playerid])] = INVALID_PLAYER_ID;
+	bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 
 	return 1;
@@ -192,7 +192,7 @@ stock DestroyPlayerBag(playerid)
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
-	new containerid = GetItemExtraData(bag_PlayerBagID[playerid]);
+	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	DestroyContainer(containerid);
@@ -231,7 +231,8 @@ public OnItemCreate(itemid)
 		bag_ContainerItem[containerid] = itemid;
 		bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 
-		SetItemExtraData(itemid, containerid);
+		SetItemArrayDataSize(itemid, 2);
+		SetItemArrayDataAtCell(itemid, containerid, 1);
 		Iter_Add(bag_Index, itemid);
 	}
 
@@ -266,7 +267,7 @@ public OnItemDestroy(itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		new containerid = GetItemExtraData(itemid);
+		new containerid = GetItemArrayDataAtCell(itemid, 1);
 
 		if(IsValidContainer(containerid))
 		{
@@ -351,7 +352,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 				CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 				GiveWorldItemToPlayer(playerid, bag_PlayerBagID[playerid], 1);
-				bag_ContainerPlayer[GetItemExtraData(bag_PlayerBagID[playerid])] = INVALID_PLAYER_ID;
+				bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
 				bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 				bag_TakingOffBag[playerid] = true;
 			}
@@ -368,7 +369,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			if(IsPlayerInventoryFull(playerid) || GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_MEDIUM)
 			{
-				new containerid = GetItemExtraData(bag_PlayerBagID[playerid]);
+				new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
 
 				if(IsValidContainer(containerid) && IsValidItem(itemid))
 				{
@@ -441,7 +442,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(IsValidItem(bag_CurrentBag[playerid]))
 			{
-				DisplayContainerInventory(playerid, GetItemExtraData(bag_CurrentBag[playerid]));
+				DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_CurrentBag[playerid], 1));
 				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
 				stop bag_PickUpTimer[playerid];
 				bag_PickUpTick[playerid] = 0;
@@ -471,7 +472,7 @@ timer bag_PutItemIn[300](playerid, itemid, containerid)
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
 	CancelPlayerMovement(playerid);
-	DisplayContainerInventory(playerid, GetItemExtraData(bag_PlayerBagID[targetid]));
+	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_PlayerBagID[targetid], 1));
 	bag_LookingInBag[playerid] = targetid;
 }
 
@@ -515,7 +516,7 @@ public OnPlayerUseItem(playerid, itemid)
 	if(IsItemTypeBag(itemtype))
 	{
 		CancelPlayerMovement(playerid);
-		DisplayContainerInventory(playerid, GetItemExtraData(itemid));
+		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
 	return CallLocalFunction("bag_OnPlayerUseItem", "dd", playerid, itemid);
 }
@@ -597,7 +598,7 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 				slot,
 				itemid;
 			
-			containerid = GetItemExtraData(bag_PlayerBagID[playerid]);
+			containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
 			slot = GetPlayerSelectedInventorySlot(playerid);
 			itemid = GetInventorySlotItem(playerid, slot);
 
@@ -638,7 +639,7 @@ forward bag_PlayerSelectInventoryOpt(playerid, option);
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemExtraData(bag_PlayerBagID[playerid]))
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
@@ -655,7 +656,7 @@ forward bag_OnPlayerViewContainerOpt(playerid, containerid);
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemExtraData(bag_PlayerBagID[playerid]))
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
@@ -664,7 +665,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 				slot,
 				itemid;
 
-			bagcontainerid = GetItemExtraData(bag_PlayerBagID[playerid]);
+			bagcontainerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
 			slot = GetPlayerContainerSlot(playerid);
 			itemid = GetContainerSlotItem(containerid, slot);
 
