@@ -28,15 +28,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("inj_OnItemCreate", "d", itemid);
+	#if defined inj_OnItemCreate
+		return inj_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate inj_OnItemCreate
-forward inj_OnItemCreate(itemid);
+#if defined inj_OnItemCreate
+	forward inj_OnItemCreate(itemid);
+#endif
 
 public OnItemNameRender(itemid)
 {

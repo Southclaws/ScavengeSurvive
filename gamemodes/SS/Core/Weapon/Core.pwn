@@ -309,8 +309,11 @@ _FastUpdateHandler(playerid)
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
+	d:1:HANDLER("[OnPlayerWeaponShot] %p fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return 0;
+
+	d:1:HANDLER("[OnPlayerWeaponShot END]");
 
 	#if defined itmw_OnPlayerWeaponShot
 		return itmw_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
@@ -323,7 +326,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 #else
 	#define _ALS_OnPlayerWeaponShot
 #endif
- 
+
 #define OnPlayerWeaponShot itmw_OnPlayerWeaponShot
 #if defined itmw_OnPlayerWeaponShot
 	forward itmw_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
@@ -332,6 +335,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:fY = 0.0, Float:fZ = 0.0)
 {
 	#pragma unused hittype, hitid, fX, fY, fZ
+	d:2:HANDLER("[_FireWeapon] %p fired weapon %d", playerid, weaponid);
 	new
 		itemid,
 		ItemType:itemtype,
@@ -487,7 +491,7 @@ public OnPlayerHolsteredItem(playerid, itemid)
 #else
 	#define _ALS_OnPlayerHolsteredItem
 #endif
- 
+
 #define OnPlayerHolsteredItem itmw_OnPlayerHolsteredItem
 #if defined itmw_OnPlayerHolsteredItem
 	forward itmw_OnPlayerHolsteredItem(playerid, itemid);
@@ -511,7 +515,7 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 #else
 	#define _ALS_OnPlayerUnHolsteredItem
 #endif
- 
+
 #define OnPlayerUnHolsteredItem itmw_OnPlayerUnHolsteredItem
 #if defined itmw_OnPlayerUnHolsteredItem
 	forward itmw_OnPlayerUnHolsteredItem(playerid, itemid);
@@ -546,7 +550,7 @@ public OnItemCreate(itemid)
 #else
 	#define _ALS_OnItemCreate
 #endif
- 
+
 #define OnItemCreate itmw_OnItemCreate
 #if defined itmw_OnItemCreate
 	forward itmw_OnItemCreate(itemid);

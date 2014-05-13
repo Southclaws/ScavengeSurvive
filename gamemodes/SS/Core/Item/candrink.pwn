@@ -25,15 +25,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("can_OnItemCreate", "d", itemid);
+	#if defined can_OnItemCreate
+		return can_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate can_OnItemCreate
-forward can_OnItemCreate(itemid);
+#if defined can_OnItemCreate
+	forward can_OnItemCreate(itemid);
+#endif
 
 
 public OnItemNameRender(itemid)

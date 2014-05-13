@@ -44,15 +44,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("hat_OnItemCreate", "d", itemid);
+	#if defined hat_OnItemCreate
+		return hat_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate hat_OnItemCreate
-forward hat_OnItemCreate(itemid);
+#if defined hat_OnItemCreate
+	forward hat_OnItemCreate(itemid);
+#endif
 
 
 // Core

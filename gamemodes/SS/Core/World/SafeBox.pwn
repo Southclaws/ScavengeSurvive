@@ -138,15 +138,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("box_OnItemCreate", "d", itemid);
+	#if defined box_OnItemCreate
+		return box_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate box_OnItemCreate
-forward box_OnItemCreate(itemid);
+#if defined box_OnItemCreate
+	forward box_OnItemCreate(itemid);
+#endif
 
 public OnItemCreateInWorld(itemid)
 {

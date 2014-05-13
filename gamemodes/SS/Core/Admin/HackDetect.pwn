@@ -884,5 +884,19 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 
-	return 1;
+	#if defined ac_OnPlayerWeaponShot
+		return ac_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerWeaponShot
+	#undef OnPlayerWeaponShot
+#else
+	#define _ALS_OnPlayerWeaponShot
+#endif
+ 
+#define OnPlayerWeaponShot ac_OnPlayerWeaponShot
+#if defined ac_OnPlayerWeaponShot
+	forward ac_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
+#endif

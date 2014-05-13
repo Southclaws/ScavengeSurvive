@@ -41,15 +41,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("mask_OnItemCreate", "d", itemid);
+	#if defined mask_OnItemCreate
+		return mask_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate mask_OnItemCreate
-forward mask_OnItemCreate(itemid);
+#if defined mask_OnItemCreate
+	forward mask_OnItemCreate(itemid);
+#endif
 
 
 // Core

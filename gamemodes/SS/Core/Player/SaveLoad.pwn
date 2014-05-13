@@ -137,7 +137,6 @@ SavePlayerChar(playerid)
 	{
 		data[0] = _:GetItemType(itemid);
 		data[1] = GetItemArrayDataSize(itemid);
-		printf("item array data size: %d", data[1]);
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, !"HELD", 2 + data[1], data);
 

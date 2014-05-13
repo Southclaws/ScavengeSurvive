@@ -8,15 +8,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("gas_OnItemCreate", "d", itemid);
+	#if defined gas_OnItemCreate
+		return gas_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate gas_OnItemCreate
-forward gas_OnItemCreate(itemid);
+#if defined gas_OnItemCreate
+	forward gas_OnItemCreate(itemid);
+#endif
 
 public OnItemNameRender(itemid)
 {

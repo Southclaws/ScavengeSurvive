@@ -8,15 +8,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("armour_OnItemCreate", "d", itemid);
+	#if defined armour_OnItemCreate
+		return armour_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate armour_OnItemCreate
-forward armour_OnItemCreate(itemid);
+#if defined armour_OnItemCreate
+	forward armour_OnItemCreate(itemid);
+#endif
 
 
 public OnPlayerUseItem(playerid, itemid)

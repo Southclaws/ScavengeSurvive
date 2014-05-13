@@ -236,15 +236,22 @@ public OnItemCreate(itemid)
 		Iter_Add(bag_Index, itemid);
 	}
 
-	return CallLocalFunction("bag_OnItemCreate", "d", itemid);
+	#if defined bag_OnItemCreate
+		return bag_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate bag_OnItemCreate
-forward bag_OnItemCreate(itemid);
+#if defined bag_OnItemCreate
+	forward bag_OnItemCreate(itemid);
+#endif
 
 public OnItemCreateInWorld(itemid)
 {

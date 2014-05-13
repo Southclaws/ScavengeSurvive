@@ -60,15 +60,22 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, skinid);
 	}
 
-	return CallLocalFunction("skin_OnItemCreate", "d", itemid);
+	#if defined skin_OnItemCreate
+		return skin_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate skin_OnItemCreate
-forward skin_OnItemCreate(itemid);
+#if defined skin_OnItemCreate
+	forward skin_OnItemCreate(itemid);
+#endif
 
 
 public OnItemNameRender(itemid)

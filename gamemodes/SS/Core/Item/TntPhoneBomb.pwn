@@ -61,12 +61,19 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, INVALID_ITEM_ID);
 	}
 
-	return CallLocalFunction("tntp_OnItemCreate", "d", itemid);
+	#if defined tntp_OnItemCreate
+		return tntp_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate tntp_OnItemCreate
-forward tntp_OnItemCreate(itemid);
+#if defined tntp_OnItemCreate
+	forward tntp_OnItemCreate(itemid);
+#endif

@@ -107,13 +107,19 @@ public OnItemCreate(itemid)
 	if(GetItemType(itemid) == ItemType:0)
 		return 1;
 
-	return CallLocalFunction("dis_OnItemCreate", "d", itemid);
+	#if defined dis_OnItemCreate
+		return dis_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
+ 
 #define OnItemCreate dis_OnItemCreate
-forward dis_OnItemCreate(itemid);
-
+#if defined dis_OnItemCreate
+	forward dis_OnItemCreate(itemid);
+#endif

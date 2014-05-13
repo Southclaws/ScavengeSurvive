@@ -25,15 +25,22 @@ public OnItemCreate(itemid)
 		}
 	}
 
-	return CallLocalFunction("pil_OnItemCreate", "d", itemid);
+	#if defined pills_OnItemCreate
+		return pills_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
 }
 #if defined _ALS_OnItemCreate
 	#undef OnItemCreate
 #else
 	#define _ALS_OnItemCreate
 #endif
-#define OnItemCreate pil_OnItemCreate
-forward pil_OnItemCreate(itemid);
+ 
+#define OnItemCreate pills_OnItemCreate
+#if defined pills_OnItemCreate
+	forward pills_OnItemCreate(itemid);
+#endif
 
 public OnItemNameRender(itemid)
 {
