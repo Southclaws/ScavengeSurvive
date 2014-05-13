@@ -160,7 +160,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 		GetItemPos(withitemid, x, y, z);
 		GetItemRot(withitemid, r, r, r);
 
-		if(data[bbq_grillItem1] == INVALID_ITEM_ID)
+		if(data[bbq_grillItem1] <= 0)// == INVALID_ITEM_ID) temp fix
 		{
 			d:2:HANDLER("[_UseBbqHandler] Adding food to grill slot 1");
 
@@ -177,7 +177,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 			return 1;
 		}
-		else if(data[bbq_grillItem2] == INVALID_ITEM_ID)
+		else if(data[bbq_grillItem2] <= 0)// == INVALID_ITEM_ID) temp fix
 		{
 			d:2:HANDLER("[_UseBbqHandler] Adding food to grill slot 2");
 
@@ -293,7 +293,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 		if(data[bbq_state] != COOKER_STATE_NONE)
 			return 1;
 
-		if(IsValidItem(data[bbq_grillItem1]))
+		if(IsValidItem(data[bbq_grillItem1]) && data[bbq_grillItem1] > 0) // temp fix
 		{
 			d:2:HANDLER("[OnPlayerPickUpItem] BBQ has valid item in slot 1 (%d)", data[bbq_grillItem1]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem1], 1);
@@ -301,7 +301,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 			return 1;
 		}
 
-		if(IsValidItem(data[bbq_grillItem2]))
+		if(IsValidItem(data[bbq_grillItem2]) && data[bbq_grillItem2] > 0) // temp fix
 		{
 			d:2:HANDLER("[OnPlayerPickUpItem] BBQ has valid item in slot 2 (%d)", data[bbq_grillItem2]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem2], 1);
