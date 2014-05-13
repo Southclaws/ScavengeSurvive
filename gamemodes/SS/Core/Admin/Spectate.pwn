@@ -192,7 +192,8 @@ timer UpdateSpectateMode[100](playerid)
 	{
 		new
 			invehicleas[24],
-			wepname[32],
+			itemid,
+			itemname[32],
 			cameramodename[37];
 
 		if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
@@ -201,11 +202,12 @@ timer UpdateSpectateMode[100](playerid)
 		else
 			invehicleas = "Passenger";
 
-		GetWeaponName(GetPlayerWeapon(targetid), wepname);
+		itemid = GetPlayerItem(targetid);
+		GetItemName(itemid, itemname);
 		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleeding: %d Weapon: %s Ammo: %d/%d~n~\
+			Knockedout: %d Bleeding: %d Item: %s Exdata: %d~n~\
 			Camera: %s Velocity: %.2f~n~\
 			Vehicle %d As %s Fuel: %.2f Locked: %d",
 			GetPlayerHP(targetid),
@@ -213,9 +215,8 @@ timer UpdateSpectateMode[100](playerid)
 			GetPlayerFP(targetid),
 			IsPlayerKnockedOut(targetid) ? 1 : 0,
 			IsPlayerBleeding(targetid) ? 1 : 0,
-			wepname,
-			GetPlayerAmmo(targetid),
-			GetPlayerReserveAmmo(targetid),
+			itemname,
+			GetItemExtraData(itemid),
 			cameramodename,
 			GetPlayerTotalVelocity(targetid),
 			GetPlayerLastVehicle(targetid),
@@ -226,8 +227,9 @@ timer UpdateSpectateMode[100](playerid)
 	else
 	{
 		new
-			wepname[32],
-			ammo[16],
+			itemid,
+			itemname[32],
+			holsteritemid,
 			holsteritemname[32],
 			cameramodename[37],
 			Float:vx,
@@ -235,20 +237,11 @@ timer UpdateSpectateMode[100](playerid)
 			Float:vz,
 			Float:velocity;
 
-		if(GetPlayerWeapon(targetid))
-		{
-			GetWeaponName(GetPlayerWeapon(targetid), wepname);
-			format(ammo, sizeof(ammo), "%d/%d", GetPlayerAmmo(targetid), GetPlayerReserveAmmo(targetid));
-		}
-		else
-		{
-			new itemid = GetPlayerItem(targetid);
+		itemid = GetPlayerItem(targetid);
+		GetItemName(itemid, itemname);
 
-			GetItemName(itemid, wepname);
-			format(ammo, sizeof(ammo), "%d", GetItemExtraData(itemid));
-		}
-
-		GetItemName(GetPlayerHolsterItem(targetid), holsteritemname);
+		holsteritemid = GetPlayerHolsterItem(targetid);
+		GetItemName(holsteritemid, holsteritemname);
 
 		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 		GetPlayerVelocity(targetid, vx, vy, vz);
@@ -257,7 +250,7 @@ timer UpdateSpectateMode[100](playerid)
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
 			Knockedout: %d Bleeding: %d Camera: %s Velocity: %.2f~n~\
-			Item/Weapon: %s Ammo/Ex: %s Holster: %s Ammo/Ex: %d",
+			Item: %s Exdata: %d Holster: %s Ammo/Ex: %d",
 			GetPlayerHP(targetid),
 			GetPlayerAP(targetid),
 			GetPlayerFP(targetid),
@@ -265,10 +258,10 @@ timer UpdateSpectateMode[100](playerid)
 			IsPlayerBleeding(targetid) ? 1 : 0,
 			cameramodename,
 			velocity,
-			wepname,
-			ammo,
+			itemname,
+			GetItemExtraData(itemid),
 			holsteritemname,
-			GetItemExtraData(GetPlayerHolsterItem(targetid)));
+			GetItemExtraData(holsteritemid));
 	}
 
 	format(name, sizeof(name), "%s (%d)", gPlayerName[targetid], targetid);
