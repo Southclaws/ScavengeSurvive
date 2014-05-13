@@ -36,8 +36,8 @@ native gpci(playerid, serial[], len);
 #define MAX_MODIO_SESSION				(1024) // modio
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
-// #define DEBUG_LABELS_BUTTON			(true) // SIF/Button
-// #define DEBUG_LABELS_ITEM			(true) // SIF/Item
+#define DEBUG_LABELS_BUTTON				(true) // SIF/Button
+#define DEBUG_LABELS_ITEM				(true) // SIF/Item
 #define BTN_MAX							(16384) // SIF/Button
 #define ITM_MAX							(16384) // SIF/Item
 
@@ -1283,7 +1283,7 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_Pumpkin,		1);
 	SetItemTypeMaxArrayData(item_Nailbat,		1);
 	SetItemTypeMaxArrayData(item_ZorroMask,		1);
-	SetItemTypeMaxArrayData(item_Barbecue,		1);
+	SetItemTypeMaxArrayData(item_Barbecue,		7);
 	SetItemTypeMaxArrayData(item_Headlight,		1);
 	SetItemTypeMaxArrayData(item_Pills,			1);
 	SetItemTypeMaxArrayData(item_AutoInjec,		1);
