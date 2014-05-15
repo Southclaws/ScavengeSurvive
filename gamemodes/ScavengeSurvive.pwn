@@ -1253,8 +1253,8 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_GasMask,		1);
 	SetItemTypeMaxArrayData(item_Flag,			1);
 	SetItemTypeMaxArrayData(item_DoctorBag,		1);
-	SetItemTypeMaxArrayData(item_Backpack,		1);
-	SetItemTypeMaxArrayData(item_Satchel,		1);
+	SetItemTypeMaxArrayData(item_Backpack,		2);
+	SetItemTypeMaxArrayData(item_Satchel,		2);
 	SetItemTypeMaxArrayData(item_Wheel,			1);
 	SetItemTypeMaxArrayData(item_MotionSense,	1);
 	SetItemTypeMaxArrayData(item_Accelerometer,	1);
@@ -1267,9 +1267,9 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_GasCan,		1);
 	SetItemTypeMaxArrayData(item_Clothes,		1);
 	SetItemTypeMaxArrayData(item_HelmArmy,		1);
-	SetItemTypeMaxArrayData(item_MediumBox,		1);
-	SetItemTypeMaxArrayData(item_SmallBox,		1);
-	SetItemTypeMaxArrayData(item_LargeBox,		1);
+	SetItemTypeMaxArrayData(item_MediumBox,		2);
+	SetItemTypeMaxArrayData(item_SmallBox,		2);
+	SetItemTypeMaxArrayData(item_LargeBox,		2);
 	SetItemTypeMaxArrayData(item_HockeyMask,	1);
 	SetItemTypeMaxArrayData(item_Meat,			1);
 	SetItemTypeMaxArrayData(item_DeadLeg,		1);
@@ -1347,7 +1347,7 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_FlareGun,		1);
 	SetItemTypeMaxArrayData(item_PetrolBomb,	1);
 	SetItemTypeMaxArrayData(item_CodePart,		1);
-	SetItemTypeMaxArrayData(item_LargeBackpack,	1);
+	SetItemTypeMaxArrayData(item_LargeBackpack,	2);
 	SetItemTypeMaxArrayData(item_LocksmithKit,	1);
 	SetItemTypeMaxArrayData(item_XmasHat,		1);
 
