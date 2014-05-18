@@ -104,7 +104,7 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_STANCE] = 3;
 	}
 
-	data[PLY_CELL_BLEEDING] = IsPlayerBleeding(playerid);
+	data[PLY_CELL_BLEEDING] = _:GetPlayerBleedRate(playerid);
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 	data[PLY_CELL_WARNS] = GetPlayerWarnings(playerid);
 	data[PLY_CELL_FREQ] = _:GetPlayerRadioFrequency(playerid);
@@ -341,8 +341,11 @@ LoadPlayerChar(playerid)
 			printf("[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
+	if(data[PLY_CELL_BLEEDING] == 1)
+		data[PLY_CELL_BLEEDING] = _:Float:0.01;
+
 	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
-	SetPlayerBitFlag(playerid, Bleeding, data[PLY_CELL_BLEEDING]);
+	SetPlayerBleedRate(playerid, Float:data[PLY_CELL_BLEEDING]);
 	SetPlayerCuffs(playerid, data[PLY_CELL_CUFFED]);
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
@@ -572,8 +575,11 @@ FV10_LoadPlayerChar(playerid)
 			printf("[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
 	}
 
+	if(data[PLY_CELL_BLEEDING] == 1)
+		data[PLY_CELL_BLEEDING] = _:Float:0.01;
+
 	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
-	SetPlayerBitFlag(playerid, Bleeding, data[PLY_CELL_BLEEDING]);
+	SetPlayerBleedRate(playerid, data[PLY_CELL_BLEEDING]);
 	SetPlayerCuffs(playerid, data[PLY_CELL_CUFFED]);
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);

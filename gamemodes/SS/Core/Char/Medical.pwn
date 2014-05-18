@@ -140,7 +140,7 @@ public OnHoldActionFinish(playerid)
 			GivePlayerHP(med_HealTarget[playerid], 50.0);
 		}
 
-		SetPlayerBitFlag(med_HealTarget[playerid], Bleeding, false);
+		SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
 		DestroyItem(GetPlayerItem(playerid));
 
 		PlayerStopHeal(playerid);

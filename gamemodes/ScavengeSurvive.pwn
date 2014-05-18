@@ -798,6 +798,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
 #include "SS/Core/Char/Drugs.pwn"
+#include "SS/Core/Char/Bleed.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/ammunition.pwn"

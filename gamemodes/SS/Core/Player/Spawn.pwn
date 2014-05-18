@@ -184,9 +184,9 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetPlayerFP(playerid, 80.0);
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	SetPlayerGender(playerid, gender);
+	SetPlayerBleedRate(playerid, 0.0);
 
 	SetPlayerBitFlag(playerid, Alive, true);
-	SetPlayerBitFlag(playerid, Bleeding, false);
 	SetPlayerBitFlag(playerid, Infected, false);
 
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);

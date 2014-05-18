@@ -191,7 +191,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 				{
 					if(random(100) < 30)
 					{
-						SetPlayerBitFlag(targetid, Bleeding, true);
+						SetPlayerBleedRate(targetid, 0.01);
 					}
 				}
 				case 0, 40..46:
@@ -202,7 +202,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 				{
 					new Float:hp = GetPlayerHP(playerid);
 
-					SetPlayerBitFlag(targetid, Bleeding, true);
+					SetPlayerBleedRate(targetid, 0.01);
 
 					if((hp - hploss) < 40.0)
 					{
@@ -227,7 +227,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 
 			if(random(100) < 30)
 			{
-				SetPlayerBitFlag(targetid, Bleeding, true);
+				SetPlayerBleedRate(targetid, 0.01);
 			}
 		}
 		if(weaponid == anim_Stab)
@@ -240,7 +240,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 			}
 			else
 			{
-				SetPlayerBitFlag(targetid, Bleeding, true);
+				SetPlayerBleedRate(targetid, 0.01);
 			}
 		}
 
@@ -259,7 +259,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 		if(45.0 < angleto < 135.0)
 			hploss *= 0.1;
 
-		SetPlayerBitFlag(targetid, Bleeding, false);
+		SetPlayerBleedRate(targetid, 0.0);
 	}
 
 	if(GetItemType(GetPlayerHolsterItem(targetid)) == item_Shield)
@@ -275,7 +275,7 @@ DamagePlayer(playerid, targetid, weaponid, bodypart, type = 0)
 		if(155.0 < angleto < 205.0)
 			hploss *= 0.1;
 
-		SetPlayerBitFlag(targetid, Bleeding, false);
+		SetPlayerBleedRate(targetid, 0.0);
 	}
 
 	GetPlayerName(targetid, dmg_LastHit[playerid], MAX_PLAYER_NAME);

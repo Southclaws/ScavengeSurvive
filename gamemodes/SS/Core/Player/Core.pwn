@@ -20,7 +20,6 @@ enum E_FLAGS:(<<= 1) // 17
 
 		ToolTips,
 		ShowHUD,
-		Bleeding,
 		Infected,
 		GlobalQuiet,
 
@@ -369,51 +368,6 @@ ptask PlayerUpdate[100](playerid)
 		GivePlayerHP(playerid, 0.01);
 	}
 
-	if(ply_Data[playerid][ply_BitFlags] & Bleeding)
-	{
-		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
-		{
-			if(random(100) < 30)
-				GivePlayerHP(playerid, -0.01);
-		}
-		else
-		{
-			if(random(100) < 60)
-				GivePlayerHP(playerid, -0.01);
-		}
-
-		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
-		{
-			if(frandom(100.0) < ply_Data[playerid][ply_HitPoints])
-			{
-				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
-			}
-		}
-		else
-		{
-			if(frandom(100.0) < 100 - ply_Data[playerid][ply_HitPoints])
-			{
-				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
-			}
-		}
-	}
-	else
-	{
-		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
-			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
-
-		GivePlayerHP(playerid, 0.000925925); // One third of the health bar regenerates each real-time hour
-
-		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
-		{
-			SetPlayerDrunkLevel(playerid, 2200);
-
-			if(random(100) < 80)
-				GivePlayerHP(playerid, 0.05);
-		}
-
-	}
-
 	if(ply_Data[playerid][ply_BitFlags] & Infected)
 	{
 		PlayerInfectionUpdate(playerid);
@@ -706,15 +660,6 @@ stock IsPlayerHudOn(playerid)
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & ShowHUD);
-}
-
-// Bleeding
-stock IsPlayerBleeding(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & Bleeding);
 }
 
 // Infected
