@@ -26,7 +26,8 @@ Float:		bag_attachScaleZ
 
 static
 			bag_TypeData[MAX_BAG_TYPE][E_BAG_TYPE_DATA],
-			bag_TypeTotal;
+			bag_TypeTotal,
+			bag_ItemTypeBagType[ITM_MAX_TYPES] = {-1, ...};
 
 static
 Iterator:	bag_Index<ITM_MAX>,
@@ -44,14 +45,20 @@ Timer:		bag_PickUpTimer			[MAX_PLAYERS],
 Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 			bag_LookingInBag		[MAX_PLAYERS];
 
+static		HANDLER;
 
 
-// Zeroing
+/*==============================================================================
 
+	Zeroing
+
+==============================================================================*/
 
 
 hook OnGameModeInit()
 {
+	HANDLER = debug_register_handler("char/backpack");
+
 	for(new i; i < CNT_MAX; i++)
 	{
 		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;
@@ -78,6 +85,8 @@ hook OnPlayerConnect(playerid)
 
 stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
+	d:1:HANDLER("[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
+
 	if(bag_TypeTotal == MAX_BAG_TYPE)
 		return -1;
 
@@ -97,39 +106,15 @@ stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, max_med, max_la
 	bag_TypeData[bag_TypeTotal][bag_attachScaleY]	= attachScaleY;
 	bag_TypeData[bag_TypeTotal][bag_attachScaleZ]	= attachScaleZ;
 
+	bag_ItemTypeBagType[itemtype] = bag_TypeTotal;
+
 	return bag_TypeTotal++;
-}
-
-stock IsItemTypeBag(ItemType:itemtype)
-{
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	for(new i; i < bag_TypeTotal; i++)
-	{
-		if(itemtype == bag_TypeData[i][bag_itemtype])
-			return 1;
-	}
-
-	return 0;
-}
-
-stock GetItemBagType(ItemType:itemtype)
-{
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	for(new i; i < bag_TypeTotal; i++)
-	{
-		if(itemtype == bag_TypeData[i][bag_itemtype])
-			return i;
-	}
-
-	return -1;
 }
 
 stock GivePlayerBag(playerid, itemid)
 {
+	d:1:HANDLER("[GivePlayerBag] playerid:%d itemid:%d", playerid, itemid);
+
 	if(!IsValidItem(itemid))
 		return 0;
 
@@ -138,7 +123,7 @@ stock GivePlayerBag(playerid, itemid)
 	if(!IsValidContainer(containerid))
 		return 0;
 
-	new bagtype = GetItemBagType(GetItemType(itemid));
+	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
 	if(bagtype != -1)
 	{
@@ -169,6 +154,8 @@ stock GivePlayerBag(playerid, itemid)
 
 stock RemovePlayerBag(playerid)
 {
+	d:1:HANDLER("[RemovePlayerBag] playerid:%d", playerid);
+
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -186,6 +173,8 @@ stock RemovePlayerBag(playerid)
 
 stock DestroyPlayerBag(playerid)
 {
+	d:1:HANDLER("[DestroyPlayerBag] playerid:%d", playerid);
+
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
@@ -214,10 +203,12 @@ stock DestroyPlayerBag(playerid)
 
 public OnItemCreate(itemid)
 {
-	new bagtype = GetItemBagType(GetItemType(itemid));
+	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
 	if(bagtype != -1)
 	{
+		d:2:HANDLER("[OnItemCreate] itemid:%d itemtype:%d bagtype:%d", itemid, _:GetItemType(itemid), bagtype);
+
 		new containerid;
 
 		containerid = CreateContainer(
@@ -328,8 +319,12 @@ forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 
 BagInteractionCheck(playerid, itemid)
 {
+	d:1:HANDLER("[BagInteractionCheck] playerid:%d itemid:%d", playerid, itemid);
+
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
+		d:2:HANDLER("[BagInteractionCheck] is bag, itemtype:%d bagtype:%d", _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
+
 		stop bag_PickUpTimer[playerid];
 		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
 
@@ -362,53 +357,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & 16)
 	{
-		foreach(new i : Player)
-		{
-			if(IsPlayerInPlayerArea(playerid, i))
-			{
-				if(IsValidItem(bag_PlayerBagID[i]))
-				{
-					new
-						Float:px,
-						Float:py,
-						Float:pz,
-						Float:tx,
-						Float:ty,
-						Float:tz,
-						Float:tr,
-						Float:angle;
-
-					GetPlayerPos(playerid, px, py, pz);
-					GetPlayerPos(i, tx, ty, tz);
-					GetPlayerFacingAngle(i, tr);
-
-					angle = absoluteangle(tr - GetAngleToPoint(tx, ty, px, py));
-
-					if(155.0 < angle < 205.0)
-					{
-						CancelPlayerMovement(playerid);
-						bag_OtherPlayerEnter[playerid] = defer bag_EnterOtherPlayer(playerid, i);
-						break;
-					}
-				}
-			}
-		}
+		_BagRummageHandler(playerid);
 	}
 
 	if(oldkeys & 16)
 	{
-		stop bag_OtherPlayerEnter[playerid];
-
-		if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
-		{
-			if(IsValidItem(bag_CurrentBag[playerid]))
-			{
-				DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_CurrentBag[playerid], 1));
-				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
-				stop bag_PickUpTimer[playerid];
-				bag_PickUpTick[playerid] = 0;
-			}
-		}
+		_BagReleaseInteractHandler(playerid);
 	}
 
 	return 1;
@@ -477,6 +431,62 @@ _BagDropHandler(playerid)
 	return 1;
 }
 
+_BagRummageHandler(playerid)
+{
+	foreach(new i : Player)
+	{
+		if(IsPlayerInPlayerArea(playerid, i))
+		{
+			if(IsValidItem(bag_PlayerBagID[i]))
+			{
+				new
+					Float:px,
+					Float:py,
+					Float:pz,
+					Float:tx,
+					Float:ty,
+					Float:tz,
+					Float:tr,
+					Float:angle;
+
+				GetPlayerPos(playerid, px, py, pz);
+				GetPlayerPos(i, tx, ty, tz);
+				GetPlayerFacingAngle(i, tr);
+
+				angle = absoluteangle(tr - GetAngleToPoint(tx, ty, px, py));
+
+				if(155.0 < angle < 205.0)
+				{
+					CancelPlayerMovement(playerid);
+					bag_OtherPlayerEnter[playerid] = defer bag_EnterOtherPlayer(playerid, i);
+					break;
+				}
+			}
+		}
+	}
+
+	return 1;
+}
+
+_BagReleaseInteractHandler(playerid)
+{
+	stop bag_OtherPlayerEnter[playerid];
+
+	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
+	{
+		if(IsValidItem(bag_CurrentBag[playerid]))
+		{
+			d:1:HANDLER("[_BagReleaseInteractHandler] Current bag item %d is valid", bag_CurrentBag[playerid]);
+			DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_CurrentBag[playerid], 1));
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+			stop bag_PickUpTimer[playerid];
+			bag_PickUpTick[playerid] = 0;
+		}
+	}
+
+	return 1;
+}
+
 timer bag_PickUp[250](playerid, itemid)
 {
 	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
@@ -495,6 +505,7 @@ timer bag_PutItemIn[300](playerid, itemid, containerid)
 
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
+	d:1:HANDLER("[bag_EnterOtherPlayer] playerid:%d targetid:%d", playerid, targetid);
 	CancelPlayerMovement(playerid);
 	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_PlayerBagID[targetid], 1));
 	bag_LookingInBag[playerid] = targetid;
@@ -539,9 +550,11 @@ public OnPlayerUseItem(playerid, itemid)
 
 	if(IsItemTypeBag(itemtype))
 	{
+		d:1:HANDLER("[OnPlayerUseItem] Item %d type %d is bag type %d", itemid, _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
 		CancelPlayerMovement(playerid);
 		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
+
 	return CallLocalFunction("bag_OnPlayerUseItem", "dd", playerid, itemid);
 }
 #if defined _ALS_OnPlayerUseItem
@@ -695,6 +708,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 
 			if(!IsValidItem(itemid))
 			{
+				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #1");
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
@@ -708,6 +722,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 				GetContainerName(bagcontainerid, name);
 				format(str, sizeof(str), "%s full", name);
 				ShowActionText(playerid, str, 3000, 100);
+				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #2");
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
@@ -715,12 +730,14 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 			if(!WillItemTypeFitInContainer(bagcontainerid, GetItemType(itemid)))
 			{
 				ShowActionText(playerid, "Item won't fit", 3000, 140);
+				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #3");
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
 
 			RemoveItemFromContainer(containerid, slot);
 			AddItemToContainer(bagcontainerid, itemid, playerid);
+			d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #4");
 			DisplayContainerInventory(playerid, containerid);
 		}
 	}
@@ -742,6 +759,22 @@ forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
 
 ==============================================================================*/
 
+
+stock IsItemTypeBag(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	return (bag_ItemTypeBagType[itemtype] != -1) ? (true) : (false);
+}
+
+stock GetItemBagType(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	return bag_ItemTypeBagType[itemtype];
+}
 
 stock GetPlayerBagItem(playerid)
 {
