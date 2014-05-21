@@ -62,7 +62,7 @@ hook OnGameModeInit()
 
 	new arr[1];
 
-	modio_read(GEID_FILE, !"TENT", arr);
+	modio_read(GEID_FILE, _T<T,E,N,T>, arr);
 
 	tnt_GEID_Index = arr[0];
 	// printf("Loaded tent GEID: %d", tnt_GEID_Index);
@@ -550,7 +550,7 @@ SaveTents(printeach = false, printtotal = false)
 
 	arr[0] = tnt_GEID_Index;
 
-	modio_push(GEID_FILE, !"TENT", 1, arr);//, true, false, false);
+	modio_push(GEID_FILE, _T<T,E,N,T>, 1, arr);//, true, false, false);
 	printf("Storing tent GEID: %d", tnt_GEID_Index);
 }
 
@@ -619,7 +619,7 @@ SaveTent(tentid, prints = false)
 	data[2] = _:tnt_Data[tentid][tnt_posZ];
 	data[3] = _:tnt_Data[tentid][tnt_rotZ];
 
-	modio_push(filename, !"WPOS", 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
 
 	new
 		items[10],
@@ -634,7 +634,7 @@ SaveTent(tentid, prints = false)
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, tnt_ItemList);
 
-	modio_push(filename, !"ITEM", GetItemListSize(itemlist), tnt_ItemList, true, true, true);
+	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), tnt_ItemList, true, true, true);
 
 	DestroyItemList(itemlist);
 
@@ -649,7 +649,7 @@ LoadTent(filename[], prints = false)
 		tentid,
 		data[4];
 
-	length = modio_read(filename, !"WPOS", _:data, false, false);
+	length = modio_read(filename, _T<W,P,O,S>, _:data, false, false);
 
 	if(length == 0)
 		return 0;
@@ -687,7 +687,7 @@ LoadTent(filename[], prints = false)
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each tent.
-	length = modio_read(filename, !"ITEM", tnt_ItemList, true);
+	length = modio_read(filename, _T<I,T,E,M>, tnt_ItemList, true);
 
 	itemlist = ExtractItemList(tnt_ItemList, length);
 

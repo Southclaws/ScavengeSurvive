@@ -432,7 +432,7 @@ ACMD:acmds[1](playerid, params[])
 		strcat(gBigString[playerid], gAdminCommandList_Lvl1);
 	}
 	
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -464,7 +464,7 @@ ACMD:adminlist[3](playerid, params[])
 		strcat(gBigString[playerid], line);
 	}
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, title, gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_LIST, title, gBigString[playerid], "Close", "");
 
 	return 1;
 }

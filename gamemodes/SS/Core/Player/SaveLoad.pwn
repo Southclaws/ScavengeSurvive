@@ -125,7 +125,7 @@ SavePlayerChar(playerid)
 	if(saveload_Debug[playerid] >= 3)
 		printf("[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
 
-	modio_push(filename, !"CHAR", PLY_CELL_END, data);
+	modio_push(filename, _T<C,H,A,R>, PLY_CELL_END, data);
 
 /*
 	Held item
@@ -138,7 +138,7 @@ SavePlayerChar(playerid)
 		data[0] = _:GetItemType(itemid);
 		data[1] = GetItemArrayDataSize(itemid);
 		GetItemArrayData(itemid, data[2]);
-		modio_push(filename, !"HELD", 2 + data[1], data);
+		modio_push(filename, _T<H,E,L,D>, 2 + data[1], data);
 
 		if(saveload_Debug[playerid] >= 2)
 			printf("[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
@@ -146,7 +146,7 @@ SavePlayerChar(playerid)
 	else
 	{
 		data[0] = -1;
-		modio_push(filename, !"HELD", 1, data);
+		modio_push(filename, _T<H,E,L,D>, 1, data);
 	}
 
 /*
@@ -160,7 +160,7 @@ SavePlayerChar(playerid)
 		data[0] = _:GetItemType(itemid);
 		data[1] = GetItemArrayDataSize(itemid);
 		GetItemArrayData(itemid, data[2]);
-		modio_push(filename, !"HOLS", 2 + data[1], data);
+		modio_push(filename, _T<H,O,L,S>, 2 + data[1], data);
 
 		if(saveload_Debug[playerid] >= 2)
 			printf("[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
@@ -168,7 +168,7 @@ SavePlayerChar(playerid)
 	else
 	{
 		data[0] = -1;
-		modio_push(filename, !"HOLS", 1, data);
+		modio_push(filename, _T<H,O,L,S>, 1, data);
 	}
 
 /*
@@ -194,7 +194,7 @@ SavePlayerChar(playerid)
 	if(saveload_Debug[playerid] >= 4)
 		printf("[SAVE:%p] Inv items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
 
-	modio_push(filename, !"INV0", GetItemListSize(itemlist), saveload_ItemList);
+	modio_push(filename, _T<I,N,V,0>, GetItemListSize(itemlist), saveload_ItemList);
 
 	DestroyItemList(itemlist);
 
@@ -227,7 +227,7 @@ SavePlayerChar(playerid)
 		if(saveload_Debug[playerid] >= 4)
 			printf("[SAVE:%p] Bag items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
 
-		modio_push(filename, !"BAG0", GetItemListSize(itemlist), saveload_ItemList);
+		modio_push(filename, _T<B,A,G,0>, GetItemListSize(itemlist), saveload_ItemList);
 
 		DestroyItemList(itemlist);
 	}
@@ -249,7 +249,7 @@ LoadPlayerChar(playerid)
 
 	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
-	length = modio_read(filename, !"CHAR", data);
+	length = modio_read(filename, _T<C,H,A,R>, data);
 
 	if(length == 0)
 	{
@@ -380,7 +380,7 @@ LoadPlayerChar(playerid)
 	Held item
 */
 
-	length = modio_read(filename, !"HELD", data);
+	length = modio_read(filename, _T<H,E,L,D>, data);
 
 	if(IsValidItemType(ItemType:data[0]) && length > 0)
 	{
@@ -398,7 +398,7 @@ LoadPlayerChar(playerid)
 
 	data[0] = -1;
 
-	length = modio_read(filename, !"HOLS", data);
+	length = modio_read(filename, _T<H,O,L,S>, data);
 
 	if(IsValidItemType(ItemType:data[0]) && length > 0)
 	{
@@ -414,7 +414,7 @@ LoadPlayerChar(playerid)
 	Inventory
 */
 
-	length = modio_read(filename, !"INV0", saveload_ItemList);
+	length = modio_read(filename, _T<I,N,V,0>, saveload_ItemList);
 
 	itemlist = ExtractItemList(saveload_ItemList, length);
 
@@ -451,7 +451,7 @@ LoadPlayerChar(playerid)
 	Bag
 */
 
-	length = modio_read(filename, !"BAG0", saveload_ItemList);
+	length = modio_read(filename, _T<B,A,G,0>, saveload_ItemList);
 
 	itemlist = ExtractItemList(saveload_ItemList, length);
 

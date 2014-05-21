@@ -21,7 +21,7 @@ CMD:help(playerid, params[])
 		\t"C_LGREEN"/changepass - change your password\n\n\n\
 		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Rules", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Rules", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -63,7 +63,7 @@ CMD:chatinfo(playerid, params[])
 		If you are talking to someone next to you, "C_YELLOW"USE LOCAL OR RADIO!\n\
 		"C_WHITE"If you send unnecessary chat to global, you will be muted.");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -85,7 +85,7 @@ CMD:restartinfo(playerid, params[])
 		Items within containers within containers "C_RED"WILL NOT SAVE!"C_WHITE"\n\
 		Items on the floor "C_RED"WILL NOT SAVE!");
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
 
 	return 1;
 }

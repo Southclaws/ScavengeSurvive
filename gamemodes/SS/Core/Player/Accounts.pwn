@@ -279,17 +279,58 @@ DeleteAccount(name[])
 	return 1;
 }
 
-DisplayLoginPrompt(playerid)
+DisplayRegisterPrompt(playerid)
 {
-	new str[128];
-	format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
-	ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
+	new str[150];
+	format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem
+
+		if(response)
+		{
+			if(!(4 <= strlen(inputtext) <= 32))
+			{
+				Msg(playerid, YELLOW, " >  Password must be between 4 and 32 characters.");
+				DisplayRegisterPrompt(playerid);
+				return 0;
+			}
+
+			new buffer[MAX_PASSWORD_LEN];
+
+			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
+
+			if(CreateAccount(playerid, buffer))
+				ShowWelcomeMessage(playerid, 10);
+		}
+		else
+		{
+			MsgAllF(GREY, " >  %s left the server without registering.", gPlayerName[playerid]);
+			Kick(playerid);
+		}
+
+		return 1;
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
+
+	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+DisplayLoginPrompt(playerid, badpass = 0)
 {
-	if(dialogid == d_Login)
+	new str[128];
+
+	if(badpass)
+		format(str, 128, "Incorrect password! %d out of 5 tries", LoginPasswordAttempts[playerid]);
+
+	else
+		format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
+
 		if(response)
 		{
 			if(strlen(inputtext) < 4)
@@ -311,14 +352,13 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_Login, DIALOG_STYLE_PASSWORD,
-					"Login To Your Account",
-					sprintf("Incorrect password! %d out of 5 tries", LoginPasswordAttempts[playerid]),
-					"Accept", "Quit");
-
 				LoginPasswordAttempts[playerid]++;
 
-				if(LoginPasswordAttempts[playerid] == 5)
+				if(LoginPasswordAttempts[playerid] < 5)
+				{
+					DisplayLoginPrompt(playerid);
+				}
+				else
 				{
 					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
 					Kick(playerid);
@@ -330,30 +370,10 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
 			Kick(playerid);
 		}
+
+		return 1;
 	}
-	if(dialogid == d_Register)
-	{
-		if(response)
-		{
-			if(!(4 <= strlen(inputtext) <= 32))
-			{
-				ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, ""C_RED"Password too short/long!\n"C_YELLOW"Password must be between 4 and 32 characters.", "Type your password below", "Accept", "Quit");
-				return 0;
-			}
-
-			new buffer[MAX_PASSWORD_LEN];
-
-			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
-
-			if(CreateAccount(playerid, buffer))
-				ShowWelcomeMessage(playerid, 10);
-		}
-		else
-		{
-			MsgAllF(GREY, " >  %s left the server without registering.", gPlayerName[playerid]);
-			Kick(playerid);
-		}
-	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
 
 	return 1;
 }

@@ -121,7 +121,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 	if(clickedid == RadioUI_Freq[playerid])
 	{
-		ShowPlayerDialog(playerid, d_Radio, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
+		ShowFrequencyDialog(playerid);
 	}
 	if(clickedid == RadioUI_Power[playerid])
 	{
@@ -147,10 +147,11 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 	}
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+ShowFrequencyDialog(playerid)
 {
-	if(dialogid == d_Radio)
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
 		if(response)
 		{
 			new Float:frequency;
@@ -164,15 +165,16 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 				}
 				else
 				{
-					ShowPlayerDialog(playerid, d_Radio, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
+					ShowFrequencyDialog(playerid);
 				}
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_Radio, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
+				ShowFrequencyDialog(playerid);
 			}
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
 
 	return 1;
 }

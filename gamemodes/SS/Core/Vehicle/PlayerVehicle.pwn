@@ -134,7 +134,7 @@ LoadPlayerVehicle(username[], prints)
 	filename = DIRECTORY_VEHICLE;
 	strcat(filename, username);
 
-	length = modio_read(filename, !"DATA", data, false, false);
+	length = modio_read(filename, _T<D,A,T,A>, data, false, false);
 
 	if(length == 0)
 		return 0;
@@ -234,7 +234,7 @@ LoadPlayerVehicle(username[], prints)
 		containerid = CreateContainer("Trunk", VehicleFuelData[data[VEH_CELL_MODEL]-400][veh_trunkSize], .virtual = 1);
 		SetVehicleContainer(vehicleid, containerid);
 
-		length = modio_read(filename, !"TRNK", vehicle_ItemList, true);
+		length = modio_read(filename, _T<T,R,N,K>, vehicle_ItemList, true);
 
 		itemlist = ExtractItemList(vehicle_ItemList, length);
 
@@ -376,7 +376,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	// push the data, forcewrite is false
 	// forceclose is also false, the file will be closed on the next call
 	// autowrite is set to false to stop the timer from going off
-	modio_push(filename, !"DATA", VEH_CELL_END, data, false, false, false);
+	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data, false, false, false);
 
 	new containerid = GetVehicleContainer(vehicleid);
 
@@ -407,7 +407,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	// forcewrite is true, and forceclose is true by default.
 	// File will be written and closed ready for the next call.
 	// Resulting in reusing modio sessions instead of registering new ones.
-	modio_push(filename, !"TRNK", GetItemListSize(itemlist), vehicle_ItemList, true, true);
+	modio_push(filename, _T<T,R,N,K>, GetItemListSize(itemlist), vehicle_ItemList, true, true);
 
 	DestroyItemList(itemlist);
 

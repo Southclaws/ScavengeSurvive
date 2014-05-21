@@ -72,22 +72,12 @@ ShowTireList(playerid, vehicleid)
 	}
 	gCurrentWheelFixVehicle[playerid] = vehicleid;
 
-	ShowPlayerDialog(playerid, d_Tires, DIALOG_STYLE_LIST, "Tires", str, "Fix", "Cancel");
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	if(dialogid == d_Tires && response)
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
-		new
-			panels,
-			doors,
-			lights,
-			tires,
-			itemid;
+		#pragma unused pid, dialogid, response, listitem, inputtext
 
 		GetVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires);
-		itemid = GetPlayerItem(playerid);
+		new itemid = GetPlayerItem(playerid);
 
 		if(listitem == 0)
 		{
@@ -126,5 +116,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else ShowTireList(playerid, gCurrentWheelFixVehicle[playerid]);
 		}
 	}
-}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Tires", str, "Fix", "Cancel");
 
+	return 1;
+}

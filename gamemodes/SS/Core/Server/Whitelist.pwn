@@ -85,7 +85,7 @@ WhitelistKick(playerid)
 		There are no requirements, just follow the rules.\n\
 		Failure to do so will result in permanent removal from the whitelist.", gWebsiteURL);
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
 
 	defer KickPlayerDelay(playerid);
 }

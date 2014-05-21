@@ -116,8 +116,20 @@ SetSignText(signid, text[])
 EditSign(playerid, signid)
 {
 	CancelPlayerMovement(playerid);
-	ShowPlayerDialog(playerid, d_SignEdit, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\n' will start a new line.", "Accept", "Close");
 	sgn_CurrentSign[playerid] = signid;
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem
+		if(response)
+		{
+			if(!isnull(inputtext))
+				SetSignText(sgn_CurrentSign[playerid], inputtext);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\n' will start a new line.", "Accept", "Close");
+
+	return 1;
 }
 
 
@@ -186,18 +198,6 @@ timer PickUpSign[250](playerid)
 
 	DestroySign(sgn_CurrentSign[playerid]);
 	GiveWorldItemToPlayer(playerid, CreateItem(item_Sign, 0.0, 0.0, 0.0), true);
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	if(dialogid == d_SignEdit)
-	{
-		if(response)
-		{
-			if(!isnull(inputtext))
-				SetSignText(sgn_CurrentSign[playerid], inputtext);
-		}
-	}
 }
 
 

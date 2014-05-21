@@ -299,38 +299,6 @@ enum
 	CHAT_MODE_ADMIN			// 3 - Speak to admins
 }
 
-// Dialog IDs
-enum
-{
-	d_NULL = 100,
-
-// Internal Dialogs
-	d_Login,
-	d_Register,
-	d_WelcomeMessage,
-
-// External Dialogs
-	d_SignEdit,
-	d_Tires,
-	d_Lights,
-	d_Radio,
-	d_GraveStone,
-
-	d_IssueSubmit,
-	d_IssueList,
-	d_Issue,
-
-	d_DefenceSetPass,
-	d_DefenceEnterPass,
-
-	d_TransferAmmoToGun,
-	d_TransferAmmoToBox,
-	d_TransferAmmoGun2Gun,
-
-	d_BanReason,
-	d_BanDuration
-}
-
 // Keypad IDs
 enum
 {

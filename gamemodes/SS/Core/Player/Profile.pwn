@@ -63,7 +63,7 @@ ShowPlayerProfile(playerid, name[])
 		spawns,
 		warnings);
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, name, body, "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, name, body, "Close", "");
 
 	return 1;
 }

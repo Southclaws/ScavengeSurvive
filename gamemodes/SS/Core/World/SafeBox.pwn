@@ -54,7 +54,7 @@ hook OnGameModeInit()
 
 	new arr[1];
 
-	modio_read(GEID_FILE, !"SBOX", arr);
+	modio_read(GEID_FILE, _T<S,B,O,X>, arr);
 
 	box_GEID_Index = arr[0];
 	printf("Loaded safebox GEID: %d", box_GEID_Index);
@@ -362,7 +362,7 @@ SaveSafeboxes(printeach = false, printtotal = false)
 
 	arr[0] = box_GEID_Index;
 
-	modio_push(GEID_FILE, !"SBOX", 1, arr);//, true, false, false);
+	modio_push(GEID_FILE, _T<S,B,O,X>, 1, arr);//, true, false, false);
 	printf("Storing safebox GEID: %d", box_GEID_Index);
 }
 
@@ -433,12 +433,12 @@ SaveSafeboxItem(itemid, prints = false)
 
 	data[0] = _:GetItemType(itemid);
 
-	modio_push(filename, !"TYPE", 1, data, false, false, false);
+	modio_push(filename, _T<T,Y,P,E>, 1, data, false, false, false);
 
 	GetItemPos(itemid, Float:data[0], Float:data[1], Float:data[2]);
 	GetItemRot(itemid, Float:data[3], Float:data[3], Float:data[3]);
 
-	modio_push(filename, !"WPOS", 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
 
 	if(prints)
 		printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
@@ -461,7 +461,7 @@ SaveSafeboxItem(itemid, prints = false)
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, box_ItemList);
 
-	modio_push(filename, !"ITEM", GetItemListSize(itemlist), box_ItemList, true);
+	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), box_ItemList, true);
 
 	DestroyItemList(itemlist);
 
@@ -477,7 +477,7 @@ LoadSafeboxItem(filename[], prints = false)
 		itemid,
 		containerid;
 
-	length = modio_read(filename, !"TYPE", type, false, false);
+	length = modio_read(filename, _T<T,Y,P,E>, type, false, false);
 
 	if(length == 0)
 		return 0;
@@ -485,7 +485,7 @@ LoadSafeboxItem(filename[], prints = false)
 	if(!IsItemTypeSafebox(ItemType:type[0]))
 		return 0;
 
-	modio_read(filename, !"WPOS", _:data, false, false);
+	modio_read(filename, _T<W,P,O,S>, _:data, false, false);
 
 	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
 		return 0;
@@ -511,7 +511,7 @@ LoadSafeboxItem(filename[], prints = false)
 		ItemType:itemtype,
 		itemlist;
 
-	length = modio_read(filename, !"ITEM", box_ItemList, true);
+	length = modio_read(filename, _T<I,T,E,M>, box_ItemList, true);
 
 	itemlist = ExtractItemList(box_ItemList, length);
 

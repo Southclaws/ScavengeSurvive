@@ -27,10 +27,12 @@ ResetBanVariables(playerid)
 	ban_CurrentDuration[playerid] = 0;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+FormatBanReasonDialog(playerid)
 {
-	if(dialogid == d_BanReason)
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
+
 		if(response)
 		{
 			ban_CurrentReason[playerid][0] = EOS;
@@ -43,9 +45,15 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			ResetBanVariables(playerid);
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Please enter ban reason", "Enter the ban reason below. The character limit is 128. After this screen you can choose the ban duration.", "Continue", "Cancel");
+}
 
-	if(dialogid == d_BanDuration)
+FormatBanDurationDialog(playerid)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
+
 		if(response)
 		{
 			if(!strcmp(inputtext, "forever", true))
@@ -72,22 +80,9 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			FormatBanReasonDialog(playerid);
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Please enter ban duration", "Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.", "Continue", "Back");
 
 	return 1;
-}
-
-FormatBanReasonDialog(playerid)
-{
-	ShowPlayerDialog(playerid, d_BanReason, DIALOG_STYLE_INPUT, "Please enter ban reason",
-		"Enter the ban reason below. The character limit is 128. After this screen you can choose the ban duration.",
-		"Continue", "Cancel");
-}
-
-FormatBanDurationDialog(playerid)
-{
-	ShowPlayerDialog(playerid, d_BanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration",
-		"Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.",
-		"Continue", "Back");
 }
 
 FinaliseBan(playerid)

@@ -228,7 +228,7 @@ ACMD:allcountry[1](playerid, params[])
 		format(list, sizeof(list), "%s%p - %s\n", list, i, country);
 	}
 
-	ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
 
 	return 1;
 }

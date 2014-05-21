@@ -252,7 +252,7 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 
 		if(ch_doorstate == false && !IsValidItem(GetPlayerItem(playerid)))
 		{
-			ShowPlayerDialog(playerid, d_NULL, DIALOG_STYLE_MSGBOX, "Door", "The keypad seems broken", "Close", "");
+			Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Door", "The keypad seems broken", "Close", "");
 			return 1;
 		}
 	}

@@ -162,11 +162,8 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(loadresult == 0) // Account does not exist
 	{
-		new str[150];
-		format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
-		ShowPlayerDialog(playerid, d_Register, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
-
 		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
+		DisplayRegisterPrompt(playerid);
 
 		log(sprintf("[LOAD] %p (account does not exist)", playerid), 0);
 	}

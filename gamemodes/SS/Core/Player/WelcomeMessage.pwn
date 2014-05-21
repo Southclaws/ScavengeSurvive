@@ -14,19 +14,6 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	if(dialogid == d_WelcomeMessage)
-	{
-		if(!CanLeaveWelcomeMessage[playerid])
-		{
-			ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
-		}
-	}
-
-	return 1;
-}
-
 timer ShowWelcomeMessage[1000](playerid, count)
 {
 	new
@@ -62,7 +49,19 @@ timer ShowWelcomeMessage[1000](playerid, count)
 
 	WelcomeMessageCount[playerid] = count;
 
-	ShowPlayerDialog(playerid, d_WelcomeMessage, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str, button, "");
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, response, dialogid, listitem, inputtext
+
+		if(!CanLeaveWelcomeMessage[playerid])
+		{
+			ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
+		}
+	}
+
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str, button, "");
+
+	return 1;
 }
 
 stock CanPlayerLeaveWelcomeMessage(playerid)

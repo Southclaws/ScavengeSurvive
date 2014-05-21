@@ -199,7 +199,7 @@ CheckPlayerFile(item[])
 	/*
 		push the same data using modio
 	*/
-	modio_push(filename_ply, !"CHAR", PLY_CELL_OLD_END, ply_data, false, false, false);
+	modio_push(filename_ply, _T<C,H,A,R>, PLY_CELL_OLD_END, ply_data, false, false, false);
 
 
 /*
@@ -244,7 +244,7 @@ CheckPlayerFile(item[])
 	/*
 		push the itemlist data using modio
 	*/
-	modio_push(filename_ply, !"INV0", GetItemListSize(itemlist), filecheck_ItemList, false, false, false);
+	modio_push(filename_ply, _T<I,N,V,0>, GetItemListSize(itemlist), filecheck_ItemList, false, false, false);
 	DestroyItemList(itemlist);
 
 	for(new i; i < itemcount; i++)
@@ -274,7 +274,7 @@ CheckPlayerFile(item[])
 	/*
 		push the itemlist data using modio
 	*/
-	modio_push(filename_ply, !"BAG0", GetItemListSize(itemlist), filecheck_ItemList, true, true, true);
+	modio_push(filename_ply, _T<B,A,G,0>, GetItemListSize(itemlist), filecheck_ItemList, true, true, true);
 	DestroyItemList(itemlist);
 
 	for(new i; i < itemcount; i++)

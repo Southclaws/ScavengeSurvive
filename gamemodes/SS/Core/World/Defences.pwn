@@ -87,7 +87,7 @@ hook OnGameModeInit()
 
 	new arr[1];
 
-	modio_read(GEID_FILE, !"DFNC", arr);
+	modio_read(GEID_FILE, _T<D,F,N,C>, arr);
 
 	def_GEID_Index = arr[0];
 	// printf("Loaded defence GEID: %d", def_GEID_Index);
@@ -444,7 +444,7 @@ public OnButtonPress(playerid, buttonid)
 				{
 					def_CurrentDefenceOpen[playerid] = id;
 
-					ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Enter the 4 digit passcode to open.", "Enter", "Cancel");
+					ShowEnterPassDialog(playerid);
 					CancelPlayerMovement(playerid);
 				}
 				else
@@ -545,7 +545,7 @@ public OnHoldActionFinish(playerid)
 		if(GetItemType(itemid) == item_Keypad)
 		{
 			ShowActionText(playerid, "Keypad installed to defence");
-			ShowPlayerDialog(playerid, d_DefenceSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Set a 4 digit passcode:", "Enter", "");
+			ShowSetPassDialog(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = true;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
@@ -583,11 +583,11 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish def_OnHoldActionFinish
 forward def_OnHoldActionFinish(playerid);
 
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+ShowSetPassDialog(playerid, wrong = 0)
 {
-	if(dialogid == d_DefenceSetPass)
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
 		if(response)
 		{
 			new pass = strval(inputtext);
@@ -599,13 +599,21 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_DefenceSetPass, DIALOG_STYLE_INPUT, "Set passcode", "Passcode must be a 4 digit number", "Enter", "");
+				ShowSetPassDialog(playerid, 1);
 			}
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set passcode", (wrong) ? ("Passcode must be a 4 digit number") : ("Set a 4 digit passcode:"), "Enter", "");
 
-	if(dialogid == d_DefenceEnterPass)
+	return 1;
+}
+
+ShowEnterPassDialog(playerid, wrong = 0)
+{
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
+		#pragma unused pid, dialogid, listitem
+
 		if(response)
 		{
 			new pass = strval(inputtext);
@@ -616,10 +624,11 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			}
 			else
 			{
-				ShowPlayerDialog(playerid, d_DefenceEnterPass, DIALOG_STYLE_INPUT, "Enter passcode", "Incorrect passcode!", "Enter", "Cancel");
+				ShowEnterPassDialog(playerid, 1);
 			}
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Enter passcode", (wrong) ? ("Incorrect passcode!") : ("Enter the 4 digit passcode to open."), "Enter", "Cancel");
 
 	return 1;
 }
@@ -796,7 +805,7 @@ SaveDefences(printeach = false, printtotal = false)
 
 	arr[0] = def_GEID_Index;
 
-	modio_push(GEID_FILE, !"DFNC", 1, arr);//, true, false, false);
+	modio_push(GEID_FILE, _T<D,F,N,C>, 1, arr);//, true, false, false);
 	printf("Storing defence GEID: %d", def_GEID_Index);
 }
 
@@ -858,7 +867,7 @@ SaveDefenceItem(defenceid, prints = false)
 	data[2] = _:def_Data[defenceid][def_posZ];
 	data[3] = _:def_Data[defenceid][def_rotZ];
 
-	modio_push(filename, !"WPOS", 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
 
 	data[DEFENCE_CELL_TYPE] = def_Data[defenceid][def_type];
 	data[DEFENCE_CELL_POSE] = def_Data[defenceid][def_pose];
@@ -868,7 +877,7 @@ SaveDefenceItem(defenceid, prints = false)
 	data[DEFENCE_CELL_MOVESTATE] = def_Data[defenceid][def_moveState];
 	data[DEFENCE_CELL_HITPOINTS] = def_Data[defenceid][def_hitPoints];
 
-	modio_push(filename, !"DATA", 7, data, true, true, true);
+	modio_push(filename, _T<D,A,T,A>, 7, data, true, true, true);
 
 	return 1;
 }
@@ -882,7 +891,7 @@ LoadDefenceItem(filename[], prints = false)
 		pos[4],
 		data[7];
 
-	length = modio_read(filename, !"WPOS", _:pos, false, false);
+	length = modio_read(filename, _T<W,P,O,S>, _:pos, false, false);
 
 	if(length == 0)
 		return 0;
@@ -893,7 +902,7 @@ LoadDefenceItem(filename[], prints = false)
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each Defence.
-	length = modio_read(filename, !"DATA", _:data, true);
+	length = modio_read(filename, _T<D,A,T,A>, _:data, true);
 
 	def_SkipGEID = true;
 

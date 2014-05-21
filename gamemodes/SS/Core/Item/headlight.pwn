@@ -72,22 +72,12 @@ ShowLightList(playerid, vehicleid)
 	}
 	gCurrentLightFixVehicle[playerid] = vehicleid;
 
-	ShowPlayerDialog(playerid, d_Lights, DIALOG_STYLE_LIST, "Lights", str, "Fix", "Cancel");
-}
-
-hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	if(dialogid == d_Lights && response)
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
-		new
-			panels,
-			doors,
-			lights,
-			tires,
-			itemid;
+		#pragma unused pid, dialogid, response, listitem, inputtext
 
 		GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
-		itemid = GetPlayerItem(playerid);
+		new itemid = GetPlayerItem(playerid);
 
 		if(listitem == 0)
 		{
@@ -126,7 +116,7 @@ hook OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Lights", str, "Fix", "Cancel");
 
 	return 1;
 }
-
