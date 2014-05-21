@@ -593,15 +593,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnItemNameRender(itemid)
 {
-	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
-	{
-		if(GetItemTypeMagSize(GetItemWeaponItemAmmoItem(itemid)) > 1)
-		{
-			new exname[22];
-			format(exname, sizeof(exname), "%d/%d", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
-			SetItemNameExtra(itemid, exname);
-		}
-	}
+	_NameRenderHandler(itemid);
 
 	return CallLocalFunction("itmw_OnItemNameRender", "d", itemid);
 }
@@ -612,6 +604,26 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender itmw_OnItemNameRender
 forward itmw_OnItemNameRender(itemid);
+
+_NameRenderHandler(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(GetItemTypeWeapon(itemtype) == -1)
+		return 0;
+
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
+		return 0;
+
+	if(GetItemTypeMagSize(GetItemWeaponItemAmmoItem(itemid)) > 1)
+		return 0;
+
+	new exname[22];
+	format(exname, sizeof(exname), "%d/%d", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	SetItemNameExtra(itemid, exname);
+
+	return 1;
+}
 
 
 /*==============================================================================
