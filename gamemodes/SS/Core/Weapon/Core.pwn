@@ -379,13 +379,19 @@ _ReloadWeapon(playerid)
 
 	new
 		itemid,
-		ItemType:itemtype,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
+		return 0;
+
+	new
 		magammo,
 		reserveammo,
 		magsize;
 
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
 	magammo = GetItemWeaponItemMagAmmo(itemid);
 	reserveammo = GetItemWeaponItemReserve(itemid);
 	magsize = GetItemTypeMagSize(GetItemWeaponItemAmmoItem(itemid));

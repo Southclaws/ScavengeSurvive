@@ -92,7 +92,7 @@ public OnGameModeInit()
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
-#include <GeoIP>					// By Whitetiger:			https://sixtytiger.com/tiger/geo_ip/geolocation.inc
+#include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
 
 #define time ctime_time
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054

@@ -98,7 +98,12 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 		if(ammotypeid != -1) // Transfer ammo from weapon to held weapon
 		{
-			if(GetItemWeaponCalibre(heldtypeid) != GetItemWeaponCalibre(ammotypeid))
+			new heldcalibre = GetItemWeaponCalibre(heldtypeid);
+
+			if(heldcalibre == NO_CALIBRE)
+				return 1;
+
+			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
 				ShowActionText(playerid, "Wrong calibre for weapon");
 				return 1;
@@ -128,7 +133,12 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 		if(ammotypeid != -1) // Transfer ammo from ammo item to held weapon
 		{
-			if(GetItemWeaponCalibre(heldtypeid) != GetAmmoTypeCalibre(ammotypeid))
+			new heldcalibre = GetItemWeaponCalibre(heldtypeid);
+
+			if(heldcalibre == NO_CALIBRE)
+				return 1;
+			
+			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
 				ShowActionText(playerid, "Wrong calibre for weapon");
 				return 1;
