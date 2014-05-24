@@ -1,6 +1,7 @@
 # Scavenge and Survive gamemode script for SA:MP
 
-
+Support the development of this mod by donating. I can put more time into adding new features!
+[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
 
 ## A PvP SA:MP server script built upon the SIF framework.
 
