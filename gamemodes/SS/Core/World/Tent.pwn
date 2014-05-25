@@ -30,8 +30,10 @@ new
 			tnt_GEID[MAX_TENT],
 			tnt_SkipGEID,
 			tnt_Loading,
+#if defined SIF_USE_DEBUG_LABELS
 			tnt_DebugLabelType,
 			tnt_DebugLabelID[MAX_TENT],
+#endif
 			tnt_Data[MAX_TENT][E_TENT_DATA],
 			tnt_Items[MAX_TENT][MAX_TENT_ITEMS],
 Iterator:	tnt_Index<MAX_TENT>,
@@ -67,7 +69,9 @@ hook OnGameModeInit()
 	tnt_GEID_Index = arr[0];
 	// printf("Loaded tent GEID: %d", tnt_GEID_Index);
 
-	tnt_DebugLabelType = DefineDebugLabelType("TENT", GREEN);
+	#if defined SIF_USE_DEBUG_LABELS
+		tnt_DebugLabelType = DefineDebugLabelType("TENT", GREEN);
+	#endif
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
@@ -167,7 +171,10 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 		// printf("Tent GEID Index: %d", tnt_GEID_Index);
 	}
 
-	tnt_DebugLabelID[id] = CreateDebugLabel(tnt_DebugLabelType, id, x, y, z);
+	#if defined SIF_USE_DEBUG_LABELS
+		tnt_DebugLabelID[id] = CreateDebugLabel(tnt_DebugLabelType, id, x, y, z);
+	#endif
+
 	UpdateTentDebugLabel(id);
 
 	return id;
@@ -214,7 +221,9 @@ stock DestroyTent(tentid)
 
 	Iter_SafeRemove(tnt_Index, tentid, tentid);
 
-	DestroyDebugLabel(tnt_DebugLabelID[tentid]);
+	#if defined SIF_USE_DEBUG_LABELS
+		DestroyDebugLabel(tnt_DebugLabelID[tentid]);
+	#endif
 
 	return tentid;
 }
@@ -439,7 +448,9 @@ UpdateTentDebugLabel(tentid)
 		strcat(string, ", ");
 	}
 
-	UpdateDebugLabelString(tnt_DebugLabelID[tentid], string);
+	#if defined SIF_USE_DEBUG_LABELS
+		UpdateDebugLabelString(tnt_DebugLabelID[tentid], string);
+	#endif
 }
 
 

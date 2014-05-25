@@ -405,16 +405,20 @@ ACMD:sifgdebug[4](playerid, params[])
 
 ACMD:dbl[3](playerid, params[])
 {
-	if(IsPlayerToggledAllDebugLabels(playerid))
-	{
-		HideAllDebugLabelsForPlayer(playerid);
-		Msg(playerid, YELLOW, " >  Debug labels toggled off.");
-	}
-	else
-	{
-		ShowAllDebugLabelsForPlayer(playerid);
-		Msg(playerid, YELLOW, " >  Debug labels toggled on.");
-	}
+	#if defined SIF_USE_DEBUG_LABELS
+		if(IsPlayerToggledAllDebugLabels(playerid))
+		{
+			HideAllDebugLabelsForPlayer(playerid);
+			Msg(playerid, YELLOW, " >  Debug labels toggled off.");
+		}
+		else
+		{
+			ShowAllDebugLabelsForPlayer(playerid);
+			Msg(playerid, YELLOW, " >  Debug labels toggled on.");
+		}
+	#else
+		Msg(playerid, YELLOW, " >  Debug labels are not compiled.");
+	#endif
 
 	return 1;
 }

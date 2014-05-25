@@ -59,8 +59,10 @@ static
 			def_GEID_Index,
 			def_GEID[MAX_DEFENCE],
 			def_SkipGEID,
+#if defined SIF_USE_DEBUG_LABELS
 			def_DebugLabelType,
 			def_DebugLabelID[MAX_DEFENCE],
+#endif
 			def_TypeData[MAX_DEFENCE_ITEM][E_DEFENCE_ITEM_DATA],
 			def_TypeIndex,
 			def_ItemTypeBounds[2] = {65535, 0};
@@ -92,7 +94,9 @@ hook OnGameModeInit()
 	def_GEID_Index = arr[0];
 	// printf("Loaded defence GEID: %d", def_GEID_Index);
 
-	def_DebugLabelType = DefineDebugLabelType("DEFENCE", GREEN);
+	#if defined SIF_USE_DEBUG_LABELS
+		def_DebugLabelType = DefineDebugLabelType("DEFENCE", GREEN);
+	#endif
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES);
 
@@ -231,7 +235,9 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 		// printf("Defence GEID Index: %d", def_GEID_Index);
 	}
 
-	def_DebugLabelID[id] = CreateDebugLabel(def_DebugLabelType, id, x, y, z);
+	#if defined SIF_USE_DEBUG_LABELS
+		def_DebugLabelID[id] = CreateDebugLabel(def_DebugLabelType, id, x, y, z);
+	#endif
 
 	return id;
 }
@@ -271,7 +277,9 @@ stock DestroyDefence(defenceid)
 
 	Iter_SafeRemove(def_Index, defenceid, next);
 
-	DestroyDebugLabel(def_DebugLabelID[defenceid]);
+	#if defined SIF_USE_DEBUG_LABELS
+		DestroyDebugLabel(def_DebugLabelID[defenceid]);
+	#endif
 
 	return next;
 }
