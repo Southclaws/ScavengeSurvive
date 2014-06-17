@@ -249,8 +249,8 @@ timer UpdateSpectateMode[100](playerid)
 		velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleed rate: %d Camera: %s Velocity: %.2f~n~\
-			Item: %s Exdata: %d Holster: %s Ammo/Ex: %d",
+			Knockedout: %d Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
+			Item: %s Exdata: %d Holster: %s Exdata: %d",
 			GetPlayerHP(targetid),
 			GetPlayerAP(targetid),
 			GetPlayerFP(targetid),
