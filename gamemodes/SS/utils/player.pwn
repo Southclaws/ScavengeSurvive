@@ -242,6 +242,34 @@ stock IsPlayerInArea(playerid, Float:MinX, Float:MinY, Float:MaxX, Float:MaxY)
 	return 0;
 }
 
+stock Float:GetDistanceBetweenPlayers(playerid, targetid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(targetid, x, y, z);
+
+	return GetPlayerDistanceFromPoint(playerid, x, y, z);
+}
+
+stock Float:GetPlayerAngleToPlayer(playerid, targetid)
+{
+	new
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:tx,
+		Float:ty,
+		Float:tz;
+
+	GetPlayerPos(playerid, px, py, pz);
+	GetPlayerPos(targetid, tx, ty, tz);
+
+	return GetAngleToPoint(px, py, tx, ty);
+}
+
 stock GetClosestPlayerFromPlayer(playerid, &Float:range = 10000.0)
 {
 	new

@@ -63,8 +63,6 @@ E_FLAGS:ply_BitFlags,
 		ply_stance,
 		ply_JoinTick,
 		ply_SpawnTick,
-		ply_TookDamageTick,
-		ply_DeltDamageTick,
 		ply_ExitVehicleTick
 }
 
@@ -221,8 +219,6 @@ ResetVariables(playerid)
 	ply_Data[playerid][ply_stance]				= 0;
 	ply_Data[playerid][ply_JoinTick]			= 0;
 	ply_Data[playerid][ply_SpawnTick]			= 0;
-	ply_Data[playerid][ply_TookDamageTick]		= 0;
-	ply_Data[playerid][ply_DeltDamageTick]		= 0;
 	ply_Data[playerid][ply_ExitVehicleTick]		= 0;
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
@@ -842,7 +838,7 @@ stock SetPlayerAP(playerid, Float:amount)
 		if(amount > 100.0)
 			amount = 100.0;
 
-		ToggleArmour(playerid, false);
+		ToggleArmour(playerid, true);
 	}
 
 	ply_Data[playerid][ply_ArmourPoints] = amount;
@@ -1113,44 +1109,6 @@ stock GetPlayerSpawnTick(playerid)
 		return 0;
 
 	return ply_Data[playerid][ply_SpawnTick];
-}
-
-// ply_TookDamageTick
-stock GetPlayerTookDamageTick(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_TookDamageTick];
-}
-
-stock SetPlayerTookDamageTick(playerid, tick)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_TookDamageTick] = tick;
-
-	return 1;
-}
-
-// ply_DeltDamageTick
-stock GetPlayerDeltDamageTick(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_DeltDamageTick];
-}
-
-stock SetPlayerDeltDamageTick(playerid, tick)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_DeltDamageTick] = tick;
-
-	return 1;
 }
 
 // ply_ExitVehicleTick

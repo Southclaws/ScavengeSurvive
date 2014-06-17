@@ -11,6 +11,9 @@ Float:	death_RotZ[MAX_PLAYERS],
 		death_LastKilledById[MAX_PLAYERS];
 
 
+forward OnDeath(playerid, killerid, reason);
+
+
 hook OnPlayerConnect(playerid)
 {
 	death_LastKilledBy[playerid][0] = EOS;
@@ -37,19 +40,21 @@ public OnPlayerDeath(playerid, killerid, reason)
 		}
 	}
 
-	OnDeath(playerid, killerid, GetLastHitByWeapon(playerid));
+	_OnDeath(playerid, killerid);
 
 	return 1;
 }
 
-OnDeath(playerid, killerid, reason)
+_OnDeath(playerid, killerid)
 {
 	if(!IsPlayerAlive(playerid) || IsPlayerOnAdminDuty(playerid))
 	{
 		return 0;
 	}
 
-	new deathreason[256];
+	new
+		deathreason = GetLastHitByWeapon(playerid),
+		deathreasonstring[256];
 
 	SetPlayerBitFlag(playerid, Dying, true);
 	SetPlayerBitFlag(playerid, Spawned, false);
@@ -67,85 +72,87 @@ OnDeath(playerid, killerid, reason)
 	SpawnPlayer(playerid);
 	ToggleArmour(playerid, false);
 
+	CallLocalFunction("OnDeath", "ddd", playerid, killerid, deathreason);
+
 	if(IsPlayerConnected(killerid))
 	{
-		logf("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		logf("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
 
-		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, reason);
+		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, deathreason);
 
-		switch(reason)
+		switch(deathreason)
 		{
 			case 0..3, 5..7, 10..15:
-				deathreason = "They were beaten to death.";
+				deathreasonstring = "They were beaten to death.";
 
 			case 4:
-				deathreason = "They suffered small lacerations on the torso, possibly from a knife.";
+				deathreasonstring = "They suffered small lacerations on the torso, possibly from a knife.";
 
 			case 8:
-				deathreason = "Large lacerations cover the torso and head, looks like a finely sharpened sword.";
+				deathreasonstring = "Large lacerations cover the torso and head, looks like a finely sharpened sword.";
 
 			case 9:
-				deathreason = "There's bits everywhere, probably suffered a chainsaw to the torso.";
+				deathreasonstring = "There's bits everywhere, probably suffered a chainsaw to the torso.";
 
 			case 16, 39, 35, 36, 255:
-				deathreason = "They suffered massive concussion due to an explosion.";
+				deathreasonstring = "They suffered massive concussion due to an explosion.";
 
 			case 18, 37:
-				deathreason = "The entire body is charred and burnt.";
+				deathreasonstring = "The entire body is charred and burnt.";
 
 			case 22..34, 38:
-				deathreason = "They died of blood loss caused by what looks like bullets.";
+				deathreasonstring = "They died of blood loss caused by what looks like bullets.";
 
 			case 41, 42:
-				deathreason = "They were sprayed and suffocated by a high pressure liquid.";
+				deathreasonstring = "They were sprayed and suffocated by a high pressure liquid.";
 
 			case 44, 45:
-				deathreason = "Somehow, they were killed by goggles.";
+				deathreasonstring = "Somehow, they were killed by goggles.";
 
 			case 43:
-				deathreason = "Somehow, they were killed by a camera.";
+				deathreasonstring = "Somehow, they were killed by a camera.";
 
 			default:
-				deathreason = "They died for an unknown reason.";
+				deathreasonstring = "They died for an unknown deathreason.";
 		}
 	}
 	else
 	{
-		logf("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		logf("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
-		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, reason);
+		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, deathreason);
 
 		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
 		{
-			deathreason = "They died of air embolism (injecting oxygen into their bloodstream).";
+			deathreasonstring = "They died of air embolism (injecting oxygen into their bloodstream).";
 			RemoveDrug(playerid, DRUG_TYPE_AIR);
 		}
 		else
 		{
-			switch(reason)
+			switch(deathreason)
 			{
 				case 53:
-					deathreason = "They drowned.";
+					deathreasonstring = "They drowned.";
 
 				case 54:
-					deathreason = "Most bones are broken, looks like they fell from a great height.";
+					deathreasonstring = "Most bones are broken, looks like they fell from a great height.";
 
 				case 255:
-					deathreason = "They suffered massive concussion due to an explosion.";
+					deathreasonstring = "They suffered massive concussion due to an explosion.";
 
 				default:
-					deathreason = "They died for an unknown reason.";
+					deathreasonstring = "They died for an unknown deathreason.";
 			}
 		}
 	}
 
-	CreateGravestone(playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid] - FLOOR_OFFSET, death_RotZ[playerid]);
+	CreateGravestone(playerid, deathreasonstring, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid] - FLOOR_OFFSET, death_RotZ[playerid]);
 
 	return 1;
 }

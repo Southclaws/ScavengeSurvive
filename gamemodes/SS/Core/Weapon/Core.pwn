@@ -12,7 +12,8 @@ ItemType:	itmw_itemType,
 			itmw_calibre,
 Float:		itmw_muzzVelocity,
 			itmw_maxReserveMags,
-			itmw_animSet
+			itmw_animSet,
+			itmw_koTime
 }
 
 enum // Item array data structure
@@ -55,7 +56,7 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, maxreservemags, animset = -1)
+stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, maxreservemags, animset = -1, kotime = 0)
 {
 	itmw_Data[itmw_Total][itmw_itemType] = itemtype;
 	itmw_Data[itmw_Total][itmw_baseWeapon] = baseweapon;
@@ -63,6 +64,7 @@ stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvel
 	itmw_Data[itmw_Total][itmw_muzzVelocity] = muzzvelocity;
 	itmw_Data[itmw_Total][itmw_maxReserveMags] = maxreservemags;
 	itmw_Data[itmw_Total][itmw_animSet] = animset;
+	itmw_Data[itmw_Total][itmw_koTime] = kotime;
 
 	itmw_ItemTypeWeapon[itemtype] = itmw_Total;
 
@@ -282,8 +284,16 @@ _FastUpdateHandler(playerid)
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 		return;
 
-	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] != NO_CALIBRE)
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
+	{
+		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
+		{
+			if(GetPlayerWeapon(playerid) == 0)
+				DestroyItem(itemid);
+		}
+
 		return;
+	}
 
 	new magammo = GetItemWeaponItemMagAmmo(itemid);
 
@@ -701,6 +711,15 @@ stock GetItemWeaponAnimSet(itemweaponid)
 	return itmw_Data[itemweaponid][itmw_animSet];
 }
 
+// itmw_koTime
+stock GetItemWeaponKOTime(itemweaponid)
+{
+	if(!(0 <= itemweaponid < itmw_Total))
+		return 0;
+
+	return itmw_Data[itemweaponid][itmw_koTime];
+}
+
 stock GetPlayerMagAmmo(playerid)
 {
 	if(!IsPlayerConnected(playerid))
@@ -788,6 +807,18 @@ stock GetItemTypeWeaponAnimSet(ItemType:itemtype)
 		return 0;
 
 	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_animSet];
+}
+
+// itmw_koTime
+stock GetItemTypeWeaponKOTime(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
+		return 0;
+
+	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_koTime];
 }
 
 
@@ -887,6 +918,25 @@ stock GetPlayerItemWeaponAnimSet(playerid)
 		return 0;
 
 	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_animSet];
+}
+
+// itmw_koTime
+stock GetPlayerItemWeaponKOTime(playerid)
+{
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
+		return 0;
+
+	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_koTime];
 }
 
 

@@ -6,17 +6,20 @@ new
 			anm_CurrentAnim[MAX_PLAYERS];
 
 
+forward Float:OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, kochance);
+
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & KEY_FIRE)
 	{
-		_FireWeaponHandler_Melee(playerid, GetItemType(GetPlayerItem(playerid)));
+		_HandleCustomMelee(playerid, GetItemType(GetPlayerItem(playerid)));
 	}
 
 	return 1;
 }
 
-_FireWeaponHandler_Melee(playerid, ItemType:itemtype)
+_HandleCustomMelee(playerid, ItemType:itemtype)
 {
 	if(!IsValidItemType(itemtype))
 		return 0;
@@ -97,10 +100,53 @@ _FireWeaponHandler_Melee(playerid, ItemType:itemtype)
 				if(angle > 225.0 || angle < 315.0)
 					ApplyAnimation(i, "PED", "DAM_stomach_frmRT", 4.1, 0, 1, 1, 0, 0, 1); // FROM RIGHT
 
-				DamagePlayer(playerid, i, animset, 0, 1); // temp
-				// PlayerDamagePlayer(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMaxReserveMags(itemtype));
+				_DoMeleeDamage(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMaxReserveMags(itemtype));
 			}
 		}
+	}
+
+	return 1;
+}
+
+hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
+{
+	if(weaponid == 0)
+		return _DoMeleeDamage(playerid, damagedid, 0.01, 10);
+
+	return _HandleStandardMelee(playerid, damagedid);
+}
+
+_HandleStandardMelee(playerid, targetid)
+{
+	new
+		itemid,
+		ItemType:itemtype,
+		weapontype,
+		baseweapon;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+	weapontype = GetItemTypeWeapon(itemtype);
+	baseweapon = GetItemWeaponBaseWeapon(weapontype);
+
+	if(!IsBaseWeaponMelee(baseweapon))
+		return 0;
+
+	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMaxReserveMags(itemtype));
+}
+
+_DoMeleeDamage(playerid, targetid, Float:bleedrate, kochance)
+{
+	bleedrate += Float:CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, Float:bleedrate, kochance);
+
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, NO_CALIBRE);
+	ShowHitMarker(playerid, 0);
+
+	if(random(100) < kochance)
+	{
+		new Float:hp = GetPlayerHP(playerid);
+
+		KnockOutPlayer(targetid, GetPlayerItemWeaponKOTime(playerid) + floatround(500 * (50.0 - hp) + frandom(200 * (50.0 - hp))));
 	}
 
 	return 1;

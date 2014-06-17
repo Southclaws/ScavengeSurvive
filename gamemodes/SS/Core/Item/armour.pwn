@@ -76,6 +76,40 @@ public OnItemNameRender(itemid)
 forward armour_OnItemNameRender(itemid);
 
 
+public Float:OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, bulletvelocity, distance)
+{
+	if(bodypart == 3)
+	{
+		if(GetPlayerAP(targetid) > 0.0)
+		{
+			if(random(100) < 50)
+				bleedrate -= bleedrate * 0.6;
+
+			else
+				bleedrate -= bleedrate * 0.3;
+
+			return -bleedrate;
+		}
+	}
+
+	#if defined armour_OnPlayerShootPlayer
+		return armour_OnPlayerShootPlayer(playerid, targetid, bodypart, bleedrate, bulletvelocity, distance);
+	#else
+		return 0.0;
+	#endif
+}
+#if defined _ALS_OnPlayerShootPlayer
+	#undef OnPlayerShootPlayer
+#else
+	#define _ALS_OnPlayerShootPlayer
+#endif
+ 
+#define OnPlayerShootPlayer armour_OnPlayerShootPlayer
+#if defined armour_OnPlayerShootPlayer
+	forward Float:armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, bleedrate, bulletvelocity, distance);
+#endif
+
+
 new Float:ArmourSkinData[17][9]=
 {
 	{0.072999, 0.036000, 0.002999,  0.000000, 0.000000, 4.400002,  1.043000, 1.190000, 1.139000},		// skin_MainM

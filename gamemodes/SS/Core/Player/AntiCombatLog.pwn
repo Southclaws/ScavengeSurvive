@@ -17,7 +17,6 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid)
 	if(!IsPlayerSpawned(damagedid))
 		return 0;
 
-	SetPlayerTookDamageTick(damagedid, GetTickCount());
 	combatlog_LastAttacker[damagedid] = playerid;
 	combatlog_LastWeapon[damagedid] = weaponid;
 
