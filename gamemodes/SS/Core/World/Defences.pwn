@@ -523,12 +523,27 @@ public OnHoldActionFinish(playerid)
 		DestroyItem(def_CurrentDefenceItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
+		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL);
 
+			logf("[CONSTRUCT] %p Built defence %d type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, type,
+				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
+				def_TypeData[type][def_verticalRotX],
+				def_TypeData[type][def_verticalRotY],
+				def_TypeData[type][def_verticalRotZ] + angle);
+		}
+
 		if(itemtype == item_Hammer)
+		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL);
 
-		logf("[CONSTRUCT] %p Built defence %d type %d at %f, %f, %f (%f)", playerid, id, type, x, y, z, angle);
+			logf("[CONSTRUCT] %p Built defence %d type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, type,
+				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
+				def_TypeData[type][def_horizontalRotX],
+				def_TypeData[type][def_horizontalRotY],
+				def_TypeData[type][def_horizontalRotZ] + angle);
+		}
+
 
 		SaveDefenceItem(id);
 		StopBuildingDefence(playerid);
@@ -571,7 +586,41 @@ public OnHoldActionFinish(playerid)
 				.rz = def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ],
 				.zoffset = ITEM_BUTTON_OFFSET);
 
-			logf("[CROWBAR] %p broke defence %d type %d at %f, %f, %f (%f)", playerid, def_CurrentDefenceEdit[playerid], _:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype], def_Data[def_CurrentDefenceEdit[playerid]][def_posX], def_Data[def_CurrentDefenceEdit[playerid]][def_posY], def_Data[def_CurrentDefenceEdit[playerid]][def_posZ], def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ]);
+			switch(def_Data[def_CurrentDefenceEdit[playerid]][def_pose])
+			{
+				case DEFENCE_POSE_HORIZONTAL:
+				{
+					logf("[CROWBAR] %p broke defence %d type %d (%d, %f, %f, %f, %f, %f, %f)",
+						playerid,
+						def_CurrentDefenceEdit[playerid],
+						_:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
+						GetItemTypeModel(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype]),
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posY],
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posZ],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_horizontalRotX],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_horizontalRotY],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_horizontalRotZ] + def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ]);
+				}
+				case DEFENCE_POSE_VERTICAL:
+				{
+					logf("[CROWBAR] %p broke defence %d type %d (%d, %f, %f, %f, %f, %f, %f)",
+						playerid,
+						def_CurrentDefenceEdit[playerid],
+						_:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
+						GetItemTypeModel(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype]),
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posY],
+						def_Data[def_CurrentDefenceEdit[playerid]][def_posZ] + def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_placeOffsetZ],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_verticalRotX],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_verticalRotY],
+						def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_verticalRotZ] + def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ]);
+				}
+				case DEFENCE_POSE_SUPPORTED:
+				{
+					// not implemented
+				}
+			}
 
 			DestroyDefence(def_CurrentDefenceEdit[playerid]);
 			ClearAnimations(playerid);
@@ -712,7 +761,9 @@ public OnPlayerEnterButtonArea(playerid, buttonid)
 
 		if(Iter_Contains(def_Index, defenceid))
 		{
-			if((!def_Data[defenceid][def_motor] && def_Data[defenceid][def_pose] == DEFENCE_POSE_VERTICAL) || (def_Data[defenceid][def_motor] && def_Data[defenceid][def_moveState] == DEFENCE_POSE_VERTICAL))
+			if(
+				(!def_Data[defenceid][def_motor] && def_Data[defenceid][def_pose] == DEFENCE_POSE_VERTICAL) ||
+				(def_Data[defenceid][def_motor] && def_Data[defenceid][def_moveState] == DEFENCE_POSE_VERTICAL) )
 			{
 				new Float:angle = absoluteangle(def_Data[defenceid][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
 
