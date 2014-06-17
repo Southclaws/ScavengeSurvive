@@ -15,7 +15,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(!IsValidItem(GetPlayerBagItem(playerid)))
 			{
-				// Rewrite parachute equip code
+				_EquipParachute(playerid);
 			}
 		}
 	}
@@ -53,3 +53,9 @@ public OnPlayerDropItem(playerid, itemid)
 #endif
 #define OnPlayerDropItem para_OnPlayerDropItem
 forward para_OnPlayerDropItem(playerid, itemid);
+
+
+_EquipParachute(playerid)
+{
+	Msg(playerid, YELLOW, " >  Not implemented.");
+}

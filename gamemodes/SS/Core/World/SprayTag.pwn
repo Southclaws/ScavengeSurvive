@@ -85,23 +85,25 @@ CreateNewSprayTag(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 	stmt_bind_value(stmt_SprayTagExists, 2, DB::TYPE_FLOAT, z);
 	stmt_bind_result_field(stmt_SprayTagExists, 0, DB::TYPE_INT, count);
 
-	if(stmt_execute(stmt_SprayTagExists))
+	if(!stmt_execute(stmt_SprayTagExists))
+		return 0;
+
+	stmt_fetch_row(stmt_SprayTagExists);
+
+	if(count == 0)
 	{
-		stmt_fetch_row(stmt_SprayTagExists);
+		stmt_bind_value(stmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
+		stmt_bind_value(stmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
+		stmt_bind_value(stmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
+		stmt_bind_value(stmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
+		stmt_bind_value(stmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
+		stmt_bind_value(stmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
+		stmt_bind_value(stmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
 
-		if(count == 0)
-		{
-			stmt_bind_value(stmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
-			stmt_bind_value(stmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
-			stmt_bind_value(stmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
-			stmt_bind_value(stmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
-			stmt_bind_value(stmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
-			stmt_bind_value(stmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
-			stmt_bind_value(stmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
-
-			stmt_execute(stmt_SprayTagInsert);
-		}
+		stmt_execute(stmt_SprayTagInsert);
 	}
+
+	return 1;
 }
 
 

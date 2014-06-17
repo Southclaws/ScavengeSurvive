@@ -87,9 +87,9 @@ UpdateRadioUI(playerid)
 	}
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
+hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
-	if(clickedid == RadioUI_KnobL[playerid])
+	if(playertextid == RadioUI_KnobL[playerid])
 	{
 		if(GetPlayerRadioFrequency(playerid) - 0.5 <= MIN_RADIO_FREQ)
 			SetPlayerRadioFrequency(playerid, MIN_RADIO_FREQ);
@@ -99,7 +99,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 
 		UpdateRadioUI(playerid);
 	}
-	if(clickedid == RadioUI_KnobR[playerid])
+	if(playertextid == RadioUI_KnobR[playerid])
 	{
 		if(GetPlayerRadioFrequency(playerid) + 0.5 >= MAX_RADIO_FREQ)
 			SetPlayerRadioFrequency(playerid, MAX_RADIO_FREQ);
@@ -109,7 +109,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 
 		UpdateRadioUI(playerid);
 	}
-	if(clickedid == RadioUI_Mode[playerid])
+	if(playertextid == RadioUI_Mode[playerid])
 	{
 		if(GetPlayerChatMode(playerid) == CHAT_MODE_GLOBAL)
 			SetPlayerChatMode(playerid, CHAT_MODE_RADIO);
@@ -119,11 +119,11 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 
 		UpdateRadioUI(playerid);
 	}
-	if(clickedid == RadioUI_Freq[playerid])
+	if(playertextid == RadioUI_Freq[playerid])
 	{
 		ShowFrequencyDialog(playerid);
 	}
-	if(clickedid == RadioUI_Power[playerid])
+	if(playertextid == RadioUI_Power[playerid])
 	{
 		if(GetPlayerChatMode(playerid) == CHAT_MODE_LOCAL)
 		{
@@ -141,7 +141,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:clickedid)
 
 		UpdateRadioUI(playerid);
 	}
-	if(clickedid == RadioUI_Back[playerid])
+	if(playertextid == RadioUI_Back[playerid])
 	{
 		HideRadioUI(playerid);
 	}
