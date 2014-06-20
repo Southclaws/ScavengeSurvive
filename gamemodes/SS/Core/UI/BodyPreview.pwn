@@ -22,6 +22,7 @@ PlayerText:	bod_Header		[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	bod_Background	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	bod_BodyPreview	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 
+			bod_Shown		[MAX_PLAYERS],
 			bod_LabelData0	[MAX_PLAYERS][MAX_BODY_LABEL][E_BODY_LABEL_DATA],
 			bod_LabelData1	[MAX_PLAYERS][MAX_BODY_LABEL][E_BODY_LABEL_DATA],
 			bod_LabelIndex0	[MAX_PLAYERS],
@@ -97,6 +98,8 @@ stock ShowBodyPreviewUI(playerid)
 	PlayerTextDrawShow(playerid, bod_Header[playerid]);
 	PlayerTextDrawShow(playerid, bod_Background[playerid]);
 	PlayerTextDrawShow(playerid, bod_BodyPreview[playerid]);
+
+	bod_Shown[playerid] = true;
 }
 
 stock HideBodyPreviewUI(playerid)
@@ -123,11 +126,16 @@ stock HideBodyPreviewUI(playerid)
 
 	bod_LabelIndex0[playerid] = 0;
 	bod_LabelIndex1[playerid] = 0;
+
+	bod_Shown[playerid] = false;
 }
 
 stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textcolour)
 {
 	d:1:HANDLER("[SetBodyPreviewLabel] side:%d index:%d spacing:%.2f string:'%s' col:%x", side, index, spacing, string, textcolour);
+
+	if(!bod_Shown[playerid])
+		return 0;
 
 	new Float:ypos;
 
