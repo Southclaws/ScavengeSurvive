@@ -220,22 +220,32 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_SPECIAL					"{0025AA}"
 
 
+// Body parts
+#define BODY_PART_TORSO				(3)
+#define BODY_PART_GROIN				(4)
+#define BODY_PART_LEFT_ARM			(5)
+#define BODY_PART_RIGHT_ARM			(6)
+#define BODY_PART_LEFT_LEG			(7)
+#define BODY_PART_RIGHT_LEG			(8)
+#define BODY_PART_HEAD				(9)
+
+
 // Report types
-#define REPORT_TYPE_PLAYER_ID			"PLY ID"
-#define REPORT_TYPE_PLAYER_NAME			"PLY NAME"
-#define REPORT_TYPE_PLAYER_CLOSE		"PLY CLOSE"
-#define REPORT_TYPE_PLAYER_KILLER		"PLY KILL"
-#define REPORT_TYPE_TELEPORT			"TELE"
-#define REPORT_TYPE_SWIMFLY				"FLY"
-#define REPORT_TYPE_VHEALTH				"VHP"
-#define REPORT_TYPE_CAMDIST				"CAM"
-#define REPORT_TYPE_CARNITRO			"NOS"
-#define REPORT_TYPE_CARHYDRO			"HYDRO"
-#define REPORT_TYPE_CARTELE				"VTP"
-#define REPORT_TYPE_HACKTRAP			"TRAP"
-#define REPORT_TYPE_LOCKEDCAR			"LCAR"
-#define REPORT_TYPE_AMMO				"AMMO"
-#define REPORT_TYPE_SHOTANIM			"ANIM"
+#define REPORT_TYPE_PLAYER_ID		"PLY ID"
+#define REPORT_TYPE_PLAYER_NAME		"PLY NAME"
+#define REPORT_TYPE_PLAYER_CLOSE	"PLY CLOSE"
+#define REPORT_TYPE_PLAYER_KILLER	"PLY KILL"
+#define REPORT_TYPE_TELEPORT		"TELE"
+#define REPORT_TYPE_SWIMFLY			"FLY"
+#define REPORT_TYPE_VHEALTH			"VHP"
+#define REPORT_TYPE_CAMDIST			"CAM"
+#define REPORT_TYPE_CARNITRO		"NOS"
+#define REPORT_TYPE_CARHYDRO		"HYDRO"
+#define REPORT_TYPE_CARTELE			"VTP"
+#define REPORT_TYPE_HACKTRAP		"TRAP"
+#define REPORT_TYPE_LOCKEDCAR		"LCAR"
+#define REPORT_TYPE_AMMO			"AMMO"
+#define REPORT_TYPE_SHOTANIM		"ANIM"
 #define REPORT_TYPE_END
 
 
@@ -709,6 +719,7 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/Watch.pwn"
 #include "SS/Core/UI/Keypad.pwn"
 #include "SS/Core/UI/DialogPages.pwn"
+#include "SS/Core/UI/BodyPreview.pwn"
 
 // VEHICLE
 #include "SS/Core/Vehicle/Core.pwn"
@@ -1470,7 +1481,6 @@ public OnGameModeInit()
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7);
 
 
-	DefineItemCombo(item_Medkit,		item_Bandage,		item_DoctorBag);
 	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 

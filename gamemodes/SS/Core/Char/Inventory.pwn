@@ -15,7 +15,17 @@ new
 	PlayerText:GearSlot_Back[3],
 
 	inv_TempContainerID[MAX_PLAYERS],
-	inv_InventoryOptionID[MAX_PLAYERS];
+	inv_InventoryOptionID[MAX_PLAYERS],
+	inv_BodyPartHead[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartTorso[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartArmR[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartArmL[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartGroin[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartLegR[MAX_PLAYERS] = {-1, ...},
+	inv_BodyPartLegL[MAX_PLAYERS] = {-1, ...},
+	inv_StatBleeding[MAX_PLAYERS] = {-1, ...},
+	inv_StatHunger[MAX_PLAYERS] = {-1, ...},
+	inv_StatInfect[MAX_PLAYERS] = {-1, ...};
 
 
 forward CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item, Float:x, Float:y, Float:width, Float:height, colour, overlaycolour);
@@ -93,6 +103,67 @@ HidePlayerGear(playerid)
 		PlayerTextDrawHide(playerid, GearSlot_Tors[i]);
 		PlayerTextDrawHide(playerid, GearSlot_Back[i]);
 	}
+}
+
+ShowPlayerHealthInfo(playerid)
+{
+	new
+		tmp,
+		bodypartwounds[7],
+		Float:bleedrate = GetPlayerBleedRate(playerid),
+		Float:hunger = GetPlayerFP(playerid),
+		infected = IsPlayerInfected(playerid);
+
+	GetPlayerWoundsPerBodypart(playerid, bodypartwounds);
+
+	HideBodyPreviewUI(playerid);
+	ShowBodyPreviewUI(playerid);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 35.0, sprintf("Head: %d", bodypartwounds[6]),
+		bodypartwounds[6] ? RGBAToHex(max(bodypartwounds[6] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 25.0, sprintf("Torso: %d", bodypartwounds[0]),
+		bodypartwounds[0] ? RGBAToHex(max(bodypartwounds[0] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 30.0, sprintf("Arm R: %d", bodypartwounds[3]),
+		bodypartwounds[3] ? RGBAToHex(max(bodypartwounds[3] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 20.0, sprintf("Arm L: %d", bodypartwounds[2]),
+		bodypartwounds[2] ? RGBAToHex(max(bodypartwounds[2] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 20.0, sprintf("Groin: %d", bodypartwounds[1]),
+		bodypartwounds[1] ? RGBAToHex(max(bodypartwounds[1] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 20.0, sprintf("Leg R: %d", bodypartwounds[5]),
+		bodypartwounds[5] ? RGBAToHex(max(bodypartwounds[5] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	SetBodyPreviewLabel(playerid, 0, tmp++, 20.0, sprintf("Leg L: %d", bodypartwounds[4]),
+		bodypartwounds[4] ? RGBAToHex(max(bodypartwounds[4] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
+
+	if(bleedrate > 0.0)
+		SetBodyPreviewLabel(playerid, 1, tmp++, 35.0, "Bleeding", RGBAToHex(floatround(bleedrate * 10.0), 255 - floatround(bleedrate * 10.0), 0, 255));
+
+	if(hunger < 66.6)
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Hungry", RGBAToHex(floatround((66.6 - hunger) * 4.8), 255 - floatround((66.6 - hunger) * 4.8), 0, 255));
+
+	if(infected)
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Infected", 0xFF0000FF);
+}
+
+HidePlayerHealthInfo(playerid)
+{
+	HideBodyPreviewUI(playerid);
+
+	inv_BodyPartHead[playerid] = -1;
+	inv_BodyPartTorso[playerid] = -1;
+	inv_BodyPartArmR[playerid] = -1;
+	inv_BodyPartArmL[playerid] = -1;
+	inv_BodyPartGroin[playerid] = -1;
+	inv_BodyPartLegR[playerid] = -1;
+	inv_BodyPartLegL[playerid] = -1;
+	inv_StatBleeding[playerid] = -1;
+	inv_StatHunger[playerid] = -1;
+	inv_StatInfect[playerid] = -1;
 }
 
 UpdatePlayerGear(playerid, show = 1)
@@ -193,6 +264,7 @@ public OnPlayerOpenInventory(playerid)
 {
 	ShowPlayerGear(playerid);
 	UpdatePlayerGear(playerid);
+	ShowPlayerHealthInfo(playerid);
 
 	return CallLocalFunction("app_OnPlayerOpenInventory", "d", playerid);
 }
@@ -207,6 +279,7 @@ forward app_OnPlayerOpenInventory(playerid);
 public OnPlayerCloseInventory(playerid)
 {
 	HidePlayerGear(playerid);
+	HidePlayerHealthInfo(playerid);
 
 	return CallLocalFunction("app_OnPlayerCloseInventory", "d", playerid);
 }
@@ -222,6 +295,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 {
 	ShowPlayerGear(playerid);
 	UpdatePlayerGear(playerid);
+	ShowPlayerHealthInfo(playerid);
 
 	return CallLocalFunction("app_OnPlayerOpenContainer", "dd", playerid, containerid);
 }
@@ -236,6 +310,7 @@ forward app_OnPlayerOpenContainer(playerid, containerid);
 public OnPlayerCloseContainer(playerid, containerid)
 {
 	HidePlayerGear(playerid);
+	HidePlayerHealthInfo(playerid);
 
 	return CallLocalFunction("app_OnPlayerCloseContainer", "dd", playerid, containerid);
 }
@@ -713,3 +788,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 #endif
 #define OnPlayerSelectContainerOpt inv_OnPlayerSelectContainerOpt
 forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
+
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+{
+	if(IsPlayerSpawned(playerid))
+		ShowPlayerHealthInfo(playerid);
+}
