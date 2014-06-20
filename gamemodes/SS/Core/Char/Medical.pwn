@@ -132,23 +132,22 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Bandage)
 		{
-			RemovePlayerWounds(playerid, 1);
+			SetPlayerBleedRate(med_HealTarget[playerid], GetPlayerBleedRate(med_HealTarget[playerid]) > 0.05 ? 0.05 : 0.0);
 		}
 
 		if(itemtype == item_Medkit)
 		{
+			SetPlayerBleedRate(med_HealTarget[playerid], GetPlayerBleedRate(med_HealTarget[playerid]) > 0.05 ? 0.05 : 0.0);
 			ApplyDrug(med_HealTarget[playerid], DRUG_TYPE_PAINKILL);
-			RemovePlayerWounds(playerid, 2);
 		}
 
 		if(itemtype == item_DoctorBag)
 		{
+			SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
 			ApplyDrug(med_HealTarget[playerid], DRUG_TYPE_PAINKILL);
 			ApplyDrug(med_HealTarget[playerid], DRUG_TYPE_MORPHINE);
-			RemovePlayerWounds(playerid, 3);
+			RemovePlayerWounds(med_HealTarget[playerid], 1);
 		}
-
-		SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
 
 		DestroyItem(GetPlayerItem(playerid));
 
