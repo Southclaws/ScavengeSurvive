@@ -20,7 +20,8 @@ enum E_WOUND_DATA
 E_WND_TYPE:	wnd_type,
 Float:		wnd_bleedrate,
 			wnd_calibre,
-			wnd_timestamp
+			wnd_timestamp,
+			wnd_bodypart
 }
 
 
@@ -65,7 +66,7 @@ hook OnGameModeInit()
 }
 
 
-stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, calibre)
+stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, calibre, bodypart)
 {
 	new
 		woundid = Iter_Free(wnd_Index[targetid]),
@@ -86,32 +87,13 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, c
 	wnd_Data[targetid][woundid][wnd_bleedrate] = bleedrate;
 	wnd_Data[targetid][woundid][wnd_calibre] = calibre;
 	wnd_Data[targetid][woundid][wnd_timestamp] = gettime();
+	wnd_Data[targetid][woundid][wnd_bodypart] = bodypart;
 
 	// Max bleed rate is 1.0, don't allow higher values
 	bleedrate = bleedrate > 10.0 ? 10.0 : bleedrate;
 
-	// If player isn't already bleeding
-	if(totalbleedrate == 0.0)
-	{
-		d:2:FIREARM_DEBUG("[PlayerInflictWound] totalbleedrate = bleedrate");
-		totalbleedrate = bleedrate;
-	}
-	else
-	{
-		// If the total bleed rate is higher than the input
-		if(totalbleedrate > bleedrate)
-		{
-			d:2:FIREARM_DEBUG("[PlayerInflictWound] totalbleedrate += bleedrate * totalbleedrate : %f + %f", totalbleedrate, bleedrate * totalbleedrate);
-			// Make the desired a bit smaller
-			totalbleedrate += bleedrate * totalbleedrate;
-		}
-		else
-		{
-			d:2:FIREARM_DEBUG("[PlayerInflictWound] totalbleedrate += bleedrate");
-			// Otherwise, just add the bleed rate
-			totalbleedrate += bleedrate;
-		}
-	}
+	totalbleedrate += bleedrate;
+	d:2:FIREARM_DEBUG("[PlayerInflictWound] totalbleedrate = %f", totalbleedrate);
 
 	// Truncate result to 10.0
 	totalbleedrate = totalbleedrate > 10.0 ? 10.0 : totalbleedrate;
@@ -120,7 +102,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, c
 
 	if(woundcount > 1)
 	{
-		if(frandom(100.0) < woundcount * (totalbleedrate * 10))
+		if(frandom(100.0) < (woundcount * (totalbleedrate * 20)))
 		{
 			new
 				Float:hp,
@@ -131,7 +113,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, c
 
 			if(knockouttime > 1500)
 			{
-				// MsgF(targetid, -1, "[WOUND_KO] Knocking out for %dms - %d wounds, %f health %f bleedrate", knockouttime, woundcount, hp, totalbleedrate);
+				d:2:FIREARM_DEBUG("[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", playerid, knockouttime, woundcount, hp, totalbleedrate);
 				KnockOutPlayer(targetid, knockouttime);
 			}
 		}
@@ -285,25 +267,48 @@ stock GetPlayerWounds(playerid)
 	return Iter_Count(wnd_Index[playerid]);
 }
 
+stock GetPlayerWoundsPerBodypart(playerid, output[7])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	foreach(new i : wnd_Index[playerid])
+	{
+		switch(wnd_Data[playerid][i][wnd_bodypart])
+		{
+			case BODY_PART_TORSO:		output[0]++;
+			case BODY_PART_GROIN:		output[1]++;
+			case BODY_PART_LEFT_ARM:	output[2]++;
+			case BODY_PART_RIGHT_ARM:	output[3]++;
+			case BODY_PART_LEFT_LEG:	output[4]++;
+			case BODY_PART_RIGHT_LEG:	output[5]++;
+			case BODY_PART_HEAD:		output[6]++;
+			default:					output[0]++;
+		}
+	}
+
+	return 1;
+}
+
 stock GetPlayerWoundDataAsArray(playerid, output[])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 /*
-	if(sizeof(output) != 1 + (MAX_WOUNDS * 4))
+	if(sizeof(output) != 1 + (MAX_WOUNDS * 5))
 	{
-		printf("ERROR: Output array for GetPlayerWoundDataAsArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 4));
+		printf("ERROR: Output array for GetPlayerWoundDataAsArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 5));
 		return 0;
 	}
 */
 
 /*
-	max size: 1 + MAX_WOUNDS * 4
+	max size: 1 + MAX_WOUNDS * 5
 	header: 1 cell
 		woundblcok count
 
-	woundblock: 4 cells
+	woundblock: 5 cells
 		wnd_type
 		wnd_bleedrate
 		wnd_calibre
@@ -323,6 +328,7 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		output[idx++] = _:wnd_Data[playerid][i][wnd_bleedrate];
 		output[idx++] = wnd_Data[playerid][i][wnd_calibre];
 		output[idx++] = wnd_Data[playerid][i][wnd_timestamp];
+		output[idx++] = wnd_Data[playerid][i][wnd_bodypart];
 	}
 
 	return idx;
@@ -334,9 +340,9 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		return 0;
 
 /*
-	if(sizeof(output) != 1 + (MAX_WOUNDS * 4))
+	if(sizeof(output) != 1 + (MAX_WOUNDS * 5))
 	{
-		printf("ERROR: Input array for SetPlayerWoundDataFromArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 4));
+		printf("ERROR: Input array for SetPlayerWoundDataFromArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 5));
 		return 0;
 	}
 */
@@ -346,7 +352,7 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 
 	new id;
 
-	for(new i = 1; i < input[0] * 4;)
+	for(new i = 1; i < input[0] * 5;)
 	{
 		id = Iter_Free(wnd_Index[playerid]);
 
@@ -354,6 +360,7 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		wnd_Data[playerid][id][wnd_bleedrate] = Float:input[i++];
 		wnd_Data[playerid][id][wnd_calibre] = input[i++];
 		wnd_Data[playerid][id][wnd_timestamp] = input[i++];
+		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
 
 		Iter_Add(wnd_Index[playerid], id);
 	}
@@ -415,11 +422,9 @@ public OnPlayerLoad(playerid, filename[])
 #endif
 
 
-static showbleedrate[MAX_PLAYERS];
 ACMD:showdamage[4](playerid, params[])
 {
-	showbleedrate[playerid] = !showbleedrate[playerid];
-	HideActionText(playerid);
+	ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", GetPlayerBleedRate(playerid), Iter_Count(wnd_Index[playerid])), 5000);
 	return 1;
 }
 ACMD:removewounds[4](playerid, params[])
@@ -432,15 +437,5 @@ ACMD:setbleed[4](playerid, params[])
 {
 	SetPlayerBleedRate(playerid, floatstr(params));
 	MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
-	return 1;
-}
-
-hook OnPlayerUpdate(playerid)
-{
-	if(showbleedrate[playerid])
-	{
-		ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", GetPlayerBleedRate(playerid), Iter_Count(wnd_Index[playerid])));
-	}
-
 	return 1;
 }

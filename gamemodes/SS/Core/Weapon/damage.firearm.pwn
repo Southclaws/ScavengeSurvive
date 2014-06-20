@@ -93,7 +93,7 @@ _DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
 	bleedrate += Float:CallLocalFunction("OnPlayerShootPlayer", "dddfdd", playerid, targetid, bodypart, bleedrate, bulletvelocity, distance);
 	d:2:FIREARM_DEBUG("[_DoFirearmDamage] bleedrate: %.4f (after callback)", bleedrate);
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, calibre);
+	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, calibre, bodypart);
 	ShowHitMarker(playerid, GetItemTypeWeaponBaseWeapon(itemtype));
 
 	return 1;

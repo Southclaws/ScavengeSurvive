@@ -139,7 +139,7 @@ _DoMeleeDamage(playerid, targetid, Float:bleedrate, kochance)
 {
 	bleedrate += Float:CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, Float:bleedrate, kochance);
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, NO_CALIBRE);
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, NO_CALIBRE, random(2) ? BODY_PART_TORSO : BODY_PART_HEAD);
 	ShowHitMarker(playerid, 0);
 
 	if(random(100) < kochance)
