@@ -37,6 +37,9 @@ static
 			box_ItemList[ITM_LST_OF_ITEMS(10)];
 
 
+static HANDLER;
+
+
 /*==============================================================================
 
 	Zeroing
@@ -63,6 +66,8 @@ hook OnGameModeInit()
 
 	for(new i; i < CNT_MAX; i++)
 		box_ContainerSafebox[i] = INVALID_ITEM_ID;
+
+	HANDLER = debug_register_handler("safebox", 2);
 }
 
 hook OnPlayerConnect(playerid)
@@ -230,7 +235,10 @@ public OnPlayerDroppedItem(playerid, itemid)
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
 		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
-			SaveSafeboxItem(itemid);
+		{
+			d:1:HANDLER("Player %d dropping and saving container %d (item %d)", playerid, GetItemArrayDataAtCell(itemid, 1), itemid);
+			SaveSafeboxItem(itemid, true);
+		}
 	}
 
 	return CallLocalFunction("box_OnPlayerDroppedItem", "dd", playerid, itemid);
@@ -311,9 +319,11 @@ timer box_PickUp[250](playerid, itemid)
 	if(!IsItemInWorld(itemid))
 		return;
 
+	d:1:HANDLER("[box_PickUp] Player %d picked up container %d GEID: %d", playerid, itemid, box_GEID[itemid]);
+
 	PlayerPickUpItem(playerid, itemid);
 
-	RemoveSafeboxItem(itemid);
+	RemoveSafeboxItem(itemid, true);
 
 	return;
 }
@@ -322,7 +332,8 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(box_CurrentBoxItem[playerid]))
 	{
-		SaveSafeboxItem(box_CurrentBoxItem[playerid]);
+		d:1:HANDLER("Player %d closing and saving container %d (%d)", playerid, containerid, box_CurrentBoxItem[playerid]);
+		SaveSafeboxItem(box_CurrentBoxItem[playerid], true);
 		ClearAnimations(playerid);
 		box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 	}
@@ -408,13 +419,22 @@ LoadSafeboxes(printeach = false, printtotal = false)
 SaveSafeboxItem(itemid, prints = false)
 {
 	if(!IsValidItem(itemid))
+	{
+		printf("ERROR: Can't save safebox %d GEID: %d: Not valid item.", itemid, box_GEID[itemid]);
 		return 0;
+	}
 
 	if(!IsItemInWorld(itemid))
+	{
+		printf("ERROR: Can't save safebox %d GEID: %d: Item not in world.", itemid, box_GEID[itemid]);
 		return 0;
+	}
 
 	if(!IsItemTypeSafebox(GetItemType(itemid)))
+	{
+		printf("ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox.", itemid, box_GEID[itemid]);
 		return 0;
+	}
 
 	new
 		data[4],
@@ -427,6 +447,7 @@ SaveSafeboxItem(itemid, prints = false)
 
 	if(!IsValidContainer(containerid) || IsContainerEmpty(containerid))
 	{
+		printf("ERROR: Can't save safebox %d GEID: %d: Not valid container (%d) or container is empty.", itemid, box_GEID[itemid], containerid);
 		fremove(filename);
 		return 0;
 	}
@@ -541,12 +562,15 @@ LoadSafeboxItem(filename[], prints = false)
 	return 1;
 }
 
-RemoveSafeboxItem(itemid)
+RemoveSafeboxItem(itemid, prints = false)
 {
 	new filename[64];
 
 	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"box_%010d.dat", box_GEID[itemid]);
 	fremove(filename);
+
+	if(prints)
+		printf("\t[DELT] Safebox: GEID %d", box_GEID[itemid]);
 
 	return Iter_SafeRemove(box_Index, itemid, itemid);
 }
