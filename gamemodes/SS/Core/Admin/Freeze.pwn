@@ -63,7 +63,7 @@ timer UnfreezePlayer_check[4000](playerid)
 
 	GetPlayerCameraFrontVector(playerid, z, z, z);
 
-	if(Z < 0.75)
+	if(z < 0.75)
 		MsgAdminsF(2, YELLOW, " >  Possible mod user: "C_ORANGE"%p (%d)", playerid, playerid);
 }
 
