@@ -70,7 +70,6 @@ CreateBodyPreviewUI(playerid)
 	bod_Background[playerid]		=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid], bod_UIPositionY[playerid], "~n~");
 	PlayerTextDrawAlignment			(playerid, bod_Background[playerid], 2);
 	PlayerTextDrawFont				(playerid, bod_Background[playerid], 1);
-
 	PlayerTextDrawLetterSize		(playerid, bod_Background[playerid], 0.50, 23.6);
 	PlayerTextDrawColor				(playerid, bod_Background[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, bod_Background[playerid], 0);
@@ -95,6 +94,8 @@ CreateBodyPreviewUI(playerid)
 stock ShowBodyPreviewUI(playerid)
 {
 	d:1:HANDLER("[ShowBodyPreviewUI]");
+	PlayerTextDrawSetPreviewModel	(playerid, bod_BodyPreview[playerid], GetPlayerSkin(playerid));
+
 	PlayerTextDrawShow(playerid, bod_Header[playerid]);
 	PlayerTextDrawShow(playerid, bod_Background[playerid]);
 	PlayerTextDrawShow(playerid, bod_BodyPreview[playerid]);
@@ -207,7 +208,7 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textco
 
 			else
 				ypos = bod_LabelData1[playerid][index - 1][bl_posY] + spacing;
-			
+
 			bod_LabelData1[playerid][index][bl_posY] = ypos;
 
 			bod_LabelData1[playerid][index][bl_textdraw]=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid] + 55.0, ypos, string);

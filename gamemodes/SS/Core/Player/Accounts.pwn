@@ -584,8 +584,6 @@ SavePlayerData(playerid)
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 
 		stmt_execute(stmt_AccountUpdate);
-
-		ClearPlayerInventoryFile(playerid);
 	}
 
 	return 1;
