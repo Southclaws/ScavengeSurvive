@@ -6,7 +6,7 @@
 #define UI_ELEMENT_ITEM		(2)
 
 
-new
+static
 	PlayerText:GearSlot_Head[3],
 	PlayerText:GearSlot_Face[3],
 	PlayerText:GearSlot_Hand[3],
@@ -15,17 +15,7 @@ new
 	PlayerText:GearSlot_Back[3],
 
 	inv_TempContainerID[MAX_PLAYERS],
-	inv_InventoryOptionID[MAX_PLAYERS],
-	inv_BodyPartHead[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartTorso[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartArmR[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartArmL[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartGroin[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartLegR[MAX_PLAYERS] = {-1, ...},
-	inv_BodyPartLegL[MAX_PLAYERS] = {-1, ...},
-	inv_StatBleeding[MAX_PLAYERS] = {-1, ...},
-	inv_StatHunger[MAX_PLAYERS] = {-1, ...},
-	inv_StatInfect[MAX_PLAYERS] = {-1, ...};
+	inv_InventoryOptionID[MAX_PLAYERS];
 
 
 forward CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item, Float:x, Float:y, Float:width, Float:height, colour, overlaycolour);
@@ -110,11 +100,15 @@ ShowPlayerHealthInfo(playerid)
 	new
 		tmp,
 		bodypartwounds[7],
+		drugslist[MAX_DRUG_TYPE],
+		drugs,
+		drugname[MAX_DRUG_NAME],
 		Float:bleedrate = GetPlayerBleedRate(playerid),
 		Float:hunger = GetPlayerFP(playerid),
 		infected = IsPlayerInfected(playerid);
 
 	GetPlayerWoundsPerBodypart(playerid, bodypartwounds);
+	drugs = GetPlayerDrugsList(playerid, drugslist);
 
 	HideBodyPreviewUI(playerid);
 	ShowBodyPreviewUI(playerid);
@@ -140,6 +134,8 @@ ShowPlayerHealthInfo(playerid)
 	SetBodyPreviewLabel(playerid, 0, tmp++, 20.0, sprintf("Leg L: %d", bodypartwounds[4]),
 		bodypartwounds[4] ? RGBAToHex(max(bodypartwounds[4] * 50, 255), 0, 0, 255) : 0xFFFFFFFF);
 
+	tmp = 0;
+
 	if(bleedrate > 0.0)
 		SetBodyPreviewLabel(playerid, 1, tmp++, 35.0, "Bleeding", RGBAToHex(floatround(bleedrate * 10.0), 255 - floatround(bleedrate * 10.0), 0, 255));
 
@@ -148,22 +144,17 @@ ShowPlayerHealthInfo(playerid)
 
 	if(infected)
 		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Infected", 0xFF0000FF);
+
+	for(new i; i < drugs; i++)
+	{
+		GetDrugName(drugslist[i], drugname);
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, drugname, 0xFFFF00FF);
+	}
 }
 
 HidePlayerHealthInfo(playerid)
 {
 	HideBodyPreviewUI(playerid);
-
-	inv_BodyPartHead[playerid] = -1;
-	inv_BodyPartTorso[playerid] = -1;
-	inv_BodyPartArmR[playerid] = -1;
-	inv_BodyPartArmL[playerid] = -1;
-	inv_BodyPartGroin[playerid] = -1;
-	inv_BodyPartLegR[playerid] = -1;
-	inv_BodyPartLegL[playerid] = -1;
-	inv_StatBleeding[playerid] = -1;
-	inv_StatHunger[playerid] = -1;
-	inv_StatInfect[playerid] = -1;
 }
 
 UpdatePlayerGear(playerid, show = 1)

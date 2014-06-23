@@ -60,11 +60,11 @@ ptask FoodUpdate[1000](playerid)
 	if(food > 100.0)
 		food = 100.0;
 
-	if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+	if(!IsPlayerUnderDrugEffect(playerid, drug_Morphine) && !IsPlayerUnderDrugEffect(playerid, drug_Air))
 	{
 		if(food < 30.0)
 		{
-			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+			if(!IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
 			{
 				if(!IsPlayerInfected(playerid))
 					SetPlayerDrunkLevel(playerid, 0);

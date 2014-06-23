@@ -4,13 +4,13 @@ new
 
 PlayerInfectionUpdate(playerid)
 {
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Morphine))
 		return;
 
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
 		return;
 
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
 		return;
 
 	if(GetPlayerDrunkLevel(playerid) == 0)

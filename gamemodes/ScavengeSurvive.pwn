@@ -288,18 +288,6 @@ enum
 	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
 }
 
-// Drug types
-enum
-{
-	DRUG_TYPE_ANTIBIOTIC,	// 0 - Remove infection
-	DRUG_TYPE_PAINKILL,		// 1 - +10 HP, 5 minutes no darkness or knockouts from low HP
-	DRUG_TYPE_LSD,			// 2 - Weather effects
-	DRUG_TYPE_AIR,			// 3 - Health loss and death
-	DRUG_TYPE_MORPHINE,		// 4 - Shaky screen and health regen
-	DRUG_TYPE_ADRENALINE,	// 5 - No knockouts, camera shaking and slow health regen
-	DRUG_TYPE_HEROINE		// 6 - Weather effects
-}
-
 // Chat modes
 enum
 {
@@ -404,6 +392,15 @@ new
 	anim_Stab,
 	anim_Heavy;
 
+// DRUG TYPES
+new
+	drug_Antibiotic,
+	drug_Painkill,
+	drug_Lsd,
+	drug_Air,
+	drug_Morphine,
+	drug_Adrenaline,
+	drug_Heroin;
 
 // LOOT INDEXES
 enum
@@ -761,6 +758,7 @@ forward SetRestart(seconds);
 
 // CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
+#include "SS/Core/Char/Drugs.pwn"
 #include "SS/Core/Char/Clothes.pwn"
 #include "SS/Core/Char/Hats.pwn"
 #include "SS/Core/Char/Inventory.pwn"
@@ -777,7 +775,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Char/Medical.pwn"
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
-#include "SS/Core/Char/Drugs.pwn"
 #include "SS/Core/Char/Bleed.pwn"
 
 // WEAPON
@@ -830,6 +827,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Admin/Rcon.pwn"
 #include "SS/Core/Admin/Freeze.pwn"
 #include "SS/Core/Admin/NameTags.pwn"
+#include "SS/Core/Admin/FreeCam.pwn"
 
 // ITEMS
 #include "SS/Core/Item/Food.pwn"
@@ -1548,6 +1546,14 @@ public OnGameModeInit()
 	skin_ArmyF	= DefineClothesType(191,	"Military",			1, 0.2);
 	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.1);
 
+	drug_Antibiotic	= DefineDrugType("Antibiotic",	300000);
+	drug_Painkill	= DefineDrugType("Painkill",	300000);
+	drug_Lsd		= DefineDrugType("Lsd",			300000);
+	drug_Air		= DefineDrugType("Air",			300000);
+	drug_Morphine	= DefineDrugType("Morphine",	300000);
+	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
+	drug_Heroin		= DefineDrugType("Heroin",		300000);
+
 	DefineSafeboxType("Medium Box",		item_MediumBox,		6, 6, 3, 2);
 	DefineSafeboxType("Small Box",		item_SmallBox,		4, 2, 1, 0);
 	DefineSafeboxType("Large Box",		item_LargeBox,		10, 8, 6, 6);
@@ -1710,11 +1716,11 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 		sql_string[256],
 		dbcolumns;
 
-	format(query, sizeof(query), "SELECT sql FROM sqlite_master WHERE tbl_name = '%s' COLLATE NOCASE", tablename);
+	format(query, sizeof(query), "pragma table_info(%s)", tablename);
 	result = db_query(database, query);
 	db_get_field(result, 0, sql_string, sizeof(sql_string));
 
-	dbcolumns = strcount(sql_string, ",") + 1;
+	dbcolumns = db_num_rows(result);
 
 	if(dbcolumns != expectedcolumns)
 	{
@@ -1724,6 +1730,6 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 
 		// Put the server into a loop to stop it so the user can read the message.
 		// It won't function correctly with bad databases anyway.
-		//for(;;){}
+		for(;;){}
 	}
 }

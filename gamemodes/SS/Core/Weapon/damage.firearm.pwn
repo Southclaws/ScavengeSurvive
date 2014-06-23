@@ -98,25 +98,3 @@ _DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
 
 	return 1;
 }
-
-
-/*
-
-To implement:
-
-knockouts:
-
-	new Float:hp = GetPlayerHP(playerid);
-
-	SetPlayerBleedRate(targetid, 0.01);
-
-	if((hp - hploss) < 40.0)
-	{
-		if(random(100) < 70)
-		{
-			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-				KnockOutPlayer(targetid, floatround(4000 * (40.0 - (hp - hploss))));
-		}
-	}
-
-*/

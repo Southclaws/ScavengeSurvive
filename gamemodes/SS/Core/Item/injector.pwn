@@ -4,7 +4,7 @@
 #define INJECT_TYPE_EMPTY		(0)
 #define INJECT_TYPE_MORPHINE	(1)
 #define INJECT_TYPE_ADRENALINE	(2)
-#define INJECT_TYPE_HEROINE		(3)
+#define INJECT_TYPE_HEROIN		(3)
 
 
 static
@@ -54,7 +54,7 @@ public OnItemNameRender(itemid)
 			case INJECT_TYPE_EMPTY:			SetItemNameExtra(itemid, "Empty");
 			case INJECT_TYPE_MORPHINE:		SetItemNameExtra(itemid, "Morphine");
 			case INJECT_TYPE_ADRENALINE:	SetItemNameExtra(itemid, "Adrenaline");
-			case INJECT_TYPE_HEROINE:		SetItemNameExtra(itemid, "Heroine");
+			case INJECT_TYPE_HEROIN:		SetItemNameExtra(itemid, "Heroin");
 			default:						SetItemNameExtra(itemid, "Empty");
 		}
 	}
@@ -156,25 +156,25 @@ public OnHoldActionFinish(playerid)
 		{
 			case INJECT_TYPE_EMPTY:
 			{
-				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_AIR);
+				ApplyDrug(inj_CurrentTarget[playerid], drug_Air);
 			}
 
 			case INJECT_TYPE_MORPHINE:
 			{
-				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_MORPHINE);
+				ApplyDrug(inj_CurrentTarget[playerid], drug_Morphine);
 			}
 
 			case INJECT_TYPE_ADRENALINE:
 			{
-				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_ADRENALINE);
+				ApplyDrug(inj_CurrentTarget[playerid], drug_Adrenaline);
 
 				if(IsPlayerKnockedOut(inj_CurrentTarget[playerid]) && inj_CurrentTarget[playerid] != playerid)
 					WakeUpPlayer(inj_CurrentTarget[playerid]);
 			}
 
-			case INJECT_TYPE_HEROINE:
+			case INJECT_TYPE_HEROIN:
 			{
-				ApplyDrug(inj_CurrentTarget[playerid], DRUG_TYPE_HEROINE);
+				ApplyDrug(inj_CurrentTarget[playerid], drug_Heroin);
 			}
 		}
 

@@ -302,11 +302,11 @@ ptask PlayerUpdate[100](playerid)
 	{
 		if(ply_Data[playerid][ply_HitPoints] < 40.0)
 		{
-			if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
+			if(IsPlayerUnderDrugEffect(playerid, drug_Painkill))
 			{
 				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 			}
-			else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+			else if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
 			{
 				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
 			}
@@ -328,13 +328,13 @@ ptask PlayerUpdate[100](playerid)
 
 	gettime(hour, minute);
 
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
 	{
 		hour = 22;
 		minute = 3;
 		weather = 33;
 	}
-	else if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
+	else if(IsPlayerUnderDrugEffect(playerid, drug_Heroin))
 	{
 		hour = 22;
 		minute = 30;
@@ -348,7 +348,7 @@ ptask PlayerUpdate[100](playerid)
 	SetPlayerTime(playerid, hour, minute);
 	SetPlayerWeather(playerid, weather);
 
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
 	{
 		SetPlayerDrunkLevel(playerid, 100000);
 
@@ -356,7 +356,7 @@ ptask PlayerUpdate[100](playerid)
 			GivePlayerHP(playerid, -0.1);
 	}
 
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
+	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
 	{
 		GivePlayerHP(playerid, 0.01);
 	}
@@ -432,8 +432,6 @@ public OnPlayerSpawn(playerid)
 	PreloadPlayerAnims(playerid);
 	SetAllWeaponSkills(playerid, 500);
 	Streamer_Update(playerid);
-
-	RemoveAllDrugs(playerid);
 
 	return 1;
 }

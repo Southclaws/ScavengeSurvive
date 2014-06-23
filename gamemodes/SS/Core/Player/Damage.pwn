@@ -31,7 +31,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 			{
 				if(amount > 6.0 || amount > 70.0)
 				{
-					KnockOutPlayer(playerid, floatround(amount * (IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) ? 52 : 64)));
+					KnockOutPlayer(playerid, floatround(amount * (IsPlayerUnderDrugEffect(playerid, drug_Adrenaline) ? 52 : 64)));
 				}
 			}
 		}

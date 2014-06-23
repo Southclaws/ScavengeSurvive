@@ -110,7 +110,7 @@ KnockOutUpdate(playerid)
 
 		if(hp < 50.0)
 		{
-			if(!IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE) && !IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
+			if(!IsPlayerUnderDrugEffect(playerid, drug_Adrenaline) && !IsPlayerUnderDrugEffect(playerid, drug_Painkill))
 			{
 				if(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]) > 5000 * hp)
 				{

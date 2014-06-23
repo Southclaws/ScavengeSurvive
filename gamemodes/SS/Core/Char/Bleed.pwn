@@ -33,14 +33,14 @@ ptask BleedUpdate[1000](playerid)
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 
 		GivePlayerHP(playerid, 0.000925925); // One third of the health bar regenerates each real-time hour
+	}
 
-		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
-		{
-			SetPlayerDrunkLevel(playerid, 2200);
+	if(IsPlayerUnderDrugEffect(playerid, drug_Morphine))
+	{
+		SetPlayerDrunkLevel(playerid, 2200);
 
-			if(random(100) < 80)
-				GivePlayerHP(playerid, 0.05);
-		}
+		if(random(100) < 80)
+			GivePlayerHP(playerid, 0.05);
 	}
 
 	return;

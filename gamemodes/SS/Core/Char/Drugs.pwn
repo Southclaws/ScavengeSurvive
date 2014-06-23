@@ -1,88 +1,292 @@
-#define MAX_DRUG_TYPE (7)
-
-//#define 
+#include <YSI\y_hooks>
 
 
+#define MAX_DRUG_TYPE	(12)
+#define MAX_DRUG_NAME	(32)
 
 
-new
-	drug_PlayerDrugUseTick[MAX_PLAYERS][MAX_DRUG_TYPE],
-	drug_bPlayerDrugEffects[MAX_PLAYERS];
-
-
-ApplyDrug(playerid, drugtype)
+enum E_DRUG_TYPE_DATA
 {
-	drug_PlayerDrugUseTick[playerid][drugtype] = GetTickCount();
-	t:drug_bPlayerDrugEffects[playerid]<(1 << drugtype)>;
+	drug_name[MAX_DRUG_NAME],
+	drug_duration
 }
 
-RemoveDrug(playerid, drugtype)
+enum E_PLAYER_DRUG_DATA
 {
-	drug_PlayerDrugUseTick[playerid][drugtype] = 0;
-	f:drug_bPlayerDrugEffects[playerid]<(1 << drugtype)>;
+	drug_active,
+	drug_tick,
+	drug_totalDuration
 }
+
+
+static
+	drug_TypeData[MAX_DRUG_TYPE][E_DRUG_TYPE_DATA],
+	drug_TypeTotal,
+
+	drug_PlayerDrugData[MAX_PLAYERS][MAX_DRUG_TYPE][E_PLAYER_DRUG_DATA];
+
+
+static HANDLER;
+
+
+forward OnPlayerDrugWearOff(playerid, drugtype);
+
+
+/*==============================================================================
+
+	Zeroing
+
+==============================================================================*/
+
+
+hook OnGameModeInit()
+{
+	HANDLER = debug_register_handler("drugs");
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	for(new i; i < MAX_DRUG_TYPE; i++)
+	{
+		drug_PlayerDrugData[playerid][i][drug_active] = false;
+		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
+		drug_PlayerDrugData[playerid][i][drug_totalDuration] = 0;
+	}
+}
+
+
+/*==============================================================================
+
+	Global Variables
+
+==============================================================================*/
+
+
+stock DefineDrugType(name[], duration)
+{
+	if(drug_TypeTotal == MAX_DRUG_TYPE)
+	{
+		printf("ERROR: Max drug types (%d) reached.", MAX_DRUG_TYPE);
+		return -1;
+	}
+
+	drug_TypeData[drug_TypeTotal][drug_name][0] = EOS;
+	strcat(drug_TypeData[drug_TypeTotal][drug_name], name, MAX_DRUG_NAME);
+	drug_TypeData[drug_TypeTotal][drug_duration] = duration;
+
+	return drug_TypeTotal++;
+}
+
+stock ApplyDrug(playerid, drugtype, customduration = -1)
+{
+	d:1:HANDLER("[ApplyDrug] playerid:%d drugtype:%d customduration:%d", playerid, drugtype, customduration);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(!(0 <= drugtype < drug_TypeTotal))
+		return 0;
+
+	if(drug_PlayerDrugData[playerid][drugtype][drug_active])
+	{
+		drug_PlayerDrugData[playerid][drugtype][drug_totalDuration] += customduration == -1 ? drug_TypeData[drugtype][drug_duration] : customduration;
+	}
+	else
+	{
+		drug_PlayerDrugData[playerid][drugtype][drug_active] = true;
+		drug_PlayerDrugData[playerid][drugtype][drug_tick] = tickcount();
+		drug_PlayerDrugData[playerid][drugtype][drug_totalDuration] = customduration == -1 ? drug_TypeData[drugtype][drug_duration] : customduration;
+	}
+
+	ShowActionText(playerid, sprintf("Taken %s", drug_TypeData[drugtype][drug_name]), 3000);
+
+	return 1;
+}
+
+stock RemoveDrug(playerid, drugtype)
+{
+	d:1:HANDLER("[RemoveDrug] playerid:%d drugtype:%d", playerid, drugtype);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(!(0 <= drugtype < drug_TypeTotal))
+		return 0;
+
+	drug_PlayerDrugData[playerid][drugtype][drug_active] = false;
+	drug_PlayerDrugData[playerid][drugtype][drug_tick] = 0;
+	drug_PlayerDrugData[playerid][drugtype][drug_totalDuration] = 0;
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Internal
+
+==============================================================================*/
 
 
 DrugsUpdate(playerid)
 {
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ANTIBIOTIC))
+	for(new i; i < MAX_DRUG_TYPE; i++)
 	{
-		if(GetTickCountDifference(GetTickCount(), GetPlayerDrugUseTick(playerid, DRUG_TYPE_ANTIBIOTIC)) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_ANTIBIOTIC);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_PAINKILL))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_PAINKILL]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_PAINKILL);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_LSD))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_LSD]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_LSD);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_AIR]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_AIR);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_MORPHINE))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_MORPHINE]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_MORPHINE);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_ADRENALINE))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_ADRENALINE]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_ADRENALINE);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_HEROINE))
-	{
-		if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugUseTick[playerid][DRUG_TYPE_HEROINE]) > 300000)
-			RemoveDrug(playerid, DRUG_TYPE_HEROINE);
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+		{
+			if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugData[playerid][i][drug_tick]) > drug_TypeData[i][drug_duration])
+			{
+				ShowActionText(playerid, sprintf("%s has worn off", drug_TypeData[i][drug_name]), 3000);
+				RemoveDrug(playerid, i);
+				CallLocalFunction("OnPlayerDrugWearOff", "dd", playerid, i);
+			}
+		}
 	}
 }
 
-
-GetPlayerDrugUseTick(playerid, drugtype)
+stock IsPlayerUnderDrugEffect(playerid, drugtype)
 {
-	return drug_PlayerDrugUseTick[playerid][drugtype];
+	d:1:HANDLER("[IsPlayerUnderDrugEffect] playerid:%d drugtype:%d", playerid, drugtype);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(!(0 <= drugtype < drug_TypeTotal))
+		return 0;
+
+	return drug_PlayerDrugData[playerid][drugtype][drug_active];
 }
 
-IsPlayerUnderDrugEffect(playerid, drugtype)
+stock GetDrugName(drugtype, name[])
 {
-	if(drug_bPlayerDrugEffects[playerid] & (1 << drugtype))
+	d:1:HANDLER("[GetDrugName] drugtype:%d", drugtype);
+	if(!(0 <= drugtype < drug_TypeTotal))
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, drug_TypeData[drugtype][drug_name], MAX_DRUG_NAME);
+
+	return 1;
+}
+
+stock GetPlayerDrugsList(playerid, output[])
+{
+	d:1:HANDLER("[GetPlayerDrugsList] playerid:%d", playerid);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	new idx;
+
+	for(new i; i < MAX_DRUG_TYPE; i++)
+	{
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+			output[idx++] = i;
+	}
+
+	return idx;
+}
+
+stock GetPlayerDrugsAsArray(playerid, output[])
+{
+	d:1:HANDLER("[GetPlayerDrugsAsArray] playerid:%d", playerid);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+/*
+	max size: 1 + MAX_DRUG_TYPE * 2
+	header: 1 cell
+		drugblock count
+
+	drugblock: 2 cells
+		drug_type
+		remainingms
+*/
+
+	new idx = 1;
+
+	for(new i; i < MAX_DRUG_TYPE; i++)
+	{
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+		{
+			output[0]++;
+			output[idx++] = i;
+			output[idx++] = drug_PlayerDrugData[playerid][i][drug_totalDuration] - GetTickCountDifference(drug_PlayerDrugData[playerid][i][drug_tick], GetTickCount());
+		}
+	}
+
+	return idx;
+}
+
+stock SetPlayerDrugsFromArray(playerid, input[])
+{
+	d:1:HANDLER("[GetPlayerDrugsAsArray] playerid:%d", playerid);
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(input[0] <= 0)
+		return 0;
+
+	for(new i = 1; i < input[0] * 2; i += 2)
+	{
+		ApplyDrug(playerid, input[i], input[i + 1]);
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Save/Load
+
+==============================================================================*/
+
+
+public OnPlayerSave(playerid, filename[])
+{
+	new
+		length,
+		data[1 + (MAX_DRUG_TYPE * 2)];
+
+	length = GetPlayerDrugsAsArray(playerid, data);
+
+	modio_push(filename, _T<D,R,U,G>, length, data);
+
+	#if defined drug_OnPlayerSave
+		return drug_OnPlayerSave(playerid, filename);
+	#else
 		return 1;
-
-	return 0;
+	#endif
 }
+#if defined _ALS_OnPlayerSave
+	#undef OnPlayerSave
+#else
+	#define _ALS_OnPlayerSave
+#endif
+ 
+#define OnPlayerSave drug_OnPlayerSave
+#if defined drug_OnPlayerSave
+	forward drug_OnPlayerSave(playerid, filename[]);
+#endif
 
-RemoveAllDrugs(playerid)
+public OnPlayerLoad(playerid, filename[])
 {
-	drug_bPlayerDrugEffects[playerid] = 0;
+	new data[1 + (MAX_DRUG_TYPE * 2)];
+
+	modio_read(filename, _T<D,R,U,G>, data);
+
+	SetPlayerDrugsFromArray(playerid, data);
+
+	#if defined drug_OnPlayerLoad
+		return drug_OnPlayerLoad(playerid, filename);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerLoad
+	#undef OnPlayerLoad
+#else
+	#define _ALS_OnPlayerLoad
+#endif
+ 
+#define OnPlayerLoad drug_OnPlayerLoad
+#if defined drug_OnPlayerLoad
+	forward drug_OnPlayerLoad(playerid, filename[]);
+#endif

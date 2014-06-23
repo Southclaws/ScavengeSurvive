@@ -128,10 +128,9 @@ _OnDeath(playerid, killerid)
 
 		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, deathreason);
 
-		if(IsPlayerUnderDrugEffect(playerid, DRUG_TYPE_AIR))
+		if(IsPlayerUnderDrugEffect(playerid, drug_Air))
 		{
 			deathreasonstring = "They died of air embolism (injecting oxygen into their bloodstream).";
-			RemoveDrug(playerid, DRUG_TYPE_AIR);
 		}
 		else
 		{
@@ -147,7 +146,7 @@ _OnDeath(playerid, killerid)
 					deathreasonstring = "They suffered massive concussion due to an explosion.";
 
 				default:
-					deathreasonstring = "They died for an unknown deathreason.";
+					deathreasonstring = "They died for an unknown reason.";
 			}
 		}
 	}
