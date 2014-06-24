@@ -7,6 +7,9 @@
 
 
 static
+	inv_GearActive[MAX_PLAYERS],
+	inv_HealthInfoActive[MAX_PLAYERS],
+
 	PlayerText:GearSlot_Head[3],
 	PlayerText:GearSlot_Face[3],
 	PlayerText:GearSlot_Hand[3],
@@ -71,6 +74,8 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 
 ShowPlayerGear(playerid)
 {
+	inv_GearActive[playerid] = true;
+
 	for(new i; i < 3; i++)
 	{
 		PlayerTextDrawShow(playerid, GearSlot_Head[i]);
@@ -84,6 +89,8 @@ ShowPlayerGear(playerid)
 
 HidePlayerGear(playerid)
 {
+	inv_GearActive[playerid] = false;
+
 	for(new i; i < 3; i++)
 	{
 		PlayerTextDrawHide(playerid, GearSlot_Head[i]);
@@ -109,6 +116,8 @@ ShowPlayerHealthInfo(playerid)
 
 	GetPlayerWoundsPerBodypart(playerid, bodypartwounds);
 	drugs = GetPlayerDrugsList(playerid, drugslist);
+
+	inv_HealthInfoActive[playerid] = true;
 
 	HideBodyPreviewUI(playerid);
 	ShowBodyPreviewUI(playerid);
@@ -154,6 +163,7 @@ ShowPlayerHealthInfo(playerid)
 
 HidePlayerHealthInfo(playerid)
 {
+	inv_HealthInfoActive[playerid] = false;
 	HideBodyPreviewUI(playerid);
 }
 
@@ -783,5 +793,8 @@ forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	if(IsPlayerSpawned(playerid))
-		ShowPlayerHealthInfo(playerid);
+	{
+		if(inv_HealthInfoActive[playerid])
+			ShowPlayerHealthInfo(playerid);
+	}
 }
