@@ -465,6 +465,7 @@ Logout(playerid, docombatlogcheck = 1)
 
 		if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
 		{
+			MsgAllF(YELLOW, " >  %p combat logged!", playerid);
 			OnPlayerDeath(playerid, lastattacker, lastweapon);
 		}
 	}

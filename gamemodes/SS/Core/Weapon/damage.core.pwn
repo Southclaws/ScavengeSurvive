@@ -119,8 +119,12 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, c
 		}
 	}
 
+	dmg_TookDamageTick[targetid] = GetTickCount();
+
 	if(IsPlayerConnected(playerid))
 	{
+		dmg_DeltDamageTick[playerid] = GetTickCount();
+
 		GetPlayerName(targetid, dmg_LastHit[playerid], MAX_PLAYER_NAME);
 		dmg_LastHitId[playerid] = targetid;
 		dmg_LastHitItem[playerid] = GetPlayerItem(playerid);

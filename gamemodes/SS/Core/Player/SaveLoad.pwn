@@ -681,50 +681,6 @@ FV10_LoadPlayerInventory(playerid)
 
 /*==============================================================================
 
-	Clear inventory data
-
-==============================================================================*/
-
-
-ClearPlayerInventoryFile(playerid)
-{
-	new
-		filename[MAX_PLAYER_FILE],
-		File:file,
-		data[PLY_CELL_END];
-
-	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
-
-	file = fopen(filename, io_write);
-
-	if(!file)
-	{
-		printf("ERROR: [ClearPlayerInventoryFile] Opening file '%s'.", filename);
-		return 0;
-	}
-
-	fblockwrite(file, data, 1);
-	fclose(file);
-
-	PLAYER_INV_FILE(gPlayerName[playerid], filename);
-
-	file = fopen(filename, io_write);
-
-	if(!file)
-	{
-		printf("ERROR: [ClearPlayerInventoryFile] Opening file '%s'.", filename);
-		return 0;
-	}
-
-	fblockwrite(file, data, 1);
-	fclose(file);
-
-	return 1;
-}
-
-
-/*==============================================================================
-
 	Gamemode exit fix for modio
 
 ==============================================================================*/

@@ -746,7 +746,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Death.pwn"
 #include "SS/Core/Player/Tutorial.pwn"
 #include "SS/Core/Player/WelcomeMessage.pwn"
-#include "SS/Core/Player/AntiCombatLog.pwn"
 #include "SS/Core/Player/Chat.pwn"
 #include "SS/Core/Player/CmdProcess.pwn"
 #include "SS/Core/Player/Commands.pwn"
@@ -788,6 +787,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Weapon/damage.explosive.pwn"
 #include "SS/Core/Weapon/animset.pwn"
 #include "SS/Core/Weapon/misc.pwn"
+#include "SS/Core/Weapon/AntiCombatLog.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
