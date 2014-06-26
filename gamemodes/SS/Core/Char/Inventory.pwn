@@ -266,6 +266,7 @@ public OnPlayerOpenInventory(playerid)
 	ShowPlayerGear(playerid);
 	UpdatePlayerGear(playerid);
 	ShowPlayerHealthInfo(playerid);
+	SelectTextDraw(playerid, 0xFFFF00FF);
 
 	return CallLocalFunction("app_OnPlayerOpenInventory", "d", playerid);
 }
@@ -281,6 +282,7 @@ public OnPlayerCloseInventory(playerid)
 {
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
+	CancelSelectTextDraw(playerid);
 
 	return CallLocalFunction("app_OnPlayerCloseInventory", "d", playerid);
 }
@@ -312,6 +314,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
+	CancelSelectTextDraw(playerid);
 
 	return CallLocalFunction("app_OnPlayerCloseContainer", "dd", playerid, containerid);
 }
@@ -789,6 +792,18 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 #endif
 #define OnPlayerSelectContainerOpt inv_OnPlayerSelectContainerOpt
 forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
+
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+	if(clickedid == Text:65535)
+	{
+		if(IsPlayerViewingInventory(playerid))
+		{
+			CancelSelectTextDraw(playerid);
+			ClosePlayerInventory(playerid);
+		}
+	}
+}
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
