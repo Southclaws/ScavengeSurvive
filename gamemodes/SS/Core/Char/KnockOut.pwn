@@ -25,6 +25,9 @@ stock KnockOutPlayer(playerid, duration)
 		knockout_Duration[playerid] = duration;
 		knockout_KnockedOut[playerid] = true;
 
+		foreach(new i : veh_Index)
+			SetVehicleParamsForPlayer(i, playerid, 0, 1);
+
 		_PlayKnockOutAnimation(playerid);
 
 		stop knockout_Timer[playerid];
@@ -38,6 +41,9 @@ stock KnockOutPlayer(playerid, duration)
 stock WakeUpPlayer(playerid)
 {
 	stop knockout_Timer[playerid];
+
+	foreach(new i : veh_Index)
+		SetVehicleParamsForPlayer(i, playerid, 0, IsVehicleLocked(i));
 
 	HidePlayerProgressBar(playerid, KnockoutBar);
 	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);

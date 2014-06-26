@@ -8,22 +8,27 @@ static
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(IsPlayerInAnyVehicle(playerid))
+	if(newkeys & KEY_SUBMISSION)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
-
-		if(newkeys & KEY_SUBMISSION)
-		{
-			if(VehicleDoorsState(vehicleid))
-			{
-				SetVehicleExternalLock(vehicleid, false);
-			}
-			else
-			{
-				SetVehicleExternalLock(vehicleid, true);
-			}
-		}
+		if(IsPlayerInAnyVehicle(playerid))
+			_HandleLockKey(playerid);
 	}
+
+	return 1;
+}
+
+_HandleLockKey(playerid)
+{
+	if(IsPlayerKnockedOut(playerid))
+		return 0;
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(VehicleDoorsState(vehicleid))
+		SetVehicleExternalLock(vehicleid, false);
+
+	else
+		SetVehicleExternalLock(vehicleid, true);
 
 	return 1;
 }
