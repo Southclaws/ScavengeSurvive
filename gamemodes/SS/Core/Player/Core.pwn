@@ -187,6 +187,12 @@ timer LoadAccountDelay[5000](playerid)
 		log(sprintf("[LOAD] %p (account not whitelisted)", playerid), 0);
 	}
 
+	if(loadresult == 4) // Account does exists, but is disabled
+	{
+		KickPlayer(playerid, "Account inactive");
+		log(sprintf("[LOAD] %p (account inactive)", playerid), 0);
+	}
+
 	CheckForExtraAccounts(playerid);
 }
 

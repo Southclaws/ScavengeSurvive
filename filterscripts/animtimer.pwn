@@ -1,6 +1,6 @@
 #define FILTERSCRIPT
 #include <a_samp>
-#include <SIF/SIF>
+#include <SIF\Core.pwn>
 
 #undef MAX_PLAYERS
 #define MAX_PLAYERS 16

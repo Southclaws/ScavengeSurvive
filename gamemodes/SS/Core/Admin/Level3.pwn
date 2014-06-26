@@ -8,6 +8,7 @@ new gAdminCommandList_Lvl3[] =
 	/additem - spawn an item\n\
 	/addvehicle - spawn a vehicle\n\
 	/resetpassword - reset a password\n\
+	/setactive - (de)activate accounts\n\
 	/delete(items/tents/defences/signs) - delete things"
 };
 
@@ -416,6 +417,31 @@ ACMD:resetpassword[3](playerid, params[])
 	return 1;
 }
 
+
+ACMD:setactive[3](playerid, params[])
+{
+	new
+		name[MAX_PLAYER_NAME],
+		active;
+
+	if(sscanf(params, "s[24]d", name, active))
+	{
+		MsgF(playerid, YELLOW, " >  Usage: /setactive [name] [1/0]");
+		return 1;
+	}
+
+	if(!AccountExists(name))
+	{
+		Msg(playerid, RED, " >  That account doesn't exist.");
+		return 1;
+	}
+
+	SetAccountActiveState(name, active);
+
+	MsgF(playerid, YELLOW, " >  %s "C_BLUE"'%s' "C_YELLOW"account.", active ? ("Activated") : ("Deactivated"), name);
+
+	return 1;
+}
 
 /*==============================================================================
 

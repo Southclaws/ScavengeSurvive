@@ -14,6 +14,7 @@
 #define FIELD_PLAYER_WARNINGS		"warnings"	// 09
 #define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 10
 #define FIELD_PLAYER_GPCI			"gpci"		// 11
+#define FIELD_PLAYER_ACTIVE			"active"	// 12
 
 enum
 {
@@ -28,7 +29,8 @@ enum
 	FIELD_ID_PLAYER_TOTALSPAWNS,
 	FIELD_ID_PLAYER_WARNINGS,
 	FIELD_ID_PLAYER_AIMSHOUT,
-	FIELD_ID_PLAYER_GPCI
+	FIELD_ID_PLAYER_GPCI,
+	FIELD_ID_PLAYER_ACTIVE
 }
 
 
@@ -73,6 +75,9 @@ DBStatement:	stmt_AccountSetAimShout,
 DBStatement:	stmt_AccountGetGpci,
 DBStatement:	stmt_AccountSetGpci,
 
+DBStatement:	stmt_AccountGetActiveState,
+DBStatement:	stmt_AccountSetActiveState,
+
 DBStatement:	stmt_AccountGetAliasData;
 	
 
@@ -90,11 +95,12 @@ hook OnGameModeInit()
 		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
 		"FIELD_PLAYER_WARNINGS" INTEGER,\
 		"FIELD_PLAYER_AIMSHOUT" TEXT,\
-		"FIELD_PLAYER_GPCI" TEXT)");
+		"FIELD_PLAYER_GPCI" TEXT,\
+		"FIELD_PLAYER_ACTIVE")");
 
 	db_query(gAccounts, "CREATE INDEX IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER"_index ON "ACCOUNTS_TABLE_PLAYER"("FIELD_PLAYER_NAME")");
 
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 12);
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 13);
 
 	stmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,0,0,?,?,0,0,0,?,?)");
@@ -134,7 +140,10 @@ hook OnGameModeInit()
 	stmt_AccountGetGpci			= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetGpci			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
-	stmt_AccountGetAliasData	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4", "FIELD_PLAYER_PASS", "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+	stmt_AccountGetActiveState	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_ACTIVE" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+	stmt_AccountSetActiveState	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ACTIVE"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+
+	stmt_AccountGetAliasData	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4", "FIELD_PLAYER_PASS", "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? AND "FIELD_PLAYER_ACTIVE" COLLATE NOCASE");
 }
 
 
@@ -158,7 +167,8 @@ LoadAccount(playerid)
 		spawntime,
 		spawns,
 		warnings,
-		aimshout[128];
+		aimshout[128],
+		active;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
@@ -188,6 +198,7 @@ LoadAccount(playerid)
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, spawns);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_AIMSHOUT, DB::TYPE_STRING, aimshout, 128);
+	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ACTIVE, DB::TYPE_INTEGER, active);
 
 	if(!stmt_execute(stmt_AccountLoad))
 	{
@@ -196,6 +207,9 @@ LoadAccount(playerid)
 	}
 
 	stmt_fetch_row(stmt_AccountLoad);
+
+	if(!active)
+		return 4;
 
 	if(gWhitelist)
 	{
@@ -853,10 +867,32 @@ stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 
 stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 {
-	stmt_bind_value(stmt_AccountGetGpci, 0, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
-	stmt_bind_value(stmt_AccountGetGpci, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AccountSetGpci, 0, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
+	stmt_bind_value(stmt_AccountSetGpci, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
-	return stmt_execute(stmt_AccountGetGpci);
+	return stmt_execute(stmt_AccountSetGpci);
+}
+
+// FIELD_ID_PLAYER_ACTIVE
+stock GetAccountActiveState(name[], active)
+{
+	stmt_bind_result_field(stmt_AccountGetActiveState, 0, DB::TYPE_INTEGER , active);
+	stmt_bind_value(stmt_AccountGetActiveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_AccountGetActiveState))
+		return 0;
+
+	stmt_fetch_row(stmt_AccountGetActiveState);
+
+	return 1;
+}
+
+stock SetAccountActiveState(name[], active)
+{
+	stmt_bind_value(stmt_AccountSetActiveState, 0, DB::TYPE_INTEGER, active);
+	stmt_bind_value(stmt_AccountSetActiveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	return stmt_execute(stmt_AccountSetActiveState);
 }
 
 // Pass, IP and gpci
