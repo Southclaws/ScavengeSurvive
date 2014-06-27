@@ -1,3 +1,19 @@
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
+{
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/restart - restart the server\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/setadmin - set a player's staff level\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/setpinglimit - set ping limit\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/weather - set weather\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/debug - activate a debug handler\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/sifdebug - activate SIF debug\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/sifgdebug - activate SIF global debug\n");
+	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/dbl - toggle debug labels\n");
+}
+
+
 /*==============================================================================
 
 	"Secret" RCON self-admin level command
@@ -20,6 +36,30 @@ CMD:adminlvl(playerid, params[])
 
 
 	MsgF(playerid, YELLOW, " >  Admin Level Secretly Set To: %d", level);
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	"Secret" RCON self-admin level command
+
+==============================================================================*/
+
+
+ACMD:restart[4](playerid, params[])
+{
+	new duration;
+
+	if(sscanf(params, "d", duration))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /restart [seconds] - Always give players 5 or 10 minutes to prepare.");
+		return 1;
+	}
+
+	MsgF(playerid, YELLOW, " >  Restarting the server in "C_BLUE"%02d:%02d"C_YELLOW".", duration / 60, duration % 60);
+	SetRestart(duration);
 
 	return 1;
 }
@@ -74,33 +114,6 @@ ACMD:setadmin[4](playerid, params[])
 
 /*==============================================================================
 
-	Delete a player's account
-
-==============================================================================*/
-
-
-ACMD:deleteaccount[3](playerid, params[])
-{
-	if(isnull(params))
-	{
-		Msg(playerid, YELLOW, " >  Usage: /deleteaccount [account user-name]");
-		return 1;
-	}
-
-	new ret = DeleteAccount(params);
-
-	if(ret)
-		Msg(playerid, YELLOW, " >  Account deleted.");
-
-	else
-		Msg(playerid, YELLOW, " >  That account does not exist.");
-
-	return 1;	
-}
-
-
-/*==============================================================================
-
 	Set the server's ping limit
 
 ==============================================================================*/
@@ -125,141 +138,11 @@ ACMD:setpinglimit[3](playerid, params[])
 
 /*==============================================================================
 
-	Lazy RCON commands
-
-==============================================================================*/
-
-
-ACMD:gamename[4](playerid,params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /gamename [name]");
-
-	SetGameModeText(params);
-	MsgF(playerid, YELLOW, " >  GameMode name set to "C_BLUE"%s", params);
-
-	return 1;
-}
-
-ACMD:hostname[4](playerid,params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /hostname [name]");
-
-	new str[74];
-	format(str, sizeof(str), "hostname %s", params);
-	SendRconCommand(str);
-
-	MsgF(playerid, YELLOW, " >  Hostname set to "C_BLUE"%s", params);
-
-	return 1;
-}
-
-ACMD:mapname[4](playerid,params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /mapname [name]");
-
-	new str[74];
-	format(str, sizeof(str), "mapname %s", params);
-	SendRconCommand(str);
-
-	return 1;
-}
-
-ACMD:gmx[4](playerid, params[])
-{
-	RestartGamemode();
-	return 1;
-}
-
-ACMD:loadfs[4](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
-
-	new str[64];
-	format(str, sizeof(str), "loadfs %s", params);
-	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Loading Filterscript: "C_BLUE"'%s'", params);
-
-	return 1;
-}
-
-ACMD:reloadfs[4](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
-
-	new str[64];
-	format(str, sizeof(str), "reloadfs %s", params);
-	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Reloading Filterscript: "C_BLUE"'%s'", params);
-
-	return 1;
-}
-
-ACMD:unloadfs[4](playerid, params[])
-{
-	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
-
-	new str[64];
-	format(str, sizeof(str), "unloadfs %s", params);
-	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Unloading Filterscript: "C_BLUE"'%s'", params);
-
-	return 1;
-}
-
-
-/*==============================================================================
-
 	Utility commands
 
 ==============================================================================*/
 
 
-ACMD:pos[4](playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-
-	MsgF(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
-
-	return 1;
-}
-
-ACMD:hud[4](playerid, params[])
-{
-	if(GetPlayerBitFlag(playerid, ShowHUD))
-	{
-		PlayerTextDrawHide(playerid, HungerBarBackground[playerid]);
-		PlayerTextDrawHide(playerid, HungerBarForeground[playerid]);
-		TextDrawHideForPlayer(playerid, Branding);
-		HideWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, false);
-	}
-	else
-	{
-		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
-		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
-		TextDrawShowForPlayer(playerid, Branding);
-		ShowWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, true);
-	}
-}
-ACMD:nametags[4](playerid, params[])
-{
-	ToggleNameTagsForPlayer(playerid, !GetPlayerNameTagsToggle(playerid));
-	MsgF(playerid, YELLOW, " >  Nametags toggled %s", (GetPlayerNameTagsToggle(playerid)) ? ("on") : ("off"));
-
-	return 1;
-}
 
 ACMD:weather[4](playerid, params[])
 {
@@ -419,20 +302,6 @@ ACMD:dbl[3](playerid, params[])
 	#else
 		Msg(playerid, YELLOW, " >  Debug labels are not compiled.");
 	#endif
-
-	return 1;
-}
-
-ACMD:gotoitem[4](playerid, params[])
-{
-	new
-		itemid = strval(params),
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetItemPos(itemid, x, y, z);
-	SetPlayerPos(playerid, x, y, z);
 
 	return 1;
 }

@@ -1,15 +1,16 @@
-// 7 commands
+#include <YSI\y_hooks>
 
-new gAdminCommandList_Lvl1[] =
+
+hook OnGameModeInit()
 {
-	"/(un)mute - mute/unmute player\n\
-	/warn - warn a player\n\
-	/kick - kick player\n\
-	/msg - send chat announcement\n\
-	/(all)country - show country data\n\
-	/clearchat - clear the chatbox\n\
-	/aliases - check aliases\n"
-};
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/(un)mute - mute/unmute player\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/warn - warn a player\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/kick - kick player\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/msg - send chat announcement\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/(all)country - show country data\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/clearchat - clear the chatbox\n");
+	RegisterAdminCommand(ADMIN_LEVEL_GM, "/aliases - check aliases\n");
+}
 
 
 /*==============================================================================

@@ -1,17 +1,18 @@
-// 10 commands
+#include <YSI\y_hooks>
 
-new gAdminCommandList_Lvl2[] =
+
+hook OnGameModeInit()
 {
-	"/duty - go on admin duty\n\
-	/spec - spectate\n\
-	/goto, /get - teleport players\n\
-	/gotopos - go to coordinates\n\
-	/(un)freeze - freeze/unfreeze player\n\
-	/(un)ban - ban/unban player\n\
-	/banlist - show list of bans\n\
-	/banned - check if banned\n\
-	/motd - set message of the day\n"
-};
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/duty - go on admin duty\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/spec - spectate\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/goto, /get - teleport players\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/gotopos - go to coordinates\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)freeze - freeze/unfreeze player\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)ban - ban/unban player\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banlist - show list of bans\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banned - check if banned\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/motd - set message of the day\n");
+}
 
 
 /*==============================================================================
@@ -61,7 +62,7 @@ ACMD:spec[2](playerid, params[])
 
 		if(IsPlayerConnected(targetid) && targetid != playerid)
 		{
-			if(GetPlayerAdminLevel(playerid) == 1)
+			if(GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_GM)
 			{
 				if(!IsPlayerReported(gPlayerName[targetid]))
 				{
@@ -93,11 +94,8 @@ ACMD:recam[2](playerid, params[])
 
 ACMD:goto[2](playerid, params[])
 {
-	if(GetPlayerAdminLevel(playerid) < 4)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+		return 6;
 
 	new targetid;
 
@@ -120,11 +118,8 @@ ACMD:goto[2](playerid, params[])
 
 ACMD:get[2](playerid, params[])
 {
-	if(GetPlayerAdminLevel(playerid) < 4)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+		return 6;
 
 	new targetid;
 
@@ -259,7 +254,7 @@ ACMD:ban[2](playerid, params[])
 		return 1;
 	}
 
-	if(GetAdminLevelByName(name) > 0)
+	if(GetAdminLevelByName(name) > ADMIN_LEVEL_NONE)
 		return 2;
 
 	BanAndEnterInfo(playerid, name);

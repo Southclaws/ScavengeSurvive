@@ -1,16 +1,17 @@
-// 7 commands
+#include <YSI\y_hooks>
 
-new gAdminCommandList_Lvl3[] =
+
+hook OnGameModeInit()
 {
-	"/whitelist - add/remove name or turn whitelist on/off\n\
-	/vehicle - vehicle control (duty only)\n\
-	/move - nudge yourself\n\
-	/additem - spawn an item\n\
-	/addvehicle - spawn a vehicle\n\
-	/resetpassword - reset a password\n\
-	/setactive - (de)activate accounts\n\
-	/delete(items/tents/defences/signs) - delete things"
-};
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/whitelist - add/remove name or turn whitelist on/off\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/vehicle - vehicle control (duty only)\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/move - nudge yourself\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/additem - spawn an item\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/addvehicle - spawn a vehicle\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/resetpassword - reset a password\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/setactive - (de)activate accounts\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/delete(items/tents/defences/signs) - delete things\n");
+}
 
 
 /*==============================================================================
@@ -107,7 +108,7 @@ ACMD:whitelist[3](playerid, params[])
 
 ACMD:vehicle[3](playerid, params[])
 {
-	if(!IsPlayerOnAdminDuty(playerid))
+	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
 		return 6;
 
 	new
@@ -136,6 +137,8 @@ ACMD:vehicle[3](playerid, params[])
 		GetPlayerPos(playerid, x, y, z);
 		PutPlayerInVehicle(playerid, vehicleid, 0);
 		SetVehiclePos(vehicleid, x, y, z);
+		SetPlayerPos(playerid, x, y, z + 2);
+		SetCameraBehindPlayer(playerid);
 
 		return 1;
 	}
@@ -217,6 +220,15 @@ ACMD:vehicle[3](playerid, params[])
 		return 1;
 	}
 
+	if(!strcmp(command, "removekey"))
+	{
+		SetVehicleKey(vehicleid, 0);
+
+		MsgF(playerid, YELLOW, " >  Vehicle %d unlocked", vehicleid);
+
+		return 1;
+	}
+
 	Msg(playerid, YELLOW, " >  Usage: /vehicle [get/enter/owner/delete/respawn/reset/lock/unlock] [id]");
 
 	return 1;
@@ -232,6 +244,9 @@ ACMD:vehicle[3](playerid, params[])
 
 ACMD:move[3](playerid, params[])
 {
+	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+		return 6;
+
 	new
 		direction[10],
 		Float:amount;
@@ -327,7 +342,7 @@ ACMD:additem[3](playerid, params[])
 
 	SetItemExtraData(itemid, exdata);	
 
-	if(GetPlayerAdminLevel(playerid) < 4)
+	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
 	{
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
@@ -374,7 +389,7 @@ ACMD:addvehicle[3](playerid, params[])
 	SetVehicleFuel(vehicleid, 100000.0);
 	SetVehicleHealth(vehicleid, 990.0);
 
-	if(GetPlayerAdminLevel(playerid) < 4)
+	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
 	{
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
@@ -452,11 +467,8 @@ ACMD:setactive[3](playerid, params[])
 
 ACMD:delete[3](playerid, params[])
 {
-	if(GetPlayerAdminLevel(playerid) == 3)
-	{
-		if(!(IsPlayerOnAdminDuty(playerid)))
-			return 6;
-	}
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_ADMIN)
+		return 6;
 
 	new
 		type[16],

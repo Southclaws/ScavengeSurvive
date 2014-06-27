@@ -1,11 +1,21 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_ADMIN_LEVELS (5)
+#define MAX_ADMIN_LEVELS (6)
 #define ACCOUNTS_TABLE_ADMINS		"Admins"
 #define FIELD_ADMINS_NAME			"name"		// 00
 #define FIELD_ADMINS_LEVEL			"level"		// 01
 
+
+enum
+{
+	ADMIN_LEVEL_NONE,
+	ADMIN_LEVEL_GM,
+	ADMIN_LEVEL_MOD,
+	ADMIN_LEVEL_ADMIN,
+	ADMIN_LEVEL_LEAD,
+	ADMIN_LEVEL_DEV
+}
 
 enum e_admin_data
 {
@@ -17,22 +27,25 @@ enum e_admin_data
 static
 				admin_Data[MAX_ADMIN][e_admin_data],
 				admin_Total,
-				admin_Names[MAX_ADMIN_LEVELS][14] =
+				admin_Names[MAX_ADMIN_LEVELS][15] =
 				{
 					"Player",			// 0 (Unused)
 					"Game Master",		// 1
 					"Moderator",		// 2
 					"Administrator",	// 3
-					"Developer"			// 4
+					"Lord of Admins",	// 4
+					"Developer"			// 5
 				},
 				admin_Colours[MAX_ADMIN_LEVELS] =
 				{
 					0xFFFFFFFF,			// 0 (Unused)
 					0x5DFC0AFF,			// 1
-					0x33CCFFAA,			// 2
+					0x33CCFFFF,			// 2
 					0x6600FFFF,			// 3
-					0xFF0000FF			// 4
+					0xFF0000FF,			// 4
+					0xFF3200FF			// 5
 				},
+				admin_Commands[4][512],
 DBStatement:	stmt_AdminLoadAll,
 DBStatement:	stmt_AdminExists,
 DBStatement:	stmt_AdminInsert,
@@ -402,6 +415,19 @@ stock IsPlayerOnAdminDuty(playerid)
 	return admin_OnDuty[playerid];
 }
 
+stock RegisterAdminCommand(level, string[])
+{
+	if(!(ADMIN_LEVEL_GM <= level <= ADMIN_LEVEL_LEAD))
+	{
+		printf("ERROR: Cannot register admin command for level %d", level);
+		return 0;
+	}
+
+	strcat(admin_Commands[level - 1], string);
+
+	return 1;
+}
+
 
 /*==============================================================================
 
@@ -416,20 +442,25 @@ ACMD:acmds[1](playerid, params[])
 
 	strcat(gBigString[playerid], "/a [message] - Staff chat channel");
 
+	if(admin_Level[playerid] >= 4)
+	{
+		strcat(gBigString[playerid], "\n\n"C_YELLOW"Lead (level 4)"C_BLUE"\n");
+		strcat(gBigString[playerid], admin_Commands[3]);
+	}
 	if(admin_Level[playerid] >= 3)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 3)"C_BLUE"\n");
-		strcat(gBigString[playerid], gAdminCommandList_Lvl3);
+		strcat(gBigString[playerid], admin_Commands[2]);
 	}
 	if(admin_Level[playerid] >= 2)
 	{
-		strcat(gBigString[playerid], "\n\n"C_YELLOW"Administrator (level 2)"C_BLUE"\n");
-		strcat(gBigString[playerid], gAdminCommandList_Lvl2);
+		strcat(gBigString[playerid], "\n\n"C_YELLOW"Moderator (level 2)"C_BLUE"\n");
+		strcat(gBigString[playerid], admin_Commands[1]);
 	}
 	if(admin_Level[playerid] >= 1)
 	{
 		strcat(gBigString[playerid], "\n\n"C_YELLOW"Game Master (level 1)"C_BLUE"\n");
-		strcat(gBigString[playerid], gAdminCommandList_Lvl1);
+		strcat(gBigString[playerid], admin_Commands[0]);
 	}
 	
 	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
@@ -445,7 +476,7 @@ ACMD:adminlist[3](playerid, params[])
 
 	gBigString[playerid][0] = EOS;
 
-	format(title, 20, "Administrators (%d)", admin_Total);
+	format(title, 20, "Staff (%d)", admin_Total);
 
 	for(new i; i < admin_Total; i++)
 	{
