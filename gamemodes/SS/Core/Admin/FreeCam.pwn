@@ -37,6 +37,7 @@ ToggleFreeCam(playerid, bool:toggle)
 
 		DestroyObject(cam_Obj[playerid]);
 		cam_Obj[playerid] = CreateObject(19300, camX, camY, camZ, 0.0, 0.0, 0.0);
+		TogglePlayerSpectating(playerid, false);
 		TogglePlayerSpectating(playerid, true);
 		AttachCameraToObject(playerid, cam_Obj[playerid]);
 
