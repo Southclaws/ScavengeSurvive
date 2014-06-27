@@ -103,7 +103,7 @@ hook OnGameModeInit()
 	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 13);
 
 	stmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,0,0,?,?,0,0,0,?,?)");
+	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,0,0,?,?,0,0,0,?,?,1)");
 	stmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE"=?, "FIELD_PLAYER_KARMA"=?, "FIELD_PLAYER_WARNINGS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
@@ -251,6 +251,8 @@ CreateAccount(playerid, password[])
 
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
+	logf("[REGISTER] %p registered", playerid);
+
 	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		gPlayerName[playerid], MAX_PLAYER_NAME); 
 	stmt_bind_value(stmt_AccountCreate, 1, DB::TYPE_STRING,		password, MAX_PASSWORD_LEN); 
 	stmt_bind_value(stmt_AccountCreate, 2, DB::TYPE_INTEGER,	GetPlayerIpAsInt(playerid)); 
@@ -285,18 +287,12 @@ CreateAccount(playerid, password[])
 	return 1;
 }
 
-DeleteAccount(name[])
-{
-	#pragma unused name
-	// Deleting accounts is removed.
-	// Disabling accounts will be used instead.
-	return 1;
-}
-
 DisplayRegisterPrompt(playerid)
 {
 	new str[150];
 	format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
+
+	logf("[REGPROMPT] %p is registering", playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -340,6 +336,8 @@ DisplayLoginPrompt(playerid, badpass = 0)
 
 	else
 		format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
+
+	logf("[LOGPROMPT] %p is logging in", playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -405,6 +403,8 @@ Login(playerid)
 	new serial[MAX_GPCI_LEN];
 
 	gpci(playerid, serial, MAX_GPCI_LEN);
+
+	logf("[LOGIN] %p logged in", playerid);
 
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 	stmt_bind_value(stmt_AccountSetIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);
@@ -473,14 +473,17 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(docombatlogcheck)
 	{
-		new
-			lastattacker,
-			lastweapon;
-
-		if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+		if(gServerMaxUptime - gServerUptime > 30)
 		{
-			MsgAllF(YELLOW, " >  %p combat logged!", playerid);
-			OnPlayerDeath(playerid, lastattacker, lastweapon);
+			new
+				lastattacker,
+				lastweapon;
+
+			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+			{
+				MsgAllF(YELLOW, " >  %p combat logged!", playerid);
+				OnPlayerDeath(playerid, lastattacker, lastweapon);
+			}
 		}
 	}
 
