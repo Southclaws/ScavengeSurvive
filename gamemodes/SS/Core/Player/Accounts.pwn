@@ -211,7 +211,7 @@ LoadAccount(playerid)
 	if(!active)
 		return 4;
 
-	if(gWhitelist)
+	if(IsWhitelistActive())
 	{
 		if(!IsNameInWhitelist(gPlayerName[playerid]))
 			return 3;
@@ -264,7 +264,7 @@ CreateAccount(playerid, password[])
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
 
-	if(gWhitelist)
+	if(IsWhitelistActive())
 	{
 		if(!IsNameInWhitelist(gPlayerName[playerid]))
 		{

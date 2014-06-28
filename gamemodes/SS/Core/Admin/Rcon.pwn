@@ -82,16 +82,27 @@ public OnRconCommand(cmd[])
 
 			if(!strcmp(action, "on") && action[0] != EOS)
 			{
-				gWhitelist = true;
+				ToggleWhitelist(true);
 				print("Whitelist turned on.");
 			}
 
 			if(!strcmp(action, "off") && action[0] != EOS)
 			{
-				gWhitelist = false;
+				ToggleWhitelist(false);
 				print("Whitelist turned off.");
 			}
 
+			if(!strcmp(action, "auto on") && action[0] != EOS)
+			{
+				ToggleAutoWhitelist(false);
+				print("Automatic whitelist turned off.");
+			}
+
+			if(!strcmp(action, "auto off") && action[0] != EOS)
+			{
+				ToggleAutoWhitelist(false);
+				print("Automatic whitelist turned off.");
+			}
 		}
 
 		return 1;

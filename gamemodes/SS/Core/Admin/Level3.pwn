@@ -29,7 +29,7 @@ ACMD:whitelist[3](playerid, params[])
 
 	if(sscanf(params, "s[7]S()[24]", command, name))
 	{
-		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", gWhitelist ? ("on") : ("off"));
+		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", IsWhitelistActive() ? ("on") : ("off"));
 		return 1;
 	}
 
@@ -62,26 +62,26 @@ ACMD:whitelist[3](playerid, params[])
 	else if(!strcmp(command, "on", true))
 	{
 		MsgAdmins(1, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
-		gWhitelist = true;
+		ToggleWhitelist(true);
 	}
 	else if(!strcmp(command, "off", true))
 	{
 		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
-		gWhitelist = false;
+		ToggleWhitelist(false);
 	}
 	else if(!strcmp(command, "auto", true))
 	{
-		if(!gWhitelistAutoToggle)
+		if(!IsWhitelistAuto())
 		{
 			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle activated.");
-			gWhitelistAutoToggle = true;
+			ToggleWhitelist(true);
 
 			// UpdateSetting("whitelist-auto-toggle", 0);
 		}
 		else
 		{
 			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle deactivated.");
-			gWhitelistAutoToggle = false;
+			ToggleWhitelist(false);
 
 			// UpdateSetting("whitelist-auto-toggle", 0);
 		}
