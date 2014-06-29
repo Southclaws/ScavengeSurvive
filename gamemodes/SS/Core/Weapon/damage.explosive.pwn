@@ -21,7 +21,7 @@ _DoExplosiveDamage(playerid, targetid, Float:multiplier)
 	if(multiplier > 10.0)
 		KnockOutPlayer(targetid, floatround(1000 + (multiplier * 100)));
 
-	bleedrate += Float:CallLocalFunction("OnPlayerExplosiveDmg", "dfd", playerid, bleedrate);
+	bleedrate += Float:CallLocalFunction("OnPlayerExplosiveDmg", "df", playerid, bleedrate);
 
 	PlayerInflictWound(playerid, targetid, E_WOUND_BURN, bleedrate, NO_CALIBRE, random(2) ? (BODY_PART_TORSO) : (random(2) ? (BODY_PART_RIGHT_LEG) : (BODY_PART_LEFT_LEG)));
 }
