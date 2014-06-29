@@ -1,3 +1,13 @@
+#include <YSI\y_hooks>
+
+
+static HANDLER;
+
+hook OnGameModeInit()
+{
+	HANDLER = debug_register_handler("weapon/interact", 4);
+}
+
 public OnPlayerGetItem(playerid, itemid)
 {
 	UpdatePlayerWeaponItem(playerid);
@@ -105,7 +115,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, "Wrong calibre for weapon");
+				ShowActionText(playerid, "Wrong calibre for weapon", 3000);
 				return 1;
 			}
 
@@ -124,6 +134,8 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 				SetItemWeaponItemMagAmmo(ammoitemid, 0);
 				SetItemWeaponItemReserve(ammoitemid, remainder);
+
+				ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to weapon", (reserveammo + magammo) - remainder), 3000);
 			}
 
 			return 1;
@@ -137,10 +149,10 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre == NO_CALIBRE)
 				return 1;
-			
+
 			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, "Wrong calibre for weapon");
+				ShowActionText(playerid, "Wrong calibre for weapon", 3000);
 				return 1;
 			}
 
@@ -156,27 +168,82 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				remainder = GivePlayerAmmo(playerid, ammo);
 
 				SetItemExtraData(ammoitemid, remainder);
+
+				ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to weapon", ammo - remainder), 3000);
 			}
 
 			return 1;
 		}
 	}
 
-	if(GetItemTypeAmmoType(helditemtype) != -1) // Player is holding an ammo item
+	heldtypeid = GetItemTypeAmmoType(helditemtype);
+
+	if(heldtypeid != -1) // Player is holding an ammo item
 	{
 		new ammotypeid = GetItemTypeWeapon(ammoitemtype);
 
+		d:1:HANDLER("[_PickUpAmmoTransferCheck] Weapon check: ammotypeid: %d", ammotypeid);
+
 		if(ammotypeid != -1) // Transfer ammo from weapon to held ammo item
 		{
-			Msg(playerid, -1, "Not implemented.");
+			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
+
+			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Holding ammo item, calibre: %d", heldcalibre);
+
+			if(heldcalibre == NO_CALIBRE)
+				return 1;
+
+			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Ammo calibre: %d", GetItemWeaponCalibre(ammotypeid));
+
+			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
+			{
+				ShowActionText(playerid, "Wrong calibre in weapon", 3000);
+				return 1;
+			}
+
+			new
+				existing = GetItemExtraData(helditemid),
+				amount = GetItemWeaponItemMagAmmo(ammoitemid) + GetItemWeaponItemReserve(ammoitemid);
+
+			SetItemExtraData(helditemid, existing + amount);
+			SetItemWeaponItemMagAmmo(ammoitemid, 0);
+			SetItemWeaponItemReserve(ammoitemid, 0);
+
+			ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to ammo tin", amount), 3000);
+
 			return 1;
 		}
 
 		ammotypeid = GetItemTypeAmmoType(ammoitemtype);
 
+		d:1:HANDLER("[_PickUpAmmoTransferCheck] Ammo tin check: ammotypeid: %d", ammotypeid);
+
 		if(ammotypeid != -1) // Transfer ammo from ammo item to held ammo item
 		{
-			Msg(playerid, -1, "Not implemented.");
+			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
+
+			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Holding ammo item, calibre: %d", heldcalibre);
+
+			if(heldcalibre == NO_CALIBRE)
+				return 1;
+
+			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Ammo calibre: %d", GetAmmoTypeCalibre(ammotypeid));
+
+			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
+			{
+				ShowActionText(playerid, "Wrong calibre in ammo tin", 3000);
+				return 1;
+			}
+
+			new
+				existing = GetItemExtraData(helditemid),
+				amount = GetItemExtraData(ammoitemid);
+
+			SetItemExtraData(helditemid, existing + amount);
+			SetItemExtraData(ammoitemid, 0);
+
+			ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to ammo tin", amount), 3000);
+
 			return 1;
 		}
 	}
