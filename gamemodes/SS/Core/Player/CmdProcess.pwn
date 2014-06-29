@@ -17,9 +17,9 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	{
 		new
 			iLvl = GetPlayerAdminLevel(playerid), // The player's admin level
-			iLoop = 4; // The highest admin level
+			iLoop = 5; // The highest admin level
 
-		while(iLoop > 0) // Loop backwards through admin levels, from 4 to 1
+		while(iLoop > 0) // Loop backwards through admin levels, from 5 to 1
 		{
 			format(cmdfunction, 64, "acmd_%s_%d", cmd[1], iLoop); // format the function to include the admin variable
 

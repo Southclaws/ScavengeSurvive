@@ -191,8 +191,8 @@ ShowDetfieldList(playerid)
 	}
 
 	format(title, sizeof(title), "Detection Fields (%d-%d of %d)",
-		count,
-		(count + MAX_DETFIELD_PAGESIZE > total) ? (total) : (count + MAX_DETFIELD_PAGESIZE),
+		dfm_PageIndex[playerid],
+		(dfm_PageIndex[playerid] + count > total) ? (total) : (dfm_PageIndex[playerid] + count),
 		total);
 
 	ShowPlayerPageButtons(playerid);

@@ -360,6 +360,12 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 	{
 		id = Iter_Free(wnd_Index[playerid]);
 
+		if(id == -1)
+		{
+			printf("ERROR: [SetPlayerWoundDataFromArray] Ran out of wound slots on wound %d cell: %d", (i - 1) / 5, i);
+			break;
+		}
+
 		wnd_Data[playerid][id][wnd_type] = E_WND_TYPE:input[i++];
 		wnd_Data[playerid][id][wnd_bleedrate] = Float:input[i++];
 		wnd_Data[playerid][id][wnd_calibre] = input[i++];
@@ -406,6 +412,7 @@ public OnPlayerLoad(playerid, filename[])
 
 	modio_read(filename, _T<W,N,D,S>, data);
 
+	Iter_Clear(wnd_Index[playerid]);
 	SetPlayerWoundDataFromArray(playerid, data);
 
 	#if defined dmg_OnPlayerLoad

@@ -143,10 +143,14 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_DoctorBag)
 		{
+			new woundcount = (med_HealTarget[playerid] == playerid) ? 1 + random(2) : 3 + random(3);
+
 			SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
 			ApplyDrug(med_HealTarget[playerid], drug_Painkill);
 			ApplyDrug(med_HealTarget[playerid], drug_Morphine);
-			RemovePlayerWounds(med_HealTarget[playerid], 1);
+			RemovePlayerWounds(med_HealTarget[playerid], woundcount);
+
+			ShowActionText(playerid, sprintf("Healed %d wounds", woundcount), 5000);
 		}
 
 		DestroyItem(GetPlayerItem(playerid));
