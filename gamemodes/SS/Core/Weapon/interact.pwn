@@ -1,13 +1,3 @@
-#include <YSI\y_hooks>
-
-
-static HANDLER;
-
-hook OnGameModeInit()
-{
-	HANDLER = debug_register_handler("weapon/interact", 4);
-}
-
 public OnPlayerGetItem(playerid, itemid)
 {
 	UpdatePlayerWeaponItem(playerid);
@@ -119,24 +109,8 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
-			new
-				magammo,
-				reserveammo,
-				remainder;
-
-			magammo = GetItemWeaponItemMagAmmo(ammoitemid);
-			reserveammo = GetItemWeaponItemReserve(ammoitemid);
-
-			if(reserveammo + magammo > 0)
-			{
-				SetItemWeaponItemAmmoItem(helditemid, GetItemWeaponItemAmmoItem(ammoitemid));
-				remainder = GivePlayerAmmo(playerid, reserveammo + magammo);
-
-				SetItemWeaponItemMagAmmo(ammoitemid, 0);
-				SetItemWeaponItemReserve(ammoitemid, remainder);
-
-				ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to weapon", (reserveammo + magammo) - remainder), 3000);
-			}
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			defer _TransferWeaponToWeapon(playerid, ammoitemid, helditemid);
 
 			return 1;
 		}
@@ -156,21 +130,8 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
-			new
-				ammo,
-				remainder;
-
-			ammo = GetItemExtraData(ammoitemid);
-
-			if(ammo > 0)
-			{
-				SetItemWeaponItemAmmoItem(helditemid, ammoitemtype);
-				remainder = GivePlayerAmmo(playerid, ammo);
-
-				SetItemExtraData(ammoitemid, remainder);
-
-				ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to weapon", ammo - remainder), 3000);
-			}
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			defer _TransferTinToWeapon(playerid, ammoitemid, helditemid);
 
 			return 1;
 		}
@@ -182,18 +143,12 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 	{
 		new ammotypeid = GetItemTypeWeapon(ammoitemtype);
 
-		d:1:HANDLER("[_PickUpAmmoTransferCheck] Weapon check: ammotypeid: %d", ammotypeid);
-
 		if(ammotypeid != -1) // Transfer ammo from weapon to held ammo item
 		{
 			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
 
-			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Holding ammo item, calibre: %d", heldcalibre);
-
 			if(heldcalibre == NO_CALIBRE)
 				return 1;
-
-			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Ammo calibre: %d", GetItemWeaponCalibre(ammotypeid));
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
@@ -201,33 +156,20 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
-			new
-				existing = GetItemExtraData(helditemid),
-				amount = GetItemWeaponItemMagAmmo(ammoitemid) + GetItemWeaponItemReserve(ammoitemid);
-
-			SetItemExtraData(helditemid, existing + amount);
-			SetItemWeaponItemMagAmmo(ammoitemid, 0);
-			SetItemWeaponItemReserve(ammoitemid, 0);
-
-			ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to ammo tin", amount), 3000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			defer _TransferWeaponToTin(playerid, ammoitemid, helditemid);
 
 			return 1;
 		}
 
 		ammotypeid = GetItemTypeAmmoType(ammoitemtype);
 
-		d:1:HANDLER("[_PickUpAmmoTransferCheck] Ammo tin check: ammotypeid: %d", ammotypeid);
-
 		if(ammotypeid != -1) // Transfer ammo from ammo item to held ammo item
 		{
 			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
 
-			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Holding ammo item, calibre: %d", heldcalibre);
-
 			if(heldcalibre == NO_CALIBRE)
 				return 1;
-
-			d:1:HANDLER("[_PickUpAmmoTransferCheck]: Ammo calibre: %d", GetAmmoTypeCalibre(ammotypeid));
 
 			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
@@ -235,18 +177,92 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
-			new
-				existing = GetItemExtraData(helditemid),
-				amount = GetItemExtraData(ammoitemid);
-
-			SetItemExtraData(helditemid, existing + amount);
-			SetItemExtraData(ammoitemid, 0);
-
-			ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to ammo tin", amount), 3000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			defer _TransferTinToTin(playerid, ammoitemid, helditemid);
 
 			return 1;
 		}
 	}
 
 	return 1;
+}
+
+
+// Transfer ammo from weapon to held weapon
+timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
+{
+	new
+		magammo,
+		reserveammo,
+		remainder;
+
+	magammo = GetItemWeaponItemMagAmmo(srcitem);
+	reserveammo = GetItemWeaponItemReserve(srcitem);
+
+	if(reserveammo + magammo > 0)
+	{
+		SetItemWeaponItemAmmoItem(tgtitem, GetItemWeaponItemAmmoItem(srcitem));
+		remainder = GivePlayerAmmo(playerid, reserveammo + magammo);
+
+		SetItemWeaponItemMagAmmo(srcitem, 0);
+		SetItemWeaponItemReserve(srcitem, remainder);
+
+		ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to weapon", (reserveammo + magammo) - remainder), 3000);
+	}
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+}
+
+// Transfer ammo from ammo item to held weapon
+// Damn y_timers and it's length restrictions!
+timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
+{
+	new
+		ammo,
+		remainder;
+
+	ammo = GetItemExtraData(srcitem);
+
+	if(ammo > 0)
+	{
+		SetItemWeaponItemAmmoItem(tgtitem, GetItemType(srcitem));
+		remainder = GivePlayerAmmo(playerid, ammo);
+
+		SetItemExtraData(srcitem, remainder);
+
+		ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to weapon", ammo - remainder), 3000);
+	}
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+}
+
+// Transfer ammo from weapon to held ammo item
+timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
+{
+	new
+		existing = GetItemExtraData(tgtitem),
+		amount = GetItemWeaponItemMagAmmo(srcitem) + GetItemWeaponItemReserve(srcitem);
+
+	SetItemExtraData(tgtitem, existing + amount);
+	SetItemWeaponItemMagAmmo(srcitem, 0);
+	SetItemWeaponItemReserve(srcitem, 0);
+
+	ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to ammo tin", amount), 3000);
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+}
+
+// Transfer ammo from ammo item to held ammo item
+timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
+{
+	new
+		existing = GetItemExtraData(tgtitem),
+		amount = GetItemExtraData(srcitem);
+
+	SetItemExtraData(tgtitem, existing + amount);
+	SetItemExtraData(srcitem, 0);
+
+	ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to ammo tin", amount), 3000);
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
 }
