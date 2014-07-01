@@ -958,6 +958,9 @@ public OnGameModeInit()
 	if(gWhitelist)
 		ToggleWhitelist(true);
 
+	if(gWhitelistAutoToggle)
+		ToggleAutoWhitelist(true);
+
 	SendRconCommand(sprintf("mapname %s", gMapName));
 
 // 00

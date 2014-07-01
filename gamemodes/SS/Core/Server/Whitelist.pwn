@@ -160,7 +160,7 @@ stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 
 stock IsPlayerInWhitelist(playerid)
 {
-	if(!IsNameInWhitelist(name))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return wl_Whitelisted[playerid];
@@ -210,7 +210,7 @@ stock ToggleWhitelist(bool:toggle)
 	{
 		foreach(new i : Player)
 		{
-			if(wl_Whitelisted[i])
+			if(!wl_Whitelisted[i])
 			{
 				wl_Countdown[i] = wl_NonWhitelistTime;
 				PlayerTextDrawSetString(i, wl_CountdownUI[i], sprintf("Not whitelisted~n~Time remaining: %02d:%02d", wl_Countdown[i] / 60, wl_Countdown[i] % 60));
@@ -224,7 +224,7 @@ stock ToggleWhitelist(bool:toggle)
 	{
 		foreach(new i : Player)
 		{
-			if(wl_Whitelisted[i])
+			if(!wl_Whitelisted[i])
 			{
 				stop wl_CountdownTimer[i];
 				PlayerTextDrawHide(i, wl_CountdownUI[i]);

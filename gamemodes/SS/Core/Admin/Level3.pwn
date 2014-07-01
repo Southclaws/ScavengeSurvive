@@ -29,12 +29,18 @@ ACMD:whitelist[3](playerid, params[])
 
 	if(sscanf(params, "s[7]S()[24]", command, name))
 	{
-		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off] [name] - the whitelist is currently %s", IsWhitelistActive() ? ("on") : ("off"));
+		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off/auto/list] - the whitelist is currently %s (auto: %s)", IsWhitelistActive() ? ("on") : ("off"), IsWhitelistAuto() ? ("on") : ("off"));
 		return 1;
 	}
 
-	if(!strcmp(command, "add", true) && !isnull(name))
+	if(!strcmp(command, "add", true))
 	{
+		if(isnull(name))
+		{
+			Msg(playerid, YELLOW, " >  Usage /whitelist add [name]");
+			return 1;
+		}
+
 		new result = AddNameToWhitelist(name);
 
 		if(result == 1)
@@ -46,8 +52,14 @@ ACMD:whitelist[3](playerid, params[])
 		if(result == -1)
 			Msg(playerid, RED, " >  An error occurred.");
 	}
-	else if(!strcmp(command, "remove", true) && !isnull(name))
+	else if(!strcmp(command, "remove", true))
 	{
+		if(isnull(name))
+		{
+			Msg(playerid, YELLOW, " >  Usage /whitelist remove [name]");
+			return 1;
+		}
+
 		new result = RemoveNameFromWhitelist(name);
 
 		if(result == 1)
@@ -93,6 +105,18 @@ ACMD:whitelist[3](playerid, params[])
 
 		else
 			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist");
+	}
+	else if(!strcmp(command, "list", true))
+	{
+		new list[(MAX_PLAYER_NAME + 1) * MAX_PLAYERS];
+
+		foreach(new i : Player)
+		{
+			GetPlayerName(i, name, MAX_PLAYER_NAME);
+			format(list, sizeof(list), "%s%C%s\n", list, IsPlayerInWhitelist(i) ? (GREEN) : (RED), name);
+		}
+
+		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close");
 	}
 
 	return 1;
