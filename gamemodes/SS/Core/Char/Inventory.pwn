@@ -405,13 +405,20 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsContainerFull(containerid))
 				{
-					RemovePlayerHat(playerid);
+					if(IsValidItem(GetPlayerItem(playerid)))
+					{
+						RemovePlayerHat(playerid);
 
-					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					GiveWorldItemToPlayer(playerid, itemid);
-					UpdatePlayerGear(playerid);
+						itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+						GiveWorldItemToPlayer(playerid, itemid);
+						UpdatePlayerGear(playerid);
 
-					ShowActionText(playerid, "Hat removed", 3000, 150);
+						ShowActionText(playerid, "Hat removed", 3000);
+					}
+					else
+					{
+						ShowActionText(playerid, "You are already holding an item", 3000);
+					}
 				}
 				else
 				{
@@ -423,7 +430,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 						UpdatePlayerGear(playerid);
 						DisplayContainerInventory(playerid, containerid);
 
-						ShowActionText(playerid, "Hat removed", 3000, 150);
+						ShowActionText(playerid, "Hat removed", 3000);
 					}
 					else
 					{
@@ -435,13 +442,20 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsPlayerInventoryFull(playerid))
 				{
-					RemovePlayerHat(playerid);
+					if(IsValidItem(GetPlayerItem(playerid)))
+					{
+						RemovePlayerHat(playerid);
 
-					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					GiveWorldItemToPlayer(playerid, itemid);
-					UpdatePlayerGear(playerid);
+						itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+						GiveWorldItemToPlayer(playerid, itemid);
+						UpdatePlayerGear(playerid);
 
-					ShowActionText(playerid, "Hat removed", 3000, 150);
+						ShowActionText(playerid, "Hat removed", 3000, 150);
+					}
+					else
+					{
+						ShowActionText(playerid, "You are already holding an item", 3000);
+					}
 				}
 				else
 				{
