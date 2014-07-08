@@ -142,7 +142,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define MAX_PASSWORD_LEN			(129)
 #define MAX_GPCI_LEN				(41)
 #define MAX_HOST_LEN				(256)
-#define MAX_SPAWNED_VEHICLES		(250)
 
 
 // Directories
@@ -691,11 +690,6 @@ forward SetRestart(seconds);
 #include "SS/utils/string.pwn"
 #include "SS/utils/debug.pwn"
 
-// GAME DATA
-#include "SS/Data/Vehicle.pwn"
-//#include "SS/Data/Weapon.pwn"
-#include "SS/Data/Loot.pwn"
-
 // SERVER CORE
 #include "SS/Core/Server/Settings.pwn"
 #include "SS/Core/Server/TextTags.pwn"
@@ -719,6 +713,7 @@ forward SetRestart(seconds);
 #include "SS/Core/UI/BodyPreview.pwn"
 
 // VEHICLE
+#include "SS/Core/Vehicle/VehicleTypeIndex.pwn"
 #include "SS/Core/Vehicle/Core.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
@@ -731,7 +726,6 @@ forward SetRestart(seconds);
 
 // LOOT
 #include "SS/Core/Loot/Spawn.pwn"
-#include "SS/Core/Loot/HouseLoot.pwn"
 
 // PLAYER INTERNAL SCRIPTS
 #include "SS/Core/Player/Core.pwn"
@@ -876,6 +870,11 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/GasMask.pwn"
 #include "SS/Core/Item/HockeyMask.pwn"
 #include "SS/Core/Item/XmasHat.pwn"
+
+// GAME DATA LOADING
+#include "SS/Data/Loot.pwn"
+#include "SS/Data/Vehicle.pwn"
+//#include "SS/Data/Weapon.pwn"
 
 
 // POST-CODE

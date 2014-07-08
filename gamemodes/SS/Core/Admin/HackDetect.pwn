@@ -136,7 +136,7 @@ PositionCheck(playerid)
 		GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 5000 ||
 		GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 20000 ||
 		IsPlayerDead(playerid) ||
-		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		GetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
@@ -368,7 +368,7 @@ CameraDistanceCheck(playerid)
 		IsPlayerDead(playerid) ||
 		IsPlayerUnfocused(playerid) ||
 		IsPlayerOnZipline(playerid) ||
-		IsValidVehicleID(GetPlayerSurfingVehicleID(playerid)) ||
+		IsValidVehicle(GetPlayerSurfingVehicleID(playerid)) ||
 		IsValidObject(GetPlayerSurfingObjectID(playerid)))
 	{
 		cd_DetectDelay[playerid] = GetTickCount();
@@ -545,9 +545,9 @@ CameraDistanceCheck(playerid)
 
 
 static
-		vt_MovedFar[MAX_SPAWNED_VEHICLES],
-		vt_MovedFarTick[MAX_SPAWNED_VEHICLES],
-		vt_MovedFarPlayer[MAX_SPAWNED_VEHICLES];
+		vt_MovedFar[MAX_VEHICLES],
+		vt_MovedFarTick[MAX_VEHICLES],
+		vt_MovedFarPlayer[MAX_VEHICLES];
 
 
 public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z)
@@ -602,15 +602,15 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 
 			new
 				name[MAX_PLAYER_NAME],
-				model,
-				vehiclename[MAX_VEHICLE_NAME],
+				vehicletype,
+				vehiclename[MAX_VEHICLE_TYPE_NAME],
 				owner[MAX_PLAYER_NAME],
 				reason[128],
 				info[128];
 
 			GetPlayerName(vt_MovedFarPlayer[vehicleid], name, MAX_PLAYER_NAME);
-			model = GetVehicleModel(vehicleid);
-			GetVehicleName(model, vehiclename);
+			vehicletype = GetVehicleType(vehicleid);
+			GetVehicleTypeName(vehicletype, vehiclename);
 			GetVehicleOwner(vehicleid, owner);
 
 			if(isnull(owner))

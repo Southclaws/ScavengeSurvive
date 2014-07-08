@@ -22,7 +22,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		
 		if(itemtype == item_LocksmithKit)
 		{
-			if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
+			if(!VehicleHasDoors(vehicleid))
 			{
 				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
 				return 1;
@@ -64,7 +64,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			CancelPlayerMovement(playerid);
 
-			if(IsVehicleLocked(vehicleid) && VehicleHasDoors(GetVehicleModel(vehicleid)))
+			if(IsVehicleLocked(vehicleid) && VehicleHasDoors(vehicleid))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);
@@ -124,7 +124,7 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(!IsValidVehicleID(lsk_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_LocksmithKit || !IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
+		if(!IsValidVehicle(lsk_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_LocksmithKit || !IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
 		{
 			StopCraftingKey(playerid);
 			return 1;

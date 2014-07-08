@@ -2,8 +2,8 @@
 
 
 static
-	lock_Status		[MAX_SPAWNED_VEHICLES],
-	lock_LastChange	[MAX_SPAWNED_VEHICLES];
+	lock_Status		[MAX_VEHICLES],
+	lock_LastChange	[MAX_VEHICLES];
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -54,7 +54,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 stock IsVehicleLocked(vehicleid)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return -1;
 
 	return lock_Status[vehicleid];
@@ -62,10 +62,10 @@ stock IsVehicleLocked(vehicleid)
 
 stock SetVehicleExternalLock(vehicleid, status)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	if(!VehicleHasDoors(GetVehicleModel(vehicleid)))
+	if(!VehicleHasDoors(vehicleid))
 	{
 		lock_Status[vehicleid] = false;
 		VehicleDoorsState(vehicleid, false);
@@ -82,7 +82,7 @@ stock SetVehicleExternalLock(vehicleid, status)
 
 stock GetVehicleLockTick(vehicleid)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	return lock_LastChange[vehicleid];

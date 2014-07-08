@@ -33,7 +33,7 @@ new
 Iterator:	arm_Index<MAX_ARMOUR>;
 
 new
-			arm_ArmourID[MAX_SPAWNED_VEHICLES];
+			arm_ArmourID[MAX_VEHICLES];
 
 hook OnGameModeInit()
 {
@@ -107,7 +107,7 @@ LoadOffsetsFromFile(name[])
 
 ApplyArmourToVehicle(vehicleid, armourid)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	new

@@ -148,7 +148,7 @@ ACMD:vehicle[3](playerid, params[])
 	if(vehicleid == -1)
 		vehicleid = GetPlayerVehicleID(playerid);
 
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 4;
 
 	if(!strcmp(command, "get"))
@@ -391,25 +391,29 @@ ACMD:additem[3](playerid, params[])
 ACMD:addvehicle[3](playerid, params[])
 {
 	new
-		model,
+		type,
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:r,
 		vehicleid;
 
-	model = strval(params);
+	if(isnumeric(params))
+		type = strval(params);
 
-	if(!(400 <= model < 612))
+	else
+		type = GetVehicleTypeFromName(params, true, true);
+
+	if(!IsValidVehicleType(type))
 	{
-		Msg(playerid, -1, " >  Usage: /addvehicle [modelid]");
+		Msg(playerid, YELLOW, " >  Invalid vehicle type.");
 		return 1;
 	}
 
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	vehicleid = CreateNewVehicle(model, x, y, z, r);
+	vehicleid = CreateNewVehicle(type, x, y, z, r);
 	SetVehicleFuel(vehicleid, 100000.0);
 	SetVehicleHealth(vehicleid, 990.0);
 
@@ -419,7 +423,7 @@ ACMD:addvehicle[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
-			logf("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, model, inputtext);
+			logf("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, type, inputtext);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this vehicle:", "Enter", "");
 	}

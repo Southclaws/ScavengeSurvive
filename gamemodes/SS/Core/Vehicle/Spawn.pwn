@@ -1,14 +1,25 @@
 #include <YSI\y_hooks>
 
 
-// Directory from where vehicle spawn positions are loaded
+// The directory from which vehicle spawn positions are loaded
 #define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
 
-// Chance that each spawn position will produce a vehicle in percent
-#define VEHICLE_SPAWN_CHANCE		(4)
+
+enum E_VEHICLE_SPAWN_DATA
+{
+Float:	vspawn_posX,
+Float:	vspawn_posY,
+Float:	vspawn_posZ,
+Float:	vspawn_posR,
+		vspawn_group,
+		vspawn_categories[8],
+		vspawn_sizes[3]
+}
 
 
-static veh_CurrentModelGroup;
+static
+	veh_SpawnChance = 5,
+	veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA];
 
 
 LoadVehicles(printeach = false, printtotal = false)
@@ -46,12 +57,12 @@ LoadVehiclesFromFolder(foldername[], prints)
 		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
 		{
 			next_path[0] = EOS;
-			format(next_path, sizeof(next_path), "%s%s", foldername, item);
+			format(next_path, sizeof(next_path), "%s%s/", foldername, item);
 			LoadVehiclesFromFolder(next_path, prints);
 		}
 		if(type == FM_FILE)
 		{
-			if(!strcmp(item[strlen(item) - 4], ".dat"))
+			if(!strcmp(item[strlen(item) - 4], ".vpl"))
 			{
 				next_path[0] = EOS;
 				format(next_path, sizeof(next_path), "%s%s", foldername, item);
@@ -76,86 +87,193 @@ LoadVehiclesFromFile(file[], prints)
 	new
 		File:f = fopen(file, io_read),
 		line[128],
-		modelgroupname[28],
+		func[32],
+		args[192],
 		Float:posX,
 		Float:posY,
 		Float:posZ,
 		Float:rotZ,
-		model,
-		tmpid,
+		group[32],
+		categories[9],
+		maxcategories,
+		sizes[4],
+		maxsizes,
+		type,
+		vehicleid,
+		linenum,
 		count,
-		total;
+		total,
+		default_group = -2,
+		default_categories[9],
+		default_maxcategories,
+		default_sizes[4],
+		default_maxsizes;
 
 	while(fread(f, line))
 	{
-		if(!sscanf(line, "p<,>ffffD(-1)", posX, posY, posZ, rotZ, model))
+		linenum++;
+
+		if(sscanf(line, "p<(>s[32]p<)>s[192]{s[4]}", func, args))
+			continue;
+
+		if(!strcmp(func, "Vehicle"))
 		{
 			total++;
-			if(tmpid - 1 >= MAX_SPAWNED_VEHICLES)
-				break;
 
-			if(random(100) < 100 - VEHICLE_SPAWN_CHANCE)
+			if(random(100) < 100 - veh_SpawnChance)
 				continue;
 
-			if(model == -1)
+			if(sscanf(args, "P<,>ffffS()[32]S()[9]S()[4]", posX, posY, posZ, rotZ, group, categories, sizes))
 			{
-				model = PickRandomVehicleFromGroup(veh_CurrentModelGroup);
+				printf("ERROR: [LoadVehiclesFromFile] reading 'Vehicle' args on line %d.", linenum);
+				continue;
 			}
-			else if(0 <= model <= 12)
+
+			rotZ += (random(2) ? 0.0 : 180.0);
+
+			veh_SpawnData[count][vspawn_posX] = posX;
+			veh_SpawnData[count][vspawn_posY] = posY;
+			veh_SpawnData[count][vspawn_posZ] = posZ;
+			veh_SpawnData[count][vspawn_posR] = rotZ;
+
+			if(isnull(categories) || !strcmp(categories, "_"))
 			{
-				model = PickRandomVehicleFromGroup(model);
-			}
-			else if(400 <= model < 612)
-			{
-				if(frandom(1.0) > VehicleFuelData[model - 400][veh_spawnRate])
+				if(default_maxcategories == 0)
+				{
+					print("ERROR: Tried to assign default categories to vehicle spawn but defaults are empty.");
 					continue;
+				}
+
+				for(new i; i < default_maxcategories; i++)
+					veh_SpawnData[count][vspawn_categories][i] = default_categories[i];
+
+				maxcategories = default_maxcategories;
 			}
 			else
 			{
+				for(new i, j = strlen(categories); i < j; i++)
+				{
+					switch(categories[i])
+					{
+						case 'C': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_CAR;
+						case 'T': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_TRUCK;
+						case 'M': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_MOTORBIKE;
+						case 'B': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_PUSHBIKE;
+						case 'H': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_HELICOPTER;
+						case 'P': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_PLANE;
+						case 'S': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_BOAT;
+						case 'L': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_TRAIN;
+						case 'A': veh_SpawnData[count][vspawn_categories][i] = VEHICLE_CATEGORY_TRAILER;
+						default: printf("ERROR: Invalid category character (%c) found in spawn category list.", categories[i]);
+					}
+					maxcategories++;
+				}
+			}
+
+			if(isnull(sizes) || !strcmp(sizes, "_"))
+			{
+				if(default_maxsizes == 0)
+				{
+					print("ERROR: Tried to assign default sizes to vehicle spawn but defaults are empty.");
+					continue;
+				}
+
+				for(new i; i < default_maxsizes; i++)
+					veh_SpawnData[count][vspawn_sizes][i] = default_sizes[i];
+
+				maxsizes = default_maxsizes;
+			}
+			else
+			{
+				for(new i, j = strlen(sizes); i < j; i++)
+				{
+					switch(sizes[i])
+					{
+						case 'S': veh_SpawnData[count][vspawn_sizes][i] = VEHICLE_SIZE_SMALL;
+						case 'M': veh_SpawnData[count][vspawn_sizes][i] = VEHICLE_SIZE_MEDIUM;
+						case 'L': veh_SpawnData[count][vspawn_sizes][i] = VEHICLE_SIZE_LARGE;
+						default: printf("ERROR: Invalid size character (%c) found in spawn size list.", sizes[i]);
+					}
+					maxsizes++;
+				}
+			}
+
+			if(isnull(group))
+				veh_SpawnData[count][vspawn_group] = default_group;
+
+			else
+				veh_SpawnData[count][vspawn_group] = GetVehicleGroupFromName(group);
+
+			if(veh_SpawnData[count][vspawn_group] != -1)
+				type = PickRandomVehicleTypeFromGroup(veh_SpawnData[count][vspawn_group], veh_SpawnData[count][vspawn_categories], maxcategories, veh_SpawnData[count][vspawn_sizes], maxsizes);
+
+			else
+				type = GetVehicleTypeFromName(group);
+
+			if(!IsValidVehicleType(type))
+			{
+				printf("ERROR: [LoadVehiclesFromFile] Determined vehicle type is invalid (%d).", type);
 				continue;
 			}
 
-			switch(model)
+			vehicleid = CreateNewVehicle(type, posX, posY, posZ, rotZ);
+
+			if(vehicleid == MAX_VEHICLES - 1)
 			{
-				case 403, 443, 514, 515, 539:
-				{
-					posZ += 2.0;
-				}
+				print("WARNING: MAX_VEHICLES limit reached.");
+				break;
 			}
 
-			switch(veh_CurrentModelGroup)
-			{
-				case VEHICLE_GROUP_CASUAL, VEHICLE_GROUP_TRUCK_S, VEHICLE_GROUP_SPORT, VEHICLE_GROUP_BIKE:
-				{
-					rotZ += random(2) ? 0.0 : 180.0;
-				}
-			}
-
-			tmpid = CreateNewVehicle(model, posX, posY, posZ, rotZ);
-
-			if(!IsValidVehicleID(tmpid))
+			if(!IsValidVehicle(vehicleid))
 				continue;
 
 			count++;
 		}
-		else
+
+		if(!strcmp(func, "Defaults"))
 		{
-			if(!sscanf(line, "'MODELGROUP:'s[28]", modelgroupname))
+			if(sscanf(args, "p<,>s[32]s[9]s[4]", group, categories, sizes))
 			{
-				strtrim(modelgroupname);
-
-				new newgroup = GetVehicleGroupFromName(modelgroupname);
-
-				if(newgroup != -1 && newgroup != veh_CurrentModelGroup)
-					veh_CurrentModelGroup = newgroup;
+				printf("ERROR: [LoadVehiclesFromFile] reading 'Defaults' args on line %d.", linenum);
+				continue;
 			}
-			else
+
+			default_group = GetVehicleGroupFromName(group);
+			default_maxcategories = 0;
+			default_maxsizes = 0;
+
+			for(new i, j = strlen(categories); i < j; i++)
 			{
-				if(strlen(line) > 3)
-					print("LINE ERROR");
+				switch(categories[i])
+				{
+					case 'C': default_categories[i] = VEHICLE_CATEGORY_CAR;
+					case 'T': default_categories[i] = VEHICLE_CATEGORY_TRUCK;
+					case 'M': default_categories[i] = VEHICLE_CATEGORY_MOTORBIKE;
+					case 'B': default_categories[i] = VEHICLE_CATEGORY_PUSHBIKE;
+					case 'H': default_categories[i] = VEHICLE_CATEGORY_HELICOPTER;
+					case 'P': default_categories[i] = VEHICLE_CATEGORY_PLANE;
+					case 'S': default_categories[i] = VEHICLE_CATEGORY_BOAT;
+					case 'L': default_categories[i] = VEHICLE_CATEGORY_TRAIN;
+					case 'A': default_categories[i] = VEHICLE_CATEGORY_TRAILER;
+					default: printf("ERROR: Invalid category character (%c) found in default category list.", categories[i]);
+				}
+				default_maxcategories++;
+			}
+
+			for(new i, j = strlen(sizes); i < j; i++)
+			{
+				switch(sizes[i])
+				{
+					case 'S': default_sizes[i] = VEHICLE_SIZE_SMALL;
+					case 'M': default_sizes[i] = VEHICLE_SIZE_MEDIUM;
+					case 'L': default_sizes[i] = VEHICLE_SIZE_LARGE;
+					default: printf("ERROR: Invalid size character (%c) found in spawn size list.", sizes[i]);
+				}
+				default_maxsizes++;
 			}
 		}
 	}
+
 	fclose(f);
 
 	if(prints)
@@ -164,14 +282,7 @@ LoadVehiclesFromFile(file[], prints)
 	return 1;
 }
 
-RandomNumberPlateString()
+stock SetVehicleSpawnChance(chance)
 {
-	new str[9];
-	for(new c; c < 8; c++)
-	{
-		if(c<4)str[c] = 'A' + random(26);
-		else if(c>4)str[c] = '0' + random(10);
-		str[4] = ' ';
-	}
-	return str;
+	veh_SpawnChance = chance;
 }

@@ -15,7 +15,7 @@ static
 
 enum
 {
-	VEH_CELL_MODEL,		// 00
+	VEH_CELL_TYPE,		// 00
 	VEH_CELL_HEALTH,	// 01
 	VEH_CELL_FUEL,		// 02
 	VEH_CELL_POSX,		// 03
@@ -48,14 +48,14 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 		count,
 		owner[MAX_PLAYER_NAME];
 
-	for(new i = 1; i < MAX_SPAWNED_VEHICLES; i++)
+	for(new i = 1; i < MAX_VEHICLES; i++)
 	{
 		owner[0] = EOS;
 		GetVehicleOwner(i, owner);
 
 		if(strlen(owner) >= 3)
 		{
-			if(!IsValidVehicleID(i))
+			if(!IsValidVehicle(i))
 			{
 				if(printeach)
 					printf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", i, owner);
@@ -125,10 +125,12 @@ LoadPlayerVehicle(username[], prints)
 	new
 		filename[64],
 		vehicleid,
-		vehicletype,
+		category,
+		vehiclename[MAX_VEHICLE_TYPE_NAME],
 		owner[MAX_PLAYER_NAME],
 		containerid,
 		data[VEH_CELL_END],
+		trunksize,
 		length;
 
 	filename = DIRECTORY_VEHICLE;
@@ -139,40 +141,105 @@ LoadPlayerVehicle(username[], prints)
 	if(length == 0)
 		return 0;
 
-	if(!(400 <= data[VEH_CELL_MODEL] <= 612))
+	/*
+		Legacy vehicle model conversion.
+		Substitute missing vehicles with equivalents.
+	*/
+	if(400 <= data[VEH_CELL_TYPE] <= 612)
 	{
-		printf("ERROR: Removing Vehicle file: %s. Invalid model ID %d.", username, data[VEH_CELL_MODEL]);
+		new tmp;
+		printf("WARNING: Vehicle for '%s' type is model ID (%d), converting to vehicle index type.", username, data[VEH_CELL_TYPE]);
+		
+		tmp = GetVehicleTypeFromModel(data[VEH_CELL_TYPE]);
+
+		if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
+		{
+			printf("ERROR: Invalid vehicle type retrieved from model %d.", data[VEH_CELL_TYPE]);
+
+			new modeltype = GetVehicleModelType(data[VEH_CELL_TYPE]);
+
+			switch(modeltype)
+			{
+				case VTYPE_CAR: tmp = 0;
+				case VTYPE_HEAVY: tmp = 12;
+				case VTYPE_QUAD: tmp = 5;
+				case VTYPE_MOTORBIKE: tmp = 5;
+				case VTYPE_BICYCLE: tmp = 4;
+				case VTYPE_HELI: tmp = 2;
+				case VTYPE_PLANE: tmp = 1;
+				case VTYPE_SEA: tmp = 19;
+			}
+
+			// REMOVE FOR PRODUCTION
+
+			switch(data[VEH_CELL_TYPE])
+			{
+				case 402: tmp = 25; // Buffalo
+				case 404: tmp = 22; // Pereniel
+				case 411: tmp = 3; // Infernus
+				case 412: tmp = 21; // Voodoo
+				case 418: tmp = 22; // Moonbeam
+				case 421: tmp = 21; // Washington
+				case 426: tmp = 21; // Premier
+				case 429: tmp = 3; // Banshee
+				case 438: tmp = 21; // Cabbie
+				case 451: tmp = 3; // Turismo
+				case 477: tmp = 3; // ZR 350
+				case 494: tmp = 25; // Hotring
+				case 497: tmp = 2; // Police Maverick
+				case 502: tmp = 25; // Hotring Racer A
+				case 503: tmp = 25; // Hotring Racer B
+				case 506: tmp = 3; // Super GT
+				case 507: tmp = 21; // Elegant
+				case 516: tmp = 21; // Nebula
+				case 533: tmp = 21; // Feltzer
+				case 541: tmp = 3; // Bullet
+				case 550: tmp = 21; // Sunrise
+				case 558: tmp = 41; // Uranus
+				case 559: tmp = 3; // Jester
+				case 565: tmp = 41; // Flash
+				case 567: tmp = 21; // Savanna
+				case 575: tmp = 21; // Broadway
+				case 581: tmp = 32; // BF-400
+			}
+
+			// END
+
+			data[VEH_CELL_TYPE] = 0;
+		}
+
+		data[VEH_CELL_TYPE] = tmp;
+	}
+
+	if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
+	{
+		printf("ERROR: Removing Vehicle file: %s, invalid vehicle type '%d'.", username, data[VEH_CELL_TYPE]);
 		fremove(filename);
 		return 0;
 	}
+
+	GetVehicleTypeName(data[VEH_CELL_TYPE], vehiclename);
 
 	if(Float:data[VEH_CELL_HEALTH] < 255.5)
 	{
-		printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[data[VEH_CELL_MODEL]-400], username);
+		printf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, username);
 		fremove(filename);
 		return 0;
 	}
 
-	vehicletype = GetVehicleType(data[VEH_CELL_MODEL]);
+	category = GetVehicleTypeCategory(data[VEH_CELL_TYPE]);
 
-	if(vehicletype == VTYPE_TRAIN)
-	{
-		printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[data[VEH_CELL_MODEL]-400], username);
-		fremove(filename);
-		return 0;
-	}
-
-	if(vehicletype != VTYPE_SEA)
+	if(category != VEHICLE_CATEGORY_BOAT)
 	{
 		if(!IsPointInMapBounds(Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]))
 		{
-			if(vehicletype == VTYPE_HELI || vehicletype == VTYPE_PLANE)
+			if(category == VEHICLE_CATEGORY_HELICOPTER || category == VEHICLE_CATEGORY_PLANE)
 			{
 				data[VEH_CELL_POSZ] = _:(Float:data[VEH_CELL_POSZ] + 10.0);
 			}
 			else
 			{
-				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", VehicleNames[data[VEH_CELL_MODEL]-400], username);
+				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, username);
 				fremove(filename);
 
 				return 0;
@@ -182,17 +249,16 @@ LoadPlayerVehicle(username[], prints)
 
 	strmid(owner, username, 0, strlen(username) - 4);
 
-	vehicleid = CreateVehicle(
-		data[VEH_CELL_MODEL],
+	vehicleid = CreateVehicleOfType(
+		data[VEH_CELL_TYPE],
 		Float:data[VEH_CELL_POSX],
 		Float:data[VEH_CELL_POSY],
 		Float:data[VEH_CELL_POSZ],
 		Float:data[VEH_CELL_ROTZ],
 		data[VEH_CELL_COL1],
-		data[VEH_CELL_COL2],
-		86400);
+		data[VEH_CELL_COL2]);
 
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	SetVehicleSpawnPoint(vehicleid,
@@ -204,7 +270,7 @@ LoadPlayerVehicle(username[], prints)
 	veh_Owner[vehicleid] = owner;
 
 	if(prints)
-		printf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), VehicleNames[data[VEH_CELL_MODEL]-400], owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		printf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -224,14 +290,16 @@ LoadPlayerVehicle(username[], prints)
 
 	SetVehicleExternalLock(vehicleid, data[VEH_CELL_LOCKED]);
 
-	if(VehicleFuelData[data[VEH_CELL_MODEL]-400][veh_trunkSize] > 0)
+	trunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
+
+	if(trunksize > 0)
 	{
 		new
 			ItemType:itemtype,
 			itemid,
 			itemlist;
 
-		containerid = CreateContainer("Trunk", VehicleFuelData[data[VEH_CELL_MODEL]-400][veh_trunkSize], .virtual = 1);
+		containerid = CreateContainer("Trunk", trunksize, .virtual = 1);
 		SetVehicleContainer(vehicleid, containerid);
 
 		length = modio_read(filename, _T<T,R,N,K>, vehicle_ItemList, true);
@@ -292,12 +360,12 @@ SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 
 UpdateVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	new lastvehicleid;
 
-	for(lastvehicleid = 1; lastvehicleid < MAX_SPAWNED_VEHICLES; lastvehicleid++)
+	for(lastvehicleid = 1; lastvehicleid < MAX_VEHICLES; lastvehicleid++)
 	{
 		if(lastvehicleid == vehicleid)
 		{
@@ -342,6 +410,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	new
 		filename[MAX_PLAYER_NAME + 22],
 		session,
+		vehiclename[MAX_VEHICLE_TYPE_NAME],
 		data[VEH_CELL_END];
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", veh_Owner[vehicleid]);
@@ -351,10 +420,9 @@ UpdateVehicleFile(vehicleid, prints = false)
 	if(session != -1)
 		modio_close_session_write(session);
 
-	data[VEH_CELL_MODEL] = GetVehicleModel(vehicleid);
+	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
 
-	if(GetVehicleType(data[VEH_CELL_MODEL]) == VTYPE_TRAIN)
-		return 0;
+	data[VEH_CELL_TYPE] = GetVehicleType(vehicleid);
 
 	GetVehicleHealth(vehicleid, Float:data[1]);
 
@@ -368,7 +436,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
 	if(prints)
-		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), VehicleNames[data[VEH_CELL_MODEL]-400], veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
+		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), vehiclename, veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
@@ -481,7 +549,9 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		File:file,
 		filedir[64],
 		vehicleid,
-		vehicletype,
+		category,
+		vehiclename[MAX_VEHICLE_TYPE_NAME],
+		trunksize,
 		owner[MAX_PLAYER_NAME],
 		containerid,
 		array_data[VEH_CELL_END],
@@ -505,40 +575,35 @@ OLD_LoadPlayerVehicle(filename[], prints)
 	fblockread(file, array_data, sizeof(array_data));
 	fclose(file);
 
-	if(!(400 <= array_data[VEH_CELL_MODEL] <= 612))
+	if(!(400 <= array_data[VEH_CELL_TYPE] <= 612))
 	{
-		printf("ERROR: Removing Vehicle file: %s. Invalid model ID %d.", filename, array_data[VEH_CELL_MODEL]);
+		printf("ERROR: Removing Vehicle file: %s. Invalid model ID %d.", filename, array_data[VEH_CELL_TYPE]);
 		fremove(filedir);
 		return 0;
 	}
+
+	GetVehicleTypeName(array_data[VEH_CELL_TYPE], vehiclename);
 
 	if(Float:array_data[VEH_CELL_HEALTH] < 255.5)
 	{
-		printf("ERROR: Removing Vehicle %s file: %s due to low health.", VehicleNames[array_data[VEH_CELL_MODEL]-400], filename);
+		printf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, filename);
 		fremove(filedir);
 		return 0;
 	}
 
-	vehicletype = GetVehicleType(array_data[VEH_CELL_MODEL]);
+	category = GetVehicleTypeCategory(array_data[VEH_CELL_TYPE]);
 
-	if(vehicletype == VTYPE_TRAIN)
-	{
-		printf("ERROR: Removing Vehicle %s file: %s because train.", VehicleNames[array_data[VEH_CELL_MODEL]-400], filename);
-		fremove(filedir);
-		return 0;
-	}
-
-	if(vehicletype != VTYPE_SEA)
+	if(category != VEHICLE_CATEGORY_BOAT)
 	{
 		if(!IsPointInMapBounds(Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]))
 		{
-			if(vehicletype == VTYPE_HELI || vehicletype == VTYPE_PLANE)
+			if(category == VEHICLE_CATEGORY_HELICOPTER || category == VEHICLE_CATEGORY_PLANE)
 			{
 				array_data[VEH_CELL_POSZ] = _:(Float:array_data[VEH_CELL_POSZ] + 10.0);
 			}
 			else
 			{
-				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", VehicleNames[array_data[VEH_CELL_MODEL]-400], filename);
+				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, filename);
 				fremove(filedir);
 
 				return 0;
@@ -556,17 +621,16 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		return 0;
 	}
 
-	vehicleid = CreateVehicle(
-		array_data[VEH_CELL_MODEL],
+	vehicleid = CreateVehicleOfType(
+		array_data[VEH_CELL_TYPE],
 		Float:array_data[VEH_CELL_POSX],
 		Float:array_data[VEH_CELL_POSY],
 		Float:array_data[VEH_CELL_POSZ],
 		Float:array_data[VEH_CELL_ROTZ],
 		array_data[VEH_CELL_COL1],
-		array_data[VEH_CELL_COL2],
-		86400);
+		array_data[VEH_CELL_COL2]);
 
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	SetVehicleSpawnPoint(vehicleid,
@@ -578,7 +642,7 @@ OLD_LoadPlayerVehicle(filename[], prints)
 	veh_Owner[vehicleid] = owner;
 
 	if(prints)
-		printf("\t[LOAD] [OLD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, array_data[VEH_CELL_LOCKED] ? ("L") : ("U"), VehicleNames[array_data[VEH_CELL_MODEL]-400], owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
+		printf("\t[LOAD] [OLD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, array_data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -598,7 +662,9 @@ OLD_LoadPlayerVehicle(filename[], prints)
 
 	SetVehicleExternalLock(vehicleid, array_data[VEH_CELL_LOCKED]);
 
-	if(VehicleFuelData[array_data[VEH_CELL_MODEL]-400][veh_trunkSize] > 0)
+	trunksize = GetVehicleTypeTrunkSize(array_data[VEH_CELL_TYPE]);
+
+	if(trunksize > 0)
 	{
 		filedir = DIRECTORY_VEHICLE_INV;
 		strcat(filedir, filename);
@@ -614,7 +680,7 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		fblockread(file, array_inv, sizeof(array_inv));
 		fclose(file);
 
-		containerid = CreateContainer("Trunk", VehicleFuelData[array_data[VEH_CELL_MODEL]-400][veh_trunkSize], .virtual = 1);
+		containerid = CreateContainer("Trunk", trunksize, .virtual = 1);
 		SetVehicleContainer(vehicleid, containerid);
 
 		for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)

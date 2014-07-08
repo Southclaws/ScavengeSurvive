@@ -11,6 +11,7 @@
 #include "ss/World/Puzzles/Ranch.pwn"
 #include "ss/World/Puzzles/MtChill.pwn"
 #include "ss/World/Puzzles/CodeHunt.pwn"
+#include "ss/World/HouseLoot.pwn"
 
 #include "ss/World/Xmas.pwn"
 

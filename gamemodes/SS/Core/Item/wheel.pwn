@@ -9,6 +9,7 @@ new
 ShowTireList(playerid, vehicleid)
 {
 	new
+		vehicletype = GetVehicleType(vehicleid),
 		panels,
 		doors,
 		lights,
@@ -17,7 +18,7 @@ ShowTireList(playerid, vehicleid)
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
-	if(GetVehicleType(GetVehicleModel(vehicleid)) == VTYPE_MOTORBIKE)
+	if(GetVehicleTypeCategory(vehicletype) == VEHICLE_CATEGORY_MOTORBIKE && GetVehicleTypeModel(vehicletype) != 471)
 	{
 		gTireData[playerid][0] = tires & 0b0001;
 		gTireData[playerid][1] = tires & 0b0010;

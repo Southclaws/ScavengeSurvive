@@ -150,7 +150,7 @@ public OnHoldActionUpdate(playerid, progress)
 			return 1;
 		}
 
-		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicleID(fix_TargetVehicle[playerid]))
+		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
 		{
 			StopRepairingVehicle(playerid);
 			return 1;

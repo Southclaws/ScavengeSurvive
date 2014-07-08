@@ -105,9 +105,9 @@ _PlayKnockOutAnimation(playerid)
 		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 			SetVehicleEngine(vehicleid, 0);
 
-		switch(GetVehicleType(GetVehicleModel(vehicleid)))
+		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
-			case VTYPE_MOTORBIKE, VTYPE_QUAD, VTYPE_BICYCLE:
+			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
 			{
 				new
 					Float:x,

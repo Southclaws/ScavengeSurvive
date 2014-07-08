@@ -199,7 +199,7 @@ StartRefuellingVehicle(playerid, vehicleid)
 
 	CancelPlayerMovement(playerid);
 	ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, 1, 0, 0, 0, 0);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleFuelCapacity(vehicleid));
+	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleTypeMaxFuel(GetVehicleType(vehicleid)));
 	SetPlayerProgressBarValue(playerid, ActionBar, 0.0);
 	ShowPlayerProgressBar(playerid, ActionBar);
 
@@ -214,7 +214,7 @@ StopRefuellingVehicle(playerid)
 {
 	stop fuel_RefuelTimer[playerid];
 
-	if(!IsValidVehicleID(fuel_CurrentlyRefuelling[playerid]))
+	if(!IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
 		return 0;
 
 	HidePlayerProgressBar(playerid, ActionBar);
@@ -226,7 +226,7 @@ StopRefuellingVehicle(playerid)
 
 timer RefuelVehicleUpdate[500](playerid, vehicleid)
 {
-	if(!IsValidVehicleID(vehicleid))
+	if(!IsValidVehicle(vehicleid))
 	{
 		StopRefuellingVehicle(playerid);
 		return;
@@ -246,14 +246,14 @@ timer RefuelVehicleUpdate[500](playerid, vehicleid)
 	canfuel = GetItemExtraData(itemid);
 	vehiclefuel = GetVehicleFuel(vehicleid);
 
-	if(vehiclefuel >= GetVehicleFuelCapacity(vehicleid) || canfuel <= 0 || GetItemType(itemid) != item_GasCan || !IsPlayerInVehicleArea(playerid, vehicleid))
+	if(vehiclefuel >= GetVehicleTypeMaxFuel(GetVehicleType(vehicleid)) || canfuel <= 0 || GetItemType(itemid) != item_GasCan || !IsPlayerInVehicleArea(playerid, vehicleid))
 	{
 		StopRefuellingVehicle(playerid);
 		return;
 	}
 
 	SetPlayerProgressBarValue(playerid, ActionBar, vehiclefuel);
-	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleFuelCapacity(vehicleid));
+	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleTypeMaxFuel(GetVehicleType(vehicleid)));
 	ShowPlayerProgressBar(playerid, ActionBar);
 
 	GetPlayerPos(playerid, px, py, pz);
