@@ -86,14 +86,14 @@ ACMD:whitelist[3](playerid, params[])
 		if(!IsWhitelistAuto())
 		{
 			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle activated.");
-			ToggleWhitelist(true);
+			ToggleAutoWhitelist(true);
 
 			// UpdateSetting("whitelist-auto-toggle", 0);
 		}
 		else
 		{
 			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle deactivated.");
-			ToggleWhitelist(false);
+			ToggleAutoWhitelist(false);
 
 			// UpdateSetting("whitelist-auto-toggle", 0);
 		}
