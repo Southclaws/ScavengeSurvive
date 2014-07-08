@@ -24,6 +24,9 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 	if(!IsValidItemType(itemtype))
 		return 0;
 
+	if(GetItemWeaponBaseWeapon(GetItemTypeWeapon(itemtype)) != 0)
+		return 0;
+
 	if(IsPlayerInAnyVehicle(playerid))
 		return 0;
 
@@ -100,7 +103,7 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 				if(angle > 225.0 || angle < 315.0)
 					ApplyAnimation(i, "PED", "DAM_stomach_frmRT", 4.1, 0, 1, 1, 0, 0, 1); // FROM RIGHT
 
-				_DoMeleeDamage(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMaxReserveMags(itemtype));
+				_DoMeleeDamage(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMagSize(itemtype));
 			}
 		}
 	}
@@ -132,7 +135,7 @@ _HandleStandardMelee(playerid, targetid)
 	if(!IsBaseWeaponMelee(baseweapon))
 		return 0;
 
-	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMaxReserveMags(itemtype));
+	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMagSize(itemtype));
 }
 
 _DoMeleeDamage(playerid, targetid, Float:bleedrate, kochance)
@@ -146,7 +149,7 @@ _DoMeleeDamage(playerid, targetid, Float:bleedrate, kochance)
 	{
 		new Float:hp = GetPlayerHP(playerid);
 
-		KnockOutPlayer(targetid, GetPlayerItemWeaponKOTime(playerid) + floatround(500 * (50.0 - hp) + frandom(200 * (50.0 - hp))));
+		KnockOutPlayer(targetid, GetPlayerItemWeaponMaxResMags(playerid) + floatround(500 * (50.0 - hp) + frandom(200 * (50.0 - hp))));
 	}
 
 	return 1;

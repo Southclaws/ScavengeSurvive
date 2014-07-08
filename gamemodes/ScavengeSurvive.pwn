@@ -1374,61 +1374,62 @@ public OnGameModeInit()
 	AddAnimToSet(anim_Heavy,	19);
 	AddAnimToSet(anim_Heavy,	20);
 
-	// Items with a baseweapon of 0 utilise parameters for different data.
-	// Custom melee weapons replace muzzle velocity with bleedrate and maxmags
-	// with knockout chance.
+	// Items with a baseweapon of 0 or no calibre utilise parameters for
+	// different data. Custom melee weapons replace muzzle velocity with
+	// bleedrate and magsize with knockout chance.
 
-	//					itemtype				baseweapon					calibre			bleedrate		kochance	animset			kotime
-	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			20,			anim_Blunt,		3000);
-	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			25,			anim_Blunt,		3000);
-	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			30,			anim_Blunt,		3000);
-	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			30,			anim_Blunt,		3000);
-	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.0,			0,			anim_Blunt,		3000);
-	DefineItemTypeWeapon(item_Taser,			0,							NO_CALIBRE,		0.0,			100,		anim_Stab,		60000);
-	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,			anim_Stab,		3000);
-	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			40,			anim_Heavy,		3000);
-	//					itemtype				baseweapon					calibre			muzzvelocity	maxmags		animset			kotime
-	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20);
-	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35);
-	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.03,			24);
-	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.35,			14);
-	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.09,			35);
-	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.21,			40);
-	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.08,			37);
-	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.44,			15);
-	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.93,			19);
-	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				NO_CALIBRE,		0.001,			0);
-	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				NO_CALIBRE,		0.001,			0);
-	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			NO_CALIBRE,		0.001,			0);
-	DefineItemTypeWeapon(item_Dildo4,			WEAPON_VIBRATOR2,			NO_CALIBRE,		0.001,			0);
-	DefineItemTypeWeapon(item_Flowers,			WEAPON_FLOWER,				NO_CALIBRE,		0.001,			0);
-	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.06,			24);
-	DefineItemTypeWeapon(item_Grenade,			WEAPON_GRENADE,				NO_CALIBRE,		0.0,			0);
-	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				NO_CALIBRE,		0.0,			0);
-	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				NO_CALIBRE,		0.0,			0);
-	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	300.0,			1);
-	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	250.0,			1);
-	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	420.0,			1);
-	DefineItemTypeWeapon(item_PumpShotgun,		WEAPON_SHOTGUN,				calibre_12g,	475.0,			1);
-	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	265.0,			1);
-	DefineItemTypeWeapon(item_Spas12,			WEAPON_SHOTGSPA,			calibre_12g,	480.0,			1);
-	DefineItemTypeWeapon(item_Mac10,			WEAPON_UZI,					calibre_9mm,	366.0,			1);
-	DefineItemTypeWeapon(item_MP5,				WEAPON_MP5,					calibre_9mm,	400.0,			1);
-	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_556,	715.0,			1);
-	DefineItemTypeWeapon(item_M16Rifle,			WEAPON_M4,					calibre_556,	948.0,			1);
-	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	360.0,			1);
-	DefineItemTypeWeapon(item_SemiAutoRifle,	WEAPON_RIFLE,				calibre_357,	829.0,			1);
-	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	864.0,			1);
-	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			0);
-	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	0.0,			0);
-	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	0.0,			1);
-	DefineItemTypeWeapon(item_Minigun,			WEAPON_MINIGUN,				calibre_556,	853.0,			1);
-	DefineItemTypeWeapon(item_RemoteBomb,		WEAPON_SATCHEL,				NO_CALIBRE,		0.0,			1);
-	DefineItemTypeWeapon(item_Detonator,		WEAPON_BOMB,				NO_CALIBRE,		0.0,			1);
-	DefineItemTypeWeapon(item_SprayPaint,		WEAPON_SPRAYCAN,			NO_CALIBRE,		0.0,			1);
-	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	NO_CALIBRE,		0.0,			1);
-	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			1);
-	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			1);
+	//					itemtype				baseweapon					calibre			bleedrate		koprob	kotime	animset
+	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			20,		3000,	anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			25,		3000,	anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			30,		3000,	anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			30,		3000,	anim_Blunt);
+	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.0,			0,		3000,	anim_Blunt);
+	DefineItemTypeWeapon(item_Taser,			0,							NO_CALIBRE,		0.0,			100,	60000,	anim_Stab);
+	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		3000,	anim_Stab);
+	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			40,		3000,	anim_Heavy);
+	//					itemtype				baseweapon					calibre			bleedrate		koprob	kotime	animset
+	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20,		20);
+	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35,		35);
+	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.03,			24,		24);
+	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.35,			14,		14);
+	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.09,			35,		35);
+	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.21,			40,		40);
+	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.08,			37,		37);
+	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.44,			15,		15);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.93,			19,		19);
+	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				NO_CALIBRE,		0.001,			0,		0);
+	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				NO_CALIBRE,		0.001,			0,		0);
+	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			NO_CALIBRE,		0.001,			0,		0);
+	DefineItemTypeWeapon(item_Dildo4,			WEAPON_VIBRATOR2,			NO_CALIBRE,		0.001,			0,		0);
+	DefineItemTypeWeapon(item_Flowers,			WEAPON_FLOWER,				NO_CALIBRE,		0.001,			0,		0);
+	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.06,			24,		24);
+	DefineItemTypeWeapon(item_Grenade,			WEAPON_GRENADE,				NO_CALIBRE,		0.0,			0,		0);
+	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				NO_CALIBRE,		0.0,			0,		0);
+	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				NO_CALIBRE,		0.0,			0,		0);
+	//					itemtype				baseweapon					calibre			muzzvelocity	magsize	maxmags		animset
+	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	300.0,			10,		1);
+	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	250.0,			10,		1);
+	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	420.0,			7,		1);
+	DefineItemTypeWeapon(item_PumpShotgun,		WEAPON_SHOTGUN,				calibre_12g,	475.0,			6,		1);
+	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	265.0,			2,		1);
+	DefineItemTypeWeapon(item_Spas12,			WEAPON_SHOTGSPA,			calibre_12g,	480.0,			6,		1);
+	DefineItemTypeWeapon(item_Mac10,			WEAPON_UZI,					calibre_9mm,	366.0,			35,		1);
+	DefineItemTypeWeapon(item_MP5,				WEAPON_MP5,					calibre_9mm,	400.0,			30,		1);
+	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_556,	715.0,			30,		1);
+	DefineItemTypeWeapon(item_M16Rifle,			WEAPON_M4,					calibre_556,	948.0,			30,		1);
+	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	360.0,			30,		1);
+	DefineItemTypeWeapon(item_SemiAutoRifle,	WEAPON_RIFLE,				calibre_357,	829.0,			5,		1);
+	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	864.0,			5,		1);
+	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			1,		0);
+	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	0.0,			1,		0);
+	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	0.0,			100,	1);
+	DefineItemTypeWeapon(item_Minigun,			WEAPON_MINIGUN,				calibre_556,	853.0,			100,	1);
+	DefineItemTypeWeapon(item_RemoteBomb,		WEAPON_SATCHEL,				NO_CALIBRE,		0.0,			1,		1);
+	DefineItemTypeWeapon(item_Detonator,		WEAPON_BOMB,				NO_CALIBRE,		0.0,			1,		1);
+	DefineItemTypeWeapon(item_SprayPaint,		WEAPON_SPRAYCAN,			NO_CALIBRE,		0.0,			100,	0);
+	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	NO_CALIBRE,		0.0,			100,	0);
+	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			24,		4);
+	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 
 	DefineItemTypeAmmo(item_Ammo9mm,			calibre_9mm,	10);
 	DefineItemTypeAmmo(item_Ammo50,				calibre_50c,	7);
