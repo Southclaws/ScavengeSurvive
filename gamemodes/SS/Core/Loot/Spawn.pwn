@@ -54,7 +54,7 @@ GenerateLoot(index, &ItemType:itemtype, &exdata)
 
 	if(loot_IndexSize[index] == 0)
 	{
-		print("ERROR: Specified index (%d) is empty.");
+		printf("ERROR: Specified index (%d) is empty.", index);
 		return 0;
 	}
 

@@ -90,6 +90,9 @@ public Float:OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate)
 
 _CombatLogHandleDamage(playerid, targetid, itemid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	if(IsPlayerConnected(playerid))
 	{
 		combatlog_LastAttacked[playerid] = targetid;
@@ -101,6 +104,8 @@ _CombatLogHandleDamage(playerid, targetid, itemid)
 	}
 
 	combatlog_LastItem[targetid] = itemid;
+
+	return 1;
 }
 
 hook OnPlayerSpawn(playerid)
