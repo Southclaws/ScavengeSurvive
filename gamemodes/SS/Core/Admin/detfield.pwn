@@ -605,7 +605,7 @@ DetectionFieldLogPlayer(playerid, detfieldid)
 
 	format(line, sizeof(line), "%p, %s\r\n", playerid, TimestampToDateTime(gettime()));
 
-	printf("[DET] %p entered %s at %s", playerid, det_Name[detfieldid], TimestampToDateTime(gettime()));
+	logf("[DET] %p entered %s at %s", playerid, det_Name[detfieldid], TimestampToDateTime(gettime()));
 
 	return 1;
 }
