@@ -390,7 +390,7 @@ public OnPlayerSave(playerid, filename[])
 	modio_push(filename, _T<W,N,D,S>, length, data);
 
 	#if defined dmg_OnPlayerSave
-		return dmg_OnPlayerSave(playerid, filename[]);
+		return dmg_OnPlayerSave(playerid, filename);
 	#else
 		return 1;
 	#endif
@@ -416,7 +416,7 @@ public OnPlayerLoad(playerid, filename[])
 	SetPlayerWoundDataFromArray(playerid, data);
 
 	#if defined dmg_OnPlayerLoad
-		return dmg_OnPlayerLoad(playerid, filename[]);
+		return dmg_OnPlayerLoad(playerid, filename);
 	#else
 		return 1;
 	#endif
