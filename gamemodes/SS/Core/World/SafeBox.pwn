@@ -67,7 +67,7 @@ hook OnGameModeInit()
 	for(new i; i < CNT_MAX; i++)
 		box_ContainerSafebox[i] = INVALID_ITEM_ID;
 
-	HANDLER = debug_register_handler("safebox", 2);
+	HANDLER = debug_register_handler("safebox", 0);
 }
 
 hook OnPlayerConnect(playerid)

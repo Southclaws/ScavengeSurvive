@@ -21,9 +21,9 @@ _DoVehicleCollisionDamage(playerid, targetid)
 		Float:bleedrate;
 
 	velocity = GetPlayerTotalVelocity(playerid);
-	bleedrate = 0.3 * (velocity / 50.0);
+	bleedrate = 0.04 * (velocity / 50.0);
 
-	if(velocity > 55.0)
+	if(velocity > 55.0 && frandom(velocity) > 55.0)
 		KnockOutPlayer(targetid, floatround(1000 + ((velocity / 20.0) * 1000)));
 
 	bleedrate += Float:CallLocalFunction("OnPlayerVehicleCollide", "ddf", playerid, targetid, bleedrate);
