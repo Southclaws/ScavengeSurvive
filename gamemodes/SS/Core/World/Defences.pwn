@@ -76,8 +76,10 @@ static
 			def_CurrentDefenceItem[MAX_PLAYERS],
 			def_CurrentDefenceEdit[MAX_PLAYERS],
 			def_CurrentDefenceMove[MAX_PLAYERS],
-			def_CurrentDefenceOpen[MAX_PLAYERS];
-
+			def_CurrentDefenceOpen[MAX_PLAYERS],
+			def_LastPassEntry[MAX_PLAYERS],
+			def_Cooldown[MAX_PLAYERS],
+			def_PassFails[MAX_PLAYERS];
 
 hook OnGameModeInit()
 {
@@ -110,6 +112,9 @@ hook OnPlayerConnect(playerid)
 	def_CurrentDefenceEdit[playerid] = -1;
 	def_CurrentDefenceMove[playerid] = -1;
 	def_CurrentDefenceOpen[playerid] = -1;
+	def_LastPassEntry[playerid] = 0;
+	def_Cooldown[playerid] = 2000;
+	def_PassFails[playerid] = 0;
 }
 
 
@@ -446,17 +451,67 @@ public OnButtonPress(playerid, buttonid)
 				}
 			}
 
+			if(itemtype == item_AdvancedKeypad)
+			{
+				new Float:angle = absoluteangle(def_Data[id][def_rotZ] - GetButtonAngleToPlayer(playerid, buttonid));
+
+				if(90.0 < angle < 270.0)
+				{
+					if(!def_Data[id][def_motor])
+					{
+						ShowActionText(playerid, "You must install a motor before installing a keypad!");
+						return 1;
+					}
+
+					new itemtypename[ITM_MAX_NAME];
+
+					GetItemTypeName(def_TypeData[def_Data[id][def_type]][def_itemtype], itemtypename);
+
+					def_CurrentDefenceEdit[playerid] = id;
+					StartHoldAction(playerid, 6000);
+					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+
+					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+
+					return 1;
+				}
+			}
+
 			if(def_Data[id][def_motor])
 			{
-				if(def_Data[id][def_keypad])
+				if(def_Data[id][def_keypad] == 1)
 				{
-					def_CurrentDefenceOpen[playerid] = id;
+					if(def_Data[id][def_pass] == 0)
+					{
+						def_CurrentDefenceEdit[playerid] = id;
+						ShowSetPassDialog_Keypad(playerid);
+					}
+					else
+					{
+						def_CurrentDefenceOpen[playerid] = id;
 
-					ShowEnterPassDialog(playerid);
-					CancelPlayerMovement(playerid);
+						ShowEnterPassDialog_Keypad(playerid);
+						CancelPlayerMovement(playerid);
+					}
+				}
+				else if(def_Data[id][def_keypad] == 2)
+				{
+					if(def_Data[id][def_pass] == 0)
+					{
+						def_CurrentDefenceEdit[playerid] = id;
+						ShowSetPassDialog_KeypadAdv(playerid);
+					}
+					else
+					{
+						def_CurrentDefenceOpen[playerid] = id;
+
+						ShowEnterPassDialog_KeypadAdv(playerid);
+						CancelPlayerMovement(playerid);
+					}
 				}
 				else
 				{
+					ShowActionText(playerid, "Moving defence, please stand back.", 3000);
 					defer MoveDefence(id, playerid);
 				}
 
@@ -526,7 +581,7 @@ public OnHoldActionFinish(playerid)
 		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL);
 
-			logf("[CONSTRUCT] %p Built defence %d type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, type,
+			logf("[CONSTRUCT] %p Built defence %d (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
 				def_TypeData[type][def_verticalRotX],
 				def_TypeData[type][def_verticalRotY],
@@ -537,7 +592,7 @@ public OnHoldActionFinish(playerid)
 		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL);
 
-			logf("[CONSTRUCT] %p Built defence %d type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, type,
+			logf("[CONSTRUCT] %p Built defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 				def_TypeData[type][def_horizontalRotX],
 				def_TypeData[type][def_horizontalRotY],
@@ -568,8 +623,18 @@ public OnHoldActionFinish(playerid)
 		if(GetItemType(itemid) == item_Keypad)
 		{
 			ShowActionText(playerid, "Keypad installed to defence");
-			ShowSetPassDialog(playerid);
-			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = true;
+			ShowSetPassDialog_Keypad(playerid);
+			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 1;
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			DestroyItem(itemid);
+			ClearAnimations(playerid);
+		}
+
+		if(GetItemType(itemid) == item_AdvancedKeypad)
+		{
+			ShowActionText(playerid, "Advanced Keypad installed to defence");
+			ShowSetPassDialog_KeypadAdv(playerid);
+			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 2;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
@@ -590,9 +655,10 @@ public OnHoldActionFinish(playerid)
 			{
 				case DEFENCE_POSE_HORIZONTAL:
 				{
-					logf("[CROWBAR] %p broke defence %d type %d (%d, %f, %f, %f, %f, %f, %f)",
+					logf("[CROWBAR] %p broke defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)",
 						playerid,
 						def_CurrentDefenceEdit[playerid],
+						def_GEID[def_CurrentDefenceEdit[playerid]],
 						_:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
 						GetItemTypeModel(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype]),
 						def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
@@ -604,9 +670,10 @@ public OnHoldActionFinish(playerid)
 				}
 				case DEFENCE_POSE_VERTICAL:
 				{
-					logf("[CROWBAR] %p broke defence %d type %d (%d, %f, %f, %f, %f, %f, %f)",
+					logf("[CROWBAR] %p broke defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)",
 						playerid,
 						def_CurrentDefenceEdit[playerid],
+						def_GEID[def_CurrentDefenceEdit[playerid]],
 						_:def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
 						GetItemTypeModel(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype]),
 						def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
@@ -640,32 +707,197 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish def_OnHoldActionFinish
 forward def_OnHoldActionFinish(playerid);
 
-ShowSetPassDialog(playerid, wrong = 0)
+/* y_inline
+ShowSetPassDialog_Keypad(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	inline Response(pid, keypadid, code, match)
 	{
-		#pragma unused pid, dialogid, listitem
-		if(response)
-		{
-			new pass = strval(inputtext);
+		#pragma unused pid, keypadid, match
 
-			if(1000 <= pass < 10000)
-			{
-				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
-				SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
-			}
-			else
-			{
-				ShowSetPassDialog(playerid, 1);
-			}
-		}
+		def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
+		SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+		HideKeypad(playerid);
+
+		return 1;
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set passcode", (wrong) ? ("Passcode must be a 4 digit number") : ("Set a 4 digit passcode:"), "Enter", "");
+	inline Cancel(pid, keypadid)
+	{
+		#pragma unused pid, keypadid
+
+		ShowSetPassDialog_Keypad(playerid);
+	}
+	ShowKeypad_Callback(playerid, using inline Response, using inline Cancel, -1);
 
 	return 1;
 }
 
-ShowEnterPassDialog(playerid, wrong = 0)
+ShowEnterPassDialog_Keypad(playerid)
+{
+	inline Response(pid, keypadid, code, match)
+	{
+		#pragma unused pid, keypadid, match
+
+		if(code == match)
+		{
+			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+		}
+		else
+		{
+			if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < 1000)
+			{
+				ShowEnterPassDialog_Keypad(playerid, 2);
+				return 1;
+			}
+
+			if(def_PassFails[playerid] == 5)
+			{
+				def_PassFails[playerid] = 0;
+				return 1;
+			}
+
+			logf("[DEFFAIL] Player %p failed defence %d (GEID: %d) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], def_GEID[def_CurrentDefenceOpen[playerid]], code);
+			ShowEnterPassDialog_Keypad(playerid, 1);
+			def_LastPassEntry[playerid] = GetTickCount();
+			def_PassFails[playerid]++;
+		}
+
+		return 1;
+	}
+	inline Cancel(pid, keypadid)
+	{
+		#pragma unused pid, keypadid
+
+		HideKeypad(playerid);
+	}
+	ShowKeypad_Callback(playerid, using inline Response, using inline Cancel, def_Data[def_CurrentDefenceEdit[playerid]][def_pass]);
+
+	return 1;
+}
+*/
+
+public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+{
+	if(keypadid == 100)
+	{
+		if(def_CurrentDefenceEdit[playerid] != -1)
+		{
+			def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			HideKeypad(playerid);
+
+			def_CurrentDefenceEdit[playerid] = -1;
+
+			if(code == 0)
+				Msg(playerid, YELLOW, " >  Leaving the code at 0 will allow the code to be set again.");
+
+			return 1;
+		}
+
+		if(def_CurrentDefenceOpen[playerid] != -1)
+		{
+			if(code == match)
+			{
+				ShowActionText(playerid, "Moving defence, please stand back.", 3000);
+				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+				def_CurrentDefenceOpen[playerid] = -1;
+			}
+			else
+			{
+				if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
+				{
+					ShowEnterPassDialog_Keypad(playerid, 2);
+					return 0;
+				}
+
+				if(def_PassFails[playerid] == 5)
+				{
+					def_Cooldown[playerid] += 4000;
+					def_PassFails[playerid] = 0;
+					return 0;
+				}
+
+				logf("[DEFFAIL] Player %p failed defence %d (GEID: %d) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], def_GEID[def_CurrentDefenceOpen[playerid]], code);
+				ShowEnterPassDialog_Keypad(playerid, 1);
+				def_LastPassEntry[playerid] = GetTickCount();
+				def_Cooldown[playerid] = 2000;
+				def_PassFails[playerid]++;
+
+				return 0;
+			}
+
+			return 1;
+		}
+	}
+
+	#if defined kp_OnPlayerKeypadEnter
+		return kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerKeypadEnter
+	#undef OnPlayerKeypadEnter
+#else
+	#define _ALS_OnPlayerKeypadEnter
+#endif
+ 
+#define OnPlayerKeypadEnter kp_OnPlayerKeypadEnter
+#if defined kp_OnPlayerKeypadEnter
+	forward kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
+#endif
+
+public OnPlayerKeypadCancel(playerid, keypadid)
+{
+	if(keypadid == 100)
+	{
+		if(def_CurrentDefenceEdit[playerid] != -1)
+		{
+			ShowSetPassDialog_Keypad(playerid);
+			def_CurrentDefenceEdit[playerid] = -1;
+
+			return 1;
+		}
+	}
+
+	#if defined kp_OnPlayerKeypadCancel
+		return kp_OnPlayerKeypadCancel(playerid, keypadid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerKeypadCancel
+	#undef OnPlayerKeypadCancel
+#else
+	#define _ALS_OnPlayerKeypadCancel
+#endif
+ 
+#define OnPlayerKeypadCancel kp_OnPlayerKeypadCancel
+#if defined kp_OnPlayerKeypadCancel
+	forward kp_OnPlayerKeypadCancel(playerid, keypadid);
+#endif
+
+ShowSetPassDialog_Keypad(playerid)
+{
+	MsgF(playerid, YELLOW, " >  Set a 4 digit passcode for this defence.");
+
+	ShowKeypad(playerid, 100);
+}
+
+ShowEnterPassDialog_Keypad(playerid, msg = 0)
+{
+	if(msg == 0)
+		MsgF(playerid, YELLOW, " >  Enter the 4 digit passcode to open this defence.");
+
+	if(msg == 1)
+		MsgF(playerid, YELLOW, " >  Incorrect passcode!");
+
+	if(msg == 2)
+		MsgF(playerid, YELLOW, " >  You are entering codes too fast, please wait %s.", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
+
+	ShowKeypad(playerid, 100, def_Data[def_CurrentDefenceOpen[playerid]][def_pass]);
+}
+
+ShowSetPassDialog_KeypadAdv(playerid)
 {
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -673,19 +905,78 @@ ShowEnterPassDialog(playerid, wrong = 0)
 
 		if(response)
 		{
-			new pass = strval(inputtext);
+			new pass;
 
-			if(def_Data[def_CurrentDefenceOpen[playerid]][def_pass] == pass)
+			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
 			{
-				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
+				SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+				def_CurrentDefenceEdit[playerid] = -1;
 			}
 			else
 			{
-				ShowEnterPassDialog(playerid, 1);
+				ShowSetPassDialog_KeypadAdv(playerid);
 			}
 		}
+		else
+		{
+			ShowSetPassDialog_KeypadAdv(playerid);
+		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Enter passcode", (wrong) ? ("Incorrect passcode!") : ("Enter the 4 digit passcode to open."), "Enter", "Cancel");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set passcode", "Enter a passcode between 4 and 8 characters long using characers 0-9, a-f.", "Enter", "");
+
+	return 1;
+}
+
+ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
+{
+	if(msg == 2)
+		MsgF(playerid, YELLOW, " >  You are entering codes too fast, please wait %s.", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem
+
+		if(response)
+		{
+			new pass;
+
+			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
+			{
+				ShowActionText(playerid, "Moving defence, please stand back.", 3000);
+				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+				def_CurrentDefenceOpen[playerid] = -1;
+			}
+			else
+			{
+				if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
+				{
+					ShowEnterPassDialog_KeypadAdv(playerid, 2);
+					return 1;
+				}
+
+				if(def_PassFails[playerid] == 5)
+				{
+					def_Cooldown[playerid] += 4000;
+					def_PassFails[playerid] = 0;
+					return 1;
+				}
+
+				logf("[DEFFAIL] Player %p failed defence %d (GEID: %d) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], def_GEID[def_CurrentDefenceOpen[playerid]], pass);
+				ShowEnterPassDialog_KeypadAdv(playerid, 1);
+				def_LastPassEntry[playerid] = GetTickCount();
+				def_Cooldown[playerid] = 2000;
+				def_PassFails[playerid]++;
+			}
+		}
+		else
+		{
+			return 0;
+		}
+
+		return 1;
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Enter passcode", (msg == 1) ? ("Incorrect passcode!") : ("Enter the 4-8 character hexadecimal passcode to open."), "Enter", "Cancel");
 
 	return 1;
 }
@@ -721,7 +1012,7 @@ timer MoveDefence[1500](defenceid, playerid)
 
 		def_Data[defenceid][def_moveState] = DEFENCE_POSE_VERTICAL;
 
-		logf("[DEFMOVE] Player %p moved defence %d into CLOSED position.", playerid, defenceid);
+		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into CLOSED position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 	}
 	else
 	{
@@ -735,7 +1026,7 @@ timer MoveDefence[1500](defenceid, playerid)
 
 		def_Data[defenceid][def_moveState] = DEFENCE_POSE_HORIZONTAL;
 
-		logf("[DEFMOVE] Player %p moved defence %d into OPEN position.", playerid, defenceid);
+		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into OPEN position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 	}
 
 	return;
@@ -833,7 +1124,7 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 		MsgAdminsF(3, YELLOW, " >  [TEST] Player %p moved through defence %d at %.1f, %.1f, %.1f", playerid, defenceid,
 			def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 
-		logf("[THRUDEF] Player %p moved through defence %d at %.1f, %.1f, %.1f", playerid, defenceid, def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
+		logf("[THRUDEF] Player %p moved through defence %d (GEID: %d) at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 
 		stop def_AngleCheckTimer[playerid];
 	}
@@ -1124,6 +1415,109 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 ==============================================================================*/
 
 
+stock IsValidDefence(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return 1;
+}
+
+// def_type
+stock GetDefenceType(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_type];
+}
+
+// def_objectId
+stock GetDefenceObjectID(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_objectId];
+}
+
+// def_buttonId
+stock GetDefenceButtonID(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_buttonId];
+}
+
+// def_pose
+stock GetDefencePose(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_pose];
+}
+
+// def_motor
+stock GetDefenceMotor(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_motor];
+}
+
+// def_keypad
+stock GetDefenceKeypad(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_keypad];
+}
+
+// def_pass
+stock GetDefencePass(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_pass];
+}
+
+// def_moveState
+stock GetDefenceMoveState(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_moveState];
+}
+
+// def_hitPoints
+stock GetDefenceHitPoints(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	return def_Data[defenceid][def_hitPoints];
+}
+
+stock SetDefenceHitPoints(defenceid, hitpoints)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0;
+
+	def_Data[defenceid][def_hitPoints] = hitpoints;
+	SetButtonLabel(def_Data[defenceid][def_buttonId], sprintf("%d/%d", def_Data[defenceid][def_hitPoints], def_TypeData[def_Data[defenceid][def_type]][def_maxHitPoints]), .range = 1.5);
+
+	return 1;
+}
+
+// def_posX
+// def_posY
+// def_posZ
 stock GetDefencePos(defenceid, &Float:x, &Float:y, &Float:z)
 {
 	if(!Iter_Contains(def_Index, defenceid))
@@ -1132,6 +1526,27 @@ stock GetDefencePos(defenceid, &Float:x, &Float:y, &Float:z)
 	x = def_Data[defenceid][def_posX];
 	y = def_Data[defenceid][def_posY];
 	z = def_Data[defenceid][def_posZ];
+
+	return 1;
+}
+
+// def_rotZ
+stock Float:GetDefenceRot(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return 0.0;
+
+	return def_Data[defenceid][def_rotZ];
+}
+
+// def_GEID
+stock GetDefenceIDFromGEID(geid)
+{
+	foreach(new i : def_Index)
+	{
+		if(def_GEID[i] == geid)
+			return i;
+	}
 
 	return 1;
 }

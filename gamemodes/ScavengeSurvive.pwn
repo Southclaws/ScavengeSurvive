@@ -626,7 +626,8 @@ ItemType:		item_CodePart		= INVALID_ITEM_TYPE,
 ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE,
 ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE,
 ItemType:		item_XmasHat		= INVALID_ITEM_TYPE,
-ItemType:		item_VehicleWeapon	= INVALID_ITEM_TYPE;
+ItemType:		item_VehicleWeapon	= INVALID_ITEM_TYPE,
+ItemType:		item_AdvancedKeypad	= INVALID_ITEM_TYPE;
 
 
 // UI HANDLES
@@ -1159,6 +1160,7 @@ public OnGameModeInit()
 	item_LocksmithKit	= DefineItemType("Locksmith Kit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
 	item_XmasHat		= DefineItemType("Christmas Hat",		19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 	item_VehicleWeapon	= DefineItemType("VEHICLE_WEAPON",		356,	ITEM_SIZE_LARGE,	90.0);
+	item_AdvancedKeypad	= DefineItemType("Advanced Keypad",		19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1517,6 +1519,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_PowerSupply,	item_Timer,			item_Motor);
 	DefineItemCombo(item_Key,			item_Motor,			item_LocksmithKit);
 	DefineItemCombo(item_Motor,			item_Fluctuator,	item_StarterMotor);
+	DefineItemCombo(item_IoUnit,		item_PowerSupply,	item_AdvancedKeypad);
 	//WriteAllCombosToFile();
 
 

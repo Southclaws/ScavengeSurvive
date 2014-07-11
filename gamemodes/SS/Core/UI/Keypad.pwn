@@ -26,7 +26,8 @@ new
 		kp_Value[MAX_PLAYERS],
 		kp_Match[MAX_PLAYERS],
 		kp_CurrentID[MAX_PLAYERS],
-		kp_Callback[MAX_PLAYERS][E_CALLBACK_DATA],
+		kp_CallbackResponse[MAX_PLAYERS][E_CALLBACK_DATA],
+		kp_CallbackCancel[MAX_PLAYERS][E_CALLBACK_DATA],
 		kp_Hacking[MAX_PLAYERS],
 Timer:	kp_HackTimer[MAX_PLAYERS],
 		kp_HackTries[MAX_PLAYERS],
@@ -47,8 +48,10 @@ Timer:	kp_HackTimer[MAX_PLAYERS],
 
 
 forward OnPlayerKeypadEnter(playerid, keypadid, code, match);
+forward OnPlayerKeypadCancel(playerid, keypadid);
 
-stock ShowKeypad(playerid, keypadid, match)
+
+stock ShowKeypad(playerid, keypadid, match = -1)
 {
 	PlayerTextDrawShow(playerid, kp_Background[playerid]);
 	PlayerTextDrawShow(playerid, kp_EdgeL[playerid]);
@@ -74,17 +77,28 @@ stock ShowKeypad(playerid, keypadid, match)
 	kp_Match[playerid] = match;
 	kp_CurrentID[playerid] = keypadid;
 	KeypadUpdateDisplay(playerid);
+
+	return 1;
 }
 
-stock ShowKeypad_Callback(playerid, callback:callback, match)
+stock ShowKeypad_Callback(playerid, callback:response, callback:cancel, match = 0)
 {
-	Callback_Get(callback, kp_Callback[playerid]);
+	if(kp_CurrentID[playerid] != -1)
+		return 0;
+
+	Callback_Get(response, kp_CallbackResponse[playerid]);
+	Callback_Get(cancel, kp_CallbackCancel[playerid]);
 
 	ShowKeypad(playerid, 0xFFFFFFFF, match);
+
+	return 1;
 }
 
 stock HideKeypad(playerid)
 {
+	if(kp_CurrentID[playerid] == -1)
+		return 0;
+
 	if(kp_Hacking[playerid])
 	{
 		stop kp_HackTimer[playerid];
@@ -114,6 +128,24 @@ stock HideKeypad(playerid)
 	kp_CurrentID[playerid] = -1;
 	kp_Value[playerid] = 0;
 	kp_Match[playerid] = 0;
+
+	return 1;
+}
+
+stock CancelKeypad(playerid)
+{
+	if(kp_CurrentID[playerid] == -1)
+		return 0;
+
+	if(kp_CurrentID[playerid] == 0xFFFFFFFF)
+		Callback_Call(kp_CallbackCancel[playerid], playerid, 0xFFFFFFFF);
+
+	else
+		CallLocalFunction("OnPlayerKeypadCancel", "dd", playerid, kp_CurrentID[playerid]);
+
+	HideKeypad(playerid);
+
+	return 1;
 }
 
 stock HackKeypad(playerid, keypadid, match)
@@ -183,7 +215,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		KeypadEnter(playerid);
 
 	if(playertextid == kp_KeyCancel[playerid])
-		HideKeypad(playerid);
+		CancelKeypad(playerid);
 
 	if(playertextid == kp_Key0[playerid])
 		KeypadAddNumber(playerid, 0);
@@ -234,7 +266,7 @@ KeypadEnter(playerid)
 	new ret;
 
 	if(kp_CurrentID[playerid] == 0xFFFFFFFF)
-		Callback_Call(kp_Callback[playerid], playerid, 0xFFFFFFFF, kp_Value[playerid], kp_Match[playerid]);
+		Callback_Call(kp_CallbackResponse[playerid], playerid, 0xFFFFFFFF, kp_Value[playerid], kp_Match[playerid]);
 
 	else
 		ret = CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, kp_CurrentID[playerid], kp_Value[playerid], kp_Match[playerid]);
@@ -245,10 +277,12 @@ KeypadEnter(playerid)
 
 KeypadAddNumber(playerid, number)
 {
-	if(kp_Value[playerid] >= 9999)
+	new result = (kp_Value[playerid] * 10) + number;
+
+	if(result > 9999)
 		return 0;
 
-	kp_Value[playerid] = (kp_Value[playerid] * 10) + number;
+	kp_Value[playerid] = result;
 	KeypadUpdateDisplay(playerid);
 
 	return 1;
