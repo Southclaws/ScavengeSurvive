@@ -378,7 +378,7 @@ stock GetAdminTotal()
 	return admin_Total;
 }
 
-stock GetAdminsOnline(from = 1, to = 4)
+stock GetAdminsOnline(from = 1, to = 5)
 {
 	new count;
 

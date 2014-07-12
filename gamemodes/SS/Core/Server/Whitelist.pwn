@@ -41,7 +41,7 @@ hook OnPlayerConnect(playerid)
 		wl_Whitelisted[playerid] = true;
 
 	// Used a timer here because the admin hook may be called afterwards.
-	defer _AutoWhitelistConnect();
+	defer _AutoWhitelistConnect(playerid);
 
 	wl_CountdownUI[playerid]		=CreatePlayerTextDraw(playerid, 430.0, 40.0, "Not whitelisted~n~Time remaining: 00:00");
 	PlayerTextDrawAlignment			(playerid, wl_CountdownUI[playerid], 2);
@@ -57,7 +57,13 @@ hook OnPlayerDisconnect(playerid)
 {
 	// Again, a timer in case the GetAdminsOnline func returns 1 even though
 	// that 1 admin is quitting (Admin/Core.pwn hook maybe called after this)
-	defer _AutoWhitelistDisconnect();
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	defer _AutoWhitelistDisconnect(name);
+
+	return 1;
 }
 
 
@@ -280,21 +286,28 @@ timer _UpdateWhitelistCountdown[1000](playerid)
 	anti-hack tools at disposal.
 */
 
-timer _AutoWhitelistConnect[10]()
+timer _AutoWhitelistConnect[100](playerid)
 {
 	if(wl_Auto)
 	{
 		if(GetAdminsOnline(2) > 0) // turn off if whitelist is on and are admins online
+		{
+			Msg(playerid, YELLOW, " >  Auto-whitelist: Deactivated the whitelist.");
 			ToggleWhitelist(false);
+			logf("[AUTOWHITELIST] Whitelist turned off by %p joining", playerid);
+		}
 	}
 }
 
-timer _AutoWhitelistDisconnect[10]()
+timer _AutoWhitelistDisconnect[100](string:name[])
 {
 	if(wl_Auto)
 	{
 		if(GetAdminsOnline(2) == 0) // turn on if whitelist is off and no admins remain online
+		{
 			ToggleWhitelist(true);
+			logf("[AUTOWHITELIST] Whitelist turned on by %s quitting.", name);
+		}
 	}
 }
 
