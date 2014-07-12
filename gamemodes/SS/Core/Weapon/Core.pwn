@@ -316,6 +316,18 @@ timer _RepeatingFire[100](playerid)
 	itemtype = GetItemType(itemid);
 	magammo = GetItemWeaponItemMagAmmo(itemid);
 
+	if(!IsValidItemType(itemtype))
+	{
+		stop itmw_RepeatingFireTimer[playerid];
+		return;
+	}
+
+	if(itmw_ItemTypeWeapon[itemtype] == -1)
+	{
+		stop itmw_RepeatingFireTimer[playerid];
+		return;
+	}
+
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER)
 	{
 		if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)

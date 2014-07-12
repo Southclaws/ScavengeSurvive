@@ -98,7 +98,7 @@ public OnLoad()
 	DefineItemToolTip(item_Hammer,			"Use this to repair vehicles by standing at the front and holding "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Shield,			"This protects you from gunfire when pointed towards the shooter");
 	DefineItemToolTip(item_Flashlight,		"Press "KEYTEXT_INTERACT" to toggle light, other than that it does nothing");
-	DefineItemToolTip(item_Taser,			"Attack players with this to disable them for 1 minute");
+	DefineItemToolTip(item_StunGun,			"Attack players with this to disable them for 1 minute");
 	DefineItemToolTip(item_LaserPoint,		"This has no use yet");
 	DefineItemToolTip(item_Screwdriver,		"Use this to repair vehicles by standing at the front and holding "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_MobilePhone,		"Used for crafting");

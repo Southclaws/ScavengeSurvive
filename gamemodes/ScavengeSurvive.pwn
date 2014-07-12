@@ -504,7 +504,7 @@ ItemType:		item_Crowbar		= INVALID_ITEM_TYPE,
 ItemType:		item_Hammer			= INVALID_ITEM_TYPE,
 ItemType:		item_Shield			= INVALID_ITEM_TYPE,
 ItemType:		item_Flashlight		= INVALID_ITEM_TYPE,
-ItemType:		item_Taser			= INVALID_ITEM_TYPE,
+ItemType:		item_StunGun		= INVALID_ITEM_TYPE,
 ItemType:		item_LaserPoint		= INVALID_ITEM_TYPE,
 ItemType:		item_Screwdriver	= INVALID_ITEM_TYPE,
 // 70
@@ -724,6 +724,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Vehicle/Carmour.pwn"
 #include "SS/Core/Vehicle/Lock.pwn"
 #include "SS/Core/Vehicle/AntiNinja.pwn"
+#include "SS/Core/Vehicle/BikeCollision.pwn"
 
 // LOOT
 #include "SS/Core/Loot/Spawn.pwn"
@@ -1037,7 +1038,7 @@ public OnGameModeInit()
 	item_Hammer			= DefineItemType("Hammer",				18635,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.01,	0.000000, -0.008230, 0.000000, 6.428617, 0.000000, 0.000000);
 	item_Shield			= DefineItemType("Shield",				18637,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.262389, 0.016478, -0.151046, 103.597534, 6.474381, 38.321765);
 	item_Flashlight		= DefineItemType("Flashlight",			18641,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.061910, 0.022700, 0.039052, 190.938354, 0.000000, 0.000000);
-	item_Taser			= DefineItemType("Taser",				18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
+	item_StunGun		= DefineItemType("Stun Gun",			18642,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.079878, 0.014009, 0.029525, 180.000000, 0.000000, 0.000000);
 	item_LaserPoint		= DefineItemType("Laser Pointer",		18643,	ITEM_SIZE_SMALL,	0.0, 0.0, 90.0,			0.0,	0.066244, 0.010838, -0.000024, 6.443027, 287.441467, 0.000000);
 	item_Screwdriver	= DefineItemType("Screwdriver",			18644,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.099341, 0.021018, 0.009145, 193.644195, 0.000000, 0.000000);
 // 70
@@ -1229,7 +1230,7 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_Hammer,		1);
 	SetItemTypeMaxArrayData(item_Shield,		1);
 	SetItemTypeMaxArrayData(item_Flashlight,	1);
-	SetItemTypeMaxArrayData(item_Taser,			1);
+	SetItemTypeMaxArrayData(item_StunGun,		1);
 	SetItemTypeMaxArrayData(item_LaserPoint,	1);
 	SetItemTypeMaxArrayData(item_Screwdriver,	1);
 	SetItemTypeMaxArrayData(item_MobilePhone,	1);
@@ -1386,7 +1387,7 @@ public OnGameModeInit()
 	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			30,		3000,	anim_Blunt);
 	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			30,		3000,	anim_Blunt);
 	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.0,			0,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_Taser,			0,							NO_CALIBRE,		0.0,			100,	60000,	anim_Stab);
+	DefineItemTypeWeapon(item_StunGun,			0,							NO_CALIBRE,		0.0,			100,	60000,	anim_Stab);
 	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		3000,	anim_Stab);
 	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			40,		3000,	anim_Heavy);
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	kotime	animset
@@ -1460,7 +1461,7 @@ public OnGameModeInit()
 	SetItemTypeHolsterable(item_RocketLauncher,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Heatseeker,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 
-	SetItemTypeHolsterable(item_Taser,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_StunGun,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_Shield,			1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Mailbox,		1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 
@@ -1511,7 +1512,7 @@ public OnGameModeInit()
 
 	DefineItemCombo(item_Battery,		item_Fusebox,		item_PowerSupply);
 	DefineItemCombo(item_Timer,			item_HardDrive,		item_StorageUnit);
-	DefineItemCombo(item_Taser,			item_RadioPole,		item_Fluctuator);
+	DefineItemCombo(item_StunGun,		item_RadioPole,		item_Fluctuator);
 	DefineItemCombo(item_MobilePhone,	item_Keypad,		item_IoUnit);
 	DefineItemCombo(item_PowerSupply,	item_Fluctuator,	item_FluxCap);
 	DefineItemCombo(item_StorageUnit,	item_IoUnit,		item_DataInterface);
