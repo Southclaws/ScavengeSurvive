@@ -77,6 +77,9 @@ ShowLightList(playerid, vehicleid)
 	{
 		#pragma unused pid, dialogid, response, listitem, inputtext
 
+		if(!response)
+			return 0;
+
 		GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
 		new itemid = GetPlayerItem(playerid);
 
