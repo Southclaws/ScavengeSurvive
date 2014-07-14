@@ -514,8 +514,6 @@ public OnButtonPress(playerid, buttonid)
 					ShowActionText(playerid, "Moving defence, please stand back.", 3000);
 					defer MoveDefence(id, playerid);
 				}
-
-				return 1;
 			}
 		}
 	}
@@ -941,7 +939,9 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 		{
 			new pass;
 
-			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
+			sscanf(inputtext, "x", pass);
+
+			if(pass == def_Data[def_CurrentDefenceOpen[playerid]][def_pass] && strlen(inputtext) >= 4)
 			{
 				ShowActionText(playerid, "Moving defence, please stand back.", 3000);
 				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
