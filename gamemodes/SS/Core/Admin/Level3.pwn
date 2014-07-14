@@ -4,6 +4,7 @@
 hook OnGameModeInit()
 {
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/whitelist - add/remove name or turn whitelist on/off\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/ip - get a player's IP\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/vehicle - vehicle control (duty only)\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/move - nudge yourself\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/additem - spawn an item\n");
@@ -117,6 +118,49 @@ ACMD:whitelist[3](playerid, params[])
 		}
 
 		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close");
+	}
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Get IP
+
+==============================================================================*/
+
+
+ACMD:ip[3](playerid, params[])
+{
+	if(isnumeric(params))
+	{
+		new targetid = strval(params);
+
+		if(!IsPlayerConnected(targetid))
+		{
+			if(targetid > 99)
+				MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+
+			else
+				return 4;
+		}
+
+		MsgF(playerid, YELLOW, " >  IP for %P"C_YELLOW": %s", targetid, IpIntToStr(GetPlayerIpAsInt(targetid)));
+	}
+	else
+	{
+		if(!AccountExists(params))
+		{
+			MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", params);
+			return 1;
+		}
+
+		new ip;
+
+		GetAccountIP(params, ip);
+
+		MsgF(playerid, YELLOW, " >  IP for "C_BLUE"%s"C_YELLOW": %s", params, IpIntToStr(ip));
 	}
 
 	return 1;

@@ -186,28 +186,44 @@ ACMD:msg[1](playerid, params[])
 
 ACMD:country[1](playerid, params[])
 {
-	new id;
-
-	if(sscanf(params, "d", id))
+	if(isnumeric(params))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /country [id]");
-		return 1;
+		new targetid = strval(params);
+
+		if(!IsPlayerConnected(targetid))
+		{
+			if(targetid > 99)
+				MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+
+			else
+				return 4;
+		}
+
+		new country[32];
+
+		GetPlayerCountry(targetid, country);
+
+		MsgF(playerid, YELLOW, " >  %P"C_YELLOW"'s GeoIP location: "C_BLUE"%s", targetid, country);
 	}
-
-	if(!IsPlayerConnected(id))
-	{
-		return 4;
-	}
-
-	new country[32];
-
-	if(GetPlayerAdminLevel(id) > GetPlayerAdminLevel(playerid))
-		country = "Unknown";
-
 	else
-		GetPlayerCountry(id, country);
+	{
+		if(!AccountExists(params))
+		{
+			MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", params);
+			return 1;
+		}
 
-	MsgF(playerid, YELLOW, " >  %P"C_YELLOW"'s current GeoIP location: "C_BLUE"%s", id, country);
+		new
+			ipint,
+			ipstr[17],
+			country[32];
+
+		GetAccountIP(params, ipint);
+		ipstr = IpIntToStr(ipint);
+		GetIPCountry(ipstr, country);
+
+		MsgF(playerid, YELLOW, " >  "C_BLUE"%s"C_YELLOW"'s GeoIP location: "C_BLUE"%s", params, country);
+	}
 
 	return 1;
 }
