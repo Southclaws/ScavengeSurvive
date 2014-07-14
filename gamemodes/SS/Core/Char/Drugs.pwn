@@ -54,6 +54,16 @@ hook OnPlayerDisconnect(playerid)
 	}
 }
 
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	for(new i; i < MAX_DRUG_TYPE; i++)
+	{
+		drug_PlayerDrugData[playerid][i][drug_active] = false;
+		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
+		drug_PlayerDrugData[playerid][i][drug_totalDuration] = 0;
+	}
+}
+
 
 /*==============================================================================
 
