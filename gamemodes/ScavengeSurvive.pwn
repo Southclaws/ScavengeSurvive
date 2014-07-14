@@ -872,6 +872,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Item/GasMask.pwn"
 #include "SS/Core/Item/HockeyMask.pwn"
 #include "SS/Core/Item/XmasHat.pwn"
+#include "SS/Core/Item/StunGun.pwn"
 
 // GAME DATA LOADING
 #include "SS/Data/Loot.pwn"
@@ -1381,31 +1382,31 @@ public OnGameModeInit()
 	// different data. Custom melee weapons replace muzzle velocity with
 	// bleedrate and magsize with knockout chance.
 
-	//					itemtype				baseweapon					calibre			bleedrate		koprob	kotime	animset
-	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			20,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			25,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			30,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			30,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.0,			0,		3000,	anim_Blunt);
-	DefineItemTypeWeapon(item_StunGun,			0,							NO_CALIBRE,		0.0,			100,	60000,	anim_Stab);
-	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		3000,	anim_Stab);
-	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			40,		3000,	anim_Heavy);
-	//					itemtype				baseweapon					calibre			bleedrate		koprob	kotime	animset
-	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20,		20);
-	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35,		35);
-	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.03,			24,		24);
-	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.35,			14,		14);
-	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.09,			35,		35);
-	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.21,			40,		40);
-	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.08,			37,		37);
-	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.44,			15,		15);
-	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.93,			19,		19);
+	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
+	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			120,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			125,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			130,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			130,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.08,			125,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_StunGun,			0,							NO_CALIBRE,		0.0,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			140,	0,		anim_Heavy);
+	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
+	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20,		0);
+	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35,		0);
+	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.03,			24,		0);
+	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.35,			14,		0);
+	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.09,			35,		0);
+	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.21,			40,		0);
+	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.08,			37,		0);
+	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.44,			15,		0);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.93,			19,		0);
 	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo4,			WEAPON_VIBRATOR2,			NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Flowers,			WEAPON_FLOWER,				NO_CALIBRE,		0.001,			0,		0);
-	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.06,			24,		24);
+	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.06,			24,		0);
 	DefineItemTypeWeapon(item_Grenade,			WEAPON_GRENADE,				NO_CALIBRE,		0.0,			0,		0);
 	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				NO_CALIBRE,		0.0,			0,		0);
 	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				NO_CALIBRE,		0.0,			0,		0);

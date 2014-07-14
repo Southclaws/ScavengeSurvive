@@ -1,12 +1,18 @@
 #include <YSI\y_hooks>
 
 
+static
+		// Always for targetid
+Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
+		dmg_ReturnKnockMult[MAX_PLAYERS];
+
+
 new
 			anm_AttackTick[MAX_PLAYERS],
 			anm_CurrentAnim[MAX_PLAYERS];
 
 
-forward Float:OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, kochance);
+forward OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult);
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -114,7 +120,7 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if(weaponid == 0)
-		return _DoMeleeDamage(playerid, damagedid, 0.01, 10);
+		return _DoMeleeDamage(playerid, damagedid, 0.01, 50);
 
 	return _HandleStandardMelee(playerid, damagedid);
 }
@@ -138,19 +144,45 @@ _HandleStandardMelee(playerid, targetid)
 	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMagSize(itemtype));
 }
 
-_DoMeleeDamage(playerid, targetid, Float:bleedrate, kochance)
+_DoMeleeDamage(playerid, targetid, Float:bleedrate, knockmult)
 {
-	bleedrate += Float:CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, Float:bleedrate, kochance);
+	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
+		return 0;
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, NO_CALIBRE, random(2) ? BODY_PART_TORSO : BODY_PART_HEAD);
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+	dmg_ReturnKnockMult[targetid] = knockmult;
+
+	if(CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, Float:bleedrate, knockmult))
+		return 0;
+
+	if(dmg_ReturnBleedrate[targetid] != bleedrate)
+		bleedrate = dmg_ReturnBleedrate[targetid];
+
+	if(dmg_ReturnKnockMult[targetid] != knockmult)
+		knockmult = dmg_ReturnKnockMult[targetid];
+
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, knockmult, NO_CALIBRE, random(2) ? BODY_PART_TORSO : BODY_PART_HEAD);
 	ShowHitMarker(playerid, 0);
 
-	if(random(100) < kochance)
-	{
-		new Float:hp = GetPlayerHP(playerid);
+	return 1;
+}
 
-		KnockOutPlayer(targetid, GetPlayerItemWeaponMaxResMags(playerid) + floatround(500 * (50.0 - hp) + frandom(200 * (50.0 - hp))));
-	}
+stock DMG_MELEE_SetBleedRate(targetid, Float:bleedrate)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+
+	return 1;
+}
+
+stock DMG_MELEE_SetKnockMult(targetid, knockmult)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnKnockMult[targetid] = knockmult;
 
 	return 1;
 }

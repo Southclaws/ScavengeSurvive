@@ -1,7 +1,13 @@
 #include <YSI\y_hooks>
 
 
-forward Float:OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, bulletvelocity, distance);
+static
+		// Always for targetid
+Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
+		dmg_ReturnKnockMult[MAX_PLAYERS];
+
+
+forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance);
 
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
@@ -25,6 +31,9 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 
 _HandleFirearmDamage(playerid, targetid, bodypart)
 {
+	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
+		return 0;
+
 	new
 		itemid,
 		ItemType:itemtype,
@@ -60,6 +69,7 @@ _DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
 	new
 		calibre,
 		Float:bleedrate,
+		knockmult = 100,
 		Float:bulletvelocity,
 		Float:distance,
 		Float:velocitydegredationrate;
@@ -90,11 +100,40 @@ _DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
 	bleedrate = (bleedrate * (bulletvelocity / 1000.0));
 	d:2:FIREARM_DEBUG("[_DoFirearmDamage] bleedrate: %.4f", bleedrate);
 
-	bleedrate += Float:CallLocalFunction("OnPlayerShootPlayer", "dddfdd", playerid, targetid, bodypart, bleedrate, bulletvelocity, distance);
-	d:2:FIREARM_DEBUG("[_DoFirearmDamage] bleedrate: %.4f (after callback)", bleedrate);
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, calibre, bodypart);
+	if(CallLocalFunction("OnPlayerShootPlayer", "dddfddd", playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance))
+		return 0;
+
+	if(dmg_ReturnBleedrate[targetid] != bleedrate)
+		bleedrate = dmg_ReturnBleedrate[targetid];
+
+	if(dmg_ReturnKnockMult[targetid] != knockmult)
+		knockmult = dmg_ReturnKnockMult[targetid];
+
+	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, knockmult, calibre, bodypart);
 	ShowHitMarker(playerid, GetItemTypeWeaponBaseWeapon(itemtype));
+
+	return 1;
+}
+
+stock DMG_FIREARM_SetBleedRate(targetid, Float:bleedrate)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+
+	return 1;
+}
+
+stock DMG_FIREARM_SetKnockMult(targetid, knockmult)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnKnockMult[targetid] = knockmult;
 
 	return 1;
 }

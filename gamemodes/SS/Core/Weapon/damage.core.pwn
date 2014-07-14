@@ -66,8 +66,11 @@ hook OnGameModeInit()
 }
 
 
-stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, calibre, bodypart)
+stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, knockmult, calibre, bodypart)
 {
+	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
+		return 0;
+
 	new
 		woundid = Iter_Free(wnd_Index[targetid]),
 		woundcount,
@@ -99,23 +102,32 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, c
 	totalbleedrate = totalbleedrate > 10.0 ? 10.0 : totalbleedrate;
 
 	SetPlayerBleedRate(targetid, totalbleedrate);
+	GivePlayerHP(targetid, -(bleedrate * 10.0));
 
-	if(woundcount > 1)
+	switch(bodypart)
 	{
-		if(frandom(100.0) < (woundcount * (totalbleedrate * 20)))
+		case BODY_PART_TORSO: knockmult *= 1;
+		case BODY_PART_GROIN: knockmult *= 1.2;
+		case BODY_PART_LEFT_ARM: knockmult *= 0.9;
+		case BODY_PART_RIGHT_ARM: knockmult *= 0.9;
+		case BODY_PART_LEFT_LEG: knockmult *= 0.9;
+		case BODY_PART_RIGHT_LEG: knockmult *= 0.9;
+		case BODY_PART_HEAD: knockmult *= 2.0;
+	}
+
+	if(frandom(100.0) < (float(knockmult) / 100.0) * (woundcount * (totalbleedrate * 20)))
+	{
+		new
+			Float:hp,
+			knockouttime;
+
+		hp = GetPlayerHP(targetid);
+		knockouttime = floatround((woundcount * (totalbleedrate * 10) * (100.0 - hp) + (200 * (100.0 - hp))));
+
+		if(knockouttime > 1500)
 		{
-			new
-				Float:hp,
-				knockouttime;
-
-			hp = GetPlayerHP(targetid);
-			knockouttime = floatround((woundcount * (totalbleedrate * 10) * (100.0 - hp) + (200 * (100.0 - hp))));
-
-			if(knockouttime > 1500)
-			{
-				d:2:FIREARM_DEBUG("[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", playerid, knockouttime, woundcount, hp, totalbleedrate);
-				KnockOutPlayer(targetid, knockouttime);
-			}
+			d:2:FIREARM_DEBUG("[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", playerid, knockouttime, woundcount, hp, totalbleedrate);
+			KnockOutPlayer(targetid, knockouttime);
 		}
 	}
 

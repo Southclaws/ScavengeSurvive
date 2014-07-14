@@ -76,26 +76,32 @@ public OnItemNameRender(itemid)
 forward armour_OnItemNameRender(itemid);
 
 
-public Float:OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance)
 {
 	if(bodypart == 3)
 	{
-		if(GetPlayerAP(targetid) > 0.0)
+		new Float:ap = GetPlayerAP(targetid);
+
+		if(ap > 0.0)
 		{
 			if(random(100) < 50)
-				bleedrate -= bleedrate * 0.6;
+				bleedrate *= 0.6;
 
 			else
-				bleedrate -= bleedrate * 0.3;
+				bleedrate *= 0.3;
 
-			return -bleedrate;
+			SetPlayerAP(targetid, ap * (bleedrate * 10.0));
+
+			DMG_FIREARM_SetBleedRate(targetid, bleedrate);
+
+			return 1;
 		}
 	}
 
 	#if defined armour_OnPlayerShootPlayer
-		return armour_OnPlayerShootPlayer(playerid, targetid, bodypart, bleedrate, bulletvelocity, distance);
+		return armour_OnPlayerShootPlayer(playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance);
 	#else
-		return 0.0;
+		return 0;
 	#endif
 }
 #if defined _ALS_OnPlayerShootPlayer
@@ -106,7 +112,7 @@ public Float:OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, 
  
 #define OnPlayerShootPlayer armour_OnPlayerShootPlayer
 #if defined armour_OnPlayerShootPlayer
-	forward Float:armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, bleedrate, bulletvelocity, distance);
+	forward armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, bleedrate, knockmult, bulletvelocity, distance);
 #endif
 
 

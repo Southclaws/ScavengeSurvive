@@ -8,6 +8,31 @@ static
 Timer:	knockout_Timer[MAX_PLAYERS];
 
 
+hook OnPlayerConnect(playerid)
+{
+	knockout_KnockedOut[playerid] = false;
+	knockout_Tick[playerid] = 0;
+	knockout_Duration[playerid] = 0;
+}
+
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	WakeUpPlayer(playerid);
+}
+
+hook OnPlayerDisconnect(playerid)
+{
+	if(gServerRestarting)
+		return 1;
+
+	if(knockout_KnockedOut[playerid])
+	{
+		WakeUpPlayer(playerid);
+	}
+
+	return 1;
+}
+
 stock KnockOutPlayer(playerid, duration)
 {
 	if(IsPlayerOnAdminDuty(playerid))
@@ -129,24 +154,6 @@ _PlayKnockOutAnimation(playerid)
 			}
 		}
 	}
-}
-
-hook OnPlayerDisconnect(playerid)
-{
-	if(gServerRestarting)
-		return 1;
-
-	if(knockout_KnockedOut[playerid])
-	{
-		WakeUpPlayer(playerid);
-	}
-
-	return 1;
-}
-
-hook OnPlayerSpawn(playerid)
-{
-	knockout_KnockedOut[playerid] = false;
 }
 
 stock GetPlayerKnockOutTick(playerid)

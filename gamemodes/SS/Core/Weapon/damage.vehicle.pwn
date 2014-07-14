@@ -1,7 +1,13 @@
 #include <YSI\y_hooks>
 
 
-forward Float:OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate);
+static
+		// Always for targetid
+Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
+		dmg_ReturnKnockMult[MAX_PLAYERS];
+
+
+forward OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, knockmult);
 
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
@@ -16,9 +22,13 @@ hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 _DoVehicleCollisionDamage(playerid, targetid)
 {
+	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
+		return 0;
+
 	new
 		Float:velocity,
-		Float:bleedrate;
+		Float:bleedrate,
+		knockmult = 100;
 
 	velocity = GetPlayerTotalVelocity(playerid);
 	bleedrate = 0.04 * (velocity / 50.0);
@@ -26,7 +36,39 @@ _DoVehicleCollisionDamage(playerid, targetid)
 	if(velocity > 55.0 && frandom(velocity) > 55.0)
 		KnockOutPlayer(targetid, floatround(1000 + ((velocity / 20.0) * 1000)));
 
-	bleedrate += Float:CallLocalFunction("OnPlayerVehicleCollide", "ddf", playerid, targetid, bleedrate);
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, NO_CALIBRE, random(2) ? (BODY_PART_TORSO) : (random(2) ? (BODY_PART_RIGHT_LEG) : (BODY_PART_LEFT_LEG)));
+	if(CallLocalFunction("OnPlayerVehicleCollide", "ddfd", playerid, targetid, bleedrate, knockmult))
+		return 0;
+
+	if(dmg_ReturnBleedrate[targetid] != bleedrate)
+		bleedrate = dmg_ReturnBleedrate[targetid];
+
+	if(dmg_ReturnKnockMult[targetid] != knockmult)
+		knockmult = dmg_ReturnKnockMult[targetid];
+
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, 0, NO_CALIBRE, random(2) ? (BODY_PART_TORSO) : (random(2) ? (BODY_PART_RIGHT_LEG) : (BODY_PART_LEFT_LEG)));
+
+	return 1;
+}
+
+stock DMG_VEHICLE_SetBleedRate(targetid, Float:bleedrate)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnBleedrate[targetid] = bleedrate;
+
+	return 1;
+}
+
+stock DMG_VEHICLE_SetKnockMult(targetid, knockmult)
+{
+	if(!IsPlayerConnected(targetid))
+		return 0;
+
+	dmg_ReturnKnockMult[targetid] = knockmult;
+
+	return 1;
 }
