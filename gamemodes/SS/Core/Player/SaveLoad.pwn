@@ -352,10 +352,6 @@ LoadPlayerChar(playerid)
 	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
 	SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
 	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
-
-	if(!IsPointInMapBounds(Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]))
-		data[PLY_CELL_SPAWN_Z] += _:1.0;
-
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 

@@ -56,7 +56,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-timer SitDown[300](playerid)
+timer SitDown[800](playerid)
 {
 	ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_IN", 4.0, 0, 0, 0, 0, 0);
 	defer SitLoop(playerid);

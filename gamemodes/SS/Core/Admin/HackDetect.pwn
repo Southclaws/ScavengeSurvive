@@ -651,6 +651,7 @@ VehicleModCheck(playerid)
 	if(component == 1008 || component == 1009 || component == 1010)
 	{
 		BanPlayer(playerid, "Detected Nitro vehicle component.", -1, 0);
+		RemoveVehicleComponent(vehicleid, CARMODTYPE_NITRO);
 	}
 
 	component = GetVehicleComponentInSlot(vehicleid, CARMODTYPE_HYDRAULICS);
@@ -658,6 +659,7 @@ VehicleModCheck(playerid)
 	if(component == 1087)
 	{
 		BanPlayer(playerid, "Detected Hydraulics vehicle component.", -1, 0);
+		RemoveVehicleComponent(vehicleid, CARMODTYPE_HYDRAULICS);
 	}
 }
 

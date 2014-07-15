@@ -92,6 +92,8 @@ stock SetPlayerHolsterItem(playerid, itemid)
 	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
 		return 0;
 
+	RemoveItemFromWorld(itemid);
+
 	SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetItemTypeModel(GetItemType(itemid)),
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_boneId],
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_offsetPosX],
@@ -254,7 +256,6 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 	new currentitem = hols_Item[playerid];
 
 	SetPlayerHolsterItem(playerid, itemid);
-	RemoveItemFromWorld(itemid);
 	ClearAnimations(playerid);
 
 	if(IsValidItem(currentitem))

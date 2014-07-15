@@ -17,7 +17,7 @@ CMD:help(playerid, params[])
 
 	strcat(gBigString[playerid],
 		"\t"C_YELLOW"/tooltips - enable and disable helpful tooltips\n\n\
-		\t"C_BROWN"/die - kill yourself\n\n\
+		\t"C_BROWN"/dropall - drop all your items and surrender\n\n\
 		\t"C_LGREEN"/changepass - change your password\n\n\n\
 		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
 
@@ -102,6 +102,23 @@ CMD:tooltips(playerid, params[])
 		Msg(playerid, YELLOW, " >  Tooltips enabled");
 		SetPlayerBitFlag(playerid, ToolTips, true);
 	}
+	return 1;
+}
+
+CMD:dropall(playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+	DropItems(playerid, x, y, z, r, false);
+
 	return 1;
 }
 

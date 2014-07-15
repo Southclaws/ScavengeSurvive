@@ -404,13 +404,12 @@ public OnPlayerDroppedItem(playerid, itemid)
 		list[BTN_MAX_INRANGE],
 		count;
 
-	GetPlayerButtonList(playerid, list, count);
+	GetPlayerButtonList(playerid, list, count, true);
 
 	for(new i; i < count; i++)
 	{
 		if(tnt_ButtonTent[list[i]] != INVALID_TENT_ID)
 		{
-			// Do distance check from player to tent to validate.
 			tnt_ItemTentTarget[itemid] = tnt_ButtonTent[list[i]];
 			MsgF(playerid, YELLOW, " >  Item %d added to tent %d (GEID: %d)", itemid, tnt_ButtonTent[list[i]], tnt_GEID[tnt_ButtonTent[list[i]]]);
 			break;

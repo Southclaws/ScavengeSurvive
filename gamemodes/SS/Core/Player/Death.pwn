@@ -67,7 +67,7 @@ _OnDeath(playerid, killerid)
 		death_PosZ[playerid] += 0.1;
 
 	HideWatch(playerid);
-	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
 	RemovePlayerWeapon(playerid);
 	SpawnPlayer(playerid);
 	ToggleArmour(playerid, false);
@@ -156,13 +156,17 @@ _OnDeath(playerid, killerid)
 	return 1;
 }
 
-DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
+DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 {
 	new
-		interior = GetPlayerInterior(playerid),
-		backpackitem = GetPlayerBagItem(playerid),
-		itemid = GetPlayerItem(playerid),
-		clothes = GetPlayerClothes(playerid);
+		itemid,
+		interior = GetPlayerInterior(playerid);
+
+	/*
+		Held item
+	*/
+
+	itemid = GetPlayerItem(playerid);
 
 	if(IsValidItem(itemid))
 	{
@@ -173,27 +177,18 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
-
-		RemoveCurrentItem(playerid);
 	}
-	else if(GetPlayerWeapon(playerid) > 0 && GetPlayerTotalAmmo(playerid) > 0)
-	{
-		itemid = CreateItem(ItemType:GetPlayerWeapon(playerid),
-			x + floatsin(345.0, degrees),
-			y + floatcos(345.0, degrees),
-			z - FLOOR_OFFSET,
-			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
-			.interior = interior);
 
-		SetItemExtraData(itemid, GetPlayerTotalAmmo(playerid));
-		RemovePlayerWeapon(playerid);
-	}
+	/*
+		Holstered item
+	*/
 
 	itemid = GetPlayerHolsterItem(playerid);
 
 	if(IsValidItem(itemid))
 	{
+		RemovePlayerHolsterItem(playerid);
+
 		CreateItemInWorld(itemid,
 			x + floatsin(15.0, degrees),
 			y + floatcos(15.0, degrees),
@@ -201,9 +196,11 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
-
-		RemovePlayerHolsterItem(playerid);
 	}
+
+	/*
+		Inventory
+	*/
 
 	for(new i; i < INV_MAX_SLOTS; i++)
 	{
@@ -222,27 +219,24 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 			.interior = interior);
 	}
 
-	if(IsValidItem(backpackitem))
+	/*
+		Bag item
+	*/
+
+	itemid = GetPlayerBagItem(playerid);
+
+	if(IsValidItem(itemid))
 	{
 		RemovePlayerBag(playerid);
 
-		SetItemPos(backpackitem, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
-		SetItemRot(backpackitem, 0.0, 0.0, r, true);
-		SetItemInterior(backpackitem, interior);
+		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+		SetItemRot(itemid, 0.0, 0.0, r, true);
+		SetItemInterior(itemid, interior);
 	}
 
-	if(clothes != skin_MainM && clothes != skin_MainF)
-	{
-		itemid = CreateItem(item_Clothes,
-			x + floatsin(90.0, degrees),
-			y + floatcos(90.0, degrees),
-			z - FLOOR_OFFSET,
-			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
-			.interior = interior);
-
-		SetItemExtraData(itemid, clothes);
-	}
+	/*
+		Head-wear item
+	*/
 
 	itemid = GetPlayerHat(playerid);
 
@@ -259,6 +253,10 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 		RemovePlayerHat(playerid);
 	}
 
+	/*
+		Face-wear item
+	*/
+
 	itemid = GetPlayerMask(playerid);
 
 	if(IsValidItem(itemid))
@@ -274,6 +272,36 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 		RemovePlayerMask(playerid);
 	}
 
+	/*
+		Armour item
+	*/
+
+	if(GetPlayerAP(playerid) > 0.0)
+	{
+		itemid = CreateItem(item_Armour,
+			x + floatsin(80.0, degrees),
+			y + floatcos(80.0, degrees),
+			z - FLOOR_OFFSET,
+			.rz = r,
+			.zoffset = ITEM_BUTTON_OFFSET,
+			.interior = interior);
+
+		SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+		ToggleArmour(playerid, false);
+		SetPlayerAP(playerid, 0.0);
+	}
+
+	/*
+		These items should only be dropped on death.
+	*/
+
+	if(!death)
+		return;
+
+	/*
+		Handcuffs
+	*/
+
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 	{
 		CreateItem(item_HandCuffs,
@@ -283,7 +311,25 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r)
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.interior = interior);
+
+		SetPlayerCuffs(playerid, false);
 	}
+
+	/*
+		Clothes item
+	*/
+
+	itemid = CreateItem(item_Clothes,
+		x + floatsin(90.0, degrees),
+		y + floatcos(90.0, degrees),
+		z - FLOOR_OFFSET,
+		.rz = r,
+		.zoffset = ITEM_BUTTON_OFFSET,
+		.interior = interior);
+
+	SetItemExtraData(itemid, GetPlayerClothes(playerid));
+
+	return;
 }
 
 hook OnPlayerSpawn(playerid)
