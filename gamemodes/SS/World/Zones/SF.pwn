@@ -19,9 +19,17 @@ public OnLoad()
 	SF_District_Ship1();
 	SF_District_Ship2();
 
+/*
+	// SF Factory
 	LinkTP(
 		CreateButton(-904.7388, 335.7443, 1014.1530, "Press F to open", 0),
 		CreateButton(-1857.1831, -169.5322, 9.1358, "Press F to open", 0));
+
+	// SF utility room
+	LinkTP(
+		CreateButton(-2578.1204, 1144.8810, 40.3989, "Press F to enter"),
+		CreateButton(-2587.5229, 1162.4547, 55.5876, "Press F to enter"));
+*/
 
 	DefineSupplyDropPos("San Fierro Airport", -1312.81885, -16.52664, 13.08027);
 	DefineSupplyDropPos("San Fierro Driving School", -2055.64697, -200.37950, 34.24461);
@@ -156,10 +164,6 @@ SF_District_Housing1()
 }
 SF_District_Housing2()
 {
-	LinkTP(
-		CreateButton(-2578.1204, 1144.8810, 40.3989, "Press F to enter"),
-		CreateButton(-2587.5229, 1162.4547, 55.5876, "Press F to enter"));
-
 	CreateItem(item_Barbecue, -2701.1328, 845.7422, 70.3828, 171.0);
 
 	CreateZipline(
@@ -463,10 +467,11 @@ SF_District_City1()
 }
 SF_District_City2()
 {
+/*
 	LinkTP(
 		CreateButton(-1753.70, 883.57, 295.56, "Press ~k~~VEHICLE_ENTER_EXIT~ to enter"),
 		CreateButton(-1749.37, 871.82, 25.23, "Press ~k~~VEHICLE_ENTER_EXIT~ to enter"));
-
+*/
 	CreateZipline(
 		-2114.91, 923.88, 86.04,
 		-1948.34, 952.88, 61.47);
