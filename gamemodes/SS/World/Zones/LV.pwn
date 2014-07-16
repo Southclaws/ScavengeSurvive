@@ -30,6 +30,13 @@ public OnLoad()
 	CreateFuelOutlet(1596.13281, 2193.71094, 11.31250, 2.0, 100.0, frandom(25.0));
 	CreateFuelOutlet(1602.00000, 2193.71094, 11.31250, 2.0, 100.0, frandom(25.0));
 
+	CreateFuelOutlet(2634.64063, 1100.94531, 11.25000, 2.0, 100.0, frandom(20.0));
+	CreateFuelOutlet(2639.87500, 1100.96094, 11.25000, 2.0, 100.0, frandom(20.0));
+	CreateFuelOutlet(2645.25000, 1100.96094, 11.25000, 2.0, 100.0, frandom(20.0));
+	CreateFuelOutlet(2634.64063, 1111.75000, 11.25000, 2.0, 100.0, frandom(20.0));
+	CreateFuelOutlet(2639.87500, 1111.75000, 11.25000, 2.0, 100.0, frandom(20.0));
+	CreateFuelOutlet(2645.25000, 1111.75000, 11.25000, 2.0, 100.0, frandom(20.0));
+
 	CreateLadder(1177.6424, -1305.6337, 13.9241, 29.0859, 0.0);
 
 	LV_District_Housing1();
