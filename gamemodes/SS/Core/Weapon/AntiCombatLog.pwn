@@ -3,7 +3,7 @@ new
 	combatlog_LastAttacker[MAX_PLAYERS] = {INVALID_PLAYER_ID, ...},
 	combatlog_LastItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance)
 {
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
@@ -21,10 +21,10 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockm
  
 #define OnPlayerShootPlayer aclg_OnPlayerShootPlayer
 #if defined aclg_OnPlayerShootPlayer
-	forward aclg_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance);
+	forward aclg_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance);
 #endif
 
-public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult)
+public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
@@ -42,15 +42,15 @@ public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult)
  
 #define OnPlayerMeleePlayer aclg_OnPlayerMeleePlayer
 #if defined aclg_OnPlayerMeleePlayer
-	forward aclg_OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult);
+	forward aclg_OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult);
 #endif
 
-public OnPlayerExplosiveDmg(playerid, Float:bleedrate, knockmult)
+public OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult)
 {
 	_CombatLogHandleDamage(INVALID_PLAYER_ID, playerid, INVALID_ITEM_ID);
 
 	#if defined aclg_OnPlayerExplosiveDmg
-		return aclg_OnPlayerExplosiveDmg(playerid, Float:bleedrate, knockmult);
+		return aclg_OnPlayerExplosiveDmg(playerid, bleedrate, knockmult);
 	#else
 		return 0;
 	#endif
@@ -63,10 +63,10 @@ public OnPlayerExplosiveDmg(playerid, Float:bleedrate, knockmult)
  
 #define OnPlayerExplosiveDmg aclg_OnPlayerExplosiveDmg
 #if defined aclg_OnPlayerExplosiveDmg
-	forward aclg_OnPlayerExplosiveDmg(playerid, Float:bleedrate, knockmult);
+	forward aclg_OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult);
 #endif
 
-public OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, knockmult)
+public OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
 	_CombatLogHandleDamage(playerid, targetid, INVALID_ITEM_ID);
 
@@ -84,7 +84,7 @@ public OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, knockmult)
  
 #define OnPlayerVehicleCollide aclg_OnPlayerVehicleCollide
 #if defined aclg_OnPlayerVehicleCollide
-	forward aclg_OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, knockmult);
+	forward aclg_OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult);
 #endif
 
 

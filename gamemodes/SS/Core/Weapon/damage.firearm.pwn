@@ -4,10 +4,10 @@
 static
 		// Always for targetid
 Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
-		dmg_ReturnKnockMult[MAX_PLAYERS];
+Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 
 
-forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance);
+forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance);
 
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
@@ -59,17 +59,17 @@ _HandleFirearmDamage(playerid, targetid, bodypart)
 			return 0;
 	}
 
-	return _DoFirearmDamage(playerid, targetid, itemtype, bodypart);
+	return _DoFirearmDamage(playerid, targetid, itemid, itemtype, bodypart);
 }
 
-_DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
+_DoFirearmDamage(playerid, targetid, itemid, ItemType:itemtype, bodypart)
 {
 	d:1:FIREARM_DEBUG("[_DoFirearmDamage] playerid: %d targetid: %d itemtype: %d bodypart: %d ", playerid, targetid, _:itemtype, bodypart);
 
 	new
 		calibre,
 		Float:bleedrate,
-		knockmult = 100,
+		Float:knockmult = 1.0,
 		Float:bulletvelocity,
 		Float:distance,
 		Float:velocitydegredationrate;
@@ -100,6 +100,13 @@ _DoFirearmDamage(playerid, targetid, ItemType:itemtype, bodypart)
 	bleedrate = (bleedrate * (bulletvelocity / 1000.0));
 	d:2:FIREARM_DEBUG("[_DoFirearmDamage] bleedrate: %.4f", bleedrate);
 
+	// Apply bleedrate and knockout multiplier from ammotype
+	if(IsValidItem(itemid))
+	{
+		bleedrate *= GetAmmoTypeBleedrateMultiplier(GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)));
+		knockmult *= GetAmmoTypeKnockoutMultiplier(GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)));
+	}
+
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
 
@@ -128,7 +135,7 @@ stock DMG_FIREARM_SetBleedRate(targetid, Float:bleedrate)
 	return 1;
 }
 
-stock DMG_FIREARM_SetKnockMult(targetid, knockmult)
+stock DMG_FIREARM_SetKnockMult(targetid, Float:knockmult)
 {
 	if(!IsPlayerConnected(targetid))
 		return 0;

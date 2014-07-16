@@ -4,10 +4,10 @@
 static
 		// Always for targetid
 Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
-		dmg_ReturnKnockMult[MAX_PLAYERS];
+Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 
 
-forward OnPlayerExplosiveDmg(playerid, Float:bleedrate, knockmult);
+forward OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult);
 
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
@@ -27,7 +27,7 @@ _DoExplosiveDamage(playerid, targetid, Float:multiplier)
 
 	new
 		Float:bleedrate = 0.5 * (multiplier / 80.0),
-		knockmult = floatround(150 + multiplier);
+		Float:knockmult = 150.0 + multiplier;
 
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;

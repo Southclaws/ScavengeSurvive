@@ -4,7 +4,7 @@
 static
 		// Always for targetid
 Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
-		dmg_ReturnKnockMult[MAX_PLAYERS];
+Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 
 
 new
@@ -12,7 +12,7 @@ new
 			anm_CurrentAnim[MAX_PLAYERS];
 
 
-forward OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult);
+forward OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult);
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -141,10 +141,10 @@ _HandleStandardMelee(playerid, targetid)
 	if(!IsBaseWeaponMelee(baseweapon))
 		return 0;
 
-	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMagSize(itemtype));
+	return _DoMeleeDamage(playerid, targetid, GetItemTypeWeaponMuzzVelocity(itemtype), Float:GetItemTypeWeaponMagSize(itemtype));
 }
 
-_DoMeleeDamage(playerid, targetid, Float:bleedrate, knockmult)
+_DoMeleeDamage(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
 	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
 		return 0;
@@ -152,7 +152,7 @@ _DoMeleeDamage(playerid, targetid, Float:bleedrate, knockmult)
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	if(CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, Float:bleedrate, knockmult))
+	if(CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, bleedrate, knockmult))
 		return 0;
 
 	if(dmg_ReturnBleedrate[targetid] != bleedrate)
@@ -177,7 +177,7 @@ stock DMG_MELEE_SetBleedRate(targetid, Float:bleedrate)
 	return 1;
 }
 
-stock DMG_MELEE_SetKnockMult(targetid, knockmult)
+stock DMG_MELEE_SetKnockMult(targetid, Float:knockmult)
 {
 	if(!IsPlayerConnected(targetid))
 		return 0;

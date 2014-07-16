@@ -76,7 +76,7 @@ public OnItemNameRender(itemid)
 forward armour_OnItemNameRender(itemid);
 
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance)
 {
 	if(bodypart == 3)
 	{

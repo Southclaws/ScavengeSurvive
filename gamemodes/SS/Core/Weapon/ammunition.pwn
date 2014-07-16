@@ -9,10 +9,14 @@ enum e_calibre_data
 			clbr_name[MAX_AMMO_CALIBRE_NAME],
 Float:		clbr_bleedRate
 }
+
 enum E_ITEM_AMMO_DATA
 {
 ItemType:	ammo_itemType,
+			ammo_name[MAX_AMMO_CALIBRE_NAME],
 			ammo_calibre,
+Float:		ammo_bleedrateMult,
+Float:		ammo_knockoutMult,
 			ammo_size
 }
 
@@ -44,10 +48,13 @@ stock DefineAmmoCalibre(name[], Float:bleedrate)
 	return clbr_Total++;
 }
 
-stock DefineItemTypeAmmo(ItemType:itemtype, calibre, size)
+stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult, Float:knockoutmult, size)
 {
 	ammo_Data[ammo_Total][ammo_itemType] = itemtype;
+	strcat(ammo_Data[ammo_Total][ammo_name], name, MAX_AMMO_CALIBRE_NAME);
 	ammo_Data[ammo_Total][ammo_calibre] = calibre;
+	ammo_Data[ammo_Total][ammo_bleedrateMult] = bleedratemult;
+	ammo_Data[ammo_Total][ammo_knockoutMult] = knockoutmult;
 	ammo_Data[ammo_Total][ammo_size] = size;
 
 	ammo_ItemTypeAmmoType[itemtype] = ammo_Total;
@@ -75,13 +82,12 @@ public OnItemNameRender(itemid)
 	{
 		new
 			amount = GetItemExtraData(itemid),
-			str[11];
+			str[ITM_MAX_TEXT];
 
-		if(amount <= 0)
-			str = "Empty";
-
-		else
-			format(str, sizeof(str), "%d", amount);
+		format(str, sizeof(str), "%d, %s, %s",
+			amount,
+			clbr_Data[ammo_Data[ammo_ItemTypeAmmoType[GetItemType(itemid)]][ammo_calibre]][clbr_name],
+			ammo_Data[ammo_ItemTypeAmmoType[GetItemType(itemid)]][ammo_name]);
 
 		SetItemNameExtra(itemid, str);
 	}
@@ -170,6 +176,18 @@ stock ItemType:GetAmmoTypeItemType(ammotype)
 	return ammo_Data[ammotype][ammo_itemType];
 }
 
+// ammo_name
+stock GetAmmoTypeName(ammotype, name[])
+{
+	if(!(0 <= ammotype < ammo_Total))
+		return 0;
+
+	name[0] = EOS;
+	strcat(name, ammo_Data[ammotype][ammo_name], MAX_AMMO_CALIBRE_NAME);
+
+	return 1;
+}
+
 // ammo_calibre
 stock GetAmmoTypeCalibre(ammotype)
 {
@@ -177,6 +195,24 @@ stock GetAmmoTypeCalibre(ammotype)
 		return 0;
 
 	return ammo_Data[ammotype][ammo_calibre];
+}
+
+// ammo_bleedrateMult
+stock Float:GetAmmoTypeBleedrateMultiplier(ammotype)
+{
+	if(!(0 <= ammotype < ammo_Total))
+		return 0.0;
+
+	return ammo_Data[ammotype][ammo_bleedrateMult];
+}
+
+// ammo_knockoutMult
+stock Float:GetAmmoTypeKnockoutMultiplier(ammotype)
+{
+	if(!(0 <= ammotype < ammo_Total))
+		return 0.0;
+
+	return ammo_Data[ammotype][ammo_knockoutMult];
 }
 
 // ammo_size

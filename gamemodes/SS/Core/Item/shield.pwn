@@ -35,7 +35,7 @@ timer shield_Down[400](playerid, itemid)
 	SetItemRot(itemid, 90.0, 0.0, 180.0 + angle);
 }
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance)
 {
 	if(_HandleShieldHit(playerid, targetid, bodypart))
 		return 1;
@@ -54,7 +54,7 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockm
  
 #define OnPlayerShootPlayer shd_OnPlayerShootPlayer
 #if defined shd_OnPlayerShootPlayer
-	forward shd_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, knockmult, bulletvelocity, distance);
+	forward shd_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance);
 #endif
 
 

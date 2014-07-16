@@ -4,10 +4,10 @@
 static
 		// Always for targetid
 Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
-		dmg_ReturnKnockMult[MAX_PLAYERS];
+Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 
 
-forward OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, knockmult);
+forward OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult);
 
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
@@ -28,7 +28,7 @@ _DoVehicleCollisionDamage(playerid, targetid)
 	new
 		Float:velocity,
 		Float:bleedrate,
-		knockmult = 100;
+		Float:knockmult = 1.0;
 
 	velocity = GetPlayerTotalVelocity(playerid);
 	bleedrate = 0.04 * (velocity / 50.0);
@@ -63,7 +63,7 @@ stock DMG_VEHICLE_SetBleedRate(targetid, Float:bleedrate)
 	return 1;
 }
 
-stock DMG_VEHICLE_SetKnockMult(targetid, knockmult)
+stock DMG_VEHICLE_SetKnockMult(targetid, Float:knockmult)
 {
 	if(!IsPlayerConnected(targetid))
 		return 0;

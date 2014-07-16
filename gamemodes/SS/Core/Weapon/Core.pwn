@@ -678,19 +678,32 @@ forward itmw_OnItemNameRender(itemid);
 
 _NameRenderHandler(itemid)
 {
-	new ItemType:itemtype = GetItemType(itemid);
+	new
+		ItemType:itemtype = GetItemType(itemid),
+		itemweaponid = GetItemTypeWeapon(itemtype);
 
-	if(GetItemTypeWeapon(itemtype) == -1)
+	if(itemweaponid == -1)
 		return 0;
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 		return 0;
 
-	if(GetItemTypeMagSize(GetItemWeaponItemAmmoItem(itemid)) > 1)
-		return 0;
+	new
+		ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)),
+		calibrename[MAX_AMMO_CALIBRE_NAME],
+		ammoname[MAX_AMMO_CALIBRE_NAME],
+		exname[ITM_MAX_TEXT];
 
-	new exname[22];
-	format(exname, sizeof(exname), "%d/%d", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	GetCalibreName(itmw_Data[itemweaponid][itmw_calibre], calibrename);
+
+	if(ammotype == -1)
+		ammoname = "Unloaded";
+
+	else
+		GetAmmoTypeName(ammotype, ammoname);
+
+	format(exname, sizeof(exname), "%d/%d, %s, %s", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);
+
 	SetItemNameExtra(itemid, exname);
 
 	return 1;

@@ -35,6 +35,7 @@ native gpci(playerid, serial[], len);
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
 #define MAX_MODIO_SESSION				(1024) // modio
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
+#define ITM_MAX_TEXT					(48) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
 //	#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
 //	#define DEBUG_LABELS_BUTTON				(true) // SIF/Button
@@ -627,7 +628,9 @@ ItemType:		item_LargeBackpack	= INVALID_ITEM_TYPE,
 ItemType:		item_LocksmithKit	= INVALID_ITEM_TYPE,
 ItemType:		item_XmasHat		= INVALID_ITEM_TYPE,
 ItemType:		item_VehicleWeapon	= INVALID_ITEM_TYPE,
-ItemType:		item_AdvancedKeypad	= INVALID_ITEM_TYPE;
+ItemType:		item_AdvancedKeypad	= INVALID_ITEM_TYPE,
+// 180
+ItemType:		item_Ammo9mmFMJ		= INVALID_ITEM_TYPE;
 
 
 // UI HANDLES
@@ -1163,6 +1166,8 @@ public OnGameModeInit()
 	item_XmasHat		= DefineItemType("Christmas Hat",		19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 	item_VehicleWeapon	= DefineItemType("VEHICLE_WEAPON",		356,	ITEM_SIZE_LARGE,	90.0);
 	item_AdvancedKeypad	= DefineItemType("Advanced Keypad",		19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
+// 180
+	item_Ammo9mmFMJ		= DefineItemType("9mm FMJ Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1340,8 +1345,11 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_PetrolBomb,	1);
 	SetItemTypeMaxArrayData(item_CodePart,		1);
 	SetItemTypeMaxArrayData(item_LargeBackpack,	2);
-	SetItemTypeMaxArrayData(item_LocksmithKit,	1);
-	SetItemTypeMaxArrayData(item_XmasHat,		1);
+	SetItemTypeMaxArrayData(item_LocksmithKit,	0);
+	SetItemTypeMaxArrayData(item_XmasHat,		0);
+	SetItemTypeMaxArrayData(item_VehicleWeapon,	0);
+	SetItemTypeMaxArrayData(item_AdvancedKeypad,0);
+	SetItemTypeMaxArrayData(item_Ammo9mmFMJ,	1);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1383,14 +1391,14 @@ public OnGameModeInit()
 	// bleedrate and magsize with knockout chance.
 
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
-	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			120,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			125,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			130,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			130,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.08,			125,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			_:1.20,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			_:1.25,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			_:1.30,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			_:1.30,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.08,			_:1.25,	0,		anim_Blunt);
 	DefineItemTypeWeapon(item_StunGun,			0,							NO_CALIBRE,		0.0,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			140,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			_:1.40,	0,		anim_Heavy);
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
 	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20,		0);
 	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35,		0);
@@ -1435,13 +1443,14 @@ public OnGameModeInit()
 	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			24,		4);
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 
-	DefineItemTypeAmmo(item_Ammo9mm,			calibre_9mm,	10);
-	DefineItemTypeAmmo(item_Ammo50,				calibre_50c,	7);
-	DefineItemTypeAmmo(item_AmmoBuck,			calibre_12g,	6);
-	DefineItemTypeAmmo(item_Ammo556,			calibre_556,	30);
-	DefineItemTypeAmmo(item_Ammo357,			calibre_357,	5);
-	DefineItemTypeAmmo(item_AmmoRocket,			calibre_rpg,	1);
-	DefineItemTypeAmmo(item_GasCan,				calibre_fuel,	20);
+	DefineItemTypeAmmo(item_Ammo9mm,			"Hollow Point",		calibre_9mm,	1.0, 1.0, 20);
+	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50c,	1.0, 1.0, 28);
+	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.0, 1.0, 24);
+	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.0, 1.0, 30);
+	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.0, 1.0, 10);
+	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0, 1.0, 1);
+	DefineItemTypeAmmo(item_GasCan,				"Petrol",			calibre_fuel,	0.0, 0.0, 20);
+	DefineItemTypeAmmo(item_Ammo9mmFMJ,			"FMJ",				calibre_9mm,	1.2, 0.5, 20);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");

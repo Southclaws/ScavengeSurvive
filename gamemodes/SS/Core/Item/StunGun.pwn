@@ -1,4 +1,4 @@
-public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult)
+public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
 	new itemid = GetPlayerItem(playerid);
 
@@ -40,7 +40,7 @@ public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult)
  
 #define OnPlayerMeleePlayer stun_OnPlayerMeleePlayer
 #if defined stun_OnPlayerMeleePlayer
-	forward stun_OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult);
+	forward stun_OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult);
 #endif
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)

@@ -66,7 +66,7 @@ hook OnGameModeInit()
 }
 
 
-stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, knockmult, calibre, bodypart)
+stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, Float:knockmult, calibre, bodypart)
 {
 	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
 		return 0;
@@ -96,7 +96,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, k
 	bleedrate = bleedrate > 10.0 ? 10.0 : bleedrate;
 
 	totalbleedrate += bleedrate;
-	d:2:FIREARM_DEBUG("[PlayerInflictWound] totalbleedrate = %f", totalbleedrate);
+	d:2:FIREARM_DEBUG("[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
 
 	// Truncate result to 10.0
 	totalbleedrate = totalbleedrate > 10.0 ? 10.0 : totalbleedrate;
@@ -115,7 +115,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, k
 		case BODY_PART_HEAD: knockmult *= 2.0;
 	}
 
-	if(frandom(100.0) < (float(knockmult) / 100.0) * (woundcount * (totalbleedrate * 20)))
+	if(frandom(100.0) < knockmult * (woundcount * (totalbleedrate * 20)))
 	{
 		new
 			Float:hp,
