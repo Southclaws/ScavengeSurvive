@@ -58,7 +58,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 			if(!IsValidVehicle(i))
 			{
 				if(printeach)
-					printf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", i, owner);
+					logf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", i, owner);
 
 				RemoveVehicleFile(owner, printeach);
 				continue;
@@ -67,7 +67,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 			if(veh_BitData[i] & veh_Dead)
 			{
 				if(printeach)
-					printf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", i, owner);
+					logf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", i, owner);
 
 				RemoveVehicleFile(owner, printeach);
 				continue;
@@ -79,7 +79,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 	}
 
 	if(printtotal)
-		printf("Saved %d Player vehicles\n", count);
+		logf("Saved %d Player vehicles\n", count);
 }
 
 LoadPlayerVehicles(printeach = false, printtotal = false)
@@ -107,7 +107,7 @@ LoadPlayerVehicles(printeach = false, printtotal = false)
 		OLD_LoadPlayerVehicles(printeach, printtotal);
 
 	if(printtotal)
-		printf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
+		logf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
 
 	return 1;
 }
@@ -170,41 +170,6 @@ LoadPlayerVehicle(username[], prints)
 				case VTYPE_SEA: tmp = 19;
 			}
 
-			// REMOVE FOR PRODUCTION
-
-			switch(data[VEH_CELL_TYPE])
-			{
-				case 402: tmp = 25; // Buffalo
-				case 404: tmp = 22; // Pereniel
-				case 411: tmp = 3; // Infernus
-				case 412: tmp = 21; // Voodoo
-				case 418: tmp = 22; // Moonbeam
-				case 421: tmp = 21; // Washington
-				case 426: tmp = 21; // Premier
-				case 429: tmp = 3; // Banshee
-				case 438: tmp = 21; // Cabbie
-				case 451: tmp = 3; // Turismo
-				case 477: tmp = 3; // ZR 350
-				case 494: tmp = 25; // Hotring
-				case 497: tmp = 2; // Police Maverick
-				case 502: tmp = 25; // Hotring Racer A
-				case 503: tmp = 25; // Hotring Racer B
-				case 506: tmp = 3; // Super GT
-				case 507: tmp = 21; // Elegant
-				case 516: tmp = 21; // Nebula
-				case 533: tmp = 21; // Feltzer
-				case 541: tmp = 3; // Bullet
-				case 550: tmp = 21; // Sunrise
-				case 558: tmp = 41; // Uranus
-				case 559: tmp = 3; // Jester
-				case 565: tmp = 41; // Flash
-				case 567: tmp = 21; // Savanna
-				case 575: tmp = 21; // Broadway
-				case 581: tmp = 32; // BF-400
-			}
-
-			// END
-
 			data[VEH_CELL_TYPE] = 0;
 		}
 
@@ -213,7 +178,7 @@ LoadPlayerVehicle(username[], prints)
 
 	if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
 	{
-		printf("ERROR: Removing Vehicle file: %s, invalid vehicle type '%d'.", username, data[VEH_CELL_TYPE]);
+		logf("ERROR: Removing Vehicle file: %s, invalid vehicle type '%d'.", username, data[VEH_CELL_TYPE]);
 		fremove(filename);
 		return 0;
 	}
@@ -222,7 +187,7 @@ LoadPlayerVehicle(username[], prints)
 
 	if(Float:data[VEH_CELL_HEALTH] < 255.5)
 	{
-		printf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, username);
+		logf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, username);
 		fremove(filename);
 		return 0;
 	}
@@ -239,7 +204,7 @@ LoadPlayerVehicle(username[], prints)
 			}
 			else
 			{
-				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, username);
+				logf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, username);
 				fremove(filename);
 
 				return 0;
@@ -270,7 +235,7 @@ LoadPlayerVehicle(username[], prints)
 	veh_Owner[vehicleid] = owner;
 
 	if(prints)
-		printf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		logf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -436,7 +401,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
 
 	if(prints)
-		printf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), vehiclename, veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
+		logf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), vehiclename, veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
@@ -497,7 +462,7 @@ RemoveVehicleFile(owner[MAX_PLAYER_NAME], prints = true)
 		return 0;
 
 	if(prints)
-		printf("[DELT] Removing player vehicle. Owner: %s", owner);
+		logf("[DELT] Removing player vehicle. Owner: %s", owner);
 
 	new filename[MAX_PLAYER_NAME + 22];
 

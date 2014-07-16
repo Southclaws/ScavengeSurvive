@@ -445,9 +445,15 @@ SaveSafeboxItem(itemid, prints = false)
 
 	containerid = GetItemArrayDataAtCell(itemid, 1);
 
-	if(!IsValidContainer(containerid) || IsContainerEmpty(containerid))
+	if(IsContainerEmpty(containerid))
 	{
-		printf("ERROR: Can't save safebox %d GEID: %d: Not valid container (%d) or container is empty.", itemid, box_GEID[itemid], containerid);
+		fremove(filename);
+		return 0;
+	}
+
+	if(!IsValidContainer(containerid))
+	{
+		printf("ERROR: Can't save safebox %d GEID: %d: Not valid container (%d).", itemid, box_GEID[itemid], containerid);
 		fremove(filename);
 		return 0;
 	}

@@ -243,9 +243,13 @@ GenerateVehicleData(vehicleid)
 
 	if(lootindex != -1 && 0 < trunksize <= CNT_MAX_SLOTS)
 	{
-		veh_Container[vehicleid] = CreateContainer("Trunk", trunksize, .virtual = 1);
+		new vehiclename[MAX_VEHICLE_TYPE_NAME];
+
+		GetVehicleTypeName(type, vehiclename);
+
+		veh_Container[vehicleid] = CreateContainer(sprintf("%s Trunk", vehiclename), trunksize, .virtual = 1);
 		veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
-		FillContainerWithLoot(veh_Container[vehicleid], random(trunksize / 2), lootindex);
+		FillContainerWithLoot(veh_Container[vehicleid], random(trunksize / 3), lootindex);
 	}
 	else
 	{

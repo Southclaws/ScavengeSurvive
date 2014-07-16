@@ -18,7 +18,7 @@ Float:	vspawn_posR,
 
 
 static
-	veh_SpawnChance = 5,
+	veh_SpawnChance = 4,
 	veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA];
 
 
@@ -30,6 +30,24 @@ LoadVehicles(printeach = false, printtotal = false)
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
 
 	printf("Loaded %d Vehicles\n", Iter_Count(veh_Index));
+
+	if(printtotal)
+	{
+		new
+			vehicletypename[MAX_VEHICLE_TYPE_NAME],
+			vehicletypecount;
+
+		for(new i; i < veh_TypeTotal; i++)
+		{
+			vehicletypecount = GetVehicleTypeCount(i);
+
+			if(vehicletypecount > 0)
+			{
+				GetVehicleTypeName(i, vehicletypename);
+				logf("[%02d] Spawned %d '%s'", i, vehicletypecount, vehicletypename);
+			}
+		}
+	}
 }
 
 LoadVehiclesFromFolder(foldername[], prints)

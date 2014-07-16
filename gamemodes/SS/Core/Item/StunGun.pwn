@@ -45,7 +45,7 @@ public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, knockmult)
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(GetItemType(itemid) == item_StunGun && GetItemType(withitemid))
+	if(GetItemType(itemid) == item_StunGun && GetItemType(withitemid) == item_Battery)
 	{
 		SetItemExtraData(itemid, 1);
 		DestroyItem(withitemid);

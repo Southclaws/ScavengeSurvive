@@ -53,17 +53,20 @@ Float:	veh_maxFuel,
 Float:	veh_fuelCons,
 		veh_lootIndex,
 		veh_trunkSize,
-		veh_spawnChance,
+Float:	veh_spawnChance,
 		veh_flags
 }
 
 
 static
 		veh_GroupName[MAX_VEHICLE_GROUP][MAX_VEHICLE_GROUP_NAME],
-		veh_GroupTotal,
 		veh_TypeData[MAX_VEHICLE_TYPE][E_VEHICLE_TYPE_DATA],
-		veh_TypeTotal,
+		veh_TypeCount[MAX_VEHICLE_TYPE],
 		veh_Type[MAX_VEHICLES];
+
+new
+		veh_GroupTotal,
+		veh_TypeTotal;
 
 
 /*==============================================================================
@@ -85,7 +88,7 @@ stock DefineVehicleSpawnGroup(name[])
 	return veh_GroupTotal++;
 }
 
-stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex, trunksize, spawnchance, flags = 0)
+stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex, trunksize, Float:spawnchance, flags = 0)
 {
 	if(veh_TypeTotal == MAX_VEHICLE_TYPE - 1)
 		return -1;
@@ -136,6 +139,7 @@ stock CreateVehicleOfType(type, Float:x, Float:y, Float:z, Float:r, colour1, col
 		return 0;
 
 	veh_Type[vehicleid] = type;
+	veh_TypeCount[type]++;
 
 	return vehicleid;
 }
@@ -159,7 +163,7 @@ stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[]
 		if(!_IsMatchingSize(i, sizes, maxsizes))
 			continue;
 
-		if(random(100) < veh_TypeData[i][veh_spawnChance])
+		if(frandom(100.0) < veh_TypeData[i][veh_spawnChance])
 		{
 			//printf("[PickRandomVehicleTypeFromGroup] Adding '%s' to list", veh_TypeData[i][veh_name]);
 			list[idx++] = i;
@@ -302,6 +306,7 @@ stock GetVehicleTypeName(vehicletype, name[])
 	if(!(0 <= vehicletype < veh_TypeTotal))
 		return 0;
 
+	name[0] = EOS;
 	strcat(name, veh_TypeData[vehicletype][veh_name], MAX_VEHICLE_TYPE_NAME);
 
 	return 1;
@@ -371,10 +376,10 @@ stock GetVehicleTypeTrunkSize(vehicletype)
 }
 
 // veh_spawnChance
-stock GetVehicleTypeSpawnChance(vehicletype)
+stock Float:GetVehicleTypeSpawnChance(vehicletype)
 {
 	if(!(0 <= vehicletype < veh_TypeTotal))
-		return 0;
+		return 0.0;
 
 	return veh_TypeData[vehicletype][veh_spawnChance];
 }
@@ -388,6 +393,14 @@ stock GetVehicleTypeFlags(vehicletype)
 	return veh_TypeData[vehicletype][veh_flags];
 }
 
+// veh_TypeCount
+stock GetVehicleTypeCount(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return veh_TypeCount[vehicletype];
+}
 
 /*
 	Hook for CreateVehicle, if the first parameter isn't a valid model ID but is
