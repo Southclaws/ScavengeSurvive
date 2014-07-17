@@ -589,10 +589,18 @@ public OnItemCreate(itemid)
 		{
 			if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] != NO_CALIBRE)
 			{
-				new ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid));
+				new
+					calibre = itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre],
+					ItemType:ammotypelist[4],
+					ammotypes;
 
-				if(GetAmmoTypeSize(ammotype) > 1)
-					SetItemExtraData(itemid, random(GetAmmoTypeSize(ammotype) - 1) + 1);
+				ammotypes = GetAmmoItemTypesOfCalibre(calibre, ammotypelist);
+
+				if(ammotypes > 0)
+				{
+					SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]));
+					SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
+				}
 			}
 		}
 	}

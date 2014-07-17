@@ -265,5 +265,5 @@ stock GetAmmoItemTypesOfCalibre(calibre, ItemType:output[], max = sizeof(output)
 			output[idx++] = ammo_Data[i][ammo_itemType];
 	}
 
-	return idx + 1;
+	return idx;
 }
