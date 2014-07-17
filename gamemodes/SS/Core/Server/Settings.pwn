@@ -236,6 +236,42 @@ LoadSettings()
 	print("\n");
 }
 
+stock GetSettingInt(path[], defaultvalue, &output, printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+		djSetInt(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+
+	else
+		output = djInt(SETTINGS_FILE, path);
+
+	if(printsetting)
+		printf("  %s: %d", path, output);
+}
+
+stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+		djSetFloat(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+
+	else
+		output = djFloat(SETTINGS_FILE, path);
+
+	if(printsetting)
+		printf("  %s: %f", path, output);
+}
+
+stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output), printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+		djSet(SETTINGS_FILE, path, defaultvalue), strcat(output, defaultvalue, maxsize);
+
+	else
+		strcat(output, dj(SETTINGS_FILE, path), maxsize);
+
+	if(printsetting)
+		printf("  %s: %s", path, output);
+}
+
 stock UpdateSettingInt(path[], value)
 {
 	djSetInt(SETTINGS_FILE, path, value);
