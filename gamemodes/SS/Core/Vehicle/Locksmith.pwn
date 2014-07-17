@@ -135,7 +135,11 @@ public OnHoldActionUpdate(playerid, progress)
 		return 1;
 	}
 
-	return CallLocalFunction("lsk_OnHoldActionUpdate", "dd", playerid, progress);
+	#if defined lsk_OnHoldActionUpdate
+		return lsk_OnHoldActionUpdate(playerid, progress);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionUpdate
 	#undef OnHoldActionUpdate
@@ -143,7 +147,9 @@ public OnHoldActionUpdate(playerid, progress)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate lsk_OnHoldActionUpdate
-forward lsk_OnHoldActionUpdate(playerid, progress);
+#if defined lsk_OnHoldActionUpdate
+	forward lsk_OnHoldActionUpdate(playerid, progress);
+#endif
 
 public OnHoldActionFinish(playerid)
 {
@@ -173,7 +179,11 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("lsk_OnHoldActionFinish", "d", playerid);
+	#if defined lsk_OnHoldActionFinish
+		return lsk_OnHoldActionFinish(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -181,7 +191,9 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish lsk_OnHoldActionFinish
-forward lsk_OnHoldActionFinish(playerid);
+#if defined lsk_OnHoldActionFinish
+	forward lsk_OnHoldActionFinish(playerid);
+#endif
 
 public OnItemNameRender(itemid)
 {
@@ -191,7 +203,11 @@ public OnItemNameRender(itemid)
 			SetItemNameExtra(itemid, "Cut");
 	}
 
-	return CallLocalFunction("lsk_OnItemNameRender", "d", itemid);
+	#if defined lsk_OnItemNameRender
+		return lsk_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -199,4 +215,6 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender lsk_OnItemNameRender
-forward lsk_OnItemNameRender(itemid);
+#if defined lsk_OnItemNameRender
+	forward lsk_OnItemNameRender(itemid);
+#endif

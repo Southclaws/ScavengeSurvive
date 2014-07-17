@@ -13,7 +13,11 @@ public OnItemCreateInWorld(itemid)
 		SetItemExtraData(itemid, CreateCampfire(x, y, z, rz));
 	}
 
-	return CallLocalFunction("cmp_OnItemCreateInWorld", "d", itemid);
+	#if defined cmp_OnItemCreateInWorld
+		return cmp_OnItemCreateInWorld(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -21,7 +25,9 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld cmp_OnItemCreateInWorld
-forward cmp_OnItemCreateInWorld(itemid);
+#if defined cmp_OnItemCreateInWorld
+	forward cmp_OnItemCreateInWorld(itemid);
+#endif
 
 public OnPlayerPickedUpItem(playerid, itemid)
 {
@@ -31,7 +37,11 @@ public OnPlayerPickedUpItem(playerid, itemid)
 		defer AttachWoodLogs(playerid);
 	}
 
-	return CallLocalFunction("cmp_OnPlayerPickedUpItem", "dd", playerid, itemid);
+	#if defined cmp_OnPlayerPickedUpItem
+		return cmp_OnPlayerPickedUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickedUpItem
 	#undef OnPlayerPickedUpItem
@@ -39,7 +49,9 @@ public OnPlayerPickedUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickedUpItem
 #endif
 #define OnPlayerPickedUpItem cmp_OnPlayerPickedUpItem
-forward cmp_OnPlayerPickedUpItem(playerid, itemid);
+#if defined cmp_OnPlayerPickedUpItem
+	forward cmp_OnPlayerPickedUpItem(playerid, itemid);
+#endif
 
 public OnPlayerGivenItem(playerid, targetid, itemid)
 {
@@ -48,7 +60,11 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 		defer AttachWoodLogs(targetid);
 	}
 
-	return CallLocalFunction("cmp_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
+	#if defined cmp_OnPlayerGivenItem
+		return cmp_OnPlayerGivenItem(playerid, targetid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerGivenItem
 	#undef OnPlayerGivenItem
@@ -56,7 +72,9 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 	#define _ALS_OnPlayerGivenItem
 #endif
 #define OnPlayerGivenItem cmp_OnPlayerGivenItem
-forward cmp_OnPlayerGivenItem(playerid, targetid, itemid);
+#if defined cmp_OnPlayerGivenItem
+	forward cmp_OnPlayerGivenItem(playerid, targetid, itemid);
+#endif
 
 timer AttachWoodLogs[0](playerid)
 {

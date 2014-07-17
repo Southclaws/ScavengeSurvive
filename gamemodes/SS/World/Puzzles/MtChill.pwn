@@ -233,7 +233,11 @@ public OnLoad()
 		CreateDynamicObject(18244, -2309.60, -1646.11, 487.69,   90.00, 0.00, 25.86),
 		0, "Mt. Chill\nRadio", OBJECT_MATERIAL_SIZE_512x256, "Impact", 72, 0, -1, 4278216843, 1);
 
-	return CallLocalFunction("mtchil_OnLoad", "");
+	#if defined mtchil_OnLoad
+		return mtchil_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -241,7 +245,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad mtchil_OnLoad
-forward mtchil_OnLoad();
+#if defined mtchil_OnLoad
+	forward mtchil_OnLoad();
+#endif
 
 public OnPlayerActivateDoor(playerid, doorid, newstate)
 {
@@ -257,7 +263,11 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		}
 	}
 
-	return CallLocalFunction("ch_OnPlayerActivateDoor", "ddd", playerid, doorid, newstate);
+	#if defined ch_OnPlayerActivateDoor
+		return ch_OnPlayerActivateDoor(playerid, doorid, newstate);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerActivateDoor
 	#undef OnPlayerActivateDoor
@@ -265,7 +275,9 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 	#define _ALS_OnPlayerActivateDoor
 #endif
 #define OnPlayerActivateDoor ch_OnPlayerActivateDoor
-forward ch_OnPlayerActivateDoor(playerid, doorid, newstate);
+#if defined ch_OnPlayerActivateDoor
+	forward ch_OnPlayerActivateDoor(playerid, doorid, newstate);
+#endif
 
 
 public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
@@ -287,7 +299,11 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 		}
 	}
 
-    return CallLocalFunction("ch_OnPlayerUseItemWithButton", "ddd", playerid, buttonid, itemid);
+    #if defined ch_OnPlayerUseItemWithButton
+		return ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithButton
     #undef OnPlayerUseItemWithButton
@@ -295,7 +311,9 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
     #define _ALS_OnPlayerUseItemWithButton
 #endif
 #define OnPlayerUseItemWithButton ch_OnPlayerUseItemWithButton
-forward ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+#if defined ch_OnPlayerUseItemWithButton
+	forward ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+#endif
 
 
 timer ch_keypad_move[400]()

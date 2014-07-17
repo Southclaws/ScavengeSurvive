@@ -100,7 +100,11 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	return CallLocalFunction("cuf_OnHoldActionUpdate", "dd", playerid, progress);
+	#if defined cuf_OnHoldActionUpdate
+		return cuf_OnHoldActionUpdate(playerid, progress);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionUpdate
 	#undef OnHoldActionUpdate
@@ -108,7 +112,9 @@ public OnHoldActionUpdate(playerid, progress)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate cuf_OnHoldActionUpdate
-forward cuf_OnHoldActionUpdate(playerid, progress);
+#if defined cuf_OnHoldActionUpdate
+	forward cuf_OnHoldActionUpdate(playerid, progress);
+#endif
 
 public OnHoldActionFinish(playerid)
 {
@@ -138,7 +144,11 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("cuf_OnHoldActionFinish", "d", playerid);
+	#if defined cuf_OnHoldActionFinish
+		return cuf_OnHoldActionFinish(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -146,7 +156,9 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish cuf_OnHoldActionFinish
-forward cuf_OnHoldActionFinish(playerid);
+#if defined cuf_OnHoldActionFinish
+	forward cuf_OnHoldActionFinish(playerid);
+#endif
 
 CanPlayerHandcuffPlayer(playerid, targetid)
 {

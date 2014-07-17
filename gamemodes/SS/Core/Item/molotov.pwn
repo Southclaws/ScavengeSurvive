@@ -25,7 +25,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			ShowActionText(playerid, "Petrol Can Empty", 3000);
 		}
 	}
-	return CallLocalFunction("mol_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined mol_OnPlayerUseItemWithItem
+		return mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -33,4 +37,6 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem mol_OnPlayerUseItemWithItem
-forward mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined mol_OnPlayerUseItemWithItem
+	forward mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif

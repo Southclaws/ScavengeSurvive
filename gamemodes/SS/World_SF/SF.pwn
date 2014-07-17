@@ -30,7 +30,11 @@ public OnLoad()
 	DefineSupplyDropPos("San Fierro Square", -1980.58887, 884.61041, 44.17714);
 	DefineSupplyDropPos("San Fierro Promenade", -1587.81201, 1180.50891, 5.97472);
 
-	return CallLocalFunction("fierro_OnLoad", "");
+	#if defined fierro_OnLoad
+		return fierro_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -38,7 +42,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad fierro_OnLoad
-forward fierro_OnLoad();
+#if defined fierro_OnLoad
+	forward fierro_OnLoad();
+#endif
 
 
 SF_District_Housing1()

@@ -24,7 +24,11 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.152291, 0.000030, -0.005790, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.152291, 0.000030, -0.005790, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0);
 
-	return CallLocalFunction("army_OnLoad", "");
+	#if defined army_OnLoad
+		return army_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -32,5 +36,7 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad army_OnLoad
-forward army_OnLoad();
+#if defined army_OnLoad
+	forward army_OnLoad();
+#endif
 

@@ -168,7 +168,11 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	return CallLocalFunction("rep_OnHoldActionUpdate", "dd", playerid, progress);
+	#if defined rep_OnHoldActionUpdate
+		return rep_OnHoldActionUpdate(playerid, progress);
+	#else
+		return 0;
+	#endif
 }
 
 #if defined _ALS_OnHoldActionUpdate
@@ -177,7 +181,9 @@ public OnHoldActionUpdate(playerid, progress)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate rep_OnHoldActionUpdate
-forward rep_OnHoldActionUpdate(playerid, progress);
+#if defined rep_OnHoldActionUpdate
+	forward rep_OnHoldActionUpdate(playerid, progress);
+#endif
 
 
 CompToolHealth(ItemType:itemtype, Float:health)

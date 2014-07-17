@@ -27,7 +27,11 @@ public OnLoad()
 
 	repeat AddLoot();
 
-	return CallLocalFunction("robada_OnLoad", "");
+	#if defined robada_OnLoad
+		return robada_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -35,7 +39,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad robada_OnLoad
-forward robada_OnLoad();
+#if defined robada_OnLoad
+	forward robada_OnLoad();
+#endif
 
 new Float:LootAngle;
 timer AddLoot[60000]()

@@ -161,7 +161,11 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("hat_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined hat_OnPlayerUseItem
+		return hat_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -169,7 +173,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem hat_OnPlayerUseItem
-forward hat_OnPlayerUseItem(playerid, itemid);
+#if defined hat_OnPlayerUseItem
+	forward hat_OnPlayerUseItem(playerid, itemid);
+#endif
 
 
 // Interface

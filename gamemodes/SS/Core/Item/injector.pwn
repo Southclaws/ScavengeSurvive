@@ -59,7 +59,11 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	return CallLocalFunction("inj_OnItemNameRender", "d", itemid);
+	#if defined inj_OnItemNameRender
+		return inj_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -67,7 +71,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender inj_OnItemNameRender
-forward inj_OnItemNameRender(itemid);
+#if defined inj_OnItemNameRender
+	forward inj_OnItemNameRender(itemid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -87,7 +93,11 @@ public OnPlayerUseItem(playerid, itemid)
 		StartInjecting(playerid, targetid);
 	}
 
-	return CallLocalFunction("inj_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined inj_OnPlayerUseItem
+		return inj_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -95,7 +105,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem inj_OnPlayerUseItem
-forward inj_OnPlayerUseItem(playerid, itemid);
+#if defined inj_OnPlayerUseItem
+	forward inj_OnPlayerUseItem(playerid, itemid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -181,7 +193,11 @@ public OnHoldActionFinish(playerid)
 		SetItemExtraData(inj_CurrentItem[playerid], INJECT_TYPE_EMPTY);
 	}
 
-	return CallLocalFunction("inj_OnHoldActionFinish", "d", playerid);
+	#if defined inj_OnHoldActionFinish
+		return inj_OnHoldActionFinish(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -189,4 +205,6 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish inj_OnHoldActionFinish
-forward inj_OnHoldActionFinish(playerid);
+#if defined inj_OnHoldActionFinish
+	forward inj_OnHoldActionFinish(playerid);
+#endif

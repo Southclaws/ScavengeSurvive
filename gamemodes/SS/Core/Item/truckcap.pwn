@@ -24,7 +24,11 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.134000, 0.028000, -0.000999,  0.000000, 90.000000, 90.000000,  1.234999, 1.094000, 1.000000); // 191
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.092000, 0.041000, -0.003999,  0.000000, 90.000000, 88.200027,  1.162999, 1.106000, 1.000000); // 131
 
-	return CallLocalFunction("tcap_OnLoad", "");
+	#if defined tcap_OnLoad
+		return tcap_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -32,4 +36,6 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad tcap_OnLoad
-forward tcap_OnLoad();
+#if defined tcap_OnLoad
+	forward tcap_OnLoad();
+#endif

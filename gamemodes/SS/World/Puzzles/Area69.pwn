@@ -309,7 +309,11 @@ public OnLoad()
 	CreateDynamicObject(3117, 246.71663, 1861.98657, 20.62875,   90.00000, 0.00000, 398.98010);
 	CreateDynamicObject(3095, 268.37225, 1884.12219, 15.74065,   0.00000, 0.00000, 0.00000);
 
-	return CallLocalFunction("a69_OnLoad", "");
+	#if defined a69_OnLoad
+		return a69_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -351,7 +355,11 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	return CallLocalFunction("a69_OnButtonPress", "dd", playerid, buttonid);
+	#if defined a69_OnButtonPress
+		return a69_OnButtonPress(playerid, buttonid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnButtonPress
 	#undef OnButtonPress
@@ -400,7 +408,11 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		return PlayerActivateDoorButton(playerid, k_Shaft, code_Shaft);
 
 
-	return CallLocalFunction("a69_OnPlayerActivateDoor", "ddd", playerid, doorid, newstate);
+	#if defined a69_OnPlayerActivateDoor
+		return a69_OnPlayerActivateDoor(playerid, doorid, newstate);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerActivateDoor
 	#undef OnPlayerActivateDoor
@@ -537,7 +549,11 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		}
 	}
 
-	return CallLocalFunction("a69_OnPlayerKeypadEnter", "ddd", playerid, keypadid, code, match);
+	#if defined a69_OnPlayerKeypadEnter
+		return a69_OnPlayerKeypadEnter(playerid, keypadid, code, match);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerKeypadEnter
 	#undef OnPlayerKeypadEnter

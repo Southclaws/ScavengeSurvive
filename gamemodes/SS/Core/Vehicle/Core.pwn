@@ -898,7 +898,11 @@ public OnPlayerCloseContainer(playerid, containerid)
 			veh_CurrentTrunkVehicle[playerid] = INVALID_VEHICLE_ID;
 		}
 	}
-	return CallLocalFunction("veh_OnPlayerCloseContainer", "dd", playerid, containerid);
+	#if defined veh_OnPlayerCloseContainer
+		return veh_OnPlayerCloseContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -906,14 +910,20 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer veh_OnPlayerCloseContainer
-forward veh_OnPlayerCloseContainer(playerid, containerid);
+#if defined veh_OnPlayerCloseContainer
+	forward veh_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return 1;
 
-	return CallLocalFunction("veh_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined veh_OnPlayerUseItem
+		return veh_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -921,14 +931,20 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem veh_OnPlayerUseItem
-forward veh_OnPlayerUseItem(playerid, itemid);
+#if defined veh_OnPlayerUseItem
+	forward veh_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnItemAddedToContainer(containerid, itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
-	return CallLocalFunction("veh_OnItemAddedToContainer", "ddd", containerid, itemid, playerid);
+	#if defined veh_OnItemAddedToContainer
+		return veh_OnItemAddedToContainer(containerid, itemid, playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemAddedToContainer
 	#undef OnItemAddedToContainer
@@ -936,14 +952,20 @@ public OnItemAddedToContainer(containerid, itemid, playerid)
 	#define _ALS_OnItemAddedToContainer
 #endif
 #define OnItemAddedToContainer veh_OnItemAddedToContainer
-forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
+#if defined veh_OnItemAddedToContainer
+	forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
+#endif
 
 public OnItemRemovedFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
-	return CallLocalFunction("veh_OnItemRemovedFromContainer", "ddd", containerid, slotid, playerid);
+	#if defined veh_OnItemRemovedFromContainer
+		return veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemRemovedFromContainer
 	#undef OnItemRemovedFromContainer
@@ -951,7 +973,9 @@ public OnItemRemovedFromContainer(containerid, slotid, playerid)
 	#define _ALS_OnItemRemovedFromContainer
 #endif
 #define OnItemRemovedFromContainer veh_OnItemRemovedFromContainer
-forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
+#if defined veh_OnItemRemovedFromContainer
+	forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
+#endif
 
 VehicleTrunkUpdateSave(playerid)
 {

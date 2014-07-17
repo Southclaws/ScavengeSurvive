@@ -268,7 +268,11 @@ public OnPlayerOpenInventory(playerid)
 	ShowPlayerHealthInfo(playerid);
 	SelectTextDraw(playerid, 0xFFFF00FF);
 
-	return CallLocalFunction("app_OnPlayerOpenInventory", "d", playerid);
+	#if defined app_OnPlayerOpenInventory
+		return app_OnPlayerOpenInventory(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerOpenInventory
 	#undef OnPlayerOpenInventory
@@ -276,7 +280,9 @@ public OnPlayerOpenInventory(playerid)
 	#define _ALS_OnPlayerOpenInventory
 #endif
 #define OnPlayerOpenInventory app_OnPlayerOpenInventory
-forward app_OnPlayerOpenInventory(playerid);
+#if defined app_OnPlayerOpenInventory
+	forward app_OnPlayerOpenInventory(playerid);
+#endif
 
 public OnPlayerCloseInventory(playerid)
 {
@@ -284,7 +290,11 @@ public OnPlayerCloseInventory(playerid)
 	HidePlayerHealthInfo(playerid);
 	CancelSelectTextDraw(playerid);
 
-	return CallLocalFunction("app_OnPlayerCloseInventory", "d", playerid);
+	#if defined app_OnPlayerCloseInventory
+		return app_OnPlayerCloseInventory(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerCloseInventory
 	#undef OnPlayerCloseInventory
@@ -292,7 +302,9 @@ public OnPlayerCloseInventory(playerid)
 	#define _ALS_OnPlayerCloseInventory
 #endif
 #define OnPlayerCloseInventory app_OnPlayerCloseInventory
-forward app_OnPlayerCloseInventory(playerid);
+#if defined app_OnPlayerCloseInventory
+	forward app_OnPlayerCloseInventory(playerid);
+#endif
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
@@ -300,7 +312,11 @@ public OnPlayerOpenContainer(playerid, containerid)
 	UpdatePlayerGear(playerid);
 	ShowPlayerHealthInfo(playerid);
 
-	return CallLocalFunction("app_OnPlayerOpenContainer", "dd", playerid, containerid);
+	#if defined app_OnPlayerOpenContainer
+		return app_OnPlayerOpenContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -308,7 +324,9 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer app_OnPlayerOpenContainer
-forward app_OnPlayerOpenContainer(playerid, containerid);
+#if defined app_OnPlayerOpenContainer
+	forward app_OnPlayerOpenContainer(playerid, containerid);
+#endif
 
 public OnPlayerCloseContainer(playerid, containerid)
 {
@@ -316,7 +334,11 @@ public OnPlayerCloseContainer(playerid, containerid)
 	HidePlayerHealthInfo(playerid);
 	CancelSelectTextDraw(playerid);
 
-	return CallLocalFunction("app_OnPlayerCloseContainer", "dd", playerid, containerid);
+	#if defined app_OnPlayerCloseContainer
+		return app_OnPlayerCloseContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -324,7 +346,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer app_OnPlayerCloseContainer
-forward app_OnPlayerCloseContainer(playerid, containerid);
+#if defined app_OnPlayerCloseContainer
+	forward app_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
@@ -336,7 +360,11 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 		}
 	}
 
-	return CallLocalFunction("app_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
+	#if defined app_OnItemRemoveFromContainer
+		return app_OnItemRemoveFromContainer(containerid, slotid, playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemRemoveFromContainer
 	#undef OnItemRemoveFromContainer
@@ -344,13 +372,19 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 	#define _ALS_OnItemRemoveFromContainer
 #endif
 #define OnItemRemoveFromContainer app_OnItemRemoveFromContainer
-forward app_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#if defined app_OnItemRemoveFromContainer
+	forward app_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#endif
 
 public OnItemRemoveFromInventory(playerid, itemid, slot)
 {
 	UpdatePlayerGear(playerid, 0);
 
-	return CallLocalFunction("app_OnItemRemoveFromInventory", "ddd", playerid, itemid, slot);
+	#if defined app_OnItemRemoveFromInventory
+		return app_OnItemRemoveFromInventory(playerid, itemid, slot);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerRemoveFromInv
 	#undef OnItemRemoveFromInventory
@@ -358,13 +392,19 @@ public OnItemRemoveFromInventory(playerid, itemid, slot)
 	#define _ALS_OnPlayerRemoveFromInv
 #endif
 #define OnItemRemoveFromInventory app_OnItemRemoveFromInventory
-forward app_OnItemRemoveFromInventory(playerid, itemid, slot);
+#if defined app_OnItemRemoveFromInventory
+	forward app_OnItemRemoveFromInventory(playerid, itemid, slot);
+#endif
 
 public OnItemAddToInventory(playerid, itemid, slot)
 {
 	UpdatePlayerGear(playerid, 0);
 
-	return CallLocalFunction("app_OnItemAddToInventory", "ddd", playerid, itemid, slot);
+	#if defined app_OnItemAddToInventory
+		return app_OnItemAddToInventory(playerid, itemid, slot);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemAddToInventory
 	#undef OnItemAddToInventory
@@ -372,14 +412,20 @@ public OnItemAddToInventory(playerid, itemid, slot)
 	#define _ALS_OnItemAddToInventory
 #endif
 #define OnItemAddToInventory app_OnItemAddToInventory
-forward app_OnItemAddToInventory(playerid, itemid, slot);
+#if defined app_OnItemAddToInventory
+	forward app_OnItemAddToInventory(playerid, itemid, slot);
+#endif
 
 public OnItemRemovedFromPlayer(playerid, itemid)
 {
 	if(GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_CARRY)
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	
-	return CallLocalFunction("app_OnItemRemovedFromPlayer", "dd", playerid, itemid);
+	#if defined app_OnItemRemovedFromPlayer
+		return app_OnItemRemovedFromPlayer(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemRemovedFromPlayer
 	#undef OnItemRemovedFromPlayer
@@ -387,7 +433,9 @@ public OnItemRemovedFromPlayer(playerid, itemid)
 	#define _ALS_OnItemRemovedFromPlayer
 #endif
 #define OnItemRemovedFromPlayer app_OnItemRemovedFromPlayer
-forward app_OnItemRemovedFromPlayer(playerid, itemid);
+#if defined app_OnItemRemovedFromPlayer
+	forward app_OnItemRemovedFromPlayer(playerid, itemid);
+#endif
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
@@ -739,7 +787,11 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 		}
 	}
 
-	return CallLocalFunction("inv_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+	#if defined inv_OnPlayerViewContainerOpt
+		return inv_OnPlayerViewContainerOpt(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -747,7 +799,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt inv_OnPlayerViewContainerOpt
-forward inv_OnPlayerViewContainerOpt(playerid, containerid);
+#if defined inv_OnPlayerViewContainerOpt
+	forward inv_OnPlayerViewContainerOpt(playerid, containerid);
+#endif
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
@@ -797,7 +851,11 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	return CallLocalFunction("inv_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
+	#if defined inv_OnPlayerSelectContainerOpt
+		return inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
@@ -805,7 +863,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
 #define OnPlayerSelectContainerOpt inv_OnPlayerSelectContainerOpt
-forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#if defined inv_OnPlayerSelectContainerOpt
+	forward inv_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#endif
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {

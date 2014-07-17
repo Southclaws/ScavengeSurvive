@@ -35,7 +35,11 @@ public OnItemNameRender(itemid)
 		SetItemNameExtra(itemid, str);
 	}
 
-	return CallLocalFunction("gas_OnItemNameRender", "d", itemid);
+	#if defined gas_OnItemNameRender
+		return gas_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -43,4 +47,6 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender gas_OnItemNameRender
-forward gas_OnItemNameRender(itemid);
+#if defined gas_OnItemNameRender
+	forward gas_OnItemNameRender(itemid);
+#endif

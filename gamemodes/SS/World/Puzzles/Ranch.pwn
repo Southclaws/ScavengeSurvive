@@ -87,7 +87,11 @@ public OnLoad()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0);
 
 
-	return CallLocalFunction("ranch_OnLoad", "");
+	#if defined ranch_OnLoad
+		return ranch_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -95,7 +99,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad ranch_OnLoad
-forward ranch_OnLoad();
+#if defined ranch_OnLoad
+	forward ranch_OnLoad();
+#endif
 
 
 public OnButtonPress(playerid, buttonid)
@@ -167,7 +173,11 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-    return CallLocalFunction("ranch_OnButtonPress", "ddd", playerid, buttonid);
+    #if defined ranch_OnButtonPress
+		return ranch_OnButtonPress(playerid, buttonid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnButtonPress
     #undef OnButtonPress
@@ -175,7 +185,9 @@ public OnButtonPress(playerid, buttonid)
     #define _ALS_OnButtonPress
 #endif
 #define OnButtonPress ranch_OnButtonPress
-forward ranch_OnButtonPress(playerid, buttonid);
+#if defined ranch_OnButtonPress
+	forward ranch_OnButtonPress(playerid, buttonid);
+#endif
 
 
 public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
@@ -192,7 +204,11 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 	    QuarryDoorState = 1;
 	}
 
-    return CallLocalFunction("int_OnPlayerUseItemWithButton", "ddd", playerid, buttonid, itemid);
+    #if defined int_OnPlayerUseItemWithButton
+		return int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithButton
     #undef OnPlayerUseItemWithButton
@@ -200,7 +216,9 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
     #define _ALS_OnPlayerUseItemWithButton
 #endif
 #define OnPlayerUseItemWithButton int_OnPlayerUseItemWithButton
-forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+#if defined int_OnPlayerUseItemWithButton
+	forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
+#endif
 
 
 timer AttachRanchHdd[2500](playerid)

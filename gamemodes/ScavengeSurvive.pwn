@@ -63,7 +63,7 @@ public OnGameModeInit()
 #else
 	#define _ALS_OnGameModeInit
 #endif
- 
+
 #define OnGameModeInit gm_OnGameModeInit
 #if defined gm_OnGameModeInit
 	forward gm_OnGameModeInit();

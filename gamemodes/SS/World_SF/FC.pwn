@@ -43,7 +43,11 @@ public OnLoad()
 	DefineSupplyDropPos("Angel Pine", -2165.39160, -2395.42017, 29.44930);
 	DefineSupplyDropPos("Mount Chilliad", -2335.43652, -1652.50720, 482.67642);
 
-	return CallLocalFunction("flintcounty_OnLoad", "");
+	#if defined flintcounty_OnLoad
+		return flintcounty_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -51,7 +55,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad flintcounty_OnLoad
-forward flintcounty_OnLoad();
+#if defined flintcounty_OnLoad
+	forward flintcounty_OnLoad();
+#endif
 
 
 FC_District_Chilliad()

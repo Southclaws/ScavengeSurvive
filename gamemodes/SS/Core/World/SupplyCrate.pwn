@@ -111,7 +111,11 @@ public OnDynamicObjectMoved(objectid)
 	if(objectid == sup_ObjPara)
 		SupplyCrateLand();
 
-	return CallLocalFunction("sup_OnDynamicObjectMoved", "d", objectid);
+	#if defined sup_OnDynamicObjectMoved
+		return sup_OnDynamicObjectMoved(objectid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnDynamicObjectMoved
 	#undef OnDynamicObjectMoved
@@ -119,7 +123,9 @@ public OnDynamicObjectMoved(objectid)
 	#define _ALS_OnDynamicObjectMoved
 #endif
 #define OnDynamicObjectMoved sup_OnDynamicObjectMoved
-forward sup_OnDynamicObjectMoved(objectid);
+#if defined sup_OnDynamicObjectMoved
+	forward sup_OnDynamicObjectMoved(objectid);
+#endif
 
 ACMD:sc[4](playerid, params[])
 {

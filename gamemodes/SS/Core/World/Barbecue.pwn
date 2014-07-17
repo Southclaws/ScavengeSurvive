@@ -96,7 +96,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	d:2:HANDLER("[OnPlayerUseItemWithItem END] %d %d %d", playerid, itemid, withitemid);
 
-	return CallLocalFunction("bbq_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined bbq_OnPlayerUseItemWithItem
+		return bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
     #undef OnPlayerUseItemWithItem
@@ -104,7 +108,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
     #define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem bbq_OnPlayerUseItemWithItem
-forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined bbq_OnPlayerUseItemWithItem
+	forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 _UseBbqHandler(playerid, itemid, withitemid)
 {
@@ -327,7 +333,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("bbq_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined bbq_OnPlayerPickUpItem
+		return bbq_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -335,4 +345,6 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem bbq_OnPlayerPickUpItem
-forward bbq_OnPlayerPickUpItem(playerid, itemid);
+#if defined bbq_OnPlayerPickUpItem
+	forward bbq_OnPlayerPickUpItem(playerid, itemid);
+#endif

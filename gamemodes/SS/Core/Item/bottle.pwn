@@ -80,7 +80,11 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	return CallLocalFunction("bot_OnItemNameRender", "d", itemid);
+	#if defined bot_OnItemNameRender
+		return bot_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -88,7 +92,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender bot_OnItemNameRender
-forward bot_OnItemNameRender(itemid);
+#if defined bot_OnItemNameRender
+	forward bot_OnItemNameRender(itemid);
+#endif
 
 public OnPlayerEaten(playerid, itemid)
 {
@@ -116,7 +122,11 @@ public OnPlayerEaten(playerid, itemid)
 			return 1;
 		}
 	}
-	return CallLocalFunction("bot_OnPlayerEaten", "dd", playerid, itemid);
+	#if defined bot_OnPlayerEaten
+		return bot_OnPlayerEaten(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerEaten
 	#undef OnPlayerEaten
@@ -124,4 +134,6 @@ public OnPlayerEaten(playerid, itemid)
 	#define _ALS_OnPlayerEaten
 #endif
 #define OnPlayerEaten bot_OnPlayerEaten
-forward bot_OnPlayerEaten(playerid, itemid);
+#if defined bot_OnPlayerEaten
+	forward bot_OnPlayerEaten(playerid, itemid);
+#endif

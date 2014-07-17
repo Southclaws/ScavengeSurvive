@@ -62,7 +62,11 @@ public OnPlayerUseItem(playerid, itemid)
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 	}
-	return CallLocalFunction("iedpx_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined iedpx_OnPlayerUseItem
+		return iedpx_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -70,7 +74,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem iedpx_OnPlayerUseItem
-forward iedpx_OnPlayerUseItem(playerid, itemid);
+#if defined iedpx_OnPlayerUseItem
+	forward iedpx_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {
@@ -82,7 +88,11 @@ public OnPlayerDroppedItem(playerid, itemid)
 			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
 		}
 	}
-	return CallLocalFunction("iedpx_OnPlayerDroppedItem", "dd", playerid, itemid);
+	#if defined iedpx_OnPlayerDroppedItem
+		return iedpx_OnPlayerDroppedItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerDroppedItem
 	#undef OnPlayerDroppedItem
@@ -90,7 +100,9 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#define _ALS_OnPlayerDroppedItem
 #endif
 #define OnPlayerDroppedItem iedpx_OnPlayerDroppedItem
-forward iedpx_OnPlayerDroppedItem(playerid, itemid);
+#if defined iedpx_OnPlayerDroppedItem
+	forward iedpx_OnPlayerDroppedItem(playerid, itemid);
+#endif
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
@@ -110,7 +122,11 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		}
 	}
 
-	return CallLocalFunction("iedpx_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	#if defined iedpx_OnPlayerEnterDynamicArea
+		return iedpx_OnPlayerEnterDynamicArea(playerid, areaid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
 	#undef OnPlayerEnterDynamicArea
@@ -118,4 +134,6 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea iedpx_OnPlayerEnterDynamicArea
-forward iedpx_OnPlayerEnterDynamicArea(playerid, areaid);
+#if defined iedpx_OnPlayerEnterDynamicArea
+	forward iedpx_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif

@@ -688,7 +688,11 @@ public OnLoad()
 	CreateObject(19059, 161.88771, 1933.27332, 32.88721,   0.00000, 0.00000, 0.00000);
 	CreateObject(19061, 233.53795, 1934.58704, 32.88795,   0.00000, 0.00000, 0.00000);
 
-	return CallLocalFunction("xmas_OnLoad", "");
+	#if defined xmas_OnLoad
+		return xmas_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
 	#undef OnLoad
@@ -696,5 +700,7 @@ public OnLoad()
 	#define _ALS_OnLoad
 #endif
 #define OnLoad xmas_OnLoad
-forward xmas_OnLoad();
+#if defined xmas_OnLoad
+	forward xmas_OnLoad();
+#endif
 

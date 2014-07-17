@@ -21,7 +21,11 @@ public OnLoad()
 	DefineSupplyDropPos("Tierra Robada Midland", -1484.86084, 1977.28833, 46.76990);
 	DefineSupplyDropPos("Tierra Robada North Freeway", -2547.67798, 2614.91919, 59.90747);
 
-	return CallLocalFunction("robada_OnLoad", "");
+	#if defined robada_OnLoad
+		return robada_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -29,7 +33,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad robada_OnLoad
-forward robada_OnLoad();
+#if defined robada_OnLoad
+	forward robada_OnLoad();
+#endif
 
 
 TR_District_Bayside()

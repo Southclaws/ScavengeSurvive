@@ -251,7 +251,11 @@ public OnItemCreateInWorld(itemid)
 		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
-	return CallLocalFunction("bag_OnItemCreateInWorld", "d", itemid);
+	#if defined bag_OnItemCreateInWorld
+		return bag_OnItemCreateInWorld(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -259,7 +263,9 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld bag_OnItemCreateInWorld
-forward bag_OnItemCreateInWorld(itemid);
+#if defined bag_OnItemCreateInWorld
+	forward bag_OnItemCreateInWorld(itemid);
+#endif
 
 public OnItemDestroy(itemid)
 {
@@ -277,7 +283,11 @@ public OnItemDestroy(itemid)
 		Iter_Remove(bag_Index, itemid);
 	}
 
-	return CallLocalFunction("bag_OnItemDestroy", "d", itemid);
+	#if defined bag_OnItemDestroy
+		return bag_OnItemDestroy(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemDestroy
 	#undef OnItemDestroy
@@ -285,14 +295,20 @@ public OnItemDestroy(itemid)
 	#define _ALS_OnItemDestroy
 #endif
 #define OnItemDestroy bag_OnItemDestroy
-forward bag_OnItemDestroy(itemid);
+#if defined bag_OnItemDestroy
+	forward bag_OnItemDestroy(itemid);
+#endif
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(BagInteractionCheck(playerid, itemid))
 		return 1;
 
-	return CallLocalFunction("bag_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined bag_OnPlayerPickUpItem
+		return bag_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -300,14 +316,20 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem bag_OnPlayerPickUpItem
-forward bag_OnPlayerPickUpItem(playerid, itemid);
+#if defined bag_OnPlayerPickUpItem
+	forward bag_OnPlayerPickUpItem(playerid, itemid);
+#endif
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(BagInteractionCheck(playerid, withitemid))
 		return 1;
 
-	return CallLocalFunction("bag_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined bag_OnPlayerUseItemWithItem
+		return bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -315,7 +337,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem bag_OnPlayerUseItemWithItem
-forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined bag_OnPlayerUseItemWithItem
+	forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 BagInteractionCheck(playerid, itemid)
 {
@@ -534,7 +558,11 @@ public OnPlayerCloseContainer(playerid, containerid)
 		bag_LookingInBag[playerid] = -1;
 	}
 
-	return CallLocalFunction("bag_OnPlayerCloseContainer", "dd", playerid, containerid);
+	#if defined bag_OnPlayerCloseContainer
+		return bag_OnPlayerCloseContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -542,7 +570,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer bag_OnPlayerCloseContainer
-forward bag_OnPlayerCloseContainer(playerid, containerid);
+#if defined bag_OnPlayerCloseContainer
+	forward bag_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -555,7 +585,11 @@ public OnPlayerUseItem(playerid, itemid)
 		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
 
-	return CallLocalFunction("bag_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined bag_OnPlayerUseItem
+		return bag_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -563,7 +597,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem bag_OnPlayerUseItem
-forward bag_OnPlayerUseItem(playerid, itemid);
+#if defined bag_OnPlayerUseItem
+	forward bag_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnPlayerDropItem(playerid, itemid)
 {
@@ -576,7 +612,11 @@ public OnPlayerDropItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("bag_OnPlayerDropItem", "dd", playerid, itemid);
+	#if defined bag_OnPlayerDropItem
+		return bag_OnPlayerDropItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerDropItem
 	#undef OnPlayerDropItem
@@ -584,7 +624,9 @@ public OnPlayerDropItem(playerid, itemid)
 	#define _ALS_OnPlayerDropItem
 #endif
 #define OnPlayerDropItem bag_OnPlayerDropItem
-forward bag_OnPlayerDropItem(playerid, itemid);
+#if defined bag_OnPlayerDropItem
+	forward bag_OnPlayerDropItem(playerid, itemid);
+#endif
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
@@ -597,7 +639,11 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 		}
 	}
 
-	return CallLocalFunction("bag_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);
+	#if defined bag_OnPlayerGiveItem
+		return bag_OnPlayerGiveItem(playerid, targetid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerGiveItem
 	#undef OnPlayerGiveItem
@@ -605,7 +651,9 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	#define _ALS_OnPlayerGiveItem
 #endif
 #define OnPlayerGiveItem bag_OnPlayerGiveItem
-forward bag_OnPlayerGiveItem(playerid, targetid, itemid);
+#if defined bag_OnPlayerGiveItem
+	forward bag_OnPlayerGiveItem(playerid, targetid, itemid);
+#endif
 
 public OnPlayerViewInventoryOpt(playerid)
 {
@@ -614,15 +662,21 @@ public OnPlayerViewInventoryOpt(playerid)
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
 	}
 
-	return CallLocalFunction("bag_PlayerViewInventoryOpt", "d", playerid);
+	#if defined bag_OnPlayerViewInventoryOpt
+		return bag_OnPlayerViewInventoryOpt(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerViewInventoryOpt
 	#undef OnPlayerViewInventoryOpt
 #else
 	#define _ALS_OnPlayerViewInventoryOpt
 #endif
-#define OnPlayerViewInventoryOpt bag_PlayerViewInventoryOpt
-forward bag_PlayerViewInventoryOpt(playerid);
+#define OnPlayerViewInventoryOpt bag_OnPlayerViewInventoryOpt
+#if defined bag_OnPlayerViewInventoryOpt
+	forward bag_OnPlayerViewInventoryOpt(playerid);
+#endif
 
 public OnPlayerSelectInventoryOpt(playerid, option)
 {
@@ -664,7 +718,11 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 		}
 	}
 
-	return CallLocalFunction("bag_PlayerSelectInventoryOption", "dd", playerid, option);
+	#if defined bag_PlayerSelectInventoryOption
+		return bag_PlayerSelectInventoryOption(playerid, option);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerSelectInventoryOpt
 	#undef OnPlayerSelectInventoryOpt
@@ -681,7 +739,11 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
 
-	return CallLocalFunction("bag_OnPlayerViewContainerOpt", "dd", playerid, containerid);
+	#if defined bag_OnPlayerViewContainerOpt
+		return bag_OnPlayerViewContainerOpt(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerViewContainerOpt
 	#undef OnPlayerViewContainerOpt
@@ -689,7 +751,9 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 	#define _ALS_OnPlayerViewContainerOpt
 #endif
 #define OnPlayerViewContainerOpt bag_OnPlayerViewContainerOpt
-forward bag_OnPlayerViewContainerOpt(playerid, containerid);
+#if defined bag_OnPlayerViewContainerOpt
+	forward bag_OnPlayerViewContainerOpt(playerid, containerid);
+#endif
 
 public OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
@@ -742,7 +806,11 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	return CallLocalFunction("bag_OnPlayerSelectContainerOpt", "ddd", playerid, containerid, option);
+	#if defined bag_OnPlayerSelectContainerOpt
+		return bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerSelectContainerOpt
 	#undef OnPlayerSelectContainerOpt
@@ -750,7 +818,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 	#define _ALS_OnPlayerSelectContainerOpt
 #endif
 #define OnPlayerSelectContainerOpt bag_OnPlayerSelectContainerOpt
-forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#if defined bag_OnPlayerSelectContainerOpt
+	forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#endif
 
 
 /*==============================================================================

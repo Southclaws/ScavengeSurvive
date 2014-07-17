@@ -62,7 +62,11 @@ public OnPlayerUseItem(playerid, itemid)
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 	}
-	return CallLocalFunction("tntpx_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined tntpx_OnPlayerUseItem
+		return tntpx_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -70,7 +74,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem tntpx_OnPlayerUseItem
-forward tntpx_OnPlayerUseItem(playerid, itemid);
+#if defined tntpx_OnPlayerUseItem
+	forward tntpx_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {
@@ -82,7 +88,11 @@ public OnPlayerDroppedItem(playerid, itemid)
 			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
 		}
 	}
-	return CallLocalFunction("tntpx_OnPlayerDroppedItem", "dd", playerid, itemid);
+	#if defined tntpx_OnPlayerDroppedItem
+		return tntpx_OnPlayerDroppedItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerDroppedItem
 	#undef OnPlayerDroppedItem
@@ -90,7 +100,9 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#define _ALS_OnPlayerDroppedItem
 #endif
 #define OnPlayerDroppedItem tntpx_OnPlayerDroppedItem
-forward tntpx_OnPlayerDroppedItem(playerid, itemid);
+#if defined tntpx_OnPlayerDroppedItem
+	forward tntpx_OnPlayerDroppedItem(playerid, itemid);
+#endif
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
@@ -110,7 +122,11 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		}
 	}
 
-	return CallLocalFunction("tntpx_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	#if defined tntpx_OnPlayerEnterDynamicArea
+		return tntpx_OnPlayerEnterDynamicArea(playerid, areaid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
 	#undef OnPlayerEnterDynamicArea
@@ -118,4 +134,6 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea tntpx_OnPlayerEnterDynamicArea
-forward tntpx_OnPlayerEnterDynamicArea(playerid, areaid);
+#if defined tntpx_OnPlayerEnterDynamicArea
+	forward tntpx_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif

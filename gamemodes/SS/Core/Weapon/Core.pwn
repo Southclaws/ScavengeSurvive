@@ -674,7 +674,11 @@ public OnItemNameRender(itemid)
 {
 	_NameRenderHandler(itemid);
 
-	return CallLocalFunction("itmw_OnItemNameRender", "d", itemid);
+	#if defined itmw_OnItemNameRender
+		return itmw_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -682,7 +686,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender itmw_OnItemNameRender
-forward itmw_OnItemNameRender(itemid);
+#if defined itmw_OnItemNameRender
+	forward itmw_OnItemNameRender(itemid);
+#endif
 
 _NameRenderHandler(itemid)
 {

@@ -166,7 +166,11 @@ public OnItemAddToInventory(playerid, itemid, slot)
 			return 1;
 	}
 
-	return CallLocalFunction("hols_OnItemAddToInventory", "ddd", playerid, itemid, slot);
+	#if defined hols_OnItemAddToInventory
+		return hols_OnItemAddToInventory(playerid, itemid, slot);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemAddToInventory
 	#undef OnItemAddToInventory
@@ -174,7 +178,9 @@ public OnItemAddToInventory(playerid, itemid, slot)
 	#define _ALS_OnItemAddToInventory
 #endif
 #define OnItemAddToInventory hols_OnItemAddToInventory
-forward hols_OnItemAddToInventory(playerid, itemid, slot);
+#if defined hols_OnItemAddToInventory
+	forward hols_OnItemAddToInventory(playerid, itemid, slot);
+#endif
 
 _HolsterChecks(playerid)
 {

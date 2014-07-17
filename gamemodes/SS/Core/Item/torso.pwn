@@ -19,7 +19,11 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
 	}
 
-	return CallLocalFunction("tor_OnItemCreateInWorld", "d", itemid);
+	#if defined tor_OnItemCreateInWorld
+		return tor_OnItemCreateInWorld(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -27,7 +31,9 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld tor_OnItemCreateInWorld
-forward tor_OnItemCreateInWorld(itemid);
+#if defined tor_OnItemCreateInWorld
+	forward tor_OnItemCreateInWorld(itemid);
+#endif
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
@@ -51,7 +57,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			ShowActionText(playerid, "The body has already been harvested of the edible (tasty) parts", 3000);
 		}
 	}
-	return CallLocalFunction("tor_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined tor_OnPlayerUseItemWithItem
+		return tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -59,7 +69,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem tor_OnPlayerUseItemWithItem
-forward tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined tor_OnPlayerUseItemWithItem
+	forward tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
@@ -73,7 +85,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("tor_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined tor_OnPlayerPickUpItem
+		return tor_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -81,7 +97,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem tor_OnPlayerPickUpItem
-forward tor_OnPlayerPickUpItem(playerid, itemid);
+#if defined tor_OnPlayerPickUpItem
+	forward tor_OnPlayerPickUpItem(playerid, itemid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

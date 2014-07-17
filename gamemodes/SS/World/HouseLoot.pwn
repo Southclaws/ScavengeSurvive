@@ -93,7 +93,11 @@ public OnLoad()
 		}
 	}
 
-	return CallLocalFunction("hloot_OnLoad", "");
+	#if defined hloot_OnLoad
+		return hloot_OnLoad();
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnLoad
     #undef OnLoad
@@ -101,7 +105,9 @@ public OnLoad()
     #define _ALS_OnLoad
 #endif
 #define OnLoad hloot_OnLoad
-forward hloot_OnLoad();
+#if defined hloot_OnLoad
+	forward hloot_OnLoad();
+#endif
 
 
 stock GetAttachedObjectPos(

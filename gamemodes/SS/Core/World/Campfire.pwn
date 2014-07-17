@@ -311,7 +311,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	return CallLocalFunction("cmp_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined cmp_OnPlayerUseItemWithItem
+		return cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -319,7 +323,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem cmp_OnPlayerUseItemWithItem
-forward cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined cmp_OnPlayerUseItemWithItem
+	forward cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 timer CampfireBurnOut[time](fireid, time)
 {
@@ -363,7 +369,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("cmp2_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined cmp2_OnPlayerPickUpItem
+		return cmp2_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem

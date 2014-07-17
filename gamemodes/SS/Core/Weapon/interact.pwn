@@ -27,7 +27,11 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 		UpdatePlayerWeaponItem(targetid);
 	}
 
-	return CallLocalFunction("itmw_OnPlayerGivenItem", "ddd", playerid, targetid, itemid);
+	#if defined itmw_OnPlayerGivenItem
+		return itmw_OnPlayerGivenItem(playerid, targetid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerGivenItem
 	#undef OnPlayerGivenItem
@@ -35,7 +39,9 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 	#define _ALS_OnPlayerGivenItem
 #endif
 #define OnPlayerGivenItem itmw_OnPlayerGivenItem
-forward itmw_OnPlayerGivenItem(playerid, targetid, itemid);
+#if defined itmw_OnPlayerGivenItem
+	forward itmw_OnPlayerGivenItem(playerid, targetid, itemid);
+#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {
@@ -68,7 +74,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	_PickUpAmmoTransferCheck(playerid, itemid, withitemid);
 
-	return CallLocalFunction("itmw_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined itmw_OnPlayerUseItemWithItem
+		return itmw_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -76,7 +86,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem itmw_OnPlayerUseItemWithItem
-forward itmw_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined itmw_OnPlayerUseItemWithItem
+	forward itmw_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 {

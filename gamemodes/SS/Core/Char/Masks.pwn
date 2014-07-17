@@ -158,7 +158,11 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("mask_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined mask_OnPlayerUseItem
+		return mask_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -166,7 +170,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem mask_OnPlayerUseItem
-forward mask_OnPlayerUseItem(playerid, itemid);
+#if defined mask_OnPlayerUseItem
+	forward mask_OnPlayerUseItem(playerid, itemid);
+#endif
 
 
 // Interface

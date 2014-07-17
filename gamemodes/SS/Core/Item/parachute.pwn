@@ -44,7 +44,11 @@ public OnPlayerDropItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("para_OnPlayerDropItem", "dd", playerid, itemid);
+	#if defined para_OnPlayerDropItem
+		return para_OnPlayerDropItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerDropItem
 	#undef OnPlayerDropItem
@@ -52,7 +56,9 @@ public OnPlayerDropItem(playerid, itemid)
 	#define _ALS_OnPlayerDropItem
 #endif
 #define OnPlayerDropItem para_OnPlayerDropItem
-forward para_OnPlayerDropItem(playerid, itemid);
+#if defined para_OnPlayerDropItem
+	forward para_OnPlayerDropItem(playerid, itemid);
+#endif
 
 
 _EquipParachute(playerid)

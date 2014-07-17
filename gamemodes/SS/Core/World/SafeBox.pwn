@@ -170,7 +170,11 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
-	return CallLocalFunction("box_OnItemCreateInWorld", "d", itemid);
+	#if defined box_OnItemCreateInWorld
+		return box_OnItemCreateInWorld(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemCreateInWorld
 	#undef OnItemCreateInWorld
@@ -178,7 +182,9 @@ public OnItemCreateInWorld(itemid)
 	#define _ALS_OnItemCreateInWorld
 #endif
 #define OnItemCreateInWorld box_OnItemCreateInWorld
-forward box_OnItemCreateInWorld(itemid);
+#if defined box_OnItemCreateInWorld
+	forward box_OnItemCreateInWorld(itemid);
+#endif
 
 public OnItemDestroy(itemid)
 {
@@ -197,7 +203,11 @@ public OnItemDestroy(itemid)
 		}
 	}
 
-	return CallLocalFunction("box_OnItemDestroy", "d", itemid);
+	#if defined box_OnItemDestroy
+		return box_OnItemDestroy(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemDestroy
 	#undef OnItemDestroy
@@ -205,7 +215,9 @@ public OnItemDestroy(itemid)
 	#define _ALS_OnItemDestroy
 #endif
 #define OnItemDestroy box_OnItemDestroy
-forward box_OnItemDestroy(itemid);
+#if defined box_OnItemDestroy
+	forward box_OnItemDestroy(itemid);
+#endif
 
 
 /*==============================================================================
@@ -220,7 +232,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 	if(SafeBoxInteractionCheck(playerid, itemid))
 		return 1;
 
-	return CallLocalFunction("box_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined box_OnPlayerPickUpItem
+		return box_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -228,7 +244,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem box_OnPlayerPickUpItem
-forward box_OnPlayerPickUpItem(playerid, itemid);
+#if defined box_OnPlayerPickUpItem
+	forward box_OnPlayerPickUpItem(playerid, itemid);
+#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {
@@ -241,7 +259,11 @@ public OnPlayerDroppedItem(playerid, itemid)
 		}
 	}
 
-	return CallLocalFunction("box_OnPlayerDroppedItem", "dd", playerid, itemid);
+	#if defined box_OnPlayerDroppedItem
+		return box_OnPlayerDroppedItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerDroppedItem
 	#undef OnPlayerDroppedItem
@@ -249,14 +271,20 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#define _ALS_OnPlayerDroppedItem
 #endif
 #define OnPlayerDroppedItem box_OnPlayerDroppedItem
-forward box_OnPlayerDroppedItem(playerid, itemid);
+#if defined box_OnPlayerDroppedItem
+	forward box_OnPlayerDroppedItem(playerid, itemid);
+#endif
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
 		return 1;
 
-	return CallLocalFunction("box_OnPlayerUseItemWithItem", "ddd", playerid, itemid, withitemid);
+	#if defined box_OnPlayerUseItemWithItem
+		return box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
 	#undef OnPlayerUseItemWithItem
@@ -264,7 +292,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	#define _ALS_OnPlayerUseItemWithItem
 #endif
 #define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
-forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#if defined box_OnPlayerUseItemWithItem
+	forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
+#endif
 
 
 SafeBoxInteractionCheck(playerid, itemid)
@@ -338,7 +368,11 @@ public OnPlayerCloseContainer(playerid, containerid)
 		box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 	}
 
-	return CallLocalFunction("box_OnPlayerCloseContainer", "dd", playerid, containerid);
+	#if defined box_OnPlayerCloseContainer
+		return box_OnPlayerCloseContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerCloseContainer
 	#undef OnPlayerCloseContainer
@@ -346,7 +380,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 	#define _ALS_OnPlayerCloseContainer
 #endif
 #define OnPlayerCloseContainer box_OnPlayerCloseContainer
-forward box_OnPlayerCloseContainer(playerid, containerid);
+#if defined box_OnPlayerCloseContainer
+	forward box_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 
 /*==============================================================================

@@ -5,7 +5,11 @@ public OnPlayerPickUpItem(playerid, itemid)
 	if(IsBadInteract(playerid))
 		return 1;
 
-	return CallLocalFunction("dis_OnPlayerPickUpItem", "dd", playerid, itemid);
+	#if defined dis_OnPlayerPickUpItem
+		return dis_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerPickUpItem
 	#undef OnPlayerPickUpItem
@@ -13,7 +17,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 	#define _ALS_OnPlayerPickUpItem
 #endif
 #define OnPlayerPickUpItem dis_OnPlayerPickUpItem
-forward dis_OnPlayerPickUpItem(playerid, itemid);
+#if defined dis_OnPlayerPickUpItem
+	forward dis_OnPlayerPickUpItem(playerid, itemid);
+#endif
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
@@ -26,7 +32,11 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	if(GetPlayerWeapon(targetid) != 0)
 		return 1;
 
-	return CallLocalFunction("dis_OnPlayerGiveItem", "ddd", playerid, targetid, itemid);
+	#if defined dis_OnPlayerGiveItem
+		return dis_OnPlayerGiveItem(playerid, targetid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerGiveItem
 	#undef OnPlayerGiveItem
@@ -34,7 +44,9 @@ public OnPlayerGiveItem(playerid, targetid, itemid)
 	#define _ALS_OnPlayerGiveItem
 #endif
 #define OnPlayerGiveItem dis_OnPlayerGiveItem
-forward dis_OnPlayerGiveItem(playerid, targetid, itemid);
+#if defined dis_OnPlayerGiveItem
+	forward dis_OnPlayerGiveItem(playerid, targetid, itemid);
+#endif
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
@@ -44,7 +56,11 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 			return 1;
 	}
 
-	return CallLocalFunction("dis_OnItemRemoveFromContainer", "ddd", containerid, slotid, playerid);
+	#if defined dis_OnItemRemoveFromContainer
+		return dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemRemoveFromContainer
 	#undef OnItemRemoveFromContainer
@@ -52,14 +68,20 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 	#define _ALS_OnItemRemoveFromContainer
 #endif
 #define OnItemRemoveFromContainer dis_OnItemRemoveFromContainer
-forward dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#if defined dis_OnItemRemoveFromContainer
+	forward dis_OnItemRemoveFromContainer(containerid, slotid, playerid);
+#endif
 
 public OnPlayerOpenInventory(playerid)
 {
 	if(IsBadInteract(playerid))
 		return 1;
 
-	return CallLocalFunction("dis_OnPlayerOpenInventory", "d", playerid);
+	#if defined dis_OnPlayerOpenInventory
+		return dis_OnPlayerOpenInventory(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerOpenInventory
 	#undef OnPlayerOpenInventory
@@ -67,14 +89,20 @@ public OnPlayerOpenInventory(playerid)
 	#define _ALS_OnPlayerOpenInventory
 #endif
 #define OnPlayerOpenInventory dis_OnPlayerOpenInventory
-forward dis_OnPlayerOpenInventory(playerid);
+#if defined dis_OnPlayerOpenInventory
+	forward dis_OnPlayerOpenInventory(playerid);
+#endif
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
 	if(IsBadInteract(playerid))
 		return 1;
 
-	return CallLocalFunction("dis_OnPlayerOpenContainer", "dd", playerid, containerid);
+	#if defined dis_OnPlayerOpenContainer
+		return dis_OnPlayerOpenContainer(playerid, containerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerOpenContainer
 	#undef OnPlayerOpenContainer
@@ -82,7 +110,9 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#define _ALS_OnPlayerOpenContainer
 #endif
 #define OnPlayerOpenContainer dis_OnPlayerOpenContainer
-forward dis_OnPlayerOpenContainer(playerid, containerid);
+#if defined dis_OnPlayerOpenContainer
+	forward dis_OnPlayerOpenContainer(playerid, containerid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -92,7 +122,11 @@ public OnPlayerUseItem(playerid, itemid)
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return 1;
 
-	return CallLocalFunction("dis_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined dis_OnPlayerUseItem
+		return dis_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -100,7 +134,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem dis_OnPlayerUseItem
-forward dis_OnPlayerUseItem(playerid, itemid);
+#if defined dis_OnPlayerUseItem
+	forward dis_OnPlayerUseItem(playerid, itemid);
+#endif
 
 public OnItemCreate(itemid)
 {

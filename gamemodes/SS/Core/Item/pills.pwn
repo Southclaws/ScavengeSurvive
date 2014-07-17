@@ -55,7 +55,11 @@ public OnItemNameRender(itemid)
 		}
 	}
 
-	return CallLocalFunction("pil_OnItemNameRender", "d", itemid);
+	#if defined pil_OnItemNameRender
+		return pil_OnItemNameRender(itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnItemNameRender
 	#undef OnItemNameRender
@@ -63,7 +67,9 @@ public OnItemNameRender(itemid)
 	#define _ALS_OnItemNameRender
 #endif
 #define OnItemNameRender pil_OnItemNameRender
-forward pil_OnItemNameRender(itemid);
+#if defined pil_OnItemNameRender
+	forward pil_OnItemNameRender(itemid);
+#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -72,7 +78,11 @@ public OnPlayerUseItem(playerid, itemid)
 		StartTakingPills(playerid);
 	}
 
-	return CallLocalFunction("pil_OnPlayerUseItem", "dd", playerid, itemid);
+	#if defined pil_OnPlayerUseItem
+		return pil_OnPlayerUseItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerUseItem
 	#undef OnPlayerUseItem
@@ -80,7 +90,9 @@ public OnPlayerUseItem(playerid, itemid)
 	#define _ALS_OnPlayerUseItem
 #endif
 #define OnPlayerUseItem pil_OnPlayerUseItem
-forward pil_OnPlayerUseItem(playerid, itemid);
+#if defined pil_OnPlayerUseItem
+	forward pil_OnPlayerUseItem(playerid, itemid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -140,7 +152,11 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("pil_OnHoldActionFinish", "d", playerid);
+	#if defined pil_OnHoldActionFinish
+		return pil_OnHoldActionFinish(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -148,4 +164,6 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish pil_OnHoldActionFinish
-forward pil_OnHoldActionFinish(playerid);
+#if defined pil_OnHoldActionFinish
+	forward pil_OnHoldActionFinish(playerid);
+#endif

@@ -176,7 +176,11 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			break;
 		}
 	}
-	return CallLocalFunction("tag_OnPlayerEnterDynamicArea", "dd", playerid, areaid);
+	#if defined tag_OnPlayerEnterDynamicArea
+		return tag_OnPlayerEnterDynamicArea(playerid, areaid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerEnterDynamicArea
 	#undef OnPlayerEnterDynamicArea
@@ -184,7 +188,9 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerEnterDynamicArea
 #endif
 #define OnPlayerEnterDynamicArea tag_OnPlayerEnterDynamicArea
-forward tag_OnPlayerEnterDynamicArea(playerid, areaid);
+#if defined tag_OnPlayerEnterDynamicArea
+	forward tag_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif
 
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
@@ -196,7 +202,11 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 		}
 	}
 
-	return CallLocalFunction("tag_OnPlayerLeaveDynamicArea", "dd", playerid, areaid);
+	#if defined tag_OnPlayerLeaveDynamicArea
+		return tag_OnPlayerLeaveDynamicArea(playerid, areaid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnPlayerLeaveDynamicArea
 	#undef OnPlayerLeaveDynamicArea
@@ -204,7 +214,9 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	#define _ALS_OnPlayerLeaveDynamicArea
 #endif
 #define OnPlayerLeaveDynamicArea tag_OnPlayerLeaveDynamicArea
-forward tag_OnPlayerLeaveDynamicArea(playerid, areaid);
+#if defined tag_OnPlayerLeaveDynamicArea
+	forward tag_OnPlayerLeaveDynamicArea(playerid, areaid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -283,7 +295,11 @@ public OnHoldActionUpdate(playerid, progress)
 		return 1;
 	}
 
-	return CallLocalFunction("tag_OnHoldActionUpdate", "dd", playerid, progress);
+	#if defined tag_OnHoldActionUpdate
+		return tag_OnHoldActionUpdate(playerid, progress);
+	#else
+		return 0;
+	#endif
 }
 
 #if defined _ALS_OnHoldActionUpdate
@@ -292,7 +308,9 @@ public OnHoldActionUpdate(playerid, progress)
 	#define _ALS_OnHoldActionUpdate
 #endif
 #define OnHoldActionUpdate tag_OnHoldActionUpdate
-forward tag_OnHoldActionUpdate(playerid, progress);
+#if defined tag_OnHoldActionUpdate
+	forward tag_OnHoldActionUpdate(playerid, progress);
+#endif
 
 public OnHoldActionFinish(playerid)
 {
@@ -308,7 +326,11 @@ public OnHoldActionFinish(playerid)
 		return 1;
 	}
 
-	return CallLocalFunction("tag_OnHoldActionFinish", "d", playerid);
+	#if defined tag_OnHoldActionFinish
+		return tag_OnHoldActionFinish(playerid);
+	#else
+		return 0;
+	#endif
 }
 #if defined _ALS_OnHoldActionFinish
 	#undef OnHoldActionFinish
@@ -316,7 +338,9 @@ public OnHoldActionFinish(playerid)
 	#define _ALS_OnHoldActionFinish
 #endif
 #define OnHoldActionFinish tag_OnHoldActionFinish
-forward tag_OnHoldActionFinish(playerid);
+#if defined tag_OnHoldActionFinish
+	forward tag_OnHoldActionFinish(playerid);
+#endif
 
 
 /*==============================================================================
