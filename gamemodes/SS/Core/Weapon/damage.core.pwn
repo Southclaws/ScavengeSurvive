@@ -115,7 +115,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		case BODY_PART_HEAD: knockmult *= 2.0;
 	}
 
-	if(frandom(100.0) < knockmult * (woundcount * (totalbleedrate * 20)))
+	if(frandom(100.0) < knockmult * (woundcount * (totalbleedrate * 30)))
 	{
 		new
 			Float:hp,
@@ -126,7 +126,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 		if(knockouttime > 1500)
 		{
-			d:2:FIREARM_DEBUG("[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", playerid, knockouttime, woundcount, hp, totalbleedrate);
+			d:2:FIREARM_DEBUG("[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", targetid, knockouttime, woundcount, hp, totalbleedrate);
 			KnockOutPlayer(targetid, knockouttime);
 		}
 	}

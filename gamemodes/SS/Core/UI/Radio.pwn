@@ -145,6 +145,8 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	{
 		HideRadioUI(playerid);
 	}
+
+	return 1;
 }
 
 ShowFrequencyDialog(playerid)

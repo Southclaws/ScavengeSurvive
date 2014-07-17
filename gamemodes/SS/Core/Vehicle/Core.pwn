@@ -560,10 +560,16 @@ PlayerVehicleUpdate(playerid)
 		}
 	}
 
-	if(velocitychange > 50.0)
+	if(velocitychange > 70.0)
 	{
-		KnockOutPlayer(playerid, floatround(velocitychange * 100));
-		SetPlayerBleedRate(playerid, 0.01);
+		switch(GetVehicleTypeCategory(vehicletype))
+		{
+			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
+				SetVehicleAngularVelocity(vehicleid, 0.0, 0.0, 1.0);
+
+			default:
+				PlayerInflictWound(INVALID_PLAYER_ID, playerid, E_WND_TYPE:1, velocitychange * 0.000536, velocitychange * 0.16, -1, BODY_PART_HEAD);
+		}
 	}
 
 	if(health <= VEHICLE_HEALTH_CHUNK_1)
