@@ -425,6 +425,7 @@ new
 				calibre_12g,
 				calibre_556,
 				calibre_357,
+				calibre_762,
 				calibre_rpg,
 				calibre_fuel,
 				calibre_film;
@@ -630,8 +631,13 @@ ItemType:		item_XmasHat		= INVALID_ITEM_TYPE,
 ItemType:		item_VehicleWeapon	= INVALID_ITEM_TYPE,
 ItemType:		item_AdvancedKeypad	= INVALID_ITEM_TYPE,
 // 180
-ItemType:		item_Ammo9mmFMJ		= INVALID_ITEM_TYPE;
-
+ItemType:		item_Ammo9mmFMJ		= INVALID_ITEM_TYPE,
+ItemType:		item_AmmoFlechette	= INVALID_ITEM_TYPE,
+ItemType:		item_AmmoHomeBuck	= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo556Tracer	= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo556HP		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo357Tracer	= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo762		= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -787,6 +793,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Weapon/animset.pwn"
 #include "SS/Core/Weapon/misc.pwn"
 #include "SS/Core/Weapon/AntiCombatLog.pwn"
+#include "SS/Core/Weapon/tracer.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
@@ -1127,7 +1134,7 @@ public OnGameModeInit()
 	item_TopHat			= DefineItemType("Top Hat",				19352,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
 	item_Ammo9mm		= DefineItemType("9mm Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo50			= DefineItemType(".50 Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_AmmoBuck		= DefineItemType("Buckshot Shells",		2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoBuck		= DefineItemType("Shotgun Shells",		2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo556		= DefineItemType("5.56 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo357		= DefineItemType(".357 Rounds",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_AmmoRocket		= DefineItemType("Rockets",				3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
@@ -1167,7 +1174,13 @@ public OnGameModeInit()
 	item_VehicleWeapon	= DefineItemType("VEHICLE_WEAPON",		356,	ITEM_SIZE_LARGE,	90.0);
 	item_AdvancedKeypad	= DefineItemType("Advanced Keypad",		19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 // 180
-	item_Ammo9mmFMJ		= DefineItemType("9mm FMJ Rounds",		2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo9mmFMJ		= DefineItemType("9mm Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoFlechette	= DefineItemType("Shotgun Shells",		2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AmmoHomeBuck	= DefineItemType("Shotgun Shells",		2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo556Tracer	= DefineItemType("5.56 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo556HP		= DefineItemType("5.56 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo357Tracer	= DefineItemType(".357 Rounds",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo762		= DefineItemType("7.62 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1350,6 +1363,12 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_VehicleWeapon,	0);
 	SetItemTypeMaxArrayData(item_AdvancedKeypad,0);
 	SetItemTypeMaxArrayData(item_Ammo9mmFMJ,	1);
+	SetItemTypeMaxArrayData(item_AmmoFlechette,	1);
+	SetItemTypeMaxArrayData(item_AmmoHomeBuck,	1);
+	SetItemTypeMaxArrayData(item_Ammo556Tracer,	1);
+	SetItemTypeMaxArrayData(item_Ammo556HP,		1);
+	SetItemTypeMaxArrayData(item_Ammo357Tracer,	1);
+	SetItemTypeMaxArrayData(item_Ammo762,		1);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1369,6 +1388,7 @@ public OnGameModeInit()
 	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.31);
 	calibre_556		= DefineAmmoCalibre("5.56mm",	0.19);
 	calibre_357		= DefineAmmoCalibre(".357",		0.36);
+	calibre_762		= DefineAmmoCalibre("7.62",		0.30);
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0);
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0);
 	calibre_film	= DefineAmmoCalibre("Film",		0.0);
@@ -1386,9 +1406,26 @@ public OnGameModeInit()
 	AddAnimToSet(anim_Heavy,	19);
 	AddAnimToSet(anim_Heavy,	20);
 
-	// Items with a baseweapon of 0 or no calibre utilise parameters for
-	// different data. Custom melee weapons replace muzzle velocity with
-	// bleedrate and magsize with knockout chance.
+	/*
+		baseweapon - GTA weapon ID used for this weapon class. This is the
+		GTA weapon that the player will be given when using the item. When this
+		value is 0, it indicates the weapon is a custom type that doesn't use a
+		GTA weapon as a template.
+
+		calibre - a calibre from the defined calibres above. The calibre
+		determines the base bleedrate of the rounds fired from the weapon. Melee
+		weapons use the muzzle velocity parameter in the function with bleedrate
+		and magsize with knockout chance multiplier.
+
+		muzzvelocity - the simulated initial velocity of the round after being
+		fired. This value simulates the muzzle velocity of the weapon which
+		affects how much the bullet's velocity is affected by distance. A higher
+		muzzle velocity results in rounds that can travel quite far without
+		losing velocity and thus energy (which affects the resulting bleedrate
+		and knockout chance).
+
+		magsize
+	*/
 
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
 	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			_:1.20,	0,		anim_Blunt);
@@ -1443,14 +1480,51 @@ public OnGameModeInit()
 	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			24,		4);
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 
-	DefineItemTypeAmmo(item_Ammo9mm,			"Hollow Point",		calibre_9mm,	1.0, 1.0, 20);
-	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50c,	1.0, 1.0, 28);
-	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.0, 1.0, 24);
-	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.0, 1.0, 30);
-	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.0, 1.0, 10);
-	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0, 1.0, 1);
-	DefineItemTypeAmmo(item_GasCan,				"Petrol",			calibre_fuel,	0.0, 0.0, 20);
-	DefineItemTypeAmmo(item_Ammo9mmFMJ,			"FMJ",				calibre_9mm,	1.2, 0.5, 20);
+	/*
+		name - the additional name given to the ammunition item. This is used to
+		format the full item name or weapon name which includes the amount of
+		ammo loaded into the weapon or ammo container, the calibre and this name
+		which corresponds to the type or behaviour of the ammo. This can refer
+		to the jacket type, contained substance or any other firearm term.
+
+		bld - bleedrate multiplier for ammo type. After the base bleedrate for
+		a bullet has been calculated using the distance, calibre bleedrate and
+		bullet velocity, this value is multiplied against that bleedrate. This
+		allows different ammunition types of the same calibre to inflict
+		different bleed rates.
+
+		ko - knockout chance multiplier for ammo type. When PlayerInflictWound
+		is called, a knockout chance multiplier is sent, the default is 1.0
+		resulting no chance in the chance to get knocked out. This value allows
+		different ammunition types of the same calibre to affect the chance of a
+		target being knocked out by a shot.
+
+		pen - armour and material penetration for ammo type. Unique only to ammo
+		types and not calibres, this value changes how the ammunition treats
+		targets wearing armour. The base value is 0.0 which is no bleedrate and
+		a value of 1.0 results in the round completely ignoring armour. Any
+		values above this will just multiply the resulting bleedrate more.
+
+		size - maximum size for the ammo tin item. When ammunition spawns in the
+		world, this value is used as a capacity limit for how much ammunition
+		may spawn inside the ammo item. It also acts as a limit for transferring
+		ammo to the item.
+	*/
+	//					itemtype				name				calibre			bld		ko		pen		size
+	DefineItemTypeAmmo(item_Ammo9mm,			"Hollow Point",		calibre_9mm,	1.0,	1.0,	0.2,	20);
+	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50c,	1.0,	1.0,	0.9,	28);
+	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.0,	1.0,	0.5,	24);
+	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.0,	1.0,	0.8,	30);
+	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.0,	1.0,	0.9,	10);
+	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0,	1.0,	2.0,	1);
+	DefineItemTypeAmmo(item_GasCan,				"Petrol",			calibre_fuel,	0.0,	0.0,	0.0,	20);
+	DefineItemTypeAmmo(item_Ammo9mmFMJ,			"FMJ",				calibre_9mm,	1.2,	0.5,	0.8,	20);
+	DefineItemTypeAmmo(item_AmmoFlechette,		"Flechette",		calibre_12g,	1.6,	0.6,	0.2,	8);
+	DefineItemTypeAmmo(item_AmmoHomeBuck,		"Improvised",		calibre_12g,	1.6,	0.4,	0.3,	14);
+	DefineItemTypeAmmo(item_Ammo556Tracer,		"Tracer",			calibre_556,	0.9,	1.1,	0.5,	30);
+	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.5,	0.4,	30);
+	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
+	DefineItemTypeAmmo(item_Ammo762,			"Ammo",				calibre_762,	1.0,	1.0,	0.9,	10);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");

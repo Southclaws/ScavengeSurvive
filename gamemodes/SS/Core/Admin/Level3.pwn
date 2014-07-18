@@ -372,7 +372,7 @@ ACMD:additem[3](playerid, params[])
 		Float:z,
 		Float:r;
 
-	if(sscanf(params, "dD(0)", _:type, exdata) == -1)
+	if(sscanf(params, "p<,>dD(0)", _:type, exdata) != 0)
 	{
 		new tmp[ITM_MAX_NAME];
 

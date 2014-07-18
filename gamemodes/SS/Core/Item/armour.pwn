@@ -66,7 +66,7 @@ public OnItemNameRender(itemid)
 			amount = GetItemExtraData(itemid),
 			str[11];
 
-		valstr(str, amount);
+		format(str, sizeof(str), "%d", amount);
 		
 		SetItemNameExtra(itemid, str);
 	}
@@ -96,11 +96,9 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:
 
 		if(ap > 0.0)
 		{
-			if(random(100) < 50)
-				bleedrate *= 0.6;
+			new Float:penetration = GetAmmoTypePenetration(GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(GetPlayerItem(playerid))));
 
-			else
-				bleedrate *= 0.3;
+			bleedrate *= penetration;
 
 			SetPlayerAP(targetid, ap * (bleedrate * 10.0));
 

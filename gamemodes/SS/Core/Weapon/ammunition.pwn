@@ -17,6 +17,7 @@ ItemType:	ammo_itemType,
 			ammo_calibre,
 Float:		ammo_bleedrateMult,
 Float:		ammo_knockoutMult,
+Float:		ammo_penetration,
 			ammo_size
 }
 
@@ -48,13 +49,14 @@ stock DefineAmmoCalibre(name[], Float:bleedrate)
 	return clbr_Total++;
 }
 
-stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult, Float:knockoutmult, size)
+stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size)
 {
 	ammo_Data[ammo_Total][ammo_itemType] = itemtype;
 	strcat(ammo_Data[ammo_Total][ammo_name], name, MAX_AMMO_CALIBRE_NAME);
 	ammo_Data[ammo_Total][ammo_calibre] = calibre;
 	ammo_Data[ammo_Total][ammo_bleedrateMult] = bleedratemult;
 	ammo_Data[ammo_Total][ammo_knockoutMult] = knockoutmult;
+	ammo_Data[ammo_Total][ammo_penetration] = penetration;
 	ammo_Data[ammo_Total][ammo_size] = size;
 
 	ammo_ItemTypeAmmoType[itemtype] = ammo_Total;
@@ -213,6 +215,15 @@ stock Float:GetAmmoTypeKnockoutMultiplier(ammotype)
 		return 0.0;
 
 	return ammo_Data[ammotype][ammo_knockoutMult];
+}
+
+// ammo_penetration
+stock Float:GetAmmoTypePenetration(ammotype)
+{
+	if(!(0 <= ammotype < ammo_Total))
+		return 0.0;
+
+	return ammo_Data[ammotype][ammo_penetration];
 }
 
 // ammo_size
