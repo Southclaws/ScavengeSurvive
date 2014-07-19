@@ -121,6 +121,17 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
+			new ItemType:loadedammoitemtype = GetItemWeaponItemAmmoItem(helditemid);
+
+			if(GetItemTypeAmmoType(loadedammoitemtype) != -1)
+			{
+				if(loadedammoitemtype != GetItemWeaponItemAmmoItem(ammoitemid))
+				{
+					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					return 1;
+				}
+			}
+
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
 			defer _TransferWeaponToWeapon(playerid, ammoitemid, helditemid);
 
@@ -140,6 +151,17 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				ShowActionText(playerid, "Wrong calibre for weapon", 3000);
 				return 1;
+			}
+
+			new ItemType:loadedammoitemtype = GetItemWeaponItemAmmoItem(helditemid);
+
+			if(GetItemTypeAmmoType(loadedammoitemtype) != -1)
+			{
+				if(loadedammoitemtype != ammoitemtype)
+				{
+					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					return 1;
+				}
 			}
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
@@ -168,6 +190,17 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 				return 1;
 			}
 
+			new ItemType:loadedammoitemtype = GetItemWeaponItemAmmoItem(ammoitemid);
+
+			if(GetItemTypeAmmoType(loadedammoitemtype) != -1)
+			{
+				if(loadedammoitemtype != helditemtype)
+				{
+					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					return 1;
+				}
+			}
+
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
 			defer _TransferWeaponToTin(playerid, ammoitemid, helditemid);
 
@@ -178,14 +211,23 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 		if(ammotypeid != -1) // Transfer ammo from ammo item to held ammo item
 		{
-			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
-
-			if(heldcalibre == NO_CALIBRE)
-				return 1;
-
-			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
+			/*if(GetItemExtraData(helditemid) == 0)
 			{
-				ShowActionText(playerid, "Wrong calibre in ammo tin", 3000);
+				new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
+
+				if(heldcalibre == NO_CALIBRE)
+					return 1;
+
+				if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
+				{
+					ShowActionText(playerid, "Wrong calibre in ammo tin", 3000);
+					return 1;
+				}
+			}*/
+
+			if(ammoitemtype != helditemtype)
+			{
+				ShowActionText(playerid, "Ammo types can't be mixed in tins", 5000);
 				return 1;
 			}
 

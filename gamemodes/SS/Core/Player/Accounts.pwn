@@ -213,8 +213,13 @@ LoadAccount(playerid)
 
 	if(IsWhitelistActive())
 	{
+		Msg(playerid, YELLOW, " >  Whitelist active.");
+
 		if(!IsNameInWhitelist(gPlayerName[playerid]))
+		{
+			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
 			return 3;
+		}
 	}
 
 	SetPlayerBitFlag(playerid, Alive, alive);
@@ -266,8 +271,10 @@ CreateAccount(playerid, password[])
 
 	if(IsWhitelistActive())
 	{
+		Msg(playerid, YELLOW, " >  Whitelist active.");
 		if(!IsNameInWhitelist(gPlayerName[playerid]))
 		{
+			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
 			WhitelistKick(playerid);
 			return 0;
 		}

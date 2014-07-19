@@ -34,6 +34,7 @@ ItemType:	itmw_ItemTypeUpperBound;
 
 static
 			tick_LastReload[MAX_PLAYERS],
+			tick_GetWeaponTick[MAX_PLAYERS],
 Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS];
 
 
@@ -239,6 +240,8 @@ stock UpdatePlayerWeaponItem(playerid)
 
 	_UpdateWeaponUI(playerid);
 
+	tick_GetWeaponTick[playerid] = GetTickCount();
+
 	return 1;
 }
 
@@ -289,7 +292,10 @@ _FastUpdateHandler(playerid)
 		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 		{
 			if(GetPlayerWeapon(playerid) == 0)
-				DestroyItem(itemid);
+			{
+				if(GetTickCountDifference(GetTickCount(), tick_GetWeaponTick[playerid]) > 1000)
+					DestroyItem(itemid);
+			}
 		}
 
 		return;
@@ -447,6 +453,7 @@ _ReloadWeapon(playerid)
 	if(reserveammo == 0)
 	{
 		d:1:HANDLER("no reserve ammo left to reload with");
+		SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
 		ResetPlayerWeapons(playerid);
 		return 0;
 	}

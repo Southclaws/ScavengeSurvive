@@ -1524,7 +1524,7 @@ public OnGameModeInit()
 	DefineItemTypeAmmo(item_Ammo556Tracer,		"Tracer",			calibre_556,	0.9,	1.1,	0.5,	30);
 	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.5,	0.4,	30);
 	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
-	DefineItemTypeAmmo(item_Ammo762,			"Ammo",				calibre_762,	1.0,	1.0,	0.9,	10);
+	DefineItemTypeAmmo(item_Ammo762,			"Ammo",				calibre_762,	1.0,	1.0,	0.9,	30);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");

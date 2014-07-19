@@ -74,6 +74,9 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 
 ShowPlayerGear(playerid)
 {
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
 	inv_GearActive[playerid] = true;
 
 	for(new i; i < 3; i++)
@@ -85,6 +88,8 @@ ShowPlayerGear(playerid)
 		PlayerTextDrawShow(playerid, GearSlot_Tors[i]);
 		PlayerTextDrawShow(playerid, GearSlot_Back[i]);
 	}
+
+	return 1;
 }
 
 HidePlayerGear(playerid)
