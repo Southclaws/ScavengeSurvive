@@ -1314,7 +1314,7 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_WoodPanel,		1);
 	SetItemTypeMaxArrayData(item_Flare,			1);
 	SetItemTypeMaxArrayData(item_TntPhoneBomb,	1);
-	SetItemTypeMaxArrayData(item_ParaBag,		1);
+	SetItemTypeMaxArrayData(item_ParaBag,		2);
 	SetItemTypeMaxArrayData(item_Keypad,		1);
 	SetItemTypeMaxArrayData(item_TentPack,		1);
 	SetItemTypeMaxArrayData(item_Campfire,		1);
