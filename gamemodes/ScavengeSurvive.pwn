@@ -941,7 +941,7 @@ main()
 
 
 
-OnGameModeInit_Pre()
+public OnGameModeInit_Pre()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
@@ -963,7 +963,24 @@ OnGameModeInit_Pre()
 	djson_GameModeInit();
 
 	LoadSettings();
+
+	#if defined gm_OnGameModeInit_Pre
+		return gm_OnGameModeInit_Pre();
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnGameModeInit_Pre
+	#undef OnGameModeInit_Pre
+#else
+	#define _ALS_OnGameModeInit_Pre
+#endif
+
+#define OnGameModeInit_Pre gm_OnGameModeInit_Pre
+#if defined gm_OnGameModeInit_Pre
+	forward gm_OnGameModeInit_Pre();
+#endif
+
 
 public OnGameModeInit()
 {

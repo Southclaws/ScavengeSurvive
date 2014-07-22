@@ -22,10 +22,26 @@ static
 Float:		loot_SpawnMult = 1.0;
 
 
-hook OnGameModeInit()
+public OnGameModeInit_Pre()
 {
 	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
+
+	#if defined loot_OnGameModeInit_Pre
+		return loot_OnGameModeInit_Pre();
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnGameModeInit_Pre
+	#undef OnGameModeInit_Pre
+#else
+	#define _ALS_OnGameModeInit_Pre
+#endif
+ 
+#define OnGameModeInit_Pre loot_OnGameModeInit_Pre
+#if defined loot_OnGameModeInit_Pre
+	forward loot_OnGameModeInit_Pre();
+#endif
 
 
 DefineLootIndex(indexvalue)

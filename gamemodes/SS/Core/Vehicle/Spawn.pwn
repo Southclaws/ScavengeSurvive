@@ -23,12 +23,32 @@ static
 Float:	veh_SpawnChance = 4.0;
 
 
-LoadVehicles(printeach = false, printtotal = false)
+public OnGameModeInit_Pre()
 {
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
 
 	GetSettingFloat("server/vehicle-spawn-multiplier", 4.0, veh_SpawnChance);
 
+	#if defined veh_OnGameModeInit_Pre
+		return veh_OnGameModeInit_Pre();
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnGameModeInit_Pre
+	#undef OnGameModeInit_Pre
+#else
+	#define _ALS_OnGameModeInit_Pre
+#endif
+ 
+#define OnGameModeInit_Pre veh_OnGameModeInit_Pre
+#if defined veh_OnGameModeInit_Pre
+	forward veh_OnGameModeInit_Pre();
+#endif
+
+
+LoadVehicles(printeach = false, printtotal = false)
+{
 	LoadPlayerVehicles(printeach, printtotal);
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
 
