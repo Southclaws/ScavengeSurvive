@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 #define MAX_LOOT_INDEX			(12)
 #define MAX_LOOT_INDEX_ITEMS	(256)
 
@@ -9,11 +12,20 @@ ItemType:	loot_itemType,
 			loot_spawnChance
 }
 
-new
+
+static
 			loot_IndexUpper,
 			loot_IndexSize[MAX_LOOT_INDEX],
 			loot_IndexItems[MAX_LOOT_INDEX][MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
-			loot_IsItemLoot[ITM_MAX];
+			loot_IsItemLoot[ITM_MAX],
+
+Float:		loot_SpawnMult = 1.0;
+
+
+hook OnGameModeInit()
+{
+	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
+}
 
 
 DefineLootIndex(indexvalue)
@@ -136,7 +148,7 @@ CreateLootSpawn(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
 
 	for(new i; i < size; i++)
 	{
-		if(!(random(100) < spawnchance * 2))
+		if(!(random(100) < loot_SpawnMult * spawnchance))
 			continue;
 
 		itemid = CreateLootItem(lootindex,

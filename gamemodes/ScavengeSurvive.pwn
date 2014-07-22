@@ -959,14 +959,14 @@ OnGameModeInit_Pre()
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gWorld = db_open_persistent(WORLD_DATABASE);
+
+	djson_GameModeInit();
+
+	LoadSettings();
 }
 
 public OnGameModeInit()
 {
-	djson_GameModeInit();
-
-	LoadSettings();
-
 	if(gWhitelist)
 		ToggleWhitelist(true);
 

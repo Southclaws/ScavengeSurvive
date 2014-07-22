@@ -18,13 +18,16 @@ Float:	vspawn_posR,
 
 
 static
-	veh_SpawnChance = 4,
-	veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA];
+		veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA],
+
+Float:	veh_SpawnChance = 4.0;
 
 
 LoadVehicles(printeach = false, printtotal = false)
 {
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
+
+	GetSettingFloat("server/vehicle-spawn-multiplier", 4.0, veh_SpawnChance);
 
 	LoadPlayerVehicles(printeach, printtotal);
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
@@ -138,7 +141,7 @@ LoadVehiclesFromFile(file[], prints)
 		{
 			total++;
 
-			if(random(100) < 100 - veh_SpawnChance)
+			if(frandom(100.0) < 100.0 - veh_SpawnChance)
 				continue;
 
 			if(sscanf(args, "P<,>ffffS()[32]S()[9]S()[4]", posX, posY, posZ, rotZ, group, categories, sizes))
@@ -298,9 +301,4 @@ LoadVehiclesFromFile(file[], prints)
 		printf("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
 
 	return 1;
-}
-
-stock SetVehicleSpawnChance(chance)
-{
-	veh_SpawnChance = chance;
 }
