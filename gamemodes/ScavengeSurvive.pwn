@@ -49,6 +49,7 @@ native gpci(playerid, serial[], len);
 
 ==============================================================================*/
 
+forward OnGameModeInit_Pre();
 public OnGameModeInit()
 {
 	OnGameModeInit_Pre();
