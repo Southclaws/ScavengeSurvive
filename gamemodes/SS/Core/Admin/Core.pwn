@@ -305,6 +305,8 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		ToggleArmour(playerid, false);
 
+		RemoveAllDrugs(playerid);
+
 		admin_OnDuty[playerid] = true;
 
 		if(GetPlayerGender(playerid) == GENDER_MALE)

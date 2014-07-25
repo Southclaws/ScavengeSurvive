@@ -46,7 +46,7 @@ hook OnGameModeInit()
 
 hook OnPlayerDisconnect(playerid)
 {
-	for(new i; i < MAX_DRUG_TYPE; i++)
+	for(new i; i < drug_TypeTotal; i++)
 	{
 		drug_PlayerDrugData[playerid][i][drug_active] = false;
 		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
@@ -56,7 +56,7 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerDeath(playerid, killerid, reason)
 {
-	for(new i; i < MAX_DRUG_TYPE; i++)
+	for(new i; i < drug_TypeTotal; i++)
 	{
 		drug_PlayerDrugData[playerid][i][drug_active] = false;
 		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
@@ -128,6 +128,19 @@ stock RemoveDrug(playerid, drugtype)
 	return 1;
 }
 
+stock RemoveAllDrugs(playerid)
+{
+	for(new i; i < drug_TypeTotal; i++)
+	{
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+		{
+			drug_PlayerDrugData[playerid][i][drug_active] = false;
+			drug_PlayerDrugData[playerid][i][drug_tick] = 0;
+			drug_PlayerDrugData[playerid][i][drug_totalDuration] = 0;
+		}
+	}
+}
+
 
 /*==============================================================================
 
@@ -135,10 +148,9 @@ stock RemoveDrug(playerid, drugtype)
 
 ==============================================================================*/
 
-
 DrugsUpdate(playerid)
 {
-	for(new i; i < MAX_DRUG_TYPE; i++)
+	for(new i; i < drug_TypeTotal; i++)
 	{
 		if(drug_PlayerDrugData[playerid][i][drug_active])
 		{
@@ -184,7 +196,7 @@ stock GetPlayerDrugsList(playerid, output[])
 
 	new idx;
 
-	for(new i; i < MAX_DRUG_TYPE; i++)
+	for(new i; i < drug_TypeTotal; i++)
 	{
 		if(drug_PlayerDrugData[playerid][i][drug_active])
 			output[idx++] = i;
@@ -211,7 +223,7 @@ stock GetPlayerDrugsAsArray(playerid, output[])
 
 	new idx = 1;
 
-	for(new i; i < MAX_DRUG_TYPE; i++)
+	for(new i; i < drug_TypeTotal; i++)
 	{
 		if(drug_PlayerDrugData[playerid][i][drug_active])
 		{
