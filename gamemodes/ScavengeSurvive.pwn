@@ -42,6 +42,7 @@ native gpci(playerid, serial[], len);
 //	#define DEBUG_LABELS_ITEM				(true) // SIF/Item
 #define BTN_MAX							(16384) // SIF/Button
 #define ITM_MAX							(16384) // SIF/Item
+#define CNT_MAX_SLOTS					(64)
 
 /*==============================================================================
 
@@ -52,6 +53,7 @@ native gpci(playerid, serial[], len);
 forward OnGameModeInit_Pre();
 public OnGameModeInit()
 {
+	OnGameModeInit_Setup();
 	OnGameModeInit_Pre();
 	#if defined gm_OnGameModeInit
 		return gm_OnGameModeInit();
@@ -338,8 +340,6 @@ new
 		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
-bool:	gWhitelist,
-bool:	gWhitelistAutoToggle,
 		gInfoMessageInterval,
 		gPerformFileCheck,
 
@@ -705,7 +705,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/Settings.pwn"
 #include "SS/Core/Server/TextTags.pwn"
 #include "SS/Core/Server/Weather.pwn"
-#include "SS/Core/Server/Whitelist.pwn"
 #include "SS/Core/Server/SaveBlock.pwn"
 #include "SS/Core/Server/ActivityLog.pwn"
 #include "SS/Core/Server/FileCheck.pwn"
@@ -760,6 +759,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/DisallowActions.pwn"
 #include "SS/Core/Player/Profile.pwn"
 #include "SS/Core/Player/ToolTips.pwn"
+#include "SS/Core/Player/Whitelist.pwn"
 
 // CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
@@ -940,9 +940,7 @@ main()
 
 
 
-
-
-public OnGameModeInit_Pre()
+OnGameModeInit_Setup()
 {
 	print("Starting Main Game Script 'SSS' ...");
 
@@ -964,33 +962,10 @@ public OnGameModeInit_Pre()
 	djson_GameModeInit();
 
 	LoadSettings();
-
-	#if defined gm_OnGameModeInit_Pre
-		return gm_OnGameModeInit_Pre();
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnGameModeInit_Pre
-	#undef OnGameModeInit_Pre
-#else
-	#define _ALS_OnGameModeInit_Pre
-#endif
-
-#define OnGameModeInit_Pre gm_OnGameModeInit_Pre
-#if defined gm_OnGameModeInit_Pre
-	forward gm_OnGameModeInit_Pre();
-#endif
-
 
 public OnGameModeInit()
 {
-	if(gWhitelist)
-		ToggleWhitelist(true);
-
-	if(gWhitelistAutoToggle)
-		ToggleAutoWhitelist(true);
-
 	SendRconCommand(sprintf("mapname %s", gMapName));
 
 // 00

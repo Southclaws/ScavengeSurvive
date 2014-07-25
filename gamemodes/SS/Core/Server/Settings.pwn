@@ -96,22 +96,6 @@ LoadSettings()
 	}
 
 
-	// server/whitelist
-	if(!djIsSet(SETTINGS_FILE, "server/whitelist"))
-		djSetInt(SETTINGS_FILE, "server/whitelist", false);
-
-	gWhitelist = bool:djInt(SETTINGS_FILE, "server/whitelist");
-	printf("  server/whitelist: %d", gWhitelist);
-
-
-	// server/whitelist-auto-toggle
-	if(!djIsSet(SETTINGS_FILE, "server/whitelist-auto-toggle"))
-		djSetInt(SETTINGS_FILE, "server/whitelist-auto-toggle", false);
-
-	gWhitelistAutoToggle = bool:djInt(SETTINGS_FILE, "server/whitelist-auto-toggle");
-	printf("  server/whitelist-auto-toggle: %d", gWhitelistAutoToggle);
-
-
 	// server/infomsg-interval
 	if(!djIsSet(SETTINGS_FILE, "server/infomsg-interval"))
 		djSetInt(SETTINGS_FILE, "server/infomsg-interval", 5);

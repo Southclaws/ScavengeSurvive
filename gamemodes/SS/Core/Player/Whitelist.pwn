@@ -19,7 +19,7 @@ DBStatement:	stmt_WhitelistInsert,
 DBStatement:	stmt_WhitelistDelete;
 
 
-hook OnGameModeInit()
+public OnGameModeInit_Pre()
 {
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
 		"FIELD_WHITELIST_NAME" TEXT)"));
@@ -29,7 +29,26 @@ hook OnGameModeInit()
 	stmt_WhitelistExists = db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ? COLLATE NOCASE");
 	stmt_WhitelistInsert = db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_WHITELIST" ("FIELD_WHITELIST_NAME") VALUES(?)");
 	stmt_WhitelistDelete = db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_WHITELIST" WHERE "FIELD_WHITELIST_NAME" = ?");
+
+	GetSettingInt("server/whitelist", 0, wl_Active);
+	GetSettingInt("server/whitelist-auto-toggle", 0, wl_Auto);
+
+	#if defined wl_OnGameModeInit_Pre
+		return wl_OnGameModeInit_Pre();
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnGameModeInit_Pre
+	#undef OnGameModeInit_Pre
+#else
+	#define _ALS_OnGameModeInit_Pre
+#endif
+ 
+#define OnGameModeInit_Pre wl_OnGameModeInit_Pre
+#if defined wl_OnGameModeInit_Pre
+	forward wl_OnGameModeInit_Pre();
+#endif
 
 hook OnPlayerConnect(playerid)
 {
@@ -41,7 +60,8 @@ hook OnPlayerConnect(playerid)
 		wl_Whitelisted[playerid] = true;
 
 	// Used a timer here because the admin hook may be called afterwards.
-	defer _AutoWhitelistConnect(playerid);
+	// defer _AutoWhitelistConnect(playerid);
+	// Removed. Uses OnPlayerLogin instead.
 
 	wl_CountdownUI[playerid]		=CreatePlayerTextDraw(playerid, 430.0, 40.0, "Not whitelisted~n~Time remaining: 00:00");
 	PlayerTextDrawAlignment			(playerid, wl_CountdownUI[playerid], 2);
@@ -95,7 +115,10 @@ stock AddNameToWhitelist(name[], doplayeridcheck = true)
 	stmt_bind_value(stmt_WhitelistInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(stmt_WhitelistInsert))
+	{
+		print("ERROR: Executing statement 'stmt_WhitelistInsert'.");
 		return -1;
+	}
 
 	stmt_free_result(stmt_WhitelistInsert);
 
@@ -141,7 +164,10 @@ stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 	stmt_bind_value(stmt_WhitelistDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(stmt_WhitelistDelete))
+	{
+		print("ERROR: Executing statement 'stmt_WhitelistDelete'.");
 		return -1;
+	}
 
 	stmt_free_result(stmt_WhitelistDelete);
 
@@ -180,7 +206,10 @@ stock IsNameInWhitelist(name[])
 	stmt_bind_result_field(stmt_WhitelistExists, 0, DB::TYPE_INTEGER, count);
 
 	if(!stmt_execute(stmt_WhitelistExists))
-		return 0;
+	{
+		print("ERROR: Executing statement 'stmt_WhitelistExists'.");
+		return 1;
+	}
 
 	stmt_fetch_row(stmt_WhitelistExists);
 	stmt_free_result(stmt_WhitelistExists);
@@ -286,9 +315,10 @@ timer _UpdateWhitelistCountdown[1000](playerid)
 	anti-hack tools at disposal.
 */
 
-timer _AutoWhitelistConnect[100](playerid)
+//timer _AutoWhitelistConnect[100](playerid)
+public OnPlayerLogin(playerid)
 {
-	if(wl_Auto)
+	if(wl_Auto && wl_Active)
 	{
 		if(GetAdminsOnline(2) > 0) // turn off if whitelist is on and are admins online
 		{
@@ -297,11 +327,27 @@ timer _AutoWhitelistConnect[100](playerid)
 			logf("[AUTOWHITELIST] Whitelist turned off by %p joining", playerid);
 		}
 	}
+
+	#if defined wl_OnPlayerLogin
+		return wl_OnPlayerLogin(playerid);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerLogin
+	#undef OnPlayerLogin
+#else
+	#define _ALS_OnPlayerLogin
+#endif
+ 
+#define OnPlayerLogin wl_OnPlayerLogin
+#if defined wl_OnPlayerLogin
+	forward wl_OnPlayerLogin(playerid);
+#endif
 
 timer _AutoWhitelistDisconnect[100](string:name[])
 {
-	if(wl_Auto)
+	if(wl_Auto && !wl_Active)
 	{
 		if(GetAdminsOnline(2) == 0) // turn on if whitelist is off and no admins remain online
 		{

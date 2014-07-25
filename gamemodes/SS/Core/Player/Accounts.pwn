@@ -81,6 +81,9 @@ DBStatement:	stmt_AccountSetActiveState,
 DBStatement:	stmt_AccountGetAliasData;
 	
 
+forward OnPlayerLogin(playerid);
+
+
 hook OnGameModeInit()
 {
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
@@ -449,6 +452,8 @@ Login(playerid)
 	SetPlayerScreenFadeLevel(playerid, 255);
 
 	SpawnLoggedInPlayer(playerid);
+
+	CallLocalFunction("OnPlayerLogin", "d", playerid);
 }
 
 
