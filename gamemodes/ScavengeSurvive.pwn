@@ -40,8 +40,8 @@ native gpci(playerid, serial[], len);
 //	#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
 //	#define DEBUG_LABELS_BUTTON				(true) // SIF/Button
 //	#define DEBUG_LABELS_ITEM				(true) // SIF/Item
-#define BTN_MAX							(16384) // SIF/Button
-#define ITM_MAX							(16384) // SIF/Item
+#define BTN_MAX							(32768) // SIF/Button
+#define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(64)
 
 /*==============================================================================

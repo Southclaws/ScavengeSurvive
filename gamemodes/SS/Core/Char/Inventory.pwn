@@ -877,10 +877,18 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	if(clickedid == Text:65535)
 	{
 		if(IsPlayerViewingInventory(playerid))
+		{
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
 			ClosePlayerInventory(playerid);
+		}
 
 		if(GetPlayerCurrentContainer(playerid) != INVALID_CONTAINER_ID)
+		{
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
 			ClosePlayerContainer(playerid);
+		}
 	}
 }
 
