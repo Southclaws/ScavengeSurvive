@@ -41,13 +41,13 @@ stock CreateTracer(Float:originx, Float:originy, Float:originz, Float:targetx, F
 	Streamer_SetArrayData(STREAMER_TYPE_OBJECT, tracer_ObjectID[id], E_STREAMER_EXTRA_ID, arr);
 
 	MoveDynamicObject(tracer_ObjectID[id], targetx, targety, targetz, 800.0);
-
+/*
 	printf("Created tracer: %f, %f, %f > %f, %f, %f",
 		originx + (2.0 * floatsin(rotation, degrees) * floatcos(elevation, degrees)),
 		originy + (2.0 * floatcos(rotation, degrees) * floatcos(elevation, degrees)),
 		originz + (2.0 * floatsin(elevation, degrees)),
 		targetx, targety, targetz);
-
+*/
 	Iter_Add(tracer_Index, id);
 
 	return id;
@@ -128,7 +128,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				targetz = originz + (targetz * 80.0);
 			}
 
-			MsgF(playerid, YELLOW, "hittype %d target: %f, %f, %f", hittype, targetx, targety, targetz);
+			// MsgF(playerid, YELLOW, "hittype %d target: %f, %f, %f", hittype, targetx, targety, targetz);
 
 			CreateTracer(originx, originy, originz, targetx, targety, targetz);
 		}
