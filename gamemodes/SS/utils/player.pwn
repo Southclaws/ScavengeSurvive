@@ -219,7 +219,7 @@ stock IsPlayerIdle(playerid)
 {
 	switch(GetPlayerAnimationIndex(playerid))
 	{
-		case 320, 1164, 1183, 1188, 1189:
+		case 320, 471, 1164, 1183, 1188, 1189:
 			return 1;
 	}
 
