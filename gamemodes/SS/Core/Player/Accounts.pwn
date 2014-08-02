@@ -218,7 +218,7 @@ LoadAccount(playerid)
 	{
 		Msg(playerid, YELLOW, " >  Whitelist active.");
 
-		if(!IsNameInWhitelist(gPlayerName[playerid]))
+		if(!IsPlayerInWhitelist(playerid))
 		{
 			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
 			return 3;
@@ -275,7 +275,7 @@ CreateAccount(playerid, password[])
 	if(IsWhitelistActive())
 	{
 		Msg(playerid, YELLOW, " >  Whitelist active.");
-		if(!IsNameInWhitelist(gPlayerName[playerid]))
+		if(!IsPlayerInWhitelist(playerid))
 		{
 			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
 			WhitelistKick(playerid);

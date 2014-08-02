@@ -52,16 +52,7 @@ public OnGameModeInit_Pre()
 
 hook OnPlayerConnect(playerid)
 {
-	new name[MAX_PLAYER_NAME];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	if(IsNameInWhitelist(name))
-		wl_Whitelisted[playerid] = true;
-
-	// Used a timer here because the admin hook may be called afterwards.
-	// defer _AutoWhitelistConnect(playerid);
-	// Removed. Uses OnPlayerLogin instead.
+	defer _WhitelistConnect(playerid);
 
 	wl_CountdownUI[playerid]		=CreatePlayerTextDraw(playerid, 430.0, 40.0, "Not whitelisted~n~Time remaining: 00:00");
 	PlayerTextDrawAlignment			(playerid, wl_CountdownUI[playerid], 2);
@@ -75,13 +66,15 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
+	wl_Whitelisted[playerid] = false;
+
 	// Again, a timer in case the GetAdminsOnline func returns 1 even though
 	// that 1 admin is quitting (Admin/Core.pwn hook maybe called after this)
 	new name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	defer _AutoWhitelistDisconnect(name);
+	defer _WhitelistDisconnect(name);
 
 	return 1;
 }
@@ -109,7 +102,7 @@ stock AddPlayerToWhitelist(playerid)
 
 stock AddNameToWhitelist(name[], doplayeridcheck = true)
 {
-	if(IsNameInWhitelist(name))
+	if(IsNameInWhitelist(name) == 1)
 		return 0;
 
 	stmt_bind_value(stmt_WhitelistInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -158,7 +151,7 @@ stock RemovePlayerFromWhitelist(playerid)
 
 stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 {
-	if(!IsNameInWhitelist(name))
+	if(IsNameInWhitelist(name) == 0)
 		return 0;
 
 	stmt_bind_value(stmt_WhitelistDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -208,7 +201,7 @@ stock IsNameInWhitelist(name[])
 	if(!stmt_execute(stmt_WhitelistExists))
 	{
 		print("ERROR: Executing statement 'stmt_WhitelistExists'.");
-		return 1;
+		return -1;
 	}
 
 	stmt_fetch_row(stmt_WhitelistExists);
@@ -293,9 +286,16 @@ stock ToggleAutoWhitelist(bool:toggle)
 
 timer _UpdateWhitelistCountdown[1000](playerid)
 {
+	if(!IsPlayerLoggedIn(playerid))
+	{
+		stop wl_CountdownTimer[playerid];
+		return;
+	}
+
 	if(wl_Countdown[playerid] == 0)
 	{
 		WhitelistKick(playerid);
+		stop wl_CountdownTimer[playerid];
 		return;
 	}
 
@@ -315,7 +315,19 @@ timer _UpdateWhitelistCountdown[1000](playerid)
 	anti-hack tools at disposal.
 */
 
-//timer _AutoWhitelistConnect[100](playerid)
+timer _WhitelistConnect[100](playerid)
+{
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	if(IsNameInWhitelist(name) == 1)
+		wl_Whitelisted[playerid] = true;
+
+	else
+		wl_Whitelisted[playerid] = false;
+}
+
 public OnPlayerLogin(playerid)
 {
 	if(wl_Auto && wl_Active)
@@ -345,7 +357,7 @@ public OnPlayerLogin(playerid)
 	forward wl_OnPlayerLogin(playerid);
 #endif
 
-timer _AutoWhitelistDisconnect[100](string:name[])
+timer _WhitelistDisconnect[100](string:name[])
 {
 	if(wl_Auto && !wl_Active)
 	{
