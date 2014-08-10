@@ -12,6 +12,7 @@
 ==============================================================================*/
 
 
+#pragma dynamic 65535
 #include <a_samp>
 
 /*==============================================================================
@@ -35,7 +36,7 @@ native gpci(playerid, serial[], len);
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
 #define MAX_MODIO_SESSION				(1024) // modio
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
-#define ITM_MAX_TEXT					(48) // SIF/Item
+#define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
 //	#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
 //	#define DEBUG_LABELS_BUTTON				(true) // SIF/Button

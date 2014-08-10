@@ -39,7 +39,7 @@ _DoVehicleCollisionDamage(playerid, targetid)
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	if(CallLocalFunction("OnPlayerVehicleCollide", "ddfd", playerid, targetid, bleedrate, knockmult))
+	if(CallLocalFunction("OnPlayerVehicleCollide", "ddff", playerid, targetid, bleedrate, knockmult))
 		return 0;
 
 	if(dmg_ReturnBleedrate[targetid] != bleedrate)

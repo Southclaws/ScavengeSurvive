@@ -7,7 +7,7 @@ Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
 Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 
 
-forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance);
+forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
 
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
@@ -110,7 +110,7 @@ _DoFirearmDamage(playerid, targetid, itemid, ItemType:itemtype, bodypart)
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	if(CallLocalFunction("OnPlayerShootPlayer", "dddfddd", playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance))
+	if(CallLocalFunction("OnPlayerShootPlayer", "dddffff", playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance))
 		return 0;
 
 	if(dmg_ReturnBleedrate[targetid] != bleedrate)

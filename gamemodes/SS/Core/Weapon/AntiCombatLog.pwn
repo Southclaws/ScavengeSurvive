@@ -3,7 +3,7 @@ new
 	combatlog_LastAttacker[MAX_PLAYERS] = {INVALID_PLAYER_ID, ...},
 	combatlog_LastItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
@@ -21,7 +21,7 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:
  
 #define OnPlayerShootPlayer aclg_OnPlayerShootPlayer
 #if defined aclg_OnPlayerShootPlayer
-	forward aclg_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance);
+	forward aclg_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
 #endif
 
 public OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)

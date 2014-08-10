@@ -109,7 +109,7 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 				if(angle > 225.0 || angle < 315.0)
 					ApplyAnimation(i, "PED", "DAM_stomach_frmRT", 4.1, 0, 1, 1, 0, 0, 1); // FROM RIGHT
 
-				_DoMeleeDamage(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), GetItemTypeWeaponMagSize(itemtype));
+				_DoMeleeDamage(playerid, i, GetItemTypeWeaponMuzzVelocity(itemtype), Float:GetItemTypeWeaponMagSize(itemtype));
 			}
 		}
 	}
@@ -120,7 +120,7 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
 	if(weaponid == 0)
-		return _DoMeleeDamage(playerid, damagedid, 0.01, 50);
+		return _DoMeleeDamage(playerid, damagedid, 0.001, 0.5);
 
 	return _HandleStandardMelee(playerid, damagedid);
 }
@@ -152,7 +152,7 @@ _DoMeleeDamage(playerid, targetid, Float:bleedrate, Float:knockmult)
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
 
-	if(CallLocalFunction("OnPlayerMeleePlayer", "ddfd", playerid, targetid, bleedrate, knockmult))
+	if(CallLocalFunction("OnPlayerMeleePlayer", "ddff", playerid, targetid, bleedrate, knockmult))
 		return 0;
 
 	if(dmg_ReturnBleedrate[targetid] != bleedrate)

@@ -88,7 +88,7 @@ public OnItemNameRender(itemid)
 #endif
 
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, bulletvelocity, distance)
+public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
 	if(bodypart == 3)
 	{
@@ -122,7 +122,7 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:
  
 #define OnPlayerShootPlayer armour_OnPlayerShootPlayer
 #if defined armour_OnPlayerShootPlayer
-	forward armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, bleedrate, knockmult, bulletvelocity, distance);
+	forward armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
 #endif
 
 
