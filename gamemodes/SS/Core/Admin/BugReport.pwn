@@ -118,7 +118,7 @@ ShowListOfBugs(playerid)
 		idx;
 
 	// Some bug in sqlite causes 'name' to appear empty sometimes.
-	while(stmt_fetch_row(stmt_BugList))
+	while(stmt_fetch_row(stmt_BugList) && idx < MAX_ISSUES_PER_PAGE)
 	{
 		strcat(list, name);
 		strcat(list, ": ");

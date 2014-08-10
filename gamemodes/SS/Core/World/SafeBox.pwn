@@ -301,22 +301,23 @@ SafeBoxInteractionCheck(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(box_ItemTypeBoxType[itemtype] != -1)
-	{
-		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
-		{
-			box_PickUpTick[playerid] = GetTickCount();
-			box_CurrentBoxItem[playerid] = itemid;
-			stop box_PickUpTimer[playerid];
+	if(!IsValidItemType(itemtype))
+		return 0;
 
-			if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-				box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
+	if(box_ItemTypeBoxType[itemtype] == -1)
+		return 0;
 
-			return 1;
-		}
-	}
+	if(itemtype != box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
+		return 0;
 
-	return 0;
+	box_PickUpTick[playerid] = GetTickCount();
+	box_CurrentBoxItem[playerid] = itemid;
+	stop box_PickUpTimer[playerid];
+
+	if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
+		box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
+
+	return 1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
