@@ -67,7 +67,7 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_list_output_structure], &count)
+stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_list_output_structure], max, &count)
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -82,7 +82,7 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 	if(!stmt_execute(stmt_GpciGetRecordsFromGpci))
 		return 0;
 
-	while(stmt_fetch_row(stmt_GpciGetRecordsFromGpci))
+	while(stmt_fetch_row(stmt_GpciGetRecordsFromGpci) && count < max)
 	{
 		output[count][gpci_name] = name;
 		output[count][gpci_gpci] = hash;
@@ -94,7 +94,7 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 	return 1;
 }
 
-stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_structure], &count)
+stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_structure], max, &count)
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -109,7 +109,7 @@ stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_str
 	if(!stmt_execute(stmt_GpciGetRecordsFromName))
 		return 0;
 
-	while(stmt_fetch_row(stmt_GpciGetRecordsFromName))
+	while(stmt_fetch_row(stmt_GpciGetRecordsFromName) && count < max)
 	{
 		output[count][gpci_name] = name;
 		output[count][gpci_gpci] = hash;
@@ -130,7 +130,7 @@ ACMD:ghg[4](playerid, params[])
 
 	GetAccountGPCI(params, hash);
 
-	if(!GetAccountGpciHistoryFromGpci(hash, list, count))
+	if(!GetAccountGpciHistoryFromGpci(hash, list, 48, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -164,7 +164,7 @@ ACMD:ghname[4](playerid, params[])
 		list[48][e_gpci_list_output_structure],
 		count;
 
-	if(!GetAccountGpciHistoryFromName(params, list, count))
+	if(!GetAccountGpciHistoryFromName(params, list, 48, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;

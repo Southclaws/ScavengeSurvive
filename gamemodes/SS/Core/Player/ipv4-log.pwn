@@ -72,7 +72,7 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-stock GetAccountIPHistoryFromIP(inputipv4, output[][e_ipv4_list_output_structure], &count)
+stock GetAccountIPHistoryFromIP(inputipv4, output[][e_ipv4_list_output_structure], max, &count)
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -87,7 +87,7 @@ stock GetAccountIPHistoryFromIP(inputipv4, output[][e_ipv4_list_output_structure
 	if(!stmt_execute(stmt_Ipv4GetRecordsFromIP))
 		return 0;
 
-	while(stmt_fetch_row(stmt_Ipv4GetRecordsFromIP))
+	while(stmt_fetch_row(stmt_Ipv4GetRecordsFromIP) && count < max)
 	{
 		output[count][ipv4_name] = name;
 		output[count][ipv4_ipv4] = ipv4;
@@ -99,7 +99,7 @@ stock GetAccountIPHistoryFromIP(inputipv4, output[][e_ipv4_list_output_structure
 	return 1;
 }
 
-stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_structure], &count)
+stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_structure], max, &count)
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -114,7 +114,7 @@ stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_struc
 	if(!stmt_execute(stmt_Ipv4GetRecordsFromName))
 		return 0;
 
-	while(stmt_fetch_row(stmt_Ipv4GetRecordsFromName))
+	while(stmt_fetch_row(stmt_Ipv4GetRecordsFromName) && count < max)
 	{
 		output[count][ipv4_name] = name;
 		output[count][ipv4_ipv4] = ipv4;
@@ -135,7 +135,7 @@ ACMD:iphip[4](playerid, params[])
 
 	GetAccountIP(params, ip);
 
-	if(!GetAccountIPHistoryFromIP(ip, list, count))
+	if(!GetAccountIPHistoryFromIP(ip, list, 48, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -169,7 +169,7 @@ ACMD:iphname[4](playerid, params[])
 		list[48][e_ipv4_list_output_structure],
 		count;
 
-	if(!GetAccountIPHistoryFromName(params, list, count))
+	if(!GetAccountIPHistoryFromName(params, list, 48, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
