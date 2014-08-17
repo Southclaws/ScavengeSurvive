@@ -12,7 +12,6 @@
 ==============================================================================*/
 
 
-#pragma dynamic 65535
 #include <a_samp>
 
 /*==============================================================================
@@ -93,7 +92,7 @@ public OnGameModeInit()
 #include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
 //#include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
-
+#include <socket>					// By BlueG, v0.2b:			http://forum.sa-mp.com/showthread.php?t=333934
 #include <sqlitei>					// By Slice, v0.9.6:		http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -710,6 +709,7 @@ forward SetRestart(seconds);
 #include "SS/Core/Server/ActivityLog.pwn"
 #include "SS/Core/Server/FileCheck.pwn"
 #include "SS/Core/Server/IRC.pwn"
+#include "SS/Core/Server/Sockets.pwn"
 
 // UI
 #include "SS/Core/UI/PlayerUI.pwn"
@@ -744,7 +744,6 @@ forward SetRestart(seconds);
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/Aliases.pwn"
 #include "SS/Core/Player/ipv4-log.pwn"
-#include "SS/Core/Player/host-log.pwn"
 #include "SS/Core/Player/gpci-log.pwn"
 #include "SS/Core/Player/SaveLoad.pwn"
 #include "SS/Core/Player/Spawn.pwn"
