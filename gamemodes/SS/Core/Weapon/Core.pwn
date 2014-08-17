@@ -677,12 +677,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	_NameRenderHandler(itemid);
+	weapon_NameRenderHandler(itemid, itemtype);
 
 	#if defined itmw_OnItemNameRender
-		return itmw_OnItemNameRender(itemid);
+		return itmw_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -694,14 +694,12 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender itmw_OnItemNameRender
 #if defined itmw_OnItemNameRender
-	forward itmw_OnItemNameRender(itemid);
+	forward itmw_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
-_NameRenderHandler(itemid)
+weapon_NameRenderHandler(itemid, ItemType:itemtype)
 {
-	new
-		ItemType:itemtype = GetItemType(itemid),
-		itemweaponid = GetItemTypeWeapon(itemtype);
+	new itemweaponid = GetItemTypeWeapon(itemtype);
 
 	if(itemweaponid == -1)
 		return 0;

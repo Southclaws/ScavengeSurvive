@@ -42,9 +42,9 @@ public OnItemCreate(itemid)
 	forward pills_OnItemCreate(itemid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_Pills)
+	if(itemtype == item_Pills)
 	{
 		switch(GetItemExtraData(itemid))
 		{
@@ -56,7 +56,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined pil_OnItemNameRender
-		return pil_OnItemNameRender(itemid);
+		return pil_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -68,7 +68,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender pil_OnItemNameRender
 #if defined pil_OnItemNameRender
-	forward pil_OnItemNameRender(itemid);
+	forward pil_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 public OnPlayerUseItem(playerid, itemid)

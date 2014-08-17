@@ -193,7 +193,7 @@ timer UpdateSpectateMode[100](playerid)
 		new
 			invehicleas[24],
 			itemid,
-			itemname[32],
+			itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
 			cameramodename[37];
 
 		if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
@@ -228,7 +228,7 @@ timer UpdateSpectateMode[100](playerid)
 	{
 		new
 			itemid,
-			itemname[32],
+			itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
 			holsteritemid,
 			holsteritemname[32],
 			cameramodename[37],

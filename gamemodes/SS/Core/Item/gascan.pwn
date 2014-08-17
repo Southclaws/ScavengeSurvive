@@ -25,9 +25,9 @@ public OnItemCreate(itemid)
 	forward gas_OnItemCreate(itemid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_GasCan)
+	if(itemtype == item_GasCan)
 	{
 		new str[4];
 		valstr(str, GetItemExtraData(itemid));
@@ -36,7 +36,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined gas_OnItemNameRender
-		return gas_OnItemNameRender(itemid);
+		return gas_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -48,5 +48,5 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender gas_OnItemNameRender
 #if defined gas_OnItemNameRender
-	forward gas_OnItemNameRender(itemid);
+	forward gas_OnItemNameRender(itemid, ItemType:itemtype);
 #endif

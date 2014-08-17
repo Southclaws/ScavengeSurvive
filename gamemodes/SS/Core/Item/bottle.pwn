@@ -43,9 +43,9 @@ public OnItemCreate(itemid)
 #endif
 
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_Bottle)
+	if(itemtype == item_Bottle)
 	{
 		new
 			data,
@@ -81,7 +81,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined bot_OnItemNameRender
-		return bot_OnItemNameRender(itemid);
+		return bot_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -93,7 +93,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender bot_OnItemNameRender
 #if defined bot_OnItemNameRender
-	forward bot_OnItemNameRender(itemid);
+	forward bot_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 public OnPlayerEaten(playerid, itemid)

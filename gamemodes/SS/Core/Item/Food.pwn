@@ -195,9 +195,9 @@ public OnHoldActionFinish(playerid)
 	forward food_OnHoldActionFinish(playerid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	new foodtype = GetItemTypeFoodType(GetItemType(itemid));
+	new foodtype = GetItemTypeFoodType(itemtype);
 
 	if(foodtype != -1)
 	{
@@ -212,7 +212,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined bbq_OnItemNameRender
-		return bbq_OnItemNameRender(itemid);
+		return bbq_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -224,7 +224,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender bbq_OnItemNameRender
 #if defined bbq_OnItemNameRender
-	forward bbq_OnItemNameRender(itemid);
+	forward bbq_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 

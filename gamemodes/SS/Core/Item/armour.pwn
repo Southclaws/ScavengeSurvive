@@ -56,10 +56,8 @@ public OnPlayerUseItem(playerid, itemid)
 	forward armour_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
 	if(itemtype == item_Armour)
 	{
 		new
@@ -72,7 +70,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined armour_OnItemNameRender
-		return armour_OnItemNameRender(itemid);
+		return armour_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -84,7 +82,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender armour_OnItemNameRender
 #if defined armour_OnItemNameRender
-	forward armour_OnItemNameRender(itemid);
+	forward armour_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 

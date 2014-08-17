@@ -45,9 +45,9 @@ public OnItemCreate(itemid)
 	forward inj_OnItemCreate(itemid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_AutoInjec)
+	if(itemtype == item_AutoInjec)
 	{
 		switch(GetItemExtraData(itemid))
 		{
@@ -60,7 +60,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined inj_OnItemNameRender
-		return inj_OnItemNameRender(itemid);
+		return inj_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -72,7 +72,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender inj_OnItemNameRender
 #if defined inj_OnItemNameRender
-	forward inj_OnItemNameRender(itemid);
+	forward inj_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 public OnPlayerUseItem(playerid, itemid)

@@ -78,26 +78,14 @@ stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult
 ==============================================================================*/
 
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemTypeAmmoType(GetItemType(itemid)) != -1)
-	{
-		new
-			amount = GetItemExtraData(itemid),
-			str[ITM_MAX_TEXT];
-
-		format(str, sizeof(str), "%d, %s, %s",
-			amount,
-			clbr_Data[ammo_Data[ammo_ItemTypeAmmoType[GetItemType(itemid)]][ammo_calibre]][clbr_name],
-			ammo_Data[ammo_ItemTypeAmmoType[GetItemType(itemid)]][ammo_name]);
-
-		SetItemNameExtra(itemid, str);
-	}
+	ammunition_NameRenderHandler(itemid, itemtype);
 
 	#if defined ammo_OnItemNameRender
-		return ammo_OnItemNameRender(itemid);
+		return ammo_OnItemNameRender(itemid, itemtype);
 	#else
-		return 1;
+		return 0;
 	#endif
 }
 #if defined _ALS_OnItemNameRender
@@ -108,8 +96,29 @@ public OnItemNameRender(itemid)
  
 #define OnItemNameRender ammo_OnItemNameRender
 #if defined ammo_OnItemNameRender
-	forward ammo_OnItemNameRender(itemid);
+	forward ammo_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
+
+ammunition_NameRenderHandler(itemid, ItemType:itemtype)
+{
+	new ammotype = ammo_ItemTypeAmmoType[itemtype];
+
+	if(ammotype == -1)
+		return 0;
+
+	new
+		amount = GetItemExtraData(itemid),
+		str[ITM_MAX_TEXT];
+
+	format(str, sizeof(str), "%d, %s, %s",
+		amount,
+		clbr_Data[ammo_Data[ammotype][ammo_calibre]][clbr_name],
+		ammo_Data[ammotype][ammo_name]);
+
+	SetItemNameExtra(itemid, str);
+
+	return 1;
+}
 
 public OnItemCreate(itemid)
 {

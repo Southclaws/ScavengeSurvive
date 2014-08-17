@@ -195,16 +195,16 @@ public OnHoldActionFinish(playerid)
 	forward lsk_OnHoldActionFinish(playerid);
 #endif
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_Key)
+	if(itemtype == item_Key)
 	{
 		if(GetItemExtraData(itemid) != 0)
 			SetItemNameExtra(itemid, "Cut");
 	}
 
 	#if defined lsk_OnItemNameRender
-		return lsk_OnItemNameRender(itemid);
+		return lsk_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -216,5 +216,5 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender lsk_OnItemNameRender
 #if defined lsk_OnItemNameRender
-	forward lsk_OnItemNameRender(itemid);
+	forward lsk_OnItemNameRender(itemid, ItemType:itemtype);
 #endif

@@ -78,9 +78,9 @@ public OnItemCreate(itemid)
 #endif
 
 
-public OnItemNameRender(itemid)
+public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(GetItemType(itemid) == item_Clothes)
+	if(itemtype == item_Clothes)
 	{
 		new
 			exname[32];
@@ -97,7 +97,7 @@ public OnItemNameRender(itemid)
 	}
 
 	#if defined clo_OnItemNameRender
-		return clo_OnItemNameRender(itemid);
+		return clo_OnItemNameRender(itemid, itemtype);
 	#else
 		return 0;
 	#endif
@@ -109,7 +109,7 @@ public OnItemNameRender(itemid)
 #endif
 #define OnItemNameRender clo_OnItemNameRender
 #if defined clo_OnItemNameRender
-	forward clo_OnItemNameRender(itemid);
+	forward clo_OnItemNameRender(itemid, ItemType:itemtype);
 #endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

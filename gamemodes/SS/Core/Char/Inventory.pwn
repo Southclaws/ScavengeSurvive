@@ -175,7 +175,7 @@ HidePlayerHealthInfo(playerid)
 UpdatePlayerGear(playerid, show = 1)
 {
 	new
-		tmp[ITM_MAX_NAME],
+		tmp[ITM_MAX_NAME + ITM_MAX_TEXT],
 		itemid;
 
 	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
@@ -316,6 +316,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 	ShowPlayerGear(playerid);
 	UpdatePlayerGear(playerid);
 	ShowPlayerHealthInfo(playerid);
+	SelectTextDraw(playerid, 0xFFFF00FF);
 
 	#if defined app_OnPlayerOpenContainer
 		return app_OnPlayerOpenContainer(playerid, containerid);
