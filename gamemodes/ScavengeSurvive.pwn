@@ -467,7 +467,7 @@ ItemType:		item_Spas12			= INVALID_ITEM_TYPE,
 ItemType:		item_Mac10			= INVALID_ITEM_TYPE,
 ItemType:		item_MP5			= INVALID_ITEM_TYPE,
 // 30
-ItemType:		item_AK47Rifle		= INVALID_ITEM_TYPE,
+ItemType:		item_WASR3Rifle		= INVALID_ITEM_TYPE,
 ItemType:		item_M16Rifle		= INVALID_ITEM_TYPE,
 ItemType:		item_Tec9			= INVALID_ITEM_TYPE,
 ItemType:		item_SemiAutoRifle	= INVALID_ITEM_TYPE,
@@ -638,7 +638,10 @@ ItemType:		item_AmmoHomeBuck	= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo556Tracer	= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo556HP		= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo357Tracer	= INVALID_ITEM_TYPE,
-ItemType:		item_Ammo762		= INVALID_ITEM_TYPE;
+ItemType:		item_Ammo762		= INVALID_ITEM_TYPE,
+ItemType:		item_AK47Rifle		= INVALID_ITEM_TYPE,
+ItemType:		item_M77RMRifle		= INVALID_ITEM_TYPE,
+ItemType:		item_DogsBreath		= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -1002,7 +1005,7 @@ public OnGameModeInit()
 	item_Mac10			= DefineItemType("Mac 10",				352,	ITEM_SIZE_MEDIUM,	90.0);
 	item_MP5			= DefineItemType("MP5",					353,	ITEM_SIZE_MEDIUM,	90.0);
 // 30
-	item_AK47Rifle		= DefineItemType("AK-47",				355,	ITEM_SIZE_LARGE,	90.0);
+	item_WASR3Rifle		= DefineItemType("WASR-3",				355,	ITEM_SIZE_LARGE,	90.0);
 	item_M16Rifle		= DefineItemType("M16",					356,	ITEM_SIZE_LARGE,	90.0);
 	item_Tec9			= DefineItemType("Tec 9",				372,	ITEM_SIZE_MEDIUM,	90.0);
 	item_SemiAutoRifle	= DefineItemType("Rifle",				357,	ITEM_SIZE_LARGE,	90.0);
@@ -1158,7 +1161,7 @@ public OnGameModeInit()
 // 170
 	item_Motor			= DefineItemType("Motor",				2006,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.129999, 0.087999, 0.009000,  -86.099967, -112.099975, 92.699890);
 	item_StarterMotor	= DefineItemType("Starter Motor",		2006,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.129999, 0.087999, 0.009000,  -86.099967, -112.099975, 92.699890);
-	item_FlareGun		= DefineItemType("Flare Gun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.160999, 0.035000, 0.058999,  84.400062, 0.000000, 0.000000);
+	item_FlareGun		= DefineItemType("Flare Gun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
 	item_LargeBackpack	= DefineItemType("Large Backpack",		3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
@@ -1174,6 +1177,9 @@ public OnGameModeInit()
 	item_Ammo556HP		= DefineItemType("5.56 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo357Tracer	= DefineItemType(".357 Rounds",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo762		= DefineItemType("7.62 Rounds",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_AK47Rifle		= DefineItemType("AK-47",				355,	ITEM_SIZE_LARGE,	90.0);
+	item_M77RMRifle		= DefineItemType("M77-RM",				357,	ITEM_SIZE_LARGE,	90.0);
+	item_DogsBreath		= DefineItemType("Dog's Breath",		2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1205,7 +1211,7 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_Spas12,		4);
 	SetItemTypeMaxArrayData(item_Mac10,			4);
 	SetItemTypeMaxArrayData(item_MP5,			4);
-	SetItemTypeMaxArrayData(item_AK47Rifle,		4);
+	SetItemTypeMaxArrayData(item_WASR3Rifle,	4);
 	SetItemTypeMaxArrayData(item_M16Rifle,		4);
 	SetItemTypeMaxArrayData(item_Tec9,			4);
 	SetItemTypeMaxArrayData(item_SemiAutoRifle,	4);
@@ -1362,6 +1368,9 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_Ammo556HP,		1);
 	SetItemTypeMaxArrayData(item_Ammo357Tracer,	1);
 	SetItemTypeMaxArrayData(item_Ammo762,		1);
+	SetItemTypeMaxArrayData(item_AK47Rifle,		4);
+	SetItemTypeMaxArrayData(item_M77RMRifle,	4);
+	SetItemTypeMaxArrayData(item_DogsBreath,	4);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1417,7 +1426,15 @@ public OnGameModeInit()
 		losing velocity and thus energy (which affects the resulting bleedrate
 		and knockout chance).
 
-		magsize
+		magsize - maximum amount of rounds in a magazine. This value must be
+		below the max for that base weapon since client side weapon mag sizes
+		can't be altered. Melee weapons use this field to store the knockout
+		probability in floating point form.
+
+		maxmags - total amount of reserve magazines held by the user.
+
+		animset - currently only used by melee weapons, dictates the set of
+		animations used for attacking with the weapon.
 	*/
 
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
@@ -1451,15 +1468,15 @@ public OnGameModeInit()
 	//					itemtype				baseweapon					calibre			muzzvelocity	magsize	maxmags		animset
 	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	300.0,			10,		1);
 	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	250.0,			10,		1);
-	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	420.0,			7,		1);
+	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	420.0,			7,		2);
 	DefineItemTypeWeapon(item_PumpShotgun,		WEAPON_SHOTGUN,				calibre_12g,	475.0,			6,		1);
-	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	265.0,			2,		1);
+	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	265.0,			2,		6);
 	DefineItemTypeWeapon(item_Spas12,			WEAPON_SHOTGSPA,			calibre_12g,	480.0,			6,		1);
-	DefineItemTypeWeapon(item_Mac10,			WEAPON_UZI,					calibre_9mm,	366.0,			35,		1);
+	DefineItemTypeWeapon(item_Mac10,			WEAPON_UZI,					calibre_9mm,	376.0,			32,		1);
 	DefineItemTypeWeapon(item_MP5,				WEAPON_MP5,					calibre_9mm,	400.0,			30,		1);
-	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_556,	715.0,			30,		1);
+	DefineItemTypeWeapon(item_WASR3Rifle,		WEAPON_AK47,				calibre_556,	943.0,			30,		1);
 	DefineItemTypeWeapon(item_M16Rifle,			WEAPON_M4,					calibre_556,	948.0,			30,		1);
-	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	360.0,			30,		1);
+	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	360.0,			36,		1);
 	DefineItemTypeWeapon(item_SemiAutoRifle,	WEAPON_RIFLE,				calibre_357,	829.0,			5,		1);
 	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	864.0,			5,		1);
 	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			1,		0);
@@ -1472,7 +1489,9 @@ public OnGameModeInit()
 	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	NO_CALIBRE,		0.0,			100,	0);
 	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			24,		4);
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
-
+	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_762,	715.0,			30,		1);
+	DefineItemTypeWeapon(item_M77RMRifle,		WEAPON_RIFLE,				calibre_357,	823.0,			1,		9);
+	DefineItemTypeWeapon(item_DogsBreath,		WEAPON_DEAGLE,				calibre_762,	1398.6,			1,		9);
 	/*
 		name - the additional name given to the ammunition item. This is used to
 		format the full item name or weapon name which includes the amount of
@@ -1517,7 +1536,7 @@ public OnGameModeInit()
 	DefineItemTypeAmmo(item_Ammo556Tracer,		"Tracer",			calibre_556,	0.9,	1.1,	0.5,	30);
 	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.5,	0.4,	30);
 	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
-	DefineItemTypeAmmo(item_Ammo762,			"Ammo",				calibre_762,	1.0,	1.0,	0.9,	30);
+	DefineItemTypeAmmo(item_Ammo762,			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
@@ -1530,14 +1549,16 @@ public OnGameModeInit()
 	SetItemTypeHolsterable(item_Spas12,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Mac10,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_MP5,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_AK47Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_WASR3Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_M16Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Tec9,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_SemiAutoRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_SniperRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_RocketLauncher,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Heatseeker,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-
+	SetItemTypeHolsterable(item_AK47Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M77RMRifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_DogsBreath,		8, 0.176000, -0.005000, 0.062999, -14.499991, -0.900000, 1.099991, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_StunGun,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_Shield,			1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Mailbox,		1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
@@ -1566,7 +1587,7 @@ public OnGameModeInit()
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7);
 
 
-	DefineItemCombo(ItemType:4,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
+	DefineItemCombo(item_Knife,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
 	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
 
 	DefineItemCombo(item_FireworkBox,	item_PowerSupply,	item_IedBomb);
