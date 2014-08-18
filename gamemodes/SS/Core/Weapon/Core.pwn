@@ -28,9 +28,7 @@ enum // Item array data structure
 static
 			itmw_Data[MAX_ITEM_WEAPON][E_ITEM_WEAPON_DATA],
 			itmw_Total,
-			itmw_ItemTypeWeapon[ITM_MAX_TYPES] = {-1, ...},
-ItemType:	itmw_ItemTypeLowerBound,
-ItemType:	itmw_ItemTypeUpperBound;
+			itmw_ItemTypeWeapon[ITM_MAX_TYPES] = {-1, ...};
 
 static
 			tick_LastReload[MAX_PLAYERS],
@@ -69,12 +67,6 @@ stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvel
 	itmw_Data[itmw_Total][itmw_animSet] = animset;
 
 	itmw_ItemTypeWeapon[itemtype] = itmw_Total;
-
-	if(itemtype < itmw_ItemTypeLowerBound)
-		itmw_ItemTypeLowerBound = itemtype;
-
-	else if(itemtype > itmw_ItemTypeUpperBound)
-		itmw_ItemTypeUpperBound = itemtype;
 
 	return itmw_Total++;
 }
@@ -172,7 +164,7 @@ stock AddAmmoToWeapon(itemid, amount)
 
 stock UpdatePlayerWeaponItem(playerid)
 {
-	d:1:HANDLER("\n[UpdatePlayerWeaponItem]");
+	d:1:HANDLER("[UpdatePlayerWeaponItem]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -184,13 +176,16 @@ stock UpdatePlayerWeaponItem(playerid)
 	itemtype = GetItemType(itemid);
 
 	if(!IsValidItem(itemid))
+	{
+		d:1:HANDLER("[UpdatePlayerWeaponItem] ERROR: Invalid item ID %d", itemid);
 		return 0;
-
-	if(!(itmw_ItemTypeLowerBound < itemtype < itmw_ItemTypeUpperBound))
-		return 0;
+	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
+	{
+		d:1:HANDLER("[UpdatePlayerWeaponItem] ERROR: Item type is not a weapon %d", itmw_ItemTypeWeapon[itemtype]);
 		return 0;
+	}
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
@@ -201,7 +196,7 @@ stock UpdatePlayerWeaponItem(playerid)
 	// Get the item type used as ammo for this weapon item
 	new ItemType:ammoitem = GetItemWeaponItemAmmoItem(itemid);
 
-	// If it's not a valid ammo type, something is wrong.
+	// If it's not a valid ammo type, the gun has no ammo loaded.
 	if(GetItemTypeAmmoType(ammoitem) == -1)
 	{
 		ShowActionText(playerid, "There is no ammo loaded in this weapon", 3000);
@@ -247,7 +242,7 @@ stock UpdatePlayerWeaponItem(playerid)
 
 stock RemovePlayerWeapon(playerid)
 {
-	d:1:HANDLER("\n[RemovePlayerWeapon]");
+	d:1:HANDLER("[RemovePlayerWeapon]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
