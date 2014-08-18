@@ -23,7 +23,7 @@ hook OnGameModeInit()
 	stmt_AliasesFromAll = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE ("FIELD_PLAYER_PASS"=? OR "FIELD_PLAYER_IPV4"=? OR "FIELD_PLAYER_GPCI" = ?) AND "FIELD_PLAYER_ACTIVE"=1 AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
 }
 
-GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
+stock GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
 {
 	new
 		ip,
@@ -31,6 +31,9 @@ GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
 		templevel;
 
 	GetAccountIP(name, ip);
+
+	if(ip == 0)
+		return 0;
 
 	stmt_bind_value(stmt_AliasesFromIp, 0, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_AliasesFromIp, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -66,6 +69,9 @@ stock GetAccountAliasesByPass(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 		templevel;
 
 	GetAccountPassword(name, pass);
+
+	if(isnull(pass))
+		return 0;
 
 	stmt_bind_value(stmt_AliasesFromPass, 0, DB::TYPE_STRING, pass, 129);
 	stmt_bind_value(stmt_AliasesFromPass, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -105,6 +111,9 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 	if(isnull(serial))
 		return 0;
 
+	if(serial[0] == '0')
+		return 0;
+
 	stmt_bind_value(stmt_AliasesFromHash, 0, DB::TYPE_STRING, serial, 41);
 	stmt_bind_value(stmt_AliasesFromHash, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AliasesFromHash, 0, DB::TYPE_STRING, tempname, MAX_PLAYER_NAME);
@@ -114,9 +123,6 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 
 	while(stmt_fetch_row(stmt_AliasesFromHash))
 	{
-		if(serial[0] == '0')
-			continue;
-
 		if(count < max)
 			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
 
@@ -144,6 +150,12 @@ stock GetAccountAliasesByAll(name[], list[][E_ALIAS_DATA], &count, max, &adminle
 		templevel;
 
 	GetAccountAliasData(name, pass, ip, serial);
+
+	if(isnull(serial))
+		return 0;
+
+	if(serial[0] == '0')
+		return 0;
 
 	stmt_bind_value(stmt_AliasesFromAll, 0, DB::TYPE_STRING, pass, sizeof(pass));
 	stmt_bind_value(stmt_AliasesFromAll, 1, DB::TYPE_INTEGER, ip);
