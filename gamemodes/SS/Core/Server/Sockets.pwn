@@ -42,9 +42,10 @@ public onSocketReceiveData(Socket:id, remote_clientid, data[], data_len)
 			command[32],
 			params[96];
 
-		sscanf(data, "s[32]s[96]", command, params);
-
-		CallLocalFunction("OnRemoteCommand", "ss", command, params);
+		if(!sscanf(data, "s[32]s[96]", command, params))
+		{
+			CallLocalFunction("OnRemoteCommand", "ss", command, params);
+		}
 	}
 
 	return 1;
