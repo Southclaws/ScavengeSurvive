@@ -20,6 +20,7 @@ Float:		bod_UIFontSizeX	[MAX_PLAYERS] = {0.2, ...},
 Float:		bod_UIFontSizeY	[MAX_PLAYERS] = {1.0, ...},
 PlayerText:	bod_Header		[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	bod_Background	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+PlayerText:	bod_Footer		[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	bod_BodyPreview	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 
 			bod_Shown		[MAX_PLAYERS],
@@ -79,6 +80,17 @@ CreateBodyPreviewUI(playerid)
 	PlayerTextDrawBoxColor			(playerid, bod_Background[playerid], 128);
 	PlayerTextDrawTextSize			(playerid, bod_Background[playerid], 0.0, bod_UIWidth[playerid]);
 
+	bod_Footer[playerid]			=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid], bod_UIPositionY[playerid] + 202.0, "Not Healthy");
+	PlayerTextDrawAlignment			(playerid, bod_Footer[playerid], 2);
+	PlayerTextDrawFont				(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, bod_Footer[playerid], 0.2, 1.0);
+	PlayerTextDrawColor				(playerid, bod_Footer[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, bod_Footer[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawTextSize			(playerid, bod_Footer[playerid], 0.000000, bod_UIWidth[playerid]);
+
 	bod_BodyPreview[playerid]		=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid] - (bod_UIWidth[playerid] * 0.666666667), bod_UIPositionY[playerid] + 10.0, "~n~");
 	PlayerTextDrawAlignment			(playerid, bod_BodyPreview[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, bod_BodyPreview[playerid], 0x0);
@@ -98,6 +110,7 @@ stock ShowBodyPreviewUI(playerid)
 
 	PlayerTextDrawShow(playerid, bod_Header[playerid]);
 	PlayerTextDrawShow(playerid, bod_Background[playerid]);
+	PlayerTextDrawShow(playerid, bod_Footer[playerid]);
 	PlayerTextDrawShow(playerid, bod_BodyPreview[playerid]);
 
 	bod_Shown[playerid] = true;
@@ -108,6 +121,7 @@ stock HideBodyPreviewUI(playerid)
 	d:1:HANDLER("[HideBodyPreviewUI]");
 	PlayerTextDrawHide(playerid, bod_Header[playerid]);
 	PlayerTextDrawHide(playerid, bod_Background[playerid]);
+	PlayerTextDrawHide(playerid, bod_Footer[playerid]);
 	PlayerTextDrawHide(playerid, bod_BodyPreview[playerid]);
 
 	d:2:HANDLER("[HideBodyPreviewUI] LabelIndex0 %d LabelIndex1 %d", bod_LabelIndex0[playerid], bod_LabelIndex1[playerid]);
@@ -237,9 +251,21 @@ stock SetBodyPreviewUIOffsets(playerid, Float:x, Float:y)
 
 	PlayerTextDrawDestroy(playerid, bod_Header[playerid]);
 	PlayerTextDrawDestroy(playerid, bod_Background[playerid]);
+	PlayerTextDrawDestroy(playerid, bod_Footer[playerid]);
 	PlayerTextDrawDestroy(playerid, bod_BodyPreview[playerid]);
 
 	CreateBodyPreviewUI(playerid);
+
+	return 1;
+}
+
+stock SetBodyPreviewFooterText(playerid, string[])
+{
+	if(!bod_Shown[playerid])
+		return 0;
+
+	PlayerTextDrawSetString(playerid, bod_Footer[playerid], string);
+	PlayerTextDrawShow(playerid, bod_Footer[playerid]);
 
 	return 1;
 }

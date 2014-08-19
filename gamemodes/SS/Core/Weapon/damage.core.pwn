@@ -40,6 +40,9 @@ static
 Iterator:	wnd_Index[MAX_PLAYERS]<MAX_WOUNDS>;
 
 
+forward Float:GetPlayerKnockoutChance(playerid);
+
+
 hook OnPlayerConnect(playerid)
 {
 	dmg_LastHit[playerid][0] = EOS;
@@ -169,6 +172,14 @@ public OnDeath(playerid, killerid, reason)
 #if defined dmg_OnDeath
 	forward dmg_OnDeath(playerid, killerid, reason);
 #endif
+
+stock Float:GetPlayerKnockoutChance(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0.0;
+
+	return (Iter_Count(wnd_Index[playerid]) * (GetPlayerBleedRate(playerid) * 30));
+}
 
 // dmg_LastHit
 stock GetLastHit(playerid, name[MAX_PLAYER_NAME])
