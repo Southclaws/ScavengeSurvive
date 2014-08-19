@@ -28,10 +28,10 @@ hook OnPlayerConnect(playerid)
 {
 	CreatePlayerTile(playerid, GearSlot_Head[0], GearSlot_Head[1], GearSlot_Head[2], 490.0, 120.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
 	CreatePlayerTile(playerid, GearSlot_Face[0], GearSlot_Face[1], GearSlot_Face[2], 560.0, 120.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Hand[0], GearSlot_Hand[1], GearSlot_Hand[2], 490.0, 240.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Hols[0], GearSlot_Hols[1], GearSlot_Hols[2], 560.0, 240.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Tors[0], GearSlot_Tors[1], GearSlot_Tors[2], 490.0, 380.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
-	CreatePlayerTile(playerid, GearSlot_Back[0], GearSlot_Back[1], GearSlot_Back[2], 560.0, 380.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Hand[0], GearSlot_Hand[1], GearSlot_Hand[2], 490.0, 230.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Hols[0], GearSlot_Hols[1], GearSlot_Hols[2], 560.0, 230.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Tors[0], GearSlot_Tors[1], GearSlot_Tors[2], 490.0, 340.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
+	CreatePlayerTile(playerid, GearSlot_Back[0], GearSlot_Back[1], GearSlot_Back[2], 560.0, 340.0, 60.0, 60.0, 0xFFFFFF08, 0xFFFFFFFF);
 
 	PlayerTextDrawSetString(playerid, GearSlot_Head[0], "Head");
 	PlayerTextDrawSetString(playerid, GearSlot_Face[0], "Face");
@@ -70,7 +70,7 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 	PlayerTextDrawColor				(playerid, item, -1);
 	PlayerTextDrawSetOutline		(playerid, item, 1);
 	PlayerTextDrawSetProportional	(playerid, item, 1);
-	PlayerTextDrawTextSize			(playerid, title, height, width - 4);
+	PlayerTextDrawTextSize			(playerid, item, height, width + 10);
 }
 
 ShowPlayerGear(playerid)
