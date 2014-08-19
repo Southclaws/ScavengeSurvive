@@ -33,8 +33,9 @@ static
 static
 			tick_LastReload[MAX_PLAYERS],
 			tick_GetWeaponTick[MAX_PLAYERS],
-Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS];
-
+Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS],
+			itmw_DropItemID[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+Timer:		itmw_DropTimer[MAX_PLAYERS];
 
 /*==============================================================================
 
@@ -46,6 +47,11 @@ Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS];
 hook OnGameModeInit()
 {
 	HANDLER = debug_register_handler("weapon/core");
+}
+
+hook OnPlayerConnect(playerid)
+{
+	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 }
 
 
@@ -199,6 +205,8 @@ stock UpdatePlayerWeaponItem(playerid)
 	// If it's not a valid ammo type, the gun has no ammo loaded.
 	if(GetItemTypeAmmoType(ammoitem) == -1)
 	{
+		ResetPlayerWeapons(playerid);
+		_UpdateWeaponUI(playerid);
 		ShowActionText(playerid, "There is no ammo loaded in this weapon", 3000);
 		return 0;
 	}
@@ -669,7 +677,101 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
+	if(oldkeys & KEY_NO)
+	{
+		d:1:HANDLER("[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
+		if(IsValidItem(itmw_DropItemID[playerid]))
+		{
+			d:1:HANDLER("[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
+			stop itmw_DropTimer[playerid];
+			PlayerDropItem(playerid);
+			itmw_DropItemID[playerid] = INVALID_ITEM_ID;
+		}
+	}
+
 	return 1;
+}
+
+public OnPlayerDropItem(playerid, itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(GetItemTypeWeapon(itemtype) != -1)
+	{
+		if(itmw_DropItemID[playerid] == INVALID_ITEM_ID)
+		{
+			d:1:HANDLER("[OnPlayerDropItem] dropping item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+			itmw_DropItemID[playerid] = itemid;
+			itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, itemid);
+
+			return 1;
+		}
+	}
+
+	#if defined itmw_OnPlayerDropItem
+		return itmw_OnPlayerDropItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerDropItem
+	#undef OnPlayerDropItem
+#else
+	#define _ALS_OnPlayerDropItem
+#endif
+ 
+#define OnPlayerDropItem itmw_OnPlayerDropItem
+#if defined itmw_OnPlayerDropItem
+	forward itmw_OnPlayerDropItem(playerid, itemid);
+#endif
+
+timer _UnloadWeapon[300](playerid, itemid)
+{
+	d:1:HANDLER("[_UnloadWeapon] unloading item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	if(GetPlayerItem(playerid) != itemid)
+	{
+		itmw_DropItemID[playerid] = INVALID_ITEM_ID;
+		return;
+	}
+
+	if(itmw_DropItemID[playerid] != itemid)
+	{
+		itmw_DropItemID[playerid] = INVALID_ITEM_ID;
+		return;
+	}
+
+	new
+		ItemType:ammoitemtype,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r,
+		ammoitemid;
+
+	ammoitemtype = GetItemWeaponItemAmmoItem(itemid);
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
+
+	d:1:HANDLER("[_UnloadWeapon] ammo item type %d amount: %d", _:ammoitemtype, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
+
+	ammoitemid = CreateItem(ammoitemtype,
+		x + (0.5 * floatsin(-r, degrees)),
+		y + (0.5 * floatcos(-r, degrees)),
+		z - FLOOR_OFFSET,
+		_, _, _, FLOOR_OFFSET);
+
+	SetItemExtraData(ammoitemid, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
+
+	SetItemWeaponItemMagAmmo(itemid, 0);
+	SetItemWeaponItemReserve(itemid, 0);
+	SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
+	UpdatePlayerWeaponItem(playerid);
+	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+	ShowActionText(playerid, "Unloaded weapon", 3000);
+
+	return;
 }
 
 public OnItemNameRender(itemid, ItemType:itemtype)
@@ -1059,7 +1161,7 @@ stock SetItemWeaponItemReserve(itemid, amount)
 forward ItemType:GetItemWeaponItemAmmoItem(itemid);
 stock ItemType:GetItemWeaponItemAmmoItem(itemid)
 {
-	d:1:HANDLER("ItemType:GetItemWeaponItemAmmoItem itemid:%d", itemid);
+	d:1:HANDLER("GetItemWeaponItemAmmoItem itemid:%d", itemid);
 	return ItemType:GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
 }
 

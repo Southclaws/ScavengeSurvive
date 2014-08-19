@@ -259,6 +259,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Key text
 #define KEYTEXT_INTERACT			"~k~~VEHICLE_ENTER_EXIT~"
+#define KEYTEXT_RELOAD				"~k~~PED_ANSWER_PHONE~"
 #define KEYTEXT_PUT_AWAY			"~k~~CONVERSATION_YES~"
 #define KEYTEXT_DROP_ITEM			"~k~~CONVERSATION_NO~"
 #define KEYTEXT_INVENTORY			"~k~~GROUP_CONTROL_BWD~"

@@ -36,35 +36,6 @@ ptask ToolTipUpdate[1000](playerid)
 		return;
 	}
 
-	if(GetPlayerWeapon(playerid) > 0)
-	{
-		new inplayerarea;
-
-		ClearToolTipText(playerid);
-
-		foreach(new i : Player)
-		{
-			if(IsPlayerInPlayerArea(playerid, i))
-			{
-				inplayerarea = i;
-				break;
-			}
-		}
-
-		AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Holster weapon");
-
-		if(inplayerarea > -1)
-			AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "Give weapon");
-
-		else
-			AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "Drop weapon");
-
-		AddToolTipText(playerid, KEYTEXT_INVENTORY, "Open inventory");
-		ShowPlayerToolTip(playerid);
-
-		return;
-	}
-
 	new
 		itemid = GetPlayerItem(playerid),
 		invehiclearea = GetPlayerVehicleArea(playerid),
@@ -228,7 +199,27 @@ ptask ToolTipUpdate[1000](playerid)
 		}
 	}
 
-	AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Put away");
+	if(GetItemTypeWeapon(itemtype) != -1)
+	{
+		ClearToolTipText(playerid);
+
+		foreach(new i : Player)
+		{
+			if(IsPlayerInPlayerArea(playerid, i))
+			{
+				inplayerarea = i;
+				break;
+			}
+		}
+
+		AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Holster weapon");
+		AddToolTipText(playerid, KEYTEXT_RELOAD, "Reload");
+		AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "(Hold) Unload");
+	}
+	else
+	{
+		AddToolTipText(playerid, KEYTEXT_PUT_AWAY, "Put away");
+	}
 
 	if(inplayerarea == -1)
 	{

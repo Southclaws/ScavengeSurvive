@@ -30,9 +30,6 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 	if(!IsValidItemType(itemtype))
 		return 0;
 
-	if(GetItemWeaponBaseWeapon(GetItemTypeWeapon(itemtype)) != 0)
-		return 0;
-
 	if(IsPlayerInAnyVehicle(playerid))
 		return 0;
 
@@ -49,6 +46,14 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 		return 0;
 
 	if(GetTickCountDifference(GetTickCount(), anm_AttackTick[playerid]) < 800)
+		return 0;
+
+	new weapontype = GetItemTypeWeapon(itemtype);
+
+	if(weapontype == -1)
+		return 0;
+
+	if(GetItemWeaponBaseWeapon(weapontype) != 0)
 		return 0;
 
 	new
