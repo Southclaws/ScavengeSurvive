@@ -2,6 +2,9 @@
 
 
 static
+		knockout_MaxDuration = 120000;
+
+static
 		knockout_KnockedOut[MAX_PLAYERS],
 		knockout_Tick[MAX_PLAYERS],
 		knockout_Duration[MAX_PLAYERS],
@@ -50,6 +53,7 @@ stock KnockOutPlayer(playerid, duration)
 		knockout_Duration[playerid] = duration;
 		knockout_KnockedOut[playerid] = true;
 
+
 		foreach(new i : veh_Index)
 			SetVehicleParamsForPlayer(i, playerid, 0, 1);
 
@@ -59,6 +63,8 @@ stock KnockOutPlayer(playerid, duration)
 		knockout_Timer[playerid] = repeat KnockOutUpdate(playerid);
 	}
 
+	if(knockout_Duration[playerid] > knockout_MaxDuration)
+		knockout_Duration[playerid] = knockout_MaxDuration;
 
 	return 1;
 }
@@ -189,10 +195,4 @@ stock IsPlayerKnockedOut(playerid)
 		return 0;
 
 	return knockout_KnockedOut[playerid];
-}
-
-ACMD:knockout[4](playerid, params[])
-{
-	KnockOutPlayer(playerid, strval(params));
-	return 1;
 }

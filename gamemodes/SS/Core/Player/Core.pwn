@@ -321,17 +321,20 @@ ptask PlayerUpdate[100](playerid)
 				PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], floatround((40.0 - ply_Data[playerid][ply_HitPoints]) * 4.4));
 				PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
 
-				if(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)) > 5000 * ply_Data[playerid][ply_HitPoints])
+				if(!IsPlayerKnockedOut(playerid))
 				{
-					if(GetPlayerBleedRate(playerid) > 0.0)
+					if(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)) > 5000 * ply_Data[playerid][ply_HitPoints])
 					{
-						if(frandom(40.0) < (50.0 - ply_Data[playerid][ply_HitPoints]))
-							KnockOutPlayer(playerid, floatround(2000 * (50.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (50.0 - ply_Data[playerid][ply_HitPoints]))));
-					}
-					else
-					{
-						if(frandom(40.0) < (40.0 - ply_Data[playerid][ply_HitPoints]))
-							KnockOutPlayer(playerid, floatround(2000 * (40.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (40.0 - ply_Data[playerid][ply_HitPoints]))));
+						if(GetPlayerBleedRate(playerid) > 0.0)
+						{
+							if(frandom(40.0) < (50.0 - ply_Data[playerid][ply_HitPoints]))
+								KnockOutPlayer(playerid, floatround(2000 * (50.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (50.0 - ply_Data[playerid][ply_HitPoints]))));
+						}
+						else
+						{
+							if(frandom(40.0) < (40.0 - ply_Data[playerid][ply_HitPoints]))
+								KnockOutPlayer(playerid, floatround(2000 * (40.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (40.0 - ply_Data[playerid][ply_HitPoints]))));
+						}
 					}
 				}
 			}

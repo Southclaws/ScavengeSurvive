@@ -344,6 +344,9 @@ LoadPlayerChar(playerid)
 	if(data[PLY_CELL_BLEEDING] == 1)
 		data[PLY_CELL_BLEEDING] = _:Float:0.01;
 
+	if(Float:data[PLY_CELL_BLEEDING] > 1.0)
+		data[PLY_CELL_BLEEDING] = _:(Float:data[PLY_CELL_BLEEDING] / 10.0);
+
 	SetPlayerStance(playerid, data[PLY_CELL_STANCE]);
 	SetPlayerBleedRate(playerid, Float:data[PLY_CELL_BLEEDING]);
 	SetPlayerCuffs(playerid, data[PLY_CELL_CUFFED]);

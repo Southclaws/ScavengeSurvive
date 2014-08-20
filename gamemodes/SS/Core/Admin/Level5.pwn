@@ -87,6 +87,14 @@ ACMD:unloadfs[5](playerid, params[])
 	return 1;
 }
 
+
+/*==============================================================================
+
+	Testing stuff
+
+==============================================================================*/
+
+
 ACMD:hud[5](playerid, params[])
 {
 	if(GetPlayerBitFlag(playerid, ShowHUD))
@@ -147,5 +155,54 @@ ACMD:gotodef[4](playerid, params[])
 	GetDefencePos(id, x, y, z);
 	SetPlayerPos(playerid, x, y, z);
 
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Dev-"cheats"
+
+==============================================================================*/
+
+
+ACMD:health[5](playerid, params[])
+{
+	SetPlayerHP(playerid, floatstr(params));
+	MsgF(playerid, YELLOW, "Set health to %f", floatstr(params));
+	return 1;
+}
+
+ACMD:food[5](playerid, params[])
+{
+	SetPlayerFP(playerid, floatstr(params));
+	MsgF(playerid, YELLOW, "Set food to %f", floatstr(params));
+	return 1;
+}
+
+ACMD:bleed[5](playerid, params[])
+{
+	SetPlayerBleedRate(playerid, floatstr(params));
+	MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
+	return 1;
+}
+
+ACMD:knockout[5](playerid, params[])
+{
+	KnockOutPlayer(playerid, strval(params));
+	MsgF(playerid, YELLOW, "Set knockout time to %d", strval(params));
+	return 1;
+}
+
+ACMD:showdamage[5](playerid, params[])
+{
+	ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", GetPlayerBleedRate(playerid), GetPlayerWounds(playerid)), 5000);
+	return 1;
+}
+
+ACMD:removewounds[5](playerid, params[])
+{
+	RemovePlayerWounds(playerid, strval(params));
+	MsgF(playerid, YELLOW, "Removed %d wounds.", strval(params));
 	return 1;
 }

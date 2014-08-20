@@ -6,24 +6,24 @@ static
 Float:	bld_BleedRate[MAX_PLAYERS];
 
 
-ptask BleedUpdate[1000](playerid)
+ptask BleedUpdate[100](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
 		return;
 
 	if(bld_BleedRate[playerid] > 0.0)
 	{
-		if(random(100) < 60)
-			GivePlayerHP(playerid, -bld_BleedRate[playerid]);
+		if(frandom(1.0) < 0.7)
+			GivePlayerHP(playerid, -bld_BleedRate[playerid] * 10);
 
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 		{
-			if(frandom(4.0) < 4.0 - (bld_BleedRate[playerid] * 10.0))
+			if(frandom(1.0) < 1.0 - bld_BleedRate[playerid])
 				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 		}
 		else
 		{
-			if(frandom(4.0) < (bld_BleedRate[playerid] * 10.0))
+			if(frandom(1.0) < bld_BleedRate[playerid])
 				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
 		}
 	}
@@ -63,10 +63,4 @@ stock Float:GetPlayerBleedRate(playerid)
 		return 0.0;
 
 	return bld_BleedRate[playerid];
-}
-
-ACMD:bleed[4](playerid, params[])
-{
-	SetPlayerBleedRate(playerid, floatstr(params));
-	return 1;
 }

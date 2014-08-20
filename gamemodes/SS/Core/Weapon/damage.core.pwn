@@ -101,8 +101,8 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	totalbleedrate += bleedrate;
 	d:2:FIREARM_DEBUG("[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
 
-	// Truncate result to 10.0
-	totalbleedrate = totalbleedrate > 10.0 ? 10.0 : totalbleedrate;
+	// Truncate result to 1.0
+	totalbleedrate = totalbleedrate > 1.0 ? 1.0 : totalbleedrate;
 
 	SetPlayerBleedRate(targetid, totalbleedrate);
 	GivePlayerHP(targetid, -(bleedrate * 10.0));
@@ -454,22 +454,3 @@ public OnPlayerLoad(playerid, filename[])
 #if defined dmg_OnPlayerLoad
 	forward dmg_OnPlayerLoad(playerid, filename[]);
 #endif
-
-
-ACMD:showdamage[4](playerid, params[])
-{
-	ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", GetPlayerBleedRate(playerid), Iter_Count(wnd_Index[playerid])), 5000);
-	return 1;
-}
-ACMD:removewounds[4](playerid, params[])
-{
-	RemovePlayerWounds(playerid, strval(params));
-	MsgF(playerid, YELLOW, "Removed %d wounds.", strval(params));
-	return 1;
-}
-ACMD:setbleed[4](playerid, params[])
-{
-	SetPlayerBleedRate(playerid, floatstr(params));
-	MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
-	return 1;
-}

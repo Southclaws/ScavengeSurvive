@@ -1386,12 +1386,12 @@ public OnGameModeInit()
 // 2590 - SPIKEY HOOK, SCHYTHE?
 
 	//									name		bleedrate
-	calibre_9mm		= DefineAmmoCalibre("9mm",		0.15);
-	calibre_50c		= DefineAmmoCalibre(".50",		0.23);
-	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.31);
-	calibre_556		= DefineAmmoCalibre("5.56mm",	0.19);
-	calibre_357		= DefineAmmoCalibre(".357",		0.36);
-	calibre_762		= DefineAmmoCalibre("7.62",		0.30);
+	calibre_9mm		= DefineAmmoCalibre("9mm",		0.015);
+	calibre_50c		= DefineAmmoCalibre(".50",		0.023);
+	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.031);
+	calibre_556		= DefineAmmoCalibre("5.56mm",	0.019);
+	calibre_357		= DefineAmmoCalibre(".357",		0.036);
+	calibre_762		= DefineAmmoCalibre("7.62",		0.032);
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0);
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0);
 	calibre_film	= DefineAmmoCalibre("Film",		0.0);
@@ -1439,30 +1439,30 @@ public OnGameModeInit()
 	*/
 
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
-	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.01,			_:1.20,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.03,			_:1.25,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.02,			_:1.30,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.18,			_:1.30,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.08,			_:1.25,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Wrench,			0,							NO_CALIBRE,		0.001,			_:1.20,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			0,							NO_CALIBRE,		0.003,			_:1.25,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			0,							NO_CALIBRE,		0.002,			_:1.30,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				0,							NO_CALIBRE,		0.018,			_:1.30,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Cane,				0,							NO_CALIBRE,		0.008,			_:1.25,	0,		anim_Blunt);
 	DefineItemTypeWeapon(item_StunGun,			0,							NO_CALIBRE,		0.0,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.24,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Screwdriver,		0,							NO_CALIBRE,		0.024,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Mailbox,			0,							NO_CALIBRE,		0.0,			_:1.40,	0,		anim_Heavy);
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
-	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.05,			20,		0);
-	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.07,			35,		0);
-	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.03,			24,		0);
-	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.35,			14,		0);
-	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.09,			35,		0);
-	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.21,			40,		0);
-	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.08,			37,		0);
-	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.44,			15,		0);
-	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.93,			19,		0);
+	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		NO_CALIBRE,		0.005,			20,		0);
+	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			NO_CALIBRE,		0.007,			35,		0);
+	DefineItemTypeWeapon(item_Baton,			WEAPON_NITESTICK,			NO_CALIBRE,		0.003,			24,		0);
+	DefineItemTypeWeapon(item_Knife,			WEAPON_KNIFE,				NO_CALIBRE,		0.035,			14,		0);
+	DefineItemTypeWeapon(item_Bat,				WEAPON_BAT,					NO_CALIBRE,		0.009,			35,		0);
+	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				NO_CALIBRE,		0.021,			40,		0);
+	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			NO_CALIBRE,		0.008,			37,		0);
+	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				NO_CALIBRE,		0.044,			15,		0);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			NO_CALIBRE,		0.093,			19,		0);
 	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Dildo4,			WEAPON_VIBRATOR2,			NO_CALIBRE,		0.001,			0,		0);
 	DefineItemTypeWeapon(item_Flowers,			WEAPON_FLOWER,				NO_CALIBRE,		0.001,			0,		0);
-	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.06,			24,		0);
+	DefineItemTypeWeapon(item_WalkingCane,		WEAPON_CANE,				NO_CALIBRE,		0.006,			24,		0);
 	DefineItemTypeWeapon(item_Grenade,			WEAPON_GRENADE,				NO_CALIBRE,		0.0,			0,		0);
 	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				NO_CALIBRE,		0.0,			0,		0);
 	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				NO_CALIBRE,		0.0,			0,		0);
