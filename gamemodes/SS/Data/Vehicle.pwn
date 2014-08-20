@@ -34,8 +34,8 @@ public OnLoad()
 	DefineVehicleType(480, "Comet",				vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	50.0,		12.0,	loot_CarCivilian,		12,		10.0);
 	DefineVehicleType(510, "Mountain Bike",		vgroup_Civilian,	VEHICLE_CATEGORY_PUSHBIKE,		VEHICLE_SIZE_SMALL,		0.0,		0.0,	loot_CarCivilian,		1,		25.0);
 	DefineVehicleType(586, "Wayfarer",			vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		47.0,		8.0,	loot_Survivor,			16,		20.0);
-	DefineVehicleType(520, "Hydra",				vgroup_Military,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_LARGE,		7790.0,		333.9,	-1,						0,		0.18);
-	DefineVehicleType(432, "Rhino",				vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		1900.0,		392.0,	loot_CarMilitary,		8,		0.22);
+	DefineVehicleType(520, "Hydra",				vgroup_Military,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_LARGE,		7790.0,		333.9,	-1,						0,		0.00);
+	DefineVehicleType(432, "Rhino",				vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		1900.0,		392.0,	loot_CarMilitary,		8,		0.01);
 	DefineVehicleType(433, "Barracks",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		200.0,		77.0,	loot_CarMilitary,		22,		40.0);
 	DefineVehicleType(470, "Patriot",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	94.0,		26.0,	loot_CarMilitary,		12,		50.0);
 // 10

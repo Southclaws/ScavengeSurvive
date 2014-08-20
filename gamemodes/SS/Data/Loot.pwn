@@ -323,8 +323,8 @@ public OnLoad()
 	AddItemToLootIndex(loot_Survivor,		item_Ammo357,						7.0);
 	AddItemToLootIndex(loot_Survivor,		item_CanDrink,						90.0);
 	AddItemToLootIndex(loot_Survivor,		item_Ammo762,						3.0);
-	AddItemToLootIndex(loot_Survivor,		item_AK47Rifle,						1.0);
-	AddItemToLootIndex(loot_Survivor,		item_DogsBreath,					0.5);
+	AddItemToLootIndex(loot_Survivor,		item_AK47Rifle,						0.1);
+	AddItemToLootIndex(loot_Survivor,		item_DogsBreath,					0.05);
 
 	AddItemToLootIndex(loot_SupplyCrate,	item_Medkit,						40.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_Bandage,						50.0);
