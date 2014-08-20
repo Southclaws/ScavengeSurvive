@@ -3,7 +3,7 @@
 
 #define MAX_WEPCACHE_LOCATIONS			(256)
 #define WEPCACHE_INTERVAL				(1500000 + random(600000)) // 25 minutes + random 10 minutes
-#define WEPCACHE_SIGNAL_INTERVAL		(200000)
+#define WEPCACHE_SIGNAL_INTERVAL		1000//(200000)
 
 
 enum E_WEPCACHE_LOCATION_DATA
@@ -16,6 +16,9 @@ Float:	wepc_posZ
 static
 Float:		wepc_DropLocationData[MAX_WEPCACHE_LOCATIONS][E_WEPCACHE_LOCATION_DATA],
 Iterator:	wepc_Index<MAX_WEPCACHE_LOCATIONS>,
+Float:		wepc_CurrentPosX,
+Float:		wepc_CurrentPosY,
+Float:		wepc_CurrentPosZ,
 			webc_ActiveDrop = -1;
 
 
@@ -107,6 +110,10 @@ WeaponsCacheDrop(Float:x, Float:y, Float:z)
 
 	CreateDynamicObject(964, x, y, z - 0.0440, 0.0, 0.0, 0.0, .streamdistance = 1000.0, .drawdistance = 1000.0);
 
+	wepc_CurrentPosX = x;
+	wepc_CurrentPosY = y;
+	wepc_CurrentPosZ = z;
+
 	FillContainerWithLoot(
 		CreateContainer("Supply Crate", 8, x, y - 0.5, z + 1.0),
 		4 + random(5), loot_Military);
@@ -121,7 +128,9 @@ timer WeaponsCacheSignal[WEPCACHE_SIGNAL_INTERVAL](count, Float:x, Float:y, Floa
 	// Gets a random supply drop location and uses it as a reference point.
 	// Announces the angle and distance from that location to the weapons cache.
 	new
-		location = random(GetTotalSupplyDropLocations()),
+		locationlist[MAX_SUPPLY_DROP_LOCATIONS],
+		idx,
+		location,
 		name[MAX_SUPPLY_DROP_LOCATION_NAME],
 		Float:ref_x,
 		Float:ref_y,
@@ -129,29 +138,42 @@ timer WeaponsCacheSignal[WEPCACHE_SIGNAL_INTERVAL](count, Float:x, Float:y, Floa
 		Float:angleto,
 		Float:distanceto;
 
-	GetSupplyDropLocationName(location, name);
-	GetSupplyDropLocationPos(location, ref_x, ref_y, ref_z);
+	for(new i, j = random(GetTotalSupplyDropLocations()); i < j; i++)
+	{
+		GetSupplyDropLocationPos(i, ref_x, ref_y, ref_z);
 
-	angleto = absoluteangle(360 - GetAngleToPoint(ref_x, ref_y, x, y));
-	distanceto = Distance2D(ref_x, ref_y, x, y);
+		if(Distance(ref_x, ref_y, ref_z, wepc_CurrentPosX, wepc_CurrentPosY, wepc_CurrentPosZ) < 1000.0)
+		{
+			locationlist[idx++] = i;
+		}
+	}
 
-	MsgAllF(YELLOW, " >  [EBS]: WEAPONS CACHE SIGNAL: BEARING: %.1fDEG DISTANCE: %.1fM FROM: '%s'", angleto, distanceto, name);
+	if(idx > 0)
+	{
+		location = locationlist[random(idx)];
+
+		GetSupplyDropLocationName(location, name);
+		GetSupplyDropLocationPos(location, ref_x, ref_y, ref_z);
+
+		angleto = absoluteangle(360 - GetAngleToPoint(ref_x, ref_y, x, y));
+		distanceto = Distance2D(ref_x, ref_y, x, y);
+
+		MsgAllF(YELLOW, " >  [EBS]: WEAPONS CACHE SIGNAL: BEARING: %.1fDEG DISTANCE: %.1fM FROM: '%s'", angleto, distanceto, name);
+	}
+	else
+	{
+		print("ERROR: No reference point found.");
+		return;
+	}
 
 	if(count < 3)
 	{
 		defer WeaponsCacheSignal(count + 1, x, y, z);
+	}
+	else
+	{
 		webc_ActiveDrop = -1;
 	}
-}
 
-ACMD:wc[4](playerid, params[])
-{
-	new
-		Float:x, Float:y, Float:z;
-
-	GetPlayerPos(playerid, x, y, z);
-
-	WeaponsCacheDrop(x, y, z);
-
-	return 1;
+	return;
 }

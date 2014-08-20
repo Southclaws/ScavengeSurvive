@@ -206,3 +206,18 @@ ACMD:removewounds[5](playerid, params[])
 	MsgF(playerid, YELLOW, "Removed %d wounds.", strval(params));
 	return 1;
 }
+
+ACMD:wc[5](playerid, params[])
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+	WeaponsCacheDrop(x, y, z - 0.8);
+	SetPlayerPos(playerid, x, y, z + 1.0);
+
+	return 1;
+}
