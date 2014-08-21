@@ -14,7 +14,7 @@ ptask BleedUpdate[100](playerid)
 	if(bld_BleedRate[playerid] > 0.0)
 	{
 		if(frandom(1.0) < 0.7)
-			GivePlayerHP(playerid, -bld_BleedRate[playerid] * 10);
+			GivePlayerHP(playerid, -bld_BleedRate[playerid]);
 
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 		{
