@@ -1,7 +1,12 @@
 #include <YSI\y_hooks>
 
 
-static Socket:socket;
+#define MAX_SOCKET_CONNECTIONS (10)
+
+
+static
+Socket:	socket,
+Timer:	timeout[MAX_SOCKET_CONNECTIONS];
 
 
 forward OnRemoteCommand(command[], params[]);
@@ -18,7 +23,7 @@ hook OnGameModeInit()
 	}
 
 	socket_bind(socket, "localhost");
-	socket_set_max_connections(socket, 1);
+	socket_set_max_connections(socket, MAX_SOCKET_CONNECTIONS);
 
 	socket_listen(socket, 7778);
 
@@ -31,8 +36,25 @@ hook OnGameModeExit()
 	socket_destroy(socket);
 }
 
+public onSocketRemoteConnect(Socket:id, remote_client[], remote_clientid)
+{
+	printf("[onSocketRemoteConnect] id:%d remote_client:%s, remote_clientid:%d", _:id, remote_client, remote_clientid);
+	timeout[remote_clientid] = defer socket_timeout(remote_clientid);
+	return 1;
+}
+
+public onSocketRemoteDisconnect(Socket:id, remote_clientid)
+{
+	printf("[onSocketRemoteDisconnect] id:%d remote_clientid:%d", _:id, remote_clientid);
+	return 1;
+}
+
+
 public onSocketReceiveData(Socket:id, remote_clientid, data[], data_len)
 {
+	stop timeout[remote_clientid];
+	timeout[remote_clientid] = defer socket_timeout(remote_clientid);
+
 	if(id == socket)
 	{
 		if(data[0] == EOS)
@@ -65,4 +87,10 @@ public OnRemoteCommand(command[], params[])
 		else
 			socket_sendto_remote_client(socket, 0, "false");
 	}
+}
+
+timer socket_timeout[10000](remote_clientid)
+{
+	printf("[socket_timeout] id:%d remote_clientid:%d", _:socket, remote_clientid);
+	socket_close_remote_client(socket, remote_clientid);
 }
