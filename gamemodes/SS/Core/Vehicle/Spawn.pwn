@@ -246,10 +246,16 @@ LoadVehiclesFromFile(file[], prints)
 				veh_SpawnData[count][vspawn_group] = GetVehicleGroupFromName(group);
 
 			if(veh_SpawnData[count][vspawn_group] != -1)
+			{
 				type = PickRandomVehicleTypeFromGroup(veh_SpawnData[count][vspawn_group], veh_SpawnData[count][vspawn_categories], maxcategories, veh_SpawnData[count][vspawn_sizes], maxsizes);
-
+			}
 			else
+			{
 				type = GetVehicleTypeFromName(group);
+
+				if(!(frandom(100.0) < GetVehicleTypeSpawnChance(type)))
+					continue;
+			}
 
 			if(!IsValidVehicleType(type))
 			{
