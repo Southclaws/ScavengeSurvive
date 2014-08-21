@@ -26,7 +26,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetShadow			(playerid, spec_Name, 1);
 	PlayerTextDrawUseBox			(playerid, spec_Name, 1);
 	PlayerTextDrawBoxColor			(playerid, spec_Name, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Name, 100.000000, 240.000000);
+	PlayerTextDrawTextSize			(playerid, spec_Name, 100.000000, 300.000000);
 
 	spec_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
 	PlayerTextDrawAlignment			(playerid, spec_Info, 2);
@@ -39,7 +39,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetShadow			(playerid, spec_Info, 1);
 	PlayerTextDrawUseBox			(playerid, spec_Info, 1);
 	PlayerTextDrawBoxColor			(playerid, spec_Info, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 240.000000);
+	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 300.000000);
 }
 
 hook OnPlayerDisconnect(playerid)
@@ -203,7 +203,9 @@ timer UpdateSpectateMode[100](playerid)
 			invehicleas = "Passenger";
 
 		itemid = GetPlayerItem(targetid);
-		GetItemName(itemid, itemname);
+		if(!GetItemName(itemid, itemname))
+			itemname = "None";
+
 		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
@@ -238,10 +240,12 @@ timer UpdateSpectateMode[100](playerid)
 			Float:velocity;
 
 		itemid = GetPlayerItem(targetid);
-		GetItemName(itemid, itemname);
+		if(!GetItemName(itemid, itemname))
+			itemname = "None";
 
 		holsteritemid = GetPlayerHolsterItem(targetid);
-		GetItemName(holsteritemid, holsteritemname);
+		if(!GetItemName(holsteritemid, holsteritemname))
+			holsteritemname = "None";
 
 		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 		GetPlayerVelocity(targetid, vx, vy, vz);
