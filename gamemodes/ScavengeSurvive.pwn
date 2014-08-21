@@ -35,6 +35,7 @@ native gpci(playerid, serial[], len);
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
 #define MAX_MODIO_SESSION				(1024) // modio
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
+#define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
 //	#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
@@ -423,14 +424,16 @@ enum
 // AMMO CALIBRES
 new
 				calibre_9mm,
-				calibre_50c,
+				calibre_50cae,
 				calibre_12g,
 				calibre_556,
 				calibre_357,
 				calibre_762,
 				calibre_rpg,
 				calibre_fuel,
-				calibre_film;
+				calibre_film,
+				calibre_50bmg,
+				calibre_308;
 
 // ITEM TYPES
 new stock
@@ -642,7 +645,12 @@ ItemType:		item_Ammo357Tracer	= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo762		= INVALID_ITEM_TYPE,
 ItemType:		item_AK47Rifle		= INVALID_ITEM_TYPE,
 ItemType:		item_M77RMRifle		= INVALID_ITEM_TYPE,
-ItemType:		item_DogsBreath		= INVALID_ITEM_TYPE;
+ItemType:		item_DogsBreath		= INVALID_ITEM_TYPE,
+// 190
+ItemType:		item_Ammo50BMG		= INVALID_ITEM_TYPE,
+ItemType:		item_Ammo308		= INVALID_ITEM_TYPE,
+ItemType:		item_Model70Rifle	= INVALID_ITEM_TYPE,
+ItemType:		item_LenKnocksRifle	= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -1181,6 +1189,11 @@ public OnGameModeInit()
 	item_AK47Rifle		= DefineItemType("AK-47",				355,	ITEM_SIZE_LARGE,	90.0);
 	item_M77RMRifle		= DefineItemType("M77-RM",				357,	ITEM_SIZE_LARGE,	90.0);
 	item_DogsBreath		= DefineItemType("Dog's Breath",		2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
+// 190
+	item_Ammo50BMG		= DefineItemType(".50 Rounds",			2037,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo308		= DefineItemType(".308 Rounds",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Model70Rifle	= DefineItemType("Model 70",			358,	ITEM_SIZE_LARGE,	90.0);
+	item_LenKnocksRifle	= DefineItemType("The Len-Knocks",		358,	ITEM_SIZE_LARGE,	90.0);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1372,6 +1385,10 @@ public OnGameModeInit()
 	SetItemTypeMaxArrayData(item_AK47Rifle,		4);
 	SetItemTypeMaxArrayData(item_M77RMRifle,	4);
 	SetItemTypeMaxArrayData(item_DogsBreath,	4);
+	SetItemTypeMaxArrayData(item_Ammo50BMG,		1);
+	SetItemTypeMaxArrayData(item_Ammo308,		1);
+	SetItemTypeMaxArrayData(item_Model70Rifle,	4);
+	SetItemTypeMaxArrayData(item_LenKnocksRifle,4);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1387,7 +1404,7 @@ public OnGameModeInit()
 
 	//									name		bleedrate
 	calibre_9mm		= DefineAmmoCalibre("9mm",		0.015);
-	calibre_50c		= DefineAmmoCalibre(".50",		0.023);
+	calibre_50cae	= DefineAmmoCalibre(".50",		0.073);
 	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.031);
 	calibre_556		= DefineAmmoCalibre("5.56mm",	0.019);
 	calibre_357		= DefineAmmoCalibre(".357",		0.036);
@@ -1395,6 +1412,8 @@ public OnGameModeInit()
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0);
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0);
 	calibre_film	= DefineAmmoCalibre("Film",		0.0);
+	calibre_50bmg	= DefineAmmoCalibre(".50",		0.073);
+	calibre_308		= DefineAmmoCalibre(".308",		0.043);
 
 	anim_Blunt		= DefineAnimSet();
 	anim_Stab		= DefineAnimSet();
@@ -1492,7 +1511,10 @@ public OnGameModeInit()
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_762,	715.0,			30,		1);
 	DefineItemTypeWeapon(item_M77RMRifle,		WEAPON_RIFLE,				calibre_357,	823.0,			1,		9);
-	DefineItemTypeWeapon(item_DogsBreath,		WEAPON_DEAGLE,				calibre_762,	1398.6,			1,		9);
+	DefineItemTypeWeapon(item_DogsBreath,		WEAPON_DEAGLE,				calibre_50bmg,	1398.6,			1,		9);
+	DefineItemTypeWeapon(item_Model70Rifle,		WEAPON_SNIPER,				calibre_308,	860.6,			1,		9);
+	DefineItemTypeWeapon(item_LenKnocksRifle,	WEAPON_SNIPER,				calibre_50bmg,	938.5,			1,		4);
+
 	/*
 		name - the additional name given to the ammunition item. This is used to
 		format the full item name or weapon name which includes the amount of
@@ -1525,7 +1547,7 @@ public OnGameModeInit()
 	*/
 	//					itemtype				name				calibre			bld		ko		pen		size
 	DefineItemTypeAmmo(item_Ammo9mm,			"Hollow Point",		calibre_9mm,	1.0,	1.0,	0.2,	20);
-	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50c,	1.0,	1.0,	0.9,	28);
+	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50cae,	1.0,	1.0,	0.9,	28);
 	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.0,	1.0,	0.5,	24);
 	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.0,	1.0,	0.8,	30);
 	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.0,	1.0,	0.9,	10);
@@ -1538,6 +1560,8 @@ public OnGameModeInit()
 	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.5,	0.4,	30);
 	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
 	DefineItemTypeAmmo(item_Ammo762,			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30);
+	DefineItemTypeAmmo(item_Ammo50BMG,			"BMG",				calibre_50bmg,	2.0,	2.0,	1.0,	16);
+	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.0,	1.0,	0.8,	10);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
@@ -1620,6 +1644,7 @@ public OnGameModeInit()
 	DefineItemCombo(item_Key,			item_Motor,			item_LocksmithKit);
 	DefineItemCombo(item_Motor,			item_Fluctuator,	item_StarterMotor);
 	DefineItemCombo(item_IoUnit,		item_PowerSupply,	item_AdvancedKeypad);
+	DefineItemCombo(item_Knife,			item_Clothes,		item_Bandage,		.returnitem1 = 0, .returnitem2 = 1);
 	//WriteAllCombosToFile();
 
 
