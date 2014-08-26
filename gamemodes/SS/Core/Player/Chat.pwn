@@ -130,6 +130,35 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 				SendClientMessage(i, WHITE, line2);
 		}
 	}
+	if(frequency == 2.0)
+	{
+		logf("[CHAT] [LOCALME] [%p]: %s", playerid, chat);
+
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(playerid, x, y, z);
+
+		format(line1, 256, "[Local] %P %s",
+			playerid,
+			playerid,
+			TagScan(chat));
+
+		TruncateChatMessage(line1, line2);
+
+		foreach(new i : Player)
+		{
+			if(IsPlayerInRangeOfPoint(i, 40.0, x, y, z))
+			{
+				SendClientMessage(i, CHAT_LOCAL, line1);
+
+				if(!isnull(line2))
+					SendClientMessage(i, CHAT_LOCAL, line2);
+			}
+		}
+	}
 	else
 	{
 		logf("[CHAT] [RADIO] [%p]: %s", playerid, chat);
@@ -196,6 +225,11 @@ CMD:l(playerid, params[])
 	}
 
 	return 7;
+}
+
+CMD:me(playerid, params[])
+{
+		PlayerSendChat(playerid, params, 2.0);
 }
 
 CMD:r(playerid, params[])
