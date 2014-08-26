@@ -209,13 +209,13 @@ timer UpdateSpectateMode[100](playerid)
 		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleed rate: %02f Item: %s Exdata: %d~n~\
+			Knockout: %s Bleed rate: %02f Item: %s Exdata: %d~n~\
 			Camera: %s Velocity: %.2f~n~\
 			Vehicle %d As %s Fuel: %.2f Locked: %d",
 			GetPlayerHP(targetid),
 			GetPlayerAP(targetid),
 			GetPlayerFP(targetid),
-			IsPlayerKnockedOut(targetid) ? 1 : 0,
+			MsToString(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)), "%m:%s"),
 			GetPlayerBleedRate(targetid),
 			itemname,
 			GetItemExtraData(itemid),
@@ -253,12 +253,12 @@ timer UpdateSpectateMode[100](playerid)
 		velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 
 		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f~n~\
-			Knockedout: %d Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
+			Knockout: %s Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
 			Item: %s Exdata: %d Holster: %s Exdata: %d",
 			GetPlayerHP(targetid),
 			GetPlayerAP(targetid),
 			GetPlayerFP(targetid),
-			IsPlayerKnockedOut(targetid) ? 1 : 0,
+			MsToString(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)), "%m:%s"),
 			GetPlayerBleedRate(targetid),
 			cameramodename,
 			velocity,

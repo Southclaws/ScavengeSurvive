@@ -196,15 +196,27 @@ PlayerSpawnNewCharacter(playerid, gender)
 	PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
 
 	backpackitem = CreateItem(item_Satchel);
-	containerid = GetItemExtraData(backpackitem);
+	containerid = GetItemArrayDataAtCell(backpackitem, 1);
 
 	GivePlayerBag(playerid, backpackitem);
 
 	tmpitem = CreateItem(item_Wrench);
 	AddItemToContainer(containerid, tmpitem);
 
+	tmpitem = CreateItem(item_Bandage);
+	AddItemToContainer(containerid, tmpitem);
+
 	if(GetPlayerBitFlag(playerid, IsNewPlayer))
+	{
 		Tutorial_Start(playerid);
+
+		tmpitem = CreateItem(item_M9Pistol);
+		AddItemToContainer(containerid, tmpitem);
+
+		tmpitem = CreateItem(item_Ammo9mmFMJ);
+		SetItemExtraData(tmpitem, 5);
+		AddItemToContainer(containerid, tmpitem);
+	}
 
 	SetPlayerScreenFadeLevel(playerid, 255);
 

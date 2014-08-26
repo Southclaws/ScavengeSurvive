@@ -16,7 +16,7 @@ enum E_FLAGS:(<<= 1) // 17
 		Alive,
 		Dying,
 		Spawned,
-		FirstSpawn,
+		FirstSpawn, // TODO: fix this value
 
 		ToolTips,
 		ShowHUD,
