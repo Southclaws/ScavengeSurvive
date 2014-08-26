@@ -2,6 +2,6 @@
 *.exe
 *.amx
 *.RDP
-
+scriptfiles/
 server_log.txt
 server.cfg
