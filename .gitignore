@@ -1,0 +1,7 @@
+*.dll
+*.exe
+*.amx
+*.RDP
+
+server_log.txt
+server.cfg
