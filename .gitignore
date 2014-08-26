@@ -5,3 +5,6 @@
 scriptfiles/
 server_log.txt
 server.cfg
+start.bat
+*.sublime-workspace
+*.sublime-project

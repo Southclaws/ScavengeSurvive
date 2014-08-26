@@ -456,8 +456,13 @@ _ReloadWeapon(playerid)
 	if(reserveammo == 0)
 	{
 		d:1:HANDLER("no reserve ammo left to reload with");
-		SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
-		ResetPlayerWeapons(playerid);
+
+		if(magammo == 0)
+		{
+			SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
+			ResetPlayerWeapons(playerid);
+		}
+
 		return 0;
 	}
 
