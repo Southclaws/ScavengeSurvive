@@ -1,5 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'policecap'...");
+
 	new tmp;
 
 	tmp = DefineHatItem(item_PoliceCap);
@@ -23,19 +28,4 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_Civ4F, 0.138999, 0.044999, 0.001000,  0.000000, 90.000000, 90.000000,  1.173999, 1.124000, 1.200000); // 193
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.138999, 0.048999, 0.001000,  0.000000, 90.000000, 90.000000,  1.275000, 1.187000, 1.366999); // 191
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.111999, 0.054999, 0.000000,  0.000000, 90.000000, 88.099945,  1.145000, 1.043002, 1.070000); // 131
-
-	#if defined pcap_OnLoad
-		return pcap_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad pcap_OnLoad
-#if defined pcap_OnLoad
-	forward pcap_OnLoad();
-#endif

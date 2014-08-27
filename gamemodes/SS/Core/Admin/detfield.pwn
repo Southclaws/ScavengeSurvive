@@ -637,8 +637,10 @@ UpdateDetectionFieldExceptions(detfieldid)
 	return stmt_execute(det_Stmt_DetfieldSetExcps);
 }
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'detfield'...");
+
 	det_Database = db_open_persistent(DETFIELD_DATABASE);
 
 	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_MAIN" (\

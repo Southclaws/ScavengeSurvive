@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 new
 	code_ControlTower,
 	code_MainGate,
@@ -32,8 +35,10 @@ new
 	door_Headquarters2,
 	door_Shaft;
 
-public OnLoad()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Area69'...");
+
 	new
 		buttonid[2];
 
@@ -308,20 +313,7 @@ public OnLoad()
 	CreateDynamicObject(2922, 255.92000, 1832.43994, 5.12000,   0.00000, 0.00000, 90.00000);
 	CreateDynamicObject(3117, 246.71663, 1861.98657, 20.62875,   90.00000, 0.00000, 398.98010);
 	CreateDynamicObject(3095, 268.37225, 1884.12219, 15.74065,   0.00000, 0.00000, 0.00000);
-
-	#if defined a69_OnLoad
-		return a69_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad a69_OnLoad
-forward a69_OnLoad();
 
 public OnButtonPress(playerid, buttonid)
 {

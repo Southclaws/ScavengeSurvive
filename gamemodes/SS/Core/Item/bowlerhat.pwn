@@ -1,5 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'bowlerhat'...");
+
 	new tmp;
 
 	tmp = DefineHatItem(item_BowlerHat);
@@ -23,19 +28,4 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_Civ4F, 0.154000, 0.003000, -0.005000,  0.154000, 0.003000, -0.005000,  1.096000, 1.236001, 1.120001);
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.154000, 0.009000, -0.003000,  0.154000, 0.009000, -0.003000,  1.096000, 1.427002, 1.206001);
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.121000, 0.009000, -0.006000,  0.121000, 0.009000, -0.006000,  1.096000, 1.191002, 1.160001);
-
-	#if defined bowlhat_OnLoad
-		return bowlhat_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad bowlhat_OnLoad
-#if defined bowlhat_OnLoad
-	forward bowlhat_OnLoad();
-#endif

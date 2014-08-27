@@ -50,8 +50,10 @@ static
 				tag_Spraying	[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'SprayTag'...");
+
 	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" (\
 		"FIELD_SPRAYTAG_NAME" TEXT,\
 		"FIELD_SPRAYTAG_POSX" REAL,\

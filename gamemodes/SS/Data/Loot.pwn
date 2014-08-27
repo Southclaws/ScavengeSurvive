@@ -1,4 +1,7 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
 	// loot_Civilian
 	AddItemToLootIndex(loot_Civilian,		item_GolfClub,						50.0);
@@ -347,21 +350,4 @@ public OnLoad()
 	AddItemToLootIndex(loot_SupplyCrate,	item_Burger,						30.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_Ammo9mm,						20.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_AmmoBuck,						16.0);
-
-
-	#if defined loot_OnLoad
-		return loot_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad loot_OnLoad
-#if defined loot_OnLoad
-	forward loot_OnLoad();
-#endif
-

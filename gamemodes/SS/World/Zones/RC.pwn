@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Red County");
+	print("[OnGameModeInit] Initialising 'World/RC'...");
 
 	CreateFuelOutlet(1378.96094, 461.03906, 19.32813, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(1380.63281, 460.27344, 19.32813, 2.0, 100.0, frandom(40.0));
@@ -24,22 +27,7 @@ public OnLoad()
 	DefineSupplyDropPos("Montgomery", 1332.75269, 346.71506, 18.34710);
 	DefineSupplyDropPos("Dillimore", 642.83069, -594.28088, 15.15962);
 	DefineSupplyDropPos("Blueberry", 204.94981, -261.21274, 0.52650);
-
-	#if defined redcounty_OnLoad
-		return redcounty_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad redcounty_OnLoad
-#if defined redcounty_OnLoad
-	forward redcounty_OnLoad();
-#endif
 
 
 RC_District_LogCamp()

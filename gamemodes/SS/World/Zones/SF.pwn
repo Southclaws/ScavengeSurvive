@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading San Fierro");
+	print("[OnGameModeInit] Initialising 'World/SF'...");
 
 	CreateLadder(-1164.6187, 370.0174, 1.9609, 14.1484, 221.1218);
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);
@@ -37,22 +40,7 @@ public OnLoad()
 	DefineSupplyDropPos("San Fierro Hospital", -2569.96948, 653.26270, 26.74425);
 	DefineSupplyDropPos("San Fierro Square", -1980.58887, 884.61041, 44.17714);
 	DefineSupplyDropPos("San Fierro Promenade", -1587.81201, 1180.50891, 5.97472);
-
-	#if defined fierro_OnLoad
-		return fierro_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad fierro_OnLoad
-#if defined fierro_OnLoad
-	forward fierro_OnLoad();
-#endif
 
 
 SF_District_Housing1()

@@ -83,6 +83,8 @@ static
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Defences'...");
+
 	if(def_GEID_Index > 0)
 	{
 		printf("ERROR: def_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");

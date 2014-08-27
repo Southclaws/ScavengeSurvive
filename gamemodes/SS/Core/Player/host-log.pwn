@@ -26,6 +26,8 @@ DBStatement:	stmt_HostGetRecordsFromName;
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'host-log'...");
+
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_HOST" (\
 		"FIELD_HOST_NAME" TEXT,\
 		"FIELD_HOST_HOST" TEXT,\

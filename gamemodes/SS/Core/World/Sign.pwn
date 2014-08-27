@@ -40,6 +40,8 @@ Timer:		sgn_PickUpTimer[MAX_PLAYERS],
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Sign'...");
+
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS);
 }
 

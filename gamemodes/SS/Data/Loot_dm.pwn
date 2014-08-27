@@ -1,4 +1,7 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
 	for(new i; i < loot_Survivor + 1; i++)
 	{
@@ -85,20 +88,4 @@ public OnLoad()
 		AddItemToLootIndex(i, item_MotionSense, 50);
 		AddItemToLootIndex(i, item_Accelerometer, 50);
 	}
-
-	#if defined loot_OnLoad
-		return loot_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad loot_OnLoad
-#if defined loot_OnLoad
-	forward loot_OnLoad();
-#endif
-

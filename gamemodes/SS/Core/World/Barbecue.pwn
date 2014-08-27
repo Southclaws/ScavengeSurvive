@@ -25,11 +25,13 @@ static
 			bbq_ItemBBQ[ITM_MAX] = {-1, ...};
 
 static
-			HANDLER;
+			HANDLER = -1;
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'Barbecue'...");
+
 	HANDLER = debug_register_handler("BBQ");
 }
 

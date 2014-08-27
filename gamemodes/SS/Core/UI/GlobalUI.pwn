@@ -3,6 +3,8 @@
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'GlobalUI'...");
+
 //=========================================================================Death
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
 	TextDrawAlignment			(DeathText, 2);

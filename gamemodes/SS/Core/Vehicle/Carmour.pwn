@@ -37,6 +37,8 @@ new
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Carmour'...");
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR),
 		item[46],

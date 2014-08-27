@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 /*
 x positions in each zone (7 zones)
 4 items, randomly spawning at these positions
@@ -35,25 +38,12 @@ new
 	lck_CurrentLockup[MAX_PLAYERS];
 
 
-public OnLoad()
+hook OnGameModeInit()
 {
-	LoadLockup_SF();
+	print("[OnGameModeInit] Initialising 'CodeHunt'...");
 
-	#if defined lck_OnLoad
-		return lck_OnLoad();
-	#else
-		return 0;
-	#endif
+	LoadLockup_SF();
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad lck_OnLoad
-#if defined lck_OnLoad
-	forward lck_OnLoad();
-#endif
 
 CreateCodeParts(Float:coords[][], size, keycode)
 {

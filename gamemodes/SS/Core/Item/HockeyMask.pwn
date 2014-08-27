@@ -1,5 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'HockeyMask'...");
+
 	new tmp;
 
 	tmp = DefineMaskItem(item_HockeyMask);
@@ -21,20 +26,4 @@ public OnLoad()
 	SetMaskOffsetsForSkin(tmp, skin_Civ4F, 0.098999, 0.024999, -0.002999,  90.000000, 90.000000, 0.000000,  1.131000, 1.096999, 1.190000);
 	SetMaskOffsetsForSkin(tmp, skin_ArmyF, 0.095999, 0.028999, -0.002999,  90.000000, 90.000000, 0.000000,  1.131000, 1.096999, 1.092000);
 	SetMaskOffsetsForSkin(tmp, skin_IndiF, 0.081999, 0.027999, 0.000000,  90.000000, 90.000000, 0.000000,  1.059001, 1.193000, 1.132000);
-
-	#if defined hmask_OnLoad
-		return hmask_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad hmask_OnLoad
-#if defined hmask_OnLoad
-	forward hmask_OnLoad();
-#endif
-

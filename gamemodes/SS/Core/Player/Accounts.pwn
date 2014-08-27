@@ -86,6 +86,8 @@ forward OnPlayerLogin(playerid);
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Accounts'...");
+
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
 		"FIELD_PLAYER_PASS" TEXT,\

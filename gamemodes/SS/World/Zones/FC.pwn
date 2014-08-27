@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Flint County");
+	print("[OnGameModeInit] Initialising 'World/FC'...");
 
 	CreateBalloon(-2237.60, -1711.45, 479.88, 0.0, 1529.81, -1358.07, 328.37, 0.0);
 
@@ -42,22 +45,7 @@ public OnLoad()
 	DefineSupplyDropPos("The Farm Flint County", -1114.30457, -974.00067, 128.16339);
 	DefineSupplyDropPos("Angel Pine", -2165.39160, -2395.42017, 29.44930);
 	DefineSupplyDropPos("Mount Chilliad", -2335.43652, -1652.50720, 482.67642);
-
-	#if defined flintcounty_OnLoad
-		return flintcounty_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad flintcounty_OnLoad
-#if defined flintcounty_OnLoad
-	forward flintcounty_OnLoad();
-#endif
 
 
 FC_District_Chilliad()

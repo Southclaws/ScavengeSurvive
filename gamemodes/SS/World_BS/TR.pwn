@@ -1,6 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Tierra Robada");
+	print("[OnGameModeInit] Initialising 'World_BS/TR'...");
+
 	CreateFuelOutlet(-1465.4766, 1868.2734, 32.8203, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(-1464.9375, 1860.5625, 32.8203, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(-1477.8516, 1867.3125, 32.8203, 2.0, 100.0, frandom(40.0));
@@ -26,22 +30,7 @@ public OnLoad()
 	AddLoot();
 
 	repeat AddLoot();
-
-	#if defined robada_OnLoad
-		return robada_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad robada_OnLoad
-#if defined robada_OnLoad
-	forward robada_OnLoad();
-#endif
 
 new Float:LootAngle;
 timer AddLoot[60000]()

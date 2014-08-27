@@ -256,6 +256,110 @@ stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output
 		printf("  %s: %s", path, output);
 }
 
+
+/*
+	Arrays
+*/
+
+stock GetSettingIntArray(path[], defaultvalues[], defaultmax, output[], &outputtotal, printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+	{
+		new tmpvalue[12];
+
+		for(new i; i < defaultmax; i++)
+		{
+			format(tmpvalue, sizeof(tmpvalue), "%d", defaultvalues[i]);
+			djAppend(SETTINGS_FILE, path, tmpvalue);
+			output[i] = defaultvalues[i];
+
+			if(printsetting)
+				printf("  %s/%d: %d", path, i, output[i]);
+		}
+	}
+	else
+	{
+		new tmppath[64];
+
+		outputtotal = djCount(SETTINGS_FILE, path);
+		printf("int array size %d, '%s'", outputtotal, path);
+
+		for(new i; i < outputtotal; i++)
+		{
+			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
+			output[i] = djInt(SETTINGS_FILE, tmppath);
+
+			if(printsetting)
+				printf("  %s: %d", tmppath, output[i]);
+		}
+	}
+}
+
+stock GetSettingFloatArray(path[], Float:defaultvalues[], defaultmax, Float:output[], &outputtotal, printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+	{
+		new tmpvalue[12];
+
+		for(new i; i < defaultmax; i++)
+		{
+			format(tmpvalue, sizeof(tmpvalue), "%f", defaultvalues[i]);
+			djAppend(SETTINGS_FILE, path, tmpvalue);
+			output[i] = defaultvalues[i];
+
+			if(printsetting)
+				printf("  %s/%d: %f", path, i, output[i]);
+		}
+	}
+	else
+	{
+		new tmppath[64];
+
+		outputtotal = djCount(SETTINGS_FILE, path);
+		printf("float array size %d, '%s'", outputtotal, path);
+
+		for(new i; i < outputtotal; i++)
+		{
+			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
+			output[i] = djFloat(SETTINGS_FILE, tmppath);
+
+			if(printsetting)
+				printf("  %s: %f", tmppath, output[i]);
+		}
+	}
+}
+
+stock GetSettingStringArray(path[], defaultvalues[][], defaultmax, output[][], &outputtotal, printsetting = true)
+{
+	if(!djIsSet(SETTINGS_FILE, path))
+	{
+		for(new i; i < defaultmax; i++)
+		{
+			djAppend(SETTINGS_FILE, path, defaultvalues[i]);
+			format(output[i], DJSON_MAX_STRING, defaultvalues[i]);
+
+			if(printsetting)
+				printf("  %s/%d: %s", path, i, output[i]);
+		}
+	}
+	else
+	{
+		new tmppath[64];
+
+		outputtotal = djCount(SETTINGS_FILE, path);
+		printf("string array size %d, '%s'", outputtotal, path);
+
+		for(new i; i < outputtotal; i++)
+		{
+			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
+			format(output[i], DJSON_MAX_STRING, dj(SETTINGS_FILE, tmppath));
+
+			if(printsetting)
+				printf("  %s: %s", tmppath, output[i]);
+		}
+	}
+}
+
 stock UpdateSettingInt(path[], value)
 {
 	djSetInt(SETTINGS_FILE, path, value);

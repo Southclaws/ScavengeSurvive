@@ -1,5 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'truckcap'...");
+
 	new tmp;
 
 	tmp = DefineHatItem(item_TruckCap);
@@ -23,19 +28,4 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_Civ4F, 0.133000, 0.021000, -0.000999,  0.000000, 90.000000, 90.000000,  1.123999, 1.094000, 1.000000); // 193
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.134000, 0.028000, -0.000999,  0.000000, 90.000000, 90.000000,  1.234999, 1.094000, 1.000000); // 191
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.092000, 0.041000, -0.003999,  0.000000, 90.000000, 88.200027,  1.162999, 1.106000, 1.000000); // 131
-
-	#if defined tcap_OnLoad
-		return tcap_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad tcap_OnLoad
-#if defined tcap_OnLoad
-	forward tcap_OnLoad();
-#endif

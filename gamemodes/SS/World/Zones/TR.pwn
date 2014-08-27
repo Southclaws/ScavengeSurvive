@@ -1,6 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Tierra Robada");
+	print("[OnGameModeInit] Initialising 'World/TR'...");
+
 	CreateFuelOutlet(-1465.4766, 1868.2734, 32.8203, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(-1464.9375, 1860.5625, 32.8203, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(-1477.8516, 1867.3125, 32.8203, 2.0, 100.0, frandom(40.0));
@@ -20,22 +24,7 @@ public OnLoad()
 	DefineSupplyDropPos("Tierra Robada South", -720.72766, 972.52899, 11.04721);
 	DefineSupplyDropPos("Tierra Robada Midland", -1484.86084, 1977.28833, 46.76990);
 	DefineSupplyDropPos("Tierra Robada North Freeway", -2547.67798, 2614.91919, 59.90747);
-
-	#if defined robada_OnLoad
-		return robada_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad robada_OnLoad
-#if defined robada_OnLoad
-	forward robada_OnLoad();
-#endif
 
 
 TR_District_Bayside()

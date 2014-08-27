@@ -1,6 +1,41 @@
 #include <YSI\y_hooks>
 
 
+enum e_item_object{ItemType:e_itmobj_type,e_itmobj_exdata}
+static
+ItemType:	spawn_BagType,
+ItemType:	spawn_ReSpawnItems[4][e_item_object],
+ItemType:	spawn_NewSpawnItems[4][e_item_object];
+
+
+hook OnGameModeInit()
+{
+	print("[OnGameModeInit] Initialising 'Player/Spawn'...");
+
+	new
+		bagtype[ITM_MAX_NAME],
+		respawnitems[4][ITM_MAX_NAME],
+		newspawnitems[4][ITM_MAX_NAME];
+
+	GetSettingString("spawn/bagtype", "Satchel", bagtype);
+	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
+
+	for(new i; i < 4; i++)
+	{
+		GetSettingString(sprintf("spawn/respawnitems/%d/itemType", i), "", respawnitems[i]);
+		GetSettingInt(sprintf("spawn/respawnitems/%d/exData", i), 0, spawn_ReSpawnItems[i][e_itmobj_exdata]);
+		spawn_ReSpawnItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(respawnitems[i]);
+	}
+
+	for(new i; i < 4; i++)
+	{
+		GetSettingString(sprintf("spawn/newspawnitems/%d/itemType", i), "", newspawnitems[i]);
+		GetSettingInt(sprintf("spawn/newspawnitems/%d/exData", i), 0, spawn_NewSpawnItems[i][e_itmobj_exdata]);
+		spawn_NewSpawnItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newspawnitems[i]);
+	}
+}
+
+
 SpawnLoggedInPlayer(playerid)
 {
 	if(IsPlayerAlive(playerid))
@@ -195,28 +230,39 @@ PlayerSpawnNewCharacter(playerid, gender)
 	PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
 	PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
 
-	backpackitem = CreateItem(item_Satchel);
-	containerid = GetItemArrayDataAtCell(backpackitem, 1);
+	if(IsValidItemType(spawn_BagType))
+	{
+		backpackitem = CreateItem(spawn_BagType);
+		containerid = GetItemArrayDataAtCell(backpackitem, 1);
 
-	GivePlayerBag(playerid, backpackitem);
+		GivePlayerBag(playerid, backpackitem);
 
-	tmpitem = CreateItem(item_Wrench);
-	AddItemToContainer(containerid, tmpitem);
+		for(new i; i < 4; i++)
+		{
+			if(IsValidItemType(spawn_ReSpawnItems[i][e_itmobj_type]))
+				break;
 
-	tmpitem = CreateItem(item_Bandage);
-	AddItemToContainer(containerid, tmpitem);
+			tmpitem = CreateItem(spawn_ReSpawnItems[i][e_itmobj_type]);
+			SetItemExtraData(tmpitem, spawn_ReSpawnItems[i][e_itmobj_exdata]);
+			AddItemToContainer(containerid, tmpitem);
+		}
+
+		if(GetPlayerBitFlag(playerid, IsNewPlayer))
+		{
+			for(new i; i < 4; i++)
+			{
+				if(IsValidItemType(spawn_NewSpawnItems[i][e_itmobj_type]))
+					break;
+
+				tmpitem = CreateItem(spawn_NewSpawnItems[i][e_itmobj_type]);
+				SetItemExtraData(tmpitem, spawn_NewSpawnItems[i][e_itmobj_exdata]);
+				AddItemToContainer(containerid, tmpitem);
+			}
+		}
+	}
 
 	if(GetPlayerBitFlag(playerid, IsNewPlayer))
-	{
 		Tutorial_Start(playerid);
-
-		tmpitem = CreateItem(item_M9Pistol);
-		AddItemToContainer(containerid, tmpitem);
-
-		tmpitem = CreateItem(item_Ammo9mmFMJ);
-		SetItemExtraData(tmpitem, 5);
-		AddItemToContainer(containerid, tmpitem);
-	}
 
 	SetPlayerScreenFadeLevel(playerid, 255);
 

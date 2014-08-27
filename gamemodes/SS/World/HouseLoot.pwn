@@ -43,10 +43,12 @@ new
 			{0.0, 0.0, 0.0}
 		}
 	};
+// Todo: Add offsets for the remaining house models from LS and LV to this
 
-
-public OnLoad()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'HouseLoot'...");
+
 	new
 		Float:x,
 		Float:y,
@@ -92,23 +94,7 @@ public OnLoad()
 			}
 		}
 	}
-
-	#if defined hloot_OnLoad
-		return hloot_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad hloot_OnLoad
-#if defined hloot_OnLoad
-	forward hloot_OnLoad();
-#endif
-
 
 stock GetAttachedObjectPos(
 	Float:object_px, Float:object_py, Float:object_pz, Float:object_rx, Float:object_ry, Float:object_rz,

@@ -60,10 +60,12 @@ hook OnPlayerConnect(playerid)
 }
 
 
-new FIREARM_DEBUG;
+new FIREARM_DEBUG = -1;
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'damage.core'...");
+
 	Iter_Init(wnd_Index);
 	FIREARM_DEBUG = debug_register_handler("weapon/damage");
 }

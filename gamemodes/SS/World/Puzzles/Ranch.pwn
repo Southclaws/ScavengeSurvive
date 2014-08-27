@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 new
 	RanchPcButton,
 	RanchHdd,
@@ -16,8 +19,10 @@ new
 	LiftPos;
 
 
-public OnLoad()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Ranch'...");
+
 	new
 		buttonid[2];
 
@@ -85,24 +90,7 @@ public OnLoad()
 	CreateDoor(5779, buttonid,
 		265.0330, -168.9362, -49.9792, 0.0, 0.0, 0.0,
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0);
-
-
-	#if defined ranch_OnLoad
-		return ranch_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad ranch_OnLoad
-#if defined ranch_OnLoad
-	forward ranch_OnLoad();
-#endif
-
 
 public OnButtonPress(playerid, buttonid)
 {

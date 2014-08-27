@@ -14,6 +14,8 @@ forward OnRemoteCommand(command[], params[]);
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Sockets'...");
+
 	socket = socket_create(TCP);
 
 	if(!is_socket_valid(socket))

@@ -45,7 +45,7 @@ Timer:		bag_PickUpTimer			[MAX_PLAYERS],
 Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 			bag_LookingInBag		[MAX_PLAYERS];
 
-static		HANDLER;
+static		HANDLER = -1;
 
 
 /*==============================================================================
@@ -55,8 +55,10 @@ static		HANDLER;
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'Backpack'...");
+
 	HANDLER = debug_register_handler("char/backpack");
 
 	for(new i; i < CNT_MAX; i++)

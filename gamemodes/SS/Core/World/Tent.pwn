@@ -56,6 +56,8 @@ static
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Tent'...");
+
 	if(tnt_GEID_Index > 0)
 	{
 		printf("ERROR: tnt_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");

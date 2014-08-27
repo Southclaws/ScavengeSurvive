@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 new stock
 	vgroup_Civilian,
 	vgroup_Industrial,
@@ -6,8 +9,10 @@ new stock
 	vgroup_Military,
 	vgroup_Unique;
 
-public OnLoad()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Data/Vehicle'...");
+	// Todo: Move this to "Server/Init.pwn"
 	// Regular vehicles, most common and found around cities and towns.
 	vgroup_Civilian		= DefineVehicleSpawnGroup("Civilian");
 
@@ -79,22 +84,7 @@ public OnLoad()
 	DefineVehicleType(484, "Marquis",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_LARGE,		900.0,		67.0,	loot_CarCivilian,		64,		50.0);
 	DefineVehicleType(583, "Tug",				vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_SMALL,		10.0,		4.0,	loot_CarIndustrial,		4,		70.0);
 	DefineVehicleType(424, "BF Injection",		vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	40.0,		8.0,	loot_CarCivilian,		10,		35.0);
-
-	#if defined vehdata_OnLoad
-		return vehdata_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad vehdata_OnLoad
-#if defined vehdata_OnLoad
-	forward vehdata_OnLoad();
-#endif
 
 
 

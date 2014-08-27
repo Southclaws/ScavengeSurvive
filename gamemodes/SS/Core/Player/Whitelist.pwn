@@ -19,8 +19,10 @@ DBStatement:	stmt_WhitelistInsert,
 DBStatement:	stmt_WhitelistDelete;
 
 
-public OnGameModeInit_Pre()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Whitelist'...");
+
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
 		"FIELD_WHITELIST_NAME" TEXT)"));
 
@@ -32,23 +34,7 @@ public OnGameModeInit_Pre()
 
 	GetSettingInt("server/whitelist", 0, wl_Active);
 	GetSettingInt("server/whitelist-auto-toggle", 0, wl_Auto);
-
-	#if defined wl_OnGameModeInit_Pre
-		return wl_OnGameModeInit_Pre();
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnGameModeInit_Pre
-	#undef OnGameModeInit_Pre
-#else
-	#define _ALS_OnGameModeInit_Pre
-#endif
- 
-#define OnGameModeInit_Pre wl_OnGameModeInit_Pre
-#if defined wl_OnGameModeInit_Pre
-	forward wl_OnGameModeInit_Pre();
-#endif
 
 hook OnPlayerConnect(playerid)
 {

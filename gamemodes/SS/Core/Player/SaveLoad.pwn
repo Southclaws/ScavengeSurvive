@@ -51,6 +51,8 @@ forward OnPlayerLoad(playerid, filename[]);
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'SaveLoad'...");
+
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
 }
 

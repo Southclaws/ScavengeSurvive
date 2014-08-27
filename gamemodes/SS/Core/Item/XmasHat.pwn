@@ -1,5 +1,10 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'XmasHat'...");
+
 	new tmp;
 
 	tmp = DefineHatItem(item_XmasHat);
@@ -23,19 +28,4 @@ public OnLoad()
 	SetHatOffsetsForSkin(tmp, skin_Civ4F, 0.129000, 0.015998, 0.000999,  90.000000, 98.200080, 0.000000,  1.149000, 1.178001, 1.000000);
 	SetHatOffsetsForSkin(tmp, skin_ArmyF, 0.131000, 0.008998, 0.000999,  90.000000, 98.200080, 0.000000,  1.216000, 1.178001, 1.055999);
 	SetHatOffsetsForSkin(tmp, skin_IndiF, 0.090000, 0.025998, 0.003999,  90.000000, 98.200080, 0.000000,  1.055000, 1.178001, 1.055999);
-
-	#if defined xhat_OnLoad
-		return xhat_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad xhat_OnLoad
-#if defined xhat_OnLoad
-	forward xhat_OnLoad();
-#endif

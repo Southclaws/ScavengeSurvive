@@ -1,3 +1,6 @@
+#include <YSI\y_hooks>
+
+
 new xmas_presents[4] = {19054, 19055, 19056, 19057};
 
 
@@ -30,7 +33,7 @@ CreateXmasTree(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 }
 
 
-public OnLoad()
+hook OnGameModeInit()
 {
 	// Only run this code in December
 
@@ -40,6 +43,8 @@ public OnLoad()
 
 	if(m != 12)
 		return 1;
+
+	print("[OnGameModeInit] Initialising 'Xmas'...");
 
 	CreateXmasTree(-1214.80579, 1818.40381, 40.71288,   0.00000, 0.00000, 0.00000);
 	CreateXmasTree(-883.66498, 1520.97986, 24.90551,   0.00000, 0.00000, 0.00000);
@@ -688,19 +693,5 @@ public OnLoad()
 	CreateObject(19059, 161.88771, 1933.27332, 32.88721,   0.00000, 0.00000, 0.00000);
 	CreateObject(19061, 233.53795, 1934.58704, 32.88795,   0.00000, 0.00000, 0.00000);
 
-	#if defined xmas_OnLoad
-		return xmas_OnLoad();
-	#else
-		return 0;
-	#endif
+	return 1;
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad xmas_OnLoad
-#if defined xmas_OnLoad
-	forward xmas_OnLoad();
-#endif
-

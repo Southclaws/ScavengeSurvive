@@ -30,11 +30,13 @@ PlayerText:	bod_BodyPreview	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 			bod_LabelIndex1	[MAX_PLAYERS];
 
 
-static HANDLER;
+static HANDLER = -1;
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'BodyPreview'...");
+
 	HANDLER = debug_register_handler("bodypreview");
 }
 

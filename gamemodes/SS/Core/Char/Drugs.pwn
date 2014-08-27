@@ -26,7 +26,7 @@ static
 	drug_PlayerDrugData[MAX_PLAYERS][MAX_DRUG_TYPE][E_PLAYER_DRUG_DATA];
 
 
-static HANDLER;
+static HANDLER = -1;
 
 
 forward OnPlayerDrugWearOff(playerid, drugtype);
@@ -39,8 +39,10 @@ forward OnPlayerDrugWearOff(playerid, drugtype);
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'Deugs'...");
+
 	HANDLER = debug_register_handler("drugs");
 }
 

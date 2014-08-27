@@ -72,6 +72,8 @@ forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Vehicle/Core'...");
+
 	for(new i; i < CNT_MAX; i++)
 		veh_ContainerVehicle[i] = INVALID_VEHICLE_ID;
 }

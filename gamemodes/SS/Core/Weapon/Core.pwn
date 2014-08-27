@@ -2,7 +2,7 @@
 
 
 #define MAX_ITEM_WEAPON	(64)
-static HANDLER;
+static HANDLER = -1;
 
 
 enum E_ITEM_WEAPON_DATA
@@ -44,8 +44,10 @@ Timer:		itmw_DropTimer[MAX_PLAYERS];
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'Weapon/Core'...");
+
 	HANDLER = debug_register_handler("weapon/core");
 }
 

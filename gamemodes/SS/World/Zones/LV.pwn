@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Las Venturas");
+	print("[OnGameModeInit] Initialising 'World/LV'...");
 
 	CreateFuelOutlet(2120.82031, 914.718750, 11.25781, 2.0, 100.0, frandom(25.0));
 	CreateFuelOutlet(2114.90625, 914.718750, 11.25781, 2.0, 100.0, frandom(25.0));
@@ -56,22 +59,8 @@ public OnLoad()
 	DefineSupplyDropPos("Las Venturas East Building Roof", 2644.05469, 1211.56506, 25.86082);
 	DefineSupplyDropPos("Las Venturas South Industrial", 1692.09644, 956.23187, 9.69593);
 	DefineSupplyDropPos("Las Venturas Airport", 1346.64453, 1591.55396, 9.70243);
-
-	#if defined venturas_OnLoad
-		return venturas_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad venturas_OnLoad
-#if defined venturas_OnLoad
-	forward venturas_OnLoad();
-#endif
+
 
 LV_District_Housing1()
 {

@@ -31,6 +31,8 @@ Float:		sup_DropZ;
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'SupplyCrate'...");
+
 	defer SupplyDropTimer();
 	return 1;
 }

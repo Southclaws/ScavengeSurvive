@@ -87,8 +87,10 @@ public OnPlayerDropItem(playerid, itemid)
 	forward tip_OnPlayerDropItem(playerid, itemid);
 #endif
 
-public OnLoad()
+hook OnScriptInit()
 {
+	print("[OnScriptInit] Initialising 'ToolTips'...");
+
 	DefineItemToolTip(item_Parachute,		"Press "KEYTEXT_PUT_AWAY" to equip, you can't wear this while you are wearing a bag");
 	DefineItemToolTip(item_Medkit,			"You can stop bleeding and prevent knockouts/darkness on yourself or other players with this");
 	DefineItemToolTip(item_HardDrive,		"Used for crafting and some puzzles");
@@ -219,22 +221,7 @@ public OnLoad()
 	DefineItemToolTip(item_PetrolBomb,		"This item has no use yet");
 	DefineItemToolTip(item_CodePart,		"A puzzle item, the number displayed next to the item name is part of a 4 digit code used to open a door somewhere");
 	DefineItemToolTip(item_LargeBackpack,	"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
-
-	#if defined tip_OnLoad
-		return tip_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad tip_OnLoad
-#if defined tip_OnLoad
-	forward tip_OnLoad();
-#endif
 
 
 /*==============================================================================

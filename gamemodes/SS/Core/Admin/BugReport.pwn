@@ -28,6 +28,8 @@ DBStatement:	stmt_BugInfo;
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'BugReport'...");
+
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BUGS" (\
 		"FIELD_BUGS_NAME" TEXT,\
 		"FIELD_BUGS_REASON" TEXT,\

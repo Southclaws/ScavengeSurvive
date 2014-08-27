@@ -1,4 +1,7 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnScriptInit()
 {
 	new tmp;
 
@@ -23,20 +26,4 @@ public OnLoad()
 	SetMaskOffsetsForSkin(tmp, skin_Civ4F, 0.016000, 0.129999, 0.003000,  90.000000, 86.300010, 0.000000,  0.963999, 1.156999, 1.000000);
 	SetMaskOffsetsForSkin(tmp, skin_ArmyF, 0.016000, 0.129999, 0.003000,  90.000000, 86.300010, 0.000000,  0.963999, 1.156999, 1.000000);
 	SetMaskOffsetsForSkin(tmp, skin_IndiF, -0.006999, 0.131999, -0.002999,  90.000000, 86.300010, 0.000000,  0.963999, 1.156999, 1.065000);
-
-	#if defined gmask_OnLoad
-		return gmask_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-	#undef OnLoad
-#else
-	#define _ALS_OnLoad
-#endif
-#define OnLoad gmask_OnLoad
-#if defined gmask_OnLoad
-	forward gmask_OnLoad();
-#endif
-

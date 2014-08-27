@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Bone County");
+	print("[OnGameModeInit] Initialising 'World/BC'...");
 
 	CreateFuelOutlet(603.48438, 1707.23438, 6.17969, 2.0, 130.0, frandom(40));
 	CreateFuelOutlet(606.89844, 1702.21875, 6.17969, 2.0, 130.0, frandom(40));
@@ -42,22 +45,8 @@ public OnLoad()
 	DefineSupplyDropPos("Bone County East", 631.26288, 1587.61060, 6.64180);
 	DefineSupplyDropPos("Bone County Canyons", -301.43231, 1877.09180, 41.23884);
 	DefineSupplyDropPos("Verdant Meadows", 373.16586, 2511.17383, 15.47215);
-
-	#if defined bonecounty_OnLoad
-		return bonecounty_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad bonecounty_OnLoad
-#if defined bonecounty_OnLoad
-	forward bonecounty_OnLoad();
-#endif
+
 
 BC_District_Payasdas()
 {

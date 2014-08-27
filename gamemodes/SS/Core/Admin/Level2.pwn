@@ -3,6 +3,8 @@
 
 hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'Admin/Level2'...");
+
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/duty - go on admin duty\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/spec - spectate\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/goto, /get - teleport players\n");

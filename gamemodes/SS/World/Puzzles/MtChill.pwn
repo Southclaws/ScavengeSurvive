@@ -22,8 +22,10 @@ new
 	bool:ch_doorstate = false;
 
 
-public OnLoad()
+hook OnGameModeInit()
 {
+	print("[OnGameModeInit] Initialising 'MtChill'...");
+
 	new buttons[1];
 
 
@@ -232,22 +234,7 @@ public OnLoad()
 	SetDynamicObjectMaterialText(
 		CreateDynamicObject(18244, -2309.60, -1646.11, 487.69,   90.00, 0.00, 25.86),
 		0, "Mt. Chill\nRadio", OBJECT_MATERIAL_SIZE_512x256, "Impact", 72, 0, -1, 4278216843, 1);
-
-	#if defined mtchil_OnLoad
-		return mtchil_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad mtchil_OnLoad
-#if defined mtchil_OnLoad
-	forward mtchil_OnLoad();
-#endif
 
 public OnPlayerActivateDoor(playerid, doorid, newstate)
 {

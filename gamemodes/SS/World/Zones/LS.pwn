@@ -1,6 +1,9 @@
-public OnLoad()
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
 {
-	print("Loading Los Santos");
+	print("[OnGameModeInit] Initialising 'World/LS'...");
 
 	CreateFuelOutlet(1941.65625, -1778.45313, 14.14063, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(1941.65625, -1774.31250, 14.14063, 2.0, 100.0, frandom(40.0));
@@ -39,22 +42,8 @@ public OnLoad()
 	DefineSupplyDropPos("Los Santos Market Station", 801.16882, -1322.54480, 12.35861);
 	DefineSupplyDropPos("Los Santos North Car Park", 1711.01563, -1053.82056, 22.97256);
 	DefineSupplyDropPos("Los Santos Jefferson Motel", 2217.05444, -1163.08008, 24.70885);
-
-	#if defined santos_OnLoad
-		return santos_OnLoad();
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnLoad
-    #undef OnLoad
-#else
-    #define _ALS_OnLoad
-#endif
-#define OnLoad santos_OnLoad
-#if defined santos_OnLoad
-	forward santos_OnLoad();
-#endif
+
 
 LS_District_Housing1()
 {
