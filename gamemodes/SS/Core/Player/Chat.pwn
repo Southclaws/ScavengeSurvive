@@ -143,7 +143,6 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		format(line1, 256, "[Local] %P %s",
 			playerid,
-			playerid,
 			TagScan(chat));
 
 		TruncateChatMessage(line1, line2);
@@ -229,7 +228,9 @@ CMD:l(playerid, params[])
 
 CMD:me(playerid, params[])
 {
-		PlayerSendChat(playerid, params, 2.0);
+	PlayerSendChat(playerid, params, 2.0);
+
+	return 1;
 }
 
 CMD:r(playerid, params[])
