@@ -8,3 +8,6 @@ server.cfg
 start.bat
 *.sublime-workspace
 *.sublime-project
+*.pyc
+settings.williames
+autoissue/
