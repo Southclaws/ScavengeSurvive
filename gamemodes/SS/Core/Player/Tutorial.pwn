@@ -57,7 +57,7 @@ public OnPlayerOpenInventory(playerid)
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+	if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 	{
 		if(TutorialState[playerid] == 2)
 		{
@@ -84,7 +84,7 @@ public OnPlayerOpenContainer(playerid, containerid)
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+	if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 	{
 		if(TutorialState[playerid] == 3)
 		{
@@ -116,7 +116,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 		{
 			if(TutorialState[playerid] == 4)
 			{
@@ -251,7 +251,7 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemExtraData(GetPlayerBagItem(playerid)))
+		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 		{
 			if(TutorialState[playerid] == 10)
 			{
