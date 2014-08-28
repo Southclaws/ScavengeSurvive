@@ -75,30 +75,73 @@ creations are made!
  This is included with the repo and it will also self-create if absent.
  Here is an explanation of each key:
 
- **player related settings:**
+```
+  "defence":
+    "print-each-load": print a message for each item loaded
+    "print-each-runtime-save": print a message for each item saved at runtime
+    "print-each-save": print a message for each item saved on exit
+    "print-removes": print a message every time an item is removed
+    "print-total-load": print the total amount of items loaded
+    "print-total-save": print the total amount of items saved
 
-  * allow-pause-map _(bool)_ - enable the map option in the pause menu
-  * combat-log-window _(integer)_ - combat log time window in seconds
-  * interior-entry _(bool)_ - enable interior entrances
-  * login-freeze-time _(integer)_ - amount of seconds to freeze player on spawn
-  * max-tab-out-time _(integer)_ - amount of seconds that a player can alt tab
-  * nametag-distance _(float)_ - set the nametag render distance (0.0 for off)
-  * ping-limit _(integer)_ - maximum ping for players
-  * player-animations _(bool)_ - enable the standard CJ animations
-  * vehicle-surfing _(bool)_ - enable vehicle surfing on fast vehicles
+  "player":
+    "allow-pause-map": enable the map option in the pause menu
+    "combat-log-window": combat log time window in seconds
+    "interior-entry": enable interior entrances
+    "login-freeze-time": amount of seconds to freeze player on spawn
+    "max-tab-out-time": amount of seconds that a player can alt tab
+    "nametag-distance": set the nametag render distance (0.0 for off)
+    "ping-limit": maximum ping for players
+    "player-animations": enable the standard CJ animations
+    "vehicle-surfing": enable vehicle surfing on fast vehicles
 
- **server related settings:**
+  "safebox":
+    "print-each-load": print a message for each item loaded
+    "print-each-runtime-save": print a message for each item saved at runtime
+    "print-each-save": print a message for each item saved on exit
+    "print-removes": print a message every time an item is removed
+    "print-total-load": print the total amount of items loaded
+    "print-total-save": print the total amount of items saved
 
-  * file-check _(bool)_ - perform a full file check on user files
-  * infomsg-interval _(integer)_ - time between each info message in minutes
-  * infomsgs _(string array)_ - array list of periodic information messages
-  * max-uptime _(integer)_ - maximum time in hours between server restarts
-  * motd _(string)_ - message of the day, displayed to players upon connecting
-  * rules _(string array)_ - array list of rules
-  * staff _(string array)_ - array list of staff members
-  * website _(string)_ - the website for whitelist notification message
-  * whitelist _(bool)_ - enable whitelist
-  * whitelist-auto-toggle _(bool)_ - whitelist goes off when admins are online
+  "server":
+    "file-check": perform a full file check on user files
+    "infomsg-interval": time between each info message in minutes
+    "infomsgs": array list of periodic information messages
+    "loot-spawn-multiplier": 
+    "max-uptime": maximum time in hours between server restarts
+    "motd": message of the day, displayed to players upon connecting
+    "rules": array list of rules
+    "staff": array list of staff members
+    "website": the website for whitelist notification message
+    "whitelist": enable whitelist
+    "whitelist-auto-toggle": whitelist goes off when admins are online
+
+  "sign":
+    "print-each-load": print a message for each item loaded
+    "print-each-runtime-save": print a message for each item saved at runtime
+    "print-each-save": print a message for each item saved on exit
+    "print-removes": print a message every time an item is removed
+    "print-total-load": print the total amount of items loaded
+    "print-total-save": print the total amount of items saved
+
+  "spawn":
+    "bagtype": type of bag players spawn with
+    "newspawnitems": the extra items a newly registered player spawns with
+    "respawnitems": the items a player respawns with
+
+  "tent":
+    "print-each-load": print a message for each item loaded
+    "print-each-runtime-save": print a message for each item saved at runtime
+    "print-each-save": print a message for each item saved on exit
+    "print-removes": print a message every time an item is removed
+    "print-total-load": print the total amount of items loaded
+    "print-total-save": print the total amount of items saved
+
+  "vehicle-spawn":
+    "print-each": print a message for each vehicle spawned
+    "print-total": print the total amount of vehicles spawned
+    "spawn-chance": [1-100] percentage each spawn point will create a vehicle
+```
 
 Enjoy, do whatever you want with it, but keep my name on it :)
 
