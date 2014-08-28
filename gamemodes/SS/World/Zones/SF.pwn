@@ -3,7 +3,7 @@
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'World/SF'...");
+	print("\n[OnGameModeInit] Initialising 'World/SF'...");
 
 	CreateLadder(-1164.6187, 370.0174, 1.9609, 14.1484, 221.1218);
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);
@@ -33,6 +33,10 @@ hook OnGameModeInit()
 		CreateButton(-2578.1204, 1144.8810, 40.3989, "Press F to enter"),
 		CreateButton(-2587.5229, 1162.4547, 55.5876, "Press F to enter"));
 */
+	CreateNewSprayTag(-1788.31995, 748.41998, 25.36000,   0.00000, 0.00000, 270.00000);
+	CreateNewSprayTag(-1908.90003, 299.56000, 41.52000,   0.00000, 0.00000, 180.00000);
+	CreateNewSprayTag(-2224.75000, 881.27002, 84.13000,   0.00000, 0.00000, 90.00000);
+	CreateNewSprayTag(-2636.69995, 635.52002, 15.13000,   0.00000, 0.00000, 0.00000);
 
 	DefineSupplyDropPos("San Fierro Airport", -1312.81885, -16.52664, 13.08027);
 	DefineSupplyDropPos("San Fierro Driving School", -2055.64697, -200.37950, 34.24461);

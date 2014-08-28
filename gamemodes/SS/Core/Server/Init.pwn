@@ -5,7 +5,7 @@
 
 	Everything global is declared, defined and initialised here. This ensures
 	that all entity definitions are not null before other scripts initialise.
-	This is called AFTER OnGameModeInit_Setup however.
+	Called AFTER OnGameModeInit_Setup and BEFORE other OnScriptInit hooks.
 
 ==============================================================================*/
 
@@ -76,7 +76,6 @@ new
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
 		gInfoMessageInterval,
-		gPerformFileCheck,
 
 		// server
 bool:	gPauseMap,
@@ -419,13 +418,12 @@ PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 				MiniMapOverlay;
 
 
-forward OnLoad(); // Todo: remove when changing hooks for initialisation
 forward SetRestart(seconds); // Todo: move to restart module
 
 
-hook OnGameModeInit()
+public OnScriptInit()
 {
-	log("[OnGameModeInit] Initialising 'Init'...");
+	print("\n[OnScriptInit] Initialising 'Init'...");
 
 
 // 00
@@ -1147,41 +1145,6 @@ hook OnGameModeInit()
 	DefineBagType("Parachute Bag",		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Large Backpack",		item_LargeBackpack,	9, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
 
-	CreateNewSprayTag(-399.76999, 1514.92004, 75.26000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-229.34000, 1082.34998, 20.29000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-2442.16992, 2299.22998, 5.71000,   0.00000, 0.00000, 270.00000);
-	CreateNewSprayTag(-2662.94995, 2121.43994, 2.14000,   0.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(146.92000, 1831.78003, 18.02000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(1172.88086, -1313.05103, 14.24630,   10.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(1237.39001, -1631.59998, 28.02000,   0.00000, 0.00000, 91.00000);
-	CreateNewSprayTag(1118.51100, -1540.14001, 23.66000,   0.00000, 0.00000, 178.46001);
-	CreateNewSprayTag(1202.10999, -1201.55005, 20.47000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(1264.15002, -1270.28003, 14.26000,   0.00000, 0.00000, 270.00000);
-	CreateNewSprayTag(-1908.90003, 299.56000, 41.52000,   0.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(-2636.69995, 635.52002, 15.13000,   0.00000, 0.00000, 0.00000);
-	CreateNewSprayTag(-2224.75000, 881.27002, 84.13000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(-1788.31995, 748.41998, 25.36000,   0.00000, 0.00000, 270.00000);
-
-
-	// Initiation Code
-	// Todo: hook these calls instead
-	CallLocalFunction("OnLoad", "");
-
-	// Data From Files
-	// Todo: move this stuff to hooks
-	LoadAdminData();
-
-	// Todo: make the parameters here .json settings
-	LoadVehicles	(true, true);
-	LoadSafeboxes	(true, true);
-	LoadTents		(true, true);
-	LoadDefences	(true, true);
-	LoadSigns		(true, true);
-
-	LoadSprayTags();
-
-	if(gPerformFileCheck)
-		PerformGlobalPlayerFileCheck(); // Todo: remove/move due to obsoleteness
 
 	for(new i; i < MAX_PLAYERS; i++)
 	{
@@ -1190,4 +1153,6 @@ hook OnGameModeInit()
 
 	defer AutoSave(); // Todo: move to autosave module
 	defer InfoMessage(); // Todo: move to info message module
+
+	return 1;
 }

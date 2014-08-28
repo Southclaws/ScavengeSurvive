@@ -3,7 +3,7 @@
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'World/BC'...");
+	print("\n[OnGameModeInit] Initialising 'World/BC'...");
 
 	CreateFuelOutlet(603.48438, 1707.23438, 6.17969, 2.0, 130.0, frandom(40));
 	CreateFuelOutlet(606.89844, 1702.21875, 6.17969, 2.0, 130.0, frandom(40));
@@ -40,6 +40,9 @@ hook OnGameModeInit()
 	BC_District_Hunter();
 	BC_District_BoneGen();
 
+	CreateNewSprayTag(-399.76999, 1514.92004, 75.26000,   0.00000, 0.00000, 0.00000);
+	CreateNewSprayTag(-229.34000, 1082.34998, 20.29000,   0.00000, 0.00000, 0.00000);
+	CreateNewSprayTag(146.92000, 1831.78003, 18.02000,   0.00000, 0.00000, 90.00000);
 
 	DefineSupplyDropPos("Fort Carson", 7.24142, 959.94550, 18.55249);
 	DefineSupplyDropPos("Bone County East", 631.26288, 1587.61060, 6.64180);

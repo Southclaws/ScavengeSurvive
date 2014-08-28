@@ -3,7 +3,7 @@
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Admin/Level3'...");
+	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/whitelist - add/remove name or turn whitelist on/off\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/ip - get a player's IP\n");

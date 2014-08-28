@@ -64,7 +64,7 @@ new FIREARM_DEBUG = -1;
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'damage.core'...");
+	print("\n[OnScriptInit] Initialising 'damage.core'...");
 
 	Iter_Init(wnd_Index);
 	FIREARM_DEBUG = debug_register_handler("weapon/damage");

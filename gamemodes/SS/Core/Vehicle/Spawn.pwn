@@ -20,27 +20,33 @@ Float:	vspawn_posR,
 static
 		veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA],
 
-Float:	veh_SpawnChance = 4.0;
+// Settings: Prefixed camel case here and dashed in settings.json
+Float:	veh_SpawnChance = 4.0,
+bool:	veh_PrintEach,
+bool:	veh_PrintTotal;
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Vehicle/Spawn'...");
+	print("\n[OnScriptInit] Initialising 'Vehicle/Spawn'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
 
-	GetSettingFloat("server/vehicle-spawn-multiplier", 4.0, veh_SpawnChance);
+	GetSettingFloat("vehicle-spawn/spawn-chance", 4.0, veh_SpawnChance);
+	GetSettingInt("vehicle-spawn/print-each", false, veh_PrintEach);
+	GetSettingInt("vehicle-spawn/print-total", true, veh_PrintTotal);
 }
 
-
-LoadVehicles(printeach = false, printtotal = false)
+hook OnGameModeInit()
 {
-	LoadPlayerVehicles(printeach, printtotal);
-	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS, printeach);
+	print("\n[OnGameModeInit] Initialising 'Vehicle/Spawn'...");
 
-	printf("Loaded %d Vehicles\n", Iter_Count(veh_Index));
+	LoadPlayerVehicles();
+	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS);
 
-	if(printtotal)
+	printf("Loaded %d Vehicles", Iter_Count(veh_Index));
+
+	if(veh_PrintTotal)
 	{
 		new
 			vehicletypename[MAX_VEHICLE_TYPE_NAME],
@@ -59,7 +65,7 @@ LoadVehicles(printeach = false, printtotal = false)
 	}
 }
 
-LoadVehiclesFromFolder(foldername[], prints)
+LoadVehiclesFromFolder(foldername[])
 {
 	new
 		dir:dirhandle,
@@ -85,7 +91,7 @@ LoadVehiclesFromFolder(foldername[], prints)
 		{
 			next_path[0] = EOS;
 			format(next_path, sizeof(next_path), "%s%s/", foldername, item);
-			LoadVehiclesFromFolder(next_path, prints);
+			LoadVehiclesFromFolder(next_path);
 		}
 		if(type == FM_FILE)
 		{
@@ -93,7 +99,7 @@ LoadVehiclesFromFolder(foldername[], prints)
 			{
 				next_path[0] = EOS;
 				format(next_path, sizeof(next_path), "%s%s", foldername, item);
-				LoadVehiclesFromFile(next_path, prints);
+				LoadVehiclesFromFile(next_path);
 			}
 		}
 	}
@@ -103,7 +109,7 @@ LoadVehiclesFromFolder(foldername[], prints)
 	return 1;
 }
 
-LoadVehiclesFromFile(file[], prints)
+LoadVehiclesFromFile(file[])
 {
 	if(!fexist(file))
 	{
@@ -309,7 +315,7 @@ LoadVehiclesFromFile(file[], prints)
 
 	fclose(f);
 
-	if(prints)
+	if(veh_PrintEach)
 		printf("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
 
 	return 1;

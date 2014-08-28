@@ -57,7 +57,7 @@ static		HANDLER = -1;
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'Backpack'...");
+	print("\n[OnScriptInit] Initialising 'Backpack'...");
 
 	HANDLER = debug_register_handler("char/backpack");
 

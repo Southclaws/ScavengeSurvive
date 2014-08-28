@@ -58,9 +58,9 @@ static
 				admin_OnDuty[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Admin/Core'...");
+	print("\n[OnScriptInit] Initialising 'Admin/Core'...");
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
 		"FIELD_ADMINS_NAME" TEXT,\
@@ -74,6 +74,8 @@ hook OnGameModeInit()
 	stmt_AdminUpdate	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
 	stmt_AdminDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
 	stmt_AdminGetLevel	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
+
+	LoadAdminData();
 }
 
 hook OnPlayerConnect(playerid)
@@ -92,7 +94,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-LoadAdminData() // Call in OnGameModeInit
+LoadAdminData()
 {
 	new
 		name[MAX_PLAYER_NAME],

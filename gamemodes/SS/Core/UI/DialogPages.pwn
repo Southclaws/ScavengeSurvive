@@ -40,7 +40,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'DialogPages'...");
+	print("\n[OnGameModeInit] Initialising 'DialogPages'...");
 
 	page_Left					=TextDrawCreate(280.0, 360.0, "<");
 	TextDrawAlignment			(page_Left, 2);

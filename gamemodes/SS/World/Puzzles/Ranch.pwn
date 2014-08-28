@@ -21,7 +21,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Ranch'...");
+	print("\n[OnGameModeInit] Initialising 'Ranch'...");
 
 	new
 		buttonid[2];

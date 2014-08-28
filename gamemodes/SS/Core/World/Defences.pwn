@@ -81,9 +81,19 @@ static
 			def_Cooldown[MAX_PLAYERS],
 			def_PassFails[MAX_PLAYERS];
 
-hook OnGameModeInit()
+// Settings: Prefixed camel case here and dashed in settings.json
+static
+bool:		def_PrintEachLoad,
+bool:		def_PrintTotalLoad,
+bool:		def_PrintEachSave,
+bool:		def_PrintEachRuntimeSave,
+bool:		def_PrintTotalSave,
+bool:		def_PrintRemoves;
+
+
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Defences'...");
+	print("\n[OnScriptInit] Initialising 'Defences'...");
 
 	if(def_GEID_Index > 0)
 	{
@@ -106,6 +116,13 @@ hook OnGameModeInit()
 
 	for(new i; i < BTN_MAX; i++)
 		def_ButtonDefence[i] = -1;
+
+	GetSettingInt("defence/print-each-load", false, def_PrintEachLoad);
+	GetSettingInt("defence/print-total-load", true, def_PrintTotalLoad);
+	GetSettingInt("defence/print-each-save", false, def_PrintEachSave);
+	GetSettingInt("defence/print-each-runtime-save", false, def_PrintEachRuntimeSave);
+	GetSettingInt("defence/print-total-save", true, def_PrintTotalSave);
+	GetSettingInt("defence/print-removes", false, def_PrintRemoves);
 }
 
 hook OnPlayerConnect(playerid)
@@ -618,7 +635,7 @@ public OnHoldActionFinish(playerid)
 		}
 
 
-		SaveDefenceItem(id);
+		SaveDefenceItem(id, def_PrintEachRuntimeSave);
 		StopBuildingDefence(playerid);
 		//EditDefence(playerid, id);
 
@@ -633,7 +650,7 @@ public OnHoldActionFinish(playerid)
 		{
 			ShowActionText(playerid, "Motor installed to defence");
 			def_Data[def_CurrentDefenceEdit[playerid]][def_motor] = true;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
@@ -643,7 +660,7 @@ public OnHoldActionFinish(playerid)
 			ShowActionText(playerid, "Keypad installed to defence");
 			ShowSetPassDialog_Keypad(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 1;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
@@ -653,7 +670,7 @@ public OnHoldActionFinish(playerid)
 			ShowActionText(playerid, "Advanced Keypad installed to defence");
 			ShowSetPassDialog_KeypadAdv(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 2;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 		}
@@ -739,7 +756,7 @@ ShowSetPassDialog_Keypad(playerid)
 		#pragma unused pid, keypadid, match
 
 		def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
-		SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+		SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 		HideKeypad(playerid);
 
 		return 1;
@@ -806,7 +823,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		if(def_CurrentDefenceEdit[playerid] != -1)
 		{
 			def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			HideKeypad(playerid);
 
 			def_CurrentDefenceEdit[playerid] = -1;
@@ -934,7 +951,7 @@ ShowSetPassDialog_KeypadAdv(playerid)
 			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
 			{
 				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
-				SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
+				SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 				def_CurrentDefenceEdit[playerid] = -1;
 			}
 			else
@@ -1164,18 +1181,18 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 ==============================================================================*/
 
 
-SaveDefences(printeach = false, printtotal = false)
+SaveDefences()
 {
 	new count;
 
 	foreach(new i : def_Index)
 	{
-		if(SaveDefenceItem(i, printeach))
+		if(SaveDefenceItem(i, def_PrintEachSave))
 			count++;
 	}
 
-	if(printtotal)
-		printf("Saved %d Defences\n", count);
+	if(def_PrintTotalSave)
+		printf("Saved %d Defences", count);
 
 	new arr[1];
 
@@ -1185,8 +1202,10 @@ SaveDefences(printeach = false, printtotal = false)
 	printf("Storing defence GEID: %d", def_GEID_Index);
 }
 
-LoadDefences(printeach = false, printtotal = false)
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'Defences'...");
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
 		item[46],
@@ -1201,7 +1220,7 @@ LoadDefences(printeach = false, printtotal = false)
 			filename = DIRECTORY_DEFENCES;
 			strcat(filename, item);
 
-			count += LoadDefenceItem(filename, printeach);
+			count += LoadDefenceItem(filename);
 		}
 	}
 
@@ -1210,10 +1229,10 @@ LoadDefences(printeach = false, printtotal = false)
 	// If no defences were loaded, load the old format
 	// This should only ever happen once (upon transition to this new version)
 	if(count == 0)
-		OLD_LoadDefences(printeach, printtotal);
+		OLD_LoadDefences();
 
-	if(printtotal)
-		printf("Loaded %d Defences\n", count);
+	if(def_PrintTotalLoad)
+		printf("Loaded %d Defences", count);
 }
 
 
@@ -1224,7 +1243,7 @@ LoadDefences(printeach = false, printtotal = false)
 ==============================================================================*/
 
 
-SaveDefenceItem(defenceid, prints = false)
+SaveDefenceItem(defenceid, prints)
 {
 	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
@@ -1258,7 +1277,7 @@ SaveDefenceItem(defenceid, prints = false)
 	return 1;
 }
 
-LoadDefenceItem(filename[], prints = false)
+LoadDefenceItem(filename[])
 {
 	new
 		length,
@@ -1297,7 +1316,7 @@ LoadDefenceItem(filename[], prints = false)
 		def_GEID_Index = def_GEID[defenceid] + 1;
 	}
 
-	if(prints)
+	if(def_PrintEachLoad)
 		printf("\t[LOAD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", data[DEFENCE_CELL_TYPE], Float:pos[0], Float:pos[1], Float:pos[2], data[DEFENCE_CELL_POSE], data[DEFENCE_CELL_MOTOR], data[DEFENCE_CELL_KEYPAD], data[DEFENCE_CELL_PASS], data[DEFENCE_CELL_MOVESTATE], data[DEFENCE_CELL_HITPOINTS]);
 
 	return 1;
@@ -1311,7 +1330,7 @@ LoadDefenceItem(filename[], prints = false)
 ==============================================================================*/
 
 
-OLD_LoadDefences(printeach = false, printtotal = false)
+OLD_LoadDefences()
 {
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
@@ -1327,19 +1346,19 @@ OLD_LoadDefences(printeach = false, printtotal = false)
 			filename = DIRECTORY_DEFENCES;
 			strcat(filename, item);
 
-			count += OLD_LoadDefenceItem(filename, printeach);
+			count += OLD_LoadDefenceItem(filename);
 		}
 	}
 
 	dir_close(direc);
 
-	SaveDefences(printeach, printtotal);
+	SaveDefences();
 
-	if(printtotal)
-		printf("Loaded %d Defences using old format\n", Iter_Count(def_Index));
+	if(def_PrintTotalLoad)
+		printf("Loaded %d Defences using old format", Iter_Count(def_Index));
 }
 
-OLD_LoadDefenceItem(filename[], prints = false)
+OLD_LoadDefenceItem(filename[])
 {
 	new
 		File:file,
@@ -1376,7 +1395,7 @@ OLD_LoadDefenceItem(filename[], prints = false)
 
 	if(ret > -1)
 	{
-		if(prints)
+		if(def_PrintEachLoad)
 			printf("\t[LOAD] [OLD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d m:%d h:%d)", data[0], x, y, z, pose, motor, keypad, data[3], pose, data[2]);
 	}
 	else

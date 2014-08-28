@@ -31,7 +31,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'IRC'...");
+	print("\n[OnGameModeInit] Initialising 'IRC'...");
 
 	gBots[0] = IRC_Connect(gIrcServ, gIrcPort, BOT_1_NICKNAME, BOT_1_REALNAME, BOT_1_USERNAME);
 	IRC_SetIntData(gBots[0], E_IRC_CONNECT_DELAY, 20);

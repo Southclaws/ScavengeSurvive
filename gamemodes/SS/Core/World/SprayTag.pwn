@@ -52,7 +52,7 @@ static
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'SprayTag'...");
+	print("\n[OnScriptInit] Initialising 'SprayTag'...");
 
 	db_free_result(db_query(gWorld, "CREATE TABLE IF NOT EXISTS "WORLD_TABLE_SPRAYTAG" (\
 		"FIELD_SPRAYTAG_NAME" TEXT,\
@@ -351,6 +351,13 @@ public OnHoldActionFinish(playerid)
 
 ==============================================================================*/
 
+
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'SprayTag'...");
+
+	LoadSprayTags();
+}
 
 LoadSprayTags()
 {

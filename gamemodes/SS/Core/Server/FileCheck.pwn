@@ -56,13 +56,19 @@ enum
 
 
 static
+	run_file_check,
 	filecheck_ItemList[ITM_LST_OF_ITEMS(9)],
 	conversions,
 	deletions;
 
 
-PerformGlobalPlayerFileCheck()
+hook OnScriptInit()
 {
+	GetSettingInt("server/file-check", false, run_file_check);
+
+	if(!run_file_check)
+		return 1;
+
 	print("\n\n\nPERFORMING PLAYER DATA AND INVENTORY FILE STRUCTURE CHECK\n\n\n");
 	new
 		dir:direc,
@@ -83,6 +89,8 @@ PerformGlobalPlayerFileCheck()
 
 	dir_close(direc);
 	printf("\n\n\nFILE CHECK COMPLETE. %d FILES CHANGED, %d FILES REMOVED\n\n\n", conversions, deletions);
+
+	return 1;
 }
 
 CheckPlayerFile(item[])

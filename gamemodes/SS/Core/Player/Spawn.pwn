@@ -8,9 +8,9 @@ ItemType:	spawn_ReSpawnItems[4][e_item_object],
 ItemType:	spawn_NewSpawnItems[4][e_item_object];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Player/Spawn'...");
+	print("\n[OnScriptInit] Initialising 'Player/Spawn'...");
 
 	new
 		bagtype[ITM_MAX_NAME],
@@ -239,7 +239,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 		for(new i; i < 4; i++)
 		{
-			if(IsValidItemType(spawn_ReSpawnItems[i][e_itmobj_type]))
+			if(!IsValidItemType(spawn_ReSpawnItems[i][e_itmobj_type]))
 				break;
 
 			tmpitem = CreateItem(spawn_ReSpawnItems[i][e_itmobj_type]);
@@ -251,7 +251,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 		{
 			for(new i; i < 4; i++)
 			{
-				if(IsValidItemType(spawn_NewSpawnItems[i][e_itmobj_type]))
+				if(!IsValidItemType(spawn_NewSpawnItems[i][e_itmobj_type]))
 					break;
 
 				tmpitem = CreateItem(spawn_NewSpawnItems[i][e_itmobj_type]);

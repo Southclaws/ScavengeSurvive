@@ -24,7 +24,7 @@ Float:		wepc_CurrentPosZ,
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'WeaponsCache'...");
+	print("\n[OnGameModeInit] Initialising 'WeaponsCache'...");
 
 	defer WeaponsCacheTimer();
 	return 1;

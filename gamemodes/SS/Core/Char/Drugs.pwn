@@ -41,7 +41,7 @@ forward OnPlayerDrugWearOff(playerid, drugtype);
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'Deugs'...");
+	print("\n[OnScriptInit] Initialising 'Deugs'...");
 
 	HANDLER = debug_register_handler("drugs");
 }

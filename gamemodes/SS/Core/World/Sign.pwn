@@ -30,6 +30,15 @@ static
 Timer:		sgn_PickUpTimer[MAX_PLAYERS],
 			sgn_PressSignTick[MAX_SIGN_TEXT];
 
+// Settings: Prefixed camel case here and dashed in settings.json
+static
+bool:		sgn_PrintEachLoad,
+bool:		sgn_PrintTotalLoad,
+bool:		sgn_PrintEachSave,
+bool:		sgn_PrintEachRuntimeSave,
+bool:		sgn_PrintTotalSave,
+bool:		sgn_PrintRemoves;
+
 
 /*==============================================================================
 
@@ -38,11 +47,18 @@ Timer:		sgn_PickUpTimer[MAX_PLAYERS],
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Sign'...");
+	print("\n[OnScriptInit] Initialising 'Sign'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS);
+
+	GetSettingInt("sign/print-each-load", false, sgn_PrintEachLoad);
+	GetSettingInt("sign/print-total-load", true, sgn_PrintTotalLoad);
+	GetSettingInt("sign/print-each-save", false, sgn_PrintEachSave);
+	GetSettingInt("sign/print-each-runtime-save", false, sgn_PrintEachRuntimeSave);
+	GetSettingInt("sign/print-total-save", true, sgn_PrintTotalSave);
+	GetSettingInt("sign/print-removes", false, sgn_PrintRemoves);
 }
 
 
@@ -216,8 +232,10 @@ timer PickUpSign[250](playerid)
 ==============================================================================*/
 
 
-LoadSigns(printeach = false, printtotal = false)
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'Sign'...");
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SIGNS),
 		item[46],
@@ -246,7 +264,7 @@ LoadSigns(printeach = false, printtotal = false)
 
 				sscanf(item, "p<_>dddd", _:x, _:y, _:z, _:r);
 
-				if(printeach)
+				if(sgn_PrintEachLoad)
 					printf("\t[LOAD] Sign '%s' at %f, %f, %f", text, x, y, z);
 
 				CreateSign(text, Float:x, Float:y, Float:z, Float:r);
@@ -256,13 +274,13 @@ LoadSigns(printeach = false, printtotal = false)
 
 	dir_close(direc);
 
-	if(printtotal)
-		printf("Loaded %d Signs\n", Iter_Count(sgn_Index));
+	if(sgn_PrintTotalLoad)
+		printf("Loaded %d Signs", Iter_Count(sgn_Index));
 
 	return 1;
 }
 
-SaveSigns(printeach = false, printtotal = false)
+SaveSigns()
 {
 	foreach(new i : sgn_Index)
 	{
@@ -277,7 +295,7 @@ SaveSigns(printeach = false, printtotal = false)
 
 		if(file)
 		{
-			if(printeach)
+			if(sgn_PrintEachSave)
 				printf("\t[SAVE] Sign '%s' at %f, %f, %f", sgn_Data[i][sgn_text], sgn_Data[i][sgn_posX], sgn_Data[i][sgn_posY], sgn_Data[i][sgn_posZ]);
 
 			fblockwrite(file, sgn_Data[i][sgn_text], MAX_SIGN_TEXT);
@@ -289,8 +307,8 @@ SaveSigns(printeach = false, printtotal = false)
 		}
 	}
 
-	if(printtotal)
-		printf("Saved %d Signs\n", Iter_Count(sgn_Index));
+	if(sgn_PrintTotalSave)
+		printf("Saved %d Signs", Iter_Count(sgn_Index));
 
 	return 1;
 }

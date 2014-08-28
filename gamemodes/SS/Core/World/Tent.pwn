@@ -46,6 +46,15 @@ Iterator:	tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
 static
 			tnt_CurrentTentID[MAX_PLAYERS];
 
+// Settings: Prefixed camel case here and dashed in settings.json
+static
+bool:		tnt_PrintEachLoad,
+bool:		tnt_PrintTotalLoad,
+bool:		tnt_PrintEachSave,
+bool:		tnt_PrintEachRuntimeSave,
+bool:		tnt_PrintTotalSave,
+bool:		tnt_PrintRemoves;
+
 
 /*==============================================================================
 
@@ -54,9 +63,9 @@ static
 ==============================================================================*/
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Tent'...");
+	print("\n[OnScriptInit] Initialising 'Tent'...");
 
 	if(tnt_GEID_Index > 0)
 	{
@@ -78,6 +87,13 @@ hook OnGameModeInit()
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
 	Iter_Init(tnt_ItemIndex);
+
+	GetSettingInt("tent/print-each-load", false, tnt_PrintEachLoad);
+	GetSettingInt("tent/print-total-load", true, tnt_PrintTotalLoad);
+	GetSettingInt("tent/print-each-save", false, tnt_PrintEachSave);
+	GetSettingInt("tent/print-each-runtime-save", false, tnt_PrintEachRuntimeSave);
+	GetSettingInt("tent/print-total-save", true, tnt_PrintTotalSave);
+	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
 }
 
 hook OnPlayerConnect(playerid)
@@ -188,7 +204,7 @@ stock DestroyTent(tentid)
 		return 0;
 
 	new filename[64];
-
+	// TODO: Set tent as "inactive" but don't remove it.
 	format(filename, sizeof(filename), ""DIRECTORY_TENT"tent_%010d.dat", tnt_GEID[tentid]);
 
 	if(fexist(filename))
@@ -226,6 +242,9 @@ stock DestroyTent(tentid)
 	#if defined SIF_USE_DEBUG_LABELS
 		DestroyDebugLabel(tnt_DebugLabelID[tentid]);
 	#endif
+
+	if(tnt_PrintRemoves)
+		printf("\t[DELT] Tent: GEID %d", tnt_GEID[tentid]);
 
 	return tentid;
 }
@@ -265,7 +284,7 @@ AddItemToTentIndex(tentid, itemid)
 
 	Iter_Add(tnt_ItemIndex[tentid], cell);
 
-	SaveTent(tentid);
+	SaveTent(tentid, tnt_PrintEachRuntimeSave);
 
 	UpdateTentDebugLabel(tentid);
 
@@ -296,7 +315,7 @@ RemoveItemFromTentIndex(itemid)
 	tentid = tnt_ItemTent[itemid];
 
 	Iter_Remove(tnt_ItemIndex[tentid], cell);
-	SaveTent(tentid);
+	SaveTent(tentid, tnt_PrintEachRuntimeSave);
 	UpdateTentDebugLabel(tentid);
 
 	tnt_ItemTent[itemid] = -1;
@@ -556,18 +575,18 @@ forward tnt2_OnHoldActionFinish(playerid);
 ==============================================================================*/
 
 
-SaveTents(printeach = false, printtotal = false)
+SaveTents()
 {
 	new count;
 
 	foreach(new i : tnt_Index)
 	{
-		if(SaveTent(i, printeach))
+		if(SaveTent(i, tnt_PrintEachSave))
 			count++;
 	}
 
-	if(printtotal)
-		printf("Saved %d Tents\n", count);
+	if(tnt_PrintTotalSave)
+		printf("Saved %d Tents", count);
 
 	new arr[1];
 
@@ -577,8 +596,10 @@ SaveTents(printeach = false, printtotal = false)
 	printf("Storing tent GEID: %d", tnt_GEID_Index);
 }
 
-LoadTents(printeach = false, printtotal = false)
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'Tent'...");
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
 		item[46],
@@ -595,7 +616,7 @@ LoadTents(printeach = false, printtotal = false)
 			filename = DIRECTORY_TENT;
 			strcat(filename, item);
 
-			count += LoadTent(filename, printeach);
+			count += LoadTent(filename);
 		}
 	}
 
@@ -606,10 +627,10 @@ LoadTents(printeach = false, printtotal = false)
 	// If no tents were loaded, load the old format
 	// This should only ever happen once (upon transition to this new version)
 	if(count == 0)
-		OLD_LoadTents(printeach, printtotal);
+		OLD_LoadTents();
 
-	if(printtotal)
-		printf("Loaded %d Tents\n", count);
+	if(tnt_PrintTotalLoad)
+		printf("Loaded %d Tents", count);
 }
 
 
@@ -620,7 +641,7 @@ LoadTents(printeach = false, printtotal = false)
 ==============================================================================*/
 
 
-SaveTent(tentid, prints = false)
+SaveTent(tentid, printeach)
 {
 	if(tnt_Loading)
 		return 0;
@@ -628,7 +649,7 @@ SaveTent(tentid, prints = false)
 	if(!Iter_Contains(itm_Index, tentid))
 		return 0;
 
-	if(prints)
+	if(printeach)
 		printf("\t[SAVE] Tent at %f, %f, %f", tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
 
 	new
@@ -664,7 +685,7 @@ SaveTent(tentid, prints = false)
 	return 1;
 }
 
-LoadTent(filename[], prints = false)
+LoadTent(filename[])
 {
 	new
 		length,
@@ -694,7 +715,7 @@ LoadTent(filename[], prints = false)
 		tnt_GEID_Index = tnt_GEID[tentid] + 1;
 	}
 
-	if(prints)
+	if(tnt_PrintEachLoad)
 		printf("\t[LOAD] Tent at %f, %f, %f", Float:data[0], Float:data[1], Float:data[2]);
 
 	new
@@ -762,7 +783,7 @@ enum
 	TENT_CELL_END
 }
 
-OLD_LoadTents(printeach = false, printtotal = false)
+OLD_LoadTents()
 {
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
@@ -780,7 +801,7 @@ OLD_LoadTents(printeach = false, printtotal = false)
 			filename = DIRECTORY_TENT;
 			strcat(filename, item);
 
-			count += OLD_LoadTent(filename, printeach);
+			count += OLD_LoadTent(filename);
 		}
 	}
 
@@ -788,13 +809,13 @@ OLD_LoadTents(printeach = false, printtotal = false)
 
 	dir_close(direc);
 
-	SaveTents(printeach, printtotal);
+	SaveTents();
 
-	if(printtotal)
-		printf("Loaded %d Tents using old format\n", count);
+	if(tnt_PrintTotalLoad)
+		printf("Loaded %d Tents using old format", count);
 }
 
-OLD_LoadTent(filename[], prints = false)
+OLD_LoadTent(filename[])
 {
 	if(!fexist(filename))
 		return 0;
@@ -819,7 +840,7 @@ OLD_LoadTent(filename[], prints = false)
 
 	sscanf(filename, "'"DIRECTORY_TENT"'p<_>dddd", _:x, _:y, _:z, _:r);
 
-	if(prints)
+	if(tnt_PrintEachLoad)
 		printf("\t[LOAD] [OLD] Tent at %f, %f, %f", x, y, z);
 
 	tentid = CreateTent(Float:x, Float:y, Float:z, Float:r);

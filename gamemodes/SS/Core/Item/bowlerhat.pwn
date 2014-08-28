@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'bowlerhat'...");
+	print("\n[OnScriptInit] Initialising 'bowlerhat'...");
 
 	new tmp;
 

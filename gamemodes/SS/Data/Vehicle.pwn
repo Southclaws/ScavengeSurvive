@@ -11,7 +11,7 @@ new stock
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Data/Vehicle'...");
+	print("\n[OnGameModeInit] Initialising 'Data/Vehicle'...");
 	// Todo: Move this to "Server/Init.pwn"
 	// Regular vehicles, most common and found around cities and towns.
 	vgroup_Civilian		= DefineVehicleSpawnGroup("Civilian");

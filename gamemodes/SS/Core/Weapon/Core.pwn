@@ -46,7 +46,7 @@ Timer:		itmw_DropTimer[MAX_PLAYERS];
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'Weapon/Core'...");
+	print("\n[OnScriptInit] Initialising 'Weapon/Core'...");
 
 	HANDLER = debug_register_handler("weapon/core");
 }

@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'policecap'...");
+	print("\n[OnScriptInit] Initialising 'policecap'...");
 
 	new tmp;
 

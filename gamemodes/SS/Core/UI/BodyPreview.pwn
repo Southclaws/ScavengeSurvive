@@ -35,7 +35,7 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'BodyPreview'...");
+	print("\n[OnScriptInit] Initialising 'BodyPreview'...");
 
 	HANDLER = debug_register_handler("bodypreview");
 }

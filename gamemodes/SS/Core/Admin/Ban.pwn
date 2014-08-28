@@ -39,7 +39,7 @@ DBStatement:	stmt_BanSetDuration;
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Ban'...");
+	print("\n[OnGameModeInit] Initialising 'Ban'...");
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" (\
 		"FIELD_BANS_NAME" TEXT,\

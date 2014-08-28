@@ -22,9 +22,9 @@ static
 Float:		loot_SpawnMult = 1.0;
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
-	print("[OnGameModeInit] Initialising 'Loot/Spawn'...");
+	print("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
 
 	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
 }

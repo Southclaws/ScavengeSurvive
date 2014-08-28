@@ -639,7 +639,7 @@ UpdateDetectionFieldExceptions(detfieldid)
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'detfield'...");
+	print("\n[OnScriptInit] Initialising 'detfield'...");
 
 	det_Database = db_open_persistent(DETFIELD_DATABASE);
 
@@ -715,7 +715,7 @@ hook OnScriptInit()
 		CreateDetectionField(name, points, minz, maxz, exceptionlist);
 	}
 
-	printf("Loaded %d Detection Fields\n", Iter_Count(det_Index));
+	printf("Loaded %d Detection Fields", Iter_Count(det_Index));
 
 	return 1;
 }

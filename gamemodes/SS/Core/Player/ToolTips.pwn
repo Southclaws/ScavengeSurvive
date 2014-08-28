@@ -87,9 +87,9 @@ public OnPlayerDropItem(playerid, itemid)
 	forward tip_OnPlayerDropItem(playerid, itemid);
 #endif
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("[OnScriptInit] Initialising 'ToolTips'...");
+	print("\n[OnGameModeInit] Initialising 'ToolTips'...");
 
 	DefineItemToolTip(item_Parachute,		"Press "KEYTEXT_PUT_AWAY" to equip, you can't wear this while you are wearing a bag");
 	DefineItemToolTip(item_Medkit,			"You can stop bleeding and prevent knockouts/darkness on yourself or other players with this");

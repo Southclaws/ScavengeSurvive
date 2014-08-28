@@ -37,7 +37,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Area69'...");
+	print("\n[OnGameModeInit] Initialising 'Area69'...");
 
 	new
 		buttonid[2];

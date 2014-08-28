@@ -46,7 +46,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Weather'...");
+	print("\n[OnGameModeInit] Initialising 'Weather'...");
 
 	gWeatherID = random(sizeof(WeatherData));
 	gLastWeatherChange = GetTickCount();

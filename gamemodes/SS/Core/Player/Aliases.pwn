@@ -17,7 +17,7 @@ DBStatement:	stmt_AliasesFromAll;
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Aliases'...");
+	print("\n[OnGameModeInit] Initialising 'Aliases'...");
 
 	stmt_AliasesFromIp = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_IPV4"=? AND "FIELD_PLAYER_ACTIVE"=1 AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
 	stmt_AliasesFromPass = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_PASS"=? AND "FIELD_PLAYER_ACTIVE"=1 AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");

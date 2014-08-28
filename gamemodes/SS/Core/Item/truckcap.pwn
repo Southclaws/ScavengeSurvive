@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'truckcap'...");
+	print("\n[OnScriptInit] Initialising 'truckcap'...");
 
 	new tmp;
 

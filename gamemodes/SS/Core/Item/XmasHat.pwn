@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'XmasHat'...");
+	print("\n[OnScriptInit] Initialising 'XmasHat'...");
 
 	new tmp;
 

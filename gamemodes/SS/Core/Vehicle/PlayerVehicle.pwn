@@ -79,7 +79,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 	}
 
 	if(printtotal)
-		logf("Saved %d Player vehicles\n", count);
+		logf("Saved %d Player vehicles", count);
 }
 
 LoadPlayerVehicles(printeach = false, printtotal = false)
@@ -107,7 +107,7 @@ LoadPlayerVehicles(printeach = false, printtotal = false)
 		OLD_LoadPlayerVehicles(printeach, printtotal);
 
 	if(printtotal)
-		logf("Loaded %d Player vehicles\n", Iter_Count(veh_Index));
+		logf("Loaded %d Player vehicles", Iter_Count(veh_Index));
 
 	return 1;
 }
@@ -503,7 +503,7 @@ OLD_LoadPlayerVehicles(printeach = false, printtotal = false)
 	SavePlayerVehicles(printeach, printtotal);
 
 	if(printtotal)
-		printf("Loaded %d Player vehicles (old format)\n", Iter_Count(veh_Index));
+		printf("Loaded %d Player vehicles (old format)", Iter_Count(veh_Index));
 
 	return 1;
 }

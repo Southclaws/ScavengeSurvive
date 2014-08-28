@@ -3,7 +3,7 @@
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'World/FC'...");
+	print("\n[OnGameModeInit] Initialising 'World/FC'...");
 
 	CreateBalloon(-2237.60, -1711.45, 479.88, 0.0, 1529.81, -1358.07, 328.37, 0.0);
 

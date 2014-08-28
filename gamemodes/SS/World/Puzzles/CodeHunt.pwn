@@ -40,7 +40,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'CodeHunt'...");
+	print("\n[OnGameModeInit] Initialising 'CodeHunt'...");
 
 	LoadLockup_SF();
 }

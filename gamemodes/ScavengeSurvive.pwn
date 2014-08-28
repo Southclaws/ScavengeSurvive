@@ -65,7 +65,7 @@ native gpci(playerid, serial[], len);
 
 public OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Main'...");
+	print("\n[OnGameModeInit] Initialising 'Main'...");
 
 	OnGameModeInit_Setup();
 
@@ -92,7 +92,6 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <crashdetect>
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
 #include <YSI\y_utils>				// By Y_Less:				http://forum.sa-mp.com/showthread.php?p=1696956
 #include <YSI\y_va>
@@ -527,7 +526,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	print("[OnGameModeInit_Setup] Setting up...");
+	print("\n[OnGameModeInit_Setup] Setting up...");
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
@@ -553,18 +552,18 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	log("[OnGameModeExit] Shutting down...");
+	print("[OnGameModeExit] Shutting down...");
 
 	djson_GameModeExit();
 
 	// First param: print each individual entity when it's saved
 	// Second param: print the total amount of entities saved
 
-	SavePlayerVehicles	(true, true);
-	SaveSafeboxes		(true, true);
-	SaveTents			(true, true);
-	SaveDefences		(true, true);
-	SaveSigns			(true, true);
+	SavePlayerVehicles();
+	SaveSafeboxes();
+	SaveTents();
+	SaveDefences();
+	SaveSigns();
 
 	SaveSprayTags();
 

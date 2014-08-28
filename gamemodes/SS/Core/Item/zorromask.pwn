@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'zorromask'...");
+	print("\n[OnScriptInit] Initialising 'zorromask'...");
 
 	new tmp;
 

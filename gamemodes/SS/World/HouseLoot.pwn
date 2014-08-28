@@ -47,7 +47,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'HouseLoot'...");
+	print("\n[OnGameModeInit] Initialising 'HouseLoot'...");
 
 	new
 		Float:x,

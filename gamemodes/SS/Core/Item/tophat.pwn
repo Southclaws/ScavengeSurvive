@@ -3,7 +3,7 @@
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'ToolTips'...");
+	print("\n[OnScriptInit] Initialising 'ToolTips'...");
 
 	new tmp;
 

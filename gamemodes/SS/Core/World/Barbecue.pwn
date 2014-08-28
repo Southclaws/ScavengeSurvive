@@ -30,7 +30,7 @@ static
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'Barbecue'...");
+	print("\n[OnScriptInit] Initialising 'Barbecue'...");
 
 	HANDLER = debug_register_handler("BBQ");
 }

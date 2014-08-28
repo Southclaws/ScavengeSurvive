@@ -36,6 +36,14 @@ Timer:		box_PickUpTimer[MAX_PLAYERS];
 static
 			box_ItemList[ITM_LST_OF_ITEMS(10)];
 
+// Settings: Prefixed camel case here and dashed in settings.json
+static
+bool:		box_PrintEachLoad,
+bool:		box_PrintTotalLoad,
+bool:		box_PrintEachSave,
+bool:		box_PrintEachRuntimeSave,
+bool:		box_PrintTotalSave,
+bool:		box_PrintRemoves;
 
 static HANDLER = -1;
 
@@ -49,7 +57,7 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	print("[OnScriptInit] Initialising 'SafeBox'...");
+	print("\n[OnScriptInit] Initialising 'SafeBox'...");
 
 	if(box_GEID_Index > 0)
 	{
@@ -70,6 +78,13 @@ hook OnScriptInit()
 		box_ContainerSafebox[i] = INVALID_ITEM_ID;
 
 	HANDLER = debug_register_handler("safebox", 0);
+
+	GetSettingInt("safebox/print-each-load", false, box_PrintEachLoad);
+	GetSettingInt("safebox/print-total-load", true, box_PrintTotalLoad);
+	GetSettingInt("safebox/print-each-save", false, box_PrintEachSave);
+	GetSettingInt("safebox/print-each-runtime-save", false, box_PrintEachRuntimeSave);
+	GetSettingInt("safebox/print-total-save", true, box_PrintTotalSave);
+	GetSettingInt("safebox/print-removes", false, box_PrintRemoves);
 }
 
 hook OnPlayerConnect(playerid)
@@ -257,7 +272,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
 		{
 			d:1:HANDLER("Player %d dropping and saving container %d (item %d)", playerid, GetItemArrayDataAtCell(itemid, 1), itemid);
-			SaveSafeboxItem(itemid, true);
+			SaveSafeboxItem(itemid, box_PrintEachRuntimeSave);
 		}
 	}
 
@@ -356,7 +371,7 @@ timer box_PickUp[250](playerid, itemid)
 
 	PlayerPickUpItem(playerid, itemid);
 
-	RemoveSafeboxItem(itemid, true);
+	RemoveSafeboxItem(itemid);
 
 	return;
 }
@@ -366,7 +381,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 	if(IsValidItem(box_CurrentBoxItem[playerid]))
 	{
 		d:1:HANDLER("Player %d closing and saving container %d (%d)", playerid, containerid, box_CurrentBoxItem[playerid]);
-		SaveSafeboxItem(box_CurrentBoxItem[playerid], true);
+		SaveSafeboxItem(box_CurrentBoxItem[playerid], box_PrintEachRuntimeSave);
 		ClearAnimations(playerid);
 		box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 	}
@@ -395,18 +410,18 @@ public OnPlayerCloseContainer(playerid, containerid)
 ==============================================================================*/
 
 
-SaveSafeboxes(printeach = false, printtotal = false)
+SaveSafeboxes()
 {
 	new count;
 
 	foreach(new i : box_Index)
 	{
-		if(SaveSafeboxItem(i, printeach) > 0)
+		if(SaveSafeboxItem(i, box_PrintEachSave) > 0)
 			count++;
 	}
 
-	if(printtotal)
-		printf("Saved %d Safeboxes\n", count);
+	if(box_PrintTotalSave)
+		printf("Saved %d Safeboxes", count);
 
 	new arr[1];
 
@@ -416,8 +431,10 @@ SaveSafeboxes(printeach = false, printtotal = false)
 	printf("Storing safebox GEID: %d", box_GEID_Index);
 }
 
-LoadSafeboxes(printeach = false, printtotal = false)
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'SafeBox'...");
+
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX),
 		item[46],
@@ -432,7 +449,7 @@ LoadSafeboxes(printeach = false, printtotal = false)
 			filename = DIRECTORY_SAFEBOX;
 			strcat(filename, item);
 
-			count += LoadSafeboxItem(filename, printeach);
+			count += LoadSafeboxItem(filename);
 		}
 	}
 
@@ -441,10 +458,10 @@ LoadSafeboxes(printeach = false, printtotal = false)
 	// If no safeboxes were loaded, load the old format
 	// This should only ever happen once (upon transition to this new version)
 	if(count == 0)
-		OLD_LoadSafeboxes(printeach, printtotal);
+		OLD_LoadSafeboxes();
 
-	if(printtotal)
-		printf("Loaded %d Safeboxes\n", count);
+	if(box_PrintTotalLoad)
+		printf("Loaded %d Safeboxes", count);
 }
 
 
@@ -455,7 +472,7 @@ LoadSafeboxes(printeach = false, printtotal = false)
 ==============================================================================*/
 
 
-SaveSafeboxItem(itemid, prints = false)
+SaveSafeboxItem(itemid, printeach)
 {
 	if(!IsValidItem(itemid))
 	{
@@ -506,7 +523,7 @@ SaveSafeboxItem(itemid, prints = false)
 
 	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
 
-	if(prints)
+	if(printeach)
 		printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
 
 	new
@@ -534,7 +551,7 @@ SaveSafeboxItem(itemid, prints = false)
 	return 1;
 }
 
-LoadSafeboxItem(filename[], prints = false)
+LoadSafeboxItem(filename[])
 {
 	new
 		length,
@@ -570,7 +587,7 @@ LoadSafeboxItem(filename[], prints = false)
 		box_GEID_Index = box_GEID[itemid] + 1;
 	}
 
-	if(prints)
+	if(box_PrintEachLoad)
 		printf("\t[LOAD] Safebox: GEID %d, type %d, at %f, %f, %f", box_GEID[itemid], type[0], data[0], data[1], data[2]);
 
 	new
@@ -607,14 +624,15 @@ LoadSafeboxItem(filename[], prints = false)
 	return 1;
 }
 
-RemoveSafeboxItem(itemid, prints = false)
+RemoveSafeboxItem(itemid)
 {
 	new filename[64];
 
+	// TODO: Set box as "inactive" but don't remove it.
 	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"box_%010d.dat", box_GEID[itemid]);
 	fremove(filename);
 
-	if(prints)
+	if(box_PrintRemoves)
 		printf("\t[DELT] Safebox: GEID %d", box_GEID[itemid]);
 
 	return Iter_SafeRemove(box_Index, itemid, itemid);
@@ -628,7 +646,7 @@ RemoveSafeboxItem(itemid, prints = false)
 ==============================================================================*/
 
 
-OLD_LoadSafeboxes(printeach = false, printtotal = false)
+OLD_LoadSafeboxes()
 {
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX),
@@ -644,19 +662,19 @@ OLD_LoadSafeboxes(printeach = false, printtotal = false)
 			filename = DIRECTORY_SAFEBOX;
 			strcat(filename, item);
 
-			count += OLD_LoadSafeboxItem(filename, printeach);
+			count += OLD_LoadSafeboxItem(filename);
 		}
 	}
 
 	dir_close(direc);
 
-	SaveSafeboxes(printeach, printtotal);
+	SaveSafeboxes();
 
-	if(printtotal)
-		printf("Loaded %d Safeboxes using old format\n", count);
+	if(box_PrintTotalLoad)
+		printf("Loaded %d Safeboxes using old format", count);
 }
 
-OLD_LoadSafeboxItem(filename[], prints = false)
+OLD_LoadSafeboxItem(filename[])
 {
 	new
 		File:file,
@@ -698,7 +716,7 @@ OLD_LoadSafeboxItem(filename[], prints = false)
 	itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
 	containerid = GetItemArrayDataAtCell(itemid, 1);
 
-	if(prints)
+	if(box_PrintEachLoad)
 		printf("\t[LOAD] [OLD] Safebox type %d at %f, %f, %f", data[0], x, y, z);
 
 	for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)

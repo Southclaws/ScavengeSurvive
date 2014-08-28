@@ -104,14 +104,6 @@ LoadSettings()
 	printf("  server/infomsg-interval: %d", gInfoMessageInterval);
 
 
-	// server/file-check
-	if(!djIsSet(SETTINGS_FILE, "server/file-check"))
-		djSetInt(SETTINGS_FILE, "server/file-check", false);
-
-	gPerformFileCheck = djInt(SETTINGS_FILE, "server/file-check");
-	printf("  server/file-check: %d", gPerformFileCheck);
-
-
 	// server/max-uptime
 	if(!djIsSet(SETTINGS_FILE, "server/max-uptime"))
 		djSetInt(SETTINGS_FILE, "server/max-uptime", 5);

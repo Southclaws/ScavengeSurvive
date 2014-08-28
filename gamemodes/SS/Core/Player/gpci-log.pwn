@@ -23,7 +23,7 @@ DBStatement:	stmt_GpciGetRecordsFromName;
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'gpci-log'...");
+	print("\n[OnGameModeInit] Initialising 'gpci-log'...");
 
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_GPCI" (\
 		"FIELD_GPCI_NAME" TEXT,\

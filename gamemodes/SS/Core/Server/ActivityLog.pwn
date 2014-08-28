@@ -10,7 +10,7 @@ static log_buffer[256];
 
 hook OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'ActivityLog'...");
+	print("\n[OnGameModeInit] Initialising 'ActivityLog'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
 }
