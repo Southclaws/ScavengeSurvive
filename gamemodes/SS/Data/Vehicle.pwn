@@ -64,7 +64,7 @@ hook OnGameModeInit()
 	DefineVehicleType(579, "Huntley",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	70.0,		24.6,	loot_CarCivilian,		14,		67.0);
 	DefineVehicleType(500, "Mesa",				vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	77.0,		22.0,	loot_CarCivilian,		12,		73.0);
 	DefineVehicleType(495, "Sandking",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	120.0,		26.0,	loot_CarCivilian,		14,		15.0);
-	DefineVehicleType(568, "Bandito",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	48.0,		12.0,	loot_Survivor,			6,		12.0);
+	DefineVehicleType(568, "Bandito",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	48.0,		12.0,	loot_Survivor,			6,		0.1);
 // 30
 	DefineVehicleType(416, "Ambulance",			vgroup_Medical,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	80.0,		23.6,	loot_Medical,			30,		45.0);
 	DefineVehicleType(462, "Faggio",			vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		8.0,		4.0,	loot_CarCivilian,		6,		55.0);

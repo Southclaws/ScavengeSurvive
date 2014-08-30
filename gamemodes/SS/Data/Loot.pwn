@@ -121,7 +121,6 @@ hook OnGameModeInit()
 
 	// loot_Military
 	AddItemToLootIndex(loot_Military,		item_Grenade,						20.0);
-	AddItemToLootIndex(loot_Military,		item_Teargas,						20.0);
 	AddItemToLootIndex(loot_Military,		item_M9PistolSD,					20.0);
 	AddItemToLootIndex(loot_Military,		item_Spas12,						2.0);
 	AddItemToLootIndex(loot_Military,		item_MP5,							5.0);
