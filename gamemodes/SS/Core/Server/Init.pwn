@@ -817,10 +817,10 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_PetrolBomb,	1);
 	SetItemTypeMaxArrayData(item_CodePart,		1);
 	SetItemTypeMaxArrayData(item_LargeBackpack,	2);
-	SetItemTypeMaxArrayData(item_LocksmithKit,	0);
-	SetItemTypeMaxArrayData(item_XmasHat,		0);
-	SetItemTypeMaxArrayData(item_VehicleWeapon,	0);
-	SetItemTypeMaxArrayData(item_AdvancedKeypad,0);
+	SetItemTypeMaxArrayData(item_LocksmithKit,	1);
+	SetItemTypeMaxArrayData(item_XmasHat,		1);
+	SetItemTypeMaxArrayData(item_VehicleWeapon,	4);
+	SetItemTypeMaxArrayData(item_AdvancedKeypad,1);
 	SetItemTypeMaxArrayData(item_Ammo9mmFMJ,	1);
 	SetItemTypeMaxArrayData(item_AmmoFlechette,	1);
 	SetItemTypeMaxArrayData(item_AmmoHomeBuck,	1);

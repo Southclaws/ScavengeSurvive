@@ -11,3 +11,4 @@ start.bat
 *.pyc
 settings.williames
 autoissue/
+*.lnk
