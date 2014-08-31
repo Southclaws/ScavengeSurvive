@@ -1,17 +1,6 @@
 #include <YSI\y_hooks>
 
 
-#define BOT_1_NICKNAME "SS-Echo-A"
-#define BOT_1_REALNAME "SS-Echo-A"
-#define BOT_1_USERNAME "SS-Echo-A"
-
-#define BOT_2_NICKNAME "SS-Echo-B"
-#define BOT_2_REALNAME "SS-Echo-B"
-#define BOT_2_USERNAME "SS-Echo-B"
-
-#define MAX_BOTS		(2)
-
-
 static
 	irc_Serv[32],
 	irc_Port,
