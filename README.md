@@ -84,6 +84,16 @@ creations are made!
     "print-total-load": print the total amount of items loaded
     "print-total-save": print the total amount of items saved
 
+  "irc":
+    "bot-name": bot real name
+    "bot-nick": bot nickname
+    "bot-pass": bot account password (NickServ)
+    "bot-user": bot username
+    "chan": channel to connect to and echo chat to/from
+    "pass": channel password (if any)
+    "port": server port
+    "serv": server address
+
   "player":
     "allow-pause-map": enable the map option in the pause menu
     "combat-log-window": combat log time window in seconds

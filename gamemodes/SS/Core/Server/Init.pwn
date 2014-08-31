@@ -92,7 +92,6 @@ Float:	gNameTagDistance,
 // INTERNAL
 new
 		gServerUptime,
-bool:	gServerRestarting,
 		gBigString[MAX_PLAYERS][4096],
 		gTotalInfoMessage,
 		gTotalRules,

@@ -6,6 +6,8 @@ new
 	chat_LastMessageTick[MAX_PLAYERS];
 
 
+forward OnPlayerSendChat(playerid, text[], Float:frequency);
+
 hook OnPlayerConnect(playerid)
 {
 	chat_LastMessageTick[playerid] = 0;
@@ -71,6 +73,9 @@ hook OnPlayerText(playerid, text[])
 PlayerSendChat(playerid, chat[], Float:frequency)
 {
 	if(GetTickCountDifference(GetPlayerServerJoinTick(playerid), GetTickCount()) < 1000)
+		return 0;
+
+	if(CallLocalFunction("OnPlayerSendChat", "dsf", playerid, chat, frequency))
 		return 0;
 
 	new

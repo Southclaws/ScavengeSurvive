@@ -93,7 +93,7 @@ public OnGameModeInit()
 ==============================================================================*/
 
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <YSI\y_utils>				// By Y_Less:				http://forum.sa-mp.com/showthread.php?p=1696956
+#include <YSI\y_utils>				// By Y_Less, 3.1:			http://forum.sa-mp.com/showthread.php?p=1696956
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
@@ -104,7 +104,7 @@ public OnGameModeInit()
 #include "SS\Core\Server\Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
-//#include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
+#include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
 #include <socket>					// By BlueG, v0.2b:			http://forum.sa-mp.com/showthread.php?t=333934
 #include <sqlitei>					// By Slice, v0.9.6:		http://forum.sa-mp.com/showthread.php?t=303682
@@ -122,7 +122,7 @@ public OnGameModeInit()
 #include <djson>					// By DracoBlue, 1.6.2 :	http://forum.sa-mp.com/showthread.php?t=48439
 
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF>						// By Southclaw:			https://github.com/Southclaw/SIF
+#include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
 #include <SIF\extensions\ItemArrayData>
 #include <SIF\extensions\ItemList>
 #include <SIF\extensions\InventoryDialog>
@@ -285,6 +285,18 @@ native WP_Hash(buffer[], len, const str[]);
 
 /*==============================================================================
 
+	Global values
+
+==============================================================================*/
+
+
+new
+bool:	gServerInitialising = true,
+bool:	gServerRestarting = false;
+
+
+/*==============================================================================
+
 	Gamemode Scripts
 
 ==============================================================================*/
@@ -314,7 +326,6 @@ native WP_Hash(buffer[], len, const str[]);
 #include "SS/Core/Server/SaveBlock.pwn"
 #include "SS/Core/Server/ActivityLog.pwn"
 #include "SS/Core/Server/FileCheck.pwn"
-#include "SS/Core/Server/IRC.pwn"
 #include "SS/Core/Server/Sockets.pwn"
 
 // UI
@@ -366,6 +377,7 @@ native WP_Hash(buffer[], len, const str[]);
 #include "SS/Core/Player/Profile.pwn"
 #include "SS/Core/Player/ToolTips.pwn"
 #include "SS/Core/Player/Whitelist.pwn"
+#include "SS/Core/Player/IRC.pwn"
 
 // CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
@@ -519,6 +531,8 @@ main()
 	print("\n\n/*==============================================================================\n\n");
 	print("    Southclaw's Scavenge and Survive");
 	print("\n\n==============================================================================*/\n\n");
+
+	gServerInitialising = false;
 }
 
 /*
