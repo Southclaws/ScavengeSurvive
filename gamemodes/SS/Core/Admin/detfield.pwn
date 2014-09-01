@@ -551,9 +551,10 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		if(areaid == det_AreaID[i])
 		{
 			if(!IsPlayerOnAdminDuty(playerid))
-			{
 				DetectionFieldLogPlayer(playerid, i);
 
+			if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
+			{
 				if(GetPlayerAdminLevel(playerid) >= 3)
 					MsgF(playerid, YELLOW, " >  Entered detection field '%s'", det_Name[i]);
 			}

@@ -117,7 +117,7 @@ public OnPlayerSendChat(playerid, text[], Float:frequency)
 
 public IRC_OnUserSay(botid, recipient[], user[], host[], message[])
 {
-	if(!strcmp(recipient, "#ScavengeSurviveChat", true))
+	if(!strcmp(recipient, irc_Chan, true))
 	{
 		logf("[CHAT] [IRC] [%s]: %s", user, message);
 
