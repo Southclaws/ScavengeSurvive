@@ -111,6 +111,8 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 		GetPlayerName(reporter, reportername, MAX_PLAYER_NAME);
 	}
 
+	SendIrcStaffMessage(reportername, sprintf("Report %s %s: %s", type, name, reason));
+
 	stmt_bind_value(stmt_ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_value(stmt_ReportInsert, 1, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH);
 	stmt_bind_value(stmt_ReportInsert, 2, DB::TYPE_INTEGER, gettime());

@@ -338,3 +338,32 @@ public IRC_OnUserSetChannelTopic(botid, channel[], user[], host[], topic[])
 	printf("[IRC] IRC_OnUserSetChannelTopic (Bot ID %d): User %s (%s) on %s set topic: %s", botid, user, host, channel, topic);
 	return 1;
 }
+
+
+stock SendIrcChatMessage(name[], text[])
+{
+	new
+		message[7 + MAX_PLAYER_NAME + 128];
+
+	strins(name, ".", 1, MAX_PLAYER_NAME);
+
+	format(message, sizeof(message), "[-][%s]: %s", name, text);
+
+	IRC_GroupSay(irc_Group, irc_ChatChan, message);
+
+	return 1;
+}
+
+stock SendIrcStaffMessage(name[], text[])
+{
+	new
+		message[7 + MAX_PLAYER_NAME + 128];
+
+	strins(name, ".", 1, MAX_PLAYER_NAME);
+
+	format(message, sizeof(message), "[-][%s]: %s", name, text);
+
+	IRC_GroupSay(irc_Group, irc_StaffChan, message);
+
+	return 1;
+}
