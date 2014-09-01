@@ -53,19 +53,11 @@ hook OnPlayerText(playerid, text[])
 	if(GetPlayerChatMode(playerid) == CHAT_MODE_GLOBAL)
 		PlayerSendChat(playerid, text, 1.0);
 
+	if(GetPlayerChatMode(playerid) == CHAT_MODE_ADMIN)
+		PlayerSendChat(playerid, text, 3.0);
+
 	if(GetPlayerChatMode(playerid) == CHAT_MODE_RADIO)
 		PlayerSendChat(playerid, text, GetPlayerRadioFrequency(playerid));
-
-	if(GetPlayerChatMode(playerid) == CHAT_MODE_ADMIN)
-	{
-		logf("[CHAT] [ADMIN] [%p]: %s", playerid, text);
-
-		foreach(new i : Player)
-		{
-			if(GetPlayerAdminLevel(i) > 0)
-				MsgF(i, WHITE, "%C[Admin] (%d) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, playerid, TagScan(text));
-		}
-	}
 
 	return 0;
 }
@@ -112,6 +104,8 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 					SendClientMessage(i, CHAT_LOCAL, line2);
 			}
 		}
+
+		return 1;
 	}
 	else if(frequency == 1.0)
 	{
@@ -134,8 +128,10 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			if(!isnull(line2))
 				SendClientMessage(i, WHITE, line2);
 		}
+
+		return 1;
 	}
-	if(frequency == 2.0)
+	else if(frequency == 2.0)
 	{
 		logf("[CHAT] [LOCALME] [%p]: %s", playerid, chat);
 
@@ -162,10 +158,37 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 					SendClientMessage(i, CHAT_LOCAL, line2);
 			}
 		}
+
+		return 1;
+	}
+	else if(frequency == 3.0)
+	{
+		logf("[CHAT] [ADMIN] [%p]: %s", playerid, chat);
+
+		format(line1, 256, "%C[Admin] (%d) %P"C_WHITE": %s",
+			GetAdminRankColour(GetPlayerAdminLevel(playerid)),
+			playerid,
+			playerid,
+			TagScan(chat));
+
+		TruncateChatMessage(line1, line2);
+
+		foreach(new i : Player)
+		{
+			if(GetPlayerAdminLevel(i) > 0)
+			{
+				SendClientMessage(i, CHAT_LOCAL, line1);
+
+				if(!isnull(line2))
+					SendClientMessage(i, CHAT_LOCAL, line2);
+			}
+		}
+
+		return 1;
 	}
 	else
 	{
-		logf("[CHAT] [RADIO] [%p]: %s", playerid, chat);
+		logf("[CHAT] [RADIO] [%.2f] [%p]: %s", frequency, playerid, chat);
 
 		format(line1, 256, "[%.2f] (%d) %P"C_WHITE": %s",
 			frequency,
@@ -185,9 +208,9 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 					SendClientMessage(i, CHAT_RADIO, line2);
 			}
 		}
-	}
 
-	return 1;
+		return 1;
+	}
 }
 
 CMD:g(playerid, params[])
@@ -278,13 +301,7 @@ ACMD:a[1](playerid, params[])
 	}
 	else
 	{
-		logf("[CHAT] [ADMIN] [%p]: %s", playerid, params);
-
-		foreach(new i : Player)
-		{
-			if(GetPlayerAdminLevel(i) > 0)
-				MsgF(i, WHITE, "%C[Admin] (%d) %P"C_WHITE": %s", GetAdminRankColour(GetPlayerAdminLevel(playerid)), playerid, playerid, TagScan(params));
-		}
+		PlayerSendChat(playerid, params, 3.0);
 	}
 
 	return 7;

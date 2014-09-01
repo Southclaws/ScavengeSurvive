@@ -707,7 +707,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Hammer,		1);
 	SetItemTypeMaxArrayData(item_Shield,		1);
 	SetItemTypeMaxArrayData(item_Flashlight,	1);
-	SetItemTypeMaxArrayData(item_StunGun,		1);
+	SetItemTypeMaxArrayData(item_StunGun,		4);
 	SetItemTypeMaxArrayData(item_LaserPoint,	1);
 	SetItemTypeMaxArrayData(item_Screwdriver,	1);
 	SetItemTypeMaxArrayData(item_MobilePhone,	1);
