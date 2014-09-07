@@ -90,7 +90,6 @@ hook OnPlayerConnect(playerid)
 
 	format(joinMsg, sizeof(joinMsg), " >>> [%d][%s] has joined the server.", playerid, name);
 	IRC_GroupSay(irc_Group, irc_ChatChan, joinMsg);
-	IRC_GroupSay(irc_Group, irc_StaffChan, joinMsg);
 
 	return 1;
 }
@@ -121,7 +120,6 @@ hook OnPlayerDisconnect(playerid, reason)
 
 	format(leaveMsg, sizeof(leaveMsg), " <<< [%d][%s] has left the server. (%s)", playerid, name, reasonMsg);
 	IRC_GroupSay(irc_Group, irc_ChatChan, leaveMsg);
-	IRC_GroupSay(irc_Group, irc_StaffChan, leaveMsg);
 
 	return 1;
 }
