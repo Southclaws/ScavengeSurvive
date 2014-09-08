@@ -22,7 +22,9 @@ enum E_TENT_DATA
 Float:		tnt_posX,
 Float:		tnt_posY,
 Float:		tnt_posZ,
-Float:		tnt_rotZ
+Float:		tnt_rotZ,
+			tnt_world,
+			tnt_interior
 }
 
 new
@@ -40,8 +42,7 @@ Iterator:	tnt_Index<MAX_TENT>,
 Iterator:	tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
 			tnt_ItemTent[ITM_MAX] = {INVALID_ITEM_ID, ...},
 			tnt_ItemList[ITM_LST_OF_ITEMS(MAX_TENT_ITEMS)],
-			tnt_ButtonTent[BTN_MAX] = {INVALID_TENT_ID, ...},
-			tnt_ItemTentTarget[ITM_MAX] = {INVALID_TENT_ID, ...};
+			tnt_ButtonTent[BTN_MAX] = {INVALID_TENT_ID, ...};
 
 static
 			tnt_CurrentTentID[MAX_PLAYERS];
@@ -109,11 +110,11 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
+stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 {
 	new id = Iter_Free(tnt_Index);
 
-	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", .areasize = 1.5, .label = 0);
+	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", worldid, interiorid, .areasize = 1.5, .label = 0);
 
 	tnt_ButtonTent[tnt_Data[id][tnt_buttonId]] = id;
 
@@ -121,49 +122,49 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 		x + (0.49 * floatsin(-rz + 270.0, degrees)),
 		y + (0.49 * floatcos(-rz + 270.0, degrees)),
 		z,
-		0.0, 45.0, rz, .streamdistance = 100.0);
+		0.0, 45.0, rz, worldid, interiorid, .streamdistance = 100.0);
 
 	tnt_Data[id][tnt_objSideR2] = CreateDynamicObject(19477,
 		x + (0.48 * floatsin(-rz + 270.0, degrees)),
 		y + (0.48 * floatcos(-rz + 270.0, degrees)),
 		z,
-		0.0, 45.0, rz, .streamdistance = 20.0);
+		0.0, 45.0, rz, worldid, interiorid, .streamdistance = 20.0);
 
 	tnt_Data[id][tnt_objSideL1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 90.0, degrees)),
 		y + (0.49 * floatcos(-rz + 90.0, degrees)),
 		z,
-		0.0, -45.0, rz, .streamdistance = 100.0);
+		0.0, -45.0, rz, worldid, interiorid, .streamdistance = 100.0);
 
 	tnt_Data[id][tnt_objSideL2] = CreateDynamicObject(19477,
 		x + (0.48 * floatsin(-rz + 90.0, degrees)),
 		y + (0.48 * floatcos(-rz + 90.0, degrees)),
 		z,
-		0.0, -45.0, rz, .streamdistance = 20.0);
+		0.0, -45.0, rz, worldid, interiorid, .streamdistance = 20.0);
 
 	tnt_Data[id][tnt_objEndF] = CreateDynamicObject(19475,
 		x + (1.3 * floatsin(-rz, degrees)),
 		y + (1.3 * floatcos(-rz, degrees)),
 		z + 0.17,
-		45.0, 0.0, rz + 90, .streamdistance = 5.0);
+		45.0, 0.0, rz + 90, worldid, interiorid, .streamdistance = 5.0);
 
 	tnt_Data[id][tnt_objEndB] = CreateDynamicObject(19475,
 		x - (1.3 * floatsin(-rz, degrees)),
 		y - (1.3 * floatcos(-rz, degrees)),
 		z + 0.17,
-		45.0, 0.0, rz + 90, .streamdistance = 5.0);
+		45.0, 0.0, rz + 90, worldid, interiorid, .streamdistance = 5.0);
 
 	tnt_Data[id][tnt_objPoleF] = CreateDynamicObject(19087,
 		x + (1.3 * floatsin(-rz, degrees)),
 		y + (1.3 * floatcos(-rz, degrees)),
 		z + 0.48,
-		0.0, 0.0, rz, .streamdistance = 10.0);
+		0.0, 0.0, rz, worldid, interiorid, .streamdistance = 10.0);
 
 	tnt_Data[id][tnt_objPoleB] = CreateDynamicObject(19087,
 		x - (1.3 * floatsin(-rz, degrees)),
 		y - (1.3 * floatcos(-rz, degrees)),
 		z + 0.48,
-		0.0, 0.0, rz, .streamdistance = 10.0);
+		0.0, 0.0, rz, worldid, interiorid, .streamdistance = 10.0);
 
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideR1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideR2], 0, 3095, "a51jdrx", "sam_camo", 0);
@@ -179,6 +180,8 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz)
 	tnt_Data[id][tnt_posY] = y;
 	tnt_Data[id][tnt_posZ] = z;
 	tnt_Data[id][tnt_rotZ] = rz;
+	tnt_Data[id][tnt_world] = worldid;
+	tnt_Data[id][tnt_interior] = interiorid;
 
 	Iter_Add(tnt_Index, id);
 
@@ -234,6 +237,8 @@ stock DestroyTent(tentid)
 	tnt_Data[tentid][tnt_posY] = 0.0;
 	tnt_Data[tentid][tnt_posZ] = 0.0;
 	tnt_Data[tentid][tnt_rotZ] = 0.0;
+	tnt_Data[tentid][tnt_world] = 0;
+	tnt_Data[tentid][tnt_interior] = 0;
 
 	Iter_Clear(tnt_ItemIndex[tentid]);
 
@@ -323,34 +328,6 @@ RemoveItemFromTentIndex(itemid)
 	return tentid;
 }
 
-public OnItemCreateInWorld(itemid)
-{
-	if(!tnt_Loading)
-	{
-		if(tnt_ItemTentTarget[itemid] != INVALID_TENT_ID)
-		{
-			AddItemToTentIndex(tnt_ItemTentTarget[itemid], itemid);
-			tnt_ItemTentTarget[itemid] = INVALID_TENT_ID;
-		}
-	}
-
-	#if defined tnt_OnItemCreateInWorld
-		return tnt_OnItemCreateInWorld(itemid);
-	#else
-		return 1;
-	#endif
-}
-#if defined _ALS_OnItemCreateInWorld
-	#undef OnItemCreateInWorld
-#else
-	#define _ALS_OnItemCreateInWorld
-#endif
- 
-#define OnItemCreateInWorld tnt_OnItemCreateInWorld
-#if defined tnt_OnItemCreateInWorld
-	forward tnt_OnItemCreateInWorld(itemid);
-#endif
-
 /*
 public OnItemRemoveFromWorld(itemid)
 {
@@ -431,8 +408,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	{
 		if(tnt_ButtonTent[list[i]] != INVALID_TENT_ID)
 		{
-			tnt_ItemTentTarget[itemid] = tnt_ButtonTent[list[i]];
-			MsgF(playerid, YELLOW, " >  Item %d added to tent %d (GEID: %d)", itemid, tnt_ButtonTent[list[i]], tnt_GEID[tnt_ButtonTent[list[i]]]);
+			_DropItemInTent(playerid, itemid, tnt_ButtonTent[list[i]]);
 			break;
 		}
 	}
@@ -440,7 +416,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	#if defined tnt_OnPlayerDroppedItem
 		return tnt_OnPlayerDroppedItem(playerid, itemid);
 	#else
-		return 1;
+		return 0;
 	#endif
 }
 #if defined _ALS_OnPlayerDroppedItem
@@ -453,6 +429,16 @@ public OnPlayerDroppedItem(playerid, itemid)
 #if defined tnt_OnPlayerDroppedItem
 	forward tnt_OnPlayerDroppedItem(playerid, itemid);
 #endif
+
+_DropItemInTent(playerid, itemid, tentid)
+{
+	if(AddItemToTentIndex(tentid, itemid))
+	{
+		MsgF(playerid, YELLOW, " >  Item %d added to tent %d (GEID: %d)", itemid, tentid, tnt_GEID[tentid]);
+	}
+
+	return 1;
+}
 
 UpdateTentDebugLabel(tentid)
 {
@@ -654,7 +640,7 @@ SaveTent(tentid, printeach)
 
 	new
 		filename[64],
-		data[4];
+		data[6];
 
 	format(filename, sizeof(filename), ""DIRECTORY_TENT"tent_%010d.dat", tnt_GEID[tentid]);
 
@@ -662,8 +648,10 @@ SaveTent(tentid, printeach)
 	data[1] = _:tnt_Data[tentid][tnt_posY];
 	data[2] = _:tnt_Data[tentid][tnt_posZ];
 	data[3] = _:tnt_Data[tentid][tnt_rotZ];
+	data[4] = tnt_Data[tentid][tnt_world];
+	data[5] = tnt_Data[tentid][tnt_interior];
 
-	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 6, data, false, false, false);
 
 	new
 		items[10],
@@ -691,7 +679,7 @@ LoadTent(filename[])
 		length,
 		searchpos,
 		tentid,
-		data[4];
+		data[6];
 
 	length = modio_read(filename, _T<W,P,O,S>, _:data, false, false);
 
@@ -702,7 +690,7 @@ LoadTent(filename[])
 		return 0;
 
 	tnt_SkipGEID = true;
-	tentid = CreateTent(Float:data[0], Float:data[1], Float:data[2], Float:data[3]);
+	tentid = CreateTent(Float:data[0], Float:data[1], Float:data[2], Float:data[3], data[4], data[5]);
 	tnt_SkipGEID = false;
 
 	searchpos = strlen(DIRECTORY_TENT) + 6;
@@ -725,6 +713,7 @@ LoadTent(filename[])
 		Float:z,
 		Float:r,
 		interior,
+		world,
 		itemid,
 		itemlist;
 
@@ -740,6 +729,7 @@ LoadTent(filename[])
 		itemtype = GetItemListItem(itemlist, i);
 		GetItemListItemPos(itemlist, i, x, y, z);
 		GetItemListItemRot(itemlist, i, r, r, r);
+		world = GetItemListItemWorld(itemlist, i);
 		interior = GetItemListItemInterior(itemlist, i);
 
 		if(length == 0)
@@ -751,7 +741,7 @@ LoadTent(filename[])
 		if(itemtype == ItemType:0)
 			break;
 
-		itemid = CreateItem(itemtype, x, y, z, .rz = r, .interior = interior, .zoffset = FLOOR_OFFSET);
+		itemid = CreateItem(itemtype, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
 
 		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 			SetItemArrayDataFromListItem(itemid, itemlist, i);
@@ -843,7 +833,7 @@ OLD_LoadTent(filename[])
 	if(tnt_PrintEachLoad)
 		printf("\t[LOAD] [OLD] Tent at %f, %f, %f", x, y, z);
 
-	tentid = CreateTent(Float:x, Float:y, Float:z, Float:r);
+	tentid = CreateTent(Float:x, Float:y, Float:z, Float:r, 0, 0);
 
 	while(idx < sizeof(data))
 	{

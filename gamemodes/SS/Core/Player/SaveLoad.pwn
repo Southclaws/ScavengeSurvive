@@ -41,6 +41,8 @@ enum
 	PLY_CELL_MUTE_TIME,
 	PLY_CELL_KNOCKOUT,
 	PLY_CELL_BAGTYPE,
+	PLY_CELL_WORLD,
+	PLY_CELL_INTERIOR,
 	PLY_CELL_END
 }
 
@@ -126,6 +128,9 @@ SavePlayerChar(playerid)
 
 	if(saveload_Debug[playerid] >= 3)
 		printf("[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
+
+	data[PLY_CELL_WORLD] = GetPlayerVirtualWorld(playerid);
+	data[PLY_CELL_INTERIOR] = GetPlayerInterior(playerid);
 
 	modio_push(filename, _T<C,H,A,R>, PLY_CELL_END, data);
 
@@ -376,6 +381,9 @@ LoadPlayerChar(playerid)
 		if(saveload_Debug[playerid] >= 3)
 			printf("[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
 	}
+
+	SetPlayerVirtualWorld(playerid, data[PLY_CELL_WORLD]);
+	SetPlayerInterior(playerid, data[PLY_CELL_INTERIOR]);
 
 /*
 	Held item

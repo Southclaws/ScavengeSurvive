@@ -493,7 +493,7 @@ SaveSafeboxItem(itemid, printeach)
 	}
 
 	new
-		data[4],
+		data[6],
 		containerid,
 		filename[64];
 
@@ -520,8 +520,10 @@ SaveSafeboxItem(itemid, printeach)
 
 	GetItemPos(itemid, Float:data[0], Float:data[1], Float:data[2]);
 	GetItemRot(itemid, Float:data[3], Float:data[3], Float:data[3]);
+	data[4] = GetItemWorld(itemid);
+	data[5] = GetItemInterior(itemid);
 
-	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 6, data, false, false, false);
 
 	if(printeach)
 		printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
@@ -556,7 +558,7 @@ LoadSafeboxItem(filename[])
 	new
 		length,
 		type[1],
-		data[4],
+		data[6],
 		itemid,
 		containerid;
 
@@ -574,7 +576,7 @@ LoadSafeboxItem(filename[])
 		return 0;
 
 	box_SkipGEID = true;
-	itemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .zoffset = FLOOR_OFFSET);
+	itemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5], .zoffset = FLOOR_OFFSET);
 	box_SkipGEID = false;
 
 	containerid = GetItemArrayDataAtCell(itemid, 1);

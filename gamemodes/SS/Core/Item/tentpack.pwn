@@ -80,7 +80,7 @@ public OnHoldActionFinish(playerid)
 			GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
 			GetItemRot(tnt_CurrentTentItem[playerid], rz, rz, rz);
 
-			CreateTent(x, y, z + 0.4, rz);
+			CreateTent(x, y, z + 0.4, rz, GetItemWorld(tnt_CurrentTentItem[playerid]), GetItemInterior(tnt_CurrentTentItem[playerid]));
 			DestroyItem(tnt_CurrentTentItem[playerid]);
 			ClearAnimations(playerid);
 

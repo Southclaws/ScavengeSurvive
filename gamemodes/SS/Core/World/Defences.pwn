@@ -40,7 +40,9 @@ enum E_DEFENCE_DATA
 Float:		def_posX,
 Float:		def_posY,
 Float:		def_posZ,
-Float:		def_rotZ
+Float:		def_rotZ,
+			def_worldid,
+			def_interiorid
 }
 
 enum
@@ -180,7 +182,7 @@ stock IsItemTypeDefenceItem(ItemType:itemtype)
 	return false;
 }
 
-CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hitpoints = -1)
+CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hitpoints = -1, worldid = 0, interiorid = 0)
 {
 	new id = Iter_Free(def_Index);
 
@@ -204,6 +206,8 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 	def_Data[id][def_posY] = y;
 	def_Data[id][def_posZ] = z;
 	def_Data[id][def_rotZ] = rz;
+	def_Data[id][def_worldid] = worldid;
+	def_Data[id][def_interiorid] = interiorid;
 
 	if(motor)
 	{
@@ -212,18 +216,18 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 				def_TypeData[type][def_horizontalRotX],
 				def_TypeData[type][def_horizontalRotY],
-				def_TypeData[type][def_horizontalRotZ] + rz);
+				def_TypeData[type][def_horizontalRotZ] + rz, worldid, interiorid);
 
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), worldid, interiorid, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 		}
 		else
 		{
 			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
 				def_TypeData[type][def_verticalRotX],
 				def_TypeData[type][def_verticalRotY],
-				def_TypeData[type][def_verticalRotZ] + rz);
+				def_TypeData[type][def_verticalRotZ] + rz, worldid, interiorid);
 
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename), worldid, interiorid, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 		}
 	}
 	else
@@ -233,18 +237,18 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 				def_TypeData[type][def_horizontalRotX],
 				def_TypeData[type][def_horizontalRotY],
-				def_TypeData[type][def_horizontalRotZ] + rz);
+				def_TypeData[type][def_horizontalRotZ] + rz, worldid, interiorid);
 
-			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), worldid, interiorid, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 		}
 		else
 		{
 			def_Data[id][def_objectId] = CreateDynamicObject(GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
 				def_TypeData[type][def_verticalRotX],
 				def_TypeData[type][def_verticalRotY],
-				def_TypeData[type][def_verticalRotZ] + rz);
+				def_TypeData[type][def_verticalRotZ] + rz, worldid, interiorid);
 
-			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), 0, 0, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
+			def_Data[id][def_buttonId] = CreateButton(x, y, z + def_TypeData[type][def_placeOffsetZ], sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename), worldid, interiorid, 1.5, 1, sprintf("%d/%d", def_Data[id][def_hitPoints], def_TypeData[type][def_maxHitPoints]), _, 1.5);
 		}
 	}
 
@@ -594,12 +598,16 @@ public OnHoldActionFinish(playerid)
 			Float:y,
 			Float:z,
 			Float:angle,
+			worldid,
+			interiorid,
 			ItemType:itemtype = GetItemType(GetPlayerItem(playerid)),
 			type,
 			id;
 
 		GetItemPos(def_CurrentDefenceItem[playerid], x, y, z);
 		GetItemRot(def_CurrentDefenceItem[playerid], angle, angle, angle);
+		worldid = GetItemWorld(def_CurrentDefenceItem[playerid]);
+		interiorid = GetItemInterior(def_CurrentDefenceItem[playerid]);
 
 		for(new i; i < def_TypeIndex; i++)
 		{
@@ -614,7 +622,7 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Screwdriver)
 		{
-			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL, .worldid = worldid, .interiorid = interiorid);
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
@@ -625,7 +633,7 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Hammer)
 		{
-			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL);
+			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL, .worldid = worldid, .interiorid = interiorid);
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
@@ -684,6 +692,8 @@ public OnHoldActionFinish(playerid)
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posY],
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posZ],
 				.rz = def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ],
+				.world = def_Data[def_CurrentDefenceEdit[playerid]][def_worldid],
+				.interior = def_Data[def_CurrentDefenceEdit[playerid]][def_interiorid],
 				.zoffset = ITEM_BUTTON_OFFSET);
 
 			switch(def_Data[def_CurrentDefenceEdit[playerid]][def_pose])
@@ -1261,8 +1271,10 @@ SaveDefenceItem(defenceid, prints)
 	data[1] = _:def_Data[defenceid][def_posY];
 	data[2] = _:def_Data[defenceid][def_posZ];
 	data[3] = _:def_Data[defenceid][def_rotZ];
+	data[4] = _:def_Data[defenceid][def_worldid];
+	data[5] = _:def_Data[defenceid][def_interiorid];
 
-	modio_push(filename, _T<W,P,O,S>, 4, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 6, data, false, false, false);
 
 	data[DEFENCE_CELL_TYPE] = def_Data[defenceid][def_type];
 	data[DEFENCE_CELL_POSE] = def_Data[defenceid][def_pose];
@@ -1283,7 +1295,7 @@ LoadDefenceItem(filename[])
 		length,
 		searchpos,
 		defenceid,
-		pos[4],
+		pos[6],
 		data[7];
 
 	length = modio_read(filename, _T<W,P,O,S>, _:pos, false, false);
@@ -1302,7 +1314,13 @@ LoadDefenceItem(filename[])
 	def_SkipGEID = true;
 
 	defenceid = CreateDefence(data[DEFENCE_CELL_TYPE], Float:pos[0], Float:pos[1], Float:pos[2], Float:pos[3],
-		data[DEFENCE_CELL_POSE], data[DEFENCE_CELL_MOTOR], data[DEFENCE_CELL_KEYPAD], data[DEFENCE_CELL_PASS], data[DEFENCE_CELL_MOVESTATE], data[DEFENCE_CELL_HITPOINTS]);
+		data[DEFENCE_CELL_POSE],
+		data[DEFENCE_CELL_MOTOR],
+		data[DEFENCE_CELL_KEYPAD],
+		data[DEFENCE_CELL_PASS],
+		data[DEFENCE_CELL_MOVESTATE],
+		data[DEFENCE_CELL_HITPOINTS],
+		pos[4], pos[5]);
 
 	def_SkipGEID = false;
 
@@ -1441,7 +1459,14 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 
 		if(def_Data[closestid][def_hitPoints] <= 0)
 		{
-			logf("[DESTRUCTION] DEFENCE TYPE %d %f, %f, %f (%f) FROM: %d, %d, %d", _:def_TypeData[def_Data[closestid][def_type]][def_itemtype], def_Data[closestid][def_posX], def_Data[closestid][def_posY], def_Data[closestid][def_posZ], def_Data[closestid][def_rotZ], x, y, z);
+			logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
+				closestid, x, y, z,
+				def_GEID[closestid],
+				_:def_TypeData[def_Data[closestid][def_type]][def_itemtype],
+				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
+				def_TypeData[type][def_verticalRotX],
+				def_TypeData[type][def_verticalRotY],
+				def_TypeData[type][def_verticalRotZ] + def_Data[closestid][def_rotZ]);
 
 			DestroyDefence(closestid);
 		}
