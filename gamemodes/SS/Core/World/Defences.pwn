@@ -512,11 +512,23 @@ public OnButtonPress(playerid, buttonid)
 				{
 					if(def_Data[id][def_pass] == 0)
 					{
+						if(def_CurrentDefenceEdit[playerid] != -1)
+						{
+							HideKeypad(playerid);
+							Dialog_Hide(playerid);
+						}
+
 						def_CurrentDefenceEdit[playerid] = id;
 						ShowSetPassDialog_Keypad(playerid);
 					}
 					else
 					{
+						if(def_CurrentDefenceOpen[playerid] != -1)
+						{
+							HideKeypad(playerid);
+							Dialog_Hide(playerid);
+						}
+
 						def_CurrentDefenceOpen[playerid] = id;
 
 						ShowEnterPassDialog_Keypad(playerid);
@@ -527,11 +539,23 @@ public OnButtonPress(playerid, buttonid)
 				{
 					if(def_Data[id][def_pass] == 0)
 					{
+						if(def_CurrentDefenceEdit[playerid] != -1)
+						{
+							HideKeypad(playerid);
+							Dialog_Hide(playerid);
+						}
+
 						def_CurrentDefenceEdit[playerid] = id;
 						ShowSetPassDialog_KeypadAdv(playerid);
 					}
 					else
 					{
+						if(def_CurrentDefenceOpen[playerid] != -1)
+						{
+							HideKeypad(playerid);
+							Dialog_Hide(playerid);
+						}
+
 						def_CurrentDefenceOpen[playerid] = id;
 
 						ShowEnterPassDialog_KeypadAdv(playerid);
@@ -543,6 +567,8 @@ public OnButtonPress(playerid, buttonid)
 					ShowActionText(playerid, "Moving defence, please stand back.", 3000);
 					defer MoveDefence(id, playerid);
 				}
+
+				return 1;
 			}
 		}
 	}
