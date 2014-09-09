@@ -733,6 +733,8 @@ timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
 
 	if(IsPlayerInVehicle(playerid, vehicleid))
 		BanPlayer(playerid, "Staying in a locked vehicle", -1, 0);
+
+	SetVehicleExternalLock(vehicleid, 1);
 }
 
 
@@ -749,6 +751,26 @@ static
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
+	// by IstuntmanI, thanks!
+	if(hittype == BULLET_HIT_TYPE_PLAYER)
+	{
+		if(!(-20.0 <= fX <= 20.0) || !(-20.0 <= fY <= 20.0) || !(-20.0 <= fZ <= 20.0))
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, x, y, z);
+
+			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, "");
+
+			return 0;
+		}
+	}
+
 	if(GetTickCountDifference(ammo_LastShot[playerid], GetTickCount()) < GetWeaponShotInterval(weaponid) + 10)
 	{
 		ammo_ShotCounter[playerid]++;

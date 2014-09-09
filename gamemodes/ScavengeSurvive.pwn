@@ -263,7 +263,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define REPORT_TYPE_LOCKEDCAR		"LCAR"
 #define REPORT_TYPE_AMMO			"AMMO"
 #define REPORT_TYPE_SHOTANIM		"ANIM"
-#define REPORT_TYPE_END
+#define REPORT_TYPE_BADHITOFFSET	"BHIT"
 
 
 // Genders
