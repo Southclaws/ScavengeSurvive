@@ -9,22 +9,38 @@ Float:	bld_BleedRate[MAX_PLAYERS];
 ptask BleedUpdate[100](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
+	{
+		RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 		return;
+	}
+
+	if(IsPlayerOnAdminDuty(playerid))
+	{
+		RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);		
+		return;
+	}
 
 	if(bld_BleedRate[playerid] > 0.0)
 	{
 		if(frandom(1.0) < 0.7)
 			GivePlayerHP(playerid, -bld_BleedRate[playerid]);
 
-		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
+		if(IsPlayerInAnyVehicle(playerid))
 		{
-			if(frandom(1.0) < 1.0 - bld_BleedRate[playerid])
-				RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
+			if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
+			{
+				if(frandom(1.0) < 1.0 - bld_BleedRate[playerid])
+					RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
+			}
+			else
+			{
+				if(frandom(1.0) < bld_BleedRate[playerid])
+					SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
+			}
 		}
 		else
 		{
-			if(frandom(1.0) < bld_BleedRate[playerid])
-				SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
+			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 		}
 	}
 	else
