@@ -992,21 +992,21 @@ public OnScriptInit()
 	*/
 	//					itemtype				name				calibre			bld		ko		pen		size
 	DefineItemTypeAmmo(item_Ammo9mm,			"Hollow Point",		calibre_9mm,	1.0,	1.0,	0.2,	20);
-	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50cae,	1.0,	1.0,	0.9,	28);
-	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.0,	1.0,	0.5,	24);
-	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.0,	1.0,	0.8,	30);
-	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.0,	1.0,	0.9,	10);
+	DefineItemTypeAmmo(item_Ammo50,				"Action Express",	calibre_50cae,	1.0,	1.5,	0.9,	28);
+	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.1,	1.8,	0.5,	24);
+	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.1,	1.2,	0.8,	30);
+	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.2,	1.1,	0.9,	10);
 	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0,	1.0,	2.0,	1);
 	DefineItemTypeAmmo(item_GasCan,				"Petrol",			calibre_fuel,	0.0,	0.0,	0.0,	20);
 	DefineItemTypeAmmo(item_Ammo9mmFMJ,			"FMJ",				calibre_9mm,	1.2,	0.5,	0.8,	20);
 	DefineItemTypeAmmo(item_AmmoFlechette,		"Flechette",		calibre_12g,	1.6,	0.6,	0.2,	8);
 	DefineItemTypeAmmo(item_AmmoHomeBuck,		"Improvised",		calibre_12g,	1.6,	0.4,	0.3,	14);
 	DefineItemTypeAmmo(item_Ammo556Tracer,		"Tracer",			calibre_556,	0.9,	1.1,	0.5,	30);
-	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.5,	0.4,	30);
+	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.6,	0.4,	30);
 	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
 	DefineItemTypeAmmo(item_Ammo762,			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30);
 	DefineItemTypeAmmo(item_Ammo50BMG,			"BMG",				calibre_50bmg,	2.0,	2.0,	1.0,	16);
-	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.0,	1.0,	0.8,	10);
+	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10);
 
 
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");

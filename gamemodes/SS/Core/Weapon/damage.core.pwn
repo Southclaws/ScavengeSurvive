@@ -153,10 +153,10 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	}
 	else
 	{
-		logf("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", playerid, targetid, bleedrate, knockmult, bodypart, source);
+		logf("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", targetid, bleedrate, knockmult, bodypart, source);
 	}
 
-	ShowActionText(playerid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (woundcount * (totalbleedrate * 30))) < 50.0 ? ("Minor") : ("Severe")), 5000);
+	ShowActionText(targetid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (woundcount * (totalbleedrate * 30))) < 50.0 ? ("Minor") : ("Severe")), 5000);
 
 	return 1;
 }
@@ -395,7 +395,6 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 	for(new i = 1, j; j < input[0];)
 	{
 		id = Iter_Free(wnd_Index[playerid]);
-		printf("WOUND: %d start at index %d", id, i);
 
 		if(id == -1)
 		{
@@ -409,20 +408,12 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		wnd_Data[playerid][id][wnd_timestamp] = input[i++];
 		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
 		sourcelen = input[i++]; // source string length
-		printf("done ints, strlen: %d current index: %d", sourcelen, i);
 		memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
 		i += sourcelen; // jump over the string
-
-		printf("source: '%s' len: %d index: %d", wnd_Data[playerid][id][wnd_source], i);
 
 		Iter_Add(wnd_Index[playerid], id);
 
 		j++;
-	}
-
-	for(new i = 1; i < input[0]; i++)
-	{
-		printf("[%02d] = %02d: '%c'", i, input[i], input[i]);
 	}
 
 	return 1;

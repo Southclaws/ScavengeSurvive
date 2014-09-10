@@ -26,7 +26,7 @@ _DoExplosiveDamage(playerid, targetid, Float:multiplier)
 		return 0;
 
 	new
-		Float:bleedrate = 0.5 * (multiplier / 80.0),
+		Float:bleedrate = 0.05 * (multiplier / 80.0),
 		Float:knockmult = 150.0 + multiplier;
 
 	dmg_ReturnBleedrate[targetid] = bleedrate;
