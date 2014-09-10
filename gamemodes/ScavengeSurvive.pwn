@@ -38,7 +38,7 @@ native gpci(playerid, serial[], len);
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
-//	#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
+#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
 //	#define DEBUG_LABELS_BUTTON				(true) // SIF/Button
 //	#define DEBUG_LABELS_ITEM				(true) // SIF/Item
 #define BTN_MAX							(32768) // SIF/Button
@@ -129,6 +129,7 @@ public OnGameModeInit()
 #include <SIF\extensions\InventoryKeys>
 #include <SIF\extensions\ContainerDialog>
 #include <SIF\extensions\Craft>
+#include <SIF\extensions\DebugLabels>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
 #include <Balloon>					// By Southclaw:			https://github.com/Southclaw/Balloon
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
