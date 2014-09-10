@@ -66,16 +66,13 @@ EnterSpectateMode(playerid, targetid)
 	TogglePlayerSpectating(playerid, true);
 	ToggleNameTagsForPlayer(playerid, true);
 
-	if(IsPlayerInAnyVehicle(targetid))
-		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(targetid));
+	spectate_Target[playerid] = targetid;
 
-	else
-		PlayerSpectatePlayer(playerid, targetid);
+	_RefreshSpectate(playerid);
 
 	PlayerTextDrawShow(playerid, spec_Name);
 	PlayerTextDrawShow(playerid, spec_Info);
 
-	spectate_Target[playerid] = targetid;
 	stop spectate_Timer[playerid];
 	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
 
@@ -132,12 +129,7 @@ SpectateNextTarget(playerid)
 	}
 
 	spectate_Target[playerid] = id;
-
-	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
-		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
-
-	else
-		PlayerSpectatePlayer(playerid, spectate_Target[playerid]);
+	_RefreshSpectate(playerid);
 }
 
 SpectatePrevTarget(playerid)
@@ -167,6 +159,13 @@ SpectatePrevTarget(playerid)
 	}
 
 	spectate_Target[playerid] = id;
+	_RefreshSpectate(playerid);
+}
+
+_RefreshSpectate(playerid)
+{
+	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
+	SetPlayerInterior(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
 
 	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
 		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
