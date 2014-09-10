@@ -374,7 +374,6 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Player/AfkCheck.pwn"
 #include "SS/Core/Player/AltTabCheck.pwn"
 #include "SS/Core/Player/DisallowActions.pwn"
-#include "SS/Core/Player/Profile.pwn"
 #include "SS/Core/Player/ToolTips.pwn"
 #include "SS/Core/Player/Whitelist.pwn"
 #include "SS/Core/Player/IRC.pwn"
@@ -454,6 +453,7 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Admin/Freeze.pwn"
 #include "SS/Core/Admin/NameTags.pwn"
 #include "SS/Core/Admin/FreeCam.pwn"
+#include "SS/Core/Admin/PlayerList.pwn"
 
 // ITEMS
 #include "SS/Core/Item/Food.pwn"

@@ -34,8 +34,8 @@ hook OnGameModeInit()
 
 	stmt_GpciInsert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_GPCI" VALUES(?,?,?)");
 	stmt_GpciCheckName			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_GPCI" WHERE "FIELD_GPCI_NAME"=? AND "FIELD_GPCI_GPCI"=?");
-	stmt_GpciGetRecordsFromGpci	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_GPCI" WHERE "FIELD_GPCI_GPCI"=?");
-	stmt_GpciGetRecordsFromName	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_GPCI" WHERE "FIELD_GPCI_NAME"=? COLLATE NOCASE");
+	stmt_GpciGetRecordsFromGpci	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_GPCI" WHERE "FIELD_GPCI_GPCI"=? ORDER BY "FIELD_GPCI_DATE" DESC");
+	stmt_GpciGetRecordsFromName	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_GPCI" WHERE "FIELD_GPCI_NAME"=? COLLATE NOCASE ORDER BY "FIELD_GPCI_DATE" DESC");
 }
 
 hook OnPlayerConnect(playerid)
@@ -79,7 +79,7 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 1, DB::TYPE_STRING, hash, MAX_GPCI_LEN);
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 2, DB::TYPE_INTEGER, date);
-	stmt_bind_value(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_INTEGER, inputgpci, MAX_GPCI_LEN);
+	stmt_bind_value(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_STRING, inputgpci, MAX_GPCI_LEN);
 
 	if(!stmt_execute(stmt_GpciGetRecordsFromGpci))
 		return 0;

@@ -476,7 +476,6 @@ ShowReportBanPrompt(playerid)
 				return 0;
 			}
 
-			print("ban");
 			BanPlayerByName(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name], report_CurrentReason[playerid], playerid, duration);
 			ShowListOfReports(playerid);
 		}

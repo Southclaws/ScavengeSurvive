@@ -34,8 +34,8 @@ hook OnGameModeInit()
 
 	stmt_Ipv4Insert				= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_IPV4" VALUES(?,?,?)");
 	stmt_Ipv4CheckName			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_IPV4" WHERE "FIELD_IPV4_NAME"=? AND "FIELD_IPV4_IPV4"=?");
-	stmt_Ipv4GetRecordsFromIP	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_IPV4" WHERE "FIELD_IPV4_IPV4"=?");
-	stmt_Ipv4GetRecordsFromName	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_IPV4" WHERE "FIELD_IPV4_NAME"=? COLLATE NOCASE");
+	stmt_Ipv4GetRecordsFromIP	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_IPV4" WHERE "FIELD_IPV4_IPV4"=? ORDER BY "FIELD_IPV4_DATE" DESC");
+	stmt_Ipv4GetRecordsFromName	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_IPV4" WHERE "FIELD_IPV4_NAME"=? COLLATE NOCASE ORDER BY "FIELD_IPV4_DATE" DESC");
 }
 
 hook OnPlayerConnect(playerid)
