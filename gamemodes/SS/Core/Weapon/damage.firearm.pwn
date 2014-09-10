@@ -119,7 +119,7 @@ _DoFirearmDamage(playerid, targetid, itemid, ItemType:itemtype, bodypart)
 	if(dmg_ReturnKnockMult[targetid] != knockmult)
 		knockmult = dmg_ReturnKnockMult[targetid];
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, knockmult, calibre, bodypart);
+	PlayerInflictWound(playerid, targetid, E_WOUND_FIREARM, bleedrate, knockmult, calibre, bodypart, "Firearm");
 	ShowHitMarker(playerid, GetItemTypeWeaponBaseWeapon(itemtype));
 
 	return 1;

@@ -166,7 +166,7 @@ _DoMeleeDamage(playerid, targetid, Float:bleedrate, Float:knockmult)
 	if(dmg_ReturnKnockMult[targetid] != knockmult)
 		knockmult = dmg_ReturnKnockMult[targetid];
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, knockmult, NO_CALIBRE, random(2) ? BODY_PART_TORSO : BODY_PART_HEAD);
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, knockmult, NO_CALIBRE, random(2) ? BODY_PART_TORSO : BODY_PART_HEAD, "Melee");
 	ShowHitMarker(playerid, 0);
 
 	return 1;

@@ -21,7 +21,8 @@ E_WND_TYPE:	wnd_type,
 Float:		wnd_bleedrate,
 			wnd_calibre,
 			wnd_timestamp,
-			wnd_bodypart
+			wnd_bodypart,
+			wnd_source[32]
 }
 
 
@@ -71,7 +72,7 @@ hook OnScriptInit()
 }
 
 
-stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, Float:knockmult, calibre, bodypart)
+stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, Float:knockmult, calibre, bodypart, source[])
 {
 	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
 		return 0;
@@ -96,9 +97,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	wnd_Data[targetid][woundid][wnd_calibre] = calibre;
 	wnd_Data[targetid][woundid][wnd_timestamp] = gettime();
 	wnd_Data[targetid][woundid][wnd_bodypart] = bodypart;
-
-	// Max bleed rate is 1.0, don't allow higher values
-	bleedrate = bleedrate > 10.0 ? 10.0 : bleedrate;
+	strcpy(wnd_Data[targetid][woundid][wnd_source], source, 32);
 
 	totalbleedrate += bleedrate;
 	d:2:FIREARM_DEBUG("[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
@@ -149,7 +148,15 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		GetPlayerName(playerid, dmg_LastHitBy[targetid], MAX_PLAYER_NAME);
 		dmg_LastHitById[targetid] = playerid;
 		dmg_LastHitByItem[targetid] = GetPlayerItem(targetid);
+
+		logf("[WOUND] %p wounds %p. bleedrate %f knockmult %f bodypart %d source '%s'", playerid, targetid, bleedrate, knockmult, bodypart, source);
 	}
+	else
+	{
+		logf("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", playerid, targetid, bleedrate, knockmult, bodypart, source);
+	}
+
+	ShowActionText(playerid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (woundcount * (totalbleedrate * 30))) < 50.0 ? ("Minor") : ("Severe")), 5000);
 
 	return 1;
 }
@@ -358,6 +365,8 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		output[idx++] = wnd_Data[playerid][i][wnd_calibre];
 		output[idx++] = wnd_Data[playerid][i][wnd_timestamp];
 		output[idx++] = wnd_Data[playerid][i][wnd_bodypart];
+		output[idx++] = strlen(wnd_Data[playerid][i][wnd_source]);
+		memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
 	}
 
 	return idx;
@@ -379,15 +388,18 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 	if(input[0] <= 0)
 		return 0;
 
-	new id;
+	new
+		id,
+		sourcelen;
 
-	for(new i = 1; i < input[0] * 5;)
+	for(new i = 1, j; j < input[0];)
 	{
 		id = Iter_Free(wnd_Index[playerid]);
+		printf("WOUND: %d start at index %d", id, i);
 
 		if(id == -1)
 		{
-			printf("ERROR: [SetPlayerWoundDataFromArray] Ran out of wound slots on wound %d cell: %d", (i - 1) / 5, i);
+			printf("ERROR: [SetPlayerWoundDataFromArray] Ran out of wound slots on wound %d cell: %d", (i - 1) / _:E_WOUND_DATA, i);
 			break;
 		}
 
@@ -396,8 +408,21 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		wnd_Data[playerid][id][wnd_calibre] = input[i++];
 		wnd_Data[playerid][id][wnd_timestamp] = input[i++];
 		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
+		sourcelen = input[i++]; // source string length
+		printf("done ints, strlen: %d current index: %d", sourcelen, i);
+		memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
+		i += sourcelen; // jump over the string
+
+		printf("source: '%s' len: %d index: %d", wnd_Data[playerid][id][wnd_source], i);
 
 		Iter_Add(wnd_Index[playerid], id);
+
+		j++;
+	}
+
+	for(new i = 1; i < input[0]; i++)
+	{
+		printf("[%02d] = %02d: '%c'", i, input[i], input[i]);
 	}
 
 	return 1;
@@ -408,7 +433,7 @@ public OnPlayerSave(playerid, filename[])
 {
 	new
 		length,
-		data[1 + (MAX_WOUNDS * 4)];
+		data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
 
 	length = GetPlayerWoundDataAsArray(playerid, data);
 
@@ -433,7 +458,7 @@ public OnPlayerSave(playerid, filename[])
 
 public OnPlayerLoad(playerid, filename[])
 {
-	new data[1 + (MAX_WOUNDS * 4)];
+	new data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
 
 	modio_read(filename, _T<W,N,D,S>, data);
 

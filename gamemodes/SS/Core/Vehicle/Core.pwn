@@ -570,7 +570,7 @@ PlayerVehicleUpdate(playerid)
 				SetVehicleAngularVelocity(vehicleid, 0.0, 0.0, 1.0);
 
 			default:
-				PlayerInflictWound(INVALID_PLAYER_ID, playerid, E_WND_TYPE:1, velocitychange * 0.000536, velocitychange * 0.16, -1, BODY_PART_HEAD);
+				PlayerInflictWound(INVALID_PLAYER_ID, playerid, E_WND_TYPE:1, velocitychange * 0.000536, velocitychange * 0.0076, -1, BODY_PART_HEAD, "Collision");
 		}
 	}
 

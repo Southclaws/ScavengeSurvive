@@ -17,6 +17,7 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 
 	if(issuerid == INVALID_PLAYER_ID)
 	{
+		// TODO: Fix/improve fall damage.
 		switch(weaponid)
 		{
 			case 37:
