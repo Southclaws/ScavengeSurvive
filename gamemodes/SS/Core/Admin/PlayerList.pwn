@@ -128,6 +128,7 @@ _ShowPlayerListItemOptions(playerid, item)
 		List GPCIs used by this name\n\
 		Ban\n\
 		Toggle alive\n\
+		Toggle active\n\
 		"};
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
@@ -175,17 +176,34 @@ _ShowPlayerListItemOptions(playerid, item)
 			{
 				new alivestate;
 
-				GetAccountActiveState(pls_List[playerid][item], alivestate);
+				GetAccountAliveState(pls_List[playerid][item], alivestate);
 
 				if(alivestate)
 				{
-					SetAccountActiveState(pls_List[playerid][item], 0);
+					SetAccountAliveState(pls_List[playerid][item], 0);
 					Msg(playerid, YELLOW, " >  Player alive state set to dead.");
 				}
 				else
 				{
-					SetAccountActiveState(pls_List[playerid][item], 1);
+					SetAccountAliveState(pls_List[playerid][item], 1);
 					Msg(playerid, YELLOW, " >  Player alive state set to alive.");
+				}
+			}
+			case 8: // Toggle active
+			{
+				new activestate;
+
+				GetAccountActiveState(pls_List[playerid][item], activestate);
+
+				if(activestate)
+				{
+					SetAccountActiveState(pls_List[playerid][item], 0);
+					Msg(playerid, YELLOW, " >  Player active state set to inactive.");
+				}
+				else
+				{
+					SetAccountActiveState(pls_List[playerid][item], 1);
+					Msg(playerid, YELLOW, " >  Player active state set to active.");
 				}
 			}
 		}
