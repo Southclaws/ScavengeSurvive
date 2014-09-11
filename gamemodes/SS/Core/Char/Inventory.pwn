@@ -429,7 +429,7 @@ public OnItemAddToInventory(playerid, itemid, slot)
 
 public OnItemRemovedFromPlayer(playerid, itemid)
 {
-	if(GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_CARRY)
+	if(IsItemTypeCarry(GetItemType(itemid)))
 		SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
 	
 	#if defined app_OnItemRemovedFromPlayer
@@ -637,18 +637,12 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			else
 			{
-				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
-				{
-					ShowActionText(playerid, "Item too big", 3000, 140);
-				}
-				else
-				{
-					if(AddItemToInventory(playerid, itemid) == 1)
-						ShowActionText(playerid, "Item added to inventory", 3000, 150);
+				if(AddItemToInventory(playerid, itemid) == 1)
+					ShowActionText(playerid, "Item added to inventory", 3000, 150);
 
-					else
-						ShowActionText(playerid, "Inventory full", 3000, 100);
-				}
+				else
+					ShowActionText(playerid, "Item won't fit", 3000, 100);
+
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
 			}
@@ -690,12 +684,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			else
 			{
-				if(GetItemTypeSize(GetItemType(itemid)) != ITEM_SIZE_SMALL)
-				{
-					ShowActionText(playerid, "That item is too big for your inventory", 3000, 140);
-					return 1;
-				}
-
 				if(AddItemToInventory(playerid, itemid) == 1)
 				{
 					RemovePlayerHolsterItem(playerid);
@@ -703,7 +691,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				else
 				{
-					ShowActionText(playerid, "Inventory full", 3000, 100);
+					ShowActionText(playerid, "Item won't fit", 3000, 100);
 				}
 
 				UpdatePlayerGear(playerid);
@@ -721,15 +709,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 			if(IsValidContainer(containerid))
 			{
-				if(IsContainerFull(containerid))
-				{
-					new str[CNT_MAX_NAME + 6];
-					GetContainerName(containerid, str);
-					strcat(str, " full");
-					ShowActionText(playerid, str, 3000, 150);
-					return 1;
-				}
-
 				if(!WillItemTypeFitInContainer(containerid, item_Armour))
 				{
 					ShowActionText(playerid, "Item won't fit", 3000, 150);
@@ -835,22 +814,9 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 					return 0;
 				}
 
-				if(IsContainerFull(inv_TempContainerID[playerid]))
-				{
-					new
-						str[CNT_MAX_NAME + 6],
-						name[CNT_MAX_NAME];
-
-					GetContainerName(inv_TempContainerID[playerid], name);
-					format(str, sizeof(str), "%s full", name);
-					ShowActionText(playerid, str, 3000, 100);
-					DisplayContainerInventory(playerid, containerid);
-					return 0;
-				}
-
 				if(!WillItemTypeFitInContainer(inv_TempContainerID[playerid], GetItemType(itemid)))
 				{
-					ShowActionText(playerid, "Item won't fit", 3000, 140);
+					ShowActionText(playerid, "Item won't fit", 3000, 150);
 					DisplayContainerInventory(playerid, containerid);
 					return 0;
 				}

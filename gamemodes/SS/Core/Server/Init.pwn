@@ -419,6 +419,11 @@ PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 
 forward SetRestart(seconds); // Todo: move to restart module
 
+// TODO: Add proper item sizes and remove these substitute definitions.
+#define ITEM_SIZE_SMALL (1)
+#define ITEM_SIZE_MEDIUM (2)
+#define ITEM_SIZE_LARGE (3)
+#define ITEM_SIZE_CARRY (4)
 
 public OnScriptInit()
 {
@@ -517,7 +522,7 @@ public OnScriptInit()
 	item_DoctorBag		= DefineItemType("Doctor's Bag",		"DoctorBag",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
 	item_Backpack		= DefineItemType("Backpack",			"Backpack",			3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
 	item_Satchel		= DefineItemType("Small Bag",			"Satchel",			363,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
-	item_Wheel			= DefineItemType("Wheel",				"Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049);
+	item_Wheel			= DefineItemType("Wheel",				"Wheel",			1079,	ITEM_SIZE_CARRY,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049, true);
 	item_MotionSense	= DefineItemType("Motion Sensor",		"MotionSense",		327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_Accelerometer	= DefineItemType("Accelerometer",		"Accelerometer",	327,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_TntProxMine	= DefineItemType("Proximity TNT",		"TntProxMine",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
@@ -530,51 +535,51 @@ public OnScriptInit()
 	item_GasCan			= DefineItemType("Petrol Can",			"GasCan",			1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_Clothes		= DefineItemType("Clothes",				"Clothes",			2891,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_HelmArmy		= DefineItemType("Army Helmet",			"HelmArmy",			19106,	ITEM_SIZE_MEDIUM,	345.0, 270.0, 0.0,		0.045,	0.184999, -0.007999, 0.046999, 94.199989, 22.700027, 4.799994);
-	item_MediumBox		= DefineItemType("Medium Box",			"MediumBox",		3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
-	item_SmallBox		= DefineItemType("Small Box",			"SmallBox",			2969,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100);
-	item_LargeBox		= DefineItemType("Large Box",			"LargeBox",			1271,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3112,	0.050000, 0.334999, -0.327000,  -23.900018, -10.200002, 11.799987);
+	item_MediumBox		= DefineItemType("Medium Box",			"MediumBox",		3014,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.1844,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610, true);
+	item_SmallBox		= DefineItemType("Small Box",			"SmallBox",			2969,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.114177, 0.089762, -0.173014, 247.160079, 354.746368, 79.219100, true);
+	item_LargeBox		= DefineItemType("Large Box",			"LargeBox",			1271,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3112,	0.050000, 0.334999, -0.327000,  -23.900018, -10.200002, 11.799987, true);
 	item_HockeyMask		= DefineItemType("Hockey Mask",			"HockeyMask",		19036,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Meat			= DefineItemType("Meat",				"Meat",				2804,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	-0.051398, 0.017334, 0.189188, 270.495391, 353.340423, 167.069869);
 // 100
-	item_DeadLeg		= DefineItemType("Leg",					"DeadLeg",			2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869);
-	item_Torso			= DefineItemType("Torso",				"Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552);
-	item_LongPlank		= DefineItemType("Plank",				"LongPlank",		2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552);
-	item_GreenGloop		= DefineItemType("Unknown",				"GreenGloop",		2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105);
-	item_Capsule		= DefineItemType("Capsule",				"Capsule",			3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777);
+	item_DeadLeg		= DefineItemType("Leg",					"DeadLeg",			2905,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.147815, 0.052444, -0.164205, 253.163970, 358.857666, 167.069869, true);
+	item_Torso			= DefineItemType("Torso",				"Torso",			2907,	ITEM_SIZE_CARRY,	0.0, 0.0, 270.0,		0.0,	0.087207, 0.093263, -0.280867, 253.355865, 355.971557, 175.203552, true);
+	item_LongPlank		= DefineItemType("Plank",				"LongPlank",		2937,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.141491, 0.002142, -0.190920, 248.561920, 350.667724, 175.203552, true);
+	item_GreenGloop		= DefineItemType("Unknown",				"GreenGloop",		2976,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.063387, 0.013771, -0.595982, 341.793945, 352.972686, 226.892105, true);
+	item_Capsule		= DefineItemType("Capsule",				"Capsule",			3082,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.096439, 0.034642, -0.313377, 341.793945, 348.492706, 240.265777, true);
 	item_RadioPole		= DefineItemType("Receiver",			"RadioPole",		3221,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 	item_SignShot		= DefineItemType("Sign",				"SignShot",			3265,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 	item_Mailbox		= DefineItemType("Mailbox",				"Mailbox",			3407,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
-	item_Pumpkin		= DefineItemType("Pumpkin",				"Pumpkin",			19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000);
+	item_Pumpkin		= DefineItemType("Pumpkin",				"Pumpkin",			19320,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.3,	0.105948, 0.279332, -0.253927, 246.858016, 0.000000, 0.000000, true);
 	item_Nailbat		= DefineItemType("Nailbat",				"Nailbat",			2045,	ITEM_SIZE_LARGE,	0.0, 0.0, 0.0);
 // 110
 	item_ZorroMask		= DefineItemType("Zorro Mask",			"ZorroMask",		18974,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.193932, 0.050861, 0.017257, 90.000000, 0.000000, 0.000000);
-	item_Barbecue		= DefineItemType("BBQ",					"Barbecue",			1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_Barbecue		= DefineItemType("BBQ",					"Barbecue",			1481,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.6745,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true);
 	item_Headlight		= DefineItemType("Headlight",			"Headlight",		19280,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.0,	0.107282, 0.051477, 0.023807, 0.000000, 259.073913, 351.287475);
 	item_Pills			= DefineItemType("Pills",				"Pills",			2709,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.09,	0.044038, 0.082106, 0.000000, 0.000000, 0.000000, 0.000000);
 	item_AutoInjec		= DefineItemType("Injector",			"AutoInjec",		2711,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.028,	0.145485, 0.020127, 0.034870, 0.000000, 260.512817, 349.967254);
 	item_BurgerBag		= DefineItemType("Burger",				"BurgerBag",		2663,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254);
 	item_CanDrink		= DefineItemType("Can",					"CanDrink",			2601,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.054,	0.064848, 0.059404, 0.017578, 0.000000, 359.136199, 30.178396);
 	item_Detergent		= DefineItemType("Detergent",			"Detergent",		1644,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.1,	0.081913, 0.047686, -0.026389, 95.526962, 0.546049, 358.890563);
-	item_Dice			= DefineItemType("Dice",				"Dice",				1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629);
+	item_Dice			= DefineItemType("Dice",				"Dice",				1851,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629, true);
 	item_Dynamite		= DefineItemType("Dynamite",			"Dynamite",			1654,	ITEM_SIZE_MEDIUM);
 // 120
-	item_Door			= DefineItemType("Door",				"Door",				1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563);
-	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347);
-	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	ITEM_SIZE_CARRY,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079);
-	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079);
-	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330);
-	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867);
-	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867);
-	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662);
-	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	ITEM_SIZE_CARRY,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097);
-	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209);
+	item_Door			= DefineItemType("Door",				"Door",				1497,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563, true);
+	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	ITEM_SIZE_CARRY,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347, true);
+	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	ITEM_SIZE_CARRY,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	ITEM_SIZE_CARRY,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true);
+	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true);
+	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	ITEM_SIZE_CARRY,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867, true);
+	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662, true);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	ITEM_SIZE_CARRY,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true);
+	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	ITEM_SIZE_CARRY,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true);
 // 130
 	item_Flare			= DefineItemType("Flare",				"Flare",			345,	ITEM_SIZE_SMALL);
 	item_TntPhoneBomb	= DefineItemType("Phone Remote TNT",	"TntPhoneBomb",		1576,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_ParaBag		= DefineItemType("Parachute Bag",		"ParaBag",			371,	ITEM_SIZE_MEDIUM,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_Keypad			= DefineItemType("Keypad",				"Keypad",			19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
-	item_TentPack		= DefineItemType("Tent Pack",			"TentPack",			1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
-	item_Campfire		= DefineItemType("Campfire",			"Campfire",			19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395);
+	item_TentPack		= DefineItemType("Tent Pack",			"TentPack",			1279,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true);
+	item_Campfire		= DefineItemType("Campfire",			"Campfire",			19475,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true);
 	item_CowboyHat		= DefineItemType("Cowboy Hat",			"CowboyHat",		18962,	ITEM_SIZE_MEDIUM,	0.0, 270.0, 0.0,		0.0427,	0.232999, 0.032000, 0.016000, 0.000000, 2.700027, -67.300010);
 	item_TruckCap		= DefineItemType("Trucker Cap",			"TruckCap",			18961,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.01,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
 	item_BoaterHat		= DefineItemType("Boater Hat",			"BoaterHat",		18946,	ITEM_SIZE_MEDIUM,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954);
@@ -587,7 +592,7 @@ public OnScriptInit()
 	item_AmmoBuck		= DefineItemType("Shotgun Shells",		"AmmoBuck",			2038,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo556		= DefineItemType("5.56 Rounds",			"Ammo556",			2040,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo357		= DefineItemType(".357 Rounds",			"Ammo357",			2039,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_AmmoRocket		= DefineItemType("Rockets",				"AmmoRocket",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638);
+	item_AmmoRocket		= DefineItemType("Rockets",				"AmmoRocket",		3016,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.0,	0.081998, 0.081005, -0.195033, 247.160079, 336.014343, 347.379638, true);
 	item_MolotovEmpty	= DefineItemType("Empty Molotov",		"MolotovEmpty",		344,	ITEM_SIZE_SMALL,	-4.0, 0.0, 0.0,			0.1728,	0.000000, -0.004999, 0.000000,  0.000000, 0.000000, 0.000000);
 	item_Money			= DefineItemType("Pre-War Money",		"Money",			1212,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.133999, 0.022000, 0.018000,  -90.700004, -11.199998, -101.600013);
 // 150
@@ -598,7 +603,7 @@ public OnScriptInit()
 	item_FluxCap		= DefineItemType("Flux Capacitor",		"FluxCap",			343,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0);
 	item_DataInterface	= DefineItemType("Data Interface",		"DataInterface",	19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 	item_HackDevice		= DefineItemType("Hack Interface",		"HackDevice",		364,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.134000, 0.080000, -0.037000,  84.299949, 3.399998, 9.400002);
-	item_PlantPot		= DefineItemType("Plant Pot",			"PlantPot",			2203,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610);
+	item_PlantPot		= DefineItemType("Plant Pot",			"PlantPot",			2203,	ITEM_SIZE_CARRY,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610, true);
 	item_HerpDerp		= DefineItemType("Derpification Unit",	"HerpDerp",			19513,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Parrot			= DefineItemType("Sebastian",			"Parrot",			19078,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
 // 160
@@ -618,8 +623,8 @@ public OnScriptInit()
 	item_FlareGun		= DefineItemType("Flare Gun",			"FlareGun",			2034,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			"PetrolBomb",		1650,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				"CodePart",			1898,	ITEM_SIZE_SMALL,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
-	item_LargeBackpack	= DefineItemType("Large Backpack",		"LargeBackpack",	3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, 0xFFF4A460);
-	item_LocksmithKit	= DefineItemType("Locksmith Kit",		"LocksmithKit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, 0xFFF4A460);
+	item_LargeBackpack	= DefineItemType("Large Backpack",		"LargeBackpack",	3026,	ITEM_SIZE_MEDIUM,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFF4A460);
+	item_LocksmithKit	= DefineItemType("Locksmith Kit",		"LocksmithKit",		1210,	ITEM_SIZE_MEDIUM,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, false, 0xFFF4A460);
 	item_XmasHat		= DefineItemType("Christmas Hat",		"XmasHat",			19066,	ITEM_SIZE_SMALL,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 	item_VehicleWeapon	= DefineItemType("VEHICLE_WEAPON",		"VehicleWeapon",	356,	ITEM_SIZE_LARGE,	90.0);
 	item_AdvancedKeypad	= DefineItemType("Advanced Keypad",		"AdvancedKeypad",	19273,	ITEM_SIZE_SMALL,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
