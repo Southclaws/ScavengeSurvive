@@ -1284,6 +1284,9 @@ SaveDefenceItem(defenceid, prints)
 	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
 
+	if(def_Data[defenceid][def_hitPoints] <= 0)
+		return 0;
+
 	if(prints)
 		printf("\t[SAVE] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", def_Data[defenceid][def_type], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_pose], def_Data[defenceid][def_motor], def_Data[defenceid][def_keypad], def_Data[defenceid][def_pass], def_Data[defenceid][def_moveState], def_Data[defenceid][def_hitPoints]);
 
@@ -1336,6 +1339,9 @@ LoadDefenceItem(filename[])
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each Defence.
 	length = modio_read(filename, _T<D,A,T,A>, _:data, true);
+
+	if(data[DEFENCE_CELL_HITPOINTS] <= 0)
+		return 0;
 
 	def_SkipGEID = true;
 
