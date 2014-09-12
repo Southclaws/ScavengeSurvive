@@ -9,9 +9,9 @@ CMD:help(playerid, params[])
 	gBigString[playerid][0] = EOS;
 
 	strcat(gBigString[playerid],
-		""C_YELLOW"General Information:\n\n\n"C_WHITE"\
-		\t"C_RED"/rules - list of server rules\n\n\
+		"\t"C_RED"/rules - list of server rules\n\n\
 		\t"C_GREEN"/admins - server staff\n\n\
+		\t"C_YELLOW"/motd - view the message of the day\n\n\
 		\t"C_BLUE"/chatinfo - information on chat\n\n\
 		\t"C_ORANGE"/restartinfo - information on server restarts/item saving\n\n");
 
@@ -21,7 +21,7 @@ CMD:help(playerid, params[])
 		\t"C_LGREEN"/changepass - change your password\n\n\n\
 		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Rules", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -46,6 +46,12 @@ CMD:admins(playerid, params[])
 	return 1;
 }
 
+CMD:motd(playerid, params[])
+{
+	MsgF(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
+	return 1;
+}
+
 CMD:chatinfo(playerid, params[])
 {
 	gBigString[playerid][0] = EOS;
@@ -63,7 +69,7 @@ CMD:chatinfo(playerid, params[])
 		If you are talking to someone next to you, "C_YELLOW"USE LOCAL OR RADIO!\n\
 		"C_WHITE"If you send unnecessary chat to global, you will be muted.");
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Chat", gBigString[playerid], "Close", "");
 
 	return 1;
 }

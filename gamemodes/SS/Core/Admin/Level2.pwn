@@ -13,7 +13,7 @@ hook OnGameModeInit()
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)ban - ban/unban player\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banlist - show list of bans\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banned - check if banned\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/motd - set message of the day\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/setmotd - set message of the day\n");
 }
 
 
@@ -332,11 +332,11 @@ ACMD:banned[2](playerid, params[])
 ==============================================================================*/
 
 
-ACMD:motd[2](playerid, params[])
+ACMD:setmotd[2](playerid, params[])
 {
 	if(sscanf(params, "s[128]", gMessageOfTheDay))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /motd [message]");
+		Msg(playerid, YELLOW, " >  Usage: /setmotd [message]");
 		return 1;
 	}
 
