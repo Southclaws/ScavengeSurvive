@@ -4,18 +4,19 @@
 
 static
 	pls_String[MAX_PLAYERS][PLAYER_LIST_MAX_ITEMS * PLAYER_LIST_ITEM_LEN],
-	pls_List[MAX_PLAYERS][PLAYER_LIST_MAX_ITEMS][MAX_PLAYER_NAME];
+	pls_List[MAX_PLAYERS][PLAYER_LIST_MAX_ITEMS][MAX_PLAYER_NAME],
+	pls_Length[MAX_PLAYERS];
 
 
 stock ShowPlayerList(playerid, list[][], size = sizeof(list))
 {
-	print("[ShowPlayerList]");
-	new
-		item[PLAYER_LIST_ITEM_LEN];
+	new item[PLAYER_LIST_ITEM_LEN];
+
+	pls_String[playerid][0] = EOS;
+	pls_Length[playerid] = size;
 
 	for(new i; i < size; i++)
 	{
-		printf("[ShowPlayerList] Item %d: '%s'", i, list[i]);
 		// Copy the input list to global storage
 		pls_List[playerid][i][0] = EOS;
 		strcat(pls_List[playerid][i], list[i]);
@@ -68,7 +69,7 @@ _ShowPlayerListItem(playerid, item)
 		else
 		{
 			// Send them back to the original list using the global list.
-			ShowPlayerList(playerid, pls_List[playerid]);
+			ShowPlayerList(playerid, pls_List[playerid], pls_Length[playerid]);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, pls_List[playerid][item], GetPlayerInfo(pls_List[playerid][item]), "Options", "Back");
@@ -78,26 +79,27 @@ GetPlayerInfo(name[])
 {
 	new
 		info[512],
+		dayslived,
+
+		pass[129],
+		ipv4,
 		alive,
 		karma,
 		regdate,
 		lastlog,
-		spawntimestamp,
-		dayslived,
-		spawns,
-		warnings;
+		spawntime,
+		totalspawns,
+		warnings,
+		aimshout[128],
+		hash[41],
+		active;
 
-	GetAccountAliveState(name, alive);
-	GetAccountKarma(name, karma);
-	GetAccountRegistrationDate(name, regdate);
-	GetAccountLastLogin(name, lastlog);
-	GetAccountLastSpawnTimestamp(name, spawntimestamp);
-	GetAccountTotalSpawns(name, spawns);
-	GetAccountWarnings(name, warnings);
+	GetAccountData(name, pass, ipv4, alive, karma, regdate, lastlog, spawntime, totalspawns, warnings, aimshout, hash, active);
 
-	dayslived = (gettime() > spawntimestamp) ? (0) : ((gettime() - spawntimestamp) / 86400);
+	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
 
 	format(info, sizeof(info), "\
+		IP:\t\t\t%s\n\
 		Alive:\t\t\t%s\n\
 		Karma:\t\t\t%d\n\
 		Registered:\t\t%s\n\
@@ -106,12 +108,13 @@ GetPlayerInfo(name[])
 		Lives Lived:\t\t%d\n\
 		Warnings:\t\t%d",
 
+		IpIntToStr(ipv4),
 		alive ? ("Yes") : ("No"),
 		karma,
 		TimestampToDateTime(regdate),
 		TimestampToDateTime(lastlog),
 		dayslived,
-		spawns,
+		totalspawns,
 		warnings);
 
 	return info;
@@ -217,21 +220,18 @@ _ShowPlayerListItemOptions(playerid, item)
 
 _FormatPlayerListItem(name[], output[])
 {
-	printf("[_FormatPlayerListItem] '%s'", name);
 	new
 		tabs[6],
 		ip,
-		ipstr[17],
-		country[32];
+		ipstr[17];
 
 	GetAccountIP(name, ip);
 	ipstr = IpIntToStr(ip);
-	GetIPCountry(ipstr, country);
 
 	for(new i, j = floatround((24 - strlen(name)) / 8, floatround_floor); i < j; i++)
 		tabs[i] = '\t';
 
-	format(output, PLAYER_LIST_ITEM_LEN, "%s%s%s\t%s\tProxy:%d\n", name, tabs, ipstr, country, GetIPProxy(ipstr));
+	format(output, PLAYER_LIST_ITEM_LEN, "%s%s%s\n", name, tabs, ipstr);
 }
 
 
@@ -250,12 +250,14 @@ ACMD:testplist[5](playerid, params[])
 
 ACMD:players[4](playerid, params[])
 {
-	new list[MAX_PLAYERS][MAX_PLAYER_NAME];
+	new
+		idx,
+		list[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 	foreach(new i : Player)
-		GetPlayerName(i, list[i], MAX_PLAYER_NAME);
+		GetPlayerName(i, list[idx++], MAX_PLAYER_NAME);
 
-	ShowPlayerList(playerid, list);
+	ShowPlayerList(playerid, list, idx);
 
 	return 1;
 }
