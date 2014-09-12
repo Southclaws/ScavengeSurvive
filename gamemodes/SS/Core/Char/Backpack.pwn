@@ -417,7 +417,9 @@ _BagEquipHandler(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	if(!IsPlayerInventoryFull(playerid) && GetItemTypeSize(GetItemType(itemid)) == ITEM_SIZE_SMALL)
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(WillItemTypeFitInInventory(playerid, itemtype))
 		return 0;
 
 	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
@@ -425,7 +427,7 @@ _BagEquipHandler(playerid)
 	if(!IsValidContainer(containerid))
 		return 0;
 
-	if(IsContainerFull(containerid))
+	if(!WillItemTypeFitInContainer(containerid, itemtype))
 	{
 		ShowActionText(playerid, "Bag full", 3000, 150);
 		return 0;
