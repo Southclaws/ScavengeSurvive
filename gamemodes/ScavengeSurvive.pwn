@@ -303,6 +303,9 @@ bool:	gServerRestarting = false;
 ==============================================================================*/
 
 
+// API Pre
+#tryinclude "ss/extensions/ext_pre.pwn"
+
 // UTILITIES
 #include "SS/utils/math.pwn"
 #include "SS/utils/misc.pwn"
@@ -513,6 +516,7 @@ bool:	gServerRestarting = false;
 // POST-CODE
 
 #include "SS/Core/Server/Autosave.pwn"
+#tryinclude "ss/extensions/ext_post.pwn"
 
 // WORLD
 
