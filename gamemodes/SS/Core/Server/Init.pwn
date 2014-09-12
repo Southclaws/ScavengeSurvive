@@ -467,7 +467,7 @@ public OnScriptInit()
 	item_RocketLauncher	= DefineItemType("RPG",					"RocketLauncher",	359,	12,	90.0);
 	item_Heatseeker		= DefineItemType("Heatseeker",			"Heatseeker",		360,	12,	90.0);
 	item_Flamer			= DefineItemType("Flamer",				"Flamer",			361,	14,	90.0);
-	item_Minigun		= DefineItemType("Minigun",				"Minigun",			362,	16,	90.0);
+	item_Minigun		= DefineItemType("Minigun",				"Minigun",			362,	14,	90.0);
 	item_RemoteBomb		= DefineItemType("Remote Bomb",			"RemoteBomb",		363,	2,	90.0);
 // 40
 	item_Detonator		= DefineItemType("Detonator",			"Detonator",		364,	2,	90.0);
@@ -558,16 +558,16 @@ public OnScriptInit()
 	item_Dice			= DefineItemType("Dice",				"Dice",				1851,	6,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629, true);
 	item_Dynamite		= DefineItemType("Dynamite",			"Dynamite",			1654,	2);
 // 120
-	item_Door			= DefineItemType("Door",				"Door",				1497,	20,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563, true);
-	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	20,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347, true);
-	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	19,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079, true);
-	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	18,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079, true);
-	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	20,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true);
-	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	20,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true);
-	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	20,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867, true);
-	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	19,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662, true);
-	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	22,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true);
-	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	24,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true);
+	item_Door			= DefineItemType("Door",				"Door",				1497,	14,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563, true);
+	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	14,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347, true);
+	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	14,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	14,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	15,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true);
+	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	14,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true);
+	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	15,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867, true);
+	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	13,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662, true);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	16,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true);
+	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	16,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true);
 // 130
 	item_Flare			= DefineItemType("Flare",				"Flare",			345,	2);
 	item_TntPhoneBomb	= DefineItemType("Phone Remote TNT",	"TntPhoneBomb",		1576,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
@@ -1137,15 +1137,15 @@ public OnScriptInit()
 	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
 	drug_Heroin		= DefineDrugType("Heroin",		300000);
 
-	DefineSafeboxType("Medium Box",		item_MediumBox,		6, 6, 3, 2);
-	DefineSafeboxType("Small Box",		item_SmallBox,		4, 2, 1, 0);
-	DefineSafeboxType("Large Box",		item_LargeBox,		10, 8, 6, 6);
+	DefineSafeboxType("Medium Box",		item_MediumBox,		8, 6, 3, 2);
+	DefineSafeboxType("Small Box",		item_SmallBox,		6, 2, 1, 0);
+	DefineSafeboxType("Large Box",		item_LargeBox,		12, 8, 6, 6);
 	DefineSafeboxType("Capsule",		item_Capsule,		2, 2, 0, 0);
 
-	DefineBagType("Backpack",			item_Backpack,		8, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag",			item_Satchel,		4, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Parachute Bag",		item_ParaBag,		6, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Large Backpack",		item_LargeBackpack,	9, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
+	DefineBagType("Backpack",			item_Backpack,		10, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag",			item_Satchel,		5, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Parachute Bag",		item_ParaBag,		8, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Large Backpack",		item_LargeBackpack,	12, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
 
 
 	for(new i; i < MAX_PLAYERS; i++)
