@@ -265,6 +265,7 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 
 	#if defined SIF_USE_DEBUG_LABELS
 		def_DebugLabelID[id] = CreateDebugLabel(def_DebugLabelType, id, x, y, z);
+		def_UpdateDebugLabel(id);
 	#endif
 
 	return id;
@@ -687,6 +688,7 @@ public OnHoldActionFinish(playerid)
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
+			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
 		}
 
 		if(GetItemType(itemid) == item_Keypad)
@@ -697,6 +699,7 @@ public OnHoldActionFinish(playerid)
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
+			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
 		}
 
 		if(GetItemType(itemid) == item_AdvancedKeypad)
@@ -707,6 +710,7 @@ public OnHoldActionFinish(playerid)
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
+			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
 		}
 
 		if(GetItemType(itemid) == item_Crowbar)
@@ -862,6 +866,8 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
 			HideKeypad(playerid);
 
+			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
+
 			def_CurrentDefenceEdit[playerid] = -1;
 
 			if(code == 0)
@@ -988,6 +994,7 @@ ShowSetPassDialog_KeypadAdv(playerid)
 			{
 				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
 				SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+				def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
 				def_CurrentDefenceEdit[playerid] = -1;
 			}
 			else
@@ -1092,6 +1099,7 @@ timer MoveDefence[1500](defenceid, playerid)
 		def_Data[defenceid][def_moveState] = DEFENCE_POSE_VERTICAL;
 
 		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into CLOSED position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
+		def_UpdateDebugLabel(defenceid);
 	}
 	else
 	{
@@ -1106,9 +1114,23 @@ timer MoveDefence[1500](defenceid, playerid)
 		def_Data[defenceid][def_moveState] = DEFENCE_POSE_HORIZONTAL;
 
 		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into OPEN position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
+		def_UpdateDebugLabel(defenceid);
 	}
 
 	return;
+}
+
+def_UpdateDebugLabel(defenceid)
+{
+	#if defined SIF_USE_DEBUG_LABELS
+		UpdateDebugLabelString(def_DebugLabelID[defenceid], sprintf("pose:%d motor:%d keypad:%d pass:%d movestate:%d hitpoints:%d",
+			def_Data[defenceid][def_pose],
+			def_Data[defenceid][def_motor],
+			def_Data[defenceid][def_keypad],
+			def_Data[defenceid][def_pass],
+			def_Data[defenceid][def_moveState],
+			def_Data[defenceid][def_hitPoints]));
+	#endif
 }
 
 
@@ -1505,6 +1527,7 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 		else
 		{
 			SetButtonLabel(def_Data[closestid][def_buttonId], sprintf("%d/%d", def_Data[closestid][def_hitPoints], def_TypeData[def_Data[closestid][def_type]][def_maxHitPoints]), .range = 1.5);
+			def_UpdateDebugLabel(closestid);
 		}
 	}
 }
