@@ -1,6 +1,21 @@
 #include <YSI\y_hooks>
 
 
+static
+	trl_VehicleTypeHitchSize[MAX_VEHICLE_TYPE] = {-1, ...};
+
+
+stock SetVehicleTypeTrailerHitch(vehicletype, maxtrailersize)
+{
+	if(!IsValidVehicleType(vehicletype))
+		return 0;
+
+	trl_VehicleTypeHitchSize[vehicletype] = maxtrailersize;
+
+	return 1;
+}
+
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
@@ -21,10 +36,14 @@ _HandleTrailerTowKey(playerid)
 	vehicleid = GetPlayerVehicleID(playerid);
 	vehicletype = GetVehicleType(vehicleid);
 
-	if(GetVehicleTypeCategory(vehicletype) != VEHICLE_CATEGORY_TRUCK)
+	if(!IsValidVehicleType(vehicletype))
+		return 0;
+
+	if(trl_VehicleTypeHitchSize[vehicletype] == -1)
 		return 0;
 
 	new
+		tmptype,
 		Float:vx1,
 		Float:vy1,
 		Float:vz1,
@@ -53,13 +72,18 @@ _HandleTrailerTowKey(playerid)
 		if(i == vehicleid)
 			continue;
 
-		vehicletype = GetVehicleType(i);
+		tmptype = GetVehicleType(i);
 
-		if(GetVehicleTypeCategory(vehicletype) != VEHICLE_CATEGORY_TRAILER)
+		printf("looping vehicle %d type: %d category %d size %d", i, tmptype, GetVehicleTypeCategory(tmptype), GetVehicleTypeSize(tmptype));
+
+		if(GetVehicleTypeCategory(tmptype) != VEHICLE_CATEGORY_TRAILER)
+			continue;
+
+		if(GetVehicleTypeSize(tmptype) != trl_VehicleTypeHitchSize[vehicletype])
 			continue;
 
 		GetVehiclePos(i, vx2, vy2, vz2);
-		GetVehicleModelInfo(GetVehicleTypeModel(vehicletype), VEHICLE_MODEL_INFO_SIZE, size_x2, size_y2, size_z2);
+		GetVehicleModelInfo(GetVehicleTypeModel(tmptype), VEHICLE_MODEL_INFO_SIZE, size_x2, size_y2, size_z2);
 
 		if(Distance(vx1, vy1, vz1, vx2, vy2, vz2) < size_y1 + size_y2 + 1.0)
 		{
