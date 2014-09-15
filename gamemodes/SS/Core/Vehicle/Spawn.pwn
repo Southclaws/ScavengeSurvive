@@ -41,7 +41,7 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Vehicle/Spawn'...");
 
-	LoadPlayerVehicles();
+	LoadPlayerVehicles(true, true);
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS);
 
 	printf("Loaded %d Vehicles", Iter_Count(veh_Index));
