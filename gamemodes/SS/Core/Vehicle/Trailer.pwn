@@ -74,8 +74,6 @@ _HandleTrailerTowKey(playerid)
 
 		tmptype = GetVehicleType(i);
 
-		printf("looping vehicle %d type: %d category %d size %d", i, tmptype, GetVehicleTypeCategory(tmptype), GetVehicleTypeSize(tmptype));
-
 		if(GetVehicleTypeCategory(tmptype) != VEHICLE_CATEGORY_TRAILER)
 			continue;
 

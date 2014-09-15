@@ -536,7 +536,6 @@ UpdateVehicleFile(vehicleid, prints = false)
 			for(new i, j = GetContainerSize(containerid); i < j; i++)
 			{
 				items[i] = GetContainerSlotItem(containerid, i);
-				printf(">> slot %d/%d add %d from container %d", i, j, items[i], containerid);
 
 				if(!IsValidItem(items[i]))
 					break;
@@ -546,7 +545,6 @@ UpdateVehicleFile(vehicleid, prints = false)
 
 			itemlist = CreateItemList(items, itemcount);
 			GetItemList(itemlist, vehicle_ItemList);
-			printf("saving item list, len: %d", GetItemListSize(itemlist));
 
 			// TTRN = Trailer Trunk
 			modio_push(filename, _T<T,T,R,N>, GetItemListSize(itemlist), vehicle_ItemList, false, false, false);
