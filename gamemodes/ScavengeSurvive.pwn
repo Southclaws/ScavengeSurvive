@@ -356,6 +356,7 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Vehicle/Lock.pwn"
 #include "SS/Core/Vehicle/AntiNinja.pwn"
 #include "SS/Core/Vehicle/BikeCollision.pwn"
+#include "SS/Core/Vehicle/Trailer.pwn"
 
 // LOOT
 #include "SS/Core/Loot/Spawn.pwn"
@@ -393,7 +394,6 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Char/KnockOut.pwn"
 #include "SS/Core/Char/Disarm.pwn"
 #include "SS/Core/Char/Overheat.pwn"
-#include "SS/Core/Char/Towtruck.pwn"
 #include "SS/Core/Char/Holster.pwn"
 #include "SS/Core/Char/Infection.pwn"
 #include "SS/Core/Char/Backpack.pwn"
