@@ -279,7 +279,7 @@ LoadPlayerVehicle(username[], prints)
 
 		trailertrunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
 
-		AttachTrailerToVehicle(trailerid, vehicleid);
+		SetVehicleTrailer(vehicleid, trailerid);
 
 		SetVehicleSpawnPoint(trailerid,
 			Float:data[VEH_CELL_POSX],
@@ -505,7 +505,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 
 	// Now do trailers with the same modio parameters
 
-	new trailerid = GetVehicleTrailer(vehicleid);
+	new trailerid = GetVehicleTrailerID(vehicleid);
 
 	if(IsValidVehicle(trailerid))
 	{
