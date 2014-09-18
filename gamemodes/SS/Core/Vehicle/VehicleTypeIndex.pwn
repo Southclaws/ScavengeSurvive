@@ -38,8 +38,8 @@ enum
 
 enum (<<= 1)
 {
-	VEHICLE_FLAG_LOCKABLE,
-	VEHICLE_FLAG_ELECTRIC
+	VEHICLE_FLAG_NOT_LOCKABLE = 1,
+	VEHICLE_FLAG_NO_ENGINE
 }
 
 enum E_VEHICLE_TYPE_DATA
@@ -400,6 +400,24 @@ stock GetVehicleTypeCount(vehicletype)
 		return 0;
 
 	return veh_TypeCount[vehicletype];
+}
+
+// veh_flags / VEHICLE_FLAG_NOT_LOCKABLE
+stock IsVehicleTypeLockable(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return !(veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_NOT_LOCKABLE);
+}
+
+// veh_flags / VEHICLE_FLAG_NO_ENGINE
+stock IsVehicleTypeNoEngine(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_NO_ENGINE;
 }
 
 /*

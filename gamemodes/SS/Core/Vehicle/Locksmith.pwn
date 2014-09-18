@@ -15,14 +15,16 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	{
 		new
 			itemid,
-			ItemType:itemtype;
+			ItemType:itemtype,
+			vehicletype;
 
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
+		vehicletype = GetVehicleType(vehicleid);
 		
 		if(itemtype == item_LocksmithKit)
 		{
-			if(!VehicleHasDoors(vehicleid))
+			if(!IsVehicleTypeLockable(vehicletype))
 			{
 				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
 				return 1;
@@ -64,7 +66,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			CancelPlayerMovement(playerid);
 
-			if(IsVehicleLocked(vehicleid) && VehicleHasDoors(vehicleid))
+			if(IsVehicleLocked(vehicleid) && IsVehicleTypeLockable(vehicletype))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);

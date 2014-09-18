@@ -652,7 +652,7 @@ PlayerVehicleUpdate(playerid)
 		PlayerTextDrawHide(playerid, VehicleFuelText[playerid]);
 	}
 
-	if(VehicleHasDoors(vehicleid))
+	if(IsVehicleTypeLockable(vehicletype))
 	{
 		if(VehicleDoorsState(vehicleid))
 			PlayerTextDrawColor(playerid, VehicleDoorsText[playerid], VEHICLE_UI_ACTIVE);
@@ -1097,18 +1097,6 @@ public OnVehicleSpawn(vehicleid)
 
 	return 1;
 }
-
-stock VehicleHasDoors(vehicleid)
-{
-	switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
-	{
-		case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE, VEHICLE_CATEGORY_BOAT, VEHICLE_CATEGORY_TRAILER:
-			return 0;
-	}
-
-	return 1;
-}
-
 
 
 /*==============================================================================
