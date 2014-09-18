@@ -43,10 +43,10 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		if(itemtype == item_Key)
 		{
 			new
-				extradata = GetItemExtraData(itemid),
+				keyid = GetItemArrayDataAtCell(itemid, 0),
 				vehiclekey = GetVehicleKey(vehicleid);
 
-			if(extradata == 0)
+			if(keyid == 0)
 			{
 				ShowActionText(playerid, "That key hasn't been cut yet.", 3000);
 				return 1;
@@ -58,13 +58,16 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 				return 1;
 			}
 
-			if(extradata != vehiclekey)
+			if(keyid != vehiclekey)
 			{
 				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
 				return 1;
 			}
 
 			CancelPlayerMovement(playerid);
+
+			// Update old keys to the correct vehicle type.
+			SetItemArrayDataAtCell(itemid, vehicletype, 1);
 
 			if(IsVehicleLocked(vehicleid) && IsVehicleTypeLockable(vehicletype))
 			{
@@ -172,7 +175,8 @@ public OnHoldActionFinish(playerid)
 			itemid = CreateItem(item_Key);
 			GiveWorldItemToPlayer(playerid, itemid);
 
-			SetItemExtraData(itemid, key);
+			SetItemArrayDataAtCell(itemid, key, 0);
+			SetItemArrayDataAtCell(itemid, GetVehicleType(lsk_TargetVehicle[playerid]), 1);
 			SetVehicleKey(lsk_TargetVehicle[playerid], key);
 		}
 
@@ -201,8 +205,15 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Key)
 	{
-		if(GetItemExtraData(itemid) != 0)
-			SetItemNameExtra(itemid, "Cut");
+		if(GetItemArrayDataAtCell(itemid, 0) != 0)
+		{
+			new
+				vehicletype = GetItemArrayDataAtCell(itemid, 1),
+				vehicletypename[MAX_VEHICLE_TYPE_NAME];
+
+			GetVehicleTypeName(vehicletype, vehicletypename);
+			SetItemNameExtra(itemid, vehicletypename);
+		}
 	}
 
 	#if defined lsk_OnItemNameRender

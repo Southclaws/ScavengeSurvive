@@ -689,7 +689,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Parachute,		1);
 	SetItemTypeMaxArrayData(item_Medkit,		1);
 	SetItemTypeMaxArrayData(item_HardDrive,		1);
-	SetItemTypeMaxArrayData(item_Key,			1);
+	SetItemTypeMaxArrayData(item_Key,			2);
 	SetItemTypeMaxArrayData(item_FireworkBox,	1);
 	SetItemTypeMaxArrayData(item_FireLighter,	1);
 	SetItemTypeMaxArrayData(item_Timer,			1);

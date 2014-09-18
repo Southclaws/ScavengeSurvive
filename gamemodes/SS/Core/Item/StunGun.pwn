@@ -68,3 +68,30 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #if defined stun_OnPlayerUseItemWithItem
 	forward stun_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 #endif
+
+public OnItemNameRender(itemid, ItemType:itemtype)
+{
+	if(itemtype == item_StunGun)
+	{
+		if(GetItemExtraData(itemid) == 1)
+			SetItemNameExtra(itemid, "Charged");
+
+		else
+			SetItemNameExtra(itemid, "Uncharged");
+	}
+
+	#if defined stun_OnItemNameRender
+		return stun_OnItemNameRender(itemid, itemtype);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender stun_OnItemNameRender
+#if defined stun_OnItemNameRender
+	forward stun_OnItemNameRender(itemid, ItemType:itemtype);
+#endif
