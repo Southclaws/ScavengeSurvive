@@ -381,7 +381,10 @@ ItemType:		item_DogsBreath		= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo50BMG		= INVALID_ITEM_TYPE,
 ItemType:		item_Ammo308		= INVALID_ITEM_TYPE,
 ItemType:		item_Model70Rifle	= INVALID_ITEM_TYPE,
-ItemType:		item_LenKnocksRifle	= INVALID_ITEM_TYPE;
+ItemType:		item_LenKnocksRifle	= INVALID_ITEM_TYPE,
+ItemType:		item_Daypack		= INVALID_ITEM_TYPE,
+ItemType:		item_MediumBag		= INVALID_ITEM_TYPE,
+ItemType:		item_Rucksack		= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -639,6 +642,9 @@ public OnScriptInit()
 	item_Ammo308		= DefineItemType(".308 Rounds",			"Ammo308",			2039,	1,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Model70Rifle	= DefineItemType("Model 70",			"Model70Rifle",		358,	9,	90.0);
 	item_LenKnocksRifle	= DefineItemType("The Len-Knocks",		"LenKnocksRifle",	358,	10,	90.0);
+	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	4,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
+	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	8,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
+	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	6,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -834,6 +840,9 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Ammo308,		1);
 	SetItemTypeMaxArrayData(item_Model70Rifle,	4);
 	SetItemTypeMaxArrayData(item_LenKnocksRifle,4);
+	SetItemTypeMaxArrayData(item_Daypack,		2);
+	SetItemTypeMaxArrayData(item_MediumBag,		2);
+	SetItemTypeMaxArrayData(item_Rucksack,		2);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1156,16 +1165,18 @@ public OnScriptInit()
 	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
 	drug_Heroin		= DefineDrugType("Heroin",		300000);
 
-	DefineSafeboxType("Medium Box",		item_MediumBox,		8, 6, 3, 2);
-	DefineSafeboxType("Small Box",		item_SmallBox,		6, 2, 1, 0);
-	DefineSafeboxType("Large Box",		item_LargeBox,		12, 8, 6, 6);
-	DefineSafeboxType("Capsule",		item_Capsule,		2, 2, 0, 0);
+	DefineSafeboxType("Medium Box",		item_MediumBox,		10);
+	DefineSafeboxType("Small Box",		item_SmallBox,		8);
+	DefineSafeboxType("Large Box",		item_LargeBox,		12);
+	DefineSafeboxType("Capsule",		item_Capsule,		2);
 
-	DefineBagType("Backpack",			item_Backpack,		10, 4, 1, 0, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag",			item_Satchel,		5, 2, 1, 0, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Parachute Bag",		item_ParaBag,		8, 4, 2, 0, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Large Backpack",		item_LargeBackpack,	12, 5, 2, 0, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
-
+	DefineBagType("Backpack",			item_Backpack,		12, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag",			item_Satchel,		6, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Parachute Bag",		item_ParaBag,		10, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Large Backpack",		item_LargeBackpack,	15, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
+	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
+	DefineBagType("Medium Bag",			item_MediumBag,		13, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
+	DefineBagType("Travel Rucksack",	item_Rucksack,		14, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
 
 	for(new i; i < MAX_PLAYERS; i++)
 	{
