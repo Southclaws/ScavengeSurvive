@@ -410,6 +410,16 @@ _BagEquipHandler(playerid)
 
 	new ItemType:itemtype = GetItemType(itemid);
 
+	if(IsItemTypeBag(itemtype))
+	{
+		new currentbagitem = bag_PlayerBagID[playerid];
+
+		RemovePlayerBag(playerid);
+		GivePlayerBag(playerid, itemid);
+		GiveWorldItemToPlayer(playerid, currentbagitem, 1);
+		return 0;
+	}
+
 	if(WillItemTypeFitInInventory(playerid, itemtype))
 		return 0;
 
