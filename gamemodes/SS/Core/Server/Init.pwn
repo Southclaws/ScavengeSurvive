@@ -846,6 +846,25 @@ public OnScriptInit()
 // 2277 - PICTURE OF A CAT
 // 2352 - T SHAPED SMALL OBJ
 // 2590 - SPIKEY HOOK, SCHYTHE?
+// 2226 - HIFI
+// 2231 - Speaker/small box shape
+// 2232 - Slightly bigger speaker
+// 2324 - Short cylinder (retexture)
+// 2388 - Short pole type thing
+// 2680 - Wheel lock
+// 2749 - Small long cylinder (also 2752)
+// 2751 - Wide short cylinder
+// 2750 - Hair dryer/gun shape
+// 2780 - Small grey box with handle
+// 2894 - Book
+// 2961 - Small red keypad-like thing
+// 2966 - old phone/radio
+// 2967 - another old phone/radio
+// 2983 - Pipe valve
+// 3025 - Piece of scap metal pole/frame
+// 3067 - Metal frame
+// 3070 - Goggles
+
 
 	//									name		bleedrate
 	calibre_9mm		= DefineAmmoCalibre("9mm",		0.015);

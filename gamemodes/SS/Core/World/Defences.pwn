@@ -3,7 +3,7 @@
 
 #define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
 #define MAX_DEFENCE_ITEM	(10)
-#define MAX_DEFENCE			(2048)
+#define MAX_DEFENCE			(4096)
 
 
 enum
@@ -645,11 +645,15 @@ public OnHoldActionFinish(playerid)
 			}
 		}
 
-		DestroyItem(def_CurrentDefenceItem[playerid]);
-
 		if(itemtype == item_Screwdriver)
 		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_VERTICAL, .worldid = worldid, .interiorid = interiorid);
+
+			if(!IsValidDefence(id))
+			{
+				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
+				return 1;
+			}
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
@@ -662,6 +666,12 @@ public OnHoldActionFinish(playerid)
 		{
 			id = CreateDefence(type, x, y, z, angle, DEFENCE_POSE_HORIZONTAL, .worldid = worldid, .interiorid = interiorid);
 
+			if(!IsValidDefence(id))
+			{
+				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
+				return 1;
+			}
+
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
 				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z,
 				def_TypeData[type][def_horizontalRotX],
@@ -669,6 +679,7 @@ public OnHoldActionFinish(playerid)
 				def_TypeData[type][def_horizontalRotZ] + angle);
 		}
 
+		DestroyItem(def_CurrentDefenceItem[playerid]);
 
 		SaveDefenceItem(id, def_PrintEachRuntimeSave);
 		StopBuildingDefence(playerid);
