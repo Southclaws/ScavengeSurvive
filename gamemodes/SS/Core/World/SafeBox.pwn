@@ -11,10 +11,7 @@ enum E_SAFEBOX_TYPE_DATA
 {
 			box_name[MAX_SAFEBOX_NAME],
 ItemType:	box_itemtype,
-			box_size,
-			box_maxMed,
-			box_maxLarge,
-			box_maxCarry
+			box_size
 }
 
 
@@ -100,7 +97,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry)
+DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
@@ -110,9 +107,6 @@ DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size, max_med, max_
 	box_TypeData[box_TypeTotal][box_name]		= name;
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;
-	box_TypeData[box_TypeTotal][box_maxMed]		= max_med;
-	box_TypeData[box_TypeTotal][box_maxLarge]	= max_large;
-	box_TypeData[box_TypeTotal][box_maxCarry]	= max_carry;
 
 	box_ItemTypeBoxType[itemtype] = box_TypeTotal;
 
@@ -140,10 +134,7 @@ public OnItemCreate(itemid)
 			containerid = CreateContainer(
 				box_TypeData[box_ItemTypeBoxType[itemtype]][box_name],
 				box_TypeData[box_ItemTypeBoxType[itemtype]][box_size],
-				.virtual = 1,
-				.max_med = box_TypeData[box_ItemTypeBoxType[itemtype]][box_maxMed],
-				.max_large = box_TypeData[box_ItemTypeBoxType[itemtype]][box_maxLarge],
-				.max_carry = box_TypeData[box_ItemTypeBoxType[itemtype]][box_maxCarry]);
+				.virtual = 1);
 
 			box_ContainerSafebox[containerid] = itemid;
 

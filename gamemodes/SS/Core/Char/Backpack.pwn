@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_BAG_TYPE (4)
+#define MAX_BAG_TYPE (10)
 
 
 enum E_BAG_TYPE_DATA
@@ -9,9 +9,6 @@ enum E_BAG_TYPE_DATA
 			bag_name[ITM_MAX_NAME],
 ItemType:	bag_itemtype,
 			bag_size,
-			bag_maxMed,
-			bag_maxLarge,
-			bag_maxCarry,
 Float:		bag_attachOffsetX,
 Float:		bag_attachOffsetY,
 Float:		bag_attachOffsetZ,
@@ -85,7 +82,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, max_med, max_large, max_carry, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
+stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
 	d:1:HANDLER("[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
 
@@ -95,9 +92,6 @@ stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, max_med, max_la
 	bag_TypeData[bag_TypeTotal][bag_name]			= name;
 	bag_TypeData[bag_TypeTotal][bag_itemtype]		= itemtype;
 	bag_TypeData[bag_TypeTotal][bag_size]			= size;
-	bag_TypeData[bag_TypeTotal][bag_maxMed]			= max_med;
-	bag_TypeData[bag_TypeTotal][bag_maxLarge]		= max_large;
-	bag_TypeData[bag_TypeTotal][bag_maxCarry]		= max_carry;
 	bag_TypeData[bag_TypeTotal][bag_attachOffsetX]	= attachOffsetX;
 	bag_TypeData[bag_TypeTotal][bag_attachOffsetY]	= attachOffsetY;
 	bag_TypeData[bag_TypeTotal][bag_attachOffsetZ]	= attachOffsetZ;
@@ -216,10 +210,7 @@ public OnItemCreate(itemid)
 		containerid = CreateContainer(
 			bag_TypeData[bagtype][bag_name],
 			bag_TypeData[bagtype][bag_size],
-			.virtual = 1,
-			.max_med = bag_TypeData[bagtype][bag_maxMed],
-			.max_large = bag_TypeData[bagtype][bag_maxLarge],
-			.max_carry = bag_TypeData[bagtype][bag_maxCarry]);
+			.virtual = 1);
 
 		bag_ContainerItem[containerid] = itemid;
 		bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
