@@ -70,8 +70,8 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Civilian,		item_CanDrink,						100.0);
 	AddItemToLootIndex(loot_Civilian,		item_HockeyMask,					30.0);
 	AddItemToLootIndex(loot_Civilian,		item_Pumpkin,						10.0);
-	AddItemToLootIndex(loot_Civilian,		item_Daypack,						40.0);
-	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						32.0);
+	AddItemToLootIndex(loot_Civilian,		item_Daypack,						38.0);
+	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						24.0);
 	AddItemToLootIndex(loot_Civilian,		item_Rucksack,						5.0);
 
 	// loot_Industrial
@@ -101,8 +101,8 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Industrial,		item_AmmoBuck,						6.0);
 	AddItemToLootIndex(loot_Industrial,		item_RadioPole,						6.0);
 	AddItemToLootIndex(loot_Industrial,		item_Motor,							15.0);
-	AddItemToLootIndex(loot_Industrial,		item_Daypack,						30.0);
-	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						20.0);
+	AddItemToLootIndex(loot_Industrial,		item_Daypack,						28.0);
+	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						18.0);
 	AddItemToLootIndex(loot_Industrial,		item_Rucksack,						5.0);
 
 	// loot_Police
@@ -124,7 +124,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Police,			item_Ammo9mm,						30.0);
 	AddItemToLootIndex(loot_Police,			item_AmmoBuck,						20.0);
 	AddItemToLootIndex(loot_Police,			item_Ammo357Tracer,					15.0);
-	AddItemToLootIndex(loot_Police,			item_MediumBag,						25.0);
+	AddItemToLootIndex(loot_Police,			item_MediumBag,						22.0);
 
 	// loot_Military
 	AddItemToLootIndex(loot_Military,		item_Grenade,						20.0);
@@ -285,7 +285,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo9mm,						20.0);
 	AddItemToLootIndex(loot_CarPolice,		item_AmmoBuck,						10.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo357Tracer,					5.0);
-	AddItemToLootIndex(loot_CarPolice,		item_MediumBag,						20.0);
+	AddItemToLootIndex(loot_CarPolice,		item_MediumBag,						15.0);
 
 	// loot_CarMilitary
 	AddItemToLootIndex(loot_CarMilitary,	item_Grenade,						10.0);
