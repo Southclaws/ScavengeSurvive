@@ -561,16 +561,16 @@ public OnScriptInit()
 	item_Dice			= DefineItemType("Dice",				"Dice",				1851,	6,	0.0, 0.0, 0.0,			0.136,	0.031958, 0.131180, -0.214385, 69.012298, 16.103448, 10.308629, true);
 	item_Dynamite		= DefineItemType("Dynamite",			"Dynamite",			1654,	2);
 // 120
-	item_Door			= DefineItemType("Door",				"Door",				1497,	14,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563, true);
-	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	14,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347, true);
-	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	14,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079, true);
-	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	14,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079, true);
-	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	15,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true);
-	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	14,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true);
-	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	15,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867, true);
-	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	13,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662, true);
-	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	16,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true);
-	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	16,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true);
+	item_Door			= DefineItemType("Door",				"Door",				1497,	16,	90.0, 90.0, 0.0,		0.0,	0.313428, -0.507642, -1.340901, 336.984893, 348.837493, 113.141563, true);
+	item_MetPanel		= DefineItemType("Metal Panel",			"MetPanel",			1965,	16,	0.0, 90.0, 0.0,			0.0,	0.070050, 0.008440, -0.180277, 338.515014, 349.801025, 33.250347, true);
+	item_MetalGate		= DefineItemType("Metal Gate",			"MetalGate",		19303,	16,	270.0, 0.0, 0.0,		0.0,	0.057177, 0.073761, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CrateDoor		= DefineItemType("Crate Door",			"CrateDoor",		3062,	16,	90.0, 90.0, 0.0,		0.0,	0.150177, -0.097238, -0.299014,  -19.439863, -10.153647, 105.119079, true);
+	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	16,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true);
+	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	16,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true);
+	item_RustyDoor		= DefineItemType("Metal Panel",			"RustyDoor",		2952,	16,	180.0, 90.0, 0.0,		0.0,	-0.087715, 0.483874, 1.109397, 337.887634, 172.861953, 162.198867, true);
+	item_MetalStand		= DefineItemType("Metal Stand",			"MetalStand",		2978,	15,	0.0, 0.0, 0.0,			0.0,	-0.106182, 0.534724, -0.363847, 278.598419, 68.350570, 57.954662, true);
+	item_RustyMetal		= DefineItemType("Rusty Metal Sheet",	"RustyMetal",		16637,	17,	0.0, 270.0, 90.0,		0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true);
+	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	17,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true);
 // 130
 	item_Flare			= DefineItemType("Flare",				"Flare",			345,	2);
 	item_TntPhoneBomb	= DefineItemType("Phone Remote TNT",	"TntPhoneBomb",		1576,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
