@@ -136,12 +136,22 @@ public OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Bandage)
 		{
-			SetPlayerBleedRate(med_HealTarget[playerid], GetPlayerBleedRate(med_HealTarget[playerid]) > 0.05 ? 0.05 : 0.0);
+			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
+
+			bleedrate = bleedrate / 4.0;
+			bleedrate = bleedrate - floatpower(bleedrate, 1.01);
+
+			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 		}
 
 		if(itemtype == item_Medkit)
 		{
-			SetPlayerBleedRate(med_HealTarget[playerid], GetPlayerBleedRate(med_HealTarget[playerid]) > 0.05 ? 0.05 : 0.0);
+			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
+
+			bleedrate = bleedrate / 4.0;
+			bleedrate = bleedrate - floatpower(bleedrate, 1.01);
+
+			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 			ApplyDrug(med_HealTarget[playerid], drug_Painkill);
 		}
 
