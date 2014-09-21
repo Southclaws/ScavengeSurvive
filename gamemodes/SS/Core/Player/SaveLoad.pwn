@@ -10,7 +10,7 @@
 
 static
 	saveload_Debug[MAX_PLAYERS] = {SAVELOAD_DEBUG, ...},
-	saveload_ItemList[ITM_LST_OF_ITEMS(9)];
+	saveload_ItemList[ITM_LST_OF_ITEMS(14)];
 
 
 enum
@@ -69,7 +69,7 @@ SavePlayerChar(playerid)
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		animidx = GetPlayerAnimationIndex(playerid),
 		itemid,
-		items[9],
+		items[14],
 		itemcount,
 		itemlist;
 
@@ -506,7 +506,7 @@ LoadPlayerChar(playerid)
 enum
 {
 	INV_CELL_ITEMS[4 * 3],
-	INV_CELL_BAGITEMS[9 * 3],
+	INV_CELL_BAGITEMS[14 * 3],
 	INV_CELL_END
 }
 
