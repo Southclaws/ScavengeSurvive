@@ -138,8 +138,10 @@ public OnHoldActionFinish(playerid)
 		{
 			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
 
-			bleedrate = bleedrate / 4.0;
-			bleedrate = bleedrate - floatpower(bleedrate, 1.01);
+			bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
+			bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+
+			MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
 
 			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 		}
@@ -148,8 +150,10 @@ public OnHoldActionFinish(playerid)
 		{
 			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
 
-			bleedrate = bleedrate / 4.0;
-			bleedrate = bleedrate - floatpower(bleedrate, 1.01);
+			bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
+			bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+
+			MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
 
 			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 			ApplyDrug(med_HealTarget[playerid], drug_Painkill);

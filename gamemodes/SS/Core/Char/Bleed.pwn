@@ -6,6 +6,16 @@ static
 Float:	bld_BleedRate[MAX_PLAYERS];
 
 
+static
+		HANDLER = -1;
+
+
+hook OnScriptInit()
+{
+	HANDLER = debug_register_handler("bleed");
+}
+
+
 ptask BleedUpdate[100](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
@@ -22,8 +32,24 @@ ptask BleedUpdate[100](playerid)
 
 	if(bld_BleedRate[playerid] > 0.0)
 	{
+		new Float:hp = GetPlayerHP(playerid);
+
 		if(frandom(1.0) < 0.7)
-			GivePlayerHP(playerid, -bld_BleedRate[playerid]);
+			SetPlayerHP(playerid, hp - bld_BleedRate[playerid]);
+
+		/*
+			Slow bleeding based on health and wound count. Less wounds means
+			faster degradation of bleed rate. As blood rate drops, the bleed
+			rate will slow down faster (pseudo blood pressure). Results in a
+			bleed-out that slows down faster over time (only subtly). No wounds
+			will automatically stop the bleed rate due to the nature of the
+			formula (however this is still intentional).
+		*/
+		if(random(100) < 50)
+			bld_BleedRate[playerid] -= (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0);
+
+		if(debug_conditional(HANDLER, 1))
+			ShowActionText(playerid, sprintf("HP: %f Bleedrate: %f\nWounds %d Bleed slow: %f", hp, bld_BleedRate[playerid], GetPlayerWounds(playerid), (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0)));
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{
@@ -48,7 +74,7 @@ ptask BleedUpdate[100](playerid)
 		if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 
-		GivePlayerHP(playerid, 0.000925925); // One third of the health bar regenerates each real-time hour
+		GivePlayerHP(playerid, 0.00001925925 * GetPlayerFP(playerid));
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Morphine))
