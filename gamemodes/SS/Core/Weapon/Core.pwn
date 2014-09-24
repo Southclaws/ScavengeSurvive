@@ -701,19 +701,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 public OnPlayerDropItem(playerid, itemid)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(GetItemTypeWeapon(itemtype) != -1)
-	{
-		if(itmw_DropItemID[playerid] == INVALID_ITEM_ID)
-		{
-			d:1:HANDLER("[OnPlayerDropItem] dropping item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
-			itmw_DropItemID[playerid] = itemid;
-			itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, itemid);
-
-			return 1;
-		}
-	}
+	if(_unload_DropHandler(playerid, itemid))
+		return 1;
 
 	#if defined itmw_OnPlayerDropItem
 		return itmw_OnPlayerDropItem(playerid, itemid);
@@ -731,6 +720,31 @@ public OnPlayerDropItem(playerid, itemid)
 #if defined itmw_OnPlayerDropItem
 	forward itmw_OnPlayerDropItem(playerid, itemid);
 #endif
+
+_unload_DropHandler(playerid, itemid)
+{
+	new
+		ItemType:itemtype,
+		weapontype;
+
+	itemtype = GetItemType(itemid);
+	weapontype = GetItemTypeWeapon(itemtype);
+
+	if(weapontype == -1)
+		return 0;
+
+	if(itmw_Data[weapontype][itmw_maxReserveMags] == 0)
+		return 0;
+
+	if(itmw_DropItemID[playerid] != INVALID_ITEM_ID)
+		return 0;
+
+	d:1:HANDLER("[OnPlayerDropItem] dropping item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	itmw_DropItemID[playerid] = itemid;
+	itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, itemid);
+
+	return 1;
+}
 
 timer _UnloadWeapon[300](playerid, itemid)
 {

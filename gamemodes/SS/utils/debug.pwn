@@ -64,6 +64,14 @@ stock debug_set_level(handler, level)
 	return 1;
 }
 
+stock debug_conditional(handler, level)
+{
+	if(!IS_VALID_HANDLER(handler))
+		return 0;
+
+	return (dbg_Level[handler] < level);
+}
+
 stock debug_handler_search(name[])
 {
 	new bestmatch = -1;
