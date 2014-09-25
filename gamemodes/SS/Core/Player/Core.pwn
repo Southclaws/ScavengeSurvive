@@ -266,6 +266,9 @@ ptask PlayerUpdate[100](playerid)
 		return;
 	}
 
+	if(!IsPlayerSpawned(playerid))
+		return;
+
 	new
 		hour,
 		minute,

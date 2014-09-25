@@ -41,6 +41,9 @@ stock KnockOutPlayer(playerid, duration)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
+	if(!IsPlayerSpawned(playerid))
+		return 0;
+
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
 	if(knockout_KnockedOut[playerid])

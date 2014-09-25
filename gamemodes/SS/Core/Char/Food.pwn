@@ -6,6 +6,9 @@ ptask FoodUpdate[1000](playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
+	if(!IsPlayerSpawned(playerid))
+		return;
+
 	new
 		animidx = GetPlayerAnimationIndex(playerid),
 		k,
@@ -82,7 +85,7 @@ ptask FoodUpdate[1000](playerid)
 	}
 
 	if(food < 20.0)
-		SetPlayerHP(playerid, GetPlayerHP(playerid) - (20.0 - food) / 10.0);
+		SetPlayerHP(playerid, GetPlayerHP(playerid) - (20.0 - food) / 30.0);
 
 	if(food < 0.0)
 		food = 0.0;
