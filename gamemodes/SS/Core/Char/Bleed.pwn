@@ -30,6 +30,9 @@ ptask BleedUpdate[100](playerid)
 		return;
 	}
 
+	if(IsNaN(bld_BleedRate[playerid]))
+		bld_BleedRate[playerid] = 0.0;
+
 	if(bld_BleedRate[playerid] > 0.0)
 	{
 		new Float:hp = GetPlayerHP(playerid);
@@ -49,18 +52,18 @@ ptask BleedUpdate[100](playerid)
 			bld_BleedRate[playerid] -= (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0);
 
 		if(debug_conditional(HANDLER, 1))
-			ShowActionText(playerid, sprintf("HP: %f Bleedrate: %f\nWounds %d Bleed slow: %f", hp, bld_BleedRate[playerid], GetPlayerWounds(playerid), (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0)));
+			ShowActionText(playerid, sprintf("HP: %f Bleed-rate: %f~n~Wounds %d Bleed slow-rate: %f", hp, bld_BleedRate[playerid], GetPlayerWounds(playerid), (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0)));
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{
 			if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 			{
-				if(frandom(1.0) < 1.0 - bld_BleedRate[playerid])
+				if(frandom(0.1) < 0.1 - bld_BleedRate[playerid])
 					RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 			}
 			else
 			{
-				if(frandom(1.0) < bld_BleedRate[playerid])
+				if(frandom(0.1) < bld_BleedRate[playerid])
 					SetPlayerAttachedObject(playerid, ATTACHSLOT_BLOOD, 18706, 1,  0.088999, 0.020000, 0.044999,  0.088999, 0.020000, 0.044999,  1.179000, 1.510999, 0.005000);
 			}
 		}

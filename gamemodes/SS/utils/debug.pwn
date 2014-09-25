@@ -69,7 +69,7 @@ stock debug_conditional(handler, level)
 	if(!IS_VALID_HANDLER(handler))
 		return 0;
 
-	return (dbg_Level[handler] < level);
+	return (dbg_Level[handler] >= level);
 }
 
 stock debug_handler_search(name[])
