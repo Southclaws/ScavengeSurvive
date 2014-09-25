@@ -1528,10 +1528,10 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 				closestid, x, y, z,
 				def_GEID[closestid],
 				_:def_TypeData[def_Data[closestid][def_type]][def_itemtype],
-				GetItemTypeModel(def_TypeData[type][def_itemtype]), x, y, z + def_TypeData[type][def_placeOffsetZ],
-				def_TypeData[type][def_verticalRotX],
-				def_TypeData[type][def_verticalRotY],
-				def_TypeData[type][def_verticalRotZ] + def_Data[closestid][def_rotZ]);
+				GetItemTypeModel(def_TypeData[def_Data[closestid][def_type]][def_itemtype]), x, y, z + def_TypeData[def_Data[closestid][def_type]][def_placeOffsetZ],
+				def_TypeData[def_Data[closestid][def_type]][def_verticalRotX],
+				def_TypeData[def_Data[closestid][def_type]][def_verticalRotY],
+				def_TypeData[def_Data[closestid][def_type]][def_verticalRotZ] + def_Data[closestid][def_rotZ]);
 
 			DestroyDefence(closestid);
 		}
