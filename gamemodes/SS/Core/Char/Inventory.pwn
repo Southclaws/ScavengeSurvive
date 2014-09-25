@@ -153,10 +153,10 @@ ShowPlayerHealthInfo(playerid)
 	tmp = 0;
 
 	if(bleedrate > 0.0)
-		SetBodyPreviewLabel(playerid, 1, tmp++, 35.0, "Bleeding", RGBAToHex(abs(floatround(bleedrate * 3200.0)), abs(255 - floatround(bleedrate * 3200.0)), 0, 255));
+		SetBodyPreviewLabel(playerid, 1, tmp++, 35.0, "Bleeding", RGBAToHex(truncateforbyte(floatround(bleedrate * 3200.0)), truncateforbyte(255 - floatround(bleedrate * 3200.0)), 0, 255));
 
 	if(hunger < 66.6)
-		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Hungry", RGBAToHex(abs(floatround((66.6 - hunger) * 4.8)), abs(255 - floatround((66.6 - hunger) * 4.8)), 0, 255));
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Hungry", RGBAToHex(truncateforbyte(floatround((66.6 - hunger) * 4.8)), truncateforbyte(255 - floatround((66.6 - hunger) * 4.8)), 0, 255));
 
 	if(infected)
 		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Infected", 0xFF0000FF);

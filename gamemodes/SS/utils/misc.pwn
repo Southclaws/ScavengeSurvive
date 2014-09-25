@@ -107,6 +107,11 @@ stock HexToRGBA(colour, &r, &g, &b, &a)
 	a = colour & 0xFF;
 }
 
+stock truncateforbyte(cell)
+{
+	return ((cell < 0) ? (0) : ((cell > 255) ? (255) : cell));
+}
+
 stock IpIntToStr(ip)
 {
 	new str[17];
