@@ -84,7 +84,8 @@ DBStatement:det_Stmt_DetfieldLogGetName,
 DBStatement:det_Stmt_DetfieldLogGetPos,
 DBStatement:det_Stmt_DetfieldLogGetTime,
 DBStatement:det_Stmt_DetfieldLogDelete,
-DBStatement:det_Stmt_DetfieldLogDeleteN;
+DBStatement:det_Stmt_DetfieldLogDeleteN,
+DBStatement:det_Stmt_DetfieldGetNameLogs;
 
 
 hook OnScriptInit()
@@ -125,7 +126,11 @@ hook OnScriptInit()
 	det_Stmt_DetfieldLogGetTime		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogDelete		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogDeleteN		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND "FIELD_DETLOG_NAME" = ?");
+	det_Stmt_DetfieldGetNameLogs	= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DETFIELD", "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_NAME" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
 
+
+	DatabaseTableCheck(det_Database, DETFIELD_TABLE_MAIN, 8);
+	DatabaseTableCheck(det_Database, DETFIELD_TABLE_LOGS, 4);
 
 	new
 		name[MAX_DETFIELD_NAME],
@@ -369,15 +374,40 @@ stock GetDetectionFieldList(list[], string[], limit, offset)
 			list[j - offset] = i;
 
 			if(i > 0)
-				strcat(string, "\n", (limit + offset) * (MAX_DETFIELD_NAME + 1));
+				strcat(string, "\n", limit * (MAX_DETFIELD_NAME + 1));
 
-			strcat(string, det_Name[i], (limit + offset) * (MAX_DETFIELD_NAME + 1));
+			strcat(string, det_Name[i], limit * (MAX_DETFIELD_NAME + 1));
 		}
 
 		j++;
 	}
 
 	return j - offset;
+}
+
+stock GetDetectionFieldNameLog(name[], string[], limit, offset, len = sizeof(string))
+{
+	new
+		fieldname[MAX_PLAYER_NAME],
+		timestamp,
+		count;
+
+	stmt_bind_value(det_Stmt_DetfieldGetNameLogs, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(det_Stmt_DetfieldGetNameLogs, 1, DB::TYPE_INTEGER, limit);
+	stmt_bind_value(det_Stmt_DetfieldGetNameLogs, 2, DB::TYPE_INTEGER, offset);
+	stmt_bind_result_field(det_Stmt_DetfieldGetNameLogs, 0, DB::TYPE_STRING, fieldname, MAX_DETFIELD_NAME);
+	stmt_bind_result_field(det_Stmt_DetfieldGetNameLogs, 1, DB::TYPE_INTEGER, timestamp);
+
+	if(!stmt_execute(det_Stmt_DetfieldGetNameLogs))
+		return 0;
+
+	while(stmt_fetch_row(det_Stmt_DetfieldGetNameLogs))
+	{
+		format(string, len, "%s%s %s\n", string, fieldname, TimestampToDateTime(timestamp, "%d/%m/%y %X"));
+		count++;
+	}
+
+	return count;
 }
 
 stock GetDetectionFieldLog(detfieldid, output[], limit, offset)

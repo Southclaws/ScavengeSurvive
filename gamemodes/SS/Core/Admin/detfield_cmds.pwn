@@ -168,6 +168,23 @@ ACMD:field[2](playerid, params[])
 		ShowDetfieldRenamePrompt(playerid, id);
 	}
 
+	if(!strcmp(params, "name", true, 4))
+	{
+		new
+			name[MAX_PLAYER_NAME];
+
+		if(sscanf(params, "{s[8]}s[24]", name))
+		{
+			Msg(playerid, YELLOW, " >  Usave: /field name [name]");
+			return 1;
+		}
+
+		new count = ShowDetfieldNameFields(playerid, name);
+
+		if(count == 0)
+			MsgF(playerid, YELLOW, " >  No field records found for '"C_BLUE"%s"C_YELLOW"'.", name);
+	}
+
 	return 1;
 }
 
@@ -651,6 +668,36 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, "Go to\nDelete\nDelete all of this name", "Select", "Close");
+
+	return 1;
+}
+
+ShowDetfieldNameFields(playerid, name[])
+{
+	new
+		count,
+		title[64],
+		list[MAX_DETFIELD_PAGESIZE * (MAX_DETFIELD_NAME + 16)];
+
+	count = GetDetectionFieldNameLog(name, list, MAX_DETFIELD_PAGESIZE, dfm_PageIndex[playerid], sizeof(list));
+
+	format(title, sizeof(title), "%s (last %d fields from index %d)", name, count, dfm_PageIndex[playerid]);
+
+	if(count == 0)
+	{
+		return 0;
+	}
+
+	// TODO: make proper pagination for this menu.
+	// ShowPlayerPageButtons(playerid);
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, response, listitem, inputtext
+
+		// TODO: do something with the data (jump to field log or something).
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Select", "Back");
 
 	return 1;
 }
