@@ -34,6 +34,7 @@ native gpci(playerid, serial[], len);
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
 #define MAX_MODIO_SESSION				(1024) // modio
+#define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
