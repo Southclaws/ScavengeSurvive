@@ -7,9 +7,18 @@
 #define MAX_DETFIELD_PAGESIZE		(20)
 #define MAX_DETFIELD_LOG_PAGESIZE	(32)
 
-#define DETFIELD_DATABASE			"SSS/detfield.db"
-#define DETFIELD_TABLE_MAIN			"detfield"
+/*
+	Schema:
+		field_list(name, vert1..4, minz, maxz)
+		- Contains a list of detection fields.
 
+		field_logs(field, name, pos, time)
+		- Contains every log record for each field.
+*/
+
+#define DETFIELD_DATABASE			"SSS/detfield.db"
+
+#define DETFIELD_TABLE_MAIN			"field_list"
 #define FIELD_DETFIELD_NAME			"name"		// 00
 #define FIELD_DETFIELD_VERT1		"vert1"		// 01
 #define FIELD_DETFIELD_VERT2		"vert2"		// 02
@@ -31,12 +40,15 @@ enum
 	FIELD_ID_DETFIELD_EXCEPTIONS
 }
 
-#define FIELD_DETLOG_NAME			"name"		// 00
-#define FIELD_DETLOG_POS			"pos"		// 01
-#define FIELD_DETLOG_DATE			"time"		// 02
+#define DETFIELD_TABLE_LOGS			"field_logs"
+#define FIELD_DETLOG_DETFIELD		"field"		// 00
+#define FIELD_DETLOG_NAME			"name"		// 01
+#define FIELD_DETLOG_POS			"pos"		// 02
+#define FIELD_DETLOG_DATE			"time"		// 03
 
 enum
 {
+	FIELD_ID_DETLOG_FIELD,
 	FIELD_ID_DETLOG_NAME,
 	FIELD_ID_DETLOG_POS,
 	FIELD_ID_DETLOG_DATE
@@ -58,10 +70,11 @@ Iterator:	det_Index<MAX_DETFIELD>;
 static
 DB:			det_Database,
 DBStatement:det_Stmt_DetfieldAdd,
-DBStatement:det_Stmt_DetfieldAddTable,
 DBStatement:det_Stmt_DetfieldExists,
 DBStatement:det_Stmt_DetfieldDelete,
+DBStatement:det_Stmt_DetfieldDeleteRecords,
 DBStatement:det_Stmt_DetfieldRename,
+DBStatement:det_Stmt_DetfieldRenameRecords,
 DBStatement:det_Stmt_DetfieldSetExcps,
 DBStatement:det_Stmt_DetfieldLoad,
 DBStatement:det_Stmt_DetfieldLogEntry,
@@ -72,6 +85,97 @@ DBStatement:det_Stmt_DetfieldLogGetPos,
 DBStatement:det_Stmt_DetfieldLogGetTime,
 DBStatement:det_Stmt_DetfieldLogDelete,
 DBStatement:det_Stmt_DetfieldLogDeleteN;
+
+
+hook OnScriptInit()
+{
+	print("\n[OnScriptInit] Initialising 'detfield'...");
+
+	det_Database = db_open_persistent(DETFIELD_DATABASE);
+
+	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_MAIN" (\
+		"FIELD_DETFIELD_NAME" TEXT,\
+		"FIELD_DETFIELD_VERT1" TEXT,\
+		"FIELD_DETFIELD_VERT2" TEXT,\
+		"FIELD_DETFIELD_VERT3" TEXT,\
+		"FIELD_DETFIELD_VERT4" TEXT,\
+		"FIELD_DETFIELD_Z1" REAL,\
+		"FIELD_DETFIELD_Z2" REAL,\
+		"FIELD_DETFIELD_EXCEPTIONS" TEXT)", false));
+
+	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_LOGS" (\
+		"FIELD_DETLOG_DETFIELD" TEXT,\
+		"FIELD_DETLOG_NAME" TEXT,\
+		"FIELD_DETLOG_POS" TEXT,\
+		"FIELD_DETLOG_DATE" INTEGER)", false));
+
+	det_Stmt_DetfieldAdd			= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_MAIN" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+	det_Stmt_DetfieldExists			= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
+	det_Stmt_DetfieldDelete			= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
+	det_Stmt_DetfieldDeleteRecords	= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ?");
+	det_Stmt_DetfieldRename			= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_NAME" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
+	det_Stmt_DetfieldRenameRecords	= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_LOGS" SET "FIELD_DETLOG_DETFIELD" = ? WHERE "FIELD_DETLOG_DETFIELD" = ?");
+	det_Stmt_DetfieldSetExcps		= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_EXCEPTIONS" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
+	det_Stmt_DetfieldLoad			= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_MAIN"");
+	det_Stmt_DetfieldLogEntry		= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_LOGS" VALUES(?, ?, ?, ?)");
+	det_Stmt_DetfieldLogEntryCount	= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ?");
+	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
+	det_Stmt_DetfieldLogGetName		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_NAME" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
+	det_Stmt_DetfieldLogGetPos		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_POS" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
+	det_Stmt_DetfieldLogGetTime		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
+	det_Stmt_DetfieldLogDelete		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
+	det_Stmt_DetfieldLogDeleteN		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND "FIELD_DETLOG_NAME" = ?");
+
+
+	new
+		name[MAX_DETFIELD_NAME],
+		vert1[64],
+		vert2[64],
+		vert3[64],
+		vert4[64],
+		Float:minz,
+		Float:maxz,
+		exceptions[MAX_PLAYER_NAME * 32],
+
+		Float:points[10],
+		exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME];
+
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_NAME, DB::TYPE_STRING, name, MAX_DETFIELD_NAME);
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT1, DB::TYPE_STRING, vert1, sizeof(vert1));
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT2, DB::TYPE_STRING, vert2, sizeof(vert2));
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT3, DB::TYPE_STRING, vert3, sizeof(vert3));
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT4, DB::TYPE_STRING, vert4, sizeof(vert4));
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_Z1, DB::TYPE_FLOAT, minz);
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_Z2, DB::TYPE_FLOAT, maxz);
+	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_EXCEPTIONS, DB::TYPE_STRING, exceptions, sizeof(exceptions));
+
+	stmt_execute(det_Stmt_DetfieldLoad);
+
+	while(stmt_fetch_row(det_Stmt_DetfieldLoad))
+	{
+		if(isnull(name))
+			continue;
+
+		sscanf(vert1, "ff", points[00], points[01]);
+		sscanf(vert2, "ff", points[02], points[03]);
+		sscanf(vert3, "ff", points[04], points[05]);
+		sscanf(vert4, "ff", points[06], points[07]);
+		points[08] = points[00];
+		points[09] = points[01];
+
+		// Temp, to prevent data "leaking" to the next slot.
+		for(new i; i < MAX_DETFIELD_EXCEPTIONS; i++)
+			exceptionlist[i][0] = EOS;
+
+		sscanf(exceptions, "a<s[24]>[32]", exceptionlist);
+
+		CreateDetectionField(name, points, minz, maxz, exceptionlist);
+	}
+
+	printf("Loaded %d Detection Fields", Iter_Count(det_Index));
+
+	return 1;
+}
 
 
 /*==============================================================================
@@ -172,11 +276,6 @@ stock AddDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz, F
 	if(!stmt_execute(det_Stmt_DetfieldAdd))
 		return -4;
 
-	stmt_bind_value(det_Stmt_DetfieldAddTable, 0, DB::TYPE_STRING, name, MAX_DETFIELD_NAME);
-
-	if(!stmt_execute(det_Stmt_DetfieldAddTable))
-		return -5;
-
 	return id;
 }
 
@@ -188,6 +287,10 @@ stock RemoveDetectionField(detfieldid)
 	stmt_bind_value(det_Stmt_DetfieldDelete, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 
 	stmt_execute(det_Stmt_DetfieldDelete);
+
+	stmt_bind_value(det_Stmt_DetfieldDeleteRecords, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+
+	stmt_execute(det_Stmt_DetfieldDeleteRecords);
 
 	new query[256];
 
@@ -233,6 +336,10 @@ stock SetDetectionFieldName(detfieldid, name[MAX_DETFIELD_NAME])
 
 	stmt_execute(det_Stmt_DetfieldRename);
 
+	stmt_bind_value(det_Stmt_DetfieldRenameRecords, 0, DB::TYPE_STRING, name, MAX_DETFIELD_NAME);
+	stmt_bind_value(det_Stmt_DetfieldRenameRecords, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+
+	stmt_execute(det_Stmt_DetfieldRenameRecords);
 	new query[256];
 
 	format(query, sizeof(query), "ALTER TABLE %s RENAME TO %s", det_Name[detfieldid], name);
@@ -456,8 +563,8 @@ stock GetDetectionFieldLogEntryName(detfieldid, logentry, name[MAX_PLAYER_NAME])
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
-	stmt_bind_value(det_Stmt_DetfieldLogGetName, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
-	stmt_bind_value(det_Stmt_DetfieldLogGetName, 1, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogGetName, 0, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogGetName, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 	stmt_bind_result_field(det_Stmt_DetfieldLogGetName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogGetName))
@@ -496,8 +603,8 @@ stock GetDetectionFieldLogEntryTime(detfieldid, logentry)
 
 	new timestamp;
 
-	stmt_bind_value(det_Stmt_DetfieldLogGetTime, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
-	stmt_bind_value(det_Stmt_DetfieldLogGetTime, 1, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogGetTime, 0, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogGetTime, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 	stmt_bind_result_field(det_Stmt_DetfieldLogGetTime, 0, DB::TYPE_INTEGER, timestamp);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogGetTime))
@@ -513,8 +620,8 @@ stock DeleteDetectionFieldLogEntry(detfieldid, logentry)
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
-	stmt_bind_value(det_Stmt_DetfieldLogDelete, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
-	stmt_bind_value(det_Stmt_DetfieldLogDelete, 1, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogDelete, 0, DB::TYPE_INTEGER, logentry);
+	stmt_bind_value(det_Stmt_DetfieldLogDelete, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogDelete))
 		return 0;
@@ -527,8 +634,8 @@ stock DeleteDetectionFieldLogsOfName(detfieldid, name[MAX_PLAYER_NAME])
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
-	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
-	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogDeleteN))
 		return 0;
@@ -636,89 +743,6 @@ UpdateDetectionFieldExceptions(detfieldid)
 	stmt_bind_value(det_Stmt_DetfieldSetExcps, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 
 	return stmt_execute(det_Stmt_DetfieldSetExcps);
-}
-
-hook OnScriptInit()
-{
-	print("\n[OnScriptInit] Initialising 'detfield'...");
-
-	det_Database = db_open_persistent(DETFIELD_DATABASE);
-
-	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_MAIN" (\
-		"FIELD_DETFIELD_NAME" TEXT,\
-		"FIELD_DETFIELD_VERT1" TEXT,\
-		"FIELD_DETFIELD_VERT2" TEXT,\
-		"FIELD_DETFIELD_VERT3" TEXT,\
-		"FIELD_DETFIELD_VERT4" TEXT,\
-		"FIELD_DETFIELD_Z1" REAL,\
-		"FIELD_DETFIELD_Z2" REAL,\
-		"FIELD_DETFIELD_EXCEPTIONS" TEXT)", false));
-
-	det_Stmt_DetfieldAdd			= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_MAIN" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-	det_Stmt_DetfieldAddTable		= db_prepare(det_Database, "CREATE TABLE IF NOT EXISTS ? ("FIELD_DETLOG_NAME" TEXT,"FIELD_DETLOG_POS" TEXT,"FIELD_DETLOG_DATE" TEXT)");
-	det_Stmt_DetfieldExists			= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldDelete			= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldRename			= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_NAME" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldSetExcps		= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_EXCEPTIONS" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldLoad			= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_MAIN"");
-	det_Stmt_DetfieldLogEntry		= db_prepare(det_Database, "INSERT INTO ? VALUES(?, ?, ?)");
-	det_Stmt_DetfieldLogEntryCount	= db_prepare(det_Database, "SELECT COUNT(*) FROM ?");
-	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT * FROM ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
-	det_Stmt_DetfieldLogGetName		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_NAME" FROM ? WHERE rowid = ?");
-	det_Stmt_DetfieldLogGetPos		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_POS" FROM ? WHERE rowid = ?");
-	det_Stmt_DetfieldLogGetTime		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DATE" FROM ? WHERE rowid = ?");
-	det_Stmt_DetfieldLogDelete		= db_prepare(det_Database, "DELETE FROM ? WHERE rowid = ?");
-	det_Stmt_DetfieldLogDeleteN		= db_prepare(det_Database, "DELETE FROM ? WHERE "FIELD_DETLOG_NAME" = ?");
-
-
-	new
-		name[MAX_DETFIELD_NAME],
-		vert1[64],
-		vert2[64],
-		vert3[64],
-		vert4[64],
-		Float:minz,
-		Float:maxz,
-		exceptions[MAX_PLAYER_NAME * 32],
-
-		Float:points[10],
-		exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME];
-
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_NAME, DB::TYPE_STRING, name, MAX_DETFIELD_NAME);
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT1, DB::TYPE_STRING, vert1, sizeof(vert1));
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT2, DB::TYPE_STRING, vert2, sizeof(vert2));
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT3, DB::TYPE_STRING, vert3, sizeof(vert3));
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_VERT4, DB::TYPE_STRING, vert4, sizeof(vert4));
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_Z1, DB::TYPE_FLOAT, minz);
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_Z2, DB::TYPE_FLOAT, maxz);
-	stmt_bind_result_field(det_Stmt_DetfieldLoad, FIELD_ID_DETFIELD_EXCEPTIONS, DB::TYPE_STRING, exceptions, sizeof(exceptions));
-
-	stmt_execute(det_Stmt_DetfieldLoad);
-
-	while(stmt_fetch_row(det_Stmt_DetfieldLoad))
-	{
-		if(isnull(name))
-			continue;
-
-		sscanf(vert1, "ff", points[00], points[01]);
-		sscanf(vert2, "ff", points[02], points[03]);
-		sscanf(vert3, "ff", points[04], points[05]);
-		sscanf(vert4, "ff", points[06], points[07]);
-		points[08] = points[00];
-		points[09] = points[01];
-
-		// Temp, to prevent data "leaking" to the next slot.
-		for(new i; i < MAX_DETFIELD_EXCEPTIONS; i++)
-			exceptionlist[i][0] = EOS;
-
-		sscanf(exceptions, "a<s[24]>[32]", exceptionlist);
-
-		CreateDetectionField(name, points, minz, maxz, exceptionlist);
-	}
-
-	printf("Loaded %d Detection Fields", Iter_Count(det_Index));
-
-	return 1;
 }
 
 
