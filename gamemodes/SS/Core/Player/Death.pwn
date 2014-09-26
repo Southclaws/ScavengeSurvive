@@ -31,13 +31,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 	if(killerid == INVALID_PLAYER_ID)
 	{
-		if(GetTickCountDifference(GetTickCount(), GetPlayerTookDamageTick(playerid)) < 1000)
-		{
-			killerid = GetLastHitById(playerid);
+		killerid = GetLastHitById(playerid);
 
-			if(!IsPlayerConnected(killerid))
-				killerid = INVALID_PLAYER_ID;
-		}
+		if(!IsPlayerConnected(killerid))
+			killerid = INVALID_PLAYER_ID;
 	}
 
 	_OnDeath(playerid, killerid);
@@ -81,8 +78,6 @@ _OnDeath(playerid, killerid)
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
 
-		//MsgAdminsF(1, YELLOW, " >  [KILL]: %p killed %p with %d", killerid, playerid, deathreason);
-
 		switch(deathreason)
 		{
 			case 0..3, 5..7, 10..15:
@@ -107,7 +102,7 @@ _OnDeath(playerid, killerid)
 				deathreasonstring = "They died of blood loss caused by what looks like bullets.";
 
 			case 41, 42:
-				deathreasonstring = "They were sprayed and suffocated by a high pressure liquid.";
+				deathreasonstring = "They were sprayed and suffocated by a high pressure substance.";
 
 			case 44, 45:
 				deathreasonstring = "Somehow, they were killed by goggles.";
@@ -116,7 +111,7 @@ _OnDeath(playerid, killerid)
 				deathreasonstring = "Somehow, they were killed by a camera.";
 
 			default:
-				deathreasonstring = "They died for an unknown deathreason.";
+				deathreasonstring = "They bled to death.";
 		}
 	}
 	else
@@ -125,8 +120,6 @@ _OnDeath(playerid, killerid)
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
-
-		//MsgAdminsF(1, YELLOW, " >  [DEATH]: %p died by %d", playerid, deathreason);
 
 		if(IsPlayerUnderDrugEffect(playerid, drug_Air))
 		{
@@ -347,11 +340,11 @@ hook OnPlayerSpawn(playerid)
 
 		SetPlayerCameraLookAt(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid]);
 
-		TextDrawShowForPlayer(playerid, DeathText);
-		TextDrawShowForPlayer(playerid, DeathButton);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 		SetPlayerHP(playerid, 1.0);
 		SetPlayerScreenFadeLevel(playerid, 255);
+		TextDrawShowForPlayer(playerid, DeathText);
+		TextDrawShowForPlayer(playerid, DeathButton);
 	}
 }
 
