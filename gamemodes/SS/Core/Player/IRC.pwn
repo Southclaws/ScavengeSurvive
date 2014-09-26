@@ -1,12 +1,16 @@
 #include <YSI\y_hooks>
+
+
 static
 	irc_Active,
 	irc_Serv[32],
 	irc_Port,
 	irc_ChatChan[32],
 	irc_ChatPass[32],
+	irc_ChatPrefix,
 	irc_StaffChan[32],
 	irc_StaffPass[32],
+	irc_StaffPrefix,
 	irc_BotNick[32],
 	irc_BotName[32],
 	irc_BotUser[32],
@@ -28,8 +32,10 @@ hook OnScriptInit()
 	GetSettingInt		("irc/port",		6667,				irc_Port);
 	GetSettingString	("irc/chat-chan",	"#MyChatChannel",	irc_ChatChan);
 	GetSettingString	("irc/chat-pass",	"changeme",			irc_ChatPass);
+	GetSettingInt		("irc/chat-prefix",	'.',				irc_ChatPrefix);
 	GetSettingString	("irc/staff-chan",	"#MyStaffChannel",	irc_StaffChan);
 	GetSettingString	("irc/staff-pass",	"changeme",			irc_StaffPass);
+	GetSettingInt		("irc/staff-prefix",'.',				irc_StaffPrefix);
 	GetSettingString	("irc/bot-name",	"SS-Bot",			irc_BotName);
 	GetSettingString	("irc/bot-nick",	"SS-Bot",			irc_BotNick);
 	GetSettingString	("irc/bot-pass",	"changeme",			irc_BotPass);
@@ -150,12 +156,20 @@ _IRC_HandleServerChat(playerid, text[], Float:frequency)
 {
 	if(frequency == 1.0)
 	{
+		if(irc_ChatPrefix != 0)
+		{
+			if(text[0] != irc_ChatPrefix)
+				return 0;
+
+			strdel(text, 0, 1);
+		}
+
 		new
 			name[MAX_PLAYER_NAME + 1],
 			message[7 + MAX_PLAYER_NAME + 128];
 
 		GetPlayerName(playerid, name, sizeof(name));
-		strins(name, ".", 1); // Puts a . after first char, prevents nickalerts.
+		strins(name, ".", strlen(name) / 2); // Prevents repeated nickalerts.
 
 		format(message, sizeof(message), "[%02d][%s]: %s", playerid, name, text);
 		IRC_GroupSay(irc_Group, irc_ChatChan, message);		
@@ -163,16 +177,26 @@ _IRC_HandleServerChat(playerid, text[], Float:frequency)
 
 	if(frequency == 3.0)
 	{
+		if(irc_StaffPrefix != 0)
+		{
+			if(text[0] != irc_StaffPrefix)
+				return 0;
+
+			strdel(text, 0, 1);
+		}
+
 		new
 			name[MAX_PLAYER_NAME + 1],
 			message[7 + MAX_PLAYER_NAME + 128];
 
 		GetPlayerName(playerid, name, sizeof(name));
-		strins(name, ".", 1); // Puts a . after first char, prevents nickalerts.
+		strins(name, ".", strlen(name) / 2); // Prevents repeated nickalerts.
 
 		format(message, sizeof(message), "[%02d][%s]: %s", playerid, name, text);
 		IRC_GroupSay(irc_Group, irc_StaffChan, message);		
 	}
+
+	return 1;
 }
 
 public IRC_OnUserSay(botid, recipient[], user[], host[], message[])
@@ -201,6 +225,14 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 {
 	if(!strcmp(recipient, irc_ChatChan, true))
 	{
+		if(irc_ChatPrefix != 0)
+		{
+			if(message[0] != irc_ChatPrefix)
+				return 0;
+
+			strdel(message, 0, 1);
+		}
+
 		logf("[CHAT] [IRC-C] [%s]: %s", user, message);
 
 		new
@@ -225,6 +257,14 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 
 	if(!strcmp(recipient, irc_StaffChan, true))
 	{
+		if(irc_StaffPrefix != 0)
+		{
+			if(message[0] != irc_StaffPrefix)
+				return 0;
+
+			strdel(message, 0, 1);
+		}
+
 		logf("[CHAT] [IRC-S] [%s]: %s", user, message);
 
 		new
@@ -246,6 +286,8 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 				SendClientMessage(i, WHITE, line2);
 		}
 	}
+
+	return 1;
 }
 
 
