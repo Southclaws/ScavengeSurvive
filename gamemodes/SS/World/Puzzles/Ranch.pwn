@@ -47,16 +47,6 @@ hook OnGameModeInit()
 	CreateDynamicObject(2574, -2811.88, -1530.59, 139.84, 0.00, 0.00, 180.00);
 	QuarryDoorKey = CreateItem(item_Key, -2813.96, -1530.55, 140.97, 0.36, -85.14, 25.00);
 
-	buttonid[0] = CreateButton(-2811.1840, -1524.0532, 140.8437, "Press "KEYTEXT_INTERACT" to open");
-	CreateDoor(1497, buttonid,
-		-2811.41, -1524.75, 139.84,   0.00, 0.00, 455.82,
-		-2811.41, -1524.72, 139.84,   0.00, 0.00, 570.18, .maxbuttons = 1, .movespeed = 0.1);
-
-	buttonid[0] = CreateButton(-2821.0671, -1518.6484, 140.8437, "Press "KEYTEXT_INTERACT" to open");
-	CreateDoor(1497, buttonid,
-		-2821.19, -1519.46, 139.84, 0.00, 0.00, 450.60,
-		-2821.19, -1519.44, 139.84, 0.00, 0.00, 353.28, .maxbuttons = 1, .movespeed = 0.1);
-
 
 	// Cave 1
 
