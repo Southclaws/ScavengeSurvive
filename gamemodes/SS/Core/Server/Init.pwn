@@ -1088,39 +1088,39 @@ public OnScriptInit()
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7);
 
 
-	DefineItemCombo(item_Knife,			item_Parachute,		item_ParaBag,		.returnitem1 = 0, .returnitem2 = 1);
-	DefineItemCombo(item_Bottle,		item_Bandage,		item_MolotovEmpty);
+	DefineItemCraftSet(item_ParaBag, 		item_Knife, true,			item_Parachute, false);
+	DefineItemCraftSet(item_MolotovEmpty, 	item_Bottle, false,			item_Bandage, false);
 
-	DefineItemCombo(item_FireworkBox,	item_PowerSupply,	item_IedBomb);
-	DefineItemCombo(item_Explosive,		item_Timer,			item_TntTimebomb);
-	DefineItemCombo(item_Explosive,		item_Accelerometer,	item_TntTripMine);
-	DefineItemCombo(item_Explosive,		item_MotionSense,	item_TntProxMine);
-	DefineItemCombo(item_Explosive,		item_MobilePhone,	item_TntPhoneBomb);
-	DefineItemCombo(item_IedBomb,		item_Timer,			item_IedTimebomb);
-	DefineItemCombo(item_IedBomb,		item_Accelerometer,	item_IedTripMine);
-	DefineItemCombo(item_IedBomb,		item_MotionSense,	item_IedProxMine);
-	DefineItemCombo(item_IedBomb,		item_MobilePhone,	item_IedPhoneBomb);
-	DefineItemCombo(item_Fluctuator,	item_Timer,			item_EmpTimebomb);
-	DefineItemCombo(item_Fluctuator,	item_Accelerometer,	item_EmpTripMine);
-	DefineItemCombo(item_Fluctuator,	item_MotionSense,	item_EmpProxMine);
-	DefineItemCombo(item_Fluctuator,	item_MobilePhone,	item_EmpPhoneBomb);
+	DefineItemCraftSet(item_IedBomb, 		item_FireworkBox, false,	item_PowerSupply, false);
+	DefineItemCraftSet(item_TntTimebomb, 	item_Explosive, false,		item_Timer, false);
+	DefineItemCraftSet(item_TntTripMine, 	item_Explosive, false,		item_Accelerometer, false);
+	DefineItemCraftSet(item_TntProxMine, 	item_Explosive, false,		item_MotionSense, false);
+	DefineItemCraftSet(item_TntPhoneBomb, 	item_Explosive, false,		item_MobilePhone, false);
+	DefineItemCraftSet(item_IedTimebomb, 	item_IedBomb, false,		item_Timer, false);
+	DefineItemCraftSet(item_IedTripMine, 	item_IedBomb, false,		item_Accelerometer, false);
+	DefineItemCraftSet(item_IedProxMine, 	item_IedBomb, false,		item_MotionSense, false);
+	DefineItemCraftSet(item_IedPhoneBomb, 	item_IedBomb, false,		item_MobilePhone, false);
+	DefineItemCraftSet(item_EmpTimebomb, 	item_Fluctuator, false,		item_Timer, false);
+	DefineItemCraftSet(item_EmpTripMine, 	item_Fluctuator, false,		item_Accelerometer, false);
+	DefineItemCraftSet(item_EmpProxMine, 	item_Fluctuator, false,		item_MotionSense, false);
+	DefineItemCraftSet(item_EmpPhoneBomb, 	item_Fluctuator, false,		item_MobilePhone, false);
 
-	DefineItemCombo(item_MediumBox,		item_MediumBox,		item_Campfire);
-	DefineItemCombo(item_SmallBox,		item_MediumBox,		item_Campfire);
-	DefineItemCombo(item_SmallBox,		item_SmallBox,		item_Campfire);
+	DefineItemCraftSet(item_Campfire, 		item_MediumBox, false,		item_MediumBox, false);
+	DefineItemCraftSet(item_Campfire, 		item_SmallBox, false,		item_MediumBox, false);
+	DefineItemCraftSet(item_Campfire, 		item_SmallBox, false,		item_SmallBox, false);
 
-	DefineItemCombo(item_Battery,		item_Fusebox,		item_PowerSupply);
-	DefineItemCombo(item_Timer,			item_HardDrive,		item_StorageUnit);
-	DefineItemCombo(item_StunGun,		item_RadioPole,		item_Fluctuator);
-	DefineItemCombo(item_MobilePhone,	item_Keypad,		item_IoUnit);
-	DefineItemCombo(item_PowerSupply,	item_Fluctuator,	item_FluxCap);
-	DefineItemCombo(item_StorageUnit,	item_IoUnit,		item_DataInterface);
-	DefineItemCombo(item_FluxCap,		item_DataInterface,	item_HackDevice);
-	DefineItemCombo(item_PowerSupply,	item_Timer,			item_Motor);
-	DefineItemCombo(item_Key,			item_Motor,			item_LocksmithKit);
-	DefineItemCombo(item_Motor,			item_Fluctuator,	item_StarterMotor);
-	DefineItemCombo(item_IoUnit,		item_PowerSupply,	item_AdvancedKeypad);
-	DefineItemCombo(item_Knife,			item_Clothes,		item_Bandage,		.returnitem1 = 0, .returnitem2 = 1);
+	DefineItemCraftSet(item_PowerSupply, 	item_Battery, false,		item_Fusebox, false);
+	DefineItemCraftSet(item_StorageUnit, 	item_Timer, false,			item_HardDrive, false);
+	DefineItemCraftSet(item_Fluctuator, 	item_StunGun, false,		item_RadioPole, false);
+	DefineItemCraftSet(item_IoUnit, 		item_MobilePhone, false,	item_Keypad, false);
+	DefineItemCraftSet(item_FluxCap, 		item_PowerSupply, false,	item_Fluctuator, false);
+	DefineItemCraftSet(item_DataInterface, 	item_StorageUnit, false,	item_IoUnit, false);
+	DefineItemCraftSet(item_HackDevice, 	item_FluxCap, false,		item_DataInterface, false);
+	DefineItemCraftSet(item_Motor, 			item_PowerSupply, false,	item_Timer, false);
+	DefineItemCraftSet(item_LocksmithKit, 	item_Key, false,			item_Motor, false);
+	DefineItemCraftSet(item_StarterMotor, 	item_Motor, false,			item_Fluctuator, false);
+	DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false,			item_PowerSupply, false);
+	DefineItemCraftSet(item_Bandage, 		item_Knife, true,			item_Clothes, false);
 	//WriteAllCombosToFile();
 
 
