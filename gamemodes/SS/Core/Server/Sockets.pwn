@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SOCKET_CONNECTIONS (10)
+#define MAX_SOCKET_CONNECTIONS (64)
 
 
 static
@@ -64,31 +64,37 @@ public onSocketReceiveData(Socket:id, remote_clientid, data[], data_len)
 
 		new
 			command[32],
-			params[96];
+			params[96],
+			cmdfunction[64];
 
-		if(!sscanf(data, "s[32]s[96]", command, params))
-		{
-			CallLocalFunction("OnRemoteCommand", "ss", command, params);
-		}
+		sscanf(data, "s[30]s[96]", command, params);
+
+		for (new i, j = strlen(command); i < j; i++)
+			command[i] = tolower(command[i]);
+
+		format(cmdfunction, sizeof(command) + 5, "scmd_%s", command[0]);
+
+		if(isnull(params))
+			CallLocalFunction(cmdfunction, "is", remote_clientid, "\1");
+
+		else
+			CallLocalFunction(cmdfunction, "is", remote_clientid, params);
 	}
 
 	return 1;
 }
 
-public OnRemoteCommand(command[], params[])
+SCMD:is_account_registered(remote_clientid, params[])
 {
-	if(!strcmp(command, "is_account_registered"))
-	{
-		strtrim(params, "\r\n");
+	strtrim(params, "\r\n");
 
-		printf("[RCMD] is_account_registered '%s'", params);
+	printf("[RCMD] is_account_registered '%s'", params);
 
-		if(AccountExists(params))
-			socket_sendto_remote_client(socket, 0, "true");
+	if(AccountExists(params))
+		socket_sendto_remote_client(socket, 0, "true");
 
-		else
-			socket_sendto_remote_client(socket, 0, "false");
-	}
+	else
+		socket_sendto_remote_client(socket, 0, "false");
 }
 
 timer socket_timeout[10000](remote_clientid)
