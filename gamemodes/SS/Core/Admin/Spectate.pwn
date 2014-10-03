@@ -165,7 +165,7 @@ SpectatePrevTarget(playerid)
 _RefreshSpectate(playerid)
 {
 	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
-	SetPlayerInterior(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
+	SetPlayerInterior(playerid, GetPlayerInterior(spectate_Target[playerid]));
 
 	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
 		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
