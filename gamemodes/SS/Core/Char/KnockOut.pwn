@@ -11,6 +11,9 @@ static
 Timer:	knockout_Timer[MAX_PLAYERS];
 
 
+forward OnPlayerKnockOut(playerid);
+
+
 hook OnPlayerConnect(playerid)
 {
 	knockout_KnockedOut[playerid] = false;
@@ -68,6 +71,11 @@ stock KnockOutPlayer(playerid, duration)
 
 	if(knockout_Duration[playerid] > knockout_MaxDuration)
 		knockout_Duration[playerid] = knockout_MaxDuration;
+
+	CallLocalFunction("OnPlayerKnockOut", "d", playerid);
+
+	ClosePlayerInventory(playerid);
+	ClosePlayerContainer(playerid);
 
 	return 1;
 }
