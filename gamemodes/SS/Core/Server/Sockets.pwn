@@ -27,7 +27,7 @@ hook OnGameModeInit()
 	socket_bind(socket, "localhost");
 	socket_set_max_connections(socket, MAX_SOCKET_CONNECTIONS);
 
-	socket_listen(socket, 7778);
+	socket_listen(socket, 7776);
 
 	return 1;
 }
