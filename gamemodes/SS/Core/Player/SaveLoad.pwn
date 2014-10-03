@@ -182,7 +182,7 @@ SavePlayerChar(playerid)
 	Inventory
 */
 
-	for(new i; i < 4; i++)
+	for(new i; i < INV_MAX_SLOTS; i++)
 	{
 		items[i] = GetInventorySlotItem(playerid, i);
 
@@ -505,7 +505,7 @@ LoadPlayerChar(playerid)
 
 enum
 {
-	INV_CELL_ITEMS[4 * 3],
+	INV_CELL_ITEMS[INV_MAX_SLOTS * 3],
 	INV_CELL_BAGITEMS[14 * 3],
 	INV_CELL_END
 }
