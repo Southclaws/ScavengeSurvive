@@ -180,7 +180,7 @@ HidePlayerHealthInfo(playerid)
 UpdatePlayerGear(playerid, show = 1)
 {
 	new
-		tmp[ITM_MAX_NAME + ITM_MAX_TEXT],
+		tmp[5 + ITM_MAX_NAME + ITM_MAX_TEXT],
 		itemid;
 
 	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
@@ -215,6 +215,7 @@ UpdatePlayerGear(playerid, show = 1)
 	if(IsValidItem(itemid))
 	{
 		GetItemName(itemid, tmp);
+		format(tmp, sizeof(tmp), "(%02d) %s", GetItemTypeSize(GetItemType(itemid)), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
@@ -229,6 +230,7 @@ UpdatePlayerGear(playerid, show = 1)
 	if(IsValidItem(itemid))
 	{
 		GetItemName(itemid, tmp);
+		format(tmp, sizeof(tmp), "(%02d) %s", GetItemTypeSize(GetItemType(itemid)), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
@@ -620,14 +622,20 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 			if(IsValidContainer(containerid))
 			{
-				if(IsItemTypeBag(GetItemType(itemid)))
+				new
+					ItemType:itemtype = GetItemType(itemid),
+					itemsize = GetItemTypeSize(itemtype),
+					freeslots = GetContainerFreeSlots(containerid);
+
+				if(IsItemTypeBag(itemtype))
 				{
 					if(containerid == GetBagItemContainerID(itemid))
 						return 1;
 				}
-				if(!WillItemTypeFitInContainer(containerid, GetItemType(itemid)))
+
+				if(itemsize > freeslots)
 				{
-					ShowActionText(playerid, "Item won't fit", 3000, 150);
+					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
 					return 1;
 				}
 
@@ -637,12 +645,17 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			}
 			else
 			{
-				if(AddItemToInventory(playerid, itemid) == 1)
-					ShowActionText(playerid, "Item added to inventory", 3000, 150);
+				new
+					itemsize = GetItemTypeSize(GetItemType(itemid)),
+					freeslots = GetInventoryFreeSlots(playerid);
 
-				else
-					ShowActionText(playerid, "Item won't fit", 3000, 100);
+				if(itemsize > freeslots)
+				{
+					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
+					return 1;
+				}
 
+				AddItemToInventory(playerid, itemid);
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
 			}
@@ -655,45 +668,44 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 		if(IsValidItem(itemid))
 		{
-			new
-				containerid = GetPlayerCurrentContainer(playerid),
-				ItemType:itemtype = GetItemType(itemid);
+			new containerid = GetPlayerCurrentContainer(playerid);
 
 			if(IsValidContainer(containerid))
 			{
-				if(IsContainerFull(containerid))
+				new
+					ItemType:itemtype = GetItemType(itemid),
+					itemsize = GetItemTypeSize(itemtype),
+					freeslots = GetContainerFreeSlots(containerid);
+
+				if(IsItemTypeBag(itemtype))
 				{
-					new str[CNT_MAX_NAME + 6];
-					GetContainerName(containerid, str);
-					strcat(str, " full");
-					ShowActionText(playerid, str, 3000, 150);
-					return 1;
+					if(containerid == GetBagItemContainerID(itemid))
+						return 1;
 				}
 
-				if(!WillItemTypeFitInContainer(containerid, itemtype))
+				if(itemsize > freeslots)
 				{
-					ShowActionText(playerid, "Item won't fit", 3000, 150);
+					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
 					return 1;
 				}
 
 				AddItemToContainer(containerid, itemid, playerid);
-				RemovePlayerHolsterItem(playerid);
-
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
 			else
 			{
-				if(AddItemToInventory(playerid, itemid) == 1)
+				new
+					itemsize = GetItemTypeSize(GetItemType(itemid)),
+					freeslots = GetInventoryFreeSlots(playerid);
+
+				if(itemsize > freeslots)
 				{
-					RemovePlayerHolsterItem(playerid);
-					ShowActionText(playerid, "Item added to inventory", 3000, 150);
-				}
-				else
-				{
-					ShowActionText(playerid, "Item won't fit", 3000, 100);
+					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
+					return 1;
 				}
 
+				AddItemToInventory(playerid, itemid);
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
 			}

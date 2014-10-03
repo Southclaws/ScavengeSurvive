@@ -454,23 +454,23 @@ public OnScriptInit()
 	item_NULL3			= DefineItemType("<null>",				"NULL3",			000,	1,	90.0);
 	item_NULL4			= DefineItemType("<null>",				"NULL4",			000,	1,	90.0);
 	item_M9Pistol		= DefineItemType("M9",					"M9Pistol",			346,	2,	90.0);
-	item_M9PistolSD		= DefineItemType("M9 SD",				"M9PistolSD",		347,	3,	90.0);
+	item_M9PistolSD		= DefineItemType("M9 SD",				"M9PistolSD",		347,	2,	90.0);
 	item_DesertEagle	= DefineItemType("Desert Eagle",		"DesertEagle",		348,	2,	90.0);
-	item_PumpShotgun	= DefineItemType("Shotgun",				"PumpShotgun",		349,	5,	90.0);
+	item_PumpShotgun	= DefineItemType("Shotgun",				"PumpShotgun",		349,	4,	90.0);
 	item_Sawnoff		= DefineItemType("Sawnoff",				"Sawnoff",			350,	3,	90.0);
-	item_Spas12			= DefineItemType("Spas 12",				"Spas12",			351,	6,	90.0);
+	item_Spas12			= DefineItemType("Spas 12",				"Spas12",			351,	5,	90.0);
 	item_Mac10			= DefineItemType("Mac 10",				"Mac10",			352,	3,	90.0);
 	item_MP5			= DefineItemType("MP5",					"MP5",				353,	5,	90.0);
 // 30
-	item_WASR3Rifle		= DefineItemType("WASR-3",				"WASR3Rifle",		355,	8,	90.0);
-	item_M16Rifle		= DefineItemType("M16",					"M16Rifle",			356,	8,	90.0);
-	item_Tec9			= DefineItemType("Tec 9",				"Tec9",				372,	4,	90.0);
-	item_SemiAutoRifle	= DefineItemType("Rifle",				"SemiAutoRifle",	357,	9,	90.0);
-	item_SniperRifle	= DefineItemType("Sniper",				"SniperRifle",		358,	9,	90.0);
-	item_RocketLauncher	= DefineItemType("RPG",					"RocketLauncher",	359,	12,	90.0);
-	item_Heatseeker		= DefineItemType("Heatseeker",			"Heatseeker",		360,	12,	90.0);
-	item_Flamer			= DefineItemType("Flamer",				"Flamer",			361,	14,	90.0);
-	item_Minigun		= DefineItemType("Minigun",				"Minigun",			362,	14,	90.0);
+	item_WASR3Rifle		= DefineItemType("WASR-3",				"WASR3Rifle",		355,	7,	90.0);
+	item_M16Rifle		= DefineItemType("M16",					"M16Rifle",			356,	7,	90.0);
+	item_Tec9			= DefineItemType("Tec 9",				"Tec9",				372,	3,	90.0);
+	item_SemiAutoRifle	= DefineItemType("Rifle",				"SemiAutoRifle",	357,	7,	90.0);
+	item_SniperRifle	= DefineItemType("Sniper",				"SniperRifle",		358,	7,	90.0);
+	item_RocketLauncher	= DefineItemType("RPG",					"RocketLauncher",	359,	11,	90.0);
+	item_Heatseeker		= DefineItemType("Heatseeker",			"Heatseeker",		360,	11,	90.0);
+	item_Flamer			= DefineItemType("Flamer",				"Flamer",			361,	13,	90.0);
+	item_Minigun		= DefineItemType("Minigun",				"Minigun",			362,	13,	90.0);
 	item_RemoteBomb		= DefineItemType("Remote Bomb",			"RemoteBomb",		363,	2,	90.0);
 // 40
 	item_Detonator		= DefineItemType("Detonator",			"Detonator",		364,	2,	90.0);
@@ -518,8 +518,8 @@ public OnScriptInit()
 	item_Flag			= DefineItemType("Flag",				"Flag",				2993,	3,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
 // 80
 	item_DoctorBag		= DefineItemType("Doctor's Bag",		"DoctorBag",		1210,	3,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
-	item_Backpack		= DefineItemType("Backpack",			"Backpack",			3026,	8,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
-	item_Satchel		= DefineItemType("Small Bag",			"Satchel",			363,	4,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
+	item_Backpack		= DefineItemType("Backpack",			"Backpack",			3026,	5,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
+	item_Satchel		= DefineItemType("Small Bag",			"Satchel",			363,	2,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",				"Wheel",			1079,	9,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049, true);
 	item_MotionSense	= DefineItemType("Motion Sensor",		"MotionSense",		327,	1,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
 	item_Accelerometer	= DefineItemType("Accelerometer",		"Accelerometer",	327,	1,	0.0, 0.0, 0.0,			0.0,	0.008151, 0.012682, -0.050635, 0.000000, 0.000000, 0.000000);
@@ -621,7 +621,7 @@ public OnScriptInit()
 	item_FlareGun		= DefineItemType("Flare Gun",			"FlareGun",			2034,	2,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
 	item_PetrolBomb		= DefineItemType("Petrol Bomb",			"PetrolBomb",		1650,	4,	0.0, 0.0, 0.0,			0.27,	0.143402, 0.027548, 0.063652, 0.000000, 253.648208, 0.000000);
 	item_CodePart		= DefineItemType("Code",				"CodePart",			1898,	1,	90.0, 0.0, 0.0,			0.02,	0.086999, 0.017999, 0.075999,  0.000000, 0.000000, 100.700019);
-	item_LargeBackpack	= DefineItemType("Large Backpack",		"LargeBackpack",	3026,	9,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFF4A460);
+	item_LargeBackpack	= DefineItemType("Large Backpack",		"LargeBackpack",	3026,	5,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFF4A460);
 	item_LocksmithKit	= DefineItemType("Locksmith Kit",		"LocksmithKit",		1210,	3,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000, false, 0xFFF4A460);
 	item_XmasHat		= DefineItemType("Christmas Hat",		"XmasHat",			19066,	1,	0.0, 0.0, 0.0,			0.0,	0.135000, -0.018001, -0.002000,  90.000000, 174.500061, 9.600001);
 	item_VehicleWeapon	= DefineItemType("VEHICLE_WEAPON",		"VehicleWeapon",	356,	99,	90.0);
@@ -634,17 +634,17 @@ public OnScriptInit()
 	item_Ammo556HP		= DefineItemType("5.56 Rounds",			"Ammo556HP",		2040,	3,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo357Tracer	= DefineItemType(".357 Rounds",			"Ammo357Tracer",	2039,	2,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo762		= DefineItemType("7.62 Rounds",			"Ammo762",			2040,	3,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_AK47Rifle		= DefineItemType("AK-47",				"AK47Rifle",		355,	8,	90.0);
-	item_M77RMRifle		= DefineItemType("M77-RM",				"M77RMRifle",		357,	9,	90.0);
+	item_AK47Rifle		= DefineItemType("AK-47",				"AK47Rifle",		355,	7,	90.0);
+	item_M77RMRifle		= DefineItemType("M77-RM",				"M77RMRifle",		357,	8,	90.0);
 	item_DogsBreath		= DefineItemType("Dog's Breath",		"DogsBreath",		2034,	3,	0.0, 0.0, 0.0,			0.0,	0.176000, 0.020000, 0.039999,  89.199989, -0.900000, 1.099991);
 // 190
-	item_Ammo50BMG		= DefineItemType(".50 Rounds",			"Ammo50BMG",		2037,	1,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
+	item_Ammo50BMG		= DefineItemType(".50 Rounds",			"Ammo50BMG",		2037,	2,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
 	item_Ammo308		= DefineItemType(".308 Rounds",			"Ammo308",			2039,	1,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741);
-	item_Model70Rifle	= DefineItemType("Model 70",			"Model70Rifle",		358,	9,	90.0);
-	item_LenKnocksRifle	= DefineItemType("The Len-Knocks",		"LenKnocksRifle",	358,	10,	90.0);
-	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	4,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
-	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	8,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
-	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	6,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_Model70Rifle	= DefineItemType("Model 70",			"Model70Rifle",		358,	8,	90.0);
+	item_LenKnocksRifle	= DefineItemType("The Len-Knocks",		"LenKnocksRifle",	358,	8,	90.0);
+	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	2,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
+	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	4,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
+	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	5,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1171,7 +1171,7 @@ public OnScriptInit()
 	DefineSafeboxType("Capsule",		item_Capsule,		2);
 
 	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag",			item_Satchel,		6, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Parachute Bag",		item_ParaBag,		10, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Large Backpack",		item_LargeBackpack,	14, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
 	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
