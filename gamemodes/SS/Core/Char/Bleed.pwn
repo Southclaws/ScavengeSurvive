@@ -38,7 +38,12 @@ ptask BleedUpdate[100](playerid)
 		new Float:hp = GetPlayerHP(playerid);
 
 		if(frandom(1.0) < 0.7)
+		{
 			SetPlayerHP(playerid, hp - bld_BleedRate[playerid]);
+
+			if(GetPlayerHP(playerid) < 0.1)
+				SetPlayerHP(playerid, 0.0);
+		}
 
 		/*
 			Slow bleeding based on health and wound count. Less wounds means
