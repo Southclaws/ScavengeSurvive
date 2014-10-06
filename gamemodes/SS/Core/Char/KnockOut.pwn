@@ -127,7 +127,6 @@ timer KnockOutUpdate[100](playerid)
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
 	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
-	UpdatePlayerProgressBar(playerid, KnockoutBar);
 
 	ShowActionText(playerid, sprintf("%s/%s", MsToString(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]), "%1m:%1s.%1d"), MsToString(knockout_Duration[playerid], "%1m:%1s.%1d")));
 

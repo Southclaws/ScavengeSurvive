@@ -280,8 +280,10 @@ hook OnGameModeInit()
 	return 1;
 }
 
-SaveSigns()
+hook OnScriptExit()
 {
+	print("\n[OnScriptExit] Shutting down 'Sign'...");
+
 	foreach(new i : sgn_Index)
 	{
 		new

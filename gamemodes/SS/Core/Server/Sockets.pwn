@@ -32,8 +32,10 @@ hook OnGameModeInit()
 	return 1;
 }
 
-hook OnGameModeExit()
+hook OnScriptExit()
 {
+	print("\n[OnScriptExit] Shutting down 'Sockets'...");
+
 	socket_stop_listen(socket);
 	socket_destroy(socket);
 }

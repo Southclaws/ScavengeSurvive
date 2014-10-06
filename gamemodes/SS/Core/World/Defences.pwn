@@ -127,6 +127,20 @@ hook OnScriptInit()
 	GetSettingInt("defence/print-removes", false, def_PrintRemoves);
 }
 
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'Defences'...");
+
+	LoadDefences();
+}
+
+hook OnScriptExit()
+{
+	print("\n[OnScriptExit] Shutting down 'Defences'...");
+
+	SaveDefences();
+}
+
 hook OnPlayerConnect(playerid)
 {
 	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
@@ -1250,31 +1264,8 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 ==============================================================================*/
 
 
-SaveDefences()
+LoadDefences()
 {
-	new count;
-
-	foreach(new i : def_Index)
-	{
-		if(SaveDefenceItem(i, def_PrintEachSave))
-			count++;
-	}
-
-	if(def_PrintTotalSave)
-		printf("Saved %d Defences", count);
-
-	new arr[1];
-
-	arr[0] = def_GEID_Index;
-
-	modio_push(GEID_FILE, _T<D,F,N,C>, 1, arr);//, true, false, false);
-	printf("Storing defence GEID: %d", def_GEID_Index);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'Defences'...");
-
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
 		item[46],
@@ -1302,6 +1293,27 @@ hook OnGameModeInit()
 
 	if(def_PrintTotalLoad)
 		printf("Loaded %d Defences", count);
+}
+
+SaveDefences()
+{
+	new count;
+
+	foreach(new i : def_Index)
+	{
+		if(SaveDefenceItem(i, def_PrintEachSave))
+			count++;
+	}
+
+	if(def_PrintTotalSave)
+		printf("Saved %d Defences", count);
+
+	new arr[1];
+
+	arr[0] = def_GEID_Index;
+
+	modio_push(GEID_FILE, _T<D,F,N,C>, 1, arr);//, true, false, false);
+	printf("Storing defence GEID: %d", def_GEID_Index);
 }
 
 

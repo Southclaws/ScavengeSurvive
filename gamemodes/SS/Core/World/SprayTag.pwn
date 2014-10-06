@@ -77,35 +77,18 @@ hook OnScriptInit()
 	}
 }
 
-
-CreateNewSprayTag(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+hook OnGameModeInit()
 {
-	new count;
+	print("\n[OnGameModeInit] Initialising 'SprayTag'...");
 
-	stmt_bind_value(stmt_SprayTagExists, 0, DB::TYPE_FLOAT, x);
-	stmt_bind_value(stmt_SprayTagExists, 1, DB::TYPE_FLOAT, y);
-	stmt_bind_value(stmt_SprayTagExists, 2, DB::TYPE_FLOAT, z);
-	stmt_bind_result_field(stmt_SprayTagExists, 0, DB::TYPE_INT, count);
+	LoadSprayTags();
+}
 
-	if(!stmt_execute(stmt_SprayTagExists))
-		return 0;
+hook OnScriptExit()
+{
+	print("\n[OnScriptExit] Shutting down 'SprayTag'...");
 
-	stmt_fetch_row(stmt_SprayTagExists);
-
-	if(count == 0)
-	{
-		stmt_bind_value(stmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
-		stmt_bind_value(stmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
-		stmt_bind_value(stmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
-		stmt_bind_value(stmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
-		stmt_bind_value(stmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
-		stmt_bind_value(stmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
-		stmt_bind_value(stmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
-
-		stmt_execute(stmt_SprayTagInsert);
-	}
-
-	return 1;
+	SaveSprayTags();
 }
 
 
@@ -147,6 +130,36 @@ stock SetSprayTagText(tagid, text[], colour = -1, font[] = "Arial Black")
 
 ==============================================================================*/
 
+
+CreateNewSprayTag(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
+{
+	new count;
+
+	stmt_bind_value(stmt_SprayTagExists, 0, DB::TYPE_FLOAT, x);
+	stmt_bind_value(stmt_SprayTagExists, 1, DB::TYPE_FLOAT, y);
+	stmt_bind_value(stmt_SprayTagExists, 2, DB::TYPE_FLOAT, z);
+	stmt_bind_result_field(stmt_SprayTagExists, 0, DB::TYPE_INT, count);
+
+	if(!stmt_execute(stmt_SprayTagExists))
+		return 0;
+
+	stmt_fetch_row(stmt_SprayTagExists);
+
+	if(count == 0)
+	{
+		stmt_bind_value(stmt_SprayTagInsert, 0, DB::TYPE_STRING, "HELLFIRE", 8);
+		stmt_bind_value(stmt_SprayTagInsert, 1, DB::TYPE_FLOAT, x);
+		stmt_bind_value(stmt_SprayTagInsert, 2, DB::TYPE_FLOAT, y);
+		stmt_bind_value(stmt_SprayTagInsert, 3, DB::TYPE_FLOAT, z);
+		stmt_bind_value(stmt_SprayTagInsert, 4, DB::TYPE_FLOAT, rx);
+		stmt_bind_value(stmt_SprayTagInsert, 5, DB::TYPE_FLOAT, ry);
+		stmt_bind_value(stmt_SprayTagInsert, 6, DB::TYPE_FLOAT, rz);
+
+		stmt_execute(stmt_SprayTagInsert);
+	}
+
+	return 1;
+}
 
 public OnPlayerEnterDynamicArea(playerid, areaid)
 {
@@ -351,13 +364,6 @@ public OnHoldActionFinish(playerid)
 
 ==============================================================================*/
 
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'SprayTag'...");
-
-	LoadSprayTags();
-}
 
 LoadSprayTags()
 {

@@ -119,7 +119,7 @@ public OnGameModeInit()
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <playerprogress>			// By Torbido/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
+#include <progress2>				// By Torbido/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
 #include <djson>					// By DracoBlue, 1.6.2 :	http://forum.sa-mp.com/showthread.php?t=48439
 
@@ -352,8 +352,8 @@ bool:	gServerRestarting = false;
 // VEHICLE
 #include "SS/Core/Vehicle/VehicleTypeIndex.pwn"
 #include "SS/Core/Vehicle/Core.pwn"
-#include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
+#include "SS/Core/Vehicle/Spawn.pwn"
 #include "SS/Core/Vehicle/Repair.pwn"
 #include "SS/Core/Vehicle/LockBreak.pwn"
 #include "SS/Core/Vehicle/Locksmith.pwn"
@@ -576,24 +576,18 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	print("[OnGameModeExit] Shutting down...");
+	print("\n[OnGameModeExit] Shutting down...");
 
 	djson_GameModeExit();
-
-	// First param: print each individual entity when it's saved
-	// Second param: print the total amount of entities saved
-
-	SavePlayerVehicles();
-	SaveSafeboxes();
-	SaveTents();
-	SaveDefences();
-	SaveSigns();
-
-	SaveSprayTags();
 
 	print("\nSave Complete! Safe to shut down.");
 
 	return 1;
+}
+
+public OnScriptExit()
+{
+	print("\n[OnScriptExit] Shutting down...");
 }
 
 public SetRestart(seconds)

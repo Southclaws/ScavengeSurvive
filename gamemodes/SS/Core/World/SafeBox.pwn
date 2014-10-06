@@ -84,6 +84,21 @@ hook OnScriptInit()
 	GetSettingInt("safebox/print-removes", false, box_PrintRemoves);
 }
 
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'SafeBox'...");
+
+	LoadSafeBoxes();
+}
+
+hook OnScriptExit()
+{
+	print("\n[OnScriptExit] Shutting down 'SafeBox'...");
+
+	SaveSafeBoxes();
+}
+
+
 hook OnPlayerConnect(playerid)
 {
 	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
@@ -401,31 +416,8 @@ public OnPlayerCloseContainer(playerid, containerid)
 ==============================================================================*/
 
 
-SaveSafeboxes()
+LoadSafeBoxes()
 {
-	new count;
-
-	foreach(new i : box_Index)
-	{
-		if(SaveSafeboxItem(i, box_PrintEachSave) > 0)
-			count++;
-	}
-
-	if(box_PrintTotalSave)
-		printf("Saved %d Safeboxes", count);
-
-	new arr[1];
-
-	arr[0] = box_GEID_Index;
-
-	modio_push(GEID_FILE, _T<S,B,O,X>, 1, arr);//, true, false, false);
-	printf("Storing safebox GEID: %d", box_GEID_Index);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'SafeBox'...");
-
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX),
 		item[46],
@@ -453,6 +445,27 @@ hook OnGameModeInit()
 
 	if(box_PrintTotalLoad)
 		printf("Loaded %d Safeboxes", count);
+}
+
+SaveSafeBoxes()
+{
+	new count;
+
+	foreach(new i : box_Index)
+	{
+		if(SaveSafeboxItem(i, box_PrintEachSave) > 0)
+			count++;
+	}
+
+	if(box_PrintTotalSave)
+		printf("Saved %d Safeboxes", count);
+
+	new arr[1];
+
+	arr[0] = box_GEID_Index;
+
+	modio_push(GEID_FILE, _T<S,B,O,X>, 1, arr);//, true, false, false);
+	printf("Storing safebox GEID: %d", box_GEID_Index);
 }
 
 
@@ -661,7 +674,7 @@ OLD_LoadSafeboxes()
 
 	dir_close(direc);
 
-	SaveSafeboxes();
+	SaveSafeBoxes();
 
 	if(box_PrintTotalLoad)
 		printf("Loaded %d Safeboxes using old format", count);

@@ -61,7 +61,6 @@ timer OverheatUpdate[100](playerid)
 
 	SetPlayerProgressBarMaxValue(playerid, OverheatBar, HEAT_MAX);
 	SetPlayerProgressBarValue(playerid, OverheatBar, Overheat[playerid]);
-	UpdatePlayerProgressBar(playerid, OverheatBar);
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

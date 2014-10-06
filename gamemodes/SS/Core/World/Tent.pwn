@@ -97,6 +97,20 @@ hook OnScriptInit()
 	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
 }
 
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'Tent'...");
+
+	LoadTents();
+}
+
+hook OnScriptExit()
+{
+	print("\n[OnScriptExit] Shutting down 'Tent'...");
+
+	SaveTents();
+}
+
 hook OnPlayerConnect(playerid)
 {
 	tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
@@ -561,31 +575,8 @@ forward tnt2_OnHoldActionFinish(playerid);
 ==============================================================================*/
 
 
-SaveTents()
+LoadTents()
 {
-	new count;
-
-	foreach(new i : tnt_Index)
-	{
-		if(SaveTent(i, tnt_PrintEachSave))
-			count++;
-	}
-
-	if(tnt_PrintTotalSave)
-		printf("Saved %d Tents", count);
-
-	new arr[1];
-
-	arr[0] = tnt_GEID_Index;
-
-	modio_push(GEID_FILE, _T<T,E,N,T>, 1, arr);//, true, false, false);
-	printf("Storing tent GEID: %d", tnt_GEID_Index);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'Tent'...");
-
 	new
 		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
 		item[46],
@@ -617,6 +608,27 @@ hook OnGameModeInit()
 
 	if(tnt_PrintTotalLoad)
 		printf("Loaded %d Tents", count);
+}
+
+SaveTents()
+{
+	new count;
+
+	foreach(new i : tnt_Index)
+	{
+		if(SaveTent(i, tnt_PrintEachSave))
+			count++;
+	}
+
+	if(tnt_PrintTotalSave)
+		printf("Saved %d Tents", count);
+
+	new arr[1];
+
+	arr[0] = tnt_GEID_Index;
+
+	modio_push(GEID_FILE, _T<T,E,N,T>, 1, arr);//, true, false, false);
+	printf("Storing tent GEID: %d", tnt_GEID_Index);
 }
 
 

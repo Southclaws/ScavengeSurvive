@@ -65,8 +65,10 @@ hook OnScriptInit()
 	return 1;
 }
 
-hook OnGameModeExit()
+hook OnScriptExit()
 {
+	print("\n[OnScriptExit] Shutting down 'IRC'...");
+
 	if(!irc_Active)
 		return 1;
 

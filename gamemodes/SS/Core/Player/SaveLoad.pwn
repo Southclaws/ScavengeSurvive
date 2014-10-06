@@ -695,8 +695,10 @@ FV10_LoadPlayerInventory(playerid)
 ==============================================================================*/
 
 
-hook OnGameModeExit()
+hook OnScriptExit()
 {
+	print("\n[OnScriptExit] Shutting down 'SaveLoad'...");
+
 	new
 		name[MAX_PLAYER_NAME],
 		filename[64],
