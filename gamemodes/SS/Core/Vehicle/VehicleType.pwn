@@ -60,9 +60,7 @@ Float:	veh_spawnChance,
 
 static
 		veh_GroupName[MAX_VEHICLE_GROUP][MAX_VEHICLE_GROUP_NAME],
-		veh_TypeData[MAX_VEHICLE_TYPE][E_VEHICLE_TYPE_DATA],
-		veh_TypeCount[MAX_VEHICLE_TYPE],
-		veh_Type[MAX_VEHICLES];
+		veh_TypeData[MAX_VEHICLE_TYPE][E_VEHICLE_TYPE_DATA];
 
 new
 		veh_GroupTotal,
@@ -108,40 +106,6 @@ stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, F
 	veh_TypeData[veh_TypeTotal][veh_flags] = flags;
 
 	return veh_TypeTotal++;
-}
-
-
-stock CreateVehicleOfType(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2)
-{
-	if(!(0 <= type < veh_TypeTotal))
-	{
-		printf("ERROR: Tried to create invalid vehicle type (%d).", type);
-		return 0;
-	}
-
-	/*
-		some code from the spawn module, not sure if it's necessary still...
-			switch(model)
-			{
-				case 403, 443, 514, 515, 539:
-				{
-					posZ += 2.0;
-				}
-			}
-
-	*/
-
-	//printf("[CreateVehicleOfType] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
-
-	new vehicleid = CreateVehicle(veh_TypeData[type][veh_modelId], x, y, z, r, colour1, colour2, 864000);
-
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	veh_Type[vehicleid] = type;
-	veh_TypeCount[type]++;
-
-	return vehicleid;
 }
 
 stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[], maxsizes)
@@ -275,14 +239,6 @@ stock GetVehicleTypeFromModel(modelid)
 ==============================================================================*/
 
 
-stock GetVehicleType(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return INVALID_VEHICLE_TYPE;
-
-	return veh_Type[vehicleid];
-}
-
 stock IsValidVehicleType(vehicletype)
 {
 	if(!(0 <= vehicletype < veh_TypeTotal))
@@ -393,15 +349,6 @@ stock GetVehicleTypeFlags(vehicletype)
 	return veh_TypeData[vehicletype][veh_flags];
 }
 
-// veh_TypeCount
-stock GetVehicleTypeCount(vehicletype)
-{
-	if(!(0 <= vehicletype < veh_TypeTotal))
-		return 0;
-
-	return veh_TypeCount[vehicletype];
-}
-
 // veh_flags / VEHICLE_FLAG_NOT_LOCKABLE
 stock IsVehicleTypeLockable(vehicletype)
 {
@@ -419,21 +366,3 @@ stock IsVehicleTypeNoEngine(vehicletype)
 
 	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_NO_ENGINE;
 }
-
-/*
-	Hook for CreateVehicle, if the first parameter isn't a valid model ID but is
-	a valid vehicle-type from this index, use the index create function instead.
-*/
-stock vti_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay)
-{
-	#pragma unused vehicletype, x, y, z, rotation, color1, color2, respawn_delay
-	printf("ERROR: Cannot create vehicle by model ID.");
-
-	return 0;
-}
-#if defined _ALS_CreateVehicle
-	#undef CreateVehicle
-#else
-	#define _ALS_CreateVehicle
-#endif
-#define CreateVehicle vti_CreateVehicle

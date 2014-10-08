@@ -17,16 +17,10 @@
 #define VEHICLE_UI_ACTIVE					0x808000FF
 
 
-enum (<<=1)
-{
-		veh_Used = 1,
-		veh_Occupied,
-		veh_Player,
-		veh_Dead
-}
 
 enum E_VEHICLE_DATA
 {
+		veh_type,
 Float:	veh_health,
 Float:	veh_Fuel,
 		veh_key,
@@ -43,227 +37,159 @@ Float:	veh_spawnY,
 Float:	veh_spawnZ,
 Float:	veh_spawnR,
 
-		veh_lastUsed
+		veh_lastUsed,
+		veh_used,
+		veh_occupied,
+		veh_dead
 }
 
 
-new
+static
 			veh_Data				[MAX_VEHICLES][E_VEHICLE_DATA],
-			veh_BitData				[MAX_VEHICLES],
-Iterator:	veh_Index<MAX_VEHICLES>,
-			veh_ContainerVehicle	[CNT_MAX];
+			veh_TypeCount			[MAX_VEHICLE_TYPE];
 
 new
-			veh_TrunkLock			[MAX_VEHICLES],
-			veh_Area				[MAX_VEHICLES],
-			veh_Container			[MAX_VEHICLES],
-			veh_Owner				[MAX_VEHICLES][MAX_PLAYER_NAME];
+Iterator:	veh_Index<MAX_VEHICLES>;
 
-new
-			veh_CurrentTrunkVehicle	[MAX_PLAYERS],
+static
 Float:		veh_TempHealth			[MAX_PLAYERS],
 Float:		veh_TempVelocity		[MAX_PLAYERS],
 			veh_Entering			[MAX_PLAYERS],
 			veh_EnterTick			[MAX_PLAYERS];
 
 
-forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
+forward OnVehicleCreated(vehicleid);
+forward OnVehicleDestroyed(vehicleid);
+forward OnVehicleReset(oldid, newid);
 
 
 hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Vehicle/Core'...");
-
-	for(new i; i < CNT_MAX; i++)
-		veh_ContainerVehicle[i] = INVALID_VEHICLE_ID;
 }
 
 
 /*==============================================================================
 
-
 	Core
-
 
 ==============================================================================*/
 
 
-CreateNewVehicle(type, Float:x, Float:y, Float:z, Float:r)
+stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2)
 {
-	new
-		vehicleid,
-		model,
-		colour1,
-		colour2;
-
-	model = GetVehicleTypeModel(type);
-
-	switch(model)
+	if(!(0 <= type < veh_TypeTotal))
 	{
-		case 416, 433, 523, 427, 490, 528, 407, 544, 596, 597, 598, 599, 432, 601:
-		{
-			colour1 = -1;
-			colour2 = -1;
-		}
-		default:
-		{
-			colour1 = 128 + random(128);
-			colour2 = 128 + random(128);
-		}
-	}
-
-	vehicleid = CreateVehicleOfType(type, x, y, z, r, colour1, colour2);
-	SetVehicleEngine(vehicleid, 0);
-
-	if(vehicleid >= MAX_VEHICLES)
-	{
-		print("ERROR: Vehicle limit reached.");
-		DestroyVehicle(vehicleid, 2);
+		printf("ERROR: Tried to create invalid vehicle type (%d).", type);
 		return 0;
 	}
 
-	Iter_Add(veh_Index, vehicleid);
+	/*
+		some code from the spawn module, not sure if it's necessary still...
+			switch(model)
+			{
+				case 403, 443, 514, 515, 539:
+				{
+					posZ += 2.0;
+				}
+			}
 
-	veh_Data[vehicleid][veh_colour1] = colour1;
-	veh_Data[vehicleid][veh_colour2] = colour2;
+	*/
 
-	CreateVehicleArea(vehicleid);
-	GenerateVehicleData(vehicleid);
-	UpdateVehicleData(vehicleid);
-	SetVehicleSpawnPoint(vehicleid, x, y, z, r);
+	//printf("[CreateWorldVehicle] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
+
+	new vehicleid = CreateVehicle(GetVehicleTypeModel(type), x, y, z, r, colour1, colour2, 864000);
+
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	veh_Data[vehicleid][veh_type]		= type;
+	veh_Data[vehicleid][veh_health]		= VEHICLE_HEALTH_MAX;
+	veh_Data[vehicleid][veh_Fuel]		= 0.0;
+	veh_Data[vehicleid][veh_key]		= 0;
+
+	veh_Data[vehicleid][veh_engine]		= 0;
+	veh_Data[vehicleid][veh_panels]		= 0;
+	veh_Data[vehicleid][veh_doors]		= 0;
+	veh_Data[vehicleid][veh_lights]		= 0;
+	veh_Data[vehicleid][veh_tires]		= 0;
+
+	veh_Data[vehicleid][veh_armour]		= 0;
+
+	veh_Data[vehicleid][veh_colour1]	= colour1;
+	veh_Data[vehicleid][veh_colour2]	= colour2;
+
+	veh_Data[vehicleid][veh_spawnX]		= x;
+	veh_Data[vehicleid][veh_spawnY]		= y;
+	veh_Data[vehicleid][veh_spawnZ]		= z;
+	veh_Data[vehicleid][veh_spawnR]		= r;
+
+	veh_Data[vehicleid][veh_lastUsed]	= 0;
+	veh_Data[vehicleid][veh_used]		= 0;
+	veh_Data[vehicleid][veh_occupied]	= 0;
+	veh_Data[vehicleid][veh_dead]		= 0;
+
+	veh_TypeCount[type]++;
+
+	CallLocalFunction("OnVehicleCreated", "d", vehicleid);
+	_veh_SyncData(vehicleid);
 
 	return vehicleid;
 }
 
-CreateVehicleArea(vehicleid)
+stock DestroyWorldVehicle(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, x, y, z);
-
-	veh_Area[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 3.0, 0);
-	AttachDynamicAreaToVehicle(veh_Area[vehicleid], vehicleid);
+	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
+	DestroyVehicle(vehicleid, 3);
 
 	return 1;
 }
 
-RespawnVehicle(vehicleid)
-{
-	SetVehicleToRespawn(vehicleid);
-	UpdateVehicleData(vehicleid);
-}
-
-GenerateVehicleData(vehicleid)
+stock ResetVehicle(vehicleid)
 {
 	new
-		type,
-		category,
-		Float:maxfuel,
-		lootindex,
-		trunksize,
-		chance,
-		panels,
-		doors,
-		lights,
-		tires;
+		type = GetVehicleType(vehicleid),
+		newid;
 
-	type = GetVehicleType(vehicleid);
-	category = GetVehicleTypeCategory(type);
-	maxfuel = GetVehicleTypeMaxFuel(type);
-	lootindex = GetVehicleTypeLootIndex(type);
-	trunksize = GetVehicleTypeTrunkSize(type);
+	DestroyVehicle(vehicleid, 4);
 
-// Health
+	newid = CreateWorldVehicle(type,
+		veh_Data[vehicleid][veh_spawnX],
+		veh_Data[vehicleid][veh_spawnY],
+		veh_Data[vehicleid][veh_spawnZ],
+		veh_Data[vehicleid][veh_spawnR],
+		veh_Data[vehicleid][veh_colour1],
+		veh_Data[vehicleid][veh_colour2]);
 
-	chance = random(100);
+	CallLocalFunction("OnVehicleReset", "dd", vehicleid, newid);
 
-	if(chance < 1)
-		veh_Data[vehicleid][veh_health] = 500 + random(200);
-
-	else if(chance < 5)
-		veh_Data[vehicleid][veh_health] = 400 + random(200);
-
-	else
-		veh_Data[vehicleid][veh_health] = 300 + random(200);
-
-	SetVehicleHealth(vehicleid, veh_Data[vehicleid][veh_health]);
-
-// Fuel
-
-	chance = random(100);
-
-	if(chance < 1)
-		veh_Data[vehicleid][veh_Fuel] = maxfuel / 2 + frandom(maxfuel / 2);
-
-	else if(chance < 5)
-		veh_Data[vehicleid][veh_Fuel] = maxfuel / 4 + frandom(maxfuel / 3);
-
-	else if(chance < 10)
-		veh_Data[vehicleid][veh_Fuel] = maxfuel / 8 + frandom(maxfuel / 4);
-
-	else
-		veh_Data[vehicleid][veh_Fuel] = frandom(1.0);
-
-// Visual Damage
-
-	if(category < VEHICLE_CATEGORY_MOTORBIKE)
+	if(newid != vehicleid)
 	{
-		veh_Data[vehicleid][veh_panels]	= encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4));
-		veh_Data[vehicleid][veh_doors]	= encode_doors(random(5), random(5), random(5), random(5));
-		veh_Data[vehicleid][veh_lights] = encode_lights(random(2), random(2), random(2), random(2));
-		veh_Data[vehicleid][veh_tires] = encode_tires(random(2), random(2), random(2), random(2));
-
-		UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+		veh_Data[newid] = veh_Data[vehicleid];
 	}
 
-// Locks
-
-	if(maxfuel == 0.0)
-	{
-		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
-	}
-	else
-	{
-		new locked;
-
-		if(doors == 0)
-			locked = random(2);
-
-		if(panels)
-			veh_TrunkLock[vehicleid] = random(2);
-
-		SetVehicleParamsEx(vehicleid, 0, random(2), !random(100), locked, random(2), random(2), 0);
-	}
-
-// Putting loot in trunks
-
-	if(lootindex != -1 && 0 < trunksize <= CNT_MAX_SLOTS)
-	{
-		new vehiclename[MAX_VEHICLE_TYPE_NAME];
-
-		GetVehicleTypeName(type, vehiclename);
-
-		veh_Container[vehicleid] = CreateContainer(sprintf("%s Trunk", vehiclename), trunksize, .virtual = 1);
-		veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
-		FillContainerWithLoot(veh_Container[vehicleid], random(trunksize / 3), lootindex);
-	}
-	else
-	{
-		veh_Container[vehicleid] = INVALID_CONTAINER_ID;
-	}
-
-// Number plate
-
-	SetVehicleNumberPlate(vehicleid, RandomNumberPlateString());
+	_veh_SyncData(newid);
+	SetVehicleSpawnPoint(newid, veh_Data[newid][veh_spawnX], veh_Data[newid][veh_spawnY], veh_Data[newid][veh_spawnZ], veh_Data[newid][veh_spawnR]);
 }
 
-UpdateVehicleData(vehicleid)
+stock RespawnVehicle(vehicleid)
+{
+	SetVehicleToRespawn(vehicleid);
+	_veh_SyncData(vehicleid);
+}
+
+
+/*==============================================================================
+
+	Internal
+
+==============================================================================*/
+
+
+_veh_SyncData(vehicleid)
 {
 	if(veh_Data[vehicleid][veh_health] > VEHICLE_HEALTH_MAX)
 		veh_Data[vehicleid][veh_health] = VEHICLE_HEALTH_CHUNK_4;
@@ -281,107 +207,6 @@ UpdateVehicleData(vehicleid)
 	return 1;
 }
 
-IsPlayerAtVehicleTrunk(playerid, vehicleid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
-		return 0;
-
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
-		return 0;
-
-	new
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:sx,
-		Float:sy,
-		Float:sz,
-		Float:vr,
-		Float:angle;
-
-	GetVehiclePos(vehicleid, vx, vy, vz);
-	GetPlayerPos(playerid, px, py, pz);
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
-
-	GetVehicleZAngle(vehicleid, vr);
-
-	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
-
-	if(155.0 < angle < 205.0)
-	{
-		return 1;
-	}
-
-	return 0;
-}
-
-IsPlayerAtVehicleBonnet(playerid, vehicleid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
-		return 0;
-
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
-		return 0;
-
-	new
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		Float:px,
-		Float:py,
-		Float:pz,
-		Float:sx,
-		Float:sy,
-		Float:sz,
-		Float:vr,
-		Float:angle;
-
-	GetVehiclePos(vehicleid, vx, vy, vz);
-	GetPlayerPos(playerid, px, py, pz);
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
-
-	GetVehicleZAngle(vehicleid, vr);
-
-	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
-
-	if(-25.0 < angle < 25.0 || 335.0 < angle < 385.0)
-	{
-		return 1;
-	}
-
-	return 0;
-}
-
-
-/*==============================================================================
-
-
-	Hooks and Internal
-
-
-==============================================================================*/
-
-
-RandomNumberPlateString()
-{
-	new str[9];
-	for(new c; c < 8; c++)
-	{
-		if(c<4)str[c] = 'A' + random(26);
-		else if(c>4)str[c] = '0' + random(10);
-		str[4] = ' ';
-	}
-	return str;
-}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -424,81 +249,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		return 1;
 	}
 
-	if(newkeys == 16)
-	{
-		new vehicleid = GetPlayerVehicleArea(playerid);
-
-		if(IsValidVehicle(vehicleid))
-		{
-			new
-				Float:px,
-				Float:py,
-				Float:pz,
-				Float:vx,
-				Float:vy,
-				Float:vz,
-				Float:vr,
-				Float:angle;
-
-			GetPlayerPos(playerid, px, py, pz);
-			GetVehiclePos(vehicleid, vx, vy, vz);
-			GetVehicleZAngle(vehicleid, vr);
-
-			angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
-
-			if( (vz - 1.0) < pz < (vz + 2.0) )
-			{
-				if(CallLocalFunction("OnPlayerInteractVehicle", "ddf", playerid, vehicleid, angle))
-					return 1;
-
-				if(155.0 < angle < 205.0)
-				{
-					if(IsValidContainer(GetVehicleContainer(vehicleid)))
-					{
-						if(IsVehicleTrunkLocked(vehicleid))
-						{
-							ShowActionText(playerid, "Trunk locked", 3000);
-							return 1;
-						}
-
-						if(IsVehicleLocked(vehicleid))
-						{
-							ShowActionText(playerid, "Trunk locked", 3000);
-							return 1;
-						}
-
-						new
-							engine,
-							lights,
-							alarm,
-							doors,
-							bonnet,
-							boot,
-							objective;
-
-						GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-						SetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, 1, objective);
-
-						CancelPlayerMovement(playerid);
-						SetPlayerFacingAngle(playerid, GetAngleToPoint(px, py, vx, vy));
-
-						DisplayContainerInventory(playerid, GetVehicleContainer(vehicleid));
-						veh_CurrentTrunkVehicle[playerid] = vehicleid;
-
-						return 1;
-					}
-				}
-
-				if(225.0 < angle < 315.0)
-				{
-					if(GetVehicleModel(vehicleid) == 449)
-					{
-						PutPlayerInVehicle(playerid, vehicleid, 0);
-					}
-				}
-			}
-		}
-	}
 /*
 	if(HOLDING(KEY_SPRINT) || PRESSED(KEY_SPRINT) || RELEASED(KEY_SPRINT))
 	{
@@ -713,7 +463,6 @@ VehicleSurfingCheck(playerid)
 			SetPlayerPos(playerid, x - (vx * 2.0), y - (vy * 2.0), z - 0.5);
 
 			SetPlayerVelocity(playerid, 0.0, 0.0, 0.0);
-			GivePlayerHP(playerid, -frandom(5.0));
 
 			KnockOutPlayer(playerid, 3000);
 		}
@@ -749,8 +498,8 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		else
 			VehicleEngineState(vehicleid, veh_Data[vehicleid][veh_engine]);
 
-		SetVehicleUsed(vehicleid, true);
-		SetVehicleOccupied(vehicleid, true);
+		veh_Data[vehicleid][veh_used] = true;
+		veh_Data[vehicleid][veh_occupied] = true;
 
 		ShowVehicleUI(playerid, vehicleid);
 
@@ -784,10 +533,10 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			}
 		}
 
+		veh_Data[vehicleid][veh_occupied] = false;
 		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 
 		SetVehicleExternalLock(vehicleid, 0);
-		SetVehicleOccupied(vehicleid, false);
 		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
 
@@ -879,132 +628,9 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 	veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 }
 
-public OnPlayerCloseContainer(playerid, containerid)
-{
-	if(IsValidVehicle(veh_CurrentTrunkVehicle[playerid]))
-	{
-		if(containerid == GetVehicleContainer(veh_CurrentTrunkVehicle[playerid]))
-		{
-			new
-				engine,
-				lights,
-				alarm,
-				doors,
-				bonnet,
-				boot,
-				objective;
-
-			GetVehicleParamsEx(veh_CurrentTrunkVehicle[playerid], engine, lights, alarm, doors, bonnet, boot, objective);
-			SetVehicleParamsEx(veh_CurrentTrunkVehicle[playerid], engine, lights, alarm, doors, bonnet, 0, objective);
-
-			veh_CurrentTrunkVehicle[playerid] = INVALID_VEHICLE_ID;
-		}
-	}
-	#if defined veh_OnPlayerCloseContainer
-		return veh_OnPlayerCloseContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerCloseContainer
-	#undef OnPlayerCloseContainer
-#else
-	#define _ALS_OnPlayerCloseContainer
-#endif
-#define OnPlayerCloseContainer veh_OnPlayerCloseContainer
-#if defined veh_OnPlayerCloseContainer
-	forward veh_OnPlayerCloseContainer(playerid, containerid);
-#endif
-
-public OnPlayerUseItem(playerid, itemid)
-{
-	if(IsPlayerAtAnyVehicleTrunk(playerid))
-		return 1;
-
-	#if defined veh_OnPlayerUseItem
-		return veh_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem veh_OnPlayerUseItem
-#if defined veh_OnPlayerUseItem
-	forward veh_OnPlayerUseItem(playerid, itemid);
-#endif
-
-public OnItemAddedToContainer(containerid, itemid, playerid)
-{
-	if(IsPlayerConnected(playerid))
-		VehicleTrunkUpdateSave(playerid);
-
-	#if defined veh_OnItemAddedToContainer
-		return veh_OnItemAddedToContainer(containerid, itemid, playerid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnItemAddedToContainer
-	#undef OnItemAddedToContainer
-#else
-	#define _ALS_OnItemAddedToContainer
-#endif
-#define OnItemAddedToContainer veh_OnItemAddedToContainer
-#if defined veh_OnItemAddedToContainer
-	forward veh_OnItemAddedToContainer(containerid, itemid, playerid);
-#endif
-
-public OnItemRemovedFromContainer(containerid, slotid, playerid)
-{
-	if(IsPlayerConnected(playerid))
-		VehicleTrunkUpdateSave(playerid);
-
-	#if defined veh_OnItemRemovedFromContainer
-		return veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnItemRemovedFromContainer
-	#undef OnItemRemovedFromContainer
-#else
-	#define _ALS_OnItemRemovedFromContainer
-#endif
-#define OnItemRemovedFromContainer veh_OnItemRemovedFromContainer
-#if defined veh_OnItemRemovedFromContainer
-	forward veh_OnItemRemovedFromContainer(containerid, slotid, playerid);
-#endif
-
-VehicleTrunkUpdateSave(playerid)
-{
-	if(IsValidVehicle(veh_CurrentTrunkVehicle[playerid]))
-	{
-		new owner[MAX_PLAYER_NAME];
-
-		GetVehicleOwner(veh_CurrentTrunkVehicle[playerid], owner);
-
-		if(!isnull(owner))
-		{
-			new name[MAX_PLAYER_NAME];
-
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-			if(!strcmp(owner, name))
-			{
-				UpdateVehicleFile(veh_CurrentTrunkVehicle[playerid]);
-				GetVehiclePos(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnX], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnY], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnZ]);
-				GetVehicleZAngle(veh_CurrentTrunkVehicle[playerid], veh_Data[veh_CurrentTrunkVehicle[playerid]][veh_spawnR]);
-			}
-		}
-	}
-}
-
 public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 {
+	// TODO: Some anticheat magic before syncing.
 	GetVehicleDamageStatus(vehicleid,
 		veh_Data[vehicleid][veh_panels],
 		veh_Data[vehicleid][veh_doors],
@@ -1029,66 +655,35 @@ IsVehicleValidOutOfBounds(vehicleid)
 	return 0;
 }
 
-ResetVehicle(vehicleid)
-{
-	new
-		type = GetVehicleType(vehicleid),
-		newid;
-
-	DestroyVehicle(vehicleid, 4);
-	DestroyDynamicArea(veh_Area[vehicleid]);
-
-	newid = CreateVehicleOfType(type,
-		veh_Data[vehicleid][veh_spawnX],
-		veh_Data[vehicleid][veh_spawnY],
-		veh_Data[vehicleid][veh_spawnZ],
-		veh_Data[vehicleid][veh_spawnR],
-		veh_Data[vehicleid][veh_colour1],
-		veh_Data[vehicleid][veh_colour2]);
-
-	if(newid != vehicleid)
-	{
-		veh_Data[newid] = veh_Data[vehicleid];
-		veh_BitData[newid] = veh_BitData[vehicleid];
-		veh_ContainerVehicle[veh_Container[vehicleid]] = newid;
-		veh_TrunkLock[newid] = veh_TrunkLock[vehicleid];
-		veh_Area[newid] = veh_Area[vehicleid];
-		veh_Container[newid] = veh_Container[vehicleid];
-		veh_Owner[newid] = veh_Owner[vehicleid];
-	}
-
-	CreateVehicleArea(newid);
-	UpdateVehicleData(newid);
-	SetVehicleSpawnPoint(newid, veh_Data[newid][veh_spawnX], veh_Data[newid][veh_spawnY], veh_Data[newid][veh_spawnZ], veh_Data[newid][veh_spawnR]);
-}
-
+/*
+	Handling vehicle deaths:
+	When a vehicle "dies" (reported by the client) it might be false. This hook
+	aims to fix bugs with vehicle deaths and all code that's intended to run
+	when a vehicle is destroyed should be put under OnVehicleDestroy(ed).
+*/
 public OnVehicleDeath(vehicleid, killerid)
 {
 	GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
-	t:veh_BitData[vehicleid]<veh_Dead>;
+	veh_Data[vehicleid][veh_dead] = true;
 	printf("[DEBUG] Vehicle %d killed by %d", vehicleid, killerid);
 }
 
 public OnVehicleSpawn(vehicleid)
 {
-	if(veh_BitData[vehicleid] & veh_Dead)
+	if(veh_Data[vehicleid][veh_dead])
 	{
 		if(IsVehicleValidOutOfBounds(vehicleid))
 		{
 			printf("Dead Vehicle %d Spawned, is valid out-of-bounds vehicle, resetting.", vehicleid);
 
-			f:veh_BitData[vehicleid]<veh_Dead>;
+			veh_Data[vehicleid][veh_dead] = false;
 			ResetVehicle(vehicleid);
 		}
 		else
 		{
 			printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
 
-			if(IsValidContainer(veh_Container[vehicleid]))
-				DestroyContainer(veh_Container[vehicleid]);
-
-			DestroyDynamicArea(veh_Area[vehicleid]);
-			DestroyVehicle(vehicleid, 3);
+			DestroyWorldVehicle(vehicleid);
 			Iter_Remove(veh_Index, vehicleid);
 
 			RemoveVehicleFileByID(vehicleid);
@@ -1098,41 +693,61 @@ public OnVehicleSpawn(vehicleid)
 	return 1;
 }
 
+/*
+	Hook for CreateVehicle, if the first parameter isn't a valid model ID but is
+	a valid vehicle-type from this index, use the index create function instead.
+*/
+stock vti_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay)
+{
+	#pragma unused vehicletype, x, y, z, rotation, color1, color2, respawn_delay
+	printf("ERROR: Cannot create vehicle by model ID.");
+
+	return 0;
+}
+#if defined _ALS_CreateVehicle
+	#undef CreateVehicle
+#else
+	#define _ALS_CreateVehicle
+#endif
+#define CreateVehicle vti_CreateVehicle
+
 
 /*==============================================================================
 
-
 	Interface
-
 
 ==============================================================================*/
 
 
-stock IsPlayerInVehicleArea(playerid, vehicleid)
+// veh_type
+stock GetVehicleType(vehicleid)
 {
-	if(!(0 <= playerid < MAX_PLAYERS))
-			return 0;
+	if(!IsValidVehicle(vehicleid))
+		return INVALID_VEHICLE_TYPE;
 
+	return veh_Data[vehicleid][veh_type];
+}
+
+// veh_health
+stock Float:GetVehicleHP(vehicleid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0.0;
+
+	return veh_Data[vehicleid][veh_health];
+}
+
+stock SetVehicleHP(vehicleid, Float:health)
+{
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	return IsPlayerInDynamicArea(playerid, veh_Area[vehicleid]);
+	veh_Data[vehicleid][veh_health] = health;
+
+	return 1;
 }
 
-stock GetPlayerVehicleArea(playerid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
-			return 0;
-
-	foreach(new i : veh_Index)
-	{
-		if(IsPlayerInDynamicArea(playerid, veh_Area[i]))
-			return i;
-	}
-
-	return INVALID_VEHICLE_ID;
-}
-
+// veh_Fuel
 forward Float:GetVehicleFuel(vehicleid);
 stock Float:GetVehicleFuel(vehicleid)
 {
@@ -1175,6 +790,7 @@ stock GiveVehicleFuel(vehicleid, Float:amount)
 	return 1;
 }
 
+// veh_key
 stock GetVehicleKey(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
@@ -1193,103 +809,7 @@ stock SetVehicleKey(vehicleid, key)
 	return 1;
 }
 
-stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	name = veh_Owner[vehicleid];
-
-	return 1;
-}
-
-stock GetVehicleContainer(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return INVALID_CONTAINER_ID;
-
-	return veh_Container[vehicleid];
-}
-
-stock SetVehicleContainer(vehicleid, containerid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(IsValidContainer(containerid))
-	{
-		veh_Container[vehicleid] = containerid;
-		veh_ContainerVehicle[veh_Container[vehicleid]] = vehicleid;
-	}
-	else
-	{
-		veh_Container[vehicleid] = -1;
-	}
-
-	return 1;
-}
-
-stock IsVehicleTrunkLocked(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	return veh_TrunkLock[vehicleid];
-}
-
-stock SetVehicleTrunkLock(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	veh_TrunkLock[vehicleid] = toggle;
-	return 1;
-}
-
-stock SetVehicleUsed(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(toggle)
-		t:veh_BitData[vehicleid]<veh_Used>;
-
-	else
-		f:veh_BitData[vehicleid]<veh_Used>;
-
-	return 1;
-}
-
-stock SetVehicleOccupied(vehicleid, toggle)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(toggle)
-		t:veh_BitData[vehicleid]<veh_Occupied>;
-
-	else
-		f:veh_BitData[vehicleid]<veh_Occupied>;
-
-	return 1;
-}
-
-stock GetVehicleArea(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return -1;
-
-	return veh_Area[vehicleid];
-}
-
-stock IsVehicleOccupied(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	return veh_BitData[vehicleid] & veh_Occupied;
-}
-
+// veh_engine
 stock GetVehicleEngine(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
@@ -1309,36 +829,55 @@ stock SetVehicleEngine(vehicleid, toggle)
 	return 1;
 }
 
-stock IsPlayerAtAnyVehicleTrunk(playerid)
+// veh_panels
+// veh_doors
+// veh_lights
+// veh_tires
+stock SetVehicleDamageData(vehicleid, panels, doors, lights, tires)
 {
-	foreach(new i : veh_Index)
-	{
-		if(IsPlayerAtVehicleTrunk(playerid, i))
-			return 1;
-	}
+	if(!IsValidVehicle(vehicleid))
+		return 0;
 
-	return 0;
+	veh_Data[vehicleid][veh_panels] = panels;
+	veh_Data[vehicleid][veh_doors] = doors;
+	veh_Data[vehicleid][veh_lights] = lights;
+	veh_Data[vehicleid][veh_tires] = tires;
+
+	UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+
+	return 1;
 }
 
-stock IsPlayerAtAnyVehicleBonnet(playerid)
-{
-	foreach(new i : veh_Index)
-	{
-		if(IsPlayerAtVehicleBonnet(playerid, i))
-			return 1;
-	}
+// veh_armour
 
-	return 0;
+// veh_colour1
+// veh_colour2
+stock GetVehicleColours(vehicleid, &colour1, &colour2)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	colour1 = veh_Data[vehicleid][veh_colour1];
+	colour2 = veh_Data[vehicleid][veh_colour2];
+
+	return 1;
 }
 
-stock GetContainerTrunkVehicleID(containerid)
+stock SetVehicleColours(vehicleid, colour1, colour2)
 {
-	if(!IsValidContainer(containerid))
-		return INVALID_VEHICLE_ID;
+	if(!IsValidVehicle(vehicleid))
+		return 0;
 
-	return veh_ContainerVehicle[containerid];
+	veh_Data[vehicleid][veh_colour1] = colour1;
+	veh_Data[vehicleid][veh_colour2] = colour2;
+
+	return 1;
 }
 
+// veh_spawnX
+// veh_spawnY
+// veh_spawnZ
+// veh_spawnR
 stock SetVehicleSpawnPoint(vehicleid, Float:x, Float:y, Float:z, Float:r)
 {
 	if(!IsValidVehicle(vehicleid))
@@ -1365,10 +904,48 @@ stock GetVehicleSpawnPoint(vehicleid, &Float:x, &Float:y, &Float:z, &Float:r)
 	return 1;
 }
 
+// veh_lastUsed
 stock GetVehicleLastUseTick(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	return veh_Data[vehicleid][veh_lastUsed];
+}
+
+// veh_used
+stock IsVehicleUsed(vehicleid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	return veh_Data[vehicleid][veh_used];
+}
+
+// veh_occupied
+stock IsVehicleOccupied(vehicleid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	return veh_Data[vehicleid][veh_used];
+}
+
+
+// veh_dead
+stock IsVehicleDead(vehicleid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	return veh_Data[vehicleid][veh_dead];
+}
+
+// veh_TypeCount
+stock GetVehicleTypeCount(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return veh_TypeCount[vehicletype];
 }

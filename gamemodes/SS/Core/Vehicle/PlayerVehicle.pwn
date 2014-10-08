@@ -35,6 +35,10 @@ enum
 }
 
 
+static
+	pveh_Owner[MAX_VEHICLES][MAX_PLAYER_NAME];
+
+
 /*==============================================================================
 
 	Save and Load (all)
@@ -64,7 +68,7 @@ SavePlayerVehicles(printeach = false, printtotal = false)
 				continue;
 			}
 
-			if(veh_BitData[i] & veh_Dead)
+			if(IsVehicleDead(i))
 			{
 				if(printeach)
 					logf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", i, owner);
@@ -214,7 +218,7 @@ LoadPlayerVehicle(username[], prints)
 
 	strmid(owner, username, 0, strlen(username) - 4);
 
-	vehicleid = CreateVehicleOfType(
+	vehicleid = CreateWorldVehicle(
 		data[VEH_CELL_TYPE],
 		Float:data[VEH_CELL_POSX],
 		Float:data[VEH_CELL_POSY],
@@ -232,7 +236,7 @@ LoadPlayerVehicle(username[], prints)
 		Float:data[VEH_CELL_POSZ],
 		Float:data[VEH_CELL_ROTZ]);
 
-	veh_Owner[vehicleid] = owner;
+	SetVehicleOwner(vehicleid, owner);
 
 	if(prints)
 		logf("\t[LOAD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
@@ -242,16 +246,11 @@ LoadPlayerVehicle(username[], prints)
 	if(Float:data[VEH_CELL_HEALTH] > 990.0)
 		data[VEH_CELL_HEALTH] = _:990.0;
 
-	veh_Data[vehicleid][veh_health]				= Float:data[VEH_CELL_HEALTH];
-	veh_Data[vehicleid][veh_Fuel]				= Float:data[VEH_CELL_FUEL];
-	veh_Data[vehicleid][veh_panels]				= data[VEH_CELL_PANELS];
-	veh_Data[vehicleid][veh_doors]				= data[VEH_CELL_DOORS];
-	veh_Data[vehicleid][veh_lights]				= data[VEH_CELL_LIGHTS];
-	veh_Data[vehicleid][veh_tires]				= data[VEH_CELL_TIRES];
-	veh_Data[vehicleid][veh_armour]				= data[VEH_CELL_ARMOUR];
-	veh_Data[vehicleid][veh_colour1]			= data[VEH_CELL_COL1];
-	veh_Data[vehicleid][veh_colour2]			= data[VEH_CELL_COL2];
-	veh_Data[vehicleid][veh_key]				= data[VEH_CELL_KEY];
+	SetVehicleHP(vehicleid, Float:data[VEH_CELL_HEALTH]);
+	SetVehicleFuel(vehicleid, Float:data[VEH_CELL_FUEL]);
+	SetVehicleDamageData(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+	SetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+	SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
 
 	SetVehicleExternalLock(vehicleid, data[VEH_CELL_LOCKED]);
 
@@ -268,7 +267,7 @@ LoadPlayerVehicle(username[], prints)
 
 		GetVehicleTypeName(data[VEH_CELL_TYPE], trailername);
 
-		trailerid = CreateVehicleOfType(
+		trailerid = CreateWorldVehicle(
 			data[VEH_CELL_TYPE],
 			Float:data[VEH_CELL_POSX],
 			Float:data[VEH_CELL_POSY],
@@ -292,14 +291,10 @@ LoadPlayerVehicle(username[], prints)
 
 		Iter_Add(veh_Index, trailerid);
 
-		veh_Data[trailerid][veh_health]	= Float:data[VEH_CELL_HEALTH];
-		veh_Data[trailerid][veh_Fuel]	= Float:data[VEH_CELL_FUEL];
-		veh_Data[trailerid][veh_panels]	= data[VEH_CELL_PANELS];
-		veh_Data[trailerid][veh_doors]	= data[VEH_CELL_DOORS];
-		veh_Data[trailerid][veh_lights]	= data[VEH_CELL_LIGHTS];
-		veh_Data[trailerid][veh_tires]	= data[VEH_CELL_TIRES];
-		veh_Data[trailerid][veh_armour]	= data[VEH_CELL_ARMOUR];
-		veh_Data[trailerid][veh_key]	= data[VEH_CELL_KEY];
+		SetVehicleHealth(vehicleid, Float:data[VEH_CELL_HEALTH]);
+		SetVehicleFuel(vehicleid, Float:data[VEH_CELL_FUEL]);
+		SetVehicleDamageData(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
 
 		if(trailertrunksize > 0)
 		{
@@ -307,9 +302,6 @@ LoadPlayerVehicle(username[], prints)
 				ItemType:itemtype,
 				itemid,
 				itemlist;
-
-			containerid = CreateContainer(sprintf("%s trunk", trailername), trunksize, .virtual = 1);
-			SetVehicleContainer(trailerid, containerid);
 
 			length = modio_read(filename, _T<T,T,R,N>, vehicle_ItemList, false, false);
 		
@@ -340,13 +332,6 @@ LoadPlayerVehicle(username[], prints)
 
 			DestroyItemList(itemlist);
 		}
-		else
-		{
-			SetVehicleContainer(trailerid, INVALID_CONTAINER_ID);
-		}
-
-		UpdateVehicleData(trailerid);
-		CreateVehicleArea(trailerid);
 	}
 
 	if(trunksize > 0)
@@ -355,9 +340,6 @@ LoadPlayerVehicle(username[], prints)
 			ItemType:itemtype,
 			itemid,
 			itemlist;
-
-		containerid = CreateContainer(sprintf("%s trunk", vehiclename), trunksize, .virtual = 1);
-		SetVehicleContainer(vehicleid, containerid);
 
 		length = modio_read(filename, _T<T,R,N,K>, vehicle_ItemList, true);
 
@@ -386,15 +368,6 @@ LoadPlayerVehicle(username[], prints)
 
 		DestroyItemList(itemlist);
 	}
-	else
-	{
-		SetVehicleContainer(vehicleid, INVALID_CONTAINER_ID);
-	}
-
-	t:veh_BitData[vehicleid]<veh_Player>;
-
-	UpdateVehicleData(vehicleid);
-	CreateVehicleArea(vehicleid);
 
 	return 1;
 }
@@ -426,30 +399,30 @@ UpdateVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 	{
 		if(lastvehicleid == vehicleid)
 		{
-			if(isnull(veh_Owner[lastvehicleid]))
+			if(isnull(pveh_Owner[lastvehicleid]))
 				continue;
 
-			if(!strcmp(veh_Owner[lastvehicleid], name))
+			if(!strcmp(pveh_Owner[lastvehicleid], name))
 				return 1;
 
 			else
 				continue;
 		}
 
-		if(isnull(veh_Owner[lastvehicleid]))
+		if(isnull(pveh_Owner[lastvehicleid]))
 			continue;
 
-		if(!strcmp(veh_Owner[lastvehicleid], name))
-			veh_Owner[lastvehicleid][0] = EOS;
+		if(!strcmp(pveh_Owner[lastvehicleid], name))
+			pveh_Owner[lastvehicleid][0] = EOS;
 	}
 
-	if(!isnull(veh_Owner[vehicleid]))
+	if(!isnull(pveh_Owner[vehicleid]))
 	{
-		if(strcmp(veh_Owner[vehicleid], name))
+		if(strcmp(pveh_Owner[vehicleid], name))
 			RemoveVehicleFileByID(vehicleid, prints);
 	}
 
-	veh_Owner[vehicleid] = name;
+	pveh_Owner[vehicleid] = name;
 
 	return 1;
 }
@@ -470,7 +443,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 		vehiclename[MAX_VEHICLE_TYPE_NAME],
 		data[VEH_CELL_END];
 
-	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", veh_Owner[vehicleid]);
+	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", pveh_Owner[vehicleid]);
 
 	session = modio_getsession_write(filename);
 
@@ -486,14 +459,12 @@ UpdateVehicleFile(vehicleid, prints = false)
 	data[VEH_CELL_FUEL] = _:GetVehicleFuel(vehicleid);
 	GetVehiclePos(vehicleid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 	GetVehicleZAngle(vehicleid, Float:data[VEH_CELL_ROTZ]);
-	data[VEH_CELL_COL1] = veh_Data[vehicleid][veh_colour1];
-	data[VEH_CELL_COL2] = veh_Data[vehicleid][veh_colour2];
+	GetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 	GetVehicleDamageStatus(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
-	data[VEH_CELL_ARMOUR] = 0;
-	data[VEH_CELL_KEY] = veh_Data[vehicleid][veh_key];
+	data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 
 	if(prints)
-		logf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), vehiclename, veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
+		logf("[SAVE] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, IsVehicleLocked(vehicleid) ? ("L") : ("U"), vehiclename, pveh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 
 	if(!IsVehicleOccupied(vehicleid))
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
@@ -516,11 +487,9 @@ UpdateVehicleFile(vehicleid, prints = false)
 		data[VEH_CELL_FUEL] = _:0.0;
 		GetVehiclePos(trailerid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 		GetVehicleZAngle(trailerid, Float:data[VEH_CELL_ROTZ]);
-		data[VEH_CELL_COL1] = veh_Data[trailerid][veh_colour1];
-		data[VEH_CELL_COL2] = veh_Data[trailerid][veh_colour2];
+		GetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
-		data[VEH_CELL_ARMOUR] = 0;
-		data[VEH_CELL_KEY] = veh_Data[trailerid][veh_key];
+		data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(trailerid);
 
 		// TDAT = Trailer Data
@@ -555,7 +524,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 		GetVehicleTypeName(GetVehicleType(trailerid), vehiclename);
 
 		if(prints)
-			logf("[SAVE] Trailer %d (%s): %s for %s at %f, %f, %f", trailerid, IsVehicleLocked(trailerid) ? ("L") : ("U"), vehiclename, veh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
+			logf("[SAVE] Trailer %d (%s): %s for %s at %f, %f, %f", trailerid, IsVehicleLocked(trailerid) ? ("L") : ("U"), vehiclename, pveh_Owner[vehicleid], Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 	}
 
 	new containerid = GetVehicleContainer(vehicleid);
@@ -733,7 +702,7 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		return 0;
 	}
 
-	vehicleid = CreateVehicleOfType(
+	vehicleid = CreateWorldVehicle(
 		array_data[VEH_CELL_TYPE],
 		Float:array_data[VEH_CELL_POSX],
 		Float:array_data[VEH_CELL_POSY],
@@ -751,7 +720,7 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		Float:array_data[VEH_CELL_POSZ],
 		Float:array_data[VEH_CELL_ROTZ]);
 
-	veh_Owner[vehicleid] = owner;
+	pveh_Owner[vehicleid] = owner;
 
 	if(prints)
 		printf("\t[LOAD] [OLD] Vehicle %d (%s): %s for %s at %f, %f, %f", vehicleid, array_data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
@@ -761,16 +730,11 @@ OLD_LoadPlayerVehicle(filename[], prints)
 	if(Float:array_data[VEH_CELL_HEALTH] > 990.0)
 		array_data[VEH_CELL_HEALTH] = _:990.0;
 
-	veh_Data[vehicleid][veh_health]				= Float:array_data[VEH_CELL_HEALTH];
-	veh_Data[vehicleid][veh_Fuel]				= Float:array_data[VEH_CELL_FUEL];
-	veh_Data[vehicleid][veh_panels]				= array_data[VEH_CELL_PANELS];
-	veh_Data[vehicleid][veh_doors]				= array_data[VEH_CELL_DOORS];
-	veh_Data[vehicleid][veh_lights]				= array_data[VEH_CELL_LIGHTS];
-	veh_Data[vehicleid][veh_tires]				= array_data[VEH_CELL_TIRES];
-	veh_Data[vehicleid][veh_armour]				= array_data[VEH_CELL_ARMOUR];
-	veh_Data[vehicleid][veh_colour1]			= array_data[VEH_CELL_COL1];
-	veh_Data[vehicleid][veh_colour2]			= array_data[VEH_CELL_COL2];
-	veh_Data[vehicleid][veh_key]				= array_data[VEH_CELL_KEY];
+	SetVehicleHP(vehicleid, Float:array_data[VEH_CELL_HEALTH]);
+	SetVehicleFuel(vehicleid, Float:array_data[VEH_CELL_FUEL]);
+	SetVehicleDamageData(vehicleid, array_data[VEH_CELL_PANELS], array_data[VEH_CELL_DOORS], array_data[VEH_CELL_LIGHTS], array_data[VEH_CELL_TIRES]);
+	SetVehicleColours(vehicleid, array_data[VEH_CELL_COL1], array_data[VEH_CELL_COL2]);
+	SetVehicleKey(vehicleid, array_data[VEH_CELL_KEY]);
 
 	SetVehicleExternalLock(vehicleid, array_data[VEH_CELL_LOCKED]);
 
@@ -792,9 +756,6 @@ OLD_LoadPlayerVehicle(filename[], prints)
 		fblockread(file, array_inv, sizeof(array_inv));
 		fclose(file);
 
-		containerid = CreateContainer("Trunk", trunksize, .virtual = 1);
-		SetVehicleContainer(vehicleid, containerid);
-
 		for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
 		{
 			if(!IsValidItemType(ItemType:array_inv[i]) || array_inv[i] == 0)
@@ -813,15 +774,34 @@ OLD_LoadPlayerVehicle(filename[], prints)
 			}
 		}
 	}
-	else
-	{
-		SetVehicleContainer(vehicleid, INVALID_CONTAINER_ID);
-	}
 
-	t:veh_BitData[vehicleid]<veh_Player>;
+	return 1;
+}
 
-	UpdateVehicleData(vehicleid);
-	CreateVehicleArea(vehicleid);
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	name = pveh_Owner[vehicleid];
+
+	return 1;
+}
+
+stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	pveh_Owner[vehicleid] = name;
 
 	return 1;
 }

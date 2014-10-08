@@ -459,7 +459,7 @@ ACMD:addvehicle[3](playerid, params[])
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	vehicleid = CreateNewVehicle(type, x, y, z, r);
+	vehicleid = CreateLootVehicle(type, x, y, z, r);
 	SetVehicleFuel(vehicleid, 100000.0);
 	SetVehicleHealth(vehicleid, 990.0);
 

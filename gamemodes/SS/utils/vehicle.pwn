@@ -91,3 +91,15 @@ stock VehicleBootState(v, t=-1)
 
 	return bt;
 }
+
+stock RandomNumberPlateString()
+{
+	new str[9];
+	for(new c; c < 8; c++)
+	{
+		if(c<4)str[c] = 'A' + random(26);
+		else if(c>4)str[c] = '0' + random(10);
+		str[4] = ' ';
+	}
+	return str;
+}

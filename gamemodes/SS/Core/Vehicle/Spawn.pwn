@@ -255,7 +255,7 @@ LoadVehiclesFromFile(file[])
 				continue;
 			}
 
-			vehicleid = CreateNewVehicle(type, posX, posY, posZ, rotZ);
+			vehicleid = CreateLootVehicle(type, posX, posY, posZ, rotZ);
 
 			if(vehicleid == MAX_VEHICLES - 1)
 			{

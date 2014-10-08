@@ -350,10 +350,13 @@ bool:	gServerRestarting = false;
 #include "SS/Core/UI/BodyPreview.pwn"
 
 // VEHICLE
-#include "SS/Core/Vehicle/VehicleTypeIndex.pwn"
+#include "SS/Core/Vehicle/VehicleType.pwn"
 #include "SS/Core/Vehicle/Core.pwn"
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
+#include "SS/Core/Vehicle/LootVehicle.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
+#include "SS/Core/Vehicle/Interact.pwn"
+#include "SS/Core/Vehicle/Trunk.pwn"
 #include "SS/Core/Vehicle/Repair.pwn"
 #include "SS/Core/Vehicle/LockBreak.pwn"
 #include "SS/Core/Vehicle/Locksmith.pwn"
