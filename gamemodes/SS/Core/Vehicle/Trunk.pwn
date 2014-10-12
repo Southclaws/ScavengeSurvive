@@ -17,7 +17,6 @@ static
 
 public OnVehicleCreated(vehicleid)
 {
-	printf("OnVehicleCreated %d", vehicleid);
 	new
 		vehicletype,
 		trunksize;

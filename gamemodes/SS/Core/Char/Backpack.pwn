@@ -428,9 +428,13 @@ _BagEquipHandler(playerid)
 	if(!IsValidContainer(containerid))
 		return 0;
 
-	if(!WillItemTypeFitInContainer(containerid, itemtype))
+	new
+		itemsize = GetItemTypeSize(GetItemType(itemid)),
+		freeslots = GetContainerFreeSlots(containerid);
+
+	if(itemsize > freeslots)
 	{
-		ShowActionText(playerid, "Bag full", 3000, 150);
+		ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
 		return 0;
 	}
 
@@ -553,6 +557,26 @@ PlayerBagUpdate(playerid)
 	}
 }
 
+public OnPlayerAddToInventory(playerid, itemid)
+{
+	if(IsItemTypeBag(GetItemType(itemid)))
+		return 1;
+
+	#if defined bag_OnPlayerAddToInventory
+		return bag_OnPlayerAddToInventory(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerAddToInventory
+	#undef OnPlayerAddToInventory
+#else
+	#define _ALS_OnPlayerAddToInventory
+#endif
+#define OnPlayerAddToInventory bag_OnPlayerAddToInventory
+#if defined bag_OnPlayerAddToInventory
+	forward bag_OnPlayerAddToInventory(playerid, itemid);
+#endif
 
 public OnPlayerCloseContainer(playerid, containerid)
 {

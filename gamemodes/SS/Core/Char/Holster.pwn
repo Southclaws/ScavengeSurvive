@@ -156,7 +156,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnItemAddToInventory(playerid, itemid, slot)
+public OnPlayerAddToInventory(playerid, itemid)
 {
 	// This is to stop holstered items from being added to the inventory too.
 	// (They share the same key.)
@@ -166,20 +166,20 @@ public OnItemAddToInventory(playerid, itemid, slot)
 			return 1;
 	}
 
-	#if defined hols_OnItemAddToInventory
-		return hols_OnItemAddToInventory(playerid, itemid, slot);
+	#if defined hols_OnPlayerAddToInventory
+		return hols_OnPlayerAddToInventory(playerid, itemid);
 	#else
 		return 0;
 	#endif
 }
-#if defined _ALS_OnItemAddToInventory
-	#undef OnItemAddToInventory
+#if defined _ALS_OnPlayerAddToInventory
+	#undef OnPlayerAddToInventory
 #else
-	#define _ALS_OnItemAddToInventory
+	#define _ALS_OnPlayerAddToInventory
 #endif
-#define OnItemAddToInventory hols_OnItemAddToInventory
-#if defined hols_OnItemAddToInventory
-	forward hols_OnItemAddToInventory(playerid, itemid, slot);
+#define OnPlayerAddToInventory hols_OnPlayerAddToInventory
+#if defined hols_OnPlayerAddToInventory
+	forward hols_OnPlayerAddToInventory(playerid, itemid);
 #endif
 
 _HolsterChecks(playerid)
