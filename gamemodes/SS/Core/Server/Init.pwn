@@ -137,8 +137,7 @@ new
 	drug_Heroin;
 
 // LOOT INDEXES
-enum
-{
+new
 	loot_Civilian,
 	loot_Industrial,
 	loot_Police,
@@ -149,8 +148,7 @@ enum
 	loot_CarPolice,
 	loot_CarMilitary,
 	loot_Survivor,
-	loot_SupplyCrate
-}
+	loot_SupplyCrate;
 
 // AMMO CALIBRES
 new
@@ -1124,17 +1122,17 @@ public OnScriptInit()
 	//WriteAllCombosToFile();
 
 
-	DefineLootIndex(loot_Civilian);
-	DefineLootIndex(loot_Industrial);
-	DefineLootIndex(loot_Police);
-	DefineLootIndex(loot_Military);
-	DefineLootIndex(loot_Medical);
-	DefineLootIndex(loot_CarCivilian);
-	DefineLootIndex(loot_CarIndustrial);
-	DefineLootIndex(loot_CarPolice);
-	DefineLootIndex(loot_CarMilitary);
-	DefineLootIndex(loot_Survivor);
-	DefineLootIndex(loot_SupplyCrate);
+	loot_Civilian		= DefineLootIndex("civi");
+	loot_Industrial		= DefineLootIndex("indu");
+	loot_Police			= DefineLootIndex("poli");
+	loot_Military		= DefineLootIndex("mili");
+	loot_Medical		= DefineLootIndex("medi");
+	loot_CarCivilian	= DefineLootIndex("vciv");
+	loot_CarIndustrial	= DefineLootIndex("vind");
+	loot_CarPolice		= DefineLootIndex("vpol");
+	loot_CarMilitary	= DefineLootIndex("vmil");
+	loot_Survivor		= DefineLootIndex("surv");
+	loot_SupplyCrate	= DefineLootIndex("supp");
 
 
 	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);

@@ -6,13 +6,11 @@ new
 Iterator:	hak_Index<MAX_HACKTRAP>;
 
 
-stock CreateHackerTrap(Float:x, Float:y, Float:z, size, spawnchance, lootindex)
+stock CreateHackerTrap(Float:x, Float:y, Float:z, lootindex)
 {
-	#pragma unused size
-	#pragma unused spawnchance
 	new id = Iter_Free(hak_Index);
 
-	hak_ItemID[id] = CreateLootItem(lootindex, x, y, z, 0.7);
+	hak_ItemID[id] = CreateLootItemFromIndex(lootindex, x, y, z, 0.7);
 
 	Iter_Add(hak_Index, id);
 

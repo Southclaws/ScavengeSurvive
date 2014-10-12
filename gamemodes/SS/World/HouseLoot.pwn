@@ -88,7 +88,7 @@ hook OnGameModeInit()
 							LootOffsets[j][k][0], LootOffsets[j][k][1], LootOffsets[j][k][2],
 							x, y, z);
 
-						CreateLootSpawn(x, y, z, 3, 30, loot_Civilian);
+						CreateStaticLootSpawn(x, y, z, 3, 30, loot_Civilian);
 					}
 				}
 			}

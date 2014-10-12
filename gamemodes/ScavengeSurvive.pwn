@@ -109,7 +109,7 @@ public OnGameModeInit()
 #include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
 #include <socket>					// By BlueG, v0.2b:			http://forum.sa-mp.com/showthread.php?t=333934
-#include <sqlitei>					// By Slice, v0.9.6:		http://forum.sa-mp.com/showthread.php?t=303682
+#include <sqlitei>					// By Slice, v0.9.7:		http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
@@ -366,9 +366,6 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Vehicle/BikeCollision.pwn"
 #include "SS/Core/Vehicle/Trailer.pwn"
 
-// LOOT
-#include "SS/Core/Loot/Spawn.pwn"
-
 // PLAYER INTERNAL SCRIPTS
 #include "SS/Core/Player/Core.pwn"
 #include "SS/Core/Player/Accounts.pwn"
@@ -440,6 +437,7 @@ bool:	gServerRestarting = false;
 #include "SS/Core/World/Sign.pwn"
 #include "SS/Core/World/SupplyCrate.pwn"
 #include "SS/Core/World/WeaponsCache.pwn"
+#include "SS/Core/World/Loot.pwn"
 
 // ADMINISTRATION TOOLS
 #include "SS/Core/Admin/Report.pwn"
