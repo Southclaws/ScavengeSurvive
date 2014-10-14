@@ -166,6 +166,18 @@ ACMD:gotodef[4](playerid, params[])
 ==============================================================================*/
 
 
+ACMD:vw[5](playerid, params[])
+{
+	SetPlayerVirtualWorld(playerid, strval(params));
+	return 1;
+}
+
+ACMD:iw[5](playerid, params[])
+{
+	SetPlayerInterior(playerid, strval(params));
+	return 1;
+}
+
 ACMD:health[5](playerid, params[])
 {
 	SetPlayerHP(playerid, floatstr(params));
