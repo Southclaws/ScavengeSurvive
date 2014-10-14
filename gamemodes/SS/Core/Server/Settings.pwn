@@ -39,25 +39,6 @@ LoadSettings()
 	printf("  server/website: %s", gWebsiteURL);
 
 
-	// server/infomsgs
-	if(!djIsSet(SETTINGS_FILE, "server/infomsgs"))
-		djAppend(SETTINGS_FILE, "server/infomsgs", "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.");
-
-	for(new i, j = djCount(SETTINGS_FILE, "server/infomsgs"); i < j; i++)
-	{
-		if(i >= MAX_INFO_MESSAGE)
-		{
-			print("ERROR: MAX_INFO_MESSAGE limit reached while loading infomsgs from '"SETTINGS_FILE"'.");
-			break;
-		}
-
-		format(tmp, sizeof(tmp), "server/infomsgs/%d", i);
-		strcat(gInfoMessage[i], dj(SETTINGS_FILE, tmp));
-		printf("  %s: %s", tmp, gInfoMessage[i]);
-		gTotalInfoMessage++;
-	}
-
-
 	// server/rules
 	if(!djIsSet(SETTINGS_FILE, "server/rules"))
 		djAppend(SETTINGS_FILE, "server/rules", "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.");
@@ -94,14 +75,6 @@ LoadSettings()
 		printf("  %s: %s", tmp, gStaffList[i]);
 		gTotalStaff++;
 	}
-
-
-	// server/infomsg-interval
-	if(!djIsSet(SETTINGS_FILE, "server/infomsg-interval"))
-		djSetInt(SETTINGS_FILE, "server/infomsg-interval", 5);
-
-	gInfoMessageInterval = djInt(SETTINGS_FILE, "server/infomsg-interval");
-	printf("  server/infomsg-interval: %d", gInfoMessageInterval);
 
 
 	// server/max-uptime

@@ -5,18 +5,31 @@
 #define MAX_SAVES_PER_BLOCK_VEHICLE (8)
 #define SAVE_BLOCK_INTERVAL	(50)
 
+
 static
 		autosave_Block[ITM_MAX],
 		autosave_Max,
 bool:	autosave_Active,
 
-bool:	autosave_Toggle = true,
 bool:	autosave_Debug,
 		autosave_TickTotal,
-		autosave_Tick;
+		autosave_Tick,
+
+bool:	autosave_Toggle,
+		autosave_Interval;
 
 
-timer AutoSave[60000]()
+hook OnScriptInit()
+{
+	print("\n[OnScriptInit] Initialising 'Defences'...");
+
+	GetSettingInt("autosave/autosave-toggle", 1, autosave_Toggle);
+	GetSettingInt("autosave/autosave-interval", 60000, autosave_Interval);
+
+	defer AutoSave();
+}
+
+timer AutoSave[autosave_Interval]()
 {
 	if(!autosave_Toggle)
 		return;

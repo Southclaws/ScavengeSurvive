@@ -72,10 +72,8 @@ new
 		// player
 		gMessageOfTheDay[MAX_MOTD_LEN],
 		gWebsiteURL[MAX_WEBSITE_NAME],
-		gInfoMessage[MAX_INFO_MESSAGE][MAX_INFO_MESSAGE_LEN],
 		gRuleList[MAX_RULE][MAX_RULE_LEN],
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
-		gInfoMessageInterval,
 
 		// server
 bool:	gPauseMap,
@@ -93,10 +91,8 @@ Float:	gNameTagDistance,
 new
 		gServerUptime,
 		gBigString[MAX_PLAYERS][4096],
-		gTotalInfoMessage,
 		gTotalRules,
-		gTotalStaff,
-		gCurrentInfoMessage;
+		gTotalStaff;
 
 // SKINS/CLOTHES
 new
@@ -416,9 +412,6 @@ PlayerBar:		OverheatBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
 PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
 				MiniMapOverlay;
-
-
-forward SetRestart(seconds); // Todo: move to restart module
 
 
 public OnScriptInit()
@@ -1175,14 +1168,6 @@ public OnScriptInit()
 	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
 	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
 	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
-
-	for(new i; i < MAX_PLAYERS; i++)
-	{
-		ResetVariables(i); // Todo: move to player module or just remove
-	}
-
-	defer AutoSave(); // Todo: move to autosave module
-	defer InfoMessage(); // Todo: move to info message module
 
 	return 1;
 }

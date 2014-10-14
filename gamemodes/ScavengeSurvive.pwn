@@ -152,8 +152,6 @@ native WP_Hash(buffer[], len, const str[]);
 // Limits
 #define MAX_MOTD_LEN				(128)
 #define MAX_WEBSITE_NAME			(64)
-#define MAX_INFO_MESSAGE			(8)
-#define MAX_INFO_MESSAGE_LEN		(128)
 #define MAX_RULE					(24)
 #define MAX_RULE_LEN				(128)
 #define MAX_STAFF					(24)
@@ -336,6 +334,7 @@ bool:	gServerRestarting = false;
 #include "SS/Core/Server/ActivityLog.pwn"
 #include "SS/Core/Server/FileCheck.pwn"
 #include "SS/Core/Server/Sockets.pwn"
+#include "SS/Core/Server/InfoMessage.pwn"
 
 // UI
 #include "SS/Core/UI/PlayerUI.pwn"
@@ -555,7 +554,7 @@ main()
 
 		GetItemTypeName(i, itemtypename);
 
-		printf("[%03d] Spawned %d '%s'", GetItemTypeCount(i), itemtypename);
+		printf("[%03d] Spawned %d '%s'", i, GetItemTypeCount(i), itemtypename);
 	}
 
 	gServerInitialising = false;
@@ -606,6 +605,7 @@ public OnScriptExit()
 	print("\n[OnScriptExit] Shutting down...");
 }
 
+forward SetRestart(seconds);
 public SetRestart(seconds)
 {
 	printf("Restarting server in: %ds", seconds);
@@ -659,18 +659,6 @@ task GameUpdate[1000]()
 
 		gServerUptime++;
 	}
-}
-
-timer InfoMessage[gInfoMessageInterval * 60 * 1000]()
-{
-	if(gCurrentInfoMessage >= gTotalInfoMessage)
-		gCurrentInfoMessage = 0;
-
-	MsgAll(YELLOW, sprintf(" >  "C_BLUE"%s", gInfoMessage[gCurrentInfoMessage]));
-
-	gCurrentInfoMessage++;
-
-	defer InfoMessage();
 }
 
 DirectoryCheck(directory[])
