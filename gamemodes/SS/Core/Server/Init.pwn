@@ -84,12 +84,10 @@ Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
 		gMaxTaboutTime,
-		gPingLimit,
-		gServerMaxUptime;
+		gPingLimit;
 
 // INTERNAL
 new
-		gServerUptime,
 		gBigString[MAX_PLAYERS][4096],
 		gTotalRules,
 		gTotalStaff;

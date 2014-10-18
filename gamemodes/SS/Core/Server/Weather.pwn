@@ -52,7 +52,7 @@ hook OnGameModeInit()
 	gLastWeatherChange = GetTickCount();
 }
 
-WeatherUpdate()
+task WeatherUpdate[600000]()
 {
 	if(GetTickCountDifference(GetTickCount(), gLastWeatherChange) > 600000 && random(100) < 10)
 	{

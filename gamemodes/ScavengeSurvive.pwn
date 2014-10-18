@@ -296,7 +296,9 @@ native WP_Hash(buffer[], len, const str[]);
 
 new
 bool:	gServerInitialising = true,
-bool:	gServerRestarting = false;
+bool:	gServerRestarting = false,
+		gServerMaxUptime,
+		gServerUptime;
 
 
 /*==============================================================================
@@ -554,7 +556,7 @@ main()
 
 		GetItemTypeName(i, itemtypename);
 
-		printf("[%03d] Spawned %d '%s'", i, GetItemTypeCount(i), itemtypename);
+		printf("[%03d] Spawned %d '%s'", _:i, GetItemTypeCount(i), itemtypename);
 	}
 
 	gServerInitialising = false;
@@ -638,10 +640,8 @@ RestartGamemode()
 	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
 }
 
-task GameUpdate[1000]()
+task RestartUpdate[1000]()
 {
-	WeatherUpdate();
-
 	if(gServerMaxUptime > 0)
 	{
 		if(gServerUptime >= gServerMaxUptime)
