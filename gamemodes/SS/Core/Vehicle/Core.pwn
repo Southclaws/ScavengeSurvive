@@ -928,7 +928,7 @@ stock IsVehicleOccupied(vehicleid)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	return veh_Data[vehicleid][veh_used];
+	return veh_Data[vehicleid][veh_occupied];
 }
 
 
