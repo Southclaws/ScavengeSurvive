@@ -55,7 +55,7 @@ hook OnScriptInit()
 	//GetSettingInt("player-vehicle/print-each", false, veh_PrintEach);
 	//GetSettingInt("player-vehicle/print-total", true, veh_PrintTotal);
 
-	HANDLER = debug_register_handler("vehicle/playervehicle", 3);
+	HANDLER = debug_register_handler("vehicle/playervehicle");
 }
 
 hook OnGameModeInit()

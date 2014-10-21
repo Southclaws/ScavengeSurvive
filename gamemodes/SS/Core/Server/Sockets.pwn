@@ -42,25 +42,63 @@ hook OnScriptExit()
 
 public onSocketRemoteConnect(Socket:id, remote_client[], remote_clientid)
 {
-	printf("[onSocketRemoteConnect] id:%d remote_client:%s, remote_clientid:%d", _:id, remote_client, remote_clientid);
-	timeout[remote_clientid] = defer socket_timeout(remote_clientid);
-	return 1;
+	if(id == socket)
+	{
+		printf("[SAPI] [onSocketRemoteConnect] id:%d remote_client:%s, remote_clientid:%d", _:id, remote_client, remote_clientid);
+		timeout[remote_clientid] = defer socket_timeout(remote_clientid);
+
+		return 1;
+	}
+
+	#if defined sock_onSocketRemoteConnect
+		return sock_onSocketRemoteConnect(id, remote_client, remote_clientid);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_onSocketRemoteConnect
+	#undef onSocketRemoteConnect
+#else
+	#define _ALS_onSocketRemoteConnect
+#endif
+#define onSocketRemoteConnect sock_onSocketRemoteConnect
+#if defined sock_onSocketRemoteConnect
+	forward sock_onSocketRemoteConnect(Socket:id, remote_client[], remote_clientid);
+#endif
 
 public onSocketRemoteDisconnect(Socket:id, remote_clientid)
 {
-	printf("[onSocketRemoteDisconnect] id:%d remote_clientid:%d", _:id, remote_clientid);
-	return 1;
-}
+	if(id == socket)
+	{
+		printf("[SAPI] [onSocketRemoteDisconnect] id:%d remote_clientid:%d", _:id, remote_clientid);
 
+		return 1;
+	}
+
+	#if defined sock_onSocketRemoteDisconnect
+		return sock_onSocketRemoteDisconnect(id, remote_clientid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_onSocketRemoteDisconnect
+	#undef onSocketRemoteDisconnect
+#else
+	#define _ALS_onSocketRemoteDisconnect
+#endif
+#define onSocketRemoteDisconnect sock_onSocketRemoteDisconnect
+#if defined sock_onSocketRemoteDisconnect
+	forward sock_onSocketRemoteDisconnect(Socket:id, remote_clientid);
+#endif
 
 public onSocketReceiveData(Socket:id, remote_clientid, data[], data_len)
 {
-	stop timeout[remote_clientid];
-	timeout[remote_clientid] = defer socket_timeout(remote_clientid);
-
 	if(id == socket)
 	{
+		printf("[SAPI] [onSocketReceiveData] Received %d bytes from client %d on socket %d: '%s'", data_len, remote_clientid, _:id, data);
+		stop timeout[remote_clientid];
+		timeout[remote_clientid] = defer socket_timeout(remote_clientid);
+
 		if(data[0] == EOS)
 			return 1;
 
@@ -83,8 +121,34 @@ public onSocketReceiveData(Socket:id, remote_clientid, data[], data_len)
 			CallLocalFunction(cmdfunction, "is", remote_clientid, params);
 	}
 
-	return 1;
+	#if defined sock_onSocketReceiveData
+		return sock_onSocketReceiveData(id, remote_clientid, data, data_len);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_onSocketReceiveData
+	#undef onSocketReceiveData
+#else
+	#define _ALS_onSocketReceiveData
+#endif
+#define onSocketReceiveData sock_onSocketReceiveData
+#if defined sock_onSocketReceiveData
+	forward sock_onSocketReceiveData(Socket:id, remote_clientid, data[], data_len);
+#endif
+
+timer socket_timeout[10000](remote_clientid)
+{
+	printf("[socket_timeout] id:%d remote_clientid:%d", _:socket, remote_clientid);
+	socket_close_remote_client(socket, remote_clientid);
+}
+
+stock socket_api_send(remote_clientid, data[])
+{
+	socket_sendto_remote_client(socket, remote_clientid, data);
+}
+
+
 
 SCMD:is_account_registered(remote_clientid, params[])
 {
@@ -93,14 +157,9 @@ SCMD:is_account_registered(remote_clientid, params[])
 	printf("[RCMD] is_account_registered '%s'", params);
 
 	if(AccountExists(params))
-		socket_sendto_remote_client(socket, 0, "true");
+		socket_sendto_remote_client(socket, remote_clientid, "true");
 
 	else
-		socket_sendto_remote_client(socket, 0, "false");
+		socket_sendto_remote_client(socket, remote_clientid, "false");
 }
 
-timer socket_timeout[10000](remote_clientid)
-{
-	printf("[socket_timeout] id:%d remote_clientid:%d", _:socket, remote_clientid);
-	socket_close_remote_client(socket, remote_clientid);
-}
