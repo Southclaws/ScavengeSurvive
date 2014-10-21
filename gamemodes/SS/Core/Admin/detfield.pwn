@@ -25,6 +25,7 @@
 #define FIELD_DETFIELD_Z1			"minz"		// 05
 #define FIELD_DETFIELD_Z2			"maxz"		// 06
 #define FIELD_DETFIELD_EXCEPTIONS	"excps"		// 07
+#define FIELD_DETFIELD_ACTIVE		"active"	// 08
 
 enum
 {
@@ -35,7 +36,8 @@ enum
 			FIELD_ID_DETFIELD_VERT4,
 			FIELD_ID_DETFIELD_Z1,
 			FIELD_ID_DETFIELD_Z2,
-			FIELD_ID_DETFIELD_EXCEPTIONS
+			FIELD_ID_DETFIELD_EXCEPTIONS,
+			FIELD_ID_DETFIELD_ACTIVE
 }
 
 #define DETFIELD_TABLE_LOGS			"field_logs"
@@ -43,13 +45,15 @@ enum
 #define FIELD_DETLOG_NAME			"name"		// 01
 #define FIELD_DETLOG_POS			"pos"		// 02
 #define FIELD_DETLOG_DATE			"time"		// 03
+#define FIELD_DETLOG_ACTIVE			"active"	// 04
 
 enum
 {
 			FIELD_ID_DETLOG_FIELD,
 			FIELD_ID_DETLOG_NAME,
 			FIELD_ID_DETLOG_POS,
-			FIELD_ID_DETLOG_DATE
+			FIELD_ID_DETLOG_DATE,
+			FIELD_ID_DETLOG_ACTIVE
 }
 
 enum E_DETLOG_BUFFER_DATA
@@ -80,7 +84,6 @@ DB:			det_Database,
 DBStatement:det_Stmt_DetfieldAdd,
 DBStatement:det_Stmt_DetfieldExists,
 DBStatement:det_Stmt_DetfieldDelete,
-DBStatement:det_Stmt_DetfieldDeleteRecords,
 DBStatement:det_Stmt_DetfieldRename,
 DBStatement:det_Stmt_DetfieldRenameRecords,
 DBStatement:det_Stmt_DetfieldSetExcps,
@@ -110,35 +113,36 @@ hook OnScriptInit()
 		"FIELD_DETFIELD_VERT4" TEXT,\
 		"FIELD_DETFIELD_Z1" REAL,\
 		"FIELD_DETFIELD_Z2" REAL,\
-		"FIELD_DETFIELD_EXCEPTIONS" TEXT)", false));
+		"FIELD_DETFIELD_EXCEPTIONS" TEXT,\
+		"FIELD_DETFIELD_ACTIVE" INTEGER)", false));
 
 	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_LOGS" (\
 		"FIELD_DETLOG_DETFIELD" TEXT,\
 		"FIELD_DETLOG_NAME" TEXT,\
 		"FIELD_DETLOG_POS" TEXT,\
-		"FIELD_DETLOG_DATE" INTEGER)", false));
+		"FIELD_DETLOG_DATE" INTEGER,\
+		"FIELD_DETLOG_ACTIVE" INTEGER)", false));
 
-	det_Stmt_DetfieldAdd			= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_MAIN" VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+	det_Stmt_DetfieldAdd			= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_MAIN" VALUES(?, ?, ?, ?, ?, ?, ?, ?, 1)");
 	det_Stmt_DetfieldExists			= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldDelete			= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldDeleteRecords	= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ?");
+	det_Stmt_DetfieldDelete			= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_ACTIVE" = 0 WHERE "FIELD_DETFIELD_NAME" = ?");
 	det_Stmt_DetfieldRename			= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_NAME" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
 	det_Stmt_DetfieldRenameRecords	= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_LOGS" SET "FIELD_DETLOG_DETFIELD" = ? WHERE "FIELD_DETLOG_DETFIELD" = ?");
 	det_Stmt_DetfieldSetExcps		= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_MAIN" SET "FIELD_DETFIELD_EXCEPTIONS" = ? WHERE "FIELD_DETFIELD_NAME" = ?");
-	det_Stmt_DetfieldLoad			= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_MAIN"");
-	det_Stmt_DetfieldLogEntry		= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_LOGS" VALUES(?, ?, ?, ?)");
+	det_Stmt_DetfieldLoad			= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_MAIN" WHERE "FIELD_DETFIELD_ACTIVE" = 1");
+	det_Stmt_DetfieldLogEntry		= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_LOGS" VALUES(?, ?, ?, ?, 1)");
 	det_Stmt_DetfieldLogEntryCount	= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ?");
-	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT rowid, "FIELD_DETLOG_NAME", "FIELD_DETLOG_POS", "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
+	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT rowid, "FIELD_DETLOG_NAME", "FIELD_DETLOG_POS", "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND "FIELD_DETLOG_ACTIVE" = 1 ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
 	det_Stmt_DetfieldLogGetName		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_NAME" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogGetPos		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_POS" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogGetTime		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
-	det_Stmt_DetfieldLogDelete		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
-	det_Stmt_DetfieldLogDeleteN		= db_prepare(det_Database, "DELETE FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND "FIELD_DETLOG_NAME" = ?");
+	det_Stmt_DetfieldLogDelete		= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_LOGS" SET "FIELD_DETLOG_ACTIVE" = 0 WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
+	det_Stmt_DetfieldLogDeleteN		= db_prepare(det_Database, "UPDATE "DETFIELD_TABLE_LOGS" SET "FIELD_DETLOG_ACTIVE" = 0 WHERE "FIELD_DETLOG_DETFIELD" = ? AND "FIELD_DETLOG_NAME" = ?");
 	det_Stmt_DetfieldGetNameLogs	= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DETFIELD", "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_NAME" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
 
 
-	DatabaseTableCheck(det_Database, DETFIELD_TABLE_MAIN, 8);
-	DatabaseTableCheck(det_Database, DETFIELD_TABLE_LOGS, 4);
+	DatabaseTableCheck(det_Database, DETFIELD_TABLE_MAIN, 9);
+	DatabaseTableCheck(det_Database, DETFIELD_TABLE_LOGS, 5);
 
 	new
 		name[MAX_DETFIELD_NAME],
@@ -297,20 +301,13 @@ stock RemoveDetectionField(detfieldid)
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
+
 	stmt_bind_value(det_Stmt_DetfieldDelete, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 
-	stmt_execute(det_Stmt_DetfieldDelete);
-
-	stmt_bind_value(det_Stmt_DetfieldDeleteRecords, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
-
-	stmt_execute(det_Stmt_DetfieldDeleteRecords);
-
-	new query[256];
-
-	format(query, sizeof(query), "DROP TABLE %s", det_Name[detfieldid]);
-	db_query(det_Database, query);
-
 	DestroyDetectionField(detfieldid);
+
+	if(!stmt_execute(det_Stmt_DetfieldDelete))
+		return 0;
 
 	return 1;
 }

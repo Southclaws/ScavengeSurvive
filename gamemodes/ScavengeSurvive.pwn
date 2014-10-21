@@ -675,12 +675,10 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 	new
 		query[96],
 		DBResult:result,
-		sql_string[256],
 		dbcolumns;
 
 	format(query, sizeof(query), "pragma table_info(%s)", tablename);
 	result = db_query(database, query);
-	db_get_field(result, 0, sql_string, sizeof(sql_string));
 
 	dbcolumns = db_num_rows(result);
 
@@ -688,7 +686,6 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 	{
 		printf("ERROR: Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
 		print("Please verify table structure against column list in script.");
-		print(sql_string);
 
 		// Put the server into a loop to stop it so the user can read the message.
 		// It won't function correctly with bad databases anyway.
