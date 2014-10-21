@@ -4,8 +4,6 @@
 #define MAX_DETFIELD				(128)
 #define MAX_DETFIELD_NAME			(64)
 #define MAX_DETFIELD_EXCEPTIONS		(32)
-#define MAX_DETFIELD_PAGESIZE		(20)
-#define MAX_DETFIELD_LOG_PAGESIZE	(32)
 
 /*
 	Schema:
@@ -30,14 +28,14 @@
 
 enum
 {
-	FIELD_ID_DETFIELD_NAME,
-	FIELD_ID_DETFIELD_VERT1,
-	FIELD_ID_DETFIELD_VERT2,
-	FIELD_ID_DETFIELD_VERT3,
-	FIELD_ID_DETFIELD_VERT4,
-	FIELD_ID_DETFIELD_Z1,
-	FIELD_ID_DETFIELD_Z2,
-	FIELD_ID_DETFIELD_EXCEPTIONS
+			FIELD_ID_DETFIELD_NAME,
+			FIELD_ID_DETFIELD_VERT1,
+			FIELD_ID_DETFIELD_VERT2,
+			FIELD_ID_DETFIELD_VERT3,
+			FIELD_ID_DETFIELD_VERT4,
+			FIELD_ID_DETFIELD_Z1,
+			FIELD_ID_DETFIELD_Z2,
+			FIELD_ID_DETFIELD_EXCEPTIONS
 }
 
 #define DETFIELD_TABLE_LOGS			"field_logs"
@@ -48,10 +46,20 @@ enum
 
 enum
 {
-	FIELD_ID_DETLOG_FIELD,
-	FIELD_ID_DETLOG_NAME,
-	FIELD_ID_DETLOG_POS,
-	FIELD_ID_DETLOG_DATE
+			FIELD_ID_DETLOG_FIELD,
+			FIELD_ID_DETLOG_NAME,
+			FIELD_ID_DETLOG_POS,
+			FIELD_ID_DETLOG_DATE
+}
+
+enum E_DETLOG_BUFFER_DATA
+{
+			DETLOG_BUFFER_ROW_ID,
+			DETLOG_BUFFER_NAME[MAX_DETFIELD_NAME],
+Float:		DETLOG_BUFFER_POS_X,
+Float:		DETLOG_BUFFER_POS_Y,
+Float:		DETLOG_BUFFER_POS_Z,
+			DETLOG_BUFFER_DATE
 }
 
 
@@ -120,7 +128,7 @@ hook OnScriptInit()
 	det_Stmt_DetfieldLoad			= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_MAIN"");
 	det_Stmt_DetfieldLogEntry		= db_prepare(det_Database, "INSERT INTO "DETFIELD_TABLE_LOGS" VALUES(?, ?, ?, ?)");
 	det_Stmt_DetfieldLogEntryCount	= db_prepare(det_Database, "SELECT COUNT(*) FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ?");
-	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT * FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
+	det_Stmt_DetfieldLogList		= db_prepare(det_Database, "SELECT rowid, "FIELD_DETLOG_NAME", "FIELD_DETLOG_POS", "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? ORDER BY "FIELD_DETLOG_DATE" DESC LIMIT ? OFFSET ? COLLATE NOCASE");
 	det_Stmt_DetfieldLogGetName		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_NAME" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogGetPos		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_POS" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
 	det_Stmt_DetfieldLogGetTime		= db_prepare(det_Database, "SELECT "FIELD_DETLOG_DATE" FROM "DETFIELD_TABLE_LOGS" WHERE "FIELD_DETLOG_DETFIELD" = ? AND rowid = ?");
@@ -410,31 +418,44 @@ stock GetDetectionFieldNameLog(name[], string[], limit, offset, len = sizeof(str
 	return count;
 }
 
-stock GetDetectionFieldLog(detfieldid, output[], limit, offset)
+stock GetDetectionFieldLogBuffer(detfieldid, output[][E_DETLOG_BUFFER_DATA], limit, offset)
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
 	new
-		line[MAX_PLAYER_NAME + 18 + 2],
+		rowid,
 		name[MAX_PLAYER_NAME],
+		pos[32],
 		timestamp,
+		Float:x,
+		Float:y,
+		Float:z,
 		count;
 
 	stmt_bind_value(det_Stmt_DetfieldLogList, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
 	stmt_bind_value(det_Stmt_DetfieldLogList, 1, DB::TYPE_INTEGER, limit);
 	stmt_bind_value(det_Stmt_DetfieldLogList, 2, DB::TYPE_INTEGER, offset);
 
-	stmt_bind_result_field(det_Stmt_DetfieldLogList, FIELD_ID_DETLOG_NAME, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(det_Stmt_DetfieldLogList, FIELD_ID_DETLOG_DATE, DB::TYPE_INTEGER, timestamp);
+	stmt_bind_result_field(det_Stmt_DetfieldLogList, 0, DB::TYPE_INTEGER, rowid);
+	stmt_bind_result_field(det_Stmt_DetfieldLogList, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_result_field(det_Stmt_DetfieldLogList, 2, DB::TYPE_STRING, pos, sizeof(pos));
+	stmt_bind_result_field(det_Stmt_DetfieldLogList, 3, DB::TYPE_INTEGER, timestamp);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogList))
 		return -1;
 
 	while(stmt_fetch_row(det_Stmt_DetfieldLogList))
 	{
-		format(line, sizeof(line), "%s %s\n", name, TimestampToDateTime(timestamp, "%d/%m/%y %X"));
-		strcat(output, line, MAX_DETFIELD_LOG_PAGESIZE * sizeof(line));
+		sscanf(pos, "fff", x, y, z);
+
+		output[count][DETLOG_BUFFER_ROW_ID] = rowid;
+		output[count][DETLOG_BUFFER_NAME][0] = EOS;
+		strcpy(output[count][DETLOG_BUFFER_NAME], name, MAX_PLAYER_NAME);
+		output[count][DETLOG_BUFFER_POS_X] = x;
+		output[count][DETLOG_BUFFER_POS_Y] = y;
+		output[count][DETLOG_BUFFER_POS_Z] = z;
+		output[count][DETLOG_BUFFER_DATE] = timestamp;
 		count++;
 	}
 
@@ -650,8 +671,8 @@ stock DeleteDetectionFieldLogEntry(detfieldid, logentry)
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
-	stmt_bind_value(det_Stmt_DetfieldLogDelete, 0, DB::TYPE_INTEGER, logentry);
-	stmt_bind_value(det_Stmt_DetfieldLogDelete, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDelete, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDelete, 1, DB::TYPE_INTEGER, logentry);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogDelete))
 		return 0;
@@ -659,13 +680,13 @@ stock DeleteDetectionFieldLogEntry(detfieldid, logentry)
 	return 1;
 }
 
-stock DeleteDetectionFieldLogsOfName(detfieldid, name[MAX_PLAYER_NAME])
+stock DeleteDetectionFieldLogsOfName(detfieldid, name[])
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
 
-	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 1, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 0, DB::TYPE_STRING, det_Name[detfieldid], MAX_DETFIELD_NAME);
+	stmt_bind_value(det_Stmt_DetfieldLogDeleteN, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(det_Stmt_DetfieldLogDeleteN))
 		return 0;

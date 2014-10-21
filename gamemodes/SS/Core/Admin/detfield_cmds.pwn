@@ -1,6 +1,10 @@
 #include <YSI\y_hooks>
 
 
+#define MAX_DETFIELD_PAGESIZE		(20)
+#define MAX_DETFIELD_LOG_PAGESIZE	(32)
+
+
 // dfm = detection field management
 
 enum
@@ -26,6 +30,7 @@ static
 		dfm_PageIndex		[MAX_PLAYERS],
 		// Log list
 		dfm_LogIndex		[MAX_PLAYERS],
+		dfm_LogBuffer		[MAX_PLAYERS][MAX_DETFIELD_LOG_PAGESIZE][E_DETLOG_BUFFER_DATA],
 		// Adding
 bool:	dfm_Editing			[MAX_PLAYERS],
 		dfm_Name			[MAX_PLAYERS][MAX_DETFIELD_NAME],
@@ -571,9 +576,21 @@ ShowDetfieldLog(playerid, detfieldid)
 		count,
 		total;
 
-	count = GetDetectionFieldLog(detfieldid, list, MAX_DETFIELD_LOG_PAGESIZE, dfm_LogIndex[playerid]);
+	count = GetDetectionFieldLogBuffer(detfieldid, dfm_LogBuffer[playerid], MAX_DETFIELD_LOG_PAGESIZE, dfm_LogIndex[playerid]);
 	GetDetectionFieldName(detfieldid, name);
 	total = GetDetectionFieldLogEntries(detfieldid);
+
+	for(new i; i < count; i++)
+	{
+		format(list, sizeof(list), "%s%06d:%s %s (%.1f,%.1f,%.1f)\n",
+			list,
+			dfm_LogBuffer[playerid][i][DETLOG_BUFFER_ROW_ID],
+			TimestampToDateTime(dfm_LogBuffer[playerid][i][DETLOG_BUFFER_DATE], "%d/%m/%y %X"),
+			dfm_LogBuffer[playerid][i][DETLOG_BUFFER_NAME],
+			dfm_LogBuffer[playerid][i][DETLOG_BUFFER_POS_X],
+			dfm_LogBuffer[playerid][i][DETLOG_BUFFER_POS_Y],
+			dfm_LogBuffer[playerid][i][DETLOG_BUFFER_POS_Z]);
+	}
 
 	format(title, sizeof(title), "%s (%d-%d of %d)", name, dfm_LogIndex[playerid], dfm_LogIndex[playerid] + count, total);
 
@@ -591,7 +608,7 @@ ShowDetfieldLog(playerid, detfieldid)
 
 		if(response)
 		{
-			ShowDetfieldLogOptions(playerid, detfieldid, dfm_LogIndex[playerid] + listitem + 1);
+			ShowDetfieldLogOptions(playerid, detfieldid, listitem);
 		}
 		else
 		{
@@ -629,13 +646,10 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 				{
 					if(IsPlayerOnAdminDuty(playerid))
 					{
-						new
-							Float:x,
-							Float:y,
-							Float:z;
-
-						GetDetectionFieldLogEntryPos(detfieldid, logentry, x, y, z);
-						SetPlayerPos(playerid, x, y, z);
+						SetPlayerPos(playerid,
+							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_X],
+							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Y],
+							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Z]);
 					}
 					else
 					{
@@ -645,18 +659,14 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 
 				case 1:
 				{
-					// DeleteDetectionFieldLogEntry(detfieldid, logentry);
-					Msg(playerid, YELLOW, " >  That feature is currently unavailable.");
+					DeleteDetectionFieldLogEntry(detfieldid, dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_ROW_ID]);
 
 					ShowDetfieldLog(playerid, detfieldid);
 				}
 
 				case 2:
 				{
-					// new logname[MAX_PLAYER_NAME];
-					// GetDetectionFieldLogEntryName(detfieldid, logentry, logname);
-					// DeleteDetectionFieldLogsOfName(detfieldid, logname);
-					Msg(playerid, YELLOW, " >  That feature is currently unavailable.");
+					DeleteDetectionFieldLogsOfName(detfieldid, dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_NAME]);
 
 					ShowDetfieldLog(playerid, detfieldid);
 				}
