@@ -81,6 +81,7 @@ DBStatement:	stmt_AccountSetActiveState,
 DBStatement:	stmt_AccountGetAliasData;
 	
 
+forward OnPlayerLoadAccount(playerid);
 forward OnPlayerLogin(playerid);
 
 
@@ -161,6 +162,9 @@ hook OnGameModeInit()
 
 LoadAccount(playerid)
 {
+	if(CallLocalFunction("OnPlayerLoadAccount", "d", playerid))
+		return -1;
+
 	new
 		name[MAX_PLAYER_NAME],
 		exists,

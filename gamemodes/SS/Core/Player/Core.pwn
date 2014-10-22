@@ -158,6 +158,12 @@ timer LoadAccountDelay[5000](playerid)
 {
 	new loadresult = LoadAccount(playerid);
 
+	if(loadresult == -1) // LoadAccount aborted, kick player.
+	{
+		KickPlayer(playerid, "Account load failed");
+		return;
+	}
+
 	if(loadresult == 0) // Account does not exist
 	{
 		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
@@ -194,6 +200,8 @@ timer LoadAccountDelay[5000](playerid)
 	}
 
 	CheckForExtraAccounts(playerid);
+
+	return;
 }
 
 ResetVariables(playerid)
