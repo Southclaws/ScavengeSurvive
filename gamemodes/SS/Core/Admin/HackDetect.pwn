@@ -906,6 +906,28 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				return 0;
 			}
 		}
+
+		case 22, 26, 28, 32, 34, 38:
+		{
+			// Do nothing
+		}
+
+		default:
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, x, y, z);
+
+			ReportPlayer(name, sprintf("Shot invalid weapon ID (%d)", weaponid), -1, REPORT_TYPE_BAD_SHOT_WEAP, x, y, z, "");
+			Kick(playerid);
+
+			return 0;
+		}
 	}
 
 	#if defined ac_OnPlayerWeaponShot

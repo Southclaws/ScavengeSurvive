@@ -300,7 +300,6 @@ public IRC_OnConnect(botid, ip[], port)
 
 	printf("[IRC] IRC_OnConnect: Bot ID %d connected to %s:%d", botid, ip, port);
 
-	IRC_SendRaw(botid, sprintf("ns register %s %s", irc_BotPass, irc_BotMail));
 	IRC_SendRaw(botid, sprintf("ns identify %s", irc_BotPass));
 
 	IRC_JoinChannel(botid, irc_ChatChan, irc_ChatPass);

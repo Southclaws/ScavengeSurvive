@@ -268,6 +268,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define REPORT_TYPE_AMMO			"AMMO"
 #define REPORT_TYPE_SHOTANIM		"ANIM"
 #define REPORT_TYPE_BADHITOFFSET	"BHIT"
+#define REPORT_TYPE_BAD_SHOT_WEAP	"BSHT"
 
 
 // Genders
