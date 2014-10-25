@@ -137,6 +137,9 @@ _vint_EnterArea(playerid, areaid)
 	if(IsPlayerInAnyVehicle(playerid))
 		return;
 
+	if(Iter_Count(varea_NearIndex[playerid]) == MAX_VEHICLES_IN_RANGE)
+		return;
+
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
@@ -247,7 +250,7 @@ _varea_Interact(playerid)
 
 	for(new i = index - 1; i >= 0; i--)
 	{
-		if(_varea_InteractSpecific(playerid, list[i][E_VEHICLE_AREA_VEHICLEID]))
+		if(!_varea_InteractSpecific(playerid, list[i][E_VEHICLE_AREA_VEHICLEID]))
 			break;
 	}
 
@@ -272,7 +275,7 @@ _varea_InteractSpecific(playerid, vehicleid)
 	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
 
 	if(!( (vz - 1.0) < pz < (vz + 2.0) ))
-		return 1;
+		return 0;
 
 	if(CallLocalFunction("OnPlayerInteractVehicle", "ddf", playerid, vehicleid, angle))
 		return 0;
@@ -294,8 +297,7 @@ _varea_SortPlayerVehicleList(array[][e_vehicle_range_data], left, right)
 		tmp_left = left,
 		tmp_right = right,
 		Float:pivot = array[(left + right) / 2][E_VEHICLE_AREA_DISTANCE],
-		vehicleid,
-		Float:distance;
+		tmp[e_vehicle_range_data];
 
 	while(tmp_left <= tmp_right)
 	{
@@ -307,13 +309,9 @@ _varea_SortPlayerVehicleList(array[][e_vehicle_range_data], left, right)
 
 		if(tmp_left <= tmp_right)
 		{
-			vehicleid = array[tmp_left][E_VEHICLE_AREA_VEHICLEID];
-			array[tmp_left][E_VEHICLE_AREA_VEHICLEID] = array[tmp_right][E_VEHICLE_AREA_VEHICLEID];
-			array[tmp_right][E_VEHICLE_AREA_VEHICLEID] = vehicleid;
-
-			distance = array[tmp_left][E_VEHICLE_AREA_DISTANCE];
-			array[tmp_left][E_VEHICLE_AREA_DISTANCE] = array[tmp_right][E_VEHICLE_AREA_DISTANCE];
-			array[tmp_right][E_VEHICLE_AREA_DISTANCE] = distance;
+			tmp = array[tmp_left];
+			array[tmp_left] = array[tmp_right];
+			array[tmp_right] = tmp;
 
 			tmp_left++;
 			tmp_right--;
