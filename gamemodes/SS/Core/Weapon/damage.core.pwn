@@ -351,7 +351,9 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		wnd_timestamp
 */
 
-	new idx = 1;
+	new
+		idx = 1,
+		sourcelen;
 
 	output[0] = Iter_Count(wnd_Index[playerid]);
 
@@ -365,8 +367,14 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		output[idx++] = wnd_Data[playerid][i][wnd_calibre];
 		output[idx++] = wnd_Data[playerid][i][wnd_timestamp];
 		output[idx++] = wnd_Data[playerid][i][wnd_bodypart];
-		output[idx++] = strlen(wnd_Data[playerid][i][wnd_source]);
-		memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
+		sourcelen = strlen(wnd_Data[playerid][i][wnd_source]);
+		output[idx++] = sourcelen;
+		//memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
+		// alternative version, memcpy seems to be causing stack issues:
+		for(new j; j < sourcelen; j++)
+			output[idx++] = wnd_Data[playerid][i][wnd_source][j];
+
+		output[idx++] = EOS;
 	}
 
 	return idx;
@@ -408,8 +416,14 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		wnd_Data[playerid][id][wnd_timestamp] = input[i++];
 		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
 		sourcelen = input[i++]; // source string length
-		memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
-		i += sourcelen; // jump over the string
+
+		// memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
+		// i += sourcelen; // jump over the string
+		// alternative version, memcpy seems to be causing stack issues:
+		for(new k; k < sourcelen; k++)
+			wnd_Data[playerid][id][wnd_source][k] = input[i++];
+
+		wnd_Data[playerid][id][wnd_source][sourcelen] = EOS;
 
 		Iter_Add(wnd_Index[playerid], id);
 
