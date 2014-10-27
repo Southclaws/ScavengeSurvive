@@ -297,6 +297,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 new
 bool:	gServerInitialising = true,
+		gServerInitialiseTick,
 bool:	gServerRestarting = false,
 		gServerMaxUptime,
 		gServerUptime;
@@ -561,6 +562,7 @@ main()
 	}
 
 	gServerInitialising = false;
+	gServerInitialiseTick = GetTickCount();
 }
 
 /*
