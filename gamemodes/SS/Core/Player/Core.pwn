@@ -156,6 +156,12 @@ public OnPlayerDisconnect(playerid, reason)
 
 timer LoadAccountDelay[5000](playerid)
 {
+	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
+	{
+		defer LoadAccountDelay(playerid);
+		return;
+	}
+
 	new loadresult = LoadAccount(playerid);
 
 	if(loadresult == -1) // LoadAccount aborted, kick player.
