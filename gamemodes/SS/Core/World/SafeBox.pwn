@@ -31,7 +31,7 @@ static
 Timer:		box_PickUpTimer[MAX_PLAYERS];
 
 static
-			box_ItemList[ITM_LST_OF_ITEMS(10)];
+			box_ItemList[ITM_LST_OF_ITEMS(12)];
 
 // Settings: Prefixed camel case here and dashed in settings.json
 static
@@ -533,7 +533,7 @@ SaveSafeboxItem(itemid, printeach)
 		printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
 
 	new
-		items[10],
+		items[12],
 		itemcount,
 		itemlist;
 

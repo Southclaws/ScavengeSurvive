@@ -369,16 +369,54 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		output[idx++] = wnd_Data[playerid][i][wnd_bodypart];
 		sourcelen = strlen(wnd_Data[playerid][i][wnd_source]);
 		output[idx++] = sourcelen;
-		//memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
-		// alternative version, memcpy seems to be causing stack issues:
-		for(new j; j < sourcelen; j++)
-			output[idx++] = wnd_Data[playerid][i][wnd_source][j];
 
-		output[idx++] = EOS;
+		if(sourcelen > 32)
+		{
+			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d > 32, truncating.", sourcelen);
+			sourcelen = 31;
+		}
+		else if(sourcelen > 0)
+		{
+			//memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
+			// alternative version, memcpy seems to be causing stack issues:
+			for(new j; j < sourcelen; j++)
+				output[idx++] = wnd_Data[playerid][i][wnd_source][j];
+
+			output[idx++] = EOS;
+		}
+		else
+		{
+			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d <= 0, truncating.", sourcelen);
+			output[idx++] = EOS;
+		}
 	}
 
 	return idx;
 }
+
+// called 3 times, why?
+// [28/10/2014 23:26:09] INFO: [OnPlayerDisconnect] Removing session data file for VIRUXE
+// [28/10/2014 23:26:09] [LOGOUT] VIRUXE logged out at 0.0, 0.0, 3.1 (0.0) Alive: 16 combat logging: 0 knocked out: 2 logged in: 175645056
+// [28/10/2014 23:26:09] [part] VIRUXE has left the server (0:1)
+// [28/10/2014 23:26:09] $ [SSAC]: [_ACDisconnect] ac_Auto:1 ac_Active:0
+// [28/10/2014 23:26:09] $ [SSAC]: [_ACDisconnect] Admins online: 0
+// [28/10/2014 23:26:09] $ [SSAC]: Enabling AC
+// [28/10/2014 23:28:24] Incoming connection: 78.84.224.249:1087
+// [28/10/2014 23:28:24] [join] [RCM]Kaija has joined the server (0:78.84.224.249)
+// [28/10/2014 23:28:24] INFO: [RemoveObjects_FirstLoad] Created session data for [RCM]Kaija
+// [28/10/2014 23:28:24] [JOIN] [RCM]Kaija joined
+// [28/10/2014 23:28:30] $ [tutorial]: [OnPlayerLoadAccount]
+// [28/10/2014 23:28:30] $ [SSAC]: Player 0 connected, running AC buffer checks.
+// [28/10/2014 23:28:30] $ [SSAC]: AC Whitelist binding active, player without AC is in whitelist.
+// [28/10/2014 23:28:30] [LOGIN] [RCM]Kaija logged in
+// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
+// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
+// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
+// [28/10/2014 23:28:30] [SPAWN] [RCM]Kaija spawned existing character at 1352.9, 2595.7, 10.8 (221.3)
+// [28/10/2014 23:28:30] $ [SSAC]: [OnPlayerLogin] ac_Auto:1 ac_Active:1
+// [28/10/2014 23:28:30] $ [SSAC]: [OnPlayerLogin] Admins online: 1
+// [28/10/2014 23:28:30] $ [SSAC]: Disabling AC
+// [28/10/2014 23:28:37] [COMMAND] [[RCM]Kaija]: /issues
 
 stock SetPlayerWoundDataFromArray(playerid, input[])
 {
@@ -417,13 +455,26 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
 		sourcelen = input[i++]; // source string length
 
-		// memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
-		// i += sourcelen; // jump over the string
-		// alternative version, memcpy seems to be causing stack issues:
-		for(new k; k < sourcelen; k++)
-			wnd_Data[playerid][id][wnd_source][k] = input[i++];
+		if(sourcelen > 32)
+		{
+			printf("[SetPlayerWoundDataFromArray] ERROR: sourcelen:%d > 32, truncating.", sourcelen);
+			sourcelen = 31;
+		}
+		else if(sourcelen > 0)
+		{
+			// memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
+			// i += sourcelen; // jump over the string
+			// alternative version, memcpy seems to be causing stack issues:
+			for(new k; k < sourcelen; k++)
+				wnd_Data[playerid][id][wnd_source][k] = input[i++];
 
-		wnd_Data[playerid][id][wnd_source][sourcelen] = EOS;
+			wnd_Data[playerid][id][wnd_source][sourcelen] = EOS;
+		}
+		else
+		{
+			printf("[SetPlayerWoundDataFromArray] ERROR: sourcelen:%d <= 0, truncating.", sourcelen);
+			wnd_Data[playerid][id][wnd_source][0] = EOS;
+		}
 
 		Iter_Add(wnd_Index[playerid], id);
 

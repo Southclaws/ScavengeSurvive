@@ -233,7 +233,7 @@ _varea_Interact(playerid)
 
 	foreach(new i : varea_NearIndex[playerid])
 	{
-		if(index >= MAX_VEHICLES_IN_RANGE)
+		if(index >= MAX_VEHICLES_IN_RANGE - 1)
 			break;
 
 		vehicleid = varea_NearList[playerid][i];
