@@ -88,7 +88,6 @@ PlayerSpawnExistingCharacter(playerid)
 	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
-	SetPlayerBitFlag(playerid, LoadedData, true);
 
 	SetPlayerGender(playerid, GetClothesGender(GetPlayerClothes(playerid)));
 
@@ -143,8 +142,6 @@ PlayerCreateNewCharacter(playerid)
 		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
-
-	SetPlayerBitFlag(playerid, LoadedData, true);
 
 	CallLocalFunction("OnPlayerCreateNewCharacter", "d", playerid);
 }
@@ -252,7 +249,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 			AddItemToContainer(containerid, tmpitem);
 		}
 
-		if(GetPlayerBitFlag(playerid, IsNewPlayer))
+		if(IsNewPlayer(playerid))
 		{
 			for(new i; i < 4; i++)
 			{

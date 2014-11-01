@@ -86,7 +86,7 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-hook OnPlayerDisconnect(playerid)
+hook OnPlayerDisconnected(playerid)
 {
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;

@@ -9,6 +9,7 @@
 
 
 static
+	saveload_Loaded[MAX_PLAYERS],
 	saveload_Debug[MAX_PLAYERS] = {SAVELOAD_DEBUG, ...},
 	saveload_ItemList[ITM_LST_OF_ITEMS(14)];
 
@@ -56,6 +57,11 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'SaveLoad'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
+}
+
+hook OnPlayerConnect(playerid)
+{
+	saveload_Loaded[playerid] = false;
 }
 
 SavePlayerChar(playerid)
@@ -490,6 +496,8 @@ LoadPlayerChar(playerid)
 
 	CallLocalFunction("OnPlayerLoad", "ds", playerid, filename);
 
+	saveload_Loaded[playerid] = true;
+
 	return 1;
 }
 
@@ -745,4 +753,12 @@ ACMD:iodebug[4](playerid, params[])
 	MsgF(playerid, YELLOW, " >  Saveload debug set to %d for %p.", level, targetid);
 
 	return 1;
+}
+
+stock IsPlayerDataLoaded(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return saveload_Loaded[playerid];
 }

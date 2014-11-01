@@ -8,12 +8,7 @@
 
 enum E_FLAGS:(<<= 1) // 17
 {
-		HasAccount = 1,
-		LoggedIn,
-		LoadedData,
-		IsNewPlayer,
-
-		Alive,
+		Alive = 1,
 		Dying,
 		Spawned,
 		FirstSpawn, // TODO: fix this value
@@ -151,6 +146,8 @@ public OnPlayerDisconnect(playerid, reason)
 		}
 	}
 
+	SetTimerEx("OnPlayerDisconnected", 100, false, "dd", playerid, reason);
+
 	return 1;
 }
 
@@ -172,7 +169,6 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(loadresult == 0) // Account does not exist
 	{
-		t:ply_Data[playerid][ply_BitFlags]<IsNewPlayer>;
 		DisplayRegisterPrompt(playerid);
 
 		log(sprintf("[LOAD] %p (account does not exist)", playerid), 0);
@@ -624,26 +620,6 @@ stock SetPlayerBitFlag(playerid, E_FLAGS:flag, toggle)
 
 	return 1;
 }
-
-// HasAccount
-stock IsPlayerRegistered(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & HasAccount);
-}
-// LoggedIn
-stock IsPlayerLoggedIn(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & LoggedIn);
-}
-
-// LoadedData
-// IsNewPlayer
 
 // Alive
 stock IsPlayerAlive(playerid)

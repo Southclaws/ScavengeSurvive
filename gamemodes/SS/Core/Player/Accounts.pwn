@@ -35,7 +35,11 @@ enum
 
 
 static
-				LoginPasswordAttempts[MAX_PLAYERS],
+				acc_LoginAttempts[MAX_PLAYERS],
+				acc_IsNewPlayer[MAX_PLAYERS],
+				acc_HasAccount[MAX_PLAYERS],
+				acc_LoggedIn[MAX_PLAYERS],
+
 // ACCOUNTS_TABLE_PLAYER
 DBStatement:	stmt_AccountExists,
 DBStatement:	stmt_AccountCreate,
@@ -152,6 +156,14 @@ hook OnGameModeInit()
 	stmt_AccountGetAliasData	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_IPV4", "FIELD_PLAYER_PASS", "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? AND "FIELD_PLAYER_ACTIVE" COLLATE NOCASE");
 }
 
+hook OnPlayerConnect(playerid)
+{
+	acc_LoginAttempts[playerid] = 0;
+	acc_IsNewPlayer[playerid] = false;
+	acc_HasAccount[playerid] = false;
+	acc_LoggedIn[playerid] = false;
+}
+
 
 /*==============================================================================
 
@@ -232,8 +244,8 @@ LoadAccount(playerid)
 	}
 
 	SetPlayerBitFlag(playerid, Alive, alive);
-	SetPlayerBitFlag(playerid, HasAccount, true);
-	SetPlayerBitFlag(playerid, IsNewPlayer, false);
+	acc_HasAccount[playerid] = true;
+	acc_IsNewPlayer[playerid] = true;
 
 	SetPlayerPassHash(playerid, password);
 	SetPlayerRegTimestamp(playerid, regdate);
@@ -292,8 +304,8 @@ CreateAccount(playerid, password[])
 	if(GetPlayerAdminLevel(playerid) > 0)
 		MsgF(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
 
-	SetPlayerBitFlag(playerid, LoggedIn, true);
-	SetPlayerBitFlag(playerid, HasAccount, true);
+	acc_LoggedIn[playerid] = true;
+	acc_HasAccount[playerid] = true;
 	SetPlayerBitFlag(playerid, ToolTips, true);
 
 	PlayerCreateNewCharacter(playerid);
@@ -346,7 +358,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 	new str[128];
 
 	if(badpass)
-		format(str, 128, "Incorrect password! %d out of 5 tries", LoginPasswordAttempts[playerid]);
+		format(str, 128, "Incorrect password! %d out of 5 tries", acc_LoginAttempts[playerid]);
 
 	else
 		format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
@@ -378,9 +390,9 @@ DisplayLoginPrompt(playerid, badpass = 0)
 			}
 			else
 			{
-				LoginPasswordAttempts[playerid]++;
+				acc_LoginAttempts[playerid]++;
 
-				if(LoginPasswordAttempts[playerid] < 5)
+				if(acc_LoginAttempts[playerid] < 5)
 				{
 					DisplayLoginPrompt(playerid);
 				}
@@ -449,8 +461,8 @@ Login(playerid)
 			MsgF(playerid, YELLOW, " >  %d issues, type "C_BLUE"/issues "C_YELLOW"to view.", issues);
 	}
 
-	SetPlayerBitFlag(playerid, LoggedIn, true);
-	LoginPasswordAttempts[playerid] = 0;
+	acc_LoggedIn[playerid] = true;
+	acc_LoginAttempts[playerid] = 0;
 
 	SetPlayerRadioFrequency(playerid, 107.0);
 	SetPlayerScreenFadeLevel(playerid, 255);
@@ -479,13 +491,19 @@ Logout(playerid, docombatlogcheck = 1)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Alive: %d combat logging: %d knocked out: %d logged in: %d", playerid, x, y, z, r, IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid), GetPlayerBitFlag(playerid, LoggedIn));
+	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Alive: %d combat logging: %d knocked out: %d logged in: %d", playerid, x, y, z, r, IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid), acc_LoggedIn[playerid]);
 
-	if(!GetPlayerBitFlag(playerid, LoggedIn))
+	if(!acc_LoggedIn[playerid])
+	{
+		// logf("[LOGOUT] ERROR: Player not logged in, aborting save.");
 		return 0;
+	}
 
 	if(IsPlayerOnAdminDuty(playerid))
+	{
+		// logf("[LOGOUT] ERROR: Player on admin duty, aborting save.");
 		return 0;
+	}
 
 	if(docombatlogcheck)
 	{
@@ -571,7 +589,7 @@ SavePlayerData(playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!GetPlayerBitFlag(playerid, LoadedData))
+	if(!IsPlayerDataLoaded(playerid))
 		return 0;
 
 	new
@@ -952,4 +970,31 @@ stock GetAccountAliasData(name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
 	stmt_fetch_row(stmt_AccountGetAliasData);
 
 	return 1;
+}
+
+// acc_IsNewPlayer
+stock IsNewPlayer(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return acc_IsNewPlayer[playerid];
+}
+
+// acc_HasAccount
+stock IsPlayerRegistered(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return acc_HasAccount[playerid];
+}
+
+// acc_LoggedIn
+stock IsPlayerLoggedIn(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return acc_LoggedIn[playerid];
 }
