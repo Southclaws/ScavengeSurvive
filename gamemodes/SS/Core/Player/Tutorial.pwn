@@ -1,29 +1,210 @@
+#include <YSI\y_hooks>
+
+
+/*
+	Spawn in
+
+	Items:
+		pick up bag and use to wear
+		play inventory tutorial
+		spawn a weapon
+		pick up
+		holster, unholster
+		spawn ammo
+		load ammo
+		unload ammo
+		spawn ammo of different type and load
+		spawn same ammo, pick up
+		explain extratext meanings (ammo type, calibre etc)
+		shoot and reload
+
+	Vehicles:
+		enter vehicle and exit
+		explain saving vehicles
+		get wrench from trunk
+		fix vehicle, explain more tools
+		get petrol can from trunk
+		fill petrol can
+		fill vehicle
+		enter vehicle
+		explain UI and keys
+		exit vehicle
+		spawn locksmith kit
+		apply to vehicle
+
+	Construction:
+		spawn defence
+		spawn screwdriver
+		explain building defences
+		spawn crowbar
+		explain removing defences
+		spawn timed IED (repeatedly)
+		explain destroying defences
+
+	Storage:
+		spawn tent pack
+		spawn hammer
+		explain building tents
+		spawn boxes
+		add item to box
+		explain storage
+
+*/
+
+
+#define TUTORIAL_WORLD	(90)
+
+
 static
-	TutorialState[MAX_PLAYERS];
+PlayerText:	ClassButtonTutorial[MAX_PLAYERS],
+			ExitButton,
+			TutorialState[MAX_PLAYERS];
 
-Tutorial_Start(playerid)
+
+static
+			HANDLER = -1;
+
+
+hook OnGameModeInit()
 {
-	ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.~n~~n~~w~/skip to close the tutorial.");
+	// Static objects
+	CreateDynamicObject(17037, -1547.99207, -2725.40356, 49.66700,   0.00000, 0.00000, 55.68000, TUTORIAL_WORLD);
 
-	TutorialState[playerid] = 1;
+	ExitButton = CreateButton(-1623.7362, -2693.3596, 48.6953, "Leave tutorial", TUTORIAL_WORLD, 0, 1.0, 1, "Leave tutorial");
+
+	HANDLER = debug_register_handler("tutorial", 5);
 }
 
-Tutorial_End(playerid)
+public OnPlayerLoadAccount(playerid)
 {
-	HideHelpTip(playerid);
-	TutorialState[playerid] = 0;
-}
+	d:1:HANDLER("[OnPlayerLoadAccount]");
 
-CMD:tutorial(playerid, params[])
-{
-	Tutorial_Start(playerid);
-	return 1;
+	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 260.000000, "~n~Play Tutorial~n~~n~");
+	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, ClassButtonTutorial[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassButtonTutorial[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassButtonTutorial[playerid], 0.25, 1.000000);
+	PlayerTextDrawColor				(playerid, ClassButtonTutorial[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassButtonTutorial[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonTutorial[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassButtonTutorial[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonTutorial[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassButtonTutorial[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 300.000000, 100.000000);
+	PlayerTextDrawSetSelectable		(playerid, ClassButtonTutorial[playerid], true);
+
+	#if defined tut_OnPlayerLoadAccount
+		return tut_OnPlayerLoadAccount(playerid);
+	#else
+		return 1;
+	#endif
 }
-CMD:skip(playerid, params[])
+#if defined _ALS_OnPlayerLoadAccount
+	#undef OnPlayerLoadAccount
+#else
+	#define _ALS_OnPlayerLoadAccount
+#endif
+#define OnPlayerLoadAccount tut_OnPlayerLoadAccount
+#if defined tut_OnPlayerLoadAccount
+	forward tut_OnPlayerLoadAccount(playerid);
+#endif
+
+public OnPlayerCreateNewCharacter(playerid)
 {
-	ShowHelpTip(playerid, "Tutorial skipped, you can start it at any time by typing /tutorial.", 5000);
-	TutorialState[playerid] = 0;
-	return 1;
+	d:1:HANDLER("[OnPlayerCreateNewCharacter]");
+
+	// PlayerTextDrawShow(playerid, ClassButtonTutorial[playerid]);
+
+	#if defined tut_OnPlayerCreateNewCharacter
+		return tut_OnPlayerCreateNewCharacter(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerCreateNewCharacter
+	#undef OnPlayerCreateNewCharacter
+#else
+	#define _ALS_OnPlayerCreateNewCharacter
+#endif
+ 
+#define OnPlayerCreateNewCharacter tut_OnPlayerCreateNewCharacter
+#if defined tut_OnPlayerCreateNewCharacter
+	forward tut_OnPlayerCreateNewCharacter(playerid);
+#endif
+
+public OnButtonPress(playerid, buttonid)
+{
+	d:1:HANDLER("[OnButtonPress]");
+
+	if(buttonid == ExitButton)
+		SetPlayerHP(playerid, 0.0);
+
+	#if defined tut_OnButtonPress
+		return tut_OnButtonPress(playerid, buttonid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnButtonPress
+	#undef OnButtonPress
+#else
+	#define _ALS_OnButtonPress
+#endif
+ 
+#define OnButtonPress tut_OnButtonPress
+#if defined tut_OnButtonPress
+	forward tut_OnButtonPress(playerid, buttonid);
+#endif
+
+hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+{
+	d:1:HANDLER("[OnPlayerClickPlayerTextDraw]");
+	if(playertextid == ClassButtonTutorial[playerid])
+	{
+		SetPlayerPos(playerid, -1642.1008, -2705.5376, 48.9919);
+		SetPlayerFacingAngle(playerid, 250.0);
+		SetPlayerVirtualWorld(playerid, TUTORIAL_WORLD);
+
+		switch(random(14))
+		{
+			case 0: SetPlayerClothesID(playerid, skin_MainM);
+			case 1: SetPlayerClothesID(playerid, skin_Civ1M);
+			case 2: SetPlayerClothesID(playerid, skin_Civ2M);
+			case 3: SetPlayerClothesID(playerid, skin_Civ3M);
+			case 4: SetPlayerClothesID(playerid, skin_Civ4M);
+			case 5: SetPlayerClothesID(playerid, skin_MechM);
+			case 6: SetPlayerClothesID(playerid, skin_BikeM);
+			case 7: SetPlayerClothesID(playerid, skin_MainF);
+			case 8: SetPlayerClothesID(playerid, skin_Civ1F);
+			case 9: SetPlayerClothesID(playerid, skin_Civ2F);
+			case 10: SetPlayerClothesID(playerid, skin_Civ3F);
+			case 11: SetPlayerClothesID(playerid, skin_Civ4F);
+			case 12: SetPlayerClothesID(playerid, skin_ArmyF);
+			case 13: SetPlayerClothesID(playerid, skin_IndiF);
+		}
+
+		SetPlayerHP(playerid, 100.0);
+		SetPlayerAP(playerid, 0.0);
+		SetPlayerFP(playerid, 80.0);
+		SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
+		SetPlayerGender(playerid, GetClothesGender(GetPlayerClothesID(playerid)));
+		SetPlayerBleedRate(playerid, 0.0);
+
+		SetPlayerBitFlag(playerid, Alive, true);
+		SetPlayerBitFlag(playerid, Infected, false);
+
+		FreezePlayer(playerid, gLoginFreezeTime * 1000);
+		PrepareForSpawn(playerid);
+
+		PlayerTextDrawHide(playerid, ClassButtonMale[playerid]);
+		PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
+		PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
+
+		SetPlayerScreenFadeLevel(playerid, 255);
+
+		ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.");
+		TutorialState[playerid] = 1;
+	}
 }
 
 public OnPlayerOpenInventory(playerid)

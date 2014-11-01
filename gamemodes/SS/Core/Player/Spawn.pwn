@@ -8,6 +8,9 @@ ItemType:	spawn_ReSpawnItems[4][e_item_object],
 ItemType:	spawn_NewSpawnItems[4][e_item_object];
 
 
+forward OnPlayerCreateNewCharacter(playerid);
+
+
 hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Player/Spawn'...");
@@ -142,6 +145,8 @@ PlayerCreateNewCharacter(playerid)
 	}
 
 	SetPlayerBitFlag(playerid, LoadedData, true);
+
+	CallLocalFunction("OnPlayerCreateNewCharacter", "d", playerid);
 }
 
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
@@ -260,9 +265,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 			}
 		}
 	}
-
-	if(GetPlayerBitFlag(playerid, IsNewPlayer))
-		Tutorial_Start(playerid);
 
 	SetPlayerScreenFadeLevel(playerid, 255);
 

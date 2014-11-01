@@ -243,8 +243,6 @@ LoadAccount(playerid)
 	SetPlayerWarnings(playerid, warnings);
 	SetPlayerAimShoutText(playerid, aimshout);
 
-	Tutorial_End(playerid);
-
 	if(GetPlayerIpAsInt(playerid) == ipv4)
 		return 2;
 	
