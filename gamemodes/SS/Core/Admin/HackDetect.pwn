@@ -914,19 +914,22 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 
 		default:
 		{
-			new
-				name[MAX_PLAYER_NAME],
-				Float:x,
-				Float:y,
-				Float:z;
+			if(hittype == BULLET_HIT_TYPE_PLAYER)
+			{
+				new
+					name[MAX_PLAYER_NAME],
+					Float:x,
+					Float:y,
+					Float:z;
 
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-			GetPlayerPos(playerid, x, y, z);
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				GetPlayerPos(playerid, x, y, z);
 
-			ReportPlayer(name, sprintf("Shot invalid weapon ID (%d)", weaponid), -1, REPORT_TYPE_BAD_SHOT_WEAP, x, y, z, "");
-			Kick(playerid);
+				ReportPlayer(name, sprintf("Shot invalid weapon ID (%d)", weaponid), -1, REPORT_TYPE_BAD_SHOT_WEAP, x, y, z, "");
+				Kick(playerid);
 
-			return 0;
+				return 0;
+			}
 		}
 	}
 
