@@ -300,7 +300,11 @@ bool:	gServerInitialising = true,
 		gServerInitialiseTick,
 bool:	gServerRestarting = false,
 		gServerMaxUptime,
-		gServerUptime;
+		gServerUptime,
+		gGlobalDebugLevel;
+
+new stock
+		GLOBAL_DEBUG = -1;
 
 
 /*==============================================================================
@@ -592,6 +596,9 @@ OnGameModeInit_Setup()
 	LoadSettings();
 
 	SendRconCommand(sprintf("mapname %s", gMapName));
+
+	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
+	GLOBAL_DEBUG = debug_register_handler("GLOBAL", gGlobalDebugLevel);
 }
 
 public OnGameModeExit()
