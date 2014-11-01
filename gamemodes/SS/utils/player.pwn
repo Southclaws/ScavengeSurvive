@@ -8,6 +8,7 @@ stock TeleportPlayerToPlayer(playerid, targetid)
 		Float:vx,
 		Float:vy,
 		Float:vz,
+		virtualworld = GetPlayerVirtualWorld(targetid),
 		interior = GetPlayerInterior(targetid);
 
 	if(IsPlayerInAnyVehicle(targetid))
@@ -28,6 +29,9 @@ stock TeleportPlayerToPlayer(playerid, targetid)
 		py -= floatcos(-ang, degrees);
 	}
 
+	SetPlayerVirtualWorld(playerid, virtualworld);
+	SetPlayerInterior(playerid, interior);
+
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		new vehicleid = GetPlayerVehicleID(playerid);
@@ -35,6 +39,7 @@ stock TeleportPlayerToPlayer(playerid, targetid)
 		SetVehiclePos(vehicleid, px, py, pz);
 		SetVehicleZAngle(vehicleid, ang);
 		SetVehicleVelocity(vehicleid, vx, vy, vz);
+		SetVehicleVirtualWorld(vehicleid, virtualworld);
 		LinkVehicleToInterior(vehicleid, interior);
 	}
 	else
@@ -42,7 +47,6 @@ stock TeleportPlayerToPlayer(playerid, targetid)
 		SetPlayerPos(playerid, px, py, pz);
 		SetPlayerFacingAngle(playerid, ang);
 		SetPlayerVelocity(playerid, vx, vy, vz);
-		SetPlayerInterior(playerid, interior);
 	}
 }
 
