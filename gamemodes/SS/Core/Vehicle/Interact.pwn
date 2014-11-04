@@ -234,7 +234,10 @@ _varea_Interact(playerid)
 	foreach(new i : varea_NearIndex[playerid])
 	{
 		if(index >= MAX_VEHICLES_IN_RANGE - 1)
+		{
+			printf("ERROR: [_varea_Interact] varea_NearIndex tried to iterate %d times! Iterator size is %d", index, Iter_Count(varea_NearIndex));
 			break;
+		}
 
 		vehicleid = varea_NearList[playerid][i];
 		GetVehiclePos(vehicleid, vx, vy, vz);
