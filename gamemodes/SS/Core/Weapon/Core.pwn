@@ -544,7 +544,7 @@ public OnPlayerHolsteredItem(playerid, itemid)
 	{
 		new helditemid = GetPlayerItem(playerid);
 
-		if(GetItemTypeWeapon(GetItemType(helditemid)) != -1)
+		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > 0)
 		{
 			if(GetItemWeaponItemMagAmmo(helditemid) == 0)
 				RemovePlayerWeapon(playerid);
