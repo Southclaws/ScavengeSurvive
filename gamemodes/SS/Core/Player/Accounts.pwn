@@ -206,7 +206,7 @@ LoadAccount(playerid)
 	else
 	{
 		print("ERROR: [LoadAccount] executing statement 'stmt_AccountExists'.");
-		return 0;
+		return -1;
 	}
 
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
@@ -224,7 +224,7 @@ LoadAccount(playerid)
 	if(!stmt_execute(stmt_AccountLoad))
 	{
 		print("ERROR: [LoadAccount] executing statement 'stmt_AccountLoad'.");
-		return 0;
+		return -1;
 	}
 
 	stmt_fetch_row(stmt_AccountLoad);

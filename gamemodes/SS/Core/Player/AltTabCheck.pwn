@@ -9,6 +9,7 @@ bool:	tab_IsTabbed[MAX_PLAYERS],
 
 forward OnPlayerFocusChange(playerid, status);
 
+
 hook OnPlayerUpdate(playerid)
 {
 	tab_Check[playerid] = 0;
@@ -25,7 +26,7 @@ ptask AfkCheckUpdate[100](playerid)
 		return;
 
 	new
-		comparison = 100,
+		comparison = 500,
 		Float:x,
 		Float:y,
 		Float:z,
@@ -40,13 +41,13 @@ ptask AfkCheckUpdate[100](playerid)
 		GetVehicleVelocity(GetPlayerVehicleID(playerid), x, y, z);
 
 	if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) < 2000)
-		comparison = 2000;
+		comparison = 3000;
 
 	else if(IsPlayerBeingHijacked(playerid))
-		comparison = 2800;
+		comparison = 3800;
 
 	else if((x == 0.0 && y == 0.0 && z == 0.0))
-		comparison = 1500;
+		comparison = 2500;
 
 	comparison += GetPlayerPing(playerid);
 
@@ -97,7 +98,7 @@ ptask AfkCheckUpdate[100](playerid)
 	return;
 }
 
-IsPlayerUnfocused(playerid)
+stock IsPlayerUnfocused(playerid)
 {
 	return tab_IsTabbed[playerid];
 }
