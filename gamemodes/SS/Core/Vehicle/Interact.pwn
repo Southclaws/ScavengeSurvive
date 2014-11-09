@@ -225,6 +225,9 @@ _varea_Interact(playerid)
 		Float:vx,
 		Float:vy,
 		Float:vz,
+		Float:size_x,
+		Float:size_y,
+		Float:size_z,
 		Float:distance,
 		list[MAX_VEHICLES_IN_RANGE][e_vehicle_range_data],
 		index;
@@ -241,7 +244,11 @@ _varea_Interact(playerid)
 
 		vehicleid = varea_NearList[playerid][i];
 		GetVehiclePos(vehicleid, vx, vy, vz);
+		GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, size_x, size_y, size_z);
 		distance = Distance(px, py, pz, vx, vy, vz);
+
+		if(distance > (size_y / 2.0) + 3.0)
+			continue;
 
 		list[index][E_VEHICLE_AREA_VEHICLEID] = vehicleid;
 		list[index][E_VEHICLE_AREA_DISTANCE] = distance;
