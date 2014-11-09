@@ -153,7 +153,8 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 {
 	new
 		itemid,
-		interior = GetPlayerInterior(playerid);
+		interior = GetPlayerInterior(playerid),
+		world = GetPlayerVirtualWorld(playerid);
 
 	/*
 		Held item
@@ -169,6 +170,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 	}
 
@@ -188,6 +190,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 	}
 
@@ -209,6 +212,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 	}
 
@@ -225,6 +229,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
 		SetItemRot(itemid, 0.0, 0.0, r, true);
 		SetItemInterior(itemid, interior);
+		SetItemWorld(itemid, world);
 	}
 
 	/*
@@ -241,6 +246,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 
 		RemovePlayerHat(playerid);
@@ -260,6 +266,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 
 		RemovePlayerMask(playerid);
@@ -277,6 +284,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 
 		SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
@@ -303,6 +311,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			z - FLOOR_OFFSET,
 			.rz = r,
 			.zoffset = ITEM_BUTTON_OFFSET,
+			.world = world,
 			.interior = interior);
 
 		SetPlayerCuffs(playerid, false);
@@ -318,6 +327,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		z - FLOOR_OFFSET,
 		.rz = r,
 		.zoffset = ITEM_BUTTON_OFFSET,
+		.world = world,
 		.interior = interior);
 
 	SetItemExtraData(itemid, GetPlayerClothes(playerid));

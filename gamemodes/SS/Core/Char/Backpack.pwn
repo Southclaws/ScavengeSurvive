@@ -45,6 +45,10 @@ Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 static		HANDLER = -1;
 
 
+forward OnPlayerWearBag(playerid, itemid);
+forward OnPlayerRemoveBag(playerid, itemid);
+
+
 /*==============================================================================
 
 	Zeroing
@@ -392,7 +396,12 @@ _BagEquipHandler(playerid)
 		new itemid = GetPlayerItem(playerid);
 
 		if(IsItemTypeBag(GetItemType(itemid)))
+		{
+			if(CallLocalFunction("OnPlayerWearBag", "dd", playerid, itemid))
+				return 0;
+
 			GivePlayerBag(playerid, itemid);
+		}
 
 		return 1;
 	}
@@ -448,10 +457,16 @@ _BagEquipHandler(playerid)
 
 _BagDropHandler(playerid)
 {
+	if(!IsValidItem(bag_PlayerBagID[playerid]))
+		return 0;
+
 	if(IsValidItem(GetPlayerItem(playerid)))
 		return 0;
 
 	if(IsValidItem(GetPlayerInteractingItem(playerid)))
+		return 0;
+
+	if(CallLocalFunction("OnPlayerRemoveBag", "dd", playerid, bag_PlayerBagID[playerid]))
 		return 0;
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
@@ -906,3 +921,24 @@ stock GetBagItemContainerID(itemid)
 
 	return GetItemArrayDataAtCell(itemid, 1);
 }
+
+public OnPlayerWearBag(playerid, itemid)
+{
+	// Temp fix for circular dependency.
+
+	#if defined bag_OnPlayerWearBag
+		return bag_OnPlayerWearBag(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerWearBag
+	#undef OnPlayerWearBag
+#else
+	#define _ALS_OnPlayerWearBag
+#endif
+ 
+#define OnPlayerWearBag bag_OnPlayerWearBag
+#if defined bag_OnPlayerWearBag
+	forward bag_OnPlayerWearBag(playerid, itemid);
+#endif

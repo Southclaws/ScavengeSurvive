@@ -779,7 +779,7 @@ timer _UnloadWeapon[300](playerid, itemid)
 		x + (0.5 * floatsin(-r, degrees)),
 		y + (0.5 * floatcos(-r, degrees)),
 		z - FLOOR_OFFSET,
-		_, _, _, FLOOR_OFFSET);
+		_, _, _, FLOOR_OFFSET, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 
 	SetItemExtraData(ammoitemid, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
 
