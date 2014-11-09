@@ -135,6 +135,10 @@ public OnPlayerLoadAccount(playerid)
 	#endif
 }
 
+hook OnPlayerSpawn(playerid)
+{
+	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
+}
 
 public OnPlayerCreateNewCharacter(playerid)
 {
