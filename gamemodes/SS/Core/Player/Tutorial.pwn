@@ -616,6 +616,7 @@ CMD:exit(playerid, params[])
 		return 0;
 
 	TutorialState[playerid] = E_TUT_NONE;
+	HideHelpTip(playerid);
 	SetPlayerHealth(playerid, 0.0);
 
 	return 1;
