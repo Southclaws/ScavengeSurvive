@@ -132,10 +132,12 @@ ACMD:iphip[4](playerid, params[])
 {
 	new
 		ip,
+		ipbyte[4],
 		list[48][e_ipv4_list_output_structure],
 		count;
 
-	GetAccountIP(params, ip);
+	sscanf(params, "p<.>a<d>[4]", ipbyte);
+	ip = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
 	if(!GetAccountIPHistoryFromIP(ip, list, 48, count))
 	{
