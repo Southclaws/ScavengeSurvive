@@ -373,7 +373,18 @@ DisplayLoginPrompt(playerid, badpass = 0)
 		{
 			if(strlen(inputtext) < 4)
 			{
-				DisplayLoginPrompt(playerid);
+				acc_LoginAttempts[playerid]++;
+
+				if(acc_LoginAttempts[playerid] < 5)
+				{
+					DisplayLoginPrompt(playerid, 1);
+				}
+				else
+				{
+					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+					Kick(playerid);
+				}
+
 				return 1;
 			}
 
@@ -394,7 +405,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 
 				if(acc_LoginAttempts[playerid] < 5)
 				{
-					DisplayLoginPrompt(playerid);
+					DisplayLoginPrompt(playerid, 1);
 				}
 				else
 				{

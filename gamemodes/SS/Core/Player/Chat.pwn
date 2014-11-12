@@ -64,6 +64,9 @@ hook OnPlayerText(playerid, text[])
 
 PlayerSendChat(playerid, chat[], Float:frequency)
 {
+	if(!IsPlayerLoggedIn(playerid))
+		return 0;
+
 	if(GetTickCountDifference(GetPlayerServerJoinTick(playerid), GetTickCount()) < 1000)
 		return 0;
 
