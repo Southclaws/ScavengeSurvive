@@ -87,10 +87,10 @@ static
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
 E_TUT_STATE:TutorialState			[MAX_PLAYERS],
 
-			Bag						[MAX_PLAYERS],
-			Wrench					[MAX_PLAYERS],
-			Weapon					[MAX_PLAYERS],
-			Ammo					[MAX_PLAYERS];
+			Bag						[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+			Wrench					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+			Weapon					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+			Ammo					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 static
@@ -125,7 +125,7 @@ public OnPlayerLoadAccount(playerid)
 	PlayerTextDrawSetShadow			(playerid, ClassButtonTutorial[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonTutorial[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, ClassButtonTutorial[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 300.000000, 100.000000);
+	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 24.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonTutorial[playerid], true);
 
 	#if defined tut_OnPlayerLoadAccount
@@ -135,9 +135,15 @@ public OnPlayerLoadAccount(playerid)
 	#endif
 }
 
-hook OnPlayerSpawn(playerid)
+public OnPlayerSpawnExistingChar(playerid)
 {
 	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
+
+	#if defined tut_OnPlayerSpawnExistingChar
+		return tut_OnPlayerSpawnExistingChar(playerid);
+	#else
+		return 1;
+	#endif
 }
 
 public OnPlayerCreateNewCharacter(playerid)
@@ -619,6 +625,16 @@ CMD:exit(playerid, params[])
 	HideHelpTip(playerid);
 	SetPlayerHealth(playerid, 0.0);
 
+	DestroyItem(Bag[playerid]);
+	DestroyItem(Wrench[playerid]);
+	DestroyItem(Weapon[playerid]);
+	DestroyItem(Ammo[playerid]);
+
+	Bag[playerid] = INVALID_ITEM_ID;
+	Wrench[playerid] = INVALID_ITEM_ID;
+	Weapon[playerid] = INVALID_ITEM_ID;
+	Ammo[playerid] = INVALID_ITEM_ID;
+
 	return 1;
 }
 
@@ -636,6 +652,16 @@ CMD:exit(playerid, params[])
 #define OnPlayerLoadAccount tut_OnPlayerLoadAccount
 #if defined tut_OnPlayerLoadAccount
 	forward tut_OnPlayerLoadAccount(playerid);
+#endif
+
+#if defined _ALS_OnPlayerSpawnExistingChar
+	#undef OnPlayerSpawnExistingChar
+#else
+	#define _ALS_OnPlayerSpawnExistingChar
+#endif
+#define OnPlayerSpawnExistingChar tut_OnPlayerSpawnExistingChar
+#if defined tut_OnPlayerSpawnExistingChar
+	forward tut_OnPlayerSpawnExistingChar(playerid);
 #endif
 
 #if defined _ALS_OnPlayerCreateNewCharacter

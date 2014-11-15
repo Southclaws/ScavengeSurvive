@@ -9,6 +9,7 @@ ItemType:	spawn_NewSpawnItems[4][e_item_object];
 
 
 forward OnPlayerCreateNewCharacter(playerid);
+forward OnPlayerSpawnExistingChar(playerid);
 
 
 hook OnScriptInit()
@@ -118,6 +119,8 @@ PlayerSpawnExistingCharacter(playerid)
 	}
 
 	logf("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+
+	CallLocalFunction("OnPlayerSpawnExistingChar", "d", playerid);
 
 	return 1;
 }

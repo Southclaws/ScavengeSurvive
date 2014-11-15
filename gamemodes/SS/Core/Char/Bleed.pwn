@@ -61,7 +61,7 @@ ptask BleedUpdate[100](playerid)
 		if(debug_conditional(HANDLER, 1))
 			ShowActionText(playerid, sprintf("HP: %f Bleed-rate: %f~n~Wounds %d Bleed slow-rate: %f", hp, bld_BleedRate[playerid], GetPlayerWounds(playerid), (((((100.0 - hp) / 360.0) * bld_BleedRate[playerid]) / GetPlayerWounds(playerid)) / 100.0)));
 
-		if(IsPlayerInAnyVehicle(playerid))
+		if(!IsPlayerInAnyVehicle(playerid))
 		{
 			if(IsPlayerAttachedObjectSlotUsed(playerid, ATTACHSLOT_BLOOD))
 			{

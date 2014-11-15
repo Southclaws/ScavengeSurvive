@@ -28,7 +28,7 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, ClassButtonMale[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 300.000000, 100.000000);
+	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
 
 	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
@@ -42,7 +42,7 @@ LoadPlayerTextDraws(playerid)
 	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 300.000000, 100.000000);
+	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
 
 

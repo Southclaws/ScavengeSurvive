@@ -89,9 +89,14 @@ forward OnPlayerLoadAccount(playerid);
 forward OnPlayerLogin(playerid);
 
 
+static HANDLER = -1;
+
+
 hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Accounts'...");
+
+	HANDLER = debug_register_handler("Accounts", 0);
 
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
@@ -506,13 +511,13 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(!acc_LoggedIn[playerid])
 	{
-		// logf("[LOGOUT] ERROR: Player not logged in, aborting save.");
+		d:1:HANDLER("[LOGOUT] ERROR: Player not logged in, aborting save.");
 		return 0;
 	}
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
-		// logf("[LOGOUT] ERROR: Player on admin duty, aborting save.");
+		d:1:HANDLER("[LOGOUT] ERROR: Player on admin duty, aborting save.");
 		return 0;
 	}
 
@@ -526,6 +531,7 @@ Logout(playerid, docombatlogcheck = 1)
 
 			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
 			{
+				logf("[LOGOUT] Player '%p' combat logged!", playerid);
 				MsgAllF(YELLOW, " >  %p combat logged!", playerid);
 				OnPlayerDeath(playerid, lastattacker, lastweapon);
 			}
@@ -597,11 +603,22 @@ Logout(playerid, docombatlogcheck = 1)
 
 SavePlayerData(playerid)
 {
+	d:1:HANDLER("[SavePlayerData] Saving '%p'", playerid);
+
 	if(IsPlayerOnAdminDuty(playerid))
+	{
+		d:1:HANDLER("[SavePlayerData] ERROR: On admin duty");
 		return 0;
+	}
 
 	if(!IsPlayerDataLoaded(playerid))
-		return 0;
+	{
+		if(!IsNewPlayer(playerid))
+		{
+			d:1:HANDLER("[SavePlayerData] ERROR: Data not loaded");
+			return 0;
+		}
+	}
 
 	new
 		Float:x,
@@ -613,7 +630,10 @@ SavePlayerData(playerid)
 	GetPlayerFacingAngle(playerid, r);
 
 	if(IsAtConnectionPos(x, y, z))
+	{
+		d:1:HANDLER("[SavePlayerData] ERROR: At connection pos");
 		return 0;
+	}
 
 	SaveBlockAreaCheck(x, y, z);
 
@@ -622,13 +642,21 @@ SavePlayerData(playerid)
 
 	if(IsPlayerAlive(playerid))
 	{
+		d:2:HANDLER("[SavePlayerData] Player is alive");
 		if(IsAtDefaultPos(x, y, z))
+		{
+			d:2:HANDLER("[SavePlayerData] ERROR: Player at default position");
 			return 0;
+		}
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
+			d:2:HANDLER("[SavePlayerData] Player is spectating");
 			if(!gServerRestarting)
+			{
+				d:2:HANDLER("[SavePlayerData] Server is not restarting, aborting save");
 				return 0;
+			}
 		}
 
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
@@ -637,10 +665,12 @@ SavePlayerData(playerid)
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 		stmt_execute(stmt_AccountUpdate);
 
+		d:2:HANDLER("[SavePlayerData] Saving character data");
 		SavePlayerChar(playerid);
 	}
 	else
 	{
+		d:2:HANDLER("[SavePlayerData] Player is dead");
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerKarma(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
