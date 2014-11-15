@@ -376,7 +376,9 @@ ItemType:		item_Model70Rifle	= INVALID_ITEM_TYPE,
 ItemType:		item_LenKnocksRifle	= INVALID_ITEM_TYPE,
 ItemType:		item_Daypack		= INVALID_ITEM_TYPE,
 ItemType:		item_MediumBag		= INVALID_ITEM_TYPE,
-ItemType:		item_Rucksack		= INVALID_ITEM_TYPE;
+ItemType:		item_Rucksack		= INVALID_ITEM_TYPE,
+ItemType:		item_SeedBag		= INVALID_ITEM_TYPE,
+ItemType:		item_Note			= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -634,6 +636,8 @@ public OnScriptInit()
 	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	2,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	4,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
 	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	5,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_SeedBag		= DefineItemType("Seeds",				"SeedBag",			1901,	1,	0.0, 0.0, 0.0,			0.0,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_Note			= DefineItemType("Note",				"Note",				2953,	1,	0.0, 0.0, 0.0,			0.0,	0.083999, 0.022000, -0.013000,  -82.300018, -14.900006, -83.200042, false, 0xCAFFFFFF);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -832,6 +836,8 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Daypack,		2);
 	SetItemTypeMaxArrayData(item_MediumBag,		2);
 	SetItemTypeMaxArrayData(item_Rucksack,		2);
+	SetItemTypeMaxArrayData(item_SeedBag,		1);
+	SetItemTypeMaxArrayData(item_Note,			256);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE

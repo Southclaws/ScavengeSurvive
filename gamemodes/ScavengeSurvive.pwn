@@ -519,6 +519,7 @@ new stock
 #include "SS/Core/Item/HockeyMask.pwn"
 #include "SS/Core/Item/XmasHat.pwn"
 #include "SS/Core/Item/StunGun.pwn"
+#include "SS/Core/Item/note.pwn"
 
 // GAME DATA LOADING
 #include "SS/Data/Loot.pwn"

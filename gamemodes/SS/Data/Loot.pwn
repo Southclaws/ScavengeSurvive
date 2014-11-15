@@ -73,6 +73,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Civilian,		item_Daypack,						38.0);
 	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						24.0);
 	AddItemToLootIndex(loot_Civilian,		item_Rucksack,						5.0);
+	AddItemToLootIndex(loot_Civilian,		item_Note,							45.0);
 
 	// loot_Industrial
 	AddItemToLootIndex(loot_Industrial,		item_Chainsaw,						1.0);
@@ -104,6 +105,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Industrial,		item_Daypack,						28.0);
 	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						18.0);
 	AddItemToLootIndex(loot_Industrial,		item_Rucksack,						5.0);
+	AddItemToLootIndex(loot_Industrial,		item_Note,							34.0);
 
 	// loot_Police
 	AddItemToLootIndex(loot_Police,			item_M9Pistol,						50.0);
@@ -125,6 +127,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Police,			item_AmmoBuck,						20.0);
 	AddItemToLootIndex(loot_Police,			item_Ammo357Tracer,					15.0);
 	AddItemToLootIndex(loot_Police,			item_MediumBag,						22.0);
+	AddItemToLootIndex(loot_Police,			item_Note,							21.0);
 
 	// loot_Military
 	AddItemToLootIndex(loot_Military,		item_Grenade,						20.0);
@@ -156,6 +159,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Military,		item_LargeBackpack,					7.0);
 	AddItemToLootIndex(loot_Military,		item_Ammo50BMG,						1.1);
 	AddItemToLootIndex(loot_Military,		item_Ammo308,						2.2);
+	AddItemToLootIndex(loot_Military,		item_Note,							11.0);
 
 	// loot_Medical
 	AddItemToLootIndex(loot_Medical,		item_Bandage,						50.0);
@@ -164,6 +168,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Medical,		item_Pills,							90.0);
 	AddItemToLootIndex(loot_Medical,		item_AutoInjec,						80.0);
 //	AddItemToLootIndex(loot_Medical,		item_Detergent,						10.0);
+	AddItemToLootIndex(loot_Medical,		item_Note,							16.0);
 
 	// loot_CarCivilian
 	AddItemToLootIndex(loot_CarCivilian,	item_M9Pistol,						50.0);
@@ -226,6 +231,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarCivilian,	item_Daypack,						32.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_MediumBag,						24.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Rucksack,						10.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_Note,							38.0);
 
 	// loot_CarIndustrial
 	AddItemToLootIndex(loot_CarIndustrial,	item_Bandage,						10.0);
@@ -264,6 +270,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarIndustrial,	item_GasMask,						70.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Motor,							25.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Daypack,						22.0);
+	AddItemToLootIndex(loot_CarIndustrial,	item_Note,							32.0);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		item_M9Pistol,						40.0);
@@ -286,6 +293,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarPolice,		item_AmmoBuck,						10.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo357Tracer,					5.0);
 	AddItemToLootIndex(loot_CarPolice,		item_MediumBag,						15.0);
+	AddItemToLootIndex(loot_CarPolice,		item_Note,							12.0);
 
 	// loot_CarMilitary
 	AddItemToLootIndex(loot_CarMilitary,	item_Grenade,						10.0);
@@ -312,6 +320,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarMilitary,	item_LargeBackpack,					8.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_Ammo50BMG,						1.2);
 	AddItemToLootIndex(loot_CarMilitary,	item_Ammo308,						1.8);
+	AddItemToLootIndex(loot_CarMilitary,	item_Note,							14.0);
 
 	// loot_Survivor
 	AddItemToLootIndex(loot_Survivor,		item_Sword,							10.0);
@@ -351,6 +360,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Survivor,		item_Daypack,						28.0);
 	AddItemToLootIndex(loot_Survivor,		item_MediumBag,						28.0);
 	AddItemToLootIndex(loot_Survivor,		item_Rucksack,						15.0);
+	AddItemToLootIndex(loot_Survivor,		item_Note,							1.0);
 
 	AddItemToLootIndex(loot_SupplyCrate,	item_Medkit,						40.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_Bandage,						50.0);
@@ -367,4 +377,5 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_SupplyCrate,	item_Daypack,						60.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_MediumBag,						28.0);
 	AddItemToLootIndex(loot_SupplyCrate,	item_Rucksack,						10.0);
+	AddItemToLootIndex(loot_SupplyCrate,	item_Note,							1.0);
 }
