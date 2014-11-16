@@ -48,7 +48,7 @@ stock debug_printf(handler, level, string[], va_args<>)
 		return 0;
 
 	new str[256];
-	va_format(str, sizeof(str), string, va_start<3>);
+	va_formatex(str, sizeof(str), string, va_start<3>);
 	debug_print(handler, level, str);
 
 	return 0;

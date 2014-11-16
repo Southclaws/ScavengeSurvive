@@ -22,11 +22,16 @@ forward OnPlayerEnterVehicleArea(playerid, vehicleid);
 forward OnPlayerLeaveVehicleArea(playerid, vehicleid);
 
 
+static HANDLER = -1;
+
+
 hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Vehicle/Interact'...");
 
 	Iter_Init(varea_NearIndex);
+
+	HANDLER = debug_register_handler("vehicle/interact");
 }
 
 
@@ -134,21 +139,35 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 
 _vint_EnterArea(playerid, areaid)
 {
+	d:1:HANDLER("[_vint_EnterArea] %d %d", playerid, areaid);
+
 	if(IsPlayerInAnyVehicle(playerid))
+	{
+		d:1:HANDLER("[_vint_EnterArea] Player in vehicle");
 		return;
+	}
 
 	if(Iter_Count(varea_NearIndex[playerid]) == MAX_VEHICLES_IN_RANGE)
+	{
+		d:1:HANDLER("[_vint_EnterArea] Player already in maximum amount of vehicle areas");
 		return;
+	}
 
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
 	if(data[0] != VEH_STREAMER_AREA_IDENTIFIER)
+	{
+		d:1:HANDLER("[_vint_EnterArea] Area not vehicle area type");
 		return;
+	}
 
 	if(!IsValidVehicle(data[1]))
+	{
+		d:1:HANDLER("[_vint_EnterArea] Area contains invalid vehicle ID");
 		return;
+	}
 
 	new cell = Iter_Free(varea_NearIndex[playerid]);
 
@@ -163,20 +182,32 @@ _vint_EnterArea(playerid, areaid)
 _vint_LeaveArea(playerid, areaid)
 {
 	if(IsPlayerInAnyVehicle(playerid))
+	{
+		d:1:HANDLER("[_vint_LeaveArea] Player in vehicle");
 		return;
+	}
 
 	if(Iter_Count(varea_NearIndex[playerid]) == 0)
+	{
+		d:1:HANDLER("[_vint_LeaveArea] Vehicle area list is empty");
 		return;
+	}
 
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
 	if(data[0] != VEH_STREAMER_AREA_IDENTIFIER)
+	{
+		d:1:HANDLER("[_vint_LeaveArea] Area not vehicle area type");
 		return;
+	}
 
 	if(!IsValidVehicle(data[1]))
+	{
+		d:1:HANDLER("[_vint_LeaveArea] Vehicle in area data is invalid");
 		return;
+	}
 
 	HideActionText(playerid);
 	CallLocalFunction("OnPlayerLeaveVehicleArea", "dd", playerid, data[1]);
@@ -185,6 +216,7 @@ _vint_LeaveArea(playerid, areaid)
 	{
 		if(varea_NearList[playerid][i] == data[1])
 		{
+			d:2:HANDLER("[_vint_LeaveArea] Removed vehicle from list");
 			Iter_Remove(varea_NearIndex[playerid], i);
 			break;
 		}
@@ -208,8 +240,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _varea_Interact(playerid)
 {
+	d:1:HANDLER("[_varea_Interact] %d", playerid);
+
 	if(IsPlayerInAnyVehicle(playerid))
+	{
+		d:1:HANDLER("[_varea_Interact] Player in vehicle");
 		return;
+	}
 
 	if(!IsPlayerInAnyDynamicArea(playerid))
 	{
@@ -236,6 +273,7 @@ _varea_Interact(playerid)
 
 	foreach(new i : varea_NearIndex[playerid])
 	{
+		d:2:HANDLER("[_varea_Interact] [%d] Looping vehicles in list", i);
 		if(index >= MAX_VEHICLES_IN_RANGE - 1)
 		{
 			printf("ERROR: [_varea_Interact] varea_NearIndex tried to iterate %d times! Iterator size is %d", index, Iter_Count(varea_NearIndex));
@@ -248,7 +286,10 @@ _varea_Interact(playerid)
 		distance = Distance(px, py, pz, vx, vy, vz);
 
 		if(distance > (size_y / 2.0) + 3.0)
+		{
+			d:2:HANDLER("[_varea_Interact] ERROR: Vehicle is too far away");
 			continue;
+		}
 
 		list[index][E_VEHICLE_AREA_VEHICLEID] = vehicleid;
 		list[index][E_VEHICLE_AREA_DISTANCE] = distance;
@@ -256,10 +297,12 @@ _varea_Interact(playerid)
 		index++;
 	}
 
+	d:1:HANDLER("[_varea_Interact] Sorting compiled list");
 	_varea_SortPlayerVehicleList(list, 0, index);
 
 	for(new i = index - 1; i >= 0; i--)
 	{
+		d:2:HANDLER("[_varea_Interact] [%d/%d] Interacting with vehicle", i, index);
 		if(!_varea_InteractSpecific(playerid, list[i][E_VEHICLE_AREA_VEHICLEID]))
 			break;
 	}
@@ -268,6 +311,8 @@ _varea_Interact(playerid)
 
 _varea_InteractSpecific(playerid, vehicleid)
 {
+	d:1:HANDLER("[_varea_InteractSpecific] %d %d", playerid, vehicleid);
+
 	new
 		Float:px,
 		Float:py,
@@ -285,10 +330,16 @@ _varea_InteractSpecific(playerid, vehicleid)
 	angle = absoluteangle(vr - GetAngleToPoint(vx, vy, px, py));
 
 	if(!( (vz - 1.0) < pz < (vz + 2.0) ))
+	{
+		d:1:HANDLER("[_varea_InteractSpecific] Vehicle out of Z bounds");
 		return 0;
+	}
 
 	if(CallLocalFunction("OnPlayerInteractVehicle", "ddf", playerid, vehicleid, angle))
+	{
+		d:1:HANDLER("[_varea_InteractSpecific] OnPlayerInteractVehicle returned 1 to cancel call");
 		return 0;
+	}
 
 	if(225.0 < angle < 315.0)
 	{

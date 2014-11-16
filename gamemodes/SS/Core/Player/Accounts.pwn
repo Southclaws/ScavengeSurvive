@@ -249,8 +249,8 @@ LoadAccount(playerid)
 	}
 
 	SetPlayerBitFlag(playerid, Alive, alive);
+	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = true;
-	acc_IsNewPlayer[playerid] = true;
 
 	SetPlayerPassHash(playerid, password);
 	SetPlayerRegTimestamp(playerid, regdate);
@@ -309,8 +309,9 @@ CreateAccount(playerid, password[])
 	if(GetPlayerAdminLevel(playerid) > 0)
 		MsgF(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
 
-	acc_LoggedIn[playerid] = true;
+	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
+	acc_LoggedIn[playerid] = true;
 	SetPlayerBitFlag(playerid, ToolTips, true);
 
 	PlayerCreateNewCharacter(playerid);

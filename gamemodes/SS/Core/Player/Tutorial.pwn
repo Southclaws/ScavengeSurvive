@@ -146,6 +146,17 @@ public OnPlayerSpawnExistingChar(playerid)
 	#endif
 }
 
+public OnPlayerSpawnNewCharacter(playerid)
+{
+	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
+
+	#if defined tut_OnPlayerSpawnNewCharacter
+		return tut_OnPlayerSpawnNewCharacter(playerid);
+	#else
+		return 1;
+	#endif
+}
+
 public OnPlayerCreateNewCharacter(playerid)
 {
 	d:1:HANDLER("[OnPlayerCreateNewCharacter]");
@@ -662,6 +673,16 @@ CMD:exit(playerid, params[])
 #define OnPlayerSpawnExistingChar tut_OnPlayerSpawnExistingChar
 #if defined tut_OnPlayerSpawnExistingChar
 	forward tut_OnPlayerSpawnExistingChar(playerid);
+#endif
+
+#if defined _ALS_OnPlayerSpawnNewCharacter
+	#undef OnPlayerSpawnNewCharacter
+#else
+	#define _ALS_OnPlayerSpawnNewCharacter
+#endif
+#define OnPlayerSpawnNewCharacter tut_OnPlayerSpawnNewCharacter
+#if defined tut_OnPlayerSpawnNewCharacter
+	forward tut_OnPlayerSpawnNewCharacter(playerid);
 #endif
 
 #if defined _ALS_OnPlayerCreateNewCharacter

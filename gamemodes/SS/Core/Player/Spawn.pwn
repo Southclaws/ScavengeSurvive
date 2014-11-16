@@ -10,6 +10,7 @@ ItemType:	spawn_NewSpawnItems[4][e_item_object];
 
 forward OnPlayerCreateNewCharacter(playerid);
 forward OnPlayerSpawnExistingChar(playerid);
+forward OnPlayerSpawnNewCharacter(playerid);
 
 
 hook OnScriptInit()
@@ -89,6 +90,8 @@ PlayerSpawnExistingCharacter(playerid)
 	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
 
 	SetPlayerGender(playerid, GetClothesGender(GetPlayerClothes(playerid)));
 
@@ -131,6 +134,9 @@ PlayerCreateNewCharacter(playerid)
 
 	SetPlayerPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
+
 	SetPlayerCameraLookAt(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerCameraPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z + 1.0);
 	Streamer_UpdateEx(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
@@ -191,6 +197,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
+	SetPlayerVirtualWorld(playerid, 0);
+	SetPlayerInterior(playerid, 0);
 
 	if(gender == GENDER_MALE)
 	{
@@ -267,6 +275,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	}
 
 	SetPlayerScreenFadeLevel(playerid, 255);
+
+	CallLocalFunction("OnPlayerSpawnNewCharacter", "d", playerid);
 
 	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
