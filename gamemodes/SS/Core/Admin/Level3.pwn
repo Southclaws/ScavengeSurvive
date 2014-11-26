@@ -367,20 +367,15 @@ ACMD:additem[3](playerid, params[])
 	new
 		ItemType:type,
 		itemname[ITM_MAX_NAME],
-		exdata,
-		itemid,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r;
+		exdata[8];
 
 	if(sscanf(params, "p<,>dD(0)", _:type, exdata) != 0)
 	{
 		new tmp[ITM_MAX_NAME];
 
-		if(sscanf(params, "p<,>s[32]D(0)", tmp, exdata))
+		if(sscanf(params, "p<,>s[32]A<d>(0)[8]", tmp, exdata))
 		{
-			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname], [optional:extradata]");
+			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname], [optional:extradata array, comma separated]");
 			return 1;
 		}
 
@@ -402,6 +397,18 @@ ACMD:additem[3](playerid, params[])
 		return 1;
 	}
 
+	new
+		exdatasize = 8,
+		typemaxsize = GetItemTypeArrayDataSize(type),
+		itemid,
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
+
+	if(exdatasize > typemaxsize)
+		exdatasize = typemaxsize;
+
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
@@ -410,7 +417,7 @@ ACMD:additem[3](playerid, params[])
 		y + (0.5 * floatcos(-r, degrees)),
 		z - 0.8568, .rz = r, .zoffset = 0.7);
 
-	SetItemExtraData(itemid, exdata);	
+	SetItemArrayData(itemid, exdata, exdatasize);
 
 	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
 	{
