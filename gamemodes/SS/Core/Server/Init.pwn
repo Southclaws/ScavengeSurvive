@@ -378,7 +378,8 @@ ItemType:		item_Daypack		= INVALID_ITEM_TYPE,
 ItemType:		item_MediumBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Rucksack		= INVALID_ITEM_TYPE,
 ItemType:		item_SeedBag		= INVALID_ITEM_TYPE,
-ItemType:		item_Note			= INVALID_ITEM_TYPE;
+ItemType:		item_Note			= INVALID_ITEM_TYPE,
+ItemType:		item_Tomato			= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -636,8 +637,9 @@ public OnScriptInit()
 	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	2,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	4,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
 	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	5,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
-	item_SeedBag		= DefineItemType("Seeds",				"SeedBag",			1901,	1,	0.0, 0.0, 0.0,			0.0,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_SeedBag		= DefineItemType("Seeds",				"SeedBag",			2663,	2,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254, false, 0xFFF4A460);
 	item_Note			= DefineItemType("Note",				"Note",				2953,	1,	0.0, 0.0, 0.0,			0.0,	0.083999, 0.022000, -0.013000,  -82.300018, -14.900006, -83.200042, false, 0xCAFFFFFF);
+	item_Tomato			= DefineItemType("Tomato",				"Tomato",			3105,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -696,7 +698,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_TntTimebomb,	1);
 	SetItemTypeMaxArrayData(item_Battery,		1);
 	SetItemTypeMaxArrayData(item_Fusebox,		1);
-	SetItemTypeMaxArrayData(item_Bottle,		1);
+	SetItemTypeMaxArrayData(item_Bottle,		2);
 	SetItemTypeMaxArrayData(item_Sign,			1);
 	SetItemTypeMaxArrayData(item_Armour,		1);
 	SetItemTypeMaxArrayData(item_Bandage,		1);
@@ -796,7 +798,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_FluxCap,		1);
 	SetItemTypeMaxArrayData(item_DataInterface,	1);
 	SetItemTypeMaxArrayData(item_HackDevice,	1);
-	SetItemTypeMaxArrayData(item_PlantPot,		1);
+	SetItemTypeMaxArrayData(item_PlantPot,		5);
 	SetItemTypeMaxArrayData(item_HerpDerp,		1);
 	SetItemTypeMaxArrayData(item_Parrot,		1);
 	SetItemTypeMaxArrayData(item_TntTripMine,	1);
@@ -836,8 +838,9 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Daypack,		2);
 	SetItemTypeMaxArrayData(item_MediumBag,		2);
 	SetItemTypeMaxArrayData(item_Rucksack,		2);
-	SetItemTypeMaxArrayData(item_SeedBag,		1);
+	SetItemTypeMaxArrayData(item_SeedBag,		2);
 	SetItemTypeMaxArrayData(item_Note,			256);
+	SetItemTypeMaxArrayData(item_Tomato,		1);
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE
@@ -1172,6 +1175,20 @@ public OnScriptInit()
 	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
 	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
 	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
+
+	DefineSeedType("Tomato", item_Tomato, 4, 802, 0.72044); // small green wide bush
+/*
+	DefineSeedType("", none, 2, 631, 0.90649); // tall dark bush
+	DefineSeedType("", none, 2, 692, 0.31308); // wide greyish bush
+	DefineSeedType("", none, 2, 728, 0.34546); // huge bush!
+	DefineSeedType("", none, 2, 801, 0.21290); // large fern
+	DefineSeedType("", none, 2, 804, 1.31168); // huge long green leaves
+	DefineSeedType("", none, 2, 857, 0.50507); // big leaves
+	DefineSeedType("", none, 2, 861, -0.12961); // tall bush style
+	DefineSeedType("", none, 2, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
+	DefineSeedType("", none, 2, 2194, 0.25344); // tiny cactus
+	DefineSeedType("", none, 2, 2238, 0.58121); // lava lamp (?)
+*/
 
 	return 1;
 }

@@ -1,13 +1,16 @@
-#define BOTTLE_DATA_TYPE(%0)		((%0 >> 8) & 0xFF)
-#define BOTTLE_DATA_AMOUNT(%0)		(%0 & 0xFF)
-#define BOTTLE_DATA_COMBINE(%0,%1)	(%0 << 8 | %1)
-
 enum
 {
-	BOTTLE_CONTENTS_WATER,		// 0
-	BOTTLE_CONTENTS_BEER		// 1
+	E_BOTTLE_AMOUNT,
+	E_BOTTLE_TYPE
 }
 
+
+static
+	drink_Types[2][6]=
+	{
+		"Water",
+		"Beer"
+	};
 
 
 public OnItemCreate(itemid)
@@ -16,19 +19,15 @@ public OnItemCreate(itemid)
 	{
 		if(GetItemType(itemid) == item_Bottle)
 		{
-			// First 8 bits represent the type last 8 bits represent the amount
-			new
-				type = random(2),
-				amount = random(10);
-
-			SetItemExtraData(itemid, BOTTLE_DATA_COMBINE(type, amount));
+			SetItemArrayDataAtCell(itemid, random(10), E_BOTTLE_AMOUNT);
+			SetItemArrayDataAtCell(itemid, random(2), E_BOTTLE_TYPE);
 		}
 	}
 
 	#if defined bot_OnItemCreate
 		return bot_OnItemCreate(itemid);
 	#else
-		return 1;
+		return 0;
 	#endif
 }
 #if defined _ALS_OnItemCreate
@@ -48,31 +47,15 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 	if(itemtype == item_Bottle)
 	{
 		new
-			data,
-			type,
-			amount;
+			amount,
+			type;
 
-		data = GetItemExtraData(itemid);
-		type = BOTTLE_DATA_TYPE(data);
-		amount = BOTTLE_DATA_AMOUNT(data);
+		amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
+		type = GetItemArrayDataAtCell(itemid, E_BOTTLE_TYPE);
 
 		if(amount > 0)
 		{
-			new str[12];
-
-			switch(type)
-			{
-				case BOTTLE_CONTENTS_WATER:
-					format(str, sizeof(str), "Water %d", amount);
-
-				case BOTTLE_CONTENTS_BEER:
-					format(str, sizeof(str), "Beer %d", amount);
-
-				default:
-					format(str, sizeof(str), "Unknown %d", amount);
-			}
-
-			SetItemNameExtra(itemid, str);
+			SetItemNameExtra(itemid, drink_Types[type]);
 		}
 		else
 		{
@@ -101,19 +84,17 @@ public OnPlayerEaten(playerid, itemid)
 	if(GetItemType(itemid) == item_Bottle)
 	{
 		new
-			data,
 			type,
 			amount;
 
-		data = GetItemExtraData(itemid);
-		type = BOTTLE_DATA_TYPE(data);
-		amount = BOTTLE_DATA_AMOUNT(data);
+		type = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
+		amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_TYPE);
 
 		if(amount > 0)
 		{
-			SetItemExtraData(itemid, BOTTLE_DATA_COMBINE(type, amount - 1));
+			SetItemArrayDataAtCell(itemid, amount - 1, E_BOTTLE_AMOUNT);
 
-			if(type == BOTTLE_CONTENTS_BEER)
+			if(type == 1)
 				SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 500);
 		}
 		else

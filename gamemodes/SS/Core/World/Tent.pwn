@@ -753,10 +753,14 @@ LoadTent(filename[])
 		if(itemtype == ItemType:0)
 			break;
 
-		itemid = CreateItem(itemtype, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
+		itemid = AllocNextItemID(itemtype);
+
+		SetItemNoResetArrayData(itemid, true);
 
 		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 			SetItemArrayDataFromListItem(itemid, itemlist, i);
+
+		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
 
 		AddItemToTentIndex(tentid, itemid);
 	}

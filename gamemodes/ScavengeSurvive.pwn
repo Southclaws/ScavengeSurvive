@@ -520,6 +520,8 @@ new stock
 #include "SS/Core/Item/XmasHat.pwn"
 #include "SS/Core/Item/StunGun.pwn"
 #include "SS/Core/Item/note.pwn"
+#include "SS/Core/Item/SeedBag.pwn"
+#include "SS/Core/Item/PlantPot.pwn"
 
 // GAME DATA LOADING
 #include "SS/Data/Loot.pwn"
