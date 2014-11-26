@@ -1,3 +1,18 @@
+stock IsVehicleUpsideDown(vehicleid)
+{
+    new
+    	Float:w,
+    	Float:x,
+    	Float:y,
+    	Float:z;
+
+    GetVehicleRotationQuat(vehicleid, w, x, y, z);
+
+    new Float:angle = atan2(((y * z) + (w * x)) * 2.0, (w * w) - (x * x) - (y * y) + (z * z));
+
+    return ((angle > 90.0) || (angle < -90.0));
+}
+
 stock IsVehicleInRangeOfPoint(vehicleid, Float:range, Float:x, Float:y, Float:z)
 {
 	new
