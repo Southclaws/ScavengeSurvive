@@ -226,17 +226,19 @@ CheckAdminLevel(playerid)
 	}
 }
 
-KickPlayer(playerid, reason[])
+KickPlayer(playerid, reason[], bool:tellplayer = true)
 {
-	MsgAdminsF(1, GREY, " >  %P"C_GREY" kicked, reason: "C_BLUE"%s", playerid, reason);
-	MsgF(playerid, GREY, " >  Kicked, reason: "C_BLUE"%s", reason);
-
 	defer KickPlayerDelay(playerid);
 
 	logf("[PART] %p (kick: %s)", playerid, reason);
+
+	MsgAdminsF(1, GREY, " >  %P"C_GREY" kicked, reason: "C_BLUE"%s", playerid, reason);
+
+	if(tellplayer)
+		MsgF(playerid, GREY, " >  Kicked, reason: "C_BLUE"%s", reason);
 }
 
-timer KickPlayerDelay[10](playerid)
+timer KickPlayerDelay[1000](playerid)
 {
 	Kick(playerid);
 }

@@ -213,7 +213,7 @@ stock WhitelistKick(playerid)
 
 	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
 
-	defer KickPlayerDelay(playerid);
+	KickPlayer(playerid, "Not in whitelist");
 }
 
 stock ToggleWhitelist(bool:toggle)

@@ -386,7 +386,7 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		}
 		else
 		{
-			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d <= 0, truncating.", sourcelen);
+			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d <= 0 dump: t:%d b:%.4f c:%d d:%d p:%d", sourcelen, _:wnd_Data[playerid][i][wnd_type], _:wnd_Data[playerid][i][wnd_bleedrate], wnd_Data[playerid][i][wnd_calibre], wnd_Data[playerid][i][wnd_timestamp], wnd_Data[playerid][i][wnd_bodypart]);
 			output[idx++] = EOS;
 		}
 	}
