@@ -55,7 +55,8 @@ DBStatement:	stmt_AdminGetLevel;
 
 static
 				admin_Level[MAX_PLAYERS],
-				admin_OnDuty[MAX_PLAYERS];
+				admin_OnDuty[MAX_PLAYERS],
+				admin_PlayerKicked[MAX_PLAYERS];
 
 
 hook OnScriptInit()
@@ -82,6 +83,7 @@ hook OnPlayerConnect(playerid)
 {
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
+	admin_PlayerKicked[playerid] = 0;
 
 	return 1;
 }
@@ -90,6 +92,7 @@ hook OnPlayerDisconnected(playerid)
 {
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
+	admin_PlayerKicked[playerid] = 0;
 
 	return 1;
 }
@@ -228,7 +231,11 @@ CheckAdminLevel(playerid)
 
 KickPlayer(playerid, reason[], bool:tellplayer = true)
 {
+	if(admin_PlayerKicked[playerid])
+		return;
+
 	defer KickPlayerDelay(playerid);
+	admin_PlayerKicked[playerid] = true;
 
 	logf("[PART] %p (kick: %s)", playerid, reason);
 
@@ -236,11 +243,14 @@ KickPlayer(playerid, reason[], bool:tellplayer = true)
 
 	if(tellplayer)
 		MsgF(playerid, GREY, " >  Kicked, reason: "C_BLUE"%s", reason);
+
+	return;
 }
 
 timer KickPlayerDelay[1000](playerid)
 {
 	Kick(playerid);
+	admin_PlayerKicked[playerid] = false;
 }
 
 MsgAdmins(level, colour, string[])

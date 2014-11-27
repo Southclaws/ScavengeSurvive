@@ -612,15 +612,6 @@ SavePlayerData(playerid)
 		return 0;
 	}
 
-	if(!IsPlayerDataLoaded(playerid))
-	{
-		if(!IsNewPlayer(playerid))
-		{
-			d:1:HANDLER("[SavePlayerData] ERROR: Data not loaded");
-			return 0;
-		}
-	}
-
 	new
 		Float:x,
 		Float:y,
