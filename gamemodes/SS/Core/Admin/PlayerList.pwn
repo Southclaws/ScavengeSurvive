@@ -8,7 +8,7 @@ static
 	pls_Length[MAX_PLAYERS];
 
 
-stock ShowPlayerList(playerid, list[][], size = sizeof(list))
+stock ShowPlayerList(playerid, list[][], size = sizeof(list), bool:highlightbanned = false)
 {
 	new item[PLAYER_LIST_ITEM_LEN];
 
@@ -22,12 +22,17 @@ stock ShowPlayerList(playerid, list[][], size = sizeof(list))
 		strcat(pls_List[playerid][i], list[i]);
 
 		// Format the list item
-		_FormatPlayerListItem(list[i], item);
+		_FormatPlayerListItem(list[i], item, highlightbanned);
 
 		// Concat the list item onto the big string
 		strcat(pls_String[playerid], item);
 	}
 
+	_ShowCurrentList(playerid);
+}
+
+_ShowCurrentList(playerid)
+{
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
 		#pragma unused pid, dialogid, inputtext
@@ -69,7 +74,7 @@ _ShowPlayerListItem(playerid, item)
 		else
 		{
 			// Send them back to the original list using the global list.
-			ShowPlayerList(playerid, pls_List[playerid], pls_Length[playerid]);
+			_ShowCurrentList(playerid);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, pls_List[playerid][item], GetPlayerInfo(pls_List[playerid][item]), "Options", "Back");
@@ -156,19 +161,23 @@ _ShowPlayerListItemOptions(playerid, item)
 			}
 			case 2:// List accounts used by this IP
 			{
-				Msg(playerid, YELLOW, " >  Not implemented.");
+				new ip;
+				GetAccountIP(pls_List[playerid][item], ip);
+				ShowAccountIPHistoryFromIP(playerid, ip);
 			}
 			case 3:// List accounts used by this GPCI
 			{
-				Msg(playerid, YELLOW, " >  Not implemented.");
+				new hash[MAX_GPCI_LEN];
+				GetAccountGPCI(pls_List[playerid][item], hash);
+				ShowAccountGpciHistoryFromGpci(playerid, hash);
 			}
 			case 4:// List IPs used by this name
 			{
-				Msg(playerid, YELLOW, " >  Not implemented.");
+				ShowAccountIPHistoryFromName(playerid, pls_List[playerid][item]);
 			}
 			case 5:// List GPCIs used by this name
 			{
-				Msg(playerid, YELLOW, " >  Not implemented.");
+				ShowAccountGpciHistoryFromName(playerid, pls_List[playerid][item]);
 			}
 			case 6:// Ban
 			{
@@ -210,28 +219,25 @@ _ShowPlayerListItemOptions(playerid, item)
 				}
 			}
 		}
-
-		_ShowPlayerListItem(playerid, item);
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Options", options, "Select", "Back");
 
 	return 1;
 }
 
-_FormatPlayerListItem(name[], output[])
+_FormatPlayerListItem(name[], output[], highlightbanned)
 {
 	new
-		tabs[6],
 		ip,
 		ipstr[17];
 
 	GetAccountIP(name, ip);
 	ipstr = IpIntToStr(ip);
 
-	for(new i, j = floatround((24 - strlen(name)) / 8, floatround_floor); i < j; i++)
-		tabs[i] = '\t';
-
-	format(output, PLAYER_LIST_ITEM_LEN, "%s%s%s\n", name, tabs, ipstr);
+	format(output, PLAYER_LIST_ITEM_LEN, "%s%s: %s\n",
+		((highlightbanned && IsPlayerBanned(name)) ? (C_RED):(C_WHITE)),
+		ipstr,
+		name);
 }
 
 

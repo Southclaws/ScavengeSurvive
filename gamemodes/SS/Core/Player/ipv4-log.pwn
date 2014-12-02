@@ -128,16 +128,11 @@ stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_struc
 	return 1;
 }
 
-ACMD:iphip[4](playerid, params[])
+ShowAccountIPHistoryFromIP(playerid, ip)
 {
 	new
-		ip,
-		ipbyte[4],
 		list[48][e_ipv4_list_output_structure],
 		count;
-
-	sscanf(params, "p<.>a<d>[4]", ipbyte);
-	ip = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
 	if(!GetAccountIPHistoryFromIP(ip, list, 48, count))
 	{
@@ -162,18 +157,27 @@ ACMD:iphip[4](playerid, params[])
 			TimestampToDateTime(list[i][ipv4_date], "%x"));
 	}
 
-	ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, params, gBigString[playerid], "Close", "");
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
 
-	return 1;	
+		if(response)
+		{
+			ShowAccountIPHistoryFromName(playerid, list[listitem][ipv4_name]);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, IpIntToStr(ip), gBigString[playerid], "Name Search", "Close");
+
+	return 1;
 }
 
-ACMD:iphname[4](playerid, params[])
+ShowAccountIPHistoryFromName(playerid, name[])
 {
 	new
 		list[48][e_ipv4_list_output_structure],
 		count;
 
-	if(!GetAccountIPHistoryFromName(params, list, 48, count))
+	if(!GetAccountIPHistoryFromName(name, list, 48, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -196,7 +200,37 @@ ACMD:iphname[4](playerid, params[])
 			TimestampToDateTime(list[i][ipv4_date], "%x"));
 	}
 
-	ShowPlayerDialog(playerid, 0, DIALOG_STYLE_LIST, params, gBigString[playerid], "Close", "");
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			ShowAccountIPHistoryFromIP(playerid, list[listitem][ipv4_ipv4]);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, gBigString[playerid], "IP Search", "Close");
+
+	return 1;
+}
+
+ACMD:iphip[4](playerid, params[])
+{
+	new
+		ip,
+		ipbyte[4];
+
+	sscanf(params, "p<.>a<d>[4]", ipbyte);
+	ip = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
+
+	ShowAccountIPHistoryFromIP(playerid, ip);
+
+	return 1;	
+}
+
+ACMD:iphname[4](playerid, params[])
+{
+	ShowAccountIPHistoryFromName(playerid, params);
 
 	return 1;	
 }

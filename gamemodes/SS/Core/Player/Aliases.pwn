@@ -1,13 +1,6 @@
 #include <YSI\y_hooks>
 
 
-enum E_ALIAS_DATA
-{
-		alias_Name[MAX_PLAYER_NAME],
-bool:	alias_Banned
-}
-
-
 static
 DBStatement:	stmt_AliasesFromIp,
 DBStatement:	stmt_AliasesFromPass,
@@ -25,7 +18,7 @@ hook OnGameModeInit()
 	stmt_AliasesFromAll = db_prepare(gAccounts, "SELECT "FIELD_PLAYER_NAME" FROM "ACCOUNTS_TABLE_PLAYER" WHERE ("FIELD_PLAYER_PASS"=? OR "FIELD_PLAYER_IPV4"=? OR "FIELD_PLAYER_GPCI" = ?) AND "FIELD_PLAYER_ACTIVE"=1 AND "FIELD_PLAYER_NAME"!=? COLLATE NOCASE");
 }
 
-stock GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
+stock GetAccountAliasesByIP(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
 	new
 		ip,
@@ -47,15 +40,12 @@ stock GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlev
 	while(stmt_fetch_row(stmt_AliasesFromIp))
 	{
 		if(count < max)
-			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
-
-		if(IsPlayerBanned(tempname))
-			list[count][alias_Banned] = true;
 
 		count++;
 	}
@@ -63,7 +53,7 @@ stock GetAccountAliasesByIP(name[], list[][E_ALIAS_DATA], &count, max, &adminlev
 	return 1;
 }
 
-stock GetAccountAliasesByPass(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
+stock GetAccountAliasesByPass(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
 	new
 		pass[129],
@@ -85,15 +75,12 @@ stock GetAccountAliasesByPass(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 	while(stmt_fetch_row(stmt_AliasesFromPass))
 	{
 		if(count < max)
-			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
-
-		if(IsPlayerBanned(tempname))
-			list[count][alias_Banned] = true;
 
 		count++;
 	}
@@ -101,7 +88,7 @@ stock GetAccountAliasesByPass(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 	return 1;
 }
 
-stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
+stock GetAccountAliasesByHash(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
 	new
 		serial[41],
@@ -126,15 +113,12 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 	while(stmt_fetch_row(stmt_AliasesFromHash))
 	{
 		if(count < max)
-			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
-
-		if(IsPlayerBanned(tempname))
-			list[count][alias_Banned] = true;
 
 		count++;
 	}
@@ -142,7 +126,7 @@ stock GetAccountAliasesByHash(name[], list[][E_ALIAS_DATA], &count, max, &adminl
 	return 1;
 }
 
-stock GetAccountAliasesByAll(name[], list[][E_ALIAS_DATA], &count, max, &adminlevel)
+stock GetAccountAliasesByAll(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
 	new
 		pass[129],
@@ -171,15 +155,12 @@ stock GetAccountAliasesByAll(name[], list[][E_ALIAS_DATA], &count, max, &adminle
 	while(stmt_fetch_row(stmt_AliasesFromAll))
 	{
 		if(count < max)
-			strcat(list[count][alias_Name], tempname, max * MAX_PLAYER_NAME);
+			strcat(list[count], tempname, max * MAX_PLAYER_NAME);
 
 		templevel = GetAdminLevelByName(tempname);
 
 		if(templevel > adminlevel)
 			adminlevel = templevel;
-
-		if(IsPlayerBanned(tempname))
-			list[count][alias_Banned] = true;
 
 		count++;
 	}
@@ -193,43 +174,38 @@ CheckForExtraAccounts(playerid)
 		return 0;
 
 	new
-		list[6][E_ALIAS_DATA],
+		list[6][MAX_PLAYER_NAME],
 		count,
 		adminlevel,
+		bool:donewarning,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	adminlevel = GetPlayerAdminLevel(playerid);
+	GetPlayerAdminLevel(playerid);
 
-	GetAccountAliasesByIP(gPlayerName[playerid], list, count, 6, adminlevel);
+	GetAccountAliasesByAll(gPlayerName[playerid], list, count, 6, adminlevel);
 
 	if(count == 0)
 		return 0;
 
 	if(count == 1)
-		strcat(string, list[0][alias_Name]);
+		strcat(string, list[0]);
 
 	if(count > 1)
 	{
 		for(new i; i < count && i < sizeof(list); i++)
 		{
-			strcat(string, list[i][alias_Name]);
+			strcat(string, list[i]);
 			strcat(string, ", ");
+
+			if(IsPlayerBanned(list[i]) && !donewarning)
+			{
+				MsgAdminsF(1, RED, " >  Warning: One or more of those aliases is banned!");
+				donewarning = true;
+			}
 		}
 	}
 
-	if(adminlevel < 3)
-		MsgAllF(YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
-
-	GetAccountAliasesByAll(gPlayerName[playerid], list, count, 6, adminlevel);
-
-	for(new i; i < count && i < sizeof(list); i++)
-	{
-		if(list[i][alias_Banned])
-		{
-			MsgAdminsF(1, RED, " >  Warning: One or more of those aliases is banned!");
-			break;
-		}
-	}
+	MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
 
 	return 1;
 }

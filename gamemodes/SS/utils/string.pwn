@@ -14,3 +14,12 @@ stock isalphanumeric(chr)
 	return 0;
 }
 
+FormatSpecifier<'T'>(output[], timestamp)
+{
+	strcat(output, TimestampToDateTime(timestamp, "%A %b %d %Y at %X"));
+}
+
+FormatSpecifier<'M'>(output[], millisecond)
+{
+	strcat(output, MsToString(millisecond, "%h:%m:%s.%d"));
+}

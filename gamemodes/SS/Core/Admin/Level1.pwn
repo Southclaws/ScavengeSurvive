@@ -323,26 +323,25 @@ ACMD:aliases[1](playerid, params[])
 
 	new
 		ret,
-		list[6][E_ALIAS_DATA],
+		list[60][MAX_PLAYER_NAME],
 		count,
-		adminlevel,
-		string[(MAX_PLAYER_NAME + 10) * 6];
+		adminlevel;
 
 	if(type == 'a')
 	{
-		ret = GetAccountAliasesByAll(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByAll(name, list, count, 60, adminlevel);
 	}
 	else if(type == 'i')
 	{
-		ret = GetAccountAliasesByIP(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByIP(name, list, count, 60, adminlevel);
 	}
 	else if(type == 'p')
 	{
-		ret = GetAccountAliasesByPass(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByPass(name, list, count, 60, adminlevel);
 	}
 	else if(type == 'h')
 	{
-		ret = GetAccountAliasesByHash(name, list, count, 6, adminlevel);
+		ret = GetAccountAliasesByHash(name, list, count, 60, adminlevel);
 	}
 	else
 	{
@@ -356,51 +355,15 @@ ACMD:aliases[1](playerid, params[])
 		return 1;
 	}
 
-	if(count == 0)
+	if(count == 0 || adminlevel > GetPlayerAdminLevel(playerid))
 	{
 		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
 		return 1;
 	}
 
-	if(count == 1)
-	{
-		if(list[0][alias_Banned])
-			strcat(string, C_RED);
+	gBigString[playerid][0] = EOS;
 
-		else
-			strcat(string, C_ORANGE);
-
-		strcat(string, list[0][alias_Name]);
-	}
-
-	if(count > 1)
-	{
-		for(new i; i < count; i++)
-		{
-			if(i >= 6)
-				break;
-
-			if(list[i][alias_Banned])
-				strcat(string, C_RED);
-
-			else
-				strcat(string, C_ORANGE);
-
-			strcat(string, list[i][alias_Name]);
-
-			if(i < count - 1)
-				strcat(string, ", ");
-		}
-	}
-
-	if(adminlevel <= GetPlayerAdminLevel(playerid))
-	{
-		MsgF(playerid, YELLOW, " >  Aliases: "C_BLUE"(%d) %s", count, string);
-	}
-	else
-	{
-		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
-	}
+	ShowPlayerList(playerid, list, count, true);
 
 	return 1;
 }
