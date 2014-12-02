@@ -206,7 +206,10 @@ LoadAccount(playerid)
 		stmt_fetch_row(stmt_AccountExists);
 
 		if(exists == 0)
+		{
+			logf("[LOAD] %p (account does not exist)", playerid);
 			return 0;
+		}
 	}
 	else
 	{
@@ -235,7 +238,10 @@ LoadAccount(playerid)
 	stmt_fetch_row(stmt_AccountLoad);
 
 	if(!active)
+	{
+		logf("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, lastlog);
 		return 4;
+	}
 
 	if(IsWhitelistActive())
 	{
@@ -244,6 +250,7 @@ LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
+			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, lastlog);
 			return 3;
 		}
 	}
@@ -261,8 +268,13 @@ LoadAccount(playerid)
 	SetPlayerAimShoutText(playerid, aimshout);
 
 	if(GetPlayerIpAsInt(playerid) == ipv4)
+	{
+		logf("[LOAD] %p (account exists, auto login)", playerid);
 		return 2;
-	
+	}
+
+	logf("[LOAD] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
+
 	return 1;
 }
 
@@ -499,6 +511,12 @@ Login(playerid)
 
 Logout(playerid, docombatlogcheck = 1)
 {
+	if(!acc_LoggedIn[playerid])
+	{
+		printf("[LOGOUT] %p not logged in.", playerid);
+		return 0;
+	}
+
 	new
 		Float:x,
 		Float:y,
@@ -508,13 +526,8 @@ Logout(playerid, docombatlogcheck = 1)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Alive: %d combat logging: %d knocked out: %d logged in: %d", playerid, x, y, z, r, IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid), acc_LoggedIn[playerid]);
-
-	if(!acc_LoggedIn[playerid])
-	{
-		d:1:HANDLER("[LOGOUT] ERROR: Player not logged in, aborting save.");
-		return 0;
-	}
+	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Logged In: %d Alive: %d Knocked Out: %d",
+		playerid, x, y, z, r, acc_LoggedIn[playerid], IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid));
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
@@ -702,6 +715,8 @@ stock GetAccountData(name[], pass[], &ipv4, &alive, &karma, &regdate, &lastlog, 
 		print("ERROR: [GetAccountData] executing statement 'stmt_AccountLoad'.");
 		return 0;
 	}
+
+	stmt_fetch_row(stmt_AccountLoad);
 
 	return 1;
 }

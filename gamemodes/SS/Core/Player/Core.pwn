@@ -177,35 +177,26 @@ timer LoadAccountDelay[5000](playerid)
 	if(loadresult == 0) // Account does not exist
 	{
 		DisplayRegisterPrompt(playerid);
-
-		log(sprintf("[LOAD] %p (account does not exist)", playerid), 0);
 	}
 
 	if(loadresult == 1) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
-
-		log(sprintf("[LOAD] %p (account exists, prompting login)", playerid), 0);
 	}
 
 	if(loadresult == 2) // Account does exist, auto login
 	{
 		Login(playerid);
-
-		log(sprintf("[LOAD] %p (account exists, auto login)", playerid), 0);
 	}
 
 	if(loadresult == 3) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
-
-		log(sprintf("[LOAD] %p (account not whitelisted)", playerid), 0);
 	}
 
 	if(loadresult == 4) // Account does exists, but is disabled
 	{
 		KickPlayer(playerid, "Account inactive");
-		log(sprintf("[LOAD] %p (account inactive)", playerid), 0);
 	}
 
 	CheckForExtraAccounts(playerid);
