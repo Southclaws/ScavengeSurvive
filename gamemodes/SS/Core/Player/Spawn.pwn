@@ -90,8 +90,6 @@ PlayerSpawnExistingCharacter(playerid)
 	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
-	SetPlayerVirtualWorld(playerid, 0);
-	SetPlayerInterior(playerid, 0);
 
 	SetPlayerGender(playerid, GetClothesGender(GetPlayerClothes(playerid)));
 
@@ -181,7 +179,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	SetPlayerTotalSpawns(playerid, GetPlayerTotalSpawns(playerid) + 1);
 
-	GetAccountLastSpawnTimestamp(name, gettime());
+	SetAccountLastSpawnTimestamp(name, gettime());
 	SetAccountTotalSpawns(name, GetPlayerTotalSpawns(playerid));
 
 	new

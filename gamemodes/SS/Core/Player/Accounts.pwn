@@ -619,6 +619,12 @@ SavePlayerData(playerid)
 {
 	d:1:HANDLER("[SavePlayerData] Saving '%p'", playerid);
 
+	if(!acc_LoggedIn[playerid])
+	{
+		d:1:HANDLER("[SavePlayerData] ERROR: Player isn't logged in");
+		return 0;
+	}
+
 	if(IsPlayerOnAdminDuty(playerid))
 	{
 		d:1:HANDLER("[SavePlayerData] ERROR: On admin duty");
@@ -788,7 +794,7 @@ stock SetAccountIP(name[], ip)
 stock GetAccountAliveState(name[], &alivestate)
 {
 	stmt_bind_result_field(stmt_AccountGetAliveState, 0, DB::TYPE_INTEGER, alivestate);
-	stmt_bind_value(stmt_AccountGetAliveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AccountGetAliveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(stmt_AccountGetAliveState))
 		return 0;
@@ -873,7 +879,7 @@ stock SetAccountLastLogin(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_SPAWNTIME
-stock GetAccountLastSpawnTimestamp(name[], timestamp)
+stock GetAccountLastSpawnTimestamp(name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetSpawnTime, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetSpawnTime, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -983,9 +989,9 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 }
 
 // FIELD_ID_PLAYER_ACTIVE
-stock GetAccountActiveState(name[], active)
+stock GetAccountActiveState(name[], &active)
 {
-	stmt_bind_result_field(stmt_AccountGetActiveState, 0, DB::TYPE_INTEGER , active);
+	stmt_bind_result_field(stmt_AccountGetActiveState, 0, DB::TYPE_INTEGER, active);
 	stmt_bind_value(stmt_AccountGetActiveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(stmt_AccountGetActiveState))
