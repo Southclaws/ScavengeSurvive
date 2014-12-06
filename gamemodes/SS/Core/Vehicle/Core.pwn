@@ -743,6 +743,7 @@ stock SetVehicleHP(vehicleid, Float:health)
 		return 0;
 
 	veh_Data[vehicleid][veh_health] = health;
+	_veh_SyncData(vehicleid); // hotfix
 
 	return 1;
 }

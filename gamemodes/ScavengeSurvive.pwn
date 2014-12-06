@@ -618,6 +618,7 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	print("\n[OnScriptExit] Shutting down...");
+	SendRconCommand("exit");
 }
 
 forward SetRestart(seconds);
