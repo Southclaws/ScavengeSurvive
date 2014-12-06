@@ -466,7 +466,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsContainerFull(containerid))
 				{
-					if(IsValidItem(GetPlayerItem(playerid)))
+					if(!IsValidItem(GetPlayerItem(playerid)))
 					{
 						RemovePlayerHat(playerid);
 
@@ -503,7 +503,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			{
 				if(IsPlayerInventoryFull(playerid))
 				{
-					if(IsValidItem(GetPlayerItem(playerid)))
+					if(!IsValidItem(GetPlayerItem(playerid)))
 					{
 						RemovePlayerHat(playerid);
 
@@ -520,11 +520,10 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 				else
 				{
-					RemovePlayerHat(playerid);
-
 					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
 					if(AddItemToInventory(playerid, itemid) == 1)
 					{
+						RemovePlayerHat(playerid);
 						UpdatePlayerGear(playerid);
 						DisplayPlayerInventory(playerid);
 
@@ -690,6 +689,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 
 				AddItemToContainer(containerid, itemid, playerid);
+				RemovePlayerHolsterItem(playerid);
 				UpdatePlayerGear(playerid);
 				DisplayContainerInventory(playerid, containerid);
 			}
@@ -706,6 +706,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 				}
 
 				AddItemToInventory(playerid, itemid);
+				RemovePlayerHolsterItem(playerid);
 				UpdatePlayerGear(playerid);
 				DisplayPlayerInventory(playerid);
 			}
