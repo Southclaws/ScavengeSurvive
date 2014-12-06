@@ -1,5 +1,5 @@
 #define PLAYER_LIST_MAX_ITEMS	(32)
-#define PLAYER_LIST_ITEM_LEN	(MAX_PLAYER_NAME + 64) // 100ish max extra chars
+#define PLAYER_LIST_ITEM_LEN	(MAX_PLAYER_NAME + 40) // 100ish max extra chars
 
 
 static

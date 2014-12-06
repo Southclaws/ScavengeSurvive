@@ -323,25 +323,25 @@ ACMD:aliases[1](playerid, params[])
 
 	new
 		ret,
-		list[60][MAX_PLAYER_NAME],
+		list[32][MAX_PLAYER_NAME],
 		count,
 		adminlevel;
 
 	if(type == 'a')
 	{
-		ret = GetAccountAliasesByAll(name, list, count, 60, adminlevel);
+		ret = GetAccountAliasesByAll(name, list, count, 32, adminlevel);
 	}
 	else if(type == 'i')
 	{
-		ret = GetAccountAliasesByIP(name, list, count, 60, adminlevel);
+		ret = GetAccountAliasesByIP(name, list, count, 32, adminlevel);
 	}
 	else if(type == 'p')
 	{
-		ret = GetAccountAliasesByPass(name, list, count, 60, adminlevel);
+		ret = GetAccountAliasesByPass(name, list, count, 32, adminlevel);
 	}
 	else if(type == 'h')
 	{
-		ret = GetAccountAliasesByHash(name, list, count, 60, adminlevel);
+		ret = GetAccountAliasesByHash(name, list, count, 32, adminlevel);
 	}
 	else
 	{
@@ -363,7 +363,7 @@ ACMD:aliases[1](playerid, params[])
 
 	gBigString[playerid][0] = EOS;
 
-	ShowPlayerList(playerid, list, count, true);
+	ShowPlayerList(playerid, list, (count > 32) ? 32 : count, true);
 
 	return 1;
 }

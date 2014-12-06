@@ -53,7 +53,7 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 		amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
 		type = GetItemArrayDataAtCell(itemid, E_BOTTLE_TYPE);
 
-		if(amount > 0)
+		if(amount > 0 && type < sizeof(drink_Types))
 		{
 			SetItemNameExtra(itemid, drink_Types[type]);
 		}
