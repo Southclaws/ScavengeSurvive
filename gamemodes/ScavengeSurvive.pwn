@@ -505,7 +505,6 @@ new stock
 #include "SS/Core/Item/policecap.pwn"
 #include "SS/Core/Item/tophat.pwn"
 #include "SS/Core/Item/herpderp.pwn"
-#include "SS/Core/Item/candrink.pwn"
 #include "SS/Core/Item/TntProxMine.pwn"
 #include "SS/Core/Item/IedTimebomb.pwn"
 #include "SS/Core/Item/IedTripMine.pwn"

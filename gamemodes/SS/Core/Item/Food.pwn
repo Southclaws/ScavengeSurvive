@@ -4,20 +4,30 @@
 #define MAX_FOOD_ITEM (16)
 
 
+enum e_FOOD_ITEM_DATA
+{
+			food_cooked,
+			food_amount,
+			food_subType
+}
+
 enum E_FOOD_DATA
 {
 ItemType:	food_itemType,
-Float:		food_foodValue,
+			food_maxBites,
+Float:		food_biteValue,
+			food_canCook,
 			food_canRawInfect,
-			food_consumeType
+			food_consumeType,
+			food_destroyOnEnd
 }
 
 
 static
 			food_Data[MAX_FOOD_ITEM][E_FOOD_DATA],
+			food_ItemTypeFoodType[ITM_MAX_TYPES] = {-1, ...},
 			food_Total,
-			food_CurrentItem[MAX_PLAYERS],
-			food_CurrentFoodType[MAX_PLAYERS];
+			food_CurrentItem[MAX_PLAYERS];
 
 
 forward OnPlayerEat(playerid, itemid);
@@ -27,7 +37,6 @@ forward OnPlayerEaten(playerid, itemid);
 hook OnPlayerConnect(playerid)
 {
 	food_CurrentItem[playerid] = -1;
-	food_CurrentFoodType[playerid] = -1;
 }
 
 
@@ -38,12 +47,17 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineFoodItem(ItemType:itemtype, Float:foodvalue, canrawinfect, consumetype)
+DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfect, consumetype, destroyonend)
 {
-	food_Data[food_Total][food_itemType] = itemtype;
-	food_Data[food_Total][food_foodValue] = foodvalue;
-	food_Data[food_Total][food_canRawInfect] = canrawinfect;
-	food_Data[food_Total][food_consumeType] = consumetype;
+	food_Data[food_Total][food_itemType]		= itemtype;
+	food_Data[food_Total][food_maxBites]		= maxbites;
+	food_Data[food_Total][food_biteValue]		= bitevalue;
+	food_Data[food_Total][food_canCook]			= cancook;
+	food_Data[food_Total][food_canRawInfect]	= canrawinfect;
+	food_Data[food_Total][food_consumeType]		= consumetype;
+	food_Data[food_Total][food_destroyOnEnd]	= destroyonend;
+
+	food_ItemTypeFoodType[itemtype] = food_Total;
 
 	return food_Total++;
 }
@@ -56,24 +70,40 @@ DefineFoodItem(ItemType:itemtype, Float:foodvalue, canrawinfect, consumetype)
 ==============================================================================*/
 
 
-public OnPlayerUseItem(playerid, itemid)
+public OnItemCreate(itemid)
 {
-	if(IsPlayerIdle(playerid))
+	if(IsItemLoot(itemid))
 	{
-		if(!IsPlayerAtAnyVehicleTrunk(playerid))
+		new foodtype = GetItemTypeFoodType(GetItemType(itemid));
+
+		if(foodtype != -1)
 		{
-			if(IsValidItem(itemid))
-			{
-				for(new i; i < food_Total; i++)
-				{
-					if(GetItemType(itemid) == food_Data[i][food_itemType])
-					{
-						StartEating(playerid, i, itemid);
-					}
-				}
-			}
+			SetItemArrayDataAtCell(itemid, 0, food_cooked, 0);
+			SetItemArrayDataAtCell(itemid, random(food_Data[_:foodtype][food_maxBites]), food_amount, 1);
 		}
 	}
+
+	#if defined food_OnItemCreate
+		return food_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnItemCreate
+	#undef OnItemCreate
+#else
+	#define _ALS_OnItemCreate
+#endif
+ 
+#define OnItemCreate food_OnItemCreate
+#if defined food_OnItemCreate
+	forward food_OnItemCreate(itemid);
+#endif
+
+public OnPlayerUseItem(playerid, itemid)
+{
+	if(GetItemTypeFoodType(GetItemType(itemid)) != -1)
+		_StartEating(playerid, itemid);
 
 	#if defined food_OnPlayerUseItem
 		return food_OnPlayerUseItem(playerid, itemid);
@@ -96,16 +126,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16 && food_CurrentItem[playerid] != -1)
 	{
-		StopEating(playerid);
+		_StopEating(playerid);
 	}
 
 	return 1;
 }
 
-StartEating(playerid, foodtype, itemid)
+_StartEating(playerid, itemid, continuing = false)
 {
+	if(!IsPlayerIdle(playerid) && !continuing)
+		return;
+
+	if(IsPlayerAtAnyVehicleTrunk(playerid))
+		return;
+
 	food_CurrentItem[playerid] = itemid;
-	food_CurrentFoodType[playerid] = foodtype;
 
 	if(CallLocalFunction("OnPlayerEat", "dd", playerid, itemid))
 	{
@@ -113,7 +148,7 @@ StartEating(playerid, foodtype, itemid)
 		return;
 	}
 
-	if(food_Data[foodtype][food_consumeType] == 0)
+	if(food_Data[GetItemTypeFoodType(GetItemType(itemid))][food_consumeType] == 0)
 	{
 		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
 		StartHoldAction(playerid, 3200);
@@ -127,7 +162,7 @@ StartEating(playerid, foodtype, itemid)
 	return;
 }
 
-StopEating(playerid)
+_StopEating(playerid)
 {
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
@@ -135,47 +170,62 @@ StopEating(playerid)
 	food_CurrentItem[playerid] = -1;
 }
 
-public OnHoldActionFinish(playerid)
+_EatItem(playerid, itemid)
 {
-	if(food_CurrentItem[playerid] != -1)
+	if(!IsValidItem(itemid))
+		return 0;
+
+	if(GetPlayerItem(playerid) != itemid)
+		return 0;
+
+	new foodtype = GetItemTypeFoodType(GetItemType(itemid));
+
+	if(foodtype == -1)
+		return 0;
+
+	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid))
 	{
-		if(!IsValidItem(food_CurrentItem[playerid]))
-			return 0;
+		_StopEating(playerid);
+		return 0;
+	}
 
-		if(GetPlayerItem(playerid) != food_CurrentItem[playerid])
-			return 0;
-
-		if(!IsItemTypeFood(GetItemType(food_CurrentItem[playerid])))
-			return 0;
-
-		if(CallLocalFunction("OnPlayerEaten", "dd", playerid, food_CurrentItem[playerid]))
+	if(GetItemArrayDataAtCell(itemid, food_amount) > 0)
+	{
+		if(food_Data[foodtype][food_canCook] && GetItemArrayDataAtCell(itemid, food_cooked) == 0)
 		{
-			StopEating(playerid);
-			return 0;
-		}
+			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue] / 4);
 
-		if(GetItemExtraData(GetPlayerItem(playerid)) == 0)
-		{
-			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentFoodType[playerid]][food_foodValue] / 4);
-
-			if(food_Data[food_CurrentFoodType[playerid]][food_canRawInfect])
+			if(food_Data[foodtype][food_canRawInfect])
 				SetPlayerBitFlag(playerid, Infected, true);
 		}
 		else
 		{
-			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[food_CurrentFoodType[playerid]][food_foodValue]);
+			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue]);
 		}
 
-		if(food_Data[food_CurrentFoodType[playerid]][food_consumeType] == 0)
-		{
-			DestroyItem(food_CurrentItem[playerid]);
-			StopEating(playerid);
-		}
-		else
-		{
-			StartEating(playerid, food_CurrentFoodType[playerid], food_CurrentItem[playerid]);
-		}
+		SetItemArrayDataAtCell(itemid, GetItemArrayDataAtCell(itemid, food_amount) - 1, food_amount, 0);
+	}
 
+	if(GetItemArrayDataAtCell(itemid, food_amount) > 0)
+	{
+		_StartEating(playerid, itemid, true);
+	}
+	else
+	{
+		_StopEating(playerid);
+
+		if(food_Data[foodtype][food_destroyOnEnd])
+			DestroyItem(itemid);
+	}
+
+	return 1;
+}
+
+public OnHoldActionFinish(playerid)
+{
+	if(food_CurrentItem[playerid] != -1)
+	{
+		_EatItem(playerid, food_CurrentItem[playerid]);
 		return 1;
 	}
 
@@ -201,13 +251,17 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 
 	if(foodtype != -1)
 	{
-		if(food_Data[foodtype][food_consumeType] == 0)
+		if(food_Data[foodtype][food_canCook])
 		{
-			if(GetItemExtraData(itemid) == 1)
-				SetItemNameExtra(itemid, "Cooked");
+			if(GetItemArrayDataAtCell(itemid, food_cooked) == 1)
+				SetItemNameExtra(itemid, sprintf("Cooked, %d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
 
 			else
-				SetItemNameExtra(itemid, "Uncooked");
+				SetItemNameExtra(itemid, sprintf("Uncooked, %d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
+		}
+		else
+		{
+			SetItemNameExtra(itemid, sprintf("%d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
 		}
 	}
 
@@ -235,30 +289,113 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 ==============================================================================*/
 
 
-IsItemTypeFood(ItemType:itemtype)
+stock IsItemTypeFood(ItemType:itemtype)
 {
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	for(new i; i < food_Total; i++)
-	{
-		if(itemtype == food_Data[i][food_itemType])
-			return 1;
-	}
-
-	return 0;
+	return GetItemTypeFoodType(itemtype) != -1;
 }
 
-GetItemTypeFoodType(ItemType:itemtype)
+stock GetItemTypeFoodType(ItemType:itemtype)
 {
 	if(!IsValidItemType(itemtype))
+		return -1;
+
+	return food_ItemTypeFoodType[itemtype];
+}
+
+// food_itemType
+stock ItemType:GetFoodTypeItemType(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return INVALID_ITEM_TYPE;
+
+	return food_Data[foodtype][food_itemType];
+}
+
+// food_maxBites
+stock GetFoodTypeMaxBites(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
 		return 0;
 
-	for(new i; i < food_Total; i++)
-	{
-		if(itemtype == food_Data[i][food_itemType])
-			return i;
-	}
+	return food_Data[foodtype][food_maxBites];
+}
 
-	return -1;
+// food_biteValue
+stock Float:GetFoodTypeBiteValue(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return 0.0;
+
+	return food_Data[foodtype][food_biteValue];
+}
+
+// food_canCook
+stock GetFoodTypeCanCook(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return 0;
+
+	return food_Data[foodtype][food_canCook];
+}
+
+// food_canRawInfect
+stock GetFoodTypeCanRawInfect(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return 0;
+
+	return food_Data[foodtype][food_canRawInfect];
+}
+
+// food_consumeType
+stock GetFoodTypeConsumeType(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return 0;
+
+	return food_Data[foodtype][food_consumeType];
+}
+
+// food_destroyOnEnd
+stock GetFoodTypeDestroyOnEnd(foodtype)
+{
+	if(!(0 <= foodtype < food_Total))
+		return 0;
+
+	return food_Data[foodtype][food_destroyOnEnd];
+}
+
+// Item specific
+
+// food_cooked
+stock GetFoodItemCooked(itemid)
+{
+	return GetItemArrayDataAtCell(itemid, food_cooked);
+}
+
+stock SetFoodItemCooked(itemid, value)
+{
+	return SetItemArrayDataAtCell(itemid, value, food_cooked);
+}
+
+// food_amount
+stock GetFoodItemAmount(itemid)
+{
+	return GetItemArrayDataAtCell(itemid, food_amount);
+}
+
+stock SetFoodItemAmount(itemid, value)
+{
+	return SetItemArrayDataAtCell(itemid, value, food_amount);
+}
+
+// food_subType
+stock GetFoodItemSubType(itemid)
+{
+	return GetItemArrayDataAtCell(itemid, food_subType);
+}
+
+stock SetFoodItemSubType(itemid, value)
+{
+	return SetItemArrayDataAtCell(itemid, value, food_subType);
 }

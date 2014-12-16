@@ -1,10 +1,3 @@
-enum
-{
-	E_BOTTLE_AMOUNT,
-	E_BOTTLE_TYPE
-}
-
-
 static
 	drink_Types[2][6]=
 	{
@@ -17,10 +10,9 @@ public OnItemCreate(itemid)
 {
 	if(IsItemLoot(itemid))
 	{
-		if(GetItemType(itemid) == item_Bottle)
+		if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 		{
-			SetItemArrayDataAtCell(itemid, random(10), E_BOTTLE_AMOUNT);
-			SetItemArrayDataAtCell(itemid, random(2), E_BOTTLE_TYPE);
+			SetFoodItemSubType(itemid, random(2));
 		}
 	}
 
@@ -44,18 +36,16 @@ public OnItemCreate(itemid)
 
 public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	if(itemtype == item_Bottle)
+	if(itemtype == item_Bottle || itemtype == item_CanDrink)
 	{
 		new
-			amount,
-			type;
+			foodtype = GetItemTypeFoodType(itemtype),
+			subtype = GetFoodItemSubType(itemid),
+			amount = GetFoodItemAmount(itemid);
 
-		amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
-		type = GetItemArrayDataAtCell(itemid, E_BOTTLE_TYPE);
-
-		if(amount > 0 && type < sizeof(drink_Types))
+		if(amount > 0 && subtype < sizeof(drink_Types))
 		{
-			SetItemNameExtra(itemid, drink_Types[type]);
+			SetItemNameExtra(itemid, sprintf("%s, %d/%d", drink_Types[subtype], amount, GetFoodTypeMaxBites(foodtype)));
 		}
 		else
 		{
@@ -81,27 +71,12 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 
 public OnPlayerEaten(playerid, itemid)
 {
-	if(GetItemType(itemid) == item_Bottle)
+	if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 	{
-		new
-			type,
-			amount;
+		new type = GetFoodItemSubType(itemid);
 
-		type = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
-		amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_TYPE);
-
-		if(amount > 0)
-		{
-			SetItemArrayDataAtCell(itemid, amount - 1, E_BOTTLE_AMOUNT);
-
-			if(type == 1)
-				SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 500);
-		}
-		else
-		{
-			ShowActionText(playerid, "Empty", 2000, 70);
-			return 1;
-		}
+		if(type == 1)
+			SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 1000);
 	}
 	#if defined bot_OnPlayerEaten
 		return bot_OnPlayerEaten(playerid, itemid);

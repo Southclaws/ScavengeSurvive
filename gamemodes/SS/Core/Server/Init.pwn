@@ -698,7 +698,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_TntTimebomb,	1);
 	SetItemTypeMaxArrayData(item_Battery,		1);
 	SetItemTypeMaxArrayData(item_Fusebox,		1);
-	SetItemTypeMaxArrayData(item_Bottle,		2);
+	SetItemTypeMaxArrayData(item_Bottle,		3);
 	SetItemTypeMaxArrayData(item_Sign,			1);
 	SetItemTypeMaxArrayData(item_Armour,		1);
 	SetItemTypeMaxArrayData(item_Bandage,		1);
@@ -714,7 +714,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_MobilePhone,	1);
 	SetItemTypeMaxArrayData(item_Pager,			1);
 	SetItemTypeMaxArrayData(item_Rake,			1);
-	SetItemTypeMaxArrayData(item_HotDog,		1);
+	SetItemTypeMaxArrayData(item_HotDog,		3);
 	SetItemTypeMaxArrayData(item_EasterEgg,		1);
 	SetItemTypeMaxArrayData(item_Cane,			1);
 	SetItemTypeMaxArrayData(item_HandCuffs,		1);
@@ -729,10 +729,10 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Accelerometer,	1);
 	SetItemTypeMaxArrayData(item_TntProxMine,	1);
 	SetItemTypeMaxArrayData(item_IedBomb,		1);
-	SetItemTypeMaxArrayData(item_Pizza,			1);
-	SetItemTypeMaxArrayData(item_Burger,		1);
-	SetItemTypeMaxArrayData(item_BurgerBox,		1);
-	SetItemTypeMaxArrayData(item_Taco,			1);
+	SetItemTypeMaxArrayData(item_Pizza,			3);
+	SetItemTypeMaxArrayData(item_Burger,		3);
+	SetItemTypeMaxArrayData(item_BurgerBox,		3);
+	SetItemTypeMaxArrayData(item_Taco,			3);
 	SetItemTypeMaxArrayData(item_GasCan,		1);
 	SetItemTypeMaxArrayData(item_Clothes,		1);
 	SetItemTypeMaxArrayData(item_HelmArmy,		1);
@@ -740,7 +740,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_SmallBox,		2);
 	SetItemTypeMaxArrayData(item_LargeBox,		2);
 	SetItemTypeMaxArrayData(item_HockeyMask,	1);
-	SetItemTypeMaxArrayData(item_Meat,			1);
+	SetItemTypeMaxArrayData(item_Meat,			3);
 	SetItemTypeMaxArrayData(item_DeadLeg,		1);
 	SetItemTypeMaxArrayData(item_Torso,			MAX_PLAYER_NAME + 128 + 2);
 	SetItemTypeMaxArrayData(item_LongPlank,		1);
@@ -756,8 +756,8 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Headlight,		1);
 	SetItemTypeMaxArrayData(item_Pills,			1);
 	SetItemTypeMaxArrayData(item_AutoInjec,		1);
-	SetItemTypeMaxArrayData(item_BurgerBag,		1);
-	SetItemTypeMaxArrayData(item_CanDrink,		1);
+	SetItemTypeMaxArrayData(item_BurgerBag,		3);
+	SetItemTypeMaxArrayData(item_CanDrink,		3);
 	SetItemTypeMaxArrayData(item_Detergent,		1);
 	SetItemTypeMaxArrayData(item_Dice,			1);
 	SetItemTypeMaxArrayData(item_Dynamite,		1);
@@ -1062,16 +1062,15 @@ public OnScriptInit()
 	SetItemTypeHolsterable(item_Model70Rifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_LenKnocksRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
 
-
-	DefineFoodItem(item_HotDog,			20.0, 1, 0);
-	DefineFoodItem(item_Pizza,			50.0, 0, 0);
-	DefineFoodItem(item_Burger,			25.0, 1, 0);
-	DefineFoodItem(item_BurgerBox,		25.0, 0, 0);
-	DefineFoodItem(item_Taco,			15.0, 0, 0);
-	DefineFoodItem(item_BurgerBag,		30.0, 0, 0);
-	DefineFoodItem(item_Meat,			65.0, 1, 0);
-	DefineFoodItem(item_Bottle,			1.0, 0, 1);
-	DefineFoodItem(item_CanDrink,		1.0, 0, 1);
+	DefineFoodItem(item_HotDog,			4, 5.00, 1, 1, 0, 1);
+	DefineFoodItem(item_Pizza,			6, 8.30, 1, 0, 0, 1);
+	DefineFoodItem(item_Burger,			4, 6.25, 1, 1, 0, 1);
+	DefineFoodItem(item_BurgerBox,		4, 6.25, 1, 0, 0, 1);
+	DefineFoodItem(item_Taco,			4, 3.75, 1, 0, 0, 1);
+	DefineFoodItem(item_BurgerBag,		4, 7.50, 1, 0, 0, 1);
+	DefineFoodItem(item_Meat,			8, 8.12, 1, 1, 0, 1);
+	DefineFoodItem(item_Bottle,			10, 0.4, 0, 0, 1, 0);
+	DefineFoodItem(item_CanDrink,		10, 0.4, 0, 0, 1, 0);
 
 
 	DefineDefenceItem(item_Door,		180.0, 90.0, 0.0,	90.0, 90.0, 0.0,	-0.0331,	2);

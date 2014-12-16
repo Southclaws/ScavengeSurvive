@@ -33,12 +33,12 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 	if(itemtype == item_Bottle)
 	{
-		new amount = GetItemArrayDataAtCell(itemid, E_BOTTLE_AMOUNT);
+		new amount = GetFoodItemSubType(itemid);
 
 		if(amount > 0)
 		{
 			SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
-			SetItemArrayDataAtCell(itemid, amount - 1, E_BOTTLE_AMOUNT);
+			SetFoodItemAmount(itemid, amount - 1);
 			ShowActionText(playerid, "Added 1 water to plant pot", 5000);
 			SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
 		}
