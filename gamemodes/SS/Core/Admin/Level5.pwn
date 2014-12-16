@@ -168,34 +168,68 @@ ACMD:gotodef[4](playerid, params[])
 
 ACMD:vw[5](playerid, params[])
 {
-	SetPlayerVirtualWorld(playerid, strval(params));
+	if(isnull(params))
+		MsgF(playerid, YELLOW, "Current VW: %d", GetPlayerVirtualWorld(playerid));
+
+	else
+		SetPlayerVirtualWorld(playerid, strval(params));
+
 	return 1;
 }
 
 ACMD:iw[5](playerid, params[])
 {
-	SetPlayerInterior(playerid, strval(params));
+	if(isnull(params))
+		MsgF(playerid, YELLOW, "Current INT: %d", GetPlayerInterior(playerid));
+
+	else
+		SetPlayerInterior(playerid, strval(params));
+
 	return 1;
 }
 
 ACMD:health[5](playerid, params[])
 {
-	SetPlayerHP(playerid, floatstr(params));
-	MsgF(playerid, YELLOW, "Set health to %f", floatstr(params));
+	if(isnull(params))
+	{
+		MsgF(playerid, YELLOW, "Current health %f", GetPlayerHP(playerid));
+	}
+	else
+	{
+		SetPlayerHP(playerid, floatstr(params));
+		MsgF(playerid, YELLOW, "Set health to %f", floatstr(params));
+	}
+
 	return 1;
 }
 
 ACMD:food[5](playerid, params[])
 {
-	SetPlayerFP(playerid, floatstr(params));
-	MsgF(playerid, YELLOW, "Set food to %f", floatstr(params));
+	if(isnull(params))
+	{
+		MsgF(playerid, YELLOW, "Current food %f", GetPlayerFP(playerid));
+	}
+	else
+	{
+		SetPlayerFP(playerid, floatstr(params));
+		MsgF(playerid, YELLOW, "Set food to %f", floatstr(params));
+	}
+
 	return 1;
 }
 
 ACMD:bleed[5](playerid, params[])
 {
-	SetPlayerBleedRate(playerid, floatstr(params));
-	MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
+	if(isnull(params))
+	{
+		MsgF(playerid, YELLOW, "Current bleed rate %f", GetPlayerBleedRate(playerid));
+	}
+	else
+	{
+		SetPlayerBleedRate(playerid, floatstr(params));
+		MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
+	}
+
 	return 1;
 }
 
