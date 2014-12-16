@@ -169,10 +169,28 @@ _vint_EnterArea(playerid, areaid)
 		return;
 	}
 
-	new cell = Iter_Free(varea_NearIndex[playerid]);
+	new bool:exists = false;
 
-	varea_NearList[playerid][cell] = data[1];
-	Iter_Add(varea_NearIndex[playerid], cell);
+	foreach(new i : varea_NearIndex[playerid])
+	{
+		if(varea_NearList[playerid][i] == data[1])
+		{
+			exists = true;
+			break;
+		}
+	}
+
+	if(!exists)
+	{
+		new cell = Iter_Free(varea_NearIndex[playerid]);
+
+		varea_NearList[playerid][cell] = data[1];
+		Iter_Add(varea_NearIndex[playerid], cell);
+	}
+	else
+	{
+		printf("ERROR: Vehicle %d already in NearList for player %d", data[1], playerid);
+	}
 
 	CallLocalFunction("OnPlayerEnterVehicleArea", "dd", playerid, data[1]);
 
