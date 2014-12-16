@@ -365,11 +365,11 @@ ACMD:move[3](playerid, params[])
 ACMD:additem[3](playerid, params[])
 {
 	new
-		ItemType:type,
+		ItemType:type = INVALID_ITEM_TYPE,
 		itemname[ITM_MAX_NAME],
 		exdata[8];
 
-	if(sscanf(params, "p<,>dD(0)", _:type, exdata) != 0)
+	if(sscanf(params, "p<,>dA<d>(0)[8]", _:type, exdata) != 0)
 	{
 		new tmp[ITM_MAX_NAME];
 
@@ -381,7 +381,7 @@ ACMD:additem[3](playerid, params[])
 
 		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
 		{
-			GetItemTypeName(i, itemname);
+			GetItemTypeUniqueName(i, itemname);
 
 			if(strfind(itemname, tmp, true) != -1)
 			{
@@ -389,11 +389,31 @@ ACMD:additem[3](playerid, params[])
 				break;
 			}
 		}
+
+		if(type == INVALID_ITEM_TYPE)
+		{
+			for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+			{
+				GetItemTypeName(i, itemname);
+
+				if(strfind(itemname, tmp, true) != -1)
+				{
+					type = i;
+					break;
+				}
+			}
+		}
+
+		if(type == INVALID_ITEM_TYPE)
+		{
+			MsgF(playerid, RED, " >  No items found matching: '%s'.", tmp);
+			return 1;
+		}
 	}
 
-	if(type == ItemType:0)
+	if(type == INVALID_ITEM_TYPE)
 	{
-		Msg(playerid, RED, " >  Cannot create item type 0");
+		MsgF(playerid, RED, " >  Invalid item type: %d", _:type);
 		return 1;
 	}
 
