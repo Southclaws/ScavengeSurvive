@@ -743,16 +743,14 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 				return 0;
 			}
 
-			if(IsContainerFull(containerid))
-			{
-				new
-					str[CNT_MAX_NAME + 6],
-					name[CNT_MAX_NAME];
+			new
+				itemsize = GetItemTypeSize(GetItemType(itemid)),
+				freeslots = GetContainerFreeSlots(containerid);
 
-				GetContainerName(containerid, name);
-				format(str, sizeof(str), "%s full", name);
-				ShowActionText(playerid, str, 3000, 100);
-				DisplayPlayerInventory(playerid);
+			if(itemsize > freeslots)
+			{
+				ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
+				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
 
@@ -816,36 +814,23 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 
 			if(!IsValidItem(itemid))
 			{
-				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #1");
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
 
-			if(IsContainerFull(bagcontainerid))
-			{
-				new
-					str[CNT_MAX_NAME + 6],
-					name[CNT_MAX_NAME];
+			new
+				itemsize = GetItemTypeSize(GetItemType(itemid)),
+				freeslots = GetContainerFreeSlots(containerid);
 
-				GetContainerName(bagcontainerid, name);
-				format(str, sizeof(str), "%s full", name);
-				ShowActionText(playerid, str, 3000, 100);
-				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #2");
-				DisplayContainerInventory(playerid, containerid);
-				return 0;
-			}
-
-			if(!WillItemTypeFitInContainer(bagcontainerid, GetItemType(itemid)))
+			if(itemsize > freeslots)
 			{
 				ShowActionText(playerid, "Item won't fit", 3000, 140);
-				d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #3");
 				DisplayContainerInventory(playerid, containerid);
 				return 0;
 			}
 
 			RemoveItemFromContainer(containerid, slot);
 			AddItemToContainer(bagcontainerid, itemid, playerid);
-			d:1:HANDLER("[OnPlayerSelectContainerOpt] DisplayContainerInventory call #4");
 			DisplayContainerInventory(playerid, containerid);
 		}
 	}
