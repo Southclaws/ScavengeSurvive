@@ -231,6 +231,9 @@ CheckAdminLevel(playerid)
 
 KickPlayer(playerid, reason[], bool:tellplayer = true)
 {
+	if(!IsPlayerConnected(playerid))
+		return;
+
 	if(admin_PlayerKicked[playerid])
 		return;
 
