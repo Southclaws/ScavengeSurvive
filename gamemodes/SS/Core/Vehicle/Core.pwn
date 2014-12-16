@@ -665,7 +665,7 @@ public OnVehicleDeath(vehicleid, killerid)
 {
 	GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	veh_Data[vehicleid][veh_dead] = true;
-	printf("[DEBUG] Vehicle %d killed by %d", vehicleid, killerid);
+	printf("[OnVehicleDeath] Vehicle %d killed by %d", vehicleid, killerid);
 }
 
 public OnVehicleSpawn(vehicleid)

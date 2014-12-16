@@ -82,7 +82,7 @@ hook OnGameModeInit()
 	vgroup_Unique		= DefineVehicleSpawnGroup("Unique");
 
 // 00
-//					model name	 				group			 	category						size					maxfuel	fuelcons	lootindex			trunksize	spawnchance	flags
+//										model name	 			group			 	category						size					maxfuel	fuelcons	lootindex			trunksize	spawnchance	flags
 	veht_Bobcat		= DefineVehicleType(422, "Bobcat",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		16.0,	loot_CarIndustrial,		34,		88.0);
 	veht_Rustler	= DefineVehicleType(476, "Rustler",			vgroup_Civilian,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_MEDIUM,	88.0,		19.0,	loot_CarCivilian,		10,		0.8);
 	veht_Maverick	= DefineVehicleType(487, "Maverick",		vgroup_Civilian,	VEHICLE_CATEGORY_HELICOPTER,	VEHICLE_SIZE_MEDIUM,	240.0,		76.0,	loot_CarCivilian,		20,		1.0);

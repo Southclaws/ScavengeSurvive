@@ -267,11 +267,11 @@ LoadAccount(playerid)
 	SetPlayerWarnings(playerid, warnings);
 	SetPlayerAimShoutText(playerid, aimshout);
 
-	if(GetPlayerIpAsInt(playerid) == ipv4)
-	{
-		logf("[LOAD] %p (account exists, auto login)", playerid);
-		return 2;
-	}
+//	if(GetPlayerIpAsInt(playerid) == ipv4)
+//	{
+//		logf("[LOAD] %p (account exists, auto login)", playerid);
+//		return 2;
+//	}
 
 	logf("[LOAD] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
 
