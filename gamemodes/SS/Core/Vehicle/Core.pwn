@@ -443,7 +443,7 @@ VehicleSurfingCheck(playerid)
 
 	switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 	{
-		case VEHICLE_CATEGORY_BOAT, VEHICLE_CATEGORY_TRAIN, VEHICLE_CATEGORY_TRAILER:
+		case VEHICLE_CATEGORY_BOAT, VEHICLE_CATEGORY_TRAIN:
 			return;
 	}
 
