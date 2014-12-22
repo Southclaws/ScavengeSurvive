@@ -71,7 +71,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Civilian,		item_HockeyMask,					30.0);
 	AddItemToLootIndex(loot_Civilian,		item_Pumpkin,						10.0);
 	AddItemToLootIndex(loot_Civilian,		item_Daypack,						38.0);
-	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						24.0);
+	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						14.0);
 	AddItemToLootIndex(loot_Civilian,		item_Rucksack,						5.0);
 	AddItemToLootIndex(loot_Civilian,		item_Note,							45.0);
 
@@ -103,8 +103,8 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Industrial,		item_RadioPole,						6.0);
 	AddItemToLootIndex(loot_Industrial,		item_Motor,							15.0);
 	AddItemToLootIndex(loot_Industrial,		item_Daypack,						28.0);
-	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						18.0);
-	AddItemToLootIndex(loot_Industrial,		item_Rucksack,						5.0);
+	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						15.0);
+	AddItemToLootIndex(loot_Industrial,		item_Rucksack,						1.0);
 	AddItemToLootIndex(loot_Industrial,		item_Note,							34.0);
 
 	// loot_Police
@@ -126,7 +126,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Police,			item_Ammo9mm,						30.0);
 	AddItemToLootIndex(loot_Police,			item_AmmoBuck,						20.0);
 	AddItemToLootIndex(loot_Police,			item_Ammo357Tracer,					15.0);
-	AddItemToLootIndex(loot_Police,			item_MediumBag,						22.0);
+	AddItemToLootIndex(loot_Police,			item_MediumBag,						15.0);
 	AddItemToLootIndex(loot_Police,			item_Note,							21.0);
 
 	// loot_Military
@@ -229,8 +229,8 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarCivilian,	item_Motor,							10.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Ammo762,						4.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Daypack,						32.0);
-	AddItemToLootIndex(loot_CarCivilian,	item_MediumBag,						24.0);
-	AddItemToLootIndex(loot_CarCivilian,	item_Rucksack,						10.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_MediumBag,						15.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_Rucksack,						3.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Note,							38.0);
 
 	// loot_CarIndustrial
@@ -292,7 +292,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo9mm,						20.0);
 	AddItemToLootIndex(loot_CarPolice,		item_AmmoBuck,						10.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Ammo357Tracer,					5.0);
-	AddItemToLootIndex(loot_CarPolice,		item_MediumBag,						15.0);
+	AddItemToLootIndex(loot_CarPolice,		item_MediumBag,						10.0);
 	AddItemToLootIndex(loot_CarPolice,		item_Note,							12.0);
 
 	// loot_CarMilitary
@@ -358,8 +358,8 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Survivor,		item_Ammo308,						2.4);
 	AddItemToLootIndex(loot_Survivor,		item_LenKnocksRifle,				0.05);
 	AddItemToLootIndex(loot_Survivor,		item_Daypack,						28.0);
-	AddItemToLootIndex(loot_Survivor,		item_MediumBag,						28.0);
-	AddItemToLootIndex(loot_Survivor,		item_Rucksack,						15.0);
+	AddItemToLootIndex(loot_Survivor,		item_MediumBag,						25.0);
+	AddItemToLootIndex(loot_Survivor,		item_Rucksack,						10.0);
 	AddItemToLootIndex(loot_Survivor,		item_Note,							1.0);
 
 	AddItemToLootIndex(loot_SupplyCrate,	item_Medkit,						40.0);
