@@ -10,7 +10,7 @@ public OnItemCreateInWorld(itemid)
 
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rz, rz, rz);
-		SetItemExtraData(itemid, CreateCampfire(x, y, z, rz));
+		SetItemExtraData(itemid, CreateCampfire(x, y, z, rz, GetItemWorld(itemid), GetItemInterior(itemid)));
 	}
 
 	#if defined cmp_OnItemCreateInWorld

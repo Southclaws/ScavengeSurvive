@@ -19,6 +19,8 @@ enum E_LOOT_SPAWN_DATA
 Float:		loot_posX,
 Float:		loot_posY,
 Float:		loot_posZ,
+			loot_world,
+			loot_interior,
 Float:		loot_weight,
 			loot_size,
 			loot_index,
@@ -83,7 +85,7 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight)
 	return 1;
 }
 
-stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight = 100.0, size = -1)
+stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight = 100.0, size = -1, worldid = 0, interiorid = 0)
 {
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
@@ -103,6 +105,8 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight =
 	loot_SpawnData[loot_SpawnTotal][loot_posX] = x;
 	loot_SpawnData[loot_SpawnTotal][loot_posY] = y;
 	loot_SpawnData[loot_SpawnTotal][loot_posZ] = z;
+	loot_SpawnData[loot_SpawnTotal][loot_world] = worldid;
+	loot_SpawnData[loot_SpawnTotal][loot_interior] = interiorid;
 	loot_SpawnData[loot_SpawnTotal][loot_weight] = weight;
 	loot_SpawnData[loot_SpawnTotal][loot_size] = size;
 	loot_SpawnData[loot_SpawnTotal][loot_index] = lootindex;
@@ -124,16 +128,24 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight =
 		if(!(random(100) < loot_SpawnMult * weight))
 			continue;
 
-		loot_SpawnData[loot_SpawnTotal][loot_items][loot_SpawnData[loot_SpawnTotal][loot_total]++] = CreateLootItem(samplelist, samplelistsize,
+		loot_SpawnData[loot_SpawnTotal][loot_items][loot_SpawnData[loot_SpawnTotal][loot_total]] = CreateLootItem(samplelist, samplelistsize,
 			x + (frandom(1.0) * floatsin(((360 / size) * i) + rot, degrees)),
 			y + (frandom(1.0) * floatcos(((360 / size) * i) + rot, degrees)),
-			z, 0.7);
+			z, worldid, interiorid, 0.7);
+
+/*		if(IsItemTypeBag(GetItemType(loot_SpawnData[loot_SpawnTotal][loot_items][loot_SpawnData[loot_SpawnTotal][loot_total]])))
+		{
+			new containerid = GetItemArrayDataAtCell(loot_SpawnData[loot_SpawnTotal][loot_total], 1);
+			FillContainerWithLoot(containerid, GetContainerSize(containerid) / 2, lootindex);
+		}
+*/
+		loot_SpawnData[loot_SpawnTotal][loot_total]++;
 	}
 
 	return loot_SpawnTotal++;
 }
 
-stock CreateLootItem(ItemType:samplelist[MAX_LOOT_INDEX_ITEMS], samplelistsize, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zoffset = ITEM_BUTTON_OFFSET)
+stock CreateLootItem(ItemType:samplelist[MAX_LOOT_INDEX_ITEMS], samplelistsize, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0, Float:zoffset = ITEM_BUTTON_OFFSET)
 {
 	new
 		ItemType:itemtype,
@@ -149,7 +161,7 @@ stock CreateLootItem(ItemType:samplelist[MAX_LOOT_INDEX_ITEMS], samplelistsize, 
 
 	loot_IsItemLoot[itemid] = 1;
 
-	CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0));
+	CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0), .world = worldid, .interior = interiorid);
 
 	return itemid;
 }
@@ -174,7 +186,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 	return 1;
 }
 
-stock CreateLootItemFromIndex(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, Float:zoffset = ITEM_BUTTON_OFFSET)
+stock CreateLootItemFromIndex(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0, Float:zoffset = ITEM_BUTTON_OFFSET)
 {
 	new
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
@@ -182,7 +194,7 @@ stock CreateLootItemFromIndex(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z =
 
 	samplelistsize = _loot_GenerateLootSampleList(lootindex, samplelist);
 
-	return CreateLootItem(samplelist, samplelistsize, x, y, z, zoffset);
+	return CreateLootItem(samplelist, samplelistsize, x, y, z, worldid, interiorid, zoffset);
 }
 
 
@@ -262,6 +274,18 @@ stock GetLootSpawnPos(lootspawn, &Float:x, &Float:y, &Float:z)
 	z = loot_SpawnData[lootspawn][loot_posZ];
 
 	return 1;
+}
+
+// loot_world
+stock GetLootSpawnWorld(lootspawn)
+{
+	return loot_SpawnData[lootspawn][loot_world];
+}
+
+// loot_interior
+stock GetLootSpawnInterior(lootspawn)
+{
+	return loot_SpawnData[lootspawn][loot_interior];
 }
 
 // loot_weight

@@ -1,4 +1,4 @@
-#define MAX_SAVEBLOCK	(8)
+#define MAX_SAVEBLOCK	(64)
 
 
 enum E_SAVEBLOCK_AREA
@@ -39,3 +39,30 @@ SaveBlockAreaCheck(&Float:x, &Float:y, &Float:z)
 
 	return 0;
 }
+
+public OnPlayerEnterDynamicArea(playerid, areaid)
+{
+	for(new i; i < saveblock_Total; i++)
+	{
+		if(areaid == saveblock_Data[i][saveblock_areaId])
+		{
+			MsgF(playerid, YELLOW, " >  You have entered a save-block area. If you quit while in this area, your character will be moved to a nearby location.");
+		}
+	}
+
+	#if defined sbl_OnPlayerEnterDynamicArea
+		return sbl_OnPlayerEnterDynamicArea(playerid, areaid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerEnterDynamicArea
+	#undef OnPlayerEnterDynamicArea
+#else
+	#define _ALS_OnPlayerEnterDynamicArea
+#endif
+ 
+#define OnPlayerEnterDynamicArea sbl_OnPlayerEnterDynamicArea
+#if defined sbl_OnPlayerEnterDynamicArea
+	forward sbl_OnPlayerEnterDynamicArea(playerid, areaid);
+#endif
