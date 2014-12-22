@@ -22,9 +22,9 @@ CreateXmasTree(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 	box_z = z + 0.6248;
 
 	CreateDynamicObject(xmas_presents[random(4)], box_x, box_y, box_z, 0.0, 0.0, frandom(360.0));
-	containerid = CreateContainer("Christmas Present", 4, box_x, box_y, box_z + 1.0, 0, 0, 1, 0);
+	containerid = CreateContainer("Christmas Present", 10, box_x, box_y, box_z + 1.0, 0, 0, 1, 0);
 
-	FillContainerWithLoot(containerid, random(2) + 1, loot_SupplyCrate);
+	FillContainerWithLoot(containerid, random(10) + 1, loot_Military);
 
 	if(random(100) < 10)
 		AddItemToContainer(containerid, CreateItem(item_XmasHat));
