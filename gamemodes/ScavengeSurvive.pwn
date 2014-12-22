@@ -45,7 +45,7 @@ native gpci(playerid, serial[], len);
 //	#define DEBUG_LABELS_ITEM				(true) // SIF/Item
 #define BTN_MAX							(32768) // SIF/Button
 #define ITM_MAX							(32768) // SIF/Item
-#define CNT_MAX_SLOTS					(64)
+#define CNT_MAX_SLOTS					(100)
 
 /*==============================================================================
 
@@ -562,9 +562,9 @@ main()
 		if(GetItemTypeCount(i) == 0)
 			continue;
 
-		GetItemTypeName(i, itemtypename);
+		GetItemTypeUniqueName(i, itemtypename);
 
-		printf("[%03d] Spawned %d '%s'", _:i, GetItemTypeCount(i), itemtypename);
+		printf("[%03d] Spawned %04d '%s'", _:i, GetItemTypeCount(i), itemtypename);
 	}
 
 	gServerInitialising = false;
@@ -617,7 +617,7 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	print("\n[OnScriptExit] Shutting down...");
-	SendRconCommand("exit");
+	//SendRconCommand("exit");
 }
 
 forward SetRestart(seconds);
