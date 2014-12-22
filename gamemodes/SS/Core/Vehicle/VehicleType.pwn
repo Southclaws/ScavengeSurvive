@@ -26,7 +26,6 @@ enum
 	VEHICLE_CATEGORY_PLANE,
 	VEHICLE_CATEGORY_BOAT,
 	VEHICLE_CATEGORY_TRAIN,
-	VEHICLE_CATEGORY_TRAILER,
 	MAX_VEHICLE_CATEGORIES
 }
 enum
@@ -39,7 +38,8 @@ enum
 enum (<<= 1)
 {
 	VEHICLE_FLAG_NOT_LOCKABLE = 1,
-	VEHICLE_FLAG_NO_ENGINE
+	VEHICLE_FLAG_NO_ENGINE,
+	VEHICLE_FLAG_TRAILER
 }
 
 enum E_VEHICLE_TYPE_DATA
@@ -365,4 +365,13 @@ stock IsVehicleTypeNoEngine(vehicletype)
 		return 0;
 
 	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_NO_ENGINE;
+}
+
+// veh_flags / VEHICLE_FLAG_TRAILER
+stock IsVehicleTypeTrailer(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_TRAILER;
 }
