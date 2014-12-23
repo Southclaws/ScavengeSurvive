@@ -96,7 +96,7 @@ hook OnPlayerConnect(playerid)
 	GetPlayerName(playerid, name, sizeof(name));
 	strins(name, ".", 1);
 
-	format(joinMsg, sizeof(joinMsg), " >>> [%d][%s] has joined the server.", playerid, name);
+	format(joinMsg, sizeof(joinMsg), " >>> [%02d][%s] has joined the server.", playerid, name);
 	IRC_GroupSay(irc_Group, irc_ChatChan, joinMsg);
 
 	return 1;
@@ -126,7 +126,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	GetPlayerName(playerid, name, sizeof(name));
 	strins(name, ".", 1);
 
-	format(leaveMsg, sizeof(leaveMsg), " <<< [%d][%s] has left the server. (%s)", playerid, name, reasonMsg);
+	format(leaveMsg, sizeof(leaveMsg), " <<< [%02d][%s] has left the server. (%s)", playerid, name, reasonMsg);
 	IRC_GroupSay(irc_Group, irc_ChatChan, leaveMsg);
 
 	return 1;
@@ -386,7 +386,7 @@ stock SendIrcChatMessage(name[], text[])
 	new
 		message[7 + MAX_PLAYER_NAME + 128];
 
-	strins(name, ".", 1, MAX_PLAYER_NAME);
+	strins(name, ".", strlen(name) / 2, MAX_PLAYER_NAME);
 
 	format(message, sizeof(message), "[-][%s]: %s", name, text);
 
@@ -400,7 +400,7 @@ stock SendIrcStaffMessage(name[], text[])
 	new
 		message[7 + MAX_PLAYER_NAME + 128];
 
-	strins(name, ".", 1, MAX_PLAYER_NAME);
+	strins(name, ".", strlen(name) / 2, MAX_PLAYER_NAME);
 
 	format(message, sizeof(message), "[-][%s]: %s", name, text);
 

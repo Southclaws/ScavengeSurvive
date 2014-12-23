@@ -115,15 +115,18 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Note)
 	{
-		new string[256];
+		new
+			string[256],
+			len;
 
 		GetItemArrayData(itemid, string);
+		len = strlen(string);
 
-		if(strlen(string) == 0)
+		if(len == 0)
 		{
 			SetItemNameExtra(itemid, "Blank");
 		}
-		else
+		else if(len > 8)
 		{
 			strins(string, "(...)", 8);
 			string[13] = EOS;
