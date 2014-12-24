@@ -84,6 +84,7 @@ enum E_TUT_STATE
 
 
 static
+			Zone,
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
 E_TUT_STATE:TutorialState			[MAX_PLAYERS],
 
@@ -106,6 +107,10 @@ hook OnGameModeInit()
 {
 	// Static objects
 	CreateDynamicObject(17037, -1547.99207, -2725.40356, 49.66700,   0.00000, 0.00000, 55.68000, TUTORIAL_WORLD);
+
+	// Constraint zone
+	new Float:points[12] = {-1657.0,-2703.0,-1630.0,-2676.0,-1563.0,-2694.0,-1507.0,-2747.0,-1534.0,-2796.0,-1657.0,-2703.0};
+	Zone = CreateDynamicPolygon(points, _, _, _, TUTORIAL_WORLD);
 
 	HANDLER = debug_register_handler("tutorial", 0);
 }
@@ -650,6 +655,45 @@ CMD:exit(playerid, params[])
 }
 
 
+public OnPlayerLeaveDynamicArea(playerid, areaid)
+{
+	if(areaid == Zone)
+	{
+		defer _tut_AreaCheck(playerid);
+	}
+
+	#if defined tut_OnPlayerLeaveDynamicArea
+		return tut_OnPlayerLeaveDynamicArea(playerid, areaid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerLeaveDynamicArea
+	#undef OnPlayerLeaveDynamicArea
+#else
+	#define _ALS_OnPlayerLeaveDynamicArea
+#endif
+#define OnPlayerLeaveDynamicArea tut_OnPlayerLeaveDynamicArea
+#if defined tut_OnPlayerLeaveDynamicArea
+	forward tut_OnPlayerLeaveDynamicArea(playerid, areaid);
+#endif
+
+timer _tut_AreaCheck[100](playerid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:angle;
+
+	GetPlayerPos(playerid, x, y, z);
+	angle = GetAngleToPoint(x, y, -1583.0, -2733.0);
+
+	SetPlayerVelocity(playerid, 0.5 * floatsin(-angle, degrees), 0.5 * floatcos(-angle, degrees), 0.1);
+
+	if(!IsPlayerInDynamicArea(playerid, Zone))
+		defer _tut_AreaCheck(playerid);
+}
 
 
 // ALS Stuff (Out of the way)
