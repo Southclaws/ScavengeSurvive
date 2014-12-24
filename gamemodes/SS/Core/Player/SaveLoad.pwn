@@ -449,7 +449,7 @@ LoadPlayerChar(playerid)
 		if(itemtype == ItemType:0)
 			break;
 
-		itemid = CreateItem(itemtype);
+		itemid = CreateItem(itemtype, .virtual = 1);
 
 		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 			SetItemArrayDataFromListItem(itemid, itemlist, i);
@@ -480,7 +480,7 @@ LoadPlayerChar(playerid)
 		for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
 		{
 			itemtype = GetItemListItem(itemlist, i);
-			itemid = CreateItem(itemtype);
+			itemid = CreateItem(itemtype, .virtual = 1);
 
 			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 				SetItemArrayDataFromListItem(itemid, itemlist, i);

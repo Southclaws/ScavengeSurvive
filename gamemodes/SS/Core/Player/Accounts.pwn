@@ -794,7 +794,7 @@ stock SetAccountIP(name[], ip)
 stock GetAccountAliveState(name[], &alivestate)
 {
 	stmt_bind_result_field(stmt_AccountGetAliveState, 0, DB::TYPE_INTEGER, alivestate);
-	stmt_bind_value(stmt_AccountGetAliveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AccountGetAliveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	if(!stmt_execute(stmt_AccountGetAliveState))
 		return 0;

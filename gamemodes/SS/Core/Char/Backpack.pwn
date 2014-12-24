@@ -820,7 +820,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 
 			new
 				itemsize = GetItemTypeSize(GetItemType(itemid)),
-				freeslots = GetContainerFreeSlots(containerid);
+				freeslots = GetContainerFreeSlots(bagcontainerid);
 
 			if(itemsize > freeslots)
 			{
