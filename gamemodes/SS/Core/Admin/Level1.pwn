@@ -201,11 +201,11 @@ ACMD:country[1](playerid, params[])
 				return 4;
 		}
 
-		new country[32];
+		new data[128];
 
-		GetPlayerCountry(targetid, country);
+		GetPlayerCountryDataAsString(targetid, data);
 
-		MsgF(playerid, YELLOW, " >  %P"C_YELLOW"'s GeoIP location: "C_BLUE"%s", targetid, country);
+		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "IP Data", data, "Close", "");
 	}
 	else
 	{
@@ -242,7 +242,7 @@ ACMD:allcountry[1](playerid, params[])
 			country = "Unknown";
 
 		else
-			GetPlayerCountry(i, country);
+			GetPlayerCachedCountryName(i, country);
 
 		format(list, sizeof(list), "%s%p - %s\n", list, i, country);
 	}

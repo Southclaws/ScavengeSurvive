@@ -394,6 +394,7 @@ new stock
 #include "SS/Core/Player/ToolTips.pwn"
 #include "SS/Core/Player/Whitelist.pwn"
 #include "SS/Core/Player/IRC.pwn"
+#include "SS/Core/Player/Country.pwn"
 
 // CHARACTER SCRIPTS
 #include "SS/Core/Char/Food.pwn"
