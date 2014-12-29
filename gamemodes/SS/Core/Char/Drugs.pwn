@@ -105,7 +105,7 @@ stock ApplyDrug(playerid, drugtype, customduration = -1)
 	else
 	{
 		drug_PlayerDrugData[playerid][drugtype][drug_active] = true;
-		drug_PlayerDrugData[playerid][drugtype][drug_tick] = tickcount();
+		drug_PlayerDrugData[playerid][drugtype][drug_tick] = GetTickCount();
 		drug_PlayerDrugData[playerid][drugtype][drug_totalDuration] = customduration == -1 ? drug_TypeData[drugtype][drug_duration] : customduration;
 	}
 
@@ -150,7 +150,7 @@ stock RemoveAllDrugs(playerid)
 
 ==============================================================================*/
 
-DrugsUpdate(playerid)
+ptask DrugsUpdate[100](playerid)
 {
 	for(new i; i < drug_TypeTotal; i++)
 	{

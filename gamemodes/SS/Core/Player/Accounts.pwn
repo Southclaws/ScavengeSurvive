@@ -461,6 +461,7 @@ Login(playerid)
 
 	logf("[LOGIN] %p logged in", playerid);
 
+	// TODO: move to a single query
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 	stmt_bind_value(stmt_AccountSetIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);
 	stmt_execute(stmt_AccountSetIpv4);

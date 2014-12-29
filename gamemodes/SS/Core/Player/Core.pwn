@@ -357,8 +357,6 @@ ptask PlayerUpdate[100](playerid)
 		}
 	}
 
-	DrugsUpdate(playerid);
-
 	gettime(hour, minute);
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
