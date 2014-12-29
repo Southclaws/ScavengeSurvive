@@ -185,7 +185,7 @@ ACMD:vehicle[3](playerid, params[])
 		command[10],
 		vehicleid;
 
-	if(sscanf(params, "s[8]D(-1)", command, vehicleid))
+	if(sscanf(params, "s[10]D(-1)", command, vehicleid))
 	{
 		Msg(playerid, YELLOW, " >  Usage: /vehicle [get/goto/enter/owner/delete/respawn/reset/lock/unlock/removekey] [id]");
 		return 1;

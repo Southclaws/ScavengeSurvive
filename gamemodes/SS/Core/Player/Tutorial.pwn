@@ -52,7 +52,7 @@
 */
 
 
-#define TUTORIAL_WORLD	(90)
+#define TUTORIAL_WORLD	(90 + playerid)
 
 
 enum E_TUT_STATE
@@ -84,9 +84,10 @@ enum E_TUT_STATE
 
 
 static
-			Zone,
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
 E_TUT_STATE:TutorialState			[MAX_PLAYERS],
+Float:		Zone_points[12] = {-1657.0,-2703.0,-1630.0,-2676.0,-1563.0,-2694.0,-1507.0,-2747.0,-1534.0,-2796.0,-1657.0,-2703.0},
+			Zone					[MAX_PLAYERS] = {-1, ...},
 
 			Bag						[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 			Wrench					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
@@ -106,11 +107,7 @@ forward OnPlayerUnHolsteredItem(playerid, itemid);
 hook OnGameModeInit()
 {
 	// Static objects
-	CreateDynamicObject(17037, -1547.99207, -2725.40356, 49.66700,   0.00000, 0.00000, 55.68000, TUTORIAL_WORLD);
-
-	// Constraint zone
-	new Float:points[12] = {-1657.0,-2703.0,-1630.0,-2676.0,-1563.0,-2694.0,-1507.0,-2747.0,-1534.0,-2796.0,-1657.0,-2703.0};
-	Zone = CreateDynamicPolygon(points, _, _, _, TUTORIAL_WORLD);
+	// CreateDynamicObject(17037, -1547.99207, -2725.40356, 49.66700,   0.00000, 0.00000, 55.68000, TUTORIAL_WORLD);
 
 	HANDLER = debug_register_handler("tutorial", 0);
 }
@@ -232,12 +229,38 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 		SetPlayerScreenFadeLevel(playerid, 255);
 
+		DestroyDynamicArea(Zone[playerid]);
+		Zone[playerid] = CreateDynamicPolygon(Zone_points, _, _, _, TUTORIAL_WORLD);
+
+		DestroyItem(Bag[playerid]);
 		Bag[playerid] = CreateItem(item_Satchel, -1639.0580, -2704.1577, 47.8802, _, _, _, _, TUTORIAL_WORLD);
-		Wrench[playerid] = CreateItem(item_Wrench, .world = TUTORIAL_WORLD);
-		AddItemToContainer(GetItemArrayDataAtCell(Bag[playerid], 1), Wrench[playerid]);
 		ShowHelpTip(playerid, "Welcome to the tutorial! Start by picking up that bag over there by holding "KEYTEXT_INTERACT" while standing over it.");
 		TutorialState[playerid] = E_TUT_PICK_BAG;
 	}
+}
+
+ExitTutorial(playerid)
+{
+	if(TutorialState[playerid] == E_TUT_NONE)
+		return 0;
+
+	TutorialState[playerid] = E_TUT_NONE;
+	HideHelpTip(playerid);
+	SetPlayerHealth(playerid, 0.0);
+
+	DestroyDynamicArea(Zone[playerid]);
+	DestroyItem(Bag[playerid]);
+	DestroyItem(Wrench[playerid]);
+	DestroyItem(Weapon[playerid]);
+	DestroyItem(Ammo[playerid]);
+
+	Zone[playerid] = -1;
+	Bag[playerid] = INVALID_ITEM_ID;
+	Wrench[playerid] = INVALID_ITEM_ID;
+	Weapon[playerid] = INVALID_ITEM_ID;
+	Ammo[playerid] = INVALID_ITEM_ID;
+
+	return 1;
 }
 
 
@@ -283,6 +306,8 @@ public OnPlayerWearBag(playerid, itemid)
 	if(TutorialState[playerid] == E_TUT_WEAR_BAG)
 	{
 		ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.");
+		Wrench[playerid] = CreateItem(item_Wrench, .world = TUTORIAL_WORLD);
+		AddItemToContainer(GetBagItemContainerID(itemid), Wrench[playerid]);
 		TutorialState[playerid] = E_TUT_OPEN_INV;
 	}
 
@@ -634,22 +659,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 CMD:exit(playerid, params[])
 {
-	if(TutorialState[playerid] == E_TUT_NONE)
-		return 0;
-
-	TutorialState[playerid] = E_TUT_NONE;
-	HideHelpTip(playerid);
-	SetPlayerHealth(playerid, 0.0);
-
-	DestroyItem(Bag[playerid]);
-	DestroyItem(Wrench[playerid]);
-	DestroyItem(Weapon[playerid]);
-	DestroyItem(Ammo[playerid]);
-
-	Bag[playerid] = INVALID_ITEM_ID;
-	Wrench[playerid] = INVALID_ITEM_ID;
-	Weapon[playerid] = INVALID_ITEM_ID;
-	Ammo[playerid] = INVALID_ITEM_ID;
+	ExitTutorial(playerid);
 
 	return 1;
 }
@@ -657,9 +667,10 @@ CMD:exit(playerid, params[])
 
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {
-	if(areaid == Zone)
+	if(IsPlayerInTutorial(playerid))
 	{
-		defer _tut_AreaCheck(playerid);
+		if(areaid == Zone[playerid])
+			defer _tut_AreaCheck(playerid);
 	}
 
 	#if defined tut_OnPlayerLeaveDynamicArea
@@ -691,7 +702,7 @@ timer _tut_AreaCheck[100](playerid)
 
 	SetPlayerVelocity(playerid, 0.5 * floatsin(-angle, degrees), 0.5 * floatcos(-angle, degrees), 0.1);
 
-	if(!IsPlayerInDynamicArea(playerid, Zone))
+	if(!IsPlayerInDynamicArea(playerid, Zone[playerid]))
 		defer _tut_AreaCheck(playerid);
 }
 
