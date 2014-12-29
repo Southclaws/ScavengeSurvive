@@ -874,7 +874,7 @@ public OnScriptInit()
 
 
 	//									name		bleedrate
-	calibre_9mm		= DefineAmmoCalibre("9mm",		0.015);
+	calibre_9mm		= DefineAmmoCalibre("9mm",		0.025);
 	calibre_50cae	= DefineAmmoCalibre(".50",		0.073);
 	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.031);
 	calibre_556		= DefineAmmoCalibre("5.56mm",	0.019);
@@ -957,8 +957,8 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_Teargas,			WEAPON_TEARGAS,				-1,				0.0,			0,		0);
 	DefineItemTypeWeapon(item_Molotov,			WEAPON_MOLTOV,				-1,				0.0,			0,		0);
 	//					itemtype				baseweapon					calibre			muzzvelocity	magsize	maxmags		animset
-	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	300.0,			10,		1);
-	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	250.0,			10,		1);
+	DefineItemTypeWeapon(item_M9Pistol,			WEAPON_COLT45,				calibre_9mm,	330.0,			10,		1);
+	DefineItemTypeWeapon(item_M9PistolSD,		WEAPON_SILENCED,			calibre_9mm,	295.0,			10,		1);
 	DefineItemTypeWeapon(item_DesertEagle,		WEAPON_DEAGLE,				calibre_357,	420.0,			7,		2);
 	DefineItemTypeWeapon(item_PumpShotgun,		WEAPON_SHOTGUN,				calibre_12g,	475.0,			6,		1);
 	DefineItemTypeWeapon(item_Sawnoff,			WEAPON_SAWEDOFF,			calibre_12g,	265.0,			2,		6);

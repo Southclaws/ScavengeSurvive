@@ -86,7 +86,7 @@ _DoFirearmDamage(playerid, targetid, itemid, ItemType:itemtype, bodypart)
 	// To put it simply, if the weapon has a high muzzle velocity, the round
 	// isn't affected by the distance as much as a weapon with a low muzzle
 	// velocity.
-	velocitydegredationrate = 1.0 - (bulletvelocity / 1000);
+	velocitydegredationrate = 1.0 - (bulletvelocity / 11300);
 	d:2:FIREARM_DEBUG("[_DoFirearmDamage] velocitydegredationrate: %.4f", velocitydegredationrate);
 
 	// Now a graph function, the distance is the 'x' and the degradation rate is
