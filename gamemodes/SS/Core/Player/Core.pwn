@@ -122,19 +122,6 @@ public OnPlayerDisconnect(playerid, reason)
 	if(gServerRestarting)
 		return 0;
 
-
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		{
-			VehicleDoorsState(ply_Data[playerid][ply_CurrentVehicle], 0);
-			SetVehicleExternalLock(ply_Data[playerid][ply_CurrentVehicle], 0);
-		}
-
-		if(IsVehicleUpsideDown(ply_Data[playerid][ply_CurrentVehicle]))
-			SetVehicleHealth(ply_Data[playerid][ply_CurrentVehicle], 0.0);
-	}
-
 	Logout(playerid);
 
 	ResetVariables(playerid);
