@@ -196,27 +196,29 @@ class AppMain(object):
 		hp = float(self.sli_health.get())
 
 
-		velocitydegredationrate = 1.0 - (bulletvelocity / 11300);
+		velocitydegredationrate = 1.0 - (bulletvelocity / 11300)
 
-		bulletvelocity -= math.pow(distance, velocitydegredationrate);
+		bulletvelocity -= math.pow(distance, velocitydegredationrate)
 
-		bleedrate = (bleedrate * (bulletvelocity / 1000.0));
+		bleedrate *= bulletvelocity / 1000.0
+
+		knockmult *= bulletvelocity / 50.0
 
 		bleedrate *= ammotype.get_bleed_multiplier()
 		knockmult *= ammotype.get_knockout_multiplier()
 
-		hploss = (bleedrate * 800)
+		hploss = (bleedrate * 500)
 
 		woundcount = self.sli_wounds.get()
 
-		knockchance = knockmult * (woundcount * (totalbleedrate * 30))
+		knockchance = knockmult * ((woundcount + 1) * ((totalbleedrate * 50) + 1))
 
 		timetolive = 0
 
 		if totalbleedrate > 0.0:
 			timetolive = 100 / (totalbleedrate * 10)
 
-		knockouttime = round((woundcount * (totalbleedrate * 10) * (100.0 - hp) + (200 * (100.0 - hp))));
+		knockouttime = round((knockmult * 0.2) * ((woundcount + 1) * ((totalbleedrate * 10) + 1) * (110.0 - hp) + (200 * (110.0 - hp))));
 
 		return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime
 

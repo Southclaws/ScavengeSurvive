@@ -425,6 +425,7 @@ new stock
 #include "SS/Core/Weapon/damage.melee.pwn"
 #include "SS/Core/Weapon/damage.vehicle.pwn"
 #include "SS/Core/Weapon/damage.explosive.pwn"
+#include "SS/Core/Weapon/damage.world.pwn"
 #include "SS/Core/Weapon/animset.pwn"
 #include "SS/Core/Weapon/misc.pwn"
 #include "SS/Core/Weapon/AntiCombatLog.pwn"

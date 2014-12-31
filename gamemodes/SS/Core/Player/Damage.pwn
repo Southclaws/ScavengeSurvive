@@ -15,31 +15,6 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 	if(!IsPlayerSpawned(issuerid))
 		return 0;
 
-	if(issuerid == INVALID_PLAYER_ID)
-	{
-		// TODO: Fix/improve fall damage.
-		switch(weaponid)
-		{
-			case 37:
-			{
-				GivePlayerHP(playerid, -(amount * 0.1));
-			}
-			case 53:
-			{
-				KnockOutPlayer(playerid, 1500 + random(1500));
-			}
-			default:
-			{
-				if(amount > 6.0 || amount > 70.0)
-				{
-					KnockOutPlayer(playerid, floatround(amount * (IsPlayerUnderDrugEffect(playerid, drug_Adrenaline) ? 52 : 64)));
-				}
-			}
-		}
-
-		return 1;
-	}
-
 	switch(weaponid)
 	{
 		case 31:

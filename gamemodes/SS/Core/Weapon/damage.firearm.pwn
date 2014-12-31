@@ -97,8 +97,10 @@ _DoFirearmDamage(playerid, targetid, itemid, ItemType:itemtype, bodypart)
 
 	// Now to combine the bullet velocity with the initial bleed rate of the
 	// bullet calibre which results in the final bleed rate for the player.
-	bleedrate = (bleedrate * (bulletvelocity / 1000.0));
+	bleedrate *= bulletvelocity / 1000.0;
 	d:2:FIREARM_DEBUG("[_DoFirearmDamage] bleedrate: %.4f", bleedrate);
+
+	knockmult *= bulletvelocity / 50.0;
 
 	// Apply bleedrate and knockout multiplier from ammotype
 	if(IsValidItem(itemid))

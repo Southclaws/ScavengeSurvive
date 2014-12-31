@@ -106,7 +106,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	totalbleedrate = totalbleedrate > 1.0 ? 1.0 : totalbleedrate;
 
 	SetPlayerBleedRate(targetid, totalbleedrate);
-	GivePlayerHP(targetid, -(bleedrate * 10.0));
+	GivePlayerHP(targetid, -(bleedrate * 500.0));
 
 	switch(bodypart)
 	{
@@ -119,14 +119,14 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		case BODY_PART_HEAD: knockmult *= 2.0;
 	}
 
-	if(frandom(100.0) < knockmult * (woundcount * (totalbleedrate * 30)))
+	if(frandom(100.0) < knockmult * ((woundcount + 1) * ((totalbleedrate * 50) + 1)))
 	{
 		new
 			Float:hp,
 			knockouttime;
 
 		hp = GetPlayerHP(targetid);
-		knockouttime = floatround((woundcount * (totalbleedrate * 10) * (100.0 - hp) + (200 * (100.0 - hp))));
+		knockouttime = floatround((knockmult * 0.2) * ((woundcount + 1) * ((totalbleedrate * 10) + 1) * (110.0 - hp) + (200 * (110.0 - hp))));
 
 		if(knockouttime > 1500)
 		{
