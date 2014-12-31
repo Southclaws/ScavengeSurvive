@@ -369,11 +369,11 @@ ACMD:additem[3](playerid, params[])
 		itemname[ITM_MAX_NAME],
 		exdata[8];
 
-	if(sscanf(params, "p<,>dA<d>(0)[8]", _:type, exdata) != 0)
+	if(sscanf(params, "p<,>dA<d>(-2147483648)[8]", _:type, exdata) != 0)
 	{
 		new tmp[ITM_MAX_NAME];
 
-		if(sscanf(params, "p<,>s[32]A<d>(0)[8]", tmp, exdata))
+		if(sscanf(params, "p<,>s[32]A<d>(-2147483648)[8]", tmp, exdata))
 		{
 			Msg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname], [optional:extradata array, comma separated]");
 			return 1;
@@ -418,13 +418,19 @@ ACMD:additem[3](playerid, params[])
 	}
 
 	new
-		exdatasize = 8,
+		exdatasize,
 		typemaxsize = GetItemTypeArrayDataSize(type),
 		itemid,
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:r;
+
+	for(new i; i < 8; ++i)
+	{
+		if(exdata[i] != cellmin)
+			++exdatasize;
+	}
 
 	if(exdatasize > typemaxsize)
 		exdatasize = typemaxsize;
@@ -437,7 +443,8 @@ ACMD:additem[3](playerid, params[])
 		y + (0.5 * floatcos(-r, degrees)),
 		z - 0.8568, .rz = r, .zoffset = 0.7);
 
-	SetItemArrayData(itemid, exdata, exdatasize);
+	if(exdatasize > 0)
+		SetItemArrayData(itemid, exdata, exdatasize);
 
 	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
 	{
