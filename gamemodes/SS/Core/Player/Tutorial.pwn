@@ -275,7 +275,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 	{
 		if(itemid == Bag[playerid])
 		{
-			ShowHelpTip(playerid, "Now wear the bag by pressing "KEYTEXT_PUT_AWAY".");
+			ShowHelpTip(playerid, "Now wear the bag by pressing "KEYTEXT_PUT_AWAY". You can also remove your bag item by pressing "KEYTEXT_DROP_ITEM" while not holding anything.");
 			TutorialState[playerid] = E_TUT_WEAR_BAG;
 		}
 	}
@@ -474,7 +474,7 @@ timer _WeaponUnloadOffset[500](playerid)
 		ShowHelpTip(playerid, "Now load up that different ammunition type. Different types have different effects on your target.");
 		TutorialState[playerid] = E_TUT_LOAD_NEW_AMMO;
 		DestroyItem(Ammo[playerid]);
-		Ammo[playerid] = CreateItem(item_AmmoFlechette, -1627.6945, -2695.4517, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
+		Ammo[playerid] = CreateItem(item_AmmoFlechette, -1635.4324, -2708.2253, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		SetItemExtraData(Ammo[playerid], 12);
 	}
 }
@@ -564,9 +564,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
-		ShowHelpTip(playerid, "You can remove your bag item by pressing "KEYTEXT_DROP_ITEM" with empty hands. Now pick up that weapon over by the gas station.", 30000);
+		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.", 30000);
 		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -1624.3300, -2695.5269, 47.5371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
+		Weapon[playerid] = CreateItem(item_PumpShotgun, -1635.4324, -2707.2253, 47.6371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
 	}
 
@@ -582,9 +582,9 @@ public OnPlayerCloseInventory(playerid)
 {
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
-		ShowHelpTip(playerid, "You can remove your bag item by pressing "KEYTEXT_DROP_ITEM" with empty hands. Now pick up that weapon over by the gas station.", 30000);
+		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.", 30000);
 		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -1624.3300, -2695.5269, 47.5371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
+		Weapon[playerid] = CreateItem(item_PumpShotgun, -1635.4324, -2707.2253, 47.5671, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
 	}
 
@@ -616,7 +616,7 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 	{
 		ShowHelpTip(playerid, "What good is a gun without ammunition? Load your weapon by standing at the ammunition item and pressing "KEYTEXT_INTERACT".");
 		DestroyItem(Ammo[playerid]);
-		Ammo[playerid] = CreateItem(item_AmmoBuck, -1625.6945, -2694.4517, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
+		Ammo[playerid] = CreateItem(item_AmmoBuck, -1635.4324, -2707.2253, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		SetItemExtraData(Ammo[playerid], 12);
 		TutorialState[playerid] = E_TUT_PICK_AMMO;
 	}
@@ -679,7 +679,10 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 	if(IsPlayerInTutorial(playerid))
 	{
 		if(areaid == Zone[playerid])
+		{
+			Msg(playerid, YELLOW, "If you want to leave the tutorial area, type /exit and create a character.");
 			defer _tut_AreaCheck(playerid);
+		}
 	}
 
 	#if defined tut_OnPlayerLeaveDynamicArea

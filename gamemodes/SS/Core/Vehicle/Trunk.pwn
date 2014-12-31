@@ -2,10 +2,10 @@
 
 
 static
-			trunk_ContainerVehicle	[CNT_MAX],
-			trunk_ContainerID		[MAX_VEHICLES],
+			trunk_ContainerVehicle	[CNT_MAX] = {INVALID_VEHICLE_ID, ...},
+			trunk_ContainerID		[MAX_VEHICLES] = {INVALID_CONTAINER_ID, ...},
 			trunk_Locked			[MAX_VEHICLES],
-			trunk_CurrentVehicle	[MAX_PLAYERS];
+			trunk_CurrentVehicle	[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...};
 
 
 /*==============================================================================
