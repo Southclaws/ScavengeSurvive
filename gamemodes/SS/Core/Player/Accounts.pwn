@@ -575,15 +575,13 @@ Logout(playerid, docombatlogcheck = 1)
 	if(IsPlayerAlive(playerid))
 	{
 		DestroyItem(itemid);
+		DestroyItem(GetPlayerHolsterItem(playerid));
 		DestroyPlayerBag(playerid);
 		RemovePlayerHolsterItem(playerid);
 		RemovePlayerWeapon(playerid);
 
 		for(new i; i < INV_MAX_SLOTS; i++)
-		{
 			DestroyItem(GetInventorySlotItem(playerid, 0));
-			RemoveItemFromInventory(playerid, 0);
-		}
 
 		if(IsValidItem(GetPlayerHat(playerid)))
 			RemovePlayerHat(playerid);
@@ -593,15 +591,26 @@ Logout(playerid, docombatlogcheck = 1)
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{
-			new Float:health;
+			new
+				vehicleid = GetPlayerLastVehicle(playerid),
+				Float:health;
 
-			GetVehicleHealth(GetPlayerLastVehicle(playerid), health);
+			GetVehicleHealth(vehicleid, health);
 
-			if(health < VEHICLE_HEALTH_MIN)
-				DestroyVehicle(GetPlayerLastVehicle(playerid));
-
+			if(IsVehicleUpsideDown(vehicleid) || health < 300.0)
+			{
+				DestroyVehicle(vehicleid);
+			}
 			else
-				UpdateVehicleFile(GetPlayerLastVehicle(playerid));
+			{
+				if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+				{
+					VehicleDoorsState(vehicleid, 0);
+					SetVehicleExternalLock(vehicleid, 0);
+				}
+			}
+
+			UpdateVehicleFile(vehicleid);
 		}
 	}
 
@@ -652,7 +661,7 @@ SavePlayerData(playerid)
 	if(IsPlayerInAnyVehicle(playerid))
 		x += 1.5;
 
-	if(IsPlayerAlive(playerid))
+	if(IsPlayerAlive(playerid) && !IsPlayerInTutorial(playerid))
 	{
 		d:2:HANDLER("[SavePlayerData] Player is alive");
 		if(IsAtDefaultPos(x, y, z))

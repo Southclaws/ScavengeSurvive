@@ -239,6 +239,11 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	}
 }
 
+hook OnPlayerDeath(playerid)
+{
+	ExitTutorial(playerid);
+}
+
 ExitTutorial(playerid)
 {
 	if(TutorialState[playerid] == E_TUT_NONE)
@@ -306,6 +311,7 @@ public OnPlayerWearBag(playerid, itemid)
 	if(TutorialState[playerid] == E_TUT_WEAR_BAG)
 	{
 		ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.");
+		DestroyItem(Wrench[playerid]);
 		Wrench[playerid] = CreateItem(item_Wrench, .world = TUTORIAL_WORLD);
 		AddItemToContainer(GetBagItemContainerID(itemid), Wrench[playerid]);
 		TutorialState[playerid] = E_TUT_OPEN_INV;
@@ -559,6 +565,7 @@ public OnPlayerCloseContainer(playerid, containerid)
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
 		ShowHelpTip(playerid, "You can remove your bag item by pressing "KEYTEXT_DROP_ITEM" with empty hands. Now pick up that weapon over by the gas station.", 30000);
+		DestroyItem(Weapon[playerid]);
 		Weapon[playerid] = CreateItem(item_PumpShotgun, -1624.3300, -2695.5269, 47.5371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
 	}
@@ -576,6 +583,7 @@ public OnPlayerCloseInventory(playerid)
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
 		ShowHelpTip(playerid, "You can remove your bag item by pressing "KEYTEXT_DROP_ITEM" with empty hands. Now pick up that weapon over by the gas station.", 30000);
+		DestroyItem(Weapon[playerid]);
 		Weapon[playerid] = CreateItem(item_PumpShotgun, -1624.3300, -2695.5269, 47.5371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
 	}
@@ -607,6 +615,7 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 	if(TutorialState[playerid] == E_TUT_UNHOLSTER)
 	{
 		ShowHelpTip(playerid, "What good is a gun without ammunition? Load your weapon by standing at the ammunition item and pressing "KEYTEXT_INTERACT".");
+		DestroyItem(Ammo[playerid]);
 		Ammo[playerid] = CreateItem(item_AmmoBuck, -1625.6945, -2694.4517, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		SetItemExtraData(Ammo[playerid], 12);
 		TutorialState[playerid] = E_TUT_PICK_AMMO;
@@ -691,6 +700,9 @@ public OnPlayerLeaveDynamicArea(playerid, areaid)
 
 timer _tut_AreaCheck[100](playerid)
 {
+	if(GetPlayerVirtualWorld(playerid) != TUTORIAL_WORLD)
+		return;
+
 	new
 		Float:x,
 		Float:y,
@@ -704,6 +716,8 @@ timer _tut_AreaCheck[100](playerid)
 
 	if(!IsPlayerInDynamicArea(playerid, Zone[playerid]))
 		defer _tut_AreaCheck(playerid);
+
+	return;
 }
 
 
