@@ -193,6 +193,57 @@ stock DestroyPlayerBag(playerid)
 	return 1;
 }
 
+/*
+	Automatically determines whether to add to the player's inventory or bag.
+*/
+stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = true)
+{
+	d:1:HANDLER("[AddItemToPlayer] itemid %d playerid %d useinventory %d playeraction %d", itemid, playerid, useinventory, playeraction);
+
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(IsItemTypeCarry(itemtype))
+		return -1;
+
+	if(WillItemTypeFitInInventory(playerid, itemtype))
+	{
+		d:1:HANDLER("[AddItemToPlayer] Item fits in inventory");
+		if(useinventory)
+			AddItemToInventory(playerid, itemid);
+
+		return -2;
+	}
+
+	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+
+	if(!IsValidContainer(containerid))
+		return -3;
+
+	new
+		itemsize = GetItemTypeSize(GetItemType(itemid)),
+		freeslots = GetContainerFreeSlots(containerid);
+
+	if(itemsize > freeslots)
+	{
+		ShowActionText(playerid, sprintf("Extra %d bag slots required", itemsize - freeslots), 3000, 150);
+		return -4;
+	}
+
+	if(playeraction)
+	{
+		ShowActionText(playerid, "Item added to bag", 3000, 150);
+		ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
+		bag_PuttingInBag[playerid] = true;
+		defer bag_PutItemIn(playerid, itemid, containerid);
+	}
+	else
+	{
+		return AddItemToContainer(containerid, itemid, playerid);
+	}
+
+	return 0;
+}
+
 
 /*==============================================================================
 
@@ -391,11 +442,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _BagEquipHandler(playerid)
 {
+	new itemid = GetPlayerItem(playerid);
+
+	if(!IsValidItem(itemid))
+		return 0;
+
+	if(bag_PuttingInBag[playerid])
+		return 0;
+
+	if(GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
+		return 0;
+
+	new ItemType:itemtype = GetItemType(itemid);
+
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 	{
-		new itemid = GetPlayerItem(playerid);
-
-		if(IsItemTypeBag(GetItemType(itemid)))
+		if(IsItemTypeBag(itemtype))
 		{
 			if(CallLocalFunction("OnPlayerWearBag", "dd", playerid, itemid))
 				return 0;
@@ -405,19 +467,6 @@ _BagEquipHandler(playerid)
 
 		return 1;
 	}
-
-	if(bag_PuttingInBag[playerid])
-		return 0;
-
-	if(GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
-		return 0;
-
-	new itemid = GetPlayerItem(playerid);
-
-	if(!IsValidItem(itemid))
-		return 0;
-
-	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeBag(itemtype))
 	{
@@ -429,28 +478,7 @@ _BagEquipHandler(playerid)
 		return 0;
 	}
 
-	if(WillItemTypeFitInInventory(playerid, itemtype))
-		return 0;
-
-	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
-
-	if(!IsValidContainer(containerid))
-		return 0;
-
-	new
-		itemsize = GetItemTypeSize(GetItemType(itemid)),
-		freeslots = GetContainerFreeSlots(containerid);
-
-	if(itemsize > freeslots)
-	{
-		ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-		return 0;
-	}
-
-	ShowActionText(playerid, "Item added to bag", 3000, 150);
-	ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
-	bag_PuttingInBag[playerid] = true;
-	defer bag_PutItemIn(playerid, itemid, containerid);
+	AddItemToPlayer(playerid, itemid);
 
 	return 1;
 }
@@ -574,7 +602,12 @@ PlayerBagUpdate(playerid)
 
 public OnPlayerAddToInventory(playerid, itemid)
 {
-	if(IsItemTypeBag(GetItemType(itemid)))
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(IsItemTypeBag(itemtype))
+		return 1;
+
+	if(IsItemTypeCarry(itemtype))
 		return 1;
 
 	#if defined bag_OnPlayerAddToInventory
@@ -743,19 +776,11 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 				return 0;
 			}
 
-			new
-				itemsize = GetItemTypeSize(GetItemType(itemid)),
-				freeslots = GetContainerFreeSlots(containerid);
+			new required = AddItemToContainer(containerid, itemid, playerid);
 
-			if(itemsize > freeslots)
-			{
-				ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-				DisplayContainerInventory(playerid, containerid);
-				return 0;
-			}
+			if(required > 0)
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
 
-			RemoveItemFromInventory(playerid, slot, 0);
-			AddItemToContainer(containerid, itemid, playerid);
 			DisplayPlayerInventory(playerid);
 		}
 	}
@@ -818,19 +843,11 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 				return 0;
 			}
 
-			new
-				itemsize = GetItemTypeSize(GetItemType(itemid)),
-				freeslots = GetContainerFreeSlots(bagcontainerid);
+			new required = AddItemToContainer(bagcontainerid, itemid, playerid);
 
-			if(itemsize > freeslots)
-			{
-				ShowActionText(playerid, "Item won't fit", 3000, 140);
-				DisplayContainerInventory(playerid, containerid);
-				return 0;
-			}
+			if(required > 0)
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
 
-			RemoveItemFromContainer(containerid, slot);
-			AddItemToContainer(bagcontainerid, itemid, playerid);
 			DisplayContainerInventory(playerid, containerid);
 		}
 	}
@@ -849,6 +866,36 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 #define OnPlayerSelectContainerOpt bag_OnPlayerSelectContainerOpt
 #if defined bag_OnPlayerSelectContainerOpt
 	forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
+#endif
+
+public OnItemAddToContainer(containerid, itemid, playerid)
+{
+	d:1:HANDLER("[OnItemAddToContainer] containerid %d itemid %d playerid %d", containerid, itemid, playerid);
+	if(GetContainerBagItem(containerid) != INVALID_ITEM_ID)
+	{
+		d:1:HANDLER("[OnItemAddToContainer] Container is a bag");
+		if(IsItemTypeCarry(GetItemType(itemid)))
+		{
+			d:1:HANDLER("[OnItemAddToContainer] Item is carry, cancel adding");
+			return 1;
+		}
+	}
+
+	#if defined bag_OnItemAddToContainer
+		return bag_OnItemAddToContainer(containerid, itemid, playerid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnItemAddToContainer
+	#undef OnItemAddToContainer
+#else
+	#define _ALS_OnItemAddToContainer
+#endif
+ 
+#define OnItemAddToContainer bag_OnItemAddToContainer
+#if defined bag_OnItemAddToContainer
+	forward bag_OnItemAddToContainer(containerid, itemid, playerid);
 #endif
 
 

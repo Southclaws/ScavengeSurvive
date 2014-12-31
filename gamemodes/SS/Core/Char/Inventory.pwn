@@ -411,6 +411,9 @@ public OnItemRemoveFromInventory(playerid, itemid, slot)
 
 public OnItemAddToInventory(playerid, itemid, slot)
 {
+	if(IsItemTypeCarry(GetItemType(itemid)))
+		return 1;
+
 	UpdatePlayerGear(playerid, 0);
 
 	#if defined app_OnItemAddToInventory
@@ -453,325 +456,402 @@ public OnItemRemovedFromPlayer(playerid, itemid)
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
 	if(playertextid == GearSlot_Head[UI_ELEMENT_TILE])
-	{
-		new hatid = GetPlayerHat(playerid);
-
-		if(IsValidHat(hatid))
-		{
-			new
-				containerid = GetPlayerCurrentContainer(playerid),
-				itemid;
-
-			if(IsValidContainer(containerid))
-			{
-				if(IsContainerFull(containerid))
-				{
-					if(!IsValidItem(GetPlayerItem(playerid)))
-					{
-						RemovePlayerHat(playerid);
-
-						itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-						GiveWorldItemToPlayer(playerid, itemid);
-						UpdatePlayerGear(playerid);
-
-						ShowActionText(playerid, "Hat removed", 3000);
-					}
-					else
-					{
-						ShowActionText(playerid, "You are already holding an item", 3000);
-					}
-				}
-				else
-				{
-					RemovePlayerHat(playerid);
-
-					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					if(AddItemToContainer(containerid, itemid, playerid) == 1)
-					{
-						UpdatePlayerGear(playerid);
-						DisplayContainerInventory(playerid, containerid);
-
-						ShowActionText(playerid, "Hat removed", 3000);
-					}
-					else
-					{
-						DestroyItem(itemid);
-					}
-				}
-			}
-			else
-			{
-				if(IsPlayerInventoryFull(playerid))
-				{
-					if(!IsValidItem(GetPlayerItem(playerid)))
-					{
-						RemovePlayerHat(playerid);
-
-						itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-						GiveWorldItemToPlayer(playerid, itemid);
-						UpdatePlayerGear(playerid);
-
-						ShowActionText(playerid, "Hat removed", 3000, 150);
-					}
-					else
-					{
-						ShowActionText(playerid, "You are already holding an item", 3000);
-					}
-				}
-				else
-				{
-					itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-					if(AddItemToInventory(playerid, itemid) == 1)
-					{
-						RemovePlayerHat(playerid);
-						UpdatePlayerGear(playerid);
-						DisplayPlayerInventory(playerid);
-
-						ShowActionText(playerid, "Hat removed", 3000, 150);
-					}
-					else
-					{
-						DestroyItem(itemid);
-					}
-				}
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Head(playerid);
 
 	if(playertextid == GearSlot_Face[UI_ELEMENT_TILE])
-	{
-		new maskid = GetPlayerMask(playerid);
-
-		if(IsValidMask(maskid))
-		{
-			new
-				containerid = GetPlayerCurrentContainer(playerid),
-				itemid;
-
-			if(IsValidContainer(containerid))
-			{
-				if(IsContainerFull(containerid))
-				{
-					RemovePlayerMask(playerid);
-
-					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-					GiveWorldItemToPlayer(playerid, itemid);
-					UpdatePlayerGear(playerid);
-
-					ShowActionText(playerid, "Mask removed", 3000, 150);
-				}
-				else
-				{
-					RemovePlayerMask(playerid);
-
-					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-					if(AddItemToContainer(containerid, itemid, playerid) == 1)
-					{
-						UpdatePlayerGear(playerid);
-						DisplayContainerInventory(playerid, containerid);
-
-						ShowActionText(playerid, "Mask removed", 3000, 150);
-					}
-					else
-					{
-						DestroyItem(itemid);
-					}
-				}
-			}
-			else
-			{
-				if(IsPlayerInventoryFull(playerid))
-				{
-					RemovePlayerMask(playerid);
-
-					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-					GiveWorldItemToPlayer(playerid, itemid);
-					UpdatePlayerGear(playerid);
-
-					ShowActionText(playerid, "Mask removed", 3000, 150);
-				}
-				else
-				{
-					RemovePlayerMask(playerid);
-
-					itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-					if(AddItemToInventory(playerid, itemid) == 1)
-					{
-						UpdatePlayerGear(playerid);
-						DisplayPlayerInventory(playerid);
-
-						ShowActionText(playerid, "Mask removed", 3000, 150);
-					}
-					else
-					{
-						DestroyItem(itemid);
-					}
-				}
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Face(playerid);
 
 	if(playertextid == GearSlot_Hand[UI_ELEMENT_TILE])
-	{
-		new itemid = GetPlayerItem(playerid);
-
-		if(IsValidItem(itemid))
-		{
-			new containerid = GetPlayerCurrentContainer(playerid);
-
-			if(IsValidContainer(containerid))
-			{
-				new
-					ItemType:itemtype = GetItemType(itemid),
-					itemsize = GetItemTypeSize(itemtype),
-					freeslots = GetContainerFreeSlots(containerid);
-
-				if(IsItemTypeBag(itemtype))
-				{
-					if(containerid == GetBagItemContainerID(itemid))
-						return 1;
-				}
-
-				if(itemsize > freeslots)
-				{
-					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-					return 1;
-				}
-
-				AddItemToContainer(containerid, itemid, playerid);
-				UpdatePlayerGear(playerid);
-				DisplayContainerInventory(playerid, containerid);
-			}
-			else
-			{
-				new
-					itemsize = GetItemTypeSize(GetItemType(itemid)),
-					freeslots = GetInventoryFreeSlots(playerid);
-
-				if(itemsize > freeslots)
-				{
-					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-					return 1;
-				}
-
-				AddItemToInventory(playerid, itemid);
-				UpdatePlayerGear(playerid);
-				DisplayPlayerInventory(playerid);
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Hand(playerid);
 
 	if(playertextid == GearSlot_Hols[UI_ELEMENT_TILE])
-	{
-		new itemid = GetPlayerHolsterItem(playerid);
-
-		if(IsValidItem(itemid))
-		{
-			new containerid = GetPlayerCurrentContainer(playerid);
-
-			if(IsValidContainer(containerid))
-			{
-				new
-					ItemType:itemtype = GetItemType(itemid),
-					itemsize = GetItemTypeSize(itemtype),
-					freeslots = GetContainerFreeSlots(containerid);
-
-				if(IsItemTypeBag(itemtype))
-				{
-					if(containerid == GetBagItemContainerID(itemid))
-						return 1;
-				}
-
-				if(itemsize > freeslots)
-				{
-					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-					return 1;
-				}
-
-				AddItemToContainer(containerid, itemid, playerid);
-				RemovePlayerHolsterItem(playerid);
-				UpdatePlayerGear(playerid);
-				DisplayContainerInventory(playerid, containerid);
-			}
-			else
-			{
-				new
-					itemsize = GetItemTypeSize(GetItemType(itemid)),
-					freeslots = GetInventoryFreeSlots(playerid);
-
-				if(itemsize > freeslots)
-				{
-					ShowActionText(playerid, sprintf("An extra %d slots is required", itemsize - freeslots), 3000, 150);
-					return 1;
-				}
-
-				AddItemToInventory(playerid, itemid);
-				RemovePlayerHolsterItem(playerid);
-				UpdatePlayerGear(playerid);
-				DisplayPlayerInventory(playerid);
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Hols(playerid);
 
 	if(playertextid == GearSlot_Tors[UI_ELEMENT_TILE])
-	{
-		if(GetPlayerAP(playerid) > 0.0)
-		{
-			new
-				containerid = GetPlayerCurrentContainer(playerid);
-
-			if(IsValidContainer(containerid))
-			{
-				if(!WillItemTypeFitInContainer(containerid, item_Armour))
-				{
-					ShowActionText(playerid, "Item won't fit", 3000, 150);
-					return 1;
-				}
-
-				new itemid = CreateItem(item_Armour);
-
-				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
-				AddItemToContainer(containerid, itemid, playerid);
-				SetPlayerAP(playerid, 0.0);
-
-				UpdatePlayerGear(playerid);
-				DisplayContainerInventory(playerid, containerid);
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Tors(playerid);
 
 	if(playertextid == GearSlot_Back[UI_ELEMENT_TILE])
-	{
-		new itemid = GetPlayerBagItem(playerid);
-
-		if(IsValidItem(itemid))
-		{
-			if(GetPlayerCurrentContainer(playerid) == GetBagItemContainerID(itemid))
-			{
-				ClosePlayerContainer(playerid);
-
-				if(IsValidContainer(inv_TempContainerID[playerid]))
-				{
-					DisplayContainerInventory(playerid, inv_TempContainerID[playerid]);
-				}
-				else
-				{
-					DisplayPlayerInventory(playerid);
-				}
-
-				inv_TempContainerID[playerid] = INVALID_CONTAINER_ID;
-			}
-			else
-			{
-				inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
-
-				DisplayContainerInventory(playerid, GetBagItemContainerID(itemid));
-			}
-		}
-	}
+		_inv_HandleGearSlotClick_Back(playerid);
 
 	return 1;
 }
+
+
+_inv_HandleGearSlotClick_Head(playerid)
+{
+	new hatid = GetPlayerHat(playerid);
+	
+	if(!IsValidHat(hatid))
+		return 0;
+
+	new
+		containerid = GetPlayerCurrentContainer(playerid),
+		itemid;
+
+	if(IsValidContainer(containerid))
+	{
+		if(IsContainerFull(containerid))
+		{
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				RemovePlayerHat(playerid);
+
+				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+				GiveWorldItemToPlayer(playerid, itemid);
+
+				ShowActionText(playerid, "Hat removed", 3000);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+			}
+		}
+		else
+		{
+			itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+
+			new required = AddItemToContainer(containerid, itemid, playerid);
+
+			if(required > 0)
+			{
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				DestroyItem(itemid);
+			}
+			else if(required == 0)
+			{
+				RemovePlayerHat(playerid);
+				ShowActionText(playerid, "Hat removed", 3000);
+			}
+		}
+
+		DisplayContainerInventory(playerid, containerid);
+	}
+	else
+	{
+		if(IsPlayerInventoryFull(playerid))
+		{
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				RemovePlayerHat(playerid);
+
+				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+				GiveWorldItemToPlayer(playerid, itemid);
+
+				ShowActionText(playerid, "Hat removed", 3000, 150);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+			}
+		}
+		else
+		{
+			itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+
+			new required = AddItemToInventory(playerid, itemid);
+
+			if(required > 0)
+			{
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				DestroyItem(itemid);
+			}
+			else if(required == 0)
+			{
+				RemovePlayerHat(playerid);
+				ShowActionText(playerid, "Hat removed", 3000);
+			}
+		}
+
+		DisplayPlayerInventory(playerid);
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
+_inv_HandleGearSlotClick_Face(playerid)
+{
+	new maskid = GetPlayerMask(playerid);
+	
+	if(!IsValidMask(maskid))
+		return 0;
+
+	new
+		containerid = GetPlayerCurrentContainer(playerid),
+		itemid;
+
+	if(IsValidContainer(containerid))
+	{
+		if(IsContainerFull(containerid))
+		{
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				RemovePlayerMask(playerid);
+
+				itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+				GiveWorldItemToPlayer(playerid, itemid);
+
+				ShowActionText(playerid, "Mask removed", 3000, 150);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+			}
+		}
+		else
+		{
+			itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+
+			new required = AddItemToContainer(containerid, itemid, playerid);
+
+			if(required > 0)
+			{
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				DestroyItem(itemid);
+			}
+			else if(required == 0)
+			{
+				RemovePlayerMask(playerid);
+				ShowActionText(playerid, "Mask removed", 3000, 150);
+			}
+		}
+
+		DisplayContainerInventory(playerid, containerid);
+	}
+	else
+	{
+		if(IsPlayerInventoryFull(playerid))
+		{
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				RemovePlayerMask(playerid);
+
+				itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+				GiveWorldItemToPlayer(playerid, itemid);
+
+				ShowActionText(playerid, "Mask removed", 3000, 150);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+			}
+		}
+		else
+		{
+			itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+			
+			new required = AddItemToInventory(playerid, itemid);
+
+			if(required > 0)
+			{
+				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				DestroyItem(itemid);
+			}
+			else if(required == 0)
+			{
+				RemovePlayerMask(playerid);
+				ShowActionText(playerid, "Mask removed", 3000, 150);
+			}
+		}
+
+		DisplayPlayerInventory(playerid);
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
+_inv_HandleGearSlotClick_Hand(playerid)
+{
+	new itemid = GetPlayerItem(playerid);
+	
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new containerid = GetPlayerCurrentContainer(playerid);
+
+	if(IsValidContainer(containerid))
+	{
+		if(IsItemTypeBag(GetItemType(itemid)))
+		{
+			if(containerid == GetBagItemContainerID(itemid))
+				return 1;
+		}
+
+		new required = AddItemToContainer(containerid, itemid, playerid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+			return 1;
+		}
+
+		DisplayContainerInventory(playerid, containerid);
+	}
+	else
+	{
+		new required = AddItemToInventory(playerid, itemid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+			return 1;
+		}
+
+		DisplayPlayerInventory(playerid);
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
+_inv_HandleGearSlotClick_Hols(playerid)
+{
+	new itemid = GetPlayerHolsterItem(playerid);
+	
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new containerid = GetPlayerCurrentContainer(playerid);
+
+	if(IsValidContainer(containerid))
+	{
+		if(IsItemTypeBag(GetItemType(itemid)))
+		{
+			if(containerid == GetBagItemContainerID(itemid))
+				return 1;
+		}
+
+		new required = AddItemToContainer(containerid, itemid, playerid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+		}
+		else if(required == 0)
+		{
+			RemovePlayerHolsterItem(playerid);
+		}
+
+		DisplayContainerInventory(playerid, containerid);
+	}
+	else
+	{
+		new required = AddItemToInventory(playerid, itemid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+		}
+		else if(required == 0)
+		{
+			RemovePlayerHolsterItem(playerid);
+		}
+		
+		DisplayPlayerInventory(playerid);
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
+_inv_HandleGearSlotClick_Tors(playerid)
+{
+	if(GetPlayerAP(playerid) == 0.0)
+		return 0;
+
+	new containerid = GetPlayerCurrentContainer(playerid);
+
+	if(!IsValidContainer(containerid))
+	{
+		new
+			itemid,
+			required;
+
+		itemid = CreateItem(item_Armour);
+		required = AddItemToContainer(containerid, itemid, playerid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+			DestroyItem(itemid);
+		}
+		else if(required == 0)
+		{
+			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+			SetPlayerAP(playerid, 0.0);
+			ShowActionText(playerid, "Armour removed", 3000);
+		}
+
+		DisplayContainerInventory(playerid, containerid);
+	}
+	else
+	{
+		new
+			itemid,
+			required;
+
+		itemid = CreateItem(item_Armour);
+		required = AddItemToInventory(playerid, itemid);
+
+		if(required > 0)
+		{
+			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+			DestroyItem(itemid);
+		}
+		else if(required == 0)
+		{
+			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+			SetPlayerAP(playerid, 0.0);
+			ShowActionText(playerid, "Armour removed", 3000);
+		}
+
+		DisplayPlayerInventory(playerid);
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
+_inv_HandleGearSlotClick_Back(playerid)
+{
+	new itemid = GetPlayerBagItem(playerid);
+	
+	if(!IsValidItem(itemid))
+		return 0;
+
+	if(GetPlayerCurrentContainer(playerid) == GetBagItemContainerID(itemid))
+	{
+		ClosePlayerContainer(playerid);
+
+		if(IsValidContainer(inv_TempContainerID[playerid]))
+		{
+			DisplayContainerInventory(playerid, inv_TempContainerID[playerid]);
+		}
+		else
+		{
+			DisplayPlayerInventory(playerid);
+		}
+
+		inv_TempContainerID[playerid] = INVALID_CONTAINER_ID;
+	}
+	else
+	{
+		inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
+
+		DisplayContainerInventory(playerid, GetBagItemContainerID(itemid));
+	}
+
+	UpdatePlayerGear(playerid);
+
+	return 1;
+}
+
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
@@ -827,16 +907,16 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 					return 0;
 				}
 
-				if(!WillItemTypeFitInContainer(inv_TempContainerID[playerid], GetItemType(itemid)))
-				{
-					ShowActionText(playerid, "Item won't fit", 3000, 150);
-					DisplayContainerInventory(playerid, containerid);
-					return 0;
-				}
+				new required = AddItemToContainer(inv_TempContainerID[playerid], itemid, playerid);
 
-				RemoveItemFromContainer(containerid, slot);
-				AddItemToContainer(inv_TempContainerID[playerid], itemid, playerid);
-				DisplayContainerInventory(playerid, containerid);
+				if(required > 0)
+				{
+					ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				}
+				else
+				{
+					DisplayContainerInventory(playerid, containerid);
+				}
 			}
 		}
 	}
