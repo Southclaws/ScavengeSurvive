@@ -211,7 +211,7 @@ class AppMain(object):
 
 		woundcount = self.sli_wounds.get()
 
-		knockchance = knockmult * ((woundcount + 1) * ((totalbleedrate * 50) + 1))
+		knockchance = knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1))
 
 		timetolive = 0
 

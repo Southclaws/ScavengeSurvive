@@ -368,7 +368,7 @@ timer _RepeatingFire[100](playerid)
 
 public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	d:1:HANDLER("[OnPlayerWeaponShot] %p fired weapon %d", playerid, weaponid);
+	d:1:HANDLER("[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return 0;
 

@@ -119,7 +119,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		case BODY_PART_HEAD: knockmult *= 2.0;
 	}
 
-	if(frandom(100.0) < knockmult * ((woundcount + 1) * ((totalbleedrate * 50) + 1)))
+	if(frandom(100.0) < knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)))
 	{
 		new
 			Float:hp,
