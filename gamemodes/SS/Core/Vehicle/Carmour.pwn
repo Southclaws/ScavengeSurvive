@@ -1,16 +1,14 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_CARMOUR	DIRECTORY_VEHICLESPAWNS"Mods/"
-#define MAX_ARMOUR			(16)
-#define MAX_ARMOUR_PARTS	(32)
-#define MAX_ARMOUR_VEHICLES	(8)
+#define DIRECTORY_CARMOUR	DIRECTORY_VEHICLESPAWNS"carmour/"
+#define MAX_CARMOUR			(16)
+#define MAX_CARMOUR_PARTS	(64)
 
 
 enum E_ARMOUR_DATA
 {
-			arm_vehicle,
-			arm_name[32],
+			arm_vehicleType,
 			arm_objCount
 }
 
@@ -28,39 +26,53 @@ Float:		arm_rotZ
 
 
 new
-			arm_Data[MAX_ARMOUR][E_ARMOUR_DATA],
-			arm_List[MAX_ARMOUR][MAX_ARMOUR_PARTS][E_ARMOUR_LIST_DATA],
-Iterator:	arm_Index<MAX_ARMOUR>;
+			arm_Data[MAX_CARMOUR][E_ARMOUR_DATA],
+			arm_Objects[MAX_CARMOUR][MAX_CARMOUR_PARTS][E_ARMOUR_LIST_DATA],
+Iterator:	arm_Index<MAX_CARMOUR>,
+			arm_VehicleTypeCarmour[MAX_VEHICLE_TYPE] = {-1, ...};
 
-new
-			arm_ArmourID[MAX_VEHICLES];
 
 hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Carmour'...");
 
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR),
-		item[46],
-		type;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			LoadOffsetsFromFile(item);
-		}
-	}
-
-	dir_close(direc);
+	DirectoryCheck(DIRECTORY_CARMOUR);
 }
 
-LoadOffsetsFromFile(name[])
+
+/*==============================================================================
+
+	Core
+
+==============================================================================*/
+
+
+stock SetVehicleTypeCarmour(vehicletype, name[])
+{
+	new
+		id,
+		filename[64];
+
+	format(filename, sizeof(filename), DIRECTORY_CARMOUR"%s.map", name);
+	id = LoadOffsetsFromFile(filename);
+
+	arm_Data[id][arm_vehicleType] = vehicletype;
+	arm_VehicleTypeCarmour[vehicletype] = id;
+}
+
+
+/*==============================================================================
+
+	Hooks and internal
+
+==============================================================================*/
+
+
+LoadOffsetsFromFile(filename[])
 {
 	new
 		id = Iter_Free(arm_Index),
 		File:file,
-		filedir[64],
 		line[128],
 		model,
 		Float:x,
@@ -71,105 +83,95 @@ LoadOffsetsFromFile(name[])
 		Float:rz,
 		listindex;
 
-	filedir = DIRECTORY_CARMOUR;
-	strcat(filedir, name);
-
-	if(!fexist(filedir))
+	if(!fexist(filename))
+	{
+		printf("[LoadOffsetsFromFile] ERROR: File not found: '%s'", filename);
 		return 0;
+	}
 
-	file = fopen(filedir, io_read);
-	fread(file, line);
-	arm_Data[id][arm_vehicle] = strval(line);
-
-	if(!(400 <= arm_Data[id][arm_vehicle] <= 612))
-		return 0;
+	file = fopen(filename, io_read);
 
 	while(fread(file, line))
 	{
 		if(!sscanf(line, "p<(>{s[20]}p<,>dfffffp<)>f{s[4]}", model, x, y, z, rx, ry, rz))
 		{
-			arm_List[id][listindex][arm_model] = model;
-			arm_List[id][listindex][arm_posX] = x;
-			arm_List[id][listindex][arm_posY] = y;
-			arm_List[id][listindex][arm_posZ] = z;
-			arm_List[id][listindex][arm_rotX] = rx;
-			arm_List[id][listindex][arm_rotY] = ry;
-			arm_List[id][listindex][arm_rotZ] = rz;
+			if(listindex >= MAX_CARMOUR_PARTS - 1)
+			{
+				printf("[LoadOffsetsFromFile] ERROR: Object limit reached while loading '%s'", filename);
+				break;
+			}
+
+			arm_Objects[id][listindex][arm_model] = model;
+			arm_Objects[id][listindex][arm_posX] = x;
+			arm_Objects[id][listindex][arm_posY] = y;
+			arm_Objects[id][listindex][arm_posZ] = z;
+			arm_Objects[id][listindex][arm_rotX] = rx;
+			arm_Objects[id][listindex][arm_rotY] = ry;
+			arm_Objects[id][listindex][arm_rotZ] = rz;
+
+			listindex++;
 		}
-		listindex++;
 	}
+
 	fclose(file);
 
 	arm_Data[id][arm_objCount] = listindex;
 
 	Iter_Add(arm_Index, id);
 
-	return 1;
+	return id;
 }
 
 ApplyArmourToVehicle(vehicleid, armourid)
 {
 	if(!IsValidVehicle(vehicleid))
+	{
+		printf("[ApplyArmourToVehicle] ERROR: Invalid vehicle ID (%d) passed to function.", vehicleid);
 		return 0;
+	}
 
-	new
-		objectid,
-		modelid = GetVehicleModel(vehicleid);
+	new vehicletype = GetVehicleType(vehicleid);
 
-	if(modelid != arm_Data[armourid][arm_vehicle])
+	if(vehicletype != arm_Data[armourid][arm_vehicleType])
+	{
+		printf("[ApplyArmourToVehicle] ERROR: Vehicle type (%d) does not match carmour vehicle type (%d).", vehicletype, arm_Data[armourid][arm_vehicleType]);
 		return 0;
+	}
+
+	new objectid;
 
 	for(new i; i < arm_Data[armourid][arm_objCount]; i++)
 	{
-		objectid = CreateDynamicObject(arm_List[armourid][i][arm_model], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+		objectid = CreateDynamicObject(arm_Objects[armourid][i][arm_model], 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 		AttachDynamicObjectToVehicle(objectid, vehicleid,
-			arm_List[armourid][i][arm_posX], arm_List[armourid][i][arm_posY], arm_List[armourid][i][arm_posZ],
-			arm_List[armourid][i][arm_rotX], arm_List[armourid][i][arm_rotY], arm_List[armourid][i][arm_rotZ]);
-	}
-
-	arm_ArmourID[vehicleid] = armourid;
-
-	return 1;
-}
-
-ACMD:armour[4](playerid, params[])
-{
-	new
-		vehicleid = GetPlayerVehicleID(playerid),
-		id = strval(params),
-		ret;
-
-	ret = ApplyArmourToVehicle(vehicleid, id);
-
-	MsgF(playerid, -1, "Ret: %d", ret);
-
-	return 1;
-}
-
-ACMD:allcarmour[4](playerid, params[])
-{
-	new
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		vehicleid;
-
-	GetPlayerPos(playerid, x, y, z);
-	GetPlayerFacingAngle(playerid, r);
-
-	foreach(new i : arm_Index)
-	{
-		vehicleid = CreateVehicle(arm_Data[i][arm_vehicle],
-			x + ((10 * i) * floatsin(-r, degrees)),
-			y + ((10 * i) * floatcos(-r, degrees)),
-			z, r + 90.0, -1, -1, -1);
-
-		SetVehicleFuel(vehicleid, 10000.0);
-
-		ApplyArmourToVehicle(vehicleid, i);
+			arm_Objects[armourid][i][arm_posX], arm_Objects[armourid][i][arm_posY], arm_Objects[armourid][i][arm_posZ],
+			arm_Objects[armourid][i][arm_rotX], arm_Objects[armourid][i][arm_rotY], arm_Objects[armourid][i][arm_rotZ]);
 	}
 
 	return 1;
 }
+
+public OnVehicleCreated(vehicleid)
+{
+	new vehicletype = GetVehicleType(vehicleid);
+
+	if(arm_VehicleTypeCarmour[vehicletype] != -1)
+		ApplyArmourToVehicle(vehicleid, arm_VehicleTypeCarmour[vehicletype]);
+
+	#if defined carm_OnVehicleCreated
+		return carm_OnVehicleCreated(vehicleid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnVehicleCreated
+	#undef OnVehicleCreated
+#else
+	#define _ALS_OnVehicleCreated
+#endif
+ 
+#define OnVehicleCreated carm_OnVehicleCreated
+#if defined carm_OnVehicleCreated
+	forward carm_OnVehicleCreated(vehicleid);
+#endif

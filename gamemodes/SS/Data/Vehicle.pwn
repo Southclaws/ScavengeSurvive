@@ -49,7 +49,12 @@ new stock
 	veht_Marquis,
 	veht_Tug,
 	veht_BfInject,
-	veht_Trailer;
+	veht_Trailer,
+	veht_Steamroll,
+	veht_APC30,
+	veht_Moonbeam,
+	veht_Duneride,
+	veht_Doomride;
 
 new stock
 	vgroup_Civilian,
@@ -135,6 +140,12 @@ hook OnGameModeInit()
 	veht_Tug		= DefineVehicleType(583, "Tug",				vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_SMALL,		10.0,		4.0,	loot_CarIndustrial,		8,		70.0);
 	veht_BfInject	= DefineVehicleType(424, "BF Injection",	vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	40.0,		8.0,	loot_CarCivilian,		24,		15.0,	VEHICLE_FLAG_NOT_LOCKABLE);
 	veht_Trailer	= DefineVehicleType(611, "Trailer",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_SMALL,		0.0,		0.0,	loot_CarIndustrial,		50,		20.0,	VEHICLE_FLAG_TRAILER);
+	veht_Steamroll	= DefineVehicleType(578, "Steamroller",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_Survivor,			0,		0.1);
+	veht_APC30		= DefineVehicleType(578, "APC-30",			vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_Survivor,			0,		0.1);
+// 50
+	veht_Moonbeam	= DefineVehicleType(418, "Moonbeam",		vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_LARGE,		60.0,		18.0,	loot_CarCivilian,		65,		30.0);
+	veht_Duneride	= DefineVehicleType(573, "Duneride",		vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		180.0,		11.0,	loot_CarCivilian,		85,		10.0);
+	veht_Doomride	= DefineVehicleType(573, "Doomride",		vgroup_Unique,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_LARGE,		180.0,		8.0,	loot_Survivor,			80,		0.5);
 
 	SetVehicleTypeTrailerHitch(veht_Bobcat, 	VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Patriot, 	VEHICLE_SIZE_SMALL);
@@ -146,6 +157,10 @@ hook OnGameModeInit()
 	SetVehicleTypeTrailerHitch(veht_Huntley, 	VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Mesa, 		VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Blista, 	VEHICLE_SIZE_SMALL);
+
+	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
+	SetVehicleTypeCarmour(veht_APC30, "APC30");
+	SetVehicleTypeCarmour(veht_Doomride, "Doomride");
 }
 
 
