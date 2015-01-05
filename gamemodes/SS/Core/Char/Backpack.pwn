@@ -27,7 +27,6 @@ static
 			bag_ItemTypeBagType[ITM_MAX_TYPES] = {-1, ...};
 
 static
-Iterator:	bag_Index<ITM_MAX>,
 			bag_ContainerItem		[CNT_MAX],
 			bag_ContainerPlayer		[CNT_MAX];
 
@@ -118,15 +117,24 @@ stock GivePlayerBag(playerid, itemid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new containerid = GetItemArrayDataAtCell(itemid, 1);
-
-	if(!IsValidContainer(containerid))
-		return 0;
-
 	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
 	if(bagtype != -1)
 	{
+		new containerid = GetItemArrayDataAtCell(itemid, 1);
+
+		if(!IsValidContainer(containerid))
+		{
+			printf("[GivePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", itemid, containerid);
+
+			containerid = CreateContainer(
+				bag_TypeData[bagtype][bag_name],
+				bag_TypeData[bagtype][bag_size],
+				.virtual = 1);
+
+			SetItemArrayDataAtCell(itemid, containerid, 1);
+		}
+
 		new colour = GetItemTypeColour(bag_TypeData[bagtype][bag_itemtype]);
 
 		bag_PlayerBagID[playerid] = itemid;
@@ -162,10 +170,32 @@ stock RemovePlayerBag(playerid)
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
+	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+
+	if(!IsValidContainer(containerid))
+	{
+		new bagtype = bag_ItemTypeBagType[GetItemType(bag_PlayerBagID[playerid])];
+
+		if(bagtype != -1)
+		{
+			printf("[RemovePlayerBag] ERROR: Player (%d) bag item type (%d) is not a valid bag type.", playerid, bagtype);
+			return 0;
+		}
+
+		printf("[RemovePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", bag_PlayerBagID[playerid], containerid);
+
+		containerid = CreateContainer(
+			bag_TypeData[bagtype][bag_name],
+			bag_TypeData[bagtype][bag_size],
+			.virtual = 1);
+
+		SetItemArrayDataAtCell(bag_PlayerBagID[playerid], containerid, 1);
+	}
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 
-	bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
+	bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 
 	return 1;
@@ -183,11 +213,15 @@ stock DestroyPlayerBag(playerid)
 
 	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
 
+	if(IsValidContainer(containerid))
+	{
+		bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
+		DestroyContainer(containerid);
+	}
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
-	DestroyContainer(containerid);
 	DestroyItem(bag_PlayerBagID[playerid]);
 
-	bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 
 	return 1;
@@ -272,7 +306,6 @@ public OnItemCreate(itemid)
 
 		SetItemArrayDataSize(itemid, 2);
 		SetItemArrayDataAtCell(itemid, containerid, 1);
-		Iter_Add(bag_Index, itemid);
 	}
 
 	#if defined bag_OnItemCreate
@@ -327,8 +360,6 @@ public OnItemDestroy(itemid)
 			bag_ContainerItem[containerid] = INVALID_ITEM_ID;
 			DestroyContainer(containerid);
 		}
-
-		Iter_Remove(bag_Index, itemid);
 	}
 
 	#if defined bag_OnItemDestroy
@@ -497,10 +528,15 @@ _BagDropHandler(playerid)
 	if(CallLocalFunction("OnPlayerRemoveBag", "dd", playerid, bag_PlayerBagID[playerid]))
 		return 0;
 
+	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+
+	if(!IsValidContainer(containerid))
+		return 0;
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
 	CreateItemInWorld(bag_PlayerBagID[playerid], 0.0, 0.0, 0.0, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 	GiveWorldItemToPlayer(playerid, bag_PlayerBagID[playerid], 1);
-	bag_ContainerPlayer[GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1)] = INVALID_PLAYER_ID;
+	bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 	bag_TakingOffBag[playerid] = true;
 
