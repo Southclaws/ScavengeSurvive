@@ -76,18 +76,21 @@ enum E_TUT_STATE
 	E_TUT_UNHOLSTER,
 	E_TUT_PICK_AMMO,
 	E_TUT_PICK_MORE_AMMO,
-	E_TUT_UNLOAD_AMMO,
-	E_TUT_LOAD_NEW_AMMO,
 	E_TUT_OPEN_INV2,
-	E_TUT_DROP_WEAPON
+	E_TUT_CLOSE_INV2,
+	E_TUT_UNLOAD_AMMO
 }
 
 
 static
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
 E_TUT_STATE:TutorialState			[MAX_PLAYERS],
-Float:		Zone_points[12] = {-1657.0,-2703.0,-1630.0,-2676.0,-1563.0,-2694.0,-1507.0,-2747.0,-1534.0,-2796.0,-1657.0,-2703.0},
-			Zone					[MAX_PLAYERS] = {-1, ...},
+
+			Chair,
+			Sign1,
+			Sign2,
+			Sign3,
+			Sign4,
 
 			Bag						[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 			Wrench					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
@@ -106,10 +109,32 @@ forward OnPlayerUnHolsteredItem(playerid, itemid);
 
 hook OnGameModeInit()
 {
-	// Static objects
-	// CreateDynamicObject(17037, -1547.99207, -2725.40356, 49.66700,   0.00000, 0.00000, 55.68000, TUTORIAL_WORLD);
-
 	HANDLER = debug_register_handler("tutorial", 0);
+
+	CreateDynamicObject(6959, 0.00000, 0.00000, -20.00000, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(6959, 0.00000, 0.00000, -16.50440, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, 4.90600, 0.00000, -18.28000, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -4.90600, 0.00000, -18.28000, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, 0.00000, 4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19456, 3.21220, -4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19456, -4.90600, -9.81200, -18.28000, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -1.50600, -9.81200, -18.28000, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19393, -3.21110, -4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19393, -3.21110, -14.00600, -18.28000, 0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(17951, 4.78914, 0.93508, -18.31444, 0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(2008, -4.00298, 3.81832, -20.04383, 0.00000, 0.00000, 1.20000);
+	CreateDynamicObject(1498, -3.99050, -14.01290, -20.03010, 0.00000, 0.00000, 0.00000);
+	Chair = CreateDynamicObject(1671, -3.06675, 2.96503, -19.53344, 0.00000, 0.00000, -153.05998); // chair
+
+	Sign1 = CreateDynamicObject(2599, -4.14077, -5.37283, -19.5724, 0.00000, 0.00000, 50.28007);
+	Sign2 = CreateDynamicObject(2599, -3.93179, 2.09237, -19.5724, 0.00000, 0.00000, 33.24006);
+	Sign3 = CreateDynamicObject(2599, 1.90619, 3.80585, -19.5724, 0.00000, 0.00000, -64.80000);
+	Sign4 = CreateDynamicObject(2599, 2.02679, 1.41874, -19.5724, 0.00000, 0.00000, -95.27998);
+
+	SetDynamicObjectMaterialText(Sign1, 0, "Pick up the\nBag and wear it.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
+	SetDynamicObjectMaterialText(Sign2, 0, "Pick up the\nweapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
+	SetDynamicObjectMaterialText(Sign3, 0, "Pick up the\nAmmo while holding\nthe weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
+	SetDynamicObjectMaterialText(Sign4, 0, "Pick up the\nAmmo while holding\nthe weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
 }
 
 public OnPlayerLoadAccount(playerid)
@@ -188,8 +213,8 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 	d:1:HANDLER("[OnPlayerClickPlayerTextDraw]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
-		SetPlayerPos(playerid, -1642.1008, -2705.5376, 48.9919);
-		SetPlayerFacingAngle(playerid, 250.0);
+		SetPlayerPos(playerid, -3.17802, -12.89518, -19.03157);
+		SetPlayerFacingAngle(playerid, 0.0);
 		SetPlayerVirtualWorld(playerid, TUTORIAL_WORLD);
 
 		switch(random(14))
@@ -229,11 +254,8 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 		SetPlayerScreenFadeLevel(playerid, 255);
 
-		DestroyDynamicArea(Zone[playerid]);
-		Zone[playerid] = CreateDynamicPolygon(Zone_points, _, _, _, TUTORIAL_WORLD);
-
 		DestroyItem(Bag[playerid]);
-		Bag[playerid] = CreateItem(item_Satchel, -1639.0580, -2704.1577, 47.8802, _, _, _, _, TUTORIAL_WORLD);
+		Bag[playerid] = CreateItem(item_Satchel, -3.15328, -6.40267, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		ShowHelpTip(playerid, "Welcome to the tutorial! Start by picking up that bag over there by holding "KEYTEXT_INTERACT" while standing over it.");
 		TutorialState[playerid] = E_TUT_PICK_BAG;
 	}
@@ -253,19 +275,28 @@ ExitTutorial(playerid)
 	HideHelpTip(playerid);
 	SetPlayerHealth(playerid, 0.0);
 
-	DestroyDynamicArea(Zone[playerid]);
 	DestroyItem(Bag[playerid]);
 	DestroyItem(Wrench[playerid]);
 	DestroyItem(Weapon[playerid]);
 	DestroyItem(Ammo[playerid]);
 
-	Zone[playerid] = -1;
 	Bag[playerid] = INVALID_ITEM_ID;
 	Wrench[playerid] = INVALID_ITEM_ID;
 	Weapon[playerid] = INVALID_ITEM_ID;
 	Ammo[playerid] = INVALID_ITEM_ID;
 
+	defer _tut_DestroyItems(playerid);
+
 	return 1;
+}
+
+timer _tut_DestroyItems[100](playerid)
+{
+	foreach(new i : itm_Index)
+	{
+		if(GetItemWorld(i) == TUTORIAL_WORLD)
+			DestroyItem(i, i);
+	}
 }
 
 
@@ -368,9 +399,9 @@ public OnPlayerOpenInventory(playerid)
 		else
 			GetAmmoTypeName(ammotype, ammoname);
 
-		format(string, sizeof(string), "Next to the weapon is '(%d/%d, %s, %s)'. This represents your current ammunition, weapon calibre and current ammunition type. Drop the weapon to progress.", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);
+		format(string, sizeof(string), "Next to the weapon is '(%d/%d, %s, %s)'. This represents your current ammunition, weapon calibre and current ammunition type. Close the inventory screen to progress.", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);
 		ShowHelpTip(playerid, string);
-		TutorialState[playerid] = E_TUT_DROP_WEAPON;
+		TutorialState[playerid] = E_TUT_CLOSE_INV2;
 	}
 
 	#if defined tut_OnPlayerOpenInventory
@@ -429,7 +460,7 @@ public OnItemRemoveFromContainer(containerid, slotid, playerid)
 			{
 				if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Wrench)
 				{
-					ShowHelpTip(playerid, "Wrenches can be used to repair vehicles, but it will only repair so much, you'll need more tools to repair a vehicle fully. Press "KEYTEXT_DROP_ITEM" to drop/give your current item or weapon.");
+					ShowHelpTip(playerid, "Wrenches can be used to repair vehicles, but it will only repair so much, you'll need more tools to repair a vehicle fully. Press "KEYTEXT_DROP_ITEM" to drop your current item.");
 					TutorialState[playerid] = E_TUT_DROP;
 				}
 			}
@@ -471,40 +502,13 @@ timer _WeaponUnloadOffset[500](playerid)
 {
 	if(TutorialState[playerid] == E_TUT_UNLOAD_AMMO)
 	{
-		ShowHelpTip(playerid, "Now load up that different ammunition type. Different types have different effects on your target.");
-		TutorialState[playerid] = E_TUT_LOAD_NEW_AMMO;
-		DestroyItem(Ammo[playerid]);
-		Ammo[playerid] = CreateItem(item_AmmoFlechette, -1635.4324, -2708.2253, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
-		SetItemExtraData(Ammo[playerid], 12);
-	}
-}
-
-public OnPlayerDroppedItem(playerid, itemid)
-{
-	if(TutorialState[playerid] == E_TUT_DROP_WEAPON)
-	{
+		ShowHelpTip(playerid, "The next section of the tutorial is not yet complete. Type /exit to kill yourself and return to the create-character screen.");
+		DestroyItem(Bag[playerid]);
+		DestroyItem(Wrench[playerid]);
 		DestroyItem(Weapon[playerid]);
 		DestroyItem(Ammo[playerid]);
-		ShowHelpTip(playerid, "The next section of the tutorial is not yet complete. Type /exit to leave the tutorial.");
-		return 1;
 	}
-
-	#if defined tut_OnPlayerDroppedItem
-		return tut_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
- 
-#define OnPlayerDroppedItem tut_OnPlayerDroppedItem
-#if defined tut_OnPlayerDroppedItem
-	forward tut_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
 public OnItemAddToInventory(playerid, itemid, slot)
 {
@@ -564,10 +568,16 @@ public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
-		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.", 30000);
+		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.");
 		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -1635.4324, -2707.2253, 47.6371, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
+		Weapon[playerid] = CreateItem(item_PumpShotgun, -3.12092, -0.03646, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
+	}
+
+	if(TutorialState[playerid] == E_TUT_CLOSE_INV2)
+	{
+		ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
+		TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
 	}
 
 	#if defined tut_OnPlayerCloseContainer
@@ -582,10 +592,16 @@ public OnPlayerCloseInventory(playerid)
 {
 	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
 	{
-		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.", 30000);
+		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.");
 		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -1635.4324, -2707.2253, 47.5671, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD, 0);
+		Weapon[playerid] = CreateItem(item_PumpShotgun, -3.12092, -0.03646, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		TutorialState[playerid] = E_TUT_PICK_WEAPON;
+	}
+
+	if(TutorialState[playerid] == E_TUT_CLOSE_INV2)
+	{
+		ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
+		TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
 	}
 
 	#if defined tut_OnPlayerCloseInventory
@@ -616,7 +632,7 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 	{
 		ShowHelpTip(playerid, "What good is a gun without ammunition? Load your weapon by standing at the ammunition item and pressing "KEYTEXT_INTERACT".");
 		DestroyItem(Ammo[playerid]);
-		Ammo[playerid] = CreateItem(item_AmmoBuck, -1635.4324, -2707.2253, 47.5936, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
+		Ammo[playerid] = CreateItem(item_AmmoBuck, 0.50971, 3.61521, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
 		SetItemExtraData(Ammo[playerid], 12);
 		TutorialState[playerid] = E_TUT_PICK_AMMO;
 	}
@@ -639,12 +655,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 		else if(TutorialState[playerid] == E_TUT_PICK_MORE_AMMO)
 		{
-			ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
-			TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
-		}
-		else if(TutorialState[playerid] == E_TUT_LOAD_NEW_AMMO)
-		{
-			ShowHelpTip(playerid, "This ammunition type makes your target bleed faster but has less of a chance to knock them down. Open your inventory with the weapon in hand and look on the right side at the weapon information.");
+			ShowHelpTip(playerid, "Open your inventory with the weapon in hand and look on the right side at the weapon information.");
 			TutorialState[playerid] = E_TUT_OPEN_INV2;
 		}
 	}
@@ -671,56 +682,6 @@ CMD:exit(playerid, params[])
 	ExitTutorial(playerid);
 
 	return 1;
-}
-
-
-public OnPlayerLeaveDynamicArea(playerid, areaid)
-{
-	if(IsPlayerInTutorial(playerid))
-	{
-		if(areaid == Zone[playerid])
-		{
-			Msg(playerid, YELLOW, "If you want to leave the tutorial area, type /exit and create a character.");
-			defer _tut_AreaCheck(playerid);
-		}
-	}
-
-	#if defined tut_OnPlayerLeaveDynamicArea
-		return tut_OnPlayerLeaveDynamicArea(playerid, areaid);
-	#else
-		return 1;
-	#endif
-}
-#if defined _ALS_OnPlayerLeaveDynamicArea
-	#undef OnPlayerLeaveDynamicArea
-#else
-	#define _ALS_OnPlayerLeaveDynamicArea
-#endif
-#define OnPlayerLeaveDynamicArea tut_OnPlayerLeaveDynamicArea
-#if defined tut_OnPlayerLeaveDynamicArea
-	forward tut_OnPlayerLeaveDynamicArea(playerid, areaid);
-#endif
-
-timer _tut_AreaCheck[100](playerid)
-{
-	if(GetPlayerVirtualWorld(playerid) != TUTORIAL_WORLD)
-		return;
-
-	new
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:angle;
-
-	GetPlayerPos(playerid, x, y, z);
-	angle = GetAngleToPoint(x, y, -1583.0, -2733.0);
-
-	SetPlayerVelocity(playerid, 0.5 * floatsin(-angle, degrees), 0.5 * floatcos(-angle, degrees), 0.1);
-
-	if(!IsPlayerInDynamicArea(playerid, Zone[playerid]))
-		defer _tut_AreaCheck(playerid);
-
-	return;
 }
 
 
