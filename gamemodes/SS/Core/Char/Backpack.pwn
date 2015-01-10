@@ -176,7 +176,7 @@ stock RemovePlayerBag(playerid)
 	{
 		new bagtype = bag_ItemTypeBagType[GetItemType(bag_PlayerBagID[playerid])];
 
-		if(bagtype != -1)
+		if(bagtype == -1)
 		{
 			printf("[RemovePlayerBag] ERROR: Player (%d) bag item type (%d) is not a valid bag type.", playerid, bagtype);
 			return 0;

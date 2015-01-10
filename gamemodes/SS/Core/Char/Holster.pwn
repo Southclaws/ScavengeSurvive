@@ -234,22 +234,20 @@ _HolsterItem(playerid)
 	itemid = GetPlayerItem(playerid);
 	itemtype = GetItemType(itemid);
 
-	if(IsValidItemType(itemtype))
-	{
-		if(hols_ItemTypeHolsterDataID[itemtype] != -1)
-		{
-			if(CallLocalFunction("OnPlayerHolsterItem", "dd", playerid, itemid))
-				return 0;
+	if(!IsValidItemType(itemtype))
+		return 0;
 
-			ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
-			defer HolsterItemDelay(playerid, itemid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
-			hols_LastHolster[playerid] = GetTickCount();
+	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
+		return 0;
 
-			return 1;
-		}
-	}
+	if(CallLocalFunction("OnPlayerHolsterItem", "dd", playerid, itemid))
+		return 0;
 
-	return 0;
+	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
+	defer HolsterItemDelay(playerid, itemid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
+	hols_LastHolster[playerid] = GetTickCount();
+
+	return 1;
 }
 
 timer HolsterItemDelay[time](playerid, itemid, time)
@@ -282,10 +280,13 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 
 _UnholsterItem(playerid)
 {
-	if(!IsValidItem(hols_Item[playerid]))
+	new ItemType:itemtype = GetItemType(hols_Item[playerid]);
+
+	if(!IsValidItemType(itemtype))
 		return 0;
 
-	new ItemType:itemtype = GetItemType(hols_Item[playerid]);
+	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
+		return 0;
 
 	if(CallLocalFunction("OnPlayerUnHolsterItem", "dd", playerid, hols_Item[playerid]))
 		return 0;
