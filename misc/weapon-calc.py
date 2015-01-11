@@ -1,5 +1,6 @@
 import tkinter
 import math
+import random
 from tkinter import *
 from tkinter import ttk
 
@@ -118,6 +119,9 @@ class AppMain(object):
 		self.sli_health.set(100.0)
 		self.sli_health.bind("<B1-Motion>", self.calculate_callback)
 
+		self.chk_knockedout_int = IntVar()
+		self.chk_knockedout = Checkbutton(frame_target, text="Knocked out", variable=self.chk_knockedout_int)
+
 
 		# Grid stuff
 		frame_target.grid		(column=0, row=1, sticky=(N, S, E, W))
@@ -129,6 +133,7 @@ class AppMain(object):
 		self.btn_resetbleed.grid(column=2, row=2, sticky=(E, W))
 		self.lab_health.grid	(column=0, row=3, sticky=(E, W))
 		self.sli_health.grid	(column=1, row=3, sticky=(E, W))
+		self.chk_knockedout.grid(column=0, row=4, sticky=(E, W))
 
 
 		#
@@ -149,6 +154,8 @@ class AppMain(object):
 		self.output_timetolive = self.create_output(frame_outputs, "Worst case time to live:", 5)
 		self.output_finalknock = self.create_output(frame_outputs, "Knockout chance:", 6)
 		self.output_knocktime = self.create_output(frame_outputs, "Knockout time:", 7)
+		self.output_shotstokill = self.create_output(frame_outputs, "Shots to kill:", 8)
+		self.output_timetokill = self.create_output(frame_outputs, "Instant blood loss TTK:", 9)
 
 		self.btn_calculate = ttk.Button(frame_outputs, text='Calculate', width=80)
 		self.btn_calculate.bind('<Button-1>', self.calculate_callback)
@@ -159,8 +166,7 @@ class AppMain(object):
 		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
 		self.btn_calculate.grid	(sticky=(N, S, E, W), columnspan=2)
 
-		# Calculate with the default values
-		self.calculate()
+		# Calculate with the default values and update the UI
 		self.update_ui()
 
 
@@ -181,9 +187,14 @@ class AppMain(object):
 		output.set(str(value) + suffix)
 
 
+	def calculate_callback(self, event):
+
+		self.update_ui()
+
+
 	def update_ui(self):
 
-		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime = self.calculate()
+		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill = self.calculate()
 
 		self.update_output(self.output_bulletvel, round(bulletvelocity, 8), "m/s")
 		self.update_output(self.output_veldegrad, round(velocitydegredationrate, 8))
@@ -193,19 +204,8 @@ class AppMain(object):
 		self.update_output(self.output_timetolive, round(timetolive), "s")
 		self.update_output(self.output_finalknock, round(knockchance, 8), "%")
 		self.update_output(self.output_knocktime, knockouttime, "ms")
-
-
-	def reset_bleed(self, event):
-
-		self.ent_totalbleed_string.set(0.0)
-		self.calculate()
-		self.update_ui()
-
-
-	def calculate_callback(self, event):
-
-		self.calculate()
-		self.update_ui()
+		self.update_output(self.output_shotstokill, shotstokill, " shots")
+		self.update_output(self.output_timetokill, timetokill, "ms")
 
 
 	def calculate(self):
@@ -272,6 +272,9 @@ class AppMain(object):
 
 		knockchance = knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1))
 
+		if (random.random() * 100.0) < knockchance:
+			self.chk_knockedout_int.set(1)
+
 		timetolive = 0
 
 		if totalbleedrate > 0.0:
@@ -279,7 +282,11 @@ class AppMain(object):
 
 		knockouttime = round((knockmult * 0.2) * ((woundcount + 1) * ((totalbleedrate * 10) + 1) * (110.0 - hp) + (200 * (110.0 - hp))));
 
-		return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime
+		shotstokill = math.ceil(hp / hploss)
+
+		timetokill = shotstokill * weapon.shotinterval
+
+		return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill
 
 
 	def simulate_shot_callback(self, event):
@@ -290,7 +297,7 @@ class AppMain(object):
 
 	def simulate_shot(self):
 
-		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime = self.calculate()
+		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill = self.calculate()
 
 		health = self.sli_health.get()
 
@@ -299,6 +306,12 @@ class AppMain(object):
 		self.sli_wounds.set(self.sli_wounds.get() + 1)
 
 		self.ent_totalbleed_string.set(str(round(float(self.ent_totalbleed_string.get()) + bleedrate, 8)))
+
+
+	def reset_bleed(self, event):
+
+		self.ent_totalbleed_string.set(0.0)
+		self.update_ui()
 
 
 #
@@ -322,6 +335,25 @@ class ItemTypeWeapon():
 		self.muzzvel = muzzvel
 		self.magsize = magsize
 		self.maxmags = maxmags
+
+		if   weaponid == "WEAPON_COLT45":			self.shotinterval = 300
+		elif weaponid == "WEAPON_SILENCED":			self.shotinterval = 400
+		elif weaponid == "WEAPON_DEAGLE":			self.shotinterval = 800
+		elif weaponid == "WEAPON_SHOTGUN":			self.shotinterval = 1060
+		elif weaponid == "WEAPON_SAWEDOFF":			self.shotinterval = 300
+		elif weaponid == "WEAPON_SHOTGSPA":			self.shotinterval = 320
+		elif weaponid == "WEAPON_UZI":				self.shotinterval = 120
+		elif weaponid == "WEAPON_MP5":				self.shotinterval = 100
+		elif weaponid == "WEAPON_AK47":				self.shotinterval = 120
+		elif weaponid == "WEAPON_M4":				self.shotinterval = 120
+		elif weaponid == "WEAPON_TEC9":				self.shotinterval = 120
+		elif weaponid == "WEAPON_RIFLE":			self.shotinterval = 1060
+		elif weaponid == "WEAPON_SNIPER":			self.shotinterval = 1060
+		elif weaponid == "WEAPON_ROCKETLAUNCHER":	self.shotinterval = 0
+		elif weaponid == "WEAPON_HEATSEEKER":		self.shotinterval = 0
+		elif weaponid == "WEAPON_FLAMETHROWER":		self.shotinterval = 0
+		elif weaponid == "WEAPON_MINIGUN":			self.shotinterval = 20
+		else: self.shotinterval = 0
 
 	def __repr__(self):
 		return self.item + " (" + str(self.calibre) + " @ " + str(self.muzzvel) + "m/s" + ")"

@@ -167,7 +167,7 @@ ShowPlayerHealthInfo(playerid)
 		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, drugname, 0xFFFF00FF);
 	}
 
-	format(string, sizeof(string), "%.1f%% Unconsciousness chance", GetPlayerKnockoutChance(playerid));
+	format(string, sizeof(string), "%.1f%% Unconsciousness chance", (GetPlayerKnockoutChance(playerid, 5.7) + GetPlayerKnockoutChance(playerid, 22.6)) / 2);
 	SetBodyPreviewFooterText(playerid, string);
 }
 

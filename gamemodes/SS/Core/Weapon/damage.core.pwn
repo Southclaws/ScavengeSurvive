@@ -182,12 +182,12 @@ public OnDeath(playerid, killerid, reason)
 	forward dmg_OnDeath(playerid, killerid, reason);
 #endif
 
-stock Float:GetPlayerKnockoutChance(playerid)
+stock Float:GetPlayerKnockoutChance(playerid, Float:knockmult)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0.0;
 
-	return (Iter_Count(wnd_Index[playerid]) * (GetPlayerBleedRate(playerid) * 30));
+	return knockmult * (((Iter_Count(wnd_Index[playerid]) + 1) * 0.2) * ((GetPlayerBleedRate(playerid) * 50) + 1));
 }
 
 // dmg_LastHit
