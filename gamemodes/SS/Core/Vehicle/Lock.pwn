@@ -6,6 +6,28 @@ static
 	lock_LastChange	[MAX_VEHICLES];
 
 
+public OnVehicleCreated(vehicleid)
+{
+	lock_Status[vehicleid] = 0;
+	lock_LastChange[vehicleid] = 0;
+
+	#if defined lock_OnVehicleCreated
+		return lock_OnVehicleCreated(vehicleid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnVehicleCreated
+	#undef OnVehicleCreated
+#else
+	#define _ALS_OnVehicleCreated
+#endif
+ 
+#define OnVehicleCreated lock_OnVehicleCreated
+#if defined lock_OnVehicleCreated
+	forward lock_OnVehicleCreated(vehicleid);
+#endif
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(newkeys & KEY_SUBMISSION)
