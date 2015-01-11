@@ -883,7 +883,7 @@ public OnScriptInit()
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0);
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0);
 	calibre_film	= DefineAmmoCalibre("Film",		0.0);
-	calibre_50bmg	= DefineAmmoCalibre(".50",		0.073);
+	calibre_50bmg	= DefineAmmoCalibre(".50",		0.063);
 	calibre_308		= DefineAmmoCalibre(".308",		0.043);
 
 	anim_Blunt		= DefineAnimSet();
@@ -982,7 +982,7 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_762,	715.0,			30,		1);
 	DefineItemTypeWeapon(item_M77RMRifle,		WEAPON_RIFLE,				calibre_357,	823.0,			1,		9);
-	DefineItemTypeWeapon(item_DogsBreath,		WEAPON_DEAGLE,				calibre_50bmg,	1398.6,			1,		9);
+	DefineItemTypeWeapon(item_DogsBreath,		WEAPON_DEAGLE,				calibre_50bmg,	888.8,			1,		9);
 	DefineItemTypeWeapon(item_Model70Rifle,		WEAPON_SNIPER,				calibre_308,	860.6,			1,		9);
 	DefineItemTypeWeapon(item_LenKnocksRifle,	WEAPON_SNIPER,				calibre_50bmg,	938.5,			1,		4);
 
@@ -1031,7 +1031,7 @@ public OnScriptInit()
 	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.6,	0.4,	30);
 	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
 	DefineItemTypeAmmo(item_Ammo762,			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30);
-	DefineItemTypeAmmo(item_Ammo50BMG,			"BMG",				calibre_50bmg,	2.0,	2.0,	1.0,	16);
+	DefineItemTypeAmmo(item_Ammo50BMG,			"BMG",				calibre_50bmg,	1.8,	1.8,	1.0,	16);
 	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10);
 
 

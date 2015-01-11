@@ -12,11 +12,7 @@ class AppMain(object):
 		self.style = ttk.Style()
 
 		# Load the data into lists
-		calibres, weapons, ammo = define_data()
-
-		# Serialise the lists
-		self.dict_weapons = {str(el):el for el in weapons}
-		self.dict_ammo = {str(el):el for el in ammo}
+		self.calibres, self.weapons, self.ammo, self.bodyparts = define_data()
 
 
 		#
@@ -26,13 +22,16 @@ class AppMain(object):
 
 		frame_inputs = ttk.Frame(self.root, relief=SUNKEN, borderwidth=15)
 
+		# Frame title
+		self.lab_inputs = ttk.Label(frame_inputs, text='Weapon and shot information:')
+
 		# Weapon label
 		self.lab_weapon = ttk.Label(frame_inputs, text='Weapon:')
 
 		# Weapon input
 		self.menu_weapons = ttk.Combobox(frame_inputs, width=40)
 		self.menu_weapons.bind('<<ComboboxSelected>>', self.calculate_callback)
-		self.menu_weapons['values'] = tuple(weapons)
+		self.menu_weapons['values'] = tuple(self.weapons)
 		self.menu_weapons.current(0)
 
 		# Ammo type label
@@ -41,7 +40,7 @@ class AppMain(object):
 		# Ammo type input
 		self.menu_ammo = ttk.Combobox(frame_inputs)
 		self.menu_ammo.bind('<<ComboboxSelected>>', self.calculate_callback)
-		self.menu_ammo['values'] = tuple(ammo)
+		self.menu_ammo['values'] = tuple(self.ammo)
 		self.menu_ammo.current(0)
 
 		# Distance label
@@ -52,18 +51,30 @@ class AppMain(object):
 		self.sli_distance.set(30)
 		self.sli_distance.bind("<B1-Motion>", self.calculate_callback)
 
+		# Body part label
+		self.lab_bodypart = ttk.Label(frame_inputs, text='Body part:')
+
+		# Body part menu
+		self.menu_bodypart = ttk.Combobox(frame_inputs, width=40)
+		self.menu_bodypart.bind('<<ComboboxSelected>>', self.calculate_callback)
+		self.menu_bodypart['values'] = tuple(self.bodyparts)
+		self.menu_bodypart.current(0)
+
 		# Simulate shot button
 		self.btn_fireshot = ttk.Button(frame_inputs, text='Fire Shot', width=80)
 		self.btn_fireshot.bind('<Button-1>', self.simulate_shot_callback)
 
 		# Grid stuff
 		frame_inputs.grid		(column=0, row=0, sticky=(N, S, E, W))
-		self.lab_weapon.grid	(column=0, row=0, sticky=(E, W))
-		self.menu_weapons.grid	(column=1, row=0, sticky=(E, W))
-		self.lab_ammo.grid		(column=0, row=1, sticky=(E, W))
-		self.menu_ammo.grid		(column=1, row=1, sticky=(E, W))
-		self.lab_distance.grid	(column=0, row=2, sticky=(E, W))
-		self.sli_distance.grid	(column=1, row=2, sticky=(E, W))
+		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
+		self.lab_weapon.grid	(column=0, row=1, sticky=(E, W))
+		self.menu_weapons.grid	(column=1, row=1, sticky=(E, W))
+		self.lab_ammo.grid		(column=0, row=2, sticky=(E, W))
+		self.menu_ammo.grid		(column=1, row=2, sticky=(E, W))
+		self.lab_distance.grid	(column=0, row=3, sticky=(E, W))
+		self.sli_distance.grid	(column=1, row=3, sticky=(E, W))
+		self.lab_bodypart.grid	(column=0, row=4, sticky=(E, W))
+		self.menu_bodypart.grid	(column=1, row=4, sticky=(E, W))
 		self.btn_fireshot.grid	(sticky=(N, S, E, W), columnspan=2)
 
 
@@ -74,12 +85,15 @@ class AppMain(object):
 
 		frame_target = ttk.Frame(self.root, relief=SUNKEN, borderwidth=15)
 
+		# Frame title
+		self.lab_target = ttk.Label(frame_target, text='Shot target attributes:')
+
 		# Target wounds label
 		self.lab_wounds = ttk.Label(frame_target, text='Wounds:')
 
 		# Target wounds slider
 		self.sli_wounds = Scale(frame_target, from_=0, to=64, orient=HORIZONTAL)
-		self.sli_wounds.set(2)
+		self.sli_wounds.set(0)
 		self.sli_wounds.bind("<B1-Motion>", self.calculate_callback)
 
 		# Target bleed rate label
@@ -87,28 +101,34 @@ class AppMain(object):
 
 		# Total bleed rate input
 		self.ent_totalbleed_string = StringVar()
-		self.ent_totalbleed = Entry(frame_target, textvariable=self.ent_totalbleed_string)
+		self.ent_totalbleed = Spinbox(frame_target, from_=0.0, to=1.0, increment=0.001, textvariable=self.ent_totalbleed_string)
 		self.ent_totalbleed_string.set("0.0")
 		self.ent_totalbleed.bind("<Key>", self.calculate_callback)
+		self.ent_totalbleed.bind("<Button-1>", self.calculate_callback)
 
-		# Target wounds label
+		# Reset health button
+		self.btn_resetbleed = ttk.Button(frame_target, text='0', width=1)
+		self.btn_resetbleed.bind('<Button-1>', self.reset_bleed)
+
+		# Target health label
 		self.lab_health = ttk.Label(frame_target, text='Health:')
 
-		# Target wounds slider
+		# Target health slider
 		self.sli_health = Scale(frame_target, from_=0, to=100, orient=HORIZONTAL, resolution=0.1)
 		self.sli_health.set(100.0)
 		self.sli_health.bind("<B1-Motion>", self.calculate_callback)
 
 
-
 		# Grid stuff
 		frame_target.grid		(column=0, row=1, sticky=(N, S, E, W))
-		self.lab_wounds.grid	(column=0, row=0, sticky=(E, W))
-		self.sli_wounds.grid	(column=1, row=0, sticky=(E, W))
-		self.lab_bleed.grid		(column=0, row=1, sticky=(E, W))
-		self.ent_totalbleed.grid(column=1, row=1, sticky=(E, W))
-		self.lab_health.grid	(column=0, row=2, sticky=(E, W))
-		self.sli_health.grid	(column=1, row=2, sticky=(E, W))
+		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
+		self.lab_wounds.grid	(column=0, row=1, sticky=(E, W))
+		self.sli_wounds.grid	(column=1, row=1, sticky=(E, W))
+		self.lab_bleed.grid		(column=0, row=2, sticky=(E, W))
+		self.ent_totalbleed.grid(column=1, row=2, sticky=(E, W))
+		self.btn_resetbleed.grid(column=2, row=2, sticky=(E, W))
+		self.lab_health.grid	(column=0, row=3, sticky=(E, W))
+		self.sli_health.grid	(column=1, row=3, sticky=(E, W))
 
 
 		#
@@ -117,6 +137,9 @@ class AppMain(object):
 
 
 		frame_outputs = ttk.Frame(self.root, relief=SUNKEN, borderwidth=15)
+
+		# Frame title
+		self.lab_outputs = ttk.Label(frame_outputs, text='Output results:')
 
 		self.output_bulletvel = self.create_output(frame_outputs, "Bullet velocity at impact:", 0)
 		self.output_veldegrad = self.create_output(frame_outputs, "Velocity degradation rate:", 1)
@@ -132,8 +155,9 @@ class AppMain(object):
 
 
 		# Grid stuff
-		frame_outputs.grid(column=0, row=2, sticky=(N, S, E, W))
-		self.btn_calculate.grid(sticky=(N, S, E, W), columnspan=2)
+		frame_outputs.grid		(column=0, row=2, sticky=(N, S, E, W))
+		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
+		self.btn_calculate.grid	(sticky=(N, S, E, W), columnspan=2)
 
 		# Calculate with the default values
 		self.calculate()
@@ -171,6 +195,13 @@ class AppMain(object):
 		self.update_output(self.output_knocktime, knockouttime, "ms")
 
 
+	def reset_bleed(self, event):
+
+		self.ent_totalbleed_string.set(0.0)
+		self.calculate()
+		self.update_ui()
+
+
 	def calculate_callback(self, event):
 
 		self.calculate()
@@ -179,14 +210,34 @@ class AppMain(object):
 
 	def calculate(self):
 
-		weapon_key = self.menu_weapons.get()
-		ammo_key = self.menu_ammo.get()
+		weapon_key = self.menu_weapons.current()
+		ammo_key = self.menu_ammo.current()
+		bodypart = self.menu_bodypart.current()
 
-		if weapon_key == "" or ammo_key == "":
+		if weapon_key == -1 or ammo_key == -1 or bodypart == -1:
 			return
 
-		weapon = self.dict_weapons[weapon_key]
-		ammotype = self.dict_ammo[ammo_key]
+		weapon = self.weapons[weapon_key]
+		ammotype = self.ammo[ammo_key]
+
+		bulletvelocity = 0.0
+		velocitydegredationrate = 0.0
+		bleedrate = 0.0
+		knockmult = 0.0
+		hploss = 0.0
+		timetolive = 0
+		knockchance = 0.0
+		knockouttime = 0
+
+		if weapon.calibre != ammotype.calibre:
+			for i, a in enumerate(self.ammo):
+				if a.calibre == weapon.calibre:
+					ammotype = a
+					self.menu_ammo.current(i)
+					break
+
+			else:
+				return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime
 
 		bleedrate = weapon.calibre.bleedrate;
 		knockmult = 1.0
@@ -207,6 +258,14 @@ class AppMain(object):
 		bleedrate *= ammotype.get_bleed_multiplier()
 		knockmult *= ammotype.get_knockout_multiplier()
 
+		if bodypart == 0: knockmult *= 1.0
+		if bodypart == 1: knockmult *= 1.2
+		if bodypart == 2: knockmult *= 0.9
+		if bodypart == 3: knockmult *= 0.9
+		if bodypart == 4: knockmult *= 0.8
+		if bodypart == 5: knockmult *= 0.8
+		if bodypart == 6: knockmult *= 9.9
+
 		hploss = (bleedrate * 500)
 
 		woundcount = self.sli_wounds.get()
@@ -216,7 +275,7 @@ class AppMain(object):
 		timetolive = 0
 
 		if totalbleedrate > 0.0:
-			timetolive = 100 / (totalbleedrate * 10)
+			timetolive = hp / (totalbleedrate * 10)
 
 		knockouttime = round((knockmult * 0.2) * ((woundcount + 1) * ((totalbleedrate * 10) + 1) * (110.0 - hp) + (200 * (110.0 - hp))));
 
@@ -308,7 +367,7 @@ def define_data():
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0)
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0)
 	calibre_film	= DefineAmmoCalibre("Film",		0.0)
-	calibre_50bmg	= DefineAmmoCalibre(".50",		0.073)
+	calibre_50bmg	= DefineAmmoCalibre(".50",		0.063)
 	calibre_308		= DefineAmmoCalibre(".308",		0.043)
 
 	calibres = [
@@ -351,7 +410,7 @@ def define_data():
 		DefineItemTypeWeapon("VehicleWeapon",   	"WEAPON_M4",  					calibre_556,	750.0,			0,		1),
 		DefineItemTypeWeapon("AK47Rifle",   		"WEAPON_AK47",  				calibre_762,	715.0,			30,		1),
 		DefineItemTypeWeapon("M77RMRifle",   		"WEAPON_RIFLE",  				calibre_357,	823.0,			1,		9),
-		DefineItemTypeWeapon("DogsBreath",   		"WEAPON_DEAGLE",  				calibre_50bmg,	1398.6,			1,		9),
+		DefineItemTypeWeapon("DogsBreath",   		"WEAPON_DEAGLE",  				calibre_50bmg,	888.8,			1,		9),
 		DefineItemTypeWeapon("Model70Rifle",   		"WEAPON_SNIPER",  				calibre_308,	860.6,			1,		9),
 		DefineItemTypeWeapon("LenKnocksRifle",   	"WEAPON_SNIPER",  				calibre_50bmg,	938.5,			1,		4)
 	]
@@ -371,11 +430,21 @@ def define_data():
 		DefineItemTypeAmmo("Ammo556HP",   			"Hollow Point",		calibre_556,	1.3,	1.6,	0.4,	30),
 		DefineItemTypeAmmo("Ammo357Tracer",   		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10),
 		DefineItemTypeAmmo("Ammo762",   			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30),
-		DefineItemTypeAmmo("Ammo50BMG",   			"BMG",				calibre_50bmg,	2.0,	2.0,	1.0,	16),
+		DefineItemTypeAmmo("Ammo50BMG",   			"BMG",				calibre_50bmg,	1.8,	1.8,	1.0,	16),
 		DefineItemTypeAmmo("Ammo308",   			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10)
 	]
 
-	return calibres, weapons, ammo
+	bodyparts = [
+		"Torso",
+		"Groin",
+		"Left arm",
+		"Right arm",
+		"Left leg",
+		"Right leg",
+		"Head"
+	]
+
+	return calibres, weapons, ammo, bodyparts
 
 
 

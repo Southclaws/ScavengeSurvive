@@ -110,13 +110,13 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 	switch(bodypart)
 	{
-		case BODY_PART_TORSO: knockmult *= 1;
-		case BODY_PART_GROIN: knockmult *= 1.2;
-		case BODY_PART_LEFT_ARM: knockmult *= 0.9;
-		case BODY_PART_RIGHT_ARM: knockmult *= 0.9;
-		case BODY_PART_LEFT_LEG: knockmult *= 0.9;
-		case BODY_PART_RIGHT_LEG: knockmult *= 0.9;
-		case BODY_PART_HEAD: knockmult *= 2.0;
+		case BODY_PART_TORSO:		knockmult *= 1.0;
+		case BODY_PART_GROIN:		knockmult *= 1.2;
+		case BODY_PART_LEFT_ARM:	knockmult *= 0.9;
+		case BODY_PART_RIGHT_ARM:	knockmult *= 0.9;
+		case BODY_PART_LEFT_LEG:	knockmult *= 0.8;
+		case BODY_PART_RIGHT_LEG:	knockmult *= 0.8;
+		case BODY_PART_HEAD:		knockmult *= 9.9;
 	}
 
 	if(frandom(100.0) < knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)))
