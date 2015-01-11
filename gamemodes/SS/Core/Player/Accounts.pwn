@@ -96,7 +96,7 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Accounts'...");
 
-	HANDLER = debug_register_handler("Accounts", 0);
+	HANDLER = debug_register_handler("Accounts");
 
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
@@ -201,20 +201,22 @@ LoadAccount(playerid)
 	stmt_bind_value(stmt_AccountExists, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountExists, 0, DB::TYPE_INTEGER, exists);
 
-	if(stmt_execute(stmt_AccountExists))
-	{
-		stmt_fetch_row(stmt_AccountExists);
-
-		if(exists == 0)
-		{
-			logf("[LOAD] %p (account does not exist)", playerid);
-			return 0;
-		}
-	}
-	else
+	if(!stmt_execute(stmt_AccountExists))
 	{
 		print("ERROR: [LoadAccount] executing statement 'stmt_AccountExists'.");
 		return -1;
+	}
+
+	if(!stmt_fetch_row(stmt_AccountExists))
+	{
+		print("ERROR: [LoadAccount] fetching statement result 'stmt_AccountExists'.");
+		return -1;
+	}
+
+	if(exists == 0)
+	{
+		logf("[LOAD] %p (account does not exist)", playerid);
+		return 0;
 	}
 
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
@@ -235,7 +237,11 @@ LoadAccount(playerid)
 		return -1;
 	}
 
-	stmt_fetch_row(stmt_AccountLoad);
+	if(!stmt_fetch_row(stmt_AccountLoad))
+	{
+		print("ERROR: [LoadAccount] fetching statement result 'stmt_AccountLoad'.");
+		return -1;
+	}
 
 	if(!active)
 	{

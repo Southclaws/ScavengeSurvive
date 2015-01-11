@@ -155,6 +155,8 @@ public OnPlayerLoadAccount(playerid)
 	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 24.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonTutorial[playerid], true);
 
+	TutorialState[playerid] = E_TUT_NONE;
+
 	#if defined tut_OnPlayerLoadAccount
 		return tut_OnPlayerLoadAccount(playerid);
 	#else
@@ -262,6 +264,11 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 }
 
 hook OnPlayerDeath(playerid)
+{
+	ExitTutorial(playerid);
+}
+
+hook OnPlayerDisconnect(playerid, reason)
 {
 	ExitTutorial(playerid);
 }
