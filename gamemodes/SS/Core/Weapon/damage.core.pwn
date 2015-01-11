@@ -41,7 +41,7 @@ static
 Iterator:	wnd_Index[MAX_PLAYERS]<MAX_WOUNDS>;
 
 
-forward Float:GetPlayerKnockoutChance(playerid);
+forward Float:GetPlayerKnockoutChance(playerid, Float:knockmult);
 
 
 hook OnPlayerConnect(playerid)
