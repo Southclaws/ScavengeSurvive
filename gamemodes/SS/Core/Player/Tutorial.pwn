@@ -133,8 +133,8 @@ hook OnGameModeInit()
 
 	SetDynamicObjectMaterialText(Sign1, 0, "Pick up the\nBag and wear it.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
 	SetDynamicObjectMaterialText(Sign2, 0, "Pick up the\nweapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
-	SetDynamicObjectMaterialText(Sign3, 0, "Pick up the\nAmmo while holding\nthe weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
-	SetDynamicObjectMaterialText(Sign4, 0, "Pick up the\nAmmo while holding\nthe weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
+	SetDynamicObjectMaterialText(Sign3, 0, "Pick up the Ammo\nwhile holding\nthe Weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 64, 1, -16777216, -1, 1);
+	SetDynamicObjectMaterialText(Sign4, 0, "Hold Drop to\nunload your\nWeapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 64, 1, -16777216, -1, 1);
 }
 
 public OnPlayerLoadAccount(playerid)

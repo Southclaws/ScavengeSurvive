@@ -1,7 +1,8 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_WOUNDS	(64)
+#define MAX_WOUNDS			(32)
+#define MAX_WOUND_SRCLEN	(10)
 
 
 enum E_WND_TYPE
@@ -22,7 +23,7 @@ Float:		wnd_bleedrate,
 			wnd_calibre,
 			wnd_timestamp,
 			wnd_bodypart,
-			wnd_source[32]
+			wnd_source[MAX_WOUND_SRCLEN]
 }
 
 
@@ -97,7 +98,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	wnd_Data[targetid][woundid][wnd_calibre] = calibre;
 	wnd_Data[targetid][woundid][wnd_timestamp] = gettime();
 	wnd_Data[targetid][woundid][wnd_bodypart] = bodypart;
-	strcpy(wnd_Data[targetid][woundid][wnd_source], source, 32);
+	strcpy(wnd_Data[targetid][woundid][wnd_source], source, MAX_WOUND_SRCLEN);
 
 	totalbleedrate += bleedrate;
 	d:2:FIREARM_DEBUG("[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
@@ -156,7 +157,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		logf("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", targetid, bleedrate, knockmult, bodypart, source);
 	}
 
-	ShowActionText(targetid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (woundcount * (totalbleedrate * 30))) < 50.0 ? ("Minor") : ("Severe")), 5000);
+	ShowActionText(targetid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)) < 50.0 ? ("Minor") : ("Severe"))), 5000);
 
 	return 1;
 }
@@ -331,26 +332,6 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-/*
-	if(sizeof(output) != 1 + (MAX_WOUNDS * 5))
-	{
-		printf("ERROR: Output array for GetPlayerWoundDataAsArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 5));
-		return 0;
-	}
-*/
-
-/*
-	max size: 1 + MAX_WOUNDS * 5
-	header: 1 cell
-		woundblcok count
-
-	woundblock: 5 cells
-		wnd_type
-		wnd_bleedrate
-		wnd_calibre
-		wnd_timestamp
-*/
-
 	new
 		idx = 1,
 		sourcelen;
@@ -367,118 +348,80 @@ stock GetPlayerWoundDataAsArray(playerid, output[])
 		output[idx++] = wnd_Data[playerid][i][wnd_calibre];
 		output[idx++] = wnd_Data[playerid][i][wnd_timestamp];
 		output[idx++] = wnd_Data[playerid][i][wnd_bodypart];
-		sourcelen = strlen(wnd_Data[playerid][i][wnd_source]);
+		sourcelen = strlen(wnd_Data[playerid][i][wnd_source]) + 1; // + \0
 		output[idx++] = sourcelen;
 
-		if(sourcelen > 32)
+		if(sourcelen > MAX_WOUND_SRCLEN)
 		{
-			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d > 32, truncating.", sourcelen);
-			sourcelen = 31;
+			printf("[GetPlayerWoundDataAsArray] ERROR: wound %d sourcelen:%d > %d dump: t:%d b:%f c:%d d:%d p:%d", i, sourcelen, MAX_WOUND_SRCLEN, _:wnd_Data[playerid][i][wnd_type], _:wnd_Data[playerid][i][wnd_bleedrate], wnd_Data[playerid][i][wnd_calibre], wnd_Data[playerid][i][wnd_timestamp], wnd_Data[playerid][i][wnd_bodypart]);
+			sourcelen = MAX_WOUND_SRCLEN;
 		}
-		else if(sourcelen > 0)
+		else if(sourcelen == 0)
 		{
-			//memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
-			// alternative version, memcpy seems to be causing stack issues:
-			for(new j; j < sourcelen; j++)
-				output[idx++] = wnd_Data[playerid][i][wnd_source][j];
+			printf("[GetPlayerWoundDataAsArray] ERROR: wound %d sourcelen:%d <= 0 dump: t:%d b:%f c:%d d:%d p:%d", i, sourcelen, _:wnd_Data[playerid][i][wnd_type], _:wnd_Data[playerid][i][wnd_bleedrate], wnd_Data[playerid][i][wnd_calibre], wnd_Data[playerid][i][wnd_timestamp], wnd_Data[playerid][i][wnd_bodypart]);
+		}
 
-			output[idx++] = EOS;
-		}
-		else
-		{
-			printf("[GetPlayerWoundDataAsArray] ERROR: sourcelen:%d <= 0 dump: t:%d b:%.4f c:%d d:%d p:%d", sourcelen, _:wnd_Data[playerid][i][wnd_type], _:wnd_Data[playerid][i][wnd_bleedrate], wnd_Data[playerid][i][wnd_calibre], wnd_Data[playerid][i][wnd_timestamp], wnd_Data[playerid][i][wnd_bodypart]);
-			output[idx++] = EOS;
-		}
+		//memcpy(output[idx++], wnd_Data[playerid][i][wnd_source], 0, 32 * 4, 32);
+		// alternative version, memcpy seems to be causing stack issues:
+		for(new j; j < sourcelen; j++)
+			output[idx++] = wnd_Data[playerid][i][wnd_source][j];
 	}
 
 	return idx;
 }
-
-// called 3 times, why?
-// [28/10/2014 23:26:09] INFO: [OnPlayerDisconnect] Removing session data file for VIRUXE
-// [28/10/2014 23:26:09] [LOGOUT] VIRUXE logged out at 0.0, 0.0, 3.1 (0.0) Alive: 16 combat logging: 0 knocked out: 2 logged in: 175645056
-// [28/10/2014 23:26:09] [part] VIRUXE has left the server (0:1)
-// [28/10/2014 23:26:09] $ [SSAC]: [_ACDisconnect] ac_Auto:1 ac_Active:0
-// [28/10/2014 23:26:09] $ [SSAC]: [_ACDisconnect] Admins online: 0
-// [28/10/2014 23:26:09] $ [SSAC]: Enabling AC
-// [28/10/2014 23:28:24] Incoming connection: 78.84.224.249:1087
-// [28/10/2014 23:28:24] [join] [RCM]Kaija has joined the server (0:78.84.224.249)
-// [28/10/2014 23:28:24] INFO: [RemoveObjects_FirstLoad] Created session data for [RCM]Kaija
-// [28/10/2014 23:28:24] [JOIN] [RCM]Kaija joined
-// [28/10/2014 23:28:30] $ [tutorial]: [OnPlayerLoadAccount]
-// [28/10/2014 23:28:30] $ [SSAC]: Player 0 connected, running AC buffer checks.
-// [28/10/2014 23:28:30] $ [SSAC]: AC Whitelist binding active, player without AC is in whitelist.
-// [28/10/2014 23:28:30] [LOGIN] [RCM]Kaija logged in
-// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
-// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
-// [28/10/2014 23:28:30] [SetPlayerWoundDataFromArray] ERROR: sourcelen > 32, truncating.
-// [28/10/2014 23:28:30] [SPAWN] [RCM]Kaija spawned existing character at 1352.9, 2595.7, 10.8 (221.3)
-// [28/10/2014 23:28:30] $ [SSAC]: [OnPlayerLogin] ac_Auto:1 ac_Active:1
-// [28/10/2014 23:28:30] $ [SSAC]: [OnPlayerLogin] Admins online: 1
-// [28/10/2014 23:28:30] $ [SSAC]: Disabling AC
-// [28/10/2014 23:28:37] [COMMAND] [[RCM]Kaija]: /issues
 
 stock SetPlayerWoundDataFromArray(playerid, input[])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-/*
-	if(sizeof(output) != 1 + (MAX_WOUNDS * 5))
+	if(input[0] == 0)
+		return 0;
+
+	if(!(0 < input[0] < MAX_WOUNDS))
 	{
-		printf("ERROR: Input array for SetPlayerWoundDataFromArray must be exactly %d cells in size", 1 + (MAX_WOUNDS * 5));
+		printf("[SetPlayerWoundDataFromArray] ERROR: Wound count (%d) is invalid.", input[0]);
 		return 0;
 	}
-*/
-
-	if(input[0] <= 0)
-		return 0;
 
 	new
-		id,
+		idx = 1,
+		woundid,
 		sourcelen;
 
-	for(new i = 1, j; j < input[0];)
+	for(new i; i < input[0]; i++)
 	{
-		id = Iter_Free(wnd_Index[playerid]);
+		woundid = Iter_Free(wnd_Index[playerid]);
 
-		if(id == -1)
+		if(woundid == -1)
 		{
-			printf("ERROR: [SetPlayerWoundDataFromArray] Ran out of wound slots on wound %d cell: %d", (i - 1) / _:E_WOUND_DATA, i);
+			printf("[SetPlayerWoundDataFromArray] ERROR: Ran out of wound slots on wound %d cell: %d", (idx - 1) / _:E_WOUND_DATA, idx);
 			break;
 		}
 
-		wnd_Data[playerid][id][wnd_type] = E_WND_TYPE:input[i++];
-		wnd_Data[playerid][id][wnd_bleedrate] = Float:input[i++];
-		wnd_Data[playerid][id][wnd_calibre] = input[i++];
-		wnd_Data[playerid][id][wnd_timestamp] = input[i++];
-		wnd_Data[playerid][id][wnd_bodypart] = input[i++];
-		sourcelen = input[i++]; // source string length
+		wnd_Data[playerid][woundid][wnd_type] = E_WND_TYPE:input[idx++];
+		wnd_Data[playerid][woundid][wnd_bleedrate] = Float:input[idx++];
+		wnd_Data[playerid][woundid][wnd_calibre] = input[idx++];
+		wnd_Data[playerid][woundid][wnd_timestamp] = input[idx++];
+		wnd_Data[playerid][woundid][wnd_bodypart] = input[idx++];
+		sourcelen = input[idx++]; // source string length
 
-		if(sourcelen > 32)
+		if(sourcelen > MAX_WOUND_SRCLEN)
 		{
-			printf("[SetPlayerWoundDataFromArray] ERROR: sourcelen:%d > 32, truncating.", sourcelen);
-			sourcelen = 31;
+			printf("[SetPlayerWoundDataFromArray] ERROR: sourcelen:%d > %d, truncating.", sourcelen, MAX_WOUND_SRCLEN);
+			sourcelen = MAX_WOUND_SRCLEN;
 		}
-		else if(sourcelen > 0)
-		{
-			// memcpy(wnd_Data[playerid][id][wnd_source], input[i], 0, 32 * 4); // no i++
-			// i += sourcelen; // jump over the string
-			// alternative version, memcpy seems to be causing stack issues:
-			for(new k; k < sourcelen; k++)
-				wnd_Data[playerid][id][wnd_source][k] = input[i++];
-
-			wnd_Data[playerid][id][wnd_source][sourcelen] = EOS;
-		}
-		else
+		else if(sourcelen == 0)
 		{
 			printf("[SetPlayerWoundDataFromArray] ERROR: sourcelen:%d <= 0, truncating.", sourcelen);
-			wnd_Data[playerid][id][wnd_source][0] = EOS;
 		}
 
-		Iter_Add(wnd_Index[playerid], id);
+		// memcpy(wnd_Data[playerid][woundid][wnd_source], input[idx], 0, 32 * 4); // no idx++
+		// idx += sourcelen; // jump over the string
+		for(new k; k < sourcelen; k++)
+			wnd_Data[playerid][woundid][wnd_source][k] = input[idx++];
 
-		j++;
+		Iter_Add(wnd_Index[playerid], woundid);
 	}
 
 	return 1;

@@ -85,6 +85,9 @@ ptask BleedUpdate[100](playerid)
 			RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 
 		GivePlayerHP(playerid, 0.00001925925 * GetPlayerFP(playerid));
+
+		if(bld_BleedRate[playerid] < 0.0)
+			bld_BleedRate[playerid] = 0.0;
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Morphine))
