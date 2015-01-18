@@ -281,6 +281,7 @@ ExitTutorial(playerid)
 	TutorialState[playerid] = E_TUT_NONE;
 	HideHelpTip(playerid);
 	SetPlayerHealth(playerid, 0.0);
+	SetPlayerVirtualWorld(playerid, 0);
 
 	DestroyItem(Bag[playerid]);
 	DestroyItem(Wrench[playerid]);
@@ -512,8 +513,10 @@ timer _WeaponUnloadOffset[500](playerid)
 		ShowHelpTip(playerid, "The next section of the tutorial is not yet complete. Type /exit to kill yourself and return to the create-character screen.");
 		DestroyItem(Bag[playerid]);
 		DestroyItem(Wrench[playerid]);
-		DestroyItem(Weapon[playerid]);
 		DestroyItem(Ammo[playerid]);
+		Bag[playerid] = INVALID_ITEM_ID;
+		Wrench[playerid] = INVALID_ITEM_ID;
+		Ammo[playerid] = INVALID_ITEM_ID;
 	}
 }
 

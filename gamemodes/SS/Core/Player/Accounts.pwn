@@ -86,6 +86,7 @@ DBStatement:	stmt_AccountGetAliasData;
 	
 
 forward OnPlayerLoadAccount(playerid);
+forward OnPlayerRegister(playerid);
 forward OnPlayerLogin(playerid);
 
 
@@ -333,6 +334,8 @@ CreateAccount(playerid, password[])
 	SetPlayerBitFlag(playerid, ToolTips, true);
 
 	PlayerCreateNewCharacter(playerid);
+
+	CallLocalFunction("OnPlayerRegister", "d", playerid);
 
 	return 1;
 }
