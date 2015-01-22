@@ -130,7 +130,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Police,			item_Note,							21.0);
 
 	// loot_Military
-	AddItemToLootIndex(loot_Military,		item_Grenade,						20.0);
+	//AddItemToLootIndex(loot_Military,		item_Grenade,						20.0);
 	AddItemToLootIndex(loot_Military,		item_M9PistolSD,					20.0);
 	AddItemToLootIndex(loot_Military,		item_Spas12,						2.0);
 	AddItemToLootIndex(loot_Military,		item_MP5,							5.0);
@@ -296,7 +296,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarPolice,		item_Note,							12.0);
 
 	// loot_CarMilitary
-	AddItemToLootIndex(loot_CarMilitary,	item_Grenade,						10.0);
+	//AddItemToLootIndex(loot_CarMilitary,	item_Grenade,						10.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_M9PistolSD,					20.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_Spas12,						7.0);
 	AddItemToLootIndex(loot_CarMilitary,	item_MP5,							6.0);

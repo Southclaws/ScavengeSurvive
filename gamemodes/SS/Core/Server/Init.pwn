@@ -379,7 +379,8 @@ ItemType:		item_MediumBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Rucksack		= INVALID_ITEM_TYPE,
 ItemType:		item_SeedBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Note			= INVALID_ITEM_TYPE,
-ItemType:		item_Tomato			= INVALID_ITEM_TYPE;
+ItemType:		item_Tomato			= INVALID_ITEM_TYPE,
+ItemType:		item_HeartShapedBox	= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -640,6 +641,8 @@ public OnScriptInit()
 	item_SeedBag		= DefineItemType("Seeds",				"SeedBag",			2663,	2,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254, false, 0xFFF4A460);
 	item_Note			= DefineItemType("Note",				"Note",				2953,	1,	0.0, 0.0, 0.0,			0.0,	0.083999, 0.022000, -0.013000,  -82.300018, -14.900006, -83.200042, false, 0xCAFFFFFF);
 	item_Tomato			= DefineItemType("Tomato",				"Tomato",			3105,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+// 200
+	item_HeartShapedBox	= DefineItemType("Heart box",			"HeartShapedBox",	1240,	1,	0.0, 0.0, 0.0,			0.05,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
