@@ -138,9 +138,9 @@ hook OnGameModeInit()
 	DefineItemToolTip(item_NightVision,		"This item is invalid, ignore it");
 	DefineItemToolTip(item_ThermalVision,	"This item is invalid, ignore it");
 	DefineItemToolTip(item_Parachute,		"Press "KEYTEXT_PUT_AWAY" to equip, you can't wear this while you are wearing a bag");
-	DefineItemToolTip(item_Medkit,			"You can stop bleeding and prevent knockouts/darkness on yourself or other players with this");
+	DefineItemToolTip(item_Medkit,			"You can stop bleeding and prevent knockouts on yourself or other players with this");
 	DefineItemToolTip(item_HardDrive,		"Used for crafting and some puzzles");
-	DefineItemToolTip(item_Key,				"Used in a puzzle");
+	DefineItemToolTip(item_Key,				"Can be combined with a Motor to make a locksmith kit for locking vehicles");
 	DefineItemToolTip(item_FireworkBox,		"Use a lighter with this to see some fireworks! Or craft explosives with it");
 	DefineItemToolTip(item_FireLighter,		"Light BBQs, campfires and fireworks with this");
 	DefineItemToolTip(item_Timer,			"Used for crafting");
@@ -154,7 +154,7 @@ hook OnGameModeInit()
 	DefineItemToolTip(item_Bandage,			"You can bandage wounds and stop bleeding on yourself or other players with this");
 	DefineItemToolTip(item_FishRod,			"This has no use yet");
 	DefineItemToolTip(item_Wrench,			"Use this to repair vehicles by standing at the front and holding "KEYTEXT_INTERACT"");
-	DefineItemToolTip(item_Crowbar,			"Use this to break defences and tents or open locked car doors and trunks");
+	DefineItemToolTip(item_Crowbar,			"Use this to break defences and tents");
 	DefineItemToolTip(item_Hammer,			"Use this to repair vehicles by standing at the front and holding "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Shield,			"This protects you from gunfire when pointed towards the shooter");
 	DefineItemToolTip(item_Flashlight,		"Press "KEYTEXT_INTERACT" to toggle light, other than that it does nothing");
@@ -171,7 +171,7 @@ hook OnGameModeInit()
 	DefineItemToolTip(item_Bucket,			"This has no use yet");
 	DefineItemToolTip(item_GasMask,			"Wear this by pressing "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_Flag,			"This has no use yet");
-	DefineItemToolTip(item_DoctorBag,		"You can heal yourself or others with this");
+	DefineItemToolTip(item_DoctorBag,		"You can slow bleeding, regenerate blood and heal wounds on yourself or others with this");
 	DefineItemToolTip(item_Backpack,		"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
 	DefineItemToolTip(item_Satchel,			"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
 	DefineItemToolTip(item_Wheel,			"Use this to repair vehicle wheels by standing at the front and pressing "KEYTEXT_INTERACT"");

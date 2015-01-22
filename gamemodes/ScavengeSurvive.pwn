@@ -613,13 +613,14 @@ public OnGameModeExit()
 
 	print("\nSave Complete! Safe to shut down.");
 
+	SendRconCommand("exit");
+
 	return 1;
 }
 
 public OnScriptExit()
 {
 	print("\n[OnScriptExit] Shutting down...");
-	SendRconCommand("exit");
 }
 
 forward SetRestart(seconds);
