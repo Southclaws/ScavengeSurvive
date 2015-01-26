@@ -380,7 +380,9 @@ ItemType:		item_Rucksack		= INVALID_ITEM_TYPE,
 ItemType:		item_SeedBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Note			= INVALID_ITEM_TYPE,
 ItemType:		item_Tomato			= INVALID_ITEM_TYPE,
-ItemType:		item_HeartShapedBox	= INVALID_ITEM_TYPE;
+// 100
+ItemType:		item_HeartShapedBox	= INVALID_ITEM_TYPE,
+ItemType:		item_AntiSepBandage	= INVALID_ITEM_TYPE;
 
 // UI HANDLES
 new
@@ -488,7 +490,7 @@ public OnScriptInit()
 	item_Sign			= DefineItemType("Sign",				"Sign",				19471,	6,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",				"Armour",			19515,	4,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 // 60
-	item_Bandage		= DefineItemType("Bandage",				"Bandage",			1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Bandage		= DefineItemType("Dirty Bandage",		"Bandage",			1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_FishRod		= DefineItemType("Fishing Rod",			"FishRod",			18632,	6,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
 	item_Wrench			= DefineItemType("Wrench",				"Wrench",			18633,	2,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
 	item_Crowbar		= DefineItemType("Crowbar",				"Crowbar",			18634,	2,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
@@ -643,6 +645,7 @@ public OnScriptInit()
 	item_Tomato			= DefineItemType("Tomato",				"Tomato",			3105,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 // 200
 	item_HeartShapedBox	= DefineItemType("Heart box",			"HeartShapedBox",	1240,	1,	0.0, 0.0, 0.0,			0.05,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -724,7 +727,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Bucket,		1);
 	SetItemTypeMaxArrayData(item_GasMask,		1);
 	SetItemTypeMaxArrayData(item_Flag,			1);
-	SetItemTypeMaxArrayData(item_DoctorBag,		1);
+	SetItemTypeMaxArrayData(item_DoctorBag,		2);
 	SetItemTypeMaxArrayData(item_Backpack,		2);
 	SetItemTypeMaxArrayData(item_Satchel,		2);
 	SetItemTypeMaxArrayData(item_Wheel,			1);
@@ -844,6 +847,9 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_SeedBag,		2);
 	SetItemTypeMaxArrayData(item_Note,			256);
 	SetItemTypeMaxArrayData(item_Tomato,		1);
+	SetItemTypeMaxArrayData(item_HeartShapedBox,1);
+	SetItemTypeMaxArrayData(item_AntiSepBandage,1);
+
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
 // 1719 - SMALL COMPUTER TYPE DEVICE

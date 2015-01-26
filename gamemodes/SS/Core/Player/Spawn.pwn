@@ -233,7 +233,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetPlayerBleedRate(playerid, 0.0);
 
 	SetPlayerBitFlag(playerid, Alive, true);
-	SetPlayerBitFlag(playerid, Infected, false);
 
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 	PrepareForSpawn(playerid);

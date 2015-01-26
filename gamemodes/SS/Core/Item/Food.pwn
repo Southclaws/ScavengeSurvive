@@ -196,7 +196,7 @@ _EatItem(playerid, itemid)
 			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue] / 4);
 
 			if(food_Data[foodtype][food_canRawInfect])
-				SetPlayerBitFlag(playerid, Infected, true);
+				SetPlayerInfectionIntensity(playerid, 0, 1);
 		}
 		else
 		{

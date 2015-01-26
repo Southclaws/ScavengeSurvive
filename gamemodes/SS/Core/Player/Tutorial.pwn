@@ -245,7 +245,6 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		SetPlayerBleedRate(playerid, 0.0);
 
 		SetPlayerBitFlag(playerid, Alive, true);
-		SetPlayerBitFlag(playerid, Infected, false);
 
 		FreezePlayer(playerid, gLoginFreezeTime * 1000);
 		PrepareForSpawn(playerid);

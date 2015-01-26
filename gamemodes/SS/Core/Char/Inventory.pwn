@@ -119,7 +119,8 @@ ShowPlayerHealthInfo(playerid)
 		drugname[MAX_DRUG_NAME],
 		Float:bleedrate = GetPlayerBleedRate(playerid),
 		Float:hunger = GetPlayerFP(playerid),
-		infected = IsPlayerInfected(playerid);
+		infected1 = GetPlayerInfectionIntensity(playerid, 0),
+		infected2 = GetPlayerInfectionIntensity(playerid, 1);
 
 	GetPlayerWoundsPerBodypart(playerid, bodypartwounds);
 	drugs = GetPlayerDrugsList(playerid, drugslist);
@@ -158,8 +159,11 @@ ShowPlayerHealthInfo(playerid)
 	if(hunger < 66.6)
 		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Hungry", RGBAToHex(truncateforbyte(floatround((66.6 - hunger) * 4.8)), truncateforbyte(255 - floatround((66.6 - hunger) * 4.8)), 0, 255));
 
-	if(infected)
-		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Infected", 0xFF0000FF);
+	if(infected1)
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Food Infect", 0xFF0000FF);
+
+	if(infected2)
+		SetBodyPreviewLabel(playerid, 1, tmp++, 20.0, "Wound Infect", 0xFF0000FF);
 
 	for(new i; i < drugs; i++)
 	{

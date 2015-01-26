@@ -133,7 +133,11 @@ public OnHoldActionFinish(playerid)
 		{
 			case PILL_TYPE_ANTIBIOTICS:
 			{
-				SetPlayerBitFlag(playerid, Infected, false);
+				SetPlayerInfectionIntensity(playerid, 0, 0);
+
+				if(random(100) < 50)
+					SetPlayerInfectionIntensity(playerid, 1, 0);
+
 				ApplyDrug(playerid, drug_Antibiotic);
 			}
 			case PILL_TYPE_PAINKILL:

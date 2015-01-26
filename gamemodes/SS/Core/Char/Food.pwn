@@ -10,6 +10,7 @@ ptask FoodUpdate[1000](playerid)
 		return;
 
 	new
+		intensity = GetPlayerInfectionIntensity(playerid, 0),
 		animidx = GetPlayerAnimationIndex(playerid),
 		k,
 		ud,
@@ -19,7 +20,7 @@ ptask FoodUpdate[1000](playerid)
 	GetPlayerKeys(playerid, k, ud, lr);
 	food = GetPlayerFP(playerid);
 
-	if(IsPlayerInfected(playerid))
+	if(intensity)
 	{
 		food -= IDLE_FOOD_RATE;
 	}
@@ -69,7 +70,7 @@ ptask FoodUpdate[1000](playerid)
 		{
 			if(!IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
 			{
-				if(!IsPlayerInfected(playerid))
+				if(intensity == 0)
 					SetPlayerDrunkLevel(playerid, 0);
 			}
 			else
@@ -79,7 +80,7 @@ ptask FoodUpdate[1000](playerid)
 		}
 		else
 		{
-			if(!IsPlayerInfected(playerid))
+			if(intensity == 0)
 				SetPlayerDrunkLevel(playerid, 0);
 		}
 	}

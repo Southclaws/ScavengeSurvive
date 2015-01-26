@@ -48,22 +48,17 @@ hook OnScriptInit()
 
 hook OnPlayerDisconnect(playerid)
 {
-	for(new i; i < drug_TypeTotal; i++)
-	{
-		drug_PlayerDrugData[playerid][i][drug_active] = false;
-		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
-		drug_PlayerDrugData[playerid][i][drug_totalDuration] = 0;
-	}
+	defer _drugs_Reset(playerid);
+}
+
+timer _drugs_Reset[100](playerid)
+{
+	RemoveAllDrugs(playerid);
 }
 
 hook OnPlayerDeath(playerid, killerid, reason)
 {
-	for(new i; i < drug_TypeTotal; i++)
-	{
-		drug_PlayerDrugData[playerid][i][drug_active] = false;
-		drug_PlayerDrugData[playerid][i][drug_tick] = 0;
-		drug_PlayerDrugData[playerid][i][drug_totalDuration] = 0;
-	}
+	RemoveAllDrugs(playerid);
 }
 
 
@@ -168,7 +163,7 @@ ptask DrugsUpdate[100](playerid)
 
 stock IsPlayerUnderDrugEffect(playerid, drugtype)
 {
-	d:1:HANDLER("[IsPlayerUnderDrugEffect] playerid:%d drugtype:%d", playerid, drugtype);
+	d:2:HANDLER("[IsPlayerUnderDrugEffect] playerid:%d drugtype:%d", playerid, drugtype);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -180,7 +175,7 @@ stock IsPlayerUnderDrugEffect(playerid, drugtype)
 
 stock GetDrugName(drugtype, name[])
 {
-	d:1:HANDLER("[GetDrugName] drugtype:%d", drugtype);
+	d:2:HANDLER("[GetDrugName] drugtype:%d", drugtype);
 	if(!(0 <= drugtype < drug_TypeTotal))
 		return 0;
 
@@ -192,7 +187,7 @@ stock GetDrugName(drugtype, name[])
 
 stock GetPlayerDrugsList(playerid, output[])
 {
-	d:1:HANDLER("[GetPlayerDrugsList] playerid:%d", playerid);
+	d:2:HANDLER("[GetPlayerDrugsList] playerid:%d", playerid);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -209,10 +204,7 @@ stock GetPlayerDrugsList(playerid, output[])
 
 stock GetPlayerDrugsAsArray(playerid, output[])
 {
-	d:1:HANDLER("[GetPlayerDrugsAsArray] playerid:%d", playerid);
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
+	d:2:HANDLER("[GetPlayerDrugsAsArray] playerid:%d", playerid);
 /*
 	max size: 1 + MAX_DRUG_TYPE * 2
 	header: 1 cell
@@ -240,12 +232,15 @@ stock GetPlayerDrugsAsArray(playerid, output[])
 
 stock SetPlayerDrugsFromArray(playerid, input[])
 {
-	d:1:HANDLER("[GetPlayerDrugsAsArray] playerid:%d", playerid);
+	d:2:HANDLER("[SetPlayerDrugsFromArray] playerid:%d", playerid);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	if(input[0] <= 0)
+	{
+		printf("ERROR: Attempted to assign drug effects from malformed array, cell 0: %d", input[0]);
 		return 0;
+	}
 
 	for(new i = 1; i < input[0] * 2; i += 2)
 	{
@@ -265,6 +260,8 @@ stock SetPlayerDrugsFromArray(playerid, input[])
 
 public OnPlayerSave(playerid, filename[])
 {
+	d:1:HANDLER("[OnPlayerSave] playerid:%d", playerid);
+
 	new
 		length,
 		data[1 + (MAX_DRUG_TYPE * 2)];
@@ -292,6 +289,8 @@ public OnPlayerSave(playerid, filename[])
 
 public OnPlayerLoad(playerid, filename[])
 {
+	d:1:HANDLER("[OnPlayerLoad] playerid:%d", playerid);
+
 	new data[1 + (MAX_DRUG_TYPE * 2)];
 
 	modio_read(filename, _T<D,R,U,G>, data);

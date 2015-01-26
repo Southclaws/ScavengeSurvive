@@ -15,7 +15,6 @@ enum E_FLAGS:(<<= 1) // 17
 
 		ToolTips,
 		ShowHUD,
-		Infected,
 		GlobalQuiet,
 
 		Frozen,
@@ -379,11 +378,6 @@ ptask PlayerUpdate[100](playerid)
 		GivePlayerHP(playerid, 0.01);
 	}
 
-	if(ply_Data[playerid][ply_BitFlags] & Infected)
-	{
-		PlayerInfectionUpdate(playerid);
-	}
-
 	PlayerBagUpdate(playerid);
 
 	return;
@@ -649,15 +643,6 @@ stock IsPlayerHudOn(playerid)
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & ShowHUD);
-}
-
-// Infected
-stock IsPlayerInfected(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & Infected);
 }
 
 // GlobalQuiet

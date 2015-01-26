@@ -13,6 +13,41 @@ hook OnPlayerConnect(playerid)
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
+public OnItemCreate(itemid)
+{
+	if(IsItemLoot(itemid))
+	{
+		if(GetItemType(itemid) == item_DoctorBag)
+		{
+			SetItemArrayDataAtCell(itemid, 1 + random(3), 0, 1);
+
+			switch(random(4))
+			{
+				case 0: SetItemArrayDataAtCell(itemid, drug_Antibiotic, 1, 1);
+				case 1: SetItemArrayDataAtCell(itemid, drug_Painkill, 1, 1);
+				case 2: SetItemArrayDataAtCell(itemid, drug_Morphine, 1, 1);
+				case 3: SetItemArrayDataAtCell(itemid, drug_Adrenaline, 1, 1);
+			}
+		}
+	}
+
+	#if defined infect_OnItemCreate
+		return infect_OnItemCreate(itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnItemCreate
+	#undef OnItemCreate
+#else
+	#define _ALS_OnItemCreate
+#endif
+
+#define OnItemCreate infect_OnItemCreate
+#if defined infect_OnItemCreate
+	forward infect_OnItemCreate(itemid);
+#endif
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	new
@@ -22,7 +57,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	itemid = GetPlayerItem(playerid);
 	itemtype = GetItemType(itemid);
 
-	if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
+	if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag || itemtype == item_AntiSepBandage)
 	{
 		if(newkeys == 16)
 		{
@@ -91,6 +126,40 @@ PlayerStopHeal(playerid)
 	}
 }
 
+public OnItemNameRender(itemid, ItemType:itemtype)
+{
+	if(itemtype == item_DoctorBag)
+	{
+		new data[2];
+
+		GetItemArrayData(itemid, data);
+
+		if(data[0] > 0)
+		{
+			new name[MAX_DRUG_NAME];
+
+			GetDrugName(data[1], name);
+
+			SetItemNameExtra(itemid, sprintf("%d/3, %s", data, name));
+		}
+	}
+
+	#if defined infect_OnItemNameRender
+		return infect_OnItemNameRender(itemid, itemtype);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnItemNameRender
+	#undef OnItemNameRender
+#else
+	#define _ALS_OnItemNameRender
+#endif
+#define OnItemNameRender infect_OnItemNameRender
+#if defined infect_OnItemNameRender
+	forward infect_OnItemNameRender(itemid, ItemType:itemtype);
+#endif
+
 public OnHoldActionUpdate(playerid, progress)
 {
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
@@ -138,40 +207,95 @@ public OnHoldActionFinish(playerid)
 		{
 			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
 
-			bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
-			bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+			if(bleedrate > 0.0)
+			{
+				bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
+				bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
 
-			MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+				if(random(100) < 33)
+				{
+					SetPlayerInfectionIntensity(playerid, 1, 1);
+					ShowActionText(playerid, "Your wound has become infected!", 5000);
+				}
 
-			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+
+				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
+
+				DestroyItem(itemid);
+			}
 		}
 
 		if(itemtype == item_Medkit)
 		{
-			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
+			new
+				Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]),
+				woundcount = (med_HealTarget[playerid] == playerid) ? 1 + random(2) : 2 + random(2);
 
-			bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
-			bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+			if(bleedrate > 0.0)
+			{
+				bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
+				bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 
-			MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+			}
 
-			SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
-			ApplyDrug(med_HealTarget[playerid], drug_Painkill);
+			if(woundcount > 0)
+			{
+				RemovePlayerWounds(med_HealTarget[playerid], woundcount);
+				ShowActionText(playerid, sprintf("Healed %d wounds", woundcount), 5000);
+
+				DestroyItem(itemid);
+			}
 		}
 
 		if(itemtype == item_DoctorBag)
 		{
 			new woundcount = (med_HealTarget[playerid] == playerid) ? 1 + random(2) : 3 + random(3);
 
-			SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
-			ApplyDrug(med_HealTarget[playerid], drug_Painkill);
-			ApplyDrug(med_HealTarget[playerid], drug_Morphine);
-			RemovePlayerWounds(med_HealTarget[playerid], woundcount);
+			if(woundcount > 0)
+			{
+				RemovePlayerWounds(med_HealTarget[playerid], woundcount);
+				ShowActionText(playerid, sprintf("Healed %d wounds", woundcount), 5000);
+			}
 
-			ShowActionText(playerid, sprintf("Healed %d wounds", woundcount), 5000);
+			SetPlayerBleedRate(med_HealTarget[playerid], 0.0);
+			SetPlayerInfectionIntensity(playerid, 1, 0);
+
+			new data[2];
+
+			GetItemArrayData(itemid, data);
+
+			if(data[0] > 1)
+			{
+				SetItemArrayDataAtCell(itemid, data[0] - 1, 0);
+			}
+			else
+			{
+				DestroyItem(itemid);
+			}
+
+			ApplyDrug(med_HealTarget[playerid], data[1]);
 		}
 
-		DestroyItem(GetPlayerItem(playerid));
+		if(itemtype == item_AntiSepBandage)
+		{
+			new Float:bleedrate = GetPlayerBleedRate(med_HealTarget[playerid]);
+
+			if(bleedrate > 0.0)
+			{
+				bleedrate -= bleedrate * floatpower(1.0091 - bleedrate, 2.1);
+				bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
+
+				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
+				DestroyItem(itemid);
+
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+			}
+
+			SetPlayerInfectionIntensity(playerid, 1, 0);
+		}
 
 		PlayerStopHeal(playerid);
 
