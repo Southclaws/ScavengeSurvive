@@ -190,45 +190,48 @@ ACMD:iw[5](playerid, params[])
 
 ACMD:health[5](playerid, params[])
 {
-	if(isnull(params))
+	new Float:value;
+
+	if(sscanf(params, "f", value))
 	{
 		MsgF(playerid, YELLOW, "Current health %f", GetPlayerHP(playerid));
+		return 1;
 	}
-	else
-	{
-		SetPlayerHP(playerid, floatstr(params));
-		MsgF(playerid, YELLOW, "Set health to %f", floatstr(params));
-	}
+
+	SetPlayerHP(playerid, value);
+	MsgF(playerid, YELLOW, "Set health to %f", value);
 
 	return 1;
 }
 
 ACMD:food[5](playerid, params[])
 {
-	if(isnull(params))
+	new Float:value;
+
+	if(sscanf(params, "f", value))
 	{
 		MsgF(playerid, YELLOW, "Current food %f", GetPlayerFP(playerid));
+		return 1;
 	}
-	else
-	{
-		SetPlayerFP(playerid, floatstr(params));
-		MsgF(playerid, YELLOW, "Set food to %f", floatstr(params));
-	}
+
+	SetPlayerFP(playerid, value);
+	MsgF(playerid, YELLOW, "Set food to %f", value);
 
 	return 1;
 }
 
 ACMD:bleed[5](playerid, params[])
 {
-	if(isnull(params))
+	new Float:value;
+
+	if(sscanf(params, "f", value))
 	{
 		MsgF(playerid, YELLOW, "Current bleed rate %f", GetPlayerBleedRate(playerid));
+		return 1;
 	}
-	else
-	{
-		SetPlayerBleedRate(playerid, floatstr(params));
-		MsgF(playerid, YELLOW, "Set bleed rate to %f", floatstr(params));
-	}
+
+	SetPlayerBleedRate(playerid, value);
+	MsgF(playerid, YELLOW, "Set bleed rate to %f", value);
 
 	return 1;
 }
