@@ -119,6 +119,14 @@ class AppMain(object):
 		self.sli_health.set(100.0)
 		self.sli_health.bind("<B1-Motion>", self.calculate_callback)
 
+		# Target armour label
+		self.lab_armour = ttk.Label(frame_target, text='Armour:')
+
+		# Target armour slider
+		self.sli_armour = Scale(frame_target, from_=0, to=100, orient=HORIZONTAL, resolution=0.1)
+		self.sli_armour.set(0.0)
+		self.sli_armour.bind("<B1-Motion>", self.calculate_callback)
+
 		self.chk_knockedout_int = IntVar()
 		self.chk_knockedout = Checkbutton(frame_target, text="Knocked out", variable=self.chk_knockedout_int)
 
@@ -133,7 +141,9 @@ class AppMain(object):
 		self.btn_resetbleed.grid(column=2, row=2, sticky=(E, W))
 		self.lab_health.grid	(column=0, row=3, sticky=(E, W))
 		self.sli_health.grid	(column=1, row=3, sticky=(E, W))
-		self.chk_knockedout.grid(column=0, row=4, sticky=(E, W))
+		self.lab_armour.grid	(column=0, row=4, sticky=(E, W))
+		self.sli_armour.grid	(column=1, row=4, sticky=(E, W))
+		self.chk_knockedout.grid(column=0, row=5, sticky=(E, W))
 
 
 		#
@@ -151,11 +161,13 @@ class AppMain(object):
 		self.output_bleedrate = self.create_output(frame_outputs, "Bleed rate:", 2)
 		self.output_knockout = self.create_output(frame_outputs, "Knockout multiplier:", 3)
 		self.output_bloodloss = self.create_output(frame_outputs, "Instant blood loss:", 4)
-		self.output_timetolive = self.create_output(frame_outputs, "Worst case time to live:", 5)
-		self.output_finalknock = self.create_output(frame_outputs, "Knockout chance:", 6)
-		self.output_knocktime = self.create_output(frame_outputs, "Knockout time:", 7)
-		self.output_shotstokill = self.create_output(frame_outputs, "Shots to kill:", 8)
-		self.output_timetokill = self.create_output(frame_outputs, "Instant blood loss TTK:", 9)
+		self.output_armourloss = self.create_output(frame_outputs, "Armour damage:", 5)
+		self.output_timetolive = self.create_output(frame_outputs, "Worst case time to live:", 6)
+		self.output_finalknock = self.create_output(frame_outputs, "Knockout chance:", 7)
+		self.output_knocktime = self.create_output(frame_outputs, "Knockout time:", 8)
+		self.output_shotstokill = self.create_output(frame_outputs, "Shots to kill:", 9)
+		self.output_timetokill = self.create_output(frame_outputs, "Instant blood loss TTK:", 10)
+		self.output_firerate = self.create_output(frame_outputs, "Rate of fire:", 11)
 
 		self.btn_calculate = ttk.Button(frame_outputs, text='Calculate', width=80)
 		self.btn_calculate.bind('<Button-1>', self.calculate_callback)
@@ -194,18 +206,20 @@ class AppMain(object):
 
 	def update_ui(self):
 
-		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill = self.calculate()
+		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, aploss, timetolive, knockchance, knockouttime, shotstokill, timetokill, firerate = self.calculate()
 
 		self.update_output(self.output_bulletvel, round(bulletvelocity, 8), "m/s")
 		self.update_output(self.output_veldegrad, round(velocitydegredationrate, 8))
 		self.update_output(self.output_bleedrate, round(bleedrate, 8))
 		self.update_output(self.output_knockout, round(knockmult, 8))
 		self.update_output(self.output_bloodloss, round(hploss, 8), "hp")
+		self.update_output(self.output_armourloss, round(aploss, 8), "ap")
 		self.update_output(self.output_timetolive, round(timetolive), "s")
 		self.update_output(self.output_finalknock, round(knockchance, 8), "%")
 		self.update_output(self.output_knocktime, knockouttime, "ms")
 		self.update_output(self.output_shotstokill, shotstokill, " shots")
 		self.update_output(self.output_timetokill, timetokill, "ms")
+		self.update_output(self.output_firerate, firerate, "RPM")
 
 
 	def calculate(self):
@@ -225,9 +239,13 @@ class AppMain(object):
 		bleedrate = 0.0
 		knockmult = 0.0
 		hploss = 0.0
+		aploss = 0.0
 		timetolive = 0
 		knockchance = 0.0
 		knockouttime = 0
+		shotstokill = 0
+		timetokill = 0
+		firerate = 0.0
 
 		if weapon.calibre != ammotype.calibre:
 			for i, a in enumerate(self.ammo):
@@ -237,7 +255,7 @@ class AppMain(object):
 					break
 
 			else:
-				return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime
+				return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, aploss, timetolive, knockchance, knockouttime, shotstokill, timetokill, firerate
 
 		bleedrate = weapon.calibre.bleedrate;
 		knockmult = 1.0
@@ -245,6 +263,7 @@ class AppMain(object):
 		distance = float(self.sli_distance.get())
 		totalbleedrate = float(self.ent_totalbleed.get())
 		hp = float(self.sli_health.get())
+		ap = float(self.sli_armour.get())
 
 
 		velocitydegredationrate = 1.0 - (bulletvelocity / 11300)
@@ -257,6 +276,10 @@ class AppMain(object):
 
 		bleedrate *= ammotype.get_bleed_multiplier()
 		knockmult *= ammotype.get_knockout_multiplier()
+
+		if ap > 0.0:
+			bleedrate *= ammotype.penetration
+			aploss = (ap * (bleedrate * 10.0))
 
 		if bodypart == 0: knockmult *= 1.0
 		if bodypart == 1: knockmult *= 1.2
@@ -272,9 +295,6 @@ class AppMain(object):
 
 		knockchance = knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1))
 
-		if (random.random() * 100.0) < knockchance:
-			self.chk_knockedout_int.set(1)
-
 		timetolive = 0
 
 		if totalbleedrate > 0.0:
@@ -282,11 +302,15 @@ class AppMain(object):
 
 		knockouttime = round((knockmult * 0.2) * ((woundcount + 1) * ((totalbleedrate * 10) + 1) * (110.0 - hp) + (200 * (110.0 - hp))));
 
-		shotstokill = math.ceil(hp / hploss)
+		if hploss > 0.0:
+			shotstokill = math.ceil(hp / hploss)
 
 		timetokill = shotstokill * weapon.shotinterval
 
-		return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill
+		if weapon.shotinterval > 0:
+			firerate = (1000 / weapon.shotinterval) * 60
+
+		return bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, aploss, timetolive, knockchance, knockouttime, shotstokill, timetokill, firerate
 
 
 	def simulate_shot_callback(self, event):
@@ -297,13 +321,20 @@ class AppMain(object):
 
 	def simulate_shot(self):
 
-		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, timetolive, knockchance, knockouttime, shotstokill, timetokill = self.calculate()
+		bulletvelocity, velocitydegredationrate, bleedrate, knockmult, hploss, aploss, timetolive, knockchance, knockouttime, shotstokill, timetokill, firerate = self.calculate()
 
 		health = self.sli_health.get()
+		armour = self.sli_armour.get()
 
 		self.sli_health.set(health - hploss)
+		self.sli_armour.set(armour - aploss)
 
 		self.sli_wounds.set(self.sli_wounds.get() + 1)
+
+		knockrand = (random.random() * 100.0)
+		print("%f < %f"%(knockrand, knockchance))
+		if knockrand < knockchance:
+			self.chk_knockedout_int.set(1)
 
 		self.ent_totalbleed_string.set(str(round(float(self.ent_totalbleed_string.get()) + bleedrate, 8)))
 
@@ -349,9 +380,9 @@ class ItemTypeWeapon():
 		elif weaponid == "WEAPON_TEC9":				self.shotinterval = 120
 		elif weaponid == "WEAPON_RIFLE":			self.shotinterval = 1060
 		elif weaponid == "WEAPON_SNIPER":			self.shotinterval = 1060
-		elif weaponid == "WEAPON_ROCKETLAUNCHER":	self.shotinterval = 0
-		elif weaponid == "WEAPON_HEATSEEKER":		self.shotinterval = 0
-		elif weaponid == "WEAPON_FLAMETHROWER":		self.shotinterval = 0
+		elif weaponid == "WEAPON_ROCKETLAUNCHER":	self.shotinterval = 1000
+		elif weaponid == "WEAPON_HEATSEEKER":		self.shotinterval = 1000
+		elif weaponid == "WEAPON_FLAMETHROWER":		self.shotinterval = 20
 		elif weaponid == "WEAPON_MINIGUN":			self.shotinterval = 20
 		else: self.shotinterval = 0
 
@@ -390,6 +421,7 @@ def DefineItemTypeAmmo(item, name, calibre, bleedmult, knockmult, penetration, c
 
 
 def define_data():
+	calibre_none	= DefineAmmoCalibre("None",		0.0)
 	calibre_9mm		= DefineAmmoCalibre("9mm",		0.025)
 	calibre_50cae	= DefineAmmoCalibre(".50",		0.073)
 	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.031)
@@ -403,6 +435,7 @@ def define_data():
 	calibre_308		= DefineAmmoCalibre(".308",		0.043)
 
 	calibres = [
+		calibre_none,
 		calibre_9mm,
 		calibre_50cae,
 		calibre_12g,
@@ -434,10 +467,10 @@ def define_data():
 		DefineItemTypeWeapon("Heatseeker",   		"WEAPON_HEATSEEKER",  			calibre_rpg,	0.0,			1,		0),
 		DefineItemTypeWeapon("Flamer",   			"WEAPON_FLAMETHROWER",  		calibre_fuel,	0.0,			100,	1),
 		DefineItemTypeWeapon("Minigun",   			"WEAPON_MINIGUN",  				calibre_556,	853.0,			100,	1),
-		DefineItemTypeWeapon("RemoteBomb",   		"WEAPON_SATCHEL",  				-1,				0.0,			1,		1),
-		DefineItemTypeWeapon("Detonator",   		"WEAPON_BOMB",  				-1,				0.0,			1,		1),
-		DefineItemTypeWeapon("SprayPaint",   		"WEAPON_SPRAYCAN",  			-1,				0.0,			100,	0),
-		DefineItemTypeWeapon("Extinguisher",   		"WEAPON_FIREEXTINGUISHER",  	-1,				0.0,			100,	0),
+		DefineItemTypeWeapon("RemoteBomb",   		"WEAPON_SATCHEL",  				calibre_none,	0.0,			1,		1),
+		DefineItemTypeWeapon("Detonator",   		"WEAPON_BOMB",  				calibre_none,	0.0,			1,		1),
+		DefineItemTypeWeapon("SprayPaint",   		"WEAPON_SPRAYCAN",  			calibre_none,	0.0,			100,	0),
+		DefineItemTypeWeapon("Extinguisher",   		"WEAPON_FIREEXTINGUISHER",  	calibre_none,	0.0,			100,	0),
 		DefineItemTypeWeapon("Camera",   			"WEAPON_CAMERA",  				calibre_film,	1337.0,			24,		4),
 		DefineItemTypeWeapon("VehicleWeapon",   	"WEAPON_M4",  					calibre_556,	750.0,			0,		1),
 		DefineItemTypeWeapon("AK47Rifle",   		"WEAPON_AK47",  				calibre_762,	715.0,			30,		1),
@@ -448,6 +481,7 @@ def define_data():
 	]
 
 	ammo = [
+		DefineItemTypeAmmo("None",   				"",					calibre_none,	0.0,	0.0,	0.0,	0),
 		DefineItemTypeAmmo("Ammo9mm",   			"Hollow Point",		calibre_9mm,	1.0,	1.0,	0.2,	20),
 		DefineItemTypeAmmo("Ammo50",   				"Action Express",	calibre_50cae,	1.0,	1.5,	0.9,	28),
 		DefineItemTypeAmmo("AmmoBuck",   			"No. 1",			calibre_12g,	1.1,	1.8,	0.5,	24),
