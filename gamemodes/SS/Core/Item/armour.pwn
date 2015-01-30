@@ -97,12 +97,11 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:
 			new Float:penetration = GetAmmoTypePenetration(GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(GetPlayerItem(playerid))));
 
 			bleedrate *= penetration;
+			ap -= ((ap + 10) * (bleedrate * 10.0));
 
-			SetPlayerAP(targetid, ap * (bleedrate * 10.0));
+			SetPlayerAP(targetid, ap);
 
 			DMG_FIREARM_SetBleedRate(targetid, bleedrate);
-
-			return 1;
 		}
 	}
 
