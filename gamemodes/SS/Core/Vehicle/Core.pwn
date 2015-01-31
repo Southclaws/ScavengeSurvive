@@ -76,7 +76,7 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2)
+stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0)
 {
 	if(!(0 <= type < veh_TypeTotal))
 	{
@@ -102,6 +102,8 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
+
+	SetVehicleVirtualWorld(vehicleid, world);
 
 	veh_Data[vehicleid][veh_type]		= type;
 	veh_Data[vehicleid][veh_health]		= VEHICLE_HEALTH_MAX;

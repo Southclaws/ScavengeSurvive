@@ -61,6 +61,32 @@ enum
 	k_Lockup
 }
 
+enum
+{
+	VEHICLE_CATEGORY_CAR,
+	VEHICLE_CATEGORY_TRUCK,
+	VEHICLE_CATEGORY_MOTORBIKE,
+	VEHICLE_CATEGORY_PUSHBIKE,
+	VEHICLE_CATEGORY_HELICOPTER,
+	VEHICLE_CATEGORY_PLANE,
+	VEHICLE_CATEGORY_BOAT,
+	VEHICLE_CATEGORY_TRAIN,
+	MAX_VEHICLE_CATEGORIES
+}
+enum
+{
+	VEHICLE_SIZE_SMALL,
+	VEHICLE_SIZE_MEDIUM,
+	VEHICLE_SIZE_LARGE
+}
+
+enum (<<= 1)
+{
+	VEHICLE_FLAG_NOT_LOCKABLE = 1,
+	VEHICLE_FLAG_NO_ENGINE,
+	VEHICLE_FLAG_TRAILER
+}
+
 
 // DATABASES
 new
@@ -384,6 +410,71 @@ ItemType:		item_Tomato			= INVALID_ITEM_TYPE,
 ItemType:		item_HeartShapedBox	= INVALID_ITEM_TYPE,
 ItemType:		item_AntiSepBandage	= INVALID_ITEM_TYPE;
 
+// VEHICLE TYPES
+new stock
+	veht_Bobcat,
+	veht_Rustler,
+	veht_Maverick,
+	veht_Comet,
+	veht_MountBike,
+	veht_Wayfarer,
+	veht_Hydra,
+	veht_Rhino,
+	veht_Barracks,
+	veht_Patriot,
+	veht_Boxville,
+	veht_DFT30,
+	veht_Flatbed,
+	veht_Rumpo,
+	veht_Yankee,
+	veht_Yosemite,
+	veht_Dinghy,
+	veht_Coastguard,
+	veht_Launch,
+	veht_Reefer,
+	veht_Tropic,
+	veht_Sentinel,
+	veht_Regina,
+	veht_Tampa,
+	veht_Clover,
+	veht_Sultan,
+	veht_Huntley,
+	veht_Mesa,
+	veht_Sandking,
+	veht_Bandito,
+	veht_Ambulance,
+	veht_Faggio,
+	veht_Sanchez,
+	veht_Freeway,
+	veht_Police1,
+	veht_Police2,
+	veht_Police3,
+	veht_Ranger,
+	veht_Enforcer,
+	veht_FbiTruck,
+	veht_Seasparr,
+	veht_Blista,
+	veht_HPV1000,
+	veht_Squalo,
+	veht_Marquis,
+	veht_Tug,
+	veht_BfInject,
+	veht_Trailer,
+	veht_Steamroll,
+	veht_APC30,
+	veht_Moonbeam,
+	veht_Duneride,
+	veht_Doomride;
+
+// VEHICLE GROUPS
+new stock
+	vgroup_Civilian,
+	vgroup_Industrial,
+	vgroup_Medical,
+	vgroup_Police,
+	vgroup_Military,
+	vgroup_Unique;
+
 // UI HANDLES
 new
 Text:			DeathText			= Text:INVALID_TEXT_DRAW,
@@ -646,6 +737,54 @@ public OnScriptInit()
 // 200
 	item_HeartShapedBox	= DefineItemType("Heart box",			"HeartShapedBox",	1240,	1,	0.0, 0.0, 0.0,			0.05,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+
+
+// 19632 logs
+// 19631 sledgehammer
+// 19630 wrench
+// 19627 fish
+// 19624 suitcase
+// 19621 oilcan
+// 19618 safe door: 19619
+// 19616 amp
+// 19612 small amp
+// 19610 mic
+// 19590 bowie knife
+// 19586 spatula
+// 19584 pan
+// 19583 knife
+// 19582 meat
+// 19581 frying pan
+// 19580 pizza
+// 19579 loaf of bread
+// 19578 banana
+// 19577 orange
+// 19576 apple
+// 19575 apple
+// 19574 lemon
+// 19573 briquettes bag
+// 19572 pissh box
+// 19571 pizza box
+// 19570 milk
+// 19569 milk carton
+// 19568 ice cream
+// 19566 fishy fingers
+// 19565 ice cream bars
+// 19564 apple juice
+// 19563 orange juice
+// 19562 cereal
+// 19561 cereal
+// 19560 shrink wrapped meat
+// 19559 traveller's rucksack
+// 19558 pizza hat
+// 19557 pointy ear mask
+// 19556 boxing gloves
+// 19554 beanie
+// 19553 straw hat
+// 19528 witches hat
+// 19525 wedding cake
+// 19520 captain's cap
+// 19514 swat helmet
 
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
@@ -1031,7 +1170,7 @@ public OnScriptInit()
 	DefineItemTypeAmmo(item_AmmoBuck,			"No. 1",			calibre_12g,	1.1,	1.8,	0.5,	24);
 	DefineItemTypeAmmo(item_Ammo556,			"FMJ",				calibre_556,	1.1,	1.2,	0.8,	30);
 	DefineItemTypeAmmo(item_Ammo357,			"FMJ",				calibre_357,	1.2,	1.1,	0.9,	10);
-	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0,	1.0,	2.0,	1);
+	DefineItemTypeAmmo(item_AmmoRocket,			"RPG",				calibre_rpg,	1.0,	1.0,	1.0,	1);
 	DefineItemTypeAmmo(item_GasCan,				"Petrol",			calibre_fuel,	0.0,	0.0,	0.0,	20);
 	DefineItemTypeAmmo(item_Ammo9mmFMJ,			"FMJ",				calibre_9mm,	1.2,	0.5,	0.8,	20);
 	DefineItemTypeAmmo(item_AmmoFlechette,		"Flechette",		calibre_12g,	1.6,	0.6,	0.2,	8);
@@ -1197,6 +1336,100 @@ public OnScriptInit()
 	DefineSeedType("", none, 2, 2194, 0.25344); // tiny cactus
 	DefineSeedType("", none, 2, 2238, 0.58121); // lava lamp (?)
 */
+
+	// Regular vehicles, most common and found around cities and towns.
+	vgroup_Civilian		= DefineVehicleSpawnGroup("Civilian");
+
+	// Work vehicles found in industrial areas, factories and docks.
+	vgroup_Industrial	= DefineVehicleSpawnGroup("Industrial");
+
+	// Medical vehicles that contain medical items, found at hospitals.
+	vgroup_Medical		= DefineVehicleSpawnGroup("Medical");
+
+	// Police vehicles with weapons in, found at police stations or on streets.
+	vgroup_Police		= DefineVehicleSpawnGroup("Police");
+
+	// Military vehicles found at army/navy bases with lots of weapons in.
+	vgroup_Military		= DefineVehicleSpawnGroup("Military");
+
+	// Special vehicles that don't fit in to above groups.
+	vgroup_Unique		= DefineVehicleSpawnGroup("Unique");
+
+// 00
+//										model name	 			group			 	category						size					maxfuel	fuelcons	lootindex			trunksize	spawnchance	flags
+	veht_Bobcat		= DefineVehicleType(422, "Bobcat",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		16.0,	loot_CarIndustrial,		40,		88.0);
+	veht_Rustler	= DefineVehicleType(476, "Rustler",			vgroup_Civilian,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_MEDIUM,	88.0,		19.0,	loot_CarCivilian,		15,		0.8);
+	veht_Maverick	= DefineVehicleType(487, "Maverick",		vgroup_Civilian,	VEHICLE_CATEGORY_HELICOPTER,	VEHICLE_SIZE_MEDIUM,	240.0,		76.0,	loot_CarCivilian,		32,		1.0);
+	veht_Comet		= DefineVehicleType(480, "Comet",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	50.0,		12.0,	loot_CarCivilian,		20,		10.0);
+	veht_MountBike	= DefineVehicleType(510, "Mountain Bike",	vgroup_Civilian,	VEHICLE_CATEGORY_PUSHBIKE,		VEHICLE_SIZE_SMALL,		0.0,		0.0,	loot_CarCivilian,		2,		8.0,	VEHICLE_FLAG_NOT_LOCKABLE | VEHICLE_FLAG_NO_ENGINE);
+	veht_Wayfarer	= DefineVehicleType(586, "Wayfarer",		vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		47.0,		8.0,	loot_Survivor,			15,		10.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Hydra		= DefineVehicleType(520, "Hydra",			vgroup_Military,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_LARGE,		7790.0,		333.9,	-1,						0,		0.00);
+	veht_Rhino		= DefineVehicleType(432, "Rhino",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		1900.0,		392.0,	loot_CarMilitary,		12,		0.01);
+	veht_Barracks	= DefineVehicleType(433, "Barracks",		vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		200.0,		77.0,	loot_CarMilitary,		100,	3.0);
+	veht_Patriot	= DefineVehicleType(470, "Patriot",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	94.0,		26.0,	loot_CarMilitary,		50,		22.0);
+// 10
+	veht_Boxville	= DefineVehicleType(498, "Boxville",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	75.0,		19.0,	loot_CarIndustrial,		70,		89.0);
+	veht_DFT30		= DefineVehicleType(578, "DFT-30",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_CarIndustrial,		0,		35.0);
+	veht_Flatbed	= DefineVehicleType(455, "Flatbed",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE, 	70.0,		69.0,	loot_CarIndustrial,		100,	25.0);
+	veht_Rumpo		= DefineVehicleType(440, "Rumpo",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	55.0,		19.0,	loot_CarIndustrial,		80,		45.0);
+	veht_Yankee		= DefineVehicleType(456, "Yankee",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		45.0,	loot_CarIndustrial,		80,		40.0);
+	veht_Yosemite	= DefineVehicleType(554, "Yosemite",		vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		13.0,	loot_CarIndustrial,		44,		75.0);
+	veht_Dinghy		= DefineVehicleType(473, "Dinghy",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_SMALL,		81.0,		22.0,	loot_CarCivilian,		10,		64.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Coastguard	= DefineVehicleType(472, "Coastguard",		vgroup_Police,		VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_MEDIUM,	120.0,		28.0,	loot_CarIndustrial,		24,		35.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Launch		= DefineVehicleType(595, "Launch",			vgroup_Military,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_MEDIUM,	213.0,		23.0,	loot_CarMilitary,		26,		40.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Reefer		= DefineVehicleType(453, "Reefer",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_MEDIUM,	245.0,		34.0,	loot_CarCivilian,		48,		60.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+// 20
+	veht_Tropic		= DefineVehicleType(454, "Tropic",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_LARGE,		260.0,		36.0,	loot_CarCivilian,		44,		55.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Sentinel	= DefineVehicleType(405, "Sentinel",		vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	58.8,		21.4,	loot_CarCivilian,		42,		86.0);
+	veht_Regina		= DefineVehicleType(479, "Regina",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	74.0,		28.0,	loot_CarCivilian,		48,		75.0);
+	veht_Tampa		= DefineVehicleType(549, "Tampa",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	58.0,		25.0,	loot_CarCivilian,		38,		64.0);
+	veht_Clover		= DefineVehicleType(542, "Clover",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	62.0,		26.5,	loot_CarCivilian,		34,		80.0);
+	veht_Sultan		= DefineVehicleType(560, "Sultan",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	65.0,		15.0,	loot_CarCivilian,		40,		15.0);
+	veht_Huntley	= DefineVehicleType(579, "Huntley",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	70.0,		24.6,	loot_CarCivilian,		50,		67.0);
+	veht_Mesa		= DefineVehicleType(500, "Mesa",			vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	77.0,		22.0,	loot_CarCivilian,		48,		70.0);
+	veht_Sandking	= DefineVehicleType(495, "Sandking",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	120.0,		26.0,	loot_CarCivilian,		46,		6.5);
+	veht_Bandito	= DefineVehicleType(568, "Bandito",			vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	48.0,		12.0,	loot_Survivor,			15,		0.1,	VEHICLE_FLAG_NOT_LOCKABLE);
+// 30
+	veht_Ambulance	= DefineVehicleType(416, "Ambulance",		vgroup_Medical,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	80.0,		23.6,	loot_Medical,			70,		30.0);
+	veht_Faggio		= DefineVehicleType(462, "Faggio",			vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		8.0,		4.0,	loot_CarCivilian,		10,		45.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Sanchez	= DefineVehicleType(468, "Sanchez",			vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		10.0,		6.0,	loot_CarCivilian,		8,		15.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Freeway	= DefineVehicleType(463, "Freeway",			vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		19.0,		4.0,	loot_Survivor,			15,		8.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Police1	= DefineVehicleType(596, "Police Car",		vgroup_Police,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	78.0,		12.5,	loot_CarPolice,			42,		80.0);
+	veht_Police2	= DefineVehicleType(597, "Police Car",		vgroup_Police,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	70.0,		13.0,	loot_CarPolice,			42,		80.0);
+	veht_Police3	= DefineVehicleType(598, "Police Car",		vgroup_Police,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	75.0,		12.0,	loot_CarPolice,			42,		80.0);
+	veht_Ranger		= DefineVehicleType(599, "Ranger",			vgroup_Police,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	110.0,		15.0,	loot_CarPolice,			48,		30.0);
+	veht_Enforcer	= DefineVehicleType(427, "Enforcer",		vgroup_Police,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		90.0,		36.0,	loot_CarPolice,			64,		10.0);
+	veht_FbiTruck	= DefineVehicleType(528, "FBI Truck",		vgroup_Police,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	80.0,		13.0,	loot_CarPolice,			45,		3.0);
+// 40
+	veht_Seasparr	= DefineVehicleType(447, "Seasparrow",		vgroup_Civilian,	VEHICLE_CATEGORY_HELICOPTER,	VEHICLE_SIZE_MEDIUM,	96.0,		46.0,	loot_CarCivilian,		10,		0.31);
+	veht_Blista		= DefineVehicleType(496, "Blista Compact",	vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	40.0,		14.4,	loot_CarCivilian,		38,		80.0);
+	veht_HPV1000	= DefineVehicleType(523, "HPV1000",			vgroup_Police,		VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		60.0,		13.0,	loot_CarPolice,			15,		45.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Squalo		= DefineVehicleType(446, "Squalo",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_MEDIUM,	50.0,		31.0,	loot_CarCivilian,		28,		20.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Marquis	= DefineVehicleType(484, "Marquis",			vgroup_Civilian,	VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_LARGE,		900.0,		67.0,	loot_CarCivilian,		100,	50.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Tug		= DefineVehicleType(583, "Tug",				vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_SMALL,		10.0,		4.0,	loot_CarIndustrial,		8,		70.0);
+	veht_BfInject	= DefineVehicleType(424, "BF Injection",	vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	40.0,		8.0,	loot_CarCivilian,		24,		15.0,	VEHICLE_FLAG_NOT_LOCKABLE);
+	veht_Trailer	= DefineVehicleType(611, "Trailer",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_SMALL,		0.0,		0.0,	loot_CarIndustrial,		50,		20.0,	VEHICLE_FLAG_TRAILER);
+	veht_Steamroll	= DefineVehicleType(578, "Steamroller",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_Survivor,			0,		0.1);
+	veht_APC30		= DefineVehicleType(578, "APC-30",			vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_Survivor,			0,		0.1);
+// 50
+	veht_Moonbeam	= DefineVehicleType(418, "Moonbeam",		vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_LARGE,		60.0,		18.0,	loot_CarCivilian,		65,		30.0);
+	veht_Duneride	= DefineVehicleType(573, "Duneride",		vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		180.0,		11.0,	loot_CarCivilian,		85,		10.0);
+	veht_Doomride	= DefineVehicleType(573, "Doomride",		vgroup_Unique,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_LARGE,		180.0,		8.0,	loot_Survivor,			80,		0.5);
+
+	SetVehicleTypeTrailerHitch(veht_Bobcat, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Patriot, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Yosemite, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Sentinel, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Regina, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Tampa,	 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Clover, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Huntley, 	VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Mesa, 		VEHICLE_SIZE_SMALL);
+	SetVehicleTypeTrailerHitch(veht_Blista, 	VEHICLE_SIZE_SMALL);
+
+	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
+	SetVehicleTypeCarmour(veht_APC30, "APC30");
+	SetVehicleTypeCarmour(veht_Doomride, "Doomride");
 
 	return 1;
 }

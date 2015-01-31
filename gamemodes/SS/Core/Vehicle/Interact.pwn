@@ -55,7 +55,7 @@ stock CreateVehicleArea(vehicleid)
 
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, x, y, z);
 
-	varea_AreaID[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 3.0, 0);
+	varea_AreaID[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 3.0, GetVehicleVirtualWorld(vehicleid));
 	AttachDynamicAreaToVehicle(varea_AreaID[vehicleid], vehicleid);
 
 	data[0] = VEH_STREAMER_AREA_IDENTIFIER;
