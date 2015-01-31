@@ -316,6 +316,28 @@ timer UnholsterItemDelay[time](playerid, time)
 	return 1;
 }
 
+public OnPlayerPickUpItem(playerid, itemid)
+{
+	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+		return 1;
+
+	#if defined hols_OnPlayerPickUpItem
+		return hols_OnPlayerPickUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+
+#if defined _ALS_OnPlayerPickUpItem
+	#undef OnPlayerPickUpItem
+#else
+	#define _ALS_OnPlayerPickUpItem
+#endif
+#define OnPlayerPickUpItem hols_OnPlayerPickUpItem
+#if defined hols_OnPlayerPickUpItem
+	forward hols_OnPlayerPickUpItem(playerid, itemid);
+#endif
+
 
 /*==============================================================================
 
