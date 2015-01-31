@@ -41,11 +41,8 @@ ShowItemToolTip(playerid, ItemType:itemtype)
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	if(!IsPlayerInTutorial(playerid))
-	{
-		if(IsPlayerToolTipsOn(playerid))
-			ShowItemToolTip(playerid, GetItemType(itemid));
-	}
+	if(IsPlayerToolTipsOn(playerid))
+		ShowItemToolTip(playerid, GetItemType(itemid));
 
 	#if defined tip_OnPlayerPickUpItem
 		return tip_OnPlayerPickUpItem(playerid, itemid);
@@ -65,11 +62,8 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 public OnPlayerDropItem(playerid, itemid)
 {
-	if(!IsPlayerInTutorial(playerid))
-	{
-		if(IsPlayerToolTipsOn(playerid))
-			HideHelpTip(playerid);
-	}
+	if(IsPlayerToolTipsOn(playerid))
+		HideHelpTip(playerid);
 
 	#if defined tip_OnPlayerDropItem
 		return tip_OnPlayerDropItem(playerid, itemid);
@@ -298,12 +292,17 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	if(ispassenger)
+	if(!IsPlayerToolTipsOn(playerid))
 		return 1;
 
-	if(!IsPlayerToolTipsOn(playerid))
+	if(newstate != PLAYER_STATE_DRIVER)
+		return 1;
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
 		return 1;
 
 	new
