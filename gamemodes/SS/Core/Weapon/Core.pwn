@@ -91,7 +91,7 @@ stock GivePlayerAmmo(playerid, amount)
 	UpdatePlayerWeaponItem(playerid);
 	_UpdateWeaponUI(playerid);
 
-	d:1:HANDLER("[GivePlayerAmmo] Remainder of added ammo: %d", remainder);
+	d:2:HANDLER("[GivePlayerAmmo] Remainder of added ammo: %d", remainder);
 
 	return remainder;
 }
@@ -119,7 +119,7 @@ stock AddAmmoToWeapon(itemid, amount)
 
 	if(maxammo == 0)
 	{
-		d:1:HANDLER("[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d magsize: %d reserve: %d", amount, itemid, _:ammoitem, magsize, reserveammo);
+		d:2:HANDLER("[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d magsize: %d reserve: %d", amount, itemid, _:ammoitem, magsize, reserveammo);
 
 		if(amount > magsize)
 		{
@@ -131,7 +131,7 @@ stock AddAmmoToWeapon(itemid, amount)
 			remainder = 0;
 		}
 
-		d:1:HANDLER("[AddAmmoToWeapon] Setting just mag to %d", amount);
+		d:2:HANDLER("[AddAmmoToWeapon] Setting just mag to %d", amount);
 
 		SetItemWeaponItemReserve(itemid, amount);
 	}
@@ -140,7 +140,7 @@ stock AddAmmoToWeapon(itemid, amount)
 		if(reserveammo == maxammo)
 			return remainder;
 
-		d:1:HANDLER("[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d reserve: %d max reserve: %d", amount, itemid, _:ammoitem, reserveammo, maxammo);
+		d:2:HANDLER("[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d reserve: %d max reserve: %d", amount, itemid, _:ammoitem, reserveammo, maxammo);
 
 		if(reserveammo + amount > maxammo)
 		{
@@ -152,12 +152,12 @@ stock AddAmmoToWeapon(itemid, amount)
 			remainder = 0;
 		}
 
-		d:1:HANDLER("[AddAmmoToWeapon] Setting just reserve to %d", amount);
+		d:2:HANDLER("[AddAmmoToWeapon] Setting just reserve to %d", amount);
 
 		SetItemWeaponItemReserve(itemid, amount + reserveammo);
 	}
 
-	d:1:HANDLER("[AddAmmoToWeapon] Returning remainder of %d", remainder);
+	d:2:HANDLER("[AddAmmoToWeapon] Returning remainder of %d", remainder);
 
 	return remainder;
 }
@@ -185,13 +185,13 @@ stock UpdatePlayerWeaponItem(playerid)
 
 	if(!IsValidItem(itemid))
 	{
-		d:1:HANDLER("[UpdatePlayerWeaponItem] ERROR: Invalid item ID %d", itemid);
+		d:2:HANDLER("[UpdatePlayerWeaponItem] ERROR: Invalid item ID %d", itemid);
 		return 0;
 	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 	{
-		d:1:HANDLER("[UpdatePlayerWeaponItem] ERROR: Item type is not a weapon %d", itmw_ItemTypeWeapon[itemtype]);
+		d:2:HANDLER("[UpdatePlayerWeaponItem] ERROR: Item type is not a weapon %d", itmw_ItemTypeWeapon[itemtype]);
 		return 0;
 	}
 
@@ -223,7 +223,7 @@ stock UpdatePlayerWeaponItem(playerid)
 	}
 	else
 	{
-		d:1:HANDLER("ERROR: Item weapon %d uses ammo item %d which has a max ammo of %d.", _:itemtype, _:ammoitem, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
+		d:2:HANDLER("ERROR: Item weapon %d uses ammo item %d which has a max ammo of %d.", _:itemtype, _:ammoitem, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
 	}
 
 	new
@@ -372,8 +372,6 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return 0;
 
-	d:1:HANDLER("[OnPlayerWeaponShot END]");
-
 	#if defined itmw_OnPlayerWeaponShot
 		return itmw_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
 	#else
@@ -407,14 +405,14 @@ _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:
 	if(!IsValidItemType(itemtype))
 	{
 		MsgAdminsF(1, YELLOW, "[TEST] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
-		d:1:HANDLER("[TMPREPORT] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
+		d:2:HANDLER("[TMPREPORT] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
 		return 0;
 	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 	{
 		MsgAdminsF(1, YELLOW, "[TEST] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
-		d:1:HANDLER("[TMPREPORT] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
+		d:2:HANDLER("[TMPREPORT] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
 		return 0;
 	}
 
@@ -457,7 +455,7 @@ _ReloadWeapon(playerid)
 
 	if(reserveammo == 0)
 	{
-		d:1:HANDLER("no reserve ammo left to reload with");
+		d:2:HANDLER("no reserve ammo left to reload with");
 
 		if(magammo == 0)
 		{
@@ -470,7 +468,7 @@ _ReloadWeapon(playerid)
 
 	if(magammo == magsize)
 	{
-		d:1:HANDLER("Mag ammo is the same as mag size");
+		d:2:HANDLER("Mag ammo is the same as mag size");
 		return 0;
 	}
 
@@ -481,7 +479,7 @@ _ReloadWeapon(playerid)
 
 	if(!IsBaseWeaponClipBased(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 	{
-		d:1:HANDLER("Weapon is not clip based, cancelling reload");
+		d:2:HANDLER("Weapon is not clip based, cancelling reload");
 		return 0;
 	}
 
@@ -517,12 +515,12 @@ _UpdateWeaponUI(playerid)
 
 	if(!IsWeaponClipBased(itemid))
 	{
-		d:1:HANDLER("weapon is not clip based");
+		d:2:HANDLER("weapon is not clip based");
 		PlayerTextDrawHide(playerid, WeaponAmmo[playerid]);
 		return;
 	}
 
-	d:1:HANDLER("[_UpdateWeaponUI] item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	d:2:HANDLER("[_UpdateWeaponUI] item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 
 	new str[8];
 
@@ -689,7 +687,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		d:1:HANDLER("[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
 		if(IsValidItem(itmw_DropItemID[playerid]))
 		{
-			d:1:HANDLER("[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
+			d:2:HANDLER("[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
 			stop itmw_DropTimer[playerid];
 			PlayerDropItem(playerid);
 			itmw_DropItemID[playerid] = INVALID_ITEM_ID;
@@ -773,7 +771,7 @@ timer _UnloadWeapon[300](playerid, itemid)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	d:1:HANDLER("[_UnloadWeapon] ammo item type %d amount: %d", _:ammoitemtype, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
+	d:2:HANDLER("[_UnloadWeapon] ammo item type %d amount: %d", _:ammoitemtype, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
 
 	ammoitemid = CreateItem(ammoitemtype,
 		x + (0.5 * floatsin(-r, degrees)),
@@ -1149,14 +1147,14 @@ stock GetPlayerItemWeaponAnimSet(playerid)
 // WEAPON_ITEM_ARRAY_CELL_MAG
 stock GetItemWeaponItemMagAmmo(itemid)
 {
-	d:1:HANDLER("GetItemWeaponItemMagAmmo itemid:%d", itemid);
+	d:3:HANDLER("GetItemWeaponItemMagAmmo itemid:%d", itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_MAG);
 	return ret < 0 ? 0 : ret;
 }
 
 stock SetItemWeaponItemMagAmmo(itemid, amount)
 {
-	d:1:HANDLER("SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
+	d:3:HANDLER("SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_MAG);
@@ -1165,14 +1163,14 @@ stock SetItemWeaponItemMagAmmo(itemid, amount)
 // WEAPON_ITEM_ARRAY_CELL_RESERVE
 stock GetItemWeaponItemReserve(itemid)
 {
-	d:1:HANDLER("GetItemWeaponItemReserve itemid:%d", itemid);
+	d:3:HANDLER("GetItemWeaponItemReserve itemid:%d", itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_RESERVE);
 	return ret < 0 ? 0 : ret;
 }
 
 stock SetItemWeaponItemReserve(itemid, amount)
 {
-	d:1:HANDLER("SetItemWeaponItemReserve itemid:%d, amount:%d", itemid, amount);
+	d:3:HANDLER("SetItemWeaponItemReserve itemid:%d, amount:%d", itemid, amount);
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_RESERVE);
@@ -1182,13 +1180,13 @@ stock SetItemWeaponItemReserve(itemid, amount)
 forward ItemType:GetItemWeaponItemAmmoItem(itemid);
 stock ItemType:GetItemWeaponItemAmmoItem(itemid)
 {
-	d:1:HANDLER("GetItemWeaponItemAmmoItem itemid:%d", itemid);
+	d:3:HANDLER("GetItemWeaponItemAmmoItem itemid:%d", itemid);
 	return ItemType:GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
 }
 
 stock SetItemWeaponItemAmmoItem(itemid, ItemType:itemtype)
 {
-	d:1:HANDLER("SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", itemid, _:itemtype);
+	d:3:HANDLER("SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", itemid, _:itemtype);
 	SetItemArrayDataSize(itemid, 4);
 
 	return SetItemArrayDataAtCell(itemid, _:itemtype, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
