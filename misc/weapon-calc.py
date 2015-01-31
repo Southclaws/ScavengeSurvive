@@ -133,7 +133,7 @@ class AppMain(object):
 
 		# Grid stuff
 		frame_target.grid		(column=0, row=1, sticky=(N, S, E, W))
-		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
+		self.lab_target.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
 		self.lab_wounds.grid	(column=0, row=1, sticky=(E, W))
 		self.sli_wounds.grid	(column=1, row=1, sticky=(E, W))
 		self.lab_bleed.grid		(column=0, row=2, sticky=(E, W))
@@ -156,18 +156,18 @@ class AppMain(object):
 		# Frame title
 		self.lab_outputs = ttk.Label(frame_outputs, text='Output results:')
 
-		self.output_bulletvel = self.create_output(frame_outputs, "Bullet velocity at impact:", 0)
-		self.output_veldegrad = self.create_output(frame_outputs, "Velocity degradation rate:", 1)
-		self.output_bleedrate = self.create_output(frame_outputs, "Bleed rate:", 2)
-		self.output_knockout = self.create_output(frame_outputs, "Knockout multiplier:", 3)
-		self.output_bloodloss = self.create_output(frame_outputs, "Instant blood loss:", 4)
-		self.output_armourloss = self.create_output(frame_outputs, "Armour damage:", 5)
-		self.output_timetolive = self.create_output(frame_outputs, "Worst case time to live:", 6)
-		self.output_finalknock = self.create_output(frame_outputs, "Knockout chance:", 7)
-		self.output_knocktime = self.create_output(frame_outputs, "Knockout time:", 8)
-		self.output_shotstokill = self.create_output(frame_outputs, "Shots to kill:", 9)
-		self.output_timetokill = self.create_output(frame_outputs, "Instant blood loss TTK:", 10)
-		self.output_firerate = self.create_output(frame_outputs, "Rate of fire:", 11)
+		self.output_bulletvel = self.create_output(frame_outputs, "Bullet velocity at impact:", 1)
+		self.output_veldegrad = self.create_output(frame_outputs, "Velocity degradation rate:", 2)
+		self.output_bleedrate = self.create_output(frame_outputs, "Bleed rate:", 3)
+		self.output_knockout = self.create_output(frame_outputs, "Knockout multiplier:", 4)
+		self.output_bloodloss = self.create_output(frame_outputs, "Instant blood loss:", 5)
+		self.output_armourloss = self.create_output(frame_outputs, "Armour damage:", 6)
+		self.output_timetolive = self.create_output(frame_outputs, "Worst case time to live:", 7)
+		self.output_finalknock = self.create_output(frame_outputs, "Knockout chance:", 8)
+		self.output_knocktime = self.create_output(frame_outputs, "Knockout time:", 9)
+		self.output_shotstokill = self.create_output(frame_outputs, "Shots to kill:", 10)
+		self.output_timetokill = self.create_output(frame_outputs, "Instant blood loss TTK:", 11)
+		self.output_firerate = self.create_output(frame_outputs, "Rate of fire:", 12)
 
 		self.btn_calculate = ttk.Button(frame_outputs, text='Calculate', width=80)
 		self.btn_calculate.bind('<Button-1>', self.calculate_callback)
@@ -175,7 +175,7 @@ class AppMain(object):
 
 		# Grid stuff
 		frame_outputs.grid		(column=0, row=2, sticky=(N, S, E, W))
-		self.lab_inputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
+		self.lab_outputs.grid	(column=0, row=0, sticky=(N, S, E, W), columnspan=2)
 		self.btn_calculate.grid	(sticky=(N, S, E, W), columnspan=2)
 
 		# Calculate with the default values and update the UI
@@ -279,7 +279,7 @@ class AppMain(object):
 
 		if ap > 0.0:
 			bleedrate *= ammotype.penetration
-			aploss = (ap * (bleedrate * 10.0))
+			aploss = ((ap + 10) * (bleedrate * 10.0))
 
 		if bodypart == 0: knockmult *= 1.0
 		if bodypart == 1: knockmult *= 1.2
@@ -332,7 +332,7 @@ class AppMain(object):
 		self.sli_wounds.set(self.sli_wounds.get() + 1)
 
 		knockrand = (random.random() * 100.0)
-		print("%f < %f"%(knockrand, knockchance))
+
 		if knockrand < knockchance:
 			self.chk_knockedout_int.set(1)
 
