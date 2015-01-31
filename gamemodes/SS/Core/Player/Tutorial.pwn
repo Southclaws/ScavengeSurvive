@@ -1,101 +1,12 @@
 #include <YSI\y_hooks>
 
 
-/*
-	Spawn in
-
-	Items:
-		pick up bag and use to wear
-		play inventory tutorial
-		spawn a weapon
-		pick up
-		holster, unholster
-		spawn ammo
-		load ammo
-		unload ammo
-		spawn ammo of different type and load
-		spawn same ammo, pick up
-		explain extratext meanings (ammo type, calibre etc)
-		shoot and reload
-
-	Vehicles:
-		enter vehicle and exit
-		explain saving vehicles
-		get wrench from trunk
-		fix vehicle, explain more tools
-		get petrol can from trunk
-		fill petrol can
-		fill vehicle
-		enter vehicle
-		explain UI and keys
-		exit vehicle
-		spawn locksmith kit
-		apply to vehicle
-
-	Construction:
-		spawn defence
-		spawn screwdriver
-		explain building defences
-		spawn crowbar
-		explain removing defences
-		spawn timed IED (repeatedly)
-		explain destroying defences
-
-	Storage:
-		spawn tent pack
-		spawn hammer
-		explain building tents
-		spawn boxes
-		add item to box
-		explain storage
-
-*/
-
-
-#define TUTORIAL_WORLD	(90 + playerid)
-
-
-enum E_TUT_STATE
-{
-	E_TUT_NONE,
-	E_TUT_PICK_BAG,
-	E_TUT_WEAR_BAG,
-	E_TUT_OPEN_INV,
-	E_TUT_OPEN_BAG,
-	E_TUT_CLICK_ITEM,
-	E_TUT_EQUIP_ITEM,
-	E_TUT_DROP,
-	E_TUT_RE_PICK,
-	E_TUT_PUT_AWAY,
-	E_TUT_OPEN_INV1,
-	E_TUT_INV_ITEM_OPT,
-	E_TUT_MOVE_TO_BAG,
-	E_TUT_CLOSE_INV,
-	E_TUT_PICK_WEAPON,
-	E_TUT_HOLSTER,
-	E_TUT_UNHOLSTER,
-	E_TUT_PICK_AMMO,
-	E_TUT_PICK_MORE_AMMO,
-	E_TUT_OPEN_INV2,
-	E_TUT_CLOSE_INV2,
-	E_TUT_UNLOAD_AMMO
-}
-
-
 static
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
-E_TUT_STATE:TutorialState			[MAX_PLAYERS],
-
-			Chair,
-			Sign1,
-			Sign2,
-			Sign3,
-			Sign4,
-
-			Bag						[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
-			Wrench					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
-			Weapon					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
-			Ammo					[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+bool:		PlayerInTutorial		[MAX_PLAYERS],
+			PlayerTutorialWorld		[MAX_PLAYERS],
+			PlayerTutorialVehicle	[MAX_PLAYERS],
+			TutorialWorld = 90;
 
 
 static
@@ -104,44 +15,33 @@ static
 
 forward OnPlayerWearBag(playerid, itemid);
 forward OnPlayerHolsteredItem(playerid, itemid);
-forward OnPlayerUnHolsteredItem(playerid, itemid);
 
 
 hook OnGameModeInit()
 {
 	HANDLER = debug_register_handler("tutorial", 0);
 
-	CreateDynamicObject(6959, 0.00000, 0.00000, -20.00000, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(6959, 0.00000, 0.00000, -16.50440, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, 4.90600, 0.00000, -18.28000, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -4.90600, 0.00000, -18.28000, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, 0.00000, 4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19456, 3.21220, -4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19456, -4.90600, -9.81200, -18.28000, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -1.50600, -9.81200, -18.28000, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19393, -3.21110, -4.90600, -18.28000, 0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19393, -3.21110, -14.00600, -18.28000, 0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(17951, 4.78914, 0.93508, -18.31444, 0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(2008, -4.00298, 3.81832, -20.04383, 0.00000, 0.00000, 1.20000);
-	CreateDynamicObject(1498, -3.99050, -14.01290, -20.03010, 0.00000, 0.00000, 0.00000);
-	Chair = CreateDynamicObject(1671, -3.06675, 2.96503, -19.53344, 0.00000, 0.00000, -153.05998); // chair
-
-	Sign1 = CreateDynamicObject(2599, -4.14077, -5.37283, -19.5724, 0.00000, 0.00000, 50.28007);
-	Sign2 = CreateDynamicObject(2599, -3.93179, 2.09237, -19.5724, 0.00000, 0.00000, 33.24006);
-	Sign3 = CreateDynamicObject(2599, 1.90619, 3.80585, -19.5724, 0.00000, 0.00000, -64.80000);
-	Sign4 = CreateDynamicObject(2599, 2.02679, 1.41874, -19.5724, 0.00000, 0.00000, -95.27998);
-
-	SetDynamicObjectMaterialText(Sign1, 0, "Pick up the\nBag and wear it.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
-	SetDynamicObjectMaterialText(Sign2, 0, "Pick up the\nweapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
-	SetDynamicObjectMaterialText(Sign3, 0, "Pick up the Ammo\nwhile holding\nthe Weapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 64, 1, -16777216, -1, 1);
-	SetDynamicObjectMaterialText(Sign4, 0, "Hold Drop to\nunload your\nWeapon.", OBJECT_MATERIAL_SIZE_512x512, "Arial", 64, 1, -16777216, -1, 1);
+	CreateDynamicObject(6959, 0.00000, 0.00000, -20.00000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, 8.06020, -0.00030, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -4.90600, 0.00000, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -0.26566, 14.42851, -18.28000,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19456, 3.21220, -4.90600, -18.28000,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19456, -4.90600, -9.81200, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -1.50600, -9.81200, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19393, -3.21110, -4.90600, -18.28000,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(19393, -3.21110, -14.00600, -18.28000,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(1498, -3.99050, -14.01290, -20.03010,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, -4.90600, 9.63400, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, 8.06330, 9.63260, -18.28000,   0.00000, 0.00000, 0.00000);
+	CreateDynamicObject(19456, 9.36560, 14.42880, -18.28000,   0.00000, 0.00000, 90.00000);
+	CreateDynamicObject(6959, 0.00000, 0.00000, -16.51838,   0.00000, 0.00000, 0.00000);
 }
 
 public OnPlayerLoadAccount(playerid)
 {
 	d:1:HANDLER("[OnPlayerLoadAccount]");
 
-	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 260.000000, "~n~Play Tutorial~n~~n~");
+	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, "~n~Want to try the game first?~n~~n~~y~Click here to play the tutorial!~n~~n~");
 	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonTutorial[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonTutorial[playerid], 1);
@@ -152,10 +52,8 @@ public OnPlayerLoadAccount(playerid)
 	PlayerTextDrawSetShadow			(playerid, ClassButtonTutorial[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonTutorial[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, ClassButtonTutorial[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 24.000000, 100.000000);
+	PlayerTextDrawTextSize			(playerid, ClassButtonTutorial[playerid], 34.000000, 150.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonTutorial[playerid], true);
-
-	TutorialState[playerid] = E_TUT_NONE;
 
 	#if defined tut_OnPlayerLoadAccount
 		return tut_OnPlayerLoadAccount(playerid);
@@ -199,25 +97,17 @@ public OnPlayerCreateNewCharacter(playerid)
 	#endif
 }
 
-public OnButtonPress(playerid, buttonid)
-{
-	d:1:HANDLER("[OnButtonPress]");
-
-	#if defined tut_OnButtonPress
-		return tut_OnButtonPress(playerid, buttonid);
-	#else
-		return 1;
-	#endif
-}
-
 hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 {
 	d:1:HANDLER("[OnPlayerClickPlayerTextDraw]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
+		PlayerTutorialWorld[playerid] = TutorialWorld;
+		TutorialWorld++;
+
 		SetPlayerPos(playerid, -3.17802, -12.89518, -19.03157);
 		SetPlayerFacingAngle(playerid, 0.0);
-		SetPlayerVirtualWorld(playerid, TUTORIAL_WORLD);
+		SetPlayerVirtualWorld(playerid, PlayerTutorialWorld[playerid]);
 
 		switch(random(14))
 		{
@@ -244,7 +134,8 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		SetPlayerGender(playerid, GetClothesGender(GetPlayerClothesID(playerid)));
 		SetPlayerBleedRate(playerid, 0.0);
 
-		SetPlayerBitFlag(playerid, Alive, true);
+		SetPlayerBitFlag(playerid, Alive, false);
+		SetPlayerBitFlag(playerid, Spawned, false);
 
 		FreezePlayer(playerid, gLoginFreezeTime * 1000);
 		PrepareForSpawn(playerid);
@@ -255,10 +146,29 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 
 		SetPlayerScreenFadeLevel(playerid, 255);
 
-		DestroyItem(Bag[playerid]);
-		Bag[playerid] = CreateItem(item_Satchel, -3.15328, -6.40267, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
-		ShowHelpTip(playerid, "Welcome to the tutorial! Start by picking up that bag over there by holding "KEYTEXT_INTERACT" while standing over it.");
-		TutorialState[playerid] = E_TUT_PICK_BAG;
+		ShowHelpTip(playerid, "Welcome to the tutorial! Look around and try things. Help messages will appear here! Type /exit to leave the tutorial.");
+		PlayerInTutorial[playerid] = true;
+
+		CreateItem(item_Satchel, -3.15328, -6.40267, -19.9447, _, _, _, FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+
+		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 3.6560, 9.9606, -19.1121, 137.5200, -1, -1, PlayerTutorialWorld[playerid]);
+		SetVehicleHealth(PlayerTutorialVehicle[playerid], 321.9);
+		SetVehicleFuel(PlayerTutorialVehicle[playerid], frandom(1.0));
+		FillContainerWithLoot(GetVehicleContainer(PlayerTutorialVehicle[playerid]), 5, loot_Civilian);
+		SetVehicleDamageData(PlayerTutorialVehicle[playerid],
+			encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
+			encode_doors(random(5), random(5), random(5), random(5)),
+			encode_lights(random(2), random(2), random(2), random(2)),
+			encode_tires(random(2), random(2), random(2), random(2)) );
+
+		CreateItem(item_Wrench, -3.43313, 12.14963, -20.03342, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Screwdriver, -3.31169, 10.41365, -20.03261, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Hammer, -2.27567, 10.21404, -20.03267, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+
+		CreateItem(item_Wheel, 1.45441, 12.21830, -20.03421, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wheel, 0.53707, 11.79060, -20.03381, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		new itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		SetItemExtraData(itemid, 10);
 	}
 }
 
@@ -274,66 +184,29 @@ hook OnPlayerDisconnect(playerid, reason)
 
 ExitTutorial(playerid)
 {
-	if(TutorialState[playerid] == E_TUT_NONE)
+	if(!PlayerInTutorial[playerid])
 		return 0;
 
-	TutorialState[playerid] = E_TUT_NONE;
+	PlayerInTutorial[playerid] = false;
 	HideHelpTip(playerid);
-	SetPlayerHealth(playerid, 0.0);
+	SetPlayerBitFlag(playerid, Spawned, false);
+	SetPlayerBitFlag(playerid, Alive, false);
 	SetPlayerVirtualWorld(playerid, 0);
+	PlayerCreateNewCharacter(playerid);
+	SetPlayerScreenFadeLevel(playerid, 0);
 
-	DestroyItem(Bag[playerid]);
-	DestroyItem(Wrench[playerid]);
-	DestroyItem(Weapon[playerid]);
-	DestroyItem(Ammo[playerid]);
-
-	Bag[playerid] = INVALID_ITEM_ID;
-	Wrench[playerid] = INVALID_ITEM_ID;
-	Weapon[playerid] = INVALID_ITEM_ID;
-	Ammo[playerid] = INVALID_ITEM_ID;
-
-	defer _tut_DestroyItems(playerid);
+	DestroyWorldVehicle(PlayerTutorialVehicle[playerid]);
+	PlayerTutorialVehicle[playerid] = INVALID_VEHICLE_ID;
 
 	return 1;
-}
-
-timer _tut_DestroyItems[100](playerid)
-{
-	foreach(new i : itm_Index)
-	{
-		if(GetItemWorld(i) == TUTORIAL_WORLD)
-			DestroyItem(i, i);
-	}
 }
 
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
-	if(TutorialState[playerid] == E_TUT_PICK_BAG)
+	if(PlayerInTutorial[playerid])
 	{
-		if(itemid == Bag[playerid])
-		{
-			ShowHelpTip(playerid, "Now wear the bag by pressing "KEYTEXT_PUT_AWAY". You can also remove your bag item by pressing "KEYTEXT_DROP_ITEM" while not holding anything.");
-			TutorialState[playerid] = E_TUT_WEAR_BAG;
-		}
-	}
-
-	if(TutorialState[playerid] == E_TUT_RE_PICK)
-	{
-		if(GetItemType(itemid) == item_Wrench)
-		{
-			ShowHelpTip(playerid, "You can't go around carrying everything by hand! Put your current item in your inventory by pressing "KEYTEXT_PUT_AWAY"");
-			TutorialState[playerid] = E_TUT_PUT_AWAY;
-		}
-	}
-
-	if(TutorialState[playerid] == E_TUT_PICK_WEAPON)
-	{
-		if(itemid == Weapon[playerid])
-		{
-			ShowHelpTip(playerid, "Some items (such as weapons) can be stored on your character by holstering them. Press "KEYTEXT_PUT_AWAY" to holster your item.");
-			TutorialState[playerid] = E_TUT_HOLSTER;
-		}
+		// ShowHelpTip(playerid, "This is an item. There are many different items in the game with different purposes. Some are common and some are rare.");
 	}
 
 	#if defined tut_OnPlayerPickUpItem
@@ -346,13 +219,9 @@ public OnPlayerPickUpItem(playerid, itemid)
 
 public OnPlayerWearBag(playerid, itemid)
 {
-	if(TutorialState[playerid] == E_TUT_WEAR_BAG)
+	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "Using your inventory effectively is key to scavenging items quickly and efficiently! When you have a bag on your back it is available for extra storage.~n~~b~Press "KEYTEXT_INVENTORY" to open your inventory now.");
-		DestroyItem(Wrench[playerid]);
-		Wrench[playerid] = CreateItem(item_Wrench, .world = TUTORIAL_WORLD);
-		AddItemToContainer(GetBagItemContainerID(itemid), Wrench[playerid]);
-		TutorialState[playerid] = E_TUT_OPEN_INV;
+		ShowHelpTip(playerid, "You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
 	}
 
 	#if defined tut_OnPlayerWearBag
@@ -365,50 +234,9 @@ public OnPlayerWearBag(playerid, itemid)
 
 public OnPlayerOpenInventory(playerid)
 {
-	if(TutorialState[playerid] == E_TUT_OPEN_INV)
+	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "Great! From here you can access your items and bag if you have one. Click your bag on the right side of the screen now. It is labeled \"Small Bag\".");
-		TutorialState[playerid] = E_TUT_OPEN_BAG;
-	}
-	if(TutorialState[playerid] == E_TUT_OPEN_INV1)
-	{
-		ShowHelpTip(playerid, "Open the options menu for the item in your inventory.");
-		TutorialState[playerid] = E_TUT_INV_ITEM_OPT;
-	}
-	if(TutorialState[playerid] == E_TUT_OPEN_INV2)
-	{
-		new
-			itemid,
-			itemweaponid;
-
-		itemid = GetPlayerItem(playerid);
-		itemweaponid = GetItemTypeWeapon(GetItemType(itemid));
-
-		if(itemweaponid == -1)
-		{
-			ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
-			TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
-			return 0;
-		}
-
-		new
-			ammotype,
-			calibrename[32],
-			ammoname[32],
-			string[256];
-
-		ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid));
-		GetCalibreName(GetItemWeaponCalibre(itemweaponid), calibrename);
-
-		if(ammotype == -1)
-			ammoname = "Unloaded";
-
-		else
-			GetAmmoTypeName(ammotype, ammoname);
-
-		format(string, sizeof(string), "Next to the weapon is '(%d/%d, %s, %s)'. This represents your current ammunition, weapon calibre and current ammunition type. Close the inventory screen to progress.", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);
-		ShowHelpTip(playerid, string);
-		TutorialState[playerid] = E_TUT_CLOSE_INV2;
+		ShowHelpTip(playerid, "This is your character inventory also known as your pockets. This is not your bag.");
 	}
 
 	#if defined tut_OnPlayerOpenInventory
@@ -423,10 +251,9 @@ public OnPlayerOpenContainer(playerid, containerid)
 {
 	if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 	{
-		if(TutorialState[playerid] == E_TUT_OPEN_BAG)
+		if(PlayerInTutorial[playerid])
 		{
-			ShowHelpTip(playerid, "This is your starting gear. Now double click an item in your bag.");
-			TutorialState[playerid] = E_TUT_CLICK_ITEM;
+			ShowHelpTip(playerid, "This is your bag. Bags are extra storage. There are many different types of bags with different sizes.");
 		}
 	}
 
@@ -440,12 +267,11 @@ public OnPlayerOpenContainer(playerid, containerid)
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
-	if(TutorialState[playerid] == E_TUT_CLICK_ITEM)
+	if(PlayerInTutorial[playerid])
 	{
 		if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
 		{
-			ShowHelpTip(playerid, "Now click \"Equip\" to remove the item from your bag and put it in your hands.");
-			TutorialState[playerid] = E_TUT_EQUIP_ITEM;
+			ShowHelpTip(playerid, "These are your options for the selected item. Equip puts it in your hand. Combine can be selected on multiple items to attempt to combine them.");
 		}
 	}
 
@@ -457,74 +283,25 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 }
 
 
-public OnItemRemoveFromContainer(containerid, slotid, playerid)
+public OnPlayerDroppedItem(playerid, itemid)
 {
-	if(IsPlayerConnected(playerid))
+	if(PlayerInTutorial[playerid])
 	{
-		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
-		{
-			if(TutorialState[playerid] == E_TUT_EQUIP_ITEM)
-			{
-				if(GetItemType(GetContainerSlotItem(containerid, slotid)) == item_Wrench)
-				{
-					ShowHelpTip(playerid, "Wrenches can be used to repair vehicles, but it will only repair so much, you'll need more tools to repair a vehicle fully. Press "KEYTEXT_DROP_ITEM" to drop your current item.");
-					TutorialState[playerid] = E_TUT_DROP;
-				}
-			}
-		}
+		ShowHelpTip(playerid, "When you drop an item, other players can pick it up. Most item types ");
 	}
 
-	#if defined tut_OnItemRemoveFromContainer
-		return tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
+	#if defined tut_OnPlayerDroppedItem
+		return tut_OnPlayerDroppedItem(playerid, itemid);
 	#else
 		return 0;
 	#endif
-}
-
-
-public OnPlayerDropItem(playerid, itemid)
-{
-	if(TutorialState[playerid] == E_TUT_DROP)
-	{
-		if(GetItemType(itemid) == item_Wrench)
-		{
-			ShowHelpTip(playerid, "Good, you should grab that again though, you might need it! Press "KEYTEXT_INTERACT" to pick up items.");
-			TutorialState[playerid] = E_TUT_RE_PICK;
-		}
-	}
-
-	if(TutorialState[playerid] == E_TUT_UNLOAD_AMMO)
-	{
-		defer _WeaponUnloadOffset(playerid);
-	}
-
-	#if defined tut_OnPlayerDropItem
-		return tut_OnPlayerDropItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-
-timer _WeaponUnloadOffset[500](playerid)
-{
-	if(TutorialState[playerid] == E_TUT_UNLOAD_AMMO)
-	{
-		ShowHelpTip(playerid, "The next section of the tutorial is not yet complete. Type /exit to kill yourself and return to the create-character screen.");
-		DestroyItem(Bag[playerid]);
-		DestroyItem(Wrench[playerid]);
-		DestroyItem(Ammo[playerid]);
-		Bag[playerid] = INVALID_ITEM_ID;
-		Wrench[playerid] = INVALID_ITEM_ID;
-		Ammo[playerid] = INVALID_ITEM_ID;
-	}
 }
 
 public OnItemAddToInventory(playerid, itemid, slot)
 {
-	if(TutorialState[playerid] == E_TUT_PUT_AWAY)
+	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You put it in your inventory, you can move items between your inventory and your bag, open your inventory again with "KEYTEXT_INVENTORY".");
-		TutorialState[playerid] = E_TUT_OPEN_INV1;
+		ShowHelpTip(playerid, "You added an item to your inventory. If your inventory is full, the item will be put in your bag.");
 	}
 
 	#if defined tut_OnItemAddToInventory
@@ -537,10 +314,9 @@ public OnItemAddToInventory(playerid, itemid, slot)
 
 public OnPlayerViewInventoryOpt(playerid)
 {
-	if(TutorialState[playerid] == E_TUT_INV_ITEM_OPT)
+	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "Now press the \"Move to bag\" button to remove that item from your inventory and put it in your bag.");
-		TutorialState[playerid] = E_TUT_MOVE_TO_BAG;
+		ShowHelpTip(playerid, "These are your options for the selected item. Equip puts it in your hand. Combine can be selected on multiple items to attempt to combine them.");
 	}
 
 	#if defined tut_OnPlayerViewInventoryOpt
@@ -555,12 +331,15 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+		if(PlayerInTutorial[playerid])
 		{
-			if(TutorialState[playerid] == E_TUT_MOVE_TO_BAG)
+			if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 			{
-				ShowHelpTip(playerid, "This works both ways, in your bag item options \"Move to inventory\" moves an item from your bag to your inventory. Click Close or press ESC to close your inventory.");
-				TutorialState[playerid] = E_TUT_CLOSE_INV;
+				ShowHelpTip(playerid, "You added an item to your bag. You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
+			}
+			else
+			{
+				ShowHelpTip(playerid, "You added an item to a container. Containers are places to store items ");
 			}
 		}
 	}
@@ -572,107 +351,31 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 	#endif
 }
 
-
-public OnPlayerCloseContainer(playerid, containerid)
-{
-	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
-	{
-		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.");
-		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -3.12092, -0.03646, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
-		TutorialState[playerid] = E_TUT_PICK_WEAPON;
-	}
-
-	if(TutorialState[playerid] == E_TUT_CLOSE_INV2)
-	{
-		ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
-		TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
-	}
-
-	#if defined tut_OnPlayerCloseContainer
-		return tut_OnPlayerCloseContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
-}
-
-
-public OnPlayerCloseInventory(playerid)
-{
-	if(TutorialState[playerid] == E_TUT_CLOSE_INV)
-	{
-		ShowHelpTip(playerid, "Now pick up that shotgun by pressing "KEYTEXT_INTERACT" while standing over it.");
-		DestroyItem(Weapon[playerid]);
-		Weapon[playerid] = CreateItem(item_PumpShotgun, -3.12092, -0.03646, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
-		TutorialState[playerid] = E_TUT_PICK_WEAPON;
-	}
-
-	if(TutorialState[playerid] == E_TUT_CLOSE_INV2)
-	{
-		ShowHelpTip(playerid, "Once some of your ammunition has been shot, you can reload by pressing "KEYTEXT_RELOAD". To progress, unload your weapon by holding "KEYTEXT_DROP_ITEM".");
-		TutorialState[playerid] = E_TUT_UNLOAD_AMMO;
-	}
-
-	#if defined tut_OnPlayerCloseInventory
-		return tut_OnPlayerCloseInventory(playerid);
-	#else
-		return 0;
-	#endif
-}
-
 public OnPlayerHolsteredItem(playerid, itemid)
 {
-	if(TutorialState[playerid] == E_TUT_HOLSTER)
+	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You can hit the same key to unholster your item if your hands are empty. If you are holding another item that can be holstered, your items will be swapped.");
-		TutorialState[playerid] = E_TUT_UNHOLSTER;
+		ShowHelpTip(playerid, "You have holstered an item. Holstered items can be quickly accessed by pressing "KEYTEXT_PUT_AWAY" again.");
 	}
 
 	#if defined tut_OnPlayerHolsteredItem
 		return tut_OnPlayerHolsteredItem(playerid, itemid);
 	#else
-		return 1;
-	#endif
-}
-
-public OnPlayerUnHolsteredItem(playerid, itemid)
-{
-	if(TutorialState[playerid] == E_TUT_UNHOLSTER)
-	{
-		ShowHelpTip(playerid, "What good is a gun without ammunition? Load your weapon by standing at the ammunition item and pressing "KEYTEXT_INTERACT".");
-		DestroyItem(Ammo[playerid]);
-		Ammo[playerid] = CreateItem(item_AmmoBuck, 0.50971, 3.61521, -19.9447, _, _, _, FLOOR_OFFSET, TUTORIAL_WORLD);
-		SetItemExtraData(Ammo[playerid], 12);
-		TutorialState[playerid] = E_TUT_PICK_AMMO;
-	}
-
-	#if defined tut_OnPlayerUnHolsteredItem
-		return tut_OnPlayerUnHolsteredItem(playerid, itemid);
-	#else
-		return 1;
+		return 0;
 	#endif
 }
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(itemid == Weapon[playerid] && withitemid == Ammo[playerid])
+	if(PlayerInTutorial[playerid])
 	{
-		if(TutorialState[playerid] == E_TUT_PICK_AMMO)
-		{
-			ShowHelpTip(playerid, "You've loaded the ammunition into your weapon. You can store some extra reserve ammo too, try picking it up again.");
-			TutorialState[playerid] = E_TUT_PICK_MORE_AMMO;
-		}
-		else if(TutorialState[playerid] == E_TUT_PICK_MORE_AMMO)
-		{
-			ShowHelpTip(playerid, "Open your inventory with the weapon in hand and look on the right side at the weapon information.");
-			TutorialState[playerid] = E_TUT_OPEN_INV2;
-		}
+		ShowHelpTip(playerid, "You tried to use an item with another item because you're holding one already. This can be used sometimes, for example use a lighter with a campfire to light it or use a weapon with ammo to load it.");
 	}
 
 	#if defined tut_OnPlayerUseItemWithItem
 		return tut_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 	#else
-		return 1;
+		return 0;
 	#endif
 }
 #if defined _ALS_OnPlayerUseItemWithItem
@@ -737,14 +440,14 @@ CMD:exit(playerid, params[])
 	forward tut_OnPlayerCreateNewCharacter(playerid);
 #endif
 
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
+#if defined _ALS_OnPlayerWearBag
+	#undef OnPlayerWearBag
 #else
-	#define _ALS_OnButtonPress
+	#define _ALS_OnPlayerWearBag
 #endif
-#define OnButtonPress tut_OnButtonPress
-#if defined tut_OnButtonPress
-	forward tut_OnButtonPress(playerid, buttonid);
+#define OnPlayerWearBag tut_OnPlayerWearBag
+#if defined tut_OnPlayerWearBag
+	forward tut_OnPlayerWearBag(playerid, itemid);
 #endif
 
 #if defined _ALS_OnPlayerOpenInventory
@@ -777,24 +480,14 @@ CMD:exit(playerid, params[])
 	forward tut_OnPlayerViewContainerOpt(playerid, containerid);
 #endif
 
-#if defined _ALS_OnItemRemoveFromContainer
-	#undef OnItemRemoveFromContainer
+#if defined _ALS_OnPlayerDroppedItem
+	#undef OnPlayerDroppedItem
 #else
-	#define _ALS_OnItemRemoveFromContainer
+	#define _ALS_OnPlayerDroppedItem
 #endif
-#define OnItemRemoveFromContainer tut_OnItemRemoveFromContainer
-#if defined tut_OnItemRemoveFromContainer
-	forward tut_OnItemRemoveFromContainer(containerid, slotid, playerid);
-#endif
-
-#if defined _ALS_OnPlayerDropItem
-	#undef OnPlayerDropItem
-#else
-	#define _ALS_OnPlayerDropItem
-#endif
-#define OnPlayerDropItem tut_OnPlayerDropItem
-#if defined tut_OnPlayerDropItem
-	forward tut_OnPlayerDropItem(playerid, itemid);
+#define OnPlayerDroppedItem tut_OnPlayerDroppedItem
+#if defined tut_OnPlayerDroppedItem
+	forward tut_OnPlayerDroppedItem(playerid, itemid);
 #endif
 
 #if defined _ALS_OnPlayerPickUpItem
@@ -837,26 +530,6 @@ CMD:exit(playerid, params[])
 	forward tut_OnItemAddToContainer(containerid, itemid, playerid);
 #endif
 
-#if defined _ALS_OnPlayerCloseContainer
-	#undef OnPlayerCloseContainer
-#else
-	#define _ALS_OnPlayerCloseContainer
-#endif
-#define OnPlayerCloseContainer tut_OnPlayerCloseContainer
-#if defined tut_OnPlayerCloseContainer
-	forward tut_OnPlayerCloseContainer(playerid, containerid);
-#endif
-
-#if defined _ALS_OnPlayerCloseInventory
-	#undef OnPlayerCloseInventory
-#else
-	#define _ALS_OnPlayerCloseInventory
-#endif
-#define OnPlayerCloseInventory tut_OnPlayerCloseInventory
-#if defined tut_OnPlayerCloseInventory
-	forward tut_OnPlayerCloseInventory(playerid);
-#endif
-
 #if defined _ALS_OnPlayerHolsteredItem
 	#undef OnPlayerHolsteredItem
 #else
@@ -867,33 +540,13 @@ CMD:exit(playerid, params[])
 	forward tut_OnPlayerHolsteredItem(playerid, itemid);
 #endif
 
-#if defined _ALS_OnPlayerUnHolsteredItem
-	#undef OnPlayerUnHolsteredItem
-#else
-	#define _ALS_OnPlayerUnHolsteredItem
-#endif
-#define OnPlayerUnHolsteredItem tut_OnPlayerUnHolsteredItem
-#if defined tut_OnPlayerUnHolsteredItem
-	forward tut_OnPlayerUnHolsteredItem(playerid, itemid);
-#endif
-
-#if defined _ALS_OnPlayerWearBag
-	#undef OnPlayerWearBag
-#else
-	#define _ALS_OnPlayerWearBag
-#endif
-#define OnPlayerWearBag tut_OnPlayerWearBag
-#if defined tut_OnPlayerWearBag
-	forward tut_OnPlayerWearBag(playerid, itemid);
-#endif
-
 
 // Interface
 
 
 stock IsPlayerInTutorial(playerid)
 {
-	if(TutorialState[playerid] != E_TUT_NONE)
+	if(PlayerInTutorial[playerid])
 		return 1;
 
 	return 0;
