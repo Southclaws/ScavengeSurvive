@@ -142,12 +142,15 @@ public OnHoldActionFinish(playerid)
 			Float:x,
 			Float:y,
 			Float:z,
-			Float:r;
+			Float:r,
+			itemid;
 
 		GetItemPos(gut_TargetItem[playerid], x, y, z);
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
-		CreateItem(item_Meat, x, y, z + 0.3, .rz = r, .zoffset = FLOOR_OFFSET);
+		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r, .zoffset = FLOOR_OFFSET);
+		SetItemArrayDataAtCell(itemid, 0, food_cooked, 1);
+		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		ClearAnimations(playerid);
