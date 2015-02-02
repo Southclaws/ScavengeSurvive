@@ -88,14 +88,27 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-hook OnPlayerDisconnected(playerid)
+public OnPlayerDisconnected(playerid)
 {
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;
 
-	return 1;
+	#if defined admin_OnPlayerDisconnected
+		return admin_OnPlayerDisconnected(playerid);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerDisconnected
+	#undef OnPlayerDisconnected
+#else
+	#define _ALS_OnPlayerDisconnected
+#endif
+#define OnPlayerDisconnected admin_OnPlayerDisconnected
+#if defined admin_OnPlayerDisconnected
+	forward admin_OnPlayerDisconnected(playerid);
+#endif
 
 
 /*==============================================================================

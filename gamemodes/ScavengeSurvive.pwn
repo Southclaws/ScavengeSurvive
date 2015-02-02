@@ -194,6 +194,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define RELEASED(%0)				(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
 #define PRESSED(%0)					(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))
 
+#define IsValidPlayerID(%0)			(0<=%0<MAX_PLAYERS)
+
 
 // Colours
 #define YELLOW						0xFFFF00FF
@@ -613,7 +615,9 @@ public OnGameModeExit()
 
 	print("\nSave Complete! Safe to shut down.");
 
-	SendRconCommand("exit");
+	new File:f = fopen("nonexistentfile", io_read), _s[1];
+	fread(f, _s);
+	fclose(f);
 
 	return 1;
 }

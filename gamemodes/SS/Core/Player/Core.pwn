@@ -67,6 +67,9 @@ new
 		gPlayerName[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
+forward OnPlayerDisconnected(playerid);
+
+
 public OnPlayerConnect(playerid)
 {
 	logf("[JOIN] %p joined", playerid);
@@ -122,8 +125,6 @@ public OnPlayerDisconnect(playerid, reason)
 		return 0;
 
 	Logout(playerid);
-
-	ResetVariables(playerid);
 
 	switch(reason)
 	{
@@ -189,6 +190,26 @@ timer LoadAccountDelay[5000](playerid)
 
 	return;
 }
+
+public OnPlayerDisconnected(playerid)
+{
+	ResetVariables(playerid);
+
+	#if defined ply_OnPlayerDisconnected
+		return ply_OnPlayerDisconnected(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerDisconnected
+	#undef OnPlayerDisconnected
+#else
+	#define _ALS_OnPlayerDisconnected
+#endif
+#define OnPlayerDisconnected ply_OnPlayerDisconnected
+#if defined ply_OnPlayerDisconnected
+	forward ply_OnPlayerDisconnected(playerid);
+#endif
 
 ResetVariables(playerid)
 {
@@ -571,7 +592,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 forward E_FLAGS:GetPlayerDataBitmask(playerid);
 stock E_FLAGS:GetPlayerDataBitmask(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return E_FLAGS:0;
 
 	return ply_Data[playerid][ply_BitFlags];
@@ -579,7 +600,7 @@ stock E_FLAGS:GetPlayerDataBitmask(playerid)
 
 stock GetPlayerBitFlag(playerid, E_FLAGS:flag)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & flag);
@@ -601,7 +622,7 @@ stock SetPlayerBitFlag(playerid, E_FLAGS:flag, toggle)
 // Alive
 stock IsPlayerAlive(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & Alive);
@@ -610,7 +631,7 @@ stock IsPlayerAlive(playerid)
 // Dying
 stock IsPlayerDead(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & Dying);
@@ -619,7 +640,7 @@ stock IsPlayerDead(playerid)
 // Spawned
 stock IsPlayerSpawned(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & Spawned);
@@ -630,7 +651,7 @@ stock IsPlayerSpawned(playerid)
 // ToolTips
 stock IsPlayerToolTipsOn(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & ToolTips);
@@ -639,7 +660,7 @@ stock IsPlayerToolTipsOn(playerid)
 // ShowHUD
 stock IsPlayerHudOn(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return _:(ply_Data[playerid][ply_BitFlags] & ShowHUD);
@@ -657,7 +678,7 @@ stock IsPlayerHudOn(playerid)
 // ply_Password
 stock GetPlayerPassHash(playerid, string[MAX_PASSWORD_LEN])
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	string[0] = EOS;
@@ -679,7 +700,7 @@ stock SetPlayerPassHash(playerid, string[MAX_PASSWORD_LEN])
 // ply_IP
 stock GetPlayerIpAsInt(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_IP];
@@ -688,7 +709,7 @@ stock GetPlayerIpAsInt(playerid)
 // ply_Karma
 stock GetPlayerKarma(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_Karma];
@@ -697,7 +718,7 @@ stock GetPlayerKarma(playerid)
 // ply_RegisterTimestamp
 stock GetPlayerRegTimestamp(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_RegisterTimestamp];
@@ -716,7 +737,7 @@ stock SetPlayerRegTimestamp(playerid, timestamp)
 // ply_LastLogin
 stock GetPlayerLastLogin(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_LastLogin];
@@ -735,7 +756,7 @@ stock SetPlayerLastLogin(playerid, timestamp)
 // ply_TotalSpawns
 stock GetPlayerTotalSpawns(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_TotalSpawns];
@@ -754,7 +775,7 @@ stock SetPlayerTotalSpawns(playerid, amount)
 // ply_Warnings
 stock GetPlayerWarnings(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_Warnings];
@@ -774,7 +795,7 @@ stock SetPlayerWarnings(playerid, timestamp)
 forward Float:GetPlayerHP(playerid);
 stock Float:GetPlayerHP(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0.0;
 
 	return ply_Data[playerid][ply_HitPoints];
@@ -797,7 +818,7 @@ stock SetPlayerHP(playerid, Float:hp)
 forward Float:GetPlayerAP(playerid);
 stock Float:GetPlayerAP(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0.0;
 
 	return ply_Data[playerid][ply_ArmourPoints];
@@ -831,7 +852,7 @@ stock SetPlayerAP(playerid, Float:amount)
 forward Float:GetPlayerFP(playerid);
 stock Float:GetPlayerFP(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0.0;
 
 	return ply_Data[playerid][ply_FoodPoints];
@@ -850,7 +871,7 @@ stock SetPlayerFP(playerid, Float:food)
 // ply_Clothes
 stock GetPlayerClothesID(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_Clothes];
@@ -869,7 +890,7 @@ stock SetPlayerClothesID(playerid, id)
 // ply_Gender
 stock GetPlayerGender(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_Gender];
@@ -889,7 +910,7 @@ stock SetPlayerGender(playerid, gender)
 forward Float:GetPlayerTotalVelocity(playerid);
 Float:GetPlayerTotalVelocity(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0.0;
 
 	return ply_Data[playerid][ply_Velocity];
@@ -900,7 +921,7 @@ Float:GetPlayerTotalVelocity(playerid)
 // ply_SpawnPosZ
 stock GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	x = ply_Data[playerid][ply_SpawnPosX];
@@ -925,7 +946,7 @@ stock SetPlayerSpawnPos(playerid, Float:x, Float:y, Float:z)
 // ply_SpawnRotZ
 stock GetPlayerSpawnRot(playerid, &Float:r)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	r = ply_Data[playerid][ply_SpawnRotZ];
@@ -947,7 +968,7 @@ stock SetPlayerSpawnRot(playerid, Float:r)
 forward Float:GetPlayerRadioFrequency(playerid);
 stock Float:GetPlayerRadioFrequency(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0.0;
 
 	return ply_Data[playerid][ply_RadioFrequency];
@@ -965,7 +986,7 @@ stock SetPlayerRadioFrequency(playerid, Float:frequency)
 // ply_CreationTimestamp
 stock GetPlayerCreationTimestamp(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_CreationTimestamp];
@@ -984,7 +1005,7 @@ stock SetPlayerCreationTimestamp(playerid, timestamp)
 // ply_AimShoutText
 stock GetPlayerAimShoutText(playerid, string[])
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	string[0] = EOS;
@@ -1006,7 +1027,7 @@ stock SetPlayerAimShoutText(playerid, string[128])
 // ply_ChatMode
 stock GetPlayerChatMode(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_ChatMode];
@@ -1024,7 +1045,7 @@ stock SetPlayerChatMode(playerid, chatmode)
 // ply_CurrentVehicle
 stock GetPlayerLastVehicle(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_CurrentVehicle];
@@ -1034,7 +1055,7 @@ stock GetPlayerLastVehicle(playerid)
 // ply_ScreenBoxFadeLevel
 stock GetPlayerScreenFadeLevel(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_ScreenBoxFadeLevel];
@@ -1058,7 +1079,7 @@ stock SetPlayerScreenFadeLevel(playerid, level)
 // ply_stance
 stock GetPlayerStance(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_stance];
@@ -1077,7 +1098,7 @@ stock SetPlayerStance(playerid, stance)
 // ply_JoinTick
 stock GetPlayerServerJoinTick(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_JoinTick];
@@ -1086,7 +1107,7 @@ stock GetPlayerServerJoinTick(playerid)
 // ply_SpawnTick
 stock GetPlayerSpawnTick(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_SpawnTick];
@@ -1095,7 +1116,7 @@ stock GetPlayerSpawnTick(playerid)
 // ply_ExitVehicleTick
 stock GetPlayerVehicleExitTick(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	return ply_Data[playerid][ply_ExitVehicleTick];

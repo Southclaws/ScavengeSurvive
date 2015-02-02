@@ -46,7 +46,7 @@ timer UnMuteDelay[time](playerid, time)
 	Msg(playerid, YELLOW, " >  You are now un-muted.");
 }
 
-hook OnPlayerDisconnect(playerid)
+public OnPlayerDisconnected(playerid)
 {
 	if(gServerRestarting)
 		return 1;
@@ -56,8 +56,21 @@ hook OnPlayerDisconnect(playerid)
 		TogglePlayerMute(playerid, false);
 	}
 
-	return 1;
+	#if defined mute_OnPlayerDisconnected
+		return mute_OnPlayerDisconnected(playerid);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnPlayerDisconnected
+	#undef OnPlayerDisconnected
+#else
+	#define _ALS_OnPlayerDisconnected
+#endif
+#define OnPlayerDisconnected mute_OnPlayerDisconnected
+#if defined mute_OnPlayerDisconnected
+	forward mute_OnPlayerDisconnected(playerid);
+#endif
 
 stock IsPlayerMuted(playerid)
 {
@@ -85,7 +98,7 @@ stock GetPlayerMuteDuration(playerid)
 
 stock GetPlayerMuteRemainder(playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!IsValidPlayerID(playerid))
 		return 0;
 
 	if(!mute_Muted[playerid])
