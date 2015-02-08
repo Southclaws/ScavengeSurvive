@@ -15,8 +15,6 @@ enum E_TENT_DATA
 			tnt_objSideR2,
 			tnt_objSideL1,
 			tnt_objSideL2,
-			tnt_objEndF,
-			tnt_objEndB,
 			tnt_objPoleF,
 			tnt_objPoleB,
 Float:		tnt_posX,
@@ -156,18 +154,6 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 		z,
 		0.0, -45.0, rz, worldid, interiorid, .streamdistance = 20.0);
 
-	tnt_Data[id][tnt_objEndF] = CreateDynamicObject(19475,
-		x + (1.3 * floatsin(-rz, degrees)),
-		y + (1.3 * floatcos(-rz, degrees)),
-		z + 0.17,
-		45.0, 0.0, rz + 90, worldid, interiorid, .streamdistance = 5.0);
-
-	tnt_Data[id][tnt_objEndB] = CreateDynamicObject(19475,
-		x - (1.3 * floatsin(-rz, degrees)),
-		y - (1.3 * floatcos(-rz, degrees)),
-		z + 0.17,
-		45.0, 0.0, rz + 90, worldid, interiorid, .streamdistance = 5.0);
-
 	tnt_Data[id][tnt_objPoleF] = CreateDynamicObject(19087,
 		x + (1.3 * floatsin(-rz, degrees)),
 		y + (1.3 * floatcos(-rz, degrees)),
@@ -185,8 +171,6 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideL1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideL2], 0, 3095, "a51jdrx", "sam_camo", 0);
 
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objEndF], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objEndB], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objPoleF], 0, 1270, "signs", "lamppost", 0);
 	SetDynamicObjectMaterial(tnt_Data[id][tnt_objPoleB], 0, 1270, "signs", "lamppost", 0);
 
@@ -234,8 +218,6 @@ stock DestroyTent(tentid)
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideR2]);
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideL1]);
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideL2]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objEndF]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objEndB]);
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objPoleF]);
 	DestroyDynamicObject(tnt_Data[tentid][tnt_objPoleB]);
 
@@ -243,8 +225,6 @@ stock DestroyTent(tentid)
 	tnt_Data[tentid][tnt_objSideR2] = INVALID_OBJECT_ID;
 	tnt_Data[tentid][tnt_objSideL1] = INVALID_OBJECT_ID;
 	tnt_Data[tentid][tnt_objSideL2] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objEndF] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objEndB] = INVALID_OBJECT_ID;
 	tnt_Data[tentid][tnt_objPoleF] = INVALID_OBJECT_ID;
 	tnt_Data[tentid][tnt_objPoleB] = INVALID_OBJECT_ID;
 	tnt_Data[tentid][tnt_posX] = 0.0;
