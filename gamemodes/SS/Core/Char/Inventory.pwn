@@ -947,16 +947,18 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	{
 		if(IsPlayerViewingInventory(playerid))
 		{
-			HidePlayerGear(playerid);
-			HidePlayerHealthInfo(playerid);
-			ClosePlayerInventory(playerid);
+			// HidePlayerGear(playerid);
+			// HidePlayerHealthInfo(playerid);
+			// ClosePlayerInventory(playerid);
+			DisplayPlayerInventory(playerid);
 		}
 
 		if(GetPlayerCurrentContainer(playerid) != INVALID_CONTAINER_ID)
 		{
-			HidePlayerGear(playerid);
-			HidePlayerHealthInfo(playerid);
-			ClosePlayerContainer(playerid);
+			// HidePlayerGear(playerid);
+			// HidePlayerHealthInfo(playerid);
+			// ClosePlayerContainer(playerid);
+			DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
 		}
 	}
 }
