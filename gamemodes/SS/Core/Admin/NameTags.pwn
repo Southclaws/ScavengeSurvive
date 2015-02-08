@@ -24,8 +24,8 @@ hook OnPlayerConnect(playerid)
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(name, YELLOW, 0.0, 0.0, 0.5, 6000.0, playerid, _, 0, 6000.0, _, _, players, 1, 1, maxplayers);
-	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[VISIBLE]", BLUE, 0.5, 0.5, -0.5, 6000.0, playerid, _, 1, 6000.0, _, _, players, 1, 1, maxplayers);
+	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(name, YELLOW, 0.0, 0.0, 0.0, 6000.0, playerid, _, 0, 6000.0, _, _, players, 1, 1, maxplayers);
+	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[|                                   |]", BLUE, 0.0, 0.0, 0.0, 6000.0, playerid, _, 1, 6000.0, _, _, players, 1, 1, maxplayers);
 
 	return 1;
 }
