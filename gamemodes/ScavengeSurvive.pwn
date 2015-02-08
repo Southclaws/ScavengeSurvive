@@ -444,7 +444,6 @@ new stock
 #include "SS/Core/World/Workbench.pwn"
 #include "SS/Core/World/Emp.pwn"
 #include "SS/Core/World/Explosive.pwn"
-#include "SS/Core/World/SprayTag.pwn"
 #include "SS/Core/World/Sign.pwn"
 #include "SS/Core/World/SupplyCrate.pwn"
 #include "SS/Core/World/WeaponsCache.pwn"
