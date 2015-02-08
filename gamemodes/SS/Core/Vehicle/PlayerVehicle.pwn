@@ -133,6 +133,18 @@ LoadPlayerVehicles()
 	{
 		if(type == FM_FILE)
 		{
+			if(!(6 < strlen(item) < MAX_PLAYER_NAME + 4))
+			{
+				printf("[LoadPlayerVehicles] WARNING: File with a bad filename length: '%s' len: %d", item, strlen(item));
+				continue;
+			}
+
+			if(strfind(item, ".dat", false, 3) == -1)
+			{
+				printf("[LoadPlayerVehicles] WARNING: File with invalid extension: '%s'", item);
+				continue;
+			}
+
 			LoadPlayerVehicle(item, veh_PrintEach);
 		}
 	}
@@ -158,23 +170,17 @@ LoadPlayerVehicles()
 ==============================================================================*/
 
 
-LoadPlayerVehicle(username[], prints)
+LoadPlayerVehicle(filename[], prints)
 {
 	new
-		filename[64],
-		vehicleid,
-		category,
-		vehiclename[MAX_VEHICLE_TYPE_NAME],
-		owner[MAX_PLAYER_NAME],
-		containerid,
+		filepath[64],
 		data[VEH_CELL_END],
-		trunksize,
 		length;
 
-	filename = DIRECTORY_VEHICLE;
-	strcat(filename, username);
+	filepath = DIRECTORY_VEHICLE;
+	strcat(filepath, filename);
 
-	length = modio_read(filename, _T<D,A,T,A>, data, false, false);
+	length = modio_read(filepath, _T<D,A,T,A>, data, false, false);
 
 	if(length == 0)
 		return 0;
@@ -186,7 +192,7 @@ LoadPlayerVehicle(username[], prints)
 	if(400 <= data[VEH_CELL_TYPE] <= 612)
 	{
 		new tmp;
-		printf("WARNING: Vehicle for '%s' type is model ID (%d), converting to vehicle index type.", username, data[VEH_CELL_TYPE]);
+		printf("WARNING: Vehicle for '%s' type is model ID (%d), converting to vehicle index type.", filename, data[VEH_CELL_TYPE]);
 		
 		tmp = GetVehicleTypeFromModel(data[VEH_CELL_TYPE]);
 
@@ -216,21 +222,22 @@ LoadPlayerVehicle(username[], prints)
 
 	if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
 	{
-		logf("ERROR: Removing Vehicle file: %s, invalid vehicle type '%d'.", username, data[VEH_CELL_TYPE]);
-		fremove(filename);
+		logf("ERROR: Removing vehicle file '%s' invalid vehicle type '%d'.", filename, data[VEH_CELL_TYPE]);
+		fremove(filepath);
 		return 0;
 	}
 
+	new vehiclename[MAX_VEHICLE_TYPE_NAME];
 	GetVehicleTypeName(data[VEH_CELL_TYPE], vehiclename);
 
 	if(Float:data[VEH_CELL_HEALTH] < 255.5)
 	{
-		logf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, username);
-		fremove(filename);
+		logf("ERROR: Removing vehicle file: '%s' (%s) due to low health.", filename, vehiclename);
+		fremove(filepath);
 		return 0;
 	}
 
-	category = GetVehicleTypeCategory(data[VEH_CELL_TYPE]);
+	new category = GetVehicleTypeCategory(data[VEH_CELL_TYPE]);
 
 	if(category != VEHICLE_CATEGORY_BOAT)
 	{
@@ -242,15 +249,19 @@ LoadPlayerVehicle(username[], prints)
 			}
 			else
 			{
-				logf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, username);
-				fremove(filename);
+				logf("ERROR: Removing vehicle file: %s (%s) because it's out of the map bounds.", filename, vehiclename);
+				fremove(filepath);
 
 				return 0;
 			}
 		}
 	}
 
-	strmid(owner, username, 0, strlen(username) - 4);
+	new
+		vehicleid,
+		owner[MAX_PLAYER_NAME];
+
+	strmid(owner, filename, 0, strlen(filename) - 4);
 
 	vehicleid = CreateWorldVehicle(
 		data[VEH_CELL_TYPE],
@@ -285,9 +296,13 @@ LoadPlayerVehicle(username[], prints)
 
 	SetVehicleExternalLock(vehicleid, data[VEH_CELL_LOCKED]);
 
+	new
+		containerid,
+		trunksize;
+
 	trunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
 
-	length = modio_read(filename, _T<T,D,A,T>, data, false, false);
+	length = modio_read(filepath, _T<T,D,A,T>, data, false, false);
 
 	if(length > 0)
 	{
@@ -333,7 +348,7 @@ LoadPlayerVehicle(username[], prints)
 				itemid,
 				itemlist;
 
-			length = modio_read(filename, _T<T,T,R,N>, vehicle_ItemList, false, false);
+			length = modio_read(filepath, _T<T,T,R,N>, vehicle_ItemList, false, false);
 		
 			itemlist = ExtractItemList(vehicle_ItemList, length);
 			itemcount = GetItemListItemCount(itemlist);
@@ -376,7 +391,7 @@ LoadPlayerVehicle(username[], prints)
 			itemid,
 			itemlist;
 
-		length = modio_read(filename, _T<T,R,N,K>, vehicle_ItemList, true);
+		length = modio_read(filepath, _T<T,R,N,K>, vehicle_ItemList, true);
 
 		itemlist = ExtractItemList(vehicle_ItemList, length);
 		itemcount = GetItemListItemCount(itemlist);
@@ -480,6 +495,12 @@ UpdateVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 
 UpdateVehicleFile(vehicleid, prints = false)
 {
+	if(isnull(pveh_Owner[vehicleid]))
+	{
+		printf("ERROR: Attempted to save vehicle %d with null owner string.", vehicleid);
+		return 0;
+	}
+
 	new
 		filename[MAX_PLAYER_NAME + 22],
 		session,
