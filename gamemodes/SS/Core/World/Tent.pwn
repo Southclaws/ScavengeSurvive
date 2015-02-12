@@ -50,7 +50,6 @@ static
 bool:		tnt_PrintEachLoad,
 bool:		tnt_PrintTotalLoad,
 bool:		tnt_PrintEachSave,
-bool:		tnt_PrintEachRuntimeSave,
 bool:		tnt_PrintTotalSave,
 bool:		tnt_PrintRemoves;
 
@@ -72,17 +71,6 @@ hook OnScriptInit()
 		for(;;){}
 	}
 
-	new arr[1];
-
-	modio_read(GEID_FILE, _T<T,E,N,T>, arr);
-
-	tnt_GEID_Index = arr[0];
-	// printf("Loaded tent GEID: %d", tnt_GEID_Index);
-
-	#if defined SIF_USE_DEBUG_LABELS
-		tnt_DebugLabelType = DefineDebugLabelType("TENT", GREEN);
-	#endif
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
 
 	Iter_Init(tnt_ItemIndex);
@@ -90,7 +78,6 @@ hook OnScriptInit()
 	GetSettingInt("tent/print-each-load", false, tnt_PrintEachLoad);
 	GetSettingInt("tent/print-total-load", true, tnt_PrintTotalLoad);
 	GetSettingInt("tent/print-each-save", false, tnt_PrintEachSave);
-	GetSettingInt("tent/print-each-runtime-save", false, tnt_PrintEachRuntimeSave);
 	GetSettingInt("tent/print-total-save", true, tnt_PrintTotalSave);
 	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
 }
@@ -100,13 +87,6 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'Tent'...");
 
 	LoadTents();
-}
-
-hook OnScriptExit()
-{
-	print("\n[OnScriptExit] Shutting down 'Tent'...");
-
-	SaveTents();
 }
 
 hook OnPlayerConnect(playerid)
@@ -196,6 +176,8 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 
 	UpdateTentDebugLabel(id);
 
+	SaveTent(id, 1);
+
 	return id;
 }
 
@@ -204,12 +186,7 @@ stock DestroyTent(tentid)
 	if(!Iter_Contains(tnt_Index, tentid))
 		return 0;
 
-	new filename[64];
-	// TODO: Set tent as "inactive" but don't remove it.
-	format(filename, sizeof(filename), ""DIRECTORY_TENT"tent_%010d.dat", tnt_GEID[tentid]);
-
-	if(fexist(filename))
-		fremove(filename);
+	SaveTent(tentid, 0);
 
 	DestroyButton(tnt_Data[tentid][tnt_buttonId]);
 	tnt_ButtonTent[tnt_Data[tentid][tnt_buttonId]] = INVALID_TENT_ID;
@@ -241,9 +218,6 @@ stock DestroyTent(tentid)
 	#if defined SIF_USE_DEBUG_LABELS
 		DestroyDebugLabel(tnt_DebugLabelID[tentid]);
 	#endif
-
-	if(tnt_PrintRemoves)
-		printf("\t[DELT] Tent: GEID %d", tnt_GEID[tentid]);
 
 	return tentid;
 }
@@ -283,7 +257,7 @@ AddItemToTentIndex(tentid, itemid)
 
 	Iter_Add(tnt_ItemIndex[tentid], cell);
 
-	SaveTent(tentid, tnt_PrintEachRuntimeSave);
+	SaveTent(tentid, 1);
 
 	UpdateTentDebugLabel(tentid);
 
@@ -314,7 +288,7 @@ RemoveItemFromTentIndex(itemid)
 	tentid = tnt_ItemTent[itemid];
 
 	Iter_Remove(tnt_ItemIndex[tentid], cell);
-	SaveTent(tentid, tnt_PrintEachRuntimeSave);
+	SaveTent(tentid, 1);
 	UpdateTentDebugLabel(tentid);
 
 	tnt_ItemTent[itemid] = -1;
@@ -581,34 +555,8 @@ LoadTents()
 
 	dir_close(direc);
 
-	// If no tents were loaded, load the old format
-	// This should only ever happen once (upon transition to this new version)
-	if(count == 0)
-		OLD_LoadTents();
-
 	if(tnt_PrintTotalLoad)
 		printf("Loaded %d Tents", count);
-}
-
-SaveTents()
-{
-	new count;
-
-	foreach(new i : tnt_Index)
-	{
-		if(SaveTent(i, tnt_PrintEachSave))
-			count++;
-	}
-
-	if(tnt_PrintTotalSave)
-		printf("Saved %d Tents", count);
-
-	new arr[1];
-
-	arr[0] = tnt_GEID_Index;
-
-	modio_push(GEID_FILE, _T<T,E,N,T>, 1, arr);//, true, false, false);
-	printf("Storing tent GEID: %d", tnt_GEID_Index);
 }
 
 
@@ -619,7 +567,7 @@ SaveTents()
 ==============================================================================*/
 
 
-SaveTent(tentid, printeach)
+SaveTent(tentid, active)
 {
 	if(tnt_Loading)
 		return 0;
@@ -627,14 +575,27 @@ SaveTent(tentid, printeach)
 	if(!Iter_Contains(itm_Index, tentid))
 		return 0;
 
-	if(printeach)
-		printf("\t[SAVE] Tent at %f, %f, %f", tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
+	if(active)
+	{
+		if(tnt_PrintEachSave)
+			printf("\t[SAVE] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
+	}
+	else
+	{
+		if(tnt_PrintEachSave)
+			printf("\t[DELT] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
+	}
 
 	new
 		filename[64],
+		head[1],
 		data[6];
 
 	format(filename, sizeof(filename), ""DIRECTORY_TENT"tent_%010d.dat", tnt_GEID[tentid]);
+
+	head[0] = active;
+
+	modio_push(filename, _T<H,E,A,D>, 1, head);
 
 	data[0] = _:tnt_Data[tentid][tnt_posX];
 	data[1] = _:tnt_Data[tentid][tnt_posY];
@@ -643,7 +604,7 @@ SaveTent(tentid, printeach)
 	data[4] = tnt_Data[tentid][tnt_world];
 	data[5] = tnt_Data[tentid][tnt_interior];
 
-	modio_push(filename, _T<W,P,O,S>, 6, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 6, data);
 
 	new
 		items[10],
@@ -658,7 +619,7 @@ SaveTent(tentid, printeach)
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, tnt_ItemList);
 
-	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), tnt_ItemList, true, true, true);
+	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), tnt_ItemList);
 
 	DestroyItemList(itemlist);
 
@@ -671,9 +632,18 @@ LoadTent(filename[])
 		length,
 		searchpos,
 		tentid,
+		head[1],
 		data[6];
 
-	length = modio_read(filename, _T<W,P,O,S>, _:data, false, false);
+	length = modio_read(filename, _T<H,E,A,D>, sizeof(tnt_ItemList), head);
+
+	if(length > 0)
+	{
+		if(head[0] == 0)
+			return 0;
+	}
+
+	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, false, false);
 
 	if(length == 0)
 		return 0;
@@ -691,7 +661,6 @@ LoadTent(filename[])
 
 	if(tnt_GEID[tentid] > tnt_GEID_Index)
 	{
-		printf("WARNING: Tent %d GEID (%d) is greater than GEID index (%d). Updating to %d to avoid GEID collision.", tentid, tnt_GEID[tentid], tnt_GEID_Index, tnt_GEID[tentid] + 1);
 		tnt_GEID_Index = tnt_GEID[tentid] + 1;
 	}
 
@@ -712,7 +681,7 @@ LoadTent(filename[])
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each tent.
-	length = modio_read(filename, _T<I,T,E,M>, tnt_ItemList, true);
+	length = modio_read(filename, _T<I,T,E,M>, sizeof(tnt_ItemList), tnt_ItemList, true);
 
 	itemlist = ExtractItemList(tnt_ItemList, length);
 
@@ -746,113 +715,6 @@ LoadTent(filename[])
 	}
 
 	DestroyItemList(itemlist);
-
-	return 1;
-}
-
-
-/*==============================================================================
-
-	Legacy format (Load only)
-
-==============================================================================*/
-
-
-enum
-{
-	TENT_CELL_ITEMTYPE,
-	TENT_CELL_EXDATA,
-	TENT_CELL_POSX,
-	TENT_CELL_POSY,
-	TENT_CELL_POSZ,
-	TENT_CELL_ROTZ,
-	TENT_CELL_END
-}
-
-OLD_LoadTents()
-{
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
-		item[46],
-		type,
-		filename[64],
-		count;
-
-	tnt_Loading = true;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			filename = DIRECTORY_TENT;
-			strcat(filename, item);
-
-			count += OLD_LoadTent(filename);
-		}
-	}
-
-	tnt_Loading = false;
-
-	dir_close(direc);
-
-	SaveTents();
-
-	if(tnt_PrintTotalLoad)
-		printf("Loaded %d Tents using old format", count);
-}
-
-OLD_LoadTent(filename[])
-{
-	if(!fexist(filename))
-		return 0;
-
-	new
-		File:file,
-		data[MAX_TENT_ITEMS * TENT_CELL_END],
-		tentid,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		idx,
-		itemid;
-
-	file = fopen(filename, io_read);
-
-	if(!file)
-		return 0;
-
-	fblockread(file, data, MAX_TENT_ITEMS * TENT_CELL_END);
-
-	sscanf(filename, "'"DIRECTORY_TENT"'p<_>dddd", _:x, _:y, _:z, _:r);
-
-	if(tnt_PrintEachLoad)
-		printf("\t[LOAD] [OLD] Tent at %f, %f, %f", x, y, z);
-
-	tentid = CreateTent(Float:x, Float:y, Float:z, Float:r, 0, 0);
-
-	while(idx < sizeof(data))
-	{
-		if(!IsValidItemType(ItemType:data[idx + TENT_CELL_ITEMTYPE]))
-			break;
-
-		itemid = CreateItem(ItemType:data[idx + TENT_CELL_ITEMTYPE],
-			Float:data[idx + TENT_CELL_POSX],
-			Float:data[idx + TENT_CELL_POSY],
-			Float:data[idx + TENT_CELL_POSZ],
-			.rz = Float:data[idx + TENT_CELL_ROTZ],
-			.zoffset = FLOOR_OFFSET);
-
-		if(!IsItemTypeExtraDataDependent(ItemType:data[idx + TENT_CELL_ITEMTYPE]))
-			SetItemExtraData(itemid, data[idx + TENT_CELL_EXDATA]);
-
-		AddItemToTentIndex(tentid, itemid);
-
-		idx += TENT_CELL_END;
-	}
-
-	fclose(file);
-	fremove(filename);
 
 	return 1;
 }
