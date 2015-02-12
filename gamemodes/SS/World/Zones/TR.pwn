@@ -21,9 +21,6 @@ hook OnGameModeInit()
 	TR_District_Sherman();
 	TR_District_RobadaGen();
 
-	CreateNewSprayTag(-2442.16992, 2299.22998, 5.71000,   0.00000, 0.00000, 270.00000);
-	CreateNewSprayTag(-2662.94995, 2121.43994, 2.14000,   0.00000, 0.00000, 180.00000);
-
 	DefineSupplyDropPos("Tierra Robada South", -720.72766, 972.52899, 11.04721);
 	DefineSupplyDropPos("Tierra Robada Midland", -1484.86084, 1977.28833, 46.76990);
 	DefineSupplyDropPos("Tierra Robada North Freeway", -2547.67798, 2614.91919, 59.90747);

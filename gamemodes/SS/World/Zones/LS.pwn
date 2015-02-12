@@ -35,12 +35,6 @@ hook OnGameModeInit()
 	LS_District_City2();
 	LS_District_City3();
 
-	CreateNewSprayTag(1118.51100, -1540.14001, 23.66000,   0.00000, 0.00000, 178.46001);
-	CreateNewSprayTag(1172.88086, -1313.05103, 14.24630,   10.00000, 0.00000, 180.00000);
-	CreateNewSprayTag(1202.10999, -1201.55005, 20.47000,   0.00000, 0.00000, 90.00000);
-	CreateNewSprayTag(1237.39001, -1631.59998, 28.02000,   0.00000, 0.00000, 91.00000);
-	CreateNewSprayTag(1264.15002, -1270.28003, 14.26000,   0.00000, 0.00000, 270.00000);
-
 	DefineSupplyDropPos("Los Santos Docks", 2760.28491, -2443.92456, 12.47645);
 	DefineSupplyDropPos("Los Santos Airport", 2092.42188, -2219.47021, 12.50092);
 	DefineSupplyDropPos("Los Santos Verdant Bluffs", 1134.69092, -2037.15295, 67.97311);
