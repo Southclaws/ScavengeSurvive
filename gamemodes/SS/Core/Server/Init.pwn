@@ -881,16 +881,16 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_GasCan,		1);
 	SetItemTypeMaxArrayData(item_Clothes,		1);
 	SetItemTypeMaxArrayData(item_HelmArmy,		1);
-	SetItemTypeMaxArrayData(item_MediumBox,		2);
-	SetItemTypeMaxArrayData(item_SmallBox,		2);
-	SetItemTypeMaxArrayData(item_LargeBox,		2);
+	SetItemTypeMaxArrayData(item_MediumBox,		3);
+	SetItemTypeMaxArrayData(item_SmallBox,		3);
+	SetItemTypeMaxArrayData(item_LargeBox,		3);
 	SetItemTypeMaxArrayData(item_HockeyMask,	1);
 	SetItemTypeMaxArrayData(item_Meat,			3);
 	SetItemTypeMaxArrayData(item_DeadLeg,		1);
 	SetItemTypeMaxArrayData(item_Torso,			MAX_PLAYER_NAME + 128 + 2);
 	SetItemTypeMaxArrayData(item_LongPlank,		1);
 	SetItemTypeMaxArrayData(item_GreenGloop,	1);
-	SetItemTypeMaxArrayData(item_Capsule,		1);
+	SetItemTypeMaxArrayData(item_Capsule,		3);
 	SetItemTypeMaxArrayData(item_RadioPole,		1);
 	SetItemTypeMaxArrayData(item_SignShot,		1);
 	SetItemTypeMaxArrayData(item_Mailbox,		1);
@@ -1310,10 +1310,10 @@ public OnScriptInit()
 	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
 	drug_Heroin		= DefineDrugType("Heroin",		300000);
 
-	DefineSafeboxType("Medium Box",		item_MediumBox,		10);
-	DefineSafeboxType("Small Box",		item_SmallBox,		8);
-	DefineSafeboxType("Large Box",		item_LargeBox,		12);
-	DefineSafeboxType("Capsule",		item_Capsule,		2);
+	DefineSafeboxType(item_MediumBox,		10);
+	DefineSafeboxType(item_SmallBox,		8);
+	DefineSafeboxType(item_LargeBox,		12);
+	DefineSafeboxType(item_Capsule,		2);
 
 	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);

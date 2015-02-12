@@ -9,9 +9,15 @@
 
 enum E_SAFEBOX_TYPE_DATA
 {
-			box_name[MAX_SAFEBOX_NAME],
 ItemType:	box_itemtype,
 			box_size
+}
+
+enum
+{
+			E_BOX_LEGACY_NULL,
+			E_BOX_CONTAINER_ID,
+			E_BOX_GEID
 }
 
 
@@ -21,7 +27,6 @@ static
 			box_SkipGEID,
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
-Iterator:	box_Index<ITM_MAX>,
 			box_ItemTypeBoxType[ITM_MAX_TYPES] = {-1, ...},
 			box_ContainerSafebox[CNT_MAX];
 
@@ -38,7 +43,6 @@ static
 bool:		box_PrintEachLoad,
 bool:		box_PrintTotalLoad,
 bool:		box_PrintEachSave,
-bool:		box_PrintEachRuntimeSave,
 bool:		box_PrintTotalSave,
 bool:		box_PrintRemoves;
 
@@ -62,24 +66,16 @@ hook OnScriptInit()
 		for(;;){}
 	}
 
-	new arr[1];
-
-	modio_read(GEID_FILE, _T<S,B,O,X>, arr);
-
-	box_GEID_Index = arr[0];
-	printf("Loaded safebox GEID: %d", box_GEID_Index);
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX);
 
 	for(new i; i < CNT_MAX; i++)
 		box_ContainerSafebox[i] = INVALID_ITEM_ID;
 
-	HANDLER = debug_register_handler("safebox");
+	HANDLER = debug_register_handler("safebox", 4);
 
 	GetSettingInt("safebox/print-each-load", false, box_PrintEachLoad);
 	GetSettingInt("safebox/print-total-load", true, box_PrintTotalLoad);
 	GetSettingInt("safebox/print-each-save", false, box_PrintEachSave);
-	GetSettingInt("safebox/print-each-runtime-save", false, box_PrintEachRuntimeSave);
 	GetSettingInt("safebox/print-total-save", true, box_PrintTotalSave);
 	GetSettingInt("safebox/print-removes", false, box_PrintRemoves);
 }
@@ -90,14 +86,6 @@ hook OnGameModeInit()
 
 	LoadSafeBoxes();
 }
-
-hook OnScriptExit()
-{
-	print("\n[OnScriptExit] Shutting down 'SafeBox'...");
-
-	SaveSafeBoxes();
-}
-
 
 hook OnPlayerConnect(playerid)
 {
@@ -112,14 +100,13 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineSafeboxType(name[MAX_SAFEBOX_NAME], ItemType:itemtype, size)
+DefineSafeboxType(ItemType:itemtype, size)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
 
 	SetItemTypeMaxArrayData(itemtype, 2);
 
-	box_TypeData[box_TypeTotal][box_name]		= name;
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;
 
@@ -144,25 +131,25 @@ public OnItemCreate(itemid)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
-			new containerid;
+			new
+				name[ITM_MAX_NAME],
+				containerid;
 
-			containerid = CreateContainer(
-				box_TypeData[box_ItemTypeBoxType[itemtype]][box_name],
-				box_TypeData[box_ItemTypeBoxType[itemtype]][box_size],
-				.virtual = 1);
+			GetItemTypeName(itemtype, name);
+
+			containerid = CreateContainer(name, box_TypeData[box_ItemTypeBoxType[itemtype]][box_size], .virtual = 1);
 
 			box_ContainerSafebox[containerid] = itemid;
-
-			SetItemArrayDataSize(itemid, 2);
-			SetItemArrayDataAtCell(itemid, containerid, 1);
-			Iter_Add(box_Index, itemid);
 
 			if(!box_SkipGEID)
 			{
 				box_GEID[itemid] = box_GEID_Index;
 				box_GEID_Index++;
-				// printf("Safebox GEID Index: %d", box_GEID_Index);
 			}
+
+			SetItemArrayDataSize(itemid, 3);
+			SetItemArrayDataAtCell(itemid, containerid, E_BOX_CONTAINER_ID);
+			SetItemArrayDataAtCell(itemid, box_GEID[itemid], E_BOX_GEID);
 		}
 	}
 
@@ -217,7 +204,7 @@ public OnItemDestroy(itemid)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
-			new containerid = GetItemArrayDataAtCell(itemid, 1);
+			new containerid = GetItemArrayDataAtCell(itemid, E_BOX_CONTAINER_ID);
 
 			DestroyContainer(containerid);
 			box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
@@ -271,33 +258,6 @@ public OnPlayerPickUpItem(playerid, itemid)
 	forward box_OnPlayerPickUpItem(playerid, itemid);
 #endif
 
-public OnPlayerDroppedItem(playerid, itemid)
-{
-	if(IsItemTypeSafebox(GetItemType(itemid)))
-	{
-		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
-		{
-			d:1:HANDLER("[OnPlayerDroppedItem] Player %p dropping and saving container %d (GEID: %d item %d)", playerid, GetItemArrayDataAtCell(itemid, 1), box_GEID[itemid], itemid);
-			SaveSafeboxItem(itemid, box_PrintEachRuntimeSave);
-		}
-	}
-
-	#if defined box_OnPlayerDroppedItem
-		return box_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem box_OnPlayerDroppedItem
-#if defined box_OnPlayerDroppedItem
-	forward box_OnPlayerDroppedItem(playerid, itemid);
-#endif
-
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
@@ -318,7 +278,6 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 #if defined box_OnPlayerUseItemWithItem
 	forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 #endif
-
 
 SafeBoxInteractionCheck(playerid, itemid)
 {
@@ -373,21 +332,54 @@ timer box_PickUp[250](playerid, itemid)
 	if(!IsItemInWorld(itemid))
 		return;
 
-	d:1:HANDLER("[box_PickUp] Player %p picked up container %d GEID: %d", playerid, itemid, box_GEID[itemid]);
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	d:1:HANDLER("[box_PickUp] Player %p picked up container %d GEID: %d at %f %f %f", playerid, itemid, box_GEID[itemid], x, y, z);
 
 	PlayerPickUpItem(playerid, itemid);
-
 	RemoveSafeboxItem(itemid);
+
+	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 
 	return;
 }
+
+public OnPlayerDroppedItem(playerid, itemid)
+{
+	if(IsItemTypeSafebox(GetItemType(itemid)))
+	{
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+		d:1:HANDLER("[OnPlayerDroppedItem] Player %p dropping and saving container %d (GEID: %d item %d) at %f %f %f", playerid, GetItemArrayDataAtCell(itemid, 1), box_GEID[itemid], itemid, x, y, z);
+
+		SafeboxSaveCheck(playerid, itemid);
+	}
+
+	#if defined box_OnPlayerDroppedItem
+		return box_OnPlayerDroppedItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerDroppedItem
+	#undef OnPlayerDroppedItem
+#else
+	#define _ALS_OnPlayerDroppedItem
+#endif
+#define OnPlayerDroppedItem box_OnPlayerDroppedItem
+#if defined box_OnPlayerDroppedItem
+	forward box_OnPlayerDroppedItem(playerid, itemid);
+#endif
 
 public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(box_CurrentBoxItem[playerid]))
 	{
-		d:1:HANDLER("[OnPlayerCloseContainer] Player %p closing and saving container %d (box GEID: %d, itemid: %d)", playerid, containerid, box_GEID[box_CurrentBoxItem[playerid]], box_CurrentBoxItem[playerid]);
-		SaveSafeboxItem(box_CurrentBoxItem[playerid], box_PrintEachRuntimeSave);
+		new Float:x, Float:y, Float:z;
+		GetPlayerPos(playerid, x, y, z);
+		d:1:HANDLER("[OnPlayerCloseContainer] Player %p closing and saving container %d (box GEID: %d, itemid: %d) at %f %f %f", playerid, containerid, box_GEID[box_CurrentBoxItem[playerid]], box_CurrentBoxItem[playerid], x, y, z);
+
+		SafeboxSaveCheck(playerid, box_CurrentBoxItem[playerid]);
 		ClearAnimations(playerid);
 		box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 	}
@@ -408,10 +400,39 @@ public OnPlayerCloseContainer(playerid, containerid)
 	forward box_OnPlayerCloseContainer(playerid, containerid);
 #endif
 
+SafeboxSaveCheck(playerid, itemid)
+{
+	new ret = SaveSafeboxItem(itemid);
+
+	if(ret == 0)
+	{
+		SetItemLabel(itemid, sprintf("SAVED (GEID: %d, itemid: %d)", box_GEID[itemid], itemid), 0xFFFF00FF, 2.0);
+	}
+	else
+	{
+		SetItemLabel(itemid, sprintf("NOT SAVED (GEID: %d, itemid: %d)", box_GEID[itemid], itemid), 0xFF0000FF, 2.0);
+
+		if(ret == 1)
+			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid item. (Please show Southclaw)", itemid, box_GEID[itemid]);
+
+		if(ret == 2)
+			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox. (Please show Southclaw)", itemid, box_GEID[itemid]);
+
+		if(ret == 3)
+			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item not in world. (Please show Southclaw)", itemid, box_GEID[itemid]);
+
+		if(ret == 4)
+			MsgF(playerid, YELLOW, "ERROR: Container is empty, removing file (GEID: %d itemid: %d) (If the container was NOT empty, please show Southclaw)", box_GEID[itemid], itemid);
+
+		if(ret == 5)
+			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid container (%d). (Please show Southclaw)", itemid, box_GEID[itemid], GetItemArrayDataAtCell(itemid, 1));
+	}
+}
+
 
 /*==============================================================================
 
-	Save and Load All
+	Load All
 
 ==============================================================================*/
 
@@ -438,34 +459,8 @@ LoadSafeBoxes()
 
 	dir_close(direc);
 
-	// If no safeboxes were loaded, load the old format
-	// This should only ever happen once (upon transition to this new version)
-	if(count == 0)
-		OLD_LoadSafeboxes();
-
 	if(box_PrintTotalLoad)
 		printf("Loaded %d Safeboxes", count);
-}
-
-SaveSafeBoxes()
-{
-	new count;
-
-	foreach(new i : box_Index)
-	{
-		if(SaveSafeboxItem(i, box_PrintEachSave) > 0)
-			count++;
-	}
-
-	if(box_PrintTotalSave)
-		printf("Saved %d Safeboxes", count);
-
-	new arr[1];
-
-	arr[0] = box_GEID_Index;
-
-	modio_push(GEID_FILE, _T<S,B,O,X>, 1, arr);//, true, false, false);
-	printf("Storing safebox GEID: %d", box_GEID_Index);
 }
 
 
@@ -476,27 +471,28 @@ SaveSafeBoxes()
 ==============================================================================*/
 
 
-SaveSafeboxItem(itemid, printeach)
+SaveSafeboxItem(itemid, active = 1)
 {
 	if(!IsValidItem(itemid))
 	{
 		printf("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Not valid item.", itemid, box_GEID[itemid]);
-		return 0;
+		return 1;
 	}
 
 	if(!IsItemTypeSafebox(GetItemType(itemid)))
 	{
-		printf("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox.", itemid, box_GEID[itemid]);
-		return 0;
+		printf("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox, type: %d", itemid, box_GEID[itemid], _:GetItemType(itemid));
+		return 2;
 	}
 
 	if(!IsItemInWorld(itemid))
 	{
 		d:1:HANDLER("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Item not in world.", itemid, box_GEID[itemid]);
-		return 0;
+		return 3;
 	}
 
 	new
+		type[2],
 		data[6],
 		containerid,
 		filename[64];
@@ -509,29 +505,38 @@ SaveSafeboxItem(itemid, printeach)
 	{
 		d:1:HANDLER("[SaveSafeboxItem] ERROR: Container is empty, removing file '%s' (GEID: %d itemid: %d)", filename, box_GEID[itemid], itemid);
 		fremove(filename);
-		return 0;
+		return 4;
 	}
 
 	if(!IsValidContainer(containerid))
 	{
 		printf("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Not valid container (%d).", itemid, box_GEID[itemid], containerid);
 		fremove(filename);
-		return 0;
+		return 5;
 	}
 
-	data[0] = _:GetItemType(itemid);
+	type[0] = _:GetItemType(itemid);
+	type[1] = active;
 
-	modio_push(filename, _T<T,Y,P,E>, 1, data, false, false, false);
+	modio_push(filename, _T<T,Y,P,E>, 2, type);
 
 	GetItemPos(itemid, Float:data[0], Float:data[1], Float:data[2]);
 	GetItemRot(itemid, Float:data[3], Float:data[3], Float:data[3]);
 	data[4] = GetItemWorld(itemid);
 	data[5] = GetItemInterior(itemid);
 
-	modio_push(filename, _T<W,P,O,S>, 6, data, false, false, false);
+	modio_push(filename, _T<W,P,O,S>, 6, data);
 
-	if(printeach)
-		printf("\t[SAVE] Safebox type %d at %f, %f, %f, %f", _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
+	if(active)
+	{
+		if(box_PrintEachSave)
+			printf("\t[SAVE] Safebox GEID %d, type %d at %f, %f, %f, %f", box_GEID[itemid], _:GetItemType(itemid), data[0], data[1], data[2], data[3]);
+	}
+	else
+	{
+		if(box_PrintRemoves)
+			printf("\t[DELT] Safebox: GEID %d itemid %d", box_GEID[itemid], itemid);
+	}
 
 	new
 		items[12],
@@ -551,48 +556,70 @@ SaveSafeboxItem(itemid, printeach)
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, box_ItemList);
 
-	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), box_ItemList, true);
+	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), box_ItemList);
 
 	DestroyItemList(itemlist);
 
-	return 1;
+	return 0;
 }
 
 LoadSafeboxItem(filename[])
 {
 	new
+		geid,
 		length,
-		type[1],
+		type[2],
 		data[6],
 		itemid,
 		containerid;
 
-	length = modio_read(filename, _T<T,Y,P,E>, type, false, false);
+	if(sscanf(filename, "'"DIRECTORY_SAFEBOX"box_'p<.>d{s[5]}", geid))
+	{
+		printf("[LoadSafeboxItem] ERROR: Rogue file detected ('%s') in safebox directory.", filename);
+		return 0;
+	}
+
+	length = modio_read(filename, _T<T,Y,P,E>, 2, type, false, false);
 
 	if(length == 0)
+	{
+		printf("[LoadSafeboxItem] ERROR: Safebox data length is 0 (file: %s)", filename);
 		return 0;
+	}
+
+	if(length == 2)
+	{
+		if(type[1] == 0)
+		{
+			d:1:HANDLER("[LoadSafeboxItem] ERROR: Safebox set to inactive (file: %s)", filename);
+			return 0;
+		}
+	}
 
 	if(!IsItemTypeSafebox(ItemType:type[0]))
+	{
+		printf("[LoadSafeboxItem] ERROR: Safebox type (%d) is invalid (file: %s)", type[0], filename);
 		return 0;
+	}
 
-	modio_read(filename, _T<W,P,O,S>, _:data, false, false);
+	modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, false, false);
 
 	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
+	{
+		printf("[LoadSafeboxItem] ERROR: Safebox position is %f %f %f (file: %s)", data[0], data[1], data[2], filename);
 		return 0;
+	}
 
 	box_SkipGEID = true;
 	itemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5], .zoffset = FLOOR_OFFSET);
 	box_SkipGEID = false;
 
+	box_GEID[itemid] = geid;
+
 	containerid = GetItemArrayDataAtCell(itemid, 1);
 
-	sscanf(filename, "'"DIRECTORY_SAFEBOX"box_'p<.>d{s[5]}", box_GEID[itemid]);
-
 	if(box_GEID[itemid] > box_GEID_Index)
-	{
-		printf("WARNING: Safebox %d GEID (%d) is greater than GEID index (%d). Updating index to avoid GEID collision.", itemid, box_GEID[itemid], box_GEID_Index);
 		box_GEID_Index = box_GEID[itemid] + 1;
-	}
 
 	if(box_PrintEachLoad)
 		printf("\t[LOAD] Safebox: GEID %d, type %d, at %f, %f, %f", box_GEID[itemid], type[0], data[0], data[1], data[2]);
@@ -601,7 +628,7 @@ LoadSafeboxItem(filename[])
 		ItemType:itemtype,
 		itemlist;
 
-	length = modio_read(filename, _T<I,T,E,M>, box_ItemList, true);
+	length = modio_read(filename, _T<I,T,E,M>, sizeof(box_ItemList), box_ItemList, true);
 
 	itemlist = ExtractItemList(box_ItemList, length);
 
@@ -635,111 +662,9 @@ RemoveSafeboxItem(itemid)
 {
 	new filename[64];
 
-	// TODO: Set box as "inactive" but don't remove it.
 	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"box_%010d.dat", box_GEID[itemid]);
-	fremove(filename);
 
-	if(box_PrintRemoves)
-		printf("\t[DELT] Safebox: GEID %d", box_GEID[itemid]);
-
-	return Iter_SafeRemove(box_Index, itemid, itemid);
-}
-
-
-/*==============================================================================
-
-	Legacy format (Load only)
-
-==============================================================================*/
-
-
-OLD_LoadSafeboxes()
-{
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_SAFEBOX),
-		item[46],
-		type,
-		filename[64],
-		count;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			filename = DIRECTORY_SAFEBOX;
-			strcat(filename, item);
-
-			count += OLD_LoadSafeboxItem(filename);
-		}
-	}
-
-	dir_close(direc);
-
-	SaveSafeBoxes();
-
-	if(box_PrintTotalLoad)
-		printf("Loaded %d Safeboxes using old format", count);
-}
-
-OLD_LoadSafeboxItem(filename[])
-{
-	new
-		File:file,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		containerid,
-		data[1 + (CNT_MAX_SLOTS * 2)],
-		itemid;
-
-	file = fopen(filename, io_read);
-
-	if(!file)
-	{
-		printf("ERROR: Safebox (OLD) '%s' unable to open file.", filename);
-		return 0;
-	}
-
-	sscanf(filename, "'"DIRECTORY_SAFEBOX"'p<_>dddd", _:x, _:y, _:z, _:r);
-
-	if(x == 0.0 && y == 0.0 && z == 0.0)
-	{
-		printf("ERROR: Safebox (OLD) '%s' position at null point.", filename);
-		fremove(filename);
-		return 0;
-	}
-
-	fblockread(file, data, sizeof(data));
-	fclose(file);
-
-	if(!IsItemTypeSafebox(ItemType:data[0]))
-	{
-		printf("ERROR: Safebox (OLD) '%s' type (%d) not valid safebox type.", filename, data[0]);
-		fremove(filename);
-		return 0;
-	}
-
-	itemid = CreateItem(ItemType:data[0], x, y, z, .rz = r, .zoffset = FLOOR_OFFSET);
-	containerid = GetItemArrayDataAtCell(itemid, 1);
-
-	if(box_PrintEachLoad)
-		printf("\t[LOAD] [OLD] Safebox type %d at %f, %f, %f", data[0], x, y, z);
-
-	for(new i = 1, j; j < CNT_MAX_SLOTS; i += 2, j++)
-	{
-		if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
-			break;
-
-		itemid = CreateItem(ItemType:data[i], 0.0, 0.0, 0.0);
-
-		if(!IsItemTypeExtraDataDependent(ItemType:data[i]))
-			SetItemExtraData(itemid, data[i + 1]);
-
-		AddItemToContainer(containerid, itemid);
-	}
-
-	fremove(filename);
+	SaveSafeboxItem(itemid, 0);
 
 	return 1;
 }
