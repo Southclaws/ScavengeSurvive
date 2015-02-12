@@ -459,7 +459,7 @@ public OnPlayerLoad(playerid, filename[])
 {
 	new data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
 
-	modio_read(filename, _T<W,N,D,S>, data);
+	modio_read(filename, _T<W,N,D,S>, sizeof(data), data);
 
 	Iter_Clear(wnd_Index[playerid]);
 	SetPlayerWoundDataFromArray(playerid, data);

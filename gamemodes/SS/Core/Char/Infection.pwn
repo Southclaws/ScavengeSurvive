@@ -99,7 +99,7 @@ public OnPlayerSave(playerid, filename[])
 
 public OnPlayerLoad(playerid, filename[])
 {
-	modio_read(filename, _T<I,N,F,C>, infect_InfectionIntensity[playerid]);
+	modio_read(filename, _T<I,N,F,C>, 2, infect_InfectionIntensity[playerid]);
 
 	#if defined infect_OnPlayerLoad
 		return infect_OnPlayerLoad(playerid, filename);

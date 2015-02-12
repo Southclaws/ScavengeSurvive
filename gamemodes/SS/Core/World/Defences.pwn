@@ -105,7 +105,7 @@ hook OnScriptInit()
 
 	new arr[1];
 
-	modio_read(GEID_FILE, _T<D,F,N,C>, arr);
+	modio_read(GEID_FILE, _T<D,F,N,C>, 1, arr);
 
 	def_GEID_Index = arr[0];
 	// printf("Loaded defence GEID: %d", def_GEID_Index);
@@ -1372,7 +1372,7 @@ LoadDefenceItem(filename[])
 		pos[6],
 		data[7];
 
-	length = modio_read(filename, _T<W,P,O,S>, _:pos, false, false);
+	length = modio_read(filename, _T<W,P,O,S>, sizeof(pos), _:pos, false, false);
 
 	if(length == 0)
 		return 0;
@@ -1383,7 +1383,7 @@ LoadDefenceItem(filename[])
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each Defence.
-	length = modio_read(filename, _T<D,A,T,A>, _:data, true);
+	length = modio_read(filename, _T<D,A,T,A>, sizeof(data), _:data, true);
 
 	if(data[DEFENCE_CELL_HITPOINTS] <= 0)
 		return 0;

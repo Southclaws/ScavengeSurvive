@@ -293,7 +293,7 @@ public OnPlayerLoad(playerid, filename[])
 
 	new data[1 + (MAX_DRUG_TYPE * 2)];
 
-	modio_read(filename, _T<D,R,U,G>, data);
+	modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
 
 	SetPlayerDrugsFromArray(playerid, data);
 

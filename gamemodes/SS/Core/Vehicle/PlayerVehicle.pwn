@@ -180,7 +180,7 @@ LoadPlayerVehicle(filename[], prints)
 	filepath = DIRECTORY_VEHICLE;
 	strcat(filepath, filename);
 
-	length = modio_read(filepath, _T<D,A,T,A>, data, false, false);
+	length = modio_read(filepath, _T<D,A,T,A>, sizeof(data), data, false, false);
 
 	if(length == 0)
 		return 0;
@@ -302,7 +302,7 @@ LoadPlayerVehicle(filename[], prints)
 
 	trunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
 
-	length = modio_read(filepath, _T<T,D,A,T>, data, false, false);
+	length = modio_read(filepath, _T<T,D,A,T>, sizeof(data), data, false, false);
 
 	if(length > 0)
 	{
@@ -348,7 +348,7 @@ LoadPlayerVehicle(filename[], prints)
 				itemid,
 				itemlist;
 
-			length = modio_read(filepath, _T<T,T,R,N>, vehicle_ItemList, false, false);
+			length = modio_read(filepath, _T<T,T,R,N>, sizeof(vehicle_ItemList), vehicle_ItemList, false, false);
 		
 			itemlist = ExtractItemList(vehicle_ItemList, length);
 			itemcount = GetItemListItemCount(itemlist);
@@ -391,7 +391,7 @@ LoadPlayerVehicle(filename[], prints)
 			itemid,
 			itemlist;
 
-		length = modio_read(filepath, _T<T,R,N,K>, vehicle_ItemList, true);
+		length = modio_read(filepath, _T<T,R,N,K>, sizeof(vehicle_ItemList), vehicle_ItemList, true);
 
 		itemlist = ExtractItemList(vehicle_ItemList, length);
 		itemcount = GetItemListItemCount(itemlist);

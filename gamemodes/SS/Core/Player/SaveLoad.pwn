@@ -262,7 +262,7 @@ LoadPlayerChar(playerid)
 
 	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
 
-	length = modio_read(filename, _T<C,H,A,R>, data);
+	length = modio_read(filename, _T<C,H,A,R>, sizeof(data), data);
 
 	if(length == 0)
 	{
@@ -395,7 +395,7 @@ LoadPlayerChar(playerid)
 	Held item
 */
 
-	length = modio_read(filename, _T<H,E,L,D>, data);
+	length = modio_read(filename, _T<H,E,L,D>, sizeof(data), data);
 
 	if(IsValidItemType(ItemType:data[0]) && length > 0)
 	{
@@ -413,7 +413,7 @@ LoadPlayerChar(playerid)
 
 	data[0] = -1;
 
-	length = modio_read(filename, _T<H,O,L,S>, data);
+	length = modio_read(filename, _T<H,O,L,S>, sizeof(data), data);
 
 	if(IsValidItemType(ItemType:data[0]) && length > 0)
 	{
@@ -429,7 +429,7 @@ LoadPlayerChar(playerid)
 	Inventory
 */
 
-	length = modio_read(filename, _T<I,N,V,0>, saveload_ItemList);
+	length = modio_read(filename, _T<I,N,V,0>, sizeof(saveload_ItemList), saveload_ItemList);
 
 	itemlist = ExtractItemList(saveload_ItemList, length);
 
@@ -466,7 +466,7 @@ LoadPlayerChar(playerid)
 	Bag
 */
 
-	length = modio_read(filename, _T<B,A,G,0>, saveload_ItemList);
+	length = modio_read(filename, _T<B,A,G,0>, sizeof(saveload_ItemList), saveload_ItemList);
 
 	itemlist = ExtractItemList(saveload_ItemList, length);
 
