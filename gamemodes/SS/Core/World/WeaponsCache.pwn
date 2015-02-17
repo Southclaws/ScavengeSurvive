@@ -117,8 +117,8 @@ WeaponsCacheDrop(Float:x, Float:y, Float:z)
 	wepc_CurrentPosZ = z;
 
 	FillContainerWithLoot(
-		CreateContainer("Supply Crate", 8, x, y - 0.5, z + 1.0),
-		4 + random(5), loot_Military);
+		CreateContainer("Supply Crate", 32, x, y - 0.5, z + 1.0),
+		22 + random(11), loot_MilWepCrate);
 
 	defer WeaponsCacheSignal(1, x, y, z);
 

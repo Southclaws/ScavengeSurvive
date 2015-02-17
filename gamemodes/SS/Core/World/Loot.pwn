@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_LOOT_INDEX			(12)
+#define MAX_LOOT_INDEX			(15)
 #define MAX_LOOT_INDEX_ITEMS	(256)
 #define MAX_LOOT_INDEX_NAME		(5)
 #define MAX_LOOT_SPAWN			(12683)

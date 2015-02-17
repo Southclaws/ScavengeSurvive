@@ -168,7 +168,11 @@ new
 	loot_CarPolice,
 	loot_CarMilitary,
 	loot_Survivor,
-	loot_SupplyCrate;
+	loot_FoodMedCrate,
+	loot_LowWepCrate,
+	loot_MilWepCrate,
+	loot_IndustCrate,
+	loot_OrdnanceCrate;
 
 // AMMO CALIBRES
 new
@@ -735,7 +739,7 @@ public OnScriptInit()
 	item_Note			= DefineItemType("Note",				"Note",				2953,	1,	0.0, 0.0, 0.0,			0.0,	0.083999, 0.022000, -0.013000,  -82.300018, -14.900006, -83.200042, false, 0xCAFFFFFF);
 	item_Tomato			= DefineItemType("Tomato",				"Tomato",			3105,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 // 200
-	item_HeartShapedBox	= DefineItemType("Heart box",			"HeartShapedBox",	1240,	1,	0.0, 0.0, 0.0,			0.05,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_HeartShapedBox	= DefineItemType("Heart Shaped Box",	"HeartShapedBox",	1240,	1,	90.0, 0.0, 0.0,			-0.02,	0.171999, 0.077999, -0.016999,  0.000000, 0.000000, 10.200000);
 	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 
 
@@ -986,7 +990,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_SeedBag,		2);
 	SetItemTypeMaxArrayData(item_Note,			256);
 	SetItemTypeMaxArrayData(item_Tomato,		1);
-	SetItemTypeMaxArrayData(item_HeartShapedBox,1);
+	SetItemTypeMaxArrayData(item_HeartShapedBox,2);
 	SetItemTypeMaxArrayData(item_AntiSepBandage,1);
 
 
@@ -1177,7 +1181,7 @@ public OnScriptInit()
 	DefineItemTypeAmmo(item_AmmoHomeBuck,		"Improvised",		calibre_12g,	1.6,	0.4,	0.3,	14);
 	DefineItemTypeAmmo(item_Ammo556Tracer,		"Tracer",			calibre_556,	0.9,	1.1,	0.5,	30);
 	DefineItemTypeAmmo(item_Ammo556HP,			"Hollow Point",		calibre_556,	1.3,	1.6,	0.4,	30);
-	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	0.9,	1.1,	0.6,	10);
+	DefineItemTypeAmmo(item_Ammo357Tracer,		"Tracer",			calibre_357,	1.2,	1.1,	0.6,	10);
 	DefineItemTypeAmmo(item_Ammo762,			"FMJ",				calibre_762,	1.3,	1.1,	0.9,	30);
 	DefineItemTypeAmmo(item_Ammo50BMG,			"BMG",				calibre_50bmg,	1.8,	1.8,	1.0,	16);
 	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10);
@@ -1279,7 +1283,11 @@ public OnScriptInit()
 	loot_CarPolice		= DefineLootIndex("vpol");
 	loot_CarMilitary	= DefineLootIndex("vmil");
 	loot_Survivor		= DefineLootIndex("surv");
-	loot_SupplyCrate	= DefineLootIndex("supp");
+	loot_FoodMedCrate	= DefineLootIndex("scfm");
+	loot_LowWepCrate	= DefineLootIndex("sclw");
+	loot_MilWepCrate	= DefineLootIndex("scmw");
+	loot_IndustCrate	= DefineLootIndex("scin");
+	loot_OrdnanceCrate	= DefineLootIndex("scor");
 
 
 	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);
@@ -1313,7 +1321,7 @@ public OnScriptInit()
 	DefineSafeboxType(item_MediumBox,		10);
 	DefineSafeboxType(item_SmallBox,		8);
 	DefineSafeboxType(item_LargeBox,		12);
-	DefineSafeboxType(item_Capsule,		2);
+	DefineSafeboxType(item_Capsule,			2);
 
 	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
@@ -1322,6 +1330,13 @@ public OnScriptInit()
 	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
 	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
 	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
+	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+
+	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate, 600, 300);
+	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate, 1800, 1200);
+	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate, 3600, 1800);
+	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate, 1800, 600);
+	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate, 7200, 7200);
 
 	DefineSeedType("Tomato", item_Tomato, 4, 802, 0.72044); // small green wide bush
 /*

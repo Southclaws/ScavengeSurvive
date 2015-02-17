@@ -524,6 +524,7 @@ new stock
 #include "SS/Core/Item/note.pwn"
 #include "SS/Core/Item/SeedBag.pwn"
 #include "SS/Core/Item/PlantPot.pwn"
+#include "SS/Core/Item/HeartShapedBox.pwn"
 
 // GAME DATA LOADING
 #include "SS/Data/Loot.pwn"
