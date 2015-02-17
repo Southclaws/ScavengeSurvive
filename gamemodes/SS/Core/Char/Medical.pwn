@@ -218,7 +218,7 @@ public OnHoldActionFinish(playerid)
 					ShowActionText(playerid, "Your wound has become infected!", 5000);
 				}
 
-				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(med_HealTarget[playerid]), bleedrate);
 
 				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 
@@ -238,7 +238,7 @@ public OnHoldActionFinish(playerid)
 				bleedrate = (bleedrate < 0.00001) ? 0.0 : bleedrate;
 				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 
-				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(med_HealTarget[playerid]), bleedrate);
 			}
 
 			if(woundcount > 0)
@@ -291,7 +291,7 @@ public OnHoldActionFinish(playerid)
 				SetPlayerBleedRate(med_HealTarget[playerid], bleedrate);
 				DestroyItem(itemid);
 
-				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(playerid), bleedrate);
+				MsgF(playerid, YELLOW, "Reduced bleedrate from %f to %f", GetPlayerBleedRate(med_HealTarget[playerid]), bleedrate);
 			}
 
 			SetPlayerInfectionIntensity(playerid, 1, 0);
