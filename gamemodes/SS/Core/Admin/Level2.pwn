@@ -14,6 +14,7 @@ hook OnGameModeInit()
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banlist - show list of bans\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banned - check if banned\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/setmotd - set message of the day\n");
+	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/tpmenu - opens a teleport menu.\n");
 }
 
 
@@ -353,7 +354,7 @@ ACMD:setmotd[2](playerid, params[])
 	Teleport around the world menu ( Core : TMenuCore.pwn )
 
 ==============================================================================*/
-
+#include "../SS/Core/Admin/TMenuCore.pwn"
 ACMD:tpmenu[2](playerid, params[])
 {
 	new targetid,
