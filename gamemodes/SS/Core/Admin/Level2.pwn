@@ -347,3 +347,33 @@ ACMD:setmotd[2](playerid, params[])
 
 	return 1;
 }
+
+/*==============================================================================
+
+	Teleport around the world menu ( Core : TMenuCore.pwn )
+
+==============================================================================*/
+
+ACMD:tpmenu[2](playerid, params[])
+{
+	new targetid,
+ 		
+	if(!(IsPlayerOnAdminDuty(playerid)))
+		return 6;
+		
+	if(!sscanf(params, "r", targetid)) // if you trust a player and you don't have time to
+	{                                  // teleport yourself then /get.
+	    if (toplayerid != INVALID_PLAYER_ID){
+	    	strcat(name, params);
+	    	MsgF(playerid, YELLOW, ">  Teleport Menu Opened to: %P",targetid);
+	    	Msg(targetid, YELLOW, ">  Teleport Menu Opened.");
+			TMCShowDialog(targetid);
+			return 1;}
+		else{
+			SendClientMessage(playerid, 0xFF0000FF, "That player is not connected.");
+			return 1;}
+	}
+	
+	TMCShowDialog(playerid); // Teleport yourself then get player to you. ( /get )
+	return 1;
+}
