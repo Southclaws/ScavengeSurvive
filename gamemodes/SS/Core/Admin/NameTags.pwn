@@ -10,6 +10,7 @@ Text3D:	tags_NametagLOS[MAX_PLAYERS] = {Text3D:INVALID_3DTEXT_ID, ...};
 hook OnPlayerConnect(playerid)
 {
 	new
+		string[MAX_PLAYER_NAME + 6],
 		name[MAX_PLAYER_NAME],
 		players[MAX_PLAYERS],
 		maxplayers;
@@ -23,9 +24,10 @@ hook OnPlayerConnect(playerid)
 	}
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	format(string, sizeof(string), "(%d) %s", playerid, name);
 
-	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(name, YELLOW, 0.0, 0.0, 0.0, 6000.0, playerid, _, 0, 6000.0, _, _, players, 1, 1, maxplayers);
-	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[|                                   |]", BLUE, 0.0, 0.0, 0.0, 6000.0, playerid, _, 1, 6000.0, _, _, players, 1, 1, maxplayers);
+	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(string, YELLOW, 0.0, 0.0, 0.0, 6000.0, playerid, _, 0, 6000.0, _, _, players, 1, 1, maxplayers);
+	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[|                                           |]", BLUE, 0.0, 0.0, 0.0, 6000.0, playerid, _, 1, 6000.0, _, _, players, 1, 1, maxplayers);
 
 	return 1;
 }
