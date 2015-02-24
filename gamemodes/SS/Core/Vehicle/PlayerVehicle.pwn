@@ -440,6 +440,9 @@ LoadPlayerVehicle(filename[], prints)
 
 SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = true)
 {
+	if(GetVehicleVirtualWorld(vehicleid) > 0)
+		return 0;
+
 	UpdateVehicleOwner(vehicleid, name);
 	UpdateVehicleFile(vehicleid, prints);
 

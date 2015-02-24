@@ -7,7 +7,7 @@ Hook_HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 
 Hook_Debug_DestroyVehicle(vehicleid, source = -1)
 {
-	printf("DEBUG: DestroyVehicle called, Source: %d", source);
+	printf("DEBUG: DestroyVehicle %d called, Source: %d", vehicleid, source);
 	return DestroyVehicle(vehicleid);
 }
 #define DestroyVehicle Hook_Debug_DestroyVehicle
