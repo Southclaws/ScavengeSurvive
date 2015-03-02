@@ -13,7 +13,7 @@ TogglePlayerMute(playerid, bool:toggle, duration = -1)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	if(toggle)
+	if(toggle && duration != 0)
 	{
 		mute_Muted[playerid] = true;
 		mute_StartTick[playerid] = GetTickCount();
