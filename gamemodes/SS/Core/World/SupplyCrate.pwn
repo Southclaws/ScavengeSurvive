@@ -205,6 +205,7 @@ SupplyCrateLand()
 	}
 
 	new
+		containerid,
 		Float:a,
 		Float:x,
 		Float:y,
@@ -221,9 +222,10 @@ SupplyCrateLand()
 		}		
 	}
 
-	FillContainerWithLoot(
-		CreateContainer("Supply Crate", 48, sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0),
-		38 + random(11), sup_TypeData[sup_CurrentType][supt_loot]);
+	containerid = CreateContainer("Supply Crate", 48, sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0);
+
+	FillContainerWithLoot(containerid, 38 + random(11), sup_TypeData[sup_CurrentType][supt_loot]);
+	d:2:HANDLER("[SupplyCrateLand] Spawned %d items in supply crate container %d", 48 - GetContainerFreeSlots(containerid), containerid);
 
 	DestroyDynamicObject(sup_ObjPara);
 	sup_CurrentType = -1;

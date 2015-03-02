@@ -8,7 +8,7 @@ static
 
 public OnItemCreate(itemid)
 {
-	if(IsItemLoot(itemid))
+	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 		{

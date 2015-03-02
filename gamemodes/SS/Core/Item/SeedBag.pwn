@@ -44,7 +44,7 @@ public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_SeedBag)
 	{
-		if(IsItemLoot(itemid))
+		if(GetItemLootIndex(itemid) != -1)
 		{
 			SetItemArrayDataAtCell(itemid, random(5), E_SEED_BAG_AMOUNT, 1);
 			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, 1);

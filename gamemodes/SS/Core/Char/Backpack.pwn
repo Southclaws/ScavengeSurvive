@@ -294,7 +294,9 @@ public OnItemCreate(itemid)
 	{
 		d:2:HANDLER("[OnItemCreate] itemid:%d itemtype:%d bagtype:%d", itemid, _:GetItemType(itemid), bagtype);
 
-		new containerid;
+		new
+			containerid,
+			lootindex = GetItemLootIndex(itemid);
 
 		containerid = CreateContainer(
 			bag_TypeData[bagtype][bag_name],
@@ -306,6 +308,9 @@ public OnItemCreate(itemid)
 
 		SetItemArrayDataSize(itemid, 2);
 		SetItemArrayDataAtCell(itemid, containerid, 1);
+
+		if(lootindex != -1)
+			FillContainerWithLoot(containerid, random(bag_TypeData[bagtype][bag_size] - 1) + 1, lootindex);
 	}
 
 	#if defined bag_OnItemCreate

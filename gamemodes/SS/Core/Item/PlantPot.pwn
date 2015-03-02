@@ -274,7 +274,7 @@ public OnItemCreateInWorld(itemid)
 	{
 		if(gServerInitialising)
 		{
-			if(IsItemLoot(itemid))
+			if(GetItemLootIndex(itemid) != -1)
 			{
 				new potdata[e_plant_pot_data];
 

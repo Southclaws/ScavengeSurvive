@@ -73,7 +73,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Civilian,		item_Pumpkin,						10.0);
 	AddItemToLootIndex(loot_Civilian,		item_Daypack,						38.0);
 	AddItemToLootIndex(loot_Civilian,		item_MediumBag,						14.0);
-	AddItemToLootIndex(loot_Civilian,		item_Rucksack,						5.0);
+	AddItemToLootIndex(loot_Civilian,		item_Rucksack,						1.0);
 	AddItemToLootIndex(loot_Civilian,		item_Note,							45.0);
 	AddItemToLootIndex(loot_Civilian,		item_HeartShapedBox,				5.0);
 
@@ -266,7 +266,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarIndustrial,	item_ShipDoor,						1.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_RustyDoor,						5.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_MetalStand,					2.0);
-	AddItemToLootIndex(loot_CarIndustrial,	item_RustyMetal,					5.0);
+//	AddItemToLootIndex(loot_CarIndustrial,	item_RustyMetal,					5.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_WoodPanel,						2.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Keypad,						10.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_TruckCap,						70.0);
@@ -397,27 +397,27 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_LowWepCrate,	item_AmmoHomeBuck,					40.0);
 	AddItemToLootIndex(loot_LowWepCrate,	item_Ammo357Tracer,					15.0);
 
-	AddItemToLootIndex(loot_MilWepCrate,	item_M9Pistol,						40.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_M9PistolSD,					20.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Spas12,						10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_MP5,							30.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_M16Rifle,						30.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_SemiAutoRifle,					25.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_SniperRifle,					20.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_RocketLauncher,				10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Flamer,						0.05);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Minigun,						0.01);
-	AddItemToLootIndex(loot_MilWepCrate,	item_AK47Rifle,						10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_M77RMRifle,					20.0);	
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo556,						24.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo556Tracer,					10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo357,						22.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo357Tracer,					10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_AmmoRocket,					10.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_AmmoFlechette,					26.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo762,						14.0);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo50BMG,						0.05);
-	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo308,						12.5);
+	AddItemToLootIndex(loot_MilWepCrate,	item_M9Pistol,						40.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_M9PistolSD,					20.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Spas12,						10.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_MP5,							30.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_M16Rifle,						30.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_SemiAutoRifle,					25.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_SniperRifle,					03.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_RocketLauncher,				10.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Flamer,						0.05, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Minigun,						0.01, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_AK47Rifle,						10.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_M77RMRifle,					08.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo556,						24.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo556Tracer,					10.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo357,						22.0, 3);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo357Tracer,					10.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_AmmoRocket,					10.0, 1);
+	AddItemToLootIndex(loot_MilWepCrate,	item_AmmoFlechette,					26.0, 3);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo762,						14.0, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo50BMG,						0.05, 2);
+	AddItemToLootIndex(loot_MilWepCrate,	item_Ammo308,						12.5, 3);
 
 	AddItemToLootIndex(loot_IndustCrate,	item_Chainsaw,						10.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_Battery,						30.0);
@@ -434,7 +434,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_IndustCrate,	item_ShipDoor,						10.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_RustyDoor,						35.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_MetalStand,					20.0);
-	AddItemToLootIndex(loot_IndustCrate,	item_RustyMetal,					10.0);
+//	AddItemToLootIndex(loot_IndustCrate,	item_RustyMetal,					10.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_WoodPanel,						20.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_Keypad,						10.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_Motor,							25.0);

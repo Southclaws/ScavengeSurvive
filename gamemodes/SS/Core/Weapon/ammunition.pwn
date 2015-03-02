@@ -122,7 +122,7 @@ ammunition_NameRenderHandler(itemid, ItemType:itemtype)
 
 public OnItemCreate(itemid)
 {
-	if(IsItemLoot(itemid))
+	if(GetItemLootIndex(itemid) != -1)
 	{
 		new ammotype = GetItemTypeAmmoType(GetItemType(itemid));
 

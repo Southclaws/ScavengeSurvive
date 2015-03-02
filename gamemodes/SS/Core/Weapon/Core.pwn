@@ -596,7 +596,9 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 
 public OnItemCreate(itemid)
 {
-	if(IsItemLoot(itemid))
+	new lootindex = GetItemLootIndex(itemid);
+
+	if(lootindex != -1)
 	{
 		new ItemType:itemtype = GetItemType(itemid);
 
@@ -613,8 +615,34 @@ public OnItemCreate(itemid)
 
 				if(ammotypes > 0)
 				{
-					SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]));
-					SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
+					if(lootindex == loot_Civilian || lootindex == loot_CarCivilian || lootindex == loot_Survivor)
+					{
+						SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]));
+						SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
+					}
+					else if(lootindex == loot_Police || lootindex == loot_Military || lootindex == loot_CarPolice || lootindex == loot_CarMilitary || lootindex == loot_LowWepCrate || lootindex == loot_MilWepCrate)
+					{
+						switch(random(100))
+						{
+							case 00..29: // spawn empty
+							{
+								SetItemWeaponItemMagAmmo(itemid, 0);
+								SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
+							}
+
+							case 30..49: // spawn with random ammo
+							{
+								SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize] + 1) - 1);
+								SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
+							}
+
+							case 50..99: // spawn full
+							{
+								SetItemWeaponItemMagAmmo(itemid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
+								SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
+							}
+						}
+					}
 				}
 			}
 		}
@@ -1155,6 +1183,9 @@ stock GetItemWeaponItemMagAmmo(itemid)
 stock SetItemWeaponItemMagAmmo(itemid, amount)
 {
 	d:3:HANDLER("SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
+
+	if(amount == 0)
+		SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_MAG);

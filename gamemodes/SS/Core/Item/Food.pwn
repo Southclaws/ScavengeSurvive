@@ -72,7 +72,7 @@ DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfe
 
 public OnItemCreate(itemid)
 {
-	if(IsItemLoot(itemid))
+	if(GetItemLootIndex(itemid) != -1)
 	{
 		new foodtype = GetItemTypeFoodType(GetItemType(itemid));
 

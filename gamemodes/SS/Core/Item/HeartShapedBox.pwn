@@ -10,7 +10,7 @@ public OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_HeartShapedBox)
 	{
-		if(IsItemLoot(itemid))
+		if(GetItemLootIndex(itemid) != -1)
 		{
 			new containerid = GetItemArrayDataAtCell(itemid, 1);
 

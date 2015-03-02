@@ -15,7 +15,7 @@ hook OnPlayerConnect(playerid)
 
 public OnItemCreate(itemid)
 {
-	if(IsItemLoot(itemid))
+	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_DoctorBag)
 		{

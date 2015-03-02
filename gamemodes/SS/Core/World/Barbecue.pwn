@@ -45,7 +45,7 @@ public OnItemCreate(itemid)
 
 		new data[7];
 
-		if(IsItemLoot(itemid))
+		if(GetItemLootIndex(itemid) != -1)
 		{
 			data[bbq_fuel] = random(10);
 		}
