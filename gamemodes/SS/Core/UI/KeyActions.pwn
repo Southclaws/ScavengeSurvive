@@ -1,5 +1,11 @@
 ptask ToolTipUpdate[1000](playerid)
 {
+	if(!IsPlayerSpawned(playerid))
+	{
+		HidePlayerToolTip(playerid);
+		return;		
+	}
+
 	if(IsPlayerViewingInventory(playerid))
 	{
 		HidePlayerToolTip(playerid);

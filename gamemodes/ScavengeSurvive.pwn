@@ -674,7 +674,15 @@ task RestartUpdate[1000]()
 			new str[36];
 			format(str, 36, "Server Restarting In:~n~%02d:%02d", (gServerMaxUptime - gServerUptime) / 60, (gServerMaxUptime - gServerUptime) % 60);
 			TextDrawSetString(RestartCount, str);
-			TextDrawShowForAll(RestartCount);
+
+			foreach(new i : Player)
+			{
+				if(GetPlayerBitFlag(i, ShowHUD))
+					TextDrawShowForPlayer(i, RestartCount);
+
+				else
+					TextDrawHideForPlayer(i, RestartCount);
+			}
 		}
 
 		gServerUptime++;

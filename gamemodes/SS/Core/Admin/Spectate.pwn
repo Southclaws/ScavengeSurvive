@@ -187,6 +187,12 @@ timer UpdateSpectateMode[100](playerid)
 		return;
 	}
 
+	if(GetPlayerBitFlag(playerid, ShowHUD))
+	{
+		PlayerTextDrawHide(playerid, spec_Info);
+		return;
+	}
+
 	if(IsPlayerInAnyVehicle(targetid))
 	{
 		new
