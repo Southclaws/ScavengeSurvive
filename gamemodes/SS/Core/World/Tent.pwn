@@ -635,15 +635,18 @@ LoadTent(filename[])
 		head[1],
 		data[6];
 
-	length = modio_read(filename, _T<H,E,A,D>, sizeof(tnt_ItemList), head);
+	length = modio_read(filename, _T<H,E,A,D>, sizeof(tnt_ItemList), head, .autoclose = false);
 
 	if(length > 0)
 	{
 		if(head[0] == 0)
+		{
+			modio_finalise_read(modio_getsession_read(filename));
 			return 0;
+		}
 	}
 
-	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, false, false);
+	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, .autoclose = false);
 
 	if(length == 0)
 		return 0;
@@ -681,7 +684,7 @@ LoadTent(filename[])
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
 	// ensures that a new session isn't registered for each tent.
-	length = modio_read(filename, _T<I,T,E,M>, sizeof(tnt_ItemList), tnt_ItemList, true);
+	length = modio_read(filename, _T<I,T,E,M>, sizeof(tnt_ItemList), tnt_ItemList, .forceclose = true);
 
 	itemlist = ExtractItemList(tnt_ItemList, length);
 
