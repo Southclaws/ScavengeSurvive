@@ -133,7 +133,6 @@ public OnGameModeInit()
 #include <SIF\extensions\Craft>
 #include <SIF\extensions\DebugLabels>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
-#include <Balloon>					// By Southclaw:			https://github.com/Southclaw/Balloon
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
 #include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
 #include <Ladder>					// By Southclaw:			https://github.com/Southclaw/Ladder

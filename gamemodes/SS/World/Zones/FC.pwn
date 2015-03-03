@@ -5,8 +5,6 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'World/FC'...");
 
-	CreateBalloon(-2237.60, -1711.45, 479.88, 0.0, 1529.81, -1358.07, 328.37, 0.0);
-
 	CreateFuelOutlet(-2246.7031, -2559.7109, 31.0625, 2.0, 100.0, frandom(50.0));
 	CreateFuelOutlet(-2241.7188, -2562.2891, 31.0625, 2.0, 100.0, frandom(50.0));
 
