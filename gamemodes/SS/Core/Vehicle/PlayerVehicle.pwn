@@ -4,10 +4,6 @@
 // Directory for storing player-saved vehicles
 #define DIRECTORY_VEHICLE			DIRECTORY_MAIN"Vehicle/"
 
-// Old directories for conversion
-#define DIRECTORY_VEHICLE_DAT		DIRECTORY_MAIN"VehicleDat/"
-#define DIRECTORY_VEHICLE_INV		DIRECTORY_MAIN"VehicleInv/"
-
 
 static
 		vehicle_ItemList[ITM_LST_OF_ITEMS(64)];
@@ -36,7 +32,9 @@ enum
 
 
 static
-		pveh_Owner[MAX_VEHICLES][MAX_PLAYER_NAME];
+		pveh_Owner[MAX_VEHICLES][MAX_PLAYER_NAME],
+		pveh_OwnerPlayer[MAX_VEHICLES] = {INVALID_PLAYER_ID, ...},
+		pveh_PlayerVehicle[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...};
 
 static
 bool:	veh_PrintEach = true,
@@ -52,7 +50,7 @@ hook OnScriptInit()
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 
-	//GetSettingInt("player-vehicle/print-each", false, veh_PrintEach);
+	//GetSettingInt("player-vehicle/print-each", true, veh_PrintEach);
 	//GetSettingInt("player-vehicle/print-total", true, veh_PrintTotal);
 
 	HANDLER = debug_register_handler("vehicle/playervehicle");
@@ -65,60 +63,46 @@ hook OnGameModeInit()
 	LoadPlayerVehicles();
 }
 
-hook OnScriptExit()
+hook OnPlayerConnect(playerid)
 {
-	print("\n[OnScriptExit] Shutting down 'Vehicle/PlayerVehicle'...");
+	new name[MAX_PLAYER_NAME];
 
-	SavePlayerVehicles();
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	foreach(new i : veh_Index)
+	{
+		if(isnull(pveh_Owner[i]))
+			continue;
+
+		if(!strcmp(pveh_Owner[i], name, true))
+		{
+			pveh_PlayerVehicle[playerid] = i;
+			pveh_OwnerPlayer[i] = playerid;
+			return 1;
+		}
+	}
+
+	pveh_PlayerVehicle[playerid] = INVALID_VEHICLE_ID;
+
+	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
+	{
+		pveh_OwnerPlayer[pveh_PlayerVehicle[playerid]] = INVALID_PLAYER_ID;
+		pveh_PlayerVehicle[playerid] = INVALID_VEHICLE_ID;
+	}
 }
 
 
 /*==============================================================================
 
-	Save and Load (all)
+	Loading
 
 ==============================================================================*/
 
-
-SavePlayerVehicles()
-{
-	new
-		count,
-		owner[MAX_PLAYER_NAME];
-
-	for(new i = 1; i < MAX_VEHICLES; i++)
-	{
-		owner[0] = EOS;
-		GetVehicleOwner(i, owner);
-
-		if(strlen(owner) >= 3)
-		{
-			if(!IsValidVehicle(i))
-			{
-				if(veh_PrintEach)
-					logf("ERROR: Saving vehicle ID %d for %s. Invalid vehicle ID", i, owner);
-
-				RemoveVehicleFile(owner, veh_PrintEach);
-				continue;
-			}
-
-			if(IsVehicleDead(i))
-			{
-				if(veh_PrintEach)
-					logf("ERROR: Saving vehicle ID %d for %s. Vehicle is dead.", i, owner);
-
-				RemoveVehicleFile(owner, veh_PrintEach);
-				continue;
-			}
-
-			UpdateVehicleFile(i, veh_PrintEach);
-			count++;
-		}
-	}
-
-	if(veh_PrintTotal)
-		logf("Saved %d Player vehicles", count);
-}
 
 LoadPlayerVehicles()
 {
@@ -145,16 +129,11 @@ LoadPlayerVehicles()
 				continue;
 			}
 
-			LoadPlayerVehicle(item, veh_PrintEach);
+			LoadPlayerVehicle(item);
 		}
 	}
 
 	dir_close(direc);
-
-	// If no vehicles were loaded, load the old format
-	// This should only ever happen once (upon transition to this new version)
-	if(Iter_Count(veh_Index) == 0 && dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT))
-		OLD_LoadPlayerVehicles();
 
 	if(veh_PrintTotal)
 		logf("Loaded %d Player vehicles", Iter_Count(veh_Index));
@@ -170,7 +149,7 @@ LoadPlayerVehicles()
 ==============================================================================*/
 
 
-LoadPlayerVehicle(filename[], prints)
+LoadPlayerVehicle(filename[])
 {
 	new
 		filepath[64],
@@ -281,7 +260,7 @@ LoadPlayerVehicle(filename[], prints)
 		Float:data[VEH_CELL_POSZ],
 		Float:data[VEH_CELL_ROTZ]);
 
-	SetVehicleOwner(vehicleid, owner);
+	_SetVehicleOwner(vehicleid, owner);
 
 	Iter_Add(veh_Index, vehicleid);
 
@@ -376,7 +355,7 @@ LoadPlayerVehicle(filename[], prints)
 			DestroyItemList(itemlist);
 		}
 
-		if(prints)
+		if(veh_PrintEach)
 			logf("\t[LOAD] Trailer %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f", trailerid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 	}
 
@@ -424,66 +403,8 @@ LoadPlayerVehicle(filename[], prints)
 		DestroyItemList(itemlist);
 	}
 
-	if(prints)
+	if(veh_PrintEach)
 		logf("\t[LOAD] Vehicle %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
-
-	return 1;
-}
-
-
-/*==============================================================================
-
-	Save vehicle for a specific name
-
-==============================================================================*/
-
-
-SavePlayerVehicle(vehicleid, name[MAX_PLAYER_NAME], prints = true)
-{
-	if(GetVehicleVirtualWorld(vehicleid) > 0)
-		return 0;
-
-	UpdateVehicleOwner(vehicleid, name);
-	UpdateVehicleFile(vehicleid, prints);
-
-	return 1;
-}
-
-UpdateVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	new lastvehicleid;
-
-	for(lastvehicleid = 1; lastvehicleid < MAX_VEHICLES; lastvehicleid++)
-	{
-		if(lastvehicleid == vehicleid)
-		{
-			if(isnull(pveh_Owner[lastvehicleid]))
-				continue;
-
-			if(!strcmp(pveh_Owner[lastvehicleid], name))
-				return 1;
-
-			else
-				continue;
-		}
-
-		if(isnull(pveh_Owner[lastvehicleid]))
-			continue;
-
-		if(!strcmp(pveh_Owner[lastvehicleid], name))
-			pveh_Owner[lastvehicleid][0] = EOS;
-	}
-
-	if(!isnull(pveh_Owner[vehicleid]))
-	{
-		if(strcmp(pveh_Owner[vehicleid], name))
-			RemoveVehicleFileByID(vehicleid, prints);
-	}
-
-	pveh_Owner[vehicleid] = name;
 
 	return 1;
 }
@@ -496,7 +417,7 @@ UpdateVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], prints = false)
 ==============================================================================*/
 
 
-UpdateVehicleFile(vehicleid, prints = false)
+_SaveVehicle(vehicleid)
 {
 	if(isnull(pveh_Owner[vehicleid]))
 	{
@@ -533,10 +454,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 	if(!IsVehicleOccupied(vehicleid))
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
 
-	// push the data, forcewrite is false
-	// forceclose is also false, the file will be closed on the next call
-	// autowrite is set to false to stop the timer from going off
-	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data, false, false, false);
+	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data);
 
 	// Now do trailers with the same modio parameters
 
@@ -557,7 +475,7 @@ UpdateVehicleFile(vehicleid, prints = false)
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(trailerid);
 
 		// TDAT = Trailer Data
-		modio_push(filename, _T<T,D,A,T>, VEH_CELL_END, data, false, false, false);
+		modio_push(filename, _T<T,D,A,T>, VEH_CELL_END, data);
 
 		new itemcount;
 
@@ -581,14 +499,14 @@ UpdateVehicleFile(vehicleid, prints = false)
 			GetItemList(itemlist, vehicle_ItemList);
 
 			// TTRN = Trailer Trunk
-			modio_push(filename, _T<T,T,R,N>, GetItemListSize(itemlist), vehicle_ItemList, false, false, false);
+			modio_push(filename, _T<T,T,R,N>, GetItemListSize(itemlist), vehicle_ItemList);
 
 			DestroyItemList(itemlist);
 		}
 
 		GetVehicleTypeName(GetVehicleType(trailerid), vehiclename);
 
-		if(prints)
+		if(veh_PrintEach)
 		{
 			logf("[SAVE] Trailer %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f",
 				trailerid,
@@ -628,14 +546,11 @@ UpdateVehicleFile(vehicleid, prints = false)
 	itemlist = CreateItemList(items, itemcount);
 	GetItemList(itemlist, vehicle_ItemList);
 
-	// forcewrite is true, and forceclose is true by default.
-	// File will be written and closed ready for the next call.
-	// Resulting in reusing modio sessions instead of registering new ones.
-	modio_push(filename, _T<T,R,N,K>, GetItemListSize(itemlist), vehicle_ItemList, true, true);
+	modio_push(filename, _T<T,R,N,K>, GetItemListSize(itemlist), vehicle_ItemList);
 
 	DestroyItemList(itemlist);
 
-	if(prints)
+	if(veh_PrintEach)
 	{
 		logf("[SAVE] Vehicle %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f",
 			vehicleid,
@@ -651,21 +566,203 @@ UpdateVehicleFile(vehicleid, prints = false)
 	return 1;
 }
 
-RemoveVehicleFileByID(vehicleid, prints = true)
+
+/*==============================================================================
+
+	Internal functions and hooks
+
+==============================================================================*/
+
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(oldstate == PLAYER_STATE_DRIVER)
+		_PlayerExitVehicle(playerid, GetPlayerLastVehicle(playerid));
+
+	return 1;
+}
+
+_PlayerExitVehicle(playerid, vehicleid)
+{
+	printf("[_PlayerExitVehicle] %d %d", playerid, vehicleid);
+	if(IsPlayerOnAdminDuty(playerid))
+		return;
+
+	if(GetTickCountDifference(GetPlayerVehicleEnterTick(playerid), GetTickCount()) < 1000)
+		return;
+
+	new vehiclename[MAX_VEHICLE_TYPE_NAME];
+	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
+
+	_UpdatePlayerVehicle(playerid, vehicleid);
+
+	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+
+	return;
+}
+/*
+_SetVehicleOwnerPlayer(vehicleid, playerid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	_SetVehicleOwnerName(vehicleid, name, true);
+	pveh_OwnerPlayer[vehicleid] = playerid;
+	pveh_PlayerVehicle[playerid] = vehicleid;
+
+	return 1;
+}
+*/
+_SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
+{
+	printf("[_SetVehicleOwner] %d '%s' %d", vehicleid, name, playerid);
+
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	if(isnull(name))
+		return 0;
+
+	if(IsPlayerConnected(playerid))
+	{
+		pveh_PlayerVehicle[playerid] = vehicleid;
+		pveh_OwnerPlayer[vehicleid] = playerid;
+	}
+	else
+	{
+		pveh_OwnerPlayer[vehicleid] = INVALID_PLAYER_ID;
+	}
+
+	pveh_Owner[vehicleid][0] = EOS;
+	strcat(pveh_Owner[vehicleid], name, MAX_PLAYER_NAME);
+
+	return 1;
+}
+
+_RemoveVehicleOwner(vehicleid)
+{
+	printf("[_RemoveVehicleOwner] %d", vehicleid);
+
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	pveh_Owner[vehicleid][0] = EOS;
+	pveh_OwnerPlayer[vehicleid] = INVALID_PLAYER_ID;
+
+	return 1;
+}
+
+/*
+	Makes playerid the owner of vehicleid
+	If playerid owned a vehicle beforehand, it is removed
+	If vehicleid already has an owner, it is assigned to playerid's old vehicle
+	Saves changes made to any vehicles in context
+*/
+_UpdatePlayerVehicle(playerid, vehicleid)
+{
+	printf("[_UpdatePlayerVehicle] %d %d", playerid, vehicleid);
+
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	if(isnull(pveh_Owner[vehicleid]))
+	{
+		// Vehicle has no owner, assign player as owner
+		// Set owner of player's old vehicle to null
+		printf("Vehicle %d owner is null", vehicleid);
+
+		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
+		{
+			printf("Player vehicle is %d, removing", pveh_PlayerVehicle[playerid]);
+			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
+		}
+
+		_SetVehicleOwner(vehicleid, name, playerid);
+		_SaveVehicle(vehicleid);
+	}
+	else
+	{
+		// Vehicle has an owner
+		printf("Vehicle %d owner is not null: '%s'", vehicleid, pveh_Owner[vehicleid]);
+		if(pveh_PlayerVehicle[playerid] == vehicleid)
+		{
+			// Vehicle's owner is the player, do nothing but save it
+			print("This vehicle belongs to the player in context");
+			_SaveVehicle(vehicleid);
+		}
+		else
+		{
+			// Vehicle's owner is not the player, check if the player already
+			// owns a vehicle
+			print("This vehicle does not belong to the player in context, swapping");
+
+			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
+			{
+				// Player owns a vehicle
+				printf("Player in context already owns a vehicle (%d) swapping owners", pveh_PlayerVehicle[playerid]);
+
+				// pveh_PlayerVehicle[playerid] = player's previous vehicle
+				// vehicleid = new vehicle
+
+				new
+					oldvehicleid,
+					oldownername[MAX_PLAYER_NAME],
+					oldplayerid = INVALID_PLAYER_ID;
+
+				oldvehicleid = pveh_PlayerVehicle[playerid];
+				strcat(oldownername, pveh_Owner[vehicleid]);
+				oldplayerid = pveh_OwnerPlayer[vehicleid];
+
+				_SetVehicleOwner(vehicleid, name, playerid);
+				_SetVehicleOwner(oldvehicleid, oldownername, oldplayerid);
+				_SaveVehicle(vehicleid);
+				_SaveVehicle(oldvehicleid);
+			}
+			else
+			{
+				// Player does not own a vehicle
+				// Remove the original owner's name from it
+				// Assign the player as the new owner and save the vehicle
+				printf("Player in context does not own a vehicle, saving this one");
+				_RemoveVehicleFileByID(vehicleid);
+				_SetVehicleOwner(vehicleid, name, playerid);
+				_SaveVehicle(vehicleid);
+			}
+		}
+	}
+
+	return 1;
+}
+
+_RemoveVehicleFileByID(vehicleid)
 {
 	new owner[MAX_PLAYER_NAME];
 
 	GetVehicleOwner(vehicleid, owner);
 
-	return RemoveVehicleFile(owner, prints);
+	return _RemoveVehicleFile(owner);
 }
 
-RemoveVehicleFile(owner[MAX_PLAYER_NAME], prints = true)
+_RemoveVehicleFile(owner[MAX_PLAYER_NAME])
 {
 	if(isnull(owner))
 		return 0;
 
-	if(prints)
+	if(veh_PrintEach)
 		logf("[DELT] Removing player vehicle. Owner: %s", owner);
 
 	new filename[MAX_PLAYER_NAME + 22];
@@ -679,200 +776,24 @@ RemoveVehicleFile(owner[MAX_PLAYER_NAME], prints = true)
 
 /*==============================================================================
 
-	Legacy format (Load only)
-
-==============================================================================*/
-
-
-OLD_LoadPlayerVehicles()
-{
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT),
-		item[28],
-		type;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			OLD_LoadPlayerVehicle(item, veh_PrintEach);
-		}
-	}
-
-	dir_close(direc);
-
-	dir_delete(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_DAT);
-	dir_delete(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE_INV);
-
-	SavePlayerVehicles();
-
-	if(veh_PrintTotal)
-		printf("Loaded %d Player vehicles (old format)", Iter_Count(veh_Index));
-
-	return 1;
-}
-
-OLD_LoadPlayerVehicle(filename[], prints)
-{
-	new
-		File:file,
-		filedir[64],
-		vehicleid,
-		category,
-		vehiclename[MAX_VEHICLE_TYPE_NAME],
-		trunksize,
-		owner[MAX_PLAYER_NAME],
-		containerid,
-		array_data[VEH_CELL_END],
-		array_inv[CNT_MAX_SLOTS * 3],
-		itemid;
-
-	filedir = DIRECTORY_VEHICLE_DAT;
-	strcat(filedir, filename);
-
-	if(strlen(filename) < 3)
-	{
-		fremove(filedir);
-		return 0;
-	}
-
-	file = fopen(filedir, io_read);
-
-	if(!file)
-		return 0;
-
-	fblockread(file, array_data, sizeof(array_data));
-	fclose(file);
-
-	if(!(400 <= array_data[VEH_CELL_TYPE] <= 612))
-	{
-		printf("ERROR: Removing Vehicle file: %s. Invalid model ID %d.", filename, array_data[VEH_CELL_TYPE]);
-		fremove(filedir);
-		return 0;
-	}
-
-	GetVehicleTypeName(array_data[VEH_CELL_TYPE], vehiclename);
-
-	if(Float:array_data[VEH_CELL_HEALTH] < 255.5)
-	{
-		printf("ERROR: Removing Vehicle %s file: %s due to low health.", vehiclename, filename);
-		fremove(filedir);
-		return 0;
-	}
-
-	category = GetVehicleTypeCategory(array_data[VEH_CELL_TYPE]);
-
-	if(category != VEHICLE_CATEGORY_BOAT)
-	{
-		if(!IsPointInMapBounds(Float:array_data[VEH_CELL_POSX], Float:array_data[VEH_CELL_POSY], Float:array_data[VEH_CELL_POSZ]))
-		{
-			if(category == VEHICLE_CATEGORY_HELICOPTER || category == VEHICLE_CATEGORY_PLANE)
-			{
-				array_data[VEH_CELL_POSZ] = _:(Float:array_data[VEH_CELL_POSZ] + 10.0);
-			}
-			else
-			{
-				printf("ERROR: Removing Vehicle %s file: %s because it's out of the map bounds.", vehiclename, filename);
-				fremove(filedir);
-
-				return 0;
-			}
-		}
-	}
-
-	strmid(owner, filename, 0, strlen(filename) - 4);
-
-	if(strlen(owner) < 3)
-	{
-		printf("ERROR: Vehicle owner name is invalid: '%s' Length: %d", owner, strlen(owner));
-		DestroyVehicle(vehicleid, 1);
-		fremove(filedir);
-		return 0;
-	}
-
-	vehicleid = CreateWorldVehicle(
-		array_data[VEH_CELL_TYPE],
-		Float:array_data[VEH_CELL_POSX],
-		Float:array_data[VEH_CELL_POSY],
-		Float:array_data[VEH_CELL_POSZ],
-		Float:array_data[VEH_CELL_ROTZ],
-		array_data[VEH_CELL_COL1],
-		array_data[VEH_CELL_COL2]);
-
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	SetVehicleSpawnPoint(vehicleid,
-		Float:array_data[VEH_CELL_POSX],
-		Float:array_data[VEH_CELL_POSY],
-		Float:array_data[VEH_CELL_POSZ],
-		Float:array_data[VEH_CELL_ROTZ]);
-
-	pveh_Owner[vehicleid] = owner;
-
-	if(prints)
-		printf("\t[LOAD] [OLD] Vehicle %d (%s): %s for %s at %.2f, %.2f, %.2f", vehicleid, array_data[VEH_CELL_LOCKED] ? ("L") : ("U"), vehiclename, owner, array_data[VEH_CELL_POSX], array_data[VEH_CELL_POSY], array_data[VEH_CELL_POSZ], array_data[VEH_CELL_ROTZ]);
-
-	Iter_Add(veh_Index, vehicleid);
-
-	if(Float:array_data[VEH_CELL_HEALTH] > 990.0)
-		array_data[VEH_CELL_HEALTH] = _:990.0;
-
-	SetVehicleHP(vehicleid, Float:array_data[VEH_CELL_HEALTH]);
-	SetVehicleFuel(vehicleid, Float:array_data[VEH_CELL_FUEL]);
-	SetVehicleDamageData(vehicleid, array_data[VEH_CELL_PANELS], array_data[VEH_CELL_DOORS], array_data[VEH_CELL_LIGHTS], array_data[VEH_CELL_TIRES]);
-	SetVehicleColours(vehicleid, array_data[VEH_CELL_COL1], array_data[VEH_CELL_COL2]);
-	SetVehicleKey(vehicleid, array_data[VEH_CELL_KEY]);
-
-	SetVehicleExternalLock(vehicleid, array_data[VEH_CELL_LOCKED]);
-
-	trunksize = GetVehicleTypeTrunkSize(array_data[VEH_CELL_TYPE]);
-
-	if(trunksize > 0)
-	{
-		filedir = DIRECTORY_VEHICLE_INV;
-		strcat(filedir, filename);
-
-		file = fopen(filedir, io_read);
-
-		if(!file)
-		{
-			printf("ERROR: Vehicle inventory file for '%s' is missing!", filedir);
-			return 0;
-		}
-
-		fblockread(file, array_inv, sizeof(array_inv));
-		fclose(file);
-
-		for(new i, j; j < CNT_MAX_SLOTS; i += 3, j++)
-		{
-			if(!IsValidItemType(ItemType:array_inv[i]) || array_inv[i] == 0)
-				continue;
-
-			itemid = CreateItem(ItemType:array_inv[i], 0.0, 0.0, 0.0);
-
-			if(array_inv[i + 1] == 1)
-			{
-				if(!IsItemTypeSafebox(ItemType:array_inv[i]) && !IsItemTypeBag(ItemType:array_inv[i]))
-				{
-					SetItemExtraData(itemid, array_inv[i + 2]);
-				}
-
-				AddItemToContainer(containerid, itemid);
-			}
-		}
-	}
-
-	return 1;
-}
-
-
-/*==============================================================================
-
 	Interface
 
 ==============================================================================*/
 
+
+stock SaveVehicle(vehicleid)
+{
+	_SaveVehicle(vehicleid);
+
+	return 1;
+}
+
+stock UpdatePlayerVehicle(playerid, vehicleid)
+{
+	_UpdatePlayerVehicle(playerid, vehicleid);
+
+	return 1;
+}
 
 stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 {
@@ -884,12 +805,12 @@ stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 	return 1;
 }
 
-stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
+stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
-	if(!IsValidVehicle(vehicleid))
-		return 0;
+	return _SetVehicleOwner(vehicleid, name, playerid);
+}
 
-	pveh_Owner[vehicleid] = name;
-
-	return 1;
+stock RemoveVehicleFileByID(vehicleid)
+{
+	return _RemoveVehicleFileByID(vehicleid);
 }

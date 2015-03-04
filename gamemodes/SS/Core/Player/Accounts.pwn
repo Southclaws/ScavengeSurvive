@@ -619,7 +619,7 @@ Logout(playerid, docombatlogcheck = 1)
 				}
 			}
 
-			UpdateVehicleFile(vehicleid);
+			UpdatePlayerVehicle(playerid, vehicleid);
 		}
 	}
 
