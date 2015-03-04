@@ -6,12 +6,13 @@
 #define PLAYER_DAT_FILE(%0,%1)		format(%1, MAX_PLAYER_FILE, PLAYER_DATA_FILE, %0)
 #define CHARACTER_DATA_FILE_VERSION	(10)
 #define SAVELOAD_DEBUG				(0)
+#define MAX_BAG_CONTAINER_SIZE		(14)
 
 
 static
 	saveload_Loaded[MAX_PLAYERS],
 	saveload_Debug[MAX_PLAYERS] = {SAVELOAD_DEBUG, ...},
-	saveload_ItemList[ITM_LST_OF_ITEMS(14)];
+	saveload_ItemList[ITM_LST_OF_ITEMS(MAX_BAG_CONTAINER_SIZE)];
 
 
 enum
@@ -75,7 +76,7 @@ SavePlayerChar(playerid)
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		animidx = GetPlayerAnimationIndex(playerid),
 		itemid,
-		items[14],
+		items[MAX_BAG_CONTAINER_SIZE],
 		itemcount,
 		itemlist;
 
@@ -221,7 +222,7 @@ SavePlayerChar(playerid)
 	{
 		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
-		for(new i, j = GetContainerSize(containerid); i < j; i++)
+		for(new i, j = GetContainerSize(containerid); i < j && i < MAX_BAG_CONTAINER_SIZE; i++)
 		{
 			items[i] = GetContainerSlotItem(containerid, i);
 
@@ -514,7 +515,7 @@ LoadPlayerChar(playerid)
 enum
 {
 	INV_CELL_ITEMS[INV_MAX_SLOTS * 3],
-	INV_CELL_BAGITEMS[14 * 3],
+	INV_CELL_BAGITEMS[MAX_BAG_CONTAINER_SIZE * 3],
 	INV_CELL_END
 }
 

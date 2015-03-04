@@ -114,6 +114,7 @@ public OnGameModeInit()
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
+#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 
 #define time ctime_time
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
@@ -581,6 +582,7 @@ OnGameModeInit_Setup()
 {
 	print("\n[OnGameModeInit_Setup] Setting up...");
 
+	Streamer_ToggleErrorCallback(true);
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
@@ -718,4 +720,9 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 		// It won't function correctly with bad databases anyway.
 		for(;;){}
 	}
+}
+
+public Streamer_OnPluginError()
+{
+	PrintAmxBacktrace();
 }
