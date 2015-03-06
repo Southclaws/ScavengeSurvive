@@ -345,6 +345,27 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 	return count;
 }
 
+public OnItemDestroy(itemid)
+{
+	loot_ItemLootIndex[itemid] = -1;
+
+	#if defined loot_OnItemDestroy
+		return loot_OnItemDestroy(itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnItemDestroy
+	#undef OnItemDestroy
+#else
+	#define _ALS_OnItemDestroy
+#endif
+ 
+#define OnItemDestroy loot_OnItemDestroy
+#if defined loot_OnItemDestroy
+	forward loot_OnItemDestroy(itemid);
+#endif
+
 
 /*==============================================================================
 

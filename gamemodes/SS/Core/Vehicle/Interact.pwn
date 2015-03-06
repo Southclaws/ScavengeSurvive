@@ -147,6 +147,12 @@ _vint_EnterArea(playerid, areaid)
 		return;
 	}
 
+	if(!IsValidDynamicArea(areaid))
+	{
+		d:1:HANDLER("[_vint_EnterArea] Invalid area ID (%d)", areaid);
+		return;
+	}
+
 	if(Iter_Count(varea_NearIndex[playerid]) == MAX_VEHICLES_IN_RANGE)
 	{
 		d:1:HANDLER("[_vint_EnterArea] Player already in maximum amount of vehicle areas");
@@ -202,6 +208,12 @@ _vint_LeaveArea(playerid, areaid)
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		d:1:HANDLER("[_vint_LeaveArea] Player in vehicle");
+		return;
+	}
+
+	if(!IsValidDynamicArea(areaid))
+	{
+		d:1:HANDLER("[_vint_LeaveArea] Invalid area ID (%d)", areaid);
 		return;
 	}
 
