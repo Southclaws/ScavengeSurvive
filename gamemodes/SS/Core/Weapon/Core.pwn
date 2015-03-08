@@ -1185,7 +1185,10 @@ stock SetItemWeaponItemMagAmmo(itemid, amount)
 	d:3:HANDLER("SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
 
 	if(amount == 0)
-		SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
+	{
+		if(GetItemWeaponItemReserve(itemid) == 0)
+			SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
+	}
 
 	SetItemArrayDataSize(itemid, 4);
 	return SetItemArrayDataAtCell(itemid, amount, WEAPON_ITEM_ARRAY_CELL_MAG);
