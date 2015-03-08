@@ -267,3 +267,10 @@ ACMD:players[4](playerid, params[])
 
 	return 1;
 }
+
+ACMD:profile[2](playerid, params[])
+{
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, params, GetPlayerInfo(params), "Close");
+
+	return 1;
+}

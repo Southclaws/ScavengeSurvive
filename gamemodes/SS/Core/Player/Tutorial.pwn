@@ -2,6 +2,10 @@
 
 
 static
+PlayerText:	TutUI_Keys				[MAX_PLAYERS],
+PlayerText:	TutUI_Watch				[MAX_PLAYERS],
+PlayerText:	TutUI_Stats				[MAX_PLAYERS],
+PlayerText:	TutUI_Exit				[MAX_PLAYERS],
 PlayerText:	ClassButtonTutorial		[MAX_PLAYERS],
 bool:		PlayerInTutorial		[MAX_PLAYERS],
 			PlayerTutorialWorld		[MAX_PLAYERS],
@@ -20,21 +24,6 @@ forward OnPlayerHolsteredItem(playerid, itemid);
 hook OnGameModeInit()
 {
 	HANDLER = debug_register_handler("tutorial", 0);
-
-	CreateDynamicObject(6959, 0.00000, 0.00000, -20.00000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, 8.06020, -0.00030, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -4.90600, 0.00000, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -0.26566, 14.42851, -18.28000,   0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19456, 3.21220, -4.90600, -18.28000,   0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19456, -4.90600, -9.81200, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -1.50600, -9.81200, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19393, -3.21110, -4.90600, -18.28000,   0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(19393, -3.21110, -14.00600, -18.28000,   0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(1498, -3.99050, -14.01290, -20.03010,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, -4.90600, 9.63400, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, 8.06330, 9.63260, -18.28000,   0.00000, 0.00000, 0.00000);
-	CreateDynamicObject(19456, 9.36560, 14.42880, -18.28000,   0.00000, 0.00000, 90.00000);
-	CreateDynamicObject(6959, 0.00000, 0.00000, -16.51838,   0.00000, 0.00000, 0.00000);
 }
 
 public OnPlayerLoadAccount(playerid)
@@ -105,8 +94,57 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		PlayerTutorialWorld[playerid] = TutorialWorld;
 		TutorialWorld++;
 
-		SetPlayerPos(playerid, -3.17802, -12.89518, -19.03157);
-		SetPlayerFacingAngle(playerid, 0.0);
+		TutUI_Keys[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 140.000000, "This tells you ~>~ what keys to press");
+		PlayerTextDrawBackgroundColor	(playerid, TutUI_Keys[playerid], 255);
+		PlayerTextDrawFont				(playerid, TutUI_Keys[playerid], 1);
+		PlayerTextDrawLetterSize		(playerid, TutUI_Keys[playerid], 0.300000, 1.500000);
+		PlayerTextDrawColor				(playerid, TutUI_Keys[playerid], -1);
+		PlayerTextDrawSetOutline		(playerid, TutUI_Keys[playerid], 0);
+		PlayerTextDrawSetProportional	(playerid, TutUI_Keys[playerid], 1);
+		PlayerTextDrawSetShadow			(playerid, TutUI_Keys[playerid], 1);
+		PlayerTextDrawUseBox			(playerid, TutUI_Keys[playerid], 1);
+		PlayerTextDrawBoxColor			(playerid, TutUI_Keys[playerid], 100);
+		PlayerTextDrawTextSize			(playerid, TutUI_Keys[playerid], 480.000000, 0.000000);
+
+		TutUI_Watch[playerid]			=CreatePlayerTextDraw(playerid, 83.000000, 250.000000, "This is your watch.~n~It shows your facing angle,~n~current time of day,~n~and chat radio frequency.~n~~d~");
+		PlayerTextDrawAlignment			(playerid, TutUI_Watch[playerid], 2);
+		PlayerTextDrawBackgroundColor	(playerid, TutUI_Watch[playerid], 255);
+		PlayerTextDrawFont				(playerid, TutUI_Watch[playerid], 1);
+		PlayerTextDrawLetterSize		(playerid, TutUI_Watch[playerid], 0.300000, 1.500000);
+		PlayerTextDrawColor				(playerid, TutUI_Watch[playerid], -1);
+		PlayerTextDrawSetOutline		(playerid, TutUI_Watch[playerid], 0);
+		PlayerTextDrawSetProportional	(playerid, TutUI_Watch[playerid], 1);
+		PlayerTextDrawSetShadow			(playerid, TutUI_Watch[playerid], 1);
+		PlayerTextDrawUseBox			(playerid, TutUI_Watch[playerid], 1);
+		PlayerTextDrawBoxColor			(playerid, TutUI_Watch[playerid], 100);
+		PlayerTextDrawTextSize			(playerid, TutUI_Watch[playerid], 0.000000, 150.000000);
+
+		TutUI_Stats[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 20.000000, "This shows your ~>~ health, armour, ammo and energy");
+		PlayerTextDrawBackgroundColor	(playerid, TutUI_Stats[playerid], 255);
+		PlayerTextDrawFont				(playerid, TutUI_Stats[playerid], 1);
+		PlayerTextDrawLetterSize		(playerid, TutUI_Stats[playerid], 0.300000, 1.500000);
+		PlayerTextDrawColor				(playerid, TutUI_Stats[playerid], -1);
+		PlayerTextDrawSetOutline		(playerid, TutUI_Stats[playerid], 0);
+		PlayerTextDrawSetProportional	(playerid, TutUI_Stats[playerid], 1);
+		PlayerTextDrawSetShadow			(playerid, TutUI_Stats[playerid], 1);
+		PlayerTextDrawUseBox			(playerid, TutUI_Stats[playerid], 1);
+		PlayerTextDrawBoxColor			(playerid, TutUI_Stats[playerid], 100);
+		PlayerTextDrawTextSize			(playerid, TutUI_Stats[playerid], 480.000000, 0.000000);
+
+		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, "To exit the tutorial, type /exit. If you can only see the tutorial button:~n~~n~This server uses an anti-cheat program. To play, you must download this from ~y~ac.scavengesurvive.com then you can play unrestricted.");
+		PlayerTextDrawBackgroundColor	(playerid, TutUI_Exit[playerid], 255);
+		PlayerTextDrawFont				(playerid, TutUI_Exit[playerid], 1);
+		PlayerTextDrawLetterSize		(playerid, TutUI_Exit[playerid], 0.300000, 1.500000);
+		PlayerTextDrawColor				(playerid, TutUI_Exit[playerid], -1);
+		PlayerTextDrawSetOutline		(playerid, TutUI_Exit[playerid], 0);
+		PlayerTextDrawSetProportional	(playerid, TutUI_Exit[playerid], 1);
+		PlayerTextDrawSetShadow			(playerid, TutUI_Exit[playerid], 1);
+		PlayerTextDrawUseBox			(playerid, TutUI_Exit[playerid], 1);
+		PlayerTextDrawBoxColor			(playerid, TutUI_Exit[playerid], 100);
+		PlayerTextDrawTextSize			(playerid, TutUI_Exit[playerid], 630.000000, 0.000000);
+
+		SetPlayerPos(playerid, 1078.36194, 2139.40771, 10.64758);
+		SetPlayerFacingAngle(playerid, 180.0);
 		SetPlayerVirtualWorld(playerid, PlayerTutorialWorld[playerid]);
 
 		switch(random(14))
@@ -149,9 +187,13 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		ShowHelpTip(playerid, "Welcome to the tutorial! Look around and try things. Help messages will appear here! Type /exit to leave the tutorial.");
 		PlayerInTutorial[playerid] = true;
 
-		CreateItem(item_Satchel, -3.15328, -6.40267, -19.9447, _, _, _, FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		ToggleTutorialUI(playerid, true);
 
-		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 3.6560, 9.9606, -19.1121, 137.5200, -1, -1, PlayerTutorialWorld[playerid]);
+		new itemid;
+
+		CreateItem(item_Satchel, 1078.70325, 2132.96069, 9.85179, _, _, _, FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+
+		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 1075.4344, 2121.3606, 10.7901, 355.6799, -1, -1, PlayerTutorialWorld[playerid]);
 		SetVehicleHealth(PlayerTutorialVehicle[playerid], 321.9);
 		SetVehicleFuel(PlayerTutorialVehicle[playerid], frandom(1.0));
 		FillContainerWithLoot(GetVehicleContainer(PlayerTutorialVehicle[playerid]), 5, loot_Civilian);
@@ -159,15 +201,15 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 			encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
 			encode_doors(random(5), random(5), random(5), random(5)),
 			encode_lights(random(2), random(2), random(2), random(2)),
-			encode_tires(random(2), random(2), random(2), random(2)) );
+			encode_tires(0, 1, 1, 0) );
 
-		CreateItem(item_Wrench, -3.43313, 12.14963, -20.03342, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Screwdriver, -3.31169, 10.41365, -20.03261, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Hammer, -2.27567, 10.21404, -20.03267, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wrench, 1077.57263, 2125.35938, 9.85153, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Screwdriver, 1076.52942, 2125.82959, 9.85156, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Hammer, 1074.94214, 2126.51489, 9.85160, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
 
-		CreateItem(item_Wheel, 1.45441, 12.21830, -20.03421, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Wheel, 0.53707, 11.79060, -20.03381, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		new itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wheel, 1073.59448, 2127.05786, 9.85164, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wheel, 1073.4965, 2125.6582, 9.8516, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
 		SetItemExtraData(itemid, 10);
 	}
 }
@@ -198,7 +240,27 @@ ExitTutorial(playerid)
 	DestroyWorldVehicle(PlayerTutorialVehicle[playerid]);
 	PlayerTutorialVehicle[playerid] = INVALID_VEHICLE_ID;
 
+	ToggleTutorialUI(playerid, false);
+
 	return 1;
+}
+
+ToggleTutorialUI(playerid, toggle)
+{
+	if(toggle)
+	{
+		PlayerTextDrawShow(playerid, TutUI_Keys[playerid]);
+		PlayerTextDrawShow(playerid, TutUI_Watch[playerid]);
+		PlayerTextDrawShow(playerid, TutUI_Stats[playerid]);
+		PlayerTextDrawShow(playerid, TutUI_Exit[playerid]);
+	}
+	else
+	{
+		PlayerTextDrawHide(playerid, TutUI_Keys[playerid]);
+		PlayerTextDrawHide(playerid, TutUI_Watch[playerid]);
+		PlayerTextDrawHide(playerid, TutUI_Stats[playerid]);
+		PlayerTextDrawHide(playerid, TutUI_Exit[playerid]);
+	}
 }
 
 
@@ -236,6 +298,8 @@ public OnPlayerOpenInventory(playerid)
 {
 	if(PlayerInTutorial[playerid])
 	{
+		ToggleTutorialUI(playerid, false);
+
 		ShowHelpTip(playerid, "This is your character inventory also known as your pockets. This is not your bag.");
 	}
 
@@ -249,9 +313,11 @@ public OnPlayerOpenInventory(playerid)
 
 public OnPlayerOpenContainer(playerid, containerid)
 {
-	if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+	if(PlayerInTutorial[playerid])
 	{
-		if(PlayerInTutorial[playerid])
+		ToggleTutorialUI(playerid, false);
+
+		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 		{
 			ShowHelpTip(playerid, "This is your bag. Bags are extra storage. There are many different types of bags with different sizes.");
 		}
@@ -264,6 +330,49 @@ public OnPlayerOpenContainer(playerid, containerid)
 	#endif
 }
 
+public OnPlayerCloseInventory(playerid)
+{
+	if(PlayerInTutorial[playerid])
+		ToggleTutorialUI(playerid, true);
+
+	#if defined tut_OnPlayerCloseInventory
+		return tut_OnPlayerCloseInventory(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerCloseInventory
+	#undef OnPlayerCloseInventory
+#else
+	#define _ALS_OnPlayerCloseInventory
+#endif
+ 
+#define OnPlayerCloseInventory tut_OnPlayerCloseInventory
+#if defined tut_OnPlayerCloseInventory
+	forward tut_OnPlayerCloseInventory(playerid);
+#endif
+
+public OnPlayerCloseContainer(playerid, containerid)
+{
+	if(PlayerInTutorial[playerid])
+		ToggleTutorialUI(playerid, true);
+
+	#if defined tut_OnPlayerCloseContainer
+		return tut_OnPlayerCloseContainer(playerid, containerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerCloseContainer
+	#undef OnPlayerCloseContainer
+#else
+	#define _ALS_OnPlayerCloseContainer
+#endif
+ 
+#define OnPlayerCloseContainer tut_OnPlayerCloseContainer
+#if defined tut_OnPlayerCloseContainer
+	forward tut_OnPlayerCloseContainer(playerid, containerid);
+#endif
 
 public OnPlayerViewContainerOpt(playerid, containerid)
 {
