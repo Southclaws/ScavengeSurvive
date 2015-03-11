@@ -146,6 +146,7 @@ stock DestroyWorldVehicle(vehicleid)
 
 	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
 	DestroyVehicle(vehicleid, 3);
+	Iter_Remove(veh_Index, vehicleid);
 
 	return 1;
 }
@@ -674,9 +675,6 @@ public OnVehicleSpawn(vehicleid)
 			printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
 
 			DestroyWorldVehicle(vehicleid);
-			Iter_Remove(veh_Index, vehicleid);
-
-			RemoveVehicleFileByID(vehicleid);
 		}
 	}
 

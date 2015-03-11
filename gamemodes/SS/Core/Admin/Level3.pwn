@@ -246,8 +246,7 @@ ACMD:vehicle[3](playerid, params[])
 
 	if(!strcmp(command, "delete"))
 	{
-		RemoveVehicleFileByID(vehicleid);
-		DestroyVehicle(vehicleid, 0);
+		DestroyWorldVehicle(vehicleid);
 
 		MsgF(playerid, YELLOW, " >  Vehicle %d deleted", vehicleid);
 
