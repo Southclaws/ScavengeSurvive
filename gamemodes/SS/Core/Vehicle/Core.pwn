@@ -146,6 +146,7 @@ stock DestroyWorldVehicle(vehicleid)
 
 	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
 	DestroyVehicle(vehicleid, 3);
+	Iter_Remove(veh_Index, vehicleid);
 
 	return 1;
 }
@@ -521,19 +522,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		vehicletype = GetVehicleType(vehicleid);
 		GetVehicleTypeName(vehicletype, vehiclename);
 		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
-
-		if(!IsPlayerOnAdminDuty(playerid))
-		{
-			if(GetTickCountDifference(veh_EnterTick[playerid], GetTickCount()) > 1000)
-			{
-				new name[MAX_PLAYER_NAME];
-
-				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-				GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
-
-				SavePlayerVehicle(vehicleid, name);
-			}
-		}
+		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 
 		veh_Data[vehicleid][veh_occupied] = false;
 		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
@@ -686,9 +675,6 @@ public OnVehicleSpawn(vehicleid)
 			printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
 
 			DestroyWorldVehicle(vehicleid);
-			Iter_Remove(veh_Index, vehicleid);
-
-			RemoveVehicleFileByID(vehicleid);
 		}
 	}
 
@@ -951,4 +937,21 @@ stock GetVehicleTypeCount(vehicletype)
 		return 0;
 
 	return veh_TypeCount[vehicletype];
+}
+
+// veh_Entering
+stock GetPlayerEnteringVehicle(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return veh_Entering[playerid];
+}
+// veh_EnterTick
+stock GetPlayerVehicleEnterTick(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return veh_EnterTick[playerid];
 }

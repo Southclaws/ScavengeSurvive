@@ -259,7 +259,7 @@ VehicleTrunkUpdateSave(playerid)
 					Float:z,
 					Float:r;
 
-				UpdateVehicleFile(trunk_CurrentVehicle[playerid]);
+				SaveVehicle(trunk_CurrentVehicle[playerid]);
 				GetVehiclePos(trunk_CurrentVehicle[playerid], x, y, z);
 				GetVehicleZAngle(trunk_CurrentVehicle[playerid], r);
 				SetVehicleSpawnPoint(trunk_CurrentVehicle[playerid], x, y, z, r);
