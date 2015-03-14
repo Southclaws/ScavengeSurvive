@@ -37,6 +37,9 @@ static
 		pveh_PlayerVehicle[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...};
 
 static
+		pveh_SaveAnyVehicle[MAX_PLAYERS] = {1, ...};
+
+static
 bool:	veh_PrintEach = true,
 bool:	veh_PrintTotal = true;
 
@@ -83,6 +86,7 @@ hook OnPlayerConnect(playerid)
 	}
 
 	pveh_PlayerVehicle[playerid] = INVALID_VEHICLE_ID;
+	pveh_SaveAnyVehicle[playerid] = 1;
 
 	return 1;
 }
@@ -563,19 +567,55 @@ _SaveVehicle(vehicleid, active = true)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	if(newstate == PLAYER_STATE_DRIVER)
+	{
+		if(pveh_SaveAnyVehicle[playerid])
+			_PlayerUpdateVehicle(playerid, GetPlayerVehicleID(playerid));
+
+		else
+			_SaveIfOwnedBy(GetPlayerVehicleID(playerid), playerid);
+
+	}
 	if(oldstate == PLAYER_STATE_DRIVER)
-		_PlayerExitVehicle(playerid, GetPlayerLastVehicle(playerid));
+	{
+		if(GetTickCountDifference(GetPlayerVehicleEnterTick(playerid), GetTickCount()) > 1000)
+		{
+			if(pveh_SaveAnyVehicle[playerid])
+				_PlayerUpdateVehicle(playerid, GetPlayerLastVehicle(playerid));
+
+			else
+				_SaveIfOwnedBy(GetPlayerLastVehicle(playerid), playerid);
+		}
+	}
 
 	return 1;
 }
 
-_PlayerExitVehicle(playerid, vehicleid)
+_SaveIfOwnedBy(vehicleid, playerid)
 {
-	printf("[_PlayerExitVehicle] %d %d", playerid, vehicleid);
-	if(IsPlayerOnAdminDuty(playerid))
-		return;
+	new vehiclename[MAX_VEHICLE_TYPE_NAME];
+	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
 
-	if(GetTickCountDifference(GetPlayerVehicleEnterTick(playerid), GetTickCount()) < 1000)
+	if(pveh_PlayerVehicle[playerid] != vehicleid)
+	{
+		new ownedvehiclename[MAX_VEHICLE_TYPE_NAME];
+		GetVehicleTypeName(GetVehicleType(pveh_PlayerVehicle[playerid]), ownedvehiclename);
+
+		MsgF(playerid, YELLOW, " >  This "C_BLUE"%s"C_YELLOW" is not yours, you own a "C_BLUE"%s"C_YELLOW". To save any vehicle, type: /vsave", vehiclename, ownedvehiclename);
+		return 0;
+	}
+
+	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+
+	_SaveVehicle(vehicleid);
+
+	return 1;
+}
+
+_PlayerUpdateVehicle(playerid, vehicleid)
+{
+	printf("[_PlayerUpdateVehicle] %d %d", playerid, vehicleid);
+	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
 	new vehiclename[MAX_VEHICLE_TYPE_NAME];
@@ -608,26 +648,7 @@ public OnVehicleDestroyed(vehicleid)
 #if defined pveh_OnVehicleDestroyed
 	forward pveh_OnVehicleDestroyed(vehicleid);
 #endif
-/*
-_SetVehicleOwnerPlayer(vehicleid, playerid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
 
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	new name[MAX_PLAYER_NAME];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	_SetVehicleOwnerName(vehicleid, name, true);
-	pveh_OwnerPlayer[vehicleid] = playerid;
-	pveh_PlayerVehicle[playerid] = vehicleid;
-
-	return 1;
-}
-*/
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
 	printf("[_SetVehicleOwner] %d '%s' %d", vehicleid, name, playerid);
@@ -807,4 +828,25 @@ stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYE
 stock RemoveVehicleFile(vehicleid)
 {
 	return _RemoveVehicleFile(vehicleid);
+}
+
+CMD:vsave(playerid, params[])
+{
+	if(!isnull(params) && !strcmp(params, "on"))
+	{
+		pveh_SaveAnyVehicle[playerid] = 1;
+		Msg(playerid, YELLOW, " >  Vehicle save mode set to 'All vehicles'. When you enter ANY vehicle, it will be saved for you.");
+		return 1;
+	}
+
+	if(!isnull(params) && !strcmp(params, "off"))
+	{
+		pveh_SaveAnyVehicle[playerid] = 0;
+		Msg(playerid, YELLOW, " >  Vehicle save mode set to: 'Own vehicle'. Only your own vehicle will be saved when you drive it. If you enter another vehicle as a driver, it won't overwrite your current vehicle.");
+		return 1;
+	}
+
+	Msg(playerid, YELLOW, " >  Usage: /vsave [on / off] - Save vehicles when exited or entered. When 'off', you will only be able to save your own exiting vehicle.");
+
+	return 1;
 }
