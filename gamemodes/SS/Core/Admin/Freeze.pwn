@@ -35,7 +35,9 @@ FreezePlayer(playerid, duration = 0, msg = 0)
 	if(duration > 4000 || duration == 0)
 	{
 		stop frz_CheckTimer[playerid];
-		frz_CheckTimer[playerid] = defer UnfreezePlayer_check(playerid);
+
+		if(GetPlayerAnimationIndex(playerid) != 1130) // if not falling
+			frz_CheckTimer[playerid] = defer UnfreezePlayer_check(playerid);
 	}
 }
 
@@ -59,6 +61,9 @@ timer UnfreezePlayer_delay[time](playerid, time, msg)
 
 timer UnfreezePlayer_check[4000](playerid)
 {
+	if(GetPlayerAnimationIndex(playerid) == 1130) // Player is falling
+		return;
+
 	new Float:z;
 
 	GetPlayerCameraFrontVector(playerid, z, z, z);
@@ -68,6 +73,8 @@ timer UnfreezePlayer_check[4000](playerid)
 		MsgAdminsF(2, YELLOW, " >  Possible mod user: "C_ORANGE"%p (%d)", playerid, playerid);
 		SendIrcStaffMessage("Server", sprintf("Possible mod user %p", playerid));
 	}
+
+	return;
 }
 
 
