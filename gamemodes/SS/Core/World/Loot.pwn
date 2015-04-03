@@ -63,8 +63,8 @@ hook OnScriptInit()
 
 stock DefineLootIndex(name[MAX_LOOT_INDEX_NAME])
 {
-	if(loot_IndexTotal >= MAX_LOOT_INDEX-1)
-		print("ERROR: Loot index limit reached.");
+	if(loot_IndexTotal >= MAX_LOOT_INDEX)
+		printf("ERROR: Loot index limit reached at '%s'.", name);
 
 	loot_IndexName[loot_IndexTotal] = name;
 
@@ -304,7 +304,7 @@ _loot_PickFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], lis
 	cell = random(listsize);
 	value = frandom(100.0) * loot_SpawnMult;
 
-	if(value > list[cell][lootitem_weight])
+	if(value < list[cell][lootitem_weight])
 		return 0;
 
 	if(!IsValidItemType(list[cell][lootitem_type]))

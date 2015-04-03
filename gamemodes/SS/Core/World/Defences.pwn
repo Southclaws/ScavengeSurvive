@@ -1406,10 +1406,7 @@ LoadDefenceItem(filename[])
 	sscanf(filename[searchpos], "p<.>d{s[5]}", def_GEID[defenceid]);
 
 	if(def_GEID[defenceid] > def_GEID_Index)
-	{
-		printf("WARNING: Defence %d GEID (%d) is greater than GEID index (%d). Updating to %d to avoid GEID collision.", defenceid, def_GEID[defenceid], def_GEID_Index, def_GEID[defenceid] + 1);
 		def_GEID_Index = def_GEID[defenceid] + 1;
-	}
 
 	if(def_PrintEachLoad)
 		printf("\t[LOAD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", data[DEFENCE_CELL_TYPE], Float:pos[0], Float:pos[1], Float:pos[2], data[DEFENCE_CELL_POSE], data[DEFENCE_CELL_MOTOR], data[DEFENCE_CELL_KEYPAD], data[DEFENCE_CELL_PASS], data[DEFENCE_CELL_MOVESTATE], data[DEFENCE_CELL_HITPOINTS]);

@@ -2,7 +2,7 @@
 
 
 #define DIRECTORY_TENT		DIRECTORY_MAIN"Tents/"
-#define MAX_TENT			(1024)
+#define MAX_TENT			(2048)
 #define MAX_TENT_ITEMS		(8)
 #define INVALID_TENT_ID		(-1)
 
@@ -176,7 +176,8 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 
 	UpdateTentDebugLabel(id);
 
-	SaveTent(id, 1);
+	if(!tnt_Loading)
+		SaveTent(id, 1);
 
 	return id;
 }
@@ -257,7 +258,8 @@ AddItemToTentIndex(tentid, itemid)
 
 	Iter_Add(tnt_ItemIndex[tentid], cell);
 
-	SaveTent(tentid, 1);
+	if(!tnt_Loading)
+		SaveTent(tentid, 1);
 
 	UpdateTentDebugLabel(tentid);
 
@@ -569,10 +571,7 @@ LoadTents()
 
 SaveTent(tentid, active)
 {
-	if(tnt_Loading)
-		return 0;
-
-	if(!Iter_Contains(itm_Index, tentid))
+	if(!Iter_Contains(tnt_Index, tentid))
 		return 0;
 
 	if(active)
@@ -630,12 +629,13 @@ LoadTent(filename[])
 {
 	new
 		length,
+		rewrite,
 		searchpos,
 		tentid,
 		head[1],
 		data[6];
 
-	length = modio_read(filename, _T<H,E,A,D>, sizeof(tnt_ItemList), head, .autoclose = false);
+	length = modio_read(filename, _T<H,E,A,D>, 1, head, .autoclose = false);
 
 	if(length > 0)
 	{
@@ -644,6 +644,11 @@ LoadTent(filename[])
 			modio_finalise_read(modio_getsession_read(filename));
 			return 0;
 		}
+	}
+	else
+	{
+		printf("WARNING: Tent '%s' does not have HEAD file tag, force saving.", filename);
+		rewrite = 1;
 	}
 
 	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, .autoclose = false);
@@ -668,7 +673,7 @@ LoadTent(filename[])
 	}
 
 	if(tnt_PrintEachLoad)
-		printf("\t[LOAD] Tent at %f, %f, %f", Float:data[0], Float:data[1], Float:data[2]);
+		printf("\t[LOAD] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, Float:data[0], Float:data[1], Float:data[2]);
 
 	new
 		ItemType:itemtype,
@@ -718,6 +723,11 @@ LoadTent(filename[])
 	}
 
 	DestroyItemList(itemlist);
+
+	if(rewrite)
+	{
+		SaveTent(tentid, 1);
+	}
 
 	return 1;
 }

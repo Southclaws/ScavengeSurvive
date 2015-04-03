@@ -587,6 +587,11 @@ LoadSafeboxItem(filename[])
 		return 0;
 	}
 
+	if(length == 1)
+	{
+		printf("WARNING: Safebox '%s' does not contain HEAD tag", filename);
+	}
+
 	if(length == 2)
 	{
 		if(type[1] == 0)
