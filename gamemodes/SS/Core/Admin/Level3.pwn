@@ -220,8 +220,8 @@ ACMD:vehicle[3](playerid, params[])
 			Float:y,
 			Float:z;
 
-		GetVehiclePos(playerid, x, y, z);
-		SetPlayerPos(vehicleid, x, y, z);
+		GetVehiclePos(vehicleid, x, y, z);
+		SetPlayerPos(playerid, x, y, z);
 
 		return 1;
 	}
