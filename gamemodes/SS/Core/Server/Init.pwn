@@ -90,8 +90,7 @@ enum (<<= 1)
 
 // DATABASES
 new
-DB:				gAccounts,
-DB:				gWorld;
+DB:				gAccounts;
 
 // GLOBAL SERVER SETTINGS (Todo: modularise)
 new

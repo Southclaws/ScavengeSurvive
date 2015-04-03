@@ -614,7 +614,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 
 _PlayerUpdateVehicle(playerid, vehicleid)
 {
-	printf("[_PlayerUpdateVehicle] %d %d", playerid, vehicleid);
+	d:1:HANDLER("[_PlayerUpdateVehicle] %d %d", playerid, vehicleid);
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
@@ -651,7 +651,7 @@ public OnVehicleDestroyed(vehicleid)
 
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
-	printf("[_SetVehicleOwner] %d '%s' %d", vehicleid, name, playerid);
+	d:1:HANDLER("[_SetVehicleOwner] %d '%s' %d", vehicleid, name, playerid);
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -677,7 +677,7 @@ _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 
 _RemoveVehicleOwner(vehicleid)
 {
-	printf("[_RemoveVehicleOwner] %d", vehicleid);
+	d:1:HANDLER("[_RemoveVehicleOwner] %d", vehicleid);
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -696,7 +696,7 @@ _RemoveVehicleOwner(vehicleid)
 */
 _UpdatePlayerVehicle(playerid, vehicleid)
 {
-	printf("[_UpdatePlayerVehicle] %d %d", playerid, vehicleid);
+	d:1:HANDLER("[_UpdatePlayerVehicle] %d %d", playerid, vehicleid);
 
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -712,11 +712,11 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	{
 		// Vehicle has no owner, assign player as owner
 		// Set owner of player's old vehicle to null
-		printf("Vehicle %d owner is null", vehicleid);
+		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle %d owner is null", vehicleid);
 
 		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 		{
-			printf("Player vehicle is %d, removing", pveh_PlayerVehicle[playerid]);
+			d:1:HANDLER("[_UpdatePlayerVehicle] Player vehicle is %d, removing", pveh_PlayerVehicle[playerid]);
 			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 		}
 
@@ -726,23 +726,23 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	else
 	{
 		// Vehicle has an owner
-		printf("Vehicle %d owner is not null: '%s'", vehicleid, pveh_Owner[vehicleid]);
+		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle %d owner is not null: '%s'", vehicleid, pveh_Owner[vehicleid]);
 		if(pveh_PlayerVehicle[playerid] == vehicleid)
 		{
 			// Vehicle's owner is the player, do nothing but save it
-			print("This vehicle belongs to the player in context");
+			d:1:HANDLER("[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
 			_SaveVehicle(vehicleid);
 		}
 		else
 		{
 			// Vehicle's owner is not the player, check if the player already
 			// owns a vehicle
-			print("This vehicle does not belong to the player in context, swapping");
+			d:1:HANDLER("[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
 
 			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
 			{
 				// Player owns a vehicle
-				printf("Player in context already owns a vehicle (%d) swapping owners", pveh_PlayerVehicle[playerid]);
+				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context already owns a vehicle (%d) swapping owners", pveh_PlayerVehicle[playerid]);
 
 				// pveh_PlayerVehicle[playerid] = player's previous vehicle
 				// vehicleid = new vehicle
@@ -766,7 +766,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// Player does not own a vehicle
 				// Remove the original owner's name from it
 				// Assign the player as the new owner and save the vehicle
-				printf("Player in context does not own a vehicle, saving this one");
+				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
 				_RemoveVehicleFile(vehicleid);
 				_SetVehicleOwner(vehicleid, name, playerid);
 				_SaveVehicle(vehicleid);
