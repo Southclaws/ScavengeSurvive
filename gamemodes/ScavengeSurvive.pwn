@@ -29,6 +29,9 @@ native gpci(playerid, serial[], len);
 #define _DEBUG							0 // YSI
 #define DB_DEBUG						false // SQLitei
 #define DB_MAX_STATEMENTS				(128) // SQLitei
+#define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
+#define DB_DEBUG_BACKTRACE_WARNING		(true) // SQLitei
+#define DB_DEBUG_BACKTRACE_ERROR		(true) // SQLitei
 #define STRLIB_RETURN_SIZE				(256) // strlib
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
@@ -105,6 +108,7 @@ public OnGameModeInit()
 
 #include "SS\Core\Server\Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
+#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 #include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
 #include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
@@ -114,7 +118,6 @@ public OnGameModeInit()
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
 #include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
-#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 
 #define time ctime_time
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
@@ -596,7 +599,6 @@ OnGameModeInit_Setup()
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
-	gWorld = db_open_persistent(WORLD_DATABASE);
 
 	djson_GameModeInit();
 
