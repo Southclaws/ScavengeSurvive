@@ -61,7 +61,12 @@ _OnDeath(playerid, killerid)
 	GetPlayerFacingAngle(playerid, death_RotZ[playerid]);
 
 	if(IsPlayerInAnyVehicle(playerid))
-		death_PosZ[playerid] += 0.1;
+	{
+		RemovePlayerFromVehicle(playerid);
+		TogglePlayerSpectating(playerid, true);
+		TogglePlayerSpectating(playerid, false);
+		death_PosZ[playerid] += 0.5;
+	}
 
 	HideWatch(playerid);
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
@@ -340,6 +345,7 @@ hook OnPlayerSpawn(playerid)
 	if(IsPlayerDead(playerid))
 	{
 		TogglePlayerSpectating(playerid, true);
+		TogglePlayerControllable(playerid, false);
 
 		defer SetDeathCamera(playerid);
 
@@ -358,8 +364,11 @@ hook OnPlayerSpawn(playerid)
 	}
 }
 
-timer SetDeathCamera[50](playerid)
+timer SetDeathCamera[500](playerid)
 {
+	if(!IsPlayerDead(playerid))
+		return;
+
 	InterpolateCameraPos(playerid,
 		death_PosX[playerid] - floatsin(-death_RotZ[playerid], degrees),
 		death_PosY[playerid] - floatcos(-death_RotZ[playerid], degrees),
@@ -377,12 +386,17 @@ timer SetDeathCamera[50](playerid)
 		death_PosY[playerid],
 		death_PosZ[playerid] + 1.0,
 		30000, CAMERA_MOVE);
+
+	return;
 }
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == DeathButton)
 	{
+		if(!IsPlayerDead(playerid))
+			return 1;
+
 		SetPlayerBitFlag(playerid, Dying, false);
 		TogglePlayerSpectating(playerid, false);
 		CancelSelectTextDraw(playerid);
