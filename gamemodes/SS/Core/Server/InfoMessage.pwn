@@ -2,7 +2,7 @@
 
 
 #define MAX_INFO_MESSAGE			(8)
-#define MAX_INFO_MESSAGE_LEN		(128)
+#define MAX_INFO_MESSAGE_LEN		(256)
 
 
 static
@@ -20,7 +20,7 @@ hook OnScriptInit()
 	ifm_Messages[1] = "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 	ifm_Messages[2] = "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
 
-	GetSettingStringArray("infomessage/messages", ifm_Messages, 3, ifm_Messages, ifm_Total);
+	GetSettingStringArray("infomessage/messages", ifm_Messages, 3, ifm_Messages, ifm_Total, MAX_INFO_MESSAGE_LEN);
 	GetSettingInt("infomessage/interval", 5, ifm_Interval);
 
 	defer InfoMessage(); // Todo: move to info message module

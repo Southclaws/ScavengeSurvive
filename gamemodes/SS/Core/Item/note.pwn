@@ -15,7 +15,7 @@ hook OnScriptInit()
 	note_Text[1] = "If anyone offers to meet up to trade... ALWAYS HAVE A PLAN B.";
 	note_Text[2] = "Too many people have opinions on things they know nothing about. And the more ignorant they are, the more opinions they have.";
 
-	GetSettingStringArray("items/note/messages", note_Text, 3, note_Text, note_Total);
+	GetSettingStringArray("items/note/messages", note_Text, 3, note_Text, note_Total, 256);
 }
 
 

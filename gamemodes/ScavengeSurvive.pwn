@@ -36,7 +36,7 @@ native gpci(playerid, serial[], len);
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(1024) // modio
+#define MAX_MODIO_SESSION				(2048) // modio
 #define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define INV_MAX_SLOTS					(6) // SIF/Inventory
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
@@ -125,7 +125,7 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
-#include <djson>					// By DracoBlue, 1.6.2 :	http://forum.sa-mp.com/showthread.php?t=48439
+#include <a_json>					// By KingHual, 0.1.1:		http://forum.sa-mp.com/showthread.php?t=543919
 
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
@@ -600,8 +600,6 @@ OnGameModeInit_Setup()
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 
-	djson_GameModeInit();
-
 	LoadSettings();
 
 	SendRconCommand(sprintf("mapname %s", gMapName));
@@ -613,10 +611,6 @@ OnGameModeInit_Setup()
 public OnGameModeExit()
 {
 	print("\n[OnGameModeExit] Shutting down...");
-
-	djson_GameModeExit();
-
-	print("\nSave Complete! Safe to shut down.");
 
 	new File:f = fopen("nonexistentfile", io_read), _s[1];
 	fread(f, _s);

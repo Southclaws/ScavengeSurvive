@@ -73,88 +73,27 @@ creations are made!
 
 5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
 
- This is included with the repo and it will also self-create if absent.
- Here is an explanation of each key:
+ This will not self-create if absent due to SAMPSON not having write API.
+ Not all settings must be present, here is an example:
 
 ```
-  "defence":
-    "print-each-load": print a message for each item loaded
-    "print-each-runtime-save": print a message for each item saved at runtime
-    "print-each-save": print a message for each item saved on exit
-    "print-removes": print a message every time an item is removed
-    "print-total-load": print the total amount of items loaded
-    "print-total-save": print the total amount of items saved
-
-  "irc":
-    "bot-name": bot real name
-    "bot-nick": bot nickname
-    "bot-pass": bot account password (NickServ)
-    "bot-user": bot username
-    "chan": channel to connect to and echo chat to/from
-    "pass": channel password (if any)
-    "port": server port
-    "serv": server address
-
-  "player":
-    "allow-pause-map": enable the map option in the pause menu
-    "combat-log-window": combat log time window in seconds
-    "interior-entry": enable interior entrances
-    "login-freeze-time": amount of seconds to freeze player on spawn
-    "max-tab-out-time": amount of seconds that a player can alt tab
-    "nametag-distance": set the nametag render distance (0.0 for off)
-    "ping-limit": maximum ping for players
-    "player-animations": enable the standard CJ animations
-    "vehicle-surfing": enable vehicle surfing on fast vehicles
-
-  "safebox":
-    "print-each-load": print a message for each item loaded
-    "print-each-runtime-save": print a message for each item saved at runtime
-    "print-each-save": print a message for each item saved on exit
-    "print-removes": print a message every time an item is removed
-    "print-total-load": print the total amount of items loaded
-    "print-total-save": print the total amount of items saved
-
+{
+  "player":{
+    "allow-pause-map":1,
+    "combat-log-window":60,
+    "nametag-distance":5.000000,
+    "vehicle-surfing":1
+  },
   "server":
-    "file-check": perform a full file check on user files
-    "infomsg-interval": time between each info message in minutes
-    "infomsgs": array list of periodic information messages
-    "loot-spawn-multiplier": 
-    "max-uptime": maximum time in hours between server restarts
-    "motd": message of the day, displayed to players upon connecting
-    "rules": array list of rules
-    "staff": array list of staff members
-    "website": the website for whitelist notification message
-    "whitelist": enable whitelist
-    "whitelist-auto-toggle": whitelist goes off when admins are online
-
-  "sign":
-    "print-each-load": print a message for each item loaded
-    "print-each-runtime-save": print a message for each item saved at runtime
-    "print-each-save": print a message for each item saved on exit
-    "print-removes": print a message every time an item is removed
-    "print-total-load": print the total amount of items loaded
-    "print-total-save": print the total amount of items saved
-
-  "spawn":
-    "bagtype": type of bag players spawn with
-    "newspawnitems": the extra items a newly registered player spawns with
-    "respawnitems": the items a player respawns with
-
-  "tent":
-    "print-each-load": print a message for each item loaded
-    "print-each-runtime-save": print a message for each item saved at runtime
-    "print-each-save": print a message for each item saved on exit
-    "print-removes": print a message every time an item is removed
-    "print-total-load": print the total amount of items loaded
-    "print-total-save": print the total amount of items saved
-
-  "vehicle-spawn":
-    "print-each": print a message for each vehicle spawned
-    "print-total": print the total amount of vehicles spawned
-    "spawn-chance": [1-100] percentage each spawn point will create a vehicle
+  {
+    "max-uptime":3600,
+    "motd":"Welcome to Southclaw's Scavenge and Survive!"
+  }
+}
 ```
 
-Enjoy, do whatever you want with it, but keep my name on it :)
+6. Enjoy!
+ Do whatever you want with it, but keep my name on it :)
 
 
 ## Maintenance

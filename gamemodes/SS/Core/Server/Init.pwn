@@ -516,6 +516,21 @@ public OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Init'...");
 
+	if(!gPauseMap)
+		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
+
+	if(!gInteriorEntry)
+		DisableInteriorEnterExits();
+
+	if(gPlayerAnimations)
+		UsePlayerPedAnims();
+
+	SetNameTagDrawDistance(gNameTagDistance);
+
+	EnableStuntBonusForAll(false);
+	ManualVehicleEngineAndLights();
+	AllowInteriorWeapons(true);
+
 
 // 00
 	item_NULL			= DefineItemType("NULL",				"NULL",				0,		1);

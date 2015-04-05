@@ -1,6 +1,3 @@
-#define PRINT_SETTINGS
-
-
 LoadSettings()
 {
 	print("\nLoading Settings...");
@@ -13,212 +10,87 @@ LoadSettings()
 
 	if(!fexist(SETTINGS_FILE))
 	{
-		print("ERROR: Settings file '"SETTINGS_FILE"' not found. Creating with default values.");
+		print("ERROR: Settings file '"SETTINGS_FILE"' not found. Creating and using default values.");
 
-		djCreateFile(SETTINGS_FILE);
+		fclose(fopen(SETTINGS_FILE, io_write));
 	}
 
-	djStyled(true);
+	GetSettingString("server/motd", "Please update the 'server/motd' string in "SETTINGS_FILE"", gMessageOfTheDay);
+	GetSettingString("server/website", "southclawjk.wordpress.com", gMessageOfTheDay);
 
-	new tmp[64];
+	gRuleList[0] = "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+	gRuleList[1] = "(Rule 2) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+	gRuleList[2] = "(Rule 3) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
+	GetSettingStringArray("server/rules", gRuleList, 3, gRuleList, gTotalRules, MAX_RULE_LEN);
 
+	gStaffList[0] = "(Staff 1)";
+	gStaffList[1] = "(Staff 2)";
+	gStaffList[2] = "(Staff 3)";
+	GetSettingStringArray("server/staff", gStaffList, 3, gStaffList, gTotalStaff, MAX_STAFF_LEN);
 
-	// server/motd
-	if(!djIsSet(SETTINGS_FILE, "server/motd"))
-		djSet(SETTINGS_FILE, "server/motd", "Please update the 'server/motd' string in "SETTINGS_FILE"");
-
-	strcat(gMessageOfTheDay, dj(SETTINGS_FILE, "server/motd"));
-	printf("  server/motd: %s", gMessageOfTheDay);
-
-
-	// server/website
-	if(!djIsSet(SETTINGS_FILE, "server/website"))
-		djSet(SETTINGS_FILE, "server/website", "southclawjk.wordpress.com");
-
-	strcat(gWebsiteURL, dj(SETTINGS_FILE, "server/website"));
-	printf("  server/website: %s", gWebsiteURL);
-
-
-	// server/rules
-	if(!djIsSet(SETTINGS_FILE, "server/rules"))
-		djAppend(SETTINGS_FILE, "server/rules", "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.");
-
-	for(new i, j = djCount(SETTINGS_FILE, "server/rules"); i < j; i++)
-	{
-		if(i >= MAX_RULE)
-		{
-			print("ERROR: MAX_RULE limit reached while loading rules from '"SETTINGS_FILE"'.");
-			break;
-		}
-
-		format(tmp, sizeof(tmp), "server/rules/%d", i);
-		strcat(gRuleList[i], dj(SETTINGS_FILE, tmp));
-		printf("  %s: %s", tmp, gRuleList[i]);
-		gTotalRules++;
-	}
-
-
-	// server/staff
-	if(!djIsSet(SETTINGS_FILE, "server/staff"))
-		djAppend(SETTINGS_FILE, "server/staff", "(Staff 1)");
-
-	for(new i, j = djCount(SETTINGS_FILE, "server/staff"); i < j; i++)
-	{
-		if(i >= MAX_STAFF)
-		{
-			print("ERROR: MAX_STAFF limit reached while loading staff from '"SETTINGS_FILE"'.");
-			break;
-		}
-
-		format(tmp, sizeof(tmp), "server/staff/%d", i);
-		strcat(gStaffList[i], dj(SETTINGS_FILE, tmp));
-		printf("  %s: %s", tmp, gStaffList[i]);
-		gTotalStaff++;
-	}
-
-
-	// server/max-uptime
-	if(!djIsSet(SETTINGS_FILE, "server/max-uptime"))
-		djSetInt(SETTINGS_FILE, "server/max-uptime", 5);
-
-	gServerMaxUptime = 3600 * djInt(SETTINGS_FILE, "server/max-uptime");
-	printf("  server/max-uptime: %d", gServerMaxUptime);
-
-
-
-	// player/allow-pause-map
-	if(!djIsSet(SETTINGS_FILE, "player/allow-pause-map"))
-		djSetInt(SETTINGS_FILE, "player/allow-pause-map", false);
-
-	gPauseMap = bool:djInt(SETTINGS_FILE, "player/allow-pause-map");
-	printf("  player/allow-pause-map: %d", gPauseMap);
-
-
-	// player/interior-entry
-	if(!djIsSet(SETTINGS_FILE, "player/interior-entry"))
-		djSetInt(SETTINGS_FILE, "player/interior-entry", false);
-
-	gInteriorEntry = bool:djInt(SETTINGS_FILE, "player/interior-entry");
-	printf("  player/interior-entry: %d", gInteriorEntry);
-
-
-	// player/player-animations
-	if(!djIsSet(SETTINGS_FILE, "player/player-animations"))
-		djSetInt(SETTINGS_FILE, "player/player-animations", true);
-
-	gPlayerAnimations = bool:djInt(SETTINGS_FILE, "player/player-animations");
-	printf("  player/player-animations: %d", gPlayerAnimations);
-
-
-	// player/vehicle-surfing
-	if(!djIsSet(SETTINGS_FILE, "player/vehicle-surfing"))
-		djSetInt(SETTINGS_FILE, "player/vehicle-surfing", false);
-
-	gVehicleSurfing = bool:djInt(SETTINGS_FILE, "player/vehicle-surfing");
-	printf("  player/vehicle-surfing: %d", gVehicleSurfing);
-
-
-	// player/nametag-distance
-	if(!djIsSet(SETTINGS_FILE, "player/nametag-distance"))
-		djSetFloat(SETTINGS_FILE, "player/nametag-distance", 3.0);
-
-	gNameTagDistance = djFloat(SETTINGS_FILE, "player/nametag-distance");
-	printf("  player/nametag-distance: %f", gNameTagDistance);
-
-
-	// player/combat-log-window
-	if(!djIsSet(SETTINGS_FILE, "player/combat-log-window"))
-		djSetInt(SETTINGS_FILE, "player/combat-log-window", 10);
-
-	gCombatLogWindow = djInt(SETTINGS_FILE, "player/combat-log-window");
-	printf("  player/combat-log-window: %d", gCombatLogWindow);
-
-
-	// player/login-freeze-time
-	if(!djIsSet(SETTINGS_FILE, "player/login-freeze-time"))
-		djSetInt(SETTINGS_FILE, "player/login-freeze-time", 5);
-
-	gLoginFreezeTime = djInt(SETTINGS_FILE, "player/login-freeze-time");
-	printf("  player/login-freeze-time: %d", gLoginFreezeTime);
-
-
-	// player/max-tab-out-time
-	if(!djIsSet(SETTINGS_FILE, "player/max-tab-out-time"))
-		djSetInt(SETTINGS_FILE, "player/max-tab-out-time", 60);
-
-	gMaxTaboutTime = djInt(SETTINGS_FILE, "player/max-tab-out-time");
-	printf("  player/max-tab-out-time: %d", gMaxTaboutTime);
-
-
-	// player/ping-limit
-	if(!djIsSet(SETTINGS_FILE, "player/ping-limit"))
-		djSetInt(SETTINGS_FILE, "player/ping-limit", 400);
-
-	gPingLimit = djInt(SETTINGS_FILE, "player/ping-limit");
-	printf("  player/ping-limit: %d", gPingLimit);
-
+	GetSettingInt("server/max-uptime", 18000, gServerMaxUptime);
+	GetSettingInt("player/allow-pause-map", 0, gPauseMap);
+	GetSettingInt("player/interior-entry", 0, gInteriorEntry);
+	GetSettingInt("player/player-animations", 1, gPlayerAnimations);
+	GetSettingInt("player/vehicle-surfing", 0, gVehicleSurfing);
+	GetSettingFloat("player/nametag-distance", 3.0, gNameTagDistance);
+	GetSettingInt("player/combat-log-window", 30, gCombatLogWindow);
+	GetSettingInt("player/login-freeze-time", 8, gLoginFreezeTime);
+	GetSettingInt("player/max-tab-out-time", 60, gMaxTaboutTime);
+	GetSettingInt("player/ping-limit", 400, gPingLimit);
 
 	// I'd appreciate if you left my credit and the proper gamemode name intact!
 	SetGameModeText("Scavenge Survive by Southclaw");
-
-	if(!gPauseMap)
-		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
-
-	if(!gInteriorEntry)
-		DisableInteriorEnterExits();
-
-	if(gPlayerAnimations)
-		UsePlayerPedAnims();
-
-	SetNameTagDrawDistance(gNameTagDistance);
-
-
-/*
-	Defaults
-*/
-
-
-	EnableStuntBonusForAll(false);
-	ManualVehicleEngineAndLights();
-	AllowInteriorWeapons(true);
 
 	print("\n");
 }
 
 stock GetSettingInt(path[], defaultvalue, &output, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSetInt(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
+
+	if(!json_get_node(json, path))
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default value %d.", defaultvalue);
 
 	else
-		output = djInt(SETTINGS_FILE, path);
+		output = json_get_int(json, path);
 
 	if(printsetting)
-		printf("  %s: %d", path, output);
+		printf("%s: %d", path, output);
+
+	json_close(json);
 }
 
 stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSetFloat(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
+
+	if(!json_get_node(json, path))
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default value %f.", defaultvalue);
 
 	else
-		output = djFloat(SETTINGS_FILE, path);
+		output = json_get_float(json, path);
 
 	if(printsetting)
-		printf("  %s: %f", path, output);
+		printf("%s: %f", path, output);
+
+	json_close(json);
 }
 
 stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output), printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSet(SETTINGS_FILE, path, defaultvalue), strcat(output, defaultvalue, maxsize);
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
+
+	if(!json_get_node(json, path))
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default value '%s'.", defaultvalue);
 
 	else
-		strcat(output, dj(SETTINGS_FILE, path), maxsize);
+		json_get_string(json, output, maxsize, path);
 
 	if(printsetting)
-		printf("  %s: %s", path, output);
+		printf("%s: %s", path, output);
+
+	json_close(json);
 }
 
 
@@ -228,119 +100,99 @@ stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output
 
 stock GetSettingIntArray(path[], defaultvalues[], defaultmax, output[], &outputtotal, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
+
+	if(!json_get_node(json, path))
 	{
-		new tmpvalue[12];
-
-		for(new i; i < defaultmax; i++)
-		{
-			format(tmpvalue, sizeof(tmpvalue), "%d", defaultvalues[i]);
-			djAppend(SETTINGS_FILE, path, tmpvalue);
-			output[i] = defaultvalues[i];
-
-			if(printsetting)
-				printf("  %s/%d: %d", path, i, output[i]);
-		}
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default values %d %s.", defaultmax, defaultvalues);
 	}
 	else
 	{
-		new tmppath[64];
+		new JSONArray:jsonarray = json_get_array(json, path);
 
-		outputtotal = djCount(SETTINGS_FILE, path);
+		outputtotal = json_array_count(jsonarray);
 		printf("int array size %d, '%s'", outputtotal, path);
 
 		for(new i; i < outputtotal; i++)
 		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			output[i] = djInt(SETTINGS_FILE, tmppath);
+			json = json_array_at(jsonarray, i);
+			output[i] = json_get_int(json);
 
 			if(printsetting)
-				printf("  %s: %d", tmppath, output[i]);
+				printf("%s[%d]: %d", path, i, output[i]);
 		}
 	}
+
+	json_close(json);
 }
 
 stock GetSettingFloatArray(path[], Float:defaultvalues[], defaultmax, Float:output[], &outputtotal, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
+
+	if(!json_get_node(json, path))
 	{
-		new tmpvalue[12];
-
-		for(new i; i < defaultmax; i++)
-		{
-			format(tmpvalue, sizeof(tmpvalue), "%f", defaultvalues[i]);
-			djAppend(SETTINGS_FILE, path, tmpvalue);
-			output[i] = defaultvalues[i];
-
-			if(printsetting)
-				printf("  %s/%d: %f", path, i, output[i]);
-		}
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default values %d %s.", defaultmax, defaultvalues);
 	}
 	else
 	{
-		new tmppath[64];
+		new JSONArray:jsonarray = json_get_array(json, path);
 
-		outputtotal = djCount(SETTINGS_FILE, path);
+		outputtotal = json_array_count(jsonarray);
 		printf("float array size %d, '%s'", outputtotal, path);
 
 		for(new i; i < outputtotal; i++)
 		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			output[i] = djFloat(SETTINGS_FILE, tmppath);
+			json = json_array_at(jsonarray, i);
+			output[i] = json_get_float(json);
 
 			if(printsetting)
-				printf("  %s: %f", tmppath, output[i]);
+				printf("%s[%d]: %f", path, i, output[i]);
 		}
 	}
+
+	json_close(json);
 }
 
-stock GetSettingStringArray(path[], defaultvalues[][], defaultmax, output[][], &outputtotal, printsetting = true)
+stock GetSettingStringArray(path[], defaultvalues[][], defaultmax, output[][], &outputtotal, outputsize, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-	{
-		for(new i; i < defaultmax; i++)
-		{
-			djAppend(SETTINGS_FILE, path, defaultvalues[i]);
-			format(output[i], DJSON_MAX_STRING, defaultvalues[i]);
+	new JSONNode:json = JSONNode:json_parse_file(SETTINGS_FILE);
 
-			if(printsetting)
-				printf("  %s/%d: %s", path, i, output[i]);
-		}
+	if(!json_get_node(json, path))
+	{
+		printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot auto-write default values %d %s.", defaultmax, defaultvalues);
 	}
 	else
 	{
-		new tmppath[64];
+		new JSONArray:jsonarray = json_get_array(json, path);
 
-		outputtotal = djCount(SETTINGS_FILE, path);
+		outputtotal = json_array_count(jsonarray);
 		printf("string array size %d, '%s'", outputtotal, path);
 
 		for(new i; i < outputtotal; i++)
 		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			format(output[i], DJSON_MAX_STRING, dj(SETTINGS_FILE, tmppath));
+			json = json_array_at(jsonarray, i);
+			json_get_string(json, output[i], outputsize);
 
 			if(printsetting)
-				printf("  %s: %s", tmppath, output[i]);
+				printf("%s[%d]: %s", path, i, output[i]);
 		}
 	}
+
+	json_close(json);
 }
 
 stock UpdateSettingInt(path[], value)
 {
-	djSetInt(SETTINGS_FILE, path, value);
+	printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot write %s: %d.", path, value);
 }
 
 stock UpdateSettingFloat(path[], Float:value)
 {
-	djSetFloat(SETTINGS_FILE, path, value);
+	printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot write %s: %d.", path, value);
 }
 
 stock UpdateSettingString(path[], value[])
 {
-	djSet(SETTINGS_FILE, path, value);
-}
-
-stock UpdateSettingArrayAppend(path[], value[])
-{
-	djAppend(SETTINGS_FILE, path, value);
+	printf("WARNING: JSON writing currently not supported by KingHual's plugin! Cannot write %s: %d.", path, value);
 }
