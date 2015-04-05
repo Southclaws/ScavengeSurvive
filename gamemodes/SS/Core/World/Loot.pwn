@@ -302,9 +302,9 @@ _loot_PickFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], lis
 // However this one has a chance of not returning an item:
 
 	cell = random(listsize);
-	value = frandom(100.0) * loot_SpawnMult;
+	value = frandom(100.0);
 
-	if(value < list[cell][lootitem_weight])
+	if(value > (list[cell][lootitem_weight] * loot_SpawnMult))
 		return 0;
 
 	if(!IsValidItemType(list[cell][lootitem_type]))
