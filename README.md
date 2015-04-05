@@ -77,7 +77,8 @@ creations are made!
  Not all settings must be present, here is an example:
  ```
  {
-   "player":{
+   "player":
+   {
      "allow-pause-map":1,
      "combat-log-window":60,
      "nametag-distance":5.000000,
@@ -92,28 +93,5 @@ creations are made!
  ```
 
 6. **Enjoy!**
+
  Do whatever you want with it, but keep my name on it :)
-
-
-## Maintenance
-
-Set "file-check" to "1" in "./scriptfiles/SSS/Settings.json" in order to perform
-a player data file check. This will remove any files that shouldn't be there
-Such as files that aren't in the "Accounts.db" player table or files with names
-that aren't valid player names.
-
-This option also updates files if a new file structure is used. Since the modio
-implementation however, this will likely be done from the character load code.
-
-
-Run these queries to remove duplicates from the database:
-
-```sql
-
-ALTER TABLE Player RENAME TO Player_old
-CREATE TABLE Player (name TEXT,pass TEXT,ipv4 INTEGER,alive INTEGER,karma INTEGER,regdate INTEGER,lastlog INTEGER,spawntime INTEGER,spawns INTEGER,warnings INTEGER,aimshout TEXT,gpci TEXT)
-INSERT INTO Player (name,pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci) SELECT DISTINCT lower(name),pass,ipv4,alive,karma,regdate,lastlog,spawntime,spawns,warnings,aimshout,gpci FROM Player_old
-
-```
-Downside: table will be re-ordered by "name" column alphabetically instead of by
-registration date and names will all be in lower case.
