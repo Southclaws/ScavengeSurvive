@@ -206,10 +206,10 @@ public OnItemDestroy(itemid)
 		{
 			new containerid = GetItemArrayDataAtCell(itemid, E_BOX_CONTAINER_ID);
 
+			RemoveSafeboxItem(itemid);
+
 			DestroyContainer(containerid);
 			box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
-
-			RemoveSafeboxItem(itemid);
 		}
 	}
 
@@ -511,7 +511,6 @@ SaveSafeboxItem(itemid, active = 1)
 	if(!IsValidContainer(containerid))
 	{
 		printf("[SaveSafeboxItem] ERROR: Can't save safebox %d GEID: %d: Not valid container (%d).", itemid, box_GEID[itemid], containerid);
-		fremove(filename);
 		return 5;
 	}
 
@@ -563,20 +562,20 @@ SaveSafeboxItem(itemid, active = 1)
 	return 0;
 }
 
-LoadSafeboxItem(filename[])
+LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 {
 	new
 		geid,
 		length,
 		type[2],
 		data[6],
-		itemid,
+		boxitemid,
 		containerid;
 
 	if(sscanf(filename, "'"DIRECTORY_SAFEBOX"box_'p<.>d{s[5]}", geid))
 	{
 		printf("[LoadSafeboxItem] ERROR: Rogue file detected ('%s') in safebox directory.", filename);
-		return 0;
+		return INVALID_ITEM_ID;
 	}
 
 	length = modio_read(filename, _T<T,Y,P,E>, 2, type, false, false);
@@ -584,7 +583,7 @@ LoadSafeboxItem(filename[])
 	if(length == 0)
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox data length is 0 (file: %s)", filename);
-		return 0;
+		return INVALID_ITEM_ID;
 	}
 
 	if(length == 1)
@@ -596,15 +595,18 @@ LoadSafeboxItem(filename[])
 	{
 		if(type[1] == 0)
 		{
-			d:1:HANDLER("[LoadSafeboxItem] ERROR: Safebox set to inactive (file: %s)", filename);
-			return 0;
+			if(forceactive == 0)
+			{
+				d:1:HANDLER("[LoadSafeboxItem] ERROR: Safebox set to inactive (file: %s)", filename);
+				return INVALID_ITEM_ID;
+			}
 		}
 	}
 
 	if(!IsItemTypeSafebox(ItemType:type[0]))
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox type (%d) is invalid (file: %s)", type[0], filename);
-		return 0;
+		return INVALID_ITEM_ID;
 	}
 
 	modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, false, false);
@@ -612,24 +614,29 @@ LoadSafeboxItem(filename[])
 	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox position is %f %f %f (file: %s)", data[0], data[1], data[2], filename);
-		return 0;
+		return INVALID_ITEM_ID;
 	}
 
-	box_SkipGEID = true;
-	itemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5], .zoffset = FLOOR_OFFSET);
-	box_SkipGEID = false;
+	if(skipgeid)
+		box_SkipGEID = true;
 
-	box_GEID[itemid] = geid;
+	boxitemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5], .zoffset = FLOOR_OFFSET);
 
-	containerid = GetItemArrayDataAtCell(itemid, 1);
+	if(skipgeid)
+		box_SkipGEID = false;
 
-	if(box_GEID[itemid] > box_GEID_Index)
-		box_GEID_Index = box_GEID[itemid] + 1;
+	box_GEID[boxitemid] = geid;
+
+	containerid = GetItemArrayDataAtCell(boxitemid, 1);
+
+	if(box_GEID[boxitemid] > box_GEID_Index)
+		box_GEID_Index = box_GEID[boxitemid] + 1;
 
 	if(box_PrintEachLoad)
-		printf("\t[LOAD] Safebox: GEID %d, type %d, at %f, %f, %f", box_GEID[itemid], type[0], data[0], data[1], data[2]);
+		printf("\t[LOAD] Safebox: GEID %d, type %d, at %f, %f, %f", box_GEID[boxitemid], type[0], data[0], data[1], data[2]);
 
 	new
+		itemid,
 		ItemType:itemtype,
 		itemlist;
 
@@ -660,7 +667,7 @@ LoadSafeboxItem(filename[])
 
 	DestroyItemList(itemlist);
 
-	return 1;
+	return boxitemid;
 }
 
 RemoveSafeboxItem(itemid)
@@ -713,4 +720,30 @@ stock IsItemTypeExtraDataDependent(ItemType:itemtype)
 		return 1;
 
 	return 0;
+}
+
+ACMD:setboxactive[4](playerid, params[])
+{
+	new geid;
+
+	if(sscanf(params, "d", geid))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /setboxactive [geid]");
+		return 1;
+	}
+
+	new
+		filename[64],
+		itemid,
+		Float:x,
+		Float:y,
+		Float:z;
+
+	format(filename, sizeof(filename), ""DIRECTORY_SAFEBOX"box_%010d.dat", geid);
+	itemid = LoadSafeboxItem(filename, 1, 0);
+
+	GetItemPos(itemid, x, y, z);
+	MsgF(playerid, YELLOW, " >  Loaded safebox item %d at %f %f %f", itemid, x, y, z);
+
+	return 1;
 }

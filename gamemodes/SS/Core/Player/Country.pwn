@@ -160,8 +160,6 @@ _cntr_GetXMLData(string[], tag[], output[], &start, maxlength = sizeof(output))
 {
 	new end = start = (strfind(string, tag, true, start) + strlen(tag) + 1);
 
-	print(string[start]);
-
 	while(string[end] != '<' && string[end] != '\0' && end - start < maxlength)
 		end++;
 
