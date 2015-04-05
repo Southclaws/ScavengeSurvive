@@ -201,7 +201,7 @@ ACMD:country[1](playerid, params[])
 				return 4;
 		}
 
-		new data[128];
+		new data[256];
 
 		GetPlayerCountryDataAsString(targetid, data);
 

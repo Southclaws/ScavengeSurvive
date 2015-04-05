@@ -66,8 +66,19 @@ public OnPlayerRegister(playerid)
 
 _cntr_HandleLogin(playerid)
 {
-	_cntr_UseDatabase(playerid);
+	_cntr_ClearData(playerid);
+	//_cntr_UseDatabase(playerid);
 	_cntr_UseWeb(playerid);
+}
+
+_cntr_ClearData(playerid)
+{
+	PlayerCountryData[playerid][cntr_Hostname][0] = EOS;
+	PlayerCountryData[playerid][cntr_Code][0] = EOS;
+	PlayerCountryData[playerid][cntr_Country][0] = EOS;
+	PlayerCountryData[playerid][cntr_Region][0] = EOS;
+	PlayerCountryData[playerid][cntr_ISP][0] = EOS;
+	PlayerCountryData[playerid][cntr_Proxy] = 0;
 }
 
 _cntr_UseDatabase(playerid)
@@ -110,7 +121,7 @@ public OnLookupResponse(sessionid, response, data[])
 	new playerid = PlayerSessionData[sessionid];
 	Iter_Remove(PlayerSessionIndex, sessionid);
 
-	if(IsPlayerConnected(playerid))
+	if(!IsPlayerConnected(playerid))
 		return;
 
 	if(response != 200 || isnull(data))
@@ -126,18 +137,14 @@ public OnLookupResponse(sessionid, response, data[])
 
 	new
 		pos,
-		country[45],
 		proxy[2];
 
 	_cntr_GetXMLData(data, "host", PlayerCountryData[playerid][cntr_Hostname], pos, 60);
 	_cntr_GetXMLData(data, "code", PlayerCountryData[playerid][cntr_Code], pos, 3);
-	_cntr_GetXMLData(data, "country", country, pos, 45);
+	_cntr_GetXMLData(data, "country", PlayerCountryData[playerid][cntr_Country], pos, 92);
 	_cntr_GetXMLData(data, "region", PlayerCountryData[playerid][cntr_Region], pos, 43);
 	_cntr_GetXMLData(data, "isp", PlayerCountryData[playerid][cntr_ISP], pos, 60);
 	_cntr_GetXMLData(data, "proxy", proxy, pos, 2);
-
-	if(strcmp(PlayerCountryData[playerid][cntr_Country], country, true, 45))
-		format(PlayerCountryData[playerid][cntr_Country], 92, "%s/%s", PlayerCountryData[playerid][cntr_Country], country);
 
 	PlayerCountryData[playerid][cntr_Proxy] = strval(proxy);
 
