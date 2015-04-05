@@ -75,24 +75,23 @@ creations are made!
 
  This will not self-create if absent due to SAMPSON not having write API.
  Not all settings must be present, here is an example:
+ ```
+ {
+   "player":{
+     "allow-pause-map":1,
+     "combat-log-window":60,
+     "nametag-distance":5.000000,
+     "vehicle-surfing":1
+   },
+   "server":
+   {
+     "max-uptime":3600,
+     "motd":"Welcome to Southclaw's Scavenge and Survive!"
+   }
+ }
+ ```
 
-```
-{
-  "player":{
-    "allow-pause-map":1,
-    "combat-log-window":60,
-    "nametag-distance":5.000000,
-    "vehicle-surfing":1
-  },
-  "server":
-  {
-    "max-uptime":3600,
-    "motd":"Welcome to Southclaw's Scavenge and Survive!"
-  }
-}
-```
-
-6. Enjoy!
+6. **Enjoy!**
  Do whatever you want with it, but keep my name on it :)
 
 
