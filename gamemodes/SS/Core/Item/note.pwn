@@ -11,6 +11,8 @@ static
 
 hook OnScriptInit()
 {
+	print("\n[OnScriptInit] Initialising 'note'...");
+
 	note_Text[0] = "Have you tried using the 'Combine' option to use a knife with clothes? You'll get a bandage! Always useful to have a bandage...";
 	note_Text[1] = "If anyone offers to meet up to trade... ALWAYS HAVE A PLAN B.";
 	note_Text[2] = "Too many people have opinions on things they know nothing about. And the more ignorant they are, the more opinions they have.";
