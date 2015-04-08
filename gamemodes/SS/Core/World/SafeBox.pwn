@@ -143,8 +143,8 @@ public OnItemCreate(itemid)
 
 			if(!box_SkipGEID)
 			{
-				box_GEID[itemid] = box_GEID_Index;
 				box_GEID_Index++;
+				box_GEID[itemid] = box_GEID_Index;
 			}
 
 			SetItemArrayDataSize(itemid, 3);

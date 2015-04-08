@@ -16,7 +16,7 @@ LoadSettings()
 	}
 
 	GetSettingString("server/motd", "Please update the 'server/motd' string in "SETTINGS_FILE"", gMessageOfTheDay);
-	GetSettingString("server/website", "southclawjk.wordpress.com", gMessageOfTheDay);
+	GetSettingString("server/website", "southclawjk.wordpress.com", gWebsiteURL);
 
 	gRuleList[0] = "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
 	gRuleList[1] = "(Rule 2) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
