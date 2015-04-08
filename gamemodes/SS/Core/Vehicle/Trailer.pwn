@@ -241,7 +241,7 @@ _HandleTrailerTowKey(playerid)
 
 		tmptype = GetVehicleType(i);
 
-		if(IsVehicleTypeTrailer(tmptype))
+		if(!IsVehicleTypeTrailer(tmptype))
 			continue;
 
 		if(GetVehicleTypeSize(tmptype) != trl_VehicleTypeHitchSize[vehicletype])

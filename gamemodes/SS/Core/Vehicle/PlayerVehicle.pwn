@@ -293,10 +293,10 @@ LoadPlayerVehicle(filename[])
 
 		Iter_Add(veh_Index, trailerid);
 
-		SetVehicleHealth(vehicleid, Float:data[VEH_CELL_HEALTH]);
-		SetVehicleFuel(vehicleid, Float:data[VEH_CELL_FUEL]);
-		SetVehicleDamageData(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
-		SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
+		SetVehicleHealth(trailerid, Float:data[VEH_CELL_HEALTH]);
+		SetVehicleFuel(trailerid, Float:data[VEH_CELL_FUEL]);
+		SetVehicleDamageData(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		SetVehicleKey(trailerid, data[VEH_CELL_KEY]);
 
 		new itemcount;
 
