@@ -97,9 +97,10 @@ GetPlayerInfo(name[])
 		warnings,
 		aimshout[128],
 		hash[41],
-		active;
+		active,
+		vSave;
 
-	GetAccountData(name, pass, ipv4, alive, karma, regdate, lastlog, spawntime, totalspawns, warnings, aimshout, hash, active);
+	GetAccountData(name, pass, ipv4, alive, karma, regdate, lastlog, spawntime, totalspawns, warnings, aimshout, hash, active, vSave);
 
 	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
 
