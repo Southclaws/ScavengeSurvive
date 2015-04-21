@@ -6,6 +6,7 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/whitelist - add/remove name or turn whitelist on/off\n");
+	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/spec - spectate\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/ip - get a player's IP\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/vehicle - vehicle control (duty only)\n");
 	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/move - nudge yourself\n");
@@ -122,6 +123,51 @@ ACMD:whitelist[3](playerid, params[])
 		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close");
 	}
 
+	return 1;
+}
+
+
+/*==============================================================================
+
+	Enter spectate mode on a specific player
+
+==============================================================================*/
+
+
+ACMD:spec[2](playerid, params[])
+{
+	if(!(IsPlayerOnAdminDuty(playerid)))
+		return 6;
+
+	if(isnull(params))
+	{
+		ExitSpectateMode(playerid);
+	}
+	else
+	{
+		new targetid = strval(params);
+
+		if(IsPlayerConnected(targetid) && targetid != playerid)
+		{
+			if(GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_GM)
+			{
+				if(!IsPlayerReported(gPlayerName[targetid]))
+				{
+					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
+					return 1;
+				}
+			}
+
+			EnterSpectateMode(playerid, targetid);
+		}
+	}
+
+	return 1;
+}
+
+ACMD:recam[2](playerid, params[])
+{
+	SetCameraBehindPlayer(playerid);
 	return 1;
 }
 

@@ -6,7 +6,6 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'Admin/Level2'...");
 
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/duty - go on admin duty\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/spec - spectate\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/goto, /get - teleport players\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/gotopos - go to coordinates\n");
 	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)freeze - freeze/unfreeze player\n");
@@ -38,51 +37,6 @@ ACMD:duty[2](playerid, params[])
 	else
 		TogglePlayerAdminDuty(playerid, true);
 
-	return 1;
-}
-
-
-/*==============================================================================
-
-	Enter spectate mode on a specific player
-
-==============================================================================*/
-
-
-ACMD:spec[2](playerid, params[])
-{
-	if(!(IsPlayerOnAdminDuty(playerid)))
-		return 6;
-
-	if(isnull(params))
-	{
-		ExitSpectateMode(playerid);
-	}
-	else
-	{
-		new targetid = strval(params);
-
-		if(IsPlayerConnected(targetid) && targetid != playerid)
-		{
-			if(GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_GM)
-			{
-				if(!IsPlayerReported(gPlayerName[targetid]))
-				{
-					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
-					return 1;
-				}
-			}
-
-			EnterSpectateMode(playerid, targetid);
-		}
-	}
-
-	return 1;
-}
-
-ACMD:recam[2](playerid, params[])
-{
-	SetCameraBehindPlayer(playerid);
 	return 1;
 }
 
