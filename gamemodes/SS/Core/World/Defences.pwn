@@ -88,7 +88,6 @@ static
 bool:		def_PrintEachLoad,
 bool:		def_PrintTotalLoad,
 bool:		def_PrintEachSave,
-bool:		def_PrintEachRuntimeSave,
 bool:		def_PrintTotalSave,
 bool:		def_PrintRemoves;
 
@@ -99,16 +98,9 @@ hook OnScriptInit()
 
 	if(def_GEID_Index > 0)
 	{
-		printf("ERROR: def_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");
+		printf("ERROR: def_GEID_Index has been modified prior to loading defences.");
 		for(;;){}
 	}
-
-	new arr[1];
-
-	modio_read(GEID_FILE, _T<D,F,N,C>, 1, arr);
-
-	def_GEID_Index = arr[0];
-	// printf("Loaded defence GEID: %d", def_GEID_Index);
 
 	#if defined SIF_USE_DEBUG_LABELS
 		def_DebugLabelType = DefineDebugLabelType("DEFENCE", GREEN);
@@ -122,7 +114,6 @@ hook OnScriptInit()
 	GetSettingInt("defence/print-each-load", false, def_PrintEachLoad);
 	GetSettingInt("defence/print-total-load", true, def_PrintTotalLoad);
 	GetSettingInt("defence/print-each-save", false, def_PrintEachSave);
-	GetSettingInt("defence/print-each-runtime-save", false, def_PrintEachRuntimeSave);
 	GetSettingInt("defence/print-total-save", true, def_PrintTotalSave);
 	GetSettingInt("defence/print-removes", false, def_PrintRemoves);
 }
@@ -132,13 +123,6 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'Defences'...");
 
 	LoadDefences();
-}
-
-hook OnScriptExit()
-{
-	print("\n[OnScriptExit] Shutting down 'Defences'...");
-
-	SaveDefences();
 }
 
 hook OnPlayerConnect(playerid)
@@ -695,7 +679,7 @@ public OnHoldActionFinish(playerid)
 
 		DestroyItem(def_CurrentDefenceItem[playerid]);
 
-		SaveDefenceItem(id, def_PrintEachRuntimeSave);
+		SaveDefenceItem(id);
 		StopBuildingDefence(playerid);
 		//EditDefence(playerid, id);
 
@@ -710,7 +694,7 @@ public OnHoldActionFinish(playerid)
 		{
 			ShowActionText(playerid, "Motor installed to defence");
 			def_Data[def_CurrentDefenceEdit[playerid]][def_motor] = true;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
@@ -721,7 +705,7 @@ public OnHoldActionFinish(playerid)
 			ShowActionText(playerid, "Keypad installed to defence");
 			ShowSetPassDialog_Keypad(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 1;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
@@ -732,7 +716,7 @@ public OnHoldActionFinish(playerid)
 			ShowActionText(playerid, "Advanced Keypad installed to defence");
 			ShowSetPassDialog_KeypadAdv(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 2;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
 			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
@@ -821,7 +805,7 @@ ShowSetPassDialog_Keypad(playerid)
 		#pragma unused pid, keypadid, match
 
 		def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
-		SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+		SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 		HideKeypad(playerid);
 
 		return 1;
@@ -888,7 +872,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		if(def_CurrentDefenceEdit[playerid] != -1)
 		{
 			def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = code;
-			SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			HideKeypad(playerid);
 
 			def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
@@ -1018,7 +1002,7 @@ ShowSetPassDialog_KeypadAdv(playerid)
 			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
 			{
 				def_Data[def_CurrentDefenceEdit[playerid]][def_pass] = pass;
-				SaveDefenceItem(def_CurrentDefenceEdit[playerid], def_PrintEachRuntimeSave);
+				SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 				def_UpdateDebugLabel(def_CurrentDefenceEdit[playerid]);
 				def_CurrentDefenceEdit[playerid] = -1;
 			}
@@ -1125,6 +1109,7 @@ timer MoveDefence[1500](defenceid, playerid)
 
 		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into CLOSED position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 		def_UpdateDebugLabel(defenceid);
+		SaveDefenceItem(defenceid);
 	}
 	else
 	{
@@ -1140,6 +1125,7 @@ timer MoveDefence[1500](defenceid, playerid)
 
 		logf("[DEFMOVE] Player %p moved defence %d (GEID: %d) into OPEN position at %.1f, %.1f, %.1f", playerid, defenceid, def_GEID[defenceid], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ]);
 		def_UpdateDebugLabel(defenceid);
+		SaveDefenceItem(defenceid);
 	}
 
 	return;
@@ -1259,7 +1245,7 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 
 /*==============================================================================
 
-	Save and Load All
+	Load All
 
 ==============================================================================*/
 
@@ -1286,34 +1272,8 @@ LoadDefences()
 
 	dir_close(direc);
 
-	// If no defences were loaded, load the old format
-	// This should only ever happen once (upon transition to this new version)
-	if(count == 0)
-		OLD_LoadDefences();
-
 	if(def_PrintTotalLoad)
 		printf("Loaded %d Defences", count);
-}
-
-SaveDefences()
-{
-	new count;
-
-	foreach(new i : def_Index)
-	{
-		if(SaveDefenceItem(i, def_PrintEachSave))
-			count++;
-	}
-
-	if(def_PrintTotalSave)
-		printf("Saved %d Defences", count);
-
-	new arr[1];
-
-	arr[0] = def_GEID_Index;
-
-	modio_push(GEID_FILE, _T<D,F,N,C>, 1, arr);//, true, false, false);
-	printf("Storing defence GEID: %d", def_GEID_Index);
 }
 
 
@@ -1324,7 +1284,7 @@ SaveDefences()
 ==============================================================================*/
 
 
-SaveDefenceItem(defenceid, prints)
+SaveDefenceItem(defenceid)
 {
 	if(!Iter_Contains(def_Index, defenceid))
 		return 0;
@@ -1332,7 +1292,7 @@ SaveDefenceItem(defenceid, prints)
 	if(def_Data[defenceid][def_hitPoints] <= 0)
 		return 0;
 
-	if(prints)
+	if(def_PrintEachSave)
 		printf("\t[SAVE] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d ms:%d h:%d)", def_Data[defenceid][def_type], def_Data[defenceid][def_posX], def_Data[defenceid][def_posY], def_Data[defenceid][def_posZ], def_Data[defenceid][def_pose], def_Data[defenceid][def_motor], def_Data[defenceid][def_keypad], def_Data[defenceid][def_pass], def_Data[defenceid][def_moveState], def_Data[defenceid][def_hitPoints]);
 
 	new
@@ -1417,144 +1377,6 @@ LoadDefenceItem(filename[])
 
 /*==============================================================================
 
-	Legacy format (Load only)
-
-==============================================================================*/
-
-
-OLD_LoadDefences()
-{
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_DEFENCES),
-		item[46],
-		type,
-		filename[64],
-		count;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			filename = DIRECTORY_DEFENCES;
-			strcat(filename, item);
-
-			count += OLD_LoadDefenceItem(filename);
-		}
-	}
-
-	dir_close(direc);
-
-	SaveDefences();
-
-	if(def_PrintTotalLoad)
-		printf("Loaded %d Defences using old format", Iter_Count(def_Index));
-}
-
-OLD_LoadDefenceItem(filename[])
-{
-	new
-		File:file,
-		data[4],
-		pose,
-		motor,
-		keypad,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r;
-
-	file = fopen(filename);
-
-	if(!file)
-		return 0;
-
-	fblockread(file, data, sizeof(data));
-	fclose(file);
-	fremove(filename);
-
-	sscanf(filename, "'"DIRECTORY_DEFENCES"'p<_>dddd", _:x, _:y, _:z, _:r);
-
-	pose = data[1];
-
-	if(pose == 2)
-	{
-		pose = DEFENCE_POSE_VERTICAL;
-		motor = 1;
-		keypad = 1;
-	}
-
-	new ret = CreateDefence(data[0], Float:x, Float:y, Float:z, Float:r, pose, motor, keypad, data[3], pose, data[2]);
-
-	if(ret > -1)
-	{
-		if(def_PrintEachLoad)
-			printf("\t[LOAD] [OLD] Defence type %d at %f, %f, %f (p:%d m:%d k:%d p:%d m:%d h:%d)", data[0], x, y, z, pose, motor, keypad, data[3], pose, data[2]);
-	}
-	else
-	{
-		printf("ERROR: Creating loaded defence type %d at %f, %f, %f, Code: %d", data[0], x, y, z, ret);
-	}
-
-	return 1;
-}
-
-
-/*==============================================================================
-
-	(I have no idea where to put this, for now it will live right here.)
-	(Custom explosion code needs to be written that also does custom damage.)
-
-==============================================================================*/
-
-
-stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
-{
-	CreateExplosion(x, y, z, type, size);
-
-	new
-		Float:smallestdistance = 9999999.9,
-		Float:tempdistance,
-		closestid;
-
-	foreach(new i : def_Index)
-	{
-		tempdistance = Distance(x, y, z, def_Data[i][def_posX], def_Data[i][def_posY], def_Data[i][def_posZ]);
-
-		if(tempdistance < smallestdistance)
-		{
-			smallestdistance = tempdistance;
-			closestid = i;
-		}
-	}
-
-	if(smallestdistance < size)
-	{
-		def_Data[closestid][def_hitPoints] -= hitpoints;
-
-		if(def_Data[closestid][def_hitPoints] <= 0)
-		{
-			logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
-				closestid, x, y, z,
-				def_GEID[closestid],
-				_:def_TypeData[def_Data[closestid][def_type]][def_itemtype],
-				GetItemTypeModel(def_TypeData[def_Data[closestid][def_type]][def_itemtype]), x, y, z + def_TypeData[def_Data[closestid][def_type]][def_placeOffsetZ],
-				def_TypeData[def_Data[closestid][def_type]][def_verticalRotX],
-				def_TypeData[def_Data[closestid][def_type]][def_verticalRotY],
-				def_TypeData[def_Data[closestid][def_type]][def_verticalRotZ] + def_Data[closestid][def_rotZ]);
-
-			DestroyDefence(closestid);
-		}
-		else
-		{
-			SetButtonLabel(def_Data[closestid][def_buttonId], sprintf("%d/%d", def_Data[closestid][def_hitPoints], def_TypeData[def_Data[closestid][def_type]][def_maxHitPoints]), .range = 1.5);
-			def_UpdateDebugLabel(closestid);
-		}
-	}
-}
-
-
-/*==============================================================================
-
 	Interface functions
 
 ==============================================================================*/
@@ -1567,6 +1389,64 @@ stock IsValidDefence(defenceid)
 
 	return 1;
 }
+
+// def_itemtype
+stock ItemType:GetDefenceTypeItemType(defencetype)
+{
+	if(!(0 <= defencetype < def_TypeIndex))
+		return INVALID_ITEM_TYPE;
+
+	return def_TypeData[defencetype][def_itemtype];
+}
+
+// def_verticalRotX
+// def_verticalRotY
+// def_verticalRotZ
+stock GetDefenceTypeVerticalRot(defencetype, &Float:x, &Float:y, &Float:z)
+{
+	if(!(0 <= defencetype < def_TypeIndex))
+		return 0;
+
+	x = def_TypeData[defencetype][def_verticalRotX];
+	y = def_TypeData[defencetype][def_verticalRotY];
+	z = def_TypeData[defencetype][def_verticalRotZ];
+
+	return 1;
+}
+
+// def_horizontalRotX
+// def_horizontalRotY
+// def_horizontalRotZ
+stock GetDefenceTypeHorizontalRot(defencetype, &Float:x, &Float:y, &Float:z)
+{
+	if(!(0 <= defencetype < def_TypeIndex))
+		return 0;
+
+	x = def_TypeData[defencetype][def_horizontalRotX];
+	y = def_TypeData[defencetype][def_horizontalRotY];
+	z = def_TypeData[defencetype][def_horizontalRotZ];
+
+	return 1;
+}
+
+// def_placeOffsetZ
+stock Float:GetDefenceTypeOffsetZ(defencetype)
+{
+	if(!(0 <= defencetype < def_TypeIndex))
+		return 0.0;
+
+	return def_TypeData[defencetype][def_placeOffsetZ];
+}
+
+// def_maxHitPoints
+stock GetDefenceTypeMaxHitpoints(defencetype)
+{
+	if(!(0 <= defencetype < def_TypeIndex))
+		return 0;
+
+	return def_TypeData[defencetype][def_maxHitPoints];
+}
+
 
 // def_type
 stock GetDefenceType(defenceid)
@@ -1656,6 +1536,7 @@ stock SetDefenceHitPoints(defenceid, hitpoints)
 
 	def_Data[defenceid][def_hitPoints] = hitpoints;
 	SetButtonLabel(def_Data[defenceid][def_buttonId], sprintf("%d/%d", def_Data[defenceid][def_hitPoints], def_TypeData[def_Data[defenceid][def_type]][def_maxHitPoints]), .range = 1.5);
+	def_UpdateDebugLabel(defenceid);
 
 	return 1;
 }
@@ -1685,6 +1566,14 @@ stock Float:GetDefenceRot(defenceid)
 }
 
 // def_GEID
+stock GetDefenceGEID(defenceid)
+{
+	if(!Iter_Contains(def_Index, defenceid))
+		return -1;
+
+	return def_GEID[defenceid];
+}
+
 stock GetDefenceIDFromGEID(geid)
 {
 	foreach(new i : def_Index)

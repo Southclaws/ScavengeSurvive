@@ -2,7 +2,6 @@
 
 
 #define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"Safebox/"
-#define MAX_SAFEBOX			ITM_MAX
 #define MAX_SAFEBOX_TYPE	(8)
 #define MAX_SAFEBOX_NAME	(32)
 
@@ -23,7 +22,7 @@ enum
 
 static
 			box_GEID_Index,
-			box_GEID[MAX_SAFEBOX],
+			box_GEID[ITM_MAX],
 			box_SkipGEID,
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
@@ -62,7 +61,7 @@ hook OnScriptInit()
 
 	if(box_GEID_Index > 0)
 	{
-		printf("ERROR: box_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");
+		printf("ERROR: box_GEID_Index has been modified prior to loading safeboxes.");
 		for(;;){}
 	}
 
@@ -78,13 +77,22 @@ hook OnScriptInit()
 	GetSettingInt("safebox/print-each-save", false, box_PrintEachSave);
 	GetSettingInt("safebox/print-total-save", true, box_PrintTotalSave);
 	GetSettingInt("safebox/print-removes", false, box_PrintRemoves);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'SafeBox'...");
 
 	LoadSafeBoxes();
+}
+
+hook OnScriptExit()
+{
+	new ret;
+
+	foreach(new i : itm_Index)
+	{
+		ret = CheckForDuplicateGEID(i);
+
+		if(ret > 0)
+			printf("[EXIT] BOX %d (GEID: %d) DUPLICATE ID RETURN: %d", i, box_GEID[i], ret);
+	}
+
 }
 
 hook OnPlayerConnect(playerid)
@@ -629,8 +637,8 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 
 	containerid = GetItemArrayDataAtCell(boxitemid, 1);
 
-	if(box_GEID[boxitemid] > box_GEID_Index)
-		box_GEID_Index = box_GEID[boxitemid] + 1;
+	if(geid > box_GEID_Index)
+		box_GEID_Index = geid + 1;
 
 	if(box_PrintEachLoad)
 		printf("\t[LOAD] Safebox: GEID %d, type %d, at %f, %f, %f", box_GEID[boxitemid], type[0], data[0], data[1], data[2]);
@@ -744,6 +752,55 @@ ACMD:setboxactive[4](playerid, params[])
 
 	GetItemPos(itemid, x, y, z);
 	MsgF(playerid, YELLOW, " >  Loaded safebox item %d at %f %f %f", itemid, x, y, z);
+
+	return 1;
+}
+
+CheckForDuplicateGEID(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(!IsItemTypeSafebox(itemtype))
+		return -1;
+
+	new count;
+
+	foreach(new i : itm_Index)
+	{
+		itemtype = GetItemType(i);
+
+		if(!IsItemTypeSafebox(itemtype))
+			continue;
+
+		if(i == itemid)
+			continue;
+
+		if(box_GEID[i] == box_GEID[itemid])
+		{
+			box_GEID_Index++;
+			box_GEID[i] = box_GEID_Index;
+			printf("[WARNING] Item %d has the same GEID as item %d. Assigning new GEID: %d", itemid, i, box_GEID[i]);
+			SafeboxSaveCheck(INVALID_PLAYER_ID, itemid);
+			SafeboxSaveCheck(INVALID_PLAYER_ID, i);
+			count++;
+		}
+	}
+
+	return count;
+}
+
+ACMD:bgeid[3](playerid, params[])
+{
+	new
+		itemid = strval(params),
+		ret;
+
+	ret = CheckForDuplicateGEID(itemid);
+
+	if(ret == -1)
+		Msg(playerid, YELLOW, " >  ERROR: Specified item is not a safebox type.");
+
+	MsgF(playerid, YELLOW, " >  %d safeboxe GEIDs reassigned", ret);
 
 	return 1;
 }

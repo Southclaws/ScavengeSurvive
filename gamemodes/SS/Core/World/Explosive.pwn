@@ -147,3 +147,62 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, type, Float:size, prese
 			CreateEmpExplosion(x, y, z, size);
 	}
 }
+
+stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
+{
+	CreateExplosion(x, y, z, type, size);
+
+	new
+		Float:defposx,
+		Float:defposy,
+		Float:defposz,
+		Float:smallestdistance = 9999999.9,
+		Float:tempdistance,
+		closestid;
+
+	foreach(new i : def_Index)
+	{
+		GetDefencePos(closestid, defposx, defposy, defposz);
+
+		tempdistance = Distance(x, y, z, defposx, defposy, defposz);
+
+		if(tempdistance < smallestdistance)
+		{
+			smallestdistance = tempdistance;
+			closestid = i;
+		}
+	}
+
+	if(smallestdistance < size)
+	{
+		new newhitpoints = GetDefenceHitPoints(closestid) - hitpoints;
+
+		if(newhitpoints <= 0)
+		{
+			new
+				defencetype = GetDefenceType(closestid),
+				ItemType:itemtype = GetDefenceTypeItemType(defencetype),
+				Float:vrotx,
+				Float:vroty,
+				Float:vrotz,
+				Float:rotz;
+
+			GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
+			rotz = GetDefenceRot(closestid);
+
+			logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
+				closestid, x, y, z,
+				GetDefenceGEID(closestid),
+				_:itemtype,
+				GetItemTypeModel(itemtype),
+				x, y, z + GetDefenceTypeOffsetZ(defencetype),
+				vrotx, vroty, vrotz + rotz);
+
+			DestroyDefence(closestid);
+		}
+		else
+		{
+			SetDefenceHitPoints(closestid, newhitpoints);
+		}
+	}
+}

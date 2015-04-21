@@ -67,7 +67,7 @@ hook OnScriptInit()
 
 	if(tnt_GEID_Index > 0)
 	{
-		printf("ERROR: tnt_GEID_Index has been modified prior to loading from "GEID_FILE". This variable can NOT be modified before being assigned a value from this file.");
+		printf("ERROR: tnt_GEID_Index has been modified prior to loading tents.");
 		for(;;){}
 	}
 
@@ -80,11 +80,6 @@ hook OnScriptInit()
 	GetSettingInt("tent/print-each-save", false, tnt_PrintEachSave);
 	GetSettingInt("tent/print-total-save", true, tnt_PrintTotalSave);
 	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'Tent'...");
 
 	LoadTents();
 }

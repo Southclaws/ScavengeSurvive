@@ -804,6 +804,28 @@ public OnScriptInit()
 // 19520 captain's cap
 // 19514 swat helmet
 
+// a51 floor/buildings
+// some islands/mystical places
+// 11704 devil mask
+// 11712 cross
+// 11713 keypad
+// 11715/6 fork and knife melee
+// 11722/3 sauce bottles
+// 11729/11730 metal lockers
+// 11735 boot
+// 11736 medical satchel
+// 11737 doormat (constructable)
+// 11738 new doctor's bag model
+// 11742 cake: autocreate in circle, allow taking of slices
+// 11743 rare, can be used to fill bottles
+// 11745 use as safebox if small enough
+// 11746 use as mechanical key
+// 11747/11748 bandages
+
+
+
+
+
 	SetItemTypeMaxArrayData(item_NULL,			0);
 	SetItemTypeMaxArrayData(item_Knuckles,		4);
 	SetItemTypeMaxArrayData(item_GolfClub,		4);

@@ -175,7 +175,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define ACCOUNT_DATABASE			DIRECTORY_MAIN"accounts.db"
 #define WORLD_DATABASE				DIRECTORY_MAIN"world.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
-#define GEID_FILE					DIRECTORY_MAIN"geids.dat"
 
 
 // Macros
