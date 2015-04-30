@@ -125,7 +125,8 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
-#include <a_json>					// By KingHual, 0.1.1:		http://forum.sa-mp.com/showthread.php?t=543919
+//#include <a_json>					// By KingHual, 0.1.1:		http://forum.sa-mp.com/showthread.php?t=543919
+#include <djson>
 
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
@@ -583,7 +584,7 @@ main()
 OnGameModeInit_Setup()
 {
 	print("\n[OnGameModeInit_Setup] Setting up...");
-
+	djson_GameModeInit();
 	Streamer_ToggleErrorCallback(true);
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
@@ -610,7 +611,7 @@ OnGameModeInit_Setup()
 public OnGameModeExit()
 {
 	print("\n[OnGameModeExit] Shutting down...");
-
+	djson_GameModeExit();
 	new File:f = fopen("nonexistentfile", io_read), _s[1];
 	fread(f, _s);
 	fclose(f);
