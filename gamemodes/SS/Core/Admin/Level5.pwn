@@ -270,3 +270,29 @@ ACMD:wc[5](playerid, params[])
 
 	return 1;
 }
+
+static cloneid[MAX_PLAYERS] = {INVALID_ACTOR_ID, ...};
+
+ACMD:clone[5](playerid, params[])
+{
+	if(cloneid[playerid] == INVALID_ACTOR_ID)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:a;
+
+		GetPlayerPos(playerid, x, y, z);
+		GetPlayerFacingAngle(playerid, a);
+
+		cloneid[playerid] = CreateActor(GetPlayerSkin(playerid), x, y, z, a);
+	}
+	else
+	{
+		DestroyActor(cloneid[playerid]);
+		cloneid[playerid] = INVALID_ACTOR_ID;
+	}
+
+	return 1;
+}

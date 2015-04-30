@@ -409,9 +409,28 @@ ItemType:		item_Rucksack		= INVALID_ITEM_TYPE,
 ItemType:		item_SeedBag		= INVALID_ITEM_TYPE,
 ItemType:		item_Note			= INVALID_ITEM_TYPE,
 ItemType:		item_Tomato			= INVALID_ITEM_TYPE,
-// 100
+// 200
 ItemType:		item_HeartShapedBox	= INVALID_ITEM_TYPE,
-ItemType:		item_AntiSepBandage	= INVALID_ITEM_TYPE;
+ItemType:		item_AntiSepBandage	= INVALID_ITEM_TYPE,
+ItemType:		item_WoodLog		= INVALID_ITEM_TYPE,
+ItemType:		item_Sledgehammer	= INVALID_ITEM_TYPE,
+ItemType:		item_RawFish		= INVALID_ITEM_TYPE,
+ItemType:		item_Spanner		= INVALID_ITEM_TYPE,
+ItemType:		item_Suitcase		= INVALID_ITEM_TYPE,
+ItemType:		item_OilCan			= INVALID_ITEM_TYPE,
+ItemType:		item_RadioBox		= INVALID_ITEM_TYPE,
+ItemType:		item_BigSword		= INVALID_ITEM_TYPE,
+// 210
+ItemType:		item_Microphone		= INVALID_ITEM_TYPE,
+ItemType:		item_Spatula		= INVALID_ITEM_TYPE,
+ItemType:		item_Pan			= INVALID_ITEM_TYPE,
+ItemType:		item_Knife2			= INVALID_ITEM_TYPE,
+ItemType:		item_Meat2			= INVALID_ITEM_TYPE,
+ItemType:		item_FryingPan		= INVALID_ITEM_TYPE,
+ItemType:		item_PizzaOnly		= INVALID_ITEM_TYPE,
+ItemType:		item_BreadLoaf		= INVALID_ITEM_TYPE,
+ItemType:		item_Banana			= INVALID_ITEM_TYPE,
+ItemType:		item_Orange			= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -755,28 +774,26 @@ public OnScriptInit()
 // 200
 	item_HeartShapedBox	= DefineItemType("Heart Shaped Box",	"HeartShapedBox",	1240,	1,	90.0, 0.0, 0.0,			-0.02,	0.171999, 0.077999, -0.016999,  0.000000, 0.000000, 10.200000);
 	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_WoodLog		= DefineItemType("Wood Log",			"WoodLog",			19632,	1,	0.0, 0.0, 0.0,			0.0,	0.034999, 0.018998, -0.150000,  -74.199989, -110.000022, -54.900020);
+	item_Sledgehammer	= DefineItemType("sledgehammer",		"Sledgehammer",		19631,	1,	0.0, 0.0, 0.0,			0.0,	0.075000, -0.004000, 0.269000,  -84.600021, -70.899993, 0.000000);
+	item_RawFish		= DefineItemType("fish",				"RawFish",			19630,	1,	0.0, 0.0, 0.0,			0.0,	0.047000, 0.021999, 0.083000,  -84.299980, -75.299972, 103.100028);
+	item_Spanner		= DefineItemType("wrench",				"Spanner",			19627,	1,	0.0, 0.0, 0.0,			0.0,	0.073000, 0.022000, 0.035000,  -84.299980, -75.299972, 103.100028);
+	item_Suitcase		= DefineItemType("suitcase",			"Suitcase",			19624,	1,	0.0, 0.0, 0.0,			0.0,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028);
+	item_OilCan			= DefineItemType("oilcan",				"OilCan",			19621,	1,	0.0, 0.0, 0.0,			0.0,	0.075999, 0.022000, 0.011000,  7.800007, -11.899963, 81.800025);
+	item_RadioBox		= DefineItemType("small amp",			"RadioBox",			19612,	1,	0.0, 0.0, 0.0,			0.0,	-0.090000, 0.132999, -0.202000,  63.499916, 108.599983, 95.499877);
+	item_BigSword		= DefineItemType("Big Ass Sword",		"BigSword",			19590,	1,	0.0, 0.0, 0.0,			0.0,	0.069000, 0.030999, 0.012000,  53.499919, -99.100090, 146.499862);
+// 210
+	item_Microphone		= DefineItemType("Microphone",			"Microphone",		19610,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.030999, 0.012000,  53.499919, -99.100090, -46.300144);
+	item_Spatula		= DefineItemType("Spatula",				"Spatula",			19586,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.030999, 0.012000,  53.499919, -99.100090, 150.899887);
+	item_Pan			= DefineItemType("Pan",					"Pan",				19584,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.030999, 0.012000,  39.499954, -77.500083, 128.299819);
+	item_Knife2			= DefineItemType("Knife",				"Knife2",			19583,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.030999, 0.012000,  90.099937, 11.200005, -171.200286);
+	item_Meat2			= DefineItemType("Meat",				"Meat2",			19582,	1,	0.0, 0.0, 0.0,		0.0,	0.044000, 0.017999, 0.099000,  90.099960, 7.200009, 1.799715);
+	item_FryingPan		= DefineItemType("Frying Pan",			"FryingPan",		19581,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.017999, 0.025000,  -29.900056, -88.800018, 59.299705);
+	item_PizzaOnly		= DefineItemType("Pizza",				"PizzaOnly",		19580,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.017999, 0.025000,  -29.900056, -88.800018, 59.299705);
+	item_BreadLoaf		= DefineItemType("Loaf of Bread",		"BreadLoaf",		19579,	1,	0.0, 0.0, 0.0,		0.0,	0.232000, 0.053998, 0.047000,  83.599945, -56.300045, 100.099731);
+	item_Banana			= DefineItemType("Banana",				"Banana",			19578,	1,	0.0, 0.0, 0.0,		0.0,	0.059000, 0.017998, 0.026000,  86.399932, -161.300003, 83.699714);
+	item_Orange			= DefineItemType("Orange",				"Orange",			19577,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.040998, 0.009000,  86.399932, -161.300003, 83.699714);
 
-
-// 19632 logs
-// 19631 sledgehammer
-// 19630 wrench
-// 19627 fish
-// 19624 suitcase
-// 19621 oilcan
-// 19618 safe door: 19619
-// 19616 amp
-// 19612 small amp
-// 19610 mic
-// 19590 bowie knife
-// 19586 spatula
-// 19584 pan
-// 19583 knife
-// 19582 meat
-// 19581 frying pan
-// 19580 pizza
-// 19579 loaf of bread
-// 19578 banana
-// 19577 orange
 // 19576 apple
 // 19575 apple
 // 19574 lemon
@@ -787,6 +804,7 @@ public OnScriptInit()
 // 19569 milk carton
 // 19568 ice cream
 // 19566 fishy fingers
+
 // 19565 ice cream bars
 // 19564 apple juice
 // 19563 orange juice
@@ -797,6 +815,7 @@ public OnScriptInit()
 // 19558 pizza hat
 // 19557 pointy ear mask
 // 19556 boxing gloves
+	
 // 19554 beanie
 // 19553 straw hat
 // 19528 witches hat
