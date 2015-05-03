@@ -123,7 +123,7 @@ public OnGameModeInit()
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
+#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/progress2
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
 //#include <a_json>					// By KingHual, 0.1.1:		http://forum.sa-mp.com/showthread.php?t=543919
 #include <djson>
