@@ -295,8 +295,8 @@ public OnItemCreate(itemid)
 		d:2:HANDLER("[OnItemCreate] itemid:%d itemtype:%d bagtype:%d", itemid, _:GetItemType(itemid), bagtype);
 
 		new
-			containerid,
-			lootindex = GetItemLootIndex(itemid);
+			containerid;
+//			lootindex = GetItemLootIndex(itemid);
 
 		containerid = CreateContainer(
 			bag_TypeData[bagtype][bag_name],
