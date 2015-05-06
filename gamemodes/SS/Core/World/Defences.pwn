@@ -1334,11 +1334,26 @@ LoadDefenceItem(filename[])
 
 	length = modio_read(filename, _T<W,P,O,S>, sizeof(pos), _:pos, false, false);
 
-	if(length == 0)
+	if(length < 0)
+	{
+		printf("[LoadDefenceItem] ERROR: modio error %d in '%s'.", length, filename);
+		modio_finalise_read(modio_getsession_read(filename));
 		return 0;
+	}
+
+	if(length == 0)
+	{
+		print("[LoadDefenceItem] ERROR: modio_read returned length of 0.");
+		modio_finalise_read(modio_getsession_read(filename));
+		return 0;
+	}
 
 	if(Float:pos[0] == 0.0 && Float:pos[1] == 0.0 && Float:pos[2] == 0.0)
+	{
+		print("[LoadDefenceItem] ERROR: null position.");
+		modio_finalise_read(modio_getsession_read(filename));
 		return 0;
+	}
 
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
@@ -1346,7 +1361,10 @@ LoadDefenceItem(filename[])
 	length = modio_read(filename, _T<D,A,T,A>, sizeof(data), _:data, true);
 
 	if(data[DEFENCE_CELL_HITPOINTS] <= 0)
+	{
+		printf("[LoadDefenceItem] ERROR: none or negative hitpoints (%d).", data[DEFENCE_CELL_HITPOINTS]);
 		return 0;
+	}
 
 	def_SkipGEID = true;
 

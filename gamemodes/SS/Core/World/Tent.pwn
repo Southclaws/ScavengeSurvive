@@ -80,6 +80,11 @@ hook OnScriptInit()
 	GetSettingInt("tent/print-each-save", false, tnt_PrintEachSave);
 	GetSettingInt("tent/print-total-save", true, tnt_PrintTotalSave);
 	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
+}
+
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'Tent'...");
 
 	LoadTents();
 }
@@ -632,6 +637,13 @@ LoadTent(filename[])
 
 	length = modio_read(filename, _T<H,E,A,D>, 1, head, .autoclose = false);
 
+	if(length < 0)
+	{
+		printf("[LoadTent] ERROR: modio error %d in '%s'.", length, filename);
+		modio_finalise_read(modio_getsession_read(filename));
+		return 0;
+	}
+
 	if(length > 0)
 	{
 		if(head[0] == 0)
@@ -642,17 +654,25 @@ LoadTent(filename[])
 	}
 	else
 	{
-		printf("WARNING: Tent '%s' does not have HEAD file tag, force saving.", filename);
+		printf("[LoadTent] WARNING: Tent '%s' does not have HEAD file tag, force saving.", filename);
 		rewrite = 1;
 	}
 
 	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, .autoclose = false);
 
 	if(length == 0)
+	{
+		print("[LoadTent] ERROR: modio_read returned length of 0.");
+		modio_finalise_read(modio_getsession_read(filename));
 		return 0;
+	}
 
 	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
+	{
+		print("[LoadTent] ERROR: null position.");
+		modio_finalise_read(modio_getsession_read(filename));
 		return 0;
+	}
 
 	tnt_SkipGEID = true;
 	tentid = CreateTent(Float:data[0], Float:data[1], Float:data[2], Float:data[3], data[4], data[5]);
@@ -721,7 +741,9 @@ LoadTent(filename[])
 
 	if(rewrite)
 	{
-		SaveTent(tentid, 1);
+		print("FORCE SAVING TENT");
+		new ret = SaveTent(tentid, 1);
+		printf("SaveTent ret %d", ret);
 	}
 
 	return 1;

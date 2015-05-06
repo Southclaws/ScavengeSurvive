@@ -77,6 +77,11 @@ hook OnScriptInit()
 	GetSettingInt("safebox/print-each-save", false, box_PrintEachSave);
 	GetSettingInt("safebox/print-total-save", true, box_PrintTotalSave);
 	GetSettingInt("safebox/print-removes", false, box_PrintRemoves);
+}
+
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'SafeBox'...");
 
 	LoadSafeBoxes();
 }
@@ -452,6 +457,7 @@ LoadSafeBoxes()
 		item[46],
 		type,
 		filename[64],
+		ret,
 		count;
 
 	while(dir_list(direc, item, type))
@@ -461,7 +467,10 @@ LoadSafeBoxes()
 			filename = DIRECTORY_SAFEBOX;
 			strcat(filename, item);
 
-			count += LoadSafeboxItem(filename);
+			ret = LoadSafeboxItem(filename);
+
+			if(ret != INVALID_ITEM_ID)
+				count++;
 		}
 	}
 
@@ -588,9 +597,17 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 
 	length = modio_read(filename, _T<T,Y,P,E>, 2, type, false, false);
 
+	if(length < 0)
+	{
+		printf("[LoadSafeboxItem] ERROR: modio error %d in '%s'.", length, filename);
+		modio_finalise_read(modio_getsession_read(filename));
+		return INVALID_ITEM_ID;
+	}
+
 	if(length == 0)
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox data length is 0 (file: %s)", filename);
+		modio_finalise_read(modio_getsession_read(filename));
 		return INVALID_ITEM_ID;
 	}
 
@@ -606,6 +623,7 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 			if(forceactive == 0)
 			{
 				d:1:HANDLER("[LoadSafeboxItem] ERROR: Safebox set to inactive (file: %s)", filename);
+				modio_finalise_read(modio_getsession_read(filename));
 				return INVALID_ITEM_ID;
 			}
 		}
@@ -614,6 +632,7 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 	if(!IsItemTypeSafebox(ItemType:type[0]))
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox type (%d) is invalid (file: %s)", type[0], filename);
+		modio_finalise_read(modio_getsession_read(filename));
 		return INVALID_ITEM_ID;
 	}
 
@@ -622,6 +641,7 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
 	{
 		printf("[LoadSafeboxItem] ERROR: Safebox position is %f %f %f (file: %s)", data[0], data[1], data[2], filename);
+		modio_finalise_read(modio_getsession_read(filename));
 		return INVALID_ITEM_ID;
 	}
 

@@ -155,6 +155,7 @@ LoadPlayerVehicles()
 
 LoadPlayerVehicle(filename[])
 {
+	// TODO: move this directory formatting to the load loop.
 	new
 		filepath[64],
 		data[VEH_CELL_END],
@@ -165,11 +166,19 @@ LoadPlayerVehicle(filename[])
 
 	length = modio_read(filepath, _T<A,C,T,V>, 1, data, false, false);
 
+	if(length < 0)
+	{
+		printf("[LoadPlayerVehicle] ERROR: modio error %d in '%s'.", length, filename);
+		modio_finalise_read(modio_getsession_read(filepath));
+		return 0;
+	}
+
 	if(length == 1)
 	{
 		if(data[0] == 0)
 		{
 			d:1:HANDLER("[LoadPlayerVehicle] ERROR: Vehicle set to inactive (file: %s)", filename);
+			modio_finalise_read(modio_getsession_read(filepath));
 			return 0;
 		}
 	}
@@ -177,12 +186,17 @@ LoadPlayerVehicle(filename[])
 	length = modio_read(filepath, _T<D,A,T,A>, sizeof(data), data, false, false);
 
 	if(length == 0)
+	{
+		modio_finalise_read(modio_getsession_read(filepath));
+		print("[LoadPlayerVehicle] ERROR: modio_read returned length of 0.");
 		return 0;
+	}
 
 	if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
 	{
-		logf("ERROR: Removing vehicle file '%s' invalid vehicle type '%d'.", filename, data[VEH_CELL_TYPE]);
+		logf("[LoadPlayerVehicle] ERROR: Removing vehicle file '%s' invalid vehicle type '%d'.", filename, data[VEH_CELL_TYPE]);
 		fremove(filepath);
+		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
 	}
 
@@ -191,8 +205,9 @@ LoadPlayerVehicle(filename[])
 
 	if(Float:data[VEH_CELL_HEALTH] < 255.5)
 	{
-		logf("ERROR: Removing vehicle file: '%s' (%s) due to low health.", filename, vehiclename);
+		logf("[LoadPlayerVehicle] ERROR: Removing vehicle file: '%s' (%s) due to low health.", filename, vehiclename);
 		fremove(filepath);
+		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
 	}
 
@@ -208,9 +223,9 @@ LoadPlayerVehicle(filename[])
 			}
 			else
 			{
-				logf("ERROR: Removing vehicle file: %s (%s) because it's out of the map bounds.", filename, vehiclename);
+				logf("[LoadPlayerVehicle] ERROR: Removing vehicle file: %s (%s) because it's out of the map bounds.", filename, vehiclename);
 				fremove(filepath);
-
+				modio_finalise_read(modio_getsession_read(filepath));
 				return 0;
 			}
 		}
@@ -232,7 +247,11 @@ LoadPlayerVehicle(filename[])
 		data[VEH_CELL_COL2]);
 
 	if(!IsValidVehicle(vehicleid))
+	{
+		printf("[LoadPlayerVehicle] ERROR: Created vehicle returned invalid ID (%d)", vehicleid);
+		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
+	}
 
 	SetVehicleSpawnPoint(vehicleid,
 		Float:data[VEH_CELL_POSX],
