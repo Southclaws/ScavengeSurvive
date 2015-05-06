@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-hook OnGameModeInit()
+Load_FC()
 {
 	print("\n[OnGameModeInit] Initialising 'World/FC'...");
 

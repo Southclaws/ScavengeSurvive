@@ -16,3 +16,53 @@
 #include "ss/World/Xmas.pwn"
 
 new gMapName[17] = 	"San Androcalypse";
+
+#include <YSI\y_hooks>
+
+
+hook OnGameModeInit()
+{
+	defer LoadWorld();
+}
+
+timer LoadWorld[100]()
+{
+	new
+		itemtypename[ITM_MAX_NAME],
+		itemcounts[ITM_MAX_TYPES];
+
+	// store this to a list and compare after
+	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+	{
+		if(!IsValidItemType(i))
+			break;
+
+		if(GetItemTypeCount(i) == 0)
+			continue;
+
+		itemcounts[i] = GetItemTypeCount(i);
+	}
+
+
+	Load_LS();
+	Load_SF();
+	Load_LV();
+	Load_RC();
+	Load_FC();
+	Load_BC();
+	Load_TR();
+
+	// compare with previous list and print differences
+	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+	{
+		if(!IsValidItemType(i))
+			break;
+
+		if(GetItemTypeCount(i) == 0)
+			continue;
+
+		GetItemTypeUniqueName(i, itemtypename);
+
+		printf("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, itemcounts[i], GetItemTypeCount(i) - itemcounts[i], GetItemTypeCount(i), itemtypename);
+	}
+}

@@ -559,21 +559,6 @@ main()
 	print("    Southclaw's Scavenge and Survive");
 	print("\n\n==============================================================================*/\n\n");
 
-	new itemtypename[ITM_MAX_NAME];
-
-	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
-	{
-		if(!IsValidItemType(i))
-			break;
-
-		if(GetItemTypeCount(i) == 0)
-			continue;
-
-		GetItemTypeUniqueName(i, itemtypename);
-
-		printf("[%03d] Spawned %04d '%s'", _:i, GetItemTypeCount(i), itemtypename);
-	}
-
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
 }
