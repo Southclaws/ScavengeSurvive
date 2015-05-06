@@ -564,7 +564,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			Float:y,
 			Float:z;
 
-		vehicleid = GetPlayerVehicleID(playerid);
+		vehicleid = GetPlayerLastVehicle(playerid);
 		vehicletype = GetVehicleType(vehicleid);
 		GetVehicleTypeName(vehicletype, vehiclename);
 		GetVehiclePos(vehicleid, x, y, z);

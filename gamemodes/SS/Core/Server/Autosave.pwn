@@ -67,6 +67,9 @@ timer Player_BlockSave[SAVE_BLOCK_INTERVAL](index)
 
 	for(i = index; i < index + MAX_SAVES_PER_BLOCK_PLAYERS && i < autosave_Max; i++)
 	{
+		if(!IsPlayerConnected(autosave_Block[i]))
+			continue;
+
 		SavePlayerData(autosave_Block[i]);
 	}
 
