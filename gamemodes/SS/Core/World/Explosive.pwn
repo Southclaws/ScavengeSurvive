@@ -162,7 +162,7 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 
 	foreach(new i : def_Index)
 	{
-		GetDefencePos(closestid, defposx, defposy, defposz);
+		GetDefencePos(i, defposx, defposy, defposz);
 
 		tempdistance = Distance(x, y, z, defposx, defposy, defposz);
 
