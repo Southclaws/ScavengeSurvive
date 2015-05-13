@@ -22,7 +22,7 @@ hook OnPlayerText(playerid, text[])
 			Msg(playerid, RED, " >  You are muted permanently.");
 
 		else
-			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid), "%1h:%1m:%1s"));
+			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid) * 1000, "%1h:%1m:%1s"));
 
 		return 0;
 	}
@@ -33,7 +33,7 @@ hook OnPlayerText(playerid, text[])
 			chat_MessageStreak[playerid]++;
 			if(chat_MessageStreak[playerid] == 3)
 			{
-				TogglePlayerMute(playerid, true, 30000);
+				TogglePlayerMute(playerid, true, 30);
 				Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
 				return 0;
 			}

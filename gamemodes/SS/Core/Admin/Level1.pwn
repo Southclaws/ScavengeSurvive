@@ -43,7 +43,7 @@ ACMD:mute[1](playerid, params[])
 
 	if(delay > 0)
 	{
-		TogglePlayerMute(targetid, true, delay * 1000);
+		TogglePlayerMute(targetid, true, delay);
 		MsgF(playerid, YELLOW, " >  Muted player %P "C_WHITE"for %d seconds.", targetid, delay);
 		MsgF(targetid, YELLOW, " >  Muted from global chat for "C_ORANGE"%d "C_YELLOW"seconds, Reason: "C_BLUE"%s", delay, reason);
 	}

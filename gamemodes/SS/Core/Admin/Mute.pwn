@@ -3,7 +3,7 @@
 
 static
 		mute_Muted[MAX_PLAYERS],
-		mute_StartTick[MAX_PLAYERS],
+		mute_StartTime[MAX_PLAYERS],
 		mute_Duration[MAX_PLAYERS],
 Timer:	mute_UnmuteTimer[MAX_PLAYERS];
 
@@ -16,19 +16,19 @@ TogglePlayerMute(playerid, bool:toggle, duration = -1)
 	if(toggle && duration != 0)
 	{
 		mute_Muted[playerid] = true;
-		mute_StartTick[playerid] = GetTickCount();
+		mute_StartTime[playerid] = gettime();
 		mute_Duration[playerid] = duration;
 
 		if(duration > 0)
 		{
 			stop mute_UnmuteTimer[playerid];
-			mute_UnmuteTimer[playerid] = defer UnMuteDelay(playerid, duration);
+			mute_UnmuteTimer[playerid] = defer UnMuteDelay(playerid, duration * 1000);
 		}
 	}
 	else
 	{
 		mute_Muted[playerid] = false;
-		mute_StartTick[playerid] = 0;
+		mute_StartTime[playerid] = 0;
 		mute_Duration[playerid] = 0;
 
 		stop mute_UnmuteTimer[playerid];
@@ -85,7 +85,7 @@ stock GetPlayerMuteTick(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	return mute_StartTick[playerid];
+	return mute_StartTime[playerid];
 }
 
 stock GetPlayerMuteDuration(playerid)
@@ -107,7 +107,7 @@ stock GetPlayerMuteRemainder(playerid)
 	if(mute_Duration[playerid] == -1)
 		return -1;
 
-	return GetTickCountDifference((mute_StartTick[playerid] + mute_Duration[playerid]), GetTickCount());
+	return mute_Duration[playerid] - (gettime() - mute_StartTime[playerid]);
 }
 
 CMD:testmute(playerid, params[])
