@@ -6,6 +6,8 @@ static
 
 static
 		knockout_KnockedOut[MAX_PLAYERS],
+		knockout_InVehicleID[MAX_PLAYERS],
+		knockout_InVehicleSeat[MAX_PLAYERS],
 		knockout_Tick[MAX_PLAYERS],
 		knockout_Duration[MAX_PLAYERS],
 Timer:	knockout_Timer[MAX_PLAYERS];
@@ -17,6 +19,8 @@ forward OnPlayerKnockOut(playerid);
 hook OnPlayerConnect(playerid)
 {
 	knockout_KnockedOut[playerid] = false;
+	knockout_InVehicleID[playerid] = INVALID_VEHICLE_ID;
+	knockout_InVehicleSeat[playerid] = -1;
 	knockout_Tick[playerid] = 0;
 	knockout_Duration[playerid] = 0;
 }
@@ -48,6 +52,12 @@ stock KnockOutPlayer(playerid, duration)
 		return 0;
 
 	ShowPlayerProgressBar(playerid, KnockoutBar);
+
+	if(IsPlayerInAnyVehicle(playerid))
+	{
+		knockout_InVehicleID[playerid] = GetPlayerVehicleID(playerid);
+		knockout_InVehicleSeat[playerid] = GetPlayerVehicleSeat(playerid);
+	}
 
 	if(knockout_KnockedOut[playerid])
 	{
@@ -93,6 +103,8 @@ stock WakeUpPlayer(playerid)
 
 	knockout_Tick[playerid] = GetTickCount();
 	knockout_KnockedOut[playerid] = false;
+	knockout_InVehicleID[playerid] = INVALID_VEHICLE_ID;
+	knockout_InVehicleSeat[playerid] = -1;
 }
 
 timer KnockOutUpdate[100](playerid)
@@ -110,19 +122,29 @@ timer KnockOutUpdate[100](playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 		WakeUpPlayer(playerid);
 
-	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	if(IsValidVehicle(knockout_InVehicleID[playerid]))
 	{
-		SetVehicleEngine(GetPlayerVehicleID(playerid), 0);	
+		if(!IsPlayerInVehicle(playerid, knockout_InVehicleID[playerid]))
+		{
+			PutPlayerInVehicle(playerid, knockout_InVehicleID[playerid], knockout_InVehicleSeat[playerid]);
+
+			new animidx = GetPlayerAnimationIndex(playerid);
+
+			if(animidx != 1207 && animidx != 1018 && animidx != 1001)
+				_PlayKnockOutAnimation(playerid);
+		}
+
+		SetVehicleEngine(knockout_InVehicleID[playerid], 0);
 	}
 	else
 	{
+		if(IsPlayerInAnyVehicle(playerid))
+			RemovePlayerFromVehicle(playerid);
+
 		new animidx = GetPlayerAnimationIndex(playerid);
 
 		if(animidx != 1207 && animidx != 1018 && animidx != 1001)
-		{
 			_PlayKnockOutAnimation(playerid);
-			return;
-		}
 	}
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
@@ -170,6 +192,48 @@ _PlayKnockOutAnimation(playerid)
 			}
 		}
 	}
+}
+
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	if(knockout_KnockedOut[playerid])
+	{
+		_vehicleCheck(playerid);
+	}
+}
+
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	if(knockout_KnockedOut[playerid])
+	{
+		_vehicleCheck(playerid);
+	}
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(knockout_KnockedOut[playerid])
+	{
+		_vehicleCheck(playerid);
+	}
+}
+
+_vehicleCheck(playerid)
+{
+	if(IsValidVehicle(knockout_InVehicleID[playerid]))
+	{
+		PutPlayerInVehicle(playerid, knockout_InVehicleID[playerid], knockout_InVehicleSeat[playerid]);
+		SetVehicleEngine(knockout_InVehicleID[playerid], 0);
+	}
+	else
+	{
+		RemovePlayerFromVehicle(playerid);
+	}
+
+	new animidx = GetPlayerAnimationIndex(playerid);
+
+	if(animidx != 1207 && animidx != 1018 && animidx != 1001)
+		_PlayKnockOutAnimation(playerid);
 }
 
 stock GetPlayerKnockOutTick(playerid)

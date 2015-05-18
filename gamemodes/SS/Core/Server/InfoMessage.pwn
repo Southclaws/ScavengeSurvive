@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_INFO_MESSAGE			(8)
+#define MAX_INFO_MESSAGE			(32)
 #define MAX_INFO_MESSAGE_LEN		(256)
 
 
@@ -23,7 +23,7 @@ hook OnScriptInit()
 	GetSettingStringArray("infomessage/messages", ifm_Messages, 3, ifm_Messages, ifm_Total, MAX_INFO_MESSAGE_LEN);
 	GetSettingInt("infomessage/interval", 5, ifm_Interval);
 
-	defer InfoMessage(); // Todo: move to info message module
+	defer InfoMessage();
 }
 
 timer InfoMessage[ifm_Interval * 60000]()

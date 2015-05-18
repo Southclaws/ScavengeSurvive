@@ -264,9 +264,6 @@ stock RemovePlayerWeapon(playerid)
 
 hook OnPlayerUpdate(playerid)
 {
-	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-		return 1;
-
 	_FastUpdateHandler(playerid);
 
 	return 1;
@@ -303,6 +300,12 @@ _FastUpdateHandler(playerid)
 			}
 		}
 
+		return;
+	}
+
+	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+	{
+		SetPlayerArmedWeapon(playerid, 0);
 		return;
 	}
 
