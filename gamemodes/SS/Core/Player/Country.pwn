@@ -80,7 +80,7 @@ _cntr_ClearData(playerid)
 	PlayerCountryData[playerid][cntr_ISP][0] = EOS;
 	PlayerCountryData[playerid][cntr_Proxy] = 0;
 }
-
+/*
 _cntr_UseDatabase(playerid)
 {
 	GetPlayerCountry(playerid, PlayerCountryData[playerid][cntr_Country], 45);
@@ -90,7 +90,7 @@ _cntr_UseDatabase(playerid)
 
 	return 1;
 }
-
+*/
 _cntr_UseWeb(playerid)
 {
 	new
