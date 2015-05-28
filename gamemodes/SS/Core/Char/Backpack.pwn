@@ -127,10 +127,7 @@ stock GivePlayerBag(playerid, itemid)
 		{
 			printf("[GivePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", itemid, containerid);
 
-			containerid = CreateContainer(
-				bag_TypeData[bagtype][bag_name],
-				bag_TypeData[bagtype][bag_size],
-				.virtual = 1);
+			containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
 			SetItemArrayDataAtCell(itemid, containerid, 1);
 		}
@@ -184,10 +181,7 @@ stock RemovePlayerBag(playerid)
 
 		printf("[RemovePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", bag_PlayerBagID[playerid], containerid);
 
-		containerid = CreateContainer(
-			bag_TypeData[bagtype][bag_name],
-			bag_TypeData[bagtype][bag_size],
-			.virtual = 1);
+		containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
 		SetItemArrayDataAtCell(bag_PlayerBagID[playerid], containerid, 1);
 	}
@@ -298,10 +292,7 @@ public OnItemCreate(itemid)
 			containerid,
 			lootindex = GetItemLootIndex(itemid);
 
-		containerid = CreateContainer(
-			bag_TypeData[bagtype][bag_name],
-			bag_TypeData[bagtype][bag_size],
-			.virtual = 1);
+		containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
 		bag_ContainerItem[containerid] = itemid;
 		bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;

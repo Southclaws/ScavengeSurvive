@@ -150,7 +150,7 @@ public OnItemCreate(itemid)
 
 			GetItemTypeName(itemtype, name);
 
-			containerid = CreateContainer(name, box_TypeData[box_ItemTypeBoxType[itemtype]][box_size], .virtual = 1);
+			containerid = CreateContainer(name, box_TypeData[box_ItemTypeBoxType[itemtype]][box_size]);
 
 			box_ContainerSafebox[containerid] = itemid;
 
