@@ -327,7 +327,7 @@ LoadPlayerVehicle(filename[])
 				itemlist;
 
 			length = modio_read(filepath, _T<T,T,R,N>, sizeof(vehicle_ItemList), vehicle_ItemList, false, false);
-		
+
 			itemlist = ExtractItemList(vehicle_ItemList, length);
 			itemcount = GetItemListItemCount(itemlist);
 
@@ -662,7 +662,7 @@ public OnVehicleDestroyed(vehicleid)
 #else
 	#define _ALS_OnVehicleDestroyed
 #endif
- 
+
 #define OnVehicleDestroyed pveh_OnVehicleDestroyed
 #if defined pveh_OnVehicleDestroyed
 	forward pveh_OnVehicleDestroyed(vehicleid);
@@ -851,9 +851,15 @@ stock RemoveVehicleFile(vehicleid)
 
 CMD:vsave(playerid, params[])
 {
+	new
+		name[MAX_PLAYER_NAME];
+
+    GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
 	if(!isnull(params) && !strcmp(params, "on"))
 	{
 		pveh_SaveAnyVehicle[playerid] = 1;
+		SetAccountVSaveState(name, pveh_SaveAnyVehicle[playerid]);
 		Msg(playerid, YELLOW, " >  Vehicle save mode set to 'All vehicles'. When you enter ANY vehicle, it will be saved for you.");
 		return 1;
 	}
@@ -861,6 +867,7 @@ CMD:vsave(playerid, params[])
 	if(!isnull(params) && !strcmp(params, "off"))
 	{
 		pveh_SaveAnyVehicle[playerid] = 0;
+		SetAccountVSaveState(name, pveh_SaveAnyVehicle[playerid]);
 		Msg(playerid, YELLOW, " >  Vehicle save mode set to: 'Own vehicle'. Only your own vehicle will be saved when you drive it. If you enter another vehicle as a driver, it won't overwrite your current vehicle.");
 		return 1;
 	}
