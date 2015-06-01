@@ -16,11 +16,14 @@ hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'InfoMessage'...");
 
-	ifm_Messages[0] = "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
-	ifm_Messages[1] = "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
-	ifm_Messages[2] = "(info 1) Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.";
+	GetSettingStringArray(
+		"infomessage/messages",
+		"Please update the 'server/infomsgs' array in '"SETTINGS_FILE"'.",
+		MAX_INFO_MESSAGE,
+		ifm_Messages,
+		ifm_Total,
+		MAX_INFO_MESSAGE_LEN);
 
-	GetSettingStringArray("infomessage/messages", ifm_Messages, 3, ifm_Messages, ifm_Total, MAX_INFO_MESSAGE_LEN);
 	GetSettingInt("infomessage/interval", 5, ifm_Interval);
 
 	defer InfoMessage();

@@ -15,20 +15,11 @@ LoadSettings()
 		fclose(fopen(SETTINGS_FILE, io_write));
 	}
 
-	djStyled(true);
-
 	GetSettingString("server/motd", "Please update the 'server/motd' string in "SETTINGS_FILE"", gMessageOfTheDay);
 	GetSettingString("server/website", "southclawjk.wordpress.com", gWebsiteURL);
 
-	gRuleList[0] = "(Rule 1) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
-	gRuleList[1] = "(Rule 2) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
-	gRuleList[2] = "(Rule 3) Please update the 'server/rules' array in '"SETTINGS_FILE"'.";
-	GetSettingStringArray("server/rules", gRuleList, 3, gRuleList, gTotalRules, MAX_RULE_LEN);
-
-	gStaffList[0] = "(Staff 1)";
-	gStaffList[1] = "(Staff 2)";
-	gStaffList[2] = "(Staff 3)";
-	GetSettingStringArray("server/staff", gStaffList, 3, gStaffList, gTotalStaff, MAX_STAFF_LEN);
+	GetSettingStringArray("server/rules", "Please update the 'server/rules' array in '"SETTINGS_FILE"'.", MAX_RULE, gRuleList, gTotalRules, MAX_RULE_LEN);
+	GetSettingStringArray("server/staff", "StaffName", 3, gStaffList, gTotalStaff, MAX_STAFF_LEN);
 
 	GetSettingInt("server/max-uptime", 18000, gServerMaxUptime);
 	GetSettingInt("player/allow-pause-map", 0, gPauseMap);
@@ -48,40 +39,83 @@ LoadSettings()
 }
 
 
-stock GetSettingInt(path[], defaultvalue, &output, printsetting = true)
+stock GetSettingInt(path[], defaultvalue, &output, printsetting = true, openfile = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSetInt(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+	if(openfile)
+		file_Open(SETTINGS_FILE);
 
+	if(!file_IsKey(path))
+	{
+		file_SetVal(path, defaultvalue);
+		output = defaultvalue;
+		file_Save(SETTINGS_FILE);
+
+		if(printsetting)
+			printf("[DEFAULT] %s: %d", path, output);
+	}
 	else
-		output = djInt(SETTINGS_FILE, path);
+	{
+		output = file_GetVal(path);
 
-	if(printsetting)
-		printf("  %s: %d", path, output);
+		if(printsetting)
+			printf("[LOAD] %s: %d", path, output);
+	}
+
+	if(openfile)
+		file_Close();
 }
 
-stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = true)
+stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = true, openfile = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSetFloat(SETTINGS_FILE, path, defaultvalue), output = defaultvalue;
+	if(openfile)
+		file_Open(SETTINGS_FILE);
 
+	if(!file_IsKey(path))
+	{
+		file_SetFloat(path, defaultvalue);
+		output = defaultvalue;
+		file_Save(SETTINGS_FILE);
+
+		if(printsetting)
+			printf("[DEFAULT] %s: %f", path, output);
+	}
 	else
-		output = djFloat(SETTINGS_FILE, path);
+	{
+		output = file_GetFloat(path);
 
-	if(printsetting)
-		printf("  %s: %f", path, output);
+		if(printsetting)
+			printf("[LOAD] %s: %f", path, output);
+	}
+
+	if(openfile)
+		file_Close();
 }
 
-stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output), printsetting = true)
+stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output), printsetting = true, openfile = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
-		djSet(SETTINGS_FILE, path, defaultvalue), strcat(output, defaultvalue, maxsize);
+	if(openfile)
+		file_Open(SETTINGS_FILE);
 
+	if(!file_IsKey(path))
+	{
+		file_SetStr(path, defaultvalue);
+		output[0] = EOS;
+		strcat(output, defaultvalue, maxsize);
+		file_Save(SETTINGS_FILE);
+
+		if(printsetting)
+			printf("[DEFAULT] %s: %s", path, output);
+	}
 	else
-		strcat(output, dj(SETTINGS_FILE, path), maxsize);
+	{
+		file_GetStr(path, output, maxsize);
 
-	if(printsetting)
-		printf("  %s: %s", path, output);
+		if(printsetting)
+			printf("[LOAD] %s: %s", path, output);
+	}
+
+	if(openfile)
+		file_Close();
 }
 
 
@@ -89,118 +123,116 @@ stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output
 	Arrays
 */
 
-stock GetSettingIntArray(path[], defaultvalues[], defaultmax, output[], &outputtotal, printsetting = true)
+stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
+	file_Open(SETTINGS_FILE);
+
+	new
+		count,
+		tmpkey[MAX_KEY_LENGTH];
+
+	while(outputtotal < max)
 	{
-		new tmpvalue[12];
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
 
-		for(new i; i < defaultmax; i++)
+		if(!file_IsKey(tmpkey))
 		{
-			format(tmpvalue, sizeof(tmpvalue), "%d", defaultvalues[i]);
-			djAppend(SETTINGS_FILE, path, tmpvalue);
-			output[i] = defaultvalues[i];
+			if(count == 0)
+				printf("ERROR: key '%s' not found.", tmpkey);
 
-			if(printsetting)
-				printf("  %s/%d: %d", path, i, output[i]);
+			break;
 		}
+
+		GetSettingInt(tmpkey, defaultvalue, output[count], printsetting, false);
+
+		count++;
 	}
-	else
-	{
-		new tmppath[64];
 
-		outputtotal = djCount(SETTINGS_FILE, path);
-		printf("int array size %d, '%s'", outputtotal, path);
-
-		for(new i; i < outputtotal; i++)
-		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			output[i] = djInt(SETTINGS_FILE, tmppath);
-
-			if(printsetting)
-				printf("  %s: %d", tmppath, output[i]);
-		}
-	}
+	file_Close();
 }
 
-stock GetSettingFloatArray(path[], Float:defaultvalues[], defaultmax, Float:output[], &outputtotal, printsetting = true)
+stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &outputtotal, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
+	file_Open(SETTINGS_FILE);
+
+	new
+		count,
+		tmpkey[MAX_KEY_LENGTH];
+
+	while(outputtotal < max)
 	{
-		new tmpvalue[12];
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
 
-		for(new i; i < defaultmax; i++)
+		if(!file_IsKey(tmpkey))
 		{
-			format(tmpvalue, sizeof(tmpvalue), "%f", defaultvalues[i]);
-			djAppend(SETTINGS_FILE, path, tmpvalue);
-			output[i] = defaultvalues[i];
+			if(count == 0)
+				printf("ERROR: key '%s' not found.", tmpkey);
 
-			if(printsetting)
-				printf("  %s/%d: %f", path, i, output[i]);
+			break;
 		}
+
+		GetSettingFloat(tmpkey, defaultvalue, output[count], printsetting, false);
+
+		count++;
 	}
-	else
-	{
-		new tmppath[64];
 
-		outputtotal = djCount(SETTINGS_FILE, path);
-		printf("float array size %d, '%s'", outputtotal, path);
-
-		for(new i; i < outputtotal; i++)
-		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			output[i] = djFloat(SETTINGS_FILE, tmppath);
-
-			if(printsetting)
-				printf("  %s: %f", tmppath, output[i]);
-		}
-	}
+	file_Close();
 }
 
-stock GetSettingStringArray(path[], defaultvalues[][], defaultmax, output[][], &outputtotal, printsetting = true)
+stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtotal, outputmaxsize, printsetting = true)
 {
-	if(!djIsSet(SETTINGS_FILE, path))
+	file_Open(SETTINGS_FILE);
+
+	new
+		count,
+		tmpkey[MAX_KEY_LENGTH];
+
+	while(outputtotal < max)
 	{
-		for(new i; i < defaultmax; i++)
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
+
+		if(!file_IsKey(tmpkey))
 		{
-			djAppend(SETTINGS_FILE, path, defaultvalues[i]);
-			format(output[i], DJSON_MAX_STRING, defaultvalues[i]);
+			if(count == 0)
+			{
+				printf("ERROR: key '%s' not found.", tmpkey);
+				output[0][0] = EOS;
+				strcat(output[0], defaultvalue, outputmaxsize);
+			}
 
-			if(printsetting)
-				printf("  %s/%d: %s", path, i, output[i]);
+			break;
 		}
+
+		GetSettingString(tmpkey, defaultvalue, output[count], outputmaxsize, printsetting, false);
+
+		count++;
 	}
-	else
-	{
-		new tmppath[64];
 
-		outputtotal = djCount(SETTINGS_FILE, path);
-		printf("string array size %d, '%s'", outputtotal, path);
-
-		for(new i; i < outputtotal; i++)
-		{
-			format(tmppath, sizeof(tmppath), "%s/%d", path, i);
-			format(output[i], DJSON_MAX_STRING, dj(SETTINGS_FILE, tmppath));
-
-			if(printsetting)
-				printf("  %s: %s", tmppath, output[i]);
-		}
-	}
+	file_Close();
 }
 
 stock UpdateSettingInt(path[], value)
 {
-	djSetInt(SETTINGS_FILE, path, value);
+	file_Open(SETTINGS_FILE);
+	file_SetVal(path, value);
+	file_Save(SETTINGS_FILE);
+	file_Close();
 }
 
 stock UpdateSettingFloat(path[], Float:value)
 {
-	djSetFloat(SETTINGS_FILE, path, value);
+	file_Open(SETTINGS_FILE);
+	file_SetFloat(path, value);
+	file_Save(SETTINGS_FILE);
+	file_Close();
 }
 
 stock UpdateSettingString(path[], value[])
 {
-	djSet(SETTINGS_FILE, path, value);
+	file_Open(SETTINGS_FILE);
+	file_SetStr(path, value);
+	file_Save(SETTINGS_FILE);
+	file_Close();
 }
 
 stock UpdateSettingArrayAppend(path[], value[])

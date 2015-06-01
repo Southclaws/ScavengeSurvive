@@ -3,7 +3,7 @@
 
 #define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
 #define MAX_DEFENCE_ITEM	(10)
-#define MAX_DEFENCE			(4096)
+#define MAX_DEFENCE			(6000)
 
 
 enum

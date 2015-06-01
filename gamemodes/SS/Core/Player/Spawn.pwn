@@ -17,27 +17,18 @@ hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Player/Spawn'...");
 
-	new
-		bagtype[ITM_MAX_NAME],
-		respawnitems[4][ITM_MAX_NAME],
-		newspawnitems[4][ITM_MAX_NAME];
+	new bagtype[ITM_MAX_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
 
-	for(new i; i < 4; i++)
-	{
-		GetSettingString(sprintf("spawn/respawnitems/%d/itemType", i), "", respawnitems[i]);
-		GetSettingInt(sprintf("spawn/respawnitems/%d/exData", i), 0, spawn_ReSpawnItems[i][e_itmobj_exdata]);
-		spawn_ReSpawnItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(respawnitems[i]);
-	}
-
-	for(new i; i < 4; i++)
-	{
-		GetSettingString(sprintf("spawn/newspawnitems/%d/itemType", i), "", newspawnitems[i]);
-		GetSettingInt(sprintf("spawn/newspawnitems/%d/exData", i), 0, spawn_NewSpawnItems[i][e_itmobj_exdata]);
-		spawn_NewSpawnItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newspawnitems[i]);
-	}
+	// todo: make this better.
+	spawn_ReSpawnItems[0][e_itmobj_type] = item_AntiSepBandage;
+	spawn_ReSpawnItems[1][e_itmobj_type] = item_Knife;
+	spawn_ReSpawnItems[2][e_itmobj_type] = item_Wrench;
+	spawn_NewSpawnItems[0][e_itmobj_type] = item_M9Pistol;
+	spawn_NewSpawnItems[1][e_itmobj_type] = item_Ammo9mm;
+	spawn_NewSpawnItems[1][e_itmobj_exdata] = 10;
 }
 
 

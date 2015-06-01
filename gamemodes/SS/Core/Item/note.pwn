@@ -1,57 +1,6 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_NOTE_TEXT (64)
-
-
-static
-	note_Text[MAX_NOTE_TEXT][256],
-	note_Total;
-
-
-hook OnScriptInit()
-{
-	print("\n[OnScriptInit] Initialising 'note'...");
-
-	note_Text[0] = "Have you tried using the 'Combine' option to use a knife with clothes? You'll get a bandage! Always useful to have a bandage...";
-	note_Text[1] = "If anyone offers to meet up to trade... ALWAYS HAVE A PLAN B.";
-	note_Text[2] = "Too many people have opinions on things they know nothing about. And the more ignorant they are, the more opinions they have.";
-
-	GetSettingStringArray("items/note/messages", note_Text, 3, note_Text, note_Total, 256);
-}
-
-
-public OnItemCreate(itemid)
-{
-	if(GetItemLootIndex(itemid) != -1)
-	{
-		if(GetItemType(itemid) == item_Note)
-		{
-			if(random(2) == 1 && note_Total > 0)
-			{
-				new noteid = random(note_Total);
-
-				SetItemArrayData(itemid, note_Text[noteid], strlen(note_Text[noteid]));
-			}
-		}
-	}
-
-	#if defined note_OnItemCreate
-		return note_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
-}
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate note_OnItemCreate
-#if defined note_OnItemCreate
-	forward note_OnItemCreate(itemid);
-#endif
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Note)
