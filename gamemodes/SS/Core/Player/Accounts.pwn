@@ -308,7 +308,13 @@ CreateAccount(playerid, password[])
 	stmt_bind_value(stmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime()); 
 	stmt_bind_value(stmt_AccountCreate, 5, DB::TYPE_STRING,		"Drop your weapon!", 18); 
 	stmt_bind_value(stmt_AccountCreate, 6, DB::TYPE_STRING,		serial, MAX_GPCI_LEN); 
-	stmt_execute(stmt_AccountCreate);
+
+	if(!stmt_execute(stmt_AccountCreate))
+	{
+		print("ERROR: [CreateAccount] executing statement 'stmt_AccountCreate'.");
+		KickPlayer(playerid, "An error occurred while executing statement 'stmt_AccountCreate'. Please contact an admin on IRC or the forum.");
+		return 0;
+	}
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
 
