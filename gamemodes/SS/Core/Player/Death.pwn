@@ -2,6 +2,8 @@
 
 
 static
+Text:	DeathText = Text:INVALID_TEXT_DRAW,
+Text:	DeathButton = Text:INVALID_TEXT_DRAW,
 		death_LastDeath[MAX_PLAYERS],
 Float:	death_PosX[MAX_PLAYERS],
 Float:	death_PosY[MAX_PLAYERS],
@@ -9,9 +11,6 @@ Float:	death_PosZ[MAX_PLAYERS],
 Float:	death_RotZ[MAX_PLAYERS],
 		death_LastKilledBy[MAX_PLAYERS][MAX_PLAYER_NAME],
 		death_LastKilledById[MAX_PLAYERS];
-
-
-forward OnDeath(playerid, killerid, reason);
 
 
 hook OnPlayerConnect(playerid)
@@ -74,7 +73,7 @@ _OnDeath(playerid, killerid)
 	SpawnPlayer(playerid);
 	ToggleArmour(playerid, false);
 
-	CallLocalFunction("OnDeath", "ddd", playerid, killerid, deathreason);
+	KillPlayer(playerid, killerid, deathreason);
 
 	if(IsPlayerConnected(killerid))
 	{
@@ -126,26 +125,19 @@ _OnDeath(playerid, killerid)
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
-		if(IsPlayerUnderDrugEffect(playerid, drug_Air))
+		switch(deathreason)
 		{
-			deathreasonstring = "They died of air embolism (injecting oxygen into their bloodstream).";
-		}
-		else
-		{
-			switch(deathreason)
-			{
-				case 53:
-					deathreasonstring = "They drowned.";
+			case 53:
+				deathreasonstring = "They drowned.";
 
-				case 54:
-					deathreasonstring = "Most bones are broken, looks like they fell from a great height.";
+			case 54:
+				deathreasonstring = "Most bones are broken, looks like they fell from a great height.";
 
-				case 255:
-					deathreasonstring = "They suffered massive concussion due to an explosion.";
+			case 255:
+				deathreasonstring = "They suffered massive concussion due to an explosion.";
 
-				default:
-					deathreasonstring = "They died for an unknown reason.";
-			}
+			default:
+				deathreasonstring = "They died for an unknown reason.";
 		}
 	}
 
@@ -358,7 +350,7 @@ hook OnPlayerSpawn(playerid)
 
 		SelectTextDraw(playerid, 0xFFFFFF88);
 		SetPlayerHP(playerid, 1.0);
-		SetPlayerScreenFadeLevel(playerid, 255);
+		SetPlayerBrightness(playerid, 255);
 		TextDrawShowForPlayer(playerid, DeathText);
 		TextDrawShowForPlayer(playerid, DeathButton);
 	}
@@ -406,6 +398,36 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 
 	return 1;
+}
+
+hook OnGameModeInit()
+{
+	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
+	TextDrawAlignment			(DeathText, 2);
+	TextDrawBackgroundColor		(DeathText, 255);
+	TextDrawFont				(DeathText, 1);
+	TextDrawLetterSize			(DeathText, 0.500000, 2.000000);
+	TextDrawColor				(DeathText, -1);
+	TextDrawSetOutline			(DeathText, 0);
+	TextDrawSetProportional		(DeathText, 1);
+	TextDrawSetShadow			(DeathText, 1);
+	TextDrawUseBox				(DeathText, 1);
+	TextDrawBoxColor			(DeathText, 85);
+	TextDrawTextSize			(DeathText, 20.000000, 150.000000);
+
+	DeathButton					=TextDrawCreate(320.000000, 323.000000, ">Play Again<");
+	TextDrawAlignment			(DeathButton, 2);
+	TextDrawBackgroundColor		(DeathButton, 255);
+	TextDrawFont				(DeathButton, 1);
+	TextDrawLetterSize			(DeathButton, 0.370000, 1.599999);
+	TextDrawColor				(DeathButton, -1);
+	TextDrawSetOutline			(DeathButton, 0);
+	TextDrawSetProportional		(DeathButton, 1);
+	TextDrawSetShadow			(DeathButton, 1);
+	TextDrawUseBox				(DeathButton, 1);
+	TextDrawBoxColor			(DeathButton, 85);
+	TextDrawTextSize			(DeathButton, 20.000000, 150.000000);
+	TextDrawSetSelectable		(DeathButton, true);
 }
 
 

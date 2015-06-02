@@ -8,67 +8,119 @@
 
 enum E_FLAGS:(<<= 1) // 17
 {
-		Alive = 1,
-		Dying,
-		Spawned,
-		FirstSpawn, // TODO: fix this value
+			Alive = 1,
+			Dying,
+			Spawned,
+			FirstSpawn, // TODO: fix this value
 
-		ToolTips,
-		ShowHUD,
-		GlobalQuiet,
+			ToolTips,
+			ShowHUD,
+			GlobalQuiet,
 
-		Frozen,
+			Frozen,
 
-		DebugMode
+			DebugMode
 }
 
 enum E_PLAYER_DATA
 {
-		// Database Account Data
-		ply_Password[MAX_PASSWORD_LEN],
-		ply_IP,
-		ply_RegisterTimestamp,
-		ply_LastLogin,
-		ply_TotalSpawns,
-		ply_Warnings,
+			// Database Account Data
+			ply_Password[MAX_PASSWORD_LEN],
+			ply_IP,
+			ply_RegisterTimestamp,
+			ply_LastLogin,
+			ply_TotalSpawns,
+			ply_Warnings,
 
-		// Character Data
-Float:	ply_HitPoints,
-Float:	ply_ArmourPoints,
-Float:	ply_FoodPoints,
-		ply_Clothes,
-		ply_Gender,
-		ply_Karma,
-Float:	ply_Velocity,
-Float:	ply_SpawnPosX,
-Float:	ply_SpawnPosY,
-Float:	ply_SpawnPosZ,
-Float:	ply_SpawnRotZ,
-Float:	ply_RadioFrequency,
-		ply_CreationTimestamp,
-		ply_AimShoutText[128],
+			// Character Data
+Float:		ply_HitPoints,
+Float:		ply_ArmourPoints,
+Float:		ply_FoodPoints,
+			ply_Clothes,
+			ply_Gender,
+			ply_Karma,
+Float:		ply_Velocity,
+Float:		ply_SpawnPosX,
+Float:		ply_SpawnPosY,
+Float:		ply_SpawnPosZ,
+Float:		ply_SpawnRotZ,
+Float:		ply_RadioFrequency,
+			ply_CreationTimestamp,
+			ply_AimShoutText[128],
 
-		// Internal Data
-E_FLAGS:ply_BitFlags,
-		ply_ChatMode,
-		ply_CurrentVehicle,
-		ply_PingLimitStrikes,
-		ply_ScreenBoxFadeLevel,
-		ply_stance,
-		ply_JoinTick,
-		ply_SpawnTick,
-		ply_ExitVehicleTick
+			// Internal Data
+E_FLAGS:	ply_BitFlags,
+			ply_ChatMode,
+			ply_CurrentVehicle,
+			ply_PingLimitStrikes,
+			ply_ScreenBoxFadeLevel,
+			ply_stance,
+			ply_JoinTick,
+			ply_SpawnTick,
+			ply_ExitVehicleTick
 }
 
 static
-		ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
+			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
+PlayerText:	ClassBackGround[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+PlayerText:	ClassButtonFemale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 new
-		gPlayerName[MAX_PLAYERS][MAX_PLAYER_NAME];
+			gPlayerName[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
 forward OnPlayerDisconnected(playerid);
 
+
+public OnGameModeInit()
+{
+	ClassBackGround[playerid]		=CreatePlayerTextDraw(playerid, 0.000000, 0.000000, "_");
+	PlayerTextDrawBackgroundColor	(playerid, ClassBackGround[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassBackGround[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassBackGround[playerid], 0.500000, 50.000000);
+	PlayerTextDrawColor				(playerid, ClassBackGround[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassBackGround[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassBackGround[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassBackGround[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassBackGround[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassBackGround[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassBackGround[playerid], 640.000000, 0.000000);
+
+	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
+	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassButtonMale[playerid], 0.500000, 2.000000);
+	PlayerTextDrawColor				(playerid, ClassButtonMale[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassButtonMale[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
+	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
+
+	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
+	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassButtonFemale[playerid], 0.500000, 2.000000);
+	PlayerTextDrawColor				(playerid, ClassButtonFemale[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassButtonFemale[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
+	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
+}
+
+ShowClassBackground(playerid)
+{
+	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
+	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
+}
 
 public OnPlayerConnect(playerid)
 {

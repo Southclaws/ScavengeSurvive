@@ -510,7 +510,7 @@ Login(playerid)
 	acc_LoginAttempts[playerid] = 0;
 
 	SetPlayerRadioFrequency(playerid, 107.0);
-	SetPlayerScreenFadeLevel(playerid, 255);
+	SetPlayerBrightness(playerid, 255);
 
 	SpawnLoggedInPlayer(playerid);
 

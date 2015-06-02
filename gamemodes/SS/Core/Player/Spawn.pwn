@@ -7,6 +7,10 @@ ItemType:	spawn_BagType,
 ItemType:	spawn_ReSpawnItems[4][e_item_object],
 ItemType:	spawn_NewSpawnItems[4][e_item_object];
 
+new
+PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+PlayerText:	ClassButtonFemale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
+
 
 forward OnPlayerCreateNewCharacter(playerid);
 forward OnPlayerSpawnExistingChar(playerid);
@@ -26,11 +30,49 @@ hook OnScriptInit()
 	spawn_ReSpawnItems[0][e_itmobj_type] = item_AntiSepBandage;
 	spawn_ReSpawnItems[1][e_itmobj_type] = item_Knife;
 	spawn_ReSpawnItems[2][e_itmobj_type] = item_Wrench;
+	spawn_ReSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
 	spawn_NewSpawnItems[0][e_itmobj_type] = item_M9Pistol;
 	spawn_NewSpawnItems[1][e_itmobj_type] = item_Ammo9mm;
+	spawn_NewSpawnItems[2][e_itmobj_type] = INVALID_ITEM_TYPE;
+	spawn_NewSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
 	spawn_NewSpawnItems[1][e_itmobj_exdata] = 10;
 }
 
+hook OnPlayerConnect(playerid)
+{
+//	defer LoadClassUI(playerid);
+//}
+//
+//timer LoadClassUI[1](playerid)
+//{
+	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
+	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassButtonMale[playerid], 0.500000, 2.000000);
+	PlayerTextDrawColor				(playerid, ClassButtonMale[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassButtonMale[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
+	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
+
+	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
+	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ClassButtonFemale[playerid], 0.500000, 2.000000);
+	PlayerTextDrawColor				(playerid, ClassButtonFemale[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ClassButtonFemale[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
+	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
+}
 
 SpawnLoggedInPlayer(playerid)
 {
@@ -38,13 +80,13 @@ SpawnLoggedInPlayer(playerid)
 	{
 		if(PlayerSpawnExistingCharacter(playerid))
 		{
-			SetPlayerScreenFadeLevel(playerid, 255);
+			SetPlayerBrightness(playerid, 255);
 			return 1;
 		}
 	}
 	
 	PlayerCreateNewCharacter(playerid);
-	SetPlayerScreenFadeLevel(playerid, 0);
+	SetPlayerBrightness(playerid, 255);
 
 	return 0;
 }
@@ -121,17 +163,16 @@ PlayerCreateNewCharacter(playerid)
 {
 	logf("[NEWCHAR] %p creating new character", playerid);
 
-	SetPlayerPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
+	SetPlayerPos(playerid, DEFAULT_POS_X + 5, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
 	SetPlayerVirtualWorld(playerid, 0);
 	SetPlayerInterior(playerid, 0);
 
 	SetPlayerCameraLookAt(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
-	SetPlayerCameraPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z + 1.0);
+	SetPlayerCameraPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z - 1.0);
 	Streamer_UpdateEx(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 
-	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
-	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
+	SetPlayerBrightness(playerid, 255);
 	TogglePlayerControllable(playerid, false);
 
 	if(IsPlayerLoggedIn(playerid))
@@ -262,7 +303,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 		}
 	}
 
-	SetPlayerScreenFadeLevel(playerid, 255);
+	SetPlayerBrightness(playerid, 255);
 
 	CallLocalFunction("OnPlayerSpawnNewCharacter", "d", playerid);
 

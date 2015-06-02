@@ -5,16 +5,16 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/whitelist - add/remove name or turn whitelist on/off\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/spec - spectate\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/ip - get a player's IP\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/vehicle - vehicle control (duty only)\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/move - nudge yourself\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/additem - spawn an item\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/addvehicle - spawn a vehicle\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/resetpassword - reset a password\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/setactive - (de)activate accounts\n");
-	RegisterAdminCommand(ADMIN_LEVEL_ADMIN, "/delete(items/tents/defences/signs) - delete things\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/whitelist - add/remove name or turn whitelist on/off\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/spec - spectate\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/ip - get a player's IP\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/vehicle - vehicle control (duty only)\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/move - nudge yourself\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/additem - spawn an item\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/addvehicle - spawn a vehicle\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/resetpassword - reset a password\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/setactive - (de)activate accounts\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/delete(items/tents/defences/signs) - delete things\n");
 }
 
 
@@ -149,7 +149,7 @@ ACMD:spec[2](playerid, params[])
 
 		if(IsPlayerConnected(targetid) && targetid != playerid)
 		{
-			if(GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_GM)
+			if(GetPlayerAdminLevel(playerid) == STAFF_LEVEL_GAME_MASTER)
 			{
 				if(!IsPlayerReported(gPlayerName[targetid]))
 				{
@@ -224,7 +224,7 @@ ACMD:ip[3](playerid, params[])
 
 ACMD:vehicle[3](playerid, params[])
 {
-	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
+	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
 		return 6;
 
 	new
@@ -359,7 +359,7 @@ ACMD:vehicle[3](playerid, params[])
 
 ACMD:move[3](playerid, params[])
 {
-	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+	if(!IsPlayerOnAdminDuty(playerid) && GetPlayerAdminLevel(playerid) < STAFF_LEVEL_DEVELOPER)
 		return 6;
 
 	new
@@ -491,7 +491,7 @@ ACMD:additem[3](playerid, params[])
 	if(exdatasize > 0)
 		SetItemArrayData(itemid, exdata, exdatasize);
 
-	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
+	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
 	{
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
@@ -542,7 +542,7 @@ ACMD:addvehicle[3](playerid, params[])
 	SetVehicleFuel(vehicleid, 100000.0);
 	SetVehicleHealth(vehicleid, 990.0);
 
-	if(GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_LEAD)
+	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
 	{
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
@@ -620,7 +620,7 @@ ACMD:setactive[3](playerid, params[])
 
 ACMD:delete[3](playerid, params[])
 {
-	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) == ADMIN_LEVEL_ADMIN)
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) == STAFF_LEVEL_ADMINISTRATOR)
 		return 6;
 
 	new

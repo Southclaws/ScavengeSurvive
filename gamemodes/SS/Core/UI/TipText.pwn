@@ -1,9 +1,8 @@
-new
-	gToolTipText[MAX_PLAYERS][512];
+#include <YSI\y_hooks>
 
 
-// Help Tips (bottom of screen)
-
+static
+PlayerText:	HelpTipText[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 ShowHelpTip(playerid, text[], time = 0)
 {
@@ -25,29 +24,17 @@ HideHelpTip(playerid)
 	PlayerTextDrawHide(playerid, HelpTipText[playerid]);
 }
 
-
-// Tool Tips (top right)
-
-
-ClearToolTipText(playerid)
+hook OnPlayerConnect(playerid)
 {
-	gToolTipText[playerid][0] = EOS;
-}
-
-AddToolTipText(playerid, key[], use[])
-{
-	new tmp[128];
-	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
-	strcat(gToolTipText[playerid], tmp);
-}
-
-ShowPlayerToolTip(playerid)
-{
-	PlayerTextDrawSetString(playerid, ToolTip[playerid], gToolTipText[playerid]);
-	PlayerTextDrawShow(playerid, ToolTip[playerid]);
-}
-
-HidePlayerToolTip(playerid)
-{
-	PlayerTextDrawHide(playerid, ToolTip[playerid]);
+	HelpTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
+	PlayerTextDrawBackgroundColor	(playerid, HelpTipText[playerid], 255);
+	PlayerTextDrawFont				(playerid, HelpTipText[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, HelpTipText[playerid], 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, HelpTipText[playerid], 16711935);
+	PlayerTextDrawSetOutline		(playerid, HelpTipText[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, HelpTipText[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, HelpTipText[playerid], 0);
+	PlayerTextDrawUseBox			(playerid, HelpTipText[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, HelpTipText[playerid], 0);
+	PlayerTextDrawTextSize			(playerid, HelpTipText[playerid], 520.000000, 0.000000);
 }

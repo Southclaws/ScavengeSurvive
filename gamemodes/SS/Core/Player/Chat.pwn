@@ -1,6 +1,16 @@
 #include <YSI\y_hooks>
 
 
+// Chat modes
+enum
+{
+	CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
+	CHAT_MODE_GLOBAL,		// 1 - Speak to all players
+	CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
+	CHAT_MODE_ADMIN			// 3 - Speak to admins
+}
+
+
 new
 	chat_MessageStreak[MAX_PLAYERS],
 	chat_LastMessageTick[MAX_PLAYERS];

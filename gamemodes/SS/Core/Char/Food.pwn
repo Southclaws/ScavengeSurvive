@@ -1,4 +1,12 @@
+#include <YSI\y_hooks>
+
+
 #define IDLE_FOOD_RATE (0.004)
+
+
+static
+PlayerText:	HungerBarBackground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+PlayerText:	HungerBarForeground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 
 ptask FoodUpdate[1000](playerid)
@@ -101,4 +109,32 @@ ptask FoodUpdate[1000](playerid)
 	SetPlayerFP(playerid, food);
 
 	return;
+}
+
+
+hook OnPlayerConnect(playerid)
+{
+	HungerBarBackground[playerid]	=CreatePlayerTextDraw(playerid, 612.000000, 101.000000, "_");
+	PlayerTextDrawBackgroundColor	(playerid, HungerBarBackground[playerid], 255);
+	PlayerTextDrawFont				(playerid, HungerBarBackground[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, HungerBarBackground[playerid], 0.500000, -10.200000);
+	PlayerTextDrawColor				(playerid, HungerBarBackground[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, HungerBarBackground[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, HungerBarBackground[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, HungerBarBackground[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, HungerBarBackground[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, HungerBarBackground[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, HungerBarBackground[playerid], 618.000000, 10.000000);
+
+	HungerBarForeground[playerid]	=CreatePlayerTextDraw(playerid, 613.000000, 100.000000, "_");
+	PlayerTextDrawBackgroundColor	(playerid, HungerBarForeground[playerid], 255);
+	PlayerTextDrawFont				(playerid, HungerBarForeground[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, HungerBarForeground[playerid], 0.500000, -10.000000);
+	PlayerTextDrawColor				(playerid, HungerBarForeground[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, HungerBarForeground[playerid], 0);
+	PlayerTextDrawSetProportional	(playerid, HungerBarForeground[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, HungerBarForeground[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, HungerBarForeground[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, HungerBarForeground[playerid], -2130771840);
+	PlayerTextDrawTextSize			(playerid, HungerBarForeground[playerid], 617.000000, 10.000000);
 }

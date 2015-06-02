@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_ADMIN_LEVELS (6)
+#define MAX_ADMIN_LEVELS			(7)
 #define ACCOUNTS_TABLE_ADMINS		"Admins"
 #define FIELD_ADMINS_NAME			"name"		// 00
 #define FIELD_ADMINS_LEVEL			"level"		// 01
@@ -9,12 +9,13 @@
 
 enum
 {
-	ADMIN_LEVEL_NONE,
-	ADMIN_LEVEL_GM,
-	ADMIN_LEVEL_MOD,
-	ADMIN_LEVEL_ADMIN,
-	ADMIN_LEVEL_LEAD,
-	ADMIN_LEVEL_DEV
+	STAFF_LEVEL_NONE,
+	STAFF_LEVEL_GAME_MASTER,
+	STAFF_LEVEL_MODERATOR,
+	STAFF_LEVEL_ADMINISTRATOR,
+	STAFF_LEVEL_LEAD,
+	STAFF_LEVEL_DEVELOPER,
+	STAFF_LEVEL_SECRET
 }
 
 enum e_admin_data
@@ -34,7 +35,8 @@ static
 					"Moderator",		// 2
 					"Administrator",	// 3
 					"Lord of Admins",	// 4
-					"Developer"			// 5
+					"Developer",		// 5
+					""					// 6
 				},
 				admin_Colours[MAX_ADMIN_LEVELS] =
 				{
@@ -43,7 +45,8 @@ static
 					0x33CCFFFF,			// 2
 					0x6600FFFF,			// 3
 					0xFF0000FF,			// 4
-					0xFF3200FF			// 5
+					0xFF3200FF,			// 5
+					0x00000000			// 6
 				},
 				admin_Commands[4][512],
 DBStatement:	stmt_AdminLoadAll,
@@ -459,7 +462,7 @@ stock IsPlayerOnAdminDuty(playerid)
 
 stock RegisterAdminCommand(level, string[])
 {
-	if(!(ADMIN_LEVEL_GM <= level <= ADMIN_LEVEL_LEAD))
+	if(!(STAFF_LEVEL_GAME_MASTER <= level <= STAFF_LEVEL_LEAD))
 	{
 		printf("ERROR: Cannot register admin command for level %d", level);
 		return 0;

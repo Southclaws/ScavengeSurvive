@@ -10,38 +10,6 @@
 ==============================================================================*/
 
 
-// Staff levels
-enum
-{
-	STAFF_LEVEL_NONE,						// 0
-	STAFF_LEVEL_GAME_MASTER,				// 1
-	STAFF_LEVEL_MODERATOR,					// 2
-	STAFF_LEVEL_ADMINISTRATOR,				// 3
-	STAFF_LEVEL_DEVELOPER,					// 4
-	STAFF_LEVEL_SECRET						// 5
-}
-
-// Attachment slots
-enum
-{
-	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
-	ATTACHSLOT_BAG,			// 1 - Bag on back
-	ATTACHSLOT_HOLSTER,		// 2 - Item holstering
-	ATTACHSLOT_HAT,			// 3 - Head-wear slot
-	ATTACHSLOT_FACE,		// 4 - Face-wear slot
-	ATTACHSLOT_BLOOD,		// 5 - Bleeding particle effect
-	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
-}
-
-// Chat modes
-enum
-{
-	CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
-	CHAT_MODE_GLOBAL,		// 1 - Speak to all players
-	CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
-	CHAT_MODE_ADMIN			// 3 - Speak to admins
-}
-
 // Keypad IDs
 enum
 {
@@ -61,61 +29,6 @@ enum
 	k_Lockup
 }
 
-enum
-{
-	VEHICLE_CATEGORY_CAR,
-	VEHICLE_CATEGORY_TRUCK,
-	VEHICLE_CATEGORY_MOTORBIKE,
-	VEHICLE_CATEGORY_PUSHBIKE,
-	VEHICLE_CATEGORY_HELICOPTER,
-	VEHICLE_CATEGORY_PLANE,
-	VEHICLE_CATEGORY_BOAT,
-	VEHICLE_CATEGORY_TRAIN,
-	MAX_VEHICLE_CATEGORIES
-}
-enum
-{
-	VEHICLE_SIZE_SMALL,
-	VEHICLE_SIZE_MEDIUM,
-	VEHICLE_SIZE_LARGE
-}
-
-enum (<<= 1)
-{
-	VEHICLE_FLAG_NOT_LOCKABLE = 1,
-	VEHICLE_FLAG_NO_ENGINE,
-	VEHICLE_FLAG_TRAILER
-}
-
-
-// DATABASES
-new
-DB:				gAccounts;
-
-// GLOBAL SERVER SETTINGS (Todo: modularise)
-new
-		// player
-		gMessageOfTheDay[MAX_MOTD_LEN],
-		gWebsiteURL[MAX_WEBSITE_NAME],
-		gRuleList[MAX_RULE][MAX_RULE_LEN],
-		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
-
-		// server
-bool:	gPauseMap,
-bool:	gInteriorEntry,
-bool:	gPlayerAnimations,
-bool:	gVehicleSurfing,
-Float:	gNameTagDistance,
-		gCombatLogWindow,
-		gLoginFreezeTime,
-		gMaxTaboutTime,
-		gPingLimit;
-
-// INTERNAL
-new
-		gBigString[MAX_PLAYERS][4096],
-		gTotalRules,
-		gTotalStaff;
 
 // SKINS/CLOTHES
 new
@@ -498,37 +411,7 @@ new stock
 	vgroup_Unique;
 
 // UI HANDLES
-new
-Text:			DeathText			= Text:INVALID_TEXT_DRAW,
-Text:			DeathButton			= Text:INVALID_TEXT_DRAW,
-Text:			RestartCount		= Text:INVALID_TEXT_DRAW,
-Text:			HitMark_centre		= Text:INVALID_TEXT_DRAW,
-Text:			HitMark_offset		= Text:INVALID_TEXT_DRAW,
-Text:			Branding			= Text:INVALID_TEXT_DRAW,
-
-PlayerText:		ClassBackGround		[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		ClassButtonMale		[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		ClassButtonFemale	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		WeaponAmmo			[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		HungerBarBackground	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		HungerBarForeground	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		WatchBackground		[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		WatchTime			[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		WatchBear			[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		WatchFreq			[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		ToolTip				[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		HelpTipText			[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleFuelText		[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleDamageText	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleEngineText	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleDoorsText	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleNameText		[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:		VehicleSpeedText	[MAX_PLAYERS]	= {PlayerText:INVALID_TEXT_DRAW, ...},
-
-PlayerBar:		OverheatBar			= INVALID_PLAYER_BAR_ID,
-PlayerBar:		ActionBar			= INVALID_PLAYER_BAR_ID,
-PlayerBar:		KnockoutBar			= INVALID_PLAYER_BAR_ID,
-				MiniMapOverlay;
+new MiniMapOverlay;
 
 
 public OnScriptInit()

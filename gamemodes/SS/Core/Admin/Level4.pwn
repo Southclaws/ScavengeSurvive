@@ -5,14 +5,14 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Admin/Level4'...");
 
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/restart - restart the server\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/setadmin - set a player's staff level\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/setpinglimit - set ping limit\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/weather - set weather\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/debug - activate a debug handler\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/sifdebug - activate SIF debug\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/sifgdebug - activate SIF global debug\n");
-	RegisterAdminCommand(ADMIN_LEVEL_LEAD, "/dbl - toggle debug labels\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/restart - restart the server\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/setadmin - set a player's staff level\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/setpinglimit - set ping limit\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/weather - set weather\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/debug - activate a debug handler\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/sifdebug - activate SIF debug\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/sifgdebug - activate SIF global debug\n");
+	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/dbl - toggle debug labels\n");
 }
 
 

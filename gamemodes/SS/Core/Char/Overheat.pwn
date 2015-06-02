@@ -5,9 +5,20 @@
 
 
 new
-Float:	Overheat				[MAX_PLAYERS],
-Timer:	OverheatUpdateTimer		[MAX_PLAYERS];
+PlayerBar:	OverheatBar				= INVALID_PLAYER_BAR_ID,
+Float:		Overheat				[MAX_PLAYERS],
+Timer:		OverheatUpdateTimer		[MAX_PLAYERS];
 
+
+hook OnPlayerConnect(playerid)
+{
+	OverheatBar = CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	DestroyPlayerProgressBar(playerid, OverheatBar);
+}
 
 timer OverheatUpdate[100](playerid)
 {

@@ -31,6 +31,7 @@ static
 			itmw_ItemTypeWeapon[ITM_MAX_TYPES] = {-1, ...};
 
 static
+PlayerText:	WeaponAmmoUI[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 			tick_LastReload[MAX_PLAYERS],
 			tick_GetWeaponTick[MAX_PLAYERS],
 Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS],
@@ -53,6 +54,18 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
+	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
+	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
+	PlayerTextDrawFont				(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, WeaponAmmoUI[playerid], 0.210000, 1.000000);
+	PlayerTextDrawColor				(playerid, WeaponAmmoUI[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, WeaponAmmoUI[playerid], 255);
+	PlayerTextDrawTextSize			(playerid, WeaponAmmoUI[playerid], 548.000000, 40.000000);
+
 	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 }
 
@@ -256,7 +269,7 @@ stock RemovePlayerWeapon(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	PlayerTextDrawHide(playerid, WeaponAmmo[playerid]);
+	PlayerTextDrawHide(playerid, WeaponAmmoUI[playerid]);
 	ResetPlayerWeapons(playerid);
 
 	return 1;
@@ -519,7 +532,7 @@ _UpdateWeaponUI(playerid)
 	if(!IsWeaponClipBased(itemid))
 	{
 		d:2:HANDLER("weapon is not clip based");
-		PlayerTextDrawHide(playerid, WeaponAmmo[playerid]);
+		PlayerTextDrawHide(playerid, WeaponAmmoUI[playerid]);
 		return;
 	}
 
@@ -533,8 +546,8 @@ _UpdateWeaponUI(playerid)
 	else
 		format(str, 8, "%d", GetItemWeaponItemMagAmmo(itemid));
 
-	PlayerTextDrawSetString(playerid, WeaponAmmo[playerid], str);
-	PlayerTextDrawShow(playerid, WeaponAmmo[playerid]);
+	PlayerTextDrawSetString(playerid, WeaponAmmoUI[playerid], str);
+	PlayerTextDrawShow(playerid, WeaponAmmoUI[playerid]);
 
 	return;
 }

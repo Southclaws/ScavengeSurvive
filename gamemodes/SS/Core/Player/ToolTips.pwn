@@ -12,7 +12,9 @@
 
 
 static
-	ItemToolTips[ITM_MAX][MAX_TOOLTIP_TEXT];
+PlayerText:	ToolTip[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+			ToolTipText[MAX_PLAYERS][512],
+			ItemToolTips[ITM_MAX][MAX_TOOLTIP_TEXT];
 
 
 DefineItemToolTip(ItemType:itemtype, tooltip[MAX_TOOLTIP_TEXT])
@@ -37,6 +39,41 @@ ShowItemToolTip(playerid, ItemType:itemtype)
 	ShowHelpTip(playerid, str, 20000);
 
 	return 1;
+}
+
+ClearToolTipText(playerid)
+{
+	ToolTipText[playerid][0] = EOS;
+}
+
+AddToolTipText(playerid, key[], use[])
+{
+	new tmp[128];
+	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
+	strcat(ToolTipText[playerid], tmp);
+}
+
+ShowPlayerToolTip(playerid)
+{
+	PlayerTextDrawSetString(playerid, ToolTip[playerid], ToolTipText[playerid]);
+	PlayerTextDrawShow(playerid, ToolTip[playerid]);
+}
+
+HidePlayerToolTip(playerid)
+{
+	PlayerTextDrawHide(playerid, ToolTip[playerid]);
+}
+
+hook OnPlayerConnect(playerid)
+{
+	ToolTip[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
+	PlayerTextDrawAlignment			(playerid, ToolTip[playerid], 3);
+	PlayerTextDrawBackgroundColor	(playerid, ToolTip[playerid], 255);
+	PlayerTextDrawFont				(playerid, ToolTip[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ToolTip[playerid], 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, ToolTip[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ToolTip[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ToolTip[playerid], 1);
 }
 
 public OnPlayerPickUpItem(playerid, itemid)

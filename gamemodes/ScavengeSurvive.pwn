@@ -291,6 +291,18 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
 #define KEYTEXT_RADIO				"R"
 
+// Attachment slots
+enum
+{
+	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
+	ATTACHSLOT_BAG,			// 1 - Bag on back
+	ATTACHSLOT_HOLSTER,		// 2 - Item holstering
+	ATTACHSLOT_HAT,			// 3 - Head-wear slot
+	ATTACHSLOT_FACE,		// 4 - Face-wear slot
+	ATTACHSLOT_BLOOD,		// 5 - Bleeding particle effect
+	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
+}
+
 
 /*==============================================================================
 
@@ -306,6 +318,35 @@ bool:	gServerRestarting = false,
 		gServerMaxUptime,
 		gServerUptime,
 		gGlobalDebugLevel;
+
+// DATABASES
+new
+DB:		gAccounts;
+
+// GLOBAL SERVER SETTINGS (Todo: modularise)
+new
+		// player
+		gMessageOfTheDay[MAX_MOTD_LEN],
+		gWebsiteURL[MAX_WEBSITE_NAME],
+		gRuleList[MAX_RULE][MAX_RULE_LEN],
+		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
+
+		// server
+bool:	gPauseMap,
+bool:	gInteriorEntry,
+bool:	gPlayerAnimations,
+bool:	gVehicleSurfing,
+Float:	gNameTagDistance,
+		gCombatLogWindow,
+		gLoginFreezeTime,
+		gMaxTaboutTime,
+		gPingLimit;
+
+// INTERNAL
+new
+		gBigString[MAX_PLAYERS][4096],
+		gTotalRules,
+		gTotalStaff;
 
 new stock
 		GLOBAL_DEBUG = -1;
@@ -336,9 +377,9 @@ new stock
 #include "SS/utils/tickcountfix.pwn"
 #include "SS/utils/string.pwn"
 #include "SS/utils/debug.pwn"
+#include "SS/utils/dialog-pages.pwn"
 
 // SERVER CORE
-#include "SS/Core/Server/Init.pwn"
 #include "SS/Core/Server/Settings.pwn"
 #include "SS/Core/Server/TextTags.pwn"
 #include "SS/Core/Server/Weather.pwn"
@@ -348,21 +389,31 @@ new stock
 #include "SS/Core/Server/Sockets.pwn"
 #include "SS/Core/Server/InfoMessage.pwn"
 
-// UI
-#include "SS/Core/UI/PlayerUI.pwn"
-#include "SS/Core/UI/GlobalUI.pwn"
-#include "SS/Core/UI/HoldAction.pwn"
-#include "SS/Core/UI/Radio.pwn"
-#include "SS/Core/UI/TipText.pwn"
-#include "SS/Core/UI/KeyActions.pwn"
-#include "SS/Core/UI/Watch.pwn"
-#include "SS/Core/UI/Keypad.pwn"
-#include "SS/Core/UI/DialogPages.pwn"
-#include "SS/Core/UI/BodyPreview.pwn"
-
-// VEHICLE
+/*
+	PARENT SYSTEMS
+	Modules that declare setup functions and constants used throughout.
+*/
 #include "SS/Core/Vehicle/VehicleType.pwn"
 #include "SS/Core/Vehicle/Core.pwn"
+#include "SS/Core/Player/Core.pwn"
+#include "SS/Core/Player/SaveLoad.pwn"
+#include "SS/Core/Admin/Core.pwn"
+#include "SS/Core/Char/Holster.pwn"
+#include "SS/Core/Weapon/ammunition.pwn"
+#include "SS/Core/Weapon/damage.core.pwn"
+#include "SS/Core/UI/HoldAction.pwn"
+
+/*
+	MODULE INITIALISATION CALLS
+	Calls module constructors to set up entity types.
+*/
+#include "SS/Core/Server/Init.pwn"
+
+/*
+	CHILD SYSTEMS
+	Modules that do not declare anything globally accessible besides interfaces.
+*/
+// VEHICLE
 #include "SS/Core/Vehicle/PlayerVehicle.pwn"
 #include "SS/Core/Vehicle/LootVehicle.pwn"
 #include "SS/Core/Vehicle/Spawn.pwn"
@@ -378,12 +429,11 @@ new stock
 #include "SS/Core/Vehicle/Trailer.pwn"
 
 // PLAYER INTERNAL SCRIPTS
-#include "SS/Core/Player/Core.pwn"
 #include "SS/Core/Player/Accounts.pwn"
 #include "SS/Core/Player/Aliases.pwn"
 #include "SS/Core/Player/ipv4-log.pwn"
 #include "SS/Core/Player/gpci-log.pwn"
-#include "SS/Core/Player/SaveLoad.pwn"
+#include "SS/Core/Player/Brightness.pwn"
 #include "SS/Core/Player/Spawn.pwn"
 #include "SS/Core/Player/Damage.pwn"
 #include "SS/Core/Player/Death.pwn"
@@ -411,7 +461,6 @@ new stock
 #include "SS/Core/Char/KnockOut.pwn"
 #include "SS/Core/Char/Disarm.pwn"
 #include "SS/Core/Char/Overheat.pwn"
-#include "SS/Core/Char/Holster.pwn"
 #include "SS/Core/Char/Infection.pwn"
 #include "SS/Core/Char/Backpack.pwn"
 #include "SS/Core/Char/HandCuffs.pwn"
@@ -419,12 +468,11 @@ new stock
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
 #include "SS/Core/Char/Bleed.pwn"
+#include "SS/Core/Char/DrugFX.pwn"
 
 // WEAPON
-#include "SS/Core/Weapon/ammunition.pwn"
 #include "SS/Core/Weapon/core.pwn"
 #include "SS/Core/Weapon/interact.pwn"
-#include "SS/Core/Weapon/damage.core.pwn"
 #include "SS/Core/Weapon/damage.firearm.pwn"
 #include "SS/Core/Weapon/damage.melee.pwn"
 #include "SS/Core/Weapon/damage.vehicle.pwn"
@@ -434,6 +482,14 @@ new stock
 #include "SS/Core/Weapon/misc.pwn"
 #include "SS/Core/Weapon/AntiCombatLog.pwn"
 #include "SS/Core/Weapon/tracer.pwn"
+
+// UI
+#include "SS/Core/UI/Radio.pwn"
+#include "SS/Core/UI/TipText.pwn"
+#include "SS/Core/UI/KeyActions.pwn"
+#include "SS/Core/UI/Watch.pwn"
+#include "SS/Core/UI/Keypad.pwn"
+#include "SS/Core/UI/BodyPreview.pwn"
 
 // WORLD ENTITIES
 #include "SS/Core/World/Fuel.pwn"
@@ -460,7 +516,6 @@ new stock
 #include "SS/Core/Admin/BanCommand.pwn"
 #include "SS/Core/Admin/BanList.pwn"
 #include "SS/Core/Admin/Spectate.pwn"
-#include "SS/Core/Admin/Core.pwn"
 #include "SS/Core/Admin/Level1.pwn"
 #include "SS/Core/Admin/Level2.pwn"
 #include "SS/Core/Admin/Level3.pwn"
@@ -552,6 +607,9 @@ new stock
 #endif
 
 
+static
+Text:RestartCount = Text:INVALID_TEXT_DRAW;
+
 main()
 {
 	print("\n\n/*==============================================================================\n\n");
@@ -590,6 +648,15 @@ OnGameModeInit_Setup()
 
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
 	GLOBAL_DEBUG = debug_register_handler("GLOBAL", gGlobalDebugLevel);
+
+	RestartCount				=TextDrawCreate(430.000000, 10.000000, "Server Restart In:~n~00:00");
+	TextDrawAlignment			(RestartCount, 2);
+	TextDrawBackgroundColor		(RestartCount, 255);
+	TextDrawFont				(RestartCount, 1);
+	TextDrawLetterSize			(RestartCount, 0.400000, 2.000000);
+	TextDrawColor				(RestartCount, -1);
+	TextDrawSetOutline			(RestartCount, 1);
+	TextDrawSetProportional		(RestartCount, 1);
 }
 
 public OnGameModeExit()

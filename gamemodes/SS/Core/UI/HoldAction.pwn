@@ -1,12 +1,27 @@
+#include <YSI\y_hooks>
+
+
 new
-		HoldActionLimit[MAX_PLAYERS],
-		HoldActionProgress[MAX_PLAYERS],
-Timer:	HoldActionTimer[MAX_PLAYERS],
-		HoldActionState[MAX_PLAYERS];
+PlayerBar:	ActionBar = INVALID_PLAYER_BAR_ID,
+			HoldActionLimit[MAX_PLAYERS],
+			HoldActionProgress[MAX_PLAYERS],
+Timer:		HoldActionTimer[MAX_PLAYERS],
+			HoldActionState[MAX_PLAYERS];
 
 
 forward OnHoldActionUpdate(playerid, progress);
 forward OnHoldActionFinish(playerid);
+
+
+hook OnPlayerConnect(playerid)
+{
+	ActionBar = CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	DestroyPlayerProgressBar(playerid, ActionBar);
+}
 
 
 StartHoldAction(playerid, duration, startvalue = 0)
@@ -61,19 +76,4 @@ timer HoldActionUpdate[100](playerid)
 	HoldActionProgress[playerid] += 100;
 
 	return;
-}
-
-#endinput
-
-#include <YSI\y_hooks>
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	if(newkeys & 16)
-	{
-		StartHoldAction(playerid, 3000);
-	}
-	if(oldkeys & 16)
-	{
-		StopHoldAction(playerid);
-	}
 }

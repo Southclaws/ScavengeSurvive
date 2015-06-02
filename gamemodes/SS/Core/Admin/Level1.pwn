@@ -5,13 +5,13 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Admin/Level1'...");
 
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/(un)mute - mute/unmute player\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/warn - warn a player\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/kick - kick player\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/msg - send chat announcement\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/(all)country - show country data\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/clearchat - clear the chatbox\n");
-	RegisterAdminCommand(ADMIN_LEVEL_GM, "/aliases - check aliases\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/(un)mute - mute/unmute player\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/warn - warn a player\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/kick - kick player\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/msg - send chat announcement\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/(all)country - show country data\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/clearchat - clear the chatbox\n");
+	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/aliases - check aliases\n");
 }
 
 

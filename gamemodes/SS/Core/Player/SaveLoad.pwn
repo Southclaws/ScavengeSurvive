@@ -130,6 +130,7 @@ SavePlayerChar(playerid)
 
 	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
 	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);
+	printf("[MUTEDEBUG] SAVE: '%s' %d", gPlayerName[playerid], GetPlayerMuteRemainder(playerid));
 	data[PLY_CELL_KNOCKOUT] = GetPlayerKnockOutRemainder(playerid);
 
 	if(IsValidItem(GetPlayerBagItem(playerid)))
@@ -366,8 +367,12 @@ LoadPlayerChar(playerid)
 
 	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
 
-	if(data[PLY_CELL_MUTE_TIME] > 0)
+	printf("[MUTEDEBUG] LOAD: '%s' %d", gPlayerName[playerid], data[PLY_CELL_MUTE_TIME]);
+	if(data[PLY_CELL_MUTE_TIME] != 0)
 		TogglePlayerMute(playerid, true, data[PLY_CELL_MUTE_TIME]);
+
+	else
+		TogglePlayerMute(playerid, false);
 
 	if(data[PLY_CELL_KNOCKOUT] > 0)
 		KnockOutPlayer(playerid, data[PLY_CELL_KNOCKOUT]);

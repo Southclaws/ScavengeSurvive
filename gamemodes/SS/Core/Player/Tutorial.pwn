@@ -184,7 +184,7 @@ hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
 		PlayerTextDrawHide(playerid, ClassButtonFemale[playerid]);
 		PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
 
-		SetPlayerScreenFadeLevel(playerid, 255);
+		SetPlayerBrightness(playerid, 255);
 
 		ShowHelpTip(playerid, "Welcome to the tutorial! Look around and try things. Help messages will appear here! Type /exit to leave the tutorial.");
 		PlayerInTutorial[playerid] = true;
@@ -237,7 +237,7 @@ ExitTutorial(playerid)
 	SetPlayerBitFlag(playerid, Alive, false);
 	SetPlayerVirtualWorld(playerid, 0);
 	PlayerCreateNewCharacter(playerid);
-	SetPlayerScreenFadeLevel(playerid, 0);
+	SetPlayerBrightness(playerid, 0);
 
 	DestroyWorldVehicle(PlayerTutorialVehicle[playerid]);
 	PlayerTutorialVehicle[playerid] = INVALID_VEHICLE_ID;

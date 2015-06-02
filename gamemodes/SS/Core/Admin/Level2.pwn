@@ -5,14 +5,14 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Admin/Level2'...");
 
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/duty - go on admin duty\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/goto, /get - teleport players\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/gotopos - go to coordinates\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)freeze - freeze/unfreeze player\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/(un)ban - ban/unban player\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banlist - show list of bans\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/banned - check if banned\n");
-	RegisterAdminCommand(ADMIN_LEVEL_MOD, "/setmotd - set message of the day\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/duty - go on admin duty\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/goto, /get - teleport players\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/gotopos - go to coordinates\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/(un)freeze - freeze/unfreeze player\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/(un)ban - ban/unban player\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/banlist - show list of bans\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/banned - check if banned\n");
+	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/setmotd - set message of the day\n");
 }
 
 
@@ -50,7 +50,7 @@ ACMD:duty[2](playerid, params[])
 
 ACMD:goto[2](playerid, params[])
 {
-	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < STAFF_LEVEL_DEVELOPER)
 		return 6;
 
 	new targetid;
@@ -74,7 +74,7 @@ ACMD:goto[2](playerid, params[])
 
 ACMD:get[2](playerid, params[])
 {
-	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < ADMIN_LEVEL_DEV)
+	if(!(IsPlayerOnAdminDuty(playerid)) && GetPlayerAdminLevel(playerid) < STAFF_LEVEL_DEVELOPER)
 		return 6;
 
 	new targetid;
@@ -210,7 +210,7 @@ ACMD:ban[2](playerid, params[])
 		return 1;
 	}
 
-	if(GetAdminLevelByName(name) > ADMIN_LEVEL_NONE)
+	if(GetAdminLevelByName(name) > STAFF_LEVEL_NONE)
 		return 2;
 
 	BanAndEnterInfo(playerid, name);

@@ -2,15 +2,16 @@
 
 
 static
-		knockout_MaxDuration = 120000;
+			knockout_MaxDuration = 120000;
 
 static
-		knockout_KnockedOut[MAX_PLAYERS],
-		knockout_InVehicleID[MAX_PLAYERS],
-		knockout_InVehicleSeat[MAX_PLAYERS],
-		knockout_Tick[MAX_PLAYERS],
-		knockout_Duration[MAX_PLAYERS],
-Timer:	knockout_Timer[MAX_PLAYERS];
+PlayerBar:	KnockoutBar = INVALID_PLAYER_BAR_ID,
+			knockout_KnockedOut[MAX_PLAYERS],
+			knockout_InVehicleID[MAX_PLAYERS],
+			knockout_InVehicleSeat[MAX_PLAYERS],
+			knockout_Tick[MAX_PLAYERS],
+			knockout_Duration[MAX_PLAYERS],
+Timer:		knockout_Timer[MAX_PLAYERS];
 
 
 forward OnPlayerKnockOut(playerid);
@@ -18,6 +19,7 @@ forward OnPlayerKnockOut(playerid);
 
 hook OnPlayerConnect(playerid)
 {
+	KnockoutBar = CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
 	knockout_KnockedOut[playerid] = false;
 	knockout_InVehicleID[playerid] = INVALID_VEHICLE_ID;
 	knockout_InVehicleSeat[playerid] = -1;
@@ -25,15 +27,12 @@ hook OnPlayerConnect(playerid)
 	knockout_Duration[playerid] = 0;
 }
 
-hook OnPlayerDeath(playerid, killerid, reason)
-{
-	WakeUpPlayer(playerid);
-}
-
 hook OnPlayerDisconnect(playerid)
 {
 	if(gServerRestarting)
 		return 1;
+
+	DestroyPlayerProgressBar(playerid, KnockoutBar);
 
 	if(knockout_KnockedOut[playerid])
 	{
@@ -41,6 +40,11 @@ hook OnPlayerDisconnect(playerid)
 	}
 
 	return 1;
+}
+
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	WakeUpPlayer(playerid);
 }
 
 stock KnockOutPlayer(playerid, duration)
