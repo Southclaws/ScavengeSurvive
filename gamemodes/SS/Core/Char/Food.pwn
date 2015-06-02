@@ -4,7 +4,7 @@
 #define IDLE_FOOD_RATE (0.004)
 
 
-static
+new // TODO: replace this with a PlayerProgressBar
 PlayerText:	HungerBarBackground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	HungerBarForeground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 

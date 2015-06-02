@@ -53,7 +53,6 @@ E_FLAGS:	ply_BitFlags,
 			ply_ChatMode,
 			ply_CurrentVehicle,
 			ply_PingLimitStrikes,
-			ply_ScreenBoxFadeLevel,
 			ply_stance,
 			ply_JoinTick,
 			ply_SpawnTick,
@@ -62,65 +61,15 @@ E_FLAGS:	ply_BitFlags,
 
 static
 			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
-PlayerText:	ClassBackGround[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:	ClassButtonFemale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 new
+Text:		Branding = Text:INVALID_TEXT_DRAW,
 			gPlayerName[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
 forward OnPlayerDisconnected(playerid);
+forward OnDeath(playerid, killerid, reason);
 
-
-public OnGameModeInit()
-{
-	ClassBackGround[playerid]		=CreatePlayerTextDraw(playerid, 0.000000, 0.000000, "_");
-	PlayerTextDrawBackgroundColor	(playerid, ClassBackGround[playerid], 255);
-	PlayerTextDrawFont				(playerid, ClassBackGround[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, ClassBackGround[playerid], 0.500000, 50.000000);
-	PlayerTextDrawColor				(playerid, ClassBackGround[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, ClassBackGround[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, ClassBackGround[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, ClassBackGround[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, ClassBackGround[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ClassBackGround[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassBackGround[playerid], 640.000000, 0.000000);
-
-	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
-	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, ClassButtonMale[playerid], 255);
-	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, ClassButtonMale[playerid], 0.500000, 2.000000);
-	PlayerTextDrawColor				(playerid, ClassButtonMale[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, ClassButtonMale[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ClassButtonMale[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
-	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
-
-	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
-	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, ClassButtonFemale[playerid], 255);
-	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, ClassButtonFemale[playerid], 0.500000, 2.000000);
-	PlayerTextDrawColor				(playerid, ClassButtonFemale[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, ClassButtonFemale[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
-	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
-}
-
-ShowClassBackground(playerid)
-{
-	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
-	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
-}
 
 public OnPlayerConnect(playerid)
 {
@@ -152,14 +101,10 @@ public OnPlayerConnect(playerid)
 	defer LoadAccountDelay(playerid);
 
 	LoadPlayerTextDraws(playerid);
-
-	ply_Data[playerid][ply_ScreenBoxFadeLevel] = 0;
-	PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], 0x000000FF);
-	PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
+	SetPlayerBrightness(playerid, 255);
 
 	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
-	TextDrawShowForPlayer(playerid, Branding);
 	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
 
@@ -195,6 +140,19 @@ public OnPlayerDisconnect(playerid, reason)
 	SetTimerEx("OnPlayerDisconnected", 100, false, "dd", playerid, reason);
 
 	return 1;
+}
+
+LoadPlayerTextDraws(playerid)
+{
+	Branding					=TextDrawCreate(638.000000, 2.000000, "SouthclawJK.wordpress.com");
+	TextDrawAlignment			(Branding, 3);
+	TextDrawBackgroundColor		(Branding, 255);
+	TextDrawFont				(Branding, 1);
+	TextDrawLetterSize			(Branding, 0.240000, 1.000000);
+	TextDrawColor				(Branding, -1);
+	TextDrawSetOutline			(Branding, 1);
+	TextDrawSetProportional		(Branding, 1);
+	TextDrawShowForPlayer(playerid, Branding);
 }
 
 timer LoadAccountDelay[5000](playerid)
@@ -285,10 +243,9 @@ ResetVariables(playerid)
 	ply_Data[playerid][ply_RadioFrequency]		= 108.0;
 	ply_Data[playerid][ply_AimShoutText][0]		= EOS;
 
-	ply_Data[playerid][ply_ChatMode]			= CHAT_MODE_GLOBAL;
+	ply_Data[playerid][ply_ChatMode]			= 1;
 	ply_Data[playerid][ply_CurrentVehicle]		= 0;
 	ply_Data[playerid][ply_PingLimitStrikes]	= 0;
-	ply_Data[playerid][ply_ScreenBoxFadeLevel]	= 0;
 	ply_Data[playerid][ply_stance]				= 0;
 	ply_Data[playerid][ply_JoinTick]			= 0;
 	ply_Data[playerid][ply_SpawnTick]			= 0;
@@ -338,8 +295,7 @@ ptask PlayerUpdate[100](playerid)
 
 	new
 		hour,
-		minute,
-		weather;
+		minute;
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -361,95 +317,11 @@ ptask PlayerUpdate[100](playerid)
 		}
 	}
 
-	if(ply_Data[playerid][ply_ScreenBoxFadeLevel] > 0)
-	{
-		PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], ply_Data[playerid][ply_ScreenBoxFadeLevel]);
-		PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
-
-		ply_Data[playerid][ply_ScreenBoxFadeLevel] -= 4;
-
-		if(ply_Data[playerid][ply_HitPoints] <= 40.0)
-		{
-			if(ply_Data[playerid][ply_ScreenBoxFadeLevel] <= floatround((40.0 - ply_Data[playerid][ply_HitPoints]) * 4.4))
-				ply_Data[playerid][ply_ScreenBoxFadeLevel] = 0;
-		}
-	}
-	else
-	{
-		if(ply_Data[playerid][ply_HitPoints] < 40.0)
-		{
-			if(IsPlayerUnderDrugEffect(playerid, drug_Painkill))
-			{
-				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
-			}
-			else if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
-			{
-				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
-			}
-			else
-			{
-				PlayerTextDrawBoxColor(playerid, ClassBackGround[playerid], floatround((40.0 - ply_Data[playerid][ply_HitPoints]) * 4.4));
-				PlayerTextDrawShow(playerid, ClassBackGround[playerid]);
-
-				if(!IsPlayerKnockedOut(playerid))
-				{
-					if(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)) > 5000 * ply_Data[playerid][ply_HitPoints])
-					{
-						if(GetPlayerBleedRate(playerid) > 0.0)
-						{
-							if(frandom(40.0) < (50.0 - ply_Data[playerid][ply_HitPoints]))
-								KnockOutPlayer(playerid, floatround(2000 * (50.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (50.0 - ply_Data[playerid][ply_HitPoints]))));
-						}
-						else
-						{
-							if(frandom(40.0) < (40.0 - ply_Data[playerid][ply_HitPoints]))
-								KnockOutPlayer(playerid, floatround(2000 * (40.0 - ply_Data[playerid][ply_HitPoints]) + frandom(200 * (40.0 - ply_Data[playerid][ply_HitPoints]))));
-						}
-					}
-				}
-			}
-		}
-		else
-		{
-			if(ply_Data[playerid][ply_BitFlags] & Spawned)
-				PlayerTextDrawHide(playerid, ClassBackGround[playerid]);
-		}
-	}
-
 	gettime(hour, minute);
 
-	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
-	{
-		hour = 22;
-		minute = 3;
-		weather = 33;
-	}
-	else if(IsPlayerUnderDrugEffect(playerid, drug_Heroin))
-	{
-		hour = 22;
-		minute = 30;
-		weather = 33;
-	}
-	else
-	{
-		weather = gWeatherID;
-	}
-
+	// TODO: Modularise weather, add in hooking/override system for drug FX
 	SetPlayerTime(playerid, hour, minute);
-	SetPlayerWeather(playerid, weather);
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
-	{
-		SetPlayerDrunkLevel(playerid, 100000);
-
-		if(random(100) < 50)
-			GivePlayerHP(playerid, -0.1);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
-	{
-		GivePlayerHP(playerid, 0.01);
-	}
+	SetPlayerWeather(playerid, gWeatherID);
 
 	PlayerBagUpdate(playerid);
 
@@ -537,7 +409,7 @@ public OnPlayerUpdate(playerid)
 		GetVehicleVelocity(ply_Data[playerid][ply_CurrentVehicle], vx, vy, vz);
 		ply_Data[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 		format(str, 32, "%.0fkm/h", ply_Data[playerid][ply_Velocity]);
-		PlayerTextDrawSetString(playerid, VehicleSpeedText[playerid], str);
+		SetPlayerVehicleSpeedUI(playerid, str);
 	}
 	else
 	{
@@ -640,6 +512,10 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
+KillPlayer(playerid, killerid, deathreason)
+{
+	CallLocalFunction("OnDeath", "ddd", playerid, killerid, deathreason);
+}
 
 forward E_FLAGS:GetPlayerDataBitmask(playerid);
 stock E_FLAGS:GetPlayerDataBitmask(playerid)
@@ -1104,30 +980,6 @@ stock GetPlayerLastVehicle(playerid)
 }
 
 // ply_PingLimitStrikes
-// ply_ScreenBoxFadeLevel
-stock GetPlayerScreenFadeLevel(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_ScreenBoxFadeLevel];
-}
-stock SetPlayerScreenFadeLevel(playerid, level)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	if(level > 255)
-		level = 255;
-
-	if(level < 0)
-		level = 0;
-
-	ply_Data[playerid][ply_ScreenBoxFadeLevel] = level;
-
-	return 1;
-}
-
 // ply_stance
 stock GetPlayerStance(playerid)
 {
