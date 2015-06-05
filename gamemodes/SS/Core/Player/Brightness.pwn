@@ -100,8 +100,6 @@ stock SetPlayerBrightness(playerid, level)
 //	if(!IsPlayerConnected(playerid))
 //		return 0;
 
-	MsgF(playerid, WHITE, "set b %d c: %d", level, IsPlayerConnected(playerid));
-
 	if(level > 255)
 		level = 255;
 

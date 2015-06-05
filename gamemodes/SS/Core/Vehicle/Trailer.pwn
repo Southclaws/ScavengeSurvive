@@ -132,11 +132,22 @@ stock GetTrailerVehicleID(vehicleid)
 */
 task _trailerSync[1000]()
 {
+	new trailerid;
+
 	foreach(new i : veh_Index)
 	{
 		// If this vehicle doesn't have a trailer, skip.
 		if(trl_VehicleTrailer[i] == INVALID_VEHICLE_ID)
-			continue;
+		{
+			trailerid = GetVehicleTrailer(i);
+
+			// Check for a client-sided trailer and try to add it
+			if(IsValidVehicle(trailerid))
+				SetVehicleTrailer(i, trailerid);
+
+			else
+				continue;
+		}
 
 		// If this vehicle apparently did have a trailer but it doesn't exist,
 		// clear that trailer from memory.

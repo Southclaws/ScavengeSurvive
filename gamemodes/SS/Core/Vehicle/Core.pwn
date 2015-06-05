@@ -508,11 +508,8 @@ VehicleSurfingCheck(playerid)
 		Float:vz,
 		Float:velocity;
 
-	switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
-	{
-		case VEHICLE_CATEGORY_BOAT, VEHICLE_CATEGORY_TRAIN:
-			return;
-	}
+	if(IsVehicleTypeSurfable(GetVehicleType(vehicleid)))
+		return;
 
 	GetVehicleVelocity(vehicleid, vx, vy, vz);
 	velocity = floatsqroot( (vx * vx) + (vy * vy) + (vz * vz) ) * 150.0;

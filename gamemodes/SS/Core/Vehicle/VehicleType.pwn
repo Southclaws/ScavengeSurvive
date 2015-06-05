@@ -20,7 +20,8 @@ enum (<<= 1)
 {
 	VEHICLE_FLAG_NOT_LOCKABLE = 1,
 	VEHICLE_FLAG_NO_ENGINE,
-	VEHICLE_FLAG_TRAILER
+	VEHICLE_FLAG_TRAILER,
+	VEHICLE_FLAG_CAN_SURF
 }
 
 enum
@@ -375,4 +376,13 @@ stock IsVehicleTypeTrailer(vehicletype)
 		return 0;
 
 	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_TRAILER;
+}
+
+// veh_flags / VEHICLE_FLAG_CAN_SURF
+stock IsVehicleTypeSurfable(vehicletype)
+{
+	if(!(0 <= vehicletype < veh_TypeTotal))
+		return 0;
+
+	return veh_TypeData[vehicletype][veh_flags] & VEHICLE_FLAG_CAN_SURF;
 }
