@@ -317,6 +317,8 @@ LoadPlayerVehicle(filename[])
 		SetVehicleDamageData(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
 		SetVehicleKey(trailerid, data[VEH_CELL_KEY]);
 
+		SetVehicleExternalLock(trailerid, data[VEH_CELL_LOCKED]);
+
 		new itemcount;
 
 		if(trailertrunksize > 0)
@@ -471,9 +473,9 @@ _SaveVehicle(vehicleid, active = true)
 		data[VEH_CELL_FUEL] = _:0.0;
 		GetVehiclePos(trailerid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 		GetVehicleZAngle(trailerid, Float:data[VEH_CELL_ROTZ]);
-		GetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+		GetVehicleColours(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
-		data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
+		data[VEH_CELL_KEY] = GetVehicleKey(trailerid);
 		data[VEH_CELL_LOCKED] = IsVehicleLocked(trailerid);
 
 		// TDAT = Trailer Data
@@ -515,7 +517,7 @@ _SaveVehicle(vehicleid, active = true)
 				IsVehicleLocked(trailerid) ? ("L") : ("U"),
 				itemcount,
 				vehiclename,
-				pveh_Owner[vehicleid],
+				pveh_Owner[trailerid],
 				Float:data[VEH_CELL_POSX],
 				Float:data[VEH_CELL_POSY],
 				Float:data[VEH_CELL_POSZ]);

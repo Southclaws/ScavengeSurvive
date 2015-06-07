@@ -82,7 +82,11 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 				logf("[VLOCK] %p locked vehicle %d", playerid, vehicleid);
 			}
 
-			SaveVehicle(vehicleid);
+			if(IsVehicleTypeTrailer(vehicletype))
+				SaveVehicle(GetTrailerVehicleID(vehicleid));
+
+			else
+				SaveVehicle(vehicleid);
 		}
 	}
 

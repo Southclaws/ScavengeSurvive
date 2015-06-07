@@ -127,25 +127,23 @@ stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, prin
 {
 	file_Open(SETTINGS_FILE);
 
-	new
-		count,
-		tmpkey[MAX_KEY_LENGTH];
+	new tmpkey[MAX_KEY_LENGTH];
 
 	while(outputtotal < max)
 	{
-		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
 		if(!file_IsKey(tmpkey))
 		{
-			if(count == 0)
+			if(outputtotal == 0)
 				printf("ERROR: key '%s' not found.", tmpkey);
 
 			break;
 		}
 
-		GetSettingInt(tmpkey, defaultvalue, output[count], printsetting, false);
+		GetSettingInt(tmpkey, defaultvalue, output[outputtotal], printsetting, false);
 
-		count++;
+		outputtotal++;
 	}
 
 	file_Close();
@@ -155,25 +153,23 @@ stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &out
 {
 	file_Open(SETTINGS_FILE);
 
-	new
-		count,
-		tmpkey[MAX_KEY_LENGTH];
+	new tmpkey[MAX_KEY_LENGTH];
 
 	while(outputtotal < max)
 	{
-		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
 		if(!file_IsKey(tmpkey))
 		{
-			if(count == 0)
+			if(outputtotal == 0)
 				printf("ERROR: key '%s' not found.", tmpkey);
 
 			break;
 		}
 
-		GetSettingFloat(tmpkey, defaultvalue, output[count], printsetting, false);
+		GetSettingFloat(tmpkey, defaultvalue, output[outputtotal], printsetting, false);
 
-		count++;
+		outputtotal++;
 	}
 
 	file_Close();
@@ -183,17 +179,15 @@ stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtota
 {
 	file_Open(SETTINGS_FILE);
 
-	new
-		count,
-		tmpkey[MAX_KEY_LENGTH];
+	new tmpkey[MAX_KEY_LENGTH];
 
 	while(outputtotal < max)
 	{
-		format(tmpkey, sizeof(tmpkey), "%s/%d", path, count);
+		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
 		if(!file_IsKey(tmpkey))
 		{
-			if(count == 0)
+			if(outputtotal == 0)
 			{
 				printf("ERROR: key '%s' not found.", tmpkey);
 				output[0][0] = EOS;
@@ -203,9 +197,9 @@ stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtota
 			break;
 		}
 
-		GetSettingString(tmpkey, defaultvalue, output[count], outputmaxsize, printsetting, false);
+		GetSettingString(tmpkey, defaultvalue, output[outputtotal], outputmaxsize, printsetting, false);
 
-		count++;
+		outputtotal++;
 	}
 
 	file_Close();
