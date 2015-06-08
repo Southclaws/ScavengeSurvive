@@ -350,7 +350,7 @@ hook OnPlayerSpawn(playerid)
 
 		SelectTextDraw(playerid, 0xFFFFFF88);
 		SetPlayerHP(playerid, 1.0);
-		SetPlayerBrightness(playerid, 255);
+		SetPlayerBrightness(playerid, 200);
 		TextDrawShowForPlayer(playerid, DeathText);
 		TextDrawShowForPlayer(playerid, DeathButton);
 	}
