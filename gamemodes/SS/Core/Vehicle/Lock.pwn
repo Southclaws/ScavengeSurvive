@@ -94,6 +94,13 @@ stock SetVehicleExternalLock(vehicleid, status)
 		return 1;
 	}
 
+	if(IsVehicleDead(vehicleid))
+	{
+		lock_Status[vehicleid] = true;
+		VehicleDoorsState(vehicleid, true);
+		return 1;
+	}
+
 	lock_LastChange[vehicleid] = GetTickCount();
 
 	lock_Status[vehicleid] = status;

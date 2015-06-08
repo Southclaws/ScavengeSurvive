@@ -255,10 +255,25 @@ _vint_LeaveArea(playerid, areaid)
 	return;
 }
 
-hook OnVehicleDeath(vehicleid, killerid)
+public OnVehicleDestroyed(vehicleid)
 {
 	DestroyDynamicArea(varea_AreaID[vehicleid]);
+
+	#if defined varea_OnVehicleDestroyed
+		return varea_OnVehicleDestroyed(vehicleid);
+	#else
+		return 1;
+	#endif
 }
+#if defined _ALS_OnVehicleDestroyed
+	#undef OnVehicleDestroyed
+#else
+	#define _ALS_OnVehicleDestroyed
+#endif
+#define OnVehicleDestroyed varea_OnVehicleDestroyed
+#if defined varea_OnVehicleDestroyed
+	forward varea_OnVehicleDestroyed(vehicleid);
+#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

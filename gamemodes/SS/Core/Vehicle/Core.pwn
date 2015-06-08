@@ -148,20 +148,76 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 		return 0;
 	}
 
-	/*
-		some code from the spawn module, not sure if it's necessary still...
-			switch(model)
-			{
-				case 403, 443, 514, 515, 539:
-				{
-					posZ += 2.0;
-				}
-			}
-
-	*/
-
 	//printf("[CreateWorldVehicle] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
 
+	new vehicleid = _veh_create(type, x, y, z, r, colour1, colour2, world);
+
+	veh_TypeCount[type]++;
+
+	CallLocalFunction("OnVehicleCreated", "d", vehicleid);
+	_veh_SyncData(vehicleid);
+
+	return vehicleid;
+}
+
+stock DestroyWorldVehicle(vehicleid)
+{
+	if(!IsValidVehicle(vehicleid))
+		return 0;
+
+	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
+	veh_Data[vehicleid][veh_health] = 300.0;
+	VehicleDoorsState(vehicleid, true);
+	ResetVehicle(vehicleid);
+//	DestroyVehicle(vehicleid, 3);
+//	Iter_Remove(veh_Index, vehicleid);
+
+	return 1;
+}
+
+stock ResetVehicle(vehicleid)
+{
+	new
+		type = GetVehicleType(vehicleid),
+		tmp[E_VEHICLE_DATA],
+		newid;
+
+	tmp = veh_Data[vehicleid];
+
+	DestroyVehicle(vehicleid, 4);
+
+	newid = _veh_create(type,
+		veh_Data[vehicleid][veh_spawnX],
+		veh_Data[vehicleid][veh_spawnY],
+		veh_Data[vehicleid][veh_spawnZ],
+		veh_Data[vehicleid][veh_spawnR],
+		veh_Data[vehicleid][veh_colour1],
+		veh_Data[vehicleid][veh_colour2]);
+
+	CallLocalFunction("OnVehicleReset", "dd", vehicleid, newid);
+
+	veh_Data[newid] = tmp;
+
+	_veh_SyncData(newid);
+	SetVehicleSpawnPoint(newid, veh_Data[newid][veh_spawnX], veh_Data[newid][veh_spawnY], veh_Data[newid][veh_spawnZ], veh_Data[newid][veh_spawnR]);
+}
+
+stock RespawnVehicle(vehicleid)
+{
+	SetVehicleToRespawn(vehicleid);
+	_veh_SyncData(vehicleid);
+}
+
+
+/*==============================================================================
+
+	Internal
+
+==============================================================================*/
+
+
+_veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0)
+{
 	new vehicleid = CreateVehicle(GetVehicleTypeModel(type), x, y, z, r, colour1, colour2, 864000);
 
 	if(!IsValidVehicle(vehicleid))
@@ -195,66 +251,8 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 	veh_Data[vehicleid][veh_occupied]	= 0;
 	veh_Data[vehicleid][veh_dead]		= 0;
 
-	veh_TypeCount[type]++;
-
-	CallLocalFunction("OnVehicleCreated", "d", vehicleid);
-	_veh_SyncData(vehicleid);
-
 	return vehicleid;
 }
-
-stock DestroyWorldVehicle(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
-	DestroyVehicle(vehicleid, 3);
-	Iter_Remove(veh_Index, vehicleid);
-
-	return 1;
-}
-
-stock ResetVehicle(vehicleid)
-{
-	new
-		type = GetVehicleType(vehicleid),
-		newid;
-
-	DestroyVehicle(vehicleid, 4);
-
-	newid = CreateWorldVehicle(type,
-		veh_Data[vehicleid][veh_spawnX],
-		veh_Data[vehicleid][veh_spawnY],
-		veh_Data[vehicleid][veh_spawnZ],
-		veh_Data[vehicleid][veh_spawnR],
-		veh_Data[vehicleid][veh_colour1],
-		veh_Data[vehicleid][veh_colour2]);
-
-	CallLocalFunction("OnVehicleReset", "dd", vehicleid, newid);
-
-	if(newid != vehicleid)
-	{
-		veh_Data[newid] = veh_Data[vehicleid];
-	}
-
-	_veh_SyncData(newid);
-	SetVehicleSpawnPoint(newid, veh_Data[newid][veh_spawnX], veh_Data[newid][veh_spawnY], veh_Data[newid][veh_spawnZ], veh_Data[newid][veh_spawnR]);
-}
-
-stock RespawnVehicle(vehicleid)
-{
-	SetVehicleToRespawn(vehicleid);
-	_veh_SyncData(vehicleid);
-}
-
-
-/*==============================================================================
-
-	Internal
-
-==============================================================================*/
-
 
 _veh_SyncData(vehicleid)
 {
@@ -690,6 +688,38 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 		veh_Data[vehicleid][veh_tires]);
 }
 
+public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
+{
+	if(GetVehicleDistanceFromPoint(vehicleid, new_x, new_y, new_z) > 0.1)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetVehiclePos(vehicleid, x, y, z);
+		SetVehiclePos(vehicleid, x, y, z);
+
+		return 0;
+	}
+	
+	#if defined veh_OnUnoccupiedVehicleUpdate
+		return veh_OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, new_x, new_y, new_z, vel_x, vel_y, vel_z);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnUnoccupiedVehicleUpdate
+	#undef OnUnoccupiedVehicleUpdate
+#else
+	#define _ALS_OnUnoccupiedVehicleUpdate
+#endif
+ 
+#define OnUnoccupiedVehicleUpdate veh_OnUnoccupiedVehicleUpdate
+#if defined veh_OnUnoccupiedVehicleUpdate
+	forward veh_OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z);
+#endif
+
 IsVehicleValidOutOfBounds(vehicleid)
 {
 	if(!IsPointInMapBounds(veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]))
@@ -715,9 +745,14 @@ IsVehicleValidOutOfBounds(vehicleid)
 */
 public OnVehicleDeath(vehicleid, killerid)
 {
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(killerid, name, MAX_PLAYER_NAME);
 	GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+
 	veh_Data[vehicleid][veh_dead] = true;
-	printf("[OnVehicleDeath] Vehicle %d killed by %d", vehicleid, killerid);
+
+	printf("[OnVehicleDeath] Vehicle %d killed by %s at %f %f %f", vehicleid, name, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 }
 
 public OnVehicleSpawn(vehicleid)
