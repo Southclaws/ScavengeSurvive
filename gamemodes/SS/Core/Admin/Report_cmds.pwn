@@ -214,6 +214,14 @@ ACMD:reports[1](playerid, params[])
 	return 1;
 }
 
+ACMD:deletereports[2](playerid, params[])
+{
+	DeleteReadReports();
+	Msg(playerid, YELLOW, " >  All read reports deleted.");
+
+	return 1;
+}
+
 ShowListOfReports(playerid)
 {
 	new totalreports = GetReportList(report_CurrentReportList[playerid]);

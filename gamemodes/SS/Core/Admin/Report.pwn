@@ -45,6 +45,7 @@ static
 DBStatement:	stmt_ReportInsert,
 DBStatement:	stmt_ReportDelete,
 DBStatement:	stmt_ReportDeleteName,
+DBStatement:	stmt_ReportDeleteRead,
 DBStatement:	stmt_ReportNameExists,
 DBStatement:	stmt_ReportList,
 DBStatement:	stmt_ReportInfo,
@@ -81,6 +82,7 @@ hook OnGameModeInit()
 	stmt_ReportInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?, 1)");
 	stmt_ReportDelete		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE rowid = ?");
 	stmt_ReportDeleteName	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE "FIELD_REPORTS_NAME" = ?");
+	stmt_ReportDeleteRead	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE "FIELD_REPORTS_READ" = 1");
 	stmt_ReportNameExists	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_NAME" = ?");
 	stmt_ReportList			= db_prepare(gAccounts, "SELECT "FIELD_REPORTS_NAME", "FIELD_REPORTS_READ", "FIELD_REPORTS_TYPE", rowid FROM "ACCOUNTS_TABLE_REPORTS" WHERE "FIELD_REPORTS_ACTIVE"=1");
 	stmt_ReportInfo			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_REPORTS" WHERE rowid = ?");
@@ -143,6 +145,11 @@ DeleteReportsOfPlayer(name[])
 	stmt_bind_value(stmt_ReportDeleteName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	return stmt_execute(stmt_ReportDeleteName);
+}
+
+DeleteReadReports()
+{
+	return stmt_execute(stmt_ReportDeleteRead);
 }
 
 
