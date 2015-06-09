@@ -422,17 +422,17 @@ def DefineItemTypeAmmo(item, name, calibre, bleedmult, knockmult, penetration, c
 
 def define_data():
 	calibre_none	= DefineAmmoCalibre("None",		0.0)
-	calibre_9mm		= DefineAmmoCalibre("9mm",		0.025)
-	calibre_50cae	= DefineAmmoCalibre(".50",		0.073)
-	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.031)
-	calibre_556		= DefineAmmoCalibre("5.56mm",	0.019)
-	calibre_357		= DefineAmmoCalibre(".357",		0.036)
-	calibre_762		= DefineAmmoCalibre("7.62",		0.032)
+	calibre_9mm		= DefineAmmoCalibre("9mm",		0.25)
+	calibre_50cae	= DefineAmmoCalibre(".50",		0.73)
+	calibre_12g		= DefineAmmoCalibre("12 Gauge",	0.31)
+	calibre_556		= DefineAmmoCalibre("5.56mm",	0.19)
+	calibre_357		= DefineAmmoCalibre(".357",		0.36)
+	calibre_762		= DefineAmmoCalibre("7.62",		0.32)
 	calibre_rpg		= DefineAmmoCalibre("RPG",		0.0)
 	calibre_fuel	= DefineAmmoCalibre("Fuel",		0.0)
 	calibre_film	= DefineAmmoCalibre("Film",		0.0)
-	calibre_50bmg	= DefineAmmoCalibre(".50",		0.063)
-	calibre_308		= DefineAmmoCalibre(".308",		0.043)
+	calibre_50bmg	= DefineAmmoCalibre(".50",		0.63)
+	calibre_308		= DefineAmmoCalibre(".308",		0.43)
 
 	calibres = [
 		calibre_none,
