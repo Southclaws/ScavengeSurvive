@@ -1,4 +1,4 @@
-ptask DrugFX[100](playerid)
+ptask DrugFX[1000](playerid)
 {
 //	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
 //	{
@@ -18,7 +18,7 @@ ptask DrugFX[100](playerid)
 		SetPlayerDrunkLevel(playerid, 100000);
 
 		if(random(100) < 50)
-			GivePlayerHP(playerid, -0.1);
+			GivePlayerHP(playerid, -1.0);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))

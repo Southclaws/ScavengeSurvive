@@ -145,7 +145,7 @@ stock RemoveAllDrugs(playerid)
 
 ==============================================================================*/
 
-ptask DrugsUpdate[100](playerid)
+ptask DrugsUpdate[1000](playerid)
 {
 	for(new i; i < drug_TypeTotal; i++)
 	{

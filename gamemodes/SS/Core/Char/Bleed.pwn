@@ -1,7 +1,3 @@
-//new const MIN_BLEED_RATE = 0.01;
-//new const MAX_BLEED_RATE = 0.4;
-
-
 static
 Float:	bld_BleedRate[MAX_PLAYERS];
 
@@ -18,7 +14,7 @@ hook OnScriptInit()
 }
 
 
-ptask BleedUpdate[100](playerid)
+ptask BleedUpdate[1000](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
 	{
@@ -88,7 +84,7 @@ ptask BleedUpdate[100](playerid)
 
 		new intensity = GetPlayerInfectionIntensity(playerid, 1);
 
-		GivePlayerHP(playerid, 0.0001925925 * GetPlayerFP(playerid) * (intensity ? 0.5 : 1.0));
+		GivePlayerHP(playerid, 0.001925925 * GetPlayerFP(playerid) * (intensity ? 0.5 : 1.0));
 
 		if(bld_BleedRate[playerid] < 0.0)
 			bld_BleedRate[playerid] = 0.0;
@@ -99,7 +95,7 @@ ptask BleedUpdate[100](playerid)
 		SetPlayerDrunkLevel(playerid, 2200);
 
 		if(random(100) < 80)
-			GivePlayerHP(playerid, 0.05);
+			GivePlayerHP(playerid, 0.5);
 	}
 
 	return;

@@ -31,7 +31,7 @@ _DoVehicleCollisionDamage(playerid, targetid)
 		Float:knockmult = 1.0;
 
 	velocity = GetPlayerTotalVelocity(playerid);
-	bleedrate = 0.004 * (velocity / 50.0);
+	bleedrate = 0.04 * (velocity / 50.0);
 
 	if(velocity > 55.0 && frandom(velocity) > 55.0)
 		KnockOutPlayer(targetid, floatround(1000 + ((velocity / 20.0) * 1000)));
