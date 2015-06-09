@@ -204,7 +204,7 @@ PositionCheck(playerid)
 
 				format(reason, sizeof(reason), "Moved %.0fm @%.0f (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, velocity, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 				format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
-				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
+				ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
 
 				SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
@@ -227,7 +227,7 @@ PositionCheck(playerid)
 
 					format(reason, sizeof(reason), "Moved %.0fm after TP @%.0f (%.0f, %.0f, %.0f > %.0f, %.0f, %.0f)", distance, velocity, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], x, y, z);
 					format(info, sizeof(info), "%.1f, %.1f, %.1f", x, y, z);
-					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], info);
+					ReportPlayer(name, reason, -1, REPORT_TYPE_TELEPORT, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2], GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
 
 					SetPlayerPos(playerid, tp_CurPos[playerid][0], tp_CurPos[playerid][1], tp_CurPos[playerid][2]);
 
@@ -301,7 +301,7 @@ SwimFlyCheck(playerid)
 
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			format(reason, sizeof(reason), "Used swimming animation at %.0f, %.0f, %.0f", x, y, z);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, "");
+			ReportPlayer(name, reason, -1, REPORT_TYPE_SWIMFLY, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 			BanPlayer(playerid, reason, -1, 0);
 
 			sf_ReportTick[playerid] = GetTickCount();
@@ -337,7 +337,7 @@ VehicleHealthCheck(playerid)
 		GetPlayerPos(playerid, x, y, z);
 		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 		format(reason, sizeof(reason), "Vehicle health of %.2f (impossible via server)", vehiclehp);
-		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, "");
+		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 		BanPlayer(playerid, reason, -1, 0);
 
 		defer vh_ResetVehiclePosition(GetPlayerVehicleID(playerid));
@@ -483,7 +483,7 @@ CameraDistanceCheck(playerid)
 
 			format(reason, sizeof(reason), " >  %s(%d) camera distance %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", name, playerid, distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, vx, vy, vz);
-			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
 			MsgAdmins(3, YELLOW, reason);
 
 			cd_ReportTick[playerid] = GetTickCount();
@@ -527,7 +527,7 @@ CameraDistanceCheck(playerid)
 
 			format(reason, sizeof(reason), "Camera distance from player %.0f (onfoot, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, info);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
 
 			cd_ReportTick[playerid] = GetTickCount();
 		}
@@ -620,7 +620,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 				format(reason, sizeof(reason), "Teleported a %s (%s's) %.0fm", vehiclename, owner, distance);
 
 			format(info, sizeof(info), "%f, %f, %f", new_x, new_y, new_z);
-			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, info);
+			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, GetPlayerVirtualWorld(vt_MovedFarPlayer[vehicleid]), GetPlayerInterior(vt_MovedFarPlayer[vehicleid]), info);
 
 			// RespawnVehicle(vehicleid);
 			return 0;
@@ -688,7 +688,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			GetPlayerPos(playerid, px, py, pz);
 
-			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as driver", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, px, py, pz, "");
+			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as driver", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, px, py, pz);
 
@@ -713,7 +713,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			GetPlayerPos(playerid, x, y, z);
 
-			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as passenger", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, x, y, z, "");
+			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as passenger", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, x, y, z);
 
@@ -765,7 +765,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			GetPlayerPos(playerid, x, y, z);
 
-			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, "");
+			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 			return 0;
 		}
@@ -786,7 +786,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 			GetPlayerPos(playerid, x, y, z);
 
-			ReportPlayer(name, sprintf("fired %d bullets from a %w without reloading", ammo_ShotCounter[playerid], weaponid), -1, REPORT_TYPE_AMMO, x, y, z, "");
+			ReportPlayer(name, sprintf("fired %d bullets from a %w without reloading", ammo_ShotCounter[playerid], weaponid), -1, REPORT_TYPE_AMMO, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 		}
 	}
 	else
@@ -811,7 +811,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 222 while shooting weapon 27", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 222 while shooting weapon 27", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -829,7 +829,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 1454 while shooting weapon 23", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 1454 while shooting weapon 23", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -847,7 +847,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 1450 while shooting weapon 25", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 1450 while shooting weapon 25", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -865,7 +865,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 1645 while shooting weapon 29", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 1645 while shooting weapon 29", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -883,7 +883,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 1367 while shooting weapon 30/31/33", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 1367 while shooting weapon 30/31/33", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -901,7 +901,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, "Used animation 1333 while shooting weapon 24", -1, REPORT_TYPE_SHOTANIM, x, y, z, "");
+				ReportPlayer(name, "Used animation 1333 while shooting weapon 24", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 
 				return 0;
 			}
@@ -925,7 +925,7 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 				GetPlayerPos(playerid, x, y, z);
 
-				ReportPlayer(name, sprintf("Shot invalid weapon ID (%d)", weaponid), -1, REPORT_TYPE_BAD_SHOT_WEAP, x, y, z, "");
+				ReportPlayer(name, sprintf("Shot invalid weapon ID (%d)", weaponid), -1, REPORT_TYPE_BAD_SHOT_WEAP, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 				Kick(playerid);
 
 				return 0;

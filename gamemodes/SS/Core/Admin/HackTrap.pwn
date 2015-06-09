@@ -57,6 +57,6 @@ TheTrapHasSprung(playerid)
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	GetPlayerPos(playerid, x, y, z);
 
-	ReportPlayer(name, "Picked up a hack-trap", -1, REPORT_TYPE_HACKTRAP, x, y, z, "");
+	ReportPlayer(name, "Picked up a hack-trap", -1, REPORT_TYPE_HACKTRAP, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 	BanPlayer(playerid, "Sprung the hacker trap by picking up an unreachable item!", -1, 0);
 }

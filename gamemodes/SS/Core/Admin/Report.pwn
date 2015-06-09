@@ -15,9 +15,11 @@
 #define FIELD_REPORTS_POSX			"posx"		// 05
 #define FIELD_REPORTS_POSY			"posy"		// 06
 #define FIELD_REPORTS_POSZ			"posz"		// 07
-#define FIELD_REPORTS_INFO			"info"		// 08
-#define FIELD_REPORTS_BY			"by"		// 09
-#define FIELD_REPORTS_ACTIVE		"active"	// 10
+#define FIELD_REPORTS_POSW			"world"		// 08
+#define FIELD_REPORTS_POSI			"interior"	// 09
+#define FIELD_REPORTS_INFO			"info"		// 10
+#define FIELD_REPORTS_BY			"by"		// 11
+#define FIELD_REPORTS_ACTIVE		"active"	// 12
 
 enum
 {
@@ -29,6 +31,8 @@ enum
 	FIELD_ID_REPORTS_POSX,
 	FIELD_ID_REPORTS_POSY,
 	FIELD_ID_REPORTS_POSZ,
+	FIELD_ID_REPORTS_POSW,
+	FIELD_ID_REPORTS_POSI,
 	FIELD_ID_REPORTS_INFO,
 	FIELD_ID_REPORTS_BY,
 	FIELD_ID_REPORTS_ACTIVE
@@ -73,13 +77,15 @@ hook OnGameModeInit()
 		"FIELD_REPORTS_POSX" REAL,\
 		"FIELD_REPORTS_POSY" REAL,\
 		"FIELD_REPORTS_POSZ" REAL,\
+		"FIELD_REPORTS_POSW" INTEGER,\
+		"FIELD_REPORTS_POSI" INTEGER,\
 		"FIELD_REPORTS_INFO" TEXT,\
 		"FIELD_REPORTS_BY" TEXT,\
 		"FIELD_REPORTS_ACTIVE" INTEGER)");
 
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_REPORTS, 11);
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_REPORTS, 13);
 
-	stmt_ReportInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?, 1)");
+	stmt_ReportInsert		= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_REPORTS" VALUES(?, ?, ?, '0', ?, ?, ?, ?, ?, ?, ?, ?, 1)");
 	stmt_ReportDelete		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE rowid = ?");
 	stmt_ReportDeleteName	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE "FIELD_REPORTS_NAME" = ?");
 	stmt_ReportDeleteRead	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_REPORTS" SET "FIELD_REPORTS_ACTIVE"=0, "FIELD_REPORTS_READ"=1 WHERE "FIELD_REPORTS_READ" = 1");
@@ -98,7 +104,7 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, infostring[])
+ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, world, interior, infostring[])
 {
 	new reportername[MAX_PLAYER_NAME];
 
@@ -120,8 +126,10 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 	stmt_bind_value(stmt_ReportInsert, 4, DB::TYPE_FLOAT, posx);
 	stmt_bind_value(stmt_ReportInsert, 5, DB::TYPE_FLOAT, posy);
 	stmt_bind_value(stmt_ReportInsert, 6, DB::TYPE_FLOAT, posz);
-	stmt_bind_value(stmt_ReportInsert, 7, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH);
-	stmt_bind_value(stmt_ReportInsert, 8, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_ReportInsert, 7, DB::TYPE_INTEGER, world);
+	stmt_bind_value(stmt_ReportInsert, 8, DB::TYPE_INTEGER, interior);
+	stmt_bind_value(stmt_ReportInsert, 9, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH);
+	stmt_bind_value(stmt_ReportInsert, 10, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME);
 
 	if(stmt_execute(stmt_ReportInsert))
 	{
@@ -189,7 +197,7 @@ stock GetReportList(list[][e_report_list_struct])
 	return idx;
 }
 
-stock GetReportInfo(rowid, reason[], &date, type[], &Float:posx, &Float:posy, &Float:posz, info[], reporter[])
+stock GetReportInfo(rowid, reason[], &date, type[], &Float:posx, &Float:posy, &Float:posz, &world, &interior, info[], reporter[])
 {
 	stmt_bind_value(stmt_ReportInfo, 0, DB::TYPE_INTEGER, rowid);
 
@@ -199,6 +207,8 @@ stock GetReportInfo(rowid, reason[], &date, type[], &Float:posx, &Float:posy, &F
 	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSX, DB::TYPE_FLOAT, posx);
 	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSY, DB::TYPE_FLOAT, posy);
 	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSZ, DB::TYPE_FLOAT, posz);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSW, DB::TYPE_INTEGER, world);
+	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_POSI, DB::TYPE_INTEGER, interior);
 	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_INFO, DB::TYPE_STRING, info, MAX_REPORT_INFO_LENGTH);
 	stmt_bind_result_field(stmt_ReportInfo, FIELD_ID_REPORTS_BY, DB::TYPE_STRING, reporter, MAX_PLAYER_NAME);
 

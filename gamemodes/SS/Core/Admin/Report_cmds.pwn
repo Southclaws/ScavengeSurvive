@@ -2,12 +2,16 @@ static
 		send_TargetName				[MAX_PLAYERS][MAX_PLAYER_NAME],
 		send_TargetType				[MAX_PLAYERS],
 Float:	send_TargetPos				[MAX_PLAYERS][3],
+		send_TargetWorld			[MAX_PLAYERS],
+		send_TargetInterior			[MAX_PLAYERS],
 
 		report_CurrentReportList	[MAX_PLAYERS][MAX_REPORTS_PER_PAGE][e_report_list_struct],
 
 		report_CurrentReason		[MAX_PLAYERS][MAX_REPORT_REASON_LENGTH],
 		report_CurrentType			[MAX_PLAYERS][MAX_REPORT_TYPE_LENGTH],
 Float:	report_CurrentPos			[MAX_PLAYERS][3],
+		report_CurrentWorld			[MAX_PLAYERS],
+		report_CurrentInterior		[MAX_PLAYERS],
 		report_CurrentInfo			[MAX_PLAYERS][MAX_REPORT_INFO_LENGTH],
 		report_CurrentItem			[MAX_PLAYERS];
 
@@ -74,6 +78,8 @@ ShowReportMenu(playerid)
 					}
 
 					GetPlayerDeathPos(playerid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
+					send_TargetWorld[playerid] = -1;
+					send_TargetInterior[playerid] = -1;
 
 					ShowReportReasonInput(playerid);
 					send_TargetType[playerid] = 3;
@@ -94,6 +100,8 @@ ShowReportMenu(playerid)
 
 					GetPlayerName(targetid, send_TargetName[playerid], MAX_PLAYER_NAME);
 					GetPlayerPos(targetid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
+					send_TargetWorld[playerid] = GetPlayerVirtualWorld(targetid);
+					send_TargetInterior[playerid] = GetPlayerInterior(targetid);
 		
 					ShowReportReasonInput(playerid);
 					send_TargetType[playerid] = 4;
@@ -126,6 +134,8 @@ ShowReportOnlinePlayer(playerid)
 		if(response)
 		{
 			GetPlayerPos(playerid, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2]);
+			send_TargetWorld[playerid] = -1;
+			send_TargetInterior[playerid] = -1;
 			strmid(send_TargetName[playerid], inputtext, 0, strlen(inputtext));
 
 			ShowReportReasonInput(playerid);
@@ -154,6 +164,8 @@ ShowReportOfflinePlayer(playerid)
 			send_TargetPos[playerid][0] = 0.0;
 			send_TargetPos[playerid][1] = 0.0;
 			send_TargetPos[playerid][2] = 0.0;
+			send_TargetWorld[playerid] = -1;
+			send_TargetInterior[playerid] = -1;
 
 			ShowReportReasonInput(playerid);
 		}
@@ -184,7 +196,7 @@ ShowReportReasonInput(playerid)
 				case 3: reporttype = REPORT_TYPE_PLAYER_KILLER;
 				case 4: reporttype = REPORT_TYPE_PLAYER_CLOSE;
 			}
-			ReportPlayer(send_TargetName[playerid], inputtext, playerid, reporttype, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2], "");
+			ReportPlayer(send_TargetName[playerid], inputtext, playerid, reporttype, send_TargetPos[playerid][0], send_TargetPos[playerid][1], send_TargetPos[playerid][2], send_TargetWorld[playerid], send_TargetInterior[playerid], "");
 		}
 		else
 		{
@@ -279,6 +291,8 @@ ShowReport(playerid, reportlistitem)
 		report_CurrentPos[playerid][0],
 		report_CurrentPos[playerid][1],
 		report_CurrentPos[playerid][2],
+		report_CurrentWorld[playerid],
+		report_CurrentInterior[playerid],
 		report_CurrentInfo[playerid],
 		reporter);
 
@@ -382,6 +396,8 @@ ShowReportOptions(playerid)
 					if(IsPlayerOnAdminDuty(playerid))
 					{
 						SetPlayerPos(playerid, report_CurrentPos[playerid][0], report_CurrentPos[playerid][1], report_CurrentPos[playerid][2]);
+						SetPlayerVirtualWorld(playerid, report_CurrentWorld[playerid]);
+						SetPlayerInterior(playerid, report_CurrentInterior[playerid]);
 					}
 				}
 				case 5:
@@ -397,6 +413,8 @@ ShowReportOptions(playerid)
 
 							sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
 							SetPlayerPos(playerid, x, y, z);
+							SetPlayerVirtualWorld(playerid, report_CurrentWorld[playerid]);
+							SetPlayerInterior(playerid, report_CurrentInterior[playerid]);
 						}
 					}
 
@@ -411,6 +429,8 @@ ShowReportOptions(playerid)
 
 							sscanf(report_CurrentInfo[playerid], "p<,>fff{fff}", x, y, z);
 							SetPlayerPos(playerid, x, y, z);
+							SetPlayerVirtualWorld(playerid, report_CurrentWorld[playerid]);
+							SetPlayerInterior(playerid, report_CurrentInterior[playerid]);
 						}
 					}
 
@@ -425,6 +445,8 @@ ShowReportOptions(playerid)
 
 							sscanf(report_CurrentInfo[playerid], "p<,>fff", x, y, z);
 							SetPlayerPos(playerid, x, y, z);
+							SetPlayerVirtualWorld(playerid, report_CurrentWorld[playerid]);
+							SetPlayerInterior(playerid, report_CurrentInterior[playerid]);
 						}
 					}
 				}
@@ -445,6 +467,8 @@ ShowReportOptions(playerid)
 							sscanf(report_CurrentInfo[playerid], "p<,>ffffff", x, y, z, vx, vy, vz);
 
 							SetPlayerPos(playerid, report_CurrentPos[playerid][0], report_CurrentPos[playerid][1], report_CurrentPos[playerid][2]);
+							SetPlayerVirtualWorld(playerid, report_CurrentWorld[playerid]);
+							SetPlayerInterior(playerid, report_CurrentInterior[playerid]);
 							SetPlayerCameraPos(playerid, x, y, z);
 							SetPlayerCameraLookAt(playerid, x + vx, y + vy, z + vz);
 
