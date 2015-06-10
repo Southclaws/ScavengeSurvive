@@ -289,7 +289,7 @@ class AppMain(object):
 		if bodypart == 5: knockmult *= 0.8
 		if bodypart == 6: knockmult *= 9.9
 
-		hploss = (bleedrate * 500)
+		hploss = (bleedrate * 100)
 
 		woundcount = self.sli_wounds.get()
 

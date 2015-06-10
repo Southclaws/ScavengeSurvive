@@ -1151,7 +1151,7 @@ def_UpdateDebugLabel(defenceid)
 
 ==============================================================================*/
 
-
+/*
 static
 		def_CurrentCheckDefence[MAX_PLAYERS],
 Timer:	def_AngleCheckTimer[MAX_PLAYERS];
@@ -1241,7 +1241,7 @@ timer DefenceAngleCheck[100](playerid, defenceid)
 		stop def_AngleCheckTimer[playerid];
 	}
 }
-
+*/
 
 /*==============================================================================
 
