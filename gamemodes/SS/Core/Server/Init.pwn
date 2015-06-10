@@ -1277,11 +1277,11 @@ public OnScriptInit()
 	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
 	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 
-	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate, 600, 300);
-	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate, 1800, 1200);
-	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate, 3600, 1800);
-	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate, 1800, 600);
-	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate, 7200, 7200);
+	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
+	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
+	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
+	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
+	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	9600,	8);
 
 	DefineSeedType("Tomato", item_Tomato, 4, 802, 0.72044); // small green wide bush
 /*

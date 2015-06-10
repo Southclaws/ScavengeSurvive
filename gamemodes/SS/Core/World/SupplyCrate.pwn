@@ -7,7 +7,7 @@
 #define MAX_SUPPLY_DROP_LOCATION_NAME	(32)
 #define SUPPLY_DROP_SPEED				(3.5)
 #define SUPPLY_DROP_TICK_INTERVAL		(60000)
-#define SUPPLY_DROP_COOLDOWN			(300000)
+#define SUPPLY_DROP_COOLDOWN			(600000)
 
 
 enum E_SUPPLY_DROP_TYPE_DATA
@@ -16,6 +16,7 @@ enum E_SUPPLY_DROP_TYPE_DATA
 			supt_loot,
 			supt_interval,
 			supt_random,
+			supt_required,
 
 			supt_lastDrop,
 			supt_offset
@@ -38,7 +39,7 @@ static
 Float:		sup_DropLocationData[MAX_SUPPLY_DROP_LOCATIONS][E_SUPPLY_DROP_LOCATION_DATA],
 Iterator:	sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
 			sup_TotalLocations,
-
+Timer:		sup_UpdateTimer,
 			sup_CurrentType = -1,
 			sup_LastSupplyDrop,
 			sup_ObjCrate1 = INVALID_OBJECT_ID,
@@ -49,10 +50,6 @@ Float:		sup_DropY,
 Float:		sup_DropZ;
 
 static
-			sup_RequiredPlayers = 3;
-
-
-static
 			HANDLER = -1;
 
 
@@ -60,7 +57,7 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
 
-	repeat SupplyDropTimer();
+	sup_UpdateTimer = repeat SupplyDropTimer();
 
 	HANDLER = debug_register_handler("SupplyCrate", 2);
 
@@ -68,7 +65,7 @@ hook OnGameModeInit()
 }
 
 
-DefineSupplyDropType(name[], lootindex, interval, rand)
+DefineSupplyDropType(name[], lootindex, interval, rand, required)
 {
 	if(sup_TypeTotal == MAX_SUPPLY_DROP_TYPE)
 	{
@@ -80,6 +77,7 @@ DefineSupplyDropType(name[], lootindex, interval, rand)
 	sup_TypeData[sup_TypeTotal][supt_loot] = lootindex;
 	sup_TypeData[sup_TypeTotal][supt_interval] = interval * 1000;
 	sup_TypeData[sup_TypeTotal][supt_random] = rand * 1000;
+	sup_TypeData[sup_TypeTotal][supt_required] = required;
 
 	sup_TypeData[sup_TypeTotal][supt_lastDrop] = GetTickCount() - sup_TypeData[sup_TypeTotal][supt_interval];
 	sup_TypeData[sup_TypeTotal][supt_offset] = random(sup_TypeData[sup_TypeTotal][supt_random]);
@@ -116,15 +114,10 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		return;
 	}
 
-	if(Iter_Count(Player) < sup_RequiredPlayers)
-	{
-		d:1:HANDLER("[SupplyDropTimer] Player count (%d) is below required player count (%d).", Iter_Count(Player), sup_RequiredPlayers);
-		return;
-	}
-
 	if(Iter_Count(sup_Index) == 0)
 	{
 		printf("[SupplyDropTimer] ERROR: Supply drops run out, stopping supply drop timer.");
+		stop sup_UpdateTimer;
 		return;
 	}
 
@@ -135,34 +128,58 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	}
 
 	new
+		type,
 		id,
 		ret;
 
-	for(new i; i < sup_TypeTotal; i++)
+	while(type < sup_TypeTotal)
 	{
-		d:2:HANDLER("[SupplyDropTimer] Supply type: %d time since last drop: %d interval + offset: %d", i, GetTickCountDifference(GetTickCount(), sup_TypeData[i][supt_lastDrop]), sup_TypeData[i][supt_interval] + sup_TypeData[i][supt_offset]);
-		if(GetTickCountDifference(GetTickCount(), sup_TypeData[i][supt_lastDrop]) < sup_TypeData[i][supt_interval] + sup_TypeData[i][supt_offset])
-			continue;
-
-		id = Iter_Random(sup_Index);
-		ret = SupplyCrateDrop(i, sup_DropLocationData[id][supl_posX], sup_DropLocationData[id][supl_posY], sup_DropLocationData[id][supl_posZ]);
-
-		if(ret)
+		if(Iter_Count(Player) < sup_TypeData[type][supt_required])
 		{
-			MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP: "C_BLUE"\"%s\""C_YELLOW" INCOMING AT: "C_ORANGE"\"%s\"", sup_TypeData[i][supt_name], sup_DropLocationData[id][supl_name]);
-
-			Iter_Remove(sup_Index, id);
-
-			sup_TypeData[i][supt_lastDrop] = GetTickCount();
-			sup_TypeData[i][supt_offset] = random(sup_TypeData[i][supt_random]);
-
-			return;
+			d:1:HANDLER("[SupplyDropTimer] Checking %d: Not enough players (%d < %d).", type, Iter_Count(Player), sup_TypeData[type][supt_required]);
+			type++;
+			continue;
 		}
 
-		printf("[SupplyDropTimer] ERROR: Supply crate already active (type: %d)", sup_CurrentType);
+		if(GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]) < sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset])
+		{
+			d:1:HANDLER("[SupplyDropTimer] Checking %d: Last drop too soon (%d < %d).", type, GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]), sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset]);
+			type++;
+			continue;
+		}
 
 		break;
 	}
+
+	if(type == sup_TypeTotal)
+	{
+		d:1:HANDLER("[SupplyDropTimer] No supply drop type available.");
+		return;
+	}
+
+	id = Iter_Random(sup_Index);
+	ret = SupplyCrateDrop(type, sup_DropLocationData[id][supl_posX], sup_DropLocationData[id][supl_posY], sup_DropLocationData[id][supl_posZ]);
+
+	if(!ret)
+	{
+		printf("[SupplyDropTimer] ERROR: Supply crate already active (type: %d)", sup_CurrentType);
+		return;
+	}
+
+	new name[MAX_SUPPLY_DROP_TYPE_NAME];
+
+	if(random(100) < 50)
+		strcat(name, sup_TypeData[type][supt_name], MAX_SUPPLY_DROP_TYPE_NAME);
+
+	else
+		name = "Unknown";
+
+	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP: "C_BLUE"\"%s\""C_YELLOW" INCOMING AT: "C_ORANGE"\"%s\"", name, sup_DropLocationData[id][supl_name]);
+
+	Iter_Remove(sup_Index, id);
+
+	sup_TypeData[type][supt_lastDrop] = GetTickCount();
+	sup_TypeData[type][supt_offset] = random(sup_TypeData[type][supt_random]);
 
 	return;
 }
@@ -222,9 +239,9 @@ SupplyCrateLand()
 		}		
 	}
 
-	containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate"));
+	containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate"));
 
-	FillContainerWithLoot(containerid, 38 + random(11), sup_TypeData[sup_CurrentType][supt_loot]);
+	FillContainerWithLoot(containerid, 4 + random(16), sup_TypeData[sup_CurrentType][supt_loot]);
 	d:2:HANDLER("[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), containerid);
 
 	DestroyDynamicObject(sup_ObjPara);
@@ -281,15 +298,6 @@ ACMD:sc[4](playerid, params[])
 	GetPlayerPos(playerid, x, y, z);
 
 	SupplyCrateDrop(type, x, y, z - 0.8);
-
-	return 1;
-}
-
-ACMD:screq[4](playerid, params[])
-{
-	sup_RequiredPlayers = strval(params);
-
-	MsgF(playerid, YELLOW, " >  Required players for supply drops set to %d.", sup_RequiredPlayers);
 
 	return 1;
 }
