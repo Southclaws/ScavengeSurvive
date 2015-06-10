@@ -690,15 +690,43 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 
 public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
 {
-	if(GetVehicleDistanceFromPoint(vehicleid, new_x, new_y, new_z) > 0.1)
-	{
-		new
-			Float:x,
-			Float:y,
-			Float:z;
+	new Float:distance = GetVehicleDistanceFromPoint(vehicleid, new_x, new_y, new_z);
 
-		GetVehiclePos(vehicleid, x, y, z);
-		SetVehiclePos(vehicleid, x, y, z);
+	if(distance > 0.0)
+	{
+		if(GetTickCountDifference(GetTickCount(), veh_Data[vehicleid][veh_lastUsed]) < 10000)
+			return 1;
+
+		new Float:thresh;
+
+		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
+		{
+			case VEHICLE_CATEGORY_TRUCK:
+				thresh = 0.05;
+
+			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
+				thresh = 0.2;
+
+			case VEHICLE_CATEGORY_BOAT:
+				thresh = 0.6;
+
+			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
+				thresh = 0.01;
+
+			default:
+				thresh = 0.1;
+		}
+
+		if(distance > thresh)
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetVehiclePos(vehicleid, x, y, z);
+			SetVehiclePos(vehicleid, x, y, z);
+		}
 
 		return 0;
 	}
