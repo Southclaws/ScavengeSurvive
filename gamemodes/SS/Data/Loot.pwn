@@ -109,6 +109,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Industrial,		item_MediumBag,						15.0);
 	AddItemToLootIndex(loot_Industrial,		item_Rucksack,						1.0);
 	AddItemToLootIndex(loot_Industrial,		item_Note,							34.0);
+	AddItemToLootIndex(loot_Industrial,		item_WheelLock,						34.0);
 
 	// loot_Police
 	AddItemToLootIndex(loot_Police,			item_M9Pistol,						50.0);
@@ -236,6 +237,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarCivilian,	item_MediumBag,						15.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Rucksack,						3.0);
 	AddItemToLootIndex(loot_CarCivilian,	item_Note,							38.0);
+	AddItemToLootIndex(loot_CarCivilian,	item_WheelLock,						28.0);
 
 	// loot_CarIndustrial
 	AddItemToLootIndex(loot_CarIndustrial,	item_Bandage,						10.0);
@@ -276,6 +278,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_CarIndustrial,	item_Motor,							25.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Daypack,						22.0);
 	AddItemToLootIndex(loot_CarIndustrial,	item_Note,							32.0);
+	AddItemToLootIndex(loot_CarIndustrial,	item_WheelLock,						30.0);
 
 	// loot_CarPolice
 	AddItemToLootIndex(loot_CarPolice,		item_M9Pistol,						40.0);
@@ -439,19 +442,19 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_IndustCrate,	item_Keypad,						10.0);
 	AddItemToLootIndex(loot_IndustCrate,	item_Motor,							25.0);
 
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_Explosive,						15.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_Explosive,						10.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_TntTimebomb,					5.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_TntTripMine,					8.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_TntProxMine,					8.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_TntPhoneBomb,					5.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedBomb,						25.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedTimebomb,					10.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedTripMine,					20.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedProxMine,					20.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedPhoneBomb,					10.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedBomb,						12.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedTimebomb,					4.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedTripMine,					11.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedProxMine,					11.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_IedPhoneBomb,					7.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_Fluctuator,					14.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpTimebomb,					1.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpTimebomb,					9.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpTripMine,					12.0);
 	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpProxMine,					12.0);
-	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpPhoneBomb,					6.0);
+	AddItemToLootIndex(loot_OrdnanceCrate,	item_EmpPhoneBomb,					9.0);
 }

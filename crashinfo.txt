@@ -1,0 +1,214 @@
+
+--------------------------
+SA-MP Server: 0.3.7
+
+Exception At Address: 0x00404F44 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000024	EBX: 0x00000001	ECX: 0x004E66B0	EDX: 0x1F4F6F28
+ESI: 0x00000024	EDI: 0x00000020	EBP: 0x00000000	ESP: 0x0018FA6C
+EFLAGS: 0x00210202
+
+Stack:
++0000: 0x00000000   0x0018FA88   0x1F4F6F14   0x00000001
++0010: 0x0018FAB4   0x0018FA84   0x6E4F5B0A   0x0018FAB4
++0020: 0x5ACD5F0A   0x00405832   0x00000000   0x00000001
++0030: 0x00000001   0x004057E0   0x0000004D   0x01DD4260
++0040: 0x00000001   0x00000000   0x0018FBE4   0x004010B6
++0050: 0x01DD4260   0x1F4F6F28   0x02929EF8   0x5ACF01B4
++0060: 0x01DD4260   0x0000004D   0x0018FC58   0x1F4F6F14
++0070: 0x43A0386B   0x1032E050   0x01DD4260   0x00000000
++0080: 0x00000000   0x01DD4260   0x00000000   0x0F1C84E0
++0090: 0x00315740   0x0000004D   0x0018FAA0   0x0018FB7C
++00A0: 0x0018FBC8   0x77051A05   0x0157DAC9   0xFFFFFFFE
++00B0: 0x770101FB   0x7701034A   0x006D2440   0x0018FB7E
++00C0: 0x00000000   0x0018FB7C   0x00000000   0x0018FBD8
++00D0: 0x770103C2   0x7700E1F2   0x77010398   0x764F9E41
++00E0: 0x006E9D80   0x00000000   0x0000FFFF   0x5AC80000
++00F0: 0x000001E3   0x0018FC28   0x000007FF   0x00000000
++0100: 0x006D2440   0x0018FB7C   0xFFBADD11   0xC0000139
++0110: 0x6E4F0000   0x656D6147   0x65646F4D   0x74697845
++0120: 0x0018FB00   0x00000000   0x000007FF   0x01E528C0
++0130: 0xC808C000   0x056AAEE8   0x00000001   0x02EAA180
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004FA000	(E:\Games\Projects\SA-MP\ScavengeSurvive\samp-server.exe)
+ntdll.dll	A: 0x76FE0000 - 0x77160000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75780000 - 0x75890000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x749D0000 - 0x74A17000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x75DA0000 - 0x769EB000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x75890000 - 0x7593C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75000000 - 0x75057000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x74F70000 - 0x75000000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x75060000 - 0x75160000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x75950000 - 0x759F1000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x749B0000 - 0x749C9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75360000 - 0x75450000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74950000 - 0x749B0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74940000 - 0x7494C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75940000 - 0x7594A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x74A40000 - 0x74ADD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x726F0000 - 0x726F7000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75A70000 - 0x75AA5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75450000 - 0x75456000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x73200000 - 0x73232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75A10000 - 0x75A70000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x74D90000 - 0x74E5C000	(C:\Windows\syswow64\MSCTF.dll)
+avghookx.dll	A: 0x69850000 - 0x698CD000	(C:\Program Files (x86)\AVG\AVG2015\avghookx.dll)
+dbghelp.dll	A: 0x6BB80000 - 0x6BC6B000	(C:\Windows\system32\dbghelp.dll)
+MSVCP100.dll	A: 0x6ADB0000 - 0x6AE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCR100.dll	A: 0x72740000 - 0x727FF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5AC80000 - 0x5ACC4000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\streamer.DLL)
+MSVCP120.dll	A: 0x50030000 - 0x500A1000	(C:\Windows\system32\MSVCP120.dll)
+MSVCR120.dll	A: 0x77D00000 - 0x77DEE000	(C:\Windows\system32\MSVCR120.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\sscanf.DLL)
+CTime.DLL	A: 0x5D480000 - 0x5D486000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\CTime.DLL)
+Whirlpool.DLL	A: 0x00300000 - 0x0030C000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\Whirlpool.DLL)
+MSVCR80.dll	A: 0x72350000 - 0x723EB000	(C:\Windows\WinSxS\x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.6229_none_d089f796442de10e\MSVCR80.dll)
+FileManager.DLL	A: 0x5D470000 - 0x5D47A000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\FileManager.DLL)
+SAMPSON.DLL	A: 0x5AC50000 - 0x5AC74000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\SAMPSON.DLL)
+irc.DLL	A: 0x0F310000 - 0x0F35D000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\irc.DLL)
+socket.DLL	A: 0x5D460000 - 0x5D46B000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\socket.DLL)
+LIBEAY32.dll	A: 0x02A80000 - 0x02BA5000	(C:\Windows\system32\LIBEAY32.dll)
+MSVCR90.dll	A: 0x5F340000 - 0x5F3E3000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCR90.dll)
+SSLEAY32.dll	A: 0x02680000 - 0x026C7000	(C:\Windows\system32\SSLEAY32.dll)
+MSVCP90.dll	A: 0x5B420000 - 0x5B4AE000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCP90.dll)
+mswsock.dll	A: 0x725B0000 - 0x725EC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x72710000 - 0x72715000	(C:\Windows\System32\wshtcpip.dll)
+NLAapi.dll	A: 0x6C8F0000 - 0x6C900000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x6C8E0000 - 0x6C8F0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x6C8C0000 - 0x6C8D2000	(C:\Windows\system32\pnrpnsp.dll)
+DNSAPI.dll	A: 0x6C870000 - 0x6C8B4000	(C:\Windows\system32\DNSAPI.dll)
+winrnr.dll	A: 0x6C860000 - 0x6C868000	(C:\Windows\System32\winrnr.dll)
+WLIDNSP.DLL	A: 0x6C830000 - 0x6C854000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x74A20000 - 0x74A25000	(C:\Windows\syswow64\PSAPI.DLL)
+IPHLPAPI.DLL	A: 0x72AF0000 - 0x72B0C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x72AE0000 - 0x72AE7000	(C:\Windows\system32\WINNSI.DLL)
+rasadhlp.dll	A: 0x6E5D0000 - 0x6E5D6000	(C:\Windows\system32\rasadhlp.dll)
+uxtheme.dll	A: 0x71290000 - 0x71310000	(C:\Windows\system32\uxtheme.dll)
+RocketDock.dll	A: 0x026D0000 - 0x026E2000	(C:\Program Files (x86)\RocketDock\RocketDock.dll)
+tiptsf.dll	A: 0x744C0000 - 0x74518000	(C:\Program Files (x86)\Common Files\microsoft shared\ink\tiptsf.dll)
+OLEAUT32.dll	A: 0x74E60000 - 0x74EEF000	(C:\Windows\syswow64\OLEAUT32.dll)
+PROPSYS.dll	A: 0x74110000 - 0x74205000	(C:\Windows\system32\PROPSYS.dll)
+comctl32.dll	A: 0x74520000 - 0x746BE000	(C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.18837_none_41e855142bd5705d\comctl32.dll)
+apphelp.dll	A: 0x73F60000 - 0x73FAC000	(C:\Windows\system32\apphelp.dll)
+CLBCatQ.DLL	A: 0x75D10000 - 0x75D93000	(C:\Windows\syswow64\CLBCatQ.DLL)
+api-ms-win-downlevel-advapi32-l1-1-0.dll	A: 0x74C50000 - 0x74C55000	(C:\Windows\syswow64\api-ms-win-downlevel-advapi32-l1-1-0.dll)
+api-ms-win-downlevel-shlwapi-l1-1-0.dll	A: 0x75AB0000 - 0x75AB4000	(C:\Windows\syswow64\api-ms-win-downlevel-shlwapi-l1-1-0.dll)
+SETUPAPI.dll	A: 0x75160000 - 0x752FD000	(C:\Windows\syswow64\SETUPAPI.dll)
+CFGMGR32.dll	A: 0x75750000 - 0x75777000	(C:\Windows\syswow64\CFGMGR32.dll)
+DEVOBJ.dll	A: 0x75460000 - 0x75472000	(C:\Windows\syswow64\DEVOBJ.dll)
+ntmarta.dll	A: 0x74790000 - 0x747B1000	(C:\Windows\system32\ntmarta.dll)
+WLDAP32.dll	A: 0x75480000 - 0x754C5000	(C:\Windows\syswow64\WLDAP32.dll)
+profapi.dll	A: 0x74AE0000 - 0x74AEB000	(C:\Windows\syswow64\profapi.dll)
+Secur32.dll	A: 0x73FC0000 - 0x73FC8000	(C:\Windows\system32\Secur32.dll)
+api-ms-win-downlevel-advapi32-l2-1-0.dll	A: 0x73FB0000 - 0x73FB4000	(C:\Windows\system32\api-ms-win-downlevel-advapi32-l2-1-0.dll)
+
+--------------------------
+SA-MP Server: 0.3.7
+
+Exception At Address: 0x00404F44 Module: (samp-server.exe)
+
+Registers:
+EAX: 0x00000024	EBX: 0x00000001	ECX: 0x004E66B0	EDX: 0x1F4F6FA0
+ESI: 0x00000024	EDI: 0x00000020	EBP: 0x00000000	ESP: 0x0018FA6C
+EFLAGS: 0x00210202
+
+Stack:
++0000: 0x00000000   0x0018FA88   0x1F4F6F8C   0x00000001
++0010: 0x0018FAB4   0x0018FA84   0x6E4F5B0A   0x0018FAB4
++0020: 0x5AC75F0A   0x00405832   0x00000000   0x00000001
++0030: 0x00000001   0x004057E0   0x0000004D   0x020D4250
++0040: 0x00000001   0x00000000   0x0018FBE4   0x004010B6
++0050: 0x020D4250   0x1F4F6FA0   0x00319EF8   0x5AC901B4
++0060: 0x020D4250   0x0000004D   0x0018FC58   0x1F4F6F8C
++0070: 0x3434DC1C   0x1032E0B0   0x020D4250   0x00000000
++0080: 0x00000000   0x020D4250   0x00000000   0x0F1C84F8
++0090: 0x003157A0   0x0000004D   0x0018FAA0   0x0018FB7C
++00A0: 0x0018FBC8   0x77051A05   0x0168B971   0xFFFFFFFE
++00B0: 0x770101FB   0x7701034A   0x00702480   0x0018FB7E
++00C0: 0x00000000   0x0018FB7C   0x00000000   0x0018FBD8
++00D0: 0x770103C2   0x7700E1F2   0x77010398   0x7670FDF9
++00E0: 0x00717E08   0x00000000   0x0000FFFF   0x5ACE0000
++00F0: 0x000001E3   0x0018FC28   0x000007FF   0x00000000
++0100: 0x00702480   0x0018FB7C   0xFFBADD11   0xC0000139
++0110: 0x6E4F0000   0x656D6147   0x65646F4D   0x74697845
++0120: 0x00000700   0x00000000   0x053682D8   0x002B28D0
++0130: 0x88088000   0x02D49720   0x00000001   0x000001A2
+
+--------------------------
+
+Loaded Modules:
+samp-server.exe	A: 0x00400000 - 0x004FA000	(E:\Games\Projects\SA-MP\ScavengeSurvive\samp-server.exe)
+ntdll.dll	A: 0x76FE0000 - 0x77160000	(C:\Windows\SysWOW64\ntdll.dll)
+kernel32.dll	A: 0x75780000 - 0x75890000	(C:\Windows\syswow64\kernel32.dll)
+KERNELBASE.dll	A: 0x749D0000 - 0x74A17000	(C:\Windows\syswow64\KERNELBASE.dll)
+SHELL32.dll	A: 0x75DA0000 - 0x769EB000	(C:\Windows\syswow64\SHELL32.dll)
+msvcrt.dll	A: 0x75890000 - 0x7593C000	(C:\Windows\syswow64\msvcrt.dll)
+SHLWAPI.dll	A: 0x75000000 - 0x75057000	(C:\Windows\syswow64\SHLWAPI.dll)
+GDI32.dll	A: 0x74F70000 - 0x75000000	(C:\Windows\syswow64\GDI32.dll)
+USER32.dll	A: 0x75060000 - 0x75160000	(C:\Windows\syswow64\USER32.dll)
+ADVAPI32.dll	A: 0x75950000 - 0x759F1000	(C:\Windows\syswow64\ADVAPI32.dll)
+sechost.dll	A: 0x749B0000 - 0x749C9000	(C:\Windows\SysWOW64\sechost.dll)
+RPCRT4.dll	A: 0x75360000 - 0x75450000	(C:\Windows\syswow64\RPCRT4.dll)
+SspiCli.dll	A: 0x74950000 - 0x749B0000	(C:\Windows\syswow64\SspiCli.dll)
+CRYPTBASE.dll	A: 0x74940000 - 0x7494C000	(C:\Windows\syswow64\CRYPTBASE.dll)
+LPK.dll	A: 0x75940000 - 0x7594A000	(C:\Windows\syswow64\LPK.dll)
+USP10.dll	A: 0x74A40000 - 0x74ADD000	(C:\Windows\syswow64\USP10.dll)
+WSOCK32.dll	A: 0x726F0000 - 0x726F7000	(C:\Windows\system32\WSOCK32.dll)
+WS2_32.dll	A: 0x75A70000 - 0x75AA5000	(C:\Windows\syswow64\WS2_32.dll)
+NSI.dll	A: 0x75450000 - 0x75456000	(C:\Windows\syswow64\NSI.dll)
+WINMM.dll	A: 0x73200000 - 0x73232000	(C:\Windows\system32\WINMM.dll)
+IMM32.DLL	A: 0x75A10000 - 0x75A70000	(C:\Windows\system32\IMM32.DLL)
+MSCTF.dll	A: 0x74D90000 - 0x74E5C000	(C:\Windows\syswow64\MSCTF.dll)
+avghookx.dll	A: 0x69850000 - 0x698CD000	(C:\Program Files (x86)\AVG\AVG2015\avghookx.dll)
+dbghelp.dll	A: 0x6BB80000 - 0x6BC6B000	(C:\Windows\system32\dbghelp.dll)
+MSVCP100.dll	A: 0x6ADB0000 - 0x6AE19000	(C:\Windows\system32\MSVCP100.dll)
+MSVCR100.dll	A: 0x72740000 - 0x727FF000	(C:\Windows\system32\MSVCR100.dll)
+streamer.DLL	A: 0x5ACE0000 - 0x5AD24000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\streamer.DLL)
+MSVCP120.dll	A: 0x50030000 - 0x500A1000	(C:\Windows\system32\MSVCP120.dll)
+MSVCR120.dll	A: 0x77D00000 - 0x77DEE000	(C:\Windows\system32\MSVCR120.dll)
+sscanf.DLL	A: 0x10000000 - 0x1000D000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\sscanf.DLL)
+CTime.DLL	A: 0x5D470000 - 0x5D476000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\CTime.DLL)
+Whirlpool.DLL	A: 0x00350000 - 0x0035C000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\Whirlpool.DLL)
+MSVCR80.dll	A: 0x72350000 - 0x723EB000	(C:\Windows\WinSxS\x86_microsoft.vc80.crt_1fc8b3b9a1e18e3b_8.0.50727.6229_none_d089f796442de10e\MSVCR80.dll)
+FileManager.DLL	A: 0x5D480000 - 0x5D48A000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\FileManager.DLL)
+SAMPSON.DLL	A: 0x0FFA0000 - 0x0FFC4000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\SAMPSON.DLL)
+irc.DLL	A: 0x0F2C0000 - 0x0F30D000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\irc.DLL)
+socket.DLL	A: 0x5ACD0000 - 0x5ACDB000	(E:\Games\Projects\SA-MP\ScavengeSurvive\plugins\socket.DLL)
+LIBEAY32.dll	A: 0x02900000 - 0x02A25000	(C:\Windows\system32\LIBEAY32.dll)
+MSVCR90.dll	A: 0x5F340000 - 0x5F3E3000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCR90.dll)
+SSLEAY32.dll	A: 0x02A30000 - 0x02A77000	(C:\Windows\system32\SSLEAY32.dll)
+MSVCP90.dll	A: 0x5B420000 - 0x5B4AE000	(C:\Windows\WinSxS\x86_microsoft.vc90.crt_1fc8b3b9a1e18e3b_9.0.30729.6161_none_50934f2ebcb7eb57\MSVCP90.dll)
+mswsock.dll	A: 0x725B0000 - 0x725EC000	(C:\Windows\system32\mswsock.dll)
+wshtcpip.dll	A: 0x72710000 - 0x72715000	(C:\Windows\System32\wshtcpip.dll)
+NLAapi.dll	A: 0x6C8F0000 - 0x6C900000	(C:\Windows\system32\NLAapi.dll)
+napinsp.dll	A: 0x6C8E0000 - 0x6C8F0000	(C:\Windows\system32\napinsp.dll)
+pnrpnsp.dll	A: 0x6C8C0000 - 0x6C8D2000	(C:\Windows\system32\pnrpnsp.dll)
+DNSAPI.dll	A: 0x6C870000 - 0x6C8B4000	(C:\Windows\system32\DNSAPI.dll)
+winrnr.dll	A: 0x6C860000 - 0x6C868000	(C:\Windows\System32\winrnr.dll)
+WLIDNSP.DLL	A: 0x6C830000 - 0x6C854000	(C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live\WLIDNSP.DLL)
+PSAPI.DLL	A: 0x74A20000 - 0x74A25000	(C:\Windows\syswow64\PSAPI.DLL)
+IPHLPAPI.DLL	A: 0x72AF0000 - 0x72B0C000	(C:\Windows\system32\IPHLPAPI.DLL)
+WINNSI.DLL	A: 0x72AE0000 - 0x72AE7000	(C:\Windows\system32\WINNSI.DLL)
+rasadhlp.dll	A: 0x6E5D0000 - 0x6E5D6000	(C:\Windows\system32\rasadhlp.dll)
+uxtheme.dll	A: 0x71290000 - 0x71310000	(C:\Windows\system32\uxtheme.dll)
+RocketDock.dll	A: 0x02780000 - 0x02792000	(C:\Program Files (x86)\RocketDock\RocketDock.dll)
+tiptsf.dll	A: 0x744C0000 - 0x74518000	(C:\Program Files (x86)\Common Files\microsoft shared\ink\tiptsf.dll)
+OLEAUT32.dll	A: 0x74E60000 - 0x74EEF000	(C:\Windows\syswow64\OLEAUT32.dll)
+PROPSYS.dll	A: 0x74110000 - 0x74205000	(C:\Windows\system32\PROPSYS.dll)
+comctl32.dll	A: 0x74520000 - 0x746BE000	(C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.7601.18837_none_41e855142bd5705d\comctl32.dll)
+apphelp.dll	A: 0x73F60000 - 0x73FAC000	(C:\Windows\system32\apphelp.dll)
+CLBCatQ.DLL	A: 0x75D10000 - 0x75D93000	(C:\Windows\syswow64\CLBCatQ.DLL)
+api-ms-win-downlevel-advapi32-l1-1-0.dll	A: 0x74C50000 - 0x74C55000	(C:\Windows\syswow64\api-ms-win-downlevel-advapi32-l1-1-0.dll)
+api-ms-win-downlevel-shlwapi-l1-1-0.dll	A: 0x75AB0000 - 0x75AB4000	(C:\Windows\syswow64\api-ms-win-downlevel-shlwapi-l1-1-0.dll)
+SETUPAPI.dll	A: 0x75160000 - 0x752FD000	(C:\Windows\syswow64\SETUPAPI.dll)
+CFGMGR32.dll	A: 0x75750000 - 0x75777000	(C:\Windows\syswow64\CFGMGR32.dll)
+DEVOBJ.dll	A: 0x75460000 - 0x75472000	(C:\Windows\syswow64\DEVOBJ.dll)
+ntmarta.dll	A: 0x74790000 - 0x747B1000	(C:\Windows\system32\ntmarta.dll)
+WLDAP32.dll	A: 0x75480000 - 0x754C5000	(C:\Windows\syswow64\WLDAP32.dll)
+profapi.dll	A: 0x74AE0000 - 0x74AEB000	(C:\Windows\syswow64\profapi.dll)
+Secur32.dll	A: 0x73FC0000 - 0x73FC8000	(C:\Windows\system32\Secur32.dll)
+api-ms-win-downlevel-advapi32-l2-1-0.dll	A: 0x73FB0000 - 0x73FB4000	(C:\Windows\system32\api-ms-win-downlevel-advapi32-l2-1-0.dll)

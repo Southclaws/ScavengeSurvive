@@ -40,6 +40,24 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			StartCraftingKey(playerid, vehicleid);
 		}
 
+		if(itemtype == item_WheelLock)
+		{
+			if(GetItemArrayDataAtCell(itemid, 0) == 0)
+			{
+				ShowActionText(playerid, "That lock and chain has no key. Combine it with a Locksmith Kit.", 3000);
+				return 1;
+			}
+
+			if(GetVehicleKey(vehicleid) != 0)
+			{
+				ShowActionText(playerid, "That vehicle has already been locked", 3000);
+				return 1;
+			}
+
+			CancelPlayerMovement(playerid);
+			StartCraftingKey(playerid, vehicleid);
+		}
+
 		if(itemtype == item_Key)
 		{
 			new
@@ -69,7 +87,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			// Update old keys to the correct vehicle type.
 			SetItemArrayDataAtCell(itemid, vehicletype, 1);
 
-			if(IsVehicleLocked(vehicleid) && IsVehicleTypeLockable(vehicletype))
+			if(IsVehicleLocked(vehicleid))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
 				ShowActionText(playerid, "Unlocked", 3000);
@@ -135,7 +153,10 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(!IsValidVehicle(lsk_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_LocksmithKit || !IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
+		if(
+			!IsValidVehicle(lsk_TargetVehicle[playerid]) ||
+			(GetItemType(GetPlayerItem(playerid)) != item_LocksmithKit && GetItemType(GetPlayerItem(playerid)) != item_WheelLock) ||
+			!IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
 		{
 			StopCraftingKey(playerid);
 			return 1;
@@ -173,7 +194,7 @@ public OnHoldActionFinish(playerid)
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
 
-		if(itemtype == item_LocksmithKit)
+		if(itemtype == item_LocksmithKit || itemtype == item_WheelLock)
 		{
 			new key = 1 + random(2147483646);
 
@@ -221,6 +242,17 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, vehicletypename);
 		}
 	}
+	else if(itemtype == item_WheelLock)
+	{
+		if(GetItemArrayDataAtCell(itemid, 0) == 0)
+		{
+			SetItemNameExtra(itemid, "Uncut");
+		}
+		else
+		{
+			SetItemNameExtra(itemid, "Cut");
+		}
+	}
 
 	#if defined lsk_OnItemNameRender
 		return lsk_OnItemNameRender(itemid, itemtype);
@@ -236,4 +268,28 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 #define OnItemNameRender lsk_OnItemNameRender
 #if defined lsk_OnItemNameRender
 	forward lsk_OnItemNameRender(itemid, ItemType:itemtype);
+#endif
+
+public OnPlayerCrafted(playerid, craftset, result)
+{
+	if(GetCraftSetResult(craftset) == item_WheelLock)
+	{
+		SetItemArrayDataAtCell(result, 1, 0);
+	}
+
+	#if defined lsk_OnPlayerCrafted
+		return lsk_OnPlayerCrafted(playerid, craftset, result);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerCrafted
+	#undef OnPlayerCrafted
+#else
+	#define _ALS_OnPlayerCrafted
+#endif
+ 
+#define OnPlayerCrafted lsk_OnPlayerCrafted
+#if defined lsk_OnPlayerCrafted
+	forward lsk_OnPlayerCrafted(playerid, craftset, result);
 #endif

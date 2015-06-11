@@ -55,6 +55,10 @@ stock CreateVehicleArea(vehicleid)
 
 	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, x, y, z);
 
+	// temp workaround for interaction zone of the marquis boat
+	if(GetVehicleModel(vehicleid) == 484)
+		y = 0.0;
+
 	varea_AreaID[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 3.0, GetVehicleVirtualWorld(vehicleid));
 	AttachDynamicAreaToVehicle(varea_AreaID[vehicleid], vehicleid);
 

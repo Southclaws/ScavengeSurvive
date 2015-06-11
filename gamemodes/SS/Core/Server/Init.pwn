@@ -343,7 +343,9 @@ ItemType:		item_FryingPan		= INVALID_ITEM_TYPE,
 ItemType:		item_PizzaOnly		= INVALID_ITEM_TYPE,
 ItemType:		item_BreadLoaf		= INVALID_ITEM_TYPE,
 ItemType:		item_Banana			= INVALID_ITEM_TYPE,
-ItemType:		item_Orange			= INVALID_ITEM_TYPE;
+ItemType:		item_Orange			= INVALID_ITEM_TYPE,
+// 220
+ItemType:		item_WheelLock		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -683,6 +685,8 @@ public OnScriptInit()
 	item_BreadLoaf		= DefineItemType("Loaf of Bread",		"BreadLoaf",		19579,	1,	0.0, 0.0, 0.0,		0.0,	0.232000, 0.053998, 0.047000,  83.599945, -56.300045, 100.099731);
 	item_Banana			= DefineItemType("Banana",				"Banana",			19578,	1,	0.0, 0.0, 0.0,		0.0,	0.059000, 0.017998, 0.026000,  86.399932, -161.300003, 83.699714);
 	item_Orange			= DefineItemType("Orange",				"Orange",			19577,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.040998, 0.009000,  86.399932, -161.300003, 83.699714);
+// 220
+	item_WheelLock		= DefineItemType("Lock and Chain",		"WheelLock",		2680,	1,	0.0, 0.0, 0.0,			0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
 // 19576 apple
 // 19575 apple
@@ -937,6 +941,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Tomato,		1);
 	SetItemTypeMaxArrayData(item_HeartShapedBox,2);
 	SetItemTypeMaxArrayData(item_AntiSepBandage,1);
+	SetItemTypeMaxArrayData(item_WheelLock,		1);
 
 
 // 1656 - CUBOID SHAPE, CARRY ITEM
@@ -1215,6 +1220,7 @@ public OnScriptInit()
 	DefineItemCraftSet(item_StarterMotor, 	item_Motor, false,			item_Fluctuator, false);
 	DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false,			item_PowerSupply, false);
 	DefineItemCraftSet(item_Bandage, 		item_Knife, true,			item_Clothes, false);
+	DefineItemCraftSet(item_WheelLock,		item_WheelLock, false,		item_LocksmithKit, false);
 	//WriteAllCombosToFile();
 
 
@@ -1281,7 +1287,7 @@ public OnScriptInit()
 	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
 	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
 	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
-	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	9600,	8);
+	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
 
 	DefineSeedType("Tomato", item_Tomato, 4, 802, 0.72044); // small green wide bush
 /*

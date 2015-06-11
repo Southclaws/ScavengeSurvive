@@ -708,7 +708,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 				thresh = 0.2;
 
 			case VEHICLE_CATEGORY_BOAT:
-				thresh = 0.6;
+				thresh = 2.6;
 
 			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
 				thresh = 0.01;

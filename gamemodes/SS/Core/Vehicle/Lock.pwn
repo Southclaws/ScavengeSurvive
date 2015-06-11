@@ -87,13 +87,6 @@ stock SetVehicleExternalLock(vehicleid, status)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	if(!IsVehicleTypeLockable(GetVehicleType(vehicleid)))
-	{
-		lock_Status[vehicleid] = false;
-		VehicleDoorsState(vehicleid, false);
-		return 1;
-	}
-
 	if(IsVehicleDead(vehicleid))
 	{
 		lock_Status[vehicleid] = true;
