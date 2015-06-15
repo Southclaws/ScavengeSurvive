@@ -78,6 +78,12 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
 		return 0;
 
+	if(IsPlayerKnockedOut(playerid))
+	{
+		printf("[WARNING] Knocked out player %p tried to wound player %p", playerid, targetid);
+		return 0;
+	}
+
 	new
 		woundid = Iter_Free(wnd_Index[targetid]),
 		woundcount,

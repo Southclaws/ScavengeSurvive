@@ -166,11 +166,8 @@ stock DestroyWorldVehicle(vehicleid)
 		return 0;
 
 	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
-	veh_Data[vehicleid][veh_health] = 300.0;
-	VehicleDoorsState(vehicleid, true);
-	ResetVehicle(vehicleid);
-//	DestroyVehicle(vehicleid, 3);
-//	Iter_Remove(veh_Index, vehicleid);
+	DestroyVehicle(vehicleid, 3);
+	Iter_Remove(veh_Index, vehicleid);
 
 	return 1;
 }
@@ -690,6 +687,9 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 
 public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
 {
+	if(IsValidVehicle(GetTrailerVehicleID(vehicleid)))
+		return 1;
+
 	new Float:distance = GetVehicleDistanceFromPoint(vehicleid, new_x, new_y, new_z);
 
 	if(distance > 0.0)
@@ -796,9 +796,11 @@ public OnVehicleSpawn(vehicleid)
 		}
 		else
 		{
-			printf("Dead Vehicle %d Spawned, destroying.", vehicleid);
+			printf("Dead Vehicle %d Spawned, spawning as inactive.", vehicleid);
 
-			DestroyWorldVehicle(vehicleid);
+			veh_Data[vehicleid][veh_health] = 300.0;
+			VehicleDoorsState(vehicleid, true);
+			ResetVehicle(vehicleid);
 		}
 	}
 
