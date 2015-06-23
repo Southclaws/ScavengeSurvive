@@ -67,7 +67,7 @@ public OnPlayerRegister(playerid)
 _cntr_HandleLogin(playerid)
 {
 	_cntr_ClearData(playerid);
-	//_cntr_UseDatabase(playerid);
+	_cntr_UseDatabase(playerid);
 	_cntr_UseWeb(playerid);
 }
 
@@ -152,6 +152,9 @@ public OnLookupResponse(sessionid, response, data[])
 		PlayerCountryData[playerid][cntr_Country],
 		PlayerCountryData[playerid][cntr_Hostname],
 		PlayerCountryData[playerid][cntr_Proxy]);
+
+	if(PlayerCountryData[playerid][cntr_Proxy])
+		KickPlayer(playerid, "Proxy connection detected, these are not allowed.");
 
 	return;
 }
