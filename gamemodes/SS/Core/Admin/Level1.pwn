@@ -361,9 +361,88 @@ ACMD:aliases[1](playerid, params[])
 		return 1;
 	}
 
-	gBigString[playerid][0] = EOS;
-
 	ShowPlayerList(playerid, list, (count > 32) ? 32 : count, true);
+
+	return 1;
+}
+
+ACMD:history[1](playerid, params[])
+{
+	new
+		name[MAX_PLAYER_NAME],
+		type,
+		lookup;
+
+	if(sscanf(params, "s[24]C(a)C()", name, type, lookup))
+	{
+		Msg(playerid, YELLOW, " >  Usage: /history [playerid/name] [i/h] [n]");
+		return 1;
+	}
+
+	if(isnumeric(name))
+	{
+		new targetid = strval(name);
+
+		if(IsPlayerConnected(targetid))
+			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+
+		else if(targetid > 99)
+			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+
+		else
+			return 4;
+	}
+
+	if(!AccountExists(name))
+	{
+		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
+		return 1;
+	}
+
+	if(GetAdminLevelByName(name) > GetPlayerAdminLevel(playerid))
+	{
+		new playername[MAX_PLAYER_NAME];
+
+		GetPlayerName(playerid, playername, MAX_PLAYER_NAME);
+
+		if(strcmp(name, playername))
+		{
+			MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+			return 1;
+		}
+	}
+
+	if(type == 'i')
+	{
+		if(lookup == 'n')
+		{
+			ShowAccountIPHistoryFromName(playerid, name);
+		}
+		else
+		{
+			new ip;
+			GetAccountIP(name, ip);
+			ShowAccountIPHistoryFromIP(playerid, ip);
+		}
+	}
+	else if(type == 'h')
+	{
+		if(lookup == 'n')
+		{
+			ShowAccountGpciHistoryFromName(playerid, name);
+		}
+		else
+		{
+			new hash[MAX_GPCI_LEN];
+			GetAccountGPCI(name, hash);
+			ShowAccountGpciHistoryFromGpci(playerid, hash);
+		}
+	}
+	else
+	{
+		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'h'(hash), optional parameter 'n' lists the history for that player only.");
+		return 1;
+	}
 
 	return 1;
 }

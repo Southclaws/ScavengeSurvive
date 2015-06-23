@@ -433,6 +433,7 @@ new stock
 #include "SS/Core/Player/Aliases.pwn"
 #include "SS/Core/Player/ipv4-log.pwn"
 #include "SS/Core/Player/gpci-log.pwn"
+#include "SS/Core/Player/gpci-whitelist.pwn"
 #include "SS/Core/Player/Brightness.pwn"
 #include "SS/Core/Player/Spawn.pwn"
 #include "SS/Core/Player/Damage.pwn"

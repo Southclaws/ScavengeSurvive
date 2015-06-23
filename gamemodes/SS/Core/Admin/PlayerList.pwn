@@ -88,6 +88,8 @@ GetPlayerInfo(name[])
 
 		pass[129],
 		ipv4,
+		ip[17],
+		country[32],
 		alive,
 		karma,
 		regdate,
@@ -101,10 +103,14 @@ GetPlayerInfo(name[])
 
 	GetAccountData(name, pass, ipv4, alive, karma, regdate, lastlog, spawntime, totalspawns, warnings, aimshout, hash, active);
 
+	ip = IpIntToStr(ipv4);
+	GetIPCountry(ip, country);
+
 	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
 
 	format(info, sizeof(info), "\
 		IP:\t\t\t%s\n\
+		Country:\t\t%s\n\
 		Alive:\t\t\t%s\n\
 		Karma:\t\t\t%d\n\
 		Registered:\t\t%s\n\
@@ -113,7 +119,8 @@ GetPlayerInfo(name[])
 		Lives Lived:\t\t%d\n\
 		Warnings:\t\t%d",
 
-		IpIntToStr(ipv4),
+		ip,
+		country,
 		alive ? ("Yes") : ("No"),
 		karma,
 		TimestampToDateTime(regdate),

@@ -170,7 +170,7 @@ stock GetAccountAliasesByAll(name[], list[][MAX_PLAYER_NAME], &count, max, &admi
 
 CheckForExtraAccounts(playerid)
 {
-	if(IsPlayerRegistered(playerid))
+	if(!IsPlayerRegistered(playerid) || !IsPlayerLoggedIn(playerid))
 		return 0;
 
 	new
@@ -203,6 +203,12 @@ CheckForExtraAccounts(playerid)
 				donewarning = true;
 			}
 		}
+	}
+
+	if(donewarning && GetAdminsOnline() == 0)
+	{
+		KickPlayer(playerid, "One of your previously used accounts is banned.");
+		return 0;
 	}
 
 	MsgAdminsF(adminlevel, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);

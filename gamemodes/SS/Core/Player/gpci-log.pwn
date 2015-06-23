@@ -1,6 +1,8 @@
 #include <YSI\y_hooks>
 
 
+#define MAX_GPCI_LOG_RESULTS	(32)
+
 #define ACCOUNTS_TABLE_GPCI		"gpci_log"
 #define FIELD_GPCI_NAME			"name"		// 00
 #define FIELD_GPCI_GPCI			"hash"		// 01
@@ -73,7 +75,7 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 {
 	new
 		name[MAX_PLAYER_NAME],
-		hash,
+		hash[MAX_GPCI_LEN],
 		date;
 
 	stmt_bind_result_field(stmt_GpciGetRecordsFromGpci, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -86,8 +88,8 @@ stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_lis
 
 	while(stmt_fetch_row(stmt_GpciGetRecordsFromGpci) && count < max)
 	{
-		output[count][gpci_name] = name;
-		output[count][gpci_gpci] = hash;
+		strcat(output[count][gpci_name], name, MAX_PLAYER_NAME);
+		strcat(output[count][gpci_gpci], hash, MAX_GPCI_LEN);
 		output[count][gpci_date] = date;
 
 		count++;
@@ -113,8 +115,8 @@ stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_str
 
 	while(stmt_fetch_row(stmt_GpciGetRecordsFromName) && count < max)
 	{
-		output[count][gpci_name] = name;
-		output[count][gpci_gpci] = hash;
+		strcat(output[count][gpci_name], name, MAX_PLAYER_NAME);
+		strcat(output[count][gpci_gpci], hash, MAX_GPCI_LEN);
 		output[count][gpci_date] = date;
 
 		count++;
@@ -126,10 +128,11 @@ stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_str
 ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 {
 	new
-		list[48][e_gpci_list_output_structure],
+		list[MAX_GPCI_LOG_RESULTS][e_gpci_list_output_structure],
+		newlist[MAX_GPCI_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountGpciHistoryFromGpci(hash, list, 48, count))
+	if(!GetAccountGpciHistoryFromGpci(hash, list, MAX_GPCI_LOG_RESULTS, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -141,27 +144,12 @@ ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 		return 1;
 	}
 
-	gBigString[playerid][0] = EOS;
-
 	for(new i; i < count; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s%s: %s (%s)\n",
-			gBigString[playerid],
-			list[i][gpci_name],
-			list[i][gpci_gpci],
-			TimestampToDateTime(list[i][gpci_date], "%x"));
+		strcat(newlist[i], list[i][gpci_name], MAX_PLAYER_NAME);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowAccountGpciHistoryFromName(playerid, list[listitem][gpci_name]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, hash, gBigString[playerid], "Name Search", "Close");
+	ShowPlayerList(playerid, newlist, count, true);
 
 	return 1;
 }
@@ -169,10 +157,11 @@ ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 ShowAccountGpciHistoryFromName(playerid, name[])
 {
 	new
-		list[48][e_gpci_list_output_structure],
+		list[MAX_GPCI_LOG_RESULTS][e_gpci_list_output_structure],
+		newlist[MAX_GPCI_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountGpciHistoryFromName(name, list, 48, count))
+	if(!GetAccountGpciHistoryFromName(name, list, MAX_GPCI_LOG_RESULTS, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -188,43 +177,10 @@ ShowAccountGpciHistoryFromName(playerid, name[])
 
 	for(new i; i < count; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s%s: %s (%s)\n",
-			gBigString[playerid],
-			list[i][gpci_name],
-			list[i][gpci_gpci],
-			TimestampToDateTime(list[i][gpci_date], "%x"));
+		strcat(newlist[i], list[i][gpci_name], MAX_PLAYER_NAME);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			new tmp[MAX_GPCI_LEN];
-			strcat(tmp, list[listitem][gpci_gpci], MAX_GPCI_LEN);
-			ShowAccountGpciHistoryFromGpci(playerid, tmp);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, gBigString[playerid], "GPCI Search", "Close");
+	ShowPlayerList(playerid, newlist, count, true);
 
 	return 1;
 }
-
-ACMD:ghg[4](playerid, params[])
-{
-	new hash[MAX_GPCI_LEN];
-
-	GetAccountGPCI(params, hash);
-	ShowAccountGpciHistoryFromGpci(playerid, hash);
-
-	return 1;	
-}
-
-ACMD:ghname[4](playerid, params[])
-{
-	ShowAccountGpciHistoryFromName(playerid, params);
-
-	return 1;	
-}
-

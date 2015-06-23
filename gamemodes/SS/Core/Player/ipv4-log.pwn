@@ -1,6 +1,8 @@
 #include <YSI\y_hooks>
 
 
+#define MAX_IPV4_LOG_RESULTS	(32)
+
 #define ACCOUNTS_TABLE_IPV4		"ipv4_log"
 #define FIELD_IPV4_NAME			"name"		// 00
 #define FIELD_IPV4_IPV4			"ipv4"		// 01
@@ -131,10 +133,11 @@ stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_struc
 ShowAccountIPHistoryFromIP(playerid, ip)
 {
 	new
-		list[48][e_ipv4_list_output_structure],
+		list[MAX_IPV4_LOG_RESULTS][e_ipv4_list_output_structure],
+		newlist[MAX_IPV4_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountIPHistoryFromIP(ip, list, 48, count))
+	if(!GetAccountIPHistoryFromIP(ip, list, MAX_IPV4_LOG_RESULTS, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -146,27 +149,12 @@ ShowAccountIPHistoryFromIP(playerid, ip)
 		return 1;
 	}
 
-	gBigString[playerid][0] = EOS;
-
 	for(new i; i < count; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s%s: %s (%s)\n",
-			gBigString[playerid],
-			list[i][ipv4_name],
-			IpIntToStr(list[i][ipv4_ipv4]),
-			TimestampToDateTime(list[i][ipv4_date], "%x"));
+		strcat(newlist[i], list[i][ipv4_name], MAX_PLAYER_NAME);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowAccountIPHistoryFromName(playerid, list[listitem][ipv4_name]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, IpIntToStr(ip), gBigString[playerid], "Name Search", "Close");
+	ShowPlayerList(playerid, newlist, count, true);
 
 	return 1;
 }
@@ -174,10 +162,11 @@ ShowAccountIPHistoryFromIP(playerid, ip)
 ShowAccountIPHistoryFromName(playerid, name[])
 {
 	new
-		list[48][e_ipv4_list_output_structure],
+		list[MAX_IPV4_LOG_RESULTS][e_ipv4_list_output_structure],
+		newlist[MAX_IPV4_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountIPHistoryFromName(name, list, 48, count))
+	if(!GetAccountIPHistoryFromName(name, list, MAX_IPV4_LOG_RESULTS, count))
 	{
 		Msg(playerid, YELLOW, " >  Failed");
 		return 1;
@@ -189,48 +178,12 @@ ShowAccountIPHistoryFromName(playerid, name[])
 		return 1;
 	}
 
-	gBigString[playerid][0] = EOS;
-
 	for(new i; i < count; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s%s: %s (%s)\n",
-			gBigString[playerid],
-			list[i][ipv4_name],
-			IpIntToStr(list[i][ipv4_ipv4]),
-			TimestampToDateTime(list[i][ipv4_date], "%x"));
+		strcat(newlist[i], list[i][ipv4_name], MAX_PLAYER_NAME);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowAccountIPHistoryFromIP(playerid, list[listitem][ipv4_ipv4]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, gBigString[playerid], "IP Search", "Close");
+	ShowPlayerList(playerid, newlist, count, true);
 
 	return 1;
-}
-
-ACMD:iphip[4](playerid, params[])
-{
-	new
-		ip,
-		ipbyte[4];
-
-	sscanf(params, "p<.>a<d>[4]", ipbyte);
-	ip = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
-
-	ShowAccountIPHistoryFromIP(playerid, ip);
-
-	return 1;	
-}
-
-ACMD:iphname[4](playerid, params[])
-{
-	ShowAccountIPHistoryFromName(playerid, params);
-
-	return 1;	
 }
