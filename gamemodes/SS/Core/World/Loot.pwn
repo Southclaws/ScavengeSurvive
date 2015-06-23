@@ -217,6 +217,9 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 	if(slots > containersize)
 		slots = containersize;
 
+	else if(slots <= 0)
+		return 0;
+
 	new
 		samplelist[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
 		samplelistsize,
@@ -269,8 +272,12 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 
 		loot_ItemLootIndex[itemid] = lootindex;
 
-		CreateItem(itemtype);
+		// allocate the item first
+		itemid = AllocNextItemID(itemtype);
+		// add it to the container before creating
 		AddItemToContainer(containerid, itemid);
+		// now OnItemCreate will return a value for GetItemContainer :)
+		CreateItem_ExplicitID(itemid);
 
 		items++;
 	}
