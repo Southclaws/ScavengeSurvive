@@ -83,7 +83,8 @@ _cntr_ClearData(playerid)
 
 _cntr_UseDatabase(playerid)
 {
-	GetPlayerCountry(playerid, PlayerCountryData[playerid][cntr_Country], 45);
+// Causes sqlitei errors for some reason, disabled for now.
+//	GetPlayerCountry(playerid, PlayerCountryData[playerid][cntr_Country], 45);
 
 	if(!strcmp(PlayerCountryData[playerid][cntr_Country], "Unknown"))
 		return 0;

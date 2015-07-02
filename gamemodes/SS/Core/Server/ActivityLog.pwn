@@ -3,6 +3,7 @@
 
 
 #define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"
+#define USE_LOGS					false
 
 
 static log_buffer[256];
@@ -10,9 +11,11 @@ static log_buffer[256];
 
 hook OnGameModeInit()
 {
+#if USE_LOGS == true
 	print("\n[OnGameModeInit] Initialising 'ActivityLog'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
+#endif
 }
 
 stock log(text[], printtext = true)
@@ -20,6 +23,7 @@ stock log(text[], printtext = true)
 	if(printtext)
 		print(text);
 
+#if USE_LOGS == true
 	new
 		year,
 		month,
@@ -50,9 +54,10 @@ stock log(text[], printtext = true)
 
 	format(string, 256, "[%02d:%02d:%02d] %s\r\n", hour, minute, second, text);
 
+// Todo: replace this with an SQL buffer and time triggered/buffer triggered transaction
 	fwrite(file, string);
 	fclose(file);
-
+#endif
 	return 1;
 }
 

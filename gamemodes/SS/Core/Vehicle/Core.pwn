@@ -336,7 +336,7 @@ PlayerVehicleUpdate(playerid)
 		vehicleid,
 		vehicletype,
 		Float:health,
-		Float:velocitychange,
+//		Float:velocitychange,
 		Float:maxfuel,
 		Float:fuelcons,
 		playerstate;
@@ -351,7 +351,7 @@ PlayerVehicleUpdate(playerid)
 		return;
 
 	GetVehicleHealth(vehicleid, health);
-	velocitychange = floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid));
+//	velocitychange = floatabs(veh_TempVelocity[playerid] - GetPlayerTotalVelocity(playerid));
 	maxfuel = GetVehicleTypeMaxFuel(vehicletype);
 	fuelcons = GetVehicleTypeFuelConsumption(vehicletype);
 	playerstate = GetPlayerState(playerid);
@@ -374,17 +374,17 @@ PlayerVehicleUpdate(playerid)
 		}
 	}
 
-	if(velocitychange > 70.0)
-	{
-		switch(GetVehicleTypeCategory(vehicletype))
-		{
-			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
-				SetVehicleAngularVelocity(vehicleid, 0.0, 0.0, 1.0);
-
-			default:
-				PlayerInflictWound(INVALID_PLAYER_ID, playerid, E_WND_TYPE:1, velocitychange * 0.000236, velocitychange * 0.0076, -1, BODY_PART_HEAD, "Collision");
-		}
-	}
+//	if(velocitychange > 70.0)
+//	{
+//		switch(GetVehicleTypeCategory(vehicletype))
+//		{
+//			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
+//				SetVehicleAngularVelocity(vehicleid, 0.0, 0.0, 1.0);
+//
+//			default:
+//				PlayerInflictWound(INVALID_PLAYER_ID, playerid, E_WND_TYPE:1, velocitychange * 0.0001136, velocitychange * 0.00166, -1, BODY_PART_HEAD, "Collision");
+//		}
+//	}
 
 	if(health <= VEHICLE_HEALTH_CHUNK_1)
 		PlayerTextDrawColor(playerid, veh_DamageUI[playerid], VEHICLE_HEALTH_CHUNK_1_COLOUR);
