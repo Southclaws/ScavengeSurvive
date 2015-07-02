@@ -252,7 +252,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				}
 				else if(itemtype == item_FireLighter)
 				{
-					if(gWeatherID == 8 || gWeatherID == 16)
+					new weatherid = GetGlobalWeather();
+
+					if(weatherid == 8 || weatherid == 16)
 					{
 						if(random(100) < 40)
 						{

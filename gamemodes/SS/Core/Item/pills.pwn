@@ -148,6 +148,14 @@ public OnHoldActionFinish(playerid)
 			case PILL_TYPE_LSD:
 			{
 				ApplyDrug(playerid, drug_Lsd);
+
+				new
+					hour = 22,
+					minute = 3,
+					weather = 33;
+
+				SetTimeForPlayer(playerid, hour, minute);
+				SetWeatherForPlayer(playerid, weather);
 			}
 		}
 
@@ -170,4 +178,29 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish pil_OnHoldActionFinish
 #if defined pil_OnHoldActionFinish
 	forward pil_OnHoldActionFinish(playerid);
+#endif
+
+public OnPlayerDrugWearOff(playerid, drugtype)
+{
+	if(drugtype == drug_Lsd)
+	{
+		SetTimeForPlayer(playerid, -1, -1, true);
+		SetWeatherForPlayer(playerid);
+	}
+
+	#if defined pil_OnPlayerDrugWearOff
+		return pil_OnPlayerDrugWearOff(playerid, drugtype);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerDrugWearOff
+	#undef OnPlayerDrugWearOff
+#else
+	#define _ALS_OnPlayerDrugWearOff
+#endif
+
+#define OnPlayerDrugWearOff pil_OnPlayerDrugWearOff
+#if defined pil_OnPlayerDrugWearOff
+	forward pil_OnPlayerDrugWearOff(playerid, drugtype);
 #endif

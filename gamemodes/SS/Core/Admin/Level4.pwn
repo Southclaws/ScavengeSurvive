@@ -159,7 +159,7 @@ ACMD:weather[4](playerid, params[])
 					SetPlayerWeather(j, i);
 				}
 
-				gWeatherID = i;
+				SetGlobalWeather(i);
 				MsgAdminsF(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
 
 				return 1;

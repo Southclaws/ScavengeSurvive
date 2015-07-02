@@ -469,7 +469,6 @@ new stock
 #include "SS/Core/Char/AimShout.pwn"
 #include "SS/Core/Char/Masks.pwn"
 #include "SS/Core/Char/Bleed.pwn"
-#include "SS/Core/Char/DrugFX.pwn"
 
 // WEAPON
 #include "SS/Core/Weapon/core.pwn"

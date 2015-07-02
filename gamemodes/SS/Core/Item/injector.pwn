@@ -187,6 +187,14 @@ public OnHoldActionFinish(playerid)
 			case INJECT_TYPE_HEROIN:
 			{
 				ApplyDrug(inj_CurrentTarget[playerid], drug_Heroin);
+
+				new
+					hour = 22,
+					minute = 30,
+					weather = 33;
+
+				SetTimeForPlayer(playerid, hour, minute);
+				SetWeatherForPlayer(playerid, weather);
 			}
 		}
 
@@ -207,4 +215,29 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish inj_OnHoldActionFinish
 #if defined inj_OnHoldActionFinish
 	forward inj_OnHoldActionFinish(playerid);
+#endif
+
+public OnPlayerDrugWearOff(playerid, drugtype)
+{
+	if(drugtype == drug_Heroin)
+	{
+		SetTimeForPlayer(playerid, -1, -1, true);
+		SetWeatherForPlayer(playerid);
+	}
+
+	#if defined inj_OnPlayerDrugWearOff
+		return inj_OnPlayerDrugWearOff(playerid, drugtype);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerDrugWearOff
+	#undef OnPlayerDrugWearOff
+#else
+	#define _ALS_OnPlayerDrugWearOff
+#endif
+
+#define OnPlayerDrugWearOff inj_OnPlayerDrugWearOff
+#if defined inj_OnPlayerDrugWearOff
+	forward inj_OnPlayerDrugWearOff(playerid, drugtype);
 #endif

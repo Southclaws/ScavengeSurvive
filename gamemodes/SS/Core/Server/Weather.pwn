@@ -11,9 +11,14 @@ Float:	weather_chance
 }
 
 
-new
-	gWeatherID,
-	gLastWeatherChange;
+static
+	weather_Current,
+	weather_CurrentHour,
+	weather_CurrentMinute,
+	weather_PlayerWeather[MAX_PLAYERS],
+	weather_PlayerHour[MAX_PLAYERS],
+	weather_PlayerMinute[MAX_PLAYERS],
+	weather_LastChange;
 
 new
 	WeatherData[MAX_WEATHER_TYPES][E_WEATHER_DATA]=
@@ -48,13 +53,23 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Weather'...");
 
-	gWeatherID = random(sizeof(WeatherData));
-	gLastWeatherChange = GetTickCount();
+	// Todo: custom weather array loaded from settings
+
+	weather_Current = random(sizeof(WeatherData));
+	weather_LastChange = GetTickCount();
+}
+
+hook OnPlayerConnect(playerid)
+{
+	weather_PlayerWeather[playerid] = -1;
+	weather_PlayerHour[playerid] = -1;
+	weather_PlayerMinute[playerid] = -1;
+	_WeatherUpdateForPlayer(playerid);
 }
 
 task WeatherUpdate[600000]()
 {
-	if(GetTickCountDifference(GetTickCount(), gLastWeatherChange) > 600000 && random(100) < 10)
+	if(GetTickCountDifference(GetTickCount(), weather_LastChange) > 600000 && random(100) < 10)
 	{
 		new
 			list[MAX_WEATHER_TYPES],
@@ -66,7 +81,80 @@ task WeatherUpdate[600000]()
 				list[idx++] = i;
 		}
 
-		gWeatherID = list[random(idx)];
-		gLastWeatherChange = GetTickCount();
+		weather_Current = list[random(idx)];
+		weather_LastChange = GetTickCount();
 	}
+
+}
+
+_WeatherUpdate()
+{
+	foreach(new i : Player)
+	{
+		_WeatherUpdateForPlayer(i);
+	}
+}
+
+_WeatherUpdateForPlayer(playerid)
+{
+	if(weather_PlayerWeather[playerid] != -1)
+		return 0;
+
+	SetPlayerTime(playerid, weather_CurrentHour, weather_CurrentMinute);
+	SetPlayerWeather(playerid, weather_Current);
+
+	return 1;
+}
+
+stock SetGlobalWeather(weather)
+{
+	weather_Current = weather;
+
+	_WeatherUpdate();
+}
+
+stock GetGlobalWeather()
+{
+	return weather_Current;
+}
+
+stock SetWeatherForPlayer(playerid, weather = -1)
+{
+	if(weather == -1)
+	{
+		weather_PlayerWeather[playerid] = -1;
+		_WeatherUpdateForPlayer(playerid);
+	}
+	else
+	{
+		weather_PlayerWeather[playerid] = weather;
+		SetPlayerWeather(playerid, weather);
+	}
+}
+
+stock GetWeatherForPlayer(playerid)
+{
+	return weather_PlayerWeather[playerid];
+}
+
+stock SetTimeForPlayer(playerid, hour, minute, reset = false)
+{
+	if(reset)
+	{
+		weather_PlayerHour[playerid] = -1;
+		weather_PlayerMinute[playerid] = -1;
+		SetPlayerTime(playerid, weather_CurrentHour, weather_CurrentMinute);
+	}
+	else
+	{
+		weather_PlayerHour[playerid] = hour;
+		weather_PlayerMinute[playerid] = minute;
+		SetPlayerTime(playerid, hour, minute);
+	}
+}
+
+stock GetTimeForPlayer(playerid, &hour, &minute)
+{
+	hour = weather_PlayerHour[playerid];
+	minute = weather_PlayerMinute[playerid];
 }

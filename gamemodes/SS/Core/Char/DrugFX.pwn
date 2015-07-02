@@ -1,17 +1,21 @@
 ptask DrugFX[1000](playerid)
 {
-//	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
-//	{
-//		hour = 22;
-//		minute = 3;
-//		weather = 33;
-//	}
-//	else if(IsPlayerUnderDrugEffect(playerid, drug_Heroin))
-//	{
-//		hour = 22;
-//		minute = 30;
-//		weather = 33;
-//	}
+	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
+	{
+		hour = 22;
+		minute = 3;
+		weather = 33;
+		SetPlayerTime(playerid, hour, minute);
+		SetPlayerWeather(playerid, weather);
+	}
+	else if(IsPlayerUnderDrugEffect(playerid, drug_Heroin))
+	{
+		hour = 22;
+		minute = 30;
+		weather = 33;
+		SetPlayerTime(playerid, hour, minute);
+		SetPlayerWeather(playerid, weather);
+	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
 	{

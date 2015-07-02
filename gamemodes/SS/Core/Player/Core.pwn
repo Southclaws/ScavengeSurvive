@@ -76,8 +76,6 @@ public OnPlayerConnect(playerid)
 	logf("[JOIN] %p joined", playerid);
 
 	SetPlayerColor(playerid, 0xB8B8B800);
-	SetPlayerWeather(playerid, gWeatherID);
-	GetPlayerName(playerid, gPlayerName[playerid], MAX_PLAYER_NAME);
 
 	if(IsPlayerNPC(playerid))
 		return 1;
@@ -293,10 +291,6 @@ ptask PlayerUpdate[100](playerid)
 	if(!IsPlayerSpawned(playerid))
 		return;
 
-	new
-		hour,
-		minute;
-
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		PlayerVehicleUpdate(playerid);
@@ -305,25 +299,22 @@ ptask PlayerUpdate[100](playerid)
 	{
 		if(!gVehicleSurfing)
 			VehicleSurfingCheck(playerid);
-
-		if(IsValidVehicle(ply_Data[playerid][ply_CurrentVehicle]))
-		{
-			new Float:health;
-
-			GetVehicleHealth(ply_Data[playerid][ply_CurrentVehicle], health);
-
-			if(health < 299.0)
-				SetVehicleHealth(ply_Data[playerid][ply_CurrentVehicle], 299.0);
-		}
 	}
 
-	gettime(hour, minute);
-
-	// TODO: Modularise weather, add in hooking/override system for drug FX
-	SetPlayerTime(playerid, hour, minute);
-	SetPlayerWeather(playerid, gWeatherID);
-
 	PlayerBagUpdate(playerid);
+
+	new
+		hour,
+		minute;
+
+	// Get player's own time data
+	GetTimeForPlayer(playerid, hour, minute);
+
+	// If it's -1, just use the default instead.
+	if(hour == -1 || minute == -1)
+		gettime(hour, minute);
+
+	SetPlayerTime(playerid, hour, minute);
 
 	return;
 }
@@ -381,7 +372,6 @@ public OnPlayerSpawn(playerid)
 	ply_Data[playerid][ply_SpawnTick] = GetTickCount();
 
 	SetAllWeaponSkills(playerid, 500);
-	SetPlayerWeather(playerid, gWeatherID);
 	SetPlayerTeam(playerid, 0);
 	ResetPlayerMoney(playerid);
 
