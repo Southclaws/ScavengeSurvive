@@ -151,7 +151,11 @@ ACMD:spec[2](playerid, params[])
 		{
 			if(GetPlayerAdminLevel(playerid) == STAFF_LEVEL_GAME_MASTER)
 			{
-				if(!IsPlayerReported(gPlayerName[targetid]))
+				new name[MAX_PLAYER_NAME];
+
+				GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+
+				if(!IsPlayerReported(name))
 				{
 					Msg(playerid, YELLOW, " >  You can only spectate reported players.");
 					return 1;

@@ -235,9 +235,13 @@ RemoveAdminFromDatabase(name[])
 
 CheckAdminLevel(playerid)
 {
+	new name[MAX_PLAYER_NAME];
+
 	for(new i; i < admin_Total; i++)
 	{
-		if(!strcmp(gPlayerName[playerid], admin_Data[i][admin_Name]))
+		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+		if(!strcmp(name, admin_Data[i][admin_Name]))
 		{
 			admin_Level[playerid] = admin_Data[i][admin_Rank];
 			break;
@@ -391,9 +395,13 @@ stock SetPlayerAdminLevel(playerid, level)
 	if(!(0 <= level < MAX_ADMIN_LEVELS))
 		return 0;
 
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
 	admin_Level[playerid] = level;
 
-	UpdateAdmin(gPlayerName[playerid], level);
+	UpdateAdmin(name, level);
 
 	return 1;
 }

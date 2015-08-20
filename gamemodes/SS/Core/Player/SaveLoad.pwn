@@ -74,6 +74,7 @@ SavePlayerChar(playerid)
 		return 0;
 
 	new
+		name[MAX_PLAYER_NAME],
 		filename[MAX_PLAYER_FILE],
 		session,
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
@@ -83,7 +84,8 @@ SavePlayerChar(playerid)
 		itemcount,
 		itemlist;
 
-	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	PLAYER_DAT_FILE(name, filename);
 
 	session = modio_getsession_write(filename);
 
@@ -249,6 +251,7 @@ SavePlayerChar(playerid)
 LoadPlayerChar(playerid)
 {
 	new
+		name[MAX_PLAYER_NAME],
 		filename[MAX_PLAYER_FILE],
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		ItemType:itemtype,
@@ -256,7 +259,8 @@ LoadPlayerChar(playerid)
 		itemlist,
 		length;
 
-	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	PLAYER_DAT_FILE(name, filename);
 
 	length = modio_read(filename, _T<C,H,A,R>, sizeof(data), data);
 
@@ -511,12 +515,14 @@ enum
 FV10_LoadPlayerChar(playerid)
 {
 	new
+		name[MAX_PLAYER_NAME],
 		filename[MAX_PLAYER_FILE],
 		File:file,
 		data[PLY_CELL_END],
 		itemid;
 
-	PLAYER_DAT_FILE(gPlayerName[playerid], filename);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	PLAYER_DAT_FILE(name, filename);
 
 	file = fopen(filename, io_read);
 
@@ -618,13 +624,15 @@ FV10_LoadPlayerChar(playerid)
 FV10_LoadPlayerInventory(playerid)
 {
 	new
+		name[MAX_PLAYER_NAME],
 		filename[MAX_PLAYER_FILE],
 		File:file,
 		data[INV_CELL_END],
 		itemid,
 		containerid;
 
-	PLAYER_INV_FILE(gPlayerName[playerid], filename);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	PLAYER_INV_FILE(name, filename);
 
 	file = fopen(filename, io_read);
 

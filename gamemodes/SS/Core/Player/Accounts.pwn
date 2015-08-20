@@ -199,7 +199,7 @@ LoadAccount(playerid)
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	stmt_bind_value(stmt_AccountExists, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AccountExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountExists, 0, DB::TYPE_INTEGER, exists);
 
 	if(!stmt_execute(stmt_AccountExists))
@@ -220,7 +220,7 @@ LoadAccount(playerid)
 		return 0;
 	}
 
-	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, gPlayerName[playerid], MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, password, MAX_PASSWORD_LEN);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_IPV4, DB::TYPE_INTEGER, ipv4);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ALIVE, DB::TYPE_INTEGER, alive);
@@ -295,13 +295,16 @@ LoadAccount(playerid)
 
 CreateAccount(playerid, password[])
 {
-	new serial[MAX_GPCI_LEN];
+	new
+		name[MAX_PLAYER_NAME],
+		serial[MAX_GPCI_LEN];
 
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
 	logf("[REGISTER] %p registered", playerid);
 
-	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		gPlayerName[playerid], MAX_PLAYER_NAME); 
+	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		name, MAX_PLAYER_NAME); 
 	stmt_bind_value(stmt_AccountCreate, 1, DB::TYPE_STRING,		password, MAX_PASSWORD_LEN); 
 	stmt_bind_value(stmt_AccountCreate, 2, DB::TYPE_INTEGER,	GetPlayerIpAsInt(playerid)); 
 	stmt_bind_value(stmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime()); 
@@ -375,7 +378,7 @@ DisplayRegisterPrompt(playerid)
 		}
 		else
 		{
-			MsgAllF(GREY, " >  %s left the server without registering.", gPlayerName[playerid]);
+			MsgAllF(GREY, " >  %p left the server without registering.", playerid);
 			Kick(playerid);
 		}
 
@@ -414,7 +417,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 				}
 				else
 				{
-					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+					MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
 					Kick(playerid);
 				}
 
@@ -442,14 +445,14 @@ DisplayLoginPrompt(playerid, badpass = 0)
 				}
 				else
 				{
-					MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+					MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
 					Kick(playerid);
 				}
 			}
 		}
 		else
 		{
-			MsgAllF(GREY, " >  %s left the server without logging in.", gPlayerName[playerid]);
+			MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
 			Kick(playerid);
 		}
 
@@ -699,7 +702,11 @@ SavePlayerData(playerid)
 		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerKarma(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
-		stmt_execute(stmt_AccountUpdate);
+
+		if(!stmt_execute(stmt_AccountUpdate))
+		{
+			printf("[SavePlayerData] ERROR: Statement 'stmt_AccountUpdate' failed to execute.");
+		}
 
 		d:2:HANDLER("[SavePlayerData] Saving character data");
 		SavePlayerChar(playerid);
@@ -712,7 +719,10 @@ SavePlayerData(playerid)
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 
-		stmt_execute(stmt_AccountUpdate);
+		if(!stmt_execute(stmt_AccountUpdate))
+		{
+			printf("[SavePlayerData] ERROR: Statement 'stmt_AccountUpdate' failed to execute.");
+		}
 	}
 
 	return 1;

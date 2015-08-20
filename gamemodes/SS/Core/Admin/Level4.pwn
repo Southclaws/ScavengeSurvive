@@ -78,7 +78,7 @@ ACMD:setadmin[4](playerid, params[])
 {
 	new
 		id,
-		name[24],
+		name[MAX_PLAYER_NAME],
 		level;
 
 	if(!sscanf(params, "dd", id, level))
@@ -97,7 +97,11 @@ ACMD:setadmin[4](playerid, params[])
 	}
 	else if(!sscanf(params, "s[24]d", name, level))
 	{
-		if(!strcmp(name, gPlayerName[playerid]))
+		new playername[MAX_PLAYER_NAME];
+
+		GetPlayerName(playerid, playername, MAX_PLAYER_NAME);
+
+		if(!strcmp(name, playername))
 			return Msg(playerid, RED, " >  You cannot set your own level");
 
 		UpdateAdmin(name, level);

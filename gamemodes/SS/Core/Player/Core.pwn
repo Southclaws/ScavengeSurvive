@@ -63,8 +63,7 @@ static
 			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
 
 new
-Text:		Branding = Text:INVALID_TEXT_DRAW,
-			gPlayerName[MAX_PLAYERS][MAX_PLAYER_NAME];
+Text:		Branding = Text:INVALID_TEXT_DRAW;
 
 
 forward OnPlayerDisconnected(playerid);

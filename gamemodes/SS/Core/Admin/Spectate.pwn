@@ -178,7 +178,8 @@ timer UpdateSpectateMode[100](playerid)
 {
 	new
 		targetid = spectate_Target[playerid],
-		name[24 + 6],
+		name[MAX_PLAYER_NAME],
+		title[MAX_PLAYER_NAME + 6],
 		str[256];
 
 	if(!IsPlayerConnected(targetid))
@@ -277,9 +278,11 @@ timer UpdateSpectateMode[100](playerid)
 			GetItemExtraData(holsteritemid));
 	}
 
-	format(name, sizeof(name), "%s (%d)", gPlayerName[targetid], targetid);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	PlayerTextDrawSetString(playerid, spec_Name, name);
+	format(title, sizeof(title), "%s (%d)", name, targetid);
+
+	PlayerTextDrawSetString(playerid, spec_Name, title);
 	PlayerTextDrawSetString(playerid, spec_Info, str);
 	PlayerTextDrawShow(playerid, spec_Info);
 }
@@ -312,7 +315,11 @@ CanPlayerSpectate(playerid, targetid)
 
 	if(GetPlayerAdminLevel(playerid) == 1)
 	{
-		if(!IsPlayerReported(gPlayerName[targetid]))
+		new name[MAX_PLAYER_NAME];
+
+		GetPlayerName(targetid, name, MAX_PLAYER_NAME);
+
+		if(!IsPlayerReported(name))
 			return 0;
 	}
 

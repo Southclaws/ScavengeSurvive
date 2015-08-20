@@ -96,19 +96,22 @@ BanPlayer(playerid, reason[], byid, duration)
 BanPlayerByName(name[], reason[], byid, duration)
 {
 	new
+		forname[MAX_PLAYER_NAME],
 		id = INVALID_PLAYER_ID,
 		ip,
-		by[MAX_PLAYER_NAME];
+		byname[MAX_PLAYER_NAME];
 
 	if(byid == -1)
-		by = "Server";
+		byname = "Server";
 
 	else
-		GetPlayerName(byid, by, MAX_PLAYER_NAME);
+		GetPlayerName(byid, byname, MAX_PLAYER_NAME);
 
 	foreach(new i : Player)
 	{
-		if(!strcmp(gPlayerName[i], name))
+		GetPlayerName(i, forname, MAX_PLAYER_NAME);
+
+		if(!strcmp(forname, name))
 			id = i;
 	}
 
@@ -126,7 +129,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 	stmt_bind_value(stmt_BanInsert, 1, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_BanInsert, 2, DB::TYPE_INTEGER, gettime());
 	stmt_bind_value(stmt_BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON);
-	stmt_bind_value(stmt_BanInsert, 4, DB::TYPE_STRING, by, MAX_PLAYER_NAME);
+	stmt_bind_value(stmt_BanInsert, 4, DB::TYPE_STRING, byname, MAX_PLAYER_NAME);
 	stmt_bind_value(stmt_BanInsert, 5, DB::TYPE_INTEGER, duration);
 
 	if(!stmt_execute(stmt_BanInsert))

@@ -174,15 +174,16 @@ CheckForExtraAccounts(playerid)
 		return 0;
 
 	new
+		name[MAX_PLAYER_NAME],
 		list[6][MAX_PLAYER_NAME],
 		count,
 		adminlevel,
 		bool:donewarning,
 		string[(MAX_PLAYER_NAME + 2) * 6];
 
-	GetPlayerAdminLevel(playerid);
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	GetAccountAliasesByAll(gPlayerName[playerid], list, count, 6, adminlevel);
+	GetAccountAliasesByAll(name, list, count, 6, adminlevel);
 
 	if(count == 0)
 		return 0;
