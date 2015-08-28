@@ -29,13 +29,9 @@ an #include line.
 
 The "World" scripts are separated and can be completely replaced for a new map.
 
-An API is in the works that will allow developers to fully control and
-manipulate the gamemode without needing to edit it in any way; allowing for
-easy, conflict free updating from the master branch.
-
 I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
-creations are made!
+creations are made! Please publish all bug fixes in order to benefit everyone.
 
 
 ## Setup
@@ -69,27 +65,19 @@ creations are made!
  public server:
 
         filterscripts object-loader rcon
-        plugins streamer sscanf CTime Whirlpool FileManager dns
+        plugins crashdetect streamer sscanf CTime Whirlpool FileManager irc socket
 
 5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
 
- This will not self-create if absent due to SAMPSON not having write API.
+ This is an INI file with game settings that will self-create if absent.
  Not all settings must be present, here is an example:
  ```
- {
-   "player":
-   {
-     "allow-pause-map":1,
-     "combat-log-window":60,
-     "nametag-distance":5.000000,
-     "vehicle-surfing":1
-   },
-   "server":
-   {
-     "max-uptime":3600,
-     "motd":"Welcome to Southclaw's Scavenge and Survive!"
-   }
- }
+ player/max-tab-out-time=600000
+ player/combat-log-window=30
+ player/interior-entry=0
+ autosave/autosave-toggle=1
+ autosave/autosave-interval=60000
+ vehicle-spawn/spawn-chance=5.0
  ```
 
 6. **Enjoy!**
