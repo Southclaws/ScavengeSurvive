@@ -97,8 +97,8 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <YSI\y_utils>				// By Y_Less, 3.1:			http://forum.sa-mp.com/showthread.php?p=1696956
+#include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
+#include <YSI\y_utils>				// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
