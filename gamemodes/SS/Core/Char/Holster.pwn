@@ -338,6 +338,31 @@ public OnPlayerPickUpItem(playerid, itemid)
 	forward hols_OnPlayerPickUpItem(playerid, itemid);
 #endif
 
+public OnPlayerGiveItem(playerid, targetid, itemid)
+{
+	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+		return 1;
+
+	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[targetid]) < 1000)
+		return 1;
+
+	#if defined hols_OnPlayerGiveItem
+		return hols_OnPlayerGiveItem(playerid, targetid, itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerGiveItem
+	#undef OnPlayerGiveItem
+#else
+	#define _ALS_OnPlayerGiveItem
+#endif
+ 
+#define OnPlayerGiveItem hols_OnPlayerGiveItem
+#if defined hols_OnPlayerGiveItem
+	forward hols_OnPlayerGiveItem(playerid, targetid, itemid);
+#endif
+
 
 /*==============================================================================
 
