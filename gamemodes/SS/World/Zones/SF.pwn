@@ -45,6 +45,8 @@ Load_SF()
 
 SF_District_Housing1()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing1' please wait...");
+
 	CreateSaveBlockArea(CreateDynamicCube(-2521.3608, 286.6024, 1035.3081, -2478.7195, 328.1099, 1039.7107), -2499.1262, 315.1892, 29.4147);
 
 	DefineWeaponsCachePos(-2716.43823, 382.60507, 3.34639);
@@ -158,6 +160,8 @@ SF_District_Housing1()
 }
 SF_District_Housing2()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing2' please wait...");
+
 	CreateItem(item_Barbecue, -2701.1328, 845.7422, 70.3828, 171.0);
 
 	CreateZipline(
@@ -865,6 +869,8 @@ SF_District_Housing2()
 }
 SF_District_Bayfront()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Bayfront' please wait...");
+
 	DefineWeaponsCachePos(-1838.79651, 1543.79602, 6.11533);
 	DefineWeaponsCachePos(-1791.30994, 1543.37488, 6.12531);
 	DefineWeaponsCachePos(-1740.91626, 1543.25623, 6.14425);
@@ -1107,6 +1113,8 @@ SF_District_Bayfront()
 }
 SF_District_City1()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_City1' please wait...");
+
 	new
 		buttonid[2];
 
@@ -1611,6 +1619,8 @@ SF_District_City1()
 }
 SF_District_City2()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_City2' please wait...");
+
 /*
 	LinkTP(
 		CreateButton(-1753.70, 883.57, 295.56, "Press ~k~~VEHICLE_ENTER_EXIT~ to enter"),
@@ -1755,6 +1765,8 @@ SF_District_City2()
 }
 SF_District_Naval()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Naval' please wait...");
+
 	new buttonid[1];
 
 	// Requires "./scriptfiles/Maps/SF/Naval Base.map" to remove:
@@ -1812,6 +1824,8 @@ SF_District_Naval()
 }
 SF_District_Police()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Police' please wait...");
+
 	CreateStaticLootSpawn(-1615.52000, 685.33000, 6.48000,			loot_Police, 10.0);
 	CreateStaticLootSpawn(-1590.78000, 716.26000, -6.15000,			loot_Police, 10.0);
 	CreateStaticLootSpawn(-1623.20000, 668.23000, -5.86000,			loot_Police, 10.0);
@@ -1820,6 +1834,8 @@ SF_District_Police()
 }
 SF_District_Industrial()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Industrial' please wait...");
+
 	CreateDynamicObject(2002, -1978.52356, 131.39619, 26.68210, 0.00000, 0.00000, 90.00000);
 	CreateDynamic3DTextLabel("XBOX ONE", YELLOW, -1978.52356, 131.39619, 28.2150, 10.0);
 	CreateWorkBench(-2124.13916, 219.68687, 34.66147, -128.63998);
@@ -2009,6 +2025,8 @@ SF_District_Industrial()
 }
 SF_District_SfAirport()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_SfAirport' please wait...");
+
 	DefineWeaponsCachePos(-1237.20361, 52.09208, 13.13244);
 	DefineWeaponsCachePos(-1279.19019, 45.46248, 13.13572);
 	DefineWeaponsCachePos(-1199.94641, -132.13683, 13.11613);
@@ -2055,6 +2073,8 @@ SF_District_SfAirport()
 }
 SF_District_MontFoster()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_MontFoster' please wait...");
+
 	DefineWeaponsCachePos(-2150.16040, -408.60284, 34.30775);
 	DefineWeaponsCachePos(-1986.81006, -497.92313, 34.31303);
 	DefineWeaponsCachePos(-2555.83960, -251.85573, 20.41562);
@@ -2395,6 +2415,8 @@ SF_District_MontFoster()
 }
 SF_District_Ship1()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship1' please wait...");
+
 	CreateStaticLootSpawn(-2303.82, 1545.11, 17.89,					loot_Industrial, 12.0, 6);
 	CreateStaticLootSpawn(-2404.19, 1548.50, 25.07,					loot_Industrial, 12.0, 6);
 	CreateStaticLootSpawn(-2512.85, 1545.25, 16.40,					loot_Industrial, 12.0, 6);
@@ -2415,6 +2437,8 @@ SF_District_Ship1()
 }
 SF_District_Ship2()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship2' please wait...");
+
 	CreateStaticLootSpawn(-1478.84, 1489.43, 7.32,					loot_Industrial, 12.0, 6);
 	CreateStaticLootSpawn(-1371.58, 1486.57, 2.71,					loot_Industrial, 12.0, 6);
 	CreateStaticLootSpawn(-1433.17, 1483.05, 0.93,					loot_Industrial, 12.0, 6);

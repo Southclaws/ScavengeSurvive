@@ -59,7 +59,7 @@ hook OnGameModeInit()
 
 	sup_UpdateTimer = repeat SupplyDropTimer();
 
-	HANDLER = debug_register_handler("SupplyCrate", 2);
+	HANDLER = debug_register_handler("SupplyCrate");
 
 	return 1;
 }

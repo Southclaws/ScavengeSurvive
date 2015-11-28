@@ -598,8 +598,8 @@ new stock
 
 #include "SS/World/World.pwn"
 
-#if !defined gMapName
-	#error World script MUST have a "gMapName" variable!
+#if !defined GetMapName
+	#error World script MUST have a "GetMapName" function!
 #endif
 
 #if !defined GenerateSpawnPoint
@@ -644,7 +644,7 @@ OnGameModeInit_Setup()
 
 	LoadSettings();
 
-	SendRconCommand(sprintf("mapname %s", gMapName));
+	SendRconCommand(sprintf("mapname %s", GetMapName()));
 
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
 	GLOBAL_DEBUG = debug_register_handler("GLOBAL", gGlobalDebugLevel);

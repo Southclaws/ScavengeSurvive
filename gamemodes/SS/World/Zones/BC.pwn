@@ -49,6 +49,8 @@ Load_BC()
 
 BC_District_Payasdas()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Payasdas' please wait...");
+
 	CreateStaticLootSpawn(-162.708709, 2764.035888, 61.619419,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-168.285522, 2727.203857, 61.401859,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-203.731369, 2768.484619, 61.414489,		loot_Civilian, 20.0);
@@ -84,6 +86,8 @@ BC_District_Payasdas()
 }
 BC_District_Verdant()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Verdant' please wait...");
+
 	CreateStaticLootSpawn(377.433288, 2594.337890, 15.473210,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(413.673675, 2536.922363, 18.147050,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(333.301483, 2411.031982, 15.932689,		loot_Industrial, 20.0);
@@ -139,6 +143,8 @@ BC_District_Verdant()
 }
 BC_District_Area69()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Area69' please wait...");
+
 	CreateStaticLootSpawn(211.756774, 1859.329711, 12.133520,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(222.789550, 1855.840698, 11.984900,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(203.165679, 1863.224121, 12.132530,		loot_Industrial, 20.0);
@@ -252,6 +258,8 @@ BC_District_Area69()
 }
 BC_District_BoneEast()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_BoneEast' please wait...");
+
 	CreateStaticLootSpawn(790.219055, 1990.437377, 4.361800,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(701.584167, 1992.585693, 4.535160,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(693.793334, 1965.575927, 4.529550,		loot_Civilian, 20.0);
@@ -286,6 +294,8 @@ BC_District_BoneEast()
 }
 BC_District_BigEar()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_BigEar' please wait...");
+
 	CreateStaticLootSpawn(-299.839294, 1577.899414, 74.346000,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-324.601623, 1535.770629, 74.552757,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-285.389465, 1562.626953, 74.350852,		loot_Civilian, 20.0);
@@ -306,6 +316,8 @@ BC_District_BigEar()
 }
 BC_District_Probe()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Probe' please wait...");
+
 	CreateStaticLootSpawn(-226.105682, 1405.623779, 26.767429,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-16.725469, 1385.647094, 8.141059,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-223.680587, 1397.573242, 27.367929,		loot_Civilian, 20.0);
@@ -329,6 +341,8 @@ BC_District_Probe()
 }
 BC_District_Octane()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Octane' please wait...");
+
 	CreateStaticLootSpawn(406.390502, 1161.583251, 6.903639,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(502.410369, 1119.108764, 13.740139,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(711.367980, 1204.533447, 12.385020,		loot_Civilian, 20.0);
@@ -382,6 +396,8 @@ BC_District_Octane()
 }
 BC_District_Carson()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Carson' please wait...");
+
 	CreateStaticLootSpawn(-204.049407, 1052.944702, 18.736200,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-203.905685, 1061.835571, 18.736690,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(65.135223, 1163.147705, 17.655750,		loot_Civilian, 20.0);
@@ -548,6 +564,8 @@ BC_District_Carson()
 }
 BC_District_Hunter()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Hunter' please wait...");
+
 	CreateStaticLootSpawn(627.578979, 894.678649, -42.107200,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(578.331787, 829.218872, -30.850990,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(591.060485, 878.450073, -43.504810,		loot_Industrial, 20.0);
@@ -570,6 +588,8 @@ BC_District_Hunter()
 }
 BC_District_BoneGen()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'BC_District_BoneGen' please wait...");
+
 	CreateStaticLootSpawn(-583.062133, 2713.019042, 70.823257,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-13.895059, 2345.650634, 23.131660,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-551.655273, 2592.609619, 52.930320,		loot_Civilian, 20.0);

@@ -47,6 +47,8 @@ Load_LS()
 
 LS_District_Housing1()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Housing1' please wait...");
+
 	CreateStaticLootSpawn(2241.932128, -1258.510009, 22.936239,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2244.920898, -1245.123657, 24.416099,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2250.253417, -1238.292114, 24.894189,	loot_Civilian, 20, 3);
@@ -586,6 +588,8 @@ LS_District_Housing1()
 
 LS_District_Housing2()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Housing2' please wait...");
+
 	CreateStaticLootSpawn(2535.713134, -1657.764526, 14.267840,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2498.556640, -1643.643920, 12.746850,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2497.789062, -1631.021728, 12.394729,	loot_Civilian, 20, 3);
@@ -1096,6 +1100,8 @@ LS_District_Housing2()
 
 LS_District_Housing3()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Housing3' please wait...");
+
 	CreateStaticLootSpawn(2459.707275, -948.579895, 79.067253,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2455.191162, -965.123168, 79.059082,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2389.697265, -1038.046386, 52.567359,	loot_Civilian, 20, 3);
@@ -1307,6 +1313,8 @@ LS_District_Housing3()
 
 LS_District_Housing4()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Housing4' please wait...");
+
 	CreateStaticLootSpawn(2529.212402, 746.210388, 13.727939,		loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2536.050048, 716.275268, 9.810350,		loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2536.044433, 717.308288, 13.727910,		loot_Civilian, 20, 3);
@@ -1704,6 +1712,8 @@ LS_District_Housing4()
 
 LS_District_EastBeach()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_EastBeach' please wait...");
+
 	CreateStaticLootSpawn(2824.011718, -1722.606323, 8.960789,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2809.209960, -1832.113403, 8.885160,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2780.439941, -1837.687866, 8.749910,	loot_Civilian, 20, 3);
@@ -1981,6 +1991,8 @@ LS_District_EastBeach()
 
 LS_District_Industrial()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Industrial' please wait...");
+
 	CreateStaticLootSpawn(1920.410156, -1992.947387, 12.532649,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1898.591552, -1986.132934, 12.530599,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1899.098754, -1995.579467, 12.531539,	loot_Civilian, 20, 3);
@@ -2234,6 +2246,8 @@ LS_District_Industrial()
 
 LS_District_Docks()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Docks' please wait...");
+
 	CreateStaticLootSpawn(2415.879150, -2230.404052, 12.547030,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2392.702636, -2251.687744, 12.547300,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2828.959716, -2360.772949, 21.772930,	loot_Civilian, 20, 3);
@@ -2428,6 +2442,8 @@ LS_District_Docks()
 
 LS_District_Airport()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Airport' please wait...");
+
 	CreateStaticLootSpawn(1644.251831, -2293.599609, -2.209739,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1644.311645, -2285.240234, -2.209310,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1656.953002, -2275.078613, -2.269570,	loot_Civilian, 20, 3);
@@ -2536,6 +2552,8 @@ LS_District_Airport()
 
 LS_District_SantaMaria()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_SantaMaria' please wait...");
+
 	CreateStaticLootSpawn(633.160339, -1776.954956, 13.092240,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(521.011291, -1810.802246, 5.574220,		loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(534.940490, -1814.249755, 5.571269,		loot_Civilian, 20, 3);
@@ -2803,6 +2821,8 @@ LS_District_SantaMaria()
 
 LS_District_City1()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_City1' please wait...");
+
 	CreateStaticLootSpawn(1045.579833, -1285.196533, 12.542830,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1045.177124, -1308.799194, 12.542539,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1045.665649, -1275.553710, 12.543339,	loot_Civilian, 20, 3);
@@ -3189,6 +3209,8 @@ LS_District_City1()
 
 LS_District_City2()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_City2' please wait...");
+
 	CreateStaticLootSpawn(1063.092407, -1562.838867, 12.538769,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1077.335205, -1563.072265, 12.538629,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1101.161376, -1562.517333, 12.538269,	loot_Civilian, 20, 3);
@@ -3615,6 +3637,8 @@ LS_District_City2()
 
 LS_District_City3()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'LS_District_City3' please wait...");
+
 	CreateStaticLootSpawn(1791.184448, -1426.041015, 12.536760,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1822.370361, -1379.691406, 13.407770,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(1825.017700, -1336.338500, 13.405240,	loot_Civilian, 20, 3);

@@ -32,6 +32,8 @@ Load_RC()
 
 RC_District_LogCamp()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_LogCamp' please wait...");
+
 	CreateStaticLootSpawn(-535.624877, -102.932212, 62.287090,		loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-488.137359, -171.310974, 77.203811,		loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-472.983703, -171.322250, 77.203163,		loot_Industrial, 15.0);
@@ -52,6 +54,8 @@ RC_District_LogCamp()
 }
 RC_District_BlueberryAcres()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_BlueberryAcres' please wait...");
+
 	CreateStaticLootSpawn(-21.749139, 82.340179, 2.108500,			loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-29.512809, 62.143798, 2.109849,			loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-38.142158, 56.792568, 2.105109,			loot_Industrial, 15.0);
@@ -85,6 +89,8 @@ RC_District_BlueberryAcres()
 }	
 RC_District_BlueberryTown()
 {	
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_BlueberryTown' please wait...");
+
 	CreateStaticLootSpawn(195.407531, -119.271759, 3.895359,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(207.479248, -107.625923, 3.894959,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(159.689651, -107.550338, 3.893419,		loot_Civilian, 20.0);
@@ -248,6 +254,8 @@ RC_District_BlueberryTown()
 }
 RC_District_Dillmore()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_Dillmore' please wait...");
+
 	CreateStaticLootSpawn(747.589782, -499.690704, 16.324209,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(690.599609, -506.115722, 15.331480,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(755.506958, -588.205017, 16.329889,		loot_Civilian, 20.0);
@@ -341,6 +349,8 @@ RC_District_Dillmore()
 }
 RC_District_Montgomery()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_Montgomery' please wait...");
+
 	CreateStaticLootSpawn(1367.052734, 258.962219, 18.549060,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(1355.000488, 242.343338, 18.548120,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(1389.525268, 265.199645, 18.542379,		loot_Civilian, 20.0);
@@ -512,6 +522,8 @@ RC_District_Montgomery()
 }
 RC_District_Palomino()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_Palomino' please wait...");
+
 	CreateStaticLootSpawn(2333.181884, -18.142669, 25.478500,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(2310.982421, -15.128290, 25.740230,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(2303.046142, -16.152420, 25.479919,		loot_Civilian, 20.0);
@@ -647,6 +659,8 @@ RC_District_Palomino()
 }
 RC_District_RedGen()
 {
+	MsgAll(YELLOW, " >  Loading world region: 'RC_District_RedGen' please wait...");
+
 	CreateStaticLootSpawn(1549.540283, 13.358389, 23.150590,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(1111.852172, -354.848999, 72.989982,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(748.824157, 277.645690, 26.256109,		loot_Civilian, 20.0);

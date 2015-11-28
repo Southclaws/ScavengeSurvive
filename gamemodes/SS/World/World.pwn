@@ -15,7 +15,9 @@
 
 #include "ss/World/Xmas.pwn"
 
-new gMapName[17] = 	"San Androcalypse";
+static
+	MapName[32] = "San Androcalypse",
+	ItemCounts[ITM_MAX_TYPES];
 
 #include <YSI\y_hooks>
 
@@ -25,11 +27,9 @@ hook OnGameModeInit()
 	defer LoadWorld();
 }
 
-timer LoadWorld[100]()
+timer LoadWorld[10]()
 {
-	new
-		itemtypename[ITM_MAX_NAME],
-		itemcounts[ITM_MAX_TYPES];
+	gServerInitialising = true;
 
 	// store this to a list and compare after
 	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
@@ -40,17 +40,57 @@ timer LoadWorld[100]()
 		if(GetItemTypeCount(i) == 0)
 			continue;
 
-		itemcounts[i] = GetItemTypeCount(i);
+		ItemCounts[i] = GetItemTypeCount(i);
 	}
 
+	defer _Load_LS();
+}
 
+timer _Load_LS[100]()
+{
 	Load_LS();
+	defer _Load_SF();
+}
+
+timer _Load_SF[100]()
+{
 	Load_SF();
+	defer _Load_LV();
+}
+
+timer _Load_LV[100]()
+{
 	Load_LV();
+	defer _Load_RC();
+}
+
+timer _Load_RC[100]()
+{
 	Load_RC();
+	defer _Load_FC();
+}
+
+timer _Load_FC[100]()
+{
 	Load_FC();
+	defer _Load_BC();
+}
+
+timer _Load_BC[100]()
+{
 	Load_BC();
+	defer _Load_TR();
+}
+
+timer _Load_TR[100]()
+{
 	Load_TR();
+	defer _Finalise();
+}
+
+timer _Finalise[100]()
+{
+	new itemtypename[ITM_MAX_NAME];
 
 	// compare with previous list and print differences
 	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
@@ -63,6 +103,14 @@ timer LoadWorld[100]()
 
 		GetItemTypeUniqueName(i, itemtypename);
 
-		printf("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, itemcounts[i], GetItemTypeCount(i) - itemcounts[i], GetItemTypeCount(i), itemtypename);
+		printf("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, ItemCounts[i], GetItemTypeCount(i) - ItemCounts[i], GetItemTypeCount(i), itemtypename);
 	}
+
+	gServerInitialising = false;
 }
+
+stock GetMapName()
+{
+	return MapName;
+}
+

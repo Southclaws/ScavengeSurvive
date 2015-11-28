@@ -33,6 +33,12 @@ LoadSettings()
 	GetSettingInt("player/ping-limit", 400, gPingLimit);
 
 	// I'd appreciate if you left my credit and the proper gamemode name intact!
+	// Failure to do this will result in being blacklisted from the server list.
+	// And I'll be less inclined to help you with issues.
+	// Unless you have a decent reason to change the gamemode name (heavy mod)
+	// I'd still like to be credited for my work. Many servers have claimed
+	// they are the sole creator of the mode and this makes me sad and very
+	// hesitant to release my work completely free of charge.
 	SetGameModeText("Scavenge Survive by Southclaw");
 
 	print("\n");
