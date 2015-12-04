@@ -2,6 +2,8 @@
 
 
 static
+Float:	dmg_VehicleVelocityKnockMult,
+Float:	dmg_VehicleVelocityBleedMult,
 		// Always for targetid
 Float:	dmg_ReturnBleedrate[MAX_PLAYERS],
 Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
@@ -42,6 +44,7 @@ _DoVehicleCollisionDamage(playerid, targetid)
 	bleedrate = (0.04 * (velocity * 0.02)) * dmg_VehicleVelocityBleedMult;
 
 	if(velocity > 55.0 && frandom(velocity) > 55.0)
+		KnockOutPlayer(targetid, floatround((1000 + ((velocity * 0.05) * 1000)) * dmg_VehicleVelocityKnockMult));
 
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
