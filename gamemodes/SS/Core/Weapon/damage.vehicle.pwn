@@ -10,6 +10,14 @@ Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 forward OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult);
 
 
+hook OnScriptInit()
+{
+	print("\n[OnScriptInit] Initialising 'damage.vehicle'...");
+
+	GetSettingFloat("vehicle.damage/knock-mult", 1.0, dmg_VehicleVelocityKnockMult);
+	GetSettingFloat("vehicle.damage/bleed-mult", 1.0, dmg_VehicleVelocityBleedMult);
+}
+
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
 	if(weaponid == 49)
@@ -31,10 +39,9 @@ _DoVehicleCollisionDamage(playerid, targetid)
 		Float:knockmult = 1.0;
 
 	velocity = GetPlayerTotalVelocity(playerid);
-	bleedrate = 0.04 * (velocity / 50.0);
+	bleedrate = (0.04 * (velocity * 0.02)) * dmg_VehicleVelocityBleedMult;
 
 	if(velocity > 55.0 && frandom(velocity) > 55.0)
-		KnockOutPlayer(targetid, floatround(1000 + ((velocity / 20.0) * 1000)));
 
 	dmg_ReturnBleedrate[targetid] = bleedrate;
 	dmg_ReturnKnockMult[targetid] = knockmult;
