@@ -102,10 +102,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight =
 	}
 
 	if(size > MAX_ITEMS_PER_SPAWN)
-	{
-		//printf("ERROR: Loot spawn size (%d) out of bounds (%d).", size, MAX_ITEMS_PER_SPAWN);
-		return -1;
-	}
+		size = -1;
 
 	if(size == -1)
 		size = MAX_ITEMS_PER_SPAWN / 2 + random(MAX_ITEMS_PER_SPAWN / 2);
