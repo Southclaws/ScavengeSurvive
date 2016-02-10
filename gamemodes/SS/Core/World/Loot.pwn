@@ -90,7 +90,7 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight, perspawnlimit =
 	return 1;
 }
 
-stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight = 100.0, size = -1, worldid = 0, interiorid = 0)
+stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, size = -1, worldid = 0, interiorid = 0)
 {
 	if(loot_SpawnMult == 0.0)
 		return -1;
