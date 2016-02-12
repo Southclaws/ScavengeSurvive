@@ -1,6 +1,7 @@
 import io
 import re
 from PIL import Image, ImageDraw, ImageColor
+import heatmap
 
 
 p = re.compile(r'[ \t]*CreateStaticLootSpawn\(([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*(loot_[a-zA-Z]*),\s*([\-\+]?[0-9]*(?:\.[0-9]+)?)(?:,\s([0-9]))?(?:,\s([0-9]))?(?:,\s([0-9]))?\);')
@@ -619,6 +620,22 @@ def main():
 	draw_loot(im, draw, loot)
 
 	im.save("gtasa-blank-1.0-ss-map.jpg")
+
+	points = []
+
+	for l in loot:
+		points.append([int(l.x + 3000), int(l.y + 3000)])
+
+	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
+	hmimg = hm.heatmap(
+		points,
+		dotsize=150,
+		size=(6000, 6000),
+		scheme='classic',
+		area=((0, 0), (6000, 6000)))
+
+	im.paste(hmimg, mask=hmimg)
+	im.save("gtasa-blank-1.0-ss-heat.jpg")
 
 
 if __name__ == '__main__':
