@@ -1,3 +1,4 @@
+import os  
 import io
 import re
 from PIL import Image, ImageDraw, ImageColor
@@ -5,7 +6,9 @@ import heatmap
 
 
 p = re.compile(r'[ \t]*CreateStaticLootSpawn\(([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*(loot_[a-zA-Z]*),\s*([\-\+]?[0-9]*(?:\.[0-9]+)?)(?:,\s([0-9]))?(?:,\s([0-9]))?(?:,\s([0-9]))?\);')
+v = re.compile(r'Vehicle\(([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*.*\)')
 DOT_RADIUS = 6
+BOX_RADIUS = 2
 
 
 regions = [
@@ -546,6 +549,13 @@ class LootSpawn():
 		self.interiorid = (interiorid if type(interiorid) is int else 0)
 		#print(self.x, self.y, self.z, self.lootindex, self.weight, self.size, self.worldid, self.interiorid)
 
+class Vehicle():
+
+	def __init__(self, x, y, z):
+		self.x = x
+		self.y = y
+		self.z = z
+
 
 def load_loot(filename):
 
@@ -569,6 +579,27 @@ def load_loot(filename):
 	return loot
 
 
+def load_vehicles(directory):
+
+	# Vehicle(-130.138595, 2244.483398, 31.974399, 349.191802)
+
+	vehicles = []
+
+	for fn in os.listdir(directory):
+		if os.path.isfile(directory + fn):
+			with io.open(directory + fn) as f:
+				for l in f:
+					r = v.match(l)
+
+					if r:
+						vehicles.append(Vehicle(
+							float(r.group(1)),	# x
+							float(r.group(2)),	# y
+							float(r.group(3))))	# z
+
+	return vehicles
+
+
 def draw_loot(im, draw, loot):
 
 	print(len(loot), "loot spawns being drawn")
@@ -580,8 +611,6 @@ def draw_loot(im, draw, loot):
 		x = s.x + 3000
 		y = 6000 - (s.y + 3000)
 		draw.ellipse([x - DOT_RADIUS, y - DOT_RADIUS, x + DOT_RADIUS, y + DOT_RADIUS], outline=(255, 255, 255), fill=colours[s.lootindex])
-
-	del draw
 
 
 def draw_regions(im, draw):
@@ -600,10 +629,23 @@ def draw_regions(im, draw):
 		draw.polygon(temp_region, outline=(255, 255, 255))
 
 
+def draw_vehicles(im, draw, vehicles):
+
+	print(len(vehicles), "vehicle spawns being drawn")
+
+	x = 0.0
+	y = 0.0
+
+	for s in vehicles:
+		x = s.x + 3000
+		y = 6000 - (s.y + 3000)
+		draw.rectangle([x - BOX_RADIUS, y - BOX_RADIUS, x + BOX_RADIUS, y + BOX_RADIUS], outline=(0, 0, 0), fill=(80, 80, 80))
+
 
 def main():
 
 	loot = []
+	vehicles = []
 
 	loot += load_loot("../gamemodes/SS/World/Zones/LS.pwn")
 	loot += load_loot("../gamemodes/SS/World/Zones/SF.pwn")
@@ -613,11 +655,14 @@ def main():
 	loot += load_loot("../gamemodes/SS/World/Zones/BC.pwn")
 	loot += load_loot("../gamemodes/SS/World/Zones/TR.pwn")
 
+	vehicles += load_vehicles("../scriptfiles/Vehicles/")
+
 	im = Image.open("gtasa-blank-1.0.jpg")
 	draw = ImageDraw.Draw(im)
 
 	draw_regions(im, draw)
 	draw_loot(im, draw, loot)
+	draw_vehicles(im, draw, vehicles)
 
 	im.save("gtasa-blank-1.0-ss-map.jpg")
 

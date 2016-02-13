@@ -17,7 +17,7 @@ Load_SF()
 	SF_District_Naval();
 	SF_District_Police();
 	SF_District_Industrial();	// updated
-	SF_District_SfAirport();
+	SF_District_SfAirport();	// updated
 	SF_District_MontFoster();	// updated
 	SF_District_Ship1();		// updated
 	SF_District_Ship2();
