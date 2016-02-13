@@ -1,4 +1,5 @@
-import os  
+import os
+import copy
 import io
 import re
 from PIL import Image, ImageDraw, ImageColor
@@ -642,29 +643,7 @@ def draw_vehicles(im, draw, vehicles):
 		draw.rectangle([x - BOX_RADIUS, y - BOX_RADIUS, x + BOX_RADIUS, y + BOX_RADIUS], outline=(0, 0, 0), fill=(80, 80, 80))
 
 
-def main():
-
-	loot = []
-	vehicles = []
-
-	loot += load_loot("../gamemodes/SS/World/Zones/LS.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/SF.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/LV.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/RC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/FC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/BC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/TR.pwn")
-
-	vehicles += load_vehicles("../scriptfiles/Vehicles/")
-
-	im = Image.open("gtasa-blank-1.0.jpg")
-	draw = ImageDraw.Draw(im)
-
-	draw_regions(im, draw)
-	draw_loot(im, draw, loot)
-	draw_vehicles(im, draw, vehicles)
-
-	im.save("gtasa-blank-1.0-ss-map.jpg")
+def generate_loot_heatmap(im, draw, loot):
 
 	points = []
 
@@ -680,7 +659,58 @@ def main():
 		area=((0, 0), (6000, 6000)))
 
 	im.paste(hmimg, mask=hmimg)
-	im.save("gtasa-blank-1.0-ss-heat.jpg")
+	im.save("gtasa-blank-1.0-ss-map-heat-loot.jpg")
+
+
+def generate_vehicle_heatmap(im, draw, vehicles):
+
+	points = []
+
+	for l in vehicles:
+		points.append([int(l.x + 3000), int(l.y + 3000)])
+
+	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
+	hmimg = hm.heatmap(
+		points,
+		dotsize=300,
+		size=(6000, 6000),
+		scheme='classic',
+		area=((0, 0), (6000, 6000)))
+
+	im.paste(hmimg, mask=hmimg)
+	im.save("gtasa-blank-1.0-ss-map-heat-vehicle.jpg")
+
+
+def main():
+
+	loot = []
+	vehicles = []
+
+	loot += load_loot("../gamemodes/SS/World/Zones/LS.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/SF.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/LV.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/RC.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/FC.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/BC.pwn")
+	loot += load_loot("../gamemodes/SS/World/Zones/TR.pwn")
+
+	vehicles += load_vehicles("../scriptfiles/Vehicles/")
+
+	# Initialise PIL stuff
+	mapimg = Image.open("gtasa-blank-1.0.jpg")
+	draw = ImageDraw.Draw(mapimg)
+
+	# Generate the main map with region lines, loot spawns and vehicles
+	draw_regions(mapimg, draw)
+	draw_loot(mapimg, draw, loot)
+	draw_vehicles(mapimg, draw, vehicles)
+
+	mapimg.save("gtasa-blank-1.0-ss-map.jpg")
+
+	# generate heatmaps for loot and vehicles on separate images
+	generate_loot_heatmap(copy.copy(mapimg), draw, loot)
+
+	generate_vehicle_heatmap(copy.copy(mapimg), draw, vehicles)
 
 
 if __name__ == '__main__':
