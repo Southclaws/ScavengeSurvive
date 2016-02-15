@@ -9,17 +9,17 @@ Load_SF()
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);
 	CreateLadder(-1736.4494, -445.9549, 1.9609, 14.1484, 270.7138);
 
-	SF_District_Housing1();		// updated
-	SF_District_Housing2();		// updated
-	SF_District_Bayfront();		// updated
-	SF_District_City1();		// updated
-	SF_District_City2();		// updated
+	SF_District_Housing1();
+	SF_District_Housing2();
+	SF_District_Bayfront();
+	SF_District_City1();
+	SF_District_City2();
 	SF_District_Naval();
 	SF_District_Police();
-	SF_District_Industrial();	// updated
-	SF_District_SfAirport();	// updated
-	SF_District_MontFoster();	// updated
-	SF_District_Ship1();		// updated
+	SF_District_Industrial();
+	SF_District_SfAirport();
+	SF_District_MontFoster();
+	SF_District_Ship1();
 	SF_District_Ship2();
 
 /*
@@ -3596,11 +3596,27 @@ SF_District_Ship2()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship2' please wait...");
 
-	CreateStaticLootSpawn(-1478.84, 1489.43, 7.32,					loot_Industrial, 12.0, 6);
-	CreateStaticLootSpawn(-1371.58, 1486.57, 2.71,					loot_Industrial, 12.0, 6);
-	CreateStaticLootSpawn(-1433.17, 1483.05, 0.93,					loot_Industrial, 12.0, 6);
-
-	CreateStaticLootSpawn(-1404.98, 1486.13, 6.24,					loot_Survivor, 8.0, 6);
-	CreateStaticLootSpawn(-1390.89, 1482.97, 0.95,					loot_Survivor, 8.0, 6);
-	CreateStaticLootSpawn(-1425.41, 1490.25, 0.97,					loot_Survivor, 8.0, 6);
+	CreateStaticLootSpawn(-1415.532470, 1489.697140, 6.093890, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1456.652100, 1497.540530, 6.092340, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1373.251220, 1491.422730, 10.036410, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1382.427860, 1498.112430, 7.561290, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1376.799930, 1488.678470, 10.203780, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1377.522710, 1493.277220, 10.203750, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1383.761350, 1486.329220, 7.906280, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1371.871580, 1494.465330, 0.848500, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1391.690060, 1495.950200, 0.847840, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1432.268190, 1497.399540, 0.849230, loot_Civilian, 30.000000, 3);
+	CreateStaticLootSpawn(-1478.839970, 1489.430050, 7.320000, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1371.579960, 1486.569950, 2.710000, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1433.170040, 1483.050050, 0.930000, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1401.780880, 1485.615110, 6.095080, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1410.068730, 1493.596800, 6.096350, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1429.040650, 1488.707760, 6.093460, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1448.746830, 1494.112920, 6.096030, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1457.281010, 1480.777950, 6.095960, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1367.665280, 1484.784060, 10.036150, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1391.000370, 1484.454960, 0.847350, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1404.493900, 1482.562260, 0.840160, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1406.396850, 1496.680540, 0.848330, loot_Industrial, 35.000000, 3);
+	CreateStaticLootSpawn(-1377.949340, 1489.305660, 18.048680, loot_Survivor, 10.000000, 3);
 }
