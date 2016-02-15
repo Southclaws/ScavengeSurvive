@@ -345,7 +345,45 @@ ItemType:		item_BreadLoaf		= INVALID_ITEM_TYPE,
 ItemType:		item_Banana			= INVALID_ITEM_TYPE,
 ItemType:		item_Orange			= INVALID_ITEM_TYPE,
 // 220
-ItemType:		item_WheelLock		= INVALID_ITEM_TYPE;
+ItemType:		item_WheelLock		= INVALID_ITEM_TYPE,
+ItemType:		item_Apple			= INVALID_ITEM_TYPE,
+ItemType:		item_Lemon			= INVALID_ITEM_TYPE,
+ItemType:		item_PisschBox		= INVALID_ITEM_TYPE,
+ItemType:		item_PizzaBox		= INVALID_ITEM_TYPE,
+ItemType:		item_MilkBottle		= INVALID_ITEM_TYPE,
+ItemType:		item_MilkCarton		= INVALID_ITEM_TYPE,
+ItemType:		item_IceCream		= INVALID_ITEM_TYPE,
+ItemType:		item_FishyFingers	= INVALID_ITEM_TYPE,
+ItemType:		item_IceCreamBars	= INVALID_ITEM_TYPE,
+// 230
+ItemType:		item_AppleJuice		= INVALID_ITEM_TYPE,
+ItemType:		item_OrangeJuice	= INVALID_ITEM_TYPE,
+ItemType:		item_Cereal			= INVALID_ITEM_TYPE,
+ItemType:		item_Cereal			= INVALID_ITEM_TYPE,
+ItemType:		item_WrappedMeat	= INVALID_ITEM_TYPE,
+ItemType:		item_Beanie			= INVALID_ITEM_TYPE,
+ItemType:		item_StrawHat		= INVALID_ITEM_TYPE,
+ItemType:		item_WitchesHat		= INVALID_ITEM_TYPE,
+ItemType:		item_WeddingCake	= INVALID_ITEM_TYPE,
+ItemType:		item_CaptainsCap	= INVALID_ITEM_TYPE,
+// 240
+ItemType:		item_SwatHelmet		= INVALID_ITEM_TYPE,
+ItemType:		item_PizzaHat		= INVALID_ITEM_TYPE,
+ItemType:		item_PussyMask		= INVALID_ITEM_TYPE,
+ItemType:		item_BoxingGloves	= INVALID_ITEM_TYPE,
+ItemType:		item_Briquettes		= INVALID_ITEM_TYPE,
+ItemType:		item_DevilMask		= INVALID_ITEM_TYPE,
+ItemType:		item_Cross			= INVALID_ITEM_TYPE,
+ItemType:		item_RedPanel		= INVALID_ITEM_TYPE,
+ItemType:		item_Fork			= INVALID_ITEM_TYPE,
+ItemType:		item_Knife			= INVALID_ITEM_TYPE,
+// 250
+ItemType:		item_Ketchup		= INVALID_ITEM_TYPE,
+ItemType:		item_Mustard		= INVALID_ITEM_TYPE,
+ItemType:		item_Boot			= INVALID_ITEM_TYPE,
+ItemType:		item_Doormat		= INVALID_ITEM_TYPE,
+ItemType:		item_CakeSlice		= INVALID_ITEM_TYPE,
+ItemType:		item_Holdall		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -495,9 +533,9 @@ public OnScriptInit()
 	item_NightVision	= DefineItemType("Night Vision",		"NightVision",		000,	2,	90.0);
 	item_ThermalVision	= DefineItemType("Thermal Vision",		"ThermalVision",	000,	2,	90.0);
 	item_Parachute		= DefineItemType("Parachute",			"Parachute",		371,	6,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
-	item_Medkit			= DefineItemType("Medkit",				"Medkit",			1580,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Medkit			= DefineItemType("Medkit",				"Medkit",			11736,	1,	0.0, 0.0, 0.0,			16.996,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	item_HardDrive		= DefineItemType("Hard Drive",			"HardDrive",		328,	1,	90.0, 0.0, 0.0,			0.0);
-	item_Key			= DefineItemType("Key",					"Key",				327,	1,	0.0, 0.0, 0.0,			0.01);//, .colour = 0xFFDEDEDE);
+	item_Key			= DefineItemType("Key",					"Key",				11746,	1,	90.0, 0.0, 0.0,			0.026);
 // 50
 	item_FireworkBox	= DefineItemType("Fireworks",			"FireworkBox",		2039,	2,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
 	item_FireLighter	= DefineItemType("Lighter",				"FireLighter",		327,	1,	0.0, 0.0, 0.0,			0.0);
@@ -510,7 +548,7 @@ public OnScriptInit()
 	item_Sign			= DefineItemType("Sign",				"Sign",				19471,	6,	0.0, 0.0, 270.0,		0.0);
 	item_Armour			= DefineItemType("Armour",				"Armour",			19515,	4,	90.0, 0.0, 0.0,			0.0,	0.300333, -0.090105, 0.000000, 0.000000, 0.000000, 180.000000);
 // 60
-	item_Bandage		= DefineItemType("Dirty Bandage",		"Bandage",			1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_Bandage		= DefineItemType("Dirty Bandage",		"Bandage",			11747,	2,	90.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_FishRod		= DefineItemType("Fishing Rod",			"FishRod",			18632,	6,	90.0, 0.0, 0.0,			0.0,	0.091496, 0.019614, 0.000000, 185.619995, 354.958374, 0.000000);
 	item_Wrench			= DefineItemType("Wrench",				"Wrench",			18633,	2,	0.0, 90.0, 0.0,			0.0,	0.084695, -0.009181, 0.152275, 98.865089, 270.085449, 0.000000);
 	item_Crowbar		= DefineItemType("Crowbar",				"Crowbar",			18634,	2,	0.0, 90.0, 0.0,			0.0,	0.066177, 0.011153, 0.038410, 97.289527, 270.962554, 1.114514);
@@ -532,7 +570,7 @@ public OnScriptInit()
 	item_GasMask		= DefineItemType("Gas Mask",			"GasMask",			19472,	1,	180.0, 0.0, 0.0,		0.0,	0.062216, 0.055396, 0.001138, 90.000000, 0.000000, 180.000000);
 	item_Flag			= DefineItemType("Flag",				"Flag",				2993,	3,	0.0, 0.0, 0.0,			0.0,	0.045789, 0.026306, -0.078802, 8.777217, 0.272155, 0.000000);
 // 80
-	item_DoctorBag		= DefineItemType("Doctor's Bag",		"DoctorBag",		1210,	3,	0.0, 0.0, 90.0,			0.0,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
+	item_DoctorBag		= DefineItemType("Doctor's Bag",		"DoctorBag",		11738,	3,	0.0, 0.0, 0.0,			0.0046,	0.285915, 0.078406, -0.009429, 0.000000, 270.000000, 0.000000);
 	item_Backpack		= DefineItemType("Backpack",			"Backpack",			3026,	4,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065);
 	item_Satchel		= DefineItemType("Small Bag",			"Satchel",			363,	2,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_Wheel			= DefineItemType("Wheel",				"Wheel",			1079,	5,	0.0, 0.0, 90.0,			0.436,	-0.098016, 0.356168, -0.309851, 258.455596, 346.618103, 354.313049, true);
@@ -659,13 +697,13 @@ public OnScriptInit()
 	item_LenKnocksRifle	= DefineItemType("The Len-Knocks",		"LenKnocksRifle",	358,	5,	90.0);
 	item_Daypack		= DefineItemType("Daypack",				"Daypack",			363,	3,	270.0, 0.0, 0.0,		0.0,	0.052853, 0.034967, -0.177413, 0.000000, 261.397491, 349.759826);
 	item_MediumBag		= DefineItemType("Medium Bag",			"MediumBag",		3026,	4,	270.0, 0.0, 90.0,		0.0,	0.470918, 0.150153, 0.055384, 181.319580, 7.513789, 163.436065, false, 0xFFFFFF00);
-	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			371,	5,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
+	item_Rucksack		= DefineItemType("Travel Rucksack",		"Rucksack",			19559,	5,	91.0, -4.0, 0.0,		0.16,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
 	item_SeedBag		= DefineItemType("Seeds",				"SeedBag",			2663,	2,	0.0, 0.0, 0.0,			0.205,	0.320356, 0.042146, 0.049817, 0.000000, 260.512817, 349.967254, false, 0xFFF4A460);
 	item_Note			= DefineItemType("Note",				"Note",				2953,	1,	0.0, 0.0, 0.0,			0.0,	0.083999, 0.022000, -0.013000,  -82.300018, -14.900006, -83.200042, false, 0xCAFFFFFF);
-	item_Tomato			= DefineItemType("Tomato",				"Tomato",			3105,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_Tomato			= DefineItemType("Tomato",				"Tomato",			19575,	1,	170.0, 0.0, 0.0,		0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
 // 200
 	item_HeartShapedBox	= DefineItemType("Heart Shaped Box",	"HeartShapedBox",	1240,	1,	90.0, 0.0, 0.0,			-0.02,	0.171999, 0.077999, -0.016999,  0.000000, 0.000000, 10.200000);
-	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	1575,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
+	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	11748,	2,	0.0, 0.0, 0.0,			0.01,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_WoodLog		= DefineItemType("Wood Log",			"WoodLog",			19632,	1,	0.0, 0.0, 0.0,			0.0,	0.034999, 0.018998, -0.150000,  -74.199989, -110.000022, -54.900020);
 	item_Sledgehammer	= DefineItemType("sledgehammer",		"Sledgehammer",		19631,	1,	0.0, 0.0, 0.0,			0.0,	0.075000, -0.004000, 0.269000,  -84.600021, -70.899993, 0.000000);
 	item_RawFish		= DefineItemType("fish",				"RawFish",			19630,	1,	0.0, 0.0, 0.0,			0.0,	0.047000, 0.021999, 0.083000,  -84.299980, -75.299972, 103.100028);
@@ -686,54 +724,77 @@ public OnScriptInit()
 	item_Banana			= DefineItemType("Banana",				"Banana",			19578,	1,	0.0, 0.0, 0.0,		0.0,	0.059000, 0.017998, 0.026000,  86.399932, -161.300003, 83.699714);
 	item_Orange			= DefineItemType("Orange",				"Orange",			19577,	1,	0.0, 0.0, 0.0,		0.0,	0.078000, 0.040998, 0.009000,  86.399932, -161.300003, 83.699714);
 // 220
-	item_WheelLock		= DefineItemType("Lock and Chain",		"WheelLock",		2680,	1,	0.0, 0.0, 0.0,			0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_WheelLock		= DefineItemType("Lock and Chain",		"WheelLock",		2680,	1,	0.0, 0.0, 0.0,		0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Apple			= DefineItemType("Apple",				"Apple",			19576,	1,	170.0, 0.0, 0.0,	0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_Lemon			= DefineItemType("Lemon",				"Lemon",			19574,	1,	170.0, 0.0, 0.0,	0.03,	0.000003, 0.000003, 0.000003, 0.000000, 0.000003, 0.000003);
+	item_PisschBox		= DefineItemType("Pissh Box", 			"PisschBox",		19572,	1,	0.0, 0.0, 0.0,		0.0363,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_PizzaBox		= DefineItemType("Pizza Box", 			"PizzaBox",			19571,	1,	90.0, 0.0, 0.0,		0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_MilkBottle		= DefineItemType("Milk Bottle", 		"MilkBottle",		19570,	1,	0.0, 0.0, 0.0,		0.0199,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_MilkCarton		= DefineItemType("Milk Carton", 		"MilkCarton",		19569,	1,	0.0, 0.0, 0.0,		0.0298,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_IceCream		= DefineItemType("Ice Cream", 			"IceCream",			19568,	1,	0.0, 0.0, 0.0,		0.0308,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_FishyFingers	= DefineItemType("Fishy Fingers", 		"FishyFingers",		19566,	1,	-91.0, 0.0, 0.0,	-0.009,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_IceCreamBars	= DefineItemType("Ice Cream Bars", 		"IceCreamBars",		19565,	1,	-90.0, 0.0, 0.0,	-0.01,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+// 230
+	item_AppleJuice		= DefineItemType("Apple Juice", 		"AppleJuice",		19564,	1,	0.0, 0.0, 0.0,		0.039,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_OrangeJuice	= DefineItemType("Orange Juice", 		"OrangeJuice",		19563,	1,	0.0, 0.0, 0.0,		0.026,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Cereal			= DefineItemType("Cereal", 				"Cereal",			19562,	1,	0.0, 0.0, 0.0,		0.022,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Cereal			= DefineItemType("Cereal", 				"Cereal",			19561,	1,	0.0, 0.0, 0.0,		0.022,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_WrappedMeat	= DefineItemType("Wrapped Meat", 		"WrappedMeat",		19560,	1,	0.0, 0.0, 0.0,		0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Beanie			= DefineItemType("Beanie",				"Beanie",			19554,	1,	-25.0, -91.0, -91.0,0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_StrawHat		= DefineItemType("Straw Hat",			"StrawHat",			19553,	1,	0.0, -105.0, 0.0,	-0.039,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_WitchesHat		= DefineItemType("Witches Hat",			"WitchesHat",		19528,	1,	0.0, -84.0, 0.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_WeddingCake	= DefineItemType("Wedding Cake",		"WeddingCake",		19525,	1,	0.0, 0.0, 0.0,		0.036,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_CaptainsCap	= DefineItemType("Captain's Cap",		"CaptainsCap",		19520,	1,	0.0, -91.0, 11.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+// 240
+	item_SwatHelmet		= DefineItemType("Swat Helmet",			"SwatHelmet",		19514,	1,	-22.0, -98.0, 2.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_PizzaHat		= DefineItemType("Pizza Hat",			"PizzaHat",			19558,	1,	2.0, -93.0, 0.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_PussyMask		= DefineItemType("Pussy Mask",			"PussyMask",		19557,	1,	0.0, 265.0, 0.0,	-0.059,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_BoxingGloves	= DefineItemType("Boxing Gloves",		"BoxingGloves",		19556,	1,	-91.0, 0.0, 0.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Briquettes		= DefineItemType("Briquettes",			"Briquettes",		19573,	1,	0.0, 0.0, 0.0,		0.036,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_DevilMask		= DefineItemType("Devil Mask",			"DevilMask",		11704,	1,	-76.0, 0.0, 0.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Cross			= DefineItemType("Cross",				"Cross",			11712,	1,	0.0, 90.0, 90.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_RedPanel		= DefineItemType("Red Panel",			"RedPanel",			11713,	1,	0.0, -90.0, 90.0,	0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Fork			= DefineItemType("Fork",				"Fork",				11715,	1,	0.0, 0.0, 0.0,		0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Knife			= DefineItemType("Knife",				"Knife",			11716,	1,	0.0, 0.0, 0.0,		0.0,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+// 250
+	item_Ketchup		= DefineItemType("Ketchup",				"Ketchup",			11722,	1,	0.0, 0.0, 0.0,		-0.1,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Mustard		= DefineItemType("Mustard",				"Mustard",			11723,	1,	0.0, 0.0, 0.0,		-0.1,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Boot			= DefineItemType("Boot",				"Boot",				11735,	1,	0.0, 0.0, 0.0,		0.02,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Doormat		= DefineItemType("Doormat",				"Doormat",			11737,	1,	0.0, 0.0, 0.0,		0.02,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_CakeSlice		= DefineItemType("Cake Slice",			"CakeSlice",		11742,	1,	0.0, 0.0, 0.0,		0.026,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Holdall		= DefineItemType("Holdall",				"Holdall",			11745,	1,	0.0, 0.0, 0.0,		-0.117,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 
-// 19576 apple
-// 19575 apple
-// 19574 lemon
-// 19573 briquettes bag
-// 19572 pissh box
-// 19571 pizza box
-// 19570 milk
-// 19569 milk carton
-// 19568 ice cream
-// 19566 fishy fingers
-
-// 19565 ice cream bars
-// 19564 apple juice
-// 19563 orange juice
-// 19562 cereal
-// 19561 cereal
-// 19560 shrink wrapped meat
-// 19559 traveller's rucksack
-// 19558 pizza hat
-// 19557 pointy ear mask
-// 19556 boxing gloves
-	
-// 19554 beanie
-// 19553 straw hat
-// 19528 witches hat
-// 19525 wedding cake
-// 19520 captain's cap
-// 19514 swat helmet
-
-// a51 floor/buildings
-// some islands/mystical places
-// 11704 devil mask
-// 11712 cross
-// 11713 keypad
-// 11715/6 fork and knife melee
-// 11722/3 sauce bottles
-// 11729/11730 metal lockers
-// 11735 boot
-// 11736 medical satchel
-// 11737 doormat (constructable)
-// 11738 new doctor's bag model
-// 11742 cake: autocreate in circle, allow taking of slices
-// 11743 rare, can be used to fill bottles
-// 11745 use as safebox if small enough
-// 11746 use as mechanical key
-// 11747/11748 bandages
+// FUTURE MODELS
+// 1656 CUBOID SHAPE, CARRY ITEM
+// 1719 SMALL COMPUTER TYPE DEVICE
+// 1898 SMALL SPIN CLICKER
+// 1899 VERY SMALL SINGLE CHIP
+// 1901 SMALL BLUE CHIPS STACK
+// 1952 SMALL RECORD NEEDLE
+// 1960 RECORD
+// 2060 SANDBAG
+// 2277 PICTURE OF A CAT
+// 2352 T SHAPED SMALL OBJ
+// 2590 SPIKEY HOOK, SCHYTHE?
+// 2226 HIFI
+// 2231 Speaker/small box shape
+// 2232 Slightly bigger speaker
+// 2324 Short cylinder (retexture)
+// 2388 Short pole type thing
+// 2680 Wheel lock
+// 2749 Small long cylinder (also 2752)
+// 2751 Wide short cylinder
+// 2750 Hair dryer/gun shape
+// 2780 Small grey box with handle
+// 2894 Book
+// 2961 Small red keypad-like thing
+// 2966 old phone/radio
+// 2967 another old phone/radio
+// 2983 Pipe valve
+// 3025 Piece of scap metal pole/frame
+// 3067 Metal frame
+// 3070 Goggles
+// 11729 & 11730 metal lockers for storage
 
 
 
@@ -942,38 +1003,41 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_HeartShapedBox,2);
 	SetItemTypeMaxArrayData(item_AntiSepBandage,1);
 	SetItemTypeMaxArrayData(item_WheelLock,		1);
-
-
-// 1656 - CUBOID SHAPE, CARRY ITEM
-// 1719 - SMALL COMPUTER TYPE DEVICE
-// 1898 - SMALL SPIN CLICKER
-// 1899 - VERY SMALL SINGLE CHIP
-// 1901 - SMALL BLUE CHIPS STACK
-// 1952 - SMALL RECORD NEEDLE
-// 1960 - RECORD
-// 2060 - SANDBAG
-// 2277 - PICTURE OF A CAT
-// 2352 - T SHAPED SMALL OBJ
-// 2590 - SPIKEY HOOK, SCHYTHE?
-// 2226 - HIFI
-// 2231 - Speaker/small box shape
-// 2232 - Slightly bigger speaker
-// 2324 - Short cylinder (retexture)
-// 2388 - Short pole type thing
-// 2680 - Wheel lock
-// 2749 - Small long cylinder (also 2752)
-// 2751 - Wide short cylinder
-// 2750 - Hair dryer/gun shape
-// 2780 - Small grey box with handle
-// 2894 - Book
-// 2961 - Small red keypad-like thing
-// 2966 - old phone/radio
-// 2967 - another old phone/radio
-// 2983 - Pipe valve
-// 3025 - Piece of scap metal pole/frame
-// 3067 - Metal frame
-// 3070 - Goggles
-
+	SetItemTypeMaxArrayData(item_Apple,			1);
+	SetItemTypeMaxArrayData(item_Lemon,			1);
+	SetItemTypeMaxArrayData(item_PisschBox,		1);
+	SetItemTypeMaxArrayData(item_PizzaBox,		3);
+	SetItemTypeMaxArrayData(item_MilkBottle,	3);
+	SetItemTypeMaxArrayData(item_MilkCarton,	3);
+	SetItemTypeMaxArrayData(item_IceCream,		3);
+	SetItemTypeMaxArrayData(item_FishyFingers,	3);
+	SetItemTypeMaxArrayData(item_IceCreamBars,	3);
+	SetItemTypeMaxArrayData(item_AppleJuice,	3);
+	SetItemTypeMaxArrayData(item_OrangeJuice,	3);
+	SetItemTypeMaxArrayData(item_Cereal,		3);
+	SetItemTypeMaxArrayData(item_Cereal,		3);
+	SetItemTypeMaxArrayData(item_WrappedMeat,	3);
+	SetItemTypeMaxArrayData(item_Beanie,		1);
+	SetItemTypeMaxArrayData(item_StrawHat,		1);
+	SetItemTypeMaxArrayData(item_WitchesHat,	1);
+	SetItemTypeMaxArrayData(item_WeddingCake,	1);
+	SetItemTypeMaxArrayData(item_CaptainsCap,	1);
+	SetItemTypeMaxArrayData(item_SwatHelmet,	1);
+	SetItemTypeMaxArrayData(item_PizzaHat,		1);
+	SetItemTypeMaxArrayData(item_PussyMask,		1);
+	SetItemTypeMaxArrayData(item_BoxingGloves,	1);
+	SetItemTypeMaxArrayData(item_Briquettes,	1);
+	SetItemTypeMaxArrayData(item_DevilMask,		1);
+	SetItemTypeMaxArrayData(item_Cross,			1);
+	SetItemTypeMaxArrayData(item_RedPanel,		1);
+	SetItemTypeMaxArrayData(item_Fork,			4);
+	SetItemTypeMaxArrayData(item_Knife,			4);
+	SetItemTypeMaxArrayData(item_Ketchup,		3);
+	SetItemTypeMaxArrayData(item_Mustard,		3);
+	SetItemTypeMaxArrayData(item_Boot,			1);
+	SetItemTypeMaxArrayData(item_Doormat,		1);
+	SetItemTypeMaxArrayData(item_CakeSlice,		3);
+	SetItemTypeMaxArrayData(item_Holdall,		3);
 
 	//									name		bleedrate
 	calibre_9mm		= DefineAmmoCalibre("9mm",		0.25);
@@ -1289,19 +1353,19 @@ public OnScriptInit()
 	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
 	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
 
-	DefineSeedType("Tomato", item_Tomato, 4, 802, 0.72044); // small green wide bush
-/*
-	DefineSeedType("", none, 2, 631, 0.90649); // tall dark bush
-	DefineSeedType("", none, 2, 692, 0.31308); // wide greyish bush
-	DefineSeedType("", none, 2, 728, 0.34546); // huge bush!
-	DefineSeedType("", none, 2, 801, 0.21290); // large fern
-	DefineSeedType("", none, 2, 804, 1.31168); // huge long green leaves
-	DefineSeedType("", none, 2, 857, 0.50507); // big leaves
-	DefineSeedType("", none, 2, 861, -0.12961); // tall bush style
-	DefineSeedType("", none, 2, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
-	DefineSeedType("", none, 2, 2194, 0.25344); // tiny cactus
-	DefineSeedType("", none, 2, 2238, 0.58121); // lava lamp (?)
-*/
+	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
+	DefineSeedType("Apple", item_Apple,		4, 802, 0.72044);
+	DefineSeedType("Banana", item_Banana,	4, 804, 1.31168);
+	DefineSeedType("Lemon", item_Lemon,		4, 810, 0.72044);
+	// Unused seed types will be given uses in future
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 692, 0.31308); // wide greyish bush
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 728, 0.34546); // huge bush!
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 801, 0.21290); // large fern
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 857, 0.50507); // big leaves
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 861, -0.12961); // tall bush style
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2194, 0.25344); // tiny cactus
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
 
 	// Regular vehicles, most common and found around cities and towns.
 	vgroup_Civilian		= DefineVehicleSpawnGroup("Civilian");
