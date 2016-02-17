@@ -1,7 +1,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_FOOD_ITEM (16)
+#define MAX_FOOD_ITEM (64)
 
 
 enum e_FOOD_ITEM_DATA
