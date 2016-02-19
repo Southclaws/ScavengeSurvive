@@ -410,6 +410,32 @@ _DropItemInTent(playerid, itemid, tentid)
 	return 1;
 }
 
+public OnItemArrayDataChanged(itemid)
+{
+	printf("OnItemArrayDataChanged: itemid %d tentid: %d", itemid, tnt_ItemTent[itemid]);
+	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
+	{
+		printf("array data changed for %d saving tent %d", itemid, tnt_ItemTent[itemid]);
+		SaveTent(tnt_ItemTent[itemid], 1);
+	}
+
+	#if defined tnt_OnItemArrayDataChanged
+		return tnt_OnItemArrayDataChanged(itemid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnItemArrayDataChanged
+	#undef OnItemArrayDataChanged
+#else
+	#define _ALS_OnItemArrayDataChanged
+#endif
+
+#define OnItemArrayDataChanged tnt_OnItemArrayDataChanged
+#if defined tnt_OnItemArrayDataChanged
+	forward tnt_OnItemArrayDataChanged(itemid);
+#endif
+
 UpdateTentDebugLabel(tentid)
 {
 	new
@@ -572,7 +598,10 @@ LoadTents()
 SaveTent(tentid, active)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
+	{
+		printf("ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
 		return 0;
+	}
 
 	if(active)
 	{
@@ -699,7 +728,8 @@ LoadTent(filename[])
 		interior,
 		world,
 		itemid,
-		itemlist;
+		itemlist,
+		cell;
 
 	// final 'true' param is to force close read session
 	// Because these files are read in a loop, sessions can stack up so this
@@ -732,9 +762,25 @@ LoadTent(filename[])
 		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 			SetItemArrayDataFromListItem(itemid, itemlist, i);
 
-		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
+		if(tnt_ItemTent[itemid] != -1)
+			Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
 
-		AddItemToTentIndex(tentid, itemid);
+		cell = Iter_Free(tnt_ItemIndex[tentid]);
+
+		if(cell == -1)
+			return 0;
+
+		tnt_Items[tentid][cell] = itemid;
+		tnt_ItemTent[itemid] = tentid;
+
+		Iter_Add(tnt_ItemIndex[tentid], cell);
+
+		if(!tnt_Loading)
+			SaveTent(tentid, 1);
+
+		UpdateTentDebugLabel(tentid);
+
+		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
 	}
 
 	DestroyItemList(itemlist);
