@@ -1,3 +1,6 @@
+static HANDLER = -1;
+
+
 enum e_plant_pot_data
 {
 	E_PLANT_POT_ACTIVE,
@@ -13,9 +16,23 @@ Timer:	pot_PickUpTimer[MAX_PLAYERS],
 		pot_PickUpTick[MAX_PLAYERS],
 		pot_CurrentItem[MAX_PLAYERS];
 
+
+hook OnScriptInit()
+{
+	print("\n[OnScriptInit] Initialising 'PlantPot'...");
+
+	HANDLER = debug_register_handler("plantpot", 3);
+}
+
+
 _pot_UseItemWithItem(playerid, itemid, withitemid)
 {
+	d:1:HANDLER("[_pot_UseItemWithItem] player %d itemid %d withitemid %d", playerid, itemid, withitemid);
 	new ItemType:itemtype = GetItemType(itemid);
+
+	new potdata[e_plant_pot_data];
+
+	GetItemArrayData(withitemid, potdata);
 
 	if(itemtype == item_SeedBag)
 	{
@@ -23,9 +40,12 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 		if(amount > 0)
 		{
-			SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(itemid, E_SEED_BAG_TYPE), E_PLANT_POT_SEED_TYPE, 1);
-			SetItemArrayDataAtCell(withitemid, 1, E_PLANT_POT_ACTIVE, 1);
+			potdata[E_PLANT_POT_SEED_TYPE] = GetItemArrayDataAtCell(itemid, E_SEED_BAG_TYPE);
+			potdata[E_PLANT_POT_ACTIVE] = 1;
+			potdata[E_PLANT_POT_GROWTH] = 0;
+
 			SetItemArrayDataAtCell(itemid, amount - 1, E_SEED_BAG_AMOUNT);
+			SetItemArrayData(withitemid, potdata, e_plant_pot_data);
 			ShowActionText(playerid, "Added seeds to plant pot", 5000);
 			SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with water bottle to add water");
 		}
@@ -33,23 +53,32 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 	if(itemtype == item_Bottle)
 	{
-		new amount = GetFoodItemSubType(itemid);
+		new amount = GetFoodItemAmount(itemid);
 
 		if(amount > 0)
 		{
-			SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
-			SetFoodItemAmount(itemid, amount - 1);
-			ShowActionText(playerid, "Added 1 water to plant pot", 5000);
-			SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
+			new subtype = GetFoodItemSubType(itemid);
+
+			if(subtype == 0)
+			{
+				SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
+				SetFoodItemAmount(itemid, amount - 1);
+				ShowActionText(playerid, "Added 1 water to plant pot", 5000);
+				SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
+			}
+			else
+			{
+				ShowActionText(playerid, "Bottle does not contain water", 5000);
+			}
+		}
+		else
+		{
+			ShowActionText(playerid, "Bottle is empty", 5000);
 		}
 	}
 
 	if(itemtype == item_Knife)
 	{
-		new potdata[e_plant_pot_data];
-
-		GetItemArrayData(withitemid, potdata);
-
 		if(!potdata[E_PLANT_POT_ACTIVE])
 		{
 			ShowActionText(playerid, "Pot doesn't contain an active plant.", 3000);
@@ -79,7 +108,7 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 		GetItemPos(withitemid, x, y, z);
 
-		CreateItem(GetSeedTypeItemType(seedtype), x, y, z, _, _, _, FLOOR_OFFSET - 0.3, world, interior);
+		CreateItem(GetSeedTypeItemType(seedtype), x, y, z + 0.5, _, _, _, FLOOR_OFFSET - 0.3, world, interior);
 		DestroyDynamicObject(potdata[E_PLANT_POT_OBJECT_ID]);
 
 		potdata[E_PLANT_POT_ACTIVE] = 0;
@@ -98,6 +127,13 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 _pot_Load(itemid)
 {
+	if(GetItemType(itemid) != item_PlantPot)
+	{
+		printf("ERROR: Attempted to _pot_Load an item that wasn't a pot (%d type %d).", itemid, _:GetItemType(itemid));
+		return;
+	}
+
+	d:1:HANDLER("[_pot_Load] itemid %d", itemid);
 	new potdata[e_plant_pot_data];
 
 	GetItemArrayData(itemid, potdata);
@@ -108,6 +144,7 @@ _pot_Load(itemid)
 		return;
 	}
 
+	d:1:HANDLER("[_pot_Load] pot active, water: %d", potdata[E_PLANT_POT_WATER]);
 	if(potdata[E_PLANT_POT_WATER] > 0)
 	{
 		// Sufficiently watered? Grow and drink some water.
@@ -123,8 +160,11 @@ _pot_Load(itemid)
 	// If growth is reduced to 0, Die :(
 	if(potdata[E_PLANT_POT_GROWTH] <= 0)
 	{
+		d:1:HANDLER("[_pot_Load] growth: %d dying.", potdata[E_PLANT_POT_GROWTH]);
 		potdata[E_PLANT_POT_ACTIVE] = 0;
 		potdata[E_PLANT_POT_SEED_TYPE] = -1;
+		potdata[E_PLANT_POT_WATER] = 0;
+		potdata[E_PLANT_POT_GROWTH] = 0;
 		SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with seeds to plant");
 	}
 
@@ -137,24 +177,26 @@ _pot_Load(itemid)
 
 _pot_UpdateModel(itemid, bool:toggle = true)
 {
+	d:1:HANDLER("[_pot_UpdateModel] itemid %d toggle %d", itemid, toggle);
 	if(!IsItemInWorld(itemid))
 		toggle = false;
 
 	if(toggle)
 	{
+		if(!GetItemArrayDataAtCell(itemid, E_PLANT_POT_ACTIVE))
+			return 0;
+
 		new
 			Float:x,
 			Float:y,
 			Float:z,
-			Float:rx,
-			Float:ry,
 			Float:rz,
 			world,
 			interior,
 			seedtype;
 
 		GetItemPos(itemid, x, y, z);
-		GetItemRot(itemid, rx, ry, rz);
+		GetItemRot(itemid, rz, rz, rz);
 		world = GetItemWorld(itemid);
 		interior = GetItemInterior(itemid);
 		seedtype = GetItemArrayDataAtCell(itemid, E_PLANT_POT_SEED_TYPE);
@@ -180,8 +222,8 @@ _pot_UpdateModel(itemid, bool:toggle = true)
 
 			z += (0.1966 / GetSeedTypeGrowthTime(seedtype)) * growth;
 
-			id = CreateDynamicObject(2194, x, y, z, rx, ry, rz, world, interior, _, 50.0, 50.0);
-			SetItemArrayDataAtCell(itemid, id, E_PLANT_POT_OBJECT_ID);
+			id = CreateDynamicObject(2194, x, y, z, 0.0, 0.0, rz, world, interior, _, 50.0, 50.0);
+			SetItemArrayDataAtCell(itemid, id, E_PLANT_POT_OBJECT_ID, 0, 0);
 		}
 		else
 		{
@@ -192,14 +234,16 @@ _pot_UpdateModel(itemid, bool:toggle = true)
 				DestroyDynamicObject(id);
 			}
 
-			id = CreateDynamicObject(GetSeedTypePlantModel(seedtype), x, y, z + GetSeedTypePlantOffset(seedtype), rx, ry, rz, world, interior, _, 50.0, 50.0);
-			SetItemArrayDataAtCell(itemid, id, E_PLANT_POT_OBJECT_ID);
+			z += GetSeedTypePlantOffset(seedtype);
+
+			id = CreateDynamicObject(GetSeedTypePlantModel(seedtype), x, y, z, 0.0, 0.0, rz, world, interior, _, 50.0, 50.0);
+			SetItemArrayDataAtCell(itemid, id, E_PLANT_POT_OBJECT_ID, 0, 0);
 		}
 	}
 	else
 	{
 		DestroyDynamicObject(GetItemArrayDataAtCell(itemid, E_PLANT_POT_OBJECT_ID));
-		SetItemArrayDataAtCell(itemid, INVALID_OBJECT_ID, E_PLANT_POT_OBJECT_ID);
+		SetItemArrayDataAtCell(itemid, INVALID_OBJECT_ID, E_PLANT_POT_OBJECT_ID, 0, 0);
 	}
 
 	return 1;
@@ -243,6 +287,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _pot_PickUp(playerid, itemid)
 {
+	d:1:HANDLER("[_pot_PickUp] playerid %d itemid %d", playerid, itemid);
 	if(GetItemType(itemid) == item_PlantPot)
 	{
 		stop pot_PickUpTimer[playerid];
@@ -272,10 +317,13 @@ public OnItemCreateInWorld(itemid)
 {
 	if(GetItemType(itemid) == item_PlantPot)
 	{
+		d:1:HANDLER("[OnItemCreateInWorld] PlantPot itemid %d", itemid);
 		if(gServerInitialising)
 		{
+			d:2:HANDLER("[OnItemCreateInWorld] gServerInitialising true");
 			if(GetItemLootIndex(itemid) != -1)
 			{
+				d:2:HANDLER("[OnItemCreateInWorld] ItemLootIndex != -1");
 				new potdata[e_plant_pot_data];
 
 				potdata[E_PLANT_POT_ACTIVE] = 0;
@@ -288,6 +336,7 @@ public OnItemCreateInWorld(itemid)
 			}
 			else
 			{
+				d:2:HANDLER("[OnItemCreateInWorld] ItemLootIndex == -1");
 				_pot_Load(itemid);
 			}
 		}
@@ -356,12 +405,12 @@ public OnPlayerPickUpItem(playerid, itemid)
 #if defined pot_OnPlayerPickUpItem
 	forward pot_OnPlayerPickUpItem(playerid, itemid);
 #endif
-new lastitem;
+
 public OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_PlantPot)
 		_pot_UpdateModel(itemid);
-	lastitem = itemid;
+
 	#if defined pot_OnPlayerDroppedItem
 		return pot_OnPlayerDroppedItem(playerid, itemid);
 	#else
@@ -401,10 +450,17 @@ public OnItemDestroy(itemid)
 	forward pot_OnItemDestroy(itemid);
 #endif
 
-CMD:potg(playerid, params[])
+ACMD:potg[4](playerid, params[])
 {
-	new growth = strval(params);
-	SetItemArrayDataAtCell(lastitem, growth, E_PLANT_POT_GROWTH);
-	_pot_Load(lastitem);
+	new
+		itemid,
+		growth;
+
+	itemid = strval(params);
+	growth = GetItemArrayDataAtCell(itemid, E_PLANT_POT_GROWTH);
+
+	SetItemArrayDataAtCell(itemid, growth, E_PLANT_POT_GROWTH);
+	_pot_Load(itemid);
+
 	return 1;
 }

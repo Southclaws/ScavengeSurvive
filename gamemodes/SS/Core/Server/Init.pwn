@@ -1433,10 +1433,11 @@ public OnScriptInit()
 	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
 
 	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
-	DefineSeedType("Apple", item_RedApple,	4, 802, 0.72044);
-	DefineSeedType("Apple", item_GrnApple,	4, 802, 0.72044);
-	DefineSeedType("Banana", item_Banana,	4, 804, 1.31168);
-	DefineSeedType("Lemon", item_Lemon,		4, 810, 0.72044);
+	DefineSeedType("Apple", item_RedApple,	5, 802, 0.72044);
+	DefineSeedType("Apple", item_GrnApple,	5, 802, 0.72044);
+	DefineSeedType("Banana", item_Banana,	6, 804, 1.31168);
+	DefineSeedType("Lemon", item_Lemon,		5, 810, 0.72044);
+	DefineSeedType("Orange", item_Orange,	5, 810, 0.72044);
 	// Unused seed types will be given uses in future
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 692, 0.31308); // wide greyish bush
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 728, 0.34546); // huge bush!
