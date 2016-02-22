@@ -355,6 +355,12 @@ timer _RepeatingFire[100](playerid)
 		return;
 	}
 
+	if(IsPlayerKnockedOut(playerid))
+	{
+		stop itmw_RepeatingFireTimer[playerid];
+		return;
+	}
+
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER)
 	{
 		if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)
@@ -366,9 +372,10 @@ timer _RepeatingFire[100](playerid)
 
 		if(k & KEY_FIRE)
 		{
-			SetItemWeaponItemMagAmmo(itemid, magammo - 5);
+			magammo -= 5;
+			SetItemWeaponItemMagAmmo(itemid, magammo);
 
-			if(magammo == 0)
+			if(magammo <= 0)
 				_ReloadWeapon(playerid);
 
 			_UpdateWeaponUI(playerid);

@@ -412,10 +412,8 @@ _DropItemInTent(playerid, itemid, tentid)
 
 public OnItemArrayDataChanged(itemid)
 {
-	printf("OnItemArrayDataChanged: itemid %d tentid: %d", itemid, tnt_ItemTent[itemid]);
 	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
 	{
-		printf("array data changed for %d saving tent %d", itemid, tnt_ItemTent[itemid]);
 		SaveTent(tnt_ItemTent[itemid], 1);
 	}
 
