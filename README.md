@@ -13,8 +13,8 @@ The overall objective is to build a stable community and defend it from players
 with more hostile intentions.
 
 Items spawn around the map in various places categorised by type, rarity and
-location. Vehicles are rare and spawn with damaged engines, tires or locked,
-they will usually spawn with loot inside the trunk.
+location. Vehicles are rare and spawn with damaged engines or tires and will
+usually spawn with loot inside the trunk.
 
 No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required
@@ -24,10 +24,8 @@ to access the gamemode-specific features.
 ## Development
 
 The gamemode is written in a modular fashion, borrowing a lot of concepts from
-object-oriented programming. Removing some features can be as simple as removing
-an #include line.
-
-The "World" scripts are separated and can be completely replaced for a new map.
+object-oriented programming. The "World" scripts are separated and can be
+completely replaced for a new map.
 
 I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
@@ -65,9 +63,9 @@ creations are made! Please publish all bug fixes in order to benefit everyone.
  public server:
 
         filterscripts object-loader rcon
-        plugins crashdetect streamer sscanf CTime Whirlpool FileManager irc socket
+        plugins streamer sscanf CTime Whirlpool FileManager irc socket
 
-5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
+5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.ini"_ file**
 
  This is an INI file with game settings that will self-create if absent.
  Not all settings must be present, here is an example:
