@@ -403,6 +403,7 @@ new stock
 #include "SS/Core/Weapon/ammunition.pwn"
 #include "SS/Core/Weapon/damage.core.pwn"
 #include "SS/Core/UI/HoldAction.pwn"
+#include "SS/Core/Item/Liquid.pwn"
 
 /*
 	MODULE INITIALISATION CALLS

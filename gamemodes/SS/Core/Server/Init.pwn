@@ -88,17 +88,29 @@ new
 
 // AMMO CALIBRES
 new
-				calibre_9mm,
-				calibre_50cae,
-				calibre_12g,
-				calibre_556,
-				calibre_357,
-				calibre_762,
-				calibre_rpg,
-				calibre_fuel,
-				calibre_film,
-				calibre_50bmg,
-				calibre_308;
+	calibre_9mm,
+	calibre_50cae,
+	calibre_12g,
+	calibre_556,
+	calibre_357,
+	calibre_762,
+	calibre_rpg,
+	calibre_fuel,
+	calibre_film,
+	calibre_50bmg,
+	calibre_308;
+
+// LIQUID TYPES
+new stock
+	liquid_Water,
+	liquid_Milk,
+	liquid_Orange,
+	liquid_Whiskey,
+	liquid_Ethanol,
+	liquid_Turpentine,
+	liquid_HydroAcid,
+	liquid_StrongWhiskey,
+	liquid_Fun;
 
 // ITEM TYPES
 new stock
@@ -1411,6 +1423,17 @@ public OnScriptInit()
 	drug_Morphine	= DefineDrugType("Morphine",	300000);
 	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
 	drug_Heroin		= DefineDrugType("Heroin",		300000);
+
+	liquid_Water			= DefineLiquidType("Water",					ROOT_LIQUID_BITMASK);
+	liquid_Milk				= DefineLiquidType("Milk",					ROOT_LIQUID_BITMASK);
+	liquid_Orange			= DefineLiquidType("Orange",				ROOT_LIQUID_BITMASK);
+	liquid_Whiskey			= DefineLiquidType("Whiskey",				ROOT_LIQUID_BITMASK);
+	liquid_Ethanol			= DefineLiquidType("Ethanol",				ROOT_LIQUID_BITMASK);
+	liquid_Turpentine		= DefineLiquidType("Turpentine",			ROOT_LIQUID_BITMASK);
+	liquid_HydroAcid		= DefineLiquidType("Hydrochloric Acid",		ROOT_LIQUID_BITMASK);
+	liquid_StrongWhiskey	= DefineLiquidType("Acid Whiskey",			liquid_Whiskey | liquid_Ethanol);
+	liquid_Fun				= DefineLiquidType("Fun",					liquid_Ethanol | liquid_Turpentine | liquid_HydroAcid);
+
 
 	DefineSafeboxType(item_MediumBox,		10);
 	DefineSafeboxType(item_SmallBox,		8);
