@@ -287,9 +287,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _pot_PickUp(playerid, itemid)
 {
-	d:1:HANDLER("[_pot_PickUp] playerid %d itemid %d", playerid, itemid);
 	if(GetItemType(itemid) == item_PlantPot)
 	{
+		d:1:HANDLER("[_pot_PickUp] playerid %d itemid %d", playerid, itemid);
 		stop pot_PickUpTimer[playerid];
 		pot_PickUpTimer[playerid] = defer _pot_PickUpDelay(playerid, itemid);
 

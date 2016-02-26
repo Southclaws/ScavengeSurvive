@@ -1376,6 +1376,7 @@ public OnScriptInit()
 	DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false,			item_PowerSupply, false);
 	DefineItemCraftSet(item_Bandage,		item_Knife, true,			item_Clothes, false);
 	DefineItemCraftSet(item_WheelLock,		item_WheelLock, false,		item_LocksmithKit, false);
+	DefineItemCraftSet(item_Bottle,			item_Bottle, true,			item_Bottle, true);
 	//WriteAllCombosToFile();
 
 

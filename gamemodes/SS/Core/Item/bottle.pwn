@@ -1,18 +1,10 @@
-static
-	drink_Types[2][6]=
-	{
-		"Water",
-		"Beer"
-	};
-
-
 public OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 		{
-			SetFoodItemSubType(itemid, random(2));
+			SetFoodItemSubType(itemid, GetTotalLiquidTypes());
 		}
 	}
 
@@ -43,9 +35,11 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			subtype = GetFoodItemSubType(itemid),
 			amount = GetFoodItemAmount(itemid);
 
-		if(amount > 0 && subtype < sizeof(drink_Types))
+		if(IsValidLiquidType(subtype))
 		{
-			SetItemNameExtra(itemid, sprintf("%s, %d/%d", drink_Types[subtype], amount, GetFoodTypeMaxBites(foodtype)));
+			new name[MAX_LIQUID_NAME];
+			GetLiquidName(subtype, name);
+			SetItemNameExtra(itemid, sprintf("%s, %d/%d", name, amount, GetFoodTypeMaxBites(foodtype)));
 		}
 		else
 		{
@@ -92,4 +86,43 @@ public OnPlayerEaten(playerid, itemid)
 #define OnPlayerEaten bot_OnPlayerEaten
 #if defined bot_OnPlayerEaten
 	forward bot_OnPlayerEaten(playerid, itemid);
+#endif
+
+public OnPlayerCrafted(playerid, craftset, result)
+{
+	if(GetItemType(result) == item_Bottle)
+	{
+		new
+			itemid1,
+			itemid2,
+			amount;
+
+		itemid1 = GetPlayerSelectedCraftItemID(playerid, 0);
+		itemid2 = GetPlayerSelectedCraftItemID(playerid, 1);
+		amount = GetFoodItemAmount(itemid1) + GetFoodItemAmount(itemid2);
+
+		printf("1: %b, 2: %b combined: %b", GetFoodItemSubType(itemid1), GetFoodItemSubType(itemid2), GetFoodItemSubType(itemid1) | GetFoodItemSubType(itemid2));
+
+		SetFoodItemSubType(itemid1, GetFoodItemSubType(itemid1) | GetFoodItemSubType(itemid2));
+		SetFoodItemAmount(itemid1, (amount > 10) ? 10 : amount);
+
+		SetFoodItemAmount(itemid2, 0);
+		SetFoodItemSubType(itemid2, -1);
+	}
+
+	#if defined liq_OnPlayerCrafted
+		return liq_OnPlayerCrafted(playerid, craftset, result);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerCrafted
+	#undef OnPlayerCrafted
+#else
+	#define _ALS_OnPlayerCrafted
+#endif
+
+#define OnPlayerCrafted liq_OnPlayerCrafted
+#if defined liq_OnPlayerCrafted
+	forward liq_OnPlayerCrafted(playerid, craftset, result);
 #endif

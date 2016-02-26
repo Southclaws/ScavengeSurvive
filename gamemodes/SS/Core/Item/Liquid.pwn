@@ -15,7 +15,7 @@ liquid_Fun				= DefineLiquidType("Fun", liquid_Ethanol | liquid_Turpentine | liq
 
 */
 
-#define MAX_LIQUID_TYPES (31) // technical limit
+#define MAX_LIQUID_TYPES (64)
 #define MAX_LIQUID_NAME (32)
 
 
@@ -43,9 +43,31 @@ stock DefineLiquidType(name[], recipe)
 	strcat(liq_Data[liq_Total][liq_name], name, MAX_LIQUID_NAME);
 	liq_Data[liq_Total][liq_mask] = liq_NextMask;
 	liq_Data[liq_Total][liq_recipe] = recipe;
-	printf("mask = %b name: '%s' recipe: '%b'", liq_NextMask, name, recipe);
 
 	liq_Total++;
 	liq_NextMask = liq_NextMask << 1;
 	return liq_NextMask;
+}
+
+stock GetLiquidName(liquidtype, name[])
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0;
+
+	strcat(name, liq_Data[liquidtype][liq_name], MAX_LIQUID_NAME);
+
+	return 1;
+}
+
+stock IsValidLiquidType(liquidtype)
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0;
+
+	return 1;
+}
+
+stock GetTotalLiquidTypes()
+{
+	return liq_Total;
 }
