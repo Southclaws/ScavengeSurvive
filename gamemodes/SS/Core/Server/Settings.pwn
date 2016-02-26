@@ -17,6 +17,7 @@ LoadSettings()
 
 	GetSettingString("server/motd", "Please update the 'server/motd' string in "SETTINGS_FILE"", gMessageOfTheDay);
 	GetSettingString("server/website", "southclawjk.wordpress.com", gWebsiteURL);
+	GetSettingInt("server/crash-on-exit", true, gCrashOnExit);
 
 	GetSettingStringArray("server/rules", "Please update the 'server/rules' array in '"SETTINGS_FILE"'.", MAX_RULE, gRuleList, gTotalRules, MAX_RULE_LEN);
 	GetSettingStringArray("server/staff", "StaffName", 3, gStaffList, gTotalStaff, MAX_STAFF_LEN);

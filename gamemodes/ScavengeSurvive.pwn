@@ -341,7 +341,8 @@ Float:	gNameTagDistance,
 		gCombatLogWindow,
 		gLoginFreezeTime,
 		gMaxTaboutTime,
-		gPingLimit;
+		gPingLimit,
+		gCrashOnExit;
 
 // INTERNAL
 new
@@ -665,9 +666,12 @@ public OnGameModeExit()
 {
 	print("\n[OnGameModeExit] Shutting down...");
 
-	new File:f = fopen("nonexistentfile", io_read), _s[1];
-	fread(f, _s);
-	fclose(f);
+	if(gCrashOnExit)
+	{
+		new File:f = fopen("nonexistentfile", io_read), _s[1];
+		fread(f, _s);
+		fclose(f);
+	}
 
 	return 1;
 }
