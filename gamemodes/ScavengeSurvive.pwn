@@ -8,6 +8,21 @@
 		Recently influenced by Minecraft and DayZ, credits to the creators of
 		those games and their fundamental mechanics and concepts.
 
+		Copyright (C) 2016 Barnaby "Southclaw" Keene
+
+		This program is free software: you can redistribute it and/or modify it
+		under the terms of the GNU General Public License as published by the
+		Free Software Foundation, either version 3 of the License, or (at your
+		option) any later version.
+
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+		See the GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License along
+		with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ==============================================================================*/
 
@@ -617,6 +632,10 @@ main()
 {
 	print("\n\n/*==============================================================================\n\n");
 	print("    Southclaw's Scavenge and Survive");
+	print("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	print("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	print("        and you are welcome to redistribute it under certain conditions.");
+	print("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
 	print("\n\n==============================================================================*/\n\n");
 
 	gServerInitialising = false;
@@ -702,11 +721,11 @@ RestartGamemode()
 	SendRconCommand("gmx");
 
 	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
+	MsgAll(ORANGE, "Scavenge and Survive");
+	MsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	MsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	MsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
+	MsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");

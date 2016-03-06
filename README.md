@@ -1,8 +1,8 @@
 # Scavenge and Survive gamemode script for SA:MP
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![GPL-V3](http://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/copyleft/gpl.html)[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
 
 Support the development of this mod by donating. I can put more time into adding new features!
-[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
+
 
 ## A PvP SA:MP server script built upon the SIF framework.
 

@@ -1,3 +1,27 @@
+/*==============================================================================
+
+
+	Southclaw's Scavenge and Survive
+
+		Copyright (C) 2016 Barnaby "Southclaw" Keene
+
+		This program is free software: you can redistribute it and/or modify it
+		under the terms of the GNU General Public License as published by the
+		Free Software Foundation, either version 3 of the License, or (at your
+		option) any later version.
+
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+		See the GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License along
+		with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+==============================================================================*/
+
+
 #include <YSI\y_hooks>
 
 
@@ -104,6 +128,13 @@ public OnPlayerConnect(playerid)
 	Streamer_ToggleIdleUpdate(playerid, true);
 	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
+
+	Msg(playerid, ORANGE, "Scavenge and Survive");
+	Msg(playerid, BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	Msg(playerid, BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	Msg(playerid, BLUE, "    and you are welcome to redistribute it under certain conditions.");
+	Msg(playerid, BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	Msg(playerid, BLUE, " ");
 
 	MsgAllF(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
 	MsgF(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);

@@ -1,4 +1,14 @@
-/*==============================================================================
+#
+#	Quick utility for adding a license to source files. Ironically, this script
+#	has no license and is in public domain!
+#
+
+
+import os
+import io
+
+
+LICENSE = """/*==============================================================================
 
 
 	Southclaw's Scavenge and Survive
@@ -22,13 +32,39 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+"""
 
 
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'Terrain'...");
+def process(filename):
 
-	LoadTiles();
-	GenerateTerrain(285645);
-}
+	source = ""
+
+	with io.open(filename, 'r') as f:
+		source = f.read()
+
+	new = LICENSE + source
+
+	with io.open(filename, 'w', newline='\n') as f:
+		f.write(new)
+
+	print(filename)
+
+
+def main():
+
+	c = 0
+
+	for p, d, fs in os.walk("."):
+		if ".git" in p:
+			continue
+
+		for f in fs:
+			if os.path.splitext(f)[1] in [".inc", ".pwn"]:
+				process(os.path.join(p, f))
+				c += 1
+
+	print(c, "files processed")
+
+
+if __name__ == '__main__':
+	main()
