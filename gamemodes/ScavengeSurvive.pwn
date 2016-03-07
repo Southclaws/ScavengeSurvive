@@ -523,6 +523,7 @@ new stock
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
+#include "sss/core/world/craft-construct.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
