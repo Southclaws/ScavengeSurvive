@@ -25,57 +25,73 @@
 #include <YSI\y_hooks>
 
 
-new
-		PlayerText:spec_Name,
-		PlayerText:spec_Info;
+enum
+{
+	SPECTATE_TYPE_NONE,
+	SPECTATE_TYPE_TARGET,
+	SPECTATE_TYPE_FREE
+}
+
 
 static
-		spectate_ClickTick[MAX_PLAYERS],
-		spectate_Target[MAX_PLAYERS],
-Timer:	spectate_Timer[MAX_PLAYERS];
+			spectate_Type[MAX_PLAYERS],
+			spectate_Target[MAX_PLAYERS],
+			spectate_ClickTick[MAX_PLAYERS],
+Timer:		spectate_Timer[MAX_PLAYERS],
+PlayerText:	spectate_Name,
+PlayerText:	spectate_Info,
+			spectate_CameraObject[MAX_PLAYERS] = {INVALID_OBJECT_ID, ...},
+Float:		spectate_StartPos[MAX_PLAYERS][3];
 
 
 hook OnPlayerConnect(playerid)
 {
+	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
 	spectate_Target[playerid] = INVALID_PLAYER_ID;
 
-	spec_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
-	PlayerTextDrawAlignment			(playerid, spec_Name, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spec_Name, 255);
-	PlayerTextDrawFont				(playerid, spec_Name, 1);
-	PlayerTextDrawLetterSize		(playerid, spec_Name, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spec_Name, -1);
-	PlayerTextDrawSetOutline		(playerid, spec_Name, 0);
-	PlayerTextDrawSetProportional	(playerid, spec_Name, 1);
-	PlayerTextDrawSetShadow			(playerid, spec_Name, 1);
-	PlayerTextDrawUseBox			(playerid, spec_Name, 1);
-	PlayerTextDrawBoxColor			(playerid, spec_Name, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Name, 100.000000, 340.000000);
+	DestroyObject(spectate_CameraObject[playerid]);
+	spectate_CameraObject[playerid] = INVALID_OBJECT_ID;
+	stop spectate_Timer[playerid];
 
-	spec_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
-	PlayerTextDrawAlignment			(playerid, spec_Info, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spec_Info, 255);
-	PlayerTextDrawFont				(playerid, spec_Info, 1);
-	PlayerTextDrawLetterSize		(playerid, spec_Info, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spec_Info, -1);
-	PlayerTextDrawSetOutline		(playerid, spec_Info, 0);
-	PlayerTextDrawSetProportional	(playerid, spec_Info, 1);
-	PlayerTextDrawSetShadow			(playerid, spec_Info, 1);
-	PlayerTextDrawUseBox			(playerid, spec_Info, 1);
-	PlayerTextDrawBoxColor			(playerid, spec_Info, 255);
-	PlayerTextDrawTextSize			(playerid, spec_Info, 100.000000, 340.000000);
+	spectate_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
+	PlayerTextDrawAlignment			(playerid, spectate_Name, 2);
+	PlayerTextDrawBackgroundColor	(playerid, spectate_Name, 255);
+	PlayerTextDrawFont				(playerid, spectate_Name, 1);
+	PlayerTextDrawLetterSize		(playerid, spectate_Name, 0.200000, 1.000000);
+	PlayerTextDrawColor				(playerid, spectate_Name, -1);
+	PlayerTextDrawSetOutline		(playerid, spectate_Name, 0);
+	PlayerTextDrawSetProportional	(playerid, spectate_Name, 1);
+	PlayerTextDrawSetShadow			(playerid, spectate_Name, 1);
+	PlayerTextDrawUseBox			(playerid, spectate_Name, 1);
+	PlayerTextDrawBoxColor			(playerid, spectate_Name, 255);
+	PlayerTextDrawTextSize			(playerid, spectate_Name, 100.000000, 340.000000);
+
+	spectate_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
+	PlayerTextDrawAlignment			(playerid, spectate_Info, 2);
+	PlayerTextDrawBackgroundColor	(playerid, spectate_Info, 255);
+	PlayerTextDrawFont				(playerid, spectate_Info, 1);
+	PlayerTextDrawLetterSize		(playerid, spectate_Info, 0.200000, 1.000000);
+	PlayerTextDrawColor				(playerid, spectate_Info, -1);
+	PlayerTextDrawSetOutline		(playerid, spectate_Info, 0);
+	PlayerTextDrawSetProportional	(playerid, spectate_Info, 1);
+	PlayerTextDrawSetShadow			(playerid, spectate_Info, 1);
+	PlayerTextDrawUseBox			(playerid, spectate_Info, 1);
+	PlayerTextDrawBoxColor			(playerid, spectate_Info, 255);
+	PlayerTextDrawTextSize			(playerid, spectate_Info, 100.000000, 340.000000);
 }
 
 hook OnPlayerDisconnect(playerid)
 {
-	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
+	if(spectate_Type[playerid] != SPECTATE_TYPE_NONE)
 		ExitSpectateMode(playerid);
 
 	foreach(new i : Player)
 	{
 		if(spectate_Target[i] == playerid)
 		{
-			ExitSpectateMode(i);
+			SpectateNextTarget(i);
+			// or
+			// EnterFreeMode(i, x, y, z);
 		}
 	}
 
@@ -87,15 +103,19 @@ EnterSpectateMode(playerid, targetid)
 	if(!IsPlayerConnected(targetid))
 		return 0;
 
+	if(spectate_Type[playerid] == SPECTATE_TYPE_FREE)
+		ExitFreeMode(playerid);
+
 	TogglePlayerSpectating(playerid, true);
 	ToggleNameTagsForPlayer(playerid, true);
 
+	spectate_Type[playerid] = SPECTATE_TYPE_TARGET;
 	spectate_Target[playerid] = targetid;
 
 	_RefreshSpectate(playerid);
 
-	PlayerTextDrawShow(playerid, spec_Name);
-	PlayerTextDrawShow(playerid, spec_Info);
+	PlayerTextDrawShow(playerid, spectate_Name);
+	PlayerTextDrawShow(playerid, spectate_Info);
 
 	stop spectate_Timer[playerid];
 	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
@@ -105,14 +125,44 @@ EnterSpectateMode(playerid, targetid)
 	return 1;
 }
 
+EnterFreeMode(playerid, Float:camX = 0.0, Float:camY = 0.0, Float:camZ = 0.0)
+{
+	if(camX * camY * camZ == 0.0)
+		GetPlayerCameraPos(playerid, camX, camY, camZ);
+
+	spectate_Type[playerid] = SPECTATE_TYPE_FREE;
+	TogglePlayerControllable(playerid, true);
+
+	DestroyObject(spectate_CameraObject[playerid]);
+	spectate_CameraObject[playerid] = CreateObject(19300, camX, camY, camZ, 0.0, 0.0, 0.0);
+	TogglePlayerSpectating(playerid, false);
+	TogglePlayerSpectating(playerid, true);
+	AttachCameraToObject(playerid, spectate_CameraObject[playerid]);
+	GetPlayerPos(playerid, spectate_StartPos[playerid][0], spectate_StartPos[playerid][1], spectate_StartPos[playerid][2]);
+	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
+}
+
+ExitFreeMode(playerid)
+{
+	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
+	DestroyObject(spectate_CameraObject[playerid]);
+	spectate_CameraObject[playerid] = INVALID_OBJECT_ID;
+	TogglePlayerSpectating(playerid, false);
+	SetPlayerPos(playerid, spectate_StartPos[playerid][0], spectate_StartPos[playerid][1], spectate_StartPos[playerid][2]);
+	stop spectate_Timer[playerid];
+}
+
 ExitSpectateMode(playerid)
 {
 	if(spectate_Target[playerid] == INVALID_PLAYER_ID)
 		return 0;
 
+	if(spectate_Type[playerid] == SPECTATE_TYPE_FREE)
+		ExitFreeMode(playerid);
+
 	TogglePlayerSpectating(playerid, false);
-	PlayerTextDrawHide(playerid, spec_Name);
-	PlayerTextDrawHide(playerid, spec_Info);
+	PlayerTextDrawHide(playerid, spectate_Name);
+	PlayerTextDrawHide(playerid, spectate_Info);
 
 	spectate_Target[playerid] = INVALID_PLAYER_ID;
 	stop spectate_Timer[playerid];
@@ -200,115 +250,190 @@ _RefreshSpectate(playerid)
 
 timer UpdateSpectateMode[100](playerid)
 {
-	new
-		targetid = spectate_Target[playerid],
-		name[MAX_PLAYER_NAME],
-		title[MAX_PLAYER_NAME + 6],
-		str[256];
-
-	if(!IsPlayerConnected(targetid))
+	if(spectate_Type[playerid] == SPECTATE_TYPE_NONE)
 	{
 		stop spectate_Timer[playerid];
 		return;
 	}
 
-	if(!GetPlayerBitFlag(playerid, ShowHUD))
-	{
-		PlayerTextDrawHide(playerid, spec_Info);
-		return;
-	}
+	new targetid = spectate_Target[playerid];
 
-	if(IsPlayerInAnyVehicle(targetid))
+	if(targetid == INVALID_PLAYER_ID)
 	{
+
 		new
-			invehicleas[24],
-			itemid,
-			itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
-			cameramodename[37];
+			k,
+			ud,
+			lr,
+			Float:camX,
+			Float:camY,
+			Float:camZ,
+			Float:vecX,
+			Float:vecY,
+			Float:vecZ,
+			Float:speed = 10.0;
 
-		if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
-			invehicleas = "Driver";
+		GetPlayerKeys(playerid, k, ud, lr);
+		GetPlayerCameraPos(playerid, camX, camY, camZ);
+		GetPlayerCameraFrontVector(playerid, vecX, vecY, vecZ);
 
-		else
-			invehicleas = "Passenger";
+		if(k & KEY_JUMP)
+		{
+			speed = 50.0;
+		}
+		if(k & KEY_WALK)
+		{
+			speed = 0.5;
+		}
 
-		itemid = GetPlayerItem(targetid);
-		if(!GetItemName(itemid, itemname))
-			itemname = "None";
+		if(ud == KEY_UP)
+		{
+			camX += vecX * 100;
+			camY += vecY * 100;
+			camZ += vecZ * 100;
+		}
+		if(ud == KEY_DOWN)
+		{
+			camX -= vecX * 100;
+			camY -= vecY * 100;
+			camZ -= vecZ * 100;
+		}
+		if(lr == KEY_RIGHT)
+		{
+			new Float:rotation = -(atan2(vecY, vecX) - 90.0);
 
-		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
+			camX += (100 * floatsin(rotation + 90.0, degrees));
+			camY += (100 * floatcos(rotation + 90.0, degrees));
+		}
+		if(lr == KEY_LEFT)
+		{
+			new Float:rotation = -(atan2(vecY, vecX) - 90.0);
 
-		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
-			Knockout: %s Bleed rate: %02f Item: %s Exdata: %d~n~\
-			Camera: %s Velocity: %.2f~n~\
-			Vehicle %d As %s Fuel: %.2f Locked: %d",
-			GetPlayerHP(targetid),
-			GetPlayerAP(targetid),
-			GetPlayerFP(targetid),
-			GetPlayerInterior(targetid),
-			GetPlayerVirtualWorld(targetid),
-			IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
-			GetPlayerBleedRate(targetid),
-			itemname,
-			GetItemExtraData(itemid),
-			cameramodename,
-			GetPlayerTotalVelocity(targetid),
-			GetPlayerLastVehicle(targetid),
-			invehicleas,
-			GetVehicleFuel(GetPlayerLastVehicle(targetid)),
-			IsVehicleLocked(GetPlayerLastVehicle(targetid)));
+			camX += (100 * floatsin(rotation - 90.0, degrees));
+			camY += (100 * floatcos(rotation - 90.0, degrees));
+		}
+		if(k & KEY_SPRINT)
+		{
+			camZ += 100.0;
+		}
+		if(k & KEY_CROUCH)
+		{
+			camZ -= 100.0;
+		}
+
+		MoveObject(spectate_CameraObject[playerid], camX, camY, camZ, speed);
+
+		if(ud == 0 && lr == 0 && !(k & KEY_SPRINT) && !(k & KEY_CROUCH))
+		{
+			StopObject(spectate_CameraObject[playerid]);
+		}
+
 	}
 	else
 	{
 		new
-			itemid,
-			itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
-			holsteritemid,
-			holsteritemname[32],
-			cameramodename[37],
-			Float:vx,
-			Float:vy,
-			Float:vz,
-			Float:velocity;
+			name[MAX_PLAYER_NAME],
+			title[MAX_PLAYER_NAME + 6],
+			str[256];
 
-		itemid = GetPlayerItem(targetid);
-		if(!GetItemName(itemid, itemname))
-			itemname = "None";
+		if(!GetPlayerBitFlag(playerid, ShowHUD))
+		{
+			PlayerTextDrawHide(playerid, spectate_Info);
+			return;
+		}
 
-		holsteritemid = GetPlayerHolsterItem(targetid);
-		if(!GetItemName(holsteritemid, holsteritemname))
-			holsteritemname = "None";
+		if(IsPlayerInAnyVehicle(targetid))
+		{
+			new
+				invehicleas[24],
+				itemid,
+				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
+				cameramodename[37];
 
-		GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
-		GetPlayerVelocity(targetid, vx, vy, vz);
+			if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
+				invehicleas = "Driver";
 
-		velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+			else
+				invehicleas = "Passenger";
 
-		format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
-			Knockout: %s Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
-			Item: %s Exdata: %d Holster: %s Exdata: %d",
-			GetPlayerHP(targetid),
-			GetPlayerAP(targetid),
-			GetPlayerFP(targetid),
-			GetPlayerInterior(targetid),
-			GetPlayerVirtualWorld(targetid),
-			IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
-			GetPlayerBleedRate(targetid),
-			cameramodename,
-			velocity,
-			itemname,
-			GetItemExtraData(itemid),
-			holsteritemname,
-			GetItemExtraData(holsteritemid));
+			itemid = GetPlayerItem(targetid);
+			if(!GetItemName(itemid, itemname))
+				itemname = "None";
+
+			GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
+
+			format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
+				Knockout: %s Bleed rate: %02f Item: %s Exdata: %d~n~\
+				Camera: %s Velocity: %.2f~n~\
+				Vehicle %d As %s Fuel: %.2f Locked: %d",
+				GetPlayerHP(targetid),
+				GetPlayerAP(targetid),
+				GetPlayerFP(targetid),
+				GetPlayerInterior(targetid),
+				GetPlayerVirtualWorld(targetid),
+				IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
+				GetPlayerBleedRate(targetid),
+				itemname,
+				GetItemExtraData(itemid),
+				cameramodename,
+				GetPlayerTotalVelocity(targetid),
+				GetPlayerLastVehicle(targetid),
+				invehicleas,
+				GetVehicleFuel(GetPlayerLastVehicle(targetid)),
+				IsVehicleLocked(GetPlayerLastVehicle(targetid)));
+		}
+		else
+		{
+			new
+				itemid,
+				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
+				holsteritemid,
+				holsteritemname[32],
+				cameramodename[37],
+				Float:vx,
+				Float:vy,
+				Float:vz,
+				Float:velocity;
+
+			itemid = GetPlayerItem(targetid);
+			if(!GetItemName(itemid, itemname))
+				itemname = "None";
+
+			holsteritemid = GetPlayerHolsterItem(targetid);
+			if(!GetItemName(holsteritemid, holsteritemname))
+				holsteritemname = "None";
+
+			GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
+			GetPlayerVelocity(targetid, vx, vy, vz);
+
+			velocity = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
+
+			format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
+				Knockout: %s Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
+				Item: %s Exdata: %d Holster: %s Exdata: %d",
+				GetPlayerHP(targetid),
+				GetPlayerAP(targetid),
+				GetPlayerFP(targetid),
+				GetPlayerInterior(targetid),
+				GetPlayerVirtualWorld(targetid),
+				IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
+				GetPlayerBleedRate(targetid),
+				cameramodename,
+				velocity,
+				itemname,
+				GetItemExtraData(itemid),
+				holsteritemname,
+				GetItemExtraData(holsteritemid));
+		}
+
+		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+		format(title, sizeof(title), "%s (%d)", name, targetid);
+
+		PlayerTextDrawSetString(playerid, spectate_Name, title);
+		PlayerTextDrawSetString(playerid, spectate_Info, str);
+		PlayerTextDrawShow(playerid, spectate_Info);
 	}
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	format(title, sizeof(title), "%s (%d)", name, targetid);
-
-	PlayerTextDrawSetString(playerid, spec_Name, title);
-	PlayerTextDrawSetString(playerid, spec_Info, str);
-	PlayerTextDrawShow(playerid, spec_Info);
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -357,3 +482,34 @@ GetPlayerSpectateTarget(playerid)
 
 	return spectate_Target[playerid];
 }
+
+stock GetPlayerSpectateType(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return -1;
+
+	return spectate_Type[playerid];
+}
+
+ACMD:freezecam[2](playerid)
+{
+	if(!IsPlayerOnAdminDuty(playerid))
+		return 6;
+
+	new
+		Float:camX,
+		Float:camY,
+		Float:camZ,
+		Float:vecX,
+		Float:vecY,
+		Float:vecZ;
+
+	GetPlayerCameraPos(playerid, camX, camY, camZ);
+	GetPlayerCameraFrontVector(playerid, vecX, vecY, vecZ);
+
+	SetPlayerCameraPos(playerid, camX, camY, camZ);
+	SetPlayerCameraLookAt(playerid, camX+vecX, camY+vecY, camZ+vecZ);
+	
+	return 1;
+}
+

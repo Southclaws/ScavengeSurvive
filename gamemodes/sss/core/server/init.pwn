@@ -1403,6 +1403,8 @@ public OnScriptInit()
 	DefineItemCraftSet(item_Bottle,			item_Bottle, true,			item_Bottle, true);
 	//WriteAllCombosToFile();
 
+	SetCraftSetConstructible(10000, DefineItemCraftSet(item_Hammer, item_Keg, false, item_Explosive, false));
+
 
 	loot_Civilian		= DefineLootIndex("civi");
 	loot_Industrial		= DefineLootIndex("indu");

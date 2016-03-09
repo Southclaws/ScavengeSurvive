@@ -136,6 +136,8 @@ stock AddNameToWhitelist(name[], doplayeridcheck = true)
 			if(!strcmp(name, tmpname))
 			{
 				wl_Whitelisted[i] = true;
+				stop wl_CountdownTimer[i];
+				PlayerTextDrawHide(i, wl_CountdownUI[i]);
 				break;
 			}
 		}
@@ -185,6 +187,13 @@ stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 			if(!strcmp(name, tmpname))
 			{
 				wl_Whitelisted[i] = false;
+
+				if(wl_Active)
+				{
+					stop wl_CountdownTimer[i];
+					wl_CountdownTimer[i] = repeat _UpdateWhitelistCountdown(i);
+				}
+
 				break;
 			}
 		}
@@ -300,6 +309,12 @@ timer _UpdateWhitelistCountdown[1000](playerid)
 	{
 		stop wl_CountdownTimer[playerid];
 		return;
+	}
+
+	if(wl_Whitelisted[playerid])
+	{
+		stop wl_CountdownTimer[playerid];
+		PlayerTextDrawHide(playerid, wl_CountdownUI[playerid]);
 	}
 
 	if(wl_Countdown[playerid] == 0)

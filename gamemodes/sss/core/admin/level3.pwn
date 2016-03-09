@@ -30,7 +30,7 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/whitelist - add/remove name or turn whitelist on/off\n");
-	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/spec - spectate\n");
+	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/spec /free - spectate and freecam\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/ip - get a player's IP\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/vehicle - vehicle control (duty only)\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/move - nudge yourself\n");
@@ -189,6 +189,20 @@ ACMD:spec[2](playerid, params[])
 			EnterSpectateMode(playerid, targetid);
 		}
 	}
+
+	return 1;
+}
+
+ACMD:free[2](playerid)
+{
+	if(!IsPlayerOnAdminDuty(playerid))
+		return 6;
+
+	if(GetPlayerSpectateType(playerid) == SPECTATE_TYPE_FREE)
+		ExitFreeMode(playerid);
+
+	else
+		EnterFreeMode(playerid);
 
 	return 1;
 }
