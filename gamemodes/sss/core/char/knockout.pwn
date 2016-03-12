@@ -166,7 +166,8 @@ timer KnockOutUpdate[100](playerid)
 				_PlayKnockOutAnimation(playerid);
 		}
 
-		SetVehicleEngine(knockout_InVehicleID[playerid], 0);
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			SetVehicleEngine(knockout_InVehicleID[playerid], 0);
 	}
 	else
 	{
@@ -255,7 +256,9 @@ _vehicleCheck(playerid)
 	if(IsValidVehicle(knockout_InVehicleID[playerid]))
 	{
 		PutPlayerInVehicle(playerid, knockout_InVehicleID[playerid], knockout_InVehicleSeat[playerid]);
-		SetVehicleEngine(knockout_InVehicleID[playerid], 0);
+
+		if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
+			SetVehicleEngine(knockout_InVehicleID[playerid], 0);
 	}
 	else
 	{
