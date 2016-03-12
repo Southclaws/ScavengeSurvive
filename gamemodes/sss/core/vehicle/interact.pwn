@@ -580,6 +580,34 @@ stock IsPlayerAtVehicleBonnet(playerid, vehicleid)
 	return 0;
 }
 
+stock GetPlayerVehicleTire(playerid, vehicleid)
+{
+	if(!(0 <= playerid < MAX_PLAYERS))
+		return -1;
+
+	if(!IsValidVehicle(vehicleid))
+		return -1;
+
+	if(!IsPlayerInDynamicArea(playerid, GetVehicleArea(vehicleid)))
+		return -1;
+
+	new
+		wheel,
+		Float:x,
+		Float:y,
+		Float:z;
+
+	for(wheel = WHEELSFRONT_LEFT; wheel <= WHEELSREAR_RIGHT; wheel++)
+	{
+		GetVehicleWheelPos(vehicleid, wheel, x, y, z);
+
+		if(IsPlayerInRangeOfPoint(playerid, 1.0, x, y, z))
+			break;
+	}
+
+	return wheel;
+}
+
 stock IsPlayerAtAnyVehicleTrunk(playerid)
 {
 	foreach(new i : veh_Index)

@@ -114,7 +114,7 @@ ShowLightList(playerid, vehicleid)
 				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b0111, tires);
 				DestroyItem(itemid);
 			}
-			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
+			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 		if(listitem == 1)
 		{
@@ -123,7 +123,7 @@ ShowLightList(playerid, vehicleid)
 				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1011, tires);
 				DestroyItem(itemid);
 			}
-			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
+			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 		if(listitem == 2)
 		{
@@ -132,7 +132,7 @@ ShowLightList(playerid, vehicleid)
 				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1101, tires);
 				DestroyItem(itemid);
 			}
-			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
+			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 		if(listitem == 3)
 		{
@@ -141,7 +141,7 @@ ShowLightList(playerid, vehicleid)
 				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1110, tires);
 				DestroyItem(itemid);
 			}
-			else ShowTireList(playerid, gCurrentLightFixVehicle[playerid]);
+			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Lights", str, "Fix", "Cancel");

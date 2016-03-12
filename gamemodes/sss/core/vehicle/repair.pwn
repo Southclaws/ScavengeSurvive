@@ -88,7 +88,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		else if(itemtype == item_Wheel)
 		{
 			CancelPlayerMovement(playerid);
-			ShowTireList(playerid, vehicleid);
+			ShowActionText(playerid, "Interact with a wheel to repair it", 5000);
 		}
 		else if(itemtype == item_GasCan)
 		{

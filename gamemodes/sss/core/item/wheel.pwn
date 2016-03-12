@@ -25,11 +25,139 @@
 #include <YSI\y_hooks>
 
 
-new
-	gCurrentWheelFixVehicle[MAX_PLAYERS],
-	gTireData[MAX_PLAYERS][4];
+public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+{
+	new itemid = GetPlayerItem(playerid);
+
+	if(GetItemType(itemid) == item_Wheel)
+		return _WheelRepair(playerid, vehicleid, itemid);
+
+	return CallLocalFunction("whl_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+}
+#if defined _ALS_OnPlayerInteractVehicle
+	#undef OnPlayerInteractVehicle
+#else
+	#define _ALS_OnPlayerInteractVehicle
+#endif
+#define OnPlayerInteractVehicle whl_OnPlayerInteractVehicle
+forward whl_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 
+_WheelRepair(playerid, vehicleid, itemid)
+{
+	new
+		wheel = GetPlayerVehicleTire(playerid, vehicleid),
+		vehicletype = GetVehicleType(vehicleid),
+		panels,
+		doors,
+		lights,
+		tires;
+
+	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
+
+	ShowActionText(playerid, sprintf("At tire %d", wheel), 5000);
+
+	if(GetVehicleTypeCategory(vehicletype) == VEHICLE_CATEGORY_MOTORBIKE && GetVehicleTypeModel(vehicletype) != 471)
+	{
+		switch(wheel)
+		{
+			case WHEELSFRONT_LEFT, WHEELSFRONT_RIGHT: // Front
+			{
+				if(tires & 0b0010)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Front Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+
+			case WHEELSMID_LEFT, WHEELSMID_RIGHT, WHEELSREAR_LEFT, WHEELSREAR_RIGHT: // back
+			{
+				if(tires & 0b0001)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Rear Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+		}
+	}
+	else
+	{
+		switch(wheel)
+		{
+			case WHEELSFRONT_LEFT:
+			{
+				if(tires & 0b1000)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b0111);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Front Left Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+
+			case WHEELSFRONT_RIGHT:
+			{
+				if(tires & 0b0010)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Front Right Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+
+			case WHEELSREAR_LEFT:
+			{
+				if(tires & 0b0100)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1011);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Rear Left Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+
+			case WHEELSREAR_RIGHT:
+			{
+				if(tires & 0b0001)
+				{
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
+					DestroyItem(itemid);
+					ShowActionText(playerid, "Repaired Rear Right Tire", 5000);
+				}
+				else
+				{
+					ShowActionText(playerid, "Tire Not Damaged", 5000);
+				}
+			}
+
+		}
+	}
+
+	return 0;
+}
+
+
+/*
 ShowTireList(playerid, vehicleid)
 {
 	new
@@ -44,17 +172,17 @@ ShowTireList(playerid, vehicleid)
 
 	if(GetVehicleTypeCategory(vehicletype) == VEHICLE_CATEGORY_MOTORBIKE && GetVehicleTypeModel(vehicletype) != 471)
 	{
-		gTireData[playerid][0] = tires & 0b0001;
-		gTireData[playerid][1] = tires & 0b0010;
+		tiredata[playerid][0] = tires & 0b0001;
+		tiredata[playerid][1] = tires & 0b0010;
 
-		if(gTireData[playerid][0]) // back
+		if(tiredata[playerid][0]) // back
 			strcat(str, "{FF0000}Back\n");
 
 		else
 			strcat(str, "{FFFFFF}Back\n");
 
 
-		if(gTireData[playerid][1]) // front
+		if(tiredata[playerid][1]) // front
 			strcat(str, "{FF0000}Front\n");
 
 		else
@@ -62,33 +190,33 @@ ShowTireList(playerid, vehicleid)
 	}
 	else
 	{
-		gTireData[playerid][0] = tires & 0b0001;
-		gTireData[playerid][1] = tires & 0b0010;
-		gTireData[playerid][2] = tires & 0b0100;
-		gTireData[playerid][3] = tires & 0b1000;
+		tiredata[playerid][0] = 
+		tiredata[playerid][1] = 
+		tiredata[playerid][2] = 
+		tiredata[playerid][3] = 
 
-		if(gTireData[playerid][0]) // backright
+		if(tiredata[playerid][0])
 			strcat(str, "{FF0000}Back Right\n");
 
 		else
 			strcat(str, "{FFFFFF}Back Right\n");
 
 
-		if(gTireData[playerid][1]) // frontright
+		if(tiredata[playerid][1])
 			strcat(str, "{FF0000}Front Right\n");
 
 		else
 			strcat(str, "{FFFFFF}Front Right\n");
 
 
-		if(gTireData[playerid][2]) // backleft
+		if(tiredata[playerid][2])
 			strcat(str, "{FF0000}Back Left\n");
 
 		else
 			strcat(str, "{FFFFFF}Back Left\n");
 
 
-		if(gTireData[playerid][3]) // frontleft
+		if(tiredata[playerid][3])
 			strcat(str, "{FF0000}Front Left\n");
 
 		else
@@ -109,7 +237,7 @@ ShowTireList(playerid, vehicleid)
 
 		if(listitem == 0)
 		{
-			if(gTireData[playerid][0] && GetItemType(itemid) == item_Wheel)
+			if(tiredata[playerid][0] && GetItemType(itemid) == item_Wheel)
 			{
 				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1110);
 				DestroyItem(itemid);
@@ -118,7 +246,7 @@ ShowTireList(playerid, vehicleid)
 		}
 		if(listitem == 1)
 		{
-			if(gTireData[playerid][1] && GetItemType(itemid) == item_Wheel)
+			if(tiredata[playerid][1] && GetItemType(itemid) == item_Wheel)
 			{
 				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1101);
 				DestroyItem(itemid);
@@ -127,7 +255,7 @@ ShowTireList(playerid, vehicleid)
 		}
 		if(listitem == 2)
 		{
-			if(gTireData[playerid][2] && GetItemType(itemid) == item_Wheel)
+			if(tiredata[playerid][2] && GetItemType(itemid) == item_Wheel)
 			{
 				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1011);
 				DestroyItem(itemid);
@@ -136,7 +264,7 @@ ShowTireList(playerid, vehicleid)
 		}
 		if(listitem == 3)
 		{
-			if(gTireData[playerid][3] && GetItemType(itemid) == item_Wheel)
+			if(tiredata[playerid][3] && GetItemType(itemid) == item_Wheel)
 			{
 				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b0111);
 				DestroyItem(itemid);
@@ -148,3 +276,4 @@ ShowTireList(playerid, vehicleid)
 
 	return 1;
 }
+*/
