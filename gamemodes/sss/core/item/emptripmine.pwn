@@ -22,18 +22,30 @@
 ==============================================================================*/
 
 
-new empm_ContainerOption[MAX_PLAYERS];
+static
+	empm_ContainerOption[MAX_PLAYERS],
+	empm_ArmingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
+
+hook OnPlayerConnect(playerid)
+{
+	empm_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
 
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTripMine)
 	{
 		PlayerDropItem(playerid);
-		SetItemExtraData(itemid, 1);
-		Msg(playerid, YELLOW, " >  Mine primed");
+		empm_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 500);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
+
 		return 1;
 	}
+
 	#if defined empm_OnPlayerUseItem
 		return empm_OnPlayerUseItem(playerid, itemid);
 	#else
@@ -48,6 +60,33 @@ public OnPlayerUseItem(playerid, itemid)
 #define OnPlayerUseItem empm_OnPlayerUseItem
 #if defined empm_OnPlayerUseItem
 	forward empm_OnPlayerUseItem(playerid, itemid);
+#endif
+
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(empm_ArmingItem[playerid]))
+	{
+		SetItemExtraData(empm_ArmingItem[playerid], 1);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed", 3000);
+
+		empm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined empm_OnHoldActionFinish
+		return empm_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish empm_OnHoldActionFinish
+#if defined empm_OnHoldActionFinish
+	forward empm_OnHoldActionFinish(playerid);
 #endif
 
 public OnPlayerPickUpItem(playerid, itemid)
