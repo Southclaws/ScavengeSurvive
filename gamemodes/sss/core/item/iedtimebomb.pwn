@@ -22,13 +22,28 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
+static
+	iedt_ArmingItem[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
+
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTimebomb)
 	{
 		PlayerDropItem(playerid);
-		defer IedTimeBombExplode(itemid);
-		logf("[EXPLOSIVE] IED TIMEBOMB placed by %p", playerid);
+		iedt_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 1000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
     #if defined iedt_OnPlayerUseItem
@@ -47,6 +62,42 @@ public OnPlayerUseItem(playerid, itemid)
 	forward iedt_OnPlayerUseItem(playerid, itemid);
 #endif
 
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(iedt_ArmingItem[playerid]))
+	{
+		defer IedTimeBombExplode(iedt_ArmingItem[playerid]);
+		logf("[EXPLOSIVE] IED TIMEBOMB placed by %p", playerid);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed for 5 seconds", 3000);
+
+		iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined iedt_OnHoldActionFinish
+		return iedt_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish iedt_OnHoldActionFinish
+#if defined iedt_OnHoldActionFinish
+	forward iedt_OnHoldActionFinish(playerid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(iedt_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 timer IedTimeBombExplode[5000](itemid)
 {

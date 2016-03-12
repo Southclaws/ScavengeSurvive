@@ -22,13 +22,28 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
+static
+	tntt_ArmingItem[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	tntt_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
+
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_TntTimebomb)
 	{
 		PlayerDropItem(playerid);
-		defer TimeBombExplode(itemid);
-		logf("[EXPLOSIVE] TNT TIMEBOMB placed by %p", playerid);
+		tntt_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 1000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
     #if defined tntt_OnPlayerUseItem
@@ -47,6 +62,42 @@ public OnPlayerUseItem(playerid, itemid)
 	forward tntt_OnPlayerUseItem(playerid, itemid);
 #endif
 
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(tntt_ArmingItem[playerid]))
+	{
+		defer TimeBombExplode(tntt_ArmingItem[playerid]);
+		logf("[EXPLOSIVE] TNT TIMEBOMB placed by %p", playerid);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed for 5 seconds", 3000);
+
+		tntt_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined tntt_OnHoldActionFinish
+		return tntt_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish tntt_OnHoldActionFinish
+#if defined tntt_OnHoldActionFinish
+	forward tntt_OnHoldActionFinish(playerid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(tntt_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		tntt_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 timer TimeBombExplode[5000](itemid)
 {

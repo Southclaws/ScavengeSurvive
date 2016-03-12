@@ -22,16 +22,29 @@
 ==============================================================================*/
 
 
-new iedm_ContainerOption[MAX_PLAYERS];
+#include <YSI\y_hooks>
 
+
+static
+	iedm_ContainerOption[MAX_PLAYERS],
+	iedm_ArmingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+
+
+hook OnPlayerConnect(playerid)
+{
+	iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
 
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
 		PlayerDropItem(playerid);
-		SetItemExtraData(itemid, 1);
-		Msg(playerid, YELLOW, " >  Mine primed");
+		iedm_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 1000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
 	#if defined iedm_OnPlayerUseItem
@@ -49,6 +62,42 @@ public OnPlayerUseItem(playerid, itemid)
 #if defined iedm_OnPlayerUseItem
 	forward iedm_OnPlayerUseItem(playerid, itemid);
 #endif
+
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(iedm_ArmingItem[playerid]))
+	{
+		SetItemExtraData(iedm_ArmingItem[playerid], 1);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed", 3000);
+
+		iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined iedm_OnHoldActionFinish
+		return iedm_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish iedm_OnHoldActionFinish
+#if defined iedm_OnHoldActionFinish
+	forward iedm_OnHoldActionFinish(playerid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(iedm_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 public OnPlayerPickUpItem(playerid, itemid)
 {

@@ -22,16 +22,29 @@
 ==============================================================================*/
 
 
-new tntm_ContainerOption[MAX_PLAYERS];
+#include <YSI\y_hooks>
 
+
+static
+	tntm_ContainerOption[MAX_PLAYERS],
+	tntm_ArmingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+
+
+hook OnPlayerConnect(playerid)
+{
+	tntm_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
 
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_TntTripMine)
 	{
 		PlayerDropItem(playerid);
-		SetItemExtraData(itemid, 1);
-		Msg(playerid, YELLOW, " >  Mine primed");
+		tntm_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 1000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
 	#if defined tntm_OnPlayerUseItem
@@ -49,6 +62,42 @@ public OnPlayerUseItem(playerid, itemid)
 #if defined tntm_OnPlayerUseItem
 	forward tntm_OnPlayerUseItem(playerid, itemid);
 #endif
+
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(tntm_ArmingItem[playerid]))
+	{
+		SetItemExtraData(tntm_ArmingItem[playerid], 1);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed", 3000);
+
+		tntm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined tntm_OnHoldActionFinish
+		return tntm_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish tntm_OnHoldActionFinish
+#if defined tntm_OnHoldActionFinish
+	forward tntm_OnHoldActionFinish(playerid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(tntm_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		tntm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 public OnPlayerPickUpItem(playerid, itemid)
 {

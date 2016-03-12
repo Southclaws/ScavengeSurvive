@@ -22,14 +22,31 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
+static
+	emptbm_ArmingItem[MAX_PLAYERS];
+
+
+hook OnPlayerConnect(playerid)
+{
+	emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
+
 public OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTimebomb)
 	{
 		PlayerDropItem(playerid);
-		defer EmpTimeBombExplode(itemid);
+		emptbm_ArmingItem[playerid] = itemid;
+
+		StartHoldAction(playerid, 1000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
+
     #if defined emptbm_OnPlayerUseItem
 		return emptbm_OnPlayerUseItem(playerid, itemid);
 	#else
@@ -46,6 +63,41 @@ public OnPlayerUseItem(playerid, itemid)
 	forward emptbm_OnPlayerUseItem(playerid, itemid);
 #endif
 
+public OnHoldActionFinish(playerid)
+{
+	if(IsValidItem(emptbm_ArmingItem[playerid]))
+	{
+		defer EmpTimeBombExplode(emptbm_ArmingItem[playerid]);
+		ClearAnimations(playerid);
+		ShowActionText(playerid, "Armed for 5 seconds", 3000);
+
+		emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+
+	#if defined emptbm_OnHoldActionFinish
+		return emptbm_OnHoldActionFinish(playerid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnHoldActionFinish
+	#undef OnHoldActionFinish
+#else
+	#define _ALS_OnHoldActionFinish
+#endif
+#define OnHoldActionFinish emptbm_OnHoldActionFinish
+#if defined emptbm_OnHoldActionFinish
+	forward emptbm_OnHoldActionFinish(playerid);
+#endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(emptbm_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 timer EmpTimeBombExplode[5000](itemid)
 {

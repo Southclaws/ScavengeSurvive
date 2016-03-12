@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
 static
 	empm_ContainerOption[MAX_PLAYERS],
 	empm_ArmingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
@@ -39,7 +42,7 @@ public OnPlayerUseItem(playerid, itemid)
 		PlayerDropItem(playerid);
 		empm_ArmingItem[playerid] = itemid;
 
-		StartHoldAction(playerid, 500);
+		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, "Arming...");
 
@@ -88,6 +91,15 @@ public OnHoldActionFinish(playerid)
 #if defined empm_OnHoldActionFinish
 	forward empm_OnHoldActionFinish(playerid);
 #endif
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && IsValidItem(empm_ArmingItem[playerid]))
+	{
+		StopHoldAction(playerid);
+		empm_ArmingItem[playerid] = INVALID_ITEM_ID;
+	}
+}
 
 public OnPlayerPickUpItem(playerid, itemid)
 {
