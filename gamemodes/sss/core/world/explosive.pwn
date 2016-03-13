@@ -98,7 +98,9 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			GetItemPos(safeboxitemid, x, y, z);
 			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
 			DestroyItem(itemid);
-			DestroyItem(safeboxitemid);
+
+			if(type != EXPLOSION_PRESET_EMP)
+				DestroyItem(safeboxitemid);
 
 			return 1;
 		}
@@ -115,7 +117,9 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			GetItemPos(bagitemid, x, y, z);
 			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
 			DestroyItem(itemid);
-			DestroyItem(bagitemid);
+
+			if(type != EXPLOSION_PRESET_EMP)
+				DestroyItem(bagitemid);
 
 			return 1;
 		}
@@ -132,7 +136,9 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			GetPlayerPos(playerid, x, y, z);
 			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
 			DestroyItem(itemid);
-			DestroyPlayerBag(playerid);
+
+			if(type != EXPLOSION_PRESET_EMP)
+				DestroyPlayerBag(playerid);
 
 			return 1;
 		}
