@@ -714,42 +714,64 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	if(IsValidVehicle(GetTrailerVehicleID(vehicleid)))
 		return 1;
 
-	new Float:distance = GetVehicleDistanceFromPoint(vehicleid, new_x, new_y, new_z);
+	new
+		Float:old_x,
+		Float:old_y,
+		Float:old_z,
+		Float:old_r,
+		Float:xydistance,
+		Float:zdistance;
 
-	if(distance > 0.0)
+	GetVehiclePos(vehicleid, old_x, old_y, old_z);
+	GetVehicleZAngle(vehicleid, old_r);
+	xydistance = Distance2D(old_x, old_y, new_x, new_y);
+	zdistance = new_z - old_z;
+
+	if(old_x * old_y * old_z == 0.0)
+		return 1;
+
+	if(xydistance > 0.0)
 	{
 		if(GetTickCountDifference(GetTickCount(), veh_Data[vehicleid][veh_lastUsed]) < 10000)
 			return 1;
 
-		new Float:thresh;
+		new
+			Float:xythresh = 0.1,
+			Float:zthresh = 0.5;
 
 		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
 			case VEHICLE_CATEGORY_TRUCK:
-				thresh = 0.05;
+			{
+				xythresh = 0.01;
+				zthresh = 0.5;
+			}
 
 			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
-				thresh = 0.2;
+			{
+				xythresh = 0.5;
+				zthresh = 0.5;
+			}
 
 			case VEHICLE_CATEGORY_BOAT:
-				thresh = 2.6;
+			{
+				xythresh = 2.5;
+				zthresh = 3.6;
+			}
 
 			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
-				thresh = 0.01;
-
-			default:
-				thresh = 0.1;
+			{
+				xythresh = 0.01;
+				zthresh = 0.01;
+			}
 		}
 
-		if(distance > thresh)
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
+		printf("xy: %f > %f z: %f > %f", xydistance, xythresh, zdistance, zthresh);
 
-			GetVehiclePos(vehicleid, x, y, z);
-			SetVehiclePos(vehicleid, x, y, z);
+		if(xydistance > xythresh || zdistance > zthresh)
+		{
+			SetVehiclePos(vehicleid, old_x, old_y, old_z);
+			SetVehicleZAngle(vehicleid, old_r);
 		}
 
 		return 0;
