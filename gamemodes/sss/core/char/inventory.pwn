@@ -795,7 +795,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 
 	new containerid = GetPlayerCurrentContainer(playerid);
 
-	if(!IsValidContainer(containerid))
+	if(IsValidContainer(containerid))
 	{
 		new
 			itemid,
@@ -807,7 +807,17 @@ _inv_HandleGearSlotClick_Tors(playerid)
 		if(required > 0)
 		{
 			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
-			DestroyItem(itemid);
+
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+				GiveWorldItemToPlayer(playerid, itemid);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+				DestroyItem(itemid);
+			}
 		}
 		else if(required == 0)
 		{
@@ -830,7 +840,17 @@ _inv_HandleGearSlotClick_Tors(playerid)
 		if(required > 0)
 		{
 			ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
-			DestroyItem(itemid);
+
+			if(!IsValidItem(GetPlayerItem(playerid)))
+			{
+				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+				GiveWorldItemToPlayer(playerid, itemid);
+			}
+			else
+			{
+				ShowActionText(playerid, "You are already holding an item", 3000);
+				DestroyItem(itemid);
+			}
 		}
 		else if(required == 0)
 		{
