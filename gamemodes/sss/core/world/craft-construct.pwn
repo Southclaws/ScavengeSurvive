@@ -117,11 +117,14 @@ public OnPlayerUseItem(playerid, itemid)
 	{
 		d:1:HANDLER("[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
 
+		new listitem;
+
 		for(new i; list[i] != INVALID_ITEM_ID && i < MAX_CONSTRUCT_SET_ITEMS; i++)
 		{
-			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(list[i]);
-			cons_SelectedItems[playerid][i][cft_selectedItemID] = list[i];
-			d:3:HANDLER("[OnPlayerUseItem] List item: %d (%d)", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID]);
+			listitem = GetItemFromButtonID(list[i]);
+			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(listitem);
+			cons_SelectedItems[playerid][i][cft_selectedItemID] = listitem;
+			d:3:HANDLER("[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
 		}
 
 		new craftset = _cft_FindCraftset(cons_SelectedItems[playerid], size);
@@ -187,6 +190,17 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionFinish cons_OnHoldActionFinish
 forward cons_OnHoldActionFinish(playerid);
 
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(RELEASED(16) && cons_Constructing[playerid] != -1)
+	{
+		StopHoldAction(playerid);
+		ClearAnimations(playerid);
+		HideActionText(playerid);
+
+		cons_Constructing[playerid] = -1;
+	}
+}
 
 public OnPlayerCraft(playerid, craftset)
 {
