@@ -725,7 +725,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	GetVehiclePos(vehicleid, old_x, old_y, old_z);
 	GetVehicleZAngle(vehicleid, old_r);
 	xydistance = Distance2D(old_x, old_y, new_x, new_y);
-	zdistance = new_z - old_z;
+	zdistance = floatabs(new_z - old_z);
 
 	if(old_x * old_y * old_z == 0.0)
 		return 1;
@@ -736,15 +736,15 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 			return 1;
 
 		new
-			Float:xythresh = 0.1,
+			Float:xythresh = 0.25,
 			Float:zthresh = 0.5;
 
 		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
 			case VEHICLE_CATEGORY_TRUCK:
 			{
-				xythresh = 0.01;
-				zthresh = 0.5;
+				xythresh = 0.02;
+				zthresh = 0.9;
 			}
 
 			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
@@ -766,10 +766,9 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 			}
 		}
 
-		printf("xy: %f > %f z: %f > %f", xydistance, xythresh, zdistance, zthresh);
-
 		if(xydistance > xythresh || zdistance > zthresh)
 		{
+			//printf("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
 			SetVehiclePos(vehicleid, old_x, old_y, old_z);
 			SetVehicleZAngle(vehicleid, old_r);
 		}

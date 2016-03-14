@@ -83,7 +83,7 @@ stock CreateVehicleArea(vehicleid)
 	if(GetVehicleModel(vehicleid) == 484)
 		y = 0.0;
 
-	varea_AreaID[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 3.0, GetVehicleVirtualWorld(vehicleid));
+	varea_AreaID[vehicleid] = CreateDynamicSphere(0.0, 0.0, 0.0, (y / 2.0) + 0.8, GetVehicleVirtualWorld(vehicleid));
 	AttachDynamicAreaToVehicle(varea_AreaID[vehicleid], vehicleid);
 
 	data[0] = VEH_STREAMER_AREA_IDENTIFIER;
@@ -358,7 +358,7 @@ _varea_Interact(playerid)
 		GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, size_x, size_y, size_z);
 		distance = Distance(px, py, pz, vx, vy, vz);
 
-		if(distance > (size_y / 2.0) + 3.0)
+		if(distance > (size_y / 2.0) + 0.8)
 		{
 			d:2:HANDLER("[_varea_Interact] ERROR: Vehicle is too far away");
 			continue;
@@ -518,15 +518,11 @@ stock IsPlayerAtVehicleTrunk(playerid, vehicleid)
 		Float:px,
 		Float:py,
 		Float:pz,
-		Float:sx,
-		Float:sy,
-		Float:sz,
 		Float:vr,
 		Float:angle;
 
 	GetVehiclePos(vehicleid, vx, vy, vz);
 	GetPlayerPos(playerid, px, py, pz);
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
 
 	GetVehicleZAngle(vehicleid, vr);
 
@@ -558,15 +554,11 @@ stock IsPlayerAtVehicleBonnet(playerid, vehicleid)
 		Float:px,
 		Float:py,
 		Float:pz,
-		Float:sx,
-		Float:sy,
-		Float:sz,
 		Float:vr,
 		Float:angle;
 
 	GetVehiclePos(vehicleid, vx, vy, vz);
 	GetPlayerPos(playerid, px, py, pz);
-	GetVehicleModelInfo(GetVehicleModel(vehicleid), VEHICLE_MODEL_INFO_SIZE, sx, sy, sz);
 
 	GetVehicleZAngle(vehicleid, vr);
 

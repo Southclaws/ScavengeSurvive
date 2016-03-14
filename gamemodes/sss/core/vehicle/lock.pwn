@@ -26,8 +26,9 @@
 
 
 static
-	lock_Status		[MAX_VEHICLES],
-	lock_LastChange	[MAX_VEHICLES];
+	lock_Status				[MAX_VEHICLES],
+	lock_LastChange			[MAX_VEHICLES],
+	lock_DisableForPlayer	[MAX_PLAYERS];
 
 
 public OnVehicleCreated(vehicleid)
@@ -51,6 +52,11 @@ public OnVehicleCreated(vehicleid)
 #if defined lock_OnVehicleCreated
 	forward lock_OnVehicleCreated(vehicleid);
 #endif
+
+hook OnPlayerConnect(playerid)
+{
+	lock_DisableForPlayer[playerid] = false;
+}
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -89,6 +95,53 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 	return 1;
 }
+
+public OnPlayerEnterVehicleArea(playerid, vehicleid)
+{
+	if(!lock_Status[vehicleid] && !lock_DisableForPlayer[playerid])
+	{
+		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
+	}
+	else
+	{
+		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 1);
+	}
+
+	#if defined lock_OnPlayerEnterVehicleArea
+		return lock_OnPlayerEnterVehicleArea(playerid, vehicleid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerEnterVehicleArea
+	#undef OnPlayerEnterVehicleArea
+#else
+	#define _ALS_OnPlayerEnterVehicleArea
+#endif
+#define OnPlayerEnterVehicleArea lock_OnPlayerEnterVehicleArea
+#if defined lock_OnPlayerEnterVehicleArea
+	forward lock_OnPlayerEnterVehicleArea(playerid, vehicleid);
+#endif
+
+public OnPlayerLeaveVehicleArea(playerid, vehicleid)
+{
+	SetVehicleParamsForPlayer(vehicleid, playerid, 0, 1);
+
+	#if defined lock_OnPlayerLeaveVehicleArea
+		return lock_OnPlayerLeaveVehicleArea(playerid, vehicleid);
+	#else
+		return 1;
+	#endif
+}
+#if defined _ALS_OnPlayerLeaveVehicleArea
+	#undef OnPlayerLeaveVehicleArea
+#else
+	#define _ALS_OnPlayerLeaveVehicleArea
+#endif
+#define OnPlayerLeaveVehicleArea lock_OnPlayerLeaveVehicleArea
+#if defined lock_OnPlayerLeaveVehicleArea
+	forward lock_OnPlayerLeaveVehicleArea(playerid, vehicleid);
+#endif
 
 
 /*==============================================================================
@@ -132,4 +185,14 @@ stock GetVehicleLockTick(vehicleid)
 		return 0;
 
 	return lock_LastChange[vehicleid];
+}
+
+stock TogglePlayerVehicleEntry(playerid, bool:toggle)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	lock_DisableForPlayer[playerid] = toggle;
+
+	return 1;
 }
