@@ -132,12 +132,17 @@ DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float
 
 timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 {
+	// sup_CurrentType represents which type of crate is currently in the
+	// falling animation. This value is always -1 except for the time between
+	// a drop starting and landing.
 	if(sup_CurrentType != -1)
 	{
 		d:1:HANDLER("[SupplyDropTimer] Current type != -1: %d", sup_CurrentType);
 		return;
 	}
 
+	// sup_Index is the linked-list of supply drop locations. When it's empty,
+	// there are no more locations so stop the timer.
 	if(Iter_Count(sup_Index) == 0)
 	{
 		printf("[SupplyDropTimer] ERROR: Supply drops run out, stopping supply drop timer.");
@@ -145,6 +150,9 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		return;
 	}
 
+	// This checks the time between the last drop time (sup_LastSupplyDrop) and
+	// the current time GetTickCount(). If that interval is below the maximum
+	// cooldown time, the script just waits for the next timer call.
 	if(GetTickCountDifference(GetTickCount(), sup_LastSupplyDrop) < SUPPLY_DROP_COOLDOWN)
 	{
 		d:1:HANDLER("[SupplyDropTimer] Cooling down: %d/%d.", GetTickCountDifference(GetTickCount(), sup_LastSupplyDrop), SUPPLY_DROP_COOLDOWN);
@@ -156,8 +164,19 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		id,
 		ret;
 
+	// This loop picks a type. Types have a required amount of players
+	// (supt_required) designed so more valuable drops only fall if there are
+	// more players available to fight over them. This also encourages players
+	// to invite their friends onto the server to increase their chances!
 	while(type < sup_TypeTotal)
 	{
+		// The code used to pick the drop type is actually a bit weird and I
+		// should probably rewrite it. The current system isn't actually a
+		// randomised choice, it cycles through drop types (hence 'type++')
+
+		// The first check looks at the player count vs player requirement for
+		// a type. If it does not meet this requirement, the type is cycled to
+		// the next.
 		if(Iter_Count(Player) < sup_TypeData[type][supt_required])
 		{
 			d:1:HANDLER("[SupplyDropTimer] Checking %d: Not enough players (%d < %d).", type, Iter_Count(Player), sup_TypeData[type][supt_required]);
@@ -165,6 +184,17 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 			continue;
 		}
 
+		// Here, the check is for the last drop time of the individual type.
+		// This works just the same as the earlier check for global drop
+		// cooldown except it's for each individual drop type.
+
+		// supt_offset is actually the only randomised property that affects
+		// when a drop falls. Everything else is completely systematic and
+		// predictable if the value of supt_offset value is known.
+
+		// As before, if the check finds that the time between the last time
+		// this drop fell is below the drop type cooldown PLUS the randomised
+		// offset value, the code skips this drop type.
 		if(GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]) < sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset])
 		{
 			d:1:HANDLER("[SupplyDropTimer] Checking %d: Last drop too soon (%d < %d).", type, GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]), sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset]);
@@ -175,21 +205,40 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		break;
 	}
 
+	// If the loop ran through every drop type and reached an out of bounds
+	// value, the entire process is cancelled since no drops are available as
+	// they either don't meet the player requirement or are still cooling down.
 	if(type == sup_TypeTotal)
 	{
 		d:1:HANDLER("[SupplyDropTimer] No supply drop type available.");
 		return;
 	}
 
+	// Now, the code has determined what drop to create it needs to pick a
+	// location. This is why the location index is a linked-list. As locations
+	// are removed from the index over time, Iter_Random can efficiently pick
+	// a random index as oppose to a regular array which would require a loop
+	// that misses more and more as indexes are removed or it would require a
+	// secondary array to keep track of available entries.
 	id = Iter_Random(sup_Index);
 	ret = SupplyCrateDrop(type, sup_DropLocationData[id][supl_posX], sup_DropLocationData[id][supl_posY], sup_DropLocationData[id][supl_posZ]);
 
+	// This block should never actually execute but it's here as a warning. If
+	// SupplyCrateDrop returns 0 somehow, it means the value of sup_CurrentType
+	// was changed at some point between SupplyDropTimer and SupplyCrateDrop.
+	// This would be a red flag for memory corruption!
 	if(!ret)
 	{
 		printf("[SupplyDropTimer] ERROR: Supply crate already active (type: %d)", sup_CurrentType);
 		return;
 	}
 
+	// Finally, just aesthetics. The supply drop message is generated and the
+	// name of the drop is randomised. This was designed to give some
+	// uncertainty to the whole process so players don't always know what kind
+	// of loot a drop contains. This uncertainty also brings in a skill of
+	// keeping track of drops. If a rare drop hasn't appeared for hours then an
+	// unknown drop is more likely to be of that type so more worth the risk.
 	new name[MAX_SUPPLY_DROP_TYPE_NAME];
 
 	if(random(100) < 50)
@@ -200,8 +249,13 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 
 	MsgAllF(YELLOW, " >  [EBS]: SUPPLY DROP: "C_BLUE"\"%s\""C_YELLOW" INCOMING AT: "C_ORANGE"\"%s\"", name, sup_DropLocationData[id][supl_name]);
 
+	// Remove the location from the index so it isn't chosen again.
 	Iter_Remove(sup_Index, id);
 
+	// Record the current time and store it for next time this function is
+	// called and the cooldown check can be made. Also, assign a randomised time
+	// offset to remove predictability from the system. As mentioned before,
+	// this is actually the only randomised element of the drop process.
 	sup_TypeData[type][supt_lastDrop] = GetTickCount();
 	sup_TypeData[type][supt_offset] = random(sup_TypeData[type][supt_random]);
 
