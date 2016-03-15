@@ -37,17 +37,25 @@ LICENSE = """/*=================================================================
 
 def process(filename):
 
+	if filename == ".\\gamemodes\\ScavengeSurvive.pwn":
+		return
+
+	if filename.startswith(".\\scriptfiles"):
+		return
+
 	source = ""
 
 	with io.open(filename, 'r') as f:
 		source = f.read()
 
-	new = LICENSE + source
+	if not source.startswith(LICENSE):
 
-	with io.open(filename, 'w', newline='\n') as f:
-		f.write(new)
-
-	print(filename)
+		new = LICENSE + source
+	
+		with io.open(filename, 'w', newline='\n') as f:
+			f.write(new)
+	
+		print("Added a license block to", filename)
 
 
 def main():
