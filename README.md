@@ -63,7 +63,7 @@ creations are made! Please publish all bug fixes in order to benefit everyone.
  public server:
 
         filterscripts object-loader rcon
-        plugins streamer sscanf CTime Whirlpool FileManager irc socket
+        plugins streamer sscanf CTime Whirlpool FileManager irc
 
 5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.ini"_ file**
 
