@@ -38,8 +38,9 @@
 
 enum E_CONSTRUCT_SET_DATA
 {
-		cons_buildtime,
-		cons_craftset
+			cons_buildtime,
+ItemType:	cons_tool,
+			cons_craftset
 }
 
 
@@ -81,7 +82,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock SetCraftSetConstructible(buildtime, craftset)
+stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset)
 {
 	if(GetCraftSetResult(craftset) == INVALID_ITEM_TYPE)
 	{
@@ -90,7 +91,14 @@ stock SetCraftSetConstructible(buildtime, craftset)
 	}
 
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
+	cons_Data[cons_Total][cons_tool] = tool;
 	cons_Data[cons_Total][cons_craftset] = craftset;
+
+	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
+	{
+		cons_SelectedItems[cons_Total][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+		cons_SelectedItems[cons_Total][i][cft_selectedItemID] = INVALID_ITEM_ID;
+	}
 
 	cons_CraftsetConstructSet[craftset] = cons_Total;
 
@@ -130,11 +138,11 @@ public OnPlayerUseItem(playerid, itemid)
 		new craftset = _cft_FindCraftset(cons_SelectedItems[playerid], size);
 		d:2:HANDLER("[OnPlayerUseItem] Craftset determined as %d", craftset);
 
-		if(GetCraftSetResult(craftset) == GetItemType(itemid))
+		if(IsValidCraftSet(craftset))
 		{
-			d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
-
 			new consset = cons_CraftsetConstructSet[craftset];
+
+			d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
 
 			StartHoldAction(playerid, cons_Data[consset][cons_buildtime]);
 			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -231,8 +239,49 @@ public OnPlayerCraft(playerid, craftset)
 ==============================================================================*/
 
 
+// cons_Total
+stock IsValidConstructionSet(consset)
+{
+	if(!(0 <= consset < MAX_CONSTRUCT_SET))
+		return 0;
+
+	return 1;
+}
+
+// cons_buildtime
+stock GetConstructionSetBuildTime(consset)
+{
+	if(!(0 <= consset < MAX_CONSTRUCT_SET))
+		return -1;
+
+	return cons_Data[cons_Total][cons_buildtime];
+}
+
+// cons_tool
+forward ItemType:GetConstructionSetTool(consset);
+stock ItemType:GetConstructionSetTool(consset)
+{
+	if(!(0 <= consset < MAX_CONSTRUCT_SET))
+		return INVALID_ITEM_TYPE;
+
+	return cons_Data[cons_Total][cons_tool];
+}
+
+// cons_craftset
+stock GetConstructionSetCraftSet(consset)
+{
+	if(!(0 <= consset < MAX_CONSTRUCT_SET))
+		return -1;
+
+	return cons_Data[cons_Total][cons_craftset];
+}
+
+// cons_CraftsetConstructSet[craftset]
 stock GetCraftSetConstructSet(craftset)
 {
+	if(!IsValidCraftSet(craftset))
+		return -1;
+
 	return cons_CraftsetConstructSet[craftset];
 }
 

@@ -516,7 +516,6 @@ new stock
 #include "sss/core/world/safebox.pwn"
 #include "sss/core/world/tent.pwn"
 #include "sss/core/world/campfire.pwn"
-#include "sss/core/world/workbench.pwn"
 #include "sss/core/world/emp.pwn"
 #include "sss/core/world/explosive.pwn"
 #include "sss/core/world/sign.pwn"
@@ -524,6 +523,7 @@ new stock
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
 #include "sss/core/world/craft-construct.pwn"
+#include "sss/core/world/workbench.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"

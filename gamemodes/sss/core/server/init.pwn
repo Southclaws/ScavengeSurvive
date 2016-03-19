@@ -1370,7 +1370,7 @@ public OnScriptInit()
 	DefineItemCraftSet(item_MolotovEmpty,	item_Bottle, false,			item_Bandage, false);
 
 	DefineItemCraftSet(item_IedBomb,		item_FireworkBox, false,	item_PowerSupply, false);
-	DefineItemCraftSet(item_TntTimebomb,	item_Explosive, false,		item_Timer, false);
+	//DefineItemCraftSet(item_TntTimebomb,	item_Explosive, false,		item_Timer, false);
 	DefineItemCraftSet(item_TntTripMine,	item_Explosive, false,		item_Accelerometer, false);
 	DefineItemCraftSet(item_TntProxMine,	item_Explosive, false,		item_MotionSense, false);
 	DefineItemCraftSet(item_TntPhoneBomb,	item_Explosive, false,		item_MobilePhone, false);
@@ -1403,8 +1403,8 @@ public OnScriptInit()
 	DefineItemCraftSet(item_Bottle,			item_Bottle, true,			item_Bottle, true);
 	//WriteAllCombosToFile();
 
-	SetCraftSetConstructible(10000, DefineItemCraftSet(item_Hammer, item_Keg, false, item_Explosive, false));
-
+	SetCraftSetConstructible(10000, item_Hammer, DefineItemCraftSet(INVALID_ITEM_TYPE, item_Keg, false, item_Explosive, false));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false))); // temp
 
 	loot_Civilian		= DefineLootIndex("civi");
 	loot_Industrial		= DefineLootIndex("indu");

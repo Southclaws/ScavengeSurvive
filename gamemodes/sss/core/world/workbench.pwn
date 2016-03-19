@@ -25,7 +25,8 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_WORK_BENCH	(8)
+#define MAX_WORK_BENCH			(32)
+#define MAX_WORK_BENCH_ITEMS	(4)
 
 
 enum E_WORKBENCH_DATA
@@ -37,15 +38,19 @@ Float:		wb_posX,
 Float:		wb_posY,
 Float:		wb_posZ,
 Float:		wb_rotZ,
-			wb_items[4],
+			wb_count
 }
 
 
-new
+static
 			wb_Data[MAX_WORK_BENCH][E_WORKBENCH_DATA],
-Iterator:	wb_Index<MAX_WORK_BENCH>;
+			wb_SelectedItems[MAX_WORK_BENCH][CFT_MAX_CRAFT_SET_ITEMS][e_selected_item_data], // has to be of CFT_MAX_CRAFT_SET_ITEMS size
+			wb_Total,
+			wb_ButtonWorkbench[BTN_MAX] = {-1, ...},
 
-new
+bool:		wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
+
+			wb_CurrentConstructSet[MAX_PLAYERS],
 			wb_CurrentWorkbench[MAX_PLAYERS];
 
 
@@ -57,43 +62,62 @@ hook OnPlayerConnect(playerid)
 
 stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
 {
-	new id = Iter_Free(wb_Index);
-
-	if(id == -1)
+	if(wb_Total == MAX_WORK_BENCH - 1)
 	{
 		print("ERROR: MAX_WORK_BENCH Limit reached.");
 		return 0;
 	}
 
-	wb_Data[id][wb_objId] = CreateDynamicObject(936, x, y, z, 0.0, 0.0, rz);
-	wb_Data[id][wb_buttonId] = CreateButton(x, y, z, "Press "KEYTEXT_INTERACT" to use workbench", .areasize = 2.0);
-	wb_Data[id][wb_labelId] = CreateDynamic3DTextLabel("Workbench", GREEN, x, y, z + 1.0, 10.0);
-	wb_Data[id][wb_posX] = x;
-	wb_Data[id][wb_posY] = y;
-	wb_Data[id][wb_posZ] = z;
-	wb_Data[id][wb_rotZ] = rz;
-	wb_Data[id][wb_items][0] = INVALID_ITEM_ID;
-	wb_Data[id][wb_items][1] = INVALID_ITEM_ID;
-	wb_Data[id][wb_items][2] = INVALID_ITEM_ID;
-	wb_Data[id][wb_items][3] = INVALID_ITEM_ID;
+	wb_Data[wb_Total][wb_objId] = CreateDynamicObject(936, x, y, z, 0.0, 0.0, rz);
+	wb_Data[wb_Total][wb_buttonId] = CreateButton(x, y, z, "Press "KEYTEXT_INTERACT" to use workbench", .areasize = 2.0);
+	wb_Data[wb_Total][wb_labelId] = CreateDynamic3DTextLabel("Workbench", GREEN, x, y, z + 1.0, 10.0);
+	wb_Data[wb_Total][wb_posX] = x;
+	wb_Data[wb_Total][wb_posY] = y;
+	wb_Data[wb_Total][wb_posZ] = z;
+	wb_Data[wb_Total][wb_rotZ] = rz;
 
-	Iter_Add(wb_Index, id);
+	for(new i; i < MAX_WORK_BENCH_ITEMS; i++)
+	{
+		wb_SelectedItems[wb_Total][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+		wb_SelectedItems[wb_Total][i][cft_selectedItemID] = INVALID_ITEM_ID;
+	}
 
-	return id;
+	wb_Data[wb_Total][wb_count] = 0;
+
+	wb_ButtonWorkbench[wb_Data[wb_Total][wb_buttonId]] = wb_Total;
+
+	return wb_Total++;
+}
+
+stock SetConstructionSetWorkbench(consset)
+{
+	if(!IsValidConstructionSet(consset))
+	{
+		printf("ERROR: Tried to assign workbench properties to invalid construction set ID.");
+		return 0;
+	}
+
+	wb_ConstructionSetWorkbench[consset] = true;
+
+	return consset;
 }
 
 public OnButtonPress(playerid, buttonid)
 {
-	new itemid = GetPlayerItem(playerid);
-
-	if(IsValidItem(itemid))
+	if(wb_ButtonWorkbench[buttonid] != -1)
 	{
-		foreach(new i : wb_Index)
+		if(wb_Data[wb_ButtonWorkbench[buttonid]][wb_buttonId] == buttonid)
 		{
-			if(buttonid == wb_Data[i][wb_buttonId])
+			new itemid = GetPlayerItem(playerid);
+
+			if(IsValidItem(itemid))
 			{
-				Internal_OnPlayerUseWorkbench(playerid, i, itemid);
+				_wb_PlayerUseWorkbench(playerid, wb_ButtonWorkbench[buttonid], itemid);
 			}
+		}
+		else
+		{
+			printf("ERROR: Workbench bi-directional link error. wb_ButtonWorkbench wb_buttonId = %d buttonid = %d");
 		}
 	}
 
@@ -113,30 +137,41 @@ public OnButtonPress(playerid, buttonid)
 	forward wb_OnButtonPress(playerid, buttonid);
 #endif
 
-Internal_OnPlayerUseWorkbench(playerid, workbenchid, itemid)
+_wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 {
-	if(GetItemType(itemid) == item_Hammer)
+	if(wb_Data[workbenchid][wb_count] > 1)
 	{
-		StartHoldAction(playerid, 5000);
-		wb_CurrentWorkbench[playerid] = workbenchid;
+		new
+			craftset,
+			consset;
 
+		craftset = _cft_FindCraftset(wb_SelectedItems[workbenchid], wb_Data[workbenchid][wb_count]);
+		consset = GetCraftSetConstructSet(craftset);
+
+		if(GetCraftSetResult(craftset) == GetConstructionSetTool(consset))
+		{
+			StartHoldAction(playerid, GetConstructionSetBuildTime(consset));
+			wb_CurrentWorkbench[playerid] = workbenchid;
+			wb_CurrentConstructSet[playerid] = consset;
+			return 1;
+		}
+	}
+
+	_wb_AddItem(workbenchid, itemid);
+
+	return 0;
+}
+
+_wb_AddItem(workbenchid, itemid)
+{
+	// todo: validate items and wb_Data[workbenchid][wb_count]
+
+	if(wb_Data[workbenchid][wb_count] == MAX_WORK_BENCH_ITEMS)
+	{
 		return 0;
 	}
 
-	new idx;
-
-	for(new i; i < 4; i++)
-	{
-		if(IsValidItem(wb_Data[workbenchid][wb_items][i]))
-			idx++;	
-	}
-
-	if(idx == 4)
-	{
-		return -1;
-	}
-
-	switch(idx)
+	switch(wb_Data[workbenchid][wb_count])
 	{
 		case 0:
 		{
@@ -172,16 +207,36 @@ Internal_OnPlayerUseWorkbench(playerid, workbenchid, itemid)
 		}
 	}
 
-	wb_Data[workbenchid][wb_items][idx] = itemid;
+	wb_SelectedItems[workbenchid][wb_Data[workbenchid][wb_count]][cft_selectedItemType] = GetItemType(itemid);
+	wb_SelectedItems[workbenchid][wb_Data[workbenchid][wb_count]][cft_selectedItemID] = itemid;
+
+	wb_Data[workbenchid][wb_count]++;
 
 	return 1;
 }
 
+_wb_ClearWorkbench(workbenchid)
+{
+	for(new i; i < wb_Data[workbenchid][wb_count]; i++)
+	{
+		DestroyItem(wb_SelectedItems[workbenchid][i][cft_selectedItemID]);
+	}
+}
+
+_wb_CreateResult(workbenchid, craftset)
+{
+	CreateItem(GetCraftSetResult(craftset),
+		wb_Data[workbenchid][wb_posX],
+		wb_Data[workbenchid][wb_posY],
+		wb_Data[workbenchid][wb_posZ] + 0.49,
+		0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
+}
+
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	if(wb_CurrentWorkbench[playerid] != -1)
+	if(RELEASED(16))
 	{
-		if(oldkeys & 16)
+		if(wb_CurrentWorkbench[playerid] != -1)
 		{
 			StopHoldAction(playerid);
 			wb_CurrentWorkbench[playerid] = -1;
@@ -195,7 +250,8 @@ public OnHoldActionFinish(playerid)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
-		Msg(playerid, YELLOW, "Feature not finished yet");
+		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
+		_wb_CreateResult(wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 		wb_CurrentWorkbench[playerid] = -1;
 	}
 
@@ -216,12 +272,16 @@ public OnHoldActionFinish(playerid)
 	forward wb_OnHoldActionFinish(playerid);
 #endif
 
+
+// Todo: hook OnPlayerPickedUpItem and remove from wb item index
+
+
 ACMD:wbtest[3](playerid, params[])
 {
-	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	Internal_OnPlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
+	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
+	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
+	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
+	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
 
 	return 1;
 }
