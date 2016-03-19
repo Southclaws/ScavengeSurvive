@@ -254,7 +254,7 @@ stock GetConstructionSetBuildTime(consset)
 	if(!(0 <= consset < MAX_CONSTRUCT_SET))
 		return -1;
 
-	return cons_Data[cons_Total][cons_buildtime];
+	return cons_Data[consset][cons_buildtime];
 }
 
 // cons_tool
@@ -264,7 +264,7 @@ stock ItemType:GetConstructionSetTool(consset)
 	if(!(0 <= consset < MAX_CONSTRUCT_SET))
 		return INVALID_ITEM_TYPE;
 
-	return cons_Data[cons_Total][cons_tool];
+	return cons_Data[consset][cons_tool];
 }
 
 // cons_craftset
@@ -273,7 +273,7 @@ stock GetConstructionSetCraftSet(consset)
 	if(!(0 <= consset < MAX_CONSTRUCT_SET))
 		return -1;
 
-	return cons_Data[cons_Total][cons_craftset];
+	return cons_Data[consset][cons_craftset];
 }
 
 // cons_CraftsetConstructSet[craftset]

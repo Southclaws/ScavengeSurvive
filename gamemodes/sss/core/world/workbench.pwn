@@ -25,6 +25,13 @@
 #include <YSI\y_hooks>
 
 
+/*==============================================================================
+
+	Setup
+
+==============================================================================*/
+
+
 #define MAX_WORK_BENCH			(32)
 #define MAX_WORK_BENCH_ITEMS	(4)
 
@@ -54,10 +61,32 @@ bool:		wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 			wb_CurrentWorkbench[MAX_PLAYERS];
 
 
+static HANDLER = -1;
+
+
+/*==============================================================================
+
+	Zeroing
+
+==============================================================================*/
+
+
+hook OnScriptInit()
+{
+	HANDLER = debug_register_handler("workbench");
+}
+
 hook OnPlayerConnect(playerid)
 {
 	wb_CurrentWorkbench[playerid] = -1;
 }
+
+
+/*==============================================================================
+
+	Core Functions
+
+==============================================================================*/
 
 
 stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
@@ -102,10 +131,19 @@ stock SetConstructionSetWorkbench(consset)
 	return consset;
 }
 
+
+/*==============================================================================
+
+	Internal Functions and Hooks
+
+==============================================================================*/
+
+
 public OnButtonPress(playerid, buttonid)
 {
 	if(wb_ButtonWorkbench[buttonid] != -1)
 	{
+		d:1:HANDLER("[OnButtonPress] button %d workbench %d", buttonid, wb_ButtonWorkbench[buttonid]);
 		if(wb_Data[wb_ButtonWorkbench[buttonid]][wb_buttonId] == buttonid)
 		{
 			new itemid = GetPlayerItem(playerid);
@@ -139,8 +177,10 @@ public OnButtonPress(playerid, buttonid)
 
 _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 {
+	d:1:HANDLER("[_wb_PlayerUseWorkbench] playerid %d workbenchid %d itemid %d", playerid, workbenchid, itemid);
 	if(wb_Data[workbenchid][wb_count] > 1)
 	{
+		d:2:HANDLER("[_wb_PlayerUseWorkbench] wb_count: %d", wb_Data[workbenchid][wb_count]);
 		new
 			craftset,
 			consset;
@@ -148,8 +188,12 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 		craftset = _cft_FindCraftset(wb_SelectedItems[workbenchid], wb_Data[workbenchid][wb_count]);
 		consset = GetCraftSetConstructSet(craftset);
 
-		if(GetCraftSetResult(craftset) == GetConstructionSetTool(consset))
+		d:2:HANDLER("[_wb_PlayerUseWorkbench] craftset: %d, consset: %d consset tool type: %d player item type: %d", craftset, consset, _:GetConstructionSetTool(consset), _:GetItemType(itemid));
+
+		if(GetItemType(itemid) == GetConstructionSetTool(consset))
 		{
+			d:2:HANDLER("[_wb_PlayerUseWorkbench] craftset determined and tool matched, start building...");
+	
 			StartHoldAction(playerid, GetConstructionSetBuildTime(consset));
 			wb_CurrentWorkbench[playerid] = workbenchid;
 			wb_CurrentConstructSet[playerid] = consset;
@@ -164,6 +208,8 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 
 _wb_AddItem(workbenchid, itemid)
 {
+	d:1:HANDLER("[_wb_AddItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
+
 	// todo: validate items and wb_Data[workbenchid][wb_count]
 
 	if(wb_Data[workbenchid][wb_count] == MAX_WORK_BENCH_ITEMS)
@@ -217,6 +263,8 @@ _wb_AddItem(workbenchid, itemid)
 
 _wb_ClearWorkbench(workbenchid)
 {
+	d:1:HANDLER("[_wb_ClearWorkbench] workbenchid %d, count: %d", workbenchid, wb_Data[workbenchid][wb_count]);
+
 	for(new i; i < wb_Data[workbenchid][wb_count]; i++)
 	{
 		DestroyItem(wb_SelectedItems[workbenchid][i][cft_selectedItemID]);
@@ -225,6 +273,8 @@ _wb_ClearWorkbench(workbenchid)
 
 _wb_CreateResult(workbenchid, craftset)
 {
+	d:1:HANDLER("[_wb_CreateResult] workbenchid %d craftset %d", workbenchid, craftset);
+
 	CreateItem(GetCraftSetResult(craftset),
 		wb_Data[workbenchid][wb_posX],
 		wb_Data[workbenchid][wb_posY],
@@ -238,6 +288,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(wb_CurrentWorkbench[playerid] != -1)
 		{
+			d:1:HANDLER("[OnPlayerKeyStateChange] stopping workbench build");
+
 			StopHoldAction(playerid);
 			wb_CurrentWorkbench[playerid] = -1;
 		}
@@ -250,9 +302,12 @@ public OnHoldActionFinish(playerid)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
+		d:1:HANDLER("[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
+
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
-		_wb_CreateResult(wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
+		_wb_CreateResult(wb_CurrentWorkbench[playerid], GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]));
 		wb_CurrentWorkbench[playerid] = -1;
+		wb_CurrentConstructSet[playerid] = -1;
 	}
 
 	#if defined wb_OnHoldActionFinish
@@ -274,6 +329,7 @@ public OnHoldActionFinish(playerid)
 
 
 // Todo: hook OnPlayerPickedUpItem and remove from wb item index
+// Todo: hook craft-construct and disable constructing workbench recipes
 
 
 ACMD:wbtest[3](playerid, params[])
@@ -285,3 +341,13 @@ ACMD:wbtest[3](playerid, params[])
 
 	return 1;
 }
+
+
+/*==============================================================================
+
+	Interface
+
+==============================================================================*/
+
+
+//
