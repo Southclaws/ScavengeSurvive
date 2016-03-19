@@ -54,6 +54,7 @@ static
 			wb_SelectedItems[MAX_WORK_BENCH][CFT_MAX_CRAFT_SET_ITEMS][e_selected_item_data], // has to be of CFT_MAX_CRAFT_SET_ITEMS size
 			wb_Total,
 			wb_ButtonWorkbench[BTN_MAX] = {-1, ...},
+			wb_ItemWorkbench[ITM_MAX] = {-1, ...},
 
 bool:		wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 
@@ -210,14 +211,27 @@ _wb_AddItem(workbenchid, itemid)
 {
 	d:1:HANDLER("[_wb_AddItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
 
-	// todo: validate items and wb_Data[workbenchid][wb_count]
-
+	// workbench is full
 	if(wb_Data[workbenchid][wb_count] == MAX_WORK_BENCH_ITEMS)
+		return 0;
+
+	new idx;
+
+	// search for free slot to place item
+	for(idx = 0; idx < MAX_WORK_BENCH_ITEMS; idx++)
 	{
+		if(!IsValidItem(wb_SelectedItems[workbenchid][idx][cft_selectedItemID]))
+			break;
+	}
+
+	// is workbench full (again?)
+	if(idx == MAX_WORK_BENCH_ITEMS)
+	{
+		printf("ERROR: Workbench full check failed after wb_count check passed (wb_count = %d)", wb_Data[workbenchid][wb_count]);
 		return 0;
 	}
 
-	switch(wb_Data[workbenchid][wb_count])
+	switch(idx)
 	{
 		case 0:
 		{
@@ -253,10 +267,32 @@ _wb_AddItem(workbenchid, itemid)
 		}
 	}
 
-	wb_SelectedItems[workbenchid][wb_Data[workbenchid][wb_count]][cft_selectedItemType] = GetItemType(itemid);
-	wb_SelectedItems[workbenchid][wb_Data[workbenchid][wb_count]][cft_selectedItemID] = itemid;
+	wb_SelectedItems[workbenchid][idx][cft_selectedItemType] = GetItemType(itemid);
+	wb_SelectedItems[workbenchid][idx][cft_selectedItemID] = itemid;
+	wb_ItemWorkbench[itemid] = workbenchid;
 
 	wb_Data[workbenchid][wb_count]++;
+
+	return 1;
+}
+
+_wb_RemoveItem(workbenchid, itemid)
+{
+	d:1:HANDLER("[_wb_RemoveItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
+
+	new idx;
+
+	while(wb_SelectedItems[workbenchid][idx][cft_selectedItemID] != itemid)
+	{
+		if(idx++ == wb_Data[workbenchid][wb_count])
+			return 0;
+	}
+
+	wb_SelectedItems[workbenchid][idx][cft_selectedItemType] = INVALID_ITEM_TYPE;
+	wb_SelectedItems[workbenchid][idx][cft_selectedItemID] = INVALID_ITEM_ID;
+	wb_ItemWorkbench[itemid] = -1;
+
+	wb_Data[workbenchid][wb_count]--;
 
 	return 1;
 }
@@ -327,9 +363,51 @@ public OnHoldActionFinish(playerid)
 	forward wb_OnHoldActionFinish(playerid);
 #endif
 
+public OnPlayerPickedUpItem(playerid, itemid)
+{
+	if(wb_ItemWorkbench[itemid] != -1)
+		_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid);
 
-// Todo: hook OnPlayerPickedUpItem and remove from wb item index
-// Todo: hook craft-construct and disable constructing workbench recipes
+	#if defined wb_OnPlayerPickedUpItem
+		return wb_OnPlayerPickedUpItem(playerid, itemid);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerPickedUpItem
+	#undef OnPlayerPickedUpItem
+#else
+	#define _ALS_OnPlayerPickedUpItem
+#endif
+#define OnPlayerPickedUpItem wb_OnPlayerPickedUpItem
+#if defined wb_OnPlayerPickedUpItem
+	forward wb_OnPlayerPickedUpItem(playerid, itemid);
+#endif
+
+public OnPlayerConstruct(playerid, consset)
+{
+	if(wb_ConstructionSetWorkbench[consset] == true)
+	{
+		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
+		ShowActionText(playerid, "You need a workbench to combine those", 5000);
+		return 1;
+	}
+
+	#if defined wb_OnPlayerConstruct
+		return wb_OnPlayerConstruct(playerid, consset);
+	#else
+		return 0;
+	#endif
+}
+#if defined _ALS_OnPlayerConstruct
+	#undef OnPlayerConstruct
+#else
+	#define _ALS_OnPlayerConstruct
+#endif
+#define OnPlayerConstruct wb_OnPlayerConstruct
+#if defined wb_OnPlayerConstruct
+	forward wb_OnPlayerConstruct(playerid, consset);
+#endif
 
 
 ACMD:wbtest[3](playerid, params[])

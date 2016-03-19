@@ -47,12 +47,13 @@ ItemType:	cons_tool,
 static
 		cons_Data[MAX_CONSTRUCT_SET][E_CONSTRUCT_SET_DATA],
 		cons_Total,
-		cons_CraftsetConstructSet[CFT_MAX_CRAFT_SET],
+		cons_CraftsetConstructSet[CFT_MAX_CRAFT_SET] = {-1, ...},
 		cons_Constructing[MAX_PLAYERS],
 		cons_SelectedItems[MAX_PLAYERS][MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data];
 
 
-forward OnPlayerConstruct(playerid, craftset);
+forward OnPlayerConstruct(playerid, consset);
+forward OnPlayerConstructed(playerid, consset);
 
 static HANDLER = -1;
 
@@ -84,12 +85,6 @@ hook OnPlayerConnect(playerid)
 
 stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset)
 {
-	if(GetCraftSetResult(craftset) == INVALID_ITEM_TYPE)
-	{
-		print("[SetCraftSetConstructible] ERROR: Invalid craftset.");
-		return -1;
-	}
-
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
 	cons_Data[cons_Total][cons_tool] = tool;
 	cons_Data[cons_Total][cons_craftset] = craftset;
@@ -140,17 +135,23 @@ public OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidCraftSet(craftset))
 		{
-			new consset = cons_CraftsetConstructSet[craftset];
+			d:2:HANDLER("[OnPlayerUseItem] Craftset determined as %d", craftset);
+			if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
+			{
+				d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
 
-			d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
+				StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
+				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				ShowActionText(playerid, "Constructing items...");
 
-			StartHoldAction(playerid, cons_Data[consset][cons_buildtime]);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-			ShowActionText(playerid, "Constructing items...");
+				cons_Constructing[playerid] = craftset;
 
-			cons_Constructing[playerid] = craftset;
-
-			return 1;
+				return 1;
+			}
+			else
+			{
+				d:2:HANDLER("[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+			}
 		}
 	}
 
@@ -175,9 +176,9 @@ public OnHoldActionFinish(playerid)
 {
 	if(cons_Constructing[playerid] != -1)
 	{
-		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstruct %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
+		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstructed %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
 
-		CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
+		CallLocalFunction("OnPlayerConstructed", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
 		ClearAnimations(playerid);
 		HideActionText(playerid);
 
