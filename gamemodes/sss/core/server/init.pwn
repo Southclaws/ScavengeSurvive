@@ -1437,11 +1437,9 @@ public OnScriptInit()
 	DefineItemCraftSet(item_Bandage, item_Knife, true, item_Clothes, false);
 	DefineItemCraftSet(item_WheelLock, item_WheelLock, false, item_LocksmithKit, false);
 	DefineItemCraftSet(item_Bottle, item_Bottle, true, item_Bottle, true);
-
-	// items created by constructing
-	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_MediumBox, false, item_MediumBox, false));
-	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_MediumBox, false));
-	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_SmallBox, false));
+	DefineItemCraftSet(item_Campfire, item_MediumBox, false, item_MediumBox, false);
+	DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_MediumBox, false);
+	DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_SmallBox, false);
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
