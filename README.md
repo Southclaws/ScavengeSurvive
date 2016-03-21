@@ -41,7 +41,7 @@ creations are made! Please publish all bug fixes in order to benefit everyone.
 
 2. **"/scriptfiles/" directory**
 
- Rename "scriptfiles-folder-structure-and-readmes" to just "scriptfiles".
+ Rename "scriptfiles-folder" to just "scriptfiles".
  The reason this folder has this name is because I don't want my actual
  scriptfiles folder on the repo as it contains various things I don't wish to
  share (such as user accounts and data for the test server) this may change.
@@ -80,4 +80,6 @@ creations are made! Please publish all bug fixes in order to benefit everyone.
 
 6. **Enjoy!**
 
- Do whatever you want with it, but keep my name on it :)
+ ~~Do whatever you want with it, but keep my name on it :)~~
+
+ My lax approach to licensing doesn't apply any more! I use GPL now so read the LICENSE file for usage rights etc. :)
