@@ -184,3 +184,10 @@ CMD:distance(playerid, params[])
 	return 1;
 }
 
+CMD:cob(playerid, params[])
+{
+	new Float:x, Float:y, Float:z;
+	GetPlayerPos(playerid, x, y, z);
+	CreateDynamicObject(strval(params), x, y, z, 0.0, 0.0, 0.0);
+	return 1;
+}

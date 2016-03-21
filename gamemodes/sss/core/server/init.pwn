@@ -133,8 +133,16 @@ new stock
 	liquid_Ethanol,
 	liquid_Turpentine,
 	liquid_HydroAcid,
+	liquid_CarbonatedWater,
+	liquid_Lemon,
+	liquid_Sugar,
+	liquid_Petrol,
+	liquid_Diesel,
+	liquid_Oil,
 	liquid_StrongWhiskey,
-	liquid_Fun;
+	liquid_Fun,
+	liquid_Lemonade,
+	liquid_Orangeade;
 
 // ITEM TYPES
 new stock
@@ -591,7 +599,7 @@ public OnScriptInit()
 	item_Key			= DefineItemType("Key",					"Key",				11746,	1,	90.0, 0.0, 0.0,			0.026);
 // 50
 	item_FireworkBox	= DefineItemType("Fireworks",			"FireworkBox",		2039,	2,	0.0, 0.0, 0.0,			0.0,	0.096996, 0.044811, 0.035688, 4.759557, 255.625167, 0.000000);
-	item_FireLighter	= DefineItemType("Lighter",				"FireLighter",		327,	1,	0.0, 0.0, 0.0,			0.0);
+	item_FireLighter	= DefineItemType("Lighter",				"FireLighter",		19998,	1,	0.0, 0.0, 0.0,			0.0);
 	item_Timer			= DefineItemType("Timer Device",		"Timer",			2922,	2,	90.0, 0.0, 0.0,			0.0,	0.231612, 0.050027, 0.017069, 0.000000, 343.020019, 180.000000);
 	item_Explosive		= DefineItemType("TNT",					"Explosive",		1576,	2,	0.0, 0.0, 0.0,			0.0,	0.269091, 0.166367, 0.000000, 90.000000, 0.000000, 0.000000);
 	item_TntTimebomb	= DefineItemType("Timed TNT",			"TntTimebomb",		1252,	2,	270.0, 0.0, 0.0,		0.0);
@@ -834,38 +842,55 @@ public OnScriptInit()
 // 270
 	item_Canister		= DefineItemType("Canister",			"Canister",			19816,	1,	0.0, 0.0, 0.0,			17.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, true);
 
-// FUTURE MODELS
-// 1656 CUBOID SHAPE, CARRY ITEM
-// 1719 SMALL COMPUTER TYPE DEVICE
-// 1898 SMALL SPIN CLICKER
-// 1899 VERY SMALL SINGLE CHIP
-// 1901 SMALL BLUE CHIPS STACK
-// 1952 SMALL RECORD NEEDLE
-// 1960 RECORD
-// 2060 SANDBAG
-// 2277 PICTURE OF A CAT
-// 2352 T SHAPED SMALL OBJ
-// 2590 SPIKEY HOOK, SCHYTHE?
-// 2226 HIFI
-// 2231 Speaker/small box shape
-// 2232 Slightly bigger speaker
-// 2324 Short cylinder (retexture)
-// 2388 Short pole type thing
-// 2680 Wheel lock
-// 2749 Small long cylinder (also 2752)
-// 2751 Wide short cylinder
-// 2750 Hair dryer/gun shape
-// 2780 Small grey box with handle
-// 2894 Book
-// 2961 Small red keypad-like thing
-// 2966 old phone/radio
-// 2967 another old phone/radio
-// 2983 Pipe valve
-// 3025 Piece of scap metal pole/frame
-// 3067 Metal frame
-// 3070 Goggles
-// 11729 & 11730 metal lockers for storage
-
+/*
+1656 cuboid shape, carry item
+1719 small computer type device
+1898 small spin clicker
+1899 very small single chip
+1901 small blue chips stack
+1952 small record needle
+1960 record
+2060 sandbag
+2277 picture of a cat
+2351 detonator thing
+2352 t shaped small obj
+2590 spikey hook, schythe?
+2226 hifi
+2231 speaker/small box shape
+2232 slightly bigger speaker
+2324 short cylinder (retexture)
+2388 short pole type thing
+2680 wheel lock
+2749 small long cylinder (also 2752)
+2751 wide short cylinder
+2750 hair dryer/gun shape
+2780 small grey box with handle
+2894 book
+2961 small red keypad-like thing
+2966 old phone/radio
+2967 another old phone/radio
+2983 pipe valve
+3025 piece of scap metal pole/frame
+3067 metal frame
+3070 goggles
+11729 & 11730 metal lockers for storage
+19896 cigarettes
+19874 soap
+19873 toilet paper
+19871 metal pole stand thing
+19917 large engine
+19918 small box
+19920 small remote device
+19921 toolbox case thing
+19932 possible weapon case
+19843 small metal panel
+19844 small metal panel
+19845 small metal panel
+19846 small metal panel
+19347 for dogmeat...
+19314 combine with sledgehammer for picaxe!
+19200 police helmet
+*/
 
 
 
@@ -1365,46 +1390,46 @@ public OnScriptInit()
 	DefineDefenceItem(item_RustyMetal,	0.0, 180.0, 90.0,	0.0, 270.0, 90.0,	1.4401,		5);
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7);
 
+	// Crafting - by hand
+	DefineItemCraftSet(item_ParaBag, item_Knife, true, item_Parachute, false);
+	DefineItemCraftSet(item_MolotovEmpty, item_Bottle, false, item_Bandage, false);
+	DefineItemCraftSet(item_Bandage, item_Knife, true, item_Clothes, false);
+	DefineItemCraftSet(item_WheelLock, item_WheelLock, false, item_LocksmithKit, false);
+	DefineItemCraftSet(item_Bottle, item_Bottle, true, item_Bottle, true);
 
-	DefineItemCraftSet(item_ParaBag,		item_Knife, true,			item_Parachute, false);
-	DefineItemCraftSet(item_MolotovEmpty,	item_Bottle, false,			item_Bandage, false);
+	// Crafting - by constructing
+	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_MediumBox, false, item_MediumBox, false));
+	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_MediumBox, false));
+	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_SmallBox, false));
 
-	DefineItemCraftSet(item_IedBomb,		item_FireworkBox, false,	item_PowerSupply, false);
-	//DefineItemCraftSet(item_TntTimebomb,	item_Explosive, false,		item_Timer, false);
-	DefineItemCraftSet(item_TntTripMine,	item_Explosive, false,		item_Accelerometer, false);
-	DefineItemCraftSet(item_TntProxMine,	item_Explosive, false,		item_MotionSense, false);
-	DefineItemCraftSet(item_TntPhoneBomb,	item_Explosive, false,		item_MobilePhone, false);
-	DefineItemCraftSet(item_IedTimebomb,	item_IedBomb, false,		item_Timer, false);
-	DefineItemCraftSet(item_IedTripMine,	item_IedBomb, false,		item_Accelerometer, false);
-	DefineItemCraftSet(item_IedProxMine,	item_IedBomb, false,		item_MotionSense, false);
-	DefineItemCraftSet(item_IedPhoneBomb,	item_IedBomb, false,		item_MobilePhone, false);
-	DefineItemCraftSet(item_EmpTimebomb,	item_Fluctuator, false,		item_Timer, false);
-	DefineItemCraftSet(item_EmpTripMine,	item_Fluctuator, false,		item_Accelerometer, false);
-	DefineItemCraftSet(item_EmpProxMine,	item_Fluctuator, false,		item_MotionSense, false);
-	DefineItemCraftSet(item_EmpPhoneBomb,	item_Fluctuator, false,		item_MobilePhone, false);
+	// Crafting - with workbench
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTripMine, item_Explosive, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntProxMine, item_Explosive, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntPhoneBomb, item_Explosive, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTimebomb, item_IedBomb, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTripMine, item_IedBomb, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedProxMine, item_IedBomb, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedPhoneBomb, item_IedBomb, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTimebomb, item_Fluctuator, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTripMine, item_Fluctuator, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpProxMine, item_Fluctuator, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpPhoneBomb, item_Fluctuator, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_PowerSupply, item_Battery, false, item_Fusebox, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StorageUnit, item_Timer, false, item_HardDrive, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Fluctuator, item_StunGun, false, item_RadioPole, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IoUnit, item_MobilePhone, false, item_Keypad, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_FluxCap, item_PowerSupply, false, item_Fluctuator, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_DataInterface,item_StorageUnit, false, item_IoUnit, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_HackDevice, item_FluxCap, false, item_DataInterface, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Motor, item_PowerSupply, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_LocksmithKit, item_Key, false, item_Motor, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false)));
 
-	DefineItemCraftSet(item_Campfire,		item_MediumBox, false,		item_MediumBox, false);
-	DefineItemCraftSet(item_Campfire,		item_SmallBox, false,		item_MediumBox, false);
-	DefineItemCraftSet(item_Campfire,		item_SmallBox, false,		item_SmallBox, false);
-
-	DefineItemCraftSet(item_PowerSupply,	item_Battery, false,		item_Fusebox, false);
-	DefineItemCraftSet(item_StorageUnit,	item_Timer, false,			item_HardDrive, false);
-	DefineItemCraftSet(item_Fluctuator,		item_StunGun, false,		item_RadioPole, false);
-	DefineItemCraftSet(item_IoUnit,			item_MobilePhone, false,	item_Keypad, false);
-	DefineItemCraftSet(item_FluxCap,		item_PowerSupply, false,	item_Fluctuator, false);
-	DefineItemCraftSet(item_DataInterface,	item_StorageUnit, false,	item_IoUnit, false);
-	DefineItemCraftSet(item_HackDevice,		item_FluxCap, false,		item_DataInterface, false);
-	DefineItemCraftSet(item_Motor,			item_PowerSupply, false,	item_Timer, false);
-	DefineItemCraftSet(item_LocksmithKit,	item_Key, false,			item_Motor, false);
-	DefineItemCraftSet(item_StarterMotor,	item_Motor, false,			item_Fluctuator, false);
-	DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false,			item_PowerSupply, false);
-	DefineItemCraftSet(item_Bandage,		item_Knife, true,			item_Clothes, false);
-	DefineItemCraftSet(item_WheelLock,		item_WheelLock, false,		item_LocksmithKit, false);
-	DefineItemCraftSet(item_Bottle,			item_Bottle, true,			item_Bottle, true);
+	// Crafting - Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();
-
-	SetCraftSetConstructible(10000, item_Hammer, DefineItemCraftSet(INVALID_ITEM_TYPE, item_Keg, false, item_Explosive, false));
-	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false))); // temp
 
 	loot_Civilian		= DefineLootIndex("civi");
 	loot_Industrial		= DefineLootIndex("indu");
@@ -1453,13 +1478,21 @@ public OnScriptInit()
 
 	liquid_Water			= DefineLiquidType("Water",					ROOT_LIQUID_BITMASK);
 	liquid_Milk				= DefineLiquidType("Milk",					ROOT_LIQUID_BITMASK);
-	liquid_Orange			= DefineLiquidType("Orange",				ROOT_LIQUID_BITMASK);
+	liquid_Orange			= DefineLiquidType("Orange Juice",			ROOT_LIQUID_BITMASK);
 	liquid_Whiskey			= DefineLiquidType("Whiskey",				ROOT_LIQUID_BITMASK);
 	liquid_Ethanol			= DefineLiquidType("Ethanol",				ROOT_LIQUID_BITMASK);
 	liquid_Turpentine		= DefineLiquidType("Turpentine",			ROOT_LIQUID_BITMASK);
 	liquid_HydroAcid		= DefineLiquidType("Hydrochloric Acid",		ROOT_LIQUID_BITMASK);
+	liquid_CarbonatedWater	= DefineLiquidType("Carbonated Water",		ROOT_LIQUID_BITMASK);
+	liquid_Lemon			= DefineLiquidType("Lemon Juice",			ROOT_LIQUID_BITMASK);
+	liquid_Sugar			= DefineLiquidType("Sugar",					ROOT_LIQUID_BITMASK);
+	liquid_Petrol			= DefineLiquidType("Petrol",				ROOT_LIQUID_BITMASK);
+	liquid_Diesel			= DefineLiquidType("Diesel",				ROOT_LIQUID_BITMASK);
+	liquid_Oil				= DefineLiquidType("Oil",					ROOT_LIQUID_BITMASK);
 	liquid_StrongWhiskey	= DefineLiquidType("Acid Whiskey",			liquid_Whiskey | liquid_Ethanol);
 	liquid_Fun				= DefineLiquidType("Fun",					liquid_Ethanol | liquid_Turpentine | liquid_HydroAcid);
+	liquid_Lemonade			= DefineLiquidType("Lemonade",				liquid_CarbonatedWater | liquid_Lemon | liquid_Sugar);
+	liquid_Orangeade		= DefineLiquidType("Orangeade",				liquid_CarbonatedWater | liquid_Orange | liquid_Sugar);
 
 
 	DefineSafeboxType(item_MediumBox,		10);
