@@ -424,7 +424,9 @@ ItemType:		item_Log			= INVALID_ITEM_TYPE,
 ItemType:		item_Padlock		= INVALID_ITEM_TYPE,
 ItemType:		item_Keg			= INVALID_ITEM_TYPE,
 // 270
-ItemType:		item_Canister		= INVALID_ITEM_TYPE;
+ItemType:		item_Canister		= INVALID_ITEM_TYPE,
+ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
+ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -822,6 +824,8 @@ public OnScriptInit()
 	item_Keg			= DefineItemType("Keg",		 			"Keg",				19812,	1,	0.0, 0.0, 0.0,			17.468,	0.053000, 0.480999, -0.340999,  -109.899971, -10.700182, 98.799865, true);
 // 270
 	item_Canister		= DefineItemType("Canister",			"Canister",			19816,	1,	0.0, 0.0, 0.0,			17.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, true);
+	item_ScrapMetal		= DefineItemType("Scrap Metal",			"ScrapMetal",		19845,	1,	0.0, 0.0, 0.0,			17.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, false, 0xA67777FF);
+	item_RefinedMetal	= DefineItemType("Refined Metal",		"RefinedMetal",		19941,	1,	0.0, 0.0, 0.0,			17.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, false, 0xA67777FF);
 
 /*
 1656 cuboid shape, carry item

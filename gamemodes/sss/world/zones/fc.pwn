@@ -234,6 +234,8 @@ FC_District_Scrapyard()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'FC_District_Scrapyard' please wait...");
 
+	CreateScrapMachine(-1888.26416, -1636.40588, 21.21387, 0.0);
+
 	CreateStaticLootSpawn(-1825.192138, -1629.722534, 22.001569,	loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-1848.610473, -1629.970947, 20.828950,	loot_Industrial, 15.0);
 	CreateStaticLootSpawn(-1833.258300, -1706.893432, 22.201660,	loot_Industrial, 15.0);
