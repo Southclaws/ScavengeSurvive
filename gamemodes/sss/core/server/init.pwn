@@ -34,26 +34,6 @@
 ==============================================================================*/
 
 
-// Keypad IDs
-enum
-{
-	k_ControlTower,
-	k_MainGate,
-	k_AirstripGate,
-	k_BlastDoor,
-	k_Storage,
-	k_StorageWatch,
-	k_Generator,
-	k_PassageTop,
-	k_PassageBottom,
-	k_Catwalk,
-	k_Headquarters1,
-	k_Headquarters2,
-	k_Shaft,
-	k_Lockup
-}
-
-
 // SKINS/CLOTHES
 new
 	skin_MainM,
@@ -526,6 +506,7 @@ public OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Init'...");
 
+	// SETTINGS
 	if(!gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);
 
@@ -541,7 +522,7 @@ public OnScriptInit()
 	ManualVehicleEngineAndLights();
 	AllowInteriorWeapons(true);
 
-
+// ITEM TYPE DEFINITIONS
 // 00
 	item_NULL			= DefineItemType("NULL",				"NULL",				0,		1);
 	item_Knuckles		= DefineItemType("Knuckle Duster",		"Knuckles",			331,	1,	90.0);
@@ -1149,6 +1130,37 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Keg,			1);
 	SetItemTypeMaxArrayData(item_Canister,		1);
 
+
+	// SETTING HOLSTERABLE ITEMS
+	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Sword,			1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 600, "GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M9Pistol,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_M9PistolSD,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_DesertEagle,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_PumpShotgun,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Sawnoff,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Spas12,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Mac10,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_MP5,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_WASR3Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M16Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Tec9,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_SemiAutoRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_SniperRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_RocketLauncher,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Heatseeker,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_AK47Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_M77RMRifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_DogsBreath,		8, 0.176000, -0.005000, 0.062999, -14.499991, -0.900000, 1.099991, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_StunGun,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Shield,			1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_Mailbox,		1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_DogsBreath,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 500,	"PED",		"PHONE_IN");
+	SetItemTypeHolsterable(item_Model70Rifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+	SetItemTypeHolsterable(item_LenKnocksRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
+
+
+	// AMMO TYPE DEFINITIONS
 	//									name		bleedrate
 	calibre_9mm		= DefineAmmoCalibre("9mm",		0.25);
 	calibre_50cae	= DefineAmmoCalibre(".50",		0.73);
@@ -1162,6 +1174,8 @@ public OnScriptInit()
 	calibre_50bmg	= DefineAmmoCalibre(".50",		0.63);
 	calibre_308		= DefineAmmoCalibre(".308",		0.43);
 
+
+	// ANIMATION SET DEFINITIONS
 	anim_Blunt		= DefineAnimSet();
 	anim_Stab		= DefineAnimSet();
 	anim_Heavy		= DefineAnimSet();
@@ -1175,7 +1189,10 @@ public OnScriptInit()
 	AddAnimToSet(anim_Heavy,	19);
 	AddAnimToSet(anim_Heavy,	20);
 
+
 	/*
+		WEAPON TYPE DEFINITIONS
+
 		baseweapon - GTA weapon ID used for this weapon class. This is the
 		GTA weapon that the player will be given when using the item. When this
 		value is 0, it indicates the weapon is a custom type that doesn't use a
@@ -1263,6 +1280,8 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_LenKnocksRifle,	WEAPON_SNIPER,				calibre_50bmg,	938.5,			1,		4);
 
 	/*
+		AMMO TYPE DEFINITIONS
+
 		name - the additional name given to the ammunition item. This is used to
 		format the full item name or weapon name which includes the amount of
 		ammo loaded into the weapon or ammo container, the calibre and this name
@@ -1311,33 +1330,7 @@ public OnScriptInit()
 	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10);
 
 
-	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_Sword,			1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 600, "GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_M9Pistol,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_M9PistolSD,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_DesertEagle,	8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_PumpShotgun,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_Sawnoff,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_Spas12,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_Mac10,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_MP5,			1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_WASR3Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_M16Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_Tec9,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_SemiAutoRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_SniperRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_RocketLauncher,	1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_Heatseeker,		1, 0.181966, -0.238397, -0.094830, 252.7912, 353.8938, 357.5294, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_AK47Rifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_M77RMRifle,		1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_DogsBreath,		8, 0.176000, -0.005000, 0.062999, -14.499991, -0.900000, 1.099991, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_StunGun,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_Shield,			1, 0.027000, -0.039999, 0.170000, 270.0000, -171.0000, 90.0000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_Mailbox,		1, 0.457000, -0.094999, -0.465000,  2.099999, -42.600, -94.500, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_DogsBreath,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 500,	"PED",		"PHONE_IN");
-	SetItemTypeHolsterable(item_Model70Rifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-	SetItemTypeHolsterable(item_LenKnocksRifle,	1, 0.214089, -0.126031, 0.114131, 0.000000, 159.522552, 0.000000, 800,	"GOGGLES",	"GOGGLES_PUT_ON");
-
+	// FOOD ITEM TYPE DEFINITIONS
 	DefineFoodItem(item_HotDog,			4, 18.00, 1, 1, 0, 1);
 	DefineFoodItem(item_Pizza,			6, 18.30, 1, 0, 0, 1);
 	DefineFoodItem(item_Burger,			4, 16.25, 1, 1, 0, 1);
@@ -1379,6 +1372,8 @@ public OnScriptInit()
 	DefineFoodItem(item_Steak,			4, 6.49, 1, 1, 0, 1);
 	DefineFoodItem(item_Bread,			1, 2.34, 1, 0, 0, 1);
 
+
+	// DEFENSIVE ITEM TYPE DEFINITIONS
 	DefineDefenceItem(item_Door,		180.0, 90.0, 0.0,	90.0, 90.0, 0.0,	-0.0331,	2);
 	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0,	0.0, 90.0, 0.0,		-0.0092,	5);
 	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0,		270.0, 0.0, 0.0,	1.2007,		4);
@@ -1390,19 +1385,65 @@ public OnScriptInit()
 	DefineDefenceItem(item_RustyMetal,	0.0, 180.0, 90.0,	0.0, 270.0, 90.0,	1.4401,		5);
 	DefineDefenceItem(item_WoodPanel,	90.0, 0.0, 23.5,	0.0, 0.0, 0.0,		1.0161,		7);
 
-	// Crafting - by hand
+
+	// SAFEBOX ITEM TYPE DEFINITIONS
+	DefineSafeboxType(item_MediumBox,		10);
+	DefineSafeboxType(item_SmallBox,		8);
+	DefineSafeboxType(item_LargeBox,		12);
+	DefineSafeboxType(item_Capsule,			2);
+
+
+	// BAG ITEM TYPE DEFINITIONS
+	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Parachute Bag",		item_ParaBag,		10, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+	DefineBagType("Large Backpack",		item_LargeBackpack,	14, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
+	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
+	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
+	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
+	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+
+
+	// SUPPLY DROP TYPE DEFINITIONS
+	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
+	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
+	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
+	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
+	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
+
+
+	// SEED TYPE DEFINITIONS
+	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
+	DefineSeedType("Apple", item_RedApple,	5, 802, 0.72044);
+	DefineSeedType("Apple", item_GrnApple,	5, 802, 0.72044);
+	DefineSeedType("Banana", item_Banana,	6, 804, 1.31168);
+	DefineSeedType("Lemon", item_Lemon,		5, 810, 0.72044);
+	DefineSeedType("Orange", item_Orange,	5, 810, 0.72044);
+	// Unused seed types will be given uses in future
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 692, 0.31308); // wide greyish bush
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 728, 0.34546); // huge bush!
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 801, 0.21290); // large fern
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 857, 0.50507); // big leaves
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 861, -0.12961); // tall bush style
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2194, 0.25344); // tiny cactus
+	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
+
+
+	// CRAFTING SET DEFINITIONS
+	// items created by hand
 	DefineItemCraftSet(item_ParaBag, item_Knife, true, item_Parachute, false);
 	DefineItemCraftSet(item_MolotovEmpty, item_Bottle, false, item_Bandage, false);
 	DefineItemCraftSet(item_Bandage, item_Knife, true, item_Clothes, false);
 	DefineItemCraftSet(item_WheelLock, item_WheelLock, false, item_LocksmithKit, false);
 	DefineItemCraftSet(item_Bottle, item_Bottle, true, item_Bottle, true);
 
-	// Crafting - by constructing
+	// items created by constructing
 	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_MediumBox, false, item_MediumBox, false));
 	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_MediumBox, false));
 	SetCraftSetConstructible(5000, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_SmallBox, false));
 
-	// Crafting - with workbench
+	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTripMine, item_Explosive, false, item_Accelerometer, false)));
@@ -1428,9 +1469,11 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false)));
 
-	// Crafting - Uncomment to write out crafting recipes in wikia format!
+	// Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();
 
+
+	// LOOT TYPE DEFINITIONS
 	loot_Civilian		= DefineLootIndex("civi");
 	loot_Industrial		= DefineLootIndex("indu");
 	loot_Police			= DefineLootIndex("poli");
@@ -1448,6 +1491,7 @@ public OnScriptInit()
 	loot_OrdnanceCrate	= DefineLootIndex("scor");
 
 
+	// SKIN DEFINITIONS
 	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);
 	skin_MainF	= DefineClothesType(192,	"Civilian",			1, 0.0);
 
@@ -1468,6 +1512,8 @@ public OnScriptInit()
 	skin_ArmyF	= DefineClothesType(191,	"Military",			1, 0.2);
 	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.1);
 
+
+	// DRUG TYPE DEFINITIONS
 	drug_Antibiotic	= DefineDrugType("Antibiotic",	300000);
 	drug_Painkill	= DefineDrugType("Painkill",	300000);
 	drug_Lsd		= DefineDrugType("Lsd",			300000);
@@ -1476,6 +1522,8 @@ public OnScriptInit()
 	drug_Adrenaline	= DefineDrugType("Adrenaline",	300000);
 	drug_Heroin		= DefineDrugType("Heroin",		300000);
 
+
+	// LIQUID TYPE DEFINITIONS
 	liquid_Water			= DefineLiquidType("Water",					ROOT_LIQUID_BITMASK);
 	liquid_Milk				= DefineLiquidType("Milk",					ROOT_LIQUID_BITMASK);
 	liquid_Orange			= DefineLiquidType("Orange Juice",			ROOT_LIQUID_BITMASK);
@@ -1495,58 +1543,38 @@ public OnScriptInit()
 	liquid_Orangeade		= DefineLiquidType("Orangeade",				liquid_CarbonatedWater | liquid_Orange | liquid_Sugar);
 
 
-	DefineSafeboxType(item_MediumBox,		10);
-	DefineSafeboxType(item_SmallBox,		8);
-	DefineSafeboxType(item_LargeBox,		12);
-	DefineSafeboxType(item_Capsule,			2);
+	/*
+		VEHICLE GROUP AND TYPE DEFINITIONS	
+		
+		Groups:
+			Civilian:	Regular vehicles, most common and found around cities and towns.
+			Industrial:	Work vehicles found in industrial areas, factories and docks.
+			Medical:	Medical vehicles that contain medical items, found at hospitals.
+			Police:		Police vehicles with weapons in, found at police stations or on streets.
+			Military:	Military vehicles found at army/navy bases with lots of weapons in.
+			Unique:		Special vehicles that don't fit in to above groups.
 
-	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Parachute Bag",		item_ParaBag,		10, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Large Backpack",		item_LargeBackpack,	14, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
-	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
-	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
-	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
-	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
+		Categories:
+			Car:		Regular cars, not including minivans, SUVs, etc.
+			Truck:		Anything larger than a car, from minivans to vans and trucks.
+			Motorbike:	Motorbikes, not including pushbikes.
+			Pushbike:	Pushbikes such as mountain bike and BMX.
+			Helicopter:	All helicopters, not including Hydra.
+			Plane:		All planes, including sea-planes, sea-helicopters and Hydra.
+			Boat:		Water vehicles including Vortex but not including sea-planes and sea-helicopters.
+			Train:		Train vehicles locked to traintrack movement.
 
-	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
-	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
-	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
-	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
-	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
-
-	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
-	DefineSeedType("Apple", item_RedApple,	5, 802, 0.72044);
-	DefineSeedType("Apple", item_GrnApple,	5, 802, 0.72044);
-	DefineSeedType("Banana", item_Banana,	6, 804, 1.31168);
-	DefineSeedType("Lemon", item_Lemon,		5, 810, 0.72044);
-	DefineSeedType("Orange", item_Orange,	5, 810, 0.72044);
-	// Unused seed types will be given uses in future
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 692, 0.31308); // wide greyish bush
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 728, 0.34546); // huge bush!
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 801, 0.21290); // large fern
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 857, 0.50507); // big leaves
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 861, -0.12961); // tall bush style
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2194, 0.25344); // tiny cactus
-	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
-
-	// Regular vehicles, most common and found around cities and towns.
+		Sizes:
+			Note: sizes are only relative to the vehicle category. For example, a large bike is still smaller than a small truck.
+			Small:		Anything smaller than the average.
+			Medium:		The average size of most vehicles in this range.
+			Large:		Any exceptions that are larger. For cars, vehicles that are too large will just be moved to Truck category since some car spawns are in tight spots.
+	*/
 	vgroup_Civilian		= DefineVehicleSpawnGroup("Civilian");
-
-	// Work vehicles found in industrial areas, factories and docks.
 	vgroup_Industrial	= DefineVehicleSpawnGroup("Industrial");
-
-	// Medical vehicles that contain medical items, found at hospitals.
 	vgroup_Medical		= DefineVehicleSpawnGroup("Medical");
-
-	// Police vehicles with weapons in, found at police stations or on streets.
 	vgroup_Police		= DefineVehicleSpawnGroup("Police");
-
-	// Military vehicles found at army/navy bases with lots of weapons in.
 	vgroup_Military		= DefineVehicleSpawnGroup("Military");
-
-	// Special vehicles that don't fit in to above groups.
 	vgroup_Unique		= DefineVehicleSpawnGroup("Unique");
 
 // 00
@@ -1564,7 +1592,7 @@ public OnScriptInit()
 // 10
 	veht_Boxville	= DefineVehicleType(498, "Boxville",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	75.0,		19.0,	loot_CarIndustrial,		70,		55.0);
 	veht_DFT30		= DefineVehicleType(578, "DFT-30",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		60.0,		13.0,	loot_CarIndustrial,		0,		35.0,	VEHICLE_FLAG_CAN_SURF);
-	veht_Flatbed	= DefineVehicleType(455, "Flatbed",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,	70.0,		69.0,	loot_CarIndustrial,		100,	15.0);
+	veht_Flatbed	= DefineVehicleType(455, "Flatbed",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		70.0,		69.0,	loot_CarIndustrial,		100,	15.0);
 	veht_Rumpo		= DefineVehicleType(440, "Rumpo",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	55.0,		19.0,	loot_CarIndustrial,		80,		45.0);
 	veht_Yankee		= DefineVehicleType(456, "Yankee",			vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		45.0,	loot_CarIndustrial,		80,		40.0);
 	veht_Yosemite	= DefineVehicleType(554, "Yosemite",		vgroup_Civilian,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	60.0,		13.0,	loot_CarIndustrial,		44,		70.0);
@@ -1617,6 +1645,8 @@ public OnScriptInit()
 	veht_Linerunner	= DefineVehicleType(403, "Linerunner",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		120.0,		60.0,	loot_CarIndustrial,		12,		5.0,	VEHICLE_FLAG_CAN_SURF);
 	veht_Articulat1	= DefineVehicleType(591, "Articulated",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		0.0,		0.0,	loot_CarIndustrial,		100,	1.0,	VEHICLE_FLAG_TRAILER | VEHICLE_FLAG_CAN_SURF);
 
+
+	// SETTING VEHICLES TO PULL TRAILERS
 	SetVehicleTypeTrailerHitch(veht_Bobcat,		VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Patriot,	VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Yosemite,	VEHICLE_SIZE_SMALL);
@@ -1629,6 +1659,8 @@ public OnScriptInit()
 	SetVehicleTypeTrailerHitch(veht_Blista,		VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Linerunner, VEHICLE_SIZE_LARGE);
 
+
+	// DEFINING VEHICLE ARMOUR TYPES
 	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
 	SetVehicleTypeCarmour(veht_APC30, "APC30");
 	SetVehicleTypeCarmour(veht_Doomride, "Doomride");

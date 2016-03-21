@@ -25,6 +25,26 @@
 #include <YSI\y_hooks>
 
 
+// Keypad IDs
+enum
+{
+	k_ControlTower,
+	k_MainGate,
+	k_AirstripGate,
+	k_BlastDoor,
+	k_Storage,
+	k_StorageWatch,
+	k_Generator,
+	k_PassageTop,
+	k_PassageBottom,
+	k_Catwalk,
+	k_Headquarters1,
+	k_Headquarters2,
+	k_Shaft,
+	k_Lockup
+}
+
+
 new
 	code_ControlTower,
 	code_MainGate,
