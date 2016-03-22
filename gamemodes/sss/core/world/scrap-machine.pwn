@@ -33,7 +33,7 @@
 
 
 #define MAX_SCRAP_MACHINE			(32)
-#define MAX_SCRAP_MACHINE_ITEMS	(4)
+#define MAX_SCRAP_MACHINE_ITEMS		(12)
 
 
 enum E_SCRAP_MACHINE_DATA
@@ -92,14 +92,14 @@ stock CreateScrapMachine(Float:x, Float:y, Float:z, Float:rz)
 		return 0;
 	}
 
-	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", 12);
+	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", MAX_SCRAP_MACHINE_ITEMS);
 
 	sm_MachineScrapMachine[sm_Data[sm_Total][sm_machineId]] = sm_Total;
 
 	return sm_Total++;
 }
 
-stock SetItemScrapValue(ItemType:itemtype, value)
+stock SetItemTypeScrapValue(ItemType:itemtype, value)
 {
 	if(!IsValidItemType(itemtype))
 	{
@@ -186,7 +186,10 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 					ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
 			}
 		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", "Press 'Start' to activate the scrap machine and convert certain types of items into scrap. Items that cannot be turned into scrap metal will be destroyed.", "Start", "Cancel");
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine",
+			"Press 'Start' to activate the scrap machine and convert certain types of items into scrap.\n\
+			Items that cannot be turned into scrap metal will be destroyed.",
+			"Start", "Cancel");
 	}
 
 	return 0;
@@ -239,7 +242,9 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 {
 #pragma unused cooktime
 	d:1:HANDLER("[_sm_PlayerUseScrapMachine] finished cooking...");
-	new itemid;
+	new
+		itemid,
+		scrapcount;
 
 	for(new i, j = GetContainerSize(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId])); i < j; i++)
 	{
@@ -250,7 +255,15 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 		if(!IsValidItem(itemid))
 			break;
 
+		scrapcount += sm_ItemTypeScrapValue[GetItemType(itemid)];
+
 		DestroyItem(itemid);
+	}
+
+	scrapcount = scrapcount > MAX_SCRAP_MACHINE_ITEMS ? MAX_SCRAP_MACHINE_ITEMS : scrapcount;
+
+	for(new i; i < scrapcount; i++)
+	{
 		itemid = CreateItem(item_ScrapMetal);
 		AddItemToContainer(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), itemid);
 		d:3:HANDLER("[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", itemid, GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]));
