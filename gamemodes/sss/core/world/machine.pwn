@@ -90,7 +90,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], size)
+stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[], size)
 {
 	if(mach_Total == MAX_MACHINE - 1)
 	{
@@ -99,7 +99,7 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], size)
 	}
 
 	mach_Data[mach_Total][mach_objId] = CreateDynamicObject(modelid, x, y, z, 0.0, 0.0, rz);
-	mach_Data[mach_Total][mach_buttonId] = CreateButton(x, y, z + 0.5, "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu", .label = true, .areasize = 2.0);
+	mach_Data[mach_Total][mach_buttonId] = CreateButton(x, y, z + 0.5, label, .label = true, .areasize = 2.0);
 	mach_Data[mach_Total][mach_containerId] = CreateContainer(name, size);
 	strcat(mach_Data[mach_Total][mach_name], name, MAX_MACHINE_NAME);
 	mach_Data[mach_Total][mach_size] = size;

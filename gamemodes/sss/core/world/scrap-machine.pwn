@@ -34,11 +34,14 @@
 
 #define MAX_SCRAP_MACHINE			(32)
 #define MAX_SCRAP_MACHINE_ITEMS		(12)
+#define MAX_SCRAP_MACHINE_FUEL		(80.0)
+#define SCRAP_MACHINE_FUEL_USAGE	(3.5)
 
 
 enum E_SCRAP_MACHINE_DATA
 {
 			sm_machineId,
+Float:		sm_fuel,
 bool:		sm_cooking,
 			sm_smoke,
 			sm_cookTime,
@@ -92,7 +95,7 @@ stock CreateScrapMachine(Float:x, Float:y, Float:z, Float:rz)
 		return 0;
 	}
 
-	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", MAX_SCRAP_MACHINE_ITEMS);
+	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", "Press "KEYTEXT_INTERACT" to access scrap machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel", MAX_SCRAP_MACHINE_ITEMS);
 
 	sm_MachineScrapMachine[sm_Data[sm_Total][sm_machineId]] = sm_Total;
 
@@ -166,34 +169,91 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 		DisplayContainerInventory(playerid, GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]));
 		return 0;
 	}
-	else
+
+	sm_CurrentScrapMachine[playerid] = scrapmachineid;
+
+	if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
 	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, listitem, inputtext
-
-			if(response)
-			{
-				new ret = _sm_StartCooking(scrapmachineid);
-
-				if(ret == 0)
-					ShowActionText(playerid, "There are no items inside.", 5000);
-
-				else if(ret == -1)
-					ShowActionText(playerid, "The server is restarting soon, not enough time to cook.~n~Try putting less items inside to reduce cook time.", 6000);
-
-				else
-					ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
-			}
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine",
-			"Press 'Start' to activate the scrap machine and convert certain types of items into scrap.\n\
-			Items that cannot be turned into scrap metal will be destroyed.",
-			"Start", "Cancel");
+		d:1:HANDLER("[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(sm_Data[scrapmachineid][sm_fuel]));
+		StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 1000), floatround(sm_Data[scrapmachineid][sm_fuel] * 1000));
+		return 0;
 	}
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+
+		if(response)
+		{
+			new ret = _sm_StartCooking(scrapmachineid);
+
+			if(ret == 0)
+				ShowActionText(playerid, "There are no items inside.", 5000);
+
+			else if(ret == -1)
+				ShowActionText(playerid, "The server is restarting soon, not enough time to cook.~n~Try putting less items inside to reduce cook time.", 6000);
+
+			else if(ret == -2)
+				ShowActionText(playerid, sprintf("There is not enough fuel. Machine requires %.1f per item.", SCRAP_MACHINE_FUEL_USAGE), 6000);
+
+			else
+				ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
+
+			sm_CurrentScrapMachine[playerid] = -1;
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", sprintf("Press 'Start' to activate the scrap machine and convert certain types of items into scrap.\nItems that cannot be turned into scrap metal will be destroyed.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", sm_Data[scrapmachineid][sm_fuel]), "Start", "Cancel");
 
 	return 0;
 }
+
+public OnHoldActionUpdate(playerid, progress)
+{
+	if(sm_CurrentScrapMachine[playerid] != -1)
+	{
+		d:3:HANDLER("[OnHoldActionUpdate] scrapmachineid %d progress %d", sm_CurrentScrapMachine[playerid], progress);
+
+		new itemid = GetPlayerItem(playerid);
+
+		if(GetItemType(itemid) != item_GasCan)
+		{
+			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+			StopHoldAction(playerid);
+			sm_CurrentScrapMachine[playerid] = -1;
+		}
+
+		new fuel = GetItemArrayDataAtCell(itemid, 0);
+
+		if(fuel <= 0)
+		{
+			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
+			StopHoldAction(playerid);
+			sm_CurrentScrapMachine[playerid] = -1;
+		}
+		else
+		{
+			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] + 1.0);
+			SetItemArrayDataAtCell(itemid, fuel - 1, 0);
+			sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] += 1.0;
+		}
+	}
+
+	#if defined sm_OnHoldActionUpdate
+		return sm_OnHoldActionUpdate(playerid, progress);
+	#else
+		return 0;
+	#endif
+}
+
+#if defined _ALS_OnHoldActionUpdate
+	#undef OnHoldActionUpdate
+#else
+	#define _ALS_OnHoldActionUpdate
+#endif
+#define OnHoldActionUpdate sm_OnHoldActionUpdate
+#if defined sm_OnHoldActionUpdate
+	forward sm_OnHoldActionUpdate(playerid, progress);
+#endif
 
 _sm_StartCooking(scrapmachineid)
 {
@@ -216,6 +276,9 @@ _sm_StartCooking(scrapmachineid)
 	// if there's not enough time left, don't allow a new cook to start.
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
 		return -1;
+
+	if(sm_Data[scrapmachineid][sm_fuel] < SCRAP_MACHINE_FUEL_USAGE * itemcount)
+		return -2;
 
 	new
 		Float:x,
@@ -256,6 +319,7 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 			break;
 
 		scrapcount += sm_ItemTypeScrapValue[GetItemType(itemid)];
+		sm_Data[scrapmachineid][sm_fuel] -= SCRAP_MACHINE_FUEL_USAGE;
 
 		DestroyItem(itemid);
 	}
