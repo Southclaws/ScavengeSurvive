@@ -38,14 +38,7 @@
 
 enum E_SCRAP_MACHINE_DATA
 {
-			sm_objId,
-			sm_buttonId,
-			sm_containerId,
-Text3D:		sm_labelId,
-Float:		sm_posX,
-Float:		sm_posY,
-Float:		sm_posZ,
-Float:		sm_rotZ,
+			sm_machineId,
 bool:		sm_cooking,
 			sm_smoke,
 			sm_cookTime,
@@ -58,7 +51,7 @@ static
 			sm_Total,
 
 			sm_ItemTypeScrapValue[ITM_MAX_TYPES],
-			sm_ButtonScrapMachine[BTN_MAX] = {-1, ...},
+			sm_MachineScrapMachine[BTN_MAX] = {INVALID_MACHINE_ID, ...},
 
 			sm_CurrentScrapMachine[MAX_PLAYERS];
 
@@ -99,16 +92,9 @@ stock CreateScrapMachine(Float:x, Float:y, Float:z, Float:rz)
 		return 0;
 	}
 
-	sm_Data[sm_Total][sm_objId] = CreateDynamicObject(920, x, y, z, 0.0, 0.0, rz);
-	sm_Data[sm_Total][sm_buttonId] = CreateButton(x, y, z, "Press "KEYTEXT_INTERACT" to use scrap machine", .areasize = 2.0);
-	sm_Data[sm_Total][sm_containerId] = CreateContainer("Scrap Machine", 12);
-	sm_Data[sm_Total][sm_labelId] = CreateDynamic3DTextLabel("Scrap Machine", GREEN, x, y, z + 1.0, 10.0);
-	sm_Data[sm_Total][sm_posX] = x;
-	sm_Data[sm_Total][sm_posY] = y;
-	sm_Data[sm_Total][sm_posZ] = z;
-	sm_Data[sm_Total][sm_rotZ] = rz;
+	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", 12);
 
-	sm_ButtonScrapMachine[sm_Data[sm_Total][sm_buttonId]] = sm_Total;
+	sm_MachineScrapMachine[sm_Data[sm_Total][sm_machineId]] = sm_Total;
 
 	return sm_Total++;
 }
@@ -134,40 +120,40 @@ stock SetItemScrapValue(ItemType:itemtype, value)
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+public OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
-	if(sm_ButtonScrapMachine[buttonid] != -1)
+	if(sm_MachineScrapMachine[machineid] != -1)
 	{
-		d:1:HANDLER("[OnButtonPress] button %d scrap machine %d", buttonid, sm_ButtonScrapMachine[buttonid]);
-		if(sm_Data[sm_ButtonScrapMachine[buttonid]][sm_buttonId] == buttonid)
+		d:1:HANDLER("[OnPlayerUseMachine] machineid %d scrap machine %d interactiontype %d", machineid, sm_MachineScrapMachine[machineid], interactiontype);
+		if(sm_Data[sm_MachineScrapMachine[machineid]][sm_machineId] == machineid)
 		{
-			_sm_PlayerUseScrapMachine(playerid, sm_ButtonScrapMachine[buttonid]);
+			_sm_PlayerUseScrapMachine(playerid, sm_MachineScrapMachine[machineid], interactiontype);
 		}
 		else
 		{
-			printf("ERROR: ScrapMachine bi-directional link error. sm_ButtonScrapMachine sm_buttonId = %d buttonid = %d");
+			printf("ERROR: ScrapMachine bi-directional link error. sm_MachineScrapMachine sm_machineId = %d machineid = %d");
 		}
 	}
 
-	#if defined sm_OnButtonPress
-		return sm_OnButtonPress(playerid, buttonid);
+	#if defined sm_OnPlayerUseMachine
+		return sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
 	#else
 		return 0;
 	#endif
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
+#if defined _ALS_OnPlayerUseMachine
+	#undef OnPlayerUseMachine
 #else
-	#define _ALS_OnButtonPress
+	#define _ALS_OnPlayerUseMachine
 #endif
-#define OnButtonPress sm_OnButtonPress
-#if defined sm_OnButtonPress
-	forward sm_OnButtonPress(playerid, buttonid);
+#define OnPlayerUseMachine sm_OnPlayerUseMachine
+#if defined sm_OnPlayerUseMachine
+	forward sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
 #endif
 
-_sm_PlayerUseScrapMachine(playerid, scrapmachineid)
+_sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 {
-	d:1:HANDLER("[_sm_PlayerUseScrapMachine] playerid %d scrapmachineid %d", playerid, scrapmachineid);
+	d:1:HANDLER("[_sm_PlayerUseScrapMachine] playerid %d scrapmachineid %d interactiontype %d", playerid, scrapmachineid, interactiontype);
 
 	if(sm_Data[scrapmachineid][sm_cooking])
 	{
@@ -175,31 +161,33 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid)
 		return 0;
 	}
 
-	if(IsValidItem(GetPlayerItem(playerid)))
+	if(interactiontype == 0)
 	{
-		DisplayContainerInventory(playerid, sm_Data[scrapmachineid][sm_containerId]);
+		DisplayContainerInventory(playerid, GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]));
 		return 0;
 	}
-
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	else
 	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
+		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
-			new ret = _sm_StartCooking(scrapmachineid);
+			#pragma unused pid, dialogid, listitem, inputtext
 
-			if(ret == 0)
-				ShowActionText(playerid, "There are no items inside.~n~Interact while holding an item to put it inside.", 8000);
+			if(response)
+			{
+				new ret = _sm_StartCooking(scrapmachineid);
 
-			else if(ret == -1)
-				ShowActionText(playerid, "The machine can't finish before the next server restart.", 6000);
+				if(ret == 0)
+					ShowActionText(playerid, "There are no items inside.", 5000);
 
-			else
-				ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
+				else if(ret == -1)
+					ShowActionText(playerid, "The server is restarting soon, not enough time to cook.~n~Try putting less items inside to reduce cook time.", 6000);
+
+				else
+					ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
+			}
 		}
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", "Press 'Start' to activate the scrap machine and convert certain types of items into scrap. Items that cannot be turned into scrap metal will be destroyed.", "Start", "Cancel");
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", "Press 'Start' to activate the scrap machine and convert certain types of items into scrap. Items that cannot be turned into scrap metal will be destroyed.", "Start", "Cancel");
 
 	return 0;
 }
@@ -207,13 +195,11 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid)
 _sm_StartCooking(scrapmachineid)
 {
 	d:1:HANDLER("[_sm_PlayerUseScrapMachine] scrapmachineid %d", scrapmachineid);
-	new
-		itemcount,
-		cooktime;
+	new itemcount;
 
-	for(new j = GetContainerSize(sm_Data[scrapmachineid][sm_containerId]); itemcount < j; itemcount++)
+	for(new j = GetContainerSize(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId])); itemcount < j; itemcount++)
 	{
-		if(!IsContainerSlotUsed(sm_Data[scrapmachineid][sm_containerId], itemcount))
+		if(!IsContainerSlotUsed(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), itemcount))
 			break;
 	}
 
@@ -221,19 +207,26 @@ _sm_StartCooking(scrapmachineid)
 		return 0;
 
 	// cook time = 90 seconds per item plus random 30 seconds
-	cooktime = (itemcount * 90) + random(30);
+	new cooktime = (itemcount * 90) + random(30);
 	d:2:HANDLER("[_sm_PlayerUseScrapMachine] itemcount %d cooktime %ds", itemcount, cooktime);
 
 	// if there's not enough time left, don't allow a new cook to start.
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
 		return -1;
 
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetMachinePos(sm_Data[scrapmachineid][sm_machineId], x, y, z);
+
 	cooktime *= 1000; // convert to ms
 
 	d:2:HANDLER("[_sm_PlayerUseScrapMachine] started cooking...");
 	sm_Data[scrapmachineid][sm_cooking] = true;
 	DestroyDynamicObject(sm_Data[scrapmachineid][sm_smoke]);
-	sm_Data[scrapmachineid][sm_smoke] = CreateDynamicObject(18726, sm_Data[scrapmachineid][sm_posX], sm_Data[scrapmachineid][sm_posY], sm_Data[scrapmachineid][sm_posZ], 0.0, 0.0, sm_Data[scrapmachineid][sm_rotZ] - 1.0);
+	sm_Data[scrapmachineid][sm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
 	sm_Data[scrapmachineid][sm_cookTime] = cooktime;
 	sm_Data[scrapmachineid][sm_startTime] = GetTickCount();
 
@@ -248,9 +241,9 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 	d:1:HANDLER("[_sm_PlayerUseScrapMachine] finished cooking...");
 	new itemid;
 
-	for(new i, j = GetContainerSize(sm_Data[scrapmachineid][sm_containerId]); i < j; i++)
+	for(new i, j = GetContainerSize(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId])); i < j; i++)
 	{
-		itemid = GetContainerSlotItem(sm_Data[scrapmachineid][sm_containerId], i);
+		itemid = GetContainerSlotItem(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), i);
 
 		d:3:HANDLER("[_sm_PlayerUseScrapMachine] slot %d: destroying %d", i, itemid);
 
@@ -259,8 +252,8 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 
 		DestroyItem(itemid);
 		itemid = CreateItem(item_ScrapMetal);
-		AddItemToContainer(sm_Data[scrapmachineid][sm_containerId], itemid);
-		d:3:HANDLER("[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", itemid, sm_Data[scrapmachineid][sm_containerId]);
+		AddItemToContainer(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), itemid);
+		d:3:HANDLER("[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", itemid, GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]));
 	}
 
 	DestroyDynamicObject(sm_Data[scrapmachineid][sm_smoke]);

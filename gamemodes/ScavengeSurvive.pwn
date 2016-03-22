@@ -522,6 +522,7 @@ new stock
 #include "sss/core/world/loot.pwn"
 #include "sss/core/world/craft-construct.pwn"
 #include "sss/core/world/workbench.pwn"
+#include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
 
 // ADMINISTRATION TOOLS
