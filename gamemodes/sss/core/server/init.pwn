@@ -1082,9 +1082,27 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Tomato,		1);
 	SetItemTypeMaxArrayData(item_HeartShapedBox,2);
 	SetItemTypeMaxArrayData(item_AntiSepBandage,1);
+	SetItemTypeMaxArrayData(item_WoodLog,		1);
+	SetItemTypeMaxArrayData(item_Sledgehammer,	4);
+	SetItemTypeMaxArrayData(item_RawFish,		3);
+	SetItemTypeMaxArrayData(item_Spanner,		1);
+	SetItemTypeMaxArrayData(item_Suitcase,		1);
+	SetItemTypeMaxArrayData(item_OilCan,		1);
+	SetItemTypeMaxArrayData(item_RadioBox,		1);
+	SetItemTypeMaxArrayData(item_BigSword,		4);
+	SetItemTypeMaxArrayData(item_Microphone,	1);
+	SetItemTypeMaxArrayData(item_Spatula,		4);
+	SetItemTypeMaxArrayData(item_Pan,			4);
+	SetItemTypeMaxArrayData(item_Knife2,		4);
+	SetItemTypeMaxArrayData(item_Meat2,			3);
+	SetItemTypeMaxArrayData(item_FryingPan,		4);
+	SetItemTypeMaxArrayData(item_PizzaOnly,		3);
+	SetItemTypeMaxArrayData(item_BreadLoaf,		3);
+	SetItemTypeMaxArrayData(item_Banana,		3);
+	SetItemTypeMaxArrayData(item_Orange,		3);
 	SetItemTypeMaxArrayData(item_WheelLock,		1);
-	SetItemTypeMaxArrayData(item_RedApple,		1);
-	SetItemTypeMaxArrayData(item_Lemon,			1);
+	SetItemTypeMaxArrayData(item_RedApple,		3);
+	SetItemTypeMaxArrayData(item_Lemon,			3);
 	SetItemTypeMaxArrayData(item_PisschBox,		1);
 	SetItemTypeMaxArrayData(item_PizzaBox,		3);
 	SetItemTypeMaxArrayData(item_MilkBottle,	3);
@@ -1111,7 +1129,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Cross,			1);
 	SetItemTypeMaxArrayData(item_RedPanel,		1);
 	SetItemTypeMaxArrayData(item_Fork,			4);
-	SetItemTypeMaxArrayData(item_Knife2,		4);
+	SetItemTypeMaxArrayData(item_Knife3,		4);
 	SetItemTypeMaxArrayData(item_Ketchup,		3);
 	SetItemTypeMaxArrayData(item_Mustard,		3);
 	SetItemTypeMaxArrayData(item_Boot,			1);
@@ -1133,6 +1151,8 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Padlock,		1);
 	SetItemTypeMaxArrayData(item_Keg,			1);
 	SetItemTypeMaxArrayData(item_Canister,		1);
+	SetItemTypeMaxArrayData(item_ScrapMetal,	1);
+	SetItemTypeMaxArrayData(item_RefinedMetal,	1);
 
 
 	// SETTING ITEM TYPE SCRAP VALUE
@@ -1328,6 +1348,12 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_StunGun,			0,							-1,				0.0,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Screwdriver,		0,							-1,				0.24,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Mailbox,			0,							-1,				0.0,			_:1.40,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Sledgehammer,		0,							-1,				0.03,			_:2.9,			anim_Heavy);
+	DefineItemTypeWeapon(item_BigSword,			0,							-1,				0.39,			_:0.15,			anim_Heavy);
+	DefineItemTypeWeapon(item_Spatula,			0,							-1,				0.001,			0,				anim_Blunt);
+	DefineItemTypeWeapon(item_Pan,				0,							-1,				0.01,			_:1.05,			anim_Blunt);
+	DefineItemTypeWeapon(item_Knife2,			0,							-1,				0.29,			0,				anim_Stab);
+	DefineItemTypeWeapon(item_FryingPan,		0,							-1,				0.01,			_:1.06,			anim_Blunt);
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
 	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		-1,				0.05,			20,		0);
 	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			-1,				0.07,			35,		0);
@@ -1440,6 +1466,7 @@ public OnScriptInit()
 	DefineFoodItem(item_CanDrink,		10, 0.6, 0, 0, 1, 0);
 	DefineFoodItem(item_Tomato,			3, 3.0, 1, 0, 0, 1);
 	DefineFoodItem(item_RawFish,		4, 4.5, 1, 1, 0, 1);
+	DefineFoodItem(item_Meat2,			6, 16.7, 1, 1, 0, 1);
 	DefineFoodItem(item_PizzaOnly,		6, 18.5, 1, 0, 0, 1);
 	DefineFoodItem(item_BreadLoaf,		10, 6.32, 1, 0, 0, 1);
 	DefineFoodItem(item_Banana,			3, 5.5, 0, 0, 0, 1);
