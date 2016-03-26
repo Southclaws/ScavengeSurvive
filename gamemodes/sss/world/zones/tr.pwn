@@ -241,6 +241,8 @@ TR_District_RobadaGen()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'TR_District_RobadaGen' please wait...");
 
+	CreateWorkBench(-1513.53040, 1978.50232, 47.85660);
+
 	CreateStaticLootSpawn(-2084.18799, 2308.36963, 22.98837,	loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-1957.37402, 2391.17017, 48.48126,	loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-1312.63354, 2532.77979, 86.72825,	loot_Civilian, 20.0);

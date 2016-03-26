@@ -422,6 +422,8 @@ BC_District_Carson()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Carson' please wait...");
 
+	CreateWorkBench(318.60028, 1145.81543, 8.04844);
+
 	CreateStaticLootSpawn(-204.049407, 1052.944702, 18.736200,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-203.905685, 1061.835571, 18.736690,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(65.135223, 1163.147705, 17.655750,		loot_Civilian, 20.0);
@@ -590,6 +592,8 @@ BC_District_Hunter()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'BC_District_Hunter' please wait...");
 
+	CreateWorkBench(585.17377, 873.72583, -43.01944);
+
 	CreateStaticLootSpawn(627.578979, 894.678649, -42.107200,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(578.331787, 829.218872, -30.850990,		loot_Industrial, 20.0);
 	CreateStaticLootSpawn(591.060485, 878.450073, -43.504810,		loot_Industrial, 20.0);
@@ -613,6 +617,8 @@ BC_District_Hunter()
 BC_District_BoneGen()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'BC_District_BoneGen' please wait...");
+
+	CreateWorkBench(-371.56595, 2235.98975, 41.93906);
 
 	CreateStaticLootSpawn(-583.062133, 2713.019042, 70.823257,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-13.895059, 2345.650634, 23.131660,		loot_Civilian, 20.0);
