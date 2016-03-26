@@ -140,6 +140,7 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
+#include <mapandreas>
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
@@ -599,6 +600,7 @@ new stock
 #include "sss/core/item/seedbag.pwn"
 #include "sss/core/item/plantpot.pwn"
 #include "sss/core/item/heartshapedbox.pwn"
+#include "sss/core/item/fishingrod.pwn"
 
 // GAME DATA LOADING
 #include "sss/data/loot.pwn" // todo: load from file
@@ -647,6 +649,8 @@ OnGameModeInit_Setup()
 	print("\n[OnGameModeInit_Setup] Setting up...");
 
 	Streamer_ToggleErrorCallback(true);
+	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
