@@ -614,7 +614,7 @@ LS_District_Housing2()
 {
 	MsgAll(YELLOW, " >  Loading world region: 'LS_District_Housing2' please wait...");
 
-	CreateWorkBench(2458.86377, -1974.19800, 12.95251);
+	CreateWorkBench(2458.86377, -1974.19800, 12.95251, -91.14005);
 
 	CreateStaticLootSpawn(2535.713134, -1657.764526, 14.267840,	loot_Civilian, 20, 3);
 	CreateStaticLootSpawn(2498.556640, -1643.643920, 12.746850,	loot_Civilian, 20, 3);
