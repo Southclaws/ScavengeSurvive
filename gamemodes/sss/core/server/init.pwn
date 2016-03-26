@@ -577,7 +577,7 @@ public OnScriptInit()
 	item_NightVision	= DefineItemType("Night Vision",		"NightVision",		000,	2,	90.0);
 	item_ThermalVision	= DefineItemType("Thermal Vision",		"ThermalVision",	000,	2,	90.0);
 	item_Parachute		= DefineItemType("Parachute",			"Parachute",		371,	6,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000);
-	item_Medkit			= DefineItemType("Medkit",				"Medkit",			11736,	1,	0.0, 0.0, 0.0,			16.996,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
+	item_Medkit			= DefineItemType("Medkit",				"Medkit",			11736,	1,	0.0, 0.0, 0.0,			0.004,	0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	item_HardDrive		= DefineItemType("Hard Drive",			"HardDrive",		328,	1,	90.0, 0.0, 0.0,			0.0);
 	item_Key			= DefineItemType("Key",					"Key",				11746,	1,	90.0, 0.0, 0.0,			0.026);
 // 50
