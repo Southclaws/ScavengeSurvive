@@ -229,7 +229,7 @@ hook OnGameModeInit()
 	DefineItemToolTip(item_DoctorBag,		"You can slow bleeding, regenerate blood and heal wounds on yourself or others with this");
 	DefineItemToolTip(item_Backpack,		"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
 	DefineItemToolTip(item_Satchel,			"Press "KEYTEXT_PUT_AWAY" to wear a bag, press "KEYTEXT_DROP_ITEM" while holding nothing to remove a bag");
-	DefineItemToolTip(item_Wheel,			"Use this to repair vehicle wheels by standing at the front and pressing "KEYTEXT_INTERACT"");
+	DefineItemToolTip(item_Wheel,			"Use this to repair vehicle wheels by facing them and pressing "KEYTEXT_INTERACT"");
 	DefineItemToolTip(item_MotionSense,		"Used for crafting");
 	DefineItemToolTip(item_Accelerometer,	"used for crafting");
 	DefineItemToolTip(item_TntTripMine,		"Arm on the floor by pressing "KEYTEXT_INTERACT" arm inside containers by opening options and clicking 'Arm' will explode when interacted with");
