@@ -404,6 +404,7 @@ new stock
 #include "sss/core/server/activity-log.pwn"
 #include "sss/core/server/file-check.pwn"
 #include "sss/core/server/info-message.pwn"
+#include "sss/core/server/language.pwn"
 
 /*
 	PARENT SYSTEMS
@@ -467,6 +468,7 @@ new stock
 #include "sss/core/player/whitelist.pwn"
 #include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
+#include "sss/core/player/language.pwn"
 
 // CHARACTER SCRIPTS
 #include "sss/core/char/food.pwn"
