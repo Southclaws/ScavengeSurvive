@@ -10,6 +10,7 @@ import heatmap
 font = ImageFont.truetype("arial.ttf", 32)
 p = re.compile(r'[ \t]*CreateStaticLootSpawn\(([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*(loot_[a-zA-Z]*),\s*([\-\+]?[0-9]*(?:\.[0-9]+)?)(?:,\s([0-9]))?(?:,\s([0-9]))?(?:,\s([0-9]))?\);')
 v = re.compile(r'Vehicle\(([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*.*\)')
+o = re.compile(r'CreateObject\(([0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+)\);')
 DOT_RADIUS = 6
 BOX_RADIUS = 2
 
@@ -667,6 +668,13 @@ class Vehicle():
 		self.y = y
 		self.z = z
 
+class Object():
+
+	def __init__(self, x, y, z):
+		self.x = x
+		self.y = y
+		self.z = z
+
 
 def load_loot(filename):
 
@@ -709,6 +717,27 @@ def load_vehicles(directory):
 							float(r.group(3))))	# z
 
 	return vehicles
+
+
+def load_obj(directory):
+
+	objs = []
+
+	for root, dirs, files in os.walk(directory):
+		for fn in files:
+			if os.path.splitext(fn)[1] == ".map" and "_TESTING" not in root:
+				with io.open(os.path.join(root, fn)) as f:
+					for l in f:
+						r = o.match(l)
+
+						if r:
+							objs.append(Object(
+								float(r.group(2)),	# x
+								float(r.group(3)),	# y
+								float(r.group(4))))	# z
+
+	return objs
+
 
 
 def draw_loot(im, draw, loot):
@@ -757,6 +786,20 @@ def draw_vehicles(im, draw, vehicles):
 		draw.rectangle([x - BOX_RADIUS, y - BOX_RADIUS, x + BOX_RADIUS, y + BOX_RADIUS], outline=(0, 0, 0), fill=(80, 80, 80))
 
 
+def draw_obj(im, draw, objs):
+
+	print(len(objs), "objs spawns being drawn")
+
+	x = 0.0
+	y = 0.0
+
+	for s in objs:
+		x = s.x + 3000
+		y = 6000 - (s.y + 3000)
+		draw.ellipse([x - DOT_RADIUS, y - DOT_RADIUS, x + DOT_RADIUS, y + DOT_RADIUS], outline=(255, 255, 255), fill=(0, 0, 0))
+
+
+
 def generate_loot_heatmap(im, draw, loot):
 
 	points = []
@@ -795,20 +838,42 @@ def generate_vehicle_heatmap(im, draw, vehicles):
 	im.save("gtasa-blank-1.0-ss-map-heat-vehicle.jpg")
 
 
+def generate_obj_heatmap(im, draw, objs):
+
+	points = []
+
+	for l in objs:
+		points.append([int(l.x + 3000), int(l.y + 3000)])
+
+	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
+	hmimg = hm.heatmap(
+		points,
+		dotsize=150,
+		size=(6000, 6000),
+		scheme='classic',
+		area=((0, 0), (6000, 6000)))
+
+	im.paste(hmimg, mask=hmimg)
+	im.save("gtasa-blank-1.0-ss-map-heat-objs.jpg")
+
+
 def main():
 
 	loot = []
 	vehicles = []
+	objs = []
 
-	loot += load_loot("../gamemodes/SS/World/Zones/LS.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/SF.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/LV.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/RC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/FC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/BC.pwn")
-	loot += load_loot("../gamemodes/SS/World/Zones/TR.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/ls.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/sf.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/lv.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/rc.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/fc.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/bc.pwn")
+	loot += load_loot("../gamemodes/sss/world/zones/tr.pwn")
 
 	vehicles += load_vehicles("../scriptfiles/Vehicles/")
+
+	objs = load_obj("../scriptfiles/Maps/")
 
 	# Initialise PIL stuff
 	mapimg = Image.open("gtasa-blank-1.0.jpg")
@@ -825,6 +890,8 @@ def main():
 	generate_loot_heatmap(copy.copy(mapimg), draw, loot)
 
 	generate_vehicle_heatmap(copy.copy(mapimg), draw, vehicles)
+
+	generate_obj_heatmap(copy.copy(mapimg), draw, objs)
 
 
 if __name__ == '__main__':
