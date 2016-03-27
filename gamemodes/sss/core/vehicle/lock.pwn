@@ -89,7 +89,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	if(lock_Status[vehicleid])
 	{
-		CancelPlayerMovement(playerid);
+		ClearAnimations(playerid);
 		ShowActionText(playerid, "Door Locked", 3000);
 	}
 
