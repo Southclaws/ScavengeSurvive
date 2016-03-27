@@ -60,7 +60,7 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Carmour'...");
 
-	DirectoryCheck(DIRECTORY_CARMOUR);
+	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR);
 }
 
 
