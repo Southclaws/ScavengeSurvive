@@ -426,7 +426,7 @@ timer UpdateSpectateMode[100](playerid)
 				GetItemExtraData(holsteritemid));
 		}
 
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+		GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
 		format(title, sizeof(title), "%s (%d)", name, targetid);
 
