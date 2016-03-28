@@ -366,7 +366,7 @@ stock _hd_IsPlayerInWater(playerid)
 		Float:y,
 		Float:z;
 
-	GetPlayerPos(playerid, x, y, z));
+	GetPlayerPos(playerid, x, y, z);
 
 	if(z < 44.0)
 	{

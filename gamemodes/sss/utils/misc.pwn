@@ -343,6 +343,10 @@ new Float:water_triangles[][] = {
 
 stock IsPosInWater(Float:x, Float:y, Float:z)
 {
+	// todo: weather based z threshold
+	if(z < 1.7 && !IsPointInMapBounds(x, y, z))
+		return 1;
+
 	for(new i = 0; i < sizeof water_squares; i++) // Check the squares. This is simple.
 	{
 		if(z <= water_squares[i][4])
