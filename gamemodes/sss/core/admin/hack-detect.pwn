@@ -436,6 +436,10 @@ stock _hd_IsPlayerInWater(playerid)
 	// Is the player at sea level? (1.9m takes into account wave height)
 	if(z < 1.9)
 	{
+		// If out of map bounds, must be in water.
+		if(!IsPointInMapBounds(x, y, z))
+			return 1;
+
 		// Check if the player is in any areas of the map below sea level that
 		// aren't under water:
 
