@@ -317,7 +317,7 @@ SwimFlyCheck(playerid)
 		if(-5.0 < (x - DEFAULT_POS_X) < 5.0 && -5.0 < (y - DEFAULT_POS_Y) < 5.0 && -5.0 < (z - DEFAULT_POS_Z) < 5.0)
 			return 0;
 
-		if(!IsPlayerInWater(playerid))
+		if(!_hd_IsPlayerInWater(playerid))
 		{
 			new
 				name[MAX_PLAYER_NAME],
@@ -335,7 +335,59 @@ SwimFlyCheck(playerid)
 	return 1;
 }
 
+new Float:water_places[20][4] =
+{
+	{30.0,			2313.0,		-1417.0,	23.0},
+	{15.0,			1280.0,		-773.0,		1083.0},
+	{25.0,			2583.0,		2385.0,		15.0},
+	{20.0,			225.0,		-1187.0,	74.0},
+	{50.0,			1973.0,		-1198.0,	17.0},
+	{180.0,			1937.0, 	1589.0,		9.0},
+	{55.0,			2142.0,		1285.0, 	8.0},
+	{45.0,			2150.0,		1132.0,		8.0},
+	{55.0,			2089.0,		1915.0,		10.0},
+	{32.0,			2531.0,		1567.0,		9.0},
+	{21.0,			2582.0,		2385.0,		17.0},
+	{33.0,			1768.0,		2853.0,		10.0},
+	{47.0,			-2721.0,	-466.0,		4.0},
+	{210.0,			-671.0,		-1898.0,	6.0},
+	{45.0,			1240.0,		-2381.0,	9.0},
+	{50.0,			1969.0,		-1200.0,	18.0},
+	{10.0,			513.0,		-1105.0,	79.0},
+	{20.0,			193.0,		-1230.0,	77.0},
+	{30.0,			1094.0,		-672.0,		113.0},
+	{20.0,			1278.0,		-805.0,		87.0}
+};
 
+stock _hd_IsPlayerInWater(playerid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z));
+
+	if(z < 44.0)
+	{
+		if(Distance(x, y, z, -965.0, 2438.0, 42.0) <= 700.0)
+			return 1;
+	}
+
+	if(z < 1.9)
+		return (Distance(x, y, z, 618.4129, 863.3164, 1.0839) >= 200.0) && (Distance(x, y, z, -1597.1052, 703.2137, -5.9072) >= 80.0);
+
+	for(new i; i < sizeof(water_places); i++)
+	{
+		if(Distance2D(x, y, water_places[i][1], water_places[i][2]) <= water_places[i][0])
+		{
+			if(z < water_places[i][3])
+				return 1;
+		}
+	}
+
+	return 0;
+}
 /*==============================================================================
 
 	Vehicle Health
