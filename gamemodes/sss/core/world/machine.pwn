@@ -54,7 +54,8 @@ Float:		mach_rotZ
 static
 			mach_Data[MAX_MACHINE][E_MACHINE_DATA],
 			mach_Total,
-			mach_ButtonMachine[BTN_MAX] = {-1, ...},
+			mach_ButtonMachine[BTN_MAX] = {INVALID_MACHINE_ID, ...},
+			mach_ContainerMachine[CNT_MAX] = {INVALID_MACHINE_ID, ...},
 			mach_CurrentMachine[MAX_PLAYERS],
 			mach_MachineInteractTick[MAX_PLAYERS],
 Timer:		mach_HoldTimer[MAX_PLAYERS];
@@ -79,7 +80,7 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	mach_CurrentMachine[playerid] = -1;
+	mach_CurrentMachine[playerid] = INVALID_MACHINE_ID;
 }
 
 
@@ -109,6 +110,7 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[
 	mach_Data[mach_Total][mach_rotZ] = rz;
 
 	mach_ButtonMachine[mach_Data[mach_Total][mach_buttonId]] = mach_Total;
+	mach_ContainerMachine[mach_Data[mach_Total][mach_containerId]] = mach_Total;
 
 	return mach_Total++;
 }
@@ -123,7 +125,7 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[
 
 public OnButtonPress(playerid, buttonid)
 {
-	if(mach_ButtonMachine[buttonid] != -1)
+	if(mach_ButtonMachine[buttonid] != INVALID_MACHINE_ID)
 	{
 		d:1:HANDLER("[OnButtonPress] button %d machine %d", buttonid, mach_ButtonMachine[buttonid]);
 		if(mach_Data[mach_ButtonMachine[buttonid]][mach_buttonId] == buttonid)
@@ -225,6 +227,15 @@ stock GetButtonMachineID(buttonid)
 		return INVALID_MACHINE_ID;
 
 	return mach_ButtonMachine[buttonid];
+}
+
+// mach_ContainerMachine
+stock GetContainerMachineID(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_MACHINE_ID;
+
+	return mach_ContainerMachine[containerid];
 }
 
 // mach_CurrentMachine

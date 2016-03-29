@@ -54,7 +54,7 @@ static
 			sm_Total,
 
 			sm_ItemTypeScrapValue[ITM_MAX_TYPES],
-			sm_MachineScrapMachine[BTN_MAX] = {INVALID_MACHINE_ID, ...},
+			sm_MachineScrapMachine[MAX_MACHINE] = {-1, ...},
 
 			sm_CurrentScrapMachine[MAX_PLAYERS];
 
@@ -95,7 +95,7 @@ stock CreateScrapMachine(Float:x, Float:y, Float:z, Float:rz)
 		return 0;
 	}
 
-	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", "Press "KEYTEXT_INTERACT" to access scrap machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel", MAX_SCRAP_MACHINE_ITEMS);
+	sm_Data[sm_Total][sm_machineId] = CreateMachine(920, x, y, z, rz, "Scrap Machine", "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel", MAX_SCRAP_MACHINE_ITEMS);
 
 	sm_MachineScrapMachine[sm_Data[sm_Total][sm_machineId]] = sm_Total;
 
@@ -229,12 +229,14 @@ public OnHoldActionUpdate(playerid, progress)
 			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
 			sm_CurrentScrapMachine[playerid] = -1;
+			HideActionText(playerid);
 		}
 		else
 		{
 			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] + 1.0);
 			SetItemArrayDataAtCell(itemid, fuel - 1, 0);
 			sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] += 1.0;
+			ShowActionText(playerid, "Refuelling...");
 		}
 	}
 
@@ -307,16 +309,14 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 	d:1:HANDLER("[_sm_PlayerUseScrapMachine] finished cooking...");
 	new
 		itemid,
+		containerid = GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]),
 		scrapcount;
 
-	for(new i, j = GetContainerSize(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId])); i < j; i++)
+	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
 	{
-		itemid = GetContainerSlotItem(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), i);
+		itemid = GetContainerSlotItem(containerid, i);
 
 		d:3:HANDLER("[_sm_PlayerUseScrapMachine] slot %d: destroying %d", i, itemid);
-
-		if(!IsValidItem(itemid))
-			break;
 
 		scrapcount += sm_ItemTypeScrapValue[GetItemType(itemid)];
 		sm_Data[scrapmachineid][sm_fuel] -= SCRAP_MACHINE_FUEL_USAGE;
@@ -324,12 +324,12 @@ timer _sm_FinishCooking[cooktime](scrapmachineid, cooktime)
 		DestroyItem(itemid);
 	}
 
-	scrapcount = scrapcount > MAX_SCRAP_MACHINE_ITEMS ? MAX_SCRAP_MACHINE_ITEMS : scrapcount;
+	scrapcount = scrapcount > MAX_SCRAP_MACHINE_ITEMS - 1 ? MAX_SCRAP_MACHINE_ITEMS - 1 : scrapcount;
 
 	for(new i; i < scrapcount; i++)
 	{
 		itemid = CreateItem(item_ScrapMetal);
-		AddItemToContainer(GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]), itemid);
+		AddItemToContainer(containerid, itemid);
 		d:3:HANDLER("[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", itemid, GetMachineContainerID(sm_Data[scrapmachineid][sm_machineId]));
 	}
 

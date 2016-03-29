@@ -527,6 +527,7 @@ new stock
 #include "sss/core/world/workbench.pwn"
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
+#include "sss/core/world/refine-machine.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
