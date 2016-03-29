@@ -489,7 +489,9 @@ new stock
 	veht_Journey,
 	veht_Bloodring,
 	veht_Linerunner,
-	veht_Articulat1;
+	veht_Articulat1,
+	veht_Firetruck,
+	veht_Baggage;
 
 // VEHICLE GROUPS
 new stock
@@ -1767,7 +1769,9 @@ public OnScriptInit()
 	veht_Bloodring	= DefineVehicleType(504, "Bloodring Banger",vgroup_Unique,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	65.0,		13.0,	loot_CarCivilian,		32,		0.5);
 	veht_Linerunner	= DefineVehicleType(403, "Linerunner",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		120.0,		60.0,	loot_CarIndustrial,		12,		5.0,	VEHICLE_FLAG_CAN_SURF);
 	veht_Articulat1	= DefineVehicleType(591, "Articulated",		vgroup_Industrial,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		0.0,		0.0,	loot_CarIndustrial,		100,	1.0,	VEHICLE_FLAG_TRAILER | VEHICLE_FLAG_CAN_SURF);
-
+// 60
+	veht_Firetruck	= DefineVehicleType(407, "Firetruck",		vgroup_Medical,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		115.0,		31.5,	loot_CarIndustrial,		65,		0.5);
+	veht_Baggage	= DefineVehicleType(485, "Baggage",			vgroup_Industrial,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_SMALL,		14.5,		9.5,	loot_CarIndustrial,		8,		35.5,	VEHICLE_FLAG_NOT_LOCKABLE | VEHICLE_FLAG_CAN_SURF);
 
 	// SETTING VEHICLES TO PULL TRAILERS
 	SetVehicleTypeTrailerHitch(veht_Bobcat,		VEHICLE_SIZE_SMALL);
