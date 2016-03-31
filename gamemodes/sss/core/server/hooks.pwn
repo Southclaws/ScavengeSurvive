@@ -35,3 +35,19 @@ Hook_Debug_DestroyVehicle(vehicleid, source = -1)
 	return DestroyVehicle(vehicleid);
 }
 #define DestroyVehicle Hook_Debug_DestroyVehicle
+
+Hook_SetPlayerSkin(playerid, skinid)
+{
+	new specialaction = GetPlayerSpecialAction(playerid);
+
+	if(specialaction == SPECIAL_ACTION_ENTER_VEHICLE || specialaction == SPECIAL_ACTION_EXIT_VEHICLE)
+		return _: defer Retry_SetPlayerSkin(playerid, skinid);
+
+	return SetPlayerSkin(playerid, skinid);
+}
+#define SetPlayerSkin Hook_SetPlayerSkin
+
+timer Retry_SetPlayerSkin[100](playerid, skinid)
+{
+	Hook_SetPlayerSkin(playerid, skinid);
+}
