@@ -476,7 +476,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		return 0;
 
 	if(GetPlayerSurfingVehicleID(playerid) == vehicleid)
-		ClearAnimations(playerid);
+		CancelPlayerMovement(playerid);
 
 	if(ispassenger)
 	{
@@ -494,7 +494,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 		}
 
 		if(driverid == -1)
-			ClearAnimations(playerid);
+			CancelPlayerMovement(playerid);
 	}
 
 	return 1;
