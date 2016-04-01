@@ -74,5 +74,71 @@
 
 public OnFilterScriptInit()
 {
+	printf("return 1;:  %d", CallLocalFunction("func0", "d", 8));
+	printf("return 0;:  %d", CallLocalFunction("func1", "d", 8));
+	printf("return -1;: %d", CallLocalFunction("func2", "d", 8));
+	printf("return -2;: %d", CallLocalFunction("func3", "d", 8));
+
 	return 1;
+}
+
+#define Y_HOOKS_CONTINUE_RETURN_1	(1)
+#define Y_HOOKS_CONTINUE_RETURN_0	(0)
+#define Y_HOOKS_BREAK_RETURN_0		(-1)
+#define Y_HOOKS_BREAK_RETURN_1		(-2)
+
+hook func0(var)
+{
+	print("func0");
+
+	return 1;
+}
+#include <YSI_4\y_hooks>
+hook func0(var)
+{
+	print("func0 call 2");
+
+	return 1;
+}
+
+hook func1(var)
+{
+	print("func1");
+
+	return 0;
+}
+#include <YSI_4\y_hooks>
+hook func1(var)
+{
+	print("func1 call2");
+
+	return 0;
+}
+
+hook func2(var)
+{
+	print("func2");
+
+	return -1;
+}
+#include <YSI_4\y_hooks>
+hook func2(var)
+{
+	print("func2 call 2");
+
+	return -1;
+}
+
+hook func3(var)
+{
+	print("func3");
+
+	return -2;
+}
+#include <YSI_4\y_hooks>
+hook func3(var)
+{
+	print("func3 call 2");
+
+	return -2;
 }

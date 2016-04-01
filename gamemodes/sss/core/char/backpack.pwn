@@ -303,6 +303,7 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 
 ==============================================================================*/
 
+
 hook OnItemCreate(itemid)
 {
 	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
@@ -357,17 +358,17 @@ hook OnItemDestroy(itemid)
 hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(BagInteractionCheck(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(BagInteractionCheck(playerid, withitemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 BagInteractionCheck(playerid, itemid)
@@ -591,12 +592,12 @@ hook OnPlayerAddToInventory(playerid, itemid)
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeBag(itemtype))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(IsItemTypeCarry(itemtype))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerCloseContainer(playerid, containerid)
@@ -607,8 +608,6 @@ hook OnPlayerCloseContainer(playerid, containerid)
 		bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 		bag_LookingInBag[playerid] = -1;
 	}
-
-	return 0;
 }
 
 hook OnPlayerUseItem(playerid, itemid)
@@ -621,8 +620,6 @@ hook OnPlayerUseItem(playerid, itemid)
 		CancelPlayerMovement(playerid);
 		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
-
-	return 0;
 }
 
 hook OnPlayerDropItem(playerid, itemid)
@@ -632,11 +629,11 @@ hook OnPlayerDropItem(playerid, itemid)
 		if(bag_TakingOffBag[playerid])
 		{
 			bag_TakingOffBag[playerid] = false;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerGiveItem(playerid, targetid, itemid)
@@ -646,11 +643,11 @@ hook OnPlayerGiveItem(playerid, targetid, itemid)
 		if(bag_TakingOffBag[playerid])
 		{
 			bag_TakingOffBag[playerid] = false;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerViewInvOpt(playerid)
@@ -659,8 +656,6 @@ hook OnPlayerViewInvOpt(playerid)
 	{
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
 	}
-
-	return 0;
 }
 
 hook OnPlayerSelectInvOpt(playerid, option)
@@ -681,7 +676,7 @@ hook OnPlayerSelectInvOpt(playerid, option)
 			if(!IsValidItem(itemid))
 			{
 				DisplayPlayerInventory(playerid);
-				return 0;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			new required = AddItemToContainer(containerid, itemid, playerid);
@@ -693,7 +688,7 @@ hook OnPlayerSelectInvOpt(playerid, option)
 		}
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerViewCntOpt(playerid, containerid)
@@ -702,8 +697,6 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
-
-	return 0;
 }
 
 hook OnPlayerSelectCntOpt(playerid, containerid, option)
@@ -724,7 +717,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 			if(!IsValidItem(itemid))
 			{
 				DisplayContainerInventory(playerid, containerid);
-				return 0;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			new required = AddItemToContainer(bagcontainerid, itemid, playerid);
@@ -736,7 +729,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 		}
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnItemAddToContainer(containerid, itemid, playerid)
@@ -748,11 +741,11 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 		if(IsItemTypeCarry(GetItemType(itemid)))
 		{
 			d:1:HANDLER("[OnItemAddToContainer] Item is carry, cancel adding");
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 
