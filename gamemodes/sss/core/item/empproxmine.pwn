@@ -34,7 +34,7 @@ enum E_EMP_PROX_DATA
 
 new
 			emppx_Data[MAX_EMP_PROXIMITY][E_EMP_PROX_DATA],
-Iterator:	emppx_Index<MAX_EMP_PROXIMITY>;
+   Iterator:emppx_Index<MAX_EMP_PROXIMITY>;
 
 
 /*==============================================================================

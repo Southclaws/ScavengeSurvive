@@ -34,7 +34,7 @@ enum E_TNT_PROX_DATA
 
 new
 			tntpx_Data[MAX_TNT_PROXIMITY][E_TNT_PROX_DATA],
-Iterator:	tntpx_Index<MAX_TNT_PROXIMITY>;
+   Iterator:tntpx_Index<MAX_TNT_PROXIMITY>;
 
 
 /*==============================================================================

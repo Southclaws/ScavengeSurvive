@@ -233,7 +233,7 @@ timer kp_PrtDestroy[2000](playerid)
 	DestroyDynamicObject(kp_HackFailParticle[playerid]);
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	if(playertextid == kp_KeyEnter[playerid])
 		KeypadEnter(playerid);

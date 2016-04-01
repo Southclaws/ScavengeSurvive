@@ -61,7 +61,7 @@ static
 
 static
 Float:		sup_DropLocationData[MAX_SUPPLY_DROP_LOCATIONS][E_SUPPLY_DROP_LOCATION_DATA],
-Iterator:	sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
+   Iterator:sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
 			sup_TotalLocations,
 Timer:		sup_UpdateTimer,
 			sup_CurrentType = -1,

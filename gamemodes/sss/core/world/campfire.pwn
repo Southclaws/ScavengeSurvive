@@ -59,7 +59,7 @@ Float:		cmp_rotZ,
 
 static
 			cmp_Data[MAX_CAMPFIRE][E_CAMPFIRE_DATA],
-Iterator:	cmp_Index<MAX_CAMPFIRE>,
+   Iterator:cmp_Index<MAX_CAMPFIRE>,
 Timer:		cmp_CookTimer[MAX_CAMPFIRE];
 
 

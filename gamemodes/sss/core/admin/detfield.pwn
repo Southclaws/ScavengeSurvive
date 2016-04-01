@@ -101,7 +101,7 @@ Float:		det_MinZ			[MAX_DETFIELD],
 Float:		det_MaxZ			[MAX_DETFIELD];
 
 new
-Iterator:	det_Index<MAX_DETFIELD>;
+   Iterator:det_Index<MAX_DETFIELD>;
 
 static
 DB:			det_Database,

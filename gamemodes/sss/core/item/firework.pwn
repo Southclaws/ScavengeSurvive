@@ -45,7 +45,7 @@ Float:		fwk_distance,	// C
 
 new
 			fwk_Data[MAX_PROJECTILE][E_FIREWORK_PROJECTILE_DATA],
-Iterator:	fwk_ProjectileIndex<MAX_PROJECTILE>,
+   Iterator:fwk_ProjectileIndex<MAX_PROJECTILE>,
 			fwk_CooldownTick;
 
 new

@@ -60,8 +60,8 @@ new
 #endif
 			tnt_Data[MAX_TENT][E_TENT_DATA],
 			tnt_Items[MAX_TENT][MAX_TENT_ITEMS],
-Iterator:	tnt_Index<MAX_TENT>,
-Iterator:	tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
+   Iterator:tnt_Index<MAX_TENT>,
+   Iterator:tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
 			tnt_ItemTent[ITM_MAX] = {INVALID_ITEM_ID, ...},
 			tnt_ItemList[ITM_LST_OF_ITEMS(MAX_TENT_ITEMS)],
 			tnt_ButtonTent[BTN_MAX] = {INVALID_TENT_ID, ...};

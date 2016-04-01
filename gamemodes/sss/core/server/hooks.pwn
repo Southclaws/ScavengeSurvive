@@ -29,13 +29,6 @@ Hook_HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 }
 #define SetPlayerPos Hook_HackDetect_SetPlayerPos
 
-Hook_Debug_DestroyVehicle(vehicleid, source = -1)
-{
-	printf("DEBUG: DestroyVehicle %d called, Source: %d", vehicleid, source);
-	return DestroyVehicle(vehicleid);
-}
-#define DestroyVehicle Hook_Debug_DestroyVehicle
-
 Hook_SetPlayerSkin(playerid, skinid, retry_on_fail = true)
 {
 	new specialaction = GetPlayerSpecialAction(playerid);

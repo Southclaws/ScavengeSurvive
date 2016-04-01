@@ -42,7 +42,7 @@ Float:		fuel_posZ
 
 new
 			fuel_Data[MAX_FUEL_LOCATIONS][E_FUEL_DATA],
-Iterator:	fuel_Index<MAX_FUEL_LOCATIONS>,
+   Iterator:fuel_Index<MAX_FUEL_LOCATIONS>,
 Timer:		fuel_RefuelTimer[MAX_PLAYERS],
 			fuel_CurrentFuelOutlet[MAX_PLAYERS],
 			fuel_CurrentlyRefuelling[MAX_PLAYERS];

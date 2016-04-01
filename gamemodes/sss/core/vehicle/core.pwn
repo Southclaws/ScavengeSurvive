@@ -73,7 +73,7 @@ static
 			veh_TypeCount			[MAX_VEHICLE_TYPE];
 
 new
-Iterator:	veh_Index<MAX_VEHICLES>;
+   Iterator:veh_Index<MAX_VEHICLES>;
 
 static
 PlayerText:	veh_FuelUI				[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
@@ -190,7 +190,7 @@ stock DestroyWorldVehicle(vehicleid)
 		return 0;
 
 	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
-	DestroyVehicle(vehicleid, 3);
+	DestroyVehicle(vehicleid);
 	Iter_Remove(veh_Index, vehicleid);
 
 	return 1;
@@ -205,7 +205,7 @@ stock ResetVehicle(vehicleid)
 
 	tmp = veh_Data[vehicleid];
 
-	DestroyVehicle(vehicleid, 4);
+	DestroyVehicle(vehicleid);
 
 	newid = _veh_create(type,
 		veh_Data[vehicleid][veh_spawnX],

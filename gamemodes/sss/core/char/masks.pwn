@@ -43,7 +43,7 @@ Float:		mask_scaleZ
 new
 ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 			mask_Data[MAX_MASK_ITEMS][MAX_MASK_SKINS][E_MASK_SKIN_DATA],
-Iterator:	mask_Index<MAX_MASK_ITEMS>,
+   Iterator:mask_Index<MAX_MASK_ITEMS>,
 			mask_CurrentMask[MAX_PLAYERS];
 
 

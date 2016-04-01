@@ -38,7 +38,7 @@ Float:		E_VEHICLE_AREA_DISTANCE
 static
 			varea_AreaID[MAX_VEHICLES],
 			varea_NearList[MAX_PLAYERS][MAX_VEHICLES_IN_RANGE],
-Iterator:	varea_NearIndex[MAX_PLAYERS]<MAX_VEHICLES_IN_RANGE>;
+   Iterator:varea_NearIndex[MAX_PLAYERS]<MAX_VEHICLES_IN_RANGE>;
 
 
 forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);

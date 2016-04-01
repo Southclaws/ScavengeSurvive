@@ -112,9 +112,9 @@ public OnPlayerCreateNewCharacter(playerid)
 	#endif
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
-	d:1:HANDLER("[OnPlayerClickPlayerTextDraw]");
+	d:1:HANDLER("[OnPlayerClickPlayerTD]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
 		PlayerTutorialWorld[playerid] = TutorialWorld;

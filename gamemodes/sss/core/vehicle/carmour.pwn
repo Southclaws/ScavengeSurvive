@@ -52,7 +52,7 @@ Float:		arm_rotZ
 new
 			arm_Data[MAX_CARMOUR][E_ARMOUR_DATA],
 			arm_Objects[MAX_CARMOUR][MAX_CARMOUR_PARTS][E_ARMOUR_LIST_DATA],
-Iterator:	arm_Index<MAX_CARMOUR>,
+   Iterator:arm_Index<MAX_CARMOUR>,
 			arm_VehicleTypeCarmour[MAX_VEHICLE_TYPE] = {-1, ...};
 
 

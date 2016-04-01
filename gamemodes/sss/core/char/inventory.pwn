@@ -482,7 +482,7 @@ public OnItemRemovedFromPlayer(playerid, itemid)
 	forward app_OnItemRemovedFromPlayer(playerid, itemid);
 #endif
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	if(playertextid == GearSlot_Head[UI_ELEMENT_TILE])
 		_inv_HandleGearSlotClick_Head(playerid);

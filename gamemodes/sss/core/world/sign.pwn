@@ -47,7 +47,7 @@ Float:		sgn_rotZ,
 
 new
 			sgn_Data[MAX_SIGN][E_SIGN_DATA],
-Iterator:	sgn_Index<MAX_SIGN>;
+   Iterator:sgn_Index<MAX_SIGN>;
 
 static
 			sgn_CurrentSign[MAX_PLAYERS],

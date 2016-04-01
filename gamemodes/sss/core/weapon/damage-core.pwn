@@ -63,7 +63,7 @@ static
 
 static
 			wnd_Data[MAX_PLAYERS][MAX_WOUNDS][E_WOUND_DATA],
-Iterator:	wnd_Index[MAX_PLAYERS]<MAX_WOUNDS>;
+   Iterator:wnd_Index[MAX_PLAYERS]<MAX_WOUNDS>;
 
 
 forward Float:GetPlayerKnockoutChance(playerid, Float:knockmult);

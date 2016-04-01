@@ -46,7 +46,7 @@ Float:		hat_scaleZ
 new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 			hat_Data[MAX_HAT_ITEMS][MAX_HAT_SKINS][E_HAT_SKIN_DATA],
-Iterator:	hat_Index<MAX_HAT_ITEMS>,
+   Iterator:hat_Index<MAX_HAT_ITEMS>,
 			hat_CurrentHat[MAX_PLAYERS];
 
 

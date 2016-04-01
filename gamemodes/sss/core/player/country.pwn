@@ -37,7 +37,7 @@ static
 			PlayerCountryData[MAX_PLAYERS][E_COUNTRY_DATA],
 			PlayerLookupRetries[MAX_PLAYERS],
 			PlayerSessionData[MAX_PLAYERS],
-Iterator:	PlayerSessionIndex<MAX_PLAYERS>;
+   Iterator:PlayerSessionIndex<MAX_PLAYERS>;
 
 static
 			MaxRetries = 5;

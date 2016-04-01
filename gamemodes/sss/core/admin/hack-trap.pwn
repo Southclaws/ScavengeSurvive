@@ -27,7 +27,7 @@
 
 new
 			hak_ItemID[MAX_HACKTRAP],
-Iterator:	hak_Index<MAX_HACKTRAP>;
+   Iterator:hak_Index<MAX_HACKTRAP>;
 
 
 stock CreateHackerTrap(Float:x, Float:y, Float:z, lootindex)

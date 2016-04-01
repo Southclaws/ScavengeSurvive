@@ -28,7 +28,7 @@
 
 static
 			tracer_ObjectID[MAX_TRACERS],
-Iterator:	tracer_Index<MAX_TRACERS>;
+   Iterator:tracer_Index<MAX_TRACERS>;
 
 
 stock CreateTracer(Float:originx, Float:originy, Float:originz, Float:targetx, Float:targety, Float:targetz)

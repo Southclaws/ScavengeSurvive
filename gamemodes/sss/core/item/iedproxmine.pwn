@@ -34,7 +34,7 @@ enum E_IED_PROX_DATA
 
 new
 			iedpx_Data[MAX_IED_PROXIMITY][E_IED_PROX_DATA],
-Iterator:	iedpx_Index<MAX_IED_PROXIMITY>;
+   Iterator:iedpx_Index<MAX_IED_PROXIMITY>;
 
 
 /*==============================================================================

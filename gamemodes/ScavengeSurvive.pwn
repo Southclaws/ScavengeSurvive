@@ -113,6 +113,7 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
+#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 #include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
 #include <YSI_4\y_utils>			// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
 #include <YSI_4\y_va>
@@ -124,7 +125,6 @@ public OnGameModeInit()
 
 #include "sss\core\server\hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
-#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 #include <streamer>					// By Incognito, v2.7.5.2:	http://forum.sa-mp.com/showthread.php?t=102865
 #include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
@@ -144,7 +144,13 @@ public OnGameModeInit()
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF_YSI_4>				// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
+//#include <SIF_YSI_4>				// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
+#include <SIF_YSI_4\Core.pwn>
+#include <SIF_YSI_4\Button.pwn>
+#include <SIF_YSI_4\Door.pwn>
+#include <SIF_YSI_4\Item.pwn>
+#include <SIF_YSI_4\Inventory.pwn>
+#include <SIF_YSI_4\Container.pwn>
 #include <SIF_YSI_4\extensions\ItemArrayData>
 #include <SIF_YSI_4\extensions\ItemList>
 #include <SIF_YSI_4\extensions\InventoryDialog>

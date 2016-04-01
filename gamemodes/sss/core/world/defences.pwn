@@ -95,7 +95,7 @@ static
 
 new
 			def_Data[MAX_DEFENCE][E_DEFENCE_DATA],
-Iterator:	def_Index<MAX_DEFENCE>,
+   Iterator:def_Index<MAX_DEFENCE>,
 			def_ButtonDefence[BTN_MAX];
 
 static

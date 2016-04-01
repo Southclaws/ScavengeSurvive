@@ -209,7 +209,7 @@ PlayerCreateNewCharacter(playerid)
 	CallLocalFunction("OnPlayerCreateNewCharacter", "d", playerid);
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
