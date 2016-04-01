@@ -114,13 +114,13 @@ public OnGameModeInit()
 ==============================================================================*/
 
 #include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
-#include <YSI\y_utils>				// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
-#include <YSI\y_va>
-#include <YSI\y_timers>
-#include <YSI\y_hooks>
-#include <YSI\y_iterate>
-#include <YSI\y_ini>
-#include <YSI\y_dialog>
+#include <YSI_4\y_utils>			// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
+#include <YSI_4\y_va>
+#include <YSI_4\y_timers>
+#include <YSI_4\y_hooks>
+#include <YSI_4\y_iterate>
+#include <YSI_4\y_ini>
+#include <YSI_4\y_dialog>
 
 #include "sss\core\server\hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
 
@@ -144,14 +144,14 @@ public OnGameModeInit()
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
-#include <SIF\extensions\ItemArrayData>
-#include <SIF\extensions\ItemList>
-#include <SIF\extensions\InventoryDialog>
-#include <SIF\extensions\InventoryKeys>
-#include <SIF\extensions\ContainerDialog>
-#include <SIF\extensions\Craft>
-#include <SIF\extensions\DebugLabels>
+#include <SIF_YSI_4>				// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
+#include <SIF_YSI_4\extensions\ItemArrayData>
+#include <SIF_YSI_4\extensions\ItemList>
+#include <SIF_YSI_4\extensions\InventoryDialog>
+#include <SIF_YSI_4\extensions\InventoryKeys>
+#include <SIF_YSI_4\extensions\ContainerDialog>
+#include <SIF_YSI_4\extensions\Craft>
+#include <SIF_YSI_4\extensions\DebugLabels>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
 #include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
