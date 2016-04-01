@@ -56,7 +56,7 @@
 */
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 #define DIRECTORY_PLAYER_BACKUP		"SSS/Player/BACKUP/"
 #define DIRECTORY_INVENTORY_BACKUP	"SSS/Inventory/BACKUP/"

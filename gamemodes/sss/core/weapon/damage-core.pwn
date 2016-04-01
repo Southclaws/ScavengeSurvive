@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_WOUNDS			(32)
@@ -458,7 +458,7 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 }
 
 
-public OnPlayerSave(playerid, filename[])
+hook OnPlayerSave(playerid, filename[])
 {
 	new
 		length,
@@ -467,25 +467,9 @@ public OnPlayerSave(playerid, filename[])
 	length = GetPlayerWoundDataAsArray(playerid, data);
 
 	modio_push(filename, _T<W,N,D,S>, length, data);
-
-	#if defined dmg_OnPlayerSave
-		return dmg_OnPlayerSave(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerSave
-	#undef OnPlayerSave
-#else
-	#define _ALS_OnPlayerSave
-#endif
- 
-#define OnPlayerSave dmg_OnPlayerSave
-#if defined dmg_OnPlayerSave
-	forward dmg_OnPlayerSave(playerid, filename[]);
-#endif
 
-public OnPlayerLoad(playerid, filename[])
+hook OnPlayerLoad(playerid, filename[])
 {
 	new data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
 
@@ -493,20 +477,4 @@ public OnPlayerLoad(playerid, filename[])
 
 	Iter_Clear(wnd_Index[playerid]);
 	SetPlayerWoundDataFromArray(playerid, data);
-
-	#if defined dmg_OnPlayerLoad
-		return dmg_OnPlayerLoad(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerLoad
-	#undef OnPlayerLoad
-#else
-	#define _ALS_OnPlayerLoad
-#endif
- 
-#define OnPlayerLoad dmg_OnPlayerLoad
-#if defined dmg_OnPlayerLoad
-	forward dmg_OnPlayerLoad(playerid, filename[]);
-#endif

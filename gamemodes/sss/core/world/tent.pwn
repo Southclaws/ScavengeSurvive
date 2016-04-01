@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_TENT		DIRECTORY_MAIN"Tents/"
@@ -536,7 +536,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
 	{
@@ -556,20 +556,7 @@ public OnHoldActionFinish(playerid)
 			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
 		}
 	}
-
-	#if defined tnt2_OnHoldActionFinish
-		return tnt2_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish tnt2_OnHoldActionFinish
-forward tnt2_OnHoldActionFinish(playerid);
 
 
 /*==============================================================================

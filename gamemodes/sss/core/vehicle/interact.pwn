@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_VEHICLES_IN_RANGE			(8)
@@ -123,26 +123,10 @@ public OnVehicleCreated(vehicleid)
 	forward vint_OnVehicleCreated(vehicleid);
 #endif
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	_vint_EnterArea(playerid, areaid);
-
-	#if defined vint_OnPlayerEnterDynamicArea
-		return vint_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
- 
-#define OnPlayerEnterDynamicArea vint_OnPlayerEnterDynamicArea
-#if defined vint_OnPlayerEnterDynamicArea
-	forward vint_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif
 
 public OnPlayerLeaveDynamicArea(playerid, areaid)
 {

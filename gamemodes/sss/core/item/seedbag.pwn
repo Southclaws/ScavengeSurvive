@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 #define MAX_SEED_TYPES	(16)
 
 
@@ -64,7 +67,7 @@ stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:pl
 }
 
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_SeedBag)
 	{
@@ -74,25 +77,9 @@ public OnItemCreate(itemid)
 			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, 1);
 		}
 	}
-
-	#if defined seed_OnItemCreate
-		return seed_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate seed_OnItemCreate
-#if defined seed_OnItemCreate
-	forward seed_OnItemCreate(itemid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_SeedBag)
 	{
@@ -112,23 +99,7 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, "Empty");
 		}
 	}
-
-	#if defined seed_OnItemNameRender
-		return seed_OnItemNameRender(itemid, ItemType:itemtype);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
- 
-#define OnItemNameRender seed_OnItemNameRender
-#if defined seed_OnItemNameRender
-	forward seed_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 
 stock IsValidSeedType(seedtype)

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"Safebox/"
@@ -160,7 +160,7 @@ DefineSafeboxType(ItemType:itemtype, size)
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -189,23 +189,7 @@ public OnItemCreate(itemid)
 			SetItemArrayDataAtCell(itemid, box_GEID[itemid], E_BOX_GEID);
 		}
 	}
-
-	#if defined box_OnItemCreate
-		return box_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate box_OnItemCreate
-#if defined box_OnItemCreate
-	forward box_OnItemCreate(itemid);
-#endif
 
 public OnItemCreateInWorld(itemid)
 {
@@ -277,23 +261,10 @@ public OnItemDestroy(itemid)
 public OnPlayerPickUpItem(playerid, itemid)
 {
 	if(SafeBoxInteractionCheck(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined box_OnPlayerPickUpItem
-		return box_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem box_OnPlayerPickUpItem
-#if defined box_OnPlayerPickUpItem
-	forward box_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {

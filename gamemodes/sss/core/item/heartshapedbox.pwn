@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 hook OnGameModeInit()
@@ -30,7 +30,7 @@ hook OnGameModeInit()
 	CreateItem(item_HeartShapedBox, 2912.3301, 2910.2800, 29.7780);
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_HeartShapedBox)
 	{
@@ -47,20 +47,4 @@ public OnItemCreate(itemid)
 			}
 		}
 	}
-	#if defined hsb_OnItemCreate
-		return hsb_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate hsb_OnItemCreate
-#if defined hsb_OnItemCreate
-	forward hsb_OnItemCreate(itemid);
-#endif
-

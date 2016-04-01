@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_HAT_ITEMS	(22)
@@ -58,7 +58,7 @@ hook OnPlayerConnect(playerid)
 	hat_CurrentHat[playerid] = -1;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	foreach(new i : hat_Index)
 	{
@@ -67,23 +67,7 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, i);
 		}
 	}
-
-	#if defined hat_OnItemCreate
-		return hat_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate hat_OnItemCreate
-#if defined hat_OnItemCreate
-	forward hat_OnItemCreate(itemid);
-#endif
 
 
 // Core

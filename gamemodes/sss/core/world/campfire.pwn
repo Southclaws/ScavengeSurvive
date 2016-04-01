@@ -383,7 +383,7 @@ timer cmp_DestroySmoke[1000](fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -396,22 +396,10 @@ public OnPlayerPickUpItem(playerid, itemid)
 				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
 				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 				stop cmp_CookTimer[fireid];
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined cmp2_OnPlayerPickUpItem
-		return cmp2_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem cmp2_OnPlayerPickUpItem
-forward cmp2_OnPlayerPickUpItem(playerid, itemid);
-

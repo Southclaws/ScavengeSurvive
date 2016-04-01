@@ -408,27 +408,13 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	forward pot_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 #endif
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(_pot_PickUp(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined pot_OnPlayerPickUpItem
-		return pot_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
- 
-#define OnPlayerPickUpItem pot_OnPlayerPickUpItem
-#if defined pot_OnPlayerPickUpItem
-	forward pot_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerDroppedItem(playerid, itemid)
 {

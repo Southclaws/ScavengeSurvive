@@ -64,54 +64,22 @@ ShowLanguageMenu(playerid)
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");
 }
 
-public OnPlayerSave(playerid, filename[])
+hook OnPlayerSave(playerid, filename[])
 {
 	new data[1];
 	data[0] = lang_PlayerLanguage[playerid];
 
 	modio_push(filename, _T<L,A,N,G>, 1, data);
-
-	#if defined lang_OnPlayerSave
-		return lang_OnPlayerSave(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerSave
-	#undef OnPlayerSave
-#else
-	#define _ALS_OnPlayerSave
-#endif
 
-#define OnPlayerSave lang_OnPlayerSave
-#if defined lang_OnPlayerSave
-	forward lang_OnPlayerSave(playerid, filename[]);
-#endif
-
-public OnPlayerLoad(playerid, filename[])
+hook OnPlayerLoad(playerid, filename[])
 {
 	new data[1];
 
 	modio_read(filename, _T<L,A,N,G>, 1, data);
 
 	lang_PlayerLanguage[playerid] = data[0];
-
-	#if defined lang_OnPlayerLoad
-		return lang_OnPlayerLoad(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerLoad
-	#undef OnPlayerLoad
-#else
-	#define _ALS_OnPlayerLoad
-#endif
-
-#define OnPlayerLoad lang_OnPlayerLoad
-#if defined lang_OnPlayerLoad
-	forward lang_OnPlayerLoad(playerid, filename[]);
-#endif
 
 CMD:language(playerid, params[])
 {

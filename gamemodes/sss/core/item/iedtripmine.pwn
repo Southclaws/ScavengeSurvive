@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -63,7 +63,7 @@ public OnPlayerUseItem(playerid, itemid)
 	forward iedm_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(iedm_ArmingItem[playerid]))
 	{
@@ -72,23 +72,12 @@ public OnHoldActionFinish(playerid)
 		ShowActionText(playerid, "Armed", 3000);
 
 		iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined iedm_OnHoldActionFinish
-		return iedm_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish iedm_OnHoldActionFinish
-#if defined iedm_OnHoldActionFinish
-	forward iedm_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -99,7 +88,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
@@ -107,24 +96,12 @@ public OnPlayerPickUpItem(playerid, itemid)
 		{
 			SetItemToExplode(itemid, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
-	#if defined iedm_OnPlayerPickUpItem
-		return iedm_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem iedm_OnPlayerPickUpItem
-#if defined iedm_OnPlayerPickUpItem
-	forward iedm_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerOpenContainer(playerid, containerid)
 {

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_FOOD_ITEM (64)
@@ -94,7 +94,7 @@ DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfe
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -106,23 +106,7 @@ public OnItemCreate(itemid)
 			SetItemArrayDataAtCell(itemid, random(food_Data[_:foodtype][food_maxBites]), food_amount, 1);
 		}
 	}
-
-	#if defined food_OnItemCreate
-		return food_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate food_OnItemCreate
-#if defined food_OnItemCreate
-	forward food_OnItemCreate(itemid);
-#endif
 
 public OnPlayerUseItem(playerid, itemid)
 {
@@ -245,31 +229,18 @@ _EatItem(playerid, itemid)
 	return 1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(food_CurrentItem[playerid] != -1)
 	{
 		_EatItem(playerid, food_CurrentItem[playerid]);
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined food_OnHoldActionFinish
-		return food_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish food_OnHoldActionFinish
-#if defined food_OnHoldActionFinish
-	forward food_OnHoldActionFinish(playerid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	new foodtype = GetItemTypeFoodType(itemtype);
 
@@ -288,22 +259,7 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, sprintf("%d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
 		}
 	}
-
-	#if defined bbq_OnItemNameRender
-		return bbq_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender bbq_OnItemNameRender
-#if defined bbq_OnItemNameRender
-	forward bbq_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 
 /*==============================================================================

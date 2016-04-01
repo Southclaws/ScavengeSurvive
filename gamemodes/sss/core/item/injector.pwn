@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define INJECT_TYPE_EMPTY		(0)
@@ -42,7 +42,7 @@ hook OnPlayerConnect(playerid)
 	inj_CurrentTarget[playerid] = -1;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -51,25 +51,9 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, 1 + random(3));
 		}
 	}
-
-	#if defined inj_OnItemCreate
-		return inj_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate inj_OnItemCreate
-#if defined inj_OnItemCreate
-	forward inj_OnItemCreate(itemid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_AutoInjec)
 	{
@@ -82,24 +66,9 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			default:						SetItemNameExtra(itemid, "Empty");
 		}
 	}
-
-	#if defined inj_OnItemNameRender
-		return inj_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender inj_OnItemNameRender
-#if defined inj_OnItemNameRender
-	forward inj_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_AutoInjec)
 	{
@@ -117,21 +86,8 @@ public OnPlayerUseItem(playerid, itemid)
 		StartInjecting(playerid, targetid);
 	}
 
-	#if defined inj_OnPlayerUseItem
-		return inj_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem inj_OnPlayerUseItem
-#if defined inj_OnPlayerUseItem
-	forward inj_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -175,18 +131,18 @@ StopInjecting(playerid)
 	inj_CurrentTarget[playerid] = -1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(inj_CurrentItem[playerid] != -1)
 	{
 		if(!IsPlayerConnected(inj_CurrentTarget[playerid]))
-			return 0;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		if(!IsValidItem(inj_CurrentItem[playerid]))
-			return 0;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		if(GetPlayerItem(playerid) != inj_CurrentItem[playerid])
-			return 0;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		switch(GetItemExtraData(inj_CurrentItem[playerid]))
 		{
@@ -225,21 +181,8 @@ public OnHoldActionFinish(playerid)
 		SetItemExtraData(inj_CurrentItem[playerid], INJECT_TYPE_EMPTY);
 	}
 
-	#if defined inj_OnHoldActionFinish
-		return inj_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish inj_OnHoldActionFinish
-#if defined inj_OnHoldActionFinish
-	forward inj_OnHoldActionFinish(playerid);
-#endif
 
 public OnPlayerDrugWearOff(playerid, drugtype)
 {

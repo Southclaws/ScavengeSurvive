@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 /*==============================================================================
@@ -172,7 +172,7 @@ public OnPlayerUseItem(playerid, itemid)
 #endif
 
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(cons_Constructing[playerid] != -1)
 	{
@@ -184,20 +184,7 @@ public OnHoldActionFinish(playerid)
 
 		cons_Constructing[playerid] = -1;
 	}
-
-	#if defined cons_OnHoldActionFinish
-		return cons_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish cons_OnHoldActionFinish
-forward cons_OnHoldActionFinish(playerid);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

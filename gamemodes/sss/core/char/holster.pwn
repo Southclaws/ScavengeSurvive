@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_HOLSTER_ITEM_TYPES	(64)
@@ -340,27 +340,13 @@ timer UnholsterItemDelay[time](playerid, time)
 	return 1;
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined hols_OnPlayerPickUpItem
-		return hols_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem hols_OnPlayerPickUpItem
-#if defined hols_OnPlayerPickUpItem
-	forward hols_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {

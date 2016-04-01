@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static scr_TargetItem[MAX_PLAYERS];
@@ -84,7 +84,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(scr_TargetItem[playerid]))
 	{
@@ -92,26 +92,8 @@ public OnHoldActionFinish(playerid)
 		SetItemExtraData(scr_TargetItem[playerid], 0);
 		scr_TargetItem[playerid] = INVALID_ITEM_ID;
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined scr_OnHoldActionFinish
-		return scr_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish scr_OnHoldActionFinish
-#if defined scr_OnHoldActionFinish
-	forward scr_OnHoldActionFinish(playerid);
-#endif

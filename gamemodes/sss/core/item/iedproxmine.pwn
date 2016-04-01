@@ -128,7 +128,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	forward iedpx_OnPlayerDroppedItem(playerid, itemid);
 #endif
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	foreach(new i : iedpx_Index)
 	{
@@ -145,19 +145,4 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			defer ExplodeIedProxMineDelay(i);
 		}
 	}
-
-	#if defined iedpx_OnPlayerEnterDynamicArea
-		return iedpx_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define OnPlayerEnterDynamicArea iedpx_OnPlayerEnterDynamicArea
-#if defined iedpx_OnPlayerEnterDynamicArea
-	forward iedpx_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif

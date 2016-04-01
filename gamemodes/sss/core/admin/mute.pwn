@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -70,7 +70,7 @@ timer UnMuteDelay[time](playerid, time)
 	Msg(playerid, YELLOW, " >  You are now un-muted.");
 }
 
-public OnPlayerDisconnected(playerid)
+hook OnPlayerDisconnected(playerid)
 {
 	if(gServerRestarting)
 		return 1;
@@ -80,21 +80,8 @@ public OnPlayerDisconnected(playerid)
 		TogglePlayerMute(playerid, false);
 	}
 
-	#if defined mute_OnPlayerDisconnected
-		return mute_OnPlayerDisconnected(playerid);
-	#else
-		return 1;
-	#endif
+	return 1;
 }
-#if defined _ALS_OnPlayerDisconnected
-	#undef OnPlayerDisconnected
-#else
-	#define _ALS_OnPlayerDisconnected
-#endif
-#define OnPlayerDisconnected mute_OnPlayerDisconnected
-#if defined mute_OnPlayerDisconnected
-	forward mute_OnPlayerDisconnected(playerid);
-#endif
 
 stock IsPlayerMuted(playerid)
 {

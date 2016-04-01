@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 new
@@ -129,8 +129,6 @@ public OnHoldActionUpdate(playerid, progress)
 	#else
 		return 0;
 	#endif
-	}
-p[]yc_0(_P) s@_<>==(FN@@.r.r.r
 }
 #if defined _ALS_OnHoldActionUpdate
 	#undef OnHoldActionUpdate
@@ -142,14 +140,14 @@ p[]yc_0(_P) s@_<>==(FN@@.r.r.r
 	forward cuf_OnHoldActionUpdate(playerid, progress);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
 		{
 			StopApplyingHandcuffs(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
@@ -167,24 +165,11 @@ public OnHoldActionFinish(playerid)
 			StopApplyingHandcuffs(playerid);
 		}
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined cuf_OnHoldActionFinish
-		return cuf_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish cuf_OnHoldActionFinish
-#if defined cuf_OnHoldActionFinish
-	forward cuf_OnHoldActionFinish(playerid);
-#endif
 
 CanPlayerHandcuffPlayer(playerid, targetid)
 {

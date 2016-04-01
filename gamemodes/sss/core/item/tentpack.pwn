@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -89,7 +89,7 @@ StopBuildingTent(playerid)
 	return;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(tnt_CurrentTentItem[playerid] != INVALID_ITEM_ID)
 	{
@@ -112,18 +112,5 @@ public OnHoldActionFinish(playerid)
 		}
 	}
 
-	#if defined tnt_OnHoldActionFinish
-		return tnt_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish tnt_OnHoldActionFinish
-#if defined tnt_OnHoldActionFinish
-	forward tnt_OnHoldActionFinish(playerid);
-#endif

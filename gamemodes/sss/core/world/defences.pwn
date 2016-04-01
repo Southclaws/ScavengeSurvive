@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
@@ -635,12 +635,12 @@ public OnHoldActionUpdate(playerid, progress)
 	forward def_OnHoldActionUpdate(playerid, progress);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_0;
 
 		new
 			Float:x,
@@ -674,7 +674,7 @@ public OnHoldActionFinish(playerid)
 			if(!IsValidDefence(id))
 			{
 				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
@@ -691,7 +691,7 @@ public OnHoldActionFinish(playerid)
 			if(!IsValidDefence(id))
 			{
 				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
@@ -707,7 +707,7 @@ public OnHoldActionFinish(playerid)
 		StopBuildingDefence(playerid);
 		//EditDefence(playerid, id);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
 	if(def_CurrentDefenceEdit[playerid] != -1)
@@ -802,24 +802,11 @@ public OnHoldActionFinish(playerid)
 			def_CurrentDefenceEdit[playerid] = -1;
 		}
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
-	#if defined def_OnHoldActionFinish
-		return def_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish def_OnHoldActionFinish
-#if defined def_OnHoldActionFinish
-	forward def_OnHoldActionFinish(playerid);
-#endif
 
 /* y_inline
 ShowSetPassDialog_Keypad(playerid)

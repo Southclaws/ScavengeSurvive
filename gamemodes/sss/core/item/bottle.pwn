@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+#include <YSI_4\y_hooks>
+
+
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -31,26 +34,9 @@ public OnItemCreate(itemid)
 			SetFoodItemSubType(itemid, GetTotalLiquidTypes());
 		}
 	}
-
-	#if defined bot_OnItemCreate
-		return bot_OnItemCreate(itemid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate bot_OnItemCreate
-#if defined bot_OnItemCreate
-	forward bot_OnItemCreate(itemid);
-#endif
 
-
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Bottle || itemtype == item_CanDrink)
 	{
@@ -70,24 +56,9 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, "Empty");
 		}
 	}
-
-	#if defined bot_OnItemNameRender
-		return bot_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender bot_OnItemNameRender
-#if defined bot_OnItemNameRender
-	forward bot_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
-public OnPlayerEaten(playerid, itemid)
+hook OnPlayerEaten(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 	{
@@ -96,23 +67,11 @@ public OnPlayerEaten(playerid, itemid)
 		if(type == 1)
 			SetPlayerDrunkLevel(playerid, GetPlayerDrunkLevel(playerid) + 1000);
 	}
-	#if defined bot_OnPlayerEaten
-		return bot_OnPlayerEaten(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerEaten
-	#undef OnPlayerEaten
-#else
-	#define _ALS_OnPlayerEaten
-#endif
-#define OnPlayerEaten bot_OnPlayerEaten
-#if defined bot_OnPlayerEaten
-	forward bot_OnPlayerEaten(playerid, itemid);
-#endif
 
-public OnPlayerCrafted(playerid, craftset, result)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerCrafted(playerid, craftset, result)
 {
 	if(GetItemType(result) == item_Bottle)
 	{
@@ -134,19 +93,5 @@ public OnPlayerCrafted(playerid, craftset, result)
 		SetFoodItemSubType(itemid2, -1);
 	}
 
-	#if defined liq_OnPlayerCrafted
-		return liq_OnPlayerCrafted(playerid, craftset, result);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerCrafted
-	#undef OnPlayerCrafted
-#else
-	#define _ALS_OnPlayerCrafted
-#endif
-
-#define OnPlayerCrafted liq_OnPlayerCrafted
-#if defined liq_OnPlayerCrafted
-	forward liq_OnPlayerCrafted(playerid, craftset, result);
-#endif

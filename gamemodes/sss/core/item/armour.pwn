@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+#include <YSI_4\y_hooks>
+
+
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -31,23 +34,7 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, random(100) + 1);
 		}
 	}
-
-	#if defined armour_OnItemCreate
-		return armour_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate armour_OnItemCreate
-#if defined armour_OnItemCreate
-	forward armour_OnItemCreate(itemid);
-#endif
 
 
 public OnPlayerUseItem(playerid, itemid)
@@ -80,7 +67,7 @@ public OnPlayerUseItem(playerid, itemid)
 	forward armour_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Armour)
 	{
@@ -92,22 +79,7 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 		
 		SetItemNameExtra(itemid, str);
 	}
-
-	#if defined armour_OnItemNameRender
-		return armour_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender armour_OnItemNameRender
-#if defined armour_OnItemNameRender
-	forward armour_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 
 public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)

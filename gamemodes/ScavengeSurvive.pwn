@@ -101,7 +101,6 @@ public OnGameModeInit()
 #else
 	#define _ALS_OnGameModeInit
 #endif
- 
 #define OnGameModeInit main_OnGameModeInit
 #if defined main_OnGameModeInit
 	forward main_OnGameModeInit();

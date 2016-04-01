@@ -128,7 +128,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	forward emppx_OnPlayerDroppedItem(playerid, itemid);
 #endif
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	foreach(new i : emppx_Index)
 	{
@@ -145,19 +145,4 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			defer ExplodeEmpProxMineDelay(i);
 		}
 	}
-
-	#if defined emppx_OnPlayerEnterDynamicArea
-		return emppx_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define OnPlayerEnterDynamicArea emppx_OnPlayerEnterDynamicArea
-#if defined emppx_OnPlayerEnterDynamicArea
-	forward emppx_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif

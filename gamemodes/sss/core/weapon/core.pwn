@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_ITEM_WEAPON	(64)
@@ -413,28 +413,15 @@ timer _RepeatingFire[100](playerid)
 	return;
 }
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	d:1:HANDLER("[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
-		return 0;
+		return Y_HOOKS_BREAK_RETURN_0;
 
-	#if defined itmw_OnPlayerWeaponShot
-		return itmw_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnPlayerWeaponShot
-	#undef OnPlayerWeaponShot
-#else
-	#define _ALS_OnPlayerWeaponShot
-#endif
 
-#define OnPlayerWeaponShot itmw_OnPlayerWeaponShot
-#if defined itmw_OnPlayerWeaponShot
-	forward itmw_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-#endif
 
 _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:fY = 0.0, Float:fZ = 0.0)
 {
@@ -641,7 +628,7 @@ public OnPlayerUnHolsteredItem(playerid, itemid)
 	forward itmw_OnPlayerUnHolsteredItem(playerid, itemid);
 #endif
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	new lootindex = GetItemLootIndex(itemid);
 
@@ -694,23 +681,7 @@ public OnItemCreate(itemid)
 			}
 		}
 	}
-
-	#if defined itmw_OnItemCreate
-		return itmw_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
-
-#define OnItemCreate itmw_OnItemCreate
-#if defined itmw_OnItemCreate
-	forward itmw_OnItemCreate(itemid);
-#endif
 
 
 /*==============================================================================
@@ -870,33 +841,13 @@ timer _UnloadWeapon[300](playerid, itemid)
 
 public OnItemNameRender(itemid, ItemType:itemtype)
 {
-	weapon_NameRenderHandler(itemid, itemtype);
-
-	#if defined itmw_OnItemNameRender
-		return itmw_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender itmw_OnItemNameRender
-#if defined itmw_OnItemNameRender
-	forward itmw_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
-
-weapon_NameRenderHandler(itemid, ItemType:itemtype)
-{
 	new itemweaponid = GetItemTypeWeapon(itemtype);
 
 	if(itemweaponid == -1)
-		return 0;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
-		return 0;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
 		ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)),
@@ -916,7 +867,7 @@ weapon_NameRenderHandler(itemid, ItemType:itemtype)
 
 	SetItemNameExtra(itemid, exname);
 
-	return 1;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 

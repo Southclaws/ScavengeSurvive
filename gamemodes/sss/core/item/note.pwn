@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 public OnPlayerUseItem(playerid, itemid)
@@ -86,7 +86,7 @@ _ShowNoteDialog(playerid, itemid)
 	return 1;
 }
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Note)
 	{
@@ -108,20 +108,4 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, string);
 		}
 	}
-
-	#if defined note_OnItemNameRender
-		return note_OnItemNameRender(itemid, itemtype);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
- 
-#define OnItemNameRender note_OnItemNameRender
-#if defined note_OnItemNameRender
-	forward note_OnItemNameRender(itemid, ItemType:itemtype);
-#endif

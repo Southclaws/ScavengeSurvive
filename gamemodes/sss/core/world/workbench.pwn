@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 /*==============================================================================
@@ -334,7 +334,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
@@ -345,23 +345,7 @@ public OnHoldActionFinish(playerid)
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
 	}
-
-	#if defined wb_OnHoldActionFinish
-		return wb_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
 }
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish wb_OnHoldActionFinish
-#if defined wb_OnHoldActionFinish
-	forward wb_OnHoldActionFinish(playerid);
-#endif
 
 public OnPlayerPickedUpItem(playerid, itemid)
 {

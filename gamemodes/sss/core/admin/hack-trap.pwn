@@ -42,32 +42,19 @@ stock CreateHackerTrap(Float:x, Float:y, Float:z, lootindex)
 }
 
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	foreach(new i : hak_Index)
 	{
 		if(itemid == hak_ItemID[i])
 		{
 			TheTrapHasSprung(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined hak_OnPlayerPickUpItem
-		return hak_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem hak_OnPlayerPickUpItem
-#if defined hak_OnPlayerPickUpItem
-	forward hak_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 
 TheTrapHasSprung(playerid)

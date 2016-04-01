@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -63,7 +63,7 @@ public OnPlayerUseItem(playerid, itemid)
 	forward tntm_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(tntm_ArmingItem[playerid]))
 	{
@@ -73,22 +73,7 @@ public OnHoldActionFinish(playerid)
 
 		tntm_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}
-
-	#if defined tntm_OnHoldActionFinish
-		return tntm_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish tntm_OnHoldActionFinish
-#if defined tntm_OnHoldActionFinish
-	forward tntm_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -99,7 +84,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_TntTripMine)
 	{
@@ -107,24 +92,12 @@ public OnPlayerPickUpItem(playerid, itemid)
 		{
 			SetItemToExplode(itemid, 10, 12.0, EXPLOSION_PRESET_STRUCTURAL, 2);
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
-	#if defined tntm_OnPlayerPickUpItem
-		return tntm_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem tntm_OnPlayerPickUpItem
-#if defined tntm_OnPlayerPickUpItem
-	forward tntm_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerOpenContainer(playerid, containerid)
 {

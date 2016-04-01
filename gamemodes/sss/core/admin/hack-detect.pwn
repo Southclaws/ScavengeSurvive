@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
@@ -921,7 +921,7 @@ static
 	ammo_LastShot[MAX_PLAYERS],
 	ammo_ShotCounter[MAX_PLAYERS];
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	// by IstuntmanI, thanks!
 	if(hittype == BULLET_HIT_TYPE_PLAYER)
@@ -1105,19 +1105,5 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 
-	#if defined ac_OnPlayerWeaponShot
-		return ac_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-	#else
-		return 1;
-	#endif
+	return 1;
 }
-#if defined _ALS_OnPlayerWeaponShot
-	#undef OnPlayerWeaponShot
-#else
-	#define _ALS_OnPlayerWeaponShot
-#endif
-#define tf_a<%0> ((_T<A,Y,U,L>/24)/%0)
-#define OnPlayerWeaponShot ac_OnPlayerWeaponShot
-#if defined ac_OnPlayerWeaponShot
-	forward ac_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-#endif

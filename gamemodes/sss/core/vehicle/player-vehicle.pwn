@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 // Directory for storing player-saved vehicles
@@ -833,54 +833,22 @@ _RemoveVehicleFile(vehicleid)
 	return _SaveVehicle(vehicleid, false);
 }
 
-public OnPlayerSave(playerid, filename[])
+hook OnPlayerSave(playerid, filename[])
 {
 	new data[1];
 	data[0] = pveh_SaveAnyVehicle[playerid];
 
 	modio_push(filename, _T<P,V,E,H>, 1, data);
-
-	#if defined pveh_OnPlayerSave
-		return pveh_OnPlayerSave(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerSave
-	#undef OnPlayerSave
-#else
-	#define _ALS_OnPlayerSave
-#endif
 
-#define OnPlayerSave pveh_OnPlayerSave
-#if defined pveh_OnPlayerSave
-	forward pveh_OnPlayerSave(playerid, filename[]);
-#endif
-
-public OnPlayerLoad(playerid, filename[])
+hook OnPlayerLoad(playerid, filename[])
 {
 	new data[1];
 
 	modio_read(filename, _T<P,V,E,H>, 1, data);
 
 	pveh_SaveAnyVehicle[playerid] = data[0];
-
-	#if defined pveh_OnPlayerLoad
-		return pveh_OnPlayerLoad(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerLoad
-	#undef OnPlayerLoad
-#else
-	#define _ALS_OnPlayerLoad
-#endif
-
-#define OnPlayerLoad pveh_OnPlayerLoad
-#if defined pveh_OnPlayerLoad
-	forward pveh_OnPlayerLoad(playerid, filename[]);
-#endif
 
 
 /*==============================================================================

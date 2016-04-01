@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 new tntp_SyncTick[MAX_PLAYERS];
 
 public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -90,26 +93,12 @@ public OnPlayerUseItem(playerid, itemid)
 	forward tntp_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone)
 	{
 		SetItemExtraData(itemid, INVALID_ITEM_ID);
 	}
 
-	#if defined tntp_OnItemCreate
-		return tntp_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate tntp_OnItemCreate
-#if defined tntp_OnItemCreate
-	forward tntp_OnItemCreate(itemid);
-#endif

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 new
@@ -106,7 +106,7 @@ public OnHoldActionUpdate(playerid, progress)
 	#endif
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(cbr_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -121,14 +121,10 @@ public OnHoldActionFinish(playerid)
 
 		StopBreakingVehicleLock(playerid);			
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined crow_OnHoldActionFinish
-		return crow_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 
@@ -143,15 +139,4 @@ public OnHoldActionFinish(playerid)
 #define OnHoldActionUpdate crow_OnHoldActionUpdate
 #if defined crow_OnHoldActionUpdate
 	forward crow_OnHoldActionUpdate(playerid, progress);
-#endif
-
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish crow_OnHoldActionFinish
-#if defined crow_OnHoldActionFinish
-	forward crow_OnHoldActionFinish(playerid);
 #endif

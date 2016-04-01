@@ -102,33 +102,12 @@ stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult
 ==============================================================================*/
 
 
-public OnItemNameRender(itemid, ItemType:itemtype)
-{
-	ammunition_NameRenderHandler(itemid, itemtype);
-
-	#if defined ammo_OnItemNameRender
-		return ammo_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
- 
-#define OnItemNameRender ammo_OnItemNameRender
-#if defined ammo_OnItemNameRender
-	forward ammo_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
-
-ammunition_NameRenderHandler(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	new ammotype = ammo_ItemTypeAmmoType[itemtype];
 
 	if(ammotype == -1)
-		return 0;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
 		amount = GetItemExtraData(itemid),
@@ -141,10 +120,10 @@ ammunition_NameRenderHandler(itemid, ItemType:itemtype)
 
 	SetItemNameExtra(itemid, str);
 
-	return 1;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -155,23 +134,7 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, ammo_Data[ammotype][ammo_size] == 1 ? random(1) : random(ammo_Data[ammotype][ammo_size] - 1) + 1);
 		}
 	}
-
-	#if defined ammo_OnItemCreate
-		return ammo_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate ammo_OnItemCreate
-#if defined ammo_OnItemCreate
-	forward ammo_OnItemCreate(itemid);
-#endif
 
 
 /*==============================================================================

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -35,7 +35,7 @@ hook OnPlayerConnect(playerid)
 	empm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTripMine)
 	{
@@ -46,26 +46,13 @@ public OnPlayerUseItem(playerid, itemid)
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, "Arming...");
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined empm_OnPlayerUseItem
-		return empm_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem empm_OnPlayerUseItem
-#if defined empm_OnPlayerUseItem
-	forward empm_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(empm_ArmingItem[playerid]))
 	{
@@ -75,22 +62,7 @@ public OnHoldActionFinish(playerid)
 
 		empm_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}
-
-	#if defined empm_OnHoldActionFinish
-		return empm_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish empm_OnHoldActionFinish
-#if defined empm_OnHoldActionFinish
-	forward empm_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -101,7 +73,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTripMine)
 	{
@@ -109,26 +81,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 		{
 			SetItemToExplode(itemid, 0, 12.0, EXPLOSION_PRESET_EMP, 0);
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
-	#if defined empm_OnPlayerPickUpItem
-		return empm_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem empm_OnPlayerPickUpItem
-#if defined empm_OnPlayerPickUpItem
-	forward empm_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
-public OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, containerid)
 {
 	for(new i, j = GetContainerSize(containerid); i < j; i++)
 	{
@@ -144,23 +104,10 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined empm_OnPlayerOpenContainer
-		return empm_OnPlayerOpenContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer empm_OnPlayerOpenContainer
-#if defined empm_OnPlayerOpenContainer
-	forward empm_OnPlayerOpenContainer(playerid, containerid);
-#endif
 
-public OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewContainerOpt(playerid, containerid)
 {
 	new
 		slot,
@@ -178,23 +125,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			empm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined empm_OnPlayerViewContainerOpt
-		return empm_OnPlayerViewContainerOpt(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerViewContainerOpt
-	#undef OnPlayerViewContainerOpt
-#else
-	#define _ALS_OnPlayerViewContainerOpt
-#endif
-#define OnPlayerViewContainerOpt empm_OnPlayerViewContainerOpt
-#if defined empm_OnPlayerViewContainerOpt
-	forward empm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
 
-public OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectContainerOpt(playerid, containerid, option)
 {
 	new
 		slot,
@@ -220,18 +154,5 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined empm_OnPlayerSelectContainerOpt
-		return empm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectContainerOpt
-	#undef OnPlayerSelectContainerOpt
-#else
-	#define _ALS_OnPlayerSelectContainerOpt
-#endif
-#define OnPlayerSelectContainerOpt empm_OnPlayerSelectContainerOpt
-#if defined empm_OnPlayerSelectContainerOpt
-	forward empm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_DRUG_TYPE	(12)
@@ -296,7 +296,7 @@ stock SetPlayerDrugsFromArray(playerid, input[])
 ==============================================================================*/
 
 
-public OnPlayerSave(playerid, filename[])
+hook OnPlayerSave(playerid, filename[])
 {
 	d:1:HANDLER("[OnPlayerSave] playerid:%d", playerid);
 
@@ -307,25 +307,9 @@ public OnPlayerSave(playerid, filename[])
 	length = GetPlayerDrugsAsArray(playerid, data);
 
 	modio_push(filename, _T<D,R,U,G>, length, data);
-
-	#if defined drug_OnPlayerSave
-		return drug_OnPlayerSave(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerSave
-	#undef OnPlayerSave
-#else
-	#define _ALS_OnPlayerSave
-#endif
- 
-#define OnPlayerSave drug_OnPlayerSave
-#if defined drug_OnPlayerSave
-	forward drug_OnPlayerSave(playerid, filename[]);
-#endif
 
-public OnPlayerLoad(playerid, filename[])
+hook OnPlayerLoad(playerid, filename[])
 {
 	d:1:HANDLER("[OnPlayerLoad] playerid:%d", playerid);
 
@@ -334,20 +318,4 @@ public OnPlayerLoad(playerid, filename[])
 	modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
 
 	SetPlayerDrugsFromArray(playerid, data);
-
-	#if defined drug_OnPlayerLoad
-		return drug_OnPlayerLoad(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerLoad
-	#undef OnPlayerLoad
-#else
-	#define _ALS_OnPlayerLoad
-#endif
- 
-#define OnPlayerLoad drug_OnPlayerLoad
-#if defined drug_OnPlayerLoad
-	forward drug_OnPlayerLoad(playerid, filename[]);
-#endif

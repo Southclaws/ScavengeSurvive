@@ -24,26 +24,13 @@
 
 #define IsBadInteract(%0) GetPlayerSpecialAction(%0) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(%0) || IsPlayerKnockedOut(%0) || GetPlayerAnimationIndex(%0) == 1381
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(IsBadInteract(playerid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined dis_OnPlayerPickUpItem
-		return dis_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem dis_OnPlayerPickUpItem
-#if defined dis_OnPlayerPickUpItem
-	forward dis_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 public OnPlayerGiveItem(playerid, targetid, itemid)
 {
@@ -162,24 +149,10 @@ public OnPlayerUseItem(playerid, itemid)
 	forward dis_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == ItemType:0)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_0;
 
-	#if defined dis_OnItemCreate
-		return dis_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate dis_OnItemCreate
-#if defined dis_OnItemCreate
-	forward dis_OnItemCreate(itemid);
-#endif

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_BANS_PER_PAGE (20)
@@ -260,7 +260,7 @@ ShowUnbanPrompt(playerid)
 	return 1;
 }
 
-public OnPlayerDialogPage(playerid, direction)
+hook OnPlayerDialogPage(playerid, direction)
 {
 	if(banlist_ViewingList[playerid])
 	{
@@ -272,20 +272,4 @@ public OnPlayerDialogPage(playerid, direction)
 
 		ShowListOfBans(playerid, banlist_CurrentIndex[playerid]);
 	}
-
-	#if defined banlist_OnPlayerDialogPage
-		return banlist_OnPlayerDialogPage(playerid, direction);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDialogPage
-	#undef OnPlayerDialogPage
-#else
-	#define _ALS_OnPlayerDialogPage
-#endif
- 
-#define OnPlayerDialogPage banlist_OnPlayerDialogPage
-#if defined banlist_OnPlayerDialogPage
-	forward banlist_OnPlayerDialogPage(playerid, direction);
-#endif

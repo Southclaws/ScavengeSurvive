@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DEFAULT_POS_X				(10000.0)
@@ -229,25 +229,10 @@ timer LoadAccountDelay[5000](playerid)
 	return;
 }
 
-public OnPlayerDisconnected(playerid)
+hook OnPlayerDisconnected(playerid)
 {
 	ResetVariables(playerid);
-
-	#if defined ply_OnPlayerDisconnected
-		return ply_OnPlayerDisconnected(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDisconnected
-	#undef OnPlayerDisconnected
-#else
-	#define _ALS_OnPlayerDisconnected
-#endif
-#define OnPlayerDisconnected ply_OnPlayerDisconnected
-#if defined ply_OnPlayerDisconnected
-	forward ply_OnPlayerDisconnected(playerid);
-#endif
 
 ResetVariables(playerid)
 {

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)

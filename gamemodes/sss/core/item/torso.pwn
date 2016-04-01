@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -97,7 +97,7 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	forward tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
 #endif
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Torso)
 	{
@@ -105,25 +105,12 @@ public OnPlayerPickUpItem(playerid, itemid)
 		{
 			gut_PickUpTimer[playerid] = defer PickUpTorso(playerid);
 			gut_TargetItem[playerid] = itemid;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined tor_OnPlayerPickUpItem
-		return tor_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem tor_OnPlayerPickUpItem
-#if defined tor_OnPlayerPickUpItem
-	forward tor_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -155,7 +142,7 @@ timer PickUpTorso[250](playerid)
 }
 
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{
@@ -181,22 +168,8 @@ public OnHoldActionFinish(playerid)
 
 		gut_TargetItem[playerid] = INVALID_ITEM_ID;
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined gut_OnHoldActionFinish
-		return gut_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
- 
-#define OnHoldActionFinish gut_OnHoldActionFinish
-#if defined gut_OnHoldActionFinish
-	forward gut_OnHoldActionFinish(playerid);
-#endif

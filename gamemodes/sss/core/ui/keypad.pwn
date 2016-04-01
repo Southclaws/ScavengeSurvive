@@ -22,8 +22,8 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
-#include <YSI\y_inline>
+#include <YSI_4\y_hooks>
+#include <YSI_4\y_inline>
 
 
 new

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -62,7 +62,7 @@ public OnPlayerUseItem(playerid, itemid)
 	forward tntt_OnPlayerUseItem(playerid, itemid);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(tntt_ArmingItem[playerid]))
 	{
@@ -73,22 +73,7 @@ public OnHoldActionFinish(playerid)
 
 		tntt_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}
-
-	#if defined tntt_OnHoldActionFinish
-		return tntt_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish tntt_OnHoldActionFinish
-#if defined tntt_OnHoldActionFinish
-	forward tntt_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

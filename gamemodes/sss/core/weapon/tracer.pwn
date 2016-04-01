@@ -126,7 +126,7 @@ tracer_HandleObjectMoved(objectid)
 	return;
 }
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	if(IsBaseWeaponClipBased(weaponid))
 	{
@@ -158,19 +158,5 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 
-	#if defined tracer_OnPlayerWeaponShot
-		return tracer_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnPlayerWeaponShot
-	#undef OnPlayerWeaponShot
-#else
-	#define _ALS_OnPlayerWeaponShot
-#endif
- 
-#define OnPlayerWeaponShot tracer_OnPlayerWeaponShot
-#if defined tracer_OnPlayerWeaponShot
-	forward tracer_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-#endif

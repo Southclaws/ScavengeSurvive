@@ -31,7 +31,7 @@
 */
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 #define DIRECTORY_PLAYER_ORIGINAL		"SSS/Player/"
 #define DIRECTORY_INVENTORY_ORIGINAL	"SSS/Inventory/"

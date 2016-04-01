@@ -128,7 +128,7 @@ public OnPlayerDroppedItem(playerid, itemid)
 	forward tntpx_OnPlayerDroppedItem(playerid, itemid);
 #endif
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	foreach(new i : tntpx_Index)
 	{
@@ -146,18 +146,5 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 		}
 	}
 
-	#if defined tntpx_OnPlayerEnterDynamicArea
-		return tntpx_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define OnPlayerEnterDynamicArea tntpx_OnPlayerEnterDynamicArea
-#if defined tntpx_OnPlayerEnterDynamicArea
-	forward tntpx_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif

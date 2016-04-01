@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static lsk_TargetVehicle[MAX_PLAYERS];
@@ -207,7 +207,7 @@ public OnHoldActionUpdate(playerid, progress)
 	forward lsk_OnHoldActionUpdate(playerid, progress);
 #endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -233,26 +233,13 @@ public OnHoldActionFinish(playerid)
 
 		StopCraftingKey(playerid);			
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined lsk_OnHoldActionFinish
-		return lsk_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish lsk_OnHoldActionFinish
-#if defined lsk_OnHoldActionFinish
-	forward lsk_OnHoldActionFinish(playerid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Key)
 	{
@@ -277,22 +264,7 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, "Cut");
 		}
 	}
-
-	#if defined lsk_OnItemNameRender
-		return lsk_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender lsk_OnItemNameRender
-#if defined lsk_OnItemNameRender
-	forward lsk_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 public OnPlayerCrafted(playerid, craftset, result)
 {
