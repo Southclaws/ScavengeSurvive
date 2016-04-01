@@ -305,18 +305,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 }
 
 
-public OnPlayerWearBag(playerid, itemid)
+hook OnPlayerWearBag(playerid, itemid)
 {
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
 	}
 
-	#if defined tut_OnPlayerWearBag
-		return tut_OnPlayerWearBag(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return 0;
 }
 
 
