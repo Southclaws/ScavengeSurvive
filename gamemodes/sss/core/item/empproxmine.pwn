@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 #define MAX_EMP_PROXIMITY	(1024)
 
 
@@ -79,30 +82,18 @@ timer ExplodeEmpProxMineDelay[1000](id)
 	return;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 	}
-	#if defined emppx_OnPlayerUseItem
-		return emppx_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem emppx_OnPlayerUseItem
-#if defined emppx_OnPlayerUseItem
-	forward emppx_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnPlayerDroppedItem(playerid, itemid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
@@ -112,21 +103,9 @@ public OnPlayerDroppedItem(playerid, itemid)
 			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
 		}
 	}
-	#if defined emppx_OnPlayerDroppedItem
-		return emppx_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem emppx_OnPlayerDroppedItem
-#if defined emppx_OnPlayerDroppedItem
-	forward emppx_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {

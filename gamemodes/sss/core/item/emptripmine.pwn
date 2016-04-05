@@ -107,7 +107,7 @@ hook OnPlayerOpenContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	new
 		slot,
@@ -128,7 +128,7 @@ hook OnPlayerViewContainerOpt(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
 	new
 		slot,

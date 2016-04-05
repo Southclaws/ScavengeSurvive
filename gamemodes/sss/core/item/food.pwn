@@ -108,27 +108,13 @@ hook OnItemCreate(itemid)
 	}
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemTypeFoodType(GetItemType(itemid)) != -1)
 		_StartEating(playerid, itemid);
 
-	#if defined food_OnPlayerUseItem
-		return food_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
- 
-#define OnPlayerUseItem food_OnPlayerUseItem
-#if defined food_OnPlayerUseItem
-	forward food_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

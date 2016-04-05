@@ -59,7 +59,7 @@ public OnItemCreateInWorld(itemid)
 	forward tor_OnItemCreateInWorld(itemid);
 #endif
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
@@ -81,21 +81,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			ShowActionText(playerid, "The body has already been harvested of the edible (tasty) parts", 3000);
 		}
 	}
-	#if defined tor_OnPlayerUseItemWithItem
-		return tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem tor_OnPlayerUseItemWithItem
-#if defined tor_OnPlayerUseItemWithItem
-	forward tor_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {

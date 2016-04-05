@@ -27,7 +27,7 @@
 
 new tntp_SyncTick[MAX_PLAYERS];
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_TntPhoneBomb)
 	{
@@ -37,23 +37,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		tntp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
-	#if defined tntp_OnPlayerUseItemWithItem
-		return tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem tntp_OnPlayerUseItemWithItem
-#if defined tntp_OnPlayerUseItemWithItem
-	forward tntp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
-public OnPlayerUseItem(playerid, itemid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone)
 	{
@@ -77,21 +65,9 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined tntp_OnPlayerUseItem
-		return tntp_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem tntp_OnPlayerUseItem
-#if defined tntp_OnPlayerUseItem
-	forward tntp_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnItemCreate(itemid)
 {

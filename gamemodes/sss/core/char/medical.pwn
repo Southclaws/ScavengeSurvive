@@ -153,7 +153,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
@@ -162,7 +162,7 @@ public OnHoldActionUpdate(playerid, progress)
 			if(!IsPlayerInPlayerArea(playerid, med_HealTarget[playerid]))
 			{
 				StopHoldAction(playerid);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			new progresscap = HEAL_PROGRESS_MAX;
@@ -176,13 +176,10 @@ public OnHoldActionUpdate(playerid, progress)
 			ShowPlayerProgressBar(med_HealTarget[playerid], ActionBar);
 		}
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
-	#if defined med_OnHoldActionUpdate
-		return med_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnHoldActionFinish(playerid)
@@ -297,17 +294,3 @@ hook OnHoldActionFinish(playerid)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate med_OnHoldActionUpdate
-#if defined med_OnHoldActionUpdate
-	forward med_OnHoldActionUpdate(playerid, progress);
-#endif

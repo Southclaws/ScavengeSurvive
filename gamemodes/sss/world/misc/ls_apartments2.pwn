@@ -195,24 +195,11 @@ hook OnObjectMoved(objectid)
 	return 1;
 }
 /* TODO: Do buttons instead of reinventing-wheel-button-detection
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
-	#if defined lsa2_OnButtonPress
-		return lsa2_OnButtonPress(playerid, buttonid);
-	#else
-		return 1;
-	#endif
-}
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
 
-#define OnButtonPress lsa2_OnButtonPress
-#if defined lsa2_OnButtonPress
-	forward lsa2_OnButtonPress(playerid, buttonid);
-#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 */
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

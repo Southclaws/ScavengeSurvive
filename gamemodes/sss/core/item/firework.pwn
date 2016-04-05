@@ -108,7 +108,7 @@ DestroyFireworkProjectile(id)
 }
 
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_FireLighter && GetItemType(withitemid) == item_FireworkBox)
 	{
@@ -119,22 +119,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			fwk_CooldownTick = GetTickCount();
 		}
 	}
-	#if defined fwk_OnPlayerUseItemWithItem
-		return fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem fwk_OnPlayerUseItemWithItem
-#if defined fwk_OnPlayerUseItemWithItem
-	forward fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 
 
 timer FireworkLaunch[6000](itemid)

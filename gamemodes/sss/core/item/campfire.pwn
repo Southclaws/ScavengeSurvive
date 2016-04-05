@@ -25,7 +25,7 @@
 #include <YSI_4\y_hooks>
 
 
-public OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -41,7 +41,7 @@ public OnItemCreateInWorld(itemid)
 	}
 }
 
-public OnPlayerPickedUpItem(playerid, itemid)
+hook OnPlayerPickedUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -52,7 +52,7 @@ public OnPlayerPickedUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerGivenItem(playerid, targetid, itemid)
+hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{

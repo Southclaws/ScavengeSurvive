@@ -225,7 +225,7 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 	forward rm_OnItemAddToContainer(containerid, itemid, playerid);
 #endif
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(rm_CurrentRefineMachine[playerid] != -1)
 	{
@@ -258,22 +258,8 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	#if defined rm_OnHoldActionUpdate
-		return rm_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate rm_OnHoldActionUpdate
-#if defined rm_OnHoldActionUpdate
-	forward rm_OnHoldActionUpdate(playerid, progress);
-#endif
 
 _rm_StartCooking(refinemachineid)
 {

@@ -359,7 +359,7 @@ hook OnGameModeInit()
 	CreateDynamicObject(3095, 268.37225, 1884.12219, 15.74065,   0.00000, 0.00000, 0.00000);
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(buttonid == btn_ControlTower)
 	{
@@ -391,19 +391,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined a69_OnButtonPress
-		return a69_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress a69_OnButtonPress
-forward a69_OnButtonPress(playerid, buttonid);
 
 public OnPlayerActivateDoor(playerid, doorid, newstate)
 {

@@ -32,32 +32,19 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
 	if(IsBadInteract(playerid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(IsBadInteract(targetid) || GetPlayerSpectateTarget(playerid) != INVALID_PLAYER_ID)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(GetPlayerWeapon(targetid) != 0)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined dis_OnPlayerGiveItem
-		return dis_OnPlayerGiveItem(playerid, targetid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerGiveItem
-	#undef OnPlayerGiveItem
-#else
-	#define _ALS_OnPlayerGiveItem
-#endif
-#define OnPlayerGiveItem dis_OnPlayerGiveItem
-#if defined dis_OnPlayerGiveItem
-	forward dis_OnPlayerGiveItem(playerid, targetid, itemid);
-#endif
 
 public OnItemRemoveFromContainer(containerid, slotid, playerid)
 {
@@ -125,29 +112,16 @@ public OnPlayerOpenContainer(playerid, containerid)
 	forward dis_OnPlayerOpenContainer(playerid, containerid);
 #endif
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(IsBadInteract(playerid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined dis_OnPlayerUseItem
-		return dis_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem dis_OnPlayerUseItem
-#if defined dis_OnPlayerUseItem
-	forward dis_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnItemCreate(itemid)
 {

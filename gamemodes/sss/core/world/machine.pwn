@@ -123,7 +123,7 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(mach_ButtonMachine[buttonid] != INVALID_MACHINE_ID)
 	{
@@ -138,21 +138,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined mach_OnButtonPress
-		return mach_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress mach_OnButtonPress
-#if defined mach_OnButtonPress
-	forward mach_OnButtonPress(playerid, buttonid);
-#endif
 
 _mach_PlayerUseMachine(playerid, machineid)
 {

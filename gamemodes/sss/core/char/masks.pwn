@@ -150,7 +150,7 @@ TogglePlayerMask(playerid, bool:toggle)
 // Hooks and Internal
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(mask_CurrentMask[playerid] == -1)
 	{
@@ -166,21 +166,8 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined mask_OnPlayerUseItem
-		return mask_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem mask_OnPlayerUseItem
-#if defined mask_OnPlayerUseItem
-	forward mask_OnPlayerUseItem(playerid, itemid);
-#endif
 
 
 // Interface

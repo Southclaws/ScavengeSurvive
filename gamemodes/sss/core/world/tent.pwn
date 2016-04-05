@@ -345,52 +345,22 @@ public OnItemRemoveFromWorld(itemid)
 #endif
 */
 #define cc.r );
-public OnItemDestroy(itemid)
+hook OnItemDestroy(itemid)
 {
 	RemoveItemFromTentIndex(itemid);
-
-	#if defined tnt_OnItemDestroy
-		return tnt_OnItemDestroy(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemDestroy
-	#undef OnItemDestroy
-#else
-	#define _ALS_OnItemDestroy
-#endif
- 
-#define OnItemDestroy tnt_OnItemDestroy
-#if defined tnt_OnItemDestroy
-	forward tnt_OnItemDestroy(itemid);
-#endif
 
-public OnPlayerPickedUpItem(playerid, itemid)
+hook OnPlayerPickedUpItem(playerid, itemid)
 {
 	new ret = RemoveItemFromTentIndex(itemid);
 
 	if(ret != INVALID_TENT_ID)
 		MsgF(playerid, YELLOW, "Removed item %d from tent %d (GEID: %d)", itemid, ret, tnt_GEID[ret]);
 
-	#if defined tnt_OnPlayerPickedUpItem
-		return tnt_OnPlayerPickedUpItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickedUpItem
-	#undef OnPlayerPickedUpItem
-#else
-	#define _ALS_OnPlayerPickedUpItem
-#endif
- 
-#define OnPlayerPickedUpItem tnt_OnPlayerPickedUpItem
-#if defined tnt_OnPlayerPickedUpItem
-	forward tnt_OnPlayerPickedUpItem(playerid, itemid);
-#endif
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	new
 		list[BTN_MAX_INRANGE],
@@ -407,22 +377,8 @@ public OnPlayerDroppedItem(playerid, itemid)
 		}
 	}
 
-	#if defined tnt_OnPlayerDroppedItem
-		return tnt_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
- 
-#define OnPlayerDroppedItem tnt_OnPlayerDroppedItem
-#if defined tnt_OnPlayerDroppedItem
-	forward tnt_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
 _DropItemInTent(playerid, itemid, tentid)
 {
@@ -434,29 +390,13 @@ _DropItemInTent(playerid, itemid, tentid)
 	return 1;
 }
 
-public OnItemArrayDataChanged(itemid)
+hook OnItemArrayDataChanged(itemid)
 {
 	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
 	{
 		SaveTent(tnt_ItemTent[itemid], 1);
 	}
-
-	#if defined tnt_OnItemArrayDataChanged
-		return tnt_OnItemArrayDataChanged(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemArrayDataChanged
-	#undef OnItemArrayDataChanged
-#else
-	#define _ALS_OnItemArrayDataChanged
-#endif
-
-#define OnItemArrayDataChanged tnt_OnItemArrayDataChanged
-#if defined tnt_OnItemArrayDataChanged
-	forward tnt_OnItemArrayDataChanged(itemid);
-#endif
 
 UpdateTentDebugLabel(tentid)
 {
@@ -486,7 +426,7 @@ UpdateTentDebugLabel(tentid)
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
@@ -499,26 +439,13 @@ public OnButtonPress(playerid, buttonid)
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 				ShowActionText(playerid, "Removing Tent");
 
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined tnt_OnButtonPress
-		return tnt_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress tnt_OnButtonPress
-#if defined tnt_OnButtonPress
-	forward tnt_OnButtonPress(playerid, buttonid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

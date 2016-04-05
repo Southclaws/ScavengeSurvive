@@ -25,7 +25,7 @@
 #include <YSI_4\y_hooks>
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Shield)
 	{
@@ -33,21 +33,9 @@ public OnPlayerUseItem(playerid, itemid)
 		defer shield_Down(playerid, itemid);
 		return 1;
 	}
-    #if defined shd_OnPlayerUseItem
-		return shd_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
-#else
-    #define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem shd_OnPlayerUseItem
-#if defined shd_OnPlayerUseItem
-	forward shd_OnPlayerUseItem(playerid, itemid);
-#endif
 
 timer shield_Down[400](playerid, itemid)
 {

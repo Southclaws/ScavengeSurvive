@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 }
 
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
@@ -56,21 +56,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 	}
-	#if defined scr_OnPlayerUseItemWithItem
-		return scr_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem scr_OnPlayerUseItemWithItem
-#if defined scr_OnPlayerUseItemWithItem
-	forward scr_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

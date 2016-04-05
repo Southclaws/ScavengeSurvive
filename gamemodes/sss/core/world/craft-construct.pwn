@@ -108,7 +108,7 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset)
 ==============================================================================*/
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	new
 		list[BTN_MAX_INRANGE] = {INVALID_ITEM_ID, ...},
@@ -146,7 +146,7 @@ public OnPlayerUseItem(playerid, itemid)
 
 				cons_Constructing[playerid] = craftset;
 
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 			else
 			{
@@ -155,21 +155,8 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined cons_OnPlayerUseItem
-		return cons_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem cons_OnPlayerUseItem
-#if defined cons_OnPlayerUseItem
-	forward cons_OnPlayerUseItem(playerid, itemid);
-#endif
 
 
 hook OnHoldActionFinish(playerid)

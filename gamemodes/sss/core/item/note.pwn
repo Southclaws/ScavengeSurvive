@@ -25,30 +25,13 @@
 #include <YSI_4\y_hooks>
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Note)
-	{
 		_ShowNoteDialog(playerid, itemid);
-	}
 
-	#if defined note_OnPlayerUseItem
-		return note_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
- 
-#define OnPlayerUseItem note_OnPlayerUseItem
-#if defined note_OnPlayerUseItem
-	forward note_OnPlayerUseItem(playerid, itemid);
-#endif
-
 
 _ShowNoteDialog(playerid, itemid)
 {

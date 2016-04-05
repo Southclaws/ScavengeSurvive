@@ -67,52 +67,25 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 	forward itmw_OnPlayerGivenItem(playerid, targetid, itemid);
 #endif
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		RemovePlayerWeapon(playerid);
 	}
 
-	#if defined itmw_OnPlayerDroppedItem
-		return itmw_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
- 
-#define OnPlayerDroppedItem itmw_OnPlayerDroppedItem
-#if defined itmw_OnPlayerDroppedItem
-	forward itmw_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
 	_PickUpAmmoTransferCheck(playerid, itemid, withitemid);
 
-	#if defined itmw_OnPlayerUseItemWithItem
-		return itmw_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem itmw_OnPlayerUseItemWithItem
-#if defined itmw_OnPlayerUseItemWithItem
-	forward itmw_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 {

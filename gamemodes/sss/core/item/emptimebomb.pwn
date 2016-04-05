@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 	emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTimebomb)
 	{
@@ -44,24 +44,10 @@ public OnPlayerUseItem(playerid, itemid)
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, "Arming...");
-		return 1;
 	}
 
-    #if defined emptbm_OnPlayerUseItem
-		return emptbm_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
-#else
-    #define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem emptbm_OnPlayerUseItem
-#if defined emptbm_OnPlayerUseItem
-	forward emptbm_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

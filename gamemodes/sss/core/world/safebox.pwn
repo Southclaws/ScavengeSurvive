@@ -1,3 +1,4 @@
+
 /*==============================================================================
 
 
@@ -266,26 +267,13 @@ public OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined box_OnPlayerUseItemWithItem
-		return box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
-#if defined box_OnPlayerUseItemWithItem
-	forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 SafeBoxInteractionCheck(playerid, itemid)
 {
@@ -352,7 +340,7 @@ timer box_PickUp[250](playerid, itemid)
 	return;
 }
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
@@ -363,22 +351,9 @@ public OnPlayerDroppedItem(playerid, itemid)
 		SafeboxSaveCheck(playerid, itemid);
 	}
 
-	#if defined box_OnPlayerDroppedItem
-		return box_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem box_OnPlayerDroppedItem
-#if defined box_OnPlayerDroppedItem
-	forward box_OnPlayerDroppedItem(playerid, itemid);
-#endif
-#define sc.r ):(fc_a<tf_a<5>> cc
+
 public OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(box_CurrentBoxItem[playerid]))

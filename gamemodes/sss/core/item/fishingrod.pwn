@@ -25,6 +25,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 #define MAX_FISHING_DISTANCE	(10000)
 #define MIN_FISHING_TIME		(30000)
 #define MAX_FISHING_TIME		(120000)
@@ -49,29 +52,17 @@ hook OnPlayerConnect(playerid)
 	stop fish_Timer[playerid];
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_FishRod)
 	{
 		_PlayerStartFishing(playerid);
+
+		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
-	#if defined fish_OnPlayerUseItem
-		return fish_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
- 
-#define OnPlayerUseItem fish_OnPlayerUseItem
-#if defined fish_OnPlayerUseItem
-	forward fish_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -174,24 +165,10 @@ timer _CatchDelay[floatround(fish_Distance[playerid], floatround_round) * 100](p
 	_PlayerStopFishing(playerid);
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(fish_Status[playerid] == FISH_STATUS_CASTING)
 		fish_Distance[playerid] = progress / 100;
 
-	#if defined fish_OnHoldActionUpdate
-		return fish_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate fish_OnHoldActionUpdate
-#if defined fish_OnHoldActionUpdate
-	forward fish_OnHoldActionUpdate(playerid, progress);
-#endif

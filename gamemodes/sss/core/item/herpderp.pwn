@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_HerpDerp)
 	{
@@ -56,19 +56,6 @@ public OnPlayerUseItem(playerid, itemid)
 
 		}
 	}
-	#if defined derp_OnPlayerUseItem
-		return derp_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem derp_OnPlayerUseItem
-#if defined derp_OnPlayerUseItem
-	forward derp_OnPlayerUseItem(playerid, itemid);
-#endif
 
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}

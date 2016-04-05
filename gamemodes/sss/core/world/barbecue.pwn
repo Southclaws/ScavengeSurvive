@@ -92,7 +92,7 @@ hook OnItemCreate(itemid)
 	}
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:1:HANDLER("[OnPlayerUseItemWithItem HOOK] %d %d %d", playerid, itemid, withitemid);
 
@@ -104,21 +104,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	d:2:HANDLER("[OnPlayerUseItemWithItem END] %d %d %d", playerid, itemid, withitemid);
 
-	#if defined bbq_OnPlayerUseItemWithItem
-		return bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-    #undef OnPlayerUseItemWithItem
-#else
-    #define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem bbq_OnPlayerUseItemWithItem
-#if defined bbq_OnPlayerUseItemWithItem
-	forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 _UseBbqHandler(playerid, itemid, withitemid)
 {

@@ -37,7 +37,7 @@ hook OnItemCreate(itemid)
 }
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Armour)
 	{
@@ -51,21 +51,9 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined armour_OnPlayerUseItem
-		return armour_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem armour_OnPlayerUseItem
-#if defined armour_OnPlayerUseItem
-	forward armour_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {

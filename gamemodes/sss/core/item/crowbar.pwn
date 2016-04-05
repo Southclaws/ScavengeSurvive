@@ -91,19 +91,15 @@ public OnHoldActionUpdate(playerid, progress)
 		if(!IsValidVehicle(cbr_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cbr_TargetVehicle[playerid]))
 		{
 			StopBreakingVehicleLock(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		SetPlayerToFaceVehicle(playerid, cbr_TargetVehicle[playerid]);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined crow_OnHoldActionUpdate
-		return crow_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnHoldActionFinish(playerid)
@@ -126,17 +122,3 @@ hook OnHoldActionFinish(playerid)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate crow_OnHoldActionUpdate
-#if defined crow_OnHoldActionUpdate
-	forward crow_OnHoldActionUpdate(playerid, progress);
-#endif

@@ -412,15 +412,8 @@ stock SetPlayerAdminLevel(playerid, level)
 
 	UpdateAdmin(name, level);
 
-	return 1;//SetPlayerAdminLevel(playerid, level); // hooking fix for external
+	return 1;
 }
-#if defined _ALS_SetPlayerAdminLevel
-    #undef SetPlayerAdminLevel
-#else
-    #define _ALS_SetPlayerAdminLevel
-#endif
- 
-#define __fix SetPlayerAdminLevel
 
 stock GetPlayerAdminLevel(playerid)
 {

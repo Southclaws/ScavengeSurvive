@@ -22,9 +22,12 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 new empp_SyncTick[MAX_PLAYERS];
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_EmpPhoneBomb)
 	{
@@ -34,23 +37,11 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		empp_SyncTick[playerid] = GetTickCount();
 		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
 	}
-	#if defined empp_OnPlayerUseItemWithItem
-		return empp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem empp_OnPlayerUseItemWithItem
-#if defined empp_OnPlayerUseItemWithItem
-	forward empp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
-public OnPlayerUseItem(playerid, itemid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_MobilePhone)
 	{
@@ -65,18 +56,6 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined empp_OnPlayerUseItem
-		return empp_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem empp_OnPlayerUseItem
-#if defined empp_OnPlayerUseItem
-	forward empp_OnPlayerUseItem(playerid, itemid);
-#endif

@@ -113,32 +113,19 @@ StopApplyingHandcuffs(playerid)
 	}
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
 		{
 			StopApplyingHandcuffs(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined cuf_OnHoldActionUpdate
-		return cuf_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate cuf_OnHoldActionUpdate
-#if defined cuf_OnHoldActionUpdate
-	forward cuf_OnHoldActionUpdate(playerid, progress);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

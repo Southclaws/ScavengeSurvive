@@ -242,7 +242,7 @@ stock SetCampfireState(fireid, bool:toggle)
 	return 1;
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(withitemid) == item_Campfire)
 	{
@@ -343,21 +343,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined cmp_OnPlayerUseItemWithItem
-		return cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem cmp_OnPlayerUseItemWithItem
-#if defined cmp_OnPlayerUseItemWithItem
-	forward cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 timer CampfireBurnOut[time](fireid, time)
 {

@@ -35,7 +35,7 @@ hook OnPlayerConnect(playerid)
 	tntm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_TntTripMine)
 	{
@@ -45,23 +45,10 @@ public OnPlayerUseItem(playerid, itemid)
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, "Arming...");
-		return 1;
 	}
-	#if defined tntm_OnPlayerUseItem
-		return tntm_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem tntm_OnPlayerUseItem
-#if defined tntm_OnPlayerUseItem
-	forward tntm_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

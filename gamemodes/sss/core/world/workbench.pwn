@@ -140,7 +140,7 @@ stock SetConstructionSetWorkbench(consset)
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(wb_ButtonWorkbench[buttonid] != -1)
 	{
@@ -160,21 +160,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined wb_OnButtonPress
-		return wb_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress wb_OnButtonPress
-#if defined wb_OnButtonPress
-	forward wb_OnButtonPress(playerid, buttonid);
-#endif
 
 _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 {

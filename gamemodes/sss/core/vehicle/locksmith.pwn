@@ -173,7 +173,7 @@ StopCraftingKey(playerid)
 	return 1;
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -183,29 +183,16 @@ public OnHoldActionUpdate(playerid, progress)
 			!IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
 		{
 			StopCraftingKey(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		SetPlayerToFaceVehicle(playerid, lsk_TargetVehicle[playerid]);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined lsk_OnHoldActionUpdate
-		return lsk_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate lsk_OnHoldActionUpdate
-#if defined lsk_OnHoldActionUpdate
-	forward lsk_OnHoldActionUpdate(playerid, progress);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

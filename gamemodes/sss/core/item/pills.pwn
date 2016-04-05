@@ -64,28 +64,15 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Pills)
 	{
 		StartTakingPills(playerid);
 	}
 
-	#if defined pil_OnPlayerUseItem
-		return pil_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem pil_OnPlayerUseItem
-#if defined pil_OnPlayerUseItem
-	forward pil_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

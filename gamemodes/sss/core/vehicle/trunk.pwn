@@ -135,7 +135,7 @@ hook OnItemAddedToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromContainer(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);

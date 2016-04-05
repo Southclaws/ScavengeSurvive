@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 
-public OnPlayerUseItem(playerid, itemid)
+#include <YSI_4\y_hooks>
+
+
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Sign)
 	{
@@ -39,21 +42,7 @@ public OnPlayerUseItem(playerid, itemid)
 		DestroyItem(itemid);
 		tmpsign = CreateSign("I am a sign.", x + floatsin(-a, degrees), y + floatcos(-a, degrees), z - 1.0, a - 90.0);
 		EditSign(playerid, tmpsign);
-
-		return 1;
 	}
-	#if defined sgn_OnPlayerUseItem
-		return sgn_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem sgn_OnPlayerUseItem
-#if defined sgn_OnPlayerUseItem
-	forward sgn_OnPlayerUseItem(playerid, itemid);
-#endif

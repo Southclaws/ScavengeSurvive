@@ -126,7 +126,7 @@ hook OnGameModeInit()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0, .worldid = RANCH_STUFF_VIRTUALW);
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(buttonid==RanchPcButton)
 	{
@@ -195,22 +195,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-    #if defined ranch_OnButtonPress
-		return ranch_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-    #undef OnButtonPress
-#else
-    #define _ALS_OnButtonPress
-#endif
-#define OnButtonPress ranch_OnButtonPress
-#if defined ranch_OnButtonPress
-	forward ranch_OnButtonPress(playerid, buttonid);
-#endif
-
 
 public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 {

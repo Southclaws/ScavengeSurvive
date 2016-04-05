@@ -335,7 +335,7 @@ stock DestroyDefence(defenceid)
 	return next;
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -349,21 +349,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined def_OnPlayerUseItemWithItem
-		return def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem def_OnPlayerUseItemWithItem
-#if defined def_OnPlayerUseItemWithItem
-	forward def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -428,7 +415,7 @@ StopBuildingDefence(playerid)
 	return;
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(def_ButtonDefence[buttonid] != -1)
 	{
@@ -453,7 +440,7 @@ public OnButtonPress(playerid, buttonid)
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					ShowActionText(playerid, sprintf("Removing %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -473,7 +460,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -486,7 +473,7 @@ public OnButtonPress(playerid, buttonid)
 					if(!def_Data[id][def_motor])
 					{
 						ShowActionText(playerid, "You must install a motor before installing a keypad!");
-						return 1;
+						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
 					new itemtypename[ITM_MAX_NAME];
@@ -499,7 +486,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -512,7 +499,7 @@ public OnButtonPress(playerid, buttonid)
 					if(!def_Data[id][def_motor])
 					{
 						ShowActionText(playerid, "You must install a motor before installing a keypad!");
-						return 1;
+						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
 					new itemtypename[ITM_MAX_NAME];
@@ -525,7 +512,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -591,49 +578,24 @@ public OnButtonPress(playerid, buttonid)
 					defer MoveDefence(id, playerid);
 				}
 
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined def_OnButtonPress
-		return def_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress def_OnButtonPress
-#if defined def_OnButtonPress
-	forward def_OnButtonPress(playerid, buttonid);
-#endif
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
 			StopHoldAction(playerid);
 	}
-	#if defined def_OnHoldActionUpdate
-		return def_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate def_OnHoldActionUpdate
-#if defined def_OnHoldActionUpdate
-	forward def_OnHoldActionUpdate(playerid, progress);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

@@ -207,7 +207,7 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 	return 0;
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(sm_CurrentScrapMachine[playerid] != -1)
 	{
@@ -240,22 +240,8 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	#if defined sm_OnHoldActionUpdate
-		return sm_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate sm_OnHoldActionUpdate
-#if defined sm_OnHoldActionUpdate
-	forward sm_OnHoldActionUpdate(playerid, progress);
-#endif
 
 _sm_StartCooking(scrapmachineid)
 {

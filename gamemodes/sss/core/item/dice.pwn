@@ -34,7 +34,7 @@ new
 	};
 
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Dice)
 	{
@@ -45,22 +45,8 @@ public OnPlayerDroppedItem(playerid, itemid)
 		defer RollDice(itemid, angle);
 	}
 
-	#if defined die_OnPlayerDroppedItem
-		return die_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem die_OnPlayerDroppedItem
-#if defined die_OnPlayerDroppedItem
-	forward die_OnPlayerDroppedItem(playerid, itemid);
-#endif
-
 
 timer RollDice[50](itemid, Float:direction)
 {

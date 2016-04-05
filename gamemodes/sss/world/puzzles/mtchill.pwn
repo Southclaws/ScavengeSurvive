@@ -322,7 +322,6 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 	forward ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
 #endif
 
-
 timer ch_keypad_move[400]()
 {
 	MoveDynamicObject(ch_keypad, -2311.5601, -1647.6781, 484.2200, 2.8, 0.0000, 32.0000, 26.0000);	

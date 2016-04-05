@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 	iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTimebomb)
 	{
@@ -46,21 +46,9 @@ public OnPlayerUseItem(playerid, itemid)
 		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
-    #if defined iedt_OnPlayerUseItem
-		return iedt_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
-#else
-    #define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem iedt_OnPlayerUseItem
-#if defined iedt_OnPlayerUseItem
-	forward iedt_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnHoldActionFinish(playerid)
 {

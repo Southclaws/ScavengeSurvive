@@ -153,7 +153,7 @@ TogglePlayerHeadwear(playerid, bool:toggle)
 // Hooks and Internal
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(hat_CurrentHat[playerid] == -1)
 	{
@@ -169,21 +169,8 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined hat_OnPlayerUseItem
-		return hat_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem hat_OnPlayerUseItem
-#if defined hat_OnPlayerUseItem
-	forward hat_OnPlayerUseItem(playerid, itemid);
-#endif
 
 
 // Interface

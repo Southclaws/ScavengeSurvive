@@ -180,31 +180,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnPlayerAddToInventory(playerid, itemid)
+hook OnPlayerAddToInventory(playerid, itemid)
 {
 	// This is to stop holstered items from being added to the inventory too.
 	// (They share the same key.)
 	if(!IsValidContainer(GetPlayerCurrentContainer(playerid)) && !IsPlayerViewingInventory(playerid))
 	{
 		if(IsValidHolsterItem(GetItemType(itemid)))
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined hols_OnPlayerAddToInventory
-		return hols_OnPlayerAddToInventory(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerAddToInventory
-	#undef OnPlayerAddToInventory
-#else
-	#define _ALS_OnPlayerAddToInventory
-#endif
-#define OnPlayerAddToInventory hols_OnPlayerAddToInventory
-#if defined hols_OnPlayerAddToInventory
-	forward hols_OnPlayerAddToInventory(playerid, itemid);
-#endif
 
 _HolsterChecks(playerid)
 {
@@ -348,30 +335,16 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[targetid]) < 1000)
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined hols_OnPlayerGiveItem
-		return hols_OnPlayerGiveItem(playerid, targetid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerGiveItem
-	#undef OnPlayerGiveItem
-#else
-	#define _ALS_OnPlayerGiveItem
-#endif
- 
-#define OnPlayerGiveItem hols_OnPlayerGiveItem
-#if defined hols_OnPlayerGiveItem
-	forward hols_OnPlayerGiveItem(playerid, targetid, itemid);
-#endif
 
 
 /*==============================================================================

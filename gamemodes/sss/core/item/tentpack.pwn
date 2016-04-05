@@ -35,28 +35,15 @@ hook OnPlayerConnect(playerid)
 }
 
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_Hammer && GetItemType(withitemid) == item_TentPack)
 	{
 		StartBuildingTent(playerid, withitemid);
 	}
 
-	#if defined tnt_OnPlayerUseItemWithItem
-		return tnt_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem tnt_OnPlayerUseItemWithItem
-#if defined tnt_OnPlayerUseItemWithItem
-	forward tnt_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
