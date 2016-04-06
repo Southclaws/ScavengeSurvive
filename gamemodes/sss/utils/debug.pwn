@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 #define MAX_DEBUG_HANDLER		(128)
 #define MAX_DEBUG_HANDLER_NAME	(32)
 
@@ -122,4 +125,48 @@ stock debug_get_handler_name(handler, output[])
 	strcat(output, dbg_Name[handler], MAX_DEBUG_HANDLER_NAME);
 
 	return 1;
+}
+
+hook OnRconCommand(cmd[])
+{
+	new
+		command[16],
+		params[92];
+
+	sscanf(cmd, "s[16]s[92]", command, params);
+
+	if(!strcmp(command, "debug"))
+	{
+		new handlername[MAX_DEBUG_HANDLER_NAME];
+
+		if(sscanf(params, "s[32]d", handlername, level))
+		{
+			print("Usage: debug [handlername] [level]");
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		handler = debug_handler_search(handlername);
+
+		if(handler == -1)
+		{
+			print("Invalid handler");
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		if(!(0 <= level <= 10))
+		{
+			print("Invalid level");
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		debug_get_handler_name(handler, handlername);
+
+		debug_set_level(handler, level);
+
+		printf("SS debug level for '%s': %d", handlername, level);
+
+		return Y_HOOKS_BREAK_RETURN_0;
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }

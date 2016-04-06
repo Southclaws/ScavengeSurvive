@@ -217,7 +217,7 @@ CMD:debug(playerid, params[])
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
+		Msg(playerid, YELLOW, " >  Usage: /debug [handlername] [level]");
 		return 1;
 	}
 
@@ -289,7 +289,7 @@ ACMD:sifgdebug[4](playerid, params[])
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
+		Msg(playerid, YELLOW, " >  Usage: /sifgdebug [handlername] [level]");
 		return 1;
 	}
 
