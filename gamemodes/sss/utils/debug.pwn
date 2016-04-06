@@ -137,7 +137,10 @@ hook OnRconCommand(cmd[])
 
 	if(!strcmp(command, "debug"))
 	{
-		new handlername[MAX_DEBUG_HANDLER_NAME];
+		new
+			handlername[MAX_DEBUG_HANDLER_NAME],
+			level,
+			handler;
 
 		if(sscanf(params, "s[32]d", handlername, level))
 		{
