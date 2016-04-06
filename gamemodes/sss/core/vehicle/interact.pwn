@@ -42,8 +42,8 @@ static
 
 
 forward OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
-forward OnPlayerEnterVehicleArea(playerid, vehicleid);
-forward OnPlayerLeaveVehicleArea(playerid, vehicleid);
+forward OnPlayerEnterVehArea(playerid, vehicleid);
+forward OnPlayerLeaveVehArea(playerid, vehicleid);
 
 
 static HANDLER = -1;
@@ -102,52 +102,24 @@ stock CreateVehicleArea(vehicleid)
 ==============================================================================*/
 
 
-public OnVehicleCreated(vehicleid)
+hook OnVehicleCreated(vehicleid)
 {
 	CreateVehicleArea(vehicleid);
 
-	#if defined vint_OnVehicleCreated
-		return vint_OnVehicleCreated(vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnVehicleCreated
-	#undef OnVehicleCreated
-#else
-	#define _ALS_OnVehicleCreated
-#endif
-
-#define OnVehicleCreated vint_OnVehicleCreated
-#if defined vint_OnVehicleCreated
-	forward vint_OnVehicleCreated(vehicleid);
-#endif
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	_vint_EnterArea(playerid, areaid);
 }
 
-public OnPlayerLeaveDynamicArea(playerid, areaid)
+hook OnPlayerLeaveDynArea(playerid, areaid)
 {
 	_vint_LeaveArea(playerid, areaid);
 
-	#if defined vint_OnPlayerLeaveDynamicArea
-		return vint_OnPlayerLeaveDynamicArea(playerid, areaid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLeaveDynamicArea
-	#undef OnPlayerLeaveDynamicArea
-#else
-	#define _ALS_OnPlayerLeaveDynamicArea
-#endif
- 
-#define OnPlayerLeaveDynamicArea vint_OnPlayerLeaveDynamicArea
-#if defined vint_OnPlayerLeaveDynamicArea
-	forward vint_OnPlayerLeaveDynamicArea(playerid, areaid);
-#endif
 
 _vint_EnterArea(playerid, areaid)
 {
@@ -210,7 +182,7 @@ _vint_EnterArea(playerid, areaid)
 		printf("ERROR: Vehicle %d already in NearList for player %d", data[1], playerid);
 	}
 
-	CallLocalFunction("OnPlayerEnterVehicleArea", "dd", playerid, data[1]);
+	CallLocalFunction("OnPlayerEnterVehArea", "dd", playerid, data[1]);
 
 	return;
 }
@@ -252,7 +224,7 @@ _vint_LeaveArea(playerid, areaid)
 	}
 
 	HideActionText(playerid);
-	CallLocalFunction("OnPlayerLeaveVehicleArea", "dd", playerid, data[1]);
+	CallLocalFunction("OnPlayerLeaveVehArea", "dd", playerid, data[1]);
 
 	foreach(new i : varea_NearIndex[playerid])
 	{
@@ -267,25 +239,12 @@ _vint_LeaveArea(playerid, areaid)
 	return;
 }
 
-public OnVehicleDestroyed(vehicleid)
+hook OnVehicleDestroyed(vehicleid)
 {
 	DestroyDynamicArea(varea_AreaID[vehicleid]);
 
-	#if defined varea_OnVehicleDestroyed
-		return varea_OnVehicleDestroyed(vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnVehicleDestroyed
-	#undef OnVehicleDestroyed
-#else
-	#define _ALS_OnVehicleDestroyed
-#endif
-#define OnVehicleDestroyed varea_OnVehicleDestroyed
-#if defined varea_OnVehicleDestroyed
-	forward varea_OnVehicleDestroyed(vehicleid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

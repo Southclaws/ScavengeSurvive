@@ -31,27 +31,13 @@ static
 	lock_DisableForPlayer	[MAX_PLAYERS];
 
 
-public OnVehicleCreated(vehicleid)
+hook OnVehicleCreated(vehicleid)
 {
 	lock_Status[vehicleid] = 0;
 	lock_LastChange[vehicleid] = 0;
 
-	#if defined lock_OnVehicleCreated
-		return lock_OnVehicleCreated(vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnVehicleCreated
-	#undef OnVehicleCreated
-#else
-	#define _ALS_OnVehicleCreated
-#endif
- 
-#define OnVehicleCreated lock_OnVehicleCreated
-#if defined lock_OnVehicleCreated
-	forward lock_OnVehicleCreated(vehicleid);
-#endif
 
 hook OnPlayerConnect(playerid)
 {
@@ -96,7 +82,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	return 1;
 }
 
-public OnPlayerEnterVehicleArea(playerid, vehicleid)
+hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
 	if(!lock_Status[vehicleid] && !lock_DisableForPlayer[playerid])
 	{
@@ -107,41 +93,15 @@ public OnPlayerEnterVehicleArea(playerid, vehicleid)
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 1);
 	}
 
-	#if defined lock_OnPlayerEnterVehicleArea
-		return lock_OnPlayerEnterVehicleArea(playerid, vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerEnterVehicleArea
-	#undef OnPlayerEnterVehicleArea
-#else
-	#define _ALS_OnPlayerEnterVehicleArea
-#endif
-#define OnPlayerEnterVehicleArea lock_OnPlayerEnterVehicleArea
-#if defined lock_OnPlayerEnterVehicleArea
-	forward lock_OnPlayerEnterVehicleArea(playerid, vehicleid);
-#endif
 
-public OnPlayerLeaveVehicleArea(playerid, vehicleid)
+hook OnPlayerLeaveVehArea(playerid, vehicleid)
 {
 	SetVehicleParamsForPlayer(vehicleid, playerid, 0, 1);
 
-	#if defined lock_OnPlayerLeaveVehicleArea
-		return lock_OnPlayerLeaveVehicleArea(playerid, vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLeaveVehicleArea
-	#undef OnPlayerLeaveVehicleArea
-#else
-	#define _ALS_OnPlayerLeaveVehicleArea
-#endif
-#define OnPlayerLeaveVehicleArea lock_OnPlayerLeaveVehicleArea
-#if defined lock_OnPlayerLeaveVehicleArea
-	forward lock_OnPlayerLeaveVehicleArea(playerid, vehicleid);
-#endif
 
 
 /*==============================================================================

@@ -109,7 +109,7 @@ stock CreateRefineMachine(Float:x, Float:y, Float:z, Float:rz)
 ==============================================================================*/
 
 
-public OnPlayerUseMachine(playerid, machineid, interactiontype)
+hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
 	if(rm_MachineRefineMachine[machineid] != -1)
 	{
@@ -124,21 +124,8 @@ public OnPlayerUseMachine(playerid, machineid, interactiontype)
 		}
 	}
 
-	#if defined rm_OnPlayerUseMachine
-		return rm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseMachine
-	#undef OnPlayerUseMachine
-#else
-	#define _ALS_OnPlayerUseMachine
-#endif
-#define OnPlayerUseMachine rm_OnPlayerUseMachine
-#if defined rm_OnPlayerUseMachine
-	forward rm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-#endif
 
 _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 {
@@ -193,7 +180,7 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 	return 0;
 }
 
-public OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(containerid, itemid, playerid)
 {
 	if(playerid != INVALID_PLAYER_ID)
 	{
@@ -209,21 +196,8 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 		}
 	}
 
-	#if defined rm_OnItemAddToContainer
-		return rm_OnItemAddToContainer(containerid, itemid, playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemAddToContainer
-	#undef OnItemAddToContainer
-#else
-	#define _ALS_OnItemAddToContainer
-#endif
-#define OnItemAddToContainer rm_OnItemAddToContainer
-#if defined rm_OnItemAddToContainer
-	forward rm_OnItemAddToContainer(containerid, itemid, playerid);
-#endif
 
 hook OnHoldActionUpdate(playerid, progress)
 {

@@ -106,26 +106,13 @@ hook OnPlayerPickUpItem(playerid, itemid)
 		ShowItemToolTip(playerid, GetItemType(itemid));
 }
 
-public OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, itemid)
 {
 	if(IsPlayerToolTipsOn(playerid))
 		HideHelpTip(playerid);
 
-	#if defined tip_OnPlayerDropItem
-		return tip_OnPlayerDropItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDropItem
-	#undef OnPlayerDropItem
-#else
-	#define _ALS_OnPlayerDropItem
-#endif
-#define OnPlayerDropItem tip_OnPlayerDropItem
-#if defined tip_OnPlayerDropItem
-	forward tip_OnPlayerDropItem(playerid, itemid);
-#endif
 
 hook OnGameModeInit()
 {

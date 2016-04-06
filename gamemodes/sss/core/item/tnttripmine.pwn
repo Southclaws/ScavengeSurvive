@@ -86,7 +86,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, containerid)
 {
 	for(new i, j = GetContainerSize(containerid); i < j; i++)
 	{
@@ -102,23 +102,10 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined tntm_OnPlayerOpenContainer
-		return tntm_OnPlayerOpenContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer tntm_OnPlayerOpenContainer
-#if defined tntm_OnPlayerOpenContainer
-	forward tntm_OnPlayerOpenContainer(playerid, containerid);
-#endif
 
-public OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	new
 		slot,
@@ -136,23 +123,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			tntm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined tntm_OnPlayerViewContainerOpt
-		return tntm_OnPlayerViewContainerOpt(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerViewContainerOpt
-	#undef OnPlayerViewContainerOpt
-#else
-	#define _ALS_OnPlayerViewContainerOpt
-#endif
-#define OnPlayerViewContainerOpt tntm_OnPlayerViewContainerOpt
-#if defined tntm_OnPlayerViewContainerOpt
-	forward tntm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
 
-public OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
 	new
 		slot,
@@ -178,18 +152,5 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined tntm_OnPlayerSelectContainerOpt
-		return tntm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectContainerOpt
-	#undef OnPlayerSelectContainerOpt
-#else
-	#define _ALS_OnPlayerSelectContainerOpt
-#endif
-#define OnPlayerSelectContainerOpt tntm_OnPlayerSelectContainerOpt
-#if defined tntm_OnPlayerSelectContainerOpt
-	forward tntm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif

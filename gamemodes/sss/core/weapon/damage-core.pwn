@@ -192,26 +192,12 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	return 1;
 }
 
-public OnDeath(playerid, killerid, reason)
+hook OnDeath(playerid, killerid, reason)
 {
 	Iter_Clear(wnd_Index[playerid]);
 
-	#if defined dmg_OnDeath
-		return dmg_OnDeath(playerid, killerid, reason);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnDeath
-	#undef OnDeath
-#else
-	#define _ALS_OnDeath
-#endif
- 
-#define OnDeath dmg_OnDeath
-#if defined dmg_OnDeath
-	forward dmg_OnDeath(playerid, killerid, reason);
-#endif
 
 stock Float:GetPlayerKnockoutChance(playerid, Float:knockmult)
 {

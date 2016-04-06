@@ -35,33 +35,28 @@ hook OnPlayerConnect(playerid)
 	cro_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
-public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
 		if(IsVehicleLocked(vehicleid))
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(225.0 < angle < 315.0)
 		{
-			return StartBreakingVehicleLock(playerid, vehicleid, 0);
+			if(StartBreakingVehicleLock(playerid, vehicleid, 0))
+				return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(155.0 < angle < 205.0)
 		{
-			return StartBreakingVehicleLock(playerid, vehicleid, 1);
+			if(StartBreakingVehicleLock(playerid, vehicleid, 1))
+				return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	return CallLocalFunction("cro_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle cro_OnPlayerInteractVehicle
-forward cro_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

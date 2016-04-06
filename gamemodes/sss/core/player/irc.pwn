@@ -156,27 +156,13 @@ hook OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-public OnPlayerSendChat(playerid, text[], Float:frequency)
+hook OnPlayerSendChat(playerid, text[], Float:frequency)
 {
 	if(irc_Active)
 		_IRC_HandleServerChat(playerid, text, frequency);
 
-	#if defined irc_OnPlayerSendChat
-		return irc_OnPlayerSendChat(playerid, text, frequency);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSendChat
-	#undef OnPlayerSendChat
-#else
-	#define _ALS_OnPlayerSendChat
-#endif
- 
-#define OnPlayerSendChat irc_OnPlayerSendChat
-#if defined irc_OnPlayerSendChat
-	forward irc_OnPlayerSendChat(playerid, text[], Float:frequency);
-#endif
 
 _IRC_HandleServerChat(playerid, text[], Float:frequency)
 {
@@ -225,27 +211,13 @@ _IRC_HandleServerChat(playerid, text[], Float:frequency)
 	return 1;
 }
 
-public IRC_OnUserSay(botid, recipient[], user[], host[], message[])
+hook IRC_OnUserSay(botid, recipient[], user[], host[], message[])
 {
 	if(irc_Active)
 		_IRC_HandleChannelChat(recipient, user, message);
 
-	#if defined irc_IRC_OnUserSay
-		return irc_IRC_OnUserSay(botid, recipient[], user[], host[], message[]);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_IRC_OnUserSay
-	#undef IRC_OnUserSay
-#else
-	#define _ALS_IRC_OnUserSay
-#endif
- 
-#define IRC_OnUserSay irc_IRC_OnUserSay
-#if defined irc_IRC_OnUserSay
-	forward irc_IRC_OnUserSay(botid, recipient[], user[], host[], message[]);
-#endif
 
 _IRC_HandleChannelChat(recipient[], user[], message[])
 {

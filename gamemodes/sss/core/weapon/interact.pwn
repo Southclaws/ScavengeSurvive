@@ -22,28 +22,14 @@
 ==============================================================================*/
 
 
-public OnPlayerGetItem(playerid, itemid)
+hook OnPlayerGetItem(playerid, itemid)
 {
 	UpdatePlayerWeaponItem(playerid);
 
-	#if defined itmw_OnPlayerGetItem
-		return itmw_OnPlayerGetItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerGetItem
-	#undef OnPlayerGetItem
-#else
-	#define _ALS_OnPlayerGetItem
-#endif
- 
-#define OnPlayerGetItem itmw_OnPlayerGetItem
-#if defined itmw_OnPlayerGetItem
-	forward itmw_OnPlayerGetItem(playerid, itemid);
-#endif
 
-public OnPlayerGivenItem(playerid, targetid, itemid)
+hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
@@ -51,21 +37,8 @@ public OnPlayerGivenItem(playerid, targetid, itemid)
 		UpdatePlayerWeaponItem(targetid);
 	}
 
-	#if defined itmw_OnPlayerGivenItem
-		return itmw_OnPlayerGivenItem(playerid, targetid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerGivenItem
-	#undef OnPlayerGivenItem
-#else
-	#define _ALS_OnPlayerGivenItem
-#endif
-#define OnPlayerGivenItem itmw_OnPlayerGivenItem
-#if defined itmw_OnPlayerGivenItem
-	forward itmw_OnPlayerGivenItem(playerid, targetid, itemid);
-#endif
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {

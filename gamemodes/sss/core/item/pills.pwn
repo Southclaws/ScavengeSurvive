@@ -147,7 +147,7 @@ public OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerDrugWearOff(playerid, drugtype)
+hook OnPlayerDrugWearOff(playerid, drugtype)
 {
 	if(drugtype == drug_Lsd)
 	{
@@ -155,19 +155,5 @@ public OnPlayerDrugWearOff(playerid, drugtype)
 		SetWeatherForPlayer(playerid);
 	}
 
-	#if defined pil_OnPlayerDrugWearOff
-		return pil_OnPlayerDrugWearOff(playerid, drugtype);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDrugWearOff
-	#undef OnPlayerDrugWearOff
-#else
-	#define _ALS_OnPlayerDrugWearOff
-#endif
-
-#define OnPlayerDrugWearOff pil_OnPlayerDrugWearOff
-#if defined pil_OnPlayerDrugWearOff
-	forward pil_OnPlayerDrugWearOff(playerid, drugtype);
-#endif

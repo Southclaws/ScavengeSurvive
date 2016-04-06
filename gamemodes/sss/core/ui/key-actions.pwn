@@ -266,42 +266,16 @@ ptask ToolTipUpdate[1000](playerid)
 	return;
 }
 
-public OnPlayerOpenInventory(playerid)
+hook OnPlayerOpenInventory(playerid)
 {
 	HidePlayerToolTip(playerid);
 
-	#if defined tip_OnPlayerOpenInventory
-		return tip_OnPlayerOpenInventory(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenInventory
-	#undef OnPlayerOpenInventory
-#else
-	#define _ALS_OnPlayerOpenInventory
-#endif
-#define OnPlayerOpenInventory tip_OnPlayerOpenInventory
-#if defined tip_OnPlayerOpenInventory
-	forward tip_OnPlayerOpenInventory(playerid);
-#endif
 
-public OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, containerid)
 {
 	HidePlayerToolTip(playerid);
 
-	#if defined tip_OnPlayerOpenContainer
-		return tip_OnPlayerOpenContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer tip_OnPlayerOpenContainer
-#if defined tip_OnPlayerOpenContainer
-	forward tip_OnPlayerOpenContainer(playerid, containerid);
-#endif

@@ -838,7 +838,7 @@ ShowEnterPassDialog_Keypad(playerid)
 }
 */
 
-public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == 100)
 	{
@@ -855,7 +855,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 			if(code == 0)
 				Msg(playerid, YELLOW, " >  Leaving the code at 0 will allow the code to be set again.");
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(def_CurrentDefenceOpen[playerid] != -1)
@@ -871,14 +871,14 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 				if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
 				{
 					ShowEnterPassDialog_Keypad(playerid, 2);
-					return 0;
+					return Y_HOOKS_BREAK_RETURN_0;
 				}
 
 				if(def_PassFails[playerid] == 5)
 				{
 					def_Cooldown[playerid] += 4000;
 					def_PassFails[playerid] = 0;
-					return 0;
+					return Y_HOOKS_BREAK_RETURN_0;
 				}
 
 				logf("[DEFFAIL] Player %p failed defence %d (GEID: %d) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], def_GEID[def_CurrentDefenceOpen[playerid]], code);
@@ -887,31 +887,17 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 				def_Cooldown[playerid] = 2000;
 				def_PassFails[playerid]++;
 
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined kp_OnPlayerKeypadEnter
-		return kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadEnter
-	#undef OnPlayerKeypadEnter
-#else
-	#define _ALS_OnPlayerKeypadEnter
-#endif
- 
-#define OnPlayerKeypadEnter kp_OnPlayerKeypadEnter
-#if defined kp_OnPlayerKeypadEnter
-	forward kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-#endif
 
-public OnPlayerKeypadCancel(playerid, keypadid)
+hook OnPlayerKeypadCancel(playerid, keypadid)
 {
 	if(keypadid == 100)
 	{
@@ -924,22 +910,8 @@ public OnPlayerKeypadCancel(playerid, keypadid)
 		}
 	}
 
-	#if defined kp_OnPlayerKeypadCancel
-		return kp_OnPlayerKeypadCancel(playerid, keypadid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadCancel
-	#undef OnPlayerKeypadCancel
-#else
-	#define _ALS_OnPlayerKeypadCancel
-#endif
-#define ss.r )?(fc_b<tf_a<5>> sc
-#define OnPlayerKeypadCancel kp_OnPlayerKeypadCancel
-#if defined kp_OnPlayerKeypadCancel
-	forward kp_OnPlayerKeypadCancel(playerid, keypadid);
-#endif
 
 ShowSetPassDialog_Keypad(playerid)
 {
@@ -1129,7 +1101,7 @@ static
 		def_CurrentCheckDefence[MAX_PLAYERS],
 Timer:	def_AngleCheckTimer[MAX_PLAYERS];
 
-public OnPlayerEnterButtonArea(playerid, buttonid)
+hook OnPlayerEnterButtonArea(playerid, buttonid)
 {
 	if(!IsPlayerOnAdminDuty(playerid))
 	{
@@ -1154,24 +1126,10 @@ public OnPlayerEnterButtonArea(playerid, buttonid)
 		}
 	}
 
-	#if defined def_OnPlayerEnterButtonArea
-		return def_OnPlayerEnterButtonArea(playerid, buttonid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerEnterButtonArea
-	#undef OnPlayerEnterButtonArea
-#else
-	#define _ALS_OnPlayerEnterButtonArea
-#endif
- 
-#define OnPlayerEnterButtonArea def_OnPlayerEnterButtonArea
-#if defined def_OnPlayerEnterButtonArea
-	forward def_OnPlayerEnterButtonArea(playerid, buttonid);
-#endif
 
-public OnPlayerLeaveButtonArea(playerid, buttonid)
+hook OnPlayerLeaveButtonArea(playerid, buttonid)
 {
 	new defenceid = def_ButtonDefence[buttonid];
 
@@ -1181,22 +1139,8 @@ public OnPlayerLeaveButtonArea(playerid, buttonid)
 			stop def_AngleCheckTimer[playerid];
 	}
 
-	#if defined def_OnPlayerLeaveButtonArea
-		return def_OnPlayerLeaveButtonArea(playerid, buttonid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLeaveButtonArea
-	#undef OnPlayerLeaveButtonArea
-#else
-	#define _ALS_OnPlayerLeaveButtonArea
-#endif
- 
-#define OnPlayerLeaveButtonArea def_OnPlayerLeaveButtonArea
-#if defined def_OnPlayerLeaveButtonArea
-	forward def_OnPlayerLeaveButtonArea(playerid, buttonid);
-#endif
 
 timer DefenceAngleCheck[100](playerid, defenceid)
 {

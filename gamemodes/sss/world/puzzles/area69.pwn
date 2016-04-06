@@ -394,7 +394,7 @@ hook OnButtonPress(playerid, buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerActivateDoor(playerid, doorid, newstate)
+hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
 	if(doorid == door_Main)
 		return PlayerActivateDoorButton(playerid, k_MainGate, code_ControlTower);
@@ -433,19 +433,8 @@ public OnPlayerActivateDoor(playerid, doorid, newstate)
 		return PlayerActivateDoorButton(playerid, k_Shaft, code_Shaft);
 
 
-	#if defined a69_OnPlayerActivateDoor
-		return a69_OnPlayerActivateDoor(playerid, doorid, newstate);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerActivateDoor
-	#undef OnPlayerActivateDoor
-#else
-	#define _ALS_OnPlayerActivateDoor
-#endif
-#define OnPlayerActivateDoor a69_OnPlayerActivateDoor
-forward a69_OnPlayerActivateDoor(playerid, doorid, newstate);
 
 PlayerActivateDoorButton(playerid, keypad, code)
 {
@@ -457,7 +446,7 @@ PlayerActivateDoorButton(playerid, keypad, code)
 	return 1;
 }
 
-public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	new itemid = GetPlayerItem(playerid);
 
@@ -574,19 +563,8 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		}
 	}
 
-	#if defined a69_OnPlayerKeypadEnter
-		return a69_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadEnter
-	#undef OnPlayerKeypadEnter
-#else
-	#define _ALS_OnPlayerKeypadEnter
-#endif
-#define OnPlayerKeypadEnter a69_OnPlayerKeypadEnter
-forward a69_OnPlayerKeypadEnter(playerid, keypadid, code, match);
 
 ShowCodeList1(playerid)
 {

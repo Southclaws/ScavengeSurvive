@@ -709,10 +709,10 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 		veh_Data[vehicleid][veh_tires]);
 }
 
-public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
+hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
 {
 	if(IsValidVehicle(GetTrailerVehicleID(vehicleid)))
-		return 1;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
 		Float:old_x,
@@ -728,12 +728,12 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	zdistance = floatabs(new_z - old_z);
 
 	if(old_x * old_y * old_z == 0.0)
-		return 1;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	if(xydistance > 0.0)
 	{
 		if(GetTickCountDifference(GetTickCount(), veh_Data[vehicleid][veh_lastUsed]) < 10000)
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		new
 			Float:xythresh = 0.25,
@@ -773,25 +773,11 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 			SetVehicleZAngle(vehicleid, old_r);
 		}
 
-		return 0;
+		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
-	
-	#if defined veh_OnUnoccupiedVehicleUpdate
-		return veh_OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, new_x, new_y, new_z, vel_x, vel_y, vel_z);
-	#else
-		return 1;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnUnoccupiedVehicleUpdate
-	#undef OnUnoccupiedVehicleUpdate
-#else
-	#define _ALS_OnUnoccupiedVehicleUpdate
-#endif
- 
-#define OnUnoccupiedVehicleUpdate veh_OnUnoccupiedVehicleUpdate
-#if defined veh_OnUnoccupiedVehicleUpdate
-	forward veh_OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z);
-#endif
 
 IsVehicleValidOutOfBounds(vehicleid)
 {

@@ -88,26 +88,12 @@ stock DestroyTracer(id)
 	return 1;
 }
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	tracer_HandleObjectMoved(objectid);
 
-	#if defined tracer_OnDynamicObjectMoved
-		return tracer_OnDynamicObjectMoved(objectid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
- 
-#define OnDynamicObjectMoved tracer_OnDynamicObjectMoved
-#if defined tracer_OnDynamicObjectMoved
-	forward tracer_OnDynamicObjectMoved(objectid);
-#endif
 
 tracer_HandleObjectMoved(objectid)
 {

@@ -51,13 +51,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(!IsVehicleTypeLockable(vehicletype))
 			{
 				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
 				ShowActionText(playerid, "That vehicle has already been locked", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -69,13 +69,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(GetItemArrayDataAtCell(itemid, 0) == 0)
 			{
 				ShowActionText(playerid, "That lock and chain has no key. Combine it with a Locksmith Kit.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
 				ShowActionText(playerid, "That vehicle has already been locked", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -91,19 +91,19 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(keyid == 0)
 			{
 				ShowActionText(playerid, "That key hasn't been cut yet.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(vehiclekey == 0)
 			{
 				ShowActionText(playerid, "That vehicle lock hasn't been set up for a key yet. Use a Locksmith Kit to set it up.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(keyid != vehiclekey)
 			{
 				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -132,15 +132,8 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		}
 	}
 
-	return CallLocalFunction("lsk_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle lsk_OnPlayerInteractVehicle
-forward lsk_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -253,26 +246,12 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-public OnPlayerCrafted(playerid, craftset, result)
+hook OnPlayerCrafted(playerid, craftset, result)
 {
 	if(GetCraftSetResult(craftset) == item_WheelLock)
 	{
 		SetItemArrayDataAtCell(result, 1, 0);
 	}
 
-	#if defined lsk_OnPlayerCrafted
-		return lsk_OnPlayerCrafted(playerid, craftset, result);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerCrafted
-	#undef OnPlayerCrafted
-#else
-	#define _ALS_OnPlayerCrafted
-#endif
- 
-#define OnPlayerCrafted lsk_OnPlayerCrafted
-#if defined lsk_OnPlayerCrafted
-	forward lsk_OnPlayerCrafted(playerid, craftset, result);
-#endif

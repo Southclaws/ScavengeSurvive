@@ -323,26 +323,12 @@ RemoveItemFromTentIndex(itemid)
 }
 
 /*
-public OnItemRemoveFromWorld(itemid)
+hook OnItemRemoveFromWorld(itemid)
 {
 	RemoveItemFromTentIndex(itemid);
 
-	#if defined tnt_OnItemRemoveFromWorld
-		return tnt_OnItemRemoveFromWorld(itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemRemoveFromWorld
-	#undef OnItemRemoveFromWorld
-#else
-	#define _ALS_OnItemRemoveFromWorld
-#endif
- 
-#define OnItemRemoveFromWorld tnt_OnItemRemoveFromWorld
-#if defined tnt_OnItemRemoveFromWorld
-	forward tnt_OnItemRemoveFromWorld(itemid);
-#endif
 */
 #define cc.r );
 hook OnItemDestroy(itemid)

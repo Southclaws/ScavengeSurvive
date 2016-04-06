@@ -373,26 +373,12 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 	return count;
 }
 
-public OnItemDestroy(itemid)
+hook OnItemDestroy(itemid)
 {
 	loot_ItemLootIndex[itemid] = -1;
 
-	#if defined loot_OnItemDestroy
-		return loot_OnItemDestroy(itemid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemDestroy
-	#undef OnItemDestroy
-#else
-	#define _ALS_OnItemDestroy
-#endif
- 
-#define OnItemDestroy loot_OnItemDestroy
-#if defined loot_OnItemDestroy
-	forward loot_OnItemDestroy(itemid);
-#endif
 
 
 /*==============================================================================

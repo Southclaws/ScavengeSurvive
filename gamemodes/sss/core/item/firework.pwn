@@ -139,7 +139,7 @@ timer FireworkLaunch[6000](itemid)
 }
 
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	foreach(new i : fwk_ProjectileIndex)
 	{
@@ -163,7 +163,7 @@ public OnDynamicObjectMoved(objectid)
 			if(index >= MAX_EX_PER_SEQUENCE)
 			{
 				i = DestroyFireworkProjectile(i);
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			extype = fwk_ExplosionSequences[sequence][index];
@@ -171,7 +171,7 @@ public OnDynamicObjectMoved(objectid)
 			if(extype == -1)
 			{
 				i = DestroyFireworkProjectile(i);
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			while(maxmodels < 8 && fwk_ExplosionTypes[extype][fwk_model][maxmodels] != -1)
@@ -192,22 +192,9 @@ public OnDynamicObjectMoved(objectid)
 			}
 		}
 	}
-	#if defined fwk_OnDynamicObjectMoved
-		return fwk_OnDynamicObjectMoved(objectid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
-#define OnDynamicObjectMoved fwk_OnDynamicObjectMoved
-#if defined fwk_OnDynamicObjectMoved
-	forward fwk_OnDynamicObjectMoved(objectid);
-#endif
 
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 
 /*
 

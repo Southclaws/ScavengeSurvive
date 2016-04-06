@@ -198,7 +198,7 @@ hook OnButtonPress(playerid, buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
@@ -212,22 +212,8 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 	    QuarryDoorState = 1;
 	}
 
-    #if defined int_OnPlayerUseItemWithButton
-		return int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithButton
-    #undef OnPlayerUseItemWithButton
-#else
-    #define _ALS_OnPlayerUseItemWithButton
-#endif
-#define OnPlayerUseItemWithButton int_OnPlayerUseItemWithButton
-#if defined int_OnPlayerUseItemWithButton
-	forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-#endif
-
 
 timer AttachRanchHdd[2500](playerid)
 {

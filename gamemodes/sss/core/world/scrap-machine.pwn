@@ -123,7 +123,7 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 ==============================================================================*/
 
 
-public OnPlayerUseMachine(playerid, machineid, interactiontype)
+hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
 	if(sm_MachineScrapMachine[machineid] != -1)
 	{
@@ -138,21 +138,8 @@ public OnPlayerUseMachine(playerid, machineid, interactiontype)
 		}
 	}
 
-	#if defined sm_OnPlayerUseMachine
-		return sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseMachine
-	#undef OnPlayerUseMachine
-#else
-	#define _ALS_OnPlayerUseMachine
-#endif
-#define OnPlayerUseMachine sm_OnPlayerUseMachine
-#if defined sm_OnPlayerUseMachine
-	forward sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-#endif
 
 _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 {

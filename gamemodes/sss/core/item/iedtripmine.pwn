@@ -91,7 +91,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, containerid)
 {
 	for(new i, j = GetContainerSize(containerid); i < j; i++)
 	{
@@ -107,23 +107,10 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined iedm_OnPlayerOpenContainer
-		return iedm_OnPlayerOpenContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer iedm_OnPlayerOpenContainer
-#if defined iedm_OnPlayerOpenContainer
-	forward iedm_OnPlayerOpenContainer(playerid, containerid);
-#endif
 
-public OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	new
 		slot,
@@ -141,23 +128,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			iedm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined iedm_OnPlayerViewContainerOpt
-		return iedm_OnPlayerViewContainerOpt(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerViewContainerOpt
-	#undef OnPlayerViewContainerOpt
-#else
-	#define _ALS_OnPlayerViewContainerOpt
-#endif
-#define OnPlayerViewContainerOpt iedm_OnPlayerViewContainerOpt
-#if defined iedm_OnPlayerViewContainerOpt
-	forward iedm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
 
-public OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
 	new
 		slot,
@@ -183,18 +157,5 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined iedm_OnPlayerSelectContainerOpt
-		return iedm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectContainerOpt
-	#undef OnPlayerSelectContainerOpt
-#else
-	#define _ALS_OnPlayerSelectContainerOpt
-#endif
-#define OnPlayerSelectContainerOpt iedm_OnPlayerSelectContainerOpt
-#if defined iedm_OnPlayerSelectContainerOpt
-	forward iedm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif

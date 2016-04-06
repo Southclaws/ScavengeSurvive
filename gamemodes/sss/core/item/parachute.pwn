@@ -57,33 +57,19 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Parachute)
 	{
 		if(para_TakingOff[playerid])
 		{
 			para_TakingOff[playerid] = false;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined para_OnPlayerDropItem
-		return para_OnPlayerDropItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDropItem
-	#undef OnPlayerDropItem
-#else
-	#define _ALS_OnPlayerDropItem
-#endif
-#define OnPlayerDropItem para_OnPlayerDropItem
-#if defined para_OnPlayerDropItem
-	forward para_OnPlayerDropItem(playerid, itemid);
-#endif
-
 
 _EquipParachute(playerid)
 {

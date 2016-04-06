@@ -333,26 +333,13 @@ SupplyCrateLand()
 	return;
 }
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	if(objectid == sup_ObjPara)
 		SupplyCrateLand();
 
-	#if defined sup_OnDynamicObjectMoved
-		return sup_OnDynamicObjectMoved(objectid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
-#define OnDynamicObjectMoved sup_OnDynamicObjectMoved
-#if defined sup_OnDynamicObjectMoved
-	forward sup_OnDynamicObjectMoved(objectid);
-#endif
 
 ACMD:sc[4](playerid, params[])
 {

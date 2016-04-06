@@ -217,48 +217,22 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 }
 
 
-public OnPlayerOpenInventory(playerid)
+hook OnPlayerOpenInventory(playerid)
 {
 	rad_InventoryItem[playerid] = AddInventoryListItem(playerid, "Radio");
 
-	#if defined rad_OnPlayerOpenInventory
-		return rad_OnPlayerOpenInventory(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenInventory
-	#undef OnPlayerOpenInventory
-#else
-	#define _ALS_OnPlayerOpenInventory
-#endif
-#define OnPlayerOpenInventory rad_OnPlayerOpenInventory
-#if defined rad_OnPlayerOpenInventory
-	forward rad_OnPlayerOpenInventory(playerid);
-#endif
 
-public OnPlayerSelectExtraItem(playerid, item)
+hook OnPlayerSelectExtraItem(playerid, item)
 {
 	if(item == rad_InventoryItem[playerid])
 	{
 		ShowRadioUI(playerid);
 	}
 
-	#if defined rad_OnPlayerSelectExtraItem
-		return rad_OnPlayerSelectExtraItem(playerid, item);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectExtraItem
-	#undef OnPlayerSelectExtraItem
-#else
-	#define _ALS_OnPlayerSelectExtraItem
-#endif
-#define OnPlayerSelectExtraItem rad_OnPlayerSelectExtraItem
-#if defined rad_OnPlayerSelectExtraItem
-	forward rad_OnPlayerSelectExtraItem(playerid, item);
-#endif
 
 
 hook OnPlayerConnect(playerid)

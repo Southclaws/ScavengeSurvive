@@ -46,47 +46,19 @@ static
 forward OnLookupResponse(sessionid, response, data[]);
 
 
-public OnPlayerLogin(playerid)
+hook OnPlayerLogin(playerid)
 {
 	_cntr_HandleLogin(playerid);
 
-	#if defined cntr_OnPlayerLogin
-		return cntr_OnPlayerLogin(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLogin
-	#undef OnPlayerLogin
-#else
-	#define _ALS_OnPlayerLogin
-#endif
 
-#define OnPlayerLogin cntr_OnPlayerLogin
-#if defined cntr_OnPlayerLogin
-	forward cntr_OnPlayerLogin(playerid);
-#endif
-
-public OnPlayerRegister(playerid)
+hook OnPlayerRegister(playerid)
 {
 	_cntr_HandleLogin(playerid);
 
-	#if defined cntr_OnPlayerRegister
-		return cntr_OnPlayerRegister(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerRegister
-	#undef OnPlayerRegister
-#else
-	#define _ALS_OnPlayerRegister
-#endif
-
-#define OnPlayerRegister cntr_OnPlayerRegister
-#if defined cntr_OnPlayerRegister
-	forward cntr_OnPlayerRegister(playerid);
-#endif
 
 _cntr_HandleLogin(playerid)
 {

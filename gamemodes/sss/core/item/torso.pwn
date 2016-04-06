@@ -35,7 +35,7 @@ hook OnPlayerConnect(playerid)
 	gut_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(itemid)
 {
 	if(GetItemType(itemid) == item_Torso)
 	{
@@ -43,21 +43,8 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
 	}
 
-	#if defined tor_OnItemCreateInWorld
-		return tor_OnItemCreateInWorld(itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemCreateInWorld
-	#undef OnItemCreateInWorld
-#else
-	#define _ALS_OnItemCreateInWorld
-#endif
-#define OnItemCreateInWorld tor_OnItemCreateInWorld
-#if defined tor_OnItemCreateInWorld
-	forward tor_OnItemCreateInWorld(itemid);
-#endif
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {

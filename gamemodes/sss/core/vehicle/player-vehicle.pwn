@@ -673,26 +673,12 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 	return;
 }
 
-public OnVehicleDestroyed(vehicleid)
+hook OnVehicleDestroyed(vehicleid)
 {
 	_RemoveVehicleFile(vehicleid);
 
-	#if defined pveh_OnVehicleDestroyed
-		return pveh_OnVehicleDestroyed(vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnVehicleDestroyed
-	#undef OnVehicleDestroyed
-#else
-	#define _ALS_OnVehicleDestroyed
-#endif
- 
-#define OnVehicleDestroyed pveh_OnVehicleDestroyed
-#if defined pveh_OnVehicleDestroyed
-	forward pveh_OnVehicleDestroyed(vehicleid);
-#endif
 
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {

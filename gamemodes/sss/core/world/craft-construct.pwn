@@ -185,26 +185,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerCraft(playerid, craftset)
+hook OnPlayerCraft(playerid, craftset)
 {
 	if(cons_CraftsetConstructSet[craftset])
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined cons_OnPlayerCraft
-		return cons_OnPlayerCraft(playerid, craftset);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerCraft
-	#undef OnPlayerCraft
-#else
-	#define _ALS_OnPlayerCraft
-#endif
-#define OnPlayerCraft cons_OnPlayerCraft
-#if defined cons_OnPlayerCraft
-	forward cons_OnPlayerCraft(playerid, craftset);
-#endif
 
 
 /*==============================================================================

@@ -140,7 +140,7 @@ hook OnButtonPress(playerid, buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == k_Lockup)
 	{
@@ -150,22 +150,8 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		}
 	}
 
-	#if defined lck_OnPlayerKeypadEnter
-		return lck_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadEnter
-	#undef OnPlayerKeypadEnter
-#else
-	#define _ALS_OnPlayerKeypadEnter
-#endif
-#define OnPlayerKeypadEnter lck_OnPlayerKeypadEnter
-#if defined lck_OnPlayerKeypadEnter
-	forward lck_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-#endif
-
 
 LoadLockup_SF()
 {

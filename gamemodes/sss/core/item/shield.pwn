@@ -53,28 +53,13 @@ timer shield_Down[400](playerid, itemid)
 	SetItemRot(itemid, 90.0, 0.0, 180.0 + angle);
 }
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
+hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
 	if(_HandleShieldHit(playerid, targetid, bodypart))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined shd_OnPlayerShootPlayer
-		return shd_OnPlayerShootPlayer(playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerShootPlayer
-	#undef OnPlayerShootPlayer
-#else
-	#define _ALS_OnPlayerShootPlayer
-#endif
- 
-#define OnPlayerShootPlayer shd_OnPlayerShootPlayer
-#if defined shd_OnPlayerShootPlayer
-	forward shd_OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
-#endif
-
 
 _HandleShieldHit(playerid, targetid, bodypart)
 {

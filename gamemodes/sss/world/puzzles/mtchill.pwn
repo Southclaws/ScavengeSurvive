@@ -256,38 +256,24 @@ hook OnGameModeInit()
 		0, "Mt. Chill\nRadio", OBJECT_MATERIAL_SIZE_512x256, "Impact", 72, 0, -1, 4278216843, 1);
 }
 
-public OnPlayerActivateDoor(playerid, doorid, newstate)
+hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
 	if(doorid == ch_door)
 	{
 		if(IsValidItem(GetPlayerItem(playerid)))
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		if(ch_doorstate == false && !IsValidItem(GetPlayerItem(playerid)))
 		{
 			Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Door", "The keypad seems broken", "Close", "");
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined ch_OnPlayerActivateDoor
-		return ch_OnPlayerActivateDoor(playerid, doorid, newstate);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerActivateDoor
-	#undef OnPlayerActivateDoor
-#else
-	#define _ALS_OnPlayerActivateDoor
-#endif
-#define OnPlayerActivateDoor ch_OnPlayerActivateDoor
-#if defined ch_OnPlayerActivateDoor
-	forward ch_OnPlayerActivateDoor(playerid, doorid, newstate);
-#endif
 
-
-public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
 	if(buttonid == ch_doorBtn)
 	{
@@ -306,21 +292,8 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 		}
 	}
 
-    #if defined ch_OnPlayerUseItemWithButton
-		return ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithButton
-    #undef OnPlayerUseItemWithButton
-#else
-    #define _ALS_OnPlayerUseItemWithButton
-#endif
-#define OnPlayerUseItemWithButton ch_OnPlayerUseItemWithButton
-#if defined ch_OnPlayerUseItemWithButton
-	forward ch_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-#endif
 
 timer ch_keypad_move[400]()
 {

@@ -353,7 +353,7 @@ timer _WhitelistConnect[100](playerid)
 		wl_Whitelisted[playerid] = false;
 }
 
-public OnPlayerLogin(playerid)
+hook OnPlayerLogin(playerid)
 {
 	if(wl_Auto && wl_Active)
 	{
@@ -365,22 +365,8 @@ public OnPlayerLogin(playerid)
 		}
 	}
 
-	#if defined wl_OnPlayerLogin
-		return wl_OnPlayerLogin(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLogin
-	#undef OnPlayerLogin
-#else
-	#define _ALS_OnPlayerLogin
-#endif
- 
-#define OnPlayerLogin wl_OnPlayerLogin
-#if defined wl_OnPlayerLogin
-	forward wl_OnPlayerLogin(playerid);
-#endif
 
 timer _WhitelistDisconnect[100](string:name[])
 {
