@@ -23,7 +23,6 @@
 
 
 #include <YSI\y_hooks>
-#include <YSI\y_inline>
 
 
 new
