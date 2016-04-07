@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI_4\y_hooks>
+#include <YSI\y_hooks>
 
 
 #define MAX_TNT_PROXIMITY	(1024)

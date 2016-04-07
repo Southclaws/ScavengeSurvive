@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI_4\y_hooks>
+#include <YSI\y_hooks>
 
 
 #define DIRECTORY_TENT		DIRECTORY_MAIN"Tents/"

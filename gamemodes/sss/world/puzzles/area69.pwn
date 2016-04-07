@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI_4\y_hooks>
+#include <YSI\y_hooks>
 
 
 // Keypad IDs
@@ -443,7 +443,7 @@ PlayerActivateDoorButton(playerid, keypad, code)
 	if(GetItemType(GetPlayerItem(playerid)) == item_HackDevice)
 		HackKeypad(playerid, keypad, code);
 
-	return 1;
+	return Y_HOOKS_BREAK_RETURN_1;
 }
 
 hook OnPlayerKeypadEnter(playerid, keypadid, code, match)

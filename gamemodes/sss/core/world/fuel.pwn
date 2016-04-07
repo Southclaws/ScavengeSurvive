@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI_4\y_hooks>
+#include <YSI\y_hooks>
 
 #define MAX_FUEL_LOCATIONS	(78)
 #define FUEL_CAN_CAPACITY	(20)
