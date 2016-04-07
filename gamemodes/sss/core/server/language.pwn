@@ -77,10 +77,16 @@ stock LoadAllLanguages()
 		return 0;
 	}
 
+	// Force load English first since that's the default language.
+	count += LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
+
 	while(dir_list(dirhandle, item, type))
 	{
 		if(type == FM_FILE)
 		{
+			if(!strcmp(item, "English"))
+				continue;
+
 			next_path[0] = EOS;
 			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_LANGUAGES, item);
 			count += LoadLanguage(next_path, item);
