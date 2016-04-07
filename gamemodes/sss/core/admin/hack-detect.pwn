@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI_4\y_hooks>
+#include <YSI\y_hooks>
 
 
 #define TELEPORT_DETECTION_DISTANCE		(45.0)
