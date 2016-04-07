@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
@@ -95,7 +95,7 @@ static
 
 new
 			def_Data[MAX_DEFENCE][E_DEFENCE_DATA],
-Iterator:	def_Index<MAX_DEFENCE>,
+   Iterator:def_Index<MAX_DEFENCE>,
 			def_ButtonDefence[BTN_MAX];
 
 static
@@ -335,7 +335,7 @@ stock DestroyDefence(defenceid)
 	return next;
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -349,21 +349,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined def_OnPlayerUseItemWithItem
-		return def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem def_OnPlayerUseItemWithItem
-#if defined def_OnPlayerUseItemWithItem
-	forward def_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -428,7 +415,7 @@ StopBuildingDefence(playerid)
 	return;
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(def_ButtonDefence[buttonid] != -1)
 	{
@@ -453,7 +440,7 @@ public OnButtonPress(playerid, buttonid)
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 					ShowActionText(playerid, sprintf("Removing %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -473,7 +460,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -486,7 +473,7 @@ public OnButtonPress(playerid, buttonid)
 					if(!def_Data[id][def_motor])
 					{
 						ShowActionText(playerid, "You must install a motor before installing a keypad!");
-						return 1;
+						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
 					new itemtypename[ITM_MAX_NAME];
@@ -499,7 +486,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -512,7 +499,7 @@ public OnButtonPress(playerid, buttonid)
 					if(!def_Data[id][def_motor])
 					{
 						ShowActionText(playerid, "You must install a motor before installing a keypad!");
-						return 1;
+						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
 					new itemtypename[ITM_MAX_NAME];
@@ -525,7 +512,7 @@ public OnButtonPress(playerid, buttonid)
 
 					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
 
-					return 1;
+					return Y_HOOKS_BREAK_RETURN_1;
 				}
 			}
 
@@ -591,56 +578,31 @@ public OnButtonPress(playerid, buttonid)
 					defer MoveDefence(id, playerid);
 				}
 
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined def_OnButtonPress
-		return def_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress def_OnButtonPress
-#if defined def_OnButtonPress
-	forward def_OnButtonPress(playerid, buttonid);
-#endif
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
 			StopHoldAction(playerid);
 	}
-	#if defined def_OnHoldActionUpdate
-		return def_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate def_OnHoldActionUpdate
-#if defined def_OnHoldActionUpdate
-	forward def_OnHoldActionUpdate(playerid, progress);
-#endif
 
-public OnHoldActionFinish(playerid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnHoldActionFinish(playerid)
 {
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_0;
 
 		new
 			Float:x,
@@ -674,7 +636,7 @@ public OnHoldActionFinish(playerid)
 			if(!IsValidDefence(id))
 			{
 				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
@@ -691,7 +653,7 @@ public OnHoldActionFinish(playerid)
 			if(!IsValidDefence(id))
 			{
 				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			logf("[CONSTRUCT] %p Built defence %d (GEID: %d)  type %d (%d, %f, %f, %f, %f, %f, %f)", playerid, id, def_GEID[id], type,
@@ -707,7 +669,7 @@ public OnHoldActionFinish(playerid)
 		StopBuildingDefence(playerid);
 		//EditDefence(playerid, id);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
 	if(def_CurrentDefenceEdit[playerid] != -1)
@@ -802,24 +764,11 @@ public OnHoldActionFinish(playerid)
 			def_CurrentDefenceEdit[playerid] = -1;
 		}
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
-	#if defined def_OnHoldActionFinish
-		return def_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish def_OnHoldActionFinish
-#if defined def_OnHoldActionFinish
-	forward def_OnHoldActionFinish(playerid);
-#endif
 
 /* y_inline
 ShowSetPassDialog_Keypad(playerid)
@@ -889,7 +838,7 @@ ShowEnterPassDialog_Keypad(playerid)
 }
 */
 
-public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == 100)
 	{
@@ -906,7 +855,7 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 			if(code == 0)
 				Msg(playerid, YELLOW, " >  Leaving the code at 0 will allow the code to be set again.");
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(def_CurrentDefenceOpen[playerid] != -1)
@@ -922,14 +871,14 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 				if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
 				{
 					ShowEnterPassDialog_Keypad(playerid, 2);
-					return 0;
+					return Y_HOOKS_BREAK_RETURN_0;
 				}
 
 				if(def_PassFails[playerid] == 5)
 				{
 					def_Cooldown[playerid] += 4000;
 					def_PassFails[playerid] = 0;
-					return 0;
+					return Y_HOOKS_BREAK_RETURN_0;
 				}
 
 				logf("[DEFFAIL] Player %p failed defence %d (GEID: %d) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], def_GEID[def_CurrentDefenceOpen[playerid]], code);
@@ -938,31 +887,17 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 				def_Cooldown[playerid] = 2000;
 				def_PassFails[playerid]++;
 
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined kp_OnPlayerKeypadEnter
-		return kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadEnter
-	#undef OnPlayerKeypadEnter
-#else
-	#define _ALS_OnPlayerKeypadEnter
-#endif
- 
-#define OnPlayerKeypadEnter kp_OnPlayerKeypadEnter
-#if defined kp_OnPlayerKeypadEnter
-	forward kp_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-#endif
 
-public OnPlayerKeypadCancel(playerid, keypadid)
+hook OnPlayerKeypadCancel(playerid, keypadid)
 {
 	if(keypadid == 100)
 	{
@@ -975,22 +910,8 @@ public OnPlayerKeypadCancel(playerid, keypadid)
 		}
 	}
 
-	#if defined kp_OnPlayerKeypadCancel
-		return kp_OnPlayerKeypadCancel(playerid, keypadid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadCancel
-	#undef OnPlayerKeypadCancel
-#else
-	#define _ALS_OnPlayerKeypadCancel
-#endif
-#define ss.r )?(fc_b<tf_a<5>> sc
-#define OnPlayerKeypadCancel kp_OnPlayerKeypadCancel
-#if defined kp_OnPlayerKeypadCancel
-	forward kp_OnPlayerKeypadCancel(playerid, keypadid);
-#endif
 
 ShowSetPassDialog_Keypad(playerid)
 {
@@ -1180,7 +1101,7 @@ static
 		def_CurrentCheckDefence[MAX_PLAYERS],
 Timer:	def_AngleCheckTimer[MAX_PLAYERS];
 
-public OnPlayerEnterButtonArea(playerid, buttonid)
+hook OnPlayerEnterButtonArea(playerid, buttonid)
 {
 	if(!IsPlayerOnAdminDuty(playerid))
 	{
@@ -1205,24 +1126,10 @@ public OnPlayerEnterButtonArea(playerid, buttonid)
 		}
 	}
 
-	#if defined def_OnPlayerEnterButtonArea
-		return def_OnPlayerEnterButtonArea(playerid, buttonid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerEnterButtonArea
-	#undef OnPlayerEnterButtonArea
-#else
-	#define _ALS_OnPlayerEnterButtonArea
-#endif
- 
-#define OnPlayerEnterButtonArea def_OnPlayerEnterButtonArea
-#if defined def_OnPlayerEnterButtonArea
-	forward def_OnPlayerEnterButtonArea(playerid, buttonid);
-#endif
 
-public OnPlayerLeaveButtonArea(playerid, buttonid)
+hook OnPlayerLeaveButtonArea(playerid, buttonid)
 {
 	new defenceid = def_ButtonDefence[buttonid];
 
@@ -1232,22 +1139,8 @@ public OnPlayerLeaveButtonArea(playerid, buttonid)
 			stop def_AngleCheckTimer[playerid];
 	}
 
-	#if defined def_OnPlayerLeaveButtonArea
-		return def_OnPlayerLeaveButtonArea(playerid, buttonid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerLeaveButtonArea
-	#undef OnPlayerLeaveButtonArea
-#else
-	#define _ALS_OnPlayerLeaveButtonArea
-#endif
- 
-#define OnPlayerLeaveButtonArea def_OnPlayerLeaveButtonArea
-#if defined def_OnPlayerLeaveButtonArea
-	forward def_OnPlayerLeaveButtonArea(playerid, buttonid);
-#endif
 
 timer DefenceAngleCheck[100](playerid, defenceid)
 {

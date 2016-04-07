@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define RANCH_STUFF_VIRTUALW	(1)
@@ -126,7 +126,7 @@ hook OnGameModeInit()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0, .worldid = RANCH_STUFF_VIRTUALW);
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(buttonid==RanchPcButton)
 	{
@@ -195,24 +195,10 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-    #if defined ranch_OnButtonPress
-		return ranch_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-    #undef OnButtonPress
-#else
-    #define _ALS_OnButtonPress
-#endif
-#define OnButtonPress ranch_OnButtonPress
-#if defined ranch_OnButtonPress
-	forward ranch_OnButtonPress(playerid, buttonid);
-#endif
 
-
-public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
@@ -226,22 +212,8 @@ public OnPlayerUseItemWithButton(playerid, buttonid, itemid)
 	    QuarryDoorState = 1;
 	}
 
-    #if defined int_OnPlayerUseItemWithButton
-		return int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithButton
-    #undef OnPlayerUseItemWithButton
-#else
-    #define _ALS_OnPlayerUseItemWithButton
-#endif
-#define OnPlayerUseItemWithButton int_OnPlayerUseItemWithButton
-#if defined int_OnPlayerUseItemWithButton
-	forward int_OnPlayerUseItemWithButton(playerid, buttonid, itemid);
-#endif
-
 
 timer AttachRanchHdd[2500](playerid)
 {

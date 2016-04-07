@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 #define MAX_EMP_PROXIMITY	(1024)
 
 
@@ -34,7 +37,7 @@ enum E_EMP_PROX_DATA
 
 new
 			emppx_Data[MAX_EMP_PROXIMITY][E_EMP_PROX_DATA],
-Iterator:	emppx_Index<MAX_EMP_PROXIMITY>;
+   Iterator:emppx_Index<MAX_EMP_PROXIMITY>;
 
 
 /*==============================================================================
@@ -79,30 +82,18 @@ timer ExplodeEmpProxMineDelay[1000](id)
 	return;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
 		PlayerDropItem(playerid);
 		SetItemExtraData(itemid, 1);
 	}
-	#if defined emppx_OnPlayerUseItem
-		return emppx_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem emppx_OnPlayerUseItem
-#if defined emppx_OnPlayerUseItem
-	forward emppx_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnPlayerDroppedItem(playerid, itemid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
@@ -112,23 +103,11 @@ public OnPlayerDroppedItem(playerid, itemid)
 			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
 		}
 	}
-	#if defined emppx_OnPlayerDroppedItem
-		return emppx_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem emppx_OnPlayerDroppedItem
-#if defined emppx_OnPlayerDroppedItem
-	forward emppx_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	foreach(new i : emppx_Index)
 	{
@@ -145,19 +124,4 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			defer ExplodeEmpProxMineDelay(i);
 		}
 	}
-
-	#if defined emppx_OnPlayerEnterDynamicArea
-		return emppx_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define OnPlayerEnterDynamicArea emppx_OnPlayerEnterDynamicArea
-#if defined emppx_OnPlayerEnterDynamicArea
-	forward emppx_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif

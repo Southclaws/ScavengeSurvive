@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_HAT_ITEMS	(22)
@@ -46,7 +46,7 @@ Float:		hat_scaleZ
 new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 			hat_Data[MAX_HAT_ITEMS][MAX_HAT_SKINS][E_HAT_SKIN_DATA],
-Iterator:	hat_Index<MAX_HAT_ITEMS>,
+   Iterator:hat_Index<MAX_HAT_ITEMS>,
 			hat_CurrentHat[MAX_PLAYERS];
 
 
@@ -58,7 +58,7 @@ hook OnPlayerConnect(playerid)
 	hat_CurrentHat[playerid] = -1;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	foreach(new i : hat_Index)
 	{
@@ -67,23 +67,7 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, i);
 		}
 	}
-
-	#if defined hat_OnItemCreate
-		return hat_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate hat_OnItemCreate
-#if defined hat_OnItemCreate
-	forward hat_OnItemCreate(itemid);
-#endif
 
 
 // Core
@@ -169,7 +153,7 @@ TogglePlayerHeadwear(playerid, bool:toggle)
 // Hooks and Internal
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(hat_CurrentHat[playerid] == -1)
 	{
@@ -185,21 +169,8 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined hat_OnPlayerUseItem
-		return hat_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem hat_OnPlayerUseItem
-#if defined hat_OnPlayerUseItem
-	forward hat_OnPlayerUseItem(playerid, itemid);
-#endif
 
 
 // Interface

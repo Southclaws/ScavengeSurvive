@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 /*
@@ -116,7 +116,7 @@ CreateLockup(keypadbutton, extButton, intButton)
 	return keycode;
 }
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	for(new i; i < lck_Total; i++)
 	{
@@ -132,28 +132,15 @@ public OnButtonPress(playerid, buttonid)
 			if(lck_Data[i][lck_locked])
 			{
 				ShowActionText(playerid, "This door is electronically locked controlled by a nearby keypad.");
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined lck_OnButtonPress
-		return lck_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress lck_OnButtonPress
-#if defined lck_OnButtonPress
-	forward lck_OnButtonPress(playerid, buttonid);
-#endif
 
-public OnPlayerKeypadEnter(playerid, keypadid, code, match)
+hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == k_Lockup)
 	{
@@ -163,22 +150,8 @@ public OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		}
 	}
 
-	#if defined lck_OnPlayerKeypadEnter
-		return lck_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerKeypadEnter
-	#undef OnPlayerKeypadEnter
-#else
-	#define _ALS_OnPlayerKeypadEnter
-#endif
-#define OnPlayerKeypadEnter lck_OnPlayerKeypadEnter
-#if defined lck_OnPlayerKeypadEnter
-	forward lck_OnPlayerKeypadEnter(playerid, keypadid, code, match);
-#endif
-
 
 LoadLockup_SF()
 {

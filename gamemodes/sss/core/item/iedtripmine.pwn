@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -35,7 +35,7 @@ hook OnPlayerConnect(playerid)
 	iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
@@ -47,23 +47,11 @@ public OnPlayerUseItem(playerid, itemid)
 		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
-	#if defined iedm_OnPlayerUseItem
-		return iedm_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem iedm_OnPlayerUseItem
-#if defined iedm_OnPlayerUseItem
-	forward iedm_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnHoldActionFinish(playerid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(iedm_ArmingItem[playerid]))
 	{
@@ -72,23 +60,12 @@ public OnHoldActionFinish(playerid)
 		ShowActionText(playerid, "Armed", 3000);
 
 		iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined iedm_OnHoldActionFinish
-		return iedm_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish iedm_OnHoldActionFinish
-#if defined iedm_OnHoldActionFinish
-	forward iedm_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -99,7 +76,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
@@ -107,26 +84,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 		{
 			SetItemToExplode(itemid, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
 
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
-	#if defined iedm_OnPlayerPickUpItem
-		return iedm_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem iedm_OnPlayerPickUpItem
-#if defined iedm_OnPlayerPickUpItem
-	forward iedm_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
-public OnPlayerOpenContainer(playerid, containerid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerOpenContainer(playerid, containerid)
 {
 	for(new i, j = GetContainerSize(containerid); i < j; i++)
 	{
@@ -142,23 +107,10 @@ public OnPlayerOpenContainer(playerid, containerid)
 		}
 	}
 
-	#if defined iedm_OnPlayerOpenContainer
-		return iedm_OnPlayerOpenContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerOpenContainer
-	#undef OnPlayerOpenContainer
-#else
-	#define _ALS_OnPlayerOpenContainer
-#endif
-#define OnPlayerOpenContainer iedm_OnPlayerOpenContainer
-#if defined iedm_OnPlayerOpenContainer
-	forward iedm_OnPlayerOpenContainer(playerid, containerid);
-#endif
 
-public OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	new
 		slot,
@@ -176,23 +128,10 @@ public OnPlayerViewContainerOpt(playerid, containerid)
 			iedm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
 	}
 
-	#if defined iedm_OnPlayerViewContainerOpt
-		return iedm_OnPlayerViewContainerOpt(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerViewContainerOpt
-	#undef OnPlayerViewContainerOpt
-#else
-	#define _ALS_OnPlayerViewContainerOpt
-#endif
-#define OnPlayerViewContainerOpt iedm_OnPlayerViewContainerOpt
-#if defined iedm_OnPlayerViewContainerOpt
-	forward iedm_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
 
-public OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
 	new
 		slot,
@@ -218,18 +157,5 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined iedm_OnPlayerSelectContainerOpt
-		return iedm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectContainerOpt
-	#undef OnPlayerSelectContainerOpt
-#else
-	#define _ALS_OnPlayerSelectContainerOpt
-#endif
-#define OnPlayerSelectContainerOpt iedm_OnPlayerSelectContainerOpt
-#if defined iedm_OnPlayerSelectContainerOpt
-	forward iedm_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif

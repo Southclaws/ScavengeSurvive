@@ -59,7 +59,7 @@ Float:		cmp_rotZ,
 
 static
 			cmp_Data[MAX_CAMPFIRE][E_CAMPFIRE_DATA],
-Iterator:	cmp_Index<MAX_CAMPFIRE>,
+   Iterator:cmp_Index<MAX_CAMPFIRE>,
 Timer:		cmp_CookTimer[MAX_CAMPFIRE];
 
 
@@ -242,7 +242,7 @@ stock SetCampfireState(fireid, bool:toggle)
 	return 1;
 }
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(withitemid) == item_Campfire)
 	{
@@ -343,21 +343,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		}
 	}
 
-	#if defined cmp_OnPlayerUseItemWithItem
-		return cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem cmp_OnPlayerUseItemWithItem
-#if defined cmp_OnPlayerUseItemWithItem
-	forward cmp_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 timer CampfireBurnOut[time](fireid, time)
 {
@@ -383,7 +370,7 @@ timer cmp_DestroySmoke[1000](fireid)
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -396,22 +383,10 @@ public OnPlayerPickUpItem(playerid, itemid)
 				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
 				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
 				stop cmp_CookTimer[fireid];
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}
 
-	#if defined cmp2_OnPlayerPickUpItem
-		return cmp2_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem cmp2_OnPlayerPickUpItem
-forward cmp2_OnPlayerPickUpItem(playerid, itemid);
-

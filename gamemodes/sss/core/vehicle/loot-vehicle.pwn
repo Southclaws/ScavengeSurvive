@@ -52,7 +52,7 @@ CreateLootVehicle(type, Float:x, Float:y, Float:z, Float:r)
 	if(vehicleid >= MAX_VEHICLES)
 	{
 		print("ERROR: Vehicle limit reached.");
-		DestroyVehicle(vehicleid, 2);
+		DestroyVehicle(vehicleid);
 		return 0;
 	}
 

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -35,7 +35,7 @@ hook OnPlayerConnect(playerid)
 	fix_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
-public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	if(angle < 25.0 || angle > 335.0)
 	{
@@ -52,7 +52,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			{
 				CancelPlayerMovement(playerid);
 				StartRepairingVehicle(playerid, vehicleid);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 			else
 			{
@@ -65,7 +65,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			{
 				CancelPlayerMovement(playerid);
 				StartRepairingVehicle(playerid, vehicleid);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 			else
 			{
@@ -78,7 +78,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			{
 				CancelPlayerMovement(playerid);
 				StartRepairingVehicle(playerid, vehicleid);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 			else
 			{
@@ -106,15 +106,8 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		}
 	}
 
-	return CallLocalFunction("rep_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle rep_OnPlayerInteractVehicle
-forward rep_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -162,7 +155,7 @@ StopRepairingVehicle(playerid)
 	return 1;
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(fix_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -171,13 +164,13 @@ public OnHoldActionUpdate(playerid, progress)
 		if(!IsValidItemType(itemtype))
 		{
 			StopRepairingVehicle(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(!IsPlayerInVehicleArea(playerid, fix_TargetVehicle[playerid]) || !IsValidVehicle(fix_TargetVehicle[playerid]))
 		{
 			StopRepairingVehicle(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(CompToolHealth(itemtype, fix_Progress[playerid]))
@@ -192,23 +185,8 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	#if defined rep_OnHoldActionUpdate
-		return rep_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate rep_OnHoldActionUpdate
-#if defined rep_OnHoldActionUpdate
-	forward rep_OnHoldActionUpdate(playerid, progress);
-#endif
-
 
 CompToolHealth(ItemType:itemtype, Float:health)
 {

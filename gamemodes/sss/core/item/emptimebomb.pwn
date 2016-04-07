@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 	emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_EmpTimebomb)
 	{
@@ -44,26 +44,12 @@ public OnPlayerUseItem(playerid, itemid)
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, "Arming...");
-		return 1;
 	}
 
-    #if defined emptbm_OnPlayerUseItem
-		return emptbm_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
-#else
-    #define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem emptbm_OnPlayerUseItem
-#if defined emptbm_OnPlayerUseItem
-	forward emptbm_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(emptbm_ArmingItem[playerid]))
 	{
@@ -73,22 +59,7 @@ public OnHoldActionFinish(playerid)
 
 		emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}
-
-	#if defined emptbm_OnHoldActionFinish
-		return emptbm_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish emptbm_OnHoldActionFinish
-#if defined emptbm_OnHoldActionFinish
-	forward emptbm_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

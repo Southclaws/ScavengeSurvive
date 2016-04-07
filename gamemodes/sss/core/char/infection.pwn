@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 enum
@@ -100,44 +100,12 @@ stock SetPlayerInfectionIntensity(playerid, type, amount)
 	return 1;
 }
 
-public OnPlayerSave(playerid, filename[])
+hook OnPlayerSave(playerid, filename[])
 {
 	modio_push(filename, _T<I,N,F,C>, 2, infect_InfectionIntensity[playerid]);
-
-	#if defined infect_OnPlayerSave
-		return infect_OnPlayerSave(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerSave
-	#undef OnPlayerSave
-#else
-	#define _ALS_OnPlayerSave
-#endif
- 
-#define OnPlayerSave infect_OnPlayerSave
-#if defined infect_OnPlayerSave
-	forward infect_OnPlayerSave(playerid, filename[]);
-#endif
 
-public OnPlayerLoad(playerid, filename[])
+hook OnPlayerLoad(playerid, filename[])
 {
 	modio_read(filename, _T<I,N,F,C>, 2, infect_InfectionIntensity[playerid]);
-
-	#if defined infect_OnPlayerLoad
-		return infect_OnPlayerLoad(playerid, filename);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerLoad
-	#undef OnPlayerLoad
-#else
-	#define _ALS_OnPlayerLoad
-#endif
- 
-#define OnPlayerLoad infect_OnPlayerLoad
-#if defined infect_OnPlayerLoad
-	forward infect_OnPlayerLoad(playerid, filename[]);
-#endif

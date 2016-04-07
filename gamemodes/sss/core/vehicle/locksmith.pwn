@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static lsk_TargetVehicle[MAX_PLAYERS];
@@ -51,13 +51,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(!IsVehicleTypeLockable(vehicletype))
 			{
 				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
 				ShowActionText(playerid, "That vehicle has already been locked", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -69,13 +69,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(GetItemArrayDataAtCell(itemid, 0) == 0)
 			{
 				ShowActionText(playerid, "That lock and chain has no key. Combine it with a Locksmith Kit.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
 				ShowActionText(playerid, "That vehicle has already been locked", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -91,19 +91,19 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(keyid == 0)
 			{
 				ShowActionText(playerid, "That key hasn't been cut yet.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(vehiclekey == 0)
 			{
 				ShowActionText(playerid, "That vehicle lock hasn't been set up for a key yet. Use a Locksmith Kit to set it up.", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(keyid != vehiclekey)
 			{
 				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			CancelPlayerMovement(playerid);
@@ -132,15 +132,8 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		}
 	}
 
-	return CallLocalFunction("lsk_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle lsk_OnPlayerInteractVehicle
-forward lsk_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -173,7 +166,7 @@ StopCraftingKey(playerid)
 	return 1;
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -183,31 +176,18 @@ public OnHoldActionUpdate(playerid, progress)
 			!IsPlayerInVehicleArea(playerid, lsk_TargetVehicle[playerid]))
 		{
 			StopCraftingKey(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		SetPlayerToFaceVehicle(playerid, lsk_TargetVehicle[playerid]);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined lsk_OnHoldActionUpdate
-		return lsk_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate lsk_OnHoldActionUpdate
-#if defined lsk_OnHoldActionUpdate
-	forward lsk_OnHoldActionUpdate(playerid, progress);
-#endif
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -233,26 +213,13 @@ public OnHoldActionFinish(playerid)
 
 		StopCraftingKey(playerid);			
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined lsk_OnHoldActionFinish
-		return lsk_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish lsk_OnHoldActionFinish
-#if defined lsk_OnHoldActionFinish
-	forward lsk_OnHoldActionFinish(playerid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Key)
 	{
@@ -277,43 +244,14 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, "Cut");
 		}
 	}
-
-	#if defined lsk_OnItemNameRender
-		return lsk_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender lsk_OnItemNameRender
-#if defined lsk_OnItemNameRender
-	forward lsk_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
-public OnPlayerCrafted(playerid, craftset, result)
+hook OnPlayerCrafted(playerid, craftset, result)
 {
 	if(GetCraftSetResult(craftset) == item_WheelLock)
 	{
 		SetItemArrayDataAtCell(result, 1, 0);
 	}
 
-	#if defined lsk_OnPlayerCrafted
-		return lsk_OnPlayerCrafted(playerid, craftset, result);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerCrafted
-	#undef OnPlayerCrafted
-#else
-	#define _ALS_OnPlayerCrafted
-#endif
- 
-#define OnPlayerCrafted lsk_OnPlayerCrafted
-#if defined lsk_OnPlayerCrafted
-	forward lsk_OnPlayerCrafted(playerid, craftset, result);
-#endif

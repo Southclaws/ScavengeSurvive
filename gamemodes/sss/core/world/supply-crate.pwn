@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_SUPPLY_DROP_TYPE			(5)
@@ -61,7 +61,7 @@ static
 
 static
 Float:		sup_DropLocationData[MAX_SUPPLY_DROP_LOCATIONS][E_SUPPLY_DROP_LOCATION_DATA],
-Iterator:	sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
+   Iterator:sup_Index<MAX_SUPPLY_DROP_LOCATIONS>,
 			sup_TotalLocations,
 Timer:		sup_UpdateTimer,
 			sup_CurrentType = -1,
@@ -333,26 +333,13 @@ SupplyCrateLand()
 	return;
 }
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	if(objectid == sup_ObjPara)
 		SupplyCrateLand();
 
-	#if defined sup_OnDynamicObjectMoved
-		return sup_OnDynamicObjectMoved(objectid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
-#define OnDynamicObjectMoved sup_OnDynamicObjectMoved
-#if defined sup_OnDynamicObjectMoved
-	forward sup_OnDynamicObjectMoved(objectid);
-#endif
 
 ACMD:sc[4](playerid, params[])
 {

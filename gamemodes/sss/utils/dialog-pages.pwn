@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -50,15 +50,11 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == page_Left)
 	{
-		#if defined OnPlayerDialogPage
-			OnPlayerDialogPage(playerid, 0);
-		#endif
+		CallLocalFunction("OnPlayerDialogPage", "dd", playerid, 0);
 	}
 	if(clickedid == page_Right)
 	{
-		#if defined OnPlayerDialogPage
-			OnPlayerDialogPage(playerid, 1);
-		#endif
+		CallLocalFunction("OnPlayerDialogPage", "dd", playerid, 1);
 	}
 }
 

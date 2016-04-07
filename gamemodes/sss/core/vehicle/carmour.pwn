@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_CARMOUR	DIRECTORY_VEHICLESPAWNS"carmour/"
@@ -52,7 +52,7 @@ Float:		arm_rotZ
 new
 			arm_Data[MAX_CARMOUR][E_ARMOUR_DATA],
 			arm_Objects[MAX_CARMOUR][MAX_CARMOUR_PARTS][E_ARMOUR_LIST_DATA],
-Iterator:	arm_Index<MAX_CARMOUR>,
+   Iterator:arm_Index<MAX_CARMOUR>,
 			arm_VehicleTypeCarmour[MAX_VEHICLE_TYPE] = {-1, ...};
 
 
@@ -176,26 +176,12 @@ ApplyArmourToVehicle(vehicleid, armourid)
 	return 1;
 }
 
-public OnVehicleCreated(vehicleid)
+hook OnVehicleCreated(vehicleid)
 {
 	new vehicletype = GetVehicleType(vehicleid);
 
 	if(arm_VehicleTypeCarmour[vehicletype] != -1)
 		ApplyArmourToVehicle(vehicleid, arm_VehicleTypeCarmour[vehicletype]);
 
-	#if defined carm_OnVehicleCreated
-		return carm_OnVehicleCreated(vehicleid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnVehicleCreated
-	#undef OnVehicleCreated
-#else
-	#define _ALS_OnVehicleCreated
-#endif
- 
-#define OnVehicleCreated carm_OnVehicleCreated
-#if defined carm_OnVehicleCreated
-	forward carm_OnVehicleCreated(vehicleid);
-#endif

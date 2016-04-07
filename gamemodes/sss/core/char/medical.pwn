@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define HEAL_PROGRESS_MAX (4000)
@@ -37,7 +37,7 @@ hook OnPlayerConnect(playerid)
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -54,23 +54,7 @@ public OnItemCreate(itemid)
 			}
 		}
 	}
-
-	#if defined infect_OnItemCreate
-		return infect_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
-
-#define OnItemCreate infect_OnItemCreate
-#if defined infect_OnItemCreate
-	forward infect_OnItemCreate(itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -150,7 +134,7 @@ PlayerStopHeal(playerid)
 	}
 }
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_DoctorBag)
 	{
@@ -167,24 +151,9 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			SetItemNameExtra(itemid, sprintf("%d/3, %s", data, name));
 		}
 	}
-
-	#if defined infect_OnItemNameRender
-		return infect_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender infect_OnItemNameRender
-#if defined infect_OnItemNameRender
-	forward infect_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
@@ -193,7 +162,7 @@ public OnHoldActionUpdate(playerid, progress)
 			if(!IsPlayerInPlayerArea(playerid, med_HealTarget[playerid]))
 			{
 				StopHoldAction(playerid);
-				return 1;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			new progresscap = HEAL_PROGRESS_MAX;
@@ -207,16 +176,13 @@ public OnHoldActionUpdate(playerid, progress)
 			ShowPlayerProgressBar(med_HealTarget[playerid], ActionBar);
 		}
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
-	#if defined med_OnHoldActionUpdate
-		return med_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
@@ -323,36 +289,8 @@ public OnHoldActionFinish(playerid)
 
 		PlayerStopHeal(playerid);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
-	#if defined med_OnHoldActionFinish
-		return med_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate med_OnHoldActionUpdate
-#if defined med_OnHoldActionUpdate
-	forward med_OnHoldActionUpdate(playerid, progress);
-#endif
-
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish med_OnHoldActionFinish
-#if defined med_OnHoldActionFinish
-	forward med_OnHoldActionFinish(playerid);
-#endif

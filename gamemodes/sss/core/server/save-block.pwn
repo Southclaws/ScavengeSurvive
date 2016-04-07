@@ -64,7 +64,7 @@ SaveBlockAreaCheck(&Float:x, &Float:y, &Float:z)
 	return 0;
 }
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	for(new i; i < saveblock_Total; i++)
 	{
@@ -73,20 +73,4 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			MsgF(playerid, YELLOW, " >  You have entered a save-block area. If you quit while in this area, your character will be moved to a nearby location.");
 		}
 	}
-
-	#if defined sbl_OnPlayerEnterDynamicArea
-		return sbl_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
- 
-#define OnPlayerEnterDynamicArea sbl_OnPlayerEnterDynamicArea
-#if defined sbl_OnPlayerEnterDynamicArea
-	forward sbl_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif

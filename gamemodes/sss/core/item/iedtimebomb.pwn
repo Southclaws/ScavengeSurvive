@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 	iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_IedTimebomb)
 	{
@@ -46,23 +46,11 @@ public OnPlayerUseItem(playerid, itemid)
 		ShowActionText(playerid, "Arming...");
 		return 1;
 	}
-    #if defined iedt_OnPlayerUseItem
-		return iedt_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-    #undef OnPlayerUseItem
-#else
-    #define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem iedt_OnPlayerUseItem
-#if defined iedt_OnPlayerUseItem
-	forward iedt_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnHoldActionFinish(playerid)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(iedt_ArmingItem[playerid]))
 	{
@@ -72,23 +60,12 @@ public OnHoldActionFinish(playerid)
 		ShowActionText(playerid, "Armed for 5 seconds", 3000);
 
 		iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined iedt_OnHoldActionFinish
-		return iedt_OnHoldActionFinish(playerid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish iedt_OnHoldActionFinish
-#if defined iedt_OnHoldActionFinish
-	forward iedt_OnHoldActionFinish(playerid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

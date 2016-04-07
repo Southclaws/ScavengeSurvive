@@ -28,7 +28,7 @@
 
 static
 			tracer_ObjectID[MAX_TRACERS],
-Iterator:	tracer_Index<MAX_TRACERS>;
+   Iterator:tracer_Index<MAX_TRACERS>;
 
 
 stock CreateTracer(Float:originx, Float:originy, Float:originz, Float:targetx, Float:targety, Float:targetz)
@@ -88,26 +88,12 @@ stock DestroyTracer(id)
 	return 1;
 }
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	tracer_HandleObjectMoved(objectid);
 
-	#if defined tracer_OnDynamicObjectMoved
-		return tracer_OnDynamicObjectMoved(objectid);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
- 
-#define OnDynamicObjectMoved tracer_OnDynamicObjectMoved
-#if defined tracer_OnDynamicObjectMoved
-	forward tracer_OnDynamicObjectMoved(objectid);
-#endif
 
 tracer_HandleObjectMoved(objectid)
 {
@@ -126,7 +112,7 @@ tracer_HandleObjectMoved(objectid)
 	return;
 }
 
-public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	if(IsBaseWeaponClipBased(weaponid))
 	{
@@ -158,19 +144,5 @@ public OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY
 		}
 	}
 
-	#if defined tracer_OnPlayerWeaponShot
-		return tracer_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-#if defined _ALS_OnPlayerWeaponShot
-	#undef OnPlayerWeaponShot
-#else
-	#define _ALS_OnPlayerWeaponShot
-#endif
- 
-#define OnPlayerWeaponShot tracer_OnPlayerWeaponShot
-#if defined tracer_OnPlayerWeaponShot
-	forward tracer_OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ);
-#endif

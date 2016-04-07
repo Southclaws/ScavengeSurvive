@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 /*==============================================================================
@@ -123,7 +123,7 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 ==============================================================================*/
 
 
-public OnPlayerUseMachine(playerid, machineid, interactiontype)
+hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
 	if(sm_MachineScrapMachine[machineid] != -1)
 	{
@@ -138,21 +138,8 @@ public OnPlayerUseMachine(playerid, machineid, interactiontype)
 		}
 	}
 
-	#if defined sm_OnPlayerUseMachine
-		return sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseMachine
-	#undef OnPlayerUseMachine
-#else
-	#define _ALS_OnPlayerUseMachine
-#endif
-#define OnPlayerUseMachine sm_OnPlayerUseMachine
-#if defined sm_OnPlayerUseMachine
-	forward sm_OnPlayerUseMachine(playerid, machineid, interactiontype);
-#endif
 
 _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 {
@@ -207,7 +194,7 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 	return 0;
 }
 
-public OnHoldActionUpdate(playerid, progress)
+hook OnHoldActionUpdate(playerid, progress)
 {
 	if(sm_CurrentScrapMachine[playerid] != -1)
 	{
@@ -240,22 +227,8 @@ public OnHoldActionUpdate(playerid, progress)
 		}
 	}
 
-	#if defined sm_OnHoldActionUpdate
-		return sm_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate sm_OnHoldActionUpdate
-#if defined sm_OnHoldActionUpdate
-	forward sm_OnHoldActionUpdate(playerid, progress);
-#endif
 
 _sm_StartCooking(scrapmachineid)
 {

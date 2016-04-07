@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_BBQ				(256)
@@ -59,8 +59,7 @@ hook OnScriptInit()
 	HANDLER = debug_register_handler("BBQ");
 }
 
-
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	d:1:HANDLER("[OnItemCreate] itemid: %d type: %d", itemid, _:GetItemType(itemid));
 	if(GetItemType(itemid) == item_Barbecue)
@@ -91,26 +90,9 @@ public OnItemCreate(itemid)
 
 		SetItemArrayData(itemid, data, 7);
 	}
-
-	#if defined bbq_OnItemCreate
-		return bbq_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate bbq_OnItemCreate
-#if defined bbq_OnItemCreate
-	forward bbq_OnItemCreate(itemid);
-#endif
 
-
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:1:HANDLER("[OnPlayerUseItemWithItem HOOK] %d %d %d", playerid, itemid, withitemid);
 
@@ -122,21 +104,8 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	d:2:HANDLER("[OnPlayerUseItemWithItem END] %d %d %d", playerid, itemid, withitemid);
 
-	#if defined bbq_OnPlayerUseItemWithItem
-		return bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-    #undef OnPlayerUseItemWithItem
-#else
-    #define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem bbq_OnPlayerUseItemWithItem
-#if defined bbq_OnPlayerUseItemWithItem
-	forward bbq_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 _UseBbqHandler(playerid, itemid, withitemid)
 {
@@ -301,14 +270,14 @@ timer bbq_FinishCooking[30000](itemid)
 }
 
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	d:1:HANDLER("[OnPlayerPickUpItem] playerid: %d itemid: %d", playerid, itemid);
 	if(GetItemType(itemid) == item_Barbecue)
 	{
 		d:1:HANDLER("[OnPlayerPickUpItem] Item type is BBQ", playerid, itemid);
 		if(GetTickCountDifference(GetTickCount(), bbq_PlaceFoodTick[playerid]) < 1000)
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		new data[7];
 
@@ -323,14 +292,14 @@ public OnPlayerPickUpItem(playerid, itemid)
 		d:3:HANDLER("GET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
 
 		if(data[bbq_state] != COOKER_STATE_NONE)
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 
 		if(IsValidItem(data[bbq_grillItem1]) && data[bbq_grillItem1] > 0) // temp fix
 		{
 			d:2:HANDLER("[OnPlayerPickUpItem] BBQ has valid item in slot 1 (%d)", data[bbq_grillItem1]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem1], 1);
 			SetItemArrayDataAtCell(itemid, INVALID_ITEM_ID, bbq_grillItem1);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(IsValidItem(data[bbq_grillItem2]) && data[bbq_grillItem2] > 0) // temp fix
@@ -338,7 +307,7 @@ public OnPlayerPickUpItem(playerid, itemid)
 			d:2:HANDLER("[OnPlayerPickUpItem] BBQ has valid item in slot 2 (%d)", data[bbq_grillItem2]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem2], 1);
 			SetItemArrayDataAtCell(itemid, INVALID_ITEM_ID, bbq_grillItem2);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
@@ -359,18 +328,5 @@ public OnPlayerPickUpItem(playerid, itemid)
 		}
 	}
 
-	#if defined bbq_OnPlayerPickUpItem
-		return bbq_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem bbq_OnPlayerPickUpItem
-#if defined bbq_OnPlayerPickUpItem
-	forward bbq_OnPlayerPickUpItem(playerid, itemid);
-#endif

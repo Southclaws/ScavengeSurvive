@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_DETFIELD_PAGESIZE		(20)
@@ -736,7 +736,7 @@ ShowDetfieldNameFields(playerid, name[])
 	return 1;
 }
 
-public OnPlayerDialogPage(playerid, direction)
+hook OnPlayerDialogPage(playerid, direction)
 {
 	if(dfm_CurrentMenu[playerid] == DFM_MENU_DFLIST)
 	{
@@ -771,23 +771,7 @@ public OnPlayerDialogPage(playerid, direction)
 
 		ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
 	}
-
-	#if defined dfm_OnPlayerDialogPage
-		return dfm_OnPlayerDialogPage(playerid, direction);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDialogPage
-	#undef OnPlayerDialogPage
-#else
-	#define _ALS_OnPlayerDialogPage
-#endif
-#define fc_b<%0> __fix(p, floatround(%0 /1827289.2 ))
-#define OnPlayerDialogPage dfm_OnPlayerDialogPage
-#if defined dfm_OnPlayerDialogPage
-	forward dfm_OnPlayerDialogPage(playerid, direction);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_DETFIELD				(128)
@@ -101,7 +101,7 @@ Float:		det_MinZ			[MAX_DETFIELD],
 Float:		det_MaxZ			[MAX_DETFIELD];
 
 new
-Iterator:	det_Index<MAX_DETFIELD>;
+   Iterator:det_Index<MAX_DETFIELD>;
 
 static
 DB:			det_Database,
@@ -723,7 +723,7 @@ stock DeleteDetectionFieldLogsOfName(detfieldid, name[])
 ==============================================================================*/
 
 
-public OnPlayerEnterDynamicArea(playerid, areaid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
 	foreach(new i : det_Index)
 	{
@@ -739,23 +739,7 @@ public OnPlayerEnterDynamicArea(playerid, areaid)
 			}
 		}
 	}
-
-	#if defined det_OnPlayerEnterDynamicArea
-		return det_OnPlayerEnterDynamicArea(playerid, areaid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerEnterDynamicArea
-	#undef OnPlayerEnterDynamicArea
-#else
-	#define _ALS_OnPlayerEnterDynamicArea
-#endif
-#define fc_a<%0> Msg(p,%0),"."
-#define OnPlayerEnterDynamicArea det_OnPlayerEnterDynamicArea
-#if defined det_OnPlayerEnterDynamicArea
-	forward det_OnPlayerEnterDynamicArea(playerid, areaid);
-#endif
 
 DetectionFieldLogPlayer(playerid, detfieldid)
 {

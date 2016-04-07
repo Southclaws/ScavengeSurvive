@@ -22,26 +22,21 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
-public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	new itemid = GetPlayerItem(playerid);
 
 	if(GetItemType(itemid) == item_Wheel)
-		return _WheelRepair(playerid, vehicleid, itemid);
+	{
+		if(_WheelRepair(playerid, vehicleid, itemid))
+			return Y_HOOKS_BREAK_RETURN_0;
+	}
 
-	return CallLocalFunction("whl_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle whl_OnPlayerInteractVehicle
-forward whl_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
-
 
 _WheelRepair(playerid, vehicleid, itemid)
 {
@@ -88,6 +83,9 @@ _WheelRepair(playerid, vehicleid, itemid)
 					ShowActionText(playerid, "Tire Not Damaged", 5000);
 				}
 			}
+
+			default:
+				return 0;
 		}
 	}
 	else
@@ -150,10 +148,12 @@ _WheelRepair(playerid, vehicleid, itemid)
 				}
 			}
 
+			default:
+				return 0;
 		}
 	}
 
-	return 0;
+	return 1;
 }
 
 

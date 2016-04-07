@@ -45,7 +45,7 @@ Float:		fwk_distance,	// C
 
 new
 			fwk_Data[MAX_PROJECTILE][E_FIREWORK_PROJECTILE_DATA],
-Iterator:	fwk_ProjectileIndex<MAX_PROJECTILE>,
+   Iterator:fwk_ProjectileIndex<MAX_PROJECTILE>,
 			fwk_CooldownTick;
 
 new
@@ -108,7 +108,7 @@ DestroyFireworkProjectile(id)
 }
 
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_FireLighter && GetItemType(withitemid) == item_FireworkBox)
 	{
@@ -119,22 +119,9 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			fwk_CooldownTick = GetTickCount();
 		}
 	}
-	#if defined fwk_OnPlayerUseItemWithItem
-		return fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem fwk_OnPlayerUseItemWithItem
-#if defined fwk_OnPlayerUseItemWithItem
-	forward fwk_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 
 
 timer FireworkLaunch[6000](itemid)
@@ -152,7 +139,7 @@ timer FireworkLaunch[6000](itemid)
 }
 
 
-public OnDynamicObjectMoved(objectid)
+hook OnDynamicObjectMoved(objectid)
 {
 	foreach(new i : fwk_ProjectileIndex)
 	{
@@ -176,7 +163,7 @@ public OnDynamicObjectMoved(objectid)
 			if(index >= MAX_EX_PER_SEQUENCE)
 			{
 				i = DestroyFireworkProjectile(i);
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			extype = fwk_ExplosionSequences[sequence][index];
@@ -184,7 +171,7 @@ public OnDynamicObjectMoved(objectid)
 			if(extype == -1)
 			{
 				i = DestroyFireworkProjectile(i);
-				return 0;
+				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			while(maxmodels < 8 && fwk_ExplosionTypes[extype][fwk_model][maxmodels] != -1)
@@ -205,22 +192,9 @@ public OnDynamicObjectMoved(objectid)
 			}
 		}
 	}
-	#if defined fwk_OnDynamicObjectMoved
-		return fwk_OnDynamicObjectMoved(objectid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnDynamicObjectMoved
-	#undef OnDynamicObjectMoved
-#else
-	#define _ALS_OnDynamicObjectMoved
-#endif
-#define OnDynamicObjectMoved fwk_OnDynamicObjectMoved
-#if defined fwk_OnDynamicObjectMoved
-	forward fwk_OnDynamicObjectMoved(objectid);
-#endif
 
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 
 /*
 

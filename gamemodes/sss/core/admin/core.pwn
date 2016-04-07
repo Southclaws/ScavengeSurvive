@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_ADMIN_LEVELS			(7)
@@ -115,27 +115,12 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-public OnPlayerDisconnected(playerid)
+hook OnPlayerDisconnected(playerid)
 {
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;
-
-	#if defined admin_OnPlayerDisconnected
-		return admin_OnPlayerDisconnected(playerid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDisconnected
-	#undef OnPlayerDisconnected
-#else
-	#define _ALS_OnPlayerDisconnected
-#endif
-#define OnPlayerDisconnected admin_OnPlayerDisconnected
-#if defined admin_OnPlayerDisconnected
-	forward admin_OnPlayerDisconnected(playerid);
-#endif
 
 
 /*==============================================================================
@@ -427,15 +412,8 @@ stock SetPlayerAdminLevel(playerid, level)
 
 	UpdateAdmin(name, level);
 
-	return 1;//SetPlayerAdminLevel(playerid, level); // hooking fix for external
+	return 1;
 }
-#if defined _ALS_SetPlayerAdminLevel
-    #undef SetPlayerAdminLevel
-#else
-    #define _ALS_SetPlayerAdminLevel
-#endif
- 
-#define __fix SetPlayerAdminLevel
 
 stock GetPlayerAdminLevel(playerid)
 {

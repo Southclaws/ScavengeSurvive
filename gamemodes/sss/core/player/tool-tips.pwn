@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_TOOLTIP_TEXT (256)
@@ -100,47 +100,19 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetProportional	(playerid, ToolTip[playerid], 1);
 }
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(IsPlayerToolTipsOn(playerid))
 		ShowItemToolTip(playerid, GetItemType(itemid));
-
-	#if defined tip_OnPlayerPickUpItem
-		return tip_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem tip_OnPlayerPickUpItem
-#if defined tip_OnPlayerPickUpItem
-	forward tip_OnPlayerPickUpItem(playerid, itemid);
-#endif
-#define s@_<> {return o_sc@(c@sc)
-public OnPlayerDropItem(playerid, itemid)
+
+hook OnPlayerDropItem(playerid, itemid)
 {
 	if(IsPlayerToolTipsOn(playerid))
 		HideHelpTip(playerid);
 
-	#if defined tip_OnPlayerDropItem
-		return tip_OnPlayerDropItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDropItem
-	#undef OnPlayerDropItem
-#else
-	#define _ALS_OnPlayerDropItem
-#endif
-#define OnPlayerDropItem tip_OnPlayerDropItem
-#if defined tip_OnPlayerDropItem
-	forward tip_OnPlayerDropItem(playerid, itemid);
-#endif
 
 hook OnGameModeInit()
 {

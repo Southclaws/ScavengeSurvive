@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_SKINS		(22)
@@ -62,7 +62,7 @@ DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
 	return skin_Total++;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemType(itemid) == item_Clothes)
 	{
@@ -84,25 +84,11 @@ public OnItemCreate(itemid)
 		SetItemExtraData(itemid, skinid);
 	}
 
-	#if defined skin_OnItemCreate
-		return skin_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
+	return 1;
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate skin_OnItemCreate
-#if defined skin_OnItemCreate
-	forward skin_OnItemCreate(itemid);
-#endif
 
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Clothes)
 	{
@@ -120,21 +106,8 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 		SetItemNameExtra(itemid, exname);
 	}
 
-	#if defined clo_OnItemNameRender
-		return clo_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender clo_OnItemNameRender
-#if defined clo_OnItemNameRender
-	forward clo_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -181,7 +154,7 @@ StopUsingClothes(playerid)
 	}
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{
@@ -190,25 +163,11 @@ public OnHoldActionFinish(playerid)
 		SetItemExtraData(skin_CurrentlyUsing[playerid], currentclothes);
 		StopUsingClothes(playerid);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined clo_OnHoldActionFinish
-		return clo_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish clo_OnHoldActionFinish
-#if defined clo_OnHoldActionFinish
-	forward clo_OnHoldActionFinish(playerid);
-#endif
 
 
 stock IsValidClothes(skinid)

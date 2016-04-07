@@ -22,8 +22,8 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
-#include <YSI\y_va>
+#include <YSI_4\y_hooks>
+#include <YSI_4\y_va>
 
 
 #define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"

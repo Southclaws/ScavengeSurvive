@@ -1,3 +1,4 @@
+
 /*==============================================================================
 
 
@@ -22,7 +23,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"Safebox/"
@@ -160,7 +161,7 @@ DefineSafeboxType(ItemType:itemtype, size)
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -189,25 +190,9 @@ public OnItemCreate(itemid)
 			SetItemArrayDataAtCell(itemid, box_GEID[itemid], E_BOX_GEID);
 		}
 	}
-
-	#if defined box_OnItemCreate
-		return box_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate box_OnItemCreate
-#if defined box_OnItemCreate
-	forward box_OnItemCreate(itemid);
-#endif
 
-public OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -217,23 +202,10 @@ public OnItemCreateInWorld(itemid)
 			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 
-	#if defined box_OnItemCreateInWorld
-		return box_OnItemCreateInWorld(itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemCreateInWorld
-	#undef OnItemCreateInWorld
-#else
-	#define _ALS_OnItemCreateInWorld
-#endif
-#define OnItemCreateInWorld box_OnItemCreateInWorld
-#if defined box_OnItemCreateInWorld
-	forward box_OnItemCreateInWorld(itemid);
-#endif
 
-public OnItemDestroy(itemid)
+hook OnItemDestroy(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -250,21 +222,8 @@ public OnItemDestroy(itemid)
 		}
 	}
 
-	#if defined box_OnItemDestroy
-		return box_OnItemDestroy(itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemDestroy
-	#undef OnItemDestroy
-#else
-	#define _ALS_OnItemDestroy
-#endif
-#define OnItemDestroy box_OnItemDestroy
-#if defined box_OnItemDestroy
-	forward box_OnItemDestroy(itemid);
-#endif
 
 
 /*==============================================================================
@@ -274,47 +233,21 @@ public OnItemDestroy(itemid)
 ==============================================================================*/
 
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(SafeBoxInteractionCheck(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined box_OnPlayerPickUpItem
-		return box_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem box_OnPlayerPickUpItem
-#if defined box_OnPlayerPickUpItem
-	forward box_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(SafeBoxInteractionCheck(playerid, withitemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined box_OnPlayerUseItemWithItem
-		return box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem box_OnPlayerUseItemWithItem
-#if defined box_OnPlayerUseItemWithItem
-	forward box_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 SafeBoxInteractionCheck(playerid, itemid)
 {
@@ -381,7 +314,7 @@ timer box_PickUp[250](playerid, itemid)
 	return;
 }
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
@@ -392,23 +325,10 @@ public OnPlayerDroppedItem(playerid, itemid)
 		SafeboxSaveCheck(playerid, itemid);
 	}
 
-	#if defined box_OnPlayerDroppedItem
-		return box_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
-#define OnPlayerDroppedItem box_OnPlayerDroppedItem
-#if defined box_OnPlayerDroppedItem
-	forward box_OnPlayerDroppedItem(playerid, itemid);
-#endif
-#define sc.r ):(fc_a<tf_a<5>> cc
-public OnPlayerCloseContainer(playerid, containerid)
+
+hook OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(box_CurrentBoxItem[playerid]))
 	{
@@ -421,21 +341,8 @@ public OnPlayerCloseContainer(playerid, containerid)
 		box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 	}
 
-	#if defined box_OnPlayerCloseContainer
-		return box_OnPlayerCloseContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerCloseContainer
-	#undef OnPlayerCloseContainer
-#else
-	#define _ALS_OnPlayerCloseContainer
-#endif
-#define OnPlayerCloseContainer box_OnPlayerCloseContainer
-#if defined box_OnPlayerCloseContainer
-	forward box_OnPlayerCloseContainer(playerid, containerid);
-#endif
 
 SafeboxSaveCheck(playerid, itemid)
 {

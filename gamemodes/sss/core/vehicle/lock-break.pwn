@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 static
@@ -35,33 +35,28 @@ hook OnPlayerConnect(playerid)
 	cro_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
-public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
+hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
 		if(IsVehicleLocked(vehicleid))
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(225.0 < angle < 315.0)
 		{
-			return StartBreakingVehicleLock(playerid, vehicleid, 0);
+			if(StartBreakingVehicleLock(playerid, vehicleid, 0))
+				return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		if(155.0 < angle < 205.0)
 		{
-			return StartBreakingVehicleLock(playerid, vehicleid, 1);
+			if(StartBreakingVehicleLock(playerid, vehicleid, 1))
+				return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	return CallLocalFunction("cro_OnPlayerInteractVehicle", "ddf", playerid, vehicleid, Float:angle);
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerInteractVehicle
-	#undef OnPlayerInteractVehicle
-#else
-	#define _ALS_OnPlayerInteractVehicle
-#endif
-#define OnPlayerInteractVehicle cro_OnPlayerInteractVehicle
-forward cro_OnPlayerInteractVehicle(playerid, vehicleid, Float:angle);
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -127,22 +122,18 @@ public OnHoldActionUpdate(playerid, progress)
 		if(!IsValidVehicle(cro_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cro_TargetVehicle[playerid]))
 		{
 			StopBreakingVehicleLock(playerid);
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
 		SetPlayerToFaceVehicle(playerid, cro_TargetVehicle[playerid]);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined cro_OnHoldActionUpdate
-		return cro_OnHoldActionUpdate(playerid, progress);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(cro_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
@@ -157,37 +148,8 @@ public OnHoldActionFinish(playerid)
 
 		StopBreakingVehicleLock(playerid);			
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined cro_OnHoldActionFinish
-		return cro_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-
-
-// Hooks
-
-
-#if defined _ALS_OnHoldActionUpdate
-	#undef OnHoldActionUpdate
-#else
-	#define _ALS_OnHoldActionUpdate
-#endif
-#define OnHoldActionUpdate cro_OnHoldActionUpdate
-#if defined cro_OnHoldActionUpdate
-	forward cro_OnHoldActionUpdate(playerid, progress);
-#endif
-
-
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish cro_OnHoldActionFinish
-#if defined cro_OnHoldActionFinish
-	forward cro_OnHoldActionFinish(playerid);
-#endif

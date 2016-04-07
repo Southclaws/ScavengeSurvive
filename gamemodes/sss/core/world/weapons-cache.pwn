@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_WEPCACHE_LOCATIONS			(256)
@@ -39,7 +39,7 @@ Float:	wepc_posZ
 
 static
 Float:		wepc_DropLocationData[MAX_WEPCACHE_LOCATIONS][E_WEPCACHE_LOCATION_DATA],
-Iterator:	wepc_Index<MAX_WEPCACHE_LOCATIONS>,
+   Iterator:wepc_Index<MAX_WEPCACHE_LOCATIONS>,
 Float:		wepc_CurrentPosX,
 Float:		wepc_CurrentPosY,
 Float:		wepc_CurrentPosZ,

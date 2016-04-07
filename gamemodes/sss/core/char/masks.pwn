@@ -43,7 +43,7 @@ Float:		mask_scaleZ
 new
 ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 			mask_Data[MAX_MASK_ITEMS][MAX_MASK_SKINS][E_MASK_SKIN_DATA],
-Iterator:	mask_Index<MAX_MASK_ITEMS>,
+   Iterator:mask_Index<MAX_MASK_ITEMS>,
 			mask_CurrentMask[MAX_PLAYERS];
 
 
@@ -55,7 +55,7 @@ hook OnPlayerConnect(playerid)
 	mask_CurrentMask[playerid] = -1;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	foreach(new i : mask_Index)
 	{
@@ -64,23 +64,7 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, i);
 		}
 	}
-
-	#if defined mask_OnItemCreate
-		return mask_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate mask_OnItemCreate
-#if defined mask_OnItemCreate
-	forward mask_OnItemCreate(itemid);
-#endif
 
 
 // Core
@@ -166,7 +150,7 @@ TogglePlayerMask(playerid, bool:toggle)
 // Hooks and Internal
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(mask_CurrentMask[playerid] == -1)
 	{
@@ -182,21 +166,8 @@ public OnPlayerUseItem(playerid, itemid)
 		}
 	}
 
-	#if defined mask_OnPlayerUseItem
-		return mask_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem mask_OnPlayerUseItem
-#if defined mask_OnPlayerUseItem
-	forward mask_OnPlayerUseItem(playerid, itemid);
-#endif
 
 
 // Interface

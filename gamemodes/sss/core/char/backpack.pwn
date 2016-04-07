@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define MAX_BAG_TYPE (10)
@@ -303,7 +303,8 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 
 ==============================================================================*/
 
-public OnItemCreate(itemid)
+
+hook OnItemCreate(itemid)
 {
 	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
@@ -329,48 +330,17 @@ public OnItemCreate(itemid)
 				FillContainerWithLoot(containerid, random(4), lootindex);
 		}
 	}
-
-	#if defined bag_OnItemCreate
-		return bag_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate bag_OnItemCreate
-#if defined bag_OnItemCreate
-	forward bag_OnItemCreate(itemid);
-#endif
 
-public OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
 		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
-
-	#if defined bag_OnItemCreateInWorld
-		return bag_OnItemCreateInWorld(itemid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemCreateInWorld
-	#undef OnItemCreateInWorld
-#else
-	#define _ALS_OnItemCreateInWorld
-#endif
-#define OnItemCreateInWorld bag_OnItemCreateInWorld
-#if defined bag_OnItemCreateInWorld
-	forward bag_OnItemCreateInWorld(itemid);
-#endif
 
-public OnItemDestroy(itemid)
+hook OnItemDestroy(itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
@@ -383,64 +353,23 @@ public OnItemDestroy(itemid)
 			DestroyContainer(containerid);
 		}
 	}
-
-	#if defined bag_OnItemDestroy
-		return bag_OnItemDestroy(itemid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemDestroy
-	#undef OnItemDestroy
-#else
-	#define _ALS_OnItemDestroy
-#endif
-#define OnItemDestroy bag_OnItemDestroy
-#if defined bag_OnItemDestroy
-	forward bag_OnItemDestroy(itemid);
-#endif
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(BagInteractionCheck(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined bag_OnPlayerPickUpItem
-		return bag_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
-#define OnPlayerPickUpItem bag_OnPlayerPickUpItem
-#if defined bag_OnPlayerPickUpItem
-	forward bag_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(BagInteractionCheck(playerid, withitemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined bag_OnPlayerUseItemWithItem
-		return bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem bag_OnPlayerUseItemWithItem
-#if defined bag_OnPlayerUseItemWithItem
-	forward bag_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
 BagInteractionCheck(playerid, itemid)
 {
@@ -658,33 +587,20 @@ PlayerBagUpdate(playerid)
 	}
 }
 
-public OnPlayerAddToInventory(playerid, itemid)
+hook OnPlayerAddToInventory(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeBag(itemtype))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
 	if(IsItemTypeCarry(itemtype))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined bag_OnPlayerAddToInventory
-		return bag_OnPlayerAddToInventory(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerAddToInventory
-	#undef OnPlayerAddToInventory
-#else
-	#define _ALS_OnPlayerAddToInventory
-#endif
-#define OnPlayerAddToInventory bag_OnPlayerAddToInventory
-#if defined bag_OnPlayerAddToInventory
-	forward bag_OnPlayerAddToInventory(playerid, itemid);
-#endif
 
-public OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, containerid)
 {
 	if(IsValidItem(bag_CurrentBag[playerid]))
 	{
@@ -692,24 +608,9 @@ public OnPlayerCloseContainer(playerid, containerid)
 		bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 		bag_LookingInBag[playerid] = -1;
 	}
-
-	#if defined bag_OnPlayerCloseContainer
-		return bag_OnPlayerCloseContainer(playerid, containerid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerCloseContainer
-	#undef OnPlayerCloseContainer
-#else
-	#define _ALS_OnPlayerCloseContainer
-#endif
-#define OnPlayerCloseContainer bag_OnPlayerCloseContainer
-#if defined bag_OnPlayerCloseContainer
-	forward bag_OnPlayerCloseContainer(playerid, containerid);
-#endif
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -719,101 +620,45 @@ public OnPlayerUseItem(playerid, itemid)
 		CancelPlayerMovement(playerid);
 		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
-
-	#if defined bag_OnPlayerUseItem
-		return bag_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem bag_OnPlayerUseItem
-#if defined bag_OnPlayerUseItem
-	forward bag_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
 		if(bag_TakingOffBag[playerid])
 		{
 			bag_TakingOffBag[playerid] = false;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined bag_OnPlayerDropItem
-		return bag_OnPlayerDropItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDropItem
-	#undef OnPlayerDropItem
-#else
-	#define _ALS_OnPlayerDropItem
-#endif
-#define OnPlayerDropItem bag_OnPlayerDropItem
-#if defined bag_OnPlayerDropItem
-	forward bag_OnPlayerDropItem(playerid, itemid);
-#endif
 
-public OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
 		if(bag_TakingOffBag[playerid])
 		{
 			bag_TakingOffBag[playerid] = false;
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined bag_OnPlayerGiveItem
-		return bag_OnPlayerGiveItem(playerid, targetid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerGiveItem
-	#undef OnPlayerGiveItem
-#else
-	#define _ALS_OnPlayerGiveItem
-#endif
-#define OnPlayerGiveItem bag_OnPlayerGiveItem
-#if defined bag_OnPlayerGiveItem
-	forward bag_OnPlayerGiveItem(playerid, targetid, itemid);
-#endif
 
-public OnPlayerViewInventoryOpt(playerid)
+hook OnPlayerViewInvOpt(playerid)
 {
 	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
 	}
-
-	#if defined bag_OnPlayerViewInventoryOpt
-		return bag_OnPlayerViewInventoryOpt(playerid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerViewInventoryOpt
-	#undef OnPlayerViewInventoryOpt
-#else
-	#define _ALS_OnPlayerViewInventoryOpt
-#endif
-#define OnPlayerViewInventoryOpt bag_OnPlayerViewInventoryOpt
-#if defined bag_OnPlayerViewInventoryOpt
-	forward bag_OnPlayerViewInventoryOpt(playerid);
-#endif
 
-public OnPlayerSelectInventoryOpt(playerid, option)
+hook OnPlayerSelectInvOpt(playerid, option)
 {
 	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
@@ -831,7 +676,7 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 			if(!IsValidItem(itemid))
 			{
 				DisplayPlayerInventory(playerid);
-				return 0;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			new required = AddItemToContainer(containerid, itemid, playerid);
@@ -843,44 +688,18 @@ public OnPlayerSelectInventoryOpt(playerid, option)
 		}
 	}
 
-	#if defined bag_PlayerSelectInventoryOption
-		return bag_PlayerSelectInventoryOption(playerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectInventoryOpt
-	#undef OnPlayerSelectInventoryOpt
-#else
-	#define _ALS_OnPlayerSelectInventoryOpt
-#endif
-#define OnPlayerSelectInventoryOpt bag_PlayerSelectInventoryOpt
-forward bag_PlayerSelectInventoryOpt(playerid, option);
 
-public OnPlayerViewContainerOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
-
-	#if defined bag_OnPlayerViewContainerOpt
-		return bag_OnPlayerViewContainerOpt(playerid, containerid);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnPlayerViewContainerOpt
-	#undef OnPlayerViewContainerOpt
-#else
-	#define _ALS_OnPlayerViewContainerOpt
-#endif
-#define OnPlayerViewContainerOpt bag_OnPlayerViewContainerOpt
-#if defined bag_OnPlayerViewContainerOpt
-	forward bag_OnPlayerViewContainerOpt(playerid, containerid);
-#endif
 
-public OnPlayerSelectContainerOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
 	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
@@ -898,7 +717,7 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 			if(!IsValidItem(itemid))
 			{
 				DisplayContainerInventory(playerid, containerid);
-				return 0;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			new required = AddItemToContainer(bagcontainerid, itemid, playerid);
@@ -910,23 +729,10 @@ public OnPlayerSelectContainerOpt(playerid, containerid, option)
 		}
 	}
 
-	#if defined bag_OnPlayerSelectContainerOpt
-		return bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerSelectContainerOpt
-	#undef OnPlayerSelectContainerOpt
-#else
-	#define _ALS_OnPlayerSelectContainerOpt
-#endif
-#define OnPlayerSelectContainerOpt bag_OnPlayerSelectContainerOpt
-#if defined bag_OnPlayerSelectContainerOpt
-	forward bag_OnPlayerSelectContainerOpt(playerid, containerid, option);
-#endif
 
-public OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(containerid, itemid, playerid)
 {
 	d:1:HANDLER("[OnItemAddToContainer] containerid %d itemid %d playerid %d", containerid, itemid, playerid);
 	if(GetContainerBagItem(containerid) != INVALID_ITEM_ID)
@@ -935,26 +741,12 @@ public OnItemAddToContainer(containerid, itemid, playerid)
 		if(IsItemTypeCarry(GetItemType(itemid)))
 		{
 			d:1:HANDLER("[OnItemAddToContainer] Item is carry, cancel adding");
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
-	#if defined bag_OnItemAddToContainer
-		return bag_OnItemAddToContainer(containerid, itemid, playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnItemAddToContainer
-	#undef OnItemAddToContainer
-#else
-	#define _ALS_OnItemAddToContainer
-#endif
- 
-#define OnItemAddToContainer bag_OnItemAddToContainer
-#if defined bag_OnItemAddToContainer
-	forward bag_OnItemAddToContainer(containerid, itemid, playerid);
-#endif
 
 
 /*==============================================================================
@@ -1011,24 +803,3 @@ stock GetBagItemContainerID(itemid)
 
 	return GetItemArrayDataAtCell(itemid, 1);
 }
-
-public OnPlayerWearBag(playerid, itemid)
-{
-	// Temp fix for circular dependency.
-
-	#if defined bag_OnPlayerWearBag
-		return bag_OnPlayerWearBag(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerWearBag
-	#undef OnPlayerWearBag
-#else
-	#define _ALS_OnPlayerWearBag
-#endif
- 
-#define OnPlayerWearBag bag_OnPlayerWearBag
-#if defined bag_OnPlayerWearBag
-	forward bag_OnPlayerWearBag(playerid, itemid);
-#endif

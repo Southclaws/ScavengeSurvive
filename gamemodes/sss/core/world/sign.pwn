@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define DIRECTORY_SIGNS		DIRECTORY_MAIN"Signs/"
@@ -47,7 +47,7 @@ Float:		sgn_rotZ,
 
 new
 			sgn_Data[MAX_SIGN][E_SIGN_DATA],
-Iterator:	sgn_Index<MAX_SIGN>;
+   Iterator:sgn_Index<MAX_SIGN>;
 
 static
 			sgn_CurrentSign[MAX_PLAYERS],
@@ -182,7 +182,7 @@ EditSign(playerid, signid)
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(!IsValidItem(GetPlayerItem(playerid)) && !IsValidItem(GetPlayerInteractingItem(playerid)))
 	{
@@ -201,21 +201,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined sgn_OnButtonPress
-		return sgn_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress sgn_OnButtonPress
-#if defined sgn_OnButtonPress
-	forward sgn_OnButtonPress(playerid, buttonid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {

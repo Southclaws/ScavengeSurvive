@@ -47,7 +47,7 @@ static
 	MapName[32] = "San Androcalypse",
 	ItemCounts[ITM_MAX_TYPES];
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 hook OnGameModeInit()

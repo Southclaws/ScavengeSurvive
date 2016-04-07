@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI_4\y_hooks>
+
+
 static HANDLER = -1;
 
 
@@ -337,7 +340,7 @@ timer _pot_PickUpDelay[400](playerid, itemid)
 	return;
 }
 
-public OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(itemid)
 {
 	if(GetItemType(itemid) == item_PlantPot)
 	{
@@ -365,114 +368,38 @@ public OnItemCreateInWorld(itemid)
 			}
 		}
 	}
-
-	#if defined pot_OnItemCreateInWorld
-		return pot_OnItemCreateInWorld(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreateInWorld
-	#undef OnItemCreateInWorld
-#else
-	#define _ALS_OnItemCreateInWorld
-#endif
- 
-#define OnItemCreateInWorld pot_OnItemCreateInWorld
-#if defined pot_OnItemCreateInWorld
-	forward pot_OnItemCreateInWorld(itemid);
-#endif
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(withitemid) == item_PlantPot)
 	{
 		if(_pot_UseItemWithItem(playerid, itemid, withitemid))
-			return 1;
+			return Y_HOOKS_BREAK_RETURN_0;
 	}
 
-	#if defined pot_OnPlayerUseItemWithItem
-		return pot_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
- 
-#define OnPlayerUseItemWithItem pot_OnPlayerUseItemWithItem
-#if defined pot_OnPlayerUseItemWithItem
-	forward pot_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif
 
-public OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(_pot_PickUp(playerid, itemid))
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 
-	#if defined pot_OnPlayerPickUpItem
-		return pot_OnPlayerPickUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickUpItem
-	#undef OnPlayerPickUpItem
-#else
-	#define _ALS_OnPlayerPickUpItem
-#endif
- 
-#define OnPlayerPickUpItem pot_OnPlayerPickUpItem
-#if defined pot_OnPlayerPickUpItem
-	forward pot_OnPlayerPickUpItem(playerid, itemid);
-#endif
 
-public OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_PlantPot)
 		_pot_UpdateModel(itemid);
-
-	#if defined pot_OnPlayerDroppedItem
-		return pot_OnPlayerDroppedItem(playerid, itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnPlayerDroppedItem
-	#undef OnPlayerDroppedItem
-#else
-	#define _ALS_OnPlayerDroppedItem
-#endif
- 
-#define OnPlayerDroppedItem pot_OnPlayerDroppedItem
-#if defined pot_OnPlayerDroppedItem
-	forward pot_OnPlayerDroppedItem(playerid, itemid);
-#endif
 
-public OnItemDestroy(itemid)
+hook OnItemDestroy(itemid)
 {
 	if(GetItemType(itemid) == item_PlantPot)
 		_pot_UpdateModel(itemid, false);
-
-	#if defined pot_OnItemDestroy
-		return pot_OnItemDestroy(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemDestroy
-	#undef OnItemDestroy
-#else
-	#define _ALS_OnItemDestroy
-#endif
- 
-#define OnItemDestroy pot_OnItemDestroy
-#if defined pot_OnItemDestroy
-	forward pot_OnItemDestroy(itemid);
-#endif
 
 ACMD:potg[4](playerid, params[])
 {

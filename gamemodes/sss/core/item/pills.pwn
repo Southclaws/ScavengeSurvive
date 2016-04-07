@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 #define PILL_TYPE_ANTIBIOTICS	(0)
@@ -39,7 +39,7 @@ hook OnPlayerConnect(playerid)
 	pill_CurrentlyTaking[playerid] = -1;
 }
 
-public OnItemCreate(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -48,25 +48,9 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, random(3));
 		}
 	}
-
-	#if defined pills_OnItemCreate
-		return pills_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate pills_OnItemCreate
-#if defined pills_OnItemCreate
-	forward pills_OnItemCreate(itemid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Pills)
 	{
@@ -78,45 +62,17 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 			default:						SetItemNameExtra(itemid, "Empty");
 		}
 	}
-
-	#if defined pil_OnItemNameRender
-		return pil_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender pil_OnItemNameRender
-#if defined pil_OnItemNameRender
-	forward pil_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Pills)
 	{
 		StartTakingPills(playerid);
 	}
 
-	#if defined pil_OnPlayerUseItem
-		return pil_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem pil_OnPlayerUseItem
-#if defined pil_OnPlayerUseItem
-	forward pil_OnPlayerUseItem(playerid, itemid);
-#endif
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
@@ -148,10 +104,10 @@ public OnHoldActionFinish(playerid)
 	if(pill_CurrentlyTaking[playerid] != -1)
 	{
 		if(!IsValidItem(pill_CurrentlyTaking[playerid]))
-			return 0;
+			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(GetPlayerItem(playerid) != pill_CurrentlyTaking[playerid])
-			return 0;
+			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		switch(GetItemExtraData(pill_CurrentlyTaking[playerid]))
 		{
@@ -185,26 +141,13 @@ public OnHoldActionFinish(playerid)
 
 		DestroyItem(pill_CurrentlyTaking[playerid]);
 
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined pil_OnHoldActionFinish
-		return pil_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish pil_OnHoldActionFinish
-#if defined pil_OnHoldActionFinish
-	forward pil_OnHoldActionFinish(playerid);
-#endif
 
-public OnPlayerDrugWearOff(playerid, drugtype)
+hook OnPlayerDrugWearOff(playerid, drugtype)
 {
 	if(drugtype == drug_Lsd)
 	{
@@ -212,19 +155,5 @@ public OnPlayerDrugWearOff(playerid, drugtype)
 		SetWeatherForPlayer(playerid);
 	}
 
-	#if defined pil_OnPlayerDrugWearOff
-		return pil_OnPlayerDrugWearOff(playerid, drugtype);
-	#else
-		return 1;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerDrugWearOff
-	#undef OnPlayerDrugWearOff
-#else
-	#define _ALS_OnPlayerDrugWearOff
-#endif
-
-#define OnPlayerDrugWearOff pil_OnPlayerDrugWearOff
-#if defined pil_OnPlayerDrugWearOff
-	forward pil_OnPlayerDrugWearOff(playerid, drugtype);
-#endif

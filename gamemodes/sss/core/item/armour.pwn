@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 
-public OnItemCreate(itemid)
+#include <YSI_4\y_hooks>
+
+
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -31,26 +34,10 @@ public OnItemCreate(itemid)
 			SetItemExtraData(itemid, random(100) + 1);
 		}
 	}
-
-	#if defined armour_OnItemCreate
-		return armour_OnItemCreate(itemid);
-	#else
-		return 1;
-	#endif
 }
-#if defined _ALS_OnItemCreate
-	#undef OnItemCreate
-#else
-	#define _ALS_OnItemCreate
-#endif
- 
-#define OnItemCreate armour_OnItemCreate
-#if defined armour_OnItemCreate
-	forward armour_OnItemCreate(itemid);
-#endif
 
 
-public OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Armour)
 	{
@@ -64,23 +51,11 @@ public OnPlayerUseItem(playerid, itemid)
 			}
 		}
 	}
-	#if defined armour_OnPlayerUseItem
-		return armour_OnPlayerUseItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
-}
-#if defined _ALS_OnPlayerUseItem
-	#undef OnPlayerUseItem
-#else
-	#define _ALS_OnPlayerUseItem
-#endif
-#define OnPlayerUseItem armour_OnPlayerUseItem
-#if defined armour_OnPlayerUseItem
-	forward armour_OnPlayerUseItem(playerid, itemid);
-#endif
 
-public OnItemNameRender(itemid, ItemType:itemtype)
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Armour)
 	{
@@ -92,25 +67,10 @@ public OnItemNameRender(itemid, ItemType:itemtype)
 		
 		SetItemNameExtra(itemid, str);
 	}
-
-	#if defined armour_OnItemNameRender
-		return armour_OnItemNameRender(itemid, itemtype);
-	#else
-		return 0;
-	#endif
 }
-#if defined _ALS_OnItemNameRender
-	#undef OnItemNameRender
-#else
-	#define _ALS_OnItemNameRender
-#endif
-#define OnItemNameRender armour_OnItemNameRender
-#if defined armour_OnItemNameRender
-	forward armour_OnItemNameRender(itemid, ItemType:itemtype);
-#endif
 
 
-public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
+hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
 	if(bodypart == 3)
 	{
@@ -129,22 +89,8 @@ public OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:
 		}
 	}
 
-	#if defined armour_OnPlayerShootPlayer
-		return armour_OnPlayerShootPlayer(playerid, targetid, bodypart, bleedrate, knockmult, bulletvelocity, distance);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerShootPlayer
-	#undef OnPlayerShootPlayer
-#else
-	#define _ALS_OnPlayerShootPlayer
-#endif
- 
-#define OnPlayerShootPlayer armour_OnPlayerShootPlayer
-#if defined armour_OnPlayerShootPlayer
-	forward armour_OnPlayerShootPlayer(playerid, targetid, Float:bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
-#endif
 
 
 new Float:ArmourSkinData[17][9]=

@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 enum e_item_object{ItemType:e_itmobj_type,e_itmobj_exdata}
@@ -36,9 +36,9 @@ PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	ClassButtonFemale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 
-forward OnPlayerCreateNewCharacter(playerid);
-forward OnPlayerSpawnExistingChar(playerid);
-forward OnPlayerSpawnNewCharacter(playerid);
+forward OnPlayerCreateChar(playerid);
+forward OnPlayerSpawnChar(playerid);
+forward OnPlayerSpawnNewChar(playerid);
 
 
 hook OnScriptInit()
@@ -178,7 +178,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 	logf("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
-	CallLocalFunction("OnPlayerSpawnExistingChar", "d", playerid);
+	CallLocalFunction("OnPlayerSpawnChar", "d", playerid);
 
 	return 1;
 }
@@ -206,10 +206,10 @@ PlayerCreateNewCharacter(playerid)
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
 
-	CallLocalFunction("OnPlayerCreateNewCharacter", "d", playerid);
+	CallLocalFunction("OnPlayerCreateChar", "d", playerid);
 }
 
-hook OnPlayerClickPlayerTextDraw(playerid, PlayerText:playertextid)
+hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
@@ -329,7 +329,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	SetPlayerBrightness(playerid, 255);
 
-	CallLocalFunction("OnPlayerSpawnNewCharacter", "d", playerid);
+	CallLocalFunction("OnPlayerSpawnNewChar", "d", playerid);
 
 	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 

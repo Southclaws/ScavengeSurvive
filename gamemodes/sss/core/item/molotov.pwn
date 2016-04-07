@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	if(GetItemType(itemid) == item_GasCan && GetItemType(withitemid) == item_MolotovEmpty)
 	{
@@ -49,18 +49,6 @@ public OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			ShowActionText(playerid, "Petrol Can Empty", 3000);
 		}
 	}
-	#if defined mol_OnPlayerUseItemWithItem
-		return mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-	#else
-		return 0;
-	#endif
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerUseItemWithItem
-	#undef OnPlayerUseItemWithItem
-#else
-	#define _ALS_OnPlayerUseItemWithItem
-#endif
-#define OnPlayerUseItemWithItem mol_OnPlayerUseItemWithItem
-#if defined mol_OnPlayerUseItemWithItem
-	forward mol_OnPlayerUseItemWithItem(playerid, itemid, withitemid);
-#endif

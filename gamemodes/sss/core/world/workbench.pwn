@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_4\y_hooks>
 
 
 /*==============================================================================
@@ -140,7 +140,7 @@ stock SetConstructionSetWorkbench(consset)
 ==============================================================================*/
 
 
-public OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, buttonid)
 {
 	if(wb_ButtonWorkbench[buttonid] != -1)
 	{
@@ -160,21 +160,8 @@ public OnButtonPress(playerid, buttonid)
 		}
 	}
 
-	#if defined wb_OnButtonPress
-		return wb_OnButtonPress(playerid, buttonid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnButtonPress
-	#undef OnButtonPress
-#else
-	#define _ALS_OnButtonPress
-#endif
-#define OnButtonPress wb_OnButtonPress
-#if defined wb_OnButtonPress
-	forward wb_OnButtonPress(playerid, buttonid);
-#endif
 
 _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 {
@@ -334,7 +321,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
@@ -345,69 +332,27 @@ public OnHoldActionFinish(playerid)
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
 	}
-
-	#if defined wb_OnHoldActionFinish
-		return wb_OnHoldActionFinish(playerid);
-	#else
-		return 0;
-	#endif
 }
 
-#if defined _ALS_OnHoldActionFinish
-	#undef OnHoldActionFinish
-#else
-	#define _ALS_OnHoldActionFinish
-#endif
-#define OnHoldActionFinish wb_OnHoldActionFinish
-#if defined wb_OnHoldActionFinish
-	forward wb_OnHoldActionFinish(playerid);
-#endif
-
-public OnPlayerPickedUpItem(playerid, itemid)
+hook OnPlayerPickedUpItem(playerid, itemid)
 {
 	if(wb_ItemWorkbench[itemid] != -1)
 		_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid);
 
-	#if defined wb_OnPlayerPickedUpItem
-		return wb_OnPlayerPickedUpItem(playerid, itemid);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerPickedUpItem
-	#undef OnPlayerPickedUpItem
-#else
-	#define _ALS_OnPlayerPickedUpItem
-#endif
-#define OnPlayerPickedUpItem wb_OnPlayerPickedUpItem
-#if defined wb_OnPlayerPickedUpItem
-	forward wb_OnPlayerPickedUpItem(playerid, itemid);
-#endif
 
-public OnPlayerConstruct(playerid, consset)
+hook OnPlayerConstruct(playerid, consset)
 {
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
 		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
 		ShowActionText(playerid, "You need a workbench to combine those", 5000);
-		return 1;
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	#if defined wb_OnPlayerConstruct
-		return wb_OnPlayerConstruct(playerid, consset);
-	#else
-		return 0;
-	#endif
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-#if defined _ALS_OnPlayerConstruct
-	#undef OnPlayerConstruct
-#else
-	#define _ALS_OnPlayerConstruct
-#endif
-#define OnPlayerConstruct wb_OnPlayerConstruct
-#if defined wb_OnPlayerConstruct
-	forward wb_OnPlayerConstruct(playerid, consset);
-#endif
 
 
 ACMD:wbtest[3](playerid, params[])
