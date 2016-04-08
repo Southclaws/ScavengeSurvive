@@ -48,7 +48,7 @@ hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 		}
 		else
 		{
-			ShowActionText(playerid, "Out of charge", 3000);
+			ShowActionText(playerid, ls(playerid, "STUNGUNOUTC"), 3000);
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
@@ -62,7 +62,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	{
 		SetItemExtraData(itemid, 1);
 		DestroyItem(withitemid);
-		ShowActionText(playerid, "Stun Gun Charged", 3000);
+		ShowActionText(playerid, ls(playerid, "STUNGUNCHAR"), 3000);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

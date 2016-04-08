@@ -41,12 +41,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			CreateItem(ItemType:18, x, y, z, .rz = rz, .zoffset = FLOOR_OFFSET);
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
-			ShowActionText(playerid, "Fuel poured in bottle", 3000);
+			ShowActionText(playerid, ls(playerid, "MOLOPOURBOT"), 3000);
 			SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 		}
 		else
 		{
-			ShowActionText(playerid, "Petrol Can Empty", 3000);
+			ShowActionText(playerid, ls(playerid, "PETROLEMPTY"), 3000);
 		}
 	}
 

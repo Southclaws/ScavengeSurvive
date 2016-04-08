@@ -44,7 +44,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-		ShowActionText(playerid, "Arming...");
+		ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
 
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
@@ -58,7 +58,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		SetItemExtraData(empm_ArmingItem[playerid], 1);
 		ClearAnimations(playerid);
-		ShowActionText(playerid, "Armed", 3000);
+		ShowActionText(playerid, ls(playerid, "ARMEDBOMB"), 3000);
 
 		empm_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}

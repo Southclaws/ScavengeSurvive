@@ -128,7 +128,7 @@ stock ApplyDrug(playerid, drugtype, customduration = -1)
 		drug_PlayerDrugData[playerid][drugtype][drug_totalDuration] = customduration == -1 ? drug_TypeData[drugtype][drug_duration] : customduration;
 	}
 
-	ShowActionText(playerid, sprintf("Taken %s", drug_TypeData[drugtype][drug_name]), 3000);
+	ShowActionText(playerid, sprintf(ls(playerid, "DRUGTAKEN"), drug_TypeData[drugtype][drug_name]), 3000);
 
 	return 1;
 }
@@ -177,7 +177,7 @@ ptask DrugsUpdate[1000](playerid)
 		{
 			if(GetTickCountDifference(GetTickCount(), drug_PlayerDrugData[playerid][i][drug_tick]) > drug_TypeData[i][drug_duration])
 			{
-				ShowActionText(playerid, sprintf("%s has worn off", drug_TypeData[i][drug_name]), 3000);
+				ShowActionText(playerid, sprintf(ls(playerid, "DRUGWORNOFF"), drug_TypeData[i][drug_name]), 3000);
 				RemoveDrug(playerid, i);
 				CallLocalFunction("OnPlayerDrugWearOff", "dd", playerid, i);
 			}

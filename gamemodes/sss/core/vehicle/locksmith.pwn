@@ -114,13 +114,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(IsVehicleLocked(vehicleid))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
-				ShowActionText(playerid, "Unlocked", 3000);
+				ShowActionText(playerid, ls(playerid, "UNLOCKED"), 3000);
 				logf("[VLOCK] %p unlocked vehicle %d", playerid, vehicleid);
 			}
 			else
 			{
 				SetVehicleExternalLock(vehicleid, 1);
-				ShowActionText(playerid, "Locked", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKED"), 3000);
 				logf("[VLOCK] %p locked vehicle %d", playerid, vehicleid);
 			}
 

@@ -136,7 +136,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 		}
 		else
 		{
-			ShowActionText(playerid, ls(playerid, "BBQPETROEMP"), 3000);
+			ShowActionText(playerid, ls(playerid, "PETROLEMPTY"), 3000);
 		}
 
 		return 1;

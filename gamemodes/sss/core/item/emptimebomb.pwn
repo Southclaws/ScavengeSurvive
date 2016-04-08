@@ -43,7 +43,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-		ShowActionText(playerid, "Arming...");
+		ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -55,7 +55,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		defer EmpTimeBombExplode(emptbm_ArmingItem[playerid]);
 		ClearAnimations(playerid);
-		ShowActionText(playerid, "Armed for 5 seconds", 3000);
+		ShowActionText(playerid, ls(playerid, "ARMEDBOMB5S"), 3000);
 
 		emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}

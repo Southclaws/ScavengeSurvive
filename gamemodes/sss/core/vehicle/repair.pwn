@@ -89,7 +89,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		{
 			CancelPlayerMovement(playerid);
 			//ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
-			ShowActionText(playerid, GetLanguageString(GetPlayerLanguage(playerid), "INTERACTWHE"), 5000);
+			ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
 		}
 		else if(itemtype == item_GasCan)
 		{

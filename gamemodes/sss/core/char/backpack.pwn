@@ -277,13 +277,13 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 
 	if(itemsize > freeslots)
 	{
-		ShowActionText(playerid, sprintf("Extra %d bag slots required", itemsize - freeslots), 3000, 150);
+		ShowActionText(playerid, sprintf(ls(playerid, "BAGEXTRASLO"), itemsize - freeslots), 3000, 150);
 		return -4;
 	}
 
 	if(playeraction)
 	{
-		ShowActionText(playerid, "Item added to bag", 3000, 150);
+		ShowActionText(playerid, ls(playerid, "BAGITMADDED"), 3000, 150);
 		ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
 		bag_PuttingInBag[playerid] = true;
 		defer bag_PutItemIn(playerid, itemid, containerid);
@@ -682,7 +682,7 @@ hook OnPlayerSelectInvOpt(playerid, option)
 			new required = AddItemToContainer(containerid, itemid, playerid);
 
 			if(required > 0)
-				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "BAGEXTRASLO"), required), 3000, 150);
 
 			DisplayPlayerInventory(playerid);
 		}
@@ -723,7 +723,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 			new required = AddItemToContainer(bagcontainerid, itemid, playerid);
 
 			if(required > 0)
-				ShowActionText(playerid, sprintf("Extra %d slots required", required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "BAGEXTRASLO"), required), 3000, 150);
 
 			DisplayContainerInventory(playerid, containerid);
 		}

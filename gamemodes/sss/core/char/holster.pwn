@@ -276,12 +276,12 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 	if(IsValidItem(currentitem))
 	{
 		GiveWorldItemToPlayer(playerid, currentitem);
-		ShowActionText(playerid, "Swapped", 3000, 70);
+		ShowActionText(playerid, ls(playerid, "HOLSTERSWAP"), 3000, 70);
 		CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, currentitem);
 	}
 	else
 	{
-		ShowActionText(playerid, "Holstered", 3000, 70);
+		ShowActionText(playerid, ls(playerid, "HOLSTERHOLS"), 3000, 70);
 	}
 
 	CallLocalFunction("OnPlayerHolsteredItem", "dd", playerid, itemid);
@@ -319,7 +319,7 @@ timer UnholsterItemDelay[time](playerid, time)
 	CreateItemInWorld(hols_Item[playerid]);
 	GiveWorldItemToPlayer(playerid, hols_Item[playerid]);
 
-	ShowActionText(playerid, "Equipped", 3000, 70);
+	ShowActionText(playerid, ls(playerid, "HOLSTEREQUI"), 3000, 70);
 	CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, hols_Item[playerid]);
 
 	RemovePlayerHolsterItem(playerid);

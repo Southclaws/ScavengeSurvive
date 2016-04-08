@@ -270,7 +270,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						}
 						else
 						{
-							ShowActionText(playerid, ls(playerid, "FIREPETROEM"));
+							ShowActionText(playerid, ls(playerid, "PETROLEMPTY"));
 						}
 					}
 				}

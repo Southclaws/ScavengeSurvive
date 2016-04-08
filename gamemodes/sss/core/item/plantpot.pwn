@@ -73,7 +73,7 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 			SetItemArrayDataAtCell(itemid, amount - 1, E_SEED_BAG_AMOUNT);
 			SetItemArrayData(withitemid, potdata, e_plant_pot_data);
-			ShowActionText(playerid, "Added seeds to plant pot", 5000);
+			ShowActionText(playerid, ls(playerid, "POTADDSEEDS"), 5000);
 			SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with water bottle to add water");
 		}
 	}
@@ -90,17 +90,17 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 			{
 				SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
 				SetFoodItemAmount(itemid, amount - 1);
-				ShowActionText(playerid, "Added 1 water to plant pot", 5000);
+				ShowActionText(playerid, ls(playerid, "POTADDWATER"), 5000);
 				SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
 			}
 			else
 			{
-				ShowActionText(playerid, "Bottle does not contain water", 5000);
+				ShowActionText(playerid, ls(playerid, "POTBOTNOWAT"), 5000);
 			}
 		}
 		else
 		{
-			ShowActionText(playerid, "Bottle is empty", 5000);
+			ShowActionText(playerid, ls(playerid, "POTBOTEMPTY"), 5000);
 		}
 	}
 
@@ -108,7 +108,7 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 	{
 		if(!potdata[E_PLANT_POT_ACTIVE])
 		{
-			ShowActionText(playerid, "Pot doesn't contain an active plant.", 3000);
+			ShowActionText(playerid, ls(playerid, "POTNOACPLNT"), 3000);
 			return 0;
 		}
 
@@ -116,13 +116,13 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 		if(!IsValidSeedType(seedtype))
 		{
-			ShowActionText(playerid, "Invalid seed type.", 3000);
+			ShowActionText(playerid, ls(playerid, "POTINVASEED"), 3000);
 			return 0;
 		}
 
 		if(_:(potdata[E_PLANT_POT_GROWTH] < GetSeedTypeGrowthTime(seedtype)))
 		{
-			ShowActionText(playerid, "The plant has not fully grown yet.", 3000);
+			ShowActionText(playerid, ls(playerid, "POTNOTGROWN"), 3000);
 			return 0;
 		}
 
@@ -146,7 +146,7 @@ _pot_UseItemWithItem(playerid, itemid, withitemid)
 
 		SetItemArrayData(withitemid, potdata, e_plant_pot_data);
 
-		ShowActionText(playerid, "Plant harvested", 3000);
+		ShowActionText(playerid, ls(playerid, "POTHARVESTE"), 3000);
 	}
 
 	return 1;
