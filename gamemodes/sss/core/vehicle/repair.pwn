@@ -56,7 +56,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, "You need another tool", 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
 			}
 		}	
 		else if(itemtype == item_Screwdriver)
@@ -69,7 +69,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, "You need another tool", 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
 			}
 		}	
 		else if(itemtype == item_Hammer)
@@ -82,13 +82,14 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, "You need another tool", 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
 			}
 		}
 		else if(itemtype == item_Wheel)
 		{
 			CancelPlayerMovement(playerid);
-			ShowActionText(playerid, "Interact with a wheel to repair it", 5000);
+			//ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
+			ShowActionText(playerid, GetLanguageString(GetPlayerLanguage(playerid), "INTERACTWHE"), 5000);
 		}
 		else if(itemtype == item_GasCan)
 		{
@@ -102,7 +103,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		}
 		else
 		{
-			ShowActionText(playerid, "You don't have the right tool", 3000, 100);
+			ShowActionText(playerid, ls(playerid, "NORIGHTTOOL"), 3000, 100);
 		}
 	}
 

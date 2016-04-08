@@ -383,7 +383,7 @@ StartBuildingDefence(playerid, itemid)
 	def_CurrentDefenceItem[playerid] = itemid;
 	StartHoldAction(playerid, 10000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	ShowActionText(playerid, sprintf("Building %s...", itemtypename));
+	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
 
 	return 1;
 }
@@ -438,7 +438,7 @@ hook OnButtonPress(playerid, buttonid)
 					def_CurrentDefenceEdit[playerid] = id;
 					StartHoldAction(playerid, 10000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
-					ShowActionText(playerid, sprintf("Removing %s", itemtypename));
+					ShowActionText(playerid, sprintf(ls(playerid, "DEFREMOVING"), itemtypename));
 
 					return Y_HOOKS_BREAK_RETURN_1;
 				}
@@ -458,7 +458,7 @@ hook OnButtonPress(playerid, buttonid)
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+					ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 
 					return Y_HOOKS_BREAK_RETURN_1;
 				}
@@ -472,7 +472,7 @@ hook OnButtonPress(playerid, buttonid)
 				{
 					if(!def_Data[id][def_motor])
 					{
-						ShowActionText(playerid, "You must install a motor before installing a keypad!");
+						ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
 						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
@@ -484,7 +484,7 @@ hook OnButtonPress(playerid, buttonid)
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+					ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 
 					return Y_HOOKS_BREAK_RETURN_1;
 				}
@@ -498,7 +498,7 @@ hook OnButtonPress(playerid, buttonid)
 				{
 					if(!def_Data[id][def_motor])
 					{
-						ShowActionText(playerid, "You must install a motor before installing a keypad!");
+						ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
 						return Y_HOOKS_BREAK_RETURN_1;
 					}
 
@@ -510,7 +510,7 @@ hook OnButtonPress(playerid, buttonid)
 					StartHoldAction(playerid, 6000);
 					ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-					ShowActionText(playerid, sprintf("Modifying %s", itemtypename));
+					ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 
 					return Y_HOOKS_BREAK_RETURN_1;
 				}
@@ -574,7 +574,7 @@ hook OnButtonPress(playerid, buttonid)
 				}
 				else
 				{
-					ShowActionText(playerid, "Moving defence, please stand back.", 3000);
+					ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
 					defer MoveDefence(id, playerid);
 				}
 
@@ -678,7 +678,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(GetItemType(itemid) == item_Motor)
 		{
-			ShowActionText(playerid, "Motor installed to defence");
+			ShowActionText(playerid, ls(playerid, "DEFINSTMOTO"));
 			def_Data[def_CurrentDefenceEdit[playerid]][def_motor] = true;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
 			DestroyItem(itemid);
@@ -688,7 +688,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(GetItemType(itemid) == item_Keypad)
 		{
-			ShowActionText(playerid, "Keypad installed to defence");
+			ShowActionText(playerid, ls(playerid, "DEFINSTKEYP"));
 			ShowSetPassDialog_Keypad(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 1;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
@@ -699,7 +699,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(GetItemType(itemid) == item_AdvancedKeypad)
 		{
-			ShowActionText(playerid, "Advanced Keypad installed to defence");
+			ShowActionText(playerid, ls(playerid, "DEFINSTADKP"));
 			ShowSetPassDialog_KeypadAdv(playerid);
 			def_Data[def_CurrentDefenceEdit[playerid]][def_keypad] = 2;
 			SaveDefenceItem(def_CurrentDefenceEdit[playerid]);
@@ -710,7 +710,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(GetItemType(itemid) == item_Crowbar)
 		{
-			ShowActionText(playerid, "Defence disassembled");
+			ShowActionText(playerid, ls(playerid, "DEFDISMANTL"));
 
 			CreateItem(def_TypeData[def_Data[def_CurrentDefenceEdit[playerid]][def_type]][def_itemtype],
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posX],
@@ -862,7 +862,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		{
 			if(code == match)
 			{
-				ShowActionText(playerid, "Moving defence, please stand back.", 3000);
+				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
 				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
 				def_CurrentDefenceOpen[playerid] = -1;
 			}
@@ -983,7 +983,7 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 
 			if(pass == def_Data[def_CurrentDefenceOpen[playerid]][def_pass] && strlen(inputtext) >= 4)
 			{
-				ShowActionText(playerid, "Moving defence, please stand back.", 3000);
+				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
 				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
 				def_CurrentDefenceOpen[playerid] = -1;
 			}

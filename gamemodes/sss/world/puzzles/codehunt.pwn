@@ -131,7 +131,7 @@ hook OnButtonPress(playerid, buttonid)
 		{
 			if(lck_Data[i][lck_locked])
 			{
-				ShowActionText(playerid, "This door is electronically locked controlled by a nearby keypad.");
+				ShowActionText(playerid, ls(playerid, "NEARBYKEYP"));
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}

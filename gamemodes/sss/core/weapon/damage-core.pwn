@@ -187,7 +187,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		logf("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", targetid, bleedrate, knockmult, bodypart, source);
 	}
 
-	ShowActionText(targetid, sprintf("Wounded~n~%s~n~Severity: %s", source, (knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)) < 50.0 ? ("Minor") : ("Severe"))), 5000);
+	ShowActionText(targetid, sprintf(ls(targetid, "WOUNDEDMSSG"), source, (knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)) < 50.0 ? ("Minor") : ("Severe"))), 5000);
 
 	return 1;
 }

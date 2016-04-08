@@ -132,11 +132,11 @@ _UseBbqHandler(playerid, itemid, withitemid)
 		{
 			SetItemArrayDataAtCell(withitemid, data[bbq_fuel] + 10, bbq_fuel);
 			SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
-			ShowActionText(playerid, "1L of petrol added~n~10 BBQ uses", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQADDPETRO"), 3000);
 		}
 		else
 		{
-			ShowActionText(playerid, "Petrol can empty", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQPETROEMP"), 3000);
 		}
 
 		return 1;
@@ -148,7 +148,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 		if(GetItemExtraData(itemid) != 0)
 		{
-			ShowActionText(playerid, "Food already cooked", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQALREADYC"), 3000);
 			return 1;
 		}
 
@@ -174,7 +174,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 			bbq_ItemBBQ[itemid] = withitemid;
 			SetItemArrayDataAtCell(withitemid, itemid, bbq_grillItem1);
 			bbq_PlaceFoodTick[playerid] = GetTickCount();
-			ShowActionText(playerid, "Food added", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQFOODADDE"), 3000);
 
 			return 1;
 		}
@@ -191,7 +191,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 			bbq_ItemBBQ[itemid] = withitemid;
 			SetItemArrayDataAtCell(withitemid, itemid, bbq_grillItem2);
 			bbq_PlaceFoodTick[playerid] = GetTickCount();
-			ShowActionText(playerid, "Food added", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQFOODADDE"), 3000);
 
 			return 1;
 		}
@@ -204,7 +204,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 		if(data[bbq_fuel] <= 0)
 		{
 			d:2:HANDLER("[_UseBbqHandler] Fuel empty");
-			ShowActionText(playerid, "No fuel", 3000);
+			ShowActionText(playerid, ls(playerid, "BBQFUELEMPT"), 3000);
 			return 1;
 		}
 
@@ -215,7 +215,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 		_LightBBQ(withitemid);
 
-		ShowActionText(playerid, "BBQ Lit~n~Cook time: 30 seconds", 3000);
+		ShowActionText(playerid, ls(playerid, "BBQLITSTART"), 3000);
 
 		return 1;
 	}

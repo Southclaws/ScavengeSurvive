@@ -258,19 +258,19 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				{
 					if(cmp_Data[fireid][cmp_fueled])
 					{
-						ShowActionText(playerid, "Campfire already fueled");
+						ShowActionText(playerid, ls(playerid, "FIREALREADY"));
 					}
 					else
 					{
 						if(GetItemExtraData(itemid) > 0)
 						{
-							ShowActionText(playerid, "1L of petrol added");
+							ShowActionText(playerid, ls(playerid, "FIREADDPETR"));
 							SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 							cmp_Data[fireid][cmp_fueled] = 1;
 						}
 						else
 						{
-							ShowActionText(playerid, "Fuel Can Empty");
+							ShowActionText(playerid, ls(playerid, "FIREPETROEM"));
 						}
 					}
 				}
@@ -336,7 +336,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 						cmp_Data[fireid][cmp_foodItem] = itemid;
 						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
-						ShowActionText(playerid, "Food added~n~1 minute cook time", 3000);
+						ShowActionText(playerid, ls(playerid, "FIRELITSTAR"), 3000);
 					}
 				}
 			}

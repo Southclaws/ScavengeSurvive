@@ -60,12 +60,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 			else
 			{
-				ShowActionText(playerid, "The body has decomposed too much to harvest", 3000);
+				ShowActionText(playerid, ls(playerid, "BODYDECOMPD"), 3000);
 			}
 		}
 		else
 		{
-			ShowActionText(playerid, "The body has already been harvested of the edible (tasty) parts", 3000);
+			ShowActionText(playerid, ls(playerid, "BODYHARVEST"), 3000);
 		}
 	}
 

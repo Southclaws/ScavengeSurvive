@@ -68,30 +68,30 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 
 hook OnGameModeInit()
 {
-	new Float:ls[8] = {
+	new Float:ls_points[8] = {
 		1357.18958, -1905.22717,
 		1314.53406, -1947.33569,
 		665.23090, -1285.64282,
 		719.66364, -1223.15979
 	};
 
-	new Float:lv[8] = {
+	new Float:lv_points[8] = {
 		2764.71533, 2126.56323,
 		2716.97314, 2081.59985,
 		2569.71045, 2213.24756,
 		2606.24243, 2252.94141	
 	};
 
-	new Float:sf[8] = {
+	new Float:sf_points[8] = {
 		-1608.19177, 166.27438,
 		-1578.24011, 135.71609,
 		-1675.87097, 38.37003,
 		-1707.14429, 66.96732
 	};
 
-	sf_LSTrainTunnel_Area = CreateDynamicPolygon(ls, -6.0, 0.0, 8);
-	sf_LVTrainTunnel_Area = CreateDynamicPolygon(lv, -6.0, 0.0, 8);
-	sf_SFDryDock_Area = CreateDynamicPolygon(sf, -14, 0.0, 8);
+	sf_LSTrainTunnel_Area = CreateDynamicPolygon(ls_points, -6.0, 0.0, 8);
+	sf_LVTrainTunnel_Area = CreateDynamicPolygon(lv_points, -6.0, 0.0, 8);
+	sf_SFDryDock_Area = CreateDynamicPolygon(sf_points, -14, 0.0, 8);
 
 }
 /*==============================================================================

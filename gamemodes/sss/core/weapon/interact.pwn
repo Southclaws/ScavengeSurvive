@@ -87,7 +87,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, "Wrong calibre for weapon", 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
 				return 1;
 			}
 
@@ -97,7 +97,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != GetItemWeaponItemAmmoItem(ammoitemid))
 				{
-					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
 					return 1;
 				}
 			}
@@ -119,7 +119,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, "Wrong calibre for weapon", 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
 				return 1;
 			}
 
@@ -129,7 +129,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != ammoitemtype)
 				{
-					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
 					return 1;
 				}
 			}
@@ -156,7 +156,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, "Wrong calibre in weapon", 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
 				return 1;
 			}
 
@@ -166,7 +166,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != helditemtype)
 				{
-					ShowActionText(playerid, "A different ammunition type is already loaded in this weapon", 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
 					return 1;
 				}
 			}
@@ -197,7 +197,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(ammoitemtype != helditemtype)
 			{
-				ShowActionText(playerid, "Ammo types can't be mixed in tins", 5000);
+				ShowActionText(playerid, ls(playerid, "AMMIXINTINS"), 5000);
 				return 1;
 			}
 
@@ -231,7 +231,7 @@ timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
 		SetItemWeaponItemMagAmmo(srcitem, 0);
 		SetItemWeaponItemReserve(srcitem, remainder);
 
-		ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to weapon", (reserveammo + magammo) - remainder), 3000);
+		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSFERW"), (reserveammo + magammo) - remainder), 3000);
 	}
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
@@ -254,7 +254,7 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 
 		SetItemExtraData(srcitem, remainder);
 
-		ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to weapon", ammo - remainder), 3000);
+		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW"), ammo - remainder), 3000);
 	}
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
@@ -271,7 +271,7 @@ timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 	SetItemWeaponItemMagAmmo(srcitem, 0);
 	SetItemWeaponItemReserve(srcitem, 0);
 
-	ShowActionText(playerid, sprintf("Transferred %d rounds from weapon to ammo tin", amount), 3000);
+	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOT"), amount), 3000);
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
 }
@@ -286,7 +286,7 @@ timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 	SetItemExtraData(tgtitem, existing + amount);
 	SetItemExtraData(srcitem, 0);
 
-	ShowActionText(playerid, sprintf("Transferred %d rounds from ammo tin to ammo tin", amount), 3000);
+	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOT"), amount), 3000);
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
 }

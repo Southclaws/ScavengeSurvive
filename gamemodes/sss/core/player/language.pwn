@@ -26,8 +26,7 @@ static
 	lang_PlayerLanguage[MAX_PLAYERS];
 
 
-#define L:%0[%1] GetLanguageString(GetPlayerLanguage(%0), %1)
-
+#define ls(%0,%1) GetLanguageString(GetPlayerLanguage(%0), %1)
 
 stock GetPlayerLanguage(playerid)
 {
@@ -58,7 +57,7 @@ ShowLanguageMenu(playerid)
 		if(response)
 		{
 			lang_PlayerLanguage[playerid] = listitem;
-			Msg(playerid, YELLOW, L:playerid["LANGCHANGE"]);
+			Msg(playerid, YELLOW, ls(playerid, "LANGCHANGE"));
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");

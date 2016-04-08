@@ -147,7 +147,7 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 
 	if(sm_Data[scrapmachineid][sm_cooking])
 	{
-		ShowActionText(playerid, sprintf("The machine is currently cooking~n~%s left", MsToString(sm_Data[scrapmachineid][sm_cookTime] - GetTickCountDifference(GetTickCount(), sm_Data[scrapmachineid][sm_startTime]), "%m minutes %s seconds")), 8000);
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(sm_Data[scrapmachineid][sm_cookTime] - GetTickCountDifference(GetTickCount(), sm_Data[scrapmachineid][sm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
@@ -175,16 +175,16 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 			new ret = _sm_StartCooking(scrapmachineid);
 
 			if(ret == 0)
-				ShowActionText(playerid, "There are no items inside.", 5000);
+				ShowActionText(playerid, ls(playerid, "MACHNOITEMS"), 5000);
 
 			else if(ret == -1)
-				ShowActionText(playerid, "The server is restarting soon, not enough time to cook.~n~Try putting less items inside to reduce cook time.", 6000);
+				ShowActionText(playerid, ls(playerid, "MACHRESTART"), 6000);
 
 			else if(ret == -2)
-				ShowActionText(playerid, sprintf("There is not enough fuel. Machine requires %.1f per item.", SCRAP_MACHINE_FUEL_USAGE), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL"), SCRAP_MACHINE_FUEL_USAGE), 6000);
 
 			else
-				ShowActionText(playerid, sprintf("Cook time: %s", MsToString(ret, "%m minutes %s seconds")), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM"), MsToString(ret, "%m minutes %s seconds")), 6000);
 
 			sm_CurrentScrapMachine[playerid] = -1;
 		}
@@ -223,7 +223,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] + 1.0);
 			SetItemArrayDataAtCell(itemid, fuel - 1, 0);
 			sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] += 1.0;
-			ShowActionText(playerid, "Refuelling...");
+			ShowActionText(playerid, ls(playerid, "REFUELLING"));
 		}
 	}
 

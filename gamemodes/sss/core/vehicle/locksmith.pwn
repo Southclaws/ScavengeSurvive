@@ -50,13 +50,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		{
 			if(!IsVehicleTypeLockable(vehicletype))
 			{
-				ShowActionText(playerid, "You cannot lock a vehicle with no doors", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKNODOORS"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
-				ShowActionText(playerid, "That vehicle has already been locked", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKALREADY"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
@@ -68,13 +68,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		{
 			if(GetItemArrayDataAtCell(itemid, 0) == 0)
 			{
-				ShowActionText(playerid, "That lock and chain has no key. Combine it with a Locksmith Kit.", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKCHNOKEY"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
-				ShowActionText(playerid, "That vehicle has already been locked", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKALREADY"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
@@ -90,19 +90,19 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			if(keyid == 0)
 			{
-				ShowActionText(playerid, "That key hasn't been cut yet.", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKKEYNCUT"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(vehiclekey == 0)
 			{
-				ShowActionText(playerid, "That vehicle lock hasn't been set up for a key yet. Use a Locksmith Kit to set it up.", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKVNOLOCK"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(keyid != vehiclekey)
 			{
-				ShowActionText(playerid, "That key doesn't fit this vehicle", 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKKEYNFIT"), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 

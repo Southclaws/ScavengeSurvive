@@ -246,7 +246,7 @@ stock UpdatePlayerWeaponItem(playerid)
 	{
 		ResetPlayerWeapons(playerid);
 		_UpdateWeaponUI(playerid);
-		ShowActionText(playerid, "There is no ammo loaded in this weapon", 3000);
+		ShowActionText(playerid, ls(playerid, "WEAPNOAMMOL"), 3000);
 		return 0;
 	}
 
@@ -792,7 +792,7 @@ timer _UnloadWeapon[300](playerid, itemid)
 	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
-	ShowActionText(playerid, "Unloaded weapon", 3000);
+	ShowActionText(playerid, ls(playerid, "WEAPAUNLOAD"), 3000);
 
 	return;
 }
