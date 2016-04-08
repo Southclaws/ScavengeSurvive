@@ -72,6 +72,8 @@ timer UnMuteDelay[time](playerid, time)
 
 hook OnPlayerDisconnected(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnected] in /gamemodes/sss/core/admin/mute.pwn");
+
 	if(gServerRestarting)
 		return 1;
 

@@ -27,6 +27,8 @@
 
 hook OnItemCreateInWorld(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");
+
 	if(GetItemType(itemid) == item_Campfire)
 	{
 		new
@@ -43,6 +45,8 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnPlayerPickedUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/item/campfire.pwn");
+
 	if(GetItemType(itemid) == item_Campfire)
 	{
 		DestroyCampfire(GetItemExtraData(itemid));
@@ -54,6 +58,8 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 
 hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerGivenItem] in /gamemodes/sss/core/item/campfire.pwn");
+
 	if(GetItemType(itemid) == item_Campfire)
 	{
 		defer AttachWoodLogs(targetid);

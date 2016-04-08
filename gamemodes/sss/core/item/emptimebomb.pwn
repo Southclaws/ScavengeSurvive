@@ -31,11 +31,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/emptimebomb.pwn");
+
 	emptbm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/emptimebomb.pwn");
+
 	if(GetItemType(itemid) == item_EmpTimebomb)
 	{
 		PlayerDropItem(playerid);
@@ -51,6 +55,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/emptimebomb.pwn");
+
 	if(IsValidItem(emptbm_ArmingItem[playerid]))
 	{
 		defer EmpTimeBombExplode(emptbm_ArmingItem[playerid]);
@@ -63,6 +69,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/emptimebomb.pwn");
+
 	if(RELEASED(16) && IsValidItem(emptbm_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);

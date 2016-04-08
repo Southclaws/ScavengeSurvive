@@ -52,11 +52,15 @@ ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/masks.pwn");
+
 	mask_CurrentMask[playerid] = -1;
 }
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/masks.pwn");
+
 	foreach(new i : mask_Index)
 	{
 		if(GetItemType(itemid) == mask_ItemType[i])
@@ -152,6 +156,8 @@ TogglePlayerMask(playerid, bool:toggle)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/char/masks.pwn");
+
 	if(mask_CurrentMask[playerid] == -1)
 	{
 		foreach(new i : mask_Index)

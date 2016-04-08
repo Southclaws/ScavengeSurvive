@@ -67,6 +67,8 @@ Float:	dfm_MaxZ			[MAX_PLAYERS],
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/admin/detfield-cmds.pwn");
+
 	for(new i; i < MAX_DETFIELD_PAGESIZE; i++)
 		dfm_FieldList[playerid][i] = -1;
 
@@ -738,6 +740,8 @@ ShowDetfieldNameFields(playerid, name[])
 
 hook OnPlayerDialogPage(playerid, direction)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDialogPage] in /gamemodes/sss/core/admin/detfield-cmds.pwn");
+
 	if(dfm_CurrentMenu[playerid] == DFM_MENU_DFLIST)
 	{
 		if(direction == 0)
@@ -775,6 +779,8 @@ hook OnPlayerDialogPage(playerid, direction)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/admin/detfield-cmds.pwn");
+
 	if(dfm_Editing[playerid])
 	{
 		if(newkeys == 128)

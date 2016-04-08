@@ -30,12 +30,16 @@ static scr_TargetItem[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/screwdriver.pwn");
+
 	scr_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/screwdriver.pwn");
+
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
 		new ItemType:itemtype = GetItemType(withitemid);
@@ -63,6 +67,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/screwdriver.pwn");
+
 	if(oldkeys & 16)
 	{
 		if(IsValidItem(scr_TargetItem[playerid]))
@@ -74,6 +80,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/screwdriver.pwn");
+
 	if(IsValidItem(scr_TargetItem[playerid]))
 	{
 		ClearAnimations(playerid);

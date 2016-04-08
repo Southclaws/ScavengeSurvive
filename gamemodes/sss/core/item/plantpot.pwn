@@ -278,6 +278,8 @@ _pot_UpdateModel(itemid, bool:toggle = true)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(oldkeys & 16)
 	{
 		if(GetTickCountDifference(GetTickCount(), pot_PickUpTick[playerid]) < 200)
@@ -342,6 +344,8 @@ timer _pot_PickUpDelay[400](playerid, itemid)
 
 hook OnItemCreateInWorld(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(GetItemType(itemid) == item_PlantPot)
 	{
 		d:1:HANDLER("[OnItemCreateInWorld] PlantPot itemid %d", itemid);
@@ -372,6 +376,8 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(GetItemType(withitemid) == item_PlantPot)
 	{
 		if(_pot_UseItemWithItem(playerid, itemid, withitemid))
@@ -383,6 +389,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(_pot_PickUp(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -391,12 +399,16 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(GetItemType(itemid) == item_PlantPot)
 		_pot_UpdateModel(itemid);
 }
 
 hook OnItemDestroy(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/item/plantpot.pwn");
+
 	if(GetItemType(itemid) == item_PlantPot)
 		_pot_UpdateModel(itemid, false);
 }

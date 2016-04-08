@@ -44,12 +44,16 @@ forward OnPlayerSendChat(playerid, text[], Float:frequency);
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/chat.pwn");
+
 	chat_LastMessageTick[playerid] = 0;
 	return 1;
 }
 
 hook OnPlayerText(playerid, text[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerText] in /gamemodes/sss/core/player/chat.pwn");
+
 	if(IsPlayerMuted(playerid))
 	{
 		if(GetPlayerMuteRemainder(playerid) == -1)

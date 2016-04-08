@@ -24,6 +24,8 @@
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/gascan.pwn");
+
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_GasCan)
@@ -35,6 +37,8 @@ hook OnItemCreate(itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/gascan.pwn");
+
 	if(itemtype == item_GasCan)
 	{
 		new str[4];

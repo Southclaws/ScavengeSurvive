@@ -268,6 +268,8 @@ ptask ToolTipUpdate[1000](playerid)
 
 hook OnPlayerOpenInventory(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerOpenInventory] in /gamemodes/sss/core/ui/key-actions.pwn");
+
 	HidePlayerToolTip(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -275,6 +277,8 @@ hook OnPlayerOpenInventory(playerid)
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/ui/key-actions.pwn");
+
 	HidePlayerToolTip(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

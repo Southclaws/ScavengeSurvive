@@ -48,6 +48,8 @@ forward OnLookupResponse(sessionid, response, data[]);
 
 hook OnPlayerLogin(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLogin] in /gamemodes/sss/core/player/country.pwn");
+
 	_cntr_HandleLogin(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -55,6 +57,8 @@ hook OnPlayerLogin(playerid)
 
 hook OnPlayerRegister(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerRegister] in /gamemodes/sss/core/player/country.pwn");
+
 	_cntr_HandleLogin(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

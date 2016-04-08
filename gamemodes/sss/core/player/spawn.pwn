@@ -64,6 +64,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
+
 //	defer LoadClassUI(playerid);
 //}
 //
@@ -211,6 +213,8 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/spawn.pwn");
+
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
 		if(playertextid == ClassButtonMale[playerid])

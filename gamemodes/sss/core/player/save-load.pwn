@@ -89,6 +89,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/save-load.pwn");
+
 	saveload_Loaded[playerid] = false;
 }
 
@@ -720,6 +722,8 @@ FV10_LoadPlayerInventory(playerid)
 
 hook OnScriptExit()
 {
+	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
+
 	print("\n[OnScriptExit] Shutting down 'SaveLoad'...");
 
 	new

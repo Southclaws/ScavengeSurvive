@@ -66,6 +66,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/ipv4-log.pwn");
+
 	new
 		name[MAX_PLAYER_NAME],
 		ipstring[16],

@@ -31,12 +31,16 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/tentpack.pwn");
+
 	tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
 }
 
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
+
 	if(GetItemType(itemid) == item_Hammer && GetItemType(withitemid) == item_TentPack)
 	{
 		StartBuildingTent(playerid, withitemid);
@@ -47,6 +51,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/tentpack.pwn");
+
 	if(oldkeys & 16)
 	{
 		StopBuildingTent(playerid);
@@ -78,6 +84,8 @@ StopBuildingTent(playerid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/tentpack.pwn");
+
 	if(tnt_CurrentTentItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)

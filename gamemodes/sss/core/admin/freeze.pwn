@@ -33,6 +33,8 @@ Timer:	frz_CheckTimer[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/admin/freeze.pwn");
+
 	frz_Frozen[playerid] = false;
 
 	return 1;
@@ -40,6 +42,8 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/admin/freeze.pwn");
+
 	stop frz_DelayTimer[playerid];
 
 	return 1;

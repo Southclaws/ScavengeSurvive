@@ -29,6 +29,8 @@ new tntp_SyncTick[MAX_PLAYERS];
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tntphonebomb.pwn");
+
 	if(GetItemType(itemid) == item_MobilePhone && GetItemType(withitemid) == item_TntPhoneBomb)
 	{
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
@@ -43,6 +45,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/tntphonebomb.pwn");
+
 	if(GetItemType(itemid) == item_MobilePhone)
 	{
 		new bombitem = GetItemExtraData(itemid);
@@ -71,6 +75,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/tntphonebomb.pwn");
+
 	if(GetItemType(itemid) == item_MobilePhone)
 	{
 		SetItemExtraData(itemid, INVALID_ITEM_ID);

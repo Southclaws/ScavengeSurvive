@@ -50,6 +50,8 @@ Timer:		fuel_RefuelTimer[MAX_PLAYERS],
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/fuel.pwn");
+
 	fuel_CurrentlyRefuelling[playerid] = -1;
 }
 
@@ -114,6 +116,8 @@ stock IsPlayerAtAnyFuelOutlet(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/fuel.pwn");
+
 	if(newkeys & 16)
 	{
 		new itemid = GetPlayerItem(playerid);

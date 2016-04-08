@@ -158,6 +158,8 @@ hook OnScriptInit()
 
 hook OnObjectMoved(objectid)
 {
+	d:3:GLOBAL_DEBUG("[OnObjectMoved] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+
 	new Float:x, Float:y, Float:z;
 	
 	// Check if the object that moved was one of the elevator floor doors
@@ -197,12 +199,16 @@ hook OnObjectMoved(objectid)
 /* TODO: Do buttons instead of reinventing-wheel-button-detection
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 */
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+
 	if (!IsPlayerInAnyVehicle(playerid) && (newkeys & KEY_YES))
 	{
 		new Float:pos[3];

@@ -54,6 +54,8 @@ hook OnGameModeInit()
 
 hook OnPlayerLoadAccount(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoadAccount] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	d:1:HANDLER("[OnPlayerLoadAccount]");
 
 	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, "~n~Want to try the game first?~n~~n~~y~Click here to play the tutorial!~n~~n~");
@@ -73,16 +75,22 @@ hook OnPlayerLoadAccount(playerid)
 
 hook OnPlayerSpawnChar(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSpawnChar] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
 }
 
 hook OnPlayerSpawnNewChar(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSpawnNewChar] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
 }
 
 hook OnPlayerCreateChar(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCreateChar] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	d:1:HANDLER("[OnPlayerCreateChar]");
 
 	PlayerTextDrawShow(playerid, ClassButtonTutorial[playerid]);
@@ -90,6 +98,8 @@ hook OnPlayerCreateChar(playerid)
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	d:1:HANDLER("[OnPlayerClickPlayerTD]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
@@ -218,11 +228,15 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 hook OnPlayerDeath(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDeath] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	ExitTutorial(playerid);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	ExitTutorial(playerid);
 }
 
@@ -268,6 +282,8 @@ ToggleTutorialUI(playerid, toggle)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		// ShowHelpTip(playerid, "This is an item. There are many different items in the game with different purposes. Some are common and some are rare.");
@@ -279,6 +295,8 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerWearBag(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerWearBag] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
@@ -290,6 +308,8 @@ hook OnPlayerWearBag(playerid, itemid)
 
 hook OnPlayerOpenInventory(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerOpenInventory] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ToggleTutorialUI(playerid, false);
@@ -303,6 +323,8 @@ hook OnPlayerOpenInventory(playerid)
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ToggleTutorialUI(playerid, false);
@@ -318,6 +340,8 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerCloseInventory(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCloseInventory] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 		ToggleTutorialUI(playerid, true);
 
@@ -326,6 +350,8 @@ hook OnPlayerCloseInventory(playerid)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCloseContainer] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 		ToggleTutorialUI(playerid, true);
 
@@ -334,6 +360,8 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnPlayerViewCntOpt(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerViewCntOpt] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
@@ -347,6 +375,8 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "When you drop an item, other players can pick it up. Most item types ");
@@ -357,6 +387,8 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 hook OnItemAddToInventory(playerid, itemid, slot)
 {
+	d:3:GLOBAL_DEBUG("[OnItemAddToInventory] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "You added an item to your inventory. If your inventory is full, the item will be put in your bag.");
@@ -367,6 +399,8 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 
 hook OnPlayerViewInvOpt(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerViewInvOpt] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "These are your options for the selected item. Equip puts it in your hand. Combine can be selected on multiple items to attempt to combine them.");
@@ -377,6 +411,8 @@ hook OnPlayerViewInvOpt(playerid)
 
 hook OnItemAddToContainer(containerid, itemid, playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemAddToContainer] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(IsPlayerConnected(playerid))
 	{
 		if(PlayerInTutorial[playerid])
@@ -397,6 +433,8 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 
 hook OnPlayerHolsteredItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerHolsteredItem] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "You have holstered an item. Holstered items can be quickly accessed by pressing "KEYTEXT_PUT_AWAY" again.");
@@ -407,6 +445,8 @@ hook OnPlayerHolsteredItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/player/tutorial.pwn");
+
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, "You tried to use an item with another item because you're holding one already. This can be used sometimes, for example use a lighter with a campfire to light it or use a weapon with ammo to load it.");

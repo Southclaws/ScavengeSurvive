@@ -184,6 +184,8 @@ EditSign(playerid, signid)
 
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/sign.pwn");
+
 	if(!IsValidItem(GetPlayerItem(playerid)) && !IsValidItem(GetPlayerInteractingItem(playerid)))
 	{
 		foreach(new i : sgn_Index)
@@ -206,6 +208,8 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/sign.pwn");
+
 	if(oldkeys & 16)
 	{
 		if(GetTickCountDifference(GetTickCount(), sgn_PressSignTick[playerid]) < 250)
@@ -293,6 +297,8 @@ hook OnGameModeInit()
 
 hook OnScriptExit()
 {
+	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/world/sign.pwn");
+
 	print("\n[OnScriptExit] Shutting down 'Sign'...");
 
 	foreach(new i : sgn_Index)

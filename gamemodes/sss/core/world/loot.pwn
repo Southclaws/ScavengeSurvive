@@ -375,6 +375,8 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 
 hook OnItemDestroy(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/loot.pwn");
+
 	loot_ItemLootIndex[itemid] = -1;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

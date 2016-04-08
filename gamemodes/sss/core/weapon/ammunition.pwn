@@ -104,6 +104,8 @@ stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/weapon/ammunition.pwn");
+
 	new ammotype = ammo_ItemTypeAmmoType[itemtype];
 
 	if(ammotype == -1)
@@ -125,6 +127,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/weapon/ammunition.pwn");
+
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		new ammotype = GetItemTypeAmmoType(GetItemType(itemid));

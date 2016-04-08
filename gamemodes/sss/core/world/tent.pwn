@@ -115,6 +115,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/tent.pwn");
+
 	tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
 }
 
@@ -325,6 +327,8 @@ RemoveItemFromTentIndex(itemid)
 /*
 hook OnItemRemoveFromWorld(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemRemoveFromWorld] in /gamemodes/sss/core/world/tent.pwn");
+
 	RemoveItemFromTentIndex(itemid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -333,11 +337,15 @@ hook OnItemRemoveFromWorld(itemid)
 #define cc.r );
 hook OnItemDestroy(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/tent.pwn");
+
 	RemoveItemFromTentIndex(itemid);
 }
 
 hook OnPlayerPickedUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/tent.pwn");
+
 	new ret = RemoveItemFromTentIndex(itemid);
 
 	if(ret != INVALID_TENT_ID)
@@ -348,6 +356,8 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/world/tent.pwn");
+
 	new
 		list[BTN_MAX_INRANGE],
 		count;
@@ -378,6 +388,8 @@ _DropItemInTent(playerid, itemid, tentid)
 
 hook OnItemArrayDataChanged(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemArrayDataChanged] in /gamemodes/sss/core/world/tent.pwn");
+
 	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
 	{
 		SaveTent(tnt_ItemTent[itemid], 1);
@@ -414,6 +426,8 @@ UpdateTentDebugLabel(tentid)
 
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/tent.pwn");
+
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
 		foreach(new i : tnt_Index)
@@ -435,6 +449,8 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/tent.pwn");
+
 	if(oldkeys & 16)
 	{
 		if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
@@ -451,6 +467,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/tent.pwn");
+
 	if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)

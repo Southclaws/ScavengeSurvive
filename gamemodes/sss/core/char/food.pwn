@@ -138,6 +138,8 @@ ptask FoodUpdate[1000](playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/food.pwn");
+
 	HungerBarBackground[playerid]	=CreatePlayerTextDraw(playerid, 612.000000, 101.000000, "_");
 	PlayerTextDrawBackgroundColor	(playerid, HungerBarBackground[playerid], 255);
 	PlayerTextDrawFont				(playerid, HungerBarBackground[playerid], 1);

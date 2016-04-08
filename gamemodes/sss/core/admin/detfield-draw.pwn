@@ -30,6 +30,8 @@ static det_LineIds[MAX_DETFIELD][8];
 
 hook OnFilterScriptInit()
 {
+	d:3:GLOBAL_DEBUG("[OnFilterScriptInit] in /gamemodes/sss/core/admin/detfield-draw.pwn");
+
 	for(new i; i < MAX_DETFIELD; i++)
 	{
 		det_LineIds[i] = {

@@ -43,6 +43,8 @@ forward OnPlayerKnockOut(playerid);
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/knockout.pwn");
+
 	KnockoutBar = CreatePlayerProgressBar(playerid, 291.0, 315.0, 57.50, 5.19, RED, 100.0);
 	knockout_KnockedOut[playerid] = false;
 	knockout_InVehicleID[playerid] = INVALID_VEHICLE_ID;
@@ -53,6 +55,8 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/char/knockout.pwn");
+
 	if(gServerRestarting)
 		return 1;
 
@@ -68,6 +72,8 @@ hook OnPlayerDisconnect(playerid)
 
 hook OnPlayerDeath(playerid, killerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDeath] in /gamemodes/sss/core/char/knockout.pwn");
+
 	WakeUpPlayer(playerid);
 }
 
@@ -225,6 +231,8 @@ _PlayKnockOutAnimation(playerid)
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehicle] in /gamemodes/sss/core/char/knockout.pwn");
+
 	if(knockout_KnockedOut[playerid])
 	{
 		_vehicleCheck(playerid);
@@ -233,6 +241,8 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 hook OnPlayerExitVehicle(playerid, vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerExitVehicle] in /gamemodes/sss/core/char/knockout.pwn");
+
 	if(knockout_KnockedOut[playerid])
 	{
 		_vehicleCheck(playerid);
@@ -241,6 +251,8 @@ hook OnPlayerExitVehicle(playerid, vehicleid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/knockout.pwn");
+
 	if(knockout_KnockedOut[playerid])
 	{
 		_vehicleCheck(playerid);

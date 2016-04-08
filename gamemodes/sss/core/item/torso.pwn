@@ -32,11 +32,15 @@ Timer:	gut_PickUpTimer[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/torso.pwn");
+
 	gut_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnItemCreateInWorld(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/torso.pwn");
+
 	if(GetItemType(itemid) == item_Torso)
 	{
 		if(GetItemExtraData(itemid) != -1)
@@ -48,6 +52,8 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/torso.pwn");
+
 	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
 		if(GetItemArrayDataAtCell(withitemid, 0))
@@ -74,6 +80,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/torso.pwn");
+
 	if(GetItemType(itemid) == item_Torso)
 	{
 		if(GetItemExtraData(itemid) != -1)
@@ -89,6 +97,8 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/torso.pwn");
+
 	if(oldkeys == 16)
 	{
 		if(IsValidItem(gut_TargetItem[playerid]))
@@ -119,6 +129,8 @@ timer PickUpTorso[250](playerid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/torso.pwn");
+
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{
 		if(GetItemExtraData(gut_TargetItem[playerid]) == -1)

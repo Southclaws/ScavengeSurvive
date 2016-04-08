@@ -72,6 +72,8 @@ hook OnScriptInit()
 
 hook OnPlayerDisconnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/char/drugs.pwn");
+
 	defer _drugs_Reset(playerid);
 }
 
@@ -82,6 +84,8 @@ timer _drugs_Reset[100](playerid)
 
 hook OnPlayerDeath(playerid, killerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDeath] in /gamemodes/sss/core/char/drugs.pwn");
+
 	RemoveAllDrugs(playerid);
 }
 
@@ -298,6 +302,8 @@ stock SetPlayerDrugsFromArray(playerid, input[])
 
 hook OnPlayerSave(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/char/drugs.pwn");
+
 	d:1:HANDLER("[OnPlayerSave] playerid:%d", playerid);
 
 	new
@@ -311,6 +317,8 @@ hook OnPlayerSave(playerid, filename[])
 
 hook OnPlayerLoad(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/char/drugs.pwn");
+
 	d:1:HANDLER("[OnPlayerLoad] playerid:%d", playerid);
 
 	new data[1 + (MAX_DRUG_TYPE * 2)];

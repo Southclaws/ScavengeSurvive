@@ -188,6 +188,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/accounts.pwn");
+
 	acc_LoginAttempts[playerid] = 0;
 	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = false;

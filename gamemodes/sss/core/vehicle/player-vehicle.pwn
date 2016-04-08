@@ -92,6 +92,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	new name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -117,6 +119,8 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 	{
 		pveh_OwnerPlayer[pveh_PlayerVehicle[playerid]] = INVALID_PLAYER_ID;
@@ -612,6 +616,8 @@ _SaveVehicle(vehicleid, active = true)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		if(pveh_SaveAnyVehicle[playerid])
@@ -675,6 +681,8 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 
 hook OnVehicleDestroyed(vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	_RemoveVehicleFile(vehicleid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -821,6 +829,8 @@ _RemoveVehicleFile(vehicleid)
 
 hook OnPlayerSave(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	new data[1];
 	data[0] = pveh_SaveAnyVehicle[playerid];
 
@@ -829,6 +839,8 @@ hook OnPlayerSave(playerid, filename[])
 
 hook OnPlayerLoad(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+
 	new data[1];
 
 	modio_read(filename, _T<P,V,E,H>, 1, data);

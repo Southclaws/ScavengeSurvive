@@ -66,6 +66,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/body-preview.pwn");
+
 	bod_LabelIndex0[playerid] = 0;
 	bod_LabelIndex1[playerid] = 0;
 

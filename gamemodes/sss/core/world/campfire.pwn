@@ -244,6 +244,8 @@ stock SetCampfireState(fireid, bool:toggle)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/campfire.pwn");
+
 	if(GetItemType(withitemid) == item_Campfire)
 	{
 		new fireid = GetItemExtraData(withitemid);
@@ -372,6 +374,8 @@ timer cmp_DestroySmoke[1000](fireid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/world/campfire.pwn");
+
 	if(GetItemType(itemid) == item_Campfire)
 	{
 		new fireid = GetItemExtraData(itemid);

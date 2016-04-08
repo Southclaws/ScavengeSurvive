@@ -55,11 +55,15 @@ ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/hats.pwn");
+
 	hat_CurrentHat[playerid] = -1;
 }
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/hats.pwn");
+
 	foreach(new i : hat_Index)
 	{
 		if(GetItemType(itemid) == hat_ItemType[i])
@@ -155,6 +159,8 @@ TogglePlayerHeadwear(playerid, bool:toggle)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/char/hats.pwn");
+
 	if(hat_CurrentHat[playerid] == -1)
 	{
 		foreach(new i : hat_Index)

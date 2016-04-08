@@ -32,11 +32,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
 		PlayerDropItem(playerid);
@@ -52,6 +56,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	if(IsValidItem(iedm_ArmingItem[playerid]))
 	{
 		SetItemExtraData(iedm_ArmingItem[playerid], 1);
@@ -68,6 +74,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	if(RELEASED(16) && IsValidItem(iedm_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);
@@ -77,6 +85,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	if(GetItemType(itemid) == item_IedTripMine)
 	{
 		if(GetItemExtraData(itemid) == 1)
@@ -92,6 +102,8 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	for(new i, j = GetContainerSize(containerid); i < j; i++)
 	{
 		new itemid = GetContainerSlotItem(containerid, i);
@@ -111,6 +123,8 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerViewCntOpt(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerViewCntOpt] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	new
 		slot,
 		itemid;
@@ -132,6 +146,8 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 
 hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSelectCntOpt] in /gamemodes/sss/core/item/iedtripmine.pwn");
+
 	new
 		slot,
 		itemid;

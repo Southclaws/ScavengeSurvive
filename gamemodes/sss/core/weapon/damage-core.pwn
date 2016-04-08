@@ -71,6 +71,8 @@ forward Float:GetPlayerKnockoutChance(playerid, Float:knockmult);
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/weapon/damage-core.pwn");
+
 	dmg_LastHit[playerid][0] = EOS;
 	dmg_LastHitId[playerid] = INVALID_PLAYER_ID;
 	dmg_LastHitItem[playerid] = 0;
@@ -194,6 +196,8 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 hook OnDeath(playerid, killerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnDeath] in /gamemodes/sss/core/weapon/damage-core.pwn");
+
 	Iter_Clear(wnd_Index[playerid]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -446,6 +450,8 @@ stock SetPlayerWoundDataFromArray(playerid, input[])
 
 hook OnPlayerSave(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/weapon/damage-core.pwn");
+
 	new
 		length,
 		data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
@@ -457,6 +463,8 @@ hook OnPlayerSave(playerid, filename[])
 
 hook OnPlayerLoad(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/weapon/damage-core.pwn");
+
 	new data[1 + (MAX_WOUNDS * _:E_WOUND_DATA)];
 
 	modio_read(filename, _T<W,N,D,S>, sizeof(data), data);

@@ -36,6 +36,8 @@ forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerGiveDamage] in /gamemodes/sss/core/weapon/damage-firearm.pwn");
+
 	if(IsPlayerOnAdminDuty(damagedid))
 		return 0;
 

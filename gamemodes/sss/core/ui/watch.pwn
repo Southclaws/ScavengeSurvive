@@ -108,6 +108,8 @@ ptask UpdateWatch[1000](playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/watch.pwn");
+
 	WatchBackground[playerid]		=CreatePlayerTextDraw(playerid, 33.000000, 338.000000, "LD_POOL:ball");
 	PlayerTextDrawBackgroundColor	(playerid, WatchBackground[playerid], 255);
 	PlayerTextDrawFont				(playerid, WatchBackground[playerid], 4);

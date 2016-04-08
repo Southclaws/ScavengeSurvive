@@ -113,6 +113,8 @@ hook OnGameModeInit()
 
 hook OnScriptExit()
 {
+	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/world/safebox.pwn");
+
 	new ret;
 
 	foreach(new i : itm_Index)
@@ -127,6 +129,8 @@ hook OnScriptExit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/safebox.pwn");
+
 	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 }
 
@@ -163,6 +167,8 @@ DefineSafeboxType(ItemType:itemtype, size)
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/world/safebox.pwn");
+
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -194,6 +200,8 @@ hook OnItemCreate(itemid)
 
 hook OnItemCreateInWorld(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/world/safebox.pwn");
+
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -207,6 +215,8 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnItemDestroy(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/safebox.pwn");
+
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -235,6 +245,8 @@ hook OnItemDestroy(itemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/world/safebox.pwn");
+
 	if(SafeBoxInteractionCheck(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -243,6 +255,8 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
+
 	if(SafeBoxInteractionCheck(playerid, withitemid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -274,6 +288,8 @@ SafeBoxInteractionCheck(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/safebox.pwn");
+
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 		return 1;
 
@@ -316,6 +332,8 @@ timer box_PickUp[250](playerid, itemid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/world/safebox.pwn");
+
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
 		new Float:x, Float:y, Float:z;
@@ -330,6 +348,8 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCloseContainer] in /gamemodes/sss/core/world/safebox.pwn");
+
 	if(IsValidItem(box_CurrentBoxItem[playerid]))
 	{
 		new Float:x, Float:y, Float:z;

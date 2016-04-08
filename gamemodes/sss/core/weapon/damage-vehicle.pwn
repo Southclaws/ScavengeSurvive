@@ -46,6 +46,8 @@ hook OnScriptInit()
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerTakeDamage] in /gamemodes/sss/core/weapon/damage-vehicle.pwn");
+
 	if(weaponid == 49)
 	{
 		_DoVehicleCollisionDamage(issuerid, playerid);

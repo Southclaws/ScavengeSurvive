@@ -129,6 +129,8 @@ stock debug_get_handler_name(handler, output[])
 
 hook OnRconCommand(cmd[])
 {
+	d:3:GLOBAL_DEBUG("[OnRconCommand] in /gamemodes/sss/utils/debug.pwn");
+
 	new
 		command[16],
 		params[92];

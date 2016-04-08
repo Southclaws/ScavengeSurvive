@@ -31,11 +31,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/iedtimebomb.pwn");
+
 	iedt_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/iedtimebomb.pwn");
+
 	if(GetItemType(itemid) == item_IedTimebomb)
 	{
 		PlayerDropItem(playerid);
@@ -51,6 +55,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/iedtimebomb.pwn");
+
 	if(IsValidItem(iedt_ArmingItem[playerid]))
 	{
 		defer IedTimeBombExplode(iedt_ArmingItem[playerid]);
@@ -68,6 +74,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/iedtimebomb.pwn");
+
 	if(RELEASED(16) && IsValidItem(iedt_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);

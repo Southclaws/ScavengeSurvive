@@ -65,6 +65,8 @@ ShowLanguageMenu(playerid)
 
 hook OnPlayerSave(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/player/language.pwn");
+
 	new data[1];
 	data[0] = lang_PlayerLanguage[playerid];
 
@@ -73,6 +75,8 @@ hook OnPlayerSave(playerid, filename[])
 
 hook OnPlayerLoad(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/player/language.pwn");
+
 	new data[1];
 
 	modio_read(filename, _T<L,A,N,G>, 1, data);

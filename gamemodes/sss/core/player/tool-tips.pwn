@@ -90,6 +90,8 @@ HidePlayerToolTip(playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/tool-tips.pwn");
+
 	ToolTip[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
 	PlayerTextDrawAlignment			(playerid, ToolTip[playerid], 3);
 	PlayerTextDrawBackgroundColor	(playerid, ToolTip[playerid], 255);
@@ -102,12 +104,16 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+
 	if(IsPlayerToolTipsOn(playerid))
 		ShowItemToolTip(playerid, GetItemType(itemid));
 }
 
 hook OnPlayerDropItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+
 	if(IsPlayerToolTipsOn(playerid))
 		HideHelpTip(playerid);
 
@@ -327,6 +333,8 @@ hook OnGameModeInit()
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/player/tool-tips.pwn");
+
 	if(!IsPlayerToolTipsOn(playerid))
 		return 1;
 

@@ -66,6 +66,8 @@ SaveBlockAreaCheck(&Float:x, &Float:y, &Float:z)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterDynArea] in /gamemodes/sss/core/server/save-block.pwn");
+
 	for(new i; i < saveblock_Total; i++)
 	{
 		if(areaid == saveblock_Data[i][saveblock_areaId])

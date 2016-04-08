@@ -39,6 +39,8 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/infection.pwn");
+
 	infect_InfectionIntensity[playerid][0] = 0;
 	infect_InfectionIntensity[playerid][1] = 0;
 	infect_LastShake[playerid] = 0;
@@ -102,10 +104,14 @@ stock SetPlayerInfectionIntensity(playerid, type, amount)
 
 hook OnPlayerSave(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/char/infection.pwn");
+
 	modio_push(filename, _T<I,N,F,C>, 2, infect_InfectionIntensity[playerid]);
 }
 
 hook OnPlayerLoad(playerid, filename[])
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/char/infection.pwn");
+
 	modio_read(filename, _T<I,N,F,C>, 2, infect_InfectionIntensity[playerid]);
 }

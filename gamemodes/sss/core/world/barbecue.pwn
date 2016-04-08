@@ -61,6 +61,8 @@ hook OnScriptInit()
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/world/barbecue.pwn");
+
 	d:1:HANDLER("[OnItemCreate] itemid: %d type: %d", itemid, _:GetItemType(itemid));
 	if(GetItemType(itemid) == item_Barbecue)
 	{
@@ -94,6 +96,8 @@ hook OnItemCreate(itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/barbecue.pwn");
+
 	d:1:HANDLER("[OnPlayerUseItemWithItem HOOK] %d %d %d", playerid, itemid, withitemid);
 
 	if(GetItemType(withitemid) == item_Barbecue)
@@ -272,6 +276,8 @@ timer bbq_FinishCooking[30000](itemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/world/barbecue.pwn");
+
 	d:1:HANDLER("[OnPlayerPickUpItem] playerid: %d itemid: %d", playerid, itemid);
 	if(GetItemType(itemid) == item_Barbecue)
 	{

@@ -39,6 +39,8 @@ Float:	death_RotZ[MAX_PLAYERS],
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/death.pwn");
+
 	death_LastKilledBy[playerid][0] = EOS;
 	death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
@@ -358,6 +360,8 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 
 hook OnPlayerSpawn(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSpawn] in /gamemodes/sss/core/player/death.pwn");
+
 	if(IsPlayerDead(playerid))
 	{
 		TogglePlayerSpectating(playerid, true);
@@ -408,6 +412,8 @@ timer SetDeathCamera[500](playerid)
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerClickTextDraw] in /gamemodes/sss/core/player/death.pwn");
+
 	if(clickedid == DeathButton)
 	{
 		if(!IsPlayerDead(playerid))

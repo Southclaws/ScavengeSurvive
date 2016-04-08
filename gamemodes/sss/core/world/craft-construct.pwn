@@ -72,6 +72,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/craft-construct.pwn");
+
 	cons_Constructing[playerid] = -1;
 }
 
@@ -110,6 +112,8 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/craft-construct.pwn");
+
 	new
 		list[BTN_MAX_INRANGE] = {INVALID_ITEM_ID, ...},
 		size;
@@ -161,6 +165,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/craft-construct.pwn");
+
 	if(cons_Constructing[playerid] != -1)
 	{
 		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstructed %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
@@ -175,6 +181,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/craft-construct.pwn");
+
 	if(RELEASED(16) && cons_Constructing[playerid] != -1)
 	{
 		StopHoldAction(playerid);
@@ -187,6 +195,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerCraft(playerid, craftset)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCraft] in /gamemodes/sss/core/world/craft-construct.pwn");
+
 	if(cons_CraftsetConstructSet[craftset])
 		return Y_HOOKS_BREAK_RETURN_1;
 

@@ -32,11 +32,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/lock-break.pwn");
+
 	cro_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
 hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerInteractVehicle] in /gamemodes/sss/core/vehicle/lock-break.pwn");
+
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
 		if(IsVehicleLocked(vehicleid))
@@ -60,6 +64,8 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/lock-break.pwn");
+
 	if(oldkeys & 16)
 	{
 		StopBreakingVehicleLock(playerid);
@@ -135,6 +141,8 @@ public OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/vehicle/lock-break.pwn");
+
 	if(cro_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		if(cro_OpenType[playerid] == 0)

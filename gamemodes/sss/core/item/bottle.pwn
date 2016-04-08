@@ -27,6 +27,8 @@
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/bottle.pwn");
+
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
@@ -38,6 +40,8 @@ hook OnItemCreate(itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/bottle.pwn");
+
 	if(itemtype == item_Bottle || itemtype == item_CanDrink)
 	{
 		new
@@ -60,6 +64,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerEaten(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEaten] in /gamemodes/sss/core/item/bottle.pwn");
+
 	if(GetItemType(itemid) == item_Bottle || GetItemType(itemid) == item_CanDrink)
 	{
 		new type = GetFoodItemSubType(itemid);
@@ -73,6 +79,8 @@ hook OnPlayerEaten(playerid, itemid)
 
 hook OnPlayerCrafted(playerid, craftset, result)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCrafted] in /gamemodes/sss/core/item/bottle.pwn");
+
 	if(GetItemType(result) == item_Bottle)
 	{
 		new

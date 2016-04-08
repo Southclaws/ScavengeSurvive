@@ -110,6 +110,8 @@ DestroyFireworkProjectile(id)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/firework.pwn");
+
 	if(GetItemType(itemid) == item_FireLighter && GetItemType(withitemid) == item_FireworkBox)
 	{
 		if(GetTickCountDifference(GetTickCount(), fwk_CooldownTick) > 3000)
@@ -141,6 +143,8 @@ timer FireworkLaunch[6000](itemid)
 
 hook OnDynamicObjectMoved(objectid)
 {
+	d:3:GLOBAL_DEBUG("[OnDynamicObjectMoved] in /gamemodes/sss/core/item/firework.pwn");
+
 	foreach(new i : fwk_ProjectileIndex)
 	{
 		if(objectid == fwk_Data[i][fwk_object])

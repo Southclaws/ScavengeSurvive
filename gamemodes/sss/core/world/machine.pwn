@@ -80,6 +80,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/machine.pwn");
+
 	mach_CurrentMachine[playerid] = INVALID_MACHINE_ID;
 }
 
@@ -125,6 +127,8 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[
 
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/machine.pwn");
+
 	if(mach_ButtonMachine[buttonid] != INVALID_MACHINE_ID)
 	{
 		d:1:HANDLER("[OnButtonPress] button %d machine %d", buttonid, mach_ButtonMachine[buttonid]);
@@ -155,6 +159,8 @@ _mach_PlayerUseMachine(playerid, machineid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/machine.pwn");
+
 	if(RELEASED(16))
 	{
 		if(mach_CurrentMachine[playerid] != INVALID_MACHINE_ID)

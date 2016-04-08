@@ -50,6 +50,8 @@ HideHelpTip(playerid)
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/tip-text.pwn");
+
 	HelpTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
 	PlayerTextDrawBackgroundColor	(playerid, HelpTipText[playerid], 255);
 	PlayerTextDrawFont				(playerid, HelpTipText[playerid], 1);

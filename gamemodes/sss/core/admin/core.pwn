@@ -108,6 +108,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/admin/core.pwn");
+
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;
@@ -117,6 +119,8 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnected(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnected] in /gamemodes/sss/core/admin/core.pwn");
+
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;

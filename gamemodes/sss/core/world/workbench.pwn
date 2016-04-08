@@ -79,6 +79,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/workbench.pwn");
+
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
@@ -142,6 +144,8 @@ stock SetConstructionSetWorkbench(consset)
 
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/workbench.pwn");
+
 	if(wb_ButtonWorkbench[buttonid] != -1)
 	{
 		d:1:HANDLER("[OnButtonPress] button %d workbench %d", buttonid, wb_ButtonWorkbench[buttonid]);
@@ -307,6 +311,8 @@ _wb_CreateResult(workbenchid, craftset)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/workbench.pwn");
+
 	if(RELEASED(16))
 	{
 		if(wb_CurrentWorkbench[playerid] != -1)
@@ -323,6 +329,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/workbench.pwn");
+
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
 		d:1:HANDLER("[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
@@ -336,6 +344,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerPickedUpItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/workbench.pwn");
+
 	if(wb_ItemWorkbench[itemid] != -1)
 		_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid);
 
@@ -344,6 +354,8 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 
 hook OnPlayerConstruct(playerid, consset)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConstruct] in /gamemodes/sss/core/world/workbench.pwn");
+
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
 		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);

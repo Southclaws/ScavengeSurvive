@@ -32,6 +32,8 @@ hook OnGameModeInit()
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/heartshapedbox.pwn");
+
 	if(GetItemType(itemid) == item_HeartShapedBox)
 	{
 		if(GetItemLootIndex(itemid) != -1)

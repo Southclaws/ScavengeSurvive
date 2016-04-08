@@ -151,6 +151,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/defences.pwn");
+
 	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
 	def_CurrentDefenceEdit[playerid] = -1;
 	def_CurrentDefenceMove[playerid] = -1;
@@ -337,6 +339,8 @@ stock DestroyDefence(defenceid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/defences.pwn");
+
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(itemtype == item_Hammer || itemtype == item_Screwdriver)
@@ -354,6 +358,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(oldkeys & 16)
 	{
 		StopBuildingDefence(playerid);
@@ -417,6 +423,8 @@ StopBuildingDefence(playerid)
 
 hook OnButtonPress(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(def_ButtonDefence[buttonid] != -1)
 	{
 		new id = def_ButtonDefence[buttonid];
@@ -588,6 +596,8 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
@@ -599,6 +609,8 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(def_CurrentDefenceItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsItemInWorld(def_CurrentDefenceItem[playerid]))
@@ -840,6 +852,8 @@ ShowEnterPassDialog_Keypad(playerid)
 
 hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeypadEnter] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(keypadid == 100)
 	{
 		if(def_CurrentDefenceEdit[playerid] != -1)
@@ -899,6 +913,8 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 
 hook OnPlayerKeypadCancel(playerid, keypadid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeypadCancel] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(keypadid == 100)
 	{
 		if(def_CurrentDefenceEdit[playerid] != -1)
@@ -1103,6 +1119,8 @@ Timer:	def_AngleCheckTimer[MAX_PLAYERS];
 
 hook OnPlayerEnterButtonArea(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterButtonArea] in /gamemodes/sss/core/world/defences.pwn");
+
 	if(!IsPlayerOnAdminDuty(playerid))
 	{
 		new defenceid = def_ButtonDefence[buttonid];
@@ -1131,6 +1149,8 @@ hook OnPlayerEnterButtonArea(playerid, buttonid)
 
 hook OnPlayerLeaveButtonArea(playerid, buttonid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLeaveButtonArea] in /gamemodes/sss/core/world/defences.pwn");
+
 	new defenceid = def_ButtonDefence[buttonid];
 
 	if(Iter_Contains(def_Index, defenceid))

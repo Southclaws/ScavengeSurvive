@@ -104,6 +104,8 @@ stock CreateVehicleArea(vehicleid)
 
 hook OnVehicleCreated(vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleCreated] in /gamemodes/sss/core/vehicle/interact.pwn");
+
 	CreateVehicleArea(vehicleid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -111,11 +113,15 @@ hook OnVehicleCreated(vehicleid)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterDynArea] in /gamemodes/sss/core/vehicle/interact.pwn");
+
 	_vint_EnterArea(playerid, areaid);
 }
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerLeaveDynArea] in /gamemodes/sss/core/vehicle/interact.pwn");
+
 	_vint_LeaveArea(playerid, areaid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -241,6 +247,8 @@ _vint_LeaveArea(playerid, areaid)
 
 hook OnVehicleDestroyed(vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/interact.pwn");
+
 	DestroyDynamicArea(varea_AreaID[vehicleid]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -248,6 +256,8 @@ hook OnVehicleDestroyed(vehicleid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/interact.pwn");
+
 	if(newkeys == 16)
 		_varea_Interact(playerid);
 

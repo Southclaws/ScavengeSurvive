@@ -36,11 +36,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/pills.pwn");
+
 	pill_CurrentlyTaking[playerid] = -1;
 }
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/pills.pwn");
+
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Pills)
@@ -52,6 +56,8 @@ hook OnItemCreate(itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/pills.pwn");
+
 	if(itemtype == item_Pills)
 	{
 		switch(GetItemExtraData(itemid))
@@ -66,6 +72,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/pills.pwn");
+
 	if(GetItemType(itemid) == item_Pills)
 	{
 		StartTakingPills(playerid);
@@ -76,6 +84,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/pills.pwn");
+
 	if(oldkeys & 16 && pill_CurrentlyTaking[playerid] != -1)
 	{
 		StopTakingPills(playerid);
@@ -149,6 +159,8 @@ public OnHoldActionFinish(playerid)
 
 hook OnPlayerDrugWearOff(playerid, drugtype)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDrugWearOff] in /gamemodes/sss/core/item/pills.pwn");
+
 	if(drugtype == drug_Lsd)
 	{
 		SetTimeForPlayer(playerid, -1, -1, true);

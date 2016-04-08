@@ -64,6 +64,8 @@ hook OnGameModeInit()
 }
 hook OnGameModeExit()
 {
+	d:3:GLOBAL_DEBUG("[OnGameModeExit] in /gamemodes/sss/world/puzzles/lockboxlv.pwn");
+
 	new
 		dr_state[2],
 		File:file;

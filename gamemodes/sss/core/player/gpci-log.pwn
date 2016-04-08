@@ -66,6 +66,8 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/gpci-log.pwn");
+
 	new
 		name[MAX_PLAYER_NAME],
 		hash[MAX_GPCI_LEN],

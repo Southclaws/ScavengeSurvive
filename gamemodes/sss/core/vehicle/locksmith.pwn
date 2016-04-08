@@ -30,6 +30,8 @@ static lsk_TargetVehicle[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	lsk_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
@@ -137,6 +139,8 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	if(oldkeys & 16)
 	{
 		StopCraftingKey(playerid);
@@ -168,6 +172,8 @@ StopCraftingKey(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		if(
@@ -189,6 +195,8 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		new
@@ -221,6 +229,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	if(itemtype == item_Key)
 	{
 		if(GetItemArrayDataAtCell(itemid, 0) != 0)
@@ -248,6 +258,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerCrafted(playerid, craftset, result)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCrafted] in /gamemodes/sss/core/vehicle/locksmith.pwn");
+
 	if(GetCraftSetResult(craftset) == item_WheelLock)
 	{
 		SetItemArrayDataAtCell(result, 1, 0);

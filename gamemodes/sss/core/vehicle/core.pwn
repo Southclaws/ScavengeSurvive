@@ -96,6 +96,8 @@ forward OnVehicleReset(oldid, newid);
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/core.pwn");
+
 	veh_NameUI[playerid]			=CreatePlayerTextDraw(playerid, 621.000000, 415.000000, "Infernus");
 	PlayerTextDrawAlignment			(playerid, veh_NameUI[playerid], 3);
 	PlayerTextDrawBackgroundColor	(playerid, veh_NameUI[playerid], 255);
@@ -296,6 +298,8 @@ _veh_SyncData(vehicleid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/core.pwn");
+
 	if(IsPlayerKnockedOut(playerid))
 		return 0;
 
@@ -556,6 +560,8 @@ VehicleSurfingCheck(playerid)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/vehicle/core.pwn");
+
 	veh_TempHealth[playerid] = 0.0;
 	veh_TempVelocity[playerid] = 0.0;
 	veh_Entering[playerid] = -1;
@@ -711,6 +717,8 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 
 hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
 {
+	d:3:GLOBAL_DEBUG("[OnUnoccupiedVehicleUpd] in /gamemodes/sss/core/vehicle/core.pwn");
+
 	if(IsValidVehicle(GetTrailerVehicleID(vehicleid)))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 

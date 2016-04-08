@@ -30,6 +30,8 @@ static
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerShootPlayer] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -37,6 +39,8 @@ hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:kn
 
 hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerMeleePlayer] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -44,6 +48,8 @@ hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 
 hook OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerExplosiveDmg] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	_CombatLogHandleDamage(INVALID_PLAYER_ID, playerid, INVALID_ITEM_ID);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -51,6 +57,8 @@ hook OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult)
 
 hook OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerVehicleCollide] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	_CombatLogHandleDamage(playerid, targetid, INVALID_ITEM_ID);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -78,12 +86,16 @@ _CombatLogHandleDamage(playerid, targetid, itemid)
 
 hook OnPlayerSpawn(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerSpawn] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	combatlog_LastAttacker[playerid] = INVALID_PLAYER_ID;
 	combatlog_LastItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
+
 	if(combatlog_LastAttacked[playerid] != INVALID_PLAYER_ID)
 	{
 		combatlog_LastAttacker[combatlog_LastAttacked[playerid]] = INVALID_PLAYER_ID;

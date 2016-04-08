@@ -36,6 +36,8 @@ forward OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult);
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerTakeDamage] in /gamemodes/sss/core/weapon/damage-explosive.pwn");
+
 	if(weaponid == 51)
 	{
 		_DoExplosiveDamage(issuerid, playerid, amount);

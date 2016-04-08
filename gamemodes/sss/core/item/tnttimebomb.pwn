@@ -31,11 +31,15 @@ static
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/tnttimebomb.pwn");
+
 	tntt_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/tnttimebomb.pwn");
+
 	if(GetItemType(itemid) == item_TntTimebomb)
 	{
 		PlayerDropItem(playerid);
@@ -51,6 +55,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/tnttimebomb.pwn");
+
 	if(IsValidItem(tntt_ArmingItem[playerid]))
 	{
 		defer TimeBombExplode(tntt_ArmingItem[playerid]);
@@ -64,6 +70,8 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/tnttimebomb.pwn");
+
 	if(RELEASED(16) && IsValidItem(tntt_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);

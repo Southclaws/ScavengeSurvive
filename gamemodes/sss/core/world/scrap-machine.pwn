@@ -76,6 +76,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/scrap-machine.pwn");
+
 	sm_CurrentScrapMachine[playerid] = -1;
 }
 
@@ -125,6 +127,8 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 
 hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseMachine] in /gamemodes/sss/core/world/scrap-machine.pwn");
+
 	if(sm_MachineScrapMachine[machineid] != -1)
 	{
 		d:1:HANDLER("[OnPlayerUseMachine] machineid %d scrap machine %d interactiontype %d", machineid, sm_MachineScrapMachine[machineid], interactiontype);
@@ -196,6 +200,8 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/world/scrap-machine.pwn");
+
 	if(sm_CurrentScrapMachine[playerid] != -1)
 	{
 		d:3:HANDLER("[OnHoldActionUpdate] scrapmachineid %d progress %d", sm_CurrentScrapMachine[playerid], progress);

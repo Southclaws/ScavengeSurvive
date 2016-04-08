@@ -84,6 +84,8 @@ timer ExplodeEmpProxMineDelay[1000](id)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/empproxmine.pwn");
+
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
 		PlayerDropItem(playerid);
@@ -95,6 +97,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/item/empproxmine.pwn");
+
 	if(GetItemType(itemid) == item_EmpProxMine)
 	{
 		if(GetItemExtraData(itemid) == 1)
@@ -109,6 +113,8 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterDynArea] in /gamemodes/sss/core/item/empproxmine.pwn");
+
 	foreach(new i : emppx_Index)
 	{
 		if(areaid == emppx_Data[i][emppx_areaId])

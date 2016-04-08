@@ -41,6 +41,8 @@ static
 
 hook OnVehicleCreated(vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleCreated] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	new
 		vehicletype,
 		trunksize;
@@ -59,6 +61,8 @@ hook OnVehicleCreated(vehicleid)
 
 hook OnVehicleReset(oldid, newid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleReset] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(oldid != newid)
 	{
 		trunk_ContainerID[newid] = trunk_ContainerID[oldid];
@@ -70,6 +74,8 @@ hook OnVehicleReset(oldid, newid)
 
 hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerInteractVehicle] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(155.0 < angle < 205.0)
 	{
 		if(IsValidContainer(GetVehicleContainer(vehicleid)))
@@ -106,6 +112,8 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerCloseContainer] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(IsValidVehicle(trunk_CurrentVehicle[playerid]))
 	{
 		if(containerid == GetVehicleContainer(trunk_CurrentVehicle[playerid]))
@@ -121,6 +129,8 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -129,6 +139,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnItemAddedToContainer(containerid, itemid, playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemAddedToContainer] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
@@ -137,6 +149,8 @@ hook OnItemAddedToContainer(containerid, itemid, playerid)
 
 hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemRemovedFromCnt] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
@@ -145,6 +159,8 @@ hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 
 hook OnVehicleDestroyed(vehicleid)
 {
+	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/trunk.pwn");
+
 	if(IsValidContainer(trunk_ContainerID[vehicleid]))
 		DestroyContainer(trunk_ContainerID[vehicleid]);
 

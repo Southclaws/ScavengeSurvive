@@ -24,6 +24,8 @@
 
 hook OnPlayerGetItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerGetItem] in /gamemodes/sss/core/weapon/interact.pwn");
+
 	UpdatePlayerWeaponItem(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -31,6 +33,8 @@ hook OnPlayerGetItem(playerid, itemid)
 
 hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerGivenItem] in /gamemodes/sss/core/weapon/interact.pwn");
+
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		RemovePlayerWeapon(playerid);
@@ -42,6 +46,8 @@ hook OnPlayerGivenItem(playerid, targetid, itemid)
 
 hook OnPlayerDroppedItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/weapon/interact.pwn");
+
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		RemovePlayerWeapon(playerid);
@@ -52,6 +58,8 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/weapon/interact.pwn");
+
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 

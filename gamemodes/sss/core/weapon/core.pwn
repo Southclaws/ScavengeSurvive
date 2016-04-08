@@ -78,6 +78,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/weapon/core.pwn");
+
 	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
 	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
@@ -301,6 +303,8 @@ stock RemovePlayerWeapon(playerid)
 
 hook OnPlayerUpdate(playerid)
 {
+	d:4:GLOBAL_DEBUG("[OnPlayerUpdate] in /gamemodes/sss/core/weapon/core.pwn");
+
 	_FastUpdateHandler(playerid);
 
 	return 1;
@@ -415,6 +419,8 @@ timer _RepeatingFire[100](playerid)
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerWeaponShot] in /gamemodes/sss/core/weapon/core.pwn");
+
 	d:1:HANDLER("[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return Y_HOOKS_BREAK_RETURN_0;
@@ -572,6 +578,8 @@ _UpdateWeaponUI(playerid)
 
 hook OnPlayerHolsteredItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerHolsteredItem] in /gamemodes/sss/core/weapon/core.pwn");
+
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		new helditemid = GetPlayerItem(playerid);
@@ -592,6 +600,8 @@ hook OnPlayerHolsteredItem(playerid, itemid)
 
 hook OnPlayerUnHolsteredItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUnHolsteredItem] in /gamemodes/sss/core/weapon/core.pwn");
+
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		UpdatePlayerWeaponItem(playerid);
@@ -602,6 +612,8 @@ hook OnPlayerUnHolsteredItem(playerid, itemid)
 
 hook OnItemCreate(itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/weapon/core.pwn");
+
 	new lootindex = GetItemLootIndex(itemid);
 
 	if(lootindex != -1)
@@ -665,6 +677,8 @@ hook OnItemCreate(itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/weapon/core.pwn");
+
 	if(newkeys & 1)
 	{
 		if(IsPlayerKnockedOut(playerid))
@@ -717,6 +731,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerDropItem(playerid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/weapon/core.pwn");
+
 	if(_unload_DropHandler(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -799,6 +815,8 @@ timer _UnloadWeapon[300](playerid, itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
+	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/weapon/core.pwn");
+
 	new itemweaponid = GetItemTypeWeapon(itemtype);
 
 	if(itemweaponid == -1)

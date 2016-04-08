@@ -41,6 +41,8 @@ forward OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/weapon/damage-melee.pwn");
+
 	if(newkeys & KEY_FIRE)
 	{
 		_HandleCustomMelee(playerid, GetItemType(GetPlayerItem(playerid)));
@@ -148,6 +150,8 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerGiveDamage] in /gamemodes/sss/core/weapon/damage-melee.pwn");
+
 	if(weaponid == 0)
 		return _DoMeleeDamage(playerid, damagedid, 0.001, 0.5);
 

@@ -75,6 +75,8 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/refine-machine.pwn");
+
 	rm_CurrentRefineMachine[playerid] = -1;
 }
 
@@ -111,6 +113,8 @@ stock CreateRefineMachine(Float:x, Float:y, Float:z, Float:rz)
 
 hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseMachine] in /gamemodes/sss/core/world/refine-machine.pwn");
+
 	if(rm_MachineRefineMachine[machineid] != -1)
 	{
 		d:1:HANDLER("[OnPlayerUseMachine] machineid %d refine machine %d interactiontype %d", machineid, rm_MachineRefineMachine[machineid], interactiontype);
@@ -182,6 +186,8 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 
 hook OnItemAddToContainer(containerid, itemid, playerid)
 {
+	d:3:GLOBAL_DEBUG("[OnItemAddToContainer] in /gamemodes/sss/core/world/refine-machine.pwn");
+
 	if(playerid != INVALID_PLAYER_ID)
 	{
 		new machineid = GetContainerMachineID(containerid);
@@ -201,6 +207,8 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/world/refine-machine.pwn");
+
 	if(rm_CurrentRefineMachine[playerid] != -1)
 	{
 		d:3:HANDLER("[OnHoldActionUpdate] refinemachineid %d progress %d", rm_CurrentRefineMachine[playerid], progress);

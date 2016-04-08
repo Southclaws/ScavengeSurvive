@@ -31,6 +31,8 @@ static
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/aim-shout.pwn");
+
 	if( (newkeys & 128) && (newkeys & 512) )
 	{
 		if(GetTickCountDifference(aimshout_Tick[playerid], GetTickCount()) > 750)

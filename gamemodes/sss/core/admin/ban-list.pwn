@@ -262,6 +262,8 @@ ShowUnbanPrompt(playerid)
 
 hook OnPlayerDialogPage(playerid, direction)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerDialogPage] in /gamemodes/sss/core/admin/ban-list.pwn");
+
 	if(banlist_ViewingList[playerid])
 	{
 		if(direction == 0)
