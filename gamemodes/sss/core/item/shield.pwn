@@ -31,7 +31,6 @@ hook OnPlayerUseItem(playerid, itemid)
 	{
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
 		defer shield_Down(playerid, itemid);
-		return 1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

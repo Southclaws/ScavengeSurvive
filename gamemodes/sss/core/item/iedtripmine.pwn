@@ -45,7 +45,6 @@ hook OnPlayerUseItem(playerid, itemid)
 		StartHoldAction(playerid, 1000);
 		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
-		return 1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

@@ -587,7 +587,7 @@ PlayerBagUpdate(playerid)
 	}
 }
 
-hook OnPlayerAddToInventory(playerid, itemid)
+hook OnItemAddToInventory(playerid, itemid, slot)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -620,6 +620,8 @@ hook OnPlayerUseItem(playerid, itemid)
 		CancelPlayerMovement(playerid);
 		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerDropItem(playerid, itemid)

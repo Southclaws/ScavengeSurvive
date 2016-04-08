@@ -180,7 +180,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-hook OnPlayerAddToInventory(playerid, itemid)
+hook OnItemAddToInventory(playerid, itemid, slot)
 {
 	// This is to stop holstered items from being added to the inventory too.
 	// (They share the same key.)
