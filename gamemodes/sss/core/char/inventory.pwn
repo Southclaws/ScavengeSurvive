@@ -726,6 +726,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
 				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+				SetPlayerAP(playerid, 0.0);
 				GiveWorldItemToPlayer(playerid, itemid);
 			}
 			else
@@ -759,6 +760,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
 				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
+				SetPlayerAP(playerid, 0.0);
 				GiveWorldItemToPlayer(playerid, itemid);
 			}
 			else
