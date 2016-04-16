@@ -28,6 +28,9 @@
 #define MAX_LANGUAGE_KEY_LEN		(12)
 #define MAX_LANGUAGE_ENTRY_LENGTH	(256)
 #define MAX_LANGUAGE_NAME			(32)
+#define MAX_LANGUAGE_REPLACEMENTS	(48)
+#define MAX_LANGUAGE_REPL_KEY_LEN	(32)
+#define MAX_LANGUAGE_REPL_VAL_LEN	(32)
 
 #define DELIMITER_CHAR				'='
 #define ALPHABET_SIZE				(26)
@@ -39,10 +42,20 @@ enum e_LANGUAGE_ENTRY_DATA
 	lang_val[MAX_LANGUAGE_ENTRY_LENGTH]
 }
 
+enum e_LANGUAGE_TAG_REPLACEMENT_DATA
+{
+	lang_repl_key[MAX_LANGUAGE_REPL_KEY_LEN],
+	lang_repl_val[MAX_LANGUAGE_REPL_VAL_LEN]
+}
+
+
 static
 	lang_Entries[MAX_LANGUAGE][MAX_LANGUAGE_ENTRIES][e_LANGUAGE_ENTRY_DATA],
 	lang_TotalEntries[MAX_LANGUAGE],
 	lang_AlphabetMap[MAX_LANGUAGE][ALPHABET_SIZE],
+
+	lang_Replacements[MAX_LANGUAGE_REPLACEMENTS][e_LANGUAGE_TAG_REPLACEMENT_DATA],
+	lang_TotalReplacements,
 
 	lang_Name[MAX_LANGUAGE][MAX_LANGUAGE_NAME],
 	lang_Total;
@@ -54,7 +67,41 @@ hook OnGameModeInit()
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
 
+	DefineLanguageReplacement("C_YELLOW",					"{FFFF00}");
+	DefineLanguageReplacement("C_RED",						"{E85454}");
+	DefineLanguageReplacement("C_GREEN",					"{33AA33}");
+	DefineLanguageReplacement("C_BLUE",						"{33CCFF}");
+	DefineLanguageReplacement("C_ORANGE",					"{FFAA00}");
+	DefineLanguageReplacement("C_GREY",						"{AFAFAF}");
+	DefineLanguageReplacement("C_PINK",						"{FFC0CB}");
+	DefineLanguageReplacement("C_NAVY",						"{000080}");
+	DefineLanguageReplacement("C_GOLD",						"{B8860B}");
+	DefineLanguageReplacement("C_LGREEN",					"{00FD4D}");
+	DefineLanguageReplacement("C_TEAL",						"{008080}");
+	DefineLanguageReplacement("C_BROWN",					"{A52A2A}");
+	DefineLanguageReplacement("C_AQUA",						"{F0F8FF}");
+	DefineLanguageReplacement("C_BLACK",					"{000000}");
+	DefineLanguageReplacement("C_WHITE",					"{FFFFFF}");
+	DefineLanguageReplacement("C_SPECIAL",					"{0025AA}");
+	DefineLanguageReplacement("KEYTEXT_INTERACT",			"~k~~VEHICLE_ENTER_EXIT~");
+	DefineLanguageReplacement("KEYTEXT_RELOAD",				"~k~~PED_ANSWER_PHONE~");
+	DefineLanguageReplacement("KEYTEXT_PUT_AWAY",			"~k~~CONVERSATION_YES~");
+	DefineLanguageReplacement("KEYTEXT_DROP_ITEM",			"~k~~CONVERSATION_NO~");
+	DefineLanguageReplacement("KEYTEXT_INVENTORY",			"~k~~GROUP_CONTROL_BWD~");
+	DefineLanguageReplacement("KEYTEXT_ENGINE",				"~k~~CONVERSATION_YES~");
+	DefineLanguageReplacement("KEYTEXT_LIGHTS",				"~k~~CONVERSATION_NO~");
+	DefineLanguageReplacement("KEYTEXT_DOORS",				"~k~~TOGGLE_SUBMISSIONS~");
+	DefineLanguageReplacement("KEYTEXT_RADIO",				"R");
+
 	LoadAllLanguages();
+}
+
+stock DefineLanguageReplacement(key[], val[])
+{
+	strcat(lang_Replacements[lang_TotalReplacements][lang_repl_key], key, MAX_LANGUAGE_REPL_KEY_LEN);
+	strcat(lang_Replacements[lang_TotalReplacements][lang_repl_val], val, MAX_LANGUAGE_REPL_VAL_LEN);
+
+	lang_TotalReplacements++;
 }
 
 stock LoadAllLanguages()
@@ -106,6 +153,7 @@ stock LoadLanguage(filename[], langname[])
 	new
 		File:f = fopen(filename, io_read),
 		line[256],
+		replace_me[MAX_LANGUAGE_ENTRY_LENGTH],
 		length,
 		delimiter,
 		key[MAX_LANGUAGE_KEY_LEN],
@@ -142,7 +190,9 @@ stock LoadLanguage(filename[], langname[])
 		index = lang_TotalEntries[lang_Total]++;
 
 		strmid(lang_Entries[lang_Total][index][lang_key], line, 0, delimiter, MAX_LANGUAGE_ENTRY_LENGTH);
-		strmid(lang_Entries[lang_Total][index][lang_val], line, delimiter + 1, length - 1, MAX_LANGUAGE_ENTRY_LENGTH);
+		strmid(replace_me, line, delimiter + 1, length - 1, MAX_LANGUAGE_ENTRY_LENGTH);
+
+		_doReplace(replace_me, lang_Entries[lang_Total][index][lang_val]);
 	}
 
 	fclose(f);
@@ -186,6 +236,48 @@ stock LoadLanguage(filename[], langname[])
 	lang_Total++;
 
 	return 1;
+}
+
+_doReplace(input[], output[])
+{
+	new
+		bool:in_tag = false,
+		tag_start = -1,
+		output_idx;
+
+	for(new i = 0; input[i] != EOS; ++i)
+	{
+		if(in_tag)
+		{
+			if(input[i] == '}')
+			{
+				for(new j; j < lang_TotalReplacements; ++j)
+				{
+					if(!strcmp(input[tag_start], lang_Replacements[j][lang_repl_key], false, i - tag_start))
+					{
+						for(new k; lang_Replacements[j][lang_repl_val][k] != 0 && output_idx < MAX_LANGUAGE_ENTRY_LENGTH; ++k)
+							output[output_idx++] = lang_Replacements[j][lang_repl_val][k];
+
+						break;
+					}
+				}
+
+				in_tag = false;
+				continue;
+			}
+		}
+		else
+		{
+			if(input[i] == '{')
+			{
+				tag_start = i + 1;
+				in_tag = true;
+				continue;
+			}
+
+			output[output_idx++] = input[i];
+		}
+	}
 }
 
 _qs(array[][], left, right)

@@ -114,7 +114,7 @@ public OnGameModeInit()
 
 #include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
 #include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
-#include <YSI\y_utils>			// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
+#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
@@ -122,7 +122,7 @@ public OnGameModeInit()
 #include <YSI\y_ini>
 #include <YSI\y_dialog>
 
-#include "sss\core\server\hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
+#include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito, v2.7.5.2:	http://forum.sa-mp.com/showthread.php?t=102865
 #include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
