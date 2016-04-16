@@ -144,9 +144,7 @@ stock CancelPlayerMovement(playerid)
 	GetPlayerPos(playerid, x, y, z);
 	SetPlayerPos(playerid, x, y, z);
 	ClearAnimations(playerid);
-	TogglePlayerControllable(playerid, false);
 	TogglePlayerControllable(playerid, true);
-	SetPlayerSkin(playerid, GetPlayerSkin(playerid), false);
 }
 
 stock SetPlayerToFacePlayer(playerid, targetid, Float:offset = 0.0)
