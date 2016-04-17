@@ -8,6 +8,21 @@
 		Recently influenced by Minecraft and DayZ, credits to the creators of
 		those games and their fundamental mechanics and concepts.
 
+		Copyright (C) 2016 Barnaby "Southclaw" Keene
+
+		This program is free software: you can redistribute it and/or modify it
+		under the terms of the GNU General Public License as published by the
+		Free Software Foundation, either version 3 of the License, or (at your
+		option) any later version.
+
+		This program is distributed in the hope that it will be useful, but
+		WITHOUT ANY WARRANTY; without even the implied warranty of
+		MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+		See the GNU General Public License for more details.
+
+		You should have received a copy of the GNU General Public License along
+		with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 ==============================================================================*/
 
@@ -40,6 +55,7 @@ native gpci(playerid, serial[], len);
 #define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define INV_MAX_SLOTS					(6) // SIF/Inventory
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
+#define ITM_MAX_TYPES					(ItemType:300) // SIF/Item
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
@@ -85,7 +101,6 @@ public OnGameModeInit()
 #else
 	#define _ALS_OnGameModeInit
 #endif
- 
 #define OnGameModeInit main_OnGameModeInit
 #if defined main_OnGameModeInit
 	forward main_OnGameModeInit();
@@ -97,8 +112,9 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <YSI\y_utils>				// By Y_Less, 3.1:			http://forum.sa-mp.com/showthread.php?p=1696956
+#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
+#include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
+#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
@@ -106,13 +122,11 @@ public OnGameModeInit()
 #include <YSI\y_ini>
 #include <YSI\y_dialog>
 
-#include "SS\Core\Server\Hooks.pwn"	// Internal library for hooking functions before they are used in external libraries.
+#include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
-#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
-#include <streamer>					// By Incognito, 2.7:		http://forum.sa-mp.com/showthread.php?t=102865
+#include <streamer>					// By Incognito, v2.7.5.2:	http://forum.sa-mp.com/showthread.php?t=102865
 #include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
 #include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
-#include <socket>					// By BlueG, v0.2b:			http://forum.sa-mp.com/showthread.php?t=333934
 #include <sqlitei>					// By Slice, v0.9.7:		http://forum.sa-mp.com/showthread.php?t=303682
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
@@ -125,8 +139,9 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
-#include <a_json>					// By KingHual, 0.1.1:		http://forum.sa-mp.com/showthread.php?t=543919
+#include <mapandreas>
 
+#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
 #include <SIF\extensions\ItemArrayData>
@@ -174,8 +189,7 @@ native WP_Hash(buffer[], len, const str[]);
 // Files
 #define ACCOUNT_DATABASE			DIRECTORY_MAIN"accounts.db"
 #define WORLD_DATABASE				DIRECTORY_MAIN"world.db"
-#define SETTINGS_FILE				DIRECTORY_MAIN"settings.json"
-#define GEID_FILE					DIRECTORY_MAIN"geids.dat"
+#define SETTINGS_FILE				DIRECTORY_MAIN"settings.ini"
 
 
 // Macros
@@ -292,6 +306,18 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
 #define KEYTEXT_RADIO				"R"
 
+// Attachment slots
+enum
+{
+	ATTACHSLOT_ITEM,		// 0 - Same as SIF/Item
+	ATTACHSLOT_BAG,			// 1 - Bag on back
+	ATTACHSLOT_HOLSTER,		// 2 - Item holstering
+	ATTACHSLOT_HAT,			// 3 - Head-wear slot
+	ATTACHSLOT_FACE,		// 4 - Face-wear slot
+	ATTACHSLOT_BLOOD,		// 5 - Bleeding particle effect
+	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
+}
+
 
 /*==============================================================================
 
@@ -308,6 +334,36 @@ bool:	gServerRestarting = false,
 		gServerUptime,
 		gGlobalDebugLevel;
 
+// DATABASES
+new
+DB:		gAccounts;
+
+// GLOBAL SERVER SETTINGS (Todo: modularise)
+new
+		// player
+		gMessageOfTheDay[MAX_MOTD_LEN],
+		gWebsiteURL[MAX_WEBSITE_NAME],
+		gRuleList[MAX_RULE][MAX_RULE_LEN],
+		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
+
+		// server
+bool:	gPauseMap,
+bool:	gInteriorEntry,
+bool:	gPlayerAnimations,
+bool:	gVehicleSurfing,
+Float:	gNameTagDistance,
+		gCombatLogWindow,
+		gLoginFreezeTime,
+		gMaxTaboutTime,
+		gPingLimit,
+		gCrashOnExit;
+
+// INTERNAL
+new
+		gBigString[MAX_PLAYERS][4096],
+		gTotalRules,
+		gTotalStaff;
+
 new stock
 		GLOBAL_DEBUG = -1;
 
@@ -320,232 +376,248 @@ new stock
 
 
 // API Pre
-#tryinclude "ss/extensions/ext_pre.pwn"
+#tryinclude "sss/extensions/ext_pre.pwn"
 
 // UTILITIES
-#include "SS/utils/math.pwn"
-#include "SS/utils/misc.pwn"
-#include "SS/utils/time.pwn"
-#include "SS/utils/camera.pwn"
-#include "SS/utils/message.pwn"
-#include "SS/utils/vehicle.pwn"
-#include "SS/utils/vehicledata.pwn"
-#include "SS/utils/vehicleparts.pwn"
-#include "SS/utils/zones.pwn"
-#include "SS/utils/player.pwn"
-#include "SS/utils/object.pwn"
-#include "SS/utils/tickcountfix.pwn"
-#include "SS/utils/string.pwn"
-#include "SS/utils/debug.pwn"
+#include "sss/utils/math.pwn"
+#include "sss/utils/misc.pwn"
+#include "sss/utils/time.pwn"
+#include "sss/utils/camera.pwn"
+#include "sss/utils/message.pwn"
+#include "sss/utils/vehicle.pwn"
+#include "sss/utils/vehicle-data.pwn"
+#include "sss/utils/vehicle-parts.pwn"
+#include "sss/utils/zones.pwn"
+#include "sss/utils/player.pwn"
+#include "sss/utils/object.pwn"
+#include "sss/utils/tickcountfix.pwn"
+#include "sss/utils/string.pwn"
+#include "sss/utils/debug.pwn"
+#include "sss/utils/dialog-pages.pwn"
 
 // SERVER CORE
-#include "SS/Core/Server/Init.pwn"
-#include "SS/Core/Server/Settings.pwn"
-#include "SS/Core/Server/TextTags.pwn"
-#include "SS/Core/Server/Weather.pwn"
-#include "SS/Core/Server/SaveBlock.pwn"
-#include "SS/Core/Server/ActivityLog.pwn"
-#include "SS/Core/Server/FileCheck.pwn"
-#include "SS/Core/Server/Sockets.pwn"
-#include "SS/Core/Server/InfoMessage.pwn"
+#include "sss/core/server/settings.pwn"
+#include "sss/core/server/text-tags.pwn"
+#include "sss/core/server/weather.pwn"
+#include "sss/core/server/save-block.pwn"
+#include "sss/core/server/activity-log.pwn"
+#include "sss/core/server/info-message.pwn"
+#include "sss/core/server/language.pwn"
+#include "sss/core/player/language.pwn"
 
-// UI
-#include "SS/Core/UI/PlayerUI.pwn"
-#include "SS/Core/UI/GlobalUI.pwn"
-#include "SS/Core/UI/HoldAction.pwn"
-#include "SS/Core/UI/Radio.pwn"
-#include "SS/Core/UI/TipText.pwn"
-#include "SS/Core/UI/KeyActions.pwn"
-#include "SS/Core/UI/Watch.pwn"
-#include "SS/Core/UI/Keypad.pwn"
-#include "SS/Core/UI/DialogPages.pwn"
-#include "SS/Core/UI/BodyPreview.pwn"
+/*
+	PARENT SYSTEMS
+	Modules that declare setup functions and constants used throughout.
+*/
+#include "sss/core/vehicle/vehicle-type.pwn"
+#include "sss/core/vehicle/core.pwn"
+#include "sss/core/player/core.pwn"
+#include "sss/core/player/save-load.pwn"
+#include "sss/core/admin/core.pwn"
+#include "sss/core/char/holster.pwn"
+#include "sss/core/weapon/ammunition.pwn"
+#include "sss/core/weapon/damage-core.pwn"
+#include "sss/core/ui/hold-action.pwn"
+#include "sss/core/item/liquid.pwn"
 
+/*
+	MODULE INITIALISATION CALLS
+	Calls module constructors to set up entity types.
+*/
+#include "sss/core/server/init.pwn"
+
+/*
+	CHILD SYSTEMS
+	Modules that do not declare anything globally accessible besides interfaces.
+*/
 // VEHICLE
-#include "SS/Core/Vehicle/VehicleType.pwn"
-#include "SS/Core/Vehicle/Core.pwn"
-#include "SS/Core/Vehicle/PlayerVehicle.pwn"
-#include "SS/Core/Vehicle/LootVehicle.pwn"
-#include "SS/Core/Vehicle/Spawn.pwn"
-#include "SS/Core/Vehicle/Interact.pwn"
-#include "SS/Core/Vehicle/Trunk.pwn"
-#include "SS/Core/Vehicle/Repair.pwn"
-#include "SS/Core/Vehicle/LockBreak.pwn"
-#include "SS/Core/Vehicle/Locksmith.pwn"
-#include "SS/Core/Vehicle/Carmour.pwn"
-#include "SS/Core/Vehicle/Lock.pwn"
-#include "SS/Core/Vehicle/AntiNinja.pwn"
-#include "SS/Core/Vehicle/BikeCollision.pwn"
-#include "SS/Core/Vehicle/Trailer.pwn"
+#include "sss/core/vehicle/player-vehicle.pwn"
+#include "sss/core/vehicle/loot-vehicle.pwn"
+#include "sss/core/vehicle/spawn.pwn"
+#include "sss/core/vehicle/interact.pwn"
+#include "sss/core/vehicle/trunk.pwn"
+#include "sss/core/vehicle/repair.pwn"
+#include "sss/core/vehicle/lock-break.pwn"
+#include "sss/core/vehicle/locksmith.pwn"
+#include "sss/core/vehicle/carmour.pwn"
+#include "sss/core/vehicle/lock.pwn"
+#include "sss/core/vehicle/anti-ninja.pwn"
+#include "sss/core/vehicle/bike-collision.pwn"
+#include "sss/core/vehicle/trailer.pwn"
 
 // PLAYER INTERNAL SCRIPTS
-#include "SS/Core/Player/Core.pwn"
-#include "SS/Core/Player/Accounts.pwn"
-#include "SS/Core/Player/Aliases.pwn"
-#include "SS/Core/Player/ipv4-log.pwn"
-#include "SS/Core/Player/gpci-log.pwn"
-#include "SS/Core/Player/SaveLoad.pwn"
-#include "SS/Core/Player/Spawn.pwn"
-#include "SS/Core/Player/Damage.pwn"
-#include "SS/Core/Player/Death.pwn"
-#include "SS/Core/Player/Tutorial.pwn"
-#include "SS/Core/Player/WelcomeMessage.pwn"
-#include "SS/Core/Player/Chat.pwn"
-#include "SS/Core/Player/CmdProcess.pwn"
-#include "SS/Core/Player/Commands.pwn"
-#include "SS/Core/Player/AfkCheck.pwn"
-#include "SS/Core/Player/AltTabCheck.pwn"
-#include "SS/Core/Player/DisallowActions.pwn"
-#include "SS/Core/Player/ToolTips.pwn"
-#include "SS/Core/Player/Whitelist.pwn"
-#include "SS/Core/Player/IRC.pwn"
-#include "SS/Core/Player/Country.pwn"
+#include "sss/core/player/accounts.pwn"
+#include "sss/core/player/aliases.pwn"
+#include "sss/core/player/ipv4-log.pwn"
+#include "sss/core/player/gpci-log.pwn"
+#include "sss/core/player/gpci-whitelist.pwn"
+#include "sss/core/player/brightness.pwn"
+#include "sss/core/player/spawn.pwn"
+#include "sss/core/player/damage.pwn"
+#include "sss/core/player/death.pwn"
+#include "sss/core/player/tutorial.pwn"
+#include "sss/core/player/welcome-message.pwn"
+#include "sss/core/player/chat.pwn"
+#include "sss/core/player/cmd-process.pwn"
+#include "sss/core/player/commands.pwn"
+#include "sss/core/player/afk-check.pwn"
+#include "sss/core/player/alt-tab-check.pwn"
+#include "sss/core/player/disallow-actions.pwn"
+#include "sss/core/player/tool-tips.pwn"
+#include "sss/core/player/whitelist.pwn"
+#include "sss/core/player/irc.pwn"
+#include "sss/core/player/country.pwn"
 
 // CHARACTER SCRIPTS
-#include "SS/Core/Char/Food.pwn"
-#include "SS/Core/Char/Drugs.pwn"
-#include "SS/Core/Char/Clothes.pwn"
-#include "SS/Core/Char/Hats.pwn"
-#include "SS/Core/Char/Inventory.pwn"
-#include "SS/Core/Char/Animations.pwn"
-#include "SS/Core/Char/MeleeItems.pwn"
-#include "SS/Core/Char/KnockOut.pwn"
-#include "SS/Core/Char/Disarm.pwn"
-#include "SS/Core/Char/Overheat.pwn"
-#include "SS/Core/Char/Holster.pwn"
-#include "SS/Core/Char/Infection.pwn"
-#include "SS/Core/Char/Backpack.pwn"
-#include "SS/Core/Char/HandCuffs.pwn"
-#include "SS/Core/Char/Medical.pwn"
-#include "SS/Core/Char/AimShout.pwn"
-#include "SS/Core/Char/Masks.pwn"
-#include "SS/Core/Char/Bleed.pwn"
+#include "sss/core/char/food.pwn"
+#include "sss/core/char/drugs.pwn"
+#include "sss/core/char/clothes.pwn"
+#include "sss/core/char/hats.pwn"
+#include "sss/core/char/inventory.pwn"
+#include "sss/core/char/animations.pwn"
+#include "sss/core/char/knockout.pwn"
+#include "sss/core/char/disarm.pwn"
+#include "sss/core/char/overheat.pwn"
+#include "sss/core/char/infection.pwn"
+#include "sss/core/char/backpack.pwn"
+#include "sss/core/char/handcuffs.pwn"
+#include "sss/core/char/medical.pwn"
+#include "sss/core/char/aim-shout.pwn"
+#include "sss/core/char/masks.pwn"
+#include "sss/core/char/bleed.pwn"
 
 // WEAPON
-#include "SS/Core/Weapon/ammunition.pwn"
-#include "SS/Core/Weapon/core.pwn"
-#include "SS/Core/Weapon/interact.pwn"
-#include "SS/Core/Weapon/damage.core.pwn"
-#include "SS/Core/Weapon/damage.firearm.pwn"
-#include "SS/Core/Weapon/damage.melee.pwn"
-#include "SS/Core/Weapon/damage.vehicle.pwn"
-#include "SS/Core/Weapon/damage.explosive.pwn"
-#include "SS/Core/Weapon/damage.world.pwn"
-#include "SS/Core/Weapon/animset.pwn"
-#include "SS/Core/Weapon/misc.pwn"
-#include "SS/Core/Weapon/AntiCombatLog.pwn"
-#include "SS/Core/Weapon/tracer.pwn"
+#include "sss/core/weapon/core.pwn"
+#include "sss/core/weapon/interact.pwn"
+#include "sss/core/weapon/damage-firearm.pwn"
+#include "sss/core/weapon/damage-melee.pwn"
+#include "sss/core/weapon/damage-vehicle.pwn"
+#include "sss/core/weapon/damage-explosive.pwn"
+#include "sss/core/weapon/damage-world.pwn"
+#include "sss/core/weapon/animset.pwn"
+#include "sss/core/weapon/misc.pwn"
+#include "sss/core/weapon/anti-combat-log.pwn"
+#include "sss/core/weapon/tracer.pwn"
+
+// UI
+#include "sss/core/ui/radio.pwn"
+#include "sss/core/ui/tip-text.pwn"
+#include "sss/core/ui/key-actions.pwn"
+#include "sss/core/ui/watch.pwn"
+#include "sss/core/ui/keypad.pwn"
+#include "sss/core/ui/body-preview.pwn"
 
 // WORLD ENTITIES
-#include "SS/Core/World/Fuel.pwn"
-#include "SS/Core/World/Barbecue.pwn"
-#include "SS/Core/World/Defences.pwn"
-#include "SS/Core/World/GraveStone.pwn"
-#include "SS/Core/World/SafeBox.pwn"
-#include "SS/Core/World/Tent.pwn"
-#include "SS/Core/World/Campfire.pwn"
-#include "SS/Core/World/Workbench.pwn"
-#include "SS/Core/World/Emp.pwn"
-#include "SS/Core/World/Explosive.pwn"
-#include "SS/Core/World/Sign.pwn"
-#include "SS/Core/World/SupplyCrate.pwn"
-#include "SS/Core/World/WeaponsCache.pwn"
-#include "SS/Core/World/Loot.pwn"
+#include "sss/core/world/fuel.pwn"
+#include "sss/core/world/barbecue.pwn"
+#include "sss/core/world/defences.pwn"
+#include "sss/core/world/gravestone.pwn"
+#include "sss/core/world/safebox.pwn"
+#include "sss/core/world/tent.pwn"
+#include "sss/core/world/campfire.pwn"
+#include "sss/core/world/emp.pwn"
+#include "sss/core/world/explosive.pwn"
+#include "sss/core/world/sign.pwn"
+#include "sss/core/world/supply-crate.pwn"
+#include "sss/core/world/weapons-cache.pwn"
+#include "sss/core/world/loot.pwn"
+#include "sss/core/world/craft-construct.pwn"
+#include "sss/core/world/workbench.pwn"
+#include "sss/core/world/machine.pwn"
+#include "sss/core/world/scrap-machine.pwn"
+#include "sss/core/world/refine-machine.pwn"
 
 // ADMINISTRATION TOOLS
-#include "SS/Core/Admin/Report.pwn"
-#include "SS/Core/Admin/Report_cmds.pwn"
-#include "SS/Core/Admin/HackDetect.pwn"
-#include "SS/Core/Admin/HackTrap.pwn"
-#include "SS/Core/Admin/Ban.pwn"
-#include "SS/Core/Admin/BanCommand.pwn"
-#include "SS/Core/Admin/BanList.pwn"
-#include "SS/Core/Admin/Spectate.pwn"
-#include "SS/Core/Admin/Core.pwn"
-#include "SS/Core/Admin/Level1.pwn"
-#include "SS/Core/Admin/Level2.pwn"
-#include "SS/Core/Admin/Level3.pwn"
-#include "SS/Core/Admin/Level4.pwn"
-#include "SS/Core/Admin/Level5.pwn"
-#include "SS/Core/Admin/BugReport.pwn"
-#include "SS/Core/Admin/detfield.pwn"
-#include "SS/Core/Admin/detfield_cmds.pwn"
-#include "SS/Core/Admin/detfield_draw.pwn"
-#include "SS/Core/Admin/Mute.pwn"
-#include "SS/Core/Admin/Rcon.pwn"
-#include "SS/Core/Admin/Freeze.pwn"
-#include "SS/Core/Admin/NameTags.pwn"
-#include "SS/Core/Admin/FreeCam.pwn"
-#include "SS/Core/Admin/PlayerList.pwn"
+#include "sss/core/admin/report.pwn"
+#include "sss/core/admin/report-cmds.pwn"
+#include "sss/core/admin/hack-detect.pwn"
+#include "sss/core/admin/hack-trap.pwn"
+#include "sss/core/admin/ban.pwn"
+#include "sss/core/admin/ban-command.pwn"
+#include "sss/core/admin/ban-list.pwn"
+#include "sss/core/admin/spectate.pwn"
+#include "sss/core/admin/level1.pwn"
+#include "sss/core/admin/level2.pwn"
+#include "sss/core/admin/level3.pwn"
+#include "sss/core/admin/level4.pwn"
+#include "sss/core/admin/level5.pwn"
+#include "sss/core/admin/bug-report.pwn"
+#include "sss/core/admin/detfield.pwn"
+#include "sss/core/admin/detfield-cmds.pwn"
+#include "sss/core/admin/detfield-draw.pwn"
+#include "sss/core/admin/mute.pwn"
+#include "sss/core/admin/rcon.pwn"
+#include "sss/core/admin/freeze.pwn"
+#include "sss/core/admin/name-tags.pwn"
+#include "sss/core/admin/player-list.pwn"
 
 // ITEMS
-#include "SS/Core/Item/Food.pwn"
-#include "SS/Core/Item/firework.pwn"
-#include "SS/Core/Item/bottle.pwn"
-#include "SS/Core/Item/TntTimeBomb.pwn"
-#include "SS/Core/Item/Sign.pwn"
-#include "SS/Core/Item/shield.pwn"
-#include "SS/Core/Item/HandCuffs.pwn"
-#include "SS/Core/Item/wheel.pwn"
-#include "SS/Core/Item/gascan.pwn"
-#include "SS/Core/Item/armyhelm.pwn"
-#include "SS/Core/Item/zorromask.pwn"
-#include "SS/Core/Item/headlight.pwn"
-#include "SS/Core/Item/pills.pwn"
-#include "SS/Core/Item/dice.pwn"
-#include "SS/Core/Item/armour.pwn"
-#include "SS/Core/Item/injector.pwn"
-#include "SS/Core/Item/TntPhoneBomb.pwn"
-#include "SS/Core/Item/TntTripMine.pwn"
-#include "SS/Core/Item/parachute.pwn"
-#include "SS/Core/Item/molotov.pwn"
-#include "SS/Core/Item/screwdriver.pwn"
-#include "SS/Core/Item/torso.pwn"
-#include "SS/Core/Item/ammotin.pwn"
-#include "SS/Core/Item/tentpack.pwn"
-#include "SS/Core/Item/campfire.pwn"
-#include "SS/Core/Item/cowboyhat.pwn"
-#include "SS/Core/Item/truckcap.pwn"
-#include "SS/Core/Item/boaterhat.pwn"
-#include "SS/Core/Item/bowlerhat.pwn"
-#include "SS/Core/Item/policecap.pwn"
-#include "SS/Core/Item/tophat.pwn"
-#include "SS/Core/Item/herpderp.pwn"
-#include "SS/Core/Item/TntProxMine.pwn"
-#include "SS/Core/Item/IedTimebomb.pwn"
-#include "SS/Core/Item/IedTripMine.pwn"
-#include "SS/Core/Item/IedProxMine.pwn"
-#include "SS/Core/Item/IedPhoneBomb.pwn"
-#include "SS/Core/Item/EmpTimebomb.pwn"
-#include "SS/Core/Item/EmpTripMine.pwn"
-#include "SS/Core/Item/EmpProxMine.pwn"
-#include "SS/Core/Item/EmpPhoneBomb.pwn"
-#include "SS/Core/Item/GasMask.pwn"
-#include "SS/Core/Item/HockeyMask.pwn"
-#include "SS/Core/Item/XmasHat.pwn"
-#include "SS/Core/Item/StunGun.pwn"
-#include "SS/Core/Item/note.pwn"
-#include "SS/Core/Item/SeedBag.pwn"
-#include "SS/Core/Item/PlantPot.pwn"
-#include "SS/Core/Item/HeartShapedBox.pwn"
+#include "sss/core/item/food.pwn"
+#include "sss/core/item/firework.pwn"
+#include "sss/core/item/bottle.pwn"
+#include "sss/core/item/tnttimebomb.pwn"
+#include "sss/core/item/sign.pwn"
+#include "sss/core/item/shield.pwn"
+#include "sss/core/item/handcuffs.pwn"
+#include "sss/core/item/wheel.pwn"
+#include "sss/core/item/gascan.pwn"
+#include "sss/core/item/armyhelm.pwn"
+#include "sss/core/item/zorromask.pwn"
+#include "sss/core/item/headlight.pwn"
+#include "sss/core/item/pills.pwn"
+#include "sss/core/item/dice.pwn"
+#include "sss/core/item/armour.pwn"
+#include "sss/core/item/injector.pwn"
+#include "sss/core/item/tntphonebomb.pwn"
+#include "sss/core/item/tnttripmine.pwn"
+#include "sss/core/item/parachute.pwn"
+#include "sss/core/item/molotov.pwn"
+#include "sss/core/item/screwdriver.pwn"
+#include "sss/core/item/torso.pwn"
+#include "sss/core/item/ammotin.pwn"
+#include "sss/core/item/tentpack.pwn"
+#include "sss/core/item/campfire.pwn"
+#include "sss/core/item/cowboyhat.pwn"
+#include "sss/core/item/truckcap.pwn"
+#include "sss/core/item/boaterhat.pwn"
+#include "sss/core/item/bowlerhat.pwn"
+#include "sss/core/item/policecap.pwn"
+#include "sss/core/item/tophat.pwn"
+#include "sss/core/item/herpderp.pwn"
+#include "sss/core/item/tntproxmine.pwn"
+#include "sss/core/item/iedtimebomb.pwn"
+#include "sss/core/item/iedtripmine.pwn"
+#include "sss/core/item/iedproxmine.pwn"
+#include "sss/core/item/iedphonebomb.pwn"
+#include "sss/core/item/emptimebomb.pwn"
+#include "sss/core/item/emptripmine.pwn"
+#include "sss/core/item/empproxmine.pwn"
+#include "sss/core/item/empphonebomb.pwn"
+#include "sss/core/item/gasmask.pwn"
+#include "sss/core/item/hockeymask.pwn"
+#include "sss/core/item/xmashat.pwn"
+#include "sss/core/item/stungun.pwn"
+#include "sss/core/item/note.pwn"
+#include "sss/core/item/seedbag.pwn"
+#include "sss/core/item/plantpot.pwn"
+#include "sss/core/item/heartshapedbox.pwn"
+#include "sss/core/item/fishingrod.pwn"
 
 // GAME DATA LOADING
-#include "SS/Data/Loot.pwn"
-#include "SS/Data/Vehicle.pwn"
-//#include "SS/Data/Weapon.pwn"
+#include "sss/data/loot.pwn" // todo: load from file
 
 
 // POST-CODE
 
-#include "SS/Core/Server/Autosave.pwn"
-#tryinclude "ss/extensions/ext_post.pwn"
+#include "sss/core/server/auto-save.pwn"
+#tryinclude "sss/extensions/ext_post.pwn"
 
 // WORLD
 
-#include "SS/World/World.pwn"
+#include "sss/world/world.pwn"
 
-#if !defined gMapName
-	#error World script MUST have a "gMapName" variable!
+#if !defined GetMapName
+	#error World script MUST have a "GetMapName" function!
 #endif
 
 #if !defined GenerateSpawnPoint
@@ -553,26 +625,18 @@ new stock
 #endif
 
 
+static
+Text:RestartCount = Text:INVALID_TEXT_DRAW;
+
 main()
 {
 	print("\n\n/*==============================================================================\n\n");
 	print("    Southclaw's Scavenge and Survive");
+	print("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	print("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	print("        and you are welcome to redistribute it under certain conditions.");
+	print("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
 	print("\n\n==============================================================================*/\n\n");
-
-	new itemtypename[ITM_MAX_NAME];
-
-	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
-	{
-		if(!IsValidItemType(i))
-			break;
-
-		if(GetItemTypeCount(i) == 0)
-			continue;
-
-		GetItemTypeUniqueName(i, itemtypename);
-
-		printf("[%03d] Spawned %04d '%s'", _:i, GetItemTypeCount(i), itemtypename);
-	}
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -586,6 +650,8 @@ OnGameModeInit_Setup()
 	print("\n[OnGameModeInit_Setup] Setting up...");
 
 	Streamer_ToggleErrorCallback(true);
+	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
+
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
@@ -602,19 +668,31 @@ OnGameModeInit_Setup()
 
 	LoadSettings();
 
-	SendRconCommand(sprintf("mapname %s", gMapName));
+	SendRconCommand(sprintf("mapname %s", GetMapName()));
 
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
 	GLOBAL_DEBUG = debug_register_handler("GLOBAL", gGlobalDebugLevel);
+
+	RestartCount				=TextDrawCreate(430.000000, 10.000000, "Server Restart In:~n~00:00");
+	TextDrawAlignment			(RestartCount, 2);
+	TextDrawBackgroundColor		(RestartCount, 255);
+	TextDrawFont				(RestartCount, 1);
+	TextDrawLetterSize			(RestartCount, 0.400000, 2.000000);
+	TextDrawColor				(RestartCount, -1);
+	TextDrawSetOutline			(RestartCount, 1);
+	TextDrawSetProportional		(RestartCount, 1);
 }
 
 public OnGameModeExit()
 {
 	print("\n[OnGameModeExit] Shutting down...");
 
-	new File:f = fopen("nonexistentfile", io_read), _s[1];
-	fread(f, _s);
-	fclose(f);
+	if(gCrashOnExit)
+	{
+		new File:f = fopen("nonexistentfile", io_read), _s[1];
+		fread(f, _s);
+		fclose(f);
+	}
 
 	return 1;
 }
@@ -645,11 +723,11 @@ RestartGamemode()
 	SendRconCommand("gmx");
 
 	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
+	MsgAll(ORANGE, "Scavenge and Survive");
+	MsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	MsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	MsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
+	MsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, " ");
 	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");

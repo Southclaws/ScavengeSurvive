@@ -1,8 +1,8 @@
 # Scavenge and Survive gamemode script for SA:MP
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![GPL-V3](http://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/copyleft/gpl.html)[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
 
 Support the development of this mod by donating. I can put more time into adding new features!
-[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
+
 
 ## A PvP SA:MP server script built upon the SIF framework.
 
@@ -13,8 +13,8 @@ The overall objective is to build a stable community and defend it from players
 with more hostile intentions.
 
 Items spawn around the map in various places categorised by type, rarity and
-location. Vehicles are rare and spawn with damaged engines, tires or locked,
-they will usually spawn with loot inside the trunk.
+location. Vehicles are rare and spawn with damaged engines or tires and will
+usually spawn with loot inside the trunk.
 
 No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required
@@ -24,18 +24,12 @@ to access the gamemode-specific features.
 ## Development
 
 The gamemode is written in a modular fashion, borrowing a lot of concepts from
-object-oriented programming. Removing some features can be as simple as removing
-an #include line.
-
-The "World" scripts are separated and can be completely replaced for a new map.
-
-An API is in the works that will allow developers to fully control and
-manipulate the gamemode without needing to edit it in any way; allowing for
-easy, conflict free updating from the master branch.
+object-oriented programming. The "World" scripts are separated and can be
+completely replaced for a new map.
 
 I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
-creations are made!
+creations are made! Please publish all bug fixes in order to benefit everyone.
 
 
 ## Setup
@@ -47,7 +41,7 @@ creations are made!
 
 2. **"/scriptfiles/" directory**
 
- Rename "scriptfiles-folder-structure-and-readmes" to just "scriptfiles".
+ Rename "scriptfiles-folder" to just "scriptfiles".
  The reason this folder has this name is because I don't want my actual
  scriptfiles folder on the repo as it contains various things I don't wish to
  share (such as user accounts and data for the test server) this may change.
@@ -69,29 +63,23 @@ creations are made!
  public server:
 
         filterscripts object-loader rcon
-        plugins streamer sscanf CTime Whirlpool FileManager dns
+        plugins streamer sscanf CTime Whirlpool FileManager irc
 
-5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.json"_ file**
+5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.ini"_ file**
 
- This will not self-create if absent due to SAMPSON not having write API.
+ This is an INI file with game settings that will self-create if absent.
  Not all settings must be present, here is an example:
  ```
- {
-   "player":
-   {
-     "allow-pause-map":1,
-     "combat-log-window":60,
-     "nametag-distance":5.000000,
-     "vehicle-surfing":1
-   },
-   "server":
-   {
-     "max-uptime":3600,
-     "motd":"Welcome to Southclaw's Scavenge and Survive!"
-   }
- }
+ player/max-tab-out-time=600000
+ player/combat-log-window=30
+ player/interior-entry=0
+ autosave/autosave-toggle=1
+ autosave/autosave-interval=60000
+ vehicle-spawn/spawn-chance=5.0
  ```
 
 6. **Enjoy!**
 
- Do whatever you want with it, but keep my name on it :)
+ ~~Do whatever you want with it, but keep my name on it :)~~
+
+ My lax approach to licensing doesn't apply any more! I use GPL now so read the LICENSE file for usage rights etc. :)
