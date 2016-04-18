@@ -28,7 +28,7 @@
 static
 	lock_Status				[MAX_VEHICLES],
 	lock_LastChange			[MAX_VEHICLES],
-	lock_DisableForPlayer	[MAX_PLAYERS] = {true, ...};
+	lock_EnableForPlayer	[MAX_PLAYERS] = {true, ...};
 
 
 hook OnVehicleCreated(vehicleid)
@@ -45,7 +45,7 @@ hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	lock_DisableForPlayer[playerid] = true;
+	lock_EnableForPlayer[playerid] = true;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -94,7 +94,7 @@ hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehArea] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	if(!lock_Status[vehicleid] && lock_DisableForPlayer[playerid])
+	if(!lock_Status[vehicleid] && lock_EnableForPlayer[playerid])
 	{
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
 	}
@@ -164,7 +164,7 @@ stock TogglePlayerVehicleEntry(playerid, bool:toggle)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	lock_DisableForPlayer[playerid] = toggle;
+	lock_EnableForPlayer[playerid] = toggle;
 
 	return 1;
 }
