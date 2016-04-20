@@ -295,7 +295,12 @@ _wb_ClearWorkbench(workbenchid)
 	for(new i; i < wb_Data[workbenchid][wb_count]; i++)
 	{
 		DestroyItem(wb_SelectedItems[workbenchid][i][cft_selectedItemID]);
+		wb_ItemWorkbench[wb_SelectedItems[workbenchid][i][cft_selectedItemID]] = -1;
+		wb_SelectedItems[workbenchid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+		wb_SelectedItems[workbenchid][i][cft_selectedItemID] = INVALID_ITEM_ID;
 	}
+
+	wb_Data[workbenchid][wb_count] = 0;
 }
 
 _wb_CreateResult(workbenchid, craftset)
