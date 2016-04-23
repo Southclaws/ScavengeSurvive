@@ -44,7 +44,7 @@ LoadSettings()
 	GetSettingInt("server/crash-on-exit", true, gCrashOnExit);
 
 	GetSettingStringArray("server/rules", "Please update the 'server/rules' array in '"SETTINGS_FILE"'.", MAX_RULE, gRuleList, gTotalRules, MAX_RULE_LEN);
-	GetSettingStringArray("server/staff", "StaffName", 3, gStaffList, gTotalStaff, MAX_STAFF_LEN);
+	GetSettingStringArray("server/staff", "StaffName", MAX_STAFF, gStaffList, gTotalStaff, MAX_STAFF_LEN);
 
 	GetSettingInt("server/max-uptime", 18000, gServerMaxUptime);
 	GetSettingInt("player/allow-pause-map", 0, gPauseMap);
@@ -167,7 +167,14 @@ stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, prin
 		if(!file_IsKey(tmpkey))
 		{
 			if(outputtotal == 0)
-				printf("ERROR: key '%s' not found.", tmpkey);
+			{
+				file_SetInt(tmpkey, defaultvalue);
+				file_Save(SETTINGS_FILE);
+				output[0] = defaultvalue;
+
+				if(printsetting)
+					printf("[DEFAULT] %s: %d", tmpkey, output[0]);
+			}
 
 			break;
 		}
@@ -193,7 +200,14 @@ stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &out
 		if(!file_IsKey(tmpkey))
 		{
 			if(outputtotal == 0)
-				printf("ERROR: key '%s' not found.", tmpkey);
+			{
+				file_SetFloat(tmpkey, defaultvalue);
+				file_Save(SETTINGS_FILE);
+				output[0] = defaultvalue;
+
+				if(printsetting)
+					printf("[DEFAULT] %s: %f", tmpkey, output[0]);
+			}
 
 			break;
 		}
@@ -220,9 +234,13 @@ stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtota
 		{
 			if(outputtotal == 0)
 			{
-				printf("ERROR: key '%s' not found.", tmpkey);
+				file_SetStr(tmpkey, defaultvalue);
+				file_Save(SETTINGS_FILE);
 				output[0][0] = EOS;
 				strcat(output[0], defaultvalue, outputmaxsize);
+
+				if(printsetting)
+					printf("[DEFAULT] %s: %s", tmpkey, output[0]);
 			}
 
 			break;
