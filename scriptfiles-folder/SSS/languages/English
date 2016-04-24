@@ -64,3 +64,6 @@ REFUELLING=Refuelling...
 TENTREMOVE=Removing tent...
 NEEDWORKBE=You need a workbench to combine those
 NEARBYKEYP=This door is electronically locked controlled by a nearby keypad.
+HOLSTERHOLS=Holstered smth
+HOLSTEREQUI=Equipped Holster
+BAGITEMADDED=Item added to bag
