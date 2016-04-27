@@ -14,3 +14,6 @@ autoissue/
 *.lnk
 gamemodes/sss/extensions/
 gamemodes/ScavengeSurvive.tar.gz
+*.xml
+*.bat
+gamemodes/sss/core/server/anti-cheat.pwn

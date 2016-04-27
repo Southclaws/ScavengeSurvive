@@ -53,8 +53,8 @@ timer ShowWelcomeMessage[1000](playerid, count)
 
 	strcat(str,
 		"Avoid attacking unarmed players, they frighten easily but will return, and in greater numbers...\n\n\n\n\n\
-		"C_TEAL"Please take some time to look at the "C_BLUE"/rules "C_TEAL"and "C_BLUE"/help "C_TEAL"before diving into the game.\n\n\n\
-		Visit "C_YELLOW"scavenge-survive.wikia.com "C_TEAL"for more information.\n\n\n");
+		Please take some time to look at the /rules and /help before diving into the game.\n\n\n\
+		"C_YELLOW"Visit wiki.scavengesurvive.com for more information.\n\n\n");
 
 	if(count == 0)
 	{
