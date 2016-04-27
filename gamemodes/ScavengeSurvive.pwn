@@ -439,7 +439,7 @@ new stock
 #include "sss/core/vehicle/repair.pwn"
 #include "sss/core/vehicle/lock-break.pwn"
 #include "sss/core/vehicle/locksmith.pwn"
-#include "sss/core/vehicle/carmour.pwn"
+//#include "sss/core/vehicle/carmour.pwn" // maybe later...
 #include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/anti-ninja.pwn"
 #include "sss/core/vehicle/bike-collision.pwn"
@@ -450,7 +450,6 @@ new stock
 #include "sss/core/player/aliases.pwn"
 #include "sss/core/player/ipv4-log.pwn"
 #include "sss/core/player/gpci-log.pwn"
-#include "sss/core/player/gpci-whitelist.pwn"
 #include "sss/core/player/brightness.pwn"
 #include "sss/core/player/spawn.pwn"
 #include "sss/core/player/damage.pwn"
@@ -464,7 +463,6 @@ new stock
 #include "sss/core/player/alt-tab-check.pwn"
 #include "sss/core/player/disallow-actions.pwn"
 #include "sss/core/player/tool-tips.pwn"
-#include "sss/core/player/whitelist.pwn"
 #include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
 

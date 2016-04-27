@@ -276,18 +276,6 @@ LoadAccount(playerid)
 		return 4;
 	}
 
-	if(IsWhitelistActive())
-	{
-		Msg(playerid, YELLOW, " >  Whitelist active.");
-
-		if(!IsPlayerInWhitelist(playerid))
-		{
-			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
-			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, lastlog);
-			return 3;
-		}
-	}
-
 	SetPlayerBitFlag(playerid, Alive, alive);
 	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = true;
@@ -346,17 +334,6 @@ CreateAccount(playerid, password[])
 	}
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
-
-	if(IsWhitelistActive())
-	{
-		Msg(playerid, YELLOW, " >  Whitelist active.");
-		if(!IsPlayerInWhitelist(playerid))
-		{
-			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
-			WhitelistKick(playerid);
-			return 0;
-		}
-	}
 
 	CheckAdminLevel(playerid);
 
