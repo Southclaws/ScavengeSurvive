@@ -214,10 +214,11 @@ timer LoadAccountDelay[5000](playerid)
 		Login(playerid);
 	}
 
-	if(loadresult == 3) // Account does exist, but not in whitelist
+	// Maybe reorder LoadAccount values?
+	/*if(loadresult == 3) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
-	}
+	}*/
 
 	if(loadresult == 4) // Account does exists, but is disabled
 	{

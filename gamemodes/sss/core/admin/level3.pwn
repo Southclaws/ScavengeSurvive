@@ -29,7 +29,6 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
-	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/whitelist - add/remove name or turn whitelist on/off\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/spec /free - spectate and freecam\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/ip - get a player's IP\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/vehicle - vehicle control (duty only)\n");
@@ -39,115 +38,6 @@ hook OnGameModeInit()
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/resetpassword - reset a password\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/setactive - (de)activate accounts\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/delete(items/tents/defences/signs) - delete things\n");
-}
-
-
-/*==============================================================================
-
-	Add to/remove from/query/toggle the whitelist feature
-
-==============================================================================*/
-
-
-ACMD:whitelist[3](playerid, params[])
-{
-	new
-		command[7],
-		name[MAX_PLAYER_NAME];
-
-	if(sscanf(params, "s[7]S()[24]", command, name))
-	{
-		MsgF(playerid, YELLOW, " >  Usage: /whitelist [add/remove/on/off/auto/list] - the whitelist is currently %s (auto: %s)", IsWhitelistActive() ? ("on") : ("off"), IsWhitelistAuto() ? ("on") : ("off"));
-		return 1;
-	}
-
-	if(!strcmp(command, "add", true))
-	{
-		if(isnull(name))
-		{
-			Msg(playerid, YELLOW, " >  Usage /whitelist add [name]");
-			return 1;
-		}
-
-		new result = AddNameToWhitelist(name);
-
-		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Added "C_BLUE"%s "C_YELLOW"to whitelist.", name);
-
-		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is already "C_YELLOW"in the whitelist.");
-
-		if(result == -1)
-			Msg(playerid, RED, " >  An error occurred.");
-	}
-	else if(!strcmp(command, "remove", true))
-	{
-		if(isnull(name))
-		{
-			Msg(playerid, YELLOW, " >  Usage /whitelist remove [name]");
-			return 1;
-		}
-
-		new result = RemoveNameFromWhitelist(name);
-
-		if(result == 1)
-			MsgF(playerid, YELLOW, " >  Removed "C_BLUE"%s "C_YELLOW"from whitelist.", name);
-
-		if(result == 0)
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist.");
-
-		if(result == -1)
-			Msg(playerid, RED, " >  An error occurred.");
-	}
-	else if(!strcmp(command, "on", true))
-	{
-		MsgAdmins(1, YELLOW, " >  Whitelist activated, only whitelisted players may join.");
-		ToggleWhitelist(true);
-	}
-	else if(!strcmp(command, "off", true))
-	{
-		MsgAdmins(1, YELLOW, " >  Whitelist deactivated, anyone may join the server.");
-		ToggleWhitelist(false);
-	}
-	else if(!strcmp(command, "auto", true))
-	{
-		if(!IsWhitelistAuto())
-		{
-			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle activated.");
-			ToggleAutoWhitelist(true);
-
-			// UpdateSetting("whitelist-auto-toggle", 0);
-		}
-		else
-		{
-			MsgAdmins(1, YELLOW, " >  Whitelist automatic toggle deactivated.");
-			ToggleAutoWhitelist(false);
-
-			// UpdateSetting("whitelist-auto-toggle", 0);
-		}
-	}
-	else if(!strcmp(command, "?", true))
-	{
-		if(IsNameInWhitelist(name))
-			Msg(playerid, YELLOW, " >  That name "C_BLUE"is "C_YELLOW"in the whitelist.");
-
-		else
-			Msg(playerid, YELLOW, " >  That name "C_ORANGE"is not "C_YELLOW"in the whitelist");
-	}
-	else if(!strcmp(command, "list", true))
-	{
-		new list[(MAX_PLAYER_NAME + 1) * MAX_PLAYERS];
-
-		foreach(new i : Player)
-		{
-			GetPlayerName(i, name, MAX_PLAYER_NAME);
-			format(list, sizeof(list), "%s%C%s\n", list, IsPlayerInWhitelist(i) ? (GREEN) : (RED), name);
-		}
-
-		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close");
-	}
-
-	return 1;
 }
 
 
