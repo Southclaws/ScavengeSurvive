@@ -439,7 +439,7 @@ new stock
 #include "sss/core/vehicle/repair.pwn"
 #include "sss/core/vehicle/lock-break.pwn"
 #include "sss/core/vehicle/locksmith.pwn"
-#include "sss/core/vehicle/carmour.pwn"
+//#include "sss/core/vehicle/carmour.pwn" // maybe later...
 #include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/anti-ninja.pwn"
 #include "sss/core/vehicle/bike-collision.pwn"
