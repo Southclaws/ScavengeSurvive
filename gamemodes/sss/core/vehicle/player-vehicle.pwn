@@ -656,7 +656,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 		return 0;
 	}
 
-	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+	//MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
 
 	_SaveVehicle(vehicleid);
 
@@ -674,7 +674,7 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 
 	_UpdatePlayerVehicle(playerid, vehicleid);
 
-	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+	//MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
 
 	return;
 }
