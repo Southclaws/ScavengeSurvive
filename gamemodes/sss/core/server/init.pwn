@@ -1788,9 +1788,9 @@ public OnScriptInit()
 
 
 	// DEFINING VEHICLE ARMOUR TYPES
-	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
-	SetVehicleTypeCarmour(veht_APC30, "APC30");
-	SetVehicleTypeCarmour(veht_Doomride, "Doomride");
+	//SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
+	//SetVehicleTypeCarmour(veht_APC30, "APC30");
+	//SetVehicleTypeCarmour(veht_Doomride, "Doomride");
 
 	return 1;
 }
