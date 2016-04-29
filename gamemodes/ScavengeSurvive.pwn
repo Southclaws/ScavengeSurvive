@@ -113,6 +113,7 @@ public OnGameModeInit()
 ==============================================================================*/
 
 #include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
+#include <sampac>
 #include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
 #include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
 #include <YSI\y_va>

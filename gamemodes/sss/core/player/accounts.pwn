@@ -398,11 +398,10 @@ DisplayLoginPrompt(playerid, badpass = 0)
 
 	if(badpass)
 		format(str, 128, "Incorrect password! %d out of 5 tries", acc_LoginAttempts[playerid]);
-
 	else
 		format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
 
-	logf("[LOGPROMPT] %p is logging in", playerid);
+	logf("[LOGPROMPT] %p is logging in.", playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{

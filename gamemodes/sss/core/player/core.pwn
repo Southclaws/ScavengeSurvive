@@ -195,7 +195,7 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(loadresult == -1) // LoadAccount aborted, kick player.
 	{
-		KickPlayer(playerid, "Account load failed");
+		KickPlayer(playerid, "Account load failed.");
 		return;
 	}
 
@@ -206,12 +206,18 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(loadresult == 1) // Account does exist, prompt login
 	{
-		DisplayLoginPrompt(playerid);
+		if(IsPlayerUsingSampAC(playerid))
+			DisplayLoginPrompt(playerid);
+		else
+			KickPlayer(playerid, "You are not using the anti-cheat. (Download at 'samp-ac.com')");
 	}
 
 	if(loadresult == 2) // Account does exist, auto login
 	{
-		Login(playerid);
+		if(IsPlayerUsingSampAC(playerid))
+			Login(playerid);
+		else
+			KickPlayer(playerid, "You are not using the anti-cheat. (Download at 'samp-ac.com')");
 	}
 
 	// Maybe reorder LoadAccount values?
@@ -222,7 +228,7 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(loadresult == 4) // Account does exists, but is disabled
 	{
-		KickPlayer(playerid, "Account inactive");
+		KickPlayer(playerid, "This account is disabled.");
 	}
 
 	CheckForExtraAccounts(playerid);

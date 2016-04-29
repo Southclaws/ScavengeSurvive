@@ -143,7 +143,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Stats[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Stats[playerid], 480.000000, 0.000000);
 
-		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, "To exit the tutorial, type /exit. If you can only see the tutorial button:~n~~n~This server uses an anti-cheat program. To play, you must download this from ~y~ac.scavengesurvive.com then you can play unrestricted.");
+		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, "To exit the tutorial, type /exit. If you can only see the tutorial button:~n~~n~This server uses an anti-cheat program. To play, you must download this from ~y~samp-ac.com then you can play unrestricted.");
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Exit[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Exit[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Exit[playerid], 0.300000, 1.500000);

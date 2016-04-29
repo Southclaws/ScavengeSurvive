@@ -187,7 +187,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 PlayerCreateNewCharacter(playerid)
 {
-	logf("[NEWCHAR] %p creating new character", playerid);
+	logf("[NEWCHAR] %p is creating a new character.", playerid);
 
 	SetPlayerPos(playerid, DEFAULT_POS_X + 5, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
@@ -203,8 +203,16 @@ PlayerCreateNewCharacter(playerid)
 
 	if(IsPlayerLoggedIn(playerid))
 	{
-		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
-		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
+		if(IsPlayerUsingSampAC(playerid))
+		{
+			PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
+			PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
+		}
+		else
+		{
+			Msg(playerid, RED, " >  In order to create a new character you need to be using the Anti-Cheat.");
+			Msg(playerid, RED, " >  Exit the game and download the client at 'samp-ac.com'.");
+		}
 		SelectTextDraw(playerid, 0xFFFFFF88);
 	}
 
