@@ -526,6 +526,7 @@ new stock
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
 #include "sss/core/world/refine-machine.pwn"
+#include "sss/core/world/tree.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
@@ -602,6 +603,7 @@ new stock
 #include "sss/core/item/plantpot.pwn"
 #include "sss/core/item/heartshapedbox.pwn"
 #include "sss/core/item/fishingrod.pwn"
+#include "sss/core/item/chainsaw.pwn"
 
 // GAME DATA LOADING
 #include "sss/data/loot.pwn" // todo: load from file
