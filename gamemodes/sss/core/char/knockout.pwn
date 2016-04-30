@@ -87,6 +87,7 @@ stock KnockOutPlayer(playerid, duration)
 
 	printf("[KNOCKOUT] Player %p knocked out for %s", playerid, MsToString(duration, "%1m:%1s.%1d"));
 
+	ShowPlayerProgressBar(playerid, KnockoutBar);
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -100,9 +101,6 @@ stock KnockOutPlayer(playerid, duration)
 	}
 	else
 	{
-	    ShowPlayerProgressBar(playerid, KnockoutBar);
-		SetPlayerProgressBarValue(playerid, KnockoutBar, 0.0);
-	
 		knockout_Tick[playerid] = GetTickCount();
 		knockout_Duration[playerid] = duration;
 		knockout_KnockedOut[playerid] = true;
@@ -117,8 +115,6 @@ stock KnockOutPlayer(playerid, duration)
 
 	if(knockout_Duration[playerid] > knockout_MaxDuration)
 		knockout_Duration[playerid] = knockout_MaxDuration;
-
-	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
 
 	CallLocalFunction("OnPlayerKnockOut", "d", playerid);
 
@@ -187,7 +183,7 @@ timer KnockOutUpdate[100](playerid)
 	}
 
 	SetPlayerProgressBarValue(playerid, KnockoutBar, GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]));
-	ShowPlayerProgressBar(playerid, KnockoutBar);
+	SetPlayerProgressBarMaxValue(playerid, KnockoutBar, knockout_Duration[playerid]);
 
 	//ShowActionText(playerid, sprintf("%s/%s", MsToString(GetTickCountDifference(GetTickCount(), knockout_Tick[playerid]), "%1m:%1s.%1d"), MsToString(knockout_Duration[playerid], "%1m:%1s.%1d")));
 
