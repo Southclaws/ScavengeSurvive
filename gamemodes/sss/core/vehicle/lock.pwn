@@ -164,7 +164,7 @@ stock TogglePlayerVehicleEntry(playerid, bool:toggle)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	lock_DisableForPlayer[playerid] = toggle;
+	lock_DisableForPlayer[playerid] = !toggle;
 
 	return 1;
 }
