@@ -30,26 +30,27 @@
 new
 	tr_LastTreeIndex[MAX_PLAYERS] = {INVALID_TREE_INDEX, ...};
 
+
 public OnPlayerEnterTreeArea(playerid, tree_index)
 {
-    if(!IsValidTree(tree_index))
-        return 0;
+	if(!IsValidTree(tree_index))
+		return 0;
 
-    tr_LastTreeIndex[playerid] = tree_index;
+	tr_LastTreeIndex[playerid] = tree_index;
 	return 1;
 }
 public OnPlayerLeaveTreeArea(playerid, tree_index)
 {
-    if(!IsValidTree(tree_index))
-        return 0;
-        
-    tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
+	if(!IsValidTree(tree_index))
+		return 0;
+		
+	tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
 	return 1;
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-    tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
+	tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -58,19 +59,19 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(GetItemType(GetPlayerItem(playerid)) == item_Chainsaw)
 	{
-	    if(IsPlayerKnockedOut(playerid))
+		if(IsPlayerKnockedOut(playerid))
 			return 0;
 	
-	    if(tr_LastTreeIndex[playerid] == INVALID_TREE_INDEX)
-	        return 0;
-	        
+		if(tr_LastTreeIndex[playerid] == INVALID_TREE_INDEX)
+			return 0;
+			
 		if(newkeys == 16)
 		{
 			_StartWoodCutting(playerid, tr_LastTreeIndex[playerid]);
 		}
 		if(oldkeys == 16)
 		{
-            _StopWoodCutting(playerid);
+			_StopWoodCutting(playerid);
 		}
 	}
 	return 1;
@@ -82,24 +83,24 @@ hook OnHoldActionUpdate(playerid, progress)
 
 	if(tr_LastTreeIndex[playerid] != INVALID_TREE_INDEX)
 	{
-	    new
+		new
 			t_Index = tr_LastTreeIndex[playerid];
 			
-        if(!IsValidTree(t_Index))
-        {
-            _StopWoodCutting(playerid);
-            tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
-            return 1;
-        }
+		if(!IsValidTree(t_Index))
+		{
+			_StopWoodCutting(playerid);
+			tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
+			return 1;
+		}
 
-  		SetTreeHealth(t_Index, GetTreeHealth(t_Index) - (species_GetTreeChopDamage(GetTreeCategory(t_Index)) / 10) ); // divide it by 10, because it gets called every 100 mseconds not 1000
+		SetTreeHealth(t_Index, GetTreeHealth(t_Index) - (species_GetTreeChopDamage(GetTreeCategory(t_Index)) / 10) ); // divide it by 10, because it gets called every 100 mseconds not 1000
 
 		if(GetTreeHealth(t_Index) <= 0.0)
-  		{
-    		LeanTree(t_Index);
-    		_StopWoodCutting(playerid);
-    		tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
-    	}
+		{
+			LeanTree(t_Index);
+			_StopWoodCutting(playerid);
+			tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -107,19 +108,19 @@ hook OnHoldActionUpdate(playerid, progress)
 
 _StartWoodCutting(playerid, tree_index)
 {
-    new
-        start 	= (1000 * floatround(species_GetTreeMaxHealth(GetTreeCategory(tree_index))) ) 	/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index))),
-        end 	= (1000 * floatround(GetTreeHealth(tree_index))) 								/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index)));
-    
-    StartHoldAction(playerid, start, start - end);
-    
-    SetPlayerToFaceTree(playerid, tree_index);
-    ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
-    
+	new
+		start 	= (1000 * floatround(species_GetTreeMaxHealth(GetTreeCategory(tree_index))) ) 	/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index))),
+		end 	= (1000 * floatround(GetTreeHealth(tree_index))) 								/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index)));
+	
+	StartHoldAction(playerid, start, start - end);
+	
+	SetPlayerToFaceTree(playerid, tree_index);
+	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
+	
 }
 
 _StopWoodCutting(playerid)
 {
-    ClearAnimations(playerid);
-    StopHoldAction(playerid);
+	ClearAnimations(playerid);
+	StopHoldAction(playerid);
 }
