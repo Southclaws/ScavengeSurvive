@@ -1531,6 +1531,14 @@ public OnScriptInit()
 	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
 
 
+	// SUPPLY DROP TYPE DEFINITIONS
+	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
+	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
+	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
+	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
+	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
+
+
 	// SEED TYPE DEFINITIONS
 	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
 	DefineSeedType("Apple", item_RedApple,	5, 802, 0.72044);
@@ -1606,14 +1614,6 @@ public OnScriptInit()
 	loot_MilWepCrate	= DefineLootIndex("scmw");
 	loot_IndustCrate	= DefineLootIndex("scin");
 	loot_OrdnanceCrate	= DefineLootIndex("scor");
-
-
-    // SUPPLY DROP TYPE DEFINITIONS
-	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
-	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);
-	DefineSupplyDropType("Military Weapons",	loot_MilWepCrate,	4200,	1800,	6);
-	DefineSupplyDropType("Industrial Supplies",	loot_IndustCrate,	2000,	900,	5);
-	DefineSupplyDropType("Ordnance Supplies",	loot_OrdnanceCrate,	10800,	10800,	8);
 
 
 	// SKIN DEFINITIONS
