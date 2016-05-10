@@ -338,7 +338,7 @@ stock GetLanguageString(languageid, key[])
 			printf("[GetLanguageString] ERROR: Malformed key '%s' must be alphabetical.", key);
 
 		case 2:
-			printf("[GetLanguageString] ERROR: Key not found: '%s'", key);
+			printf("[GetLanguageString] ERROR: Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
 	}
 
 	return result;
@@ -411,7 +411,7 @@ stock GetLanguageName(languageid, name[])
 		return 0;
 
 	name[0] = EOS;
-	strcat(name, lang_Name[languageid]);
+	strcat(name, lang_Name[languageid], MAX_LANGUAGE_NAME);
 
 	return 1;
 }
