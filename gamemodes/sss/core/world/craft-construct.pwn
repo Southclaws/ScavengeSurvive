@@ -139,22 +139,26 @@ hook OnPlayerUseItem(playerid, itemid)
 
 		if(IsValidCraftSet(craftset))
 		{
-			d:2:HANDLER("[OnPlayerUseItem] Craftset determined as %d", craftset);
-			if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
+			d:2:HANDLER("[OnPlayerUseItem] Craftset determined as %d craftset constructionset %d", craftset, cons_CraftsetConstructSet[craftset]);
+
+			if(cons_CraftsetConstructSet[craftset] != -1)
 			{
-				d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
+				if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
+				{
+					d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
 
-				StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				ShowActionText(playerid, ls(playerid, "CONSTRUCTIN"));
+					StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+					ShowActionText(playerid, ls(playerid, "CONSTRUCTIN"));
 
-				cons_Constructing[playerid] = craftset;
+					cons_Constructing[playerid] = craftset;
 
-				return Y_HOOKS_BREAK_RETURN_1;
-			}
-			else
-			{
-				d:2:HANDLER("[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+					return Y_HOOKS_BREAK_RETURN_1;
+				}
+				else
+				{
+					d:2:HANDLER("[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+				}
 			}
 		}
 	}
