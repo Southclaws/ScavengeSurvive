@@ -29,6 +29,13 @@
 static HANDLER = -1;
 
 
+enum (<<= 1)
+{
+	WEAPON_FLAG_ASSISTED_FIRE_ONCE = 1,	// fired once by server fire key event.
+	WEAPON_FLAG_ASSISTED_FIRE,			// fired repeatedly while key pressed.
+	WEAPON_FLAG_ONLY_FIRE_AIMED			// only run a fire event while RMB held.
+}
+
 enum E_ITEM_WEAPON_DATA
 {
 ItemType:	itmw_itemType,
@@ -37,7 +44,8 @@ ItemType:	itmw_itemType,
 Float:		itmw_muzzVelocity,
 			itmw_magSize,
 			itmw_maxReserveMags,
-			itmw_animSet
+			itmw_animSet,
+			itmw_flags
 }
 
 enum // Item array data structure
@@ -103,7 +111,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1)
+stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
 {
 	itmw_Data[itmw_Total][itmw_itemType] = itemtype;
 	itmw_Data[itmw_Total][itmw_baseWeapon] = baseweapon;
@@ -112,6 +120,7 @@ stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvel
 	itmw_Data[itmw_Total][itmw_magSize] = magsize;
 	itmw_Data[itmw_Total][itmw_maxReserveMags] = maxreservemags;
 	itmw_Data[itmw_Total][itmw_animSet] = animset;
+	itmw_Data[itmw_Total][itmw_flags] = flags;
 
 	itmw_ItemTypeWeapon[itemtype] = itmw_Total;
 
@@ -389,29 +398,32 @@ timer _RepeatingFire[100](playerid)
 		return;
 	}
 
-	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER)
+	if(!(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ASSISTED_FIRE))
 	{
-		if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)
-			return;
+		stop itmw_RepeatingFireTimer[playerid];
+		return;
+	}
 
-		new k, ud, lr;
+	if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)
+		return;
 
-		GetPlayerKeys(playerid, k, ud, lr);
+	new k, ud, lr;
 
-		if(k & KEY_FIRE)
-		{
-			magammo -= 5;
-			SetItemWeaponItemMagAmmo(itemid, magammo);
+	GetPlayerKeys(playerid, k, ud, lr);
 
-			if(magammo <= 0)
-				_ReloadWeapon(playerid);
+	if(k & KEY_FIRE)
+	{
+		magammo -= 5;
+		SetItemWeaponItemMagAmmo(itemid, magammo);
 
-			_UpdateWeaponUI(playerid);
-		}
-		else
-		{
-			stop itmw_RepeatingFireTimer[playerid];
-		}
+		if(magammo <= 0)
+			_ReloadWeapon(playerid);
+
+		_UpdateWeaponUI(playerid);
+	}
+	else
+	{
+		stop itmw_RepeatingFireTimer[playerid];
 	}
 
 	return;
@@ -460,7 +472,7 @@ _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:
 
 	SetItemWeaponItemMagAmmo(itemid, magammo);
 
-	if(magammo == 0)
+	if(magammo == 0 && !(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ASSISTED_FIRE_ONCE))
 		_ReloadWeapon(playerid);
 
 	_UpdateWeaponUI(playerid);
@@ -517,9 +529,10 @@ _ReloadWeapon(playerid)
 
 	ResetPlayerWeapons(playerid);
 
-	if(!IsBaseWeaponClipBased(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
+	//if(!IsBaseWeaponClipBased(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
-		d:2:HANDLER("Weapon is not clip based, cancelling reload");
+		d:2:HANDLER("Weapon has no calibre, cancelling reload");
 		return 0;
 	}
 
@@ -550,10 +563,16 @@ _ReloadWeapon(playerid)
 
 _UpdateWeaponUI(playerid)
 {
-	new itemid = GetPlayerItem(playerid);
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
 	d:1:HANDLER("[_UpdateWeaponUI] updating weapon UI for item %d", itemid);
 
-	if(!IsWeaponClipBased(itemid))
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
 		d:2:HANDLER("weapon is not clip based");
 		PlayerTextDrawHide(playerid, WeaponAmmoUI[playerid]);
@@ -564,7 +583,7 @@ _UpdateWeaponUI(playerid)
 
 	new str[8];
 
-	if(itmw_Data[itmw_ItemTypeWeapon[GetItemType(itemid)]][itmw_maxReserveMags] > 0)
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_maxReserveMags] > 0)
 		format(str, 8, "%d/%d", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 
 	else
@@ -610,63 +629,6 @@ hook OnPlayerUnHolsteredItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreate(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/weapon/core.pwn");
-
-	new lootindex = GetItemLootIndex(itemid);
-
-	if(lootindex != -1)
-	{
-		new ItemType:itemtype = GetItemType(itemid);
-
-		if(GetItemTypeWeapon(itemtype) != -1)
-		{
-			if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] != NO_CALIBRE)
-			{
-				new
-					calibre = itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre],
-					ItemType:ammotypelist[4],
-					ammotypes;
-
-				ammotypes = GetAmmoItemTypesOfCalibre(calibre, ammotypelist);
-
-				if(ammotypes > 0)
-				{
-					if(lootindex == loot_Civilian || lootindex == loot_CarCivilian || lootindex == loot_Survivor)
-					{
-						SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]));
-						SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
-					}
-					else if(lootindex == loot_Police || lootindex == loot_Military || lootindex == loot_CarPolice || lootindex == loot_CarMilitary || lootindex == loot_LowWepCrate || lootindex == loot_MilWepCrate)
-					{
-						switch(random(100))
-						{
-							case 00..29: // spawn empty
-							{
-								SetItemWeaponItemMagAmmo(itemid, 0);
-								SetItemWeaponItemAmmoItem(itemid, INVALID_ITEM_TYPE);
-							}
-
-							case 30..49: // spawn with random ammo
-							{
-								SetItemWeaponItemMagAmmo(itemid, random(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize] + 1) - 1);
-								SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
-							}
-
-							case 50..99: // spawn full
-							{
-								SetItemWeaponItemMagAmmo(itemid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
-								SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
 
 /*==============================================================================
 
@@ -693,14 +655,30 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & KEY_FIRE)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new
+			itemid,
+			ItemType:itemtype;
 
-		if(GetItemTypeWeaponBaseWeapon(GetItemType(itemid)) == WEAPON_ROCKETLAUNCHER)
+		itemid = GetPlayerItem(playerid);
+		itemtype = GetItemType(itemid);
+
+		if(IsValidItemType(itemtype))
+			return 1;
+
+		if(GetItemTypeWeapon(itemtype) == -1)
+			return 1;
+
+		if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ONLY_FIRE_AIMED)
+		{
+			if(!(newkeys & KEY_HANDBRAKE))
+				return 1;
+		}
+
+		if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ASSISTED_FIRE_ONCE)
 		{
 			_FireWeapon(playerid, WEAPON_ROCKETLAUNCHER);
 		}
-
-		if(GetItemTypeWeaponBaseWeapon(GetItemType(itemid)) == WEAPON_FLAMETHROWER)
+		else if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ASSISTED_FIRE)
 		{
 			itmw_RepeatingFireTimer[playerid] = repeat _RepeatingFire(playerid);
 		}
@@ -925,34 +903,20 @@ stock GetItemWeaponAnimSet(itemweaponid)
 	return itmw_Data[itemweaponid][itmw_animSet];
 }
 
-stock GetPlayerMagAmmo(playerid)
+// itmw_flags
+stock GetItemWeaponFlags(itemweaponid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(!(0 <= itemweaponid < itmw_Total))
 		return 0;
 
-	return GetItemWeaponItemMagAmmo(GetPlayerItem(playerid));
-}
-
-stock GetPlayerReserveAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return GetItemWeaponItemReserve(GetPlayerItem(playerid));
-}
-
-stock GetPlayerTotalAmmo(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	new itemid = GetPlayerItem(playerid);
-
-	return GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid);
+	return itmw_Data[itemweaponid][itmw_flags];
 }
 
 
-// from itemtype
+/*==============================================================================
+	from itemtype
+==============================================================================*/
+
 
 // itmw_baseWeapon
 stock GetItemTypeWeaponBaseWeapon(ItemType:itemtype)
@@ -1026,125 +990,23 @@ stock GetItemTypeWeaponAnimSet(ItemType:itemtype)
 	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_animSet];
 }
 
-
-// from player
-
-// itmw_baseWeapon
-stock GetPlayerItemWeaponBaseWeapon(playerid)
+// itmw_flags
+stock GetItemTypeWeaponFlags(ItemType:itemtype)
 {
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
 	if(!IsValidItemType(itemtype))
 		return 0;
 
 	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
 		return 0;
 
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon];
-}
-
-// itmw_calibre
-stock GetPlayerItemWeaponCalibre(playerid)
-{
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
-
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre];
-}
-
-// itmw_muzzVelocity
-stock GetPlayerItemWeaponMuzzVelocity(playerid)
-{
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0.0;
-
-	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0.0;
-
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_muzzVelocity];
-}
-
-// itmw_magSize
-stock GetPlayerItemWeaponMagSize(playerid)
-{
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
-
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize];
-}
-
-// itmw_maxReserveMags
-stock GetPlayerItemWeaponMaxResMags(playerid)
-{
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
-
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_maxReserveMags];
-}
-
-// itmw_animSet
-stock GetPlayerItemWeaponAnimSet(playerid)
-{
-	new
-		itemid,
-		ItemType:itemtype;
-
-	itemid = GetPlayerItem(playerid);
-	itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
-
-	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_animSet];
+	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags];
 }
 
 
-// Item array data interface
+/*==============================================================================
+	Item array data interface
+==============================================================================*/
+
 
 // WEAPON_ITEM_ARRAY_CELL_MAG
 stock GetItemWeaponItemMagAmmo(itemid)
@@ -1199,3 +1061,32 @@ stock SetItemWeaponItemAmmoItem(itemid, ItemType:itemtype)
 
 	return SetItemArrayDataAtCell(itemid, _:itemtype, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
 }
+
+// From player
+
+stock GetPlayerMagAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return GetItemWeaponItemMagAmmo(GetPlayerItem(playerid));
+}
+
+stock GetPlayerReserveAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return GetItemWeaponItemReserve(GetPlayerItem(playerid));
+}
+
+stock GetPlayerTotalAmmo(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	new itemid = GetPlayerItem(playerid);
+
+	return GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid);
+}
+

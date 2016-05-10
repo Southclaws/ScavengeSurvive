@@ -505,7 +505,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		new weaponid = GetPlayerItemWeaponBaseWeapon(playerid);
+		new weaponid = GetItemTypeWeaponBaseWeapon(GetItemType(GetPlayerItem(playerid)));
 
 		if(weaponid == 34 || weaponid == 35 || weaponid == 43)
 		{

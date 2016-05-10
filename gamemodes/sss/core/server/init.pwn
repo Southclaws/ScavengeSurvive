@@ -1365,7 +1365,7 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				-1,				0.21,			40,		0);
 	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			-1,				0.08,			37,		0);
 	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				-1,				0.44,			15,		0);
-	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			-1,				0.93,			19,		0);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			calibre_fuel,	0.93,			100,	8,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
 	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				-1,				0.01,			0,		0);
 	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				-1,				0.01,			0,		0);
 	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			-1,				0.01,			0,		0);
@@ -1389,9 +1389,9 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_Tec9,				WEAPON_TEC9,				calibre_9mm,	360.0,			36,		1);
 	DefineItemTypeWeapon(item_SemiAutoRifle,	WEAPON_RIFLE,				calibre_357,	829.0,			5,		1);
 	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	864.0,			5,		1);
-	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			1,		0);
-	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	0.0,			1,		0);
-	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	0.0,			100,	1);
+	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			1,		0,		-1,				WEAPON_FLAG_ASSISTED_FIRE_ONCE | WEAPON_FLAG_ONLY_FIRE_AIMED);
+	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	0.0,			1,		0,		-1,				WEAPON_FLAG_ASSISTED_FIRE_ONCE | WEAPON_FLAG_ONLY_FIRE_AIMED);
+	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	0.0,			100,	1,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
 	DefineItemTypeWeapon(item_Minigun,			WEAPON_MINIGUN,				calibre_556,	853.0,			100,	1);
 	DefineItemTypeWeapon(item_RemoteBomb,		WEAPON_SATCHEL,				-1,				0.0,			1,		1);
 	DefineItemTypeWeapon(item_Detonator,		WEAPON_BOMB,				-1,				0.0,			1,		1);

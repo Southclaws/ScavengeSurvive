@@ -416,6 +416,7 @@ new stock
 #include "sss/core/admin/core.pwn"
 #include "sss/core/char/holster.pwn"
 #include "sss/core/weapon/ammunition.pwn"
+#include "sss/core/weapon/core.pwn"
 #include "sss/core/weapon/damage-core.pwn"
 #include "sss/core/ui/hold-action.pwn"
 #include "sss/core/item/liquid.pwn"
@@ -487,7 +488,7 @@ new stock
 #include "sss/core/char/bleed.pwn"
 
 // WEAPON
-#include "sss/core/weapon/core.pwn"
+#include "sss/core/weapon/loot.pwn"
 #include "sss/core/weapon/interact.pwn"
 #include "sss/core/weapon/damage-firearm.pwn"
 #include "sss/core/weapon/damage-melee.pwn"
