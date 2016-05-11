@@ -373,6 +373,9 @@ hook OnPlayerConstruct(playerid, consset)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConstruct] in /gamemodes/sss/core/world/workbench.pwn");
 
+	if(!IsValidConstructionSet(consset))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
 		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
