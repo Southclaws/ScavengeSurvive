@@ -26,6 +26,7 @@
 
 static stock gs_Buffer[256];
 
+
 stock va_formatex(output[], size = sizeof(output), const fmat[], va_:STATIC_ARGS)
 {
 	new
@@ -81,7 +82,55 @@ stock va_formatex(output[], size = sizeof(output), const fmat[], va_:STATIC_ARGS
 	#emit SCTRL 6
 }
 
-stock Msg(playerid, colour, string[])
+
+/*==============================================================================
+
+	Main Chat Functions
+
+==============================================================================*/
+
+
+stock ChatMsg(playerid, colour, fmat[], va_args<>)
+{
+	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
+	ChatMsgFlat(playerid, colour, gs_Buffer);
+
+	return 1;
+}
+
+stock ChatMsgAll(colour, fmat[], va_args<>)
+{
+	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
+	ChatMsgAllFlat(colour, gs_Buffer);
+
+	return 1;
+}
+
+stock ChatMsgLang(playerid, colour, key[], va_args<>)
+{
+	va_formatex(gs_Buffer, sizeof(gs_Buffer), GetLanguageString(GetPlayerLanguage(playerid), key), va_start<3>);
+	ChatMsgFlat(playerid, colour, gs_Buffer);
+
+	return 1;
+}
+
+stock ChatMsgAdmins(level, colour, fmat[], va_args<>)
+{
+	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
+	ChatMsgAdminsFlat(level, colour, gs_Buffer);
+
+	return 1;
+}
+
+
+/*==============================================================================
+
+	"Flat" Message with no formatting, never actually needs to be used in-code.
+
+==============================================================================*/
+
+
+stock ChatMsgFlat(playerid, colour, string[])
 {
 	if(strlen(string) > 127)
 	{
@@ -104,11 +153,15 @@ stock Msg(playerid, colour, string[])
 		SendClientMessage(playerid, colour, string);
 		SendClientMessage(playerid, colour, string2);
 	}
-	else SendClientMessage(playerid, colour, string);
+	else
+	{
+		SendClientMessage(playerid, colour, string);
+	}
 	
 	return 1;
 }
-stock MsgAll(colour, string[])
+
+stock ChatMsgAllFlat(colour, string[])
 {
 	if(strlen(string) > 127)
 	{
@@ -131,32 +184,17 @@ stock MsgAll(colour, string[])
 		SendClientMessageToAll(colour, string);
 		SendClientMessageToAll(colour, string2);
 	}
-	else SendClientMessageToAll(colour, string);
+	else
+	{
+		SendClientMessageToAll(colour, string);
+	}
 
 	return 1;
 }
 
-
-stock MsgF(playerid, colour, fmat[], va_args<>)
+stock ChatMsgLangFlat(playerid, colour, key[])
 {
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
-	Msg(playerid, colour, gs_Buffer);
-
-	return 1;
-}
-
-stock MsgAllF(colour, fmat[], va_args<>)
-{
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
-	MsgAll(colour, gs_Buffer);
-
-	return 1;
-}
-
-stock MsgAdminsF(level, colour, fmat[], va_args<>)
-{
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
-	MsgAdmins(level, colour, gs_Buffer);
+	ChatMsgFlat(playerid, colour, GetLanguageString(GetPlayerLanguage(playerid), key));
 
 	return 1;
 }

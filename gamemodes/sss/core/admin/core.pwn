@@ -289,7 +289,7 @@ timer KickPlayerDelay[1000](playerid)
 	admin_PlayerKicked[playerid] = false;
 }
 
-MsgAdmins(level, colour, string[])
+ChatMsgAdminsFlat(level, colour, string[])
 {
 	if(level == 0)
 	{
