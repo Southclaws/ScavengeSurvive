@@ -330,6 +330,12 @@ stock GetLanguageString(languageid, key[])
 		result[MAX_LANGUAGE_ENTRY_LENGTH],
 		ret;
 
+	if(!(0 <= languageid < lang_Total))
+	{
+		printf("[GetLanguageString] ERROR: Invalid languageid %d.", languageid);
+		return result;
+	}
+
 	ret = _GetLanguageString(languageid, key, result);
 
 	switch(ret)
