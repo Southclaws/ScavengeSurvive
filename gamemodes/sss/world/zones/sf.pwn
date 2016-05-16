@@ -69,7 +69,7 @@ Load_SF()
 
 SF_District_Housing1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing1' please wait...");
 
 	CreateSaveBlockArea(CreateDynamicCube(-2521.3608, 286.6024, 1035.3081, -2478.7195, 328.1099, 1039.7107), -2499.1262, 315.1892, 29.4147);
 
@@ -657,7 +657,7 @@ SF_District_Housing1()
 }
 SF_District_Housing2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Housing2' please wait...");
 
 	CreateItem(item_Barbecue, -2701.1328, 845.7422, 70.3828, 171.0);
 
@@ -1366,7 +1366,7 @@ SF_District_Housing2()
 }
 SF_District_Bayfront()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Bayfront' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Bayfront' please wait...");
 
 	DefineWeaponsCachePos(-1838.79651, 1543.79602, 6.11533);
 	DefineWeaponsCachePos(-1791.30994, 1543.37488, 6.12531);
@@ -1610,7 +1610,7 @@ SF_District_Bayfront()
 }
 SF_District_City1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_City1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_City1' please wait...");
 
 	new
 		buttonid[2];
@@ -2116,7 +2116,7 @@ SF_District_City1()
 }
 SF_District_City2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_City2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_City2' please wait...");
 
 /*
 	LinkTP(
@@ -2725,7 +2725,7 @@ SF_District_City2()
 }
 SF_District_Naval()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Naval' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Naval' please wait...");
 
 	new buttonid[1];
 
@@ -2784,7 +2784,7 @@ SF_District_Naval()
 }
 SF_District_Police()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Police' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Police' please wait...");
 
 	CreateStaticLootSpawn(-1615.52000, 685.33000, 6.48000,			loot_Police, 10.0);
 	CreateStaticLootSpawn(-1590.78000, 716.26000, -6.15000,			loot_Police, 10.0);
@@ -2794,7 +2794,7 @@ SF_District_Police()
 }
 SF_District_Industrial()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Industrial' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Industrial' please wait...");
 
 	CreateDynamicObject(2002, -1978.52356, 131.39619, 26.68210, 0.00000, 0.00000, 90.00000);
 	CreateDynamic3DTextLabel("XBOX ONE", YELLOW, -1978.52356, 131.39619, 28.2150, 10.0);
@@ -3149,7 +3149,7 @@ SF_District_Industrial()
 }
 SF_District_SfAirport()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_SfAirport' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_SfAirport' please wait...");
 
 	DefineWeaponsCachePos(-1237.20361, 52.09208, 13.13244);
 	DefineWeaponsCachePos(-1279.19019, 45.46248, 13.13572);
@@ -3230,7 +3230,7 @@ SF_District_SfAirport()
 }
 SF_District_MontFoster()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_MontFoster' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_MontFoster' please wait...");
 
 	DefineWeaponsCachePos(-2150.16040, -408.60284, 34.30775);
 	DefineWeaponsCachePos(-1986.81006, -497.92313, 34.31303);
@@ -3572,7 +3572,7 @@ SF_District_MontFoster()
 }
 SF_District_Ship1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship1' please wait...");
 
 	CreateStaticLootSpawn(-2401.805908, 1551.141357, 25.033910, loot_Industrial, 35);
 	CreateStaticLootSpawn(-2416.135498, 1539.008911, 25.036119, loot_Industrial, 35);
@@ -3618,7 +3618,7 @@ SF_District_Ship1()
 }
 SF_District_Ship2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Ship2' please wait...");
 
 	CreateStaticLootSpawn(-1415.532470, 1489.697140, 6.093890, loot_Civilian, 30.000000, 3);
 	CreateStaticLootSpawn(-1456.652100, 1497.540530, 6.092340, loot_Civilian, 30.000000, 3);

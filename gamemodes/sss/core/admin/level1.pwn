@@ -174,7 +174,7 @@ ACMD:kick[1](playerid, params[])
 		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
 
 	if(playerid == targetid)
-		MsgAllF(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
+		ChatMsgAll(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
 
 	KickPlayer(targetid, reason);
 
@@ -198,7 +198,7 @@ ACMD:msg[1](playerid, params[])
 
 	strcat(str, TagScan(params));
 
-	MsgAll(YELLOW, str);
+	ChatMsgAll(YELLOW, str);
 	return 1;
 }
 
@@ -287,7 +287,7 @@ ACMD:allcountry[1](playerid, params[])
 ACMD:clearchat[1](playerid, params[])
 {
 	for(new i;i<100;i++)
-		MsgAll(WHITE, " ");
+		ChatMsgAll(WHITE, " ");
 
 	return 1;
 }

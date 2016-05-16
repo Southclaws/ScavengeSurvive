@@ -72,7 +72,7 @@ Load_FC()
 
 FC_District_Chilliad()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_Chilliad' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Chilliad' please wait...");
 
 	CreateStaticLootSpawn(-2404.725585, -2176.453125, 32.303958,	loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-2391.212158, -2216.532714, 32.308551,	loot_Civilian, 20.0);
@@ -113,7 +113,7 @@ FC_District_Chilliad()
 }
 FC_District_AngelPine()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_AngelPine' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_AngelPine' please wait...");
 
 	CreateWorkBench(-2176.33765, -2536.95630, 30.09808, -219.05981);
 
@@ -234,7 +234,7 @@ FC_District_AngelPine()
 }
 FC_District_Scrapyard()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_Scrapyard' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Scrapyard' please wait...");
 
 	CreateScrapMachine(-1888.26416, -1636.40588, 21.21387, 0.0);
 	CreateRefineMachine(-1848.56006, -1685.39380, 22.97520, -54.0);
@@ -275,7 +275,7 @@ FC_District_Scrapyard()
 }
 FC_District_Farms()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_Farms' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Farms' please wait...");
 
 	CreateWorkBench(-392.98178, -1433.41199, 25.17424, 0.00000);
 	CreateWorkBench(-372.71423, -1040.36572, 58.71876, 95.58000);
@@ -367,7 +367,7 @@ FC_District_Farms()
 }
 FC_District_EasterChem()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_EasterChem' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_EasterChem' please wait...");
 
 	CreateStaticLootSpawn(-983.560485, -676.974487, 30.980920,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-1007.987182, -672.090942, 30.984039,		loot_Civilian, 20.0);
@@ -485,7 +485,7 @@ FC_District_EasterChem()
 }
 FC_District_FallenTree()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_FallenTree' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_FallenTree' please wait...");
 
 	CreateStaticLootSpawn(-552.575927, -504.346130, 24.501939,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-569.084838, -502.943481, 24.501260,		loot_Civilian, 20.0);
@@ -517,7 +517,7 @@ FC_District_FallenTree()
 }
 FC_District_FlintGen()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'FC_District_FlintGen' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_FlintGen' please wait...");
 
 	CreateStaticLootSpawn(-283.446838, -2174.875244, 27.649789,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-396.378906, -426.530273, 15.193169,		loot_Civilian, 20.0);

@@ -157,7 +157,7 @@ PlayerSpawnExistingCharacter(playerid)
 		if(GetPlayerWarnings(playerid) >= 5)	
 			SetPlayerWarnings(playerid, 0);
 
-		MsgF(playerid, YELLOW, " >  You have %d/5 warnings.", GetPlayerWarnings(playerid));
+		ChatMsgLang(playerid, YELLOW, "WARNCOUNTER", GetPlayerWarnings(playerid));
 	}
 
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));

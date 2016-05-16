@@ -88,7 +88,7 @@ Load_LV()
 
 LV_District_Housing1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing1' please wait...");
 
 	CreateStaticLootSpawn(1499.182250, 2031.240844, 13.726090,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(1538.948486, 2031.298095, 13.724539,		loot_Civilian, 12.0);
@@ -301,7 +301,7 @@ LV_District_Housing1()
 
 LV_District_Housing2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing2' please wait...");
 
 	CreateStaticLootSpawn(1028.403442, 1926.650634, 10.447250,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(1027.309082, 1906.812133, 10.447699,		loot_Civilian, 12.0);
@@ -450,7 +450,7 @@ LV_District_Housing2()
 
 LV_District_Housing3()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing3' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Housing3' please wait...");
 
 	CreateStaticLootSpawn(1761.792846, 2870.549804, 13.252360,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(1750.769042, 2867.018798, 10.322710,		loot_Civilian, 12.0);
@@ -691,7 +691,7 @@ LV_District_Housing3()
 
 LV_District_KACC()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_KACC' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_KACC' please wait...");
 
 	new buttonid[1];
 
@@ -771,7 +771,7 @@ LV_District_KACC()
 
 LV_District_City1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_City1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_City1' please wait...");
 
 	CreateItem(ItemType:11, 2543.21313, 1025.56433, 11.10866, 66.0000, 4.0, 0.0);
 
@@ -1044,7 +1044,7 @@ LV_District_City1()
 
 LV_District_City2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_City2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_City2' please wait...");
 
 	CreateStaticLootSpawn(2463.546630, 2244.506103, 9.816020,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(2453.842529, 2244.573730, 9.812159,		loot_Civilian, 12.0);
@@ -1468,7 +1468,7 @@ LV_District_City2()
 
 LV_District_Strip()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Strip' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Strip' please wait...");
 
 	CreateStaticLootSpawn(2097.565917, 1158.830932, 10.643070,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(2151.691162, 987.570556, 9.797989,		loot_Civilian, 12.0);
@@ -1685,7 +1685,7 @@ LV_District_Strip()
 
 LV_District_Airport()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Airport' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Airport' please wait...");
 
 	CreateStaticLootSpawn(1673.578491, 1393.108276, 9.757200,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(1670.696411, 1398.275146, 9.767149,		loot_Civilian, 12.0);
@@ -1774,7 +1774,7 @@ LV_District_Airport()
 
 LV_District_Industrial1()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Industrial1' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Industrial1' please wait...");
 
 	CreateStaticLootSpawn(1558.014892, 1091.526245, 9.810159,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(1556.855834, 1073.391357, 9.808629,		loot_Civilian, 12.0);
@@ -1953,7 +1953,7 @@ LV_District_Industrial1()
 
 LV_District_Industrial2()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'LV_District_Industrial2' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_Industrial2' please wait...");
 
 	CreateStaticLootSpawn(2529.212402, 746.210388, 13.727939,		loot_Civilian, 12.0);
 	CreateStaticLootSpawn(2536.050048, 716.275268, 9.810350,		loot_Civilian, 12.0);

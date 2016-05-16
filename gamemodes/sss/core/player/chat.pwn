@@ -57,10 +57,10 @@ hook OnPlayerText(playerid, text[])
 	if(IsPlayerMuted(playerid))
 	{
 		if(GetPlayerMuteRemainder(playerid) == -1)
-			Msg(playerid, RED, " >  You are muted permanently.");
+			ChatMsgLang(playerid, RED, "MUTEDPERMAN");
 
 		else
-			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid) * 1000, "%1h:%1m:%1s"));
+			ChatMsgLang(playerid, RED, "MUTEDTIMERM", MsToString(GetPlayerMuteRemainder(playerid) * 1000, "%1h:%1m:%1s"));
 
 		return 0;
 	}
@@ -72,7 +72,7 @@ hook OnPlayerText(playerid, text[])
 			if(chat_MessageStreak[playerid] == 3)
 			{
 				TogglePlayerMute(playerid, true, 30);
-				Msg(playerid, RED, " >  Muted from global chat for "C_ORANGE"30 "C_RED"seconds for chat flooding");
+				ChatMsgLang(playerid, RED, "MUTEDFLOODM");
 				return 0;
 			}
 		}
@@ -265,10 +265,10 @@ CMD:g(playerid, params[])
 	if(IsPlayerMuted(playerid))
 	{
 		if(GetPlayerMuteRemainder(playerid) == -1)
-			Msg(playerid, RED, " >  You are muted permanently.");
+			ChatMsgLang(playerid, RED, "MUTEDPERMAN");
 
 		else
-			MsgF(playerid, RED, " >  You are muted. Time remaining: %s", MsToString(GetPlayerMuteRemainder(playerid), "%1h:%1m:%1s"));
+			ChatMsgLang(playerid, RED, "MUTEDTIMERM", MsToString(GetPlayerMuteRemainder(playerid) * 1000, "%1h:%1m:%1s"));
 
 		return 7;
 	}
@@ -276,7 +276,7 @@ CMD:g(playerid, params[])
 	if(isnull(params))
 	{
 		SetPlayerChatMode(playerid, CHAT_MODE_GLOBAL);
-		Msg(playerid, WHITE, " >  You turn your radio on to the global frequency.");
+		ChatMsgLang(playerid, WHITE, "RADIOGLOBAL");
 	}
 	else
 	{
@@ -291,7 +291,7 @@ CMD:l(playerid, params[])
 	if(isnull(params))
 	{
 		SetPlayerChatMode(playerid, CHAT_MODE_LOCAL);
-		Msg(playerid, WHITE, " >  You turned your radio off, chat is not broadcasted.");
+		ChatMsgLang(playerid, WHITE, "RADIOLOCAL");
 	}
 	else
 	{
@@ -313,7 +313,7 @@ CMD:r(playerid, params[])
 	if(isnull(params))
 	{
 		SetPlayerChatMode(playerid, CHAT_MODE_RADIO);
-		MsgF(playerid, WHITE, " >  You turned your radio on to frequency %.2f.", GetPlayerRadioFrequency(playerid));
+		ChatMsgLang(playerid, WHITE, "RADIOFREQUN", GetPlayerRadioFrequency(playerid));
 	}
 	else
 	{
@@ -328,12 +328,12 @@ CMD:quiet(playerid, params[])
 	if(GetPlayerBitFlag(playerid, GlobalQuiet))
 	{
 		SetPlayerBitFlag(playerid, GlobalQuiet, false);
-		Msg(playerid, WHITE, " >  You turn on your radio's global receiver, you will now see all global chat.");
+		ChatMsgLang(playerid, WHITE, "RADIOQUIET0");
 	}
 	else
 	{
 		SetPlayerBitFlag(playerid, GlobalQuiet, true);
-		Msg(playerid, WHITE, " >  You turn off your radio's global receiver, you will not see any global chat.");
+		ChatMsgLang(playerid, WHITE, "RADIOQUIET1");
 	}
 
 	return 1;
@@ -344,7 +344,7 @@ ACMD:a[1](playerid, params[])
 	if(isnull(params))
 	{
 		SetPlayerChatMode(playerid, CHAT_MODE_ADMIN);
-		Msg(playerid, WHITE, " >  Admin chat activated.");
+		ChatMsgLang(playerid, WHITE, "RADIOADMINC");
 	}
 	else
 	{

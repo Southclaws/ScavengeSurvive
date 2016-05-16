@@ -72,7 +72,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 	{
 		if(areaid == saveblock_Data[i][saveblock_areaId])
 		{
-			MsgF(playerid, YELLOW, " >  You have entered a save-block area. If you quit while in this area, your character will be moved to a nearby location.");
+			ChatMsg(playerid, YELLOW, " >  You have entered a save-block area. If you quit while in this area, your character will be moved to a nearby location.");
 		}
 	}
 }

@@ -119,10 +119,18 @@ new stock
 	liquid_Petrol,
 	liquid_Diesel,
 	liquid_Oil,
+	liquid_BakingSoda,
+	liquid_ProteinPowder,
+	liquid_IronPowder,
+	liquid_IronOxide,
+	liquid_CopperOxide,
+	liquid_Magnesium,
 	liquid_StrongWhiskey,
 	liquid_Fun,
 	liquid_Lemonade,
-	liquid_Orangeade;
+	liquid_Orangeade,
+	liquid_Thermite,
+	liquid_StrongThermite;
 
 // ITEM TYPES
 new stock
@@ -1662,10 +1670,18 @@ public OnScriptInit()
 	liquid_Petrol			= DefineLiquidType("Petrol",				ROOT_LIQUID_BITMASK);
 	liquid_Diesel			= DefineLiquidType("Diesel",				ROOT_LIQUID_BITMASK);
 	liquid_Oil				= DefineLiquidType("Oil",					ROOT_LIQUID_BITMASK);
+	liquid_BakingSoda		= DefineLiquidType("Baking Soda",			ROOT_LIQUID_BITMASK);
+	liquid_ProteinPowder	= DefineLiquidType("Protein Powder",		ROOT_LIQUID_BITMASK);
+	liquid_IronPowder		= DefineLiquidType("Iron Powder",			ROOT_LIQUID_BITMASK);
+	liquid_IronOxide		= DefineLiquidType("Iron Oxide",			ROOT_LIQUID_BITMASK);
+	liquid_CopperOxide		= DefineLiquidType("Copper Oxide",			ROOT_LIQUID_BITMASK);
+	liquid_Magnesium		= DefineLiquidType("Magnesium",				ROOT_LIQUID_BITMASK);
 	liquid_StrongWhiskey	= DefineLiquidType("Acid Whiskey",			liquid_Whiskey | liquid_Ethanol);
 	liquid_Fun				= DefineLiquidType("Fun",					liquid_Ethanol | liquid_Turpentine | liquid_HydroAcid);
 	liquid_Lemonade			= DefineLiquidType("Lemonade",				liquid_CarbonatedWater | liquid_Lemon | liquid_Sugar);
 	liquid_Orangeade		= DefineLiquidType("Orangeade",				liquid_CarbonatedWater | liquid_Orange | liquid_Sugar);
+	liquid_Thermite			= DefineLiquidType("Thermite Mix I",		liquid_IronPowder | liquid_IronOxide | liquid_Magnesium);
+	liquid_StrongThermite	= DefineLiquidType("Thermite Mix II",		liquid_IronPowder | liquid_IronOxide | liquid_Magnesium | liquid_CopperOxide);
 
 
 	/*

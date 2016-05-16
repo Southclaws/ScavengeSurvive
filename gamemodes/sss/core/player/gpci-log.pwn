@@ -160,13 +160,13 @@ ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 
 	if(!GetAccountGpciHistoryFromGpci(hash, list, MAX_GPCI_LOG_RESULTS, count))
 	{
-		Msg(playerid, YELLOW, " >  Failed");
+		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;
 	}
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  No results");
+		ChatMsg(playerid, YELLOW, " >  No results");
 		return 1;
 	}
 
@@ -189,13 +189,13 @@ ShowAccountGpciHistoryFromName(playerid, name[])
 
 	if(!GetAccountGpciHistoryFromName(name, list, MAX_GPCI_LOG_RESULTS, count))
 	{
-		Msg(playerid, YELLOW, " >  Failed");
+		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;
 	}
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  No results");
+		ChatMsg(playerid, YELLOW, " >  No results");
 		return 1;
 	}
 

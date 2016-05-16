@@ -652,11 +652,11 @@ _SaveIfOwnedBy(vehicleid, playerid)
 		new ownedvehiclename[MAX_VEHICLE_TYPE_NAME];
 		GetVehicleTypeName(GetVehicleType(pveh_PlayerVehicle[playerid]), ownedvehiclename);
 
-		MsgF(playerid, YELLOW, " >  This "C_BLUE"%s"C_YELLOW" is not yours, you own a "C_BLUE"%s"C_YELLOW". To save any vehicle, type: /vsave", vehiclename, ownedvehiclename);
+		ChatMsgLang(playerid, YELLOW, "VEHNOTYOURS", vehiclename, ownedvehiclename);
 		return 0;
 	}
 
-	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+	ChatMsgLang(playerid, YELLOW, "VEHICLSAVED", vehiclename);
 
 	_SaveVehicle(vehicleid);
 
@@ -674,7 +674,7 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 
 	_UpdatePlayerVehicle(playerid, vehicleid);
 
-	MsgF(playerid, YELLOW, " >  Vehicle "C_BLUE"%s"C_YELLOW" saved!", vehiclename);
+	ChatMsgLang(playerid, YELLOW, "VEHICLSAVED", vehiclename);
 
 	return;
 }
@@ -895,18 +895,18 @@ CMD:vsave(playerid, params[])
 	if(!isnull(params) && !strcmp(params, "on"))
 	{
 		pveh_SaveAnyVehicle[playerid] = 1;
-		Msg(playerid, YELLOW, " >  Vehicle save mode set to 'All vehicles'. When you enter ANY vehicle, it will be saved for you.");
+		ChatMsgLang(playerid, YELLOW, "VEHMODEALLV");
 		return 1;
 	}
 
 	if(!isnull(params) && !strcmp(params, "off"))
 	{
 		pveh_SaveAnyVehicle[playerid] = 0;
-		Msg(playerid, YELLOW, " >  Vehicle save mode set to: 'Own vehicle'. Only your own vehicle will be saved when you drive it. If you enter another vehicle as a driver, it won't overwrite your current vehicle.");
+		ChatMsgLang(playerid, YELLOW, "VEHMODEOWNV");
 		return 1;
 	}
 
-	Msg(playerid, YELLOW, " >  Usage: /vsave [on / off] - Save vehicles when exited or entered. When 'off', you will only be able to save your own exiting vehicle.");
+	ChatMsgLang(playerid, YELLOW, "VEHMODEHELP");
 
 	return 1;
 }

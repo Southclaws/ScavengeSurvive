@@ -53,7 +53,7 @@ Load_TR()
 
 TR_District_Bayside()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'TR_District_Bayside' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'TR_District_Bayside' please wait...");
 
 	CreateStaticLootSpawn(-2560.33521, 2256.71069, 4.03032,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-2526.42236, 2230.25171, 3.97745,		loot_Civilian, 20.0);
@@ -129,7 +129,7 @@ TR_District_Bayside()
 
 TR_District_Quebrados()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'TR_District_Quebrados' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'TR_District_Quebrados' please wait...");
 
 	CreateStaticLootSpawn(-1603.15735, 2690.23340, 54.28019,	loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-1589.21973, 2705.65381, 55.16963,	loot_Civilian, 20.0);
@@ -175,7 +175,7 @@ TR_District_Quebrados()
 
 TR_District_Barancas()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'TR_District_Barancas' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'TR_District_Barancas' please wait...");
 
 	CreateStaticLootSpawn(-637.60626, 1442.92505, 12.60786,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-654.76465, 1446.82837, 12.60757,		loot_Civilian, 20.0);
@@ -198,7 +198,7 @@ TR_District_Barancas()
 
 TR_District_Sherman()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'TR_District_Sherman' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'TR_District_Sherman' please wait...");
 
 	CreateStaticLootSpawn(-897.95825, 1976.49341, 59.62031,		loot_Civilian, 20.0);
 	CreateStaticLootSpawn(-895.60889, 1967.39795, 59.62622,		loot_Civilian, 20.0);
@@ -239,7 +239,7 @@ TR_District_Sherman()
 
 TR_District_RobadaGen()
 {
-	MsgAll(YELLOW, " >  Loading world region: 'TR_District_RobadaGen' please wait...");
+	ChatMsgAll(YELLOW, " >  Loading world region: 'TR_District_RobadaGen' please wait...");
 
 	CreateWorkBench(-1513.53040, 1978.50232, 47.85660, 85.37996);
 

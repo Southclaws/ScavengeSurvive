@@ -275,10 +275,10 @@ KickPlayer(playerid, reason[], bool:tellplayer = true)
 
 	logf("[PART] %p (kick: %s)", playerid, reason);
 
-	MsgAdminsF(1, GREY, " >  %P"C_GREY" kicked, reason: "C_BLUE"%s", playerid, reason);
+	ChatMsgAdmins(1, GREY, " >  %P"C_GREY" kicked, reason: "C_BLUE"%s", playerid, reason);
 
 	if(tellplayer)
-		MsgF(playerid, GREY, " >  Kicked, reason: "C_BLUE"%s", reason);
+		ChatMsgLang(playerid, GREY, "KICKMESSAGE", reason);
 
 	return;
 }

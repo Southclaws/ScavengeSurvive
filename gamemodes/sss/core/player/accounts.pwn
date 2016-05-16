@@ -278,11 +278,11 @@ LoadAccount(playerid)
 
 	if(IsWhitelistActive())
 	{
-		Msg(playerid, YELLOW, " >  Whitelist active.");
+		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
 
 		if(!IsPlayerInWhitelist(playerid))
 		{
-			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
+			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, lastlog);
 			return 3;
 		}
@@ -349,10 +349,10 @@ CreateAccount(playerid, password[])
 
 	if(IsWhitelistActive())
 	{
-		Msg(playerid, YELLOW, " >  Whitelist active.");
+		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
 		if(!IsPlayerInWhitelist(playerid))
 		{
-			Msg(playerid, YELLOW, " >  You are not in the whitelist.");
+			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			WhitelistKick(playerid);
 			return 0;
 		}
@@ -361,7 +361,7 @@ CreateAccount(playerid, password[])
 	CheckAdminLevel(playerid);
 
 	if(GetPlayerAdminLevel(playerid) > 0)
-		MsgF(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
+		ChatMsg(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
 
 	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
@@ -390,7 +390,7 @@ DisplayRegisterPrompt(playerid)
 		{
 			if(!(4 <= strlen(inputtext) <= 32))
 			{
-				Msg(playerid, YELLOW, " >  Password must be between 4 and 32 characters.");
+				ChatMsgLang(playerid, YELLOW, "PASSWORDREQ");
 				DisplayRegisterPrompt(playerid);
 				return 0;
 			}
@@ -404,7 +404,7 @@ DisplayRegisterPrompt(playerid)
 		}
 		else
 		{
-			MsgAllF(GREY, " >  %p left the server without registering.", playerid);
+			ChatMsgAll(GREY, " >  %p left the server without registering.", playerid);
 			Kick(playerid);
 		}
 
@@ -443,7 +443,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 				}
 				else
 				{
-					MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
+					ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
 					Kick(playerid);
 				}
 
@@ -471,14 +471,14 @@ DisplayLoginPrompt(playerid, badpass = 0)
 				}
 				else
 				{
-					MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
+					ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
 					Kick(playerid);
 				}
 			}
 		}
 		else
 		{
-			MsgAllF(GREY, " >  %p left the server without logging in.", playerid);
+			ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
 			Kick(playerid);
 		}
 
@@ -526,13 +526,13 @@ Login(playerid)
 			reports = GetUnreadReports(),
 			issues = GetBugReports();
 
-		MsgF(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
+		ChatMsg(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
 
 		if(reports > 0)
-			MsgF(playerid, YELLOW, " >  %d unread reports, type "C_BLUE"/reports "C_YELLOW"to view.", reports);
+			ChatMsg(playerid, YELLOW, " >  %d unread reports, type "C_BLUE"/reports "C_YELLOW"to view.", reports);
 
 		if(issues > 0)
-			MsgF(playerid, YELLOW, " >  %d issues, type "C_BLUE"/issues "C_YELLOW"to view.", issues);
+			ChatMsg(playerid, YELLOW, " >  %d issues, type "C_BLUE"/issues "C_YELLOW"to view.", issues);
 	}
 
 	acc_LoggedIn[playerid] = true;
@@ -591,7 +591,7 @@ Logout(playerid, docombatlogcheck = 1)
 			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
 			{
 				logf("[LOGOUT] Player '%p' combat logged!", playerid);
-				MsgAllF(YELLOW, " >  %p combat logged!", playerid);
+				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
 				OnPlayerDeath(playerid, lastattacker, lastweapon);
 			}
 		}

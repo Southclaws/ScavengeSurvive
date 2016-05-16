@@ -456,14 +456,14 @@ _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:
 
 	if(!IsValidItemType(itemtype))
 	{
-		MsgAdminsF(1, YELLOW, "[TEST] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
+		ChatMsgAdmins(1, YELLOW, "[TEST] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
 		d:2:HANDLER("[TMPREPORT] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
 		return 0;
 	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 	{
-		MsgAdminsF(1, YELLOW, "[TEST] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
+		ChatMsgAdmins(1, YELLOW, "[TEST] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
 		d:2:HANDLER("[TMPREPORT] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
 		return 0;
 	}

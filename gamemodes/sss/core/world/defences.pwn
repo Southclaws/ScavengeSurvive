@@ -647,7 +647,7 @@ hook OnHoldActionFinish(playerid)
 
 			if(!IsValidDefence(id))
 			{
-				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
+				ChatMsgLang(playerid, RED, "DEFLIMITREA");
 				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
@@ -664,7 +664,7 @@ hook OnHoldActionFinish(playerid)
 
 			if(!IsValidDefence(id))
 			{
-				Msg(playerid, RED, " >  ERROR: Defence entity limit reached, please inform an admin.");
+				ChatMsgLang(playerid, RED, "DEFLIMITREA");
 				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
@@ -867,7 +867,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 			def_CurrentDefenceEdit[playerid] = -1;
 
 			if(code == 0)
-				Msg(playerid, YELLOW, " >  Leaving the code at 0 will allow the code to be set again.");
+				ChatMsgLang(playerid, YELLOW, "DEFCODEZERO");
 
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
@@ -931,7 +931,7 @@ hook OnPlayerKeypadCancel(playerid, keypadid)
 
 ShowSetPassDialog_Keypad(playerid)
 {
-	MsgF(playerid, YELLOW, " >  Set a 4 digit passcode for this defence.");
+	ChatMsgLang(playerid, YELLOW, "DEFSETPASSC");
 
 	ShowKeypad(playerid, 100);
 }
@@ -939,13 +939,13 @@ ShowSetPassDialog_Keypad(playerid)
 ShowEnterPassDialog_Keypad(playerid, msg = 0)
 {
 	if(msg == 0)
-		MsgF(playerid, YELLOW, " >  Enter the 4 digit passcode to open this defence.");
+		ChatMsgLang(playerid, YELLOW, "DEFENTERPAS");
 
 	if(msg == 1)
-		MsgF(playerid, YELLOW, " >  Incorrect passcode!");
+		ChatMsgLang(playerid, YELLOW, "DEFINCORREC");
 
 	if(msg == 2)
-		MsgF(playerid, YELLOW, " >  You are entering codes too fast, please wait %s.", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
+		ChatMsgLang(playerid, YELLOW, "DEFTOOFASTE", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
 
 	ShowKeypad(playerid, 100, def_Data[def_CurrentDefenceOpen[playerid]][def_pass]);
 }
@@ -985,7 +985,7 @@ ShowSetPassDialog_KeypadAdv(playerid)
 ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 {
 	if(msg == 2)
-		MsgF(playerid, YELLOW, " >  You are entering codes too fast, please wait %s.", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
+		ChatMsgLang(playerid, YELLOW, "DEFTOOFASTE", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{

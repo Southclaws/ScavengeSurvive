@@ -58,7 +58,7 @@ CMD:aimshout(playerid, params[])
 
 	if(sscanf(params, "s[128]", string))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /aimshout [text] - Sets a custom string you can send by pressing the AIM and LOOK BEHIND keys at the same time.");
+		ChatMsgLang(playerid, YELLOW, "AIMSHOUTHLP");
 		return 1;
 	}
 
@@ -67,7 +67,7 @@ CMD:aimshout(playerid, params[])
 	SetPlayerAimShoutText(playerid, string);
 	SetAccountAimshout(name, string);
 
-	MsgF(playerid, YELLOW, " >  AimShout set to '%s'", string);
+	ChatMsgLang(playerid, YELLOW, "AIMSHOUTSET", string);
 
 	return 1;
 }

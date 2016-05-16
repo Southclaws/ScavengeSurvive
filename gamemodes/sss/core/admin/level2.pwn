@@ -318,7 +318,7 @@ ACMD:setmotd[2](playerid, params[])
 		return 1;
 	}
 
-	MsgAllF(YELLOW, " >  MOTD updated: "C_BLUE"%s", gMessageOfTheDay);
+	ChatMsgAll(YELLOW, " >  MOTD updated: "C_BLUE"%s", gMessageOfTheDay);
 
 	return 1;
 }

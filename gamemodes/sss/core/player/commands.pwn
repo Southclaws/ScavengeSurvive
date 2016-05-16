@@ -52,27 +52,27 @@ CMD:help(playerid, params[])
 
 CMD:rules(playerid, params[])
 {
-	MsgF(playerid, YELLOW, " >  Rules List (total: %d)", gTotalRules);
+	ChatMsg(playerid, YELLOW, " >  Rules List (total: %d)", gTotalRules);
 
 	for(new i; i < gTotalRules; i++)
-		Msg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gRuleList[i]));
+		ChatMsg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gRuleList[i]));
 	
 	return 1;
 }
 
 CMD:admins(playerid, params[])
 {
-	MsgF(playerid, YELLOW, " >  Staff List (total: %d)", gTotalStaff);
+	ChatMsg(playerid, YELLOW, " >  Staff List (total: %d)", gTotalStaff);
 
 	for(new i; i < gTotalStaff; i++)
-		Msg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gStaffList[i]));
+		ChatMsg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gStaffList[i]));
 	
 	return 1;
 }
 
 CMD:motd(playerid, params[])
 {
-	MsgF(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
+	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 	return 1;
 }
 
@@ -124,12 +124,12 @@ CMD:tooltips(playerid, params[])
 {
 	if(GetPlayerBitFlag(playerid, ToolTips))
 	{
-		Msg(playerid, YELLOW, " >  Tooltips disabled");
+		ChatMsgLang(playerid, YELLOW, "TOOLTIPSOFF");
 		SetPlayerBitFlag(playerid, ToolTips, false);
 	}
 	else
 	{
-		Msg(playerid, YELLOW, " >  Tooltips enabled");
+		ChatMsgLang(playerid, YELLOW, "TOOLTIPSON");
 		SetPlayerBitFlag(playerid, ToolTips, true);
 	}
 	return 1;
@@ -177,11 +177,14 @@ CMD:changepass(playerid,params[])
 		buffer[MAX_PASSWORD_LEN];
 
 	if(!IsPlayerLoggedIn(playerid))
-		return Msg(playerid, YELLOW, " >  You must be logged in to use that command");
+	{
+		ChatMsgLang(playerid, YELLOW, "LOGGEDINREQ");
+		return 1;
+	}
 
 	if(sscanf(params, "s[32]s[32]", oldpass, newpass))
 	{
-		Msg(playerid, YELLOW, "Usage: /changepass [old pass] [new pass]");
+		ChatMsgLang(playerid, YELLOW, "CHANGEPASSW");
 		return 1;
 	}
 	else
@@ -202,16 +205,16 @@ CMD:changepass(playerid,params[])
 			if(SetAccountPassword(name, buffer))
 			{
 				SetPlayerPassHash(playerid, buffer);
-				MsgF(playerid, YELLOW, " >  Password successfully changed to "C_BLUE"%s"C_YELLOW"!", newpass);
+				ChatMsgLang(playerid, YELLOW, "PASSCHANGED", newpass);
 			}
 			else
 			{
-				Msg(playerid, RED, " >  An error occurred! Please contact an administrator");
+				ChatMsgLang(playerid, RED, "PASSCHERROR");
 			}
 		}
 		else
 		{
-			Msg(playerid, RED, " >  The entered password you typed doesn't match your current password.");
+			ChatMsgLang(playerid, RED, "PASSCHNOMAT");
 		}
 	}
 	return 1;
@@ -226,7 +229,7 @@ CMD:pos(playerid, params[])
 
 	GetPlayerPos(playerid, x, y, z);
 
-	MsgF(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
+	ChatMsg(playerid, YELLOW, " >  Position: "C_BLUE"%.2f, %.2f, %.2f", x, y, z);
 
 	return 1;
 }

@@ -306,7 +306,7 @@ CMD:bodyuioffsets(playerid, params[])
 
 	if(sscanf(params, "ff", x, y))
 	{
-		MsgF(playerid, YELLOW, " >  Current offsets: %f, %f", bod_UIPositionX[playerid], bod_UIPositionY[playerid]);
+		ChatMsg(playerid, YELLOW, " >  Current offsets: %f, %f", bod_UIPositionX[playerid], bod_UIPositionY[playerid]);
 		return 1;
 	}
 

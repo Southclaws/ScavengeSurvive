@@ -129,15 +129,15 @@ public OnPlayerConnect(playerid)
 	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
 
-	Msg(playerid, ORANGE, "Scavenge and Survive");
-	Msg(playerid, BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	Msg(playerid, BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	Msg(playerid, BLUE, "    and you are welcome to redistribute it under certain conditions.");
-	Msg(playerid, BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	Msg(playerid, BLUE, " ");
+	ChatMsg(playerid, ORANGE, "Scavenge and Survive");
+	ChatMsg(playerid, BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	ChatMsg(playerid, BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	ChatMsg(playerid, BLUE, "    and you are welcome to redistribute it under certain conditions.");
+	ChatMsg(playerid, BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	ChatMsg(playerid, BLUE, " ");
 
-	MsgAllF(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
-	MsgF(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
+	ChatMsgAll(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
+	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 
 	t:ply_Data[playerid][ply_BitFlags]<ShowHUD>;
 
@@ -155,12 +155,12 @@ public OnPlayerDisconnect(playerid, reason)
 	{
 		case 0:
 		{
-			MsgAllF(GREY, " >  %p lost connection.", playerid);
+			ChatMsgAll(GREY, " >  %p lost connection.", playerid);
 			log(sprintf("[PART] %p (lost connection)", playerid), 0);
 		}
 		case 1:
 		{
-			MsgAllF(GREY, " >  %p left the server.", playerid);
+			ChatMsgAll(GREY, " >  %p left the server.", playerid);
 			log(sprintf("[PART] %p (quit)", playerid), 0);
 		}
 	}
@@ -301,7 +301,7 @@ ptask PlayerUpdate[100](playerid)
 
 	if(NetStats_MessagesRecvPerSecond(playerid) > 200)
 	{
-		MsgAdminsF(3, YELLOW, " >  %p sending %d messages per second.", playerid, NetStats_MessagesRecvPerSecond(playerid));
+		ChatMsgAdmins(3, YELLOW, " >  %p sending %d messages per second.", playerid, NetStats_MessagesRecvPerSecond(playerid));
 		return;
 	}
 

@@ -725,17 +725,17 @@ RestartGamemode()
 
 	SendRconCommand("gmx");
 
-	MsgAll(BLUE, " ");
-	MsgAll(ORANGE, "Scavenge and Survive");
-	MsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	MsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	MsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
-	MsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, " ");
-	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
-	MsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
-	MsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
+	ChatMsgAll(BLUE, " ");
+	ChatMsgAll(ORANGE, "Scavenge and Survive");
+	ChatMsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	ChatMsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	ChatMsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
+	ChatMsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	ChatMsgAll(BLUE, " ");
+	ChatMsgAll(BLUE, " ");
+	ChatMsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
+	ChatMsgAll(YELLOW, " >  The Server Is Restarting, Please Wait...");
+	ChatMsgAll(BLUE, "-------------------------------------------------------------------------------------------------------------------------");
 }
 
 task RestartUpdate[1000]()

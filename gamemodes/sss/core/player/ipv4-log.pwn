@@ -165,13 +165,13 @@ ShowAccountIPHistoryFromIP(playerid, ip)
 
 	if(!GetAccountIPHistoryFromIP(ip, list, MAX_IPV4_LOG_RESULTS, count))
 	{
-		Msg(playerid, YELLOW, " >  Failed");
+		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;
 	}
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  No results");
+		ChatMsg(playerid, YELLOW, " >  No results");
 		return 1;
 	}
 
@@ -194,13 +194,13 @@ ShowAccountIPHistoryFromName(playerid, name[])
 
 	if(!GetAccountIPHistoryFromName(name, list, MAX_IPV4_LOG_RESULTS, count))
 	{
-		Msg(playerid, YELLOW, " >  Failed");
+		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;
 	}
 
 	if(count == 0)
 	{
-		Msg(playerid, YELLOW, " >  No results");
+		ChatMsg(playerid, YELLOW, " >  No results");
 		return 1;
 	}
 

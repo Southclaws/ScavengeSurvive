@@ -57,7 +57,7 @@ ShowLanguageMenu(playerid)
 		if(response)
 		{
 			lang_PlayerLanguage[playerid] = listitem;
-			Msg(playerid, YELLOW, ls(playerid, "LANGCHANGE"));
+			ChatMsgLang(playerid, YELLOW, "LANGCHANGE");
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");

@@ -58,7 +58,7 @@ timer InfoMessage[ifm_Interval * 60000]()
 	if(ifm_Current >= ifm_Total)
 		ifm_Current = 0;
 
-	MsgAll(YELLOW, sprintf(" >  "C_BLUE"%s", ifm_Messages[ifm_Current]));
+	ChatMsgAll(YELLOW, " >  "C_BLUE"%s", ifm_Messages[ifm_Current]);
 
 	ifm_Current++;
 
