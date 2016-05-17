@@ -105,6 +105,25 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			return 1;
 		}
 
+        new playerid = GetContainerPlayerBag(containerid);
+
+		if(IsPlayerConnected(playerid))
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerPos(playerid, x, y, z);
+			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
+			DestroyItem(itemid);
+
+			if(type != EXPLOSION_PRESET_EMP)
+				DestroyPlayerBag(playerid);
+
+			return 1;
+		}
+
 		new bagitemid = GetContainerBagItem(containerid);
 
 		if(IsValidItem(bagitemid))
@@ -120,25 +139,6 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 
 			if(type != EXPLOSION_PRESET_EMP)
 				DestroyItem(bagitemid);
-
-			return 1;
-		}
-
-		new playerid = GetContainerPlayerBag(containerid);
-
-		if(IsPlayerConnected(playerid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetPlayerPos(playerid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-
-			if(type != EXPLOSION_PRESET_EMP)
-				DestroyPlayerBag(playerid);
 
 			return 1;
 		}

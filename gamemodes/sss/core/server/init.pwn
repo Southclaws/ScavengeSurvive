@@ -434,7 +434,8 @@ ItemType:		item_Keg			= INVALID_ITEM_TYPE,
 // 270
 ItemType:		item_Canister		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
-ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE;
+ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE,
+ItemType:		item_Locator		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -836,6 +837,7 @@ public OnScriptInit()
 	item_Canister		= DefineItemType("Canister",			"Canister",			19816,	1,	0.0, 0.0, 0.0,			0.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, true);
 	item_ScrapMetal		= DefineItemType("Scrap Metal",			"ScrapMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFF4D2525);
 	item_RefinedMetal	= DefineItemType("Refined Metal",		"RefinedMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFFE35454);
+	item_Locator		= DefineItemType("Locator",				"Locator",			2967,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
 
 /*
 1656 cuboid shape, carry item
@@ -1163,6 +1165,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Canister,		1);
 	SetItemTypeMaxArrayData(item_ScrapMetal,	1);
 	SetItemTypeMaxArrayData(item_RefinedMetal,	1);
+	SetItemTypeMaxArrayData(item_Locator,		1);
 
 
 	// SETTING ITEM TYPE SCRAP VALUE
@@ -1257,6 +1260,7 @@ public OnScriptInit()
 	SetItemTypeScrapValue(item_Padlock,			1);
 	SetItemTypeScrapValue(item_Keg,				3);
 	SetItemTypeScrapValue(item_Canister,		3);
+	SetItemTypeScrapValue(item_Locator,			1);
 
 
 	// SETTING HOLSTERABLE ITEMS
@@ -1593,6 +1597,7 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_LocksmithKit, item_Key, false, item_Motor, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Locator, item_MobilePhone, false, item_RadioPole, false)));
 
 	// Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();
