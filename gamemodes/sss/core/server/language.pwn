@@ -112,7 +112,9 @@ stock LoadAllLanguages()
 		item[64],
 		type,
 		next_path[256],
-		count;
+		default_entries,
+		entries,
+		languages;
 
 	strcat(directory_with_root, DIRECTORY_LANGUAGES);
 
@@ -125,7 +127,8 @@ stock LoadAllLanguages()
 	}
 
 	// Force load English first since that's the default language.
-	count += LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
+	default_entries = LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
+	printf("Default language (English) has %d entries.", default_entries);
 
 	while(dir_list(dirhandle, item, type))
 	{
@@ -136,20 +139,31 @@ stock LoadAllLanguages()
 
 			next_path[0] = EOS;
 			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_LANGUAGES, item);
-			count += LoadLanguage(next_path, item);
+
+			printf("Loading language '%s'...", item);
+			entries = LoadLanguage(next_path, item);
+
+			if(entries > 0)
+			{
+				printf("Loaded! %d entries, %d missing entries", entries, default_entries - entries);
+				languages++;
+			}
+			else
+			{
+				printf("[LoadAllLanguages] ERROR: No entries loaded from language file '%s'", item);
+			}
 		}
 	}
 
 	dir_close(dirhandle);
 
-	printf("Loaded %d languages", count);
+	printf("Loaded %d languages", languages);
 
 	return 1;
 }
 
 stock LoadLanguage(filename[], langname[])
 {
-	printf("Loading language '%s'...", filename);
 	new
 		File:f = fopen(filename, io_read),
 		line[256],
@@ -199,7 +213,6 @@ stock LoadLanguage(filename[], langname[])
 
 	if(lang_TotalEntries[lang_Total] == 0)
 	{
-		printf("[LoadLanguage] ERROR: No entries loaded from language file '%s'", filename);
 		return 0;
 	}
 
@@ -235,7 +248,7 @@ stock LoadLanguage(filename[], langname[])
 
 	lang_Total++;
 
-	return 1;
+	return index;
 }
 
 _doReplace(input[], output[])
