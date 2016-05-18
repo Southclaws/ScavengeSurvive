@@ -17,35 +17,35 @@ BOX_RADIUS = 2
 
 
 def area_of_polygon(x, y):
-    """Calculates the signed area of an arbitrary polygon given its verticies
-    http://stackoverflow.com/a/4682656/190597 (Joe Kington)
-    http://softsurfer.com/Archive/algorithm_0101/algorithm_0101.htm#2D%20Polygons
-    """
-    area = 0.0
-    for i in range(-1, len(x) - 1):
-        area += x[i] * (y[i + 1] - y[i - 1])
-    return area / 2.0
+	"""Calculates the signed area of an arbitrary polygon given its verticies
+	http://stackoverflow.com/a/4682656/190597 (Joe Kington)
+	http://softsurfer.com/Archive/algorithm_0101/algorithm_0101.htm#2D%20Polygons
+	"""
+	area = 0.0
+	for i in range(-1, len(x) - 1):
+		area += x[i] * (y[i + 1] - y[i - 1])
+	return area / 2.0
 
 
 def centroid_of_polygon(points):
-    """
-    http://stackoverflow.com/a/14115494/190597 (mgamba)
-    """
-    area = area_of_polygon(*zip(*points))
-    result_x = 0
-    result_y = 0
-    N = len(points)
-    points = IT.cycle(points)
-    x1, y1 = next(points)
-    for i in range(N):
-        x0, y0 = x1, y1
-        x1, y1 = next(points)
-        cross = (x0 * y1) - (x1 * y0)
-        result_x += (x0 + x1) * cross
-        result_y += (y0 + y1) * cross
-    result_x /= (area * 6.0)
-    result_y /= (area * 6.0)
-    return (result_x, result_y)
+	"""
+	http://stackoverflow.com/a/14115494/190597 (mgamba)
+	"""
+	area = area_of_polygon(*zip(*points))
+	result_x = 0
+	result_y = 0
+	N = len(points)
+	points = IT.cycle(points)
+	x1, y1 = next(points)
+	for i in range(N):
+		x0, y0 = x1, y1
+		x1, y1 = next(points)
+		cross = (x0 * y1) - (x1 * y0)
+		result_x += (x0 + x1) * cross
+		result_y += (y0 + y1) * cross
+	result_x /= (area * 6.0)
+	result_y /= (area * 6.0)
+	return (result_x, result_y)
 
 
 colours = {
@@ -173,19 +173,17 @@ def draw_regions(im, draw):
 
 	print(len(regions), "regions spawns being drawn")
 
-	for r in regions:
+	for key, value in regions.items():
 		temp_region = []
 
 		# perform the map>image translation and store temporarily
-		for i in range(1, len(r), 2):
-			temp_region.append((r[i] + 3000, 6000 - (r[i + 1] + 3000)))
-
-		#temp_region.append((r[0] + 3000, 6000 - (r[1] + 3000)))
+		for i in value:
+			temp_region.append((i[0] + 3000, 6000 - (i[1] + 3000)))
 
 		draw.polygon(temp_region, outline=(255, 255, 255))
 		cent = centroid_of_polygon(temp_region)
-		draw.text((cent[0] + 2, cent[1] + 2), r[0], fill=(0, 0, 0), font=font)
-		draw.text(cent, r[0], fill=(255, 255, 255), font=font)
+		draw.text((cent[0] + 2, cent[1] + 2), key, fill=(0, 0, 0), font=font)
+		draw.text(cent, key, fill=(255, 255, 255), font=font)
 
 
 
