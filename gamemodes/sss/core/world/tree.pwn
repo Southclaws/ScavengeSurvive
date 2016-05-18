@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
 #define MAX_TREE_CATEGORIES      		(5)
 #define MAX_TREE_SPECIES     			(10)
 #define MAX_TREES						(1024)

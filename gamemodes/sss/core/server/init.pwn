@@ -1689,6 +1689,19 @@ public OnScriptInit()
 	liquid_StrongThermite	= DefineLiquidType("Thermite Mix II",		liquid_IronPowder | liquid_IronOxide | liquid_Magnesium | liquid_CopperOxide);
 
 
+	// TREE SPECIES DEFINITIONS
+	tree_Desert				= DefineTreeCategory("desert");
+	tree_DarkForest			= DefineTreeCategory("darkforest");
+	tree_LightForest		= DefineTreeCategory("lightforest");
+	tree_GrassPlanes		= DefineTreeCategory("grassplanes");
+
+	DefineTreeSpecies(673, 13.63, 7.41, 500.0, 25.0, tree_DarkForest);
+	DefineTreeSpecies(660, 26.91, 9.50, 1000.0, 25.0, tree_DarkForest);
+	DefineTreeSpecies(659, 26.91, 9.50, 1000.0, 25.0, tree_DarkForest);
+	DefineTreeSpecies(620, 37.49, 17.36, 1000.0, 25.0, tree_Desert);
+	DefineTreeSpecies(765, 12.16, 18.60, 150.0, 25.0, tree_Desert);
+
+
 	/*
 		VEHICLE GROUP AND TYPE DEFINITIONS	
 		
