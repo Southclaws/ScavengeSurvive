@@ -55,13 +55,13 @@ CMD:adminlvl(playerid, params[])
 	new level;
 
 	if(sscanf(params, "d", level))
-		return Msg(playerid, YELLOW, " >  Usage: /adminlvl [level]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /adminlvl [level]");
 
 	if(!SetPlayerAdminLevel(playerid, level))
-		return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 4");
+		return ChatMsg(playerid, RED, " >  Admin level must be equal to or between 0 and 4");
 
 
-	MsgF(playerid, YELLOW, " >  Admin Level Secretly Set To: %d", level);
+	ChatMsg(playerid, YELLOW, " >  Admin Level Secretly Set To: %d", level);
 
 	return 1;
 }
@@ -80,11 +80,11 @@ ACMD:restart[4](playerid, params[])
 
 	if(sscanf(params, "d", duration))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /restart [seconds] - Always give players 5 or 10 minutes to prepare.");
+		ChatMsg(playerid, YELLOW, " >  Usage: /restart [seconds] - Always give players 5 or 10 minutes to prepare.");
 		return 1;
 	}
 
-	MsgF(playerid, YELLOW, " >  Restarting the server in "C_BLUE"%02d:%02d"C_YELLOW".", duration / 60, duration % 60);
+	ChatMsg(playerid, YELLOW, " >  Restarting the server in "C_BLUE"%02d:%02d"C_YELLOW".", duration / 60, duration % 60);
 	SetRestart(duration);
 
 	return 1;
@@ -108,16 +108,16 @@ ACMD:setadmin[4](playerid, params[])
 	if(!sscanf(params, "dd", id, level))
 	{
 		if(playerid == id)
-			return Msg(playerid, RED, " >  You cannot set your own level");
+			return ChatMsg(playerid, RED, " >  You cannot set your own level");
 
 		if(!IsPlayerConnected(id))
 			return 4;
 
 		if(!SetPlayerAdminLevel(id, level))
-			return Msg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
+			return ChatMsg(playerid, RED, " >  Admin level must be equal to or between 0 and 3");
 
-		MsgF(playerid, YELLOW, " >  You made %P"C_YELLOW" a Level %d Admin", id, level);
-		MsgF(id, YELLOW, " >  %P"C_YELLOW" Made you a Level %d Admin", playerid, level);
+		ChatMsg(playerid, YELLOW, " >  You made %P"C_YELLOW" a Level %d Admin", id, level);
+		ChatMsg(id, YELLOW, " >  %P"C_YELLOW" Made you a Level %d Admin", playerid, level);
 	}
 	else if(!sscanf(params, "s[24]d", name, level))
 	{
@@ -126,15 +126,15 @@ ACMD:setadmin[4](playerid, params[])
 		GetPlayerName(playerid, playername, MAX_PLAYER_NAME);
 
 		if(!strcmp(name, playername))
-			return Msg(playerid, RED, " >  You cannot set your own level");
+			return ChatMsg(playerid, RED, " >  You cannot set your own level");
 
 		UpdateAdmin(name, level);
 
-		MsgF(playerid, YELLOW, " >  You set %s to admin level %d.", name, level);
+		ChatMsg(playerid, YELLOW, " >  You set %s to admin level %d.", name, level);
 	}
 	else
 	{
-		Msg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /setadmin [playerid] [level]");
 		return 1;
 	}
 
@@ -155,12 +155,12 @@ ACMD:setpinglimit[3](playerid, params[])
 
 	if(!(100 < val < 1000))
 	{
-		Msg(playerid, YELLOW, " >  Ping limit must be between 100 and 1000");
+		ChatMsg(playerid, YELLOW, " >  Ping limit must be between 100 and 1000");
 		return 1;
 	}
 
 	gPingLimit = strval(params);
-	MsgF(playerid, YELLOW, " >  Ping limit has been updated to %d.", gPingLimit);
+	ChatMsg(playerid, YELLOW, " >  Ping limit has been updated to %d.", gPingLimit);
 
 	return 1;
 }
@@ -188,13 +188,13 @@ ACMD:weather[4](playerid, params[])
 				}
 
 				SetGlobalWeather(i);
-				MsgAdminsF(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
+				ChatMsgAdmins(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
 
 				return 1;
 			}
 		}
 
-		Msg(playerid, RED, " >  Invalid weather!");
+		ChatMsg(playerid, RED, " >  Invalid weather!");
 	}
 
 	return 1;
@@ -217,7 +217,7 @@ CMD:debug(playerid, params[])
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /debug [handlername] [level]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /debug [handlername] [level]");
 		return 1;
 	}
 
@@ -225,13 +225,13 @@ CMD:debug(playerid, params[])
 
 	if(handler == -1)
 	{
-		Msg(playerid, YELLOW, "Invalid handler");
+		ChatMsg(playerid, YELLOW, "Invalid handler");
 		return 1;
 	}
 
 	if(!(0 <= level <= 10))
 	{
-		Msg(playerid, YELLOW, "Invalid level");
+		ChatMsg(playerid, YELLOW, "Invalid level");
 		return 1;
 	}
 
@@ -239,7 +239,7 @@ CMD:debug(playerid, params[])
 
 	debug_set_level(handler, level);
 
-	MsgF(playerid, YELLOW, " >  SS debug level for '%s': %d", handlername, level);
+	ChatMsg(playerid, YELLOW, " >  SS debug level for '%s': %d", handlername, level);
 
 	return 1;
 }
@@ -253,7 +253,7 @@ CMD:sifdebug(playerid, params[])
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /sifdebug [handlername] [level]");
 		return 1;
 	}
 
@@ -261,13 +261,13 @@ CMD:sifdebug(playerid, params[])
 
 	if(handler == -1)
 	{
-		Msg(playerid, YELLOW, "Invalid handler");
+		ChatMsg(playerid, YELLOW, "Invalid handler");
 		return 1;
 	}
 
 	if(!(0 <= level <= 10))
 	{
-		Msg(playerid, YELLOW, "Invalid level");
+		ChatMsg(playerid, YELLOW, "Invalid level");
 		return 1;
 	}
 
@@ -275,7 +275,7 @@ CMD:sifdebug(playerid, params[])
 
 	sif_debug_plevel(playerid, handler, level);
 
-	MsgF(playerid, YELLOW, " >  SIF debug level for '%s': %d", handlername, level);
+	ChatMsg(playerid, YELLOW, " >  SIF debug level for '%s': %d", handlername, level);
 
 	return 1;
 }
@@ -289,7 +289,7 @@ ACMD:sifgdebug[4](playerid, params[])
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /sifgdebug [handlername] [level]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /sifgdebug [handlername] [level]");
 		return 1;
 	}
 
@@ -297,13 +297,13 @@ ACMD:sifgdebug[4](playerid, params[])
 
 	if(handler == -1)
 	{
-		Msg(playerid, YELLOW, "Invalid handler");
+		ChatMsg(playerid, YELLOW, "Invalid handler");
 		return 1;
 	}
 
 	if(!(0 <= level <= 10))
 	{
-		Msg(playerid, YELLOW, "Invalid level");
+		ChatMsg(playerid, YELLOW, "Invalid level");
 		return 1;
 	}
 
@@ -311,7 +311,7 @@ ACMD:sifgdebug[4](playerid, params[])
 
 	sif_debug_level(handler, level);
 
-	MsgF(playerid, YELLOW, " >  Global SIF debug level for '%s': %d", handlername, level);
+	ChatMsg(playerid, YELLOW, " >  Global SIF debug level for '%s': %d", handlername, level);
 
 	return 1;
 }
@@ -322,15 +322,15 @@ ACMD:dbl[3](playerid, params[])
 		if(IsPlayerToggledAllDebugLabels(playerid))
 		{
 			HideAllDebugLabelsForPlayer(playerid);
-			Msg(playerid, YELLOW, " >  Debug labels toggled off.");
+			ChatMsg(playerid, YELLOW, " >  Debug labels toggled off.");
 		}
 		else
 		{
 			ShowAllDebugLabelsForPlayer(playerid);
-			Msg(playerid, YELLOW, " >  Debug labels toggled on.");
+			ChatMsg(playerid, YELLOW, " >  Debug labels toggled on.");
 		}
 	#else
-		Msg(playerid, YELLOW, " >  Debug labels are not compiled.");
+		ChatMsg(playerid, YELLOW, " >  Debug labels are not compiled.");
 	#endif
 
 	return 1;

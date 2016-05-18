@@ -32,10 +32,10 @@
 ACMD:gamename[5](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /gamename [name]");
+		return ChatMsg(playerid,YELLOW," >  Usage: /gamename [name]");
 
 	SetGameModeText(params);
-	MsgF(playerid, YELLOW, " >  GameMode name set to "C_BLUE"%s", params);
+	ChatMsg(playerid, YELLOW, " >  GameMode name set to "C_BLUE"%s", params);
 
 	return 1;
 }
@@ -43,13 +43,13 @@ ACMD:gamename[5](playerid,params[])
 ACMD:hostname[5](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /hostname [name]");
+		return ChatMsg(playerid,YELLOW," >  Usage: /hostname [name]");
 
 	new str[74];
 	format(str, sizeof(str), "hostname %s", params);
 	SendRconCommand(str);
 
-	MsgF(playerid, YELLOW, " >  Hostname set to "C_BLUE"%s", params);
+	ChatMsg(playerid, YELLOW, " >  Hostname set to "C_BLUE"%s", params);
 
 	return 1;
 }
@@ -57,7 +57,7 @@ ACMD:hostname[5](playerid,params[])
 ACMD:mapname[5](playerid,params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid,YELLOW," >  Usage: /mapname [name]");
+		return ChatMsg(playerid,YELLOW," >  Usage: /mapname [name]");
 
 	new str[74];
 	format(str, sizeof(str), "mapname %s", params);
@@ -75,12 +75,12 @@ ACMD:gmx[5](playerid, params[])
 ACMD:loadfs[5](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
 
 	new str[64];
 	format(str, sizeof(str), "loadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Loading Filterscript: "C_BLUE"'%s'", params);
+	ChatMsg(playerid, YELLOW, " >  Loading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -88,12 +88,12 @@ ACMD:loadfs[5](playerid, params[])
 ACMD:reloadfs[5](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
 
 	new str[64];
 	format(str, sizeof(str), "reloadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Reloading Filterscript: "C_BLUE"'%s'", params);
+	ChatMsg(playerid, YELLOW, " >  Reloading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -101,12 +101,12 @@ ACMD:reloadfs[5](playerid, params[])
 ACMD:unloadfs[5](playerid, params[])
 {
 	if(!(0 < strlen(params) < 64))
-		return Msg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /loadfs [FS name]");
 
 	new str[64];
 	format(str, sizeof(str), "unloadfs %s", params);
 	SendRconCommand(str);
-	MsgF(playerid, YELLOW, " >  Unloading Filterscript: "C_BLUE"'%s'", params);
+	ChatMsg(playerid, YELLOW, " >  Unloading Filterscript: "C_BLUE"'%s'", params);
 
 	return 1;
 }
@@ -142,7 +142,7 @@ ACMD:hud[5](playerid, params[])
 ACMD:nametags[5](playerid, params[])
 {
 	ToggleNameTagsForPlayer(playerid, !GetPlayerNameTagsToggle(playerid));
-	MsgF(playerid, YELLOW, " >  Nametags toggled %s", (GetPlayerNameTagsToggle(playerid)) ? ("on") : ("off"));
+	ChatMsg(playerid, YELLOW, " >  Nametags toggled %s", (GetPlayerNameTagsToggle(playerid)) ? ("on") : ("off"));
 
 	return 1;
 }
@@ -167,7 +167,7 @@ ACMD:gotodef[4](playerid, params[])
 
 	if(!IsValidDefence(id))
 	{
-		MsgF(playerid, YELLOW, " >  Invalid ID");
+		ChatMsg(playerid, YELLOW, " >  Invalid ID");
 		return 1;
 	}
 
@@ -193,7 +193,7 @@ ACMD:gotodef[4](playerid, params[])
 ACMD:vw[5](playerid, params[])
 {
 	if(isnull(params))
-		MsgF(playerid, YELLOW, "Current VW: %d", GetPlayerVirtualWorld(playerid));
+		ChatMsg(playerid, YELLOW, "Current VW: %d", GetPlayerVirtualWorld(playerid));
 
 	else
 		SetPlayerVirtualWorld(playerid, strval(params));
@@ -204,7 +204,7 @@ ACMD:vw[5](playerid, params[])
 ACMD:iw[5](playerid, params[])
 {
 	if(isnull(params))
-		MsgF(playerid, YELLOW, "Current INT: %d", GetPlayerInterior(playerid));
+		ChatMsg(playerid, YELLOW, "Current INT: %d", GetPlayerInterior(playerid));
 
 	else
 		SetPlayerInterior(playerid, strval(params));
@@ -218,12 +218,12 @@ ACMD:health[5](playerid, params[])
 
 	if(sscanf(params, "f", value))
 	{
-		MsgF(playerid, YELLOW, "Current health %f", GetPlayerHP(playerid));
+		ChatMsg(playerid, YELLOW, "Current health %f", GetPlayerHP(playerid));
 		return 1;
 	}
 
 	SetPlayerHP(playerid, value);
-	MsgF(playerid, YELLOW, "Set health to %f", value);
+	ChatMsg(playerid, YELLOW, "Set health to %f", value);
 
 	return 1;
 }
@@ -234,12 +234,12 @@ ACMD:food[5](playerid, params[])
 
 	if(sscanf(params, "f", value))
 	{
-		MsgF(playerid, YELLOW, "Current food %f", GetPlayerFP(playerid));
+		ChatMsg(playerid, YELLOW, "Current food %f", GetPlayerFP(playerid));
 		return 1;
 	}
 
 	SetPlayerFP(playerid, value);
-	MsgF(playerid, YELLOW, "Set food to %f", value);
+	ChatMsg(playerid, YELLOW, "Set food to %f", value);
 
 	return 1;
 }
@@ -250,12 +250,12 @@ ACMD:bleed[5](playerid, params[])
 
 	if(sscanf(params, "f", value))
 	{
-		MsgF(playerid, YELLOW, "Current bleed rate %f", GetPlayerBleedRate(playerid));
+		ChatMsg(playerid, YELLOW, "Current bleed rate %f", GetPlayerBleedRate(playerid));
 		return 1;
 	}
 
 	SetPlayerBleedRate(playerid, value);
-	MsgF(playerid, YELLOW, "Set bleed rate to %f", value);
+	ChatMsg(playerid, YELLOW, "Set bleed rate to %f", value);
 
 	return 1;
 }
@@ -263,7 +263,7 @@ ACMD:bleed[5](playerid, params[])
 ACMD:knockout[5](playerid, params[])
 {
 	KnockOutPlayer(playerid, strval(params));
-	MsgF(playerid, YELLOW, "Set knockout time to %d", strval(params));
+	ChatMsg(playerid, YELLOW, "Set knockout time to %d", strval(params));
 	return 1;
 }
 
@@ -276,7 +276,7 @@ ACMD:showdamage[5](playerid, params[])
 ACMD:removewounds[5](playerid, params[])
 {
 	RemovePlayerWounds(playerid, strval(params));
-	MsgF(playerid, YELLOW, "Removed %d wounds.", strval(params));
+	ChatMsg(playerid, YELLOW, "Removed %d wounds.", strval(params));
 	return 1;
 }
 

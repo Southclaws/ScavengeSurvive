@@ -96,7 +96,7 @@ ShowReportMenu(playerid)
 						}
 						else
 						{
-							Msg(playerid, RED, " >  No player could be found.");
+							ChatMsgLang(playerid, RED, "REPNOPFOUND");
 							return 1;
 						}
 					}
@@ -118,7 +118,7 @@ ShowReportMenu(playerid)
 
 					if(!IsPlayerConnected(targetid))
 					{
-						Msg(playerid, RED, " >  No player could be found within 100m");
+						ChatMsgLang(playerid, RED, "REPNOPF100M");
 						return 1;
 					}
 
@@ -245,7 +245,7 @@ ACMD:reports[1](playerid, params[])
 	ret = ShowListOfReports(playerid);
 
 	if(ret == 0)
-		Msg(playerid, YELLOW, " >  There are no reports to show.");
+		ChatMsg(playerid, YELLOW, " >  There are no reports to show.");
 
 	return 1;
 }
@@ -253,7 +253,7 @@ ACMD:reports[1](playerid, params[])
 ACMD:deletereports[2](playerid, params[])
 {
 	DeleteReadReports();
-	Msg(playerid, YELLOW, " >  All read reports deleted.");
+	ChatMsg(playerid, YELLOW, " >  All read reports deleted.");
 
 	return 1;
 }
@@ -496,7 +496,7 @@ ShowReportOptions(playerid)
 							SetPlayerCameraPos(playerid, x, y, z);
 							SetPlayerCameraLookAt(playerid, x + vx, y + vy, z + vz);
 
-							Msg(playerid, YELLOW, " >  Type /recam to reset your camera");
+							ChatMsg(playerid, YELLOW, " >  Type /recam to reset your camera");
 						}
 					}
 				}

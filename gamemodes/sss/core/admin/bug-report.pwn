@@ -85,10 +85,10 @@ CMD:bug(playerid, params[])
 		if(response)
 		{
 			ReportBug(playerid, inputtext);
-			Msg(playerid, YELLOW, " >  Your bug report has been submitted! Thank you for your feedback! You can view a list of current issues with /issues.");
+			ChatMsgLang(playerid, YELLOW, "BUGREPORTSU");
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Bug report", "Please give a good description of the bug and/or steps to reproduce (char limit: 128 feel free to submit multiple reports)", "Submit", "Cancel");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Bug report", ls(playerid, "BUGREPORTDI"), "Submit", "Cancel");
 
 	return 1;
 }
@@ -101,7 +101,7 @@ ReportBug(playerid, bug[])
 
 	if(stmt_execute(stmt_BugInsert))
 	{
-		MsgAdminsF(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
+		ChatMsgAdmins(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
 	}
 }
 
@@ -120,7 +120,7 @@ CMD:issues(playerid, params[])
 	ret = ShowListOfBugs(playerid);
 
 	if(ret == 0)
-		Msg(playerid, YELLOW, " >  There are no bug reports to show.");
+		ChatMsg(playerid, YELLOW, " >  There are no bug reports to show.");
 
 	return 1;
 }
@@ -169,7 +169,7 @@ ShowListOfBugs(playerid)
 		if(response)
 		{
 			if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
-				Msg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
+				ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");

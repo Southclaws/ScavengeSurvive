@@ -349,7 +349,7 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 	new ret = RemoveItemFromTentIndex(itemid);
 
 	if(ret != INVALID_TENT_ID)
-		MsgF(playerid, YELLOW, "Removed item %d from tent %d (GEID: %d)", itemid, ret, tnt_GEID[ret]);
+		ChatMsgLang(playerid, YELLOW, "TENTITEMREM", itemid, ret, tnt_GEID[ret]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -380,7 +380,7 @@ _DropItemInTent(playerid, itemid, tentid)
 {
 	if(AddItemToTentIndex(tentid, itemid))
 	{
-		MsgF(playerid, YELLOW, " >  Item %d added to tent %d (GEID: %d)", itemid, tentid, tnt_GEID[tentid]);
+		ChatMsgLang(playerid, YELLOW, "TENTITEMADD", itemid, tentid, tnt_GEID[tentid]);
 	}
 
 	return 1;

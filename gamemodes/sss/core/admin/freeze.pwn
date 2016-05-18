@@ -77,7 +77,7 @@ UnfreezePlayer(playerid, msg = 0)
 	stop frz_CheckTimer[playerid];
 
 	if(msg)
-		Msg(playerid, YELLOW, " >  You are now unfrozen.");
+		ChatMsgLang(playerid, YELLOW, "FREEZEFROZE");
 }
 
 timer UnfreezePlayer_delay[time](playerid, time, msg)
@@ -98,7 +98,7 @@ timer UnfreezePlayer_check[4000](playerid)
 
 	if(-0.994 >= z >= -0.997 || 0.9958 >= z >= 0.9946)
 	{
-		MsgAdminsF(2, YELLOW, " >  Possible mod user: "C_ORANGE"%p (%d)", playerid, playerid);
+		ChatMsgAdmins(2, YELLOW, " >  Possible mod user: "C_ORANGE"%p (%d)", playerid, playerid);
 		SendIrcStaffMessage("Server", sprintf("Possible mod user %p", playerid));
 	}
 

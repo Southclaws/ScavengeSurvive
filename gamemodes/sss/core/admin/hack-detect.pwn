@@ -658,7 +658,7 @@ CameraDistanceCheck(playerid)
 			format(reason, sizeof(reason), " >  %s(%d) camera distance %.0f (incar, %d, %d at %.0f, %.0f, %.0f)", name, playerid, distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, vx, vy, vz);
 			//ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
-			MsgAdmins(3, YELLOW, reason);
+			ChatMsgAdmins(3, YELLOW, reason);
 
 			cd_ReportTick[playerid] = GetTickCount();
 		}

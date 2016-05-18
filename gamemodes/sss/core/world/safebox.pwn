@@ -377,19 +377,19 @@ SafeboxSaveCheck(playerid, itemid)
 		SetItemLabel(itemid, sprintf("NOT SAVED (GEID: %d, itemid: %d)", box_GEID[itemid], itemid), 0xFF0000FF, 2.0);
 
 		if(ret == 1)
-			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid item. (Please show Southclaw)", itemid, box_GEID[itemid]);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid item. (Please show Southclaw)", itemid, box_GEID[itemid]);
 
 		if(ret == 2)
-			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox. (Please show Southclaw)", itemid, box_GEID[itemid]);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item isn't a safebox. (Please show Southclaw)", itemid, box_GEID[itemid]);
 
 		if(ret == 3)
-			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item not in world. (Please show Southclaw)", itemid, box_GEID[itemid]);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Item not in world. (Please show Southclaw)", itemid, box_GEID[itemid]);
 
 		if(ret == 4)
-			MsgF(playerid, YELLOW, "ERROR: Container is empty, removing file (GEID: %d itemid: %d) (If the container was NOT empty, please show Southclaw)", box_GEID[itemid], itemid);
+			ChatMsg(playerid, YELLOW, "ERROR: Container is empty, removing file (GEID: %d itemid: %d) (If the container was NOT empty, please show Southclaw)", box_GEID[itemid], itemid);
 
 		if(ret == 5)
-			MsgF(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid container (%d). (Please show Southclaw)", itemid, box_GEID[itemid], GetItemArrayDataAtCell(itemid, 1));
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save safebox %d GEID: %d: Not valid container (%d). (Please show Southclaw)", itemid, box_GEID[itemid], GetItemArrayDataAtCell(itemid, 1));
 	}
 }
 
@@ -707,7 +707,7 @@ ACMD:setboxactive[4](playerid, params[])
 
 	if(sscanf(params, "d", geid))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /setboxactive [geid]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /setboxactive [geid]");
 		return 1;
 	}
 
@@ -722,7 +722,7 @@ ACMD:setboxactive[4](playerid, params[])
 	itemid = LoadSafeboxItem(filename, 1, 0);
 
 	GetItemPos(itemid, x, y, z);
-	MsgF(playerid, YELLOW, " >  Loaded safebox item %d at %f %f %f", itemid, x, y, z);
+	ChatMsg(playerid, YELLOW, " >  Loaded safebox item %d at %f %f %f", itemid, x, y, z);
 
 	return 1;
 }
@@ -769,9 +769,9 @@ ACMD:bgeid[3](playerid, params[])
 	ret = CheckForDuplicateGEID(itemid);
 
 	if(ret == -1)
-		Msg(playerid, YELLOW, " >  ERROR: Specified item is not a safebox type.");
+		ChatMsg(playerid, YELLOW, " >  ERROR: Specified item is not a safebox type.");
 
-	MsgF(playerid, YELLOW, " >  %d safeboxe GEIDs reassigned", ret);
+	ChatMsg(playerid, YELLOW, " >  %d safeboxe GEIDs reassigned", ret);
 
 	return 1;
 }

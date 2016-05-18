@@ -37,7 +37,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		SetItemExtraData(itemid, withitemid);
 		SetItemExtraData(withitemid, 1);
 		iedp_SyncTick[playerid] = GetTickCount();
-		Msg(playerid, YELLOW, " >  Cell phones synced, use phone to detonate.");
+		ChatMsgLang(playerid, YELLOW, "TNTPHBARMED");
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

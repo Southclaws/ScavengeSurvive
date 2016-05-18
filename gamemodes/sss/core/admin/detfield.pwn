@@ -737,7 +737,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 			if(GetPlayerState(playerid) != PLAYER_STATE_SPECTATING)
 			{
 				if(GetPlayerAdminLevel(playerid) >= 3)
-					MsgF(playerid, YELLOW, " >  Entered detection field '%s'", det_Name[i]);
+					ChatMsg(playerid, YELLOW, " >  Entered detection field '%s'", det_Name[i]);
 			}
 		}
 	}

@@ -54,28 +54,28 @@ ACMD:mute[1](playerid, params[])
 		reason[128];
 
 	if(sscanf(params, "dds[128]", targetid, delay, reason))
-		return Msg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason] - use -1 as a seconds duration for a permanent mute.");
+		return ChatMsg(playerid,YELLOW," >  Usage: /mute [playerid] [seconds] [reason] - use -1 as a seconds duration for a permanent mute.");
 
 	if(!IsPlayerConnected(targetid))
-		return Msg(playerid,RED, " >  Invalid targetid");
+		return ChatMsg(playerid,RED, " >  Invalid targetid");
 
 	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid))
 		return 3;
 
 	if(IsPlayerMuted(targetid))
-		return Msg(playerid, YELLOW, " >  Player Already Muted");
+		return ChatMsg(playerid, YELLOW, " >  Player Already Muted");
 
 	if(delay > 0)
 	{
 		TogglePlayerMute(targetid, true, delay);
-		MsgF(playerid, YELLOW, " >  Muted player %P "C_WHITE"for %d seconds.", targetid, delay);
-		MsgF(targetid, YELLOW, " >  Muted from global chat for "C_ORANGE"%d "C_YELLOW"seconds, Reason: "C_BLUE"%s", delay, reason);
+		ChatMsg(playerid, YELLOW, " >  Muted player %P "C_WHITE"for %d seconds.", targetid, delay);
+		ChatMsgLang(targetid, YELLOW, "MUTEDANTIME", delay, reason);
 	}
 	else
 	{
 		TogglePlayerMute(targetid, true);
-		MsgF(playerid, YELLOW, " >  Muted player %P", targetid);
-		MsgF(targetid, YELLOW, " >  Muted from global chat, Reason: "C_BLUE"%s", reason);
+		ChatMsg(playerid, YELLOW, " >  Muted player %P", targetid);
+		ChatMsgLang(targetid, YELLOW, "MUTEDREASON", reason);
 	}
 
 	return 1;
@@ -86,7 +86,7 @@ ACMD:unmute[1](playerid, params[])
 	new targetid;
 
 	if(sscanf(params, "d", targetid))
-		return Msg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /unmute [playerid]");
 
 	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
@@ -96,8 +96,8 @@ ACMD:unmute[1](playerid, params[])
 
 	TogglePlayerMute(targetid, false);
 
-	MsgF(playerid, YELLOW, " >  Un-muted %P", targetid);
-	Msg(targetid, YELLOW, " >  You are now un-muted.");
+	ChatMsg(playerid, YELLOW, " >  Un-muted %P", targetid);
+	ChatMsgLang(targetid, YELLOW, "MUTEDUNMUTE");
 
 	return 1;
 }
@@ -117,10 +117,10 @@ ACMD:warn[1](playerid, params[])
 		reason[128];
 
 	if(sscanf(params, "ds[128]", targetid, reason))
-		return Msg(playerid, YELLOW, " >  Usage: /warn [playerid] [reason]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /warn [playerid] [reason]");
 
 	if(!IsPlayerConnected(targetid))
-		return Msg(playerid,RED, " >  Invalid targetid");
+		return ChatMsg(playerid,RED, " >  Invalid targetid");
 
 	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
@@ -129,8 +129,8 @@ ACMD:warn[1](playerid, params[])
 
 	SetPlayerWarnings(targetid, warnings);
 
-	MsgF(playerid, ORANGE, " >  %P"C_YELLOW" Has been warned (%d/5) for: %s", targetid, warnings, reason);
-	MsgF(targetid, ORANGE, " >  You been warned (%d/5) for: %s. 5 warnings = 1 day ban.", warnings, reason);
+	ChatMsg(playerid, ORANGE, " >  %P"C_YELLOW" Has been warned (%d/5) for: %s", targetid, warnings, reason);
+	ChatMsgLang(targetid, ORANGE, "WARNEDMESSG", warnings, reason);
 
 	if(warnings >= 5)
 	{
@@ -162,7 +162,7 @@ ACMD:kick[1](playerid, params[])
 	}
 
 	if(sscanf(params, "ds[64]", targetid, reason))
-		return Msg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
+		return ChatMsg(playerid, YELLOW, " >  Usage: /kick [playerid] [reason]");
 
 	if(GetPlayerAdminLevel(targetid) >= GetPlayerAdminLevel(playerid) && playerid != targetid)
 		return 3;
@@ -171,7 +171,7 @@ ACMD:kick[1](playerid, params[])
 		return 4;
 
 	if(GetPlayerAdminLevel(playerid) != GetPlayerAdminLevel(highestadmin))
-		return MsgF(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
+		return ChatMsg(highestadmin, YELLOW, " >  %p kick request: (%d)%p reason: %s", playerid, targetid, targetid, reason);
 
 	if(playerid == targetid)
 		ChatMsgAll(PINK, " >  %P"C_PINK" failed and kicked themselves", playerid);
@@ -192,7 +192,7 @@ ACMD:kick[1](playerid, params[])
 ACMD:msg[1](playerid, params[])
 {
 	if(!(0 < strlen(params) < 128))
-		Msg(playerid,YELLOW," >  Usage: /msg [Message]");
+		ChatMsg(playerid,YELLOW," >  Usage: /msg [Message]");
 
 	new str[130] = {" >  "C_BLUE""};
 
@@ -219,7 +219,7 @@ ACMD:country[1](playerid, params[])
 		if(!IsPlayerConnected(targetid))
 		{
 			if(targetid > 99)
-				MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+				ChatMsg(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
 
 			else
 				return 4;
@@ -235,7 +235,7 @@ ACMD:country[1](playerid, params[])
 	{
 		if(!AccountExists(params))
 		{
-			MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", params);
+			ChatMsg(playerid, YELLOW, " >  The account '%s' does not exist.", params);
 			return 1;
 		}
 
@@ -248,7 +248,7 @@ ACMD:country[1](playerid, params[])
 		ipstr = IpIntToStr(ipint);
 		GetIPCountry(ipstr, country);
 
-		MsgF(playerid, YELLOW, " >  "C_BLUE"%s"C_YELLOW"'s GeoIP location: "C_BLUE"%s", params, country);
+		ChatMsg(playerid, YELLOW, " >  "C_BLUE"%s"C_YELLOW"'s GeoIP location: "C_BLUE"%s", params, country);
 	}
 
 	return 1;
@@ -308,7 +308,7 @@ ACMD:aliases[1](playerid, params[])
 
 	if(sscanf(params, "s[24]C(a)", name, type))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h/a]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /aliases [playerid/name] [i/p/h/a]");
 		return 1;
 	}
 
@@ -320,7 +320,7 @@ ACMD:aliases[1](playerid, params[])
 			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
 		else if(targetid > 99)
-			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+			ChatMsg(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
 
 		else
 			return 4;
@@ -328,7 +328,7 @@ ACMD:aliases[1](playerid, params[])
 
 	if(!AccountExists(name))
 	{
-		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
+		ChatMsg(playerid, YELLOW, " >  The account '%s' does not exist.", name);
 		return 1;
 	}
 
@@ -340,7 +340,7 @@ ACMD:aliases[1](playerid, params[])
 
 		if(strcmp(name, playername))
 		{
-			MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+			ChatMsg(playerid, YELLOW, " >  No aliases found for %s", name);
 			return 1;
 		}
 	}
@@ -369,19 +369,19 @@ ACMD:aliases[1](playerid, params[])
 	}
 	else
 	{
-		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'p'(password) 'h'(hash) 'a'(all)");
+		ChatMsg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'p'(password) 'h'(hash) 'a'(all)");
 		return 1;
 	}
 
 	if(ret == 0)
 	{
-		Msg(playerid, RED, " >  An error occurred.");
+		ChatMsg(playerid, RED, " >  An error occurred.");
 		return 1;
 	}
 
 	if(count == 0 || adminlevel > GetPlayerAdminLevel(playerid))
 	{
-		MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+		ChatMsg(playerid, YELLOW, " >  No aliases found for %s", name);
 		return 1;
 	}
 
@@ -399,7 +399,7 @@ ACMD:history[1](playerid, params[])
 
 	if(sscanf(params, "s[24]C(a)C()", name, type, lookup))
 	{
-		Msg(playerid, YELLOW, " >  Usage: /history [playerid/name] [i/h] [n]");
+		ChatMsg(playerid, YELLOW, " >  Usage: /history [playerid/name] [i/h] [n]");
 		return 1;
 	}
 
@@ -411,7 +411,7 @@ ACMD:history[1](playerid, params[])
 			GetPlayerName(targetid, name, MAX_PLAYER_NAME);
 
 		else if(targetid > 99)
-			MsgF(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
+			ChatMsg(playerid, YELLOW, " >  Numeric value '%d' isn't a player ID that is currently online, treating it as a name.", targetid);
 
 		else
 			return 4;
@@ -419,7 +419,7 @@ ACMD:history[1](playerid, params[])
 
 	if(!AccountExists(name))
 	{
-		MsgF(playerid, YELLOW, " >  The account '%s' does not exist.", name);
+		ChatMsg(playerid, YELLOW, " >  The account '%s' does not exist.", name);
 		return 1;
 	}
 
@@ -431,7 +431,7 @@ ACMD:history[1](playerid, params[])
 
 		if(strcmp(name, playername))
 		{
-			MsgF(playerid, YELLOW, " >  No aliases found for %s", name);
+			ChatMsg(playerid, YELLOW, " >  No aliases found for %s", name);
 			return 1;
 		}
 	}
@@ -464,7 +464,7 @@ ACMD:history[1](playerid, params[])
 	}
 	else
 	{
-		Msg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'h'(hash), optional parameter 'n' lists the history for that player only.");
+		ChatMsg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'h'(hash), optional parameter 'n' lists the history for that player only.");
 		return 1;
 	}
 

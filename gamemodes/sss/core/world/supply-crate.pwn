@@ -349,10 +349,10 @@ ACMD:sc[4](playerid, params[])
 
 	if(isnull(params) || !(0 <= type < sup_TypeTotal))
 	{
-		MsgF(playerid, YELLOW, " >  Usage: /sc [type] - types:");
+		ChatMsg(playerid, YELLOW, " >  Usage: /sc [type] - types:");
 
 		for(new i; i < sup_TypeTotal; i++)
-			MsgF(playerid, YELLOW, " >  %d: %s", i, sup_TypeData[i][supt_name]);
+			ChatMsg(playerid, YELLOW, " >  %d: %s", i, sup_TypeData[i][supt_name]);
 
 		return 1;
 	}
@@ -371,10 +371,10 @@ ACMD:sc[4](playerid, params[])
 
 ACMD:scinfo[4](playerid, params[])
 {
-	MsgF(playerid, YELLOW, " >  Current type: %d", sup_CurrentType);
+	ChatMsg(playerid, YELLOW, " >  Current type: %d", sup_CurrentType);
 
 	for(new i; i < sup_TypeTotal; i++)
-		MsgF(playerid, YELLOW, " >  %d: Tick diff: %d Curr tick: %d Last drop: %d Interval+Offset: %d", i, GetTickCountDifference(GetTickCount(), sup_TypeData[i][supt_lastDrop]), GetTickCount(), sup_TypeData[i][supt_lastDrop], sup_TypeData[i][supt_interval] + sup_TypeData[i][supt_offset]);
+		ChatMsg(playerid, YELLOW, " >  %d: Tick diff: %d Curr tick: %d Last drop: %d Interval+Offset: %d", i, GetTickCountDifference(GetTickCount(), sup_TypeData[i][supt_lastDrop]), GetTickCount(), sup_TypeData[i][supt_lastDrop], sup_TypeData[i][supt_interval] + sup_TypeData[i][supt_offset]);
 
 	return 1;
 }

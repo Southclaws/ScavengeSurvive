@@ -104,7 +104,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 		if(GetItemExtraData(itemid) == 1)
 		{
 			defer CreateIedMineProx(itemid);
-			Msg(playerid, YELLOW, " >  Proximity Mine Primed");
+			ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
 		}
 	}
 

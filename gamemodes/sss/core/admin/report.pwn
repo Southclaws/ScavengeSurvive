@@ -134,12 +134,12 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 
 	if(reporter == -1)
 	{
-		MsgAdminsF(1, YELLOW, " >  Server reported %s, reason: %s", name, reason);
+		ChatMsgAdmins(1, YELLOW, " >  Server reported %s, reason: %s", name, reason);
 		reportername = "Server";
 	}
 	else
 	{
-		MsgAdminsF(1, YELLOW, " >  %p reported %s, reason: %s", reporter, name, reason);
+		ChatMsgAdmins(1, YELLOW, " >  %p reported %s, reason: %s", reporter, name, reason);
 		GetPlayerName(reporter, reportername, MAX_PLAYER_NAME);
 	}
 
