@@ -156,3 +156,5 @@ BUGREPORTSU= >  Your bug report has been submitted! Thank you for your feedback!
 BUGREPORTDI=Please give a good description of the bug and/or steps to reproduce (char limit: 128 feel free to submit multiple reports)
 TNTPHBARMED= >  Cell phones synced, use phone to detonate.
 PROXMIARMED= >  Proximity Mine Primed
+LOCATORSYNC=Locator synced, you can now locate the phone.
+DISTANCEVAL=Distance: %.3f
