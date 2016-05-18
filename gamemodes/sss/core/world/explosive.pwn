@@ -105,7 +105,7 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 			return 1;
 		}
 
-        new playerid = GetContainerPlayerBag(containerid);
+		new playerid = GetContainerPlayerBag(containerid);
 
 		if(IsPlayerConnected(playerid))
 		{

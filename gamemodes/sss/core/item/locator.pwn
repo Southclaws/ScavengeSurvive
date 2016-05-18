@@ -65,7 +65,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			{
 			
 				GetItemPos	(phoneItemID, phone_x, phone_y, phone_z);
-                
+				
 				new
 					Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 					
