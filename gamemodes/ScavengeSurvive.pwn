@@ -605,6 +605,7 @@ new stock
 #include "sss/core/item/heartshapedbox.pwn"
 #include "sss/core/item/fishingrod.pwn"
 #include "sss/core/item/chainsaw.pwn"
+#include "sss/core/item/locator.pwn"
 
 // GAME DATA LOADING
 #include "sss/data/loot.pwn" // todo: load from file
