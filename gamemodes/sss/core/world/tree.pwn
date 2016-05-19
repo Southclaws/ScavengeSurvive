@@ -27,13 +27,12 @@
 
 #define MAX_TREE_CATEGORIES      		(5)
 #define MAX_TREE_SPECIES     			(10)
-#define MAX_TREES						(1024)
+#define MAX_TREES						(20000)
 
 #define MAX_TREE_CATEGORY_NAME  		(32)
 
 #define TREE_STREAMER_AREA_IDENTIFIER	(600)
 #define LOG_DROP_MAX_SPHERE_SIZE        (1.5)
-#define TREE_TEXT_LABEL_SHOW_HP         (true)  // to distinguish the created trees with the default trees
 
 
 enum E_TREE_SPECIES_DATA
@@ -58,6 +57,7 @@ Float:		tree_health
 
 static
 			treeCategory_Data[MAX_TREE_CATEGORIES][MAX_TREE_CATEGORY_NAME],
+			treeCategory_SpeciesCount[MAX_TREE_CATEGORIES],
 			treeCategory_IndexTotal,
 
 			treeSpecies_Data[MAX_TREE_SPECIES][E_TREE_SPECIES_DATA],
@@ -80,23 +80,25 @@ DefineTreeCategory(name[])
 	}
 
 	strcat(treeCategory_Data[treeCategory_IndexTotal], name);
+	treeCategory_SpeciesCount[treeCategory_IndexTotal] = 0;
 
 	return treeCategory_IndexTotal++;
 }
 
-DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, tree_Category)
+DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, categoryid)
 {
 	if(treeSpecies_IndexTotal > MAX_TREE_SPECIES)
 	{
 		printf("ERROR: Tree species limit reached at modelid: %i", modelid);
 		return -1;
 	}
-	if(tree_Category > MAX_TREE_CATEGORIES)
+
+	if(!(0 <= categoryid < treeCategory_IndexTotal))
 		return -1;
 
-	if(!treeCategory_Data[tree_Category][0])
+	if(!treeCategory_Data[categoryid][0])
 	{
-		printf("ERROR: DefineTreeSpecies() undefined \"tree_Category\" parameter: %i", tree_Category);
+		printf("ERROR: DefineTreeSpecies() undefined \"categoryid\" parameter: %i", categoryid);
 		return -1;
 	}
 
@@ -105,42 +107,44 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_max_health] 	= health;
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_chop_damage] 	= chop_damage;
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_pieces] 		= pieces;
-	treeSpecies_Data[treeSpecies_IndexTotal][tree_category] 	= tree_Category;
+	treeSpecies_Data[treeSpecies_IndexTotal][tree_category] 	= categoryid;
+
+	treeCategory_SpeciesCount[categoryid]++;
 
 	return treeSpecies_IndexTotal++;
 }
 
-CreateTree(tree_Species, Float:x, Float:y, Float:z)
+CreateTree(speciesid, Float:x, Float:y, Float:z)
 {
-	if(tree_Species > MAX_TREE_SPECIES)
-		return -1;
-
-	if(treeSpecies_Data[tree_Species][tree_model] == 0)
+	if(!(0 <= speciesid < MAX_TREE_SPECIES))
 	{
-		printf("ERROR: CreateTree() undefined \"tree_Species\" parameter: %i", tree_Species);
+		printf("ERROR: Invalid tree species ID: %d", speciesid);
+		return -1;
+	}
+
+	if(treeSpecies_Data[speciesid][tree_model] == 0)
+	{
+		printf("ERROR: CreateTree() undefined \"speciesid\" parameter: %i", speciesid);
 		return -1;
 	}
 
 	new
-		Float:treeDiameter = species_GetTreeDiameter(tree_Species) + 1.0,
+		Float:treeDiameter = species_GetTreeDiameter(speciesid) + 1.0,
 		id = Iter_Free(tree_Index),
 		data[2];
 
 	if(id == -1)
 	{
-		printf("ERROR: CreateTree() limit reached at [%i, %f, %f, %f]", tree_Species, x, y, z);
+		printf("ERROR: CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
 		return -1;
 	}
 
-	tree_Data[id][tree_species]    	= tree_Species;
-	tree_Data[id][tree_objectid] 	= CreateDynamicObject(species_GetTreeModel(tree_Species), x, y, z, 0.0, 0.0, frandom(360.0), 0, 0);
-	tree_Data[id][tree_areaid] 		= CreateDynamicSphere(x, y, z, treeDiameter, 0, 0);
-	tree_Data[id][tree_health] 		= species_GetTreeMaxHealth(tree_Species);
-
-	#if TREE_TEXT_LABEL_SHOW_HP == true
-		tree_Data[id][tree_labelid] = CreateDynamic3DTextLabel("0.0", YELLOW, x, y, z + 1.0, treeDiameter);
-		SetTreeHealth(id, tree_Data[id][tree_health]);
-	#endif
+	tree_Data[id][tree_species]		= speciesid;
+	tree_Data[id][tree_objectid]	= CreateDynamicObject(species_GetTreeModel(speciesid), x, y, z, 0.0, 0.0, frandom(360.0), 0, 0);
+	tree_Data[id][tree_areaid]		= CreateDynamicSphere(x, y, z, treeDiameter, 0, 0);
+	tree_Data[id][tree_health]		= species_GetTreeMaxHealth(speciesid);
+	tree_Data[id][tree_labelid]		= CreateDynamic3DTextLabel("0.0", YELLOW, x, y, z + 1.0, treeDiameter);
+	SetTreeHealth(id, tree_Data[id][tree_health]);
 
 	data[0] = TREE_STREAMER_AREA_IDENTIFIER;
 	data[1] = id;
@@ -186,11 +190,8 @@ DestroyTree(index)
 	Iter_SafeRemove(tree_Index, index, next);
 
 	DestroyDynamicObject(tree_Data[index][tree_objectid]);
-	DestroyDynamicArea	(tree_Data[index][tree_areaid]);
-
-	#if TREE_TEXT_LABEL_SHOW_HP == true
-		DestroyDynamic3DTextLabel(tree_Data[index][tree_labelid]);
-	#endif
+	DestroyDynamicArea(tree_Data[index][tree_areaid]);
+	DestroyDynamic3DTextLabel(tree_Data[index][tree_labelid]);
 
 	tree_Data[index][tree_species] 	= 0;
 	tree_Data[index][tree_objectid] = INVALID_OBJECT_ID;
@@ -202,66 +203,66 @@ DestroyTree(index)
 }
 
 
-species_GetTreeModel(tree_Species)
+species_GetTreeModel(speciesid)
 {
-	if(tree_Species > treeSpecies_IndexTotal)
+	if(!(0 <= speciesid < treeSpecies_IndexTotal))
 	{
 		print("<trees.pwn> ERROR: species_GetTreeModel() invalid tree species parameter");
 		return 0;
 	}
 
-	return treeSpecies_Data[tree_Species][tree_model];
+	return treeSpecies_Data[speciesid][tree_model];
 }
 
-forward Float:species_GetTreeDiameter(tree_Species);
-public Float:species_GetTreeDiameter(tree_Species)
+forward Float:species_GetTreeDiameter(speciesid);
+public Float:species_GetTreeDiameter(speciesid)
 {
-	if(tree_Species > treeSpecies_IndexTotal)
+	if(!(0 <= speciesid < treeSpecies_IndexTotal))
 	{
 		print("<trees.pwn> ERROR: species_GetTreeDiameter() invalid tree species parameter");
 		return 0.0;
 	}
 
-	return treeSpecies_Data[tree_Species][tree_diameter];
+	return treeSpecies_Data[speciesid][tree_diameter];
 }
 
-forward Float:species_GetTreeMaxHealth(tree_Species);
-public Float:species_GetTreeMaxHealth(tree_Species)
+forward Float:species_GetTreeMaxHealth(speciesid);
+public Float:species_GetTreeMaxHealth(speciesid)
 {
-	if(tree_Species > treeSpecies_IndexTotal)
+	if(!(0 <= speciesid < treeSpecies_IndexTotal))
 	{
 		print("<trees.pwn> ERROR: species_GetTreeMaxHealth invalid tree species parameter");
 		return 0.0;
 	}
 
-	return treeSpecies_Data[tree_Species][tree_max_health];
+	return treeSpecies_Data[speciesid][tree_max_health];
 }
 
-Float:species_GetTreeChopDamage(tree_Species)
+Float:species_GetTreeChopDamage(speciesid)
 {
-	if(tree_Species > treeSpecies_IndexTotal)
+	if(!(0 <= speciesid < treeSpecies_IndexTotal))
 	{
 		print("<trees.pwn> ERROR: species_GetTreeChopDamage() invalid tree species parameter");
 		return 0.0;
 	}
 
-	return treeSpecies_Data[tree_Species][tree_chop_damage];
+	return treeSpecies_Data[speciesid][tree_chop_damage];
 }
 
-species_GetTreePieces(tree_Species)
+species_GetTreePieces(speciesid)
 {
-	if(tree_Species > treeSpecies_IndexTotal)
+	if(!(0 <= speciesid < treeSpecies_IndexTotal))
 	{
 		print("<trees.pwn> ERROR: species_GetTreePieces() invalid tree species parameter");
 		return 0;
 	}
 
-	return treeSpecies_Data[tree_Species][tree_pieces];
+	return treeSpecies_Data[speciesid][tree_pieces];
 }
 
 IsValidTree(tree_index)
 {
-	if(tree_index > MAX_TREES)
+	if(!(0 <= tree_index < MAX_TREES))
 		return 0;
 
 	if(!Iter_Contains(tree_Index, tree_index))
@@ -270,35 +271,38 @@ IsValidTree(tree_index)
 	return 1;
 }
 
-GetRandomTreeSpecies(tree_Category = -1)
+GetRandomTreeSpecies(categoryid = -1)
 {
-	if(tree_Category == -1)
+	if(categoryid == -1)
 	{
 		return random(treeSpecies_IndexTotal);
 	}
 	else
 	{
-		if(tree_Category > MAX_TREE_CATEGORIES)
+		if(!(0 <= categoryid < treeCategory_IndexTotal))
 			return 0;
 
-		new
-			Iterator:tmp_RandomTree<MAX_TREE_SPECIES>;
+		if(treeCategory_SpeciesCount[categoryid] == 0)
+			return -1;
 
-		for(new i; i < treeSpecies_IndexTotal; i++)
-		{
-			if(treeSpecies_Data[i][tree_category] == tree_Category)
-			{
-				Iter_Add(tmp_RandomTree, treeSpecies_Data[i][tree_model]);
-			}
-		}
-
-		return Iter_Random(tmp_RandomTree);
+		return random(treeCategory_SpeciesCount[categoryid]);
 	}
+}
+
+GetTreeCategoryFromName(name[])
+{
+	for(new i; i < treeCategory_IndexTotal; i++)
+	{
+		if(!strcmp(treeCategory_Data[i], name))
+			return i;
+	}
+
+	return -1;
 }
 
 Float:GetTreeHealth(tree_index)
 {
-	if(tree_index > MAX_TREES)
+	if(!(0 <= tree_index < MAX_TREES))
 		return 0.0;
 
 	/*if(!IsValidTree(tree_index))
@@ -309,7 +313,7 @@ Float:GetTreeHealth(tree_index)
 
 GetTreeCategory(tree_index)
 {
-	if(tree_index > MAX_TREES)
+	if(!(0 <= tree_index < MAX_TREES))
 		return 0;
 
 	/*if(!IsValidTree(tree_index))
@@ -320,23 +324,21 @@ GetTreeCategory(tree_index)
 
 SetTreeHealth(tree_index, Float:health)
 {
-	if(tree_index > MAX_TREES)
+	if(!(0 <= tree_index < MAX_TREES))
 		return 0;
 
 	/*if(!IsValidTree(tree_index))
 		return 0;*/
 
 	tree_Data[tree_index][tree_health] = health;
+	UpdateDynamic3DTextLabelText(tree_Data[tree_index][tree_labelid], YELLOW, sprintf("%.2f", tree_Data[tree_index][tree_health]));
 
-	#if TREE_TEXT_LABEL_SHOW_HP == true
-		UpdateDynamic3DTextLabelText(tree_Data[tree_index][tree_labelid], YELLOW, sprintf("%.2f", tree_Data[tree_index][tree_health]));
-	#endif
 	return 1;
 }
 
 SetPlayerToFaceTree(playerid, tree_index)
 {
-	if(tree_index > MAX_TREES)
+	if(!(0 <= tree_index < MAX_TREES))
 		return 0;
 
 	/*if(!IsValidTree(tree_index))

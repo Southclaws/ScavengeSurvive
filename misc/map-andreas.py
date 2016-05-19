@@ -149,7 +149,7 @@ def save_stuff(stuff):
 
 	for name in files:
 		count = 0
-		with io.open(SCRIPTFILES_PATH + MAPSDATA_PATH + name + "/trees.txt", "w") as f:
+		with io.open(SCRIPTFILES_PATH + MAPSDATA_PATH + name + "/trees.tpl", "w") as f:
 
 			for i in stuff:
 				if IsPointIn(i[1], i[2], name):
@@ -161,7 +161,7 @@ def save_stuff(stuff):
 
 	# clear up the leftovers and dump them in GEN, should be empty really
 
-	with io.open(SCRIPTFILES_PATH + MAPSDATA_PATH + "GEN/trees.txt", "w") as f:
+	with io.open(SCRIPTFILES_PATH + MAPSDATA_PATH + "GEN/trees.tpl", "w") as f:
 		for i in stuff:
 			region = 0
 			for name in files:
