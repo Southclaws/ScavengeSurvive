@@ -65,6 +65,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(tr_LastTreeIndex[playerid] == INVALID_TREE_INDEX)
 			return 0;
 			
+		if(GetItemWeaponItemMagAmmo(GetPlayerItem(playerid)) <= 0)
+		{
+			ShowActionText(playerid, ls(playerid, "CHAINSAFUEL"), 5000);
+			return 0;
+		}
+
 		if(newkeys == 16)
 		{
 			_StartWoodCutting(playerid, tr_LastTreeIndex[playerid]);
@@ -92,6 +98,30 @@ hook OnHoldActionUpdate(playerid, progress)
 			tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
 			return 1;
 		}
+
+		new
+			itemid,
+			ItemType:itemtype;
+
+		itemid = GetPlayerItem(playerid);
+		itemtype = GetItemType(itemid);
+
+		if(itemtype != item_Chainsaw)
+		{
+			_StopWoodCutting(playerid);
+			return 1;
+		}
+
+		new ammo = GetItemWeaponItemMagAmmo(itemid);
+
+		if(ammo <= 0)
+		{
+			_StopWoodCutting(playerid);
+			return 1;
+		}
+
+		if(floatround(GetPlayerProgressBarValue(playerid, ActionBar) * 10) % 60 == 0)
+			_FireWeapon(playerid, WEAPON_CHAINSAW);
 
 		SetTreeHealth(t_Index, GetTreeHealth(t_Index) - (species_GetTreeChopDamage(GetTreeCategory(t_Index)) / 10) ); // divide it by 10, because it gets called every 100 mseconds not 1000
 
