@@ -1,16 +1,28 @@
+# SA:MP server related files
 *.dll
 *.exe
 *.amx
 *.RDP
-scriptfiles/
 server_log.txt
 server.cfg
 start.bat
-*.sublime-workspace
-*.sublime-project
-*.pyc
-settings.williames
-autoissue/
-*.lnk
+crashinfo.txt
+
+# My private SS resources
+scriptfiles/
 gamemodes/sss/extensions/
 gamemodes/ScavengeSurvive.tar.gz
+
+# Sublime stuff
+*.sublime-workspace
+*.sublime-project
+
+# stuff no one else needs
+*.lnk
+misc/*.jpg
+
+# Python stuff
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
