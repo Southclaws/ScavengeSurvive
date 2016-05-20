@@ -1702,12 +1702,90 @@ public OnScriptInit()
 	tree_LightForest		= DefineTreeCategory("lightforest");
 	tree_GrassPlanes		= DefineTreeCategory("grassplanes");
 
-	DefineTreeSpecies(673, 2.0, 500.0, 25.0, 5, tree_DarkForest);
-	DefineTreeSpecies(660, 2.0, 1000.0, 25.0, 5, tree_DarkForest);
-	DefineTreeSpecies(659, 2.0, 1000.0, 25.0, 5, tree_DarkForest);
-	DefineTreeSpecies(620, 2.0, 1000.0, 25.0, 5, tree_Desert);
-	DefineTreeSpecies(765, 2.0, 150.0, 25.0, 5, tree_Desert);
+	DefineTreeSpecies(664, 5.0, 2500.0, 20.0, 25, tree_DarkForest);
+	DefineTreeSpecies(670, 5.0, 2400.0, 20.0, 26, tree_DarkForest);
+	DefineTreeSpecies(685, 2.0, 1600.0, 24.0, 14, tree_DarkForest);
+	DefineTreeSpecies(686, 2.0, 1600.0, 24.0, 14, tree_DarkForest);
+	DefineTreeSpecies(687, 2.0, 1800.0, 24.0, 15, tree_DarkForest);
+	DefineTreeSpecies(693, 5.0, 2800.0, 18.0, 30, tree_DarkForest);
+	DefineTreeSpecies(696, 5.0, 2600.0, 18.0, 30, tree_DarkForest);
+	DefineTreeSpecies(697, 5.0, 2600.0, 20.0, 30, tree_DarkForest);
+	DefineTreeSpecies(704, 5.0, 2600.0, 20.0, 30, tree_DarkForest);
+	DefineTreeSpecies(719, 5.0, 2600.0, 20.0, 30, tree_DarkForest);
+	DefineTreeSpecies(720, 5.0, 2600.0, 18.0, 30, tree_DarkForest);
+	DefineTreeSpecies(721, 6.0, 3000.0, 18.0, 38, tree_DarkForest);
+	DefineTreeSpecies(722, 5.0, 2600.0, 22.0, 28, tree_DarkForest);
+	DefineTreeSpecies(723, 5.0, 2500.0, 22.0, 28, tree_DarkForest);
+	DefineTreeSpecies(724, 5.0, 2600.0, 18.0, 30, tree_DarkForest);
+	DefineTreeSpecies(725, 5.0, 2600.0, 18.0, 30, tree_DarkForest);
+	DefineTreeSpecies(881, 1.0, 600.0, 25.0, 7, tree_DarkForest);
 
+	DefineTreeSpecies(615, 2.0, 1200.0, 25.0, 15, tree_LightForest);
+	DefineTreeSpecies(617, 2.0, 900.0, 25.0, 10, tree_LightForest);
+	DefineTreeSpecies(654, 2.0, 1000.0, 25.0, 12, tree_LightForest);
+	DefineTreeSpecies(655, 2.0, 800.0, 25.0, 8, tree_LightForest);
+	DefineTreeSpecies(656, 2.5, 1100.0, 25.0, 16, tree_LightForest);
+	DefineTreeSpecies(657, 2.0, 750.0, 25.0, 8, tree_LightForest);
+	DefineTreeSpecies(658, 2.0, 1200.0, 25.0, 14, tree_LightForest);
+	DefineTreeSpecies(661, 2.0, 850.0, 25.0, 12, tree_LightForest);
+	DefineTreeSpecies(726, 2.0, 1700.0, 25.0, 16, tree_LightForest);
+	DefineTreeSpecies(727, 2.0, 900.0, 25.0, 14, tree_LightForest);
+	DefineTreeSpecies(729, 2.0, 900.0, 25.0, 14, tree_LightForest);
+	DefineTreeSpecies(730, 2.0, 1100.0, 25.0, 15, tree_LightForest);
+	DefineTreeSpecies(731, 3.0, 1200.0, 20.0, 24, tree_LightForest);
+	DefineTreeSpecies(732, 1.5, 800.0, 25.0, 9, tree_LightForest);
+	DefineTreeSpecies(733, 2.0, 1000.0, 25.0, 15, tree_LightForest);
+	DefineTreeSpecies(734, 2.0, 1000.0, 25.0, 15, tree_LightForest);
+	DefineTreeSpecies(735, 2.0, 1200.0, 20.0, 24, tree_LightForest);
+	DefineTreeSpecies(763, 1.5, 800.0, 25.0, 8, tree_LightForest);
+	DefineTreeSpecies(764, 2.0, 1000.0, 25.0, 12, tree_LightForest);
+	DefineTreeSpecies(765, 1.5, 700.0, 30.0, 6, tree_LightForest);
+	DefineTreeSpecies(766, 1.5, 800.0, 30.0, 8, tree_LightForest);
+	DefineTreeSpecies(770, 1.5, 800.0, 28.0, 8, tree_LightForest);
+	DefineTreeSpecies(771, 2.0, 1000.0, 25.0, 14, tree_LightForest);
+	DefineTreeSpecies(779, 1.5, 700.0, 30.0, 6, tree_LightForest);
+	DefineTreeSpecies(882, 2.0, 700.0, 25.0, 8, tree_LightForest);
+	DefineTreeSpecies(883, 2.0, 600.0, 25.0, 8, tree_LightForest);
+	DefineTreeSpecies(884, 2.0, 600.0, 25.0, 6, tree_LightForest);
+	DefineTreeSpecies(885, 2.0, 650.0, 25.0, 6, tree_LightForest);
+
+	DefineTreeSpecies(645, 2.0, 800.0, 25.0, 8, tree_Desert);
+	DefineTreeSpecies(629, 1.0, 400.0, 25.0, 3, tree_Desert);
+	DefineTreeSpecies(650, 1.0, 600.0, 28.0, 0, tree_Desert); // cacti
+	DefineTreeSpecies(651, 1.0, 600.0, 28.0, 0, tree_Desert); // cacti
+	DefineTreeSpecies(653, 1.0, 600.0, 28.0, 0, tree_Desert); // cacti
+	DefineTreeSpecies(674, 1.0, 500.0, 25.0, 3, tree_Desert);
+	DefineTreeSpecies(676, 1.0, 400.0, 25.0, 2, tree_Desert);
+	DefineTreeSpecies(680, 1.0, 500.0, 25.0, 3, tree_Desert);
+	DefineTreeSpecies(681, 1.0, 400.0, 25.0, 2, tree_Desert);
+	DefineTreeSpecies(773, 1.0, 650.0, 30.0, 8, tree_Desert);
+	DefineTreeSpecies(891, 1.0, 400.0, 30.0, 5, tree_Desert);
+	DefineTreeSpecies(904, 1.0, 300.0, 25.0, 3, tree_Desert);
+
+	DefineTreeSpecies(669, 2.5, 1200.0, 25.0, 14, tree_GrassPlanes);
+	DefineTreeSpecies(671, 1.5, 600.0, 25.0, 8, tree_GrassPlanes);
+	DefineTreeSpecies(672, 2.5, 1200.0, 25.0, 10, tree_GrassPlanes);
+	DefineTreeSpecies(691, 3.5, 1200.0, 25.0, 12, tree_GrassPlanes);
+	DefineTreeSpecies(703, 3.5, 1200.0, 25.0, 12, tree_GrassPlanes);
+	DefineTreeSpecies(705, 3.5, 1950.0, 25.0, 20, tree_GrassPlanes);
+	DefineTreeSpecies(706, 3.5, 1500.0, 15.0, 22, tree_GrassPlanes);
+	DefineTreeSpecies(707, 3.5, 1500.0, 15.0, 22, tree_GrassPlanes);
+	DefineTreeSpecies(708, 2.5, 1350.0, 20.0, 18, tree_GrassPlanes);
+	DefineTreeSpecies(767, 2.0, 1200.0, 25.0, 15, tree_GrassPlanes);
+	DefineTreeSpecies(768, 2.0, 1200.0, 25.0, 15, tree_GrassPlanes);
+	DefineTreeSpecies(769, 2.0, 1200.0, 25.0, 15, tree_GrassPlanes);
+	DefineTreeSpecies(772, 1.5, 1000.0, 25.0, 12, tree_GrassPlanes);
+	DefineTreeSpecies(774, 1.5, 1000.0, 25.0, 12, tree_GrassPlanes);
+	DefineTreeSpecies(775, 1.5, 800.0, 25.0, 8, tree_GrassPlanes);
+	DefineTreeSpecies(776, 1.5, 800.0, 25.0, 9, tree_GrassPlanes);
+	DefineTreeSpecies(777, 1.5, 1100.0, 25.0, 14, tree_GrassPlanes);
+	DefineTreeSpecies(778, 1.5, 800.0, 25.0, 8, tree_GrassPlanes);
+	DefineTreeSpecies(780, 1.5, 800.0, 25.0, 8, tree_GrassPlanes);
+	DefineTreeSpecies(781, 1.0, 650.0, 25.0, 4, tree_GrassPlanes);
+	DefineTreeSpecies(782, 1.5, 800.0, 25.0, 6, tree_GrassPlanes);
+	DefineTreeSpecies(886, 1.0, 800.0, 25.0, 5, tree_GrassPlanes);
+	DefineTreeSpecies(887, 1.5, 800.0, 25.0, 6, tree_GrassPlanes);
+	DefineTreeSpecies(888, 1.0, 600.0, 25.0, 4, tree_GrassPlanes);
 
 	/*
 		VEHICLE GROUP AND TYPE DEFINITIONS	
