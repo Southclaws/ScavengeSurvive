@@ -204,7 +204,7 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 			ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 
 			wb_CurrentConstructSet[playerid] = consset;
-			_wb_StartWorking(playerid, workbenchid);
+			_wb_StartWorking(playerid, workbenchid, GetConstructionSetBuildTime(consset));
 			return 1;
 		}
 	}
@@ -214,10 +214,10 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 	return 0;
 }
 
-_wb_StartWorking(playerid, workbenchid)
+_wb_StartWorking(playerid, workbenchid, buildtime)
 {
 	wb_Data[workbenchid][wb_inUse] = true;
-	StartHoldAction(playerid, GetConstructionSetBuildTime(consset));
+	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = workbenchid;
 }
 
