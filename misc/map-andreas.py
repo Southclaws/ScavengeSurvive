@@ -116,19 +116,19 @@ def gen_stuff():
 			# grassplanes	:192
 
 			if c == (0, 96, 0):
-				z = get_z(x, y)
+				z = get_z(x, y) - 0.5
 				stuff.append(("darkforest", x, y, z))
 
 			elif c == (0, 128, 0):
-				z = get_z(x, y)
+				z = get_z(x, y) - 0.5
 				stuff.append(("lightforest", x, y, z))
 
 			elif c == (0, 160, 0):
-				z = get_z(x, y)
+				z = get_z(x, y) - 0.5
 				stuff.append(("desert", x, y, z))
 
 			elif c == (0, 192, 0):
-				z = get_z(x, y)
+				z = get_z(x, y) - 0.5
 				stuff.append(("grassplanes", x, y, z))
 
 			# ... fill in colour codes for species here

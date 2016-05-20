@@ -26,7 +26,7 @@
 
 
 #define MAX_TREE_CATEGORIES      		(5)
-#define MAX_TREE_SPECIES     			(10)
+#define MAX_TREE_SPECIES     			(100)
 #define MAX_TREES						(20000)
 
 #define MAX_TREE_CATEGORY_NAME  		(32)
@@ -42,7 +42,8 @@ Float:		tree_diameter,
 Float:		tree_max_health,
 Float:		tree_chop_damage,
 			tree_pieces,
-			tree_category
+			tree_category,
+			tree_falltype
 }
 
 enum E_TREE_DATA
@@ -57,6 +58,7 @@ Float:		tree_health
 
 static
 			treeCategory_Data[MAX_TREE_CATEGORIES][MAX_TREE_CATEGORY_NAME],
+			treeCategory_Species[MAX_TREE_CATEGORIES][MAX_TREE_SPECIES],
 			treeCategory_SpeciesCount[MAX_TREE_CATEGORIES],
 			treeCategory_IndexTotal,
 
@@ -85,7 +87,7 @@ DefineTreeCategory(name[])
 	return treeCategory_IndexTotal++;
 }
 
-DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, categoryid)
+DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, categoryid, falltype)
 {
 	if(treeSpecies_IndexTotal > MAX_TREE_SPECIES)
 	{
@@ -108,7 +110,9 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_chop_damage] 	= chop_damage;
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_pieces] 		= pieces;
 	treeSpecies_Data[treeSpecies_IndexTotal][tree_category] 	= categoryid;
+	treeSpecies_Data[treeSpecies_IndexTotal][tree_falltype] 	= falltype;
 
+	treeCategory_Species[categoryid][treeCategory_SpeciesCount[categoryid]] = treeSpecies_IndexTotal;
 	treeCategory_SpeciesCount[categoryid]++;
 
 	return treeSpecies_IndexTotal++;
@@ -285,7 +289,7 @@ GetRandomTreeSpecies(categoryid = -1)
 		if(treeCategory_SpeciesCount[categoryid] == 0)
 			return -1;
 
-		return random(treeCategory_SpeciesCount[categoryid]);
+		return treeCategory_Species[categoryid][random(treeCategory_SpeciesCount[categoryid])];
 	}
 }
 
@@ -372,7 +376,12 @@ timer _UpdateTreePos[1000](tree_index) // time = distance / speed | (0.0001 / 0.
 	;
 	GetDynamicObjectPos	(tree_Data[tree_index][tree_objectid], x, y, z);
 	GetDynamicObjectRot	(tree_Data[tree_index][tree_objectid], rx, ry, rz);
-	MoveDynamicObject	(tree_Data[tree_index][tree_objectid], x, y, z - 0.0001, 0.0001, rx, 90.0, rz);
+
+	if(treeSpecies_Data[tree_Data[tree_index][tree_species]][tree_falltype] == 0)
+		MoveDynamicObject(tree_Data[tree_index][tree_objectid], x, y, z - 0.0001, 0.0001, rx, 90.0, rz);
+
+	else
+		MoveDynamicObject(tree_Data[tree_index][tree_objectid], x, y, z - 20.0, 4.0, -10.0 + frandom(10.0), -35.0, rz);
 
 	defer _DeleteTree(tree_index, x, y, z);
 }
@@ -381,18 +390,20 @@ timer _DeleteTree[2000](tree_index, Float:x, Float:y, Float:z)
 {
 	DestroyTree(tree_index);
 
+	new
+		Float:woodAngle,
+		Float:woodDistance;
+
 	for(new i; i < species_GetTreePieces(tree_Data[tree_index][tree_species]); i++)
 	{
-		new
-			Float:woodAngle 	= frandom(360.0),
-			Float:woodDistance 	= frandom(LOG_DROP_MAX_SPHERE_SIZE)
-		;
+		woodAngle = frandom(360.0);
+		woodDistance = frandom(LOG_DROP_MAX_SPHERE_SIZE);
 
 		x = woodDistance * floatsin(-woodAngle, degrees) + x;
 		y = woodDistance * floatcos(-woodAngle, degrees) + y;
 
 		MapAndreas_FindZ_For2DCoord(x, y, z);
-		CreateItem(item_Log, x, y, z + 0.088, .rz = frandom(360.0));
+		CreateItem(item_Log, x, y, z + 0.088, .rz = frandom(360.0), .zoffset = FLOOR_OFFSET);
 	}
 }
 
@@ -440,4 +451,19 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+
+ACMD:killalltrees[5](playerid, params[])
+{
+	foreach(new i : tree_Index)
+		LeanTree(i);
+
+	return 1;
+}
+
+ACMD:reloadtrees[5](playerid, params[])
+{
+	LoadTreesFromFolder("Maps/");
+	return 1;
 }
