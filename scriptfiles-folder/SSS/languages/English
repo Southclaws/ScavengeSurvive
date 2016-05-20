@@ -158,3 +158,4 @@ TNTPHBARMED= >  Cell phones synced, use phone to detonate.
 PROXMIARMED= >  Proximity Mine Primed
 LOCATORSYNC=Locator synced, you can now locate the phone.
 DISTANCEVAL=Distance: %.3f
+CHAINSAFUEL=There is no fuel in the chainsaw
