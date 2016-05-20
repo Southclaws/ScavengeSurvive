@@ -3,6 +3,7 @@ import os
 import io
 import array
 from PIL import Image, ImageDraw, ImageColor, ImageFont
+import heatmap
 import random
 
 # ss script utilities
@@ -125,7 +126,7 @@ def draw_stuff(stuff):
 
 		draw.ellipse([int(i[1] + 3000) - 8, int(6000 - (i[2] + 3000)) - 8, int(i[1] + 3000) + 8, int(6000 - (i[2] + 3000)) + 8], outline=(255, 255, 255), fill=c)
 
-	im.save("gtasa-blank-1.0-ss-map-trees.bmp")
+	im.save("gtasa-blank-1.0-ss-map-trees.jpg")
 
 
 def main():
