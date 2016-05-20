@@ -26,7 +26,7 @@
 
 
 // Directory for storing player-saved vehicles
-#define DIRECTORY_VEHICLE			DIRECTORY_MAIN"Vehicle/"
+#define DIRECTORY_VEHICLE			DIRECTORY_MAIN"vehicle/"
 
 
 static

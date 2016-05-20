@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_SIGNS		DIRECTORY_MAIN"Signs/"
+#define DIRECTORY_SIGNS		DIRECTORY_MAIN"sign/"
 #define MAX_SIGN			(1024)
 #define MAX_SIGN_TEXT		(128)
 #define INVALID_SIGN_ID		(-1)

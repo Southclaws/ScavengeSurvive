@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_DEFENCES	DIRECTORY_MAIN"Defences/"
+#define DIRECTORY_DEFENCES	DIRECTORY_MAIN"defences/"
 #define MAX_DEFENCE_ITEM	(10)
 #define MAX_DEFENCE			(6000)
 

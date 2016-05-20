@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_TENT		DIRECTORY_MAIN"Tents/"
+#define DIRECTORY_TENT		DIRECTORY_MAIN"tent/"
 #define MAX_TENT			(2048)
 #define MAX_TENT_ITEMS		(8)
 #define INVALID_TENT_ID		(-1)

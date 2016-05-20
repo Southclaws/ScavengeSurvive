@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_CARMOUR	DIRECTORY_VEHICLESPAWNS"carmour/"
+#define DIRECTORY_CARMOUR	"carmour/"
 #define MAX_CARMOUR			(16)
 #define MAX_CARMOUR_PARTS	(64)
 

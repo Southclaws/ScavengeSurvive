@@ -26,7 +26,7 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"Safebox/"
+#define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"safebox/"
 #define MAX_SAFEBOX_TYPE	(8)
 #define MAX_SAFEBOX_NAME	(32)
 

@@ -183,7 +183,7 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Directories
 #define DIRECTORY_SCRIPTFILES		"./scriptfiles/"
-#define DIRECTORY_MAIN				"SSS/"
+#define DIRECTORY_MAIN				"data/"
 
 
 // Files

@@ -26,7 +26,7 @@
 
 
 // The directory from which vehicle spawn positions are loaded
-#define DIRECTORY_VEHICLESPAWNS		"Vehicles/"
+#define DIRECTORY_VEHICLESPAWNS		"vspawn/"
 
 
 enum E_VEHICLE_SPAWN_DATA

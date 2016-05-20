@@ -26,7 +26,7 @@
 #include <YSI\y_va>
 
 
-#define DIRECTORY_LOGS				DIRECTORY_MAIN"Logs/"
+#define DIRECTORY_LOGS				"logs/"
 #define USE_LOGS					false
 
 
