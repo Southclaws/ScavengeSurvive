@@ -1537,7 +1537,7 @@ regions = {
 }
 
 # http://geospatialpython.com/2011/08/point-in-polygon-2-on-line.html
-def IsPointInPoly(x, y, poly):
+def is_point_in_poly(x, y, poly):
 
 	# check if point is a vertex
 	if (x, y) in poly:
@@ -1578,11 +1578,12 @@ def IsPointInPoly(x, y, poly):
 	return inside
 
 
-def IsPointIn(x, y, name):
+def is_point_in(x, y, name):
 
-	return IsPointInPoly(x, y, regions[name])
+	return is_point_in_poly(x, y, regions[name])
 
 
-# elaborate testing
-# print(IsPointIn(0.0, 0.0, "RC")) # expected true
-# print(IsPointIn(0.0, 0.0, "BC")) # expected false
+if __name__ == '__main__':
+	print("Testing regions: checking if 0.0, 0.0 is in RC and BC (should return true then false)")
+	print(is_point_in(0.0, 0.0, "RC")) # expected true
+	print(is_point_in(0.0, 0.0, "BC")) # expected false
