@@ -48,7 +48,7 @@ hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'PlantPot'...");
 
-	HANDLER = debug_register_handler("plantpot", 3);
+	HANDLER = debug_register_handler("plantpot");
 }
 
 

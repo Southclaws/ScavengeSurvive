@@ -130,6 +130,12 @@ stock LoadAllLanguages()
 	default_entries = LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
 	printf("Default language (English) has %d entries.", default_entries);
 
+	if(default_entries == 0)
+	{
+		printf("[LoadAllLanguages] ERROR: No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
+		return 0;
+	}
+
 	while(dir_list(dirhandle, item, type))
 	{
 		if(type == FM_FILE)
@@ -172,6 +178,12 @@ stock LoadLanguage(filename[], langname[])
 		delimiter,
 		key[MAX_LANGUAGE_KEY_LEN],
 		index;
+
+	if(!f)
+	{
+		printf("[LoadLanguage] ERROR: Unable to open file '%s'.", filename);
+		return 0;
+	}
 
 	while(fread(f, line))
 	{

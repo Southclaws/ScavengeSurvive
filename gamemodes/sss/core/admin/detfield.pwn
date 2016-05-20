@@ -38,7 +38,7 @@
 		- Contains every log record for each field.
 */
 
-#define DETFIELD_DATABASE			"SSS/detfield.db"
+#define DETFIELD_DATABASE			DIRECTORY_MAIN"detfield.db"
 
 #define DETFIELD_TABLE_MAIN			"field_list"
 #define FIELD_DETFIELD_NAME			"name"		// 00
