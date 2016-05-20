@@ -12,6 +12,7 @@ import mapandreas
 import bitmapdata
 
 
+SPAWN_CHANCE_PER_SQM = 0.1 # chance to spawn a tree per sq metre
 SCRIPTFILES_PATH = "../scriptfiles/"
 TXWORKSPACE_PATH = "txmap/"
 MAPSDATA_PATH = "Maps/"
@@ -38,7 +39,7 @@ def gen_stuff():
 
 		for y in range (-3000, 3000):
 
-			if random.random() > 0.0005: # .5% chance to place a tree each sq metre
+			if (100 * random.random()) > SPAWN_CHANCE_PER_SQM:
 				continue
 
 			c = bitmapdata.colour_at(x, y)

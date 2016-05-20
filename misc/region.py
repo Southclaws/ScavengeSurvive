@@ -1,4 +1,5 @@
 import sys
+import itertools
 
 
 regions = {
@@ -1586,7 +1587,7 @@ def is_point_in(x, y, name):
 	return is_point_in_poly(x, y, regions[name])
 
 
-def area(x, y):
+def get_area(x, y):
 	"""Calculates the signed area of an arbitrary polygon given its verticies
 	http://stackoverflow.com/a/4682656/190597 (Joe Kington)
 	http://softsurfer.com/Archive/algorithm_0101/algorithm_0101.htm#2D%20Polygons
@@ -1601,11 +1602,11 @@ def center(points):
 	"""
 	http://stackoverflow.com/a/14115494/190597 (mgamba)
 	"""
-	area = area(*zip(*points))
+	area = get_area(*zip(*points))
 	result_x = 0
 	result_y = 0
 	N = len(points)
-	points = IT.cycle(points)
+	points = itertools.cycle(points)
 	x1, y1 = next(points)
 	for i in range(N):
 		x0, y0 = x1, y1
