@@ -657,6 +657,12 @@ OnGameModeInit_Setup()
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
+	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
+	{
+		print("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		for(;;){}
+	}
+
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
