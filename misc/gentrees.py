@@ -3,7 +3,6 @@ import os
 import io
 import array
 from PIL import Image, ImageDraw, ImageColor, ImageFont
-import heatmap
 import random
 
 # ss script utilities
