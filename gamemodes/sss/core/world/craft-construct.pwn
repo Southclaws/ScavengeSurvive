@@ -74,6 +74,12 @@ hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/craft-construct.pwn");
 
+	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
+	{
+		cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+		cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
+	}
+
 	cons_Constructing[playerid] = -1;
 }
 
@@ -90,12 +96,6 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset)
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
 	cons_Data[cons_Total][cons_tool] = tool;
 	cons_Data[cons_Total][cons_craftset] = craftset;
-
-	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
-	{
-		cons_SelectedItems[cons_Total][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-		cons_SelectedItems[cons_Total][i][cft_selectedItemID] = INVALID_ITEM_ID;
-	}
 
 	cons_CraftsetConstructSet[craftset] = cons_Total;
 

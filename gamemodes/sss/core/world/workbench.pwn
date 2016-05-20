@@ -45,7 +45,8 @@ Float:		wb_posX,
 Float:		wb_posY,
 Float:		wb_posZ,
 Float:		wb_rotZ,
-			wb_count
+			wb_count,
+bool:		wb_inUse
 }
 
 
@@ -84,6 +85,11 @@ hook OnPlayerConnect(playerid)
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
+hook OnPlayerDisconnect(playerid, reason)
+{
+	_wb_StopWorking(playerid);
+}
+
 
 /*==============================================================================
 
@@ -115,6 +121,7 @@ stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
 	}
 
 	wb_Data[wb_Total][wb_count] = 0;
+	wb_Data[wb_Total][wb_inUse] = false;
 
 	wb_ButtonWorkbench[wb_Data[wb_Total][wb_buttonId]] = wb_Total;
 
@@ -196,9 +203,8 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 
 			ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 
-			StartHoldAction(playerid, GetConstructionSetBuildTime(consset));
-			wb_CurrentWorkbench[playerid] = workbenchid;
 			wb_CurrentConstructSet[playerid] = consset;
+			_wb_StartWorking(playerid, workbenchid);
 			return 1;
 		}
 	}
@@ -206,6 +212,22 @@ _wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
 	_wb_AddItem(workbenchid, itemid);
 
 	return 0;
+}
+
+_wb_StartWorking(playerid, workbenchid)
+{
+	wb_Data[workbenchid][wb_inUse] = true;
+	StartHoldAction(playerid, GetConstructionSetBuildTime(consset));
+	wb_CurrentWorkbench[playerid] = workbenchid;
+}
+
+_wb_StopWorking(playerid)
+{
+	ClearAnimations(playerid);
+
+	StopHoldAction(playerid);
+	wb_Data[wb_CurrentWorkbench[playerid]][wb_inUse] = false;
+	wb_CurrentWorkbench[playerid] = -1;
 }
 
 _wb_AddItem(workbenchid, itemid)
@@ -281,12 +303,18 @@ _wb_RemoveItem(workbenchid, itemid)
 {
 	d:1:HANDLER("[_wb_RemoveItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
 
+	if(wb_Data[workbenchid][wb_inUse])
+	{
+		d:2:HANDLER("[_wb_RemoveItem] Workbench in-use, cancelling remove");
+		return 0;
+	}
+
 	new idx;
 
 	while(wb_SelectedItems[workbenchid][idx][cft_selectedItemID] != itemid)
 	{
 		if(idx++ == wb_Data[workbenchid][wb_count])
-			return 0;
+			return 1;
 	}
 
 	wb_SelectedItems[workbenchid][idx][cft_selectedItemType] = INVALID_ITEM_TYPE;
@@ -333,11 +361,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(wb_CurrentWorkbench[playerid] != -1)
 		{
 			d:1:HANDLER("[OnPlayerKeyStateChange] stopping workbench build");
-
-			ClearAnimations(playerid);
-
-			StopHoldAction(playerid);
-			wb_CurrentWorkbench[playerid] = -1;
+			_wb_StopWorking(playerid);
 		}
 	}
 
@@ -364,7 +388,10 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/workbench.pwn");
 
 	if(wb_ItemWorkbench[itemid] != -1)
-		_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid);
+	{
+		if(_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid) == 0)
+			return Y_HOOKS_BREAK_RETURN_1;
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
