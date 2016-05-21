@@ -431,6 +431,9 @@ new stock
 	CHILD SYSTEMS
 	Modules that do not declare anything globally accessible besides interfaces.
 */
+// GAME DATA LOADING
+#include "sss/data/loot.pwn" // todo: load from file
+
 // VEHICLE
 #include "sss/core/vehicle/player-vehicle.pwn"
 #include "sss/core/vehicle/loot-vehicle.pwn"
@@ -605,9 +608,6 @@ new stock
 #include "sss/core/item/heartshapedbox.pwn"
 #include "sss/core/item/fishingrod.pwn"
 #include "sss/core/item/chainsaw.pwn"
-
-// GAME DATA LOADING
-#include "sss/data/loot.pwn" // todo: load from file
 
 
 // POST-CODE

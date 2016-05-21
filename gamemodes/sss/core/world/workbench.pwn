@@ -84,6 +84,15 @@ hook OnPlayerConnect(playerid)
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
+<<<<<<< HEAD
+=======
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if(wb_CurrentWorkbench[playerid] != -1)
+		_wb_StopWorking(playerid);
+}
+
+>>>>>>> aef432d... Workbench and vehilce fix
 
 /*==============================================================================
 
@@ -354,6 +363,7 @@ hook OnHoldActionFinish(playerid)
 
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
 		_wb_CreateResult(wb_CurrentWorkbench[playerid], GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]));
+		_wb_StopWorking(playerid);
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
 	}
