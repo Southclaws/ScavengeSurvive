@@ -87,7 +87,8 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	_wb_StopWorking(playerid);
+	if(wb_CurrentWorkbench[playerid] != -1)
+		_wb_StopWorking(playerid);
 }
 
 
@@ -378,6 +379,7 @@ hook OnHoldActionFinish(playerid)
 
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
 		_wb_CreateResult(wb_CurrentWorkbench[playerid], GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]));
+		_wb_StopWorking(playerid);
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
 	}
