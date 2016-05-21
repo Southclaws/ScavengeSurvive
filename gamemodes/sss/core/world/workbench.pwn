@@ -84,15 +84,12 @@ hook OnPlayerConnect(playerid)
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
-<<<<<<< HEAD
-=======
 hook OnPlayerDisconnect(playerid, reason)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)
 		_wb_StopWorking(playerid);
 }
 
->>>>>>> aef432d... Workbench and vehilce fix
 
 /*==============================================================================
 
