@@ -49,7 +49,8 @@ static
 		cons_Total,
 		cons_CraftsetConstructSet[CFT_MAX_CRAFT_SET] = {-1, ...},
 		cons_Constructing[MAX_PLAYERS],
-		cons_SelectedItems[MAX_PLAYERS][MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data];
+		cons_SelectedItems[MAX_PLAYERS][MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
+		cons_SelectedItemCount[MAX_PLAYERS];
 
 
 forward OnPlayerConstruct(playerid, consset);
@@ -80,6 +81,7 @@ hook OnPlayerConnect(playerid)
 		cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
 	}
 
+	cons_SelectedItemCount[playerid] = 0;
 	cons_Constructing[playerid] = -1;
 }
 
@@ -131,6 +133,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			listitem = GetItemFromButtonID(list[i]);
 			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(listitem);
 			cons_SelectedItems[playerid][i][cft_selectedItemID] = listitem;
+			cons_SelectedItemCount[playerid]++;
 			d:3:HANDLER("[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
 		}
 
@@ -143,21 +146,24 @@ hook OnPlayerUseItem(playerid, itemid)
 
 			if(cons_CraftsetConstructSet[craftset] != -1)
 			{
-				if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
+				if(cons_Data[cons_CraftsetConstructSet[craftset]][cons_tool] == GetItemType(GetPlayerItem(playerid)))
 				{
 					d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
+					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
+					{
 
-					StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
-					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-					ShowActionText(playerid, ls(playerid, "CONSTRUCTIN"));
+						StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
+						ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN"));
 
-					cons_Constructing[playerid] = craftset;
+						cons_Constructing[playerid] = craftset;
 
-					return Y_HOOKS_BREAK_RETURN_1;
-				}
-				else
-				{
-					d:2:HANDLER("[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+						return Y_HOOKS_BREAK_RETURN_1;
+					}
+					else
+					{
+						d:2:HANDLER("[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+					}
 				}
 			}
 		}
@@ -179,6 +185,12 @@ hook OnHoldActionFinish(playerid)
 		ClearAnimations(playerid);
 		HideActionText(playerid);
 
+		for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
+		{
+			cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+			cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
+		}
+		cons_SelectedItemCount[playerid] = 0;
 		cons_Constructing[playerid] = -1;
 	}
 }
@@ -266,9 +278,12 @@ stock GetPlayerConstructing(playerid)
 	return cons_Constructing[playerid];
 }
 
-stock GetPlayerConstructionItems(playerid, output[CFT_MAX_CRAFT_SET_ITEMS][e_selected_item_data])
+stock GetPlayerConstructionItems(playerid, output[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data], &count)
 {
-	output = cons_SelectedItems[playerid];
+	for(new i; i < MAX_CONSTRUCT_SET_ITEMS && cons_SelectedItems[playerid][i][cft_selectedItemID] != -1; i++)
+		output[i] = cons_SelectedItems[playerid][i];
+
+	count = cons_SelectedItemCount[playerid];
 
 	return 1;
 }
