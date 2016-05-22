@@ -31,17 +31,17 @@ new
 	tr_LastTreeIndex[MAX_PLAYERS] = {INVALID_TREE_INDEX, ...};
 
 
-public OnPlayerEnterTreeArea(playerid, tree_index)
+public OnPlayerEnterTreeArea(playerid, treeid)
 {
-	if(!IsValidTree(tree_index))
+	if(!IsValidTree(treeid))
 		return 0;
 
-	tr_LastTreeIndex[playerid] = tree_index;
+	tr_LastTreeIndex[playerid] = treeid;
 	return 1;
 }
-public OnPlayerLeaveTreeArea(playerid, tree_index)
+public OnPlayerLeaveTreeArea(playerid, treeid)
 {
-	if(!IsValidTree(tree_index))
+	if(!IsValidTree(treeid))
 		return 0;
 		
 	tr_LastTreeIndex[playerid] = INVALID_TREE_INDEX;
@@ -57,29 +57,32 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/chainsaw.pwn");
 
-	if(GetItemType(GetPlayerItem(playerid)) == item_Chainsaw)
-	{
-		if(IsPlayerKnockedOut(playerid))
-			return 0;
-	
-		if(tr_LastTreeIndex[playerid] == INVALID_TREE_INDEX)
-			return 0;
-			
-		if(GetItemWeaponItemMagAmmo(GetPlayerItem(playerid)) <= 0)
-		{
-			ShowActionText(playerid, ls(playerid, "CHAINSAFUEL"), 5000);
-			return 0;
-		}
+	if(IsPlayerKnockedOut(playerid))
+		return 0;
 
-		if(newkeys == 16)
-		{
-			_StartWoodCutting(playerid, tr_LastTreeIndex[playerid]);
-		}
-		if(oldkeys == 16)
-		{
-			_StopWoodCutting(playerid);
-		}
+	if(tr_LastTreeIndex[playerid] == INVALID_TREE_INDEX)
+		return 0;
+
+	new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+	if(itemtype != GetTreeSpeciesHarvestItem(GetTreeSpecies(tr_LastTreeIndex[playerid])))
+		return 0;
+
+	if(itemtype == item_Chainsaw && GetItemWeaponItemMagAmmo(GetPlayerItem(playerid)) <= 0)
+	{
+		ShowActionText(playerid, ls(playerid, "CHAINSAFUEL"), 5000);
+		return 0;
 	}
+
+	if(newkeys == 16)
+	{
+		_StartWoodCutting(playerid, tr_LastTreeIndex[playerid]);
+	}
+	if(oldkeys == 16)
+	{
+		_StopWoodCutting(playerid);
+	}
+
 	return 1;
 }
 
@@ -106,24 +109,27 @@ hook OnHoldActionUpdate(playerid, progress)
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
 
-		if(itemtype != item_Chainsaw)
+		if(itemtype != GetTreeSpeciesHarvestItem(GetTreeSpecies(t_Index)))
 		{
 			_StopWoodCutting(playerid);
 			return 1;
 		}
 
-		new ammo = GetItemWeaponItemMagAmmo(itemid);
-
-		if(ammo <= 0)
+		if(itemtype == item_Chainsaw)
 		{
-			_StopWoodCutting(playerid);
-			return 1;
+			new ammo = GetItemWeaponItemMagAmmo(itemid);
+
+			if(ammo <= 0)
+			{
+				_StopWoodCutting(playerid);
+				return 1;
+			}
+
+			if(floatround(GetPlayerProgressBarValue(playerid, ActionBar) * 10) % 60 == 0)
+				_FireWeapon(playerid, WEAPON_CHAINSAW);
 		}
 
-		if(floatround(GetPlayerProgressBarValue(playerid, ActionBar) * 10) % 60 == 0)
-			_FireWeapon(playerid, WEAPON_CHAINSAW);
-
-		SetTreeHealth(t_Index, GetTreeHealth(t_Index) - (species_GetTreeChopDamage(GetTreeCategory(t_Index)) / 10) ); // divide it by 10, because it gets called every 100 mseconds not 1000
+		SetTreeHealth(t_Index, GetTreeHealth(t_Index) - (GetTreeSpeciesChopDamage(GetTreeSpecies(t_Index)) / 10) ); // divide it by 10, because it gets called every 100 mseconds not 1000
 
 		if(GetTreeHealth(t_Index) <= 0.0)
 		{
@@ -136,15 +142,15 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_StartWoodCutting(playerid, tree_index)
+_StartWoodCutting(playerid, treeid)
 {
 	new
-		start 	= (1000 * floatround(species_GetTreeMaxHealth(GetTreeCategory(tree_index))) ) 	/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index))),
-		end 	= (1000 * floatround(GetTreeHealth(tree_index))) 								/  floatround(species_GetTreeChopDamage(GetTreeCategory(tree_index)));
+		start 	= (1000 * floatround(GetTreeSpeciesMaxHealth(GetTreeSpecies(treeid))) ) 	/  floatround(GetTreeSpeciesChopDamage(GetTreeSpecies(treeid))),
+		end 	= (1000 * floatround(GetTreeHealth(treeid))) 								/  floatround(GetTreeSpeciesChopDamage(GetTreeSpecies(treeid)));
 	
 	StartHoldAction(playerid, start, start - end);
 	
-	SetPlayerToFaceTree(playerid, tree_index);
+	SetPlayerToFaceTree(playerid, treeid);
 	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
 	
 }

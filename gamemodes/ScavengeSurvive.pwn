@@ -139,7 +139,7 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
-#include <mapandreas>
+#include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
@@ -420,6 +420,7 @@ new stock
 #include "sss/core/weapon/damage-core.pwn"
 #include "sss/core/ui/hold-action.pwn"
 #include "sss/core/item/liquid.pwn"
+#include "sss/core/world/tree.pwn"
 
 /*
 	MODULE INITIALISATION CALLS
@@ -530,7 +531,6 @@ new stock
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
 #include "sss/core/world/refine-machine.pwn"
-#include "sss/core/world/tree.pwn"
 #include "sss/core/world/tree-loader.pwn"
 
 // ADMINISTRATION TOOLS
