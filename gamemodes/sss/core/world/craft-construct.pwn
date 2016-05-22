@@ -117,7 +117,7 @@ hook OnPlayerUseItem(playerid, itemid)
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/craft-construct.pwn");
 
 	new
-		list[BTN_MAX_INRANGE] = {INVALID_ITEM_ID, ...},
+		list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...},
 		size;
 
 	GetPlayerButtonList(playerid, list, size, true);
@@ -128,7 +128,9 @@ hook OnPlayerUseItem(playerid, itemid)
 
 		new listitem;
 
-		for(new i; list[i] != INVALID_ITEM_ID && i < MAX_CONSTRUCT_SET_ITEMS; i++)
+		_ResetSelectedItems(playerid);
+
+		for(new i; list[i] != INVALID_BUTTON_ID && i < MAX_CONSTRUCT_SET_ITEMS && i < size; i++)
 		{
 			listitem = GetItemFromButtonID(list[i]);
 			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(listitem);
@@ -185,12 +187,7 @@ hook OnHoldActionFinish(playerid)
 		ClearAnimations(playerid);
 		HideActionText(playerid);
 
-		for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
-		{
-			cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-			cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
-		}
-		cons_SelectedItemCount[playerid] = 0;
+		_ResetSelectedItems(playerid);
 		cons_Constructing[playerid] = -1;
 	}
 }
@@ -204,6 +201,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		StopHoldAction(playerid);
 		ClearAnimations(playerid);
 		HideActionText(playerid);
+		_ResetSelectedItems(playerid);
 
 		cons_Constructing[playerid] = -1;
 	}
@@ -217,6 +215,16 @@ hook OnPlayerCraft(playerid, craftset)
 		return Y_HOOKS_BREAK_RETURN_1;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_ResetSelectedItems(playerid)
+{
+	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
+	{
+		cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
+		cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
+	}
+	cons_SelectedItemCount[playerid] = 0;
 }
 
 
