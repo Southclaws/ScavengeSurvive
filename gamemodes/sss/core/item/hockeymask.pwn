@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'HockeyMask'...");
+	print("\n[OnGameModeInit] Initialising 'HockeyMask'...");
 
 	new tmp;
 

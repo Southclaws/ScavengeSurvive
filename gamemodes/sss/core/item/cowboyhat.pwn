@@ -25,8 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'cowboyhat'...");
+
 	new tmp;
 
 	tmp = DefineHatItem(item_CowboyHat);

@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'boaterhat'...");
+	print("\n[OnGameModeInit] Initialising 'boaterhat'...");
 
 	new tmp;
 

@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'ToolTips'...");
+	print("\n[OnGameModeInit] Initialising 'ToolTips'...");
 
 	new tmp;
 

@@ -78,6 +78,12 @@ DefineMaskItem(ItemType:itemtype)
 {
 	new id = Iter_Free(mask_Index);
 
+	if(id == -1)
+	{
+		print("ERROR: Mask limit reached");
+		return -1;
+	}
+
 	mask_ItemType[id] = itemtype;
 
 	Iter_Add(mask_Index, id);

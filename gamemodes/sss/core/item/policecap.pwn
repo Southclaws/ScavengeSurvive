@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'policecap'...");
+	print("\n[OnGameModeInit] Initialising 'policecap'...");
 
 	new tmp;
 

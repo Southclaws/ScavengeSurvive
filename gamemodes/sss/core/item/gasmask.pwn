@@ -25,8 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
+	print("\n[OnGameModeInit] Initialising 'gasmask'...");
+
 	new tmp;
 
 	tmp = DefineMaskItem(item_GasMask);

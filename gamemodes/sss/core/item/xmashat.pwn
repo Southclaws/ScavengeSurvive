@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'XmasHat'...");
+	print("\n[OnGameModeInit] Initialising 'XmasHat'...");
 
 	new tmp;
 

@@ -25,9 +25,9 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'truckcap'...");
+	print("\n[OnGameModeInit] Initialising 'truckcap'...");
 
 	new tmp;
 

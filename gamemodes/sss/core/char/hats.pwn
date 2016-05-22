@@ -81,6 +81,12 @@ DefineHatItem(ItemType:itemtype)
 {
 	new id = Iter_Free(hat_Index);
 
+	if(id == -1)
+	{
+		print("ERROR: Hat limit reached");
+		return -1;
+	}
+
 	hat_ItemType[id] = itemtype;
 
 	Iter_Add(hat_Index, id);
