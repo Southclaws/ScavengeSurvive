@@ -1703,19 +1703,19 @@ public OnScriptInit()
 	tree_GrassPlanes		= DefineTreeCategory("grassplanes");
 	// Commented out species are models that stretch when rotated
 	DefineTreeSpecies(664, 5.0, 2500.0, 20.0, 25, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
-	DefineTreeSpecies(670, 5.0, 2400.0, 20.0, 26, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
+	DefineTreeSpecies(670, 5.0, 2400.0, 20.0, 26, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log, 2.0);
 	DefineTreeSpecies(685, 2.0, 1600.0, 24.0, 14, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
 	DefineTreeSpecies(686, 2.0, 1600.0, 24.0, 14, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
 	DefineTreeSpecies(687, 2.0, 1800.0, 24.0, 15, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
-	DefineTreeSpecies(693, 5.0, 2800.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
-	DefineTreeSpecies(696, 5.0, 2600.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
-	DefineTreeSpecies(697, 5.0, 2600.0, 20.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
+	DefineTreeSpecies(693, 5.0, 2800.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log, 2.0);
+	DefineTreeSpecies(696, 5.0, 2600.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log, 2.0);
+	DefineTreeSpecies(697, 5.0, 2600.0, 20.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log, 2.0);
 	DefineTreeSpecies(704, 5.0, 2600.0, 20.0, 30, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);
-	DefineTreeSpecies(719, 5.0, 2600.0, 20.0, 30, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
+	DefineTreeSpecies(719, 5.0, 2600.0, 20.0, 30, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log, -1.4);
 	DefineTreeSpecies(720, 5.0, 2600.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
-	DefineTreeSpecies(721, 6.0, 3000.0, 18.0, 38, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
-	DefineTreeSpecies(722, 5.0, 2600.0, 22.0, 28, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
-	DefineTreeSpecies(723, 5.0, 2500.0, 22.0, 28, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
+	DefineTreeSpecies(721, 6.0, 3000.0, 18.0, 38, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log, -3.2);
+	DefineTreeSpecies(722, 5.0, 2600.0, 22.0, 28, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log, -2.2);
+	DefineTreeSpecies(723, 5.0, 2500.0, 22.0, 28, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log, 6.0);
 	DefineTreeSpecies(724, 5.0, 2600.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
 	DefineTreeSpecies(725, 5.0, 2600.0, 18.0, 30, tree_DarkForest, FALL_TYPE_ROTATE, item_Chainsaw, item_Log);
 	DefineTreeSpecies(881, 1.0, 600.0, 25.0, 7, tree_DarkForest, FALL_TYPE_ZDROP, item_Chainsaw, item_Log);

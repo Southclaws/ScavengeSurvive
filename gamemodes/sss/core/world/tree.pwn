@@ -52,7 +52,8 @@ Float:		tree_chop_damage,
 			tree_category,
 E_FALL_TYPE:tree_falltype,
 ItemType:	tree_harvest_item,
-ItemType:	tree_result_item
+ItemType:	tree_result_item,
+Float:		tree_zoffset
 }
 
 enum E_TREE_DATA
@@ -106,7 +107,7 @@ DefineTreeCategory(name[])
 	return treeCategory_Total++;
 }
 
-DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, categoryid, E_FALL_TYPE:falltype, ItemType:harvestitem, ItemType:resultitem)
+DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, pieces, categoryid, E_FALL_TYPE:falltype, ItemType:harvestitem, ItemType:resultitem, Float:zoffset = 0.0)
 {
 	if(treeSpecies_Total >= MAX_TREE_SPECIES - 1)
 	{
@@ -132,6 +133,7 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 	treeSpecies_Data[treeSpecies_Total][tree_falltype] 		= falltype;
 	treeSpecies_Data[treeSpecies_Total][tree_harvest_item]	= harvestitem;
 	treeSpecies_Data[treeSpecies_Total][tree_result_item] 	= resultitem;
+	treeSpecies_Data[treeSpecies_Total][tree_zoffset]		= zoffset;
 
 	treeCategory_Species[categoryid][treeCategory_SpeciesCount[categoryid]] = treeSpecies_Total;
 	treeCategory_SpeciesCount[categoryid]++;
@@ -165,7 +167,7 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 	}
 
 	tree_Data[id][tree_species]		= speciesid;
-	tree_Data[id][tree_objectid]	= CreateDynamicObject(treeSpecies_Data[speciesid][tree_model], x, y, z, 0.0, 0.0, frandom(360.0), 0, 0);
+	tree_Data[id][tree_objectid]	= CreateDynamicObject(treeSpecies_Data[speciesid][tree_model], x, y, z + treeSpecies_Data[speciesid][tree_zoffset], 0.0, 0.0, frandom(360.0), 0, 0);
 	tree_Data[id][tree_areaid]		= CreateDynamicSphere(x, y, z, treeDiameter, 0, 0);
 	tree_Data[id][tree_health]		= GetTreeSpeciesMaxHealth(speciesid);
 	tree_Data[id][tree_labelid]		= CreateDynamic3DTextLabel("0.0", YELLOW, x, y, z + 1.0, treeDiameter);
