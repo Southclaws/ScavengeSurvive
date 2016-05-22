@@ -72,3 +72,48 @@ timer AttachWoodLogs[0](playerid)
 {
 	SetPlayerAttachedObject(playerid, ITM_ATTACH_INDEX, 1463, 6, 0.023999, 0.027236, -0.204656, 251.243942, 356.352508, 73.549652, 0.384758, 0.200000, 0.200000);		
 }
+
+hook OnPlayerConstructed(playerid, consset)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerConstructed] in /gamemodes/sss/core/item/campfire.pwn");
+
+	if(consset <= 3)
+	{
+		new
+			items[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
+			count,
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:tx,
+			Float:ty,
+			Float:tz,
+			i;
+
+		GetPlayerConstructionItems(playerid, items, count);
+
+		DestroyItem(GetPlayerItem(playerid));
+
+		for( ; i < count && items[i][cft_selectedItemID] != INVALID_ITEM_ID; i++)
+		{
+			GetItemPos(items[i][cft_selectedItemID], x, y, z);
+
+			if(x * y * z != 0.0)
+			{
+				tx += x;
+				ty += y;
+				tz += z;
+			}
+
+			DestroyItem(items[i][cft_selectedItemID]);
+		}
+
+		tx /= float(i);
+		ty /= float(i);
+		tz /= float(i);
+
+		CreateItem(item_Campfire, tx, ty, tz, .zoffset = FLOOR_OFFSET, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
