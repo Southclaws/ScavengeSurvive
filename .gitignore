@@ -26,3 +26,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 *.pyc
+
+misc/config.json
+*.mmd
