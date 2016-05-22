@@ -276,6 +276,9 @@ SafeBoxInteractionCheck(playerid, itemid)
 	if(itemtype != box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		return 0;
 
+	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 200)
+		return 0;
+
 	box_PickUpTick[playerid] = GetTickCount();
 	box_CurrentBoxItem[playerid] = itemid;
 	stop box_PickUpTimer[playerid];

@@ -1536,6 +1536,8 @@ public OnScriptInit()
 	DefineSafeboxType(item_SmallBox,		8);
 	DefineSafeboxType(item_LargeBox,		12);
 	DefineSafeboxType(item_Capsule,			2);
+	DefineSafeboxType(item_Suitcase,		6);
+	DefineSafeboxType(item_Holdall,			6);
 
 
 	// BAG ITEM TYPE DEFINITIONS

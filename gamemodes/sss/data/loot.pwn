@@ -509,7 +509,7 @@ hook OnGameModeInit()
 	AddItemToLootIndex(loot_Survivor,		item_MediumBag,						25.0);
 	AddItemToLootIndex(loot_Survivor,		item_Rucksack,						10.0);
 	AddItemToLootIndex(loot_Survivor,		item_Note,							1.0);
-	AddItemToLootIndex(loot_Survivor,		item_BigSword						0.01);
+	AddItemToLootIndex(loot_Survivor,		item_BigSword,						0.01);
 
 	AddItemToLootIndex(loot_FoodMedCrate,	item_Medkit,						60.0);
 	AddItemToLootIndex(loot_FoodMedCrate,	item_AntiSepBandage,				70.0);

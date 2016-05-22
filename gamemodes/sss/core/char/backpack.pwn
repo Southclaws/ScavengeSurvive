@@ -94,7 +94,7 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerConnect] in /gamemodes/sss/core/char/backpack.pwn");
 
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 	bag_PuttingInBag[playerid] = false;
@@ -308,7 +308,7 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnItemCreate] in /gamemodes/sss/core/char/backpack.pwn");
 
 	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
@@ -338,7 +338,7 @@ hook OnItemCreate(itemid)
 
 hook OnItemCreateInWorld(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnItemCreateInWorld] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
@@ -348,7 +348,7 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnItemDestroy(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnItemDestroy] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
@@ -365,7 +365,7 @@ hook OnItemDestroy(itemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerPickUpItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(BagInteractionCheck(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -375,7 +375,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(BagInteractionCheck(playerid, withitemid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -399,13 +399,19 @@ BagInteractionCheck(playerid, itemid)
 
 		return 1;
 	}
+	else if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
+	{
+		// Item is not a bag but the player is currently picking up a bag.
+		// This return will cause other OnPlayerPickUpItem events to be ignored.
+		return 1;
+	}
 
 	return 0;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
 		return 1;
@@ -603,7 +609,7 @@ PlayerBagUpdate(playerid)
 
 hook OnItemAddToInventory(playerid, itemid, slot)
 {
-	d:3:GLOBAL_DEBUG("[OnItemAddToInventory] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnItemAddToInventory] in /gamemodes/sss/core/char/backpack.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -618,7 +624,7 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerCloseContainer] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerCloseContainer] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsValidItem(bag_CurrentBag[playerid]))
 	{
@@ -630,7 +636,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerUseItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -646,7 +652,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerDropItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerDropItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
@@ -662,7 +668,7 @@ hook OnPlayerDropItem(playerid, itemid)
 
 hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerGiveItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerGiveItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
@@ -678,7 +684,7 @@ hook OnPlayerGiveItem(playerid, targetid, itemid)
 
 hook OnPlayerViewInvOpt(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerViewInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerViewInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
@@ -688,7 +694,7 @@ hook OnPlayerViewInvOpt(playerid)
 
 hook OnPlayerSelectInvOpt(playerid, option)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerSelectInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerSelectInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
@@ -723,7 +729,7 @@ hook OnPlayerSelectInvOpt(playerid, option)
 
 hook OnPlayerViewCntOpt(playerid, containerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerViewCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerViewCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
@@ -733,7 +739,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 
 hook OnPlayerSelectCntOpt(playerid, containerid, option)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerSelectCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerSelectCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
 	{
@@ -768,8 +774,6 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 
 hook OnItemAddToContainer(containerid, itemid, playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemAddToContainer] in /gamemodes/sss/core/char/backpack.pwn");
-
 	d:1:HANDLER("[OnItemAddToContainer] containerid %d itemid %d playerid %d", containerid, itemid, playerid);
 	if(GetContainerBagItem(containerid) != INVALID_ITEM_ID)
 	{
