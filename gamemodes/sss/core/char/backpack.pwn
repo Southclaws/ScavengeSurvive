@@ -387,26 +387,28 @@ BagInteractionCheck(playerid, itemid)
 {
 	d:1:HANDLER("[BagInteractionCheck] playerid:%d itemid:%d", playerid, itemid);
 
-	if(IsItemTypeBag(GetItemType(itemid)))
-	{
-		d:2:HANDLER("[BagInteractionCheck] is bag, itemtype:%d bagtype:%d", _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
+	new ItemType:itemtype = GetItemType(itemid);
 
-		stop bag_PickUpTimer[playerid];
-		bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
+	if(!IsValidItemType(itemtype))
+		return 0;
 
-		bag_PickUpTick[playerid] = GetTickCount();
-		bag_CurrentBag[playerid] = itemid;
+	if(bag_ItemTypeBagType[itemtype] == -1)
+		return 0;
 
+	if(itemtype != bag_TypeData[bag_ItemTypeBagType[itemtype]][bag_itemtype])
+		return 0;
+
+	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 500)
 		return 1;
-	}
-	else if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
-	{
-		// Item is not a bag but the player is currently picking up a bag.
-		// This return will cause other OnPlayerPickUpItem events to be ignored.
-		return 1;
-	}
 
-	return 0;
+	d:2:HANDLER("[BagInteractionCheck] is bag, itemtype:%d bagtype:%d", _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
+
+	bag_PickUpTick[playerid] = GetTickCount();
+	bag_CurrentBag[playerid] = itemid;
+	stop bag_PickUpTimer[playerid];
+	bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
+
+	return 1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

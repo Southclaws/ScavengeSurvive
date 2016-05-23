@@ -276,15 +276,13 @@ SafeBoxInteractionCheck(playerid, itemid)
 	if(itemtype != box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		return 0;
 
-	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 200)
-		return 0;
+	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 500)
+		return 1;
 
 	box_PickUpTick[playerid] = GetTickCount();
 	box_CurrentBoxItem[playerid] = itemid;
 	stop box_PickUpTimer[playerid];
-
-	if(!IsValidItem(GetPlayerItem(playerid)) && GetPlayerWeapon(playerid) == 0)
-		box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
+	box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
 
 	return 1;
 }
