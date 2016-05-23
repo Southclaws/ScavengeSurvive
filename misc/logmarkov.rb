@@ -22,7 +22,12 @@ tags = Regexp.new(/(@[0-9])|(&[a-z])/)
 # open dict
 markov = MarkyMarkov::Dictionary.new('logdict')
 
-if ARGV[0] == "build"
+if ARGV.length == 0
+
+	puts "Params: build, tweet, <number of sentences to print>"
+
+elsif ARGV[0] == "build"
+
 	Dir.foreach(LOG_DIRECTORY) do |item|
 
 		next if item == '.' or item == '..'
@@ -47,16 +52,15 @@ if ARGV[0] == "build"
 	end
 	markov.save_dictionary!
 
-else
-	# post a tweet
+elsif ARGV[0] == "tweet"
 
 	s = markov.generate_1_sentence
 	puts s
 
 	puts "post?"
-	answer = gets
+	answer = STDIN.gets.chomp
 
-	if answer == "y\n"
+	if answer == "y"
 		puts "Posting to twitter!"
 		client = Twitter::REST::Client.new do |config|
 			config.consumer_key        = CONSUMER_KEY
@@ -71,4 +75,9 @@ else
 			puts error.message
 		end
 	end
+
+elsif ARGV[0].match(/[0-9]*/)
+
+	puts markov.generate_n_sentences(ARGV[0].to_i)
+
 end
