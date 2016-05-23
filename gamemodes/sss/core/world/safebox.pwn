@@ -270,14 +270,14 @@ SafeBoxInteractionCheck(playerid, itemid)
 	if(!IsValidItemType(itemtype))
 		return 0;
 
+	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 500)
+		return 1;
+
 	if(box_ItemTypeBoxType[itemtype] == -1)
 		return 0;
 
 	if(itemtype != box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		return 0;
-
-	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 500)
-		return 1;
 
 	box_PickUpTick[playerid] = GetTickCount();
 	box_CurrentBoxItem[playerid] = itemid;

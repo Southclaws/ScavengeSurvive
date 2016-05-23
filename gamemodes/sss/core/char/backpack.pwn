@@ -392,14 +392,14 @@ BagInteractionCheck(playerid, itemid)
 	if(!IsValidItemType(itemtype))
 		return 0;
 
+	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 500)
+		return 1;
+
 	if(bag_ItemTypeBagType[itemtype] == -1)
 		return 0;
 
 	if(itemtype != bag_TypeData[bag_ItemTypeBagType[itemtype]][bag_itemtype])
 		return 0;
-
-	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 500)
-		return 1;
 
 	d:2:HANDLER("[BagInteractionCheck] is bag, itemtype:%d bagtype:%d", _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
 
