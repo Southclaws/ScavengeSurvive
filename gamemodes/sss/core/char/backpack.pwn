@@ -60,8 +60,6 @@ static
 bool:		bag_PuttingInBag		[MAX_PLAYERS],
 bool:		bag_TakingOffBag		[MAX_PLAYERS],
 			bag_CurrentBag			[MAX_PLAYERS],
-			bag_PickUpTick			[MAX_PLAYERS],
-Timer:		bag_PickUpTimer			[MAX_PLAYERS],
 Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 			bag_LookingInBag		[MAX_PLAYERS];
 
@@ -363,12 +361,21 @@ hook OnItemDestroy(itemid)
 	}
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
-	d:1:HANDLER("[OnPlayerPickUpItem] in /gamemodes/sss/core/char/backpack.pwn");
+	d:1:HANDLER("[OnPlayerUseItem] in /gamemodes/sss/core/char/backpack.pwn");
 
-	if(BagInteractionCheck(playerid, itemid))
-		return Y_HOOKS_BREAK_RETURN_1;
+	if(bag_ItemTypeBagType[GetItemType(itemid)] != -1)
+	{
+		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+			return Y_HOOKS_CONTINUE_RETURN_0;
+
+		if(IsItemInWorld(itemid))
+			_DisplayBagDialog(playerid, itemid, true);
+
+		else
+			_DisplayBagDialog(playerid, itemid, false);
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -377,38 +384,10 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:1:HANDLER("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/char/backpack.pwn");
 
-	if(BagInteractionCheck(playerid, withitemid))
-		return Y_HOOKS_BREAK_RETURN_1;
+	if(bag_ItemTypeBagType[GetItemType(withitemid)] != -1)
+		_DisplayBagDialog(playerid, withitemid, true);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-BagInteractionCheck(playerid, itemid)
-{
-	d:1:HANDLER("[BagInteractionCheck] playerid:%d itemid:%d", playerid, itemid);
-
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 500)
-		return 1;
-
-	if(bag_ItemTypeBagType[itemtype] == -1)
-		return 0;
-
-	if(itemtype != bag_TypeData[bag_ItemTypeBagType[itemtype]][bag_itemtype])
-		return 0;
-
-	d:2:HANDLER("[BagInteractionCheck] is bag, itemtype:%d bagtype:%d", _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
-
-	bag_PickUpTick[playerid] = GetTickCount();
-	bag_CurrentBag[playerid] = itemid;
-	stop bag_PickUpTimer[playerid];
-	bag_PickUpTimer[playerid] = defer bag_PickUp(playerid, itemid);
-
-	return 1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -434,11 +413,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & 16)
 	{
 		_BagRummageHandler(playerid);
-	}
-
-	if(oldkeys & 16)
-	{
-		_BagReleaseInteractHandler(playerid);
 	}
 
 	return 1;
@@ -553,35 +527,6 @@ _BagRummageHandler(playerid)
 	return 1;
 }
 
-_BagReleaseInteractHandler(playerid)
-{
-	stop bag_OtherPlayerEnter[playerid];
-
-	if(GetTickCountDifference(GetTickCount(), bag_PickUpTick[playerid]) < 200)
-	{
-		if(IsValidItem(bag_CurrentBag[playerid]))
-		{
-			d:1:HANDLER("[_BagReleaseInteractHandler] Current bag item %d is valid", bag_CurrentBag[playerid]);
-			DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_CurrentBag[playerid], 1));
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
-			stop bag_PickUpTimer[playerid];
-			bag_PickUpTick[playerid] = 0;
-		}
-	}
-
-	return 1;
-}
-
-timer bag_PickUp[250](playerid, itemid)
-{
-	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
-		return;
-
-	PlayerPickUpItem(playerid, itemid);
-
-	return;
-}
-
 timer bag_PutItemIn[300](playerid, itemid, containerid)
 {
 	AddItemToContainer(containerid, itemid, playerid);
@@ -591,8 +536,7 @@ timer bag_PutItemIn[300](playerid, itemid, containerid)
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
 	d:1:HANDLER("[bag_EnterOtherPlayer] playerid:%d targetid:%d", playerid, targetid);
-	CancelPlayerMovement(playerid);
-	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(bag_PlayerBagID[targetid], 1));
+	_DisplayBagDialog(playerid, bag_PlayerBagID[targetid], false);
 	bag_LookingInBag[playerid] = targetid;
 }
 
@@ -607,6 +551,18 @@ PlayerBagUpdate(playerid)
 			bag_LookingInBag[playerid] = -1;
 		}
 	}
+}
+
+_DisplayBagDialog(playerid, itemid, animation)
+{
+	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
+	bag_CurrentBag[playerid] = itemid;
+
+	if(animation)
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+
+	else
+		CancelPlayerMovement(playerid);
 }
 
 hook OnItemAddToInventory(playerid, itemid, slot)
@@ -634,22 +590,6 @@ hook OnPlayerCloseContainer(playerid, containerid)
 		bag_CurrentBag[playerid] = INVALID_ITEM_ID;
 		bag_LookingInBag[playerid] = -1;
 	}
-}
-
-hook OnPlayerUseItem(playerid, itemid)
-{
-	d:1:HANDLER("[OnPlayerUseItem] in /gamemodes/sss/core/char/backpack.pwn");
-
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(IsItemTypeBag(itemtype))
-	{
-		d:1:HANDLER("[OnPlayerUseItem] Item %d type %d is bag type %d", itemid, _:GetItemType(itemid), bag_ItemTypeBagType[GetItemType(itemid)]);
-		CancelPlayerMovement(playerid);
-		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerDropItem(playerid, itemid)

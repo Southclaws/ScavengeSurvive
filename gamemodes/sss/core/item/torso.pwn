@@ -26,8 +26,7 @@
 
 
 static
-		gut_TargetItem[MAX_PLAYERS],
-Timer:	gut_PickUpTimer[MAX_PLAYERS];
+		gut_TargetItem[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
@@ -78,18 +77,26 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(GetItemType(itemid) == item_Torso)
 	{
-		if(GetItemExtraData(itemid) != -1)
-		{
-			gut_PickUpTimer[playerid] = defer PickUpTorso(playerid);
-			gut_TargetItem[playerid] = itemid;
-			return Y_HOOKS_BREAK_RETURN_1;
-		}
+		gut_TargetItem[playerid] = itemid;
+		ShowTorsoDetails(playerid, itemid);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerCloseContainer(playerid, containerid)
+{
+	if(gut_TargetItem[playerid] != INVALID_ITEM_ID)
+	{
+		gut_TargetItem[playerid] = INVALID_ITEM_ID;
+		ClearAnimations(playerid);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -105,27 +112,9 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			StopHoldAction(playerid);
 			ClearAnimations(playerid);
-
-			if(GetPlayerWeapon(playerid) != 4)
-			{
-				ShowTorsoDetails(playerid, gut_TargetItem[playerid]);
-
-				stop gut_PickUpTimer[playerid];
-				gut_TargetItem[playerid] = INVALID_ITEM_ID;
-			}
 		}
 	}
 }
-
-timer PickUpTorso[250](playerid)
-{
-	if(GetPlayerWeapon(playerid) == 0)
-	{
-		PlayerPickUpItem(playerid, gut_TargetItem[playerid]);
-		gut_TargetItem[playerid] = INVALID_ITEM_ID;
-	}
-}
-
 
 hook OnHoldActionFinish(playerid)
 {

@@ -55,9 +55,7 @@ static
 			box_ContainerSafebox[CNT_MAX];
 
 static
-			box_CurrentBoxItem[MAX_PLAYERS],
-			box_PickUpTick[MAX_PLAYERS],
-Timer:		box_PickUpTimer[MAX_PLAYERS];
+			box_CurrentBoxItem[MAX_PLAYERS];
 
 static
 			box_ItemList[ITM_LST_OF_ITEMS(12)];
@@ -243,12 +241,21 @@ hook OnItemDestroy(itemid)
 ==============================================================================*/
 
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/world/safebox.pwn");
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/safebox.pwn");
 
-	if(SafeBoxInteractionCheck(playerid, itemid))
-		return Y_HOOKS_BREAK_RETURN_1;
+	if(IsItemTypeSafebox(GetItemType(itemid)))
+	{
+		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+			return Y_HOOKS_CONTINUE_RETURN_0;
+
+		if(IsItemInWorld(itemid))
+			_DisplaySafeboxDialog(playerid, itemid, true);
+
+		else
+			_DisplaySafeboxDialog(playerid, itemid, false);
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -257,78 +264,40 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
 
-	if(SafeBoxInteractionCheck(playerid, withitemid))
-		return Y_HOOKS_BREAK_RETURN_1;
+	if(IsItemTypeSafebox(GetItemType(withitemid)))
+		_DisplaySafeboxDialog(playerid, withitemid, true);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-SafeBoxInteractionCheck(playerid, itemid)
+_DisplaySafeboxDialog(playerid, itemid, animation)
 {
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 500)
-		return 1;
-
-	if(box_ItemTypeBoxType[itemtype] == -1)
-		return 0;
-
-	if(itemtype != box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
-		return 0;
-
-	box_PickUpTick[playerid] = GetTickCount();
+	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
 	box_CurrentBoxItem[playerid] = itemid;
-	stop box_PickUpTimer[playerid];
-	box_PickUpTimer[playerid] = defer box_PickUp(playerid, itemid);
 
-	return 1;
+	if(animation)
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+
+	else
+		CancelPlayerMovement(playerid);
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/safebox.pwn");
-
-	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
-		return 1;
-
-	if(oldkeys & 16)
+	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
-		if(GetTickCountDifference(GetTickCount(), box_PickUpTick[playerid]) < 200)
-		{
-			if(IsValidItem(box_CurrentBoxItem[playerid]))
-			{
-				DisplayContainerInventory(playerid, GetItemArrayDataAtCell(box_CurrentBoxItem[playerid], 1));
-				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
-				stop box_PickUpTimer[playerid];
-				box_PickUpTick[playerid] = 0;
-			}
-		}
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(playerid, x, y, z);
+		d:1:HANDLER("[box_PickUp] Player %p picked up container %d GEID: %d at %f %f %f", playerid, itemid, box_GEID[itemid], x, y, z);
+
+		RemoveSafeboxItem(itemid);
 	}
 
-	return 1;
-}
-
-timer box_PickUp[250](playerid, itemid)
-{
-	if(IsValidItem(GetPlayerItem(playerid)) || GetPlayerWeapon(playerid) != 0)
-		return;
-
-	if(!IsItemInWorld(itemid))
-		return;
-
-	new Float:x, Float:y, Float:z;
-	GetPlayerPos(playerid, x, y, z);
-	d:1:HANDLER("[box_PickUp] Player %p picked up container %d GEID: %d at %f %f %f", playerid, itemid, box_GEID[itemid], x, y, z);
-
-	PlayerPickUpItem(playerid, itemid);
-	RemoveSafeboxItem(itemid);
-
-	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
-
-	return;
+	return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
 hook OnPlayerDroppedItem(playerid, itemid)
