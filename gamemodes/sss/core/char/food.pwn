@@ -28,9 +28,7 @@
 #define IDLE_FOOD_RATE (0.004)
 
 
-new // TODO: replace this with a PlayerProgressBar
-PlayerText:	HungerBarBackground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
-PlayerText:	HungerBarForeground[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
+static PlayerBar:HungerBar[MAX_PLAYERS];
 
 
 ptask FoodUpdate[1000](playerid)
@@ -125,9 +123,7 @@ ptask FoodUpdate[1000](playerid)
 
 	if(GetPlayerBitFlag(playerid, ShowHUD))
 	{
-		PlayerTextDrawLetterSize(playerid, HungerBarForeground[playerid], 0.500000, -(food / 10.0));
-		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
-		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
+		SetPlayerProgressBarValue(playerid, HungerBar[playerid], food);
 	}
 
 	SetPlayerFP(playerid, food);
@@ -135,11 +131,22 @@ ptask FoodUpdate[1000](playerid)
 	return;
 }
 
+stock TogglePlayerHungerBar(playerid, bool:toggle)
+{
+	if(toggle)
+		ShowPlayerProgressBar(playerid, HungerBar[playerid]);
+	else
+		HidePlayerProgressBar(playerid, HungerBar[playerid]);
+}
+
 
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/food.pwn");
 
+	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 548.000000, 36.000000, 62.000000, 3.200000, 536354815, 100.0000, 0);
+/*
+	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 626.0, 100.0, 10.0, 100.0, -2130771840, 100.0, BAR_DIRECTION_UP);
 	HungerBarBackground[playerid]	=CreatePlayerTextDraw(playerid, 612.000000, 101.000000, "_");
 	PlayerTextDrawBackgroundColor	(playerid, HungerBarBackground[playerid], 255);
 	PlayerTextDrawFont				(playerid, HungerBarBackground[playerid], 1);
@@ -163,4 +170,5 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawUseBox			(playerid, HungerBarForeground[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, HungerBarForeground[playerid], -2130771840);
 	PlayerTextDrawTextSize			(playerid, HungerBarForeground[playerid], 617.000000, 10.000000);
+*/
 }

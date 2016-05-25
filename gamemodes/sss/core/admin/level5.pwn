@@ -123,16 +123,14 @@ ACMD:hud[5](playerid, params[])
 {
 	if(GetPlayerBitFlag(playerid, ShowHUD))
 	{
-		PlayerTextDrawHide(playerid, HungerBarBackground[playerid]);
-		PlayerTextDrawHide(playerid, HungerBarForeground[playerid]);
+		TogglePlayerHungerBar(playerid, false);
 		TextDrawHideForPlayer(playerid, Branding);
 		HideWatch(playerid);
 		SetPlayerBitFlag(playerid, ShowHUD, false);
 	}
 	else
 	{
-		PlayerTextDrawShow(playerid, HungerBarBackground[playerid]);
-		PlayerTextDrawShow(playerid, HungerBarForeground[playerid]);
+		TogglePlayerHungerBar(playerid, true);
 		TextDrawShowForPlayer(playerid, Branding);
 		ShowWatch(playerid);
 		SetPlayerBitFlag(playerid, ShowHUD, true);
