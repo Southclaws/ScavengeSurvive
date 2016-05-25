@@ -129,13 +129,16 @@ public OnPlayerConnect(playerid)
 	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
 	SpawnPlayer(playerid);
 
-	ChatMsg(playerid, ORANGE, "Scavenge and Survive");
-	ChatMsg(playerid, BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	ChatMsg(playerid, BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	ChatMsg(playerid, BLUE, "    and you are welcome to redistribute it under certain conditions.");
-	ChatMsg(playerid, BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	ChatMsg(playerid, BLUE, " ");
+	/*
+	If you have any respect for me or my work that I do completely free:
+	DO NOT REMOVE THIS MESSAGE.
+	It's just one line of text that appears when a player joins.
+	Feel free to add your own message UNDER this one with information regarding
+	your own modifications you've made to the code but DO NOT REMOVE THIS!
 
+	Thank you :)
+	*/
+	ChatMsg(playerid, ORANGE, "Scavenge and Survive "C_BLUE"(Copyright (C) 2016 Barnaby \"Southclaw\" Keene)");
 	ChatMsgAll(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
 	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 
