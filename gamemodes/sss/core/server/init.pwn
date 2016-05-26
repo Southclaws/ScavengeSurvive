@@ -1204,18 +1204,18 @@ public OnScriptInit()
 
 
 	// EXPLOSIVE ITEM TYPE DEFINITIONS
-	DefineExplosiveItem(item_TntTimebomb,	TIMED,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_TntTripMine,	MOTION,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_TntProxMine,	PROXIMITY,	EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_TntPhoneBomb,	RADIO,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_IedTimebomb,	TIMED,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_IedTripMine,	MOTION,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_IedProxMine,	PROXIMITY,	EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_IedPhoneBomb,	RADIO,		EXPLOSION_PRESET_STRUCTURAL);
-	DefineExplosiveItem(item_EmpTimebomb,	TIMED,		EXPLOSION_PRESET_EMP);
-	DefineExplosiveItem(item_EmpTripMine,	MOTION,		EXPLOSION_PRESET_EMP);
-	DefineExplosiveItem(item_EmpProxMine,	PROXIMITY,	EXPLOSION_PRESET_EMP);
-	DefineExplosiveItem(item_EmpPhoneBomb,	RADIO,		EXPLOSION_PRESET_EMP);
+	DefineExplosiveItem(item_TntTimebomb,	TIMED,		EXP_MEDIUM);
+	DefineExplosiveItem(item_TntTripMine,	MOTION,		EXP_MEDIUM);
+	DefineExplosiveItem(item_TntProxMine,	PROXIMITY,	EXP_MEDIUM);
+	DefineExplosiveItem(item_TntPhoneBomb,	RADIO,		EXP_MEDIUM);
+	DefineExplosiveItem(item_IedTimebomb,	TIMED,		EXP_SMALL);
+	DefineExplosiveItem(item_IedTripMine,	MOTION,		EXP_SMALL);
+	DefineExplosiveItem(item_IedProxMine,	PROXIMITY,	EXP_SMALL);
+	DefineExplosiveItem(item_IedPhoneBomb,	RADIO,		EXP_SMALL);
+	DefineExplosiveItem(item_EmpTimebomb,	TIMED,		EXP_EMP);
+	DefineExplosiveItem(item_EmpTripMine,	MOTION,		EXP_EMP);
+	DefineExplosiveItem(item_EmpProxMine,	PROXIMITY,	EXP_EMP);
+	DefineExplosiveItem(item_EmpPhoneBomb,	RADIO,		EXP_EMP);
 
 
 	// FOOD ITEM TYPE DEFINITIONS

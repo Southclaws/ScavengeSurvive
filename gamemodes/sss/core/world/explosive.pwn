@@ -27,13 +27,6 @@
 #define MAX_EXPLOSIVE_ITEM		(16)
 #define INVALID_EXPLOSIVE_TYPE	(-1)
 
-enum
-{
-	EXPLOSION_PRESET_NORMAL,
-	EXPLOSION_PRESET_STRUCTURAL,
-	EXPLOSION_PRESET_EMP
-}
-
 enum EXP_TRIGGER
 {
 	TIMED,
@@ -42,11 +35,39 @@ enum EXP_TRIGGER
 	MOTION
 }
 
+enum EXP_PRESET
+{
+	EXP_SMALL,
+	EXP_MEDIUM,
+	EXP_LARGE,
+	EXP_INCEN,
+	EXP_THERM,
+	EXP_EMP
+}
+
+
+enum EXP_PRESET_DATA
+{
+			exp_type,
+Float:		exp_size,
+			exp_defdmg
+}
+
+static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
+{
+	{12, 12.0, 1},	// EXP_SMALL
+	{11, 16.0, 2},	// EXP_MEDIUM
+	{06, 24.0, 3},	// EXP_LARGE
+	{00, 00.0, 0},	// EXP_INCEN
+	{00, 00.0, 0},	// EXP_THERM
+	{00, 00.0, 0}	// EXP_EMP
+};
+
 enum E_EXPLOSIVE_ITEM_DATA
 {
 ItemType:	exp_itemtype,
 EXP_TRIGGER:exp_trigger,
-			exp_preset
+EXP_PRESET:	exp_preset
 }
 
 
@@ -64,7 +85,7 @@ hook OnPlayerConnect(playerid)
 	exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, preset)
+stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:preset)
 {
 	if(0 <= exp_Total >= MAX_EXPLOSIVE_ITEM - 1)
 	{
@@ -81,7 +102,7 @@ stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, preset)
 	return exp_Total++;
 }
 
-stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
+stock SetItemToExplode(itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -117,7 +138,7 @@ stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 		}
 	}
 
-	CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
+	CreateExplosionOfPreset(x, y, z, exp_Data[exp_ItemTypeExplosive[itemtype]][exp_preset]);
 
 	return 0;
 }
@@ -175,7 +196,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 timer TimeBombExplode[5000](itemid)
 {
-	SetItemToExplode(itemid, 10, 12.0, EXPLOSION_PRESET_STRUCTURAL, 2);
+	SetItemToExplode(itemid);
 }
 
 
@@ -186,35 +207,33 @@ timer TimeBombExplode[5000](itemid)
 ==============================================================================*/
 
 
-stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, type, Float:size, preset, hitpoints)
+stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 {
 	switch(preset)
 	{
-		case EXPLOSION_PRESET_NORMAL:
-			CreateExplosion(x, y, z, type, size);
+		case EXP_INCEN:
+			print("EXP_INCEN not implemented");
 
-		case EXPLOSION_PRESET_STRUCTURAL:
-			CreateStructuralExplosion(x, y, z, type, size, hitpoints);
+		case EXP_THERM:
+			print("EXP_THERM not implemented");
 
-		case EXPLOSION_PRESET_EMP:
-			CreateEmpExplosion(x, y, z, size);
+		case EXP_EMP:
+			CreateEmpExplosion(x, y, z, exp_Presets[preset][exp_size]);
+
+		default:
+			CreateExplosion(x, y, z, exp_Presets[preset][exp_type], exp_Presets[preset][exp_size]);
 	}
-}
-
-stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hitpoints = 1)
-{
-	CreateExplosion(x, y, z, type, size);
 
 	new
 		defenceid,
 		newhitpoints;
 
-	defenceid = GetClosestDefence(x, y, z, size);
+	defenceid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
 
 	if(defenceid == -1)
 		return 0;
 
-	newhitpoints = GetDefenceHitPoints(defenceid) - hitpoints;
+	newhitpoints = GetDefenceHitPoints(defenceid) - exp_Presets[preset][exp_defdmg];
 
 	if(newhitpoints <= 0)
 	{
