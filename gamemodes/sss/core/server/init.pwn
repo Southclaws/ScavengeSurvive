@@ -109,7 +109,11 @@ new stock
 	liquid_Water,
 	liquid_Milk,
 	liquid_Orange,
+	liquid_Apple,
 	liquid_Whiskey,
+	liquid_WineRed,
+	liquid_WineWhite,
+	liquid_Champagne,
 	liquid_Ethanol,
 	liquid_Turpentine,
 	liquid_HydroAcid,
@@ -1663,7 +1667,11 @@ public OnScriptInit()
 	liquid_Water			= DefineLiquidType("Water",					0.5,	ROOT_LIQUID_BITMASK);
 	liquid_Milk				= DefineLiquidType("Milk",					2.1,	ROOT_LIQUID_BITMASK);
 	liquid_Orange			= DefineLiquidType("Orange Juice",			1.0,	ROOT_LIQUID_BITMASK);
+	liquid_Apple			= DefineLiquidType("Apple Juice",			1.0,	ROOT_LIQUID_BITMASK);
 	liquid_Whiskey			= DefineLiquidType("Whiskey",				0.1,	ROOT_LIQUID_BITMASK);
+	liquid_WineRed			= DefineLiquidType("Red Wine",				0.4,	ROOT_LIQUID_BITMASK);
+	liquid_WineWhite		= DefineLiquidType("White Wine",			0.4,	ROOT_LIQUID_BITMASK);
+	liquid_Champagne		= DefineLiquidType("Champagne",				0.2,	ROOT_LIQUID_BITMASK);
 	liquid_Ethanol			= DefineLiquidType("Ethanol",				-44.1,	ROOT_LIQUID_BITMASK);
 	liquid_Turpentine		= DefineLiquidType("Turpentine",			-101.0,	ROOT_LIQUID_BITMASK);
 	liquid_HydroAcid		= DefineLiquidType("Hydrochloric Acid",		-101.0,	ROOT_LIQUID_BITMASK);
@@ -1691,16 +1699,17 @@ public OnScriptInit()
 	DefineLiquidContainerItem(item_Detergent,		0.33,	true,	liquid_Turpentine, 1.0);
 	DefineLiquidContainerItem(item_Bottle,			0.5,	false,	liquid_Water, 100.0, liquid_Orange, 50.0, liquid_CarbonatedWater, 25.0, liquid_Lemon, 25.0, liquid_Lemonade, 30.0, liquid_Orangeade, 30.0);
 	DefineLiquidContainerItem(item_CanDrink,		0.33,	false,	liquid_Water, 100.0, liquid_Orange, 50.0, liquid_CarbonatedWater, 25.0, liquid_Lemon, 25.0, liquid_Lemonade, 30.0, liquid_Orangeade, 30.0);
-	DefineLiquidContainerItem(item_MilkBottle,		0.57,	false);
-	DefineLiquidContainerItem(item_MilkCarton,		1.0,	true);
-	DefineLiquidContainerItem(item_AppleJuice,		1.0,	true);
-	DefineLiquidContainerItem(item_OrangeJuice,		1.0,	true);
-	DefineLiquidContainerItem(item_Wine1,			0.75,	false);
-	DefineLiquidContainerItem(item_Wine2,			0.75,	false);
-	DefineLiquidContainerItem(item_Wine3,			0.75,	false);
-	DefineLiquidContainerItem(item_whisky,			1.5,	false);
-	DefineLiquidContainerItem(item_Champagne,		1.5,	false);
-	DefineLiquidContainerItem(item_GasCan,			20.0,	true);
+	DefineLiquidContainerItem(item_MilkBottle,		0.57,	false,	liquid_Milk, 100.0);
+	DefineLiquidContainerItem(item_MilkCarton,		1.0,	true,	liquid_Milk, 100.0);
+	DefineLiquidContainerItem(item_AppleJuice,		1.0,	true,	liquid_Apple, 100.0);
+	DefineLiquidContainerItem(item_OrangeJuice,		1.0,	true,	liquid_Orange, 100.0);
+	DefineLiquidContainerItem(item_Wine1,			0.75,	false,	liquid_WineRed, 100.0);
+	DefineLiquidContainerItem(item_Wine2,			0.75,	false,	liquid_WineWhite, 100.0);
+	DefineLiquidContainerItem(item_Wine3,			0.75,	false,	liquid_WineRed, 100.0);
+	DefineLiquidContainerItem(item_whisky,			1.5,	false,	liquid_Whiskey, 100.0);
+	DefineLiquidContainerItem(item_Champagne,		1.5,	false,	liquid_Champagne, 100.0);
+	DefineLiquidContainerItem(item_GasCan,			20.0,	true,	liquid_Petrol, 100.0);
+	DefineLiquidContainerItem(item_OilCan,			16.0,	true,	liquid_Oil, 100.0);
 	DefineLiquidContainerItem(item_Ketchup,			0.5,	true);
 	DefineLiquidContainerItem(item_Mustard,			0.5,	true);
 

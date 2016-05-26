@@ -88,7 +88,14 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 {
 	if(liq_ItemTypeLiquidContainer[itemtype] != INVALID_LIQUID_CONTAINER)
 	{
-		SetItemNameExtra(itemid, sprintf("%.1f/%.0f", float(GetItemExtraData(itemid))));
+		new
+			data[2],
+			name[MAX_LIQUID_NAME];
+
+		GetItemArrayData(itemid, data);
+		GetLiquidName(data[1], name);
+
+		SetItemNameExtra(itemid, sprintf("%s %.1f/%.2f", name, float(data[0]), liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity]));
 	}
 }
 
@@ -151,8 +158,13 @@ _DrinkItem(playerid, itemid)
 
 	if(GetItemExtraData(itemid) > 0)
 	{
+		new Float:amount = GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 		SetPlayerFP(playerid, GetPlayerFP(playerid) + GetLiquidFoodValue(GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_TYPE)));
-		SetItemArrayDataAtCell(itemid, GetItemExtraData(itemid) - 1, LIQUID_ITEM_ARRAY_CELL_AMOUNT, 0);
+
+		printf("amount pre %f", amount);
+		amount -= 0.2;
+		printf("amount aft %f", amount);
+		SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 	}
 
 	if(GetItemExtraData(itemid) > 0)
@@ -175,6 +187,15 @@ hook OnHoldActionFinish(playerid)
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(oldkeys & 16 && !(newkeys & 16))
+	{
+		if(liq_CurrentItem[playerid] != -1)
+			_StopDrinking(playerid);
+	}
 }
 
 hook OnPlayerCrafted(playerid, craftset, result)
@@ -216,6 +237,14 @@ hook OnPlayerCrafted(playerid, craftset, result)
 
 ==============================================================================*/
 
+
+stock IsItemTypeLiquidContainer(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return false;
+
+	return liq_ItemTypeLiquidContainer[itemtype];
+}
 
 stock Float:GetLiquidItemLiquidAmount(itemid)
 {
