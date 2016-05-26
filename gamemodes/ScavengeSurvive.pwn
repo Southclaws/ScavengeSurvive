@@ -425,6 +425,7 @@ new stock
 #include "sss/core/item/liquid.pwn"
 #include "sss/core/item/liquid-container.pwn"
 #include "sss/core/world/tree.pwn"
+#include "sss/core/world/explosive.pwn"
 
 /*
 	MODULE INITIALISATION CALLS

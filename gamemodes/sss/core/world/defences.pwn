@@ -1349,6 +1349,7 @@ stock IsValidDefence(defenceid)
 }
 
 // def_itemtype
+forward ItemType:GetDefenceTypeItemType(defencetype);
 stock ItemType:GetDefenceTypeItemType(defencetype)
 {
 	if(!(0 <= defencetype < def_TypeIndex))
@@ -1388,6 +1389,7 @@ stock GetDefenceTypeHorizontalRot(defencetype, &Float:x, &Float:y, &Float:z)
 }
 
 // def_placeOffsetZ
+forward Float:GetDefenceTypeOffsetZ(defencetype);
 stock Float:GetDefenceTypeOffsetZ(defencetype)
 {
 	if(!(0 <= defencetype < def_TypeIndex))
@@ -1515,6 +1517,7 @@ stock GetDefencePos(defenceid, &Float:x, &Float:y, &Float:z)
 }
 
 // def_rotZ
+forward Float:GetDefenceRot(defenceid);
 stock Float:GetDefenceRot(defenceid)
 {
 	if(!Iter_Contains(def_Index, defenceid))
@@ -1541,4 +1544,34 @@ stock GetDefenceIDFromGEID(geid)
 	}
 
 	return 1;
+}
+
+stock GetClosestDefence(Float:x, Float:y, Float:z, Float:size)
+{
+	new
+		Float:defposx,
+		Float:defposy,
+		Float:defposz,
+		Float:smallestdistance = 9999999.9,
+		Float:tempdistance,
+		closestid;
+
+	foreach(new i : def_Index)
+	{
+		GetDefencePos(i, defposx, defposy, defposz);
+
+		tempdistance = Distance(x, y, z, defposx, defposy, defposz);
+
+		if(tempdistance < smallestdistance)
+		{
+			smallestdistance = tempdistance;
+			closestid = i;
+		}
+	}
+
+	if(smallestdistance < size)
+		return closestid;
+
+	else
+		return -1;
 }

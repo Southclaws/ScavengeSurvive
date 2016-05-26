@@ -22,6 +22,11 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+#define MAX_EXPLOSIVE_ITEM		(16)
+#define INVALID_EXPLOSIVE_TYPE	(-1)
+
 enum
 {
 	EXPLOSION_PRESET_NORMAL,
@@ -29,11 +34,44 @@ enum
 	EXPLOSION_PRESET_EMP
 }
 
+enum EXP_TRIGGER
+{
+	TIMED,
+	RADIO,
+	PROXIMITY,
+	MOTION
+}
 
-//stock DefineExplosiveItem(ItemType:itemtype, )
-//{
-//
-//}
+enum E_EXPLOSIVE_ITEM_DATA
+{
+ItemType:	exp_itemtype,
+EXP_TRIGGER:exp_trigger,
+			exp_preset
+}
+
+
+static
+			exp_Data[MAX_EXPLOSIVE_ITEM][E_EXPLOSIVE_ITEM_DATA],
+			exp_Total,
+			exp_ItemTypeExplosive[ITM_MAX] = {INVALID_EXPLOSIVE_TYPE, ...};
+
+
+stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, preset)
+{
+	if(0 <= exp_Total >= MAX_EXPLOSIVE_ITEM - 1)
+	{
+		print("ERROR: Explosive item definition limit reached!");
+		return -1;
+	}
+
+	exp_Data[exp_Total][exp_itemtype] = itemtype;
+	exp_Data[exp_Total][exp_trigger] = trigger;
+	exp_Data[exp_Total][exp_preset] = preset;
+
+	exp_ItemTypeExplosive[_:itemtype] = exp_Total;
+
+	return exp_Total++;
+}
 
 stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 {
@@ -89,56 +127,43 @@ stock CreateStructuralExplosion(Float:x, Float:y, Float:z, type, Float:size, hit
 	CreateExplosion(x, y, z, type, size);
 
 	new
-		Float:defposx,
-		Float:defposy,
-		Float:defposz,
-		Float:smallestdistance = 9999999.9,
-		Float:tempdistance,
-		closestid;
+		defenceid,
+		newhitpoints;
 
-	foreach(new i : def_Index)
+	defenceid = GetClosestDefence(x, y, z, size);
+
+	if(defenceid == -1)
+		return 0;
+
+	newhitpoints = GetDefenceHitPoints(defenceid) - hitpoints;
+
+	if(newhitpoints <= 0)
 	{
-		GetDefencePos(i, defposx, defposy, defposz);
+		new
+			defencetype = GetDefenceType(defenceid),
+			ItemType:itemtype = GetDefenceTypeItemType(defencetype),
+			Float:vrotx,
+			Float:vroty,
+			Float:vrotz,
+			Float:rotz;
 
-		tempdistance = Distance(x, y, z, defposx, defposy, defposz);
+		GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
+		rotz = GetDefenceRot(defenceid);
 
-		if(tempdistance < smallestdistance)
-		{
-			smallestdistance = tempdistance;
-			closestid = i;
-		}
+		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
+			defenceid, x, y, z,
+			GetDefenceGEID(defenceid),
+			_:itemtype,
+			GetItemTypeModel(itemtype),
+			x, y, z + GetDefenceTypeOffsetZ(defencetype),
+			vrotx, vroty, vrotz + rotz);
+
+		DestroyDefence(defenceid);
+	}
+	else
+	{
+		SetDefenceHitPoints(defenceid, newhitpoints);
 	}
 
-	if(smallestdistance < size)
-	{
-		new newhitpoints = GetDefenceHitPoints(closestid) - hitpoints;
-
-		if(newhitpoints <= 0)
-		{
-			new
-				defencetype = GetDefenceType(closestid),
-				ItemType:itemtype = GetDefenceTypeItemType(defencetype),
-				Float:vrotx,
-				Float:vroty,
-				Float:vrotz,
-				Float:rotz;
-
-			GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
-			rotz = GetDefenceRot(closestid);
-
-			logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
-				closestid, x, y, z,
-				GetDefenceGEID(closestid),
-				_:itemtype,
-				GetItemTypeModel(itemtype),
-				x, y, z + GetDefenceTypeOffsetZ(defencetype),
-				vrotx, vroty, vrotz + rotz);
-
-			DestroyDefence(closestid);
-		}
-		else
-		{
-			SetDefenceHitPoints(closestid, newhitpoints);
-		}
-	}
+	return 1;
 }

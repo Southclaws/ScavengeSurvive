@@ -1203,6 +1203,21 @@ public OnScriptInit()
 	DefineItemTypeAmmo(item_Ammo308,			"FMJ",				calibre_308,	1.2,	1.1,	0.8,	10);
 
 
+	// EXPLOSIVE ITEM TYPE DEFINITIONS
+	DefineExplosiveItem(item_TntTimebomb,	TIMED,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_TntTripMine,	MOTION,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_TntProxMine,	PROXIMITY,	EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_TntPhoneBomb,	RADIO,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_IedTimebomb,	TIMED,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_IedTripMine,	MOTION,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_IedProxMine,	PROXIMITY,	EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_IedPhoneBomb,	RADIO,		EXPLOSION_PRESET_STRUCTURAL);
+	DefineExplosiveItem(item_EmpTimebomb,	TIMED,		EXPLOSION_PRESET_EMP);
+	DefineExplosiveItem(item_EmpTripMine,	MOTION,		EXPLOSION_PRESET_EMP);
+	DefineExplosiveItem(item_EmpProxMine,	PROXIMITY,	EXPLOSION_PRESET_EMP);
+	DefineExplosiveItem(item_EmpPhoneBomb,	RADIO,		EXPLOSION_PRESET_EMP);
+
+
 	// FOOD ITEM TYPE DEFINITIONS
 	DefineFoodItem(item_HotDog,			4, 18.00,	1, 1, 1);
 	DefineFoodItem(item_Pizza,			6, 18.30,	1, 0, 0);
