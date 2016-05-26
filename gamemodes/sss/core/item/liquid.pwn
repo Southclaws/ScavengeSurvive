@@ -45,26 +45,31 @@ liquid_Fun				= DefineLiquidType("Fun", liquid_Ethanol | liquid_Turpentine | liq
 
 enum E_LIQUID_DATA
 {
-	liq_name[MAX_LIQUID_NAME],
-	liq_mask,
-	liq_recipe
+		liq_name[MAX_LIQUID_NAME],
+Float:	liq_foodvalue,
+		liq_mask,
+		liq_recipe
 }
 
 
 new const ROOT_LIQUID_BITMASK = 0xFFFFFFFF;
 
 static
-	liq_Data[MAX_LIQUID_TYPES][E_LIQUID_DATA],
-	liq_Total,
-	liq_NextMask = 1;
+		liq_Data[MAX_LIQUID_TYPES][E_LIQUID_DATA],
+		liq_Total,
+		liq_NextMask = 1;
 
 
-stock DefineLiquidType(name[], recipe)
+stock DefineLiquidType(name[], Float:foodvalue, recipe)
 {
-	if(liq_Total == MAX_LIQUID_TYPES)
+	if(liq_Total >= MAX_LIQUID_TYPES - 1)
+	{
+		print("ERROR: MAX_LIQUID_TYPES limit reached!");
 		return -1;
+	}
 
 	strcat(liq_Data[liq_Total][liq_name], name, MAX_LIQUID_NAME);
+	liq_Data[liq_Total][liq_foodvalue] = foodvalue;
 	liq_Data[liq_Total][liq_mask] = liq_NextMask;
 	liq_Data[liq_Total][liq_recipe] = recipe;
 
@@ -94,4 +99,12 @@ stock IsValidLiquidType(liquidtype)
 stock GetTotalLiquidTypes()
 {
 	return liq_Total;
+}
+
+stock Float:GetLiquidFoodValue(liquidtype)
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0.0;
+
+	return liq_Data[liquidtype][liq_foodvalue];
 }

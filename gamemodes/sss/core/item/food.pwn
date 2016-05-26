@@ -42,7 +42,6 @@ ItemType:	food_itemType,
 Float:		food_biteValue,
 			food_canCook,
 			food_canRawInfect,
-			food_consumeType,
 			food_destroyOnEnd
 }
 
@@ -73,14 +72,13 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfect, consumetype, destroyonend)
+DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfect, destroyonend)
 {
 	food_Data[food_Total][food_itemType]		= itemtype;
 	food_Data[food_Total][food_maxBites]		= maxbites;
 	food_Data[food_Total][food_biteValue]		= bitevalue;
 	food_Data[food_Total][food_canCook]			= cancook;
 	food_Data[food_Total][food_canRawInfect]	= canrawinfect;
-	food_Data[food_Total][food_consumeType]		= consumetype;
 	food_Data[food_Total][food_destroyOnEnd]	= destroyonend;
 
 	food_ItemTypeFoodType[itemtype] = food_Total;
@@ -146,20 +144,12 @@ _StartEating(playerid, itemid, continuing = false)
 
 	if(CallLocalFunction("OnPlayerEat", "dd", playerid, itemid))
 	{
-		food_CurrentItem[playerid] = -1;
+		_StopEating(playerid);
 		return;
 	}
 
-	if(food_Data[GetItemTypeFoodType(GetItemType(itemid))][food_consumeType] == 0)
-	{
-		ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
-		StartHoldAction(playerid, 3200);
-	}
-	else
-	{
-		ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
-		StartHoldAction(playerid, 1000);
-	}
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
+	StartHoldAction(playerid, 3200);
 
 	return;
 }
@@ -323,15 +313,6 @@ stock GetFoodTypeCanRawInfect(foodtype)
 		return 0;
 
 	return food_Data[foodtype][food_canRawInfect];
-}
-
-// food_consumeType
-stock GetFoodTypeConsumeType(foodtype)
-{
-	if(!(0 <= foodtype < food_Total))
-		return 0;
-
-	return food_Data[foodtype][food_consumeType];
 }
 
 // food_destroyOnEnd

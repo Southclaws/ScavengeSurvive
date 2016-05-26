@@ -420,6 +420,7 @@ new stock
 #include "sss/core/weapon/damage-core.pwn"
 #include "sss/core/ui/hold-action.pwn"
 #include "sss/core/item/liquid.pwn"
+#include "sss/core/item/liquid-container.pwn"
 #include "sss/core/world/tree.pwn"
 
 /*
@@ -561,7 +562,6 @@ new stock
 // ITEMS
 #include "sss/core/item/food.pwn"
 #include "sss/core/item/firework.pwn"
-#include "sss/core/item/bottle.pwn"
 #include "sss/core/item/tnttimebomb.pwn"
 #include "sss/core/item/sign.pwn"
 #include "sss/core/item/shield.pwn"
