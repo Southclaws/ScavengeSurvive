@@ -138,6 +138,7 @@ stock SetItemToExplode(itemid)
 		}
 	}
 
+	DestroyItem(itemid);
 	CreateExplosionOfPreset(x, y, z, exp_Data[exp_ItemTypeExplosive[itemtype]][exp_preset]);
 
 	return 0;
