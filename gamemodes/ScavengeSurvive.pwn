@@ -395,6 +395,7 @@ new stock
 #include "sss/utils/string.pwn"
 #include "sss/utils/debug.pwn"
 #include "sss/utils/dialog-pages.pwn"
+#include "sss/utils/item.pwn"
 
 // SERVER CORE
 #include "sss/core/server/settings.pwn"

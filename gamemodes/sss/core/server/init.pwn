@@ -853,6 +853,7 @@ public OnScriptInit()
 /*
 1656 cuboid shape, carry item
 1719 small computer type device
+2422 computer terminal
 1898 small spin clicker
 1899 very small single chip
 1901 small blue chips stack
