@@ -14,8 +14,8 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 
 		if(IsValidButton(buttonid))
 		{
-			parent = buttonid;
-			parenttype = "buttonid";
+			parent = containerid;
+			parenttype = "containerid";
 			return GetButtonPos(buttonid, x, y, z);
 		}
 
@@ -38,8 +38,8 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 
 		if(IsValidItem(safeboxitemid))
 		{
-			parent = safeboxitemid;
-			parenttype = "itemid";
+			parent = containerid;
+			parenttype = "containerid";
 			return GetItemAbsolutePos(safeboxitemid, x, y, z, parent, parenttype);
 		}
 
@@ -62,8 +62,8 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 
 		if(IsValidItem(bagitemid))
 		{
-			parent = bagitemid;
-			parenttype = "itemid";
+			parent = containerid;
+			parenttype = "containerid";
 			return GetItemAbsolutePos(bagitemid, x, y, z, parent, parenttype);
 		}
 	}

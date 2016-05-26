@@ -30,135 +30,41 @@ enum
 }
 
 
+//stock DefineExplosiveItem(ItemType:itemtype, )
+//{
+//
+//}
+
 stock SetItemToExplode(itemid, type, Float:size, preset, hitpoints)
 {
 	if(!IsValidItem(itemid))
 		return 0;
 
-	if(IsItemInWorld(itemid))
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		parent,
+		parenttype[32];
+
+	GetItemAbsolutePos(itemid, x, y, z, parent, parenttype);
+
+	if(!strcmp(parenttype, "containerid"))
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z;
-
-		GetItemPos(itemid, x, y, z);
-		CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-		DestroyItem(itemid);
-
-		return 1;
+		DestroyContainer(parent);
 	}
 
-	new containerid = GetItemContainer(itemid);
-
-	if(IsValidContainer(containerid))
+	if(!strcmp(parenttype, "vehicleid"))
 	{
-		new buttonid = GetContainerButton(containerid);
-
-		if(IsValidButton(buttonid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetButtonPos(buttonid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-
-			return 1;
-		}
-
-		new vehicleid = GetContainerTrunkVehicleID(containerid);
-
-		if(IsValidVehicle(vehicleid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetVehiclePos(vehicleid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-			SetVehicleHealth(vehicleid, 0.0);
-
-			return 1;
-		}
-
-		new safeboxitemid = GetContainerSafeboxItem(containerid);
-
-		if(IsValidItem(safeboxitemid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(safeboxitemid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-
-			if(type != EXPLOSION_PRESET_EMP)
-				DestroyItem(safeboxitemid);
-
-			return 1;
-		}
-
-		new playerid = GetContainerPlayerBag(containerid);
-
-		if(IsPlayerConnected(playerid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetPlayerPos(playerid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-
-			if(type != EXPLOSION_PRESET_EMP)
-				DestroyPlayerBag(playerid);
-
-			return 1;
-		}
-
-		new bagitemid = GetContainerBagItem(containerid);
-
-		if(IsValidItem(bagitemid))
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(bagitemid, x, y, z);
-			CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-			DestroyItem(itemid);
-
-			if(type != EXPLOSION_PRESET_EMP)
-				DestroyItem(bagitemid);
-
-			return 1;
-		}
+		SetVehicleHealth(parent, 0.0);
 	}
 
-	new playerid = GetItemPlayerInventory(itemid);
-
-	if(IsPlayerConnected(playerid))
+	if(!strcmp(parenttype, "playerid"))
 	{
-		new
-			Float:x,
-			Float:y,
-			Float:z;
-
-		GetPlayerPos(playerid, x, y, z);
-		CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
-		DestroyItem(itemid);
-
-		return 1;
+		SetPlayerHP(parent, 0.0);
 	}
+
+	CreateExplosionOfPreset(x, y, z, type, size, preset, hitpoints);
 
 	return 0;
 }
