@@ -255,6 +255,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 		else
 			_DisplaySafeboxDialog(playerid, itemid, false);
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
