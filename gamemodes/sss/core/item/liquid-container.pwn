@@ -60,7 +60,7 @@ forward OnPlayerDrank(playerid, itemid);
 forward OnPlayerDank(memes);
 
 
-stock DefineLiquidContainerItem(ItemType:itemtype, capacity, bool:reusable, {Float, _}:...)
+stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable, {Float, _}:...)
 {
 	if(liq_Total >= MAX_LIQUID_TYPES - 1)
 	{
