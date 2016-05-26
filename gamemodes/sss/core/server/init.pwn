@@ -716,7 +716,7 @@ public OnScriptInit()
 	item_FluxCap		= DefineItemType("Flux Capacitor",		"FluxCap",			343,	1,	0.0, 0.0, 0.0,			0.0);
 	item_DataInterface	= DefineItemType("Data Interface",		"DataInterface",	19273,	1,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000);
 	item_HackDevice		= DefineItemType("Hack Interface",		"HackDevice",		364,	1,	0.0, 0.0, 0.0,			0.0,	0.134000, 0.080000, -0.037000,  84.299949, 3.399998, 9.400002);
-	item_PlantPot		= DefineItemType("Plant Pot",			"PlantPot",			2203,	4,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610, true);
+	item_PlantPot		= DefineItemType("Plant Pot",			"PlantPot",			2203,	4,	0.0, 0.0, 0.0,			0.138,	-0.027872, 0.145617, -0.246524, 243.789840, 347.397491, 349.931610, true, .longpickup = true);
 	item_HerpDerp		= DefineItemType("Derpification Unit",	"HerpDerp",			19513,	1,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000);
 	item_Parrot			= DefineItemType("Sebastian",			"Parrot",			19078,	2,	0.0, 0.0, 0.0,			0.0,	0.131000, 0.021000, 0.005999,  -86.000091, 6.700000, -106.300018);
 // 160

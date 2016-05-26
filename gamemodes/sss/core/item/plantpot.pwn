@@ -38,12 +38,6 @@ enum e_plant_pot_data
 }
 
 
-static
-Timer:	pot_PickUpTimer[MAX_PLAYERS],
-		pot_PickUpTick[MAX_PLAYERS],
-		pot_CurrentItem[MAX_PLAYERS];
-
-
 hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'PlantPot'...");
@@ -51,105 +45,111 @@ hook OnScriptInit()
 	HANDLER = debug_register_handler("plantpot");
 }
 
-
-_pot_UseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:1:HANDLER("[_pot_UseItemWithItem] player %d itemid %d withitemid %d", playerid, itemid, withitemid);
-	new ItemType:itemtype = GetItemType(itemid);
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/plantpot.pwn");
 
-	new potdata[e_plant_pot_data];
-
-	GetItemArrayData(withitemid, potdata);
-
-	if(itemtype == item_SeedBag)
+	if(GetItemType(withitemid) == item_PlantPot)
 	{
-		new amount = GetItemArrayDataAtCell(itemid, E_SEED_BAG_AMOUNT);
+		d:1:HANDLER("[_pot_UseItemWithItem] player %d itemid %d withitemid %d", playerid, itemid, withitemid);
+		new
+			ItemType:itemtype = GetItemType(itemid),
+			potdata[e_plant_pot_data];
 
-		if(amount > 0)
+		GetItemArrayData(withitemid, potdata);
+
+		if(itemtype == item_SeedBag)
 		{
-			potdata[E_PLANT_POT_SEED_TYPE] = GetItemArrayDataAtCell(itemid, E_SEED_BAG_TYPE);
-			potdata[E_PLANT_POT_ACTIVE] = 1;
-			potdata[E_PLANT_POT_GROWTH] = 0;
+			new amount = GetItemArrayDataAtCell(itemid, E_SEED_BAG_AMOUNT);
 
-			SetItemArrayDataAtCell(itemid, amount - 1, E_SEED_BAG_AMOUNT);
-			SetItemArrayData(withitemid, potdata, e_plant_pot_data);
-			ShowActionText(playerid, ls(playerid, "POTADDSEEDS"), 5000);
-			SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with water bottle to add water");
-		}
-	}
-
-	if(itemtype == item_Bottle)
-	{
-		new amount = GetFoodItemAmount(itemid);
-
-		if(amount > 0)
-		{
-			new subtype = GetFoodItemSubType(itemid);
-
-			if(subtype == 0)
+			if(amount > 0)
 			{
-				SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
-				SetFoodItemAmount(itemid, amount - 1);
-				ShowActionText(playerid, ls(playerid, "POTADDWATER"), 5000);
-				SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
+				potdata[E_PLANT_POT_SEED_TYPE] = GetItemArrayDataAtCell(itemid, E_SEED_BAG_TYPE);
+				potdata[E_PLANT_POT_ACTIVE] = 1;
+				potdata[E_PLANT_POT_GROWTH] = 0;
+
+				SetItemArrayDataAtCell(itemid, amount - 1, E_SEED_BAG_AMOUNT);
+				SetItemArrayData(withitemid, potdata, e_plant_pot_data);
+				ShowActionText(playerid, ls(playerid, "POTADDSEEDS"), 5000);
+				SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with water bottle to add water");
+			}
+		}
+
+		if(itemtype == item_Bottle)
+		{
+			new amount = GetFoodItemAmount(itemid);
+
+			if(amount > 0)
+			{
+				new subtype = GetFoodItemSubType(itemid);
+
+				if(subtype == 0)
+				{
+					SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
+					SetFoodItemAmount(itemid, amount - 1);
+					ShowActionText(playerid, ls(playerid, "POTADDWATER"), 5000);
+					SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
+				}
+				else
+				{
+					ShowActionText(playerid, ls(playerid, "POTBOTNOWAT"), 5000);
+				}
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "POTBOTNOWAT"), 5000);
+				ShowActionText(playerid, ls(playerid, "POTBOTEMPTY"), 5000);
 			}
 		}
-		else
+
+		if(itemtype == item_Knife)
 		{
-			ShowActionText(playerid, ls(playerid, "POTBOTEMPTY"), 5000);
+			if(!potdata[E_PLANT_POT_ACTIVE])
+			{
+				ShowActionText(playerid, ls(playerid, "POTNOACPLNT"), 3000);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+
+			new seedtype = potdata[E_PLANT_POT_SEED_TYPE];
+
+			if(!IsValidSeedType(seedtype))
+			{
+				ShowActionText(playerid, ls(playerid, "POTINVASEED"), 3000);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+
+			if(_:(potdata[E_PLANT_POT_GROWTH] < GetSeedTypeGrowthTime(seedtype)))
+			{
+				ShowActionText(playerid, ls(playerid, "POTNOTGROWN"), 3000);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				world = GetItemWorld(withitemid),
+				interior = GetItemInterior(withitemid);
+
+			GetItemPos(withitemid, x, y, z);
+
+			CreateItem(GetSeedTypeItemType(seedtype), x, y, z + 0.5, _, _, _, FLOOR_OFFSET - 0.3, world, interior);
+			DestroyDynamicObject(potdata[E_PLANT_POT_OBJECT_ID]);
+
+			potdata[E_PLANT_POT_ACTIVE] = 0;
+			potdata[E_PLANT_POT_SEED_TYPE] = 0;
+			potdata[E_PLANT_POT_WATER] = 0;
+			potdata[E_PLANT_POT_GROWTH] = 0;
+			potdata[E_PLANT_POT_OBJECT_ID] = INVALID_OBJECT_ID;
+
+			SetItemArrayData(withitemid, potdata, e_plant_pot_data);
+
+			ShowActionText(playerid, ls(playerid, "POTHARVESTE"), 3000);
 		}
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	if(itemtype == item_Knife)
-	{
-		if(!potdata[E_PLANT_POT_ACTIVE])
-		{
-			ShowActionText(playerid, ls(playerid, "POTNOACPLNT"), 3000);
-			return 0;
-		}
-
-		new seedtype = potdata[E_PLANT_POT_SEED_TYPE];
-
-		if(!IsValidSeedType(seedtype))
-		{
-			ShowActionText(playerid, ls(playerid, "POTINVASEED"), 3000);
-			return 0;
-		}
-
-		if(_:(potdata[E_PLANT_POT_GROWTH] < GetSeedTypeGrowthTime(seedtype)))
-		{
-			ShowActionText(playerid, ls(playerid, "POTNOTGROWN"), 3000);
-			return 0;
-		}
-
-		new
-			Float:x,
-			Float:y,
-			Float:z,
-			world = GetItemWorld(withitemid),
-			interior = GetItemInterior(withitemid);
-
-		GetItemPos(withitemid, x, y, z);
-
-		CreateItem(GetSeedTypeItemType(seedtype), x, y, z + 0.5, _, _, _, FLOOR_OFFSET - 0.3, world, interior);
-		DestroyDynamicObject(potdata[E_PLANT_POT_OBJECT_ID]);
-
-		potdata[E_PLANT_POT_ACTIVE] = 0;
-		potdata[E_PLANT_POT_SEED_TYPE] = 0;
-		potdata[E_PLANT_POT_WATER] = 0;
-		potdata[E_PLANT_POT_GROWTH] = 0;
-		potdata[E_PLANT_POT_OBJECT_ID] = INVALID_OBJECT_ID;
-
-		SetItemArrayData(withitemid, potdata, e_plant_pot_data);
-
-		ShowActionText(playerid, ls(playerid, "POTHARVESTE"), 3000);
-	}
-
-	return 1;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 _pot_Load(itemid)
@@ -276,72 +276,6 @@ _pot_UpdateModel(itemid, bool:toggle = true)
 	return 1;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/plantpot.pwn");
-
-	if(oldkeys & 16)
-	{
-		if(GetTickCountDifference(GetTickCount(), pot_PickUpTick[playerid]) < 200)
-		{
-			if(IsValidItem(pot_CurrentItem[playerid]))
-			{
-				new
-					potdata[e_plant_pot_data],
-					string[256];
-
-				GetItemArrayData(pot_CurrentItem[playerid], potdata);
-
-				ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
-				stop pot_PickUpTimer[playerid];
-				pot_PickUpTick[playerid] = 0;
-
-				format(string, sizeof(string), "Active:%d\nSeed type:%d\nWater:%d\nGrowth:%d/%d\n",
-					potdata[E_PLANT_POT_ACTIVE],
-					potdata[E_PLANT_POT_SEED_TYPE],
-					potdata[E_PLANT_POT_WATER],
-					potdata[E_PLANT_POT_GROWTH],
-					GetSeedTypeGrowthTime(potdata[E_PLANT_POT_SEED_TYPE]));
-
-				inline Response(pid, dialogid, response, listitem, string:inputtext[])
-				{
-					#pragma unused pid, dialogid, response, listitem, inputtext
-					ClearAnimations(playerid, 1);
-				}
-				Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
-			}
-		}
-	}
-}
-
-_pot_PickUp(playerid, itemid)
-{
-	if(GetItemType(itemid) == item_PlantPot)
-	{
-		d:1:HANDLER("[_pot_PickUp] playerid %d itemid %d", playerid, itemid);
-		stop pot_PickUpTimer[playerid];
-		pot_PickUpTimer[playerid] = defer _pot_PickUpDelay(playerid, itemid);
-
-		pot_PickUpTick[playerid] = GetTickCount();
-		pot_CurrentItem[playerid] = itemid;
-
-		return 1;
-	}
-
-	return 0;
-}
-
-timer _pot_PickUpDelay[400](playerid, itemid)
-{
-	if(IsValidItem(GetPlayerItem(playerid)))
-		return;
-
-	PlayerPickUpItem(playerid, itemid);
-	_pot_UpdateModel(itemid, false);
-
-	return;
-}
-
 hook OnItemCreateInWorld(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/plantpot.pwn");
@@ -349,6 +283,9 @@ hook OnItemCreateInWorld(itemid)
 	if(GetItemType(itemid) == item_PlantPot)
 	{
 		d:1:HANDLER("[OnItemCreateInWorld] PlantPot itemid %d", itemid);
+
+		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" for status");
+
 		if(gServerInitialising)
 		{
 			d:2:HANDLER("[OnItemCreateInWorld] gServerInitialising true");
@@ -374,14 +311,33 @@ hook OnItemCreateInWorld(itemid)
 	}
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/plantpot.pwn");
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/plantpot.pwn");
 
-	if(GetItemType(withitemid) == item_PlantPot)
+	if(GetItemType(itemid) == item_PlantPot && IsItemInWorld(itemid))
 	{
-		if(_pot_UseItemWithItem(playerid, itemid, withitemid))
-			return Y_HOOKS_BREAK_RETURN_0;
+		new
+			potdata[e_plant_pot_data],
+			string[256];
+
+		GetItemArrayData(itemid, potdata);
+
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+
+		format(string, sizeof(string), "Active:%d\nSeed type:%d\nWater:%d\nGrowth:%d/%d\n",
+			potdata[E_PLANT_POT_ACTIVE],
+			potdata[E_PLANT_POT_SEED_TYPE],
+			potdata[E_PLANT_POT_WATER],
+			potdata[E_PLANT_POT_GROWTH],
+			GetSeedTypeGrowthTime(potdata[E_PLANT_POT_SEED_TYPE]));
+
+		inline Response(pid, dialogid, response, listitem, string:inputtext[])
+		{
+			#pragma unused pid, dialogid, response, listitem, inputtext
+			ClearAnimations(playerid, 1);
+		}
+		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -391,8 +347,8 @@ hook OnPlayerPickUpItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/plantpot.pwn");
 
-	if(_pot_PickUp(playerid, itemid))
-		return Y_HOOKS_BREAK_RETURN_1;
+	if(GetItemType(itemid) == item_PlantPot)
+		_pot_UpdateModel(itemid, false);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
