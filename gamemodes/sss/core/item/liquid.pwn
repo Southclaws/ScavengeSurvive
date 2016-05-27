@@ -22,23 +22,6 @@
 ==============================================================================*/
 
 
-/*
-
-ROOT_LIQUID_BITMASK
-
-liquid_Water			= DefineLiquidType("Water", ROOT_LIQUID_BITMASK)
-liquid_Milk				= DefineLiquidType("Milk", ROOT_LIQUID_BITMASK)
-liquid_Orange			= DefineLiquidType("Orange", ROOT_LIQUID_BITMASK)
-liquid_Whiskey			= DefineLiquidType("Whiskey", ROOT_LIQUID_BITMASK)
-liquid_Ethanol			= DefineLiquidType("Ethanol", ROOT_LIQUID_BITMASK)
-liquid_Turpentine		= DefineLiquidType("Turpentine", ROOT_LIQUID_BITMASK)
-liquid_HydroAcid		= DefineLiquidType("Hydrochloric Acid", ROOT_LIQUID_BITMASK)
-
-liquid_StrongWhiskey	= DefineLiquidType("Acid Whiskey", liquid_Whiskey | liquid_Ethanol)
-liquid_Fun				= DefineLiquidType("Fun", liquid_Ethanol | liquid_Turpentine | liquid_HydroAcid)
-
-*/
-
 #define MAX_LIQUID_TYPES (64)
 #define MAX_LIQUID_NAME (32)
 
@@ -52,15 +35,13 @@ Float:	liq_foodvalue,
 }
 
 
-new const ROOT_LIQUID_BITMASK = 0xFFFFFFFF;
-
 static
 		liq_Data[MAX_LIQUID_TYPES][E_LIQUID_DATA],
 		liq_Total,
 		liq_NextMask = 1;
 
 
-stock DefineLiquidType(name[], Float:foodvalue, recipe)
+stock DefineLiquidType(name[], Float:foodvalue, ...)
 {
 	if(liq_Total >= MAX_LIQUID_TYPES - 1)
 	{
@@ -71,22 +52,28 @@ stock DefineLiquidType(name[], Float:foodvalue, recipe)
 	strcat(liq_Data[liq_Total][liq_name], name, MAX_LIQUID_NAME);
 	liq_Data[liq_Total][liq_foodvalue] = foodvalue;
 	liq_Data[liq_Total][liq_mask] = liq_NextMask;
-	liq_Data[liq_Total][liq_recipe] = recipe;
 
-	liq_Total++;
-	liq_NextMask = liq_NextMask << 1;
-	return liq_NextMask;
+	if(numargs() == 2)
+	{
+		liq_Data[liq_Total][liq_recipe] = liq_NextMask;
+		liq_NextMask = liq_NextMask << 1;
+	}
+	else
+	{
+		for(new i = 2; i < numargs(); i++)
+			liq_Data[liq_Total][liq_recipe] |= liq_Data[getarg(i)][liq_mask];
+	}
+
+	return liq_Total++;
 }
 
-stock GetLiquidName(liquidtype, name[])
-{
-	if(!(0 <= liquidtype < liq_Total))
-		return 0;
 
-	strcat(name, liq_Data[liquidtype][liq_name], MAX_LIQUID_NAME);
+/*==============================================================================
 
-	return 1;
-}
+	Interface
+
+==============================================================================*/
+
 
 stock IsValidLiquidType(liquidtype)
 {
@@ -101,10 +88,40 @@ stock GetTotalLiquidTypes()
 	return liq_Total;
 }
 
+// liq_name
+stock GetLiquidName(liquidtype, name[])
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0;
+
+	strcat(name, liq_Data[liquidtype][liq_name], MAX_LIQUID_NAME);
+
+	return 1;
+}
+
+// liq_foodvalue
 stock Float:GetLiquidFoodValue(liquidtype)
 {
 	if(!(0 <= liquidtype < liq_Total))
 		return 0.0;
 
 	return liq_Data[liquidtype][liq_foodvalue];
+}
+
+// liq_mask
+stock GetLiquidMask(liquidtype)
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0;
+
+	return liq_Data[liquidtype][liquid_Fun];
+}
+
+// liq_recipe
+stock GetLiquidRecipe(liquidtype)
+{
+	if(!(0 <= liquidtype < liq_Total))
+		return 0;
+
+	return liq_Data[liquidtype][liq_recipe];
 }

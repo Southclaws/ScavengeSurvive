@@ -78,10 +78,42 @@ stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable
 	{
 		liq_Data[liq_Total][liq_liquidType][ liq_Data[liq_Total][liq_liquidnum] ] = getarg(i);
 		liq_Data[liq_Total][liq_liquidProb][ liq_Data[liq_Total][liq_liquidnum] ] = getarg(i + 1);
-
+		liq_Data[liq_Total][liq_liquidnum]++;
 	}
 
 	return liq_Total++;
+}
+
+hook OnItemCreateInWorld(itemid)
+{
+	if(GetItemLootIndex(itemid) != -1)
+	{
+		new
+			ItemType:itemtype,
+			liqcont,
+			liqlist[8],
+			size;
+
+		itemtype = GetItemType(itemid);
+		liqcont = liq_ItemTypeLiquidContainer[itemtype];
+
+		if(liqcont != INVALID_LIQUID_CONTAINER)
+		{
+			for(new i; i < liq_Data[liqcont][liq_liquidnum]; i++)
+			{
+				if(random(100) > liq_Data[liqcont][liq_liquidProb][i])
+					continue;
+
+				liqlist[size++] = liq_Data[liqcont][liq_liquidType][i];
+			}
+
+			if(size > 0)
+			{
+				SetItemArrayDataAtCell(itemid, _:liq_Data[liqcont][liq_capacity], LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+				SetItemArrayDataAtCell(itemid, liqlist[random(size)], LIQUID_ITEM_ARRAY_CELL_TYPE);
+			}
+		}
+	}
 }
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
