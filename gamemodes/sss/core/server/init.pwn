@@ -995,7 +995,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Burger,		3);
 	SetItemTypeMaxArrayData(item_BurgerBox,		3);
 	SetItemTypeMaxArrayData(item_Taco,			3);
-	SetItemTypeMaxArrayData(item_GasCan,		1);
+	SetItemTypeMaxArrayData(item_GasCan,		2);
 	SetItemTypeMaxArrayData(item_Clothes,		1);
 	SetItemTypeMaxArrayData(item_HelmArmy,		1);
 	SetItemTypeMaxArrayData(item_MediumBox,		3);

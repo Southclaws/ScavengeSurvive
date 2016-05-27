@@ -436,7 +436,7 @@ stock GetPlayerVehicleArea(playerid)
 	if(!(0 <= playerid < MAX_PLAYERS))
 			return 0;
 
-	foreach(new i : veh_Index)
+	foreach(new i : varea_NearIndex[playerid])
 	{
 		if(IsPlayerInDynamicArea(playerid, varea_AreaID[i]))
 			return i;
@@ -555,7 +555,7 @@ stock GetPlayerVehicleTire(playerid, vehicleid)
 
 stock IsPlayerAtAnyVehicleTrunk(playerid)
 {
-	foreach(new i : veh_Index)
+	foreach(new i : varea_NearIndex[playerid])
 	{
 		if(IsPlayerAtVehicleTrunk(playerid, i))
 			return 1;
@@ -566,7 +566,7 @@ stock IsPlayerAtAnyVehicleTrunk(playerid)
 
 stock IsPlayerAtAnyVehicleBonnet(playerid)
 {
-	foreach(new i : veh_Index)
+	foreach(new i : varea_NearIndex[playerid])
 	{
 		if(IsPlayerAtVehicleBonnet(playerid, i))
 			return 1;

@@ -567,7 +567,6 @@ new stock
 #include "sss/core/item/shield.pwn"
 #include "sss/core/item/handcuffs.pwn"
 #include "sss/core/item/wheel.pwn"
-#include "sss/core/item/gascan.pwn"
 #include "sss/core/item/armyhelm.pwn"
 #include "sss/core/item/zorromask.pwn"
 #include "sss/core/item/headlight.pwn"

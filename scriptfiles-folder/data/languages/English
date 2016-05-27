@@ -160,3 +160,5 @@ LOCATORSYNC=Locator synced, you can now locate the phone.
 DISTANCEVAL=Distance: %.3f
 CHAINSAFUEL=There is no fuel in the chainsaw
 HATALREADYW=You are already wearing a hat
+FUELCANFULL=Fuel can is full
+FUELNOTPETR=Fuel can does not contain petrol
