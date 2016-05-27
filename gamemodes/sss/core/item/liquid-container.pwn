@@ -125,9 +125,16 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 			name[MAX_LIQUID_NAME];
 
 		GetItemArrayData(itemid, data);
-		GetLiquidName(data[1], name);
 
-		SetItemNameExtra(itemid, sprintf("%s %.1f/%.2f", name, Float:data[0], liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity]));
+		if(Float:data[0] > 0.001)
+		{
+			GetLiquidName(data[1], name);
+			SetItemNameExtra(itemid, sprintf("%s %.1f/%.2f", name, Float:data[0], liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity]));
+		}
+		else
+		{
+			SetItemNameExtra(itemid, "Empty");
+		}
 	}
 }
 
