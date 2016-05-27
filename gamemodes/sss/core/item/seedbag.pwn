@@ -57,7 +57,7 @@ stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:pl
 		return -1;
 	}
 
-	strcat(seed_Data[seed_Total][seed_name], name);
+	strcat(seed_Data[seed_Total][seed_name], name, ITM_MAX_NAME);
 	seed_Data[seed_Total][seed_itemType] = itemtype;
 	seed_Data[seed_Total][seed_growthTime] = growthtime;
 	seed_Data[seed_Total][seed_plantModel] = plantmodel;
@@ -91,12 +91,9 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 		GetItemArrayData(itemid, seeddata);
 
-		if(seeddata[E_SEED_BAG_AMOUNT] > 0)
+		if(seeddata[E_SEED_BAG_AMOUNT] > 0 && 0 <= seeddata[E_SEED_BAG_TYPE] < seed_Total)
 		{
-			if(0 <= seeddata[E_SEED_BAG_TYPE] < 2)
-			{
-				SetItemNameExtra(itemid, seed_Data[seeddata[E_SEED_BAG_TYPE]][seed_name]);
-			}
+			SetItemNameExtra(itemid, sprintf("%d, %s", seeddata[E_SEED_BAG_AMOUNT], seed_Data[seeddata[E_SEED_BAG_TYPE]][seed_name]));
 		}
 		else
 		{
