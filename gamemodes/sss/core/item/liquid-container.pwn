@@ -95,7 +95,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 		GetItemArrayData(itemid, data);
 		GetLiquidName(data[1], name);
 
-		SetItemNameExtra(itemid, sprintf("%s %.1f/%.2f", name, float(data[0]), liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity]));
+		SetItemNameExtra(itemid, sprintf("%s %.1f/%.2f", name, Float:data[0], liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity]));
 	}
 }
 
@@ -158,13 +158,8 @@ _DrinkItem(playerid, itemid)
 
 	if(GetItemExtraData(itemid) > 0)
 	{
-		new Float:amount = GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 		SetPlayerFP(playerid, GetPlayerFP(playerid) + GetLiquidFoodValue(GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_TYPE)));
-
-		printf("amount pre %f", amount);
-		amount -= 0.2;
-		printf("amount aft %f", amount);
-		SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+		SetItemArrayDataAtCell(itemid, _:(Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT) - 0.2), LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 	}
 
 	if(GetItemExtraData(itemid) > 0)
