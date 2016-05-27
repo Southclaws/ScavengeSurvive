@@ -338,6 +338,8 @@ hook OnPlayerUseItem(playerid, itemid)
 			ClearAnimations(playerid, 1);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
+
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

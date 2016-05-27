@@ -62,6 +62,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				StartHoldAction(playerid, 3000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 				gut_TargetItem[playerid] = withitemid;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 			else
 			{
@@ -86,6 +87,7 @@ hook OnPlayerUseItem(playerid, itemid)
 		gut_TargetItem[playerid] = itemid;
 		ShowTorsoDetails(playerid, itemid);
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
