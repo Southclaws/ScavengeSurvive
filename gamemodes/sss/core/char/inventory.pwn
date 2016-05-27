@@ -624,6 +624,12 @@ _inv_HandleGearSlotClick_Hand(playerid)
 				return 1;
 		}
 
+		if(IsItemTypeSafebox(GetItemType(itemid)))
+		{
+			if(GetContainerSafeboxItem(containerid) == itemid)
+				return 1;
+		}
+
 		new required = AddItemToContainer(containerid, itemid, playerid);
 
 		if(required > 0)
