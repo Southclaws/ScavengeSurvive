@@ -387,7 +387,10 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	d:1:HANDLER("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/char/backpack.pwn");
 
 	if(bag_ItemTypeBagType[GetItemType(withitemid)] != -1)
+	{
 		_DisplayBagDialog(playerid, withitemid, true);
+		return Y_HOOKS_BREAK_RETURN_1;
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }

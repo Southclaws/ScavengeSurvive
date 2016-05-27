@@ -267,7 +267,10 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
 
 	if(IsItemTypeSafebox(GetItemType(withitemid)))
+	{
 		_DisplaySafeboxDialog(playerid, withitemid, true);
+		return Y_HOOKS_BREAK_RETURN_1;
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
