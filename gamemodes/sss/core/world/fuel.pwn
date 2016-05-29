@@ -24,14 +24,15 @@
 
 #include <YSI\y_hooks>
 
-#define MAX_FUEL_LOCATIONS	(78)
-#define FUEL_CAN_CAPACITY	(20)
+#define INVALID_FUEL_OUTLET_ID	(-1)
+#define MAX_FUEL_LOCATIONS		(78)
+#define FUEL_CAN_CAPACITY		(20)
 
 
 enum E_FUEL_DATA
 {
 			fuel_state,
-			fuel_areaId,
+			fuel_buttonId,
 Float:		fuel_capacity,
 Float:		fuel_amount,
 Float:		fuel_posX,
@@ -45,14 +46,15 @@ new
    Iterator:fuel_Index<MAX_FUEL_LOCATIONS>,
 Timer:		fuel_RefuelTimer[MAX_PLAYERS],
 			fuel_CurrentFuelOutlet[MAX_PLAYERS],
-			fuel_CurrentlyRefuelling[MAX_PLAYERS];
+			fuel_CurrentlyRefuelling[MAX_PLAYERS],
+			fuel_ButtonFuelOutlet[BTN_MAX] = {INVALID_FUEL_OUTLET_ID, ...};
 
 
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/fuel.pwn");
 
-	fuel_CurrentlyRefuelling[playerid] = -1;
+	fuel_CurrentlyRefuelling[playerid] = INVALID_FUEL_OUTLET_ID;
 }
 
 
@@ -66,7 +68,7 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 		return -1;
 	}
 
-	fuel_Data[id][fuel_areaId]		= CreateDynamicSphere(x, y, z, areasize);
+	fuel_Data[id][fuel_buttonId]	= CreateButton(x, y, z + 0.5, "Fill petrol can", .label = true, .labeltext = "0.0", .areasize = areasize);
 
 	fuel_Data[id][fuel_state]		= 1;
 	fuel_Data[id][fuel_capacity]	= capacity;
@@ -76,8 +78,11 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 	fuel_Data[id][fuel_posY]		= y;
 	fuel_Data[id][fuel_posZ]		= z;
 
+	fuel_ButtonFuelOutlet[fuel_Data[id][fuel_buttonId]] = id;
+
 	Iter_Add(fuel_Index, id);
 
+	UpdateFuelText(id);
 	return id;
 }
 
@@ -86,7 +91,9 @@ stock DestroyFuelOutlet(id)
 	if(!Iter_Contains(fuel_Index, id))
 		return 0;
 
-	DestroyDynamicArea(fuel_Data[id][fuel_areaId]);
+	fuel_ButtonFuelOutlet[fuel_Data[id][fuel_buttonId]] = INVALID_FUEL_OUTLET_ID;
+
+	DestroyButton(fuel_Data[id][fuel_buttonId]);
 
 	fuel_Data[id][fuel_state]		= 0;
 	fuel_Data[id][fuel_capacity]	= 0.0;
@@ -96,52 +103,42 @@ stock DestroyFuelOutlet(id)
 	fuel_Data[id][fuel_posY]		= 0.0;
 	fuel_Data[id][fuel_posZ]		= 0.0;
 
+
 	Iter_Remove(fuel_Index, id);
 
 	return 1;
 }
 
-stock IsPlayerAtAnyFuelOutlet(playerid)
+
+hook OnButtonPress(playerid, buttonid)
 {
-	if(!(0 <= playerid < MAX_PLAYERS))
-		return 0;
+	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/fuel.pwn");
 
-	foreach(new i : fuel_Index)
+	if(fuel_ButtonFuelOutlet[buttonid] != INVALID_FUEL_OUTLET_ID)
 	{
-		if(IsPlayerInDynamicArea(playerid, fuel_Data[i][fuel_areaId]))
-			return 1;
-	}
-	return 0;
-}
-
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/fuel.pwn");
-
-	if(newkeys & 16)
-	{
-		new itemid = GetPlayerItem(playerid);
-		if(GetItemType(itemid) == item_GasCan)
+		if(fuel_Data[fuel_ButtonFuelOutlet[buttonid]][fuel_buttonId] == buttonid)
 		{
-			foreach(new i : fuel_Index)
+			new itemid = GetPlayerItem(playerid);
+			if(GetItemType(itemid) == item_GasCan)
 			{
-				if(IsPlayerInDynamicArea(playerid, fuel_Data[i][fuel_areaId]))
+				if(GetItemExtraData(itemid) < FUEL_CAN_CAPACITY)
 				{
-					if(GetItemExtraData(itemid) < FUEL_CAN_CAPACITY)
-					{
-						StartRefuellingFuelCan(playerid, i);
-					}
+					StartRefuellingFuelCan(playerid, fuel_ButtonFuelOutlet[buttonid]);
 				}
 			}
 		}
 	}
-	if(oldkeys & 16)
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnButtonRelease(playerid, buttonid)
+{
+	if(fuel_CurrentFuelOutlet[playerid] != INVALID_FUEL_OUTLET_ID)
 	{
-		if(fuel_CurrentFuelOutlet[playerid] != -1)
-		{
-			StopRefuellingFuelCan(playerid);
-		}
+		StopRefuellingFuelCan(playerid);
 	}
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 StartRefuellingFuelCan(playerid, outletid)
@@ -178,12 +175,12 @@ StopRefuellingFuelCan(playerid)
 	ClearAnimations(playerid);
 
 	stop fuel_RefuelTimer[playerid];
-	fuel_CurrentFuelOutlet[playerid] = -1;
+	fuel_CurrentFuelOutlet[playerid] = INVALID_FUEL_OUTLET_ID;
 }
 
 timer RefuelCanUpdate[500](playerid)
 {
-	if(fuel_CurrentFuelOutlet[playerid] == -1)
+	if(fuel_CurrentFuelOutlet[playerid] == INVALID_FUEL_OUTLET_ID)
 	{
 		StopRefuellingFuelCan(playerid);
 		return;
@@ -215,7 +212,11 @@ timer RefuelCanUpdate[500](playerid)
 
 	SetItemExtraData(itemid, amount + 1);
 	fuel_Data[fuel_CurrentFuelOutlet[playerid]][fuel_amount] -= 1.0;
-
+	
+	if(fuel_Data[fuel_CurrentFuelOutlet[playerid]][fuel_amount] < 0.0)
+		fuel_Data[fuel_CurrentFuelOutlet[playerid]][fuel_amount] = 0.0;
+		
+	UpdateFuelText(fuel_CurrentFuelOutlet[playerid]);
 	return;
 }
 
@@ -247,7 +248,7 @@ StopRefuellingVehicle(playerid)
 
 	HidePlayerProgressBar(playerid, ActionBar);
 	ClearAnimations(playerid);
-	fuel_CurrentlyRefuelling[playerid] = -1;
+	fuel_CurrentlyRefuelling[playerid] = INVALID_FUEL_OUTLET_ID;
 
 	return 1;
 }
@@ -293,3 +294,6 @@ timer RefuelVehicleUpdate[500](playerid, vehicleid)
 
 	return;
 }
+
+UpdateFuelText(outletid)
+	return SetButtonLabel(fuel_Data[outletid][fuel_buttonId], sprintf("%.1f/%.1f", fuel_Data[outletid][fuel_amount], fuel_Data[outletid][fuel_capacity]));
