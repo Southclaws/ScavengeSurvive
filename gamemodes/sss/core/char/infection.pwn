@@ -48,6 +48,14 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
+hook OnPlayerDeath(playerid, killerid, reason)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerDeath] in /gamemodes/sss/core/char/infection.pwn");
+
+	infect_InfectionIntensity[playerid][0] = 0;
+	infect_InfectionIntensity[playerid][1] = 0;
+	infect_LastShake[playerid] = 0;
+}
 
 //ptask PlayerInfectionUpdate[1000](playerid)
 stock PlayerInfectionUpdate(playerid)

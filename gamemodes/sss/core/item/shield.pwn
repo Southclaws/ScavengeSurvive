@@ -50,8 +50,13 @@ timer shield_Down[400](playerid, itemid)
 	GetPlayerFacingAngle(playerid, angle);
 
 	RemoveCurrentItem(playerid);
-	SetItemPos(itemid, x + (0.5 * floatsin(-angle, degrees)), y + (0.5 * floatcos(-angle, degrees)), z - 0.2);
-	SetItemRot(itemid, 90.0, 0.0, 180.0 + angle);
+
+	CreateItemInWorld(itemid,
+		x + (0.5 * floatsin(-angle, degrees)),
+		y + (0.5 * floatcos(-angle, degrees)),
+		z - 0.2,
+		90.0, 0.0, 180.0 + angle,
+		FLOOR_OFFSET, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), 1);
 }
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)

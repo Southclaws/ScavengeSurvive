@@ -154,10 +154,6 @@ ptask ToolTipUpdate[1000](playerid)
 			if(IsPlayerAtVehicleBonnet(playerid, invehiclearea))
 				AddToolTipText(playerid, KEYTEXT_INTERACT, "Refuel vehicle");
 		}
-		else if(IsPlayerAtAnyFuelOutlet(playerid))
-		{
-			AddToolTipText(playerid, KEYTEXT_INTERACT, "Fill fuel can");
-		}
 	}
 	else if(itemtype == item_Clothes)
 	{
