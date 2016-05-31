@@ -43,7 +43,7 @@ Float:		fuel_posZ
 
 new
 			fuel_Data[MAX_FUEL_LOCATIONS][E_FUEL_DATA],
-Iterator:   fuel_Index<MAX_FUEL_LOCATIONS>,
+			fuel_Total,
 Timer:		fuel_RefuelTimer[MAX_PLAYERS],
 			fuel_CurrentFuelOutlet[MAX_PLAYERS],
 			fuel_CurrentlyRefuelling[MAX_PLAYERS],
@@ -60,96 +60,71 @@ hook OnPlayerConnect(playerid)
 
 stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity, Float:startamount)
 {
-	new id = Iter_Free(fuel_Index);
-
-	if(id == -1)
+	if(fuel_Total >= MAX_FUEL_LOCATIONS - 1)
 	{
 		print("ERROR: MAX_FUEL_LOCATIONS limit reached!");
 		return -1;
 	}
 
-	fuel_Data[id][fuel_buttonId]	= CreateButton(x, y, z + 0.5, "Fill petrol can", .label = true, .labeltext = "0.0", .areasize = areasize);
+	fuel_Data[fuel_Total][fuel_buttonId]	= CreateButton(x, y, z + 0.5, "Fill petrol can", .label = true, .labeltext = "0.0", .areasize = areasize);
 
-	fuel_Data[id][fuel_state]		= 1;
-	fuel_Data[id][fuel_capacity]	= capacity;
-	fuel_Data[id][fuel_amount]		= startamount;
+	fuel_Data[fuel_Total][fuel_state]		= 1;
+	fuel_Data[fuel_Total][fuel_capacity]	= capacity;
+	fuel_Data[fuel_Total][fuel_amount]		= startamount;
 
-	fuel_Data[id][fuel_posX]		= x;
-	fuel_Data[id][fuel_posY]		= y;
-	fuel_Data[id][fuel_posZ]		= z;
+	fuel_Data[fuel_Total][fuel_posX]		= x;
+	fuel_Data[fuel_Total][fuel_posY]		= y;
+	fuel_Data[fuel_Total][fuel_posZ]		= z;
 
-	fuel_ButtonFuelOutlet[fuel_Data[id][fuel_buttonId]] = id;
+	fuel_ButtonFuelOutlet[fuel_Data[fuel_Total][fuel_buttonId]] = fuel_Total;
 
-	Iter_Add(fuel_Index, id);
+	UpdateFuelText(fuel_Total);
 
-	UpdateFuelText(id);
-	return id;
+	return fuel_Total++;
 }
 
-stock DestroyFuelOutlet(id)
+hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
-	if(!Iter_Contains(fuel_Index, id))
-		return 0;
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/world/fuel.pwn");
 
-	fuel_ButtonFuelOutlet[fuel_Data[id][fuel_buttonId]] = INVALID_FUEL_OUTLET_ID;
+	if(GetItemType(itemid) != item_GasCan)
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	DestroyButton(fuel_Data[id][fuel_buttonId]);
+	if(fuel_ButtonFuelOutlet[buttonid] == INVALID_FUEL_OUTLET_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	fuel_Data[id][fuel_state]		= 0;
-	fuel_Data[id][fuel_capacity]	= 0.0;
-	fuel_Data[id][fuel_amount]		= 0.0;
+	if(fuel_Data[fuel_ButtonFuelOutlet[buttonid]][fuel_buttonId] != buttonid)
+		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	fuel_Data[id][fuel_posX]		= 0.0;
-	fuel_Data[id][fuel_posY]		= 0.0;
-	fuel_Data[id][fuel_posZ]		= 0.0;
-
-
-	Iter_Remove(fuel_Index, id);
-
-	return 1;
-}
-
-
-hook OnButtonPress(playerid, buttonid)
-{
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/fuel.pwn");
-
-	if(fuel_ButtonFuelOutlet[buttonid] != INVALID_FUEL_OUTLET_ID)
+	if(Float:GetItemExtraData(itemid) >= FUEL_CAN_CAPACITY)
 	{
-		if(fuel_Data[fuel_ButtonFuelOutlet[buttonid]][fuel_buttonId] == buttonid)
-		{
-			new itemid = GetPlayerItem(playerid);
-			if(GetItemType(itemid) == item_GasCan)
-			{
-				if(GetItemExtraData(itemid) < FUEL_CAN_CAPACITY)
-				{
-					if(Float:GetItemExtraData(itemid) < FUEL_CAN_CAPACITY)
-					{
-						StartRefuellingFuelCan(playerid, i);
-					}
-					else
-					{
-						ShowActionText(playerid, ls(playerid, "FUELCANFULL"), 3000);
-					}
-				}
-			}
-		}
+		ShowActionText(playerid, ls(playerid, "FUELCANFULL"), 3000);
+		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
+
+	StartRefuellingFuelCan(playerid, fuel_ButtonFuelOutlet[buttonid]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnButtonRelease(playerid, buttonid)
+hook OnPlayerRelBtnWithItem(playerid, buttonid, itemid)
 {
 	if(fuel_CurrentFuelOutlet[playerid] != INVALID_FUEL_OUTLET_ID)
 	{
 		StopRefuellingFuelCan(playerid);
 	}
+
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 StartRefuellingFuelCan(playerid, outletid)
 {
+	if(!(0 <= outletid < fuel_Total))
+	{
+		printf("ERROR: [StartRefuellingFuelCan] invalid outletid: %d", outletid);
+		return 0;
+	}
+
 	if(GetItemType(GetPlayerItem(playerid)) != item_GasCan)
 	{
 		ShowActionText(playerid, ls(playerid, "YOUNEEDFCAN"), 3000, 120);

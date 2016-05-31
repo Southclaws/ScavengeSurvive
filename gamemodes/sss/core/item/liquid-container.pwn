@@ -52,13 +52,20 @@ static
 			liq_Total;
 
 static
-			liq_CurrentItem[MAX_PLAYERS];
+			liq_CurrentItem[MAX_PLAYERS],
+			liq_UseWithItemTick[MAX_PLAYERS];
 
 
 forward OnPlayerDrink(playerid, itemid);
 forward OnPlayerDrank(playerid, itemid);
 forward OnPlayerDank(memes);
 
+
+hook OnPlayerConnect(playerid)
+{
+	liq_CurrentItem[playerid] = INVALID_ITEM_ID;
+	liq_UseWithItemTick[playerid] = 0;
+}
 
 stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable, {Float, _}:...)
 {
@@ -138,12 +145,29 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/item/liquid-container.pwn");
+
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		_StartDrinking(playerid, itemid);
+		liq_UseWithItemTick[playerid] = GetTickCount();
 	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/liquid-container.pwn");
+
+	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
+	{
+		if(GetTickCountDifference(liq_UseWithItemTick[playerid], GetTickCount()) > 10)
+			_StartDrinking(playerid, itemid);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 _StartDrinking(playerid, itemid, continuing = false)
@@ -212,7 +236,7 @@ _DrinkItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/food.pwn");
+	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	if(liq_CurrentItem[playerid] != -1)
 	{
@@ -234,7 +258,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerCrafted(playerid, craftset, result)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerCrafted] in /gamemodes/sss/core/item/bottle.pwn");
+	d:3:GLOBAL_DEBUG("[OnPlayerCrafted] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	/*
 		Todo:
