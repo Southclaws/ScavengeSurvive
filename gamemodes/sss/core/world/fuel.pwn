@@ -311,7 +311,10 @@ hook OnPlayerDrink(playerid, itemid)
 	if(IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
 		return Y_HOOKS_BREAK_RETURN_1;
 
-	if(!IsPlayerAtAnyVehicleBonnet(playerid))
+	if(IsPlayerAtAnyVehicleTrunk(playerid))
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	if(IsPlayerAtAnyVehicleBonnet(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

@@ -438,7 +438,7 @@ stock GetPlayerVehicleArea(playerid)
 
 	foreach(new i : varea_NearIndex[playerid])
 	{
-		if(IsPlayerInDynamicArea(playerid, varea_AreaID[i]))
+		if(IsPlayerInDynamicArea(playerid, varea_AreaID[varea_NearList[playerid][i]]))
 			return i;
 	}
 
@@ -557,7 +557,7 @@ stock IsPlayerAtAnyVehicleTrunk(playerid)
 {
 	foreach(new i : varea_NearIndex[playerid])
 	{
-		if(IsPlayerAtVehicleTrunk(playerid, i))
+		if(IsPlayerAtVehicleTrunk(playerid, varea_NearList[playerid][i]))
 			return 1;
 	}
 
@@ -568,7 +568,7 @@ stock IsPlayerAtAnyVehicleBonnet(playerid)
 {
 	foreach(new i : varea_NearIndex[playerid])
 	{
-		if(IsPlayerAtVehicleBonnet(playerid, i))
+		if(IsPlayerAtVehicleBonnet(playerid, varea_NearList[playerid][i]))
 			return 1;
 	}
 

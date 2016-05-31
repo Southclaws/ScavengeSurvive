@@ -61,6 +61,16 @@ forward OnPlayerDrank(playerid, itemid);
 forward OnPlayerDank(memes);
 
 
+static HANDLER = -1;
+
+
+hook OnGameModeInit()
+{
+	print("\n[OnGameModeInit] Initialising 'liquid-container'...");
+
+	HANDLER = debug_register_handler("liquid-container");
+}
+
 hook OnPlayerConnect(playerid)
 {
 	liq_CurrentItem[playerid] = INVALID_ITEM_ID;
@@ -151,6 +161,8 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
+		d:2:HANDLER("[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
+
 		liq_UseWithItemTick[playerid] = GetTickCount();
 	}
 
@@ -163,6 +175,8 @@ hook OnPlayerUseItem(playerid, itemid)
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
+		d:2:HANDLER("[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(liq_UseWithItemTick[playerid], GetTickCount()));
+
 		if(GetTickCountDifference(liq_UseWithItemTick[playerid], GetTickCount()) > 10)
 			_StartDrinking(playerid, itemid);
 	}
@@ -175,11 +189,11 @@ _StartDrinking(playerid, itemid, continuing = false)
 	if(!IsPlayerIdle(playerid) && !continuing)
 		return;
 
-	if(IsPlayerAtAnyVehicleTrunk(playerid))
-		return;
+	d:2:HANDLER("[_StartDrinking] Player is not idle");
 
 	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, itemid))
 	{
+		d:2:HANDLER("[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
 		if(continuing)
 			_StopDrinking(playerid);
 
@@ -196,6 +210,7 @@ _StartDrinking(playerid, itemid, continuing = false)
 
 _StopDrinking(playerid)
 {
+	d:2:HANDLER("[_StopDrinking]");
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
@@ -242,6 +257,7 @@ hook OnHoldActionFinish(playerid)
 
 	if(liq_CurrentItem[playerid] != -1)
 	{
+		d:2:HANDLER("[OnHoldActionFinish] Finished drinking, re-starting");
 		_DrinkItem(playerid, liq_CurrentItem[playerid]);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
