@@ -178,13 +178,15 @@ _StartDrinking(playerid, itemid, continuing = false)
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return;
 
-	liq_CurrentItem[playerid] = itemid;
-
 	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, itemid))
 	{
-		_StopDrinking(playerid);
+		if(continuing)
+			_StopDrinking(playerid);
+
 		return;
 	}
+
+	liq_CurrentItem[playerid] = itemid;
 
 	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
 	StartHoldAction(playerid, 1000);

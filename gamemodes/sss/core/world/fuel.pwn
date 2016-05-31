@@ -54,7 +54,7 @@ hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/fuel.pwn");
 
-	fuel_CurrentlyRefuelling[playerid] = INVALID_FUEL_OUTLET_ID;
+	fuel_CurrentlyRefuelling[playerid] = INVALID_VEHICLE_ID;
 }
 
 
@@ -218,6 +218,12 @@ StartRefuellingVehicle(playerid, vehicleid)
 		return 0;
 	}
 
+	if(Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT) <= 0.0)
+	{
+		ShowActionText(playerid, ls(playerid, "EMPTY"), 3000);
+		return 0;
+	}
+
 	CancelPlayerMovement(playerid);
 	ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, 1, 0, 0, 0, 0);
 	SetPlayerProgressBarMaxValue(playerid, ActionBar, GetVehicleTypeMaxFuel(GetVehicleType(vehicleid)));
@@ -240,7 +246,7 @@ StopRefuellingVehicle(playerid)
 
 	HidePlayerProgressBar(playerid, ActionBar);
 	ClearAnimations(playerid);
-	fuel_CurrentlyRefuelling[playerid] = INVALID_FUEL_OUTLET_ID;
+	fuel_CurrentlyRefuelling[playerid] = INVALID_VEHICLE_ID;
 
 	return 1;
 }
@@ -268,8 +274,14 @@ timer RefuelVehicleUpdate[500](playerid, vehicleid)
 	canfuel = Float:GetItemExtraData(itemid);
 	vehiclefuel = GetVehicleFuel(vehicleid);
 
+	if(canfuel <= 0.0)
+	{
+		ShowActionText(playerid, ls(playerid, "EMPTY"), 3000, 80);
+		StopRefuellingVehicle(playerid);
+		return;
+	}
+
 	if(vehiclefuel >= GetVehicleTypeMaxFuel(GetVehicleType(vehicleid))
-	|| canfuel <= 0.0
 	|| GetItemType(itemid) != item_GasCan
 	|| !IsPlayerInVehicleArea(playerid, vehicleid))
 	{
@@ -290,6 +302,19 @@ timer RefuelVehicleUpdate[500](playerid, vehicleid)
 	SetVehicleFuel(vehicleid, vehiclefuel + transfer);
 
 	return;
+}
+
+hook OnPlayerDrink(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerDrink] in /gamemodes/sss/core/world/fuel.pwn");
+
+	if(IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	if(!IsPlayerAtAnyVehicleBonnet(playerid))
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 UpdateFuelText(outletid)
