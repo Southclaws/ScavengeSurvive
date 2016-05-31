@@ -88,7 +88,7 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 
 	return 0;
 }
-
+/*
 static
 	follower[MAX_PLAYERS],
 	followed[MAX_PLAYERS];
@@ -128,3 +128,4 @@ hook OnPlayerUpdate(playerid)
 
 	return 1;
 }
+*/

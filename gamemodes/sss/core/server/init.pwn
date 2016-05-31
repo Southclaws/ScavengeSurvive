@@ -1216,7 +1216,8 @@ public OnScriptInit()
 	DefineExplosiveItem(item_EmpTripMine,	MOTION,		EXP_EMP);
 	DefineExplosiveItem(item_EmpProxMine,	PROXIMITY,	EXP_EMP);
 	DefineExplosiveItem(item_EmpPhoneBomb,	RADIO,		EXP_EMP);
-
+	DefineExplosiveItem(item_PetrolBomb,	TIMED,		EXP_INCEN);
+	SetRadioExplosiveTriggerItem(item_MobilePhone);
 
 	// FOOD ITEM TYPE DEFINITIONS
 	DefineFoodItem(item_HotDog,			4, 18.00,	1, 1, 1);

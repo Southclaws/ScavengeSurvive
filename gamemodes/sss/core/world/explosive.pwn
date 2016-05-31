@@ -42,7 +42,8 @@ enum EXP_PRESET
 	EXP_LARGE,
 	EXP_INCEN,
 	EXP_THERM,
-	EXP_EMP
+	EXP_EMP,
+	EXP_SHRAP
 }
 
 
@@ -60,7 +61,8 @@ static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
 	{06, 24.0, 3},	// EXP_LARGE
 	{00, 00.0, 0},	// EXP_INCEN
 	{00, 00.0, 0},	// EXP_THERM
-	{00, 00.0, 0}	// EXP_EMP
+	{00, 00.0, 0},	// EXP_EMP
+	{00, 00.0, 0}	// EXP_SHRAP
 };
 
 enum E_EXPLOSIVE_ITEM_DATA
@@ -74,15 +76,30 @@ EXP_PRESET:	exp_preset
 static
 			exp_Data[MAX_EXPLOSIVE_ITEM][E_EXPLOSIVE_ITEM_DATA],
 			exp_Total,
-			exp_ItemTypeExplosive[ITM_MAX_TYPES] = {INVALID_EXPLOSIVE_TYPE, ...};
+			exp_ItemTypeExplosive[ITM_MAX_TYPES] = {INVALID_EXPLOSIVE_TYPE, ...},
+ItemType:	exp_RadioTriggerItemType;
 
 static
-			exp_ArmingItem[MAX_PLAYERS];
+			exp_ArmingItem[MAX_PLAYERS],
+			exp_ArmTick[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
 	exp_ArmingItem[playerid] = INVALID_ITEM_ID;
+}
+
+hook OnItemCreate(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
+	{
+		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == RADIO)
+			SetItemExtraData(itemid, INVALID_ITEM_ID);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:preset)
@@ -102,6 +119,11 @@ stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:pre
 	return exp_Total++;
 }
 
+stock SetRadioExplosiveTriggerItem(ItemType:itemtype)
+{
+	exp_RadioTriggerItemType = itemtype;
+}
+
 stock SetItemToExplode(itemid)
 {
 	if(!IsValidItem(itemid))
@@ -118,7 +140,7 @@ stock SetItemToExplode(itemid)
 	itemtype = GetItemType(itemid);
 	GetItemAbsolutePos(itemid, x, y, z, parent, parenttype);
 
-	logf("[EXPLOSIVE] Type %d detonated at %f, %f, %f", _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
+	logf("[EXPLOSIVE] Item %d Type %d detonated at %f, %f, %f", itemid, _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
 
 	if(!isnull(parenttype))
 	{
@@ -145,6 +167,13 @@ stock SetItemToExplode(itemid)
 }
 
 
+/*==============================================================================
+
+	Type-specific Code for Trigger Types
+
+==============================================================================*/
+
+
 hook OnPlayerUseItem(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
@@ -161,6 +190,73 @@ hook OnPlayerUseItem(playerid, itemid)
 			ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
 		}
 	}
+	else if(GetItemType(itemid) == exp_RadioTriggerItemType)
+	{
+		if(GetTickCountDifference(GetTickCount(), exp_ArmTick[playerid]) < 1000)
+			return 0;
+
+		new
+			bombitem,
+			ItemType:bombitemtype;
+
+		bombitem = GetItemExtraData(itemid);
+		bombitemtype = GetItemType(bombitem);
+
+		if(!IsValidItem(bombitem))
+		{
+			ShowActionText(playerid, ls(playerid, "RADIONOSYNC"));
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		if(exp_ItemTypeExplosive[bombitemtype] == INVALID_EXPLOSIVE_TYPE)
+		{
+			ShowActionText(playerid, ls(playerid, "RADIONOSYNC"));
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		if(exp_Data[exp_ItemTypeExplosive[bombitemtype]][exp_trigger] != RADIO)
+		{
+			ShowActionText(playerid, ls(playerid, "RADIONOSYNC"));
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		if(GetItemExtraData(bombitem) != 1)
+		{
+			ShowActionText(playerid, ls(playerid, "RADIONOSYNC"));
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		logf("[EXPLOSIVE] Player %p triggering remote explosive item %d", playerid, itemid);
+		SetItemToExplode(bombitem);
+		SetItemExtraData(itemid, INVALID_ITEM_ID);
+
+		ShowActionText(playerid, ls(playerid, "RADIOTRIGGD"));
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tntphonebomb.pwn");
+
+	if(GetItemType(itemid) != exp_RadioTriggerItemType)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new ItemType:itemtype = GetItemType(withitemid);
+
+	if(exp_ItemTypeExplosive[itemtype] == INVALID_EXPLOSIVE_TYPE)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] != RADIO)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
+	SetItemExtraData(itemid, withitemid);
+	SetItemExtraData(withitemid, 1);
+	exp_ArmTick[playerid] = GetTickCount();
+
+	ChatMsgLang(playerid, YELLOW, "ARMEDRADIOB");
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -175,8 +271,9 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
-				defer TimeBombExplode(exp_ArmingItem[playerid]);
 				logf("[EXPLOSIVE] TNT TIMEBOMB placed by %p", playerid);
+				exp_ArmTick[playerid] = GetTickCount();
+				defer TimeBombExplode(exp_ArmingItem[playerid]);
 				ClearAnimations(playerid);
 				ShowActionText(playerid, ls(playerid, "ARMEDBOMB5S"), 3000);
 
