@@ -662,7 +662,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		itemid = GetPlayerItem(playerid);
 		itemtype = GetItemType(itemid);
 
-		if(IsValidItemType(itemtype))
+		if(!IsValidItemType(itemtype))
 			return 1;
 
 		if(GetItemTypeWeapon(itemtype) == -1)
