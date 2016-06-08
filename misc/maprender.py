@@ -158,7 +158,7 @@ def main():
 	loot += lootspawns.load("../gamemodes/sss/world/zones/bc.pwn")
 	loot += lootspawns.load("../gamemodes/sss/world/zones/tr.pwn")
 
-	vehicles += vehiclespawns.load("../scriptfiles/vspawns/")
+	vehicles += vehiclespawns.load("../scriptfiles/vspawn/")
 
 	objs = objects.load("../scriptfiles/Maps/")
 
