@@ -327,6 +327,7 @@ enum
 
 
 new
+		gBuildNumber,
 bool:	gServerInitialising = true,
 		gServerInitialiseTick,
 bool:	gServerRestarting = false,
@@ -404,6 +405,7 @@ new stock
 #include "sss/core/server/info-message.pwn"
 #include "sss/core/server/language.pwn"
 #include "sss/core/player/language.pwn"
+#include "sss/core/server/version.pwn"
 
 /*
 	PARENT SYSTEMS
@@ -653,6 +655,19 @@ main()
 OnGameModeInit_Setup()
 {
 	print("\n[OnGameModeInit_Setup] Setting up...");
+
+	new buildstring[12];
+
+	file_read("BUILD_NUMBER", buildstring);
+	gBuildNumber = strval(buildstring);
+
+	if(gBuildNumber < 1000)
+	{
+		printf("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
+		for(;;){}
+	}
+
+	printf("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);

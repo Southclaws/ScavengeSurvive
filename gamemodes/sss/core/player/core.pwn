@@ -86,9 +86,6 @@ E_FLAGS:	ply_BitFlags,
 static
 			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
 
-new
-Text:		Branding = Text:INVALID_TEXT_DRAW;
-
 
 forward OnPlayerDisconnected(playerid);
 forward OnDeath(playerid, killerid, reason);
@@ -121,7 +118,6 @@ public OnPlayerConnect(playerid)
 
 	defer LoadAccountDelay(playerid);
 
-	LoadPlayerTextDraws(playerid);
 	SetPlayerBrightness(playerid, 255);
 
 	TogglePlayerControllable(playerid, false);
@@ -171,19 +167,6 @@ public OnPlayerDisconnect(playerid, reason)
 	SetTimerEx("OnPlayerDisconnected", 100, false, "dd", playerid, reason);
 
 	return 1;
-}
-
-LoadPlayerTextDraws(playerid)
-{
-	Branding					=TextDrawCreate(638.000000, 2.000000, "SouthclawJK.wordpress.com");
-	TextDrawAlignment			(Branding, 3);
-	TextDrawBackgroundColor		(Branding, 255);
-	TextDrawFont				(Branding, 1);
-	TextDrawLetterSize			(Branding, 0.240000, 1.000000);
-	TextDrawColor				(Branding, -1);
-	TextDrawSetOutline			(Branding, 1);
-	TextDrawSetProportional		(Branding, 1);
-	TextDrawShowForPlayer(playerid, Branding);
 }
 
 timer LoadAccountDelay[5000](playerid)

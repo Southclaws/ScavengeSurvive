@@ -15,7 +15,6 @@ gamemodes/ScavengeSurvive.tar.gz
 
 # Sublime stuff
 *.sublime-workspace
-*.sublime-project
 
 # stuff no one else needs
 *.lnk

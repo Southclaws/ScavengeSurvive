@@ -1,0 +1,39 @@
+{
+	"folders":
+	[
+		{
+			"path": "gamemodes"
+		},
+		{
+			"path": "filterscripts"
+		},
+		{
+			"path": "scriptfiles"
+		},
+		{
+			"path": "misc"
+		},
+		{
+			"path": "..\\pawno\\include"
+		},
+		{
+			"path": "..\\Releases"
+		}
+	],
+
+	"settings":
+	{
+		"default_line_ending": "unix",
+		"tab_size": 4
+	},
+
+	"build_systems":
+	[
+		{
+			"name": "SOUTHCLAW'S SS BUILD SYSTEM DO NOT USE!",
+			"working_dir": "${project_path:${folder}}",
+			"cmd": "python build.py",
+			"file_regex": "(.*?)[(]([0-9]*)[)]"
+		}
+	]
+}
