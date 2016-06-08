@@ -31,6 +31,15 @@ I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
 creations are made! Please publish all bug fixes in order to benefit everyone.
 
+### Don't Be Selfish
+
+When you fix something, don't keep it to yourself. This is an open source
+project. An important part of open source is sharing, that's why this code is
+free of charge and available to all.
+
+Please respect this. Feel free to keep your unique features private, just submit
+*all* fixes to the base code as pull requests or just email them to me.
+
 
 ## Setup
 
