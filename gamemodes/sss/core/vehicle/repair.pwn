@@ -95,19 +95,10 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			//ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
 			ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
 		}
-		else if(itemtype == item_GasCan)
-		{
-			CancelPlayerMovement(playerid);
-			StartRefuellingVehicle(playerid, vehicleid);
-		}
 		else if(itemtype == item_Headlight)
 		{
 			CancelPlayerMovement(playerid);
 			ShowLightList(playerid, vehicleid);
-		}
-		else
-		{
-			ShowActionText(playerid, ls(playerid, "NORIGHTTOOL"), 3000, 100);
 		}
 	}
 

@@ -314,12 +314,39 @@ hook OnPlayerCrafted(playerid, craftset, result)
 ==============================================================================*/
 
 
-stock IsItemTypeLiquidContainer(ItemType:itemtype)
+stock GetItemTypeLiquidContainerType(ItemType:itemtype)
 {
 	if(!IsValidItemType(itemtype))
-		return false;
+		return -1;
 
 	return liq_ItemTypeLiquidContainer[itemtype];
+}
+
+//liq_itemtype
+stock GetLiquidContainerTypeItemType(liqcont)
+{
+	if(!(0 <= liqcont < liq_Total))
+		return 0;
+
+	return liq_Data[liqcont][liq_itemtype]
+}
+
+//liq_capacity
+stock Float:GetLiquidContainerTypeCapacity(liqcont)
+{
+	if(!(0 <= liqcont < liq_Total))
+		return 0.0;
+
+	return liq_Data[liqcont][liq_capacity];
+}
+
+//liq_reusable
+stock IsLiquidContainerTypeReusable(liqcont)
+{
+	if(!(0 <= liqcont < liq_Total))
+		return 0;
+
+	return liq_Data[liqcont][liq_reusable];
 }
 
 stock Float:GetLiquidItemLiquidAmount(itemid)

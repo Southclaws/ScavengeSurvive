@@ -75,7 +75,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 
-		if(IsItemTypeLiquidContainer(itemtype))
+		if(GetItemTypeLiquidContainerType(itemtype) != -1)
 		{
 			new
 				Float:amount = GetLiquidItemLiquidAmount(itemid),
