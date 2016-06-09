@@ -74,49 +74,49 @@ timer LoadWorld[10]()
 	defer _Load_LS();
 }
 
-timer _Load_LS[100]()
+timer _Load_LS[500]()
 {
 	Load_LS();
 	defer _Load_SF();
 }
 
-timer _Load_SF[100]()
+timer _Load_SF[500]()
 {
 	Load_SF();
 	defer _Load_LV();
 }
 
-timer _Load_LV[100]()
+timer _Load_LV[500]()
 {
 	Load_LV();
 	defer _Load_RC();
 }
 
-timer _Load_RC[100]()
+timer _Load_RC[500]()
 {
 	Load_RC();
 	defer _Load_FC();
 }
 
-timer _Load_FC[100]()
+timer _Load_FC[500]()
 {
 	Load_FC();
 	defer _Load_BC();
 }
 
-timer _Load_BC[100]()
+timer _Load_BC[500]()
 {
 	Load_BC();
 	defer _Load_TR();
 }
 
-timer _Load_TR[100]()
+timer _Load_TR[500]()
 {
 	Load_TR();
 	defer _Finalise();
 }
 
-timer _Finalise[100]()
+timer _Finalise[500]()
 {
 	new itemtypename[ITM_MAX_NAME];
 
