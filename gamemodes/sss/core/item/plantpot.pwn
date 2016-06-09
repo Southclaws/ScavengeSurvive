@@ -75,29 +75,29 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 
-		if(itemtype == item_Bottle)
+		if(IsItemTypeLiquidContainer(itemtype))
 		{
-			new amount = GetFoodItemAmount(itemid);
+			new
+				Float:amount = GetLiquidItemLiquidAmount(itemid),
+				type = GetLiquidItemLiquidType(itemid);
 
-			if(amount > 0)
+			if(amount <= 0.0)
 			{
-				new subtype = GetFoodItemSubType(itemid);
-
-				if(subtype == 0)
-				{
-					SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + 1, E_PLANT_POT_WATER, 1);
-					SetFoodItemAmount(itemid, amount - 1);
-					ShowActionText(playerid, ls(playerid, "POTADDWATER"), 5000);
-					SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
-				}
-				else
-				{
-					ShowActionText(playerid, ls(playerid, "POTBOTNOWAT"), 5000);
-				}
+				ShowActionText(playerid, ls(playerid, "POTBOTEMPTY"), 5000);
+			}
+			else if(type != liquid_Water)
+			{
+				ShowActionText(playerid, ls(playerid, "POTBOTNOWAT"), 5000);
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "POTBOTEMPTY"), 5000);
+				new Float:transfer = (amount < 0.1) ? amount : 0.1;
+				d:2:HANDLER("[_pot_UseItemWithItem] amount %f transfer %f floatround(transfer * 10) = %d", amount, transfer, floatround(transfer * 10));
+
+				SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + floatround(transfer * 10), E_PLANT_POT_WATER, 1);
+				SetLiquidItemLiquidAmount(itemid, amount - transfer);
+				ShowActionText(playerid, ls(playerid, "POTADDWATER"), 5000);
+				SetButtonText(GetItemButtonID(itemid), "Press F to pick up~n~Press "KEYTEXT_INTERACT" with knife to harvest");
 			}
 		}
 

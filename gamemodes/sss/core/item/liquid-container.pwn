@@ -325,12 +325,12 @@ stock IsItemTypeLiquidContainer(ItemType:itemtype)
 stock Float:GetLiquidItemLiquidAmount(itemid)
 {
 	if(!IsValidItem(itemid))
-		return -1;
+		return 0.0;
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
-		return -1;
+		return 0.0;
 
-	return float(GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT));
+	return Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 }
 
 stock SetLiquidItemLiquidAmount(itemid, Float:amount)

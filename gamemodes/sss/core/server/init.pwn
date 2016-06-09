@@ -1159,7 +1159,7 @@ public OnScriptInit()
 	SetItemTypeMaxArrayData(item_Doormat,		1);
 	SetItemTypeMaxArrayData(item_CakeSlice,		3);
 	SetItemTypeMaxArrayData(item_Holdall,		3);
-	SetItemTypeMaxArrayData(item_GrnApple,		1);
+	SetItemTypeMaxArrayData(item_GrnApple,		3);
 	SetItemTypeMaxArrayData(item_Wine1,			3);
 	SetItemTypeMaxArrayData(item_Wine2,			3);
 	SetItemTypeMaxArrayData(item_Wine3,			3);
