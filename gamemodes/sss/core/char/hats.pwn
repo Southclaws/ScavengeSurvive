@@ -176,7 +176,7 @@ hook OnPlayerUseItem(playerid, itemid)
 				SetPlayerHat(playerid, i);
 				DestroyItem(itemid);
 				CancelPlayerMovement(playerid);
-				break;
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}

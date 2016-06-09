@@ -52,6 +52,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			{
 				DestroyItem(itemid);
 				SetPlayerAP(playerid, float(data));
+				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 	}

@@ -211,7 +211,7 @@ hook OnPlayerCraft(playerid, craftset)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerCraft] in /gamemodes/sss/core/world/craft-construct.pwn");
 
-	if(cons_CraftsetConstructSet[craftset])
+	if(cons_CraftsetConstructSet[craftset] != -1)
 		return Y_HOOKS_BREAK_RETURN_1;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
