@@ -149,11 +149,17 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 
 	rm_CurrentRefineMachine[playerid] = refinemachineid;
 
-	if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
+	new 
+		ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+	if(GetItemTypeLiquidContainerType(itemtype) != -1)
 	{
-		d:1:HANDLER("[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(rm_Data[refinemachineid][rm_fuel]));
-		StartHoldAction(playerid, floatround(MAX_REFINE_MACHINE_FUEL * 1000), floatround(rm_Data[refinemachineid][rm_fuel] * 1000));
-		return 0;
+		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
+		{
+			d:1:HANDLER("[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(rm_Data[refinemachineid][rm_fuel]));
+			StartHoldAction(playerid, floatround(MAX_REFINE_MACHINE_FUEL * 1000), floatround(rm_Data[refinemachineid][rm_fuel] * 1000));
+			return 0;
+		}
 	}
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
@@ -215,16 +221,22 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		new itemid = GetPlayerItem(playerid);
 
-		if(GetItemType(itemid) != item_GasCan)
+		if(GetItemTypeLiquidContainerType(GetItemType(itemid)) != -1)
 		{
-			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
-			StopHoldAction(playerid);
-			rm_CurrentRefineMachine[playerid] = -1;
+			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
+			{
+				d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				StopHoldAction(playerid);
+				rm_CurrentRefineMachine[playerid] = -1;
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
 		}
 
-		new fuel = GetItemArrayDataAtCell(itemid, 0);
+		new 
+			Float:fuel = GetLiquidItemLiquidAmount(itemid),
+			Float:transfer;
 
-		if(fuel <= 0)
+		if(fuel <= 0.0)
 		{
 			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
@@ -234,8 +246,9 @@ hook OnHoldActionUpdate(playerid, progress)
 		else
 		{
 			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] + 1.0);
-			SetItemArrayDataAtCell(itemid, fuel - 1, 0);
-			rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] += 1.0;
+			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
+			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
+			rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] += 1.1;
 			ShowActionText(playerid, ls(playerid, "REFUELLING"));
 		}
 	}

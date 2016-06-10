@@ -26,30 +26,47 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/molotov.pwn");
 
-	if(GetItemType(itemid) == item_GasCan && GetItemType(withitemid) == item_MolotovEmpty)
+	if(GetItemType(withitemid) == item_MolotovEmpty)
 	{
-		if(GetItemExtraData(itemid) > 0)
+		new 
+			ItemType:itemtype = GetItemType(itemid);
+
+		if(GetItemTypeLiquidContainerType(itemtype) == -1)
+			return Y_HOOKS_BREAK_RETURN_1;
+			
+		if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:rz;
-
-			GetItemPos(withitemid, x, y, z);
-			GetItemRot(withitemid, rz, rz, rz);
-
-			DestroyItem(withitemid);
-			CreateItem(ItemType:18, x, y, z, .rz = rz, .zoffset = FLOOR_OFFSET);
-
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
-			ShowActionText(playerid, ls(playerid, "MOLOPOURBOT"), 3000);
-			SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
+			ShowActionText(playerid, ls(playerid, "FUELNOTPETR"), 3000);
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
-		else
+
+		new 
+			Float:canfuel = GetLiquidItemLiquidAmount(itemid);
+
+		if(canfuel <= 0.0)
 		{
 			ShowActionText(playerid, ls(playerid, "PETROLEMPTY"), 3000);
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
+
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			Float:rz,
+			Float:transfer;
+
+		GetItemPos(withitemid, x, y, z);
+		GetItemRot(withitemid, rz, rz, rz);
+
+		DestroyItem(withitemid);
+		CreateItem(ItemType:18, x, y, z, .rz = rz, .zoffset = FLOOR_OFFSET);
+
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
+		ShowActionText(playerid, ls(playerid, "MOLOPOURBOT"), 3000);
+		
+		transfer = (canfuel - 0.5 < 0.0) ? canfuel : 0.5;
+		SetLiquidItemLiquidAmount(itemid, canfuel - transfer);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

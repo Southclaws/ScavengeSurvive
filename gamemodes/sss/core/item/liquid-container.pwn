@@ -126,7 +126,7 @@ hook OnItemCreateInWorld(itemid)
 
 			if(size > 0)
 			{
-				SetItemArrayDataAtCell(itemid, _:liq_Data[liqcont][liq_capacity], LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+				SetItemArrayDataAtCell(itemid, _:frandom(liq_Data[liqcont][liq_capacity]), LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 				SetItemArrayDataAtCell(itemid, liqlist[random(size)], LIQUID_ITEM_ARRAY_CELL_TYPE);
 			}
 		}

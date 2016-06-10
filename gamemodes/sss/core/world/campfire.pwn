@@ -254,20 +254,33 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		{
 			if(!IsValidDynamicObject(cmp_Data[fireid][cmp_objFlame]))
 			{
+
 				new ItemType:itemtype = GetItemType(itemid);
 
-				if(itemtype == item_GasCan)
+				if(GetItemTypeLiquidContainerType(itemtype) != -1)
 				{
+					if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
+					{
+						ShowActionText(playerid, ls(playerid, "FUELNOTPETR"), 3000);
+						return 1;
+					}
+
+					new 
+						Float:canfuel = GetLiquidItemLiquidAmount(itemid),
+						Float:transfer;
+
+
 					if(cmp_Data[fireid][cmp_fueled])
 					{
 						ShowActionText(playerid, ls(playerid, "FIREALREADY"));
 					}
 					else
 					{
-						if(GetItemExtraData(itemid) > 0)
+						if(canfuel > 0.0)
 						{
+							transfer = (canfuel - 0.3 < 0.0) ? canfuel : 0.3;
+							SetLiquidItemLiquidAmount(itemid, canfuel - transfer);
 							ShowActionText(playerid, ls(playerid, "FIREADDPETR"));
-							SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 							cmp_Data[fireid][cmp_fueled] = 1;
 						}
 						else

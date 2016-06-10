@@ -163,11 +163,17 @@ _sm_PlayerUseScrapMachine(playerid, scrapmachineid, interactiontype)
 
 	sm_CurrentScrapMachine[playerid] = scrapmachineid;
 
-	if(GetItemType(GetPlayerItem(playerid)) == item_GasCan)
+	new 
+		ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+	if(GetItemTypeLiquidContainerType(itemtype) != -1)
 	{
-		d:1:HANDLER("[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(sm_Data[scrapmachineid][sm_fuel]));
-		StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 1000), floatround(sm_Data[scrapmachineid][sm_fuel] * 1000));
-		return 0;
+		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
+		{
+			d:1:HANDLER("[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(sm_Data[scrapmachineid][sm_fuel]));
+			StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 1000), floatround(sm_Data[scrapmachineid][sm_fuel] * 1000));
+			return 0;
+		}
 	}
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
@@ -208,16 +214,22 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		new itemid = GetPlayerItem(playerid);
 
-		if(GetItemType(itemid) != item_GasCan)
+		if(GetItemTypeLiquidContainerType(GetItemType(itemid)) != -1)
 		{
-			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
-			StopHoldAction(playerid);
-			sm_CurrentScrapMachine[playerid] = -1;
+			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
+			{
+				d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				StopHoldAction(playerid);
+				sm_CurrentScrapMachine[playerid] = -1;
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
 		}
 
-		new fuel = GetItemArrayDataAtCell(itemid, 0);
+		new 
+			Float:fuel = GetLiquidItemLiquidAmount(itemid),
+			Float:transfer;
 
-		if(fuel <= 0)
+		if(fuel <= 0.0)
 		{
 			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
@@ -227,8 +239,9 @@ hook OnHoldActionUpdate(playerid, progress)
 		else
 		{
 			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] + 1.0);
-			SetItemArrayDataAtCell(itemid, fuel - 1, 0);
-			sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] += 1.0;
+			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
+			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
+			sm_Data[sm_CurrentScrapMachine[playerid]][sm_fuel] += 1.1;
 			ShowActionText(playerid, ls(playerid, "REFUELLING"));
 		}
 	}

@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 #define INVALID_FUEL_OUTLET_ID	(-1)
-#define MAX_FUEL_LOCATIONS		(78)
+#define MAX_FUEL_LOCATIONS		(86)
 
 
 enum E_FUEL_DATA
