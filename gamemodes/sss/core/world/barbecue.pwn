@@ -129,13 +129,25 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(itemtype == item_GasCan)
+	if(GetItemTypeLiquidContainerType(itemtype) != -1)
 	{
 		d:2:HANDLER("[_UseBbqHandler] Item type is gas can", playerid, itemid, withitemid);
-		if(GetItemExtraData(itemid) > 0)
+
+		if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 		{
+			ShowActionText(playerid, ls(playerid, "FUELNOTPETR"), 3000);
+			return 1;
+		}
+
+		new 
+			Float:canfuel = GetLiquidItemLiquidAmount(itemid),
+			Float:transfer;
+
+		if(canfuel > 0.0)
+		{
+			transfer = (canfuel - 0.6 < 0.0) ? canfuel : 0.6;
+			SetLiquidItemLiquidAmount(itemid, canfuel - transfer);
 			SetItemArrayDataAtCell(withitemid, data[bbq_fuel] + 10, bbq_fuel);
-			SetItemExtraData(itemid, GetItemExtraData(itemid) - 1);
 			ShowActionText(playerid, ls(playerid, "BBQADDPETRO"), 3000);
 		}
 		else
