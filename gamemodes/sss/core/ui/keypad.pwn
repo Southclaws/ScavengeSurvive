@@ -190,6 +190,8 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 		{
 			kp_Value[playerid] = match;
 			ClearAnimations(playerid);
+			KeypadUpdateDisplay(playerid);
+			defer HackKeypadFinish(playerid, keypadid, match, match);
 		}
 		else
 		{
@@ -205,10 +207,8 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 			GivePlayerHP(playerid, -5);
 			KnockOutPlayer(playerid, 3000);
 			HideKeypad(playerid);
+			HackKeypadFinish(playerid, keypadid, kp_Value[playerid], match);
 		}
-
-		KeypadUpdateDisplay(playerid);
-		defer HackKeypadFinish(playerid, keypadid, match);
 
 		return;
 	}
@@ -221,10 +221,10 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 	return;
 }
 
-timer HackKeypadFinish[1000](playerid, keypadid, match)
+timer HackKeypadFinish[1000](playerid, keypadid, code, match)
 {
 	HideKeypad(playerid);
-	CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, keypadid, match, match);
+	CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, keypadid, code, match);
 }
 
 timer kp_PrtDestroy[2000](playerid)
