@@ -81,9 +81,9 @@ I don't expect you to read the entire license.
 
 Just ensure you understand this:
 
-You may copy, distribute and modify the software as long as you track changes/dates in source files.
+**You may copy, distribute and modify the software as long as you track changes/dates in source files.**
 
-Any modifications to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build & install instructions.
+**Any modifications to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build & install instructions.**
 
 And leave all credits intact.
 
@@ -105,5 +105,5 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
-with this program.  If not, see http://www.gnu.org/licenses/.
+with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
