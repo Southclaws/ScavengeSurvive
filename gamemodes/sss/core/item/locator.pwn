@@ -161,7 +161,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			}
 			
 			
-			ShowActionText(playerid, "Unable to trace the mobile phone", 2000);
+			ShowActionText(playerid, ls(playerid, "LOCATORDIS", 2000);
 	
 
 		}
