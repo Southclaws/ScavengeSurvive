@@ -1,5 +1,0 @@
-RemoveBuildingForPlayer(playerid, 5766, 1160.96, -1180.58, 70.4141, 250.0); // Awning shadows
-RemoveBuildingForPlayer(playerid, 5767, 1160.96, -1180.58, 70.4141, 250.0); // Building
-RemoveBuildingForPlayer(playerid, 5964, 1160.96, -1180.58, 70.4141, 250.0); // LOD
-CreateObject(19595, 1160.96, -1180.58, 70.4141, 0, 0, 0);
-CreateObject(19798, 1160.96, -1180.58, 20.4141, 0, 0, 0);

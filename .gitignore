@@ -29,3 +29,9 @@ __pycache__/
 misc/config.json
 *.mmd
 misc/logmarkov.cfg
+
+scriptfiles/geoip.db
+scriptfiles/geoip_city.db
+scriptfiles/SAfull.hmap
+scriptfiles/SAfull.jpg
+scriptfiles/Maps/
