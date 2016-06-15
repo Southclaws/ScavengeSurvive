@@ -1,44 +1,33 @@
-# Scavenge and Survive gamemode script for SA:MP
-[![GPL-V3](http://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/copyleft/gpl.html)[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)[![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=M7WJU7YN8PKGQ)
+# Scavenge and Survive
+[![GPL-V3](http://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/copyleft/gpl.html)[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Support the development of this mod by donating. I can put more time into adding new features!
 
+[![Donate](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
 
-## A PvP SA:MP server script built upon the SIF framework.
 
-The aim of the game is to find supplies such as tools or weapons to help you
-survive, either alone or in a group.
+## A PvP SA:MP server script
 
-The overall objective is to build a stable community and defend it from players
-with more hostile intentions.
+The aim of the game is to find supplies such as tools or weapons to help you survive, either alone or in a group.
 
-Items spawn around the map in various places categorised by type, rarity and
-location. Vehicles are rare and spawn with damaged engines or tires and will
-usually spawn with loot inside the trunk.
+The overall objective is to build a stable community and defend it from players with more hostile intentions.
 
-No gameplay mechanics require the use of commands. All gameplay has been built
-with an intuitive _interaction model_ in mind with only 5 major keys required
-to access the gamemode-specific features.
+Items spawn around the map in various places categorised by type, rarity and location. Vehicles are rare and spawn with damaged engines or tires and will usually spawn with loot inside the trunk.
+
+No gameplay mechanics require the use of commands. All gameplay has been built with an intuitive _interaction model_ in mind with only 5 major keys required to access the gamemode-specific features.
 
 
 ## Development
 
-The gamemode is written in a modular fashion, borrowing a lot of concepts from
-object-oriented programming. The "World" scripts are separated and can be
-completely replaced for a new map.
+The gamemode is written in a modular fashion, borrowing a lot of concepts from object-oriented programming. The "World" scripts are separated and can be completely replaced for a new map.
 
-I encourage people to play around with this code, create a new map and put loot
-spawns in it or completely mod it into a new gamemode, I would love to see what
-creations are made! Please publish all bug fixes in order to benefit everyone.
+I encourage people to play around with this code, create a new map and put loot spawns in it or completely mod it into a new gamemode, I would love to see what creations are made! Please publish all bug fixes in order to benefit everyone.
 
 ### Don't Be Selfish
 
-When you fix something, don't keep it to yourself. This is an open source
-project. An important part of open source is sharing, that's why this code is
-free of charge and available to all.
+When you fix something, don't keep it to yourself. This is an open source project. An important part of open source is sharing, that's why this code is free of charge and available to all.
 
-Please respect this. Feel free to keep your unique features private, just submit
-*all* fixes to the base code as pull requests or just email them to me.
+Please respect this. Feel free to keep your unique features private, just submit *all* fixes to the base code as pull requests or just email them to me.
 
 ### Builds
 
@@ -49,52 +38,72 @@ IMPORTANT: DO NOT USE THE BUILD SCRIPT YOURSELF! The reason for this is that you
 
 ## Setup
 
-1. **Dependencies**
+**What version do I use?**
 
- Ensure you have ALL the dependencies listed in the master script (the one you
- compile from!) each #include line has a link to the release page.
+If you're running a *public server* use the latest [release](https://github.com/Southclaw/ScavengeSurvive/releases). It *should* be stable but remember, this is a constantly evolving project and bugs always slip through!
 
-2. **"/scriptfiles/" directory**
+If you want to hack on the code and contribute, pull the latest commit.
 
- Rename "scriptfiles-folder" to just "scriptfiles".
- The reason this folder has this name is because I don't want my actual
- scriptfiles folder on the repo as it contains various things I don't wish to
- share (such as user accounts and data for the test server) this may change.
+### 1. Dependencies
 
- (However, the server will cleverly automatically create any missing
- files/folders when started so this repository folder isn't even required any
- more!)
+Ensure you have ALL the dependencies listed in the master script (the one you compile from!) each #include line has a link to the release page.
 
-3. **Compile!**
+### 2. `scriptfiles/` directory
 
- If you set up all the dependencies correctly, there should be *no*
- errors at all. If you have a problem compiling DON'T SUBMIT AN ISSUE HERE!
- that place is reserved for actual bugs.
+The server will automatically create any required directories such as `scriptfiles/data/`.
 
-4. **Set up plugins and filterscripts in your _"./server.cfg"_ file.**
+If you want to use the maps provided in the repository, extract `scriptfiles/Maps.zip` to `scriptfiles/`
 
- Note: The repo contains *many* filterscripts, most of these are just testing
- tools and utilities, there are only *2* filterscripts you need to run on a
- public server:
+### 3. Compile!
 
-        filterscripts object-loader rcon
-        plugins streamer sscanf CTime Whirlpool FileManager irc
+If you have a problem compiling **DON'T SUBMIT AN ISSUE HERE!** this is reserved for actual bugs.
 
-5. **Set up gamemode settings in your _"./scriptfiles/SSS/settings.ini"_ file**
+If you set up all the dependencies correctly, there should be *no* errors or warnings at all unless mentioned in the commit message.
 
- This is an INI file with game settings that will self-create if absent.
- Not all settings must be present, here is an example:
- ```
- player/max-tab-out-time=600000
- player/combat-log-window=30
- player/interior-entry=0
- autosave/autosave-toggle=1
- autosave/autosave-interval=60000
- vehicle-spawn/spawn-chance=5.0
- ```
+### 4. Set up plugins and filterscripts in your `server.cfg` file.
 
-6. **Enjoy!**
+Note: The repo contains *many* filterscripts, most of these are just testing tools and utilities, there are only *2* filterscripts you need to run on a public server:
+```
+filterscripts object-loader rcon
+plugins streamer sscanf CTime Whirlpool FileManager irc
+```
 
- ~~Do whatever you want with it, but keep my name on it :)~~
+### 5. Set up gamemode settings in your `scriptfiles/SSS/settings.ini` file
 
- My lax approach to licensing doesn't apply any more! I use GPL now so read the LICENSE file for usage rights etc. :)
+This is an INI file with game settings that will self-create if absent.
+
+Most of the settings should be self-explanitory. If the purpose isn't clear, look up the setting in the source code for more information.
+
+
+## LICENSE
+
+I don't expect you to read the entire license.
+
+Just ensure you understand this:
+
+You may copy, distribute and modify the software as long as you track changes/dates in source files.
+
+Any modifications to or software including (via compiler) GPL-licensed code must also be made available under the GPL along with build & install instructions.
+
+And leave all credits intact.
+
+### Source file extract
+
+This block is shown at the top of every source file to indicate it's under GPL:
+
+```
+Copyright (C) 2016 Barnaby "Southclaw" Keene
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+```
