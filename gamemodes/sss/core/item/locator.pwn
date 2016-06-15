@@ -159,11 +159,8 @@ hook OnPlayerUseItem(playerid, itemid)
 				ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
 				return 1;
 			}
-			
-			
-			ShowActionText(playerid, ls(playerid, "LOCATORDIS", 2000);
-	
 
+			ShowActionText(playerid, ls(playerid, "LOCATORDIS"), 2000);
 		}
 	}
 
