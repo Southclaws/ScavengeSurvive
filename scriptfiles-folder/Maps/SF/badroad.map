@@ -1,3 +1,0 @@
-0, 0, 350
-RemoveBuildingForPlayer(playerid, 10777, -1724.1953, 547.0859, 32.3203, 0.25);
-RemoveBuildingForPlayer(playerid, 11375, -1724.1953, 547.0859, 32.3203, 0.25);

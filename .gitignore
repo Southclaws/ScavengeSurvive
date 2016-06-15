@@ -9,7 +9,7 @@ start.bat
 crashinfo.txt
 
 # My private SS resources
-scriptfiles/
+private/
 gamemodes/sss/extensions/
 gamemodes/ScavengeSurvive.tar.gz
 
