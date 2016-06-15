@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#define DIRECTORY_LANGUAGES			DIRECTORY_MAIN"languages/"
+#define DIRECTORY_LANGUAGES			"languages/"
 #define MAX_LANGUAGE				(6)
 #define MAX_LANGUAGE_ENTRIES		(500)
 #define MAX_LANGUAGE_KEY_LEN		(12)
