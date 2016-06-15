@@ -125,6 +125,35 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			if(heldcalibre == NO_CALIBRE)
 				return 1;
 
+			if(GetItemWeaponFlags(heldtypeid) & WEAPON_FLAG_LIQUID_AMMO)
+			{
+				// heldcalibre represents a liquidtype
+
+				if(GetItemTypeLiquidContainerType(GetItemType(ammoitemid)) == -1)
+					return 1;
+
+				new
+					Float:canfuel,
+					Float:transfer;
+
+				canfuel = GetLiquidItemLiquidAmount(ammoitemid);
+
+				if(canfuel <= 0.0)
+				{
+					ShowActionText(playerid, ls(playerid, "EMPTY"), 3000);
+					return 1;
+				}
+
+				transfer = (canfuel - 1.0 < 0.0) ? canfuel : 1.0;
+				SetLiquidItemLiquidAmount(ammoitemid, canfuel - transfer);
+				SetItemWeaponItemMagAmmo(helditemid, GetItemWeaponItemMagAmmo(helditemid) + floatround(transfer) * 100);
+				SetItemWeaponItemAmmoItem(helditemid, item_GasCan);
+				UpdatePlayerWeaponItem(playerid);
+				// todo: remove dependency on itemtypes for liquid based weaps
+
+				return 1;
+			}
+
 			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
 				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);

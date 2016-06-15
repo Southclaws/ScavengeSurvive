@@ -1372,12 +1372,12 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_StunGun,			0,							-1,				0.0,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Screwdriver,		0,							-1,				0.24,			0,		0,		anim_Stab);
 	DefineItemTypeWeapon(item_Mailbox,			0,							-1,				0.0,			_:1.40,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_Sledgehammer,		0,							-1,				0.03,			_:2.9,			anim_Heavy);
-	DefineItemTypeWeapon(item_BigSword,			0,							-1,				0.39,			_:0.15,			anim_Heavy);
-	DefineItemTypeWeapon(item_Spatula,			0,							-1,				0.001,			0,				anim_Blunt);
-	DefineItemTypeWeapon(item_Pan,				0,							-1,				0.01,			_:1.05,			anim_Blunt);
-	DefineItemTypeWeapon(item_Knife2,			0,							-1,				0.29,			0,				anim_Stab);
-	DefineItemTypeWeapon(item_FryingPan,		0,							-1,				0.01,			_:1.06,			anim_Blunt);
+	DefineItemTypeWeapon(item_Sledgehammer,		0,							-1,				0.03,			_:2.9,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_BigSword,			0,							-1,				0.39,			_:0.15,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Spatula,			0,							-1,				0.001,			0,		0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Pan,				0,							-1,				0.01,			_:1.05,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Knife2,			0,							-1,				0.29,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_FryingPan,		0,							-1,				0.01,			_:1.06,	0,		anim_Blunt);
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
 	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		-1,				0.05,			20,		0);
 	DefineItemTypeWeapon(item_GolfClub,			WEAPON_GOLFCLUB,			-1,				0.07,			35,		0);
@@ -1387,7 +1387,7 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_Spade,			WEAPON_SHOVEL,				-1,				0.21,			40,		0);
 	DefineItemTypeWeapon(item_PoolCue,			WEAPON_POOLSTICK,			-1,				0.08,			37,		0);
 	DefineItemTypeWeapon(item_Sword,			WEAPON_KATANA,				-1,				0.44,			15,		0);
-	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			calibre_fuel,	0.93,			100,	8,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
+	DefineItemTypeWeapon(item_Chainsaw,			WEAPON_CHAINSAW,			liquid_Petrol,	0.93,			1000,	1,		-1,				WEAPON_FLAG_ASSISTED_FIRE | WEAPON_FLAG_LIQUID_AMMO);
 	DefineItemTypeWeapon(item_Dildo1,			WEAPON_DILDO,				-1,				0.01,			0,		0);
 	DefineItemTypeWeapon(item_Dildo2,			WEAPON_DILDO2,				-1,				0.01,			0,		0);
 	DefineItemTypeWeapon(item_Dildo3,			WEAPON_VIBRATOR,			-1,				0.01,			0,		0);
@@ -1413,12 +1413,12 @@ public OnScriptInit()
 	DefineItemTypeWeapon(item_SniperRifle,		WEAPON_SNIPER,				calibre_357,	864.0,			5,		1);
 	DefineItemTypeWeapon(item_RocketLauncher,	WEAPON_ROCKETLAUNCHER,		calibre_rpg,	0.0,			1,		0,		-1,				WEAPON_FLAG_ASSISTED_FIRE_ONCE | WEAPON_FLAG_ONLY_FIRE_AIMED);
 	DefineItemTypeWeapon(item_Heatseeker,		WEAPON_HEATSEEKER,			calibre_rpg,	0.0,			1,		0,		-1,				WEAPON_FLAG_ASSISTED_FIRE_ONCE | WEAPON_FLAG_ONLY_FIRE_AIMED);
-	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		calibre_fuel,	0.0,			100,	1,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
+	DefineItemTypeWeapon(item_Flamer,			WEAPON_FLAMETHROWER,		liquid_Petrol,	0.0,			100,	5,		-1,				WEAPON_FLAG_ASSISTED_FIRE | WEAPON_FLAG_LIQUID_AMMO);
 	DefineItemTypeWeapon(item_Minigun,			WEAPON_MINIGUN,				calibre_556,	853.0,			100,	1);
 	DefineItemTypeWeapon(item_RemoteBomb,		WEAPON_SATCHEL,				-1,				0.0,			1,		1);
 	DefineItemTypeWeapon(item_Detonator,		WEAPON_BOMB,				-1,				0.0,			1,		1);
-	DefineItemTypeWeapon(item_SprayPaint,		WEAPON_SPRAYCAN,			-1,				0.0,			100,	0);
-	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	-1,				0.0,			100,	0);
+	DefineItemTypeWeapon(item_SprayPaint,		WEAPON_SPRAYCAN,			-1,				0.0,			100,	0,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
+	DefineItemTypeWeapon(item_Extinguisher,		WEAPON_FIREEXTINGUISHER,	-1,				0.0,			100,	0,		-1,				WEAPON_FLAG_ASSISTED_FIRE);
 	DefineItemTypeWeapon(item_Camera,			WEAPON_CAMERA,				calibre_film,	1337.0,			24,		4);
 	DefineItemTypeWeapon(item_VehicleWeapon,	WEAPON_M4,					calibre_556,	750.0,			0,		1);
 	DefineItemTypeWeapon(item_AK47Rifle,		WEAPON_AK47,				calibre_762,	715.0,			30,		1);

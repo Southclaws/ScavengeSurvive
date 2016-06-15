@@ -33,7 +33,8 @@ enum (<<= 1)
 {
 	WEAPON_FLAG_ASSISTED_FIRE_ONCE = 1,	// fired once by server fire key event.
 	WEAPON_FLAG_ASSISTED_FIRE,			// fired repeatedly while key pressed.
-	WEAPON_FLAG_ONLY_FIRE_AIMED			// only run a fire event while RMB held.
+	WEAPON_FLAG_ONLY_FIRE_AIMED,		// only run a fire event while RMB held.
+	WEAPON_FLAG_LIQUID_AMMO				// calibre argument is a liquid type
 }
 
 enum E_ITEM_WEAPON_DATA
@@ -245,7 +246,12 @@ stock UpdatePlayerWeaponItem(playerid)
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
-		GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 1);
+		if(0 < itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize] < 1000)
+			GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
+
+		else
+			GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 1);
+
 		return 1;
 	}
 
@@ -413,7 +419,7 @@ timer _RepeatingFire[100](playerid)
 
 	if(k & KEY_FIRE)
 	{
-		magammo -= 5;
+		magammo -= itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_maxReserveMags];
 		SetItemWeaponItemMagAmmo(itemid, magammo);
 
 		if(magammo <= 0)
@@ -809,7 +815,11 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 		ammoname[MAX_AMMO_CALIBRE_NAME],
 		exname[ITM_MAX_TEXT];
 
-	GetCalibreName(itmw_Data[itemweaponid][itmw_calibre], calibrename);
+	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_LIQUID_AMMO)
+		calibrename = "Liquid";
+
+	else
+		GetCalibreName(itmw_Data[itemweaponid][itmw_calibre], calibrename);
 
 	if(ammotype == -1)
 		ammoname = "Unloaded";
