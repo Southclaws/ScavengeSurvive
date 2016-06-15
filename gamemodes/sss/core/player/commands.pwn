@@ -36,6 +36,7 @@ CMD:help(playerid, params[])
 		"\t"C_RED"/rules - list of server rules\n\n\
 		\t"C_GREEN"/admins - server staff\n\n\
 		\t"C_YELLOW"/motd - view the message of the day\n\n\
+		\t"C_YELLOW"/credits - awesome people\n\n\
 		\t"C_BLUE"/chatinfo - information on chat\n\n\
 		\t"C_ORANGE"/restartinfo - information on server restarts/item saving\n\n");
 
@@ -67,6 +68,18 @@ CMD:admins(playerid, params[])
 	for(new i; i < gTotalStaff; i++)
 		ChatMsg(playerid, BLUE, sprintf(" >  "C_ORANGE"%s", gStaffList[i]));
 	
+	return 1;
+}
+
+CMD:credits(playerid, params[])
+{
+	ChatMsg(playerid, YELLOW, " >  Scavenge and Survive is developed by Southclaw (southclaw.net) and the following contributors:");
+	ChatMsg(playerid, BLUE, " >  Y_Less - Tons of useful code, libraries and conversations");
+	ChatMsg(playerid, BLUE, " >  Viruxe - Lots of anti-cheat work");
+	ChatMsg(playerid, BLUE, " >  Kadaradam - Fishing, Trees and lots of bug fixes");
+	ChatMsg(playerid, BLUE, " >  Eidorian - French translation");
+	ChatMsg(playerid, BLUE, " >  Hiddos - Better water detection code");
+
 	return 1;
 }
 
