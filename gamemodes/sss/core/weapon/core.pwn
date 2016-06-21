@@ -741,6 +741,9 @@ _unload_DropHandler(playerid, itemid)
 	if(itmw_DropItemID[playerid] != INVALID_ITEM_ID)
 		return 0;
 
+	if(itmw_Data[weapontype][itmw_flags] & WEAPON_FLAG_LIQUID_AMMO)
+		return 0;
+
 	d:1:HANDLER("[OnPlayerDropItem] dropping item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 	itmw_DropItemID[playerid] = itemid;
 	itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, itemid);
