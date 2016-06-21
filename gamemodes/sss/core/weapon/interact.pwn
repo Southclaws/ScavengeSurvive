@@ -93,6 +93,9 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			if(heldcalibre == NO_CALIBRE)
 				return 1;
 
+			if(GetItemWeaponFlags(heldtypeid) & WEAPON_FLAG_LIQUID_AMMO)
+				return 1;
+
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
 				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
@@ -189,6 +192,9 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			new heldcalibre = GetAmmoTypeCalibre(heldtypeid);
 
 			if(heldcalibre == NO_CALIBRE)
+				return 1;
+
+			if(GetItemWeaponFlags(ammotypeid) & WEAPON_FLAG_LIQUID_AMMO)
 				return 1;
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
