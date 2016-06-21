@@ -116,6 +116,8 @@ stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOff
 	if(bag_TypeTotal == MAX_BAG_TYPE)
 		return -1;
 
+	SetItemTypeMaxArrayData(itemtype, 2);
+
 	bag_TypeData[bag_TypeTotal][bag_name]			= name;
 	bag_TypeData[bag_TypeTotal][bag_itemtype]		= itemtype;
 	bag_TypeData[bag_TypeTotal][bag_size]			= size;

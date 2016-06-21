@@ -39,6 +39,11 @@ hook OnPlayerConnect(playerid)
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_DoctorBag, 2);
+}
+
 hook OnItemCreate(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");

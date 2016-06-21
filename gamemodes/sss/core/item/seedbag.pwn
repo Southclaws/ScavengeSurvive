@@ -49,6 +49,11 @@ static
 	seed_Total;
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_SeedBag, 2);
+}
+
 stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:plantoffset)
 {
 	if(seed_Total >= MAX_SEED_TYPES)

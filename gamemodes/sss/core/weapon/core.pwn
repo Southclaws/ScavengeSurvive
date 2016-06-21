@@ -114,6 +114,8 @@ hook OnPlayerConnect(playerid)
 
 stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
 {
+	SetItemTypeMaxArrayData(itemtype, 4);
+
 	itmw_Data[itmw_Total][itmw_itemType] = itemtype;
 	itmw_Data[itmw_Total][itmw_baseWeapon] = baseweapon;
 	itmw_Data[itmw_Total][itmw_calibre] = calibre;

@@ -74,6 +74,8 @@ hook OnPlayerConnect(playerid)
 
 DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfect, destroyonend)
 {
+	SetItemTypeMaxArrayData(itemtype, 3);
+
 	food_Data[food_Total][food_itemType]		= itemtype;
 	food_Data[food_Total][food_maxBites]		= maxbites;
 	food_Data[food_Total][food_biteValue]		= bitevalue;

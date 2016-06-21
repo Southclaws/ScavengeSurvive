@@ -145,7 +145,7 @@ DefineSafeboxType(ItemType:itemtype, size)
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
 
-	SetItemTypeMaxArrayData(itemtype, 2);
+	SetItemTypeMaxArrayData(itemtype, 3);
 
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;

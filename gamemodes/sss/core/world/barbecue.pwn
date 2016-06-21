@@ -59,6 +59,11 @@ hook OnScriptInit()
 	HANDLER = debug_register_handler("BBQ");
 }
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Barbecue, 7);
+}
+
 hook OnItemCreate(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/world/barbecue.pwn");

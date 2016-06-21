@@ -29,6 +29,11 @@ static
 		gut_TargetItem[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Torso, MAX_PLAYER_NAME + 128 + 2);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/torso.pwn");

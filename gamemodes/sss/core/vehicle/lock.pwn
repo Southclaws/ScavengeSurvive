@@ -31,6 +31,11 @@ static
 	lock_DisableForPlayer	[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Key, 2);
+}
+
 hook OnVehicleCreated(vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnVehicleCreated] in /gamemodes/sss/core/vehicle/lock.pwn");

@@ -85,6 +85,8 @@ stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable
 		return -1;
 	}
 
+	SetItemTypeMaxArrayData(itemtype, 2);
+
 	liq_Data[liq_Total][liq_itemtype] = itemtype;
 	liq_Data[liq_Total][liq_capacity] = capacity;
 	liq_Data[liq_Total][liq_reusable] = reusable;

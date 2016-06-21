@@ -45,6 +45,11 @@ hook OnScriptInit()
 	HANDLER = debug_register_handler("plantpot");
 }
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_PlantPot, 5);
+}
+
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/plantpot.pwn");
