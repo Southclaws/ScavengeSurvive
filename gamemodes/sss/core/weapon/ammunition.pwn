@@ -75,6 +75,8 @@ stock DefineAmmoCalibre(name[], Float:bleedrate)
 
 stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size)
 {
+	SetItemTypeMaxArrayData(itemtype, 1);
+
 	ammo_Data[ammo_Total][ammo_itemType] = itemtype;
 	strcat(ammo_Data[ammo_Total][ammo_name], name, MAX_AMMO_CALIBRE_NAME);
 	ammo_Data[ammo_Total][ammo_calibre] = calibre;
