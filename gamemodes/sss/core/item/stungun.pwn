@@ -25,6 +25,11 @@
 #include <YSI\y_hooks>
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_StunGun, 1);
+}
+
 hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerMeleePlayer] in /gamemodes/sss/core/item/stungun.pwn");

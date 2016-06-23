@@ -34,6 +34,11 @@ static
 	pill_CurrentlyTaking[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Pills, 1);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/pills.pwn");

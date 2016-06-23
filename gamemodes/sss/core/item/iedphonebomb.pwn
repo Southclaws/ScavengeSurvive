@@ -27,6 +27,11 @@
 
 new iedp_SyncTick[MAX_PLAYERS];
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_IedPhoneBomb, 1);
+}
+
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/iedphonebomb.pwn");

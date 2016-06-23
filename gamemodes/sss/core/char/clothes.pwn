@@ -47,6 +47,11 @@ static
 			skin_CurrentlyUsing[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Clothes, 1);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/clothes.pwn");

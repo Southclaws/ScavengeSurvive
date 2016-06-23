@@ -47,6 +47,11 @@ new
 ==============================================================================*/
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_EmpProxMine, 1);
+}
+
 timer CreateEmpMineProx[5000](itemid)
 {
 	if(IsItemInWorld(itemid) != 1)

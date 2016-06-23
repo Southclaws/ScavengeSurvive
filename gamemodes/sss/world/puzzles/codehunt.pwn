@@ -67,6 +67,7 @@ hook OnGameModeInit()
 	print("\n[OnGameModeInit] Initialising 'CodeHunt'...");
 
 	LoadLockup_SF();
+	SetItemTypeMaxArrayData(item_CodePart, 1);
 }
 
 CreateCodeParts(Float:coords[][], size, keycode)

@@ -79,6 +79,8 @@ hook OnItemCreate(itemid)
 
 DefineHatItem(ItemType:itemtype)
 {
+	SetItemTypeMaxArrayData(itemtype, 1);
+
 	new id = Iter_Free(hat_Index);
 
 	if(id == -1)

@@ -25,6 +25,11 @@
 #include <YSI\y_hooks>
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Armour, 1);
+}
+
 hook OnItemCreate(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/armour.pwn");

@@ -30,6 +30,11 @@ static
 	tntm_ArmingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_TntTripMine, 1);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/tnttripmine.pwn");

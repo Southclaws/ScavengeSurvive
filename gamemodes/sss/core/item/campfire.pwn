@@ -25,6 +25,11 @@
 #include <YSI\y_hooks>
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_Campfire, 1);
+}
+
 hook OnItemCreateInWorld(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");

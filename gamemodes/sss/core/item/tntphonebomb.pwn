@@ -27,6 +27,11 @@
 
 new tntp_SyncTick[MAX_PLAYERS];
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_TntPhoneBomb, 1);
+}
+
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tntphonebomb.pwn");

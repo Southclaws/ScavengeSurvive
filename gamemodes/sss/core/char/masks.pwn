@@ -76,6 +76,8 @@ hook OnItemCreate(itemid)
 
 DefineMaskItem(ItemType:itemtype)
 {
+	SetItemTypeMaxArrayData(itemtype, 1);
+
 	new id = Iter_Free(mask_Index);
 
 	if(id == -1)
