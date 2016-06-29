@@ -526,7 +526,6 @@ new stock
 #include "sss/core/world/tent.pwn"
 #include "sss/core/world/campfire.pwn"
 #include "sss/core/world/emp.pwn"
-#include "sss/core/world/explosive.pwn"
 #include "sss/core/world/sign.pwn"
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
@@ -566,7 +565,6 @@ new stock
 // ITEMS
 #include "sss/core/item/food.pwn"
 #include "sss/core/item/firework.pwn"
-#include "sss/core/item/bottle.pwn"
 #include "sss/core/item/sign.pwn"
 #include "sss/core/item/shield.pwn"
 #include "sss/core/item/handcuffs.pwn"

@@ -172,6 +172,7 @@ stock SetItemToExplode(itemid)
 
 timer SetItemToExplodeDelay[delay](itemid, delay)
 {
+	#pragma unused delay
 	SetItemToExplode(itemid);
 }
 
@@ -289,7 +290,7 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
-				logf("[EXPLOSIVE] Time bomb placed by %p", playerid);
+				logf("[EXPLOSIVE] Time bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
 				exp_ArmTick[playerid] = GetTickCount();
 				defer SetItemToExplodeDelay(exp_ArmingItem[playerid], 5000);
 				ClearAnimations(playerid);
@@ -299,10 +300,10 @@ hook OnHoldActionFinish(playerid)
 			}
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
 			{
-				logf("[EXPLOSIVE] Prox bomb placed by %p", playerid);
-				SetItemExtraData(itemid, 1);
-				defer CreateTntMineProx(itemid);
+				logf("[EXPLOSIVE] Prox bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				defer CreateTntMineProx(exp_ArmingItem[playerid]);
 				ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
+				exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 			}
 		}
 	}
@@ -323,7 +324,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 timer CreateTntMineProx[5000](itemid)
 {
 	if(IsItemInWorld(itemid) != 1)
-		return -1;
+		return;
 
 	new
 		Float:x,
@@ -339,6 +340,8 @@ timer CreateTntMineProx[5000](itemid)
 	data[0] = EXP_STREAMER_AREA_IDENTIFIER;
 	data[1] = itemid;
 	Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
+
+	return;
 }
 
 hook OnPlayerEnterDynArea(playerid, areaid)
@@ -349,17 +352,26 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
-	if(data[0] == EXP_STREAMER_AREA_IDENTIFIER)
+	if(data[0] != EXP_STREAMER_AREA_IDENTIFIER)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsValidItem(data[1]))
 	{
-		if(IsValidItem(data[1]))
-		{
-			_exp_ProxTrigger(data[1]);
-			DestroyDynamicArea(areaid);
-			return Y_HOOKS_BREAK_RETURN_1;
-		}
+		printf("ERROR: Proximity mine streamer area contains invalid item id (%d)", data[1]);
+		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	return Y_HOOKS_CONTINUE_RETURN_0;
+	if(GetItemExtraData(data[1]) != areaid)
+	{
+		printf("ERROR: Proximity mine item area (%d) does not match triggered area (%d)", GetItemExtraData(data[1]), areaid);
+		return Y_HOOKS_CONTINUE_RETURN_0;
+	}
+
+	logf("[EXPLOSIVE] Prox bomb %d triggered by %p", data[1], playerid);
+	_exp_ProxTrigger(data[1]);
+	DestroyDynamicArea(areaid);
+
+	return Y_HOOKS_BREAK_RETURN_1;
 }
 
 _exp_ProxTrigger(itemid)
