@@ -60,10 +60,10 @@ static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
 	{12, 12.0, 1},	// EXP_SMALL
 	{11, 16.0, 2},	// EXP_MEDIUM
 	{06, 24.0, 3},	// EXP_LARGE
-	{00, 00.0, 0},	// EXP_INCEN
-	{00, 00.0, 0},	// EXP_THERM
-	{00, 00.0, 0},	// EXP_EMP
-	{00, 00.0, 0}	// EXP_SHRAP
+	{00, 15.0, 0},	// EXP_INCEN
+	{00, 15.0, 0},	// EXP_THERM
+	{00, 12.0, 0},	// EXP_EMP
+	{00, 18.0, 0}	// EXP_SHRAP
 };
 
 enum E_EXPLOSIVE_ITEM_DATA
