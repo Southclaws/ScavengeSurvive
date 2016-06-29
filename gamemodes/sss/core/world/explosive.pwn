@@ -24,8 +24,9 @@
 
 #include <YSI\y_hooks>
 
-#define MAX_EXPLOSIVE_ITEM		(16)
-#define INVALID_EXPLOSIVE_TYPE	(-1)
+#define MAX_EXPLOSIVE_ITEM				(16)
+#define INVALID_EXPLOSIVE_TYPE			(-1)
+#define EXP_STREAMER_AREA_IDENTIFIER	(700)
 
 enum EXP_TRIGGER
 {
@@ -110,6 +111,8 @@ stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:pre
 		return -1;
 	}
 
+	SetItemTypeMaxArrayData(itemtype, 1);
+
 	exp_Data[exp_Total][exp_itemtype] = itemtype;
 	exp_Data[exp_Total][exp_trigger] = trigger;
 	exp_Data[exp_Total][exp_preset] = preset;
@@ -121,6 +124,7 @@ stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:pre
 
 stock SetRadioExplosiveTriggerItem(ItemType:itemtype)
 {
+	SetItemTypeMaxArrayData(itemtype, 1);
 	exp_RadioTriggerItemType = itemtype;
 }
 
@@ -166,6 +170,11 @@ stock SetItemToExplode(itemid)
 	return 0;
 }
 
+timer SetItemToExplodeDelay[delay](itemid, delay)
+{
+	SetItemToExplode(itemid);
+}
+
 
 /*==============================================================================
 
@@ -181,6 +190,15 @@ hook OnPlayerUseItem(playerid, itemid)
 	if(exp_ItemTypeExplosive[itemtype] != -1)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
+		{
+			PlayerDropItem(playerid);
+			exp_ArmingItem[playerid] = itemid;
+
+			StartHoldAction(playerid, 1000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
+		}
+		else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
 		{
 			PlayerDropItem(playerid);
 			exp_ArmingItem[playerid] = itemid;
@@ -271,13 +289,20 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
-				logf("[EXPLOSIVE] TNT TIMEBOMB placed by %p", playerid);
+				logf("[EXPLOSIVE] Time bomb placed by %p", playerid);
 				exp_ArmTick[playerid] = GetTickCount();
-				defer TimeBombExplode(exp_ArmingItem[playerid]);
+				defer SetItemToExplodeDelay(exp_ArmingItem[playerid], 5000);
 				ClearAnimations(playerid);
 				ShowActionText(playerid, ls(playerid, "ARMEDBOMB5S"), 3000);
 
 				exp_ArmingItem[playerid] = INVALID_ITEM_ID;
+			}
+			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
+			{
+				logf("[EXPLOSIVE] Prox bomb placed by %p", playerid);
+				SetItemExtraData(itemid, 1);
+				defer CreateTntMineProx(itemid);
+				ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
 			}
 		}
 	}
@@ -288,13 +313,65 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(RELEASED(16) && IsValidItem(exp_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);
+		CancelPlayerMovement(playerid);
 		exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 	}
 }
 
-timer TimeBombExplode[5000](itemid)
+// Proximity Mine
+
+timer CreateTntMineProx[5000](itemid)
 {
-	SetItemToExplode(itemid);
+	if(IsItemInWorld(itemid) != 1)
+		return -1;
+
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		areaid,
+		data[2];
+
+	GetItemPos(itemid, x, y, z);
+
+	areaid = CreateDynamicSphere(x, y, z, 6.0);
+	SetItemExtraData(itemid, areaid);
+	data[0] = EXP_STREAMER_AREA_IDENTIFIER;
+	data[1] = itemid;
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
+}
+
+hook OnPlayerEnterDynArea(playerid, areaid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerEnterDynArea] in /gamemodes/sss/core/item/tntproxmine.pwn");
+
+	new data[2];
+
+	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
+
+	if(data[0] == EXP_STREAMER_AREA_IDENTIFIER)
+	{
+		if(IsValidItem(data[1]))
+		{
+			_exp_ProxTrigger(data[1]);
+			DestroyDynamicArea(areaid);
+			return Y_HOOKS_BREAK_RETURN_1;
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_exp_ProxTrigger(itemid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetItemPos(itemid, x, y, z);
+	PlaySoundForAll(6400, x, y, z);
+	defer SetItemToExplodeDelay(itemid, 1000);
 }
 
 
