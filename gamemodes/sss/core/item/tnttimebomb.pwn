@@ -29,6 +29,11 @@ static
 	tntt_ArmingItem[MAX_PLAYERS];
 
 
+hook OnGameModeInit()
+{
+	SetItemTypeMaxArrayData(item_TntTimebomb, 1);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/tnttimebomb.pwn");
