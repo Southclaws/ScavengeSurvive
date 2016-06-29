@@ -188,7 +188,7 @@ hook OnPlayerUseItem(playerid, itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(exp_ItemTypeExplosive[itemtype] != -1)
+	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 		{
@@ -200,6 +200,15 @@ hook OnPlayerUseItem(playerid, itemid)
 			ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
 		}
 		else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
+		{
+			PlayerDropItem(playerid);
+			exp_ArmingItem[playerid] = itemid;
+
+			StartHoldAction(playerid, 1000);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
+		}
+		else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 		{
 			PlayerDropItem(playerid);
 			exp_ArmingItem[playerid] = itemid;
@@ -257,8 +266,6 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tntphonebomb.pwn");
-
 	if(GetItemType(itemid) != exp_RadioTriggerItemType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
@@ -286,11 +293,12 @@ hook OnHoldActionFinish(playerid)
 	{
 		new ItemType:itemtype = GetItemType(exp_ArmingItem[playerid]);
 
-		if(exp_ItemTypeExplosive[itemtype] != -1)
+		if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
 				logf("[EXPLOSIVE] Time bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+
 				exp_ArmTick[playerid] = GetTickCount();
 				defer SetItemToExplodeDelay(exp_ArmingItem[playerid], 5000);
 				ClearAnimations(playerid);
@@ -301,8 +309,20 @@ hook OnHoldActionFinish(playerid)
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
 			{
 				logf("[EXPLOSIVE] Prox bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+
 				defer CreateTntMineProx(exp_ArmingItem[playerid]);
 				ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
+
+				exp_ArmingItem[playerid] = INVALID_ITEM_ID;
+			}
+			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
+			{
+				logf("[EXPLOSIVE] Trip bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+
+				SetItemExtraData(exp_ArmingItem[playerid], 1);
+				ClearAnimations(playerid);
+				ShowActionText(playerid, ls(playerid, "ARMEDBOMB"), 3000);
+
 				exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 			}
 		}
@@ -346,8 +366,6 @@ timer CreateTntMineProx[5000](itemid)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerEnterDynArea] in /gamemodes/sss/core/item/tntproxmine.pwn");
-
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
@@ -384,6 +402,116 @@ _exp_ProxTrigger(itemid)
 	GetItemPos(itemid, x, y, z);
 	PlaySoundForAll(6400, x, y, z);
 	defer SetItemToExplodeDelay(itemid, 1000);
+}
+
+// Trip mine
+
+static exp_ContainerOption[MAX_PLAYERS];
+
+hook OnPlayerViewCntOpt(playerid, containerid)
+{
+	new
+		slot,
+		itemid,
+		ItemType:itemtype;
+
+	slot = GetPlayerContainerSlot(playerid);
+	itemid = GetContainerSlotItem(containerid, slot);
+	itemtype = GetItemType(itemid);
+
+	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
+	{
+		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
+		{
+			if(GetItemExtraData(itemid) == 0)
+				exp_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
+
+			else
+				exp_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerSelectCntOpt(playerid, containerid, option)
+{
+	new
+		slot,
+		itemid,
+		ItemType:itemtype;
+
+	slot = GetPlayerContainerSlot(playerid);
+	itemid = GetContainerSlotItem(containerid, slot);
+	itemtype = GetItemType(itemid);
+
+	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
+	{
+		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
+		{
+			if(option == exp_ContainerOption[playerid])
+			{
+				if(GetItemExtraData(itemid) == 0)
+				{
+					DisplayContainerInventory(playerid, containerid);
+					SetItemExtraData(itemid, 1);
+				}
+				else
+				{
+					SetItemExtraData(itemid, 0);
+					DisplayContainerInventory(playerid, containerid);
+				}
+			}
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerPickUpItem(playerid, itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
+	{
+		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
+		{
+			if(GetItemExtraData(itemid) == 1)
+			{
+				logf("[EXPLOSIVE] Trip bomb %d triggered by %p", itemid, playerid);
+				SetItemToExplode(itemid);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerOpenContainer(playerid, containerid)
+{
+	new
+		itemid,
+		ItemType:itemtype;
+
+	for(new i, j = GetContainerItemCount(containerid); i < j; i++)
+	{
+		itemid = GetContainerSlotItem(containerid, i);
+		itemtype = GetItemType(itemid);
+
+		if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
+		{
+			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
+			{
+				if(GetItemExtraData(itemid) == 1)
+				{
+					SetItemToExplode(itemid);
+				}
+			}
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 

@@ -46,15 +46,6 @@ hook OnPlayerUseItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/iedtripmine.pwn");
 
-	if(GetItemType(itemid) == item_IedTripMine)
-	{
-		PlayerDropItem(playerid);
-		iedm_ArmingItem[playerid] = itemid;
-
-		StartHoldAction(playerid, 1000);
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-		ShowActionText(playerid, ls(playerid, "ARMINGBOMB"));
-	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -63,16 +54,6 @@ hook OnHoldActionFinish(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/iedtripmine.pwn");
 
-	if(IsValidItem(iedm_ArmingItem[playerid]))
-	{
-		SetItemExtraData(iedm_ArmingItem[playerid], 1);
-		ClearAnimations(playerid);
-		ShowActionText(playerid, ls(playerid, "ARMEDBOMB"), 3000);
-
-		iedm_ArmingItem[playerid] = INVALID_ITEM_ID;
-
-		return Y_HOOKS_BREAK_RETURN_1;
-	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -88,94 +69,3 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/item/iedtripmine.pwn");
-
-	if(GetItemType(itemid) == item_IedTripMine)
-	{
-		if(GetItemExtraData(itemid) == 1)
-		{
-			SetItemToExplode(itemid, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
-
-			return Y_HOOKS_BREAK_RETURN_1;
-		}
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerOpenContainer(playerid, containerid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/item/iedtripmine.pwn");
-
-	for(new i, j = GetContainerSize(containerid); i < j; i++)
-	{
-		new itemid = GetContainerSlotItem(containerid, i);
-
-		if(GetItemType(itemid) == item_IedTripMine)
-		{
-			if(GetItemExtraData(itemid) == 1)
-			{
-				SetItemToExplode(itemid, 11, 8.0, EXPLOSION_PRESET_STRUCTURAL, 1);
-				RemoveItemFromContainer(containerid, i);
-			}
-		}
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerViewCntOpt(playerid, containerid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerViewCntOpt] in /gamemodes/sss/core/item/iedtripmine.pwn");
-
-	new
-		slot,
-		itemid;
-
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
-
-	if(GetItemType(itemid) == item_IedTripMine)
-	{
-		if(GetItemExtraData(itemid) == 0)
-			iedm_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
-
-		else
-			iedm_ContainerOption[playerid] = AddContainerOption(playerid, "Disarm Trip Mine");
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerSelectCntOpt(playerid, containerid, option)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerSelectCntOpt] in /gamemodes/sss/core/item/iedtripmine.pwn");
-
-	new
-		slot,
-		itemid;
-
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
-
-	if(GetItemType(itemid) == item_IedTripMine)
-	{
-		if(option == iedm_ContainerOption[playerid])
-		{
-			if(GetItemExtraData(itemid) == 0)
-			{
-				DisplayContainerInventory(playerid, containerid);
-				SetItemExtraData(itemid, 1);
-			}
-			else
-			{
-				SetItemExtraData(itemid, 0);
-				DisplayContainerInventory(playerid, containerid);
-			}
-		}
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
