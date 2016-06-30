@@ -26,25 +26,22 @@
 
 
 static
-	Text:VersionInfo = Text:INVALID_TEXT_DRAW,
+	PlayerText:VersionInfo[MAX_PLAYERS] = PlayerText:INVALID_TEXT_DRAW,
 	bool:ShowVersionInfo[MAX_PLAYERS];
 
-
-hook OnGameModeInit()
-{
-	VersionInfo					=TextDrawCreate(638.000000, 2.000000, "southclaw.net");
-	TextDrawAlignment			(VersionInfo, 3);
-	TextDrawBackgroundColor		(VersionInfo, 255);
-	TextDrawFont				(VersionInfo, 1);
-	TextDrawLetterSize			(VersionInfo, 0.240000, 1.000000);
-	TextDrawColor				(VersionInfo, -1);
-	TextDrawSetOutline			(VersionInfo, 1);
-	TextDrawSetProportional		(VersionInfo, 1);
-}
 
 hook OnPlayerConnect(playerid)
 {
 	ShowVersionInfo[playerid] = true;
+
+	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 638.000000, 2.000000, "southclaw.net");
+	PlayerTextDrawAlignment			(playerid, VersionInfo[playerid], 3);
+	PlayerTextDrawBackgroundColor	(playerid, VersionInfo[playerid], 255);
+	PlayerTextDrawFont				(playerid, VersionInfo[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, VersionInfo[playerid], 0.240000, 1.000000);
+	PlayerTextDrawColor				(playerid, VersionInfo[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, VersionInfo[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, VersionInfo[playerid], 1);
 }
 
 ptask UpdateVersionString[1000](playerid)
@@ -65,10 +62,10 @@ ptask UpdateVersionString[1000](playerid)
 		DO NOT REMOVE SOUTHCLAW'S WEBSITE LINK.
 		Write your own website into the settings.ini file.
 	*/
-	format(string, sizeof(string), "%sBuild %d - Southclaw.net - %s ~n~ Tick: %d", colour, gBuildNumber, gWebsiteURL, tickrate);
+	format(string, sizeof(string), "%sBuild %d - Southclaw.net - %s ~n~ Tick: %d Ping: %d Pkt Loss: %.2f", colour, gBuildNumber, gWebsiteURL, tickrate, GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
 
-	TextDrawSetString(VersionInfo, string);
-	TextDrawShowForPlayer(playerid, VersionInfo);
+	PlayerTextDrawSetString(playerid, VersionInfo[playerid], string);
+	PlayerTextDrawShow(playerid, VersionInfo[playerid]);
 
 	return;
 }
@@ -78,8 +75,8 @@ stock ToggleVersionInfo(playerid, bool:toggle)
 	ShowVersionInfo[playerid] = toggle;
 
 	if(toggle)
-		TextDrawShowForPlayer(playerid, VersionInfo);
+		PlayerTextDrawShow(playerid, VersionInfo[playerid]);
 
 	else
-		TextDrawHideForPlayer(playerid, VersionInfo);
+		PlayerTextDrawHide(playerid, VersionInfo[playerid]);
 }

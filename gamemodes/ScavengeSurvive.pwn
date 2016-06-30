@@ -406,7 +406,6 @@ new stock
 #include "sss/core/server/info-message.pwn"
 #include "sss/core/server/language.pwn"
 #include "sss/core/player/language.pwn"
-#include "sss/core/server/version.pwn"
 
 /*
 	PARENT SYSTEMS
@@ -516,6 +515,7 @@ new stock
 #include "sss/core/ui/watch.pwn"
 #include "sss/core/ui/keypad.pwn"
 #include "sss/core/ui/body-preview.pwn"
+#include "sss/core/ui/status.pwn"
 
 // WORLD ENTITIES
 #include "sss/core/world/fuel.pwn"
