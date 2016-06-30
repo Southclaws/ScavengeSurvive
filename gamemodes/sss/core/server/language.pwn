@@ -413,7 +413,7 @@ static stock _GetLanguageString(languageid, key[], result[])
 	// dumb search for now, will probably replace with bisect
 	for(index = start; index < end; index++)
 	{
-		if(!strcmp(lang_Entries[languageid][index][lang_key], key))
+		if(!strcmp(lang_Entries[languageid][index][lang_key], key, false, MAX_LANGUAGE_ENTRY_LENGTH))
 			break;
 	}
 

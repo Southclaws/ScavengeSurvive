@@ -22,6 +22,28 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
+static
+PlayerText:	ToolTip[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+			ToolTipText[MAX_PLAYERS][512];
+
+
+hook OnPlayerConnect(playerid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/tool-tips.pwn");
+
+	ToolTip[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
+	PlayerTextDrawAlignment			(playerid, ToolTip[playerid], 3);
+	PlayerTextDrawBackgroundColor	(playerid, ToolTip[playerid], 255);
+	PlayerTextDrawFont				(playerid, ToolTip[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ToolTip[playerid], 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, ToolTip[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, ToolTip[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ToolTip[playerid], 1);
+}
+
 ptask ToolTipUpdate[1000](playerid)
 {
 	if(!IsPlayerSpawned(playerid))
@@ -278,4 +300,77 @@ hook OnPlayerOpenContainer(playerid, containerid)
 	HidePlayerToolTip(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+stock ShowPlayerToolTip(playerid)
+{
+	PlayerTextDrawSetString(playerid, ToolTip[playerid], ToolTipText[playerid]);
+	PlayerTextDrawShow(playerid, ToolTip[playerid]);
+}
+
+stock HidePlayerToolTip(playerid)
+{
+	PlayerTextDrawHide(playerid, ToolTip[playerid]);
+}
+
+stock ClearToolTipText(playerid)
+{
+	ToolTipText[playerid][0] = EOS;
+}
+
+stock AddToolTipText(playerid, key[], use[])
+{
+	new tmp[128];
+	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
+	strcat(ToolTipText[playerid], tmp);
+}
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/player/tool-tips.pwn");
+
+	if(!IsPlayerToolTipsOn(playerid))
+		return 1;
+
+	if(newstate != PLAYER_STATE_DRIVER)
+		return 1;
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
+		return 1;
+
+	_ShowRepairTip(playerid, vehicleid);
+
+	return 1;
+}
+
+_ShowRepairTip(playerid, vehicleid)
+{
+	new Float:health;
+
+	GetVehicleHealth(vehicleid, health);
+
+	if(health <= VEHICLE_HEALTH_CHUNK_2)
+	{
+		ShowHelpTip(playerid, "This vehicle is very broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		return;
+	}
+	else if(health <= VEHICLE_HEALTH_CHUNK_3)
+	{
+		ShowHelpTip(playerid, "This vehicle is broken! To fix, equip a screwdriver and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		return;
+	}
+	else if(health <= VEHICLE_HEALTH_CHUNK_4)
+	{
+		ShowHelpTip(playerid, "This vehicle is a bit broken! To fix, equip a hammer and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		return;
+	}
+	else if(health <= VEHICLE_HEALTH_MAX)
+	{
+		ShowHelpTip(playerid, "This vehicle is slightly broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		return;
+	}
+
+	return;
 }

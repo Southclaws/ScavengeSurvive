@@ -64,3 +64,38 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawBoxColor			(playerid, HelpTipText[playerid], 0);
 	PlayerTextDrawTextSize			(playerid, HelpTipText[playerid], 520.000000, 0.000000);
 }
+
+hook OnPlayerPickUpItem(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+
+	if(IsPlayerToolTipsOn(playerid))
+	{
+		new
+			itemname[ITM_MAX_NAME],
+			itemtipkey[12],
+			str[288];
+
+		GetItemTypeUniqueName(GetItemType(itemid), itemname);
+
+		if(strlen(itemname) > 9)
+			itemname[9] = EOS;
+
+		format(itemtipkey, sizeof(itemtipkey), "%s_T", itemname);
+		itemtipkey[11] = EOS;
+		
+		format(str, sizeof(str), "%s~n~~n~~b~Type /tooltips to toggle these messages", ls(playerid, itemtipkey));
+
+		ShowHelpTip(playerid, str, 20000);
+	}
+}
+
+hook OnPlayerDropItem(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+
+	if(IsPlayerToolTipsOn(playerid))
+		HideHelpTip(playerid);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
