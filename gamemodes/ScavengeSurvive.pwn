@@ -472,7 +472,6 @@ new stock
 #include "sss/core/player/afk-check.pwn"
 #include "sss/core/player/alt-tab-check.pwn"
 #include "sss/core/player/disallow-actions.pwn"
-#include "sss/core/player/tool-tips.pwn"
 #include "sss/core/player/whitelist.pwn"
 #include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
@@ -510,7 +509,7 @@ new stock
 
 // UI
 #include "sss/core/ui/radio.pwn"
-#include "sss/core/ui/tip-text.pwn"
+#include "sss/core/ui/tool-tip.pwn"
 #include "sss/core/ui/key-actions.pwn"
 #include "sss/core/ui/watch.pwn"
 #include "sss/core/ui/keypad.pwn"

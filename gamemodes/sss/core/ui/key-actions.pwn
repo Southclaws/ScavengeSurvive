@@ -26,22 +26,22 @@
 
 
 static
-PlayerText:	ToolTip[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
-			ToolTipText[MAX_PLAYERS][512];
+PlayerText:	KeyActions[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
+			KeyActionsText[MAX_PLAYERS][512];
 
 
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/tool-tips.pwn");
 
-	ToolTip[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
-	PlayerTextDrawAlignment			(playerid, ToolTip[playerid], 3);
-	PlayerTextDrawBackgroundColor	(playerid, ToolTip[playerid], 255);
-	PlayerTextDrawFont				(playerid, ToolTip[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, ToolTip[playerid], 0.300000, 1.499999);
-	PlayerTextDrawColor				(playerid, ToolTip[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, ToolTip[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, ToolTip[playerid], 1);
+	KeyActions[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
+	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], 3);
+	PlayerTextDrawBackgroundColor	(playerid, KeyActions[playerid], 255);
+	PlayerTextDrawFont				(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, KeyActions[playerid], 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, KeyActions[playerid], -1);
+	PlayerTextDrawSetOutline		(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], 1);
 }
 
 ptask ToolTipUpdate[1000](playerid)
@@ -304,25 +304,25 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 stock ShowPlayerToolTip(playerid)
 {
-	PlayerTextDrawSetString(playerid, ToolTip[playerid], ToolTipText[playerid]);
-	PlayerTextDrawShow(playerid, ToolTip[playerid]);
+	PlayerTextDrawSetString(playerid, KeyActions[playerid], KeyActionsText[playerid]);
+	PlayerTextDrawShow(playerid, KeyActions[playerid]);
 }
 
 stock HidePlayerToolTip(playerid)
 {
-	PlayerTextDrawHide(playerid, ToolTip[playerid]);
+	PlayerTextDrawHide(playerid, KeyActions[playerid]);
 }
 
 stock ClearToolTipText(playerid)
 {
-	ToolTipText[playerid][0] = EOS;
+	KeyActionsText[playerid][0] = EOS;
 }
 
 stock AddToolTipText(playerid, key[], use[])
 {
 	new tmp[128];
 	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
-	strcat(ToolTipText[playerid], tmp);
+	strcat(KeyActionsText[playerid], tmp);
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)

@@ -26,12 +26,12 @@
 
 
 static
-PlayerText:	HelpTipText[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
+PlayerText:	ToolTipText[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 ShowHelpTip(playerid, text[], time = 0)
 {
-	PlayerTextDrawSetString(playerid, HelpTipText[playerid], text);
-	PlayerTextDrawShow(playerid, HelpTipText[playerid]);
+	PlayerTextDrawSetString(playerid, ToolTipText[playerid], text);
+	PlayerTextDrawShow(playerid, ToolTipText[playerid]);
 
 	if(time > 0)
 		defer HideHelpTip_Delay(playerid, time);
@@ -45,24 +45,24 @@ timer HideHelpTip_Delay[time](playerid, time)
 
 HideHelpTip(playerid)
 {
-	PlayerTextDrawHide(playerid, HelpTipText[playerid]);
+	PlayerTextDrawHide(playerid, ToolTipText[playerid]);
 }
 
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/tip-text.pwn");
 
-	HelpTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
-	PlayerTextDrawBackgroundColor	(playerid, HelpTipText[playerid], 255);
-	PlayerTextDrawFont				(playerid, HelpTipText[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, HelpTipText[playerid], 0.300000, 1.499999);
-	PlayerTextDrawColor				(playerid, HelpTipText[playerid], 16711935);
-	PlayerTextDrawSetOutline		(playerid, HelpTipText[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, HelpTipText[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, HelpTipText[playerid], 0);
-	PlayerTextDrawUseBox			(playerid, HelpTipText[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, HelpTipText[playerid], 0);
-	PlayerTextDrawTextSize			(playerid, HelpTipText[playerid], 520.000000, 0.000000);
+	ToolTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
+	PlayerTextDrawBackgroundColor	(playerid, ToolTipText[playerid], 255);
+	PlayerTextDrawFont				(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawLetterSize		(playerid, ToolTipText[playerid], 0.300000, 1.499999);
+	PlayerTextDrawColor				(playerid, ToolTipText[playerid], 16711935);
+	PlayerTextDrawSetOutline		(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawSetShadow			(playerid, ToolTipText[playerid], 0);
+	PlayerTextDrawUseBox			(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawBoxColor			(playerid, ToolTipText[playerid], 0);
+	PlayerTextDrawTextSize			(playerid, ToolTipText[playerid], 520.000000, 0.000000);
 }
 
 hook OnPlayerPickUpItem(playerid, itemid)
