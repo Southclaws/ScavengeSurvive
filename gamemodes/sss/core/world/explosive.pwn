@@ -589,4 +589,38 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 ==============================================================================*/
 
 
-//
+// exp_ItemTypeExplosive[itemtype]
+stock GetItemTypeExplosiveType(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return INVALID_EXPLOSIVE_TYPE;
+
+	return exp_ItemTypeExplosive[itemtype];
+}
+
+// exp_itemtype
+stock ItemType:GetExplosiveTypeItemtype(explosivetype)
+{
+	if(!(0 <= explosivetype < exp_Total))
+		return INVALID_ITEM_TYPE;
+
+	return exp_Data[explosivetype][exp_itemtype];
+}
+
+// exp_trigger
+stock EXP_TRIGGER:GetExplosiveTypeTrigger(explosivetype)
+{
+	if(!(0 <= explosivetype < exp_Total))
+		return EXP_TRIGGER:-1;
+
+	return exp_Data[explosivetype][exp_trigger];
+}
+
+// exp_preset
+stock EXP_PRESET:GetExplosiveTypePreset(explosivetype)
+{
+	if(!(0 <= explosivetype < exp_Total))
+		return EXP_PRESET:-1;
+
+	return exp_Data[explosivetype][exp_preset];
+}

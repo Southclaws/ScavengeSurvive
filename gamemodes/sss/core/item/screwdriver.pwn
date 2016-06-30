@@ -42,21 +42,25 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
-		new ItemType:itemtype = GetItemType(withitemid);
+		new
+			ItemType:itemtype,
+			explosiontype;
 
-		if(
-			itemtype == item_TntPhoneBomb ||
-			itemtype == item_TntTripMine ||
-			itemtype == item_IedPhoneBomb ||
-			itemtype == item_IedTripMine ||
-			itemtype == item_EmpPhoneBomb ||
-			itemtype == item_EmpTripMine)
+		itemtype = GetItemType(withitemid);
+		explosiontype = GetItemTypeExplosiveType(itemtype);
+
+		if(explosiontype != INVALID_EXPLOSIVE_TYPE)
 		{
-			if(GetItemExtraData(withitemid) == 1)
+			new EXP_TRIGGER:trigger = GetExplosiveTypeTrigger(explosiontype);
+
+			if(trigger == RADIO || trigger == MOTION)
 			{
-				StartHoldAction(playerid, 2000);
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				scr_TargetItem[playerid] = withitemid;
+				if(GetItemExtraData(withitemid) == 1)
+				{
+					StartHoldAction(playerid, 2000);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+					scr_TargetItem[playerid] = withitemid;
+				}
 			}
 		}
 	}
@@ -86,6 +90,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		ClearAnimations(playerid);
 		SetItemExtraData(scr_TargetItem[playerid], 0);
+		ShowActionText(playerid, ls(playerid, "DISARMEDBOM"), 5000);
 		scr_TargetItem[playerid] = INVALID_ITEM_ID;
 
 		return Y_HOOKS_BREAK_RETURN_1;
