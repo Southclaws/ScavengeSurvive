@@ -31,7 +31,7 @@ static
 	lock_DisableForPlayer	[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_Key, 2);
 }

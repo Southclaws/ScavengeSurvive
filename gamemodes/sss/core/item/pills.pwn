@@ -34,7 +34,7 @@ static
 	pill_CurrentlyTaking[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_Pills, 1);
 }

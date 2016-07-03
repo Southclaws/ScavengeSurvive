@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_Locator, 1);
 }

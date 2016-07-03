@@ -57,10 +57,7 @@ hook OnScriptInit()
 	print("\n[OnScriptInit] Initialising 'Barbecue'...");
 
 	HANDLER = debug_register_handler("BBQ");
-}
 
-hook OnGameModeInit()
-{
 	SetItemTypeMaxArrayData(item_Barbecue, 7);
 }
 

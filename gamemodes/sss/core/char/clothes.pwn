@@ -47,7 +47,7 @@ static
 			skin_CurrentlyUsing[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_Clothes, 1);
 }

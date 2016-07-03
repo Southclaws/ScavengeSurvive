@@ -29,7 +29,7 @@ static
 		gut_TargetItem[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_Torso, MAX_PLAYER_NAME + 128 + 2);
 }

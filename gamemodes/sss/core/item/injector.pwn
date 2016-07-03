@@ -36,7 +36,7 @@ static
 	inj_CurrentTarget[MAX_PLAYERS];
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_AutoInjec, 1);
 }

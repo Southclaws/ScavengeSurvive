@@ -49,7 +49,7 @@ static
 	seed_Total;
 
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_SeedBag, 2);
 }

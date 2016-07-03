@@ -43,10 +43,7 @@ hook OnScriptInit()
 	print("\n[OnScriptInit] Initialising 'PlantPot'...");
 
 	HANDLER = debug_register_handler("plantpot");
-}
 
-hook OnGameModeInit()
-{
 	SetItemTypeMaxArrayData(item_PlantPot, 5);
 }
 

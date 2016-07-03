@@ -39,7 +39,7 @@ hook OnPlayerConnect(playerid)
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
-hook OnGameModeInit()
+hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_DoctorBag, 2);
 }
