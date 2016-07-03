@@ -171,6 +171,12 @@ public OnPlayerDisconnect(playerid, reason)
 
 timer LoadAccountDelay[5000](playerid)
 {
+	if(!IsPlayerConnected(playerid))
+	{
+		print("[LoadAccountDelay] WARNING: Player not connected any more.");
+		return;
+	}
+
 	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
 	{
 		defer LoadAccountDelay(playerid);
