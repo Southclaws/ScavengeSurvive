@@ -14,19 +14,19 @@ with io.open("build-config.json") as f:
 
 COMPILER_PATH = config["compiler_path"]
 
-if ret == 0:
-	ret = subprocess.call([COMPILER_PATH, "-Dgamemodes/", "ScavengeSurvive.pwn", "-;+", "-(+", "-\\)+", "-d3",])
-else:
+if ret > 0:
 	print("git error")
 
+while True:
+	ret = subprocess.call([COMPILER_PATH, "-Dgamemodes/", "ScavengeSurvive.pwn", "-;+", "-(+", "-\\)+", "-d3",])
+	if ret > 0:
+		print("compilation error")
+		break
 
-if ret == 0:
-	subprocess.call(["python.exe", "misc/gentrees.py"])
-else:
-	print("tree generation error")
+	ret = subprocess.call(["python.exe", "misc/gentrees.py"])
+	if ret > 0:
+		print("tree generation error")
 
+	ret = subprocess.call(["samp-server.exe"])
 
-if ret == 0:
-	subprocess.call(["samp-server.exe"])
-else:
-	print("compilation error")
+	print("samp-server runtime error")
