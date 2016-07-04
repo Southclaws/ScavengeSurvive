@@ -55,17 +55,6 @@ Float:		exp_size,
 			exp_defdmg
 }
 
-static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
-{
-	{12, 12.0, 1},	// EXP_SMALL
-	{11, 16.0, 2},	// EXP_MEDIUM
-	{06, 24.0, 3},	// EXP_LARGE
-	{00, 15.0, 0},	// EXP_INCEN
-	{00, 15.0, 0},	// EXP_THERM
-	{00, 12.0, 0},	// EXP_EMP
-	{00, 18.0, 0}	// EXP_SHRAP
-};
-
 enum E_EXPLOSIVE_ITEM_DATA
 {
 ItemType:	exp_itemtype,
@@ -73,6 +62,17 @@ EXP_TRIGGER:exp_trigger,
 EXP_PRESET:	exp_preset
 }
 
+
+static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
+{
+	{12, 3.0, 1},	// EXP_SMALL
+	{00, 8.0, 2},	// EXP_MEDIUM
+	{06, 24.0, 3},	// EXP_LARGE
+	{02, 5.0, 0},	// EXP_INCEN - large fire anim from explosion
+	{04, 8.0, 0},	// EXP_THERM - fire anim from explosion combined with prt
+	{00, 12.0, 0},	// EXP_EMP - no exp anim or fire, prt used
+	{12, 10.0, 0}	// EXP_SHRAP - knockout range small, bleed range large
+};
 
 static
 			exp_Data[MAX_EXPLOSIVE_ITEM][E_EXPLOSIVE_ITEM_DATA],
