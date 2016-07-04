@@ -25,9 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_StunGun, 1);
+	if(!strcmp(uname, "StunGun"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("StunGun"), 1);
 }
 
 hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)

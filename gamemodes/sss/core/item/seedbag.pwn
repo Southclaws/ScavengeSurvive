@@ -49,9 +49,10 @@ static
 	seed_Total;
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_SeedBag, 2);
+	if(!strcmp(uname, "SeedBag"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("SeedBag"), 2);
 }
 
 stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:plantoffset)

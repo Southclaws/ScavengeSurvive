@@ -25,9 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Armour, 1);
+	if(!strcmp(uname, "Armour"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Armour"), 1);
 }
 
 hook OnItemCreate(itemid)

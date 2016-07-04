@@ -36,9 +36,10 @@ static
 	inj_CurrentTarget[MAX_PLAYERS];
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_AutoInjec, 1);
+	if(!strcmp(uname, "AutoInjec"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("AutoInjec"), 1);
 }
 
 hook OnPlayerConnect(playerid)

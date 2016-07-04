@@ -31,9 +31,10 @@ static
 	lock_DisableForPlayer	[MAX_PLAYERS];
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Key, 2);
+	if(!strcmp(uname, "Key"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Key"), 2);
 }
 
 hook OnVehicleCreated(vehicleid)

@@ -47,9 +47,10 @@ static
 			skin_CurrentlyUsing[MAX_PLAYERS];
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Clothes, 1);
+	if(!strcmp(uname, "Clothes"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Clothes"), 1);
 }
 
 hook OnPlayerConnect(playerid)

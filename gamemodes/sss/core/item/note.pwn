@@ -25,9 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Note, 256);
+	if(!strcmp(uname, "Note"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Note"), 256);
 }
 
 hook OnPlayerUseItem(playerid, itemid)

@@ -34,9 +34,10 @@ static
 	pill_CurrentlyTaking[MAX_PLAYERS];
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Pills, 1);
+	if(!strcmp(uname, "Pills"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Pills"), 1);
 }
 
 hook OnPlayerConnect(playerid)

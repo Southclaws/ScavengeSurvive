@@ -57,8 +57,12 @@ hook OnScriptInit()
 	print("\n[OnScriptInit] Initialising 'Barbecue'...");
 
 	HANDLER = debug_register_handler("BBQ");
+}
 
-	SetItemTypeMaxArrayData(item_Barbecue, 7);
+hook OnItemTypeDefined(uname[])
+{
+	if(!strcmp(uname, "Barbecue"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Barbecue"), 7);
 }
 
 hook OnItemCreate(itemid)
