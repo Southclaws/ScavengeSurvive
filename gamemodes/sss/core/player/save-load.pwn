@@ -126,9 +126,7 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_ARMOUR]	= _:GetPlayerAP(playerid);
 	data[PLY_CELL_FOOD]		= _:GetPlayerFP(playerid);
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
-	data[PLY_CELL_HAT]		= GetPlayerHat(playerid);
-	data[PLY_CELL_HOLST]	= -1; // depreciated
-	data[PLY_CELL_HELD]		= -1; // depreciated
+	data[PLY_CELL_HAT]		= _:GetItemType(GetPlayerHatItem(playerid));
 
 	d:1:HANDLER("[SAVE:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
@@ -156,7 +154,7 @@ SavePlayerChar(playerid)
 	GetPlayerPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	GetPlayerFacingAngle(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
-	data[PLY_CELL_MASK] = GetPlayerMask(playerid);
+	data[PLY_CELL_MASK] = _:GetItemType(GetPlayerMaskItem(playerid));
 	data[PLY_CELL_MUTE_TIME] = GetPlayerMuteRemainder(playerid);
 	data[PLY_CELL_KNOCKOUT] = GetPlayerKnockOutRemainder(playerid);
 
@@ -311,7 +309,9 @@ LoadPlayerChar(playerid)
 	SetPlayerFP(playerid, Float:data[PLY_CELL_FOOD]);
 	SetPlayerClothesID(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
-	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
+
+	if(IsValidItemType(ItemType:data[PLY_CELL_HAT]))
+		SetPlayerHatItem(playerid, CreateItem(ItemType:data[PLY_CELL_HAT]));
 
 	if(GetPlayerAP(playerid) > 0.0)
 		ToggleArmour(playerid, true);
@@ -394,7 +394,8 @@ LoadPlayerChar(playerid)
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
-	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
+	if(IsValidItemType(ItemType:data[PLY_CELL_MASK]))
+		SetPlayerMaskItem(playerid, CreateItem(ItemType:data[PLY_CELL_MASK]));
 
 	if(data[PLY_CELL_MUTE_TIME] != 0)
 		TogglePlayerMute(playerid, true, data[PLY_CELL_MUTE_TIME]);
@@ -577,7 +578,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerFP(playerid, Float:data[PLY_CELL_FOOD]);
 	SetPlayerClothesID(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
-	SetPlayerHat(playerid, data[PLY_CELL_HAT]);
+	SetPlayerHatItem(playerid, data[PLY_CELL_HAT]);
 
 	if(GetPlayerAP(playerid) > 0.0)
 		ToggleArmour(playerid, true);
@@ -628,7 +629,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
-	SetPlayerMask(playerid, data[PLY_CELL_MASK]);
+	SetPlayerMaskItem(playerid, data[PLY_CELL_MASK]);
 
 	if(data[PLY_CELL_MUTE_TIME] > 0)
 		TogglePlayerMute(playerid, true, data[PLY_CELL_MUTE_TIME]);

@@ -627,11 +627,11 @@ Logout(playerid, docombatlogcheck = 1)
 		for(new i; i < INV_MAX_SLOTS; i++)
 			DestroyItem(GetInventorySlotItem(playerid, 0));
 
-		if(IsValidItem(GetPlayerHat(playerid)))
-			RemovePlayerHat(playerid);
+		if(IsValidItem(GetPlayerHatItem(playerid)))
+			RemovePlayerHatItem(playerid);
 
-		if(IsValidItem(GetPlayerMask(playerid)))
-			RemovePlayerMask(playerid);
+		if(IsValidItem(GetPlayerMaskItem(playerid)))
+			RemovePlayerMaskItem(playerid);
 
 		if(IsPlayerInAnyVehicle(playerid))
 		{

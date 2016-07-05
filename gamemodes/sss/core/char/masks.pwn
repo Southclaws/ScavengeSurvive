@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
 #define MAX_MASK_ITEMS	(22)
 #define MAX_MASK_SKINS	(22)
 
@@ -43,8 +46,9 @@ Float:		mask_scaleZ
 new
 ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 			mask_Data[MAX_MASK_ITEMS][MAX_MASK_SKINS][E_MASK_SKIN_DATA],
-   Iterator:mask_Index<MAX_MASK_ITEMS>,
-			mask_CurrentMask[MAX_PLAYERS];
+			mask_Total,
+			mask_ItemTypeMask[ITM_MAX_TYPES] = {-1, ...},
+			mask_CurrentMaskItem[MAX_PLAYERS];
 
 
 // Zeroing
@@ -52,49 +56,24 @@ ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/masks.pwn");
-
-	mask_CurrentMask[playerid] = -1;
-}
-
-hook OnItemCreate(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/masks.pwn");
-
-	foreach(new i : mask_Index)
-	{
-		if(GetItemType(itemid) == mask_ItemType[i])
-		{
-			SetItemExtraData(itemid, i);
-		}
-	}
+	mask_CurrentMaskItem[playerid] = -1;
 }
 
 
 // Core
 
 
-DefineMaskItem(ItemType:itemtype)
+stock DefineMaskItem(ItemType:itemtype)
 {
-	SetItemTypeMaxArrayData(itemtype, 1);
+	mask_ItemType[mask_Total] = itemtype;
+	mask_ItemTypeMask[itemtype] = mask_Total;
 
-	new id = Iter_Free(mask_Index);
-
-	if(id == -1)
-	{
-		print("ERROR: Mask limit reached");
-		return -1;
-	}
-
-	mask_ItemType[id] = itemtype;
-
-	Iter_Add(mask_Index, id);
-	return id;
+	return mask_Total++;
 }
 
-SetMaskOffsetsForSkin(maskid, skinid, Float:offsetx, Float:offsety, Float:offsetz, Float:rotx, Float:roty, Float:rotz, Float:scalex, Float:scaley, Float:scalez)
+stock SetMaskOffsetsForSkin(maskid, skinid, Float:offsetx, Float:offsety, Float:offsetz, Float:rotx, Float:roty, Float:rotz, Float:scalex, Float:scaley, Float:scalez)
 {
-	if(!Iter_Contains(mask_Index, maskid))
+	if(!(0 <= maskid < mask_Total))
 		return 0;
 
 	mask_Data[maskid][skinid][mask_offsetX] = offsetx;
@@ -111,44 +90,69 @@ SetMaskOffsetsForSkin(maskid, skinid, Float:offsetx, Float:offsety, Float:offset
 }
 
 
-stock SetPlayerMask(playerid, maskid)
+stock SetPlayerMaskItem(playerid, itemid)
 {
-	if(!Iter_Contains(mask_Index, maskid))
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	new maskid = mask_ItemTypeMask[itemtype];
+
+	if(maskid == -1)
 		return 0;
 
 	new skinid = GetPlayerClothes(playerid);
 
 	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_FACE, GetItemTypeModel(mask_ItemType[maskid]), 2,
+		playerid, ATTACHSLOT_FACE, GetItemTypeModel(itemtype), 2,
 		mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],
 		mask_Data[maskid][skinid][mask_rotX], mask_Data[maskid][skinid][mask_rotY], mask_Data[maskid][skinid][mask_rotZ],
 		mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);
 
-	mask_CurrentMask[playerid] = maskid;
+	RemoveItemFromWorld(itemid);
+	mask_CurrentMaskItem[playerid] = itemid;
 
 	return 1;
 }
 
-stock RemovePlayerMask(playerid)
+stock RemovePlayerMaskItem(playerid)
 {
+	new itemid = mask_CurrentMaskItem[playerid];
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_FACE);
-	mask_CurrentMask[playerid] = -1;
+	mask_CurrentMaskItem[playerid] = -1;
+
+	return itemid;
 }
 
-TogglePlayerMask(playerid, bool:toggle)
+stock TogglePlayerMaskItemVisibility(playerid, bool:toggle)
 {
-	if(mask_CurrentMask[playerid] == -1)
+	if(!IsValidItem(mask_CurrentMaskItem[playerid]))
 		return 0;
 
 	if(toggle)
 	{
+		new ItemType:itemtype = GetItemType(mask_CurrentMaskItem[playerid]);
+
+		if(!IsValidItemType(itemtype))
+			return 0;
+
+		new maskid = mask_ItemTypeMask[itemtype];
+
+		if(maskid == -1)
+			return 0;
+
 		new skinid = GetPlayerClothes(playerid);
 
 		SetPlayerAttachedObject(
-			playerid, ATTACHSLOT_FACE, GetItemTypeModel(mask_ItemType[mask_CurrentMask[playerid]]), 2,
-			mask_Data[mask_CurrentMask[playerid]][skinid][mask_offsetX], mask_Data[mask_CurrentMask[playerid]][skinid][mask_offsetY], mask_Data[mask_CurrentMask[playerid]][skinid][mask_offsetZ],
-			mask_Data[mask_CurrentMask[playerid]][skinid][mask_rotX], mask_Data[mask_CurrentMask[playerid]][skinid][mask_rotY], mask_Data[mask_CurrentMask[playerid]][skinid][mask_rotZ],
-			mask_Data[mask_CurrentMask[playerid]][skinid][mask_scaleX], mask_Data[mask_CurrentMask[playerid]][skinid][mask_scaleY], mask_Data[mask_CurrentMask[playerid]][skinid][mask_scaleZ]);
+			playerid, ATTACHSLOT_FACE, GetItemTypeModel(itemtype), 2,
+			mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],
+			mask_Data[maskid][skinid][mask_rotX], mask_Data[maskid][skinid][mask_rotY], mask_Data[maskid][skinid][mask_rotZ],
+			mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);
 	}
 	else
 	{
@@ -164,21 +168,8 @@ TogglePlayerMask(playerid, bool:toggle)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/char/masks.pwn");
-
-	if(mask_CurrentMask[playerid] == -1)
-	{
-		foreach(new i : mask_Index)
-		{
-			if(GetItemType(itemid) == mask_ItemType[i])
-			{
-				SetPlayerMask(playerid, i);
-				DestroyItem(itemid);
-				CancelPlayerMovement(playerid);
-				break;
-			}
-		}
-	}
+	if(SetPlayerMaskItem(playerid, itemid))
+		CancelPlayerMovement(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -189,7 +180,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 stock IsValidMask(maskid)
 {
-	if(!Iter_Contains(mask_Index, maskid))
+	if(!(0 <= maskid < mask_Total))
 		return 0;
 
 	return 1;
@@ -198,7 +189,7 @@ stock IsValidMask(maskid)
 forward ItemType:GetItemTypeFromMask(maskid);
 stock ItemType:GetItemTypeFromMask(maskid)
 {
-	if(!Iter_Contains(mask_Index, maskid))
+	if(!(0 <= maskid < mask_Total))
 		return INVALID_ITEM_TYPE;
 
 	return mask_ItemType[maskid];
@@ -206,18 +197,16 @@ stock ItemType:GetItemTypeFromMask(maskid)
 
 stock GetMaskFromItem(ItemType:itemtype)
 {
-	foreach(new i : mask_Index)
-	{
-		if(mask_ItemType[i] == itemtype)
-			return i;
-	}
-	return -1;
-}
-
-stock GetPlayerMask(playerid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
+	if(!IsValidItemType(itemtype))
 		return -1;
 
-	return mask_CurrentMask[playerid];
+	return mask_ItemTypeMask[itemtype];
+}
+
+stock GetPlayerMaskItem(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return INVALID_ITEM_ID;
+
+	return mask_CurrentMaskItem[playerid];
 }

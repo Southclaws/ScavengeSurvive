@@ -46,8 +46,9 @@ Float:		hat_scaleZ
 new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 			hat_Data[MAX_HAT_ITEMS][MAX_HAT_SKINS][E_HAT_SKIN_DATA],
-   Iterator:hat_Index<MAX_HAT_ITEMS>,
-			hat_CurrentHat[MAX_PLAYERS];
+			hat_Total,
+			hat_ItemTypeHat[ITM_MAX_TYPES] = {-1, ...},
+			hat_CurrentHatItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 // Zeroing
@@ -55,49 +56,24 @@ ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/hats.pwn");
-
-	hat_CurrentHat[playerid] = -1;
-}
-
-hook OnItemCreate(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/hats.pwn");
-
-	foreach(new i : hat_Index)
-	{
-		if(GetItemType(itemid) == hat_ItemType[i])
-		{
-			SetItemExtraData(itemid, i);
-		}
-	}
+	hat_CurrentHatItem[playerid] = INVALID_ITEM_ID;
 }
 
 
 // Core
 
 
-DefineHatItem(ItemType:itemtype)
+stock DefineHatItem(ItemType:itemtype)
 {
-	SetItemTypeMaxArrayData(itemtype, 1);
+	hat_ItemType[hat_Total] = itemtype;
+	hat_ItemTypeHat[itemtype] = hat_Total;
 
-	new id = Iter_Free(hat_Index);
-
-	if(id == -1)
-	{
-		print("ERROR: Hat limit reached");
-		return -1;
-	}
-
-	hat_ItemType[id] = itemtype;
-
-	Iter_Add(hat_Index, id);
-	return id;
+	return hat_Total++;
 }
 
-SetHatOffsetsForSkin(hatid, skinid, Float:offsetx, Float:offsety, Float:offsetz, Float:rotx, Float:roty, Float:rotz, Float:scalex, Float:scaley, Float:scalez)
+stock SetHatOffsetsForSkin(hatid, skinid, Float:offsetx, Float:offsety, Float:offsetz, Float:rotx, Float:roty, Float:rotz, Float:scalex, Float:scaley, Float:scalez)
 {
-	if(!Iter_Contains(hat_Index, hatid))
+	if(!(0 <= hatid < hat_Total))
 		return 0;
 
 	hat_Data[hatid][skinid][hat_offsetX] = offsetx;
@@ -114,44 +90,69 @@ SetHatOffsetsForSkin(hatid, skinid, Float:offsetx, Float:offsety, Float:offsetz,
 }
 
 
-stock SetPlayerHat(playerid, hatid)
+stock SetPlayerHatItem(playerid, itemid)
 {
-	if(!Iter_Contains(hat_Index, hatid))
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(!IsValidItemType(itemtype))
+		return 0;
+
+	new hatid = hat_ItemTypeHat[itemtype];
+
+	if(hatid == -1)
 		return 0;
 
 	new skinid = GetPlayerClothes(playerid);
 
 	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_HAT, GetItemTypeModel(hat_ItemType[hatid]), 2,
+		playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
 		hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
 		hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
 		hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
 
-	hat_CurrentHat[playerid] = hatid;
+	RemoveItemFromWorld(itemid);
+	hat_CurrentHatItem[playerid] = itemid;
 
 	return 1;
 }
 
-stock RemovePlayerHat(playerid)
+stock RemovePlayerHatItem(playerid)
 {
+	new itemid = hat_CurrentHatItem[playerid];
+
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HAT);
-	hat_CurrentHat[playerid] = -1;
+	hat_CurrentHatItem[playerid] = INVALID_ITEM_ID;
+
+	return itemid;
 }
 
-TogglePlayerHeadwear(playerid, bool:toggle)
+stock TogglePlayerHatItemVisibility(playerid, bool:toggle)
 {
-	if(hat_CurrentHat[playerid] == -1)
+	if(!IsValidItem(hat_CurrentHatItem[playerid]))
 		return 0;
 
 	if(toggle)
 	{
+		new ItemType:itemtype = GetItemType(hat_CurrentHatItem[playerid]);
+
+		if(!IsValidItemType(itemtype))
+			return 0;
+
+		new hatid = hat_ItemTypeHat[itemtype];
+
+		if(hatid == -1)
+			return 0;
+
 		new skinid = GetPlayerClothes(playerid);
 
 		SetPlayerAttachedObject(
-			playerid, ATTACHSLOT_HAT, GetItemTypeModel(hat_ItemType[hat_CurrentHat[playerid]]), 2,
-			hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_offsetZ],
-			hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_rotZ],
-			hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleX], hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleY], hat_Data[hat_CurrentHat[playerid]][skinid][hat_scaleZ]);
+			playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
+			hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
+			hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
+			hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
 	}
 	else
 	{
@@ -167,21 +168,8 @@ TogglePlayerHeadwear(playerid, bool:toggle)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/char/hats.pwn");
-
-	if(hat_CurrentHat[playerid] == -1)
-	{
-		foreach(new i : hat_Index)
-		{
-			if(GetItemType(itemid) == hat_ItemType[i])
-			{
-				SetPlayerHat(playerid, i);
-				DestroyItem(itemid);
-				CancelPlayerMovement(playerid);
-				return Y_HOOKS_BREAK_RETURN_1;
-			}
-		}
-	}
+	if(SetPlayerHatItem(playerid, itemid))
+		CancelPlayerMovement(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -192,7 +180,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 stock IsValidHat(hatid)
 {
-	if(!Iter_Contains(hat_Index, hatid))
+	if(!(0 <= hatid < hat_Total))
 		return 0;
 
 	return 1;
@@ -201,7 +189,7 @@ stock IsValidHat(hatid)
 forward ItemType:GetItemTypeFromHat(hatid);
 stock ItemType:GetItemTypeFromHat(hatid)
 {
-	if(!Iter_Contains(hat_Index, hatid))
+	if(!(0 <= hatid < hat_Total))
 		return INVALID_ITEM_TYPE;
 
 	return hat_ItemType[hatid];
@@ -209,18 +197,16 @@ stock ItemType:GetItemTypeFromHat(hatid)
 
 stock GetHatFromItem(ItemType:itemtype)
 {
-	foreach(new i : hat_Index)
-	{
-		if(hat_ItemType[i] == itemtype)
-			return i;
-	}
-	return -1;
-}
-
-stock GetPlayerHat(playerid)
-{
-	if(!(0 <= playerid < MAX_PLAYERS))
+	if(!IsValidItemType(itemtype))
 		return -1;
 
-	return hat_CurrentHat[playerid];
+	return hat_ItemTypeHat[itemtype];
+}
+
+stock GetPlayerHatItem(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return INVALID_ITEM_ID;
+
+	return hat_CurrentHatItem[playerid];
 }

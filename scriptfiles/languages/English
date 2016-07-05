@@ -162,6 +162,7 @@ DISTANCEVAL=Distance: %.3f
 LOCATORDIS=Unable to trace the mobile phone
 CHAINSAFUEL=There is no fuel in the chainsaw
 HATALREADYW=You are already wearing a hat
+MASKALREADW=You are already wearing a mask
 FUELCANFULL=Fuel can is full
 FUELNOTPETR=Fuel can does not contain petrol
 DISARMEDBOM=Disarmed explosive

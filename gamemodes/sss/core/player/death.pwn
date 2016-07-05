@@ -259,11 +259,11 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		Head-wear item
 	*/
 
-	itemid = GetPlayerHat(playerid);
+	itemid = RemovePlayerHatItem(playerid);
 
 	if(IsValidItem(itemid))
 	{
-		CreateItem(GetItemTypeFromHat(itemid),
+		CreateItemInWorld(itemid,
 			x + floatsin(270.0, degrees),
 			y + floatcos(270.0, degrees),
 			z - FLOOR_OFFSET,
@@ -271,19 +271,17 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
-
-		RemovePlayerHat(playerid);
 	}
 
 	/*
 		Face-wear item
 	*/
 
-	itemid = GetPlayerMask(playerid);
+	itemid = RemovePlayerMaskItem(playerid);
 
 	if(IsValidItem(itemid))
 	{
-		CreateItem(GetItemTypeFromMask(itemid),
+		CreateItemInWorld(itemid,
 			x + floatsin(280.0, degrees),
 			y + floatcos(280.0, degrees),
 			z - FLOOR_OFFSET,
@@ -291,8 +289,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
-
-		RemovePlayerMask(playerid);
 	}
 
 	/*

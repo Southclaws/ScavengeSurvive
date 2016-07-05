@@ -213,12 +213,12 @@ UpdatePlayerGear(playerid, show = 1)
 		tmp[5 + ITM_MAX_NAME + ITM_MAX_TEXT],
 		itemid;
 
-	itemid = _:GetItemTypeFromHat(GetPlayerHat(playerid));
-	if(IsValidItemType(ItemType:itemid))
+	itemid = GetPlayerHatItem(playerid);
+	if(IsValidItem(itemid))
 	{
-		GetItemTypeName(ItemType:itemid, tmp);
+		GetItemTypeName(GetItemType(itemid), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Head[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], GetItemTypeModel(ItemType:itemid));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Head[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -227,12 +227,12 @@ UpdatePlayerGear(playerid, show = 1)
 		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], 19300);
 	}
 
-	itemid = _:GetItemTypeFromMask(GetPlayerMask(playerid));
-	if(IsValidItemType(ItemType:itemid))
+	itemid = GetPlayerMaskItem(playerid);
+	if(IsValidItem(itemid))
 	{
-		GetItemTypeName(ItemType:itemid, tmp);
+		GetItemTypeName(GetItemType(itemid), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Face[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], GetItemTypeModel(ItemType:itemid));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Face[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -423,14 +423,12 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 _inv_HandleGearSlotClick_Head(playerid)
 {
-	new hatid = GetPlayerHat(playerid);
+	new itemid = GetPlayerHatItem(playerid);
 	
-	if(!IsValidHat(hatid))
+	if(!IsValidItem(itemid))
 		return 0;
 
-	new
-		containerid = GetPlayerCurrentContainer(playerid),
-		itemid;
+	new containerid = GetPlayerCurrentContainer(playerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -438,11 +436,8 @@ _inv_HandleGearSlotClick_Head(playerid)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
-				RemovePlayerHat(playerid);
-
-				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+				RemovePlayerHatItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-
 				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
 			}
 			else
@@ -452,18 +447,15 @@ _inv_HandleGearSlotClick_Head(playerid)
 		}
 		else
 		{
-			itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-
 			new required = AddItemToContainer(containerid, itemid, playerid);
 
 			if(required > 0)
 			{
 				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
-				DestroyItem(itemid);
 			}
 			else if(required == 0)
 			{
-				RemovePlayerHat(playerid);
+				RemovePlayerHatItem(playerid);
 				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
 			}
 		}
@@ -476,11 +468,8 @@ _inv_HandleGearSlotClick_Head(playerid)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
-				RemovePlayerHat(playerid);
-
-				itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
+				RemovePlayerHatItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-
 				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000, 150);
 			}
 			else
@@ -490,18 +479,15 @@ _inv_HandleGearSlotClick_Head(playerid)
 		}
 		else
 		{
-			itemid = CreateItem(GetItemTypeFromHat(hatid), 0.0, 0.0, 0.0);
-
 			new required = AddItemToInventory(playerid, itemid);
 
 			if(required > 0)
 			{
 				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
-				DestroyItem(itemid);
 			}
 			else if(required == 0)
 			{
-				RemovePlayerHat(playerid);
+				RemovePlayerHatItem(playerid);
 				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
 			}
 		}
@@ -516,14 +502,12 @@ _inv_HandleGearSlotClick_Head(playerid)
 
 _inv_HandleGearSlotClick_Face(playerid)
 {
-	new maskid = GetPlayerMask(playerid);
+	new itemid = GetPlayerMaskItem(playerid);
 	
-	if(!IsValidMask(maskid))
+	if(!IsValidItem(itemid))
 		return 0;
 
-	new
-		containerid = GetPlayerCurrentContainer(playerid),
-		itemid;
+	new containerid = GetPlayerCurrentContainer(playerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -531,11 +515,8 @@ _inv_HandleGearSlotClick_Face(playerid)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
-				RemovePlayerMask(playerid);
-
-				itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+				RemovePlayerMaskItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-
 				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
 			}
 			else
@@ -545,18 +526,15 @@ _inv_HandleGearSlotClick_Face(playerid)
 		}
 		else
 		{
-			itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-
 			new required = AddItemToContainer(containerid, itemid, playerid);
 
 			if(required > 0)
 			{
 				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
-				DestroyItem(itemid);
 			}
 			else if(required == 0)
 			{
-				RemovePlayerMask(playerid);
+				RemovePlayerMaskItem(playerid);
 				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
 			}
 		}
@@ -569,11 +547,8 @@ _inv_HandleGearSlotClick_Face(playerid)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
-				RemovePlayerMask(playerid);
-
-				itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
+				RemovePlayerMaskItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-
 				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
 			}
 			else
@@ -583,18 +558,15 @@ _inv_HandleGearSlotClick_Face(playerid)
 		}
 		else
 		{
-			itemid = CreateItem(GetItemTypeFromMask(maskid), 0.0, 0.0, 0.0);
-			
 			new required = AddItemToInventory(playerid, itemid);
 
 			if(required > 0)
 			{
 				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
-				DestroyItem(itemid);
 			}
 			else if(required == 0)
 			{
-				RemovePlayerMask(playerid);
+				RemovePlayerMaskItem(playerid);
 				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
 			}
 		}
