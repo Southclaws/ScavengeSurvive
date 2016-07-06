@@ -29,9 +29,10 @@ static
 		gut_TargetItem[MAX_PLAYERS];
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_Torso, MAX_PLAYER_NAME + 128 + 2);
+	if(!strcmp(uname, "Torso"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Torso"), MAX_PLAYER_NAME + 128 + 2);
 }
 
 hook OnPlayerConnect(playerid)
