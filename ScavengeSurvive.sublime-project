@@ -33,7 +33,7 @@
 			"name": "SOUTHCLAW'S SS BUILD SYSTEM DO NOT USE!",
 			"working_dir": "${project_path:${folder}}",
 			"cmd": "python build.py",
-			"file_regex": "(.*?)[(]([0-9]*)[)]"
+			"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)"
 		}
 	]
 }
