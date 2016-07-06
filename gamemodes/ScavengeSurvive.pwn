@@ -537,13 +537,6 @@ new stock
 #include "sss/core/world/tree-loader.pwn"
 #include "sss/core/world/water-purifier.pwn"
 
-// IO
-
-#include "sss/core/world/item-io.pwn"
-#include "sss/core/world/safebox-io.pwn"
-//#include "sss/core/world/tent-io.pwn"
-//#include "sss/core/world/defences-io.pwn"
-
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
 #include "sss/core/admin/report-cmds.pwn"
