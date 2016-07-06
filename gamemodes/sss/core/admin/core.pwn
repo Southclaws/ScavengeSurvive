@@ -363,7 +363,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		Logout(playerid, 0); // docombatlogcheck = 0
 
-		ToggleArmour(playerid, false);
+		RemovePlayerArmourItem(playerid);
 
 		RemoveAllDrugs(playerid);
 

@@ -25,6 +25,10 @@
 #include <YSI\y_hooks>
 
 
+static
+	arm_PlayerArmourItem[MAX_PLAYERS];
+
+
 hook OnItemTypeDefined(uname[])
 {
 	if(!strcmp(uname, "Armour"))
@@ -39,7 +43,7 @@ hook OnItemCreate(itemid)
 	{
 		if(GetItemType(itemid) == item_Armour)
 		{
-			SetItemExtraData(itemid, random(100) + 1);
+			SetItemExtraData(itemid, 25 + random(75));
 		}
 	}
 }
@@ -56,7 +60,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			new data = GetItemExtraData(itemid);
 			if(data > 0)
 			{
-				DestroyItem(itemid);
+				SetPlayerArmourItem(playerid, itemid);
 				SetPlayerAP(playerid, float(data));
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
@@ -99,6 +103,10 @@ hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:kn
 			ap -= ((ap + 10) * (bleedrate * 10.0));
 
 			SetPlayerAP(targetid, ap);
+			SetItemExtraData(arm_PlayerArmourItem[playerid], floatround(ap));
+
+			if(ap <= 0.0)
+				DestroyItem(RemovePlayerArmourItem(playerid));
 
 			DMG_FIREARM_SetBleedRate(targetid, bleedrate);
 		}
@@ -129,19 +137,43 @@ new Float:ArmourSkinData[17][9]=
 	{0.089000, 0.079999, 0.009000,  -1.199999, 0.500000, -4.299999,  1.064000, 1.107001, 0.965000}		// skin_IndiF
 };
 
-ToggleArmour(playerid, bool:toggle)
+stock CreatePlayerArmour(playerid)
 {
-	if(toggle)
-	{
-		new skin = GetPlayerClothes(playerid);
+	return SetPlayerArmourItem(playerid, CreateItem(item_Armour));
+}
 
-		SetPlayerAttachedObject(playerid, ATTACHSLOT_ARMOUR, 19515, 1,
-			ArmourSkinData[skin][0], ArmourSkinData[skin][1], ArmourSkinData[skin][2],
-			ArmourSkinData[skin][3], ArmourSkinData[skin][4], ArmourSkinData[skin][5],
-			ArmourSkinData[skin][6], ArmourSkinData[skin][7], ArmourSkinData[skin][8]);
-	}
-	else
-	{
-		RemovePlayerAttachedObject(playerid, ATTACHSLOT_ARMOUR);
-	}
+stock SetPlayerArmourItem(playerid, itemid)
+{
+	if(!IsValidItem(itemid))
+		return 0;
+
+	new skin = GetPlayerClothes(playerid);
+
+	SetPlayerAttachedObject(playerid, ATTACHSLOT_ARMOUR, 19515, 1,
+		ArmourSkinData[skin][0], ArmourSkinData[skin][1], ArmourSkinData[skin][2],
+		ArmourSkinData[skin][3], ArmourSkinData[skin][4], ArmourSkinData[skin][5],
+		ArmourSkinData[skin][6], ArmourSkinData[skin][7], ArmourSkinData[skin][8]);
+
+	RemoveItemFromWorld(itemid);
+	arm_PlayerArmourItem[playerid] = itemid;
+
+	return 1;
+}
+
+stock RemovePlayerArmourItem(playerid)
+{
+	new itemid = arm_PlayerArmourItem[playerid];
+
+	RemovePlayerAttachedObject(playerid, ATTACHSLOT_ARMOUR);
+	arm_PlayerArmourItem[playerid] = INVALID_ITEM_ID;
+
+	return itemid;
+}
+
+stock GetPlayerArmourItem(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return INVALID_ITEM_ID;
+
+	return arm_PlayerArmourItem[playerid];
 }

@@ -97,7 +97,6 @@ _OnDeath(playerid, killerid)
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
 	RemovePlayerWeapon(playerid);
 	SpawnPlayer(playerid);
-	ToggleArmour(playerid, false);
 
 	KillPlayer(playerid, killerid, deathreason);
 
@@ -297,7 +296,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 
 	if(GetPlayerAP(playerid) > 0.0)
 	{
-		itemid = CreateItem(item_Armour,
+		itemid = CreateItemInWorld(RemovePlayerArmourItem(playerid),
 			x + floatsin(80.0, degrees),
 			y + floatcos(80.0, degrees),
 			z - FLOOR_OFFSET,
@@ -306,8 +305,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			.world = world,
 			.interior = interior);
 
-		SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
-		ToggleArmour(playerid, false);
 		SetPlayerAP(playerid, 0.0);
 	}
 

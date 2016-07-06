@@ -762,20 +762,6 @@ stock SetPlayerAP(playerid, Float:amount)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	if(amount <= 0.0)
-	{
-		amount = 0.0;
-
-		ToggleArmour(playerid, false);
-	}
-	else
-	{
-		if(amount > 100.0)
-			amount = 100.0;
-
-		ToggleArmour(playerid, true);
-	}
-
 	ply_Data[playerid][ply_ArmourPoints] = amount;
 
 	return 1;

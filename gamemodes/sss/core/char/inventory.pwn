@@ -686,16 +686,13 @@ _inv_HandleGearSlotClick_Tors(playerid)
 	if(GetPlayerAP(playerid) == 0.0)
 		return 0;
 
-	new containerid = GetPlayerCurrentContainer(playerid);
+	new
+		itemid = GetPlayerArmourItem(playerid),
+		containerid = GetPlayerCurrentContainer(playerid);
 
 	if(IsValidContainer(containerid))
 	{
-		new
-			itemid,
-			required;
-
-		itemid = CreateItem(item_Armour);
-		required = AddItemToContainer(containerid, itemid, playerid);
+		new required = AddItemToContainer(containerid, itemid, playerid);
 
 		if(required > 0)
 		{
@@ -705,18 +702,19 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			{
 				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 				SetPlayerAP(playerid, 0.0);
+				RemovePlayerArmourItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
 			}
 			else
 			{
 				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
-				DestroyItem(itemid);
 			}
 		}
 		else if(required == 0)
 		{
 			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 			SetPlayerAP(playerid, 0.0);
+			RemovePlayerArmourItem(playerid);
 			ShowActionText(playerid, ls(playerid, "INVREMOVARM"), 3000);
 		}
 
@@ -724,12 +722,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 	}
 	else
 	{
-		new
-			itemid,
-			required;
-
-		itemid = CreateItem(item_Armour);
-		required = AddItemToInventory(playerid, itemid);
+		new required = AddItemToInventory(playerid, itemid);
 
 		if(required > 0)
 		{
@@ -739,18 +732,19 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			{
 				SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 				SetPlayerAP(playerid, 0.0);
+				RemovePlayerArmourItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
 			}
 			else
 			{
 				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
-				DestroyItem(itemid);
 			}
 		}
 		else if(required == 0)
 		{
 			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 			SetPlayerAP(playerid, 0.0);
+			RemovePlayerArmourItem(playerid);
 			ShowActionText(playerid, ls(playerid, "INVREMOVARM"), 3000);
 		}
 

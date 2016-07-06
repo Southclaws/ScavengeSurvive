@@ -314,7 +314,7 @@ LoadPlayerChar(playerid)
 		SetPlayerHatItem(playerid, CreateItem(ItemType:data[PLY_CELL_HAT]));
 
 	if(GetPlayerAP(playerid) > 0.0)
-		ToggleArmour(playerid, true);
+		CreatePlayerArmour(playerid);
 
 /*
 	Legacy code for old held/holstered item format. Depreciated because it only
@@ -581,7 +581,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerHatItem(playerid, data[PLY_CELL_HAT]);
 
 	if(GetPlayerAP(playerid) > 0.0)
-		ToggleArmour(playerid, true);
+		CreatePlayerArmour(playerid);
 
 	if(data[PLY_CELL_HOLST] != -1)
 	{
