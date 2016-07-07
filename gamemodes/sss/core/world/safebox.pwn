@@ -244,5 +244,11 @@ stock IsItemTypeExtraDataDependent(ItemType:itemtype)
 	if(itemtype == item_Campfire)
 		return 1;
 
+	if(itemtype == item_Barbecue)
+		return 1;
+
+	if(itemtype == item_TentPack)
+		return 1;
+
 	return 0;
 }
