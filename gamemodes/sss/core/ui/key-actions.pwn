@@ -32,9 +32,7 @@ PlayerText:	KeyActions[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/tool-tips.pwn");
-
-	KeyActions[playerid]				=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
+	KeyActions[playerid]			=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
 	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], 3);
 	PlayerTextDrawBackgroundColor	(playerid, KeyActions[playerid], 255);
 	PlayerTextDrawFont				(playerid, KeyActions[playerid], 1);
@@ -44,46 +42,158 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], 1);
 }
 
-ptask ToolTipUpdate[1000](playerid)
+
+/*==============================================================================
+
+	Core
+
+==============================================================================*/
+
+
+stock ShowPlayerKeyActionUI(playerid)
+{
+	PlayerTextDrawSetString(playerid, KeyActions[playerid], KeyActionsText[playerid]);
+	PlayerTextDrawShow(playerid, KeyActions[playerid]);
+}
+
+stock HidePlayerKeyActionUI(playerid)
+{
+	PlayerTextDrawHide(playerid, KeyActions[playerid]);
+}
+
+stock ClearPlayerKeyActionUI(playerid)
+{
+	KeyActionsText[playerid][0] = EOS;
+}
+
+stock AddToolTipText(playerid, key[], use[])
+{
+	new tmp[128];
+	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
+	strcat(KeyActionsText[playerid], tmp);
+}
+
+
+/*==============================================================================
+
+	Internal
+
+==============================================================================*/
+
+
+// Enter/exit inventory
+hook OnPlayerOpenInventory(playerid)
+{
+	HidePlayerKeyActionUI(playerid);
+}
+
+hook OnPlayerCloseInventory(playerid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerOpenContainer(playerid, containerid)
+{
+	HidePlayerKeyActionUI(playerid);
+}
+
+hook OnPlayerCloseContainer(playerid, containerid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+// Pickup/drop item
+hook OnPlayerPickedUpItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerDroppedItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+// Vehicles
+hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerExitVehicle(playerid, vehicleid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+// Areas
+hook OnPlayerEnterDynArea(playerid, areaid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerLeaveDynArea(playerid, areaid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+// State change
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(!IsPlayerToolTipsOn(playerid))
+		return 1;
+
+	if(newstate != PLAYER_STATE_DRIVER)
+		return 1;
+
+	new vehicleid = GetPlayerVehicleID(playerid);
+
+	if(!IsValidVehicle(vehicleid))
+		return 1;
+
+	_ShowRepairTip(playerid, vehicleid);
+
+	return 1;
+}
+
+_UpdateKeyActions(playerid)
 {
 	if(!IsPlayerSpawned(playerid))
 	{
-		HidePlayerToolTip(playerid);
+		HidePlayerKeyActionUI(playerid);
 		return;		
 	}
 
 	if(IsPlayerViewingInventory(playerid))
 	{
-		HidePlayerToolTip(playerid);
+		HidePlayerKeyActionUI(playerid);
 		return;		
 	}
 
 	if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
 	{
-		HidePlayerToolTip(playerid);
+		HidePlayerKeyActionUI(playerid);
 		return;		
 	}
 
 	if(IsPlayerKnockedOut(playerid))
 	{
-		HidePlayerToolTip(playerid);
+		HidePlayerKeyActionUI(playerid);
 		return;		
 	}
 
 	if(!IsPlayerHudOn(playerid))
 	{
-		HidePlayerToolTip(playerid);
+		HidePlayerKeyActionUI(playerid);
 		return;		
 	}
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		ClearToolTipText(playerid);
+		ClearPlayerKeyActionUI(playerid);
 		AddToolTipText(playerid, KEYTEXT_ENGINE, "Toggle engine");
 		AddToolTipText(playerid, KEYTEXT_LIGHTS, "Toggle lights");
 		AddToolTipText(playerid, KEYTEXT_DOORS, "Toggle locks");
 		AddToolTipText(playerid, KEYTEXT_RADIO, "Open radio");
-		ShowPlayerToolTip(playerid);
+		ShowPlayerKeyActionUI(playerid);
 
 		return;
 	}
@@ -93,12 +203,15 @@ ptask ToolTipUpdate[1000](playerid)
 		invehiclearea = GetPlayerVehicleArea(playerid),
 		inplayerarea = -1;
 
-	ClearToolTipText(playerid);
+	ClearPlayerKeyActionUI(playerid);
 
 	if(invehiclearea != INVALID_VEHICLE_ID)
 	{
 		if(IsPlayerAtVehicleTrunk(playerid, invehiclearea))
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Open Trunk");
+
+		if(IsPlayerAtVehicleBonnet(playerid, invehiclearea))
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Repair with tool");
 	}
 
 	foreach(new i : Player)
@@ -115,7 +228,7 @@ ptask ToolTipUpdate[1000](playerid)
 		if(IsPlayerCuffed(inplayerarea))
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Remove handcuffs");
-			ShowPlayerToolTip(playerid);
+			ShowPlayerKeyActionUI(playerid);
 		}
 
 		AddToolTipText(playerid, KEYTEXT_INVENTORY, "Open inventory");
@@ -123,7 +236,7 @@ ptask ToolTipUpdate[1000](playerid)
 		if(IsValidItem(GetPlayerBagItem(playerid)))
 			AddToolTipText(playerid, KEYTEXT_DROP_ITEM, "Remove bag");
 
-		ShowPlayerToolTip(playerid);
+		ShowPlayerKeyActionUI(playerid);
 
 		return;
 	}
@@ -132,15 +245,7 @@ ptask ToolTipUpdate[1000](playerid)
 
 	// Single items
 
-	if(itemtype == item_TntTimebomb)
-	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Arm timebomb");
-	}
-	else if(itemtype == item_Bottle)
-	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Drink from bottle");
-	}
-	else if(itemtype == item_Sign)
+	if(itemtype == item_Sign)
 	{
 		AddToolTipText(playerid, KEYTEXT_INTERACT, "Place sign");
 	}
@@ -150,15 +255,11 @@ ptask ToolTipUpdate[1000](playerid)
 	}
 	else if(itemtype == item_Crowbar)
 	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Pry Open");
+		AddToolTipText(playerid, KEYTEXT_INTERACT, "Deconstruct");
 	}
 	else if(itemtype == item_Shield)
 	{
 		AddToolTipText(playerid, KEYTEXT_INTERACT, "Place shield");
-	}
-	else if(itemtype == item_Flashlight)
-	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Turn on/off");
 	}
 	else if(itemtype == item_HandCuffs)
 	{
@@ -175,6 +276,10 @@ ptask ToolTipUpdate[1000](playerid)
 		{
 			if(IsPlayerAtVehicleBonnet(playerid, invehiclearea))
 				AddToolTipText(playerid, KEYTEXT_INTERACT, "Refuel vehicle");
+		}
+		else
+		{
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Fill at pump");
 		}
 	}
 	else if(itemtype == item_Clothes)
@@ -201,17 +306,10 @@ ptask ToolTipUpdate[1000](playerid)
 		else
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Inject other player");
 	}
-	else if(itemtype == item_CanDrink)
-	{
-		AddToolTipText(playerid, KEYTEXT_INTERACT, "Drink from can");
-	}
 	else if(itemtype == item_HerpDerp)
 	{
 		AddToolTipText(playerid, KEYTEXT_INTERACT, "Herp-a-derp");
 	}
-
-	// Groups of items
-
 	else if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag)
 	{
 		if(inplayerarea != -1)
@@ -230,8 +328,6 @@ ptask ToolTipUpdate[1000](playerid)
 	}
 	else
 	{
-		// Looped groups of items
-
 		if(IsItemTypeFood(itemtype))
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Eat");
@@ -245,11 +341,23 @@ ptask ToolTipUpdate[1000](playerid)
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Wear Hat");
 		}
+		else if(GetMaskFromItem(itemtype) != -1)
+		{
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Wear Hat");
+		}
+		else if(GetItemTypeExplosiveType(itemtype) != -1)
+		{
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Arm Explosive");
+		}
+		else if(GetItemTypeLiquidContainerType(itemtype) != -1)
+		{
+			AddToolTipText(playerid, KEYTEXT_INTERACT, "Drink");
+		}
 	}
 
 	if(GetItemTypeWeapon(itemtype) != -1)
 	{
-		ClearToolTipText(playerid);
+		ClearPlayerKeyActionUI(playerid);
 
 		foreach(new i : Player)
 		{
@@ -279,70 +387,9 @@ ptask ToolTipUpdate[1000](playerid)
 	}
 
 	AddToolTipText(playerid, KEYTEXT_INVENTORY, "Open inventory");
-	ShowPlayerToolTip(playerid);
+	ShowPlayerKeyActionUI(playerid);
 
 	return;
-}
-
-hook OnPlayerOpenInventory(playerid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerOpenInventory] in /gamemodes/sss/core/ui/key-actions.pwn");
-
-	HidePlayerToolTip(playerid);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerOpenContainer(playerid, containerid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/ui/key-actions.pwn");
-
-	HidePlayerToolTip(playerid);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-stock ShowPlayerToolTip(playerid)
-{
-	PlayerTextDrawSetString(playerid, KeyActions[playerid], KeyActionsText[playerid]);
-	PlayerTextDrawShow(playerid, KeyActions[playerid]);
-}
-
-stock HidePlayerToolTip(playerid)
-{
-	PlayerTextDrawHide(playerid, KeyActions[playerid]);
-}
-
-stock ClearToolTipText(playerid)
-{
-	KeyActionsText[playerid][0] = EOS;
-}
-
-stock AddToolTipText(playerid, key[], use[])
-{
-	new tmp[128];
-	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);
-	strcat(KeyActionsText[playerid], tmp);
-}
-
-hook OnPlayerStateChange(playerid, newstate, oldstate)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/player/tool-tips.pwn");
-
-	if(!IsPlayerToolTipsOn(playerid))
-		return 1;
-
-	if(newstate != PLAYER_STATE_DRIVER)
-		return 1;
-
-	new vehicleid = GetPlayerVehicleID(playerid);
-
-	if(!IsValidVehicle(vehicleid))
-		return 1;
-
-	_ShowRepairTip(playerid, vehicleid);
-
-	return 1;
 }
 
 _ShowRepairTip(playerid, vehicleid)
