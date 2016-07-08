@@ -563,9 +563,8 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 		GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
 		rotz = GetDefenceRot(defenceid);
 
-		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
+		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f type %d (%d, %f, %f, %f, %f, %f, %f)",
 			defenceid, x, y, z,
-			GetDefenceGEID(defenceid),
 			_:itemtype,
 			GetItemTypeModel(itemtype),
 			x, y, z + GetDefenceTypeOffsetZ(defencetype),
