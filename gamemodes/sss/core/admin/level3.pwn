@@ -726,12 +726,15 @@ ACMD:delete[3](playerid, params[])
 	}
 	else if(!strcmp(type, "defence", true, 7))
 	{
-		foreach(new i : def_Index)
+		foreach(new i : itm_Index)
 		{
-			GetDefencePos(i, ix, iy, iz);
+			if(GetItemTypeDefenceType(GetItemType(i)) == INVALID_DEFENCE_TYPE)
+				continue;
+
+			GetItemPos(i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyDefence(i);
+				i = DestroyItem(i);
 		}
 
 		return 1;
