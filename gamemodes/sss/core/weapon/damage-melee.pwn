@@ -71,6 +71,9 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 	if(GetPlayerAnimationIndex(playerid) == 1381)
 		return 0;
 
+	if(_hd_IsPlayerInWater(playerid))
+		return 0;
+
 	if(GetTickCountDifference(GetTickCount(), anm_AttackTick[playerid]) < 800)
 		return 0;
 
