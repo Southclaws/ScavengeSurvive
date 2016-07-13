@@ -272,15 +272,24 @@ stock GetPlayerDrugsAsArray(playerid, output[])
 	return idx;
 }
 
-stock SetPlayerDrugsFromArray(playerid, input[])
+stock SetPlayerDrugsFromArray(playerid, input[], length)
 {
-	d:2:HANDLER("[SetPlayerDrugsFromArray] playerid:%d", playerid);
+	d:2:HANDLER("[SetPlayerDrugsFromArray] playerid:%d length:%d", playerid, length);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	if(input[0] <= 0)
+	if(input[0] == 0)
+		return 0;
+
+	if(input[0] < 0 || input[0] >= MAX_DRUG_TYPE)
 	{
-		printf("ERROR: Attempted to assign drug effects from malformed array, cell 0: %d", input[0]);
+		printf("[SetPlayerDrugsFromArray] ERROR: Drug count out of bounds (%d)", input[0]);
+		return 0;
+	}
+
+	if(length != 1 + (input[0] * 2))
+	{
+		printf("[SetPlayerDrugsFromArray] ERROR: (Drug count * 2) + 1 != data length (%d != %d)", 1 + (input[0] * 2), length);
 		return 0;
 	}
 
@@ -321,9 +330,11 @@ hook OnPlayerLoad(playerid, filename[])
 
 	d:1:HANDLER("[OnPlayerLoad] playerid:%d", playerid);
 
-	new data[1 + (MAX_DRUG_TYPE * 2)];
+	new
+		data[1 + (MAX_DRUG_TYPE * 2)],
+		length;
 
-	modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
+	length = modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
 
-	SetPlayerDrugsFromArray(playerid, data);
+	SetPlayerDrugsFromArray(playerid, data, length);
 }
