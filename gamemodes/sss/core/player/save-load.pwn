@@ -425,8 +425,9 @@ LoadPlayerChar(playerid)
 
 	if(IsValidItemType(ItemType:data[0]) && length > 0)
 	{
-		itemid = CreateItem(ItemType:data[0]);
+		itemid = AllocNextItemID(ItemType:data[0]);
 		SetItemArrayData(itemid, data[2], data[1]);
+		CreateItem_ExplicitID(itemid);
 		GiveWorldItemToPlayer(playerid, itemid);
 
 		d:2:HANDLER("[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
