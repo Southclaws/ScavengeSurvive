@@ -46,7 +46,7 @@ stock IsBaseWeaponClipBased(weaponid)
 {
 	switch(weaponid)
 	{
-		case 22..38, 41..43:
+		case 22..38, 43:
 			return 1;
 	}
 	return 0;
