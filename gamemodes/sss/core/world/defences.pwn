@@ -78,9 +78,9 @@ static
 			def_PassFails[MAX_PLAYERS];
 
 
-forward OnDefenceCreate(defenceid);
-forward OnDefenceModified(defenceid);
-forward OnDefenceMove(defenceid);
+forward OnDefenceCreate(itemid);
+forward OnDefenceModified(itemid);
+forward OnDefenceMove(itemid);
 
 
 /*==============================================================================
@@ -132,7 +132,7 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	return def_TypeTotal++;
 }
 
-CreateDefence(itemid, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hitpoints = -1)
+CreateDefence(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -157,22 +157,13 @@ CreateDefence(itemid, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hit
 		Float:rz;
 
 	GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
+	GetItemArrayData(itemid, itemdata);
 	objectid = GetItemObjectID(itemid);
 	GetItemRot(itemid, rz, rz, rz);
 
-	itemdata[def_active]	= true;
-	itemdata[def_pose]		= pose;
-	itemdata[def_motor]		= motor;
-	itemdata[def_keypad]	= keypad;
-	itemdata[def_pass]		= pass;
-	itemdata[def_moveState]	= movestate;
-	itemdata[def_hitPoints]	= ((hitpoints == -1) ? (def_TypeData[defencetype][def_maxHitPoints]) : (hitpoints));
-
-	SetItemArrayData(itemid, itemdata, _:e_DEFENCE_DATA);
-
-	if(motor)
+	if(itemdata[def_motor])
 	{
-		if(movestate == DEFENCE_POSE_HORIZONTAL)
+		if(itemdata[def_moveState] == DEFENCE_POSE_HORIZONTAL)
 		{
 			SetDynamicObjectRot(objectid,
 				def_TypeData[defencetype][def_horizontalRotX],
@@ -203,7 +194,7 @@ CreateDefence(itemid, pose, motor = 0, keypad = 0, pass = 0, movestate = -1, hit
 	}
 	else
 	{
-		if(pose == DEFENCE_POSE_HORIZONTAL)
+		if(itemdata[def_pose] == DEFENCE_POSE_HORIZONTAL)
 		{
 			SetDynamicObjectRot(objectid,
 				def_TypeData[defencetype][def_horizontalRotX],
@@ -249,6 +240,7 @@ DeconstructDefence(itemid)
 
 	SetItemArrayDataAtCell(itemid, 0, 0);
 	SetItemArrayDataLength(itemid, 0);
+	RemoveDefenceItem(itemid);
 }
 
 
@@ -536,7 +528,8 @@ hook OnHoldActionFinish(playerid)
 		if(itemtype == item_Hammer)
 			pose = DEFENCE_POSE_HORIZONTAL;
 
-		itemid = CreateDefence(def_CurrentDefenceItem[playerid], pose);
+		SetItemArrayDataAtCell(itemid, pose, def_pose);
+		itemid = CreateDefence(def_CurrentDefenceItem[playerid]);
 
 		if(!IsValidItem(itemid))
 		{
@@ -545,6 +538,7 @@ hook OnHoldActionFinish(playerid)
 		}
 
 		new
+			ItemType:defenceitemtype = GetItemType(itemid),
 			geid[GEID_LEN],
 			Float:x,
 			Float:y,
@@ -558,10 +552,10 @@ hook OnHoldActionFinish(playerid)
 		logf("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
 			playerid, itemid, geid,
 			GetItemTypeModel(GetItemType(itemid)),
-			x, y, z + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ] + angle);
+			x, y, z + def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ],
+			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotX],
+			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotY],
+			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ] + angle);
 
 		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
