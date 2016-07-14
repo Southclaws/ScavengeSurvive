@@ -262,13 +262,35 @@ CheckAdminLevel(playerid)
 	}
 }
 
+TimeoutPlayer(playerid, reason[])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	if(admin_PlayerKicked[playerid])
+		return 0;
+
+	new ip[16];
+
+	GetPlayerIp(playerid, ip, sizeof(ip));
+
+	BlockIpAddress(ip, 11500);
+	admin_PlayerKicked[playerid] = true;
+
+	logf("[PART] %p (timeout: %s)", playerid, reason);
+
+	ChatMsgAdmins(1, GREY, " >  %P"C_GREY" timed out, reason: "C_BLUE"%s", playerid, reason);
+
+	return 1;
+}
+
 KickPlayer(playerid, reason[], bool:tellplayer = true)
 {
 	if(!IsPlayerConnected(playerid))
-		return;
+		return 0;
 
 	if(admin_PlayerKicked[playerid])
-		return;
+		return 0;
 
 	defer KickPlayerDelay(playerid);
 	admin_PlayerKicked[playerid] = true;
@@ -280,7 +302,7 @@ KickPlayer(playerid, reason[], bool:tellplayer = true)
 	if(tellplayer)
 		ChatMsgLang(playerid, GREY, "KICKMESSAGE", reason);
 
-	return;
+	return 1;
 }
 
 timer KickPlayerDelay[1000](playerid)

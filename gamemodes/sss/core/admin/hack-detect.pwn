@@ -715,6 +715,7 @@ CameraDistanceCheck(playerid)
 			format(reason, sizeof(reason), "Camera distance from player %.0f (onfoot, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
+			TimeoutPlayer(name, reason);
 
 			cd_ReportTick[playerid] = GetTickCount();
 		}
@@ -808,6 +809,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 
 			format(info, sizeof(info), "%f, %f, %f", new_x, new_y, new_z);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CARTELE, x, y, z, GetPlayerVirtualWorld(vt_MovedFarPlayer[vehicleid]), GetPlayerInterior(vt_MovedFarPlayer[vehicleid]), info);
+			TimeoutPlayer(vt_MovedFarPlayer[vehicleid], reason);
 
 			// RespawnVehicle(vehicleid);
 			return 0;
@@ -878,6 +880,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerPos(playerid, px, py, pz);
 
 			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as driver", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+			TimeoutPlayer(playerid, sprintf("Entered locked vehicle (%d) as driver", vehicleid));
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, px, py, pz);
 
@@ -903,6 +906,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			GetPlayerPos(playerid, x, y, z);
 
 			ReportPlayer(name, sprintf("Entered locked vehicle (%d) as passenger", vehicleid), -1, REPORT_TYPE_LOCKEDCAR, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+			TimeoutPlayer(playerid, sprintf("Entered locked vehicle (%d) as passenger", vehicleid));
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, x, y, z);
 
@@ -921,7 +925,7 @@ timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
 		return;
 
 	if(IsPlayerInVehicle(playerid, vehicleid))
-		BanPlayer(playerid, "Staying in a locked vehicle", -1, 0);
+		TimeoutPlayer(playerid, "Staying in a locked vehicle");
 
 	SetVehicleExternalLock(vehicleid, 1);
 }
@@ -958,6 +962,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 			GetPlayerPos(playerid, x, y, z);
 
 			ReportPlayer(name, sprintf("fired %d bullets from a %w without reloading", ammo_ShotCounter[playerid], weaponid), -1, REPORT_TYPE_AMMO, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+			TimeoutPlayer(playerid, sprintf("fired %d bullets from a %w without reloading", ammo_ShotCounter[playerid], weaponid));
 		}
 	}
 	else
@@ -983,6 +988,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 222 while shooting weapon 27", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 222 while shooting weapon 27");
 
 				return 0;
 			}
@@ -1001,6 +1007,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 1454 while shooting weapon 23", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 1454 while shooting weapon 23");
 
 				return 0;
 			}
@@ -1019,6 +1026,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 1450 while shooting weapon 25", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 1450 while shooting weapon 25");
 
 				return 0;
 			}
@@ -1037,6 +1045,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 1645 while shooting weapon 29", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 1645 while shooting weapon 29");
 
 				return 0;
 			}
@@ -1055,6 +1064,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 1367 while shooting weapon 30/31/33", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 1367 while shooting weapon 30/31/33");
 
 				return 0;
 			}
@@ -1073,6 +1083,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				GetPlayerPos(playerid, x, y, z);
 
 				ReportPlayer(name, "Used animation 1333 while shooting weapon 24", -1, REPORT_TYPE_SHOTANIM, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+				TimeoutPlayer(playerid, "Used animation 1333 while shooting weapon 24");
 
 				return 0;
 			}
@@ -1119,6 +1130,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 			GetPlayerPos(playerid, x, y, z);
 
 			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+			TimeoutPlayer(playerid, "Bad bullet hit offset, attempted crash");
 
 			return 0;
 		}
