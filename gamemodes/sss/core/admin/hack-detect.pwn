@@ -32,6 +32,8 @@
 #define CAMERA_DISTANCE_INCAR_CINEMOVE	(150.0)
 #define CAMERA_DISTANCE_ONFOOT			(45.0)
 #define VEHICLE_TELEPORT_DISTANCE		(15.0)
+#define	NUM_SHOT_CHECK					(10)
+#define	EXCESS_AMOUNT					(7)
 
 
 enum
@@ -63,7 +65,13 @@ Float:	tp_SetPos			[MAX_PLAYERS][3],
 		vh_ReportTick		[MAX_PLAYERS],
 // Camera Distance
 		cd_ReportTick		[MAX_PLAYERS],
-		cd_DetectDelay		[MAX_PLAYERS];
+		cd_DetectDelay		[MAX_PLAYERS],
+// Excess Accuracy
+		ea_PlayerShots		[MAX_PLAYERS],
+		ea_PlayerHits		[MAX_PLAYERS],
+		ea_LastShots		[MAX_PLAYERS][NUM_SHOT_CHECK],
+		ea_Currshot			[MAX_PLAYERS],
+		ea_TotalChecks		[MAX_PLAYERS];
 
 
 hook OnGameModeInit()
@@ -93,6 +101,11 @@ hook OnGameModeInit()
 	sf_LVTrainTunnel_Area = CreateDynamicPolygon(lv_points, -6.0, 0.0, 8);
 	sf_SFDryDock_Area = CreateDynamicPolygon(sf_points, -14, 0.0, 8);
 
+	for(new i = 0; i < MAX_PLAYERS; i++)
+	{
+		for(new j = 0; j < NUM_SHOT_CHECK; j++)
+			ea_LastShots[i][j] = -1;
+	}
 }
 /*==============================================================================
 
@@ -929,26 +942,6 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerWeaponShot] in /gamemodes/sss/core/admin/hack-detect.pwn");
 
-	// by IstuntmanI, thanks!
-	if(hittype == BULLET_HIT_TYPE_PLAYER)
-	{
-		if(!(-20.0 <= fX <= 20.0) || !(-20.0 <= fY <= 20.0) || !(-20.0 <= fZ <= 20.0))
-		{
-			new
-				name[MAX_PLAYER_NAME],
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-			GetPlayerPos(playerid, x, y, z);
-
-			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
-
-			return 0;
-		}
-	}
-
 	if(GetTickCountDifference(ammo_LastShot[playerid], GetTickCount()) < GetWeaponShotInterval(weaponid) + 10)
 	{
 		ammo_ShotCounter[playerid]++;
@@ -1111,5 +1104,153 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 		}
 	}
 
+	// by IstuntmanI, thanks!
+	if(hittype == BULLET_HIT_TYPE_PLAYER)
+	{
+		if(!(-20.0 <= fX <= 20.0) || !(-20.0 <= fY <= 20.0) || !(-20.0 <= fZ <= 20.0))
+		{
+			new
+				name[MAX_PLAYER_NAME],
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+			GetPlayerPos(playerid, x, y, z);
+
+			ReportPlayer(name, "Bad bullet hit offset, attempted crash", -1, REPORT_TYPE_BADHITOFFSET, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
+
+			return 0;
+		}
+
+
+/*==============================================================================
+
+	Excess accuracy checks
+
+==============================================================================*/
+
+
+		if(GetPlayerTargetPlayer(playerid) != INVALID_PLAYER_ID)
+		{
+			if(!IsPlayerNPC(hitid))
+			{
+				// Check if player shot is standing still
+				new
+					Float:vx,
+					Float:vy,
+					Float:vz;
+
+				GetPlayerVelocity(hitid, vx, vy, vz);
+
+				if(vx != 0.0 || vy != 0.0 || vz != 0.0)
+				{
+					ea_PlayerShots[playerid]++;
+					ea_PlayerHits[playerid]++;
+					ea_LastShots[playerid][ea_Currshot[playerid]] = 1;
+
+					new total = CheckLastShots(playerid);
+
+					if(total > 0)
+					{
+						ea_TotalChecks[playerid]++;
+						AccuracyWarning(playerid, total);
+					}
+
+					ea_Currshot[playerid]++;
+
+					if(ea_Currshot[playerid] == NUM_SHOT_CHECK)
+					{
+						ea_Currshot[playerid] = 0;
+
+						for(new i = 0; i < NUM_SHOT_CHECK; i++)
+							ea_LastShots[playerid][i] = -1;
+					}
+				}
+			}
+		}
+		else
+		{
+			ea_PlayerShots[playerid]++;
+			ea_LastShots[playerid][ea_Currshot[playerid]] = 0;
+
+			new total = CheckLastShots(playerid);
+
+			if(total > 0)
+			{
+				ea_TotalChecks[playerid]++;
+				AccuracyWarning(playerid, total);
+			}
+
+			ea_Currshot[playerid]++;
+
+			if(ea_Currshot[playerid] == NUM_SHOT_CHECK)
+			{
+				ea_Currshot[playerid] = 0;
+
+				for(new i = 0; i < NUM_SHOT_CHECK; i++)
+					ea_LastShots[playerid][i] = -1;
+			}
+		}
+	}
+
 	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	ea_PlayerShots[playerid] = 0;
+	ea_PlayerHits[playerid] = 0;
+	ea_Currshot[playerid] = 0;
+	ea_TotalChecks[playerid] = 0;
+
+	for(new i = 0; i < NUM_SHOT_CHECK; i++)
+		ea_LastShots[playerid][i] = -1;
+
+	return 1;
+}
+
+stock GetPlayerShotStats(playerid, &shots, &hits, &Float:accuracy)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	shots = ea_PlayerShots[playerid];
+	hits = ea_PlayerHits[playerid];
+	accuracy = floatdiv(float(ea_PlayerHits[playerid]), float(ea_PlayerShots[playerid]));
+
+	return 1;
+}
+
+stock CheckLastShots(playerid)
+{
+	new count;
+
+	for(new i = 0; i < NUM_SHOT_CHECK; i++)
+	{
+		if(ea_LastShots[playerid][i] == -1)
+			return 0;
+
+		if(ea_LastShots[playerid][i])
+			count++;
+	}
+
+	if(count >= EXCESS_AMOUNT)
+		return count;
+
+	return 0;
+}
+
+AccuracyWarning(playerid, total)
+{
+	new
+		shots,
+		hits,
+		Float:accuracy;
+
+	GetPlayerShotStats(playerid, shots, hits, accuracy);
+
+	ChatMsgAdmins(2, YELLOW,
+		"Accuracy Warning: %P (%d) Shots: %d Hits: %d Accuracy: %.2f (%d/10) Checks: %d",
+		playerid, playerid, shots, hits, accuracy, total, ea_TotalChecks[playerid]);
 }
