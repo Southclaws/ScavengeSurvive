@@ -715,7 +715,7 @@ CameraDistanceCheck(playerid)
 			format(reason, sizeof(reason), "Camera distance from player %.0f (onfoot, %d, %d at %.0f, %.0f, %.0f)", distance, type, cameramode, cx, cy, cz);
 			format(info, sizeof(info), "%.1f, %.1f, %.1f, %.1f, %.1f, %.1f", cx, cy, cz, cx_vec, cy_vec, cz_vec);
 			ReportPlayer(name, reason, -1, REPORT_TYPE_CAMDIST, px, py, pz, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), info);
-			TimeoutPlayer(name, reason);
+			TimeoutPlayer(playerid, reason);
 
 			cd_ReportTick[playerid] = GetTickCount();
 		}
