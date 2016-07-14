@@ -518,9 +518,13 @@ hook OnHoldActionFinish(playerid)
 			return Y_HOOKS_BREAK_RETURN_0;
 
 		new
-			ItemType:itemtype = GetItemType(GetPlayerItem(playerid)),
+			ItemType:itemtype,
+			ItemType:defenceitemtype,
 			pose,
 			itemid;
+
+		itemtype = GetItemType(GetPlayerItem(playerid));
+		defenceitemtype = GetItemType(def_CurrentDefenceItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
 			pose = DEFENCE_POSE_VERTICAL;
@@ -528,7 +532,8 @@ hook OnHoldActionFinish(playerid)
 		if(itemtype == item_Hammer)
 			pose = DEFENCE_POSE_HORIZONTAL;
 
-		SetItemArrayDataAtCell(itemid, pose, def_pose);
+		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_maxHitPoints], def_hitPoints);
+		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], pose, def_pose);
 		itemid = CreateDefence(def_CurrentDefenceItem[playerid]);
 
 		if(!IsValidItem(itemid))
@@ -538,7 +543,6 @@ hook OnHoldActionFinish(playerid)
 		}
 
 		new
-			ItemType:defenceitemtype = GetItemType(itemid),
 			geid[GEID_LEN],
 			Float:x,
 			Float:y,
