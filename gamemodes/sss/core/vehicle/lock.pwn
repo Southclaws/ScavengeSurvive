@@ -100,7 +100,7 @@ hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehArea] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	if(!lock_Status[vehicleid] && !lock_DisableForPlayer[playerid])
+	if(!lock_Status[vehicleid] && !lock_DisableForPlayer[playerid] && !IsVehicleDead(vehicleid))
 	{
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
 	}
@@ -144,7 +144,7 @@ stock SetVehicleExternalLock(vehicleid, status)
 
 	if(IsVehicleDead(vehicleid))
 	{
-		lock_Status[vehicleid] = true;
+		lock_Status[vehicleid] = false;
 		VehicleDoorsState(vehicleid, true);
 		return 1;
 	}

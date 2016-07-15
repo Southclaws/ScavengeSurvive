@@ -205,7 +205,7 @@ LoadPlayerVehicle(filename[])
 	{
 		if(data[0] == 0)
 		{
-			d:1:HANDLER("[LoadPlayerVehicle] ERROR: Vehicle set to inactive (file: %s)", filename);
+			d:1:HANDLER("[LoadPlayerVehicle] Vehicle set to inactive (file: %s)", filename);
 			modio_finalise_read(modio_getsession_read(filepath));
 			return 0;
 		}
@@ -446,7 +446,7 @@ LoadPlayerVehicle(filename[])
 ==============================================================================*/
 
 
-_SaveVehicle(vehicleid, active = true)
+_SaveVehicle(vehicleid)
 {
 	if(isnull(pveh_Owner[vehicleid]))
 	{
@@ -458,6 +458,7 @@ _SaveVehicle(vehicleid, active = true)
 		filename[MAX_PLAYER_NAME + 22],
 		session,
 		vehiclename[MAX_VEHICLE_TYPE_NAME],
+		active[1],
 		data[VEH_CELL_END];
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", pveh_Owner[vehicleid]);
@@ -467,8 +468,8 @@ _SaveVehicle(vehicleid, active = true)
 	if(session != -1)
 		modio_close_session_write(session);
 
-	data[0] = active;
-	modio_push(filename, _T<A,C,T,V>, 1, data);
+	active[0] = !IsVehicleDead(vehicleid);
+	modio_push(filename, _T<A,C,T,V>, 1, active);
 
 	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
 
@@ -582,7 +583,7 @@ _SaveVehicle(vehicleid, active = true)
 
 	DestroyItemList(itemlist);
 
-	if(active)
+	if(active[0])
 	{
 		if(veh_PrintEach)
 		{
@@ -683,7 +684,7 @@ hook OnVehicleDestroyed(vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
-	_RemoveVehicleFile(vehicleid);
+	_SaveVehicle(vehicleid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -806,7 +807,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// Remove the original owner's name from it
 				// Assign the player as the new owner and save the vehicle
 				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
-				_RemoveVehicleFile(vehicleid);
+				_SaveVehicle(vehicleid);
 				_SetVehicleOwner(vehicleid, name, playerid);
 				_SaveVehicle(vehicleid);
 			}
@@ -814,17 +815,6 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	}
 
 	return 1;
-}
-
-_RemoveVehicleFile(vehicleid)
-{
-	if(!IsValidVehicle(vehicleid))
-		return 0;
-
-	if(isnull(pveh_Owner[vehicleid]))
-		return 1;
-
-	return _SaveVehicle(vehicleid, false);
 }
 
 hook OnPlayerSave(playerid, filename[])
@@ -883,11 +873,6 @@ stock GetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME])
 stock SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
 	return _SetVehicleOwner(vehicleid, name, playerid);
-}
-
-stock RemoveVehicleFile(vehicleid)
-{
-	return _RemoveVehicleFile(vehicleid);
 }
 
 CMD:vsave(playerid, params[])

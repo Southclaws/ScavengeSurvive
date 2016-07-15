@@ -158,16 +158,6 @@ hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnVehicleDestroyed(vehicleid)
-{
-	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
-	if(IsValidContainer(trunk_ContainerID[vehicleid]))
-		DestroyContainer(trunk_ContainerID[vehicleid]);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
 VehicleTrunkUpdateSave(playerid)
 {
 	if(IsValidVehicle(trunk_CurrentVehicle[playerid]))

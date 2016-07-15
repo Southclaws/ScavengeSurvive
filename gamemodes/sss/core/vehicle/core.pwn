@@ -186,14 +186,30 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 	return vehicleid;
 }
 
-stock DestroyWorldVehicle(vehicleid)
+stock DestroyWorldVehicle(vehicleid, bool:perma = false)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	CallLocalFunction("OnVehicleDestroyed", "d", vehicleid);
-	DestroyVehicle(vehicleid);
 	Iter_Remove(veh_Index, vehicleid);
+
+	if(perma)
+	{
+		DestroyVehicle(vehicleid);
+	}
+	else
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetVehiclePos(vehicleid, x, y, z);
+
+		if(!IsPosInWater(x, y, z))
+			CreateDynamicObject(18690, x, y, z - 2.0, 0.0, 0.0, 0.0);
+	}
 
 	return 1;
 }
@@ -738,21 +754,21 @@ hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Fl
 	if(old_x * old_y * old_z == 0.0)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(xydistance > 0.0)
+	if(xydistance > 0.01)
 	{
 		if(GetTickCountDifference(GetTickCount(), veh_Data[vehicleid][veh_lastUsed]) < 10000)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		new
 			Float:xythresh = 0.25,
-			Float:zthresh = 0.5;
+			Float:zthresh = 0.8;
 
 		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
 			case VEHICLE_CATEGORY_TRUCK:
 			{
 				xythresh = 0.02;
-				zthresh = 0.9;
+				zthresh = 1.0;
 			}
 
 			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
@@ -770,15 +786,21 @@ hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Fl
 			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
 			{
 				xythresh = 0.01;
-				zthresh = 0.01;
+				zthresh = 0.5;
 			}
 		}
 
-		if(xydistance > xythresh || zdistance > zthresh)
+		if(xydistance > xythresh)
 		{
 			//printf("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
 			SetVehiclePos(vehicleid, old_x, old_y, old_z);
 			SetVehicleZAngle(vehicleid, old_r);
+		}
+
+		if(zdistance > zthresh)
+		{
+			//printf("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
+			SetVehiclePos(vehicleid, new_x, new_y, old_z);
 		}
 
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -838,8 +860,12 @@ public OnVehicleSpawn(vehicleid)
 			printf("Dead Vehicle %d Spawned, spawning as inactive.", vehicleid);
 
 			veh_Data[vehicleid][veh_health] = 300.0;
-			VehicleDoorsState(vehicleid, true);
 			ResetVehicle(vehicleid);
+			SetVehicleExternalLock(vehicleid, false);
+			SetVehicleTrunkLock(vehicleid, false);
+			veh_Data[vehicleid][veh_key] = 0;
+
+			DestroyWorldVehicle(vehicleid);
 		}
 	}
 

@@ -253,7 +253,7 @@ ExitTutorial(playerid)
 	PlayerCreateNewCharacter(playerid);
 	SetPlayerBrightness(playerid, 0);
 
-	DestroyWorldVehicle(PlayerTutorialVehicle[playerid]);
+	DestroyWorldVehicle(PlayerTutorialVehicle[playerid], true);
 	PlayerTutorialVehicle[playerid] = INVALID_VEHICLE_ID;
 
 	ToggleTutorialUI(playerid, false);

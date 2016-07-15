@@ -245,15 +245,6 @@ _vint_LeaveArea(playerid, areaid)
 	return;
 }
 
-hook OnVehicleDestroyed(vehicleid)
-{
-	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/interact.pwn");
-
-	DestroyDynamicArea(varea_AreaID[vehicleid]);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/interact.pwn");
