@@ -92,8 +92,6 @@ stock DefineLootIndex(name[MAX_LOOT_INDEX_NAME])
 
 	loot_IndexName[loot_IndexTotal] = name;
 
-	printf("Defining new loot index '%s'", loot_IndexName[loot_IndexTotal]);
-
 	return loot_IndexTotal++;
 }
 

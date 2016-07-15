@@ -128,12 +128,6 @@ LoadLootTableFromFile(file[])
 
 	indexid = DefineLootIndex(indexname);
 
-	if(!IsValidLootIndex(indexid))
-	{
-		printf("ERROR: [LoadLootTableFromFile] Loot index ID (%d) interpreted from '%s' (file %s) is invalid.", indexid, indexname, file);
-		return 0;
-	}
-
 	while(fread(f, line))
 	{
 		linenum++;
