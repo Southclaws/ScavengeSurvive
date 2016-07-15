@@ -107,9 +107,15 @@ LoadOffsetsFromFile(filename[])
 		Float:rz,
 		listindex;
 
+	if(id == ITER_NONE)
+	{
+		print("ERROR: [LoadOffsetsFromFile] id == ITER_NONE");
+		return 0;
+	}
+
 	if(!fexist(filename))
 	{
-		printf("[LoadOffsetsFromFile] ERROR: File not found: '%s'", filename);
+		printf("ERROR: [LoadOffsetsFromFile] File not found: '%s'", filename);
 		return 0;
 	}
 

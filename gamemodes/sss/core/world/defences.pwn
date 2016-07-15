@@ -210,7 +210,7 @@ CreateDefence(type, Float:x, Float:y, Float:z, Float:rz, pose, motor = 0, keypad
 {
 	new id = Iter_Free(def_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 		return -1;
 
 	new	itemtypename[ITM_MAX_NAME];

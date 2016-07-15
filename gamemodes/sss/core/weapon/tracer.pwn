@@ -35,7 +35,7 @@ stock CreateTracer(Float:originx, Float:originy, Float:originz, Float:targetx, F
 {
 	new id = Iter_Free(tracer_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 		return -1;
 
 	new

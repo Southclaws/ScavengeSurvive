@@ -113,7 +113,7 @@ DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float
 {
 	new id = Iter_Free(sup_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 	{
 		printf("ERROR: Supply drop pos definition limit reached.");
 		return -1;

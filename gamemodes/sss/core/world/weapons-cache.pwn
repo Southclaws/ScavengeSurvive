@@ -58,7 +58,7 @@ DefineWeaponsCachePos(Float:x, Float:y, Float:z)
 {
 	new id = Iter_Free(wepc_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 	{
 		printf("ERROR: Weapons cache pos definition limit reached.");
 		return -1;

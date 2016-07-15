@@ -230,7 +230,7 @@ stock CreateDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz
 {
 	new id = Iter_Free(det_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 	{
 		print("ERROR: MAX_DETFIELD limit reached.");
 		return -1;

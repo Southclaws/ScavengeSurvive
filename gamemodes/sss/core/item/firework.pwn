@@ -79,7 +79,8 @@ CreateFireworkProjectile(model,
 {
 	new id = Iter_Free(fwk_ProjectileIndex);
 	
-	if(id == -1)return -1;
+	if(id == ITER_NONE)
+		return -1;
 
 	fwk_Data[id][fwk_object] = CreateDynamicObject(model, x, y, z, rx, ry, rz);
 	MoveDynamicObject(fwk_Data[id][fwk_object],

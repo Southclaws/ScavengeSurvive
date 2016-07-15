@@ -180,6 +180,12 @@ _vint_EnterArea(playerid, areaid)
 	{
 		new cell = Iter_Free(varea_NearIndex[playerid]);
 
+		if(cell == ITER_NONE)
+		{
+			print("ERROR: [_vint_EnterArea] cell == ITER_NONE");
+			return;
+		}
+
 		varea_NearList[playerid][cell] = data[1];
 		Iter_Add(varea_NearIndex[playerid], cell);
 	}

@@ -103,6 +103,13 @@ _cntr_UseWeb(playerid)
 	format(query, sizeof(query), "iphub.info/api.php?ip=%s", ip);
 
 	cell = Iter_Free(PlayerSessionIndex);
+
+	if(cell == ITER_NONE)
+	{
+		printf("ERROR: [_cntr_UseWeb] cell == ITER_NONE");
+		return 0;
+	}
+
 	PlayerSessionData[cell] = playerid;
 	Iter_Add(PlayerSessionIndex, cell);
 

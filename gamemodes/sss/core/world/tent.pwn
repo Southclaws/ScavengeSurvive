@@ -132,6 +132,12 @@ stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
 {
 	new id = Iter_Free(tnt_Index);
 
+	if(id == ITER_NONE)
+	{
+		print("ERROR: [CreateTent] id == ITER_NONE");
+		return -1;
+	}
+
 	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", worldid, interiorid, .areasize = 1.5, .label = 0);
 
 	tnt_ButtonTent[tnt_Data[id][tnt_buttonId]] = id;
@@ -276,7 +282,7 @@ AddItemToTentIndex(tentid, itemid)
 
 	new cell = Iter_Free(tnt_ItemIndex[tentid]);
 
-	if(cell == -1)
+	if(cell == ITER_NONE)
 		return 0;
 
 	tnt_Items[tentid][cell] = itemid;
@@ -707,7 +713,7 @@ LoadTent(filename[])
 
 		cell = Iter_Free(tnt_ItemIndex[tentid]);
 
-		if(cell == -1)
+		if(cell == ITER_NONE)
 			return 0;
 
 		tnt_Items[tentid][cell] = itemid;

@@ -97,7 +97,7 @@ stock CreateSign(text[MAX_SIGN_TEXT], Float:x, Float:y, Float:z, Float:rot)
 {
 	new id = Iter_Free(sgn_Index);
 
-	if(id == -1)
+	if(id == ITER_NONE)
 		return INVALID_SIGN_ID;
 
 

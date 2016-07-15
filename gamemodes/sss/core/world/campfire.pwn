@@ -67,6 +67,12 @@ stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz, world, interior)
 {
 	new id = Iter_Free(cmp_Index);
 
+	if(id == ITER_NONE)
+	{
+		print("ERROR: [CreateCampfire] id == ITER_NONE");
+		return -1;
+	}
+
 	cmp_Data[id][cmp_objMid1] = CreateDynamicObject(19475, x, y, z, 10.0, 90.0, rz + 18.0, world, interior, .streamdistance = 50.0);
 	cmp_Data[id][cmp_objMid2] = CreateDynamicObject(19475, x, y, z, -10.0, 90.0, rz + 36.0, world, interior, .streamdistance = 10.0);
 	cmp_Data[id][cmp_objMid3] = CreateDynamicObject(19475, x, y, z, 0.0, 100.0, rz + 54.0, world, interior, .streamdistance = 50.0);

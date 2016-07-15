@@ -160,7 +160,7 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 		id = Iter_Free(tree_Index),
 		data[2];
 
-	if(id == -1)
+	if(id == ITER_NONE)
 	{
 		printf("ERROR: CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
 		return -1;
