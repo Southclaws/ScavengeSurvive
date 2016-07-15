@@ -386,6 +386,15 @@ ACMD:vehicle[3](playerid, params[])
 		return 1;
 	}
 
+	if(!strcmp(command, "destroy"))
+	{
+		SetVehicleHealth(vehicleid, 0.0);
+
+		ChatMsg(playerid, YELLOW, " >  Vehicle %d set on fire", vehicleid);
+
+		return 1;
+	}
+
 	ChatMsg(playerid, YELLOW, " >  Usage: /vehicle [get/enter/owner/delete/respawn/reset/lock/unlock] [id]");
 
 	return 1;
