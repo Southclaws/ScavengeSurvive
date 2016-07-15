@@ -452,3 +452,13 @@ stock GetLootSpawnTotalItems(lootspawn)
 	return loot_SpawnData[lootspawn][loot_total];
 }
 
+stock GetLootIndexFromName(name[])
+{
+	for(new i; i < loot_IndexTotal; i++)
+	{
+		if(!strcmp(name, loot_IndexName[i], true))
+			return i;
+	}
+
+	return -1;
+}

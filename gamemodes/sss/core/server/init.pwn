@@ -1310,10 +1310,7 @@ public OnScriptInit()
 	DefineItemCraftSet(item_Bottle, item_Bottle, true, item_Bottle, true);
 
 	// items created by using a tool item on them in the world
-	SetCraftSetConstructible(3000, item_Log, DefineItemCraftSet(item_Campfire, item_Log, false, item_Log, false));
-	SetCraftSetConstructible(3000, item_Crowbar, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_SmallBox, false));
-	SetCraftSetConstructible(3000, item_Crowbar, DefineItemCraftSet(item_Campfire, item_MediumBox, false, item_MediumBox, false));
-	SetCraftSetConstructible(3000, item_Crowbar, DefineItemCraftSet(item_Campfire, item_SmallBox, false, item_MediumBox, false));
+	SetCraftSetConstructible(5000, item_Log, DefineItemCraftSet(item_Campfire, item_Log, false, item_Log, false));
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));

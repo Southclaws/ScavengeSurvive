@@ -180,6 +180,40 @@ ACMD:gotodef[4](playerid, params[])
 	return 1;
 }
 
+ACMD:addloot[5](playerid, params[])
+{
+	new
+		lootindexname[MAX_LOOT_INDEX_NAME],
+		lootindex,
+		size;
+
+	if(sscanf(params, "s[32]d", lootindexname, size))
+	{
+		ChatMsg(playerid, YELLOW, " >  Usage: /addloot [indexname] [size]");
+		return 1;
+	}
+
+	lootindex = GetLootIndexFromName(lootindexname);
+
+	if(lootindex == -1)
+	{
+		ChatMsg(playerid, RED, " >  Loot index name invalid!");
+		return 1;
+	}
+
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+	CreateLootItem(lootindex, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+	//CreateStaticLootSpawn(x, y, z - 0.8568, lootindex, 100, size, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+
+	return 1;
+}
+
 
 /*==============================================================================
 
