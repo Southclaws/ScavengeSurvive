@@ -92,6 +92,8 @@ stock DefineLootIndex(name[MAX_LOOT_INDEX_NAME])
 
 	loot_IndexName[loot_IndexTotal] = name;
 
+	printf("Defining new loot index '%s'", loot_IndexName[loot_IndexTotal]);
+
 	return loot_IndexTotal++;
 }
 
@@ -316,6 +318,9 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 
 _loot_PickFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], listsize, &cell)
 {
+	if(listsize <= 0)
+		return 0;
+
 	new Float:value;
 
 // Another selection method that will *always* return an item:
@@ -389,6 +394,11 @@ hook OnItemDestroy(itemid)
 
 ==============================================================================*/
 
+
+stock IsValidLootIndex(index)
+{
+	return (0 <= index < loot_IndexTotal);
+}
 
 stock GetItemLootIndex(itemid)
 {
