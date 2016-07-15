@@ -1343,24 +1343,6 @@ public OnScriptInit()
 	//WriteAllCombosToFile();
 
 
-	// LOOT TYPE DEFINITIONS
-	loot_Civilian		= DefineLootIndex("civi");
-	loot_Industrial		= DefineLootIndex("indu");
-	loot_Police			= DefineLootIndex("poli");
-	loot_Military		= DefineLootIndex("mili");
-	loot_Medical		= DefineLootIndex("medi");
-	loot_CarCivilian	= DefineLootIndex("vciv");
-	loot_CarIndustrial	= DefineLootIndex("vind");
-	loot_CarPolice		= DefineLootIndex("vpol");
-	loot_CarMilitary	= DefineLootIndex("vmil");
-	loot_Survivor		= DefineLootIndex("surv");
-	loot_FoodMedCrate	= DefineLootIndex("scfm");
-	loot_LowWepCrate	= DefineLootIndex("sclw");
-	loot_MilWepCrate	= DefineLootIndex("scmw");
-	loot_IndustCrate	= DefineLootIndex("scin");
-	loot_OrdnanceCrate	= DefineLootIndex("scor");
-
-
     // SUPPLY DROP TYPE DEFINITIONS
 	DefineSupplyDropType("Food and Medical",	loot_FoodMedCrate,	900,	600,	3);
 	DefineSupplyDropType("Low Grade Weapons",	loot_LowWepCrate,	2400,	1200,	4);

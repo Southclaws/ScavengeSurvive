@@ -126,7 +126,7 @@ LoadLootTableFromFile(file[])
 		return 0;
 	}
 
-	indexid = GetLootIndexFromName(indexname);
+	indexid = DefineLootIndex(indexname);
 
 	if(!IsValidLootIndex(indexid))
 	{
