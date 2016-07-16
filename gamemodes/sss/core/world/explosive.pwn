@@ -540,20 +540,20 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 	}
 
 	new
-		defenceid,
+		itemid,
 		newhitpoints;
 
-	defenceid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
+	itemid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
 
-	if(defenceid == -1)
+	if(IsValidItem(itemid))
 		return 0;
 
-	newhitpoints = GetDefenceHitPoints(defenceid) - exp_Presets[preset][exp_defdmg];
+	newhitpoints = GetDefenceHitPoints(itemid) - exp_Presets[preset][exp_defdmg];
 
 	if(newhitpoints <= 0)
 	{
 		new
-			defencetype = GetDefenceType(defenceid),
+			defencetype = GetDefenceType(itemid),
 			ItemType:itemtype = GetDefenceTypeItemType(defencetype),
 			Float:vrotx,
 			Float:vroty,
@@ -561,21 +561,20 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 			Float:rotz;
 
 		GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
-		rotz = GetDefenceRot(defenceid);
+		GetItemRot(itemid, rotz, rotz, rotz);
 
-		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
-			defenceid, x, y, z,
-			GetDefenceGEID(defenceid),
+		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f type %d (%d, %f, %f, %f, %f, %f, %f)",
+			itemid, x, y, z,
 			_:itemtype,
 			GetItemTypeModel(itemtype),
 			x, y, z + GetDefenceTypeOffsetZ(defencetype),
 			vrotx, vroty, vrotz + rotz);
 
-		DestroyDefence(defenceid);
+		DestroyItem(itemid);
 	}
 	else
 	{
-		SetDefenceHitPoints(defenceid, newhitpoints);
+		SetDefenceHitPoints(itemid, newhitpoints);
 	}
 
 	return 1;
