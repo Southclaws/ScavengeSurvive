@@ -397,7 +397,7 @@ public OnPlayerUpdate(playerid)
 	if(ply_Data[playerid][ply_BitFlags] & Frozen)
 		return 0;
 
-	if(IsPlayerDataLoaded(playerid))
+	if(!IsPlayerDataLoaded(playerid))
 		return 0;
 
 	if(IsPlayerInAnyVehicle(playerid))
