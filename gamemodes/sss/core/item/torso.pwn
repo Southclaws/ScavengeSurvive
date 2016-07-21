@@ -104,7 +104,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	if(gut_TargetItem[playerid] != INVALID_ITEM_ID)
 	{
 		gut_TargetItem[playerid] = INVALID_ITEM_ID;
-		ClearAnimations(playerid);
+		CancelPlayerMovement(playerid);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -119,7 +119,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(IsValidItem(gut_TargetItem[playerid]))
 		{
 			StopHoldAction(playerid);
-			ClearAnimations(playerid);
+			CancelPlayerMovement(playerid);
+			gut_TargetItem[playerid] = INVALID_ITEM_ID;
 		}
 	}
 }
@@ -148,7 +149,7 @@ hook OnHoldActionFinish(playerid)
 		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
-		ClearAnimations(playerid);
+		CancelPlayerMovement(playerid);
 
 		gut_TargetItem[playerid] = INVALID_ITEM_ID;
 
