@@ -116,9 +116,6 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight, perspawnlimit =
 
 stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, size = -1, worldid = 0, interiorid = 0)
 {
-	if(loot_SpawnMult == 0.0)
-		return -1;
-
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
 		print("ERROR: Loot spawn limit reached.");
@@ -143,40 +140,30 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 	loot_SpawnData[lootspawnid][loot_index] = lootindex;
 
 	new
-		samplelist[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		cell,
 		ItemType:itemtype,
 		itemid,
 		Float:rot = frandom(360.0);
 
-	for(new i; i < loot_IndexSize[lootindex]; ++i)
-	{
-		samplelist[i][lootitem_type] = loot_IndexItems[lootindex][i][lootitem_type];
-		samplelist[i][lootitem_limit] = loot_IndexItems[lootindex][i][lootitem_limit];
-		samplelist[i][lootitem_weight] = loot_IndexItems[lootindex][i][lootitem_weight];
-	}
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
-	samplelistsize = loot_IndexSize[lootindex];
+	// printf("[CreateStaticLootSpawn] index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 
 	for(new i; i < size; i++)
 	{
-		// Generate an item from the sample list
+		if(frandom(100.0) > weight * loot_SpawnMult)
+			continue;
 
+		// Generate an item from the sample list
 		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
 			continue;
 
-		itemtype = samplelist[cell][lootitem_type];
+		itemtype = samplelist[cell];
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
-			continue;
-		}
-
-		if(samplelist[cell][lootitem_limit] > 0 && _loot_LootSpawnItemsOfType(lootspawnid, itemtype) > samplelist[cell][lootitem_limit])
 		{
 			_loot_RemoveFromSampleList(samplelist, cell);
 			samplelistsize--;
@@ -208,12 +195,18 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0, Float:zoffset = ITEM_BUTTON_OFFSET)
 {
-	new cell;
+	new
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
+		samplelistsize,
+		cell;
 
-	if(!_loot_PickFromSampleList(loot_IndexItems[lootindex], loot_IndexSize[lootindex], cell))
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
+
+	// Generate an item from the sample list
+	if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
 		return INVALID_ITEM_ID;
 
-	new ItemType:itemtype = loot_IndexItems[lootindex][cell][lootitem_type];
+	new ItemType:itemtype = samplelist[cell];
 
 	if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
 		return INVALID_ITEM_ID;
@@ -242,21 +235,14 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		return 0;
 
 	new
-		samplelist[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		items,
 		cell,
 		itemid,
 		ItemType:itemtype;
 
-	for(new i; i < loot_IndexSize[lootindex]; ++i)
-	{
-		samplelist[i][lootitem_type] = loot_IndexItems[lootindex][i][lootitem_type];
-		samplelist[i][lootitem_limit] = loot_IndexItems[lootindex][i][lootitem_limit];
-		samplelist[i][lootitem_weight] = loot_IndexItems[lootindex][i][lootitem_weight];
-	}
-
-	samplelistsize = loot_IndexSize[lootindex];
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
 	while(items < slots && samplelistsize > 0 && GetContainerFreeSlots(containerid) > 0)
 	{
@@ -265,17 +251,10 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
 			continue;
 
-		itemtype = samplelist[cell][lootitem_type];
+		itemtype = samplelist[cell];
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) >= loot_ItemTypeLimit[itemtype])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
-			continue;
-		}
-
-		if(samplelist[cell][lootitem_limit] > 0 && _loot_ContainerItemsOfType(containerid, itemtype) >= samplelist[cell][lootitem_limit])
 		{
 			_loot_RemoveFromSampleList(samplelist, cell);
 			samplelistsize--;
@@ -314,37 +293,38 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 ==============================================================================*/
 
 
-_loot_PickFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], listsize, &cell)
+_loot_GenerateSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], lootindex)
+{
+	new size;
+
+	for(new i; i < loot_IndexSize[lootindex]; ++i)
+	{
+		if(frandom(100.0) > loot_IndexItems[lootindex][i][lootitem_weight])
+			continue;
+
+		if(loot_IndexItems[lootindex][i][lootitem_type] == item_NULL)
+			continue;
+
+		list[size++] = loot_IndexItems[lootindex][i][lootitem_type];
+	}
+
+	return size;
+}
+
+_loot_PickFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], listsize, &cell)
 {
 	if(listsize <= 0)
 		return 0;
 
-	new Float:value;
-
-// Another selection method that will *always* return an item:
-// Might be used in the future if the calling code is optimised.
-//	do
-//	{
-//		cell = random(listsize);
-//		value = frandom(100.0);
-//		printf("[_loot_PickFromSampleList] Checking cell %d: type: %d weight: %f", cell, list[cell][lootitem_type], list[cell][lootitem_weight]);
-//	}
-//	while(value > list[cell][lootitem_weight]);
-// However this one has a chance of not returning an item:
-
 	cell = random(listsize);
-	value = frandom(100.0);
 
-	if(value > (list[cell][lootitem_weight] * loot_SpawnMult))
-		return 0;
-
-	if(!IsValidItemType(list[cell][lootitem_type]))
-		return 0;
+	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
+		list[i] = list[i+1];
 
 	return 1;
 }
 
-_loot_RemoveFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], cell)
+_loot_RemoveFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], cell)
 {
 	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
 		list[i] = list[i+1];
