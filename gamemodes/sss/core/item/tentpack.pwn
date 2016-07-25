@@ -90,17 +90,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z,
-				Float:rz;
-
-			GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
-			GetItemRot(tnt_CurrentTentItem[playerid], rz, rz, rz);
-
-			CreateTent(x, y, z + 0.4, rz, GetItemWorld(tnt_CurrentTentItem[playerid]), GetItemInterior(tnt_CurrentTentItem[playerid]));
-			DestroyItem(tnt_CurrentTentItem[playerid]);
+			CreateTentFromItem(tnt_CurrentTentItem[playerid]);
 			ClearAnimations(playerid);
 
 			tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;

@@ -25,57 +25,39 @@
 #include <YSI\y_hooks>
 
 
-#define DIRECTORY_TENT		DIRECTORY_MAIN"tent/"
 #define MAX_TENT			(2048)
-#define MAX_TENT_ITEMS		(8)
+#define MAX_TENT_ITEMS		(16)
 #define INVALID_TENT_ID		(-1)
 
 
 enum E_TENT_DATA
 {
-			tnt_buttonId,
-			tnt_areaId,
+			tnt_itemId,
+			tnt_containerId
+}
+
+enum E_TENT_OBJECT_DATA
+{
 			tnt_objSideR1,
 			tnt_objSideR2,
 			tnt_objSideL1,
 			tnt_objSideL2,
 			tnt_objPoleF,
-			tnt_objPoleB,
-Float:		tnt_posX,
-Float:		tnt_posY,
-Float:		tnt_posZ,
-Float:		tnt_rotZ,
-			tnt_world,
-			tnt_interior
+			tnt_objPoleB
 }
 
-new
-			tnt_GEID_Index,
-			tnt_GEID[MAX_TENT],
-			tnt_SkipGEID,
-			tnt_Loading,
-#if defined SIF_USE_DEBUG_LABELS
-			tnt_DebugLabelType,
-			tnt_DebugLabelID[MAX_TENT],
-#endif
-			tnt_Data[MAX_TENT][E_TENT_DATA],
-			tnt_Items[MAX_TENT][MAX_TENT_ITEMS],
-   Iterator:tnt_Index<MAX_TENT>,
-   Iterator:tnt_ItemIndex[MAX_TENT]<MAX_TENT_ITEMS>,
-			tnt_ItemTent[ITM_MAX] = {INVALID_ITEM_ID, ...},
-			tnt_ItemList[ITM_LST_OF_ITEMS(MAX_TENT_ITEMS)],
-			tnt_ButtonTent[BTN_MAX] = {INVALID_TENT_ID, ...};
-
 static
+			tnt_Data[MAX_TENT][E_TENT_DATA],
+			tnt_ObjData[MAX_TENT][E_TENT_OBJECT_DATA],
+			tnt_ContainerTent[CNT_MAX] = {INVALID_ITEM_ID, ...},
 			tnt_CurrentTentID[MAX_PLAYERS];
 
-// Settings: Prefixed camel case here and dashed in settings.json
-static
-bool:		tnt_PrintEachLoad,
-bool:		tnt_PrintTotalLoad,
-bool:		tnt_PrintEachSave,
-bool:		tnt_PrintTotalSave,
-bool:		tnt_PrintRemoves;
+new
+   Iterator:tnt_Index<MAX_TENT>;
+
+
+forward OnTentCreate(tentid);
+forward OnTentDestroy(tentid);
 
 
 /*==============================================================================
@@ -85,39 +67,23 @@ bool:		tnt_PrintRemoves;
 ==============================================================================*/
 
 
-hook OnScriptInit()
-{
-	print("\n[OnScriptInit] Initialising 'Tent'...");
-
-	if(tnt_GEID_Index > 0)
-	{
-		printf("ERROR: tnt_GEID_Index has been modified prior to loading tents.");
-		for(;;){}
-	}
-
-	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TENT);
-
-	Iter_Init(tnt_ItemIndex);
-
-	GetSettingInt("tent/print-each-load", false, tnt_PrintEachLoad);
-	GetSettingInt("tent/print-total-load", true, tnt_PrintTotalLoad);
-	GetSettingInt("tent/print-each-save", false, tnt_PrintEachSave);
-	GetSettingInt("tent/print-total-save", true, tnt_PrintTotalSave);
-	GetSettingInt("tent/print-removes", false, tnt_PrintRemoves);
-}
-
-hook OnGameModeInit()
-{
-	print("\n[OnGameModeInit] Initialising 'Tent'...");
-
-	LoadTents();
-}
-
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/tent.pwn");
+	tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
+}
 
-	tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+hook OnItemTypeDefined(uname[])
+{
+	if(!strcmp(uname, "TentPack"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("TentPack"), 1);
+}
+
+hook OnItemCreated(itemid)
+{
+	if(GetItemType(itemid) == item_TentPack)
+	{
+		SetItemExtraData(itemid, INVALID_TENT_ID);
+	}
 }
 
 
@@ -128,88 +94,88 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock CreateTent(Float:x, Float:y, Float:z, Float:rz, worldid, interiorid)
+stock CreateTentFromItem(itemid)
 {
-	new id = Iter_Free(tnt_Index);
-
-	if(id == ITER_NONE)
+	if(GetItemType(itemid) != item_TentPack)
 	{
-		print("ERROR: [CreateTent] id == ITER_NONE");
+		printf("ERROR: Attempted to create tent from non-tentpack item %d type: %d", itemid, _:GetItemType(itemid));
 		return -1;
 	}
 
-	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", worldid, interiorid, .areasize = 1.5, .label = 0);
+	new id = Iter_Free(tnt_Index);
 
-	tnt_ButtonTent[tnt_Data[id][tnt_buttonId]] = id;
+	if(id == -1)
+	{
+		print("ERROR: MAX_TENT limit reached.");
+		return -1;
+	}
 
-	tnt_Data[id][tnt_objSideR1] = CreateDynamicObject(19477,
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rz,
+		worldid = GetItemWorld(itemid),
+		interiorid = GetItemInterior(itemid);
+
+	GetItemPos(itemid, x, y, z);
+	GetItemRot(itemid, rz, rz, rz);
+
+	z += 0.4;
+	rz += 90.0;
+
+	tnt_Data[id][tnt_itemId] = itemid;
+	tnt_Data[id][tnt_containerId] = CreateContainer("Tent", MAX_TENT_ITEMS);
+	tnt_ContainerTent[tnt_Data[id][tnt_containerId]] = id;
+
+	SetItemExtraData(itemid, id);
+
+	tnt_ObjData[id][tnt_objSideR1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 270.0, degrees)),
 		y + (0.49 * floatcos(-rz + 270.0, degrees)),
 		z,
 		0.0, 45.0, rz, worldid, interiorid, .streamdistance = 100.0);
 
-	tnt_Data[id][tnt_objSideR2] = CreateDynamicObject(19477,
+	tnt_ObjData[id][tnt_objSideR2] = CreateDynamicObject(19477,
 		x + (0.48 * floatsin(-rz + 270.0, degrees)),
 		y + (0.48 * floatcos(-rz + 270.0, degrees)),
 		z,
 		0.0, 45.0, rz, worldid, interiorid, .streamdistance = 20.0);
 
-	tnt_Data[id][tnt_objSideL1] = CreateDynamicObject(19477,
+	tnt_ObjData[id][tnt_objSideL1] = CreateDynamicObject(19477,
 		x + (0.49 * floatsin(-rz + 90.0, degrees)),
 		y + (0.49 * floatcos(-rz + 90.0, degrees)),
 		z,
 		0.0, -45.0, rz, worldid, interiorid, .streamdistance = 100.0);
 
-	tnt_Data[id][tnt_objSideL2] = CreateDynamicObject(19477,
+	tnt_ObjData[id][tnt_objSideL2] = CreateDynamicObject(19477,
 		x + (0.48 * floatsin(-rz + 90.0, degrees)),
 		y + (0.48 * floatcos(-rz + 90.0, degrees)),
 		z,
 		0.0, -45.0, rz, worldid, interiorid, .streamdistance = 20.0);
 
-	tnt_Data[id][tnt_objPoleF] = CreateDynamicObject(19087,
+	tnt_ObjData[id][tnt_objPoleF] = CreateDynamicObject(19087,
 		x + (1.3 * floatsin(-rz, degrees)),
 		y + (1.3 * floatcos(-rz, degrees)),
 		z + 0.48,
 		0.0, 0.0, rz, worldid, interiorid, .streamdistance = 10.0);
 
-	tnt_Data[id][tnt_objPoleB] = CreateDynamicObject(19087,
+	tnt_ObjData[id][tnt_objPoleB] = CreateDynamicObject(19087,
 		x - (1.3 * floatsin(-rz, degrees)),
 		y - (1.3 * floatcos(-rz, degrees)),
 		z + 0.48,
 		0.0, 0.0, rz, worldid, interiorid, .streamdistance = 10.0);
 
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideR1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideR2], 0, 3095, "a51jdrx", "sam_camo", 0);
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideL1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objSideL2], 0, 3095, "a51jdrx", "sam_camo", 0);
-
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objPoleF], 0, 1270, "signs", "lamppost", 0);
-	SetDynamicObjectMaterial(tnt_Data[id][tnt_objPoleB], 0, 1270, "signs", "lamppost", 0);
-
-	tnt_Data[id][tnt_posX] = x;
-	tnt_Data[id][tnt_posY] = y;
-	tnt_Data[id][tnt_posZ] = z;
-	tnt_Data[id][tnt_rotZ] = rz;
-	tnt_Data[id][tnt_world] = worldid;
-	tnt_Data[id][tnt_interior] = interiorid;
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objSideR1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objSideR2], 0, 3095, "a51jdrx", "sam_camo", 0);
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objSideL1], 0, 2068, "cj_ammo_net", "CJ_cammonet", 0);
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objSideL2], 0, 3095, "a51jdrx", "sam_camo", 0);
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objPoleF], 0, 1270, "signs", "lamppost", 0);
+	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objPoleB], 0, 1270, "signs", "lamppost", 0);
 
 	Iter_Add(tnt_Index, id);
 
-	if(!tnt_SkipGEID)
-	{
-		tnt_GEID[id] = tnt_GEID_Index;
-		tnt_GEID_Index++;
-		// printf("Tent GEID Index: %d", tnt_GEID_Index);
-	}
-
-	#if defined SIF_USE_DEBUG_LABELS
-		tnt_DebugLabelID[id] = CreateDebugLabel(tnt_DebugLabelType, id, x, y, z);
-	#endif
-
-	UpdateTentDebugLabel(id);
-
-	if(!tnt_Loading)
-		SaveTent(id, 1);
+	CallLocalFunction("OnTentCreate", "d", id);
 
 	return id;
 }
@@ -219,235 +185,65 @@ stock DestroyTent(tentid)
 	if(!Iter_Contains(tnt_Index, tentid))
 		return 0;
 
-	SaveTent(tentid, 0);
+	CallLocalFunction("OnTentDestroy", "d", tentid);
 
-	DestroyButton(tnt_Data[tentid][tnt_buttonId]);
-	tnt_ButtonTent[tnt_Data[tentid][tnt_buttonId]] = INVALID_TENT_ID;
+	SetItemExtraData(tnt_Data[tentid][tnt_itemId], INVALID_TENT_ID);
+	DestroyContainer(tnt_Data[tentid][tnt_containerId]);
 
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideR1]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideR2]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideL1]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objSideL2]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objPoleF]);
-	DestroyDynamicObject(tnt_Data[tentid][tnt_objPoleB]);
-
-	tnt_Data[tentid][tnt_objSideR1] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objSideR2] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objSideL1] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objSideL2] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objPoleF] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_objPoleB] = INVALID_OBJECT_ID;
-	tnt_Data[tentid][tnt_posX] = 0.0;
-	tnt_Data[tentid][tnt_posY] = 0.0;
-	tnt_Data[tentid][tnt_posZ] = 0.0;
-	tnt_Data[tentid][tnt_rotZ] = 0.0;
-	tnt_Data[tentid][tnt_world] = 0;
-	tnt_Data[tentid][tnt_interior] = 0;
-
-	Iter_Clear(tnt_ItemIndex[tentid]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objSideR1]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objSideR2]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objSideL1]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objSideL2]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objPoleF]);
+	DestroyDynamicObject(tnt_ObjData[tentid][tnt_objPoleB]);
+	tnt_ObjData[tentid][tnt_objSideR1] = INVALID_OBJECT_ID;
+	tnt_ObjData[tentid][tnt_objSideR2] = INVALID_OBJECT_ID;
+	tnt_ObjData[tentid][tnt_objSideL1] = INVALID_OBJECT_ID;
+	tnt_ObjData[tentid][tnt_objSideL2] = INVALID_OBJECT_ID;
+	tnt_ObjData[tentid][tnt_objPoleF] = INVALID_OBJECT_ID;
+	tnt_ObjData[tentid][tnt_objPoleB] = INVALID_OBJECT_ID;
 
 	Iter_SafeRemove(tnt_Index, tentid, tentid);
 
-	#if defined SIF_USE_DEBUG_LABELS
-		DestroyDebugLabel(tnt_DebugLabelID[tentid]);
-	#endif
-
 	return tentid;
 }
 
 
 /*==============================================================================
 
-	Internal
+	Internal functions and hooks
 
 ==============================================================================*/
 
 
-AddItemToTentIndex(tentid, itemid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
-	if(!Iter_Contains(tnt_Index, tentid))
-		return 0;
-
-	if(!IsValidItem(itemid))
-		return 0;
-
-	if(!IsItemInWorld(itemid))
-		return 0;
-
-	if(IsItemTypeSafebox(GetItemType(itemid)))
-		return 0;
-
-	if(tnt_ItemTent[itemid] != -1)
-		Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
-
-	new cell = Iter_Free(tnt_ItemIndex[tentid]);
-
-	if(cell == ITER_NONE)
-		return 0;
-
-	tnt_Items[tentid][cell] = itemid;
-	tnt_ItemTent[itemid] = tentid;
-
-	Iter_Add(tnt_ItemIndex[tentid], cell);
-
-	if(!tnt_Loading)
-		SaveTent(tentid, 1);
-
-	UpdateTentDebugLabel(tentid);
-
-	return 1;
-}
-
-RemoveItemFromTentIndex(itemid)
-{
-	if(!IsValidItem(itemid))
-		return INVALID_TENT_ID;
-
-	if(tnt_ItemTent[itemid] == -1)
-		return INVALID_TENT_ID;
-
-	new
-		cell,
-		tentid;
-
-	foreach(new i : tnt_ItemIndex[tnt_ItemTent[itemid]])
+	if(GetItemType(itemid) == item_TentPack)
 	{
-		if(tnt_Items[tnt_ItemTent[itemid]][i] == itemid)
+		new tentid = GetItemExtraData(itemid);
+
+		if(IsValidTent(tentid))
 		{
-			cell = i;
-			break;
-		}
-	}
-
-	tentid = tnt_ItemTent[itemid];
-
-	Iter_Remove(tnt_ItemIndex[tentid], cell);
-	SaveTent(tentid, 1);
-	UpdateTentDebugLabel(tentid);
-
-	tnt_ItemTent[itemid] = -1;
-
-	return tentid;
-}
-
-/*
-hook OnItemRemoveFromWorld(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemRemoveFromWorld] in /gamemodes/sss/core/world/tent.pwn");
-
-	RemoveItemFromTentIndex(itemid);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-*/
-#define cc.r );
-hook OnItemDestroy(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/tent.pwn");
-
-	RemoveItemFromTentIndex(itemid);
-}
-
-hook OnPlayerPickedUpItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/tent.pwn");
-
-	new ret = RemoveItemFromTentIndex(itemid);
-
-	if(ret != INVALID_TENT_ID)
-		ChatMsgLang(playerid, YELLOW, "TENTITEMREM", itemid, ret, tnt_GEID[ret]);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerDroppedItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/world/tent.pwn");
-
-	new
-		list[BTN_MAX_INRANGE],
-		count;
-
-	GetPlayerButtonList(playerid, list, count, true);
-
-	for(new i; i < count; i++)
-	{
-		if(tnt_ButtonTent[list[i]] != INVALID_TENT_ID)
-		{
-			_DropItemInTent(playerid, itemid, tnt_ButtonTent[list[i]]);
-			break;
+			DisplayContainerInventory(playerid, tnt_Data[tentid][tnt_containerId]);
+			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_DropItemInTent(playerid, itemid, tentid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	if(AddItemToTentIndex(tentid, itemid))
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
+
+	if(GetItemType(itemid) == item_Crowbar && GetItemType(withitemid) == item_TentPack)
 	{
-		ChatMsgLang(playerid, YELLOW, "TENTITEMADD", itemid, tentid, tnt_GEID[tentid]);
-	}
+		tnt_CurrentTentID[playerid] = withitemid;
+		StartHoldAction(playerid, 15000);
+		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+		ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
 
-	return 1;
-}
-
-hook OnItemArrayDataChanged(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemArrayDataChanged] in /gamemodes/sss/core/world/tent.pwn");
-
-	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
-	{
-		SaveTent(tnt_ItemTent[itemid], 1);
-	}
-}
-
-UpdateTentDebugLabel(tentid)
-{
-	new
-		string[64],
-		tmp[12];
-
-	format(string, sizeof(string), "GEID: %d ITEMCOUNT: %d\n", tnt_GEID[tentid], Iter_Count(tnt_ItemIndex[tentid]));
-
-	foreach(new i : tnt_ItemIndex[tentid])
-	{
-		valstr(tmp, tnt_Items[tentid][i]);
-		strcat(string, tmp);
-		strcat(string, ", ");
-	}
-
-	#if defined SIF_USE_DEBUG_LABELS
-		UpdateDebugLabelString(tnt_DebugLabelID[tentid], string);
-	#endif
-}
-
-
-/*==============================================================================
-
-	Player interaction
-
-==============================================================================*/
-
-
-hook OnButtonPress(playerid, buttonid)
-{
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/tent.pwn");
-
-	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
-	{
-		foreach(new i : tnt_Index)
-		{
-			if(buttonid == tnt_Data[i][tnt_buttonId])
-			{
-				tnt_CurrentTentID[playerid] = i;
-				StartHoldAction(playerid, 15000);
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
-
-				return Y_HOOKS_BREAK_RETURN_1;
-			}
-		}
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -455,16 +251,14 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/tent.pwn");
-
 	if(oldkeys & 16)
 	{
-		if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
+		if(tnt_CurrentTentID[playerid] != INVALID_ITEM_ID)
 		{
 			StopHoldAction(playerid);
 			ClearAnimations(playerid);
 			HideActionText(playerid);
-			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+			tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
 		}
 	}
 
@@ -473,272 +267,17 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/tent.pwn");
-
-	if(tnt_CurrentTentID[playerid] != INVALID_TENT_ID)
+	if(tnt_CurrentTentID[playerid] != INVALID_ITEM_ID)
 	{
 		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 		{
-			CreateItem(item_TentPack,
-				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
-				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posY],
-				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posZ] - 0.4,
-				.rz = tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
-				.zoffset = FLOOR_OFFSET);
-
-			DestroyTent(tnt_CurrentTentID[playerid]);
+			DestroyTent(GetItemExtraData(tnt_CurrentTentID[playerid]));
 			ClearAnimations(playerid);
 			HideActionText(playerid);
 
-			tnt_CurrentTentID[playerid] = INVALID_TENT_ID;
+			tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
 		}
 	}
-}
-
-
-/*==============================================================================
-
-	Save and Load All
-
-==============================================================================*/
-
-
-LoadTents()
-{
-	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_TENT),
-		item[46],
-		type,
-		filename[64],
-		count;
-
-	tnt_Loading = true;
-
-	while(dir_list(direc, item, type))
-	{
-		if(type == FM_FILE)
-		{
-			filename = DIRECTORY_TENT;
-			strcat(filename, item);
-
-			count += LoadTent(filename);
-		}
-	}
-
-	tnt_Loading = false;
-
-	dir_close(direc);
-
-	if(tnt_PrintTotalLoad)
-		printf("Loaded %d Tents", count);
-}
-
-
-/*==============================================================================
-
-	Save and Load Individual
-
-==============================================================================*/
-
-
-SaveTent(tentid, active)
-{
-	if(!Iter_Contains(tnt_Index, tentid))
-	{
-		printf("ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
-		return 0;
-	}
-
-	if(active)
-	{
-		if(tnt_PrintEachSave)
-			printf("\t[SAVE] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
-	}
-	else
-	{
-		if(tnt_PrintEachSave)
-			printf("\t[DELT] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, tnt_Data[tentid][tnt_posX], tnt_Data[tentid][tnt_posY], tnt_Data[tentid][tnt_posZ]);
-	}
-
-	new
-		filename[64],
-		head[1],
-		data[6];
-
-	format(filename, sizeof(filename), ""DIRECTORY_TENT"tent_%010d.dat", tnt_GEID[tentid]);
-
-	head[0] = active;
-
-	modio_push(filename, _T<H,E,A,D>, 1, head);
-
-	data[0] = _:tnt_Data[tentid][tnt_posX];
-	data[1] = _:tnt_Data[tentid][tnt_posY];
-	data[2] = _:tnt_Data[tentid][tnt_posZ];
-	data[3] = _:tnt_Data[tentid][tnt_rotZ];
-	data[4] = tnt_Data[tentid][tnt_world];
-	data[5] = tnt_Data[tentid][tnt_interior];
-
-	modio_push(filename, _T<W,P,O,S>, 6, data);
-
-	new
-		items[10],
-		itemcount,
-		itemlist;
-
-	foreach(new i : tnt_ItemIndex[tentid])
-	{
-		items[itemcount++] = tnt_Items[tentid][i];
-	}
-
-	itemlist = CreateItemList(items, itemcount);
-	GetItemList(itemlist, tnt_ItemList);
-
-	modio_push(filename, _T<I,T,E,M>, GetItemListSize(itemlist), tnt_ItemList);
-
-	DestroyItemList(itemlist);
-
-	return 1;
-}
-
-LoadTent(filename[])
-{
-	new
-		length,
-		rewrite,
-		searchpos,
-		tentid,
-		head[1],
-		data[6];
-
-	length = modio_read(filename, _T<H,E,A,D>, 1, head, .autoclose = false);
-
-	if(length < 0)
-	{
-		printf("[LoadTent] ERROR: modio error %d in '%s'.", length, filename);
-		modio_finalise_read(modio_getsession_read(filename));
-		return 0;
-	}
-
-	if(length > 0)
-	{
-		if(head[0] == 0)
-		{
-			modio_finalise_read(modio_getsession_read(filename));
-			return 0;
-		}
-	}
-	else
-	{
-		printf("[LoadTent] WARNING: Tent '%s' does not have HEAD file tag, force saving.", filename);
-		rewrite = 1;
-	}
-
-	length = modio_read(filename, _T<W,P,O,S>, sizeof(data), _:data, .autoclose = false);
-
-	if(length == 0)
-	{
-		print("[LoadTent] ERROR: modio_read returned length of 0.");
-		modio_finalise_read(modio_getsession_read(filename));
-		return 0;
-	}
-
-	if(Float:data[0] == 0.0 && Float:data[1] == 0.0 && Float:data[2] == 0.0)
-	{
-		print("[LoadTent] ERROR: null position.");
-		modio_finalise_read(modio_getsession_read(filename));
-		return 0;
-	}
-
-	tnt_SkipGEID = true;
-	tentid = CreateTent(Float:data[0], Float:data[1], Float:data[2], Float:data[3], data[4], data[5]);
-	tnt_SkipGEID = false;
-
-	searchpos = strlen(DIRECTORY_TENT) + 6;
-
-	sscanf(filename[searchpos], "p<.>d{s[5]}", tnt_GEID[tentid]);
-
-	if(tnt_GEID[tentid] > tnt_GEID_Index)
-	{
-		tnt_GEID_Index = tnt_GEID[tentid] + 1;
-	}
-
-	if(tnt_PrintEachLoad)
-		printf("\t[LOAD] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, Float:data[0], Float:data[1], Float:data[2]);
-
-	new
-		ItemType:itemtype,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		interior,
-		world,
-		itemid,
-		itemlist,
-		cell;
-
-	// final 'true' param is to force close read session
-	// Because these files are read in a loop, sessions can stack up so this
-	// ensures that a new session isn't registered for each tent.
-	length = modio_read(filename, _T<I,T,E,M>, sizeof(tnt_ItemList), tnt_ItemList, .forceclose = true);
-
-	itemlist = ExtractItemList(tnt_ItemList, length);
-
-	for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
-	{
-		itemtype = GetItemListItem(itemlist, i);
-		GetItemListItemPos(itemlist, i, x, y, z);
-		GetItemListItemRot(itemlist, i, r, r, r);
-		world = GetItemListItemWorld(itemlist, i);
-		interior = GetItemListItemInterior(itemlist, i);
-
-		if(length == 0)
-			break;
-
-		if(itemtype == INVALID_ITEM_TYPE)
-			break;
-
-		if(itemtype == ItemType:0)
-			break;
-
-		itemid = AllocNextItemID(itemtype);
-
-		SetItemNoResetArrayData(itemid, true);
-
-		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-			SetItemArrayDataFromListItem(itemid, itemlist, i);
-
-		if(tnt_ItemTent[itemid] != -1)
-			Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
-
-		cell = Iter_Free(tnt_ItemIndex[tentid]);
-
-		if(cell == ITER_NONE)
-			return 0;
-
-		tnt_Items[tentid][cell] = itemid;
-		tnt_ItemTent[itemid] = tentid;
-
-		Iter_Add(tnt_ItemIndex[tentid], cell);
-
-		if(!tnt_Loading)
-			SaveTent(tentid, 1);
-
-		UpdateTentDebugLabel(tentid);
-
-		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
-	}
-
-	DestroyItemList(itemlist);
-
-	if(rewrite)
-	{
-		print("FORCE SAVING TENT");
-		new ret = SaveTent(tentid, 1);
-		printf("SaveTent ret %d", ret);
-	}
-
-	return 1;
 }
 
 
@@ -749,14 +288,44 @@ LoadTent(filename[])
 ==============================================================================*/
 
 
+stock IsValidTent(tentid)
+{
+	if(!Iter_Contains(tnt_Index, tentid))
+		return 0;
+
+	return 1;
+}
+
+// tnt_itemId
+stock GetTentItem(tentid)
+{
+	if(!Iter_Contains(tnt_Index, tentid))
+		return 0;
+
+	return tnt_Data[tentid][tnt_itemId];
+}
+
+// tnt_containerId
+stock GetTentContainer(tentid)
+{
+	if(!Iter_Contains(tnt_Index, tentid))
+		return 0;
+
+	return tnt_Data[tentid][tnt_containerId];
+}
+
+stock GetContainerTent(containerid)
+{
+	if(!IsValidContainer(containerid))
+		return INVALID_TENT_ID;
+
+	return tnt_ContainerTent[containerid];
+}
+
 stock GetTentPos(tentid, &Float:x, &Float:y, &Float:z)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
 		return 0;
 
-	x = tnt_Data[tentid][tnt_posX];
-	y = tnt_Data[tentid][tnt_posY];
-	z = tnt_Data[tentid][tnt_posZ];
-
-	return 1;
+	return GetItemPos(tnt_Data[tentid][tnt_itemId], x, y, z);
 }

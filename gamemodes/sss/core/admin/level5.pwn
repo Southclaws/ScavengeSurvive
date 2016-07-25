@@ -159,27 +159,6 @@ ACMD:gotoitem[4](playerid, params[])
 	return 1;
 }
 
-ACMD:gotodef[4](playerid, params[])
-{
-	new id = strval(params);
-
-	if(!IsValidDefence(id))
-	{
-		ChatMsg(playerid, YELLOW, " >  Invalid ID");
-		return 1;
-	}
-
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetDefencePos(id, x, y, z);
-	SetPlayerPos(playerid, x, y, z);
-
-	return 1;
-}
-
 ACMD:addloot[5](playerid, params[])
 {
 	new
