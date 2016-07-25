@@ -207,8 +207,18 @@ stock DestroyWorldVehicle(vehicleid, bool:perma = false)
 
 		GetVehiclePos(vehicleid, x, y, z);
 
-		if(!IsPosInWater(x, y, z))
+		SetVehicleExternalLock(vehicleid, false);
+		veh_Data[vehicleid][veh_key] = 0;
+
+		if(!IsPosInWater(x, y, z - 1.0))
+		{
 			CreateDynamicObject(18690, x, y, z - 2.0, 0.0, 0.0, 0.0);
+			SetVehicleTrunkLock(vehicleid, true);
+		}
+		else
+		{
+			SetVehicleTrunkLock(vehicleid, false);
+		}
 	}
 
 	return 1;
@@ -861,9 +871,6 @@ public OnVehicleSpawn(vehicleid)
 
 			veh_Data[vehicleid][veh_health] = 300.0;
 			ResetVehicle(vehicleid);
-			SetVehicleExternalLock(vehicleid, false);
-			SetVehicleTrunkLock(vehicleid, false);
-			veh_Data[vehicleid][veh_key] = 0;
 
 			DestroyWorldVehicle(vehicleid);
 		}
