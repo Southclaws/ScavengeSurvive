@@ -118,7 +118,13 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 {
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
-		print("ERROR: Loot spawn limit reached.");
+		print("[CreateStaticLootSpawn] ERROR: Loot spawn limit reached.");
+		return -1;
+	}
+
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		printf("[CreateStaticLootSpawn] ERROR: Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 
@@ -161,6 +167,12 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 			continue;
 
 		itemtype = samplelist[cell];
+
+		if(itemtype == item_NULL)
+		{
+			printf("[CreateStaticLootSpawn] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			continue;
+		}
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
@@ -329,7 +341,7 @@ _loot_RemoveFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], cell)
 	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
 		list[i] = list[i+1];
 }
-
+/*
 _loot_LootSpawnItemsOfType(lootspawnid, ItemType:itemtype)
 {
 	new count;
@@ -355,7 +367,7 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 	//printf("[_loot_ContainerItemsOfType] container %d contains %d of %d", containerid, count, _:itemtype);
 	return count;
 }
-
+*/
 hook OnItemDestroy(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/loot.pwn");
