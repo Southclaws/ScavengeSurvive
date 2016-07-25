@@ -34,9 +34,9 @@ BRANCH = config["branch"]
 
 
 ret = 0
-ret += subprocess.call(["git", "checkout", BRANCH])
 ret += subprocess.call(["git", "fetch"])
 ret += subprocess.call(["git", "merge"])
+ret += subprocess.call(["git", "checkout", BRANCH])
 
 if ret > 0:
 	print("git error")
