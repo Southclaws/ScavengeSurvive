@@ -148,7 +148,6 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 	new
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
-		cell,
 		ItemType:itemtype,
 		itemid,
 		Float:rot = frandom(360.0);
@@ -163,10 +162,8 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 			continue;
 
 		// Generate an item from the sample list
-		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
+		if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 			continue;
-
-		itemtype = samplelist[cell];
 
 		if(itemtype == item_NULL)
 		{
@@ -176,11 +173,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
 			continue;
-		}
 
 		// Create the item
 		itemid = GetNextItemID();
@@ -210,15 +203,19 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 	new
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
-		cell;
+		ItemType:itemtype;
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
 	// Generate an item from the sample list
-	if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
+	if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 		return INVALID_ITEM_ID;
 
-	new ItemType:itemtype = samplelist[cell];
+	if(itemtype == item_NULL)
+	{
+		printf("[CreateLootItem] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+		return INVALID_ITEM_ID;
+	}
 
 	if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
 		return INVALID_ITEM_ID;
@@ -250,7 +247,6 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		items,
-		cell,
 		itemid,
 		ItemType:itemtype;
 
@@ -260,16 +256,18 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 	{
 		// Generate an item from the sample list
 
-		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
+		if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 			continue;
 
-		itemtype = samplelist[cell];
+		if(itemtype == item_NULL)
+		{
+			printf("[FillContainerWithLoot] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			continue;
+		}
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) >= loot_ItemTypeLimit[itemtype])
 		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
 			continue;
 		}
 
@@ -315,32 +313,35 @@ _loot_GenerateSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], lootindex)
 			continue;
 
 		if(loot_IndexItems[lootindex][i][lootitem_type] == item_NULL)
+		{
+			// printf("[_loot_GenerateSampleList] Prevented entering NULL ITEM into samplelist");
 			continue;
+		}
 
 		list[size++] = loot_IndexItems[lootindex][i][lootitem_type];
 	}
 
+	// printf("[_loot_GenerateSampleList] Generated: %s", atosr(_:list, size));
+
 	return size;
 }
 
-_loot_PickFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], listsize, &cell)
+_loot_PickFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], &listsize, &ItemType:itemtype)
 {
 	if(listsize <= 0)
-		return 0;
+		return -1;
 
-	cell = random(listsize);
+	new cell = random(listsize);
+	itemtype = list[cell];
 
-	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
+	for(new i = cell; i < listsize - 1; i++)
 		list[i] = list[i+1];
+
+	listsize -= 1;
 
 	return 1;
 }
 
-_loot_RemoveFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], cell)
-{
-	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
-		list[i] = list[i+1];
-}
 /*
 _loot_LootSpawnItemsOfType(lootspawnid, ItemType:itemtype)
 {

@@ -69,7 +69,7 @@ new
 	};
 // Todo: Add offsets for the remaining house models from LS and LV to this
 
-hook OnGameModeInit()
+Load_HouseLoot()
 {
 	print("\n[OnGameModeInit] Initialising 'HouseLoot'...");
 
