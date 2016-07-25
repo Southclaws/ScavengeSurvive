@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	for(new i; i < loot_Survivor + 1; i++)
+	for(new i; i < GetLootIndexFromName("world_survivor") + 1; i++)
 	{
 		// Firearms
 		AddItemToLootIndex(i, item_M9Pistol, 50);

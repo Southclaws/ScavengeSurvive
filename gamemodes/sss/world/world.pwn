@@ -118,6 +118,8 @@ timer _Load_TR[500]()
 
 timer _Finalise[500]()
 {
+	Load_HouseLoot();
+
 	new itemtypename[ITM_MAX_NAME];
 
 	// compare with previous list and print differences
