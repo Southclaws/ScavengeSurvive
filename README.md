@@ -68,11 +68,45 @@ filterscripts object-loader rcon
 plugins streamer sscanf CTime Whirlpool FileManager irc
 ```
 
-### 5. Set up gamemode settings in your `scriptfiles/SSS/settings.ini` file
+### 5. Set up gamemode settings in your `scriptfiles/data/settings.ini` file
 
 This is an INI file with game settings that will self-create if absent.
 
 Most of the settings should be self-explanitory. If the purpose isn't clear, look up the setting in the source code for more information.
+
+### 6. (Optional) Set up "missing features"
+
+Scavenge and Survive is now provided as a baseline to build from and many older features have been stripped out and are being developed privately. This is partly to deter inexperienced users from attempting to run a SS server/community. I hate to do this and it goes against everything I believe in when it comes to open source but it's something I had to do to prevent problems between communities and people using my work without giving proper credit.
+
+Missing features:
+
+#### Loot tables (`scriptfiles/loot/*.ltb`)
+These `.ltb` files are required to define the spawning rate of "loot items" in the world and in vehicles.
+Here is a commented example of a loot-table (`.ltb`) file:
+
+```
+airdrop_food_medical, 1.0
+# first line MUST be in this format:
+# <loot index name>, <spawn multiplier>
+# the spawn multiplier is a modifier which is applied to all items in the file.
+# the rest of the file can now contain loot definitions which consist of:
+# <spawn rate % 0-100>, <item uname>, <optional:per-spawn limit> <optional:server global limit>
+
+# It's not advisable to give items chances above 50%
+# remember to maintain a good balance! The game is no fun when rare items are too common!
+
+# tools
+10.0,	Wrench
+15.0,	Screwdriver
+10.0,	Hammer
+5.0,	Crowbar
+```
+
+#### Entity Storage (items, safeboxes, tents, defences, signs)
+
+You will need to devise your own system for storing safeboxes, tents, defences and signs.
+
+This does not affect vehicles, the saving system for vehicles is in the public repository.
 
 
 ## LICENSE
