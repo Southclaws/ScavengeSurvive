@@ -4,14 +4,18 @@ import json
 import subprocess
 
 
+config = {}
+
+
 try:
 	with io.open("build-config.json", 'r') as f:
 		config = json.load(f)
 
 except IOError as e:
 	print(e)
+	print("Creating build-config with defaults...")
 
-	if platform.platform == "win32":
+	if platform.system() == "Windows":
 		config["compiler_path"] = "../pawno/pawncc.exe"
 
 	else:
@@ -20,7 +24,9 @@ except IOError as e:
 	config["branch"] = "master"
 
 	with io.open("build-config.json", 'w') as f:
-		json.dump(config, f)
+		json.dump(config, f, indent=4)
+
+	print(config["compiler_path"], config["branch"])
 
 
 COMPILER_PATH = config["compiler_path"]
