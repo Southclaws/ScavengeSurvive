@@ -428,7 +428,8 @@ ItemType:		item_Keg			= INVALID_ITEM_TYPE,
 ItemType:		item_Canister		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
 ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE,
-ItemType:		item_Locator		= INVALID_ITEM_TYPE;
+ItemType:		item_Locator		= INVALID_ITEM_TYPE,
+ItemType:		item_PlotPole		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -831,6 +832,7 @@ public OnScriptInit()
 	item_ScrapMetal		= DefineItemType("Scrap Metal",			"ScrapMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFF4D2525);
 	item_RefinedMetal	= DefineItemType("Refined Metal",		"RefinedMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFFE35454);
 	item_Locator		= DefineItemType("Locator",				"Locator",			2967,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
+	item_PlotPole		= DefineItemType("Plot Pole",			"PlotPole",			3221,	3,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
 
 /*
 1656 cuboid shape, carry item
