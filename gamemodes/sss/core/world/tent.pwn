@@ -104,15 +104,6 @@ stock CreateTentFromItem(itemid)
 
 	new id = Iter_Free(tnt_Index);
 
-<<<<<<< 8c7f95b04d2048ecfd872b688f8c6d513fdd2441
-	if(id == ITER_NONE)
-	{
-		print("ERROR: [CreateTent] id == ITER_NONE");
-		return -1;
-	}
-
-	tnt_Data[id][tnt_buttonId] = CreateButton(x, y, z, "Hold "KEYTEXT_INTERACT" with crowbar to dismantle", worldid, interiorid, .areasize = 1.5, .label = 0);
-=======
 	if(id == -1)
 	{
 		print("ERROR: MAX_TENT limit reached.");
@@ -129,7 +120,6 @@ stock CreateTentFromItem(itemid)
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
->>>>>>> removed io systems from public repository
 
 	z += 0.4;
 	rz += 90.0;
@@ -221,178 +211,7 @@ stock DestroyTent(tentid)
 
 /*==============================================================================
 
-<<<<<<< 8c7f95b04d2048ecfd872b688f8c6d513fdd2441
-	Internal
-
-==============================================================================*/
-
-
-AddItemToTentIndex(tentid, itemid)
-{
-	if(!Iter_Contains(tnt_Index, tentid))
-		return 0;
-
-	if(!IsValidItem(itemid))
-		return 0;
-
-	if(!IsItemInWorld(itemid))
-		return 0;
-
-	if(IsItemTypeSafebox(GetItemType(itemid)))
-		return 0;
-
-	if(tnt_ItemTent[itemid] != -1)
-		Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
-
-	new cell = Iter_Free(tnt_ItemIndex[tentid]);
-
-	if(cell == ITER_NONE)
-		return 0;
-
-	tnt_Items[tentid][cell] = itemid;
-	tnt_ItemTent[itemid] = tentid;
-
-	Iter_Add(tnt_ItemIndex[tentid], cell);
-
-	if(!tnt_Loading)
-		SaveTent(tentid, 1);
-
-	UpdateTentDebugLabel(tentid);
-
-	return 1;
-}
-
-RemoveItemFromTentIndex(itemid)
-{
-	if(!IsValidItem(itemid))
-		return INVALID_TENT_ID;
-
-	if(tnt_ItemTent[itemid] == -1)
-		return INVALID_TENT_ID;
-
-	new
-		cell,
-		tentid;
-
-	foreach(new i : tnt_ItemIndex[tnt_ItemTent[itemid]])
-	{
-		if(tnt_Items[tnt_ItemTent[itemid]][i] == itemid)
-		{
-			cell = i;
-			break;
-		}
-	}
-
-	tentid = tnt_ItemTent[itemid];
-
-	Iter_Remove(tnt_ItemIndex[tentid], cell);
-	SaveTent(tentid, 1);
-	UpdateTentDebugLabel(tentid);
-
-	tnt_ItemTent[itemid] = -1;
-
-	return tentid;
-}
-
-/*
-hook OnItemRemoveFromWorld(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemRemoveFromWorld] in /gamemodes/sss/core/world/tent.pwn");
-
-	RemoveItemFromTentIndex(itemid);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-*/
-#define cc.r );
-hook OnItemDestroy(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/tent.pwn");
-
-	RemoveItemFromTentIndex(itemid);
-}
-
-hook OnPlayerPickedUpItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/tent.pwn");
-
-	new ret = RemoveItemFromTentIndex(itemid);
-
-	if(ret != INVALID_TENT_ID)
-		ChatMsgLang(playerid, YELLOW, "TENTITEMREM", itemid, ret, tnt_GEID[ret]);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-hook OnPlayerDroppedItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerDroppedItem] in /gamemodes/sss/core/world/tent.pwn");
-
-	new
-		list[BTN_MAX_INRANGE],
-		count;
-
-	GetPlayerButtonList(playerid, list, count, true);
-
-	for(new i; i < count; i++)
-	{
-		if(tnt_ButtonTent[list[i]] != INVALID_TENT_ID)
-		{
-			_DropItemInTent(playerid, itemid, tnt_ButtonTent[list[i]]);
-			break;
-		}
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-_DropItemInTent(playerid, itemid, tentid)
-{
-	if(AddItemToTentIndex(tentid, itemid))
-	{
-		ChatMsgLang(playerid, YELLOW, "TENTITEMADD", itemid, tentid, tnt_GEID[tentid]);
-	}
-
-	return 1;
-}
-
-hook OnItemArrayDataChanged(itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnItemArrayDataChanged] in /gamemodes/sss/core/world/tent.pwn");
-
-	if(tnt_ItemTent[itemid] != INVALID_TENT_ID)
-	{
-		SaveTent(tnt_ItemTent[itemid], 1);
-	}
-}
-
-UpdateTentDebugLabel(tentid)
-{
-	new
-		string[64],
-		tmp[12];
-
-	format(string, sizeof(string), "GEID: %d ITEMCOUNT: %d\n", tnt_GEID[tentid], Iter_Count(tnt_ItemIndex[tentid]));
-
-	foreach(new i : tnt_ItemIndex[tentid])
-	{
-		valstr(tmp, tnt_Items[tentid][i]);
-		strcat(string, tmp);
-		strcat(string, ", ");
-	}
-
-	#if defined SIF_USE_DEBUG_LABELS
-		UpdateDebugLabelString(tnt_DebugLabelID[tentid], string);
-	#endif
-}
-
-
-/*==============================================================================
-
-	Player interaction
-=======
 	Internal functions and hooks
->>>>>>> removed io systems from public repository
 
 ==============================================================================*/
 
@@ -491,77 +310,6 @@ stock GetTentContainer(tentid)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
 		return 0;
-<<<<<<< 8c7f95b04d2048ecfd872b688f8c6d513fdd2441
-	}
-
-	tnt_SkipGEID = true;
-	tentid = CreateTent(Float:data[0], Float:data[1], Float:data[2], Float:data[3], data[4], data[5]);
-	tnt_SkipGEID = false;
-
-	searchpos = strlen(DIRECTORY_TENT) + 6;
-
-	sscanf(filename[searchpos], "p<.>d{s[5]}", tnt_GEID[tentid]);
-
-	if(tnt_GEID[tentid] > tnt_GEID_Index)
-	{
-		tnt_GEID_Index = tnt_GEID[tentid] + 1;
-	}
-
-	if(tnt_PrintEachLoad)
-		printf("\t[LOAD] Tent (GEID: %d tentid: %d) at %f, %f, %f", tnt_GEID[tentid], tentid, Float:data[0], Float:data[1], Float:data[2]);
-
-	new
-		ItemType:itemtype,
-		Float:x,
-		Float:y,
-		Float:z,
-		Float:r,
-		interior,
-		world,
-		itemid,
-		itemlist,
-		cell;
-
-	// final 'true' param is to force close read session
-	// Because these files are read in a loop, sessions can stack up so this
-	// ensures that a new session isn't registered for each tent.
-	length = modio_read(filename, _T<I,T,E,M>, sizeof(tnt_ItemList), tnt_ItemList, .forceclose = true);
-
-	itemlist = ExtractItemList(tnt_ItemList, length);
-
-	for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
-	{
-		itemtype = GetItemListItem(itemlist, i);
-		GetItemListItemPos(itemlist, i, x, y, z);
-		GetItemListItemRot(itemlist, i, r, r, r);
-		world = GetItemListItemWorld(itemlist, i);
-		interior = GetItemListItemInterior(itemlist, i);
-
-		if(length == 0)
-			break;
-
-		if(itemtype == INVALID_ITEM_TYPE)
-			break;
-
-		if(itemtype == ItemType:0)
-			break;
-
-		itemid = AllocNextItemID(itemtype);
-
-		SetItemNoResetArrayData(itemid, true);
-
-		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-			SetItemArrayDataFromListItem(itemid, itemlist, i);
-
-		if(tnt_ItemTent[itemid] != -1)
-			Iter_Remove(tnt_ItemIndex[tnt_ItemTent[itemid]], itemid);
-
-		cell = Iter_Free(tnt_ItemIndex[tentid]);
-
-		if(cell == ITER_NONE)
-			return 0;
-=======
->>>>>>> removed io systems from public repository
 
 	return tnt_Data[tentid][tnt_containerId];
 }
