@@ -532,9 +532,9 @@ new stock
 #include "sss/core/world/workbench.pwn"
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
-#include "sss/core/world/refine-machine.pwn"
+// #include "sss/core/world/refine-machine.pwn"
 #include "sss/core/world/tree-loader.pwn"
-#include "sss/core/world/water-purifier.pwn"
+// #include "sss/core/world/water-purifier.pwn"
 #include "sss/core/world/loot-loader.pwn"
 
 // ADMINISTRATION TOOLS

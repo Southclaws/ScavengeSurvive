@@ -428,7 +428,10 @@ ItemType:		item_Keg			= INVALID_ITEM_TYPE,
 ItemType:		item_Canister		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
 ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE,
-ItemType:		item_Locator		= INVALID_ITEM_TYPE;
+ItemType:		item_Locator		= INVALID_ITEM_TYPE,
+ItemType:		item_ScrapMachine	= INVALID_ITEM_TYPE,
+ItemType:		item_RefineMachine	= INVALID_ITEM_TYPE,
+ItemType:		item_WaterMachine	= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -831,6 +834,9 @@ public OnScriptInit()
 	item_ScrapMetal		= DefineItemType("Scrap Metal",			"ScrapMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFF4D2525);
 	item_RefinedMetal	= DefineItemType("Refined Metal",		"RefinedMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFFE35454);
 	item_Locator		= DefineItemType("Locator",				"Locator",			2967,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
+	item_ScrapMachine	= DefineItemType("Scrap Machine",		"ScrapMachine",		920,	12,	0.0, 0.0, 0.0,			0.4344);
+	item_RefineMachine	= DefineItemType("Refining Machine",	"RefineMachine",	943,	12,	0.0, 0.0, 0.0,			0.7208);
+	item_WaterMachine	= DefineItemType("Water Purifier",		"WaterMachine",		958,	12,	0.0, 0.0, 0.0,			0.8195);
 
 /*
 1656 cuboid shape, carry item
@@ -1281,6 +1287,12 @@ public OnScriptInit()
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2194, 0.25344); // tiny cactus
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
+
+
+	// MACHINE TYPE DEFINITIONS
+	DefineMachineType(item_ScrapMachine, 6, 12);
+	DefineMachineType(item_RefineMachine, 6, 12);
+	DefineMachineType(item_WaterMachine, 6, 12);
 
 
 	// CRAFTING SET DEFINITIONS

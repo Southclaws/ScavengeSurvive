@@ -236,8 +236,8 @@ FC_District_Scrapyard()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Scrapyard' please wait...");
 
-	CreateScrapMachine(-1888.26416, -1636.40588, 21.21387, 0.0);
-	CreateRefineMachine(-1848.56006, -1685.39380, 22.97520, -54.0);
+	CreateItem(item_ScrapMachine, -1888.26416, -1636.40588, 21.21387, 0.0, 0.0, 0.0);
+	CreateItem(item_RefineMachine, -1848.56006, -1685.39380, 22.97520, 0.0, 0.0, -54.0);
 
 	CreateStaticLootSpawn(-1825.192138, -1629.722534, 22.001569,	GetLootIndexFromName("world_industrial"), 15.0);
 	CreateStaticLootSpawn(-1848.610473, -1629.970947, 20.828950,	GetLootIndexFromName("world_industrial"), 15.0);

@@ -40,7 +40,7 @@
 
 enum E_REFINE_MACHINE_DATA
 {
-			rm_machineId,
+			sm_containerid,
 Float:		rm_fuel,
 bool:		rm_cooking,
 			rm_smoke,
