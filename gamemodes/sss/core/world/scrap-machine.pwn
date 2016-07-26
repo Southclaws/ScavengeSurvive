@@ -50,7 +50,7 @@ bool:		sm_cooking,
 
 static
 			sm_ItemTypeScrapValue[ITM_MAX_TYPES],
-			sm_CurrentScrapMachine[MAX_PLAYERS];
+			sm_CurrentScrapMachine[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 static HANDLER = -1;
@@ -65,7 +65,14 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	HANDLER = debug_register_handler("scrap-machine", 6);
+	HANDLER = debug_register_handler("scrap-machine");
+}
+
+hook OnPlayerConnect(playerid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/scrap-machine.pwn");
+
+	sm_CurrentScrapMachine[playerid] = -1;
 }
 
 
@@ -140,7 +147,7 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
 			d:1:HANDLER("[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(Float:data[sm_fuel]));
-			StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 1000), floatround(Float:data[sm_fuel] * 1000));
+			StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 100), floatround(Float:data[sm_fuel] * 100));
 			return 0;
 		}
 	}

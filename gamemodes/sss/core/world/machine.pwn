@@ -241,11 +241,3 @@ stock GetPlayerCurrentMachine(playerid)
 
 	return mach_CurrentMachine[playerid];
 }
-
-stock GetMachineContainerID(itemid)
-{
-	if(!IsValidItem(itemid))
-		return INVALID_CONTAINER_ID;
-
-	return ;
-}

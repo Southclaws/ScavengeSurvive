@@ -32,15 +32,14 @@
 ==============================================================================*/
 
 
-#define MAX_REFINE_MACHINE			(32)
 #define MAX_REFINE_MACHINE_ITEMS	(12)
 #define MAX_REFINE_MACHINE_FUEL		(80.0)
 #define REFINE_MACHINE_FUEL_USAGE	(3.5)
 
 
-enum E_REFINE_MACHINE_DATA
+enum e_REFINE_MACHINE_DATA
 {
-			sm_containerid,
+			rm_containerid,
 Float:		rm_fuel,
 bool:		rm_cooking,
 			rm_smoke,
@@ -49,13 +48,7 @@ bool:		rm_cooking,
 }
 
 
-static
-			rm_Data[MAX_REFINE_MACHINE][E_REFINE_MACHINE_DATA],
-			rm_Total,
-
-			rm_MachineRefineMachine[MAX_MACHINE] = {-1, ...},
-
-			rm_CurrentRefineMachine[MAX_PLAYERS];
+static		rm_CurrentRefineMachine[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 static HANDLER = -1;
@@ -70,7 +63,7 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	HANDLER = debug_register_handler("refine-machine");
+	HANDLER = debug_register_handler("refine-machine", 6);
 }
 
 hook OnPlayerConnect(playerid)
@@ -83,71 +76,45 @@ hook OnPlayerConnect(playerid)
 
 /*==============================================================================
 
-	Core Functions
-
-==============================================================================*/
-
-
-stock CreateRefineMachine(Float:x, Float:y, Float:z, Float:rz)
-{
-	if(rm_Total == MAX_REFINE_MACHINE - 1)
-	{
-		print("ERROR: MAX_REFINE_MACHINE Limit reached.");
-		return 0;
-	}
-
-	rm_Data[rm_Total][rm_machineId] = CreateMachine(943, x, y, z, rz, "Refining Machine", "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel", MAX_REFINE_MACHINE_ITEMS);
-
-	rm_MachineRefineMachine[rm_Data[rm_Total][rm_machineId]] = rm_Total;
-
-	return rm_Total++;
-}
-
-
-/*==============================================================================
-
 	Internal Functions and Hooks
 
 ==============================================================================*/
 
 
-hook OnPlayerUseMachine(playerid, machineid, interactiontype)
+hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseMachine] in /gamemodes/sss/core/world/refine-machine.pwn");
 
-	if(rm_MachineRefineMachine[machineid] != -1)
+	if(GetItemType(itemid) == item_RefineMachine)
 	{
-		d:1:HANDLER("[OnPlayerUseMachine] machineid %d refine machine %d interactiontype %d", machineid, rm_MachineRefineMachine[machineid], interactiontype);
-		if(rm_Data[rm_MachineRefineMachine[machineid]][rm_machineId] == machineid)
-		{
-			_rm_PlayerUseRefineMachine(playerid, rm_MachineRefineMachine[machineid], interactiontype);
-		}
-		else
-		{
-			printf("ERROR: RefineMachine bi-directional link error. rm_MachineRefineMachine rm_machineId = %d machineid = %d");
-		}
+		d:1:HANDLER("[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
+		_rm_PlayerUseRefineMachine(playerid, itemid, interactiontype);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
+_rm_PlayerUseRefineMachine(playerid, itemid, interactiontype)
 {
-	d:1:HANDLER("[_rm_PlayerUseRefineMachine] playerid %d refinemachineid %d interactiontype %d", playerid, refinemachineid, interactiontype);
+	d:1:HANDLER("[_rm_PlayerUseRefineMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
 
-	if(rm_Data[refinemachineid][rm_cooking])
+	new data[e_REFINE_MACHINE_DATA];
+
+	GetItemArrayData(itemid, data);
+
+	if(data[rm_cooking])
 	{
-		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(rm_Data[refinemachineid][rm_cookTime] - GetTickCountDifference(GetTickCount(), rm_Data[refinemachineid][rm_startTime]), "%m minutes %s seconds")), 8000);
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(data[rm_cookTime] - GetTickCountDifference(GetTickCount(), data[rm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
 	if(interactiontype == 0)
 	{
-		DisplayContainerInventory(playerid, GetMachineContainerID(rm_Data[refinemachineid][rm_machineId]));
+		DisplayContainerInventory(playerid, data[rm_containerid]);
 		return 0;
 	}
 
-	rm_CurrentRefineMachine[playerid] = refinemachineid;
+	rm_CurrentRefineMachine[playerid] = itemid;
 
 	new 
 		ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
@@ -156,8 +123,8 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 	{
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
-			d:1:HANDLER("[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(rm_Data[refinemachineid][rm_fuel]));
-			StartHoldAction(playerid, floatround(MAX_REFINE_MACHINE_FUEL * 1000), floatround(rm_Data[refinemachineid][rm_fuel] * 1000));
+			d:1:HANDLER("[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(data[rm_fuel]));
+			StartHoldAction(playerid, floatround(MAX_REFINE_MACHINE_FUEL * 100), floatround(data[rm_fuel] * 100));
 			return 0;
 		}
 	}
@@ -168,7 +135,7 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 
 		if(response)
 		{
-			new ret = _rm_StartCooking(refinemachineid);
+			new ret = _rm_StartCooking(itemid);
 
 			if(ret == 0)
 				ShowActionText(playerid, ls(playerid, "MACHNOITEMS"), 5000);
@@ -185,7 +152,7 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 			rm_CurrentRefineMachine[playerid] = -1;
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Refining Machine", sprintf("Press 'Start' to activate the refining machine and convert scrap into refined metal.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", rm_Data[refinemachineid][rm_fuel]), "Start", "Cancel");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Refining Machine", sprintf("Press 'Start' to activate the refining machine and convert scrap into refined metal.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", data[rm_fuel]), "Start", "Cancel");
 
 	return 0;
 }
@@ -196,15 +163,12 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 
 	if(playerid != INVALID_PLAYER_ID)
 	{
-		new machineid = GetContainerMachineID(containerid);
+		new ItemType:itemtype = GetItemType(GetContainerMachineItem(containerid));
 
-		if(machineid != INVALID_MACHINE_ID)
+		if(itemtype == item_RefineMachine)
 		{
-			if(rm_MachineRefineMachine[machineid] != -1)
-			{
-				if(GetItemType(itemid) != item_ScrapMetal)
-					return 1;
-			}
+			if(GetItemType(itemid) != item_ScrapMetal)
+				return 1;
 		}
 	}
 
@@ -217,7 +181,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 	if(rm_CurrentRefineMachine[playerid] != -1)
 	{
-		d:3:HANDLER("[OnHoldActionUpdate] refinemachineid %d progress %d", rm_CurrentRefineMachine[playerid], progress);
+		d:3:HANDLER("[OnHoldActionUpdate] Refine machine itemid %d progress %d", rm_CurrentRefineMachine[playerid], progress);
 
 		new itemid = GetPlayerItem(playerid);
 
@@ -245,10 +209,12 @@ hook OnHoldActionUpdate(playerid, progress)
 		}
 		else
 		{
-			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] + 1.0);
+			new Float:machinefuel = Float:GetItemArrayDataAtCell(rm_CurrentRefineMachine[playerid], rm_fuel);
+
+			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %f, machine to %f", fuel - 1.1, machinefuel + 1.1);
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
-			rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] += 1.1;
+			SetItemArrayDataAtCell(rm_CurrentRefineMachine[playerid], _:(machinefuel + 1.1), rm_fuel);
 			ShowActionText(playerid, ls(playerid, "REFUELLING"));
 		}
 	}
@@ -256,16 +222,14 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_rm_StartCooking(refinemachineid)
+_rm_StartCooking(itemid)
 {
-	d:1:HANDLER("[_rm_PlayerUseRefineMachine] refinemachineid %d", refinemachineid);
-	new itemcount;
+	new data[e_REFINE_MACHINE_DATA];
 
-	for(new j = GetContainerSize(GetMachineContainerID(rm_Data[refinemachineid][rm_machineId])); itemcount < j; itemcount++)
-	{
-		if(!IsContainerSlotUsed(GetMachineContainerID(rm_Data[refinemachineid][rm_machineId]), itemcount))
-			break;
-	}
+	GetItemArrayData(itemid, data);
+
+	d:1:HANDLER("[_rm_PlayerUseRefineMachine] itemid %d", itemid);
+	new itemcount = GetContainerItemCount(data[rm_containerid]);
 
 	if(itemcount == 0)
 		return 0;
@@ -278,7 +242,7 @@ _rm_StartCooking(refinemachineid)
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
 		return -1;
 
-	if(rm_Data[refinemachineid][rm_fuel] < REFINE_MACHINE_FUEL_USAGE * itemcount)
+	if(data[rm_fuel] < REFINE_MACHINE_FUEL_USAGE * itemcount)
 		return -2;
 
 	new
@@ -286,50 +250,58 @@ _rm_StartCooking(refinemachineid)
 		Float:y,
 		Float:z;
 
-	GetMachinePos(rm_Data[refinemachineid][rm_machineId], x, y, z);
+	GetItemPos(itemid, x, y, z);
 
 	cooktime *= 1000; // convert to ms
 
 	d:2:HANDLER("[_rm_PlayerUseRefineMachine] started cooking...");
-	rm_Data[refinemachineid][rm_cooking] = true;
-	DestroyDynamicObject(rm_Data[refinemachineid][rm_smoke]);
-	rm_Data[refinemachineid][rm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
-	rm_Data[refinemachineid][rm_cookTime] = cooktime;
-	rm_Data[refinemachineid][rm_startTime] = GetTickCount();
+	data[rm_cooking] = true;
+	DestroyDynamicObject(data[rm_smoke]);
+	data[rm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
+	data[rm_cookTime] = cooktime;
+	data[rm_startTime] = GetTickCount();
 
-	defer _rm_FinishCooking(refinemachineid, cooktime);
+	SetItemArrayData(itemid, data, _:e_REFINE_MACHINE_DATA);
+
+	defer _rm_FinishCooking(itemid, cooktime);
 
 	return cooktime;
 }
 
-timer _rm_FinishCooking[cooktime](refinemachineid, cooktime)
+timer _rm_FinishCooking[cooktime](itemid, cooktime)
 {
 #pragma unused cooktime
 	d:1:HANDLER("[_rm_PlayerUseRefineMachine] finished cooking...");
+	new data[e_REFINE_MACHINE_DATA];
+
+	GetItemArrayData(itemid, data);
+
 	new
-		itemid,
-		containerid = GetMachineContainerID(rm_Data[refinemachineid][rm_machineId]),
+		subitemid,
+		containerid = data[rm_containerid],
 		itemcount;
 
 	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
 	{
-		itemid = GetContainerSlotItem(containerid, i);
+		subitemid = GetContainerSlotItem(containerid, i);
 
-		d:3:HANDLER("[_rm_PlayerUseRefineMachine] slot %d: destroying %d", i, itemid);
+		d:3:HANDLER("[_rm_PlayerUseRefineMachine] slot %d: destroying %d", i, subitemid);
 
-		rm_Data[refinemachineid][rm_fuel] -= REFINE_MACHINE_FUEL_USAGE;
+		data[rm_fuel] -= REFINE_MACHINE_FUEL_USAGE;
 
-		DestroyItem(itemid);
+		DestroyItem(subitemid);
 		itemcount++;
 	}
 
 	for(new i; i < itemcount; i++)
 	{
-		itemid = CreateItem(item_RefinedMetal);
-		AddItemToContainer(containerid, itemid);
+		subitemid = CreateItem(item_RefinedMetal);
+		AddItemToContainer(containerid, subitemid);
 	}
 
-	DestroyDynamicObject(rm_Data[refinemachineid][rm_smoke]);
-	rm_Data[refinemachineid][rm_cooking] = false;
-	rm_Data[refinemachineid][rm_smoke] = INVALID_OBJECT_ID;
+	DestroyDynamicObject(data[rm_smoke]);
+	data[rm_cooking] = false;
+	data[rm_smoke] = INVALID_OBJECT_ID;
+
+	SetItemArrayData(itemid, data, _:e_REFINE_MACHINE_DATA);
 }
