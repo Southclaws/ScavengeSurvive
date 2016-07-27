@@ -110,6 +110,8 @@ stock CreateTentFromItem(itemid)
 		return -1;
 	}
 
+	Iter_Add(tnt_Index, id);
+
 	new
 		Float:x,
 		Float:y,
@@ -172,8 +174,6 @@ stock CreateTentFromItem(itemid)
 	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objSideL2], 0, 3095, "a51jdrx", "sam_camo", 0);
 	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objPoleF], 0, 1270, "signs", "lamppost", 0);
 	SetDynamicObjectMaterial(tnt_ObjData[id][tnt_objPoleB], 0, 1270, "signs", "lamppost", 0);
-
-	Iter_Add(tnt_Index, id);
 
 	CallLocalFunction("OnTentCreate", "d", id);
 

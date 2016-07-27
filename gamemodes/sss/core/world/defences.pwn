@@ -165,6 +165,10 @@ CreateDefence(itemid)
 	objectid = GetItemObjectID(itemid);
 	GetItemRot(itemid, rz, rz, rz);
 
+	itemdata[def_active] = true;
+
+	SetItemArrayData(itemid, itemdata, e_DEFENCE_DATA);
+
 	if(itemdata[def_motor])
 	{
 		if(itemdata[def_moveState] == DEFENCE_POSE_HORIZONTAL)
