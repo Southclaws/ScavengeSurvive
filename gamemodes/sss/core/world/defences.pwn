@@ -1057,6 +1057,17 @@ stock GetItemTypeDefenceType(ItemType:itemtype)
 	return def_ItemTypeDefenceType[itemtype];
 }
 
+stock IsItemTypeDefence(ItemType:itemtype)
+{
+	if(!IsValidItemType(itemtype))
+		return false;
+
+	if(def_ItemTypeDefenceType[itemtype] != -1)
+		return true;
+
+	return false;
+}
+
 // def_itemtype
 forward ItemType:GetDefenceTypeItemType(defencetype);
 stock ItemType:GetDefenceTypeItemType(defencetype)

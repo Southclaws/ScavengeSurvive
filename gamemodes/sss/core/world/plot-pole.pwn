@@ -33,6 +33,9 @@ enum e_PLOT_POLE_DATA
 	E_PLOTPOLE_OBJ3
 }
 
+static InPlotPoleArea[MAX_PLAYERS];
+
+
 hook OnScriptInit()
 {
 	SetItemTypeMaxArrayData(item_PlotPole, 2);
@@ -81,6 +84,33 @@ hook OnPlayerEnterButtonArea(playerid, buttonid)
 			new geid[GEID_LEN];
 			GetItemGEID(itemid, geid);
 			ShowActionText(playerid, sprintf("Entered Zone for Plot Pole %s", geid), 5000);
+
+			InPlotPoleArea[playerid] = true;
 		}
 	}
+}
+
+hook OnPlayerLeaveButtonArea(playerid, buttonid)
+{
+	new itemid = GetItemFromButtonID(buttonid);
+
+	if(IsValidItem(itemid))
+	{
+		if(GetItemType(itemid) == item_PlotPole)
+		{
+			new geid[GEID_LEN];
+			GetItemGEID(itemid, geid);
+			ShowActionText(playerid, sprintf("Left Zone for Plot Pole %s", geid), 5000);
+
+			InPlotPoleArea[playerid] = false;
+		}
+	}
+}
+
+stock IsPlayerInPlotPoleArea(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return false;
+
+	return InPlotPoleArea[playerid];
 }
