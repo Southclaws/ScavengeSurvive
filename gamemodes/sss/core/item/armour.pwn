@@ -155,6 +155,7 @@ stock SetPlayerArmourItem(playerid, itemid)
 		ArmourSkinData[skin][6], ArmourSkinData[skin][7], ArmourSkinData[skin][8]);
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 	arm_PlayerArmourItem[playerid] = itemid;
 
 	return 1;

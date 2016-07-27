@@ -114,6 +114,7 @@ stock SetPlayerHatItem(playerid, itemid)
 		hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 	hat_CurrentHatItem[playerid] = itemid;
 
 	return 1;

@@ -114,6 +114,7 @@ stock SetPlayerMaskItem(playerid, itemid)
 		mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 	mask_CurrentMaskItem[playerid] = itemid;
 
 	return 1;

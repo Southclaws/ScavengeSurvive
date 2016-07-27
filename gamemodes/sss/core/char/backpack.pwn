@@ -176,6 +176,7 @@ stock GivePlayerBag(playerid, itemid)
 		bag_ContainerItem[containerid] = itemid;
 		bag_ContainerPlayer[containerid] = playerid;
 		RemoveItemFromWorld(itemid);
+		RemoveCurrentItem(GetItemHolder(itemid));
 
 		return 1;
 	}

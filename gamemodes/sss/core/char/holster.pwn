@@ -119,6 +119,7 @@ stock SetPlayerHolsterItem(playerid, itemid)
 		return 0;
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 
 	SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetItemTypeModel(GetItemType(itemid)),
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_boneId],
