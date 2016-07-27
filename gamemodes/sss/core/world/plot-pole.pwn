@@ -114,3 +114,38 @@ stock IsPlayerInPlotPoleArea(playerid)
 
 	return InPlotPoleArea[playerid];
 }
+
+stock IsItemInPlotPoleArea(itemid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetItemPos(itemid, x, y, z);
+
+	return IsPointInPlotPoleArea(x, y, z);
+}
+
+stock IsPointInPlotPoleArea(Float:x, Float:y, Float:z)
+{
+	new
+		areas[64],
+		areacount,
+		data[2];
+
+	areacount = GetDynamicAreasForPoint(x, y, z, areas);
+
+	for(new i; i < sizeof(areas) && i < areacount; ++i)
+	{
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, areas[i], E_STREAMER_EXTRA_ID, data, 2);
+
+		if(data[0] == BTN_STREAMER_AREA_IDENTIFIER)
+		{
+			if(GetItemType(GetItemFromButtonID(data[1])) == item_PlotPole)
+				return true;
+		}
+	}
+
+	return false;
+}
