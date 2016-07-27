@@ -811,7 +811,8 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 	}
 }
 
-public Streamer_OnPluginError()
+public Streamer_OnPluginError(error[])
 {
+	print(error);
 	PrintAmxBacktrace();
 }

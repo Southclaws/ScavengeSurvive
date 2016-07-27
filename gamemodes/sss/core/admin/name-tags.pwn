@@ -52,8 +52,23 @@ hook OnPlayerConnect(playerid)
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	format(string, sizeof(string), "(%d) %s", playerid, name);
 
-	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(string, YELLOW, 0.0, 0.0, 0.0, 6000.0, playerid, _, 0, 6000.0, _, _, players, 1, 1, maxplayers);
-	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx("[|                                           |]", BLUE, 0.0, 0.0, 0.0, 6000.0, playerid, _, 1, 6000.0, _, _, players, 1, 1, maxplayers);
+	tags_Nametag[playerid] = CreateDynamic3DTextLabelEx(
+		string, YELLOW, 0.0, 0.0, 0.0, 6000.0, playerid,
+		.testlos = 0,
+		.streamdistance = 6000.0,
+		.players = players,
+		.maxworlds = 1,
+		.maxinteriors = 1,
+		.maxplayers = maxplayers);
+
+	tags_NametagLOS[playerid] = CreateDynamic3DTextLabelEx(
+		"[|                                           |]", BLUE, 0.0, 0.0, 0.0, 6000.0, playerid,
+		.testlos = 1,
+		.streamdistance = 6000.0,
+		.players = players,
+		.maxworlds = 1,
+		.maxinteriors = 1,
+		.maxplayers = maxplayers);
 
 	return 1;
 }
