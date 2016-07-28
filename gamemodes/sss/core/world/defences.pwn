@@ -1185,32 +1185,35 @@ stock SetDefenceHitPoints(itemid, hitpoints)
 stock GetClosestDefence(Float:x, Float:y, Float:z, Float:size)
 {
 	new
-		Float:ix,
-		Float:iy,
-		Float:iz,
-		Float:smallestdistance = 9999999.9,
-		Float:tempdistance,
-		closestid;
+		items[32],
+		count,
+		data[2],
+		itemid;
 
-	foreach(new i : itm_Index)
+	count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = size);
+
+	printf("Streamer_GetNearbyItems: %d %s", count, atosr(items, count));
+
+	for(new i; i < count; ++i)
 	{
-		if(def_ItemTypeDefenceType[GetItemType(i)] == INVALID_DEFENCE_TYPE)
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, items[i], E_STREAMER_EXTRA_ID, data);
+		printf("%d/%d: Streamer_GetArrayData: %s", i, count, atosr(data, 2));
+
+		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
 			continue;
 
-		GetItemPos(i, ix, iy, iz);
+		itemid = GetItemFromButtonID(data[1]);
 
-		tempdistance = Distance(x, y, z, ix, iy, iz);
+		printf("\tGetItemFromButtonID: %d type: %d", itemid, GetItemType(itemid));
 
-		if(tempdistance < smallestdistance)
-		{
-			smallestdistance = tempdistance;
-			closestid = i;
-		}
+		if(!IsValidItem(itemid))
+			continue;
+
+		printf("\titem valid, defencetype: %d", def_ItemTypeDefenceType[GetItemType(itemid)]);
+
+		if(def_ItemTypeDefenceType[GetItemType(itemid)] != INVALID_DEFENCE_TYPE)
+			return itemid;
 	}
 
-	if(smallestdistance < size)
-		return closestid;
-
-	else
-		return -1;
+	return INVALID_ITEM_ID;
 }

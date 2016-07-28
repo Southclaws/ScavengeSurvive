@@ -545,7 +545,7 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 
 	itemid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
 
-	if(IsValidItem(itemid))
+	if(!IsValidItem(itemid))
 		return 0;
 
 	newhitpoints = GetDefenceHitPoints(itemid) - exp_Presets[preset][exp_defdmg];
