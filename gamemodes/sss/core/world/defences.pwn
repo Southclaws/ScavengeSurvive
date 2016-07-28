@@ -1192,24 +1192,17 @@ stock GetClosestDefence(Float:x, Float:y, Float:z, Float:size)
 
 	count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = size);
 
-	printf("Streamer_GetNearbyItems: %d %s", count, atosr(items, count));
-
 	for(new i; i < count; ++i)
 	{
 		Streamer_GetArrayData(STREAMER_TYPE_AREA, items[i], E_STREAMER_EXTRA_ID, data);
-		printf("%d/%d: Streamer_GetArrayData: %s", i, count, atosr(data, 2));
 
 		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
 			continue;
 
 		itemid = GetItemFromButtonID(data[1]);
 
-		printf("\tGetItemFromButtonID: %d type: %d", itemid, GetItemType(itemid));
-
 		if(!IsValidItem(itemid))
 			continue;
-
-		printf("\titem valid, defencetype: %d", def_ItemTypeDefenceType[GetItemType(itemid)]);
 
 		if(def_ItemTypeDefenceType[GetItemType(itemid)] != INVALID_DEFENCE_TYPE)
 			return itemid;
