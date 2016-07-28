@@ -77,7 +77,9 @@ Most of the settings should be self-explanitory. If the purpose isn't clear, loo
 
 ## LICENSE
 
-I don't expect you to read the entire license.
+Short Summary: https://www.tldrlegal.com/l/gpl-3.0
+
+I don't expect you to read the entire license (Read the summary linked above).
 
 Just ensure you understand this:
 
