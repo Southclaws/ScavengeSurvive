@@ -99,6 +99,14 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		containerid = GetItemArrayDataAtCell(withitemid, 0);
 		itemcount = GetContainerItemCount(containerid);
 
+		if(!IsValidContainer(containerid))
+		{
+			printf("ERROR: Workbench (%d) has invalid container ID (%d)", withitemid, containerid);
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		d:1:HANDLER("[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", withitemid, containerid, itemcount);
+
 		for(new i; i < itemcount; i++)
 		{
 			craftitems[i][cft_selectedItemType] = GetItemType(GetContainerSlotItem(containerid, i));
@@ -111,10 +119,11 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 		if(IsValidConstructionSet(consset))
 		{
-			d:3:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
+			d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
 
 			if(GetConstructionSetTool(consset) == GetItemType(GetPlayerItem(playerid)))
 			{
+				wb_CurrentConstructSet[playerid] = consset;
 				_wb_StartWorking(playerid, withitemid, itemcount * 3600);
 				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
@@ -135,12 +144,14 @@ _wb_ClearWorkbench(itemid)
 	containerid = GetItemArrayDataAtCell(itemid, 0);
 	itemcount = GetContainerItemCount(containerid);
 
-	for(new i; i < itemcount; i++)
-		DestroyItem(GetContainerSlotItem(containerid, i));
+	for(; itemcount >= 0; itemcount--)
+		DestroyItem(GetContainerSlotItem(containerid, itemcount));
 }
 
 _wb_StartWorking(playerid, itemid, buildtime)
 {
+	SetPlayerFacingAngle(playerid, GetPlayerAngleToButton(playerid, GetItemButtonID(itemid)));
+	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = itemid;
 }
@@ -166,7 +177,7 @@ _wb_CreateResult(itemid, craftset)
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
 
-	CreateItem(GetCraftSetResult(craftset), x, y, z + 0.49, 0.0, 0.0, rz - 95.0 + frandom(10.0));
+	CreateItem(GetCraftSetResult(craftset), x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)

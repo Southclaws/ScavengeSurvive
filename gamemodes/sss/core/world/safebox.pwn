@@ -33,7 +33,8 @@
 enum E_SAFEBOX_TYPE_DATA
 {
 ItemType:	box_itemtype,
-			box_size
+			box_size,
+			box_display
 }
 
 static
@@ -68,7 +69,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineSafeboxType(ItemType:itemtype, size)
+DefineSafeboxType(ItemType:itemtype, size, displayonuse = true)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
@@ -77,6 +78,7 @@ DefineSafeboxType(ItemType:itemtype, size)
 
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;
+	box_TypeData[box_TypeTotal][box_display]	= displayonuse;
 
 	box_ItemTypeBoxType[itemtype] = box_TypeTotal;
 
@@ -170,12 +172,16 @@ hook OnPlayerUseItem(playerid, itemid)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(IsItemInWorld(itemid))
-			_DisplaySafeboxDialog(playerid, itemid, true);
+		{
+			if(_DisplaySafeboxDialog(playerid, itemid, true))
+				return Y_HOOKS_BREAK_RETURN_1;
+		}
 
 		else
-			_DisplaySafeboxDialog(playerid, itemid, false);
-
-		return Y_HOOKS_BREAK_RETURN_1;
+		{
+			if(_DisplaySafeboxDialog(playerid, itemid, false))
+				return Y_HOOKS_BREAK_RETURN_1;
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -187,8 +193,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(IsItemTypeSafebox(GetItemType(withitemid)))
 	{
-		_DisplaySafeboxDialog(playerid, withitemid, true);
-		return Y_HOOKS_BREAK_RETURN_1;
+		if(_DisplaySafeboxDialog(playerid, withitemid, true))
+			return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -196,6 +202,9 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 _DisplaySafeboxDialog(playerid, itemid, animation)
 {
+	if(!box_TypeData[box_ItemTypeBoxType[GetItemType(itemid)]][box_display])
+		return 0;
+
 	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
 	box_CurrentBoxItem[playerid] = itemid;
 
@@ -204,6 +213,8 @@ _DisplaySafeboxDialog(playerid, itemid, animation)
 
 	else
 		CancelPlayerMovement(playerid);
+
+	return 1;
 }
 
 
