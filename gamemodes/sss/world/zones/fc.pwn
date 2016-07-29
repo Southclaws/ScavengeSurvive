@@ -115,7 +115,7 @@ FC_District_AngelPine()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_AngelPine' please wait...");
 
-	CreateWorkBench(-2176.33765, -2536.95630, 30.09808, -219.05981);
+	CreateItem(item_Workbench, -2176.33765, -2536.95630, 30.09808, 0.0, 0.0, -219.05981);
 
 	CreateStaticLootSpawn(-2157.903564, -2475.454589, 30.111019,	GetLootIndexFromName("world_civilian"), 20.0);
 	CreateStaticLootSpawn(-2132.607666, -2513.873046, 30.814289,	GetLootIndexFromName("world_civilian"), 20.0);
@@ -236,8 +236,8 @@ FC_District_Scrapyard()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Scrapyard' please wait...");
 
-	CreateScrapMachine(-1888.26416, -1636.40588, 21.21387, 0.0);
-	CreateRefineMachine(-1848.56006, -1685.39380, 22.97520, -54.0);
+	CreateItem(item_ScrapMachine, -1888.26416, -1636.40588, 21.21387, 0.0, 0.0, 0.0);
+	CreateItem(item_RefineMachine, -1848.56006, -1685.39380, 22.97520, 0.0, 0.0, -54.0);
 
 	CreateStaticLootSpawn(-1825.192138, -1629.722534, 22.001569,	GetLootIndexFromName("world_industrial"), 15.0);
 	CreateStaticLootSpawn(-1848.610473, -1629.970947, 20.828950,	GetLootIndexFromName("world_industrial"), 15.0);
@@ -277,8 +277,8 @@ FC_District_Farms()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'FC_District_Farms' please wait...");
 
-	CreateWorkBench(-392.98178, -1433.41199, 25.17424, 0.00000);
-	CreateWorkBench(-372.71423, -1040.36572, 58.71876, 95.58000);
+	CreateItem(item_Workbench, -392.98178, -1433.41199, 25.17424, 0.0, 0.0, 0.00000);
+	CreateItem(item_Workbench, -372.71423, -1040.36572, 58.71876, 0.0, 0.0, 95.58000);
 
 	CreateStaticLootSpawn(-576.649841, -1483.673095, 9.674639,		GetLootIndexFromName("world_civilian"), 20.0);
 	CreateStaticLootSpawn(-576.912963, -1035.397460, 22.790590,		GetLootIndexFromName("world_civilian"), 20.0);

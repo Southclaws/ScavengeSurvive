@@ -80,7 +80,7 @@ RC_District_BlueberryAcres()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'RC_District_BlueberryAcres' please wait...");
 
-	CreateWorkBench(94.44927, -168.05229, 2.05108, -180.77998);
+	CreateItem(item_Workbench, 94.44927, -168.05229, 2.05108, 0.0, 0.0, -180.77998);
 
 	CreateStaticLootSpawn(-21.749139, 82.340179, 2.108500,			GetLootIndexFromName("world_industrial"), 15.0);
 	CreateStaticLootSpawn(-29.512809, 62.143798, 2.109849,			GetLootIndexFromName("world_industrial"), 15.0);
@@ -550,7 +550,7 @@ RC_District_Palomino()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'RC_District_Palomino' please wait...");
 
-	CreateWorkBench(2560.82031, 73.39390, 25.92815, 0.00000);
+	CreateItem(item_Workbench, 2560.82031, 73.39390, 25.92815, 0.0, 0.0, 0.00000);
 
 	CreateStaticLootSpawn(2333.181884, -18.142669, 25.478500,		GetLootIndexFromName("world_civilian"), 20.0);
 	CreateStaticLootSpawn(2310.982421, -15.128290, 25.740230,		GetLootIndexFromName("world_civilian"), 20.0);

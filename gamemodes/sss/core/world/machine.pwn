@@ -32,36 +32,21 @@
 ==============================================================================*/
 
 
-#define INVALID_MACHINE_ID	(-1)
-#define MAX_MACHINE			(128)
-#define MAX_MACHINE_NAME	(32)
-
-
-enum E_MACHINE_DATA
-{
-			mach_objId,
-			mach_buttonId,
-			mach_containerId,
-			mach_name[MAX_MACHINE_NAME],
-			mach_size,
-Float:		mach_posX,
-Float:		mach_posY,
-Float:		mach_posZ,
-Float:		mach_rotZ
-}
+#define MAX_MACHINE_TYPE (4)
 
 
 static
-			mach_Data[MAX_MACHINE][E_MACHINE_DATA],
 			mach_Total,
-			mach_ButtonMachine[BTN_MAX] = {INVALID_MACHINE_ID, ...},
-			mach_ContainerMachine[CNT_MAX] = {INVALID_MACHINE_ID, ...},
+			mach_ItemTypeMachine[ITM_MAX_TYPES] = {-1, ...},
+
+			mach_ContainerSize[MAX_MACHINE_TYPE] = {0, ...},
+			mach_ContainerMachineItem[CNT_MAX] = {INVALID_ITEM_ID, ...},
 			mach_CurrentMachine[MAX_PLAYERS],
 			mach_MachineInteractTick[MAX_PLAYERS],
 Timer:		mach_HoldTimer[MAX_PLAYERS];
 
 
-forward OnPlayerUseMachine(playerid, machineid, interactiontype);
+forward OnPlayerUseMachine(playerid, itemid, interactiontype);
 
 static HANDLER = -1;
 
@@ -82,7 +67,7 @@ hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/machine.pwn");
 
-	mach_CurrentMachine[playerid] = INVALID_MACHINE_ID;
+	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 }
 
 
@@ -93,26 +78,12 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[], size)
+stock DefineMachineType(ItemType:itemtype, arraydata, containersize)
 {
-	if(mach_Total == MAX_MACHINE - 1)
-	{
-		print("ERROR: MAX_MACHINE Limit reached.");
-		return 0;
-	}
+	SetItemTypeMaxArrayData(itemtype, arraydata);
 
-	mach_Data[mach_Total][mach_objId] = CreateDynamicObject(modelid, x, y, z, 0.0, 0.0, rz);
-	mach_Data[mach_Total][mach_buttonId] = CreateButton(x, y, z + 0.5, label, .label = true, .areasize = 2.0);
-	mach_Data[mach_Total][mach_containerId] = CreateContainer(name, size);
-	strcat(mach_Data[mach_Total][mach_name], name, MAX_MACHINE_NAME);
-	mach_Data[mach_Total][mach_size] = size;
-	mach_Data[mach_Total][mach_posX] = x;
-	mach_Data[mach_Total][mach_posY] = y;
-	mach_Data[mach_Total][mach_posZ] = z;
-	mach_Data[mach_Total][mach_rotZ] = rz;
-
-	mach_ButtonMachine[mach_Data[mach_Total][mach_buttonId]] = mach_Total;
-	mach_ContainerMachine[mach_Data[mach_Total][mach_containerId]] = mach_Total;
+	mach_ItemTypeMachine[itemtype] = mach_Total;
+	mach_ContainerSize[mach_Total] = containersize;
 
 	return mach_Total++;
 }
@@ -125,31 +96,62 @@ stock CreateMachine(modelid, Float:x, Float:y, Float:z, Float:rz, name[], label[
 ==============================================================================*/
 
 
-hook OnButtonPress(playerid, buttonid)
+hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/machine.pwn");
+	new machinetype = mach_ItemTypeMachine[GetItemType(itemid)];
 
-	if(mach_ButtonMachine[buttonid] != INVALID_MACHINE_ID)
+	if(machinetype == -1)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new name[ITM_MAX_NAME];
+
+	GetItemName(itemid, name);
+
+	new containerid = CreateContainer(name, mach_ContainerSize[machinetype]);
+
+	SetItemArrayDataAtCell(itemid, containerid, 0);
+	mach_ContainerMachineItem[containerid] = itemid;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnItemCreateInWorld(itemid)
+{
+	if(mach_ItemTypeMachine[GetItemType(itemid)] == -1)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	SetButtonText(GetItemButtonID(itemid), "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel");
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerPickUpItem(playerid, itemid)
+{
+	if(mach_ItemTypeMachine[GetItemType(itemid)] != -1)
 	{
-		d:1:HANDLER("[OnButtonPress] button %d machine %d", buttonid, mach_ButtonMachine[buttonid]);
-		if(mach_Data[mach_ButtonMachine[buttonid]][mach_buttonId] == buttonid)
-		{
-			_mach_PlayerUseMachine(playerid, mach_ButtonMachine[buttonid]);
-		}
-		else
-		{
-			printf("ERROR: Machine bi-directional link error. mach_ButtonMachine mach_buttonId = %d buttonid = %d");
-		}
+		_mach_PlayerUseMachine(playerid, itemid);
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_mach_PlayerUseMachine(playerid, machineid)
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:1:HANDLER("[_mach_PlayerUseMachine] playerid %d machineid %d", playerid, machineid);
+	if(mach_ItemTypeMachine[GetItemType(withitemid)] != -1)
+	{
+		_mach_PlayerUseMachine(playerid, withitemid);
+		return Y_HOOKS_BREAK_RETURN_1;
+	}
 
-	mach_CurrentMachine[playerid] = machineid;
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_mach_PlayerUseMachine(playerid, itemid)
+{
+	d:1:HANDLER("[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
+
+	mach_CurrentMachine[playerid] = itemid;
 	mach_MachineInteractTick[playerid] = GetTickCount();
 
 	mach_HoldTimer[playerid] = defer _mach_HoldInteract(playerid);
@@ -163,7 +165,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(RELEASED(16))
 	{
-		if(mach_CurrentMachine[playerid] != INVALID_MACHINE_ID)
+		if(mach_CurrentMachine[playerid] != INVALID_ITEM_ID)
 		{
 			if(GetTickCountDifference(GetTickCount(), mach_MachineInteractTick[playerid]) < 250)
 			{
@@ -178,22 +180,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _mach_TapInteract(playerid)
 {
-	if(mach_CurrentMachine[playerid] == INVALID_MACHINE_ID)
+	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
 	CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 0);
 
-	mach_CurrentMachine[playerid] = INVALID_MACHINE_ID;
+	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 }
 
 timer _mach_HoldInteract[250](playerid)
 {
-	if(mach_CurrentMachine[playerid] == INVALID_MACHINE_ID)
+	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
 	CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 1);
 
-	mach_CurrentMachine[playerid] = INVALID_MACHINE_ID;
+	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 }
 
 
@@ -204,111 +206,38 @@ timer _mach_HoldInteract[250](playerid)
 ==============================================================================*/
 
 
-// mach_Total
-stock IsValidMachine(machineid)
+// mach_ItemTypeMachine
+stock GetItemTypeMachineType(ItemType:itemtype)
 {
-	if(!(0 <= machineid < mach_Total))
+	if(!IsValidItemType(itemtype))
+		return -1;
+
+	return mach_ItemTypeMachine[itemtype];
+}
+
+// mach_ContainerSize
+stock GetMachineTypeContainerSize(machinetype)
+{
+	if(!(0 <= machinetype < mach_Total))
 		return 0;
 
-	return 1;
+	return mach_ContainerSize[machinetype];
 }
 
-// mach_ButtonMachine
-stock GetButtonMachineID(buttonid)
-{
-	if(!IsValidButton(buttonid))
-		return INVALID_MACHINE_ID;
-
-	return mach_ButtonMachine[buttonid];
-}
-
-// mach_ContainerMachine
-stock GetContainerMachineID(containerid)
+// mach_ContainerMachineItem
+stock GetContainerMachineItem(containerid)
 {
 	if(!IsValidContainer(containerid))
-		return INVALID_MACHINE_ID;
+		return -1;
 
-	return mach_ContainerMachine[containerid];
+	return mach_ContainerMachineItem[containerid];
 }
 
 // mach_CurrentMachine
-stock GetMachineCurrentMachine(playerid)
+stock GetPlayerCurrentMachine(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return INVALID_MACHINE_ID;
+		return -1;
 
 	return mach_CurrentMachine[playerid];
-}
-
-
-// mach_objId
-stock GetMachineObjectID(machineid)
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	return mach_Data[machineid][mach_objId];
-}
-
-// mach_buttonId
-stock GetMachineButtonID(machineid)
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	return mach_Data[machineid][mach_buttonId];
-}
-
-// mach_containerId
-stock GetMachineContainerID(machineid)
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	return mach_Data[machineid][mach_containerId];
-}
-
-// mach_name
-stock GetMachineName(machineid, name[])
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	name[0] = EOS;
-	strcat(name, mach_Data[machineid][mach_name], MAX_MACHINE_NAME);
-
-	return 1;
-}
-
-// mach_size
-stock GetMachineSize(machineid)
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	return mach_Data[machineid][mach_size];
-}
-
-// mach_posX
-// mach_posY
-// mach_posZ
-stock GetMachinePos(machineid, &Float:x, &Float:y, &Float:z)
-{
-	if(!(0 <= machineid < mach_Total))
-		return 0;
-
-	x = mach_Data[machineid][mach_posX];
-	y = mach_Data[machineid][mach_posY];
-	z = mach_Data[machineid][mach_posZ];
-
-	return 1;
-}
-
-// mach_rotZ
-stock Float:GetMachineRotZ(machineid)
-{
-	if(!(0 <= machineid < mach_Total))
-		return FLOAT_INFINITY;
-
-	return mach_Data[machineid][mach_rotZ];
 }

@@ -429,7 +429,11 @@ ItemType:		item_Canister		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
 ItemType:		item_RefinedMetal	= INVALID_ITEM_TYPE,
 ItemType:		item_Locator		= INVALID_ITEM_TYPE,
-ItemType:		item_PlotPole		= INVALID_ITEM_TYPE;
+ItemType:		item_PlotPole		= INVALID_ITEM_TYPE,
+ItemType:		item_ScrapMachine	= INVALID_ITEM_TYPE,
+ItemType:		item_RefineMachine	= INVALID_ITEM_TYPE,
+ItemType:		item_WaterMachine	= INVALID_ITEM_TYPE,
+ItemType:		item_Workbench		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -833,6 +837,10 @@ public OnScriptInit()
 	item_RefinedMetal	= DefineItemType("Refined Metal",		"RefinedMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFFE35454);
 	item_Locator		= DefineItemType("Locator",				"Locator",			2967,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
 	item_PlotPole		= DefineItemType("Plot Pole",			"PlotPole",			3221,	3,	0.0, 0.0, 0.0,			0.0,	0.081356, 0.034642, -0.167247, 0.000000, 0.000000, 240.265777);
+	item_ScrapMachine	= DefineItemType("Scrap Machine",		"ScrapMachine",		920,	12,	0.0, 0.0, 0.0,			0.4344);
+	item_RefineMachine	= DefineItemType("Refining Machine",	"RefineMachine",	943,	12,	0.0, 0.0, 0.0,			0.7208);
+	item_WaterMachine	= DefineItemType("Water Purifier",		"WaterMachine",		958,	12,	0.0, 0.0, 0.0,			0.8195);
+	item_Workbench		= DefineItemType("Workbench",			"Workbench",		936,	12,	0.0, 0.0, 0.0,			0.4434, .longpickup = true);
 
 /*
 1656 cuboid shape, carry item
@@ -1254,6 +1262,7 @@ public OnScriptInit()
 	DefineSafeboxType(item_Capsule,			2);
 	DefineSafeboxType(item_Suitcase,		6);
 	DefineSafeboxType(item_Holdall,			6);
+	DefineSafeboxType(item_Workbench,		16, false);
 
 
 	// BAG ITEM TYPE DEFINITIONS
@@ -1283,6 +1292,12 @@ public OnScriptInit()
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 863, 0.33455); // cacti or (756, 0.34550) or (757, 0.34550)
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2194, 0.25344); // tiny cactus
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
+
+
+	// MACHINE TYPE DEFINITIONS
+	DefineMachineType(item_ScrapMachine, 6, 12);
+	DefineMachineType(item_RefineMachine, 6, 12);
+	DefineMachineType(item_WaterMachine, 6, 12);
 
 
 	// CRAFTING SET DEFINITIONS
@@ -1315,7 +1330,7 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Fluctuator, item_StunGun, false, item_RadioPole, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IoUnit, item_MobilePhone, false, item_Keypad, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_FluxCap, item_PowerSupply, false, item_Fluctuator, false)));
-	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_DataInterface,item_StorageUnit, false, item_IoUnit, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_DataInterface, item_StorageUnit, false, item_IoUnit, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_HackDevice, item_FluxCap, false, item_DataInterface, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Motor, item_PowerSupply, false, item_Timer, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_LocksmithKit, item_Key, false, item_Motor, false)));
