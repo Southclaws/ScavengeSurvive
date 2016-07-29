@@ -183,13 +183,41 @@ hook OnHoldActionFinish(playerid)
 	{
 		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstructed %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
 
-		if(CallLocalFunction("OnPlayerConstructed", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]))
+		if(!CallLocalFunction("OnPlayerConstructed", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]))
 		{
-			for(new i; i < cons_SelectedItemCount[playerid]; i++)
+			d:2:HANDLER("[OnHoldActionFinish] OnPlayerConstructed returned zero, creating result and destroying items marked to not keep");
+
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				Float:tx,
+				Float:ty,
+				Float:tz,
+				count;
+
+			// DestroyItem(GetPlayerItem(playerid));
+
+			for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
 			{
-				if(GetCraftSetItemKeep(cons_Constructing[playerid], i))
-					DestroyItem(cons_SelectedItems[playerid][i][cft_selectedItemID]);
+				GetItemPos(cons_SelectedItems[playerid][count][cft_selectedItemID], x, y, z);
+
+				if(x * y * z != 0.0)
+				{
+					tx += x;
+					ty += y;
+					tz += z;
+				}
+
+				if(!GetCraftSetItemKeep(cons_Constructing[playerid], count))
+					DestroyItem(cons_SelectedItems[playerid][count][cft_selectedItemID]);
 			}
+
+			tx /= float(count);
+			ty /= float(count);
+			tz /= float(count);
+
+			CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .zoffset = FLOOR_OFFSET, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 		}
 
 		ClearAnimations(playerid);
