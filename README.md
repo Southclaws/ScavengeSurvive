@@ -65,7 +65,7 @@ If you set up all the dependencies correctly, there should be *no* errors or war
 Note: The repo contains *many* filterscripts, most of these are just testing tools and utilities, there are only *2* filterscripts you need to run on a public server:
 ```
 filterscripts object-loader rcon
-plugins streamer sscanf CTime Whirlpool FileManager irc
+plugins crashdetect streamer sscanf CTime Whirlpool FileManager irc MapAndreas
 ```
 
 ### 5. Set up gamemode settings in your `scriptfiles/SSS/settings.ini` file
