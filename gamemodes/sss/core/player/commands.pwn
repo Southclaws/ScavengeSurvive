@@ -79,6 +79,7 @@ CMD:credits(playerid, params[])
 	ChatMsg(playerid, BLUE, " >  Kadaradam - Fishing, Trees and lots of bug fixes");
 	ChatMsg(playerid, BLUE, " >  Eidorian - French translation");
 	ChatMsg(playerid, BLUE, " >  Hiddos - Better water detection code");
+	ChatMsg(playerid, BLUE, " >  YOLO - Bosnian/Croatian/Serbian Translation");
 
 	return 1;
 }
