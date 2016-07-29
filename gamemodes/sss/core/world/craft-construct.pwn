@@ -183,7 +183,15 @@ hook OnHoldActionFinish(playerid)
 	{
 		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstructed %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
 
-		CallLocalFunction("OnPlayerConstructed", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]);
+		if(CallLocalFunction("OnPlayerConstructed", "dd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]]))
+		{
+			for(new i; i < cons_SelectedItemCount[playerid]; i++)
+			{
+				if(GetCraftSetItemKeep(cons_Constructing[playerid], i))
+					DestroyItem(cons_SelectedItems[playerid][i][cft_selectedItemID]);
+			}
+		}
+
 		ClearAnimations(playerid);
 		HideActionText(playerid);
 
