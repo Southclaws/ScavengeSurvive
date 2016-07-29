@@ -1310,31 +1310,31 @@ public OnScriptInit()
 	SetCraftSetConstructible(5000, item_Log, DefineItemCraftSet(item_Campfire, item_Log, false, item_Log, false));
 
 	// items created with a workbench
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTripMine, item_Explosive, false, item_Accelerometer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntProxMine, item_Explosive, false, item_MotionSense, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntPhoneBomb, item_Explosive, false, item_MobilePhone, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTimebomb, item_IedBomb, false, item_Timer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTripMine, item_IedBomb, false, item_Accelerometer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedProxMine, item_IedBomb, false, item_MotionSense, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedPhoneBomb, item_IedBomb, false, item_MobilePhone, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTimebomb, item_Fluctuator, false, item_Timer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTripMine, item_Fluctuator, false, item_Accelerometer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpProxMine, item_Fluctuator, false, item_MotionSense, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpPhoneBomb, item_Fluctuator, false, item_MobilePhone, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_PowerSupply, item_Battery, false, item_Fusebox, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StorageUnit, item_Timer, false, item_HardDrive, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Fluctuator, item_StunGun, false, item_RadioPole, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IoUnit, item_MobilePhone, false, item_Keypad, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_FluxCap, item_PowerSupply, false, item_Fluctuator, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_DataInterface, item_StorageUnit, false, item_IoUnit, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_HackDevice, item_FluxCap, false, item_DataInterface, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Motor, item_PowerSupply, false, item_Timer, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_LocksmithKit, item_Key, false, item_Motor, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false));
-	SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Locator, item_MobilePhone, false, item_RadioPole, false, item_DataInterface, false, item_PowerSupply, false));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTimebomb, item_Explosive, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntTripMine, item_Explosive, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntProxMine, item_Explosive, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_TntPhoneBomb, item_Explosive, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTimebomb, item_IedBomb, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedTripMine, item_IedBomb, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedProxMine, item_IedBomb, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IedPhoneBomb, item_IedBomb, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTimebomb, item_Fluctuator, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpTripMine, item_Fluctuator, false, item_Accelerometer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpProxMine, item_Fluctuator, false, item_MotionSense, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_EmpPhoneBomb, item_Fluctuator, false, item_MobilePhone, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_PowerSupply, item_Battery, false, item_Fusebox, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StorageUnit, item_Timer, false, item_HardDrive, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Fluctuator, item_StunGun, false, item_RadioPole, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_IoUnit, item_MobilePhone, false, item_Keypad, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_FluxCap, item_PowerSupply, false, item_Fluctuator, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_DataInterface, item_StorageUnit, false, item_IoUnit, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_HackDevice, item_FluxCap, false, item_DataInterface, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Motor, item_PowerSupply, false, item_Timer, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_LocksmithKit, item_Key, false, item_Motor, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_Locator, item_MobilePhone, false, item_RadioPole, false, item_DataInterface, false, item_PowerSupply, false)));
 
 	// Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();

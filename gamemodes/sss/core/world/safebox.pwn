@@ -217,6 +217,14 @@ _DisplaySafeboxDialog(playerid, itemid, animation)
 	return 1;
 }
 
+hook OnPlayerCloseContainer(playerid, containerid)
+{
+	if(IsValidItem(box_CurrentBoxItem[playerid]))
+	{
+		CancelPlayerMovement(playerid);
+	}
+}
+
 
 /*==============================================================================
 

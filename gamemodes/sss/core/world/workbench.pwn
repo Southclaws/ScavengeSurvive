@@ -36,7 +36,7 @@
 #define MAX_WORK_BENCH_ITEMS	(4)
 
 static
-bool:	wb_ConstructionSetWorkbench[CFT_MAX_CRAFT_SET],
+bool:	wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 		wb_CurrentConstructSet[MAX_PLAYERS],
 		wb_CurrentWorkbench[MAX_PLAYERS];
 
@@ -70,9 +70,9 @@ hook OnPlayerDisconnect(playerid, reason)
 ==============================================================================*/
 
 
-stock SetCraftSetWorkbench(consset)
+stock SetConstructionSetWorkbench(consset)
 {
-	wb_ConstructionSetWorkbench[craftset] = true;
+	wb_ConstructionSetWorkbench[consset] = true;
 }
 
 hook OnPlayerPickUpItem(playerid, itemid)
@@ -83,6 +83,14 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
+{
+	if(GetItemType(itemid) == item_Workbench)
+	{
+		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+	}
 }
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -119,13 +127,16 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 		if(IsValidConstructionSet(consset))
 		{
-			d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
-
-			if(GetConstructionSetTool(consset) == GetItemType(GetPlayerItem(playerid)))
+			if(wb_ConstructionSetWorkbench[consset])
 			{
-				wb_CurrentConstructSet[playerid] = consset;
-				_wb_StartWorking(playerid, withitemid, itemcount * 3600);
-				return Y_HOOKS_CONTINUE_RETURN_0;
+				d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
+
+				if(GetConstructionSetTool(consset) == GetItemType(GetPlayerItem(playerid)))
+				{
+					wb_CurrentConstructSet[playerid] = consset;
+					_wb_StartWorking(playerid, withitemid, itemcount * 3600);
+					return Y_HOOKS_CONTINUE_RETURN_0;
+				}
 			}
 		}
 
