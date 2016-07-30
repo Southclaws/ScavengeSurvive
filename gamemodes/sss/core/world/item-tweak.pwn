@@ -24,6 +24,7 @@
 
 #define MAX_MOVEMENT_RANGE	(1.0)
 #define NO_GO_ZONE_SIZE		(5.0)
+#define TWK_AREA_IDENTIFIER	(1234)
 
 
 #include <YSI\y_hooks>
@@ -31,6 +32,7 @@
 
 static
 			twk_Item[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+			twk_Tweaker[ITM_MAX] = {INVALID_PLAYER_ID, ...},
 Float:		twk_Origin[MAX_PLAYERS][3],
 			twk_Locked[MAX_PLAYERS],
 			twk_NoGoZone[MAX_PLAYERS],
@@ -82,7 +84,9 @@ stock TweakItem(playerid, itemid)
 {
 	d:1:HANDLER("TweakItem %d %d", playerid, itemid);
 
-	new geid[GEID_LEN];
+	new
+		geid[GEID_LEN],
+		data[2];
 
 	GetItemGEID(itemid, geid);
 
@@ -92,8 +96,13 @@ stock TweakItem(playerid, itemid)
 	logf("[TWEAK] %p Tweaked item %d (%s)", playerid, itemid, geid);
 
 	twk_Item[playerid] = itemid;
+	twk_Tweaker[itemid] = playerid;
 	GetItemPos(itemid, twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2]);
 	twk_NoGoZone[playerid] = CreateDynamicSphere(twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2], NO_GO_ZONE_SIZE, GetItemWorld(itemid), GetItemInterior(itemid));
+
+	data[0] = TWK_AREA_IDENTIFIER;
+	data[1] = itemid;
+	Streamer_SetArrayData(STREAMER_TYPE_AREA, twk_NoGoZone[playerid], E_STREAMER_EXTRA_ID, data);
 
 	_twk_ShowUI(playerid);
 	SelectTextDraw(playerid, 0xffff00ff);
@@ -112,6 +121,9 @@ stock TweakItem(playerid, itemid)
 
 _twk_Reset(playerid)
 {
+	if(IsValidItem(twk_Item[playerid]))
+		twk_Tweaker[twk_Item[playerid]] = INVALID_PLAYER_ID;
+
 	twk_Item[playerid] = INVALID_ITEM_ID;
 	twk_Locked[playerid] = false;
 	DestroyDynamicArea(twk_NoGoZone[playerid]);
@@ -193,12 +205,12 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		if(playertextid == twk_MoveL[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, -90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.2, 90.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveR[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, 90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.2, -90.0, 0.0);
 		}
 
 		if(playertextid == twk_RotR[playerid])
@@ -257,16 +269,6 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 	}
 
 	new
-		Float:vx,
-		Float:vy,
-		Float:vz,
-		Float:angle;
-
-	GetPlayerCameraFrontVector(playerid, vx, vy, vz);
-
-	angle = sif_GetAngleToPoint(0.0, 0.0, vx, vy);
-
-	new
 		Float:new_x,
 		Float:new_y,
 		Float:new_z,
@@ -277,8 +279,8 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 	GetItemPos(twk_Item[playerid], new_x, new_y, new_z);
 	GetItemRot(twk_Item[playerid], rx, ry, rz);
 
-	new_x += distance * floatsin(-direction + angle, degrees);
-	new_y += distance * floatcos(-direction + angle, degrees);
+	new_x += distance * floatsin(-(rz + direction), degrees);
+	new_y += distance * floatcos(-(rz + direction), degrees);
 
 	if(Distance(new_x, new_y, new_z, twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2]) >= MAX_MOVEMENT_RANGE)
 	{
@@ -286,7 +288,7 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 		return 4;
 	}
 
-	SetItemPos(twk_Item[playerid], new_x, new_y, new_z, FLOOR_OFFSET);
+	SetItemPos(twk_Item[playerid], new_x, new_y, new_z);
 	SetItemRot(twk_Item[playerid], rx, rx, rz + rotation);
 
 	return 0;
@@ -403,12 +405,47 @@ _twk_BuildUI(playerid)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	// twk_NoGoZoneCount++
+	new data[2];
+	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data);
+
+	if(data[0] != TWK_AREA_IDENTIFIER)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsValidItem(data[1]))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsPlayerConnected(twk_Tweaker[data[1]]))
+	{
+		printf("ERROR: Player entered area of tweaked item %d item has no connected player.", data[1]);
+		return Y_HOOKS_CONTINUE_RETURN_0;
+	}
+
+	ShowActionText(playerid, "You are blocking an item from being built, please stand back", 6000);
+	twk_NoGoZoneCount[twk_Tweaker[data[1]]]++;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-	// twk_NoGoZoneCount--
+	new data[2];
+	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data);
+
+	if(data[0] != TWK_AREA_IDENTIFIER)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsValidItem(data[1]))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsPlayerConnected(twk_Tweaker[data[1]]))
+	{
+		printf("ERROR: Player left area of tweaked item %d item has no connected player.", data[1]);
+		return Y_HOOKS_CONTINUE_RETURN_0;
+	}
+
+	twk_NoGoZoneCount[twk_Tweaker[data[1]]]--;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 

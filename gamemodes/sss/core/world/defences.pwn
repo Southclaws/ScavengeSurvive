@@ -152,12 +152,10 @@ CreateDefence(itemid)
 	new
 		itemtypename[ITM_MAX_NAME],
 		itemdata[e_DEFENCE_DATA],
-		objectid,
 		Float:rz;
 
 	GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 	GetItemArrayData(itemid, itemdata);
-	objectid = GetItemObjectID(itemid);
 	GetItemRot(itemid, rz, rz, rz);
 
 	itemdata[def_active] = true;
@@ -168,7 +166,7 @@ CreateDefence(itemid)
 	{
 		if(itemdata[def_moveState] == DEFENCE_POSE_HORIZONTAL)
 		{
-			SetDynamicObjectRot(objectid,
+			SetItemRot(itemid,
 				def_TypeData[defencetype][def_horizontalRotX],
 				def_TypeData[defencetype][def_horizontalRotY],
 				def_TypeData[defencetype][def_horizontalRotZ] + rz);
@@ -178,15 +176,7 @@ CreateDefence(itemid)
 		}
 		else
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(itemid, x, y, z);
-
-			SetDynamicObjectPos(objectid, x, y, z + def_TypeData[defencetype][def_placeOffsetZ]);
-			SetDynamicObjectRot(objectid,
+			SetItemRot(itemid,
 				def_TypeData[defencetype][def_verticalRotX],
 				def_TypeData[defencetype][def_verticalRotY],
 				def_TypeData[defencetype][def_verticalRotZ] + rz);
@@ -199,7 +189,7 @@ CreateDefence(itemid)
 	{
 		if(itemdata[def_pose] == DEFENCE_POSE_HORIZONTAL)
 		{
-			SetDynamicObjectRot(objectid,
+			SetItemRot(itemid,
 				def_TypeData[defencetype][def_horizontalRotX],
 				def_TypeData[defencetype][def_horizontalRotY],
 				def_TypeData[defencetype][def_horizontalRotZ] + rz);
@@ -209,15 +199,7 @@ CreateDefence(itemid)
 		}
 		else
 		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(itemid, x, y, z);
-
-			SetDynamicObjectPos(objectid, x, y, z + def_TypeData[defencetype][def_placeOffsetZ]);
-			SetDynamicObjectRot(objectid,
+			SetItemRot(itemid,
 				def_TypeData[defencetype][def_verticalRotX],
 				def_TypeData[defencetype][def_verticalRotY],
 				def_TypeData[defencetype][def_verticalRotZ] + rz);
@@ -238,7 +220,7 @@ DeconstructDefence(itemid)
 		Float:z;
 
 	GetItemPos(itemid, x, y, z);
-	SetItemPos(itemid, x, y, z, FLOOR_OFFSET);
+	SetItemPos(itemid, x, y, z);
 	SetItemRot(itemid, 0.0, 0.0, 0.0, true);
 
 	SetItemArrayDataAtCell(itemid, 0, 0);
@@ -265,7 +247,7 @@ stock SetDefencePosition(itemid, Float:x, Float:y, Float:z)
 		objectid = GetItemObjectID(itemid),
 		Float:rz;
 
-	SetItemPos(itemid, x, y, z, FLOOR_OFFSET);
+	SetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
 
 	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_VERTICAL)
@@ -597,10 +579,14 @@ hook OnHoldActionFinish(playerid)
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, angle, angle, angle);
 
+		z += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ];
+
+		SetItemPos(itemid, x, y, z);
+
 		logf("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
 			playerid, itemid, geid,
 			GetItemTypeModel(GetItemType(itemid)),
-			x, y, z + def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ],
+			x, y, z,
 			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotX],
 			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotY],
 			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ] + angle);
