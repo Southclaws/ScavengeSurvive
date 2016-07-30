@@ -137,7 +137,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				StartUsingClothes(playerid, itemid);
 
 			else
-				ShowActionText(playerid, ls(playerid, "CLOTHESWRGE"), 3000, 130);
+				ShowActionText(playerid, ls(playerid, "CLOTHESWRGE", true), 3000, 130);
 		}
 	}
 

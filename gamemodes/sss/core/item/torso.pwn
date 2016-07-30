@@ -72,12 +72,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "BODYDECOMPD"), 3000);
+				ShowActionText(playerid, ls(playerid, "BODYDECOMPD", true), 3000);
 			}
 		}
 		else
 		{
-			ShowActionText(playerid, ls(playerid, "BODYHARVEST"), 3000);
+			ShowActionText(playerid, ls(playerid, "BODYHARVEST", true), 3000);
 		}
 	}
 

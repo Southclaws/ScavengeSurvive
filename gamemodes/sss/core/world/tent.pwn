@@ -443,7 +443,7 @@ hook OnButtonPress(playerid, buttonid)
 				tnt_CurrentTentID[playerid] = i;
 				StartHoldAction(playerid, 15000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-				ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
+				ShowActionText(playerid, ls(playerid, "TENTREMOVE", true));
 
 				return Y_HOOKS_BREAK_RETURN_1;
 			}

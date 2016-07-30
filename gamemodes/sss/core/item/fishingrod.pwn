@@ -129,12 +129,12 @@ _CatchFish(playerid, Float:distance)
 	if(IsPosInWater(x, y, z) && -0.01 < z < 0.01)
 	{
 		fish_Timer[playerid] = defer _TryCatch(playerid);
-		ShowActionText(playerid, ls(playerid, "FISHFISHING"));
+		ShowActionText(playerid, ls(playerid, "FISHFISHING", true));
 	}
 	else
 	{
 		_PlayerStopFishing(playerid);
-		ShowActionText(playerid, ls(playerid, "FISHNCLOSER"), 8000);
+		ShowActionText(playerid, ls(playerid, "FISHNCLOSER", true), 8000);
 	}
 
 	// Debugging purposes
@@ -148,12 +148,12 @@ timer _TryCatch[MIN_FISHING_TIME + random(MAX_FISHING_TIME - MIN_FISHING_TIME)](
 		ApplyAnimation(playerid, "SWORD", "sword_block", 50.0, 1, 0, 0, 0, 0);
 		
 		fish_Timer[playerid] = defer _CatchDelay(playerid);
-		ShowActionText(playerid, ls(playerid, "FISHLINETUG"), floatround(fish_Distance[playerid], floatround_round) * 100);
+		ShowActionText(playerid, ls(playerid, "FISHLINETUG", true), floatround(fish_Distance[playerid], floatround_round) * 100);
 	}
 	else
 	{
 		_PlayerStopFishing(playerid);
-		ShowActionText(playerid, ls(playerid, "FISHUNLUCKY"), 8000);
+		ShowActionText(playerid, ls(playerid, "FISHUNLUCKY", true), 8000);
 	}
 }
 

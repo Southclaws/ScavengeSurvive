@@ -98,7 +98,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI", true), 3000);
 				return 1;
 			}
 
@@ -108,7 +108,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != GetItemWeaponItemAmmoItem(ammoitemid))
 				{
-					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE", true), 5000);
 					return 1;
 				}
 			}
@@ -143,7 +143,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 				if(canfuel <= 0.0)
 				{
-					ShowActionText(playerid, ls(playerid, "EMPTY"), 3000);
+					ShowActionText(playerid, ls(playerid, "EMPTY", true), 3000);
 					return 1;
 				}
 
@@ -159,7 +159,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetAmmoTypeCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI", true), 3000);
 				return 1;
 			}
 
@@ -169,7 +169,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != ammoitemtype)
 				{
-					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE", true), 5000);
 					return 1;
 				}
 			}
@@ -199,7 +199,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(heldcalibre != GetItemWeaponCalibre(ammotypeid))
 			{
-				ShowActionText(playerid, ls(playerid, "AMWRONGCALI"), 3000);
+				ShowActionText(playerid, ls(playerid, "AMWRONGCALI", true), 3000);
 				return 1;
 			}
 
@@ -209,7 +209,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			{
 				if(loadedammoitemtype != helditemtype)
 				{
-					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE"), 5000);
+					ShowActionText(playerid, ls(playerid, "AMDIFFATYPE", true), 5000);
 					return 1;
 				}
 			}
@@ -240,7 +240,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 
 			if(ammoitemtype != helditemtype)
 			{
-				ShowActionText(playerid, ls(playerid, "AMMIXINTINS"), 5000);
+				ShowActionText(playerid, ls(playerid, "AMMIXINTINS", true), 5000);
 				return 1;
 			}
 
@@ -274,7 +274,7 @@ timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
 		SetItemWeaponItemMagAmmo(srcitem, 0);
 		SetItemWeaponItemReserve(srcitem, remainder);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSFERW"), (reserveammo + magammo) - remainder), 3000);
+		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSFERW", true), (reserveammo + magammo) - remainder), 3000);
 	}
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
@@ -297,7 +297,7 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 
 		SetItemExtraData(srcitem, remainder);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW"), ammo - remainder), 3000);
+		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW", true), ammo - remainder), 3000);
 	}
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
@@ -314,7 +314,7 @@ timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 	SetItemWeaponItemMagAmmo(srcitem, 0);
 	SetItemWeaponItemReserve(srcitem, 0);
 
-	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOT"), amount), 3000);
+	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOT", true), amount), 3000);
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
 }
@@ -329,7 +329,7 @@ timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 	SetItemExtraData(tgtitem, existing + amount);
 	SetItemExtraData(srcitem, 0);
 
-	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOT"), amount), 3000);
+	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOT", true), amount), 3000);
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
 }

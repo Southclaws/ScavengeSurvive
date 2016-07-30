@@ -62,11 +62,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPFT"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPFT", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 
@@ -76,11 +76,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPRT"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPRT", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 
@@ -98,11 +98,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b0111);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPFL"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPFL", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 
@@ -112,11 +112,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPFR"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPFR", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 
@@ -126,11 +126,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1011);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPBL"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPBL", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 
@@ -140,11 +140,11 @@ _WheelRepair(playerid, vehicleid, itemid)
 				{
 					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
 					DestroyItem(itemid);
-					ShowActionText(playerid, ls(playerid, "TIREREPBR"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIREREPBR", true), 5000);
 				}
 				else
 				{
-					ShowActionText(playerid, ls(playerid, "TIRENOTBROK"), 5000);
+					ShowActionText(playerid, ls(playerid, "TIRENOTBROK", true), 5000);
 				}
 			}
 

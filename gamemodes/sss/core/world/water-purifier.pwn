@@ -137,7 +137,7 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 
 	if(wm_Data[watermachineid][wm_cooking])
 	{
-		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(wm_Data[watermachineid][wm_cookTime] - GetTickCountDifference(GetTickCount(), wm_Data[watermachineid][wm_startTime]), "%m minutes %s seconds")), 8000);
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS", true), MsToString(wm_Data[watermachineid][wm_cookTime] - GetTickCountDifference(GetTickCount(), wm_Data[watermachineid][wm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
@@ -171,16 +171,16 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 			new ret = _wm_StartCooking(watermachineid);
 
 			if(ret == 0)
-				ShowActionText(playerid, ls(playerid, "MACHNOITEMS"), 5000);
+				ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
 
 			else if(ret == -1)
-				ShowActionText(playerid, ls(playerid, "MACHRESTART"), 6000);
+				ShowActionText(playerid, ls(playerid, "MACHRESTART", true), 6000);
 
 			else if(ret == -2)
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL"), WATER_MACHINE_FUEL_USAGE), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL", true), WATER_MACHINE_FUEL_USAGE), 6000);
 
 			else
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM"), MsToString(ret, "%m minutes %s seconds")), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM", true), MsToString(ret, "%m minutes %s seconds")), 6000);
 
 			wm_CurrentWaterMachine[playerid] = -1;
 		}
@@ -249,7 +249,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] += 1.1;
-			ShowActionText(playerid, ls(playerid, "REFUELLING"));
+			ShowActionText(playerid, ls(playerid, "REFUELLING", true));
 		}
 	}
 

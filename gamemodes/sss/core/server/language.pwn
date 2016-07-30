@@ -349,7 +349,7 @@ _swap(str1[], str2[])
 	}
 }
 
-stock GetLanguageString(languageid, key[])
+stock GetLanguageString(languageid, key[], bool:encode = false)
 {
 	new
 		result[MAX_LANGUAGE_ENTRY_LENGTH],
@@ -361,7 +361,8 @@ stock GetLanguageString(languageid, key[])
 		return result;
 	}
 
-	ret = _GetLanguageString(languageid, key, result);
+	ret = _GetLanguageString(languageid, key, result, encode);
+	print(result);
 
 	switch(ret)
 	{
@@ -375,7 +376,7 @@ stock GetLanguageString(languageid, key[])
 	return result;
 }
 
-static stock _GetLanguageString(languageid, key[], result[])
+static stock _GetLanguageString(languageid, key[], result[], bool:encode = false)
 {
 	if(!('A' <= key[0] <= 'Z'))
 		return 1;
@@ -422,9 +423,76 @@ static stock _GetLanguageString(languageid, key[], result[])
 
 	strcat(result, lang_Entries[languageid][index][lang_val], MAX_LANGUAGE_ENTRY_LENGTH);
 
+	if(encode)
+		ConvertEncoding(result);
+
 	return 0;
 }
 
+/*
+	Credit for this function goes to Y_Less:
+	http://forum.sa-mp.com/showpost.php?p=3015480&postcount=6
+*/
+stock ConvertEncoding(string[])
+{
+	static const
+		real[256] =
+		{
+			  0,   1,   2,   3,   4,   5,   6,   7,   8,   9,  10,  11,  12,  13,  14,  15,
+			 16,  17,  18,  19,  20,  21,  22,  23,  24,  25,  26,  27,  28,  29,  30,  31,
+			 32,  33,  34,  35,  36,  37,  38,  39,  40,  41,  42,  43,  44,  45,  46,  47,
+			 48,  49,  50,  51,  52,  53,  54,  55,  56,  57,  58,  59,  60,  61,  62,  63,
+			 64,  65,  66,  67,  68,  69,  70,  71,  72,  73,  74,  75,  76,  77,  78,  79,
+			 80,  81,  82,  83,  84,  85,  86,  87,  88,  89,  90,  91,  92,  93,  94,  95,
+			 96,  97,  98,  99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111,
+			112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127,
+			128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143,
+			144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159,
+			160,  94, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175,
+			124, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 175,
+			128, 129, 130, 195, 131, 197, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141,
+			208, 173, 142, 143, 144, 213, 145, 215, 216, 146, 147, 148, 149, 221, 222, 150,
+			151, 152, 153, 227, 154, 229, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164,
+			240, 174, 165, 166, 167, 245, 168, 247, 248, 169, 170, 171, 172, 253, 254, 255
+		};
+
+	for(new i = 0, len = strlen(string), ch; i != len; ++i)
+	{
+		// Check if this character is in our reduced range.
+		if(0 <= (ch = string[i]) < 256)
+		{
+			string[i] = real[ch];
+		}
+	}
+}
+
+/*
+	Not sure where this code came from... random pastebin link!
+
+stock ConvertEncoding(string[])
+{
+	for(new i = 0, len = strlen(string); i != len; ++i)
+	{
+		switch(string[i])
+		{
+			case 0xC0 .. 0xC3: string[i] -= 0x40;
+			case 0xC7 .. 0xC9: string[i] -= 0x42;
+			case 0xD2 .. 0xD5: string[i] -= 0x44;
+			case 0xD9 .. 0xDC: string[i] -= 0x47;
+			case 0xE0 .. 0xE3: string[i] -= 0x49;
+			case 0xE7 .. 0xEF: string[i] -= 0x4B;
+			case 0xF2 .. 0xF5: string[i] -= 0x4D;
+			case 0xF9 .. 0xFC: string[i] -= 0x50;
+			case 0xC4, 0xE4: string[i] = 0x83;
+			case 0xC6, 0xE6: string[i] = 0x84;
+			case 0xD6, 0xF6: string[i] = 0x91;
+			case 0xD1, 0xF1: string[i] = 0xEC;
+			case 0xDF: string[i] = 0x96;
+			case 0xBF: string[i] = 0xAF;
+		}
+	}
+}
+*/
 stock GetLanguageList(list[][])
 {
 	for(new i; i < lang_Total; i++)

@@ -90,7 +90,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		ClearAnimations(playerid);
 		SetItemExtraData(scr_TargetItem[playerid], 0);
-		ShowActionText(playerid, ls(playerid, "DISARMEDBOM"), 5000);
+		ShowActionText(playerid, ls(playerid, "DISARMEDBOM", true), 5000);
 		scr_TargetItem[playerid] = INVALID_ITEM_ID;
 
 		return Y_HOOKS_BREAK_RETURN_1;

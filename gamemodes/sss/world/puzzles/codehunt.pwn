@@ -134,7 +134,7 @@ hook OnButtonPress(playerid, buttonid)
 		{
 			if(lck_Data[i][lck_locked])
 			{
-				ShowActionText(playerid, ls(playerid, "NEARBYKEYP"));
+				ShowActionText(playerid, ls(playerid, "NEARBYKEYP", true));
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}

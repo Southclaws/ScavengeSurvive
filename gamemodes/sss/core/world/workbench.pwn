@@ -408,7 +408,7 @@ hook OnPlayerConstruct(playerid, consset)
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
 		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
-		ShowActionText(playerid, ls(playerid, "NEEDWORKBE"), 5000);
+		ShowActionText(playerid, ls(playerid, "NEEDWORKBE", true), 5000);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
 

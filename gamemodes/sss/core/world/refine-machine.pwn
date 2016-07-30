@@ -137,7 +137,7 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 
 	if(rm_Data[refinemachineid][rm_cooking])
 	{
-		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(rm_Data[refinemachineid][rm_cookTime] - GetTickCountDifference(GetTickCount(), rm_Data[refinemachineid][rm_startTime]), "%m minutes %s seconds")), 8000);
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS", true), MsToString(rm_Data[refinemachineid][rm_cookTime] - GetTickCountDifference(GetTickCount(), rm_Data[refinemachineid][rm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
@@ -171,16 +171,16 @@ _rm_PlayerUseRefineMachine(playerid, refinemachineid, interactiontype)
 			new ret = _rm_StartCooking(refinemachineid);
 
 			if(ret == 0)
-				ShowActionText(playerid, ls(playerid, "MACHNOITEMS"), 5000);
+				ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
 
 			else if(ret == -1)
-				ShowActionText(playerid, ls(playerid, "MACHRESTART"), 6000);
+				ShowActionText(playerid, ls(playerid, "MACHRESTART", true), 6000);
 
 			else if(ret == -2)
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL"), REFINE_MACHINE_FUEL_USAGE), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL", true), REFINE_MACHINE_FUEL_USAGE), 6000);
 
 			else
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM"), MsToString(ret, "%m minutes %s seconds")), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM", true), MsToString(ret, "%m minutes %s seconds")), 6000);
 
 			rm_CurrentRefineMachine[playerid] = -1;
 		}
@@ -249,7 +249,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			rm_Data[rm_CurrentRefineMachine[playerid]][rm_fuel] += 1.1;
-			ShowActionText(playerid, ls(playerid, "REFUELLING"));
+			ShowActionText(playerid, ls(playerid, "REFUELLING", true));
 		}
 	}
 

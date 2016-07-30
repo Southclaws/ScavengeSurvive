@@ -52,13 +52,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		{
 			if(!IsVehicleTypeLockable(vehicletype))
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKNODOORS"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKNODOORS", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKALREADY"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKALREADY", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
@@ -70,13 +70,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		{
 			if(GetItemArrayDataAtCell(itemid, 0) == 0)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKCHNOKEY"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKCHNOKEY", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(GetVehicleKey(vehicleid) != 0)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKALREADY"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKALREADY", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
@@ -92,19 +92,19 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 			if(keyid == 0)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKKEYNCUT"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKKEYNCUT", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(vehiclekey == 0)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKVNOLOCK"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKVNOLOCK", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
 			if(keyid != vehiclekey)
 			{
-				ShowActionText(playerid, ls(playerid, "LOCKKEYNFIT"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKKEYNFIT", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 
@@ -116,13 +116,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(IsVehicleLocked(vehicleid))
 			{
 				SetVehicleExternalLock(vehicleid, 0);
-				ShowActionText(playerid, ls(playerid, "UNLOCKED"), 3000);
+				ShowActionText(playerid, ls(playerid, "UNLOCKED", true), 3000);
 				logf("[VLOCK] %p unlocked vehicle %d", playerid, vehicleid);
 			}
 			else
 			{
 				SetVehicleExternalLock(vehicleid, 1);
-				ShowActionText(playerid, ls(playerid, "LOCKED"), 3000);
+				ShowActionText(playerid, ls(playerid, "LOCKED", true), 3000);
 				logf("[VLOCK] %p locked vehicle %d", playerid, vehicleid);
 			}
 
