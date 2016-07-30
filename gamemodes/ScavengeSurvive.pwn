@@ -537,6 +537,7 @@ new stock
 // #include "sss/core/world/water-purifier.pwn"
 #include "sss/core/world/loot-loader.pwn"
 #include "sss/core/world/plot-pole.pwn"
+#include "sss/core/world/item-tweak.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"

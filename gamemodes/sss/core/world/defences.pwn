@@ -71,9 +71,6 @@ static
 static
 			def_CurrentDefenceItem[MAX_PLAYERS],
 			def_CurrentDefenceEdit[MAX_PLAYERS],
-Timer:		def_EditDefenceUpdater[MAX_PLAYERS],
-			def_CurrentDefenceMove[MAX_PLAYERS],
-bool:		def_ReleasedInteractKey[MAX_PLAYERS],
 			def_CurrentDefenceOpen[MAX_PLAYERS],
 			def_LastPassEntry[MAX_PLAYERS],
 			def_Cooldown[MAX_PLAYERS],
@@ -102,8 +99,6 @@ hook OnPlayerConnect(playerid)
 {
 	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
 	def_CurrentDefenceEdit[playerid] = -1;
-	def_CurrentDefenceMove[playerid] = -1;
-	def_ReleasedInteractKey[playerid] = false;
 	def_CurrentDefenceOpen[playerid] = -1;
 	def_LastPassEntry[playerid] = 0;
 	def_Cooldown[playerid] = 2000;
@@ -251,7 +246,7 @@ DeconstructDefence(itemid)
 	CallLocalFunction("OnDefenceDestroy", "d", itemid);
 }
 
-SetDefencePosition(itemid, Float:x, Float:y, Float:z)
+stock SetDefencePosition(itemid, Float:x, Float:y, Float:z)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -344,20 +339,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(oldkeys & 16)
 	{
 		StopBuildingDefence(playerid);
-
-		if(def_CurrentDefenceMove[playerid] != INVALID_ITEM_ID)
-		{
-			if(def_ReleasedInteractKey[playerid] == true)
-			{
-				ShowActionText(playerid, "Tweaking finished", 5000);
-				StopEditingDefence(playerid);
-				def_ReleasedInteractKey[playerid] = false;
-			}
-			else
-			{
-				def_ReleasedInteractKey[playerid] = true;
-			}
-		}
 	}
 }
 
@@ -626,7 +607,7 @@ hook OnHoldActionFinish(playerid)
 
 		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
-		EditDefence(playerid, itemid);
+		TweakItem(playerid, itemid);
 
 		return Y_HOOKS_BREAK_RETURN_0;
 	}
@@ -711,81 +692,6 @@ hook OnHoldActionFinish(playerid)
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
-EditDefence(playerid, itemid)
-{
-	printf("EditDefence %d %d", playerid, itemid);
-	if(def_CurrentDefenceMove[playerid] != -1)
-		printf("WARNING: [EditDefence] def_CurrentDefenceMove already set to %d", def_CurrentDefenceMove[playerid]);
-
-	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 1, 1, 1, 0);
-	def_CurrentDefenceMove[playerid] = itemid;
-	def_EditDefenceUpdater[playerid] = repeat EditDefenceUpdate(playerid);
-
-	return 1;
-}
-
-timer EditDefenceUpdate[100](playerid)
-{
-	new k, ud, lr;
-
-	GetPlayerKeys(playerid, k, ud, lr);
-
-	if(k & KEY_YES || k & KEY_NO || k & KEY_CTRL_BACK)
-	{
-		ShowActionText(playerid, "Tweaking finished", 5000);
-		StopEditingDefence(playerid);
-		return;
-	}
-
-	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 1, 1, 1, 0);
-
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetItemPos(def_CurrentDefenceMove[playerid], x, y, z);
-
-	if(ud == KEY_UP)
-		y += 0.1;
-
-	if(ud == KEY_DOWN)
-		y -= 0.1;
-
-	if(lr == KEY_RIGHT)
-		x += 0.1;
-
-	if(lr == KEY_LEFT)
-		x -= 0.1;
-
-	if(k & KEY_SPRINT)
-		z += 0.1;
-
-	if(k & KEY_CROUCH)
-		z -= 0.1;
-
-	printf("EditDefenceUpdate %d %d : %f %f %f k%d ud%d lr%d", playerid, def_CurrentDefenceMove[playerid], x, y, z, k, ud, lr);
-
-	SetDefencePosition(def_CurrentDefenceMove[playerid], x, y, z);
-
-	return;
-}
-
-StopEditingDefence(playerid)
-{
-	stop def_EditDefenceUpdater[playerid];
-	CancelPlayerMovement(playerid);
-
-	new geid[GEID_LEN];
-
-	GetItemGEID(def_CurrentDefenceMove[playerid], geid);
-
-	logf("[TWEAK] %p Tweaked defence %d (%s)", playerid, def_CurrentDefenceMove[playerid], geid);
-
-	CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceMove[playerid]);
-	def_CurrentDefenceMove[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
