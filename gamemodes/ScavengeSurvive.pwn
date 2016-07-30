@@ -125,26 +125,23 @@ public OnGameModeInit()
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
-#include <streamer>					// By Incognito, v2.8.2:	http://forum.sa-mp.com/showthread.php?t=102865
-#include <irc>						// By Incognito, 1.4.5:		http://forum.sa-mp.com/showthread.php?t=98803
-#include <dns>						// By Incognito, 2.4:		http://forum.sa-mp.com/showthread.php?t=75605
-#include <sqlitei>					// By Slice, v0.9.7:		http://forum.sa-mp.com/showthread.php?t=303682
+#include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
+#include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
+#include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
+#include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
-#include <strlib>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=362764
-#include <md-sort>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=343172
+#include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
+#include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
-
-#define time ctime_time
-#include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
-#undef time
+#include <ctime>					// By RyDeR`:				https://github.com/Southclaw/samp-ctime
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
-#include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
+#include <FileManager>				// By JaTochNietDan, 1.5:	http://www.jatochnietdan.com/project/sa-mp/filemanager
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF>						// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
+#include <SIF>						// By Southclaw, v1.4.0:	https://github.com/Southclaw/SIF
 #include <SIF\extensions\ItemArrayData>
 #include <SIF\extensions\ItemList>
 #include <SIF\extensions\InventoryDialog>
@@ -158,7 +155,7 @@ public OnGameModeInit()
 #include <Ladder>					// By Southclaw:			https://github.com/Southclaw/Ladder
 
 native WP_Hash(buffer[], len, const str[]);
-									// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=65290
+									// By Y_Less:				https://github.com/Southclaw/samp-whirlpool
 
 
 /*==============================================================================
