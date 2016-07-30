@@ -56,7 +56,7 @@ timer shield_Down[400](playerid, itemid)
 		y + (0.5 * floatcos(-angle, degrees)),
 		z - 0.2,
 		90.0, 0.0, 180.0 + angle,
-		FLOOR_OFFSET, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), 1);
+		GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), 1);
 }
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)

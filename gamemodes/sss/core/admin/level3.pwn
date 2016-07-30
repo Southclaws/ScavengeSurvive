@@ -537,7 +537,7 @@ ACMD:additem[3](playerid, params[])
 	itemid = CreateItem(type,
 		x + (0.5 * floatsin(-r, degrees)),
 		y + (0.5 * floatcos(-r, degrees)),
-		z - 0.8568, .rz = r, .zoffset = 0.7);
+		z - FLOOR_OFFSET, .rz = r);
 
 	if(exdatasize > 0)
 		SetItemArrayData(itemid, exdata, exdatasize);

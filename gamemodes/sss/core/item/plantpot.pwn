@@ -138,7 +138,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 			GetItemPos(withitemid, x, y, z);
 
-			CreateItem(GetSeedTypeItemType(seedtype), x, y, z + 0.5, _, _, _, FLOOR_OFFSET - 0.3, world, interior);
+			CreateItem(GetSeedTypeItemType(seedtype), x, y, z + 0.5, .world = world, .interior = interior);
 			DestroyDynamicObject(potdata[E_PLANT_POT_OBJECT_ID]);
 
 			potdata[E_PLANT_POT_ACTIVE] = 0;

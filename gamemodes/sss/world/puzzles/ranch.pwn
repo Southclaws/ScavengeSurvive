@@ -57,7 +57,7 @@ hook OnGameModeInit()
 	// Ranch
 
 	RanchPcButton = CreateButton(-691.1692, 942.1066, 13.6328, "Press "KEYTEXT_INTERACT" to use");
-	RanchHdd = CreateItem(item_HardDrive, -693.1787, 942.0, 15.93, 90.0, 0.0, 37.5, .zoffset = FLOOR_OFFSET);
+	RanchHdd = CreateItem(item_HardDrive, -693.1787, 942.0, 15.93, 90.0, 0.0, 37.5);
 
 
 	// Quarry

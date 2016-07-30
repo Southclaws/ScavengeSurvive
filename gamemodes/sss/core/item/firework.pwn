@@ -216,11 +216,11 @@ CMD:addfirework(playerid, params[])
 
 	CreateItem(fireworkLighterType,
 		x + (0.5 * floatsin(-r, degrees)),
-		y + (0.5 * floatcos(-r, degrees)), z-0.8568, .rz = r, .zoffset = 0.8568);
+		y + (0.5 * floatcos(-r, degrees)), z-0.8568, .rz = r);
 
 	CreateItem(fireworkItemType,
 		x + (3.5 * floatsin(-r, degrees)),
-		y + (3.5 * floatcos(-r, degrees)), z-0.8568, .rz = r, .zoffset = 0.8568);
+		y + (3.5 * floatcos(-r, degrees)), z-0.8568, .rz = r);
 
 	return 1;
 }

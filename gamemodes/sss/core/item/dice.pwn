@@ -74,5 +74,5 @@ timer RollDice[50](itemid, Float:direction)
 
 timer UpdateDiceItemPos[500](itemid, Float:x, Float:y, Float:z)
 {
-	SetItemPos(itemid, x, y, z, .zoffset = ITEM_BUTTON_OFFSET);
+	SetItemPos(itemid, x, y, z);
 }

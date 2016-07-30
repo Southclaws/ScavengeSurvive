@@ -87,13 +87,13 @@ PopMask(playerid)
 timer pop_DropHat[500](o, it, Float:x, Float:y, Float:z, Float:r)
 {
 	DestroyDynamicObject(o);
-	CreateItemInWorld(it, x, y, z - FLOOR_OFFSET, 0.0, 0.0, r, .zoffset = FLOOR_OFFSET);
+	CreateItemInWorld(it, x, y, z - FLOOR_OFFSET, 0.0, 0.0, r);
 }
 
 timer pop_DropMask[500](o, it, Float:x, Float:y, Float:z, Float:r)
 {
 	DestroyDynamicObject(o);
-	CreateItemInWorld(it, x, y, z - FLOOR_OFFSET, 0.0, 0.0, r, .zoffset = FLOOR_OFFSET);
+	CreateItemInWorld(it, x, y, z - FLOOR_OFFSET, 0.0, 0.0, r);
 }
 
 CMD:pophat(playerid, params[])

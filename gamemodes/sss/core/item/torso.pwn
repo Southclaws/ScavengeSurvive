@@ -144,7 +144,7 @@ hook OnHoldActionFinish(playerid)
 		GetItemPos(gut_TargetItem[playerid], x, y, z);
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
-		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r, .zoffset = FLOOR_OFFSET);
+		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r);
 		SetItemArrayDataAtCell(itemid, 0, food_cooked, 1);
 		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
 

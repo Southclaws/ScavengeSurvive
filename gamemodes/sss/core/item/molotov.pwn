@@ -60,7 +60,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		GetItemRot(withitemid, rz, rz, rz);
 
 		DestroyItem(withitemid);
-		CreateItem(ItemType:18, x, y, z, .rz = rz, .zoffset = FLOOR_OFFSET);
+		CreateItem(ItemType:18, x, y, z, .rz = rz);
 
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
 		ShowActionText(playerid, ls(playerid, "MOLOPOURBOT"), 3000);

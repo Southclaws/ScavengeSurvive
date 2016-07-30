@@ -217,7 +217,7 @@ hook OnHoldActionFinish(playerid)
 			ty /= float(count);
 			tz /= float(count);
 
-			CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .zoffset = FLOOR_OFFSET, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+			CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 		}
 
 		ClearAnimations(playerid);

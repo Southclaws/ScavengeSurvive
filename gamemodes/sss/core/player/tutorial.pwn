@@ -203,7 +203,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		new itemid;
 
-		CreateItem(item_Satchel, 1078.70325, 2132.96069, 9.85179, _, _, _, FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Satchel, 1078.70325, 2132.96069, 9.85179, .world = PlayerTutorialWorld[playerid]);
 
 		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 1075.4344, 2121.3606, 10.7901, 355.6799, -1, -1, PlayerTutorialWorld[playerid]);
 		SetVehicleHealth(PlayerTutorialVehicle[playerid], 321.9);
@@ -215,13 +215,13 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 			encode_lights(random(2), random(2), random(2), random(2)),
 			encode_tires(0, 1, 1, 0) );
 
-		CreateItem(item_Wrench, 1077.57263, 2125.35938, 9.85153, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Screwdriver, 1076.52942, 2125.82959, 9.85156, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Hammer, 1074.94214, 2126.51489, 9.85160, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wrench, 1077.57263, 2125.35938, 9.85153, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
+		CreateItem(item_Screwdriver, 1076.52942, 2125.82959, 9.85156, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
+		CreateItem(item_Hammer, 1074.94214, 2126.51489, 9.85160, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
 
-		CreateItem(item_Wheel, 1073.59448, 2127.05786, 9.85164, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		CreateItem(item_Wheel, 1073.4965, 2125.6582, 9.8516, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
-		itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, _, _, frandom(360.0), FLOOR_OFFSET, PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wheel, 1073.59448, 2127.05786, 9.85164, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
+		CreateItem(item_Wheel, 1073.4965, 2125.6582, 9.8516, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
+		itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
 		SetItemExtraData(itemid, 10);
 	}
 }
