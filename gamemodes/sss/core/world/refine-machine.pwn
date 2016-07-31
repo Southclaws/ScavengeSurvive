@@ -215,7 +215,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(rm_CurrentRefineMachine[playerid], _:(machinefuel + 1.1), rm_fuel);
-			ShowActionText(playerid, ls(playerid, "REFUELLING", true)));
+			ShowActionText(playerid, ls(playerid, "REFUELLING", true));
 		}
 	}
 
