@@ -120,21 +120,18 @@ hook OnPlayerUseItem(playerid, itemid)
 		list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...},
 		size;
 
-	GetPlayerButtonList(playerid, list, size, true);
+	size = GetPlayerNearbyItems(playerid, list);
 
 	if(size > 1)
 	{
 		d:1:HANDLER("[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
 
-		new listitem;
-
 		_ResetSelectedItems(playerid);
 
-		for(new i; list[i] != INVALID_BUTTON_ID && i < MAX_CONSTRUCT_SET_ITEMS && i < size; i++)
+		for(new i; i < size; i++)
 		{
-			listitem = GetItemFromButtonID(list[i]);
-			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(listitem);
-			cons_SelectedItems[playerid][i][cft_selectedItemID] = listitem;
+			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(list[i]);
+			cons_SelectedItems[playerid][i][cft_selectedItemID] = list[i];
 			cons_SelectedItemCount[playerid]++;
 			d:3:HANDLER("[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
 		}

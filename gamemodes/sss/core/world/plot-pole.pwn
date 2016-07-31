@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#define PLOTPOLE_AREA_IDENTIFIER	(2817)
+
+
 #include <YSI\y_hooks>
 
 
@@ -50,16 +53,21 @@ hook OnItemCreateInWorld(itemid)
 			Float:x,
 			Float:y,
 			Float:z,
-			Float:rz;
+			Float:rz,
+			areadata[2];
 
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rz, rz, rz);
 
-		Streamer_SetFloatData(STREAMER_TYPE_AREA, GetButtonArea(GetItemButtonID(itemid)), E_STREAMER_SIZE, 20.0);
-		// data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, GetItemWorld(itemid), GetItemInterior(itemid));
+		areadata[0] = PLOTPOLE_AREA_IDENTIFIER;
+		areadata[1] = itemid;
+
+		data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, GetItemWorld(itemid), GetItemInterior(itemid));
 		data[E_PLOTPOLE_OBJ1] = CreateDynamicObject(1719, x + (0.09200 * floatsin(-rz, degrees)), y + (0.09200 * floatcos(-rz, degrees)), z + 0.52270, 0.00000, 90.00000, rz + 90.0);
 		data[E_PLOTPOLE_OBJ2] = CreateDynamicObject(19816, x - (0.08000 * floatsin(-rz, degrees)), y - (0.08000 * floatcos(-rz, degrees)), z + 0.50000, 0.00000, 0.00000, rz);
 		data[E_PLOTPOLE_OBJ3] = CreateDynamicObject(19293, x, y, z + 1.3073, 0.00000, 0.00000, rz);
+
+		Streamer_SetArrayData(STREAMER_TYPE_AREA, data[E_PLOTPOLE_AREA], E_STREAMER_EXTRA_ID, areadata);
 	}
 }
 
@@ -73,38 +81,52 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerEnterButtonArea(playerid, buttonid)
+hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	new itemid = GetItemFromButtonID(buttonid);
+	new data[2];
 
-	if(IsValidItem(itemid))
+	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data);
+
+	if(data[0] != PLOTPOLE_AREA_IDENTIFIER)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(IsValidItem(data[1]))
 	{
-		if(GetItemType(itemid) == item_PlotPole)
+		if(GetItemType(data[1]) == item_PlotPole)
 		{
 			new geid[GEID_LEN];
-			GetItemGEID(itemid, geid);
+			GetItemGEID(data[1], geid);
 			ShowActionText(playerid, sprintf("Entered Zone for Plot Pole %s", geid), 5000);
 
 			InPlotPoleArea[playerid] = true;
 		}
 	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerLeaveButtonArea(playerid, buttonid)
+hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-	new itemid = GetItemFromButtonID(buttonid);
+	new data[2];
 
-	if(IsValidItem(itemid))
+	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data);
+
+	if(data[0] != PLOTPOLE_AREA_IDENTIFIER)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(IsValidItem(data[1]))
 	{
-		if(GetItemType(itemid) == item_PlotPole)
+		if(GetItemType(data[1]) == item_PlotPole)
 		{
 			new geid[GEID_LEN];
-			GetItemGEID(itemid, geid);
+			GetItemGEID(data[1], geid);
 			ShowActionText(playerid, sprintf("Left Zone for Plot Pole %s", geid), 5000);
 
 			InPlotPoleArea[playerid] = false;
 		}
 	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 stock IsPlayerInPlotPoleArea(playerid)
@@ -140,9 +162,9 @@ stock IsPointInPlotPoleArea(Float:x, Float:y, Float:z)
 	{
 		Streamer_GetArrayData(STREAMER_TYPE_AREA, areas[i], E_STREAMER_EXTRA_ID, data, 2);
 
-		if(data[0] == BTN_STREAMER_AREA_IDENTIFIER)
+		if(data[0] == PLOTPOLE_AREA_IDENTIFIER)
 		{
-			if(GetItemType(GetItemFromButtonID(data[1])) == item_PlotPole)
+			if(GetItemType(data[1]) == item_PlotPole)
 				return true;
 		}
 	}
