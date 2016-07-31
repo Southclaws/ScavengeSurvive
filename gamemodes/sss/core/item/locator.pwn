@@ -75,7 +75,7 @@ hook OnPlayerUseItem(playerid, itemid)
 				new
 					Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 					
-				ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+				ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 				return 1;
 			}
 			
@@ -92,7 +92,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					new
 						Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 					return 1;
 				}
 
@@ -105,7 +105,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					new
 						Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 					return 1;
 				}
 
@@ -119,7 +119,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					new
 						Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 					return 1;
 				}
 
@@ -133,7 +133,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					new
 						Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 					return 1;
 				}
 				
@@ -147,7 +147,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					new
 						Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+					ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 					return 1;
 				}
 			}
@@ -162,11 +162,11 @@ hook OnPlayerUseItem(playerid, itemid)
 				new
 					Float:distance = Distance(phone_x, phone_y, phone_z, x, y, z);
 
-				ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL"), distance), 2000);
+				ShowActionText(playerid, sprintf(ls(playerid, "DISTANCEVAL", true), distance), 2000);
 				return 1;
 			}
 
-			ShowActionText(playerid, ls(playerid, "LOCATORDIS"), 2000);
+			ShowActionText(playerid, ls(playerid, "LOCATORDIS", true), 2000);
 		}
 	}
 

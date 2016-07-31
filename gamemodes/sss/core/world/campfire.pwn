@@ -270,7 +270,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 				{
 					if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 					{
-						ShowActionText(playerid, ls(playerid, "FUELNOTPETR"), 3000);
+						ShowActionText(playerid, ls(playerid, "FUELNOTPETR", true), 3000);
 						return 1;
 					}
 
@@ -281,7 +281,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 					if(cmp_Data[fireid][cmp_fueled])
 					{
-						ShowActionText(playerid, ls(playerid, "FIREALREADY"));
+						ShowActionText(playerid, ls(playerid, "FIREALREADY", true));
 					}
 					else
 					{
@@ -289,12 +289,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 						{
 							transfer = (canfuel - 0.3 < 0.0) ? canfuel : 0.3;
 							SetLiquidItemLiquidAmount(itemid, canfuel - transfer);
-							ShowActionText(playerid, ls(playerid, "FIREADDPETR"));
+							ShowActionText(playerid, ls(playerid, "FIREADDPETR", true));
 							cmp_Data[fireid][cmp_fueled] = 1;
 						}
 						else
 						{
-							ShowActionText(playerid, ls(playerid, "PETROLEMPTY"));
+							ShowActionText(playerid, ls(playerid, "PETROLEMPTY", true));
 						}
 					}
 				}
@@ -360,7 +360,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 						cmp_Data[fireid][cmp_foodItem] = itemid;
 						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
-						ShowActionText(playerid, ls(playerid, "FIRELITSTAR"), 3000);
+						ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
 					}
 				}
 			}

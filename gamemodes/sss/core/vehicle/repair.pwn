@@ -60,7 +60,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL", true), 3000, 100);
 			}
 		}	
 		else if(itemtype == item_Screwdriver)
@@ -73,7 +73,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL", true), 3000, 100);
 			}
 		}	
 		else if(itemtype == item_Hammer)
@@ -86,14 +86,14 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL"), 3000, 100);
+				ShowActionText(playerid, ls(playerid, "NEEDANOTOOL", true), 3000, 100);
 			}
 		}
 		else if(itemtype == item_Wheel)
 		{
 			CancelPlayerMovement(playerid);
-			//ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
-			ShowActionText(playerid, ls(playerid, "INTERACTWHE"), 5000);
+			//ShowActionText(playerid, ls(playerid, "INTERACTWHE", true), 5000);
+			ShowActionText(playerid, ls(playerid, "INTERACTWHE", true), 5000);
 		}
 		else if(itemtype == item_Headlight)
 		{

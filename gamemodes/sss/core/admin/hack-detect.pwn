@@ -508,9 +508,11 @@ stock _hd_IsPlayerInWater(playerid)
 
 VehicleHealthCheck(playerid)
 {
-	new Float:vehiclehp;
+	new
+		Float:vehiclehp,
+		vehicleid = GetPlayerVehicleID(playerid);
 
-	GetVehicleHealth(GetPlayerVehicleID(playerid), vehiclehp);
+	GetVehicleHealth(vehicleid, vehiclehp);
 
 	if(vehiclehp > 990.0 && GetPlayerVehicleSeat(playerid) == 0) // Only check the driver - Checking passengers causes a false ban
 	{
@@ -527,7 +529,7 @@ VehicleHealthCheck(playerid)
 		ReportPlayer(name, reason, -1, REPORT_TYPE_VHEALTH, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), "");
 		BanPlayer(playerid, reason, -1, 0);
 
-		defer vh_ResetVehiclePosition(GetPlayerVehicleID(playerid));
+		defer vh_ResetVehiclePosition(vehicleid);
 
 		vh_ReportTick[playerid] = GetTickCount();
 	}

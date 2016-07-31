@@ -64,7 +64,7 @@ StartBuildingTent(playerid, itemid)
 	tnt_CurrentTentItem[playerid] = itemid;
 	StartHoldAction(playerid, 10000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	ShowActionText(playerid, ls(playerid, "TENTBUILD"));
+	ShowActionText(playerid, ls(playerid, "TENTBUILD", true));
 }
 
 StopBuildingTent(playerid)

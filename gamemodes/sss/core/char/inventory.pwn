@@ -438,11 +438,11 @@ _inv_HandleGearSlotClick_Head(playerid)
 			{
 				RemovePlayerHatItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVREMOVHAT", true), 3000);
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else
@@ -451,12 +451,12 @@ _inv_HandleGearSlotClick_Head(playerid)
 
 			if(required > 0)
 			{
-				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 			}
 			else if(required == 0)
 			{
 				RemovePlayerHatItem(playerid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVREMOVHAT", true), 3000);
 			}
 		}
 
@@ -470,11 +470,11 @@ _inv_HandleGearSlotClick_Head(playerid)
 			{
 				RemovePlayerHatItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000, 150);
+				ShowActionText(playerid, ls(playerid, "INVREMOVHAT", true), 3000, 150);
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else
@@ -483,12 +483,12 @@ _inv_HandleGearSlotClick_Head(playerid)
 
 			if(required > 0)
 			{
-				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO", true), required), 3000, 150);
 			}
 			else if(required == 0)
 			{
 				RemovePlayerHatItem(playerid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVHAT"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVREMOVHAT", true), 3000);
 			}
 		}
 
@@ -517,11 +517,11 @@ _inv_HandleGearSlotClick_Face(playerid)
 			{
 				RemovePlayerMaskItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
+				ShowActionText(playerid, ls(playerid, "INVREMOVMAS", true), 3000, 150);
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else
@@ -530,12 +530,12 @@ _inv_HandleGearSlotClick_Face(playerid)
 
 			if(required > 0)
 			{
-				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 			}
 			else if(required == 0)
 			{
 				RemovePlayerMaskItem(playerid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
+				ShowActionText(playerid, ls(playerid, "INVREMOVMAS", true), 3000, 150);
 			}
 		}
 
@@ -549,11 +549,11 @@ _inv_HandleGearSlotClick_Face(playerid)
 			{
 				RemovePlayerMaskItem(playerid);
 				GiveWorldItemToPlayer(playerid, itemid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
+				ShowActionText(playerid, ls(playerid, "INVREMOVMAS", true), 3000, 150);
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else
@@ -562,12 +562,12 @@ _inv_HandleGearSlotClick_Face(playerid)
 
 			if(required > 0)
 			{
-				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
+				ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO", true), required), 3000, 150);
 			}
 			else if(required == 0)
 			{
 				RemovePlayerMaskItem(playerid);
-				ShowActionText(playerid, ls(playerid, "INVREMOVMAS"), 3000, 150);
+				ShowActionText(playerid, ls(playerid, "INVREMOVMAS", true), 3000, 150);
 			}
 		}
 
@@ -606,7 +606,7 @@ _inv_HandleGearSlotClick_Hand(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 			return 1;
 		}
 
@@ -618,7 +618,7 @@ _inv_HandleGearSlotClick_Hand(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO", true), required), 3000, 150);
 			return 1;
 		}
 
@@ -651,7 +651,7 @@ _inv_HandleGearSlotClick_Hols(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 		}
 		else if(required == 0)
 		{
@@ -666,7 +666,7 @@ _inv_HandleGearSlotClick_Hols(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO", true), required), 3000, 150);
 		}
 		else if(required == 0)
 		{
@@ -696,7 +696,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
@@ -707,7 +707,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else if(required == 0)
@@ -715,7 +715,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 			SetPlayerAP(playerid, 0.0);
 			RemovePlayerArmourItem(playerid);
-			ShowActionText(playerid, ls(playerid, "INVREMOVARM"), 3000);
+			ShowActionText(playerid, ls(playerid, "INVREMOVARM", true), 3000);
 		}
 
 		DisplayContainerInventory(playerid, containerid);
@@ -726,7 +726,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 
 		if(required > 0)
 		{
-			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO"), required), 3000, 150);
+			ShowActionText(playerid, sprintf(ls(playerid, "INVEXTRASLO", true), required), 3000, 150);
 
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
@@ -737,7 +737,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			}
 			else
 			{
-				ShowActionText(playerid, ls(playerid, "INVHOLDINGI"), 3000);
+				ShowActionText(playerid, ls(playerid, "INVHOLDINGI", true), 3000);
 			}
 		}
 		else if(required == 0)
@@ -745,7 +745,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 			SetItemExtraData(itemid, floatround(GetPlayerAP(playerid)));
 			SetPlayerAP(playerid, 0.0);
 			RemovePlayerArmourItem(playerid);
-			ShowActionText(playerid, ls(playerid, "INVREMOVARM"), 3000);
+			ShowActionText(playerid, ls(playerid, "INVREMOVARM", true), 3000);
 		}
 
 		DisplayPlayerInventory(playerid);
@@ -840,7 +840,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 
 				if(required > 0)
 				{
-					ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO"), required), 3000, 150);
+					ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
 				}
 				else
 				{

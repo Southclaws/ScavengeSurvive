@@ -127,7 +127,7 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 
 	if(data[sm_cooking])
 	{
-		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS"), MsToString(data[sm_cookTime] - GetTickCountDifference(GetTickCount(), data[sm_startTime]), "%m minutes %s seconds")), 8000);
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS", true), MsToString(data[sm_cookTime] - GetTickCountDifference(GetTickCount(), data[sm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
@@ -161,16 +161,16 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 			new ret = _sm_StartCooking(itemid);
 
 			if(ret == 0)
-				ShowActionText(playerid, ls(playerid, "MACHNOITEMS"), 5000);
+				ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
 
 			else if(ret == -1)
-				ShowActionText(playerid, ls(playerid, "MACHRESTART"), 6000);
+				ShowActionText(playerid, ls(playerid, "MACHRESTART", true), 6000);
 
 			else if(ret == -2)
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL"), SCRAP_MACHINE_FUEL_USAGE), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL", true), SCRAP_MACHINE_FUEL_USAGE), 6000);
 
 			else
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM"), MsToString(ret, "%m minutes %s seconds")), 6000);
+				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM", true), MsToString(ret, "%m minutes %s seconds")), 6000);
 
 			sm_CurrentScrapMachine[playerid] = -1;
 		}
@@ -220,7 +220,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(sm_CurrentScrapMachine[playerid], _:(machinefuel + 1.1), sm_fuel);
-			ShowActionText(playerid, ls(playerid, "REFUELLING"));
+			ShowActionText(playerid, ls(playerid, "REFUELLING", true));
 		}
 	}
 

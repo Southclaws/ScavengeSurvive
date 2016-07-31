@@ -70,7 +70,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(itemtype == item_Chainsaw && GetItemWeaponItemMagAmmo(GetPlayerItem(playerid)) <= 0)
 	{
-		ShowActionText(playerid, ls(playerid, "CHAINSAFUEL"), 5000);
+		ShowActionText(playerid, ls(playerid, "CHAINSAFUEL", true), 5000);
 		return 0;
 	}
 

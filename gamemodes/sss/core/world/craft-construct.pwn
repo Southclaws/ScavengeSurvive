@@ -156,7 +156,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 						StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
 						ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN"));
+						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN", true));
 
 						cons_Constructing[playerid] = craftset;
 

@@ -65,7 +65,7 @@ If you set up all the dependencies correctly, there should be *no* errors or war
 Note: The repo contains *many* filterscripts, most of these are just testing tools and utilities, there are only *2* filterscripts you need to run on a public server:
 ```
 filterscripts object-loader rcon
-plugins streamer sscanf CTime Whirlpool FileManager irc
+plugins crashdetect streamer sscanf CTime Whirlpool FileManager irc MapAndreas
 ```
 
 ### 5. Set up gamemode settings in your `scriptfiles/data/settings.ini` file
@@ -111,7 +111,9 @@ This does not affect vehicles, the saving system for vehicles is in the public r
 
 ## LICENSE
 
-I don't expect you to read the entire license.
+Short Summary: https://www.tldrlegal.com/l/gpl-3.0
+
+I don't expect you to read the entire license (Read the summary linked above).
 
 Just ensure you understand this:
 
