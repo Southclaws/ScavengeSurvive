@@ -22,8 +22,8 @@
 ==============================================================================*/
 
 
-#include "ss/World_BS/Spawn.pwn"
-#include "ss/World_BS/TR.pwn"
+#include "sss/world-bs/spawn.pwn"
+#include "sss/world-bs/tr.pwn"
 
 static
 	MapName[32] = "Bayside DM";

@@ -23,7 +23,7 @@
 
 
 #define MAX_MOVEMENT_RANGE	(1.0)
-#define NO_GO_ZONE_SIZE		(5.0)
+#define NO_GO_ZONE_SIZE		(2.2)
 #define TWK_AREA_IDENTIFIER	(1234)
 
 
@@ -105,7 +105,7 @@ stock TweakItem(playerid, itemid)
 	Streamer_SetArrayData(STREAMER_TYPE_AREA, twk_NoGoZone[playerid], E_STREAMER_EXTRA_ID, data);
 
 	_twk_ShowUI(playerid);
-	SelectTextDraw(playerid, 0xffff00ff);
+	_twk_ToggleMouse(playerid, false);
 	ShowActionText(playerid, "Move away from item to move it");
 
 	return 1;
@@ -195,32 +195,32 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == twk_MoveF[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, 0.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.1, 0.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveB[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, 180.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.1, 180.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveL[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, 90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.1, 90.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveR[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.2, -90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.1, -90.0, 0.0);
 		}
 
 		if(playertextid == twk_RotR[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.0, 0.0, -10.0);
+			_twk_AdjustItemPos(playerid, 0.0, 0.0, -5.0);
 		}
 
 		if(playertextid == twk_RotL[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.0, 0.0, 10.0);
+			_twk_AdjustItemPos(playerid, 0.0, 0.0, 5.0);
 		}
 
 		if(playertextid == twk_Unlock[playerid])
@@ -385,7 +385,7 @@ _twk_BuildUI(playerid)
 	PlayerTextDrawSetShadow			(playerid, twk_Unlock[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, twk_Unlock[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, twk_Unlock[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, twk_Unlock[playerid], 20.000000, 50.000000);
+	PlayerTextDrawTextSize			(playerid, twk_Unlock[playerid], 20.0, 80.0);
 	PlayerTextDrawSetSelectable		(playerid, twk_Unlock[playerid], true);
 
 	twk_Done[playerid]				=CreatePlayerTextDraw(playerid, 587.000000, 420.000000, "Done");
@@ -399,7 +399,7 @@ _twk_BuildUI(playerid)
 	PlayerTextDrawSetShadow			(playerid, twk_Done[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, twk_Done[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, twk_Done[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, twk_Done[playerid], 20.000000, 50.000000);
+	PlayerTextDrawTextSize			(playerid, twk_Done[playerid], 20.0, 80.0);
 	PlayerTextDrawSetSelectable		(playerid, twk_Done[playerid], true);
 }
 

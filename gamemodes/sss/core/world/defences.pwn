@@ -579,7 +579,8 @@ hook OnHoldActionFinish(playerid)
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, angle, angle, angle);
 
-		z += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ];
+		if(pose == DEFENCE_POSE_VERTICAL)
+			z += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ];
 
 		SetItemPos(itemid, x, y, z);
 
