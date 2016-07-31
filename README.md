@@ -106,7 +106,7 @@ airdrop_food_medical, 1.0
 
 You will need to devise your own system for storing safeboxes, tents, defences and signs.
 
-This does not affect vehicles, the saving system for vehicles is in the public repository.
+This does not affect players and vehicles, these systems are still public so you can still run a basic server.
 
 
 ## LICENSE
