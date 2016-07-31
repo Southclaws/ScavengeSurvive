@@ -436,7 +436,7 @@ stock GetPlayerVehicleArea(playerid)
 	foreach(new i : varea_NearIndex[playerid])
 	{
 		if(IsPlayerInDynamicArea(playerid, varea_AreaID[varea_NearList[playerid][i]]))
-			return i;
+			return varea_NearList[playerid][i];
 	}
 
 	return INVALID_VEHICLE_ID;

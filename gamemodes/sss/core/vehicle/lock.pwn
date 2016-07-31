@@ -71,6 +71,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			_HandleLockKey(playerid);
 	}
 
+	if(newkeys & 16)
+	{
+		new vehicleid = GetPlayerVehicleArea(playerid);
+
+		if(IsValidVehicle(vehicleid))
+		{
+			if(lock_Status[vehicleid] == E_LOCK_STATE_DEFAULT)
+				ShowActionText(playerid, "Door locked~n~Use a Crowbar", 6000);
+
+			else if(lock_Status[vehicleid] == E_LOCK_STATE_EXTERNAL)
+				ShowActionText(playerid, "Door locked with custom lock", 6000);
+		}
+	}
+
 	return 1;
 }
 
