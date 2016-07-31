@@ -1,3 +1,3 @@
-Defaults(Military, CT, M)
+Defaults(Civilian, CT, M)
 Vehicle(-89.749603, 1365.342163, 9.793600, 285.290313)
 Vehicle(9.378100, 1377.774414, 8.840200, 474.203704)

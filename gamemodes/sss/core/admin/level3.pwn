@@ -361,7 +361,7 @@ ACMD:vehicle[3](playerid, params[])
 
 	if(!strcmp(command, "lock"))
 	{
-		SetVehicleExternalLock(vehicleid, 1);
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_EXTERNAL);
 
 		ChatMsg(playerid, YELLOW, " >  Vehicle %d locked", vehicleid);
 
@@ -370,7 +370,7 @@ ACMD:vehicle[3](playerid, params[])
 
 	if(!strcmp(command, "unlock"))
 	{
-		SetVehicleExternalLock(vehicleid, 0);
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 
 		ChatMsg(playerid, YELLOW, " >  Vehicle %d unlocked", vehicleid);
 

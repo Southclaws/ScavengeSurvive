@@ -84,13 +84,13 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			if(IsVehicleTrunkLocked(vehicleid))
 			{
 				ShowActionText(playerid, ls(playerid, "TRUNKLOCKED", true), 3000);
-				return Y_HOOKS_BREAK_RETURN_1;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
-			if(IsVehicleLocked(vehicleid))
+			if(GetVehicleLockState(vehicleid) == E_LOCK_STATE_EXTERNAL)
 			{
 				ShowActionText(playerid, ls(playerid, "TRUNKLOCKED", true), 3000);
-				return Y_HOOKS_BREAK_RETURN_1;
+				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			new Float:vehicleangle;

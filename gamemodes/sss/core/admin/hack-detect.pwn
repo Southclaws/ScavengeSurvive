@@ -868,9 +868,14 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
+		new
+			vehicleid,
+			E_LOCK_STATE:lockstate;
 
-		if(IsVehicleLocked(vehicleid) && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
+		vehicleid = GetPlayerVehicleID(playerid);
+		lockstate = GetVehicleLockState(vehicleid);
+
+		if(lockstate != E_LOCK_STATE_OPEN && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
 		{
 			new
 				name[MAX_PLAYER_NAME],
@@ -886,7 +891,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, px, py, pz);
 
-			defer CheckIsPlayerStillInVehicle(playerid, vehicleid);
+			defer StillInVeh(playerid, vehicleid, _:lockstate);
 
 			return -1;
 		}
@@ -894,9 +899,14 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	if(newstate == PLAYER_STATE_PASSENGER)
 	{
-		new vehicleid = GetPlayerVehicleID(playerid);
+		new
+			vehicleid,
+			E_LOCK_STATE:lockstate;
 
-		if(IsVehicleLocked(vehicleid) && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
+		vehicleid = GetPlayerVehicleID(playerid);
+		lockstate = GetVehicleLockState(vehicleid);
+
+		if(lockstate != E_LOCK_STATE_OPEN && GetTickCountDifference(GetTickCount(), GetVehicleLockTick(vehicleid)) > 3500)
 		{
 			new
 				name[MAX_PLAYER_NAME],
@@ -912,7 +922,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 			RemovePlayerFromVehicle(playerid);
 			SetPlayerPos(playerid, x, y, z);
 
-			defer CheckIsPlayerStillInVehicle(playerid, vehicleid);
+			defer StillInVeh(playerid, vehicleid, _:lockstate);
 
 			return -1;
 		}
@@ -921,7 +931,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	return 1;
 }
 
-timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
+timer StillInVeh[1000](playerid, vehicleid, ls)
 {
 	if(!IsPlayerConnected(playerid))
 		return;
@@ -929,7 +939,7 @@ timer CheckIsPlayerStillInVehicle[1000](playerid, vehicleid)
 	if(IsPlayerInVehicle(playerid, vehicleid))
 		TimeoutPlayer(playerid, "Staying in a locked vehicle");
 
-	SetVehicleExternalLock(vehicleid, 1);
+	SetVehicleExternalLock(vehicleid, E_LOCK_STATE:ls);
 }
 
 

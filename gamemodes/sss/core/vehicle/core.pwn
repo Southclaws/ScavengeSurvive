@@ -207,7 +207,7 @@ stock DestroyWorldVehicle(vehicleid, bool:perma = false)
 
 		GetVehiclePos(vehicleid, x, y, z);
 
-		SetVehicleExternalLock(vehicleid, false);
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_EXTERNAL);
 		veh_Data[vehicleid][veh_key] = 0;
 
 		if(!IsPosInWater(x, y, z - 1.0))
@@ -316,7 +316,7 @@ _veh_SyncData(vehicleid)
 		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
 
 	else
-		SetVehicleParamsEx(vehicleid, 0, 0, 0, IsVehicleLocked(vehicleid), 0, 0, 0);
+		SetVehicleParamsEx(vehicleid, 0, 0, 0, _:GetVehicleLockState(vehicleid), 0, 0, 0);
 
 	return 1;
 }
@@ -639,7 +639,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		veh_Data[vehicleid][veh_occupied] = false;
 		veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 
-		SetVehicleExternalLock(vehicleid, 0);
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
 
@@ -681,7 +681,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		GetVehicleTypeName(vehicletype, vehiclename);
 		GetVehiclePos(vehicleid, x, y, z);
 
-		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), 0);
+		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), E_LOCK_STATE_OPEN);
 		HideVehicleUI(playerid);
 		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
 	}

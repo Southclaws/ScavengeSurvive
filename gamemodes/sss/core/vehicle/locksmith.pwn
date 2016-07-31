@@ -113,15 +113,15 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			// Update old keys to the correct vehicle type.
 			SetItemArrayDataAtCell(itemid, vehicletype, 1);
 
-			if(IsVehicleLocked(vehicleid))
+			if(GetVehicleLockState(vehicleid) != E_LOCK_STATE_OPEN)
 			{
-				SetVehicleExternalLock(vehicleid, 0);
+				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 				ShowActionText(playerid, ls(playerid, "UNLOCKED", true), 3000);
 				logf("[VLOCK] %p unlocked vehicle %d", playerid, vehicleid);
 			}
 			else
 			{
-				SetVehicleExternalLock(vehicleid, 1);
+				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_EXTERNAL);
 				ShowActionText(playerid, ls(playerid, "LOCKED", true), 3000);
 				logf("[VLOCK] %p locked vehicle %d", playerid, vehicleid);
 			}

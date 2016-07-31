@@ -648,10 +648,7 @@ Logout(playerid, docombatlogcheck = 1)
 			else
 			{
 				if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
-				{
-					VehicleDoorsState(vehicleid, 0);
-					SetVehicleExternalLock(vehicleid, 0);
-				}
+					SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 			}
 
 			UpdatePlayerVehicle(playerid, vehicleid);

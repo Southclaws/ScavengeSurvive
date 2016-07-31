@@ -384,7 +384,7 @@ timer UpdateSpectateMode[100](playerid)
 				GetPlayerLastVehicle(targetid),
 				invehicleas,
 				GetVehicleFuel(GetPlayerLastVehicle(targetid)),
-				IsVehicleLocked(GetPlayerLastVehicle(targetid)));
+				_:GetVehicleLockState(GetPlayerLastVehicle(targetid)));
 		}
 		else
 		{

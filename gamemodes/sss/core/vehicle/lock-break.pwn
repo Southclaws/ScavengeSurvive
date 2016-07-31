@@ -43,8 +43,11 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 	if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 	{
-		if(IsVehicleLocked(vehicleid))
+		if(GetVehicleLockState(vehicleid) == E_LOCK_STATE_EXTERNAL)
+		{
+			ShowActionText(playerid, "This vehicle has been locked with a crafted lock and cannot be broken", 8000);
 			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
 
 		if(225.0 < angle < 315.0)
 		{
@@ -74,35 +77,26 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 StartBreakingVehicleLock(playerid, vehicleid, type)
 {
-	new
-		engine,
-		lights,
-		alarm,
-		doors,
-		bonnet,
-		boot,
-		objective;
-
-	GetVehicleParamsEx(vehicleid, engine, lights, alarm, doors, bonnet, boot, objective);
-
 	if(type == 0)
 	{
-		if(doors == 0)
+		if(GetVehicleLockState(vehicleid) != E_LOCK_STATE_DEFAULT)
 			return 0;
 
 		cro_OpenType[playerid] = 0;
+		ShowActionText(playerid, "Breaking open door", 6000);
 	}
+
 	if(type == 1)
 	{
 		if(!IsVehicleTrunkLocked(vehicleid))
 			return 0;
 
 		cro_OpenType[playerid] = 1;
+		ShowActionText(playerid, "Breaking open trunk", 6000);
 	}
 
 	cro_TargetVehicle[playerid] = vehicleid;
 	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, 1, 1, 1, 0, 0);
-
 	StartHoldAction(playerid, 3000);
 
 	return 1;
@@ -147,7 +141,7 @@ hook OnHoldActionFinish(playerid)
 	{
 		if(cro_OpenType[playerid] == 0)
 		{
-			VehicleDoorsState(cro_TargetVehicle[playerid], 0);
+			SetVehicleExternalLock(cro_TargetVehicle[playerid], E_LOCK_STATE_OPEN);
 		}
 		if(cro_OpenType[playerid] == 1)
 		{

@@ -300,7 +300,7 @@ LoadPlayerVehicle(filename[])
 	SetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 	SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
 
-	SetVehicleExternalLock(vehicleid, data[VEH_CELL_LOCKED]);
+	SetVehicleExternalLock(vehicleid, E_LOCK_STATE:data[VEH_CELL_LOCKED]);
 
 	new
 		containerid,
@@ -345,7 +345,7 @@ LoadPlayerVehicle(filename[])
 		SetVehicleDamageData(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
 		SetVehicleKey(trailerid, data[VEH_CELL_KEY]);
 
-		SetVehicleExternalLock(trailerid, data[VEH_CELL_LOCKED]);
+		SetVehicleExternalLock(trailerid, E_LOCK_STATE:data[VEH_CELL_LOCKED]);
 
 		new itemcount;
 
@@ -385,7 +385,7 @@ LoadPlayerVehicle(filename[])
 		}
 
 		if(veh_PrintEach)
-			logf("\t[LOAD] Trailer %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f", trailerid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+			logf("\t[LOAD] Trailer %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f", trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 	}
 
 	new itemcount;
@@ -433,7 +433,7 @@ LoadPlayerVehicle(filename[])
 	}
 
 	if(veh_PrintEach)
-		logf("\t[LOAD] Vehicle %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f", vehicleid, data[VEH_CELL_LOCKED] ? ("L") : ("U"), itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		logf("\t[LOAD] Vehicle %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f", vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	return 1;
 }
@@ -485,7 +485,7 @@ _SaveVehicle(vehicleid)
 	data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 
 	if(!IsVehicleOccupied(vehicleid))
-		data[VEH_CELL_LOCKED] = IsVehicleLocked(vehicleid);
+		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(vehicleid);
 
 	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data);
 
@@ -505,7 +505,7 @@ _SaveVehicle(vehicleid)
 		GetVehicleColours(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
 		data[VEH_CELL_KEY] = GetVehicleKey(trailerid);
-		data[VEH_CELL_LOCKED] = IsVehicleLocked(trailerid);
+		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(trailerid);
 
 		// TDAT = Trailer Data
 		modio_push(filename, _T<T,D,A,T>, VEH_CELL_END, data);
@@ -541,9 +541,9 @@ _SaveVehicle(vehicleid)
 
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Trailer %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f",
+			logf("[SAVE] Trailer %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f",
 				trailerid,
-				IsVehicleLocked(trailerid) ? ("L") : ("U"),
+				_:GetVehicleLockState(trailerid),
 				itemcount,
 				vehiclename,
 				pveh_Owner[trailerid],
@@ -587,9 +587,9 @@ _SaveVehicle(vehicleid)
 	{
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Vehicle %d (%s) %d items: %s for %s at %.2f, %.2f, %.2f",
+			logf("[SAVE] Vehicle %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f",
 				vehicleid,
-				IsVehicleLocked(vehicleid) ? ("L") : ("U"),
+				_:GetVehicleLockState(vehicleid),
 				itemcount,
 				vehiclename,
 				pveh_Owner[vehicleid],

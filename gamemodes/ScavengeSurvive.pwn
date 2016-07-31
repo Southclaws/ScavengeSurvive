@@ -410,6 +410,7 @@ new stock
 	Modules that declare setup functions and constants used throughout.
 */
 #include "sss/core/vehicle/vehicle-type.pwn"
+#include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/core.pwn"
 #include "sss/core/player/core.pwn"
 #include "sss/core/player/save-load.pwn"
@@ -445,7 +446,6 @@ new stock
 #include "sss/core/vehicle/lock-break.pwn"
 #include "sss/core/vehicle/locksmith.pwn"
 #include "sss/core/vehicle/carmour.pwn"
-#include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/anti-ninja.pwn"
 #include "sss/core/vehicle/bike-collision.pwn"
 #include "sss/core/vehicle/trailer.pwn"
