@@ -75,7 +75,7 @@ hook OnGameModeInit()
 //	-2310.5117, -1647.1541, 483.9890 inside door
 
 	ch_battery = CreateItem(item_Battery, -2316.15, -1646.64, 483.43, 0.00, 0.00, 32.04);
-	ch_fusebox = CreateItem(item_Fusebox, -2315.67, -1644.89, 483.06, 0.00, 0.00, 262.98, .zoffset = FLOOR_OFFSET/2);
+	ch_fusebox = CreateItem(item_Fusebox, -2315.67, -1644.89, 483.06, 0.00, 0.00, 262.98/2);
 
 	ch_keypad = CreateDynamicObject(19273, -2311.4968, -1647.6813, 484.3600, 0.0000, 0.0000, 26.2200);
 

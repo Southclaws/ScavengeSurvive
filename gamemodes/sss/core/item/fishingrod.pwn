@@ -165,7 +165,7 @@ timer _CatchDelay[floatround(fish_Distance[playerid], floatround_round) * 100](p
 		Float: z;
 
 	GetPlayerPos(playerid, x, y, z);
-	CreateItem(item_RawFish, x, y, z - FLOOR_OFFSET, 90.0, .zoffset = FLOOR_OFFSET);
+	CreateItem(item_RawFish, x, y, z - FLOOR_OFFSET, 90.0);
 	// todo: multiple fish types
 	
 	_PlayerStopFishing(playerid);

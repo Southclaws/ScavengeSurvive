@@ -733,8 +733,7 @@ hook OnHoldActionFinish(playerid)
 				def_Data[def_CurrentDefenceEdit[playerid]][def_posZ],
 				.rz = def_Data[def_CurrentDefenceEdit[playerid]][def_rotZ],
 				.world = def_Data[def_CurrentDefenceEdit[playerid]][def_worldid],
-				.interior = def_Data[def_CurrentDefenceEdit[playerid]][def_interiorid],
-				.zoffset = ITEM_BUTTON_OFFSET);
+				.interior = def_Data[def_CurrentDefenceEdit[playerid]][def_interiorid]);
 
 			switch(def_Data[def_CurrentDefenceEdit[playerid]][def_pose])
 			{

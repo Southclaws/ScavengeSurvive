@@ -197,7 +197,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 		CreateItem(itemtype,
 			x + (frandom(1.0) * floatsin(((360 / size) * i) + rot, degrees)),
 			y + (frandom(1.0) * floatcos(((360 / size) * i) + rot, degrees)),
-			z, .zoffset = ITEM_BUTTON_OFFSET, .rz = frandom(360.0), .world = worldid, .interior = interiorid);
+			z, .rz = frandom(360.0), .world = worldid, .interior = interiorid);
 
 		loot_SpawnData[lootspawnid][loot_items][loot_SpawnData[lootspawnid][loot_total]] = itemid;
 		loot_SpawnData[lootspawnid][loot_total]++;
@@ -206,7 +206,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 	return loot_SpawnTotal++;
 }
 
-stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0, Float:zoffset = ITEM_BUTTON_OFFSET)
+stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0)
 {
 	new cell;
 
@@ -225,7 +225,7 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 
 	loot_ItemLootIndex[itemid] = lootindex;
 
-	CreateItem(itemtype, x, y, z, .zoffset = zoffset, .rz = frandom(360.0), .world = worldid, .interior = interiorid);
+	CreateItem(itemtype, x, y, z, .rz = frandom(360.0), .world = worldid, .interior = interiorid);
 
 	return itemid;
 }

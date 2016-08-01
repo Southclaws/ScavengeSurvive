@@ -40,14 +40,14 @@ enum
 }
 
 
-stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz, Float:zoffset = ITEM_BUTTON_OFFSET)
+stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz)
 {
 	new
 		name[MAX_PLAYER_NAME],
 		itemid;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-	itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz, .zoffset = zoffset);
+	itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz);
 
 	SetItemArrayDataLength(itemid, 0);
 

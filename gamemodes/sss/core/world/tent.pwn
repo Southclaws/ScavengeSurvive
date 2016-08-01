@@ -483,8 +483,7 @@ hook OnHoldActionFinish(playerid)
 				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
 				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posY],
 				tnt_Data[tnt_CurrentTentID[playerid]][tnt_posZ] - 0.4,
-				.rz = tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX],
-				.zoffset = FLOOR_OFFSET);
+				.rz = tnt_Data[tnt_CurrentTentID[playerid]][tnt_posX]);
 
 			DestroyTent(tnt_CurrentTentID[playerid]);
 			ClearAnimations(playerid);
@@ -726,7 +725,7 @@ LoadTent(filename[])
 
 		UpdateTentDebugLabel(tentid);
 
-		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior, .zoffset = FLOOR_OFFSET);
+		CreateItem_ExplicitID(itemid, x, y, z, .rz = r, .world = world, .interior = interior);
 	}
 
 	DestroyItemList(itemlist);

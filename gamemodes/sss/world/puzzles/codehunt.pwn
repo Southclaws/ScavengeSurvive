@@ -86,10 +86,10 @@ CreateCodeParts(Float:coords[][], size, keycode)
 	valstr(nameextra[2], code{2});
 	valstr(nameextra[3], code{3});
 
-	itemid[0] = CreateItem(item_CodePart, coords[output[0]][0], coords[output[0]][1], coords[output[0]][2], .zoffset = FLOOR_OFFSET);
-	itemid[1] = CreateItem(item_CodePart, coords[output[1]][0], coords[output[1]][1], coords[output[1]][2], .zoffset = FLOOR_OFFSET);
-	itemid[2] = CreateItem(item_CodePart, coords[output[2]][0], coords[output[2]][1], coords[output[2]][2], .zoffset = FLOOR_OFFSET);
-	itemid[3] = CreateItem(item_CodePart, coords[output[3]][0], coords[output[3]][1], coords[output[3]][2], .zoffset = FLOOR_OFFSET);
+	itemid[0] = CreateItem(item_CodePart, coords[output[0]][0], coords[output[0]][1], coords[output[0]][2]);
+	itemid[1] = CreateItem(item_CodePart, coords[output[1]][0], coords[output[1]][1], coords[output[1]][2]);
+	itemid[2] = CreateItem(item_CodePart, coords[output[2]][0], coords[output[2]][1], coords[output[2]][2]);
+	itemid[3] = CreateItem(item_CodePart, coords[output[3]][0], coords[output[3]][1], coords[output[3]][2]);
 
 	SetItemExtraData(itemid[0], code{0});
 	SetItemExtraData(itemid[1], code{1});

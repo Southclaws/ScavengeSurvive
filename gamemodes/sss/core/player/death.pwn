@@ -191,7 +191,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(345.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 	}
@@ -211,7 +210,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(15.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 	}
@@ -233,7 +231,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(45.0 + (90.0 * float(i)), degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 	}
@@ -248,7 +245,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 	{
 		RemovePlayerBag(playerid);
 
-		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET);
 		SetItemRot(itemid, 0.0, 0.0, r, true);
 		SetItemInterior(itemid, interior);
 		SetItemWorld(itemid, world);
@@ -267,7 +264,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(270.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 	}
@@ -285,7 +281,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(280.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 	}
@@ -301,7 +296,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(80.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 
@@ -326,7 +320,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 			y + floatcos(135.0, degrees),
 			z - FLOOR_OFFSET,
 			.rz = r,
-			.zoffset = ITEM_BUTTON_OFFSET,
 			.world = world,
 			.interior = interior);
 
@@ -342,7 +335,6 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		y + floatcos(90.0, degrees),
 		z - FLOOR_OFFSET,
 		.rz = r,
-		.zoffset = ITEM_BUTTON_OFFSET,
 		.world = world,
 		.interior = interior);
 

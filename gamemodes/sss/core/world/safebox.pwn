@@ -574,7 +574,7 @@ LoadSafeboxItem(filename[], forceactive = 0, skipgeid = 1)
 	if(skipgeid)
 		box_SkipGEID = true;
 
-	boxitemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5], .zoffset = FLOOR_OFFSET);
+	boxitemid = CreateItem(ItemType:type[0], Float:data[0], Float:data[1], Float:data[2], .rz = Float:data[3], .world = data[4], .interior = data[5]);
 
 	if(skipgeid)
 		box_SkipGEID = false;

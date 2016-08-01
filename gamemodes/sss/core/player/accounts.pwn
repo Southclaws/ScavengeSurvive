@@ -608,7 +608,7 @@ Logout(playerid, docombatlogcheck = 1)
 	{
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
-			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
 
 			itemid = INVALID_ITEM_ID;
 		}

@@ -118,7 +118,7 @@ hook OnPlayerConstructed(playerid, consset)
 		ty /= float(i);
 		tz /= float(i);
 
-		CreateItem(item_Campfire, tx, ty, tz, .zoffset = FLOOR_OFFSET, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+		CreateItem(item_Campfire, tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

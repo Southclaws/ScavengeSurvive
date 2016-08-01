@@ -272,7 +272,7 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		y += woodDistance * floatcos(-woodAngle, degrees);
 
 		MapAndreas_FindZ_For2DCoord(x, y, z);
-		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.088, .rz = frandom(360.0), .zoffset = FLOOR_OFFSET);
+		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.088, .rz = frandom(360.0));
 	}
 
 	DestroyTree(treeid);

@@ -380,7 +380,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
 		{
 			if(!IsContainerEmpty(GetItemExtraData(itemid)))
-				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET, .zoffset = ITEM_BUTTON_OFFSET);
+				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET);
 		}
 
 		Logout(playerid, 0); // docombatlogcheck = 0
