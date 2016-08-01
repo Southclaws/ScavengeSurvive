@@ -142,13 +142,13 @@ public OnGameModeInit()
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF>						// By Southclaw, v1.4.0:	https://github.com/Southclaw/SIF
-#include <SIF\extensions\ItemArrayData>
-#include <SIF\extensions\ItemList>
-#include <SIF\extensions\InventoryDialog>
-#include <SIF\extensions\InventoryKeys>
-#include <SIF\extensions\ContainerDialog>
-#include <SIF\extensions\Craft>
-#include <SIF\extensions\DebugLabels>
+#include <SIF\extensions\ItemArrayData.pwn>
+#include <SIF\extensions\ItemList.pwn>
+#include <SIF\extensions\InventoryDialog.pwn>
+#include <SIF\extensions\InventoryKeys.pwn>
+#include <SIF\extensions\ContainerDialog.pwn>
+#include <SIF\extensions\Craft.pwn>
+#include <SIF\extensions\DebugLabels.pwn>
 #include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
 #include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
 #include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
