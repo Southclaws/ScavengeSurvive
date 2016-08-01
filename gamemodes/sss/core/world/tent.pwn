@@ -50,7 +50,7 @@ static
 			tnt_Data[MAX_TENT][E_TENT_DATA],
 			tnt_ObjData[MAX_TENT][E_TENT_OBJECT_DATA],
 			tnt_ContainerTent[CNT_MAX] = {INVALID_ITEM_ID, ...},
-			tnt_CurrentTentID[MAX_PLAYERS];
+			tnt_CurrentTentItem[MAX_PLAYERS];
 
 new
    Iterator:tnt_Index<MAX_TENT>;
@@ -69,7 +69,7 @@ forward OnTentDestroy(tentid);
 
 hook OnPlayerConnect(playerid)
 {
-	tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
+	tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnItemTypeDefined(uname[])
@@ -236,29 +236,94 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
 
-	if(GetItemType(itemid) == item_Crowbar && GetItemType(withitemid) == item_TentPack)
+	if(GetItemType(withitemid) == item_TentPack)
 	{
-		tnt_CurrentTentID[playerid] = withitemid;
-		StartHoldAction(playerid, 15000);
-		ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-		ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
+		new tentid = GetItemExtraData(itemid);
 
-		return Y_HOOKS_BREAK_RETURN_1;
+		if(!IsValidTent(tentid))
+		{
+			if(GetItemType(itemid) == item_Hammer)
+			{
+				StartBuildingTent(playerid, withitemid);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+		}
+		else
+		{
+			if(GetItemType(itemid) == item_Crowbar)
+			{
+				StartRemovingTent(playerid, withitemid);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+			else
+			{
+				DisplayContainerInventory(playerid, tnt_Data[tentid][tnt_containerId]);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+StartBuildingTent(playerid, itemid)
+{
+	StartHoldAction(playerid, 10000);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ShowActionText(playerid, ls(playerid, "TENTBUILD", true));
+	tnt_CurrentTentItem[playerid] = itemid;
+}
+
+StopBuildingTent(playerid)
+{
+	if(tnt_CurrentTentItem[playerid] == INVALID_ITEM_ID)
+		return;
+
+	StopHoldAction(playerid);
+	ClearAnimations(playerid);
+	HideActionText(playerid);
+	tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
+
+	return;
+}
+
+StartRemovingTent(playerid, itemid)
+{
+	StartHoldAction(playerid, 15000);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
+	tnt_CurrentTentItem[playerid] = itemid;
+}
+
+StopRemovingTent(playerid)
+{
+	if(tnt_CurrentTentItem[playerid] == INVALID_ITEM_ID)
+		return;
+
+	StopHoldAction(playerid);
+	ClearAnimations(playerid);
+	HideActionText(playerid);
+	tnt_CurrentTentItem[playerid] = INVALID_ITEM_ID;
+
+	return;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16)
 	{
-		if(tnt_CurrentTentID[playerid] != INVALID_ITEM_ID)
+		if(tnt_CurrentTentItem[playerid] != INVALID_ITEM_ID)
 		{
-			StopHoldAction(playerid);
-			ClearAnimations(playerid);
-			HideActionText(playerid);
-			tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
+			new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
+
+			if(itemtype == item_Hammer)
+			{
+				StopBuildingTent(playerid);
+			}
+			else if(itemtype == item_Crowbar)
+			{
+				StopRemovingTent(playerid);
+			}
 		}
 	}
 
@@ -267,15 +332,18 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	if(tnt_CurrentTentID[playerid] != INVALID_ITEM_ID)
+	if(tnt_CurrentTentItem[playerid] != INVALID_ITEM_ID)
 	{
+		if(GetItemType(GetPlayerItem(playerid)) == item_Hammer)
+		{
+			CreateTentFromItem(tnt_CurrentTentItem[playerid]);
+			StopBuildingTent(playerid);
+		}
+
 		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 		{
-			DestroyTent(GetItemExtraData(tnt_CurrentTentID[playerid]));
-			ClearAnimations(playerid);
-			HideActionText(playerid);
-
-			tnt_CurrentTentID[playerid] = INVALID_ITEM_ID;
+			DestroyTent(GetItemExtraData(tnt_CurrentTentItem[playerid]));
+			StopRemovingTent(playerid);
 		}
 	}
 }

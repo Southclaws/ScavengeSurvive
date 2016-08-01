@@ -579,7 +579,6 @@ new stock
 #include "sss/core/item/screwdriver.pwn"
 #include "sss/core/item/torso.pwn"
 #include "sss/core/item/ammotin.pwn"
-#include "sss/core/item/tentpack.pwn"
 #include "sss/core/item/campfire.pwn"
 #include "sss/core/item/cowboyhat.pwn"
 #include "sss/core/item/truckcap.pwn"

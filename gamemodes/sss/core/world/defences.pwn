@@ -217,14 +217,29 @@ DeconstructDefence(itemid)
 	new
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		ItemType:itemtype,
+		itemdata[e_DEFENCE_DATA];
 
 	GetItemPos(itemid, x, y, z);
+	itemtype = GetItemType(itemid);
+	GetItemArrayData(itemid, itemdata);
+
+	if(itemdata[def_motor])
+	{
+		if(itemdata[def_moveState] == DEFENCE_POSE_VERTICAL)
+			z -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
+	}
+	else
+	{
+		if(itemdata[def_pose] == DEFENCE_POSE_VERTICAL)
+			z -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
+	}
+
 	SetItemPos(itemid, x, y, z);
 	SetItemRot(itemid, 0.0, 0.0, 0.0, true);
 
 	SetItemArrayDataAtCell(itemid, 0, 0);
-	SetItemArrayDataLength(itemid, 0);
 	CallLocalFunction("OnDefenceDestroy", "d", itemid);
 }
 
