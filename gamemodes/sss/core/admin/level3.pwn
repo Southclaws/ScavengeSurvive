@@ -739,20 +739,6 @@ ACMD:delete[3](playerid, params[])
 
 		return 1;
 	}
-	else if(!strcmp(type, "sign", true, 4))
-	{
-		foreach(new i : sgn_Index)
-		{
-			GetSignPos(i, ix, iy, iz);
-
-			if(Distance(px, py, pz, ix, iy, iz) < range)
-			{
-				i = DestroySign(i);
-			}
-		}
-
-		return 1;
-	}
 
 	ChatMsg(playerid, YELLOW, " >  Usage: /delete [items/tents/defences/signs] [optional:range(1.5)]");
 

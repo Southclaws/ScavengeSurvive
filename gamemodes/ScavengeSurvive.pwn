@@ -563,7 +563,6 @@ new stock
 // ITEMS
 #include "sss/core/item/food.pwn"
 #include "sss/core/item/firework.pwn"
-#include "sss/core/item/sign.pwn"
 #include "sss/core/item/shield.pwn"
 #include "sss/core/item/handcuffs.pwn"
 #include "sss/core/item/wheel.pwn"
