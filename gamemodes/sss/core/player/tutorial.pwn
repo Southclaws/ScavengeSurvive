@@ -205,7 +205,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		CreateItem(item_Satchel, 1078.70325, 2132.96069, 9.85179, .world = PlayerTutorialWorld[playerid]);
 
-		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 1075.4344, 2121.3606, 10.7901, 355.6799, -1, -1, PlayerTutorialWorld[playerid]);
+		PlayerTutorialVehicle[playerid] = CreateWorldVehicle(veht_Bobcat, 1075.4344, 2121.3606, 10.7901, 355.6799, -1, -1, .world = PlayerTutorialWorld[playerid]);
 		SetVehicleHealth(PlayerTutorialVehicle[playerid], 321.9);
 		SetVehicleFuel(PlayerTutorialVehicle[playerid], frandom(1.0));
 		FillContainerWithLoot(GetVehicleContainer(PlayerTutorialVehicle[playerid]), 5, GetLootIndexFromName("world_civilian"));

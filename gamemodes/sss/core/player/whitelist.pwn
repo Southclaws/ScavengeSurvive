@@ -216,6 +216,9 @@ stock IsPlayerInWhitelist(playerid)
 
 stock IsNameInWhitelist(name[])
 {
+	if(isnull(name))
+		return 2;
+
 	new count;
 
 	stmt_bind_value(stmt_WhitelistExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -346,6 +349,12 @@ timer _UpdateWhitelistCountdown[1000](playerid)
 
 timer _WhitelistConnect[100](playerid)
 {
+	if(!IsPlayerConnected(playerid))
+	{
+		printf("[_WhitelistConnect] ERROR: Player %d not connected any more.", playerid);
+		return;
+	}
+
 	new name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);

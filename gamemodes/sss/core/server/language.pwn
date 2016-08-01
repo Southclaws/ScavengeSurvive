@@ -362,7 +362,6 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 	}
 
 	ret = _GetLanguageString(languageid, key, result, encode);
-	print(result);
 
 	switch(ret)
 	{
