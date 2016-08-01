@@ -36,12 +36,19 @@ enum e_PLOT_POLE_DATA
 	E_PLOTPOLE_OBJ3
 }
 
-static InPlotPoleArea[MAX_PLAYERS];
+static
+	CurrentPlotPoleItem[MAX_PLAYERS] = {INVALID_ITEM_ID};
 
 
-hook OnScriptInit()
+hook OnItemTypeDefined(uname[])
 {
-	SetItemTypeMaxArrayData(item_PlotPole, 2);
+	if(!strcmp(uname, "PlotPole"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("PlotPole"), e_PLOT_POLE_DATA);
+}
+
+hook OnPlayerConnect(playerid)
+{
+	StopRemovingPlotpole(playerid);
 }
 
 hook OnItemCreateInWorld(itemid)
@@ -68,6 +75,21 @@ hook OnItemCreateInWorld(itemid)
 		data[E_PLOTPOLE_OBJ3] = CreateDynamicObject(19293, x, y, z + 1.3073, 0.00000, 0.00000, rz);
 
 		Streamer_SetArrayData(STREAMER_TYPE_AREA, data[E_PLOTPOLE_AREA], E_STREAMER_EXTRA_ID, areadata);
+		SetItemArrayData(itemid, data, e_PLOT_POLE_DATA);
+	}
+}
+
+hook OnItemDestroy(itemid)
+{
+	if(GetItemType(itemid) == item_PlotPole)
+	{
+		new data[e_PLOT_POLE_DATA];
+		GetItemArrayData(itemid, data);
+		printf("[OnItemDestroy] Destroying plotpole item %d data: %s", itemid, atosr(data));
+		DestroyDynamicArea(data[E_PLOTPOLE_AREA]);
+		DestroyDynamicObject(data[E_PLOTPOLE_OBJ1]);
+		DestroyDynamicObject(data[E_PLOTPOLE_OBJ2]);
+		DestroyDynamicObject(data[E_PLOTPOLE_OBJ3]);
 	}
 }
 
@@ -80,6 +102,85 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
+
+// Removal
+
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	if(GetItemType(withitemid) == item_PlotPole)
+	{
+		if(GetItemType(itemid) == item_Crowbar)
+		{
+			StartRemovingPlotpole(playerid, withitemid);
+		}
+	}
+}
+
+StartRemovingPlotpole(playerid, itemid)
+{
+	StartHoldAction(playerid, 15000);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
+	CurrentPlotPoleItem[playerid] = itemid;
+}
+
+StopRemovingPlotpole(playerid)
+{
+	if(CurrentPlotPoleItem[playerid] == INVALID_ITEM_ID)
+		return;
+
+	StopHoldAction(playerid);
+	ClearAnimations(playerid);
+	HideActionText(playerid);
+	CurrentPlotPoleItem[playerid] = INVALID_ITEM_ID;
+
+	return;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	if(oldkeys & 16)
+	{
+		if(CurrentPlotPoleItem[playerid] != INVALID_ITEM_ID)
+		{
+			if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+			{
+				StopRemovingPlotpole(playerid);
+			}
+		}
+	}
+
+	return 1;
+}
+
+hook OnHoldActionFinish(playerid)
+{
+	if(CurrentPlotPoleItem[playerid] != INVALID_ITEM_ID)
+	{
+		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z;
+
+			GetItemPos(CurrentPlotPoleItem[playerid], x, y, z);
+
+			new data[e_PLOT_POLE_DATA];
+			GetItemArrayData(CurrentPlotPoleItem[playerid], data);
+			printf("[OnHoldActionFinish] Destroying plotpole item %d data: %s", CurrentPlotPoleItem[playerid], atosr(data));
+			DestroyItem(CurrentPlotPoleItem[playerid]);
+			StopRemovingPlotpole(playerid);
+
+			CreateItem(item_Canister, x + 0.5, y, z, .rz = frandom(360.0));
+			CreateItem(item_RadioPole, x - 0.5, y, z, .rz = frandom(360.0));
+			CreateItem(item_Fluctuator, x, y + 0.5, z, .rz = frandom(360.0));
+			CreateItem(item_PowerSupply, x, y - 0.5, z, .rz = frandom(360.0));
+		}
+	}
+}
+
+// Enter/leave messages
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
@@ -97,8 +198,6 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 			new geid[GEID_LEN];
 			GetItemGEID(data[1], geid);
 			ShowActionText(playerid, sprintf("Entered Zone for Plot Pole %s", geid), 5000);
-
-			InPlotPoleArea[playerid] = true;
 		}
 	}
 
@@ -121,20 +220,21 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 			new geid[GEID_LEN];
 			GetItemGEID(data[1], geid);
 			ShowActionText(playerid, sprintf("Left Zone for Plot Pole %s", geid), 5000);
-
-			InPlotPoleArea[playerid] = false;
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+// utils
+
 stock IsPlayerInPlotPoleArea(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return false;
 
-	return InPlotPoleArea[playerid];
+	// Todo: implement Streamer_GetPlayerAreas + loop
+	return false;
 }
 
 stock IsItemInPlotPoleArea(itemid)
