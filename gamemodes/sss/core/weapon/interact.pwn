@@ -274,7 +274,7 @@ timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
 		SetItemWeaponItemMagAmmo(srcitem, 0);
 		SetItemWeaponItemReserve(srcitem, remainder);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSFERW", true), (reserveammo + magammo) - remainder), 3000);
+		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOW", true), (reserveammo + magammo) - remainder), 3000);
 	}
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
