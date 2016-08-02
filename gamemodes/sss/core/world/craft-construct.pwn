@@ -234,7 +234,8 @@ hook OnHoldActionFinish(playerid)
 				Float:tx,
 				Float:ty,
 				Float:tz,
-				count;
+				count,
+				itemid;
 
 			// DestroyItem(GetPlayerItem(playerid));
 
@@ -257,7 +258,8 @@ hook OnHoldActionFinish(playerid)
 			ty /= float(count);
 			tz /= float(count);
 
-			CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+			itemid = CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+			TweakItem(playerid, itemid);
 		}
 
 		ClearAnimations(playerid);
