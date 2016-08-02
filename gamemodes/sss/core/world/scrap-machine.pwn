@@ -133,7 +133,9 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 
 	if(interactiontype == 0)
 	{
-		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+		if(GetItemType(itemid) != item_Crowbar)
+			DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+
 		return 0;
 	}
 

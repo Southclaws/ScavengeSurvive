@@ -36,19 +36,11 @@ enum e_PLOT_POLE_DATA
 	E_PLOTPOLE_OBJ3
 }
 
-static
-	CurrentPlotPoleItem[MAX_PLAYERS] = {INVALID_ITEM_ID};
-
 
 hook OnItemTypeDefined(uname[])
 {
 	if(!strcmp(uname, "PlotPole"))
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("PlotPole"), e_PLOT_POLE_DATA);
-}
-
-hook OnPlayerConnect(playerid)
-{
-	StopRemovingPlotpole(playerid);
 }
 
 hook OnItemCreateInWorld(itemid)
@@ -102,85 +94,6 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-// Removal
-
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
-{
-	if(GetItemType(withitemid) == item_PlotPole)
-	{
-		if(GetItemType(itemid) == item_Crowbar)
-		{
-			StartRemovingPlotpole(playerid, withitemid);
-		}
-	}
-}
-
-StartRemovingPlotpole(playerid, itemid)
-{
-	StartHoldAction(playerid, 15000);
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
-	CurrentPlotPoleItem[playerid] = itemid;
-}
-
-StopRemovingPlotpole(playerid)
-{
-	if(CurrentPlotPoleItem[playerid] == INVALID_ITEM_ID)
-		return;
-
-	StopHoldAction(playerid);
-	ClearAnimations(playerid);
-	HideActionText(playerid);
-	CurrentPlotPoleItem[playerid] = INVALID_ITEM_ID;
-
-	return;
-}
-
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	if(oldkeys & 16)
-	{
-		if(CurrentPlotPoleItem[playerid] != INVALID_ITEM_ID)
-		{
-			if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
-			{
-				StopRemovingPlotpole(playerid);
-			}
-		}
-	}
-
-	return 1;
-}
-
-hook OnHoldActionFinish(playerid)
-{
-	if(CurrentPlotPoleItem[playerid] != INVALID_ITEM_ID)
-	{
-		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
-		{
-			new
-				Float:x,
-				Float:y,
-				Float:z;
-
-			GetItemPos(CurrentPlotPoleItem[playerid], x, y, z);
-
-			new data[e_PLOT_POLE_DATA];
-			GetItemArrayData(CurrentPlotPoleItem[playerid], data);
-			printf("[OnHoldActionFinish] Destroying plotpole item %d data: %s", CurrentPlotPoleItem[playerid], atosr(data));
-			DestroyItem(CurrentPlotPoleItem[playerid]);
-			StopRemovingPlotpole(playerid);
-
-			CreateItem(item_Canister, x + 0.5, y, z, .rz = frandom(360.0));
-			CreateItem(item_RadioPole, x - 0.5, y, z, .rz = frandom(360.0));
-			CreateItem(item_Fluctuator, x, y + 0.5, z, .rz = frandom(360.0));
-			CreateItem(item_PowerSupply, x, y - 0.5, z, .rz = frandom(360.0));
-		}
-	}
-}
-
-// Enter/leave messages
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {

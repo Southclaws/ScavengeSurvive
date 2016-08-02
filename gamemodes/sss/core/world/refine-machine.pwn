@@ -110,7 +110,9 @@ _rm_PlayerUseRefineMachine(playerid, itemid, interactiontype)
 
 	if(interactiontype == 0)
 	{
-		DisplayContainerInventory(playerid, data[rm_containerid]);
+		if(GetItemType(itemid) != item_Crowbar)
+			DisplayContainerInventory(playerid, data[rm_containerid]);
+
 		return 0;
 	}
 

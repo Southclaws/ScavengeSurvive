@@ -131,7 +131,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			{
 				d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
 
-				if(GetConstructionSetTool(consset) == GetItemType(GetPlayerItem(playerid)))
+				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
 					wb_CurrentConstructSet[playerid] = consset;
 					_wb_StartWorking(playerid, withitemid, itemcount * 3600);
@@ -140,7 +140,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			}
 		}
 
-		DisplayContainerInventory(playerid, containerid);
+		if(GetItemType(itemid) != item_Crowbar)
+			DisplayContainerInventory(playerid, containerid);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
