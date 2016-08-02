@@ -238,7 +238,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(GetItemType(withitemid) == item_TentPack)
 	{
-		new tentid = GetItemExtraData(itemid);
+		new tentid = GetItemArrayDataAtCell(withitemid, 0);
 
 		if(!IsValidTent(tentid))
 		{
@@ -342,10 +342,29 @@ hook OnHoldActionFinish(playerid)
 
 		if(GetItemType(GetPlayerItem(playerid)) == item_Crowbar)
 		{
-			DestroyTent(GetItemExtraData(tnt_CurrentTentItem[playerid]));
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				tentid = GetItemExtraData(tnt_CurrentTentItem[playerid]);
+
+			if(!IsValidTent(tentid))
+			{
+				printf("[OnHoldActionFinish] ERROR: Player %d attempted to destroy invalid tent %d from item %d", playerid, tentid, tnt_CurrentTentItem[playerid]);
+				return Y_HOOKS_CONTINUE_RETURN_0;
+			}
+
+			GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
+
+			for(new i = GetContainerItemCount(tnt_Data[tentid][tnt_containerId]); i >= 0; i--)
+				CreateItemInWorld(GetContainerSlotItem(tnt_Data[tentid][tnt_containerId], i), x, y, z, 0.0, 0.0, frandom(360.0));
+
+			DestroyTent(tentid);
 			StopRemovingTent(playerid);
 		}
 	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 
