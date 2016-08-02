@@ -77,7 +77,6 @@ hook OnItemDestroy(itemid)
 	{
 		new data[e_PLOT_POLE_DATA];
 		GetItemArrayData(itemid, data);
-		printf("[OnItemDestroy] Destroying plotpole item %d data: %s", itemid, atosr(data));
 		DestroyDynamicArea(data[E_PLOTPOLE_AREA]);
 		DestroyDynamicObject(data[E_PLOTPOLE_OBJ1]);
 		DestroyDynamicObject(data[E_PLOTPOLE_OBJ2]);
