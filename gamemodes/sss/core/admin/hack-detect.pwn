@@ -958,7 +958,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerWeaponShot] in /gamemodes/sss/core/admin/hack-detect.pwn");
 
-	if(GetTickCountDifference(ammo_LastShot[playerid], GetTickCount()) < GetWeaponShotInterval(weaponid) + 10)
+	if(GetTickCountDifference(GetTickCount(), ammo_LastShot[playerid]) < GetWeaponShotInterval(weaponid) + 10)
 	{
 		ammo_ShotCounter[playerid]++;
 

@@ -105,7 +105,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	if(!IsPlayerLoggedIn(playerid))
 		return 0;
 
-	if(GetTickCountDifference(GetPlayerServerJoinTick(playerid), GetTickCount()) < 1000)
+	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 1000)
 		return 0;
 
 	if(CallLocalFunction("OnPlayerSendChat", "dsf", playerid, chat, frequency))
