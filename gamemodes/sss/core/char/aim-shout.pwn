@@ -35,7 +35,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if( (newkeys & 128) && (newkeys & 512) )
 	{
-		if(GetTickCountDifference(aimshout_Tick[playerid], GetTickCount()) > 750)
+		if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 		{
 			new string[128];
 

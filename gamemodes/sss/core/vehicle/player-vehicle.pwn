@@ -630,7 +630,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	}
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
-		if(GetTickCountDifference(GetPlayerVehicleEnterTick(playerid), GetTickCount()) > 1000)
+		if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleEnterTick(playerid)) > 1000)
 		{
 			if(pveh_SaveAnyVehicle[playerid])
 				_PlayerUpdateVehicle(playerid, GetPlayerLastVehicle(playerid));

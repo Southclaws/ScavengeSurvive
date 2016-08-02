@@ -146,7 +146,7 @@ timer KnockOutUpdate[100](playerid)
 	if(!knockout_KnockedOut[playerid])
 		WakeUpPlayer(playerid);
 
-	if(IsPlayerDead(playerid) || GetTickCountDifference(GetPlayerSpawnTick(playerid), GetTickCount()) < 1000 || !IsPlayerSpawned(playerid))
+	if(IsPlayerDead(playerid) || GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000 || !IsPlayerSpawned(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
@@ -303,7 +303,7 @@ stock GetPlayerKnockOutRemainder(playerid)
 	if(!knockout_KnockedOut[playerid])
 		return 0;
 
-	return GetTickCountDifference((knockout_Tick[playerid] + knockout_Duration[playerid]), GetTickCount());
+	return GetTickCountDifference(GetTickCount(), (knockout_Tick[playerid] + knockout_Duration[playerid]));
 }
 
 stock IsPlayerKnockedOut(playerid)

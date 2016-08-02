@@ -265,7 +265,7 @@ stock GetPlayerDrugsAsArray(playerid, output[])
 		{
 			output[0]++;
 			output[idx++] = i;
-			output[idx++] = drug_PlayerDrugData[playerid][i][drug_totalDuration] - GetTickCountDifference(drug_PlayerDrugData[playerid][i][drug_tick], GetTickCount());
+			output[idx++] = drug_PlayerDrugData[playerid][i][drug_totalDuration] - GetTickCountDifference(GetTickCount(), drug_PlayerDrugData[playerid][i][drug_tick]);
 		}
 	}
 

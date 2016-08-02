@@ -22,30 +22,13 @@
 ==============================================================================*/
 
 
-stock intdiffabs(tick1, tick2)
+stock GetTickCountDifference(newtick, oldtick)
 {
-	if(tick1 > tick2)
-		return abs(tick1 - tick2);
+	if (oldtick < 0 && newtick >= 0)
+		return newtick - oldtick;
 
-	else
-		return abs(tick2 - tick1);
-}
+	else if (oldtick >= 0 && newtick < 0 || oldtick > newtick)
+		return (cellmax - oldtick + 1) - (cellmin - newtick);
 
-stock GetTickCountDifference(a, b)
-{
-	if ((a < 0) && (b > 0))
-	{
-
-		new dist;
-
-		dist = intdiffabs(a, b);
-
-		if(dist > 2147483647)
-			return intdiffabs(a - 2147483647, b - 2147483647);
-
-		else
-			return dist;
-	}
-
-	return intdiffabs(a, b);
+	return newtick - oldtick;
 }
