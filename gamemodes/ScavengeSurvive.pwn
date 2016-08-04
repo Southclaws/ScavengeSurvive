@@ -143,7 +143,7 @@ public OnGameModeInit()
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
 #include <SIF>						// By Southclaw, v1.5.0:	https://github.com/Southclaw/SIF
 #include <SIF\extensions\ItemArrayData.pwn>
-#include <SIF\extensions\ItemList.pwn>
+#include <SIF\extensions\ItemSerializer.pwn>
 #include <SIF\extensions\InventoryDialog.pwn>
 #include <SIF\extensions\InventoryKeys.pwn>
 #include <SIF\extensions\ContainerDialog.pwn>

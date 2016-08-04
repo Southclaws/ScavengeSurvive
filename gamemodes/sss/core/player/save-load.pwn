@@ -32,9 +32,7 @@
 #define MAX_BAG_CONTAINER_SIZE		(14)
 
 
-static
-	saveload_Loaded[MAX_PLAYERS],
-	saveload_ItemList[ITM_LST_OF_ITEMS(MAX_BAG_CONTAINER_SIZE)];
+static saveload_Loaded[MAX_PLAYERS];
 
 
 enum
@@ -107,8 +105,7 @@ SavePlayerChar(playerid)
 		animidx = GetPlayerAnimationIndex(playerid),
 		itemid,
 		items[MAX_BAG_CONTAINER_SIZE],
-		itemcount,
-		itemlist;
+		itemcount;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	PLAYER_DAT_FILE(name, filename);
@@ -226,14 +223,13 @@ SavePlayerChar(playerid)
 		d:2:HANDLER("[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 	}
 
-	itemlist = CreateItemList(items, itemcount);
-	GetItemList(itemlist, saveload_ItemList);
+	if(!SerialiseItems(items, itemcount))
+	{
+		d:2:HANDLER("[SAVE:%p] Inv items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
-	d:2:HANDLER("[SAVE:%p] Inv items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-	modio_push(filename, _T<I,N,V,0>, GetItemListSize(itemlist), saveload_ItemList);
-
-	DestroyItemList(itemlist);
+		modio_push(filename, _T<I,N,V,0>, GetSerialisedSize(), itm_arr_Serialized);
+		ClearSerializer();
+	}
 
 /*
 	Bag
@@ -257,14 +253,13 @@ SavePlayerChar(playerid)
 			d:2:HANDLER("[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 		}
 
-		itemlist = CreateItemList(items, itemcount);
-		GetItemList(itemlist, saveload_ItemList);
+		if(!SerialiseItems(items, itemcount))
+		{
+			d:2:HANDLER("[SAVE:%p] Bag items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
-		d:2:HANDLER("[SAVE:%p] Bag items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-		modio_push(filename, _T<B,A,G,0>, GetItemListSize(itemlist), saveload_ItemList);
-
-		DestroyItemList(itemlist);
+			modio_push(filename, _T<B,A,G,0>, GetSerialisedSize(), itm_arr_Serialized);
+			ClearSerializer();
+		}
 	}
 
 	CallLocalFunction("OnPlayerSave", "ds", playerid, filename);
@@ -280,7 +275,6 @@ LoadPlayerChar(playerid)
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		ItemType:itemtype,
 		itemid,
-		itemlist,
 		length;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -459,66 +453,68 @@ LoadPlayerChar(playerid)
 	Inventory
 */
 
-	length = modio_read(filename, _T<I,N,V,0>, sizeof(saveload_ItemList), saveload_ItemList);
+	length = modio_read(filename, _T<I,N,V,0>, ITEM_SERIALIZER_RAW_SIZE, itm_arr_Serialized);
 
-	itemlist = ExtractItemList(saveload_ItemList, length);
-
-	d:2:HANDLER("[LOAD:%p] Inv items: %d", playerid, GetItemListItemCount(itemlist));
-
-	for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
+	if(!DeserialiseItems(itm_arr_Serialized, length, false))
 	{
-		itemtype = GetItemListItem(itemlist, i);
+		d:2:HANDLER("[LOAD:%p] Inv items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
-		if(length == 0)
-			break;
+		for(new i, j = GetStoredItemCount(); i < j; i++)
+		{
+			itemtype = GetStoredItemType(i);
 
-		if(itemtype == INVALID_ITEM_TYPE)
-			break;
+			if(length == 0)
+				break;
 
-		if(itemtype == ItemType:0)
-			break;
+			if(itemtype == INVALID_ITEM_TYPE)
+				break;
 
-		itemid = CreateItem(itemtype, .virtual = 1);
+			if(itemtype == ItemType:0)
+				break;
 
-		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-			SetItemArrayDataFromListItem(itemid, itemlist, i);
-	
-		AddItemToInventory(playerid, itemid, 0);
+			itemid = CreateItem(itemtype, .virtual = 1);
 
-		d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
+			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
+				SetItemArrayDataFromStored(itemid, i);
+		
+			AddItemToInventory(playerid, itemid, 0);
+
+			d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
+
+			ClearSerializer();
+		}
 	}
-
-	DestroyItemList(itemlist);
 
 /*
 	Bag
 */
 
-	length = modio_read(filename, _T<B,A,G,0>, sizeof(saveload_ItemList), saveload_ItemList);
-
-	itemlist = ExtractItemList(saveload_ItemList, length);
-
 	if(IsItemTypeBag(ItemType:data[PLY_CELL_BAGTYPE]))
 	{
-		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
+		length = modio_read(filename, _T<B,A,G,0>, ITEM_SERIALIZER_RAW_SIZE, itm_arr_Serialized);
 
-		d:2:HANDLER("[LOAD:%p] Bag items: %d (itemlist size: %d)", playerid, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-		for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
+		if(!DeserialiseItems(itm_arr_Serialized, length, false))
 		{
-			itemtype = GetItemListItem(itemlist, i);
-			itemid = CreateItem(itemtype, .virtual = 1);
+			new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
-			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-				SetItemArrayDataFromListItem(itemid, itemlist, i);
+			d:2:HANDLER("[LOAD:%p] Bag items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
-			AddItemToContainer(containerid, itemid);
+			for(new i, j = GetStoredItemCount(); i < j; i++)
+			{
+				itemtype = GetStoredItemType(i);
+				itemid = CreateItem(itemtype, .virtual = 1);
 
-			d:3:HANDLER("[LOAD:%p] - Bag item %d: (%d type: %d)", playerid, i, itemid, _:itemtype);
+				if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
+					SetItemArrayDataFromStored(itemid, i);
+
+				AddItemToContainer(containerid, itemid);
+
+				d:3:HANDLER("[LOAD:%p] - Bag item %d: (%d type: %d)", playerid, i, itemid, _:itemtype);
+
+				ClearSerializer();
+			}
 		}
 	}
-
-	DestroyItemList(itemlist);
 
 	CallLocalFunction("OnPlayerLoad", "ds", playerid, filename);
 
