@@ -47,8 +47,7 @@ Float:		def_verticalRotZ,
 Float:		def_horizontalRotX,
 Float:		def_horizontalRotY,
 Float:		def_horizontalRotZ,
-Float:		def_placeOffsetZ,
-			def_maxHitPoints
+Float:		def_placeOffsetZ
 }
 
 enum e_DEFENCE_DATA
@@ -58,8 +57,7 @@ bool:		def_active,
 			def_motor,
 			def_keypad,
 			def_pass,
-			def_moveState,
-			def_hitPoints
+			def_moveState
 }
 
 
@@ -113,7 +111,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset, maxhitpoints)
+stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset)
 {
 	SetItemTypeMaxArrayData(itemtype, e_DEFENCE_DATA);
 
@@ -125,7 +123,6 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	def_TypeData[def_TypeTotal][def_horizontalRotY] = h_ry;
 	def_TypeData[def_TypeTotal][def_horizontalRotZ] = h_rz;
 	def_TypeData[def_TypeTotal][def_placeOffsetZ] = zoffset;
-	def_TypeData[def_TypeTotal][def_maxHitPoints] = maxhitpoints;
 	def_ItemTypeDefenceType[itemtype] = def_TypeTotal;
 
 	return def_TypeTotal++;
@@ -573,7 +570,6 @@ hook OnHoldActionFinish(playerid)
 		if(itemtype == item_Hammer)
 			pose = DEFENCE_POSE_HORIZONTAL;
 
-		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_maxHitPoints], def_hitPoints);
 		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], pose, def_pose);
 		itemid = CreateDefence(def_CurrentDefenceItem[playerid]);
 
@@ -945,6 +941,30 @@ timer MoveDefence[1500](itemid, playerid)
 	return;
 }
 
+hook OnItemDestroy(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(def_ItemTypeDefenceType[itemtype] != -1)
+	{
+		if(GetItemHitPoints(itemid) <= 0)
+		{
+			new
+				Float:x,
+				Float:y,
+				Float:z,
+				Float:rx,
+				Float:ry,
+				Float:rz;
+
+			GetItemPos(itemid, x, y, z);
+			GetItemRot(itemid, rx, ry, rz);
+
+			logf("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
+		}
+	}
+}
+
 
 /*==============================================================================
 
@@ -1030,16 +1050,6 @@ stock Float:GetDefenceTypeOffsetZ(defencetype)
 	return def_TypeData[defencetype][def_placeOffsetZ];
 }
 
-// def_maxHitPoints
-stock GetDefenceTypeMaxHitpoints(defencetype)
-{
-	if(!(0 <= defencetype < def_TypeTotal))
-		return 0;
-
-	return def_TypeData[defencetype][def_maxHitPoints];
-}
-
-
 // def_type
 stock GetDefenceType(itemid)
 {
@@ -1077,44 +1087,4 @@ stock GetDefencePass(itemid)
 stock GetDefenceMoveState(itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_moveState);
-}
-
-// def_hitPoints
-stock GetDefenceHitPoints(itemid)
-{
-	return GetItemArrayDataAtCell(itemid, def_hitPoints);
-}
-
-stock SetDefenceHitPoints(itemid, hitpoints)
-{
-	return SetItemArrayDataAtCell(itemid, hitpoints, def_hitPoints);
-}
-
-stock GetClosestDefence(Float:x, Float:y, Float:z, Float:size)
-{
-	new
-		items[32],
-		count,
-		data[2],
-		itemid;
-
-	count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = size);
-
-	for(new i; i < count; ++i)
-	{
-		Streamer_GetArrayData(STREAMER_TYPE_AREA, items[i], E_STREAMER_EXTRA_ID, data);
-
-		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
-			continue;
-
-		itemid = GetItemFromButtonID(data[1]);
-
-		if(!IsValidItem(itemid))
-			continue;
-
-		if(def_ItemTypeDefenceType[GetItemType(itemid)] != INVALID_DEFENCE_TYPE)
-			return itemid;
-	}
-
-	return INVALID_ITEM_ID;
 }

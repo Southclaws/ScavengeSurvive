@@ -52,7 +52,7 @@ enum EXP_PRESET_DATA
 {
 			exp_type,
 Float:		exp_size,
-			exp_defdmg
+			exp_itemDmg
 }
 
 enum E_EXPLOSIVE_ITEM_DATA
@@ -550,42 +550,19 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 			CreateExplosion(x, y, z, exp_Presets[preset][exp_type], exp_Presets[preset][exp_size]);
 	}
 
-	new
-		itemid,
-		newhitpoints;
-
-	itemid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
-
-	if(!IsValidItem(itemid))
-		return 0;
-
-	newhitpoints = GetDefenceHitPoints(itemid) - exp_Presets[preset][exp_defdmg];
-
-	if(newhitpoints <= 0)
+	if(exp_Presets[preset][exp_itemDmg] > 0)
 	{
 		new
-			defencetype = GetDefenceType(itemid),
-			ItemType:itemtype = GetDefenceTypeItemType(defencetype),
-			Float:vrotx,
-			Float:vroty,
-			Float:vrotz,
-			Float:rotz;
+			items[256],
+			count;
 
-		GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
-		GetItemRot(itemid, rotz, rotz, rotz);
+		count = GetItemsInRange(x, y, z, exp_Presets[preset][exp_size], items);
 
-		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f type %d (%d, %f, %f, %f, %f, %f, %f)",
-			itemid, x, y, z,
-			_:itemtype,
-			GetItemTypeModel(itemtype),
-			x, y, z + GetDefenceTypeOffsetZ(defencetype),
-			vrotx, vroty, vrotz + rotz);
-
-		DestroyItem(itemid);
-	}
-	else
-	{
-		SetDefenceHitPoints(itemid, newhitpoints);
+		for(new i; i < count; i++)
+		{
+			// todo: lerp damage dealt with distance
+			SetItemHitPoints(items[i], GetItemHitPoints(items[i]) - exp_Presets[preset][exp_itemDmg]);
+		}
 	}
 
 	return 1;
