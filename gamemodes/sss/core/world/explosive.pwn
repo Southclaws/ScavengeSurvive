@@ -557,15 +557,20 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 			count;
 
 		count = GetItemsInRange(x, y, z, exp_Presets[preset][exp_size], items);
-
-		for(new i; i < count; i++)
-		{
-			// todo: lerp damage dealt with distance
-			SetItemHitPoints(items[i], GetItemHitPoints(items[i]) - exp_Presets[preset][exp_itemDmg]);
-		}
+		defer _IterateItemDmg(items, sizeof(items), count, 0, exp_Presets[preset][exp_itemDmg]);
 	}
 
 	return 1;
+}
+
+// i, s, c, o, d = items, size, count, offset, damage
+timer _IterateItemDmg[100](i[], s, c, o, d)
+{
+	#pragma unused s
+	SetItemHitPoints(i[o], GetItemHitPoints(i[o]) - d);
+
+	if(o < c)
+		defer _IterateItemDmg(i, s, c, o + 1, d);
 }
 
 
