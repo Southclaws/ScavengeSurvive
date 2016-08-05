@@ -103,6 +103,17 @@ hook OnItemCreate(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+hook OnItemDestroy(itemid)
+{
+	if(exp_ItemTypeExplosive[GetItemType(itemid)] != -1)
+	{
+		if(GetItemHitPoints(itemid) <= 0)
+		{
+			SetItemToExplode(itemid);
+		}
+	}
+}
+
 stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:preset)
 {
 	if(0 <= exp_Total >= MAX_EXPLOSIVE_ITEM - 1)

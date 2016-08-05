@@ -193,6 +193,23 @@ ACMD:addloot[5](playerid, params[])
 	return 1;
 }
 
+ACMD:setitemhp[5](playerid, params[])
+{
+	new
+		itemid,
+		hitpoints;
+
+	if(sscanf(params, "dd", itemid, hitpoints))
+	{
+		ChatMsg(playerid, YELLOW, " >  Usage: /setitemhp [itemid] [hitpoints]");
+		return 1;
+	}
+
+	SetItemHitPoints(itemid, hitpoints);
+
+	return 1;
+}
+
 
 /*==============================================================================
 
