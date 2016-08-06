@@ -214,11 +214,9 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Colours
 #define YELLOW						0xFFFF00FF
-
 #define RED							0xE85454FF
 #define GREEN						0x33AA33FF
 #define BLUE						0x33CCFFFF
-
 #define ORANGE						0xFFAA00FF
 #define GREY						0xAFAFAFFF
 #define PINK						0xFFC0CBFF
@@ -228,7 +226,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define TEAL						0x008080FF
 #define BROWN						0xA52A2AFF
 #define AQUA						0xF0F8FFFF
-
 #define BLACK						0x000000FF
 #define WHITE						0xFFFFFFFF
 #define CHAT_LOCAL					0xADABD1FF
@@ -237,11 +234,9 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Embedding Colours
 #define C_YELLOW					"{FFFF00}"
-
 #define C_RED						"{E85454}"
 #define C_GREEN						"{33AA33}"
 #define C_BLUE						"{33CCFF}"
-
 #define C_ORANGE					"{FFAA00}"
 #define C_GREY						"{AFAFAF}"
 #define C_PINK						"{FFC0CB}"
@@ -251,10 +246,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_TEAL						"{008080}"
 #define C_BROWN						"{A52A2A}"
 #define C_AQUA						"{F0F8FF}"
-
 #define C_BLACK						"{000000}"
 #define C_WHITE						"{FFFFFF}"
-
 #define C_SPECIAL					"{0025AA}"
 
 
@@ -266,26 +259,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define BODY_PART_LEFT_LEG			(7)
 #define BODY_PART_RIGHT_LEG			(8)
 #define BODY_PART_HEAD				(9)
-
-
-// Report types
-#define REPORT_TYPE_PLAYER_ID		"PLY ID"
-#define REPORT_TYPE_PLAYER_NAME		"PLY NAME"
-#define REPORT_TYPE_PLAYER_CLOSE	"PLY CLOSE"
-#define REPORT_TYPE_PLAYER_KILLER	"PLY KILL"
-#define REPORT_TYPE_TELEPORT		"TELE"
-#define REPORT_TYPE_SWIMFLY			"FLY"
-#define REPORT_TYPE_VHEALTH			"VHP"
-#define REPORT_TYPE_CAMDIST			"CAM"
-#define REPORT_TYPE_CARNITRO		"NOS"
-#define REPORT_TYPE_CARHYDRO		"HYDRO"
-#define REPORT_TYPE_CARTELE			"VTP"
-#define REPORT_TYPE_HACKTRAP		"TRAP"
-#define REPORT_TYPE_LOCKEDCAR		"LCAR"
-#define REPORT_TYPE_AMMO			"AMMO"
-#define REPORT_TYPE_SHOTANIM		"ANIM"
-#define REPORT_TYPE_BADHITOFFSET	"BHIT"
-#define REPORT_TYPE_BAD_SHOT_WEAP	"BSHT"
 
 
 // Genders
@@ -303,6 +276,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
 #define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
 #define KEYTEXT_RADIO				"R"
+
 
 // Attachment slots
 enum

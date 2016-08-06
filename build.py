@@ -2,6 +2,7 @@ import argparse
 import io
 import os
 import json
+import re
 import subprocess
 
 
@@ -42,11 +43,11 @@ def build_project(increment=True):
 		with io.open("errors", 'r') as f:
 			print("Build result:", ret)
 			for l in f:
-				if not os.path.isfile(l):
-					print("gamemodes/" + l, end='')
+				if re.match("[a-zA-Z]:\\.*", l):
+					print(l, end='')
 
 				else:
-					print(l, end='')
+					print("gamemodes/" + l, end='')
 
 		os.remove("errors")
 
@@ -68,11 +69,11 @@ def build_file(file):
 		with io.open("errors", 'r') as f:
 			print("Build result:", ret)
 			for l in f:
-				if not os.path.isfile(l):
-					print("gamemodes/" + l, end='')
+				if re.match("[a-zA-Z]:\\.*", l):
+					print(l, end='')
 
 				else:
-					print(l, end='')
+					print("gamemodes/" + l, end='')
 
 		os.remove("errors")
 
