@@ -443,7 +443,7 @@ new stock
 	veht_Comet,
 	veht_MountBike,
 	veht_Wayfarer,
-	veht_Hydra,
+	veht_Sabre,
 	veht_Rhino,
 	veht_Barracks,
 	veht_Patriot,
@@ -498,7 +498,10 @@ new stock
 	veht_Linerunner,
 	veht_Articulat1,
 	veht_Firetruck,
-	veht_Baggage;
+	veht_Baggage,
+	veht_DavidSabre,
+	veht_Truckfort,
+	veht_Roadpain;
 
 // VEHICLE GROUPS
 new stock
@@ -1571,7 +1574,7 @@ public OnScriptInit()
 	veht_Comet		= DefineVehicleType(480, "Comet",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	50.0,		12.0,	GetLootIndexFromName("vehicle_civilian"),		20,		10.0);
 	veht_MountBike	= DefineVehicleType(510, "Mountain Bike",	vgroup_Civilian,	VEHICLE_CATEGORY_PUSHBIKE,		VEHICLE_SIZE_SMALL,		0.0,		0.0,	GetLootIndexFromName("vehicle_civilian"),		2,		8.0,	VEHICLE_FLAG_NOT_LOCKABLE | VEHICLE_FLAG_NO_ENGINE);
 	veht_Wayfarer	= DefineVehicleType(586, "Wayfarer",		vgroup_Civilian,	VEHICLE_CATEGORY_MOTORBIKE,		VEHICLE_SIZE_SMALL,		47.0,		8.0,	GetLootIndexFromName("world_survivor"),			15,		10.0,	VEHICLE_FLAG_NOT_LOCKABLE);
-	veht_Hydra		= DefineVehicleType(520, "Hydra",			vgroup_Military,	VEHICLE_CATEGORY_PLANE,			VEHICLE_SIZE_LARGE,		7790.0,		333.9,	-1,												0,		0.00);
+	veht_Sabre		= DefineVehicleType(475, "Sabre",			vgroup_Civilian,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	60.0,		14.9,	GetLootIndexFromName("vehicle_civilian"),		24,		17.0);
 	veht_Rhino		= DefineVehicleType(432, "Rhino",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		1900.0,		392.0,	GetLootIndexFromName("vehicle_military"),		12,		0.01);
 	veht_Barracks	= DefineVehicleType(433, "Barracks",		vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		200.0,		77.0,	GetLootIndexFromName("vehicle_military"),		100,	3.0);
 	veht_Patriot	= DefineVehicleType(470, "Patriot",			vgroup_Military,	VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	94.0,		26.0,	GetLootIndexFromName("vehicle_military"),		50,		22.0);
@@ -1633,6 +1636,9 @@ public OnScriptInit()
 // 60
 	veht_Firetruck	= DefineVehicleType(407, "Firetruck",		vgroup_Medical,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_LARGE,		115.0,		31.5,	GetLootIndexFromName("vehicle_industrial"),		65,		0.5);
 	veht_Baggage	= DefineVehicleType(485, "Baggage",			vgroup_Industrial,	VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_SMALL,		14.5,		9.5,	GetLootIndexFromName("vehicle_industrial"),		8,		35.5,	VEHICLE_FLAG_NOT_LOCKABLE | VEHICLE_FLAG_CAN_SURF);
+	veht_DavidSabre	= DefineVehicleType(475, "Scimitar",	vgroup_Unique,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	56.0,		37.2,	GetLootIndexFromName("world_survivor"),			24,		3.3);
+	veht_Truckfort	= DefineVehicleType(515, "Truckfort",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	265.0,		24.5,	GetLootIndexFromName("world_survivor"),			76,		1.1);
+	veht_Roadpain	= DefineVehicleType(515, "Roadpain",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	210.0,		19.2,	GetLootIndexFromName("world_survivor"),			0,		1.4);
 
 	// SETTING VEHICLES TO PULL TRAILERS
 	SetVehicleTypeTrailerHitch(veht_Bobcat,		VEHICLE_SIZE_SMALL);
@@ -1652,6 +1658,9 @@ public OnScriptInit()
 	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
 	SetVehicleTypeCarmour(veht_APC30, "APC30");
 	SetVehicleTypeCarmour(veht_Doomride, "Doomride");
+	SetVehicleTypeCarmour(veht_DavidSabre, "Scimitar");
+	SetVehicleTypeCarmour(veht_Roadpain, "Roadpain");
+	SetVehicleTypeCarmour(veht_Truckfort, "Truckfort");
 
 	return 1;
 }
