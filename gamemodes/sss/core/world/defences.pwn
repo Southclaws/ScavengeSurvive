@@ -57,7 +57,6 @@ bool:		def_active,
 			def_motor,
 			def_keypad,
 			def_pass,
-			def_moveState
 }
 
 
@@ -161,15 +160,15 @@ CreateDefence(itemid)
 
 	if(itemdata[def_motor])
 	{
-		if(itemdata[def_moveState] == DEFENCE_POSE_HORIZONTAL)
+		if(itemdata[def_pose] == DEFENCE_POSE_HORIZONTAL)
 		{
 			SetItemRot(itemid,
 				def_TypeData[defencetype][def_horizontalRotX],
 				def_TypeData[defencetype][def_horizontalRotY],
 				def_TypeData[defencetype][def_horizontalRotZ] + rz);
 
-			// UITXT: sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename)
-			// LABEL: sprintf("%d/%d", hitpoints, def_TypeData[defencetype][def_maxHitPoints])
+			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
+			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 		}
 		else
 		{
@@ -178,8 +177,8 @@ CreateDefence(itemid)
 				def_TypeData[defencetype][def_verticalRotY],
 				def_TypeData[defencetype][def_verticalRotZ] + rz);
 
-			// UITXT: sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename)
-			// LABEL: sprintf("%d/%d", hitpoints, def_TypeData[defencetype][def_maxHitPoints])
+			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
+			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 		}
 	}
 	else
@@ -191,8 +190,8 @@ CreateDefence(itemid)
 				def_TypeData[defencetype][def_horizontalRotY],
 				def_TypeData[defencetype][def_horizontalRotZ] + rz);
 
-			// UITXT: sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename)
-			// LABEL: sprintf("%d/%d", hitpoints, def_TypeData[defencetype][def_maxHitPoints])
+			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
+			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 		}
 		else
 		{
@@ -201,8 +200,8 @@ CreateDefence(itemid)
 				def_TypeData[defencetype][def_verticalRotY],
 				def_TypeData[defencetype][def_verticalRotZ] + rz);
 
-			// UITXT: sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename)
-			// LABEL: sprintf("%d/%d", hitpoints, def_TypeData[defencetype][def_maxHitPoints])
+			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
+			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 		}
 	}
 
@@ -224,7 +223,7 @@ DeconstructDefence(itemid)
 
 	if(itemdata[def_motor])
 	{
-		if(itemdata[def_moveState] == DEFENCE_POSE_VERTICAL)
+		if(itemdata[def_pose] == DEFENCE_POSE_VERTICAL)
 			z -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 	}
 	else
@@ -238,47 +237,6 @@ DeconstructDefence(itemid)
 
 	SetItemArrayDataAtCell(itemid, 0, 0);
 	CallLocalFunction("OnDefenceDestroy", "d", itemid);
-}
-
-stock SetDefencePosition(itemid, Float:x, Float:y, Float:z)
-{
-	new ItemType:itemtype = GetItemType(itemid);
-
-	if(!IsValidItemType(itemtype))
-		return 0;
-
-	new defencetype = def_ItemTypeDefenceType[itemtype];
-
-	if(defencetype == INVALID_DEFENCE_TYPE)
-	{
-		printf("ERROR: Attempted to set defence pos of item that is not a defence type (%d)", _:itemtype);
-		return 0;
-	}
-
-	new
-		objectid = GetItemObjectID(itemid),
-		Float:rz;
-
-	SetItemPos(itemid, x, y, z);
-	GetItemRot(itemid, rz, rz, rz);
-
-	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_VERTICAL)
-	{
-		SetDynamicObjectPos(objectid, x, y, z + def_TypeData[defencetype][def_placeOffsetZ]);
-		SetDynamicObjectRot(objectid,
-			def_TypeData[defencetype][def_verticalRotX],
-			def_TypeData[defencetype][def_verticalRotY],
-			def_TypeData[defencetype][def_verticalRotZ] + rz);
-	}
-	else
-	{
-		SetDynamicObjectRot(objectid,
-			def_TypeData[defencetype][def_horizontalRotX],
-			def_TypeData[defencetype][def_horizontalRotY],
-			def_TypeData[defencetype][def_horizontalRotZ] + rz);
-	}
-
-	return 1;
 }
 
 
@@ -913,26 +871,32 @@ timer MoveDefence[1500](itemid, playerid)
 	GetItemRot(itemid, rz, rz, rz);
 	GetItemGEID(itemid, geid);
 
-	if(GetItemArrayDataAtCell(itemid, def_moveState) == DEFENCE_POSE_HORIZONTAL)
+	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
 	{
+		SetItemPos(itemid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
+		SetDynamicObjectPos(objectid, ix, iy, iz);
+
 		MoveDynamicObject(objectid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5,
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX],
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY],
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ] + rz);
 
-		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_moveState);
+		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
 		logf("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
 	}
 	else
 	{
-		MoveDynamicObject(objectid, ix, iy, iz, 0.5,
+		SetItemPos(itemid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
+		SetDynamicObjectPos(objectid, ix, iy, iz);
+
+		MoveDynamicObject(objectid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5,
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotX],
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotY],
 			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotZ] + rz);
 
-		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_moveState);
+		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
 		logf("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
@@ -1081,10 +1045,4 @@ stock GetDefenceKeypad(itemid)
 stock GetDefencePass(itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_pass);
-}
-
-// def_moveState
-stock GetDefenceMoveState(itemid)
-{
-	return GetItemArrayDataAtCell(itemid, def_moveState);
 }
