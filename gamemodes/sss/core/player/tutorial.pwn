@@ -245,6 +245,11 @@ ExitTutorial(playerid)
 	if(!PlayerInTutorial[playerid])
 		return 0;
 
+	for(new i = INV_MAX_SLOTS - 1; i >= 0; i--)
+	{
+		RemoveItemFromInventory(playerid, i);
+	}
+	
 	PlayerInTutorial[playerid] = false;
 	HideHelpTip(playerid);
 	SetPlayerBitFlag(playerid, Spawned, false);
