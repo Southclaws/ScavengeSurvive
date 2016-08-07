@@ -75,6 +75,17 @@ stock SetConstructionSetWorkbench(consset)
 	wb_ConstructionSetWorkbench[consset] = true;
 }
 
+stock IsValidWorkbenchConstructionSet(consset)
+{
+	if(!IsValidConstructionSet(consset))
+	{
+		printf("ERROR: Tried to assign workbench properties to invalid construction set ID.");
+		return 0;
+	}
+
+	return wb_ConstructionSetWorkbench[consset];
+}
+
 hook OnPlayerPickUpItem(playerid, itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)

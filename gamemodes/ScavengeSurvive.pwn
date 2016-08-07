@@ -445,6 +445,7 @@ new stock
 #include "sss/core/player/whitelist.pwn"
 #include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
+#include "sss/core/player/recipes.pwn"
 
 // CHARACTER SCRIPTS
 #include "sss/core/char/food.pwn"
