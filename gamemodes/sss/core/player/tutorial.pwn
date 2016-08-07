@@ -244,7 +244,13 @@ ExitTutorial(playerid)
 {
 	if(!PlayerInTutorial[playerid])
 		return 0;
-
+		
+	//removing items, cause players could do /exit before finish the tutorial and take some tools
+	for(new i; i < INV_MAX_SLOTS; i++)
+	{
+	RemoveItemFromInventory(playerid, i);
+	}
+		
 	PlayerInTutorial[playerid] = false;
 	HideHelpTip(playerid);
 	SetPlayerBitFlag(playerid, Spawned, false);
