@@ -367,7 +367,7 @@ timer UpdateSpectateMode[100](playerid)
 			GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 
 			format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
-				Knockout: %s Bleed rate: %02f Item: %s Exdata: %d~n~\
+				Knockout: %s Bleed rate: %02f Item: %s~n~\
 				Camera: %s Velocity: %.2f~n~\
 				Vehicle %d As %s Fuel: %.2f Locked: %d",
 				GetPlayerHP(targetid),
@@ -378,7 +378,6 @@ timer UpdateSpectateMode[100](playerid)
 				IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
 				GetPlayerBleedRate(targetid),
 				itemname,
-				GetItemExtraData(itemid),
 				cameramodename,
 				GetPlayerTotalVelocity(targetid),
 				GetPlayerLastVehicle(targetid),
@@ -414,7 +413,7 @@ timer UpdateSpectateMode[100](playerid)
 
 			format(str, sizeof(str), "Health: %.2f Armour: %.2f Food: %.2f Int: %d VW: %d~n~\
 				Knockout: %s Bleed rate: %02f Camera: %s Velocity: %.2f~n~\
-				Item: %s Exdata: %d Holster: %s Exdata: %d",
+				Item: %s Holster: %s",
 				GetPlayerHP(targetid),
 				GetPlayerAP(targetid),
 				GetPlayerFP(targetid),
@@ -425,9 +424,7 @@ timer UpdateSpectateMode[100](playerid)
 				cameramodename,
 				velocity,
 				itemname,
-				GetItemExtraData(itemid),
-				holsteritemname,
-				GetItemExtraData(holsteritemid));
+				holsteritemname);
 		}
 
 		GetPlayerName(targetid, name, MAX_PLAYER_NAME);
