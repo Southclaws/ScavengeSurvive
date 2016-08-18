@@ -68,7 +68,9 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Vehicle/Spawn'...");
 
-	//LoadPlayerVehicles(true, true);
+	if(veh_SpawnChance == 0.0)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
 	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS);
 
 	printf("Loaded %d Vehicles", Iter_Count(veh_Index));
@@ -92,10 +94,13 @@ hook OnGameModeInit()
 	}
 
 	veh_DebugLabelType = DefineDebugLabelType("VEHICLESPAWN", 0xFFCCFFFF);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 LoadVehiclesFromFolder(foldername[])
 {
+	printf("[LoadVehiclesFromFolder] Loading vehicles from: '%s'...", foldername);
 	new
 		dir:dirhandle,
 		directory_with_root[256],
