@@ -1,4 +1,4 @@
-LANGCHANGE= >  Idioma alterado para PortuguÃªs!
+LANGCHANGE= >  Idioma alterado para Português!
 TENTBUILD=A montar a tenda...
 ARMINGBOMB=A armar a bomba...
 ARMEDBOMB5S=Armed for 5 seconds
@@ -37,7 +37,7 @@ BBQADDPETRO=1L of petrol added~n~10 BBQ uses
 PETROLEMPTY=Este jerrican encontra-se vazio
 BBQALREADYC=Food already cooked
 BBQFOODADDE=Food added
-BBQFUELEMPT=Este BBQ ja nao tem combustÃ­vel.
+BBQFUELEMPT=Este BBQ ja nao tem combustível.
 BBQLITSTART=BBQ Lit~n~Cook time: 30 seconds
 FIREALREADY=Campfire already fueled
 FIREADDPETR=1L of petrol added
