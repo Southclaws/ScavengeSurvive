@@ -89,6 +89,8 @@ new
 // LIQUID TYPES
 new stock
 	liquid_Water,
+	liquid_PurifiedWater,
+	liquid_SaltWater,
 	liquid_Milk,
 	liquid_Orange,
 	liquid_Apple,
@@ -1300,7 +1302,7 @@ public OnScriptInit()
 	// MACHINE TYPE DEFINITIONS
 	DefineMachineType(item_ScrapMachine, 6, 12);
 	DefineMachineType(item_RefineMachine, 6, 12);
-	DefineMachineType(item_WaterMachine, 6, 12);
+	DefineMachineType(item_WaterMachine, 7, 0);
 
 
 	// CRAFTING SET DEFINITIONS
@@ -1393,6 +1395,8 @@ public OnScriptInit()
 
 	// LIQUID TYPE DEFINITIONS
 	liquid_Water			= DefineLiquidType("Water",					0.5);
+	liquid_SaltWater		= DefineLiquidType("Salt Water",			-1.0);
+	liquid_PurifiedWater	= DefineLiquidType("Purified Water",		1.5);
 	liquid_Milk				= DefineLiquidType("Milk",					2.1);
 	liquid_Orange			= DefineLiquidType("Orange Juice",			1.0);
 	liquid_Apple			= DefineLiquidType("Apple Juice",			1.0);
