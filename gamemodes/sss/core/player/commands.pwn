@@ -80,6 +80,7 @@ CMD:credits(playerid, params[])
 	ChatMsg(playerid, BLUE, " >  Eidorian - French translation");
 	ChatMsg(playerid, BLUE, " >  Hiddos - Better water detection code");
 	ChatMsg(playerid, BLUE, " >  YOLO - Bosnian/Croatian/Serbian Translation");
+	ChatMsg(playerid, BLUE, " >  JJ - Czech Translation");
 
 	return 1;
 }
