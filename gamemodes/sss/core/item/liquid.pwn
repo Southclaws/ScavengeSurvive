@@ -94,6 +94,7 @@ stock GetLiquidName(liquidtype, name[])
 	if(!(0 <= liquidtype < liq_Total))
 		return 0;
 
+	name[0] = EOS;
 	strcat(name, liq_Data[liquidtype][liq_name], MAX_LIQUID_NAME);
 
 	return 1;
