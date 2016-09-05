@@ -23,7 +23,7 @@
 
 
 #define DIRECTORY_LANGUAGES			"languages/"
-#define MAX_LANGUAGE				(6)
+#define MAX_LANGUAGE				(12)
 #define MAX_LANGUAGE_ENTRIES		(500)
 #define MAX_LANGUAGE_KEY_LEN		(12)
 #define MAX_LANGUAGE_ENTRY_LENGTH	(256)
@@ -170,6 +170,12 @@ stock LoadAllLanguages()
 
 stock LoadLanguage(filename[], langname[])
 {
+	if(lang_Total == MAX_LANGUAGE)
+	{
+		print("ERROR: lang_Total reached MAX_LANGUAGE");
+		return 0;
+	}
+
 	new
 		File:f = fopen(filename, io_read),
 		line[256],
