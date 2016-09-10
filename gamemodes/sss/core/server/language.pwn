@@ -23,7 +23,7 @@
 
 
 #define DIRECTORY_LANGUAGES			"languages/"
-#define MAX_LANGUAGE				(6)
+#define MAX_LANGUAGE				(12)
 #define MAX_LANGUAGE_ENTRIES		(500)
 #define MAX_LANGUAGE_KEY_LEN		(12)
 #define MAX_LANGUAGE_ENTRY_LENGTH	(256)
@@ -170,9 +170,17 @@ stock LoadAllLanguages()
 
 stock LoadLanguage(filename[], langname[])
 {
+	if(lang_Total == MAX_LANGUAGE)
+	{
+		print("ERROR: lang_Total reached MAX_LANGUAGE");
+		return 0;
+	}
+
 	new
 		File:f = fopen(filename, io_read),
 		line[256],
+		linenumber = 1,
+		bool:skip,
 		replace_me[MAX_LANGUAGE_ENTRY_LENGTH],
 		length,
 		delimiter,
@@ -196,19 +204,39 @@ stock LoadLanguage(filename[], langname[])
 
 		while(line[delimiter] != DELIMITER_CHAR)
 		{
+			if(!(32 <= line[delimiter] < 127))
+			{
+				printf("[LoadLanguage] ERROR: Malformed line %d in '%s' key contains non-alphabetic character (%d:%c).", linenumber, filename, line[delimiter], line[delimiter]);
+				skip = true;
+				break;
+			}
+
+			if(delimiter >= MAX_LANGUAGE_KEY_LEN)
+			{
+				printf("[LoadLanguage] ERROR: Malformed line %d in '%s' key length over %d characters (%d).", linenumber, filename, MAX_LANGUAGE_KEY_LEN, delimiter);
+				skip = true;
+				break;
+			}
+
 			key[delimiter] = line[delimiter];
 			delimiter++;
 		}
 
+		if(skip)
+		{
+			skip = false;
+			continue;
+		}
+
 		if(delimiter >= length - 1 || delimiter < 4)
 		{
-			printf("[LoadLanguage] ERROR: Malformed line in '%s' delimiter character (%c) is absent or in first 4 cells.", filename, DELIMITER_CHAR);
+			printf("[LoadLanguage] ERROR: Malformed line %d in '%s' delimiter character (%c) is absent or in first 4 cells.", linenumber, filename, DELIMITER_CHAR);
 			continue;
 		}
 
 		if(!(32 <= key[0] < 127))
 		{
-			printf("[LoadLanguage] ERROR: First character is abnormal character (%d/%c).", key[0], key[0]);
+			printf("[LoadLanguage] ERROR: First character on line %d is abnormal character (%d/%c).", linenumber, key[0], key[0]);
 			continue;
 		}
 
@@ -219,6 +247,10 @@ stock LoadLanguage(filename[], langname[])
 		strmid(replace_me, line, delimiter + 1, length - 1, MAX_LANGUAGE_ENTRY_LENGTH);
 
 		_doReplace(replace_me, lang_Entries[lang_Total][index][lang_val]);
+
+		// printf("[LoadLanguage] Added language key '%s'", key);
+
+		linenumber++;
 	}
 
 	fclose(f);

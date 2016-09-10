@@ -7,12 +7,14 @@ import subprocess
 
 
 COMPILER_PATH = "../pawno/pawncc.exe"
+CONSTANTS = []
 
 try:
 	with io.open("build-config.json") as f:
 		config = json.load(f)
 
 	COMPILER_PATH = config["compiler_path"]
+	CONSTANTS = config['constants']
 
 except IOError:
 	print("Could not load build-config.json")
@@ -33,10 +35,20 @@ def build_project(increment=True):
 
 	print("BUILD", BUILD_NUMBER)
 	print("COMPILER", COMPILER_PATH)
+	print("CONSTANTS", CONSTANTS)
 
-	ret = subprocess.call([COMPILER_PATH, "-Dgamemodes/", "ScavengeSurvive.pwn", "-;+", "-(+", "-\\)+", "-d3", "-e../errors"])
+	ret = subprocess.call([
+		COMPILER_PATH,
+		"-Dgamemodes/",
+		"ScavengeSurvive.pwn",
+		"-;+",
+		"-(+",
+		"-\\)+",
+		"-d3",
+		"-e../errors"
+	])
 
-	# fixes sublime text jump-to-error feature by adding the `gamemodes/` directory
+	# fixes sublime text jump-to-error feature by adding `gamemodes/` directory
 	# to errors and warnings.
 
 	try:
@@ -63,7 +75,15 @@ def build_file(file):
 
 	output = "-o" + os.path.splitext(file)[0]
 
-	ret = subprocess.call([COMPILER_PATH, file, output, "-;+", "-(+", "-\\)+", "-d3", "-e../errors"])
+	ret = subprocess.call([
+		COMPILER_PATH,
+		file,
+		output,
+		"-;+",
+		"-(+",
+		"-\\)+",
+		"-d3",
+		"-e../errors"] + [s + "=" for s in CONSTANTS])
 
 	try:
 		with io.open("errors", 'r') as f:
@@ -85,7 +105,7 @@ def main():
 
 	parser = argparse.ArgumentParser()
 	parser.add_argument('mode', help="mode: project|file")
-	parser.add_argument('--increment', action="store_true", help="when set, increments build number")
+	parser.add_argument('--increment', action="store_true")
 	parser.add_argument('--input', type=str, default='')
 	args = parser.parse_args()
 
