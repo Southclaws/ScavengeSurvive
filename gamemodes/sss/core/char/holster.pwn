@@ -118,6 +118,9 @@ stock SetPlayerHolsterItem(playerid, itemid)
 	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
 		return 0;
 
+	if(GetPlayerItem(playerid) == itemid)
+		RemoveCurrentItem(playerid);
+
 	RemoveItemFromWorld(itemid);
 
 	SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetItemTypeModel(GetItemType(itemid)),
@@ -275,6 +278,13 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 		return 0;
 
 	new currentitem = hols_Item[playerid];
+
+	if(itemid == currentitem)
+	{
+		printf("ERROR: Player %p (%d) attempting to holster item (%d) that's already holstered!", playerid, playerid, itemid);
+		RemoveCurrentItem(playerid);
+		return 0;
+	}
 
 	SetPlayerHolsterItem(playerid, itemid);
 	ClearAnimations(playerid);
