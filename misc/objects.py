@@ -5,12 +5,14 @@ import os
 import io
 
 
-regex = re.compile(r'CreateObject\(([0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+)\);')
+regex_obj = re.compile(r'CreateObject\(([0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+)\);')
+regex_rmb = re.compile(r'RemoveBuildingForPlayer\(playerid,\s*([0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+),\s*([\-\+]?[0-9]*\.[0-9]+)\);')
 
 
 class Object():
 
-	def __init__(self, model, x, y, z, rx, ry, rz):
+	def __init__(self, instruction, model, x, y, z, rx=0.0, ry=0.0, rz=0.0, scale=0.0):
+		self.instruction = instruction  # 'c': create, 'r': remove
 		self.model = model
 		self.x = x
 		self.y = y
@@ -18,6 +20,7 @@ class Object():
 		self.rx = rx
 		self.ry = ry
 		self.rz = rz
+		self.scale = scale
 
 
 def load(directory):
@@ -26,20 +29,32 @@ def load(directory):
 
 	for root, dirs, files in os.walk(directory):
 		for fn in files:
-			if os.path.splitext(fn)[1] == ".map" and "_TESTING" not in root:
+			if os.path.splitext(fn)[1] == ".map":
+				print(fn)
 				with io.open(os.path.join(root, fn)) as f:
 					for l in f:
-						r = regex.match(l)
+						r = regex_obj.match(l)
+						if r:
+							objs.append(Object(
+								'c',
+								r.group(1),						# model
+								float(r.group(2)),				# x
+								float(r.group(3)),				# y
+								float(r.group(4)),				# z
+								float(r.group(5)),				# rx
+								float(r.group(6)),				# ry
+								float(r.group(7))))				# rz
+
+						r = regex_rmb.match(l)
 
 						if r:
 							objs.append(Object(
-								r.group(1),			# model
-								float(r.group(2)),	# x
-								float(r.group(3)),	# y
-								float(r.group(4)),	# z
-								float(r.group(2)),	# rx
-								float(r.group(3)),	# ry
-								float(r.group(4))))	# rz
+								'r',
+								r.group(1),						# model
+								float(r.group(2)),				# x
+								float(r.group(3)),				# y
+								float(r.group(4)),				# z
+								scale=float(r.group(5))))		# scale
 
 	return objs
 
