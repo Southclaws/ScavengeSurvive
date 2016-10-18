@@ -70,14 +70,14 @@ stock PlayerGainSkillExperience(playerid, skillname[])
 stock GetPlayerSkillTimeModifier(playerid, time, skillname[])
 {
 	if(!IsPlayerConnected(playerid))
-		return 0;
+		return time;
 
 	new cell = _skl_SkillNameToID(playerid, skillname);
 
 	if(cell != -1)
-		return round(time - time * (0.5 * skl_PlayerSkills[playerid][cell][skl_amount]))
+		return floatround(time - time * (0.5 * skl_PlayerSkills[playerid][cell][skl_amount]));
 
-	return 0;
+	return time;
 }
 
 _skl_SkillNameToID(playerid, skillname[])
@@ -157,7 +157,7 @@ CMD:skills(playerid, params[])
 
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %f%% Speed Increase",
+		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete",
 			gBigString[playerid],
 			skl_PlayerSkills[playerid][i][skl_name],
 			skl_PlayerSkills[playerid][i][skl_amount] * 100);
