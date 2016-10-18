@@ -157,7 +157,7 @@ CMD:skills(playerid, params[])
 
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
-		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete",
+		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete\n",
 			gBigString[playerid],
 			skl_PlayerSkills[playerid][i][skl_name],
 			skl_PlayerSkills[playerid][i][skl_amount] * 100);

@@ -157,8 +157,9 @@ hook OnPlayerUseItem(playerid, itemid)
 					d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
 					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
 					{
-
-						StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime]);
+						new uniqueid[11];
+						GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+						StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime], uniqueid));
 						ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN", true));
 
@@ -199,7 +200,9 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 StartRemovingConstructedItem(playerid, itemid, craftset)
 {
-	StartHoldAction(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTime]);
+	new uniqueid[11];
+	GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTime], uniqueid));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, ls(playerid, "DECONSTRUCT", true));
 	cons_Deconstructing[playerid] = craftset;
@@ -235,8 +238,10 @@ hook OnHoldActionFinish(playerid)
 				Float:ty,
 				Float:tz,
 				count,
-				itemid;
+				itemid,
+				uniqueid[11];
 
+			GetCraftSetUniqueID(cons_Constructing[playerid], uniqueid, sizeof(uniqueid));
 			// DestroyItem(GetPlayerItem(playerid));
 
 			for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
@@ -260,6 +265,7 @@ hook OnHoldActionFinish(playerid)
 
 			itemid = CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 			TweakItem(playerid, itemid);
+			PlayerGainSkillExperience(playerid, uniqueid);
 		}
 
 		ClearAnimations(playerid);

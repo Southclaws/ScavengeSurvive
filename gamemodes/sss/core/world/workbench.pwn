@@ -144,8 +144,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
+					new uniqueid[11];
+					GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+
 					wb_CurrentConstructSet[playerid] = consset;
-					_wb_StartWorking(playerid, withitemid, itemcount * 3600);
+					_wb_StartWorking(playerid, withitemid, GetPlayerSkillTimeModifier(playerid, itemcount * 3600, uniqueid));
+
 					return Y_HOOKS_CONTINUE_RETURN_0;
 				}
 			}
@@ -227,11 +231,19 @@ hook OnHoldActionFinish(playerid)
 	{
 		d:1:HANDLER("[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 
+		new
+			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
+			uniqueid[11];
+
+		GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
-		_wb_CreateResult(wb_CurrentWorkbench[playerid], GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]));
+		_wb_CreateResult(wb_CurrentWorkbench[playerid], craftset);
 		_wb_StopWorking(playerid);
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
+
+		PlayerGainSkillExperience(playerid, uniqueid);
 	}
 }
 

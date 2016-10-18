@@ -46,7 +46,7 @@ def build_project(increment=True):
 		"-\\)+",
 		"-d3",
 		"-e../errors"
-	])
+	] + [s + "=" for s in CONSTANTS])
 
 	# fixes sublime text jump-to-error feature by adding `gamemodes/` directory
 	# to errors and warnings.
@@ -83,7 +83,8 @@ def build_file(file):
 		"-(+",
 		"-\\)+",
 		"-d3",
-		"-e../errors"] + [s + "=" for s in CONSTANTS])
+		"-e../errors"
+	] + [s + "=" for s in CONSTANTS])
 
 	try:
 		with io.open("errors", 'r') as f:
