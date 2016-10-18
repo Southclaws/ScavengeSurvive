@@ -464,6 +464,7 @@ new stock
 #include "sss/core/char/aim-shout.pwn"
 #include "sss/core/char/masks.pwn"
 #include "sss/core/char/bleed.pwn"
+#include "sss/core/char/skills.pwn"
 
 // WEAPON
 #include "sss/core/weapon/loot.pwn"

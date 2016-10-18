@@ -150,3 +150,20 @@ hook OnPlayerLoad(playerid, filename[])
 
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
+
+CMD:skills(playerid, params[])
+{
+	gBigString[playerid][0] = EOS;
+
+	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
+	{
+		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %f%% Speed Increase",
+			gBigString[playerid],
+			skl_PlayerSkills[playerid][i][skl_name],
+			skl_PlayerSkills[playerid][i][skl_amount] * 100);
+	}
+
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Skill Values (For debugging!)", gBigString[playerid], "Close", "");
+
+	return 1;
+}
