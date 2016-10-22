@@ -21,7 +21,7 @@ except IOError:
 
 
 def build_project(increment=True):
-	print("Building project...")
+	print("Building project...", flush=True)
 	BUILD_NUMBER = 0
 
 	with io.open("BUILD_NUMBER", 'r') as f:
@@ -33,9 +33,9 @@ def build_project(increment=True):
 		with io.open("BUILD_NUMBER", 'w') as f:
 			f.write(str(BUILD_NUMBER))
 
-	print("BUILD", BUILD_NUMBER)
-	print("COMPILER", COMPILER_PATH)
-	print("CONSTANTS", CONSTANTS)
+	print("BUILD", BUILD_NUMBER, flush=True)
+	print("COMPILER", COMPILER_PATH, flush=True)
+	print("CONSTANTS", CONSTANTS, flush=True)
 
 	ret = subprocess.call([
 		COMPILER_PATH,
@@ -68,9 +68,9 @@ def build_project(increment=True):
 
 
 def build_file(file):
-	print("Building file", file, "...")
+	print("Building file", file, "...", flush=True)
 	if not file:
-		print("No file passed")
+		print("No file passed", flush=True)
 		return
 
 	output = "-o" + os.path.splitext(file)[0]
