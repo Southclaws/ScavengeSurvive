@@ -574,6 +574,7 @@ new stock
 #include "sss/core/item/chainsaw.pwn"
 #include "sss/core/item/locator.pwn"
 #include "sss/core/item/witcheshat.pwn"
+#include "sss/core/item/locker.pwn"
 
 // POST-CODE
 

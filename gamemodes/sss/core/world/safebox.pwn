@@ -26,7 +26,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SAFEBOX_TYPE	(8)
+#define MAX_SAFEBOX_TYPE	(12)
 #define MAX_SAFEBOX_NAME	(32)
 
 

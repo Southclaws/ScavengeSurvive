@@ -433,7 +433,13 @@ ItemType:		item_PlotPole		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMachine	= INVALID_ITEM_TYPE,
 ItemType:		item_RefineMachine	= INVALID_ITEM_TYPE,
 ItemType:		item_WaterMachine	= INVALID_ITEM_TYPE,
-ItemType:		item_Workbench		= INVALID_ITEM_TYPE;
+ItemType:		item_Workbench		= INVALID_ITEM_TYPE,
+ItemType:		item_Radio			= INVALID_ITEM_TYPE,
+// 280
+ItemType:		item_Locker			= INVALID_ITEM_TYPE,
+ItemType:		item_GearBox		= INVALID_ITEM_TYPE,
+ItemType:		item_ToolBox		= INVALID_ITEM_TYPE,
+ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -844,6 +850,12 @@ public OnScriptInit()
 	item_RefineMachine	= DefineItemType("Refining Machine",	"RefineMachine",	943,	12,	0.0, 0.0, 0.0,			0.7208,	.maxhitpoints = 12);
 	item_WaterMachine	= DefineItemType("Water Purifier",		"WaterMachine",		958,	12,	0.0, 0.0, 0.0,			0.8195,	.maxhitpoints = 12);
 	item_Workbench		= DefineItemType("Workbench",			"Workbench",		936,	12,	0.0, 0.0, 0.0,			0.4434,	.longpickup = true, .maxhitpoints = 12);
+	item_Radio			= DefineItemType("Radio",				"Radio",			2966,	1,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000, .maxhitpoints = 1);
+// 280
+	item_Locker			= DefineItemType("Locker",				"Locker",			11729,	12,	0.0, 0.0, 0.0,			0.4344,	.longpickup = true,	.maxhitpoints = 10);
+	item_GearBox		= DefineItemType("Gear Box",			"GearBox",			19918,	5,	0.0, 0.0, 0.0,			0.371,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 4);
+	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.371,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 8);
+	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true, .maxhitpoints = 16);
 
 /*
 1656 cuboid shape, carry item
@@ -864,20 +876,17 @@ public OnScriptInit()
 2232 slightly bigger speaker
 2324 short cylinder (retexture)
 2388 short pole type thing
-2680 wheel lock
 2749 small long cylinder (also 2752)
 2751 wide short cylinder
 2750 hair dryer/gun shape
 2780 small grey box with handle
 2894 book
 2961 small red keypad-like thing
-2966 old phone/radio
 2967 another old phone/radio
 2983 pipe valve
 3025 piece of scap metal pole/frame
 3067 metal frame
 3070 goggles
-11729 & 11730 metal lockers for storage
 19896 cigarettes
 19874 soap
 19873 toilet paper
@@ -990,6 +999,11 @@ public OnScriptInit()
 	SetItemTypeScrapValue(item_Keg,				3);
 	SetItemTypeScrapValue(item_Canister,		3);
 	SetItemTypeScrapValue(item_Locator,			1);
+	SetItemTypeScrapValue(item_Radio,			1);
+	SetItemTypeScrapValue(item_Locker,			12);
+	SetItemTypeScrapValue(item_GearBox,			5);
+	SetItemTypeScrapValue(item_ToolBox,			8);
+	SetItemTypeScrapValue(item_MetalFrame,		16);
 
 
 	// SETTING HOLSTERABLE ITEMS
@@ -1266,6 +1280,9 @@ public OnScriptInit()
 	DefineSafeboxType(item_Suitcase,		6);
 	DefineSafeboxType(item_Holdall,			6);
 	DefineSafeboxType(item_Workbench,		16, false);
+	DefineSafeboxType(item_Locker,			16);
+	DefineSafeboxType(item_GearBox,			5);
+	DefineSafeboxType(item_ToolBox,			8);
 
 
 	// BAG ITEM TYPE DEFINITIONS
@@ -1318,6 +1335,7 @@ public OnScriptInit()
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_RefineMachine, item_Canister, false, item_Motor, false, item_Fluctuator, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_WaterMachine, item_Canister, false, item_Motor, false, item_Bucket, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Hammer, DefineItemCraftSet(item_Workbench, item_RefinedMetal, false, item_RefinedMetal, false, item_Log, false, item_Log, false, item_Log, false, item_Log, false), item_Crowbar, 25000);
+	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_Locker, item_MetalFrame, false, item_MetalFrame, false, item_RefinedMetal, false), item_Crowbar, 25000);
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
@@ -1345,7 +1363,8 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(15000, item_Screwdriver, DefineItemCraftSet(item_StarterMotor, item_Motor, false, item_Fluctuator, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(18000, item_Screwdriver, DefineItemCraftSet(item_AdvancedKeypad, item_IoUnit, false, item_PowerSupply, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_Locator, item_MobilePhone, false, item_RadioPole, false, item_DataInterface, false, item_PowerSupply, false)));
-	SetConstructionSetWorkbench(SetCraftSetConstructible(25000, item_Hammer, DefineItemCraftSet(item_Canister, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(30000, item_Hammer, DefineItemCraftSet(item_MetalFrame, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(25000, item_Hammer, DefineItemCraftSet(item_Canister, item_MetalFrame, false, item_RefinedMetal, false, item_RefinedMetal, false)));
 
 	// Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();
