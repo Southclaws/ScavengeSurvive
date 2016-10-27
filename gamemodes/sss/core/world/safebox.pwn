@@ -34,7 +34,8 @@ enum E_SAFEBOX_TYPE_DATA
 {
 ItemType:	box_itemtype,
 			box_size,
-			box_display
+			box_display,
+			box_animate
 }
 
 static
@@ -69,7 +70,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineSafeboxType(ItemType:itemtype, size, displayonuse = true)
+DefineSafeboxType(ItemType:itemtype, size, displayonuse = true, animateonuse = true)
 {
 	if(box_TypeTotal == MAX_SAFEBOX_TYPE)
 		return -1;
@@ -79,6 +80,7 @@ DefineSafeboxType(ItemType:itemtype, size, displayonuse = true)
 	box_TypeData[box_TypeTotal][box_itemtype]	= itemtype;
 	box_TypeData[box_TypeTotal][box_size]		= size;
 	box_TypeData[box_TypeTotal][box_display]	= displayonuse;
+	box_TypeData[box_TypeTotal][box_animate]	= animateonuse;
 
 	box_ItemTypeBoxType[itemtype] = box_TypeTotal;
 
@@ -166,14 +168,16 @@ hook OnPlayerUseItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/safebox.pwn");
 
-	if(IsItemTypeSafebox(GetItemType(itemid)))
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(box_ItemTypeBoxType[itemtype] != -1)
 	{
 		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(IsItemInWorld(itemid))
 		{
-			if(_DisplaySafeboxDialog(playerid, itemid, true))
+			if(_DisplaySafeboxDialog(playerid, itemid, box_TypeData[box_ItemTypeBoxType[itemtype]][box_animate]))
 				return Y_HOOKS_BREAK_RETURN_1;
 		}
 
@@ -191,9 +195,11 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
 
-	if(IsItemTypeSafebox(GetItemType(withitemid)))
+	new ItemType:itemtype = GetItemType(withitemid);
+
+	if(box_ItemTypeBoxType[itemtype] != -1)
 	{
-		if(_DisplaySafeboxDialog(playerid, withitemid, true))
+		if(_DisplaySafeboxDialog(playerid, withitemid, box_TypeData[box_ItemTypeBoxType[itemtype]][box_animate]))
 			return Y_HOOKS_BREAK_RETURN_1;
 	}
 
@@ -257,7 +263,7 @@ stock IsItemTypeExtraDataDependent(ItemType:itemtype)
 	if(IsItemTypeBag(itemtype))
 		return 1;
 
-	if(IsItemTypeSafebox(itemtype))
+	if(box_ItemTypeBoxType[itemtype] != -1)
 		return 1;
 
 	if(itemtype == item_Campfire)

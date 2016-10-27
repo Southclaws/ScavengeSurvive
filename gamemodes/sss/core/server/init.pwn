@@ -1280,7 +1280,7 @@ public OnScriptInit()
 	DefineSafeboxType(item_Suitcase,		6);
 	DefineSafeboxType(item_Holdall,			6);
 	DefineSafeboxType(item_Workbench,		16, false);
-	DefineSafeboxType(item_Locker,			16);
+	DefineSafeboxType(item_Locker,			16, .animateonuse = false);
 	DefineSafeboxType(item_GearBox,			5);
 	DefineSafeboxType(item_ToolBox,			8);
 
