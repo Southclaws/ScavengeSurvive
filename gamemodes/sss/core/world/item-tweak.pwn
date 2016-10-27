@@ -281,6 +281,7 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 
 	new_x += distance * floatsin(-(rz + direction), degrees);
 	new_y += distance * floatcos(-(rz + direction), degrees);
+	rz += rotation;
 
 	if(Distance(new_x, new_y, new_z, twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2]) >= MAX_MOVEMENT_RANGE)
 	{
@@ -288,8 +289,10 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 		return 4;
 	}
 
+	// ShowActionText(playerid, sprintf("Pos: %f, %f, %f~n~Rot: %f, %f, %f", new_x, new_y, new_z, rx, ry, rz));
+
 	SetItemPos(twk_Item[playerid], new_x, new_y, new_z);
-	SetItemRot(twk_Item[playerid], rx, rx, rz + rotation);
+	SetItemRot(twk_Item[playerid], rx, ry, rz);
 
 	return 0;
 }
