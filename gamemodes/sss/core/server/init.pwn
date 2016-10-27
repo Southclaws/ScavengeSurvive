@@ -852,10 +852,10 @@ public OnScriptInit()
 	item_Workbench		= DefineItemType("Workbench",			"Workbench",		936,	12,	0.0, 0.0, 0.0,			0.4434,	.longpickup = true, .maxhitpoints = 12);
 	item_Radio			= DefineItemType("Radio",				"Radio",			2966,	1,	0.0, 0.0, 0.0,			0.0,	0.103904, -0.003697, -0.015173, 94.655189, 184.031860, 0.000000, .maxhitpoints = 1);
 // 280
-	item_Locker			= DefineItemType("Locker",				"Locker",			11729,	12,	0.0, 0.0, 0.0,			0.4344,	.longpickup = true,	.maxhitpoints = 10);
-	item_GearBox		= DefineItemType("Gear Box",			"GearBox",			19918,	5,	0.0, 0.0, 0.0,			0.371,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 4);
-	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.371,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 8);
-	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true, .maxhitpoints = 16);
+	item_Locker			= DefineItemType("Locker",				"Locker",			11729,	12,	0.0, 0.0, 0.0,			0.0,	.longpickup = true,	.maxhitpoints = 10);
+	item_GearBox		= DefineItemType("Gear Box",			"GearBox",			19918,	5,	0.0, 0.0, 0.0,			-0.0361,0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 4);
+	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.0541,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 8);
+	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	0.0, 0.0, 0.0,			0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true, .maxhitpoints = 16);
 
 /*
 1656 cuboid shape, carry item
