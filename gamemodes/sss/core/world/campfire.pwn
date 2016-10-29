@@ -25,230 +25,94 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_CAMPFIRE	(1024)
-
-
-#define TEXTURE_1		2068,	"cj_ammo_net",		"CJ_cammonet"
-#define TEXTURE_2		693,	"gta_tree_pine",	"sm_redwood_branch"
-
-
 enum E_CAMPFIRE_DATA
 {
-			cmp_itemId,
-			cmp_objMid1,
-			cmp_objMid2,
-			cmp_objMid3,
-			cmp_objMid4,
-			cmp_objStick1,
-			cmp_objStick2,
-			cmp_objStick3,
-			cmp_objStick4,
-			cmp_objStick5,
-			cmp_objStick6,
-			cmp_objStick7,
-			cmp_objStick8,
-Float:		cmp_posX,
-Float:		cmp_posY,
-Float:		cmp_posZ,
-Float:		cmp_rotZ,
-			cmp_world,
-			cmp_interior,
-			cmp_objFlame,
 			cmp_objSmoke,
 			cmp_foodItem,
-			cmp_fueled
+Timer:		cmp_LifeTimer,
+Timer:		cmp_CookTimer
 }
 
 
 static
-			cmp_Data[MAX_CAMPFIRE][E_CAMPFIRE_DATA],
-   Iterator:cmp_Index<MAX_CAMPFIRE>,
-Timer:		cmp_CookTimer[MAX_CAMPFIRE];
+			cmp_ItemBeingCooked[ITM_MAX] = {INVALID_ITEM_ID, ...};
 
 
-stock CreateCampfire(Float:x, Float:y, Float:z, Float:rz, world, interior)
+hook OnItemTypeDefined(uname[])
 {
-	new id = Iter_Free(cmp_Index);
-
-	if(id == ITER_NONE)
-	{
-		print("ERROR: [CreateCampfire] id == ITER_NONE");
-		return -1;
-	}
-
-	cmp_Data[id][cmp_objMid1] = CreateDynamicObject(19475, x, y, z, 10.0, 90.0, rz + 18.0, world, interior, .streamdistance = 50.0);
-	cmp_Data[id][cmp_objMid2] = CreateDynamicObject(19475, x, y, z, -10.0, 90.0, rz + 36.0, world, interior, .streamdistance = 10.0);
-	cmp_Data[id][cmp_objMid3] = CreateDynamicObject(19475, x, y, z, 0.0, 100.0, rz + 54.0, world, interior, .streamdistance = 50.0);
-	cmp_Data[id][cmp_objMid4] = CreateDynamicObject(19475, x, y, z, 0.0, 80.0, rz + 72.0, world, interior, .streamdistance = 10.0);
-
-
-	cmp_Data[id][cmp_objStick1] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz, degrees)),
-		y + (0.1 * floatcos(-rz, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + 45.0, world, interior, .streamdistance = 100.0);
-
-	cmp_Data[id][cmp_objStick2] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 90.0, degrees)),
-		y + (0.1 * floatcos(-rz - 90.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 90.0, world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick3] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 180.0, degrees)),
-		y + (0.1 * floatcos(-rz - 180.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 180.0, world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick4] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 270.0, degrees)),
-		y + (0.1 * floatcos(-rz - 270.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + 45.0 + 270.0, world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick5] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz, degrees)),
-		y + (0.1 * floatcos(-rz, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + random(90), world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick6] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 90.0, degrees)),
-		y + (0.1 * floatcos(-rz - 90.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + random(90) + 90.0, world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick7] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 180.0, degrees)),
-		y + (0.1 * floatcos(-rz - 180.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + random(90) + 180.0, world, interior, .streamdistance = 10.0);
-
-	cmp_Data[id][cmp_objStick8] = CreateDynamicObject(19475,
-		x + (0.1 * floatsin(-rz - 270.0, degrees)),
-		y + (0.1 * floatcos(-rz - 270.0, degrees)),
-		z + 0.01,
-		10.0, 80.0, rz + random(90) + 270.0, world, interior, .streamdistance = 10.0);
-
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid1], 0, TEXTURE_1, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid2], 0, TEXTURE_1, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid3], 0, TEXTURE_1, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objMid4], 0, TEXTURE_1, 0);
-
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick1], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick2], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick3], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick4], 0, TEXTURE_2, 0);
-
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick5], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick6], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick7], 0, TEXTURE_2, 0);
-	SetDynamicObjectMaterial(cmp_Data[id][cmp_objStick8], 0, TEXTURE_2, 0);
-
-	cmp_Data[id][cmp_posX] = x;
-	cmp_Data[id][cmp_posY] = y;
-	cmp_Data[id][cmp_posZ] = z;
-	cmp_Data[id][cmp_rotZ] = rz;
-	cmp_Data[id][cmp_world] = world;
-	cmp_Data[id][cmp_interior] = interior;
-
-	cmp_Data[id][cmp_objFlame] = INVALID_OBJECT_ID;
-	cmp_Data[id][cmp_foodItem] = INVALID_ITEM_ID;
-	cmp_Data[id][cmp_itemId] = INVALID_ITEM_ID;
-
-	Iter_Add(cmp_Index, id);
-
-	return id;
+	if(!strcmp(uname, "Campfire"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Campfire"), _:E_CAMPFIRE_DATA);
 }
 
-stock DestroyCampfire(fireid)
+hook OnItemCreateInWorld(itemid)
 {
-	if(!Iter_Contains(cmp_Index, fireid))
-		return 0;
+	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");
 
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid1]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid2]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid3]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objMid4]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick1]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick2]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick3]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick4]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick5]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick6]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick7]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objStick8]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
-
-	cmp_Data[fireid][cmp_objMid1] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objMid2] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objMid3] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objMid4] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick1] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick2] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick3] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick4] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick5] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick6] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick7] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objStick8] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_posX] = 0.0;
-	cmp_Data[fireid][cmp_posY] = 0.0;
-	cmp_Data[fireid][cmp_posZ] = 0.0;
-	cmp_Data[fireid][cmp_rotZ] = 0.0;
-	cmp_Data[fireid][cmp_world] = 0;
-	cmp_Data[fireid][cmp_interior] = 0;
-	cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_objSmoke] = INVALID_OBJECT_ID;
-	cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
-	cmp_Data[fireid][cmp_itemId] = INVALID_ITEM_ID;
-	stop cmp_CookTimer[fireid];
-
-	Iter_Remove(cmp_Index, fireid);
-
-	return 1;
-}
-
-stock IsValidCampfire(fireid)
-{
-	if(!Iter_Contains(cmp_Index, fireid))
-		return 0;
-
-	return 1;
-}
-
-stock SetCampfireState(fireid, bool:toggle)
-{
-	if(!Iter_Contains(cmp_Index, fireid))
-		return 0;
-
-	if(toggle)
+	if(GetItemType(itemid) == item_Campfire)
 	{
-		if(IsValidDynamicObject(cmp_Data[fireid][cmp_objFlame]))
-			return -1;
+		new
+			Float:x,
+			Float:y,
+			Float:z,
+			weatherid = GetGlobalWeather(),
+			data[E_CAMPFIRE_DATA];
 
-		cmp_Data[fireid][cmp_objFlame] = CreateDynamicObject(18693,
-			cmp_Data[fireid][cmp_posX],
-			cmp_Data[fireid][cmp_posY],
-			cmp_Data[fireid][cmp_posZ] - 1.5,
-			0.0, 0.0, cmp_Data[fireid][cmp_rotZ], cmp_Data[fireid][cmp_world], cmp_Data[fireid][cmp_interior], .streamdistance = 500.0);
-	}
-	else
-	{
-		if(!IsValidDynamicObject(cmp_Data[fireid][cmp_objFlame]))
-			return -1;
+		GetItemPos(itemid, x, y, z);
 
-		DestroyDynamicObject(cmp_Data[fireid][cmp_objFlame]);
-		DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
+		data[cmp_objSmoke] = INVALID_OBJECT_ID;
+		data[cmp_foodItem] = INVALID_ITEM_ID;
+		data[cmp_CookTimer] = -1;
 
-		cmp_Data[fireid][cmp_objFlame] = INVALID_OBJECT_ID;
-		cmp_Data[fireid][cmp_objSmoke] = INVALID_OBJECT_ID;
+		SetItemArrayData(itemid, data, E_CAMPFIRE_DATA);
 
-		stop cmp_CookTimer[fireid];
+		if(weatherid == 8 || weatherid == 16)
+		{
+			if(random(100) < 40)
+			{
+				SetCampfireState(fireid, true);
+				data[cmp_LifeTimer] = defer cmp_BurnOut(fireid, 120000);
+			}
+			else
+			{
+				DestroyItem(itemid);
+				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+		}
+		else
+		{
+			SetCampfireState(fireid, true);
+			data[cmp_LifeTimer] = defer cmp_BurnOut(fireid, 600000);
+		}
 	}
 
-	return 1;
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnItemDestroy(itemid)
+{
+	if(GetItemType(itemid) == item_Campfire)
+	{
+		new fooditem = GetItemArrayDataAtCell(itemid, cmp_foodItem);
+
+		if(IsValidItem(fooditem))
+			cmp_ItemBeingCooked[fooditem] = INVALID_ITEM_ID;
+	}
+}
+
+hook OnPlayerPickUpItem(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/item/campfire.pwn");
+
+	if(GetItemType(itemid) == item_Campfire)
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	if(cmp_ItemBeingCooked[itemid] != INVALID_ITEM_ID)
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
@@ -257,112 +121,11 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(GetItemType(withitemid) == item_Campfire)
 	{
-		new fireid = GetItemExtraData(withitemid);
-
-		if(IsValidCampfire(fireid))
+		if(IsItemTypeFood(GetItemType(itemid)))
 		{
-			if(!IsValidDynamicObject(cmp_Data[fireid][cmp_objFlame]))
+			if(GetItemArrayDataAtCell(withitemid, cmp_foodItem) == INVALID_ITEM_ID)
 			{
-
-				new ItemType:itemtype = GetItemType(itemid);
-
-				if(GetItemTypeLiquidContainerType(itemtype) != -1)
-				{
-					if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
-					{
-						ShowActionText(playerid, ls(playerid, "FUELNOTPETR", true), 3000);
-						return 1;
-					}
-
-					new 
-						Float:canfuel = GetLiquidItemLiquidAmount(itemid),
-						Float:transfer;
-
-
-					if(cmp_Data[fireid][cmp_fueled])
-					{
-						ShowActionText(playerid, ls(playerid, "FIREALREADY", true));
-					}
-					else
-					{
-						if(canfuel > 0.0)
-						{
-							transfer = (canfuel - 0.3 < 0.0) ? canfuel : 0.3;
-							SetLiquidItemLiquidAmount(itemid, canfuel - transfer);
-							ShowActionText(playerid, ls(playerid, "FIREADDPETR", true));
-							cmp_Data[fireid][cmp_fueled] = 1;
-						}
-						else
-						{
-							ShowActionText(playerid, ls(playerid, "PETROLEMPTY", true));
-						}
-					}
-				}
-				else if(itemtype == item_FireLighter)
-				{
-					new weatherid = GetGlobalWeather();
-
-					if(weatherid == 8 || weatherid == 16)
-					{
-						if(random(100) < 40)
-						{
-							if(cmp_Data[fireid][cmp_fueled])
-							{
-								SetCampfireState(fireid, true);
-								cmp_Data[fireid][cmp_fueled] = 0;
-								defer CampfireBurnOut(fireid, 120000);
-							}
-							else
-							{
-								if(random(1000) < 5)
-								{
-									SetCampfireState(fireid, true);
-									defer CampfireBurnOut(fireid, 120000);
-								}
-							}
-						}
-					}
-					else
-					{
-						if(cmp_Data[fireid][cmp_fueled])
-						{
-							SetCampfireState(fireid, true);
-							cmp_Data[fireid][cmp_fueled] = 0;
-							defer CampfireBurnOut(fireid, 600000);
-						}
-						else
-						{
-							if(random(1000) < 5)
-							{
-								SetCampfireState(fireid, true);
-								defer CampfireBurnOut(fireid, 600000);
-							}
-						}
-					}
-				}
-			}
-			else
-			{
-				if(IsItemTypeFood(GetItemType(itemid)))
-				{
-					if(cmp_Data[fireid][cmp_foodItem] == INVALID_ITEM_ID)
-					{
-						new
-							Float:x,
-							Float:y,
-							Float:z,
-							Float:r;
-
-						GetItemPos(withitemid, x, y, z);
-						GetItemRot(withitemid, r, r, r);
-
-						CreateItemInWorld(itemid, x, y, z + 0.3, .rz = r);
-
-						cmp_Data[fireid][cmp_foodItem] = itemid;
-						cmp_CookTimer[fireid] = defer cmp_FinishCooking(fireid);
-						ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
-					}
-				}
+				cmp_CookItem(withitemid, itemid);
 			}
 		}
 	}
@@ -370,49 +133,65 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-timer CampfireBurnOut[time](fireid, time)
+cmp_CookItem(itemid, fooditem)
 {
-	#pragma unused time
-	DestroyCampfire(fireid);
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		data[E_CAMPFIRE_DATA];
+
+	GetItemPos(itemid, x, y, z);
+
+	CreateItemInWorld(fooditem, x, y, z + 0.3, .rz = frandom(360.0));
+
+	cmp_ItemBeingCooked[fooditem] = itemid;
+	data[cmp_foodItem] = fooditem;
+	data[cmp_CookTimer] = defer cmp_FinishCooking(itemid);
+	SetItemArrayData(itemid, data, E_CAMPFIRE_DATA);
+
+	ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
 }
 
-timer cmp_FinishCooking[60000](fireid)
+timer cmp_BurnOut[time](itemid, time)
 {
-	if(!IsValidItem(cmp_Data[fireid][cmp_foodItem]))
+	#pragma unused time
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetItemPos(itemid, x, y, z);
+	DestroyItem(itemid);
+
+	CreateItem(item_BurntLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+	CreateItem(item_BurntLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+	CreateItem(item_BurntLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+}
+
+timer cmp_FinishCooking[60000](itemid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		fooditem = GetItemArrayDataAtCell(itemid, cmp_foodItem);
+
+	if(!IsValidItem(fooditem))
 		return;
 
-	cmp_Data[fireid][cmp_objSmoke] = CreateDynamicObject(18726, cmp_Data[fireid][cmp_posX], cmp_Data[fireid][cmp_posY], cmp_Data[fireid][cmp_posZ] - 1.0, 0.0, 0.0, 0.0, cmp_Data[fireid][cmp_world], cmp_Data[fireid][cmp_interior]);
-	defer cmp_DestroySmoke(fireid);
+	GetItemPos(itemid, x, y, z);
 
-	SetItemExtraData(cmp_Data[fireid][cmp_foodItem], 1);
+	cmp_Data[itemid][cmp_objSmoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
+	defer cmp_DestroySmoke(itemid);
+
+	SetFoodItemCooked(fooditem, 1);
+	cmp_ItemBeingCooked[fooditem] = INVALID_ITEM_ID;
 
 	return;
 }
 
-timer cmp_DestroySmoke[1000](fireid)
+timer cmp_DestroySmoke[2000](fireid)
 {
 	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
-}
-
-hook OnPlayerPickUpItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/world/campfire.pwn");
-
-	if(GetItemType(itemid) == item_Campfire)
-	{
-		new fireid = GetItemExtraData(itemid);
-
-		if(IsValidCampfire(fireid))
-		{
-			if(IsValidItem(cmp_Data[fireid][cmp_foodItem]))
-			{
-				GiveWorldItemToPlayer(playerid, cmp_Data[fireid][cmp_foodItem]);
-				cmp_Data[fireid][cmp_foodItem] = INVALID_ITEM_ID;
-				stop cmp_CookTimer[fireid];
-				return Y_HOOKS_BREAK_RETURN_1;
-			}
-		}
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
 }

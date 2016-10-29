@@ -421,7 +421,7 @@ ItemType:		item_Steak			= INVALID_ITEM_TYPE,
 ItemType:		item_Bread			= INVALID_ITEM_TYPE,
 ItemType:		item_Broom			= INVALID_ITEM_TYPE,
 ItemType:		item_Keycard		= INVALID_ITEM_TYPE,
-ItemType:		item_Log			= INVALID_ITEM_TYPE,
+ItemType:		item_BurntLog		= INVALID_ITEM_TYPE,
 ItemType:		item_Padlock		= INVALID_ITEM_TYPE,
 ItemType:		item_Keg			= INVALID_ITEM_TYPE,
 // 270
@@ -692,7 +692,7 @@ public OnScriptInit()
 	item_ParaBag		= DefineItemType("Parachute Bag",		"ParaBag",			371,	6,	90.0, 0.0, 0.0,			0.0,	0.350542, 0.017385, 0.060469, 0.000000, 260.845062, 0.000000, .longpickup = true, .maxhitpoints = 6);
 	item_Keypad			= DefineItemType("Keypad",				"Keypad",			19273,	2,	270.0, 0.0, 0.0,		0.0,	0.198234, 0.101531, 0.095477, 0.000000, 343.020019, 0.000000, .maxhitpoints = 2);
 	item_TentPack		= DefineItemType("Tent Pack",			"TentPack",			1279,	6,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true, .maxhitpoints = 6);
-	item_Campfire		= DefineItemType("Campfire",			"Campfire",			19475,	5,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true, .maxhitpoints = 5);
+	item_Campfire		= DefineItemType("Campfire",			"Campfire",			19632,	5,	0.0, 0.0, 0.0,			0.0,	0.106261, 0.004634, -0.144552, 246.614654, 345.892211, 258.267395, true, .maxhitpoints = 5);
 	item_CowboyHat		= DefineItemType("Cowboy Hat",			"CowboyHat",		18962,	1,	0.0, 270.0, 0.0,		0.0427,	0.232999, 0.032000, 0.016000, 0.000000, 2.700027, -67.300010, .maxhitpoints = 1);
 	item_TruckCap		= DefineItemType("Trucker Cap",			"TruckCap",			18961,	1,	0.0, 0.0, 0.0,			0.01,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
 	item_BoaterHat		= DefineItemType("Boater Hat",			"BoaterHat",		18946,	1,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
@@ -766,7 +766,7 @@ public OnScriptInit()
 // 200
 	item_HeartShapedBox	= DefineItemType("Heart Shaped Box",	"HeartShapedBox",	1240,	1,	90.0, 0.0, 0.0,			-0.02,	0.171999, 0.077999, -0.016999,  0.000000, 0.000000, 10.200000, .longpickup = true, .maxhitpoints = 1);
 	item_AntiSepBandage	= DefineItemType("Antiseptic Bandage",	"AntiSepBandage",	11748,	2,	0.0, 0.0, 0.0,			0.01,	0.072000, 0.041999, 0.000000,  90.299995, 1.500011, 103.599960, .maxhitpoints = 2);
-	item_WoodLog		= DefineItemType("Wood Log",			"WoodLog",			19632,	1,	0.0, 0.0, 0.0,			0.000,	0.034999, 0.018998, -0.150000,  -74.199989, -110.000022, -54.900020, .maxhitpoints = 1);
+	item_WoodLog		= DefineItemType("Wood Log",			"WoodLog",			19793,	1,	0.0, 0.0, 0.0,			0.000,	0.034999, 0.018998, -0.150000,  -74.199989, -110.000022, -54.900020, .maxhitpoints = 1);
 	item_Sledgehammer	= DefineItemType("Sledgehammer",		"Sledgehammer",		19631,	7,	0.0, 90.0, 0.0,			0.000,	0.075000, -0.004000, 0.269000,  -84.600021, -70.899993, 0.000000, .maxhitpoints = 7);
 	item_RawFish		= DefineItemType("Fish",				"RawFish",			19630,	9,	0.0, 0.0, 0.0,			0.000,	0.047000, 0.021999, 0.083000,  -84.299980, -75.299972, 103.100028, .maxhitpoints = 9);
 	item_Spanner		= DefineItemType("Wrench",				"Spanner",			19627,	1,	0.0, 0.0, 0.0,			0.000,	0.073000, 0.022000, 0.035000,  -84.299980, -75.299972, 103.100028, .maxhitpoints = 1);
@@ -837,7 +837,7 @@ public OnScriptInit()
 	item_Bread			= DefineItemType("Bread",				"Bread",			19883,	1,	0.0, 0.0, 0.0,			-0.02,	0.148000, 0.024000, 0.026000,  -77.199935, 174.499786, 15.799836, .maxhitpoints = 1);
 	item_Broom			= DefineItemType("Broom",				"Broom",			19622,	4,	91.5, 0.0, 0.0,			0.0,	0.051000, -0.024999, 0.358000,  11.400080, 174.499786, 18.599828, .maxhitpoints = 4);
 	item_Keycard		= DefineItemType("Keycard",				"Keycard",			19792,	1,	0.0, 0.0, 0.0,			0.0,	0.081000, 0.039000, 0.014000,  95.100082, 174.499786, 83.799827, .maxhitpoints = 1);
-	item_Log			= DefineItemType("Log",					"Log",				19793,	3,	0.0, 0.0, 0.0,			0.046,	0.079000, 0.039000, -0.194999,  73.600059, -175.100250, 83.199836, true, .maxhitpoints = 3);
+	item_BurntLog		= DefineItemType("Burnt Log",			"BurntLog",			19793,	3,	0.0, 0.0, 0.0,			0.046,	0.079000, 0.039000, -0.194999,  73.600059, -175.100250, 83.199836, true, 0xFF000000, .maxhitpoints = 3);
 	item_Padlock		= DefineItemType("Padlock",				"Padlock",			19804,	1,	90.0, 0.0, 0.0,			-0.016,	0.160000, 0.035000, 0.019000,  75.900054, -91.200210, 85.499847, .maxhitpoints = 1);
 	item_Keg			= DefineItemType("Keg",		 			"Keg",				19812,	5,	0.0, 0.0, 0.0,			0.468,	0.053000, 0.480999, -0.340999,  -109.899971, -10.700182, 98.799865, true, .maxhitpoints = 5);
 // 270
@@ -1329,7 +1329,7 @@ public OnScriptInit()
 	DefineItemCraftSet(item_Bottle, item_Bottle, true, item_Bottle, true);
 
 	// items created by using a tool item on them in the world
-	SetCraftSetConstructible(5000, item_Log, DefineItemCraftSet(item_Campfire, item_Log, false, item_Log, false));
+	SetCraftSetConstructible(5000, item_FireLighter, DefineItemCraftSet(item_Campfire, item_Log, false, item_Log, false, item_Log, false));
 	SetCraftSetConstructible(20000, item_Screwdriver, DefineItemCraftSet(item_PlotPole, item_Canister, false, item_RadioPole, false, item_Fluctuator, false, item_PowerSupply, false), item_Crowbar, 30000);
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_ScrapMachine, item_Canister, false, item_Motor, false, item_Fluctuator, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_RefineMachine, item_Canister, false, item_Motor, false, item_Fluctuator, false, item_PowerSupply, false), item_Crowbar, 25000);
