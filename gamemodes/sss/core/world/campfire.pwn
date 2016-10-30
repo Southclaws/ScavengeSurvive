@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-enum E_CAMPFIRE_DATA
+enum e_CAMPFIRE_DATA
 {
 			cmp_objSmoke,
 			cmp_foodItem,
@@ -41,7 +41,7 @@ static
 hook OnItemTypeDefined(uname[])
 {
 	if(!strcmp(uname, "Campfire"))
-		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Campfire"), _:E_CAMPFIRE_DATA);
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Campfire"), _:e_CAMPFIRE_DATA);
 }
 
 hook OnItemCreateInWorld(itemid)
@@ -55,36 +55,33 @@ hook OnItemCreateInWorld(itemid)
 			Float:y,
 			Float:z,
 			weatherid = GetGlobalWeather(),
-			data[E_CAMPFIRE_DATA];
+			data[e_CAMPFIRE_DATA];
 
 		GetItemPos(itemid, x, y, z);
 
 		data[cmp_objSmoke] = INVALID_OBJECT_ID;
 		data[cmp_foodItem] = INVALID_ITEM_ID;
-		data[cmp_CookTimer] = -1;
 
-		SetItemArrayData(itemid, data, E_CAMPFIRE_DATA);
+		SetItemArrayData(itemid, data, _:e_CAMPFIRE_DATA);
 
 		if(weatherid == 8 || weatherid == 16)
 		{
 			if(random(100) < 40)
 			{
-				SetCampfireState(fireid, true);
-				data[cmp_LifeTimer] = defer cmp_BurnOut(fireid, 120000);
+				data[cmp_LifeTimer] = defer cmp_BurnOut(itemid, 120000);
 			}
 			else
 			{
 				DestroyItem(itemid);
-				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
-				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
-				CreateItem(item_Log, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				CreateItem(item_WoodLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				CreateItem(item_WoodLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
+				CreateItem(item_WoodLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
 		else
 		{
-			SetCampfireState(fireid, true);
-			data[cmp_LifeTimer] = defer cmp_BurnOut(fireid, 600000);
+			data[cmp_LifeTimer] = defer cmp_BurnOut(itemid, 600000);
 		}
 	}
 
@@ -126,6 +123,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			if(GetItemArrayDataAtCell(withitemid, cmp_foodItem) == INVALID_ITEM_ID)
 			{
 				cmp_CookItem(withitemid, itemid);
+				ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
 			}
 		}
 	}
@@ -139,7 +137,7 @@ cmp_CookItem(itemid, fooditem)
 		Float:x,
 		Float:y,
 		Float:z,
-		data[E_CAMPFIRE_DATA];
+		data[e_CAMPFIRE_DATA];
 
 	GetItemPos(itemid, x, y, z);
 
@@ -148,9 +146,7 @@ cmp_CookItem(itemid, fooditem)
 	cmp_ItemBeingCooked[fooditem] = itemid;
 	data[cmp_foodItem] = fooditem;
 	data[cmp_CookTimer] = defer cmp_FinishCooking(itemid);
-	SetItemArrayData(itemid, data, E_CAMPFIRE_DATA);
-
-	ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
+	SetItemArrayData(itemid, data, e_CAMPFIRE_DATA);
 }
 
 timer cmp_BurnOut[time](itemid, time)
@@ -182,16 +178,9 @@ timer cmp_FinishCooking[60000](itemid)
 
 	GetItemPos(itemid, x, y, z);
 
-	cmp_Data[itemid][cmp_objSmoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
-	defer cmp_DestroySmoke(itemid);
-
+	CreateTimedDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0, 2000);
 	SetFoodItemCooked(fooditem, 1);
 	cmp_ItemBeingCooked[fooditem] = INVALID_ITEM_ID;
 
 	return;
-}
-
-timer cmp_DestroySmoke[2000](fireid)
-{
-	DestroyDynamicObject(cmp_Data[fireid][cmp_objSmoke]);
 }
