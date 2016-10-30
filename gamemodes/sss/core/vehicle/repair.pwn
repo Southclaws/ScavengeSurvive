@@ -125,9 +125,13 @@ StartRepairingVehicle(playerid, vehicleid)
 		return 0;
 	}
 
+	new mult = 1000;
+
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
-	StartHoldAction(playerid, 50000, floatround(fix_Progress[playerid] * 50));
+
+	GetPlayerSkillTimeModifier(playerid, mult, "repair");
+	StartHoldAction(playerid, 50 * mult, floatround(fix_Progress[playerid] * 50) * mult);
 
 	fix_TargetVehicle[playerid] = vehicleid;
 
@@ -181,6 +185,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		}
 		else
 		{
+			PlayerGainSkillExperience(playerid, "repair");
 			StopRepairingVehicle(playerid);
 		}
 	}
