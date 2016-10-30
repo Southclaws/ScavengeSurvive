@@ -130,7 +130,7 @@ StartRepairingVehicle(playerid, vehicleid)
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
 
-	GetPlayerSkillTimeModifier(playerid, mult, "repair");
+	mult = GetPlayerSkillTimeModifier(playerid, mult, "repair");
 	StartHoldAction(playerid, 50 * mult, floatround(fix_Progress[playerid] * 50) * mult);
 
 	fix_TargetVehicle[playerid] = vehicleid;
