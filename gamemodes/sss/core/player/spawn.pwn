@@ -25,11 +25,26 @@
 #include <YSI\y_hooks>
 
 
-enum e_item_object{ItemType:e_itmobj_type,e_itmobj_exdata}
+enum e_item_object
+{
+	ItemType:e_itmobj_type,
+	e_itmobj_exdata
+}
+
+
 static
 ItemType:	spawn_BagType,
-ItemType:	spawn_NewItems[16][e_item_object], // items given to new players
-ItemType:	spawn_ResItems[16][e_item_object]; // items given on respawns
+// properties given to new players
+Float:		spawn_NewBlood,
+Float:		spawn_NewFood,
+Float:		spawn_NewBleed,
+ItemType:	spawn_NewItems[16][e_item_object],
+
+// properties given on respawns
+Float:		spawn_ResBlood,
+Float:		spawn_ResFood,
+Float:		spawn_ResBleed,
+ItemType:	spawn_ResItems[16][e_item_object];
 
 new
 PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
@@ -60,25 +75,31 @@ hook OnGameModeInit()
 	if(!IsValidItemType(spawn_BagType))
 		printf("ERROR: spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
 
-	GetSettingStringArray("spawn/new-spawn-items", "Knife", 16, newitems, newitems_total, 32);
-	GetSettingStringArray("spawn/respawn-items", "AntiSepBandage", 16, resitems, resitems_total, 32);
 
-	// todo: handle arraydata
+	GetSettingFloat("spawn/new-blood", 90.0, spawn_NewBlood);
+	GetSettingFloat("spawn/new-food", 80.0, spawn_NewFood);
+	GetSettingFloat("spawn/new-bleed", 0.0001, spawn_NewBleed);
+	GetSettingStringArray("spawn/new-items", "Knife", 16, newitems, newitems_total, 32);
 
 	for(new i; i < 16; i++)
 	{
 		spawn_NewItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newitems[i], true);
 
 		if(newitems[i][0] != EOS && !IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
-			printf("ERROR: item '%s' from spawn/new-spawn-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
+			printf("ERROR: item '%s' from spawn/new-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
 	}
+
+	GetSettingFloat("spawn/res-blood", 100.0, spawn_ResBlood);
+	GetSettingFloat("spawn/res-food", 40.0, spawn_ResFood);
+	GetSettingFloat("spawn/res-bleed", 0.0, spawn_ResBleed);
+	GetSettingStringArray("spawn/res-items", "AntiSepBandage", 16, resitems, resitems_total, 32);
 
 	for(new i; i < 16; i++)
 	{
 		spawn_ResItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(resitems[i], true);
 
 		if(resitems[i][0] != EOS && !IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
-			printf("ERROR: item '%s' from spawn/new-spawn-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
+			printf("ERROR: item '%s' from spawn/res-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
 	}
 }
 
@@ -304,12 +325,22 @@ PlayerSpawnNewCharacter(playerid, gender)
 		}
 	}
 
-	SetPlayerHP(playerid, 100.0);
+	if(IsNewPlayer(playerid))
+	{
+		SetPlayerHP(playerid, spawn_NewBlood);
+		SetPlayerFP(playerid, spawn_NewFood);
+		SetPlayerBleedRate(playerid, spawn_NewBleed);
+	}
+	else
+	{
+		SetPlayerHP(playerid, spawn_ResBlood);
+		SetPlayerFP(playerid, spawn_ResFood);
+		SetPlayerBleedRate(playerid, spawn_ResBleed);
+	}
+
 	SetPlayerAP(playerid, 0.0);
-	SetPlayerFP(playerid, 80.0);
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	SetPlayerGender(playerid, gender);
-	SetPlayerBleedRate(playerid, 0.0);
 
 	SetPlayerBitFlag(playerid, Alive, true);
 
