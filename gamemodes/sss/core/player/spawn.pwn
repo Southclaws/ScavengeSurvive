@@ -41,14 +41,17 @@ forward OnPlayerSpawnChar(playerid);
 forward OnPlayerSpawnNewChar(playerid);
 
 
-hook OnScriptInit()
+hook OnGameModeInit()
 {
-	print("\n[OnScriptInit] Initialising 'Player/Spawn'...");
+	print("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
 
 	new bagtype[ITM_MAX_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
+
+	if(!IsValidItemType(spawn_BagType))
+		printf("ERROR: spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
 
 	// todo: make this better.
 	spawn_ReSpawnItems[0][e_itmobj_type] = item_AntiSepBandage;
