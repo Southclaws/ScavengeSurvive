@@ -2,6 +2,7 @@ import argparse
 import io
 import os
 import json
+import re
 import subprocess
 
 
@@ -20,7 +21,7 @@ except IOError:
 
 
 def build_project(increment=True):
-	print("Building project...")
+	print("Building project...", flush=True)
 	BUILD_NUMBER = 0
 
 	with io.open("BUILD_NUMBER", 'r') as f:
@@ -32,9 +33,9 @@ def build_project(increment=True):
 		with io.open("BUILD_NUMBER", 'w') as f:
 			f.write(str(BUILD_NUMBER))
 
-	print("BUILD", BUILD_NUMBER)
-	print("COMPILER", COMPILER_PATH)
-	print("CONSTANTS", CONSTANTS)
+	print("BUILD", BUILD_NUMBER, flush=True)
+	print("COMPILER", COMPILER_PATH, flush=True)
+	print("CONSTANTS", CONSTANTS, flush=True)
 
 	ret = subprocess.call([
 		COMPILER_PATH,
@@ -45,7 +46,7 @@ def build_project(increment=True):
 		"-\\)+",
 		"-d3",
 		"-e../errors"
-	])
+	] + [s + "=" for s in CONSTANTS])
 
 	# fixes sublime text jump-to-error feature by adding `gamemodes/` directory
 	# to errors and warnings.
@@ -54,11 +55,11 @@ def build_project(increment=True):
 		with io.open("errors", 'r') as f:
 			print("Build result:", ret)
 			for l in f:
-				if not os.path.isfile(l):
-					print("gamemodes/" + l, end='')
+				if re.match("[a-zA-Z]:\\.*", l):
+					print(l, end='')
 
 				else:
-					print(l, end='')
+					print("gamemodes/" + l, end='')
 
 		os.remove("errors")
 
@@ -67,9 +68,9 @@ def build_project(increment=True):
 
 
 def build_file(file):
-	print("Building file", file, "...")
+	print("Building file", file, "...", flush=True)
 	if not file:
-		print("No file passed")
+		print("No file passed", flush=True)
 		return
 
 	output = "-o" + os.path.splitext(file)[0]
@@ -82,17 +83,18 @@ def build_file(file):
 		"-(+",
 		"-\\)+",
 		"-d3",
-		"-e../errors"] + [s + "=" for s in CONSTANTS])
+		"-e../errors"
+	] + [s + "=" for s in CONSTANTS])
 
 	try:
 		with io.open("errors", 'r') as f:
 			print("Build result:", ret)
 			for l in f:
-				if not os.path.isfile(l):
-					print("gamemodes/" + l, end='')
+				if re.match("[a-zA-Z]:\\.*", l):
+					print(l, end='')
 
 				else:
-					print(l, end='')
+					print("gamemodes/" + l, end='')
 
 		os.remove("errors")
 
