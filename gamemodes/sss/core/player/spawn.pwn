@@ -28,8 +28,8 @@
 enum e_item_object{ItemType:e_itmobj_type,e_itmobj_exdata}
 static
 ItemType:	spawn_BagType,
-ItemType:	spawn_ReSpawnItems[4][e_item_object],
-ItemType:	spawn_NewSpawnItems[4][e_item_object];
+ItemType:	spawn_NewItems[16][e_item_object], // items given to new players
+ItemType:	spawn_ResItems[16][e_item_object]; // items given on respawns
 
 new
 PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
@@ -45,7 +45,14 @@ hook OnGameModeInit()
 {
 	print("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
 
-	new bagtype[ITM_MAX_NAME];
+	new
+		newitems[16][32],
+		newitems_total,
+
+		resitems[16][32],
+		resitems_total,
+
+		bagtype[ITM_MAX_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
@@ -53,16 +60,26 @@ hook OnGameModeInit()
 	if(!IsValidItemType(spawn_BagType))
 		printf("ERROR: spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
 
-	// todo: make this better.
-	spawn_ReSpawnItems[0][e_itmobj_type] = item_AntiSepBandage;
-	spawn_ReSpawnItems[1][e_itmobj_type] = item_Knife;
-	spawn_ReSpawnItems[2][e_itmobj_type] = item_Wrench;
-	spawn_ReSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[0][e_itmobj_type] = item_M9Pistol;
-	spawn_NewSpawnItems[1][e_itmobj_type] = item_Ammo9mm;
-	spawn_NewSpawnItems[2][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[1][e_itmobj_exdata] = 10;
+	GetSettingStringArray("spawn/new-spawn-items", "Knife", 16, newitems, newitems_total, 32);
+	GetSettingStringArray("spawn/respawn-items", "AntiSepBandage", 16, resitems, resitems_total, 32);
+
+	// todo: handle arraydata
+
+	for(new i; i < 16; i++)
+	{
+		spawn_NewItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newitems[i], true);
+
+		if(newitems[i][0] != EOS && !IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
+			printf("ERROR: item '%s' from spawn/new-spawn-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
+	}
+
+	for(new i; i < 16; i++)
+	{
+		spawn_ResItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(resitems[i], true);
+
+		if(resitems[i][0] != EOS && !IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
+			printf("ERROR: item '%s' from spawn/new-spawn-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
+	}
 }
 
 hook OnPlayerConnect(playerid)
@@ -247,7 +264,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	new
 		backpackitem,
-		containerid,
 		tmpitem,
 		Float:x,
 		Float:y,
@@ -306,30 +322,35 @@ PlayerSpawnNewCharacter(playerid, gender)
 	if(IsValidItemType(spawn_BagType))
 	{
 		backpackitem = CreateItem(spawn_BagType);
-		containerid = GetItemArrayDataAtCell(backpackitem, 1);
 
 		GivePlayerBag(playerid, backpackitem);
 
 		for(new i; i < 4; i++)
 		{
-			if(!IsValidItemType(spawn_ReSpawnItems[i][e_itmobj_type]))
+			if(!IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
 				break;
 
-			tmpitem = CreateItem(spawn_ReSpawnItems[i][e_itmobj_type]);
-			SetItemExtraData(tmpitem, spawn_ReSpawnItems[i][e_itmobj_exdata]);
-			AddItemToContainer(containerid, tmpitem);
+			tmpitem = CreateItem(spawn_ResItems[i][e_itmobj_type]);
+
+			if(spawn_ResItems[i][e_itmobj_exdata] != 0)
+				SetItemExtraData(tmpitem, spawn_ResItems[i][e_itmobj_exdata]);
+
+			AddItemToPlayer(playerid, tmpitem, true, false);
 		}
 
 		if(IsNewPlayer(playerid))
 		{
 			for(new i; i < 4; i++)
 			{
-				if(!IsValidItemType(spawn_NewSpawnItems[i][e_itmobj_type]))
+				if(!IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
 					break;
 
-				tmpitem = CreateItem(spawn_NewSpawnItems[i][e_itmobj_type]);
-				SetItemExtraData(tmpitem, spawn_NewSpawnItems[i][e_itmobj_exdata]);
-				AddItemToContainer(containerid, tmpitem);
+				tmpitem = CreateItem(spawn_NewItems[i][e_itmobj_type]);
+
+				if(spawn_NewItems[i][e_itmobj_exdata] != 0)
+					SetItemExtraData(tmpitem, spawn_NewItems[i][e_itmobj_exdata]);
+
+				AddItemToPlayer(playerid, tmpitem, true, false);
 			}
 		}
 	}
