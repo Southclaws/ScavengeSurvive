@@ -368,6 +368,7 @@ new stock
 #include "sss/utils/debug.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
+#include "sss/utils/headoffsets.pwn"
 
 // SERVER CORE
 #include "sss/core/server/settings.pwn"
