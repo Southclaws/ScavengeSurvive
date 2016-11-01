@@ -161,14 +161,14 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		switch(random(14))
 		{
-			case 0: SetPlayerClothesID(playerid, skin_MainM);
+			case 0: SetPlayerClothesID(playerid, skin_Civ0M);
 			case 1: SetPlayerClothesID(playerid, skin_Civ1M);
 			case 2: SetPlayerClothesID(playerid, skin_Civ2M);
 			case 3: SetPlayerClothesID(playerid, skin_Civ3M);
 			case 4: SetPlayerClothesID(playerid, skin_Civ4M);
 			case 5: SetPlayerClothesID(playerid, skin_MechM);
 			case 6: SetPlayerClothesID(playerid, skin_BikeM);
-			case 7: SetPlayerClothesID(playerid, skin_MainF);
+			case 7: SetPlayerClothesID(playerid, skin_Civ0F);
 			case 8: SetPlayerClothesID(playerid, skin_Civ1F);
 			case 9: SetPlayerClothesID(playerid, skin_Civ2F);
 			case 10: SetPlayerClothesID(playerid, skin_Civ3F);

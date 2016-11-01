@@ -35,26 +35,39 @@
 
 
 // SKINS/CLOTHES
-new
-	skin_MainM,
-	skin_MainF,
-
+new stock
+	skin_Civ0M,
 	skin_Civ1M,
 	skin_Civ2M,
 	skin_Civ3M,
 	skin_Civ4M,
+	skin_Civ5M,
+	skin_Civ6M,
+
 	skin_MechM,
 	skin_BikeM,
+	skin_PoliM,
 	skin_ArmyM,
+	skin_SwatM,
+	skin_TriaM,
 	skin_ClawM,
 	skin_FreeM,
 
+	skin_Civ0F,
 	skin_Civ1F,
 	skin_Civ2F,
 	skin_Civ3F,
 	skin_Civ4F,
+	skin_Civ5F,
+	skin_Civ6F,
+	skin_Civ7F,
+
+	skin_IndiF,
+	skin_Cnt0F,
+	skin_Cnt1F,
+	skin_GangF,
 	skin_ArmyF,
-	skin_IndiF;
+	skin_BusiF;
 
 // ITEM ATTACK ANIMATION HANDLES
 new
@@ -439,7 +452,8 @@ ItemType:		item_Radio			= INVALID_ITEM_TYPE,
 ItemType:		item_Locker			= INVALID_ITEM_TYPE,
 ItemType:		item_GearBox		= INVALID_ITEM_TYPE,
 ItemType:		item_ToolBox		= INVALID_ITEM_TYPE,
-ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE;
+ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE,
+ItemType:		item_PoliceHelm		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -698,7 +712,7 @@ public OnScriptInit()
 	item_BoaterHat		= DefineItemType("Boater Hat",			"BoaterHat",		18946,	1,	-12.18, 268.14, 0.0,	0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
 	item_BowlerHat		= DefineItemType("Bowler Hat",			"BowlerHat",		18947,	1,	-12.18, 268.14, 0.0,	0.01,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
 //140
-	item_PoliceCap		= DefineItemType("Police Cap",			"PoliceCap",		18636,	1,	0.0, 0.0, 0.0,			0.318,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
+	item_PoliceCap		= DefineItemType("Police Cap",			"PoliceCap",		18636,	1,	0.0, 0.0, 0.0,			0.05,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 1);
 	item_TopHat			= DefineItemType("Top Hat",				"TopHat",			19352,	2,	0.0, 0.0, 0.0,			-0.023,	0.225000, 0.034000, 0.014000, 81.799942, 7.699998, 179.999954, .maxhitpoints = 2);
 	item_Ammo9mm		= DefineItemType("9mm Rounds",			"Ammo9mm",			2037,	2,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741, .maxhitpoints = 2);
 	item_Ammo50			= DefineItemType(".50 Rounds",			"Ammo50",			2037,	2,	0.0, 0.0, 0.0,			0.082,	0.221075, 0.067746, 0.037494, 87.375968, 305.182189, 5.691741, .maxhitpoints = 2);
@@ -856,6 +870,7 @@ public OnScriptInit()
 	item_GearBox		= DefineItemType("Gear Box",			"GearBox",			19918,	5,	0.0, 0.0, 0.0,			-0.0361,0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 4);
 	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.0541,	0.086000, 0.022000, 0.022000,  -84.299980, -75.299972, 103.100028, .longpickup = true, .maxhitpoints = 8);
 	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	0.0, 0.0, 0.0,			0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true, .maxhitpoints = 16);
+	item_PoliceHelm		= DefineItemType("Police Helmet",		"PoliceHelm",		19200,	1,	0.0, 0.0, 0.0,			0.05,	0.173000, -0.010000, -0.020000,  -90.299995, 0.000000, 0.000000, .maxhitpoints = 1);
 
 /*
 1656 cuboid shape, carry item
@@ -902,7 +917,6 @@ public OnScriptInit()
 19846 small metal panel
 19347 for dogmeat...
 19314 combine with sledgehammer for picaxe!
-19200 police helmet
 */
 
 
@@ -1379,25 +1393,41 @@ public OnScriptInit()
 
 
 	// SKIN DEFINITIONS
-	skin_MainM	= DefineClothesType(60,		"Civilian",			0, 0.0);
-	skin_MainF	= DefineClothesType(192,	"Civilian",			1, 0.0);
 
-	skin_Civ1M	= DefineClothesType(170,	"Civilian",			0, 1.0);
-	skin_Civ2M	= DefineClothesType(188,	"Civilian",			0, 1.0);
-	skin_Civ3M	= DefineClothesType(44,		"Civilian",			0, 1.0);
-	skin_Civ4M	= DefineClothesType(206,	"Civilian",			0, 1.0);
-	skin_MechM	= DefineClothesType(50,		"Mechanic",			0, 0.6);
-	skin_BikeM	= DefineClothesType(254,	"Biker",			0, 0.3);
-	skin_ArmyM	= DefineClothesType(287,	"Military",			0, 0.2);
-	skin_ClawM	= DefineClothesType(101,	"Southclaw",		0, 0.1);
-	skin_FreeM	= DefineClothesType(156,	"Morgan Freeman",	0, 0.01);
+	// male civilian
+	skin_Civ0M	= DefineClothesType(60,		"Civilian",			0, 1.0,		true, true);
+	skin_Civ1M	= DefineClothesType(170,	"Civilian",			0, 1.0,		true, true);
+	skin_Civ2M	= DefineClothesType(250,	"Civilian",			0, 1.0,		true, true);
+	skin_Civ3M	= DefineClothesType(188,	"Civilian",			0, 1.0,		true, true);
+	skin_Civ4M	= DefineClothesType(206,	"Civilian",			0, 1.0,		true, true);
+	skin_Civ5M	= DefineClothesType(44,		"Civilian",			0, 1.0,		true, true);
+	skin_Civ6M	= DefineClothesType(289,	"Civilian",			0, 1.0,		false, false);
+	// male special
+	skin_MechM	= DefineClothesType(50,		"Mechanic",			0, 0.6,		true, true);
+	skin_BikeM	= DefineClothesType(254,	"Biker",			0, 0.3,		true, true);
+	skin_PoliM	= DefineClothesType(283,	"Cop",				0, 0.3,		false, false);
+	skin_ArmyM	= DefineClothesType(287,	"Military",			0, 0.2,		false, true);
+	skin_SwatM	= DefineClothesType(285,	"S.W.A.T.",			0, 0.1,		false, false);
+	skin_TriaM	= DefineClothesType(294,	"Triad",			0, 0.2,		false, false);
+	skin_ClawM	= DefineClothesType(101,	"Southclaw",		0, 0.1,		true, true);
+	skin_FreeM	= DefineClothesType(156,	"Morgan Freeman",	0, 0.01,	true, true);
 
-	skin_Civ1F	= DefineClothesType(65,		"Civilian",			1, 0.8);
-	skin_Civ2F	= DefineClothesType(93,		"Civilian",			1, 0.8);
-	skin_Civ3F	= DefineClothesType(233,	"Civilian",			1, 0.8);
-	skin_Civ4F	= DefineClothesType(193,	"Civilian",			1, 0.8);
-	skin_ArmyF	= DefineClothesType(191,	"Military",			1, 0.2);
-	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.1);
+	// female civilian
+	skin_Civ0F	= DefineClothesType(192,	"Civilian",			1, 1.0,		true, true);
+	skin_Civ1F	= DefineClothesType(93,		"Civilian",			1, 1.0,		true, true);
+	skin_Civ2F	= DefineClothesType(233,	"Civilian",			1, 1.0,		true, true);
+	skin_Civ3F	= DefineClothesType(193,	"Civilian",			1, 1.0,		true, true);
+	skin_Civ4F	= DefineClothesType(90,		"Civilian",			1, 1.0,		false, false);
+	skin_Civ5F	= DefineClothesType(190,	"Civilian",			1, 1.0,		false, false);
+	skin_Civ6F	= DefineClothesType(195,	"Civilian",			1, 1.0,		true, true);
+	skin_Civ7F	= DefineClothesType(41,		"Civilian",			1, 1.0,		false, false);
+	// female special
+	skin_IndiF	= DefineClothesType(131,	"Indian",			1, 0.6,		true, true);
+	skin_Cnt0F	= DefineClothesType(157,	"Country",			1, 0.7,		false, false);
+	skin_Cnt1F	= DefineClothesType(201,	"Country",			1, 0.7,		false, false);
+	skin_GangF	= DefineClothesType(298,	"Country",			1, 0.6,		false, false);
+	skin_ArmyF	= DefineClothesType(191,	"Military",			1, 0.2,		true, true);
+	skin_BusiF	= DefineClothesType(141,	"Business",			1, 0.1,		false, false);
 
 
 	// DRUG TYPE DEFINITIONS

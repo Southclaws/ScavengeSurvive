@@ -107,6 +107,9 @@ stock SetPlayerMaskItem(playerid, itemid)
 
 	new skinid = GetPlayerClothes(playerid);
 
+	if(!GetClothesMaskStatus(skinid))
+		return 0;
+
 	SetPlayerAttachedObject(
 		playerid, ATTACHSLOT_FACE, GetItemTypeModel(itemtype), 2,
 		mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],

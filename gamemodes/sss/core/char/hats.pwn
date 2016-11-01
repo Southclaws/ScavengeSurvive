@@ -107,6 +107,9 @@ stock SetPlayerHatItem(playerid, itemid)
 
 	new skinid = GetPlayerClothes(playerid);
 
+	if(!GetClothesHatStatus(skinid))
+		return 0;
+
 	SetPlayerAttachedObject(
 		playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
 		hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
