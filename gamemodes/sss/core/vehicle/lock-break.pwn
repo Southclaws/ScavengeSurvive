@@ -79,7 +79,7 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 {
 	if(type == 0)
 	{
-		if(GetVehicleLockState(vehicleid) != E_LOCK_STATE_DEFAULT)
+		if(GetVehicleLockState(vehicleid) == E_LOCK_STATE_OPEN)
 			return 0;
 
 		cro_OpenType[playerid] = 0;
@@ -119,7 +119,7 @@ public OnHoldActionUpdate(playerid, progress)
 {
 	if(cro_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
-		if(!IsValidVehicle(cro_TargetVehicle[playerid]) || GetItemType(GetPlayerItem(playerid)) != item_Crowbar || !IsPlayerInVehicleArea(playerid, cro_TargetVehicle[playerid]))
+		if(!IsValidVehicle(cro_TargetVehicle[playerid]) || !IsPlayerInVehicleArea(playerid, cro_TargetVehicle[playerid]))
 		{
 			StopBreakingVehicleLock(playerid);
 			return Y_HOOKS_BREAK_RETURN_1;

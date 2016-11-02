@@ -439,7 +439,8 @@ ItemType:		item_Radio			= INVALID_ITEM_TYPE,
 ItemType:		item_Locker			= INVALID_ITEM_TYPE,
 ItemType:		item_GearBox		= INVALID_ITEM_TYPE,
 ItemType:		item_ToolBox		= INVALID_ITEM_TYPE,
-ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE;
+ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE,
+ItemType:		item_LockBreaker	= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -856,6 +857,7 @@ public OnScriptInit()
 	item_GearBox		= DefineItemType("Gear Box",			"GearBox",			19918,	5,	0.0, 0.0, 0.0,			-0.0361,0.073999, -0.039000, -0.169000,  73.400024, -173.499984, 80.899993, .longpickup = true, .maxhitpoints = 4);
 	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.0541,	-0.209000, 0.052999, -0.231000,  73.400024, -173.499984, 80.899993, true, .longpickup = true, .maxhitpoints = 8);
 	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	0.0, 0.0, 0.0,			0.0,	-0.093000, 0.414000, -0.347999,  77.500022, 105.500022, 80.100013, true, .maxhitpoints = 16);
+	item_LockBreaker	= DefineItemType("Electronic Lockpick",	"LockBreaker",		1952,	2,	0.0, 0.0, 0.0,			0.001,	0.098000, 0.039999, 0.085000,  -94.900032, -177.600021, 18.499980, .maxhitpoints = 2);
 
 /*
 1656 cuboid shape, carry item
@@ -864,7 +866,6 @@ public OnScriptInit()
 1898 small spin clicker
 1899 very small single chip
 1901 small blue chips stack
-1952 small record needle
 1960 record
 2060 sandbag
 2277 picture of a cat
@@ -882,7 +883,6 @@ public OnScriptInit()
 2780 small grey box with handle
 2894 book
 2961 small red keypad-like thing
-2967 another old phone/radio
 2983 pipe valve
 3025 piece of scap metal pole/frame
 3067 metal frame
@@ -892,11 +892,8 @@ public OnScriptInit()
 19873 toilet paper
 19871 metal pole stand thing
 19917 large engine
-19918 small box
 19920 small remote device
-19921 toolbox case thing
 19932 possible weapon case
-19843 small metal panel
 19844 small metal panel
 19845 small metal panel
 19846 small metal panel
@@ -1365,6 +1362,7 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_Locator, item_MobilePhone, false, item_RadioPole, false, item_DataInterface, false, item_PowerSupply, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(30000, item_Hammer, DefineItemCraftSet(item_MetalFrame, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(25000, item_Hammer, DefineItemCraftSet(item_Canister, item_MetalFrame, false, item_RefinedMetal, false, item_RefinedMetal, false)));
+	SetConstructionSetWorkbench(SetCraftSetConstructible(45000, item_Screwdriver, DefineItemCraftSet(item_LockBreaker, item_LocksmithKit, false, item_FluxCap, false, item_RefinedMetal, false, item_RefinedMetal, false, item_PowerSupply, false)));
 
 	// Uncomment to write out crafting recipes in wikia format!
 	//WriteAllCombosToFile();

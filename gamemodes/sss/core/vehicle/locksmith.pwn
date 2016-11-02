@@ -132,6 +132,17 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			else
 				SaveVehicle(vehicleid);
 		}
+
+		if(itemtype == item_LockBreaker)
+		{
+			if(GetVehicleKey(vehicleid) == 0)
+			{
+				ShowActionText(playerid, ls(playerid, "LOCKVNOLOCK", true), 3000);
+				return Y_HOOKS_BREAK_RETURN_1;
+			}
+
+			StartBreakingVehicleLock(playerid, vehicleid, 0);
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
