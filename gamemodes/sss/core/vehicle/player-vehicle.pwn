@@ -183,7 +183,8 @@ LoadPlayerVehicle(filename[])
 	new
 		filepath[64],
 		data[VEH_CELL_END],
-		length;
+		length,
+		geid[GEID_LEN];
 
 	filepath = DIRECTORY_VEHICLE;
 	strcat(filepath, filename);
@@ -255,6 +256,8 @@ LoadPlayerVehicle(filename[])
 		}
 	}
 
+	modio_read(filepath, _T<G,E,I,D>, sizeof(geid), geid, false, false);
+
 	new
 		vehicleid,
 		owner[MAX_PLAYER_NAME];
@@ -268,7 +271,9 @@ LoadPlayerVehicle(filename[])
 		Float:data[VEH_CELL_POSZ],
 		Float:data[VEH_CELL_ROTZ],
 		data[VEH_CELL_COL1],
-		data[VEH_CELL_COL2]);
+		data[VEH_CELL_COL2],
+		_,
+		geid);
 
 	if(!IsValidVehicle(vehicleid))
 	{
@@ -311,9 +316,12 @@ LoadPlayerVehicle(filename[])
 		new
 			trailerid,
 			trailertrunksize,
-			trailername[MAX_VEHICLE_TYPE_NAME];
+			trailername[MAX_VEHICLE_TYPE_NAME],
+			trailergeid[GEID_LEN];
 
 		GetVehicleTypeName(data[VEH_CELL_TYPE], trailername);
+
+		modio_read(filepath, _T<T,G,E,I>, sizeof(trailergeid), trailergeid, false, false);
 
 		trailerid = CreateWorldVehicle(
 			data[VEH_CELL_TYPE],
@@ -322,7 +330,9 @@ LoadPlayerVehicle(filename[])
 			Float:data[VEH_CELL_POSZ],
 			Float:data[VEH_CELL_ROTZ],
 			data[VEH_CELL_COL1],
-			data[VEH_CELL_COL2]);
+			data[VEH_CELL_COL2],
+			_,
+			trailergeid);
 
 		trailertrunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
 
@@ -382,7 +392,7 @@ LoadPlayerVehicle(filename[])
 		}
 
 		if(veh_PrintEach)
-			logf("\t[LOAD] Trailer %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f", trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+			logf("\t[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 	}
 
 	new itemcount;
@@ -431,7 +441,7 @@ LoadPlayerVehicle(filename[])
 	}
 
 	if(veh_PrintEach)
-		logf("\t[LOAD] Vehicle %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f", vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		logf("\t[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	return 1;
 }
@@ -457,7 +467,8 @@ _SaveVehicle(vehicleid)
 		session,
 		vehiclename[MAX_VEHICLE_TYPE_NAME],
 		active[1],
-		data[VEH_CELL_END];
+		data[VEH_CELL_END],
+		geid[GEID_LEN];
 
 	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", pveh_Owner[vehicleid]);
 
@@ -487,13 +498,18 @@ _SaveVehicle(vehicleid)
 
 	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data);
 
+	geid = GetVehicleGEID(vehicleid);
+	modio_push(filename, _T<G,E,I,D>, GEID_LEN, geid);
+
 	// Now do trailers with the same modio parameters
 
 	new trailerid = GetVehicleTrailerID(vehicleid);
 
 	if(IsValidVehicle(trailerid))
 	{
-		new containerid = GetVehicleContainer(trailerid);
+		new
+			containerid = GetVehicleContainer(trailerid),
+			trailergeid[GEID_LEN];
 
 		data[VEH_CELL_TYPE] = GetVehicleType(trailerid);
 		GetVehicleHealth(trailerid, Float:data[VEH_CELL_HEALTH]);
@@ -507,6 +523,10 @@ _SaveVehicle(vehicleid)
 
 		// TDAT = Trailer Data
 		modio_push(filename, _T<T,D,A,T>, VEH_CELL_END, data);
+
+		// TGEI = Trailer GEID
+		trailergeid = GetVehicleGEID(trailerid);
+		modio_push(filename, _T<T,G,E,I>, GEID_LEN, trailergeid);
 
 		new itemcount;
 
@@ -536,7 +556,8 @@ _SaveVehicle(vehicleid)
 
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Trailer %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f",
+			logf("[SAVE] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
+				trailergeid,
 				trailerid,
 				_:GetVehicleLockState(trailerid),
 				itemcount,
@@ -580,7 +601,8 @@ _SaveVehicle(vehicleid)
 	{
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Vehicle %d (%d) %d items: %s for %s at %.2f, %.2f, %.2f",
+			logf("[SAVE] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
+				geid,
 				vehicleid,
 				_:GetVehicleLockState(vehicleid),
 				itemcount,
@@ -659,7 +681,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 
 _PlayerUpdateVehicle(playerid, vehicleid)
 {
-	d:1:HANDLER("[_PlayerUpdateVehicle] %d %d", playerid, vehicleid);
+	d:1:HANDLER("[_PlayerUpdateVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
@@ -684,7 +706,7 @@ hook OnVehicleDestroyed(vehicleid)
 
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
-	d:1:HANDLER("[_SetVehicleOwner] %d '%s' %d", vehicleid, name, playerid);
+	d:1:HANDLER("[_SetVehicleOwner] %d (%s) '%s' %d", vehicleid, GetVehicleGEID(vehicleid), name, playerid);
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -710,7 +732,7 @@ _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 
 _RemoveVehicleOwner(vehicleid)
 {
-	d:1:HANDLER("[_RemoveVehicleOwner] %d", vehicleid);
+	d:1:HANDLER("[_RemoveVehicleOwner] %d (%s)", vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -729,7 +751,7 @@ _RemoveVehicleOwner(vehicleid)
 */
 _UpdatePlayerVehicle(playerid, vehicleid)
 {
-	d:1:HANDLER("[_UpdatePlayerVehicle] %d %d", playerid, vehicleid);
+	d:1:HANDLER("[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -745,11 +767,11 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	{
 		// Vehicle has no owner, assign player as owner
 		// Set owner of player's old vehicle to null
-		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle %d owner is null", vehicleid);
+		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle owner is null");
 
 		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 		{
-			d:1:HANDLER("[_UpdatePlayerVehicle] Player vehicle is %d, removing", pveh_PlayerVehicle[playerid]);
+			d:1:HANDLER("[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 		}
 
@@ -759,7 +781,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	else
 	{
 		// Vehicle has an owner
-		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle %d owner is not null: '%s'", vehicleid, pveh_Owner[vehicleid]);
+		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
 		if(pveh_PlayerVehicle[playerid] == vehicleid)
 		{
 			// Vehicle's owner is the player, do nothing but save it
@@ -775,7 +797,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
 			{
 				// Player owns a vehicle
-				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context already owns a vehicle (%d) swapping owners", pveh_PlayerVehicle[playerid]);
+				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 
 				// pveh_PlayerVehicle[playerid] = player's previous vehicle
 				// vehicleid = new vehicle

@@ -64,7 +64,9 @@ Float:	veh_spawnR,
 		veh_lastUsed,
 		veh_used,
 		veh_occupied,
-		veh_dead
+		veh_dead,
+
+		veh_geid[GEID_LEN]
 }
 
 
@@ -166,7 +168,7 @@ SetPlayerVehicleSpeedUI(playerid, str[])
 ==============================================================================*/
 
 
-stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0)
+stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, geid[GEID_LEN] = "")
 {
 	if(!(0 <= type < veh_TypeTotal))
 	{
@@ -176,7 +178,7 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 
 	//printf("[CreateWorldVehicle] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
 
-	new vehicleid = _veh_create(type, x, y, z, r, colour1, colour2, world);
+	new vehicleid = _veh_create(type, x, y, z, r, colour1, colour2, world, geid);
 
 	veh_TypeCount[type]++;
 
@@ -229,9 +231,12 @@ stock ResetVehicle(vehicleid)
 	new
 		type = GetVehicleType(vehicleid),
 		tmp[E_VEHICLE_DATA],
+		geid[GEID_LEN],
 		newid;
 
 	tmp = veh_Data[vehicleid];
+
+	strcat(geid, veh_Data[vehicleid][veh_geid], GEID_LEN);
 
 	DestroyVehicle(vehicleid);
 
@@ -241,7 +246,9 @@ stock ResetVehicle(vehicleid)
 		veh_Data[vehicleid][veh_spawnZ],
 		veh_Data[vehicleid][veh_spawnR],
 		veh_Data[vehicleid][veh_colour1],
-		veh_Data[vehicleid][veh_colour2]);
+		veh_Data[vehicleid][veh_colour2],
+		_,
+		geid);
 
 	CallLocalFunction("OnVehicleReset", "dd", vehicleid, newid);
 
@@ -265,7 +272,7 @@ stock RespawnVehicle(vehicleid)
 ==============================================================================*/
 
 
-_veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0)
+_veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, geid[GEID_LEN] = "")
 {
 	new vehicleid = CreateVehicle(GetVehicleTypeModel(type), x, y, z, r, colour1, colour2, 864000);
 
@@ -299,6 +306,12 @@ _veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 
 	veh_Data[vehicleid][veh_used]		= 0;
 	veh_Data[vehicleid][veh_occupied]	= 0;
 	veh_Data[vehicleid][veh_dead]		= 0;
+
+	if(isnull(geid))
+		mkgeid(vehicleid, veh_Data[vehicleid][veh_geid]);
+
+	else
+		strcat(veh_Data[vehicleid][veh_geid], geid, GEID_LEN);
 
 	return vehicleid;
 }
@@ -596,15 +609,11 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	{
 		new
 			vehicleid,
-			vehicletype,
-			vehiclename[32],
 			Float:x,
 			Float:y,
 			Float:z;
 
 		vehicleid = GetPlayerVehicleID(playerid);
-		vehicletype = GetVehicleType(vehicleid);
-		GetVehicleTypeName(vehicletype, vehiclename);
 		GetVehiclePos(vehicleid, x, y, z);
 
 		if(GetVehicleTypeCategory(GetVehicleType(vehicleid)) == VEHICLE_CATEGORY_PUSHBIKE)
@@ -620,19 +629,13 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		veh_EnterTick[playerid] = GetTickCount();
 
-		logf("[VEHICLE] %p entered vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p entered %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(vehicleid), vehicleid, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
-		new
-			vehicleid,
-			vehicletype,
-			vehiclename[32];
+		new vehicleid = GetPlayerLastVehicle(playerid);
 
-		vehicleid = GetPlayerLastVehicle(playerid);
-		vehicletype = GetVehicleType(vehicleid);
-		GetVehicleTypeName(vehicletype, vehiclename);
 		GetVehiclePos(vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 		GetVehicleZAngle(vehicleid, veh_Data[vehicleid][veh_spawnR]);
 
@@ -643,7 +646,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
 
-		logf("[VEHICLE] %p exited vehicle as driver %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+		logf("[VEHICLE] %p exited %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(vehicleid), vehicleid, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 	}
 
 	if(newstate == PLAYER_STATE_PASSENGER)
@@ -663,7 +666,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, GetPlayerVehicleID(playerid));
 
-		logf("[VEHICLE] %p entered vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p entered %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(vehicleid), vehicleid, x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_PASSENGER)
@@ -683,7 +686,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), E_LOCK_STATE_OPEN);
 		HideVehicleUI(playerid);
-		logf("[VEHICLE] %p exited vehicle as passenger %d (%s) at %f, %f, %f", playerid, vehicleid, vehiclename, x, y, z);
+		logf("[VEHICLE] %p exited %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(vehicleid), vehicleid, x, y, z);
 	}
 
 	return 1;
@@ -851,7 +854,7 @@ public OnVehicleDeath(vehicleid, killerid)
 
 	veh_Data[vehicleid][veh_dead] = true;
 
-	printf("[OnVehicleDeath] Vehicle %d killed by %s at %f %f %f", vehicleid, name, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+	logf("[OnVehicleDeath] Vehicle %s (%d) killed by %s at %f %f %f", GetVehicleGEID(vehicleid), vehicleid, name, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 }
 
 public OnVehicleSpawn(vehicleid)
@@ -860,14 +863,14 @@ public OnVehicleSpawn(vehicleid)
 	{
 		if(IsVehicleValidOutOfBounds(vehicleid))
 		{
-			printf("Dead Vehicle %d Spawned, is valid out-of-bounds vehicle, resetting.", vehicleid);
+			logf("Dead Vehicle %s (%d) Spawned, is valid out-of-bounds vehicle, resetting.", GetVehicleGEID(vehicleid), vehicleid);
 
 			veh_Data[vehicleid][veh_dead] = false;
 			ResetVehicle(vehicleid);
 		}
 		else
 		{
-			printf("Dead Vehicle %d Spawned, spawning as inactive.", vehicleid);
+			logf("Dead Vehicle %s (%d) Spawned, spawning as inactive.", GetVehicleGEID(vehicleid), vehicleid);
 
 			veh_Data[vehicleid][veh_health] = 300.0;
 			ResetVehicle(vehicleid);
@@ -1127,6 +1130,19 @@ stock IsVehicleDead(vehicleid)
 		return 0;
 
 	return veh_Data[vehicleid][veh_dead];
+}
+
+// veh_geid
+stock GetVehicleGEID(vehicleid)
+{
+	new geid[GEID_LEN];
+
+	if(!IsValidVehicle(vehicleid))
+		return geid;
+
+	strcat(geid, veh_Data[vehicleid][veh_geid], GEID_LEN);
+
+	return geid;
 }
 
 // veh_TypeCount

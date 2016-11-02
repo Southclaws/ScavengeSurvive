@@ -117,13 +117,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			{
 				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 				ShowActionText(playerid, ls(playerid, "UNLOCKED", true), 3000);
-				logf("[VLOCK] %p unlocked vehicle %d", playerid, vehicleid);
+				logf("[VLOCK] %p unlocked vehicle %s (%d)", playerid, GetVehicleGEID(vehicleid), vehicleid);
 			}
 			else
 			{
 				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_EXTERNAL);
 				ShowActionText(playerid, ls(playerid, "LOCKED", true), 3000);
-				logf("[VLOCK] %p locked vehicle %d", playerid, vehicleid);
+				logf("[VLOCK] %p locked vehicle %s (%d)", playerid, GetVehicleGEID(vehicleid), vehicleid);
 			}
 
 			if(IsVehicleTypeTrailer(vehicletype))
