@@ -33,17 +33,36 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/aim-shout.pwn");
 
-	if( (newkeys & 128) && (newkeys & 512) )
+	if(IsPlayerInAnyVehicle(playerid))
 	{
-		if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
+		if( (newkeys & 320) && (newkeys & 1) )
 		{
-			new string[128];
+			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
+			{
+				new string[128];
 
-			GetPlayerAimShoutText(playerid, string);
+				GetPlayerAimShoutText(playerid, string);
 
-			PlayerSendChat(playerid, string, 0.0);
+				PlayerSendChat(playerid, string, 0.0);
 
-			aimshout_Tick[playerid] = GetTickCount();
+				aimshout_Tick[playerid] = GetTickCount();
+			}
+		}
+	}
+	else
+	{
+		if( (newkeys & 128) && (newkeys & 512) )
+		{
+			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
+			{
+				new string[128];
+
+				GetPlayerAimShoutText(playerid, string);
+
+				PlayerSendChat(playerid, string, 0.0);
+
+				aimshout_Tick[playerid] = GetTickCount();
+			}
 		}
 	}
 
