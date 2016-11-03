@@ -481,8 +481,8 @@ LoadPlayerChar(playerid)
 
 			d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
 
-			ClearSerializer();
 		}
+		ClearSerializer();
 	}
 
 /*
@@ -509,10 +509,10 @@ LoadPlayerChar(playerid)
 
 				AddItemToContainer(containerid, itemid);
 
-				d:3:HANDLER("[LOAD:%p] - Bag item %d: (%d type: %d)", playerid, i, itemid, _:itemtype);
+				d:3:HANDLER("[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, itemid, _:itemtype);
 
-				ClearSerializer();
 			}
+			ClearSerializer();
 		}
 	}
 
