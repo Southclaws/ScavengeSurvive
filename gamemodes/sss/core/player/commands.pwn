@@ -139,16 +139,17 @@ CMD:restartinfo(playerid, params[])
 
 CMD:tooltips(playerid, params[])
 {
-	if(GetPlayerBitFlag(playerid, ToolTips))
+	if(IsPlayerToolTipsOn(playerid))
 	{
 		ChatMsgLang(playerid, YELLOW, "TOOLTIPSOFF");
-		SetPlayerBitFlag(playerid, ToolTips, false);
+		SetPlayerToolTips(playerid, false);
 	}
 	else
 	{
 		ChatMsgLang(playerid, YELLOW, "TOOLTIPSON");
-		SetPlayerBitFlag(playerid, ToolTips, true);
+		SetPlayerToolTips(playerid, true);
 	}
+
 	return 1;
 }
 

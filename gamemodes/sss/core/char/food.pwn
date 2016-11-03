@@ -121,7 +121,7 @@ ptask FoodUpdate[1000](playerid)
 	if(food < 0.0)
 		food = 0.0;
 
-	if(GetPlayerBitFlag(playerid, ShowHUD))
+	if(IsPlayerHudOn(playerid))
 	{
 		SetPlayerProgressBarValue(playerid, HungerBar[playerid], food);
 	}

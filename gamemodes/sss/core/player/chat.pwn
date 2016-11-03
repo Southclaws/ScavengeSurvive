@@ -28,18 +28,22 @@
 // Chat modes
 enum
 {
-	CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
-	CHAT_MODE_GLOBAL,		// 1 - Speak to all players
-	CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
-	CHAT_MODE_ADMIN			// 3 - Speak to admins
+		CHAT_MODE_LOCAL,		// 0 - Speak to players within chatbubble distance
+		CHAT_MODE_GLOBAL,		// 1 - Speak to all players
+		CHAT_MODE_RADIO,		// 2 - Speak to players on the same radio frequency
+		CHAT_MODE_ADMIN			// 3 - Speak to admins
 }
 
 
 new
-	chat_MessageStreak[MAX_PLAYERS],
-	chat_LastMessageTick[MAX_PLAYERS];
+		chat_Mode[MAX_PLAYERS],
+Float:	chat_Freq[MAX_PLAYERS],
+bool:	chat_Quiet[MAX_PLAYERS],
+		chat_MessageStreak[MAX_PLAYERS],
+		chat_LastMessageTick[MAX_PLAYERS];
 
 
+forward Float:GetPlayerRadioFrequency(playerid);
 forward OnPlayerSendChat(playerid, text[], Float:frequency);
 
 hook OnPlayerConnect(playerid)
@@ -85,17 +89,17 @@ hook OnPlayerText(playerid, text[])
 
 	chat_LastMessageTick[playerid] = GetTickCount();
 
-	if(GetPlayerChatMode(playerid) == CHAT_MODE_LOCAL)
+	if(chat_Mode[playerid] == CHAT_MODE_LOCAL)
 		PlayerSendChat(playerid, text, 0.0);
 
-	if(GetPlayerChatMode(playerid) == CHAT_MODE_GLOBAL)
+	if(chat_Mode[playerid] == CHAT_MODE_GLOBAL)
 		PlayerSendChat(playerid, text, 1.0);
 
-	if(GetPlayerChatMode(playerid) == CHAT_MODE_ADMIN)
+	if(chat_Mode[playerid] == CHAT_MODE_ADMIN)
 		PlayerSendChat(playerid, text, 3.0);
 
-	if(GetPlayerChatMode(playerid) == CHAT_MODE_RADIO)
-		PlayerSendChat(playerid, text, GetPlayerRadioFrequency(playerid));
+	if(chat_Mode[playerid] == CHAT_MODE_RADIO)
+		PlayerSendChat(playerid, text, chat_Freq[playerid]);
 
 	return 0;
 }
@@ -161,7 +165,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
-			if(GetPlayerBitFlag(i, GlobalQuiet))
+			if(chat_Quiet[i])
 				continue;
 
 			SendClientMessage(i, WHITE, line1);
@@ -245,7 +249,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
-			if(-0.05 < frequency - GetPlayerRadioFrequency(i) < 0.05)
+			if(-0.05 < frequency - chat_Freq[i] < 0.05)
 			{
 				SendClientMessage(i, CHAT_RADIO, line1);
 
@@ -258,6 +262,49 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		return 1;
 	}
+}
+
+stock GetPlayerChatMode(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return chat_Mode[playerid];
+}
+
+stock SetPlayerChatMode(playerid, chatmode)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	chat_Mode[playerid] = chatmode;
+
+	return 1;
+}
+
+stock IsPlayerGlobalQuiet(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return chat_Quiet[playerid];
+}
+
+stock Float:GetPlayerRadioFrequency(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0.0;
+
+	return chat_Freq[playerid];
+}
+stock SetPlayerRadioFrequency(playerid, Float:frequency)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	chat_Freq[playerid] = frequency;
+
+	return 1;
 }
 
 CMD:g(playerid, params[])
@@ -313,11 +360,11 @@ CMD:r(playerid, params[])
 	if(isnull(params))
 	{
 		SetPlayerChatMode(playerid, CHAT_MODE_RADIO);
-		ChatMsgLang(playerid, WHITE, "RADIOFREQUN", GetPlayerRadioFrequency(playerid));
+		ChatMsgLang(playerid, WHITE, "RADIOFREQUN", chat_Freq[playerid]);
 	}
 	else
 	{
-		PlayerSendChat(playerid, params, GetPlayerRadioFrequency(playerid));
+		PlayerSendChat(playerid, params, chat_Freq[playerid]);
 	}
 
 	return 7;
@@ -325,14 +372,14 @@ CMD:r(playerid, params[])
 
 CMD:quiet(playerid, params[])
 {
-	if(GetPlayerBitFlag(playerid, GlobalQuiet))
+	if(chat_Quiet[playerid])
 	{
-		SetPlayerBitFlag(playerid, GlobalQuiet, false);
+		chat_Quiet[playerid] = false;
 		ChatMsgLang(playerid, WHITE, "RADIOQUIET0");
 	}
 	else
 	{
-		SetPlayerBitFlag(playerid, GlobalQuiet, true);
+		chat_Quiet[playerid] = true;
 		ChatMsgLang(playerid, WHITE, "RADIOQUIET1");
 	}
 

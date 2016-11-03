@@ -214,7 +214,7 @@ LoadAccount(playerid)
 		exists,
 		password[MAX_PASSWORD_LEN],
 		ipv4,
-		alive,
+		bool:alive,
 		regdate,
 		lastlog,
 		spawntime,
@@ -288,7 +288,7 @@ LoadAccount(playerid)
 		}
 	}
 
-	SetPlayerBitFlag(playerid, Alive, alive);
+	SetPlayerAliveState(playerid, alive);
 	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = true;
 
@@ -366,7 +366,7 @@ CreateAccount(playerid, password[])
 	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
 	acc_LoggedIn[playerid] = true;
-	SetPlayerBitFlag(playerid, ToolTips, true);
+	SetPlayerToolTips(playerid, true);
 
 	PlayerCreateNewCharacter(playerid);
 
@@ -722,7 +722,7 @@ SavePlayerData(playerid)
 		}
 
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
-		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerKarma(playerid));
+		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 
@@ -738,7 +738,7 @@ SavePlayerData(playerid)
 	{
 		d:2:HANDLER("[SavePlayerData] Player is dead");
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerKarma(playerid));
+		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
 
@@ -1003,7 +1003,7 @@ stock SetAccountWarnings(name[], warnings)
 }
 
 // FIELD_ID_PLAYER_AIMSHOUT
-stock GetAccountAimshout(name[], string[128])
+stock GetAccountAimshout(name[], string[])
 {
 	stmt_bind_result_field(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, string, 128);
 	stmt_bind_value(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -1016,7 +1016,7 @@ stock GetAccountAimshout(name[], string[128])
 	return 1;
 }
 
-stock SetAccountAimshout(name[], string[128])
+stock SetAccountAimshout(name[], string[])
 {
 	stmt_bind_value(stmt_AccountSetAimShout, 0, DB::TYPE_STRING, string, 128);
 	stmt_bind_value(stmt_AccountSetAimShout, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);

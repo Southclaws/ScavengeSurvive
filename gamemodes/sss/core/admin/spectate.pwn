@@ -340,7 +340,7 @@ timer UpdateSpectateMode[100](playerid)
 			title[MAX_PLAYER_NAME + 6],
 			str[256];
 
-		if(!GetPlayerBitFlag(playerid, ShowHUD))
+		if(!IsPlayerHudOn(playerid))
 		{
 			PlayerTextDrawHide(playerid, spectate_Info);
 			return;

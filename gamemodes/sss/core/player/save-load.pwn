@@ -53,7 +53,7 @@ enum
 	PLY_CELL_WARNS,
 	PLY_CELL_FREQ,
 	PLY_CELL_CHATMODE,
-	PLY_CELL_INFECTED,
+	PLY_CELL_UNUSED,
 	PLY_CELL_TOOLTIPS,
 	PLY_CELL_SPAWN_X,
 	PLY_CELL_SPAWN_Y,
@@ -145,8 +145,7 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_WARNS] = GetPlayerWarnings(playerid);
 	data[PLY_CELL_FREQ] = _:GetPlayerRadioFrequency(playerid);
 	data[PLY_CELL_CHATMODE] = GetPlayerChatMode(playerid);
-	//data[PLY_CELL_INFECTED] = _:GetPlayerBitFlag(playerid, Infected);
-	data[PLY_CELL_TOOLTIPS] = _:GetPlayerBitFlag(playerid, ToolTips);
+	data[PLY_CELL_TOOLTIPS] = IsPlayerToolTipsOn(playerid);
 
 	GetPlayerPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	GetPlayerFacingAngle(playerid, Float:data[PLY_CELL_SPAWN_R]);
@@ -383,8 +382,7 @@ LoadPlayerChar(playerid)
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
 	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
-	//SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
-	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
+	SetPlayerToolTips(playerid, bool:data[PLY_CELL_TOOLTIPS]);
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
@@ -622,8 +620,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
 	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
-	//SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
-	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
+	SetPlayerToolTips(playerid, bool:data[PLY_CELL_TOOLTIPS]);
 
 	if(!IsPointInMapBounds(Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]))
 		data[PLY_CELL_SPAWN_Z] += _:1.0;

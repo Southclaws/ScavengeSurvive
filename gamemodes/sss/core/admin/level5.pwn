@@ -121,19 +121,19 @@ ACMD:unloadfs[5](playerid, params[])
 
 ACMD:hud[5](playerid, params[])
 {
-	if(GetPlayerBitFlag(playerid, ShowHUD))
+	if(IsPlayerHudOn(playerid))
 	{
 		TogglePlayerHungerBar(playerid, false);
 		ToggleVersionInfo(playerid, false);
 		HideWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, false);
+		TogglePlayerHUD(playerid, false);
 	}
 	else
 	{
 		TogglePlayerHungerBar(playerid, true);
 		ToggleVersionInfo(playerid, true);
 		ShowWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, true);
+		TogglePlayerHUD(playerid, true);
 	}
 }
 

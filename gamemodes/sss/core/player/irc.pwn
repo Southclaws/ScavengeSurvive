@@ -251,7 +251,7 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 
 		foreach(new i : Player)
 		{
-			if(GetPlayerBitFlag(i, GlobalQuiet))
+			if(IsPlayerGlobalQuiet(i))
 				continue;
 
 			SendClientMessage(i, WHITE, line1);

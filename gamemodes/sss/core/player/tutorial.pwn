@@ -184,8 +184,8 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		SetPlayerGender(playerid, GetClothesGender(GetPlayerClothesID(playerid)));
 		SetPlayerBleedRate(playerid, 0.0);
 
-		SetPlayerBitFlag(playerid, Alive, false);
-		SetPlayerBitFlag(playerid, Spawned, false);
+		SetPlayerAliveState(playerid, false);
+		SetPlayerSpawnedState(playerid, false);
 
 		FreezePlayer(playerid, gLoginFreezeTime * 1000);
 		PrepareForSpawn(playerid);
@@ -252,8 +252,8 @@ ExitTutorial(playerid)
 	
 	PlayerInTutorial[playerid] = false;
 	HideHelpTip(playerid);
-	SetPlayerBitFlag(playerid, Spawned, false);
-	SetPlayerBitFlag(playerid, Alive, false);
+	SetPlayerSpawnedState(playerid, false);
+	SetPlayerAliveState(playerid, false);
 	SetPlayerVirtualWorld(playerid, 0);
 	PlayerCreateNewCharacter(playerid);
 	SetPlayerBrightness(playerid, 0);

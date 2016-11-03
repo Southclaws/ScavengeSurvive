@@ -46,6 +46,13 @@ Float:		spawn_ResFood,
 Float:		spawn_ResBleed,
 ItemType:	spawn_ResItems[16][e_item_object];
 
+static
+bool:		spawn_State[MAX_PLAYERS],
+Float:		spawn_PosX[MAX_PLAYERS],
+Float:		spawn_PosY[MAX_PLAYERS],
+Float:		spawn_PosZ[MAX_PLAYERS],
+Float:		spawn_RotZ[MAX_PLAYERS];
+
 new
 PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 PlayerText:	ClassButtonFemale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
@@ -160,7 +167,7 @@ SpawnLoggedInPlayer(playerid)
 
 PrepareForSpawn(playerid)
 {
-	SetPlayerBitFlag(playerid, Spawned, true);
+	SetPlayerSpawnedState(playerid, true);
 
 	SetCameraBehindPlayer(playerid);
 	SetAllWeaponSkills(playerid, 500);
@@ -172,7 +179,7 @@ PrepareForSpawn(playerid)
 
 PlayerSpawnExistingCharacter(playerid)
 {
-	if(GetPlayerBitFlag(playerid, Spawned))
+	if(IsPlayerSpawned(playerid))
 		return 0;
 
 	if(!LoadPlayerChar(playerid))
@@ -271,7 +278,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
-	if(GetPlayerBitFlag(playerid, Spawned))
+	if(IsPlayerSpawned(playerid))
 		return 0;
 
 	new name[MAX_PLAYER_NAME];
@@ -342,7 +349,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	SetPlayerGender(playerid, gender);
 
-	SetPlayerBitFlag(playerid, Alive, true);
+	SetPlayerAliveState(playerid, true);
 
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 	PrepareForSpawn(playerid);
@@ -402,6 +409,73 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 ==============================================================================*/
 
+
+// spawn_State
+stock IsPlayerSpawned(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return spawn_State[playerid];
+}
+
+stock SetPlayerSpawnedState(playerid, bool:st)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	spawn_State[playerid] = st;
+
+	return 1;
+}
+
+// spawn_PosX
+// spawn_PosY
+// spawn_PosZ
+stock GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	x = spawn_PosX[playerid];
+	y = spawn_PosY[playerid];
+	z = spawn_PosZ[playerid];
+
+	return 1;
+}
+
+stock SetPlayerSpawnPos(playerid, Float:x, Float:y, Float:z)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	spawn_PosX[playerid] = x;
+	spawn_PosY[playerid] = y;
+	spawn_PosZ[playerid] = z;
+
+	return 1;
+}
+
+// spawn_RotZ
+stock GetPlayerSpawnRot(playerid, &Float:r)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	r = spawn_RotZ[playerid];
+
+	return 1;
+}
+
+stock SetPlayerSpawnRot(playerid, Float:r)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	spawn_RotZ[playerid] = r;
+
+	return 1;
+}
 
 IsAtDefaultPos(Float:x, Float:y, Float:z)
 {

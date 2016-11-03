@@ -191,11 +191,6 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Macros
-#define t:%1<%2>					((%1)|=(%2))
-#define f:%1<%2>					((%1)&=~(%2))
-
-#define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
-
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
 
@@ -740,7 +735,7 @@ task RestartUpdate[1000]()
 
 			foreach(new i : Player)
 			{
-				if(GetPlayerBitFlag(i, ShowHUD))
+				if(IsPlayerHudOn(i))
 					TextDrawShowForPlayer(i, RestartCount);
 
 				else

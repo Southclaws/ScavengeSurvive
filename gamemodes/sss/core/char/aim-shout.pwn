@@ -26,6 +26,7 @@
 
 
 static
+	aimshout_Text[MAX_PLAYERS][128],
 	aimshout_Tick[MAX_PLAYERS];
 
 
@@ -39,11 +40,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{
-				new string[128];
-
-				GetPlayerAimShoutText(playerid, string);
-
-				PlayerSendChat(playerid, string, 0.0);
+				PlayerSendChat(playerid, aimshout_Text[playerid], 0.0);
 
 				aimshout_Tick[playerid] = GetTickCount();
 			}
@@ -55,11 +52,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{
-				new string[128];
-
-				GetPlayerAimShoutText(playerid, string);
-
-				PlayerSendChat(playerid, string, 0.0);
+				PlayerSendChat(playerid, aimshout_Text[playerid], 0.0);
 
 				aimshout_Tick[playerid] = GetTickCount();
 			}
@@ -69,11 +62,35 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
+stock GetPlayerAimShoutText(playerid, string[])
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	string[0] = EOS;
+	strcat(string, aimshout_Text[playerid], 128);
+
+	return 1;
+}
+
+stock SetPlayerAimShoutText(playerid, string[])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	new name[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	strcat(aimshout_Text[playerid], string, 128);
+	SetAccountAimshout(name, string);
+
+	return 1;
+}
+
 CMD:aimshout(playerid, params[])
 {
-	new
-		string[128],
-		name[MAX_PLAYER_NAME];
+	new string[128];
 
 	if(sscanf(params, "s[128]", string))
 	{
@@ -81,11 +98,7 @@ CMD:aimshout(playerid, params[])
 		return 1;
 	}
 
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
 	SetPlayerAimShoutText(playerid, string);
-	SetAccountAimshout(name, string);
-
 	ChatMsgLang(playerid, YELLOW, "AIMSHOUTSET", string);
 
 	return 1;

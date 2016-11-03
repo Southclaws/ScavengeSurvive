@@ -26,15 +26,21 @@
 
 
 static
+bool:		ToolTips[MAX_PLAYERS],
 PlayerText:	ToolTipText[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
 ShowHelpTip(playerid, text[], time = 0)
 {
+	if(!ToolTips[playerid])
+		return 0;
+
 	PlayerTextDrawSetString(playerid, ToolTipText[playerid], text);
 	PlayerTextDrawShow(playerid, ToolTipText[playerid]);
 
 	if(time > 0)
 		defer HideHelpTip_Delay(playerid, time);
+
+	return 1;
 }
 
 timer HideHelpTip_Delay[time](playerid, time)
@@ -69,7 +75,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 
-	if(IsPlayerToolTipsOn(playerid))
+	if(ToolTips[playerid])
 	{
 		new
 			itemname[ITM_MAX_NAME],
@@ -94,8 +100,26 @@ hook OnPlayerDropItem(playerid, itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 
-	if(IsPlayerToolTipsOn(playerid))
+	if(ToolTips[playerid])
 		HideHelpTip(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+stock IsPlayerToolTipsOn(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return ToolTips[playerid];
+}
+
+stock SetPlayerToolTips(playerid, bool:st)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	ToolTips[playerid] = st;
+
+	return 1;
 }
