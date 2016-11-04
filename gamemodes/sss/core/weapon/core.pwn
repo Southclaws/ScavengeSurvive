@@ -377,7 +377,7 @@ _FastUpdateHandler(playerid)
 	return;
 }
 
-timer _RepeatingFire[100](playerid)
+timer _RepeatingFire[1000](playerid)
 {
 	new
 		itemid,
