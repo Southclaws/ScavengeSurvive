@@ -309,7 +309,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: SetPlayerClothesID(playerid, skin_MainM);
+			case 0: SetPlayerClothesID(playerid, skin_Civ0M);
 			case 1: SetPlayerClothesID(playerid, skin_Civ1M);
 			case 2: SetPlayerClothesID(playerid, skin_Civ2M);
 			case 3: SetPlayerClothesID(playerid, skin_Civ3M);
@@ -322,7 +322,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: SetPlayerClothesID(playerid, skin_MainF);
+			case 0: SetPlayerClothesID(playerid, skin_Civ0F);
 			case 1: SetPlayerClothesID(playerid, skin_Civ1F);
 			case 2: SetPlayerClothesID(playerid, skin_Civ2F);
 			case 3: SetPlayerClothesID(playerid, skin_Civ3F);

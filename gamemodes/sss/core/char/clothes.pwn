@@ -25,7 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_SKINS		(22)
+#define MAX_SKINS		(29)
 #define MAX_SKIN_NAME	(32)
 
 
@@ -34,7 +34,9 @@ enum E_SKIN_DATA
 			skin_model,
 			skin_name[MAX_SKIN_NAME],
 			skin_gender,
-Float:		skin_lootSpawnChance
+Float:		skin_lootSpawnChance,
+			skin_canWearHats,
+			skin_canWearMasks
 }
 
 
@@ -61,12 +63,14 @@ hook OnPlayerConnect(playerid)
 }
 
 
-DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance)
+DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance, bool:wearhats, bool:wearmasks)
 {
 	skin_Data[skin_Total][skin_model] = modelid;
 	skin_Data[skin_Total][skin_name] = name;
 	skin_Data[skin_Total][skin_gender] = gender;
 	skin_Data[skin_Total][skin_lootSpawnChance] = spawnchance;
+	skin_Data[skin_Total][skin_canWearHats] = wearhats;
+	skin_Data[skin_Total][skin_canWearMasks] = wearmasks;
 	return skin_Total++;
 }
 
@@ -235,4 +239,20 @@ stock GetClothesGender(skinid)
 		return -1;
 
 	return skin_Data[skinid][skin_gender];
+}
+
+stock GetClothesHatStatus(skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return false;
+
+	return skin_Data[skinid][skin_canWearHats];
+}
+
+stock GetClothesMaskStatus(skinid)
+{
+	if(!(0 <= skinid < skin_Total))
+		return false;
+
+	return skin_Data[skinid][skin_canWearMasks];
 }

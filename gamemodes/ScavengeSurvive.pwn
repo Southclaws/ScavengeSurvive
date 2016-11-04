@@ -363,6 +363,7 @@ new stock
 #include "sss/utils/debug.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
+#include "sss/utils/headoffsets.pwn"
 
 // SERVER CORE
 #include "sss/core/server/settings.pwn"
@@ -537,8 +538,6 @@ new stock
 #include "sss/core/item/shield.pwn"
 #include "sss/core/item/handcuffs.pwn"
 #include "sss/core/item/wheel.pwn"
-#include "sss/core/item/armyhelm.pwn"
-#include "sss/core/item/zorromask.pwn"
 #include "sss/core/item/headlight.pwn"
 #include "sss/core/item/pills.pwn"
 #include "sss/core/item/dice.pwn"
@@ -550,16 +549,7 @@ new stock
 #include "sss/core/item/torso.pwn"
 #include "sss/core/item/ammotin.pwn"
 #include "sss/core/item/campfire.pwn"
-#include "sss/core/item/cowboyhat.pwn"
-#include "sss/core/item/truckcap.pwn"
-#include "sss/core/item/boaterhat.pwn"
-#include "sss/core/item/bowlerhat.pwn"
-#include "sss/core/item/policecap.pwn"
-#include "sss/core/item/tophat.pwn"
 #include "sss/core/item/herpderp.pwn"
-#include "sss/core/item/gasmask.pwn"
-#include "sss/core/item/hockeymask.pwn"
-#include "sss/core/item/xmashat.pwn"
 #include "sss/core/item/stungun.pwn"
 #include "sss/core/item/note.pwn"
 #include "sss/core/item/seedbag.pwn"
@@ -568,8 +558,23 @@ new stock
 #include "sss/core/item/fishingrod.pwn"
 #include "sss/core/item/chainsaw.pwn"
 #include "sss/core/item/locator.pwn"
-#include "sss/core/item/witcheshat.pwn"
 #include "sss/core/item/locker.pwn"
+
+// ITEMS (HATS/MASKS)
+#include "sss/core/item/armyhelm.pwn"
+#include "sss/core/item/cowboyhat.pwn"
+#include "sss/core/item/truckcap.pwn"
+#include "sss/core/item/boaterhat.pwn"
+#include "sss/core/item/bowlerhat.pwn"
+#include "sss/core/item/policecap.pwn"
+#include "sss/core/item/tophat.pwn"
+#include "sss/core/item/xmashat.pwn"
+#include "sss/core/item/witcheshat.pwn"
+#include "sss/core/item/policehelm.pwn"
+
+#include "sss/core/item/zorromask.pwn"
+#include "sss/core/item/gasmask.pwn"
+#include "sss/core/item/hockeymask.pwn"
 
 // POST-CODE
 
