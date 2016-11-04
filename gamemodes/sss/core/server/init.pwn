@@ -423,7 +423,7 @@ ItemType:		item_Broom			= INVALID_ITEM_TYPE,
 ItemType:		item_Keycard		= INVALID_ITEM_TYPE,
 ItemType:		item_BurntLog		= INVALID_ITEM_TYPE,
 ItemType:		item_Padlock		= INVALID_ITEM_TYPE,
-ItemType:		item_Keg			= INVALID_ITEM_TYPE,
+ItemType:		item_OilDrum		= INVALID_ITEM_TYPE,
 // 270
 ItemType:		item_Canister		= INVALID_ITEM_TYPE,
 ItemType:		item_ScrapMetal		= INVALID_ITEM_TYPE,
@@ -840,7 +840,7 @@ public OnScriptInit()
 	item_Keycard		= DefineItemType("Keycard",				"Keycard",			19792,	1,	0.0, 0.0, 0.0,			0.0,	0.081000, 0.039000, 0.014000,  95.100082, 174.499786, 83.799827, .maxhitpoints = 1);
 	item_BurntLog		= DefineItemType("Burnt Log",			"BurntLog",			19793,	3,	0.0, 0.0, 0.0,			0.046,	0.079000, 0.039000, -0.194999,  73.600059, -175.100250, 83.199836, true, 0xFF000000, .maxhitpoints = 3);
 	item_Padlock		= DefineItemType("Padlock",				"Padlock",			19804,	1,	90.0, 0.0, 0.0,			-0.016,	0.160000, 0.035000, 0.019000,  75.900054, -91.200210, 85.499847, .maxhitpoints = 1);
-	item_Keg			= DefineItemType("Keg",		 			"Keg",				19812,	5,	0.0, 0.0, 0.0,			0.468,	0.053000, 0.480999, -0.340999,  -109.899971, -10.700182, 98.799865, true, .maxhitpoints = 5);
+	item_OilDrum		= DefineItemType("Oil Drum",	 		"OilDrum",			19812,	5,	0.0, 0.0, 0.0,			0.468,	0.053000, 0.480999, -0.340999,  -109.899971, -10.700182, 98.799865, true, .maxhitpoints = 5);
 // 270
 	item_Canister		= DefineItemType("Canister",			"Canister",			19816,	5,	0.0, 0.0, 0.0,			0.218,	0.081000, 0.032999, -0.195999,  164.900070, 8.099815, 96.199882, true, .maxhitpoints = 5);
 	item_ScrapMetal		= DefineItemType("Scrap Metal",			"ScrapMetal",		19941,	1,	0.0, 0.0, 0.0,			0.218,	0.110999, 0.031000, 0.031999,  -101.400001, 3.700001, -97.499969, false, 0xFF4D2525, .maxhitpoints = 1);
@@ -858,49 +858,6 @@ public OnScriptInit()
 	item_ToolBox		= DefineItemType("Tool Box",			"ToolBox",			19921,	7,	0.0, 0.0, 0.0,			0.0541,	-0.209000, 0.052999, -0.231000,  73.400024, -173.499984, 80.899993, true, .longpickup = true, .maxhitpoints = 8);
 	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	0.0, 0.0, 0.0,			0.0,	-0.093000, 0.414000, -0.347999,  77.500022, 105.500022, 80.100013, true, .maxhitpoints = 16);
 	item_LockBreaker	= DefineItemType("Electronic Lockpick",	"LockBreaker",		1952,	2,	0.0, 0.0, 0.0,			0.001,	0.098000, 0.039999, 0.085000,  -94.900032, -177.600021, 18.499980, .maxhitpoints = 2);
-
-/*
-1656 cuboid shape, carry item
-1719 small computer type device
-2422 computer terminal
-1898 small spin clicker
-1899 very small single chip
-1901 small blue chips stack
-1960 record
-2060 sandbag
-2277 picture of a cat
-2351 detonator thing
-2352 t shaped small obj
-2590 spikey hook, schythe?
-2226 hifi
-2231 speaker/small box shape
-2232 slightly bigger speaker
-2324 short cylinder (retexture)
-2388 short pole type thing
-2749 small long cylinder (also 2752)
-2751 wide short cylinder
-2750 hair dryer/gun shape
-2780 small grey box with handle
-2894 book
-2961 small red keypad-like thing
-2983 pipe valve
-3025 piece of scap metal pole/frame
-3067 metal frame
-3070 goggles
-19896 cigarettes
-19874 soap
-19873 toilet paper
-19871 metal pole stand thing
-19917 large engine
-19920 small remote device
-19932 possible weapon case
-19844 small metal panel
-19845 small metal panel
-19846 small metal panel
-19347 for dogmeat...
-19314 combine with sledgehammer for picaxe!
-19200 police helmet
-*/
 
 
 	// SETTING ITEM TYPE SCRAP VALUE
@@ -993,7 +950,7 @@ public OnScriptInit()
 	SetItemTypeScrapValue(item_Fork,			1);
 	SetItemTypeScrapValue(item_Knife3,			1);
 	SetItemTypeScrapValue(item_Padlock,			1);
-	SetItemTypeScrapValue(item_Keg,				3);
+	SetItemTypeScrapValue(item_OilDrum,			8);
 	SetItemTypeScrapValue(item_Canister,		3);
 	SetItemTypeScrapValue(item_Locator,			1);
 	SetItemTypeScrapValue(item_Radio,			1);
