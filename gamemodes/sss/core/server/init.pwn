@@ -453,11 +453,12 @@ ItemType:		item_Locker			= INVALID_ITEM_TYPE,
 ItemType:		item_GearBox		= INVALID_ITEM_TYPE,
 ItemType:		item_ToolBox		= INVALID_ITEM_TYPE,
 ItemType:		item_MetalFrame		= INVALID_ITEM_TYPE,
-<<<<<<< HEAD
-ItemType:		item_LockBreaker	= INVALID_ITEM_TYPE;
-=======
-ItemType:		item_PoliceHelm		= INVALID_ITEM_TYPE;
->>>>>>> skins-clothes-update
+ItemType:		item_LockBreaker	= INVALID_ITEM_TYPE,
+ItemType:		item_PoliceHelm		= INVALID_ITEM_TYPE,
+ItemType:		item_ControlBox		= INVALID_ITEM_TYPE,
+ItemType:		item_Computer		= INVALID_ITEM_TYPE,
+ItemType:		item_TallFrame		= INVALID_ITEM_TYPE,
+ItemType:		item_RemoteControl	= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -876,54 +877,11 @@ public OnScriptInit()
 	item_MetalFrame		= DefineItemType("Metal Panel",			"MetalFrame",		19843,	10,	0.0, 0.0, 0.0,			0.0,	-0.093000, 0.414000, -0.347999,  77.500022, 105.500022, 80.100013, true, .maxhitpoints = 16);
 	item_LockBreaker	= DefineItemType("Electronic Lockpick",	"LockBreaker",		1952,	2,	0.0, 0.0, 0.0,			0.001,	0.098000, 0.039999, 0.085000,  -94.900032, -177.600021, 18.499980, .maxhitpoints = 2);
 	item_PoliceHelm		= DefineItemType("Police Helmet",		"PoliceHelm",		19200,	1,	0.0, 0.0, 0.0,			0.05,	0.173000, -0.010000, -0.020000,  -90.299995, 0.000000, 0.000000, .maxhitpoints = 1);
-
-/*
-1656 cuboid shape, carry item
-1719 small computer type device
-2422 computer terminal
-1898 small spin clicker
-1899 very small single chip
-1901 small blue chips stack
-1952 small record needle
-1960 record
-2060 sandbag
-2277 picture of a cat
-2351 detonator thing
-2352 t shaped small obj
-2590 spikey hook, schythe?
-2226 hifi
-2231 speaker/small box shape
-2232 slightly bigger speaker
-2324 short cylinder (retexture)
-2388 short pole type thing
-2749 small long cylinder (also 2752)
-2751 wide short cylinder
-2750 hair dryer/gun shape
-2780 small grey box with handle
-2894 book
-2961 small red keypad-like thing
-2967 another old phone/radio
-2983 pipe valve
-3025 piece of scap metal pole/frame
-3067 metal frame
-3070 goggles
-19896 cigarettes
-19874 soap
-19873 toilet paper
-19871 metal pole stand thing
-19917 large engine
-19918 small box
-19920 small remote device
-19921 toolbox case thing
-19932 possible weapon case
-19843 small metal panel
-19844 small metal panel
-19845 small metal panel
-19846 small metal panel
-19347 for dogmeat...
-19314 combine with sledgehammer for picaxe!
-*/
->>>>>>> skins-clothes-update
+	item_ControlBox		= DefineItemType("Control Box",			"ControlBox",		1958,	2,	0.0, 0.0, 0.0,			0.0211);
+	item_Computer		= DefineItemType("Computer",			"Computer",			1719,	2,	0.0, 0.0, 0.0,			0.0251);
+	item_TallFrame		= DefineItemType("Metal Frame",			"TallFrame",		3025,	14,	0.0, 180.0, 0.0,			0.0);
+	item_RemoteControl	= DefineItemType("IR Controller",		"RemoteControl",	19920,	1,	4.0, 0.0, 0.0,			-0.0200);
+// 290
 
 
 	// SETTING ITEM TYPE SCRAP VALUE
