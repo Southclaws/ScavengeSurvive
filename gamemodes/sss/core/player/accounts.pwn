@@ -30,15 +30,13 @@
 #define FIELD_PLAYER_PASS			"pass"		// 01
 #define FIELD_PLAYER_IPV4			"ipv4"		// 02
 #define FIELD_PLAYER_ALIVE			"alive"		// 03
-#define FIELD_PLAYER_KARMA			"karma"		// 04
-#define FIELD_PLAYER_REGDATE		"regdate"	// 05
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 06
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 07
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 08
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 09
-#define FIELD_PLAYER_AIMSHOUT		"aimshout"	// 10
-#define FIELD_PLAYER_GPCI			"gpci"		// 11
-#define FIELD_PLAYER_ACTIVE			"active"	// 12
+#define FIELD_PLAYER_REGDATE		"regdate"	// 04
+#define FIELD_PLAYER_LASTLOG		"lastlog"	// 05
+#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 06
+#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 07
+#define FIELD_PLAYER_WARNINGS		"warnings"	// 08
+#define FIELD_PLAYER_GPCI			"gpci"		// 19
+#define FIELD_PLAYER_ACTIVE			"active"	// 10
 
 enum
 {
@@ -46,13 +44,11 @@ enum
 	FIELD_ID_PLAYER_PASS,
 	FIELD_ID_PLAYER_IPV4,
 	FIELD_ID_PLAYER_ALIVE,
-	FIELD_ID_PLAYER_KARMA,
 	FIELD_ID_PLAYER_REGDATE,
 	FIELD_ID_PLAYER_LASTLOG,
 	FIELD_ID_PLAYER_SPAWNTIME,
 	FIELD_ID_PLAYER_TOTALSPAWNS,
 	FIELD_ID_PLAYER_WARNINGS,
-	FIELD_ID_PLAYER_AIMSHOUT,
 	FIELD_ID_PLAYER_GPCI,
 	FIELD_ID_PLAYER_ACTIVE
 }
@@ -79,9 +75,6 @@ DBStatement:	stmt_AccountSetIpv4,
 DBStatement:	stmt_AccountGetAliveState,
 DBStatement:	stmt_AccountSetAliveState,
 
-DBStatement:	stmt_AccountGetKarma,
-DBStatement:	stmt_AccountSetKarma,
-
 DBStatement:	stmt_AccountGetRegdate,
 DBStatement:	stmt_AccountSetRegdate,
 
@@ -96,9 +89,6 @@ DBStatement:	stmt_AccountSetTotalSpawns,
 
 DBStatement:	stmt_AccountGetWarnings,
 DBStatement:	stmt_AccountSetWarnings,
-
-DBStatement:	stmt_AccountGetAimShout,
-DBStatement:	stmt_AccountSetAimShout,
 
 DBStatement:	stmt_AccountGetGpci,
 DBStatement:	stmt_AccountSetGpci,
@@ -128,24 +118,22 @@ hook OnGameModeInit()
 		"FIELD_PLAYER_PASS" TEXT,\
 		"FIELD_PLAYER_IPV4" INTEGER,\
 		"FIELD_PLAYER_ALIVE" INTEGER,\
-		"FIELD_PLAYER_KARMA" INTEGER,\
 		"FIELD_PLAYER_REGDATE" INTEGER,\
 		"FIELD_PLAYER_LASTLOG" INTEGER,\
 		"FIELD_PLAYER_SPAWNTIME" INTEGER,\
 		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
 		"FIELD_PLAYER_WARNINGS" INTEGER,\
-		"FIELD_PLAYER_AIMSHOUT" TEXT,\
 		"FIELD_PLAYER_GPCI" TEXT,\
 		"FIELD_PLAYER_ACTIVE")");
 
 	db_query(gAccounts, "CREATE INDEX IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER"_index ON "ACCOUNTS_TABLE_PLAYER"("FIELD_PLAYER_NAME")");
 
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 13);
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 11);
 
 	stmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,0,0,?,?,0,0,0,?,?,1)");
+	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,0,?,?,0,0,0,?,1)");
 	stmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE"=?, "FIELD_PLAYER_KARMA"=?, "FIELD_PLAYER_WARNINGS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+	stmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE"=?, "FIELD_PLAYER_WARNINGS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
 	stmt_AccountGetPassword		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_PASS" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetPassword		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_PASS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
@@ -155,9 +143,6 @@ hook OnGameModeInit()
 
 	stmt_AccountGetAliveState	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_ALIVE" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetAliveState	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-
-	stmt_AccountGetKarma		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_KARMA" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountSetKarma		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_KARMA"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
 	stmt_AccountGetRegdate		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_REGDATE" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetRegdate		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_REGDATE"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
@@ -173,9 +158,6 @@ hook OnGameModeInit()
 
 	stmt_AccountGetWarnings		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_WARNINGS" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetWarnings		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_WARNINGS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-
-	stmt_AccountGetAimShout		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_AIMSHOUT" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountSetAimShout		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_AIMSHOUT"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
 	stmt_AccountGetGpci			= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetGpci			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
@@ -220,7 +202,6 @@ LoadAccount(playerid)
 		spawntime,
 		spawns,
 		warnings,
-		aimshout[128],
 		active;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -255,7 +236,6 @@ LoadAccount(playerid)
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntime);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, spawns);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
-	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_AIMSHOUT, DB::TYPE_STRING, aimshout, 128);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ACTIVE, DB::TYPE_INTEGER, active);
 
 	if(!stmt_execute(stmt_AccountLoad))
@@ -298,7 +278,6 @@ LoadAccount(playerid)
 	SetPlayerCreationTimestamp(playerid, spawntime);
 	SetPlayerTotalSpawns(playerid, spawns);
 	SetPlayerWarnings(playerid, warnings);
-	SetPlayerAimShoutText(playerid, aimshout);
 
 //	if(GetPlayerIpAsInt(playerid) == ipv4)
 //	{
@@ -333,9 +312,9 @@ CreateAccount(playerid, password[])
 	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		name, MAX_PLAYER_NAME); 
 	stmt_bind_value(stmt_AccountCreate, 1, DB::TYPE_STRING,		password, MAX_PASSWORD_LEN); 
 	stmt_bind_value(stmt_AccountCreate, 2, DB::TYPE_INTEGER,	GetPlayerIpAsInt(playerid)); 
-	stmt_bind_value(stmt_AccountCreate, 3, DB::TYPE_INTEGER,	gettime()); 
+	stmt_bind_value(stmt_AccountCreate, 3, DB::TYPE_INTEGER,	1); 
 	stmt_bind_value(stmt_AccountCreate, 4, DB::TYPE_INTEGER,	gettime()); 
-	stmt_bind_value(stmt_AccountCreate, 5, DB::TYPE_STRING,		"Drop your weapon!", 18); 
+	stmt_bind_value(stmt_AccountCreate, 5, DB::TYPE_INTEGER,	gettime()); 
 	stmt_bind_value(stmt_AccountCreate, 6, DB::TYPE_STRING,		serial, MAX_GPCI_LEN); 
 
 	if(!stmt_execute(stmt_AccountCreate))
@@ -722,9 +701,8 @@ SavePlayerData(playerid)
 		}
 
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 1);
-		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
-		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
+		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_PLAYER_NAME, playerid);
 
 		if(!stmt_execute(stmt_AccountUpdate))
 		{
@@ -738,9 +716,8 @@ SavePlayerData(playerid)
 	{
 		d:2:HANDLER("[SavePlayerData] Player is dead");
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, 0);
-		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
-		stmt_bind_value(stmt_AccountUpdate, 3, DB::TYPE_PLAYER_NAME, playerid);
+		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
+		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_PLAYER_NAME, playerid);
 
 		if(!stmt_execute(stmt_AccountUpdate))
 		{
@@ -759,7 +736,7 @@ SavePlayerData(playerid)
 ==============================================================================*/
 
 
-stock GetAccountData(name[], pass[], &ipv4, &alive, &karma, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, aimshout[], gpci[], &active)
+stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, gpci[], &active)
 {
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, pass, MAX_PASSWORD_LEN);
@@ -770,8 +747,7 @@ stock GetAccountData(name[], pass[], &ipv4, &alive, &karma, &regdate, &lastlog, 
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntime);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, totalspawns);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
-	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_AIMSHOUT, DB::TYPE_STRING, aimshout, 128);
-	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_AIMSHOUT, DB::TYPE_STRING, gpci, 41);
+	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, gpci, 41);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ACTIVE, DB::TYPE_INTEGER, active);
 
 	if(!stmt_execute(stmt_AccountLoad))
@@ -868,28 +844,6 @@ stock SetAccountAliveState(name[], alivestate)
 	stmt_bind_value(stmt_AccountSetAliveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	return stmt_execute(stmt_AccountSetAliveState);
-}
-
-// FIELD_ID_PLAYER_KARMA
-stock GetAccountKarma(name[], &karma)
-{
-	stmt_bind_result_field(stmt_AccountGetKarma, 0, DB::TYPE_INTEGER, karma);
-	stmt_bind_value(stmt_AccountGetKarma, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(!stmt_execute(stmt_AccountGetKarma))
-		return 0;
-
-	stmt_fetch_row(stmt_AccountGetKarma);
-
-	return 1;
-}
-
-stock SetAccountKarma(name[], karma)
-{
-	stmt_bind_value(stmt_AccountSetKarma, 0, DB::TYPE_INTEGER, karma);
-	stmt_bind_value(stmt_AccountSetKarma, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	return stmt_execute(stmt_AccountSetKarma);
 }
 
 // FIELD_ID_PLAYER_REGDATE
@@ -1000,28 +954,6 @@ stock SetAccountWarnings(name[], warnings)
 	stmt_bind_value(stmt_AccountSetWarnings, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	return stmt_execute(stmt_AccountSetWarnings);
-}
-
-// FIELD_ID_PLAYER_AIMSHOUT
-stock GetAccountAimshout(name[], string[])
-{
-	stmt_bind_result_field(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, string, 128);
-	stmt_bind_value(stmt_AccountGetAimShout, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(!stmt_execute(stmt_AccountGetAimShout))
-		return 0;
-
-	stmt_fetch_row(stmt_AccountGetAimShout);
-
-	return 1;
-}
-
-stock SetAccountAimshout(name[], string[])
-{
-	stmt_bind_value(stmt_AccountSetAimShout, 0, DB::TYPE_STRING, string, 128);
-	stmt_bind_value(stmt_AccountSetAimShout, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	return stmt_execute(stmt_AccountSetAimShout);
 }
 
 // FIELD_ID_PLAYER_GPCI

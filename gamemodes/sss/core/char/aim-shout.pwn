@@ -40,7 +40,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{
-				PlayerSendChat(playerid, aimshout_Text[playerid], 0.0);
+				new string[128];
+
+				strcat(string, aimshout_Text[playerid], 128);
+				PlayerSendChat(playerid, string, 0.0);
 
 				aimshout_Tick[playerid] = GetTickCount();
 			}
@@ -52,7 +55,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{
-				PlayerSendChat(playerid, aimshout_Text[playerid], 0.0);
+				new string[128];
+
+				strcat(string, aimshout_Text[playerid], 128);
+				PlayerSendChat(playerid, string, 0.0);
 
 				aimshout_Tick[playerid] = GetTickCount();
 			}
@@ -78,14 +84,20 @@ stock SetPlayerAimShoutText(playerid, string[])
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	new name[MAX_PLAYER_NAME];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
+	aimshout_Text[playerid][0] = EOS;
 	strcat(aimshout_Text[playerid], string, 128);
-	SetAccountAimshout(name, string);
 
 	return 1;
+}
+
+hook OnPlayerSave(playerid, filename[])
+{
+	modio_push(filename, _T<S,H,O,U>, strlen(aimshout_Text[playerid]), aimshout_Text[playerid]);
+}
+
+hook OnPlayerLoad(playerid, filename[])
+{
+	modio_read(filename, _T<S,H,O,U>, 128, aimshout_Text[playerid]);
 }
 
 CMD:aimshout(playerid, params[])
