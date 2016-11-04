@@ -458,7 +458,12 @@ ItemType:		item_PoliceHelm		= INVALID_ITEM_TYPE,
 ItemType:		item_ControlBox		= INVALID_ITEM_TYPE,
 ItemType:		item_Computer		= INVALID_ITEM_TYPE,
 ItemType:		item_TallFrame		= INVALID_ITEM_TYPE,
-ItemType:		item_RemoteControl	= INVALID_ITEM_TYPE;
+ItemType:		item_RemoteControl	= INVALID_ITEM_TYPE,
+// 290
+ItemType:		item_Desk			= INVALID_ITEM_TYPE,
+ItemType:		item_Table			= INVALID_ITEM_TYPE,
+ItemType:		item_GunCase		= INVALID_ITEM_TYPE,
+ItemType:		item_Cupboard		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -882,7 +887,10 @@ public OnScriptInit()
 	item_TallFrame		= DefineItemType("Metal Frame",			"TallFrame",		3025,	14,	0.0, 180.0, 0.0,			0.0);
 	item_RemoteControl	= DefineItemType("IR Controller",		"RemoteControl",	19920,	1,	4.0, 0.0, 0.0,			-0.0200);
 // 290
-
+	item_Desk			= DefineItemType("Desk",				"Desk",				2180,	14,	0.0, 0.0, 0.0,			-0.0320, .longpickup = true);
+	item_Table			= DefineItemType("Table",				"Table",			2115,	14,	0.0, 0.0, 0.0,			-0.0280, .longpickup = true);
+	item_GunCase		= DefineItemType("Gun Case",			"GunCase",			2046,	12,	0.0, 0.0, 0.0,			0.5, .longpickup = true);
+	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .longpickup = true);
 
 	// SETTING ITEM TYPE SCRAP VALUE
 	SetItemTypeScrapValue(item_Knuckles,		1);
@@ -1298,6 +1306,13 @@ public OnScriptInit()
 	DefineMachineType(item_WaterMachine, 6, 12);
 
 
+	// FURNITURE TYPE DEFINITIONS
+	DefineItemTypeFurniture(item_Desk,			0.0, 0.0, 0.80, 0.0, 0.0, 0.0);
+	DefineItemTypeFurniture(item_Table,			0.0, 0.0, 0.80, 0.0, 0.0, 0.0);
+	DefineItemTypeFurniture(item_GunCase,		0.0, 0.0, 0.25, -90, -90, 0.0);
+	DefineItemTypeFurniture(item_Cupboard,		0.0, 0.0, 0.35, -90, -90, 0.0);
+
+
 	// CRAFTING SET DEFINITIONS
 	// items created by hand
 	DefineItemCraftSet(item_ParaBag, item_Knife, true, item_Parachute, false);
@@ -1314,6 +1329,8 @@ public OnScriptInit()
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_WaterMachine, item_Canister, false, item_Motor, false, item_Bucket, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Hammer, DefineItemCraftSet(item_Workbench, item_RefinedMetal, false, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_Locker, item_MetalFrame, false, item_MetalFrame, false, item_RefinedMetal, false), item_Crowbar, 25000);
+	SetCraftSetConstructible(26500, item_Screwdriver, DefineItemCraftSet(item_Desk, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
+	SetCraftSetConstructible(28500, item_Screwdriver, DefineItemCraftSet(item_Table, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
