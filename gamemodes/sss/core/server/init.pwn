@@ -887,10 +887,10 @@ public OnScriptInit()
 	item_TallFrame		= DefineItemType("Metal Frame",			"TallFrame",		3025,	14,	0.0, 180.0, 0.0,			0.0);
 	item_RemoteControl	= DefineItemType("IR Controller",		"RemoteControl",	19920,	1,	4.0, 0.0, 0.0,			-0.0200);
 // 290
-	item_Desk			= DefineItemType("Desk",				"Desk",				2180,	14,	0.0, 0.0, 0.0,			-0.0320, .longpickup = true);
-	item_Table			= DefineItemType("Table",				"Table",			2115,	14,	0.0, 0.0, 0.0,			-0.0280, .longpickup = true);
-	item_GunCase		= DefineItemType("Gun Case",			"GunCase",			2046,	12,	0.0, 0.0, 0.0,			0.5, .longpickup = true);
-	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .longpickup = true);
+	item_Desk			= DefineItemType("Desk",				"Desk",				2180,	14,	0.0, 0.0, 0.0,			-0.0320, .maxhitpoints = 14, .longpickup = true);
+	item_Table			= DefineItemType("Table",				"Table",			2115,	14,	0.0, 0.0, 0.0,			-0.0280, .maxhitpoints = 14, .longpickup = true);
+	item_GunCase		= DefineItemType("Gun Case",			"GunCase",			2046,	12,	0.0, 0.0, 0.0,			0.5, .maxhitpoints = 12, .longpickup = true);
+	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .maxhitpoints = 12, .longpickup = true);
 
 	// SETTING ITEM TYPE SCRAP VALUE
 	SetItemTypeScrapValue(item_Knuckles,		1);
@@ -1269,6 +1269,8 @@ public OnScriptInit()
 	DefineSafeboxType(item_Locker,			16, .animateonuse = false);
 	DefineSafeboxType(item_GearBox,			5);
 	DefineSafeboxType(item_ToolBox,			8);
+	DefineSafeboxType(item_GunCase,			5, false, false);
+	DefineSafeboxType(item_Cupboard,		5, false, false);
 
 
 	// BAG ITEM TYPE DEFINITIONS

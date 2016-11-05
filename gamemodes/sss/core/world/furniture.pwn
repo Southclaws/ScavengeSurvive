@@ -46,6 +46,8 @@ static
 
 stock DefineItemTypeFurniture(ItemType:itemtype, Float:px, Float:py, Float:pz, Float:rx, Float:ry, Float:rz)
 {
+	SetItemTypeMaxArrayData(itemtype, 2);
+
 	fur_Data[fur_Total][fur_itemPosX] = px;
 	fur_Data[fur_Total][fur_itemPosY] = py;
 	fur_Data[fur_Total][fur_itemPosZ] = pz;
@@ -56,6 +58,19 @@ stock DefineItemTypeFurniture(ItemType:itemtype, Float:px, Float:py, Float:pz, F
 	fur_ItemTypeFurnitureType[itemtype] = fur_Total;
 
 	return fur_Total++;
+}
+
+hook OnItemCreate(itemid)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(fur_ItemTypeFurnitureType[itemtype] != -1)
+	{
+		if(IsItemTypeSafebox(itemtype))
+			SetItemArrayDataAtCell(itemid, INVALID_OBJECT_ID, 1, true);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerPickUpItem(playerid, itemid)
@@ -79,10 +94,12 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		Float:z,
 		Float:ry,
 		Float:rx,
-		Float:rz;
+		Float:rz,
+		containerid;
 
 	GetItemPos(withitemid, x, y, z);
 	GetItemRot(withitemid, rx, ry, rz);
+	containerid = GetItemArrayDataAtCell(withitemid, 0);
 
 	x += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosX];
 	y += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosY];
@@ -91,7 +108,73 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	rx += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemRotY];
 	rz += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemRotZ];
 
-	CreateItemInWorld(itemid, x, y, z, rx, ry, rz);
+	if(IsItemTypeSafebox(itemtype))
+	{
+		if(IsValidContainer(containerid))
+		{
+			if(!IsValidDynamicObject(GetItemArrayDataAtCell(withitemid, 1)))
+			{
+				new
+					ItemType:helditemtype = GetItemType(itemid),
+					objectid,
+					Float:ox,
+					Float:oy,
+					Float:oz;
+
+				GetItemTypeRotation(helditemtype, ox, oy, oz);
+
+				new required = AddItemToContainer(containerid, itemid);
+
+				if(required > 0)
+				{
+					ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
+				}
+				else if(required == 0)
+				{
+					objectid = CreateDynamicObject(GetItemTypeModel(helditemtype), x, y, z, rx + ox, ry + oy, rz + oz, GetItemWorld(withitemid), GetItemInterior(withitemid));
+					SetItemArrayDataAtCell(withitemid, objectid, 1, true);
+					RemoveCurrentItem(playerid);
+				}
+			}
+		}
+	}
+	else
+	{
+		CreateItemInWorld(itemid, x, y, z, rx, ry, rz);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/furniture.pwn");
+
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(fur_ItemTypeFurnitureType[itemtype] == -1)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(!IsItemTypeSafebox(itemtype))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new containerid = GetItemArrayDataAtCell(itemid, 0);
+
+	if(!IsValidContainer(containerid))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new subitem = GetContainerSlotItem(containerid, 0);
+
+	if(!IsValidItem(subitem))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new objectid = GetItemArrayDataAtCell(itemid, 1);
+
+	DestroyDynamicObject(objectid);
+
+	RemoveItemFromContainer(containerid, 0);
+	GiveWorldItemToPlayer(playerid, subitem);
+	SetItemArrayDataAtCell(itemid, INVALID_OBJECT_ID, 1, true);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
