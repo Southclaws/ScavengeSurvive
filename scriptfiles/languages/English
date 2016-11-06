@@ -167,6 +167,7 @@ MASKALREADW=You are already wearing a mask
 FUELCANFULL=Fuel can is full
 FUELNOTPETR=Fuel can does not contain petrol
 DISARMEDBOM=Disarmed explosive
+TREECUTINFO=Hold {KEYTEXT_INTERACT} with a %s to harvest %s
 
 NULL_T=This item is invalid, ignore it
 Knuckles_T=This is a blunt melee weapon, useful for knocking players out

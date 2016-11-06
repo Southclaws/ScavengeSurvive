@@ -25,15 +25,15 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_TREE_CATEGORIES      		(5)
-#define MAX_TREE_SPECIES     			(100)
+#define MAX_TREE_CATEGORIES				(5)
+#define MAX_TREE_SPECIES				(100)
 #define MAX_TREES						(20000)
-#define MAX_TREE_CATEGORY_NAME  		(32)
+#define MAX_TREE_CATEGORY_NAME			(32)
 #define INVALID_TREE_SPECIES_ID			(-1)
 #define INVALID_TREE_ID					(-1)
 
 #define TREE_STREAMER_AREA_IDENTIFIER	(600)
-#define HARVEST_DROP_MAX_SPHERE_SIZE        (1.5)
+#define HARVEST_DROP_MAX_SPHERE_SIZE	(1.5)
 
 
 enum E_FALL_TYPE
@@ -169,7 +169,7 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 	tree_Data[id][tree_species]		= speciesid;
 	tree_Data[id][tree_objectid]	= CreateDynamicObject(treeSpecies_Data[speciesid][tree_model], x, y, z + treeSpecies_Data[speciesid][tree_zoffset], 0.0, 0.0, frandom(360.0), 0, 0);
 	tree_Data[id][tree_areaid]		= CreateDynamicSphere(x, y, z, treeDiameter, 0, 0);
-	tree_Data[id][tree_health]		= GetTreeSpeciesMaxHealth(speciesid);
+	tree_Data[id][tree_health]		= treeSpecies_Data[speciesid][tree_max_health];
 	tree_Data[id][tree_labelid]		= CreateDynamic3DTextLabel("0.0", YELLOW, x, y, z + 1.0, treeDiameter);
 
 	data[0] = TREE_STREAMER_AREA_IDENTIFIER;
@@ -263,6 +263,8 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		Float:woodAngle,
 		Float:woodDistance;
 
+	MapAndreas_FindZ_For2DCoord(x, y, z);
+
 	for(new i; i < treeSpecies_Data[tree_Data[treeid][tree_species]][tree_pieces]; i++)
 	{
 		woodAngle = frandom(360.0);
@@ -271,7 +273,6 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		x += woodDistance * floatsin(-woodAngle, degrees);
 		y += woodDistance * floatcos(-woodAngle, degrees);
 
-		MapAndreas_FindZ_For2DCoord(x, y, z);
 		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.088, .rz = frandom(360.0));
 	}
 
@@ -280,46 +281,42 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	if(!IsValidDynamicArea(areaid))
-	{
-		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Invalid area ID (%d)", areaid);
-		return Y_HOOKS_CONTINUE_RETURN_0;
-	}
-
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
-	if(data[0] != TREE_STREAMER_AREA_IDENTIFIER)
+	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Area not tree area type %i, %i", data[0], data[1]);
+		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Area tree area type for tree %i", data[1]);
+
+		new
+			toolname[ITM_MAX_NAME],
+			yieldname[ITM_MAX_NAME];
+
+		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_harvest_item], toolname);
+		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
+
+		ShowActionText(playerid, sprintf(ls(playerid, "TREECUTINFO"), toolname, yieldname), 6000);
+
+		CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
-
-	CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-	if(!IsValidDynamicArea(areaid))
-	{
-		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Invalid area ID (%d)", areaid);
-		return Y_HOOKS_CONTINUE_RETURN_0;
-	}
-
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
-	if(data[0] != TREE_STREAMER_AREA_IDENTIFIER)
+	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Area not tree area type");
+		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Area tree area type");
+		CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
-
-	CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -455,8 +452,15 @@ stock SetTreeHealth(treeid, Float:health)
 	if(!Iter_Contains(tree_Index, treeid))
 		return 0;
 
-	tree_Data[treeid][tree_health] = health;
-	UpdateDynamic3DTextLabelText(tree_Data[treeid][tree_labelid], YELLOW, sprintf("%.2f", tree_Data[treeid][tree_health]));
+	new
+		toolname[ITM_MAX_NAME],
+		yieldname[ITM_MAX_NAME];
+
+	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_harvest_item], toolname);
+	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], yieldname);
+
+	tree_Data[treeid][tree_health] = health < 0.0 ? 0.0 : health;
+	UpdateDynamic3DTextLabelText(tree_Data[treeid][tree_labelid], YELLOW, sprintf("Health: %.2f/%.2f\n"C_TEAL"Tool Required: %s\n"C_GREEN"Yields Resource: %s", tree_Data[treeid][tree_health], treeSpecies_Data[tree_Data[treeid][tree_species]][tree_max_health], toolname, yieldname));
 
 	return 1;
 }
