@@ -1218,6 +1218,7 @@ public OnScriptInit()
 	DefineExplosiveItem(item_PetrolBomb,	TIMED,		EXP_INCEN);
 	SetRadioExplosiveTriggerItem(item_MobilePhone);
 
+
 	// FOOD ITEM TYPE DEFINITIONS
 	DefineFoodItem(item_HotDog,			4, 18.00,	1, 1, 1);
 	DefineFoodItem(item_Pizza,			6, 18.30,	1, 0, 0);
@@ -1340,6 +1341,7 @@ public OnScriptInit()
 	SetCraftSetConstructible(28500, item_Screwdriver, DefineItemCraftSet(item_Table, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_Barstool, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_Clothes, false), item_Crowbar, 22000);
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_SmallTable, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 22000);
+	SetCraftSetConstructible(18, item_Screwdriver, DefineItemCraftSet(item_Key, item_Key, false, item_Key, true, item_Motor, false));
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));

@@ -278,3 +278,43 @@ hook OnPlayerCrafted(playerid, craftset, result)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
+
+hook OnPlayerConstructed(playerid, consset, result)
+{
+	new craftset = GetConstructionSetCraftSet(consset);
+
+	if(GetCraftSetResult(craftset) == item_Key)
+	{
+		new
+			items[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
+			count,
+			tmp,
+			itemid = INVALID_ITEM_ID;
+
+		GetPlayerConstructionItems(playerid, items, count);
+
+		for(new i; i < count; i++)
+		{
+			tmp = items[i][cft_selectedItemID];
+
+			if(GetItemType(tmp) == item_Key && GetItemArrayDataAtCell(tmp, 0) > 0)
+			{
+				itemid = tmp;
+				break;
+			}
+		}
+
+		if(IsValidItem(itemid))
+		{
+			SetItemArrayDataSize(result, 2);
+			SetItemArrayDataAtCell(result, GetItemArrayDataAtCell(itemid, 0), 0);
+			SetItemArrayDataAtCell(result, GetItemArrayDataAtCell(itemid, 1), 1);
+		}
+		else
+		{
+			printf("ERROR: Key duplicated attempt failed %d %d %d %d", consset, craftset, result, tmp);
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}

@@ -394,6 +394,7 @@ new stock
 #include "sss/core/item/liquid-container.pwn"
 #include "sss/core/world/tree.pwn"
 #include "sss/core/world/explosive.pwn"
+#include "sss/core/world/craft-construct.pwn"
 
 /*
 	MODULE INITIALISATION CALLS
@@ -497,7 +498,6 @@ new stock
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
-#include "sss/core/world/craft-construct.pwn"
 #include "sss/core/world/workbench.pwn"
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
