@@ -463,7 +463,9 @@ ItemType:		item_RemoteControl	= INVALID_ITEM_TYPE,
 ItemType:		item_Desk			= INVALID_ITEM_TYPE,
 ItemType:		item_Table			= INVALID_ITEM_TYPE,
 ItemType:		item_GunCase		= INVALID_ITEM_TYPE,
-ItemType:		item_Cupboard		= INVALID_ITEM_TYPE;
+ItemType:		item_Cupboard		= INVALID_ITEM_TYPE,
+ItemType:		item_Barstool		= INVALID_ITEM_TYPE,
+ItemType:		item_SmallTable		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -891,6 +893,8 @@ public OnScriptInit()
 	item_Table			= DefineItemType("Table",				"Table",			2115,	14,	0.0, 0.0, 0.0,			-0.0280, .maxhitpoints = 14, .longpickup = true);
 	item_GunCase		= DefineItemType("Gun Case",			"GunCase",			2046,	12,	0.0, 0.0, 0.0,			0.5, .maxhitpoints = 12, .longpickup = true);
 	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .maxhitpoints = 12, .longpickup = true);
+	item_Barstool		= DefineItemType("Barstool",			"Barstool",			1805,	8,	0.0, 0.0, 0.0,			0.22, .maxhitpoints = 8, .longpickup = true);
+	item_SmallTable		= DefineItemType("Small Table",			"SmallTable",		2346,	10,	0.0, 0.0, 0.0,			-0.03, .maxhitpoints = 10, .longpickup = true);
 
 	// SETTING ITEM TYPE SCRAP VALUE
 	SetItemTypeScrapValue(item_Knuckles,		1);
@@ -1313,7 +1317,8 @@ public OnScriptInit()
 	DefineItemTypeFurniture(item_Table,			0.0, 0.0, 0.80, 0.0, 0.0, 0.0);
 	DefineItemTypeFurniture(item_GunCase,		0.0, 0.0, 0.25, -90, -90, 0.0);
 	DefineItemTypeFurniture(item_Cupboard,		0.0, 0.0, 0.35, -90, -90, 0.0);
-
+	DefineItemTypeFurniture(item_Barstool,		0.0, 0.0, 0.48, 0.0, 0.0, 0.0);
+	DefineItemTypeFurniture(item_SmallTable,	0.0, 0.0, 0.45, 0.0, 0.0, 0.0);
 
 	// CRAFTING SET DEFINITIONS
 	// items created by hand
