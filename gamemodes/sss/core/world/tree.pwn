@@ -76,15 +76,21 @@ static
 			treeSpecies_Total,
 
 			tree_Data[MAX_TREES][E_TREE_DATA],
-Iterator:   tree_Index<MAX_TREES>;
+Iterator:   tree_Index<MAX_TREES>,
+
+			tree_AtTree[MAX_PLAYERS],
+			tree_CuttingTree[MAX_PLAYERS];
 
 
 forward OnPlayerEnterTreeArea(playerid, treeid);
 forward OnPlayerLeaveTreeArea(playerid, treeid);
 
+forward Float:GetTreeHealth(treeid);
 forward Float:GetTreeSpeciesDiameter(speciesid);
 forward Float:GetTreeSpeciesMaxHealth(speciesid);
-
+forward Float:GetTreeSpeciesChopDamage(speciesid);
+forward ItemType:GetTreeSpeciesHarvestItem(speciesid);
+forward ItemType:GetTreeSpeciesResultItem(speciesid);
 
 /*==============================================================================
 
@@ -156,7 +162,7 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 	}
 
 	new
-		Float:treeDiameter = GetTreeSpeciesDiameter(speciesid) + 1.0,
+		Float:treeDiameter = treeSpecies_Data[speciesid][tree_diameter] + 1.0,
 		id = Iter_Free(tree_Index),
 		data[2];
 
@@ -297,7 +303,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "TREECUTINFO"), toolname, yieldname), 6000);
-
+		tree_AtTree[playerid] = data[1];
 		CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
@@ -315,7 +321,113 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	{
 		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Area tree area type");
 		CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
+		tree_AtTree[playerid] = INVALID_TREE_ID;
 		return Y_HOOKS_CONTINUE_RETURN_0;
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
+{
+	if(tree_AtTree[playerid] != INVALID_TREE_ID)
+	{
+		if(GetItemType(itemid) == treeSpecies_Data[tree_Data[tree_AtTree[playerid]][tree_species]][tree_harvest_item])
+		{
+			_StartWoodCutting(playerid, tree_AtTree[playerid]);
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/chainsaw.pwn");
+
+	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(oldkeys == 16)
+		_StopWoodCutting(playerid);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_StartWoodCutting(playerid, treeid)
+{
+	new
+		mult = 1000,
+		start = floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_max_health]) / floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_chop_damage]),
+		end = floatround(tree_Data[treeid][tree_health]) / floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_chop_damage]);
+
+	mult = GetPlayerSkillTimeModifier(playerid, mult, "forestry");
+
+	StartHoldAction(playerid, floatround(1.1 * (mult * start)), mult * (start - end));
+
+	SetPlayerToFaceTree(playerid, treeid);
+	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
+	tree_CuttingTree[playerid] = treeid;
+}
+
+_StopWoodCutting(playerid)
+{
+	ClearAnimations(playerid);
+	StopHoldAction(playerid);
+	tree_CuttingTree[playerid] = INVALID_TREE_ID;
+}
+
+hook OnHoldActionUpdate(playerid, progress)
+{
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/item/chainsaw.pwn");
+
+	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+		
+	if(!IsValidTree(tree_CuttingTree[playerid]))
+	{
+		_StopWoodCutting(playerid);
+		return 1;
+	}
+
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
+	if(itemtype != GetTreeSpeciesHarvestItem(GetTreeSpecies(tree_CuttingTree[playerid])))
+	{
+		_StopWoodCutting(playerid);
+		return 1;
+	}
+
+	if(GetItemTypeWeaponFlags(itemtype) & WEAPON_FLAG_LIQUID_AMMO)
+	{
+		new ammo = GetItemWeaponItemMagAmmo(itemid);
+
+		if(ammo <= 0)
+		{
+			_StopWoodCutting(playerid);
+			return 1;
+		}
+
+		if(floatround(GetPlayerProgressBarValue(playerid, ActionBar) * 10) % 60 == 0)
+			_FireWeapon(playerid, WEAPON_CHAINSAW);
+	}
+
+	new mult = 1000;
+
+	mult = GetPlayerSkillTimeModifier(playerid, mult, "forestry");
+
+	SetTreeHealth(tree_CuttingTree[playerid], GetTreeHealth(tree_CuttingTree[playerid]) - ((treeSpecies_Data[GetTreeSpecies(tree_CuttingTree[playerid])][tree_chop_damage] / 10000) * mult) );
+
+	if(tree_Data[tree_CuttingTree[playerid]][tree_health] <= 0.0)
+	{
+		LeanTree(tree_CuttingTree[playerid]);
+		PlayerGainSkillExperience(playerid, "forestry");
+		_StopWoodCutting(playerid);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -459,7 +571,11 @@ stock SetTreeHealth(treeid, Float:health)
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_harvest_item], toolname);
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], yieldname);
 
-	tree_Data[treeid][tree_health] = health < 0.0 ? 0.0 : health;
+	tree_Data[treeid][tree_health] = health;
+
+	if(tree_Data[treeid][tree_health] < 0.0)
+		tree_Data[treeid][tree_health] = 0.0;
+
 	UpdateDynamic3DTextLabelText(tree_Data[treeid][tree_labelid], YELLOW, sprintf("Health: %.2f/%.2f\n"C_TEAL"Tool Required: %s\n"C_GREEN"Yields Resource: %s", tree_Data[treeid][tree_health], treeSpecies_Data[tree_Data[treeid][tree_species]][tree_max_health], toolname, yieldname));
 
 	return 1;

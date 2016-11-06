@@ -125,13 +125,9 @@ StartRepairingVehicle(playerid, vehicleid)
 		return 0;
 	}
 
-	new mult = 1000;
-
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
-
-	mult = GetPlayerSkillTimeModifier(playerid, mult, "repair");
-	StartHoldAction(playerid, 50 * mult, floatround(fix_Progress[playerid] * 50) * mult);
+	StartHoldAction(playerid, 50000, floatround(fix_Progress[playerid] * 50));
 
 	fix_TargetVehicle[playerid] = vehicleid;
 
@@ -179,7 +175,9 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		if(CompToolHealth(itemtype, fix_Progress[playerid]))
 		{
-			fix_Progress[playerid] += 2.0;
+			new mult = 2000;
+			mult = GetPlayerSkillTimeModifier(playerid, mult, "repair");
+			fix_Progress[playerid] += (float(mult) / 1000.0);
 			SetVehicleHealth(fix_TargetVehicle[playerid], fix_Progress[playerid]);
 			SetPlayerToFaceVehicle(playerid, fix_TargetVehicle[playerid]);	
 		}
