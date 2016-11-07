@@ -31,7 +31,7 @@
 static PlayerBar:HungerBar[MAX_PLAYERS];
 
 
-ptask FoodUpdate[1000](playerid)
+hook OnPlayerScriptUpdate(playerid)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return;

@@ -22,7 +22,10 @@
 ==============================================================================*/
 
 
-ptask DrugFX[1000](playerid)
+#include <YSI\y_hooks>
+
+
+hook OnPlayerScriptUpdate(playerid)
 {
 	if(IsPlayerUnderDrugEffect(playerid, drug_Lsd))
 	{
@@ -39,6 +42,19 @@ ptask DrugFX[1000](playerid)
 		weather = 33;
 		SetPlayerTime(playerid, hour, minute);
 		SetPlayerWeather(playerid, weather);
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
+	{
+		SetPlayerDrunkLevel(playerid, 100000);
+
+		if(random(100) < 50)
+			GivePlayerHP(playerid, -1.0);
+	}
+
+	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
+	{
+		GivePlayerHP(playerid, 0.01);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Air))

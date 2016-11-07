@@ -62,6 +62,7 @@ static
 			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
 
 
+forward OnPlayerScriptUpdate(playerid);
 forward OnPlayerDisconnected(playerid);
 forward OnDeath(playerid, killerid, reason);
 
@@ -230,7 +231,7 @@ ResetVariables(playerid)
 		RemovePlayerAttachedObject(playerid, i);
 }
 
-ptask PlayerUpdate[100](playerid)
+ptask PlayerUpdateFast[100](playerid)
 {
 	new pinglimit = (Iter_Count(Player) > 10) ? (gPingLimit) : (gPingLimit + 100);
 
@@ -290,6 +291,11 @@ ptask PlayerUpdate[100](playerid)
 	SetPlayerTime(playerid, hour, minute);
 
 	return;
+}
+
+ptask PlayerUpdateSlow[1000](playerid)
+{
+	CallLocalFunction("OnPlayerScriptUpdate", "d", playerid);
 }
 
 public OnPlayerRequestClass(playerid, classid)

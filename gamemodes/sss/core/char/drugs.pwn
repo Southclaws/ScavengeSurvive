@@ -173,7 +173,8 @@ stock RemoveAllDrugs(playerid)
 
 ==============================================================================*/
 
-ptask DrugsUpdate[1000](playerid)
+
+hook OnPlayerScriptUpdate(playerid)
 {
 	for(new i; i < drug_TypeTotal; i++)
 	{
@@ -186,20 +187,6 @@ ptask DrugsUpdate[1000](playerid)
 				CallLocalFunction("OnPlayerDrugWearOff", "dd", playerid, i);
 			}
 		}
-	}
-
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
-	{
-		SetPlayerDrunkLevel(playerid, 100000);
-
-		if(random(100) < 50)
-			GivePlayerHP(playerid, -1.0);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
-	{
-		GivePlayerHP(playerid, 0.01);
 	}
 }
 
@@ -337,4 +324,26 @@ hook OnPlayerLoad(playerid, filename[])
 	length = modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
 
 	SetPlayerDrugsFromArray(playerid, data, length);
+}
+
+CMD:druginfo(playerid, params[])
+{
+	gBigString[playerid][0] = EOS;
+
+	for(new i; i < drug_TypeTotal; i++)
+	{
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+		{
+			format(gBigString[playerid], sizeof(gBigString[]), "%s%s:\ntick: %d\ntotdur: %d\ncalc: %d\n\n",
+				gBigString[playerid],
+				drug_TypeData[i][drug_name],
+				drug_PlayerDrugData[playerid][i][drug_tick],
+				drug_PlayerDrugData[playerid][i][drug_totalDuration],
+				GetTickCountDifference(GetTickCount(), drug_PlayerDrugData[playerid][i][drug_tick]));
+		}
+	}
+
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Drug Debug (Debrdug!?)", gBigString[playerid], "Close", "");
+
+	return 1;
 }
