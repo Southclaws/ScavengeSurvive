@@ -155,15 +155,31 @@ CMD:skills(playerid, params[])
 {
 	gBigString[playerid][0] = EOS;
 
+	new
+		craftset,
+		skillname[64];
+
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
+		craftset = GetCraftSetFromUniqueID(skl_PlayerSkills[playerid][i][skl_name]);
+
+		if(craftset != -1)
+		{
+			GetItemTypeName(GetCraftSetResult(craftset), skillname);
+		}
+		else
+		{
+			skillname[0] = EOS;
+			strcat(skillname, skl_PlayerSkills[playerid][i][skl_name]);
+		}
+
 		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete\n",
 			gBigString[playerid],
-			skl_PlayerSkills[playerid][i][skl_name],
+			skillname,
 			skl_PlayerSkills[playerid][i][skl_amount] * 100);
 	}
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Skill Values (For debugging!)", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_LIST, "Skill Values (For debugging!)", gBigString[playerid], "Close", "");
 
 	return 1;
 }
