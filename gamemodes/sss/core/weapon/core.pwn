@@ -248,12 +248,7 @@ stock UpdatePlayerWeaponItem(playerid)
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
-		if(0 < itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize] < 1000)
-			GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
-
-		else
-			GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 1);
-
+		GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 99999);
 		return 1;
 	}
 
@@ -295,8 +290,7 @@ stock UpdatePlayerWeaponItem(playerid)
 	}
 	else if(magammo > 0)
 	{
-		GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon],
-			(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon] == WEAPON_FLAMETHROWER) ? (GetItemWeaponItemMagAmmo(itemid) * 2) : (GetItemWeaponItemMagAmmo(itemid)));
+		GivePlayerWeapon(playerid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon], 99999);
 	}
 
 	_UpdateWeaponUI(playerid);
@@ -652,10 +646,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & 1)
 	{
 		if(IsPlayerKnockedOut(playerid))
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_1;
 
 		if(IsPlayerInAnyVehicle(playerid))
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_1;
 
 		if(GetItemTypeWeapon(GetItemType(GetPlayerItem(playerid))) != -1)
 			_ReloadWeapon(playerid);
@@ -671,15 +665,21 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		itemtype = GetItemType(itemid);
 
 		if(!IsValidItemType(itemtype))
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_1;
 
 		if(GetItemTypeWeapon(itemtype) == -1)
-			return 1;
+			return Y_HOOKS_CONTINUE_RETURN_1;
+
+		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
+		{
+			defer DestroyThrowable(playerid, itemid);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
 
 		if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ONLY_FIRE_AIMED)
 		{
 			if(!(newkeys & KEY_HANDBRAKE))
-				return 1;
+				return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 
 		if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_ASSISTED_FIRE_ONCE)
@@ -712,7 +712,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
-	return 1;
+	return Y_HOOKS_CONTINUE_RETURN_1;
+}
+
+timer DestroyThrowable[1000](playerid, itemid)
+{
+	DestroyItem(itemid);
+	ResetPlayerWeapons(playerid);
 }
 
 hook OnPlayerDropItem(playerid, itemid)
