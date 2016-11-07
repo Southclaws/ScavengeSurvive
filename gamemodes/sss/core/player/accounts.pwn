@@ -583,13 +583,37 @@ Logout(playerid, docombatlogcheck = 1)
 	itemid = GetPlayerItem(playerid);
 	itemtype = GetItemType(itemid);
 
-	if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
+	if(IsItemTypeSafebox(itemtype))
 	{
+		d:1:HANDLER("[LOGOUT] Player is holding a box.");
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
+			d:1:HANDLER("[LOGOUT] Player is holding an unempty box, dropping in world.");
 			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
-
 			itemid = INVALID_ITEM_ID;
+			itemtype = INVALID_ITEM_TYPE;
+		}
+	}
+
+	if(IsItemTypeBag(itemtype))
+	{
+		d:1:HANDLER("[LOGOUT] Player is holding a bag.");
+		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
+		{
+			if(IsValidItem(GetPlayerBagItem(playerid)))
+			{
+				d:1:HANDLER("[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
+				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
+				itemid = INVALID_ITEM_ID;
+				itemtype = INVALID_ITEM_TYPE;
+			}
+			else
+			{
+				d:1:HANDLER("[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
+				GivePlayerBag(playerid, itemid);
+				itemid = INVALID_ITEM_ID;
+				itemtype = INVALID_ITEM_TYPE;
+			}
 		}
 	}
 
