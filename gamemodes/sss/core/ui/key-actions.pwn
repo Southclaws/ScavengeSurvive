@@ -102,6 +102,21 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	_UpdateKeyActions(playerid);
 }
 
+hook OnPlayerAddToInventory(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnItemRemovedFromInv(playerid, itemid, slot)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnItemRemovedFromPlayer(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
 // Pickup/drop item
 hook OnPlayerPickedUpItem(playerid, itemid)
 {
@@ -109,6 +124,21 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 }
 
 hook OnPlayerDroppedItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGetItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGiveItem(playerid, targetid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	_UpdateKeyActions(playerid);
 }
@@ -138,6 +168,8 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 // State change
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	_UpdateKeyActions(playerid);
+
 	if(!IsPlayerToolTipsOn(playerid))
 		return 1;
 
