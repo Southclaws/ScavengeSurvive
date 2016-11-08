@@ -47,7 +47,7 @@ Float:		spawn_ResBleed,
 ItemType:	spawn_ResItems[16][e_item_object];
 
 static
-bool:		spawn_State[MAX_PLAYERS],
+bool:		spawn_State[MAX_PLAYERS] = {false, ...},
 Float:		spawn_PosX[MAX_PLAYERS],
 Float:		spawn_PosY[MAX_PLAYERS],
 Float:		spawn_PosZ[MAX_PLAYERS],
@@ -114,6 +114,8 @@ hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
 
+	spawn_State[playerid] = false;
+
 //	defer LoadClassUI(playerid);
 //}
 //
@@ -152,10 +154,16 @@ SpawnLoggedInPlayer(playerid)
 {
 	if(IsPlayerAlive(playerid))
 	{
-		if(PlayerSpawnExistingCharacter(playerid))
+		new ret = PlayerSpawnExistingCharacter(playerid);
+
+		if(!ret)
 		{
 			SetPlayerBrightness(playerid, 255);
 			return 1;
+		}
+		else
+		{
+			printf("ERROR: PlayerSpawnExistingCharacter returned %d", ret);
 		}
 	}
 	
@@ -180,10 +188,10 @@ PrepareForSpawn(playerid)
 PlayerSpawnExistingCharacter(playerid)
 {
 	if(IsPlayerSpawned(playerid))
-		return 0;
+		return 1;
 
 	if(!LoadPlayerChar(playerid))
-		return 0;
+		return 2;
 
 	new
 		Float:x,
@@ -230,7 +238,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 	CallLocalFunction("OnPlayerSpawnChar", "d", playerid);
 
-	return 1;
+	return 0;
 }
 
 PlayerCreateNewCharacter(playerid)

@@ -252,7 +252,7 @@ LoadAccount(playerid)
 
 	if(!active)
 	{
-		logf("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, lastlog);
+		logf("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
 		return 4;
 	}
 
@@ -263,7 +263,7 @@ LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, lastlog);
+			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
 			return 3;
 		}
 	}
@@ -482,7 +482,7 @@ Login(playerid)
 
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
-	logf("[LOGIN] %p logged in", playerid);
+	logf("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
 
 	// TODO: move to a single query
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
