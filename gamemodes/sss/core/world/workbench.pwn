@@ -144,8 +144,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
-					new uniqueid[11];
-					GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+					new uniqueid[ITM_MAX_NAME];
+					GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
 
 					wb_CurrentConstructSet[playerid] = consset;
 					_wb_StartWorking(playerid, withitemid, GetPlayerSkillTimeModifier(playerid, itemcount * 3600, uniqueid));
@@ -233,9 +233,9 @@ hook OnHoldActionFinish(playerid)
 
 		new
 			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
-			uniqueid[11];
+			uniqueid[ITM_MAX_NAME];
 
-		GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+		GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
 
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
 		_wb_CreateResult(wb_CurrentWorkbench[playerid], craftset);

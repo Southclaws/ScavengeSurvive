@@ -32,7 +32,7 @@
 
 
 #define MAX_PLAYER_SKILLS	(50)
-#define MAX_SKILL_NAME		(16)
+#define MAX_SKILL_NAME		(32)
 
 
 enum E_SKILL_DATA

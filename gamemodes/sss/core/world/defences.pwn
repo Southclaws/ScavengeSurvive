@@ -301,7 +301,7 @@ StartBuildingDefence(playerid, itemid)
 	GetItemTypeName(GetItemType(itemid), itemtypename);
 
 	def_CurrentDefenceItem[playerid] = itemid;
-	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "construction"));
+	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
 
@@ -428,7 +428,7 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
 		def_CurrentDefenceEdit[playerid] = itemid;
-		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "construction"));
+		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFREMOVING"), itemtypename));
 
@@ -442,7 +442,7 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
 		def_CurrentDefenceEdit[playerid] = itemid;
-		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "construction"));
+		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
@@ -463,7 +463,7 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
 		def_CurrentDefenceEdit[playerid] = itemid;
-		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "construction"));
+		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
@@ -484,7 +484,7 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
 		def_CurrentDefenceEdit[playerid] = itemid;
-		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "construction"));
+		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
@@ -564,7 +564,7 @@ hook OnHoldActionFinish(playerid)
 		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
 		TweakItem(playerid, itemid);
-		PlayerGainSkillExperience(playerid, "construction");
+		PlayerGainSkillExperience(playerid, "Construction");
 
 		return Y_HOOKS_BREAK_RETURN_0;
 	}

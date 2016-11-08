@@ -157,8 +157,8 @@ hook OnPlayerUseItem(playerid, itemid)
 					d:2:HANDLER("[OnPlayerUseItem] Tool matches current item, begin holdaction");
 					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
 					{
-						new uniqueid[11];
-						GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+						new uniqueid[ITM_MAX_NAME];
+						GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
 						StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime], uniqueid));
 						ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN", true));
@@ -200,8 +200,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 StartRemovingConstructedItem(playerid, itemid, craftset)
 {
-	new uniqueid[11];
-	GetCraftSetUniqueID(craftset, uniqueid, sizeof(uniqueid));
+	new uniqueid[ITM_MAX_NAME];
+	GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTime], uniqueid));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, ls(playerid, "DECONSTRUCT", true));
@@ -235,9 +235,9 @@ hook OnHoldActionFinish(playerid)
 			Float:tz,
 			count,
 			itemid,
-			uniqueid[11];
+			uniqueid[ITM_MAX_NAME];
 
-		GetCraftSetUniqueID(cons_Constructing[playerid], uniqueid, sizeof(uniqueid));
+		GetItemTypeName(GetCraftSetResult(cons_Constructing[playerid]), uniqueid);
 		// DestroyItem(GetPlayerItem(playerid));
 
 		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
