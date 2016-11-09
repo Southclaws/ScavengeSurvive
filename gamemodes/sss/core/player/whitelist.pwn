@@ -84,11 +84,7 @@ hook OnPlayerDisconnect(playerid)
 
 	// Again, a timer in case the GetAdminsOnline func returns 1 even though
 	// that 1 admin is quitting (Admin/Core.pwn hook maybe called after this)
-	new name[MAX_PLAYER_NAME];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	defer _WhitelistDisconnect(name);
+	defer _WhitelistDisconnect(playerid);
 
 	return 1;
 }
@@ -383,14 +379,14 @@ hook OnPlayerLogin(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-timer _WhitelistDisconnect[100](string:name[])
+timer _WhitelistDisconnect[100](playerid)
 {
 	if(wl_Auto && !wl_Active)
 	{
 		if(GetAdminsOnline(2) == 0) // turn on if whitelist is off and no admins remain online
 		{
 			ToggleWhitelist(true);
-			logf("[AUTOWHITELIST] Whitelist turned on by %s quitting.", name);
+			logf("[AUTOWHITELIST] Whitelist turned on by %d quitting.", playerid);
 		}
 	}
 }
