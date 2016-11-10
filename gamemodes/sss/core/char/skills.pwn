@@ -155,23 +155,12 @@ CMD:skills(playerid, params[])
 {
 	gBigString[playerid][0] = EOS;
 
-	new
-		craftset,
-		skillname[64];
+	new skillname[64];
 
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
-		craftset = GetCraftSetFromUniqueID(skl_PlayerSkills[playerid][i][skl_name]);
-
-		if(craftset != -1)
-		{
-			GetItemTypeName(GetCraftSetResult(craftset), skillname);
-		}
-		else
-		{
-			skillname[0] = EOS;
-			strcat(skillname, skl_PlayerSkills[playerid][i][skl_name]);
-		}
+		skillname[0] = EOS;
+		strcat(skillname, skl_PlayerSkills[playerid][i][skl_name]);
 
 		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete\n",
 			gBigString[playerid],
