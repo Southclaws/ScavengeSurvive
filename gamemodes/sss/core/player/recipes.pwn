@@ -34,23 +34,25 @@ CMD:recipes(playerid, params[])
 Dialog_ShowCraftTypes(playerid)
 {
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-    {
-        #pragma unused pid, dialogid, listitem, inputtext
-        
-        if(response)
-        {
-        	switch(listitem)
-        	{
-        		case 0:
-        			Dialog_ShowCraftList(playerid, 1);
-        		case 1:
-        			Dialog_ShowCraftList(playerid, 2);
-        		case 2:
-        			Dialog_ShowCraftList(playerid, 3);
-        	}
-        }
-    }
-    Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Recipes", "Combine recipes\nGround combine recipes\nWorkbench recipes", "Select", "Close");
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+		
+		if(response)
+		{
+			switch(listitem)
+			{
+				case 0:
+					Dialog_ShowCraftList(playerid, 1);
+				case 1:
+					Dialog_ShowCraftList(playerid, 2);
+				case 2:
+					Dialog_ShowCraftList(playerid, 3);
+				case 3:
+					Dialog_ShowCraftHelp(playerid);
+			}
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Recipes", "Combination Recipes\nConstruction Recipes\nWorkbench Recipes\n"C_GREEN"Help", "Select", "Close");
 }
 
 Dialog_ShowCraftList(playerid, type)
@@ -106,24 +108,23 @@ Dialog_ShowCraftList(playerid, type)
 	}
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-    {
-        #pragma unused pid, dialogid, listitem
-        
-        if(response)
-        {
-        	new 
-        		consset;
+	{
+		#pragma unused pid, dialogid, listitem
+		
+		if(response)
+		{
+			new consset;
 
-        	sscanf(inputtext, "p<.>i{s[96]}", consset);
+			sscanf(inputtext, "p<.>i{s[96]}", consset);
 
-        	Dialog_ShowIngredients(playerid, consset);
-        }
-        else
-        {
-        	Dialog_ShowCraftTypes(playerid);
-        }
-    }
-    Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Craftsets", f_str, "View", "Close");
+			Dialog_ShowIngredients(playerid, consset);
+		}
+		else
+		{
+			Dialog_ShowCraftTypes(playerid);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Craftsets", f_str, "View", "Close");
 }
 
 Dialog_ShowIngredients(playerid, craftset)
@@ -131,36 +132,35 @@ Dialog_ShowIngredients(playerid, craftset)
 	if(!IsValidCraftSet(craftset))
 		return 1;
 
-    new 
-        ItemType:itemType,
-        f_str[256],
+	gBigString[playerid][0] = EOS;
+
+	new 
+		ItemType:itemType,
 		itemname[ITM_MAX_NAME],
 		toolname[ITM_MAX_NAME],
 		consset = GetCraftSetConstructSet(craftset);
 
-    for(new i; i < GetCraftSetItemCount(craftset); i++)
+	for(new i; i < GetCraftSetItemCount(craftset); i++)
 	{
 		itemType = GetCraftSetItemType(craftset, i);
 		GetItemTypeName(itemType, itemname);
-		format(f_str, sizeof(f_str), "%s\t\t\t%s\n", f_str, itemname);
+		format(gBigString[playerid], sizeof(gBigString[]), "%s\t\t\t%s\n", gBigString[playerid], itemname);
 	}
-
-	GetItemTypeName(GetCraftSetResult(craftset), itemname);
 
 	if(consset != -1)
 	{
 		GetItemTypeName(GetConstructionSetTool(consset), toolname);
-		format(f_str, sizeof(f_str), "\
-			"C_WHITE"Itemname:		"C_YELLOW"%s\n\
+		format(gBigString[playerid], sizeof(gBigString[]), "\
 			"C_WHITE"Tool: 			"C_YELLOW"%s\n\
-			"C_WHITE"Ingredients:	"C_YELLOW"\n%s", itemname, toolname, f_str);
+			"C_WHITE"Ingredients:	"C_YELLOW"\n%s", toolname, gBigString[playerid]);
 	}
 	else
 	{
-		format(f_str, sizeof(f_str), "\
-			"C_WHITE"Itemname: 		"C_YELLOW"%s\n\
-			"C_WHITE"Ingredients:	"C_YELLOW"\n%s", itemname, f_str);
+		format(gBigString[playerid], sizeof(gBigString[]), "\
+			"C_WHITE"Ingredients:	"C_YELLOW"\n%s", gBigString[playerid]);
 	}
+
+	GetItemTypeName(GetCraftSetResult(craftset), itemname);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -170,7 +170,42 @@ Dialog_ShowIngredients(playerid, craftset)
 			Dialog_ShowCraftTypes(playerid);
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, itemname, f_str, "Close", "Back");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, itemname, gBigString[playerid], "Close", "Back");
 
 	return 1;
+}
+
+Dialog_ShowCraftHelp(playerid)
+{
+	gBigString[playerid][0] = EOS;
+
+	strcat(gBigString[playerid], "Crafting is a way to create new items from existing items.\n");
+	strcat(gBigString[playerid], "There are three ways to combine items in Scavenge and Survive:\n\n");
+
+	strcat(gBigString[playerid], C_YELLOW"In Inventory Screens (Aka: Crafting or Combining):\n\n");
+	strcat(gBigString[playerid], C_WHITE"While viewing your inventory or a container (vehicle trunk, box, bag, etc)\n");
+	strcat(gBigString[playerid], C_WHITE"Select 'Combine' from the item options\n");
+	strcat(gBigString[playerid], C_WHITE"Go back and open the options for another item\n");
+	strcat(gBigString[playerid], C_WHITE"Select 'Combine with ...' to combine the items together\n");
+	strcat(gBigString[playerid], C_WHITE"If a recipe requires more than two items, just repeat.\n\n");
+
+	strcat(gBigString[playerid], C_GREEN"On The Ground (Aka: Constructing):\n\n");
+	strcat(gBigString[playerid], C_WHITE"Place all the ingredient items on the ground\n");
+	strcat(gBigString[playerid], C_WHITE"Equip the 'Tool' item specified in the recipe page\n");
+	strcat(gBigString[playerid], C_WHITE"Hold the Interact key while close to the ingredients\n\n");
+
+	strcat(gBigString[playerid], C_BLUE"At a Workbench:\n\n");
+	strcat(gBigString[playerid], C_WHITE"Place the all ingredient items in the workbench (The workbench acts like a box)\n");
+	strcat(gBigString[playerid], C_WHITE"Equip the 'Tool' item specified in the recipe page\n");
+	strcat(gBigString[playerid], C_WHITE"Hold the Interact key while standing at the workbench");
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, listitem, inputtext
+		if(response)
+		{
+			Dialog_ShowCraftTypes(playerid);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Crafting Help", gBigString[playerid], "Back", "Cancel");
 }
