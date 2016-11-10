@@ -135,11 +135,19 @@ hook OnPlayerLoad(playerid, filename[])
 		}
 		else if(data[i] == EOS)
 		{
-			i++; // pass the EOS onto the skill amount cell
+			// pass the EOS onto the skill amount cell, add an EOS to skill name
+			i++;
 			skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name][ptr++] = EOS;
+			ptr = 0;
+
+			if(_skl_SkillNameToID(playerid, skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name]) != -1)
+			{
+				printf("ERROR: Skill '%s' duplicated in player data", skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name]);
+				continue;
+			}
+
 			skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_amount] = Float:data[i];
 			skl_PlayerSkillCount[playerid]++;
-			ptr = 0;
 		}
 	}
 
