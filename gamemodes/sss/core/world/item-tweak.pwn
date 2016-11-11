@@ -35,7 +35,7 @@ static
 			twk_Tweaker[ITM_MAX] = {INVALID_PLAYER_ID, ...},
 Float:		twk_Origin[MAX_PLAYERS][3],
 			twk_Locked[MAX_PLAYERS],
-			twk_NoGoZone[MAX_PLAYERS],
+			twk_NoGoZone[MAX_PLAYERS] = {INVALID_STREAMER_ID, ...},
 			twk_NoGoZoneCount[MAX_PLAYERS];
 
 static
@@ -106,7 +106,7 @@ stock TweakItem(playerid, itemid)
 
 	_twk_ShowUI(playerid);
 	_twk_ToggleMouse(playerid, false);
-	ShowActionText(playerid, "Move away from item to move it");
+	ShowHelpTip(playerid, "Move away from item to move it~n~Press ~k~~SNEAK_ABOUT~ to show mouse~n~Click Done to finish", 10000);
 
 	return 1;
 }
@@ -121,13 +121,15 @@ stock TweakItem(playerid, itemid)
 
 _twk_Reset(playerid)
 {
+	twk_Locked[playerid] = false;
+	DestroyDynamicArea(twk_NoGoZone[playerid]);
+	twk_NoGoZone[playerid] = INVALID_STREAMER_ID;
+	twk_NoGoZoneCount[playerid] = 0;
+
 	if(IsValidItem(twk_Item[playerid]))
 		twk_Tweaker[twk_Item[playerid]] = INVALID_PLAYER_ID;
 
 	twk_Item[playerid] = INVALID_ITEM_ID;
-	twk_Locked[playerid] = false;
-	DestroyDynamicArea(twk_NoGoZone[playerid]);
-	twk_NoGoZoneCount[playerid] = 0;
 
 	_twk_HideUI(playerid);
 }
