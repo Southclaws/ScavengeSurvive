@@ -42,7 +42,8 @@ enum E_CONSTRUCT_SET_DATA
 ItemType:	cons_tool,
 			cons_craftset,
 ItemType:	cons_removalTool,
-			cons_removalTime
+			cons_removalTime,
+bool:		cons_tweak
 }
 
 
@@ -98,13 +99,14 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0)
+stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0, bool:tweak = true)
 {
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
 	cons_Data[cons_Total][cons_tool] = tool;
 	cons_Data[cons_Total][cons_craftset] = craftset;
 	cons_Data[cons_Total][cons_removalTool] = removal;
 	cons_Data[cons_Total][cons_removalTime] = removaltime;
+	cons_Data[cons_Total][cons_tweak] = tweak;
 
 	cons_CraftsetConstructSet[craftset] = cons_Total;
 
@@ -260,8 +262,10 @@ hook OnHoldActionFinish(playerid)
 		tz /= float(count);
 
 		itemid = CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
-		TweakItem(playerid, itemid);
 		PlayerGainSkillExperience(playerid, uniqueid);
+
+		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_tweak])
+			TweakItem(playerid, itemid);
 
 		d:2:HANDLER("[OnHoldActionFinish] Calling OnPlayerConstructed %d %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
 		CallLocalFunction("OnPlayerConstructed", "ddd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
