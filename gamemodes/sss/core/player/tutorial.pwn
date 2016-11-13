@@ -58,7 +58,7 @@ hook OnPlayerLoadAccount(playerid)
 
 	d:1:HANDLER("[OnPlayerLoadAccount]");
 
-	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, "~n~Want to try the game first?~n~~n~~y~Click here to play the tutorial!~n~~n~");
+	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, ls(playerid, "TUTORPROMPT"));
 	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonTutorial[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonTutorial[playerid], 1);
@@ -106,7 +106,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTutorialWorld[playerid] = TutorialWorld;
 		TutorialWorld++;
 
-		TutUI_Keys[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 140.000000, "This tells you ~>~ what keys to press");
+		TutUI_Keys[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 140.000000, ls(playerid, "TUTORKEYSPR"));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Keys[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Keys[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Keys[playerid], 0.300000, 1.500000);
@@ -118,7 +118,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Keys[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Keys[playerid], 480.000000, 0.000000);
 
-		TutUI_Watch[playerid]			=CreatePlayerTextDraw(playerid, 83.000000, 250.000000, "This is your watch.~n~It shows your facing angle,~n~current time of day,~n~and chat radio frequency.~n~~d~");
+		TutUI_Watch[playerid]			=CreatePlayerTextDraw(playerid, 83.000000, 250.000000, ls(playerid, "TUTORWATCHI"));
 		PlayerTextDrawAlignment			(playerid, TutUI_Watch[playerid], 2);
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Watch[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Watch[playerid], 1);
@@ -131,7 +131,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Watch[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Watch[playerid], 0.000000, 150.000000);
 
-		TutUI_Stats[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 20.000000, "This shows your ~>~ health, armour, ammo and energy");
+		TutUI_Stats[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 20.000000, ls(playerid, "TUTORHPAPEN"));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Stats[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Stats[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Stats[playerid], 0.300000, 1.500000);
@@ -143,7 +143,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Stats[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Stats[playerid], 480.000000, 0.000000);
 
-		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, "To exit the tutorial, type /exit. If you can only see the tutorial button:~n~~n~This server uses an anti-cheat program. To play, you must download this from ~y~ac.scavengesurvive.com then you can play unrestricted.");
+		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, ls(playerid, "TUTOREXITCM"));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Exit[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Exit[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Exit[playerid], 0.300000, 1.500000);
@@ -196,7 +196,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		SetPlayerBrightness(playerid, 255);
 
-		ShowHelpTip(playerid, "Welcome to the tutorial! Look around and try things. Help messages will appear here! Type /exit to leave the tutorial.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORINTROD"));
 		PlayerInTutorial[playerid] = true;
 
 		ToggleTutorialUI(playerid, true);
@@ -304,7 +304,7 @@ hook OnPlayerWearBag(playerid, itemid)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORACCBAG"));
 	}
 
 	return 0;
@@ -319,7 +319,7 @@ hook OnPlayerOpenInventory(playerid)
 	{
 		ToggleTutorialUI(playerid, false);
 
-		ShowHelpTip(playerid, "This is your character inventory also known as your pockets. This is not your bag.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORINTINV"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -336,7 +336,7 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 		{
-			ShowHelpTip(playerid, "This is your bag. Bags are extra storage. There are many different types of bags with different sizes.");
+			ShowHelpTip(playerid, ls(playerid, "TUTORINTBAG"));
 		}
 	}
 
@@ -371,7 +371,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	{
 		if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
 		{
-			ShowHelpTip(playerid, "These are your options for the selected item. Equip puts it in your hand. Combine can be selected on multiple items to attempt to combine them.");
+			ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
 		}
 	}
 
@@ -384,7 +384,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "When you drop an item, other players can pick it up. Most item types ");
+		ShowHelpTip(playerid, ls(playerid, "TUTORDROITM"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -396,7 +396,7 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You added an item to your inventory. If your inventory is full, the item will be put in your bag.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORINVADD"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -408,7 +408,7 @@ hook OnPlayerViewInvOpt(playerid)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "These are your options for the selected item. Equip puts it in your hand. Combine can be selected on multiple items to attempt to combine them.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -424,11 +424,11 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 		{
 			if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 			{
-				ShowHelpTip(playerid, "You added an item to your bag. You can access your bag by pressing "KEYTEXT_INVENTORY" and clicking the Bag icon at the bottom right.");
+				ShowHelpTip(playerid, ls(playerid, "TUTORADDBAG"));
 			}
 			else
 			{
-				ShowHelpTip(playerid, "You added an item to a container. Containers are places to store items ");
+				ShowHelpTip(playerid, ls(playerid, "TUTORADDCNT"));
 			}
 		}
 	}
@@ -442,7 +442,7 @@ hook OnPlayerHolsteredItem(playerid, itemid)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You have holstered an item. Holstered items can be quickly accessed by pressing "KEYTEXT_PUT_AWAY" again.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMHOL"));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -454,7 +454,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, "You tried to use an item with another item because you're holding one already. This can be used sometimes, for example use a lighter with a campfire to light it or use a weapon with ammo to load it.");
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMUSE"));
 	}
 }
 
