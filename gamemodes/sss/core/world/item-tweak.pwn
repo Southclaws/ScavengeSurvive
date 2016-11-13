@@ -106,7 +106,7 @@ stock TweakItem(playerid, itemid)
 
 	_twk_ShowUI(playerid);
 	_twk_ToggleMouse(playerid, false);
-	ShowHelpTip(playerid, "Move away from item to move it~n~Press ~k~~SNEAK_ABOUT~ to show mouse~n~Click Done to finish", 10000);
+	ShowHelpTip(playerid, ls(playerid, "TIPTWEAKITM"), 10000);
 
 	return 1;
 }

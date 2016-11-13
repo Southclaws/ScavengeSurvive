@@ -184,6 +184,11 @@ TUTORADDBAG=You added an item to your bag. You can access your bag by pressing {
 TUTORADDCNT=You added an item to a container. Containers are places to store items 
 TUTORITMHOL=You have holstered an item. Holstered items can be quickly accessed by pressing {KEYTEXT_PUT_AWAY} again.
 TUTORITMUSE=You tried to use an item with another item because you're holding one already. This can be used sometimes, for example use a lighter with a campfire to light it or use a weapon with ammo to load it.
+TUTORVEHVER=This vehicle is very broken! To fix, equip a wrench and hold {KEYTEXT_INTERACT} while at the front of the vehicle.
+TUTORVEHBRO=This vehicle is broken! To fix, equip a screwdriver and hold {KEYTEXT_INTERACT} while at the front of the vehicle.
+TUTORVEHBIT=This vehicle is a bit broken! To fix, equip a hammer and hold {KEYTEXT_INTERACT} while at the front of the vehicle.
+TUTORVEHSLI=This vehicle is slightly broken! To fix, equip a wrench and hold {KEYTEXT_INTERACT} while at the front of the vehicle.
+TIPTWEAKITM=Move away from item to move it~n~Press ~k~~SNEAK_ABOUT~ to show mouse~n~Click Done to finish
 
 NULL_T=This item is invalid, ignore it
 Knuckles_T=This is a blunt melee weapon, useful for knocking players out
