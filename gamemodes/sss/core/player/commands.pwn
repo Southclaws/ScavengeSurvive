@@ -30,23 +30,7 @@ CMD:welcome(playerid, params[])
 
 CMD:help(playerid, params[])
 {
-	gBigString[playerid][0] = EOS;
-
-	strcat(gBigString[playerid],
-		"\t"C_RED"/rules - list of server rules\n\n\
-		\t"C_GREEN"/admins - server staff\n\n\
-		\t"C_YELLOW"/motd - view the message of the day\n\n\
-		\t"C_YELLOW"/credits - awesome people\n\n\
-		\t"C_BLUE"/chatinfo - information on chat\n\n\
-		\t"C_ORANGE"/restartinfo - information on server restarts/item saving\n\n");
-
-	strcat(gBigString[playerid],
-		"\t"C_YELLOW"/tooltips - enable and disable helpful tooltips\n\n\
-		\t"C_BROWN"/dropall - drop all your items and surrender\n\n\
-		\t"C_LGREEN"/changepass - change your password\n\n\n\
-		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
-
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", ls(playerid, "GENCOMDHELP"), "Close", "");
 
 	return 1;
 }
