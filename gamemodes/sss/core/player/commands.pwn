@@ -83,6 +83,7 @@ CMD:credits(playerid, params[])
 	ChatMsg(playerid, BLUE, " >  JJ - Czech Translation");
 	ChatMsg(playerid, BLUE, " >  KingSergio - Russian Translation");
 	ChatMsg(playerid, BLUE, " >  Blacky - Romanian Translation");
+	ChatMsg(playerid, BLUE, " >  Reza - Indonesian Translation");
 
 	return 1;
 }
