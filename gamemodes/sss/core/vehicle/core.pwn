@@ -200,6 +200,7 @@ stock DestroyWorldVehicle(vehicleid, bool:perma = false)
 
 	if(perma)
 	{
+		logf("[DestroyWorldVehicle] Permanently destroying vehicle %d", vehicleid);
 		DestroyVehicle(vehicleid);
 	}
 	else

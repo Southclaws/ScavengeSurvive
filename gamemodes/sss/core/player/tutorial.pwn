@@ -226,6 +226,17 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 	}
 }
 
+hook OnVehicleSave(vehicleid)
+{
+	foreach(new i : Player)
+	{
+		if(vehicleid == PlayerTutorialVehicle[i])
+			return Y_HOOKS_BREAK_RETURN_1;
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
 hook OnPlayerDeath(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerDeath] in /gamemodes/sss/core/player/tutorial.pwn");
