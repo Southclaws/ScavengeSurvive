@@ -994,6 +994,11 @@ public OnScriptInit()
 	SetItemTypeScrapValue(item_GearBox,			5);
 	SetItemTypeScrapValue(item_ToolBox,			8);
 	SetItemTypeScrapValue(item_MetalFrame,		16);
+	SetItemTypeScrapValue(item_LockBreaker,		1);
+	SetItemTypeScrapValue(item_ControlBox,		2);
+	SetItemTypeScrapValue(item_Computer,		2);
+	SetItemTypeScrapValue(item_TallFrame,		8);
+	SetItemTypeScrapValue(item_RemoteControl,	1);
 
 
 	// SETTING HOLSTERABLE ITEMS
