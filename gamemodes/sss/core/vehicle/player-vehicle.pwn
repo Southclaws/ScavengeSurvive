@@ -71,6 +71,9 @@ static
 		HANDLER = -1;
 
 
+forward OnVehicleSave(vehicleid);
+
+
 hook OnScriptInit()
 {
 	print("\n[OnScriptInit] Initialising 'Vehicle/PlayerVehicle'...");
@@ -448,9 +451,15 @@ LoadPlayerVehicle(filename[])
 
 _SaveVehicle(vehicleid)
 {
-	if(isnull(pveh_Owner[vehicleid]))
+	if(strlen(pveh_Owner[vehicleid]) < 3)
 	{
-		printf("ERROR: Attempted to save vehicle %d with null owner string.", vehicleid);
+		printf("ERROR: Attempted to save vehicle %d with bad owner string '%s'", vehicleid, pveh_Owner[vehicleid]);
+		return 0;
+	}
+
+	if(CallLocalFunction("OnVehicleSave", "d", vehicleid))
+	{
+		d:1:HANDLER("[_SaveVehicle] OnVehicleSave returned non-zero");
 		return 0;
 	}
 
