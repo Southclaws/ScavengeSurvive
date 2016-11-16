@@ -56,6 +56,12 @@ hook OnScriptInit()
 	HANDLER = debug_register_handler("workbench");
 }
 
+hook OnPlayerConnect(playerid)
+{
+	wb_CurrentConstructSet[playerid] = -1;
+	wb_CurrentWorkbench[playerid] = -1;
+}
+
 hook OnPlayerDisconnect(playerid, reason)
 {
 	if(wb_CurrentWorkbench[playerid] != -1)

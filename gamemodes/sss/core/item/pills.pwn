@@ -115,7 +115,7 @@ StopTakingPills(playerid)
 	pill_CurrentlyTaking[playerid] = -1;
 }
 
-public OnHoldActionFinish(playerid)
+hook OnHoldActionFinish(playerid)
 {
 	if(pill_CurrentlyTaking[playerid] != -1)
 	{

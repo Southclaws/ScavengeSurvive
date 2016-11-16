@@ -92,6 +92,14 @@ forward Float:GetTreeSpeciesChopDamage(speciesid);
 forward ItemType:GetTreeSpeciesHarvestItem(speciesid);
 forward ItemType:GetTreeSpeciesResultItem(speciesid);
 
+
+hook OnPlayerConnect(playerid)
+{
+	tree_AtTree[playerid] = INVALID_TREE_ID;
+	tree_CuttingTree[playerid] = INVALID_TREE_ID;
+}
+
+
 /*==============================================================================
 
 	Core
