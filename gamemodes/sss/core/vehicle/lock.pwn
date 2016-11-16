@@ -78,10 +78,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(IsValidVehicle(vehicleid))
 		{
 			if(lock_Status[vehicleid] == E_LOCK_STATE_DEFAULT)
-				ShowActionText(playerid, "Door locked~n~Use a Crowbar", 6000);
+				ShowActionText(playerid, ls(playerid, "LOCKUSECROW"), 6000);
 
 			else if(lock_Status[vehicleid] == E_LOCK_STATE_EXTERNAL)
-				ShowActionText(playerid, "Door locked with custom lock", 6000);
+				ShowActionText(playerid, ls(playerid, "LOCKCUSTOML"), 6000);
 		}
 	}
 

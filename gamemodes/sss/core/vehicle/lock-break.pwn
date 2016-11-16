@@ -45,7 +45,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	{
 		if(GetVehicleLockState(vehicleid) == E_LOCK_STATE_EXTERNAL)
 		{
-			ShowActionText(playerid, "This vehicle has been locked with a crafted lock and cannot be broken", 8000);
+			ShowActionText(playerid, ls(playerid, "LOCKBREAKNO"), 8000);
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
@@ -83,7 +83,7 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 			return 0;
 
 		cro_OpenType[playerid] = 0;
-		ShowActionText(playerid, "Breaking open door", 6000);
+		ShowActionText(playerid, ls(playerid, "LOCKBREAKDR"), 6000);
 	}
 
 	if(type == 1)
@@ -92,7 +92,7 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 			return 0;
 
 		cro_OpenType[playerid] = 1;
-		ShowActionText(playerid, "Breaking open trunk", 6000);
+		ShowActionText(playerid, ls(playerid, "LOCKBREAKTR"), 6000);
 	}
 
 	cro_TargetVehicle[playerid] = vehicleid;

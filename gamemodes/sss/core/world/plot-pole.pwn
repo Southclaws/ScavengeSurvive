@@ -109,7 +109,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		{
 			new geid[GEID_LEN];
 			GetItemGEID(data[1], geid);
-			ShowActionText(playerid, sprintf("Entered Zone for Plot Pole %s", geid), 5000);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLEENT"), geid), 5000);
 		}
 	}
 
@@ -131,7 +131,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 		{
 			new geid[GEID_LEN];
 			GetItemGEID(data[1], geid);
-			ShowActionText(playerid, sprintf("Left Zone for Plot Pole %s", geid), 5000);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLELEF"), geid), 5000);
 		}
 	}
 
