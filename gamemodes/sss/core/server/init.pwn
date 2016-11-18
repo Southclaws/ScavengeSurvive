@@ -427,7 +427,7 @@ ItemType:		item_Wine1			= INVALID_ITEM_TYPE,
 ItemType:		item_Wine2			= INVALID_ITEM_TYPE,
 ItemType:		item_Wine3			= INVALID_ITEM_TYPE,
 // 260
-ItemType:		item_whisky			= INVALID_ITEM_TYPE,
+ItemType:		item_Whisky			= INVALID_ITEM_TYPE,
 ItemType:		item_Champagne		= INVALID_ITEM_TYPE,
 ItemType:		item_Ham			= INVALID_ITEM_TYPE,
 ItemType:		item_Steak			= INVALID_ITEM_TYPE,
@@ -856,7 +856,7 @@ public OnScriptInit()
 	item_Wine2			= DefineItemType("Wine",				"Wine2",			19821,	1,	0.0, 0.0, 0.0,			0.0,	0.169000, 0.053000, -0.506999,  -178.499954, -170.700210, -10.200168, .maxhitpoints = 1);
 	item_Wine3			= DefineItemType("Wine",				"Wine3",			19822,	1,	0.0, 0.0, 0.0,			0.0,	0.169000, 0.053000, -0.423999,  -178.499954, -170.700210, -10.200168, .maxhitpoints = 1);
 // 260
-	item_whisky			= DefineItemType("Whisky",				"whisky",			19823,	1,	0.0, 0.0, 0.0,			0.0,	0.132000, 0.041000, -0.286999,  -178.499954, -170.700210, -10.200168, .maxhitpoints = 1);
+	item_Whisky			= DefineItemType("Whisky",				"Whisky",			19823,	1,	0.0, 0.0, 0.0,			0.0,	0.132000, 0.041000, -0.286999,  -178.499954, -170.700210, -10.200168, .maxhitpoints = 1);
 	item_Champagne		= DefineItemType("Champagne",			"Champagne",		19824,	1,	0.0, 0.0, 0.0,			0.0,	0.132000, 0.041000, -0.346999,  -178.499954, -170.700210, -10.200168, .maxhitpoints = 1);
 	item_Ham			= DefineItemType("Ham",					"Ham",				19847,	1,	0.0, 0.0, 0.0,			0.0,	0.085000, 0.024000, 0.044000,  -77.199935, -167.100173, 15.799836, .maxhitpoints = 1);
 	item_Steak			= DefineItemType("Steak",				"Steak",			19882,	1,	0.0, 0.0, 0.0,			-0.02,	0.148000, 0.024000, 0.044000,  -77.199935, -167.100173, 15.799836, .maxhitpoints = 1);
@@ -1481,7 +1481,7 @@ public OnScriptInit()
 	DefineLiquidContainerItem(item_Wine1,			0.75,	false,	liquid_WineRed, 100);
 	DefineLiquidContainerItem(item_Wine2,			0.75,	false,	liquid_WineWhite, 100);
 	DefineLiquidContainerItem(item_Wine3,			0.75,	false,	liquid_WineRed, 100);
-	DefineLiquidContainerItem(item_whisky,			1.5,	false,	liquid_Whiskey, 100);
+	DefineLiquidContainerItem(item_Whisky,			1.5,	false,	liquid_Whiskey, 100);
 	DefineLiquidContainerItem(item_Champagne,		1.5,	false,	liquid_Champagne, 100);
 	DefineLiquidContainerItem(item_GasCan,			20.0,	true,	liquid_Petrol, 100);
 	DefineLiquidContainerItem(item_OilCan,			16.0,	true,	liquid_Oil, 100);

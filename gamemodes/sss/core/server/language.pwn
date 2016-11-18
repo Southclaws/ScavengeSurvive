@@ -24,7 +24,7 @@
 
 #define DIRECTORY_LANGUAGES			"languages/"
 #define MAX_LANGUAGE				(12)
-#define MAX_LANGUAGE_ENTRIES		(500)
+#define MAX_LANGUAGE_ENTRIES		(1024)
 #define MAX_LANGUAGE_KEY_LEN		(12)
 #define MAX_LANGUAGE_ENTRY_LENGTH	(600)
 #define MAX_LANGUAGE_NAME			(32)
@@ -178,7 +178,7 @@ stock LoadLanguage(filename[], langname[])
 
 	new
 		File:f = fopen(filename, io_read),
-		line[256],
+		line[MAX_LANGUAGE_KEY_LEN + 1 + MAX_LANGUAGE_ENTRY_LENGTH],
 		linenumber = 1,
 		bool:skip,
 		replace_me[MAX_LANGUAGE_ENTRY_LENGTH],
@@ -243,6 +243,12 @@ stock LoadLanguage(filename[], langname[])
 		key[delimiter] = EOS;
 		index = lang_TotalEntries[lang_Total]++;
 
+		if(lang_TotalEntries[lang_Total] >= MAX_LANGUAGE_ENTRIES)
+		{
+			printf("[LoadLanguage] ERROR: MAX_LANGUAGE_ENTRIES limit reached at line %d", linenumber);
+			break;
+		}
+
 		strmid(lang_Entries[lang_Total][index][lang_key], line, 0, delimiter, MAX_LANGUAGE_ENTRY_LENGTH);
 		strmid(replace_me, line, delimiter + 1, length - 1, MAX_LANGUAGE_ENTRY_LENGTH);
 
@@ -280,6 +286,11 @@ stock LoadLanguage(filename[], langname[])
 		{
 			lang_AlphabetMap[lang_Total][letter_idx] = -1;
 			letter_idx++;
+		}
+
+		if(letter_idx >= 26)
+		{
+			printf("ERROR: letter_idx > 26 (%d) at i = %d entry: '%s'", letter_idx, i, lang_Entries[lang_Total][i][lang_key]);
 		}
 
 		lang_AlphabetMap[lang_Total][letter_idx] = i;
