@@ -348,3 +348,16 @@ ACMD:clone[5](playerid, params[])
 
 	return 1;
 }
+
+ACMD:setskill[5](playerid, params[])
+{
+	new
+		skill[32],
+		Float:amount;
+
+	sscanf(params, "s[32]f", skill, amount);
+
+	PlayerGainSkillExperience(playerid, skill, amount);
+
+	return 1;
+}

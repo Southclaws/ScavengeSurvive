@@ -37,16 +37,46 @@
 
 enum E_SKILL_DATA
 {
-		skl_name[MAX_SKILL_NAME],
-Float:	skl_amount
+			skl_name[MAX_SKILL_NAME],
+Float:		skl_amount
+}
+
+enum E_SKILL_LEVEL_DATA
+{
+			skl_level[13],
+			skl_colour[9],
+Float:		skl_bound
 }
 
 static
-		skl_PlayerSkills[MAX_PLAYERS][MAX_PLAYER_SKILLS][E_SKILL_DATA],
-		skl_PlayerSkillCount[MAX_PLAYERS];
+			skl_PlayerSkills[MAX_PLAYERS][MAX_PLAYER_SKILLS][E_SKILL_DATA],
+			skl_PlayerSkillCount[MAX_PLAYERS],
+PlayerText:	skl_PlayerNotification,
+			skl_InventoryItem[MAX_PLAYERS];
+
+static
+				skl_Levels[5][E_SKILL_LEVEL_DATA] = {
+					{"Novice",			C_YELLOW,	0.1},
+					{"Adequate",		C_GREEN,	0.2},
+					{"Intermediate",	C_ORANGE,	0.33},
+					{"Experienced",		C_BLUE,		0.66},
+					{"Master",			C_PINK,		0.9}
+				};
 
 
-stock PlayerGainSkillExperience(playerid, skillname[])
+hook OnPlayerConnect(playerid)
+{
+	skl_PlayerNotification			=CreatePlayerTextDraw(playerid, 320.000000, 430.000000, "+Fishing");
+	PlayerTextDrawAlignment			(playerid, skl_PlayerNotification, 2);
+	PlayerTextDrawBackgroundColor	(playerid, skl_PlayerNotification, 255);
+	PlayerTextDrawFont				(playerid, skl_PlayerNotification, 1);
+	PlayerTextDrawLetterSize		(playerid, skl_PlayerNotification, 0.400000, 1.399999);
+	PlayerTextDrawColor				(playerid, skl_PlayerNotification, 16711935);
+	PlayerTextDrawSetOutline		(playerid, skl_PlayerNotification, 1);
+	PlayerTextDrawSetProportional	(playerid, skl_PlayerNotification, 1);
+}
+
+stock PlayerGainSkillExperience(playerid, skillname[], Float:mult = 0.0)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -60,11 +90,20 @@ stock PlayerGainSkillExperience(playerid, skillname[])
 	}
 
 	// s-curve(ish) formula
-	skl_PlayerSkills[playerid][cell][skl_amount] += 0.001 + 0.001 * (
+	skl_PlayerSkills[playerid][cell][skl_amount] += 0.001 + mult * (
 			(3 * floatpower(skl_PlayerSkills[playerid][cell][skl_amount], 2) -
 				2 * floatpower(skl_PlayerSkills[playerid][cell][skl_amount], 3)));
 
+	PlayerTextDrawSetString(playerid, skl_PlayerNotification, sprintf("+%s", skillname));
+	PlayerTextDrawShow(playerid, skl_PlayerNotification);
+	defer skl_HideUI(playerid);
+
 	return 1;
+}
+
+timer skl_HideUI[5000](playerid)
+{
+	PlayerTextDrawHide(playerid, skl_PlayerNotification);
 }
 
 stock GetPlayerSkillTimeModifier(playerid, time, skillname[])
@@ -127,6 +166,8 @@ hook OnPlayerLoad(playerid, filename[])
 
 	length = modio_read(filename, _T<S,K,I,L>, sizeof(data), data);
 
+	skl_PlayerSkillCount[playerid] = 0;
+
 	for(new i; i < length; i++)
 	{
 		if(32 < data[i] < 256)
@@ -159,24 +200,55 @@ hook OnPlayerLoad(playerid, filename[])
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-CMD:skills(playerid, params[])
+hook OnPlayerOpenInventory(playerid)
+{
+	skl_InventoryItem[playerid] = AddInventoryListItem(playerid, "Skills");
+}
+
+hook OnPlayerSelectExtraItem(playerid, item)
+{
+	if(item == skl_InventoryItem[playerid])
+	{
+		skl_ShowSkillList(playerid);
+	}
+}
+
+skl_ShowSkillList(playerid)
 {
 	gBigString[playerid][0] = EOS;
 
-	new skillname[64];
+	new
+		skillname[64],
+		level,
+		levelname[13];
 
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
 		skillname[0] = EOS;
 		strcat(skillname, skl_PlayerSkills[playerid][i][skl_name]);
 
-		format(gBigString[playerid], sizeof(gBigString[]), "%s'%s': %.2f%% Complete\n",
+		for(level = 0; level < 5; level++)
+		{
+			if(skl_PlayerSkills[playerid][i][skl_amount] < skl_Levels[level][skl_bound])
+				break;
+		}
+
+		levelname[0] = EOS;
+		strcat(levelname, skl_Levels[level][skl_level], 13);
+
+		format(gBigString[playerid], sizeof(gBigString[]), "%s%s%s (%s)\n",
 			gBigString[playerid],
+			skl_Levels[level][skl_colour],
 			skillname,
-			skl_PlayerSkills[playerid][i][skl_amount] * 100);
+			skl_Levels[level][skl_level]);
 	}
 
-	Dialog_Show(playerid, DIALOG_STYLE_LIST, "Skill Values (For debugging!)", gBigString[playerid], "Close", "");
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, inputtext, listitem, response
+		DisplayPlayerInventory(playerid);
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Skills", gBigString[playerid], "Back", "");
 
 	return 1;
 }
