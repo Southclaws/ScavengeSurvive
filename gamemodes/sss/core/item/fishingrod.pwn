@@ -31,7 +31,7 @@
 #define MAX_FISHING_DISTANCE	(10000)
 #define MIN_FISHING_TIME		(30000)
 #define MAX_FISHING_TIME		(120000)
-#define FISHING_CHANCE			(30) // value in percentage
+#define FISHING_CHANCE			(300) // value in percentage
 
 
 enum
@@ -128,7 +128,7 @@ _CatchFish(playerid, Float:distance)
 
 	if(IsPosInWater(x, y, z) && -0.01 < z < 0.01)
 	{
-		fish_Timer[playerid] = defer _TryCatch(playerid);
+		fish_Timer[playerid] = defer _TryCatch(playerid, GetPlayerSkillTimeModifier(playerid, MIN_FISHING_TIME + random(MAX_FISHING_TIME - MIN_FISHING_TIME), "Fishing"));
 		ShowActionText(playerid, ls(playerid, "FISHFISHING", true));
 	}
 	else
@@ -141,14 +141,17 @@ _CatchFish(playerid, Float:distance)
 	// CreateDynamicObject(18728, x, y, z, 0, 0, 0, -1, -1);
 }
 
-timer _TryCatch[MIN_FISHING_TIME + random(MAX_FISHING_TIME - MIN_FISHING_TIME)](playerid)
+timer _TryCatch[catchtime](playerid, catchtime)
 {
-	if(random(100) < FISHING_CHANCE)
+	#pragma unused catchtime
+
+	if(random(1000) < 1000 - GetPlayerSkillTimeModifier(playerid, 1000 - FISHING_CHANCE, "Fishing"))
 	{
 		ApplyAnimation(playerid, "SWORD", "sword_block", 50.0, 1, 0, 0, 0, 0);
-		
+
 		fish_Timer[playerid] = defer _CatchDelay(playerid);
 		ShowActionText(playerid, ls(playerid, "FISHLINETUG", true), floatround(fish_Distance[playerid], floatround_round) * 100);
+		PlayerGainSkillExperience(playerid, "Fishing");
 	}
 	else
 	{
@@ -167,7 +170,7 @@ timer _CatchDelay[floatround(fish_Distance[playerid], floatround_round) * 100](p
 	GetPlayerPos(playerid, x, y, z);
 	CreateItem(item_RawFish, x, y, z - FLOOR_OFFSET, 90.0);
 	// todo: multiple fish types
-	
+
 	_PlayerStopFishing(playerid);
 }
 
