@@ -441,9 +441,17 @@ _BagEquipHandler(playerid)
 
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(!IsValidItem(bag_PlayerBagID[playerid]))
+	if(IsItemTypeBag(itemtype))
 	{
-		if(IsItemTypeBag(itemtype))
+		if(IsValidItem(bag_PlayerBagID[playerid]))
+		{
+			new currentbagitem = bag_PlayerBagID[playerid];
+
+			RemovePlayerBag(playerid);
+			GivePlayerBag(playerid, itemid);
+			GiveWorldItemToPlayer(playerid, currentbagitem, 1);
+		}
+		else
 		{
 			if(CallLocalFunction("OnPlayerWearBag", "dd", playerid, itemid))
 				return 0;
@@ -451,20 +459,12 @@ _BagEquipHandler(playerid)
 			GivePlayerBag(playerid, itemid);
 		}
 
-		return 1;
-	}
-
-	if(IsItemTypeBag(itemtype))
-	{
-		new currentbagitem = bag_PlayerBagID[playerid];
-
-		RemovePlayerBag(playerid);
-		GivePlayerBag(playerid, itemid);
-		GiveWorldItemToPlayer(playerid, currentbagitem, 1);
 		return 0;
 	}
-
-	AddItemToPlayer(playerid, itemid);
+	else
+	{
+		AddItemToPlayer(playerid, itemid);
+	}
 
 	return 1;
 }
