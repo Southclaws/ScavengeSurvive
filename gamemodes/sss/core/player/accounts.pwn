@@ -353,11 +353,11 @@ CreateAccount(playerid, password[])
 
 	return 1;
 }
-#define p[%0] CMD:@
+
 DisplayRegisterPrompt(playerid)
 {
 	new str[150];
-	format(str, 150, ""C_WHITE"Hello %P"C_WHITE", You must be new here!\nPlease create an account by entering a "C_BLUE"password"C_WHITE" below:", playerid);
+	format(str, 150, ls(playerid, "ACCREGIBOD"), playerid);
 
 	logf("[REGPROMPT] %p is registering", playerid);
 
@@ -389,7 +389,7 @@ DisplayRegisterPrompt(playerid)
 
 		return 1;
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, "Register For A New Account", str, "Accept", "Leave");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCREGITITL"), str, "Accept", "Leave");
 
 	return 1;
 }
@@ -399,10 +399,10 @@ DisplayLoginPrompt(playerid, badpass = 0)
 	new str[128];
 
 	if(badpass)
-		format(str, 128, "Incorrect password! %d out of 5 tries", acc_LoginAttempts[playerid]);
+		format(str, 128, ls(playerid, "ACCLOGWROPW"), acc_LoginAttempts[playerid]);
 
 	else
-		format(str, 128, ""C_WHITE"Welcome Back %P"C_WHITE", Please log into to your account below!\n\n"C_YELLOW"Enjoy your stay :)", playerid);
+		format(str, 128, ls(playerid, "ACCLOGIBODY"), playerid);
 
 	logf("[LOGPROMPT] %p is logging in", playerid);
 
@@ -463,7 +463,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 
 		return 1;
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, "Login To Your Account", str, "Accept", "Leave");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCLOGITITL"), str, "Accept", "Leave");
 
 	return 1;
 }

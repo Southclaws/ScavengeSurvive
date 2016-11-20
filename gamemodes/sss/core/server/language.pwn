@@ -342,8 +342,23 @@ _doReplace(input[], output[])
 				in_tag = true;
 				continue;
 			}
-
-			output[output_idx++] = input[i];
+			else if(input[i] == '\\')
+			{
+				if(input[i + 1] == 'n')
+				{
+					output[output_idx++] = '\n';
+					i += 1;
+				}
+				else if(input[i + 1] == 't')
+				{
+					output[output_idx++] = '\t';
+					i += 1;
+				}
+			}
+			else
+			{
+				output[output_idx++] = input[i];
+			}
 		}
 	}
 }
