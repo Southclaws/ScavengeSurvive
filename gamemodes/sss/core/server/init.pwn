@@ -1685,6 +1685,7 @@ public OnScriptInit()
 	veht_DavidSabre	= DefineVehicleType(475, "Scimitar",		vgroup_Unique,		VEHICLE_CATEGORY_CAR,			VEHICLE_SIZE_MEDIUM,	56.0,		37.2,	GetLootIndexFromName("world_survivor"),			24,		3.3);
 	veht_Truckfort	= DefineVehicleType(403, "Truckfort",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	265.0,		24.5,	GetLootIndexFromName("world_survivor"),			76,		1.1);
 	veht_Roadpain	= DefineVehicleType(515, "Roadpain",		vgroup_Unique,		VEHICLE_CATEGORY_TRUCK,			VEHICLE_SIZE_MEDIUM,	210.0,		19.2,	GetLootIndexFromName("world_survivor"),			0,		1.4);
+	// veht_Vortex		= DefineVehicleType(539, "Vortex",			vgroup_Unique,		VEHICLE_CATEGORY_BOAT,			VEHICLE_SIZE_SMALL,		45.0,		11.6,	GetLootIndexFromName("vehicle_civilian"),		4,		0.1);
 
 	// SETTING VEHICLES TO PULL TRAILERS
 	SetVehicleTypeTrailerHitch(veht_Bobcat,		VEHICLE_SIZE_SMALL);

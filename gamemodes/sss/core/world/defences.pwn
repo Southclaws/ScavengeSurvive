@@ -66,6 +66,7 @@ static
 			def_ItemTypeDefenceType[ITM_MAX_TYPES] = {INVALID_DEFENCE_TYPE, ...};
 
 static
+			def_TweakArrow[MAX_PLAYERS] = {INVALID_OBJECT_ID, ...},
 			def_CurrentDefenceItem[MAX_PLAYERS],
 			def_CurrentDefenceEdit[MAX_PLAYERS],
 			def_CurrentDefenceOpen[MAX_PLAYERS],
@@ -563,7 +564,9 @@ hook OnHoldActionFinish(playerid)
 
 		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
+		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 90.0, 0.0, def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ] + angle, GetItemWorld(itemid), GetItemInterior(itemid));
 		TweakItem(playerid, itemid);
+		_UpdateDefenceTweakArrow(playerid, itemid);
 		PlayerGainSkillExperience(playerid, "Construction");
 
 		return Y_HOOKS_BREAK_RETURN_0;
@@ -710,6 +713,40 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_UpdateDefenceTweakArrow(playerid, itemid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rx,
+		Float:ry,
+		Float:rz;
+
+	GetItemPos(itemid, x, y, z);
+	GetItemRot(itemid, rx, ry, rz);
+
+	SetDynamicObjectPos(def_TweakArrow[playerid], x, y, z);
+	SetDynamicObjectRot(def_TweakArrow[playerid], rx + 90.0, ry, rz - 90.0);
+}
+
+hook OnItemTweakUpdate(playerid, itemid)
+{
+	if(def_TweakArrow[playerid] != INVALID_OBJECT_ID)
+	{
+		_UpdateDefenceTweakArrow(playerid, itemid);
+	}
+}
+
+hook OnItemTweakFinish(playerid, itemid)
+{
+	if(def_TweakArrow[playerid] != INVALID_OBJECT_ID)
+	{
+		DestroyDynamicObject(def_TweakArrow[playerid]);
+		def_TweakArrow[playerid] = INVALID_OBJECT_ID;
+	}
 }
 
 hook OnPlayerKeypadCancel(playerid, keypadid)

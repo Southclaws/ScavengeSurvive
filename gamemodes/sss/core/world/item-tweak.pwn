@@ -48,7 +48,8 @@ PlayerText:	twk_RotL[MAX_PLAYERS],
 PlayerText:	twk_Unlock[MAX_PLAYERS],
 PlayerText:	twk_Done[MAX_PLAYERS];
 
-forward OnItemTweak(playerid, itemid);
+forward OnItemTweakUpdate(playerid, itemid);
+forward OnItemTweakFinish(playerid, itemid);
 
 static HANDLER = -1;
 
@@ -70,6 +71,14 @@ hook OnPlayerConnect(playerid)
 	twk_Item[playerid] = INVALID_ITEM_ID;
 	_twk_Reset(playerid);
 	_twk_BuildUI(playerid);
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	if(IsValidItem(twk_Item[playerid]))
+	{
+		_twk_Commit(playerid);
+	}
 }
 
 
@@ -142,7 +151,7 @@ _twk_Commit(playerid)
 
 	logf("[TWEAK] %p Tweaked item %d (%s)", playerid, twk_Item[playerid], geid);
 
-	CallLocalFunction("OnItemTweak", "d", twk_Item[playerid]);
+	CallLocalFunction("OnItemTweakFinish", "dd", playerid, twk_Item[playerid]);
 
 	_twk_HideUI(playerid);
 	CancelSelectTextDraw(playerid);
@@ -295,6 +304,8 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 
 	SetItemPos(twk_Item[playerid], new_x, new_y, new_z);
 	SetItemRot(twk_Item[playerid], rx, ry, rz);
+
+	CallLocalFunction("OnItemTweakUpdate", "dd", playerid, twk_Item[playerid]);
 
 	return 0;
 }
