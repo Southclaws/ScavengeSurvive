@@ -569,6 +569,8 @@ hook OnHoldActionFinish(playerid)
 		_UpdateDefenceTweakArrow(playerid, itemid);
 		PlayerGainSkillExperience(playerid, "Construction");
 
+		ShowHelpTip(playerid, ls(playerid, "TIPTWEAKDEF"))
+
 		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
