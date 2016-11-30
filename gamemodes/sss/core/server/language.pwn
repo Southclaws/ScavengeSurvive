@@ -26,7 +26,7 @@
 #define MAX_LANGUAGE				(12)
 #define MAX_LANGUAGE_ENTRIES		(1024)
 #define MAX_LANGUAGE_KEY_LEN		(12)
-#define MAX_LANGUAGE_ENTRY_LENGTH	(600)
+#define MAX_LANGUAGE_ENTRY_LENGTH	(768)
 #define MAX_LANGUAGE_NAME			(32)
 #define MAX_LANGUAGE_REPLACEMENTS	(48)
 #define MAX_LANGUAGE_REPL_KEY_LEN	(32)
@@ -424,10 +424,17 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 	switch(ret)
 	{
 		case 1:
+		{
 			printf("[GetLanguageString] ERROR: Malformed key '%s' must be alphabetical.", key);
-
+		}
 		case 2:
+		{
 			printf("[GetLanguageString] ERROR: Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
+
+			// return english if key not found
+			if(languageid != 0)
+				return GetLanguageString(0, key, encode);
+		}
 	}
 
 	return result;

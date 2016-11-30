@@ -259,6 +259,8 @@ PlayerCreateNewCharacter(playerid)
 
 	if(IsPlayerLoggedIn(playerid))
 	{
+		PlayerTextDrawSetString(playerid, ClassButtonMale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_M")));
+		PlayerTextDrawSetString(playerid, ClassButtonFemale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_F")));
 		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
 		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
