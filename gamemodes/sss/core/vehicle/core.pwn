@@ -838,7 +838,7 @@ IsVehicleValidOutOfBounds(vehicleid)
 	{
 		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
-			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE:
+			case VEHICLE_CATEGORY_HELICOPTER, VEHICLE_CATEGORY_PLANE, VEHICLE_CATEGORY_BOAT:
 				return 1;
 
 			default:
