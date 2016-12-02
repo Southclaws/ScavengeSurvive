@@ -43,6 +43,13 @@ hook OnGameModeInit()
 	console("\n[OnGameModeInit] Initialising 'logging'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
+	_log_open();
+}
+
+_log_open()
+{
+	if(!!log_File)
+		return;
 
 	new
 		year,
@@ -58,6 +65,8 @@ hook OnGameModeInit()
 
 	else
 		log_File = fopen(filename, io_write);
+
+	return;
 }
 
 hook OnScriptExit()
@@ -71,11 +80,7 @@ stock _log(text[], printtext = true)
 		print(text);
 
 	if(!log_File)
-	{
-		PrintAmxBacktrace();
-		print("Writing to log file.");
-		return 0;
-	}
+		_log_open();
 
 	new
 		hour,
@@ -101,13 +106,13 @@ stock console(text[], va_args<>)
 stock log(text[], va_args<>)
 {
 	va_formatex(log_buffer, sizeof(log_buffer), text, va_start<1>);
-	log(log_buffer);
+	_log(log_buffer);
 }
 
 stock err(text[], va_args<>)
 {
 	va_formatex(log_buffer, sizeof(log_buffer), text, va_start<1>);
-	log(log_buffer);
+	_log(log_buffer);
 	PrintAmxBacktrace();
 }
 
