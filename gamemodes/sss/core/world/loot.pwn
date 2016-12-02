@@ -200,6 +200,12 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0)
 {
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		printf("[CreateLootItem] ERROR: Loot index (%d) is invalid.", lootindex);
+		return -1;
+	}
+
 	new
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
@@ -234,6 +240,12 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 
 stock FillContainerWithLoot(containerid, slots, lootindex)
 {
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		printf("[FillContainerWithLoot] ERROR: Loot index (%d) is invalid.", lootindex);
+		return -1;
+	}
+
 	//printf("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
 	new containersize = GetContainerSize(containerid);
 
@@ -460,6 +472,9 @@ stock GetLootIndexFromName(name[])
 		if(!strcmp(name, loot_IndexName[i], true))
 			return i;
 	}
+
+	printf("[GetLootIndexFromName] ERROR: specified index name is invalid ('%s')", name);
+	PrintAmxBacktrace();
 
 	return -1;
 }

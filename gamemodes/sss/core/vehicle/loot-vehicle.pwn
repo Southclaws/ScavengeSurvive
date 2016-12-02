@@ -72,6 +72,7 @@ GenerateVehicleData(vehicleid)
 		type,
 		category,
 		Float:maxfuel,
+		lootindexname[32],
 		lootindex,
 		trunksize,
 		chance;
@@ -79,7 +80,8 @@ GenerateVehicleData(vehicleid)
 	type = GetVehicleType(vehicleid);
 	category = GetVehicleTypeCategory(type);
 	maxfuel = GetVehicleTypeMaxFuel(type);
-	lootindex = GetVehicleTypeLootIndex(type);
+	GetVehicleTypeLootIndex(type, lootindexname);
+	lootindex = GetLootIndexFromName(lootindexname);
 	trunksize = GetVehicleTypeTrunkSize(type);
 
 // Health

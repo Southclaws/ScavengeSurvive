@@ -37,7 +37,7 @@
 enum E_SUPPLY_DROP_TYPE_DATA
 {
 			supt_name[MAX_SUPPLY_DROP_TYPE_NAME],
-			supt_loot,
+			supt_loot[32],
 			supt_interval,
 			supt_random,
 			supt_required,
@@ -89,7 +89,7 @@ hook OnGameModeInit()
 }
 
 
-DefineSupplyDropType(name[], lootindex, interval, rand, required)
+DefineSupplyDropType(name[], lootindex[], interval, rand, required)
 {
 	if(sup_TypeTotal == MAX_SUPPLY_DROP_TYPE)
 	{
@@ -98,7 +98,7 @@ DefineSupplyDropType(name[], lootindex, interval, rand, required)
 	}
 
 	strcat(sup_TypeData[sup_TypeTotal][supt_name], name, MAX_SUPPLY_DROP_TYPE_NAME);
-	sup_TypeData[sup_TypeTotal][supt_loot] = lootindex;
+	strcat(sup_TypeData[sup_TypeTotal][supt_loot], lootindex, 32);
 	sup_TypeData[sup_TypeTotal][supt_interval] = interval * 1000;
 	sup_TypeData[sup_TypeTotal][supt_random] = rand * 1000;
 	sup_TypeData[sup_TypeTotal][supt_required] = required;
@@ -304,7 +304,8 @@ SupplyCrateLand()
 		Float:a,
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		lootindex;
 
 	foreach(new i : Player)
 	{
@@ -319,7 +320,8 @@ SupplyCrateLand()
 
 	containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate"));
 
-	FillContainerWithLoot(containerid, 4 + random(16), sup_TypeData[sup_CurrentType][supt_loot]);
+	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
+	FillContainerWithLoot(containerid, 4 + random(16), lootindex);
 	d:2:HANDLER("[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), containerid);
 
 	DestroyDynamicObject(sup_ObjPara);

@@ -77,7 +77,7 @@ enum E_VEHICLE_TYPE_DATA
 		veh_size,
 Float:	veh_maxFuel,
 Float:	veh_fuelCons,
-		veh_lootIndex,
+		veh_lootIndex[32],
 		veh_trunkSize,
 Float:	veh_spawnChance,
 		veh_flags
@@ -112,12 +112,13 @@ stock DefineVehicleSpawnGroup(name[])
 	return veh_GroupTotal++;
 }
 
-stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex, trunksize, Float:spawnchance, flags = 0)
+stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex[], trunksize, Float:spawnchance, flags = 0)
 {
 	if(veh_TypeTotal == MAX_VEHICLE_TYPE - 1)
 		return -1;
 
-	printf("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d.", veh_TypeTotal, modelid, name, group, category, size);
+	printf("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d, maxfuel %f, fuelcons %f, lootindex %s, trunksize %d, spawnchance %f, flags %d",
+		veh_TypeTotal, modelid, name, group, category, size, maxfuel, fuelcons, lootindex, trunksize, spawnchance, flags);
 
 	veh_TypeData[veh_TypeTotal][veh_modelId] = modelid;
 	strcat(veh_TypeData[veh_TypeTotal][veh_modelId], name, MAX_VEHICLE_TYPE_NAME);
@@ -126,7 +127,7 @@ stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, F
 	veh_TypeData[veh_TypeTotal][veh_size] = size;
 	veh_TypeData[veh_TypeTotal][veh_maxFuel] = maxfuel;
 	veh_TypeData[veh_TypeTotal][veh_fuelCons] = fuelcons;
-	veh_TypeData[veh_TypeTotal][veh_lootIndex] = lootindex;
+	strcat(veh_TypeData[veh_TypeTotal][veh_lootIndex], lootindex, 32);
 	veh_TypeData[veh_TypeTotal][veh_trunkSize] = trunksize;
 	veh_TypeData[veh_TypeTotal][veh_spawnChance] = spawnchance;
 	veh_TypeData[veh_TypeTotal][veh_flags] = flags;
@@ -340,12 +341,15 @@ stock Float:GetVehicleTypeFuelConsumption(vehicletype)
 }
 
 // veh_lootIndex
-stock GetVehicleTypeLootIndex(vehicletype)
+stock GetVehicleTypeLootIndex(vehicletype, lootindex[])
 {
 	if(!(0 <= vehicletype < veh_TypeTotal))
 		return 0;
 
-	return veh_TypeData[vehicletype][veh_lootIndex];
+	lootindex[0] = EOS;
+	strcat(lootindex, veh_TypeData[vehicletype][veh_lootIndex], 32);
+
+	return 1;
 }
 
 // veh_trunkSize

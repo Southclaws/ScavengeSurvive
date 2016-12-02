@@ -42,7 +42,11 @@ hook OnGameModeInit()
 
 	new count = LoadLootTableDir(DIRECTORY_LOOT_TABLES);
 
-	printf("Loaded %d Loot table entries", count);
+	if(count == 0)
+		print("ERROR: No loot table entries loaded!");
+
+	else
+		printf("Loaded %d Loot table entries", count);
 }
 
 LoadLootTableDir(directory[])
