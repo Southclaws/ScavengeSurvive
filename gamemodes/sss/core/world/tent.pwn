@@ -98,7 +98,7 @@ stock CreateTentFromItem(itemid)
 {
 	if(GetItemType(itemid) != item_TentPack)
 	{
-		printf("ERROR: Attempted to create tent from non-tentpack item %d type: %d", itemid, _:GetItemType(itemid));
+		err("Attempted to create tent from non-tentpack item %d type: %d", itemid, _:GetItemType(itemid));
 		return -1;
 	}
 
@@ -106,7 +106,7 @@ stock CreateTentFromItem(itemid)
 
 	if(id == -1)
 	{
-		print("ERROR: MAX_TENT limit reached.");
+		err("MAX_TENT limit reached.");
 		return -1;
 	}
 
@@ -350,7 +350,7 @@ hook OnHoldActionFinish(playerid)
 
 			if(!IsValidTent(tentid))
 			{
-				printf("[OnHoldActionFinish] ERROR: Player %d attempted to destroy invalid tent %d from item %d", playerid, tentid, tnt_CurrentTentItem[playerid]);
+				err("Player %d attempted to destroy invalid tent %d from item %d", playerid, tentid, tnt_CurrentTentItem[playerid]);
 				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 

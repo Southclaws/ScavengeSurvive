@@ -92,7 +92,7 @@ stock CreateWaterMachine(Float:x, Float:y, Float:z, Float:rz)
 {
 	if(wm_Total == MAX_WATER_MACHINE - 1)
 	{
-		print("ERROR: MAX_WATER_MACHINE Limit reached.");
+		err("MAX_WATER_MACHINE Limit reached.");
 		return 0;
 	}
 
@@ -124,7 +124,7 @@ hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 		}
 		else
 		{
-			printf("ERROR: WaterMachine bi-directional link error. wm_MachineWaterMachine wm_machineId = %d machineid = %d");
+			err("WaterMachine bi-directional link error. wm_MachineWaterMachine wm_machineId = %d machineid = %d");
 		}
 	}
 

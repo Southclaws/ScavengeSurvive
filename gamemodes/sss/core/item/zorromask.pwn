@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'zorromask'...");
+	console("\n[OnGameModeInit] Initialising 'zorromask'...");
 
 	new tmp;
 

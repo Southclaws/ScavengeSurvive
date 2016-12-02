@@ -104,7 +104,7 @@ _OnDeath(playerid, killerid)
 
 	if(IsPlayerConnected(killerid))
 	{
-		logf("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
@@ -147,7 +147,7 @@ _OnDeath(playerid, killerid)
 	}
 	else
 	{
-		logf("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;

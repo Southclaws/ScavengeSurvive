@@ -33,7 +33,7 @@
 
 GenerateTerrain(seed)
 {
-	printf("\n\n\nGenerating terrain from seed: %d", seed);
+	log("\n\n\nGenerating terrain from seed: %d", seed);
 
 	new
 		Float:x = ORIGIN_X,
@@ -58,14 +58,14 @@ GenerateTerrain(seed)
 	}
 
 	print("Terrain generation complete");
-	printf("%d Total Tiles", GetTotalTiles());
+	log("%d Total Tiles", GetTotalTiles());
 
 	new name[24];
 
 	for(new i; i < GetTotalTileTypes(); i++)
 	{
 		GetTileName(i, name);
-	 	printf("Tile '%s' uses: %d", name, GetTileUses(i));
+	 	log("Tile '%s' uses: %d", name, GetTileUses(i));
 	}
 
 	print("\n\n\n");

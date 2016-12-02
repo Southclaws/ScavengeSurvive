@@ -48,7 +48,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Ranch'...");
+	console("\n[OnGameModeInit] Initialising 'Ranch'...");
 
 	_Ranch_LoadObjects();
 

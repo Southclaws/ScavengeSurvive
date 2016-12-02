@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'truckcap'...");
+	console("\n[OnGameModeInit] Initialising 'truckcap'...");
 
 	new tmp;
 

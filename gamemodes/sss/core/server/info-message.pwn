@@ -38,7 +38,7 @@ static
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'InfoMessage'...");
+	console("\n[OnScriptInit] Initialising 'InfoMessage'...");
 
 	GetSettingStringArray(
 		"infomessage/messages",

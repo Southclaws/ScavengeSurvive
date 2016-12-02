@@ -90,7 +90,7 @@ forward OnDefenceMove(itemid);
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Defences'...");
+	console("\n[OnScriptInit] Initialising 'Defences'...");
 }
 
 hook OnPlayerConnect(playerid)
@@ -134,7 +134,7 @@ CreateDefence(itemid)
 
 	if(!IsValidItemType(itemtype))
 	{
-		printf("ERROR: Attempted to create defence from item with invalid type (%d)", _:itemtype);
+		err("Attempted to create defence from item with invalid type (%d)", _:itemtype);
 		return INVALID_ITEM_ID;
 	}
 
@@ -142,7 +142,7 @@ CreateDefence(itemid)
 
 	if(defencetype == INVALID_DEFENCE_TYPE)
 	{
-		printf("ERROR: Attempted to create defence from item that is not a defence type (%d)", _:itemtype);
+		err("Attempted to create defence from item that is not a defence type (%d)", _:itemtype);
 		return INVALID_ITEM_ID;
 	}
 
@@ -554,7 +554,7 @@ hook OnHoldActionFinish(playerid)
 
 		SetItemPos(itemid, x, y, z);
 
-		logf("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
+		log("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
 			playerid, itemid, geid,
 			GetItemTypeModel(GetItemType(itemid)),
 			x, y, z,
@@ -633,7 +633,7 @@ hook OnHoldActionFinish(playerid)
 
 			DeconstructDefence(def_CurrentDefenceEdit[playerid]);
 
-			logf("[CROWBAR] %p broke defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
+			log("[CROWBAR] %p broke defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
 				playerid, def_CurrentDefenceEdit[playerid], geid,
 				GetItemTypeModel(GetItemType(def_CurrentDefenceEdit[playerid])), x, y, z, rx, ry, rz);
 
@@ -701,7 +701,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 
 				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
 
-				logf("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, code);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, code);
 				ShowEnterPassDialog_Keypad(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -859,7 +859,7 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 
 				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
 
-				logf("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, pass);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, pass);
 				ShowEnterPassDialog_KeypadAdv(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -923,7 +923,7 @@ timer MoveDefence[1500](itemid, playerid)
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
-		logf("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
+		log("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
 	}
 	else
@@ -938,7 +938,7 @@ timer MoveDefence[1500](itemid, playerid)
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
-		logf("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
+		log("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
 	}
 
@@ -964,7 +964,7 @@ hook OnItemDestroy(itemid)
 			GetItemPos(itemid, x, y, z);
 			GetItemRot(itemid, rx, ry, rz);
 
-			logf("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
+			log("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
 		}
 	}
 }

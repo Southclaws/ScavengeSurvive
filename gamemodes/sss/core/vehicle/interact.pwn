@@ -51,7 +51,7 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Vehicle/Interact'...");
+	console("\n[OnScriptInit] Initialising 'Vehicle/Interact'...");
 
 	Iter_Init(varea_NearIndex);
 
@@ -182,7 +182,7 @@ _vint_EnterArea(playerid, areaid)
 
 		if(cell == ITER_NONE)
 		{
-			print("ERROR: [_vint_EnterArea] cell == ITER_NONE");
+			err("[_vint_EnterArea] cell == ITER_NONE");
 			return;
 		}
 
@@ -191,7 +191,7 @@ _vint_EnterArea(playerid, areaid)
 	}
 	else
 	{
-		printf("ERROR: Vehicle %d already in NearList for player %d", data[1], playerid);
+		err("Vehicle %d already in NearList for player %d", data[1], playerid);
 	}
 
 	CallLocalFunction("OnPlayerEnterVehArea", "dd", playerid, data[1]);
@@ -273,7 +273,7 @@ _varea_Interact(playerid)
 
 	if(!IsPlayerInAnyDynamicArea(playerid))
 	{
-		printf("[WARNING] Player %d is not in areas but list isn't empty. Purging list.", playerid);
+		err("Player %d is not in areas but list isn't empty. Purging list.", playerid);
 		Iter_Clear(varea_NearIndex[playerid]);
 	}
 
@@ -299,7 +299,7 @@ _varea_Interact(playerid)
 		d:2:HANDLER("[_varea_Interact] [%d] Looping vehicles in list", i);
 		if(index >= MAX_VEHICLES_IN_RANGE - 1)
 		{
-			printf("ERROR: [_varea_Interact] varea_NearIndex tried to iterate %d times! Iterator size is %d", index, Iter_Count(varea_NearIndex));
+			err("[_varea_Interact] varea_NearIndex tried to iterate %d times! Iterator size is %d", index, Iter_Count(varea_NearIndex));
 			break;
 		}
 

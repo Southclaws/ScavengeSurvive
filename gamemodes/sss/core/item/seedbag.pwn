@@ -59,7 +59,7 @@ stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:pl
 {
 	if(seed_Total >= MAX_SEED_TYPES)
 	{
-		print("ERROR: Seed type limit reached.");
+		err("Seed type limit reached.");
 		return -1;
 	}
 

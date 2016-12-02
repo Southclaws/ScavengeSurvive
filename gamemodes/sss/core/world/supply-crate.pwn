@@ -79,7 +79,7 @@ static
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
+	console("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
 
 	sup_UpdateTimer = repeat SupplyDropTimer();
 
@@ -93,7 +93,7 @@ DefineSupplyDropType(name[], lootindex[], interval, rand, required)
 {
 	if(sup_TypeTotal == MAX_SUPPLY_DROP_TYPE)
 	{
-		print("ERROR: Supply drop type limit reached.");
+		err("Supply drop type limit reached.");
 		return -1;
 	}
 
@@ -115,7 +115,7 @@ DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float
 
 	if(id == ITER_NONE)
 	{
-		printf("ERROR: Supply drop pos definition limit reached.");
+		err("Supply drop pos definition limit reached.");
 		return -1;
 	}
 
@@ -145,7 +145,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// there are no more locations so stop the timer.
 	if(Iter_Count(sup_Index) == 0)
 	{
-		printf("[SupplyDropTimer] ERROR: Supply drops run out, stopping supply drop timer.");
+		err("Supply drops run out, stopping supply drop timer.");
 		stop sup_UpdateTimer;
 		return;
 	}
@@ -229,7 +229,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// This would be a red flag for memory corruption!
 	if(!ret)
 	{
-		printf("[SupplyDropTimer] ERROR: Supply crate already active (type: %d)", sup_CurrentType);
+		err("Supply crate already active (type: %d)", sup_CurrentType);
 		return;
 	}
 
@@ -295,7 +295,7 @@ SupplyCrateLand()
 
 	if(sup_CurrentType == -1)
 	{
-		print("ERROR: sup_CurrentType == -1");
+		err("sup_CurrentType == -1");
 		return;
 	}
 

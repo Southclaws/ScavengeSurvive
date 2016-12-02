@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'boaterhat'...");
+	console("\n[OnGameModeInit] Initialising 'boaterhat'...");
 
 	new tmp;
 

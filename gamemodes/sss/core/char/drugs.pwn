@@ -65,7 +65,7 @@ forward OnPlayerDrugWearOff(playerid, drugtype);
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Drugs'...");
+	console("\n[OnScriptInit] Initialising 'Drugs'...");
 
 	HANDLER = debug_register_handler("drugs");
 }
@@ -101,7 +101,7 @@ stock DefineDrugType(name[], duration)
 {
 	if(drug_TypeTotal == MAX_DRUG_TYPE)
 	{
-		printf("ERROR: Max drug types (%d) reached.", MAX_DRUG_TYPE);
+		err("Max drug types (%d) reached.", MAX_DRUG_TYPE);
 		return -1;
 	}
 
@@ -270,13 +270,13 @@ stock SetPlayerDrugsFromArray(playerid, input[], length)
 
 	if(input[0] < 0 || input[0] >= MAX_DRUG_TYPE)
 	{
-		printf("[SetPlayerDrugsFromArray] ERROR: Drug count out of bounds (%d)", input[0]);
+		err("Drug count out of bounds (%d)", input[0]);
 		return 0;
 	}
 
 	if(length != 1 + (input[0] * 2))
 	{
-		printf("[SetPlayerDrugsFromArray] ERROR: (Drug count * 2) + 1 != data length (%d != %d)", 1 + (input[0] * 2), length);
+		err("(Drug count * 2) + 1 != data length (%d != %d)", 1 + (input[0] * 2), length);
 		return 0;
 	}
 

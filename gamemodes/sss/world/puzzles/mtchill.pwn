@@ -48,7 +48,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'MtChill'...");
+	console("\n[OnGameModeInit] Initialising 'MtChill'...");
 
 	new buttons[1];
 

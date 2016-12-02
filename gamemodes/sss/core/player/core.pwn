@@ -69,7 +69,7 @@ forward OnDeath(playerid, killerid, reason);
 
 public OnPlayerConnect(playerid)
 {
-	logf("[JOIN] %p joined", playerid);
+	log("[JOIN] %p joined", playerid);
 
 	SetPlayerColor(playerid, 0xB8B8B800);
 
@@ -149,7 +149,7 @@ timer LoadAccountDelay[5000](playerid)
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		print("[LoadAccountDelay] WARNING: Player not connected any more.");
+		err("Player not connected any more.");
 		return;
 	}
 

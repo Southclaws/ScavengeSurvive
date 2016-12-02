@@ -27,7 +27,7 @@
 
 Load_RC()
 {
-	print("\n[OnGameModeInit] Initialising 'World/RC'...");
+	console("\n[OnGameModeInit] Initialising 'World/RC'...");
 
 	CreateFuelOutlet(1378.96094, 461.03906, 19.32813, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(1380.63281, 460.27344, 19.32813, 2.0, 100.0, frandom(40.0));

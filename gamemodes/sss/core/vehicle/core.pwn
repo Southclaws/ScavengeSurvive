@@ -174,11 +174,11 @@ stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colo
 {
 	if(!(0 <= type < veh_TypeTotal))
 	{
-		printf("ERROR: Tried to create invalid vehicle type (%d).", type);
+		err("Tried to create invalid vehicle type (%d).", type);
 		return 0;
 	}
 
-	//printf("[CreateWorldVehicle] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
+	// log("[CreateWorldVehicle] Creating vehicle of type %d model %d at %f, %f, %f", type, veh_TypeData[type][veh_modelId], x, y, z);
 
 	new vehicleid = _veh_create(type, x, y, z, r, colour1, colour2, world, geid);
 
@@ -200,7 +200,7 @@ stock DestroyWorldVehicle(vehicleid, bool:perma = false)
 
 	if(perma)
 	{
-		logf("[DestroyWorldVehicle] Permanently destroying vehicle %d", vehicleid);
+		log("[DestroyWorldVehicle] Permanently destroying vehicle %d", vehicleid);
 		DestroyVehicle(vehicleid);
 	}
 	else
@@ -631,14 +631,14 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		veh_EnterTick[playerid] = GetTickCount();
 
-		logf("[VEHICLE] %p entered %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
+		log("[VEHICLE] %p entered %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_DRIVER)
 	{
 		if(!IsValidVehicle(veh_Current[playerid]))
 		{
-			printf("ERROR: player state changed from vehicle but veh_Current is invalid", veh_Current[playerid]);
+			err("player state changed from vehicle but veh_Current is invalid", veh_Current[playerid]);
 			return 0;
 		}
 
@@ -652,7 +652,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 		SetCameraBehindPlayer(playerid);
 		HideVehicleUI(playerid);
 
-		logf("[VEHICLE] %p exited %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], veh_Data[veh_Current[playerid]][veh_spawnX], veh_Data[veh_Current[playerid]][veh_spawnY], veh_Data[veh_Current[playerid]][veh_spawnZ]);
+		log("[VEHICLE] %p exited %s (%d) as driver at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], veh_Data[veh_Current[playerid]][veh_spawnX], veh_Data[veh_Current[playerid]][veh_spawnY], veh_Data[veh_Current[playerid]][veh_spawnZ]);
 	}
 
 	if(newstate == PLAYER_STATE_PASSENGER)
@@ -671,14 +671,14 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		ShowVehicleUI(playerid, GetPlayerVehicleID(playerid));
 
-		logf("[VEHICLE] %p entered %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
+		log("[VEHICLE] %p entered %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
 	}
 
 	if(oldstate == PLAYER_STATE_PASSENGER)
 	{
 		if(!IsValidVehicle(veh_Current[playerid]))
 		{
-			printf("ERROR: player state changed from vehicle but veh_Current is invalid", veh_Current[playerid]);
+			err("player state changed from vehicle but veh_Current is invalid", veh_Current[playerid]);
 			return 0;
 		}
 
@@ -695,7 +695,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 		SetVehicleExternalLock(GetPlayerLastVehicle(playerid), E_LOCK_STATE_OPEN);
 		HideVehicleUI(playerid);
-		logf("[VEHICLE] %p exited %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
+		log("[VEHICLE] %p exited %s (%d) as passenger at %f, %f, %f", playerid, GetVehicleGEID(veh_Current[playerid]), veh_Current[playerid], x, y, z);
 	}
 
 	return 1;
@@ -815,14 +815,14 @@ hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Fl
 
 		if(xydistance > xythresh)
 		{
-			//printf("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
+			// log("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
 			SetVehiclePos(vehicleid, old_x, old_y, old_z);
 			SetVehicleZAngle(vehicleid, old_r);
 		}
 
 		if(zdistance > zthresh)
 		{
-			//printf("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
+			// log("xy: %f > %f = %d z: %f > %f = %d", xydistance, xythresh, xydistance > xythresh, zdistance, zthresh, zdistance > zthresh);
 			SetVehiclePos(vehicleid, new_x, new_y, old_z);
 		}
 
@@ -864,7 +864,7 @@ public OnVehicleDeath(vehicleid, killerid)
 
 	veh_Data[vehicleid][veh_dead] = true;
 
-	logf("[OnVehicleDeath] Vehicle %s (%d) killed by %s at %f %f %f", GetVehicleGEID(vehicleid), vehicleid, name, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
+	log("[OnVehicleDeath] Vehicle %s (%d) killed by %s at %f %f %f", GetVehicleGEID(vehicleid), vehicleid, name, veh_Data[vehicleid][veh_spawnX], veh_Data[vehicleid][veh_spawnY], veh_Data[vehicleid][veh_spawnZ]);
 }
 
 public OnVehicleSpawn(vehicleid)
@@ -873,14 +873,14 @@ public OnVehicleSpawn(vehicleid)
 	{
 		if(IsVehicleValidOutOfBounds(vehicleid))
 		{
-			logf("Dead Vehicle %s (%d) Spawned, is valid out-of-bounds vehicle, resetting.", GetVehicleGEID(vehicleid), vehicleid);
+			log("Dead Vehicle %s (%d) Spawned, is valid out-of-bounds vehicle, resetting.", GetVehicleGEID(vehicleid), vehicleid);
 
 			veh_Data[vehicleid][veh_dead] = false;
 			ResetVehicle(vehicleid);
 		}
 		else
 		{
-			logf("Dead Vehicle %s (%d) Spawned, spawning as inactive.", GetVehicleGEID(vehicleid), vehicleid);
+			log("Dead Vehicle %s (%d) Spawned, spawning as inactive.", GetVehicleGEID(vehicleid), vehicleid);
 
 			veh_Data[vehicleid][veh_health] = 300.0;
 			ResetVehicle(vehicleid);
@@ -899,7 +899,7 @@ public OnVehicleSpawn(vehicleid)
 stock vti_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay)
 {
 	#pragma unused vehicletype, x, y, z, rotation, color1, color2, respawn_delay
-	printf("ERROR: Cannot create vehicle by model ID.");
+	err("Cannot create vehicle by model ID.");
 
 	return 0;
 }

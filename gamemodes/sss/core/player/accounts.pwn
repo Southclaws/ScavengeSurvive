@@ -109,7 +109,7 @@ static HANDLER = -1;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Accounts'...");
+	console("\n[OnGameModeInit] Initialising 'Accounts'...");
 
 	HANDLER = debug_register_handler("Accounts");
 
@@ -211,19 +211,19 @@ LoadAccount(playerid)
 
 	if(!stmt_execute(stmt_AccountExists))
 	{
-		print("ERROR: [LoadAccount] executing statement 'stmt_AccountExists'.");
+		err("[LoadAccount] executing statement 'stmt_AccountExists'.");
 		return -1;
 	}
 
 	if(!stmt_fetch_row(stmt_AccountExists))
 	{
-		print("ERROR: [LoadAccount] fetching statement result 'stmt_AccountExists'.");
+		err("[LoadAccount] fetching statement result 'stmt_AccountExists'.");
 		return -1;
 	}
 
 	if(exists == 0)
 	{
-		logf("[LOAD] %p (account does not exist)", playerid);
+		log("[LOAD] %p (account does not exist)", playerid);
 		return 0;
 	}
 
@@ -240,19 +240,19 @@ LoadAccount(playerid)
 
 	if(!stmt_execute(stmt_AccountLoad))
 	{
-		print("ERROR: [LoadAccount] executing statement 'stmt_AccountLoad'.");
+		err("[LoadAccount] executing statement 'stmt_AccountLoad'.");
 		return -1;
 	}
 
 	if(!stmt_fetch_row(stmt_AccountLoad))
 	{
-		print("ERROR: [LoadAccount] fetching statement result 'stmt_AccountLoad'.");
+		err("[LoadAccount] fetching statement result 'stmt_AccountLoad'.");
 		return -1;
 	}
 
 	if(!active)
 	{
-		logf("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
+		log("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
 		return 4;
 	}
 
@@ -263,7 +263,7 @@ LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			logf("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
+			log("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
 			return 3;
 		}
 	}
@@ -281,11 +281,11 @@ LoadAccount(playerid)
 
 //	if(GetPlayerIpAsInt(playerid) == ipv4)
 //	{
-//		logf("[LOAD] %p (account exists, auto login)", playerid);
+//		log("[LOAD] %p (account exists, auto login)", playerid);
 //		return 2;
 //	}
 
-	logf("[LOAD] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
+	log("[LOAD] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
 
 	return 1;
 }
@@ -307,7 +307,7 @@ CreateAccount(playerid, password[])
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
-	logf("[REGISTER] %p registered", playerid);
+	log("[REGISTER] %p registered", playerid);
 
 	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		name, MAX_PLAYER_NAME); 
 	stmt_bind_value(stmt_AccountCreate, 1, DB::TYPE_STRING,		password, MAX_PASSWORD_LEN); 
@@ -319,7 +319,7 @@ CreateAccount(playerid, password[])
 
 	if(!stmt_execute(stmt_AccountCreate))
 	{
-		print("ERROR: [CreateAccount] executing statement 'stmt_AccountCreate'.");
+		err("[CreateAccount] executing statement 'stmt_AccountCreate'.");
 		KickPlayer(playerid, "An error occurred while executing statement 'stmt_AccountCreate'. Please contact an admin on IRC or the forum.");
 		return 0;
 	}
@@ -359,7 +359,7 @@ DisplayRegisterPrompt(playerid)
 	new str[150];
 	format(str, 150, ls(playerid, "ACCREGIBOD"), playerid);
 
-	logf("[REGPROMPT] %p is registering", playerid);
+	log("[REGPROMPT] %p is registering", playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -404,7 +404,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 	else
 		format(str, 128, ls(playerid, "ACCLOGIBODY"), playerid);
 
-	logf("[LOGPROMPT] %p is logging in", playerid);
+	log("[LOGPROMPT] %p is logging in", playerid);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -482,7 +482,7 @@ Login(playerid)
 
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
-	logf("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
+	log("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
 
 	// TODO: move to a single query
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
@@ -537,7 +537,7 @@ Logout(playerid, docombatlogcheck = 1)
 {
 	if(!acc_LoggedIn[playerid])
 	{
-		printf("[LOGOUT] %p not logged in.", playerid);
+		err("[LOGOUT] %p not logged in.", playerid);
 		return 0;
 	}
 
@@ -550,7 +550,7 @@ Logout(playerid, docombatlogcheck = 1)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	logf("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Logged In: %d Alive: %d Knocked Out: %d",
+	log("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Logged In: %d Alive: %d Knocked Out: %d",
 		playerid, x, y, z, r, acc_LoggedIn[playerid], IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid));
 
 	if(IsPlayerOnAdminDuty(playerid))
@@ -569,7 +569,7 @@ Logout(playerid, docombatlogcheck = 1)
 
 			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
 			{
-				logf("[LOGOUT] Player '%p' combat logged!", playerid);
+				log("[LOGOUT] Player '%p' combat logged!", playerid);
 				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
 				OnPlayerDeath(playerid, lastattacker, lastweapon);
 			}
@@ -730,7 +730,7 @@ SavePlayerData(playerid)
 
 		if(!stmt_execute(stmt_AccountUpdate))
 		{
-			printf("[SavePlayerData] ERROR: Statement 'stmt_AccountUpdate' failed to execute.");
+			err("Statement 'stmt_AccountUpdate' failed to execute.");
 		}
 
 		d:2:HANDLER("[SavePlayerData] Saving character data");
@@ -745,7 +745,7 @@ SavePlayerData(playerid)
 
 		if(!stmt_execute(stmt_AccountUpdate))
 		{
-			printf("[SavePlayerData] ERROR: Statement 'stmt_AccountUpdate' failed to execute.");
+			err("Statement 'stmt_AccountUpdate' failed to execute.");
 		}
 	}
 
@@ -776,7 +776,7 @@ stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawnti
 
 	if(!stmt_execute(stmt_AccountLoad))
 	{
-		print("ERROR: [GetAccountData] executing statement 'stmt_AccountLoad'.");
+		err("[GetAccountData] executing statement 'stmt_AccountLoad'.");
 		return 0;
 	}
 

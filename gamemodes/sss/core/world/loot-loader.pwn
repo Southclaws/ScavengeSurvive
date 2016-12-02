@@ -31,22 +31,22 @@
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'loot-loader'...");
+	console("\n[OnScriptInit] Initialising 'loot-loader'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOOT_TABLES);
 }
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'loot-loader'...");
+	console("\n[OnGameModeInit] Initialising 'loot-loader'...");
 
 	new count = LoadLootTableDir(DIRECTORY_LOOT_TABLES);
 
 	if(count == 0)
-		print("ERROR: No loot table entries loaded!");
+		err("No loot table entries loaded!");
 
 	else
-		printf("Loaded %d Loot table entries", count);
+		log("Loaded %d Loot table entries", count);
 }
 
 LoadLootTableDir(directory[])
@@ -66,7 +66,7 @@ LoadLootTableDir(directory[])
 
 	if(!dirhandle)
 	{
-		printf("ERROR: [LoadLootTableDir] Reading directory '%s'.", directory);
+		err("[LoadLootTableDir] Reading directory '%s'.", directory);
 		return 0;
 	}
 
@@ -99,7 +99,7 @@ LoadLootTableFromFile(file[])
 {
 	if(!fexist(file))
 	{
-		printf("ERROR: [LoadLootTableFromFile] File '%s' not found.", file);
+		err("[LoadLootTableFromFile] File '%s' not found.", file);
 		return 0;
 	}
 
@@ -126,7 +126,7 @@ LoadLootTableFromFile(file[])
 
 	if(sscanf(line, "p<,>s[32]F(1.0)", indexname, mult))
 	{
-		printf("ERROR: [LoadLootTableFromFile] ltb (loot-table) file %s has bad header (must be <indexname>, <weight multiplier>", file);
+		err("[LoadLootTableFromFile] ltb (loot-table) file %s has bad header (must be <indexname>, <weight multiplier>", file);
 		return 0;
 	}
 
@@ -145,7 +145,7 @@ LoadLootTableFromFile(file[])
 
 		if(!IsValidItemType(itemtype))
 		{
-			printf("ERROR: [LoadLootTableFromFile] Invalid item uname '%s' at %s:%d", uname, file, linenum);
+			err("[LoadLootTableFromFile] Invalid item uname '%s' at %s:%d", uname, file, linenum);
 			continue;
 		}
 
@@ -156,7 +156,7 @@ LoadLootTableFromFile(file[])
 
 	fclose(f);
 
-	printf("[LOAD] %d item spawn rates loaded from %s", count, file);
+	log("[LOAD] %d item spawn rates loaded from %s", count, file);
 
 	return 1;
 }

@@ -63,7 +63,7 @@ static
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'language'...");
+	console("\n[OnGameModeInit] Initialising 'language'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
 
@@ -122,17 +122,17 @@ stock LoadAllLanguages()
 
 	if(!dirhandle)
 	{
-		printf("[LoadAllLanguages] ERROR: Reading directory '%s'.", directory_with_root);
+		err("Reading directory '%s'.", directory_with_root);
 		return 0;
 	}
 
 	// Force load English first since that's the default language.
 	default_entries = LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
-	printf("Default language (English) has %d entries.", default_entries);
+	log("Default language (English) has %d entries.", default_entries);
 
 	if(default_entries == 0)
 	{
-		printf("[LoadAllLanguages] ERROR: No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
+		err("No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
 		return 0;
 	}
 
@@ -146,24 +146,24 @@ stock LoadAllLanguages()
 			next_path[0] = EOS;
 			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_LANGUAGES, item);
 
-			printf("Loading language '%s'...", item);
+			log("Loading language '%s'...", item);
 			entries = LoadLanguage(next_path, item);
 
 			if(entries > 0)
 			{
-				printf("Loaded! %d entries, %d missing entries", entries, default_entries - entries);
+				log("Loaded! %d entries, %d missing entries", entries, default_entries - entries);
 				languages++;
 			}
 			else
 			{
-				printf("[LoadAllLanguages] ERROR: No entries loaded from language file '%s'", item);
+				err("No entries loaded from language file '%s'", item);
 			}
 		}
 	}
 
 	dir_close(dirhandle);
 
-	printf("Loaded %d languages", languages);
+	log("Loaded %d languages", languages);
 
 	return 1;
 }
@@ -172,7 +172,7 @@ stock LoadLanguage(filename[], langname[])
 {
 	if(lang_Total == MAX_LANGUAGE)
 	{
-		print("ERROR: lang_Total reached MAX_LANGUAGE");
+		err("lang_Total reached MAX_LANGUAGE");
 		return 0;
 	}
 
@@ -189,7 +189,7 @@ stock LoadLanguage(filename[], langname[])
 
 	if(!f)
 	{
-		printf("[LoadLanguage] ERROR: Unable to open file '%s'.", filename);
+		err("Unable to open file '%s'.", filename);
 		return 0;
 	}
 
@@ -206,14 +206,14 @@ stock LoadLanguage(filename[], langname[])
 		{
 			if(!(32 <= line[delimiter] < 127))
 			{
-				printf("[LoadLanguage] ERROR: Malformed line %d in '%s' key contains non-alphabetic character (%d:%c).", linenumber, filename, line[delimiter], line[delimiter]);
+				err("Malformed line %d in '%s' key contains non-alphabetic character (%d:%c).", linenumber, filename, line[delimiter], line[delimiter]);
 				skip = true;
 				break;
 			}
 
 			if(delimiter >= MAX_LANGUAGE_KEY_LEN)
 			{
-				printf("[LoadLanguage] ERROR: Malformed line %d in '%s' key length over %d characters (%d).", linenumber, filename, MAX_LANGUAGE_KEY_LEN, delimiter);
+				err("Malformed line %d in '%s' key length over %d characters (%d).", linenumber, filename, MAX_LANGUAGE_KEY_LEN, delimiter);
 				skip = true;
 				break;
 			}
@@ -230,13 +230,13 @@ stock LoadLanguage(filename[], langname[])
 
 		if(delimiter >= length - 1 || delimiter < 4)
 		{
-			printf("[LoadLanguage] ERROR: Malformed line %d in '%s' delimiter character (%c) is absent or in first 4 cells.", linenumber, filename, DELIMITER_CHAR);
+			err("Malformed line %d in '%s' delimiter character (%c) is absent or in first 4 cells.", linenumber, filename, DELIMITER_CHAR);
 			continue;
 		}
 
 		if(!(32 <= key[0] < 127))
 		{
-			printf("[LoadLanguage] ERROR: First character on line %d is abnormal character (%d/%c).", linenumber, key[0], key[0]);
+			err("First character on line %d is abnormal character (%d/%c).", linenumber, key[0], key[0]);
 			continue;
 		}
 
@@ -245,7 +245,7 @@ stock LoadLanguage(filename[], langname[])
 
 		if(lang_TotalEntries[lang_Total] >= MAX_LANGUAGE_ENTRIES)
 		{
-			printf("[LoadLanguage] ERROR: MAX_LANGUAGE_ENTRIES limit reached at line %d", linenumber);
+			err("MAX_LANGUAGE_ENTRIES limit reached at line %d", linenumber);
 			break;
 		}
 
@@ -254,7 +254,7 @@ stock LoadLanguage(filename[], langname[])
 
 		_doReplace(replace_me, lang_Entries[lang_Total][index][lang_val]);
 
-		// printf("[LoadLanguage] Added language key '%s'", key);
+		// log("Added language key '%s'", key);
 
 		linenumber++;
 	}
@@ -290,7 +290,7 @@ stock LoadLanguage(filename[], langname[])
 
 		if(letter_idx >= 26)
 		{
-			printf("ERROR: letter_idx > 26 (%d) at i = %d entry: '%s'", letter_idx, i, lang_Entries[lang_Total][i][lang_key]);
+			err("letter_idx > 26 (%d) at i = %d entry: '%s'", letter_idx, i, lang_Entries[lang_Total][i][lang_key]);
 		}
 
 		lang_AlphabetMap[lang_Total][letter_idx] = i;
@@ -415,7 +415,7 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 
 	if(!(0 <= languageid < lang_Total))
 	{
-		printf("[GetLanguageString] ERROR: Invalid languageid %d.", languageid);
+		err("Invalid languageid %d.", languageid);
 		return result;
 	}
 
@@ -425,11 +425,11 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 	{
 		case 1:
 		{
-			printf("[GetLanguageString] ERROR: Malformed key '%s' must be alphabetical.", key);
+			err("Malformed key '%s' must be alphabetical.", key);
 		}
 		case 2:
 		{
-			printf("[GetLanguageString] ERROR: Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
+			err("Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
 
 			// return english if key not found
 			if(languageid != 0)

@@ -72,7 +72,7 @@ forward OnVehicleSave(vehicleid);
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Vehicle/PlayerVehicle'...");
+	console("\n[OnScriptInit] Initialising 'Vehicle/PlayerVehicle'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 
@@ -84,7 +84,7 @@ hook OnScriptInit()
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Vehicle/PlayerVehicle'...");
+	console("\n[OnGameModeInit] Initialising 'Vehicle/PlayerVehicle'...");
 
 	LoadPlayerVehicles();
 }
@@ -150,13 +150,13 @@ LoadPlayerVehicles()
 		{
 			if(!(6 < strlen(item) < MAX_PLAYER_NAME + 4))
 			{
-				printf("[LoadPlayerVehicles] WARNING: File with a bad filename length: '%s' len: %d", item, strlen(item));
+				err("File with a bad filename length: '%s' len: %d", item, strlen(item));
 				continue;
 			}
 
 			if(strfind(item, ".dat", false, 3) == -1)
 			{
-				printf("[LoadPlayerVehicles] WARNING: File with invalid extension: '%s'", item);
+				err("File with invalid extension: '%s'", item);
 				continue;
 			}
 
@@ -167,7 +167,7 @@ LoadPlayerVehicles()
 	dir_close(direc);
 
 	if(veh_PrintTotal)
-		logf("Loaded %d Player vehicles", Iter_Count(veh_Index));
+		log("Loaded %d Player vehicles", Iter_Count(veh_Index));
 
 	return 1;
 }
@@ -196,7 +196,7 @@ LoadPlayerVehicle(filename[])
 
 	if(length < 0)
 	{
-		printf("[LoadPlayerVehicle] ERROR: modio error %d in '%s'.", length, filename);
+		err("modio error %d in '%s'.", length, filename);
 		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
 	}
@@ -205,7 +205,7 @@ LoadPlayerVehicle(filename[])
 	{
 		if(data[0] == 0)
 		{
-			d:1:HANDLER("[LoadPlayerVehicle] Vehicle set to inactive (file: %s)", filename);
+			d:1:HANDLER("Vehicle set to inactive (file: %s)", filename);
 			modio_finalise_read(modio_getsession_read(filepath));
 			return 0;
 		}
@@ -216,13 +216,13 @@ LoadPlayerVehicle(filename[])
 	if(length == 0)
 	{
 		modio_finalise_read(modio_getsession_read(filepath));
-		print("[LoadPlayerVehicle] ERROR: modio_read returned length of 0.");
+		err("modio_read returned length of 0.");
 		return 0;
 	}
 
 	if(!IsValidVehicleType(data[VEH_CELL_TYPE]))
 	{
-		logf("[LoadPlayerVehicle] ERROR: Removing vehicle file '%s' invalid vehicle type '%d'.", filename, data[VEH_CELL_TYPE]);
+		err("Removing vehicle file '%s' invalid vehicle type '%d'.", filename, data[VEH_CELL_TYPE]);
 		fremove(filepath);
 		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
@@ -233,7 +233,7 @@ LoadPlayerVehicle(filename[])
 
 	if(Float:data[VEH_CELL_HEALTH] < 255.5)
 	{
-		logf("[LoadPlayerVehicle] ERROR: Removing vehicle file: '%s' (%s) due to low health.", filename, vehiclename);
+		err("Removing vehicle file: '%s' (%s) due to low health.", filename, vehiclename);
 		fremove(filepath);
 		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
@@ -251,7 +251,7 @@ LoadPlayerVehicle(filename[])
 			}
 			else
 			{
-				logf("[LoadPlayerVehicle] ERROR: Removing vehicle file: %s (%s) because it's out of the map bounds.", filename, vehiclename);
+				err("Removing vehicle file: %s (%s) because it's out of the map bounds.", filename, vehiclename);
 				fremove(filepath);
 				modio_finalise_read(modio_getsession_read(filepath));
 				return 0;
@@ -280,7 +280,7 @@ LoadPlayerVehicle(filename[])
 
 	if(!IsValidVehicle(vehicleid))
 	{
-		printf("[LoadPlayerVehicle] ERROR: Created vehicle returned invalid ID (%d)", vehicleid);
+		err("Created vehicle returned invalid ID (%d)", vehicleid);
 		modio_finalise_read(modio_getsession_read(filepath));
 		return 0;
 	}
@@ -395,7 +395,7 @@ LoadPlayerVehicle(filename[])
 		}
 
 		if(veh_PrintEach)
-			logf("\t[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+			log("\t[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 	}
 
 	new itemcount;
@@ -444,7 +444,7 @@ LoadPlayerVehicle(filename[])
 	}
 
 	if(veh_PrintEach)
-		logf("\t[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		log("\t[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	return 1;
 }
@@ -461,7 +461,7 @@ _SaveVehicle(vehicleid)
 {
 	if(strlen(pveh_Owner[vehicleid]) < 3)
 	{
-		printf("ERROR: Attempted to save vehicle %d with bad owner string '%s'", vehicleid, pveh_Owner[vehicleid]);
+		err("Attempted to save vehicle %d with bad owner string '%s'", vehicleid, pveh_Owner[vehicleid]);
 		return 0;
 	}
 
@@ -565,7 +565,7 @@ _SaveVehicle(vehicleid)
 
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
+			log("[SAVE] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
 				trailergeid,
 				trailerid,
 				_:GetVehicleLockState(trailerid),
@@ -610,7 +610,7 @@ _SaveVehicle(vehicleid)
 	{
 		if(veh_PrintEach)
 		{
-			logf("[SAVE] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
+			log("[SAVE] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
 				geid,
 				vehicleid,
 				_:GetVehicleLockState(vehicleid),
@@ -625,7 +625,7 @@ _SaveVehicle(vehicleid)
 	else
 	{
 		if(veh_PrintEach)
-			logf("[DELT] Removing player vehicle %d, owner: %s", vehicleid, pveh_Owner[vehicleid]);
+			log("[DELT] Removing player vehicle %d, owner: %s", vehicleid, pveh_Owner[vehicleid]);
 	}
 
 	return 1;

@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'gasmask'...");
+	console("\n[OnGameModeInit] Initialising 'gasmask'...");
 
 	new tmp;
 

@@ -66,7 +66,7 @@ static HANDLER = -1;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'liquid-container'...");
+	console("\n[OnGameModeInit] Initialising 'liquid-container'...");
 
 	HANDLER = debug_register_handler("liquid-container");
 }
@@ -81,7 +81,7 @@ stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable
 {
 	if(liq_Total >= MAX_LIQUID_TYPES - 1)
 	{
-		print("ERROR: MAX_LIQUID_TYPES limit reached!");
+		err("MAX_LIQUID_TYPES limit reached!");
 		return -1;
 	}
 

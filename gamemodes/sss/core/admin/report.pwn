@@ -109,7 +109,7 @@ DBStatement:	stmt_ReportGetUnread;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Report'...");
+	console("\n[OnGameModeInit] Initialising 'Report'...");
 
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
 		"FIELD_REPORTS_NAME" TEXT,\

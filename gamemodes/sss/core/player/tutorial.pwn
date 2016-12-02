@@ -47,7 +47,7 @@ forward OnPlayerHolsteredItem(playerid, itemid);
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Tutorial'...");
+	console("\n[OnGameModeInit] Initialising 'Tutorial'...");
 
 	HANDLER = debug_register_handler("tutorial", 0);
 }

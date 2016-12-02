@@ -38,7 +38,7 @@ forward OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockm
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'damage.vehicle'...");
+	console("\n[OnScriptInit] Initialising 'damage.vehicle'...");
 
 	GetSettingFloat("vehicle.damage/knock-mult", 1.0, dmg_VehicleVelocityKnockMult);
 	GetSettingFloat("vehicle.damage/bleed-mult", 1.0, dmg_VehicleVelocityBleedMult);

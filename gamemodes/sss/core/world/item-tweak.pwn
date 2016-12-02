@@ -100,9 +100,9 @@ stock TweakItem(playerid, itemid)
 	GetItemGEID(itemid, geid);
 
 	if(twk_Item[playerid] != -1)
-		printf("WARNING: [TweakItem] twk_Item already set to %d", twk_Item[playerid]);
+		err("twk_Item already set to %d", twk_Item[playerid]);
 
-	logf("[TWEAK] %p Tweaked item %d (%s)", playerid, itemid, geid);
+	log("[TWEAK] %p Tweaked item %d (%s)", playerid, itemid, geid);
 
 	twk_Item[playerid] = itemid;
 	twk_Tweaker[itemid] = playerid;
@@ -149,7 +149,7 @@ _twk_Commit(playerid)
 
 	GetItemGEID(twk_Item[playerid], geid);
 
-	logf("[TWEAK] %p Tweaked item %d (%s)", playerid, twk_Item[playerid], geid);
+	log("[TWEAK] %p Tweaked item %d (%s)", playerid, twk_Item[playerid], geid);
 
 	CallLocalFunction("OnItemTweakFinish", "dd", playerid, twk_Item[playerid]);
 
@@ -262,13 +262,13 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		printf("[_twk_AdjustItemPos] WARNING: Called on invalid player %d", playerid);
+		err("Called on invalid player %d", playerid);
 		return 1;
 	}
 
 	if(!IsValidItem(twk_Item[playerid]))
 	{
-		printf("[_twk_AdjustItemPos] WARNING: Called on invalid item %d", twk_Item[playerid]);
+		err("Called on invalid item %d", twk_Item[playerid]);
 		_twk_Reset(playerid);
 		return 2;
 	}
@@ -432,7 +432,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 	if(!IsPlayerConnected(twk_Tweaker[data[1]]))
 	{
-		printf("ERROR: Player entered area of tweaked item %d item has no connected player.", data[1]);
+		err("Player entered area of tweaked item %d item has no connected player.", data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
@@ -455,7 +455,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 
 	if(!IsPlayerConnected(twk_Tweaker[data[1]]))
 	{
-		printf("ERROR: Player left area of tweaked item %d item has no connected player.", data[1]);
+		err("Player left area of tweaked item %d item has no connected player.", data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 

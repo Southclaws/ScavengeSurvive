@@ -49,7 +49,7 @@ static
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'IRC'...");
+	console("\n[OnScriptInit] Initialising 'IRC'...");
 
 	GetSettingInt		("irc/use-irc",		0,					irc_Active);
 	GetSettingString	("irc/serv",		"irc.tl",			irc_Serv);
@@ -71,13 +71,13 @@ hook OnScriptInit()
 
 	if(!strcmp(irc_BotPass, "changeme"))
 	{
-		print("ERROR: Please set the IRC bot password in settings.json");
+		err("Please set the IRC bot password in settings.json");
 		for(;;){}
 	}
 
 	if(!strcmp(irc_BotMail, "e@ma.il"))
 	{
-		print("ERROR: Please set the IRC bot email in settings.json");
+		err("Please set the IRC bot email in settings.json");
 		for(;;){}
 	}
 
@@ -93,7 +93,7 @@ hook OnScriptExit()
 {
 	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/irc.pwn");
 
-	print("\n[OnScriptExit] Shutting down 'IRC'...");
+	console("\n[OnScriptExit] Shutting down 'IRC'...");
 
 	if(!irc_Active)
 		return 1;
@@ -239,7 +239,7 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 			strdel(message, 0, 1);
 		}
 
-		logf("[CHAT] [IRC-C] [%s]: %s", user, message);
+		log("[CHAT] [IRC-C] [%s]: %s", user, message);
 
 		new
 			line1[256],
@@ -271,7 +271,7 @@ _IRC_HandleChannelChat(recipient[], user[], message[])
 			strdel(message, 0, 1);
 		}
 
-		logf("[CHAT] [IRC-S] [%s]: %s", user, message);
+		log("[CHAT] [IRC-S] [%s]: %s", user, message);
 
 		new
 			line1[256],
@@ -302,7 +302,7 @@ public IRC_OnConnect(botid, ip[], port)
 	if(!irc_Active)
 		return 1;
 
-	printf("[IRC] IRC_OnConnect: Bot ID %d connected to %s:%d", botid, ip, port);
+	log("[IRC] IRC_OnConnect: Bot ID %d connected to %s:%d", botid, ip, port);
 
 	IRC_SendRaw(botid, sprintf("ns identify %s", irc_BotPass));
 
@@ -316,7 +316,7 @@ public IRC_OnConnect(botid, ip[], port)
 
 public IRC_OnDisconnect(botid, ip[], port, reason[])
 {
-	printf("[IRC] IRC_OnDisconnect: Bot ID %d disconnected from %s:%d (%s)", botid, ip, port, reason);
+	log("[IRC] IRC_OnDisconnect: Bot ID %d disconnected from %s:%d (%s)", botid, ip, port, reason);
 	// Remove the bot from the group
 	IRC_RemoveFromGroup(irc_Group, botid);
 	return 1;
@@ -324,13 +324,13 @@ public IRC_OnDisconnect(botid, ip[], port, reason[])
 
 public IRC_OnJoinChannel(botid, channel[])
 {
-	// printf("[IRC] IRC_OnJoinChannel: Bot ID %d joined channel %s", botid, channel);
+	// log("[IRC] IRC_OnJoinChannel: Bot ID %d joined channel %s", botid, channel);
 	return 1;
 }
 
 public IRC_OnLeaveChannel(botid, channel[], message[])
 {
-	// printf("[IRC] IRC_OnLeaveChannel: Bot ID %d left channel %s (%s)", botid, channel, message);
+	// log("[IRC] IRC_OnLeaveChannel: Bot ID %d left channel %s (%s)", botid, channel, message);
 	return 1;
 }
 
@@ -338,49 +338,49 @@ public IRC_OnLeaveChannel(botid, channel[], message[])
 
 public IRC_OnKickedFromChannel(botid, channel[], oppeduser[], oppedhost[], message[])
 {
-	printf("[IRC] IRC_OnKickedFromChannel: Bot ID %d kicked by %s (%s) from channel %s (%s)", botid, oppeduser, oppedhost, channel, message);
+	log("[IRC] IRC_OnKickedFromChannel: Bot ID %d kicked by %s (%s) from channel %s (%s)", botid, oppeduser, oppedhost, channel, message);
 	IRC_JoinChannel(botid, channel);
 	return 1;
 }
 
 public IRC_OnUserDisconnect(botid, user[], host[], message[])
 {
-	printf("[IRC] IRC_OnUserDisconnect (Bot ID %d): User %s (%s) disconnected (%s)", botid, user, host, message);
+	log("[IRC] IRC_OnUserDisconnect (Bot ID %d): User %s (%s) disconnected (%s)", botid, user, host, message);
 	return 1;
 }
 
 public IRC_OnUserJoinChannel(botid, channel[], user[], host[])
 {
-	printf("[IRC] IRC_OnUserJoinChannel (Bot ID %d): User %s (%s) joined channel %s", botid, user, host, channel);
+	log("[IRC] IRC_OnUserJoinChannel (Bot ID %d): User %s (%s) joined channel %s", botid, user, host, channel);
 	return 1;
 }
 
 public IRC_OnUserLeaveChannel(botid, channel[], user[], host[], message[])
 {
-	printf("[IRC] IRC_OnUserLeaveChannel (Bot ID %d): User %s (%s) left channel %s (%s)", botid, user, host, channel, message);
+	log("[IRC] IRC_OnUserLeaveChannel (Bot ID %d): User %s (%s) left channel %s (%s)", botid, user, host, channel, message);
 	return 1;
 }
 
 public IRC_OnUserKickedFromChannel(botid, channel[], kickeduser[], oppeduser[], oppedhost[], message[])
 {
-	printf("[IRC] IRC_OnUserKickedFromChannel (Bot ID %d): User %s kicked by %s (%s) from channel %s (%s)", botid, kickeduser, oppeduser, oppedhost, channel, message);
+	log("[IRC] IRC_OnUserKickedFromChannel (Bot ID %d): User %s kicked by %s (%s) from channel %s (%s)", botid, kickeduser, oppeduser, oppedhost, channel, message);
 }
 
 public IRC_OnUserNickChange(botid, oldnick[], newnick[], host[])
 {
-	printf("[IRC] IRC_OnUserNickChange (Bot ID %d): User %s (%s) changed his/her nick to %s", botid, oldnick, host, newnick);
+	log("[IRC] IRC_OnUserNickChange (Bot ID %d): User %s (%s) changed his/her nick to %s", botid, oldnick, host, newnick);
 	return 1;
 }
 
 public IRC_OnUserSetChannelMode(botid, channel[], user[], host[], mode[])
 {
-	printf("[IRC] IRC_OnUserSetChannelMode (Bot ID %d): User %s (%s) on %s set mode: %s", botid, user, host, channel, mode);
+	log("[IRC] IRC_OnUserSetChannelMode (Bot ID %d): User %s (%s) on %s set mode: %s", botid, user, host, channel, mode);
 	return 1;
 }
 
 public IRC_OnUserSetChannelTopic(botid, channel[], user[], host[], topic[])
 {
-	printf("[IRC] IRC_OnUserSetChannelTopic (Bot ID %d): User %s (%s) on %s set topic: %s", botid, user, host, channel, topic);
+	log("[IRC] IRC_OnUserSetChannelTopic (Bot ID %d): User %s (%s) on %s set topic: %s", botid, user, host, channel, topic);
 	return 1;
 }
 

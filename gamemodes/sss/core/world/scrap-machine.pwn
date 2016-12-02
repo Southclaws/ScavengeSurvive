@@ -87,7 +87,7 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 {
 	if(!IsValidItemType(itemtype))
 	{
-		printf("ERROR: Tried to assign scrap value to invalid item type.");
+		err("Tried to assign scrap value to invalid item type.");
 		return;
 	}
 

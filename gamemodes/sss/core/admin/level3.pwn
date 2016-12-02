@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
+	console("\n[OnGameModeInit] Initialising 'Admin/Level3'...");
 
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/whitelist - add/remove name or turn whitelist on/off\n");
 	RegisterAdminCommand(STAFF_LEVEL_ADMINISTRATOR, "/spec /free - spectate and freecam\n");
@@ -548,7 +548,7 @@ ACMD:additem[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
-			logf("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
+			log("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this item:", "Enter", "");
 	}
@@ -599,7 +599,7 @@ ACMD:addvehicle[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
-			logf("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, type, inputtext);
+			log("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, type, inputtext);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this vehicle:", "Enter", "");
 	}

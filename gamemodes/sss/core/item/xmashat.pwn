@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'XmasHat'...");
+	console("\n[OnGameModeInit] Initialising 'XmasHat'...");
 
 	new tmp;
 

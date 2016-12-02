@@ -35,7 +35,7 @@ static
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Bleed'...");
+	console("\n[OnScriptInit] Initialising 'Bleed'...");
 
 	HANDLER = debug_register_handler("bleed");
 }

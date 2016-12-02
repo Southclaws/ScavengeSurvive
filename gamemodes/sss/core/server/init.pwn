@@ -551,7 +551,7 @@ new MiniMapOverlay;
 
 public OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Init'...");
+	console("\n[OnScriptInit] Initialising 'Init'...");
 
 	// SETTINGS
 	if(!gPauseMap)

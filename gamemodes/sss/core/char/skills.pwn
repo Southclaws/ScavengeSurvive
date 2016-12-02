@@ -149,7 +149,7 @@ hook OnPlayerSave(playerid, filename[])
 		while(skl_PlayerSkills[playerid][i][skl_name][tmp++] != EOS);
 
 		data[ptr++] = _:skl_PlayerSkills[playerid][i][skl_amount];
-		printf("skill value for '%s': %f", skl_PlayerSkills[playerid][i][skl_name], skl_PlayerSkills[playerid][i][skl_amount]);
+		log("skill value for '%s': %f", skl_PlayerSkills[playerid][i][skl_name], skl_PlayerSkills[playerid][i][skl_amount]);
 	}
 
 	modio_push(filename, _T<S,K,I,L>, ptr, data);
@@ -183,7 +183,7 @@ hook OnPlayerLoad(playerid, filename[])
 
 			if(_skl_SkillNameToID(playerid, skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name]) != -1)
 			{
-				printf("ERROR: Skill '%s' duplicated in player data", skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name]);
+				err("Skill '%s' duplicated in player data", skl_PlayerSkills[playerid][skl_PlayerSkillCount[playerid]][skl_name]);
 				continue;
 			}
 
@@ -194,7 +194,7 @@ hook OnPlayerLoad(playerid, filename[])
 
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
-		printf("skill '%s' value: %f", skl_PlayerSkills[playerid][i][skl_name], skl_PlayerSkills[playerid][i][skl_amount]);
+		log("skill '%s' value: %f", skl_PlayerSkills[playerid][i][skl_name], skl_PlayerSkills[playerid][i][skl_amount]);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_1;

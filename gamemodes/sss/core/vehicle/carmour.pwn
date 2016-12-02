@@ -58,7 +58,7 @@ new
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Carmour'...");
+	console("\n[OnGameModeInit] Initialising 'Carmour'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR);
 }
@@ -109,13 +109,13 @@ LoadOffsetsFromFile(filename[])
 
 	if(id == ITER_NONE)
 	{
-		print("ERROR: [LoadOffsetsFromFile] id == ITER_NONE");
+		err("[LoadOffsetsFromFile] id == ITER_NONE");
 		return 0;
 	}
 
 	if(!fexist(filename))
 	{
-		printf("ERROR: [LoadOffsetsFromFile] File not found: '%s'", filename);
+		err("[LoadOffsetsFromFile] File not found: '%s'", filename);
 		return 0;
 	}
 
@@ -127,7 +127,7 @@ LoadOffsetsFromFile(filename[])
 		{
 			if(listindex >= MAX_CARMOUR_PARTS - 1)
 			{
-				printf("[LoadOffsetsFromFile] ERROR: Object limit reached while loading '%s'", filename);
+				err("Object limit reached while loading '%s'", filename);
 				break;
 			}
 
@@ -156,7 +156,7 @@ ApplyArmourToVehicle(vehicleid, armourid)
 {
 	if(!IsValidVehicle(vehicleid))
 	{
-		printf("[ApplyArmourToVehicle] ERROR: Invalid vehicle ID (%d) passed to function.", vehicleid);
+		err("Invalid vehicle ID (%d) passed to function.", vehicleid);
 		return 0;
 	}
 
@@ -164,7 +164,7 @@ ApplyArmourToVehicle(vehicleid, armourid)
 
 	if(vehicletype != arm_Data[armourid][arm_vehicleType])
 	{
-		printf("[ApplyArmourToVehicle] ERROR: Vehicle type (%d) does not match carmour vehicle type (%d).", vehicletype, arm_Data[armourid][arm_vehicleType]);
+		err("Vehicle type (%d) does not match carmour vehicle type (%d).", vehicletype, arm_Data[armourid][arm_vehicleType]);
 		return 0;
 	}
 

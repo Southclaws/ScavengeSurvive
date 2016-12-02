@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'TopHat'...");
+	console("\n[OnGameModeInit] Initialising 'TopHat'...");
 
 	new tmp;
 

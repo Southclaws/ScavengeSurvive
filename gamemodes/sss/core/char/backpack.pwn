@@ -79,7 +79,7 @@ forward OnPlayerRemoveBag(playerid, itemid);
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Backpack'...");
+	console("\n[OnScriptInit] Initialising 'Backpack'...");
 
 	HANDLER = debug_register_handler("char/backpack");
 
@@ -151,7 +151,7 @@ stock GivePlayerBag(playerid, itemid)
 
 		if(!IsValidContainer(containerid))
 		{
-			printf("[GivePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", itemid, containerid);
+			err("Bag (%d) container ID (%d) was invalid container has to be recreated.", itemid, containerid);
 
 			containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
@@ -202,11 +202,11 @@ stock RemovePlayerBag(playerid)
 
 		if(bagtype == -1)
 		{
-			printf("[RemovePlayerBag] ERROR: Player (%d) bag item type (%d) is not a valid bag type.", playerid, bagtype);
+			err("Player (%d) bag item type (%d) is not a valid bag type.", playerid, bagtype);
 			return 0;
 		}
 
-		printf("[RemovePlayerBag] ERROR: Bag (%d) container ID (%d) was invalid container has to be recreated.", bag_PlayerBagID[playerid], containerid);
+		err("Bag (%d) container ID (%d) was invalid container has to be recreated.", bag_PlayerBagID[playerid], containerid);
 
 		containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 

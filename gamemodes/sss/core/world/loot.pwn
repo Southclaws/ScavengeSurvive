@@ -72,7 +72,7 @@ Float:		loot_SpawnMult = 1.0;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
+	console("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
 
 	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
 }
@@ -88,7 +88,7 @@ hook OnScriptInit()
 stock DefineLootIndex(name[MAX_LOOT_INDEX_NAME])
 {
 	if(loot_IndexTotal >= MAX_LOOT_INDEX)
-		printf("ERROR: Loot index limit reached at '%s'.", name);
+		err("Loot index limit reached at '%s'.", name);
 
 	loot_IndexName[loot_IndexTotal] = name;
 
@@ -101,7 +101,7 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight, perspawnlimit =
 		return 0;
 
 	if(loot_IndexSize[index] >= MAX_LOOT_INDEX_ITEMS)
-		print("ERROR: Loot index item limit reached.");
+		err("Loot index item limit reached.");
 
 	loot_IndexItems[index][loot_IndexSize[index]][lootitem_type] = itemtype;
 	loot_IndexItems[index][loot_IndexSize[index]][lootitem_weight] = weight;
@@ -118,13 +118,13 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 {
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
-		print("[CreateStaticLootSpawn] ERROR: Loot spawn limit reached.");
+		err("[CreateStaticLootSpawn] ERROR: Loot spawn limit reached.");
 		return -1;
 	}
 
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{
-		printf("[CreateStaticLootSpawn] ERROR: Loot index (%d) is invalid.", lootindex);
+		err("[CreateStaticLootSpawn] ERROR: Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 
@@ -154,7 +154,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
-	// printf("[CreateStaticLootSpawn] index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+	// log("[CreateStaticLootSpawn] index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 
 	for(new i; i < size; i++)
 	{
@@ -167,7 +167,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 		if(itemtype == item_NULL)
 		{
-			printf("[CreateStaticLootSpawn] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 			continue;
 		}
 
@@ -180,7 +180,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 		if(!(0 <= itemid < ITM_MAX))
 		{
-			print("ERROR: Item limit reached while generating loot.");
+			err("Item limit reached while generating loot.");
 			return -1;
 		}
 
@@ -202,7 +202,7 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 {
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{
-		printf("[CreateLootItem] ERROR: Loot index (%d) is invalid.", lootindex);
+		err("Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 
@@ -219,7 +219,7 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 
 	if(itemtype == item_NULL)
 	{
-		printf("[CreateLootItem] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+		err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 		return INVALID_ITEM_ID;
 	}
 
@@ -242,11 +242,11 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 {
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{
-		printf("[FillContainerWithLoot] ERROR: Loot index (%d) is invalid.", lootindex);
+		err("Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 
-	//printf("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
+	// log("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
 	new containersize = GetContainerSize(containerid);
 
 	if(slots > containersize)
@@ -273,7 +273,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 
 		if(itemtype == item_NULL)
 		{
-			printf("[FillContainerWithLoot] WARNING: Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 			continue;
 		}
 
@@ -288,7 +288,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 
 		if(!(0 <= itemid < ITM_MAX))
 		{
-			print("ERROR: Item limit reached while generating loot.");
+			err("Item limit reached while generating loot.");
 			return -1;
 		}
 
@@ -326,14 +326,14 @@ _loot_GenerateSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], lootindex)
 
 		if(loot_IndexItems[lootindex][i][lootitem_type] == item_NULL)
 		{
-			// printf("[_loot_GenerateSampleList] Prevented entering NULL ITEM into samplelist");
+			// log("[_loot_GenerateSampleList] Prevented entering NULL ITEM into samplelist");
 			continue;
 		}
 
 		list[size++] = loot_IndexItems[lootindex][i][lootitem_type];
 	}
 
-	// printf("[_loot_GenerateSampleList] Generated: %s", atosr(_:list, size));
+	// log("[_loot_GenerateSampleList] Generated: %s", atosr(_:list, size));
 
 	return size;
 }
@@ -364,7 +364,7 @@ _loot_LootSpawnItemsOfType(lootspawnid, ItemType:itemtype)
 		if(GetItemType(loot_SpawnData[lootspawnid][loot_items][i]) == itemtype)
 			count++;
 	}
-	//printf("[_loot_LootSpawnItemsOfType] loot spawn %d contains %d of %d", lootspawnid, count, _:itemtype);
+	// log("[_loot_LootSpawnItemsOfType] loot spawn %d contains %d of %d", lootspawnid, count, _:itemtype);
 	return count;
 }
 
@@ -377,7 +377,7 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 		if(GetItemType(GetContainerSlotItem(containerid, i)) == itemtype)
 			count++;
 	}
-	//printf("[_loot_ContainerItemsOfType] container %d contains %d of %d", containerid, count, _:itemtype);
+	// log("[_loot_ContainerItemsOfType] container %d contains %d of %d", containerid, count, _:itemtype);
 	return count;
 }
 */
@@ -473,7 +473,7 @@ stock GetLootIndexFromName(name[])
 			return i;
 	}
 
-	printf("[GetLootIndexFromName] ERROR: specified index name is invalid ('%s')", name);
+	err("specified index name is invalid ('%s')", name);
 	PrintAmxBacktrace();
 
 	return -1;

@@ -347,6 +347,7 @@ new stock
 #tryinclude "sss/extensions/ext_pre.pwn"
 
 // UTILITIES
+#include "sss/utils/logging.pwn"
 #include "sss/utils/math.pwn"
 #include "sss/utils/misc.pwn"
 #include "sss/utils/time.pwn"
@@ -370,7 +371,6 @@ new stock
 #include "sss/core/server/text-tags.pwn"
 #include "sss/core/server/weather.pwn"
 #include "sss/core/server/save-block.pwn"
-#include "sss/core/server/activity-log.pwn"
 #include "sss/core/server/info-message.pwn"
 #include "sss/core/server/language.pwn"
 #include "sss/core/player/language.pwn"
@@ -600,13 +600,13 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	print("\n\n/*==============================================================================\n\n");
-	print("    Southclaw's Scavenge and Survive");
-	print("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	print("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	print("        and you are welcome to redistribute it under certain conditions.");
-	print("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	print("\n\n==============================================================================*/\n\n");
+	console("\n\n/*==============================================================================\n\n");
+	console("    Southclaw's Scavenge and Survive");
+	console("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	console("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	console("        and you are welcome to redistribute it under certain conditions.");
+	console("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	console("\n\n==============================================================================*/\n\n");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -617,7 +617,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	print("\n[OnGameModeInit_Setup] Setting up...");
+	console("\n[OnGameModeInit_Setup] Setting up...");
 
 	new buildstring[12];
 
@@ -626,30 +626,30 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		printf("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
+		console("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 		for(;;){}
 	}
 
-	printf("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
+	console("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		print("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		err("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		err("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES);
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		err("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
@@ -674,7 +674,7 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	print("\n[OnGameModeExit] Shutting down...");
+	console("\n[OnGameModeExit] Shutting down...");
 
 	if(gCrashOnExit)
 	{
@@ -688,19 +688,19 @@ public OnGameModeExit()
 
 public OnScriptExit()
 {
-	print("\n[OnScriptExit] Shutting down...");
+	console("\n[OnScriptExit] Shutting down...");
 }
 
 forward SetRestart(seconds);
 public SetRestart(seconds)
 {
-	printf("Restarting server in: %ds", seconds);
+	log("Restarting server in: %ds", seconds);
 	gServerUptime = gServerMaxUptime - seconds;
 }
 
 RestartGamemode()
 {
-	log("[RestartGamemode] Initialising gamemode restart...");
+	console("[RestartGamemode] Initialising gamemode restart...");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
@@ -757,7 +757,7 @@ DirectoryCheck(directory[])
 {
 	if(!dir_exists(directory))
 	{
-		printf("ERROR: Directory '%s' not found. Creating directory.", directory);
+		err("Directory '%s' not found. Creating directory.", directory);
 		dir_create(directory);
 	}
 }
@@ -776,8 +776,8 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 
 	if(dbcolumns != expectedcolumns)
 	{
-		printf("ERROR: Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
-		print("Please verify table structure against column list in script.");
+		err("Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
+		err("Please verify table structure against column list in script.");
 
 		// Put the server into a loop to stop it so the user can read the message.
 		// It won't function correctly with bad databases anyway.
@@ -787,6 +787,5 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 
 public Streamer_OnPluginError(error[])
 {
-	print(error);
-	PrintAmxBacktrace();
+	err(error);
 }

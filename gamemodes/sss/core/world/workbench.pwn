@@ -85,7 +85,7 @@ stock IsValidWorkbenchConstructionSet(consset)
 {
 	if(!IsValidConstructionSet(consset))
 	{
-		printf("ERROR: Tried to assign workbench properties to invalid construction set ID.");
+		err("Tried to assign workbench properties to invalid construction set ID.");
 		return 0;
 	}
 
@@ -126,7 +126,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 		if(!IsValidContainer(containerid))
 		{
-			printf("ERROR: Workbench (%d) has invalid container ID (%d)", withitemid, containerid);
+			err("Workbench (%d) has invalid container ID (%d)", withitemid, containerid);
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 

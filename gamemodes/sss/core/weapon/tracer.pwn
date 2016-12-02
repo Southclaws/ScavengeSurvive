@@ -66,7 +66,7 @@ stock CreateTracer(Float:originx, Float:originy, Float:originz, Float:targetx, F
 
 	MoveDynamicObject(tracer_ObjectID[id], targetx, targety, targetz, 800.0);
 /*
-	printf("Created tracer: %f, %f, %f > %f, %f, %f",
+	log("Created tracer: %f, %f, %f > %f, %f, %f",
 		originx + (2.0 * floatsin(rotation, degrees) * floatcos(elevation, degrees)),
 		originy + (2.0 * floatcos(rotation, degrees) * floatcos(elevation, degrees)),
 		originz + (2.0 * floatsin(elevation, degrees)),

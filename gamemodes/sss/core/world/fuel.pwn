@@ -60,7 +60,7 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 {
 	if(fuel_Total >= MAX_FUEL_LOCATIONS - 1)
 	{
-		print("ERROR: MAX_FUEL_LOCATIONS limit reached!");
+		err("MAX_FUEL_LOCATIONS limit reached!");
 		return -1;
 	}
 
@@ -136,7 +136,7 @@ StartRefuellingFuelCan(playerid, outletid)
 {
 	if(!(0 <= outletid < fuel_Total))
 	{
-		printf("ERROR: [StartRefuellingFuelCan] invalid outletid: %d", outletid);
+		err("[StartRefuellingFuelCan] invalid outletid: %d", outletid);
 		return 0;
 	}
 

@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'policecap'...");
+	console("\n[OnGameModeInit] Initialising 'policecap'...");
 
 	new tmp;
 

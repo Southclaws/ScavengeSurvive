@@ -111,7 +111,7 @@ DefineTreeCategory(name[])
 {
 	if(treeCategory_Total >= MAX_TREE_CATEGORIES)
 	{
-		printf("ERROR: Tree category index limit reached at name: %i", name);
+		err("Tree category index limit reached at name: %i", name);
 		return -1;
 	}
 
@@ -125,7 +125,7 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 {
 	if(treeSpecies_Total >= MAX_TREE_SPECIES - 1)
 	{
-		printf("ERROR: Tree species limit reached at modelid: %i", modelid);
+		err("Tree species limit reached at modelid: %i", modelid);
 		return -1;
 	}
 
@@ -134,7 +134,7 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 
 	if(!treeCategory_Data[categoryid][0])
 	{
-		printf("ERROR: DefineTreeSpecies() undefined \"categoryid\" parameter: %i", categoryid);
+		err("DefineTreeSpecies() undefined \"categoryid\" parameter: %i", categoryid);
 		return -1;
 	}
 
@@ -159,13 +159,13 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 {
 	if(!(0 <= speciesid < MAX_TREE_SPECIES))
 	{
-		printf("ERROR: Invalid tree species ID: %d", speciesid);
+		err("Invalid tree species ID: %d", speciesid);
 		return -1;
 	}
 
 	if(treeSpecies_Data[speciesid][tree_model] == 0)
 	{
-		printf("ERROR: CreateTree() undefined \"speciesid\" parameter: %i", speciesid);
+		err("CreateTree() undefined \"speciesid\" parameter: %i", speciesid);
 		return -1;
 	}
 
@@ -176,7 +176,7 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 
 	if(id == ITER_NONE)
 	{
-		printf("ERROR: CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
+		err("CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
 		return -1;
 	}
 

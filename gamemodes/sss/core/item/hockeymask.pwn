@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'HockeyMask'...");
+	console("\n[OnGameModeInit] Initialising 'HockeyMask'...");
 
 	new tmp;
 

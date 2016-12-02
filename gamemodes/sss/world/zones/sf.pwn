@@ -27,7 +27,7 @@
 
 Load_SF()
 {
-	print("\n[OnGameModeInit] Initialising 'World/SF'...");
+	console("\n[OnGameModeInit] Initialising 'World/SF'...");
 
 	CreateLadder(-1164.6187, 370.0174, 1.9609, 14.1484, 221.1218);
 	CreateLadder(-1182.6258, 60.4429, 1.9609, 14.1484, 134.2914);

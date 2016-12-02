@@ -133,7 +133,7 @@ timer _Finalise[500]()
 
 		GetItemTypeUniqueName(i, itemtypename);
 
-		printf("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, ItemCounts[i], GetItemTypeCount(i) - ItemCounts[i], GetItemTypeCount(i), itemtypename);
+		console("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, ItemCounts[i], GetItemTypeCount(i) - ItemCounts[i], GetItemTypeCount(i), itemtypename);
 	}
 
 	gServerInitialising = false;

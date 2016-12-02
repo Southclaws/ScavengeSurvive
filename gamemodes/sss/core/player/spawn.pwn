@@ -65,7 +65,7 @@ forward OnPlayerSpawnNewChar(playerid);
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
+	console("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
 
 	new
 		newitems[16][32],
@@ -80,7 +80,7 @@ hook OnGameModeInit()
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
 
 	if(!IsValidItemType(spawn_BagType))
-		printf("ERROR: spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
+		err("spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
 
 
 	GetSettingFloat("spawn/new-blood", 90.0, spawn_NewBlood);
@@ -93,7 +93,7 @@ hook OnGameModeInit()
 		spawn_NewItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newitems[i], true);
 
 		if(newitems[i][0] != EOS && !IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
-			printf("ERROR: item '%s' from spawn/new-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
+			err("item '%s' from spawn/new-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
 	}
 
 	GetSettingFloat("spawn/res-blood", 100.0, spawn_ResBlood);
@@ -106,7 +106,7 @@ hook OnGameModeInit()
 		spawn_ResItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(resitems[i], true);
 
 		if(resitems[i][0] != EOS && !IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
-			printf("ERROR: item '%s' from spawn/res-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
+			err("item '%s' from spawn/res-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
 	}
 }
 
@@ -163,7 +163,7 @@ SpawnLoggedInPlayer(playerid)
 		}
 		else
 		{
-			printf("ERROR: PlayerSpawnExistingCharacter returned %d", ret);
+			err("PlayerSpawnExistingCharacter returned %d", ret);
 		}
 	}
 	
@@ -234,7 +234,7 @@ PlayerSpawnExistingCharacter(playerid)
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
 
-	logf("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	log("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
 	CallLocalFunction("OnPlayerSpawnChar", "d", playerid);
 
@@ -243,7 +243,7 @@ PlayerSpawnExistingCharacter(playerid)
 
 PlayerCreateNewCharacter(playerid)
 {
-	logf("[NEWCHAR] %p creating new character", playerid);
+	log("[NEWCHAR] %p creating new character", playerid);
 
 	SetPlayerPos(playerid, DEFAULT_POS_X + 5, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
@@ -407,7 +407,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	CallLocalFunction("OnPlayerSpawnNewChar", "d", playerid);
 
-	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	log("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
 	return 1;
 }

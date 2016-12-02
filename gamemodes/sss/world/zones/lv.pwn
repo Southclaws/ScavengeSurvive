@@ -27,7 +27,7 @@
 
 Load_LV()
 {
-	print("\n[OnGameModeInit] Initialising 'World/LV'...");
+	console("\n[OnGameModeInit] Initialising 'World/LV'...");
 
 	CreateFuelOutlet(2120.82031, 914.718750, 11.25781, 2.0, 100.0, frandom(25.0));
 	CreateFuelOutlet(2114.90625, 914.718750, 11.25781, 2.0, 100.0, frandom(25.0));

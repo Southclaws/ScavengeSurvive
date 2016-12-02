@@ -78,7 +78,7 @@ static HANDLER = -1;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'SaveLoad'...");
+	console("\n[OnGameModeInit] Initialising 'SaveLoad'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
 
@@ -555,7 +555,7 @@ FV10_LoadPlayerChar(playerid)
 
 	if(!file)
 	{
-		printf("ERROR: [LoadPlayerChar] Opening file '%s'.", filename);
+		err("[LoadPlayerChar] Opening file '%s'.", filename);
 		return 0;
 	}
 
@@ -564,7 +564,7 @@ FV10_LoadPlayerChar(playerid)
 
 	if(data[PLY_CELL_FILE_VERSION] != CHARACTER_DATA_FILE_VERSION)
 	{
-		printf("ERROR: [LoadPlayerChar] Opening file '%s'. Incompatible file version %d (Current: %d)", filename, data[PLY_CELL_FILE_VERSION], CHARACTER_DATA_FILE_VERSION);
+		err("[LoadPlayerChar] Opening file '%s'. Incompatible file version %d (Current: %d)", filename, data[PLY_CELL_FILE_VERSION], CHARACTER_DATA_FILE_VERSION);
 		return 0;
 	}
 
@@ -664,7 +664,7 @@ FV10_LoadPlayerInventory(playerid)
 
 	if(!file)
 	{
-		printf("ERROR: [LoadPlayerInventory] Opening file '%s'.", filename);
+		err("[LoadPlayerInventory] Opening file '%s'.", filename);
 		return 0;
 	}
 
@@ -724,14 +724,14 @@ hook OnScriptExit()
 {
 	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
 
-	print("\n[OnScriptExit] Shutting down 'SaveLoad'...");
+	console("\n[OnScriptExit] Shutting down 'SaveLoad'...");
 
 	new
 		name[MAX_PLAYER_NAME],
 		filename[64],
 		session;
 
-	printf("Closing open modio sessions for player data.");
+	log("Closing open modio sessions for player data.");
 
 	foreach(new i : Player)
 	{
@@ -740,7 +740,7 @@ hook OnScriptExit()
 
 		session = modio_getsession_write(filename);
 
-		printf("- Closing file '%s' for playerid: %d (session: %d)", filename, i, session);
+		log("- Closing file '%s' for playerid: %d (session: %d)", filename, i, session);
 
 		if(session != -1)
 			modio_finalise_write(session, true);

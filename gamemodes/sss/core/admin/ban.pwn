@@ -63,7 +63,7 @@ DBStatement:	stmt_BanSetDuration;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Ban'...");
+	console("\n[OnGameModeInit] Initialising 'Ban'...");
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BANS" (\
 		"FIELD_BANS_NAME" TEXT,\
@@ -220,7 +220,7 @@ BanCheck(playerid)
 					UnBanPlayer(name);
 
 					ChatMsgLang(playerid, YELLOW, "BANLIFMESSG", TimestampToDateTime(timestamp));
-					logf("[UNBAN] Ban lifted automatically for %s", name);
+					log("[UNBAN] Ban lifted automatically for %s", name);
 
 					return 0;
 				}
