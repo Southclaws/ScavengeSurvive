@@ -357,7 +357,7 @@ CreateAccount(playerid, password[])
 DisplayRegisterPrompt(playerid)
 {
 	new str[150];
-	format(str, 150, ls(playerid, "ACCREGIBOD"), playerid);
+	format(str, 150, ls(playerid, "ACCREGIBODY"), playerid);
 
 	log("[REGPROMPT] %p is registering", playerid);
 
