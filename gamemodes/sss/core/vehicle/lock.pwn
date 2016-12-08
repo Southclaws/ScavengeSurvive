@@ -54,6 +54,11 @@ hook OnVehicleCreated(vehicleid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+hook OnVehicleReset(oldid, newid)
+{
+	lock_Status[newid] = lock_Status[oldid];
+}
+
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/lock.pwn");
