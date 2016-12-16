@@ -401,9 +401,9 @@ hook OnPlayerDroppedItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddToInventory(playerid, itemid, slot)
+hook OnItemAddedToInventory(playerid, itemid, slot)
 {
-	d:3:GLOBAL_DEBUG("[OnItemAddToInventory] in /gamemodes/sss/core/player/tutorial.pwn");
+	d:3:GLOBAL_DEBUG("[OnItemAddedToInventory] in /gamemodes/sss/core/player/tutorial.pwn");
 
 	if(PlayerInTutorial[playerid])
 	{
@@ -425,9 +425,9 @@ hook OnPlayerViewInvOpt(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(containerid, itemid, playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemAddToContainer] in /gamemodes/sss/core/player/tutorial.pwn");
+	d:3:GLOBAL_DEBUG("[OnItemAddedToContainer] in /gamemodes/sss/core/player/tutorial.pwn");
 
 	if(IsPlayerConnected(playerid))
 	{
