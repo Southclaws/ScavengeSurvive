@@ -51,7 +51,8 @@ static
 Float:	TravelLastPosX[MAX_PLAYERS],
 Float:	TravelLastPosY[MAX_PLAYERS],
 Float:	TravelLastPosZ[MAX_PLAYERS],
-		TravelLastTick[MAX_PLAYERS];
+		TravelLastTick[MAX_PLAYERS],
+		ExpGainCooldown[MAX_PLAYERS];
 
 
 hook OnPlayerScriptUpdate(playerid)
@@ -74,6 +75,11 @@ hook OnPlayerScriptUpdate(playerid)
 
 	dist = Distance(TravelLastPosX[playerid], TravelLastPosY[playerid], TravelLastPosZ[playerid], x, y, z);
 	tick_diff = GetTickCountDifference(tick, TravelLastTick[playerid]);
+
+	TravelLastTick[playerid] = tick;
+	TravelLastPosX[playerid] = x;
+	TravelLastPosY[playerid] = y;
+	TravelLastPosZ[playerid] = z;
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{
@@ -99,11 +105,23 @@ hook OnPlayerScriptUpdate(playerid)
 			{
 				TravelStats[playerid][STAT_DIST_SPRINTING] += dist;
 				TravelStats[playerid][STAT_TIME_SPRINTING] += tick_diff;
+
+				if(floatround(TravelStats[playerid][STAT_DIST_SPRINTING] / 10) % 50 == 0 && GetTickCountDifference(tick, ExpGainCooldown[playerid]) > 10000)
+				{
+					PlayerGainSkillExperience(playerid, "Endurance");
+					ExpGainCooldown[playerid] = tick;
+				}
 			}
 			else // running
 			{
 				TravelStats[playerid][STAT_DIST_RUNNING] += dist;
 				TravelStats[playerid][STAT_TIME_RUNNING] += tick_diff;
+
+				if(floatround(TravelStats[playerid][STAT_DIST_RUNNING] / 10) % 50 == 0 && GetTickCountDifference(tick, ExpGainCooldown[playerid]) > 10000)
+				{
+					PlayerGainSkillExperience(playerid, "Endurance");
+					ExpGainCooldown[playerid] = tick;
+				}
 			}
 		}
 		else if(animidx == 1159 || animidx == 1274) // crouch moving
@@ -115,11 +133,23 @@ hook OnPlayerScriptUpdate(playerid)
 		{
 			TravelStats[playerid][STAT_DIST_SWIMMING] += dist;
 			TravelStats[playerid][STAT_TIME_SWIMMING] += tick_diff;
+
+			if(floatround(TravelStats[playerid][STAT_DIST_SWIMMING] / 10) % 20 == 0 && GetTickCountDifference(tick, ExpGainCooldown[playerid]) > 10000)
+			{
+				PlayerGainSkillExperience(playerid, "Endurance");
+				ExpGainCooldown[playerid] = tick;
+			}
 		}
 		else if(animidx == 1541 || animidx == 1544) // swimming under water
 		{
 			TravelStats[playerid][STAT_DIST_UNDERWATER] += dist;
 			TravelStats[playerid][STAT_TIME_UNDERWATER] += tick_diff;
+
+			if(floatround(TravelStats[playerid][STAT_DIST_UNDERWATER] / 10) % 20 == 0 && GetTickCountDifference(tick, ExpGainCooldown[playerid]) > 10000)
+			{
+				PlayerGainSkillExperience(playerid, "Endurance");
+				ExpGainCooldown[playerid] = tick;
+			}
 		}
 		else if(animidx == 1195 || animidx == 1197 || animidx == 1130 || animidx == 1132) // falling
 		{
@@ -132,11 +162,6 @@ hook OnPlayerScriptUpdate(playerid)
 	{
 		TravelStats[playerid][STAT_TIME_KNOCKED_OUT] += tick_diff;
 	}
-
-	TravelLastTick[playerid] = tick;
-	TravelLastPosX[playerid] = x;
-	TravelLastPosY[playerid] = y;
-	TravelLastPosZ[playerid] = z;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -154,12 +179,37 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
-	if(oldkeys & KEY_JUMP && !AlreadyJumping[playerid])
+	if(oldkeys & KEY_JUMP)
 	{
-		new animidx = GetPlayerAnimationIndex(playerid);
-		if(animidx == 1195 || animidx == 1197)
+		if(!AlreadyJumping[playerid])
 		{
-			TravelStats[playerid][STAT_JUMPS] += 1;
+			new animidx = GetPlayerAnimationIndex(playerid);
+			if(animidx == 1195 || animidx == 1197)
+			{
+				TravelStats[playerid][STAT_JUMPS] += 1;
+
+				new
+					Float:x,
+					Float:y,
+					Float:z,
+					Float:boost;
+
+				GetPlayerVelocity(playerid, x, y, z);
+
+				boost = 1.0 + (1.0 - (float(GetPlayerSkillTimeModifier(playerid, 1000, "Endurance")) / 10000));
+
+				if(boost > 1.5)
+					boost = 1.5;
+
+				SetPlayerVelocity(playerid, x * boost, y * boost, z * boost);
+
+				if((TravelStats[playerid][STAT_JUMPS] / 10) % 10 == 0)
+					PlayerGainSkillExperience(playerid, "Endurance");
+			}
+		}
+		else
+		{
+			AlreadyJumping[playerid] = false;
 		}
 	}
 }
