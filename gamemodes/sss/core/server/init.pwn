@@ -1701,14 +1701,5 @@ public OnScriptInit()
 	SetVehicleTypeTrailerHitch(veht_Blista,		VEHICLE_SIZE_SMALL);
 	SetVehicleTypeTrailerHitch(veht_Linerunner, VEHICLE_SIZE_LARGE);
 
-
-	// DEFINING VEHICLE ARMOUR TYPES
-	SetVehicleTypeCarmour(veht_Steamroll, "Steamroll");
-	SetVehicleTypeCarmour(veht_APC30, "APC30");
-	SetVehicleTypeCarmour(veht_Doomride, "Doomride");
-	SetVehicleTypeCarmour(veht_DavidSabre, "Scimitar");
-	SetVehicleTypeCarmour(veht_Roadpain, "Roadpain");
-	SetVehicleTypeCarmour(veht_Truckfort, "Truckfort");
-
 	return 1;
 }

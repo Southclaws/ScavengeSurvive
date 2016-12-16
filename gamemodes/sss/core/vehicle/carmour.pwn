@@ -61,27 +61,8 @@ hook OnGameModeInit()
 	console("\n[OnGameModeInit] Initialising 'Carmour'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR);
-}
 
-
-/*==============================================================================
-
-	Core
-
-==============================================================================*/
-
-
-stock SetVehicleTypeCarmour(vehicletype, name[])
-{
-	new
-		id,
-		filename[64];
-
-	format(filename, sizeof(filename), DIRECTORY_CARMOUR"%s.map", name);
-	id = LoadOffsetsFromFile(filename);
-
-	arm_Data[id][arm_vehicleType] = vehicletype;
-	arm_VehicleTypeCarmour[vehicletype] = id;
+	LoadCarmour();
 }
 
 
@@ -92,8 +73,51 @@ stock SetVehicleTypeCarmour(vehicletype, name[])
 ==============================================================================*/
 
 
-LoadOffsetsFromFile(filename[])
+LoadCarmour()
 {
+	new
+		dir:dirhandle,
+		directory_with_root[256] = DIRECTORY_SCRIPTFILES,
+		item[64],
+		type,
+		next_path[256];
+
+	strcat(directory_with_root, DIRECTORY_CARMOUR);
+
+	dirhandle = dir_open(directory_with_root);
+
+	if(!dirhandle)
+	{
+		err("Reading directory '%s'.", directory_with_root);
+		return 0;
+	}
+
+	while(dir_list(dirhandle, item, type))
+	{
+		if(type == FM_FILE)
+		{
+			next_path[0] = EOS;
+			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_CARMOUR, item);
+
+			LoadOffsetsFromFile(next_path, item);
+		}
+	}
+
+	dir_close(dirhandle);
+
+	return 1;
+}
+
+LoadOffsetsFromFile(filename[], name[])
+{
+	new vehicletype = GetVehicleTypeFromName(name);
+
+	if(!IsValidVehicleType(vehicletype))
+	{
+		err("Vehicle type from name '%s' is invalid", name);
+		return -1;
+	}
+
 	new
 		id = Iter_Free(arm_Index),
 		File:file,
@@ -146,8 +170,12 @@ LoadOffsetsFromFile(filename[])
 	fclose(file);
 
 	arm_Data[id][arm_objCount] = listindex;
+	arm_Data[id][arm_vehicleType] = vehicletype;
+	arm_VehicleTypeCarmour[vehicletype] = id;
 
 	Iter_Add(arm_Index, id);
+
+	log("Loaded Carmour: %d objects for vehicle %s", listindex, name);
 
 	return id;
 }
