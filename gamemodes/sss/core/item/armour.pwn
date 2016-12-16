@@ -118,8 +118,8 @@ hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:kn
 
 new Float:ArmourSkinData[17][9]=
 {
-	{0.072999, 0.036000, 0.002999,  0.000000, 0.000000, 4.400002,  1.043000, 1.190000, 1.139000},		// skin_MainM
-	{0.117000, 0.062000, 0.009000,  -1.199999, 0.500000, -3.199997,  1.043000, 1.101000, 0.895000},		// skin_MainF
+	{0.072999, 0.036000, 0.002999,  0.000000, 0.000000, 4.400002,  1.043000, 1.190000, 1.139000},		// skin_Civ0M
+	{0.117000, 0.062000, 0.009000,  -1.199999, 0.500000, -3.199997,  1.043000, 1.101000, 0.895000},		// skin_Civ0F
 	{0.072999, 0.036000, 0.002999,  0.000000, 0.000000, 4.400002,  1.043000, 1.190000, 1.139000},		// skin_Civ1M
 	{0.073000, 0.052000, 0.009000,  -1.199999, -0.500000, 2.500002,  1.064000, 1.107001, 1.030000},		// skin_Civ2M
 	{0.036000, 0.061999, 0.014999,  -1.199999, -0.500000, -1.399994,  0.967000, 1.180001, 0.912000},	// skin_Civ3M
@@ -155,6 +155,7 @@ stock SetPlayerArmourItem(playerid, itemid)
 		ArmourSkinData[skin][6], ArmourSkinData[skin][7], ArmourSkinData[skin][8]);
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 	arm_PlayerArmourItem[playerid] = itemid;
 
 	return 1;

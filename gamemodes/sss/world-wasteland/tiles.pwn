@@ -83,7 +83,7 @@ LoadTiles()
 
 	dir_close(direc);
 
-	printf("Total Tile Types: %d", tiletype_Total);
+	log("Total Tile Types: %d", tiletype_Total);
 }
 
 LoadTile(filename[])
@@ -112,7 +112,7 @@ LoadTile(filename[])
 			}
 			else
 			{
-				printf("ERROR: in file '%s': tile rarity must be defined on line 1", filename);
+				err("in file '%s': tile rarity must be defined on line 1", filename);
 			}
 		}
 
@@ -138,7 +138,7 @@ AddTerrainTile(name[24], objects[MAX_OBJECTS_PER_TILE][E_TILE_OBJECT_DATA], rari
 {
 	if(tiletype_Total == MAX_TILE_TYPE)
 	{
-		print("ERROR: MAX_TILE_TYPE limit reached.");
+		err("MAX_TILE_TYPE limit reached.");
 		return;
 	}
 
@@ -158,7 +158,7 @@ AddTerrainTile(name[24], objects[MAX_OBJECTS_PER_TILE][E_TILE_OBJECT_DATA], rari
 		tiletype_Objects[tiletype_Total][i][tileobj_rotZ]	= objects[i][tileobj_rotZ];
 	}
 
-	printf("Added Terrain Tile '%s' (%d objects)", tiletype_Data[tiletype_Total][tiletype_name], total);
+	log("Added Terrain Tile '%s' (%d objects)", tiletype_Data[tiletype_Total][tiletype_name], total);
 
 	tiletype_Total++;
 
@@ -190,7 +190,7 @@ GenerateTile(&seed1, &seed2, &tiletype)
 
 	tiletype = list[seed2];
 
-	printf("PICKED %d FROM CELL %d OF TOTAL %d", tiletype, seed2, total);
+	log("PICKED %d FROM CELL %d OF TOTAL %d", tiletype, seed2, total);
 }
 
 CreateTile(tiletype, Float:x, Float:y)
@@ -204,17 +204,17 @@ CreateTile(tiletype, Float:x, Float:y)
 	{
 		tiletype_Uses[tiletype]++;
 
-		printf("Creating tile with %d objs", tiletype_Data[tiletype][tiletype_totalObj]);
+		log("Creating tile with %d objs", tiletype_Data[tiletype][tiletype_totalObj]);
 
 		for(new i; i < tiletype_Data[tiletype][tiletype_totalObj]; i++)
 		{
-			printf("    obj %d type %d", i, tiletype_Objects[tiletype][i][tileobj_type]);
+			log("    obj %d type %d", i, tiletype_Objects[tiletype][i][tileobj_type]);
 
 			switch(tiletype_Objects[tiletype][i][tileobj_type])
 			{
 				case TILE_OBJECT_TYPE_MODEL:
 				{
-					printf("creating %d", tiletype_Objects[tiletype][i][tileobj_id]);
+					log("creating %d", tiletype_Objects[tiletype][i][tileobj_id]);
 					CreateDynamicObject(
 						tiletype_Objects[tiletype][i][tileobj_id],
 						x + tiletype_Objects[tiletype][i][tileobj_posX],

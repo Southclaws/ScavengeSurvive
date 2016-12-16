@@ -30,23 +30,7 @@ CMD:welcome(playerid, params[])
 
 CMD:help(playerid, params[])
 {
-	gBigString[playerid][0] = EOS;
-
-	strcat(gBigString[playerid],
-		"\t"C_RED"/rules - list of server rules\n\n\
-		\t"C_GREEN"/admins - server staff\n\n\
-		\t"C_YELLOW"/motd - view the message of the day\n\n\
-		\t"C_YELLOW"/credits - awesome people\n\n\
-		\t"C_BLUE"/chatinfo - information on chat\n\n\
-		\t"C_ORANGE"/restartinfo - information on server restarts/item saving\n\n");
-
-	strcat(gBigString[playerid],
-		"\t"C_YELLOW"/tooltips - enable and disable helpful tooltips\n\n\
-		\t"C_BROWN"/dropall - drop all your items and surrender\n\n\
-		\t"C_LGREEN"/changepass - change your password\n\n\n\
-		"C_WHITE"Server script coded and owned by "C_GREEN"Southclaw "C_WHITE"(SouthclawJK@gmail.com) all rights reserved.");
-
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", ls(playerid, "GENCOMDHELP"), "Close", "");
 
 	return 1;
 }
@@ -97,22 +81,7 @@ CMD:motd(playerid, params[])
 
 CMD:chatinfo(playerid, params[])
 {
-	gBigString[playerid][0] = EOS;
-
-	strcat(gBigString[playerid],
-		""C_YELLOW"Communication Information:\n\n\n"C_WHITE"\
-		Chat is split into 3 types: Global, Local and Radio.\n\n\
-		\t"C_GREEN"Global chat (/G) is chat everyone can see, you can ignore it with "C_WHITE"/quiet\n\n\
-		\t"C_BLUE"Local chat (/L) is only visible in a 40m radius of the sender.\n\n\
-		\t"C_ORANGE"Radio chat (/R) is sent on specific frequencies, useful for private or clan chat.\n\n\n");
-
-	strcat(gBigString[playerid],
-		""C_WHITE"You can type the command on it's own to switch to that mode\n\
-		Or type the command followed by some text to send a message to that specific chat.\n\n\
-		If you are talking to someone next to you, "C_YELLOW"USE LOCAL OR RADIO!\n\
-		"C_WHITE"If you send unnecessary chat to global, you will be muted.");
-
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Chat", gBigString[playerid], "Close", "");
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Chat", ls(playerid, "GENCOMDCHAT"), "Close", "");
 
 	return 1;
 }
@@ -121,18 +90,8 @@ CMD:restartinfo(playerid, params[])
 {
 	gBigString[playerid][0] = EOS;
 
-	strcat(gBigString[playerid],
-		sprintf(""C_WHITE"The server restarts "C_YELLOW"every %d hours."C_WHITE"\n\n\
-		Your character data such as position, clothes etc will be saved just like when you log out.\n\
-		All your held items, holstered weapon, inventory and bag items will be saved.\n\
-		The last car you exited will be saved along with all items inside.\n", (gServerMaxUptime / 3600)));
-
-	strcat(gBigString[playerid],
-		"Box items save over restarts only if they are not empty.\n\
-		Tents save 8 items that are placed inside.\n\n\
-		The contents of bags saved in tents / boxes "C_RED"WILL NOT SAVE!"C_WHITE"\n\
-		Items within containers within containers "C_RED"WILL NOT SAVE!"C_WHITE"\n\
-		Items on the floor "C_RED"WILL NOT SAVE!");
+	strcat(gBigString[playerid], sprintf(ls(playerid, "GENCOMDRES1"), floatround(gServerMaxUptime / 3600)));
+	strcat(gBigString[playerid], ls(playerid, "GENCOMDRES2"));
 
 	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
 
@@ -141,16 +100,17 @@ CMD:restartinfo(playerid, params[])
 
 CMD:tooltips(playerid, params[])
 {
-	if(GetPlayerBitFlag(playerid, ToolTips))
+	if(IsPlayerToolTipsOn(playerid))
 	{
 		ChatMsgLang(playerid, YELLOW, "TOOLTIPSOFF");
-		SetPlayerBitFlag(playerid, ToolTips, false);
+		SetPlayerToolTips(playerid, false);
 	}
 	else
 	{
 		ChatMsgLang(playerid, YELLOW, "TOOLTIPSON");
-		SetPlayerBitFlag(playerid, ToolTips, true);
+		SetPlayerToolTips(playerid, true);
 	}
+
 	return 1;
 }
 

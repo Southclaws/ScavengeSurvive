@@ -35,7 +35,7 @@
 
 #define MAX_VEHICLE_GROUP		(12)
 #define MAX_VEHICLE_GROUP_NAME	(32)
-#define MAX_VEHICLE_TYPE		(64)
+#define MAX_VEHICLE_TYPE		(70)
 #define MAX_VEHICLE_TYPE_NAME	(32)
 #define INVALID_VEHICLE_TYPE	(-1)
 
@@ -77,7 +77,7 @@ enum E_VEHICLE_TYPE_DATA
 		veh_size,
 Float:	veh_maxFuel,
 Float:	veh_fuelCons,
-		veh_lootIndex,
+		veh_lootIndex[32],
 		veh_trunkSize,
 Float:	veh_spawnChance,
 		veh_flags
@@ -105,19 +105,20 @@ stock DefineVehicleSpawnGroup(name[])
 	if(veh_GroupTotal == MAX_VEHICLE_GROUP - 1)
 		return -1;
 
-	printf("Defining new vehicle spawn group %d: '%s'.", veh_GroupTotal, name);
+	log("Defining new vehicle spawn group %d: '%s'.", veh_GroupTotal, name);
 
 	strcat(veh_GroupName[veh_GroupTotal], name, MAX_VEHICLE_GROUP_NAME);
 
 	return veh_GroupTotal++;
 }
 
-stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex, trunksize, Float:spawnchance, flags = 0)
+stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex[], trunksize, Float:spawnchance, flags = 0)
 {
 	if(veh_TypeTotal == MAX_VEHICLE_TYPE - 1)
 		return -1;
 
-	printf("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d.", veh_TypeTotal, modelid, name, group, category, size);
+	log("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d, maxfuel %f, fuelcons %f, lootindex %s, trunksize %d, spawnchance %f, flags %d",
+		veh_TypeTotal, modelid, name, group, category, size, maxfuel, fuelcons, lootindex, trunksize, spawnchance, flags);
 
 	veh_TypeData[veh_TypeTotal][veh_modelId] = modelid;
 	strcat(veh_TypeData[veh_TypeTotal][veh_modelId], name, MAX_VEHICLE_TYPE_NAME);
@@ -126,7 +127,7 @@ stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, F
 	veh_TypeData[veh_TypeTotal][veh_size] = size;
 	veh_TypeData[veh_TypeTotal][veh_maxFuel] = maxfuel;
 	veh_TypeData[veh_TypeTotal][veh_fuelCons] = fuelcons;
-	veh_TypeData[veh_TypeTotal][veh_lootIndex] = lootindex;
+	strcat(veh_TypeData[veh_TypeTotal][veh_lootIndex], lootindex, 32);
 	veh_TypeData[veh_TypeTotal][veh_trunkSize] = trunksize;
 	veh_TypeData[veh_TypeTotal][veh_spawnChance] = spawnchance;
 	veh_TypeData[veh_TypeTotal][veh_flags] = flags;
@@ -136,7 +137,7 @@ stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, F
 
 stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[], maxsizes)
 {
-	//printf("[PickRandomVehicleTypeFromGroup] group: %d categories: %d sizes: %d", group, maxcategories, maxsizes);
+	// log("[PickRandomVehicleTypeFromGroup] group: %d categories: %d sizes: %d", group, maxcategories, maxsizes);
 	new
 		idx,
 		cell,
@@ -155,7 +156,7 @@ stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[]
 
 		if(frandom(100.0) < veh_TypeData[i][veh_spawnChance])
 		{
-			//printf("[PickRandomVehicleTypeFromGroup] Adding '%s' to list", veh_TypeData[i][veh_name]);
+			// log("[PickRandomVehicleTypeFromGroup] Adding '%s' to list", veh_TypeData[i][veh_name]);
 			list[idx++] = i;
 		}
 	}
@@ -340,12 +341,15 @@ stock Float:GetVehicleTypeFuelConsumption(vehicletype)
 }
 
 // veh_lootIndex
-stock GetVehicleTypeLootIndex(vehicletype)
+stock GetVehicleTypeLootIndex(vehicletype, lootindex[])
 {
 	if(!(0 <= vehicletype < veh_TypeTotal))
 		return 0;
 
-	return veh_TypeData[vehicletype][veh_lootIndex];
+	lootindex[0] = EOS;
+	strcat(lootindex, veh_TypeData[vehicletype][veh_lootIndex], 32);
+
+	return 1;
 }
 
 // veh_trunkSize

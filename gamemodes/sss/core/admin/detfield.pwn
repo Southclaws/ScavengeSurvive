@@ -125,7 +125,7 @@ DBStatement:det_Stmt_DetfieldGetNameLogs;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'detfield'...");
+	console("\n[OnScriptInit] Initialising 'detfield'...");
 
 	det_Database = db_open_persistent(DETFIELD_DATABASE);
 
@@ -213,7 +213,7 @@ hook OnScriptInit()
 		CreateDetectionField(name, points, minz, maxz, exceptionlist);
 	}
 
-	printf("Loaded %d Detection Fields", Iter_Count(det_Index));
+	log("Loaded %d Detection Fields", Iter_Count(det_Index));
 
 	return 1;
 }
@@ -232,7 +232,7 @@ stock CreateDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz
 
 	if(id == ITER_NONE)
 	{
-		print("ERROR: MAX_DETFIELD limit reached.");
+		err("MAX_DETFIELD limit reached.");
 		return -1;
 	}
 
@@ -778,7 +778,7 @@ DetectionFieldLogPlayer(playerid, detfieldid)
 
 	format(line, sizeof(line), "%p, %s\r\n", playerid, TimestampToDateTime(gettime()));
 
-	logf("[DET] %p entered %s at %s", playerid, det_Name[detfieldid], TimestampToDateTime(gettime()));
+	log("[DET] %p entered %s at %s", playerid, det_Name[detfieldid], TimestampToDateTime(gettime()));
 
 	return 1;
 }

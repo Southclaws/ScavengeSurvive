@@ -40,7 +40,7 @@ enum e_plant_pot_data
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'PlantPot'...");
+	console("\n[OnScriptInit] Initialising 'PlantPot'...");
 
 	HANDLER = debug_register_handler("plantpot");
 }
@@ -162,7 +162,7 @@ _pot_Load(itemid)
 {
 	if(GetItemType(itemid) != item_PlantPot)
 	{
-		printf("ERROR: Attempted to _pot_Load an item that wasn't a pot (%d type %d).", itemid, _:GetItemType(itemid));
+		err("Attempted to _pot_Load an item that wasn't a pot (%d type %d).", itemid, _:GetItemType(itemid));
 		return;
 	}
 

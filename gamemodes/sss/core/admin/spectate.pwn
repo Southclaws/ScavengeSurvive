@@ -89,13 +89,22 @@ hook OnPlayerDisconnect(playerid)
 	if(spectate_Type[playerid] != SPECTATE_TYPE_NONE)
 		ExitSpectateMode(playerid);
 
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
 	foreach(new i : Player)
 	{
 		if(spectate_Target[i] == playerid)
 		{
-			SpectateNextTarget(i);
-			// or
-			// EnterFreeMode(i, x, y, z);
+			GetPlayerCameraPos(i, x, y, z);
+
+			if(Iter_Count(Player) > 0)
+				SpectateNextTarget(i);
+
+			else
+				EnterFreeMode(i, x, y, z);
 		}
 	}
 
@@ -124,7 +133,7 @@ EnterSpectateMode(playerid, targetid)
 	stop spectate_Timer[playerid];
 	spectate_Timer[playerid] = repeat UpdateSpectateMode(playerid);
 
-	logf("[SPECTATE] %p watches %p", playerid, targetid);
+	log("[SPECTATE] %p watches %p", playerid, targetid);
 
 	return 1;
 }
@@ -148,12 +157,20 @@ EnterFreeMode(playerid, Float:camX = 0.0, Float:camY = 0.0, Float:camZ = 0.0)
 
 ExitFreeMode(playerid)
 {
+	if(spectate_Type[playerid] == SPECTATE_TYPE_TARGET)
+		ExitSpectateMode(playerid);
+
+	spectate_Target[playerid] = INVALID_PLAYER_ID;
 	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
+
 	DestroyObject(spectate_CameraObject[playerid]);
 	spectate_CameraObject[playerid] = INVALID_OBJECT_ID;
+
 	TogglePlayerSpectating(playerid, false);
-	SetPlayerPos(playerid, spectate_StartPos[playerid][0], spectate_StartPos[playerid][1], spectate_StartPos[playerid][2]);
 	stop spectate_Timer[playerid];
+	defer ReturnToDuty(playerid);
+
+	return 1;
 }
 
 ExitSpectateMode(playerid)
@@ -164,20 +181,26 @@ ExitSpectateMode(playerid)
 	if(spectate_Type[playerid] == SPECTATE_TYPE_FREE)
 		ExitFreeMode(playerid);
 
-	TogglePlayerSpectating(playerid, false);
+	spectate_Target[playerid] = INVALID_PLAYER_ID;
+	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
+
 	PlayerTextDrawHide(playerid, spectate_Name);
 	PlayerTextDrawHide(playerid, spectate_Info);
-
-	spectate_Target[playerid] = INVALID_PLAYER_ID;
+	TogglePlayerSpectating(playerid, false);
 	stop spectate_Timer[playerid];
+	defer ReturnToDuty(playerid);
 
+	return 1;
+}
+
+timer ReturnToDuty[100](playerid)
+{
+	SetPlayerPos(playerid, spectate_StartPos[playerid][0], spectate_StartPos[playerid][1], spectate_StartPos[playerid][2]);
 	if(GetPlayerGender(playerid) == GENDER_MALE)
 		SetPlayerSkin(playerid, 217);
 
 	else
 		SetPlayerSkin(playerid, 211);
-
-	return 1;
 }
 
 SpectateNextTarget(playerid)
@@ -242,14 +265,31 @@ SpectatePrevTarget(playerid)
 
 _RefreshSpectate(playerid)
 {
-	SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
-	SetPlayerInterior(playerid, GetPlayerInterior(spectate_Target[playerid]));
+	if(spectate_Type[playerid] == SPECTATE_TYPE_TARGET)
+	{
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
+		SetPlayerInterior(playerid, GetPlayerInterior(spectate_Target[playerid]));
 
-	if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
-		PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
+		if(IsPlayerInAnyVehicle(spectate_Target[playerid]))
+			PlayerSpectateVehicle(playerid, GetPlayerVehicleID(spectate_Target[playerid]));
 
-	else
-		PlayerSpectatePlayer(playerid, spectate_Target[playerid]);
+		else
+			PlayerSpectatePlayer(playerid, spectate_Target[playerid]);
+	}
+	else if(spectate_Type[playerid] == SPECTATE_TYPE_FREE)
+	{
+		new
+			Float:x,
+			Float:y,
+			Float:z;
+
+		GetPlayerPos(spectate_Target[playerid], x, y, z);
+
+		SetPlayerVirtualWorld(playerid, GetPlayerVirtualWorld(spectate_Target[playerid]));
+		SetPlayerInterior(playerid, GetPlayerInterior(spectate_Target[playerid]));
+		SetObjectPos(spectate_CameraObject[playerid], x, y, z + 1.0);
+		AttachCameraToObject(playerid, spectate_CameraObject[playerid]);
+	}
 }
 
 timer UpdateSpectateMode[100](playerid)
@@ -340,7 +380,7 @@ timer UpdateSpectateMode[100](playerid)
 			title[MAX_PLAYER_NAME + 6],
 			str[256];
 
-		if(!GetPlayerBitFlag(playerid, ShowHUD))
+		if(!IsPlayerHudOn(playerid))
 		{
 			PlayerTextDrawHide(playerid, spectate_Info);
 			return;
@@ -383,7 +423,7 @@ timer UpdateSpectateMode[100](playerid)
 				GetPlayerLastVehicle(targetid),
 				invehicleas,
 				GetVehicleFuel(GetPlayerLastVehicle(targetid)),
-				IsVehicleLocked(GetPlayerLastVehicle(targetid)));
+				_:GetVehicleLockState(GetPlayerLastVehicle(targetid)));
 		}
 		else
 		{

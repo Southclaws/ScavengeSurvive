@@ -48,7 +48,7 @@ stock debug_register_handler(name[], initstate = 0)
 	strcat(dbg_Name[dbg_Total], name);
 	dbg_Level[dbg_Total] = initstate;
 
-	printf("Registered debug handler: '%s' initial state: %d", dbg_Name[dbg_Total], dbg_Level[dbg_Total]);
+	log("Registered debug handler: '%s' initial state: %d", dbg_Name[dbg_Total], dbg_Level[dbg_Total]);
 
 	return dbg_Total++;
 }
@@ -61,7 +61,7 @@ stock debug_print(handler, level, string[])
 	if(dbg_Level[handler] < level)
 		return 0;
 
-	printf("%s[%s]: %s", DEBUG_PREFIX, dbg_Name[handler], string);
+	log("%s[%s]: %s", DEBUG_PREFIX, dbg_Name[handler], string);
 
 	return 0;
 }
@@ -146,7 +146,7 @@ hook OnRconCommand(cmd[])
 
 		if(sscanf(params, "s[32]d", handlername, level))
 		{
-			print("Usage: debug [handlername] [level]");
+			console("Usage: debug [handlername] [level]");
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
@@ -154,13 +154,13 @@ hook OnRconCommand(cmd[])
 
 		if(handler == -1)
 		{
-			print("Invalid handler");
+			console("Invalid handler");
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
 		if(!(0 <= level <= 10))
 		{
-			print("Invalid level");
+			console("Invalid level");
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
@@ -168,7 +168,7 @@ hook OnRconCommand(cmd[])
 
 		debug_set_level(handler, level);
 
-		printf("SS debug level for '%s': %d", handlername, level);
+		log("SS debug level for '%s': %d", handlername, level);
 
 		return Y_HOOKS_BREAK_RETURN_0;
 	}

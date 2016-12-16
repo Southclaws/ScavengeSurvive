@@ -51,7 +51,7 @@ CreateLootVehicle(type, Float:x, Float:y, Float:z, Float:r)
 
 	if(vehicleid >= MAX_VEHICLES)
 	{
-		print("ERROR: Vehicle limit reached.");
+		err("Vehicle limit reached.");
 		DestroyVehicle(vehicleid);
 		return 0;
 	}
@@ -72,6 +72,7 @@ GenerateVehicleData(vehicleid)
 		type,
 		category,
 		Float:maxfuel,
+		lootindexname[32],
 		lootindex,
 		trunksize,
 		chance;
@@ -79,7 +80,8 @@ GenerateVehicleData(vehicleid)
 	type = GetVehicleType(vehicleid);
 	category = GetVehicleTypeCategory(type);
 	maxfuel = GetVehicleTypeMaxFuel(type);
-	lootindex = GetVehicleTypeLootIndex(type);
+	GetVehicleTypeLootIndex(type, lootindexname);
+	lootindex = GetLootIndexFromName(lootindexname);
 	trunksize = GetVehicleTypeTrunkSize(type);
 
 // Health
@@ -115,31 +117,39 @@ GenerateVehicleData(vehicleid)
 
 	if(category < VEHICLE_CATEGORY_MOTORBIKE)
 	{
+		new
+			panels = encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
+			doors = encode_doors(random(5), random(5), random(5), random(5));
+
 		SetVehicleDamageData(vehicleid,
-			encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
-			encode_doors(random(5), random(5), random(5), random(5)),
+			panels,
+			doors,
 			encode_lights(random(2), random(2), random(2), random(2)),
 			encode_tires(random(2), random(2), random(2), random(2)) );
-	}
 
 // Locks
 
-/*	if(maxfuel == 0.0)
-	{
-		SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
+		if(maxfuel == 0.0)
+		{
+			SetVehicleParamsEx(vehicleid, 1, 0, 0, 0, 0, 0, 0);
+		}
+		else
+		{
+			new locked;
+
+			if(doors)
+				locked = random(2);
+
+			if(panels)
+				SetVehicleTrunkLock(vehicleid, random(2));
+
+			SetVehicleParamsEx(vehicleid, 0, random(2), !random(100), locked, random(2), random(2), 0);
+
+			if(locked)
+				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_DEFAULT);
+		}
 	}
-	else
-	{
-		new locked;
 
-		if(doors == 0)
-			locked = random(2);
-
-		if(panels)
-			veh_TrunkLock[vehicleid] = random(2);
-
-		SetVehicleParamsEx(vehicleid, 0, random(2), !random(100), locked, random(2), random(2), 0);
-	}*/
 
 // Putting loot in trunks
 

@@ -50,12 +50,12 @@ hook OnItemCreate(itemid)
 				{
 					new magsize = GetItemTypeWeaponMagSize(itemtype);
 
-					if(lootindex == loot_Civilian || lootindex == loot_CarCivilian || lootindex == loot_Survivor)
+					if(lootindex == GetLootIndexFromName("world_civilian") || lootindex == GetLootIndexFromName("vehicle_civilian") || lootindex == GetLootIndexFromName("world_survivor"))
 					{
 						SetItemWeaponItemMagAmmo(itemid, random(magsize));
 						SetItemWeaponItemAmmoItem(itemid, ammotypelist[random(ammotypes)]);
 					}
-					else if(lootindex == loot_Police || lootindex == loot_Military || lootindex == loot_CarPolice || lootindex == loot_CarMilitary || lootindex == loot_LowWepCrate || lootindex == loot_MilWepCrate)
+					else if(lootindex == GetLootIndexFromName("world_police") || lootindex == GetLootIndexFromName("world_military") || lootindex == GetLootIndexFromName("vehicle_police") || lootindex == GetLootIndexFromName("vehicle_military") || lootindex == GetLootIndexFromName("airdrop_low_weapons") || lootindex == GetLootIndexFromName("airdrop_military_weapons"))
 					{
 						switch(random(100))
 						{

@@ -44,7 +44,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetProportional	(playerid, VersionInfo[playerid], 1);
 }
 
-ptask UpdateVersionString[1000](playerid)
+hook OnPlayerScriptUpdate(playerid)
 {
 	if(!ShowVersionInfo[playerid])
 		return;

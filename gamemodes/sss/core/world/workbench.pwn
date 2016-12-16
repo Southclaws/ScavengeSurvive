@@ -35,32 +35,10 @@
 #define MAX_WORK_BENCH			(32)
 #define MAX_WORK_BENCH_ITEMS	(4)
 
-
-enum E_WORKBENCH_DATA
-{
-			wb_objId,
-			wb_buttonId,
-Text3D:		wb_labelId,
-Float:		wb_posX,
-Float:		wb_posY,
-Float:		wb_posZ,
-Float:		wb_rotZ,
-			wb_count,
-bool:		wb_inUse
-}
-
-
 static
-			wb_Data[MAX_WORK_BENCH][E_WORKBENCH_DATA],
-			wb_SelectedItems[MAX_WORK_BENCH][CFT_MAX_CRAFT_SET_ITEMS][e_selected_item_data], // has to be of CFT_MAX_CRAFT_SET_ITEMS size
-			wb_Total,
-			wb_ButtonWorkbench[BTN_MAX] = {-1, ...},
-			wb_ItemWorkbench[ITM_MAX] = {-1, ...},
-
-bool:		wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
-
-			wb_CurrentConstructSet[MAX_PLAYERS],
-			wb_CurrentWorkbench[MAX_PLAYERS];
+bool:	wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
+		wb_CurrentConstructSet[MAX_PLAYERS],
+		wb_CurrentWorkbench[MAX_PLAYERS];
 
 
 static HANDLER = -1;
@@ -80,8 +58,7 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/workbench.pwn");
-
+	wb_CurrentConstructSet[playerid] = -1;
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
@@ -94,132 +71,122 @@ hook OnPlayerDisconnect(playerid, reason)
 
 /*==============================================================================
 
-	Core Functions
+	Core
 
 ==============================================================================*/
 
-
-stock CreateWorkBench(Float:x, Float:y, Float:z, Float:rz)
-{
-	if(wb_Total == MAX_WORK_BENCH - 1)
-	{
-		print("ERROR: MAX_WORK_BENCH Limit reached.");
-		return 0;
-	}
-
-	wb_Data[wb_Total][wb_objId] = CreateDynamicObject(936, x, y, z, 0.0, 0.0, rz);
-	wb_Data[wb_Total][wb_buttonId] = CreateButton(x, y, z, "Press "KEYTEXT_INTERACT" to use workbench", .areasize = 2.0);
-	wb_Data[wb_Total][wb_labelId] = CreateDynamic3DTextLabel("Workbench", GREEN, x, y, z + 1.0, 10.0);
-	wb_Data[wb_Total][wb_posX] = x;
-	wb_Data[wb_Total][wb_posY] = y;
-	wb_Data[wb_Total][wb_posZ] = z;
-	wb_Data[wb_Total][wb_rotZ] = rz;
-
-	for(new i; i < MAX_WORK_BENCH_ITEMS; i++)
-	{
-		wb_SelectedItems[wb_Total][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-		wb_SelectedItems[wb_Total][i][cft_selectedItemID] = INVALID_ITEM_ID;
-	}
-
-	wb_Data[wb_Total][wb_count] = 0;
-	wb_Data[wb_Total][wb_inUse] = false;
-
-	wb_ButtonWorkbench[wb_Data[wb_Total][wb_buttonId]] = wb_Total;
-
-	return wb_Total++;
-}
 
 stock SetConstructionSetWorkbench(consset)
 {
+	wb_ConstructionSetWorkbench[consset] = true;
+}
+
+stock IsValidWorkbenchConstructionSet(consset)
+{
 	if(!IsValidConstructionSet(consset))
 	{
-		printf("ERROR: Tried to assign workbench properties to invalid construction set ID.");
+		err("Tried to assign workbench properties to invalid construction set ID.");
 		return 0;
 	}
 
-	wb_ConstructionSetWorkbench[consset] = true;
-
-	return consset;
+	return wb_ConstructionSetWorkbench[consset];
 }
 
-
-/*==============================================================================
-
-	Internal Functions and Hooks
-
-==============================================================================*/
-
-
-hook OnButtonPress(playerid, buttonid)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/core/world/workbench.pwn");
-
-	if(wb_ButtonWorkbench[buttonid] != -1)
+	if(GetItemType(itemid) == item_Workbench)
 	{
-		d:1:HANDLER("[OnButtonPress] button %d workbench %d", buttonid, wb_ButtonWorkbench[buttonid]);
-		if(wb_Data[wb_ButtonWorkbench[buttonid]][wb_buttonId] == buttonid)
-		{
-			new itemid = GetPlayerItem(playerid);
-
-			if(IsValidItem(itemid))
-			{
-				_wb_PlayerUseWorkbench(playerid, wb_ButtonWorkbench[buttonid], itemid);
-			}
-		}
-		else
-		{
-			printf("ERROR: Workbench bi-directional link error. wb_ButtonWorkbench wb_buttonId = %d buttonid = %d");
-		}
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_wb_PlayerUseWorkbench(playerid, workbenchid, itemid)
+hook OnPlayerUseItem(playerid, itemid)
 {
-	d:1:HANDLER("[_wb_PlayerUseWorkbench] playerid %d workbenchid %d itemid %d", playerid, workbenchid, itemid);
-	if(wb_Data[workbenchid][wb_count] > 1)
+	if(GetItemType(itemid) == item_Workbench)
 	{
-		d:2:HANDLER("[_wb_PlayerUseWorkbench] wb_count: %d", wb_Data[workbenchid][wb_count]);
+		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+	}
+}
+
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	if(GetItemType(withitemid) == item_Workbench)
+	{
 		new
+			craftitems[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
+			containerid,
+			itemcount,
 			craftset,
 			consset;
 
-		craftset = _cft_FindCraftset(wb_SelectedItems[workbenchid], wb_Data[workbenchid][wb_count]);
+		containerid = GetItemArrayDataAtCell(withitemid, 0);
+		itemcount = GetContainerItemCount(containerid);
+
+		if(!IsValidContainer(containerid))
+		{
+			err("Workbench (%d) has invalid container ID (%d)", withitemid, containerid);
+			return Y_HOOKS_CONTINUE_RETURN_0;
+		}
+
+		d:1:HANDLER("[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", withitemid, containerid, itemcount);
+
+		for(new i; i < itemcount; i++)
+		{
+			craftitems[i][cft_selectedItemType] = GetItemType(GetContainerSlotItem(containerid, i));
+			craftitems[i][cft_selectedItemID] = GetContainerSlotItem(containerid, i);
+			d:3:HANDLER("[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][cft_selectedItemType], craftitems[i][cft_selectedItemID], IsValidItem(craftitems[i][cft_selectedItemID]));
+		}
+
+		craftset = _cft_FindCraftset(craftitems, itemcount);
 		consset = GetCraftSetConstructSet(craftset);
 
-		d:2:HANDLER("[_wb_PlayerUseWorkbench] craftset: %d, consset: %d consset tool type: %d player item type: %d", craftset, consset, _:GetConstructionSetTool(consset), _:GetItemType(itemid));
-
-		if(GetItemType(itemid) == GetConstructionSetTool(consset))
+		if(IsValidConstructionSet(consset))
 		{
-			d:2:HANDLER("[_wb_PlayerUseWorkbench] craftset determined and tool matched, start building...");
-	
-			new
-				Float:x,
-				Float:y,
-				Float:z;
+			if(wb_ConstructionSetWorkbench[consset])
+			{
+				d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
 
-			GetPlayerPos(playerid, x, y, z);
-			SetPlayerFacingAngle(playerid, GetAngleToPoint(x, y, wb_Data[workbenchid][wb_posX],  wb_Data[workbenchid][wb_posY]));
+				if(GetConstructionSetTool(consset) == GetItemType(itemid))
+				{
+					new uniqueid[ITM_MAX_NAME];
+					GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
 
-			ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
+					wb_CurrentConstructSet[playerid] = consset;
+					_wb_StartWorking(playerid, withitemid, GetPlayerSkillTimeModifier(playerid, itemcount * 3600, uniqueid));
 
-			wb_CurrentConstructSet[playerid] = consset;
-			_wb_StartWorking(playerid, workbenchid, GetConstructionSetBuildTime(consset));
-			return 1;
+					return Y_HOOKS_CONTINUE_RETURN_0;
+				}
+			}
 		}
+
+		if(GetItemType(itemid) != item_Crowbar)
+			DisplayContainerInventory(playerid, containerid);
 	}
 
-	_wb_AddItem(workbenchid, itemid);
-
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_wb_StartWorking(playerid, workbenchid, buildtime)
+_wb_ClearWorkbench(itemid)
 {
-	wb_Data[workbenchid][wb_inUse] = true;
+	new
+		containerid,
+		itemcount;
+
+	containerid = GetItemArrayDataAtCell(itemid, 0);
+	itemcount = GetContainerItemCount(containerid);
+
+	for(; itemcount >= 0; itemcount--)
+		DestroyItem(GetContainerSlotItem(containerid, itemcount));
+}
+
+_wb_StartWorking(playerid, itemid, buildtime)
+{
+	SetPlayerFacingAngle(playerid, GetPlayerAngleToButton(playerid, GetItemButtonID(itemid)));
+	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	StartHoldAction(playerid, buildtime);
-	wb_CurrentWorkbench[playerid] = workbenchid;
+	wb_CurrentWorkbench[playerid] = itemid;
 }
 
 _wb_StopWorking(playerid)
@@ -227,130 +194,23 @@ _wb_StopWorking(playerid)
 	ClearAnimations(playerid);
 
 	StopHoldAction(playerid);
-	wb_Data[wb_CurrentWorkbench[playerid]][wb_inUse] = false;
 	wb_CurrentWorkbench[playerid] = -1;
 }
 
-_wb_AddItem(workbenchid, itemid)
+_wb_CreateResult(itemid, craftset)
 {
-	d:1:HANDLER("[_wb_AddItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
+	d:1:HANDLER("[_wb_CreateResult] itemid %d craftset %d", itemid, craftset);
 
-	// workbench is full
-	if(wb_Data[workbenchid][wb_count] == MAX_WORK_BENCH_ITEMS)
-		return 0;
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rz;
 
-	new idx;
+	GetItemPos(itemid, x, y, z);
+	GetItemRot(itemid, rz, rz, rz);
 
-	// search for free slot to place item
-	for(idx = 0; idx < MAX_WORK_BENCH_ITEMS; idx++)
-	{
-		if(!IsValidItem(wb_SelectedItems[workbenchid][idx][cft_selectedItemID]))
-			break;
-	}
-
-	// is workbench full (again?)
-	if(idx == MAX_WORK_BENCH_ITEMS)
-	{
-		printf("ERROR: Workbench full check failed after wb_count check passed (wb_count = %d)", wb_Data[workbenchid][wb_count]);
-		return 0;
-	}
-
-	switch(idx)
-	{
-		case 0:
-		{
-			CreateItemInWorld(itemid,
-				wb_Data[workbenchid][wb_posX] + (0.8 * floatsin(-wb_Data[workbenchid][wb_rotZ] + 105.0, degrees)),
-				wb_Data[workbenchid][wb_posY] + (0.8 * floatcos(-wb_Data[workbenchid][wb_rotZ] + 105.0, degrees)),
-				wb_Data[workbenchid][wb_posZ] + 0.49,
-				0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
-		}
-		case 1:
-		{
-			CreateItemInWorld(itemid,
-				wb_Data[workbenchid][wb_posX] + (0.32 * floatsin(-wb_Data[workbenchid][wb_rotZ] + 125.0, degrees)),
-				wb_Data[workbenchid][wb_posY] + (0.32 * floatcos(-wb_Data[workbenchid][wb_rotZ] + 125.0, degrees)),
-				wb_Data[workbenchid][wb_posZ] + 0.49,
-				0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
-		}
-		case 2:
-		{
-			CreateItemInWorld(itemid,
-				wb_Data[workbenchid][wb_posX] + (0.32 * floatsin(-wb_Data[workbenchid][wb_rotZ] - 125.0, degrees)),
-				wb_Data[workbenchid][wb_posY] + (0.32 * floatcos(-wb_Data[workbenchid][wb_rotZ] - 125.0, degrees)),
-				wb_Data[workbenchid][wb_posZ] + 0.49,
-				0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
-		}
-		case 3:
-		{
-			CreateItemInWorld(itemid,
-				wb_Data[workbenchid][wb_posX] + (0.8 * floatsin(-wb_Data[workbenchid][wb_rotZ] - 105.0, degrees)),
-				wb_Data[workbenchid][wb_posY] + (0.8 * floatcos(-wb_Data[workbenchid][wb_rotZ] - 105.0, degrees)),
-				wb_Data[workbenchid][wb_posZ] + 0.49,
-				0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
-		}
-	}
-
-	wb_SelectedItems[workbenchid][idx][cft_selectedItemType] = GetItemType(itemid);
-	wb_SelectedItems[workbenchid][idx][cft_selectedItemID] = itemid;
-	wb_ItemWorkbench[itemid] = workbenchid;
-
-	wb_Data[workbenchid][wb_count]++;
-
-	return 1;
-}
-
-_wb_RemoveItem(workbenchid, itemid)
-{
-	d:1:HANDLER("[_wb_RemoveItem] workbenchid %d itemid %d, wb_count: %d", workbenchid, itemid, wb_Data[workbenchid][wb_count]);
-
-	if(wb_Data[workbenchid][wb_inUse])
-	{
-		d:2:HANDLER("[_wb_RemoveItem] Workbench in-use, cancelling remove");
-		return 0;
-	}
-
-	new idx;
-
-	while(wb_SelectedItems[workbenchid][idx][cft_selectedItemID] != itemid)
-	{
-		if(idx++ == wb_Data[workbenchid][wb_count])
-			return 1;
-	}
-
-	wb_SelectedItems[workbenchid][idx][cft_selectedItemType] = INVALID_ITEM_TYPE;
-	wb_SelectedItems[workbenchid][idx][cft_selectedItemID] = INVALID_ITEM_ID;
-	wb_ItemWorkbench[itemid] = -1;
-
-	wb_Data[workbenchid][wb_count]--;
-
-	return 1;
-}
-
-_wb_ClearWorkbench(workbenchid)
-{
-	d:1:HANDLER("[_wb_ClearWorkbench] workbenchid %d, count: %d", workbenchid, wb_Data[workbenchid][wb_count]);
-
-	for(new i; i < wb_Data[workbenchid][wb_count]; i++)
-	{
-		DestroyItem(wb_SelectedItems[workbenchid][i][cft_selectedItemID]);
-		wb_ItemWorkbench[wb_SelectedItems[workbenchid][i][cft_selectedItemID]] = -1;
-		wb_SelectedItems[workbenchid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-		wb_SelectedItems[workbenchid][i][cft_selectedItemID] = INVALID_ITEM_ID;
-	}
-
-	wb_Data[workbenchid][wb_count] = 0;
-}
-
-_wb_CreateResult(workbenchid, craftset)
-{
-	d:1:HANDLER("[_wb_CreateResult] workbenchid %d craftset %d", workbenchid, craftset);
-
-	CreateItem(GetCraftSetResult(craftset),
-		wb_Data[workbenchid][wb_posX],
-		wb_Data[workbenchid][wb_posY],
-		wb_Data[workbenchid][wb_posZ] + 0.49,
-		0.0, 0.0, wb_Data[workbenchid][wb_rotZ] - 95.0 + frandom(10.0));
+	CreateItem(GetCraftSetResult(craftset), x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -377,25 +237,20 @@ hook OnHoldActionFinish(playerid)
 	{
 		d:1:HANDLER("[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 
+		new
+			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
+			uniqueid[ITM_MAX_NAME];
+
+		GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
-		_wb_CreateResult(wb_CurrentWorkbench[playerid], GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]));
+		_wb_CreateResult(wb_CurrentWorkbench[playerid], craftset);
 		_wb_StopWorking(playerid);
 		wb_CurrentWorkbench[playerid] = -1;
 		wb_CurrentConstructSet[playerid] = -1;
+
+		PlayerGainSkillExperience(playerid, uniqueid);
 	}
-}
-
-hook OnPlayerPickedUpItem(playerid, itemid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/world/workbench.pwn");
-
-	if(wb_ItemWorkbench[itemid] != -1)
-	{
-		if(_wb_RemoveItem(wb_ItemWorkbench[itemid], itemid) == 0)
-			return Y_HOOKS_BREAK_RETURN_1;
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerConstruct(playerid, consset)
@@ -414,24 +269,3 @@ hook OnPlayerConstruct(playerid, consset)
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
-
-
-ACMD:wbtest[3](playerid, params[])
-{
-	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-	_wb_PlayerUseWorkbench(playerid, 0, CreateItem(item_Battery));
-
-	return 1;
-}
-
-
-/*==============================================================================
-
-	Interface
-
-==============================================================================*/
-
-
-//

@@ -27,7 +27,7 @@
 
 #define MAX_LOOT_INDEX			(15)
 #define MAX_LOOT_INDEX_ITEMS	(256)
-#define MAX_LOOT_INDEX_NAME		(5)
+#define MAX_LOOT_INDEX_NAME		(32)
 #define MAX_LOOT_SPAWN			(12683)
 #define MAX_ITEMS_PER_SPAWN		(6)
 
@@ -72,7 +72,7 @@ Float:		loot_SpawnMult = 1.0;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
+	console("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
 
 	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
 }
@@ -88,7 +88,7 @@ hook OnScriptInit()
 stock DefineLootIndex(name[MAX_LOOT_INDEX_NAME])
 {
 	if(loot_IndexTotal >= MAX_LOOT_INDEX)
-		printf("ERROR: Loot index limit reached at '%s'.", name);
+		err("Loot index limit reached at '%s'.", name);
 
 	loot_IndexName[loot_IndexTotal] = name;
 
@@ -101,7 +101,7 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight, perspawnlimit =
 		return 0;
 
 	if(loot_IndexSize[index] >= MAX_LOOT_INDEX_ITEMS)
-		print("ERROR: Loot index item limit reached.");
+		err("Loot index item limit reached.");
 
 	loot_IndexItems[index][loot_IndexSize[index]][lootitem_type] = itemtype;
 	loot_IndexItems[index][loot_IndexSize[index]][lootitem_weight] = weight;
@@ -116,12 +116,15 @@ stock AddItemToLootIndex(index, ItemType:itemtype, Float:weight, perspawnlimit =
 
 stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, size = -1, worldid = 0, interiorid = 0)
 {
-	if(loot_SpawnMult == 0.0)
-		return -1;
-
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
-		print("ERROR: Loot spawn limit reached.");
+		err("Loot spawn limit reached.");
+		return -1;
+	}
+
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		err("Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 
@@ -143,52 +146,41 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 	loot_SpawnData[lootspawnid][loot_index] = lootindex;
 
 	new
-		samplelist[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
-		cell,
 		ItemType:itemtype,
 		itemid,
 		Float:rot = frandom(360.0);
 
-	for(new i; i < loot_IndexSize[lootindex]; ++i)
-	{
-		samplelist[i][lootitem_type] = loot_IndexItems[lootindex][i][lootitem_type];
-		samplelist[i][lootitem_limit] = loot_IndexItems[lootindex][i][lootitem_limit];
-		samplelist[i][lootitem_weight] = loot_IndexItems[lootindex][i][lootitem_weight];
-	}
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
-	samplelistsize = loot_IndexSize[lootindex];
+	// log("[CreateStaticLootSpawn] index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 
 	for(new i; i < size; i++)
 	{
-		// Generate an item from the sample list
-
-		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
+		if(frandom(100.0) > weight * loot_SpawnMult)
 			continue;
 
-		itemtype = samplelist[cell][lootitem_type];
+		// Generate an item from the sample list
+		if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
+			continue;
+
+		if(itemtype == item_NULL)
+		{
+			err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			continue;
+		}
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
 			continue;
-		}
-
-		if(samplelist[cell][lootitem_limit] > 0 && _loot_LootSpawnItemsOfType(lootspawnid, itemtype) > samplelist[cell][lootitem_limit])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
-			continue;
-		}
 
 		// Create the item
 		itemid = GetNextItemID();
 
 		if(!(0 <= itemid < ITM_MAX))
 		{
-			print("ERROR: Item limit reached while generating loot.");
+			err("Item limit reached while generating loot.");
 			return -1;
 		}
 
@@ -208,12 +200,28 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0)
 {
-	new cell;
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		err("Loot index (%d) is invalid.", lootindex);
+		return -1;
+	}
 
-	if(!_loot_PickFromSampleList(loot_IndexItems[lootindex], loot_IndexSize[lootindex], cell))
+	new
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
+		samplelistsize,
+		ItemType:itemtype;
+
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
+
+	// Generate an item from the sample list
+	if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 		return INVALID_ITEM_ID;
 
-	new ItemType:itemtype = loot_IndexItems[lootindex][cell][lootitem_type];
+	if(itemtype == item_NULL)
+	{
+		err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+		return INVALID_ITEM_ID;
+	}
 
 	if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
 		return INVALID_ITEM_ID;
@@ -232,7 +240,13 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 
 stock FillContainerWithLoot(containerid, slots, lootindex)
 {
-	//printf("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
+	if(!(0 <= lootindex < loot_IndexTotal))
+	{
+		err("Loot index (%d) is invalid.", lootindex);
+		return -1;
+	}
+
+	// log("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
 	new containersize = GetContainerSize(containerid);
 
 	if(slots > containersize)
@@ -242,43 +256,30 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		return 0;
 
 	new
-		samplelist[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA],
+		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		items,
-		cell,
 		itemid,
 		ItemType:itemtype;
 
-	for(new i; i < loot_IndexSize[lootindex]; ++i)
-	{
-		samplelist[i][lootitem_type] = loot_IndexItems[lootindex][i][lootitem_type];
-		samplelist[i][lootitem_limit] = loot_IndexItems[lootindex][i][lootitem_limit];
-		samplelist[i][lootitem_weight] = loot_IndexItems[lootindex][i][lootitem_weight];
-	}
-
-	samplelistsize = loot_IndexSize[lootindex];
+	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
 	while(items < slots && samplelistsize > 0 && GetContainerFreeSlots(containerid) > 0)
 	{
 		// Generate an item from the sample list
 
-		if(!_loot_PickFromSampleList(samplelist, samplelistsize, cell))
+		if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 			continue;
 
-		itemtype = samplelist[cell][lootitem_type];
+		if(itemtype == item_NULL)
+		{
+			err("Chosen cell contained itemtype 0, index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
+			continue;
+		}
 
 		// Check if the generated item is legal
 		if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) >= loot_ItemTypeLimit[itemtype])
 		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
-			continue;
-		}
-
-		if(samplelist[cell][lootitem_limit] > 0 && _loot_ContainerItemsOfType(containerid, itemtype) >= samplelist[cell][lootitem_limit])
-		{
-			_loot_RemoveFromSampleList(samplelist, cell);
-			samplelistsize--;
 			continue;
 		}
 
@@ -287,7 +288,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 
 		if(!(0 <= itemid < ITM_MAX))
 		{
-			print("ERROR: Item limit reached while generating loot.");
+			err("Item limit reached while generating loot.");
 			return -1;
 		}
 
@@ -314,39 +315,46 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 ==============================================================================*/
 
 
-_loot_PickFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], listsize, &cell)
+_loot_GenerateSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], lootindex)
 {
-	new Float:value;
+	new size;
 
-// Another selection method that will *always* return an item:
-// Might be used in the future if the calling code is optimised.
-//	do
-//	{
-//		cell = random(listsize);
-//		value = frandom(100.0);
-//		printf("[_loot_PickFromSampleList] Checking cell %d: type: %d weight: %f", cell, list[cell][lootitem_type], list[cell][lootitem_weight]);
-//	}
-//	while(value > list[cell][lootitem_weight]);
-// However this one has a chance of not returning an item:
+	for(new i; i < loot_IndexSize[lootindex]; ++i)
+	{
+		if(frandom(100.0) > loot_IndexItems[lootindex][i][lootitem_weight])
+			continue;
 
-	cell = random(listsize);
-	value = frandom(100.0);
+		if(loot_IndexItems[lootindex][i][lootitem_type] == item_NULL)
+		{
+			// log("[_loot_GenerateSampleList] Prevented entering NULL ITEM into samplelist");
+			continue;
+		}
 
-	if(value > (list[cell][lootitem_weight] * loot_SpawnMult))
-		return 0;
+		list[size++] = loot_IndexItems[lootindex][i][lootitem_type];
+	}
 
-	if(!IsValidItemType(list[cell][lootitem_type]))
-		return 0;
+	// log("[_loot_GenerateSampleList] Generated: %s", atosr(_:list, size));
+
+	return size;
+}
+
+_loot_PickFromSampleList(ItemType:list[MAX_LOOT_INDEX_ITEMS], &listsize, &ItemType:itemtype)
+{
+	if(listsize <= 0)
+		return -1;
+
+	new cell = random(listsize);
+	itemtype = list[cell];
+
+	for(new i = cell; i < listsize - 1; i++)
+		list[i] = list[i+1];
+
+	listsize -= 1;
 
 	return 1;
 }
 
-_loot_RemoveFromSampleList(list[MAX_LOOT_INDEX_ITEMS][E_LOOT_INDEX_ITEM_DATA], cell)
-{
-	for(new i = cell; i < MAX_LOOT_INDEX_ITEMS - 1; i++)
-		list[i] = list[i+1];
-}
-
+/*
 _loot_LootSpawnItemsOfType(lootspawnid, ItemType:itemtype)
 {
 	new count;
@@ -356,7 +364,7 @@ _loot_LootSpawnItemsOfType(lootspawnid, ItemType:itemtype)
 		if(GetItemType(loot_SpawnData[lootspawnid][loot_items][i]) == itemtype)
 			count++;
 	}
-	//printf("[_loot_LootSpawnItemsOfType] loot spawn %d contains %d of %d", lootspawnid, count, _:itemtype);
+	// log("[_loot_LootSpawnItemsOfType] loot spawn %d contains %d of %d", lootspawnid, count, _:itemtype);
 	return count;
 }
 
@@ -369,10 +377,10 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 		if(GetItemType(GetContainerSlotItem(containerid, i)) == itemtype)
 			count++;
 	}
-	//printf("[_loot_ContainerItemsOfType] container %d contains %d of %d", containerid, count, _:itemtype);
+	// log("[_loot_ContainerItemsOfType] container %d contains %d of %d", containerid, count, _:itemtype);
 	return count;
 }
-
+*/
 hook OnItemDestroy(itemid)
 {
 	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/loot.pwn");
@@ -389,6 +397,11 @@ hook OnItemDestroy(itemid)
 
 ==============================================================================*/
 
+
+stock IsValidLootIndex(index)
+{
+	return (0 <= index < loot_IndexTotal);
+}
 
 stock GetItemLootIndex(itemid)
 {
@@ -459,6 +472,9 @@ stock GetLootIndexFromName(name[])
 		if(!strcmp(name, loot_IndexName[i], true))
 			return i;
 	}
+
+	err("specified index name is invalid ('%s')", name);
+	PrintAmxBacktrace();
 
 	return -1;
 }

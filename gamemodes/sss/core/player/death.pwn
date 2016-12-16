@@ -28,6 +28,7 @@
 static
 Text:	DeathText = Text:INVALID_TEXT_DRAW,
 Text:	DeathButton = Text:INVALID_TEXT_DRAW,
+bool:	death_Dying[MAX_PLAYERS],
 		death_LastDeath[MAX_PLAYERS],
 Float:	death_PosX[MAX_PLAYERS],
 Float:	death_PosY[MAX_PLAYERS],
@@ -78,9 +79,9 @@ _OnDeath(playerid, killerid)
 		deathreason = GetLastHitByWeapon(playerid),
 		deathreasonstring[256];
 
-	SetPlayerBitFlag(playerid, Dying, true);
-	SetPlayerBitFlag(playerid, Spawned, false);
-	SetPlayerBitFlag(playerid, Alive, false);
+	death_Dying[playerid] = true;
+	SetPlayerSpawnedState(playerid, false);
+	SetPlayerAliveState(playerid, false);
 
 	GetPlayerPos(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid]);
 	GetPlayerFacingAngle(playerid, death_RotZ[playerid]);
@@ -96,13 +97,14 @@ _OnDeath(playerid, killerid)
 	HideWatch(playerid);
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
 	RemovePlayerWeapon(playerid);
+	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 
 	KillPlayer(playerid, killerid, deathreason);
 
 	if(IsPlayerConnected(killerid))
 	{
-		logf("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
@@ -145,7 +147,7 @@ _OnDeath(playerid, killerid)
 	}
 	else
 	{
-		logf("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
@@ -404,7 +406,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 		if(!IsPlayerDead(playerid))
 			return 1;
 
-		SetPlayerBitFlag(playerid, Dying, false);
+		death_Dying[playerid] = false;
 		TogglePlayerSpectating(playerid, false);
 		CancelSelectTextDraw(playerid);
 		TextDrawHideForPlayer(playerid, DeathText);
@@ -445,6 +447,14 @@ hook OnGameModeInit()
 	TextDrawSetSelectable		(DeathButton, true);
 }
 
+
+stock IsPlayerDead(playerid)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	return death_Dying[playerid];
+}
 
 stock GetPlayerDeathPos(playerid, &Float:x, &Float:y, &Float:z)
 {

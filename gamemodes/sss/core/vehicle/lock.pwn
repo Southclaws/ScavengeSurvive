@@ -25,10 +25,17 @@
 #include <YSI\y_hooks>
 
 
+enum E_LOCK_STATE
+{
+	E_LOCK_STATE_OPEN,		// 0 Vehicle is enterable
+	E_LOCK_STATE_EXTERNAL,	// 1 Installed lock, cannot be broken with crowbar
+	E_LOCK_STATE_DEFAULT	// 2 Default manufacturer's lock, broken with crowbar
+}
+
 static
-	lock_Status				[MAX_VEHICLES],
-	lock_LastChange			[MAX_VEHICLES],
-	lock_DisableForPlayer	[MAX_PLAYERS];
+E_LOCK_STATE:	lock_Status				[MAX_VEHICLES],
+				lock_LastChange			[MAX_VEHICLES],
+				lock_DisableForPlayer	[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -41,10 +48,15 @@ hook OnVehicleCreated(vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnVehicleCreated] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	lock_Status[vehicleid] = 0;
+	lock_Status[vehicleid] = E_LOCK_STATE_OPEN;
 	lock_LastChange[vehicleid] = 0;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnVehicleReset(oldid, newid)
+{
+	lock_Status[newid] = lock_Status[oldid];
 }
 
 hook OnPlayerConnect(playerid)
@@ -64,6 +76,20 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			_HandleLockKey(playerid);
 	}
 
+	if(newkeys & 16)
+	{
+		new vehicleid = GetPlayerVehicleArea(playerid);
+
+		if(IsValidVehicle(vehicleid))
+		{
+			if(lock_Status[vehicleid] == E_LOCK_STATE_DEFAULT)
+				ShowActionText(playerid, ls(playerid, "LOCKUSECROW"), 6000);
+
+			else if(lock_Status[vehicleid] == E_LOCK_STATE_EXTERNAL)
+				ShowActionText(playerid, ls(playerid, "LOCKCUSTOML"), 6000);
+		}
+	}
+
 	return 1;
 }
 
@@ -74,11 +100,11 @@ _HandleLockKey(playerid)
 
 	new vehicleid = GetPlayerVehicleID(playerid);
 
-	if(VehicleDoorsState(vehicleid))
-		SetVehicleExternalLock(vehicleid, false);
+	if(lock_Status[vehicleid] == E_LOCK_STATE_OPEN)
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_DEFAULT);
 
 	else
-		SetVehicleExternalLock(vehicleid, true);
+		SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 
 	return 1;
 }
@@ -87,7 +113,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehicle] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	if(lock_Status[vehicleid])
+	if(lock_Status[vehicleid] != E_LOCK_STATE_OPEN)
 	{
 		CancelPlayerMovement(playerid);
 		ShowActionText(playerid, ls(playerid, "DOORLOCKED", true), 3000);
@@ -100,7 +126,7 @@ hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehArea] in /gamemodes/sss/core/vehicle/lock.pwn");
 
-	if(!lock_Status[vehicleid] && !lock_DisableForPlayer[playerid] && !IsVehicleDead(vehicleid))
+	if(lock_Status[vehicleid] == E_LOCK_STATE_OPEN && !lock_DisableForPlayer[playerid] && !IsVehicleDead(vehicleid))
 	{
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
 	}
@@ -129,22 +155,22 @@ hook OnPlayerLeaveVehArea(playerid, vehicleid)
 ==============================================================================*/
 
 
-stock IsVehicleLocked(vehicleid)
+stock E_LOCK_STATE:GetVehicleLockState(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
-		return -1;
+		return E_LOCK_STATE_OPEN;
 
 	return lock_Status[vehicleid];
 }
 
-stock SetVehicleExternalLock(vehicleid, status)
+stock SetVehicleExternalLock(vehicleid, E_LOCK_STATE:status)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
 	if(IsVehicleDead(vehicleid))
 	{
-		lock_Status[vehicleid] = false;
+		lock_Status[vehicleid] = E_LOCK_STATE_EXTERNAL;
 		VehicleDoorsState(vehicleid, true);
 		return 1;
 	}
@@ -152,7 +178,12 @@ stock SetVehicleExternalLock(vehicleid, status)
 	lock_LastChange[vehicleid] = GetTickCount();
 
 	lock_Status[vehicleid] = status;
-	VehicleDoorsState(vehicleid, status);
+
+	if(status == E_LOCK_STATE_OPEN)
+		VehicleDoorsState(vehicleid, false);
+
+	else
+		VehicleDoorsState(vehicleid, true);
 
 	return 1;
 }

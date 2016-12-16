@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
 static
 Float:	bld_BleedRate[MAX_PLAYERS];
 
@@ -32,13 +35,13 @@ static
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Bleed'...");
+	console("\n[OnScriptInit] Initialising 'Bleed'...");
 
 	HANDLER = debug_register_handler("bleed");
 }
 
 
-ptask BleedUpdate[1000](playerid)
+hook OnPlayerScriptUpdate(playerid)
 {
 	if(!IsPlayerSpawned(playerid))
 	{

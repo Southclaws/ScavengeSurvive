@@ -127,7 +127,7 @@ FinaliseBan(playerid)
 
 	ChatMsg(playerid, YELLOW, " >  Banned "C_BLUE"%s", ban_CurrentName[playerid]);
 
-	logf("[BAN] %p banned %s reason: %s", playerid, ban_CurrentName[playerid], ban_CurrentReason[playerid]);
+	log("[BAN] %p banned %s reason: %s", playerid, ban_CurrentName[playerid], ban_CurrentReason[playerid]);
 
 	return 1;
 }

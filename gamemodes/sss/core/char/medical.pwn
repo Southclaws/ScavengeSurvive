@@ -129,7 +129,7 @@ PlayerStartHeal(playerid, target)
 		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
 	}
 
-	StartHoldAction(playerid, duration);
+	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, duration, "Medical"));
 }
 
 PlayerStopHeal(playerid)
@@ -306,6 +306,7 @@ hook OnHoldActionFinish(playerid)
 		}
 
 		PlayerStopHeal(playerid);
+		PlayerGainSkillExperience(playerid, "Medical");
 
 		return Y_HOOKS_BREAK_RETURN_1;
 	}

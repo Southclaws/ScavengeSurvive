@@ -45,6 +45,25 @@
 #define FIELD_REPORTS_BY			"by"		// 11
 #define FIELD_REPORTS_ACTIVE		"active"	// 12
 
+// Report types
+#define REPORT_TYPE_PLAYER_ID		"PLY ID"
+#define REPORT_TYPE_PLAYER_NAME		"PLY NAME"
+#define REPORT_TYPE_PLAYER_CLOSE	"PLY CLOSE"
+#define REPORT_TYPE_PLAYER_KILLER	"PLY KILL"
+#define REPORT_TYPE_TELEPORT		"TELE"
+#define REPORT_TYPE_SWIMFLY			"FLY"
+#define REPORT_TYPE_VHEALTH			"VHP"
+#define REPORT_TYPE_CAMDIST			"CAM"
+#define REPORT_TYPE_CARNITRO		"NOS"
+#define REPORT_TYPE_CARHYDRO		"HYDRO"
+#define REPORT_TYPE_CARTELE			"VTP"
+#define REPORT_TYPE_HACKTRAP		"TRAP"
+#define REPORT_TYPE_LOCKEDCAR		"LCAR"
+#define REPORT_TYPE_AMMO			"AMMO"
+#define REPORT_TYPE_SHOTANIM		"ANIM"
+#define REPORT_TYPE_BADHITOFFSET	"BHIT"
+#define REPORT_TYPE_BAD_SHOT_WEAP	"BSHT"
+
 enum
 {
 	FIELD_ID_REPORTS_NAME,
@@ -90,7 +109,7 @@ DBStatement:	stmt_ReportGetUnread;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Report'...");
+	console("\n[OnGameModeInit] Initialising 'Report'...");
 
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
 		"FIELD_REPORTS_NAME" TEXT,\

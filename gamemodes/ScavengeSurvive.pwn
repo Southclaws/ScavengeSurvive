@@ -59,9 +59,9 @@ native gpci(playerid, serial[], len);
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
-#define SIF_USE_DEBUG_LABELS			(true) // SIF/extensions/DebugLabels
-//	#define DEBUG_LABELS_BUTTON				(true) // SIF/Button
-//	#define DEBUG_LABELS_ITEM				(true) // SIF/Item
+#define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
+#define DEBUG_LABELS_BUTTON				// SIF/Button
+#define DEBUG_LABELS_ITEM				// SIF/Item
 #define BTN_MAX							(32768) // SIF/Button
 #define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
@@ -141,9 +141,9 @@ public OnGameModeInit()
 
 #include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF>						// By Southclaw, v1.6.0:	https://github.com/Southclaw/SIF
+#include <SIF>						// By Southclaw, v1.6.1:	https://github.com/Southclaw/SIF
 #include <SIF\extensions\ItemArrayData.pwn>
-#include <SIF\extensions\ItemList.pwn>
+#include <SIF\extensions\ItemSerializer.pwn>
 #include <SIF\extensions\InventoryDialog.pwn>
 #include <SIF\extensions\InventoryKeys.pwn>
 #include <SIF\extensions\ContainerDialog.pwn>
@@ -191,11 +191,6 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Macros
-#define t:%1<%2>					((%1)|=(%2))
-#define f:%1<%2>					((%1)&=~(%2))
-
-#define SetSpawn(%0,%1,%2,%3,%4)	SetSpawnInfo(%0, NO_TEAM, 0, %1, %2, %3, %4, 0,0,0,0,0,0)
-
 #define CMD:%1(%2)					forward cmd_%1(%2);\
 									public cmd_%1(%2)
 
@@ -214,11 +209,9 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Colours
 #define YELLOW						0xFFFF00FF
-
 #define RED							0xE85454FF
 #define GREEN						0x33AA33FF
 #define BLUE						0x33CCFFFF
-
 #define ORANGE						0xFFAA00FF
 #define GREY						0xAFAFAFFF
 #define PINK						0xFFC0CBFF
@@ -228,7 +221,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define TEAL						0x008080FF
 #define BROWN						0xA52A2AFF
 #define AQUA						0xF0F8FFFF
-
 #define BLACK						0x000000FF
 #define WHITE						0xFFFFFFFF
 #define CHAT_LOCAL					0xADABD1FF
@@ -237,11 +229,9 @@ native WP_Hash(buffer[], len, const str[]);
 
 // Embedding Colours
 #define C_YELLOW					"{FFFF00}"
-
 #define C_RED						"{E85454}"
 #define C_GREEN						"{33AA33}"
 #define C_BLUE						"{33CCFF}"
-
 #define C_ORANGE					"{FFAA00}"
 #define C_GREY						"{AFAFAF}"
 #define C_PINK						"{FFC0CB}"
@@ -251,10 +241,8 @@ native WP_Hash(buffer[], len, const str[]);
 #define C_TEAL						"{008080}"
 #define C_BROWN						"{A52A2A}"
 #define C_AQUA						"{F0F8FF}"
-
 #define C_BLACK						"{000000}"
 #define C_WHITE						"{FFFFFF}"
-
 #define C_SPECIAL					"{0025AA}"
 
 
@@ -266,26 +254,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define BODY_PART_LEFT_LEG			(7)
 #define BODY_PART_RIGHT_LEG			(8)
 #define BODY_PART_HEAD				(9)
-
-
-// Report types
-#define REPORT_TYPE_PLAYER_ID		"PLY ID"
-#define REPORT_TYPE_PLAYER_NAME		"PLY NAME"
-#define REPORT_TYPE_PLAYER_CLOSE	"PLY CLOSE"
-#define REPORT_TYPE_PLAYER_KILLER	"PLY KILL"
-#define REPORT_TYPE_TELEPORT		"TELE"
-#define REPORT_TYPE_SWIMFLY			"FLY"
-#define REPORT_TYPE_VHEALTH			"VHP"
-#define REPORT_TYPE_CAMDIST			"CAM"
-#define REPORT_TYPE_CARNITRO		"NOS"
-#define REPORT_TYPE_CARHYDRO		"HYDRO"
-#define REPORT_TYPE_CARTELE			"VTP"
-#define REPORT_TYPE_HACKTRAP		"TRAP"
-#define REPORT_TYPE_LOCKEDCAR		"LCAR"
-#define REPORT_TYPE_AMMO			"AMMO"
-#define REPORT_TYPE_SHOTANIM		"ANIM"
-#define REPORT_TYPE_BADHITOFFSET	"BHIT"
-#define REPORT_TYPE_BAD_SHOT_WEAP	"BSHT"
 
 
 // Genders
@@ -303,6 +271,7 @@ native WP_Hash(buffer[], len, const str[]);
 #define KEYTEXT_LIGHTS				"~k~~CONVERSATION_NO~"
 #define KEYTEXT_DOORS				"~k~~TOGGLE_SUBMISSIONS~"
 #define KEYTEXT_RADIO				"R"
+
 
 // Attachment slots
 enum
@@ -378,6 +347,7 @@ new stock
 #tryinclude "sss/extensions/ext_pre.pwn"
 
 // UTILITIES
+#include "sss/utils/logging.pwn"
 #include "sss/utils/math.pwn"
 #include "sss/utils/misc.pwn"
 #include "sss/utils/time.pwn"
@@ -394,13 +364,13 @@ new stock
 #include "sss/utils/debug.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
+#include "sss/utils/headoffsets.pwn"
 
 // SERVER CORE
 #include "sss/core/server/settings.pwn"
 #include "sss/core/server/text-tags.pwn"
 #include "sss/core/server/weather.pwn"
 #include "sss/core/server/save-block.pwn"
-#include "sss/core/server/activity-log.pwn"
 #include "sss/core/server/info-message.pwn"
 #include "sss/core/server/language.pwn"
 #include "sss/core/player/language.pwn"
@@ -410,6 +380,7 @@ new stock
 	Modules that declare setup functions and constants used throughout.
 */
 #include "sss/core/vehicle/vehicle-type.pwn"
+#include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/core.pwn"
 #include "sss/core/player/core.pwn"
 #include "sss/core/player/save-load.pwn"
@@ -423,6 +394,8 @@ new stock
 #include "sss/core/item/liquid-container.pwn"
 #include "sss/core/world/tree.pwn"
 #include "sss/core/world/explosive.pwn"
+#include "sss/core/world/craft-construct.pwn"
+#include "sss/core/world/loot-loader.pwn"
 
 /*
 	MODULE INITIALISATION CALLS
@@ -434,8 +407,6 @@ new stock
 	CHILD SYSTEMS
 	Modules that do not declare anything globally accessible besides interfaces.
 */
-// GAME DATA LOADING
-#include "sss/data/loot.pwn" // todo: load from file
 
 // VEHICLE
 #include "sss/core/vehicle/player-vehicle.pwn"
@@ -447,7 +418,6 @@ new stock
 #include "sss/core/vehicle/lock-break.pwn"
 #include "sss/core/vehicle/locksmith.pwn"
 #include "sss/core/vehicle/carmour.pwn"
-#include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/anti-ninja.pwn"
 #include "sss/core/vehicle/bike-collision.pwn"
 #include "sss/core/vehicle/trailer.pwn"
@@ -473,6 +443,7 @@ new stock
 #include "sss/core/player/whitelist.pwn"
 #include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
+#include "sss/core/player/recipes.pwn"
 
 // CHARACTER SCRIPTS
 #include "sss/core/char/food.pwn"
@@ -491,6 +462,8 @@ new stock
 #include "sss/core/char/aim-shout.pwn"
 #include "sss/core/char/masks.pwn"
 #include "sss/core/char/bleed.pwn"
+#include "sss/core/char/skills.pwn"
+#include "sss/core/char/travel-stats.pwn"
 
 // WEAPON
 #include "sss/core/weapon/loot.pwn"
@@ -527,13 +500,15 @@ new stock
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
-#include "sss/core/world/craft-construct.pwn"
 #include "sss/core/world/workbench.pwn"
 #include "sss/core/world/machine.pwn"
 #include "sss/core/world/scrap-machine.pwn"
 #include "sss/core/world/refine-machine.pwn"
 #include "sss/core/world/tree-loader.pwn"
-#include "sss/core/world/water-purifier.pwn"
+// #include "sss/core/world/water-purifier.pwn"
+#include "sss/core/world/plot-pole.pwn"
+#include "sss/core/world/item-tweak.pwn"
+#include "sss/core/world/furniture.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
@@ -562,12 +537,9 @@ new stock
 // ITEMS
 #include "sss/core/item/food.pwn"
 #include "sss/core/item/firework.pwn"
-#include "sss/core/item/sign.pwn"
 #include "sss/core/item/shield.pwn"
 #include "sss/core/item/handcuffs.pwn"
 #include "sss/core/item/wheel.pwn"
-#include "sss/core/item/armyhelm.pwn"
-#include "sss/core/item/zorromask.pwn"
 #include "sss/core/item/headlight.pwn"
 #include "sss/core/item/pills.pwn"
 #include "sss/core/item/dice.pwn"
@@ -578,18 +550,8 @@ new stock
 #include "sss/core/item/screwdriver.pwn"
 #include "sss/core/item/torso.pwn"
 #include "sss/core/item/ammotin.pwn"
-#include "sss/core/item/tentpack.pwn"
 #include "sss/core/item/campfire.pwn"
-#include "sss/core/item/cowboyhat.pwn"
-#include "sss/core/item/truckcap.pwn"
-#include "sss/core/item/boaterhat.pwn"
-#include "sss/core/item/bowlerhat.pwn"
-#include "sss/core/item/policecap.pwn"
-#include "sss/core/item/tophat.pwn"
 #include "sss/core/item/herpderp.pwn"
-#include "sss/core/item/gasmask.pwn"
-#include "sss/core/item/hockeymask.pwn"
-#include "sss/core/item/xmashat.pwn"
 #include "sss/core/item/stungun.pwn"
 #include "sss/core/item/note.pwn"
 #include "sss/core/item/seedbag.pwn"
@@ -598,7 +560,23 @@ new stock
 #include "sss/core/item/fishingrod.pwn"
 #include "sss/core/item/chainsaw.pwn"
 #include "sss/core/item/locator.pwn"
+#include "sss/core/item/locker.pwn"
+
+// ITEMS (HATS/MASKS)
+#include "sss/core/item/armyhelm.pwn"
+#include "sss/core/item/cowboyhat.pwn"
+#include "sss/core/item/truckcap.pwn"
+#include "sss/core/item/boaterhat.pwn"
+#include "sss/core/item/bowlerhat.pwn"
+#include "sss/core/item/policecap.pwn"
+#include "sss/core/item/tophat.pwn"
+#include "sss/core/item/xmashat.pwn"
 #include "sss/core/item/witcheshat.pwn"
+#include "sss/core/item/policehelm.pwn"
+
+#include "sss/core/item/zorromask.pwn"
+#include "sss/core/item/gasmask.pwn"
+#include "sss/core/item/hockeymask.pwn"
 
 // POST-CODE
 
@@ -623,13 +601,13 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	print("\n\n/*==============================================================================\n\n");
-	print("    Southclaw's Scavenge and Survive");
-	print("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	print("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	print("        and you are welcome to redistribute it under certain conditions.");
-	print("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	print("\n\n==============================================================================*/\n\n");
+	console("\n\n/*==============================================================================\n\n");
+	console("    Southclaw's Scavenge and Survive");
+	console("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	console("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	console("        and you are welcome to redistribute it under certain conditions.");
+	console("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	console("\n\n==============================================================================*/\n\n");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -640,7 +618,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	print("\n[OnGameModeInit_Setup] Setting up...");
+	console("\n[OnGameModeInit_Setup] Setting up...");
 
 	new buildstring[12];
 
@@ -649,31 +627,37 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		printf("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
+		console("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 		for(;;){}
 	}
 
-	printf("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
+	console("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		print("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		console("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES);
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS))
+	{
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_LOGS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -697,7 +681,7 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	print("\n[OnGameModeExit] Shutting down...");
+	console("\n[OnGameModeExit] Shutting down...");
 
 	if(gCrashOnExit)
 	{
@@ -711,19 +695,19 @@ public OnGameModeExit()
 
 public OnScriptExit()
 {
-	print("\n[OnScriptExit] Shutting down...");
+	console("\n[OnScriptExit] Shutting down...");
 }
 
 forward SetRestart(seconds);
 public SetRestart(seconds)
 {
-	printf("Restarting server in: %ds", seconds);
+	log("Restarting server in: %ds", seconds);
 	gServerUptime = gServerMaxUptime - seconds;
 }
 
 RestartGamemode()
 {
-	log("[RestartGamemode] Initialising gamemode restart...");
+	console("[RestartGamemode] Initialising gamemode restart...");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
@@ -764,7 +748,7 @@ task RestartUpdate[1000]()
 
 			foreach(new i : Player)
 			{
-				if(GetPlayerBitFlag(i, ShowHUD))
+				if(IsPlayerHudOn(i))
 					TextDrawShowForPlayer(i, RestartCount);
 
 				else
@@ -780,7 +764,7 @@ DirectoryCheck(directory[])
 {
 	if(!dir_exists(directory))
 	{
-		printf("ERROR: Directory '%s' not found. Creating directory.", directory);
+		err("Directory '%s' not found. Creating directory.", directory);
 		dir_create(directory);
 	}
 }
@@ -799,8 +783,8 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 
 	if(dbcolumns != expectedcolumns)
 	{
-		printf("ERROR: Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
-		print("Please verify table structure against column list in script.");
+		err("Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
+		err("Please verify table structure against column list in script.");
 
 		// Put the server into a loop to stop it so the user can read the message.
 		// It won't function correctly with bad databases anyway.
@@ -810,6 +794,5 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 
 public Streamer_OnPluginError(error[])
 {
-	print(error);
-	PrintAmxBacktrace();
+	err(error);
 }

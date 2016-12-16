@@ -374,7 +374,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	    new Float:pos[3];
 	    GetPlayerPos(playerid, pos[0], pos[1], pos[2]);
 
-		//printf("X = %0.2f | Y = %0.2f | Z = %0.2f", pos[0], pos[1], pos[2]);
+		// log("X = %0.2f | Y = %0.2f | Z = %0.2f", pos[0], pos[1], pos[2]);
 	    
 	    if(pos[1] < (Y_ELEVATOR_POS + 1.8) && pos[1] > (Y_ELEVATOR_POS - 1.8) && pos[0] < (X_ELEVATOR_POS + 1.8) && pos[0] > (X_ELEVATOR_POS - 1.8))    // He is using the elevator button
 	        ShowElevatorDialog(playerid);
@@ -392,7 +392,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		        }
 		        else i = 1;
 		        
-		        //printf("Floor = %d | State = %d | i = %d", ElevatorFloor, ElevatorState, i);
+		        // log("Floor = %d | State = %d | i = %d", ElevatorFloor, ElevatorState, i);
 		        
 		        // Check if the elevator is not moving and already on the requested floor
 		        if (ElevatorState != ELEVATOR_STATE_MOVING && ElevatorFloor == i)
@@ -402,7 +402,7 @@ public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		            return 1;
 		        }
 				
-			    //printf("Call Elevator to Floor %i", i);
+			    // log("Call Elevator to Floor %i", i);
 			    
 				CallElevator(playerid, i);
 				GameTextForPlayer(playerid, "~r~Elevator called", 3500, 4);

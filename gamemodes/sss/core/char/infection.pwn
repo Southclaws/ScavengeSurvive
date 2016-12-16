@@ -57,10 +57,9 @@ hook OnPlayerDeath(playerid, killerid, reason)
 	infect_LastShake[playerid] = 0;
 }
 
-//ptask PlayerInfectionUpdate[1000](playerid)
-stock PlayerInfectionUpdate(playerid)
+hook OnPlayerScriptUpdate(playerid)
 {
-	if(infect_InfectionIntensity[playerid][INFECT_TYPE_FOOD] == 0 || infect_InfectionIntensity[playerid][INFECT_TYPE_WOUND] == 0)
+	if(infect_InfectionIntensity[playerid][INFECT_TYPE_FOOD] == 0 && infect_InfectionIntensity[playerid][INFECT_TYPE_WOUND] == 0)
 		return;
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Morphine))

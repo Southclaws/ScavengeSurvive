@@ -32,9 +32,7 @@
 #define MAX_BAG_CONTAINER_SIZE		(14)
 
 
-static
-	saveload_Loaded[MAX_PLAYERS],
-	saveload_ItemList[ITM_LST_OF_ITEMS(MAX_BAG_CONTAINER_SIZE)];
+static saveload_Loaded[MAX_PLAYERS];
 
 
 enum
@@ -55,7 +53,7 @@ enum
 	PLY_CELL_WARNS,
 	PLY_CELL_FREQ,
 	PLY_CELL_CHATMODE,
-	PLY_CELL_INFECTED,
+	PLY_CELL_UNUSED,
 	PLY_CELL_TOOLTIPS,
 	PLY_CELL_SPAWN_X,
 	PLY_CELL_SPAWN_Y,
@@ -80,7 +78,7 @@ static HANDLER = -1;
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'SaveLoad'...");
+	console("\n[OnGameModeInit] Initialising 'SaveLoad'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
 
@@ -107,8 +105,7 @@ SavePlayerChar(playerid)
 		animidx = GetPlayerAnimationIndex(playerid),
 		itemid,
 		items[MAX_BAG_CONTAINER_SIZE],
-		itemcount,
-		itemlist;
+		itemcount;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	PLAYER_DAT_FILE(name, filename);
@@ -148,8 +145,7 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_WARNS] = GetPlayerWarnings(playerid);
 	data[PLY_CELL_FREQ] = _:GetPlayerRadioFrequency(playerid);
 	data[PLY_CELL_CHATMODE] = GetPlayerChatMode(playerid);
-	//data[PLY_CELL_INFECTED] = _:GetPlayerBitFlag(playerid, Infected);
-	data[PLY_CELL_TOOLTIPS] = _:GetPlayerBitFlag(playerid, ToolTips);
+	data[PLY_CELL_TOOLTIPS] = IsPlayerToolTipsOn(playerid);
 
 	GetPlayerPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	GetPlayerFacingAngle(playerid, Float:data[PLY_CELL_SPAWN_R]);
@@ -226,14 +222,13 @@ SavePlayerChar(playerid)
 		d:2:HANDLER("[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 	}
 
-	itemlist = CreateItemList(items, itemcount);
-	GetItemList(itemlist, saveload_ItemList);
+	if(!SerialiseItems(items, itemcount))
+	{
+		d:2:HANDLER("[SAVE:%p] Inv items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
-	d:2:HANDLER("[SAVE:%p] Inv items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-	modio_push(filename, _T<I,N,V,0>, GetItemListSize(itemlist), saveload_ItemList);
-
-	DestroyItemList(itemlist);
+		modio_push(filename, _T<I,N,V,0>, GetSerialisedSize(), itm_arr_Serialized);
+		ClearSerializer();
+	}
 
 /*
 	Bag
@@ -257,14 +252,13 @@ SavePlayerChar(playerid)
 			d:2:HANDLER("[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 		}
 
-		itemlist = CreateItemList(items, itemcount);
-		GetItemList(itemlist, saveload_ItemList);
+		if(!SerialiseItems(items, itemcount))
+		{
+			d:2:HANDLER("[SAVE:%p] Bag items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
-		d:2:HANDLER("[SAVE:%p] Bag items: %d (itemlist: %d, size: %d)", playerid, itemcount, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-		modio_push(filename, _T<B,A,G,0>, GetItemListSize(itemlist), saveload_ItemList);
-
-		DestroyItemList(itemlist);
+			modio_push(filename, _T<B,A,G,0>, GetSerialisedSize(), itm_arr_Serialized);
+			ClearSerializer();
+		}
 	}
 
 	CallLocalFunction("OnPlayerSave", "ds", playerid, filename);
@@ -280,7 +274,6 @@ LoadPlayerChar(playerid)
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		ItemType:itemtype,
 		itemid,
-		itemlist,
 		length;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -389,8 +382,7 @@ LoadPlayerChar(playerid)
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
 	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
-	//SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
-	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
+	SetPlayerToolTips(playerid, bool:data[PLY_CELL_TOOLTIPS]);
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
@@ -459,66 +451,68 @@ LoadPlayerChar(playerid)
 	Inventory
 */
 
-	length = modio_read(filename, _T<I,N,V,0>, sizeof(saveload_ItemList), saveload_ItemList);
+	length = modio_read(filename, _T<I,N,V,0>, ITEM_SERIALIZER_RAW_SIZE, itm_arr_Serialized);
 
-	itemlist = ExtractItemList(saveload_ItemList, length);
-
-	d:2:HANDLER("[LOAD:%p] Inv items: %d", playerid, GetItemListItemCount(itemlist));
-
-	for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
+	if(!DeserialiseItems(itm_arr_Serialized, length, false))
 	{
-		itemtype = GetItemListItem(itemlist, i);
+		d:2:HANDLER("[LOAD:%p] Inv items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
-		if(length == 0)
-			break;
+		for(new i, j = GetStoredItemCount(); i < j; i++)
+		{
+			itemtype = GetStoredItemType(i);
 
-		if(itemtype == INVALID_ITEM_TYPE)
-			break;
+			if(length == 0)
+				break;
 
-		if(itemtype == ItemType:0)
-			break;
+			if(itemtype == INVALID_ITEM_TYPE)
+				break;
 
-		itemid = CreateItem(itemtype, .virtual = 1);
+			if(itemtype == ItemType:0)
+				break;
 
-		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-			SetItemArrayDataFromListItem(itemid, itemlist, i);
-	
-		AddItemToInventory(playerid, itemid, 0);
+			itemid = CreateItem(itemtype, .virtual = 1);
 
-		d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
+			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
+				SetItemArrayDataFromStored(itemid, i);
+		
+			AddItemToInventory(playerid, itemid, 0);
+
+			d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
+
+		}
+		ClearSerializer();
 	}
-
-	DestroyItemList(itemlist);
 
 /*
 	Bag
 */
 
-	length = modio_read(filename, _T<B,A,G,0>, sizeof(saveload_ItemList), saveload_ItemList);
-
-	itemlist = ExtractItemList(saveload_ItemList, length);
-
 	if(IsItemTypeBag(ItemType:data[PLY_CELL_BAGTYPE]))
 	{
-		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
+		length = modio_read(filename, _T<B,A,G,0>, ITEM_SERIALIZER_RAW_SIZE, itm_arr_Serialized);
 
-		d:2:HANDLER("[LOAD:%p] Bag items: %d (itemlist size: %d)", playerid, GetItemListItemCount(itemlist), GetItemListSize(itemlist));
-
-		for(new i, j = GetItemListItemCount(itemlist); i < j; i++)
+		if(!DeserialiseItems(itm_arr_Serialized, length, false))
 		{
-			itemtype = GetItemListItem(itemlist, i);
-			itemid = CreateItem(itemtype, .virtual = 1);
+			new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
-			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-				SetItemArrayDataFromListItem(itemid, itemlist, i);
+			d:2:HANDLER("[LOAD:%p] Bag items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
-			AddItemToContainer(containerid, itemid);
+			for(new i, j = GetStoredItemCount(); i < j; i++)
+			{
+				itemtype = GetStoredItemType(i);
+				itemid = CreateItem(itemtype, .virtual = 1);
 
-			d:3:HANDLER("[LOAD:%p] - Bag item %d: (%d type: %d)", playerid, i, itemid, _:itemtype);
+				if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
+					SetItemArrayDataFromStored(itemid, i);
+
+				AddItemToContainer(containerid, itemid);
+
+				d:3:HANDLER("[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, itemid, _:itemtype);
+
+			}
+			ClearSerializer();
 		}
 	}
-
-	DestroyItemList(itemlist);
 
 	CallLocalFunction("OnPlayerLoad", "ds", playerid, filename);
 
@@ -561,7 +555,7 @@ FV10_LoadPlayerChar(playerid)
 
 	if(!file)
 	{
-		printf("ERROR: [LoadPlayerChar] Opening file '%s'.", filename);
+		err("[LoadPlayerChar] Opening file '%s'.", filename);
 		return 0;
 	}
 
@@ -570,7 +564,7 @@ FV10_LoadPlayerChar(playerid)
 
 	if(data[PLY_CELL_FILE_VERSION] != CHARACTER_DATA_FILE_VERSION)
 	{
-		printf("ERROR: [LoadPlayerChar] Opening file '%s'. Incompatible file version %d (Current: %d)", filename, data[PLY_CELL_FILE_VERSION], CHARACTER_DATA_FILE_VERSION);
+		err("[LoadPlayerChar] Opening file '%s'. Incompatible file version %d (Current: %d)", filename, data[PLY_CELL_FILE_VERSION], CHARACTER_DATA_FILE_VERSION);
 		return 0;
 	}
 
@@ -626,8 +620,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerWarnings(playerid, data[PLY_CELL_WARNS]);
 	SetPlayerRadioFrequency(playerid, Float:data[PLY_CELL_FREQ]);
 	SetPlayerChatMode(playerid, data[PLY_CELL_CHATMODE]);
-	//SetPlayerBitFlag(playerid, Infected, data[PLY_CELL_INFECTED]);
-	SetPlayerBitFlag(playerid, ToolTips, data[PLY_CELL_TOOLTIPS]);
+	SetPlayerToolTips(playerid, bool:data[PLY_CELL_TOOLTIPS]);
 
 	if(!IsPointInMapBounds(Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]))
 		data[PLY_CELL_SPAWN_Z] += _:1.0;
@@ -671,7 +664,7 @@ FV10_LoadPlayerInventory(playerid)
 
 	if(!file)
 	{
-		printf("ERROR: [LoadPlayerInventory] Opening file '%s'.", filename);
+		err("[LoadPlayerInventory] Opening file '%s'.", filename);
 		return 0;
 	}
 
@@ -731,14 +724,14 @@ hook OnScriptExit()
 {
 	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
 
-	print("\n[OnScriptExit] Shutting down 'SaveLoad'...");
+	console("\n[OnScriptExit] Shutting down 'SaveLoad'...");
 
 	new
 		name[MAX_PLAYER_NAME],
 		filename[64],
 		session;
 
-	printf("Closing open modio sessions for player data.");
+	log("Closing open modio sessions for player data.");
 
 	foreach(new i : Player)
 	{
@@ -747,7 +740,7 @@ hook OnScriptExit()
 
 		session = modio_getsession_write(filename);
 
-		printf("- Closing file '%s' for playerid: %d (session: %d)", filename, i, session);
+		log("- Closing file '%s' for playerid: %d (session: %d)", filename, i, session);
 
 		if(session != -1)
 			modio_finalise_write(session, true);

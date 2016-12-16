@@ -27,7 +27,7 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Terrain'...");
+	console("\n[OnGameModeInit] Initialising 'Terrain'...");
 
 	LoadTiles();
 	GenerateTerrain(285645);

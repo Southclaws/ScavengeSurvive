@@ -187,7 +187,7 @@ _EatItem(playerid, itemid)
 	{
 		if(food_Data[foodtype][food_canCook] && GetItemArrayDataAtCell(itemid, food_cooked) == 0)
 		{
-			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue] / 4);
+			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue] * 0.7);
 
 			if(food_Data[foodtype][food_canRawInfect])
 				SetPlayerInfectionIntensity(playerid, 0, 1);

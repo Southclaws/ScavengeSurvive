@@ -25,15 +25,15 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_TREE_CATEGORIES      		(5)
-#define MAX_TREE_SPECIES     			(100)
+#define MAX_TREE_CATEGORIES				(5)
+#define MAX_TREE_SPECIES				(100)
 #define MAX_TREES						(20000)
-#define MAX_TREE_CATEGORY_NAME  		(32)
+#define MAX_TREE_CATEGORY_NAME			(32)
 #define INVALID_TREE_SPECIES_ID			(-1)
 #define INVALID_TREE_ID					(-1)
 
 #define TREE_STREAMER_AREA_IDENTIFIER	(600)
-#define HARVEST_DROP_MAX_SPHERE_SIZE        (1.5)
+#define HARVEST_DROP_MAX_SPHERE_SIZE	(1.5)
 
 
 enum E_FALL_TYPE
@@ -76,14 +76,28 @@ static
 			treeSpecies_Total,
 
 			tree_Data[MAX_TREES][E_TREE_DATA],
-Iterator:   tree_Index<MAX_TREES>;
+Iterator:   tree_Index<MAX_TREES>,
+
+			tree_AtTree[MAX_PLAYERS],
+			tree_CuttingTree[MAX_PLAYERS];
 
 
 forward OnPlayerEnterTreeArea(playerid, treeid);
 forward OnPlayerLeaveTreeArea(playerid, treeid);
 
+forward Float:GetTreeHealth(treeid);
 forward Float:GetTreeSpeciesDiameter(speciesid);
 forward Float:GetTreeSpeciesMaxHealth(speciesid);
+forward Float:GetTreeSpeciesChopDamage(speciesid);
+forward ItemType:GetTreeSpeciesHarvestItem(speciesid);
+forward ItemType:GetTreeSpeciesResultItem(speciesid);
+
+
+hook OnPlayerConnect(playerid)
+{
+	tree_AtTree[playerid] = INVALID_TREE_ID;
+	tree_CuttingTree[playerid] = INVALID_TREE_ID;
+}
 
 
 /*==============================================================================
@@ -97,7 +111,7 @@ DefineTreeCategory(name[])
 {
 	if(treeCategory_Total >= MAX_TREE_CATEGORIES)
 	{
-		printf("ERROR: Tree category index limit reached at name: %i", name);
+		err("Tree category index limit reached at name: %i", name);
 		return -1;
 	}
 
@@ -111,7 +125,7 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 {
 	if(treeSpecies_Total >= MAX_TREE_SPECIES - 1)
 	{
-		printf("ERROR: Tree species limit reached at modelid: %i", modelid);
+		err("Tree species limit reached at modelid: %i", modelid);
 		return -1;
 	}
 
@@ -120,7 +134,7 @@ DefineTreeSpecies(modelid, Float:diameter, Float:health, Float:chop_damage, piec
 
 	if(!treeCategory_Data[categoryid][0])
 	{
-		printf("ERROR: DefineTreeSpecies() undefined \"categoryid\" parameter: %i", categoryid);
+		err("DefineTreeSpecies() undefined \"categoryid\" parameter: %i", categoryid);
 		return -1;
 	}
 
@@ -145,31 +159,31 @@ CreateTree(speciesid, Float:x, Float:y, Float:z)
 {
 	if(!(0 <= speciesid < MAX_TREE_SPECIES))
 	{
-		printf("ERROR: Invalid tree species ID: %d", speciesid);
+		err("Invalid tree species ID: %d", speciesid);
 		return -1;
 	}
 
 	if(treeSpecies_Data[speciesid][tree_model] == 0)
 	{
-		printf("ERROR: CreateTree() undefined \"speciesid\" parameter: %i", speciesid);
+		err("CreateTree() undefined \"speciesid\" parameter: %i", speciesid);
 		return -1;
 	}
 
 	new
-		Float:treeDiameter = GetTreeSpeciesDiameter(speciesid) + 1.0,
+		Float:treeDiameter = treeSpecies_Data[speciesid][tree_diameter] + 1.0,
 		id = Iter_Free(tree_Index),
 		data[2];
 
 	if(id == ITER_NONE)
 	{
-		printf("ERROR: CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
+		err("CreateTree() limit reached at [%i, %f, %f, %f]", speciesid, x, y, z);
 		return -1;
 	}
 
 	tree_Data[id][tree_species]		= speciesid;
 	tree_Data[id][tree_objectid]	= CreateDynamicObject(treeSpecies_Data[speciesid][tree_model], x, y, z + treeSpecies_Data[speciesid][tree_zoffset], 0.0, 0.0, frandom(360.0), 0, 0);
 	tree_Data[id][tree_areaid]		= CreateDynamicSphere(x, y, z, treeDiameter, 0, 0);
-	tree_Data[id][tree_health]		= GetTreeSpeciesMaxHealth(speciesid);
+	tree_Data[id][tree_health]		= treeSpecies_Data[speciesid][tree_max_health];
 	tree_Data[id][tree_labelid]		= CreateDynamic3DTextLabel("0.0", YELLOW, x, y, z + 1.0, treeDiameter);
 
 	data[0] = TREE_STREAMER_AREA_IDENTIFIER;
@@ -263,6 +277,8 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		Float:woodAngle,
 		Float:woodDistance;
 
+	MapAndreas_FindZ_For2DCoord(x, y, z);
+
 	for(new i; i < treeSpecies_Data[tree_Data[treeid][tree_species]][tree_pieces]; i++)
 	{
 		woodAngle = frandom(360.0);
@@ -271,7 +287,6 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		x += woodDistance * floatsin(-woodAngle, degrees);
 		y += woodDistance * floatcos(-woodAngle, degrees);
 
-		MapAndreas_FindZ_For2DCoord(x, y, z);
 		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.088, .rz = frandom(360.0));
 	}
 
@@ -280,46 +295,148 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	if(!IsValidDynamicArea(areaid))
-	{
-		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Invalid area ID (%d)", areaid);
-		return Y_HOOKS_CONTINUE_RETURN_0;
-	}
-
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
-	if(data[0] != TREE_STREAMER_AREA_IDENTIFIER)
+	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Area not tree area type %i, %i", data[0], data[1]);
+		d:3:GLOBAL_DEBUG("[_tree_EnterArea] Area tree area type for tree %i", data[1]);
+
+		new
+			toolname[ITM_MAX_NAME],
+			yieldname[ITM_MAX_NAME];
+
+		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_harvest_item], toolname);
+		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
+
+		ShowActionText(playerid, sprintf(ls(playerid, "TREECUTINFO"), toolname, yieldname), 6000);
+		tree_AtTree[playerid] = data[1];
+		CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
-
-	CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 hook OnPlayerLeaveDynArea(playerid, areaid)
 {
-	if(!IsValidDynamicArea(areaid))
-	{
-		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Invalid area ID (%d)", areaid);
-		return Y_HOOKS_CONTINUE_RETURN_0;
-	}
-
 	new data[2];
 
 	Streamer_GetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
-	if(data[0] != TREE_STREAMER_AREA_IDENTIFIER)
+	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Area not tree area type");
+		d:3:GLOBAL_DEBUG("[_tree_LeaveArea] Area tree area type");
+		CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
+		tree_AtTree[playerid] = INVALID_TREE_ID;
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerUseItem(playerid, itemid)
+{
+	if(tree_AtTree[playerid] != INVALID_TREE_ID)
+	{
+		if(GetItemType(itemid) == treeSpecies_Data[tree_Data[tree_AtTree[playerid]][tree_species]][tree_harvest_item])
+		{
+			_StartWoodCutting(playerid, tree_AtTree[playerid]);
+		}
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+{
+	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/chainsaw.pwn");
+
+	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(oldkeys == 16)
+		_StopWoodCutting(playerid);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_StartWoodCutting(playerid, treeid)
+{
+	new
+		mult = 1000,
+		start = floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_max_health]) / floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_chop_damage]),
+		end = floatround(tree_Data[treeid][tree_health]) / floatround(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_chop_damage]);
+
+	mult = GetPlayerSkillTimeModifier(playerid, mult, "Forestry");
+
+	StartHoldAction(playerid, floatround(1.1 * (mult * start)), mult * (start - end));
+
+	SetPlayerToFaceTree(playerid, treeid);
+	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
+	tree_CuttingTree[playerid] = treeid;
+}
+
+_StopWoodCutting(playerid)
+{
+	ClearAnimations(playerid);
+	StopHoldAction(playerid);
+	tree_CuttingTree[playerid] = INVALID_TREE_ID;
+}
+
+hook OnHoldActionUpdate(playerid, progress)
+{
+	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/item/chainsaw.pwn");
+
+	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+		
+	if(!IsValidTree(tree_CuttingTree[playerid]))
+	{
+		_StopWoodCutting(playerid);
+		return 1;
+	}
+
+	new
+		itemid,
+		ItemType:itemtype;
+
+	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+
+	if(itemtype != GetTreeSpeciesHarvestItem(GetTreeSpecies(tree_CuttingTree[playerid])))
+	{
+		_StopWoodCutting(playerid);
+		return 1;
+	}
+
+	if(GetItemTypeWeaponFlags(itemtype) & WEAPON_FLAG_LIQUID_AMMO)
+	{
+		new ammo = GetItemWeaponItemMagAmmo(itemid);
+
+		if(ammo <= 0)
+		{
+			_StopWoodCutting(playerid);
+			return 1;
+		}
+
+		if(floatround(GetPlayerProgressBarValue(playerid, ActionBar) * 10) % 60 == 0)
+			_FireWeapon(playerid, WEAPON_CHAINSAW);
+	}
+
+	new mult = 1000;
+
+	mult = GetPlayerSkillTimeModifier(playerid, mult, "Forestry");
+
+	SetTreeHealth(tree_CuttingTree[playerid], GetTreeHealth(tree_CuttingTree[playerid]) - ((treeSpecies_Data[GetTreeSpecies(tree_CuttingTree[playerid])][tree_chop_damage] / 10000) * mult) );
+
+	if(tree_Data[tree_CuttingTree[playerid]][tree_health] <= 0.0)
+	{
+		LeanTree(tree_CuttingTree[playerid]);
+		PlayerGainSkillExperience(playerid, "Forestry");
+		_StopWoodCutting(playerid);
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -455,8 +572,19 @@ stock SetTreeHealth(treeid, Float:health)
 	if(!Iter_Contains(tree_Index, treeid))
 		return 0;
 
+	new
+		toolname[ITM_MAX_NAME],
+		yieldname[ITM_MAX_NAME];
+
+	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_harvest_item], toolname);
+	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], yieldname);
+
 	tree_Data[treeid][tree_health] = health;
-	UpdateDynamic3DTextLabelText(tree_Data[treeid][tree_labelid], YELLOW, sprintf("%.2f", tree_Data[treeid][tree_health]));
+
+	if(tree_Data[treeid][tree_health] < 0.0)
+		tree_Data[treeid][tree_health] = 0.0;
+
+	UpdateDynamic3DTextLabelText(tree_Data[treeid][tree_labelid], YELLOW, sprintf("Health: %.2f/%.2f\n"C_TEAL"Tool Required: %s\n"C_GREEN"Yields Resource: %s", tree_Data[treeid][tree_health], treeSpecies_Data[tree_Data[treeid][tree_species]][tree_max_health], toolname, yieldname));
 
 	return 1;
 }

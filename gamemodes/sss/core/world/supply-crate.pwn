@@ -37,7 +37,7 @@
 enum E_SUPPLY_DROP_TYPE_DATA
 {
 			supt_name[MAX_SUPPLY_DROP_TYPE_NAME],
-			supt_loot,
+			supt_loot[32],
 			supt_interval,
 			supt_random,
 			supt_required,
@@ -79,7 +79,7 @@ static
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
+	console("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
 
 	sup_UpdateTimer = repeat SupplyDropTimer();
 
@@ -89,16 +89,16 @@ hook OnGameModeInit()
 }
 
 
-DefineSupplyDropType(name[], lootindex, interval, rand, required)
+DefineSupplyDropType(name[], lootindex[], interval, rand, required)
 {
 	if(sup_TypeTotal == MAX_SUPPLY_DROP_TYPE)
 	{
-		print("ERROR: Supply drop type limit reached.");
+		err("Supply drop type limit reached.");
 		return -1;
 	}
 
 	strcat(sup_TypeData[sup_TypeTotal][supt_name], name, MAX_SUPPLY_DROP_TYPE_NAME);
-	sup_TypeData[sup_TypeTotal][supt_loot] = lootindex;
+	strcat(sup_TypeData[sup_TypeTotal][supt_loot], lootindex, 32);
 	sup_TypeData[sup_TypeTotal][supt_interval] = interval * 1000;
 	sup_TypeData[sup_TypeTotal][supt_random] = rand * 1000;
 	sup_TypeData[sup_TypeTotal][supt_required] = required;
@@ -115,7 +115,7 @@ DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float
 
 	if(id == ITER_NONE)
 	{
-		printf("ERROR: Supply drop pos definition limit reached.");
+		err("Supply drop pos definition limit reached.");
 		return -1;
 	}
 
@@ -145,7 +145,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// there are no more locations so stop the timer.
 	if(Iter_Count(sup_Index) == 0)
 	{
-		printf("[SupplyDropTimer] ERROR: Supply drops run out, stopping supply drop timer.");
+		err("Supply drops run out, stopping supply drop timer.");
 		stop sup_UpdateTimer;
 		return;
 	}
@@ -229,7 +229,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// This would be a red flag for memory corruption!
 	if(!ret)
 	{
-		printf("[SupplyDropTimer] ERROR: Supply crate already active (type: %d)", sup_CurrentType);
+		err("Supply crate already active (type: %d)", sup_CurrentType);
 		return;
 	}
 
@@ -295,7 +295,7 @@ SupplyCrateLand()
 
 	if(sup_CurrentType == -1)
 	{
-		print("ERROR: sup_CurrentType == -1");
+		err("sup_CurrentType == -1");
 		return;
 	}
 
@@ -304,7 +304,8 @@ SupplyCrateLand()
 		Float:a,
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		lootindex;
 
 	foreach(new i : Player)
 	{
@@ -319,7 +320,8 @@ SupplyCrateLand()
 
 	containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate"));
 
-	FillContainerWithLoot(containerid, 4 + random(16), sup_TypeData[sup_CurrentType][supt_loot]);
+	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
+	FillContainerWithLoot(containerid, 4 + random(16), lootindex);
 	d:2:HANDLER("[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), containerid);
 
 	DestroyDynamicObject(sup_ObjPara);

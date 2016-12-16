@@ -26,7 +26,7 @@
 
 
 new
-	cbr_TargetVehicle[MAX_PLAYERS],
+	cbr_TargetVehicle[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...},
 	cbr_OpenType[MAX_PLAYERS];
 
 

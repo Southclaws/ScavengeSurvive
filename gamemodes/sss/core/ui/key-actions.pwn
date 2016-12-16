@@ -102,6 +102,21 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	_UpdateKeyActions(playerid);
 }
 
+hook OnPlayerAddToInventory(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnItemRemovedFromInv(playerid, itemid, slot)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnItemRemovedFromPlayer(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
 // Pickup/drop item
 hook OnPlayerPickedUpItem(playerid, itemid)
 {
@@ -109,6 +124,21 @@ hook OnPlayerPickedUpItem(playerid, itemid)
 }
 
 hook OnPlayerDroppedItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGetItem(playerid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGiveItem(playerid, targetid, itemid)
+{
+	_UpdateKeyActions(playerid);
+}
+
+hook OnPlayerGivenItem(playerid, targetid, itemid)
 {
 	_UpdateKeyActions(playerid);
 }
@@ -138,6 +168,8 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 // State change
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
+	_UpdateKeyActions(playerid);
+
 	if(!IsPlayerToolTipsOn(playerid))
 		return 1;
 
@@ -400,22 +432,22 @@ _ShowRepairTip(playerid, vehicleid)
 
 	if(health <= VEHICLE_HEALTH_CHUNK_2)
 	{
-		ShowHelpTip(playerid, "This vehicle is very broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHVER"), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_CHUNK_3)
 	{
-		ShowHelpTip(playerid, "This vehicle is broken! To fix, equip a screwdriver and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBRO"), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_CHUNK_4)
 	{
-		ShowHelpTip(playerid, "This vehicle is a bit broken! To fix, equip a hammer and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBIT"), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_MAX)
 	{
-		ShowHelpTip(playerid, "This vehicle is slightly broken! To fix, equip a wrench and hold "KEYTEXT_INTERACT" while at the front of the vehicle.", 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHSLI"), 20000);
 		return;
 	}
 

@@ -82,7 +82,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 	// If a command returns 7, don't log it.
 
 	if(0 < result < 7)
-		logf("[COMMAND] [%p]: %s", playerid, cmdtext);
+		log("[COMMAND] [%p]: %s", playerid, cmdtext);
 
 	if		(result == 0) ChatMsgLang(playerid, ORANGE, "CMDERROR0");
 	else if	(result == 1) return 1; // valid command, do nothing.
@@ -101,7 +101,7 @@ public OnRconLoginAttempt(ip[], password[], success)
 	{
 		new ipstring[16];
 
-		printf("[RCON] Failed login by %s password: %s", ip, password);
+		log("[RCON] Failed login by %s password: %s", ip, password);
 
 		foreach(new i : Player)
 		{

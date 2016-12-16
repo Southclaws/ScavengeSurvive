@@ -128,7 +128,7 @@ stock PickFromList(max, count, output[])
 		picked[256];
 
 	if(max > 256)
-		print("ERROR: PickFromList function variable 'picked' is too small to match parameter 'max'.");
+		err("PickFromList function variable 'picked' is too small to match parameter 'max'.");
 
 	while(idx < count)
 	{

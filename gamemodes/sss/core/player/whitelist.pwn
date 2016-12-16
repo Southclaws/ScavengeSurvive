@@ -45,7 +45,7 @@ DBStatement:	stmt_WhitelistDelete;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Whitelist'...");
+	console("\n[OnScriptInit] Initialising 'Whitelist'...");
 
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
 		"FIELD_WHITELIST_NAME" TEXT)"));
@@ -84,11 +84,7 @@ hook OnPlayerDisconnect(playerid)
 
 	// Again, a timer in case the GetAdminsOnline func returns 1 even though
 	// that 1 admin is quitting (Admin/Core.pwn hook maybe called after this)
-	new name[MAX_PLAYER_NAME];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	defer _WhitelistDisconnect(name);
+	defer _WhitelistDisconnect(playerid);
 
 	return 1;
 }
@@ -123,7 +119,7 @@ stock AddNameToWhitelist(name[], doplayeridcheck = true)
 
 	if(!stmt_execute(stmt_WhitelistInsert))
 	{
-		print("ERROR: Executing statement 'stmt_WhitelistInsert'.");
+		err("Executing statement 'stmt_WhitelistInsert'.");
 		return -1;
 	}
 
@@ -174,7 +170,7 @@ stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 
 	if(!stmt_execute(stmt_WhitelistDelete))
 	{
-		print("ERROR: Executing statement 'stmt_WhitelistDelete'.");
+		err("Executing statement 'stmt_WhitelistDelete'.");
 		return -1;
 	}
 
@@ -226,7 +222,7 @@ stock IsNameInWhitelist(name[])
 
 	if(!stmt_execute(stmt_WhitelistExists))
 	{
-		print("ERROR: Executing statement 'stmt_WhitelistExists'.");
+		err("Executing statement 'stmt_WhitelistExists'.");
 		return -1;
 	}
 
@@ -351,7 +347,7 @@ timer _WhitelistConnect[100](playerid)
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		printf("[_WhitelistConnect] ERROR: Player %d not connected any more.", playerid);
+		err("[_WhitelistConnect] ERROR: Player %d not connected any more.", playerid);
 		return;
 	}
 
@@ -376,21 +372,21 @@ hook OnPlayerLogin(playerid)
 		{
 			ChatMsg(playerid, YELLOW, " >  Auto-whitelist: Deactivated the whitelist.");
 			ToggleWhitelist(false);
-			logf("[AUTOWHITELIST] Whitelist turned off by %p joining", playerid);
+			log("[AUTOWHITELIST] Whitelist turned off by %p joining", playerid);
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-timer _WhitelistDisconnect[100](string:name[])
+timer _WhitelistDisconnect[100](playerid)
 {
 	if(wl_Auto && !wl_Active)
 	{
 		if(GetAdminsOnline(2) == 0) // turn on if whitelist is off and no admins remain online
 		{
 			ToggleWhitelist(true);
-			logf("[AUTOWHITELIST] Whitelist turned on by %s quitting.", name);
+			log("[AUTOWHITELIST] Whitelist turned on by %d quitting.", playerid);
 		}
 	}
 }

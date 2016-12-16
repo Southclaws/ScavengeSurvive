@@ -22,72 +22,91 @@
 ==============================================================================*/
 
 
+#if defined USE_DEFAULT_LOGGING
+	#endinput
+#endif
+
+
 #include <YSI\y_hooks>
 #include <YSI\y_va>
 
 
 #define DIRECTORY_LOGS				"logs/"
-#define USE_LOGS					false
+
+static
+File:	log_File,
+		log_buffer[256];
 
 
-static log_buffer[256];
-
-
-hook OnGameModeInit()
+_log_open()
 {
-#if USE_LOGS == true
-	print("\n[OnGameModeInit] Initialising 'ActivityLog'...");
+	if(!!log_File)
+		return;
 
-	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
-#endif
-}
-
-stock log(text[], printtext = true)
-{
-	if(printtext)
-		print(text);
-
-#if USE_LOGS == true
 	new
 		year,
 		month,
 		day,
-		hour,
-		minute,
-		second,
-		string[256],
-		File:file,
 		filename[64];
 
 	getdate(year, month, day);
-	gettime(hour, minute, second);
-
 	format(filename, 64, DIRECTORY_LOGS"%d-%02d-%02d.txt", year, month, day);
 
 	if(fexist(filename))
-		file = fopen(filename, io_append);
+		log_File = fopen(filename, io_append);
 
 	else
-		file = fopen(filename, io_write);
+		log_File = fopen(filename, io_write);
 
-	if(!file)
-	{
-		printf("ERROR: Writing to log file '%s'.", filename);
-		return 0;
-	}
+	return;
+}
+
+hook OnScriptExit()
+{
+	fclose(log_File);
+}
+
+stock _log(text[], printtext = true)
+{
+	if(printtext)
+		print(text);
+
+	if(!log_File)
+		_log_open();
+
+	new
+		hour,
+		minute,
+		second,
+		string[256];
+
+	gettime(hour, minute, second);
 
 	format(string, 256, "[%02d:%02d:%02d] %s\r\n", hour, minute, second, text);
 
-// Todo: replace this with an SQL buffer and time triggered/buffer triggered transaction
-	fwrite(file, string);
-	fclose(file);
-#endif
+	fwrite(log_File, string);
+
 	return 1;
 }
 
-stock logf(text[], va_args<>)
+stock console(text[], va_args<>)
 {
 	va_formatex(log_buffer, sizeof(log_buffer), text, va_start<1>);
-
-	return log(log_buffer);
+	print(log_buffer);
 }
+
+stock log(text[], va_args<>)
+{
+	va_formatex(log_buffer, sizeof(log_buffer), text, va_start<1>);
+	_log(log_buffer);
+}
+
+stock err(text[], va_args<>)
+{
+	va_formatex(log_buffer, sizeof(log_buffer), text, va_start<1>);
+	_log(log_buffer);
+	PrintAmxBacktrace();
+}
+
+#define print						__use_log
+#define printfex					__use_log

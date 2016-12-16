@@ -121,19 +121,19 @@ ACMD:unloadfs[5](playerid, params[])
 
 ACMD:hud[5](playerid, params[])
 {
-	if(GetPlayerBitFlag(playerid, ShowHUD))
+	if(IsPlayerHudOn(playerid))
 	{
 		TogglePlayerHungerBar(playerid, false);
 		ToggleVersionInfo(playerid, false);
 		HideWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, false);
+		TogglePlayerHUD(playerid, false);
 	}
 	else
 	{
 		TogglePlayerHungerBar(playerid, true);
 		ToggleVersionInfo(playerid, true);
 		ShowWatch(playerid);
-		SetPlayerBitFlag(playerid, ShowHUD, true);
+		TogglePlayerHUD(playerid, true);
 	}
 }
 
@@ -154,27 +154,6 @@ ACMD:gotoitem[4](playerid, params[])
 		Float:z;
 
 	GetItemPos(itemid, x, y, z);
-	SetPlayerPos(playerid, x, y, z);
-
-	return 1;
-}
-
-ACMD:gotodef[4](playerid, params[])
-{
-	new id = strval(params);
-
-	if(!IsValidDefence(id))
-	{
-		ChatMsg(playerid, YELLOW, " >  Invalid ID");
-		return 1;
-	}
-
-	new
-		Float:x,
-		Float:y,
-		Float:z;
-
-	GetDefencePos(id, x, y, z);
 	SetPlayerPos(playerid, x, y, z);
 
 	return 1;
@@ -210,6 +189,23 @@ ACMD:addloot[5](playerid, params[])
 
 	CreateLootItem(lootindex, x, y, z, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
 	//CreateStaticLootSpawn(x, y, z - 0.8568, lootindex, 100, size, GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid));
+
+	return 1;
+}
+
+ACMD:setitemhp[5](playerid, params[])
+{
+	new
+		itemid,
+		hitpoints;
+
+	if(sscanf(params, "dd", itemid, hitpoints))
+	{
+		ChatMsg(playerid, YELLOW, " >  Usage: /setitemhp [itemid] [hitpoints]");
+		return 1;
+	}
+
+	SetItemHitPoints(itemid, hitpoints);
 
 	return 1;
 }
@@ -349,6 +345,19 @@ ACMD:clone[5](playerid, params[])
 		DestroyActor(cloneid[playerid]);
 		cloneid[playerid] = INVALID_ACTOR_ID;
 	}
+
+	return 1;
+}
+
+ACMD:setskill[5](playerid, params[])
+{
+	new
+		skill[32],
+		Float:amount;
+
+	sscanf(params, "s[32]f", skill, amount);
+
+	PlayerGainSkillExperience(playerid, skill, amount);
 
 	return 1;
 }

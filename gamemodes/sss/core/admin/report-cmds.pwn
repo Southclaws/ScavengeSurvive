@@ -512,6 +512,14 @@ ShowReportOptions(playerid)
 
 ShowReportBanPrompt(playerid)
 {
+	if(GetPlayerAdminLevel(playerid) < 2)
+	{
+		ChatMsg(playerid, RED, "You do not have permission to ban players.");
+		ShowReportOptions(playerid);
+
+		return 0;
+	}
+
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
 		#pragma unused pid, dialogid, listitem, inputtext

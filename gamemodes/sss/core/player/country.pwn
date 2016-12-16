@@ -106,7 +106,7 @@ _cntr_UseWeb(playerid)
 
 	if(cell == ITER_NONE)
 	{
-		printf("ERROR: [_cntr_UseWeb] cell == ITER_NONE");
+		err("[_cntr_UseWeb] cell == ITER_NONE");
 		return 0;
 	}
 
@@ -122,7 +122,7 @@ public OnLookupResponse(sessionid, response, data[])
 {
 	if(!(0 <= sessionid < MAX_PLAYERS))
 	{
-		printf("ERROR: OnLookupResponse sessionid out of bounds (%d)", sessionid);
+		err("OnLookupResponse sessionid out of bounds (%d)", sessionid);
 		return;
 	}
 
@@ -156,7 +156,7 @@ public OnLookupResponse(sessionid, response, data[])
 
 	PlayerCountryData[playerid][cntr_Proxy] = strval(proxy);
 
-	printf("[COUNTRY] Player country: '%s' (host: '%s' proxy: %d)",
+	log("[COUNTRY] Player country: '%s' (host: '%s' proxy: %d)",
 		PlayerCountryData[playerid][cntr_Country],
 		PlayerCountryData[playerid][cntr_Hostname],
 		PlayerCountryData[playerid][cntr_Proxy]);

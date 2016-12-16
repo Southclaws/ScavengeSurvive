@@ -30,22 +30,6 @@
 #define DEFAULT_POS_Z				(1.0)
 
 
-enum E_FLAGS:(<<= 1) // 17
-{
-			Alive = 1,
-			Dying,
-			Spawned,
-			FirstSpawn, // TODO: fix this value
-
-			ToolTips,
-			ShowHUD,
-			GlobalQuiet,
-
-			Frozen,
-
-			DebugMode
-}
-
 enum E_PLAYER_DATA
 {
 			// Database Account Data
@@ -57,43 +41,35 @@ enum E_PLAYER_DATA
 			ply_Warnings,
 
 			// Character Data
+bool:		ply_Alive,
 Float:		ply_HitPoints,
 Float:		ply_ArmourPoints,
 Float:		ply_FoodPoints,
 			ply_Clothes,
 			ply_Gender,
-			ply_Karma,
 Float:		ply_Velocity,
-Float:		ply_SpawnPosX,
-Float:		ply_SpawnPosY,
-Float:		ply_SpawnPosZ,
-Float:		ply_SpawnRotZ,
-Float:		ply_RadioFrequency,
 			ply_CreationTimestamp,
-			ply_AimShoutText[128],
 
 			// Internal Data
-E_FLAGS:	ply_BitFlags,
-			ply_ChatMode,
-			ply_CurrentVehicle,
+			ply_ShowHUD,
 			ply_PingLimitStrikes,
 			ply_stance,
 			ply_JoinTick,
-			ply_SpawnTick,
-			ply_ExitVehicleTick
+			ply_SpawnTick
 }
 
 static
 			ply_Data[MAX_PLAYERS][E_PLAYER_DATA];
 
 
+forward OnPlayerScriptUpdate(playerid);
 forward OnPlayerDisconnected(playerid);
 forward OnDeath(playerid, killerid, reason);
 
 
 public OnPlayerConnect(playerid)
 {
-	logf("[JOIN] %p joined", playerid);
+	log("[JOIN] %p joined", playerid);
 
 	SetPlayerColor(playerid, 0xB8B8B800);
 
@@ -122,7 +98,7 @@ public OnPlayerConnect(playerid)
 
 	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
-	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
 	SpawnPlayer(playerid);
 
 	/*
@@ -138,7 +114,7 @@ public OnPlayerConnect(playerid)
 	ChatMsgAll(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
 	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 
-	t:ply_Data[playerid][ply_BitFlags]<ShowHUD>;
+	ply_Data[playerid][ply_ShowHUD] = true;
 
 	return 1;
 }
@@ -173,7 +149,7 @@ timer LoadAccountDelay[5000](playerid)
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		print("[LoadAccountDelay] WARNING: Player not connected any more.");
+		err("Player not connected any more.");
 		return;
 	}
 
@@ -230,33 +206,22 @@ hook OnPlayerDisconnected(playerid)
 
 ResetVariables(playerid)
 {
-	ply_Data[playerid][ply_BitFlags]			= E_FLAGS:0;
-
 	ply_Data[playerid][ply_Password][0]			= EOS;
 	ply_Data[playerid][ply_IP]					= 0;
 	ply_Data[playerid][ply_Warnings]			= 0;
-	ply_Data[playerid][ply_Karma]				= 0;
 
+	ply_Data[playerid][ply_Alive]				= false;
 	ply_Data[playerid][ply_HitPoints]			= 100.0;
 	ply_Data[playerid][ply_ArmourPoints]		= 0.0;
 	ply_Data[playerid][ply_FoodPoints]			= 80.0;
 	ply_Data[playerid][ply_Clothes]				= 0;
 	ply_Data[playerid][ply_Gender]				= 0;
 	ply_Data[playerid][ply_Velocity]			= 0.0;
-	ply_Data[playerid][ply_SpawnPosX]			= 0.0;
-	ply_Data[playerid][ply_SpawnPosY]			= 0.0;
-	ply_Data[playerid][ply_SpawnPosZ]			= 0.0;
-	ply_Data[playerid][ply_SpawnRotZ]			= 0.0;
-	ply_Data[playerid][ply_RadioFrequency]		= 108.0;
-	ply_Data[playerid][ply_AimShoutText][0]		= EOS;
 
-	ply_Data[playerid][ply_ChatMode]			= 1;
-	ply_Data[playerid][ply_CurrentVehicle]		= 0;
 	ply_Data[playerid][ply_PingLimitStrikes]	= 0;
 	ply_Data[playerid][ply_stance]				= 0;
 	ply_Data[playerid][ply_JoinTick]			= 0;
 	ply_Data[playerid][ply_SpawnTick]			= 0;
-	ply_Data[playerid][ply_ExitVehicleTick]		= 0;
 
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_PISTOL,			100);
 	SetPlayerSkillLevel(playerid, WEAPONSKILL_SAWNOFF_SHOTGUN,	100);
@@ -266,7 +231,7 @@ ResetVariables(playerid)
 		RemovePlayerAttachedObject(playerid, i);
 }
 
-ptask PlayerUpdate[100](playerid)
+ptask PlayerUpdateFast[100](playerid)
 {
 	new pinglimit = (Iter_Count(Player) > 10) ? (gPingLimit) : (gPingLimit + 100);
 
@@ -328,13 +293,16 @@ ptask PlayerUpdate[100](playerid)
 	return;
 }
 
+ptask PlayerUpdateSlow[1000](playerid)
+{
+	CallLocalFunction("OnPlayerScriptUpdate", "d", playerid);
+}
+
 public OnPlayerRequestClass(playerid, classid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	t:ply_Data[playerid][ply_BitFlags]<FirstSpawn>;
-
-	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
 
 	return 0;
 }
@@ -343,9 +311,7 @@ public OnPlayerRequestSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	t:ply_Data[playerid][ply_BitFlags]<FirstSpawn>;
-
-	SetSpawn(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
 
 	return 1;
 }
@@ -354,7 +320,7 @@ public OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
 	if(clickedid == Text:65535)
 	{
-		if(ply_Data[playerid][ply_BitFlags] & Dying)
+		if(IsPlayerDead(playerid))
 		{
 			SelectTextDraw(playerid, 0xFFFFFF88);
 		}
@@ -394,9 +360,6 @@ public OnPlayerSpawn(playerid)
 
 public OnPlayerUpdate(playerid)
 {
-	if(ply_Data[playerid][ply_BitFlags] & Frozen)
-		return 0;
-
 	if(IsPlayerInAnyVehicle(playerid))
 	{
 		static
@@ -405,7 +368,7 @@ public OnPlayerUpdate(playerid)
 			Float:vy,
 			Float:vz;
 
-		GetVehicleVelocity(ply_Data[playerid][ply_CurrentVehicle], vx, vy, vz);
+		GetVehicleVelocity(GetPlayerLastVehicle(playerid), vx, vy, vz);
 		ply_Data[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 		format(str, 32, "%.0fkm/h", ply_Data[playerid][ply_Velocity]);
 		SetPlayerVehicleSpeedUI(playerid, str);
@@ -421,7 +384,7 @@ public OnPlayerUpdate(playerid)
 		ply_Data[playerid][ply_Velocity] = floatsqroot( (vx*vx)+(vy*vy)+(vz*vz) ) * 150.0;
 	}
 
-	if(ply_Data[playerid][ply_BitFlags] & Alive)
+	if(ply_Data[playerid][ply_Alive])
 	{
 		if(IsPlayerOnAdminDuty(playerid))
 			ply_Data[playerid][ply_HitPoints] = 250.0;
@@ -443,7 +406,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{
-		ply_Data[playerid][ply_CurrentVehicle] = GetPlayerVehicleID(playerid);
 		ShowPlayerDialog(playerid, -1, DIALOG_STYLE_MSGBOX, " ", " ", " ", " ");
 		HidePlayerGear(playerid);
 	}
@@ -483,13 +445,6 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	return 1;
 }
 
-hook OnPlayerExitVehicle(playerid, vehicleid)
-{
-	d:3:GLOBAL_DEBUG("[OnPlayerExitVehicle] in /gamemodes/sss/core/player/core.pwn");
-
-	ply_Data[playerid][ply_ExitVehicleTick] = GetTickCount();
-}
-
 public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(IsPlayerKnockedOut(playerid))
@@ -522,92 +477,6 @@ KillPlayer(playerid, killerid, deathreason)
 	CallLocalFunction("OnDeath", "ddd", playerid, killerid, deathreason);
 }
 
-forward E_FLAGS:GetPlayerDataBitmask(playerid);
-stock E_FLAGS:GetPlayerDataBitmask(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return E_FLAGS:0;
-
-	return ply_Data[playerid][ply_BitFlags];
-}
-
-stock GetPlayerBitFlag(playerid, E_FLAGS:flag)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & flag);
-}
-stock SetPlayerBitFlag(playerid, E_FLAGS:flag, toggle)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	if(toggle)
-		t:ply_Data[playerid][ply_BitFlags]<flag>;
-
-	else
-		f:ply_Data[playerid][ply_BitFlags]<flag>;
-
-	return 1;
-}
-
-// Alive
-stock IsPlayerAlive(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & Alive);
-}
-
-// Dying
-stock IsPlayerDead(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & Dying);
-}
-
-// Spawned
-stock IsPlayerSpawned(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & Spawned);
-}
-
-// FirstSpawn
-
-// ToolTips
-stock IsPlayerToolTipsOn(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & ToolTips);
-}
-
-// ShowHUD
-stock IsPlayerHudOn(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return _:(ply_Data[playerid][ply_BitFlags] & ShowHUD);
-}
-
-// GlobalQuiet
-
-// Frozen
-
-// DebugMode
-
-
-
-
 // ply_Password
 stock GetPlayerPassHash(playerid, string[MAX_PASSWORD_LEN])
 {
@@ -637,15 +506,6 @@ stock GetPlayerIpAsInt(playerid)
 		return 0;
 
 	return ply_Data[playerid][ply_IP];
-}
-
-// ply_Karma
-stock GetPlayerKarma(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_Karma];
 }
 
 // ply_RegisterTimestamp
@@ -720,6 +580,44 @@ stock SetPlayerWarnings(playerid, timestamp)
 		return 0;
 
 	ply_Data[playerid][ply_Warnings] = timestamp;
+
+	return 1;
+}
+
+// ply_Alive
+stock IsPlayerAlive(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return ply_Data[playerid][ply_Alive];
+}
+
+stock SetPlayerAliveState(playerid, bool:st)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	ply_Data[playerid][ply_Alive] = st;
+
+	return 1;
+}
+
+// ply_ShowHUD
+stock IsPlayerHudOn(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return ply_Data[playerid][ply_ShowHUD];
+}
+
+stock TogglePlayerHUD(playerid, bool:st)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	ply_Data[playerid][ply_ShowHUD] = st;
 
 	return 1;
 }
@@ -835,73 +733,6 @@ Float:GetPlayerTotalVelocity(playerid)
 	return ply_Data[playerid][ply_Velocity];
 }
 
-// ply_SpawnPosX
-// ply_SpawnPosY
-// ply_SpawnPosZ
-stock GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	x = ply_Data[playerid][ply_SpawnPosX];
-	y = ply_Data[playerid][ply_SpawnPosY];
-	z = ply_Data[playerid][ply_SpawnPosZ];
-
-	return 1;
-}
-
-stock SetPlayerSpawnPos(playerid, Float:x, Float:y, Float:z)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_SpawnPosX] = x;
-	ply_Data[playerid][ply_SpawnPosY] = y;
-	ply_Data[playerid][ply_SpawnPosZ] = z;
-
-	return 1;
-}
-
-// ply_SpawnRotZ
-stock GetPlayerSpawnRot(playerid, &Float:r)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	r = ply_Data[playerid][ply_SpawnRotZ];
-
-	return 1;
-}
-
-stock SetPlayerSpawnRot(playerid, Float:r)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_SpawnRotZ] = r;
-
-	return 1;
-}
-
-// ply_RadioFrequency
-forward Float:GetPlayerRadioFrequency(playerid);
-stock Float:GetPlayerRadioFrequency(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0.0;
-
-	return ply_Data[playerid][ply_RadioFrequency];
-}
-stock SetPlayerRadioFrequency(playerid, Float:frequency)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_RadioFrequency] = frequency;
-
-	return 1;
-}
-
 // ply_CreationTimestamp
 stock GetPlayerCreationTimestamp(playerid)
 {
@@ -919,55 +750,6 @@ stock SetPlayerCreationTimestamp(playerid, timestamp)
 	ply_Data[playerid][ply_CreationTimestamp] = timestamp;
 
 	return 1;
-}
-
-// ply_AimShoutText
-stock GetPlayerAimShoutText(playerid, string[])
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	string[0] = EOS;
-	strcat(string, ply_Data[playerid][ply_AimShoutText], 128);
-
-	return 1;
-}
-stock SetPlayerAimShoutText(playerid, string[128])
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_AimShoutText] = string;
-
-	return 1;
-}
-
-
-// ply_ChatMode
-stock GetPlayerChatMode(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_ChatMode];
-}
-stock SetPlayerChatMode(playerid, chatmode)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	ply_Data[playerid][ply_ChatMode] = chatmode;
-
-	return 1;
-}
-
-// ply_CurrentVehicle
-stock GetPlayerLastVehicle(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_CurrentVehicle];
 }
 
 // ply_PingLimitStrikes
@@ -1006,13 +788,4 @@ stock GetPlayerSpawnTick(playerid)
 		return 0;
 
 	return ply_Data[playerid][ply_SpawnTick];
-}
-
-// ply_ExitVehicleTick
-stock GetPlayerVehicleExitTick(playerid)
-{
-	if(!IsValidPlayerID(playerid))
-		return 0;
-
-	return ply_Data[playerid][ply_ExitVehicleTick];
 }

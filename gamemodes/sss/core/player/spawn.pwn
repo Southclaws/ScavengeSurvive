@@ -25,11 +25,33 @@
 #include <YSI\y_hooks>
 
 
-enum e_item_object{ItemType:e_itmobj_type,e_itmobj_exdata}
+enum e_item_object
+{
+	ItemType:e_itmobj_type,
+	e_itmobj_exdata
+}
+
+
 static
 ItemType:	spawn_BagType,
-ItemType:	spawn_ReSpawnItems[4][e_item_object],
-ItemType:	spawn_NewSpawnItems[4][e_item_object];
+// properties given to new players
+Float:		spawn_NewBlood,
+Float:		spawn_NewFood,
+Float:		spawn_NewBleed,
+ItemType:	spawn_NewItems[16][e_item_object],
+
+// properties given on respawns
+Float:		spawn_ResBlood,
+Float:		spawn_ResFood,
+Float:		spawn_ResBleed,
+ItemType:	spawn_ResItems[16][e_item_object];
+
+static
+bool:		spawn_State[MAX_PLAYERS] = {false, ...},
+Float:		spawn_PosX[MAX_PLAYERS],
+Float:		spawn_PosY[MAX_PLAYERS],
+Float:		spawn_PosZ[MAX_PLAYERS],
+Float:		spawn_RotZ[MAX_PLAYERS];
 
 new
 PlayerText:	ClassButtonMale[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
@@ -43,31 +65,56 @@ forward OnPlayerSpawnNewChar(playerid);
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
+	console("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
 
-	new bagtype[ITM_MAX_NAME];
+	new
+		newitems[16][32],
+		newitems_total,
+
+		resitems[16][32],
+		resitems_total,
+
+		bagtype[ITM_MAX_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
 
 	if(!IsValidItemType(spawn_BagType))
-		printf("ERROR: spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
+		err("spawn/bagtype item name '%s' results in invalid item type %d", bagtype, _:spawn_BagType);
 
-	// todo: make this better.
-	spawn_ReSpawnItems[0][e_itmobj_type] = item_AntiSepBandage;
-	spawn_ReSpawnItems[1][e_itmobj_type] = item_Knife;
-	spawn_ReSpawnItems[2][e_itmobj_type] = item_Wrench;
-	spawn_ReSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[0][e_itmobj_type] = item_M9Pistol;
-	spawn_NewSpawnItems[1][e_itmobj_type] = item_Ammo9mm;
-	spawn_NewSpawnItems[2][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[3][e_itmobj_type] = INVALID_ITEM_TYPE;
-	spawn_NewSpawnItems[1][e_itmobj_exdata] = 10;
+
+	GetSettingFloat("spawn/new-blood", 90.0, spawn_NewBlood);
+	GetSettingFloat("spawn/new-food", 80.0, spawn_NewFood);
+	GetSettingFloat("spawn/new-bleed", 0.0001, spawn_NewBleed);
+	GetSettingStringArray("spawn/new-items", "Knife", 16, newitems, newitems_total, 32);
+
+	for(new i; i < 16; i++)
+	{
+		spawn_NewItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(newitems[i], true);
+
+		if(newitems[i][0] != EOS && !IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
+			err("item '%s' from spawn/new-items/%d is invalid type %d.", newitems[i], i, _:spawn_NewItems[i][e_itmobj_type]);
+	}
+
+	GetSettingFloat("spawn/res-blood", 100.0, spawn_ResBlood);
+	GetSettingFloat("spawn/res-food", 40.0, spawn_ResFood);
+	GetSettingFloat("spawn/res-bleed", 0.0, spawn_ResBleed);
+	GetSettingStringArray("spawn/res-items", "AntiSepBandage", 16, resitems, resitems_total, 32);
+
+	for(new i; i < 16; i++)
+	{
+		spawn_ResItems[i][e_itmobj_type] = GetItemTypeFromUniqueName(resitems[i], true);
+
+		if(resitems[i][0] != EOS && !IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
+			err("item '%s' from spawn/res-items/%d is invalid type %d.", resitems[i], i, _:spawn_ResItems[i][e_itmobj_type]);
+	}
 }
 
 hook OnPlayerConnect(playerid)
 {
 	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
+
+	spawn_State[playerid] = false;
 
 //	defer LoadClassUI(playerid);
 //}
@@ -107,10 +154,16 @@ SpawnLoggedInPlayer(playerid)
 {
 	if(IsPlayerAlive(playerid))
 	{
-		if(PlayerSpawnExistingCharacter(playerid))
+		new ret = PlayerSpawnExistingCharacter(playerid);
+
+		if(!ret)
 		{
 			SetPlayerBrightness(playerid, 255);
 			return 1;
+		}
+		else
+		{
+			err("PlayerSpawnExistingCharacter returned %d", ret);
 		}
 	}
 	
@@ -122,7 +175,7 @@ SpawnLoggedInPlayer(playerid)
 
 PrepareForSpawn(playerid)
 {
-	SetPlayerBitFlag(playerid, Spawned, true);
+	SetPlayerSpawnedState(playerid, true);
 
 	SetCameraBehindPlayer(playerid);
 	SetAllWeaponSkills(playerid, 500);
@@ -134,11 +187,11 @@ PrepareForSpawn(playerid)
 
 PlayerSpawnExistingCharacter(playerid)
 {
-	if(GetPlayerBitFlag(playerid, Spawned))
-		return 0;
+	if(IsPlayerSpawned(playerid))
+		return 1;
 
 	if(!LoadPlayerChar(playerid))
-		return 0;
+		return 2;
 
 	new
 		Float:x,
@@ -181,16 +234,16 @@ PlayerSpawnExistingCharacter(playerid)
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
 
-	logf("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	log("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
 	CallLocalFunction("OnPlayerSpawnChar", "d", playerid);
 
-	return 1;
+	return 0;
 }
 
 PlayerCreateNewCharacter(playerid)
 {
-	logf("[NEWCHAR] %p creating new character", playerid);
+	log("[NEWCHAR] %p creating new character", playerid);
 
 	SetPlayerPos(playerid, DEFAULT_POS_X + 5, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
@@ -206,6 +259,8 @@ PlayerCreateNewCharacter(playerid)
 
 	if(IsPlayerLoggedIn(playerid))
 	{
+		PlayerTextDrawSetString(playerid, ClassButtonMale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_M")));
+		PlayerTextDrawSetString(playerid, ClassButtonFemale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_F")));
 		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
 		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
@@ -233,7 +288,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
-	if(GetPlayerBitFlag(playerid, Spawned))
+	if(IsPlayerSpawned(playerid))
 		return 0;
 
 	new name[MAX_PLAYER_NAME];
@@ -247,7 +302,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	new
 		backpackitem,
-		containerid,
 		tmpitem,
 		Float:x,
 		Float:y,
@@ -265,7 +319,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: SetPlayerClothesID(playerid, skin_MainM);
+			case 0: SetPlayerClothesID(playerid, skin_Civ0M);
 			case 1: SetPlayerClothesID(playerid, skin_Civ1M);
 			case 2: SetPlayerClothesID(playerid, skin_Civ2M);
 			case 3: SetPlayerClothesID(playerid, skin_Civ3M);
@@ -278,7 +332,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 	{
 		switch(random(6))
 		{
-			case 0: SetPlayerClothesID(playerid, skin_MainF);
+			case 0: SetPlayerClothesID(playerid, skin_Civ0F);
 			case 1: SetPlayerClothesID(playerid, skin_Civ1F);
 			case 2: SetPlayerClothesID(playerid, skin_Civ2F);
 			case 3: SetPlayerClothesID(playerid, skin_Civ3F);
@@ -288,14 +342,24 @@ PlayerSpawnNewCharacter(playerid, gender)
 		}
 	}
 
-	SetPlayerHP(playerid, 100.0);
+	if(IsNewPlayer(playerid))
+	{
+		SetPlayerHP(playerid, spawn_NewBlood);
+		SetPlayerFP(playerid, spawn_NewFood);
+		SetPlayerBleedRate(playerid, spawn_NewBleed);
+	}
+	else
+	{
+		SetPlayerHP(playerid, spawn_ResBlood);
+		SetPlayerFP(playerid, spawn_ResFood);
+		SetPlayerBleedRate(playerid, spawn_ResBleed);
+	}
+
 	SetPlayerAP(playerid, 0.0);
-	SetPlayerFP(playerid, 80.0);
 	SetPlayerClothes(playerid, GetPlayerClothesID(playerid));
 	SetPlayerGender(playerid, gender);
-	SetPlayerBleedRate(playerid, 0.0);
 
-	SetPlayerBitFlag(playerid, Alive, true);
+	SetPlayerAliveState(playerid, true);
 
 	FreezePlayer(playerid, gLoginFreezeTime * 1000);
 	PrepareForSpawn(playerid);
@@ -306,30 +370,35 @@ PlayerSpawnNewCharacter(playerid, gender)
 	if(IsValidItemType(spawn_BagType))
 	{
 		backpackitem = CreateItem(spawn_BagType);
-		containerid = GetItemArrayDataAtCell(backpackitem, 1);
 
 		GivePlayerBag(playerid, backpackitem);
 
 		for(new i; i < 4; i++)
 		{
-			if(!IsValidItemType(spawn_ReSpawnItems[i][e_itmobj_type]))
+			if(!IsValidItemType(spawn_ResItems[i][e_itmobj_type]))
 				break;
 
-			tmpitem = CreateItem(spawn_ReSpawnItems[i][e_itmobj_type]);
-			SetItemExtraData(tmpitem, spawn_ReSpawnItems[i][e_itmobj_exdata]);
-			AddItemToContainer(containerid, tmpitem);
+			tmpitem = CreateItem(spawn_ResItems[i][e_itmobj_type]);
+
+			if(spawn_ResItems[i][e_itmobj_exdata] != 0)
+				SetItemExtraData(tmpitem, spawn_ResItems[i][e_itmobj_exdata]);
+
+			AddItemToPlayer(playerid, tmpitem, true, false);
 		}
 
 		if(IsNewPlayer(playerid))
 		{
 			for(new i; i < 4; i++)
 			{
-				if(!IsValidItemType(spawn_NewSpawnItems[i][e_itmobj_type]))
+				if(!IsValidItemType(spawn_NewItems[i][e_itmobj_type]))
 					break;
 
-				tmpitem = CreateItem(spawn_NewSpawnItems[i][e_itmobj_type]);
-				SetItemExtraData(tmpitem, spawn_NewSpawnItems[i][e_itmobj_exdata]);
-				AddItemToContainer(containerid, tmpitem);
+				tmpitem = CreateItem(spawn_NewItems[i][e_itmobj_type]);
+
+				if(spawn_NewItems[i][e_itmobj_exdata] != 0)
+					SetItemExtraData(tmpitem, spawn_NewItems[i][e_itmobj_exdata]);
+
+				AddItemToPlayer(playerid, tmpitem, true, false);
 			}
 		}
 	}
@@ -338,7 +407,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	CallLocalFunction("OnPlayerSpawnNewChar", "d", playerid);
 
-	logf("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	log("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
 
 	return 1;
 }
@@ -350,6 +419,73 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 ==============================================================================*/
 
+
+// spawn_State
+stock IsPlayerSpawned(playerid)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	return spawn_State[playerid];
+}
+
+stock SetPlayerSpawnedState(playerid, bool:st)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	spawn_State[playerid] = st;
+
+	return 1;
+}
+
+// spawn_PosX
+// spawn_PosY
+// spawn_PosZ
+stock GetPlayerSpawnPos(playerid, &Float:x, &Float:y, &Float:z)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	x = spawn_PosX[playerid];
+	y = spawn_PosY[playerid];
+	z = spawn_PosZ[playerid];
+
+	return 1;
+}
+
+stock SetPlayerSpawnPos(playerid, Float:x, Float:y, Float:z)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	spawn_PosX[playerid] = x;
+	spawn_PosY[playerid] = y;
+	spawn_PosZ[playerid] = z;
+
+	return 1;
+}
+
+// spawn_RotZ
+stock GetPlayerSpawnRot(playerid, &Float:r)
+{
+	if(!IsValidPlayerID(playerid))
+		return 0;
+
+	r = spawn_RotZ[playerid];
+
+	return 1;
+}
+
+stock SetPlayerSpawnRot(playerid, Float:r)
+{
+	if(!IsPlayerConnected(playerid))
+		return 0;
+
+	spawn_RotZ[playerid] = r;
+
+	return 1;
+}
 
 IsAtDefaultPos(Float:x, Float:y, Float:z)
 {

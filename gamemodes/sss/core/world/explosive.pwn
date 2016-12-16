@@ -52,7 +52,7 @@ enum EXP_PRESET_DATA
 {
 			exp_type,
 Float:		exp_size,
-			exp_defdmg
+			exp_itemDmg
 }
 
 enum E_EXPLOSIVE_ITEM_DATA
@@ -103,11 +103,22 @@ hook OnItemCreate(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+hook OnItemDestroy(itemid)
+{
+	if(exp_ItemTypeExplosive[GetItemType(itemid)] != -1)
+	{
+		if(GetItemHitPoints(itemid) <= 0)
+		{
+			SetItemToExplode(itemid);
+		}
+	}
+}
+
 stock DefineExplosiveItem(ItemType:itemtype, EXP_TRIGGER:trigger, EXP_PRESET:preset)
 {
 	if(0 <= exp_Total >= MAX_EXPLOSIVE_ITEM - 1)
 	{
-		print("ERROR: Explosive item definition limit reached!");
+		err("Explosive item definition limit reached!");
 		return -1;
 	}
 
@@ -144,7 +155,7 @@ stock SetItemToExplode(itemid)
 	itemtype = GetItemType(itemid);
 	GetItemAbsolutePos(itemid, x, y, z, parent, parenttype);
 
-	logf("[EXPLOSIVE] Item %d Type %d detonated at %f, %f, %f", itemid, _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
+	log("[EXPLOSIVE] Item %d Type %d detonated at %f, %f, %f", itemid, _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
 
 	if(!isnull(parenttype))
 	{
@@ -254,7 +265,7 @@ hook OnPlayerUseItem(playerid, itemid)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		logf("[EXPLOSIVE] Player %p triggering remote explosive item %d", playerid, itemid);
+		log("[EXPLOSIVE] Player %p triggering remote explosive item %d", playerid, itemid);
 		SetItemToExplode(bombitem);
 		SetItemExtraData(itemid, INVALID_ITEM_ID);
 
@@ -297,7 +308,7 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
-				logf("[EXPLOSIVE] Time bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Time bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
 
 				exp_ArmTick[playerid] = GetTickCount();
 				defer SetItemToExplodeDelay(exp_ArmingItem[playerid], 5000);
@@ -308,7 +319,7 @@ hook OnHoldActionFinish(playerid)
 			}
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
 			{
-				logf("[EXPLOSIVE] Prox bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Prox bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
 
 				defer CreateTntMineProx(exp_ArmingItem[playerid]);
 				ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
@@ -317,7 +328,7 @@ hook OnHoldActionFinish(playerid)
 			}
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 			{
-				logf("[EXPLOSIVE] Trip bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Trip bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
 
 				SetItemExtraData(exp_ArmingItem[playerid], 1);
 				ClearAnimations(playerid);
@@ -375,17 +386,17 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 	if(!IsValidItem(data[1]))
 	{
-		printf("ERROR: Proximity mine streamer area contains invalid item id (%d)", data[1]);
+		err("Proximity mine streamer area contains invalid item id (%d)", data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
 	if(GetItemExtraData(data[1]) != areaid)
 	{
-		printf("ERROR: Proximity mine item area (%d) does not match triggered area (%d)", GetItemExtraData(data[1]), areaid);
+		err("Proximity mine item area (%d) does not match triggered area (%d)", GetItemExtraData(data[1]), areaid);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	logf("[EXPLOSIVE] Prox bomb %d triggered by %p", data[1], playerid);
+	log("[EXPLOSIVE] Prox bomb %d triggered by %p", data[1], playerid);
 	_exp_ProxTrigger(data[1]);
 	DestroyDynamicArea(areaid);
 
@@ -478,7 +489,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 		{
 			if(GetItemExtraData(itemid) == 1)
 			{
-				logf("[EXPLOSIVE] Trip bomb %d triggered by %p", itemid, playerid);
+				log("[EXPLOSIVE] Trip bomb %d triggered by %p", itemid, playerid);
 				SetItemToExplode(itemid);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
@@ -527,10 +538,10 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 	switch(preset)
 	{
 		case EXP_INCEN:
-			print("EXP_INCEN not implemented");
+			err("EXP_INCEN not implemented");
 
 		case EXP_THERM:
-			print("EXP_THERM not implemented");
+			err("EXP_THERM not implemented");
 
 		case EXP_EMP:
 			CreateEmpExplosion(x, y, z, exp_Presets[preset][exp_size]);
@@ -539,46 +550,27 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 			CreateExplosion(x, y, z, exp_Presets[preset][exp_type], exp_Presets[preset][exp_size]);
 	}
 
-	new
-		defenceid,
-		newhitpoints;
-
-	defenceid = GetClosestDefence(x, y, z, exp_Presets[preset][exp_size]);
-
-	if(defenceid == -1)
-		return 0;
-
-	newhitpoints = GetDefenceHitPoints(defenceid) - exp_Presets[preset][exp_defdmg];
-
-	if(newhitpoints <= 0)
+	if(exp_Presets[preset][exp_itemDmg] > 0)
 	{
 		new
-			defencetype = GetDefenceType(defenceid),
-			ItemType:itemtype = GetDefenceTypeItemType(defencetype),
-			Float:vrotx,
-			Float:vroty,
-			Float:vrotz,
-			Float:rotz;
+			items[256],
+			count;
 
-		GetDefenceTypeVerticalRot(defencetype, vrotx, vroty, vrotz);
-		rotz = GetDefenceRot(defenceid);
-
-		logf("[DESTRUCTION] Defence %d From %.1f, %.1f, %.1f (GEID: %d) type %d (%d, %f, %f, %f, %f, %f, %f)",
-			defenceid, x, y, z,
-			GetDefenceGEID(defenceid),
-			_:itemtype,
-			GetItemTypeModel(itemtype),
-			x, y, z + GetDefenceTypeOffsetZ(defencetype),
-			vrotx, vroty, vrotz + rotz);
-
-		DestroyDefence(defenceid);
-	}
-	else
-	{
-		SetDefenceHitPoints(defenceid, newhitpoints);
+		count = GetItemsInRange(x, y, z, exp_Presets[preset][exp_size], items);
+		defer _IterateItemDmg(items, sizeof(items), count, 0, exp_Presets[preset][exp_itemDmg]);
 	}
 
 	return 1;
+}
+
+// i, s, c, o, d = items, size, count, offset, damage
+timer _IterateItemDmg[100](i[], s, c, o, d)
+{
+	#pragma unused s
+	SetItemHitPoints(i[o], GetItemHitPoints(i[o]) - d);
+
+	if(o < c)
+		defer _IterateItemDmg(i, s, c, o + 1, d);
 }
 
 

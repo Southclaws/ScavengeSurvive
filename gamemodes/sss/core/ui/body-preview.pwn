@@ -59,7 +59,7 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'BodyPreview'...");
+	console("\n[OnScriptInit] Initialising 'BodyPreview'...");
 
 	HANDLER = debug_register_handler("bodypreview");
 }

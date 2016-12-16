@@ -25,8 +25,7 @@
 #include <YSI\y_hooks>
 
 
-#define MAX_HAT_ITEMS	(22)
-#define MAX_HAT_SKINS	(22)
+#define MAX_HAT_ITEMS	(32)
 
 
 enum E_HAT_SKIN_DATA
@@ -45,7 +44,7 @@ Float:		hat_scaleZ
 
 new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
-			hat_Data[MAX_HAT_ITEMS][MAX_HAT_SKINS][E_HAT_SKIN_DATA],
+			hat_Data[MAX_HAT_ITEMS][MAX_SKINS][E_HAT_SKIN_DATA],
 			hat_Total,
 			hat_ItemTypeHat[ITM_MAX_TYPES] = {-1, ...},
 			hat_CurrentHatItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
@@ -107,6 +106,9 @@ stock SetPlayerHatItem(playerid, itemid)
 
 	new skinid = GetPlayerClothes(playerid);
 
+	if(!GetClothesHatStatus(skinid))
+		return 0;
+
 	SetPlayerAttachedObject(
 		playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
 		hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
@@ -114,6 +116,7 @@ stock SetPlayerHatItem(playerid, itemid)
 		hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
 
 	RemoveItemFromWorld(itemid);
+	RemoveCurrentItem(GetItemHolder(itemid));
 	hat_CurrentHatItem[playerid] = itemid;
 
 	return 1;

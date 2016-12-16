@@ -48,7 +48,7 @@ CreateXmasTree(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 	CreateDynamicObject(xmas_presents[random(4)], box_x, box_y, box_z, 0.0, 0.0, frandom(360.0));
 	containerid = CreateContainer("Christmas Present", 10, CreateButton(box_x, box_y, box_z + 1.0, "Merry Christmas!"));
 
-	FillContainerWithLoot(containerid, random(10) + 1, loot_Military);
+	FillContainerWithLoot(containerid, random(10) + 1, GetLootIndexFromName("world_military"));
 
 	if(random(100) < 10)
 		AddItemToContainer(containerid, CreateItem(item_XmasHat));
@@ -68,7 +68,7 @@ hook OnGameModeInit()
 	if(m != 12)
 		return 1;
 
-	print("\n[OnGameModeInit] Initialising 'Xmas'...");
+	console("\n[OnGameModeInit] Initialising 'Xmas'...");
 
 	CreateXmasTree(-1214.80579, 1818.40381, 40.71288,   0.00000, 0.00000, 0.00000);
 	CreateXmasTree(-883.66498, 1520.97986, 24.90551,   0.00000, 0.00000, 0.00000);

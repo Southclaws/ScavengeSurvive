@@ -1,4 +1,40 @@
 {
+	"build_systems":
+	[
+		{
+			"cmd": "python build.py project --increment",
+			"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
+			"name": "[1] SOUTHCLAW'S SS BUILD SYSTEM DO NOT USE!",
+			"variants":
+			[
+				{
+					"cmd": "python build.py file --input \"${file}\"",
+					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
+					"name": "[2] Pawn (Build current file)",
+					"working_dir": "${project_path:${folder}}"
+				},
+				{
+					"cmd": "python build.py project",
+					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
+					"name": "[3] Build project (No build increment)",
+					"working_dir": "${project_path:${folder}}"
+				},
+				{
+					"cmd": "python build.py project --increment",
+					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
+					"name": "[4] Build project",
+					"working_dir": "${project_path:${folder}}"
+				}
+			],
+			"working_dir": "${project_path:${folder}}"
+		},
+		{
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"name": "Anaconda Python Builder",
+			"selector": "source.python",
+			"shell_cmd": "\"python\" -u \"$file\""
+		}
+	],
 	"folders":
 	[
 		{
@@ -20,40 +56,9 @@
 			"path": "..\\Releases"
 		}
 	],
-
 	"settings":
 	{
 		"default_line_ending": "unix",
 		"tab_size": 4
-	},
-
-	"build_systems":
-	[
-		{
-			"name": "[1] SOUTHCLAW'S SS BUILD SYSTEM DO NOT USE!",
-			"working_dir": "${project_path:${folder}}",
-			"cmd": "python build.py project --increment",
-			"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
-			"variants": [
-				{
-					"name": "[2] Pawn (Build current file)",
-					"working_dir": "${project_path:${folder}}",
-					"cmd": "python build.py file --input \"${file}\"",
-					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)"
-				},
-				{
-					"name": "[3] Build project (No build increment)",
-					"working_dir": "${project_path:${folder}}",
-					"cmd": "python build.py project",
-					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)"
-				},
-				{
-					"name": "[4] Build project",
-					"working_dir": "${project_path:${folder}}",
-					"cmd": "python build.py project --increment",
-					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
-				}
-			]
-		}
-	]
+	}
 }

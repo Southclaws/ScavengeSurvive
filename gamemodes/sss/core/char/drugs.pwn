@@ -65,7 +65,7 @@ forward OnPlayerDrugWearOff(playerid, drugtype);
 
 hook OnScriptInit()
 {
-	print("\n[OnScriptInit] Initialising 'Drugs'...");
+	console("\n[OnScriptInit] Initialising 'Drugs'...");
 
 	HANDLER = debug_register_handler("drugs");
 }
@@ -101,7 +101,7 @@ stock DefineDrugType(name[], duration)
 {
 	if(drug_TypeTotal == MAX_DRUG_TYPE)
 	{
-		printf("ERROR: Max drug types (%d) reached.", MAX_DRUG_TYPE);
+		err("Max drug types (%d) reached.", MAX_DRUG_TYPE);
 		return -1;
 	}
 
@@ -173,7 +173,8 @@ stock RemoveAllDrugs(playerid)
 
 ==============================================================================*/
 
-ptask DrugsUpdate[1000](playerid)
+
+hook OnPlayerScriptUpdate(playerid)
 {
 	for(new i; i < drug_TypeTotal; i++)
 	{
@@ -186,20 +187,6 @@ ptask DrugsUpdate[1000](playerid)
 				CallLocalFunction("OnPlayerDrugWearOff", "dd", playerid, i);
 			}
 		}
-	}
-
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
-	{
-		SetPlayerDrunkLevel(playerid, 100000);
-
-		if(random(100) < 50)
-			GivePlayerHP(playerid, -1.0);
-	}
-
-	if(IsPlayerUnderDrugEffect(playerid, drug_Adrenaline))
-	{
-		GivePlayerHP(playerid, 0.01);
 	}
 }
 
@@ -283,13 +270,13 @@ stock SetPlayerDrugsFromArray(playerid, input[], length)
 
 	if(input[0] < 0 || input[0] >= MAX_DRUG_TYPE)
 	{
-		printf("[SetPlayerDrugsFromArray] ERROR: Drug count out of bounds (%d)", input[0]);
+		err("Drug count out of bounds (%d)", input[0]);
 		return 0;
 	}
 
 	if(length != 1 + (input[0] * 2))
 	{
-		printf("[SetPlayerDrugsFromArray] ERROR: (Drug count * 2) + 1 != data length (%d != %d)", 1 + (input[0] * 2), length);
+		err("(Drug count * 2) + 1 != data length (%d != %d)", 1 + (input[0] * 2), length);
 		return 0;
 	}
 
@@ -337,4 +324,26 @@ hook OnPlayerLoad(playerid, filename[])
 	length = modio_read(filename, _T<D,R,U,G>, sizeof(data), data);
 
 	SetPlayerDrugsFromArray(playerid, data, length);
+}
+
+CMD:druginfo(playerid, params[])
+{
+	gBigString[playerid][0] = EOS;
+
+	for(new i; i < drug_TypeTotal; i++)
+	{
+		if(drug_PlayerDrugData[playerid][i][drug_active])
+		{
+			format(gBigString[playerid], sizeof(gBigString[]), "%s%s:\ntick: %d\ntotdur: %d\ncalc: %d\n\n",
+				gBigString[playerid],
+				drug_TypeData[i][drug_name],
+				drug_PlayerDrugData[playerid][i][drug_tick],
+				drug_PlayerDrugData[playerid][i][drug_totalDuration],
+				GetTickCountDifference(GetTickCount(), drug_PlayerDrugData[playerid][i][drug_tick]));
+		}
+	}
+
+	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Drug Debug (Debrdug!?)", gBigString[playerid], "Close", "");
+
+	return 1;
 }

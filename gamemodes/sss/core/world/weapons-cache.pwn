@@ -48,7 +48,7 @@ Float:		wepc_CurrentPosZ,
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'WeaponsCache'...");
+	console("\n[OnGameModeInit] Initialising 'WeaponsCache'...");
 
 	defer WeaponsCacheTimer();
 	return 1;
@@ -60,7 +60,7 @@ DefineWeaponsCachePos(Float:x, Float:y, Float:z)
 
 	if(id == ITER_NONE)
 	{
-		printf("ERROR: Weapons cache pos definition limit reached.");
+		err("Weapons cache pos definition limit reached.");
 		return -1;
 	}
 
@@ -81,7 +81,7 @@ timer WeaponsCacheTimer[WEPCACHE_INTERVAL]()
 	// There are no more locations available, kill the timer.
 	if(Iter_Count(wepc_Index) == 0)
 	{
-		printf("ERROR: Weapons caches run out, stopping weapons cache timer.");
+		err("Weapons caches run out, stopping weapons cache timer.");
 		return;
 	}
 
@@ -143,7 +143,7 @@ WeaponsCacheDrop(Float:x, Float:y, Float:z)
 	FillContainerWithLoot(
 		CreateContainer("Weapon Cache", 32,
 			CreateButton(x, y - 0.5, z + 1.0, "Weapon Cache")),
-		22 + random(11), loot_MilWepCrate);
+		22 + random(11), GetLootIndexFromName("airdrop_military_weapons"));
 
 	defer WeaponsCacheSignal(1, x, y, z);
 
@@ -189,7 +189,7 @@ timer WeaponsCacheSignal[WEPCACHE_SIGNAL_INTERVAL](count, Float:x, Float:y, Floa
 	}
 	else
 	{
-		print("ERROR: No reference point found.");
+		err("No reference point found.");
 		return;
 	}
 
