@@ -63,6 +63,8 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
+	console("\n[OnScriptInit] Initialising 'item-tweak'...");
+
 	HANDLER = debug_register_handler("item-tweak");
 }
 

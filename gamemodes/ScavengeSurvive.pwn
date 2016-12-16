@@ -638,20 +638,26 @@ OnGameModeInit_Setup()
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		err("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		console("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
-		err("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES);
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		err("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
+	}
+
+	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS))
+	{
+		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_LOGS"' not found. Creating directory.");
+		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);

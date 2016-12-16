@@ -38,14 +38,6 @@ File:	log_File,
 		log_buffer[256];
 
 
-hook OnGameModeInit()
-{
-	console("\n[OnGameModeInit] Initialising 'logging'...");
-
-	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
-	_log_open();
-}
-
 _log_open()
 {
 	if(!!log_File)

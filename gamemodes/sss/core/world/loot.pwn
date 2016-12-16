@@ -118,13 +118,13 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 {
 	if(loot_SpawnTotal >= MAX_LOOT_SPAWN - 1)
 	{
-		err("[CreateStaticLootSpawn] ERROR: Loot spawn limit reached.");
+		err("Loot spawn limit reached.");
 		return -1;
 	}
 
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{
-		err("[CreateStaticLootSpawn] ERROR: Loot index (%d) is invalid.", lootindex);
+		err("Loot index (%d) is invalid.", lootindex);
 		return -1;
 	}
 

@@ -74,6 +74,8 @@ static HANDLER = -1;
 
 hook OnScriptInit()
 {
+	console("\n[OnScriptInit] Initialising 'craft-construct'...");
+
 	HANDLER = debug_register_handler("craft-construct");
 }
 
