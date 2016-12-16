@@ -38,22 +38,13 @@
 	"folders":
 	[
 		{
-			"path": "gamemodes"
+			"path": "."
 		},
 		{
-			"path": "filterscripts"
+			"path": "F:\\Projects\\SA-MP\\pawno\\include"
 		},
 		{
-			"path": "scriptfiles"
-		},
-		{
-			"path": "misc"
-		},
-		{
-			"path": "..\\pawno\\include"
-		},
-		{
-			"path": "..\\Releases"
+			"path": "F:\\Projects\\SA-MP\\Releases"
 		}
 	],
 	"settings":
