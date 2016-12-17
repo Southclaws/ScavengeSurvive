@@ -260,13 +260,17 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 	if(IsItemTypeCarry(itemtype))
 		return -1;
 
-	if(WillItemTypeFitInInventory(playerid, itemtype))
-	{
-		d:1:HANDLER("[AddItemToPlayer] Item fits in inventory");
-		if(useinventory)
-			AddItemToInventory(playerid, itemid);
+	new required;
 
-		return -2;
+	if(useinventory)
+		required = AddItemToInventory(playerid, itemid);
+
+	if(!IsValidItem(bag_PlayerBagID[playerid]))
+	{
+		if(required > 0)
+			ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), required), 3000, 150);
+
+		return -3;
 	}
 
 	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
@@ -584,6 +588,40 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 
 	if(IsItemTypeCarry(itemtype))
 		return Y_HOOKS_BREAK_RETURN_1;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerAddToInventory(playerid, itemid, success)
+{
+	d:1:HANDLER("[OnItemAddToInventory] in /gamemodes/sss/core/char/backpack.pwn");
+
+	if(success)
+	{
+		new ItemType:itemtype = GetItemType(itemid);
+
+		if(IsItemTypeBag(itemtype))
+			return Y_HOOKS_BREAK_RETURN_1;
+
+		if(IsItemTypeCarry(itemtype))
+			return Y_HOOKS_BREAK_RETURN_1;
+	}
+	else
+	{
+		new ItemType:itemtype = GetItemType(itemid);
+
+		if(IsItemTypeBag(itemtype))
+			return Y_HOOKS_BREAK_RETURN_1;
+
+		if(IsItemTypeCarry(itemtype))
+			return Y_HOOKS_BREAK_RETURN_1;
+
+		new
+			itemsize = GetItemTypeSize(GetItemType(itemid)),
+			freeslots = GetInventoryFreeSlots(playerid);
+
+		ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), itemsize - freeslots), 3000, 150);
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
