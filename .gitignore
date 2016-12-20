@@ -18,7 +18,7 @@ gamemodes/ScavengeSurvive.tar.gz
 
 # stuff no one else needs
 *.lnk
-misc/*.jpg
+pyss/data/*.jpg
 build-config.json
 
 # Python stuff
