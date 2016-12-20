@@ -1,52 +1,67 @@
-import os
+import argparse
 import copy
-import io
-import re
-from PIL import Image, ImageDraw, ImageColor, ImageFont
+import os
+
+from pyss.utility.regions import Regions, center
+from pyss.utility.loot_spawns import LootSpawns
+from pyss.utility.vehicle_spawns import VehicleSpawns
+from pyss.utility.object_placement import ObjectSet
+
+from PIL import Image, ImageDraw, ImageFont
 import heatmap
 
-import region
-import lootspawns
-import vehiclespawns
-import objects
 
-
-font = ImageFont.truetype("arial.ttf", 32)
-DOT_RADIUS = 6
-BOX_RADIUS = 2
-
-
-def draw_loot(im, draw, loot):
-
-	print(len(loot), "loot spawns being drawn")
+def draw_loot(im, draw, loot, mark_size=4):
 
 	colours = {
-		"loot_Civilian":		(0, 100, 0),
-		"loot_Industrial":		(50, 50, 50),
-		"loot_Police":			(0, 20, 100),
-		"loot_Military":		(255, 0, 0),
-		"loot_Medical":			(100, 100, 255),
-		"loot_CarCivilian":		(0, 100, 0),
-		"loot_CarIndustrial":	(50, 50, 50),
-		"loot_CarPolice":		(0, 20, 100),
-		"loot_CarMilitary":		(255, 0, 0),
-		"loot_Survivor":		(60, 0, 100)
+		"world_civilian":
+			(0, 100, 0),
+
+		"world_industrial":
+			(50, 50, 50),
+
+		"world_police":
+			(0, 20, 100),
+
+		"world_military":
+			(255, 0, 0),
+
+		"world_medical":
+			(100, 100, 255),
+
+		"vehicle_civilian":
+			(0, 100, 0),
+
+		"vehicle_industrial":
+			(50, 50, 50),
+
+		"vehicle_police":
+			(0, 20, 100),
+
+		"vehicle_military":
+			(255, 0, 0),
+
+		"world_survivor":
+			(60, 0, 100)
 	}
 
 	x = 0.0
 	y = 0.0
 
-	for s in loot:
-		x = s.x + 3000
-		y = 6000 - (s.y + 3000)
-		draw.ellipse([x - DOT_RADIUS, y - DOT_RADIUS, x + DOT_RADIUS, y + DOT_RADIUS], outline=(255, 255, 255), fill=colours[s.lootindex])
+	for zone in loot.spawns:
+		for spawn in loot.spawns[zone]:
+			x = spawn.x + 3000
+			y = 6000 - (spawn.y + 3000)
+			draw.ellipse([
+				x - mark_size, y - mark_size, x + mark_size, y + mark_size],
+				outline=(255, 255, 255), fill=colours[spawn.lootindex])
 
 
-def draw_regions(im, draw):
+def draw_regions(im, draw, regions, font):
 
-	print(len(region.regions), "regions spawns being drawn")
+	print(len(regions.regions), "regions spawns being drawn")
 
-	for key, value in region.regions.items():
+	for key, value in regions.regions.items():
 		temp_region = []
 
 		# perform the map>image translation and store temporarily
@@ -54,45 +69,50 @@ def draw_regions(im, draw):
 			temp_region.append((i[0] + 3000, 6000 - (i[1] + 3000)))
 
 		draw.polygon(temp_region, outline=(255, 255, 255))
-		cent = region.center(temp_region)
+		cent = center(temp_region)
 		draw.text((cent[0] + 2, cent[1] + 2), key, fill=(0, 0, 0), font=font)
 		draw.text(cent, key, fill=(255, 255, 255), font=font)
 
 
-def draw_vehicles(im, draw, vehicles):
+def draw_vehicles(im, draw, vehicles, mark_size=2):
 
-	print(len(vehicles), "vehicle spawns being drawn")
+	print(len(vehicles.vehicles), "vehicle spawns being drawn")
 
 	x = 0.0
 	y = 0.0
 
-	for s in vehicles:
-		x = s.x + 3000
-		y = 6000 - (s.y + 3000)
-		draw.rectangle([x - BOX_RADIUS, y - BOX_RADIUS, x + BOX_RADIUS, y + BOX_RADIUS], outline=(0, 0, 0), fill=(80, 80, 80))
+	for spawn in vehicles.vehicles:
+		x = spawn.x + 3000
+		y = 6000 - (spawn.y + 3000)
+		draw.rectangle([
+			x - mark_size, y - mark_size, x + mark_size, y + mark_size],
+			outline=(0, 0, 0), fill=(80, 80, 80))
 
 
-def draw_obj(im, draw, objs):
+def draw_obj(im, draw, objs, mark_size=4):
 
 	print(len(objs), "objs spawns being drawn")
 
 	x = 0.0
 	y = 0.0
 
-	for s in objs:
-		x = s.x + 3000
-		y = 6000 - (s.y + 3000)
-		draw.ellipse([x - DOT_RADIUS, y - DOT_RADIUS, x + DOT_RADIUS, y + DOT_RADIUS], outline=(255, 255, 255), fill=(0, 0, 0))
+	for file in objs.objects:
+		for obj in objs.objects[file]:
+			x = obj.x + 3000
+			y = 6000 - (obj.y + 3000)
+			draw.ellipse([
+				x - mark_size, y - mark_size, x + mark_size, y + mark_size],
+				outline=(255, 255, 255), fill=(0, 0, 0))
 
 
-def generate_loot_heatmap(im, draw, loot):
+def generate_loot_heatmap(im, draw, hm, loot, out):
 
 	points = []
 
-	for l in loot:
-		points.append([int(l.x + 3000), int(l.y + 3000)])
+	for zone in loot.spawns:
+		for spawn in loot.spawns[zone]:
+			points.append([int(spawn.x + 3000), int(spawn.y + 3000)])
 
-	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
 	hmimg = hm.heatmap(
 		points,
 		dotsize=150,
@@ -101,17 +121,16 @@ def generate_loot_heatmap(im, draw, loot):
 		area=((0, 0), (6000, 6000)))
 
 	im.paste(hmimg, mask=hmimg)
-	im.save("gtasa-blank-1.0-ss-map-heat-loot.jpg")
+	im.save(out)
 
 
-def generate_vehicle_heatmap(im, draw, vehicles):
+def generate_vehicle_heatmap(im, draw, hm, vehicles, out):
 
 	points = []
 
-	for l in vehicles:
+	for l in vehicles.vehicles:
 		points.append([int(l.x + 3000), int(l.y + 3000)])
 
-	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
 	hmimg = hm.heatmap(
 		points,
 		dotsize=300,
@@ -120,17 +139,17 @@ def generate_vehicle_heatmap(im, draw, vehicles):
 		area=((0, 0), (6000, 6000)))
 
 	im.paste(hmimg, mask=hmimg)
-	im.save("gtasa-blank-1.0-ss-map-heat-vehicle.jpg")
+	im.save(out)
 
 
-def generate_obj_heatmap(im, draw, objs):
+def generate_obj_heatmap(im, draw, hm, objs, out):
 
 	points = []
 
-	for l in objs:
-		points.append([int(l.x + 3000), int(l.y + 3000)])
+	for file in objs.objects:
+		for obj in objs.objects[file]:
+			points.append([int(obj.x + 3000), int(obj.y + 3000)])
 
-	hm = heatmap.Heatmap(libpath="C:\\Python34\\Lib\\site-packages\\heatmap\\cHeatmap-x86.dll")
 	hmimg = hm.heatmap(
 		points,
 		dotsize=150,
@@ -139,44 +158,53 @@ def generate_obj_heatmap(im, draw, objs):
 		area=((0, 0), (6000, 6000)))
 
 	im.paste(hmimg, mask=hmimg)
-	im.save("gtasa-blank-1.0-ss-map-heat-objs.jpg")
+	im.save(out)
 
 
 def main():
+	parser = argparse.ArgumentParser()
 
-	loot = []
-	vehicles = []
-	objs = []
+	parser.add_argument(
+		'-i', '--image',
+		default='data/gtasa-blank-1.0.jpg',
+		help="path to Ian Albert's gtasa-blank-1.0.jpg map")
 
-	loot += lootspawns.load("../gamemodes/sss/world/zones/ls.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/sf.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/lv.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/rc.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/fc.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/bc.pwn")
-	loot += lootspawns.load("../gamemodes/sss/world/zones/tr.pwn")
+	parser.add_argument(
+		'-o', '--imageout',
+		default='data/',
+		help="directory to write output images to")
 
-	vehicles += vehiclespawns.load("../scriptfiles/vspawn/")
-
-	objs = objects.load("../scriptfiles/Maps/")
+	args = parser.parse_args()
 
 	# Initialise PIL stuff
-	mapimg = Image.open("gtasa-blank-1.0.jpg")
+	font = ImageFont.truetype("arial.ttf", 32)
+	mapimg = Image.open(args.image)
 	draw = ImageDraw.Draw(mapimg)
+	hm = heatmap.Heatmap(libpath="C:/Anaconda3/Lib/site-packages/heatmap/cHeatmap-x64.dll")
+
+	# Generate paths
+	map_path = os.path.join(args.imageout, "gtasa-blank-1.0-ss-map.jpg")
+	hm_loot = os.path.join(args.imageout, "gtasa-blank-1.0-ss-loot.jpg")
+	hm_vehicle = os.path.join(args.imageout, "gtasa-blank-1.0-ss-vehicles.jpg")
+	hm_object = os.path.join(args.imageout, "gtasa-blank-1.0-ss-objects.jpg")
+
+	# Load SS data
+	regions = Regions("data/regions.json")
+	loot = LootSpawns("../gamemodes/sss/world/zones/")
+	vehicles = VehicleSpawns("../scriptfiles/vspawn/")
+	objs = ObjectSet("../scriptfiles/Maps/")
 
 	# Generate the main map with region lines, loot spawns and vehicles
 	draw_loot(mapimg, draw, loot)
 	draw_vehicles(mapimg, draw, vehicles)
-	draw_regions(mapimg, draw)
+	draw_regions(mapimg, draw, regions, font)
 
-	mapimg.save("gtasa-blank-1.0-ss-map.jpg")
+	mapimg.save(map_path)
 
 	# generate heatmaps for loot and vehicles on separate images
-	generate_loot_heatmap(copy.copy(mapimg), draw, loot)
-
-	generate_vehicle_heatmap(copy.copy(mapimg), draw, vehicles)
-
-	generate_obj_heatmap(copy.copy(mapimg), draw, objs)
+	generate_loot_heatmap(copy.copy(mapimg), draw, hm, loot, hm_loot)
+	generate_vehicle_heatmap(copy.copy(mapimg), draw, hm, vehicles, hm_vehicle)
+	generate_obj_heatmap(copy.copy(mapimg), draw, hm, objs, hm_object)
 
 
 if __name__ == '__main__':

@@ -51,7 +51,7 @@ class Vehicle:
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
-	parser.add_argument("file", type=str, help="6k square bitmap file")
+	parser.add_argument("file", type=str, help="path to directory containing .vpl files")
 	args = parser.parse_args()
 
 	vehicles = VehicleSpawns(args.file)

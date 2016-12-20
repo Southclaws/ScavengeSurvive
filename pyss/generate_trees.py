@@ -158,7 +158,7 @@ def main():
 
 	parser.add_argument(
 		'-o', '--imageout',
-		default='data/gtasa-blank-1.0-ss-map-trees.jpg',
+		default='data/gtasa-blank-1.0-ss-trees.jpg',
 		help="path to output file for tree map")
 
 	parser.add_argument(
@@ -213,7 +213,7 @@ def main():
 	write_trees(trees, args.directory, r, args.subfolders)
 
 	if os.path.isdir(args.image):
-		draw_tree_map(trees)
+		draw_tree_map(trees, args.image, args.imageout)
 
 
 if __name__ == '__main__':
