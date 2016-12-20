@@ -97,10 +97,10 @@ _cntr_UseWeb(playerid)
 	new
 		cell,
 		ip[16],
-		query[60];
+		query[66];
 
 	GetPlayerIp(playerid, ip, sizeof(ip));
-	format(query, sizeof(query), "iphub.info/api.php?ip=%s", ip);
+	format(query, sizeof(query), "legacy.iphub.info/api.php?ip=%s&source=ScavengeSurvive", ip);
 
 	cell = Iter_Free(PlayerSessionIndex);
 
