@@ -24,3 +24,7 @@ class Player(Model):
 
 def get_account(name):
     return Player.select().where(Player.name == name).get()
+
+
+def get_all_accounts():
+    return Player.select().get()
