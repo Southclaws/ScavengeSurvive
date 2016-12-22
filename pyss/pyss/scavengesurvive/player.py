@@ -4,6 +4,7 @@ from socket import inet_ntoa
 from datetime import datetime
 
 from .player_db import get_account
+from ..sif.item_sequence import ItemSequence
 
 from modio import open
 
@@ -55,8 +56,8 @@ class Player:
         self.interior = None
 
         self._character_data = None
-        self._items_inventory = None
-        self._items_bag = None
+        self.items_inv = None
+        self.items_bag = None
         self.held_item = None
         self.holstered_item = None
 
@@ -71,8 +72,8 @@ class Player:
 
         with open(join(datapath, name) + '.dat', 'r') as f:
             self._character_data = f.get("CHAR").get_data_format()
-            self._items_inventory = f.get("INV0").get_data_format()
-            self._items_bag = f.get("BAG0").get_data_format()
+            self.items_inv = ItemSequence(f.get("INV0").get_data_format())
+            self.items_bag = ItemSequence(f.get("BAG0").get_data_format())
             self.held_item = f.get("HELD").get_data_format()
             self.holstered_item = f.get("HOLS").get_data_format()
 

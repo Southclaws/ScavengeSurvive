@@ -21,6 +21,9 @@ def main():
     print("gpci:", p.gpci)
     print("active:", p.active)
 
+    print("items_inv:", p.items_inv)
+    print("items_bag:", p.items_bag)
+
     print("file_version:", p.file_version)
     print("health:", p.health)
     print("armour:", p.armour)
