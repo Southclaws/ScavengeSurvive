@@ -1,10 +1,11 @@
 class ItemType:
-    def __init__(self, name, uname, model, size,
+    def __init__(self, typeid, name, uname, model, size,
                  offsetRotX, offsetRotY, offsetRotZ,
                  zModelOffset, zButtonOffset, attachPosX, attachPosY,
                  attachPosZ, attachRotX, attachRotY, attachRotZ,
                  useCarryAnim, colour, attachBone, longPickup, maxHitPoints):
 
+        self.typeid = typeid
         self.name = name
         self.uname = uname
         self.model = model
@@ -28,11 +29,9 @@ class ItemType:
 
 
 class Item:
-    def __init__(self, objId, button, type, posX, posY, posZ, rotX, rotY, rotZ,
-                 world, interior, hitPoints, exData, nameEx, geid):
-        self.objId = objId
-        self.button = button
-        self.type = type
+    def __init__(self, typeid, posX, posY, posZ, rotX, rotY, rotZ,
+                 world, interior, hitPoints, exData, nameEx, geid, arrayData):
+        self.typeid = typeid
         self.posX = posX
         self.posY = posY
         self.posZ = posZ
@@ -45,3 +44,7 @@ class Item:
         self.exData = exData
         self.nameEx = nameEx
         self.geid = geid
+        self.arrayData = arrayData
+
+    def __repr__(self):
+        return str(self.typeid)

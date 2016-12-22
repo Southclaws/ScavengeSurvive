@@ -1,26 +1,7 @@
+from .item import Item
+
+
 GEID_LEN = 16
-
-
-class ItemSequenceItem:
-    def __init__(self, item, worldx, worldy, worldz,
-                 rotationx, rotationy, rotationz, virtualworld,
-                 interior, hitpoints, geid, array, arraysize):
-        self.item = item
-        self.worldx = worldx
-        self.worldy = worldy
-        self.worldz = worldz
-        self.rotationx = rotationx
-        self.rotationy = rotationy
-        self.rotationz = rotationz
-        self.virtualworld = virtualworld
-        self.interior = interior
-        self.hitpoints = hitpoints
-        self.geid = geid
-        self.array = array
-        self.arraysize = arraysize
-
-    def __repr__(self):
-        return str(self.item)
 
 
 class ItemSequence:
@@ -102,7 +83,7 @@ class ItemSequence:
 
             itm_list_Count += 1
 
-            result.append(ItemSequenceItem(
+            result.append(Item(
                 itm_list_Item,
                 itm_list_WorldX,
                 itm_list_WorldY,
@@ -113,9 +94,10 @@ class ItemSequence:
                 itm_list_VirtualWorld,
                 itm_list_Interior,
                 itm_list_Hitpoints,
+                0,
+                "",
                 itm_list_GEID,
-                itm_list_Array,
-                itm_list_ArraySize))
+                itm_list_Array))
 
         if itm_arr_Size != array[0]:
             print("itm_arr_Size != array[0] (%d != %d)",
