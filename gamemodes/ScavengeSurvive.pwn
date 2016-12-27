@@ -113,9 +113,9 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
-#include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
-#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
+#include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
+#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
+#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Southclaws/YSI-4.0
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
@@ -133,15 +133,15 @@ public OnGameModeInit()
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
-#include <ctime>					// By RyDeR`:				https://github.com/Southclaw/samp-ctime
+#include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
 
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
-#include <FileManager>				// By JaTochNietDan, 1.5:	http://www.jatochnietdan.com/project/sa-mp/filemanager
+#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
+#include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
-#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
-#include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaw/SIF
+#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaws/SimpleINI
+#include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
+#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
 #include <SIF\extensions\ItemArrayData.pwn>
 #include <SIF\extensions\ItemSerializer.pwn>
 #include <SIF\extensions\InventoryDialog.pwn>
@@ -149,13 +149,13 @@ public OnGameModeInit()
 #include <SIF\extensions\ContainerDialog.pwn>
 #include <SIF\extensions\Craft.pwn>
 #include <SIF\extensions\DebugLabels.pwn>
-#include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
-#include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
-#include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
-#include <Ladder>					// By Southclaw:			https://github.com/Southclaw/Ladder
+#include <WeaponData>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
+#include <Line>						// By Southclaw:			https://github.com/Southclaws/Line
+#include <Zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
+#include <Ladder>					// By Southclaw:			https://github.com/Southclaws/Ladder
 
 native WP_Hash(buffer[], len, const str[]);
-									// By Y_Less:				https://github.com/Southclaw/samp-whirlpool
+									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
 
 
 /*==============================================================================
