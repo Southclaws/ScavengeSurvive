@@ -919,3 +919,11 @@ CMD:vsave(playerid, params[])
 
 	return 1;
 }
+
+CMD:veh(playerid, params[])
+{
+	new ownedvehiclename[MAX_VEHICLE_TYPE_NAME];
+	GetVehicleTypeName(GetVehicleType(pveh_PlayerVehicle[playerid]), ownedvehiclename);
+	ChatMsg(playerid, YELLOW, " >  Vehicle: %s", ownedvehiclename);
+	return 1;
+}
