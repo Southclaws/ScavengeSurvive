@@ -681,7 +681,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 		return 0;
 	}
 
-	ChatMsgLang(playerid, YELLOW, "VEHICLSAVED", vehiclename);
+	ShowActionText(playerid, sprintf(ls(playerid, "VEHICLSAVED"), vehiclename), 5000);
 
 	_SaveVehicle(vehicleid);
 
@@ -699,7 +699,7 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 
 	_UpdatePlayerVehicle(playerid, vehicleid);
 
-	ChatMsgLang(playerid, YELLOW, "VEHICLSAVED", vehiclename);
+	ShowActionText(playerid, sprintf(ls(playerid, "VEHICLSAVED"), vehiclename), 5000);
 
 	return;
 }
