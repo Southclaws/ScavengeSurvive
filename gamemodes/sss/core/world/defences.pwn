@@ -945,6 +945,14 @@ timer MoveDefence[1500](itemid, playerid)
 	return;
 }
 
+hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
+{
+	new ItemType:itemtype = GetItemType(itemid);
+
+	if(def_ItemTypeDefenceType[itemtype] != -1)
+		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
+}
+
 hook OnItemDestroy(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
