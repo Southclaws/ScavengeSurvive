@@ -2798,7 +2798,7 @@ SF_District_Industrial()
 
 	CreateDynamicObject(2002, -1978.52356, 131.39619, 26.68210, 0.00000, 0.00000, 90.00000);
 	CreateDynamic3DTextLabel("XBOX ONE", YELLOW, -1978.52356, 131.39619, 28.2150, 10.0);
-	CreateItem(item_Workbench, -2124.13916, 219.68687, 34.66147, 0.0, 0.0, -128.63998);
+	CreateItem(item_Workbench, -2124.13916, 219.68687, 34.16147, 0.0, 0.0, -128.63998);
 
 	CreateFuelOutlet(-1679.3594, 403.0547, 6.3828, 2.0, 100.0, frandom(35.0));
 	CreateFuelOutlet(-1675.2188, 407.1953, 6.3828, 2.0, 100.0, frandom(35.0));
