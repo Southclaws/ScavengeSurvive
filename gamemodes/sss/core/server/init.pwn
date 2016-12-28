@@ -1243,7 +1243,7 @@ public OnScriptInit()
 	DefineFoodItem(item_RedApple,		4, 4.5,		0, 0, 1);
 	DefineFoodItem(item_Lemon,			4, 4.0,		0, 0, 1);
 	DefineFoodItem(item_PizzaBox,		6, 16.5,	1, 0, 0);
-	DefineFoodItem(item_IceCream,		12, 4.1,	1, 0, 0);
+	DefineFoodItem(item_IceCream,		12, 4.1,	0, 0, 0);
 	DefineFoodItem(item_FishyFingers,	10, 6.3,	1, 0, 0);
 	DefineFoodItem(item_IceCreamBars,	12, 3.9,	0, 0, 0);
 	DefineFoodItem(item_Cereal1,		6, 2.2,		0, 0, 0);
