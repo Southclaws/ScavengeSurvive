@@ -61,11 +61,11 @@ _log_open()
 	return;
 }
 
-hook OnScriptExit()
+/*hook OnScriptExit()
 {
 	fclose(log_File);
 }
-
+*/
 stock _log(text[], printtext = true)
 {
 	if(printtext)
