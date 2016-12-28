@@ -119,6 +119,19 @@ stock GetPlayerSkillTimeModifier(playerid, time, skillname[])
 	return time;
 }
 
+stock Float:GetPlayerSkillValue(playerid, skillname[])
+{
+	if(!IsPlayerConnected(playerid))
+		return 0.0;
+
+	new cell = _skl_SkillNameToID(playerid, skillname);
+
+	if(cell != -1)
+		return skl_PlayerSkills[playerid][cell][skl_amount];
+
+	return 0.0;
+}
+
 _skl_SkillNameToID(playerid, skillname[])
 {
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)

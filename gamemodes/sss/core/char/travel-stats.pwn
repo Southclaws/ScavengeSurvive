@@ -173,6 +173,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & KEY_JUMP)
 	{
 		new animidx = GetPlayerAnimationIndex(playerid);
+
+		if(animidx == 1231 || animidx == 1196)
+		{
+			defer JumpBoost(playerid);
+		}
 		if(animidx == 1195 || animidx == 1197)
 		{
 			AlreadyJumping[playerid] = true;
@@ -188,21 +193,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			{
 				TravelStats[playerid][STAT_JUMPS] += 1;
 
-				new
-					Float:x,
-					Float:y,
-					Float:z,
-					Float:boost;
-
-				GetPlayerVelocity(playerid, x, y, z);
-
-				boost = 1.0 + (1.0 - (float(GetPlayerSkillTimeModifier(playerid, 1000, "Endurance")) / 10000));
-
-				if(boost > 1.5)
-					boost = 1.5;
-
-				SetPlayerVelocity(playerid, x * boost, y * boost, z * boost);
-
 				if((TravelStats[playerid][STAT_JUMPS] / 10) % 10 == 0)
 					PlayerGainSkillExperience(playerid, "Endurance");
 			}
@@ -212,6 +202,23 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			AlreadyJumping[playerid] = false;
 		}
 	}
+}
+
+timer JumpBoost[0](playerid)
+{
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:boost;
+
+	GetPlayerVelocity(playerid, x, y, z);
+
+	boost = 1.0 + (1.3 * GetPlayerSkillValue(playerid, "Endurance"));
+
+	log("boost: %f", boost);
+
+	SetPlayerVelocity(playerid, x * boost, y * boost, z * boost);
 }
 
 hook OnPlayerSave(playerid, filename[])
