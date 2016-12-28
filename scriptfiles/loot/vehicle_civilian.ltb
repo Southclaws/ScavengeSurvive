@@ -1,0 +1,142 @@
+vehicle_civilian, 1.0
+
+# tools, useful stuff, etc
+58.0,	Wrench
+57.0,	Screwdriver
+53.0,	Hammer
+41.0,	Crowbar
+# meds
+10.0,	AntiSepBandage
+20.0,	Bandage
+10.0,	Medkit
+30.0,	Pills
+# bags
+36.0,	Satchel
+32.0,	Daypack
+6.0,	Backpack
+4.0,	MediumBag
+3.0,	Rucksack
+# vehicle stuff
+20.0,	Wheel
+30.0,	GasCan
+28.0,	WheelLock
+25.0,	Headlight
+# other useful stuff
+10.0,	Barbecue
+10.0,	FireworkBox
+45.0,	FireLighter
+34.0,	FishRod
+# melee weapons
+21.0,	GolfClub
+12.0,	Knife
+23.0,	Bat
+22.0,	Spade
+10.0,	Flowers
+14.0,	WalkingCane
+
+# food and drink
+# common
+33.0,	Bottle
+34.0,	CanDrink
+12.0,	AppleJuice
+13.0,	OrangeJuice
+13.0,	MilkCarton
+14.0,	MilkBottle
+12.0,	Bread
+12.0,	BreadLoaf
+10.0,	Pizza
+21.0,	Burger
+24.0,	BurgerBox
+25.0,	Taco
+12.0,	HotDog
+10.0,	BurgerBag
+11.0,	Ketchup
+11.0,	Lemon
+12.0,	Orange
+13.0,	RedApple
+14.0,	Banana
+# kinda rare
+3.0,	IceCreamBars
+3.0,	PizzaOnly
+4.0,	FishyFingers
+4.0,	WrappedMeat
+5.0,	Cereal1
+6.0,	Cereal2
+7.0,	GrnApple
+7.0,	PizzaBox
+2.0,	Ham
+2.0,	IceCream
+2.0,	Meat2
+2.0,	RawFish
+2.0,	Wine2
+# super rare
+5.0,	Champagne
+3.0,	Wine3
+1.0,	Mustard
+1.0,	PisschBox
+1.0,	Steak
+1.0,	whisky
+1.0,	Wine1
+
+# guns and ammo
+43.0,	M9Pistol
+12.0,	DesertEagle
+26.0,	PumpShotgun
+11.0,	SemiAutoRifle
+12.0,	Tec9
+10.0,	Mac10
+10.0,	Sawnoff
+9.0,	M77RMRifle
+8.0,	Model70Rifle
+
+10.0,	Ammo9mmFMJ
+3.0,	Ammo308
+4.0,	Ammo762
+6.0,	AmmoBuck
+
+# clothes etc
+46.0,	Clothes
+10.0,	BoaterHat
+10.0,	BowlerHat
+10.0,	TopHat
+30.0,	CowboyHat
+20.0,	TruckCap
+30.0,	HockeyMask
+
+# crafting, construction and base stuff
+10.0,	Motor
+12.0,	SeedBag
+30.0,	TentPack
+35.0,	PlantPot
+47.0,	Battery
+40.0,	MobilePhone
+34.0,	Fusebox
+
+# misc
+4.0,	Holdall
+4.0,	Suitcase
+5.0,	Fork
+6.0,	Doormat
+9.0,	Knife2
+6.0,	Knife3
+6.0,	Pan
+8.0,	Spatula
+9.0,	Broom
+2.0,	FryingPan
+11.0,	Bucket
+38.0,	Note
+11.0,	Camera
+24.0,	Extinguisher
+21.0,	SprayPaint
+
+# rare and random
+0.01,	WeddingCake
+0.1,	CakeSlice
+0.1,	Tomato
+1.0,	Boot
+1.0,	Cross
+0.5,	WoodLog
+1.0,	Flashlight
+1.0,	LaserPoint
+0.1,	HerpDerp
+1.0,	Flag

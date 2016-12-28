@@ -1,0 +1,44 @@
+airdrop_food_medical, 1.0
+
+# useful stuff
+58.0,	Wrench
+57.0,	Screwdriver
+53.0,	Hammer
+41.0,	Crowbar
+50.0,	GasCan
+46.0,	FireLighter
+25.0,	WoodLog
+12.0,	SeedBag
+30.0,	TentPack
+35.0,	PlantPot
+
+# food and drink
+10.0,	Meat
+60.0,	Burger
+80.0,	CanDrink
+12.0,	AppleJuice
+13.0,	OrangeJuice
+13.0,	MilkCarton
+14.0,	MilkBottle
+12.0,	Bread
+12.0,	BreadLoaf
+10.0,	Pizza
+21.0,	Burger
+10.0,	Tomato
+14.0,	WrappedMeat
+15.0,	Cereal1
+17.0,	GrnApple
+12.0,	Ham
+12.0,	Meat2
+
+# bags
+45.0,	Daypack
+30.0,	Backpack
+28.0,	MediumBag
+1.0,	Rucksack
+
+# meds
+60.0,	Medkit
+70.0,	AntiSepBandage
+40.0,	DoctorBag
+40.0,	Pills

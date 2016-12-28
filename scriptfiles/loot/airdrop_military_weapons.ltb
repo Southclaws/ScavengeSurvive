@@ -1,0 +1,26 @@
+airdrop_military_weapons, 1.0
+
+# weapons
+40.0,	M9Pistol,			2
+20.0,	M9PistolSD,			2
+10.0,	Spas12,				2
+30.0,	MP5,				2
+30.0,	M16Rifle,			1
+25.0,	SemiAutoRifle,		2
+03.0,	SniperRifle,		1
+10.0,	RocketLauncher,		1
+0.05,	Flamer,				1
+0.01,	Minigun,			1
+10.0,	AK47Rifle,			1
+08.0,	M77RMRifle,			1
+
+# ammo
+24.0,	Ammo556,			2
+10.0,	Ammo556Tracer,		2
+22.0,	Ammo357,			3
+10.0,	Ammo357Tracer,		2
+10.0,	AmmoRocket,			1
+26.0,	AmmoFlechette,		3
+14.0,	Ammo762,			2
+0.05,	Ammo50BMG,			2
+12.5,	Ammo308,			3

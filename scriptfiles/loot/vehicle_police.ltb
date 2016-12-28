@@ -1,0 +1,32 @@
+vehicle_police, 1.0
+
+# tools,	useful stuff, etc
+41.0,	Wrench
+45.0,	Screwdriver
+42.0,	Hammer
+44.0,	Crowbar
+20.0,	AntiSepBandage
+15.0,	Medkit
+
+# police stuff
+45.0,	HandCuffs
+35.0,	StunGun
+50.0,	PoliceCap
+
+# weapons
+40.0,	M9Pistol
+30.0,	PumpShotgun
+8.0,	Spas12
+
+# ammo
+20.0,	Ammo9mm
+10.0,	AmmoBuck
+5.0,	Ammo357Tracer
+
+# misc
+12.0,	Battery
+10.0,	Wheel
+21.0,	Flashlight
+12.0,	Headlight
+10.0,	MediumBag
+12.0,	Note

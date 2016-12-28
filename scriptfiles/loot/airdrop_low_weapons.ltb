@@ -1,0 +1,21 @@
+airdrop_low_weapons, 1.0
+
+# melee
+30.0,	Knife
+40.0,	Bat
+
+# guns
+50.0,	M9Pistol
+35.0,	PumpShotgun
+24.0,	Sawnoff
+20.0,	Mac10
+10.0,	M77RMRifle
+
+# ammo
+50.0,	Ammo9mm
+30.0,	AmmoBuck
+10.0,	Ammo357
+40.0,	Ammo9mmFMJ
+35.0,	AmmoFlechette
+40.0,	AmmoHomeBuck
+15.0,	Ammo357Tracer

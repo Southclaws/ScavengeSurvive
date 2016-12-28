@@ -80,33 +80,16 @@ Scavenge and Survive is now provided as a baseline to build from and many older 
 
 Missing features:
 
-#### Loot tables (`scriptfiles/loot/*.ltb`)
-These `.ltb` files are required to define the spawning rate of "loot items" in the world and in vehicles.
-Here is a commented example of a loot-table (`.ltb`) file:
-
-```
-airdrop_food_medical, 1.0
-# first line MUST be in this format:
-# <loot index name>, <spawn multiplier>
-# the spawn multiplier is a modifier which is applied to all items in the file.
-# the rest of the file can now contain loot definitions which consist of:
-# <spawn rate % 0-100>, <item uname>, <optional:per-spawn limit> <optional:server global limit>
-
-# It's not advisable to give items chances above 50%
-# remember to maintain a good balance! The game is no fun when rare items are too common!
-
-# tools
-10.0,	Wrench
-15.0,	Screwdriver
-10.0,	Hammer
-5.0,	Crowbar
-```
-
 #### Entity Storage (items, safeboxes, tents, defences, signs)
 
 You will need to devise your own system for storing safeboxes, tents, defences and signs.
 
 This does not affect players and vehicles, these systems are still public so you can still run a basic server.
+
+#### Tree generator bitmap
+
+This is simply a 6000 x 6000 bitmap that determines tree placement.
+See generate_trees.py for information.
 
 
 ## LICENSE

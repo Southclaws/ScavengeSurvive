@@ -1,0 +1,24 @@
+airdrop_ordnance, 1.0
+
+# crafting
+10.0,	Explosive
+12.0,	IedBomb
+14.0,	Fluctuator
+
+# tnt
+3.0,	TntTimebomb
+8.0,	TntTripMine
+8.0,	TntProxMine
+4.0,	TntPhoneBomb
+
+# ied
+4.0,	IedTimebomb
+11.0,	IedTripMine
+11.0,	IedProxMine
+7.0,	IedPhoneBomb
+
+# emp
+9.0,	EmpTimebomb
+12.0,	EmpTripMine
+15.0,	EmpProxMine
+9.0,	EmpPhoneBomb

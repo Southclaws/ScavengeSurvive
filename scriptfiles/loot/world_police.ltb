@@ -1,0 +1,32 @@
+world_police, 1.0
+
+# tools,	useful stuff, etc
+20.0,	AntiSepBandage
+16.0,	Medkit
+20.0,	MobilePhone
+20.0,	GasMask
+
+# police stuff
+45.0,	HandCuffs
+41.0,	StunGun
+55.0,	PoliceCap
+53.0,	Shield
+10.0,	CowboyHat
+
+# weapons
+40.0,	M9Pistol
+30.0,	PumpShotgun
+14.0,	SemiAutoRifle
+12.0,	M77RMRifle
+
+# ammo
+20.0,	Ammo9mm
+15.0,	AmmoBuck
+12.0,	Ammo357Tracer
+
+# misc
+26.0,	Battery
+10.0,	Wheel
+21.0,	Flashlight
+15.0,	MediumBag
+12.0,	Note

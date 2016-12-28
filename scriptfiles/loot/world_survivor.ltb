@@ -1,0 +1,52 @@
+world_survivor, 1.0
+
+# tools, useful stuff, etc
+10.0,	Wrench
+8.5,	Screwdriver
+11.0,	Hammer
+12.0,	Crowbar
+# meds
+10.0,	Bandage
+25.0,	AntiSepBandage
+35.0,	Medkit
+60.0,	Pills
+# bags
+28.0,	Daypack
+40.0,	Backpack
+25.0,	MediumBag
+10.0,	Rucksack
+# other stuff
+10.0,	Wheel
+38.0,	FireLighter
+34.0,	Campfire
+20.0,	GasCan
+
+# food and drink
+20.0,	Bottle
+20.0,	CanDrink
+15.0,	Pizza
+18.0,	Burger
+10.0,	GasMask
+9.9,	Meat
+
+# weapons and ammo
+40.0,	M9Pistol
+7.0,	Sawnoff
+4.0,	Mac10
+3.0,	Tec9
+9.5,	PumpShotgun
+7.0,	SemiAutoRifle
+9.0,	M77RMRifle
+2.0,	WASR3Rifle
+0.1,	AK47Rifle
+
+10.0,	Ammo556HP
+7.0,	Ammo357
+3.0,	Ammo762
+3.4,	Ammo308
+
+# super rare
+0.05,	Sword
+0.01,	BigSword
+0.01,	DogsBreath
+0.01,	LenKnocksRifle
