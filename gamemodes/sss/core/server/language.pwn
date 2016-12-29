@@ -433,7 +433,7 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 
 			// return english if key not found
 			if(languageid != 0)
-				return GetLanguageString(0, key, encode);
+				strcat(result, GetLanguageString(0, key, encode), MAX_LANGUAGE_ENTRY_LENGTH);
 		}
 	}
 
