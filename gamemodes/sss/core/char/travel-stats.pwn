@@ -216,8 +216,6 @@ timer JumpBoost[0](playerid)
 
 	boost = 1.0 + (1.3 * GetPlayerSkillValue(playerid, "Endurance"));
 
-	log("boost: %f", boost);
-
 	SetPlayerVelocity(playerid, x * boost, y * boost, z * boost);
 }
 
