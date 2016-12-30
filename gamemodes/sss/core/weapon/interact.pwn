@@ -356,7 +356,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	itemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
 	itemtype = GetItemType(itemid);
 
-	if(GetItemTypeWeapon(itemtype) != -1 || GetItemTypeAmmoType(itemtype) != -1)
+	if((GetItemTypeWeapon(itemtype) != -1 && GetItemTypeWeaponCalibre(itemtype) != -1) || GetItemTypeAmmoType(itemtype) != -1)
 	{
 		if(IsValidItem(trans_SelectedItem[playerid]) && trans_SelectedItem[playerid] != itemid)
 		{
