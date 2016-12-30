@@ -536,7 +536,7 @@ Logout(playerid, docombatlogcheck = 1)
 {
 	if(!acc_LoggedIn[playerid])
 	{
-		err("[LOGOUT] %p not logged in.", playerid);
+		log("[LOGOUT] %p not logged in.", playerid);
 		return 0;
 	}
 

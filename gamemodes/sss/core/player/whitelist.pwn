@@ -347,7 +347,7 @@ timer _WhitelistConnect[100](playerid)
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		err("[_WhitelistConnect] ERROR: Player %d not connected any more.", playerid);
+		log("[_WhitelistConnect] Player %d not connected any more.", playerid);
 		return;
 	}
 

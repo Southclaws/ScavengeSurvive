@@ -395,7 +395,7 @@ LoadPlayerVehicle(filename[])
 		}
 
 		if(veh_PrintEach)
-			log("\t[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+			log("[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 	}
 
 	new itemcount;
@@ -444,7 +444,7 @@ LoadPlayerVehicle(filename[])
 	}
 
 	if(veh_PrintEach)
-		log("\t[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		log("[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
 
 	return 1;
 }

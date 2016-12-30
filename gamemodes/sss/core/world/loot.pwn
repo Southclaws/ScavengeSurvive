@@ -154,6 +154,9 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
+	if(samplelistsize == 0)
+		return -1;
+
 	// log("[CreateStaticLootSpawn] index %d size %d: %s", lootindex, samplelistsize, atosr(_:samplelist, samplelistsize));
 
 	for(new i; i < size; i++)
@@ -213,6 +216,9 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
+	if(samplelistsize == 0)
+		return -1;
+
 	// Generate an item from the sample list
 	if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
 		return INVALID_ITEM_ID;
@@ -263,6 +269,9 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		ItemType:itemtype;
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
+
+	if(samplelistsize == 0)
+		return 0;
 
 	while(items < slots && samplelistsize > 0 && GetContainerFreeSlots(containerid) > 0)
 	{

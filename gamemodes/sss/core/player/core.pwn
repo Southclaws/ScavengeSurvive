@@ -149,7 +149,7 @@ timer LoadAccountDelay[5000](playerid)
 {
 	if(!IsPlayerConnected(playerid))
 	{
-		err("Player not connected any more.");
+		log("[LoadAccountDelay] Player %d not connected any more.", playerid);
 		return;
 	}
 

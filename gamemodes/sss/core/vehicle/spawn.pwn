@@ -330,7 +330,7 @@ LoadVehiclesFromFile(file[])
 	fclose(f);
 
 	if(veh_PrintEach)
-		log("\t[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
+		log("[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
 
 	return 1;
 }

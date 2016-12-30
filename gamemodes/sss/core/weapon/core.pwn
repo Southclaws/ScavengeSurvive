@@ -839,6 +839,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	else
 		GetAmmoTypeName(ammotype, ammoname);
 
+	log("itemwepaonid %d, calibre %d, ammotype %d", itemweaponid, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre], ammotype);
+
 	format(exname, sizeof(exname), "%d/%d, %s, %s", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);
 
 	SetItemNameExtra(itemid, exname);
