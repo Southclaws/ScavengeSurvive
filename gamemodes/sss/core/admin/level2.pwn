@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Admin/Level2'...");
-
 	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/duty - go on admin duty\n");
 	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/goto, /get - teleport players\n");
 	RegisterAdminCommand(STAFF_LEVEL_MODERATOR, "/gotopos - go to coordinates\n");

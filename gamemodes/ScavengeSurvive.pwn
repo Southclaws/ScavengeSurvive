@@ -87,7 +87,7 @@ native gpci(playerid, serial[], len);
 
 public OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'Main'...");
+	print("[OnGameModeInit] Initialising 'Main'...");
 
 	OnGameModeInit_Setup();
 
@@ -600,13 +600,13 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	console("\n\n/*==============================================================================\n\n");
+	console("================================================================================");
 	console("    Southclaw's Scavenge and Survive");
 	console("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
 	console("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
 	console("        and you are welcome to redistribute it under certain conditions.");
 	console("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	console("\n\n==============================================================================*/\n\n");
+	console("================================================================================");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -617,7 +617,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	console("\n[OnGameModeInit_Setup] Setting up...");
+	console("[OnGameModeInit_Setup] Setting up...");
 
 	new buildstring[12];
 
@@ -630,7 +630,7 @@ OnGameModeInit_Setup()
 		for(;;){}
 	}
 
-	console("-\n\nInitialising Scavenge and Survive build %d\n\n-", gBuildNumber);
+	console("Initialising Scavenge and Survive build %d", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
@@ -680,7 +680,7 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	console("\n[OnGameModeExit] Shutting down...");
+	console("[OnGameModeExit] Shutting down...");
 
 	if(gCrashOnExit)
 	{
@@ -694,7 +694,7 @@ public OnGameModeExit()
 
 public OnScriptExit()
 {
-	console("\n[OnScriptExit] Shutting down...");
+	console("[OnScriptExit] Shutting down...");
 }
 
 forward SetRestart(seconds);

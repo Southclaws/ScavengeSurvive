@@ -31,15 +31,11 @@
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'loot-loader'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LOOT_TABLES);
 }
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'loot-loader'...");
-
 	new count = LoadLootTableDir(DIRECTORY_LOOT_TABLES);
 
 	if(count == 0)

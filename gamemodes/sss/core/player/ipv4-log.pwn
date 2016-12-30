@@ -49,8 +49,6 @@ DBStatement:	stmt_Ipv4GetRecordsFromName;
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'ipv4-log'...");
-
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_IPV4" (\
 		"FIELD_IPV4_NAME" TEXT,\
 		"FIELD_IPV4_IPV4" INTEGER,\

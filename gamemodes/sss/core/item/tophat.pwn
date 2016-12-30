@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'TopHat'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_TopHat);

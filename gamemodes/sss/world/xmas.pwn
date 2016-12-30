@@ -68,8 +68,6 @@ hook OnGameModeInit()
 	if(m != 12)
 		return 1;
 
-	console("\n[OnGameModeInit] Initialising 'Xmas'...");
-
 	CreateXmasTree(-1214.80579, 1818.40381, 40.71288,   0.00000, 0.00000, 0.00000);
 	CreateXmasTree(-883.66498, 1520.97986, 24.90551,   0.00000, 0.00000, 0.00000);
 	CreateXmasTree(-776.81244, 1557.50903, 26.10019,   0.00000, 0.00000, 0.00000);

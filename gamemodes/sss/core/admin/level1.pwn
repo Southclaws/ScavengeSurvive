@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Admin/Level1'...");
-
 	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/(un)mute - mute/unmute player\n");
 	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/warn - warn a player\n");
 	RegisterAdminCommand(STAFF_LEVEL_GAME_MASTER, "/kick - kick player\n");

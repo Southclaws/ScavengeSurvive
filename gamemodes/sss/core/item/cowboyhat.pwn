@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'cowboyhat'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_CowboyHat);

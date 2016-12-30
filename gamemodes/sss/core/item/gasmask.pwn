@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'gasmask'...");
-
 	new tmp;
 
 	tmp = DefineMaskItem(item_GasMask);

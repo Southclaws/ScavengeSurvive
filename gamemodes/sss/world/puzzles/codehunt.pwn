@@ -64,8 +64,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'CodeHunt'...");
-
 	LoadLockup_SF();
 	SetItemTypeMaxArrayData(item_CodePart, 1);
 }

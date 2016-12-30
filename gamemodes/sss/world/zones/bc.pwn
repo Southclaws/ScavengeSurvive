@@ -27,8 +27,6 @@
 
 Load_BC()
 {
-	console("\n[OnGameModeInit] Initialising 'World/BC'...");
-
 	CreateFuelOutlet(603.48438, 1707.23438, 6.17969, 2.0, 130.0, frandom(40));
 	CreateFuelOutlet(606.89844, 1702.21875, 6.17969, 2.0, 130.0, frandom(40));
 	CreateFuelOutlet(610.25000, 1697.26563, 6.17969, 2.0, 130.0, frandom(40));

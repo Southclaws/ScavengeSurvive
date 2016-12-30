@@ -71,8 +71,6 @@ new
 
 Load_HouseLoot()
 {
-	console("\n[OnGameModeInit] Initialising 'HouseLoot'...");
-
 	new
 		Float:x,
 		Float:y,

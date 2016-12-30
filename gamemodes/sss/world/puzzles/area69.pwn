@@ -81,8 +81,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Area69'...");
-
 	new
 		buttonid[2];
 

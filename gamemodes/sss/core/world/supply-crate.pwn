@@ -76,8 +76,6 @@ Float:		sup_DropZ;
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'SupplyCrate'...");
-
 	sup_UpdateTimer = repeat SupplyDropTimer();
 
 	return 1;

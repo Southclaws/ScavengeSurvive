@@ -109,8 +109,6 @@ DBStatement:	stmt_ReportGetUnread;
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Report'...");
-
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_REPORTS" (\
 		"FIELD_REPORTS_NAME" TEXT,\
 		"FIELD_REPORTS_REASON" TEXT,\

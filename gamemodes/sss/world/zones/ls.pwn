@@ -27,8 +27,6 @@
 
 Load_LS()
 {
-	console("\n[OnGameModeInit] Initialising 'World/LS'...");
-
 	CreateFuelOutlet(1941.65625, -1778.45313, 14.14063, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(1941.65625, -1774.31250, 14.14063, 2.0, 100.0, frandom(40.0));
 	CreateFuelOutlet(1941.65625, -1771.34375, 14.14063, 2.0, 100.0, frandom(40.0));

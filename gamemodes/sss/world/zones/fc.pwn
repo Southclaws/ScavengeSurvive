@@ -27,8 +27,6 @@
 
 Load_FC()
 {
-	console("\n[OnGameModeInit] Initialising 'World/FC'...");
-
 	CreateFuelOutlet(-2246.7031, -2559.7109, 31.0625, 2.0, 100.0, frandom(50.0));
 	CreateFuelOutlet(-2241.7188, -2562.2891, 31.0625, 2.0, 100.0, frandom(50.0));
 

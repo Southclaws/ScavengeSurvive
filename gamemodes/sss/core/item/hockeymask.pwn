@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'HockeyMask'...");
-
 	new tmp;
 
 	tmp = DefineMaskItem(item_HockeyMask);

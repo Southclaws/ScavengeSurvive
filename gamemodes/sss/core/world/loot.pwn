@@ -72,8 +72,6 @@ Float:		loot_SpawnMult = 1.0;
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Loot/Spawn'...");
-
 	GetSettingFloat("server/loot-spawn-multiplier", 1.0, loot_SpawnMult);
 }
 

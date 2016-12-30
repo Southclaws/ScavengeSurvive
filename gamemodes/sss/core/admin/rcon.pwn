@@ -34,7 +34,7 @@ public OnRconCommand(cmd[])
 	{
 		if(params[0] == EOS)
 		{
-			console("\n\tUsage: 'restart <seconds>' enter '0' to restart instantly.");
+			console("\tUsage: 'restart <seconds>' enter '0' to restart instantly.");
 			console("\tIt is not advised to restart instantly.");
 			console("\tEntering a time will display a countdown to all players");
 			console("\tallowing them to prepare for the restart.\n");
@@ -51,7 +51,7 @@ public OnRconCommand(cmd[])
 	{
 		if(params[0] == EOS)
 		{
-			console("\n\tUsage: 'whitelist (<add/remove> <name>) / (on/off/?)'.");
+			console("\tUsage: 'whitelist (<add/remove> <name>) / (on/off/?)'.");
 		}
 		else
 		{

@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'armyhelm'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_HelmArmy);

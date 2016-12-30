@@ -90,8 +90,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'damage.core'...");
-
 	Iter_Init(wnd_Index);
 }
 

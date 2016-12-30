@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'truckcap'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_TruckCap);

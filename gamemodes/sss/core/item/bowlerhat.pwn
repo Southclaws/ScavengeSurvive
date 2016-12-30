@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'bowlerhat'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_BowlerHat);

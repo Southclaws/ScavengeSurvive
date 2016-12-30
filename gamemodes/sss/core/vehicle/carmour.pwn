@@ -58,8 +58,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Carmour'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_CARMOUR);
 
 	LoadCarmour();

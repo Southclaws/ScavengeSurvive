@@ -55,8 +55,6 @@ static	veh_DebugLabelType;
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Vehicle/Spawn'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
 
 	GetSettingFloat("vehicle-spawn/spawn-chance", 4.0, veh_SpawnChance);
@@ -66,8 +64,6 @@ hook OnScriptInit()
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Vehicle/Spawn'...");
-
 	if(veh_SpawnChance == 0.0)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 

@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'boaterhat'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_BoaterHat);

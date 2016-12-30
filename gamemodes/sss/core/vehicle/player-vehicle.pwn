@@ -69,8 +69,6 @@ forward OnVehicleSave(vehicleid);
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Vehicle/PlayerVehicle'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 
 	GetSettingInt("player-vehicle/print-each", true, veh_PrintEach);
@@ -79,8 +77,6 @@ hook OnScriptInit()
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Vehicle/PlayerVehicle'...");
-
 	LoadPlayerVehicles();
 }
 

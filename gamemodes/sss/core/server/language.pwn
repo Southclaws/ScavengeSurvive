@@ -63,8 +63,6 @@ static
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'language'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
 
 	DefineLanguageReplacement("C_YELLOW",					"{FFFF00}");
@@ -146,12 +144,11 @@ stock LoadAllLanguages()
 			next_path[0] = EOS;
 			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_LANGUAGES, item);
 
-			log("Loading language '%s'...", item);
 			entries = LoadLanguage(next_path, item);
 
 			if(entries > 0)
 			{
-				log("Loaded! %d entries, %d missing entries", entries, default_entries - entries);
+				log("Loaded language %s: %d entries, %d missing entries", item, entries, default_entries - entries);
 				languages++;
 			}
 			else

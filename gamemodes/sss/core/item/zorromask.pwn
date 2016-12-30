@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'zorromask'...");
-
 	new tmp;
 
 	tmp = DefineMaskItem(item_ZorroMask);

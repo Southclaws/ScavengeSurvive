@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'XmasHat'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_XmasHat);

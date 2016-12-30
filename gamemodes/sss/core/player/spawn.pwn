@@ -65,8 +65,6 @@ forward OnPlayerSpawnNewChar(playerid);
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Player/Spawn'...");
-
 	new
 		newitems[16][32],
 		newitems_total,

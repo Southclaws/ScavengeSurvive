@@ -106,8 +106,6 @@ forward OnPlayerLogin(playerid);
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Accounts'...");
-
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
 		"FIELD_PLAYER_PASS" TEXT,\
@@ -218,7 +216,7 @@ LoadAccount(playerid)
 
 	if(exists == 0)
 	{
-		log("[LOAD] %p (account does not exist)", playerid);
+		log("[LoadAccount] %p (account does not exist)", playerid);
 		return 0;
 	}
 
@@ -247,7 +245,7 @@ LoadAccount(playerid)
 
 	if(!active)
 	{
-		log("[LOAD] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
+		log("[LoadAccount] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
 		return 4;
 	}
 
@@ -258,7 +256,7 @@ LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			log("[LOAD] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
+			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
 			return 3;
 		}
 	}
@@ -276,11 +274,11 @@ LoadAccount(playerid)
 
 //	if(GetPlayerIpAsInt(playerid) == ipv4)
 //	{
-//		log("[LOAD] %p (account exists, auto login)", playerid);
+//		log("[LoadAccount] %p (account exists, auto login)", playerid);
 //		return 2;
 //	}
 
-	log("[LOAD] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
+	log("[LoadAccount] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
 
 	return 1;
 }

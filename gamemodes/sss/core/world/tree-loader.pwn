@@ -30,15 +30,11 @@
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'tree-loader'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_TREES);
 }
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'tree-loader'...");
-
 	LoadTreesFromFolder(DIRECTORY_TREES);
 }
 

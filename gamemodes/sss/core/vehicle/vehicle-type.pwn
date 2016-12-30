@@ -105,7 +105,7 @@ stock DefineVehicleSpawnGroup(name[])
 	if(veh_GroupTotal == MAX_VEHICLE_GROUP - 1)
 		return -1;
 
-	log("Defining new vehicle spawn group %d: '%s'.", veh_GroupTotal, name);
+	// log("Defining new vehicle spawn group %d: '%s'.", veh_GroupTotal, name);
 
 	strcat(veh_GroupName[veh_GroupTotal], name, MAX_VEHICLE_GROUP_NAME);
 
@@ -117,8 +117,8 @@ stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, F
 	if(veh_TypeTotal == MAX_VEHICLE_TYPE - 1)
 		return -1;
 
-	log("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d, maxfuel %f, fuelcons %f, lootindex %s, trunksize %d, spawnchance %f, flags %d",
-		veh_TypeTotal, modelid, name, group, category, size, maxfuel, fuelcons, lootindex, trunksize, spawnchance, flags);
+	// log("Defining new vehicle type %d: model %d, name '%s', group %d, category %d, size %d, maxfuel %f, fuelcons %f, lootindex %s, trunksize %d, spawnchance %f, flags %d",
+	// 	veh_TypeTotal, modelid, name, group, category, size, maxfuel, fuelcons, lootindex, trunksize, spawnchance, flags);
 
 	veh_TypeData[veh_TypeTotal][veh_modelId] = modelid;
 	strcat(veh_TypeData[veh_TypeTotal][veh_modelId], name, MAX_VEHICLE_TYPE_NAME);

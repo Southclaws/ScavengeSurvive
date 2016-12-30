@@ -77,8 +77,6 @@ forward OnPlayerRemoveBag(playerid, itemid);
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Backpack'...");
-
 	for(new i; i < CNT_MAX; i++)
 	{
 		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;

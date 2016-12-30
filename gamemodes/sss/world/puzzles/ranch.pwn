@@ -48,8 +48,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Ranch'...");
-
 	_Ranch_LoadObjects();
 
 	new buttonid[2];

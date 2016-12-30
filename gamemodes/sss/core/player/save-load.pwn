@@ -75,8 +75,6 @@ forward OnPlayerLoad(playerid, filename[]);
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'SaveLoad'...");
-
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
 }
 
@@ -719,7 +717,7 @@ hook OnScriptExit()
 {
 	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
 
-	console("\n[OnScriptExit] Shutting down 'SaveLoad'...");
+	console("[OnScriptExit] Shutting down 'SaveLoad'...");
 
 	new
 		name[MAX_PLAYER_NAME],

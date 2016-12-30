@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'policecap'...");
-
 	new tmp;
 
 	tmp = DefineHatItem(item_PoliceHelm);

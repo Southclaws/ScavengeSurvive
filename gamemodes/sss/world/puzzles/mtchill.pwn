@@ -48,8 +48,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'MtChill'...");
-
 	new buttons[1];
 
 

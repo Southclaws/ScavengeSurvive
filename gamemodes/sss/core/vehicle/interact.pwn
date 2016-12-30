@@ -48,8 +48,6 @@ forward OnPlayerLeaveVehArea(playerid, vehicleid);
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Vehicle/Interact'...");
-
 	Iter_Init(varea_NearIndex);
 }
 

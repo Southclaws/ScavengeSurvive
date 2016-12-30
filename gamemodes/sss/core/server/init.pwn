@@ -551,8 +551,6 @@ new MiniMapOverlay;
 
 public OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Init'...");
-
 	// SETTINGS
 	if(!gPauseMap)
 		MiniMapOverlay = GangZoneCreate(-6000, -6000, 6000, 6000);

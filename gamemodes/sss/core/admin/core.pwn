@@ -88,8 +88,6 @@ static
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Admin/Core'...");
-
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
 		"FIELD_ADMINS_NAME" TEXT,\
 		"FIELD_ADMINS_LEVEL" INTEGER)"));

@@ -89,9 +89,7 @@ forward OnDefenceMove(itemid);
 
 
 hook OnScriptInit()
-{
-	console("\n[OnScriptInit] Initialising 'Defences'...");
-}
+{}
 
 hook OnPlayerConnect(playerid)
 {

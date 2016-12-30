@@ -75,8 +75,6 @@ new
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Weather'...");
-
 	// Todo: custom weather array loaded from settings
 
 	weather_Current = random(sizeof(WeatherData));

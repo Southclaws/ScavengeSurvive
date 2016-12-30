@@ -49,8 +49,6 @@ static
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'IRC'...");
-
 	GetSettingInt		("irc/use-irc",		0,					irc_Active);
 	GetSettingString	("irc/serv",		"irc.tl",			irc_Serv);
 	GetSettingInt		("irc/port",		6667,				irc_Port);
@@ -93,7 +91,7 @@ hook OnScriptExit()
 {
 	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/irc.pwn");
 
-	console("\n[OnScriptExit] Shutting down 'IRC'...");
+	console("[OnScriptExit] Shutting down 'IRC'...");
 
 	if(!irc_Active)
 		return 1;

@@ -27,8 +27,6 @@
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'Admin/Level4'...");
-
 	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/restart - restart the server\n");
 	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/setadmin - set a player's staff level\n");
 	RegisterAdminCommand(STAFF_LEVEL_LEAD, "/setpinglimit - set ping limit\n");

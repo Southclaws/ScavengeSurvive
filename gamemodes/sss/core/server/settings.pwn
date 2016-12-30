@@ -79,7 +79,7 @@ stock GetSettingInt(path[], defaultvalue, &output, printsetting = true, openfile
 		output = file_GetVal(path);
 
 		if(printsetting)
-			log("[LOAD] %s: %d", path, output);
+			log("[SETTING] %s: %d", path, output);
 	}
 
 	if(openfile)
@@ -105,7 +105,7 @@ stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = 
 		output = file_GetFloat(path);
 
 		if(printsetting)
-			log("[LOAD] %s: %f", path, output);
+			log("[SETTING] %s: %f", path, output);
 	}
 
 	if(openfile)
@@ -132,7 +132,7 @@ stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output
 		file_GetStr(path, output, maxsize);
 
 		if(printsetting)
-			log("[LOAD] %s: %s", path, output);
+			log("[SETTING] %s: %s", path, output);
 	}
 
 	if(openfile)

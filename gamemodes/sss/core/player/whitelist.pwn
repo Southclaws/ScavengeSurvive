@@ -45,8 +45,6 @@ DBStatement:	stmt_WhitelistDelete;
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'Whitelist'...");
-
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_WHITELIST" (\
 		"FIELD_WHITELIST_NAME" TEXT)"));
 

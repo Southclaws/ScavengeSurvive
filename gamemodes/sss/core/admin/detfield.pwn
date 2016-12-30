@@ -125,8 +125,6 @@ DBStatement:det_Stmt_DetfieldGetNameLogs;
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'detfield'...");
-
 	det_Database = db_open_persistent(DETFIELD_DATABASE);
 
 	db_free_result(db_query(det_Database, "CREATE TABLE IF NOT EXISTS "DETFIELD_TABLE_MAIN" (\

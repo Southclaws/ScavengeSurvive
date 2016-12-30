@@ -38,8 +38,6 @@ DBStatement:	stmt_WhitelistGetAll;
 
 hook OnScriptInit()
 {
-	console("\n[OnScriptInit] Initialising 'gpci-whitelist'...");
-
 	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_GPCI_WHITELIST" (\
 		"FIELD_WHITELIST_HASH" TEXT)"));
 

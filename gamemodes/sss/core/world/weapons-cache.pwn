@@ -48,8 +48,6 @@ Float:		wepc_CurrentPosZ,
 
 hook OnGameModeInit()
 {
-	console("\n[OnGameModeInit] Initialising 'WeaponsCache'...");
-
 	defer WeaponsCacheTimer();
 	return 1;
 }
