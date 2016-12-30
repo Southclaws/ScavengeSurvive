@@ -376,8 +376,10 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 	tooltype = GetItemType(tool);
 	GetItemRot(itemid, angle, angle, angle);
 
+	angle = absoluteangle((angle - def_TypeData[defencetype][def_verticalRotZ]) - GetButtonAngleToPlayer(playerid, GetItemButtonID(itemid)));
+
 	// ensures the player can only perform these actions on the back-side.
-	if(!(90.0 < absoluteangle(angle - GetButtonAngleToPlayer(playerid, GetItemButtonID(itemid))) < 270.0))
+	if(!(90.0 < angle < 270.0))
 		return 0;
 
 	if(tooltype == item_Crowbar)

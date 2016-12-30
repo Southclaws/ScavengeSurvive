@@ -1253,15 +1253,15 @@ public OnScriptInit()
 
 
 	// DEFENSIVE ITEM TYPE DEFINITIONS
-	DefineDefenceItem(item_Door,		0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	-0.0331);
-	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0,	0.0, 90.0, 0.0,		-0.0092);
-	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0,		270.0, 0.0, 0.0,	1.2007);
-	DefineDefenceItem(item_CrateDoor,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.4738);
-	DefineDefenceItem(item_CorPanel,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.1859);
-	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0,	180.0, 90.0, 0.0,	1.3966);
-	DefineDefenceItem(item_InsulDoor,	0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	2.1143);
-	DefineDefenceItem(item_InsulPanel,	0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	0.5998);
-	DefineDefenceItem(item_SmallPanel,	90.0, 0.0, 0.0,		0.0, 0.0, 0.0,		1.4401);
+	DefineDefenceItem(item_Door,		0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	1.26817);
+	DefineDefenceItem(item_MetPanel,	90.0, 90.0, 0.0,	0.0, 90.0, 0.0,		0.02708);
+	DefineDefenceItem(item_MetalGate,	0.0, 0.0, 0.0,		270.0, 0.0, 0.0,	1.20759);
+	DefineDefenceItem(item_CrateDoor,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.52665);
+	DefineDefenceItem(item_CorPanel,	0.0, 90.0, 0.0,		90.0, 90.0, 0.0,	1.21428);
+	DefineDefenceItem(item_ShipDoor,	90.0, 90.0, 0.0,	180.0, 90.0, 0.0,	1.39421);
+	DefineDefenceItem(item_InsulDoor,	0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	1.72882);
+	DefineDefenceItem(item_InsulPanel,	0.0, 0.0, 90.0,		0.0, 90.0, 90.0,	1.71953);
+	DefineDefenceItem(item_SmallPanel,	90.0, 0.0, 0.0,		0.0, 0.0, 0.0,		0.48333);
 
 
 	// SAFEBOX ITEM TYPE DEFINITIONS
