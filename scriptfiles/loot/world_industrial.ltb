@@ -40,10 +40,7 @@ world_industrial, 1.0
 3.0,	MetPanel
 4.0,	CorPanel
 4.0,	CrateDoor
-5.0,	RustyDoor
-5.0,	RustyMetal
 2.0,	WoodPanel
-2.0,	MetalStand
 
 # misc
 11.0,	CanDrink
