@@ -109,7 +109,7 @@ hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 
 	if(wm_MachineWaterMachine[machineid] != -1)
 	{
-		dbg(HANDLER, 1, "[OnPlayerUseMachine] machineid %d water machine %d interactiontype %d", machineid, wm_MachineWaterMachine[machineid], interactiontype);
+		dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 1, "[OnPlayerUseMachine] machineid %d water machine %d interactiontype %d", machineid, wm_MachineWaterMachine[machineid], interactiontype);
 		if(wm_Data[wm_MachineWaterMachine[machineid]][wm_machineId] == machineid)
 		{
 			_wm_PlayerUseWaterMachine(playerid, wm_MachineWaterMachine[machineid], interactiontype);
@@ -125,7 +125,7 @@ hook OnPlayerUseMachine(playerid, machineid, interactiontype)
 
 _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 {
-	dbg(HANDLER, 1, "[_wm_PlayerUseWaterMachine] playerid %d watermachineid %d interactiontype %d", playerid, watermachineid, interactiontype);
+	dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 1, "[_wm_PlayerUseWaterMachine] playerid %d watermachineid %d interactiontype %d", playerid, watermachineid, interactiontype);
 
 	if(wm_Data[watermachineid][wm_cooking])
 	{
@@ -148,7 +148,7 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 	{
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
-			dbg(HANDLER, 1, "[_wm_PlayerUseWaterMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_WATER_MACHINE_FUEL), floatround(wm_Data[watermachineid][wm_fuel]));
+			dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 1, "[_wm_PlayerUseWaterMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_WATER_MACHINE_FUEL), floatround(wm_Data[watermachineid][wm_fuel]));
 			StartHoldAction(playerid, floatround(MAX_WATER_MACHINE_FUEL * 1000), floatround(wm_Data[watermachineid][wm_fuel] * 1000));
 			return 0;
 		}
@@ -209,7 +209,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 	if(wm_CurrentWaterMachine[playerid] != -1)
 	{
-		dbg(HANDLER, 3, "[OnHoldActionUpdate] watermachineid %d progress %d", wm_CurrentWaterMachine[playerid], progress);
+		dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 3, "[OnHoldActionUpdate] watermachineid %d progress %d", wm_CurrentWaterMachine[playerid], progress);
 
 		new itemid = GetPlayerItem(playerid);
 
@@ -217,7 +217,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
-				dbg(HANDLER, 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
 				StopHoldAction(playerid);
 				wm_CurrentWaterMachine[playerid] = -1;
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -230,14 +230,14 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		if(fuel <= 0.0)
 		{
-			dbg(HANDLER, 3, "[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
+			dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 3, "[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
 			wm_CurrentWaterMachine[playerid] = -1;
 			HideActionText(playerid);
 		}
 		else
 		{
-			dbg(HANDLER, 3, "[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] + 1.0);
+			dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 3, "[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] + 1.0);
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] += 1.1;
@@ -250,7 +250,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 _wm_StartCooking(watermachineid)
 {
-	dbg(HANDLER, 1, "[_wm_PlayerUseWaterMachine] watermachineid %d", watermachineid);
+	dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 1, "[_wm_PlayerUseWaterMachine] watermachineid %d", watermachineid);
 	new itemcount;
 
 	for(new j = GetContainerSize(GetMachineContainerID(wm_Data[watermachineid][wm_machineId])); itemcount < j; itemcount++)
@@ -264,7 +264,7 @@ _wm_StartCooking(watermachineid)
 
 	// cook time = 60 seconds per item plus random 20 seconds
 	new cooktime = (itemcount * 60) + random(20);
-	dbg(HANDLER, 2, "[_wm_PlayerUseWaterMachine] itemcount %d cooktime %ds", itemcount, cooktime);
+	dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 2, "[_wm_PlayerUseWaterMachine] itemcount %d cooktime %ds", itemcount, cooktime);
 
 	// if there's not enough time left, don't allow a new cook to start.
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
@@ -282,7 +282,7 @@ _wm_StartCooking(watermachineid)
 
 	cooktime *= 1000; // convert to ms
 
-	dbg(HANDLER, 2, "[_wm_PlayerUseWaterMachine] started cooking...");
+	dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 2, "[_wm_PlayerUseWaterMachine] started cooking...");
 	wm_Data[watermachineid][wm_cooking] = true;
 	DestroyDynamicObject(wm_Data[watermachineid][wm_smoke]);
 	wm_Data[watermachineid][wm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
@@ -297,7 +297,7 @@ _wm_StartCooking(watermachineid)
 timer _wm_FinishCooking[cooktime](watermachineid, cooktime)
 {
 #pragma unused cooktime
-	dbg(HANDLER, 1, "[_wm_PlayerUseWaterMachine] finished cooking...");
+	dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 1, "[_wm_PlayerUseWaterMachine] finished cooking...");
 	new
 		itemid,
 		containerid = GetMachineContainerID(wm_Data[watermachineid][wm_machineId]),
@@ -307,7 +307,7 @@ timer _wm_FinishCooking[cooktime](watermachineid, cooktime)
 	{
 		itemid = GetContainerSlotItem(containerid, i);
 
-		dbg(HANDLER, 3, "[_wm_PlayerUseWaterMachine] slot %d: destroying %d", i, itemid);
+		dbg(\"gamemodes/sss/core/world/water-purifier.pwn\", 3, "[_wm_PlayerUseWaterMachine] slot %d: destroying %d", i, itemid);
 
 		wm_Data[watermachineid][wm_fuel] -= WATER_MACHINE_FUEL_USAGE;
 

@@ -212,8 +212,7 @@ CMD:debug(playerid, params[])
 {
 	new
 		handlername[32],
-		level,
-		handler;
+		level;
 
 	if(sscanf(params, "s[32]d", handlername, level))
 	{
@@ -221,23 +220,7 @@ CMD:debug(playerid, params[])
 		return 1;
 	}
 
-	handler = debug_handler_search(handlername);
-
-	if(handler == -1)
-	{
-		ChatMsg(playerid, YELLOW, "Invalid handler");
-		return 1;
-	}
-
-	if(!(0 <= level <= 10))
-	{
-		ChatMsg(playerid, YELLOW, "Invalid level");
-		return 1;
-	}
-
-	debug_get_handler_name(handler, handlername);
-
-	debug_set_level(handler, level);
+	debug_set_level(handlername, level);
 
 	ChatMsg(playerid, YELLOW, " >  SS debug level for '%s': %d", handlername, level);
 

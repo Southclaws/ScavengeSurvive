@@ -84,7 +84,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 stock TweakItem(playerid, itemid)
 {
-	dbg(HANDLER, 1, "TweakItem %d %d", playerid, itemid);
+	dbg(\"gamemodes/sss/core/world/item-tweak.pwn\", 1, "TweakItem %d %d", playerid, itemid);
 
 	new
 		geid[GEID_LEN],

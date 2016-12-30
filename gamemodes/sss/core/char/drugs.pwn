@@ -50,9 +50,6 @@ static
 	drug_PlayerDrugData[MAX_PLAYERS][MAX_DRUG_TYPE][E_PLAYER_DRUG_DATA];
 
 
-static HANDLER = -1;
-
-
 forward OnPlayerDrugWearOff(playerid, drugtype);
 
 
@@ -107,7 +104,7 @@ stock DefineDrugType(name[], duration)
 
 stock ApplyDrug(playerid, drugtype, customduration = -1)
 {
-	dbg(HANDLER, 1, "[ApplyDrug] playerid:%d drugtype:%d customduration:%d", playerid, drugtype, customduration);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 1, "[ApplyDrug] playerid:%d drugtype:%d customduration:%d", playerid, drugtype, customduration);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -132,7 +129,7 @@ stock ApplyDrug(playerid, drugtype, customduration = -1)
 
 stock RemoveDrug(playerid, drugtype)
 {
-	dbg(HANDLER, 1, "[RemoveDrug] playerid:%d drugtype:%d", playerid, drugtype);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 1, "[RemoveDrug] playerid:%d drugtype:%d", playerid, drugtype);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -185,7 +182,7 @@ hook OnPlayerScriptUpdate(playerid)
 
 stock IsPlayerUnderDrugEffect(playerid, drugtype)
 {
-	dbg(HANDLER, 2, "[IsPlayerUnderDrugEffect] playerid:%d drugtype:%d", playerid, drugtype);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 2, "[IsPlayerUnderDrugEffect] playerid:%d drugtype:%d", playerid, drugtype);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -197,7 +194,7 @@ stock IsPlayerUnderDrugEffect(playerid, drugtype)
 
 stock GetDrugName(drugtype, name[])
 {
-	dbg(HANDLER, 2, "[GetDrugName] drugtype:%d", drugtype);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 2, "[GetDrugName] drugtype:%d", drugtype);
 	if(!(0 <= drugtype < drug_TypeTotal))
 		return 0;
 
@@ -209,7 +206,7 @@ stock GetDrugName(drugtype, name[])
 
 stock GetPlayerDrugsList(playerid, output[])
 {
-	dbg(HANDLER, 2, "[GetPlayerDrugsList] playerid:%d", playerid);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 2, "[GetPlayerDrugsList] playerid:%d", playerid);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -226,7 +223,7 @@ stock GetPlayerDrugsList(playerid, output[])
 
 stock GetPlayerDrugsAsArray(playerid, output[])
 {
-	dbg(HANDLER, 2, "[GetPlayerDrugsAsArray] playerid:%d", playerid);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 2, "[GetPlayerDrugsAsArray] playerid:%d", playerid);
 /*
 	max size: 1 + MAX_DRUG_TYPE * 2
 	header: 1 cell
@@ -254,7 +251,7 @@ stock GetPlayerDrugsAsArray(playerid, output[])
 
 stock SetPlayerDrugsFromArray(playerid, input[], length)
 {
-	dbg(HANDLER, 2, "[SetPlayerDrugsFromArray] playerid:%d length:%d", playerid, length);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 2, "[SetPlayerDrugsFromArray] playerid:%d length:%d", playerid, length);
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -293,7 +290,7 @@ hook OnPlayerSave(playerid, filename[])
 {
 	dbg("global", CORE, "[OnPlayerSave] in /gamemodes/sss/core/char/drugs.pwn");
 
-	dbg(HANDLER, 1, "[OnPlayerSave] playerid:%d", playerid);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 1, "[OnPlayerSave] playerid:%d", playerid);
 
 	new
 		length,
@@ -308,7 +305,7 @@ hook OnPlayerLoad(playerid, filename[])
 {
 	dbg("global", CORE, "[OnPlayerLoad] in /gamemodes/sss/core/char/drugs.pwn");
 
-	dbg(HANDLER, 1, "[OnPlayerLoad] playerid:%d", playerid);
+	dbg(\"gamemodes/sss/core/char/drugs.pwn\", 1, "[OnPlayerLoad] playerid:%d", playerid);
 
 	new
 		data[1 + (MAX_DRUG_TYPE * 2)],

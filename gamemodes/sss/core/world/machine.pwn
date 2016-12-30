@@ -142,7 +142,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 _mach_PlayerUseMachine(playerid, itemid)
 {
-	dbg(HANDLER, 1, "[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
+	dbg(\"gamemodes/sss/core/world/machine.pwn\", 1, "[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
 
 	mach_CurrentMachine[playerid] = itemid;
 	mach_MachineInteractTick[playerid] = GetTickCount();

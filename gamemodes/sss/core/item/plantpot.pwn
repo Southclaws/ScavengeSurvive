@@ -25,9 +25,6 @@
 #include <YSI\y_hooks>
 
 
-static HANDLER = -1;
-
-
 enum e_plant_pot_data
 {
 	E_PLANT_POT_ACTIVE,
@@ -50,7 +47,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(GetItemType(withitemid) == item_PlantPot)
 	{
-		dbg(HANDLER, 1, "[_pot_UseItemWithItem] player %d itemid %d withitemid %d", playerid, itemid, withitemid);
+		dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[_pot_UseItemWithItem] player %d itemid %d withitemid %d", playerid, itemid, withitemid);
 		new
 			ItemType:itemtype = GetItemType(itemid),
 			potdata[e_plant_pot_data];
@@ -91,7 +88,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			else
 			{
 				new Float:transfer = (amount < 0.1) ? amount : 0.1;
-				dbg(HANDLER, 2, "[_pot_UseItemWithItem] amount %f transfer %f floatround(transfer * 10) = %d", amount, transfer, floatround(transfer * 10));
+				dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 2, "[_pot_UseItemWithItem] amount %f transfer %f floatround(transfer * 10) = %d", amount, transfer, floatround(transfer * 10));
 
 				SetItemArrayDataAtCell(withitemid, GetItemArrayDataAtCell(withitemid, E_PLANT_POT_WATER) + floatround(transfer * 10), E_PLANT_POT_WATER, 1);
 				SetLiquidItemLiquidAmount(itemid, amount - transfer);
@@ -159,7 +156,7 @@ _pot_Load(itemid)
 		return;
 	}
 
-	dbg(HANDLER, 1, "[_pot_Load] itemid %d", itemid);
+	dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[_pot_Load] itemid %d", itemid);
 	new potdata[e_plant_pot_data];
 
 	GetItemArrayData(itemid, potdata);
@@ -170,7 +167,7 @@ _pot_Load(itemid)
 		return;
 	}
 
-	dbg(HANDLER, 1, "[_pot_Load] pot active, water: %d", potdata[E_PLANT_POT_WATER]);
+	dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[_pot_Load] pot active, water: %d", potdata[E_PLANT_POT_WATER]);
 	if(potdata[E_PLANT_POT_WATER] > 0)
 	{
 		// Sufficiently watered? Grow and drink some water.
@@ -186,7 +183,7 @@ _pot_Load(itemid)
 	// If growth is reduced to 0, Die :(
 	if(potdata[E_PLANT_POT_GROWTH] <= 0)
 	{
-		dbg(HANDLER, 1, "[_pot_Load] growth: %d dying.", potdata[E_PLANT_POT_GROWTH]);
+		dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[_pot_Load] growth: %d dying.", potdata[E_PLANT_POT_GROWTH]);
 		potdata[E_PLANT_POT_ACTIVE] = 0;
 		potdata[E_PLANT_POT_SEED_TYPE] = -1;
 		potdata[E_PLANT_POT_WATER] = 0;
@@ -203,7 +200,7 @@ _pot_Load(itemid)
 
 _pot_UpdateModel(itemid, bool:toggle = true)
 {
-	dbg(HANDLER, 1, "[_pot_UpdateModel] itemid %d toggle %d", itemid, toggle);
+	dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[_pot_UpdateModel] itemid %d toggle %d", itemid, toggle);
 	if(!IsItemInWorld(itemid))
 		toggle = false;
 
@@ -281,16 +278,16 @@ hook OnItemCreateInWorld(itemid)
 
 	if(GetItemType(itemid) == item_PlantPot)
 	{
-		dbg(HANDLER, 1, "[OnItemCreateInWorld] PlantPot itemid %d", itemid);
+		dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 1, "[OnItemCreateInWorld] PlantPot itemid %d", itemid);
 
 		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" for status");
 
 		if(gServerInitialising)
 		{
-			dbg(HANDLER, 2, "[OnItemCreateInWorld] gServerInitialising true");
+			dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 2, "[OnItemCreateInWorld] gServerInitialising true");
 			if(GetItemLootIndex(itemid) != -1)
 			{
-				dbg(HANDLER, 2, "[OnItemCreateInWorld] ItemLootIndex != -1");
+				dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 2, "[OnItemCreateInWorld] ItemLootIndex != -1");
 				new potdata[e_plant_pot_data];
 
 				potdata[E_PLANT_POT_ACTIVE] = 0;
@@ -303,7 +300,7 @@ hook OnItemCreateInWorld(itemid)
 			}
 			else
 			{
-				dbg(HANDLER, 2, "[OnItemCreateInWorld] ItemLootIndex == -1");
+				dbg(\"gamemodes/sss/core/item/plantpot.pwn\", 2, "[OnItemCreateInWorld] ItemLootIndex == -1");
 				_pot_Load(itemid);
 			}
 		}

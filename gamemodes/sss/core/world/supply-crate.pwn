@@ -132,7 +132,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// a drop starting and landing.
 	if(sup_CurrentType != -1)
 	{
-		dbg(HANDLER, 1, "[SupplyDropTimer] Current type != -1: %d", sup_CurrentType);
+		dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyDropTimer] Current type != -1: %d", sup_CurrentType);
 		return;
 	}
 
@@ -150,7 +150,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// cooldown time, the script just waits for the next timer call.
 	if(GetTickCountDifference(GetTickCount(), sup_LastSupplyDrop) < SUPPLY_DROP_COOLDOWN)
 	{
-		dbg(HANDLER, 1, "[SupplyDropTimer] Cooling down: %d/%d.", GetTickCountDifference(GetTickCount(), sup_LastSupplyDrop), SUPPLY_DROP_COOLDOWN);
+		dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyDropTimer] Cooling down: %d/%d.", GetTickCountDifference(GetTickCount(), sup_LastSupplyDrop), SUPPLY_DROP_COOLDOWN);
 		return;
 	}
 
@@ -174,7 +174,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		// the next.
 		if(Iter_Count(Player) < sup_TypeData[type][supt_required])
 		{
-			dbg(HANDLER, 1, "[SupplyDropTimer] Checking %d: Not enough players (%d < %d).", type, Iter_Count(Player), sup_TypeData[type][supt_required]);
+			dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyDropTimer] Checking %d: Not enough players (%d < %d).", type, Iter_Count(Player), sup_TypeData[type][supt_required]);
 			type++;
 			continue;
 		}
@@ -192,7 +192,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 		// offset value, the code skips this drop type.
 		if(GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]) < sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset])
 		{
-			dbg(HANDLER, 1, "[SupplyDropTimer] Checking %d: Last drop too soon (%d < %d).", type, GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]), sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset]);
+			dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyDropTimer] Checking %d: Last drop too soon (%d < %d).", type, GetTickCountDifference(GetTickCount(), sup_TypeData[type][supt_lastDrop]), sup_TypeData[type][supt_interval] + sup_TypeData[type][supt_offset]);
 			type++;
 			continue;
 		}
@@ -205,7 +205,7 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 	// they either don't meet the player requirement or are still cooling down.
 	if(type == sup_TypeTotal)
 	{
-		dbg(HANDLER, 1, "[SupplyDropTimer] No supply drop type available.");
+		dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyDropTimer] No supply drop type available.");
 		return;
 	}
 
@@ -259,11 +259,11 @@ timer SupplyDropTimer[SUPPLY_DROP_TICK_INTERVAL]()
 
 SupplyCrateDrop(type, Float:x, Float:y, Float:z)
 {
-	dbg(HANDLER, 1, "[SupplyCrateDrop] Dropping supply crate of type %d at %f %f %f", type, x, y, z);
+	dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyCrateDrop] Dropping supply crate of type %d at %f %f %f", type, x, y, z);
 
 	if(sup_CurrentType != -1)
 	{
-		dbg(HANDLER, 1, "[SupplyCrateDrop] ERROR: sup_CurrentType is not -1 (%d)", sup_CurrentType);
+		dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyCrateDrop] ERROR: sup_CurrentType is not -1 (%d)", sup_CurrentType);
 		return 0;
 	}
 
@@ -286,7 +286,7 @@ SupplyCrateDrop(type, Float:x, Float:y, Float:z)
 
 SupplyCrateLand()
 {
-	dbg(HANDLER, 1, "[SupplyCrateLand] Supply crate landed, type: %d", sup_CurrentType);
+	dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 1, "[SupplyCrateLand] Supply crate landed, type: %d", sup_CurrentType);
 
 	if(sup_CurrentType == -1)
 	{
@@ -317,7 +317,7 @@ SupplyCrateLand()
 
 	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
 	FillContainerWithLoot(containerid, 4 + random(16), lootindex);
-	dbg(HANDLER, 2, "[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), containerid);
+	dbg(\"gamemodes/sss/core/world/supply-crate.pwn\", 2, "[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), containerid);
 
 	DestroyDynamicObject(sup_ObjPara);
 	sup_CurrentType = -1;

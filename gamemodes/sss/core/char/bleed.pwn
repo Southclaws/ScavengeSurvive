@@ -71,7 +71,7 @@ hook OnPlayerScriptUpdate(playerid)
 		if(random(100) < 50)
 			bld_BleedRate[playerid] -= slowrate;
 
-		if(debug_conditional(HANDLER, 1))
+		if(debug_conditional(\"gamemodes/sss/core/char/bleed.pwn\", 1))
 			ShowActionText(playerid, sprintf("HP: %f Bleed-rate: %f~n~Wounds %d Bleed slow-rate: %f", hp, bld_BleedRate[playerid], GetPlayerWounds(playerid)));
 
 		if(!IsPlayerInAnyVehicle(playerid))
