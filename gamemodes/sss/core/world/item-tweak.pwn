@@ -260,6 +260,42 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
+hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
+hook OnPlayerStateChange(playerid, newstate, oldstate)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
+hook OnPlayerDropItem(playerid, itemid)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
+hook OnPlayerGiveItem(playerid, targetid, itemid)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
+hook OnPlayerOpenInventory(playerid)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
+hook OnPlayerOpenContainer(playerid, containerid)
+{
+	if(IsValidItem(twk_Item[playerid]))
+		_twk_Commit(playerid);
+}
+
 _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:ry, */Float:rotation)
 {
 	if(!IsPlayerConnected(playerid))
