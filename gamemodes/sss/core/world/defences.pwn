@@ -88,9 +88,6 @@ forward OnDefenceMove(itemid);
 ==============================================================================*/
 
 
-hook OnScriptInit()
-{}
-
 hook OnPlayerConnect(playerid)
 {
 	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
@@ -126,7 +123,7 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	return def_TypeTotal++;
 }
 
-CreateDefence(itemid)
+ActivateDefenceItem(itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -146,12 +143,10 @@ CreateDefence(itemid)
 
 	new
 		itemtypename[ITM_MAX_NAME],
-		itemdata[e_DEFENCE_DATA],
-		Float:rz;
+		itemdata[e_DEFENCE_DATA];
 
 	GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 	GetItemArrayData(itemid, itemdata);
-	GetItemRot(itemid, rz, rz, rz);
 
 	itemdata[def_active] = true;
 
@@ -159,49 +154,13 @@ CreateDefence(itemid)
 
 	if(itemdata[def_motor])
 	{
-		if(itemdata[def_pose] == DEFENCE_POSE_HORIZONTAL)
-		{
-			SetItemRot(itemid,
-				def_TypeData[defencetype][def_horizontalRotX],
-				def_TypeData[defencetype][def_horizontalRotY],
-				def_TypeData[defencetype][def_horizontalRotZ] + rz);
-
-			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
-			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
-		}
-		else
-		{
-			SetItemRot(itemid,
-				def_TypeData[defencetype][def_verticalRotX],
-				def_TypeData[defencetype][def_verticalRotY],
-				def_TypeData[defencetype][def_verticalRotZ] + rz);
-
-			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
-			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
-		}
+		SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
+		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 	}
 	else
 	{
-		if(itemdata[def_pose] == DEFENCE_POSE_HORIZONTAL)
-		{
-			SetItemRot(itemid,
-				def_TypeData[defencetype][def_horizontalRotX],
-				def_TypeData[defencetype][def_horizontalRotY],
-				def_TypeData[defencetype][def_horizontalRotZ] + rz);
-
-			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
-			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
-		}
-		else
-		{
-			SetItemRot(itemid,
-				def_TypeData[defencetype][def_verticalRotX],
-				def_TypeData[defencetype][def_verticalRotY],
-				def_TypeData[defencetype][def_verticalRotZ] + rz);
-
-			SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
-			SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
-		}
+		SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
+		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 	}
 
 	return itemid;
@@ -300,7 +259,8 @@ StartBuildingDefence(playerid, itemid)
 	GetItemTypeName(GetItemType(itemid), itemtypename);
 
 	def_CurrentDefenceItem[playerid] = itemid;
-	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
+	new __DONT_FORGET_THIS__;
+	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 1000, "Construction"));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
 
@@ -528,7 +488,7 @@ hook OnHoldActionFinish(playerid)
 			pose = DEFENCE_POSE_HORIZONTAL;
 
 		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], pose, def_pose);
-		itemid = CreateDefence(def_CurrentDefenceItem[playerid]);
+		itemid = ActivateDefenceItem(def_CurrentDefenceItem[playerid]);
 
 		if(!IsValidItem(itemid))
 		{
@@ -541,28 +501,37 @@ hook OnHoldActionFinish(playerid)
 			Float:x,
 			Float:y,
 			Float:z,
-			Float:angle;
+			Float:rx,
+			Float:ry,
+			Float:rz;
 
 		GetItemGEID(itemid, geid);
 		GetItemPos(itemid, x, y, z);
-		GetItemRot(itemid, angle, angle, angle);
+		GetItemRot(itemid, rx, ry, rz);
 
-		if(pose == DEFENCE_POSE_VERTICAL)
+		if(pose == DEFENCE_POSE_HORIZONTAL)
+		{
+			rx = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotX];
+			ry = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotY];
+			rz += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotZ];
+		}
+		else if(pose == DEFENCE_POSE_VERTICAL)
+		{
 			z += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ];
+			rx = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotX];
+			ry = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotY];
+			rz += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ];
+		}
 
 		SetItemPos(itemid, x, y, z);
+		SetItemRot(itemid, rx, ry, rz);
 
 		log("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
-			playerid, itemid, geid,
-			GetItemTypeModel(GetItemType(itemid)),
-			x, y, z,
-			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotX],
-			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotY],
-			def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ] + angle);
+			playerid, itemid, geid, GetItemTypeModel(GetItemType(itemid)), x, y, z, rx, ry, rz);
 
 		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
-		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 90.0, 0.0, def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ] + angle, GetItemWorld(itemid), GetItemInterior(itemid));
+		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
 		TweakItem(playerid, itemid);
 		_UpdateDefenceTweakArrow(playerid, itemid);
 		PlayerGainSkillExperience(playerid, "Construction");
@@ -729,7 +698,21 @@ _UpdateDefenceTweakArrow(playerid, itemid)
 	GetItemRot(itemid, rx, ry, rz);
 
 	SetDynamicObjectPos(def_TweakArrow[playerid], x, y, z);
-	SetDynamicObjectRot(def_TweakArrow[playerid], rx + 90.0, ry, rz - 90.0);
+
+	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_VERTICAL)
+	{
+		SetDynamicObjectRot(def_TweakArrow[playerid],
+			rx - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_verticalRotX] + 90,
+			ry - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_verticalRotY],
+			rz - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_verticalRotZ]);
+	}
+	else
+	{
+		SetDynamicObjectRot(def_TweakArrow[playerid],
+			rx - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_horizontalRotX],
+			ry - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_horizontalRotY],
+			rz - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_horizontalRotZ]);
+	}
 }
 
 hook OnItemTweakUpdate(playerid, itemid)

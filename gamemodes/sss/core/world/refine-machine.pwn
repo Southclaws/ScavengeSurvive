@@ -79,7 +79,7 @@ hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 
 	if(GetItemType(itemid) == item_RefineMachine)
 	{
-		dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 1, "[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
+		dbg("gamemodes/sss/core/world/refine-machine.pwn", 1, "[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
 		_rm_PlayerUseRefineMachine(playerid, itemid, interactiontype);
 	}
 
@@ -88,7 +88,7 @@ hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 
 _rm_PlayerUseRefineMachine(playerid, itemid, interactiontype)
 {
-	dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 1, "[_rm_PlayerUseRefineMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
+	dbg("gamemodes/sss/core/world/refine-machine.pwn", 1, "[_rm_PlayerUseRefineMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
 
 	new data[e_REFINE_MACHINE_DATA];
 
@@ -117,7 +117,7 @@ _rm_PlayerUseRefineMachine(playerid, itemid, interactiontype)
 	{
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
-			dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 1, "[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(data[rm_fuel]));
+			dbg("gamemodes/sss/core/world/refine-machine.pwn", 1, "[_rm_PlayerUseRefineMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_REFINE_MACHINE_FUEL), floatround(data[rm_fuel]));
 			StartHoldAction(playerid, floatround(MAX_REFINE_MACHINE_FUEL * 100), floatround(data[rm_fuel] * 100));
 			return 0;
 		}
@@ -175,7 +175,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 	if(rm_CurrentRefineMachine[playerid] != -1)
 	{
-		dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 3, "[OnHoldActionUpdate] Refine machine itemid %d progress %d", rm_CurrentRefineMachine[playerid], progress);
+		dbg("gamemodes/sss/core/world/refine-machine.pwn", 3, "[OnHoldActionUpdate] Refine machine itemid %d progress %d", rm_CurrentRefineMachine[playerid], progress);
 
 		new itemid = GetPlayerItem(playerid);
 
@@ -183,7 +183,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
-				dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				dbg("gamemodes/sss/core/world/refine-machine.pwn", 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
 				StopHoldAction(playerid);
 				rm_CurrentRefineMachine[playerid] = -1;
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -196,7 +196,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		if(fuel <= 0.0)
 		{
-			dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 3, "[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
+			dbg("gamemodes/sss/core/world/refine-machine.pwn", 3, "[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
 			rm_CurrentRefineMachine[playerid] = -1;
 			HideActionText(playerid);
@@ -205,7 +205,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			new Float:machinefuel = Float:GetItemArrayDataAtCell(rm_CurrentRefineMachine[playerid], rm_fuel);
 
-			dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 3, "[OnHoldActionUpdate] setting petrol can to %f, machine to %f", fuel - 1.1, machinefuel + 1.1);
+			dbg("gamemodes/sss/core/world/refine-machine.pwn", 3, "[OnHoldActionUpdate] setting petrol can to %f, machine to %f", fuel - 1.1, machinefuel + 1.1);
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(rm_CurrentRefineMachine[playerid], _:(machinefuel + 1.1), rm_fuel);
@@ -222,7 +222,7 @@ _rm_StartCooking(itemid)
 
 	GetItemArrayData(itemid, data);
 
-	dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 1, "[_rm_PlayerUseRefineMachine] itemid %d", itemid);
+	dbg("gamemodes/sss/core/world/refine-machine.pwn", 1, "[_rm_PlayerUseRefineMachine] itemid %d", itemid);
 	new itemcount = GetContainerItemCount(data[rm_containerid]);
 
 	if(itemcount == 0)
@@ -230,7 +230,7 @@ _rm_StartCooking(itemid)
 
 	// cook time = 90 seconds per item plus random 30 seconds
 	new cooktime = (itemcount * 90) + random(30);
-	dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 2, "[_rm_PlayerUseRefineMachine] itemcount %d cooktime %ds", itemcount, cooktime);
+	dbg("gamemodes/sss/core/world/refine-machine.pwn", 2, "[_rm_PlayerUseRefineMachine] itemcount %d cooktime %ds", itemcount, cooktime);
 
 	// if there's not enough time left, don't allow a new cook to start.
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
@@ -248,7 +248,7 @@ _rm_StartCooking(itemid)
 
 	cooktime *= 1000; // convert to ms
 
-	dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 2, "[_rm_PlayerUseRefineMachine] started cooking...");
+	dbg("gamemodes/sss/core/world/refine-machine.pwn", 2, "[_rm_PlayerUseRefineMachine] started cooking...");
 	data[rm_cooking] = true;
 	DestroyDynamicObject(data[rm_smoke]);
 	data[rm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
@@ -265,7 +265,7 @@ _rm_StartCooking(itemid)
 timer _rm_FinishCooking[cooktime](itemid, cooktime)
 {
 #pragma unused cooktime
-	dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 1, "[_rm_PlayerUseRefineMachine] finished cooking...");
+	dbg("gamemodes/sss/core/world/refine-machine.pwn", 1, "[_rm_PlayerUseRefineMachine] finished cooking...");
 	new data[e_REFINE_MACHINE_DATA];
 
 	GetItemArrayData(itemid, data);
@@ -279,7 +279,7 @@ timer _rm_FinishCooking[cooktime](itemid, cooktime)
 	{
 		subitemid = GetContainerSlotItem(containerid, i);
 
-		dbg(\"gamemodes/sss/core/world/refine-machine.pwn\", 3, "[_rm_PlayerUseRefineMachine] slot %d: destroying %d", i, subitemid);
+		dbg("gamemodes/sss/core/world/refine-machine.pwn", 3, "[_rm_PlayerUseRefineMachine] slot %d: destroying %d", i, subitemid);
 
 		data[rm_fuel] -= REFINE_MACHINE_FUEL_USAGE;
 

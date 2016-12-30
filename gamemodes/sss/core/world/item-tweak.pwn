@@ -84,7 +84,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 stock TweakItem(playerid, itemid)
 {
-	dbg(\"gamemodes/sss/core/world/item-tweak.pwn\", 1, "TweakItem %d %d", playerid, itemid);
+	dbg("gamemodes/sss/core/world/item-tweak.pwn", 1, "TweakItem %d %d", playerid, itemid);
 
 	new
 		geid[GEID_LEN],
@@ -138,11 +138,25 @@ _twk_Reset(playerid)
 
 _twk_Commit(playerid)
 {
-	new geid[GEID_LEN];
+	if(!IsValidItem(twk_Item[playerid]))
+		return 0;
+
+	new
+		geid[GEID_LEN],
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rx,
+		Float:ry,
+		Float:rz;
 
 	GetItemGEID(twk_Item[playerid], geid);
+	GetItemPos(twk_Item[playerid], x, y, z);
+	GetItemRot(twk_Item[playerid], rx, ry, rz);
 
-	log("[TWEAK] %p Tweaked item %d (%s)", playerid, twk_Item[playerid], geid);
+	log("[TWEAK] %p Tweaked item %d (%s) %d (%f, %f, %f, %f, %f, %f)",
+		playerid, twk_Item[playerid], geid, GetItemTypeModel(GetItemType(twk_Item[playerid])),
+		x, y, z, rx, ry, rz);
 
 	CallLocalFunction("OnItemTweakFinish", "dd", playerid, twk_Item[playerid]);
 
@@ -151,6 +165,8 @@ _twk_Commit(playerid)
 	CancelPlayerMovement(playerid);
 	ShowActionText(playerid, ls(playerid, "ITEMTWKFINI"), 5000);
 	_twk_Reset(playerid);
+
+	return 1;
 }
 
 _twk_ShowUI(playerid)

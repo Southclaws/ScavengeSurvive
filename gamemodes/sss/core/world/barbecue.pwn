@@ -59,10 +59,10 @@ hook OnItemCreate(itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/world/barbecue.pwn");
 
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnItemCreate] itemid: %d type: %d", itemid, _:GetItemType(itemid));
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnItemCreate] itemid: %d type: %d", itemid, _:GetItemType(itemid));
 	if(GetItemType(itemid) == item_Barbecue)
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnItemCreate] BBQ item %d created", itemid);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnItemCreate] BBQ item %d created", itemid);
 
 		new data[7];
 
@@ -78,13 +78,13 @@ hook OnItemCreate(itemid)
 		data[bbq_grillPart2] = INVALID_ITEM_ID;
 		data[bbq_cookTimer] = Timer:0;
 
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_state]: %d", itemid, data[bbq_state]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "SET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_state]: %d", itemid, data[bbq_state]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
 
 		SetItemArrayData(itemid, data, 7);
 	}
@@ -94,7 +94,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/barbecue.pwn");
 
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnPlayerUseItemWithItem HOOK] %d %d %d", playerid, itemid, withitemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnPlayerUseItemWithItem HOOK] %d %d %d", playerid, itemid, withitemid);
 
 	if(GetItemType(withitemid) == item_Barbecue)
 	{
@@ -102,32 +102,32 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			return 1;
 	}
 
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[OnPlayerUseItemWithItem END] %d %d %d", playerid, itemid, withitemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[OnPlayerUseItemWithItem END] %d %d %d", playerid, itemid, withitemid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
 _UseBbqHandler(playerid, itemid, withitemid)
 {
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[_UseBbqHandler] %d %d %d", playerid, itemid, withitemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[_UseBbqHandler] %d %d %d", playerid, itemid, withitemid);
 
 	new data[7];
 
 	GetItemArrayData(withitemid, data);
 
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_state]: %d", itemid, data[bbq_state]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_state]: %d", itemid, data[bbq_state]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
 
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(GetItemTypeLiquidContainerType(itemtype) != -1)
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Item type is gas can", playerid, itemid, withitemid);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Item type is gas can", playerid, itemid, withitemid);
 
 		if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 		{
@@ -156,7 +156,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 	if(IsItemTypeFood(itemtype))
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Item type %d is food", _:itemtype);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Item type %d is food", _:itemtype);
 
 		if(GetItemExtraData(itemid) != 0)
 		{
@@ -175,7 +175,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 		if(data[bbq_grillItem1] <= 0)// == INVALID_ITEM_ID) temp fix
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Adding food to grill slot 1");
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Adding food to grill slot 1");
 
 			CreateItemInWorld(itemid,
 				x + (0.25 * floatsin(-r + 90.0, degrees)),
@@ -192,7 +192,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 		}
 		else if(data[bbq_grillItem2] <= 0)// == INVALID_ITEM_ID) temp fix
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Adding food to grill slot 2");
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Adding food to grill slot 2");
 
 			CreateItemInWorld(itemid,
 				x + (0.25 * floatsin(-r - 90.0, degrees)),
@@ -211,11 +211,11 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 	if(itemtype == item_FireLighter)
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Item type is lighter");
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Item type is lighter");
 
 		if(data[bbq_fuel] <= 0)
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[_UseBbqHandler] Fuel empty");
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[_UseBbqHandler] Fuel empty");
 			ShowActionText(playerid, ls(playerid, "BBQFUELEMPT", true), 3000);
 			return 1;
 		}
@@ -237,7 +237,7 @@ _UseBbqHandler(playerid, itemid, withitemid)
 
 _LightBBQ(itemid)
 {
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[_LightBBQ] Lighting BBQ item %d", itemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[_LightBBQ] Lighting BBQ item %d", itemid);
 
 	new
 		Float:x,
@@ -265,7 +265,7 @@ _LightBBQ(itemid)
 
 timer bbq_FinishCooking[30000](itemid)
 {
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[bbq_FinishCooking] itemid: %d", itemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[bbq_FinishCooking] itemid: %d", itemid);
 
 	new data[7];
 
@@ -286,10 +286,10 @@ hook OnPlayerPickUpItem(playerid, itemid)
 {
 	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/world/barbecue.pwn");
 
-	dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnPlayerPickUpItem] playerid: %d itemid: %d", playerid, itemid);
+	dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnPlayerPickUpItem] playerid: %d itemid: %d", playerid, itemid);
 	if(GetItemType(itemid) == item_Barbecue)
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnPlayerPickUpItem] Item type is BBQ", playerid, itemid);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnPlayerPickUpItem] Item type is BBQ", playerid, itemid);
 		if(GetTickCountDifference(GetTickCount(), bbq_PlaceFoodTick[playerid]) < 1000)
 			return Y_HOOKS_BREAK_RETURN_1;
 
@@ -297,20 +297,20 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 		GetItemArrayData(itemid, data);
 
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_state]: %d", itemid, data[bbq_state]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 3, "GET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_state]: %d", itemid, data[bbq_state]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillItem1]: %d", itemid, data[bbq_grillItem1]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillItem2]: %d", itemid, data[bbq_grillItem2]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillPart1]: %d", itemid, data[bbq_grillPart1]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_grillPart2]: %d", itemid, data[bbq_grillPart2]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "GET %d data[bbq_cookTimer]: %d", itemid, data[bbq_cookTimer]);
 
 		if(data[bbq_state] != COOKER_STATE_NONE)
 			return Y_HOOKS_BREAK_RETURN_1;
 
 		if(IsValidItem(data[bbq_grillItem1]) && data[bbq_grillItem1] > 0) // temp fix
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[OnPlayerPickUpItem] BBQ has valid item in slot 1 (%d)", data[bbq_grillItem1]);
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[OnPlayerPickUpItem] BBQ has valid item in slot 1 (%d)", data[bbq_grillItem1]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem1], 1);
 			SetItemArrayDataAtCell(itemid, INVALID_ITEM_ID, bbq_grillItem1);
 			return Y_HOOKS_BREAK_RETURN_1;
@@ -318,7 +318,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 		if(IsValidItem(data[bbq_grillItem2]) && data[bbq_grillItem2] > 0) // temp fix
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[OnPlayerPickUpItem] BBQ has valid item in slot 2 (%d)", data[bbq_grillItem2]);
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[OnPlayerPickUpItem] BBQ has valid item in slot 2 (%d)", data[bbq_grillItem2]);
 			GiveWorldItemToPlayer(playerid, data[bbq_grillItem2], 1);
 			SetItemArrayDataAtCell(itemid, INVALID_ITEM_ID, bbq_grillItem2);
 			return Y_HOOKS_BREAK_RETURN_1;
@@ -327,17 +327,17 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 	if(bbq_ItemBBQ[itemid] != -1)
 	{
-		dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 1, "[OnPlayerPickUpItem] Item %d is from BBQ item %d", itemid, bbq_ItemBBQ[itemid]);
+		dbg("gamemodes/sss/core/world/barbecue.pwn", 1, "[OnPlayerPickUpItem] Item %d is from BBQ item %d", itemid, bbq_ItemBBQ[itemid]);
 
 		if(GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], bbq_grillItem1) == itemid)
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[OnPlayerPickUpItem] Item removed from bbq slot 1");
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[OnPlayerPickUpItem] Item removed from bbq slot 1");
 			SetItemArrayDataAtCell(bbq_ItemBBQ[itemid], INVALID_ITEM_ID, bbq_grillItem1);
 		}
 
 		else if(GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], bbq_grillItem2) == itemid)
 		{
-			dbg(\"gamemodes/sss/core/world/barbecue.pwn\", 2, "[OnPlayerPickUpItem] Item removed from bbq slot 2");
+			dbg("gamemodes/sss/core/world/barbecue.pwn", 2, "[OnPlayerPickUpItem] Item removed from bbq slot 2");
 			SetItemArrayDataAtCell(bbq_ItemBBQ[itemid], INVALID_ITEM_ID, bbq_grillItem2);
 		}
 	}

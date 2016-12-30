@@ -45,7 +45,7 @@ hook OnPlayerLoadAccount(playerid)
 {
 	dbg("global", CORE, "[OnPlayerLoadAccount] in /gamemodes/sss/core/player/tutorial.pwn");
 
-	dbg(\"gamemodes/sss/core/player/tutorial.pwn\", 1, "[OnPlayerLoadAccount]");
+	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerLoadAccount]");
 
 	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, ls(playerid, "TUTORPROMPT"));
 	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
@@ -80,7 +80,7 @@ hook OnPlayerCreateChar(playerid)
 {
 	dbg("global", CORE, "[OnPlayerCreateChar] in /gamemodes/sss/core/player/tutorial.pwn");
 
-	dbg(\"gamemodes/sss/core/player/tutorial.pwn\", 1, "[OnPlayerCreateChar]");
+	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerCreateChar]");
 
 	PlayerTextDrawShow(playerid, ClassButtonTutorial[playerid]);
 }
@@ -89,7 +89,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
 	dbg("global", CORE, "[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/tutorial.pwn");
 
-	dbg(\"gamemodes/sss/core/player/tutorial.pwn\", 1, "[OnPlayerClickPlayerTD]");
+	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerClickPlayerTD]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
 		PlayerTutorialWorld[playerid] = TutorialWorld;

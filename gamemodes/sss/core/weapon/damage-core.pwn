@@ -128,7 +128,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	strcpy(wnd_Data[targetid][woundid][wnd_source], source, MAX_WOUND_SRCLEN);
 
 	totalbleedrate += bleedrate;
-	dbg(\"gamemodes/sss/core/weapon/damage-core.pwn\", 2, "[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
+	dbg("gamemodes/sss/core/weapon/damage-core.pwn", 2, "[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
 
 	// Truncate result to 1.0
 	totalbleedrate = totalbleedrate > 1.0 ? 1.0 : totalbleedrate;
@@ -158,7 +158,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 		if(knockouttime > 1500)
 		{
-			dbg(\"gamemodes/sss/core/weapon/damage-core.pwn\", 2, "[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", targetid, knockouttime, woundcount, hp, totalbleedrate);
+			dbg("gamemodes/sss/core/weapon/damage-core.pwn", 2, "[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", targetid, knockouttime, woundcount, hp, totalbleedrate);
 			KnockOutPlayer(targetid, knockouttime);
 		}
 	}

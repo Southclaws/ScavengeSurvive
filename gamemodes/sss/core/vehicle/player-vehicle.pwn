@@ -196,7 +196,7 @@ LoadPlayerVehicle(filename[])
 	{
 		if(data[0] == 0)
 		{
-			dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "Vehicle set to inactive (file: %s)", filename);
+			dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "Vehicle set to inactive (file: %s)", filename);
 			modio_finalise_read(modio_getsession_read(filepath));
 			return 0;
 		}
@@ -393,7 +393,7 @@ LoadPlayerVehicle(filename[])
 
 	if(trunksize > 0)
 	{
-		dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[LoadPlayerVehicle] trunk size: %d", trunksize);
+		dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[LoadPlayerVehicle] trunk size: %d", trunksize);
 
 		new
 			ItemType:itemtype,
@@ -407,13 +407,13 @@ LoadPlayerVehicle(filename[])
 
 			containerid = GetVehicleContainer(vehicleid);
 
-			dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[LoadPlayerVehicle] modio read length:%d items:%d", length, itemcount);
+			dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[LoadPlayerVehicle] modio read length:%d items:%d", length, itemcount);
 
 			for(new i; i < itemcount; i++)
 			{
 				itemtype = GetStoredItemType(i);
 
-				dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 2, "[LoadPlayerVehicle] item %d/%d type:%d", i, itemcount, _:itemtype);
+				dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 2, "[LoadPlayerVehicle] item %d/%d type:%d", i, itemcount, _:itemtype);
 
 				if(itemtype == INVALID_ITEM_TYPE)
 					break;
@@ -422,7 +422,7 @@ LoadPlayerVehicle(filename[])
 					break;
 
 				itemid = CreateItem(itemtype);
-				dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 2, "[LoadPlayerVehicle] created item:%d container:%d", itemid, containerid);
+				dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 2, "[LoadPlayerVehicle] created item:%d container:%d", itemid, containerid);
 
 				if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 					SetItemArrayDataFromStored(itemid, i);
@@ -458,7 +458,7 @@ _SaveVehicle(vehicleid)
 
 	if(CallLocalFunction("OnVehicleSave", "d", vehicleid))
 	{
-		dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_SaveVehicle] OnVehicleSave returned non-zero");
+		dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_SaveVehicle] OnVehicleSave returned non-zero");
 		return 0;
 	}
 
@@ -681,7 +681,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 
 _PlayerUpdateVehicle(playerid, vehicleid)
 {
-	dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_PlayerUpdateVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
+	dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_PlayerUpdateVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
@@ -706,7 +706,7 @@ hook OnVehicleDestroyed(vehicleid)
 
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
-	dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_SetVehicleOwner] %d (%s) '%s' %d", vehicleid, GetVehicleGEID(vehicleid), name, playerid);
+	dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_SetVehicleOwner] %d (%s) '%s' %d", vehicleid, GetVehicleGEID(vehicleid), name, playerid);
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -732,7 +732,7 @@ _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 
 _RemoveVehicleOwner(vehicleid)
 {
-	dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_RemoveVehicleOwner] %d (%s)", vehicleid, GetVehicleGEID(vehicleid));
+	dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_RemoveVehicleOwner] %d (%s)", vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -751,7 +751,7 @@ _RemoveVehicleOwner(vehicleid)
 */
 _UpdatePlayerVehicle(playerid, vehicleid)
 {
-	dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
+	dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -767,11 +767,11 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	{
 		// Vehicle has no owner, assign player as owner
 		// Set owner of player's old vehicle to null
-		dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] Vehicle owner is null");
+		dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] Vehicle owner is null");
 
 		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 		{
-			dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
+			dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 		}
 
@@ -781,23 +781,23 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	else
 	{
 		// Vehicle has an owner
-		dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
+		dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
 		if(pveh_PlayerVehicle[playerid] == vehicleid)
 		{
 			// Vehicle's owner is the player, do nothing but save it
-			dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
+			dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
 			_SaveVehicle(vehicleid);
 		}
 		else
 		{
 			// Vehicle's owner is not the player, check if the player already
 			// owns a vehicle
-			dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
+			dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
 
 			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
 			{
 				// Player owns a vehicle
-				dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
+				dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 
 				// pveh_PlayerVehicle[playerid] = player's previous vehicle
 				// vehicleid = new vehicle
@@ -821,7 +821,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// Player does not own a vehicle
 				// Remove the original owner's name from it
 				// Assign the player as the new owner and save the vehicle
-				dbg(\"gamemodes/sss/core/vehicle/player-vehicle.pwn\", 1, "[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
+				dbg("gamemodes/sss/core/vehicle/player-vehicle.pwn", 1, "[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
 				_SaveVehicle(vehicleid);
 				_SetVehicleOwner(vehicleid, name, playerid);
 				_SaveVehicle(vehicleid);

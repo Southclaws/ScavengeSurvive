@@ -153,7 +153,7 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
+		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
 
 		liq_UseWithItemTick[playerid] = GetTickCount();
 	}
@@ -167,7 +167,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]));
+		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]));
 
 		if(GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]) > 10)
 			_StartDrinking(playerid, itemid);
@@ -181,11 +181,11 @@ _StartDrinking(playerid, itemid, continuing = false)
 	if(!IsPlayerIdle(playerid) && !continuing)
 		return;
 
-	dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[_StartDrinking] Player is not idle");
+	dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StartDrinking] Player is not idle");
 
 	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, itemid))
 	{
-		dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
+		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
 		if(continuing)
 			_StopDrinking(playerid);
 
@@ -202,7 +202,7 @@ _StartDrinking(playerid, itemid, continuing = false)
 
 _StopDrinking(playerid)
 {
-	dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[_StopDrinking]");
+	dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StopDrinking]");
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
@@ -249,7 +249,7 @@ hook OnHoldActionFinish(playerid)
 
 	if(liq_CurrentItem[playerid] != -1)
 	{
-		dbg(\"gamemodes/sss/core/item/liquid-container.pwn\", 2, "[OnHoldActionFinish] Finished drinking, re-starting");
+		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnHoldActionFinish] Finished drinking, re-starting");
 		_DrinkItem(playerid, liq_CurrentItem[playerid]);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
