@@ -75,7 +75,7 @@ stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:pl
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/seedbag.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/seedbag.pwn");
 
 	if(GetItemType(itemid) == item_SeedBag)
 	{
@@ -89,7 +89,7 @@ hook OnItemCreate(itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
-	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/seedbag.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/seedbag.pwn");
 
 	if(itemtype == item_SeedBag)
 	{

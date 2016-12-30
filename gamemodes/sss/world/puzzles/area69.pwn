@@ -361,7 +361,7 @@ hook OnGameModeInit()
 
 hook OnButtonPress(playerid, buttonid)
 {
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/world/puzzles/area69.pwn");
+	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/area69.pwn");
 
 	if(buttonid == btn_ControlTower)
 	{
@@ -398,7 +398,7 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/area69.pwn");
+	dbg("global", CORE, "[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/area69.pwn");
 
 	if(doorid == door_Main)
 		return PlayerActivateDoorButton(playerid, k_MainGate, code_ControlTower);
@@ -452,7 +452,7 @@ PlayerActivateDoorButton(playerid, keypad, code)
 
 hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeypadEnter] in /gamemodes/sss/world/puzzles/area69.pwn");
+	dbg("global", CORE, "[OnPlayerKeypadEnter] in /gamemodes/sss/world/puzzles/area69.pwn");
 
 	new itemid = GetPlayerItem(playerid);
 

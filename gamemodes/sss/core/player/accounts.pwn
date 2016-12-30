@@ -111,8 +111,6 @@ hook OnGameModeInit()
 {
 	console("\n[OnGameModeInit] Initialising 'Accounts'...");
 
-	HANDLER = debug_register_handler("Accounts");
-
 	db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER" (\
 		"FIELD_PLAYER_NAME" TEXT,\
 		"FIELD_PLAYER_PASS" TEXT,\
@@ -170,7 +168,7 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/accounts.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/accounts.pwn");
 
 	acc_LoginAttempts[playerid] = 0;
 	acc_IsNewPlayer[playerid] = false;
@@ -554,7 +552,7 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
-		d:1:HANDLER("[LOGOUT] ERROR: Player on admin duty, aborting save.");
+		dbg(HANDLER, 1, "[LOGOUT] ERROR: Player on admin duty, aborting save.");
 		return 0;
 	}
 
@@ -584,10 +582,10 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeSafebox(itemtype))
 	{
-		d:1:HANDLER("[LOGOUT] Player is holding a box.");
+		dbg(HANDLER, 1, "[LOGOUT] Player is holding a box.");
 		if(!IsContainerEmpty(GetItemExtraData(itemid)))
 		{
-			d:1:HANDLER("[LOGOUT] Player is holding an unempty box, dropping in world.");
+			dbg(HANDLER, 1, "[LOGOUT] Player is holding an unempty box, dropping in world.");
 			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
 			itemid = INVALID_ITEM_ID;
 			itemtype = INVALID_ITEM_TYPE;
@@ -596,19 +594,19 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeBag(itemtype))
 	{
-		d:1:HANDLER("[LOGOUT] Player is holding a bag.");
+		dbg(HANDLER, 1, "[LOGOUT] Player is holding a bag.");
 		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
 		{
 			if(IsValidItem(GetPlayerBagItem(playerid)))
 			{
-				d:1:HANDLER("[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
+				dbg(HANDLER, 1, "[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
 				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
 			}
 			else
 			{
-				d:1:HANDLER("[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
+				dbg(HANDLER, 1, "[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
 				GivePlayerBag(playerid, itemid);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
@@ -670,17 +668,17 @@ Logout(playerid, docombatlogcheck = 1)
 
 SavePlayerData(playerid)
 {
-	d:1:HANDLER("[SavePlayerData] Saving '%p'", playerid);
+	dbg(HANDLER, 1, "[SavePlayerData] Saving '%p'", playerid);
 
 	if(!acc_LoggedIn[playerid])
 	{
-		d:1:HANDLER("[SavePlayerData] ERROR: Player isn't logged in");
+		dbg(HANDLER, 1, "[SavePlayerData] ERROR: Player isn't logged in");
 		return 0;
 	}
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
-		d:1:HANDLER("[SavePlayerData] ERROR: On admin duty");
+		dbg(HANDLER, 1, "[SavePlayerData] ERROR: On admin duty");
 		return 0;
 	}
 
@@ -695,7 +693,7 @@ SavePlayerData(playerid)
 
 	if(IsAtConnectionPos(x, y, z))
 	{
-		d:1:HANDLER("[SavePlayerData] ERROR: At connection pos");
+		dbg(HANDLER, 1, "[SavePlayerData] ERROR: At connection pos");
 		return 0;
 	}
 
@@ -706,19 +704,19 @@ SavePlayerData(playerid)
 
 	if(IsPlayerAlive(playerid) && !IsPlayerInTutorial(playerid))
 	{
-		d:2:HANDLER("[SavePlayerData] Player is alive");
+		dbg(HANDLER, 2, "[SavePlayerData] Player is alive");
 		if(IsAtDefaultPos(x, y, z))
 		{
-			d:2:HANDLER("[SavePlayerData] ERROR: Player at default position");
+			dbg(HANDLER, 2, "[SavePlayerData] ERROR: Player at default position");
 			return 0;
 		}
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
-			d:2:HANDLER("[SavePlayerData] Player is spectating");
+			dbg(HANDLER, 2, "[SavePlayerData] Player is spectating");
 			if(!gServerRestarting)
 			{
-				d:2:HANDLER("[SavePlayerData] Server is not restarting, aborting save");
+				dbg(HANDLER, 2, "[SavePlayerData] Server is not restarting, aborting save");
 				return 0;
 			}
 		}
@@ -732,12 +730,12 @@ SavePlayerData(playerid)
 			err("Statement 'stmt_AccountUpdate' failed to execute.");
 		}
 
-		d:2:HANDLER("[SavePlayerData] Saving character data");
+		dbg(HANDLER, 2, "[SavePlayerData] Saving character data");
 		SavePlayerChar(playerid);
 	}
 	else
 	{
-		d:2:HANDLER("[SavePlayerData] Player is dead");
+		dbg(HANDLER, 2, "[SavePlayerData] Player is dead");
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_PLAYER_NAME, playerid);

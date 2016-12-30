@@ -37,14 +37,14 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/torso.pwn");
 
 	gut_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnItemCreateInWorld(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(GetItemType(itemid) == item_Torso)
 	{
@@ -57,7 +57,7 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
@@ -86,7 +86,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(GetItemType(itemid) == item_Torso)
 	{
@@ -112,7 +112,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(oldkeys == 16)
 	{
@@ -127,7 +127,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/torso.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/torso.pwn");
 
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{

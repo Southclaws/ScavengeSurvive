@@ -27,7 +27,7 @@
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/shield.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/shield.pwn");
 
 	if(GetItemType(itemid) == item_Shield)
 	{
@@ -61,7 +61,7 @@ timer shield_Down[400](playerid, itemid)
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerShootPlayer] in /gamemodes/sss/core/item/shield.pwn");
+	dbg("global", CORE, "[OnPlayerShootPlayer] in /gamemodes/sss/core/item/shield.pwn");
 
 	if(_HandleShieldHit(playerid, targetid, bodypart))
 		return Y_HOOKS_BREAK_RETURN_1;

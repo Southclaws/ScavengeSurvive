@@ -34,7 +34,7 @@ static med_HealTarget[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/medical.pwn");
 
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
@@ -47,7 +47,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");
 
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -68,7 +68,7 @@ hook OnItemCreate(itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/medical.pwn");
 
 	new
 		itemid,
@@ -148,7 +148,7 @@ PlayerStopHeal(playerid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
-	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/medical.pwn");
 
 	if(itemtype == item_DoctorBag)
 	{
@@ -169,7 +169,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/char/medical.pwn");
 
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
@@ -200,7 +200,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/char/medical.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/medical.pwn");
 
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{

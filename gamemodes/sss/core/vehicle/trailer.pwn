@@ -203,7 +203,7 @@ task _trailerSync[1000]()
 */
 hook OnVehicleDeath(vehicleid, killerid)
 {
-	d:3:GLOBAL_DEBUG("[OnVehicleDeath] in /gamemodes/sss/core/vehicle/trailer.pwn");
+	dbg("global", CORE, "[OnVehicleDeath] in /gamemodes/sss/core/vehicle/trailer.pwn");
 
 	if(IsValidVehicle(trl_VehicleTrailer[vehicleid]))
 	{
@@ -222,7 +222,7 @@ hook OnVehicleDeath(vehicleid, killerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/trailer.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/trailer.pwn");
 
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;

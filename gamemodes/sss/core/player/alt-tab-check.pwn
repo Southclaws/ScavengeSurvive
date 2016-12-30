@@ -36,7 +36,7 @@ forward OnPlayerFocusChange(playerid, status);
 
 hook OnPlayerUpdate(playerid)
 {
-	d:4:GLOBAL_DEBUG("[OnPlayerUpdate] in /gamemodes/sss/core/player/alt-tab-check.pwn");
+	dbg("global", CORE, "[OnPlayerUpdate] in /gamemodes/sss/core/player/alt-tab-check.pwn");
 
 	tab_Check[playerid] = 0;
 	return 1;

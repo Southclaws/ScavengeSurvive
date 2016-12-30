@@ -148,7 +148,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/furniture.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/furniture.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 

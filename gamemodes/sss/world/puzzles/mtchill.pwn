@@ -258,7 +258,7 @@ hook OnGameModeInit()
 
 hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/mtchill.pwn");
+	dbg("global", CORE, "[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/mtchill.pwn");
 
 	if(doorid == ch_door)
 	{
@@ -277,7 +277,7 @@ hook OnPlayerActivateDoor(playerid, doorid, newstate)
 
 hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/mtchill.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/mtchill.pwn");
 
 	if(buttonid == ch_doorBtn)
 	{

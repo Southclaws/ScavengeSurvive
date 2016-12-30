@@ -48,7 +48,7 @@ HidePlayerPageButtons(playerid)
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerClickTextDraw] in /gamemodes/sss/utils/dialog-pages.pwn");
+	dbg("global", CORE, "[OnPlayerClickTextDraw] in /gamemodes/sss/utils/dialog-pages.pwn");
 
 	if(clickedid == page_Left)
 	{

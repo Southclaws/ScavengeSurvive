@@ -37,7 +37,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/armour.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/armour.pwn");
 
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -51,7 +51,7 @@ hook OnItemCreate(itemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/armour.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/armour.pwn");
 
 	if(GetItemType(itemid) == item_Armour)
 	{
@@ -72,7 +72,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
-	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/armour.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/armour.pwn");
 
 	if(itemtype == item_Armour)
 	{
@@ -89,7 +89,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerShootPlayer] in /gamemodes/sss/core/item/armour.pwn");
+	dbg("global", CORE, "[OnPlayerShootPlayer] in /gamemodes/sss/core/item/armour.pwn");
 
 	if(bodypart == 3)
 	{

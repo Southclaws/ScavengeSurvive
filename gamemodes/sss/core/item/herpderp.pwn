@@ -27,7 +27,7 @@
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/herpderp.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/herpderp.pwn");
 
 	if(GetItemType(itemid) == item_HerpDerp)
 	{

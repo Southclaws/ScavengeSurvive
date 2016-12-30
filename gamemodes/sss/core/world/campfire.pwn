@@ -46,7 +46,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreateInWorld(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");
+	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");
 
 	if(GetItemType(itemid) == item_Campfire)
 	{
@@ -101,7 +101,7 @@ hook OnItemDestroy(itemid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickedUpItem] in /gamemodes/sss/core/item/campfire.pwn");
+	dbg("global", CORE, "[OnPlayerPickedUpItem] in /gamemodes/sss/core/item/campfire.pwn");
 
 	if(GetItemType(itemid) == item_Campfire)
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -114,7 +114,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/campfire.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/campfire.pwn");
 
 	if(GetItemType(withitemid) == item_Campfire)
 	{

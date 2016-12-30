@@ -51,8 +51,6 @@ PlayerText:	twk_Done[MAX_PLAYERS];
 forward OnItemTweakUpdate(playerid, itemid);
 forward OnItemTweakFinish(playerid, itemid);
 
-static HANDLER = -1;
-
 
 /*==============================================================================
 
@@ -60,13 +58,6 @@ static HANDLER = -1;
 
 ==============================================================================*/
 
-
-hook OnScriptInit()
-{
-	console("\n[OnScriptInit] Initialising 'item-tweak'...");
-
-	HANDLER = debug_register_handler("item-tweak");
-}
 
 hook OnPlayerConnect(playerid)
 {
@@ -93,7 +84,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 stock TweakItem(playerid, itemid)
 {
-	d:1:HANDLER("TweakItem %d %d", playerid, itemid);
+	dbg(HANDLER, 1, "TweakItem %d %d", playerid, itemid);
 
 	new
 		geid[GEID_LEN],

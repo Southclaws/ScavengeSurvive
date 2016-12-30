@@ -32,7 +32,7 @@ Timer:	SitDownTimer[MAX_PLAYERS];
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/animations.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/animations.pwn");
 
 	if(!IsPlayerInAnyVehicle(playerid))
 	{

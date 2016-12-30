@@ -142,7 +142,7 @@ stock TogglePlayerHungerBar(playerid, bool:toggle)
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/food.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/food.pwn");
 
 	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 548.000000, 36.000000, 62.000000, 3.200000, 536354815, 100.0000, 0);
 /*

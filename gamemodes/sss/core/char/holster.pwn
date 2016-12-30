@@ -67,7 +67,7 @@ forward OnPlayerUnHolsteredItem(playerid, itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/holster.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/holster.pwn");
 
 	hols_Item[playerid] = INVALID_ITEM_ID;
 }
@@ -160,7 +160,7 @@ stock RemovePlayerHolsterItem(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/holster.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/holster.pwn");
 
 	if(newkeys & KEY_YES)
 	{
@@ -190,7 +190,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnItemAddToInventory(playerid, itemid, slot)
 {
-	d:3:GLOBAL_DEBUG("[OnItemAddToInventory] in /gamemodes/sss/core/char/holster.pwn");
+	dbg("global", CORE, "[OnItemAddToInventory] in /gamemodes/sss/core/char/holster.pwn");
 
 	// This is to stop holstered items from being added to the inventory too.
 	// (They share the same key.)
@@ -346,7 +346,7 @@ timer UnholsterItemDelay[time](playerid, time)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/char/holster.pwn");
+	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/char/holster.pwn");
 
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -356,7 +356,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerGiveItem] in /gamemodes/sss/core/char/holster.pwn");
+	dbg("global", CORE, "[OnPlayerGiveItem] in /gamemodes/sss/core/char/holster.pwn");
 
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return Y_HOOKS_BREAK_RETURN_1;

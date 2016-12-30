@@ -30,7 +30,7 @@ static scr_TargetItem[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/item/screwdriver.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/screwdriver.pwn");
 
 	scr_TargetItem[playerid] = INVALID_ITEM_ID;
 }
@@ -38,7 +38,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/screwdriver.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/screwdriver.pwn");
 
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
@@ -71,7 +71,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/screwdriver.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/screwdriver.pwn");
 
 	if(oldkeys & 16)
 	{
@@ -84,7 +84,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/screwdriver.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/screwdriver.pwn");
 
 	if(IsValidItem(scr_TargetItem[playerid]))
 	{

@@ -128,7 +128,7 @@ hook OnGameModeInit()
 
 hook OnButtonPress(playerid, buttonid)
 {
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/world/puzzles/ranch.pwn");
+	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/ranch.pwn");
 
 	if(buttonid==RanchPcButton)
 	{
@@ -202,7 +202,7 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
 
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{

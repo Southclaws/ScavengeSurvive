@@ -158,7 +158,7 @@ hook OnScriptInit()
 
 hook OnObjectMoved(objectid)
 {
-	d:3:GLOBAL_DEBUG("[OnObjectMoved] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+	dbg("global", CORE, "[OnObjectMoved] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
 
 	new Float:x, Float:y, Float:z;
 	
@@ -199,7 +199,7 @@ hook OnObjectMoved(objectid)
 /* TODO: Do buttons instead of reinventing-wheel-button-detection
 hook OnButtonPress(playerid, buttonid)
 {
-	d:3:GLOBAL_DEBUG("[OnButtonPress] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
 
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -207,7 +207,7 @@ hook OnButtonPress(playerid, buttonid)
 */
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/world/misc/ls_apartments2.pwn");
 
 	if (!IsPlayerInAnyVehicle(playerid) && (newkeys & KEY_YES))
 	{

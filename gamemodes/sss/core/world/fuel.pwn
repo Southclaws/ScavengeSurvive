@@ -50,7 +50,7 @@ new
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/fuel.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/fuel.pwn");
 
 	fuel_CurrentlyRefuelling[playerid] = INVALID_VEHICLE_ID;
 }
@@ -83,7 +83,7 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 
 hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/world/fuel.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/world/fuel.pwn");
 
 	if(fuel_ButtonFuelOutlet[buttonid] == INVALID_FUEL_OUTLET_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -119,7 +119,7 @@ hook OnPlayerRelBtnWithItem(playerid, buttonid, itemid)
 
 hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerInteractVehicle] in /gamemodes/sss/core/vehicle/repair.pwn");
+	dbg("global", CORE, "[OnPlayerInteractVehicle] in /gamemodes/sss/core/vehicle/repair.pwn");
 
 	if(angle < 25.0 || angle > 335.0)
 	{
@@ -320,7 +320,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnPlayerDrink(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDrink] in /gamemodes/sss/core/world/fuel.pwn");
+	dbg("global", CORE, "[OnPlayerDrink] in /gamemodes/sss/core/world/fuel.pwn");
 
 	if(IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
 		return Y_HOOKS_BREAK_RETURN_1;

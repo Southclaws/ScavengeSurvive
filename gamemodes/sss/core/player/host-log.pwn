@@ -67,7 +67,7 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/host-log.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/host-log.pwn");
 
 	JoinResolve[playerid] = true;
 	GetPlayerHost(playerid);

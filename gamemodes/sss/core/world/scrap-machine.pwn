@@ -53,9 +53,6 @@ static
 			sm_CurrentScrapMachine[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
-static HANDLER = -1;
-
-
 /*==============================================================================
 
 	Zeroing
@@ -63,14 +60,9 @@ static HANDLER = -1;
 ==============================================================================*/
 
 
-hook OnScriptInit()
-{
-	HANDLER = debug_register_handler("scrap-machine");
-}
-
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/scrap-machine.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/scrap-machine.pwn");
 
 	sm_CurrentScrapMachine[playerid] = -1;
 }
@@ -106,11 +98,11 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 
 hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseMachine] in /gamemodes/sss/core/world/scrap-machine.pwn");
+	dbg("global", CORE, "[OnPlayerUseMachine] in /gamemodes/sss/core/world/scrap-machine.pwn");
 
 	if(GetItemType(itemid) == item_ScrapMachine)
 	{
-		d:1:HANDLER("[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
+		dbg(HANDLER, 1, "[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
 		_sm_PlayerUseScrapMachine(playerid, itemid, interactiontype);
 	}
 
@@ -119,7 +111,7 @@ hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 
 _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 {
-	d:1:HANDLER("[_sm_PlayerUseScrapMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
+	dbg(HANDLER, 1, "[_sm_PlayerUseScrapMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
 
 	new data[e_SCRAP_MACHINE_DATA];
 
@@ -148,7 +140,7 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 	{
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
-			d:1:HANDLER("[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(Float:data[sm_fuel]));
+			dbg(HANDLER, 1, "[_sm_PlayerUseScrapMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_SCRAP_MACHINE_FUEL), floatround(Float:data[sm_fuel]));
 			StartHoldAction(playerid, floatround(MAX_SCRAP_MACHINE_FUEL * 100), floatround(Float:data[sm_fuel] * 100));
 			return 0;
 		}
@@ -184,11 +176,11 @@ _sm_PlayerUseScrapMachine(playerid, itemid, interactiontype)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionUpdate] in /gamemodes/sss/core/world/scrap-machine.pwn");
+	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/world/scrap-machine.pwn");
 
 	if(sm_CurrentScrapMachine[playerid] != -1)
 	{
-		d:3:HANDLER("[OnHoldActionUpdate] Scrap machine itemid %d progress %d", sm_CurrentScrapMachine[playerid], progress);
+		dbg(HANDLER, 3, "[OnHoldActionUpdate] Scrap machine itemid %d progress %d", sm_CurrentScrapMachine[playerid], progress);
 
 		new itemid = GetPlayerItem(playerid);
 
@@ -196,7 +188,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
-				d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				dbg(HANDLER, 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
 				StopHoldAction(playerid);
 				sm_CurrentScrapMachine[playerid] = -1;
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -209,7 +201,7 @@ hook OnHoldActionUpdate(playerid, progress)
 
 		if(fuel <= 0.0)
 		{
-			d:3:HANDLER("[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
+			dbg(HANDLER, 3, "[OnHoldActionUpdate] Stopping HoldAction: petrol can has %d < 0 fuel", fuel);
 			StopHoldAction(playerid);
 			sm_CurrentScrapMachine[playerid] = -1;
 			HideActionText(playerid);
@@ -218,7 +210,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			new Float:machinefuel = Float:GetItemArrayDataAtCell(sm_CurrentScrapMachine[playerid], sm_fuel);
 
-			d:3:HANDLER("[OnHoldActionUpdate] setting petrol can to %f, machine to %f", fuel - 1.1, machinefuel + 1.1);
+			dbg(HANDLER, 3, "[OnHoldActionUpdate] setting petrol can to %f, machine to %f", fuel - 1.1, machinefuel + 1.1);
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(sm_CurrentScrapMachine[playerid], _:(machinefuel + 1.1), sm_fuel);
@@ -235,7 +227,7 @@ _sm_StartCooking(itemid)
 
 	GetItemArrayData(itemid, data);
 
-	d:1:HANDLER("[_sm_PlayerUseScrapMachine] itemid %d", itemid);
+	dbg(HANDLER, 1, "[_sm_PlayerUseScrapMachine] itemid %d", itemid);
 	new itemcount = GetContainerItemCount(data[sm_containerid]);
 
 	if(itemcount == 0)
@@ -243,7 +235,7 @@ _sm_StartCooking(itemid)
 
 	// cook time = 90 seconds per item plus random 30 seconds
 	new cooktime = (itemcount * 90) + random(30);
-	d:2:HANDLER("[_sm_PlayerUseScrapMachine] itemcount %d cooktime %ds", itemcount, cooktime);
+	dbg(HANDLER, 2, "[_sm_PlayerUseScrapMachine] itemcount %d cooktime %ds", itemcount, cooktime);
 
 	// if there's not enough time left, don't allow a new cook to start.
 	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
@@ -261,7 +253,7 @@ _sm_StartCooking(itemid)
 
 	cooktime *= 1000; // convert to ms
 
-	d:2:HANDLER("[_sm_PlayerUseScrapMachine] started cooking...");
+	dbg(HANDLER, 2, "[_sm_PlayerUseScrapMachine] started cooking...");
 	data[sm_cooking] = true;
 	DestroyDynamicObject(data[sm_smoke]);
 	data[sm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
@@ -278,7 +270,7 @@ _sm_StartCooking(itemid)
 timer _sm_FinishCooking[cooktime](itemid, cooktime)
 {
 #pragma unused cooktime
-	d:1:HANDLER("[_sm_PlayerUseScrapMachine] finished cooking...");
+	dbg(HANDLER, 1, "[_sm_PlayerUseScrapMachine] finished cooking...");
 	new data[e_SCRAP_MACHINE_DATA];
 
 	GetItemArrayData(itemid, data);
@@ -292,7 +284,7 @@ timer _sm_FinishCooking[cooktime](itemid, cooktime)
 	{
 		subitemid = GetContainerSlotItem(containerid, i);
 
-		d:3:HANDLER("[_sm_PlayerUseScrapMachine] slot %d: destroying %d", i, subitemid);
+		dbg(HANDLER, 3, "[_sm_PlayerUseScrapMachine] slot %d: destroying %d", i, subitemid);
 
 		scrapcount += sm_ItemTypeScrapValue[GetItemType(subitemid)];
 		data[sm_fuel] -= SCRAP_MACHINE_FUEL_USAGE;
@@ -306,7 +298,7 @@ timer _sm_FinishCooking[cooktime](itemid, cooktime)
 	{
 		subitemid = CreateItem(item_ScrapMetal);
 		AddItemToContainer(containerid, subitemid);
-		d:3:HANDLER("[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", subitemid, containerid);
+		dbg(HANDLER, 3, "[_sm_PlayerUseScrapMachine] Created item %d and added to container %d", subitemid, containerid);
 	}
 
 	DestroyDynamicObject(data[sm_smoke]);

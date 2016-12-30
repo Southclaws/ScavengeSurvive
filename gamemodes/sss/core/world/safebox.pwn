@@ -57,7 +57,7 @@ static
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/safebox.pwn");
 
 	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 }
@@ -97,7 +97,7 @@ DefineSafeboxType(ItemType:itemtype, size, displayonuse = true, animateonuse = t
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/world/safebox.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -123,7 +123,7 @@ hook OnItemCreate(itemid)
 
 hook OnItemCreateInWorld(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreateInWorld] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/world/safebox.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -138,7 +138,7 @@ hook OnItemCreateInWorld(itemid)
 
 hook OnItemDestroy(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemDestroy] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnItemDestroy] in /gamemodes/sss/core/world/safebox.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -166,7 +166,7 @@ hook OnItemDestroy(itemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/safebox.pwn");
 
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -193,7 +193,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
 
 	new ItemType:itemtype = GetItemType(withitemid);
 

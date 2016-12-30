@@ -33,7 +33,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/locator.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/locator.pwn");
 
 	if(GetItemType(itemid) == item_Locator && GetItemType(withitemid) == item_MobilePhone)
 	{
@@ -48,7 +48,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/locator.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/locator.pwn");
 
 	if(GetItemType(itemid) != item_Locator)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -83,7 +83,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/item/locator.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/locator.pwn");
 
 	if(GetItemType(itemid) == item_Locator)
 	{

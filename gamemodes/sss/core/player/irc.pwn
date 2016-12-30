@@ -91,7 +91,7 @@ hook OnScriptInit()
 
 hook OnScriptExit()
 {
-	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/irc.pwn");
+	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/irc.pwn");
 
 	console("\n[OnScriptExit] Shutting down 'IRC'...");
 
@@ -108,7 +108,7 @@ hook OnScriptExit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/irc.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/irc.pwn");
 
 	if(!irc_Active)
 		return 1;
@@ -132,7 +132,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/player/irc.pwn");
+	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/player/irc.pwn");
 
 	if(!irc_Active)
 		return 1;
@@ -164,7 +164,7 @@ hook OnPlayerDisconnect(playerid, reason)
 
 hook OnPlayerSendChat(playerid, text[], Float:frequency)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerSendChat] in /gamemodes/sss/core/player/irc.pwn");
+	dbg("global", CORE, "[OnPlayerSendChat] in /gamemodes/sss/core/player/irc.pwn");
 
 	if(irc_Active)
 		_IRC_HandleServerChat(playerid, text, frequency);

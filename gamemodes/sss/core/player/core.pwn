@@ -199,7 +199,7 @@ timer LoadAccountDelay[5000](playerid)
 
 hook OnPlayerDisconnected(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDisconnected] in /gamemodes/sss/core/player/core.pwn");
+	dbg("global", CORE, "[OnPlayerDisconnected] in /gamemodes/sss/core/player/core.pwn");
 
 	ResetVariables(playerid);
 }
@@ -402,7 +402,7 @@ public OnPlayerUpdate(playerid)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/player/core.pwn");
+	dbg("global", CORE, "[OnPlayerStateChange] in /gamemodes/sss/core/player/core.pwn");
 
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{
@@ -415,7 +415,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerEnterVehicle] in /gamemodes/sss/core/player/core.pwn");
+	dbg("global", CORE, "[OnPlayerEnterVehicle] in /gamemodes/sss/core/player/core.pwn");
 
 	if(IsPlayerKnockedOut(playerid))
 		return 0;

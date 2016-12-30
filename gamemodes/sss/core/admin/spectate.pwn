@@ -46,7 +46,7 @@ Float:		spectate_StartPos[MAX_PLAYERS][3];
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/admin/spectate.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/admin/spectate.pwn");
 
 	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
 	spectate_Target[playerid] = INVALID_PLAYER_ID;
@@ -84,7 +84,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/admin/spectate.pwn");
+	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/admin/spectate.pwn");
 
 	if(spectate_Type[playerid] != SPECTATE_TYPE_NONE)
 		ExitSpectateMode(playerid);
@@ -479,7 +479,7 @@ timer UpdateSpectateMode[100](playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/admin/spectate.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/admin/spectate.pwn");
 
 	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
 	{

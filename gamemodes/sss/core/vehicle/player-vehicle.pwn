@@ -63,9 +63,6 @@ static
 bool:	veh_PrintEach = true,
 bool:	veh_PrintTotal = true;
 
-static
-		HANDLER = -1;
-
 
 forward OnVehicleSave(vehicleid);
 
@@ -78,8 +75,6 @@ hook OnScriptInit()
 
 	GetSettingInt("player-vehicle/print-each", true, veh_PrintEach);
 	GetSettingInt("player-vehicle/print-total", true, veh_PrintTotal);
-
-	HANDLER = debug_register_handler("vehicle/playervehicle");
 }
 
 hook OnGameModeInit()
@@ -91,7 +86,7 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	new name[MAX_PLAYER_NAME];
 
@@ -118,7 +113,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDisconnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 	{
@@ -205,7 +200,7 @@ LoadPlayerVehicle(filename[])
 	{
 		if(data[0] == 0)
 		{
-			d:1:HANDLER("Vehicle set to inactive (file: %s)", filename);
+			dbg(HANDLER, 1, "Vehicle set to inactive (file: %s)", filename);
 			modio_finalise_read(modio_getsession_read(filepath));
 			return 0;
 		}
@@ -402,7 +397,7 @@ LoadPlayerVehicle(filename[])
 
 	if(trunksize > 0)
 	{
-		d:1:HANDLER("[LoadPlayerVehicle] trunk size: %d", trunksize);
+		dbg(HANDLER, 1, "[LoadPlayerVehicle] trunk size: %d", trunksize);
 
 		new
 			ItemType:itemtype,
@@ -416,13 +411,13 @@ LoadPlayerVehicle(filename[])
 
 			containerid = GetVehicleContainer(vehicleid);
 
-			d:1:HANDLER("[LoadPlayerVehicle] modio read length:%d items:%d", length, itemcount);
+			dbg(HANDLER, 1, "[LoadPlayerVehicle] modio read length:%d items:%d", length, itemcount);
 
 			for(new i; i < itemcount; i++)
 			{
 				itemtype = GetStoredItemType(i);
 
-				d:2:HANDLER("[LoadPlayerVehicle] item %d/%d type:%d", i, itemcount, _:itemtype);
+				dbg(HANDLER, 2, "[LoadPlayerVehicle] item %d/%d type:%d", i, itemcount, _:itemtype);
 
 				if(itemtype == INVALID_ITEM_TYPE)
 					break;
@@ -431,7 +426,7 @@ LoadPlayerVehicle(filename[])
 					break;
 
 				itemid = CreateItem(itemtype);
-				d:2:HANDLER("[LoadPlayerVehicle] created item:%d container:%d", itemid, containerid);
+				dbg(HANDLER, 2, "[LoadPlayerVehicle] created item:%d container:%d", itemid, containerid);
 
 				if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 					SetItemArrayDataFromStored(itemid, i);
@@ -467,7 +462,7 @@ _SaveVehicle(vehicleid)
 
 	if(CallLocalFunction("OnVehicleSave", "d", vehicleid))
 	{
-		d:1:HANDLER("[_SaveVehicle] OnVehicleSave returned non-zero");
+		dbg(HANDLER, 1, "[_SaveVehicle] OnVehicleSave returned non-zero");
 		return 0;
 	}
 
@@ -641,7 +636,7 @@ _SaveVehicle(vehicleid)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerStateChange] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnPlayerStateChange] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
@@ -690,7 +685,7 @@ _SaveIfOwnedBy(vehicleid, playerid)
 
 _PlayerUpdateVehicle(playerid, vehicleid)
 {
-	d:1:HANDLER("[_PlayerUpdateVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
+	dbg(HANDLER, 1, "[_PlayerUpdateVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
@@ -706,7 +701,7 @@ _PlayerUpdateVehicle(playerid, vehicleid)
 
 hook OnVehicleDestroyed(vehicleid)
 {
-	d:3:GLOBAL_DEBUG("[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnVehicleDestroyed] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	_SaveVehicle(vehicleid);
 
@@ -715,7 +710,7 @@ hook OnVehicleDestroyed(vehicleid)
 
 _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 {
-	d:1:HANDLER("[_SetVehicleOwner] %d (%s) '%s' %d", vehicleid, GetVehicleGEID(vehicleid), name, playerid);
+	dbg(HANDLER, 1, "[_SetVehicleOwner] %d (%s) '%s' %d", vehicleid, GetVehicleGEID(vehicleid), name, playerid);
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -741,7 +736,7 @@ _SetVehicleOwner(vehicleid, name[MAX_PLAYER_NAME], playerid = INVALID_PLAYER_ID)
 
 _RemoveVehicleOwner(vehicleid)
 {
-	d:1:HANDLER("[_RemoveVehicleOwner] %d (%s)", vehicleid, GetVehicleGEID(vehicleid));
+	dbg(HANDLER, 1, "[_RemoveVehicleOwner] %d (%s)", vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsValidVehicle(vehicleid))
 		return 0;
@@ -760,7 +755,7 @@ _RemoveVehicleOwner(vehicleid)
 */
 _UpdatePlayerVehicle(playerid, vehicleid)
 {
-	d:1:HANDLER("[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
+	dbg(HANDLER, 1, "[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleGEID(vehicleid));
 
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -776,11 +771,11 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	{
 		// Vehicle has no owner, assign player as owner
 		// Set owner of player's old vehicle to null
-		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle owner is null");
+		dbg(HANDLER, 1, "[_UpdatePlayerVehicle] Vehicle owner is null");
 
 		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
 		{
-			d:1:HANDLER("[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
+			dbg(HANDLER, 1, "[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 		}
 
@@ -790,23 +785,23 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 	else
 	{
 		// Vehicle has an owner
-		d:1:HANDLER("[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
+		dbg(HANDLER, 1, "[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
 		if(pveh_PlayerVehicle[playerid] == vehicleid)
 		{
 			// Vehicle's owner is the player, do nothing but save it
-			d:1:HANDLER("[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
+			dbg(HANDLER, 1, "[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
 			_SaveVehicle(vehicleid);
 		}
 		else
 		{
 			// Vehicle's owner is not the player, check if the player already
 			// owns a vehicle
-			d:1:HANDLER("[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
+			dbg(HANDLER, 1, "[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
 
 			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
 			{
 				// Player owns a vehicle
-				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
+				dbg(HANDLER, 1, "[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleGEID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
 
 				// pveh_PlayerVehicle[playerid] = player's previous vehicle
 				// vehicleid = new vehicle
@@ -830,7 +825,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// Player does not own a vehicle
 				// Remove the original owner's name from it
 				// Assign the player as the new owner and save the vehicle
-				d:1:HANDLER("[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
+				dbg(HANDLER, 1, "[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
 				_SaveVehicle(vehicleid);
 				_SetVehicleOwner(vehicleid, name, playerid);
 				_SaveVehicle(vehicleid);
@@ -843,7 +838,7 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 
 hook OnPlayerSave(playerid, filename[])
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerSave] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnPlayerSave] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	new data[1];
 	data[0] = pveh_SaveAnyVehicle[playerid];
@@ -853,7 +848,7 @@ hook OnPlayerSave(playerid, filename[])
 
 hook OnPlayerLoad(playerid, filename[])
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerLoad] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
+	dbg("global", CORE, "[OnPlayerLoad] in /gamemodes/sss/core/vehicle/player-vehicle.pwn");
 
 	new data[1];
 

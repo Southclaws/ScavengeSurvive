@@ -112,7 +112,7 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
 
 	spawn_State[playerid] = false;
 
@@ -271,7 +271,7 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/spawn.pwn");
+	dbg("global", CORE, "[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/spawn.pwn");
 
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{

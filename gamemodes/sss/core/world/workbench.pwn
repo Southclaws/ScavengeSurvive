@@ -41,20 +41,12 @@ bool:	wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 		wb_CurrentWorkbench[MAX_PLAYERS];
 
 
-static HANDLER = -1;
-
-
 /*==============================================================================
 
 	Zeroing
 
 ==============================================================================*/
 
-
-hook OnScriptInit()
-{
-	HANDLER = debug_register_handler("workbench");
-}
 
 hook OnPlayerConnect(playerid)
 {
@@ -130,13 +122,13 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		d:1:HANDLER("[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", withitemid, containerid, itemcount);
+		dbg(HANDLER, 1, "[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", withitemid, containerid, itemcount);
 
 		for(new i; i < itemcount; i++)
 		{
 			craftitems[i][cft_selectedItemType] = GetItemType(GetContainerSlotItem(containerid, i));
 			craftitems[i][cft_selectedItemID] = GetContainerSlotItem(containerid, i);
-			d:3:HANDLER("[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][cft_selectedItemType], craftitems[i][cft_selectedItemID], IsValidItem(craftitems[i][cft_selectedItemID]));
+			dbg(HANDLER, 3, "[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][cft_selectedItemType], craftitems[i][cft_selectedItemID], IsValidItem(craftitems[i][cft_selectedItemID]));
 		}
 
 		craftset = _cft_FindCraftset(craftitems, itemcount);
@@ -146,7 +138,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		{
 			if(wb_ConstructionSetWorkbench[consset])
 			{
-				d:2:HANDLER("[OnPlayerUseItemWithItem] Valid consset %d", consset);
+				dbg(HANDLER, 2, "[OnPlayerUseItemWithItem] Valid consset %d", consset);
 
 				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
@@ -199,7 +191,7 @@ _wb_StopWorking(playerid)
 
 _wb_CreateResult(itemid, craftset)
 {
-	d:1:HANDLER("[_wb_CreateResult] itemid %d craftset %d", itemid, craftset);
+	dbg(HANDLER, 1, "[_wb_CreateResult] itemid %d craftset %d", itemid, craftset);
 
 	new
 		Float:x,
@@ -215,13 +207,13 @@ _wb_CreateResult(itemid, craftset)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/workbench.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/workbench.pwn");
 
 	if(RELEASED(16))
 	{
 		if(wb_CurrentWorkbench[playerid] != -1)
 		{
-			d:1:HANDLER("[OnPlayerKeyStateChange] stopping workbench build");
+			dbg(HANDLER, 1, "[OnPlayerKeyStateChange] stopping workbench build");
 			_wb_StopWorking(playerid);
 		}
 	}
@@ -231,11 +223,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/world/workbench.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/world/workbench.pwn");
 
 	if(wb_CurrentWorkbench[playerid] != -1)
 	{
-		d:1:HANDLER("[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
+		dbg(HANDLER, 1, "[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 
 		new
 			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
@@ -255,14 +247,14 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerConstruct(playerid, consset)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConstruct] in /gamemodes/sss/core/world/workbench.pwn");
+	dbg("global", CORE, "[OnPlayerConstruct] in /gamemodes/sss/core/world/workbench.pwn");
 
 	if(!IsValidConstructionSet(consset))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
-		d:2:HANDLER("[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
+		dbg(HANDLER, 2, "[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
 		ShowActionText(playerid, ls(playerid, "NEEDWORKBE", true), 5000);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}

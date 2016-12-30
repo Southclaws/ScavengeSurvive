@@ -56,7 +56,7 @@ HideHelpTip(playerid)
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/tip-text.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/ui/tip-text.pwn");
 
 	ToolTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
 	PlayerTextDrawBackgroundColor	(playerid, ToolTipText[playerid], 255);
@@ -73,7 +73,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 
 	if(ToolTips[playerid])
 	{
@@ -98,7 +98,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerDropItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
+	dbg("global", CORE, "[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 
 	if(ToolTips[playerid])
 		HideHelpTip(playerid);

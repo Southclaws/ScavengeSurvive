@@ -54,19 +54,9 @@ PlayerText:	bod_BodyPreview	[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 			bod_LabelIndex1	[MAX_PLAYERS];
 
 
-static HANDLER = -1;
-
-
-hook OnScriptInit()
-{
-	console("\n[OnScriptInit] Initialising 'BodyPreview'...");
-
-	HANDLER = debug_register_handler("bodypreview");
-}
-
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/ui/body-preview.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/ui/body-preview.pwn");
 
 	bod_LabelIndex0[playerid] = 0;
 	bod_LabelIndex1[playerid] = 0;
@@ -133,7 +123,7 @@ CreateBodyPreviewUI(playerid)
 
 stock ShowBodyPreviewUI(playerid)
 {
-	d:1:HANDLER("[ShowBodyPreviewUI]");
+	dbg(HANDLER, 1, "[ShowBodyPreviewUI]");
 	PlayerTextDrawSetPreviewModel	(playerid, bod_BodyPreview[playerid], GetPlayerSkin(playerid));
 
 	PlayerTextDrawShow(playerid, bod_Header[playerid]);
@@ -146,13 +136,13 @@ stock ShowBodyPreviewUI(playerid)
 
 stock HideBodyPreviewUI(playerid)
 {
-	d:1:HANDLER("[HideBodyPreviewUI]");
+	dbg(HANDLER, 1, "[HideBodyPreviewUI]");
 	PlayerTextDrawHide(playerid, bod_Header[playerid]);
 	PlayerTextDrawHide(playerid, bod_Background[playerid]);
 	PlayerTextDrawHide(playerid, bod_Footer[playerid]);
 	PlayerTextDrawHide(playerid, bod_BodyPreview[playerid]);
 
-	d:2:HANDLER("[HideBodyPreviewUI] LabelIndex0 %d LabelIndex1 %d", bod_LabelIndex0[playerid], bod_LabelIndex1[playerid]);
+	dbg(HANDLER, 2, "[HideBodyPreviewUI] LabelIndex0 %d LabelIndex1 %d", bod_LabelIndex0[playerid], bod_LabelIndex1[playerid]);
 	for(new i; i <= bod_LabelIndex0[playerid]; i++)
 	{
 		PlayerTextDrawDestroy(playerid, bod_LabelData0[playerid][i][bl_textdraw]);
@@ -175,7 +165,7 @@ stock HideBodyPreviewUI(playerid)
 
 stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textcolour)
 {
-	d:1:HANDLER("[SetBodyPreviewLabel] side:%d index:%d spacing:%.2f string:'%s' col:%x", side, index, spacing, string, textcolour);
+	dbg(HANDLER, 1, "[SetBodyPreviewLabel] side:%d index:%d spacing:%.2f string:'%s' col:%x", side, index, spacing, string, textcolour);
 
 	if(!bod_Shown[playerid])
 		return 0;
@@ -187,7 +177,7 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textco
 	{
 		if(bod_LabelData0[playerid][index][bl_valid])
 		{
-			d:2:HANDLER("[SetBodyPreviewLabel] Updating left side index: %d", index);
+			dbg(HANDLER, 2, "[SetBodyPreviewLabel] Updating left side index: %d", index);
 
 			PlayerTextDrawSetString(playerid, bod_LabelData0[playerid][index][bl_textdraw], string);
 			PlayerTextDrawColor(playerid, bod_LabelData0[playerid][index][bl_textdraw], textcolour);
@@ -195,7 +185,7 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textco
 		}
 		else
 		{
-			d:2:HANDLER("[SetBodyPreviewLabel] Adding to left side index: %d", index);
+			dbg(HANDLER, 2, "[SetBodyPreviewLabel] Adding to left side index: %d", index);
 
 			bod_LabelData0[playerid][index][bl_valid] = true;
 
@@ -230,7 +220,7 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textco
 	{
 		if(bod_LabelData1[playerid][index][bl_valid])
 		{
-			d:2:HANDLER("[SetBodyPreviewLabel] Updating right side index: %d", index);
+			dbg(HANDLER, 2, "[SetBodyPreviewLabel] Updating right side index: %d", index);
 
 			PlayerTextDrawSetString(playerid, bod_LabelData1[playerid][index][bl_textdraw], string);
 			PlayerTextDrawColor(playerid, bod_LabelData1[playerid][index][bl_textdraw], textcolour);
@@ -238,7 +228,7 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textco
 		}
 		else
 		{
-			d:2:HANDLER("[SetBodyPreviewLabel] Adding to right side index: %d", index);
+			dbg(HANDLER, 2, "[SetBodyPreviewLabel] Adding to right side index: %d", index);
 
 			bod_LabelData1[playerid][index][bl_valid] = true;
 

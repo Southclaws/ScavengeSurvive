@@ -71,7 +71,7 @@ _sign_UpdateText(itemid, text[])
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/sign.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/sign.pwn");
 
 	if(GetItemType(itemid) == item_Sign)
 	{

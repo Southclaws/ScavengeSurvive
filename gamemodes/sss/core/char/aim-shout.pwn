@@ -32,7 +32,7 @@ static
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/aim-shout.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/aim-shout.pwn");
 
 	if(IsPlayerInAnyVehicle(playerid))
 	{

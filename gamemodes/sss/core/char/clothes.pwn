@@ -57,7 +57,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/char/clothes.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/clothes.pwn");
 
 	skin_CurrentlyUsing[playerid] = INVALID_ITEM_ID;
 }
@@ -76,7 +76,7 @@ DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance, bool:
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/char/clothes.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/clothes.pwn");
 
 	if(GetItemType(itemid) == item_Clothes)
 	{
@@ -104,7 +104,7 @@ hook OnItemCreate(itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
-	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/char/clothes.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/clothes.pwn");
 
 	if(itemtype == item_Clothes)
 	{
@@ -127,7 +127,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/clothes.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/clothes.pwn");
 
 	if(newkeys == 16)
 	{
@@ -174,7 +174,7 @@ StopUsingClothes(playerid)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/char/clothes.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/clothes.pwn");
 
 	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{

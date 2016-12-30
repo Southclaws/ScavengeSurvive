@@ -26,7 +26,7 @@
 
 hook OnPlayerPickUpItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerPickUpItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -36,7 +36,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerGiveItem(playerid, targetid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerGiveItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnPlayerGiveItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -52,7 +52,7 @@ hook OnPlayerGiveItem(playerid, targetid, itemid)
 
 hook OnItemRemoveFromCnt(containerid, slotid, playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemRemoveFromCnt] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnItemRemoveFromCnt] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsPlayerConnected(playerid))
 	{
@@ -65,7 +65,7 @@ hook OnItemRemoveFromCnt(containerid, slotid, playerid)
 
 hook OnPlayerOpenInventory(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerOpenInventory] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnPlayerOpenInventory] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -75,7 +75,7 @@ hook OnPlayerOpenInventory(playerid)
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerOpenContainer] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnPlayerOpenContainer] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -85,7 +85,7 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -101,7 +101,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnItemCreate(itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnItemCreate] in /gamemodes/sss/core/player/disallow-actions.pwn");
+	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/player/disallow-actions.pwn");
 
 	if(GetItemType(itemid) == ItemType:0)
 		return Y_HOOKS_BREAK_RETURN_0;

@@ -29,18 +29,6 @@ static
 Float:	bld_BleedRate[MAX_PLAYERS];
 
 
-static
-		HANDLER = -1;
-
-
-hook OnScriptInit()
-{
-	console("\n[OnScriptInit] Initialising 'Bleed'...");
-
-	HANDLER = debug_register_handler("bleed");
-}
-
-
 hook OnPlayerScriptUpdate(playerid)
 {
 	if(!IsPlayerSpawned(playerid))

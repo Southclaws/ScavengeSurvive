@@ -48,7 +48,7 @@ forward OnLookupResponse(sessionid, response, data[]);
 
 hook OnPlayerLogin(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerLogin] in /gamemodes/sss/core/player/country.pwn");
+	dbg("global", CORE, "[OnPlayerLogin] in /gamemodes/sss/core/player/country.pwn");
 
 	_cntr_HandleLogin(playerid);
 
@@ -57,7 +57,7 @@ hook OnPlayerLogin(playerid)
 
 hook OnPlayerRegister(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerRegister] in /gamemodes/sss/core/player/country.pwn");
+	dbg("global", CORE, "[OnPlayerRegister] in /gamemodes/sss/core/player/country.pwn");
 
 	_cntr_HandleLogin(playerid);
 

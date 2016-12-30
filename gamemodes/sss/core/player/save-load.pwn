@@ -73,21 +73,16 @@ forward OnPlayerSave(playerid, filename[]);
 forward OnPlayerLoad(playerid, filename[]);
 
 
-static HANDLER = -1;
-
-
 hook OnGameModeInit()
 {
 	console("\n[OnGameModeInit] Initialising 'SaveLoad'...");
 
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_PLAYER);
-
-	HANDLER = debug_register_handler("SaveLoad");
 }
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/player/save-load.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/save-load.pwn");
 
 	saveload_Loaded[playerid] = false;
 }
@@ -125,7 +120,7 @@ SavePlayerChar(playerid)
 	data[PLY_CELL_SKIN]		= GetPlayerClothes(playerid);
 	data[PLY_CELL_HAT]		= _:GetItemType(GetPlayerHatItem(playerid));
 
-	d:1:HANDLER("[SAVE:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
+	dbg(HANDLER, 1, "[SAVE:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_DUCK)
 	{
@@ -157,7 +152,7 @@ SavePlayerChar(playerid)
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 		data[PLY_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
-	d:2:HANDLER("[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
+	dbg(HANDLER, 2, "[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
 
 	data[PLY_CELL_WORLD] = GetPlayerVirtualWorld(playerid);
 	data[PLY_CELL_INTERIOR] = GetPlayerInterior(playerid);
@@ -177,7 +172,7 @@ SavePlayerChar(playerid)
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,E,L,D>, 2 + data[1], data);
 
-		d:2:HANDLER("[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg(HANDLER, 2, "[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
 	else
 	{
@@ -198,7 +193,7 @@ SavePlayerChar(playerid)
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,O,L,S>, 2 + data[1], data);
 
-		d:2:HANDLER("[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg(HANDLER, 2, "[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
 	else
 	{
@@ -219,12 +214,12 @@ SavePlayerChar(playerid)
 
 		itemcount++;
 
-		d:2:HANDLER("[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
+		dbg(HANDLER, 2, "[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 	}
 
 	if(!SerialiseItems(items, itemcount))
 	{
-		d:2:HANDLER("[SAVE:%p] Inv items: %d size: %d", playerid, itemcount, GetSerialisedSize());
+		dbg(HANDLER, 2, "[SAVE:%p] Inv items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
 		modio_push(filename, _T<I,N,V,0>, GetSerialisedSize(), itm_arr_Serialized);
 		ClearSerializer();
@@ -249,12 +244,12 @@ SavePlayerChar(playerid)
 
 			itemcount++;
 
-			d:2:HANDLER("[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
+			dbg(HANDLER, 2, "[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
 		}
 
 		if(!SerialiseItems(items, itemcount))
 		{
-			d:2:HANDLER("[SAVE:%p] Bag items: %d size: %d", playerid, itemcount, GetSerialisedSize());
+			dbg(HANDLER, 2, "[SAVE:%p] Bag items: %d size: %d", playerid, itemcount, GetSerialisedSize());
 
 			modio_push(filename, _T<B,A,G,0>, GetSerialisedSize(), itm_arr_Serialized);
 			ClearSerializer();
@@ -288,7 +283,7 @@ LoadPlayerChar(playerid)
 		return length;
 	}
 
-	d:2:HANDLER("[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
+	dbg(HANDLER, 2, "[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
 /*
 	Character
@@ -340,7 +335,7 @@ LoadPlayerChar(playerid)
 
 		GiveWorldItemToPlayer(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] OLD HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] OLD HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
 	}
 
 	if(data[PLY_CELL_HOLST] > 0)
@@ -367,7 +362,7 @@ LoadPlayerChar(playerid)
 
 		SetPlayerHolsterItem(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
 	if(data[PLY_CELL_BLEEDING] == 1)
@@ -403,7 +398,7 @@ LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
 	}
 
 	SetPlayerVirtualWorld(playerid, data[PLY_CELL_WORLD]);
@@ -425,7 +420,7 @@ LoadPlayerChar(playerid)
 		CreateItem_ExplicitID(itemid);
 		GiveWorldItemToPlayer(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
 
 /*
@@ -444,7 +439,7 @@ LoadPlayerChar(playerid)
 		CreateItem_ExplicitID(itemid);
 		SetPlayerHolsterItem(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
 	}
 
 /*
@@ -455,7 +450,7 @@ LoadPlayerChar(playerid)
 
 	if(!DeserialiseItems(itm_arr_Serialized, length, false))
 	{
-		d:2:HANDLER("[LOAD:%p] Inv items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
+		dbg(HANDLER, 2, "[LOAD:%p] Inv items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
 		for(new i, j = GetStoredItemCount(); i < j; i++)
 		{
@@ -477,7 +472,7 @@ LoadPlayerChar(playerid)
 		
 			AddItemToInventory(playerid, itemid, 0);
 
-			d:3:HANDLER("[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
+			dbg(HANDLER, 3, "[LOAD:%p] - Inv item %d: %d", playerid, i, _:itemtype);
 
 		}
 		ClearSerializer();
@@ -495,7 +490,7 @@ LoadPlayerChar(playerid)
 		{
 			new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
-			d:2:HANDLER("[LOAD:%p] Bag items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
+			dbg(HANDLER, 2, "[LOAD:%p] Bag items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
 			for(new i, j = GetStoredItemCount(); i < j; i++)
 			{
@@ -507,7 +502,7 @@ LoadPlayerChar(playerid)
 
 				AddItemToContainer(containerid, itemid);
 
-				d:3:HANDLER("[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, itemid, _:itemtype);
+				dbg(HANDLER, 3, "[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, itemid, _:itemtype);
 
 			}
 			ClearSerializer();
@@ -568,7 +563,7 @@ FV10_LoadPlayerChar(playerid)
 		return 0;
 	}
 
-	d:1:HANDLER("[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
+	dbg(HANDLER, 1, "[LOAD:%p] CHR %.1f, %.1f, %.1f, %d, %d", playerid, data[PLY_CELL_HEALTH], data[PLY_CELL_ARMOUR], data[PLY_CELL_FOOD], data[PLY_CELL_SKIN], data[PLY_CELL_HAT]);
 
 	if(Float:data[PLY_CELL_HEALTH] <= 0.0)
 		data[PLY_CELL_HEALTH] = _:1.0;
@@ -589,7 +584,7 @@ FV10_LoadPlayerChar(playerid)
 		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
 		SetPlayerHolsterItem(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
 	}
 
 	if(data[PLY_CELL_HELD] != -1)
@@ -608,7 +603,7 @@ FV10_LoadPlayerChar(playerid)
 			GiveWorldItemToPlayer(playerid, itemid, false);
 		}
 
-		d:2:HANDLER("[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
 	}
 
 	if(data[PLY_CELL_BLEEDING] == 1)
@@ -641,7 +636,7 @@ FV10_LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		d:2:HANDLER("[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
+		dbg(HANDLER, 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
 	}
 
 	return 1;
@@ -683,7 +678,7 @@ FV10_LoadPlayerInventory(playerid)
 	
 		AddItemToInventory(playerid, itemid, 0);
 
-		d:3:HANDLER("[LOAD:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
+		dbg(HANDLER, 3, "[LOAD:%p] INV %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 	}
 
 	containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
@@ -705,7 +700,7 @@ FV10_LoadPlayerInventory(playerid)
 
 			AddItemToContainer(containerid, itemid);
 
-			d:3:HANDLER("[LOAD:%p] BAG %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
+			dbg(HANDLER, 3, "[LOAD:%p] BAG %d, %d, %d", playerid, data[i], data[i + 1], data[i + 2]);
 		}
 	}
 
@@ -722,7 +717,7 @@ FV10_LoadPlayerInventory(playerid)
 
 hook OnScriptExit()
 {
-	d:3:GLOBAL_DEBUG("[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
+	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
 
 	console("\n[OnScriptExit] Shutting down 'SaveLoad'...");
 

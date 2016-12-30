@@ -61,16 +61,6 @@ forward OnPlayerDrank(playerid, itemid);
 forward OnPlayerDank(memes);
 
 
-static HANDLER = -1;
-
-
-hook OnGameModeInit()
-{
-	console("\n[OnGameModeInit] Initialising 'liquid-container'...");
-
-	HANDLER = debug_register_handler("liquid-container");
-}
-
 hook OnPlayerConnect(playerid)
 {
 	liq_CurrentItem[playerid] = INVALID_ITEM_ID;
@@ -159,11 +149,11 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/item/liquid-container.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		d:2:HANDLER("[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
+		dbg(HANDLER, 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
 
 		liq_UseWithItemTick[playerid] = GetTickCount();
 	}
@@ -173,11 +163,11 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/liquid-container.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		d:2:HANDLER("[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]));
+		dbg(HANDLER, 2, "[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]));
 
 		if(GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]) > 10)
 			_StartDrinking(playerid, itemid);
@@ -191,11 +181,11 @@ _StartDrinking(playerid, itemid, continuing = false)
 	if(!IsPlayerIdle(playerid) && !continuing)
 		return;
 
-	d:2:HANDLER("[_StartDrinking] Player is not idle");
+	dbg(HANDLER, 2, "[_StartDrinking] Player is not idle");
 
 	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, itemid))
 	{
-		d:2:HANDLER("[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
+		dbg(HANDLER, 2, "[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
 		if(continuing)
 			_StopDrinking(playerid);
 
@@ -212,7 +202,7 @@ _StartDrinking(playerid, itemid, continuing = false)
 
 _StopDrinking(playerid)
 {
-	d:2:HANDLER("[_StopDrinking]");
+	dbg(HANDLER, 2, "[_StopDrinking]");
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
@@ -255,11 +245,11 @@ _DrinkItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnHoldActionFinish] in /gamemodes/sss/core/item/liquid-container.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	if(liq_CurrentItem[playerid] != -1)
 	{
-		d:2:HANDLER("[OnHoldActionFinish] Finished drinking, re-starting");
+		dbg(HANDLER, 2, "[OnHoldActionFinish] Finished drinking, re-starting");
 		_DrinkItem(playerid, liq_CurrentItem[playerid]);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
@@ -278,7 +268,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerCrafted(playerid, craftset, result)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerCrafted] in /gamemodes/sss/core/item/liquid-container.pwn");
+	dbg("global", CORE, "[OnPlayerCrafted] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	/*
 		Todo:

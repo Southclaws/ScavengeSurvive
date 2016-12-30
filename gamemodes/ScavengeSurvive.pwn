@@ -361,7 +361,6 @@ new stock
 #include "sss/utils/object.pwn"
 #include "sss/utils/tickcountfix.pwn"
 #include "sss/utils/string.pwn"
-#include "sss/utils/debug.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
 #include "sss/utils/headoffsets.pwn"
@@ -667,7 +666,7 @@ OnGameModeInit_Setup()
 	SendRconCommand(sprintf("mapname %s", GetMapName()));
 
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
-	GLOBAL_DEBUG = debug_register_handler("GLOBAL", gGlobalDebugLevel);
+	debug_set_level("global", gGlobalDebugLevel);
 
 	RestartCount				=TextDrawCreate(430.000000, 10.000000, "Server Restart In:~n~00:00");
 	TextDrawAlignment			(RestartCount, 2);

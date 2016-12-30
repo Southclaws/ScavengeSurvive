@@ -48,8 +48,6 @@ Timer:		mach_HoldTimer[MAX_PLAYERS];
 
 forward OnPlayerUseMachine(playerid, itemid, interactiontype);
 
-static HANDLER = -1;
-
 
 /*==============================================================================
 
@@ -58,14 +56,9 @@ static HANDLER = -1;
 ==============================================================================*/
 
 
-hook OnScriptInit()
-{
-	HANDLER = debug_register_handler("machine");
-}
-
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/world/machine.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/machine.pwn");
 
 	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 }
@@ -149,7 +142,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 _mach_PlayerUseMachine(playerid, itemid)
 {
-	d:1:HANDLER("[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
+	dbg(HANDLER, 1, "[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
 
 	mach_CurrentMachine[playerid] = itemid;
 	mach_MachineInteractTick[playerid] = GetTickCount();
@@ -161,7 +154,7 @@ _mach_PlayerUseMachine(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/machine.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/machine.pwn");
 
 	if(RELEASED(16))
 	{

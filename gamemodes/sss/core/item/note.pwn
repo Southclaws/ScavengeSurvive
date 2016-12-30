@@ -33,7 +33,7 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItem] in /gamemodes/sss/core/item/note.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/note.pwn");
 
 	if(GetItemType(itemid) == item_Note)
 		_ShowNoteDialog(playerid, itemid);
@@ -79,7 +79,7 @@ _ShowNoteDialog(playerid, itemid)
 
 hook OnItemNameRender(itemid, ItemType:itemtype)
 {
-	d:3:GLOBAL_DEBUG("[OnItemNameRender] in /gamemodes/sss/core/item/note.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/note.pwn");
 
 	if(itemtype == item_Note)
 	{

@@ -234,7 +234,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
 
 	if(GetItemType(withitemid) == item_TentPack)
 	{

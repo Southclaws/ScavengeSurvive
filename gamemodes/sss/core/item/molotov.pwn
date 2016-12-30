@@ -24,7 +24,7 @@
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/molotov.pwn");
+	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/molotov.pwn");
 
 	if(GetItemType(withitemid) == item_MolotovEmpty)
 	{

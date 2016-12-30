@@ -85,7 +85,7 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	d:3:GLOBAL_DEBUG("[OnPlayerConnect] in /gamemodes/sss/core/server/weather.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/server/weather.pwn");
 
 	weather_PlayerWeather[playerid] = -1;
 	weather_PlayerHour[playerid] = -1;
