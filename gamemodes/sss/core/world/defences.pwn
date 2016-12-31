@@ -259,8 +259,7 @@ StartBuildingDefence(playerid, itemid)
 	GetItemTypeName(GetItemType(itemid), itemtypename);
 
 	def_CurrentDefenceItem[playerid] = itemid;
-	new __DONT_FORGET_THIS__;
-	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 1000, "Construction"));
+	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
 
