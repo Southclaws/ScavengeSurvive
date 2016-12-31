@@ -42,7 +42,10 @@ static
 	PlayerText:GearSlot_Back[3],
 
 	inv_TempContainerID[MAX_PLAYERS],
-	inv_InventoryOptionID[MAX_PLAYERS];
+	inv_InventoryOptionID[MAX_PLAYERS],
+
+	inv_EscInventory[MAX_PLAYERS],
+	inv_EscContainer[MAX_PLAYERS];
 
 
 forward CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item, Float:x, Float:y, Float:width, Float:height, colour, overlaycolour);
@@ -321,7 +324,12 @@ hook OnPlayerCloseInventory(playerid)
 
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
-	CancelSelectTextDraw(playerid);
+
+	if(inv_EscInventory[playerid])
+		inv_EscInventory[playerid] = false;
+
+	else
+		CancelSelectTextDraw(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -344,7 +352,12 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
-	CancelSelectTextDraw(playerid);
+
+	if(inv_EscContainer[playerid])
+		inv_EscContainer[playerid] = false;
+
+	else
+		CancelSelectTextDraw(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -861,18 +874,20 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	{
 		if(IsPlayerViewingInventory(playerid))
 		{
-			// HidePlayerGear(playerid);
-			// HidePlayerHealthInfo(playerid);
-			// ClosePlayerInventory(playerid);
-			DisplayPlayerInventory(playerid);
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
+			ClosePlayerInventory(playerid);
+			inv_EscInventory[playerid] = true;
+			// DisplayPlayerInventory(playerid);
 		}
 
 		if(GetPlayerCurrentContainer(playerid) != INVALID_CONTAINER_ID)
 		{
-			// HidePlayerGear(playerid);
-			// HidePlayerHealthInfo(playerid);
-			// ClosePlayerContainer(playerid);
-			DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
+			ClosePlayerContainer(playerid);
+			inv_EscContainer[playerid] = true;
+			// DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
 		}
 	}
 }
