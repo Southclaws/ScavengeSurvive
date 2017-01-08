@@ -905,15 +905,13 @@ timer MoveDefence[1500](itemid, playerid)
 
 	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
 	{
-		SetItemPos(itemid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
-		SetDynamicObjectPos(objectid, ix, iy, iz);
-
 		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX];
 		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY];
 		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ];
+		iz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 
-		new t = MoveDynamicObject(objectid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5, rx, ry, rz);
-		// defer _UpdateDefenceRotation(itemid, rx, ry, rz, t);
+		SetItemPos(itemid, ix, iy, iz);
+		SetItemRot(itemid, rx, ry, rz);
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
@@ -922,11 +920,13 @@ timer MoveDefence[1500](itemid, playerid)
 	}
 	else
 	{
-		SetItemPos(itemid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
-		SetDynamicObjectPos(objectid, ix, iy, iz);
+		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotX];
+		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotY];
+		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotZ];
+		iz -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 
-		new t = MoveDynamicObject(objectid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5, rx, ry, rz);
-		// defer _UpdateDefenceRotation(itemid, rx, ry, rz, t);
+		SetItemPos(itemid, ix, iy, iz);
+		SetItemRot(itemid, rx, ry, rz);
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
@@ -937,12 +937,6 @@ timer MoveDefence[1500](itemid, playerid)
 	return;
 }
 
-/*timer _UpdateDefenceRotation[t](itemid, Float:rx, Float:ry, Float:rz, t)
-{
-	#pragma unused t
-	SetItemRot(itemid, rx, ry, rz, false);
-}
-*/
 hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
 {
 	new ItemType:itemtype = GetItemType(itemid);
