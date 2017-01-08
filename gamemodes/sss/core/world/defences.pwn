@@ -47,7 +47,8 @@ Float:		def_verticalRotZ,
 Float:		def_horizontalRotX,
 Float:		def_horizontalRotY,
 Float:		def_horizontalRotZ,
-Float:		def_placeOffsetZ
+Float:		def_placeOffsetZ,
+bool:		def_movable
 }
 
 enum e_DEFENCE_DATA
@@ -106,7 +107,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset)
+stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, Float:h_rx, Float:h_ry, Float:h_rz, Float:zoffset, bool:movable)
 {
 	SetItemTypeMaxArrayData(itemtype, e_DEFENCE_DATA);
 
@@ -118,6 +119,7 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	def_TypeData[def_TypeTotal][def_horizontalRotY] = h_ry;
 	def_TypeData[def_TypeTotal][def_horizontalRotZ] = h_rz;
 	def_TypeData[def_TypeTotal][def_placeOffsetZ] = zoffset;
+	def_TypeData[def_TypeTotal][def_movable] = movable;
 	def_ItemTypeDefenceType[itemtype] = def_TypeTotal;
 
 	return def_TypeTotal++;
@@ -397,6 +399,12 @@ _InteractDefenceWithItem(playerid, itemid, tool)
 
 	if(tooltype == item_Motor)
 	{
+		if(!def_TypeData[defencetype][def_movable])
+		{
+			ShowActionText(playerid, ls(playerid, "DEFNOTMOVAB"));
+			return 1;
+		}
+
 		new itemtypename[ITM_MAX_NAME];
 
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
@@ -887,10 +895,12 @@ timer MoveDefence[1500](itemid, playerid)
 	new
 		ItemType:itemtype = GetItemType(itemid),
 		objectid = GetItemObjectID(itemid),
+		Float:rx,
+		Float:ry,
 		Float:rz,
 		geid[GEID_LEN];
 
-	GetItemRot(itemid, rz, rz, rz);
+	GetItemRot(itemid, rx, ry, rz);
 	GetItemGEID(itemid, geid);
 
 	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
@@ -898,10 +908,12 @@ timer MoveDefence[1500](itemid, playerid)
 		SetItemPos(itemid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
 		SetDynamicObjectPos(objectid, ix, iy, iz);
 
-		MoveDynamicObject(objectid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5,
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ] + rz);
+		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX];
+		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY];
+		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ];
+
+		new t = MoveDynamicObject(objectid, ix, iy, iz + def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5, rx, ry, rz);
+		// defer _UpdateDefenceRotation(itemid, rx, ry, rz, t);
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
@@ -913,10 +925,8 @@ timer MoveDefence[1500](itemid, playerid)
 		SetItemPos(itemid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ]);
 		SetDynamicObjectPos(objectid, ix, iy, iz);
 
-		MoveDynamicObject(objectid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5,
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotX],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotY],
-			def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotZ] + rz);
+		new t = MoveDynamicObject(objectid, ix, iy, iz - def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ], 0.5, rx, ry, rz);
+		// defer _UpdateDefenceRotation(itemid, rx, ry, rz, t);
 
 		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
@@ -927,6 +937,12 @@ timer MoveDefence[1500](itemid, playerid)
 	return;
 }
 
+/*timer _UpdateDefenceRotation[t](itemid, Float:rx, Float:ry, Float:rz, t)
+{
+	#pragma unused t
+	SetItemRot(itemid, rx, ry, rz, false);
+}
+*/
 hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
 {
 	new ItemType:itemtype = GetItemType(itemid);
