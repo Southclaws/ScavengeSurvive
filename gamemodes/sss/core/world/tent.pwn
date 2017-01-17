@@ -234,8 +234,6 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/tentpack.pwn");
-
 	if(GetItemType(withitemid) == item_TentPack)
 	{
 		new tentid = GetItemArrayDataAtCell(withitemid, 0);

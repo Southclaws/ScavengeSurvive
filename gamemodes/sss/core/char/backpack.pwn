@@ -259,6 +259,9 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 	if(useinventory)
 		required = AddItemToInventory(playerid, itemid);
 
+	if(required == 0)
+		return 0;
+
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 	{
 		if(required > 0)

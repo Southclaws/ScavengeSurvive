@@ -894,7 +894,6 @@ timer MoveDefence[1500](itemid, playerid)
 
 	new
 		ItemType:itemtype = GetItemType(itemid),
-		objectid = GetItemObjectID(itemid),
 		Float:rx,
 		Float:ry,
 		Float:rz,

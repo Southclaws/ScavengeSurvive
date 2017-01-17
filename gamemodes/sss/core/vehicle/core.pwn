@@ -563,7 +563,7 @@ PlayerVehicleUpdate(playerid)
 	PlayerTextDrawShow(playerid, veh_DamageUI[playerid]);
 	PlayerTextDrawShow(playerid, veh_EngineUI[playerid]);
 
-	if(IsWeaponDriveby(GetPlayerWeapon(playerid)))
+	if(IsBaseWeaponDriveby(GetPlayerWeapon(playerid)))
 	{
 		if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
 			SetPlayerArmedWeapon(playerid, 0);

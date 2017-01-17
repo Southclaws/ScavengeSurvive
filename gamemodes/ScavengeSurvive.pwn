@@ -115,7 +115,7 @@ public OnGameModeInit()
 
 #include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
 #include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Southclaws/YSI-4.0
+#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
