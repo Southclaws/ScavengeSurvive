@@ -28,6 +28,12 @@ static
 
 #define ls(%0,%1) GetLanguageString(GetPlayerLanguage(%0), %1)
 
+hook OnPlayerConnect(playerid)
+{
+	lang_PlayerLanguage[playerid] = 0;
+	return Y_HOOKS_CONTINUE_RETURN_1;
+}
+
 stock GetPlayerLanguage(playerid)
 {
 	if(!IsPlayerConnected(playerid))

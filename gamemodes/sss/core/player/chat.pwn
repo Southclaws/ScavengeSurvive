@@ -115,6 +115,9 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 	if(CallLocalFunction("OnPlayerSendChat", "dsf", playerid, chat, frequency))
 		return 0;
 
+	if(isnull(chat))
+		return 0;
+
 	new
 		line1[256],
 		line2[128];
