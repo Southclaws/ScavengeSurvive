@@ -142,7 +142,7 @@ _skl_SkillNameToID(playerid, skillname[])
 
 	return -1;
 }
-
+/*
 hook OnPlayerSave(playerid, filename[])
 {
 	if(skl_PlayerSkillCount[playerid] == 0)
@@ -212,7 +212,7 @@ hook OnPlayerLoad(playerid, filename[])
 
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
-
+*/
 hook OnPlayerOpenInventory(playerid)
 {
 	skl_InventoryItem[playerid] = AddInventoryListItem(playerid, "Skills");

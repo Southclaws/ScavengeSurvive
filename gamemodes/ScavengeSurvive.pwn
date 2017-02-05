@@ -600,13 +600,13 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	console("================================================================================");
-	console("    Southclaw's Scavenge and Survive");
-	console("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	console("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	console("        and you are welcome to redistribute it under certain conditions.");
-	console("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	console("================================================================================");
+	log("================================================================================");
+	log("    Southclaw's Scavenge and Survive");
+	log("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	log("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
+	log("        and you are welcome to redistribute it under certain conditions.");
+	log("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
+	log("================================================================================");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -617,7 +617,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	console("[OnGameModeInit_Setup] Setting up...");
+	log("[OnGameModeInit_Setup] Setting up...");
 
 	new buildstring[12];
 
@@ -626,37 +626,31 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		console("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
+		log("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 		for(;;){}
 	}
 
-	console("Initialising Scavenge and Survive build %d", gBuildNumber);
+	log("Initialising Scavenge and Survive build %d", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		console("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		log("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
 	{
-		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES);
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
-	}
-
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS))
-	{
-		console("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_LOGS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_LOGS);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -680,7 +674,7 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	console("[OnGameModeExit] Shutting down...");
+	log("[OnGameModeExit] Shutting down...");
 
 	if(gCrashOnExit)
 	{
@@ -694,7 +688,7 @@ public OnGameModeExit()
 
 public OnScriptExit()
 {
-	console("[OnScriptExit] Shutting down...");
+	log("[OnScriptExit] Shutting down...");
 }
 
 forward SetRestart(seconds);
@@ -706,7 +700,7 @@ public SetRestart(seconds)
 
 RestartGamemode()
 {
-	console("[RestartGamemode] Initialising gamemode restart...");
+	log("[RestartGamemode] Initialising gamemode restart...");
 	gServerRestarting = true;
 
 	foreach(new i : Player)

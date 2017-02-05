@@ -221,7 +221,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 public OnFilterScriptInit()
 {
-    // Display information in the Server Console
+    // Display information in the Server log
 	print("\n");
 	print("  |---------------------------------------------------");
 	print("  |--- SF ZomboTech Filterscript");
@@ -235,7 +235,7 @@ public OnFilterScriptInit()
     // Create the SF ZomboTech Lab object
     SFZomboTechLabObject = CreateObject(19594, -1951.687500, 660.023986, 29.507797, 0, 0, 0);
 
-    // Display information in the Server Console
+    // Display information in the Server log
     print("  |--  SF ZomboTech Building and Lab objects created");
 
     // Reset the elevator queue
@@ -244,7 +244,7 @@ public OnFilterScriptInit()
 	// Create the elevator object, the elevator doors and the floor doors
 	Elevator_Initialize();
 	
-	// Display information in the Server Console
+	// Display information in the Server log
     print("  |--  SF ZomboTech Building Elevator created");
     print("  |---------------------------------------------------");
     
@@ -274,7 +274,7 @@ public OnFilterScriptExit()
 		// Destroy the SF ZombotTech Building object
 		DestroyObject(SFZomboTechBuildingObject);
 
-		// Display information in the Server Console
+		// Display information in the Server log
 		print("  |---------------------------------------------------");
     	print("  |--  SF ZomboTech Building object destroyed");
     }
@@ -285,14 +285,14 @@ public OnFilterScriptExit()
 		// Destroy the SF ZomboTech Lab object
 		DestroyObject(SFZomboTechLabObject);
 
-		// Display information in the Server Console
+		// Display information in the Server log
     	print("  |--  SF ZomboTech Lab object destroyed");
     }
     
     // Destroy the elevator, the elevator doors and the elevator floor doors
 	Elevator_Destroy();
 	
-	// Display information in the Server Console
+	// Display information in the Server log
     print("  |--  SF ZomboTech Building Elevator destroyed");
     print("  |---------------------------------------------------");
     	

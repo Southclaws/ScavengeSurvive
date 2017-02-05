@@ -26,7 +26,6 @@
 #include <YSI\y_va>
 
 
-#define DIRECTORY_LOGS				"logs/"
 #define MAX_LOG_HANDLER				(128)
 #define MAX_LOG_HANDLER_NAME		(32)
 
@@ -46,68 +45,15 @@ enum e_DEBUG_HANDLER
 }
 
 static
-File:	log_File,
 		log_Buffer[256],
 		log_Table[MAX_LOG_HANDLER][e_DEBUG_HANDLER],
 		log_Total;
 
 
-_log_open()
-{
-	if(!!log_File)
-		return;
-
-	new
-		year,
-		month,
-		day,
-		filename[64];
-
-	getdate(year, month, day);
-	format(filename, 64, DIRECTORY_LOGS"%d-%02d-%02d.txt", year, month, day);
-
-	if(fexist(filename))
-		log_File = fopen(filename, io_append);
-
-	else
-		log_File = fopen(filename, io_write);
-
-	return;
-}
-
-stock _log(text[], printtext = true)
-{
-	if(printtext)
-		print(text);
-
-	if(!log_File)
-		_log_open();
-
-	new
-		hour,
-		minute,
-		second,
-		string[256];
-
-	gettime(hour, minute, second);
-
-	format(string, 256, "[%02d:%02d:%02d] %s\r\n", hour, minute, second, text);
-
-	fwrite(log_File, string);
-
-	return 1;
-}
-
-stock console(text[], va_args<>)
-{
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
-	print(log_Buffer);
-}
-
 stock log(text[], va_args<>)
 {
 	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
-	_log(log_Buffer);
+	print(log_Buffer);
 }
 
 stock dbg(handler[], level, text[], va_args<>)
@@ -117,14 +63,14 @@ stock dbg(handler[], level, text[], va_args<>)
 	if(level <= log_Table[idx][log_level])
 	{
 		va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<3>);
-		_log(log_Buffer);
+		print(log_Buffer);
 	}
 }
 
 stock err(text[], va_args<>)
 {
 	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
-	_log(log_Buffer);
+	print(log_Buffer);
 	PrintAmxBacktrace();
 }
 
@@ -173,7 +119,3 @@ stock debug_conditional(handler[], level)
 
 	return 0;
 }
-
-
-#define print						__use_log
-#define printfex					__use_log

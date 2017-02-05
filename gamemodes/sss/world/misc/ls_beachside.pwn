@@ -259,7 +259,7 @@ public OnPlayerCommandText(playerid, cmdtext[])
 
 public OnFilterScriptInit()
 {
-    // Display information in the Server Console
+    // Display information in the Server log
 	print("\n");
 	print("  |---------------------------------------------------");
 	print("  |--- LS BeachSide Filterscript");
@@ -273,7 +273,7 @@ public OnFilterScriptInit()
 	// Create the elevator object, the elevator doors and the floor doors
 	Elevator_Initialize();
 
-	// Display information in the Server Console
+	// Display information in the Server log
     print("  |--  LS BeachSide Building Elevator created");
     print("  |---------------------------------------------------");
     
@@ -301,7 +301,7 @@ public OnFilterScriptExit()
     // Destroy the elevator, the elevator doors and the elevator floor doors
 	Elevator_Destroy();
 
-	// Display information in the Server Console
+	// Display information in the Server log
     print("  |--  LS BeachSide Building Elevator destroyed");
     print("  |---------------------------------------------------");
 

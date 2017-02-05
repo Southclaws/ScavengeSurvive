@@ -91,7 +91,7 @@ hook OnScriptExit()
 {
 	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/irc.pwn");
 
-	console("[OnScriptExit] Shutting down 'IRC'...");
+	log("[OnScriptExit] Shutting down 'IRC'...");
 
 	if(!irc_Active)
 		return 1;

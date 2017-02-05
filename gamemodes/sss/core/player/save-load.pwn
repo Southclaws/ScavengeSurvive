@@ -717,7 +717,7 @@ hook OnScriptExit()
 {
 	dbg("global", CORE, "[OnScriptExit] in /gamemodes/sss/core/player/save-load.pwn");
 
-	console("[OnScriptExit] Shutting down 'SaveLoad'...");
+	log("[OnScriptExit] Shutting down 'SaveLoad'...");
 
 	new
 		name[MAX_PLAYER_NAME],
