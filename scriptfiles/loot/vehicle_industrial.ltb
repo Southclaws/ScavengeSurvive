@@ -29,6 +29,7 @@ vehicle_industrial,	1.0
 4.0,	Holdall
 9.0,	GearBox
 8.0,	ToolBox
+4.0,	RadioPole
 
 # defences
 1.0,	ShipDoor

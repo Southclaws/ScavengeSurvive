@@ -33,6 +33,7 @@ world_industrial, 1.0
 4.0,	Holdall
 8.5,	GearBox
 6.0,	ToolBox
+3.0,	RadioPole
 
 # defences
 1.0,	ShipDoor
