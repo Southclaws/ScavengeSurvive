@@ -125,6 +125,7 @@ public OnGameModeInit()
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
+#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
 #include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
