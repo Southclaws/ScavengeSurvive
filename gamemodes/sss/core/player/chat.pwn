@@ -45,6 +45,13 @@ bool:	chat_Quiet[MAX_PLAYERS],
 
 forward Float:GetPlayerRadioFrequency(playerid);
 forward OnPlayerSendChat(playerid, text[], Float:frequency);
+forward OnDiscordChat(data[]);
+
+
+hook OnGameModeInit()
+{
+	Redis_BindMessage(gRedis, "samp.chat.discord.incoming", "OnDiscordChat");
+}
 
 hook OnPlayerConnect(playerid)
 {
@@ -102,6 +109,38 @@ hook OnPlayerText(playerid, text[])
 		PlayerSendChat(playerid, text, chat_Freq[playerid]);
 
 	return 0;
+}
+
+public OnDiscordChat(data[])
+{
+	new
+		user[MAX_PLAYER_NAME],
+		message[256],
+		delim;
+
+	while(delim <= MAX_PLAYER_NAME && data[delim] != ':')
+		delim++;
+	
+	if(delim > MAX_PLAYER_NAME)
+	{
+		err("OnDiscordChat sent malformed message: '%s'", data);
+		return;
+	}
+
+	strmid(user, data, 0, delim, MAX_PLAYER_NAME);
+	strmid(message, data, delim, strlen(data), 256);
+
+	log("[CHAT] [IRC-C] [%s]: %s", user, message);
+
+	new
+		line1[256],
+		line2[128];
+
+	format(line1, 256, "[DISCORD] "C_TEAL"%s"C_WHITE": %s", user, TagScan(message));
+
+	TruncateChatMessage(line1, line2);
+
+	return;
 }
 
 PlayerSendChat(playerid, chat[], Float:frequency)
@@ -163,6 +202,8 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			playerid,
 			playerid,
 			TagScan(chat));
+
+		Redis_SendMessage(gRedis, "samp.chat.discord.outgoing", sprintf("%p (%d):%s", playerid, playerid, chat));
 
 		TruncateChatMessage(line1, line2);
 
