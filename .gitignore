@@ -7,6 +7,10 @@ server_log.txt
 server.cfg
 start.bat
 crashinfo.txt
+announce
+plugins/
+samp-npc
+samp03svr
 
 # My private SS resources
 private/
