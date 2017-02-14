@@ -32,9 +32,9 @@ type Message struct {
 // API holds program state and shares access to resources
 type API struct {
 	// settings
-	redisHost    string
-	discordToken string
-	discordBinds []Bind
+	RedisHost    string
+	DiscordToken string
+	DiscordBinds []Bind
 	// objects
 	redisClient       *redis.Client
 	discordClient     *discordgo.Session
@@ -44,18 +44,18 @@ type API struct {
 }
 
 func (api API) getOutQueueFromChannel(channel string) string {
-	for i := range api.discordBinds {
-		if channel == api.discordBinds[i].DiscordChannel {
-			return api.discordBinds[i].OutputQueue
+	for i := range api.DiscordBinds {
+		if channel == api.DiscordBinds[i].DiscordChannel {
+			return api.DiscordBinds[i].OutputQueue
 		}
 	}
 	return ""
 }
 
 func (api API) getChannelFromInQueue(queue string) string {
-	for i := range api.discordBinds {
-		if queue == api.discordBinds[i].InputQueue {
-			return api.discordBinds[i].DiscordChannel
+	for i := range api.DiscordBinds {
+		if queue == api.DiscordBinds[i].InputQueue {
+			return api.DiscordBinds[i].DiscordChannel
 		}
 	}
 	return ""
@@ -67,23 +67,24 @@ func main() {
 
 	err = api.loadConfig("config.json")
 	if err != nil {
+		log.Print("config load error")
 		log.Fatal(err)
 	}
 
 	api.redisClient = redis.NewClient(&redis.Options{
-		Addr: api.redisHost,
+		Addr: api.RedisHost,
 	})
 	_, err = api.redisClient.Ping().Result()
 	if err != nil {
-		log.Print(err)
-		return
+		log.Print("redis ping error")
+		log.Fatal(err)
 	}
 	log.Print("Connected to Redis")
 
-	api.discordClient, err = discordgo.New("Bot " + api.discordToken)
+	api.discordClient, err = discordgo.New("Bot " + api.DiscordToken)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Print("discord client creation error")
+		log.Fatal(err)
 	}
 	log.Print("Connected to Discord")
 
@@ -94,8 +95,8 @@ func main() {
 
 	err = api.discordClient.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
-		return
+		fmt.Println("discord client connection error")
+		log.Fatal(err)
 	}
 
 	log.Print("Awaiting Discord ready state...")
@@ -131,7 +132,7 @@ func (api API) awaitFromDiscord() {
 
 func (api API) awaitFromGame() {
 	log.Print("[READY] awaiting messages from game")
-	for i := range api.discordBinds {
+	for i := range api.DiscordBinds {
 		go func(input string, destination string) {
 			for {
 				reply, err := api.redisClient.BLPop(0, input).Result()
@@ -146,7 +147,7 @@ func (api API) awaitFromGame() {
 					api.messagesToDiscord <- Message{split[0], split[1], destination}
 				}
 			}
-		}(api.discordBinds[i].InputQueue, api.discordBinds[i].DiscordChannel)
+		}(api.DiscordBinds[i].InputQueue, api.DiscordBinds[i].DiscordChannel)
 	}
 }
 
@@ -186,21 +187,21 @@ func (api API) loadConfig(filename string) error {
 		return err
 	}
 
-	var bytes []byte
+	json.NewDecoder(file).Decode(&api)
 
-	file.Read(bytes)
-	err = json.Unmarshal(bytes, &api)
+	err = file.Close()
 	if err != nil {
 		return err
 	}
 
 	log.Printf("Loaded config:")
-	log.Printf("redisHost: %s", api.redisHost)
-	log.Printf("discordToken: %s", api.discordToken)
+	log.Printf("RedisHost: '%s'", api.RedisHost)
+	log.Printf("DiscordToken: (%d chars)", len(api.DiscordToken))
 	log.Printf("channel binds:")
-	for i := range api.discordBinds {
-		log.Printf("- %s <> %s:%s", api.discordBinds[i].DiscordChannel, api.discordBinds[i].InputQueue, api.discordBinds[i].OutputQueue)
+	for i := range api.DiscordBinds {
+		log.Printf("- %s <> %s:%s", api.DiscordBinds[i].DiscordChannel, api.DiscordBinds[i].InputQueue, api.DiscordBinds[i].OutputQueue)
 	}
+	log.Printf("~")
 
 	return nil
 }
