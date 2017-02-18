@@ -1,13 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
-
-	"encoding/json"
 	"os"
 
 	"strings"
+
+	"container/ring"
 
 	"github.com/bwmarrin/discordgo"
 	"gopkg.in/redis.v5"
@@ -40,6 +41,7 @@ type API struct {
 	discordClient     *discordgo.Session
 	messagesToDiscord chan Message
 	messagesToGame    chan Message
+	messageHistory    *ring.Ring
 	done              chan bool
 }
 
@@ -90,6 +92,7 @@ func main() {
 
 	api.messagesToDiscord = make(chan Message)
 	api.messagesToGame = make(chan Message)
+	api.messageHistory = ring.New(32)
 
 	api.discordClient.AddHandler(api.ready)
 
@@ -120,10 +123,21 @@ func (api API) awaitFromDiscord() {
 		destination := api.getOutQueueFromChannel(m.Message.ChannelID)
 
 		if destination != "" {
-			message := Message{m.Message.Author.Username, m.Message.Content, destination}
-			log.Printf("[RECIEVE DISCORD] %s: '%s' [%s]", m.Message.Author.Username, m.Message.Content, destination)
+			split := strings.SplitN(m.Message.Content, ": ", 2)
+			duplicate := false
+			if len(split) >= 2 {
+				api.messageHistory.Do(func(i interface{}) {
+					if i == split[1] {
+						duplicate = true
+					}
+				})
+			}
 
-			api.messagesToGame <- message
+			if !duplicate {
+				message := Message{m.Message.Author.Username, m.Message.Content, destination}
+				log.Printf("[RECIEVE DISCORD] %s: '%s' [%s]", m.Message.Author.Username, m.Message.Content, destination)
+				api.messagesToGame <- message
+			}
 		} else {
 			log.Printf("[RECIEVE DISCORD] message arrived with unknown destination bind: '%s'", m.Message.ChannelID)
 		}
@@ -143,8 +157,23 @@ func (api API) awaitFromGame() {
 				} else {
 					raw := reply[1]
 					split := strings.SplitN(raw, ":", 2)
-					log.Printf("[RECIEVE GAME] %s: '%s' [%s]", split[0], split[1], destination)
-					api.messagesToDiscord <- Message{split[0], split[1], destination}
+
+					if len(split) != 2 {
+						log.Printf("[RECIEVE GAME] message malformed, no colon delimiter: '%s'", raw)
+						continue
+					}
+
+					duplicate := false
+					api.messageHistory.Do(func(i interface{}) {
+						if i == split[1] {
+							duplicate = true
+						}
+					})
+
+					if !duplicate {
+						log.Printf("[RECIEVE GAME] %s: '%s' [%s]", split[0], split[1], destination)
+						api.messagesToDiscord <- Message{split[0], split[1], destination}
+					}
 				}
 			}
 		}(api.DiscordBinds[i].InputQueue, api.DiscordBinds[i].DiscordChannel)
@@ -157,8 +186,9 @@ func (api API) awaitToDiscord() {
 		message := <-api.messagesToDiscord
 		log.Printf("[SEND DISCORD] %s: '%s' [%s]", message.user, message.text, message.destination)
 
+		api.messageHistory.Value = message.text
+		api.messageHistory.Next()
 		text := fmt.Sprintf("%s: %s", message.user, message.text)
-
 		sr, err := api.discordClient.ChannelMessageSend(message.destination, text)
 		if err != nil {
 			log.Print(err)
@@ -173,6 +203,8 @@ func (api API) awaitToGame() {
 		message := <-api.messagesToGame
 		log.Printf("[SEND GAME] %s: '%s' [%s]", message.user, message.text, message.destination)
 
+		api.messageHistory.Value = message.text
+		api.messageHistory.Next()
 		raw := fmt.Sprintf("%s:%s", message.user, message.text)
 		response := api.redisClient.LPush(message.destination, raw)
 		if response.Val() < 1 {
@@ -181,7 +213,7 @@ func (api API) awaitToGame() {
 	}
 }
 
-func (api API) loadConfig(filename string) error {
+func (api *API) loadConfig(filename string) error {
 	file, err := os.Open(filename)
 	if err != nil {
 		return err
