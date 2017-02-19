@@ -114,7 +114,7 @@ public OnPlayerConnect(playerid)
 
 	ply_Data[playerid][ply_ShowHUD] = true;
 
-	LoadAccount(); // OnPlayerLoadedAccount
+	LoadAccount(playerid); // OnPlayerLoadedAccount
 
 	return 1;
 }

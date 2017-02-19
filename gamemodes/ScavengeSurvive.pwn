@@ -299,7 +299,6 @@ bool:	gServerRestarting = false,
 
 // DATABASES
 new
-DB:		gAccounts,
 Redis:	gRedis;
 
 // GLOBAL SERVER SETTINGS (Todo: modularise)
@@ -650,7 +649,6 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gRedis = Redis_Connect("localhost", 6379);
 
 	LoadSettings();
