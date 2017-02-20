@@ -19,7 +19,7 @@ type PlayerAccount struct {
 	IsActive         int32  `gorm:"column:active"`
 }
 
-// TableName updates the PlayerAccount SQL table name
+// TableName wraps the internal table name
 func (PlayerAccount) TableName() string {
 	return "Player"
 }

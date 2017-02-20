@@ -62,8 +62,21 @@ func main() {
 
 	var count int
 	db.Model(&PlayerAccount{}).Where(&PlayerAccount{IsActive: 1}).Count(&count)
-
-	log.Printf("Connected to database, player count: %d", count)
+	log.Printf("Active players: %d", count)
+	db.Model(&Admin{}).Count(&count)
+	log.Printf("Admins: %d", count)
+	db.Model(&Ban{}).Where(&Ban{IsActive: 1}).Count(&count)
+	log.Printf("Active bans: %d", count)
+	db.Model(&Bug{}).Count(&count)
+	log.Printf("Bug reports: %d", count)
+	db.Model(&Report{}).Count(&count)
+	log.Printf("Player reports: %d", count)
+	db.Model(&Whitelist{}).Count(&count)
+	log.Printf("Whitelist entries: %d", count)
+	db.Model(&GPCI{}).Count(&count)
+	log.Printf("GPCI log entries: %d", count)
+	db.Model(&Ipv4{}).Count(&count)
+	log.Printf("Ipv4 log entries: %d", count)
 
 	// Redis
 
