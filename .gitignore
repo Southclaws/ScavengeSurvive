@@ -11,6 +11,7 @@ announce
 plugins/
 samp-npc
 samp03svr
+logs/
 
 # My private SS resources
 private/
