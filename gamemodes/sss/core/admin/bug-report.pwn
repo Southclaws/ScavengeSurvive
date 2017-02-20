@@ -41,29 +41,12 @@ enum
 
 
 static
-				issue_RowIndex[MAX_ISSUES_PER_PAGE],
-
-DBStatement:	stmt_BugInsert,
-DBStatement:	stmt_BugDelete,
-DBStatement:	stmt_BugList,
-DBStatement:	stmt_BugTotal,
-DBStatement:	stmt_BugInfo;
+	issue_RowIndex[MAX_ISSUES_PER_PAGE];
 
 
 hook OnGameModeInit()
 {
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_BUGS" (\
-		"FIELD_BUGS_NAME" TEXT,\
-		"FIELD_BUGS_REASON" TEXT,\
-		"FIELD_BUGS_DATE" INTEGER)"));
-
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_BUGS, 3);
-
-	stmt_BugInsert	= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BUGS" VALUES(?, ?, ?)");
-	stmt_BugDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BUGS" WHERE rowid = ?");
-	stmt_BugList	= db_prepare(gAccounts, "SELECT "FIELD_BUGS_NAME", "FIELD_BUGS_REASON", rowid FROM "ACCOUNTS_TABLE_BUGS"");
-	stmt_BugTotal	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BUGS"");
-	stmt_BugInfo	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS" WHERE rowid = ? LIMIT 1");
+	//
 }
 
 
@@ -93,14 +76,11 @@ CMD:bug(playerid, params[])
 
 ReportBug(playerid, bug[])
 {
-	stmt_bind_value(stmt_BugInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
-	stmt_bind_value(stmt_BugInsert, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
-	stmt_bind_value(stmt_BugInsert, 2, DB::TYPE_INTEGER, gettime());
+	// BugInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
+	// BugInsert, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
+	// BugInsert, 2, DB::TYPE_INTEGER, gettime());
 
-	if(stmt_execute(stmt_BugInsert))
-	{
-		ChatMsgAdmins(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
-	}
+	ChatMsgAdmins(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
 }
 
 
@@ -130,19 +110,15 @@ ShowListOfBugs(playerid)
 		bug[32],
 		rowid;
 
-	stmt_bind_result_field(stmt_BugList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(stmt_BugList, 1, DB::TYPE_STRING, bug, 32);
-	stmt_bind_result_field(stmt_BugList, 2, DB::TYPE_INTEGER, rowid);
-
-	if(!stmt_execute(stmt_BugList))
-		return 0;
+	// BugList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	// BugList, 1, DB::TYPE_STRING, bug, 32
+	// BugList, 2, DB::TYPE_INTEGER, rowid
 
 	new
 		list[(MAX_PLAYER_NAME + 2 + 32 + 1) * MAX_ISSUES_PER_PAGE],
 		idx;
-
-	// Some bug in sqlite causes 'name' to appear empty sometimes.
-	while(stmt_fetch_row(stmt_BugList) && idx < MAX_ISSUES_PER_PAGE)
+/*
+	while(idx < MAX_ISSUES_PER_PAGE)
 	{
 		strcat(list, name);
 		strcat(list, ": ");
@@ -156,7 +132,7 @@ ShowListOfBugs(playerid)
 
 		issue_RowIndex[idx++] = rowid;
 	}
-
+*/
 	if(idx == 0)
 		return 0;
 
@@ -166,8 +142,7 @@ ShowListOfBugs(playerid)
 
 		if(response)
 		{
-			if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
-				ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
+			ShowBugReportInfo(playerid, issue_RowIndex[listitem]);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
@@ -183,15 +158,10 @@ ShowBugReportInfo(playerid, rowid)
 		date,
 		message[512];
 
-	stmt_bind_value(stmt_BugInfo, 0, DB::TYPE_INTEGER, rowid);
-	stmt_bind_result_field(stmt_BugInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(stmt_BugInfo, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
-	stmt_bind_result_field(stmt_BugInfo, 2, DB::TYPE_INTEGER, date);
-
-	if(!stmt_execute(stmt_BugInfo))
-		return 0;
-
-	stmt_fetch_row(stmt_BugInfo);
+	// BugInfo, 0, DB::TYPE_INTEGER, rowid
+	// BugInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	// BugInfo, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH
+	// BugInfo, 2, DB::TYPE_INTEGER, date
 
 	format(message, sizeof(message),
 		""C_YELLOW"Reporter:\n\t\t"C_BLUE"%s\n\n\
@@ -207,8 +177,7 @@ ShowBugReportInfo(playerid, rowid)
 		{
 			if(GetPlayerAdminLevel(playerid) > 1)
 			{
-				stmt_bind_value(stmt_BugDelete, 0, DB::TYPE_INTEGER, rowid);
-				stmt_execute(stmt_BugDelete);
+				// BugDelete, 0, DB::TYPE_INTEGER, rowid);
 			}
 		}
 
@@ -235,9 +204,7 @@ stock GetBugReports()
 {
 	new count;
 
-	stmt_bind_result_field(stmt_BugTotal, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(stmt_BugTotal);
-	stmt_fetch_row(stmt_BugTotal);
+	// BugTotal, 0, DB::TYPE_INTEGER, count);
 
 	return count;
 }

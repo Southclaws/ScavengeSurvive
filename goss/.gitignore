@@ -1,2 +1,4 @@
 config.json
 goss
+goss.exe
+*.db

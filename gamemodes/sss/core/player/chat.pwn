@@ -130,7 +130,7 @@ public OnDiscordChat(data[])
 	strmid(user, data, 0, delim, MAX_PLAYER_NAME);
 	strmid(message, data, delim, strlen(data), 256);
 
-	log("[CHAT] [IRC-C] [%s]: %s", user, message);
+	log("[CHAT] [DISCORD] [%s]: %s", user, message);
 
 	new
 		line1[256],

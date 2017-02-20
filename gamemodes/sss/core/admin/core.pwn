@@ -72,13 +72,7 @@ static
 					0xFF3200FF,			// 5
 					0x00000000			// 6
 				},
-				admin_Commands[4][512],
-DBStatement:	stmt_AdminLoadAll,
-DBStatement:	stmt_AdminExists,
-DBStatement:	stmt_AdminInsert,
-DBStatement:	stmt_AdminUpdate,
-DBStatement:	stmt_AdminDelete,
-DBStatement:	stmt_AdminGetLevel;
+				admin_Commands[4][512];
 
 static
 				admin_Level[MAX_PLAYERS],
@@ -88,19 +82,6 @@ static
 
 hook OnScriptInit()
 {
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
-		"FIELD_ADMINS_NAME" TEXT,\
-		"FIELD_ADMINS_LEVEL" INTEGER)"));
-
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_ADMINS, 2);
-
-	stmt_AdminLoadAll	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" ORDER BY "FIELD_ADMINS_LEVEL" DESC");
-	stmt_AdminExists	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminInsert	= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
-	stmt_AdminUpdate	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminGetLevel	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-
 	LoadAdminData();
 }
 
@@ -138,26 +119,10 @@ LoadAdminData()
 		name[MAX_PLAYER_NAME],
 		level;
 
-	stmt_bind_result_field(stmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(stmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
+	// AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	// AdminLoadAll, 1, DB::TYPE_INTEGER, level
 
-	if(stmt_execute(stmt_AdminLoadAll))
-	{
-		while(stmt_fetch_row(stmt_AdminLoadAll))
-		{
-			if(level > 0 && !isnull(name))
-			{
-				admin_Data[admin_Total][admin_Name] = name;
-				admin_Data[admin_Total][admin_Rank] = level;
-
-				admin_Total++;
-			}
-			else
-			{
-				RemoveAdminFromDatabase(name);
-			}
-		}
-	}
+	//
 
 	SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
 }
@@ -167,80 +132,11 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 	if(level == 0)
 		return RemoveAdminFromDatabase(name);
 
-	new count;
-
-	stmt_bind_value(stmt_AdminExists, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(stmt_AdminExists, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(stmt_AdminExists);
-	stmt_fetch_row(stmt_AdminExists);
-
-	if(count == 0)
-	{
-		stmt_bind_value(stmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_value(stmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
-
-		if(stmt_execute(stmt_AdminInsert))
-		{
-			admin_Data[admin_Total][admin_Name] = name;
-			admin_Data[admin_Total][admin_Rank] = level;
-			admin_Total++;
-
-			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-	else
-	{
-		stmt_bind_value(stmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
-		stmt_bind_value(stmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-		if(stmt_execute(stmt_AdminUpdate))
-		{
-			for(new i; i < admin_Total; i++)
-			{
-				if(!strcmp(name, admin_Data[i][admin_Name]))
-				{
-					admin_Data[i][admin_Rank] = level;
-
-					break;
-				}
-			}
-
-			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-
 	return 1;
 }
 
 RemoveAdminFromDatabase(name[])
 {
-	stmt_bind_value(stmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(stmt_execute(stmt_AdminDelete))
-	{
-		new bool:found = false;
-
-		for(new i; i < admin_Total; i++)
-		{
-			if(!strcmp(name, admin_Data[i][admin_Name]))
-				found = true;
-
-			if(found && i < MAX_ADMIN-1)
-			{
-				format(admin_Data[i][admin_Name], 24, admin_Data[i+1][admin_Name]);
-				admin_Data[i][admin_Rank] = admin_Data[i+1][admin_Rank];
-			}
-		}
-
-		admin_Total--;
-
-		return 1;
-	}
-
 	return 0;
 }
 
@@ -450,11 +346,6 @@ stock GetPlayerAdminLevel(playerid)
 stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
 {
 	new level;
-
-	stmt_bind_value(stmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(stmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
-	stmt_execute(stmt_AdminGetLevel);
-	stmt_fetch_row(stmt_AdminGetLevel);
 
 	return level;
 }

@@ -92,8 +92,6 @@ public OnPlayerConnect(playerid)
 	if(BanCheck(playerid))
 		return 0;
 
-	defer LoadAccountDelay(playerid);
-
 	SetPlayerBrightness(playerid, 255);
 
 	TogglePlayerControllable(playerid, false);
@@ -115,6 +113,8 @@ public OnPlayerConnect(playerid)
 	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 
 	ply_Data[playerid][ply_ShowHUD] = true;
+
+	LoadAccount(); // OnPlayerLoadedAccount
 
 	return 1;
 }
@@ -145,22 +145,8 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-timer LoadAccountDelay[5000](playerid)
+public OnPlayerLoadedAccount(playerid, loadresult)
 {
-	if(!IsPlayerConnected(playerid))
-	{
-		log("[LoadAccountDelay] Player %d not connected any more.", playerid);
-		return;
-	}
-
-	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
-	{
-		defer LoadAccountDelay(playerid);
-		return;
-	}
-
-	new loadresult = LoadAccount(playerid);
-
 	if(loadresult == -1) // LoadAccount aborted, kick player.
 	{
 		KickPlayer(playerid, "Account load failed");

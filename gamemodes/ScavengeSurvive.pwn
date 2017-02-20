@@ -42,16 +42,11 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define _DEBUG							0 // YSI
-#define DB_DEBUG						false // SQLitei
-#define DB_MAX_STATEMENTS				(128) // SQLitei
-#define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_WARNING		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_ERROR		(true) // SQLitei
 #define STRLIB_RETURN_SIZE				(256) // strlib
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(2048) // modio
+#define MAX_MODIO_SESSION				(8) // (2048) // modio
 #define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define INV_MAX_SLOTS					(6) // SIF/Inventory
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
@@ -62,8 +57,8 @@ native gpci(playerid, serial[], len);
 #define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
 #define DEBUG_LABELS_BUTTON				// SIF/Button
 #define DEBUG_LABELS_ITEM				// SIF/Item
-#define BTN_MAX							(32768) // SIF/Button
-#define ITM_MAX							(32768) // SIF/Item
+#define BTN_MAX							(256) // (32768) // SIF/Button
+#define ITM_MAX							(256) // (32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
 #define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
 
@@ -129,7 +124,6 @@ public OnGameModeInit()
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
 #include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
-#include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
@@ -526,9 +520,10 @@ new stock
 #include "sss/core/admin/level4.pwn"
 #include "sss/core/admin/level5.pwn"
 #include "sss/core/admin/bug-report.pwn"
-#include "sss/core/admin/detfield.pwn"
-#include "sss/core/admin/detfield-cmds.pwn"
-#include "sss/core/admin/detfield-draw.pwn"
+// #include "sss/core/admin/detfield.pwn"
+// #include "sss/core/admin/detfield-io.pwn"
+// #include "sss/core/admin/detfield-cmds.pwn"
+// #include "sss/core/admin/detfield-draw.pwn"
 #include "sss/core/admin/mute.pwn"
 #include "sss/core/admin/rcon.pwn"
 #include "sss/core/admin/freeze.pwn"
@@ -692,6 +687,8 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	log("[OnScriptExit] Shutting down...");
+
+	return 0;
 }
 
 forward SetRestart(seconds);
