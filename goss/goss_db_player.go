@@ -1,4 +1,4 @@
-package ssdb
+package main
 
 // gorm sqlite dialect
 import _ "github.com/jinzhu/gorm/dialects/sqlite"

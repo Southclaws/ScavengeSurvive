@@ -51,7 +51,7 @@ func main() {
 
 	// Database
 
-	db, err := ssdb.ConnectDatabase(filepath.Join(cfg.WorkingDir, cfg.Database), true)
+	db, err := ConnectDatabase(filepath.Join(cfg.WorkingDir, cfg.Database), true)
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func main() {
 	}
 
 	var count int
-	db.Model(&ssdb.PlayerAccount{}).Where(&ssdb.PlayerAccount{IsActive: 1}).Count(&count)
+	db.Model(&PlayerAccount{}).Where(&PlayerAccount{IsActive: 1}).Count(&count)
 
 	log.Printf("Connected to database, player count: %d", count)
 
