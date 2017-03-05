@@ -57,6 +57,17 @@ hook OnPlayerConnect(playerid)
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, hash, MAX_GPCI_LEN);
 
+	// GpciCheckName, 0, DB::TYPE_INTEGER, count
+	// GpciCheckName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	// GpciCheckName, 1, DB::TYPE_STRING, hash, MAX_GPCI_LEN
+
+	if(count == 0)
+	{
+		// GpciInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+		// GpciInsert, 1, DB::TYPE_STRING, hash, MAX_GPCI_LEN
+		// GpciInsert, 2, DB::TYPE_INTEGER, gettime()
+	}
+
 	return 1;
 }
 
@@ -70,7 +81,7 @@ stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_str
 	return 1;
 }
 
-ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
+stock ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 {
 	new
 		list[MAX_GPCI_LOG_RESULTS][e_gpci_list_output_structure],
@@ -99,7 +110,7 @@ ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
 	return 1;
 }
 
-ShowAccountGpciHistoryFromName(playerid, name[])
+stock ShowAccountGpciHistoryFromName(playerid, name[])
 {
 	new
 		list[MAX_GPCI_LOG_RESULTS][e_gpci_list_output_structure],

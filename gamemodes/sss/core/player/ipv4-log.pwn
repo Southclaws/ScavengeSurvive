@@ -62,7 +62,16 @@ hook OnPlayerConnect(playerid)
 	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
 	ip = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
-	//
+	// Ipv4CheckName, 0, DB::TYPE_INTEGER, count
+	// Ipv4CheckName, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	// Ipv4CheckName, 1, DB::TYPE_INTEGER, ip
+
+	if(count == 0)
+	{
+		// Ipv4Insert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+		// Ipv4Insert, 1, DB::TYPE_INTEGER, ip
+		// Ipv4Insert, 2, DB::TYPE_INTEGER, gettime()
+	}
 
 	return 1;
 }
@@ -77,7 +86,7 @@ stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_struc
 	return 1;
 }
 
-ShowAccountIPHistoryFromIP(playerid, ip)
+stock ShowAccountIPHistoryFromIP(playerid, ip)
 {
 	new
 		list[MAX_IPV4_LOG_RESULTS][e_ipv4_list_output_structure],
@@ -106,7 +115,7 @@ ShowAccountIPHistoryFromIP(playerid, ip)
 	return 1;
 }
 
-ShowAccountIPHistoryFromName(playerid, name[])
+stock ShowAccountIPHistoryFromName(playerid, name[])
 {
 	new
 		list[MAX_IPV4_LOG_RESULTS][e_ipv4_list_output_structure],

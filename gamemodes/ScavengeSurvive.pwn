@@ -310,7 +310,6 @@ bool:	gServerRestarting = false,
 
 // DATABASES
 new
-DB:		gAccounts,
 Redis:	gRedis;
 
 // GLOBAL SERVER SETTINGS (Todo: modularise)

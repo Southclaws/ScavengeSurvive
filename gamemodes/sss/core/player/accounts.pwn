@@ -96,8 +96,6 @@ LoadAccount(playerid)
 		return;
 
 	defer LoadAccountDelay(playerid);
-
-	return;
 }
 
 timer LoadAccountDelay[1000](playerid)
@@ -105,13 +103,13 @@ timer LoadAccountDelay[1000](playerid)
 	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
 	{
 		defer LoadAccountDelay(playerid);
-		return;
+		return 0;
 	}
 
 	if(!IsPlayerConnected(playerid))
 	{
 		log("[LoadAccount] Player %d not connected any more.", playerid);
-		return;
+		return 0;
 	}
 
 	new

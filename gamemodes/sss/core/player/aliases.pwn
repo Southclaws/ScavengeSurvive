@@ -32,6 +32,7 @@ hook OnGameModeInit()
 
 stock GetAccountAliasesByIP(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
+	return 1;
 }
 
 stock GetAccountAliasesByPass(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
@@ -41,10 +42,12 @@ stock GetAccountAliasesByPass(name[], list[][MAX_PLAYER_NAME], &count, max, &adm
 
 stock GetAccountAliasesByHash(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
+	return 1;
 }
 
 stock GetAccountAliasesByAll(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
 {
+	return 1;
 }
 
 CheckForExtraAccounts(playerid)

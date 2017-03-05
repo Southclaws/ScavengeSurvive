@@ -100,7 +100,7 @@ stock AddNameToWhitelist(name[], doplayeridcheck = true)
 	if(IsNameInWhitelist(name) == 1)
 		return 0;
 
-	//
+	// WhitelistInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
 
 	if(doplayeridcheck)
 	{
@@ -143,7 +143,7 @@ stock RemoveNameFromWhitelist(name[], doplayeridcheck = true)
 	if(IsNameInWhitelist(name) == 0)
 		return 0;
 
-	//
+	// WhitelistDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
 
 	if(doplayeridcheck)
 	{
@@ -185,6 +185,8 @@ stock IsNameInWhitelist(name[])
 		return 2;
 
 	new count;
+
+	// WhitelistExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
 
 	return 0;
 }
