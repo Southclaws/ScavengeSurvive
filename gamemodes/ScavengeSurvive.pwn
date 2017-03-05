@@ -42,11 +42,11 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define _DEBUG							0 // YSI
+#define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
 #define STRLIB_RETURN_SIZE				(256) // strlib
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(8) // (2048) // modio
 #define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define INV_MAX_SLOTS					(6) // SIF/Inventory
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
@@ -54,13 +54,26 @@ native gpci(playerid, serial[], len);
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
+
+#if defined BUILD_MINIMAL
+
+#define BTN_MAX							(512) // SIF/Button
+#define ITM_MAX							(512) // SIF/Item
+#define CNT_MAX_SLOTS					(100)
+#define MAX_MODIO_STACK_SIZE			(1024)
+#define MAX_MODIO_SESSION				(2)
+
+#else
+
 #define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
 #define DEBUG_LABELS_BUTTON				// SIF/Button
 #define DEBUG_LABELS_ITEM				// SIF/Item
-#define BTN_MAX							(256) // (32768) // SIF/Button
-#define ITM_MAX							(256) // (32768) // SIF/Item
+#define BTN_MAX							(32768) // SIF/Button
+#define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
-#define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
+#define MAX_MODIO_SESSION				(8) // (2048) // modio
+
+#endif
 
 /*==============================================================================
 
@@ -122,8 +135,6 @@ public OnGameModeInit()
 
 #include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
-#include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
@@ -422,7 +433,6 @@ new stock
 #include "sss/core/player/aliases.pwn"
 #include "sss/core/player/ipv4-log.pwn"
 #include "sss/core/player/gpci-log.pwn"
-#include "sss/core/player/gpci-whitelist.pwn"
 #include "sss/core/player/brightness.pwn"
 #include "sss/core/player/spawn.pwn"
 #include "sss/core/player/damage.pwn"
@@ -436,7 +446,6 @@ new stock
 #include "sss/core/player/alt-tab-check.pwn"
 #include "sss/core/player/disallow-actions.pwn"
 #include "sss/core/player/whitelist.pwn"
-#include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
 #include "sss/core/player/recipes.pwn"
 
@@ -650,7 +659,6 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
 	gRedis = Redis_Connect("localhost", 6379);
 
 	LoadSettings();

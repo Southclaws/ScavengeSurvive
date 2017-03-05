@@ -93,9 +93,11 @@ hook OnPlayerConnect(playerid)
 LoadAccount(playerid)
 {
 	if(CallLocalFunction("OnPlayerLoadAccount", "d", playerid))
-		return -1;
+		return;
 
 	defer LoadAccountDelay(playerid);
+
+	return;
 }
 
 timer LoadAccountDelay[1000](playerid)
@@ -130,7 +132,7 @@ timer LoadAccountDelay[1000](playerid)
 	if(exists == 0)
 	{
 		log("[LoadAccount] %p (account does not exist)", playerid);
-		return 0;
+		return;// 0;
 	}
 /*
 	if()
@@ -142,7 +144,7 @@ timer LoadAccountDelay[1000](playerid)
 	if(!active)
 	{
 		log("[LoadAccount] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
-		return 4;
+		return;// 4;
 	}
 
 	if(IsWhitelistActive())
@@ -153,7 +155,7 @@ timer LoadAccountDelay[1000](playerid)
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
-			return 3;
+			return;// 3;
 		}
 	}
 
@@ -170,7 +172,7 @@ timer LoadAccountDelay[1000](playerid)
 
 	log("[LoadAccount] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
 
-	return 1;
+	return;// 1;
 }
 
 
