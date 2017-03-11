@@ -32,30 +32,25 @@
 ==============================================================================*/
 
 
-#define MAX_WATER_MACHINE			(32)
-#define MAX_WATER_MACHINE_ITEMS		(12)
-#define MAX_WATER_MACHINE_FUEL		(80.0)
-#define WATER_MACHINE_FUEL_USAGE	(3.5)
+#define MAX_WATER_MACHINE_FUEL		(15.0)
+#define WATER_MACHINE_FUEL_USAGE	(3.0)
+#define WATER_PURIFY_TIME			(30)
 
 
-enum E_WATER_MACHINE_DATA
+enum e_WATER_MACHINE_DATA
 {
-			wm_machineId,
+			wm_containerid,
 Float:		wm_fuel,
 bool:		wm_cooking,
 			wm_smoke,
 			wm_cookTime,
-			wm_startTime
+			wm_startTime,
+			wm_selectedItem
 }
 
 
-static
-			wm_Data[MAX_WATER_MACHINE][E_WATER_MACHINE_DATA],
-			wm_Total,
-
-			wm_MachineWaterMachine[MAX_MACHINE] = {-1, ...},
-
-			wm_CurrentWaterMachine[MAX_PLAYERS];
+static		wm_CurrentWaterMachine[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+			wm_ItemWaterPurifier[ITM_MAX] 		= {-1, ...};
 
 
 /*==============================================================================
@@ -72,29 +67,22 @@ hook OnPlayerConnect(playerid)
 	wm_CurrentWaterMachine[playerid] = -1;
 }
 
-
-/*==============================================================================
-
-	Core Functions
-
-==============================================================================*/
-
-
-stock CreateWaterMachine(Float:x, Float:y, Float:z, Float:rz)
+hook OnItemCreateInWorld(itemid)
 {
-	if(wm_Total == MAX_WATER_MACHINE - 1)
+	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/world/water-purifier.pwn");
+
+	if(GetItemType(itemid) == item_WaterMachine)
 	{
-		err("MAX_WATER_MACHINE Limit reached.");
-		return 0;
+		new data[e_WATER_MACHINE_DATA];
+
+		GetItemArrayData(itemid, data);
+
+		data[wm_smoke] 			= INVALID_OBJECT_ID;
+		data[wm_selectedItem]	= INVALID_ITEM_ID;
+
+		SetItemArrayData(itemid, data, _:e_WATER_MACHINE_DATA);
 	}
-
-	wm_Data[wm_Total][wm_machineId] = CreateMachine(943, x, y, z, rz, "Refining Machine", "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel", MAX_WATER_MACHINE_ITEMS);
-
-	wm_MachineWaterMachine[wm_Data[wm_Total][wm_machineId]] = wm_Total;
-
-	return wm_Total++;
 }
-
 
 /*==============================================================================
 
@@ -103,43 +91,56 @@ stock CreateWaterMachine(Float:x, Float:y, Float:z, Float:rz)
 ==============================================================================*/
 
 
-hook OnPlayerUseMachine(playerid, machineid, interactiontype)
+hook OnPlayerUseMachine(playerid, itemid, interactiontype)
 {
 	dbg("global", CORE, "[OnPlayerUseMachine] in /gamemodes/sss/core/world/water-purifier.pwn");
 
-	if(wm_MachineWaterMachine[machineid] != -1)
+	if(GetItemType(itemid) == item_WaterMachine)
 	{
-		dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[OnPlayerUseMachine] machineid %d water machine %d interactiontype %d", machineid, wm_MachineWaterMachine[machineid], interactiontype);
-		if(wm_Data[wm_MachineWaterMachine[machineid]][wm_machineId] == machineid)
-		{
-			_wm_PlayerUseWaterMachine(playerid, wm_MachineWaterMachine[machineid], interactiontype);
-		}
-		else
-		{
-			err("WaterMachine bi-directional link error. wm_MachineWaterMachine wm_machineId = %d machineid = %d");
-		}
+		dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[OnPlayerUseMachine] itemid %d interactiontype %d", itemid, interactiontype);
+		_wm_PlayerUseWaterMachine(playerid, itemid, interactiontype);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
+hook OnPlayerPickUpItem(playerid, itemid)
 {
-	dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[_wm_PlayerUseWaterMachine] playerid %d watermachineid %d interactiontype %d", playerid, watermachineid, interactiontype);
+	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/world/water-purifier.pwn");
 
-	if(wm_Data[watermachineid][wm_cooking])
+	if(wm_ItemWaterPurifier[itemid] != -1)
 	{
-		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS", true), MsToString(wm_Data[watermachineid][wm_cookTime] - GetTickCountDifference(GetTickCount(), wm_Data[watermachineid][wm_startTime]), "%m minutes %s seconds")), 8000);
+		if(_wm_RemoveSelectedItem(itemid) == 0)
+			return Y_HOOKS_BREAK_RETURN_1;
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_wm_PlayerUseWaterMachine(playerid, itemid, interactiontype)
+{
+	dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[_wm_PlayerUseWaterMachine] playerid %d itemid %d interactiontype %d", playerid, itemid, interactiontype);
+
+	wm_CurrentWaterMachine[playerid] = itemid;
+
+	new data[e_WATER_MACHINE_DATA];
+
+	GetItemArrayData(itemid, data);
+
+	if(data[wm_cooking])
+	{
+		ShowActionText(playerid, sprintf(ls(playerid, "MACHPROCESS", true), MsToString(data[wm_cookTime] - GetTickCountDifference(GetTickCount(), data[wm_startTime]), "%m minutes %s seconds")), 8000);
 		return 0;
 	}
 
 	if(interactiontype == 0)
 	{
-		DisplayContainerInventory(playerid, GetMachineContainerID(wm_Data[watermachineid][wm_machineId]));
+		if(GetItemType(itemid) != item_Crowbar)
+				if(data[wm_selectedItem] == INVALID_ITEM_ID)
+					_wm_AddSelectedItem(playerid, data);
+
 		return 0;
 	}
-
-	wm_CurrentWaterMachine[playerid] = watermachineid;
 
 	new 
 		ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
@@ -149,7 +150,7 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 		if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 		{
 			dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[_wm_PlayerUseWaterMachine] starting HoldAction for %ds starting at %ds", floatround(MAX_WATER_MACHINE_FUEL), floatround(wm_Data[watermachineid][wm_fuel]));
-			StartHoldAction(playerid, floatround(MAX_WATER_MACHINE_FUEL * 1000), floatround(wm_Data[watermachineid][wm_fuel] * 1000));
+			StartHoldAction(playerid, floatround(MAX_WATER_MACHINE_FUEL * 1000), floatround(data[wm_fuel] * 1000));
 			return 0;
 		}
 	}
@@ -160,7 +161,7 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 
 		if(response)
 		{
-			new ret = _wm_StartCooking(watermachineid);
+			new ret = _wm_StartCooking(itemid);
 
 			if(ret == 0)
 				ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
@@ -177,39 +178,71 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 			wm_CurrentWaterMachine[playerid] = -1;
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Refining Machine", sprintf("Press 'Start' to activate the water purifier.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", wm_Data[watermachineid][wm_fuel]), "Start", "Cancel");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Water Purifier", sprintf("Press 'Start' to activate the water purifier and purify and contaminated water.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", data[wm_fuel]), "Start", "Cancel");
 
 	return 0;
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+_wm_AddSelectedItem(playerid, data[e_WATER_MACHINE_DATA])
 {
-	dbg("global", CORE, "[OnItemAddToContainer] in /gamemodes/sss/core/world/water-machine.pwn");
+	new
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rx,
+		Float:ry,
+		Float:rz,
+		itemid = GetPlayerItem(playerid),
+		ItemType:itemtype = GetItemType(itemid);
 
-	if(playerid != INVALID_PLAYER_ID)
+	if(GetItemTypeLiquidContainerType(itemtype) != -1)
 	{
-		new machineid = GetContainerMachineID(containerid);
-
-		if(machineid != INVALID_MACHINE_ID)
+		if(GetLiquidItemLiquidType(itemid) == liquid_SaltWater)
 		{
-			if(wm_MachineWaterMachine[machineid] != -1)
-			{
-				if(GetItemType(itemid) != item_ScrapMetal)
-					return 1;
-			}
+			data[wm_selectedItem] = itemid;
+			SetItemArrayData(wm_CurrentWaterMachine[playerid], data, _:e_WATER_MACHINE_DATA);
+
+			GetItemPos(wm_CurrentWaterMachine[playerid], x, y, z);
+			GetItemRot(wm_CurrentWaterMachine[playerid], rx, ry, rz);
+			CreateItemInWorld(itemid,
+				x + (0.92358 * floatsin(- rz - 70.727416, degrees)),
+				y + (0.92358 * floatcos(- rz - 70.727416, degrees)),
+				z + 0.91,
+				rx, ry, rz);
+
+			wm_ItemWaterPurifier[itemid] = wm_CurrentWaterMachine[playerid];
 		}
+		else
+			ShowActionText(playerid, ls(playerid, "PURWATERONLY", true), 5000);
 	}
 
-	return Y_HOOKS_CONTINUE_RETURN_0;
+	return 1;
+}
+
+_wm_RemoveSelectedItem(itemid)
+{
+	new data[e_WATER_MACHINE_DATA];
+
+	GetItemArrayData(wm_ItemWaterPurifier[itemid], data);
+
+	if(data[wm_cooking])
+		return 0;
+
+	data[wm_selectedItem] = INVALID_ITEM_ID;
+
+	SetItemArrayData(wm_ItemWaterPurifier[itemid], data, _:e_WATER_MACHINE_DATA);
+
+	wm_ItemWaterPurifier[itemid] = -1;
+	return 1;
 }
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/world/water-machine.pwn");
+	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/world/water-purifier.pwn");
 
 	if(wm_CurrentWaterMachine[playerid] != -1)
 	{
-		dbg("gamemodes/sss/core/world/water-purifier.pwn", 3, "[OnHoldActionUpdate] watermachineid %d progress %d", wm_CurrentWaterMachine[playerid], progress);
+		dbg("gamemodes/sss/core/world/water-purifier.pwn", 3, "[OnHoldActionUpdate] Water purifier itemid %d progress %d", wm_CurrentWaterMachine[playerid], progress);
 
 		new itemid = GetPlayerItem(playerid);
 
@@ -218,6 +251,7 @@ hook OnHoldActionUpdate(playerid, progress)
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
 				dbg("gamemodes/sss/core/world/water-purifier.pwn", 3, "[OnHoldActionUpdate] Stopping HoldAction: player not holding petrol can");
+				StopHoldAction(playerid);
 				StopHoldAction(playerid);
 				wm_CurrentWaterMachine[playerid] = -1;
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -237,10 +271,12 @@ hook OnHoldActionUpdate(playerid, progress)
 		}
 		else
 		{
+			new Float:machinefuel = Float:GetItemArrayDataAtCell(wm_CurrentWaterMachine[playerid], wm_fuel);
+
 			dbg("gamemodes/sss/core/world/water-purifier.pwn", 3, "[OnHoldActionUpdate] setting petrol can to %d, machine to %.1f", fuel - 1, wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] + 1.0);
 			transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1;
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
-			wm_Data[wm_CurrentWaterMachine[playerid]][wm_fuel] += 1.1;
+			SetItemArrayDataAtCell(wm_CurrentWaterMachine[playerid], _:(machinefuel + 1.1), wm_fuel);
 			ShowActionText(playerid, ls(playerid, "REFUELLING", true));
 		}
 	}
@@ -248,80 +284,80 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_wm_StartCooking(watermachineid)
+_wm_StartCooking(itemid)
 {
-	dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[_wm_PlayerUseWaterMachine] watermachineid %d", watermachineid);
-	new itemcount;
+	new data[e_WATER_MACHINE_DATA];
 
-	for(new j = GetContainerSize(GetMachineContainerID(wm_Data[watermachineid][wm_machineId])); itemcount < j; itemcount++)
-	{
-		if(!IsContainerSlotUsed(GetMachineContainerID(wm_Data[watermachineid][wm_machineId]), itemcount))
-			break;
-	}
+	GetItemArrayData(itemid, data);
 
-	if(itemcount == 0)
+	if(data[wm_selectedItem] == INVALID_ITEM_ID)
 		return 0;
 
-	// cook time = 60 seconds per item plus random 20 seconds
-	new cooktime = (itemcount * 60) + random(20);
-	dbg("gamemodes/sss/core/world/water-purifier.pwn", 2, "[_wm_PlayerUseWaterMachine] itemcount %d cooktime %ds", itemcount, cooktime);
-
 	// if there's not enough time left, don't allow a new cook to start.
-	if(gServerUptime >= gServerMaxUptime - (cooktime * 1.5))
+	if(gServerUptime >= gServerMaxUptime - (WATER_PURIFY_TIME * 1.5))
 		return -1;
 
-	if(wm_Data[watermachineid][wm_fuel] < WATER_MACHINE_FUEL_USAGE * itemcount)
+	if(data[wm_fuel] < WATER_MACHINE_FUEL_USAGE)
 		return -2;
 
 	new
 		Float:x,
 		Float:y,
-		Float:z;
+		Float:z,
+		cooktime = WATER_PURIFY_TIME * 1000;
 
-	GetMachinePos(wm_Data[watermachineid][wm_machineId], x, y, z);
-
-	cooktime *= 1000; // convert to ms
+	GetItemPos(itemid, x, y, z);
 
 	dbg("gamemodes/sss/core/world/water-purifier.pwn", 2, "[_wm_PlayerUseWaterMachine] started cooking...");
-	wm_Data[watermachineid][wm_cooking] = true;
-	DestroyDynamicObject(wm_Data[watermachineid][wm_smoke]);
-	wm_Data[watermachineid][wm_smoke] = CreateDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0);
-	wm_Data[watermachineid][wm_cookTime] = cooktime;
-	wm_Data[watermachineid][wm_startTime] = GetTickCount();
+	data[wm_cooking] = true;
+	DestroyDynamicObject(data[wm_smoke]);
+	data[wm_smoke] = CreateDynamicObject(18726, x, y, z + 0.25, 0.0, 0.0, 0.0);
+	data[wm_cookTime] = cooktime;
+	data[wm_startTime] = GetTickCount();
 
-	defer _wm_FinishCooking(watermachineid, cooktime);
+	SetItemArrayData(itemid, data, _:e_WATER_MACHINE_DATA);
+
+	defer _wm_FinishCooking(itemid, cooktime);
 
 	return cooktime;
 }
 
-timer _wm_FinishCooking[cooktime](watermachineid, cooktime)
+timer _wm_FinishCooking[cooktime](itemid, cooktime)
 {
-#pragma unused cooktime
+	#pragma unused cooktime
 	dbg("gamemodes/sss/core/world/water-purifier.pwn", 1, "[_wm_PlayerUseWaterMachine] finished cooking...");
+	new data[e_WATER_MACHINE_DATA];
+
+	GetItemArrayData(itemid, data);
+
+	SetLiquidItemLiquidType(data[wm_selectedItem], liquid_PurifiedWater);
+
+	DestroyDynamicObject(data[wm_smoke]);
+	data[wm_fuel]		-= WATER_MACHINE_FUEL_USAGE;
+	data[wm_cooking] 	= false;
+	data[wm_smoke] 		= INVALID_OBJECT_ID;
+
+	SetItemArrayData(itemid, data, _:e_WATER_MACHINE_DATA);
+}
+
+/*CMD:liq(playerid, params[]) // Cmd to test the purifier
+{
 	new
 		itemid,
-		containerid = GetMachineContainerID(wm_Data[watermachineid][wm_machineId]),
-		itemcount;
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:r;
 
-	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
-	{
-		itemid = GetContainerSlotItem(containerid, i);
+	GetPlayerPos(playerid, x, y, z);
+	GetPlayerFacingAngle(playerid, r);
 
-		dbg("gamemodes/sss/core/world/water-purifier.pwn", 3, "[_wm_PlayerUseWaterMachine] slot %d: destroying %d", i, itemid);
+	itemid = CreateItem(item_GasCan,
+		x + (0.5 * floatsin(-r, degrees)),
+		y + (0.5 * floatcos(-r, degrees)),
+		z - FLOOR_OFFSET, .rz = r);
 
-		wm_Data[watermachineid][wm_fuel] -= WATER_MACHINE_FUEL_USAGE;
-
-		DestroyItem(itemid);
-		itemcount++;
-	}
-
-	for(new i; i < itemcount; i++)
-	{
-		itemid = CreateItem(item_Bottle);
-		AddItemToContainer(containerid, itemid);
-	}
-
-	DestroyDynamicObject(wm_Data[watermachineid][wm_smoke]);
-	wm_Data[watermachineid][wm_cooking] = false;
-	wm_Data[watermachineid][wm_smoke] = INVALID_OBJECT_ID;
-}
+	SetItemArrayDataAtCell(itemid, _:5.0, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+	SetItemArrayDataAtCell(itemid, liquid_SaltWater, LIQUID_ITEM_ARRAY_CELL_TYPE);
+	return 1;
+}*/
