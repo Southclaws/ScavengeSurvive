@@ -465,7 +465,11 @@ ItemType:		item_Table			= INVALID_ITEM_TYPE,
 ItemType:		item_GunCase		= INVALID_ITEM_TYPE,
 ItemType:		item_Cupboard		= INVALID_ITEM_TYPE,
 ItemType:		item_Barstool		= INVALID_ITEM_TYPE,
-ItemType:		item_SmallTable		= INVALID_ITEM_TYPE;
+ItemType:		item_SmallTable		= INVALID_ITEM_TYPE,
+ItemType:		item_BandanaBlue	= INVALID_ITEM_TYPE,
+ItemType:		item_BandanaGrey	= INVALID_ITEM_TYPE,
+ItemType:		item_BandanaWhite	= INVALID_ITEM_TYPE,
+ItemType:		item_BandanaPattern	= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -894,6 +898,10 @@ public OnScriptInit()
 	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .maxhitpoints = 12, .longpickup = true);
 	item_Barstool		= DefineItemType("Barstool",			"Barstool",			1805,	8,	0.0, 0.0, 0.0,			0.22, .maxhitpoints = 8, .longpickup = true);
 	item_SmallTable		= DefineItemType("Small Table",			"SmallTable",		2346,	10,	0.0, 0.0, 0.0,			-0.03, .maxhitpoints = 10, .longpickup = true);
+	item_BandanaBlue	= DefineItemType("Bandana",				"BandanaBl",		18917,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
+	item_BandanaGrey	= DefineItemType("Bandana",				"BandanaGr",		18918,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
+	item_BandanaWhite	= DefineItemType("Bandana",				"BandanaWh",		18919,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
+	item_BandanaPattern	= DefineItemType("Bandana",				"BandanaPat",		18920,	1,	0.0, 0.0, 0.0,			0.0,	0.095999, 0.064999, 0.000000, -1.300025, -67.899948, -92.999908);
 
 	// SETTING ITEM TYPE SCRAP VALUE
 	SetItemTypeScrapValue(item_Knuckles,		1);
