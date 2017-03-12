@@ -93,7 +93,7 @@ stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable
 	return liq_Total++;
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreate(itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
