@@ -326,7 +326,10 @@ ShowDetfieldListOptions(playerid, detfieldid)
 
 				case 2:
 				{
-					ShowDetfieldExceptions(playerid, detfieldid);
+					if(exceptioncount > 0)
+						ShowDetfieldExceptions(playerid, detfieldid);
+					else
+						ShowDetfieldAddException(playerid, detfieldid, -1);
 				}
 
 				case 3:
@@ -489,7 +492,10 @@ ShowDetfieldAddException(playerid, detfieldid, exceptionid)
 		}
 		else
 		{
-			ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid);
+			if(exceptionid != -1)
+				ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid);
+			else
+				ShowDetfieldListOptions(playerid, detfieldid);
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, sprintf("Add exception for %s", name), "Type a username:", "Add", "Back");
