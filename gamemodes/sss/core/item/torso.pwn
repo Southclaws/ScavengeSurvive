@@ -146,7 +146,7 @@ hook OnHoldActionFinish(playerid)
 
 		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r);
 		SetItemArrayDataAtCell(itemid, 0, food_cooked, 1);
-		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
+		SetItemArrayDataAtCell(itemid, 5 + random(3), food_amount, 1);
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		CancelPlayerMovement(playerid);
