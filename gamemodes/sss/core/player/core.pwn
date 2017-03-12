@@ -147,33 +147,33 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerLoadedAccount(playerid, loadresult)
 {
-	if(loadresult == -1) // LoadAccount aborted, kick player.
+	if(loadresult == ACCOUNT_LOAD_RESULT_ERROR) // LoadAccount aborted, kick player.
 	{
 		KickPlayer(playerid, "Account load failed");
 		return;
 	}
 
-	if(loadresult == 0) // Account does not exist
+	if(loadresult == ACCOUNT_LOAD_RESULT_NO_EXIST) // Account does not exist
 	{
 		DisplayRegisterPrompt(playerid);
 	}
 
-	if(loadresult == 1) // Account does exist, prompt login
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
 	}
 
-	if(loadresult == 2) // Account does exist, auto login
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_AL) // Account does exist, auto login
 	{
 		Login(playerid);
 	}
 
-	if(loadresult == 3) // Account does exist, but not in whitelist
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_WL) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
 	}
 
-	if(loadresult == 4) // Account does exists, but is disabled
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_DA) // Account does exists, but is disabled
 	{
 		KickPlayer(playerid, "Account inactive");
 	}

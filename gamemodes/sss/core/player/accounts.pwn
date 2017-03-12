@@ -25,19 +25,6 @@
 #include <YSI\y_hooks>
 
 
-#define ACCOUNTS_TABLE_PLAYER		"Player"
-#define FIELD_PLAYER_NAME			"name"		// 00
-#define FIELD_PLAYER_PASS			"pass"		// 01
-#define FIELD_PLAYER_IPV4			"ipv4"		// 02
-#define FIELD_PLAYER_ALIVE			"alive"		// 03
-#define FIELD_PLAYER_REGDATE		"regdate"	// 04
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 05
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 06
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 07
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 08
-#define FIELD_PLAYER_GPCI			"gpci"		// 19
-#define FIELD_PLAYER_ACTIVE			"active"	// 10
-
 enum
 {
 	FIELD_ID_PLAYER_NAME,
@@ -65,6 +52,8 @@ forward OnPlayerLoadAccount(playerid);
 forward OnPlayerLoadedAccount(playerid, loadresult);
 forward OnPlayerRegister(playerid);
 forward OnPlayerLogin(playerid);
+
+forward OnLoadAccount(playerid, loadresult);
 
 
 hook OnGameModeInit()
@@ -112,65 +101,20 @@ timer LoadAccountDelay[1000](playerid)
 		return 0;
 	}
 
-	new
-		name[MAX_PLAYER_NAME],
-		exists,
-		password[MAX_PASSWORD_LEN],
-		ipv4,
-		bool:alive,
-		regdate,
-		lastlog,
-		spawntime,
-		spawns,
-		warnings,
-		active;
+	AccountIO_Load(playerid, "OnLoadAccount");
+}
 
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+public OnLoadAccount(playerid, loadresult)
+{
+	if(loadresult == ACCOUNT_LOAD_RESULT_NO_EXIST) // Account does not exist
+		acc_HasAccount[playerid] = false;
 
-	if(exists == 0)
-	{
-		log("[LoadAccount] %p (account does not exist)", playerid);
-		return;// 0;
-	}
-/*
-	if()
-	{
-		err("[LoadAccount] error.");
-		return -1;
-	}
-*/
-	if(!active)
-	{
-		log("[LoadAccount] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
-		return;// 4;
-	}
+	else
+		acc_HasAccount[playerid] = true;
 
-	if(IsWhitelistActive())
-	{
-		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
-
-		if(!IsPlayerInWhitelist(playerid))
-		{
-			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
-			return;// 3;
-		}
-	}
-
-	SetPlayerAliveState(playerid, alive);
 	acc_IsNewPlayer[playerid] = false;
-	acc_HasAccount[playerid] = true;
 
-	SetPlayerPassHash(playerid, password);
-	SetPlayerRegTimestamp(playerid, regdate);
-	SetPlayerLastLogin(playerid, lastlog);
-	SetPlayerCreationTimestamp(playerid, spawntime);
-	SetPlayerTotalSpawns(playerid, spawns);
-	SetPlayerWarnings(playerid, warnings);
-
-	log("[LoadAccount] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
-
-	return;// 1;
+	CallLocalFunction("OnPlayerLoadedAccount", "dd", playerid, loadresult);
 }
 
 
@@ -192,12 +136,11 @@ CreateAccount(playerid, password[])
 
 	log("[REGISTER] %p registered", playerid);
 
-	// name, MAX_PLAYER_NAME
-	// password, MAX_PASSWORD_LEN
-	// GetPlayerIpAsInt(playerid
-	// gettime()
-	// gettime()
-	// serial, MAX_GPCI_LEN
+	AccountIO_Create(name, password,
+		GetPlayerIpAsInt(playerid),
+		gettime(playerid),
+		gettime(playerid),
+		serial);
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
 

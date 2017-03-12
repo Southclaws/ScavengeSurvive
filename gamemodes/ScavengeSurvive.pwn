@@ -191,9 +191,8 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Files
-#define ACCOUNT_DATABASE			DIRECTORY_MAIN"accounts.db"
-#define WORLD_DATABASE				DIRECTORY_MAIN"world.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.ini"
+#define REDIS_DOMAIN_ROOT			"ss"
 
 
 // Macros
@@ -384,6 +383,7 @@ new stock
 	PARENT SYSTEMS
 	Modules that declare setup functions and constants used throughout.
 */
+#include "sss/core/player/accounts-io.pwn"
 #include "sss/core/vehicle/vehicle-type.pwn"
 #include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/core.pwn"
