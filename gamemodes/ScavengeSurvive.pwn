@@ -569,6 +569,7 @@ new stock
 #include "sss/core/item/bowlerhat.pwn"
 #include "sss/core/item/policecap.pwn"
 #include "sss/core/item/tophat.pwn"
+#include "sss/core/item/bandana.pwn"
 #include "sss/core/item/xmashat.pwn"
 #include "sss/core/item/witcheshat.pwn"
 #include "sss/core/item/policehelm.pwn"
