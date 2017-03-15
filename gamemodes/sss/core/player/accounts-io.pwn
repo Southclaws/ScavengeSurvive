@@ -64,23 +64,20 @@ stock AccountIO_Load(playerid, callback[])
 {
 	new
 		name[MAX_PLAYER_NAME],
-		key[MAX_PLAYER_NAME + 32],
-		ret = 0,
-		passhash[MAX_PASSWORD_LEN];
+		key[MAX_PLAYER_NAME + 32];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, passhash);
-
-	if(ret != 0)
+	if(!Redis_Exists(gRedis, key))
 	{
-		log("[LoadAccount] %p (account does not exist)", playerid);
 		CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_NO_EXIST);
 		return;
 	}
 
 	new
+		ret,
+		passhash[MAX_PASSWORD_LEN],
 		ipv4_str[16],
 		alive_str[2],
 		regdate_str[12],
@@ -99,6 +96,7 @@ stock AccountIO_Load(playerid, callback[])
 		warnings,
 		active;
 
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, passhash);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, alive_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, regdate_str);

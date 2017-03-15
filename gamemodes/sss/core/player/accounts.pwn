@@ -129,18 +129,25 @@ CreateAccount(playerid, password[])
 {
 	new
 		name[MAX_PLAYER_NAME],
-		serial[MAX_GPCI_LEN];
+		serial[MAX_GPCI_LEN],
+		ret;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
-	log("[REGISTER] %p registered", playerid);
-
-	AccountIO_Create(name, password,
+	ret = AccountIO_Create(name, password,
 		GetPlayerIpAsInt(playerid),
 		gettime(playerid),
 		gettime(playerid),
 		serial);
+
+	if(ret != 0)
+	{
+		err("AccountIO_Create returned nonzero");
+		return 1;
+	}
+
+	log("[REGISTER] %p registered", playerid);
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
 
@@ -151,7 +158,7 @@ CreateAccount(playerid, password[])
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			WhitelistKick(playerid);
-			return 0;
+			return 2;
 		}
 	}
 
@@ -169,7 +176,7 @@ CreateAccount(playerid, password[])
 
 	CallLocalFunction("OnPlayerRegister", "d", playerid);
 
-	return 1;
+	return 0;
 }
 
 DisplayRegisterPrompt(playerid)
@@ -179,37 +186,36 @@ DisplayRegisterPrompt(playerid)
 
 	log("[REGPROMPT] %p is registering", playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
-		{
-			if(!(4 <= strlen(inputtext) <= 32))
-			{
-				ChatMsgLang(playerid, YELLOW, "PASSWORDREQ");
-				DisplayRegisterPrompt(playerid);
-				return 0;
-			}
-
-			new buffer[MAX_PASSWORD_LEN];
-
-			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
-
-			if(CreateAccount(playerid, buffer))
-				ShowWelcomeMessage(playerid, 10);
-		}
-		else
-		{
-			ChatMsgAll(GREY, " >  %p left the server without registering.", playerid);
-			Kick(playerid);
-		}
-
-		return 1;
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCREGITITL"), str, "Accept", "Leave");
+	Dialog_Show_NotYSI(playerid, RegisterPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCREGITITL"), str, "Accept", "Leave");
 
 	return 1;
+}
+
+Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
+{
+	log("[RegisterPrompt] %p Response: %d", playerid, response);
+
+	if(response)
+	{
+		if(!(4 <= strlen(inputtext) <= 32))
+		{
+			ChatMsgLang(playerid, YELLOW, "PASSWORDREQ");
+			DisplayRegisterPrompt(playerid);
+			return 0;
+		}
+
+		new buffer[MAX_PASSWORD_LEN];
+
+		WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
+
+		if(!CreateAccount(playerid, buffer))
+			ShowWelcomeMessage(playerid, 10);
+	}
+	else
+	{
+		ChatMsgAll(GREY, " >  %p left the server without registering.", playerid);
+		Kick(playerid);
+	}
 }
 
 DisplayLoginPrompt(playerid, badpass = 0)
@@ -224,66 +230,65 @@ DisplayLoginPrompt(playerid, badpass = 0)
 
 	log("[LOGPROMPT] %p is logging in", playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show_NotYSI(playerid, LoginPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCLOGITITL"), str, "Accept", "Leave");
+
+	return 1;
+}
+
+Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
+{
+	log("[LoginPrompt] %p Response: %d", playerid, response);
+
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
+		if(strlen(inputtext) < 4)
 		{
-			if(strlen(inputtext) < 4)
+			acc_LoginAttempts[playerid]++;
+
+			if(acc_LoginAttempts[playerid] < 5)
 			{
-				acc_LoginAttempts[playerid]++;
-
-				if(acc_LoginAttempts[playerid] < 5)
-				{
-					DisplayLoginPrompt(playerid, 1);
-				}
-				else
-				{
-					ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
-					Kick(playerid);
-				}
-
-				return 1;
-			}
-
-			new
-				inputhash[MAX_PASSWORD_LEN],
-				storedhash[MAX_PASSWORD_LEN];
-
-			WP_Hash(inputhash, MAX_PASSWORD_LEN, inputtext);
-			GetPlayerPassHash(playerid, storedhash);
-
-			if(!strcmp(inputhash, storedhash))
-			{
-				Login(playerid);
+				DisplayLoginPrompt(playerid, 1);
 			}
 			else
 			{
-				acc_LoginAttempts[playerid]++;
-
-				if(acc_LoginAttempts[playerid] < 5)
-				{
-					DisplayLoginPrompt(playerid, 1);
-				}
-				else
-				{
-					ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
-					Kick(playerid);
-				}
+				ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
+				Kick(playerid);
 			}
+
+			return 1;
+		}
+
+		new
+			inputhash[MAX_PASSWORD_LEN],
+			storedhash[MAX_PASSWORD_LEN];
+
+		WP_Hash(inputhash, MAX_PASSWORD_LEN, inputtext);
+		GetPlayerPassHash(playerid, storedhash);
+
+		if(!strcmp(inputhash, storedhash))
+		{
+			Login(playerid);
 		}
 		else
 		{
-			ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
-			Kick(playerid);
+			acc_LoginAttempts[playerid]++;
+
+			if(acc_LoginAttempts[playerid] < 5)
+			{
+				DisplayLoginPrompt(playerid, 1);
+			}
+			else
+			{
+				ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
+				Kick(playerid);
+			}
 		}
-
-		return 1;
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCLOGITITL"), str, "Accept", "Leave");
-
-	return 1;
+	else
+	{
+		ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
+		Kick(playerid);
+	}
 }
 
 

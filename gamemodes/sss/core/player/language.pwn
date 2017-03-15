@@ -37,7 +37,10 @@ hook OnPlayerConnect(playerid)
 stock GetPlayerLanguage(playerid)
 {
 	if(!IsPlayerConnected(playerid))
+	{
+		err("player not connected");
 		return -1;
+	}
 
 	return lang_PlayerLanguage[playerid];
 }

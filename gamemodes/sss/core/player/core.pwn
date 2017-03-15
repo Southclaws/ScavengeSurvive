@@ -147,6 +147,8 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerLoadedAccount(playerid, loadresult)
 {
+	log("[OnPlayerLoadedAccount] %p loadresult: %d", playerid, loadresult);
+
 	if(loadresult == ACCOUNT_LOAD_RESULT_ERROR) // LoadAccount aborted, kick player.
 	{
 		KickPlayer(playerid, "Account load failed");

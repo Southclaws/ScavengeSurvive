@@ -182,13 +182,13 @@ stock IsPlayerInWhitelist(playerid)
 stock IsNameInWhitelist(name[])
 {
 	if(isnull(name))
-		return 2;
+		return 0;
 
 	new count;
 
 	// WhitelistExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
 
-	return 0;
+	return 1;
 }
 
 stock WhitelistKick(playerid)
