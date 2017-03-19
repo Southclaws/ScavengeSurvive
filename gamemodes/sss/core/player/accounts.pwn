@@ -125,68 +125,14 @@ public OnLoadAccount(playerid, loadresult)
 ==============================================================================*/
 
 
-CreateAccount(playerid, password[])
-{
-	new
-		name[MAX_PLAYER_NAME],
-		serial[MAX_GPCI_LEN],
-		ret;
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-	gpci(playerid, serial, MAX_GPCI_LEN);
-
-	ret = AccountIO_Create(name, password,
-		GetPlayerIpAsInt(playerid),
-		gettime(playerid),
-		gettime(playerid),
-		serial);
-
-	if(ret != 0)
-	{
-		err("AccountIO_Create returned nonzero");
-		return 1;
-	}
-
-	log("[REGISTER] %p registered", playerid);
-
-	SetPlayerAimShoutText(playerid, "Drop your weapon!");
-
-	if(IsWhitelistActive())
-	{
-		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
-		if(!IsPlayerInWhitelist(playerid))
-		{
-			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			WhitelistKick(playerid);
-			return 2;
-		}
-	}
-
-	CheckAdminLevel(playerid);
-
-	if(GetPlayerAdminLevel(playerid) > 0)
-		ChatMsg(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
-
-	acc_IsNewPlayer[playerid] = true;
-	acc_HasAccount[playerid] = true;
-	acc_LoggedIn[playerid] = true;
-	SetPlayerToolTips(playerid, true);
-
-	PlayerCreateNewCharacter(playerid);
-
-	CallLocalFunction("OnPlayerRegister", "d", playerid);
-
-	return 0;
-}
-
 DisplayRegisterPrompt(playerid)
 {
 	new str[150];
 	format(str, 150, ls(playerid, "ACCREGIBODY"), playerid);
 
-	log("[REGPROMPT] %p is registering", playerid);
+	log("[DisplayRegisterPrompt] %p is registering", playerid);
 
-	Dialog_Show_NotYSI(playerid, RegisterPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCREGITITL"), str, "Accept", "Leave");
+	Dialog_Show(playerid, RegisterPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCREGITITL"), str, "Accept", "Leave");
 
 	return 1;
 }
@@ -208,7 +154,8 @@ Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
 
 		WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
 
-		if(!CreateAccount(playerid, buffer))
+		log("[RegisterPrompt] CreateAccount %d", playerid);
+		if(CreateAccount(playerid, buffer))
 			ShowWelcomeMessage(playerid, 10);
 	}
 	else
@@ -216,6 +163,81 @@ Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
 		ChatMsgAll(GREY, " >  %p left the server without registering.", playerid);
 		Kick(playerid);
 	}
+}
+
+CreateAccount(playerid, password[])
+{
+	log("[CreateAccount] %p", playerid);
+
+	new
+		name[MAX_PLAYER_NAME],
+		serial[MAX_GPCI_LEN],
+		ret;
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	err("%d", playerid);
+	// gpci(playerid, serial, MAX_GPCI_LEN);
+	err("%d '%s' '%s' %d %d %d '%s'",
+		playerid,
+		name,
+		password,
+		GetPlayerIpAsInt(playerid),
+		gettime(playerid),
+		gettime(playerid),
+		serial);
+
+
+	ret = AccountIO_Create(
+		name,
+		password,
+		GetPlayerIpAsInt(playerid),
+		gettime(playerid),
+		gettime(playerid),
+		serial);
+
+	err("%d", playerid);
+	if(ret != 0)
+	{
+		err("AccountIO_Create returned nonzero");
+		return 1;
+	}
+
+	log("[REGISTER] %p registered", playerid);
+
+	err("%d", playerid);
+	SetPlayerAimShoutText(playerid, "Drop your weapon!");
+
+	err("%d", playerid);
+	if(IsWhitelistActive())
+	{
+		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
+		if(!IsPlayerInWhitelist(playerid))
+		{
+			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
+			WhitelistKick(playerid);
+			return 2;
+		}
+	}
+
+	err("%d", playerid);
+	CheckAdminLevel(playerid);
+	err("%d", playerid);
+
+	if(GetPlayerAdminLevel(playerid) > 0)
+		ChatMsg(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
+
+	err("%d", playerid);
+	acc_IsNewPlayer[playerid] = true;
+	acc_HasAccount[playerid] = true;
+	acc_LoggedIn[playerid] = true;
+	SetPlayerToolTips(playerid, true);
+
+	PlayerCreateNewCharacter(playerid);
+
+	err("%d", playerid);
+	CallLocalFunction("OnPlayerRegister", "d", playerid);
+
+	return 0;
 }
 
 DisplayLoginPrompt(playerid, badpass = 0)
@@ -228,9 +250,9 @@ DisplayLoginPrompt(playerid, badpass = 0)
 	else
 		format(str, 128, ls(playerid, "ACCLOGIBODY"), playerid);
 
-	log("[LOGPROMPT] %p is logging in", playerid);
+	log("[DisplayLoginPrompt] %p is logging in", playerid);
 
-	Dialog_Show_NotYSI(playerid, LoginPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCLOGITITL"), str, "Accept", "Leave");
+	Dialog_Show(playerid, LoginPrompt, DIALOG_STYLE_PASSWORD, ls(playerid, "ACCLOGITITL"), str, "Accept", "Leave");
 
 	return 1;
 }
@@ -282,6 +304,8 @@ Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
 				ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
 				Kick(playerid);
 			}
+
+			return 1;
 		}
 	}
 	else
@@ -289,6 +313,8 @@ Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
 		ChatMsgAll(GREY, " >  %p left the server without logging in.", playerid);
 		Kick(playerid);
 	}
+
+	return 0;
 }
 
 

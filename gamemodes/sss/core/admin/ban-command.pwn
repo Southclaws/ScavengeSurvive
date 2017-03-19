@@ -55,10 +55,11 @@ ResetBanVariables(playerid)
 
 FormatBanReasonDialog(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
+	Dialog_Show(playerid, BanReason, DIALOG_STYLE_INPUT, "Please enter ban reason", "Enter the ban reason below. The character limit is 128. After this screen you can choose the ban duration.", "Continue", "Cancel");
+}
 
+Dialog:BanReason(playerid, dialogid, response, listitem, inputtext[])
+{
 		if(response)
 		{
 			ban_CurrentReason[playerid][0] = EOS;
@@ -70,45 +71,44 @@ FormatBanReasonDialog(playerid)
 		{
 			ResetBanVariables(playerid);
 		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Please enter ban reason", "Enter the ban reason below. The character limit is 128. After this screen you can choose the ban duration.", "Continue", "Cancel");
 }
 
 FormatBanDurationDialog(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show(playerid, BanDuration, DIALOG_STYLE_INPUT, "Please enter ban duration", "Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.", "Continue", "Back");
+
+	return 1;
+}
+
+Dialog:BanDuration(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
+		if(!strcmp(inputtext, "forever", true))
 		{
-			if(!strcmp(inputtext, "forever", true))
-			{
-				ban_CurrentDuration[playerid] = 0;
-				FinaliseBan(playerid);
-				return 1;
-			}
+			ban_CurrentDuration[playerid] = 0;
+			FinaliseBan(playerid);
+			return 1;
+		}
 
-			new duration = GetDurationFromString(inputtext);
+		new duration = GetDurationFromString(inputtext);
 
-			if(duration == -1)
-			{
-				FormatBanDurationDialog(playerid);
-			}
-			else
-			{
-				ban_CurrentDuration[playerid] = duration;
-				FinaliseBan(playerid);
-			}
+		if(duration == -1)
+		{
+			FormatBanDurationDialog(playerid);
 		}
 		else
 		{
-			FormatBanReasonDialog(playerid);
+			ban_CurrentDuration[playerid] = duration;
+			FinaliseBan(playerid);
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Please enter ban duration", "Enter the ban duration below. You can type a number then one of either: 'days', 'weeks' or 'months'. Type 'forever' for perma-ban.", "Continue", "Back");
+	else
+	{
+		FormatBanReasonDialog(playerid);
+	}
 
-	return 1;
+	return 0;
 }
 
 FinaliseBan(playerid)

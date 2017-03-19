@@ -97,54 +97,63 @@ ShowLightList(playerid, vehicleid)
 	}
 	gCurrentLightFixVehicle[playerid] = vehicleid;
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, response, listitem, inputtext
-
-		if(!response)
-			return 0;
-
-		GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
-		new itemid = GetPlayerItem(playerid);
-
-		if(listitem == 0)
-		{
-			if(gLightData[playerid][0] && GetItemType(itemid) == item_Headlight)
-			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b0111, tires);
-				DestroyItem(itemid);
-			}
-			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
-		}
-		if(listitem == 1)
-		{
-			if(gLightData[playerid][1] && GetItemType(itemid) == item_Headlight)
-			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1011, tires);
-				DestroyItem(itemid);
-			}
-			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
-		}
-		if(listitem == 2)
-		{
-			if(gLightData[playerid][2] && GetItemType(itemid) == item_Headlight)
-			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1101, tires);
-				DestroyItem(itemid);
-			}
-			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
-		}
-		if(listitem == 3)
-		{
-			if(gLightData[playerid][3] && GetItemType(itemid) == item_Headlight)
-			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1110, tires);
-				DestroyItem(itemid);
-			}
-			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Lights", str, "Fix", "Cancel");
+	Dialog_Show(playerid, HeadLightList, DIALOG_STYLE_LIST, "Lights", str, "Fix", "Cancel");
 
 	return 1;
+}
+
+Dialog:HeadLightList(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return 0;
+
+	new
+		panels,
+		doors,
+		lights,
+		tires;
+
+	GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
+
+	GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
+	new itemid = GetPlayerItem(playerid);
+
+	if(listitem == 0)
+	{
+		if(gLightData[playerid][0] && GetItemType(itemid) == item_Headlight)
+		{
+			UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b0111, tires);
+			DestroyItem(itemid);
+		}
+		else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
+	}
+	if(listitem == 1)
+	{
+		if(gLightData[playerid][1] && GetItemType(itemid) == item_Headlight)
+		{
+			UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1011, tires);
+			DestroyItem(itemid);
+		}
+		else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
+	}
+	if(listitem == 2)
+	{
+		if(gLightData[playerid][2] && GetItemType(itemid) == item_Headlight)
+		{
+			UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1101, tires);
+			DestroyItem(itemid);
+		}
+		else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
+	}
+	if(listitem == 3)
+	{
+		if(gLightData[playerid][3] && GetItemType(itemid) == item_Headlight)
+		{
+			UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1110, tires);
+			DestroyItem(itemid);
+		}
+		else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
+	}
+
+	return 0;
 }

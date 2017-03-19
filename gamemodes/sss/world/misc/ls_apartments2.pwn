@@ -521,24 +521,24 @@ ShowElevatorDialog(playerid)
 		strcat(string, "\n");
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
-		if(!response)
-			return 0;
+	Dialog_Show(playerid, LsAptsElevator, DIALOG_STYLE_LIST, "LS Apartments 1 Elevator...", string, "Accept", "Cancel");
 
-		if(FloorRequestedBy[listitem] != INVALID_PLAYER_ID || IsFloorInQueue(listitem))
-			GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
+	return 1;
+}
 
-		else if(DidPlayerRequestElevator(playerid))
-			GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
+Dialog:LsAptsElevator(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		return 0;
 
-		else
-			CallElevator(playerid, listitem);
+	if(FloorRequestedBy[listitem] != INVALID_PLAYER_ID || IsFloorInQueue(listitem))
+		GameTextForPlayer(playerid, "~r~The floor is already in the queue", 3500, 4);
 
-		return 1;
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "LS Apartments 1 Elevator...", string, "Accept", "Cancel");
+	else if(DidPlayerRequestElevator(playerid))
+		GameTextForPlayer(playerid, "~r~You already requested the elevator", 3500, 4);
+
+	else
+		CallElevator(playerid, listitem);
 
 	return 1;
 }

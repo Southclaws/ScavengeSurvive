@@ -328,17 +328,17 @@ hook OnPlayerUseItem(playerid, itemid)
 			potdata[E_PLANT_POT_GROWTH],
 			GetSeedTypeGrowthTime(potdata[E_PLANT_POT_SEED_TYPE]));
 
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, response, listitem, inputtext
-			ClearAnimations(playerid, 1);
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
+		Dialog_Show(playerid, PlantPotStatus, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close", "");
 
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+Dialog:PlantPotStatus(playerid, response, listitem, inputtext[])
+{
+	ClearAnimations(playerid, 1);
 }
 
 hook OnPlayerPickUpItem(playerid, itemid)

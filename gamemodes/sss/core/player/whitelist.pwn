@@ -203,7 +203,7 @@ stock WhitelistKick(playerid)
 		There are no requirements, just follow the rules.\n\
 		Failure to do so will result in permanent removal from the whitelist.", gWebsiteURL);
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Whitelist", str, "Close", "");
 
 	KickPlayer(playerid, "Not in whitelist");
 }

@@ -129,18 +129,17 @@ public OnGameModeInit()
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
-#include <YSI\y_dialog>
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
-#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
+//#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
 #include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
-
+#include <easyDialog>				// By Emmet_:				https://github.com/Awsomedude/easyDialog
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
 #include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
@@ -658,7 +657,7 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	gRedis = Redis_Connect("localhost", 6379);
+	// gRedis = Redis_Connect("localhost", 6379);
 
 	LoadSettings();
 
@@ -694,7 +693,6 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	log("[OnScriptExit] Shutting down...");
-
 	return 0;
 }
 

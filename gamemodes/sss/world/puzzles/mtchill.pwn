@@ -265,7 +265,7 @@ hook OnPlayerActivateDoor(playerid, doorid, newstate)
 
 		if(ch_doorstate == false && !IsValidItem(GetPlayerItem(playerid)))
 		{
-			Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Door", "The keypad seems broken", "Close", "");
+			ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Door", "The keypad seems broken", "Close", "");
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}

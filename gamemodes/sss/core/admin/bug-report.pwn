@@ -59,19 +59,18 @@ hook OnGameModeInit()
 
 CMD:bug(playerid, params[])
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
-		{
-			ReportBug(playerid, inputtext);
-			ChatMsgLang(playerid, YELLOW, "BUGREPORTSU");
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Bug report", ls(playerid, "BUGREPORTDI"), "Submit", "Cancel");
+	Dialog_Show(playerid, BugReport, DIALOG_STYLE_INPUT, "Bug report", ls(playerid, "BUGREPORTDI"), "Submit", "Cancel");
 
 	return 1;
+}
+
+Dialog:BugReport(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ReportBug(playerid, inputtext);
+		ChatMsgLang(playerid, YELLOW, "BUGREPORTSU");
+	}
 }
 
 ReportBug(playerid, bug[])
@@ -136,18 +135,18 @@ ShowListOfBugs(playerid)
 	if(idx == 0)
 		return 0;
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowBugReportInfo(playerid, issue_RowIndex[listitem]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
+	Dialog_Show(playerid, ListOfBugs, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
 
 	return 1;
+}
+
+Dialog:ListOfBugs(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
+			ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
+	}
 }
 
 ShowBugReportInfo(playerid, rowid)
@@ -169,29 +168,19 @@ ShowBugReportInfo(playerid, rowid)
 		"C_YELLOW"Date:\n\t\t"C_BLUE"%s",
 		name, bug, TimestampToDateTime(date));
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			if(GetPlayerAdminLevel(playerid) > 1)
-			{
-				// BugDelete, 0, DB::TYPE_INTEGER, rowid);
-			}
-		}
-
-		ShowListOfBugs(playerid);
-	}
-
 	if(GetPlayerAdminLevel(playerid) > 1)
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Issues", message, "Delete", "Back");
+		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Delete", "Back");
 
 	else
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Issues", message, "Back", "");
+		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Back", "");
 
 	return 1;
 }
+
+Dialog:BugReportInfo(playerid, response, listitem, inputtext[])
+{
+}
+
 
 /*==============================================================================
 

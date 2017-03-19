@@ -333,7 +333,7 @@ CMD:druginfo(playerid, params[])
 		}
 	}
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Drug Debug (Debrdug!?)", gBigString[playerid], "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Drug Debug (Debrdug!?)", gBigString[playerid], "Close", "");
 
 	return 1;
 }

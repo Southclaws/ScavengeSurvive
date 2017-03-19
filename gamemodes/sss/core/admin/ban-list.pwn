@@ -76,24 +76,23 @@ ShowListOfBans(playerid, index = 0)
 
 	ShowPlayerPageButtons(playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			new name[MAX_PLAYER_NAME];
-			strmid(name, inputtext, 0, MAX_PLAYER_NAME);
-			ShowBanInfo(playerid, name);
-		}
-
-		banlist_ViewingList[playerid] = false;
-		HidePlayerPageButtons(playerid);
-		CancelSelectTextDraw(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, string, "Open", "Close");
+	Dialog_Show(playerid, ListOfBans, DIALOG_STYLE_LIST, title, string, "Open", "Close");
 
 	return 1;
+}
+
+Dialog:ListOfBans(playerid, dialogid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new name[MAX_PLAYER_NAME];
+		strmid(name, inputtext, 0, MAX_PLAYER_NAME);
+		ShowBanInfo(playerid, name);
+	}
+
+	banlist_ViewingList[playerid] = false;
+	HidePlayerPageButtons(playerid);
+	CancelSelectTextDraw(playerid);
 }
 
 ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
@@ -120,144 +119,138 @@ ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
 
 	banlist_CurrentName[playerid] = name;
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowBanOptions(playerid);
-		}
-		else
-		{
-			ShowListOfBans(playerid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, name, str, "Options", "Back");
+	Dialog_Show(playerid, BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Options", "Back");
 
 	return 1;
+}
+
+Dialog:BanInfo(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ShowBanOptions(playerid);
+	}
+	else
+	{
+		ShowListOfBans(playerid);
+	}
 }
 
 ShowBanOptions(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0: // Edit reason
-					ShowBanReasonEdit(playerid);
-
-				case 1: // Edit duration
-					ShowBanDurationEdit(playerid);
-
-				case 2: // Edit set unban
-					ShowBanDateEdit(playerid);
-
-				case 3: // Unban
-					ShowUnbanPrompt(playerid);
-			}
-		}
-		else
-		{
-			ShowBanInfo(playerid, banlist_CurrentName[playerid]);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, banlist_CurrentName[playerid], "Edit reason\nEdit duration\nSet unban\nUnban\n", "Select", "Back");
+	Dialog_Show(playerid, BanOptions, DIALOG_STYLE_LIST, banlist_CurrentName[playerid], "Edit reason\nEdit duration\nSet unban\nUnban\n", "Select", "Back");
 
 	return 1;
+}
+
+Dialog:BanOptions(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0: // Edit reason
+				ShowBanReasonEdit(playerid);
+
+			case 1: // Edit duration
+				ShowBanDurationEdit(playerid);
+
+			case 2: // Edit set unban
+				ShowBanDateEdit(playerid);
+
+			case 3: // Unban
+				ShowUnbanPrompt(playerid);
+		}
+	}
+	else
+	{
+		ShowBanInfo(playerid, banlist_CurrentName[playerid]);
+	}
 }
 
 ShowBanReasonEdit(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			SetBanReason(banlist_CurrentName[playerid], inputtext);
-		}
-
-		ShowBanOptions(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban reason below.", "Enter", "Cancel");
+	Dialog_Show(playerid, BanReasonEdit, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban reason below.", "Enter", "Cancel");
 
 	return 1;
+}
+
+Dialog:BanReasonEdit(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		SetBanReason(banlist_CurrentName[playerid], inputtext);
+	}
+
+	ShowBanOptions(playerid);
 }
 
 ShowBanDurationEdit(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			new duration;
-
-			if(!strcmp(inputtext, "forever", true))
-				duration = 0;
-
-			else
-				duration = GetDurationFromString(inputtext);
-
-			if(duration == -1)
-			{
-				ChatMsg(playerid, YELLOW, " >  Invalid input. Please use <number> <days/weeks/months>.");
-				ShowBanDurationEdit(playerid);
-			}
-			else
-			{
-				SetBanDuration(banlist_CurrentName[playerid], duration);
-				ShowBanOptions(playerid);
-			}
-		}
-
-		ShowBanOptions(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban duration below in format <number> <days/weeks/months>", "Enter", "Cancel");
+	Dialog_Show(playerid, BanDurationEdit, DIALOG_STYLE_INPUT, "Edit ban reason", "Enter the new ban duration below in format <number> <days/weeks/months>", "Enter", "Cancel");
 
 	return 1;
+}
+
+Dialog:BanDurationEdit(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new duration;
+
+		if(!strcmp(inputtext, "forever", true))
+			duration = 0;
+
+		else
+			duration = GetDurationFromString(inputtext);
+
+		if(duration == -1)
+		{
+			ChatMsg(playerid, YELLOW, " >  Invalid input. Please use <number> <days/weeks/months>.");
+			ShowBanDurationEdit(playerid);
+		}
+		else
+		{
+			SetBanDuration(banlist_CurrentName[playerid], duration);
+			ShowBanOptions(playerid);
+		}
+	}
+
+	ShowBanOptions(playerid);
 }
 
 ShowBanDateEdit(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ChatMsg(playerid, YELLOW, " >  Not implemented.");
-		}
-
-		ShowBanOptions(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Edit unban date", "Please enter a date in format: dd/mm/yy", "Enter", "Cancel");
+	Dialog_Show(playerid, BanDateEdit, DIALOG_STYLE_INPUT, "Edit unban date", "Please enter a date in format: dd/mm/yy", "Enter", "Cancel");
 
 	return 1;
 }
 
+Dialog:BanDateEdit(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ChatMsg(playerid, YELLOW, " >  Not implemented.");
+	}
+
+	ShowBanOptions(playerid);
+}
+
 ShowUnbanPrompt(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			UnBanPlayer(banlist_CurrentName[playerid]);
-		}
-
-		ShowBanOptions(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Unban", "Please confirm unban.", "Enter", "Cancel");
+	Dialog_Show(playerid, UnbanPrompt, DIALOG_STYLE_MSGBOX, "Unban", "Please confirm unban.", "Enter", "Cancel");
 
 	return 1;
+}
+
+Dialog:UnbanPrompt(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		UnBanPlayer(banlist_CurrentName[playerid]);
+	}
+
+	ShowBanOptions(playerid);
 }
 
 hook OnPlayerDialogPage(playerid, direction)

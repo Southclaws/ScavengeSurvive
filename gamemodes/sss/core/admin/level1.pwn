@@ -227,7 +227,7 @@ ACMD:country[1](playerid, params[])
 
 		GetPlayerCountryDataAsString(targetid, data);
 
-		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "IP Data", data, "Close", "");
+		ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "IP Data", data, "Close", "");
 	}
 	else
 	{
@@ -269,7 +269,7 @@ ACMD:allcountry[1](playerid, params[])
 		format(list, sizeof(list), "%s%p - %s\n", list, i, country);
 	}
 
-	Dialog_Show(playerid, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_LIST, "Countries", list, "Close", "");
 
 	return 1;
 }

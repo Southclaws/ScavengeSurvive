@@ -50,7 +50,7 @@ forward OnDiscordChat(data[]);
 
 hook OnGameModeInit()
 {
-	Redis_BindMessage(gRedis, "samp.chat.discord.incoming", "OnDiscordChat");
+	//Redis_BindMessage(gRedis, "samp.chat.discord.incoming", "OnDiscordChat");
 }
 
 hook OnPlayerConnect(playerid)
@@ -203,7 +203,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			playerid,
 			TagScan(chat));
 
-		Redis_SendMessage(gRedis, "samp.chat.discord.outgoing", sprintf("%p (%d):%s", playerid, playerid, chat));
+		//Redis_SendMessage(gRedis, "samp.chat.discord.outgoing", sprintf("%p (%d):%s", playerid, playerid, chat));
 
 		TruncateChatMessage(line1, line2);
 
