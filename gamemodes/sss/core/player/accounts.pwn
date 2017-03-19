@@ -154,8 +154,7 @@ Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
 
 		WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
 
-		log("[RegisterPrompt] CreateAccount %d", playerid);
-		if(CreateAccount(playerid, buffer))
+		if(!CreateAccount(playerid))
 			ShowWelcomeMessage(playerid, 10);
 	}
 	else
@@ -163,79 +162,6 @@ Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
 		ChatMsgAll(GREY, " >  %p left the server without registering.", playerid);
 		Kick(playerid);
 	}
-}
-
-CreateAccount(playerid, password[])
-{
-	log("[CreateAccount] %p", playerid);
-
-	new
-		name[MAX_PLAYER_NAME],
-		serial[MAX_GPCI_LEN],
-		ret;
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-	err("%d", playerid);
-	// gpci(playerid, serial, MAX_GPCI_LEN);
-	err("%d '%s' '%s' %d %d %d '%s'",
-		playerid,
-		name,
-		password,
-		GetPlayerIpAsInt(playerid),
-		gettime(playerid),
-		gettime(playerid),
-		serial);
-
-
-	ret = AccountIO_Create(
-		name,
-		password,
-		GetPlayerIpAsInt(playerid),
-		gettime(playerid),
-		gettime(playerid),
-		serial);
-
-	err("%d", playerid);
-	if(ret != 0)
-	{
-		err("AccountIO_Create returned nonzero");
-		return 1;
-	}
-
-	log("[REGISTER] %p registered", playerid);
-
-	err("%d", playerid);
-	SetPlayerAimShoutText(playerid, "Drop your weapon!");
-
-	err("%d", playerid);
-	if(IsWhitelistActive())
-	{
-		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
-		if(!IsPlayerInWhitelist(playerid))
-		{
-			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			WhitelistKick(playerid);
-			return 2;
-		}
-	}
-
-	err("%d", playerid);
-	CheckAdminLevel(playerid);
-	err("%d", playerid);
-
-	if(GetPlayerAdminLevel(playerid) > 0)
-		ChatMsg(playerid, BLUE, " >  Your admin level: %d", GetPlayerAdminLevel(playerid));
-
-	err("%d", playerid);
-	acc_IsNewPlayer[playerid] = true;
-	acc_HasAccount[playerid] = true;
-	acc_LoggedIn[playerid] = true;
-	SetPlayerToolTips(playerid, true);
-
-	PlayerCreateNewCharacter(playerid);
-
-	err("%d", playerid);
-	CallLocalFunction("OnPlayerRegister", "d", playerid);
 
 	return 0;
 }
@@ -324,6 +250,22 @@ Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
 
 ==============================================================================*/
 
+
+// todo: route to login directly after this to simplify later routing
+CreateAccount(playerid)
+{
+	CheckAdminLevel(playerid);
+
+	acc_IsNewPlayer[playerid] = true;
+	acc_HasAccount[playerid] = true;
+	acc_LoggedIn[playerid] = true;
+	SetPlayerToolTips(playerid, true);
+
+	PlayerCreateNewCharacter(playerid);
+	CallLocalFunction("OnPlayerRegister", "d", playerid);
+
+	return 0;
+}
 
 Login(playerid)
 {

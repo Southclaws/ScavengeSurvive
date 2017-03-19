@@ -201,9 +201,6 @@ native WP_Hash(buffer[], len, const str[]);
 #define ACMD:%1[%2](%3)				forward acmd_%1_%2(%3);\
 									public acmd_%1_%2(%3)
 
-#define SCMD:%1(%2)					forward scmd_%1(%2);\
-									public scmd_%1(%2)
-
 #define HOLDING(%0)					((newkeys & (%0)) == (%0))
 #define RELEASED(%0)				(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
 #define PRESSED(%0)					(((newkeys & (%0)) == (%0)) && ((oldkeys & (%0)) != (%0)))

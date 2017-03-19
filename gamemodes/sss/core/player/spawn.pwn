@@ -148,6 +148,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
 }
 
+// todo: use hooks for this
 SpawnLoggedInPlayer(playerid)
 {
 	if(IsPlayerAlive(playerid))
@@ -239,6 +240,7 @@ PlayerSpawnExistingCharacter(playerid)
 	return 0;
 }
 
+// todo: fix hitting ESC when choosing gender
 PlayerCreateNewCharacter(playerid)
 {
 	log("[NEWCHAR] %p creating new character", playerid);
