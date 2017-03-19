@@ -121,7 +121,6 @@ public OnGameModeInit()
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
-#include <YSI\y_dialog>
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
@@ -134,7 +133,7 @@ public OnGameModeInit()
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
 #include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
 #include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
-
+#include <easyDialog>				// By Emmet_:				https://github.com/Awsomedude/easyDialog
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
 #include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
@@ -524,9 +523,9 @@ new stock
 #include "sss/core/admin/level4.pwn"
 #include "sss/core/admin/level5.pwn"
 #include "sss/core/admin/bug-report.pwn"
-#include "sss/core/admin/detfield.pwn"
-#include "sss/core/admin/detfield-cmds.pwn"
-#include "sss/core/admin/detfield-draw.pwn"
+// #include "sss/core/admin/detfield.pwn"
+// #include "sss/core/admin/detfield-cmds.pwn"
+// #include "sss/core/admin/detfield-draw.pwn"
 #include "sss/core/admin/mute.pwn"
 #include "sss/core/admin/rcon.pwn"
 #include "sss/core/admin/freeze.pwn"
@@ -689,6 +688,7 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	log("[OnScriptExit] Shutting down...");
+	return 0;
 }
 
 forward SetRestart(seconds);

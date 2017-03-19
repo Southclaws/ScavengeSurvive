@@ -80,18 +80,18 @@ hook OnPlayerUseItem(playerid, itemid)
 			CancelPlayerMovement(playerid);
 			CurrentSignItem[playerid] = itemid;
 
-			inline Response(pid, dialogid, response, listitem, string:inputtext[])
-			{
-				#pragma unused pid, dialogid, listitem
-				if(response)
-				{
-					if(!isnull(inputtext) && IsValidItem(CurrentSignItem[playerid]))
-						SetItemArrayData(CurrentSignItem[playerid], inputtext, strlen(inputtext));
-				}
-			}
-			Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\' will start a new line.", "Accept", "Close");
+			Dialog_Show(playerid, SignEdit, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\' will start a new line.", "Accept", "Close");
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+Dialog:SignEdit(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		if(!isnull(inputtext) && IsValidItem(CurrentSignItem[playerid]))
+			SetItemArrayData(CurrentSignItem[playerid], inputtext, strlen(inputtext));
+	}
 }

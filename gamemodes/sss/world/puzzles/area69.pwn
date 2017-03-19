@@ -589,7 +589,7 @@ ShowCodeList1(playerid)
 		code_Inner,
 		code_Storage);
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
 }
 
 ShowCodeList2(playerid)
@@ -611,5 +611,5 @@ ShowCodeList2(playerid)
 		code_Headquarters,
 		code_Shaft);
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Main Control", str, "Close", "");
 }

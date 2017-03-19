@@ -234,7 +234,7 @@ BanCheck(playerid)
 				reason,
 				duration ? (TimestampToDateTime(timestamp + duration)) : "Never");
 
-			Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
+			ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
 
 			stmt_bind_value(stmt_BanSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
 			stmt_bind_value(stmt_BanSetIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);

@@ -25,6 +25,9 @@
 #include <YSI\y_hooks>
 
 
+static note_CurrentItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+
+
 hook OnItemTypeDefined(uname[])
 {
 	if(!strcmp(uname, "Note"))
@@ -36,7 +39,9 @@ hook OnPlayerUseItem(playerid, itemid)
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/note.pwn");
 
 	if(GetItemType(itemid) == item_Note)
+	{
 		_ShowNoteDialog(playerid, itemid);
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -46,35 +51,33 @@ _ShowNoteDialog(playerid, itemid)
 	new string[256];
 
 	GetItemArrayData(itemid, string);
+	note_CurrentItem[playerid] = itemid;
 
-	if(strlen(string) == 0)
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, listitem
+	if(strlen(string))
+		Dialog_Show(playerid, Note, DIALOG_STYLE_MSGBOX, "Note", string, "Close", "Tear");
 
-			if(response)
-			{
-				SetItemArrayData(itemid, inputtext, strlen(inputtext));
-			}
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Note", "Write a message onto the note:", "Done", "Cancel");
-	}
 	else
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, listitem, inputtext
-
-			if(!response)
-			{
-				DestroyItem(itemid);
-			}
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Note", string, "Close", "Tear");
-	}
+		Dialog_Show(playerid, NoteSet, DIALOG_STYLE_INPUT, "Note", "Write a message onto the note:", "Done", "Cancel");
 
 	return 1;
+}
+
+Dialog:Note(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+	{
+		DestroyItem(note_CurrentItem[playerid]);
+		note_CurrentItem[playerid] = INVALID_ITEM_ID;
+	}
+}
+
+Dialog:NoteSet(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		SetItemArrayData(note_CurrentItem[playerid], inputtext, strlen(inputtext));
+		note_CurrentItem[playerid] = INVALID_ITEM_ID;
+	}
 }
 
 hook OnItemNameRender(itemid, ItemType:itemtype)

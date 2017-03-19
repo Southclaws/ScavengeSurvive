@@ -256,12 +256,12 @@ skl_ShowSkillList(playerid)
 			skl_Levels[level][skl_level]);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext, listitem, response
-		DisplayPlayerInventory(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Skills", gBigString[playerid], "Back", "");
+	Dialog_Show(playerid, SkillList, DIALOG_STYLE_LIST, "Skills", gBigString[playerid], "Back", "");
 
 	return 1;
+}
+
+Dialog:SkillList(playerid, response, listitem, inputtext[])
+{
+	DisplayPlayerInventory(playerid);
 }

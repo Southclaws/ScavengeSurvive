@@ -44,7 +44,6 @@ static
 				issue_RowIndex[MAX_ISSUES_PER_PAGE],
 
 DBStatement:	stmt_BugInsert,
-DBStatement:	stmt_BugDelete,
 DBStatement:	stmt_BugList,
 DBStatement:	stmt_BugTotal,
 DBStatement:	stmt_BugInfo;
@@ -60,7 +59,6 @@ hook OnGameModeInit()
 	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_BUGS, 3);
 
 	stmt_BugInsert	= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_BUGS" VALUES(?, ?, ?)");
-	stmt_BugDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_BUGS" WHERE rowid = ?");
 	stmt_BugList	= db_prepare(gAccounts, "SELECT "FIELD_BUGS_NAME", "FIELD_BUGS_REASON", rowid FROM "ACCOUNTS_TABLE_BUGS"");
 	stmt_BugTotal	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_BUGS"");
 	stmt_BugInfo	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_BUGS" WHERE rowid = ? LIMIT 1");
@@ -76,19 +74,18 @@ hook OnGameModeInit()
 
 CMD:bug(playerid, params[])
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
-		{
-			ReportBug(playerid, inputtext);
-			ChatMsgLang(playerid, YELLOW, "BUGREPORTSU");
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Bug report", ls(playerid, "BUGREPORTDI"), "Submit", "Cancel");
+	Dialog_Show(playerid, BugReport, DIALOG_STYLE_INPUT, "Bug report", ls(playerid, "BUGREPORTDI"), "Submit", "Cancel");
 
 	return 1;
+}
+
+Dialog:BugReport(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ReportBug(playerid, inputtext);
+		ChatMsgLang(playerid, YELLOW, "BUGREPORTSU");
+	}
 }
 
 ReportBug(playerid, bug[])
@@ -160,19 +157,18 @@ ShowListOfBugs(playerid)
 	if(idx == 0)
 		return 0;
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
-				ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
+	Dialog_Show(playerid, ListOfBugs, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
 
 	return 1;
+}
+
+Dialog:ListOfBugs(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
+			ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
+	}
 }
 
 ShowBugReportInfo(playerid, rowid)
@@ -199,30 +195,19 @@ ShowBugReportInfo(playerid, rowid)
 		"C_YELLOW"Date:\n\t\t"C_BLUE"%s",
 		name, bug, TimestampToDateTime(date));
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			if(GetPlayerAdminLevel(playerid) > 1)
-			{
-				stmt_bind_value(stmt_BugDelete, 0, DB::TYPE_INTEGER, rowid);
-				stmt_execute(stmt_BugDelete);
-			}
-		}
-
-		ShowListOfBugs(playerid);
-	}
-
 	if(GetPlayerAdminLevel(playerid) > 1)
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Issues", message, "Delete", "Back");
+		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Delete", "Back");
 
 	else
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Issues", message, "Back", "");
+		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Back", "");
 
 	return 1;
 }
+
+Dialog:BugReportInfo(playerid, response, listitem, inputtext[])
+{
+}
+
 
 /*==============================================================================
 

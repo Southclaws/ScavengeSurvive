@@ -27,6 +27,7 @@
 
 
 static
+	pls_CurrentItem[MAX_PLAYERS],
 	pls_String[MAX_PLAYERS][PLAYER_LIST_MAX_ITEMS * PLAYER_LIST_ITEM_LEN],
 	pls_List[MAX_PLAYERS][PLAYER_LIST_MAX_ITEMS][MAX_PLAYER_NAME],
 	pls_Length[MAX_PLAYERS];
@@ -57,16 +58,15 @@ stock ShowPlayerList(playerid, list[][], size = sizeof(list), bool:highlightbann
 
 _ShowCurrentList(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
+	Dialog_Show(playerid, PlayerList, DIALOG_STYLE_LIST, "Player list", pls_String[playerid], "Select", "Close");
+}
 
-		if(response)
-		{
-			_ShowPlayerListItem(playerid, listitem);
-		}
+Dialog:PlayerList(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		_ShowPlayerListItem(playerid, listitem);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Player list", pls_String[playerid], "Select", "Close");
 }
 
 stock HidePlayerList(playerid)
@@ -86,22 +86,22 @@ stock _HidePlayerListControls(playerid)
 
 _ShowPlayerListItem(playerid, item)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
+	pls_CurrentItem[playerid] = item;
+	Dialog_Show(playerid, PlayerListItem, DIALOG_STYLE_MSGBOX, pls_List[playerid][item], GetPlayerInfo(pls_List[playerid][item]), "Options", "Back");
+}
 
-		if(response)
-		{
-			// Show some options.
-			_ShowPlayerListItemOptions(playerid, item);
-		}
-		else
-		{
-			// Send them back to the original list using the global list.
-			_ShowCurrentList(playerid);
-		}
+Dialog:PlayerListItem(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		// Show some options.
+		_ShowPlayerListItemOptions(playerid, pls_CurrentItem[playerid]);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, pls_List[playerid][item], GetPlayerInfo(pls_List[playerid][item]), "Options", "Back");
+	else
+	{
+		// Send them back to the original list using the global list.
+		_ShowCurrentList(playerid);
+	}
 }
 
 GetPlayerInfo(name[])
@@ -154,6 +154,7 @@ GetPlayerInfo(name[])
 
 _ShowPlayerListItemOptions(playerid, item)
 {
+	pls_CurrentItem[playerid] = item;
 	new options[256] = {"\
 		Go to spawn\n\
 		Set spawn\n\
@@ -166,90 +167,90 @@ _ShowPlayerListItemOptions(playerid, item)
 		Toggle active\n\
 		"};
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
+	Dialog_Show(playerid, PlayerListItemOptions, DIALOG_STYLE_LIST, "Options", options, "Select", "Back");
+	return 1;
+}
 
-		if(!response)
+Dialog:PlayerListItemOptions(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+	{
+		_ShowPlayerListItem(playerid, pls_CurrentItem[playerid]);
+		return 1;
+	}
+
+	switch(listitem)
+	{
+		case 0:// Go to spawn
 		{
-			_ShowPlayerListItem(playerid, item);
+			ChatMsg(playerid, YELLOW, " >  Not implemented.");
+		}
+		case 1:// Set spawn
+		{
+			ChatMsg(playerid, YELLOW, " >  Not implemented.");
+		}
+		case 2:// List accounts used by this IP
+		{
+			new ip;
+			GetAccountIP(pls_List[playerid][pls_CurrentItem[playerid]], ip);
+			ShowAccountIPHistoryFromIP(playerid, ip);
+		}
+		case 3:// List accounts used by this GPCI
+		{
+			new hash[MAX_GPCI_LEN];
+			GetAccountGPCI(pls_List[playerid][pls_CurrentItem[playerid]], hash);
+			ShowAccountGpciHistoryFromGpci(playerid, hash);
+		}
+		case 4:// List IPs used by this name
+		{
+			ShowAccountIPHistoryFromName(playerid, pls_List[playerid][pls_CurrentItem[playerid]]);
+		}
+		case 5:// List GPCIs used by this name
+		{
+			ShowAccountGpciHistoryFromName(playerid, pls_List[playerid][pls_CurrentItem[playerid]]);
+		}
+		case 6:// Ban
+		{
+			BanAndEnterInfo(playerid, pls_List[playerid][pls_CurrentItem[playerid]]);
 			return 1;
 		}
-
-		switch(listitem)
+		case 7:// Toggle alive
 		{
-			case 0:// Go to spawn
-			{
-				ChatMsg(playerid, YELLOW, " >  Not implemented.");
-			}
-			case 1:// Set spawn
-			{
-				ChatMsg(playerid, YELLOW, " >  Not implemented.");
-			}
-			case 2:// List accounts used by this IP
-			{
-				new ip;
-				GetAccountIP(pls_List[playerid][item], ip);
-				ShowAccountIPHistoryFromIP(playerid, ip);
-			}
-			case 3:// List accounts used by this GPCI
-			{
-				new hash[MAX_GPCI_LEN];
-				GetAccountGPCI(pls_List[playerid][item], hash);
-				ShowAccountGpciHistoryFromGpci(playerid, hash);
-			}
-			case 4:// List IPs used by this name
-			{
-				ShowAccountIPHistoryFromName(playerid, pls_List[playerid][item]);
-			}
-			case 5:// List GPCIs used by this name
-			{
-				ShowAccountGpciHistoryFromName(playerid, pls_List[playerid][item]);
-			}
-			case 6:// Ban
-			{
-				BanAndEnterInfo(playerid, pls_List[playerid][item]);
-				return 1;
-			}
-			case 7:// Toggle alive
-			{
-				new alivestate;
+			new alivestate;
 
-				GetAccountAliveState(pls_List[playerid][item], alivestate);
+			GetAccountAliveState(pls_List[playerid][pls_CurrentItem[playerid]], alivestate);
 
-				if(alivestate)
-				{
-					SetAccountAliveState(pls_List[playerid][item], 0);
-					ChatMsg(playerid, YELLOW, " >  Player alive state set to dead.");
-				}
-				else
-				{
-					SetAccountAliveState(pls_List[playerid][item], 1);
-					ChatMsg(playerid, YELLOW, " >  Player alive state set to alive.");
-				}
-			}
-			case 8: // Toggle active
+			if(alivestate)
 			{
-				new activestate;
+				SetAccountAliveState(pls_List[playerid][pls_CurrentItem[playerid]], 0);
+				ChatMsg(playerid, YELLOW, " >  Player alive state set to dead.");
+			}
+			else
+			{
+				SetAccountAliveState(pls_List[playerid][pls_CurrentItem[playerid]], 1);
+				ChatMsg(playerid, YELLOW, " >  Player alive state set to alive.");
+			}
+		}
+		case 8: // Toggle active
+		{
+			new activestate;
 
-				GetAccountActiveState(pls_List[playerid][item], activestate);
+			GetAccountActiveState(pls_List[playerid][pls_CurrentItem[playerid]], activestate);
 
-				if(activestate)
-				{
-					SetAccountActiveState(pls_List[playerid][item], 0);
-					ChatMsg(playerid, YELLOW, " >  Player active state set to inactive.");
-				}
-				else
-				{
-					SetAccountActiveState(pls_List[playerid][item], 1);
-					ChatMsg(playerid, YELLOW, " >  Player active state set to active.");
-				}
+			if(activestate)
+			{
+				SetAccountActiveState(pls_List[playerid][pls_CurrentItem[playerid]], 0);
+				ChatMsg(playerid, YELLOW, " >  Player active state set to inactive.");
+			}
+			else
+			{
+				SetAccountActiveState(pls_List[playerid][pls_CurrentItem[playerid]], 1);
+				ChatMsg(playerid, YELLOW, " >  Player active state set to active.");
 			}
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Options", options, "Select", "Back");
 
-	return 1;
+	return 0;
 }
 
 _FormatPlayerListItem(name[], output[], highlightbanned)
@@ -297,7 +298,7 @@ ACMD:players[4](playerid, params[])
 
 ACMD:profile[2](playerid, params[])
 {
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, params, GetPlayerInfo(params), "Close");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, params, GetPlayerInfo(params), "Close", "");
 
 	return 1;
 }

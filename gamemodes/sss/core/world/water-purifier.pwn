@@ -154,32 +154,31 @@ _wm_PlayerUseWaterMachine(playerid, watermachineid, interactiontype)
 		}
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			new ret = _wm_StartCooking(watermachineid);
-
-			if(ret == 0)
-				ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
-
-			else if(ret == -1)
-				ShowActionText(playerid, ls(playerid, "MACHRESTART", true), 6000);
-
-			else if(ret == -2)
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL", true), WATER_MACHINE_FUEL_USAGE), 6000);
-
-			else
-				ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM", true), MsToString(ret, "%m minutes %s seconds")), 6000);
-
-			wm_CurrentWaterMachine[playerid] = -1;
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Refining Machine", sprintf("Press 'Start' to activate the water purifier.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", wm_Data[watermachineid][wm_fuel]), "Start", "Cancel");
+	Dialog_Show(playerid, WaterMachine, DIALOG_STYLE_MSGBOX, "Refining Machine", sprintf("Press 'Start' to activate the water purifier.\n\n"C_GREEN"Fuel amount: "C_WHITE"%.1f", wm_Data[watermachineid][wm_fuel]), "Start", "Cancel");
 
 	return 0;
+}
+
+Dialog:WaterMachine(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new ret = _wm_StartCooking(watermachineid);
+
+		if(ret == 0)
+			ShowActionText(playerid, ls(playerid, "MACHNOITEMS", true), 5000);
+
+		else if(ret == -1)
+			ShowActionText(playerid, ls(playerid, "MACHRESTART", true), 6000);
+
+		else if(ret == -2)
+			ShowActionText(playerid, sprintf(ls(playerid, "MACHNOTFUEL", true), WATER_MACHINE_FUEL_USAGE), 6000);
+
+		else
+			ShowActionText(playerid, sprintf(ls(playerid, "MACHCOOKTIM", true), MsToString(ret, "%m minutes %s seconds")), 6000);
+
+		wm_CurrentWaterMachine[playerid] = -1;
+	}
 }
 
 hook OnItemAddToContainer(containerid, itemid, playerid)

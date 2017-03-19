@@ -75,19 +75,17 @@ timer ShowWelcomeMessage[1000](playerid, count)
 
 	WelcomeMessageCount[playerid] = count;
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, response, dialogid, listitem, inputtext
-
-		if(!CanLeaveWelcomeMessage[playerid])
-		{
-			ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
-		}
-	}
-
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str, button, "");
+	Dialog_Show(playerid, WelcomeMessage, DIALOG_STYLE_MSGBOX, "Welcome to the Server", str, button, "");
 
 	return 1;
+}
+
+Dialog:WelcomeMessage(playerid, response, listitem, inputtext[])
+{
+	if(!CanLeaveWelcomeMessage[playerid])
+	{
+		ShowWelcomeMessage(playerid, WelcomeMessageCount[playerid] + 1);
+	}
 }
 
 stock CanPlayerLeaveWelcomeMessage(playerid)
