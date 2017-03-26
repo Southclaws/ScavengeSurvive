@@ -58,15 +58,6 @@ hook OnPlayerLogin(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerRegister(playerid)
-{
-	dbg("global", CORE, "[OnPlayerRegister] in /gamemodes/sss/core/player/country.pwn");
-
-	_cntr_HandleLogin(playerid);
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
-}
-
 _cntr_HandleLogin(playerid)
 {
 	_cntr_ClearData(playerid);

@@ -148,8 +148,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
 }
 
-// todo: use hooks for this
-SpawnLoggedInPlayer(playerid)
+hook OnPlayerLogin(playerid)
 {
 	if(IsPlayerAlive(playerid))
 	{
@@ -165,9 +164,11 @@ SpawnLoggedInPlayer(playerid)
 			err("PlayerSpawnExistingCharacter returned %d", ret);
 		}
 	}
-	
-	PlayerCreateNewCharacter(playerid);
-	SetPlayerBrightness(playerid, 255);
+	else
+	{
+		PlayerCreateNewCharacter(playerid);
+		SetPlayerBrightness(playerid, 255);
+	}
 
 	return 0;
 }

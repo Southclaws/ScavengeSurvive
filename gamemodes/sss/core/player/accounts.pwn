@@ -251,18 +251,14 @@ Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
 ==============================================================================*/
 
 
-// todo: route to login directly after this to simplify later routing
 CreateAccount(playerid)
 {
-	CheckAdminLevel(playerid);
-
 	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
-	acc_LoggedIn[playerid] = true;
 	SetPlayerToolTips(playerid, true);
 
-	PlayerCreateNewCharacter(playerid);
 	CallLocalFunction("OnPlayerRegister", "d", playerid);
+	Login(playerid);
 
 	return 0;
 }
@@ -301,8 +297,6 @@ Login(playerid)
 
 	SetPlayerRadioFrequency(playerid, 107.0);
 	SetPlayerBrightness(playerid, 255);
-
-	SpawnLoggedInPlayer(playerid);
 
 	CallLocalFunction("OnPlayerLogin", "d", playerid);
 }
