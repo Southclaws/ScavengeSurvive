@@ -92,16 +92,18 @@ timer LoadAccountDelay[1000](playerid)
 	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
 	{
 		defer LoadAccountDelay(playerid);
-		return 0;
+		return;
 	}
 
 	if(!IsPlayerConnected(playerid))
 	{
 		log("[LoadAccount] Player %d not connected any more.", playerid);
-		return 0;
+		return;
 	}
 
 	AccountIO_Load(playerid, "OnLoadAccount");
+
+	return;
 }
 
 public OnLoadAccount(playerid, loadresult)
@@ -154,8 +156,11 @@ Dialog:RegisterPrompt(playerid, response, listitem, inputtext[])
 
 		WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
 
-		if(!CreateAccount(playerid))
+		if(!CreateAccount(playerid, buffer))
 			ShowWelcomeMessage(playerid, 10);
+
+		else
+			KickPlayer(playerid, "Account creation failed");
 	}
 	else
 	{
@@ -251,8 +256,28 @@ Dialog:LoginPrompt(playerid, response, listitem, inputtext[])
 ==============================================================================*/
 
 
-CreateAccount(playerid)
+CreateAccount(playerid, pass[])
 {
+	new
+		name[MAX_PLAYER_NAME],
+		ipv4_str[17],
+		ipv4,
+		regdate,
+		lastlog,
+		hash[MAX_GPCI_LEN],
+		ret;
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	regdate = lastlog = gettime();
+	ipv4 = GetPlayerIpAsInt(playerid);
+	gpci(playerid, hash, MAX_GPCI_LEN);
+
+	#if defined BUILD_REDIS_IO
+	ret = AccountIO_Create(name, pass, ipv4, regdate, lastlog, hash);
+	if(ret != 0)
+		return ret;
+	#endif
+
 	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
 	SetPlayerToolTips(playerid, true);

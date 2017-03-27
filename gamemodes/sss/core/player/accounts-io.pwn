@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-//#define REDIS_DOMAIN_ACCOUNTS		"account"
+#define REDIS_DOMAIN_ACCOUNTS		"account"
 #define FIELD_PLAYER_NAME			"name"		// 00
 #define FIELD_PLAYER_PASS			"pass"		// 01
 #define FIELD_PLAYER_IPV4			"ipv4"		// 02
@@ -44,32 +44,50 @@
 
 stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
 {
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
 	new
 		key[MAX_PLAYER_NAME + 32],
 		ret = 0;
 
-	//format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_PASS, pass);
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, "1");
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, sprintf("%d", regdate));
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
-	//ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci);
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_PASS, pass);
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, "1");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, sprintf("%d", regdate));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci);
 
 	return ret;
 }
 
 stock AccountIO_Load(playerid, callback[])
 {
+	if(!IsPlayerConnected(playerid))
+	{
+		err("player not connected");
+		return;
+	}
+
+	if(isnull(callback))
+	{
+		err("callback is null");
+		return;
+	}
+
 	new
 		name[MAX_PLAYER_NAME],
 		key[MAX_PLAYER_NAME + 32];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-	//format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	//if(!Redis_Exists(gRedis, key))
+	if(!Redis_Exists(gRedis, key))
 	{
 		CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_NO_EXIST);
 		return;
@@ -96,16 +114,16 @@ stock AccountIO_Load(playerid, callback[])
 		warnings,
 		active;
 
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, passhash);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, alive_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, regdate_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, lastlog_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_SPAWNTIME, spawntime_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_TOTALSPAWNS, spawns_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WARNINGS, warnings_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci_str);
-	//ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, active_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, passhash);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, alive_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, regdate_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, lastlog_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_SPAWNTIME, spawntime_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_TOTALSPAWNS, spawns_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WARNINGS, warnings_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci_str);
+	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, active_str);
 
 	ipv4 = strval(ipv4_str),
 	alive = !!strval(alive_str),

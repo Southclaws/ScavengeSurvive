@@ -132,7 +132,7 @@ public OnGameModeInit()
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
-//#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
+#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
@@ -654,7 +654,7 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	// gRedis = Redis_Connect("localhost", 6379);
+	gRedis = Redis_Connect("localhost", 6379);
 
 	LoadSettings();
 
