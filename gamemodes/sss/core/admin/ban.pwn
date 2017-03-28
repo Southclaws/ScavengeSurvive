@@ -26,14 +26,7 @@
 
 
 #define MAX_BAN_REASON (128)
-#define ACCOUNTS_TABLE_BANS			"Bans"
-#define FIELD_BANS_NAME				"name"		// 00
-#define FIELD_BANS_IPV4				"ipv4"		// 01
-#define FIELD_BANS_DATE				"date"		// 02
-#define FIELD_BANS_REASON			"reason"	// 03
-#define FIELD_BANS_BY				"by"		// 04
-#define FIELD_BANS_DURATION			"duration"	// 05
-#define FIELD_BANS_ACTIVE			"active"	// 06
+
 
 enum
 {
@@ -54,20 +47,24 @@ hook OnGameModeInit()
 
 BanPlayer(playerid, reason[], byid, duration)
 {
-	new name[MAX_PLAYER_NAME];
+	new
+		name_banned[MAX_PLAYER_NAME],
+		name_by[MAX_PLAYER_NAME];
+
+	GetPlayerName(playerid, name_banned, MAX_PLAYER_NAME);
 
 	if(byid == -1)
-		name = "Server";
+		name_by = "Server";
 
 	else
-		GetPlayerName(byid, name, MAX_PLAYER_NAME);
+		GetPlayerName(byid, name_by, MAX_PLAYER_NAME);
 
-	// BanInsert, 0, DB::TYPE_PLAYER_NAME, playerid
-	// BanInsert, 1, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid)
-	// BanInsert, 2, DB::TYPE_INTEGER, gettime()
-	// BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON
-	// BanInsert, 4, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// BanInsert, 5, DB::TYPE_INTEGER, duration
+	BanIO_Create(name_banned,
+		GetPlayerIpAsInt(playerid),
+		gettime(),
+		reason,
+		name_by,
+		duration);
 
 	ChatMsgLang(playerid, YELLOW, "BANNEDMESSG", reason);
 	defer KickPlayerDelay(playerid);
@@ -78,22 +75,22 @@ BanPlayer(playerid, reason[], byid, duration)
 BanPlayerByName(name[], reason[], byid, duration)
 {
 	new
-		forname[MAX_PLAYER_NAME],
+		name_banned[MAX_PLAYER_NAME],
 		id = INVALID_PLAYER_ID,
 		ip,
-		byname[MAX_PLAYER_NAME];
+		name_by[MAX_PLAYER_NAME];
 
 	if(byid == -1)
-		byname = "Server";
+		name_by = "Server";
 
 	else
-		GetPlayerName(byid, byname, MAX_PLAYER_NAME);
+		GetPlayerName(byid, name_by, MAX_PLAYER_NAME);
 
 	foreach(new i : Player)
 	{
-		GetPlayerName(i, forname, MAX_PLAYER_NAME);
+		GetPlayerName(i, name_banned, MAX_PLAYER_NAME);
 
-		if(!strcmp(forname, name))
+		if(!strcmp(name_banned, name))
 			id = i;
 	}
 
@@ -104,24 +101,23 @@ BanPlayerByName(name[], reason[], byid, duration)
 	else
 	{
 		ip = GetPlayerIpAsInt(id);
+		ChatMsgLang(id, YELLOW, "BANNEDMESSG", reason);
 		defer KickPlayerDelay(id);
 	}
 
-	// BanInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// BanInsert, 1, DB::TYPE_INTEGER, ip
-	// BanInsert, 2, DB::TYPE_INTEGER, gettime()
-	// BanInsert, 3, DB::TYPE_STRING, reason, MAX_BAN_REASON
-	// BanInsert, 4, DB::TYPE_STRING, byname, MAX_PLAYER_NAME
-	// BanInsert, 5, DB::TYPE_INTEGER, duration
+	BanIO_Create(name_banned,
+		ip,
+		gettime(),
+		reason,
+		name_by,
+		duration);
 
 	return 1;
 }
 
 UpdateBanInfo(name[], reason[], duration)
 {
-	// BanUpdateInfo, 0, DB::TYPE_STRING, reason, MAX_BAN_REASON
-	// BanUpdateInfo, 1, DB::TYPE_INTEGER, duration
-	// BanUpdateInfo, 2, DB::TYPE_STRING, name, MAX_PLAYER_NAME
+	BanIO_Update(name, reason, duration);
 	
 	return 0;
 }
@@ -131,7 +127,7 @@ UnBanPlayer(name[])
 	if(!IsPlayerBanned(name))
 		return 0;
 
-	// BanUnban, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+	BanIO_Remove(name);
 
 	return 0;
 }

@@ -515,6 +515,7 @@ new stock
 #include "sss/core/admin/hack-detect.pwn"
 #include "sss/core/admin/hack-trap.pwn"
 #include "sss/core/admin/ban.pwn"
+#include "sss/core/admin/ban-io.pwn"
 #include "sss/core/admin/ban-command.pwn"
 #include "sss/core/admin/ban-list.pwn"
 #include "sss/core/admin/spectate.pwn"

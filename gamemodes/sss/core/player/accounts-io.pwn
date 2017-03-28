@@ -96,7 +96,6 @@ stock AccountIO_Load(playerid, callback[])
 	new
 		ret,
 		passhash[MAX_PASSWORD_LEN],
-		ipv4_str[16],
 		alive_str[2],
 		regdate_str[12],
 		lastlog_str[12],
@@ -105,17 +104,14 @@ stock AccountIO_Load(playerid, callback[])
 		warnings_str[12],
 		active_str[12],
 		gpci_str[MAX_GPCI_LEN],
-		ipv4,
 		bool:alive,
 		regdate,
 		lastlog,
 		spawntime,
 		spawns,
-		warnings,
-		active;
+		warnings;
 
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, passhash);
-	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, alive_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, regdate_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, lastlog_str);
@@ -125,14 +121,12 @@ stock AccountIO_Load(playerid, callback[])
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci_str);
 	ret += Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, active_str);
 
-	ipv4 = strval(ipv4_str),
-	alive = !!strval(alive_str),
-	regdate = strval(regdate_str),
-	lastlog = strval(lastlog_str),
-	spawntime = strval(spawntime_str),
-	spawns = strval(spawns_str),
-	warnings = strval(warnings_str),
-	active = strval(active_str);
+	alive = !!strval(alive_str);
+	regdate = strval(regdate_str);
+	lastlog = strval(lastlog_str);
+	spawntime = strval(spawntime_str);
+	spawns = strval(spawns_str);
+	warnings = strval(warnings_str);
 
 	if(active_str[0] == '0')
 	{
