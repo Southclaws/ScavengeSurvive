@@ -31,6 +31,7 @@
 #define FIELD_BANS_DURATION			"duration"	// 05
 #define FIELD_BANS_ACTIVE			"active"	// 06
 
+
 BanIO_Create(name[], ipv4, timestamp, reason[], by[], duration)
 {
 	if(isnull(name))
@@ -56,7 +57,7 @@ BanIO_Create(name[], ipv4, timestamp, reason[], by[], duration)
 	return ret;
 }
 
-BanIO_Update(name[], reason[], duration)
+BanIO_UpdateReasonDuration(name[], reason[], duration)
 {
 	if(isnull(name))
 	{
@@ -73,9 +74,30 @@ BanIO_Update(name[], reason[], duration)
 	if(!Redis_Exists(gRedis, key))
 		return 1;
 
-	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_NAME, name);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_REASON, reason);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_DURATION, sprintf("%d", duration));
+
+	return ret;
+}
+
+BanIO_UpdateIpv4(name[], ipv4)
+{
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
+	new
+		key[MAX_PLAYER_NAME + 32],
+		ret = 0;
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".%s", name);
+
+	if(!Redis_Exists(gRedis, key))
+		return 1;
+
+	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, sprintf("%d", ipv4));
 
 	return ret;
 }

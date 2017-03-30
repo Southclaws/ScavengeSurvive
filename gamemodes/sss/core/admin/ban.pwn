@@ -117,7 +117,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 
 UpdateBanInfo(name[], reason[], duration)
 {
-	BanIO_Update(name, reason, duration);
+	BanIO_UpdateReasonDuration(name, reason, duration);
 	
 	return 0;
 }
@@ -132,58 +132,62 @@ UnBanPlayer(name[])
 	return 0;
 }
 
-BanCheck(playerid)
+hook OnPlayerConnect(playerid)
 {
 	new
-		banned,
+		name[MAX_PLAYER_NAME],
 		timestamp,
 		reason[MAX_BAN_REASON],
 		duration;
 
-	// BanGetFromNameIp, 0, DB::TYPE_PLAYER_NAME, playerid
-	// BanGetFromNameIp, 1, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid)
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
-	// BanGetFromNameIp, 0, DB::TYPE_INTEGER, banned
-	// BanGetFromNameIp, 1, DB::TYPE_INTEGER, timestamp
-	// BanGetFromNameIp, 2, DB::TYPE_STRING, reason, MAX_BAN_REASON
-	// BanGetFromNameIp, 3, DB::TYPE_INTEGER, duration
-
-	if(banned)
+	if(IsPlayerBanned(name))
 	{
-		if(duration > 0)
-		{
-			if(gettime() > (timestamp + duration))
-			{
-				new name[MAX_PLAYER_NAME];
-				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-				UnBanPlayer(name);
-
-				ChatMsgLang(playerid, YELLOW, "BANLIFMESSG", TimestampToDateTime(timestamp));
-				log("[UNBAN] Ban lifted automatically for %s", name);
-
-				return 0;
-			}
-		}
-
-		new string[256];
-
-		format(string, 256, "\
-			"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\
-			"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
-			"C_YELLOW"Unban:\n\t\t"C_BLUE"%s",
-			TimestampToDateTime(timestamp),
-			reason,
-			duration ? (TimestampToDateTime(timestamp + duration)) : "Never");
-
-		ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
-
-		// BanSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
-		// BanSetIpv4, 1, DB::TYPE_PLAYER_NAME, playerid);
-
-		defer KickPlayerDelay(playerid);
-
-		return 1;
+		CallLocalFunction("OnBanResult", "d", playerid);
 	}
+	else
+	{
+		AccountIO_UpdateCache(name, "OnBanResult");
+	}
+}
+
+public OnBanResult(playerid, bool:banned, timestamp, reason[], duration)
+{
+	if(!banned)
+		return 0;
+
+	new name[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+
+	if(duration > 0)
+	{
+		if(gettime() > (timestamp + duration))
+		{
+			UnBanPlayer(name);
+
+			ChatMsgLang(playerid, YELLOW, "BANLIFMESSG", TimestampToDateTime(timestamp));
+			log("[UNBAN] Ban lifted automatically for %s", name);
+
+			return 0;
+		}
+	}
+
+	new string[256];
+
+	format(string, 256, "\
+		"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\
+		"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
+		"C_YELLOW"Unban:\n\t\t"C_BLUE"%s",
+		TimestampToDateTime(timestamp),
+		reason,
+		duration ? (TimestampToDateTime(timestamp + duration)) : "Never");
+
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
+
+	BanIO_UpdateIpv4(name, GetPlayerIpAsInt(playerid));
+
+	defer KickPlayerDelay(playerid);
 
 	return 0;
 }
@@ -196,34 +200,16 @@ BanCheck(playerid)
 ==============================================================================*/
 
 
-forward external_BanPlayer(name[], reason[], duration);
-public external_BanPlayer(name[], reason[], duration)
-{
-	BanPlayerByName(name, reason, -1, duration);
-}
-
 stock IsPlayerBanned(name[])
 {
+	// redis get account property "banned"
 	return 0;
 }
 
 stock GetBanList(string[][MAX_PLAYER_NAME], limit, offset)
 {
-	// new name[MAX_PLAYER_NAME];
-
-	// BanGetList, 0, DB::TYPE_INTEGER, offset
-	// BanGetList, 1, DB::TYPE_INTEGER, limit
-	// BanGetList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-
-	new idx;
-/*
-	while()
-	{
-		string[idx] = name;
-		idx++;
-	}
-*/
-	return idx;
+	// BanIO_GetList
+	return 0;
 }
 
 stock GetTotalBans()

@@ -89,9 +89,6 @@ public OnPlayerConnect(playerid)
 	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
 	ply_Data[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
-	if(BanCheck(playerid))
-		return 0;
-
 	SetPlayerBrightness(playerid, 255);
 
 	TogglePlayerControllable(playerid, false);

@@ -80,11 +80,11 @@ CheckForExtraAccounts(playerid)
 			strcat(string, list[i]);
 			strcat(string, ", ");
 
-			if(IsPlayerBanned(list[i]) && !donewarning)
+			/*if(IsPlayerBanned(list[i]) && !donewarning)
 			{
 				ChatMsgAdmins(1, RED, " >  Warning: One or more of those aliases is banned!");
 				donewarning = true;
-			}
+			}*/
 		}
 	}
 

@@ -22,6 +22,9 @@
 ==============================================================================*/
 
 
+#include <YSI\y_hooks>
+
+
 #define REDIS_DOMAIN_ACCOUNTS		"account"
 #define FIELD_PLAYER_NAME			"name"		// 00
 #define FIELD_PLAYER_PASS			"pass"		// 01
@@ -41,6 +44,16 @@
 #define ACCOUNT_LOAD_RESULT_EXIST_DA	(3) // Account does exist, but is disabled
 #define ACCOUNT_LOAD_RESULT_NO_EXIST	(4) // Account does not exist
 #define ACCOUNT_LOAD_RESULT_ERROR		(5) // LoadAccount aborted, kick player.
+
+
+forward OnAccountResponse(data[]);
+
+
+hook OnScriptInit()
+{
+	Redis_BindMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", "OnAccountResponse");
+}
+
 
 stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
 {
@@ -160,4 +173,45 @@ stock AccountIO_Load(playerid, callback[])
 
 	CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_EXIST);
 	return;
+}
+
+stock AccountIO_UpdateCache(name[], callback[])
+{
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCache %s %s", name, callback));
+}
+
+stock AccountIO_UpdateCacheAll(callback[])
+{
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCacheAll %s", callback));
+}
+
+public OnAccountResponse(data[])
+{
+	new
+		op[32],
+		args[256];
+
+	if(sscanf(data, "s[32]s[256]", op, args))
+	{
+		err("OnAccountResponse sscanf failed on '%s'", data);
+		return 1;
+	}
+
+	if(!strcmp(op, "AccountIO_UpdateCache"))
+	{
+		if(strcmp(args, "success"))
+		{
+			err("AccountIO_UpdateCache failed: '%s'", args);
+		}
+	}
+
+	if(!strcmp(op, "AccountIO_UpdateCacheAll"))
+	{
+		if(strcmp(args, "success"))
+		{
+			err("AccountIO_UpdateCacheAll failed: '%s'", args);
+		}
+	}
+
+	return 0;
 }
