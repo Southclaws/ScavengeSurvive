@@ -32,6 +32,14 @@
 #define FIELD_BANS_ACTIVE			"active"	// 06
 
 
+forward OnBanResponse(data[]);
+
+
+hook OnScriptInit()
+{
+	Redis_BindMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", "OnBanResponse");
+}
+
 BanIO_Create(name[], ipv4, timestamp, reason[], by[], duration)
 {
 	if(isnull(name))
@@ -121,4 +129,65 @@ BanIO_Remove(name[])
 
 	// ret = Redis_Delete(key);
 	return ret;
+}
+
+BanIO_ShowBanInfo(playerid, callback[])
+{
+	if(!IsPlayerConnected(playerid))
+	{
+		err("player not connected");
+		return 1;
+	}
+
+	new
+		name[MAX_PLAYER_NAME],
+		key[MAX_PLAYER_NAME + 32];
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".%s", name);
+
+	if(!Redis_Exists(gRedis, key))
+		return 1;
+
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_ShowBanInfo %s %d %s", name, playerid, callback));
+}
+
+public OnBanResponse(data[])
+{
+	new
+		op[32],
+		args[256];
+
+	if(sscanf(data, "s[32]s[256]", op, args))
+	{
+		err("OnBanResponse sscanf failed on '%s'", data);
+		return Y_HOOKS_CONTINUE_RETURN_1;
+	}
+
+	if(!strcmp(op, "BanIO_ShowBanInfo"))
+	{
+		if(strcmp(args, "success"))
+		{
+			err("BanIO_ShowBanInfo failed: '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
+
+		new
+			callback[32],
+			playerid,
+			bool:banned,
+			timestamp,
+			reason[MAX_BAN_REASON],
+			duration;
+
+		if(sscanf(args, "s[32]ddds[128]d", callback, playerid, banned, timestamp, reason, duration))
+		{
+			err("BanIO_ShowBanInfo sscanf failed with '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
+
+		return CallLocalFunction(callback, "dddsd", playerid, banned, timestamp, reason, duration);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }

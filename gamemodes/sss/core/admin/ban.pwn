@@ -134,21 +134,13 @@ UnBanPlayer(name[])
 
 hook OnPlayerConnect(playerid)
 {
-	new
-		name[MAX_PLAYER_NAME],
-		timestamp,
-		reason[MAX_BAN_REASON],
-		duration;
+	new name[MAX_PLAYER_NAME];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
 	if(IsPlayerBanned(name))
 	{
-		CallLocalFunction("OnBanResult", "d", playerid);
-	}
-	else
-	{
-		AccountIO_UpdateCache(name, "OnBanResult");
+		BanIO_ShowBanInfo(playerid, "OnBanResult");
 	}
 }
 

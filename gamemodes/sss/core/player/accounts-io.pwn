@@ -47,6 +47,7 @@
 
 
 forward OnAccountResponse(data[]);
+forward OnAccountCacheUpdate(name[]);
 
 
 hook OnScriptInit()
@@ -175,14 +176,14 @@ stock AccountIO_Load(playerid, callback[])
 	return;
 }
 
-stock AccountIO_UpdateCache(name[], callback[])
+stock AccountIO_UpdateCache(name[])
 {
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCache %s %s", name, callback));
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCache %s", name));
 }
 
-stock AccountIO_UpdateCacheAll(callback[])
+stock AccountIO_UpdateCacheAll()
 {
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCacheAll %s", callback));
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCacheAll"));
 }
 
 public OnAccountResponse(data[])
@@ -194,7 +195,7 @@ public OnAccountResponse(data[])
 	if(sscanf(data, "s[32]s[256]", op, args))
 	{
 		err("OnAccountResponse sscanf failed on '%s'", data);
-		return 1;
+		return Y_HOOKS_CONTINUE_RETURN_1;
 	}
 
 	if(!strcmp(op, "AccountIO_UpdateCache"))
@@ -202,7 +203,10 @@ public OnAccountResponse(data[])
 		if(strcmp(args, "success"))
 		{
 			err("AccountIO_UpdateCache failed: '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
+
+		CallLocalFunction("OnAccountCacheUpdate", "s", args);
 	}
 
 	if(!strcmp(op, "AccountIO_UpdateCacheAll"))
@@ -210,8 +214,11 @@ public OnAccountResponse(data[])
 		if(strcmp(args, "success"))
 		{
 			err("AccountIO_UpdateCacheAll failed: '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
+
+		CallLocalFunction("OnAccountCacheUpdateAll", "");
 	}
 
-	return 0;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
