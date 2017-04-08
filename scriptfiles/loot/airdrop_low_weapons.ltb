@@ -3,6 +3,7 @@ airdrop_low_weapons, 1.0
 # melee
 30.0,	Knife
 40.0,	Bat
+12.0, Knuckles
 
 # guns
 50.0,	M9Pistol
