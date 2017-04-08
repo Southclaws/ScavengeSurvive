@@ -17,6 +17,7 @@ vehicle_police, 1.0
 40.0,	M9Pistol
 30.0,	PumpShotgun
 8.0,	Spas12
+40.0, Baton
 
 # ammo
 20.0,	Ammo9mm
