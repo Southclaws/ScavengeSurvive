@@ -194,31 +194,19 @@ public OnBanResult(playerid, bool:banned, timestamp, reason[], duration)
 
 stock IsPlayerBanned(name[])
 {
-	// redis get account property "banned"
-	return 0;
+	new banned;
+	GetAccountBannedState(name, banned);
+	return banned;
 }
 
-stock GetBanList(string[][MAX_PLAYER_NAME], limit, offset)
+stock GetBanList(playerid, limit, offset, callback[])
 {
-	// BanIO_GetList
-	return 0;
+	return BanIO_ShowBanList(playerid, limit, offset, callback);
 }
 
-stock GetTotalBans()
+stock GetBanInfo(playerid, name[], callback[])
 {
-	new total;
-
-	return total;
-}
-
-stock GetBanInfo(name[], &timestamp, reason[], bannedby[], &duration)
-{
-	// BanGetInfo, FIELD_ID_BANS_DATE, DB::TYPE_INTEGER, timestamp);
-	// BanGetInfo, FIELD_ID_BANS_REASON, DB::TYPE_STRING, reason, MAX_BAN_REASON);
-	// BanGetInfo, FIELD_ID_BANS_BY, DB::TYPE_STRING, bannedby, MAX_PLAYER_NAME);
-	// BanGetInfo, FIELD_ID_BANS_DURATION, DB::TYPE_INTEGER, duration);
-
-	return 1;
+	return BanIO_ShowBanInfo(playerid, name, callback);
 }
 
 stock SetBanIpv4(name[], ipv4)

@@ -655,9 +655,22 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	gRedis = Redis_Connect("localhost", 6379);
+	new
+		redis_host[128],
+		redis_port,
+		redis_pass[128];
 
 	LoadSettings();
+	GetSettingString("server/redis-host", "localhost", redis_host);
+	GetSettingInt("server/redis-port", 6379, redis_port);
+	GetSettingString("server/redis-pass", "", redis_pass);
+
+	gRedis = Redis_Connect(redis_host, redis_port, redis_pass);
+	if(_:gRedis < 0)
+	{
+		err("redis connect failed: %d", _:gRedis);
+		for(;;){}
+	}
 
 	SendRconCommand(sprintf("mapname %s", GetMapName()));
 

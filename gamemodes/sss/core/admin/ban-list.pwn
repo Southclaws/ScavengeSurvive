@@ -34,49 +34,28 @@ static
 	banlist_CurrentName[MAX_PLAYERS][MAX_PLAYER_NAME];
 
 
+forward OnBanListShow(playerid, totalbans, listitems, index, list[]);
+forward OnBanInfoShow(playerid, name[], timestamp, reason[], bannedby[], duration);
+
+
 ShowListOfBans(playerid, index = 0)
 {
-	new
-		list[MAX_BANS_PER_PAGE][MAX_PLAYER_NAME],
-		totalbans,
-		listitems;
+	return GetBanList(playerid, MAX_BANS_PER_PAGE, index, "OnBanListShow");
+}
 
-	totalbans = GetTotalBans();
-
-	if(index > totalbans)
-		index = 0;
-
-	if(index < 0)
-		index = totalbans - (totalbans % MAX_BANS_PER_PAGE);
-
-	listitems = GetBanList(list, MAX_BANS_PER_PAGE, index);
-
-	if(listitems == 0)
-		return 0;
-
-	if(listitems == -1)
-		return -1;
-
-	new
-		idx,
-		string[((MAX_PLAYER_NAME + 1) * MAX_BANS_PER_PAGE)],
-		title[22];
-
-	while(idx < listitems )
+public OnBanListShow(playerid, totalbans, listitems, index, list[])
+{
+	if(listitems == 0 || listitems == -1)
 	{
-		strcat(string, list[idx]);
-		strcat(string, "\n");
-		idx++;
+		ChatMsg(playerid, YELLOW, " >  No bans to show");
+		return 0;
 	}
-
-	format(title, sizeof(title), "Bans (%d-%d of %d)", index, index + listitems, totalbans);
 
 	banlist_ViewingList[playerid] = true;
 	banlist_CurrentIndex[playerid] = index;
 
 	ShowPlayerPageButtons(playerid);
-
-	Dialog_Show(playerid, ListOfBans, DIALOG_STYLE_LIST, title, string, "Open", "Close");
+	Dialog_Show(playerid, ListOfBans, DIALOG_STYLE_LIST, sprintf("Bans (%d-%d of %d)", index, index + listitems, totalbans), list, "Open", "Close");
 
 	return 1;
 }
@@ -97,15 +76,11 @@ Dialog:ListOfBans(playerid, dialogid, response, listitem, inputtext[])
 
 ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
 {
-	new
-		timestamp,
-		reason[MAX_BAN_REASON],
-		bannedby[MAX_PLAYER_NAME],
-		duration;
+	return GetBanInfo(playerid, name, "OnBanInfoShow");
+}
 
-	if(!GetBanInfo(name, timestamp, reason, bannedby, duration))
-		return 0;
-
+public OnBanInfoShow(playerid, name[], timestamp, reason[], bannedby[], duration)
+{
 	new str[256];
 
 	format(str, 256, "\
@@ -117,7 +92,8 @@ ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
 		bannedby,
 		reason);
 
-	banlist_CurrentName[playerid] = name;
+	banlist_CurrentName[playerid][0] = EOS;
+	strcat(banlist_CurrentName[playerid], name, MAX_PLAYER_NAME);
 
 	Dialog_Show(playerid, BanInfo, DIALOG_STYLE_MSGBOX, name, str, "Options", "Back");
 

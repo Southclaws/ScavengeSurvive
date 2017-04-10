@@ -37,6 +37,7 @@
 #define FIELD_PLAYER_WARNINGS		"warnings"	// 08
 #define FIELD_PLAYER_GPCI			"gpci"		// 19
 #define FIELD_PLAYER_ACTIVE			"active"	// 10
+#define FIELD_PLAYER_BANNED			"banned"	// 11
 
 #define ACCOUNT_LOAD_RESULT_EXIST		(0) // Account does exist, prompt login
 #define ACCOUNT_LOAD_RESULT_EXIST_AL	(1) // Account does exist, auto login
@@ -76,6 +77,8 @@ stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, sprintf("%d", regdate));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci);
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, "1");
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Create %s", name));
 
 	return ret;
 }
@@ -176,49 +179,20 @@ stock AccountIO_Load(playerid, callback[])
 	return;
 }
 
-stock AccountIO_UpdateCache(name[])
+stock AccountIO_GetField(name[], field[], out[])
 {
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCache %s", name));
+	new key[MAX_PLAYER_NAME + 32];
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
+
+	return Redis_GetHashValue(gRedis, key, field, out);
 }
 
-stock AccountIO_UpdateCacheAll()
+stock AccountIO_SetField(name[], field[], val[])
 {
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".response", sprintf("AccountIO_UpdateCacheAll"));
-}
+	new key[MAX_PLAYER_NAME + 32];
 
-public OnAccountResponse(data[])
-{
-	new
-		op[32],
-		args[256];
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	if(sscanf(data, "s[32]s[256]", op, args))
-	{
-		err("OnAccountResponse sscanf failed on '%s'", data);
-		return Y_HOOKS_CONTINUE_RETURN_1;
-	}
-
-	if(!strcmp(op, "AccountIO_UpdateCache"))
-	{
-		if(strcmp(args, "success"))
-		{
-			err("AccountIO_UpdateCache failed: '%s'", args);
-			return Y_HOOKS_CONTINUE_RETURN_1;
-		}
-
-		CallLocalFunction("OnAccountCacheUpdate", "s", args);
-	}
-
-	if(!strcmp(op, "AccountIO_UpdateCacheAll"))
-	{
-		if(strcmp(args, "success"))
-		{
-			err("AccountIO_UpdateCacheAll failed: '%s'", args);
-			return Y_HOOKS_CONTINUE_RETURN_1;
-		}
-
-		CallLocalFunction("OnAccountCacheUpdateAll", "");
-	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
+	return Redis_SetHashValue(gRedis, key, field, val);
 }

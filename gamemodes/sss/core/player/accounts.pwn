@@ -676,6 +676,35 @@ stock SetAccountActiveState(name[], active)
 	return 0;
 }
 
+// FIELD_ID_PLAYER_BANNED
+stock GetAccountBannedState(name[], &banned)
+{
+	new
+		buf[2],
+		ret;
+
+	ret = AccountIO_GetField(name, "banned", buf);
+
+	if(buf[0] == '1')
+		banned = 1;
+	else
+		banned = 0;
+
+	return ret;
+}
+
+stock SetAccountBannedState(name[], banned)
+{
+	new ret;
+
+	if(banned)
+		ret = AccountIO_SetField(name, "banned", "1");
+	else
+		ret = AccountIO_SetField(name, "banned", "0");
+
+	return ret;
+}
+
 // Pass, IP and gpci
 stock GetAccountAliasData(name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
 {
