@@ -27,27 +27,7 @@
 
 #define MAX_ISSUE_LENGTH			(128)
 #define MAX_ISSUES_PER_PAGE			(32)
-#define ACCOUNTS_TABLE_BUGS			"Bugs"
-#define FIELD_BUGS_NAME				"name"		// 00
-#define FIELD_BUGS_REASON			"reason"	// 01
-#define FIELD_BUGS_DATE				"date"		// 02
-
-enum
-{
-	FIELD_ID_BUGS_NAME,
-	FIELD_ID_BUGS_REASON,
-	FIELD_ID_BUGS_DATE
-}
-
-
-static
-	issue_RowIndex[MAX_ISSUES_PER_PAGE];
-
-
-hook OnGameModeInit()
-{
-	//
-}
+#define REDIS_DOMAIN_BUGS			"bug"
 
 
 /*==============================================================================
@@ -75,125 +55,14 @@ Dialog:BugReport(playerid, response, listitem, inputtext[])
 
 ReportBug(playerid, bug[])
 {
-	// BugInsert, 0, DB::TYPE_PLAYER_NAME, playerid);
-	// BugInsert, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH);
-	// BugInsert, 2, DB::TYPE_INTEGER, gettime());
+	new
+		name[MAX_PLAYER_NAME],
+		timestamp;
+
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	timestamp = gettime();
+
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BUGS".request", sprintf("BugIO_Create %s %d \"%s\"", name, timestamp, bug));
 
 	ChatMsgAdmins(1, YELLOW, " >  %P"C_YELLOW" reported bug %s", playerid, bug);
-}
-
-
-/*==============================================================================
-
-	Listing reports
-
-==============================================================================*/
-
-
-CMD:issues(playerid, params[])
-{
-	new ret;
-
-	ret = ShowListOfBugs(playerid);
-
-	if(ret == 0)
-		ChatMsg(playerid, YELLOW, " >  There are no bug reports to show.");
-
-	return 1;
-}
-
-ShowListOfBugs(playerid)
-{
-	new
-		name[MAX_PLAYER_NAME],
-		bug[32],
-		rowid;
-
-	// BugList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// BugList, 1, DB::TYPE_STRING, bug, 32
-	// BugList, 2, DB::TYPE_INTEGER, rowid
-
-	new
-		list[(MAX_PLAYER_NAME + 2 + 32 + 1) * MAX_ISSUES_PER_PAGE],
-		idx;
-/*
-	while(idx < MAX_ISSUES_PER_PAGE)
-	{
-		strcat(list, name);
-		strcat(list, ": ");
-
-		strcat(list, bug);
-
-		if(bug[30] != EOS)
-			strcat(list, "[...]");
-
-		strcat(list, "\n");
-
-		issue_RowIndex[idx++] = rowid;
-	}
-*/
-	if(idx == 0)
-		return 0;
-
-	Dialog_Show(playerid, ListOfBugs, DIALOG_STYLE_LIST, "Issues", list, "Open", "Close");
-
-	return 1;
-}
-
-Dialog:ListOfBugs(playerid, response, listitem, inputtext[])
-{
-	if(response)
-	{
-		if(!ShowBugReportInfo(playerid, issue_RowIndex[listitem]))
-			ChatMsg(playerid, RED, " >  An error occurred while trying to execute statement 'stmt_BugInfo'.");
-	}
-}
-
-ShowBugReportInfo(playerid, rowid)
-{
-	new
-		name[MAX_PLAYER_NAME],
-		bug[MAX_ISSUE_LENGTH],
-		date,
-		message[512];
-
-	// BugInfo, 0, DB::TYPE_INTEGER, rowid
-	// BugInfo, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// BugInfo, 1, DB::TYPE_STRING, bug, MAX_ISSUE_LENGTH
-	// BugInfo, 2, DB::TYPE_INTEGER, date
-
-	format(message, sizeof(message),
-		""C_YELLOW"Reporter:\n\t\t"C_BLUE"%s\n\n\
-		"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
-		"C_YELLOW"Date:\n\t\t"C_BLUE"%s",
-		name, bug, TimestampToDateTime(date));
-
-	if(GetPlayerAdminLevel(playerid) > 1)
-		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Delete", "Back");
-
-	else
-		Dialog_Show(playerid, BugReportInfo, DIALOG_STYLE_MSGBOX, "Issues", message, "Back", "");
-
-	return 1;
-}
-
-Dialog:BugReportInfo(playerid, response, listitem, inputtext[])
-{
-}
-
-
-/*==============================================================================
-
-	Interface
-
-==============================================================================*/
-
-
-stock GetBugReports()
-{
-	new count;
-
-	// BugTotal, 0, DB::TYPE_INTEGER, count);
-
-	return count;
 }

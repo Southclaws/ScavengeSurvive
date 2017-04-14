@@ -132,12 +132,12 @@ BanIO_Remove(name[])
 	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_Remove %s", name));
 }
 
-BanIO_ShowBanList(playerid, limit, offset, callback[])
+BanIO_GetList(playerid, limit, offset, callback[])
 {
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_ShowBanList %d %d %d %s", playerid, limit, offset, callback));
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_GetList %d %d %d %s", playerid, limit, offset, callback));
 }
 
-BanIO_ShowBanInfo(playerid, name[], callback[])
+BanIO_GetInfo(playerid, name[], callback[])
 {
 	if(!IsPlayerConnected(playerid))
 	{
@@ -152,7 +152,7 @@ BanIO_ShowBanInfo(playerid, name[], callback[])
 	if(!Redis_Exists(gRedis, key))
 		return 1;
 
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_ShowBanInfo %d %s %s", playerid, name, callback));
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", sprintf("BanIO_GetInfo %d %s %s", playerid, name, callback));
 }
 
 public OnBanResponse(data[])
@@ -167,7 +167,7 @@ public OnBanResponse(data[])
 		return Y_HOOKS_CONTINUE_RETURN_1;
 	}
 
-	if(!strcmp(op, "BanIO_ShowBanList"))
+	if(!strcmp(op, "BanIO_GetList"))
 	{
 		new
 			callback[32],
@@ -179,17 +179,17 @@ public OnBanResponse(data[])
 
 		if(sscanf(args, "s[32]dddds[832]", callback, playerid, totalbans, listitems, index, list))
 		{
-			err("BanIO_ShowBanList sscanf failed with '%s'", args);
+			err("BanIO_GetList sscanf failed with '%s'", args);
 			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 
 		return CallLocalFunction(callback, "dddds", playerid, totalbans, listitems, index, list);
 	}
-	else if(!strcmp(op, "BanIO_ShowBanInfo"))
+	else if(!strcmp(op, "BanIO_GetInfo"))
 	{
 		if(strcmp(args, "success"))
 		{
-			err("BanIO_ShowBanInfo failed: '%s'", args);
+			err("BanIO_GetInfo failed: '%s'", args);
 			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 
@@ -197,14 +197,14 @@ public OnBanResponse(data[])
 			callback[32],
 			playerid,
 			name[MAX_PLAYER_NAME],
-			bool:banned,
 			timestamp,
 			reason[MAX_BAN_REASON],
+			bannedby[MAX_PLAYER_NAME],
 			duration;
 
 		if(sscanf(args, "s[32]ds[24]ds[128]s[24]d", callback, playerid, name, timestamp, reason, bannedby, duration))
 		{
-			err("BanIO_ShowBanInfo sscanf failed with '%s'", args);
+			err("BanIO_GetInfo sscanf failed with '%s'", args);
 			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 

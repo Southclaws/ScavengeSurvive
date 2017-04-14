@@ -25,19 +25,19 @@
 #include <YSI\y_hooks>
 
 
-#define REDIS_DOMAIN_ACCOUNTS		"account"
-#define FIELD_PLAYER_NAME			"name"		// 00
-#define FIELD_PLAYER_PASS			"pass"		// 01
-#define FIELD_PLAYER_IPV4			"ipv4"		// 02
-#define FIELD_PLAYER_ALIVE			"alive"		// 03
-#define FIELD_PLAYER_REGDATE		"regdate"	// 04
-#define FIELD_PLAYER_LASTLOG		"lastlog"	// 05
-#define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 06
-#define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 07
-#define FIELD_PLAYER_WARNINGS		"warnings"	// 08
-#define FIELD_PLAYER_GPCI			"gpci"		// 19
-#define FIELD_PLAYER_ACTIVE			"active"	// 10
-#define FIELD_PLAYER_BANNED			"banned"	// 11
+#define REDIS_DOMAIN_ACCOUNTS			"account"
+#define FIELD_PLAYER_NAME				"name"		// 00
+#define FIELD_PLAYER_PASS				"pass"		// 01
+#define FIELD_PLAYER_IPV4				"ipv4"		// 02
+#define FIELD_PLAYER_ALIVE				"alive"		// 03
+#define FIELD_PLAYER_REGDATE			"regdate"	// 04
+#define FIELD_PLAYER_LASTLOG			"lastlog"	// 05
+#define FIELD_PLAYER_SPAWNTIME			"spawntime"	// 06
+#define FIELD_PLAYER_TOTALSPAWNS		"spawns"	// 07
+#define FIELD_PLAYER_WARNINGS			"warnings"	// 08
+#define FIELD_PLAYER_GPCI				"gpci"		// 19
+#define FIELD_PLAYER_ACTIVE				"active"	// 10
+#define FIELD_PLAYER_BANNED				"banned"	// 11
 
 #define ACCOUNT_LOAD_RESULT_EXIST		(0) // Account does exist, prompt login
 #define ACCOUNT_LOAD_RESULT_EXIST_AL	(1) // Account does exist, auto login
@@ -179,20 +179,77 @@ stock AccountIO_Load(playerid, callback[])
 	return;
 }
 
-stock AccountIO_GetField(name[], field[], out[])
+stock AccountIO_Get(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, gpci[], &active, &banned)
+{
+	new
+		key[MAX_PLAYER_NAME + 32],
+		ret,
+		str_ipv4[16],
+		str_alive[2],
+		str_regdate[12],
+		str_lastlog[12],
+		str_spawntime[12],
+		str_totalspawns[12],
+		str_warnings[12],
+		str_active[2],
+		str_banned[2];
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
+
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, pass, 128);
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, str_ipv4, sizeof(str_ipv4));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, str_alive, sizeof(str_alive));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, str_regdate, sizeof(str_regdate));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, str_lastlog, sizeof(str_lastlog));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_SPAWNTIME, str_spawntime, sizeof(str_spawntime));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_TOTALSPAWNS, str_totalspawns, sizeof(str_totalspawns));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WARNINGS, str_warnings, sizeof(str_warnings));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci, MAX_GPCI_LEN);
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, str_active, sizeof(str_active));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_BANNED, str_banned, sizeof(str_banned));
+
+	ipv4 = strval(str_ipv4);
+	alive = strval(str_alive);
+	regdate = strval(str_regdate);
+	lastlog = strval(str_lastlog);
+	spawntime = strval(str_spawntime);
+	totalspawns = strval(str_totalspawns);
+	warnings = strval(str_warnings);
+	active = strval(str_active);
+	banned = strval(str_banned);
+
+	return ret;
+}
+
+stock AccountIO_Exists(name[])
 {
 	new key[MAX_PLAYER_NAME + 32];
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	return Redis_GetHashValue(gRedis, key, field, out);
+	return Redis_Exists(gRedis, key);
+}
+
+stock AccountIO_GetField(name[], field[], out[], len = sizeof(out))
+{
+	new key[MAX_PLAYER_NAME + 32];
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
+
+	return Redis_GetHashValue(gRedis, key, field, out, len);
 }
 
 stock AccountIO_SetField(name[], field[], val[])
 {
-	new key[MAX_PLAYER_NAME + 32];
+	new
+		key[MAX_PLAYER_NAME + 32],
+		ret;
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
-	return Redis_SetHashValue(gRedis, key, field, val);
+	ret = Redis_SetHashValue(gRedis, key, field, val);
+	if(ret)
+		return ret;
+
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Update %s", name));;
 }

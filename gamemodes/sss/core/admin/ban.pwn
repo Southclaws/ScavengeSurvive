@@ -140,7 +140,7 @@ hook OnPlayerConnect(playerid)
 
 	if(IsPlayerBanned(name))
 	{
-		BanIO_ShowBanInfo(playerid, "OnBanResult");
+		BanIO_GetInfo(playerid, "OnBanResult");
 	}
 }
 
@@ -201,12 +201,12 @@ stock IsPlayerBanned(name[])
 
 stock GetBanList(playerid, limit, offset, callback[])
 {
-	return BanIO_ShowBanList(playerid, limit, offset, callback);
+	return BanIO_GetList(playerid, limit, offset, callback);
 }
 
 stock GetBanInfo(playerid, name[], callback[])
 {
-	return BanIO_ShowBanInfo(playerid, name, callback);
+	return BanIO_GetInfo(playerid, name, callback);
 }
 
 stock SetBanIpv4(name[], ipv4)
