@@ -290,15 +290,20 @@ CreateAccount(playerid, pass[])
 
 Login(playerid)
 {
-	new serial[MAX_GPCI_LEN];
+	new
+		name[MAX_PLAYER_NAME],
+		serial[MAX_GPCI_LEN],
+		ipv4[16];
 
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
+	GetPlayerIp(playerid, ipv4, 16);
 
 	log("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
 
-	// AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
-	// AccountSetGpci, 0, DB::TYPE_STRING, serial);
-	// AccountSetLastLog, 0, DB::TYPE_INTEGER, gettime());
+	SetAccountIP(name, ipv4);
+	SetAccountGPCI(name, serial);
+	SetAccountLastLogin(name, gettime());
 
 	CheckAdminLevel(playerid);
 
@@ -563,14 +568,21 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 }
 
 // FIELD_ID_PLAYER_IPV4
-stock GetAccountIP(name[], ip[16])
+stock GetAccountIP(name[], &ipv4)
 {
-	return AccountIO_GetField(name, FIELD_PLAYER_IPV4, ip, 16);
+	new
+		str_ipv4[16],
+		ret;
+
+	ret = AccountIO_GetField(name, FIELD_PLAYER_IPV4, str_ipv4, 16);
+	ipv4 = strval(str_ipv4);
+
+	return ret;
 }
 
-stock SetAccountIP(name[], ip[16])
+stock SetAccountIP(name[], ipv4)
 {
-	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, ip);
+	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
 }
 
 // FIELD_ID_PLAYER_ALIVE
@@ -700,7 +712,7 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 }
 
 // FIELD_ID_PLAYER_ACTIVE
-stock GetAccountActiveState(name[], &active)
+stock GetAccountActiveState(name[], &activestate)
 {
 	new
 		str_activestate[12],
@@ -712,7 +724,7 @@ stock GetAccountActiveState(name[], &active)
 	return ret;
 }
 
-stock SetAccountActiveState(name[], active)
+stock SetAccountActiveState(name[], activestate)
 {
 	new ret;
 
