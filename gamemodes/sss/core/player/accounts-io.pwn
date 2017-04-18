@@ -26,18 +26,20 @@
 
 
 #define REDIS_DOMAIN_ACCOUNTS			"account"
-#define FIELD_PLAYER_NAME				"name"		// 00
-#define FIELD_PLAYER_PASS				"pass"		// 01
-#define FIELD_PLAYER_IPV4				"ipv4"		// 02
-#define FIELD_PLAYER_ALIVE				"alive"		// 03
-#define FIELD_PLAYER_REGDATE			"regdate"	// 04
-#define FIELD_PLAYER_LASTLOG			"lastlog"	// 05
-#define FIELD_PLAYER_SPAWNTIME			"spawntime"	// 06
-#define FIELD_PLAYER_TOTALSPAWNS		"spawns"	// 07
-#define FIELD_PLAYER_WARNINGS			"warnings"	// 08
-#define FIELD_PLAYER_GPCI				"gpci"		// 19
-#define FIELD_PLAYER_ACTIVE				"active"	// 10
-#define FIELD_PLAYER_BANNED				"banned"	// 11
+#define FIELD_PLAYER_NAME				"name"
+#define FIELD_PLAYER_PASS				"pass"
+#define FIELD_PLAYER_IPV4				"ipv4"
+#define FIELD_PLAYER_ALIVE				"alive"
+#define FIELD_PLAYER_REGDATE			"regdate"
+#define FIELD_PLAYER_LASTLOG			"lastlog"
+#define FIELD_PLAYER_SPAWNTIME			"spawntime"
+#define FIELD_PLAYER_TOTALSPAWNS		"spawns"
+#define FIELD_PLAYER_WARNINGS			"warnings"
+#define FIELD_PLAYER_GPCI				"gpci"
+#define FIELD_PLAYER_ACTIVE				"active"
+#define FIELD_PLAYER_BANNED				"banned"
+#define FIELD_PLAYER_ADMIN				"admin"
+#define FIELD_PLAYER_WHITELIST			"whitelisted"
 
 #define ACCOUNT_LOAD_RESULT_EXIST		(0) // Account does exist, prompt login
 #define ACCOUNT_LOAD_RESULT_EXIST_AL	(1) // Account does exist, auto login
@@ -78,6 +80,7 @@ stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, "1");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_WHITELIST, "0");
 	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Create %s", name));
 
 	return ret;
@@ -251,5 +254,28 @@ stock AccountIO_SetField(name[], field[], val[])
 	if(ret)
 		return ret;
 
-	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Update %s", name));;
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Update %s", name));
+}
+
+stock AccountIO_UpdateAdminList()
+{
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", "AccountIO_UpdateAdminList");
+}
+
+stock AdminIO_GetAdminList(list[], len = sizeof(list))
+{
+	return Redis_GetStr(gRedis, REDIS_DOMAIN_ROOT".admin.list", list, len);
+}
+
+stock AdminIO_GetAdminTotal()
+{
+	new
+		str_total[12],
+		ret;
+
+	ret = Redis_GetStr(gRedis, REDIS_DOMAIN_ROOT".admin.total", str_total);
+	if(ret)
+		err("Redis_GetStr failed on admin.total, return: %d", ret);
+
+	return strval(str_total);
 }

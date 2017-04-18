@@ -628,8 +628,7 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		log("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
-		for(;;){}
+		fatal("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 	}
 
 	log("Initialising Scavenge and Survive build %d", gBuildNumber);
@@ -639,8 +638,7 @@ OnGameModeInit_Setup()
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		log("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
-		for(;;){}
+		fatal("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
@@ -668,8 +666,7 @@ OnGameModeInit_Setup()
 	gRedis = Redis_Connect(redis_host, redis_port, redis_pass);
 	if(_:gRedis < 0)
 	{
-		err("redis connect failed: %d", _:gRedis);
-		for(;;){}
+		fatal("redis connect failed: %d", _:gRedis);
 	}
 
 	SendRconCommand(sprintf("mapname %s", GetMapName()));
@@ -689,14 +686,11 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	log("[OnGameModeExit] Shutting down...");
-
 	if(gCrashOnExit)
-	{
-		new File:f = fopen("nonexistentfile", io_read), _s[1];
-		fread(f, _s);
-		fclose(f);
-	}
+		fatal("[OnGameModeExit] Shutting down...");
+
+	else
+		log("[OnGameModeExit] Shutting down...");
 
 	return 1;
 }
@@ -775,29 +769,6 @@ DirectoryCheck(directory[])
 	{
 		err("Directory '%s' not found. Creating directory.", directory);
 		dir_create(directory);
-	}
-}
-
-DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
-{
-	new
-		query[96],
-		DBResult:result,
-		dbcolumns;
-
-	format(query, sizeof(query), "pragma table_info(%s)", tablename);
-	result = db_query(database, query);
-
-	dbcolumns = db_num_rows(result);
-
-	if(dbcolumns != expectedcolumns)
-	{
-		err("Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
-		err("Please verify table structure against column list in script.");
-
-		// Put the server into a loop to stop it so the user can read the message.
-		// It won't function correctly with bad databases anyway.
-		for(;;){}
 	}
 }
 

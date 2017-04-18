@@ -1375,9 +1375,6 @@ public OnScriptInit()
 	SetConstructionSetWorkbench(SetCraftSetConstructible(25000, item_Hammer, DefineItemCraftSet(item_Canister, item_MetalFrame, false, item_RefinedMetal, false, item_RefinedMetal, false)));
 	SetConstructionSetWorkbench(SetCraftSetConstructible(45000, item_Screwdriver, DefineItemCraftSet(item_LockBreaker, item_LocksmithKit, false, item_FluxCap, false, item_RefinedMetal, false, item_RefinedMetal, false, item_PowerSupply, false)));
 
-	// Uncomment to write out crafting recipes in wikia format!
-	//WriteAllCombosToFile();
-
 
     // SUPPLY DROP TYPE DEFINITIONS
 	DefineSupplyDropType("Food and Medical",	"airdrop_food_medical",		900,	600,	3);

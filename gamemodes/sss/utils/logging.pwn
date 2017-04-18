@@ -74,6 +74,18 @@ stock err(text[], va_args<>)
 	PrintAmxBacktrace();
 }
 
+stock fatal(text[], va_args<>)
+{
+	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	print(log_Buffer);
+	PrintAmxBacktrace();
+
+	// trigger a crash to escape the gamemode
+	new File:f = fopen("nonexistentfile", io_read), _s[1];
+	fread(f, _s);
+	fclose(f);
+}
+
 
 /*==============================================================================
 

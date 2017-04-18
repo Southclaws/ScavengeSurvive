@@ -25,22 +25,6 @@
 #include <YSI\y_hooks>
 
 
-enum
-{
-	FIELD_ID_PLAYER_NAME,
-	FIELD_ID_PLAYER_PASS,
-	FIELD_ID_PLAYER_IPV4,
-	FIELD_ID_PLAYER_ALIVE,
-	FIELD_ID_PLAYER_REGDATE,
-	FIELD_ID_PLAYER_LASTLOG,
-	FIELD_ID_PLAYER_SPAWNTIME,
-	FIELD_ID_PLAYER_TOTALSPAWNS,
-	FIELD_ID_PLAYER_WARNINGS,
-	FIELD_ID_PLAYER_GPCI,
-	FIELD_ID_PLAYER_ACTIVE
-}
-
-
 static
 	acc_LoginAttempts[MAX_PLAYERS],
 	acc_IsNewPlayer[MAX_PLAYERS],
@@ -300,8 +284,6 @@ Login(playerid)
 	// AccountSetGpci, 0, DB::TYPE_STRING, serial);
 	// AccountSetLastLog, 0, DB::TYPE_INTEGER, gettime());
 
-	CheckAdminLevel(playerid);
-
 	if(GetPlayerAdminLevel(playerid) > 0)
 	{
 		new
@@ -545,13 +527,13 @@ stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawnti
 	return AccountIO_Get(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, gpci, active, banned);
 }
 
-// FIELD_ID_PLAYER_NAME
+// FIELD_PLAYER_NAME
 stock AccountExists(name[])
 {
 	return AccountIO_Exists(name);
 }
 
-// FIELD_ID_PLAYER_PASS
+// FIELD_PLAYER_PASS
 stock GetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 {
 	return AccountIO_GetField(name, FIELD_PLAYER_PASS, password, MAX_PASSWORD_LEN);
@@ -562,7 +544,7 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 	return AccountIO_SetField(name, FIELD_PLAYER_PASS, password);
 }
 
-// FIELD_ID_PLAYER_IPV4
+// FIELD_PLAYER_IPV4
 stock GetAccountIP(name[], ip[16])
 {
 	return AccountIO_GetField(name, FIELD_PLAYER_IPV4, ip, 16);
@@ -573,7 +555,7 @@ stock SetAccountIP(name[], ip[16])
 	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, ip);
 }
 
-// FIELD_ID_PLAYER_ALIVE
+// FIELD_PLAYER_ALIVE
 stock GetAccountAliveState(name[], &alivestate)
 {
 	new
@@ -598,7 +580,7 @@ stock SetAccountAliveState(name[], alivestate)
 	return ret;
 }
 
-// FIELD_ID_PLAYER_REGDATE
+// FIELD_PLAYER_REGDATE
 stock GetAccountRegistrationDate(name[], &timestamp)
 {
 	new
@@ -616,7 +598,7 @@ stock SetAccountRegistrationDate(name[], timestamp)
 	return AccountIO_SetField(name, FIELD_PLAYER_REGDATE, sprintf("%d", timestamp));
 }
 
-// FIELD_ID_PLAYER_LASTLOG
+// FIELD_PLAYER_LASTLOG
 stock GetAccountLastLogin(name[], &timestamp)
 {
 	new
@@ -634,7 +616,7 @@ stock SetAccountLastLogin(name[], timestamp)
 	return AccountIO_SetField(name, FIELD_PLAYER_LASTLOG, sprintf("%d", timestamp));
 }
 
-// FIELD_ID_PLAYER_SPAWNTIME
+// FIELD_PLAYER_SPAWNTIME
 stock GetAccountLastSpawnTimestamp(name[], &timestamp)
 {
 	new
@@ -652,7 +634,7 @@ stock SetAccountLastSpawnTimestamp(name[], timestamp)
 	return AccountIO_SetField(name, FIELD_PLAYER_SPAWNTIME, sprintf("%d", timestamp));
 }
 
-// FIELD_ID_PLAYER_TOTALSPAWNS
+// FIELD_PLAYER_TOTALSPAWNS
 stock GetAccountTotalSpawns(name[], &spawns)
 {
 	new
@@ -670,7 +652,7 @@ stock SetAccountTotalSpawns(name[], spawns)
 	return AccountIO_SetField(name, FIELD_PLAYER_TOTALSPAWNS, sprintf("%d", spawns));
 }
 
-// FIELD_ID_PLAYER_WARNINGS
+// FIELD_PLAYER_WARNINGS
 stock GetAccountWarnings(name[], &warnings)
 {
 	new
@@ -688,7 +670,7 @@ stock SetAccountWarnings(name[], warnings)
 	return AccountIO_SetField(name, FIELD_PLAYER_WARNINGS, sprintf("%d", warnings));
 }
 
-// FIELD_ID_PLAYER_GPCI
+// FIELD_PLAYER_GPCI
 stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 {
 	return AccountIO_GetField(name, FIELD_PLAYER_GPCI, gpci, MAX_GPCI_LEN);
@@ -699,7 +681,7 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 	return AccountIO_SetField(name, FIELD_PLAYER_GPCI, gpci);
 }
 
-// FIELD_ID_PLAYER_ACTIVE
+// FIELD_PLAYER_ACTIVE
 stock GetAccountActiveState(name[], &active)
 {
 	new
@@ -724,7 +706,7 @@ stock SetAccountActiveState(name[], active)
 	return ret;
 }
 
-// FIELD_ID_PLAYER_BANNED
+// FIELD_PLAYER_BANNED
 stock GetAccountBannedState(name[], &banned)
 {
 	new
@@ -749,6 +731,57 @@ stock SetAccountBannedState(name[], banned)
 		ret = AccountIO_SetField(name, FIELD_PLAYER_BANNED, "1");
 	else
 		ret = AccountIO_SetField(name, FIELD_PLAYER_BANNED, "0");
+
+	return ret;
+}
+
+// FIELD_PLAYER_ADMIN
+stock GetAccountAdminLevel(name[], &level)
+{
+	new
+		buf[12],
+		ret;
+
+	ret = AccountIO_GetField(name, "level", buf);
+	level = strval(buf);
+
+	return ret;
+}
+
+stock SetAccountAdminLevel(name[], level)
+{
+	new ret = AccountIO_UpdateAdminList();
+	if(ret)
+		err("AccountIO_UpdateAdminList returned %d", ret);
+
+	return AccountIO_SetField(name, FIELD_PLAYER_ADMIN, sprintf("%d", level));
+}
+
+// FIELD_PLAYER_WHITELIST
+stock GetAccountWhitelisted(name[], &whitelisted)
+{
+	new
+		buf[2],
+		ret;
+
+	ret = AccountIO_GetField(name, "whitelisted", buf);
+
+	if(buf[0] == '1')
+		whitelisted = 1;
+	else
+		whitelisted = 0;
+
+	return ret;
+}
+
+stock SetAccountWhitelisted(name[], whitelisted)
+{
+	new ret;
+
+	if(whitelisted)
+		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "1");
+	else
+		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "0");
 
 	return ret;
 }
