@@ -238,13 +238,11 @@ ACMD:country[1](playerid, params[])
 		}
 
 		new
-			ipint,
-			ipstr[17],
+			ipv4[16],
 			country[32];
 
-		GetAccountIP(params, ipint);
-		ipstr = IpIntToStr(ipint);
-		GetIPCountry(ipstr, country);
+		GetAccountIP(params, ipv4);
+		GetIPCountry(ipv4, country);
 
 		ChatMsg(playerid, YELLOW, " >  "C_BLUE"%s"C_YELLOW"'s GeoIP location: "C_BLUE"%s", params, country);
 	}

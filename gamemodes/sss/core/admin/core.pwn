@@ -73,7 +73,7 @@ static
 
 hook OnScriptInit()
 {
-	LoadAdminData();
+	AccountIO_UpdateAdminList();
 }
 
 hook OnPlayerConnect(playerid)
@@ -103,14 +103,6 @@ hook OnPlayerDisconnected(playerid)
 
 ==============================================================================*/
 
-
-UpdateAdmin(name[MAX_PLAYER_NAME], level)
-{
-	if(level == 0)
-		return RemoveAdminFromDatabase(name);
-
-	return 1;
-}
 
 TimeoutPlayer(playerid, reason[])
 {

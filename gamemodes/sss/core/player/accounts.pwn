@@ -550,7 +550,7 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 }
 
 // FIELD_PLAYER_IPV4
-stock GetAccountIP(name[], ip[16])
+stock GetAccountIP(name[], ipv4[16])
 {
 	new
 		str_ipv4[16],

@@ -262,9 +262,9 @@ stock AccountIO_UpdateAdminList()
 	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", "AccountIO_UpdateAdminList");
 }
 
-stock AdminIO_GetAdminList(list[], len = sizeof(list))
+stock AccountIO_GetAdminList(list[], len = sizeof(list))
 {
-	return Redis_GetStr(gRedis, REDIS_DOMAIN_ROOT".admin.list", list, len);
+	return Redis_GetString(gRedis, REDIS_DOMAIN_ROOT".admin.list", list, len);
 }
 
 stock AdminIO_GetAdminTotal()
@@ -273,7 +273,7 @@ stock AdminIO_GetAdminTotal()
 		str_total[12],
 		ret;
 
-	ret = Redis_GetStr(gRedis, REDIS_DOMAIN_ROOT".admin.total", str_total);
+	ret = Redis_GetString(gRedis, REDIS_DOMAIN_ROOT".admin.total", str_total);
 	if(ret)
 		err("Redis_GetStr failed on admin.total, return: %d", ret);
 

@@ -40,7 +40,7 @@ hook OnScriptInit()
 	Redis_BindMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".response", "OnBanResponse");
 }
 
-BanIO_Create(name[], ipv4, timestamp, reason[], by[], duration)
+BanIO_Create(name[], ipv4[], timestamp, reason[], by[], duration)
 {
 	if(isnull(name))
 	{
@@ -55,7 +55,7 @@ BanIO_Create(name[], ipv4, timestamp, reason[], by[], duration)
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".%s", name);
 
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_NAME, name);
-	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, sprintf("%d", ipv4));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, ipv4);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_DATE, sprintf("%d", timestamp));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_REASON, reason);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_BY, by);
@@ -94,7 +94,7 @@ BanIO_UpdateReasonDuration(name[], reason[], duration)
 	return ret;
 }
 
-BanIO_UpdateIpv4(name[], ipv4)
+BanIO_UpdateIpv4(name[], ipv4[])
 {
 	if(isnull(name))
 	{
@@ -111,7 +111,7 @@ BanIO_UpdateIpv4(name[], ipv4)
 	if(!Redis_Exists(gRedis, key))
 		return 1;
 
-	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, sprintf("%d", ipv4));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, ipv4);
 
 	return ret;
 }

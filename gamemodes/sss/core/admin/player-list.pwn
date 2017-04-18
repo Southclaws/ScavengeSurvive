@@ -255,16 +255,13 @@ Dialog:PlayerListItemOptions(playerid, response, listitem, inputtext[])
 
 _FormatPlayerListItem(name[], output[], highlightbanned)
 {
-	new
-		ip,
-		ipstr[17];
+	new ipv4[17];
 
-	GetAccountIP(name, ip);
-	ipstr = IpIntToStr(ip);
+	GetAccountIP(name, ipv4);
 
 	format(output, PLAYER_LIST_ITEM_LEN, "%s%s: %s\n",
 		((highlightbanned && IsPlayerBanned(name)) ? (C_RED):(C_WHITE)),
-		ipstr,
+		ipv4,
 		name);
 }
 

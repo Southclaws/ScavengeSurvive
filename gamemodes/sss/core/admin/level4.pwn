@@ -126,7 +126,7 @@ ACMD:setadmin[4](playerid, params[])
 		if(!strcmp(name, playername))
 			return ChatMsg(playerid, RED, " >  You cannot set your own level");
 
-		UpdateAdmin(name, level);
+		SetAccountAdminLevel(name, level);
 
 		ChatMsg(playerid, YELLOW, " >  You set %s to admin level %d.", name, level);
 	}

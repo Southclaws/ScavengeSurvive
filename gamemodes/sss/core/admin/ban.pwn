@@ -77,7 +77,7 @@ BanPlayerByName(name[], reason[], byid, duration)
 	new
 		name_banned[MAX_PLAYER_NAME],
 		id = INVALID_PLAYER_ID,
-		ip,
+		ipv4[16],
 		name_by[MAX_PLAYER_NAME];
 
 	if(byid == -1)
@@ -96,17 +96,17 @@ BanPlayerByName(name[], reason[], byid, duration)
 
 	if(id == INVALID_PLAYER_ID)
 	{
-		GetAccountIP(name, ip);
+		GetAccountIP(name, ipv4);
 	}
 	else
 	{
-		ip = GetPlayerIpAsInt(id);
+		GetPlayerIp(id, ipv4, sizeof(ipv4));
 		ChatMsgLang(id, YELLOW, "BANNEDMESSG", reason);
 		defer KickPlayerDelay(id);
 	}
 
 	BanIO_Create(name_banned,
-		ip,
+		ipv4,
 		gettime(),
 		reason,
 		name_by,
