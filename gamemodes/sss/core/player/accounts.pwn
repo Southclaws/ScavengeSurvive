@@ -274,15 +274,20 @@ CreateAccount(playerid, pass[])
 
 Login(playerid)
 {
-	new serial[MAX_GPCI_LEN];
+	new
+		name[MAX_PLAYER_NAME],
+		serial[MAX_GPCI_LEN],
+		ipv4[16];
 
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
+	GetPlayerIp(playerid, ipv4, 16);
 
 	log("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
 
-	// AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
-	// AccountSetGpci, 0, DB::TYPE_STRING, serial);
-	// AccountSetLastLog, 0, DB::TYPE_INTEGER, gettime());
+	SetAccountIP(name, ipv4);
+	SetAccountGPCI(name, serial);
+	SetAccountLastLogin(name, gettime());
 
 	if(GetPlayerAdminLevel(playerid) > 0)
 	{
@@ -547,12 +552,19 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 // FIELD_PLAYER_IPV4
 stock GetAccountIP(name[], ip[16])
 {
-	return AccountIO_GetField(name, FIELD_PLAYER_IPV4, ip, 16);
+	new
+		str_ipv4[16],
+		ret;
+
+	ret = AccountIO_GetField(name, FIELD_PLAYER_IPV4, str_ipv4, 16);
+	ipv4 = strval(str_ipv4);
+
+	return ret;
 }
 
-stock SetAccountIP(name[], ip[16])
+stock SetAccountIP(name[], ipv4)
 {
-	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, ip);
+	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
 }
 
 // FIELD_PLAYER_ALIVE
@@ -682,7 +694,7 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 }
 
 // FIELD_PLAYER_ACTIVE
-stock GetAccountActiveState(name[], &active)
+stock GetAccountActiveState(name[], &activestate)
 {
 	new
 		str_activestate[12],
@@ -694,7 +706,7 @@ stock GetAccountActiveState(name[], &active)
 	return ret;
 }
 
-stock SetAccountActiveState(name[], active)
+stock SetAccountActiveState(name[], activestate)
 {
 	new ret;
 
@@ -707,27 +719,23 @@ stock SetAccountActiveState(name[], active)
 }
 
 // FIELD_PLAYER_BANNED
-stock GetAccountBannedState(name[], &banned)
+stock GetAccountBannedState(name[], &bannedstate)
 {
 	new
-		buf[2],
+		str_bannedstate[12],
 		ret;
 
-	ret = AccountIO_GetField(name, "banned", buf);
-
-	if(buf[0] == '1')
-		banned = 1;
-	else
-		banned = 0;
+	ret = AccountIO_GetField(name, FIELD_PLAYER_BANNED, str_bannedstate);
+	bannedstate = strval(str_bannedstate);
 
 	return ret;
 }
 
-stock SetAccountBannedState(name[], banned)
+stock SetAccountBannedState(name[], bannedstate)
 {
 	new ret;
 
-	if(banned)
+	if(bannedstate)
 		ret = AccountIO_SetField(name, FIELD_PLAYER_BANNED, "1");
 	else
 		ret = AccountIO_SetField(name, FIELD_PLAYER_BANNED, "0");
@@ -739,11 +747,11 @@ stock SetAccountBannedState(name[], banned)
 stock GetAccountAdminLevel(name[], &level)
 {
 	new
-		buf[12],
+		str_level[12],
 		ret;
 
-	ret = AccountIO_GetField(name, "level", buf);
-	level = strval(buf);
+	ret = AccountIO_GetField(name, FIELD_PLAYER_ADMIN, str_level);
+	level = strval(str_level);
 
 	return ret;
 }
@@ -761,15 +769,11 @@ stock SetAccountAdminLevel(name[], level)
 stock GetAccountWhitelisted(name[], &whitelisted)
 {
 	new
-		buf[2],
+		str_whitelisted[12],
 		ret;
 
-	ret = AccountIO_GetField(name, "whitelisted", buf);
-
-	if(buf[0] == '1')
-		whitelisted = 1;
-	else
-		whitelisted = 0;
+	ret = AccountIO_GetField(name, "whitelisted", str_whitelisted);
+	whitelisted = strval(str_whitelisted);
 
 	return ret;
 }
