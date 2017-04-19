@@ -111,8 +111,7 @@ GetPlayerInfo(name[])
 		dayslived,
 
 		pass[129],
-		ipv4,
-		ip[17],
+		ipv4[16],
 		country[32],
 		alive,
 		regdate,
@@ -121,12 +120,14 @@ GetPlayerInfo(name[])
 		totalspawns,
 		warnings,
 		hash[41],
-		active;
+		active,
+		banned,
+		admin,
+		whitelist;
 
-	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active);
+	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active, banned, admin, whitelist);
 
-	ip = IpIntToStr(ipv4);
-	GetIPCountry(ip, country);
+	GetIPCountry(ipv4, country);
 
 	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
 
@@ -140,7 +141,7 @@ GetPlayerInfo(name[])
 		Lives Lived:\t\t%d\n\
 		Warnings:\t\t%d",
 
-		ip,
+		ipv4,
 		country,
 		alive ? ("Yes") : ("No"),
 		TimestampToDateTime(regdate),
@@ -191,23 +192,19 @@ Dialog:PlayerListItemOptions(playerid, response, listitem, inputtext[])
 		}
 		case 2:// List accounts used by this IP
 		{
-			new ip;
-			GetAccountIP(pls_List[playerid][pls_CurrentItem[playerid]], ip);
-			ShowAccountIPHistoryFromIP(playerid, ip);
+			//
 		}
 		case 3:// List accounts used by this GPCI
 		{
-			new hash[MAX_GPCI_LEN];
-			GetAccountGPCI(pls_List[playerid][pls_CurrentItem[playerid]], hash);
-			ShowAccountGpciHistoryFromGpci(playerid, hash);
+			//
 		}
 		case 4:// List IPs used by this name
 		{
-			ShowAccountIPHistoryFromName(playerid, pls_List[playerid][pls_CurrentItem[playerid]]);
+			//
 		}
 		case 5:// List GPCIs used by this name
 		{
-			ShowAccountGpciHistoryFromName(playerid, pls_List[playerid][pls_CurrentItem[playerid]]);
+			//
 		}
 		case 6:// Ban
 		{
@@ -255,7 +252,7 @@ Dialog:PlayerListItemOptions(playerid, response, listitem, inputtext[])
 
 _FormatPlayerListItem(name[], output[], highlightbanned)
 {
-	new ipv4[17];
+	new ipv4[16];
 
 	GetAccountIP(name, ipv4);
 

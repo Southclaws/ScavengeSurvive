@@ -30,20 +30,6 @@
 #define MAX_REPORT_INFO_LENGTH		(128)
 #define MAX_REPORTS_PER_PAGE		(32)
 #define MAX_REPORT_TYPES			(5)
-#define ACCOUNTS_TABLE_REPORTS		"Reports"
-#define FIELD_REPORTS_NAME			"name"		// 00
-#define FIELD_REPORTS_REASON		"reason"	// 01
-#define FIELD_REPORTS_DATE			"date"		// 02
-#define FIELD_REPORTS_READ			"read"		// 03
-#define FIELD_REPORTS_TYPE			"type"		// 04
-#define FIELD_REPORTS_POSX			"posx"		// 05
-#define FIELD_REPORTS_POSY			"posy"		// 06
-#define FIELD_REPORTS_POSZ			"posz"		// 07
-#define FIELD_REPORTS_POSW			"world"		// 08
-#define FIELD_REPORTS_POSI			"interior"	// 09
-#define FIELD_REPORTS_INFO			"info"		// 10
-#define FIELD_REPORTS_BY			"by"		// 11
-#define FIELD_REPORTS_ACTIVE		"active"	// 12
 
 // Report types
 #define REPORT_TYPE_PLAYER_ID		"PLY ID"
@@ -125,19 +111,7 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 		GetPlayerName(reporter, reportername, MAX_PLAYER_NAME);
 	}
 
-	// ReportInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// ReportInsert, 1, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH
-	// ReportInsert, 2, DB::TYPE_INTEGER, gettime()
-	// ReportInsert, 3, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH
-	// ReportInsert, 4, DB::TYPE_FLOAT, posx
-	// ReportInsert, 5, DB::TYPE_FLOAT, posy
-	// ReportInsert, 6, DB::TYPE_FLOAT, posz
-	// ReportInsert, 7, DB::TYPE_INTEGER, world
-	// ReportInsert, 8, DB::TYPE_INTEGER, interior
-	// ReportInsert, 9, DB::TYPE_STRING, infostring, MAX_REPORT_INFO_LENGTH
-	// ReportInsert, 10, DB::TYPE_STRING, reportername, MAX_PLAYER_NAME
-
-	// OnPlayerReported
+	ReportIO_Create(name, reason, gettime(), type, posx, posy, posz, world, interior, infostring, reportername);
 
 	return 0;
 }

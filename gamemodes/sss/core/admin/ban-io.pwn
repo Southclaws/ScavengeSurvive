@@ -71,7 +71,7 @@ BanIO_Create(name[], ipv4[], timestamp, reason[], by[], duration)
 	return ret;
 }
 
-BanIO_UpdateReasonDuration(name[], reason[], duration)
+BanIO_UpdateReason(name[], reason[])
 {
 	if(isnull(name))
 	{
@@ -89,7 +89,30 @@ BanIO_UpdateReasonDuration(name[], reason[], duration)
 		return 1;
 
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_REASON, reason);
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".request", sprintf("BanIO_Update %s", name));
+
+	return ret;
+}
+
+BanIO_UpdateDuration(name[], duration)
+{
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
+	new
+		key[MAX_PLAYER_NAME + 32],
+		ret = 0;
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".%s", name);
+
+	if(!Redis_Exists(gRedis, key))
+		return 1;
+
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_DURATION, sprintf("%d", duration));
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".request", sprintf("BanIO_Update %s", name));
 
 	return ret;
 }
@@ -112,6 +135,7 @@ BanIO_UpdateIpv4(name[], ipv4[])
 		return 1;
 
 	ret += Redis_SetHashValue(gRedis, key, FIELD_BANS_IPV4, ipv4);
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_BANS".request", sprintf("BanIO_Update %s", name));
 
 	return ret;
 }

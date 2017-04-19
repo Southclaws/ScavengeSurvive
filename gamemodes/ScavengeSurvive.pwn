@@ -425,9 +425,9 @@ new stock
 
 // PLAYER INTERNAL SCRIPTS
 #include "sss/core/player/accounts.pwn"
-#include "sss/core/player/aliases.pwn"
-#include "sss/core/player/ipv4-log.pwn"
-#include "sss/core/player/gpci-log.pwn"
+// #include "sss/core/player/aliases.pwn"
+// #include "sss/core/player/ipv4-log.pwn"
+// #include "sss/core/player/gpci-log.pwn"
 #include "sss/core/player/brightness.pwn"
 #include "sss/core/player/spawn.pwn"
 #include "sss/core/player/damage.pwn"
@@ -511,6 +511,7 @@ new stock
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
+#include "sss/core/admin/report-io.pwn"
 #include "sss/core/admin/report-cmds.pwn"
 #include "sss/core/admin/hack-detect.pwn"
 #include "sss/core/admin/hack-trap.pwn"

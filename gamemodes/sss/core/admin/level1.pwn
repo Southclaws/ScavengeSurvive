@@ -341,47 +341,7 @@ ACMD:aliases[1](playerid, params[])
 		}
 	}
 
-	new
-		ret,
-		list[32][MAX_PLAYER_NAME],
-		count,
-		adminlevel;
-
-	if(type == 'a')
-	{
-		ret = GetAccountAliasesByAll(name, list, count, 32, adminlevel);
-	}
-	else if(type == 'i')
-	{
-		ret = GetAccountAliasesByIP(name, list, count, 32, adminlevel);
-	}
-	else if(type == 'p')
-	{
-		ret = GetAccountAliasesByPass(name, list, count, 32, adminlevel);
-	}
-	else if(type == 'h')
-	{
-		ret = GetAccountAliasesByHash(name, list, count, 32, adminlevel);
-	}
-	else
-	{
-		ChatMsg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'p'(password) 'h'(hash) 'a'(all)");
-		return 1;
-	}
-
-	if(ret == 0)
-	{
-		ChatMsg(playerid, RED, " >  An error occurred.");
-		return 1;
-	}
-
-	if(count == 0 || adminlevel > GetPlayerAdminLevel(playerid))
-	{
-		ChatMsg(playerid, YELLOW, " >  No aliases found for %s", name);
-		return 1;
-	}
-
-	ShowPlayerList(playerid, list, (count > 32) ? 32 : count, true);
+	//
 
 	return 1;
 }
@@ -432,37 +392,7 @@ ACMD:history[1](playerid, params[])
 		}
 	}
 
-	if(type == 'i')
-	{
-		if(lookup == 'n')
-		{
-			ShowAccountIPHistoryFromName(playerid, name);
-		}
-		else
-		{
-			new ip;
-			GetAccountIP(name, ip);
-			ShowAccountIPHistoryFromIP(playerid, ip);
-		}
-	}
-	else if(type == 'h')
-	{
-		if(lookup == 'n')
-		{
-			ShowAccountGpciHistoryFromName(playerid, name);
-		}
-		else
-		{
-			new hash[MAX_GPCI_LEN];
-			GetAccountGPCI(name, hash);
-			ShowAccountGpciHistoryFromGpci(playerid, hash);
-		}
-	}
-	else
-	{
-		ChatMsg(playerid, YELLOW, " >  Lookup type must be one of: 'i'(ip) 'h'(hash), optional parameter 'n' lists the history for that player only.");
-		return 1;
-	}
+	//
 
 	return 1;
 }

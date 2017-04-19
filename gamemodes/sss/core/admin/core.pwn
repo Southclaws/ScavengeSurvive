@@ -41,8 +41,6 @@ enum
 
 
 static
-				admin_List[MAX_ADMIN * (MAX_PLAYER_NAME + 12)],
-				admin_Total,
 				admin_Names[MAX_ADMIN_LEVELS][15] =
 				{
 					"Player",			// 0 (Unused)
@@ -294,7 +292,7 @@ stock GetPlayerAdminLevel(playerid)
 stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
 {
 	new level;
-
+	GetAccountAdminLevel(name, level);
 	return level;
 }
 
@@ -397,7 +395,6 @@ ACMD:adminlist[3](playerid, params[])
 {
 	new
 		title[20],
-		line[52],
 		ret;
 
 	gBigString[playerid][0] = EOS;

@@ -40,6 +40,9 @@ enum
 }
 
 
+forward OnBanResult(playerid, bool:banned, timestamp, reason[], duration);
+
+
 hook OnGameModeInit()
 {
 	//
@@ -49,9 +52,11 @@ BanPlayer(playerid, reason[], byid, duration)
 {
 	new
 		name_banned[MAX_PLAYER_NAME],
-		name_by[MAX_PLAYER_NAME];
+		name_by[MAX_PLAYER_NAME],
+		ipv4[16];
 
 	GetPlayerName(playerid, name_banned, MAX_PLAYER_NAME);
+	GetPlayerIp(playerid, ipv4, 16);
 
 	if(byid == -1)
 		name_by = "Server";
@@ -60,7 +65,7 @@ BanPlayer(playerid, reason[], byid, duration)
 		GetPlayerName(byid, name_by, MAX_PLAYER_NAME);
 
 	BanIO_Create(name_banned,
-		GetPlayerIpAsInt(playerid),
+		ipv4,
 		gettime(),
 		reason,
 		name_by,
@@ -117,7 +122,8 @@ BanPlayerByName(name[], reason[], byid, duration)
 
 UpdateBanInfo(name[], reason[], duration)
 {
-	BanIO_UpdateReasonDuration(name, reason, duration);
+	BanIO_UpdateReason(name, reason);
+	BanIO_UpdateDuration(name, duration);
 	
 	return 0;
 }
@@ -140,7 +146,7 @@ hook OnPlayerConnect(playerid)
 
 	if(IsPlayerBanned(name))
 	{
-		BanIO_GetInfo(playerid, "OnBanResult");
+		BanIO_GetInfo(playerid, name, "OnBanResult");
 	}
 }
 
@@ -165,8 +171,11 @@ public OnBanResult(playerid, bool:banned, timestamp, reason[], duration)
 		}
 	}
 
-	new string[256];
+	new
+		ipv4[16],
+		string[256];
 
+	GetPlayerIp(playerid, ipv4, 16);
 	format(string, 256, "\
 		"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\
 		"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\
@@ -177,7 +186,7 @@ public OnBanResult(playerid, bool:banned, timestamp, reason[], duration)
 
 	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Banned", string, "Close", "");
 
-	BanIO_UpdateIpv4(name, GetPlayerIpAsInt(playerid));
+	BanIO_UpdateIpv4(name, ipv4);
 
 	defer KickPlayerDelay(playerid);
 
@@ -209,26 +218,17 @@ stock GetBanInfo(playerid, name[], callback[])
 	return BanIO_GetInfo(playerid, name, callback);
 }
 
-stock SetBanIpv4(name[], ipv4)
+stock SetBanIpv4(name[], ipv4[])
 {
-	// BanSetIpv4, 0, DB::TYPE_INTEGER, ipv4);
-	// BanSetIpv4, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	return 0;
+	return BanIO_UpdateIpv4(name, ipv4);
 }
 
 stock SetBanReason(name[], reason[])
 {
-	// BanSetReason, 0, DB::TYPE_STRING, reason, MAX_BAN_REASON
-	// BanSetReason, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-
-	return 0;
+	return BanIO_UpdateReason(name, reason);
 }
 
 stock SetBanDuration(name[], duration)
 {
-	// BanSetDuration, 0, DB::TYPE_INTEGER, duration
-	// BanSetDuration, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-
-	return 0;
+	return BanIO_UpdateDuration(name, duration);
 }

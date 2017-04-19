@@ -177,8 +177,6 @@ public OnPlayerLoadedAccount(playerid, loadresult)
 		KickPlayer(playerid, "Account inactive");
 	}
 
-	CheckForExtraAccounts(playerid);
-
 	return;
 }
 

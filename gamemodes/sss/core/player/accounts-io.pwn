@@ -59,7 +59,7 @@ hook OnScriptInit()
 }
 
 
-stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
+stock AccountIO_Create(name[], pass[], ipv4[], regdate, lastlog, hash[])
 {
 	if(isnull(name))
 	{
@@ -74,11 +74,11 @@ stock AccountIO_Create(name[], pass[], ipv4, regdate, lastlog, gpci[])
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_PASS, pass);
-	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, "1");
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, sprintf("%d", regdate));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
-	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci);
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, hash);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, "1");
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_WHITELIST, "0");
 	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Create %s", name));
@@ -182,12 +182,11 @@ stock AccountIO_Load(playerid, callback[])
 	return;
 }
 
-stock AccountIO_Get(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, gpci[], &active, &banned)
+stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, hash[], &active, &banned, &admin, &whitelist)
 {
 	new
 		key[MAX_PLAYER_NAME + 32],
 		ret,
-		str_ipv4[16],
 		str_alive[2],
 		str_regdate[12],
 		str_lastlog[12],
@@ -195,23 +194,26 @@ stock AccountIO_Get(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntim
 		str_totalspawns[12],
 		str_warnings[12],
 		str_active[2],
-		str_banned[2];
+		str_banned[2],
+		str_admin[2],
+		str_whitelist[2];
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_PASS, pass, 128);
-	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, str_ipv4, sizeof(str_ipv4));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_IPV4, ipv4, 16);
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, str_alive, sizeof(str_alive));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, str_regdate, sizeof(str_regdate));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, str_lastlog, sizeof(str_lastlog));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_SPAWNTIME, str_spawntime, sizeof(str_spawntime));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_TOTALSPAWNS, str_totalspawns, sizeof(str_totalspawns));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WARNINGS, str_warnings, sizeof(str_warnings));
-	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, gpci, MAX_GPCI_LEN);
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_GPCI, hash, MAX_GPCI_LEN);
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, str_active, sizeof(str_active));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_BANNED, str_banned, sizeof(str_banned));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ADMIN, str_admin, sizeof(str_admin));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WHITELIST, str_whitelist, sizeof(str_whitelist));
 
-	ipv4 = strval(str_ipv4);
 	alive = strval(str_alive);
 	regdate = strval(str_regdate);
 	lastlog = strval(str_lastlog);
@@ -220,6 +222,8 @@ stock AccountIO_Get(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntim
 	warnings = strval(str_warnings);
 	active = strval(str_active);
 	banned = strval(str_banned);
+	admin = strval(str_admin);
+	whitelist = strval(str_whitelist);
 
 	return ret;
 }

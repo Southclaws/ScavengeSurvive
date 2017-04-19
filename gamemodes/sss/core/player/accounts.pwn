@@ -244,8 +244,7 @@ CreateAccount(playerid, pass[])
 {
 	new
 		name[MAX_PLAYER_NAME],
-		ipv4_str[17],
-		ipv4,
+		ipv4[16],
 		regdate,
 		lastlog,
 		hash[MAX_GPCI_LEN],
@@ -253,7 +252,7 @@ CreateAccount(playerid, pass[])
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	regdate = lastlog = gettime();
-	ipv4 = GetPlayerIpAsInt(playerid);
+	GetPlayerIp(playerid, ipv4, 16);
 	gpci(playerid, hash, MAX_GPCI_LEN);
 
 	#if defined BUILD_REDIS_IO
@@ -276,17 +275,17 @@ Login(playerid)
 {
 	new
 		name[MAX_PLAYER_NAME],
-		serial[MAX_GPCI_LEN],
+		hash[MAX_GPCI_LEN],
 		ipv4[16];
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-	gpci(playerid, serial, MAX_GPCI_LEN);
+	gpci(playerid, hash, MAX_GPCI_LEN);
 	GetPlayerIp(playerid, ipv4, 16);
 
 	log("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
 
 	SetAccountIP(name, ipv4);
-	SetAccountGPCI(name, serial);
+	SetAccountGPCI(name, hash);
 	SetAccountLastLogin(name, gettime());
 
 	if(GetPlayerAdminLevel(playerid) > 0)
@@ -527,9 +526,9 @@ SavePlayerData(playerid)
 ==============================================================================*/
 
 
-stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, gpci[], &active, &banned)
+stock GetAccountData(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, hash[], &active, &banned, &admin, &whitelist)
 {
-	return AccountIO_Get(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, gpci, active, banned);
+	return AccountIO_Get(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active, banned, admin, whitelist);
 }
 
 // FIELD_PLAYER_NAME
@@ -552,19 +551,12 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 // FIELD_PLAYER_IPV4
 stock GetAccountIP(name[], ipv4[16])
 {
-	new
-		str_ipv4[16],
-		ret;
-
-	ret = AccountIO_GetField(name, FIELD_PLAYER_IPV4, str_ipv4, 16);
-	ipv4 = strval(str_ipv4);
-
-	return ret;
+	return AccountIO_GetField(name, FIELD_PLAYER_IPV4, ipv4, 16);
 }
 
-stock SetAccountIP(name[], ipv4)
+stock SetAccountIP(name[], ipv4[16])
 {
-	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, sprintf("%d", ipv4));
+	return AccountIO_SetField(name, FIELD_PLAYER_IPV4, ipv4);
 }
 
 // FIELD_PLAYER_ALIVE
@@ -683,14 +675,14 @@ stock SetAccountWarnings(name[], warnings)
 }
 
 // FIELD_PLAYER_GPCI
-stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
+stock GetAccountGPCI(name[], hash[MAX_GPCI_LEN])
 {
-	return AccountIO_GetField(name, FIELD_PLAYER_GPCI, gpci, MAX_GPCI_LEN);
+	return AccountIO_GetField(name, FIELD_PLAYER_GPCI, hash, MAX_GPCI_LEN);
 }
 
-stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
+stock SetAccountGPCI(name[], hash[MAX_GPCI_LEN])
 {
-	return AccountIO_SetField(name, FIELD_PLAYER_GPCI, gpci);
+	return AccountIO_SetField(name, FIELD_PLAYER_GPCI, hash);
 }
 
 // FIELD_PLAYER_ACTIVE

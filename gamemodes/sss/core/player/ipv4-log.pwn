@@ -76,7 +76,7 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-stock GetAccountIPHistoryFromIP(inputipv4, output[][e_ipv4_list_output_structure], max, &count)
+stock GetAccountIPHistoryFromIP(inputname[], output[][e_ipv4_list_output_structure], max, &count)
 {
 	return 1;
 }
@@ -86,14 +86,14 @@ stock GetAccountIPHistoryFromName(inputname[], output[][e_ipv4_list_output_struc
 	return 1;
 }
 
-stock ShowAccountIPHistoryFromIP(playerid, ip)
+stock ShowAccountIPHistoryFromIP(playerid, name[])
 {
 	new
 		list[MAX_IPV4_LOG_RESULTS][e_ipv4_list_output_structure],
 		newlist[MAX_IPV4_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountIPHistoryFromIP(ip, list, MAX_IPV4_LOG_RESULTS, count))
+	if(!GetAccountIPHistoryFromIP(name, list, MAX_IPV4_LOG_RESULTS, count))
 	{
 		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;

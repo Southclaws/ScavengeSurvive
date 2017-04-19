@@ -102,7 +102,6 @@ timer UnfreezePlayer_check[4000](playerid)
 			name[MAX_PLAYER_NAME],
 			Float:x,
 			Float:y,
-			Float:z,
 			w,
 			i;
 

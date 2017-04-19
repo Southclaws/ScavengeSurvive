@@ -71,7 +71,7 @@ hook OnPlayerConnect(playerid)
 	return 1;
 }
 
-stock GetAccountGpciHistoryFromGpci(inputgpci[MAX_GPCI_LEN], output[][e_gpci_list_output_structure], max, &count)
+stock GetAccountGpciHistoryFromGpci(inputname[], output[][e_gpci_list_output_structure], max, &count)
 {
 	return 1;
 }
@@ -81,14 +81,14 @@ stock GetAccountGpciHistoryFromName(inputname[], output[][e_gpci_list_output_str
 	return 1;
 }
 
-stock ShowAccountGpciHistoryFromGpci(playerid, hash[MAX_GPCI_LEN])
+stock ShowAccountGpciHistoryFromGpci(playerid, name[])
 {
 	new
 		list[MAX_GPCI_LOG_RESULTS][e_gpci_list_output_structure],
 		newlist[MAX_GPCI_LOG_RESULTS][MAX_PLAYER_NAME],
 		count;
 
-	if(!GetAccountGpciHistoryFromGpci(hash, list, MAX_GPCI_LOG_RESULTS, count))
+	if(!GetAccountGpciHistoryFromGpci(name, list, MAX_GPCI_LOG_RESULTS, count))
 	{
 		ChatMsg(playerid, YELLOW, " >  Failed");
 		return 1;

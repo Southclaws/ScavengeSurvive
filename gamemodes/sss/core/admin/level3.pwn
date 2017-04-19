@@ -244,11 +244,11 @@ ACMD:ip[3](playerid, params[])
 			return 1;
 		}
 
-		new ip;
+		new ipv4[16];
 
-		GetAccountIP(params, ip);
+		GetAccountIP(params, ipv4);
 
-		ChatMsg(playerid, YELLOW, " >  IP for "C_BLUE"%s"C_YELLOW": %s", params, IpIntToStr(ip));
+		ChatMsg(playerid, YELLOW, " >  IP for "C_BLUE"%s"C_YELLOW": %s", params, ipv4);
 	}
 
 	return 1;

@@ -25,76 +25,10 @@
 #include <YSI\y_hooks>
 
 
-hook OnGameModeInit()
-{
-	//
-}
-
-stock GetAccountAliasesByIP(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
-{
-	return 1;
-}
-
-stock GetAccountAliasesByPass(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
-{
-	return 1;
-}
-
-stock GetAccountAliasesByHash(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
-{
-	return 1;
-}
-
-stock GetAccountAliasesByAll(name[], list[][MAX_PLAYER_NAME], &count, max, &adminlevel)
-{
-	return 1;
-}
-
 CheckForExtraAccounts(playerid)
 {
 	if(!IsPlayerRegistered(playerid) || !IsPlayerLoggedIn(playerid))
 		return 0;
-
-	new
-		name[MAX_PLAYER_NAME],
-		list[6][MAX_PLAYER_NAME],
-		count,
-		adminlevel,
-		bool:donewarning,
-		string[(MAX_PLAYER_NAME + 2) * 6];
-
-	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-	GetAccountAliasesByAll(name, list, count, 6, adminlevel);
-
-	if(count == 0)
-		return 0;
-
-	if(count == 1)
-		strcat(string, list[0]);
-
-	if(count > 1)
-	{
-		for(new i; i < count && i < sizeof(list); i++)
-		{
-			strcat(string, list[i]);
-			strcat(string, ", ");
-
-			/*if(IsPlayerBanned(list[i]) && !donewarning)
-			{
-				ChatMsgAdmins(1, RED, " >  Warning: One or more of those aliases is banned!");
-				donewarning = true;
-			}*/
-		}
-	}
-
-	if(donewarning && GetAdminsOnline() == 0)
-	{
-		KickPlayer(playerid, "One of your previously used accounts is banned.");
-		return 0;
-	}
-
-	ChatMsgAdmins(adminlevel, YELLOW, " >  Aliases: "C_BLUE"(%d)"C_ORANGE" %s", count, string);
 
 	return 1;
 }
