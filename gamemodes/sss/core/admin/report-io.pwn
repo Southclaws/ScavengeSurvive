@@ -38,6 +38,14 @@
 #define FIELD_REPORTS_ACTIVE		"active"
 
 
+forward OnReportResponse(data[]);
+
+
+hook OnScriptInit()
+{
+	Redis_BindMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", "OnReportResponse");
+}
+
 stock ReportIO_Create(name[], reason[], timestamp, type[], Float:posx, Float:posy, Float:posz, world, interior, info[], by[])
 {
 	if(isnull(name))
@@ -53,11 +61,15 @@ stock ReportIO_Create(name[], reason[], timestamp, type[], Float:posx, Float:pos
 	}
 
 	new
+		id[GEID_LEN],
 		key[MAX_PLAYER_NAME + 32],
 		ret = 0;
 
-	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".%s", name);
+	mkgeid(random(2147483647), id);
 
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".%s", id);
+
+	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_NAME, name);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_REASON, reason);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_DATE, sprintf("%d", timestamp));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_READ, "0");
@@ -70,7 +82,161 @@ stock ReportIO_Create(name[], reason[], timestamp, type[], Float:posx, Float:pos
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_INFO, info);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_BY, by);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_REPORTS_ACTIVE, "1");
-	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".request", sprintf("BanIO_Create %s", name));
+	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".request", sprintf("ReportIO_Create %s", id));
+
+	SetAccountReported(name, 1);
 
 	return ret;
+}
+
+stock ReportIO_Remove(id[])
+{
+	if(isnull(id))
+	{
+		err("id is null");
+		return 1;
+	}
+
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", sprintf("ReportIO_Remove %s", id));
+}
+
+stock ReportIO_RemoveOfName(name[])
+{
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", sprintf("ReportIO_RemoveOfName %s", name));
+}
+
+stock ReportIO_RemoveRead()
+{
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", "ReportIO_RemoveRead");
+}
+
+stock ReportIO_SetRead(id[], read)
+{
+	if(isnull(id))
+	{
+		err("id is null");
+		return 1;
+	}
+
+	new key[MAX_PLAYER_NAME + 32];
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".%s", id);
+
+	if(!Redis_Exists(gRedis, key))
+	{
+		err("report key '%s' does not exist", key);
+		return 1;
+	}
+
+	return Redis_SetHashValue(gRedis, key, FIELD_REPORTS_READ, read ? ("1") : ("0"));
+}
+
+stock ReportIO_GetUnread(&unread)
+{
+	return Redis_GetInt(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".__unread", unread);
+}
+
+stock ReportIO_GetList(playerid, limit, offset, callback[])
+{
+	if(isnull(callback))
+	{
+		err("callback is null");
+		return 1;
+	}
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", sprintf("ReportIO_GetList %d %d %d %s", playerid, limit, offset, callback));
+}
+
+stock ReportIO_GetInfo(playerid, id[], callback[])
+{
+	if(!IsPlayerConnected(playerid))
+	{
+		err("player not connected");
+		return 1;
+	}
+
+	new key[MAX_PLAYER_NAME + 32];
+
+	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".%s", id);
+
+	if(!Redis_Exists(gRedis, key))
+	{
+		err("report key '%s' does not exist", key);
+		return 1;
+	}
+
+	return Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_REPORTS".response", sprintf("ReportIO_GetInfo %d %s %s", playerid, id, callback));
+}
+
+public OnReportResponse(data[])
+{
+	new
+		op[32],
+		args[256];
+
+	if(sscanf(data, "s[32]s[256]", op, args))
+	{
+		err("OnReportResponse sscanf failed on '%s'", data);
+		return Y_HOOKS_CONTINUE_RETURN_1;
+	}
+
+	if(!strcmp(op, "ReportIO_GetList"))
+	{
+		new
+			callback[32],
+			playerid,
+			totalreports,
+			listitems,
+			index,
+			dialog_string_key[64],
+			idlist_string_key[64];
+
+		if(sscanf(args, "s[32]dddds[64]s[64]", callback, playerid, totalreports, listitems, index, dialog_string_key, idlist_string_key))
+		{
+			err("ReportIO_GetList sscanf failed with '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
+
+		return CallLocalFunction(callback, "ddddss", playerid, totalreports, listitems, index, dialog_string_key, idlist_string_key);
+	}
+	else if(!strcmp(op, "ReportIO_GetInfo"))
+	{
+		if(strcmp(args, "success"))
+		{
+			err("ReportIO_GetInfo failed: '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
+
+		new
+			callback[32],
+			playerid,
+			name[MAX_PLAYER_NAME],
+			reason[MAX_REPORT_REASON_LENGTH],
+			date,
+			read,
+			type[MAX_REPORT_TYPE_LENGTH]
+			Float:posx,
+			Float:posy,
+			Float:posz,
+			posw,
+			posi,
+			info[MAX_REPORT_INFO_LENGTH],
+			by[MAX_PLAYER_NAME],
+			active;
+
+		if(sscanf(args, "p<\n>s[32]ds[24]s[128]dds[10]fffdds[128]s[24]d", callback, playerid, name, reason, date, read, type, posx, posy, posz, posw, posi, info, by, active))
+		{
+			err("ReportIO_GetInfo sscanf failed with '%s'", args);
+			return Y_HOOKS_CONTINUE_RETURN_1;
+		}
+
+		return CallLocalFunction(callback, "dsddsd", playerid, name, timestamp, reason, bannedby, duration);
+	}
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }

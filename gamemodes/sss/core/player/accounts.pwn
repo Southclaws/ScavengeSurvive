@@ -764,7 +764,7 @@ stock GetAccountWhitelisted(name[], &whitelisted)
 		str_whitelisted[12],
 		ret;
 
-	ret = AccountIO_GetField(name, "whitelisted", str_whitelisted);
+	ret = AccountIO_GetField(name, FIELD_PLAYER_WHITELIST, str_whitelisted);
 	whitelisted = strval(str_whitelisted);
 
 	return ret;
@@ -775,6 +775,31 @@ stock SetAccountWhitelisted(name[], whitelisted)
 	new ret;
 
 	if(whitelisted)
+		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "1");
+	else
+		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "0");
+
+	return ret;
+}
+
+// FIELD_PLAYER_REPORTED
+stock GetAccountReported(name[], &reported)
+{
+	new
+		str_reported[12],
+		ret;
+
+	ret = AccountIO_GetField(name, FIELD_PLAYER_REPORTED, str_reported);
+	reported = strval(str_reported);
+
+	return ret;
+}
+
+stock SetAccountReported(name[], reported)
+{
+	new ret;
+
+	if(reported)
 		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "1");
 	else
 		ret = AccountIO_SetField(name, FIELD_PLAYER_WHITELIST, "0");

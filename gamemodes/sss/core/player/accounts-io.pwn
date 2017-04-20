@@ -40,6 +40,7 @@
 #define FIELD_PLAYER_BANNED				"banned"
 #define FIELD_PLAYER_ADMIN				"admin"
 #define FIELD_PLAYER_WHITELIST			"whitelisted"
+#define FIELD_PLAYER_REPORTED			"reported"
 
 #define ACCOUNT_LOAD_RESULT_EXIST		(0) // Account does exist, prompt login
 #define ACCOUNT_LOAD_RESULT_EXIST_AL	(1) // Account does exist, auto login
@@ -182,7 +183,7 @@ stock AccountIO_Load(playerid, callback[])
 	return;
 }
 
-stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, hash[], &active, &banned, &admin, &whitelist)
+stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, hash[], &active, &banned, &admin, &whitelist, &reported)
 {
 	new
 		key[MAX_PLAYER_NAME + 32],
@@ -196,7 +197,8 @@ stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawnti
 		str_active[2],
 		str_banned[2],
 		str_admin[2],
-		str_whitelist[2];
+		str_whitelist[2],
+		str_reported[2];
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
 
@@ -213,6 +215,7 @@ stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawnti
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_BANNED, str_banned, sizeof(str_banned));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_ADMIN, str_admin, sizeof(str_admin));
 	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_WHITELIST, str_whitelist, sizeof(str_whitelist));
+	ret = Redis_GetHashValue(gRedis, key, FIELD_PLAYER_REPORTED, str_reported, sizeof(str_reported));
 
 	alive = strval(str_alive);
 	regdate = strval(str_regdate);
@@ -224,6 +227,7 @@ stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawnti
 	banned = strval(str_banned);
 	admin = strval(str_admin);
 	whitelist = strval(str_whitelist);
+	reported = strval(str_reported);
 
 	return ret;
 }

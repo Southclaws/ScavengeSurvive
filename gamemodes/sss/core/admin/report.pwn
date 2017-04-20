@@ -50,44 +50,6 @@
 #define REPORT_TYPE_BADHITOFFSET	"BHIT"
 #define REPORT_TYPE_BAD_SHOT_WEAP	"BSHT"
 
-enum
-{
-	FIELD_ID_REPORTS_NAME,
-	FIELD_ID_REPORTS_REASON,
-	FIELD_ID_REPORTS_DATE,
-	FIELD_ID_REPORTS_READ,
-	FIELD_ID_REPORTS_TYPE,
-	FIELD_ID_REPORTS_POSX,
-	FIELD_ID_REPORTS_POSY,
-	FIELD_ID_REPORTS_POSZ,
-	FIELD_ID_REPORTS_POSW,
-	FIELD_ID_REPORTS_POSI,
-	FIELD_ID_REPORTS_INFO,
-	FIELD_ID_REPORTS_BY,
-	FIELD_ID_REPORTS_ACTIVE
-}
-
-enum e_report_list_struct
-{
-	report_name[MAX_PLAYER_NAME],
-	report_type[MAX_REPORT_TYPE_LENGTH],
-	report_read,
-	report_rowid
-}
-
-
-/*==============================================================================
-
-	Initialisation
-
-==============================================================================*/
-
-
-hook OnGameModeInit()
-{
-	//
-}
-
 
 /*==============================================================================
 
@@ -116,19 +78,19 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 	return 0;
 }
 
-DeleteReport(rowid)
+DeleteReport(id[])
 {
-	return 0;
+	return ReportIO_Remove(id);
 }
 
 DeleteReportsOfPlayer(name[])
 {
-	return 0;
+	return ReportIO_RemoveOfName(name);
 }
 
 DeleteReadReports()
 {
-	return 0;
+	return ReportIO_RemoveRead();
 }
 
 
@@ -139,60 +101,43 @@ DeleteReadReports()
 ==============================================================================*/
 
 
-stock GetReportList(list[][e_report_list_struct])
+stock GetReportList(playerid, limit, offset, callback[])
 {
-	new
-		name[MAX_PLAYER_NAME],
-		type[MAX_REPORT_TYPE_LENGTH],
-		read,
-		rowid,
-		idx;
-
-	// ReportList, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	// ReportList, 1, DB::TYPE_INTEGER, read);
-	// ReportList, 2, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH);
-	// ReportList, 3, DB::TYPE_INTEGER, rowid);
-
-	return idx;
+	return ReportIO_GetList(playerid, limit, offset, callback);
 }
 
-stock GetReportInfo(rowid, reason[], &date, type[], &Float:posx, &Float:posy, &Float:posz, &world, &interior, info[], reporter[])
+stock GetReportInfo(playerid, name[], callback[])
 {
-	// ReportInfo, FIELD_ID_REPORTS_REASON, DB::TYPE_STRING, reason, MAX_REPORT_REASON_LENGTH
-	// ReportInfo, FIELD_ID_REPORTS_DATE, DB::TYPE_INTEGER, date
-	// ReportInfo, FIELD_ID_REPORTS_TYPE, DB::TYPE_STRING, type, MAX_REPORT_TYPE_LENGTH
-	// ReportInfo, FIELD_ID_REPORTS_POSX, DB::TYPE_FLOAT, posx
-	// ReportInfo, FIELD_ID_REPORTS_POSY, DB::TYPE_FLOAT, posy
-	// ReportInfo, FIELD_ID_REPORTS_POSZ, DB::TYPE_FLOAT, posz
-	// ReportInfo, FIELD_ID_REPORTS_POSW, DB::TYPE_INTEGER, world
-	// ReportInfo, FIELD_ID_REPORTS_POSI, DB::TYPE_INTEGER, interior
-	// ReportInfo, FIELD_ID_REPORTS_INFO, DB::TYPE_STRING, info, MAX_REPORT_INFO_LENGTH
-	// ReportInfo, FIELD_ID_REPORTS_BY, DB::TYPE_STRING, reporter, MAX_PLAYER_NAME
-
-	return 1;
+	return ReportIO_GetInfo(playerid, name, callback);
 }
 
-stock SetReportRead(rowid, read)
+stock SetReportRead(id[], read)
 {
-	return 0;
+	return ReportIO_SetRead(id, read);
 }
 
 stock GetUnreadReports()
 {
-	new count;
+	new
+		count,
+		ret;
+
+	ret = ReportIO_GetUnread(count);
+	if(ret)
+		err("ReportIO_GetUnread failed: %d", ret);
 
 	return count;
 }
 
 stock IsPlayerReported(name[])
 {
-	new count;
+	new
+		reported,
+		ret;
 
-	// ReportNameExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-	// ReportNameExists, 0, DB::TYPE_INTEGER, count
+	ret = GetAccountReported(name, reported);
+	if(ret)
+		err("ReportIO_GetUnread failed: %d", ret);
 
-	if(count > 0)
-		return 1;
-
-	return 0;
+	return reported;
 }

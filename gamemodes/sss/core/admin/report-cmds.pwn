@@ -29,7 +29,7 @@ Float:	send_TargetPos				[MAX_PLAYERS][3],
 		send_TargetWorld			[MAX_PLAYERS],
 		send_TargetInterior			[MAX_PLAYERS],
 
-		report_CurrentReportList	[MAX_PLAYERS][MAX_REPORTS_PER_PAGE][e_report_list_struct],
+		report_CurrentReportList	[MAX_PLAYERS][MAX_REPORTS_PER_PAGE][GEID_LEN],
 
 		report_CurrentReason		[MAX_PLAYERS][MAX_REPORT_REASON_LENGTH],
 		report_CurrentType			[MAX_PLAYERS][MAX_REPORT_TYPE_LENGTH],
@@ -38,6 +38,10 @@ Float:	report_CurrentPos			[MAX_PLAYERS][3],
 		report_CurrentInterior		[MAX_PLAYERS],
 		report_CurrentInfo			[MAX_PLAYERS][MAX_REPORT_INFO_LENGTH],
 		report_CurrentItem			[MAX_PLAYERS];
+
+
+forward OnReportList(playerid, totalreports, listitems, index, dialog_string_key[], idlist_string_key[]);
+forward OnReportInfo(playerid, name[], reason[], date, read, type, Float:posx, Float:posy, Float:posz, posw, posi, info[], by[], active);
 
 
 /*==============================================================================
@@ -257,70 +261,33 @@ ACMD:deletereports[2](playerid, params[])
 
 ShowListOfReports(playerid)
 {
-	new totalreports = GetReportList(report_CurrentReportList[playerid]);
+	return ReportIO_GetList(playerid, MAX_REPORTS_PER_PAGE, 0, "OnReportList");
+}
 
-	if(totalreports == 0)
-		return 0;
-
-	new
-		colour[9],
-		string[(8 + MAX_PLAYER_NAME + 13 + 1) * MAX_REPORTS_PER_PAGE],
-		idx;
-
-	while(idx < totalreports && idx < MAX_REPORTS_PER_PAGE)
-	{
-		if(IsPlayerBanned(report_CurrentReportList[playerid][idx][report_name]))
-			colour = "{FF0000}";
-
-		else if(!report_CurrentReportList[playerid][idx][report_read])
-			colour = "{FFFF00}";
-
-		else
-			colour = "{FFFFFF}";
-
-		format(string, sizeof(string), "%s%s%s (%s)\n", string, colour, report_CurrentReportList[playerid][idx][report_name], report_CurrentReportList[playerid][idx][report_type]);
-
-		idx++;
-	}
-
-	Dialog_Show(playerid, ListOfReports, DIALOG_STYLE_LIST, "Reports", string, "Open", "Close");
-
-	return 1;
+public OnReportList(playerid, totalreports, listitems, index, dialog_string_key[], idlist_string_key[])
+{
+	// Dialog_Show(playerid, ListOfReports, DIALOG_STYLE_LIST, "Reports", string, "Open", "Close");
 }
 
 Dialog:ListOfReports(playerid, response, listitem, inputtext[])
 {
 	if(response)
 	{
+		// get id from idmap (from idlist_string_key)
 		ShowReport(playerid, listitem);
 		report_CurrentItem[playerid] = listitem;
 	}
 }
 
-
-ShowReport(playerid, reportlistitem)
+ShowReport(playerid, id[])
 {
-	new
-		ret,
-		timestamp,
-		reporter[MAX_PLAYER_NAME];
+	return ReportIO_GetInfo(playerid, id, "OnReportInfo");
+}
 
-	ret = GetReportInfo(report_CurrentReportList[playerid][reportlistitem][report_rowid],
-		report_CurrentReason[playerid],
-		timestamp, report_CurrentType[playerid],
-		report_CurrentPos[playerid][0],
-		report_CurrentPos[playerid][1],
-		report_CurrentPos[playerid][2],
-		report_CurrentWorld[playerid],
-		report_CurrentInterior[playerid],
-		report_CurrentInfo[playerid],
-		reporter);
-
-	if(!ret)
-		return 0;
-
+public OnReportInfo(playerid, name[], reason[], date, read, type, Float:posx, Float:posy, Float:posz, posw, posi, info[], by[], active)
+{
+/*
 	new message[512];
-
 	format(message, sizeof(message), "\
 		"C_YELLOW"Date:\n\t\t"C_BLUE"%s\n\n\n\
 		"C_YELLOW"Reason:\n\t\t"C_BLUE"%s\n\n\n\
@@ -328,12 +295,9 @@ ShowReport(playerid, reportlistitem)
 		TimestampToDateTime(timestamp),
 		report_CurrentReason[playerid],
 		reporter);
-
 	SetReportRead(report_CurrentReportList[playerid][reportlistitem][report_rowid], 1);
-
 	Dialog_Show(playerid, Report, DIALOG_STYLE_MSGBOX, report_CurrentReportList[playerid][reportlistitem][report_name], message, "Options", "Back");
-
-	return 1;
+*/
 }
 
 Dialog:Report(playerid, response, listitem, inputtext[])
