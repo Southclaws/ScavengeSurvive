@@ -219,7 +219,7 @@ public OnReportResponse(data[])
 			reason[MAX_REPORT_REASON_LENGTH],
 			date,
 			read,
-			type[MAX_REPORT_TYPE_LENGTH]
+			type[MAX_REPORT_TYPE_LENGTH],
 			Float:posx,
 			Float:posy,
 			Float:posz,
@@ -235,7 +235,7 @@ public OnReportResponse(data[])
 			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 
-		return CallLocalFunction(callback, "dsddsd", playerid, name, timestamp, reason, bannedby, duration);
+		return CallLocalFunction(callback, "dssddsfffddssd", playerid, name, reason, date, read, type, posx, posy, posz, posw, posi, info, by, active);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

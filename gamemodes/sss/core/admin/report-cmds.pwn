@@ -37,7 +37,7 @@ Float:	report_CurrentPos			[MAX_PLAYERS][3],
 		report_CurrentWorld			[MAX_PLAYERS],
 		report_CurrentInterior		[MAX_PLAYERS],
 		report_CurrentInfo			[MAX_PLAYERS][MAX_REPORT_INFO_LENGTH],
-		report_CurrentItem			[MAX_PLAYERS];
+		report_CurrentID			[MAX_PLAYERS][GEID_LEN];
 
 
 forward OnReportList(playerid, totalreports, listitems, index, dialog_string_key[], idlist_string_key[]);
@@ -274,8 +274,8 @@ Dialog:ListOfReports(playerid, response, listitem, inputtext[])
 	if(response)
 	{
 		// get id from idmap (from idlist_string_key)
-		ShowReport(playerid, listitem);
-		report_CurrentItem[playerid] = listitem;
+		// ShowReport(playerid, listitem);
+		// report_CurrentItem[playerid] = listitem;
 	}
 }
 
@@ -343,7 +343,7 @@ ShowReportOptions(playerid)
 		strcat(options, "(Go on duty to see more options)");	
 	}
 
-	Dialog_Show(playerid, ReportOptions, DIALOG_STYLE_LIST, report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name], options, "Select", "Back");
+	// Dialog_Show(playerid, ReportOptions, DIALOG_STYLE_LIST, report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name], options, "Select", "Back");
 }
 
 Dialog:ReportOptions(playerid, response, listitem, inputtext[])
@@ -358,19 +358,19 @@ Dialog:ReportOptions(playerid, response, listitem, inputtext[])
 			}
 			case 1:
 			{
-				DeleteReport(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_rowid]);
+				// DeleteReport(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_rowid]);
 
 				ShowListOfReports(playerid);
 			}
 			case 2:
 			{
-				DeleteReportsOfPlayer(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name]);
+				// DeleteReportsOfPlayer(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name]);
 
 				ShowListOfReports(playerid);
 			}
 			case 3:
 			{
-				SetReportRead(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_rowid], 0);
+				// SetReportRead(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_rowid], 0);
 
 				ShowListOfReports(playerid);
 			}
@@ -463,7 +463,7 @@ Dialog:ReportOptions(playerid, response, listitem, inputtext[])
 	}
 	else
 	{
-		ShowReport(playerid, report_CurrentItem[playerid]);
+		// ShowReport(playerid, report_CurrentItem[playerid]);
 	}
 }
 
@@ -500,7 +500,7 @@ Dialog:BanPrompt(playerid, response, listitem, inputtext[])
 			return 0;
 		}
 
-		BanPlayerByName(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name], report_CurrentReason[playerid], playerid, duration);
+		// BanPlayerByName(report_CurrentReportList[playerid][report_CurrentItem[playerid]][report_name], report_CurrentReason[playerid], playerid, duration);
 		ShowListOfReports(playerid);
 	}
 	else

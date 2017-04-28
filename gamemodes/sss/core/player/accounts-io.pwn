@@ -79,9 +79,14 @@ stock AccountIO_Create(name[], pass[], ipv4[], regdate, lastlog, hash[])
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ALIVE, "1");
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REGDATE, sprintf("%d", regdate));
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_LASTLOG, sprintf("%d", lastlog));
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_TOTALSPAWNS, "0");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_WARNINGS, "0");
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_GPCI, hash);
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ACTIVE, "1");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_BANNED, "0");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_ADMIN, "0");
 	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_WHITELIST, "0");
+	ret += Redis_SetHashValue(gRedis, key, FIELD_PLAYER_REPORTED, "0");
 	Redis_SendMessage(gRedis, REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".request", sprintf("AccountIO_Create %s", name));
 
 	return ret;

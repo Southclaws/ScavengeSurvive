@@ -613,6 +613,7 @@ main()
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing", "The server is online, come and play!");
 }
 
 /*
@@ -712,6 +713,7 @@ public SetRestart(seconds)
 RestartGamemode()
 {
 	log("[RestartGamemode] Initialising gamemode restart...");
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing", "The server is restarting, that means more loot!");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
