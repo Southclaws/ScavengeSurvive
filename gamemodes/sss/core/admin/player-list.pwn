@@ -123,9 +123,10 @@ GetPlayerInfo(name[])
 		active,
 		banned,
 		admin,
-		whitelist;
+		whitelist,
+		reported;
 
-	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active, banned, admin, whitelist);
+	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active, banned, admin, whitelist, reported);
 
 	GetIPCountry(ipv4, country);
 

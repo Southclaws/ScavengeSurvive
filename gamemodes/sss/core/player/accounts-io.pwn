@@ -97,13 +97,13 @@ stock AccountIO_Load(playerid, callback[])
 	if(!IsPlayerConnected(playerid))
 	{
 		err("player not connected");
-		return;
+		return 1;
 	}
 
 	if(isnull(callback))
 	{
 		err("callback is null");
-		return;
+		return 1;
 	}
 
 	new
@@ -116,7 +116,7 @@ stock AccountIO_Load(playerid, callback[])
 	if(!Redis_Exists(gRedis, key))
 	{
 		CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_NO_EXIST);
-		return;
+		return 2;
 	}
 
 	new
@@ -158,7 +158,7 @@ stock AccountIO_Load(playerid, callback[])
 	{
 		log("[LoadAccount] %p (account inactive) Last login: %T", playerid, lastlog);
 		CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_EXIST_DA);
-		return;
+		return 2;
 	}
 
 	if(IsWhitelistActive())
@@ -170,7 +170,7 @@ stock AccountIO_Load(playerid, callback[])
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
 			CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_EXIST_WL);
-			return;
+			return 2;
 		}
 	}
 
@@ -185,7 +185,7 @@ stock AccountIO_Load(playerid, callback[])
 	log("[LoadAccount] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
 
 	CallLocalFunction(callback, "dd", playerid, ACCOUNT_LOAD_RESULT_EXIST);
-	return;
+	return 0;
 }
 
 stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, hash[], &active, &banned, &admin, &whitelist, &reported)
@@ -239,6 +239,12 @@ stock AccountIO_Get(name[], pass[], ipv4[], &alive, &regdate, &lastlog, &spawnti
 
 stock AccountIO_Exists(name[])
 {
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
 	new key[MAX_PLAYER_NAME + 32];
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
@@ -248,6 +254,18 @@ stock AccountIO_Exists(name[])
 
 stock AccountIO_GetField(name[], field[], out[], len = sizeof(out))
 {
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
+	if(isnull(field))
+	{
+		err("field is null");
+		return 1;
+	}
+
 	new key[MAX_PLAYER_NAME + 32];
 
 	format(key, sizeof(key), REDIS_DOMAIN_ROOT"."REDIS_DOMAIN_ACCOUNTS".%s", name);
@@ -257,6 +275,24 @@ stock AccountIO_GetField(name[], field[], out[], len = sizeof(out))
 
 stock AccountIO_SetField(name[], field[], val[])
 {
+	if(isnull(name))
+	{
+		err("name is null");
+		return 1;
+	}
+
+	if(isnull(field))
+	{
+		err("field is null");
+		return 1;
+	}
+
+	if(isnull(val))
+	{
+		err("val is null");
+		return 1;
+	}
+
 	new
 		key[MAX_PLAYER_NAME + 32],
 		ret;

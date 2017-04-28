@@ -181,14 +181,15 @@ stock IsPlayerInWhitelist(playerid)
 
 stock IsNameInWhitelist(name[])
 {
-	if(isnull(name))
-		return 0;
+	new
+		whitelisted,
+		ret;
 
-	new count;
+	ret = GetAccountWhitelisted(name, whitelisted);
+	if(ret)
+		err("GetAccountWhitelisted failed: %d", ret);
 
-	// WhitelistExists, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME
-
-	return 1;
+	return whitelisted;
 }
 
 stock WhitelistKick(playerid)
