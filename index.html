@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Scavenge and Survive by Southclaw</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/Southclaw/ScavengeSurvive">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/Southclaw/ScavengeSurvive/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/Southclaw/ScavengeSurvive/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Scavenge and Survive</h1>
+          <p>PvP SA:MP server script based around combat, building, crafting and survival against other players.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/Southclaw">Southclaw</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="scavenge-and-survive-gamemode-script-for-samp" class="anchor" href="#scavenge-and-survive-gamemode-script-for-samp"><span class="octicon octicon-link"></span></a>Scavenge and Survive gamemode script for SA:MP</h1>
+
+<h2>
+<a name="a-pvp-samp-server-script-built-upon-the-sif-framework" class="anchor" href="#a-pvp-samp-server-script-built-upon-the-sif-framework"><span class="octicon octicon-link"></span></a>A PvP SA:MP server script built upon the SIF framework.</h2>
+
+<p>The aim of the game is to find supplies such as tools or weapons to help you
+survive, either alone or in a group.</p>
+
+<p>The overall objective is to build a stable community and defend it from players
+with more hostile intentions.</p>
+
+<p>Items spawn around the map in various places categorised by type, rarity and
+location. Vehicles are rare and spawn with damaged engines, tires or locked,
+they will usually spawn with loot inside the trunk.</p>
+
+<p>No gameplay mechanics require the use of commands. All gameplay has been built
+with an intuitive <em>interaction model</em> in mind with only 5 major keys required
+to access the gamemode-specific features.</p>
+
+<h2>
+<a name="development" class="anchor" href="#development"><span class="octicon octicon-link"></span></a>Development</h2>
+
+<p>The gamemode is written in a modular fashion, borrowing a lot of concepts from
+object-oriented programming. Removing some features can be as simple as removing
+an #include line.</p>
+
+<p>The "World" scripts are separated and can be completely replaced for a new map.</p>
+
+<p>An API is in the works that will allow developers to fully control and
+manipulate the gamemode without needing to edit it in any way; allowing for
+easy, conflict free updating from the master branch.</p>
+
+<p>I encourage people to play around with this code, create a new map and put loot
+spawns in it, I would love to see what is made!</p>
+
+<h2>
+<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
+
+<ol>
+<li>
+<p><strong>Dependencies</strong></p>
+
+<p>Ensure you have ALL the dependencies listed in the master script (the one you
+compile from!) each #include line has a link to the release page.</p>
+</li>
+<li>
+<p><strong>"/scriptfiles/" directory</strong></p>
+
+<p>Rename "scriptfiles-folder-structure-and-readmes" to just "scriptfiles".
+The reason this folder has this name is because I don't want my actual
+scriptfiles folder on the repo as it contains various things I don't wish to
+share (such as user accounts and data for the test server) this may change.</p>
+
+<p>(However, the server will cleverly automatically create any missing
+files/folders when started so this repository folder isn't even required any
+more!)</p>
+</li>
+<li>
+<p><strong>Compile!</strong></p>
+
+<p>If you set up all the dependencies correctly, there should be <em>no</em>
+errors at all. If you have a problem compiling DON'T SUBMIT AN ISSUE HERE!
+that place is reserved for actual bugs, if you need help, send me an email :)</p>
+</li>
+<li>
+<p><strong>Set up plugins and filterscripts in your <em>"./server.cfg"</em> file.</strong></p>
+
+<p>Note: The repo contains <em>many</em> filterscripts, most of these are just testing
+tools and utilities, there are only <em>2</em> filterscripts you need to run on a
+public server:</p>
+
+<pre><code>  filterscripts maps rcon
+  plugins streamer sscanf CTime Whirlpool FileManager
+</code></pre>
+</li>
+<li>
+<p><strong>Set up gamemode settings in your <em>"./scriptfiles/SSS/settings.json"</em> file</strong></p>
+
+<p>This is included with the repo and it will also self-create if absent.
+Here is an explanation of each key:</p>
+
+<p><strong>player related settings:</strong></p>
+
+<ul>
+<li>allow-pause-map <em>(bool)</em> - enable the map option in the pause menu</li>
+<li>combat-log-window <em>(integer)</em> - combat log time window in seconds</li>
+<li>interior-entry <em>(bool)</em> - enable interior entrances</li>
+<li>login-freeze-time <em>(integer)</em> - amount of seconds to freeze player on spawn</li>
+<li>max-tab-out-time <em>(integer)</em> - amount of seconds that a player can alt tab</li>
+<li>nametag-distance <em>(float)</em> - set the nametag render distance (0.0 for off)</li>
+<li>ping-limit <em>(integer)</em> - maximum ping for players</li>
+<li>player-animations <em>(bool)</em> - enable the standard CJ animations</li>
+</ul>
+<p><strong>server related settings:</strong></p>
+
+<ul>
+<li>file-check <em>(bool)</em> - perform a full file check on user files</li>
+<li>gamemodename <em>(string)</em> - server browser gamemode name</li>
+<li>infomsg-interval <em>(integer)</em> - time between each info message in minutes</li>
+<li>infomsgs <em>(string array)</em> - array list of periodic information messages</li>
+<li>motd <em>(string)</em> - message of the day, displayed to players upon connecting</li>
+<li>rules <em>(string array)</em> - array list of rules</li>
+<li>website <em>(string)</em> - the website for whitelist notification message</li>
+<li>whitelist <em>(bool)</em> - enable whitelist</li>
+</ul>
+</li>
+</ol><p>Enjoy, do whatever you want with it, but keep my name on it :)</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
