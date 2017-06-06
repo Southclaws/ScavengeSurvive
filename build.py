@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This script will build the Scavenge and Survive gamemode and handle incrementing the build number
 while developing. It's important that if you're an end-user that you do not increment the build
