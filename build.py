@@ -43,6 +43,8 @@ def build_project(config, increment=True):
     cmd = config["cmd"]
     constants = config["constants"]
 
+    cmd += ["-e../errors"] + [k + "=" + v for k, v in constants.items()]
+
     print("BUILD", build_number, flush=True)
     print("COMPILER", cmd, flush=True)
     print("CONSTANTS", constants, flush=True)
@@ -60,10 +62,7 @@ def build_project(config, increment=True):
     # '-d3': sets the debug output as level 3, mostly just for crashdetect
     # '-e': tells the compiler to write all output to a file instead of stdout
     # (that ^last one^ is important!)
-    ret = subprocess.call(
-        cmd +
-        ["-e../errors"] +
-        [k + "=" + v for k, v in constants])
+    ret = subprocess.call(cmd)
 
     # This extra part at the end will iterate the `constants` list and add them
     # to the command with a '=' after each. This is because pawncc accepts
@@ -146,19 +145,15 @@ def main():
     - input: if 'mode' is 'file' then this arg specifies the file to compile
     then the script calls either build_project or build_file.
     """
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('mode', help="mode: project|file")
     parser.add_argument('--increment', action="store_true")
     parser.add_argument('--input', type=str, default='')
     args = parser.parse_args()
 
     config = load_config()
 
-    if args.mode == "project":
-        build_project(config, args.increment)
-
-    else:
-        print("the current only supported mode is 'project'")
+    build_project(config, args.increment)
 
 
 if __name__ == '__main__':
