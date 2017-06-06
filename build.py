@@ -6,6 +6,8 @@ while developing. It's important that if you're an end-user that you do not incr
 number as you'll get out of sync with the main repository.
 
 This script requires Python 3 so if you plan on using it, make sure you have that installed first.
+
+If you're interested in how it works, scroll down to `main` to follow the script in order.
 """
 
 import argparse
@@ -14,12 +16,6 @@ import os
 import json
 import re
 import subprocess
-
-
-# NOTE:
-#
-# Scroll down to "def main():" to follow the script in chronological order.
-#
 
 
 def build_project(config, increment=True):
@@ -55,7 +51,7 @@ def build_project(config, increment=True):
     # pawncc NOT Pawno! Pawno is the IDE but you can compile scripts without
     # ever touching Pawno because the compilation is actually always performed
     # by pawncc which is a simple terminal application with a variety of args.
-    # The arguments being passed here include:
+    # The arguments being passed here by default include:
     # '-D': tells the compiler the working directory
     # 'ScavengeSurvive.pwn': the source file we want to compile
     # '-;+': enforces the use of semicolons, just a SA:MP tradition really!
