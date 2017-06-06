@@ -587,7 +587,11 @@ new stock
 
 // WORLD
 
+#if defined BUILD_MINIMAL
+#include "sss/world-bs/world.pwn"
+#else
 #include "sss/world/world.pwn"
+#endif
 
 #if !defined GetMapName
 	#error World script MUST have a "GetMapName" function!
@@ -613,7 +617,7 @@ main()
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
-	Redis_SendMessage(gRedis, "ss.rediscord.outgoing", "The server is online, come and play!");
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing-global", "Server:The server is online, come and play!");
 }
 
 /*
@@ -713,7 +717,7 @@ public SetRestart(seconds)
 RestartGamemode()
 {
 	log("[RestartGamemode] Initialising gamemode restart...");
-	Redis_SendMessage(gRedis, "ss.rediscord.outgoing", "The server is restarting, that means more loot!");
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing-global", "Server:The server is restarting, that means more loot!");
 	gServerRestarting = true;
 
 	foreach(new i : Player)

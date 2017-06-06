@@ -137,7 +137,7 @@ stock IsPlayerReported(name[])
 
 	ret = GetAccountReported(name, reported);
 	if(ret)
-		err("ReportIO_GetUnread failed: %d", ret);
+		err("GetAccountReported failed: %d", ret);
 
 	return reported;
 }
