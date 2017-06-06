@@ -90,7 +90,7 @@ def build_project(config, increment=True):
         with io.open("errors", 'r') as filehandle:
             print("Build result:", ret)
             for line in filehandle:
-                if re.match("[a-zA-Z]:\\.*", line):
+                if re.match("[a-zA-Z]:\\.*", line) or re.match("^/", line):
                     print(line, end='')
 
                 else:
