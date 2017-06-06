@@ -255,11 +255,9 @@ CreateAccount(playerid, pass[])
 	GetPlayerIp(playerid, ipv4, 16);
 	gpci(playerid, hash, MAX_GPCI_LEN);
 
-	#if defined BUILD_REDIS_IO
 	ret = AccountIO_Create(name, pass, ipv4, regdate, lastlog, hash);
 	if(ret != 0)
 		return ret;
-	#endif
 
 	acc_IsNewPlayer[playerid] = true;
 	acc_HasAccount[playerid] = true;
