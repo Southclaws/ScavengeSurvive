@@ -2,49 +2,25 @@
 	"build_systems":
 	[
 		{
-			"cmd": "python build.py project --increment",
+			"cmd": ["python3", "build.py", "--increment"],
 			"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
-			"name": "[1] SOUTHCLAW'S SS BUILD SYSTEM DO NOT USE!",
+			"name": "Scavenge and Survive build system (For development only)",
 			"variants":
 			[
 				{
-					"cmd": "python build.py file --input \"${file}\"",
-					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
-					"name": "[2] Pawn (Build current file)",
-					"working_dir": "${project_path:${folder}}"
-				},
-				{
-					"cmd": "python build.py project",
+					"cmd": ["python3", "build.py"],
 					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
 					"name": "[3] Build project (No build increment)",
-					"working_dir": "${project_path:${folder}}"
-				},
-				{
-					"cmd": "python build.py project --increment",
-					"file_regex": "(.*?)\\(([0-9]*)[- 0-9]*\\)",
-					"name": "[4] Build project",
 					"working_dir": "${project_path:${folder}}"
 				}
 			],
 			"working_dir": "${project_path:${folder}}"
-		},
-		{
-			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"name": "Anaconda Python Builder",
-			"selector": "source.python",
-			"shell_cmd": "\"python\" -u \"$file\""
 		}
 	],
 	"folders":
 	[
 		{
 			"path": "."
-		},
-		{
-			"path": "F:\\Projects\\SA-MP\\pawno\\include"
-		},
-		{
-			"path": "F:\\Projects\\SA-MP\\Releases"
 		}
 	],
 	"settings":
