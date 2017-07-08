@@ -1,6 +1,6 @@
 # Scavenge and Survive
 
-[![GPL-V3](https://img.shields.io/badge/license-GPL3-orange.svg)](http://www.gnu.org/copyleft/gpl.html)
+[![GPL-V3](https://img.shields.io/badge/license-GPL3-red.svg)](http://www.gnu.org/copyleft/gpl.html)
 [![Slack](https://img.shields.io/badge/discuss-slack-orange.svg)](https://join.slack.com/southclaws/shared_invite/MjA5NzM2ODkxMDExLTE0OTk1MDI4MjItYjdjM2NmMTJjNA)
 [![Discord](https://img.shields.io/badge/discuss-discord-blue.svg)](http://dc.southcla.ws)
 [![GitHub issues](https://img.shields.io/github/issues/Southclaws/ScavengeSurvive.svg)]()
