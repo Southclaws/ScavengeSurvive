@@ -1,9 +1,10 @@
 # Scavenge and Survive
-[![GPL-V3](http://www.gnu.org/graphics/gplv3-88x31.png)](http://www.gnu.org/copyleft/gpl.html)[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Southclaw/ScavengeSurvive?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Support the development of this mod by donating. I can put more time into adding new features!
-
-[![Donate](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-200px.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
+[![GPL-V3](https://img.shields.io/badge/license-GPL3-orange.svg)](http://www.gnu.org/copyleft/gpl.html)
+[![Slack](https://img.shields.io/badge/discuss-slack-orange.svg)](https://join.slack.com/southclaws/shared_invite/MjA5NzM2ODkxMDExLTE0OTk1MDI4MjItYjdjM2NmMTJjNA)
+[![Discord](https://img.shields.io/badge/discuss-discord-blue.svg)](http://dc.southcla.ws)
+[![GitHub issues](https://img.shields.io/github/issues/Southclaws/ScavengeSurvive.svg)]()
+[![Donate](https://img.shields.io/badge/donate-paypal-3b7bbf.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
 
 
 ## A PvP SA:MP server script
