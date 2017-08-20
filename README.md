@@ -4,7 +4,8 @@
 [![Slack](https://img.shields.io/badge/discuss-slack-orange.svg)](https://join.slack.com/southclaws/shared_invite/MjA5NzM2ODkxMDExLTE0OTk1MDI4MjItYjdjM2NmMTJjNA)
 [![Discord](https://img.shields.io/badge/discuss-discord-blue.svg)](http://dc.southcla.ws)
 [![GitHub issues](https://img.shields.io/github/issues/Southclaws/ScavengeSurvive.svg)]()
-[![Donate](https://img.shields.io/badge/donate-paypal-3b7bbf.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)[![Waffle.io](https://img.shields.io/waffle/label/Southclaws/ScavengeSurvive/in%20progress.svg)](https://waffle.io/Southclaws/ScavengeSurvive)
+[![Donate](https://img.shields.io/badge/donate-paypal-3b7bbf.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
+[![Waffle.io](https://img.shields.io/waffle/label/Southclaws/ScavengeSurvive/in%20progress.svg)](https://waffle.io/Southclaws/ScavengeSurvive)
 
 
 
