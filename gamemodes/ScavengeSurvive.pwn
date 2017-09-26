@@ -97,7 +97,7 @@ public OnGameModeInit()
 {
 	print("[OnGameModeInit] Initialising 'Main'...");
 
-	OnGameModeInit_Setup();
+	// OnGameModeInit_Setup();
 
 	#if defined main_OnGameModeInit
 		return main_OnGameModeInit();
@@ -121,32 +121,61 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
-#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
+// By Zeex: https://github.com/Zeex/samp-plugin-crashdetect
+#include <crashdetect>
+
+// By Y_Less: https://github.com/maddinat0r/sscanf
+#include <sscanf2>
+
+// By Y_Less: https://github.com/Misiur/YSI-Includes
+#include <YSI\y_utils>
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
 
-#include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
+// preload library for hooking functions before they are used in external libraries.
+#include "sss\core\server\hooks.pwn"
 
-#include <redis>					// By Southclaws, v0.1.0:	https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
-#include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
-#include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
-#include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
-#include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
-#include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
-#include <easyDialog>				// By Emmet_:				https://github.com/Awsomedude/easyDialog
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
-#include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
-#include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
+// By Southclaws, v0.1.0: https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
+#include <redis>
 
-#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaws/SimpleINI
-#include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
-#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
+// By Incognito, v2.8.2: https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.8.2
+#include <streamer>
+
+// By Slice: https://github.com/Southclaws/formatex
+#include <formatex>
+
+// By Slice: https://github.com/oscar-broman/strlib
+#include <strlib>
+
+// By Whitetiger: https://github.com/Whitetigerswt/SAMP-geoip
+#include <geolocation>
+
+// By RyDeR`: https://github.com/Southclaws/samp-ctime
+#include <ctime>
+
+// By Emmet_: https://github.com/Awsomedude/easyDialog
+#include <easyDialog>
+
+// By Toribio/Southclaw: https://github.com/Southclaws/progress2
+#include <progress2>
+
+// By JaTochNietDan, 1.5: https://github.com/Southclaws/SA-MP-FileManager
+#include <FileManager>
+
+// By Kalcor: https://github.com/Southclaws/samp-plugin-mapandreas
+#include <mapandreas>
+
+// By Southclaw: https://github.com/Southclaws/SimpleINI
+#include <SimpleINI>
+
+// By Southclaw: https://github.com/Southclaws/modio
+#include <modio>
+
+// By Southclaw, v1.6.2: https://github.com/Southclaws/SIF
+#include <SIF>
 #include <SIF\extensions\ItemArrayData.pwn>
 #include <SIF\extensions\ItemSerializer.pwn>
 #include <SIF\extensions\InventoryDialog.pwn>
@@ -154,13 +183,22 @@ public OnGameModeInit()
 #include <SIF\extensions\ContainerDialog.pwn>
 #include <SIF\extensions\Craft.pwn>
 #include <SIF\extensions\DebugLabels.pwn>
-#include <WeaponData>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
-#include <Line>						// By Southclaw:			https://github.com/Southclaws/Line
-#include <Zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
-#include <Ladder>					// By Southclaw:			https://github.com/Southclaws/Ladder
 
+// By Southclaw: https://github.com/Southclaws/AdvancedWeaponData
+#include <WeaponData>
+
+// By Southclaw: https://github.com/Southclaws/Line
+#include <Line>
+
+// By Southclaw: https://github.com/Southclaws/Zipline
+#include <Zipline>
+
+// By Southclaw: https://github.com/Southclaws/Ladder
+#include <Ladder>
+
+
+// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
 native WP_Hash(buffer[], len, const str[]);
-									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
 
 
 /*==============================================================================
@@ -779,7 +817,7 @@ DirectoryCheck(directory[])
 	}
 }
 
-public Streamer_OnPluginError(error[])
+public Streamer_OnPluginError(const error[])
 {
 	err(error);
 }

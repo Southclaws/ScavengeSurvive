@@ -50,33 +50,41 @@ static
 		log_Total;
 
 
-stock log(text[], va_args<>)
+stock log(const text[], {Float,_}:...)
 {
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
 	print(log_Buffer);
 }
 
-stock dbg(handler[], level, text[], va_args<>)
+stock dbg(const handler[], level, const text[], {Float,_}:...)
 {
-	new idx = _debug_get_handler_index(handler);
+	new
+		idx = _debug_get_handler_index(handler),
+		bt[412];
+	
+	if(!GetBacktrace(bt)) {
+		print("ERROR GETTING BACKTRACE");
+	}
+
+	// todo: strip bt down to just the file it originated from
 
 	if(level <= log_Table[idx][log_level])
 	{
-		va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<3>);
+		formatex(log_Buffer, sizeof(log_Buffer), text, ___(3));
 		print(log_Buffer);
 	}
 }
 
-stock err(text[], va_args<>)
+stock err(const text[], {Float,_}:...)
 {
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
 	print(log_Buffer);
 	PrintAmxBacktrace();
 }
 
-stock fatal(text[], va_args<>)
+stock fatal(const text[], {Float,_}:...)
 {
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
 	print(log_Buffer);
 	PrintAmxBacktrace();
 
@@ -94,7 +102,7 @@ stock fatal(text[], va_args<>)
 ==============================================================================*/
 
 
-_debug_get_handler_index(handler[])
+_debug_get_handler_index(const handler[])
 {
 	for(new i; i < log_Total; ++i)
 	{
