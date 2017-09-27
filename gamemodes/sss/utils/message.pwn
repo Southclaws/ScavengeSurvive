@@ -37,7 +37,7 @@ static formatBuffer[244];
 
 stock ChatMsg(playerid, colour, fmat[], {Float,_}:...)
 {
-	formatex(formatBuffer, sizeof(formatBuffer), fmat, ___(3));
+	format(formatBuffer, sizeof(formatBuffer), fmat, ___(3));
 	ChatMsgFlat(playerid, colour, formatBuffer);
 
 	return 1;
@@ -45,7 +45,7 @@ stock ChatMsg(playerid, colour, fmat[], {Float,_}:...)
 
 stock ChatMsgAll(colour, fmat[], {Float,_}:...)
 {
-	formatex(formatBuffer, sizeof(formatBuffer), fmat, ___(2));
+	format(formatBuffer, sizeof(formatBuffer), fmat, ___(2));
 	ChatMsgAllFlat(colour, formatBuffer);
 
 	return 1;
@@ -53,7 +53,7 @@ stock ChatMsgAll(colour, fmat[], {Float,_}:...)
 
 stock ChatMsgLang(playerid, colour, key[], {Float,_}:...)
 {
-	formatex(formatBuffer, sizeof(formatBuffer), GetLanguageString(GetPlayerLanguage(playerid), key), ___(3));
+	format(formatBuffer, sizeof(formatBuffer), GetLanguageString(GetPlayerLanguage(playerid), key), ___(3));
 	ChatMsgFlat(playerid, colour, formatBuffer);
 
 	return 1;
@@ -61,7 +61,7 @@ stock ChatMsgLang(playerid, colour, key[], {Float,_}:...)
 
 stock ChatMsgAdmins(level, colour, fmat[], {Float,_}:...)
 {
-	formatex(formatBuffer, sizeof(formatBuffer), fmat, ___(3));
+	format(formatBuffer, sizeof(formatBuffer), fmat, ___(3));
 	ChatMsgAdminsFlat(level, colour, formatBuffer);
 
 	return 1;

@@ -45,18 +45,19 @@ enum e_DEBUG_HANDLER
 }
 
 static
-		log_Buffer[256],
+//		log_Buffer[256],
 		log_Table[MAX_LOG_HANDLER][e_DEBUG_HANDLER],
 		log_Total;
 
 
-stock log(const text[], {Float,_}:...)
+stock log(text[], {Float,_}:...)
 {
-	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
-	print(log_Buffer);
+	new buffer[256];
+	format(buffer, sizeof(buffer), text, ___(1));
+	print(buffer);
 }
 
-stock dbg(const handler[], level, const text[], {Float,_}:...)
+stock dbg(handler[], level, text[], {Float,_}:...)
 {
 	new
 		idx = _debug_get_handler_index(handler),
@@ -70,22 +71,25 @@ stock dbg(const handler[], level, const text[], {Float,_}:...)
 
 	if(level <= log_Table[idx][log_level])
 	{
-		formatex(log_Buffer, sizeof(log_Buffer), text, ___(3));
-		print(log_Buffer);
+		new buffer[256];
+		format(buffer, sizeof(buffer), text, ___(3));
+		print(buffer);
 	}
 }
 
-stock err(const text[], {Float,_}:...)
+stock err(text[], {Float,_}:...)
 {
-	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
-	print(log_Buffer);
+	new buffer[256];
+	format(buffer, sizeof(buffer), text, ___(1));
+	print(buffer);
 	PrintAmxBacktrace();
 }
 
-stock fatal(const text[], {Float,_}:...)
+stock fatal(text[], {Float,_}:...)
 {
-	formatex(log_Buffer, sizeof(log_Buffer), text, ___(1));
-	print(log_Buffer);
+	new buffer[256];
+	format(buffer, sizeof(buffer), text, ___(1));
+	print(buffer);
 	PrintAmxBacktrace();
 
 	// trigger a crash to escape the gamemode
@@ -102,7 +106,7 @@ stock fatal(const text[], {Float,_}:...)
 ==============================================================================*/
 
 
-_debug_get_handler_index(const handler[])
+_debug_get_handler_index(handler[])
 {
 	for(new i; i < log_Total; ++i)
 	{
