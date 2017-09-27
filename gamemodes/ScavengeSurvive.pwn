@@ -97,7 +97,7 @@ public OnGameModeInit()
 {
 	print("[OnGameModeInit] Initialising 'Main'...");
 
-	// OnGameModeInit_Setup();
+	OnGameModeInit_Setup();
 
 	#if defined main_OnGameModeInit
 		return main_OnGameModeInit();

@@ -13,10 +13,12 @@
 		"crashdetect",
 		"ctime",
 		"sscanf",
-		"streamer"
+		"streamer",
+		"redis"
 	],
 	"port": 7777,
 	"hostname": "SS",
 	"maxplayers": 32,
-	"rcon": false
+	"rcon": false,
+	"rcon_password": "test"
 }
