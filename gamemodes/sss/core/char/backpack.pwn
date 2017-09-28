@@ -107,8 +107,10 @@ stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOff
 {
 	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
 
-	if(bag_TypeTotal == MAX_BAG_TYPE)
+	if(bag_TypeTotal == MAX_BAG_TYPE-1) {
+		fatal("maximum amount of bags defined");
 		return -1;
+	}
 
 	SetItemTypeMaxArrayData(itemtype, 2);
 
