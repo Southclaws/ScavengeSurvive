@@ -93,6 +93,10 @@ native gpci(playerid, serial[], len);
 
 ==============================================================================*/
 
+// Must include y_utils before this hook (not quite a "guaranteed" first call any more!)
+// due to https://github.com/Misiur/YSI-Includes/issues/196
+#include <YSI\y_utils>
+
 public OnGameModeInit()
 {
 	print("[OnGameModeInit] Initialising 'Main'...");
@@ -128,7 +132,6 @@ public OnGameModeInit()
 #include <sscanf2>
 
 // By Y_Less: https://github.com/Misiur/YSI-Includes
-#include <YSI\y_utils>
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
@@ -163,7 +166,7 @@ public OnGameModeInit()
 #include <progress2>
 
 // By JaTochNietDan, 1.5: https://github.com/Southclaws/SA-MP-FileManager
-#include <FileManager>
+#include <filemanager>
 
 // By Kalcor: https://github.com/Southclaws/samp-plugin-mapandreas
 #include <mapandreas>
@@ -422,6 +425,7 @@ new stock
 #include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/core.pwn"
 #include "sss/core/player/core.pwn"
+#include "sss/core/player/chat.pwn"
 #include "sss/core/player/save-load.pwn"
 #include "sss/core/admin/core.pwn"
 #include "sss/core/char/holster.pwn"
@@ -472,7 +476,6 @@ new stock
 #include "sss/core/player/death.pwn"
 #include "sss/core/player/tutorial.pwn"
 #include "sss/core/player/welcome-message.pwn"
-#include "sss/core/player/chat.pwn"
 #include "sss/core/player/cmd-process.pwn"
 #include "sss/core/player/commands.pwn"
 #include "sss/core/player/afk-check.pwn"
