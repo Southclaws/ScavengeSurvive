@@ -7,7 +7,7 @@
 		"rcon"
 	],
 	"plugins": [
-		"FileManager",
+		"filemanager",
 		"MapAndreas",
 		"Whirlpool",
 		"crashdetect",
