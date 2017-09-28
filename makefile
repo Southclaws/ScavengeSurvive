@@ -56,6 +56,7 @@ dev-windows: dependencies
 dev-linux:
 	pawncc \
 		-Dgamemodes \
+		-iinclude \
 		-ivendor/samp-plugin-crashdetect/include \
 		-ivendor/sscanf \
 		-ivendor/amx_assembly \

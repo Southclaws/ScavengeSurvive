@@ -26,6 +26,7 @@ gamemodes/ScavengeSurvive.tar.gz
 pyss/data/*.jpg
 build-config.json
 gamemodes/vendor/
+gamemodes/include/
 
 # Python stuff
 __pycache__/
