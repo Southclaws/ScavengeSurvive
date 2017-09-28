@@ -1,6 +1,6 @@
 {
     "triggerTaskOnSave.on": true,
-    "triggerTaskOnSave.restart": true,
+    "triggerTaskOnSave.restart": false,
     "triggerTaskOnSave.tasks": {
         "build": [
             "*.pwn"

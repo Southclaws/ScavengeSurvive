@@ -57,8 +57,8 @@ native gpci(playerid, serial[], len);
 
 #if defined BUILD_MINIMAL
 
-#define BTN_MAX							(512) // SIF/Button
-#define ITM_MAX							(512) // SIF/Item
+#define BTN_MAX							(4096) // SIF/Button
+#define ITM_MAX							(4096) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
 #define MAX_MODIO_STACK_SIZE			(1024)
 #define MAX_MODIO_SESSION				(2)
@@ -148,7 +148,7 @@ public OnGameModeInit()
 #include <streamer>
 
 // By Slice: https://github.com/Southclaws/formatex
-// #include <formatex>
+#include <formatex>
 
 // By Slice: https://github.com/oscar-broman/strlib
 #include <strlib>
