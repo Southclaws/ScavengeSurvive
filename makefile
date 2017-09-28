@@ -119,3 +119,6 @@ filterscripts:
 		-igamemodes/vendor/sscanf \
 		-igamemodes/vendor/SA-MP-FileManager \
 		filterscripts/object-loader.pwn
+
+redis:
+	docker run --name redis redis
