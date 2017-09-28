@@ -665,6 +665,21 @@ OnGameModeInit_Setup()
 {
 	log("[OnGameModeInit_Setup] Setting up...");
 
+	new
+		dir:dirhandle = dir_open("./"),
+		item[64],
+		type;
+
+	if(!dirhandle)
+	{
+		fatal("UNKNOWN ERROR: Failed to read server directory");
+	}
+	log("directory scan:");
+	while(dir_list(dirhandle, item, type))
+	{
+		log(item);
+	}
+
 	new buildstring[12];
 
 	file_read("BUILD_NUMBER", buildstring);
