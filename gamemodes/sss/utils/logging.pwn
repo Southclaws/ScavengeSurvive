@@ -69,12 +69,15 @@ stock dbg(handler[], level, text[], {Float,_}:...)
 
 	// todo: strip bt down to just the file it originated from
 
-	if(level <= log_Table[idx][log_level])
-	{
-		new buffer[256];
-		format(buffer, sizeof(buffer), text, ___(3));
-		print(buffer);
+	if(idx > -1) {
+		if(level > log_Table[idx][log_level]) {
+			return;
+		}
 	}
+
+	new buffer[256];
+	format(buffer, sizeof(buffer), text, ___(3));
+	print(buffer);
 }
 
 stock err(text[], {Float,_}:...)
