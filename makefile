@@ -88,8 +88,28 @@ dev-linux:
 
 prod-windows:
 	pawncc \
-		-ivendor \
 		-Dgamemodes \
+		-ivendor/samp-plugin-crashdetect/include \
+		-ivendor/sscanf \
+		-ivendor/amx_assembly \
+		-ivendor/YSI-Includes \
+		-ivendor/samp-redis \
+		-ivendor/samp-streamer-plugin \
+		-ivendor/formatex \
+		-ivendor/strlib \
+		-ivendor/SAMP-geoip \
+		-ivendor/samp-ctime \
+		-ivendor/easyDialog \
+		-ivendor/progress2 \
+		-ivendor/SA-MP-FileManager \
+		-ivendor/samp-plugin-mapandreas/include \
+		-ivendor/SimpleINI \
+		-ivendor/modio \
+		-ivendor/SIF \
+		-ivendor/AdvancedWeaponData \
+		-ivendor/Line \
+		-ivendor/Zipline \
+		-ivendor/Ladder \
 		-\;+ \
 		-\(+ \
 		-\\+ \
@@ -98,7 +118,27 @@ prod-windows:
 
 prod-linux:
 	pawncc \
-		-ivendor \
+		-ivendor/samp-plugin-crashdetect/include \
+		-ivendor/sscanf \
+		-ivendor/amx_assembly \
+		-ivendor/YSI-Includes \
+		-ivendor/samp-redis \
+		-ivendor/samp-streamer-plugin \
+		-ivendor/formatex \
+		-ivendor/strlib \
+		-ivendor/SAMP-geoip \
+		-ivendor/samp-ctime \
+		-ivendor/easyDialog \
+		-ivendor/progress2 \
+		-ivendor/SA-MP-FileManager \
+		-ivendor/samp-plugin-mapandreas/include \
+		-ivendor/SimpleINI \
+		-ivendor/modio \
+		-ivendor/SIF \
+		-ivendor/AdvancedWeaponData \
+		-ivendor/Line \
+		-ivendor/Zipline \
+		-ivendor/Ladder \
 		-Dgamemodes \
 		-\;+ \
 		-\(+ \
