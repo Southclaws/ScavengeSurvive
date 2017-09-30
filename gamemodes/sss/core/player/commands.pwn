@@ -30,7 +30,7 @@ CMD:welcome(playerid, params[])
 
 CMD:help(playerid, params[])
 {
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "General Information", ls(playerid, "GENCOMDHELP"), "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "General Information", ls(playerid, "GENCOMDHELP"), "Close", "");
 
 	return 1;
 }
@@ -81,7 +81,7 @@ CMD:motd(playerid, params[])
 
 CMD:chatinfo(playerid, params[])
 {
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Chat", ls(playerid, "GENCOMDCHAT"), "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Chat", ls(playerid, "GENCOMDCHAT"), "Close", "");
 
 	return 1;
 }
@@ -93,7 +93,7 @@ CMD:restartinfo(playerid, params[])
 	strcat(gBigString[playerid], sprintf(ls(playerid, "GENCOMDRES1"), floatround(gServerMaxUptime / 3600)));
 	strcat(gBigString[playerid], ls(playerid, "GENCOMDRES2"));
 
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Information about "C_BLUE"Server Restarts", gBigString[playerid], "Close", "");
 
 	return 1;
 }

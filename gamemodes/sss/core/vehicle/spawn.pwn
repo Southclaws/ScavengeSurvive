@@ -89,7 +89,9 @@ hook OnGameModeInit()
 		}
 	}
 
+	#if defined DefineDebugLabelType
 	veh_DebugLabelType = DefineDebugLabelType("VEHICLESPAWN", 0xFFCCFFFF);
+	#endif
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -281,10 +283,12 @@ LoadVehiclesFromFile(file[])
 					continue;
 			}
 
+			#if defined CreateDebugLabel
 			CreateDebugLabel(veh_DebugLabelType, count, posX, posY, posZ, sprintf("GRP: '%d' CAT: '%s' SIZ: '%s'",
 				veh_SpawnData[count][vspawn_group],
 				categories,
 				sizes));
+			#endif
 
 			if(!IsValidVehicleType(type))
 				continue;

@@ -26,9 +26,6 @@
 
 
 #define MAX_ADMIN_LEVELS			(7)
-#define ACCOUNTS_TABLE_ADMINS		"Admins"
-#define FIELD_ADMINS_NAME			"name"		// 00
-#define FIELD_ADMINS_LEVEL			"level"		// 01
 
 
 enum
@@ -42,23 +39,15 @@ enum
 	STAFF_LEVEL_SECRET
 }
 
-enum e_admin_data
-{
-	admin_Name[MAX_PLAYER_NAME],
-	admin_Rank
-}
-
 
 static
-				admin_Data[MAX_ADMIN][e_admin_data],
-				admin_Total,
 				admin_Names[MAX_ADMIN_LEVELS][15] =
 				{
 					"Player",			// 0 (Unused)
 					"Game Master",		// 1
 					"Moderator",		// 2
 					"Administrator",	// 3
-					"Lord of Admins",	// 4
+					"Overseer",			// 4
 					"Developer",		// 5
 					""					// 6
 				},
@@ -72,13 +61,7 @@ static
 					0xFF3200FF,			// 5
 					0x00000000			// 6
 				},
-				admin_Commands[4][512],
-DBStatement:	stmt_AdminLoadAll,
-DBStatement:	stmt_AdminExists,
-DBStatement:	stmt_AdminInsert,
-DBStatement:	stmt_AdminUpdate,
-DBStatement:	stmt_AdminDelete,
-DBStatement:	stmt_AdminGetLevel;
+				admin_Commands[4][512];
 
 static
 				admin_Level[MAX_PLAYERS],
@@ -88,20 +71,7 @@ static
 
 hook OnScriptInit()
 {
-	db_free_result(db_query(gAccounts, "CREATE TABLE IF NOT EXISTS "ACCOUNTS_TABLE_ADMINS" (\
-		"FIELD_ADMINS_NAME" TEXT,\
-		"FIELD_ADMINS_LEVEL" INTEGER)"));
-
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_ADMINS, 2);
-
-	stmt_AdminLoadAll	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" ORDER BY "FIELD_ADMINS_LEVEL" DESC");
-	stmt_AdminExists	= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminInsert	= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_ADMINS" VALUES(?, ?)");
-	stmt_AdminUpdate	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_ADMINS" SET "FIELD_ADMINS_LEVEL" = ? WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminDelete	= db_prepare(gAccounts, "DELETE FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-	stmt_AdminGetLevel	= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_ADMINS" WHERE "FIELD_ADMINS_NAME" = ?");
-
-	LoadAdminData();
+	AccountIO_UpdateAdminList();
 }
 
 hook OnPlayerConnect(playerid)
@@ -131,134 +101,6 @@ hook OnPlayerDisconnected(playerid)
 
 ==============================================================================*/
 
-
-LoadAdminData()
-{
-	new
-		name[MAX_PLAYER_NAME],
-		level;
-
-	stmt_bind_result_field(stmt_AdminLoadAll, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-	stmt_bind_result_field(stmt_AdminLoadAll, 1, DB::TYPE_INTEGER, level);
-
-	if(stmt_execute(stmt_AdminLoadAll))
-	{
-		while(stmt_fetch_row(stmt_AdminLoadAll))
-		{
-			if(level > 0 && !isnull(name))
-			{
-				admin_Data[admin_Total][admin_Name] = name;
-				admin_Data[admin_Total][admin_Rank] = level;
-
-				admin_Total++;
-			}
-			else
-			{
-				RemoveAdminFromDatabase(name);
-			}
-		}
-	}
-
-	SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-}
-
-UpdateAdmin(name[MAX_PLAYER_NAME], level)
-{
-	if(level == 0)
-		return RemoveAdminFromDatabase(name);
-
-	new count;
-
-	stmt_bind_value(stmt_AdminExists, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(stmt_AdminExists, 0, DB::TYPE_INTEGER, count);
-	stmt_execute(stmt_AdminExists);
-	stmt_fetch_row(stmt_AdminExists);
-
-	if(count == 0)
-	{
-		stmt_bind_value(stmt_AdminInsert, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-		stmt_bind_value(stmt_AdminInsert, 1, DB::TYPE_INTEGER, level);
-
-		if(stmt_execute(stmt_AdminInsert))
-		{
-			admin_Data[admin_Total][admin_Name] = name;
-			admin_Data[admin_Total][admin_Rank] = level;
-			admin_Total++;
-
-			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-	else
-	{
-		stmt_bind_value(stmt_AdminUpdate, 0, DB::TYPE_INTEGER, level);
-		stmt_bind_value(stmt_AdminUpdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-		if(stmt_execute(stmt_AdminUpdate))
-		{
-			for(new i; i < admin_Total; i++)
-			{
-				if(!strcmp(name, admin_Data[i][admin_Name]))
-				{
-					admin_Data[i][admin_Rank] = level;
-
-					break;
-				}
-			}
-
-			SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
-
-			return 1;
-		}
-	}
-
-	return 1;
-}
-
-RemoveAdminFromDatabase(name[])
-{
-	stmt_bind_value(stmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
-
-	if(stmt_execute(stmt_AdminDelete))
-	{
-		new bool:found = false;
-
-		for(new i; i < admin_Total; i++)
-		{
-			if(!strcmp(name, admin_Data[i][admin_Name]))
-				found = true;
-
-			if(found && i < MAX_ADMIN-1)
-			{
-				format(admin_Data[i][admin_Name], 24, admin_Data[i+1][admin_Name]);
-				admin_Data[i][admin_Rank] = admin_Data[i+1][admin_Rank];
-			}
-		}
-
-		admin_Total--;
-
-		return 1;
-	}
-
-	return 0;
-}
-
-CheckAdminLevel(playerid)
-{
-	new name[MAX_PLAYER_NAME];
-
-	for(new i; i < admin_Total; i++)
-	{
-		GetPlayerName(playerid, name, MAX_PLAYER_NAME);
-
-		if(!strcmp(name, admin_Data[i][admin_Name]))
-		{
-			admin_Level[playerid] = admin_Data[i][admin_Rank];
-			break;
-		}
-	}
-}
 
 TimeoutPlayer(playerid, reason[])
 {
@@ -434,7 +276,7 @@ stock SetPlayerAdminLevel(playerid, level)
 
 	admin_Level[playerid] = level;
 
-	UpdateAdmin(name, level);
+	SetAccountAdminLevel(name, level);
 
 	return 1;
 }
@@ -450,18 +292,13 @@ stock GetPlayerAdminLevel(playerid)
 stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
 {
 	new level;
-
-	stmt_bind_value(stmt_AdminGetLevel, 0, DB::TYPE_STRING, name);
-	stmt_bind_result_field(stmt_AdminGetLevel, 1, DB::TYPE_INTEGER, level);
-	stmt_execute(stmt_AdminGetLevel);
-	stmt_fetch_row(stmt_AdminGetLevel);
-
+	GetAccountAdminLevel(name, level);
 	return level;
 }
 
 stock GetAdminTotal()
 {
-	return admin_Total;
+	return AdminIO_GetAdminTotal();
 }
 
 stock GetAdminsOnline(from = 1, to = 5)
@@ -549,7 +386,7 @@ ACMD:acmds[1](playerid, params[])
 		strcat(gBigString[playerid], admin_Commands[0]);
 	}
 	
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Admin Commands List", gBigString[playerid], "Close", "");
 
 	return 1;
 }
@@ -558,30 +395,17 @@ ACMD:adminlist[3](playerid, params[])
 {
 	new
 		title[20],
-		line[52];
+		ret;
 
 	gBigString[playerid][0] = EOS;
 
-	format(title, 20, "Staff (%d)", admin_Total);
+	format(title, 20, "Staff (%d)", AdminIO_GetAdminTotal());
 
-	for(new i; i < admin_Total; i++)
-	{
-		if(admin_Data[i][admin_Rank] == STAFF_LEVEL_SECRET)
-			continue;
+	ret = AccountIO_GetAdminList(gBigString[playerid], sizeof(gBigString[]));
+	if(ret)
+		err("AccountIO_GetAdminList failed, return: %d", ret);
 
-		format(line, sizeof(line), "%s %C(%d-%s)\n",
-			admin_Data[i][admin_Name],
-			admin_Colours[admin_Data[i][admin_Rank]],
-			admin_Data[i][admin_Rank],
-			admin_Names[admin_Data[i][admin_Rank]]);
-
-		if(GetPlayerIDFromName(admin_Data[i][admin_Name]) != INVALID_PLAYER_ID)
-			strcat(gBigString[playerid], " >  ");
-
-		strcat(gBigString[playerid], line);
-	}
-
-	Dialog_Show(playerid, DIALOG_STYLE_LIST, title, gBigString[playerid], "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_LIST, title, gBigString[playerid], "Close", "");
 
 	return 1;
 }

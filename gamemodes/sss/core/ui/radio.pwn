@@ -177,34 +177,34 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 ShowFrequencyDialog(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show(playerid, Frequency, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
+
+	return 1;
+}
+
+Dialog:Frequency(playerid, response, listitem, inputtext[])
+{
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem
-		if(response)
+		new Float:frequency;
+		if(!sscanf(inputtext, "f", frequency))
 		{
-			new Float:frequency;
-			if(!sscanf(inputtext, "f", frequency))
+			if(MIN_RADIO_FREQ <= frequency <= MAX_RADIO_FREQ)
 			{
-				if(MIN_RADIO_FREQ <= frequency <= MAX_RADIO_FREQ)
-				{
-					SetPlayerRadioFrequency(playerid, frequency);
-					log("%p updated frequency to %.2f", playerid, frequency);
-					UpdateRadioUI(playerid);
-				}
-				else
-				{
-					ShowFrequencyDialog(playerid);
-				}
+				SetPlayerRadioFrequency(playerid, frequency);
+				log("%p updated frequency to %.2f", playerid, frequency);
+				UpdateRadioUI(playerid);
 			}
 			else
 			{
 				ShowFrequencyDialog(playerid);
 			}
 		}
+		else
+		{
+			ShowFrequencyDialog(playerid);
+		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Frequency", "Enter a frequency between 87.5 and 108.0", "Accept", "Cancel");
-
-	return 1;
 }
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)

@@ -37,7 +37,10 @@ hook OnPlayerConnect(playerid)
 stock GetPlayerLanguage(playerid)
 {
 	if(!IsPlayerConnected(playerid))
+	{
+		err("player not connected");
 		return -1;
+	}
 
 	return lang_PlayerLanguage[playerid];
 }
@@ -56,17 +59,16 @@ ShowLanguageMenu(playerid)
 		format(langlist, sizeof(langlist), "%s%s\n", langlist, languages[i]);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
+	Dialog_Show(playerid, LanguageMenu, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");
+}
 
-		if(response)
-		{
-			lang_PlayerLanguage[playerid] = listitem;
-			ChatMsgLang(playerid, YELLOW, "LANGCHANGE");
-		}
+Dialog:LanguageMenu(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		lang_PlayerLanguage[playerid] = listitem;
+		ChatMsgLang(playerid, YELLOW, "LANGCHANGE");
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");
 }
 
 hook OnPlayerSave(playerid, filename[])

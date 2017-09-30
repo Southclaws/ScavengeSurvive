@@ -148,7 +148,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
 }
 
-SpawnLoggedInPlayer(playerid)
+hook OnPlayerLogin(playerid)
 {
 	if(IsPlayerAlive(playerid))
 	{
@@ -164,9 +164,11 @@ SpawnLoggedInPlayer(playerid)
 			err("PlayerSpawnExistingCharacter returned %d", ret);
 		}
 	}
-	
-	PlayerCreateNewCharacter(playerid);
-	SetPlayerBrightness(playerid, 255);
+	else
+	{
+		PlayerCreateNewCharacter(playerid);
+		SetPlayerBrightness(playerid, 255);
+	}
 
 	return 0;
 }
@@ -239,6 +241,7 @@ PlayerSpawnExistingCharacter(playerid)
 	return 0;
 }
 
+// todo: fix hitting ESC when choosing gender
 PlayerCreateNewCharacter(playerid)
 {
 	log("[NEWCHAR] %p creating new character", playerid);

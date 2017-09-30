@@ -49,6 +49,7 @@ enum
 static
 		dfm_CurrentMenu		[MAX_PLAYERS],
 		dfm_CurrentDetfield	[MAX_PLAYERS],
+		dfm_CurrentException[MAX_PLAYERS],
 		// Field list
 		dfm_FieldList		[MAX_PLAYERS][MAX_DETFIELD_PAGESIZE],
 		dfm_PageIndex		[MAX_PLAYERS],
@@ -245,34 +246,33 @@ ShowDetfieldList(playerid)
 
 	ShowPlayerPageButtons(playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
-
-		if(response)
-		{
-			dfm_CurrentDetfield[playerid] = dfm_FieldList[playerid][listitem];
-			ShowDetfieldListOptions(playerid, dfm_FieldList[playerid][listitem]);
-			HidePlayerPageButtons(playerid);
-			CancelSelectTextDraw(playerid);
-		}
-		else
-		{
-			for(new i; i < MAX_DETFIELD_PAGESIZE; i++)
-				dfm_FieldList[playerid][i] = -1;
-
-			dfm_CurrentMenu[playerid]		= -1;
-			dfm_CurrentDetfield[playerid]	= -1;
-			dfm_LogIndex[playerid]			= 0;
-			dfm_PageIndex[playerid]			= 0;
-
-			HidePlayerPageButtons(playerid);
-			CancelSelectTextDraw(playerid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Options", "Close");
+	Dialog_Show(playerid, DetfieldList, DIALOG_STYLE_LIST, title, list, "Options", "Close");
 
 	return 1;
+}
+
+Dialog:DetfieldList(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		dfm_CurrentDetfield[playerid] = dfm_FieldList[playerid][listitem];
+		ShowDetfieldListOptions(playerid, dfm_FieldList[playerid][listitem]);
+		HidePlayerPageButtons(playerid);
+		CancelSelectTextDraw(playerid);
+	}
+	else
+	{
+		for(new i; i < MAX_DETFIELD_PAGESIZE; i++)
+			dfm_FieldList[playerid][i] = -1;
+
+		dfm_CurrentMenu[playerid]		= -1;
+		dfm_CurrentDetfield[playerid]	= -1;
+		dfm_LogIndex[playerid]			= 0;
+		dfm_PageIndex[playerid]			= 0;
+
+		HidePlayerPageButtons(playerid);
+		CancelSelectTextDraw(playerid);
+	}
 }
 
 ShowDetfieldListOptions(playerid, detfieldid)
@@ -289,68 +289,67 @@ ShowDetfieldListOptions(playerid, detfieldid)
 	GetDetectionFieldName(detfieldid, name);
 	exceptioncount = GetDetectionFieldExceptionCount(detfieldid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
-
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0:
-				{
-					if(!ShowDetfieldLog(playerid, detfieldid))
-					{
-						ChatMsg(playerid, YELLOW, " >  There are no log entries in '%s'.", name);
-						ShowDetfieldListOptions(playerid, detfieldid);
-					}
-				}
-
-				case 1:
-				{
-					if(IsPlayerOnAdminDuty(playerid))
-					{
-						new
-							Float:x,
-							Float:y,
-							Float:z;
-
-						GetDetectionFieldPos(detfieldid, x, y, z);
-						SetPlayerPos(playerid, x, y, z);
-					}
-					else
-					{
-						ChatMsg(playerid, RED, " >  You must be on admin duty to do that.");
-					}
-				}
-
-				case 2:
-				{
-					if(exceptioncount > 0)
-						ShowDetfieldExceptions(playerid, detfieldid);
-					else
-						ShowDetfieldAddException(playerid, detfieldid, -1);
-				}
-
-				case 3:
-				{
-					ShowDetfieldRenamePrompt(playerid, detfieldid);
-				}
-
-				case 4:
-				{
-					ShowDetfieldDeletePrompt(playerid, detfieldid);
-				}
-			}
-		}
-		else
-		{
-			ShowDetfieldList(playerid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, sprintf("View Log\nGo to\nExceptions (%d)\nRename\nDelete", exceptioncount), "Select", "Back");
+	Dialog_Show(playerid, DetfieldListOptions, DIALOG_STYLE_LIST, name, sprintf("View Log\nGo to\nExceptions (%d)\nRename\nDelete", exceptioncount), "Select", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldListOptions(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				if(!ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]))
+				{
+					new name[MAX_DETFIELD_NAME];
+
+					GetDetectionFieldName(dfm_CurrentDetfield[playerid], name);
+					ChatMsg(playerid, YELLOW, " >  There are no log entries in '%s'.", name);
+					ShowDetfieldListOptions(playerid, dfm_CurrentDetfield[playerid]);
+				}
+			}
+
+			case 1:
+			{
+				if(IsPlayerOnAdminDuty(playerid))
+				{
+					new
+						Float:x,
+						Float:y,
+						Float:z;
+
+					GetDetectionFieldPos(dfm_CurrentDetfield[playerid], x, y, z);
+					SetPlayerPos(playerid, x, y, z);
+				}
+				else
+				{
+					ChatMsg(playerid, RED, " >  You must be on admin duty to do that.");
+				}
+			}
+
+			case 2:
+			{
+				ShowDetfieldExceptions(playerid, dfm_CurrentDetfield[playerid]);
+			}
+
+			case 3:
+			{
+				ShowDetfieldRenamePrompt(playerid, dfm_CurrentDetfield[playerid]);
+			}
+
+			case 4:
+			{
+				ShowDetfieldDeletePrompt(playerid, dfm_CurrentDetfield[playerid]);
+			}
+		}
+	}
+	else
+	{
+		ShowDetfieldList(playerid);
+	}
 }
 
 ShowDetfieldExceptions(playerid, detfieldid)
@@ -378,23 +377,21 @@ ShowDetfieldExceptions(playerid, detfieldid)
 
 	count = GetDetectionFieldExceptionsList(detfieldid, list, sizeof(list), '\n');
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(response)
-		{
-			ShowDetfieldExceptionOptions(playerid, detfieldid, listitem);
-		}
-		else
-		{
-			ShowDetfieldListOptions(playerid, detfieldid);
-		}
-	}
-
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, sprintf("%s Exceptions (%d)", name, count), list, "Options", "Back");
+	Dialog_Show(playerid, DetfieldExceptions, DIALOG_STYLE_LIST, sprintf("%s Exceptions (%d)", name, count), list, "Options", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldExceptions(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ShowDetfieldExceptionOptions(playerid, dfm_CurrentDetfield[playerid], listitem);
+	}
+	else
+	{
+		ShowDetfieldListOptions(playerid, dfm_CurrentDetfield[playerid]);
+	}
 }
 
 ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid)
@@ -403,41 +400,41 @@ ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid)
 		return 0;
 
 	dfm_CurrentMenu[playerid] = DFM_MENU_EXCEPTION_OPTIONS;
+	dfm_CurrentException[playerid] = exceptionid;
 
 	new name[MAX_PLAYER_NAME];
 
 	GetDetectionFieldExceptionName(detfieldid, exceptionid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, inputtext
-
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0:
-				{
-					ShowDetfieldAddException(playerid, detfieldid, exceptionid);
-				}
-
-				case 1:
-				{
-					ShowDetfieldDeleteException(playerid, detfieldid, exceptionid);
-				}
-			}
-		}
-		else
-		{
-			ShowDetfieldExceptions(playerid, detfieldid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, sprintf("Add exception\nDelete '%s'", name), "Select", "Back");
+	Dialog_Show(playerid, DetfieldExceptionOpts, DIALOG_STYLE_LIST, name, sprintf("Add exception\nDelete '%s'", name), "Select", "Back");
 
 	return 1;
 }
 
-ShowDetfieldAddException(playerid, detfieldid, exceptionid)
+Dialog:DetfieldExceptionOpts(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				ShowDetfieldAddException(playerid, dfm_CurrentDetfield[playerid]);
+			}
+
+			case 1:
+			{
+				ShowDetfieldDeleteException(playerid, dfm_CurrentDetfield[playerid]);
+			}
+		}
+	}
+	else
+	{
+		ShowDetfieldExceptions(playerid, dfm_CurrentDetfield[playerid]);
+	}
+}
+
+ShowDetfieldAddException(playerid, detfieldid)
 {
 	if(!IsValidDetectionField(detfieldid))
 		return 0;
@@ -449,58 +446,54 @@ ShowDetfieldAddException(playerid, detfieldid, exceptionid)
 
 	GetDetectionFieldName(detfieldid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
-		{
-			new tmp[MAX_PLAYER_NAME];
-			strcat(tmp, inputtext);
-
-			new ret = AddDetectionFieldException(detfieldid, tmp);
-
-			if(ret)
-			{
-				ShowDetfieldExceptions(playerid, detfieldid);
-				return 1;
-			}
-
-			if(ret == 0)
-			{
-				ChatMsg(playerid, RED, " >  Invalid detection field (error code 0)");
-				ShowDetfieldAddException(playerid, detfieldid, exceptionid);
-			}
-
-			if(ret == -1)
-			{
-				ChatMsg(playerid, RED, " >  Exception list is full (error code -1)");
-				ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid);
-			}
-
-			if(ret == -2)
-			{
-				ChatMsg(playerid, RED, " >  Invalid username (error code -2)");
-				ShowDetfieldAddException(playerid, detfieldid, exceptionid);
-			}
-
-			if(ret == -3)
-			{
-				ChatMsg(playerid, RED, " >  Username already in list (error code -3)");
-				ShowDetfieldAddException(playerid, detfieldid, exceptionid);
-			}
-		}
-		else
-		{
-			if(exceptionid != -1)
-				ShowDetfieldExceptionOptions(playerid, detfieldid, exceptionid);
-			else
-				ShowDetfieldListOptions(playerid, detfieldid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, sprintf("Add exception for %s", name), "Type a username:", "Add", "Back");
+	Dialog_Show(playerid, DetfieldAddExc, DIALOG_STYLE_INPUT, sprintf("Add exception for %s", name), "Type a username:", "Add", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldAddExc(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new tmp[MAX_PLAYER_NAME];
+		strcat(tmp, inputtext);
+
+		new ret = AddDetectionFieldException(dfm_CurrentDetfield[playerid], tmp);
+
+		if(ret)
+		{
+			ShowDetfieldExceptions(playerid, dfm_CurrentDetfield[playerid]);
+			return 1;
+		}
+
+		if(ret == 0)
+		{
+			ChatMsg(playerid, RED, " >  Invalid detection field (error code 0)");
+			ShowDetfieldAddException(playerid, dfm_CurrentDetfield[playerid], dfm_CurrentException[playerid]);
+		}
+
+		if(ret == -1)
+		{
+			ChatMsg(playerid, RED, " >  Exception list is full (error code -1)");
+			ShowDetfieldExceptionOptions(playerid, dfm_CurrentDetfield[playerid], dfm_CurrentException[playerid]);
+		}
+
+		if(ret == -2)
+		{
+			ChatMsg(playerid, RED, " >  Invalid username (error code -2)");
+			ShowDetfieldAddException(playerid, dfm_CurrentDetfield[playerid], dfm_CurrentException[playerid]);
+		}
+
+		if(ret == -3)
+		{
+			ChatMsg(playerid, RED, " >  Username already in list (error code -3)");
+			ShowDetfieldAddException(playerid, dfm_CurrentDetfield[playerid], dfm_CurrentException[playerid]);
+		}
+	}
+	else
+	{
+		ShowDetfieldExceptionOptions(playerid, dfm_CurrentDetfield[playerid], dfm_CurrentException[playerid]);
+	}
 }
 
 ShowDetfieldDeleteException(playerid, detfieldid, exceptionid)
@@ -514,18 +507,17 @@ ShowDetfieldDeleteException(playerid, detfieldid, exceptionid)
 
 	GetDetectionFieldExceptionName(detfieldid, exceptionid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(!response)
-			RemoveDetectionFieldExceptionID(detfieldid, exceptionid);
-
-		ShowDetfieldExceptions(playerid, detfieldid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, sprintf("Delete '%s'", name), "Are you sure?", "Back", "Delete");
+	Dialog_ShowCallback(playerid, DetfieldDeleteExc, DIALOG_STYLE_MSGBOX, sprintf("Delete '%s'", name), "Are you sure?", "Back", "Delete");
 
 	return 1;
+}
+
+Dialog:DetfieldDeleteExc(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		RemoveDetectionFieldExceptionID(dfm_CurrentDetfield[playerid], exceptionid);
+
+	ShowDetfieldExceptions(playerid, dfm_CurrentDetfield[playerid]);
 }
 
 ShowDetfieldRenamePrompt(playerid, detfieldid)
@@ -539,33 +531,31 @@ ShowDetfieldRenamePrompt(playerid, detfieldid)
 
 	GetDetectionFieldName(detfieldid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-
-		if(response)
-		{
-			new
-				tmp[MAX_DETFIELD_NAME],
-				ret;
-
-			strcat(tmp, inputtext);
-
-			ret = SetDetectionFieldName(detfieldid, tmp);
-
-			if(ret == -1)
-				ChatMsg(playerid, RED, " >  A field with that name already exists.");
-
-			if(ret == -2)
-				ChatMsg(playerid, RED, " >  Invalid detection field name. Must start with an alphabetic character and can contain only alphanumeric characters.");
-		}
-
-		ShowDetfieldListOptions(playerid, detfieldid);
-	}
-
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, sprintf("Rename %s", name), "Enter new name:", "Rename", "Back");
+	Dialog_ShowCallback(playerid, DetfieldRename, DIALOG_STYLE_INPUT, sprintf("Rename %s", name), "Enter new name:", "Rename", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldRename(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new
+			tmp[MAX_DETFIELD_NAME],
+			ret;
+
+		strcat(tmp, inputtext);
+
+		ret = SetDetectionFieldName(dfm_CurrentDetfield[playerid], tmp);
+
+		if(ret == -1)
+			ChatMsg(playerid, RED, " >  A field with that name already exists.");
+
+		if(ret == -2)
+			ChatMsg(playerid, RED, " >  Invalid detection field name. Must start with an alphabetic character and can contain only alphanumeric characters.");
+	}
+
+	ShowDetfieldListOptions(playerid, dfm_CurrentDetfield[playerid]);
 }
 
 ShowDetfieldDeletePrompt(playerid, detfieldid)
@@ -579,19 +569,17 @@ ShowDetfieldDeletePrompt(playerid, detfieldid)
 
 	GetDetectionFieldName(detfieldid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-
-		if(!response)
-			RemoveDetectionField(detfieldid);
-
-		ShowDetfieldList(playerid);
-	}
-	
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, sprintf("Delete %s", name), "Are you sure?", "Back", "Delete");
+	Dialog_ShowCallback(playerid, DetfieldDelete, DIALOG_STYLE_MSGBOX, sprintf("Delete %s", name), "Are you sure?", "Back", "Delete");
 
 	return 1;
+}
+
+Dialog:DetfieldDelete(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+		RemoveDetectionField(dfm_CurrentDetfield[playerid]);
+
+	ShowDetfieldList(playerid);
 }
 
 ShowDetfieldLog(playerid, detfieldid)
@@ -634,25 +622,24 @@ ShowDetfieldLog(playerid, detfieldid)
 
 	ShowPlayerPageButtons(playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, response, listitem, inputtext
-
-		if(response)
-		{
-			ShowDetfieldLogOptions(playerid, detfieldid, listitem);
-		}
-		else
-		{
-			ShowDetfieldListOptions(playerid, detfieldid);
-		}
-
-		HidePlayerPageButtons(playerid);
-		CancelSelectTextDraw(playerid);
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Select", "Back");
+	Dialog_ShowCallback(playerid, DetfieldLog, DIALOG_STYLE_LIST, title, list, "Select", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldLog(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		ShowDetfieldLogOptions(playerid, dfm_CurrentDetfield[playerid], listitem);
+	}
+	else
+	{
+		ShowDetfieldListOptions(playerid, dfm_CurrentDetfield[playerid]);
+	}
+
+	HidePlayerPageButtons(playerid);
+	CancelSelectTextDraw(playerid);
 }
 
 ShowDetfieldLogOptions(playerid, detfieldid, logentry)
@@ -666,52 +653,51 @@ ShowDetfieldLogOptions(playerid, detfieldid, logentry)
 
 	GetDetectionFieldName(detfieldid, name);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, response, inputtext
-
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0:
-				{
-					if(IsPlayerOnAdminDuty(playerid))
-					{
-						SetPlayerPos(playerid,
-							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_X],
-							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Y],
-							dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Z]);
-					}
-					else
-					{
-						ChatMsg(playerid, RED, " >  You must be on admin duty to do that.");
-					}
-				}
-
-				case 1:
-				{
-					DeleteDetectionFieldLogEntry(detfieldid, dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_ROW_ID]);
-
-					ShowDetfieldLog(playerid, detfieldid);
-				}
-
-				case 2:
-				{
-					DeleteDetectionFieldLogsOfName(detfieldid, dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_NAME]);
-
-					ShowDetfieldLog(playerid, detfieldid);
-				}
-			}
-		}
-		else
-		{
-			ShowDetfieldLog(playerid, detfieldid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, name, "Go to\nDelete\nDelete all of this name", "Select", "Close");
+	Dialog_ShowCallback(playerid, DetfieldLogOpts, DIALOG_STYLE_LIST, name, "Go to\nDelete\nDelete all of this name", "Select", "Close");
 
 	return 1;
+}
+
+Dialog:DetfieldLogOpts(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+			{
+				if(IsPlayerOnAdminDuty(playerid))
+				{
+					SetPlayerPos(playerid,
+						dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_X],
+						dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Y],
+						dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_POS_Z]);
+				}
+				else
+				{
+					ChatMsg(playerid, RED, " >  You must be on admin duty to do that.");
+				}
+			}
+
+			case 1:
+			{
+				DeleteDetectionFieldLogEntry(dfm_CurrentDetfield[playerid], dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_ROW_ID]);
+
+				ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
+			}
+
+			case 2:
+			{
+				DeleteDetectionFieldLogsOfName(dfm_CurrentDetfield[playerid], dfm_LogBuffer[playerid][logentry][DETLOG_BUFFER_NAME]);
+
+				ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
+			}
+		}
+	}
+	else
+	{
+		ShowDetfieldLog(playerid, dfm_CurrentDetfield[playerid]);
+	}
 }
 
 ShowDetfieldNameFields(playerid, name[])
@@ -733,15 +719,14 @@ ShowDetfieldNameFields(playerid, name[])
 	// TODO: make proper pagination for this menu.
 	// ShowPlayerPageButtons(playerid);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, response, listitem, inputtext
-
-		// TODO: do something with the data (jump to field log or something).
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, title, list, "Select", "Back");
+	Dialog_ShowCallback(playerid, DetfieldName, DIALOG_STYLE_LIST, title, list, "Select", "Back");
 
 	return 1;
+}
+
+Dialog:DetfieldName(playerid, response, listitem, inputtext[])
+{
+	// TODO: do something with the data (jump to field log or something).
 }
 
 hook OnPlayerDialogPage(playerid, direction)

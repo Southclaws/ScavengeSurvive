@@ -27,35 +27,34 @@
 
 CMD:recipes(playerid, params[])
 {
-	Dialog_ShowCraftTypes(playerid);
+	ShowCraftTypes(playerid);
 	return 1;
 }
 
-Dialog_ShowCraftTypes(playerid)
+ShowCraftTypes(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-		
-		if(response)
-		{
-			switch(listitem)
-			{
-				case 0:
-					Dialog_ShowCraftList(playerid, 1);
-				case 1:
-					Dialog_ShowCraftList(playerid, 2);
-				case 2:
-					Dialog_ShowCraftList(playerid, 3);
-				case 3:
-					Dialog_ShowCraftHelp(playerid);
-			}
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Recipes", "Combination Recipes\nConstruction Recipes\nWorkbench Recipes\n"C_GREEN"Help", "Select", "Close");
+	Dialog_Show(playerid, CraftTypes, DIALOG_STYLE_LIST, "Recipes", "Combination Recipes\nConstruction Recipes\nWorkbench Recipes\n"C_GREEN"Help", "Select", "Close");
 }
 
-Dialog_ShowCraftList(playerid, type)
+Dialog:CraftTypes(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		switch(listitem)
+		{
+			case 0:
+				ShowCraftList(playerid, 1);
+			case 1:
+				ShowCraftList(playerid, 2);
+			case 2:
+				ShowCraftList(playerid, 3);
+			case 3:
+				ShowCraftHelp(playerid);
+		}
+	}
+}
+
+ShowCraftList(playerid, type)
 {
 	// 0 All
 	// 1 Combine
@@ -107,27 +106,26 @@ Dialog_ShowCraftList(playerid, type)
 		format(f_str, sizeof(f_str), "%s%i. %s\n", f_str, i, itemname);
 	}
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem
-		
-		if(response)
-		{
-			new consset;
-
-			sscanf(inputtext, "p<.>i{s[96]}", consset);
-
-			Dialog_ShowIngredients(playerid, consset);
-		}
-		else
-		{
-			Dialog_ShowCraftTypes(playerid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Craftsets", f_str, "View", "Close");
+	Dialog_Show(playerid, CraftList, DIALOG_STYLE_LIST, "Craftsets", f_str, "View", "Close");
 }
 
-Dialog_ShowIngredients(playerid, craftset)
+Dialog:CraftList(playerid, response, listitem, inputtext[])
+{
+	if(response)
+	{
+		new consset;
+
+		sscanf(inputtext, "p<.>i{s[96]}", consset);
+
+		ShowIngredients(playerid, consset);
+	}
+	else
+	{
+		ShowCraftTypes(playerid);
+	}
+}
+
+ShowIngredients(playerid, craftset)
 {
 	if(!IsValidCraftSet(craftset))
 		return 1;
@@ -162,20 +160,20 @@ Dialog_ShowIngredients(playerid, craftset)
 
 	GetItemTypeName(GetCraftSetResult(craftset), itemname);
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
-	{
-		#pragma unused pid, dialogid, listitem, inputtext
-		if(!response)
-		{
-			Dialog_ShowCraftTypes(playerid);
-		}
-	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, itemname, gBigString[playerid], "Close", "Back");
+	Dialog_Show(playerid, Ingredients, DIALOG_STYLE_MSGBOX, itemname, gBigString[playerid], "Close", "Back");
 
-	return 1;
+	return 0;
 }
 
-Dialog_ShowCraftHelp(playerid)
+Dialog:Ingredients(playerid, response, listitem, inputtext[])
+{
+	if(!response)
+	{
+		ShowCraftTypes(playerid);
+	}
+}
+
+ShowCraftHelp(playerid)
 {
 	gBigString[playerid][0] = EOS;
 
@@ -199,13 +197,13 @@ Dialog_ShowCraftHelp(playerid)
 	strcat(gBigString[playerid], C_WHITE"Equip the 'Tool' item specified in the recipe page\n");
 	strcat(gBigString[playerid], C_WHITE"Hold the Interact key while standing at the workbench");
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show(playerid, CraftHelp, DIALOG_STYLE_MSGBOX, "Crafting Help", gBigString[playerid], "Back", "Cancel");
+}
+
+Dialog:CraftHelp(playerid, response, listitem, inputtext[])
+{
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem, inputtext
-		if(response)
-		{
-			Dialog_ShowCraftTypes(playerid);
-		}
+		ShowCraftTypes(playerid);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Crafting Help", gBigString[playerid], "Back", "Cancel");
 }

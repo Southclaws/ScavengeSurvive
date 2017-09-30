@@ -1,0 +1,24 @@
+{
+	"gamemodes": [
+		"ScavengeSurvive"
+	],
+	"filterscripts": [
+		"object-loader",
+		"rcon"
+	],
+	"plugins": [
+		"filemanager",
+		"MapAndreas",
+		"Whirlpool",
+		"crashdetect",
+		"ctime",
+		"sscanf",
+		"streamer",
+		"redis"
+	],
+	"port": 7777,
+	"hostname": "SS",
+	"maxplayers": 32,
+	"rcon": false,
+	"rcon_password": "test"
+}

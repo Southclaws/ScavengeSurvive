@@ -42,16 +42,11 @@ native IsValidVehicle(vehicleid);
 native gpci(playerid, serial[], len);
 
 #define _DEBUG							0 // YSI
-#define DB_DEBUG						false // SQLitei
-#define DB_MAX_STATEMENTS				(128) // SQLitei
-#define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_WARNING		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_ERROR		(true) // SQLitei
+#define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
 #define STRLIB_RETURN_SIZE				(256) // strlib
 #define MODIO_DEBUG						(0) // modio
 #define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
 #define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(2048) // modio
 #define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
 #define INV_MAX_SLOTS					(6) // SIF/Inventory
 #define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
@@ -59,13 +54,26 @@ native gpci(playerid, serial[], len);
 #define ITM_MAX_NAME					(20) // SIF/Item
 #define ITM_MAX_TEXT					(64) // SIF/Item
 #define ITM_DROP_ON_DEATH				(false) // SIF/Item
+
+#if defined BUILD_MINIMAL
+
+#define BTN_MAX							(4096) // SIF/Button
+#define ITM_MAX							(4096) // SIF/Item
+#define CNT_MAX_SLOTS					(100)
+#define MAX_MODIO_STACK_SIZE			(1024)
+#define MAX_MODIO_SESSION				(2)
+
+#else
+
 #define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
 #define DEBUG_LABELS_BUTTON				// SIF/Button
 #define DEBUG_LABELS_ITEM				// SIF/Item
 #define BTN_MAX							(32768) // SIF/Button
 #define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
-#define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
+#define MAX_MODIO_SESSION				(8) // (2048) // modio
+
+#endif
 
 /*==============================================================================
 
@@ -84,6 +92,10 @@ native gpci(playerid, serial[], len);
 	means for declaring entities with relevant data.
 
 ==============================================================================*/
+
+// Must include y_utils before this hook (not quite a "guaranteed" first call any more!)
+// due to https://github.com/Misiur/YSI-Includes/issues/196
+#include <YSI\y_utils>
 
 public OnGameModeInit()
 {
@@ -113,35 +125,60 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
-#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
+// By Zeex: https://github.com/Zeex/samp-plugin-crashdetect
+#include <crashdetect>
+
+// By Y_Less: https://github.com/maddinat0r/sscanf
+#include <sscanf2>
+
+// By Y_Less: https://github.com/Misiur/YSI-Includes
 #include <YSI\y_va>
 #include <YSI\y_timers>
 #include <YSI\y_hooks>
 #include <YSI\y_iterate>
 #include <YSI\y_ini>
-#include <YSI\y_dialog>
 
-#include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
+// preload library for hooking functions before they are used in external libraries.
+#include "sss\core\server\hooks.pwn"
 
-#include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
-#include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
-#include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei
-#include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
-#include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
-#include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
-#include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
-#include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
+// By Southclaws, v0.1.0: https://github.com/Southclaws/samp-redis/releases/tag/v0.1.0
+#include <redis>
 
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
-#include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
-#include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
+// By Incognito, v2.8.2: https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.8.2
+#include <streamer>
 
-#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaws/SimpleINI
-#include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
-#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
+// By Slice: https://github.com/Southclaws/formatex
+#include <formatex>
+
+// By Slice: https://github.com/oscar-broman/strlib
+#include <strlib>
+
+// By Whitetiger: https://github.com/Whitetigerswt/SAMP-geoip
+#include <geolocation>
+
+// By RyDeR`: https://github.com/Southclaws/samp-ctime
+#include <ctime>
+
+// By Emmet_: https://github.com/Awsomedude/easyDialog
+#include <easyDialog>
+
+// By Toribio/Southclaw: https://github.com/Southclaws/progress2
+#include <progress2>
+
+// By JaTochNietDan, 1.5: https://github.com/Southclaws/SA-MP-FileManager
+#include <filemanager>
+
+// By Kalcor: https://github.com/Southclaws/samp-plugin-mapandreas
+#include <mapandreas>
+
+// By Southclaw: https://github.com/Southclaws/SimpleINI
+#include <SimpleINI>
+
+// By Southclaw: https://github.com/Southclaws/modio
+#include <modio>
+
+// By Southclaw, v1.6.2: https://github.com/Southclaws/SIF
+#include <SIF>
 #include <SIF\extensions\ItemArrayData.pwn>
 #include <SIF\extensions\ItemSerializer.pwn>
 #include <SIF\extensions\InventoryDialog.pwn>
@@ -149,13 +186,22 @@ public OnGameModeInit()
 #include <SIF\extensions\ContainerDialog.pwn>
 #include <SIF\extensions\Craft.pwn>
 #include <SIF\extensions\DebugLabels.pwn>
-#include <WeaponData>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
-#include <Line>						// By Southclaw:			https://github.com/Southclaws/Line
-#include <Zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
-#include <Ladder>					// By Southclaw:			https://github.com/Southclaws/Ladder
 
+// By Southclaw: https://github.com/Southclaws/AdvancedWeaponData
+#include <WeaponData>
+
+// By Southclaw: https://github.com/Southclaws/Line
+#include <Line>
+
+// By Southclaw: https://github.com/Southclaws/Zipline
+#include <Zipline>
+
+// By Southclaw: https://github.com/Southclaws/Ladder
+#include <Ladder>
+
+
+// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
 native WP_Hash(buffer[], len, const str[]);
-									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
 
 
 /*==============================================================================
@@ -185,9 +231,8 @@ native WP_Hash(buffer[], len, const str[]);
 
 
 // Files
-#define ACCOUNT_DATABASE			DIRECTORY_MAIN"accounts.db"
-#define WORLD_DATABASE				DIRECTORY_MAIN"world.db"
 #define SETTINGS_FILE				DIRECTORY_MAIN"settings.ini"
+#define REDIS_DOMAIN_ROOT			"ss"
 
 
 // Macros
@@ -196,9 +241,6 @@ native WP_Hash(buffer[], len, const str[]);
 
 #define ACMD:%1[%2](%3)				forward acmd_%1_%2(%3);\
 									public acmd_%1_%2(%3)
-
-#define SCMD:%1(%2)					forward scmd_%1(%2);\
-									public scmd_%1(%2)
 
 #define HOLDING(%0)					((newkeys & (%0)) == (%0))
 #define RELEASED(%0)				(((newkeys & (%0)) != (%0)) && ((oldkeys & (%0)) == (%0)))
@@ -304,7 +346,7 @@ bool:	gServerRestarting = false,
 
 // DATABASES
 new
-DB:		gAccounts;
+Redis:	gRedis;
 
 // GLOBAL SERVER SETTINGS (Todo: modularise)
 new
@@ -378,10 +420,12 @@ new stock
 	PARENT SYSTEMS
 	Modules that declare setup functions and constants used throughout.
 */
+#include "sss/core/player/accounts-io.pwn"
 #include "sss/core/vehicle/vehicle-type.pwn"
 #include "sss/core/vehicle/lock.pwn"
 #include "sss/core/vehicle/core.pwn"
 #include "sss/core/player/core.pwn"
+#include "sss/core/player/chat.pwn"
 #include "sss/core/player/save-load.pwn"
 #include "sss/core/admin/core.pwn"
 #include "sss/core/char/holster.pwn"
@@ -423,24 +467,21 @@ new stock
 
 // PLAYER INTERNAL SCRIPTS
 #include "sss/core/player/accounts.pwn"
-#include "sss/core/player/aliases.pwn"
-#include "sss/core/player/ipv4-log.pwn"
-#include "sss/core/player/gpci-log.pwn"
-#include "sss/core/player/gpci-whitelist.pwn"
+// #include "sss/core/player/aliases.pwn"
+// #include "sss/core/player/ipv4-log.pwn"
+// #include "sss/core/player/gpci-log.pwn"
 #include "sss/core/player/brightness.pwn"
 #include "sss/core/player/spawn.pwn"
 #include "sss/core/player/damage.pwn"
 #include "sss/core/player/death.pwn"
 #include "sss/core/player/tutorial.pwn"
 #include "sss/core/player/welcome-message.pwn"
-#include "sss/core/player/chat.pwn"
 #include "sss/core/player/cmd-process.pwn"
 #include "sss/core/player/commands.pwn"
 #include "sss/core/player/afk-check.pwn"
 #include "sss/core/player/alt-tab-check.pwn"
 #include "sss/core/player/disallow-actions.pwn"
 #include "sss/core/player/whitelist.pwn"
-#include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
 #include "sss/core/player/recipes.pwn"
 
@@ -511,10 +552,12 @@ new stock
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
+#include "sss/core/admin/report-io.pwn"
 #include "sss/core/admin/report-cmds.pwn"
 #include "sss/core/admin/hack-detect.pwn"
 #include "sss/core/admin/hack-trap.pwn"
 #include "sss/core/admin/ban.pwn"
+#include "sss/core/admin/ban-io.pwn"
 #include "sss/core/admin/ban-command.pwn"
 #include "sss/core/admin/ban-list.pwn"
 #include "sss/core/admin/spectate.pwn"
@@ -524,9 +567,10 @@ new stock
 #include "sss/core/admin/level4.pwn"
 #include "sss/core/admin/level5.pwn"
 #include "sss/core/admin/bug-report.pwn"
-#include "sss/core/admin/detfield.pwn"
-#include "sss/core/admin/detfield-cmds.pwn"
-#include "sss/core/admin/detfield-draw.pwn"
+// #include "sss/core/admin/detfield.pwn"
+// #include "sss/core/admin/detfield-io.pwn"
+// #include "sss/core/admin/detfield-cmds.pwn"
+// #include "sss/core/admin/detfield-draw.pwn"
 #include "sss/core/admin/mute.pwn"
 #include "sss/core/admin/rcon.pwn"
 #include "sss/core/admin/freeze.pwn"
@@ -585,7 +629,11 @@ new stock
 
 // WORLD
 
+#if defined BUILD_MINIMAL
+#include "sss/world-bs/world.pwn"
+#else
 #include "sss/world/world.pwn"
+#endif
 
 #if !defined GetMapName
 	#error World script MUST have a "GetMapName" function!
@@ -611,6 +659,7 @@ main()
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing-global", "Server:The server is online, come and play!");
 }
 
 /*
@@ -620,6 +669,21 @@ OnGameModeInit_Setup()
 {
 	log("[OnGameModeInit_Setup] Setting up...");
 
+	new
+		dir:dirhandle = dir_open("./"),
+		item[64],
+		type;
+
+	if(!dirhandle)
+	{
+		fatal("UNKNOWN ERROR: Failed to read server directory");
+	}
+	log("directory scan:");
+	while(dir_list(dirhandle, item, type))
+	{
+		log(item);
+	}
+
 	new buildstring[12];
 
 	file_read("BUILD_NUMBER", buildstring);
@@ -627,8 +691,7 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		log("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
-		for(;;){}
+		fatal("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 	}
 
 	log("Initialising Scavenge and Survive build %d", gBuildNumber);
@@ -638,8 +701,7 @@ OnGameModeInit_Setup()
 
 	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		log("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
-		for(;;){}
+		fatal("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 	}
 
 	if(!dir_exists(DIRECTORY_SCRIPTFILES))
@@ -654,9 +716,21 @@ OnGameModeInit_Setup()
 		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
-	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
+	new
+		redis_host[128],
+		redis_port,
+		redis_pass[128];
 
 	LoadSettings();
+	GetSettingString("server/redis-host", "localhost", redis_host);
+	GetSettingInt("server/redis-port", 6379, redis_port);
+	GetSettingString("server/redis-pass", "", redis_pass);
+
+	gRedis = Redis_Connect(redis_host, redis_port, redis_pass);
+	if(_:gRedis < 0)
+	{
+		fatal("redis connect failed: %d", _:gRedis);
+	}
 
 	SendRconCommand(sprintf("mapname %s", GetMapName()));
 
@@ -675,14 +749,11 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	log("[OnGameModeExit] Shutting down...");
-
 	if(gCrashOnExit)
-	{
-		new File:f = fopen("nonexistentfile", io_read), _s[1];
-		fread(f, _s);
-		fclose(f);
-	}
+		fatal("[OnGameModeExit] Shutting down...");
+
+	else
+		log("[OnGameModeExit] Shutting down...");
 
 	return 1;
 }
@@ -690,6 +761,7 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	log("[OnScriptExit] Shutting down...");
+	return 0;
 }
 
 forward SetRestart(seconds);
@@ -702,6 +774,7 @@ public SetRestart(seconds)
 RestartGamemode()
 {
 	log("[RestartGamemode] Initialising gamemode restart...");
+	Redis_SendMessage(gRedis, "ss.rediscord.outgoing-global", "Server:The server is restarting, that means more loot!");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
@@ -763,30 +836,7 @@ DirectoryCheck(directory[])
 	}
 }
 
-DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
+public Streamer_OnPluginError(const error[])
 {
-	new
-		query[96],
-		DBResult:result,
-		dbcolumns;
-
-	format(query, sizeof(query), "pragma table_info(%s)", tablename);
-	result = db_query(database, query);
-
-	dbcolumns = db_num_rows(result);
-
-	if(dbcolumns != expectedcolumns)
-	{
-		err("Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
-		err("Please verify table structure against column list in script.");
-
-		// Put the server into a loop to stop it so the user can read the message.
-		// It won't function correctly with bad databases anyway.
-		for(;;){}
-	}
-}
-
-public Streamer_OnPluginError(error[])
-{
-	err(error);
+	// err(error);
 }

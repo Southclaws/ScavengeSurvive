@@ -89,11 +89,6 @@ public OnPlayerConnect(playerid)
 	sscanf(ipstring, "p<.>a<d>[4]", ipbyte);
 	ply_Data[playerid][ply_IP] = ((ipbyte[0] << 24) | (ipbyte[1] << 16) | (ipbyte[2] << 8) | ipbyte[3]);
 
-	if(BanCheck(playerid))
-		return 0;
-
-	defer LoadAccountDelay(playerid);
-
 	SetPlayerBrightness(playerid, 255);
 
 	TogglePlayerControllable(playerid, false);
@@ -115,6 +110,8 @@ public OnPlayerConnect(playerid)
 	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 
 	ply_Data[playerid][ply_ShowHUD] = true;
+
+	LoadAccount(playerid); // OnPlayerLoadedAccount
 
 	return 1;
 }
@@ -145,54 +142,40 @@ public OnPlayerDisconnect(playerid, reason)
 	return 1;
 }
 
-timer LoadAccountDelay[5000](playerid)
+public OnPlayerLoadedAccount(playerid, loadresult)
 {
-	if(!IsPlayerConnected(playerid))
-	{
-		log("[LoadAccountDelay] Player %d not connected any more.", playerid);
-		return;
-	}
+	log("[OnPlayerLoadedAccount] %p loadresult: %d", playerid, loadresult);
 
-	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
-	{
-		defer LoadAccountDelay(playerid);
-		return;
-	}
-
-	new loadresult = LoadAccount(playerid);
-
-	if(loadresult == -1) // LoadAccount aborted, kick player.
+	if(loadresult == ACCOUNT_LOAD_RESULT_ERROR) // LoadAccount aborted, kick player.
 	{
 		KickPlayer(playerid, "Account load failed");
 		return;
 	}
 
-	if(loadresult == 0) // Account does not exist
+	if(loadresult == ACCOUNT_LOAD_RESULT_NO_EXIST) // Account does not exist
 	{
 		DisplayRegisterPrompt(playerid);
 	}
 
-	if(loadresult == 1) // Account does exist, prompt login
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST) // Account does exist, prompt login
 	{
 		DisplayLoginPrompt(playerid);
 	}
 
-	if(loadresult == 2) // Account does exist, auto login
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_AL) // Account does exist, auto login
 	{
 		Login(playerid);
 	}
 
-	if(loadresult == 3) // Account does exist, but not in whitelist
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_WL) // Account does exist, but not in whitelist
 	{
 		WhitelistKick(playerid);
 	}
 
-	if(loadresult == 4) // Account does exists, but is disabled
+	if(loadresult == ACCOUNT_LOAD_RESULT_EXIST_DA) // Account does exists, but is disabled
 	{
 		KickPlayer(playerid, "Account inactive");
 	}
-
-	CheckForExtraAccounts(playerid);
 
 	return;
 }

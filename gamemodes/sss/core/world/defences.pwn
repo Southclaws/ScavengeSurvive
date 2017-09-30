@@ -311,7 +311,7 @@ _InteractDefence(playerid, itemid)
 				if(def_CurrentDefenceEdit[playerid] != -1)
 				{
 					HideKeypad(playerid);
-					Dialog_Hide(playerid);
+					Dialog_Close(playerid);
 				}
 
 				def_CurrentDefenceEdit[playerid] = itemid;
@@ -322,7 +322,7 @@ _InteractDefence(playerid, itemid)
 				if(def_CurrentDefenceOpen[playerid] != -1)
 				{
 					HideKeypad(playerid);
-					Dialog_Hide(playerid);
+					Dialog_Close(playerid);
 				}
 
 				def_CurrentDefenceOpen[playerid] = itemid;
@@ -338,7 +338,7 @@ _InteractDefence(playerid, itemid)
 				if(def_CurrentDefenceEdit[playerid] != -1)
 				{
 					HideKeypad(playerid);
-					Dialog_Hide(playerid);
+					Dialog_Close(playerid);
 				}
 
 				def_CurrentDefenceEdit[playerid] = itemid;
@@ -349,7 +349,7 @@ _InteractDefence(playerid, itemid)
 				if(def_CurrentDefenceOpen[playerid] != -1)
 				{
 					HideKeypad(playerid);
-					Dialog_Hide(playerid);
+					Dialog_Close(playerid);
 				}
 
 				def_CurrentDefenceOpen[playerid] = itemid;
@@ -780,33 +780,32 @@ ShowEnterPassDialog_Keypad(playerid, msg = 0)
 
 ShowSetPassDialog_KeypadAdv(playerid)
 {
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show(playerid, SetPassAdv, DIALOG_STYLE_INPUT, "Set passcode", "Enter a passcode between 4 and 8 characters long using characers 0-9, a-f.", "Enter", "");
+
+	return 1;
+}
+
+Dialog:SetPassAdv(playerid, response, listitem, inputtext[])
+{
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem
+		new pass;
 
-		if(response)
+		if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
 		{
-			new pass;
-
-			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
-			{
-				SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], pass, def_pass);
-				CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
-				def_CurrentDefenceEdit[playerid] = -1;
-			}
-			else
-			{
-				ShowSetPassDialog_KeypadAdv(playerid);
-			}
+			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], pass, def_pass);
+			CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
+			def_CurrentDefenceEdit[playerid] = -1;
 		}
 		else
 		{
 			ShowSetPassDialog_KeypadAdv(playerid);
 		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Set passcode", "Enter a passcode between 4 and 8 characters long using characers 0-9, a-f.", "Enter", "");
-
-	return 1;
+	else
+	{
+		ShowSetPassDialog_KeypadAdv(playerid);
+	}
 }
 
 ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
@@ -814,56 +813,55 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 	if(msg == 2)
 		ChatMsgLang(playerid, YELLOW, "DEFTOOFASTE", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
 
-	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	Dialog_Show(playerid, EnterPassAdv, DIALOG_STYLE_INPUT, "Enter passcode", (msg == 1) ? ("Incorrect passcode!") : ("Enter the 4-8 character hexadecimal passcode to open."), "Enter", "Cancel");
+
+	return 1;
+}
+
+Dialog:EnterPassAdv(playerid, response, listitem, inputtext[])
+{
+	if(response)
 	{
-		#pragma unused pid, dialogid, listitem
+		new pass;
 
-		if(response)
+		sscanf(inputtext, "x", pass);
+
+		if(pass == GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], def_pass) && strlen(inputtext) >= 4)
 		{
-			new pass;
-
-			sscanf(inputtext, "x", pass);
-
-			if(pass == GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], def_pass) && strlen(inputtext) >= 4)
-			{
-				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
-				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
-				def_CurrentDefenceOpen[playerid] = -1;
-			}
-			else
-			{
-				if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
-				{
-					ShowEnterPassDialog_KeypadAdv(playerid, 2);
-					return 1;
-				}
-
-				if(def_PassFails[playerid] == 5)
-				{
-					def_Cooldown[playerid] += 4000;
-					def_PassFails[playerid] = 0;
-					return 1;
-				}
-
-				new geid[GEID_LEN];
-
-				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
-
-				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, pass);
-				ShowEnterPassDialog_KeypadAdv(playerid, 1);
-				def_LastPassEntry[playerid] = GetTickCount();
-				def_Cooldown[playerid] = 2000;
-				def_PassFails[playerid]++;
-			}
+			ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
+			defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
+			def_CurrentDefenceOpen[playerid] = -1;
 		}
 		else
 		{
-			return 0;
-		}
+			if(GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]) < def_Cooldown[playerid])
+			{
+				ShowEnterPassDialog_KeypadAdv(playerid, 2);
+				return 1;
+			}
 
-		return 1;
+			if(def_PassFails[playerid] == 5)
+			{
+				def_Cooldown[playerid] += 4000;
+				def_PassFails[playerid] = 0;
+				return 1;
+			}
+
+			new geid[GEID_LEN];
+
+			GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
+
+			log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, pass);
+			ShowEnterPassDialog_KeypadAdv(playerid, 1);
+			def_LastPassEntry[playerid] = GetTickCount();
+			def_Cooldown[playerid] = 2000;
+			def_PassFails[playerid]++;
+		}
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Enter passcode", (msg == 1) ? ("Incorrect passcode!") : ("Enter the 4-8 character hexadecimal passcode to open."), "Enter", "Cancel");
+	else
+	{
+		return 0;
+	}
 
 	return 1;
 }

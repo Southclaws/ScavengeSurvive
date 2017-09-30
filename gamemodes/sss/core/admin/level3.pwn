@@ -142,7 +142,7 @@ ACMD:whitelist[3](playerid, params[])
 			format(list, sizeof(list), "%s%C%s\n", list, IsPlayerInWhitelist(i) ? (GREEN) : (RED), name);
 		}
 
-		Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close");
+		ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Whitelisted players", list, "Close", "");
 	}
 
 	return 1;
@@ -244,11 +244,11 @@ ACMD:ip[3](playerid, params[])
 			return 1;
 		}
 
-		new ip;
+		new ipv4[16];
 
-		GetAccountIP(params, ip);
+		GetAccountIP(params, ipv4);
 
-		ChatMsg(playerid, YELLOW, " >  IP for "C_BLUE"%s"C_YELLOW": %s", params, IpIntToStr(ip));
+		ChatMsg(playerid, YELLOW, " >  IP for "C_BLUE"%s"C_YELLOW": %s", params, ipv4);
 	}
 
 	return 1;
@@ -540,17 +540,6 @@ ACMD:additem[3](playerid, params[])
 	if(exdatasize > 0)
 		SetItemArrayData(itemid, exdata, exdatasize);
 
-	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, response, listitem
-
-			log("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this item:", "Enter", "");
-	}
-
 	return 1;
 }
 
@@ -590,17 +579,6 @@ ACMD:addvehicle[3](playerid, params[])
 	vehicleid = CreateLootVehicle(type, x, y, z, r);
 	SetVehicleFuel(vehicleid, 100000.0);
 	SetVehicleHealth(vehicleid, 990.0);
-
-	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
-	{
-		inline Response(pid, dialogid, response, listitem, string:inputtext[])
-		{
-			#pragma unused pid, dialogid, response, listitem
-
-			log("[ADDVEHICLE] %p added vehicle %d reason: %s", pid, type, inputtext);
-		}
-		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this vehicle:", "Enter", "");
-	}
 
 	return 1;
 }

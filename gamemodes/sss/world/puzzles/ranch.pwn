@@ -130,7 +130,11 @@ hook OnButtonPress(playerid, buttonid)
 
 	if(buttonid==RanchPcButton)
 	{
-	    if(RanchPcState == 0)Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You try to turn on the computer but the hard disk is missing.\nYou wonder where it could be and think it's mighty suspicious.\nThere is nothing useful nearby.", "Close", "");
+	    if(RanchPcState == 0)
+	    {
+	    	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Computer", "You try to turn on the computer but the hard disk is missing.\nYou wonder where it could be and think it's mighty suspicious.\nThere is nothing useful nearby.", "Close", "");
+		}
+
 	    if(RanchPcState == 1)
 	    {
 			if(RanchPcPlayerViewing[playerid])
@@ -153,7 +157,7 @@ hook OnButtonPress(playerid, buttonid)
 	{
 	    if(QuarryDoorState == 0)
 	    {
-	    	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Door", "You pull on the door but it won't budge, the lock seems sturdy.\nThere's no way you can get through here without a key.\nPerhaps you should search the shed?", "Close", "");
+	    	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Door", "You pull on the door but it won't budge, the lock seems sturdy.\nThere's no way you can get through here without a key.\nPerhaps you should search the shed?", "Close", "");
 	    }
 	    else
 	    {
@@ -204,13 +208,13 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
-	    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You begin reattaching the hard drive to the computer.", "Close", "");
+	    ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Computer", "You begin reattaching the hard drive to the computer.", "Close", "");
 		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 1, 450);
 		defer AttachRanchHdd(playerid);
 	}
 	if(QuarryDoorState == 0 && buttonid == QuarryDoor && itemid == QuarryDoorKey)
 	{
-	    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Door", "You have unlocked the mystery door!", "Close", "");
+	    ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Door", "You have unlocked the mystery door!", "Close", "");
 	    QuarryDoorState = 1;
 	}
 
@@ -220,7 +224,7 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 timer AttachRanchHdd[2500](playerid)
 {
 	DestroyItem(RanchHdd);
-	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You successfully install the hard drive without electricuting yourself, well done!", "Close", "");
+	ShowPlayerDialog(playerid, 10008, DIALOG_STYLE_MSGBOX, "Computer", "You successfully install the hard drive without electricuting yourself, well done!", "Close", "");
     ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
     RanchPcState = 1;
 
