@@ -1,7 +1,7 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
 		Open Source File
 

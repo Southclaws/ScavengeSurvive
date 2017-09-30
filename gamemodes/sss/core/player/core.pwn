@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -105,7 +105,7 @@ public OnPlayerConnect(playerid)
 
 	Thank you :)
 	*/
-	ChatMsg(playerid, ORANGE, "Scavenge and Survive "C_BLUE"(Copyright (C) 2016 Barnaby \"Southclaw\" Keene)");
+	ChatMsg(playerid, ORANGE, "Scavenge and Survive "C_BLUE"(Copyright (C) 2017 Barnaby \"Southclaw\" Keene)");
 	ChatMsgAll(WHITE, " >  %P (%d)"C_WHITE" has joined", playerid, playerid);
 	ChatMsg(playerid, YELLOW, " >  MoTD: "C_BLUE"%s", gMessageOfTheDay);
 

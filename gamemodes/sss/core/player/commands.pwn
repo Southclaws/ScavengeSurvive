@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -57,7 +57,7 @@ CMD:admins(playerid, params[])
 
 CMD:credits(playerid, params[])
 {
-	ChatMsg(playerid, YELLOW, " >  Scavenge and Survive is developed by Southclaw (southclaw.net) and the following contributors:");
+	ChatMsg(playerid, YELLOW, " >  Scavenge and Survive is developed by Southclaw (southcla.ws) and the following contributors:");
 	ChatMsg(playerid, BLUE, " >  Y_Less - Tons of useful code, libraries and conversations");
 	ChatMsg(playerid, BLUE, " >  Viruxe - Lots of anti-cheat work");
 	ChatMsg(playerid, BLUE, " >  Kadaradam - Fishing, Trees and lots of bug fixes");

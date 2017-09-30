@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -33,8 +33,8 @@ hook OnGameModeInit()
 
 	tmp = DefineMaskItem(item_BandanaBlue);
 
-	SetMaskOffsetsForSkin(tmp, skin_MainM, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
-	SetMaskOffsetsForSkin(tmp, skin_MainF, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0M, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0F, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
 
 	SetMaskOffsetsForSkin(tmp, skin_Civ1M, 0.071999, 0.025000, -0.006999, -85.499992, 16.900012, -92.800048, 0.964000, 1.000000, 0.989001);
 	SetMaskOffsetsForSkin(tmp, skin_Civ2M, 0.081999, 0.017000, 0.000000, -85.499992, 14.300015, -92.800048, 1.011000, 1.000000, 0.989001); 
@@ -56,8 +56,8 @@ hook OnGameModeInit()
 
 	tmp = DefineMaskItem(item_BandanaGrey);
 
-	SetMaskOffsetsForSkin(tmp, skin_MainM, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
-	SetMaskOffsetsForSkin(tmp, skin_MainF, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0M, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0F, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
 
 	SetMaskOffsetsForSkin(tmp, skin_Civ1M, 0.071999, 0.025000, -0.006999, -85.499992, 16.900012, -92.800048, 0.964000, 1.000000, 0.989001);
 	SetMaskOffsetsForSkin(tmp, skin_Civ2M, 0.081999, 0.017000, 0.000000, -85.499992, 14.300015, -92.800048, 1.011000, 1.000000, 0.989001); 
@@ -79,8 +79,8 @@ hook OnGameModeInit()
 
 	tmp = DefineMaskItem(item_BandanaWhite);
 
-	SetMaskOffsetsForSkin(tmp, skin_MainM, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
-	SetMaskOffsetsForSkin(tmp, skin_MainF, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0M, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0F, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
 
 	SetMaskOffsetsForSkin(tmp, skin_Civ1M, 0.071999, 0.025000, -0.006999, -85.499992, 16.900012, -92.800048, 0.964000, 1.000000, 0.989001);
 	SetMaskOffsetsForSkin(tmp, skin_Civ2M, 0.081999, 0.017000, 0.000000, -85.499992, 14.300015, -92.800048, 1.011000, 1.000000, 0.989001); 
@@ -102,8 +102,8 @@ hook OnGameModeInit()
 
 	tmp = DefineMaskItem(item_BandanaPattern);
 
-	SetMaskOffsetsForSkin(tmp, skin_MainM, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
-	SetMaskOffsetsForSkin(tmp, skin_MainF, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0M, 0.088999, 0.034000, -0.002999, -85.499992, 8.599997, -92.800048, 0.998000, 1.000000, 0.914000);
+	SetMaskOffsetsForSkin(tmp, skin_Civ0F, 0.082999, 0.025000, -0.001999, -85.499992, 6.000015, -92.800048, 1.011000, 1.000000, 0.989001);
 
 	SetMaskOffsetsForSkin(tmp, skin_Civ1M, 0.071999, 0.025000, -0.006999, -85.499992, 16.900012, -92.800048, 0.964000, 1.000000, 0.989001);
 	SetMaskOffsetsForSkin(tmp, skin_Civ2M, 0.081999, 0.017000, 0.000000, -85.499992, 14.300015, -92.800048, 1.011000, 1.000000, 0.989001); 

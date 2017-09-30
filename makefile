@@ -1,3 +1,7 @@
+BUILD_NUMBER := $(shell cat BUILD_NUMBER)
+
+
+# Dependencies: git-clones each of the project dependencies into gamemodes/vendor
 dependencies:
 	-git clone https://github.com/Zeex/samp-plugin-crashdetect gamemodes/vendor/samp-plugin-crashdetect
 	-git clone https://github.com/maddinat0r/sscanf gamemodes/vendor/sscanf
@@ -22,6 +26,7 @@ dependencies:
 	-git clone https://github.com/Southclaws/Ladder gamemodes/vendor/Ladder
 
 
+# dev builds: uses BUILD_MINIMAL to speed up the compile
 dev-windows: dependencies
 	pawncc \
 		-Dgamemodes \
@@ -52,6 +57,9 @@ dev-windows: dependencies
 		-d3 \
 		BUILD_MINIMAL= \
 		ScavengeSurvive.pwn
+	$(eval BUILD_NUMBER=$(shell echo $$(($(BUILD_NUMBER)+1))))
+	echo -n $(BUILD_NUMBER) > BUILD_NUMBER
+
 
 dev-linux:
 	pawncc \
@@ -85,7 +93,11 @@ dev-linux:
 		-Z+ \
 		BUILD_MINIMAL= \
 		ScavengeSurvive.pwn
+	$(eval BUILD_NUMBER=$(shell echo $$(($(BUILD_NUMBER)+1))))
+	echo -n $(BUILD_NUMBER) > BUILD_NUMBER
 
+
+# Production builds: does not use BUILD_MINIMAL
 prod-windows:
 	pawncc \
 		-Dgamemodes \
@@ -147,6 +159,8 @@ prod-linux:
 		-Z+ \
 		ScavengeSurvive.pwn
 
+
+# Compiles required filterscripts
 filterscripts:
 	pawncc \
 		-\;+ \
@@ -160,5 +174,7 @@ filterscripts:
 		-igamemodes/vendor/SA-MP-FileManager \
 		filterscripts/object-loader.pwn
 
+
+# Runs a Redis container for testing
 redis:
 	docker run --name redis redis

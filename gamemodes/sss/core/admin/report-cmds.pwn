@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -259,7 +259,7 @@ ACMD:deletereports[2](playerid, params[])
 	return 1;
 }
 
-ShowListOfReports(playerid)
+stock ShowListOfReports(playerid)
 {
 	return ReportIO_GetList(playerid, MAX_REPORTS_PER_PAGE, 0, "OnReportList");
 }
@@ -279,7 +279,7 @@ Dialog:ListOfReports(playerid, response, listitem, inputtext[])
 	}
 }
 
-ShowReport(playerid, id[])
+stock ShowReport(playerid, id[])
 {
 	return ReportIO_GetInfo(playerid, id, "OnReportInfo");
 }

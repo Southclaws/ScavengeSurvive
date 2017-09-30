@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -58,7 +58,7 @@
 ==============================================================================*/
 
 
-ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, world, interior, infostring[])
+stock ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, world, interior, infostring[])
 {
 	new reportername[MAX_PLAYER_NAME];
 
@@ -78,17 +78,17 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 	return 0;
 }
 
-DeleteReport(id[])
+stock DeleteReport(id[])
 {
 	return ReportIO_Remove(id);
 }
 
-DeleteReportsOfPlayer(name[])
+stock DeleteReportsOfPlayer(name[])
 {
 	return ReportIO_RemoveOfName(name);
 }
 
-DeleteReadReports()
+stock DeleteReadReports()
 {
 	return ReportIO_RemoveRead();
 }

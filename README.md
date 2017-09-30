@@ -8,7 +8,6 @@
 [![Donate](https://img.shields.io/badge/donate-paypal-3b7bbf.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
 
 
-
 ## A PvP SA:MP server script
 
 The aim of the game is to find supplies such as tools or weapons to help you survive, either alone or in a group.
@@ -22,9 +21,30 @@ No gameplay mechanics require the use of commands. All gameplay has been built w
 
 ## Development
 
-The gamemode is written in a modular fashion, borrowing a lot of concepts from object-oriented programming. The "World" scripts are separated and can be completely replaced for a new map.
+Development of this project is only advised to experienced users of the Pawn language or other languages. The development environment is rather specific and requires quite a bit of existing software knowledge such as makefiles, dependency management and Docker (if on Windows).
 
-I encourage people to play around with this code, create a new map and put loot spawns in it or completely mod it into a new gamemode, I would love to see what creations are made! Please publish all bug fixes in order to benefit everyone.
+That being said, I encourage people to play around with this code, create a new map and put loot spawns in it or completely mod it into a new gamemode, I would love to see what creations are made! Please publish all bug fixes in order to benefit everyone.
+
+### Pre-Requisites
+
+- GNU Make - You can install Git For Windows to get this on Windows, it's pretty standard on Linux
+- Git - You should have acquired the project via `git clone` anyway, if not I highly advise it so you can easily stay up to date
+- sampctl - You can download this from my GitHub - it's a tool for aiding the development and management process of SA:MP servers
+- Patience - This is not a simple project, you have been warned. I do not have time to provide tech-support so please do not contact me asking me for help compiling the project (sorry!)
+
+### Dependencies
+
+To get the dependencies, run `make dependencies` - this will also run on every build, just to keep things up to date. I try to keep the code compatible with the HEADs of dependencies. You can download them manually but that would be a pain.
+
+### `pawncc` on System `PATH` Environment Variable
+
+Make sure `pawncc` is available as a command - if you do not know how to do this then Google is your friend! I recommend Zeex' compiler on Linux but the default compiler will do just fine on Windows.
+
+### Compile!
+
+If you're just developing, run `make dev-windows`/`make dev-linux` to run a fast build. YMMV but it takes around 30 seconds on my machine.
+
+When you deploy, run `make prod-windows`/`make prod-linux` and this will push all the limits for various entities up pretty high.
 
 ### Don't Be Selfish
 
@@ -34,50 +54,9 @@ Please respect this. Feel free to keep your unique features private, just submit
 
 ### Builds
 
-Each time I compile a version of the gamemode, the build number (stored in BUILD_NUMBER) is incremented. This is also shown in-game at the top-right of the screen and will allow players and developers to know which version is in use which can help track issues and fix bugs.
+Each time I compile a version of the gamemode, the build number (stored in `BUILD_NUMBER`) is incremented. This is also shown in-game at the top-right of the screen and will allow players and developers to know which version is in use which can help track issues and fix bugs.
 
-IMPORTANT: DO NOT USE THE BUILD SCRIPT YOURSELF! The reason for this is that you'll change the build number which is meant to reflect which BASE version of the gamemode you are using, NOT your own builds. This will greatly improve my ability to fix issues on your server.
-
-
-## Setup
-
-**What version do I use?**
-
-If you're running a *public server* use the latest [release](https://github.com/Southclaw/ScavengeSurvive/releases). It *should* be stable but remember, this is a constantly evolving project and bugs always slip through!
-
-If you want to hack on the code and contribute, pull the latest commit.
-
-### 1. Dependencies
-
-Ensure you have ALL the dependencies listed in the master script (the one you compile from!) each #include line has a link to the release page.
-
-### 2. `scriptfiles/` directory
-
-The server will automatically create any required directories such as `scriptfiles/data/`.
-
-If you want to use the maps provided in the repository, extract `scriptfiles/Maps.zip` to `scriptfiles/`
-
-### 3. Compile!
-
-If you have a problem compiling **DON'T SUBMIT AN ISSUE HERE!** this is reserved for actual bugs.
-
-If you set up all the dependencies correctly, there should be *no* errors or warnings at all unless mentioned in the commit message.
-
-### 4. Set up plugins and filterscripts in your `server.cfg` file.
-
-Note: The repo contains *many* filterscripts, most of these are just testing tools and utilities, there are only *2* filterscripts you need to run on a public server:
-```
-filterscripts object-loader rcon
-plugins crashdetect streamer sscanf CTime Whirlpool FileManager irc MapAndreas
-```
-
-### 5. Set up gamemode settings in your `scriptfiles/data/settings.ini` file
-
-This is an INI file with game settings that will self-create if absent.
-
-Most of the settings should be self-explanitory. If the purpose isn't clear, look up the setting in the source code for more information.
-
-### 6. (Optional) Set up "missing features"
+### Missing Features
 
 Scavenge and Survive is now provided as a baseline to build from and many older features have been stripped out and are being developed privately. This is partly to deter inexperienced users from attempting to run a SS server/community. I hate to do this and it goes against everything I believe in when it comes to open source but it's something I had to do to prevent problems between communities and people using my work without giving proper credit.
 

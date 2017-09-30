@@ -1,5 +1,5 @@
 {
-    "triggerTaskOnSave.on": true,
+    "triggerTaskOnSave.on": false,
     "triggerTaskOnSave.restart": false,
     "triggerTaskOnSave.tasks": {
         "build": [

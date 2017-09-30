@@ -1,14 +1,14 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
 		Big thanks to Onfire559/Adam for the initial concept and developing
 		the idea a lot long ago with some very productive discussions!
 		Recently influenced by Minecraft and DayZ, credits to the creators of
 		those games and their fundamental mechanics and concepts.
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -162,7 +162,7 @@ public OnGameModeInit()
 // By Emmet_: https://github.com/Awsomedude/easyDialog
 #include <easyDialog>
 
-// By Toribio/Southclaw: https://github.com/Southclaws/progress2
+// By Toribio/Southclaws: https://github.com/Southclaws/progress2
 #include <progress2>
 
 // By JaTochNietDan, 1.5: https://github.com/Southclaws/SA-MP-FileManager
@@ -171,13 +171,13 @@ public OnGameModeInit()
 // By Kalcor: https://github.com/Southclaws/samp-plugin-mapandreas
 #include <mapandreas>
 
-// By Southclaw: https://github.com/Southclaws/SimpleINI
+// By Southclaws: https://github.com/Southclaws/SimpleINI
 #include <SimpleINI>
 
-// By Southclaw: https://github.com/Southclaws/modio
+// By Southclaws: https://github.com/Southclaws/modio
 #include <modio>
 
-// By Southclaw, v1.6.2: https://github.com/Southclaws/SIF
+// By Southclaws, v1.6.2: https://github.com/Southclaws/SIF
 #include <SIF>
 #include <SIF\extensions\ItemArrayData.pwn>
 #include <SIF\extensions\ItemSerializer.pwn>
@@ -187,16 +187,16 @@ public OnGameModeInit()
 #include <SIF\extensions\Craft.pwn>
 #include <SIF\extensions\DebugLabels.pwn>
 
-// By Southclaw: https://github.com/Southclaws/AdvancedWeaponData
+// By Southclaws: https://github.com/Southclaws/AdvancedWeaponData
 #include <WeaponData>
 
-// By Southclaw: https://github.com/Southclaws/Line
+// By Southclaws: https://github.com/Southclaws/Line
 #include <Line>
 
-// By Southclaw: https://github.com/Southclaws/Zipline
+// By Southclaws: https://github.com/Southclaws/Zipline
 #include <Zipline>
 
-// By Southclaw: https://github.com/Southclaws/Ladder
+// By Southclaws: https://github.com/Southclaws/Ladder
 #include <Ladder>
 
 
@@ -650,8 +650,8 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 main()
 {
 	log("================================================================================");
-	log("    Southclaw's Scavenge and Survive");
-	log("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	log("    Southclaws' Scavenge and Survive");
+	log("        Copyright (C) 2016 Barnaby \"Southclaws\" Keene");
 	log("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
 	log("        and you are welcome to redistribute it under certain conditions.");
 	log("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
@@ -787,7 +787,7 @@ RestartGamemode()
 
 	ChatMsgAll(BLUE, " ");
 	ChatMsgAll(ORANGE, "Scavenge and Survive");
-	ChatMsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	ChatMsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaws\" Keene");
 	ChatMsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
 	ChatMsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
 	ChatMsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");

@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -1411,7 +1411,7 @@ public OnScriptInit()
 	skin_ArmyM	= DefineClothesType(287,	"Military",			0, 0.2,		false, true);
 	skin_SwatM	= DefineClothesType(285,	"S.W.A.T.",			0, 0.1,		false, false);
 	skin_TriaM	= DefineClothesType(294,	"Triad",			0, 0.2,		false, false);
-	skin_ClawM	= DefineClothesType(101,	"Southclaw",		0, 0.1,		true, true);
+	skin_ClawM	= DefineClothesType(101,	"Southclaws",		0, 0.1,		true, true);
 	skin_FreeM	= DefineClothesType(156,	"Morgan Freeman",	0, 0.01,	true, true);
 
 	// female civilian

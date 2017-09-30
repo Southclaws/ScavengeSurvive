@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2017 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -50,7 +50,9 @@ bool:	veh_PrintEach,
 bool:	veh_PrintTotal;
 
 
+#if defined DefineDebugLabelType
 static	veh_DebugLabelType;
+#endif
 
 
 hook OnScriptInit()
