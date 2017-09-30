@@ -119,6 +119,8 @@ public OnGameModeInit()
 	forward main_OnGameModeInit();
 #endif
 
+#define GameModeIsInTestingMode
+
 /*==============================================================================
 
 	Libraries and respective links to their release pages
