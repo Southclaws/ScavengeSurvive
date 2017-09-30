@@ -67,7 +67,15 @@ stock ChatMsgAdmins(level, colour, fmat[], {Float,_}:...)
 	return 1;
 }
 
-
+stock SendDebug(type, text[], va_args<>)
+{
+	#if defined GameModeIsInTestingMode
+ 		va_formatex(gs_Buffer, sizeof(gs_Buffer), text, va_start<2>);
+		SendDebugFlat(type, gs_Buffer);
+	#endif	
+    
+    	return 1;
+}    
 /*==============================================================================
 
 	"Flat" Message with no formatting, never actually needs to be used in-code.
@@ -143,3 +151,22 @@ stock ChatMsgLangFlat(playerid, colour, key[])
 
 	return 1;
 }
+
+stock SendDebugFlat(type, text[])
+{
+	if(type == 0)
+	{
+		ChatMsgAll(WHITE, "DEBUG: %s", text);
+	}
+	if(type == 1)
+	{
+		ChatMsgAll(RED, "ERROR: %s, text);
+	}
+	if(type == 2)
+	{
+		ChatMsgAll(YELLOW, "WARNING: %s, text);
+	}
+	
+	return 1;
+}	
+		
