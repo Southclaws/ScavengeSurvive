@@ -40,7 +40,7 @@ stock TimestampToDateTime(datetime, format[] = CTIME_DATE_TIME)
 {
 	new
 		str[64],
-		tm<timestamp>;
+		timestamp[e_tm];
 
 	localtime(Time:datetime, timestamp);
 	strftime(str, 64, format, timestamp);
