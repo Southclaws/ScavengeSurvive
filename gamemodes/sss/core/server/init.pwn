@@ -999,6 +999,7 @@ public OnScriptInit()
 
 
 	// SETTING HOLSTERABLE ITEMS
+	SetItemTypeHolsterable(item_Spade,			1, 0.179000, -0.032000, 0.000000, 0.000000, -112.199981, -78.399993, 600, "GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_Baton,			8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
 	SetItemTypeHolsterable(item_Sword,			1, 0.123097, -0.129424, -0.139251, 0.000000, 301.455871, 0.000000, 600, "GOGGLES",	"GOGGLES_PUT_ON");
 	SetItemTypeHolsterable(item_M9Pistol,		8, 0.061868, 0.008748, 0.136682, 254.874801, 0.318417, 0.176398, 300,	"PED",		"PHONE_IN");
