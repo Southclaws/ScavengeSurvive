@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 
 #define DIRECTORY_PLAYER			DIRECTORY_MAIN"player/"

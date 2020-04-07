@@ -115,19 +115,17 @@ public OnGameModeInit()
 
 #include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
 #include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <YSI\y_utils>				// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
-#include <YSI\y_va>
-#include <YSI\y_timers>
-#include <YSI\y_hooks>
-#include <YSI\y_iterate>
-#include <YSI\y_ini>
-#include <YSI\y_dialog>
+#include <YSI_Core\y_utils>			// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
+#include <YSI_Coding\y_va>
+#include <YSI_Coding\y_timers>
+#include <YSI_Coding\y_hooks>
+#include <YSI_Coding\y_iterate>
+#include <YSI_Storage\y_ini>
+#include <YSI_Visual\y_dialog>
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <irc>						// By Incognito, 1.4.8:		https://github.com/samp-incognito/samp-irc-plugin/releases/tag/v1.4.8-non-ssl
-#include <dns>						// By Incognito, 2.4:		https://github.com/samp-incognito/samp-dns-plugin/releases/tag/v2.4
 #include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
@@ -139,7 +137,7 @@ public OnGameModeInit()
 #include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
-#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaws/SimpleINI
+#include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
 #include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
 #include <SIF\extensions\ItemArrayData.pwn>

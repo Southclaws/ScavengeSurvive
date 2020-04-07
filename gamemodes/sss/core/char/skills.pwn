@@ -28,7 +28,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 
 #define MAX_PLAYER_SKILLS	(50)

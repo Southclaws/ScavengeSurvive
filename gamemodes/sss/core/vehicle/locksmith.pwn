@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 
 static lsk_TargetVehicle[MAX_PLAYERS];

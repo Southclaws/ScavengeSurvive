@@ -1,0 +1,41 @@
+{
+	"user": "Southclaws",
+	"repo": "ScavengeSurvive",
+	"entry": "gamemodes/ScavengeSurvive.pwn",
+	"output": "gamemodes/ScavengeSurvive.amx",
+	"dependencies": [
+		"sampctl/samp-stdlib",
+		"Southclaws/samp-stdlib:0.3.7-R2-2-1",
+		"Southclaws/samp-logger",
+		"Southclaws/pawn-errors:^1.1.0",
+		"maddinat0r/sscanf",
+		"pawn-lang/YSI-Includes",
+		"Southclaws/formatex",
+		"oscar-broman/strlib",
+		"Awsomedude/easyDialog",
+		"Southclaws/samp-ctime",
+		"Southclaws/pawn-chrono:1.0.0",
+		"Southclaws/progress2",
+		"Southclaws/samp-plugin-mapandreas",
+		"Southclaws/samp-ini",
+		"Southclaws/modio",
+		"Southclaws/pawn-requests",
+		"Southclaws/pawn-fsutil:1.0.3",
+		"Southclaws/samp-whirlpool",
+		"Zeex/samp-plugin-crashdetect",
+		"oscar-broman/sqlitei",
+		"oscar-broman/md-sort",
+		"Whitetigerswt/SAMP-geoip",
+		"Southclaws/modio",
+		"Southclaws/SIF",
+		"JaTochNietDan/SA-MP-FileManager",
+		"samp-incognito/samp-streamer-plugin:2.9.3"
+	],
+	"runtime": {
+		"version": "0.3.7",
+		"mode": "server",
+		"echo": "-",
+		"rcon_password": "password",
+		"port": 7777
+	}
+}

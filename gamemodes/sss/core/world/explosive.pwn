@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-#include <YSI\y_hooks>
+#include <YSI_Coding\y_hooks>
 
 #define MAX_EXPLOSIVE_ITEM				(16)
 #define INVALID_EXPLOSIVE_TYPE			(-1)
