@@ -40,7 +40,7 @@
 
 #define _DEBUG							0 // YSI
 #define CGEN_MEMORY						(69420) // lol xd funny meme welcome to comedy zoNEwd
-#define FUCK_OFF_YSI_OPTIMISATION		true
+#define YSI_NO_HEAP_MALLOC
 #define DB_DEBUG						false // SQLitei
 #define DB_MAX_STATEMENTS				(128) // SQLitei
 #define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
@@ -64,7 +64,6 @@
 #define BTN_MAX							(32768) // SIF/Button
 #define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
-#define ITER_NONE						(cellmin) // Temporary fix for https://github.com/Misiur/YSI-Includes/issues/109
 
 /*==============================================================================
 
