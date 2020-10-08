@@ -10,6 +10,7 @@
 		"Southclaws/samp-logger:1.4.0",
 		"Southclaws/pawn-errors:^1.1.0",
 		"maddinat0r/sscanf:v2.8.3",
+		"samp-incognito/samp-streamer-plugin:v2.9.4",
 		"pawn-lang/YSI-Includes",
 		"Southclaws/formatex",
 		"oscar-broman/strlib",
@@ -22,14 +23,13 @@
 		"Southclaws/pawn-requests:0.8.7",
 		"Southclaws/pawn-fsutil:1.0.3",
 		"Southclaws/samp-whirlpool:v1.0.0",
-		"Zeex/samp-plugin-crashdetect:v4.19.4",
+		"Zeex/samp-plugin-crashdetect:v4.20",
 		"oscar-broman/sqlitei",
 		"oscar-broman/md-sort",
 		"Whitetigerswt/SAMP-geoip",
 		"Southclaws/modio",
 		"ScavengeSurvive/SIF",
 		"Southclaws/pawn-fsutil:1.0.4",
-		"samp-incognito/samp-streamer-plugin:v2.9.4",
 		"Southclaws/samp-weapon-data",
 		"Southclaws/samp-linegen",
 		"Southclaws/samp-zipline:v1.2.1",
@@ -41,5 +41,9 @@
 		"includes": [
 			"legacy"
 		]
+	},
+	"runtime": {
+		"bind": "0.0.0.0",
+		"port": 7777
 	}
 }
