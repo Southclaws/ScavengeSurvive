@@ -126,7 +126,8 @@ GetPlayerInfo(name[])
 	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active);
 
 	ip = IpIntToStr(ipv4);
-	GetIPCountry(ip, country);
+	// TODO: use a different country service
+	// GetIPCountry(ip, country);
 
 	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
 

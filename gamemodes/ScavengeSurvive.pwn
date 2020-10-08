@@ -128,7 +128,6 @@ public OnGameModeInit()
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
-#include <geolocation>				// By Whitetiger:			https://github.com/Whitetigerswt/SAMP-geoip
 #include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
