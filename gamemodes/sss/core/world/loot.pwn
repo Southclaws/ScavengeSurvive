@@ -472,7 +472,7 @@ stock GetLootSpawnTotalItems(lootspawn)
 	return loot_SpawnData[lootspawn][loot_total];
 }
 
-stock GetLootIndexFromName(name[])
+stock GetLootIndexFromName(const name[])
 {
 	for(new i; i < loot_IndexTotal; i++)
 	{

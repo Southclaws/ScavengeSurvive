@@ -87,7 +87,7 @@ hook OnPlayerDeath(playerid, killerid, reason)
 ==============================================================================*/
 
 
-stock DefineDrugType(name[], duration)
+stock DefineDrugType(const name[], duration)
 {
 	if(drug_TypeTotal == MAX_DRUG_TYPE)
 	{

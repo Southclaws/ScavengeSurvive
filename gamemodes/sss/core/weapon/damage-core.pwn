@@ -94,7 +94,7 @@ hook OnScriptInit()
 }
 
 
-stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, Float:knockmult, calibre, bodypart, source[])
+stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, Float:knockmult, calibre, bodypart, const source[])
 {
 	if(IsPlayerOnAdminDuty(playerid) || IsPlayerOnAdminDuty(targetid))
 		return 0;
@@ -328,14 +328,14 @@ stock GetPlayerWoundsPerBodypart(playerid, output[7])
 	{
 		switch(wnd_Data[playerid][i][wnd_bodypart])
 		{
-			case BODY_PART_TORSO:		output[0]++;
-			case BODY_PART_GROIN:		output[1]++;
-			case BODY_PART_LEFT_ARM:	output[2]++;
-			case BODY_PART_RIGHT_ARM:	output[3]++;
-			case BODY_PART_LEFT_LEG:	output[4]++;
-			case BODY_PART_RIGHT_LEG:	output[5]++;
-			case BODY_PART_HEAD:		output[6]++;
-			default:					output[0]++;
+			case BODY_PART_TORSO:		output[0] += 1;
+			case BODY_PART_GROIN:		output[1] += 1;
+			case BODY_PART_LEFT_ARM:	output[2] += 1;
+			case BODY_PART_RIGHT_ARM:	output[3] += 1;
+			case BODY_PART_LEFT_LEG:	output[4] += 1;
+			case BODY_PART_RIGHT_LEG:	output[5] += 1;
+			case BODY_PART_HEAD:		output[6] += 1;
+			default:					output[0] += 1;
 		}
 	}
 

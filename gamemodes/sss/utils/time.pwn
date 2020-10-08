@@ -36,7 +36,7 @@ stock RoundTimestamp(timestamp, roundamount)
 	return timestamp - (timestamp % roundamount);
 }
 
-stock TimestampToDateTime(datetime, format[] = CTIME_DATE_TIME)
+stock TimestampToDateTime(datetime, const format[] = CTIME_DATE_TIME)
 {
 	new
 		str[64],
@@ -48,7 +48,7 @@ stock TimestampToDateTime(datetime, format[] = CTIME_DATE_TIME)
 	return str;
 }
 
-stock MsToString(millisecond, format[])
+stock MsToString(millisecond, const format[])
 {
 	new
 		tmp[4],
@@ -156,7 +156,7 @@ stock MsToString(millisecond, format[])
 	return result;
 }
 
-GetDurationFromString(string[])
+GetDurationFromString(const string[])
 {
 	new
 		value,

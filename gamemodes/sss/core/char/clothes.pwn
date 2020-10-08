@@ -63,7 +63,7 @@ hook OnPlayerConnect(playerid)
 }
 
 
-DefineClothesType(modelid, name[MAX_SKIN_NAME], gender, Float:spawnchance, bool:wearhats, bool:wearmasks)
+DefineClothesType(modelid, const name[MAX_SKIN_NAME], gender, Float:spawnchance, bool:wearhats, bool:wearmasks)
 {
 	skin_Data[skin_Total][skin_model] = modelid;
 	skin_Data[skin_Total][skin_name] = name;

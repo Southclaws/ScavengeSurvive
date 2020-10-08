@@ -38,10 +38,9 @@
 #undef MAX_PLAYERS
 #define MAX_PLAYERS	(32)
 
-native IsValidVehicle(vehicleid);
-native gpci(playerid, serial[], len);
-
 #define _DEBUG							0 // YSI
+#define CGEN_MEMORY						(69420) // lol xd funny meme welcome to comedy zoNEwd
+#define FUCK_OFF_YSI_OPTIMISATION		true
 #define DB_DEBUG						false // SQLitei
 #define DB_MAX_STATEMENTS				(128) // SQLitei
 #define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
@@ -134,23 +133,24 @@ public OnGameModeInit()
 #include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
-#include <FileManager>				// By JaTochNietDan, 1.5:	https://github.com/JaTochNietDan/SA-MP-FileManager
+#include <FileManager>				// By JaTochNietDan			https://github.com/JaTochNietDan/SA-MP-FileManager
+// #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
 #include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
 #include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
-#include <SIF\extensions\ItemArrayData.pwn>
-#include <SIF\extensions\ItemSerializer.pwn>
-#include <SIF\extensions\InventoryDialog.pwn>
-#include <SIF\extensions\InventoryKeys.pwn>
-#include <SIF\extensions\ContainerDialog.pwn>
-#include <SIF\extensions\Craft.pwn>
-#include <SIF\extensions\DebugLabels.pwn>
-#include <WeaponData>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
-#include <Line>						// By Southclaw:			https://github.com/Southclaws/Line
-#include <Zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
-#include <Ladder>					// By Southclaw:			https://github.com/Southclaws/Ladder
+#include <SIF\extensions\item-array-data>
+#include <SIF\extensions\item-serializer>
+#include <SIF\extensions\dialog-inventory>
+#include <SIF\extensions\keys-inventory>
+#include <SIF\extensions\dialog-container>
+#include <SIF\extensions\craft>
+#include <SIF\extensions\debug-labels>
+#include <weapon-data>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
+#include <linegen>					// By Southclaw:			https://github.com/Southclaws/Line
+#include <zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
+#include <ladders>					// By Southclaw:			https://github.com/Southclaws/Ladder
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
@@ -438,7 +438,6 @@ new stock
 #include "sss/core/player/alt-tab-check.pwn"
 #include "sss/core/player/disallow-actions.pwn"
 #include "sss/core/player/whitelist.pwn"
-#include "sss/core/player/irc.pwn"
 #include "sss/core/player/country.pwn"
 #include "sss/core/player/recipes.pwn"
 
@@ -687,6 +686,7 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	log("[OnScriptExit] Shutting down...");
+	return 1;
 }
 
 forward SetRestart(seconds);
@@ -751,16 +751,18 @@ task RestartUpdate[1000]()
 	}
 }
 
-DirectoryCheck(directory[])
+DirectoryCheck(const directory[])
 {
-	if(!dir_exists(directory))
+	new d[256];
+	strcat(d, directory);
+	if(!dir_exists(d))
 	{
 		err("Directory '%s' not found. Creating directory.", directory);
-		dir_create(directory);
+		dir_create(d);
 	}
 }
 
-DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
+DatabaseTableCheck(DB:database, const tablename[], expectedcolumns)
 {
 	new
 		query[96],
@@ -783,7 +785,7 @@ DatabaseTableCheck(DB:database, tablename[], expectedcolumns)
 	}
 }
 
-public Streamer_OnPluginError(error[])
+public Streamer_OnPluginError(const error[])
 {
 	err(error);
 }

@@ -100,7 +100,7 @@ new
 ==============================================================================*/
 
 
-stock DefineVehicleSpawnGroup(name[])
+stock DefineVehicleSpawnGroup(const name[])
 {
 	if(veh_GroupTotal == MAX_VEHICLE_GROUP - 1)
 		return -1;
@@ -112,7 +112,7 @@ stock DefineVehicleSpawnGroup(name[])
 	return veh_GroupTotal++;
 }
 
-stock DefineVehicleType(modelid, name[], group, category, size, Float:maxfuel, Float:fuelcons, lootindex[], trunksize, Float:spawnchance, flags = 0)
+stock DefineVehicleType(modelid, const name[], group, category, size, Float:maxfuel, Float:fuelcons, const lootindex[], trunksize, Float:spawnchance, flags = 0)
 {
 	if(veh_TypeTotal == MAX_VEHICLE_TYPE - 1)
 		return -1;

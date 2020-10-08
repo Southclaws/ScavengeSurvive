@@ -50,26 +50,26 @@ static
 		log_Total;
 
 
-stock log(text[], va_args<>)
+stock log(const text[], va_args<>)
 {
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
 	print(log_Buffer);
 }
 
-stock dbg(handler[], level, text[], va_args<>)
+stock dbg(const handler[], level, const text[], va_args<>)
 {
 	new idx = _debug_get_handler_index(handler);
 
 	if(level <= log_Table[idx][log_level])
 	{
-		va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<3>);
+		formatex(log_Buffer, sizeof(log_Buffer), text, va_start<3>);
 		print(log_Buffer);
 	}
 }
 
-stock err(text[], va_args<>)
+stock err(const text[], va_args<>)
 {
-	va_formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
+	formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
 	print(log_Buffer);
 	PrintAmxBacktrace();
 }
@@ -82,7 +82,7 @@ stock err(text[], va_args<>)
 ==============================================================================*/
 
 
-_debug_get_handler_index(handler[])
+_debug_get_handler_index(const handler[])
 {
 	for(new i; i < log_Total; ++i)
 	{
@@ -93,7 +93,7 @@ _debug_get_handler_index(handler[])
 	return -1;
 }
 
-stock debug_set_level(handler[], level)
+stock debug_set_level(const handler[], level)
 {
 	new idx = _debug_get_handler_index(handler);
 
@@ -110,7 +110,7 @@ stock debug_set_level(handler[], level)
 	return 1;
 }
 
-stock debug_conditional(handler[], level)
+stock debug_conditional(const handler[], level)
 {
 	new idx = _debug_get_handler_index(handler);
 

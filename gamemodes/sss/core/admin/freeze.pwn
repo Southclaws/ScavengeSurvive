@@ -99,7 +99,6 @@ timer UnfreezePlayer_check[4000](playerid)
 	if(-0.994 >= z >= -0.997 || 0.9958 >= z >= 0.9946)
 	{
 		ChatMsgAdmins(2, YELLOW, " >  Possible mod user: "C_ORANGE"%p (%d)", playerid, playerid);
-		SendIrcStaffMessage("Server", sprintf("Possible mod user %p", playerid));
 	}
 
 	return;

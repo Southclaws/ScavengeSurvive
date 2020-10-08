@@ -145,7 +145,7 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:posz, world, interior, infostring[])
+ReportPlayer(const name[], const reason[], reporter, const type[], Float:posx, Float:posy, Float:posz, world, interior, const infostring[])
 {
 	new reportername[MAX_PLAYER_NAME];
 
@@ -176,8 +176,6 @@ ReportPlayer(name[], reason[], reporter, type[], Float:posx, Float:posy, Float:p
 	{
 		return 1;
 	}
-
-	SendIrcStaffMessage(reportername, sprintf("Report %s %s: %s", type, name, reason));
 
 	return 0;
 }

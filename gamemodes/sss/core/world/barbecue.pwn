@@ -40,7 +40,7 @@ enum //E_BBQ_DATA
 			bbq_grillItem2, 
 			bbq_grillPart1,
 			bbq_grillPart2,
-Timer:		bbq_cookTimer
+			bbq_cookTimer
 }
 
 
@@ -76,7 +76,7 @@ hook OnItemCreate(itemid)
 		data[bbq_grillItem2] = INVALID_ITEM_ID;
 		data[bbq_grillPart1] = INVALID_ITEM_ID;
 		data[bbq_grillPart2] = INVALID_ITEM_ID;
-		data[bbq_cookTimer] = Timer:0;
+		data[bbq_cookTimer] = 0;
 
 		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_state]: %d", itemid, data[bbq_state]);
 		dbg("gamemodes/sss/core/world/barbecue.pwn", 3, "SET %d data[bbq_fuel]: %d", itemid, data[bbq_fuel]);

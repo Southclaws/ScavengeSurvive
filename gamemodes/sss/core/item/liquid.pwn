@@ -41,7 +41,7 @@ static
 		liq_NextMask = 1;
 
 
-stock DefineLiquidType(name[], Float:foodvalue, ...)
+stock DefineLiquidType(const name[], Float:foodvalue, ...)
 {
 	if(liq_Total >= MAX_LIQUID_TYPES - 1)
 	{

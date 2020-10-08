@@ -107,7 +107,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-DefineTreeCategory(name[])
+DefineTreeCategory(const name[])
 {
 	if(treeCategory_Total >= MAX_TREE_CATEGORIES)
 	{

@@ -45,7 +45,7 @@ hook OnGameModeInit()
 		log("Loaded %d Loot table entries", count);
 }
 
-LoadLootTableDir(directory[])
+LoadLootTableDir(const directory[])
 {
 	new
 		dir:dirhandle,

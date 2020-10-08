@@ -43,7 +43,7 @@ new EmbedColours[9][E_COLOUR_EMBED_DATA]=
 };
 
 
-stock TagScan(chat[], colour = WHITE)
+stock TagScan(const chat[], colour = WHITE)
 {
 	new
 		text[256],
@@ -75,10 +75,13 @@ stock TagScan(chat[], colour = WHITE)
 					format(tmpName, MAX_PLAYER_NAME+17, "%P%C", id, colour);
 
 					if(id<10)
+					{
 						strdel(text[a], 0, 2);
-
+					}
 					else
+					{
 						strdel(text[a], 0, 3);
+					}
 
 					strins(text[a], tmpName, 0);
 
@@ -87,9 +90,15 @@ stock TagScan(chat[], colour = WHITE)
 					tags++;
 					continue;
 				}
-				else a++;
+				else
+				{
+					a++;
+				}
 			}
-			else a++;
+			else
+			{
+				a++;
+			}
 		}
 		else if(text[a]=='&')
 		{
@@ -108,11 +117,20 @@ stock TagScan(chat[], colour = WHITE)
 						break;
 					}
 				}
-				if(replacements==0)a++;
+				if(replacements==0)
+				{
+					a++;
+				}
 			}
-			else a++;
+			else
+			{
+				a++;
+			}
 		}
-		else a++;
+		else
+		{
+			a++;
+		}
 	}
 	return text;
 }

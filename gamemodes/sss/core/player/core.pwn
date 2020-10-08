@@ -66,6 +66,8 @@ forward OnPlayerScriptUpdate(playerid);
 forward OnPlayerDisconnected(playerid);
 forward OnDeath(playerid, killerid, reason);
 
+forward Float:GetPlayerTotalVelocity(playerid);
+
 
 public OnPlayerConnect(playerid)
 {
@@ -489,7 +491,7 @@ stock GetPlayerPassHash(playerid, string[MAX_PASSWORD_LEN])
 	return 1;
 }
 
-stock SetPlayerPassHash(playerid, string[MAX_PASSWORD_LEN])
+stock SetPlayerPassHash(playerid, const string[MAX_PASSWORD_LEN])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -724,7 +726,6 @@ stock SetPlayerGender(playerid, gender)
 }
 
 // ply_Velocity
-forward Float:GetPlayerTotalVelocity(playerid);
 Float:GetPlayerTotalVelocity(playerid)
 {
 	if(!IsValidPlayerID(playerid))

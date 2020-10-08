@@ -80,7 +80,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock SetItemTypeHolsterable(ItemType:itemtype, boneid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, animtime, animlib[32], animname[32])
+stock SetItemTypeHolsterable(ItemType:itemtype, boneid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, animtime, const animlib[32], const animname[32])
 {
 	if(!IsValidItemType(itemtype))
 		return -1;

@@ -22,65 +22,9 @@
 ==============================================================================*/
 
 
-#include <YSI\y_va>
+#include <YSI_Coding\y_va>
 
 static stock gs_Buffer[256];
-
-
-stock va_formatex(output[], size = sizeof(output), const fmat[], va_:STATIC_ARGS)
-{
-	new
-		num_args,
-		arg_start,
-		arg_end;
-	
-	// Get the pointer to the number of arguments to the last function.
-	#emit LOAD.S.pri 0
-	#emit ADD.C 8
-	#emit MOVE.alt
-	// Get the number of arguments.
-	#emit LOAD.I
-	#emit STOR.S.pri num_args
-	// Get the variable arguments (end).
-	#emit ADD
-	#emit STOR.S.pri arg_end
-	// Get the variable arguments (start).
-	#emit LOAD.S.pri STATIC_ARGS
-	#emit SMUL.C 4
-	#emit ADD
-	#emit STOR.S.pri arg_start
-	// Using an assembly loop here screwed the code up as the labels added some
-	// odd stack/frame manipulation code...
-	while (arg_end != arg_start)
-	{
-		#emit MOVE.pri
-		#emit LOAD.I
-		#emit PUSH.pri
-		#emit CONST.pri 4
-		#emit SUB.alt
-		#emit STOR.S.pri arg_end
-	}
-	// Push the additional parameters.
-	#emit PUSH.S fmat
-	#emit PUSH.S size
-	#emit PUSH.S output
-	// Push the argument count.
-	#emit LOAD.S.pri num_args
-	#emit ADD.C 12
-	#emit LOAD.S.alt STATIC_ARGS
-	#emit XCHG
-	#emit SMUL.C 4
-	#emit SUB.alt
-	#emit PUSH.pri
-	#emit MOVE.alt
-	// Push the return address.
-	#emit LCTRL 6
-	#emit ADD.C 28
-	#emit PUSH.pri
-	// Call formatex
-	#emit CONST.pri formatex
-	#emit SCTRL 6
-}
 
 
 /*==============================================================================
@@ -90,33 +34,33 @@ stock va_formatex(output[], size = sizeof(output), const fmat[], va_:STATIC_ARGS
 ==============================================================================*/
 
 
-stock ChatMsg(playerid, colour, fmat[], va_args<>)
+stock ChatMsg(playerid, colour, const fmat[], va_args<>)
 {
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
+	formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
 	ChatMsgFlat(playerid, colour, gs_Buffer);
 
 	return 1;
 }
 
-stock ChatMsgAll(colour, fmat[], va_args<>)
+stock ChatMsgAll(colour, const fmat[], va_args<>)
 {
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
+	formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<2>);
 	ChatMsgAllFlat(colour, gs_Buffer);
 
 	return 1;
 }
 
-stock ChatMsgLang(playerid, colour, key[], va_args<>)
+stock ChatMsgLang(playerid, colour, const key[], va_args<>)
 {
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), GetLanguageString(GetPlayerLanguage(playerid), key), va_start<3>);
+	formatex(gs_Buffer, sizeof(gs_Buffer), GetLanguageString(GetPlayerLanguage(playerid), key), va_start<3>);
 	ChatMsgFlat(playerid, colour, gs_Buffer);
 
 	return 1;
 }
 
-stock ChatMsgAdmins(level, colour, fmat[], va_args<>)
+stock ChatMsgAdmins(level, colour, const fmat[], va_args<>)
 {
-	va_formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
+	formatex(gs_Buffer, sizeof(gs_Buffer), fmat, va_start<3>);
 	ChatMsgAdminsFlat(level, colour, gs_Buffer);
 
 	return 1;
@@ -130,69 +74,71 @@ stock ChatMsgAdmins(level, colour, fmat[], va_args<>)
 ==============================================================================*/
 
 
-stock ChatMsgFlat(playerid, colour, string[])
+stock ChatMsgFlat(playerid, colour, const message[])
 {
-	if(strlen(string) > 127)
+	if(strlen(message) > 127)
 	{
 		new
+			string1[128],
 			string2[128],
 			splitpos;
 
 		for(new c = 128; c > 0; c--)
 		{
-			if(string[c] == ' ' || string[c] ==  ',' || string[c] ==  '.')
+			if(message[c] == ' ' || message[c] ==  ',' || message[c] ==  '.')
 			{
 				splitpos = c;
 				break;
 			}
 		}
 
-		strcat(string2, string[splitpos]);
-		string[splitpos] = EOS;
-		
-		SendClientMessage(playerid, colour, string);
+		strcat(string1, message, splitpos);
+		strcat(string2, message[splitpos]);
+
+		SendClientMessage(playerid, colour, string1);
 		SendClientMessage(playerid, colour, string2);
 	}
 	else
 	{
-		SendClientMessage(playerid, colour, string);
+		SendClientMessage(playerid, colour, message);
 	}
 	
 	return 1;
 }
 
-stock ChatMsgAllFlat(colour, string[])
+stock ChatMsgAllFlat(colour, const message[])
 {
-	if(strlen(string) > 127)
+	if(strlen(message) > 127)
 	{
 		new
+			string1[128],
 			string2[128],
 			splitpos;
 
 		for(new c = 128; c>0; c--)
 		{
-			if(string[c] == ' ' || string[c] ==  ',' || string[c] ==  '.')
+			if(message[c] == ' ' || message[c] ==  ',' || message[c] ==  '.')
 			{
 				splitpos = c;
 				break;
 			}
 		}
 
-		strcat(string2, string[splitpos]);
-		string[splitpos] = EOS;
+		strcat(string1, message, splitpos);
+		strcat(string2, message[splitpos]);
 
-		SendClientMessageToAll(colour, string);
+		SendClientMessageToAll(colour, string1);
 		SendClientMessageToAll(colour, string2);
 	}
 	else
 	{
-		SendClientMessageToAll(colour, string);
+		SendClientMessageToAll(colour, message);
 	}
 
 	return 1;
 }
 
-stock ChatMsgLangFlat(playerid, colour, key[])
+stock ChatMsgLangFlat(playerid, colour, const key[])
 {
 	ChatMsgFlat(playerid, colour, GetLanguageString(GetPlayerLanguage(playerid), key));
 

@@ -66,7 +66,7 @@ stock ClearPlayerKeyActionUI(playerid)
 	KeyActionsText[playerid][0] = EOS;
 }
 
-stock AddToolTipText(playerid, key[], use[])
+stock AddToolTipText(playerid, const key[], const use[])
 {
 	new tmp[128];
 	format(tmp, sizeof(tmp), "~y~%s ~w~%s~n~", key, use);

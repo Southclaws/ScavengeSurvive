@@ -10,7 +10,7 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 		/*
 			First, check if the container is a world-container with a button.
 		*/
-		new buttonid = GetContainerButton(containerid);
+		new buttonid = 0;//GetContainerButton(containerid); // TODO!
 
 		if(IsValidButton(buttonid))
 		{

@@ -103,7 +103,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineBagType(name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
+stock DefineBagType(const name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
 	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
 

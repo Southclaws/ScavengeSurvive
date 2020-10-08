@@ -94,7 +94,7 @@ hook OnGameModeInit()
 	LoadAllLanguages();
 }
 
-stock DefineLanguageReplacement(key[], val[])
+stock DefineLanguageReplacement(const key[], const val[])
 {
 	strcat(lang_Replacements[lang_TotalReplacements][lang_repl_key], key, MAX_LANGUAGE_REPL_KEY_LEN);
 	strcat(lang_Replacements[lang_TotalReplacements][lang_repl_val], val, MAX_LANGUAGE_REPL_VAL_LEN);
@@ -120,7 +120,7 @@ stock LoadAllLanguages()
 
 	if(!dirhandle)
 	{
-		err("Reading directory '%s'.", directory_with_root);
+		printf("Reading directory '%s'.", directory_with_root);
 		return 0;
 	}
 
@@ -130,7 +130,7 @@ stock LoadAllLanguages()
 
 	if(default_entries == 0)
 	{
-		err("No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
+		printf("No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
 		return 0;
 	}
 
@@ -153,7 +153,7 @@ stock LoadAllLanguages()
 			}
 			else
 			{
-				err("No entries loaded from language file '%s'", item);
+				printf("No entries loaded from language file '%s'", item);
 			}
 		}
 	}
@@ -165,11 +165,11 @@ stock LoadAllLanguages()
 	return 1;
 }
 
-stock LoadLanguage(filename[], langname[])
+stock LoadLanguage(const filename[], const langname[])
 {
 	if(lang_Total == MAX_LANGUAGE)
 	{
-		err("lang_Total reached MAX_LANGUAGE");
+		printf("lang_Total reached MAX_LANGUAGE");
 		return 0;
 	}
 
@@ -186,7 +186,7 @@ stock LoadLanguage(filename[], langname[])
 
 	if(!f)
 	{
-		err("Unable to open file '%s'.", filename);
+		printf("Unable to open file '%s'.", filename);
 		return 0;
 	}
 
@@ -203,14 +203,14 @@ stock LoadLanguage(filename[], langname[])
 		{
 			if(!(32 <= line[delimiter] < 127))
 			{
-				err("Malformed line %d in '%s' key contains non-alphabetic character (%d:%c).", linenumber, filename, line[delimiter], line[delimiter]);
+				printf("Malformed line %d in '%s' key contains non-alphabetic character (%d:%c).", linenumber, filename, line[delimiter], line[delimiter]);
 				skip = true;
 				break;
 			}
 
 			if(delimiter >= MAX_LANGUAGE_KEY_LEN)
 			{
-				err("Malformed line %d in '%s' key length over %d characters (%d).", linenumber, filename, MAX_LANGUAGE_KEY_LEN, delimiter);
+				printf("Malformed line %d in '%s' key length over %d characters (%d).", linenumber, filename, MAX_LANGUAGE_KEY_LEN, delimiter);
 				skip = true;
 				break;
 			}
@@ -227,13 +227,13 @@ stock LoadLanguage(filename[], langname[])
 
 		if(delimiter >= length - 1 || delimiter < 4)
 		{
-			err("Malformed line %d in '%s' delimiter character (%c) is absent or in first 4 cells.", linenumber, filename, DELIMITER_CHAR);
+			printf("Malformed line %d in '%s' delimiter character (%c) is absent or in first 4 cells.", linenumber, filename, DELIMITER_CHAR);
 			continue;
 		}
 
 		if(!(32 <= key[0] < 127))
 		{
-			err("First character on line %d is abnormal character (%d/%c).", linenumber, key[0], key[0]);
+			printf("First character on line %d is abnormal character (%d/%c).", linenumber, key[0], key[0]);
 			continue;
 		}
 
@@ -242,7 +242,7 @@ stock LoadLanguage(filename[], langname[])
 
 		if(lang_TotalEntries[lang_Total] >= MAX_LANGUAGE_ENTRIES)
 		{
-			err("MAX_LANGUAGE_ENTRIES limit reached at line %d", linenumber);
+			printf("MAX_LANGUAGE_ENTRIES limit reached at line %d", linenumber);
 			break;
 		}
 
@@ -287,7 +287,7 @@ stock LoadLanguage(filename[], langname[])
 
 		if(letter_idx >= 26)
 		{
-			err("letter_idx > 26 (%d) at i = %d entry: '%s'", letter_idx, i, lang_Entries[lang_Total][i][lang_key]);
+			printf("letter_idx > 26 (%d) at i = %d entry: '%s'", letter_idx, i, lang_Entries[lang_Total][i][lang_key]);
 		}
 
 		lang_AlphabetMap[lang_Total][letter_idx] = i;
@@ -303,7 +303,7 @@ stock LoadLanguage(filename[], langname[])
 	return index;
 }
 
-_doReplace(input[], output[])
+_doReplace(const input[], output[])
 {
 	new
 		bool:in_tag = false,
@@ -404,7 +404,7 @@ _swap(str1[], str2[])
 	}
 }
 
-stock GetLanguageString(languageid, key[], bool:encode = false)
+stock GetLanguageString(languageid, const key[], bool:encode = false)
 {
 	new
 		result[MAX_LANGUAGE_ENTRY_LENGTH],
@@ -412,7 +412,7 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 
 	if(!(0 <= languageid < lang_Total))
 	{
-		err("Invalid languageid %d.", languageid);
+		printf("Invalid languageid %d.", languageid);
 		return result;
 	}
 
@@ -422,11 +422,11 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 	{
 		case 1:
 		{
-			err("Malformed key '%s' must be alphabetical.", key);
+			printf("Malformed key '%s' must be alphabetical.", key);
 		}
 		case 2:
 		{
-			err("Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
+			printf("Key not found: '%s' in language '%s'", key, lang_Name[languageid]);
 
 			// return english if key not found
 			if(languageid != 0)
@@ -437,7 +437,7 @@ stock GetLanguageString(languageid, key[], bool:encode = false)
 	return result;
 }
 
-static stock _GetLanguageString(languageid, key[], result[], bool:encode = false)
+static stock _GetLanguageString(languageid, const key[], result[], bool:encode = false)
 {
 	if(!('A' <= key[0] <= 'Z'))
 		return 1;

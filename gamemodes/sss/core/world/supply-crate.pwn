@@ -82,7 +82,7 @@ hook OnGameModeInit()
 }
 
 
-DefineSupplyDropType(name[], lootindex[], interval, rand, required)
+DefineSupplyDropType(const name[], const lootindex[], interval, rand, required)
 {
 	if(sup_TypeTotal == MAX_SUPPLY_DROP_TYPE)
 	{
@@ -102,7 +102,7 @@ DefineSupplyDropType(name[], lootindex[], interval, rand, required)
 	return sup_TypeTotal++;
 }
 
-DefineSupplyDropPos(name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float:z)
+DefineSupplyDropPos(const name[MAX_SUPPLY_DROP_LOCATION_NAME], Float:x, Float:y, Float:z)
 {
 	new id = Iter_Free(sup_Index);
 
@@ -311,7 +311,7 @@ SupplyCrateLand()
 		}		
 	}
 
-	containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate"));
+	// containerid = CreateContainer("Supply Crate", 32, CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate"));
 
 	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
 	FillContainerWithLoot(containerid, 4 + random(16), lootindex);

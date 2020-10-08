@@ -170,7 +170,7 @@ public OnLookupResponse(sessionid, response, data[])
 	return;
 }
 
-_cntr_GetXMLData(string[], tag[], output[], &start, maxlength = sizeof(output))
+_cntr_GetXMLData(const string[], const tag[], output[], &start, maxlength = sizeof(output))
 {
 	new end = start = (strfind(string, tag, true, start) + strlen(tag) + 1);
 

@@ -74,7 +74,7 @@ stock TeleportPlayerToPlayer(playerid, targetid)
 	}
 }
 
-stock IsValidUsername(name[])
+stock IsValidUsername(const name[])
 {
 	new
 		i,
@@ -98,7 +98,7 @@ stock IsValidUsername(name[])
 	return 1;
 }
 
-stock GetPlayerIDFromName(name[], bool:ignorecase = false, bool:partialname = false)
+stock GetPlayerIDFromName(const name[], bool:ignorecase = false, bool:partialname = false)
 {
 	new
 		playerid = INVALID_PLAYER_ID,

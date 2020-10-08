@@ -79,7 +79,7 @@ stock GetPlayerAimShoutText(playerid, string[])
 	return 1;
 }
 
-stock SetPlayerAimShoutText(playerid, string[])
+stock SetPlayerAimShoutText(playerid, const string[])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;

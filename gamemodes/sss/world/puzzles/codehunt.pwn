@@ -68,7 +68,7 @@ hook OnGameModeInit()
 	SetItemTypeMaxArrayData(item_CodePart, 1);
 }
 
-CreateCodeParts(Float:coords[][], size, keycode)
+CreateCodeParts(const Float:coords[][], size, keycode)
 {
 	new
 		output[16],

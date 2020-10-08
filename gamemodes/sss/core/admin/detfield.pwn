@@ -224,7 +224,7 @@ hook OnScriptInit()
 ==============================================================================*/
 
 
-stock CreateDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz, Float:maxz, exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME])
+stock CreateDetectionField(const name[MAX_DETFIELD_NAME], const Float:points[10], Float:minz, Float:maxz, const exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME])
 {
 	new id = Iter_Free(det_Index);
 
@@ -270,7 +270,7 @@ stock DestroyDetectionField(detfieldid)
 	return 1;
 }
 
-stock AddDetectionField(name[MAX_DETFIELD_NAME], Float:points[10], Float:minz, Float:maxz, exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME])
+stock AddDetectionField(const name[MAX_DETFIELD_NAME], Float:points[10], Float:minz, Float:maxz, const exceptionlist[MAX_DETFIELD_EXCEPTIONS][MAX_PLAYER_NAME])
 {
 	if(DetectionFieldExists(name))
 		return -1;
@@ -334,7 +334,7 @@ stock RemoveDetectionField(detfieldid)
 	return 1;
 }
 
-stock DetectionFieldExists(name[])
+stock DetectionFieldExists(const name[])
 {
 	new count;
 
@@ -352,7 +352,7 @@ stock DetectionFieldExists(name[])
 	return 0;
 }
 
-stock SetDetectionFieldName(detfieldid, name[MAX_DETFIELD_NAME])
+stock SetDetectionFieldName(detfieldid, const name[MAX_DETFIELD_NAME])
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
@@ -543,7 +543,7 @@ stock GetDetectionFieldExceptionsList(detfieldid, list[], length, delimiter = '\
 	return i;
 }
 
-stock AddDetectionFieldException(detfieldid, name[MAX_PLAYER_NAME])
+stock AddDetectionFieldException(detfieldid, const name[MAX_PLAYER_NAME])
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
@@ -699,7 +699,7 @@ stock DeleteDetectionFieldLogEntry(detfieldid, logentry)
 	return 1;
 }
 
-stock DeleteDetectionFieldLogsOfName(detfieldid, name[])
+stock DeleteDetectionFieldLogsOfName(detfieldid, const name[])
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;
@@ -845,7 +845,7 @@ stock GetDetectionFieldPos(detfieldid, &Float:x, &Float:y, &Float:z)
 	return 1;
 }
 
-stock GetDetectionFieldIdFromName(name[], bool:ignorecase = false)
+stock GetDetectionFieldIdFromName(const name[], bool:ignorecase = false)
 {
 	foreach(new i : det_Index)
 	{
@@ -887,7 +887,7 @@ stock GetDetectionFieldMaxZ(detfieldid, &Float:maxz)
 	return 1;
 }
 
-stock IsValidDetectionFieldName(name[])
+stock IsValidDetectionFieldName(const name[])
 {
 	if(!isalphabetic(name[0]))
 		return 0;
@@ -930,7 +930,7 @@ stock GetDetectionFieldExceptionName(detfieldid, exceptionid, name[MAX_PLAYER_NA
 	return 1;
 }
 
-stock IsNameInExceptionList(detfieldid, name[MAX_PLAYER_NAME])
+stock IsNameInExceptionList(detfieldid, const name[MAX_PLAYER_NAME])
 {
 	if(!Iter_Contains(det_Index, detfieldid))
 		return 0;

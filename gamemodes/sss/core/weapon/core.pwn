@@ -70,6 +70,10 @@ Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS],
 			itmw_DropItemID[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 Timer:		itmw_DropTimer[MAX_PLAYERS];
 
+
+forward ItemType:GetItemWeaponItemAmmoItem(itemid);
+
+
 /*==============================================================================
 
 	Core
@@ -1070,7 +1074,6 @@ stock SetItemWeaponItemReserve(itemid, amount)
 }
 
 // WEAPON_ITEM_ARRAY_CELL_AMMOITEM
-forward ItemType:GetItemWeaponItemAmmoItem(itemid);
 stock ItemType:GetItemWeaponItemAmmoItem(itemid)
 {
 	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "GetItemWeaponItemAmmoItem itemid:%d", itemid);

@@ -103,6 +103,8 @@ forward OnVehicleCreated(vehicleid);
 forward OnVehicleDestroyed(vehicleid);
 forward OnVehicleReset(oldid, newid);
 
+forward Float:GetVehicleFuel(vehicleid);
+
 
 hook OnPlayerConnect(playerid)
 {
@@ -163,7 +165,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetProportional	(playerid, veh_DoorsUI[playerid], 1);
 }
 
-SetPlayerVehicleSpeedUI(playerid, str[])
+SetPlayerVehicleSpeedUI(playerid, const str[])
 {
 	PlayerTextDrawSetString(playerid, veh_SpeedUI[playerid], str);
 }
@@ -960,7 +962,6 @@ stock SetVehicleHP(vehicleid, Float:health)
 }
 
 // veh_Fuel
-forward Float:GetVehicleFuel(vehicleid);
 stock Float:GetVehicleFuel(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))

@@ -60,83 +60,83 @@ LoadSettings()
 }
 
 
-stock GetSettingInt(path[], defaultvalue, &output, printsetting = true, openfile = true)
+stock GetSettingInt(const path[], defaultvalue, &output, printsetting = true, openfile = true)
 {
 	if(openfile)
-		file_Open(SETTINGS_FILE);
+		ini_open(SETTINGS_FILE);
 
-	if(!file_IsKey(path))
+	if(!ini_isKey(path))
 	{
-		file_SetVal(path, defaultvalue);
+		ini_setInt(path, defaultvalue);
 		output = defaultvalue;
-		file_Save(SETTINGS_FILE);
+		ini_close();
 
 		if(printsetting)
-			log("[DEFAULT] %s: %d", path, output);
+			Logger_Log("Setting default", Logger_S("path", path), Logger_I("output", output));
 	}
 	else
 	{
-		output = file_GetVal(path);
+		ini_getInt(path, output);
 
 		if(printsetting)
-			log("[SETTING] %s: %d", path, output);
+			Logger_Log("Setting loaded", Logger_S("path", path), Logger_I("output", output));
 	}
 
 	if(openfile)
-		file_Close();
+		ini_close();
 }
 
-stock GetSettingFloat(path[], Float:defaultvalue, &Float:output, printsetting = true, openfile = true)
+stock GetSettingFloat(const path[], Float:defaultvalue, &Float:output, printsetting = true, openfile = true)
 {
 	if(openfile)
-		file_Open(SETTINGS_FILE);
+		ini_open(SETTINGS_FILE);
 
-	if(!file_IsKey(path))
+	if(!ini_isKey(path))
 	{
-		file_SetFloat(path, defaultvalue);
+		ini_setFloat(path, defaultvalue);
 		output = defaultvalue;
-		file_Save(SETTINGS_FILE);
+		ini_close();
 
 		if(printsetting)
-			log("[DEFAULT] %s: %f", path, output);
+			Logger_Log("Setting default", Logger_S("path", path), Logger_F("output", output));
 	}
 	else
 	{
-		output = file_GetFloat(path);
+		ini_getFloat(path, output);
 
 		if(printsetting)
-			log("[SETTING] %s: %f", path, output);
+			Logger_Log("Setting loaded", Logger_S("path", path), Logger_F("output", output));
 	}
 
 	if(openfile)
-		file_Close();
+		ini_close();
 }
 
-stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output), printsetting = true, openfile = true)
+stock GetSettingString(const path[], const defaultvalue[], output[], maxsize = sizeof(output), printsetting = true, openfile = true)
 {
 	if(openfile)
-		file_Open(SETTINGS_FILE);
+		ini_open(SETTINGS_FILE);
 
-	if(!file_IsKey(path))
+	if(!ini_isKey(path))
 	{
-		file_SetStr(path, defaultvalue);
+		ini_setString(path, defaultvalue);
 		output[0] = EOS;
 		strcat(output, defaultvalue, maxsize);
-		file_Save(SETTINGS_FILE);
+		ini_close();
 
 		if(printsetting)
-			log("[DEFAULT] %s: %s", path, output);
+			Logger_Log("Setting default", Logger_S("path", path), Logger_S("output", output));
 	}
 	else
 	{
-		file_GetStr(path, output, maxsize);
+		ini_getString(path, output, maxsize);
 
 		if(printsetting)
-			log("[SETTING] %s: %s", path, output);
+			Logger_Log("Setting loaded", Logger_S("path", path), Logger_S("output", output));
 	}
 
 	if(openfile)
-		file_Close();
+		ini_close();
 }
 
 
@@ -144,9 +144,9 @@ stock GetSettingString(path[], defaultvalue[], output[], maxsize = sizeof(output
 	Arrays
 */
 
-stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, printsetting = true)
+stock GetSettingIntArray(const path[], defaultvalue, max, output[], &outputtotal, printsetting = true)
 {
-	file_Open(SETTINGS_FILE);
+	ini_open(SETTINGS_FILE);
 
 	new tmpkey[MAX_KEY_LENGTH];
 
@@ -154,16 +154,16 @@ stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, prin
 	{
 		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
-		if(!file_IsKey(tmpkey))
+		if(!ini_isKey(tmpkey))
 		{
 			if(outputtotal == 0)
 			{
-				file_SetInt(tmpkey, defaultvalue);
-				file_Save(SETTINGS_FILE);
+				ini_setInt(tmpkey, defaultvalue);
+				ini_close();
 				output[0] = defaultvalue;
 
 				if(printsetting)
-					log("[DEFAULT] %s: %d", tmpkey, output[0]);
+					Logger_Log("Setting default", Logger_S("key", tmpkey), Logger_S("value", output[0]));
 			}
 
 			break;
@@ -174,12 +174,12 @@ stock GetSettingIntArray(path[], defaultvalue, max, output[], &outputtotal, prin
 		outputtotal++;
 	}
 
-	file_Close();
+	ini_close();
 }
 
-stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &outputtotal, printsetting = true)
+stock GetSettingFloatArray(const path[], Float:defaultvalue, max, Float:output[], &outputtotal, printsetting = true)
 {
-	file_Open(SETTINGS_FILE);
+	ini_open(SETTINGS_FILE);
 
 	new tmpkey[MAX_KEY_LENGTH];
 
@@ -187,16 +187,16 @@ stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &out
 	{
 		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
-		if(!file_IsKey(tmpkey))
+		if(!ini_isKey(tmpkey))
 		{
 			if(outputtotal == 0)
 			{
-				file_SetFloat(tmpkey, defaultvalue);
-				file_Save(SETTINGS_FILE);
+				ini_setFloat(tmpkey, defaultvalue);
+				ini_close();
 				output[0] = defaultvalue;
 
 				if(printsetting)
-					log("[DEFAULT] %s: %f", tmpkey, output[0]);
+					Logger_Log("Setting default", Logger_S("key", tmpkey), Logger_S("value", output[0]));
 			}
 
 			break;
@@ -207,12 +207,12 @@ stock GetSettingFloatArray(path[], Float:defaultvalue, max, Float:output[], &out
 		outputtotal++;
 	}
 
-	file_Close();
+	ini_close();
 }
 
-stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtotal, outputmaxsize, printsetting = true)
+stock GetSettingStringArray(const path[], const defaultvalue[], max, output[][], &outputtotal, outputmaxsize, printsetting = true)
 {
-	file_Open(SETTINGS_FILE);
+	ini_open(SETTINGS_FILE);
 
 	new tmpkey[MAX_KEY_LENGTH];
 
@@ -220,17 +220,17 @@ stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtota
 	{
 		format(tmpkey, sizeof(tmpkey), "%s/%d", path, outputtotal);
 
-		if(!file_IsKey(tmpkey))
+		if(!ini_isKey(tmpkey))
 		{
 			if(outputtotal == 0)
 			{
-				file_SetStr(tmpkey, defaultvalue);
-				file_Save(SETTINGS_FILE);
+				ini_setString(tmpkey, defaultvalue);
+				ini_close();
 				output[0][0] = EOS;
 				strcat(output[0], defaultvalue, outputmaxsize);
 
 				if(printsetting)
-					log("[DEFAULT] %s: %s", tmpkey, output[0]);
+					Logger_Log("Setting default", Logger_S("key", tmpkey), Logger_S("value", output[0]));
 			}
 
 			break;
@@ -241,29 +241,29 @@ stock GetSettingStringArray(path[], defaultvalue[], max, output[][], &outputtota
 		outputtotal++;
 	}
 
-	file_Close();
+	ini_close();
 }
 
-stock UpdateSettingInt(path[], value)
+stock UpdateSettingInt(const path[], value)
 {
-	file_Open(SETTINGS_FILE);
-	file_SetVal(path, value);
-	file_Save(SETTINGS_FILE);
-	file_Close();
+	ini_open(SETTINGS_FILE);
+	ini_setInt(path, value);
+	ini_close();
+	ini_close();
 }
 
-stock UpdateSettingFloat(path[], Float:value)
+stock UpdateSettingFloat(const path[], Float:value)
 {
-	file_Open(SETTINGS_FILE);
-	file_SetFloat(path, value);
-	file_Save(SETTINGS_FILE);
-	file_Close();
+	ini_open(SETTINGS_FILE);
+	ini_setFloat(path, value);
+	ini_close();
+	ini_close();
 }
 
-stock UpdateSettingString(path[], value[])
+stock UpdateSettingString(const path[], value[])
 {
-	file_Open(SETTINGS_FILE);
-	file_SetStr(path, value);
-	file_Save(SETTINGS_FILE);
-	file_Close();
+	ini_open(SETTINGS_FILE);
+	ini_setString(path, value);
+	ini_close();
+	ini_close();
 }

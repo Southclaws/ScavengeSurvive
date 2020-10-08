@@ -55,7 +55,7 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("SeedBag"), 2);
 }
 
-stock DefineSeedType(name[], ItemType:itemtype, growthtime, plantmodel, Float:plantoffset)
+stock DefineSeedType(const name[], ItemType:itemtype, growthtime, plantmodel, Float:plantoffset)
 {
 	if(seed_Total >= MAX_SEED_TYPES)
 	{

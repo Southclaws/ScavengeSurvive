@@ -416,7 +416,7 @@ stock returnOrdinal(number)
 	return (((10 < (number % 100) < 14)) ? ordinal[3] : (0 < (number % 10) < 4) ? ordinal[((number % 10) - 1)] : ordinal[3]);
 }
 
-stock IsNumeric(string[])
+stock IsNumeric(const string[])
 {
 	for(new i,j=strlen(string);i<j;i++)if (string[i] > '9' || string[i] < '0') return 0;
 	return 1;

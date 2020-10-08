@@ -76,7 +76,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetProportional	(playerid, skl_PlayerNotification, 1);
 }
 
-stock PlayerGainSkillExperience(playerid, skillname[], Float:mult = 0.0)
+stock PlayerGainSkillExperience(playerid, const skillname[], Float:mult = 0.0)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -106,7 +106,7 @@ timer skl_HideUI[5000](playerid)
 	PlayerTextDrawHide(playerid, skl_PlayerNotification);
 }
 
-stock GetPlayerSkillTimeModifier(playerid, time, skillname[])
+stock GetPlayerSkillTimeModifier(playerid, time, const skillname[])
 {
 	if(!IsPlayerConnected(playerid))
 		return time;
@@ -119,7 +119,7 @@ stock GetPlayerSkillTimeModifier(playerid, time, skillname[])
 	return time;
 }
 
-stock Float:GetPlayerSkillValue(playerid, skillname[])
+stock Float:GetPlayerSkillValue(playerid, const skillname[])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0.0;
@@ -132,7 +132,7 @@ stock Float:GetPlayerSkillValue(playerid, skillname[])
 	return 0.0;
 }
 
-_skl_SkillNameToID(playerid, skillname[])
+_skl_SkillNameToID(playerid, const skillname[])
 {
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{

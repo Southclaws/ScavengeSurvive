@@ -38,7 +38,7 @@ hook OnPlayerConnect(playerid)
 	ResetBanVariables(playerid);
 }
 
-BanAndEnterInfo(playerid, name[MAX_PLAYER_NAME])
+BanAndEnterInfo(playerid, const name[MAX_PLAYER_NAME])
 {
 	BanPlayerByName(name, "Pending", playerid, 0);
 	FormatBanReasonDialog(playerid);

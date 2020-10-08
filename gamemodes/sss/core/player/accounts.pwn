@@ -291,7 +291,7 @@ LoadAccount(playerid)
 ==============================================================================*/
 
 
-CreateAccount(playerid, password[])
+CreateAccount(playerid, const password[])
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -810,7 +810,7 @@ stock GetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 	return 1;
 }
 
-stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
+stock SetAccountPassword(const name[], password[MAX_PASSWORD_LEN])
 {
 	stmt_bind_value(stmt_AccountSetPassword, 0, DB::TYPE_STRING, password, MAX_PASSWORD_LEN);
 	stmt_bind_value(stmt_AccountSetPassword, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -819,7 +819,7 @@ stock SetAccountPassword(name[], password[MAX_PASSWORD_LEN])
 }
 
 // FIELD_ID_PLAYER_IPV4
-stock GetAccountIP(name[], &ip)
+stock GetAccountIP(const name[], &ip)
 {
 	stmt_bind_result_field(stmt_AccountGetIpv4, 0, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_AccountGetIpv4, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -832,7 +832,7 @@ stock GetAccountIP(name[], &ip)
 	return 1;
 }
 
-stock SetAccountIP(name[], ip)
+stock SetAccountIP(const name[], ip)
 {
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, ip);
 	stmt_bind_value(stmt_AccountSetIpv4, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -841,7 +841,7 @@ stock SetAccountIP(name[], ip)
 }
 
 // FIELD_ID_PLAYER_ALIVE
-stock GetAccountAliveState(name[], &alivestate)
+stock GetAccountAliveState(const name[], &alivestate)
 {
 	stmt_bind_result_field(stmt_AccountGetAliveState, 0, DB::TYPE_INTEGER, alivestate);
 	stmt_bind_value(stmt_AccountGetAliveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -854,7 +854,7 @@ stock GetAccountAliveState(name[], &alivestate)
 	return 1;
 }
 
-stock SetAccountAliveState(name[], alivestate)
+stock SetAccountAliveState(const name[], alivestate)
 {
 	stmt_bind_value(stmt_AccountSetAliveState, 0, DB::TYPE_INTEGER, alivestate);
 	stmt_bind_value(stmt_AccountSetAliveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -863,7 +863,7 @@ stock SetAccountAliveState(name[], alivestate)
 }
 
 // FIELD_ID_PLAYER_REGDATE
-stock GetAccountRegistrationDate(name[], &timestamp)
+stock GetAccountRegistrationDate(const name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetRegdate, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetRegdate, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -876,7 +876,7 @@ stock GetAccountRegistrationDate(name[], &timestamp)
 	return 1;
 }
 
-stock SetAccountRegistrationDate(name[], timestamp)
+stock SetAccountRegistrationDate(const name[], timestamp)
 {
 	stmt_bind_value(stmt_AccountSetRegdate, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountSetRegdate, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -885,7 +885,7 @@ stock SetAccountRegistrationDate(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_LASTLOG
-stock GetAccountLastLogin(name[], &timestamp)
+stock GetAccountLastLogin(const name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetLastLog, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetLastLog, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -898,7 +898,7 @@ stock GetAccountLastLogin(name[], &timestamp)
 	return 1;
 }
 
-stock SetAccountLastLogin(name[], timestamp)
+stock SetAccountLastLogin(const name[], timestamp)
 {
 	stmt_bind_value(stmt_AccountSetLastLog, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountSetLastLog, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -907,7 +907,7 @@ stock SetAccountLastLogin(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_SPAWNTIME
-stock GetAccountLastSpawnTimestamp(name[], &timestamp)
+stock GetAccountLastSpawnTimestamp(const name[], &timestamp)
 {
 	stmt_bind_result_field(stmt_AccountGetSpawnTime, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountGetSpawnTime, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -920,7 +920,7 @@ stock GetAccountLastSpawnTimestamp(name[], &timestamp)
 	return 1;
 }
 
-stock SetAccountLastSpawnTimestamp(name[], timestamp)
+stock SetAccountLastSpawnTimestamp(const name[], timestamp)
 {
 	stmt_bind_value(stmt_AccountSetSpawnTime, 0, DB::TYPE_INTEGER, timestamp);
 	stmt_bind_value(stmt_AccountSetSpawnTime, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -929,7 +929,7 @@ stock SetAccountLastSpawnTimestamp(name[], timestamp)
 }
 
 // FIELD_ID_PLAYER_TOTALSPAWNS
-stock GetAccountTotalSpawns(name[], &spawns)
+stock GetAccountTotalSpawns(const name[], &spawns)
 {
 	stmt_bind_result_field(stmt_AccountGetTotalSpawns, 0, DB::TYPE_INTEGER, spawns);
 	stmt_bind_value(stmt_AccountGetTotalSpawns, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -942,7 +942,7 @@ stock GetAccountTotalSpawns(name[], &spawns)
 	return 1;
 }
 
-stock SetAccountTotalSpawns(name[], spawns)
+stock SetAccountTotalSpawns(const name[], spawns)
 {
 	stmt_bind_value(stmt_AccountSetTotalSpawns, 0, DB::TYPE_INTEGER, spawns);
 	stmt_bind_value(stmt_AccountSetTotalSpawns, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -951,7 +951,7 @@ stock SetAccountTotalSpawns(name[], spawns)
 }
 
 // FIELD_ID_PLAYER_WARNINGS
-stock GetAccountWarnings(name[], &warnings)
+stock GetAccountWarnings(const name[], &warnings)
 {
 	stmt_bind_result_field(stmt_AccountGetWarnings, 0, DB::TYPE_INTEGER, warnings);
 	stmt_bind_value(stmt_AccountGetWarnings, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -964,7 +964,7 @@ stock GetAccountWarnings(name[], &warnings)
 	return 1;
 }
 
-stock SetAccountWarnings(name[], warnings)
+stock SetAccountWarnings(const name[], warnings)
 {
 	stmt_bind_value(stmt_AccountSetWarnings, 0, DB::TYPE_INTEGER, warnings);
 	stmt_bind_value(stmt_AccountSetWarnings, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -973,7 +973,7 @@ stock SetAccountWarnings(name[], warnings)
 }
 
 // FIELD_ID_PLAYER_GPCI
-stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
+stock GetAccountGPCI(const name[], gpci[MAX_GPCI_LEN])
 {
 	stmt_bind_result_field(stmt_AccountGetGpci, 0, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
 	stmt_bind_value(stmt_AccountGetGpci, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -986,7 +986,7 @@ stock GetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 	return 1;
 }
 
-stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
+stock SetAccountGPCI(const name[], gpci[MAX_GPCI_LEN])
 {
 	stmt_bind_value(stmt_AccountSetGpci, 0, DB::TYPE_STRING, gpci, MAX_GPCI_LEN);
 	stmt_bind_value(stmt_AccountSetGpci, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -995,7 +995,7 @@ stock SetAccountGPCI(name[], gpci[MAX_GPCI_LEN])
 }
 
 // FIELD_ID_PLAYER_ACTIVE
-stock GetAccountActiveState(name[], &active)
+stock GetAccountActiveState(const name[], &active)
 {
 	stmt_bind_result_field(stmt_AccountGetActiveState, 0, DB::TYPE_INTEGER, active);
 	stmt_bind_value(stmt_AccountGetActiveState, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -1008,7 +1008,7 @@ stock GetAccountActiveState(name[], &active)
 	return 1;
 }
 
-stock SetAccountActiveState(name[], active)
+stock SetAccountActiveState(const name[], active)
 {
 	stmt_bind_value(stmt_AccountSetActiveState, 0, DB::TYPE_INTEGER, active);
 	stmt_bind_value(stmt_AccountSetActiveState, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -1017,7 +1017,7 @@ stock SetAccountActiveState(name[], active)
 }
 
 // Pass, IP and gpci
-stock GetAccountAliasData(name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
+stock GetAccountAliasData(const name[], pass[129], &ip, gpci[MAX_GPCI_LEN])
 {
 	stmt_bind_value(stmt_AccountGetAliasData, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountGetAliasData, 0, DB::TYPE_STRING, pass, MAX_PASSWORD_LEN);

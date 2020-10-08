@@ -163,7 +163,7 @@ stock HideBodyPreviewUI(playerid)
 	bod_Shown[playerid] = false;
 }
 
-stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, string[], textcolour)
+stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, const string[], textcolour)
 {
 	dbg("gamemodes/sss/core/ui/body-preview.pwn", 1, "[SetBodyPreviewLabel] side:%d index:%d spacing:%.2f string:'%s' col:%x", side, index, spacing, string, textcolour);
 
@@ -277,7 +277,7 @@ stock SetBodyPreviewUIOffsets(playerid, Float:x, Float:y)
 	return 1;
 }
 
-stock SetBodyPreviewFooterText(playerid, string[])
+stock SetBodyPreviewFooterText(playerid, const string[])
 {
 	if(!bod_Shown[playerid])
 		return 0;

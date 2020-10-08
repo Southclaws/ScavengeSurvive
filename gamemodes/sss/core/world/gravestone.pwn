@@ -40,7 +40,7 @@ enum
 }
 
 
-stock CreateGravestone(playerid, reason[], Float:x, Float:y, Float:z, Float:rz)
+stock CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z, Float:rz)
 {
 	new
 		name[MAX_PLAYER_NAME],

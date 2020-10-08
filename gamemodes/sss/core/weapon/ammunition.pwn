@@ -65,7 +65,7 @@ ItemType:	ammo_ItemTypeUpperBound;
 ==============================================================================*/
 
 
-stock DefineAmmoCalibre(name[], Float:bleedrate)
+stock DefineAmmoCalibre(const name[], Float:bleedrate)
 {
 	strcat(clbr_Data[clbr_Total][clbr_name], name, MAX_AMMO_CALIBRE_NAME);
 	clbr_Data[clbr_Total][clbr_bleedRate] = bleedrate;
@@ -73,7 +73,7 @@ stock DefineAmmoCalibre(name[], Float:bleedrate)
 	return clbr_Total++;
 }
 
-stock DefineItemTypeAmmo(ItemType:itemtype, name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size)
+stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size)
 {
 	SetItemTypeMaxArrayData(itemtype, 1);
 

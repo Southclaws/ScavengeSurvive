@@ -46,7 +46,7 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-LoadTreesFromFolder(folder[])
+LoadTreesFromFolder(const folder[])
 {
 	new
 		foldername[256],

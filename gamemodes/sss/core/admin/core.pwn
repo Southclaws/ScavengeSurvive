@@ -162,7 +162,7 @@ LoadAdminData()
 	SortDeepArray(admin_Data, admin_Rank, .order = SORT_DESC);
 }
 
-UpdateAdmin(name[MAX_PLAYER_NAME], level)
+UpdateAdmin(const name[MAX_PLAYER_NAME], level)
 {
 	if(level == 0)
 		return RemoveAdminFromDatabase(name);
@@ -216,7 +216,7 @@ UpdateAdmin(name[MAX_PLAYER_NAME], level)
 	return 1;
 }
 
-RemoveAdminFromDatabase(name[])
+RemoveAdminFromDatabase(const name[])
 {
 	stmt_bind_value(stmt_AdminDelete, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
@@ -260,7 +260,7 @@ CheckAdminLevel(playerid)
 	}
 }
 
-TimeoutPlayer(playerid, reason[])
+TimeoutPlayer(playerid, const reason[])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -282,7 +282,7 @@ TimeoutPlayer(playerid, reason[])
 	return 1;
 }
 
-KickPlayer(playerid, reason[], bool:tellplayer = true)
+KickPlayer(playerid, const reason[], bool:tellplayer = true)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -309,7 +309,7 @@ timer KickPlayerDelay[1000](playerid)
 	admin_PlayerKicked[playerid] = false;
 }
 
-ChatMsgAdminsFlat(level, colour, string[])
+ChatMsgAdminsFlat(level, colour, const message[])
 {
 	if(level == 0)
 	{
@@ -317,30 +317,31 @@ ChatMsgAdminsFlat(level, colour, string[])
 		return 0;
 	}
 
-	if(strlen(string) > 127)
+	if(strlen(message) > 127)
 	{
 		new
+			string1[128],
 			string2[128],
 			splitpos;
 
 		for(new c = 128; c>0; c--)
 		{
-			if(string[c] == ' ' || string[c] ==  ',' || string[c] ==  '.')
+			if(message[c] == ' ' || message[c] ==  ',' || message[c] ==  '.')
 			{
 				splitpos = c;
 				break;
 			}
 		}
 
-		strcat(string2, string[splitpos]);
-		string[splitpos] = EOS;
+		strcat(string1, message, splitpos);
+		strcat(string2, message[splitpos]);
 
 		foreach(new i : Player)
 		{
 			if(admin_Level[i] < level)
 				continue;
 
-			SendClientMessage(i, colour, string);
+			SendClientMessage(i, colour, string1);
 			SendClientMessage(i, colour, string2);
 		}
 	}
@@ -351,7 +352,7 @@ ChatMsgAdminsFlat(level, colour, string[])
 			if(admin_Level[i] < level)
 				continue;
 
-			SendClientMessage(i, colour, string);
+			SendClientMessage(i, colour, message);
 		}
 	}
 
@@ -447,7 +448,7 @@ stock GetPlayerAdminLevel(playerid)
 	return admin_Level[playerid];
 }
 
-stock GetAdminLevelByName(name[MAX_PLAYER_NAME])
+stock GetAdminLevelByName(const name[MAX_PLAYER_NAME])
 {
 	new level;
 
@@ -501,7 +502,7 @@ stock IsPlayerOnAdminDuty(playerid)
 	return admin_OnDuty[playerid];
 }
 
-stock RegisterAdminCommand(level, string[])
+stock RegisterAdminCommand(level, const string[])
 {
 	if(!(STAFF_LEVEL_GAME_MASTER <= level <= STAFF_LEVEL_LEAD))
 	{

@@ -96,7 +96,7 @@ ShowListOfBans(playerid, index = 0)
 	return 1;
 }
 
-ShowBanInfo(playerid, name[MAX_PLAYER_NAME])
+ShowBanInfo(playerid, const name[MAX_PLAYER_NAME])
 {
 	new
 		timestamp,

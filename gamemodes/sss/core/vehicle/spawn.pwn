@@ -94,7 +94,7 @@ hook OnGameModeInit()
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-LoadVehiclesFromFolder(foldername[])
+LoadVehiclesFromFolder(const foldername[])
 {
 	log("[LoadVehiclesFromFolder] Loading vehicles from: '%s'...", foldername);
 	new
@@ -332,7 +332,7 @@ LoadVehiclesFromFile(file[])
 }
 
 
-_CatStringToInts(input[], output[], len)
+_CatStringToInts(const input[], output[], len)
 {
 	for(new i; i < len; i++)
 	{
@@ -353,7 +353,7 @@ _CatStringToInts(input[], output[], len)
 	return 1;
 }
 
-_SizeStringToInts(input[], output[], len)
+_SizeStringToInts(const input[], output[], len)
 {
 	for(new i; i < len; i++)
 	{
