@@ -104,7 +104,9 @@ ptask BrightnessUpdate[100](playerid)
 		{
 			if(GetTickCountDifference(GetTickCount(), GetPlayerKnockOutTick(playerid)) > 5000 * hp)
 			{
-				if(GetPlayerBleedRate(playerid) > 0.0)
+				new Float:bleedrate;
+				GetPlayerBleedRate(playerid, bleedrate);
+				if(bleedrate > 0.0)
 				{
 					if(frandom(40.0) < (50.0 - hp))
 						KnockOutPlayer(playerid, floatround(2000 * (50.0 - hp) + frandom(200 * (50.0 - hp))));

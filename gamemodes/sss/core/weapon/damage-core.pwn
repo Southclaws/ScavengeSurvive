@@ -108,7 +108,8 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	new
 		woundid = Iter_Free(wnd_Index[targetid]),
 		woundcount,
-		Float:totalbleedrate = GetPlayerBleedRate(targetid);
+		Float:totalbleedrate;
+	GetPlayerBleedRate(targetid, totalbleedrate);
 
 	if(woundid == ITER_NONE)
 	{
@@ -202,8 +203,11 @@ stock Float:GetPlayerKnockoutChance(playerid, Float:knockmult)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0.0;
+	
+	new Float:bleedrate;
+	GetPlayerBleedRate(playerid, bleedrate);
 
-	return knockmult * (((Iter_Count(wnd_Index[playerid]) + 1) * 0.2) * ((GetPlayerBleedRate(playerid) * 50) + 1));
+	return knockmult * (((Iter_Count(wnd_Index[playerid]) + 1) * 0.2) * ((bleedrate * 50) + 1));
 }
 
 // dmg_LastHit

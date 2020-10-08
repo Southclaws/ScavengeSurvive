@@ -390,6 +390,7 @@ timer UpdateSpectateMode[100](playerid)
 		{
 			new
 				invehicleas[24],
+				Float:bleedrate,
 				itemid,
 				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
 				cameramodename[37];
@@ -400,6 +401,7 @@ timer UpdateSpectateMode[100](playerid)
 			else
 				invehicleas = "Passenger";
 
+			GetPlayerBleedRate(targetid, bleedrate);
 			itemid = GetPlayerItem(targetid);
 			if(!GetItemName(itemid, itemname))
 				itemname = "None";
@@ -416,7 +418,7 @@ timer UpdateSpectateMode[100](playerid)
 				GetPlayerInterior(targetid),
 				GetPlayerVirtualWorld(targetid),
 				IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
-				GetPlayerBleedRate(targetid),
+				bleedrate,
 				itemname,
 				cameramodename,
 				GetPlayerTotalVelocity(targetid),
@@ -432,6 +434,7 @@ timer UpdateSpectateMode[100](playerid)
 				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
 				holsteritemid,
 				holsteritemname[32],
+				Float:bleedrate,
 				cameramodename[37],
 				Float:vx,
 				Float:vy,
@@ -446,6 +449,7 @@ timer UpdateSpectateMode[100](playerid)
 			if(!GetItemName(holsteritemid, holsteritemname))
 				holsteritemname = "None";
 
+			GetPlayerBleedRate(targetid, bleedrate);
 			GetCameraModeName(GetPlayerCameraMode(targetid), cameramodename);
 			GetPlayerVelocity(targetid, vx, vy, vz);
 
@@ -460,7 +464,7 @@ timer UpdateSpectateMode[100](playerid)
 				GetPlayerInterior(targetid),
 				GetPlayerVirtualWorld(targetid),
 				IsPlayerKnockedOut(targetid) ? MsToString(GetPlayerKnockOutRemainder(targetid), "%1m:%1s") : ("No"),
-				GetPlayerBleedRate(targetid),
+				bleedrate,
 				cameramodename,
 				velocity,
 				itemname,

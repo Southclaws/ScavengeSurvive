@@ -29,7 +29,7 @@ static
 bool:		ToolTips[MAX_PLAYERS],
 PlayerText:	ToolTipText[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...};
 
-ShowHelpTip(playerid, text[], time = 0)
+ShowHelpTip(playerid, const text[], time = 0)
 {
 	if(!ToolTips[playerid])
 		return 0;

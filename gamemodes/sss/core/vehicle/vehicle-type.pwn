@@ -135,7 +135,7 @@ stock DefineVehicleType(modelid, const name[], group, category, size, Float:maxf
 	return veh_TypeTotal++;
 }
 
-stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[], maxsizes)
+stock PickRandomVehicleTypeFromGroup(group, const categories[], maxcategories, const sizes[], maxsizes)
 {
 	// log("[PickRandomVehicleTypeFromGroup] group: %d categories: %d sizes: %d", group, maxcategories, maxsizes);
 	new
@@ -169,7 +169,7 @@ stock PickRandomVehicleTypeFromGroup(group, categories[], maxcategories, sizes[]
 	return list[cell];
 }
 
-_IsMatchingCategory(vehicletype, categories[], maxcategories)
+_IsMatchingCategory(vehicletype, const categories[], maxcategories)
 {
 	for(new i; i <= maxcategories; i++)
 	{
@@ -183,7 +183,7 @@ _IsMatchingCategory(vehicletype, categories[], maxcategories)
 	return 0;
 }
 
-_IsMatchingSize(vehicletype, sizes[], maxsizes)
+_IsMatchingSize(vehicletype, const sizes[], maxsizes)
 {
 	for(new i; i <= maxsizes; i++)
 	{

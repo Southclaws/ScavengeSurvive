@@ -278,7 +278,8 @@ ACMD:bleed[5](playerid, params[])
 
 	if(sscanf(params, "f", value))
 	{
-		ChatMsg(playerid, YELLOW, "Current bleed rate %f", GetPlayerBleedRate(playerid));
+		GetPlayerBleedRate(playerid, value);
+		ChatMsg(playerid, YELLOW, "Current bleed rate %f", value);
 		return 1;
 	}
 
@@ -297,7 +298,9 @@ ACMD:knockout[5](playerid, params[])
 
 ACMD:showdamage[5](playerid, params[])
 {
-	ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", GetPlayerBleedRate(playerid), GetPlayerWounds(playerid)), 5000);
+	new Float:bleedrate;
+	GetPlayerBleedRate(playerid, bleedrate);
+	ShowActionText(playerid, sprintf("bleedrate: %f~n~wounds: %d", bleedrate, GetPlayerWounds(playerid)), 5000);
 	return 1;
 }
 

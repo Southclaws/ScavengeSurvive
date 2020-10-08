@@ -146,13 +146,14 @@ ShowPlayerHealthInfo(playerid)
 		drugslist[MAX_DRUG_TYPE],
 		drugs,
 		drugname[MAX_DRUG_NAME],
-		Float:bleedrate = GetPlayerBleedRate(playerid),
+		Float:bleedrate,
 		Float:hunger = GetPlayerFP(playerid),
 		infected1 = GetPlayerInfectionIntensity(playerid, 0),
 		infected2 = GetPlayerInfectionIntensity(playerid, 1);
 
 	GetPlayerWoundsPerBodypart(playerid, bodypartwounds);
 	drugs = GetPlayerDrugsList(playerid, drugslist);
+	GetPlayerBleedRate(playerid, bleedrate);
 
 	inv_HealthInfoActive[playerid] = true;
 

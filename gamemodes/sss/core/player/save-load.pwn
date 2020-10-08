@@ -133,7 +133,7 @@ SavePlayerChar(playerid)
 		data[PLY_CELL_STANCE] = 3;
 	}
 
-	data[PLY_CELL_BLEEDING] = _:GetPlayerBleedRate(playerid);
+	GetPlayerBleedRate(playerid, Float:data[PLY_CELL_BLEEDING]);
 	data[PLY_CELL_CUFFED] = (GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED);
 	data[PLY_CELL_WARNS] = GetPlayerWarnings(playerid);
 	data[PLY_CELL_FREQ] = _:GetPlayerRadioFrequency(playerid);

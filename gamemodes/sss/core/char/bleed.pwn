@@ -126,11 +126,11 @@ stock SetPlayerBleedRate(playerid, Float:rate)
 	return 1;
 }
 
-forward Float:GetPlayerBleedRate(playerid);
-stock Float:GetPlayerBleedRate(playerid)
+stock GetPlayerBleedRate(playerid, &Float:bleedrate)
 {
 	if(!IsValidPlayerID(playerid))
-		return 0.0;
+		return 0;
 
-	return bld_BleedRate[playerid];
+	bleedrate = bld_BleedRate[playerid];
+	return 1;
 }

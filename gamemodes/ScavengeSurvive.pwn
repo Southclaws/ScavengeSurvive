@@ -376,9 +376,8 @@ new stock
 */
 #include "sss/core/vehicle/vehicle-type.pwn"
 #include "sss/core/vehicle/lock.pwn"
-#include "sss/core/vehicle/core.pwn"
 #include "sss/core/player/core.pwn"
-#include "sss/core/player/save-load.pwn"
+#include "sss/core/vehicle/core.pwn"
 #include "sss/core/admin/core.pwn"
 #include "sss/core/char/holster.pwn"
 #include "sss/core/weapon/ammunition.pwn"
@@ -574,6 +573,7 @@ new stock
 
 // POST-CODE
 
+#include "sss/core/player/save-load.pwn"
 #include "sss/core/server/auto-save.pwn"
 #tryinclude "sss/extensions/ext_post.pwn"
 
