@@ -608,7 +608,7 @@ stock GetRandomTreeSpecies(categoryid = -1)
 	}
 }
 
-stock GetTreeCategoryFromName(name[])
+stock GetTreeCategoryFromName(const name[])
 {
 	for(new i; i < treeCategory_Total; i++)
 	{
