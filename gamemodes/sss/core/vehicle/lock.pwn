@@ -82,11 +82,14 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if(IsValidVehicle(vehicleid))
 		{
-			if(lock_Status[vehicleid] == E_LOCK_STATE_DEFAULT)
-				ShowActionText(playerid, ls(playerid, "LOCKUSECROW"), 6000);
+			if(!IsPlayerInVehicle(playerid, vehicleid))
+			{
+				if(lock_Status[vehicleid] == E_LOCK_STATE_DEFAULT)
+					ShowActionText(playerid, ls(playerid, "LOCKUSECROW"), 6000);
 
-			else if(lock_Status[vehicleid] == E_LOCK_STATE_EXTERNAL)
-				ShowActionText(playerid, ls(playerid, "LOCKCUSTOML"), 6000);
+				else if(lock_Status[vehicleid] == E_LOCK_STATE_EXTERNAL)
+					ShowActionText(playerid, ls(playerid, "LOCKCUSTOML"), 6000);
+			}
 		}
 	}
 
