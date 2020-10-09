@@ -134,8 +134,7 @@ public OnGameModeInit()
 #include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
-#include <FileManager>				// By JaTochNietDan			https://github.com/JaTochNietDan/SA-MP-FileManager
-// #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
+#include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
 #include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
 #include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
@@ -617,9 +616,11 @@ OnGameModeInit_Setup()
 {
 	log("[OnGameModeInit_Setup] Setting up...");
 
-	new buildstring[12];
+	// removed the file thing, so left this at the last version number for now.
+	// probably needs a better method, like a build-time variable or something.
+	new buildstring[12] = "1769";
 
-	file_read("BUILD_NUMBER", buildstring);
+	// file_read("BUILD_NUMBER", buildstring);
 	gBuildNumber = strval(buildstring);
 
 	if(gBuildNumber < 1000)
@@ -633,22 +634,22 @@ OnGameModeInit_Setup()
 	Streamer_ToggleErrorCallback(true);
 	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
-	if(dir_exists(DIRECTORY_SCRIPTFILES"SSS/"))
+	if(Exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
 		log("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES))
+	if(!Exists(DIRECTORY_SCRIPTFILES))
 	{
 		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES);
+		CreateDir(DIRECTORY_SCRIPTFILES);
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
+	if(!Exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
 		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
+		CreateDir(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
 	gAccounts = db_open_persistent(ACCOUNT_DATABASE);
@@ -754,12 +755,10 @@ task RestartUpdate[1000]()
 
 DirectoryCheck(const directory[])
 {
-	new d[256];
-	strcat(d, directory);
-	if(!dir_exists(d))
+	if(!Exists(directory))
 	{
 		err("Directory '%s' not found. Creating directory.", directory);
-		dir_create(d);
+		CreateDir(directory);
 	}
 }
 

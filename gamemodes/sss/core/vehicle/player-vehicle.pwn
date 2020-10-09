@@ -131,31 +131,35 @@ LoadPlayerVehicles()
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 
 	new
-		dir:direc = dir_open(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE),
-		item[28],
-		type;
+		path[64] = DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE,
+		Directory:direc,
+		entry[28],
+		ENTRY_TYPE:type,
+		trimlength = strlen("./scriptfiles/");
 
-	while(dir_list(direc, item, type))
+	direc = OpenDir(path);
+
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			if(!(6 < strlen(item) < MAX_PLAYER_NAME + 4))
+			if(!(6 < strlen(entry) < MAX_PLAYER_NAME + 4))
 			{
-				err("File with a bad filename length: '%s' len: %d", item, strlen(item));
+				err("File with a bad filename length: '%s' len: %d", entry, strlen(entry));
 				continue;
 			}
 
-			if(strfind(item, ".dat", false, 3) == -1)
+			if(strfind(entry, ".dat", false, 3) == -1)
 			{
-				err("File with invalid extension: '%s'", item);
+				err("File with invalid extension: '%s'", entry);
 				continue;
 			}
 
-			LoadPlayerVehicle(item);
+			LoadPlayerVehicle(entry[trimlength]);
 		}
 	}
 
-	dir_close(direc);
+	CloseDir(direc);
 
 	if(veh_PrintTotal)
 		log("Loaded %d Player vehicles", Iter_Count(veh_Index));
@@ -171,18 +175,15 @@ LoadPlayerVehicles()
 ==============================================================================*/
 
 
-LoadPlayerVehicle(filename[])
+LoadPlayerVehicle(filepath[])
 {
-	// TODO: move this directory formatting to the load loop.
 	new
-		filepath[64],
+		filename[32],
 		data[VEH_CELL_END],
 		length,
 		geid[GEID_LEN];
 
-	filepath = DIRECTORY_VEHICLE;
-	strcat(filepath, filename);
-
+	PathBase(filepath, filename);
 	length = modio_read(filepath, _T<A,C,T,V>, 1, data, false, false);
 
 	if(length < 0)

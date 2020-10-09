@@ -105,20 +105,21 @@ stock DefineLanguageReplacement(const key[], const val[])
 stock LoadAllLanguages()
 {
 	new
-		dir:dirhandle,
+		Directory:direc,
 		directory_with_root[256] = DIRECTORY_SCRIPTFILES,
-		item[64],
-		type,
-		next_path[256],
+		entry[64],
+		ENTRY_TYPE:type,
 		default_entries,
 		entries,
-		languages;
+		languages,
+		filename[32],
+		trimlength = strlen("./scriptfiles/");
 
 	strcat(directory_with_root, DIRECTORY_LANGUAGES);
 
-	dirhandle = dir_open(directory_with_root);
+	direc = OpenDir(directory_with_root);
 
-	if(!dirhandle)
+	if(!direc)
 	{
 		printf("Reading directory '%s'.", directory_with_root);
 		return 0;
@@ -134,31 +135,29 @@ stock LoadAllLanguages()
 		return 0;
 	}
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			if(!strcmp(item, "English"))
+			if(!strcmp(entry, "English"))
 				continue;
 
-			next_path[0] = EOS;
-			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_LANGUAGES, item);
-
-			entries = LoadLanguage(next_path, item);
+			PathBase(entry, filename);
+			entries = LoadLanguage(entry[trimlength], filename);
 
 			if(entries > 0)
 			{
-				log("Loaded language %s: %d entries, %d missing entries", item, entries, default_entries - entries);
+				log("Loaded language %s: %d entries, %d missing entries", entry, entries, default_entries - entries);
 				languages++;
 			}
 			else
 			{
-				printf("No entries loaded from language file '%s'", item);
+				printf("No entries loaded from language file '%s'", entry);
 			}
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(direc);
 
 	log("Loaded %d languages", languages);
 

@@ -35,7 +35,7 @@ hook OnScriptInit()
 
 hook OnGameModeInit()
 {
-	LoadTreesFromFolder(DIRECTORY_TREES);
+	LoadTreesFromFolder(DIRECTORY_SCRIPTFILES DIRECTORY_TREES);
 }
 
 
@@ -46,39 +46,33 @@ hook OnGameModeInit()
 ==============================================================================*/
 
 
-LoadTreesFromFolder(const folder[])
+LoadTreesFromFolder(const foldername[])
 {
 	new
-		foldername[256],
-		dir:dirhandle,
-		item[64],
-		type,
-		filename[256];
+		Directory:direc,
+		entry[64],
+		ENTRY_TYPE:type,
+		trimlength = strlen("./scriptfiles/");
 
-	format(foldername, sizeof(foldername), DIRECTORY_SCRIPTFILES"%s", folder);
-	dirhandle = dir_open(foldername);
+	direc = OpenDir(foldername);
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			if(!strcmp(item[strlen(item) - 4], ".tpl"))
+			if(!strcmp(entry[strlen(entry) - 4], ".tpl"))
 			{
-				filename[0] = EOS;
-				format(filename, sizeof(filename), "%s%s", folder, item);
-				LoadTrees(filename);
+				LoadTrees(entry[trimlength]);
 			}
 		}
 
-		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
+		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
-			filename[0] = EOS;
-			format(filename, sizeof(filename), "%s%s/", folder, item);
-			LoadTreesFromFolder(filename);
+			LoadTreesFromFolder(entry);
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(direc);
 }
 
 LoadTrees(filename[])

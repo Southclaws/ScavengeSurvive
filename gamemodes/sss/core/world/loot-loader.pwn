@@ -36,7 +36,7 @@ hook OnScriptInit()
 
 hook OnGameModeInit()
 {
-	new count = LoadLootTableDir(DIRECTORY_LOOT_TABLES);
+	new count = LoadLootTableDir(DIRECTORY_SCRIPTFILES DIRECTORY_LOOT_TABLES);
 
 	if(count == 0)
 		err("No loot table entries loaded!");
@@ -45,54 +45,52 @@ hook OnGameModeInit()
 		log("Loaded %d Loot table entries", count);
 }
 
-LoadLootTableDir(const directory[])
+LoadLootTableDir(const directory_with_root[])
 {
+	Logger_Log("loading loot tables from directory", Logger_S("directory", directory_with_root));
+
 	new
-		dir:dirhandle,
-		directory_with_root[256],
-		item[64],
-		type,
-		next_path[256],
-		count;
+		Directory:direc,
+		entry[64],
+		ENTRY_TYPE:type,
+		count,
+		ext[5],
+		trimlength = strlen("./scriptfiles/");
 
-	strcat(directory_with_root, DIRECTORY_SCRIPTFILES);
-	strcat(directory_with_root, directory);
+	direc = OpenDir(directory_with_root);
 
-	dirhandle = dir_open(directory_with_root);
-
-	if(!dirhandle)
+	if(!direc)
 	{
-		err("[LoadLootTableDir] Reading directory '%s'.", directory);
+		err("[LoadLootTableDir] Reading directory '%s'.", directory_with_root);
 		return 0;
 	}
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
+		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
-			next_path[0] = EOS;
-			format(next_path, sizeof(next_path), "%s%s/", directory, item);
-			count += LoadLootTableDir(next_path);
+			count += LoadLootTableDir(entry);
 		}
 
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			if(!strcmp(item[strlen(item) - 4], ".ltb"))
+			PathExt(entry, ext);
+			if(!strcmp(ext, ".ltb"))
 			{
-				next_path[0] = EOS;
-				format(next_path, sizeof(next_path), "%s%s", directory, item);
-				count += LoadLootTableFromFile(next_path);
+				count += LoadLootTableFromFile(entry[trimlength]);
 			}
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(direc);
 
 	return count;
 }
 
 LoadLootTableFromFile(file[])
 {
+	Logger_Log("loading loot table from file", Logger_S("file", file));
+
 	if(!fexist(file))
 	{
 		err("[LoadLootTableFromFile] File '%s' not found.", file);
@@ -152,7 +150,7 @@ LoadLootTableFromFile(file[])
 
 	fclose(f);
 
-	log("[LOAD] %d item spawn rates loaded from %s", count, file);
+	Logger_Log("loaded item spawn rates", Logger_I("count", count), Logger_S("file", file));
 
 	return 1;
 }

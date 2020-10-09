@@ -33,8 +33,7 @@
 		"Southclaws/samp-linegen",
 		"Southclaws/samp-zipline:v1.2.1",
 		"Southclaws/samp-ladders:v1.0.0",
-		"ScavengeSurvive/action-text",
-		"JaTochNietDan/SA-MP-FileManager:1.5"
+		"ScavengeSurvive/action-text"
 	],
 	"build": {
 		"includes": [

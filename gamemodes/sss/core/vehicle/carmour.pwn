@@ -74,34 +74,33 @@ hook OnGameModeInit()
 LoadCarmour()
 {
 	new
-		dir:dirhandle,
+		Directory:direc,
 		directory_with_root[256] = DIRECTORY_SCRIPTFILES,
-		item[64],
-		type,
-		next_path[256];
+		entry[64],
+		ENTRY_TYPE:type,
+		trimlength = strlen("./scriptfiles/"),
+		filename[32];
 
 	strcat(directory_with_root, DIRECTORY_CARMOUR);
 
-	dirhandle = dir_open(directory_with_root);
+	direc = OpenDir(directory_with_root);
 
-	if(!dirhandle)
+	if(!direc)
 	{
 		err("Reading directory '%s'.", directory_with_root);
 		return 0;
 	}
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			next_path[0] = EOS;
-			format(next_path, sizeof(next_path), "%s%s", DIRECTORY_CARMOUR, item);
-
-			LoadOffsetsFromFile(next_path, item);
+			PathBase(entry, filename);
+			LoadOffsetsFromFile(entry[trimlength], filename);
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(direc);
 
 	return 1;
 }

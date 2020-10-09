@@ -94,47 +94,39 @@ hook OnGameModeInit()
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-LoadVehiclesFromFolder(const foldername[])
+LoadVehiclesFromFolder(const directory_with_root[])
 {
-	log("[LoadVehiclesFromFolder] Loading vehicles from: '%s'...", foldername);
+	log("[LoadVehiclesFromFolder] Loading vehicles from: '%s'...", directory_with_root);
 	new
-		dir:dirhandle,
-		directory_with_root[256],
-		item[64],
-		type,
-		next_path[256];
+		Directory:direc,
+		entry[64],
+		ENTRY_TYPE:type,
+		trimlength = strlen("./scriptfiles/");
 
-	strcat(directory_with_root, DIRECTORY_SCRIPTFILES);
-	strcat(directory_with_root, foldername);
+	direc = OpenDir(directory_with_root);
 
-	dirhandle = dir_open(directory_with_root);
-
-	if(!dirhandle)
+	if(!direc)
 	{
-		err("[LoadVehiclesFromFolder] Reading directory '%s'.", foldername);
+		err("[LoadVehiclesFromFolder] Reading directory '%s'.", directory_with_root);
 		return 0;
 	}
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(direc, type, entry))
 	{
-		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
+		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
-			next_path[0] = EOS;
-			format(next_path, sizeof(next_path), "%s%s/", foldername, item);
-			LoadVehiclesFromFolder(next_path);
+			LoadVehiclesFromFolder(entry);
 		}
-		if(type == FM_FILE)
+		if(type == ENTRY_TYPE:1)
 		{
-			if(!strcmp(item[strlen(item) - 4], ".vpl"))
+			if(!strcmp(entry[strlen(entry) - 4], ".vpl"))
 			{
-				next_path[0] = EOS;
-				format(next_path, sizeof(next_path), "%s%s", foldername, item);
-				LoadVehiclesFromFile(next_path);
+				LoadVehiclesFromFile(entry[trimlength]);
 			}
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(direc);
 
 	return 1;
 }
@@ -171,6 +163,12 @@ LoadVehiclesFromFile(file[])
 		default_maxcategories,
 		default_sizes[4],
 		default_maxsizes;
+
+	if(!f)
+	{
+		err("Reading file '%s'.", file);
+		return 0;
+	}
 
 	while(fread(f, line))
 	{
