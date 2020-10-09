@@ -40,6 +40,9 @@
 
 #define _DEBUG							0 // YSI
 #define CGEN_MEMORY						(69420) // lol xd funny meme welcome to comedy zoNEwd
+#define YSI_NO_VERSION_CHECK
+#define YSI_NO_OPTIMISATION_MESSAGE
+#define YSI_NO_MODE_CACHE
 #define YSI_NO_HEAP_MALLOC
 #define DB_DEBUG						false // SQLitei
 #define DB_MAX_STATEMENTS				(128) // SQLitei
