@@ -174,7 +174,7 @@ LoadOffsetsFromFile(filename[], name[])
 
 	Logger_Log("loaded carmour",
 		Logger_I("objects", listindex),
-		Logger_I("vehicle_type", name)
+		Logger_S("vehicle_type", name)
 	);
 
 	return id;
