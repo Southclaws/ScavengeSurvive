@@ -131,7 +131,7 @@ public OnGameModeInit()
 #include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
-#include <ctime>					// By RyDeR`:				https://github.com/Southclaws/samp-ctime
+#include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
 #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil

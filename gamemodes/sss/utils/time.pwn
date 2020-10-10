@@ -38,13 +38,8 @@ stock RoundTimestamp(timestamp, roundamount)
 
 stock TimestampToDateTime(datetime, const format[] = CTIME_DATE_TIME)
 {
-	new
-		str[64],
-		timestamp[e_tm];
-
-	localtime(Time:datetime, timestamp);
-	strftime(str, 64, format, timestamp);
-
+	new str[64];
+	TimeFormat(Timestamp:datetime, format, str);
 	return str;
 }
 
