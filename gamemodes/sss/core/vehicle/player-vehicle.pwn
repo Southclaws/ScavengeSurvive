@@ -59,10 +59,6 @@ static
 static
 		pveh_SaveAnyVehicle[MAX_PLAYERS] = {1, ...};
 
-static
-bool:	veh_PrintEach = true,
-bool:	veh_PrintTotal = true;
-
 
 forward OnVehicleSave(vehicleid);
 
@@ -70,9 +66,6 @@ forward OnVehicleSave(vehicleid);
 hook OnScriptInit()
 {
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
-
-	GetSettingInt("player-vehicle/print-each", true, veh_PrintEach);
-	GetSettingInt("player-vehicle/print-total", true, veh_PrintTotal);
 }
 
 hook OnGameModeInit()
@@ -131,24 +124,23 @@ LoadPlayerVehicles()
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE);
 
 	new
-		path[64] = DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE,
+		path[128] = DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLE,
 		Directory:direc,
-		entry[28],
+		entry[128],
 		ENTRY_TYPE:type,
 		trimlength = strlen("./scriptfiles/");
 
 	direc = OpenDir(path);
+	if(direc == Directory:-1)
+	{
+		err("failed to open vehicles directory '%s': %d", path, _:direc);
+		return 1;
+	}
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
-			if(!(6 < strlen(entry) < MAX_PLAYER_NAME + 4))
-			{
-				err("File with a bad filename length: '%s' len: %d", entry, strlen(entry));
-				continue;
-			}
-
 			if(strfind(entry, ".dat", false, 3) == -1)
 			{
 				err("File with invalid extension: '%s'", entry);
@@ -161,8 +153,7 @@ LoadPlayerVehicles()
 
 	CloseDir(direc);
 
-	if(veh_PrintTotal)
-		log("Loaded %d Player vehicles", Iter_Count(veh_Index));
+	Logger_Log("loaded player vehicles", Logger_I("count", Iter_Count(veh_Index)));
 
 	return 1;
 }
@@ -184,6 +175,12 @@ LoadPlayerVehicle(filepath[])
 		geid[GEID_LEN];
 
 	PathBase(filepath, filename);
+	if(!(6 < strlen(filename) < MAX_PLAYER_NAME + 4))
+	{
+		err("File with a bad filename length: '%s' len: %d", filename, strlen(filename));
+		return 0;
+	}
+
 	length = modio_read(filepath, _T<A,C,T,V>, 1, data, false, false);
 
 	if(length < 0)
@@ -386,8 +383,18 @@ LoadPlayerVehicle(filepath[])
 			}
 		}
 
-		if(veh_PrintEach)
-			log("[LOAD] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", trailergeid, trailerid, data[VEH_CELL_LOCKED], itemcount, trailername, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+		Logger_Log("loaded player trailer",
+			Logger_S("geid", trailergeid),
+			Logger_I("id", trailerid),
+			Logger_I("locked", data[VEH_CELL_LOCKED]),
+			Logger_I("count", itemcount),
+			Logger_S("type", trailername),
+			Logger_S("owner", owner),
+			Logger_F("x", data[VEH_CELL_POSX]),
+			Logger_F("y", data[VEH_CELL_POSY]),
+			Logger_F("z", data[VEH_CELL_POSZ]),
+			Logger_F("r", data[VEH_CELL_ROTZ])
+		);
 	}
 
 	new itemcount;
@@ -435,8 +442,18 @@ LoadPlayerVehicle(filepath[])
 		}
 	}
 
-	if(veh_PrintEach)
-		log("[LOAD] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f", geid, vehicleid, data[VEH_CELL_LOCKED], itemcount, vehiclename, owner, data[VEH_CELL_POSX], data[VEH_CELL_POSY], data[VEH_CELL_POSZ], data[VEH_CELL_ROTZ]);
+	Logger_Log("loaded player vehicle",
+		Logger_S("geid", geid),
+		Logger_I("id", vehicleid),
+		Logger_I("locked", data[VEH_CELL_LOCKED]),
+		Logger_I("count", itemcount),
+		Logger_S("type", vehiclename),
+		Logger_S("owner", owner),
+		Logger_F("x", data[VEH_CELL_POSX]),
+		Logger_F("y", data[VEH_CELL_POSY]),
+		Logger_F("z", data[VEH_CELL_POSZ]),
+		Logger_F("r", data[VEH_CELL_ROTZ])
+	);
 
 	return 1;
 }
@@ -554,20 +571,19 @@ _SaveVehicle(vehicleid)
 		}
 
 		GetVehicleTypeName(GetVehicleType(trailerid), vehiclename);
-
-		if(veh_PrintEach)
-		{
-			log("[SAVE] Trailer %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
-				trailergeid,
-				trailerid,
-				_:GetVehicleLockState(trailerid),
-				itemcount,
-				vehiclename,
-				pveh_Owner[trailerid],
-				Float:data[VEH_CELL_POSX],
-				Float:data[VEH_CELL_POSY],
-				Float:data[VEH_CELL_POSZ]);
-		}
+		
+		Logger_Log("saved player trailer",
+			Logger_S("geid", trailergeid),
+			Logger_I("id", trailerid),
+			Logger_I("locked", _:GetVehicleLockState(trailerid)),
+			Logger_I("count", itemcount),
+			Logger_S("type", vehiclename),
+			Logger_S("owner", pveh_Owner[trailerid]),
+			Logger_F("x", data[VEH_CELL_POSX]),
+			Logger_F("y", data[VEH_CELL_POSY]),
+			Logger_F("z", data[VEH_CELL_POSZ]),
+			Logger_F("r", data[VEH_CELL_ROTZ])
+		);
 	}
 
 	new containerid = GetVehicleContainer(vehicleid);
@@ -600,24 +616,33 @@ _SaveVehicle(vehicleid)
 
 	if(active[0])
 	{
-		if(veh_PrintEach)
-		{
-			log("[SAVE] Vehicle %s (%d) L:%d %d items: %s for %s at %.2f, %.2f, %.2f",
-				geid,
-				vehicleid,
-				_:GetVehicleLockState(vehicleid),
-				itemcount,
-				vehiclename,
-				pveh_Owner[vehicleid],
-				Float:data[VEH_CELL_POSX],
-				Float:data[VEH_CELL_POSY],
-				Float:data[VEH_CELL_POSZ]);
-		}
+		Logger_Log("saved player vehicle",
+			Logger_S("geid", geid),
+			Logger_I("id", vehicleid),
+			Logger_I("locked", _:GetVehicleLockState(vehicleid)),
+			Logger_I("count", itemcount),
+			Logger_S("type", vehiclename),
+			Logger_S("owner", pveh_Owner[vehicleid]),
+			Logger_F("x", data[VEH_CELL_POSX]),
+			Logger_F("y", data[VEH_CELL_POSY]),
+			Logger_F("z", data[VEH_CELL_POSZ]),
+			Logger_F("r", data[VEH_CELL_ROTZ])
+		);
 	}
 	else
 	{
-		if(veh_PrintEach)
-			log("[DELT] Removing player vehicle %d, owner: %s", vehicleid, pveh_Owner[vehicleid]);
+		Logger_Log("removed player vehicle",
+			Logger_S("geid", geid),
+			Logger_I("id", vehicleid),
+			Logger_I("locked", _:GetVehicleLockState(vehicleid)),
+			Logger_I("count", itemcount),
+			Logger_S("type", vehiclename),
+			Logger_S("owner", pveh_Owner[vehicleid]),
+			Logger_F("x", data[VEH_CELL_POSX]),
+			Logger_F("y", data[VEH_CELL_POSY]),
+			Logger_F("z", data[VEH_CELL_POSZ]),
+			Logger_F("r", data[VEH_CELL_ROTZ])
+		);
 	}
 
 	return 1;

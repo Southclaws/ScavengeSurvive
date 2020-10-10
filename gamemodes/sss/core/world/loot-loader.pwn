@@ -42,7 +42,7 @@ hook OnGameModeInit()
 		err("No loot table entries loaded!");
 
 	else
-		log("Loaded %d Loot table entries", count);
+		Logger_Log("loaded loot table entries", Logger_I("count", count));
 }
 
 LoadLootTableDir(const directory_with_root[])
@@ -59,7 +59,7 @@ LoadLootTableDir(const directory_with_root[])
 
 	direc = OpenDir(directory_with_root);
 
-	if(!direc)
+	if(direc == Directory:-1)
 	{
 		err("[LoadLootTableDir] Reading directory '%s'.", directory_with_root);
 		return 0;
@@ -67,12 +67,12 @@ LoadLootTableDir(const directory_with_root[])
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
+		if(type == E_DIRECTORY && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
 			count += LoadLootTableDir(entry);
 		}
 
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
 			PathExt(entry, ext);
 			if(!strcmp(ext, ".ltb"))

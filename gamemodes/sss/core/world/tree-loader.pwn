@@ -58,7 +58,7 @@ LoadTreesFromFolder(const foldername[])
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
 			if(!strcmp(entry[strlen(entry) - 4], ".tpl"))
 			{
@@ -66,7 +66,7 @@ LoadTreesFromFolder(const foldername[])
 			}
 		}
 
-		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
+		if(type == E_DIRECTORY && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
 			LoadTreesFromFolder(entry);
 		}

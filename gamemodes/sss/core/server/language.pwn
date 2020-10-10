@@ -106,7 +106,6 @@ stock LoadAllLanguages()
 {
 	new
 		Directory:direc,
-		directory_with_root[256] = DIRECTORY_SCRIPTFILES,
 		entry[64],
 		ENTRY_TYPE:type,
 		default_entries,
@@ -115,29 +114,27 @@ stock LoadAllLanguages()
 		filename[32],
 		trimlength = strlen("./scriptfiles/");
 
-	strcat(directory_with_root, DIRECTORY_LANGUAGES);
-
-	direc = OpenDir(directory_with_root);
-
-	if(!direc)
-	{
-		printf("Reading directory '%s'.", directory_with_root);
-		return 0;
-	}
+	direc = OpenDir(DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
 
 	// Force load English first since that's the default language.
 	default_entries = LoadLanguage(DIRECTORY_LANGUAGES"English", "English");
-	log("Default language (English) has %d entries.", default_entries);
+	Logger_Log("default language English loaded", Logger_I("entries", default_entries));
+
+	if(direc == Directory:-1)
+	{
+		err("Reading directory '%s'.", DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
+		return 0;
+	}
 
 	if(default_entries == 0)
 	{
-		printf("No default entries loaded! Please add the 'English' langfile to '%s'.", directory_with_root);
-		return 0;
+		err("No default entries loaded! Please add the 'English' langfile to '%s'.", DIRECTORY_SCRIPTFILES DIRECTORY_LANGUAGES);
+		for(;;) {}
 	}
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
 			if(!strcmp(entry, "English"))
 				continue;
@@ -147,7 +144,11 @@ stock LoadAllLanguages()
 
 			if(entries > 0)
 			{
-				log("Loaded language %s: %d entries, %d missing entries", entry, entries, default_entries - entries);
+				Logger_Log("additional language loaded",
+					Logger_S("entry", entry),
+					Logger_I("entries", entries),
+					Logger_I("missing", default_entries - entries)
+				);
 				languages++;
 			}
 			else
@@ -158,8 +159,6 @@ stock LoadAllLanguages()
 	}
 
 	CloseDir(direc);
-
-	log("Loaded %d languages", languages);
 
 	return 1;
 }
@@ -249,8 +248,6 @@ stock LoadLanguage(const filename[], const langname[])
 		strmid(replace_me, line, delimiter + 1, length - 1, MAX_LANGUAGE_ENTRY_LENGTH);
 
 		_doReplace(replace_me, lang_Entries[lang_Total][index][lang_val]);
-
-		// log("Added language key '%s'", key);
 
 		linenumber++;
 	}

@@ -46,8 +46,7 @@ static
 
 // Settings: Prefixed camel case here and dashed in settings.json
 Float:	veh_SpawnChance = 4.0,
-bool:	veh_PrintEach,
-bool:	veh_PrintTotal;
+bool:	veh_PrintEach;
 
 
 static	veh_DebugLabelType;
@@ -59,7 +58,6 @@ hook OnScriptInit()
 
 	GetSettingFloat("vehicle-spawn/spawn-chance", 4.0, veh_SpawnChance);
 	GetSettingInt("vehicle-spawn/print-each", false, veh_PrintEach);
-	GetSettingInt("vehicle-spawn/print-total", true, veh_PrintTotal);
 }
 
 hook OnGameModeInit()
@@ -67,27 +65,28 @@ hook OnGameModeInit()
 	if(veh_SpawnChance == 0.0)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	LoadVehiclesFromFolder(DIRECTORY_VEHICLESPAWNS);
+	LoadVehiclesFromFolder(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
 
-	log("Loaded %d Vehicles", Iter_Count(veh_Index));
+	new
+		vehicletypename[MAX_VEHICLE_TYPE_NAME],
+		vehicletypecount;
 
-	if(veh_PrintTotal)
+	for(new i; i < veh_TypeTotal; i++)
 	{
-		new
-			vehicletypename[MAX_VEHICLE_TYPE_NAME],
-			vehicletypecount;
+		vehicletypecount = GetVehicleTypeCount(i);
 
-		for(new i; i < veh_TypeTotal; i++)
+		if(vehicletypecount > 0)
 		{
-			vehicletypecount = GetVehicleTypeCount(i);
-
-			if(vehicletypecount > 0)
-			{
-				GetVehicleTypeName(i, vehicletypename);
-				log("[%02d] Spawned %d '%s'", i, vehicletypecount, vehicletypename);
-			}
+			GetVehicleTypeName(i, vehicletypename);
+			Logger_Log("spawned new vehicles",
+				Logger_I("type_id", i),
+				Logger_S("type", vehicletypename),
+				Logger_I("count", vehicletypecount)
+			);
 		}
 	}
+
+	Logger_Log("loaded vehicles", Logger_I("count", Iter_Count(veh_Index)));
 
 	veh_DebugLabelType = DefineDebugLabelType("VEHICLESPAWN", 0xFFCCFFFF);
 
@@ -96,7 +95,6 @@ hook OnGameModeInit()
 
 LoadVehiclesFromFolder(const directory_with_root[])
 {
-	log("[LoadVehiclesFromFolder] Loading vehicles from: '%s'...", directory_with_root);
 	new
 		Directory:direc,
 		entry[64],
@@ -105,7 +103,7 @@ LoadVehiclesFromFolder(const directory_with_root[])
 
 	direc = OpenDir(directory_with_root);
 
-	if(!direc)
+	if(direc == Directory:-1)
 	{
 		err("[LoadVehiclesFromFolder] Reading directory '%s'.", directory_with_root);
 		return 0;
@@ -113,11 +111,11 @@ LoadVehiclesFromFolder(const directory_with_root[])
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:2 && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
+		if(type == E_DIRECTORY && strcmp(entry, "..") && strcmp(entry, ".") && strcmp(entry, "_"))
 		{
 			LoadVehiclesFromFolder(entry);
 		}
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
 			if(!strcmp(entry[strlen(entry) - 4], ".vpl"))
 			{
@@ -323,8 +321,11 @@ LoadVehiclesFromFile(file[])
 
 	fclose(f);
 
-	if(veh_PrintEach)
-		log("[LOAD] %d vehicles from %s (from total %d spawns)", count, file, total);
+	Logger_Log("spawned vehicles",
+		Logger_I("count", count),
+		Logger_I("spawns", total),
+		Logger_S("file", file)
+	);
 
 	return 1;
 }

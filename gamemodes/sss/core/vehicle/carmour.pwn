@@ -85,7 +85,7 @@ LoadCarmour()
 
 	direc = OpenDir(directory_with_root);
 
-	if(!direc)
+	if(direc == Directory:-1)
 	{
 		err("Reading directory '%s'.", directory_with_root);
 		return 0;
@@ -93,7 +93,7 @@ LoadCarmour()
 
 	while(DirNext(direc, type, entry))
 	{
-		if(type == ENTRY_TYPE:1)
+		if(type == E_REGULAR)
 		{
 			PathBase(entry, filename);
 			LoadOffsetsFromFile(entry[trimlength], filename);
@@ -172,7 +172,10 @@ LoadOffsetsFromFile(filename[], name[])
 
 	Iter_Add(arm_Index, id);
 
-	log("Loaded Carmour: %d objects for vehicle %s", listindex, name);
+	Logger_Log("loaded carmour",
+		Logger_I("objects", listindex),
+		Logger_I("vehicle_type", name)
+	);
 
 	return id;
 }
