@@ -34,11 +34,7 @@
 		"Southclaws/samp-ladders:v1.0.0",
 		"ScavengeSurvive/action-text"
 	],
-	"build": {
-		"includes": [
-			"legacy"
-		]
-	},
+	"build": {},
 	"runtime": {
 		"bind": "0.0.0.0",
 		"port": 7777,
