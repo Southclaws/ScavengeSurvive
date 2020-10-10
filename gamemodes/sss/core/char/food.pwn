@@ -65,7 +65,7 @@ hook OnPlayerScriptUpdate(playerid)
 	}
 	else if(animidx == 1195) // Jumping
 	{
-		food -= IDLE_FOOD_RATE * 3.2;	
+		food -= IDLE_FOOD_RATE * 3.2;
 	}
 	else if(animidx == 1231) // Running
 	{
@@ -124,6 +124,7 @@ hook OnPlayerScriptUpdate(playerid)
 	if(IsPlayerHudOn(playerid))
 	{
 		SetPlayerProgressBarValue(playerid, HungerBar[playerid], food);
+		ShowPlayerProgressBar(playerid, HungerBar[playerid]);
 	}
 
 	SetPlayerFP(playerid, food);
