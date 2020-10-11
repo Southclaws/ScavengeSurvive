@@ -57,6 +57,8 @@ hook OnGameModeInit()
 
 timer LoadWorld[10]()
 {
+	Logger_Log("loading World");
+
 	gServerInitialising = true;
 
 	// store this to a list and compare after
@@ -76,48 +78,56 @@ timer LoadWorld[10]()
 
 timer _Load_LS[500]()
 {
+	Logger_Log("loading SF");
 	Load_LS();
 	defer _Load_SF();
 }
 
 timer _Load_SF[500]()
 {
+	Logger_Log("loading SF");
 	Load_SF();
 	defer _Load_LV();
 }
 
 timer _Load_LV[500]()
 {
+	Logger_Log("loading LV");
 	Load_LV();
 	defer _Load_RC();
 }
 
 timer _Load_RC[500]()
 {
+	Logger_Log("loading RC");
 	Load_RC();
 	defer _Load_FC();
 }
 
 timer _Load_FC[500]()
 {
+	Logger_Log("loading FC");
 	Load_FC();
 	defer _Load_BC();
 }
 
 timer _Load_BC[500]()
 {
+	Logger_Log("loading BC");
 	Load_BC();
 	defer _Load_TR();
 }
 
 timer _Load_TR[500]()
 {
+	Logger_Log("loading TR");
 	Load_TR();
 	defer _Finalise();
 }
 
 timer _Finalise[500]()
 {
+	Logger_Log("loading HouseLoot");
 	Load_HouseLoot();
 
 	new itemtypename[ITM_MAX_NAME];
@@ -133,7 +143,12 @@ timer _Finalise[500]()
 
 		GetItemTypeUniqueName(i, itemtypename);
 
-		log("[%03d] Loaded:%04d, Spawned:%04d, Total:%04d, '%s'", _:i, ItemCounts[i], GetItemTypeCount(i) - ItemCounts[i], GetItemTypeCount(i), itemtypename);
+		Logger_Log("spawned items",
+			Logger_S("type", itemtypename),
+			Logger_I("loaded", ItemCounts[i]),
+			Logger_I("spawned", GetItemTypeCount(i) - ItemCounts[i]),
+			Logger_I("total", GetItemTypeCount(i))
+		);
 	}
 
 	gServerInitialising = false;
