@@ -20,7 +20,6 @@
 		"Southclaws/progress2",
 		"Southclaws/samp-ini",
 		"Southclaws/modio",
-		"Southclaws/pawn-requests:0.8.7",
 		"Southclaws/samp-whirlpool:v1.0.0",
 		"Zeex/samp-plugin-crashdetect:v4.20",
 		"oscar-broman/sqlitei",
@@ -34,7 +33,15 @@
 		"Southclaws/samp-ladders:v1.0.0",
 		"ScavengeSurvive/action-text"
 	],
-	"build": {},
+	"build": {
+		"args": [
+			"-;+",
+			"-(+",
+			"-\\+",
+			"-d3",
+			"-Z+"
+		]
+	},
 	"runtime": {
 		"bind": "0.0.0.0",
 		"port": 7777,
