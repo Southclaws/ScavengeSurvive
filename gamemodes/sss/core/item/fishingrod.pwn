@@ -124,7 +124,6 @@ _CatchFish(playerid, Float:distance)
 
 	x += (distance * floatsin(-a, degrees));
 	y += (distance * floatcos(-a, degrees));
-	MapAndreas_FindZ_For2DCoord(x, y, z);
 
 	if(IsPosInWater(x, y, z) && -0.01 < z < 0.01)
 	{

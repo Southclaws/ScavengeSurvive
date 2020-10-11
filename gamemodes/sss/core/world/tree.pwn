@@ -277,8 +277,6 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		Float:woodAngle,
 		Float:woodDistance;
 
-	MapAndreas_FindZ_For2DCoord(x, y, z);
-
 	for(new i; i < treeSpecies_Data[tree_Data[treeid][tree_species]][tree_pieces]; i++)
 	{
 		woodAngle = frandom(360.0);

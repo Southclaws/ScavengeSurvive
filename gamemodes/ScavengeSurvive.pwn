@@ -632,7 +632,6 @@ OnGameModeInit_Setup()
 	log("Initialising Scavenge and Survive build %d", gBuildNumber);
 
 	Streamer_ToggleErrorCallback(true);
-	MapAndreas_Init(MAP_ANDREAS_MODE_FULL);
 
 	if(Exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
@@ -787,5 +786,6 @@ DatabaseTableCheck(DB:database, const tablename[], expectedcolumns)
 
 public Streamer_OnPluginError(const error[])
 {
+	print("Streamer_OnPluginError");
 	err(error);
 }
