@@ -78,7 +78,7 @@ timer LoadWorld[10]()
 
 timer _Load_LS[500]()
 {
-	Logger_Log("loading SF");
+	Logger_Log("loading LS");
 	Load_LS();
 	defer _Load_SF();
 }
