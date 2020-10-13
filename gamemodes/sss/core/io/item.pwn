@@ -43,7 +43,7 @@ Float:		SAVED_ITEM_ROT_Z,
 static big_data[8192];
 
 
-SaveWorldItem(itemid, subdir[], bool:active, savearray = true, data[] = "", data_size = 0)
+SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[] = "", data_size = 0)
 {
 	new geid[GEID_LEN];
 
@@ -121,7 +121,7 @@ SaveWorldItem(itemid, subdir[], bool:active, savearray = true, data[] = "", data
 	return 0;
 }
 
-RemoveSavedItem(itemid, subdir[])
+RemoveSavedItem(itemid, const subdir[])
 {
 	new
 		geid[GEID_LEN],
@@ -134,13 +134,13 @@ RemoveSavedItem(itemid, subdir[])
 	fremove(filename);
 }
 
-LoadItems(subdir[], callback[])
+LoadItems(const subdir[], const callback[])
 {
 	new
 		path[64],
 		Directory:direc,
-		item[46],
-		type,
+		entry[46],
+		ENTRY_TYPE:type,
 		ret,
 		count;
 
@@ -170,7 +170,7 @@ LoadItems(subdir[], callback[])
 	log("Loaded %d items from %s", count, subdir);
 }
 
-LoadItem(subdir[], geid[], callback[])
+LoadItem(const subdir[], const geid[], const callback[])
 {
 	new
 		filename[128],
