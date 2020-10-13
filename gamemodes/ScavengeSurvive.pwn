@@ -708,6 +708,8 @@ RestartGamemode()
 		ResetVariables(i);
 	}
 
+	CloseSaveSessions();
+
 	SendRconCommand("gmx");
 
 	ChatMsgAll(BLUE, " ");
