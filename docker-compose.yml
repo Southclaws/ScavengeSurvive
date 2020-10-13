@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  game:
+    build: .
+    image: southclaws/scavenge-survive:latest
+    volumes:
+      - ./scriptfiles:/ss/scriptfiles
