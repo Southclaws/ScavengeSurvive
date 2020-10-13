@@ -1,11 +1,5 @@
 # Scavenge and Survive
 
-[![GPL-V3](https://img.shields.io/badge/license-GPL3-red.svg)](http://www.gnu.org/copyleft/gpl.html)
-[![Slack](https://img.shields.io/badge/discuss-slack-orange.svg)](https://join.slack.com/southclaws/shared_invite/MjA5NzM2ODkxMDExLTE0OTk1MDI4MjItYjdjM2NmMTJjNA)
-[![Discord](https://img.shields.io/badge/discuss-discord-blue.svg)](http://dc.southcla.ws)
-[![GitHub issues](https://img.shields.io/github/issues/Southclaws/ScavengeSurvive.svg)](https://www.github.com/Southclaws/ScavengeSurvive/issues)
-[![Donate](https://img.shields.io/badge/donate-paypal-3b7bbf.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=P7H2FNNWLMFW4)
-
 ## Overview
 
 Scavenge and Survive is a PvP SA:MP survival gamemode. The aim of the game is to
@@ -27,10 +21,11 @@ access the gamemode-specific features.
 
 Development of this project requires
 [`sampctl`](https://github.com/Southclaws/sampctl), a package management and
-project build tool for SA:MP. It's easy to install and easy to use. To compile
-the gamemode, run:
+project build tool for SA:MP. It's easy to install and easy to use. To download
+all dependencies and compile the gamemode, run:
 
 ```bash
+sampctl project ensure
 sampctl project build
 ```
 

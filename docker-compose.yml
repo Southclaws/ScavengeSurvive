@@ -4,5 +4,8 @@ services:
   game:
     build: .
     image: southclaws/scavenge-survive:latest
+    command: package run
     volumes:
       - ./scriptfiles:/ss/scriptfiles
+    ports:
+      - 7777:7777/udp
