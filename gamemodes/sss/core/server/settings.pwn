@@ -26,7 +26,7 @@ LoadSettings()
 {
 	if(!fexist(SETTINGS_FILE))
 	{
-		err("Settings file '"SETTINGS_FILE"' not found. Creating and using default values.");
+		Logger_Log("settings file not found creating with defaults");
 
 		fclose(fopen(SETTINGS_FILE, io_write));
 	}

@@ -135,7 +135,6 @@ public OnGameModeInit()
 
 #include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
 #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
-#include <mapandreas>				// By Kalcor				http://forum.sa-mp.com/showthread.php?t=120013
 
 #include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
@@ -607,6 +606,7 @@ main()
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
+	SetCrashDetectLongCallTime(5000);
 }
 
 /*
@@ -629,7 +629,7 @@ OnGameModeInit_Setup()
 		for(;;){}
 	}
 
-	log("Initialising Scavenge and Survive build %d", gBuildNumber);
+	Logger_Log("Initialising Scavenge and Survive", Logger_I("build", gBuildNumber));
 
 	Streamer_ToggleErrorCallback(true);
 
@@ -756,7 +756,7 @@ DirectoryCheck(const directory[])
 {
 	if(!Exists(directory))
 	{
-		err("Directory '%s' not found. Creating directory.", directory);
+		Logger_Log("creating directory", Logger_S("directory", directory));
 		CreateDir(directory);
 	}
 }
@@ -776,7 +776,6 @@ DatabaseTableCheck(DB:database, const tablename[], expectedcolumns)
 	if(dbcolumns != expectedcolumns)
 	{
 		err("Table '%s' has %d columns, expected %d:", tablename, dbcolumns, expectedcolumns);
-		err("Please verify table structure against column list in script.");
 
 		// Put the server into a loop to stop it so the user can read the message.
 		// It won't function correctly with bad databases anyway.
@@ -786,6 +785,5 @@ DatabaseTableCheck(DB:database, const tablename[], expectedcolumns)
 
 public Streamer_OnPluginError(const error[])
 {
-	print("Streamer_OnPluginError");
 	err(error);
 }

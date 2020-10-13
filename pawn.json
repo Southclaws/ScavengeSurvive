@@ -43,6 +43,9 @@
 	"runtime": {
 		"bind": "0.0.0.0",
 		"port": 7777,
-		"rcon_password": "scavenge"
+		"rcon_password": "scavenge",
+		"extra": {
+			"long_call_time": "0"
+		}
 	}
 }
