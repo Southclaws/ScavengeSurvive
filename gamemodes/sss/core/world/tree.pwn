@@ -285,7 +285,7 @@ timer _DeleteTree[2000](treeid, Float:x, Float:y, Float:z)
 		x += woodDistance * floatsin(-woodAngle, degrees);
 		y += woodDistance * floatcos(-woodAngle, degrees);
 
-		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.088, .rz = frandom(360.0));
+		CreateItem(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], x, y, z + 0.5, .rz = frandom(360.0));
 	}
 
 	DestroyTree(treeid);
