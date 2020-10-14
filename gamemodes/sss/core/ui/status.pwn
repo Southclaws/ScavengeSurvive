@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 {
 	ShowVersionInfo[playerid] = true;
 
-	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 638.000000, 2.000000, "southclaw.net");
+	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 632.000000, 2.000000, "southclaw.net");
 	PlayerTextDrawAlignment			(playerid, VersionInfo[playerid], 3);
 	PlayerTextDrawBackgroundColor	(playerid, VersionInfo[playerid], 255);
 	PlayerTextDrawFont				(playerid, VersionInfo[playerid], 1);
@@ -62,7 +62,7 @@ hook OnPlayerScriptUpdate(playerid)
 		DO NOT REMOVE SOUTHCLAW'S WEBSITE LINK.
 		Write your own website into the settings.ini file.
 	*/
-	format(string, sizeof(string), "%sBuild %d - Southclaw.net - %s ~n~ Tick: %d Ping: %d Pkt Loss: %.2f", colour, gBuildNumber, gWebsiteURL, tickrate, GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
+	format(string, sizeof(string), "%sBuild %d - southcla.ws - %s ~n~ Tick: %d Ping: %d Pkt Loss: %.2f", colour, gBuildNumber, gWebsiteURL, tickrate, GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
 
 	PlayerTextDrawSetString(playerid, VersionInfo[playerid], string);
 	PlayerTextDrawShow(playerid, VersionInfo[playerid]);
