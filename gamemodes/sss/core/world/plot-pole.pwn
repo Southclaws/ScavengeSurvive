@@ -62,9 +62,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreateInWorld(itemid)
 {
-	if(gServerInitialising)
-		return Y_HOOKS_CONTINUE_RETURN_0;
-
 	if(GetItemType(itemid) == item_PlotPole)
 	{
 		new
@@ -91,30 +88,10 @@ hook OnItemCreateInWorld(itemid)
 
 		SaveWorldItem(itemid, DIRECTORY_PLOTPOLE, true, false);
 
-		// new
-		// 	data[2],
-		// 	Float:x,
-		// 	Float:y,
-		// 	Float:z,
-		// 	items[128],
-		// 	count,
-		// 	subitem;
-
-		// GetItemPos(itemid, x, y, z);
-		// count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = 20.0);
-
-		// for(new i; i < count; ++i)
-		// {
-		// 	Streamer_GetArrayData(STREAMER_TYPE_AREA, items[i], E_STREAMER_EXTRA_ID, data);
-
-		// 	if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
-		// 		continue;
-
-		// 	subitem = GetItemFromButtonID(data[1]);
-
-		// 	if(IsValidItem(subitem))
-		// 		defer _SaveItemFuture(subitem);
-		// }
+		if(!gServerInitialising)
+		{
+			_plotpole_saveNearby(itemid);
+		}
 	}
 	else if(IsItemInPlotPoleArea(itemid))
 	{
@@ -125,6 +102,36 @@ hook OnItemCreateInWorld(itemid)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_plotpole_saveNearby(itemid)
+{
+	new
+		data[2],
+		Float:x,
+		Float:y,
+		Float:z,
+		items[128],
+		count,
+		subitem;
+
+	GetItemPos(itemid, x, y, z);
+	count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = 20.0);
+
+	for(new i; i < count; ++i)
+	{
+		Streamer_GetArrayData(STREAMER_TYPE_AREA, items[i], E_STREAMER_EXTRA_ID, data);
+
+		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
+			continue;
+
+		subitem = GetItemFromButtonID(data[1]);
+
+		if(IsValidItem(subitem))
+		{
+			defer _SaveItemFuture(subitem);
+		}
+	}
 }
 
 // as close to asyncio pawn will get!
