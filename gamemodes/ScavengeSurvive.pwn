@@ -391,6 +391,9 @@ new stock
 #include "sss/core/world/explosive.pwn"
 #include "sss/core/world/craft-construct.pwn"
 #include "sss/core/world/loot-loader.pwn"
+#include "sss/core/io/item.pwn"
+#include "sss/core/io/defence.pwn"
+#include "sss/core/io/safebox.pwn"
 
 /*
 	MODULE INITIALISATION CALLS

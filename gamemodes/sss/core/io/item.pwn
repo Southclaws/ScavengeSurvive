@@ -43,7 +43,7 @@ Float:		SAVED_ITEM_ROT_Z,
 static big_data[8192];
 
 
-SaveWorldItem(itemid, subdir[], bool:active, savearray = true, data[] = "", data_size = 0)
+SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[] = "", data_size = 0)
 {
 	new geid[GEID_LEN];
 
@@ -121,7 +121,7 @@ SaveWorldItem(itemid, subdir[], bool:active, savearray = true, data[] = "", data
 	return 0;
 }
 
-RemoveSavedItem(itemid, subdir[])
+RemoveSavedItem(itemid, const subdir[])
 {
 	new
 		geid[GEID_LEN],
@@ -134,31 +134,27 @@ RemoveSavedItem(itemid, subdir[])
 	fremove(filename);
 }
 
-LoadItems(subdir[], callback[])
+LoadItems(const subdir[], const callback[])
 {
 	new
-		path[64],
+		path_with_root[64],
 		Directory:direc,
-		item[46],
-		type,
+		entry[46],
+		geid[GEID_LEN],
+		ENTRY_TYPE:type,
 		ret,
-		count;
+		count,
+		trimlength = strlen("./scriptfiles/");
 
-	format(path, sizeof(path), DIRECTORY_SCRIPTFILES"%s", subdir);
-
-	direc = OpenDir(path);
+	format(path_with_root, sizeof(path_with_root), DIRECTORY_SCRIPTFILES"%s", subdir);
+	direc = OpenDir(path_with_root);
 
 	while(DirNext(direc, type, entry))
 	{
 		if(type == E_REGULAR)
 		{
-			if(strlen(entry) != 14)
-			{
-				err("Rogue file detected ('%s') in directory %s", entry, subdir);
-				continue;
-			}
-
-			ret = LoadItem(subdir, entry, callback);
+			PathBase(entry, geid);
+			ret = LoadItem(entry[trimlength], geid, callback);
 
 			if(ret != INVALID_ITEM_ID)
 				count++;
@@ -170,14 +166,11 @@ LoadItems(subdir[], callback[])
 	log("Loaded %d items from %s", count, subdir);
 }
 
-LoadItem(subdir[], geid[], callback[])
+LoadItem(const filename[], const geid[], const callback[])
 {
 	new
-		filename[128],
 		length,
 		info[e_SAVED_ITEM_DATA];
-
-	format(filename, sizeof(filename), "%s%s", subdir, geid);
 
 	length = modio_read(filename, _T<I,N,F,O>, _:e_SAVED_ITEM_DATA, _:info, false, false);
 
