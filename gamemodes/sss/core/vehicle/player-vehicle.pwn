@@ -166,7 +166,7 @@ LoadPlayerVehicles()
 ==============================================================================*/
 
 
-LoadPlayerVehicle(filepath[])
+LoadPlayerVehicle(const filepath[])
 {
 	new
 		filename[32],
