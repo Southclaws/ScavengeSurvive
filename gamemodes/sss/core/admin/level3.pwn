@@ -459,25 +459,27 @@ ACMD:move[3](playerid, params[])
 ACMD:additem[3](playerid, params[])
 {
 	new
-		ItemType:type = INVALID_ITEM_TYPE,
-		itemname[ITM_MAX_NAME],
-		exdata[8];
+		query[32],
+		specifiers[32],
+		data[64];
 
-	if(sscanf(params, "p<,>dA<d>(-2147483648)[8]", _:type, exdata) != 0)
+	if(sscanf(params, "s[32]S()[32]S()[64]", query, specifiers, data))
 	{
-		new tmp[ITM_MAX_NAME];
+		ChatMsg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname] [extradata format specifiers] [extradata array, comma separated]");
+		ChatMsg(playerid, YELLOW, " >  Example: `/additem gascan df 1, 4.5` create a petrol can with an integer and a float in extradata.");
+		return 1;
+	}
 
-		if(sscanf(params, "p<,>s[32]A<d>(-2147483648)[8]", tmp, exdata))
-		{
-			ChatMsg(playerid, YELLOW, " >  Usage: /additem [itemid/itemname], [optional:extradata array, comma separated]");
-			return 1;
-		}
-
+	// if the "query" is not an integer type, search for the name
+	new ItemType:type = INVALID_ITEM_TYPE;
+	if(sscanf(query, "d", _:type))
+	{
+		new itemname[ITM_MAX_NAME];
 		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
 		{
 			GetItemTypeUniqueName(i, itemname);
 
-			if(strfind(itemname, tmp, true) != -1)
+			if(strfind(itemname, query, true) != -1)
 			{
 				type = i;
 				break;
@@ -490,44 +492,45 @@ ACMD:additem[3](playerid, params[])
 			{
 				GetItemTypeName(i, itemname);
 
-				if(strfind(itemname, tmp, true) != -1)
+				if(strfind(itemname, query, true) != -1)
 				{
 					type = i;
 					break;
 				}
 			}
 		}
-
 		if(type == INVALID_ITEM_TYPE)
 		{
-			ChatMsg(playerid, RED, " >  No items found matching: '%s'.", tmp);
+			ChatMsg(playerid, RED, " >  Invalid item type from string: '%s'", query);
 			return 1;
 		}
 	}
-
 	if(type == INVALID_ITEM_TYPE)
 	{
-		ChatMsg(playerid, RED, " >  Invalid item type: %d", _:type);
+		ChatMsg(playerid, RED, " >  Invalid item type from integer: '%d'", _:type);
 		return 1;
 	}
 
+	// generate a sscanf enum specifier format
+	new sscanf_format[32];
+	format(sscanf_format, sizeof sscanf_format, "p<,>e<%s>", specifiers);
+
+	// parse the extra data using the generated sscanf format string
+	new exdata[32];
+	if(strlen(data) && sscanf(data, sscanf_format, exdata))
+	{
+		ChatMsg(playerid, YELLOW, " >  Format of exdata did not match specifier: '%s'", sscanf_format);
+		return 1;
+	}
+
+	// create the item and hydrate its extradata array.
 	new
-		exdatasize,
 		typemaxsize = GetItemTypeArrayDataSize(type),
 		itemid,
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:r;
-
-	for(new i; i < 8; ++i)
-	{
-		if(exdata[i] != cellmin)
-			++exdatasize;
-	}
-
-	if(exdatasize > typemaxsize)
-		exdatasize = typemaxsize;
 
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
@@ -537,8 +540,7 @@ ACMD:additem[3](playerid, params[])
 		y + (0.5 * floatcos(-r, degrees)),
 		z - FLOOR_OFFSET, .rz = r);
 
-	if(exdatasize > 0)
-		SetItemArrayData(itemid, exdata, exdatasize);
+	SetItemArrayData(itemid, exdata, typemaxsize);
 
 	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
 	{
@@ -546,6 +548,8 @@ ACMD:additem[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
+			new itemname[ITM_MAX_NAME];
+			GetItemTypeName(type, itemname);
 			log("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Justification", "Type a reason for adding this item:", "Enter", "");
