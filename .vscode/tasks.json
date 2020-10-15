@@ -3,8 +3,9 @@
     "tasks": [
         {
             "label": "build only",
-            "type": "shell",
-            "command": "sampctl package build",
+            "type": "process",
+            "command": "sampctl",
+            "args": ["package", "build"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -25,8 +26,9 @@
         },
         {
             "label": "build watcher",
-            "type": "shell",
-            "command": "sampctl package build --watch",
+            "type": "process",
+            "command": "sampctl",
+            "args": ["package", "build"],
             "group": "build",
             "isBackground": true,
             "presentation": {
