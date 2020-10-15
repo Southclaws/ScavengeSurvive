@@ -219,6 +219,7 @@ CMD:debug(playerid, params[])
 	}
 
 	debug_set_level(handlername, level);
+	Logger_ToggleDebug(handlername, bool:level);
 
 	ChatMsg(playerid, YELLOW, " >  SS debug level for '%s': %d", handlername, level);
 
@@ -255,6 +256,7 @@ CMD:sifdebug(playerid, params[])
 	sif_debug_get_handler_name(handler, handlername);
 
 	sif_debug_plevel(playerid, handler, level);
+	sif_debug_level(handler, level);
 
 	ChatMsg(playerid, YELLOW, " >  SIF debug level for '%s': %d", handlername, level);
 
