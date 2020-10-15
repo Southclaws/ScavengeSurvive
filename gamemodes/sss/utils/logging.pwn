@@ -26,10 +26,6 @@
 #include <YSI\y_va>
 
 
-#define MAX_LOG_HANDLER				(128)
-#define MAX_LOG_HANDLER_NAME		(32)
-
-
 enum
 {
 	NONE,
@@ -38,29 +34,18 @@ enum
 	LOOP
 }
 
-enum e_DEBUG_HANDLER
-{
-	log_name[MAX_LOG_HANDLER_NAME],
-	log_level
-}
-
-static
-		log_Buffer[256],
-		log_Table[MAX_LOG_HANDLER][e_DEBUG_HANDLER],
-		log_Total;
-
 
 stock log(const text[], va_args<>)
 {
+	new log_Buffer[256];
 	formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
 	print(log_Buffer);
 }
 
 stock dbg(const handler[], level, const text[], va_args<>)
 {
-	new idx = _debug_get_handler_index(handler);
-
-	if(level <= log_Table[idx][log_level])
+	new log_Buffer[256];
+	if(level <= GetSVarInt(handler))
 	{
 		formatex(log_Buffer, sizeof(log_Buffer), text, va_start<3>);
 		print(log_Buffer);
@@ -69,6 +54,7 @@ stock dbg(const handler[], level, const text[], va_args<>)
 
 stock err(const text[], va_args<>)
 {
+	new log_Buffer[256];
 	formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
 	print(log_Buffer);
 	PrintAmxBacktrace();
@@ -82,40 +68,13 @@ stock err(const text[], va_args<>)
 ==============================================================================*/
 
 
-_debug_get_handler_index(const handler[])
-{
-	for(new i; i < log_Total; ++i)
-	{
-		if(!strcmp(handler, log_Table[i][log_name]))
-			return i;
-	}
-
-	return -1;
-}
-
 stock debug_set_level(const handler[], level)
 {
-	new idx = _debug_get_handler_index(handler);
-
-	if(idx == -1)
-	{
-		log_Table[log_Total][log_level] = level;
-		log_Total++;
-	}
-	else
-	{
-		log_Table[idx][log_level] = level;
-	}
-
+	SetSVarInt(handler, level);
 	return 1;
 }
 
 stock debug_conditional(const handler[], level)
 {
-	new idx = _debug_get_handler_index(handler);
-
-	if(idx != -1)
-		return log_Table[idx][log_level] >= level;
-
-	return 0;
+	return GetSVarInt(handler) >= level;
 }
