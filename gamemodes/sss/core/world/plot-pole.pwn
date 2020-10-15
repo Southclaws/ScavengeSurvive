@@ -144,7 +144,6 @@ hook OnItemDestroy(itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
-		dbg("plot-pole", 1, "[OnItemDestroy] Removing Plot Pole item %d", itemid);
 		new data[e_PLOT_POLE_DATA];
 		GetItemArrayData(itemid, data);
 		DestroyDynamicArea(data[E_PLOTPOLE_AREA]);
@@ -217,12 +216,7 @@ hook OnItemRemoveFromWorld(itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
-		dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 1, "[OnItemRemoveFromWorld] Removing Plot Pole item %d", itemid);
 		RemoveSavedItem(itemid, DIRECTORY_PLOTPOLE);
-	}
-	else
-	{
-		RemoveSavedItem(itemid, DIRECTORY_WORLDITEM);
 	}
 }
 
@@ -232,27 +226,21 @@ hook OnItemArrayDataChanged(itemid)
 	{
 		new data[4];
 		GetItemArrayData(itemid, data);
-		dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 1, "[OnItemArrayDataChanged] poltpole array data: %s", atosr(data));
-
 	}
 	if(IsItemInPlotPoleArea(itemid))
 	{
-		dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 1, "[OnItemArrayDataChanged] Item is in plot pole area.");
 		_SavePlotPoleItem(itemid);
 	}
 }
 
 _SavePlotPoleItem(itemid, playerid = INVALID_PLAYER_ID)
 {
-	dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 1, "[_SavePlotPoleItem] Saving item %d for player %d", itemid, playerid);
 	if(_ExcludeItem(itemid))
 	{
-		dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 2, "[_SavePlotPoleItem] Item is excluded, removing");
 		RemoveSavedItem(itemid, DIRECTORY_WORLDITEM);
 		return;
 	}
 
-	dbg("gamemodes/sss/extensions/plot-pole-io.pwn", 2, "[_SavePlotPoleItem] Item is not excluded");
 	SaveWorldItem(itemid, DIRECTORY_WORLDITEM, true);
 
 	if(IsPlayerConnected(playerid))
@@ -288,8 +276,14 @@ stock IsPlayerInPlotPoleArea(playerid)
 	if(!IsPlayerConnected(playerid))
 		return false;
 
-	// Todo: implement Streamer_GetPlayerAreas + loop
-	return false;
+	new
+		Float:x,
+		Float:y,
+		Float:z;
+
+	GetPlayerPos(playerid, x, y, z);
+
+	return IsPointInPlotPoleArea(x, y, z);
 }
 
 stock IsItemInPlotPoleArea(itemid)

@@ -51,7 +51,6 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 
 	if(gServerInitialising)
 	{
-		dbg("item-io", 1, "[SaveItem] Not saving %d (%s) while gServerInitialising.", itemid, geid);
 		return 1;
 	}
 
@@ -63,13 +62,11 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 
 	if(!IsItemInWorld(itemid))
 	{
-		dbg("item-io", 1, "[SaveItem] ERROR: Can't save item %d (%s) Item not in world.", itemid, geid);
 		return 3;
 	}
 
 	if(isnull(geid))
 	{
-		dbg("item-io", 1, "[SaveItem] ERROR: Can't save item %d (%s) Item has null GEID.", itemid, geid);
 		return 4;
 	}
 
@@ -97,12 +94,10 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 
 	if(savearray)
 	{
-		dbg("item-io", 1, "[SaveItem] Saving arraydata associated with item");
 		new arraydatalen = GetItemArrayDataSize(itemid);
 
 		if(arraydatalen > 0)
 		{
-			dbg("item-io", 1, "[SaveItem] array data length %d", arraydatalen);
 			new arraydata[ITM_ARR_MAX_ARRAY_DATA];
 
 			GetItemArrayData(itemid, arraydata);
@@ -222,12 +217,10 @@ LoadItem(const filename[], const geid[], const callback[])
 */
 	if(!IsItemTypeExtraDataDependent(GetItemType(itemid)))
 	{
-		dbg("item-io", 1, "[LoadItem] item is not extradata dependent");
 		length = modio_read(filename, _T<A,R,R,Y>, sizeof(big_data), big_data, false, false);
 
 		if(length > 0)
 		{
-			dbg("item-io", 1, "[LoadItem] loaded array data of length %d, assigning to item", length);
 			SetItemArrayData(itemid, big_data, length);
 		}
 	}
@@ -244,4 +237,9 @@ LoadItem(const filename[], const geid[], const callback[])
 	CallLocalFunction(callback, "ddsad", itemid, info[SAVED_ITEM_ACTIVE], geid, big_data, length);
 
 	return itemid;
+}
+
+hook OnItemRemoveFromWorld(itemid)
+{
+	RemoveSavedItem(itemid, DIRECTORY_WORLDITEM);
 }

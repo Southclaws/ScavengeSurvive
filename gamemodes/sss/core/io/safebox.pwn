@@ -60,7 +60,6 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("general", 1, "[OnPlayerPickUpItem] Player %p picked up safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
 
 		RemoveSafeboxItem(itemid);
 	}
@@ -80,7 +79,6 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("general", 1, "[OnPlayerDroppedItem] Player %p dropped safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
 
 		SafeboxSaveCheck(playerid, itemid);
 	}
@@ -102,7 +100,6 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("general", 1, "[OnPlayerCloseContainer] Player %p closed safebox item %d (%s) cnt %d at %f %f %f", playerid, itemid, geid, containerid, x, y, z);
 
 		SafeboxSaveCheck(playerid, itemid);
 		ClearAnimations(playerid);
@@ -139,8 +136,6 @@ hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 
 hook OnItemDestroy(itemid)
 {
-	dbg("global", CORE, "[OnItemDestroy] in /gamemodes/sss/core/world/safebox.pwn");
-
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 		RemoveSafeboxItem(itemid);
 
@@ -209,7 +204,6 @@ SaveSafeboxItem(itemid, bool:active = true)
 
 	if(IsContainerEmpty(containerid))
 	{
-		dbg("general", 1, "[SaveSafeboxItem] Not saving safebox %d (%s): Container is empty", itemid, geid);
 		RemoveSavedItem(itemid, DIRECTORY_SAFEBOX);
 		return 4;
 	}
