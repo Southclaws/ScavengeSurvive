@@ -1,0 +1,15 @@
+name: ci
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: AGraber/sampctl-action@v1
+        with:
+          version: "1.9.1"
+      - run: sampctl p build --forceEnsure
