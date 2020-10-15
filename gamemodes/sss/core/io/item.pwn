@@ -25,6 +25,9 @@
 #include <YSI_Coding\y_hooks>
 
 
+#define DIRECTORY_WORLDITEM			DIRECTORY_MAIN"worlditem/"
+
+
 enum e_SAVED_ITEM_DATA
 {
 ItemType:	SAVED_ITEM_TYPE,
