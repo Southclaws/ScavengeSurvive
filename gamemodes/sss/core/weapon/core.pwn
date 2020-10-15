@@ -310,8 +310,6 @@ stock RemovePlayerWeapon(playerid)
 
 hook OnPlayerUpdate(playerid)
 {
-	dbg("global", CORE, "[OnPlayerUpdate] in /gamemodes/sss/core/weapon/core.pwn");
-
 	_FastUpdateHandler(playerid);
 
 	return 1;
