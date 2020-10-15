@@ -357,8 +357,14 @@ stock SetLiquidItemLiquidAmount(itemid, Float:amount)
 	if(!IsValidItem(itemid))
 		return -1;
 
-	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
+	new ItemType:itemtype = GetItemType(itemid);
+	if(liq_ItemTypeLiquidContainer[itemtype] == -1)
 		return -1;
+
+	if(amount > liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity])
+	{
+		return SetItemArrayDataAtCell(itemid, _:liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity], LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+	}
 
 	return SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 }
