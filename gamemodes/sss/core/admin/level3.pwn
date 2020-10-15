@@ -511,16 +511,21 @@ ACMD:additem[3](playerid, params[])
 		return 1;
 	}
 
-	// generate a sscanf enum specifier format
-	new sscanf_format[32];
-	format(sscanf_format, sizeof sscanf_format, "p<,>e<%s>", specifiers);
-
-	// parse the extra data using the generated sscanf format string
-	new exdata[32];
-	if(strlen(data) && sscanf(data, sscanf_format, exdata))
+	new
+		exdata[32],
+		exdatalen = strlen(specifiers);
+	if(exdatalen > 0)
 	{
-		ChatMsg(playerid, YELLOW, " >  Format of exdata did not match specifier: '%s'", sscanf_format);
-		return 1;
+		// generate a sscanf enum specifier format
+		new sscanf_format[32];
+		format(sscanf_format, sizeof sscanf_format, "p<,>e<%s>", specifiers);
+
+		// parse the extra data using the generated sscanf format string
+		if(strlen(data) && sscanf(data, sscanf_format, exdata))
+		{
+			ChatMsg(playerid, YELLOW, " >  Format of exdata did not match specifier: '%s'", sscanf_format);
+			return 1;
+		}
 	}
 
 	// create the item and hydrate its extradata array.
@@ -540,7 +545,10 @@ ACMD:additem[3](playerid, params[])
 		y + (0.5 * floatcos(-r, degrees)),
 		z - FLOOR_OFFSET, .rz = r);
 
-	SetItemArrayData(itemid, exdata, typemaxsize);
+	if(exdatalen > 0)
+	{
+		SetItemArrayData(itemid, exdata, typemaxsize);
+	}
 
 	if(GetPlayerAdminLevel(playerid) < STAFF_LEVEL_LEAD)
 	{
