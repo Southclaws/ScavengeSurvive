@@ -8,7 +8,8 @@ from pyss.utility.vehicle_spawns import VehicleSpawns
 from pyss.utility.object_placement import ObjectSet
 
 from PIL import Image, ImageDraw, ImageFont
-import heatmap
+# import heatmap
+# heatmap won't work, it's python 2 and I have no idea how it worked previously
 
 
 def draw_loot(im, draw, loot, mark_size=4):
@@ -185,13 +186,13 @@ def main():
     font = ImageFont.truetype("arial.ttf", 32)
     mapimg = Image.open(args.image)
     draw = ImageDraw.Draw(mapimg)
-    hm = heatmap.Heatmap(libpath=args.hmlibpath)
+    # hm = heatmap.Heatmap(libpath=args.hmlibpath)
 
     # Generate paths
     map_path = os.path.join(args.imageout, "gtasa-blank-1.0-ss-map.jpg")
-    hm_loot = os.path.join(args.imageout, "gtasa-blank-1.0-ss-loot.jpg")
-    hm_vehicle = os.path.join(args.imageout, "gtasa-blank-1.0-ss-vehicles.jpg")
-    hm_object = os.path.join(args.imageout, "gtasa-blank-1.0-ss-objects.jpg")
+    # hm_loot = os.path.join(args.imageout, "gtasa-blank-1.0-ss-loot.jpg")
+    # hm_vehicle = os.path.join(args.imageout, "gtasa-blank-1.0-ss-vehicles.jpg")
+    # hm_object = os.path.join(args.imageout, "gtasa-blank-1.0-ss-objects.jpg")
 
     # Load SS data
     regions = Regions("data/regions.json")
@@ -207,9 +208,9 @@ def main():
     mapimg.save(map_path)
 
     # generate heatmaps for loot and vehicles on separate images
-    generate_loot_heatmap(copy.copy(mapimg), draw, hm, loot, hm_loot)
-    generate_vehicle_heatmap(copy.copy(mapimg), draw, hm, vehicles, hm_vehicle)
-    generate_obj_heatmap(copy.copy(mapimg), draw, hm, objs, hm_object)
+    # generate_loot_heatmap(copy.copy(mapimg), draw, hm, loot, hm_loot)
+    # generate_vehicle_heatmap(copy.copy(mapimg), draw, hm, vehicles, hm_vehicle)
+    # generate_obj_heatmap(copy.copy(mapimg), draw, hm, objs, hm_object)
 
 
 if __name__ == '__main__':
