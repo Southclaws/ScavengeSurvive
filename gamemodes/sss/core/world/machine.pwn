@@ -58,7 +58,7 @@ forward OnPlayerUseMachine(playerid, itemid, interactiontype);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/machine.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in machine");
 
 	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 }
@@ -142,7 +142,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 _mach_PlayerUseMachine(playerid, itemid)
 {
-	dbg("gamemodes/sss/core/world/machine.pwn", 1, "[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
+	dbg("machine", 1, "[_mach_PlayerUseMachine] playerid %d itemid %d", playerid, itemid);
 
 	mach_CurrentMachine[playerid] = itemid;
 	mach_MachineInteractTick[playerid] = GetTickCount();
@@ -154,7 +154,7 @@ _mach_PlayerUseMachine(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/machine.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in machine");
 
 	if(RELEASED(16))
 	{
@@ -176,6 +176,11 @@ _mach_TapInteract(playerid)
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
+	Logger_Dbg("machine", "machine interact tap",
+		Logger_I("id", mach_CurrentMachine[playerid]),
+		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], 0)),
+		Logger_I("playerid", playerid));
+
 	CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 0);
 
 	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
@@ -185,6 +190,11 @@ timer _mach_HoldInteract[250](playerid)
 {
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
+
+	Logger_Dbg("machine", "machine interact hold",
+		Logger_I("id", mach_CurrentMachine[playerid]),
+		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], 0)),
+		Logger_I("playerid", playerid));
 
 	CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 1);
 
