@@ -61,6 +61,7 @@ MACHNOITEMS=There are no items inside.
 MACHRESTART=The server is restarting soon, not enough time to cook.~n~Try putting less items inside to reduce cook time.
 MACHNOTFUEL=There is not enough fuel. Machine requires %.1f per item.
 MACHCOOKTIM=Cook time: %s
+MACHITEMTYP=This machine only accepts %s
 REFUELLING=Refuelling...
 TENTREMOVE=Removing tent...
 NEEDWORKBE=You need a workbench to combine those

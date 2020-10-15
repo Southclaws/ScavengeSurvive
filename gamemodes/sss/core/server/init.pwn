@@ -129,7 +129,8 @@ new stock
 	liquid_Lemonade,
 	liquid_Orangeade,
 	liquid_Thermite,
-	liquid_StrongThermite;
+	liquid_StrongThermite,
+	liquid_SeaWater;
 
 // TREE CATEGORIES
 new stock
@@ -1310,12 +1311,6 @@ public OnScriptInit()
 	DefineSeedType("Unknown", INVALID_ITEM_TYPE, 0, 2238, 0.58121); // lava lamp (?)
 
 
-	// MACHINE TYPE DEFINITIONS
-	DefineMachineType(item_ScrapMachine, 6, 12);
-	DefineMachineType(item_RefineMachine, 6, 12);
-	DefineMachineType(item_WaterMachine, 6, 12);
-
-
 	// FURNITURE TYPE DEFINITIONS
 	DefineItemTypeFurniture(item_Desk,			0.0, 0.0, 0.80, 0.0, 0.0, 0.0);
 	DefineItemTypeFurniture(item_Table,			0.0, 0.0, 0.80, 0.0, 0.0, 0.0);
@@ -1466,6 +1461,7 @@ public OnScriptInit()
 	liquid_Orangeade		= DefineLiquidType("Orangeade",				2.5,	liquid_CarbonatedWater, liquid_Orange, liquid_Sugar);
 	liquid_Thermite			= DefineLiquidType("Thermite Mix I",		-101.0,	liquid_IronPowder, liquid_IronOxide, liquid_Magnesium);
 	liquid_StrongThermite	= DefineLiquidType("Thermite Mix II",		-101.0,	liquid_IronPowder, liquid_IronOxide, liquid_Magnesium, liquid_CopperOxide);
+	liquid_SeaWater			= DefineLiquidType("Sea Water",				-50.0);
 
 
 	// LIQUID CONTAINER ITEM TYPE DEFINITIONS

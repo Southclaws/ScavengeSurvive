@@ -502,7 +502,7 @@ new stock
 #include "sss/core/world/scrap-machine.pwn"
 #include "sss/core/world/refine-machine.pwn"
 #include "sss/core/world/tree-loader.pwn"
-// #include "sss/core/world/water-purifier.pwn"
+#include "sss/core/world/water-purifier.pwn"
 #include "sss/core/world/plot-pole.pwn"
 #include "sss/core/world/item-tweak.pwn"
 #include "sss/core/world/furniture.pwn"
