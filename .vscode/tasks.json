@@ -9,10 +9,17 @@
                 "kind": "build",
                 "isDefault": true
             },
+            "runOptions": {
+                "instanceLimit": 1,
+                "reevaluateOnRerun": true
+            },
             "isBackground": false,
             "presentation": {
                 "reveal": "silent",
-                "panel": "dedicated"
+                "panel": "shared",
+                "clear": true,
+                "revealProblems": "always",
+                "focus": false
             },
             "problemMatcher": "$sampctl"
         },
