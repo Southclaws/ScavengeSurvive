@@ -466,7 +466,8 @@ ItemType:		item_Table			= INVALID_ITEM_TYPE,
 ItemType:		item_GunCase		= INVALID_ITEM_TYPE,
 ItemType:		item_Cupboard		= INVALID_ITEM_TYPE,
 ItemType:		item_Barstool		= INVALID_ITEM_TYPE,
-ItemType:		item_SmallTable		= INVALID_ITEM_TYPE;
+ItemType:		item_SmallTable		= INVALID_ITEM_TYPE,
+ItemType:		item_LargeFrame		= INVALID_ITEM_TYPE;
 
 // VEHICLE TYPES
 new stock
@@ -895,6 +896,7 @@ public OnScriptInit()
 	item_Cupboard		= DefineItemType("Cupboard",			"Cupboard",			19932,	12,	0.0, 0.0, 90.0,			0.0, .maxhitpoints = 12, .longpickup = true);
 	item_Barstool		= DefineItemType("Barstool",			"Barstool",			1805,	8,	0.0, 0.0, 0.0,			0.22, .maxhitpoints = 8, .longpickup = true);
 	item_SmallTable		= DefineItemType("Small Table",			"SmallTable",		2346,	10,	0.0, 0.0, 0.0,			-0.03, .maxhitpoints = 10, .longpickup = true);
+	item_LargeFrame		= DefineItemType("",					"LargeFrame",		19157,	20,	0.0, 0.0, 0.0,			-0.03);
 
 	// SETTING ITEM TYPE SCRAP VALUE
 	SetItemTypeScrapValue(item_Knuckles,		1);
@@ -1318,6 +1320,7 @@ public OnScriptInit()
 	DefineItemTypeFurniture(item_Cupboard,		0.0, 0.0, 0.35, -90, -90, 0.0);
 	DefineItemTypeFurniture(item_Barstool,		0.0, 0.0, 0.48, 0.0, 0.0, 0.0);
 	DefineItemTypeFurniture(item_SmallTable,	0.0, 0.0, 0.45, 0.0, 0.0, 0.0);
+	DefineItemTypeFurniture(item_LargeFrame,	0.0, 0.0, 1.0, 0.0, 0.0, 0.0);
 
 	// CRAFTING SET DEFINITIONS
 	// items created by hand
@@ -1340,6 +1343,7 @@ public OnScriptInit()
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_Barstool, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_Clothes, false), item_Crowbar, 22000);
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_SmallTable, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 22000);
 	SetCraftSetConstructible(18500, item_Screwdriver, DefineItemCraftSet(item_Key, item_Key, false, item_Key, true, item_Motor, false), .tweak = false);
+	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_LargeFrame, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false), item_Crowbar, 22000);
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
