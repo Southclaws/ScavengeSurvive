@@ -60,7 +60,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("gamemodes/sss/extensions/safebox-io.pwn", 1, "[OnPlayerPickUpItem] Player %p picked up safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
+		dbg("general", 1, "[OnPlayerPickUpItem] Player %p picked up safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
 
 		RemoveSafeboxItem(itemid);
 	}
@@ -80,7 +80,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("gamemodes/sss/extensions/safebox-io.pwn", 1, "[OnPlayerDroppedItem] Player %p dropped safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
+		dbg("general", 1, "[OnPlayerDroppedItem] Player %p dropped safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
 
 		SafeboxSaveCheck(playerid, itemid);
 	}
@@ -102,7 +102,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 		GetPlayerPos(playerid, x, y, z);
 		GetItemGEID(itemid, geid);
-		dbg("gamemodes/sss/extensions/safebox-io.pwn", 1, "[OnPlayerCloseContainer] Player %p closed safebox item %d (%s) at %f %f %f", playerid, itemid, geid, x, y, z);
+		dbg("general", 1, "[OnPlayerCloseContainer] Player %p closed safebox item %d (%s) cnt %d at %f %f %f", playerid, itemid, geid, containerid, x, y, z);
 
 		SafeboxSaveCheck(playerid, itemid);
 		ClearAnimations(playerid);
@@ -113,7 +113,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnItemAddedToContainer(containerid, itemid, playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(IsPlayerConnected(playerid))
 	{
 		new safeboxitem = GetContainerSafeboxItem(containerid);
 
@@ -126,7 +126,7 @@ hook OnItemAddedToContainer(containerid, itemid, playerid)
 
 hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 {
-	if(!IsPlayerConnected(playerid))
+	if(IsPlayerConnected(playerid))
 	{
 		new safeboxitem = GetContainerSafeboxItem(containerid);
 
@@ -209,7 +209,7 @@ SaveSafeboxItem(itemid, bool:active = true)
 
 	if(IsContainerEmpty(containerid))
 	{
-		dbg("gamemodes/sss/extensions/safebox-io.pwn", 1, "[SaveSafeboxItem] Not saving safebox %d (%s): Container is empty", itemid, geid);
+		dbg("general", 1, "[SaveSafeboxItem] Not saving safebox %d (%s): Container is empty", itemid, geid);
 		RemoveSavedItem(itemid, DIRECTORY_SAFEBOX);
 		return 4;
 	}
@@ -255,30 +255,39 @@ public OnSafeboxLoad(itemid, active, geid[], data[], length)
 		subitem,
 		ItemType:itemtype;
 
-	DeserialiseItems(data, length);
-
-	for(new i, j = GetStoredItemCount(); i < j; i++)
+	if(!DeserialiseItems(data, length))
 	{
-		itemtype = GetStoredItemType(i);
+		for(new i, j = GetStoredItemCount(); i < j; i++)
+		{
+			itemtype = GetStoredItemType(i);
 
-		if(length == 0)
-			break;
+			if(length == 0)
+				break;
 
-		if(itemtype == INVALID_ITEM_TYPE)
-			break;
+			if(itemtype == INVALID_ITEM_TYPE)
+				break;
 
-		if(itemtype == ItemType:0)
-			break;
+			if(itemtype == ItemType:0)
+				break;
 
-		subitem = CreateItem(itemtype);
+			subitem = CreateItem(itemtype);
 
-		if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
-			SetItemArrayDataFromStored(subitem, i);
+			if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
+				SetItemArrayDataFromStored(subitem, i);
 
-		AddItemToContainer(containerid, subitem);
+			AddItemToContainer(containerid, subitem);
+		}
+
+		Logger_Log("safebox loaded",
+			Logger_S("geid", geid),
+			Logger_I("itemid", itemid),
+			Logger_I("containerid", containerid),
+			Logger_I("active", active),
+			Logger_I("items", GetStoredItemCount())
+		);
+
+		ClearSerializer();
 	}
-
-	ClearSerializer();
 
 	return 1;
 }
