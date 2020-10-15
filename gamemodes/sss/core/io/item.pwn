@@ -195,8 +195,10 @@ LoadItem(const filename[], const geid[], const callback[])
 		return INVALID_ITEM_ID;
 	}
 
-	new itemid = CreateItem(
-		info[SAVED_ITEM_TYPE],
+	new itemid = AllocNextItemID(info[SAVED_ITEM_TYPE], geid);
+	SetItemNoResetArrayData(itemid, true);
+	CreateItem_ExplicitID(
+		itemid,
 		info[SAVED_ITEM_POS_X],
 		info[SAVED_ITEM_POS_Y],
 		info[SAVED_ITEM_POS_Z],
