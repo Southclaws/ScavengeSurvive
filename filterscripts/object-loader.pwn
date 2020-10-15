@@ -52,7 +52,7 @@
 
 #include <streamer>					// By Incognito:			http://forum.sa-mp.com/showthread.php?t=102865
 #include <sscanf2>					// By Y_Less:				http://forum.sa-mp.com/showthread.php?t=120356
-#include <FileManager>				// By JaTochNietDan:		http://forum.sa-mp.com/showthread.php?t=92246
+#include <fsutil>
 
 
 /*==============================================================================
@@ -63,7 +63,7 @@
 
 
 #define DIRECTORY_SCRIPTFILES	"./scriptfiles/"
-#define DIRECTORY_MAPS			"Maps/"
+#define DIRECTORY_MAPS			"maps/"
 #define DIRECTORY_SESSION		"session/"
 #define CONFIG_FILE				DIRECTORY_MAPS"maps.cfg"
 
@@ -124,22 +124,22 @@ new
 
 public OnFilterScriptInit()
 {
-	if(!dir_exists(DIRECTORY_SCRIPTFILES))
+	if(!Exists(DIRECTORY_SCRIPTFILES))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES);
+		CreateDir(DIRECTORY_SCRIPTFILES);
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS))
+	if(!Exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAPS"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS);
+		CreateDir(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS);
 	}
 
-	if(!dir_exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION))
+	if(!Exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION))
 	{
 		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION"' not found. Creating directory.");
-		dir_create(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION);
+		CreateDir(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS DIRECTORY_SESSION);
 	}
 
 	// Load config if exists
@@ -149,7 +149,7 @@ public OnFilterScriptInit()
 	if(gDebugLevel > DEBUG_LEVEL_NONE)
 		printf("INFO: [Init] Debug Level: %d", gDebugLevel);
 
-	LoadMapsFromFolder(DIRECTORY_MAPS);
+	LoadMapsFromFolder(DIRECTORY_SCRIPTFILES DIRECTORY_MAPS);
 
 	// Yes a standard loop is required here.
 	for(new i; i < MAX_PLAYERS; i++)
@@ -222,17 +222,15 @@ LoadConfig()
 	return 1;
 }
 
-LoadMapsFromFolder(folder[])
+LoadMapsFromFolder(const foldername[])
 {
 	new
-		foldername[256],
-		dir:dirhandle,
+		Directory:dirhandle,
 		item[64],
-		type,
-		filename[256];
+		ENTRY_TYPE:type,
+		trimlength = strlen("./scriptfiles/");
 
-	format(foldername, sizeof(foldername), DIRECTORY_SCRIPTFILES"%s", folder);
-	dirhandle = dir_open(foldername);
+	dirhandle = OpenDir(foldername);
 
 	if(gDebugLevel >= DEBUG_LEVEL_FOLDERS)
 	{
@@ -241,9 +239,9 @@ LoadMapsFromFolder(folder[])
 			totalmapfiles,
 			totalfolders;
 
-		while(dir_list(dirhandle, item, type))
+		while(DirNext(dirhandle, type, item))
 		{
-			if(type == FM_FILE)
+			if(type == E_REGULAR)
 			{
 				totalfiles++;
 
@@ -251,38 +249,34 @@ LoadMapsFromFolder(folder[])
 					totalmapfiles++;
 			}
 
-			if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
+			if(type == E_DIRECTORY && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
 				totalfolders++;
 		}
 
 		// Reopen the directory so the next code can run properly.
-		dir_close(dirhandle);
-		dirhandle = dir_open(foldername);
+		CloseDir(dirhandle);
+		dirhandle = OpenDir(foldername);
 
 		printf("DEBUG: [LoadMapsFromFolder] Reading directory '%s': %d files, %d .map files, %d folders", foldername, totalfiles, totalmapfiles, totalfolders);
 	}
 
-	while(dir_list(dirhandle, item, type))
+	while(DirNext(dirhandle, type, item))
 	{
-		if(type == FM_FILE)
+		if(type == E_REGULAR)
 		{
 			if(!strcmp(item[strlen(item) - 4], ".map"))
 			{
-				filename[0] = EOS;
-				format(filename, sizeof(filename), "%s%s", folder, item);
-				LoadMap(filename);
+				LoadMap(item[trimlength]);
 			}
 		}
 
-		if(type == FM_DIR && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
+		if(type == E_DIRECTORY && strcmp(item, "..") && strcmp(item, ".") && strcmp(item, "_"))
 		{
-			filename[0] = EOS;
-			format(filename, sizeof(filename), "%s%s/", folder, item);
-			LoadMapsFromFolder(filename);
+			LoadMapsFromFolder(item);
 		}
 	}
 
-	dir_close(dirhandle);
+	CloseDir(dirhandle);
 
 	if(gDebugLevel >= DEBUG_LEVEL_FOLDERS)
 		print("DEBUG: [LoadMapsFromFolder] Finished reading directory.");
