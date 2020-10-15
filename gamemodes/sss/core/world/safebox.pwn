@@ -275,5 +275,8 @@ stock IsItemTypeExtraDataDependent(ItemType:itemtype)
 	if(itemtype == item_TentPack)
 		return 1;
 
+	if(GetItemTypeMachineType(itemtype) != -1)
+		return 1;
+
 	return 0;
 }
