@@ -25,7 +25,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-#define DIRECTORY_TREES "Maps/"
+#define DIRECTORY_TREES "trees/"
 
 
 hook OnScriptInit()

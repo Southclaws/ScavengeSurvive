@@ -151,7 +151,7 @@ def main():
 
     parser.add_argument(
         '-d', '--directory',
-        default='../scriptfiles/maps/',
+        default='../scriptfiles/trees/',
         help='output directory path')
 
     parser.add_argument(
