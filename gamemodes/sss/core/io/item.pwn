@@ -130,6 +130,8 @@ RemoveSavedItem(itemid, const subdir[])
 	format(filename, sizeof(filename), "%s%s", subdir, geid);
 
 	fremove(filename);
+
+	log("[DELT] Item %d (%s) file %s", itemid, geid, filename);
 }
 
 LoadItems(const subdir[], const callback[])
@@ -137,7 +139,7 @@ LoadItems(const subdir[], const callback[])
 	new
 		path_with_root[64],
 		Directory:direc,
-		entry[46],
+		entry[256],
 		geid[GEID_LEN],
 		ENTRY_TYPE:type,
 		ret,
@@ -243,5 +245,6 @@ LoadItem(const filename[], const geid[], const callback[])
 
 hook OnItemRemoveFromWorld(itemid)
 {
+	
 	RemoveSavedItem(itemid, DIRECTORY_WORLDITEM);
 }
