@@ -559,6 +559,7 @@ new stock
 #include "sss/core/item/chainsaw.pwn"
 #include "sss/core/item/locator.pwn"
 #include "sss/core/item/locker.pwn"
+#include "sss/core/item/largeframe.pwn"
 
 // ITEMS (HATS/MASKS)
 #include "sss/core/item/armyhelm.pwn"

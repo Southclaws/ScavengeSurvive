@@ -25,7 +25,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-#define MAX_DEFENCE_ITEM		(10)
+#define MAX_DEFENCE_ITEM		(11)
 #define MAX_DEFENCE				(6000)
 #define INVALID_DEFENCE_ID		(-1)
 #define INVALID_DEFENCE_TYPE	(-1)
@@ -58,6 +58,7 @@ bool:		def_active,
 			def_motor,
 			def_keypad,
 			def_pass,
+			def_mod,
 }
 
 

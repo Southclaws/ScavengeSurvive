@@ -213,6 +213,8 @@ StopRemovingConstructedItem(playerid)
 	cons_DeconstructingItem[playerid] = INVALID_ITEM_ID;
 }
 
+// TODO: Check if items are still there
+// if a player picked one up during construction, it could be duplicated maybe.
 hook OnHoldActionFinish(playerid)
 {
 	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/world/craft-construct.pwn");
