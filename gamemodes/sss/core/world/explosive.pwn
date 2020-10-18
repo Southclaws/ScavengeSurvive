@@ -563,6 +563,10 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 	return 1;
 }
 
+// TODO: Remove this once YSI is updated to support const in defer declarations
+#pragma warning push
+#pragma warning disable 214
+
 // i, s, c, o, d = items, size, count, offset, damage
 timer _IterateItemDmg[100](i[], s, c, o, d)
 {
@@ -572,6 +576,8 @@ timer _IterateItemDmg[100](i[], s, c, o, d)
 	if(o < c)
 		defer _IterateItemDmg(i, s, c, o + 1, d);
 }
+
+#pragma warning pop
 
 
 /*==============================================================================
