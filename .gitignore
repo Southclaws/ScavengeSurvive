@@ -13,7 +13,6 @@ dependencies/
 # Dependency versions lockfile
 pawn.lock
 
-
 #
 # Server/gamemode related files
 #
@@ -58,7 +57,8 @@ build-config.json
 
 # Python stuff
 __pycache__/
-*.py[cod]
+*.pyo
+*.pyd
 *$py.class
 *.pyc
 
