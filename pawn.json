@@ -6,6 +6,7 @@
 	"local": true,
 	"dependencies": [
 		"sampctl/samp-stdlib",
+		"Southclaws/samp-nolog:0.2.1",
 		"Southclaws/samp-stdlib:0.3.7-R2-2-1",
 		"Southclaws/samp-logger:1.4.0",
 		"Southclaws/pawn-errors:^1.1.0",

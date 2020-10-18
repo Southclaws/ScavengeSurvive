@@ -88,7 +88,8 @@
 
 public OnGameModeInit()
 {
-	print("[OnGameModeInit] Initialising 'Main'...");
+	// Note: DO NOT CHANGE THIS STRING!
+	print("[OnGameModeInit] FIRST_INIT");
 
 	OnGameModeInit_Setup();
 
@@ -599,13 +600,7 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	log("================================================================================");
-	log("    Southclaw's Scavenge and Survive");
-	log("        Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
-	log("        This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
-	log("        and you are welcome to redistribute it under certain conditions.");
-	log("        Please see <http://www.gnu.org/copyleft/gpl.html> for details.");
-	log("================================================================================");
+	log("[main] Finished initialising Southclaws' Scavenge and Survive");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -689,7 +684,8 @@ public OnGameModeExit()
 
 public OnScriptExit()
 {
-	log("[OnScriptExit] Shutting down...");
+	// Note: DO NOT CHANGE THIS STRING!
+	log("[OnScriptExit] LAST_EXIT");
 	return 1;
 }
 
