@@ -13,3 +13,7 @@ jobs:
         with:
           version: "1.9.1"
       - run: sampctl p build --forceEnsure
+      - uses: actions/upload-artifact@v2
+        with:
+          name: compiled-amx
+          path: gamemodes/ScavengeSurvive.amx
