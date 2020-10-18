@@ -205,7 +205,6 @@ LoadItem(const filename[], const geid[], const callback[])
 		.rz = info[SAVED_ITEM_ROT_Z],
 		.world = info[SAVED_ITEM_WORLD],
 		.interior = info[SAVED_ITEM_INTERIOR],
-		.geid = geid,
 		.hitpoints = info[SAVED_ITEM_HITPOINTS],
 		.applyrotoffsets = 0);
 
