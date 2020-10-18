@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: ["master"]
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: "^1.13.1"
+      - run: env GOOS=windows GOARCH=amd64 go build -o ScavengeSurvive.exe
+      - run: env GOOS=linux GOARCH=amd64 go build -o ScavengeSurvive
+      - uses: actions/upload-artifact@v2
+        with:
+          name: runner
+          path: |
+            ScavengeSurvive.exe
+            ScavengeSurvive
