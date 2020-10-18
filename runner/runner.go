@@ -20,7 +20,7 @@ const ExitPattern = `[OnScriptExit] LAST_EXIT`
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
 
-func Run(ctx context.Context, r io.Reader, w io.Writer) {
+func RunServer(ctx context.Context, r io.Reader, w io.Writer) {
 	zap.L().Info("starting blocking process")
 
 	// a signaller that uses logs to understand when the gamemode is restarting
