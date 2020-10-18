@@ -9,6 +9,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -100,6 +101,7 @@ func runBlocking(parentctx context.Context, restartKiller chan struct{}, in io.R
 
 	go func() {
 		<-restartKiller
+		time.Sleep(time.Millisecond)
 		zap.L().Info("internally triggered process restart")
 		cancel()
 	}()
