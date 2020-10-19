@@ -7,3 +7,6 @@ tasks:
     cmds:
       - go build -o ss.exe
       - ./ss.exe
+  docs:
+    cmds:
+      - npm start --dir docs
