@@ -81,6 +81,7 @@ forward OnDefenceCreate(itemid);
 forward OnDefenceDestroy(itemid);
 forward OnDefenceModified(itemid);
 forward OnDefenceMove(itemid);
+forward OnPlayerInteractDefence(playerid, itemid);
 
 
 /*==============================================================================
@@ -365,6 +366,8 @@ _InteractDefence(playerid, itemid)
 			defer MoveDefence(itemid, playerid);
 		}
 	}
+
+	CallLocalFunction("OnPlayerInteractDefence", "dd", playerid, itemid);
 }
 
 _InteractDefenceWithItem(playerid, itemid, tool)

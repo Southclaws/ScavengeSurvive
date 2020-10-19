@@ -25,62 +25,73 @@
 #include <YSI_Coding\y_hooks>
 
 
-static CraftSet;
-static ConsSet;
-static bool:Constructing[MAX_PLAYERS];
-
-
-hook OnGameModeInit()
+hook OnPlayerInteractDefence(playerid, itemid)
 {
-	CraftSet = DefineItemCraftSet(item_LargeFrame, item_LargeFrame, false, item_RefinedMetal, false, item_RefinedMetal, false);
-	ConsSet = SetCraftSetConstructible(30000, item_Wrench, CraftSet, item_Crowbar, 22000);
-}
-
-hook OnPlayerConnect(playerid)
-{
-	Constructing[playerid] = false;
-	return 1;
-}
-
-hook OnPlayerConstruct(playerid, consset)
-{
-	if(!consset != ConsSet)
+	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new craftset = GetConstructionSetCraftSet(consset);
-	new uniqueid[ITM_MAX_NAME];
-	GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
-	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, uniqueid));
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	ShowActionText(playerid, ls(playerid, "CONSTRUCTIN", true));
-
-	Constructing[playerid] = true;
-
-	return Y_HOOKS_BREAK_RETURN_1;
-}
-
-hook OnHoldActionFinish(playerid)
-{
-	if(!Constructing[playerid])
-		return Y_HOOKS_CONTINUE_RETURN_0;
-
-	new list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...};
-	size = GetPlayerNearbyItems(playerid, list);
-	if(size == 0)
-		return Y_HOOKS_CONTINUE_RETURN_0;
-
-	new modification_item = INVALID_ITEM_ID;
-	for(new i; i < size; i++)
+	new objectid = GetItemArrayDataAtCell(itemid, def_mod);
+	if(IsValidDynamicObject(objectid))
 	{
-		if(GetItemType(i) == item_CorPanel)
-		{
-			modification_item = list[i];
-			break;
-		}
+		SetItemArrayDataAtCell(itemid, def_mod, 0);
+		DestroyDynamicObject(objectid);
+	}
+	else
+	{
+		_frame_createCovering(itemid);
 	}
 
-	// find modification item, find target item
-	// remove mod, adjust target
+	SaveDefenceItem(itemid);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+_frame_createCovering(itemid)
+{
+	new
+		Float:px,
+		Float:py,
+		Float:pz,
+		Float:rx,
+		Float:ry,
+		Float:rz,
+		objectid;
+	GetItemPos(itemid, px, py, pz);
+	GetItemRot(itemid, rx, ry, rz);
+
+	objectid = CreateDynamicObject(19908, px, py, pz + 2.6, 0.0, 90.0, rz);
+	return SetItemArrayDataAtCell(itemid, objectid, def_mod, true);
+}
+
+hook OnItemRemoveFromWorld(itemid)
+{
+	if(GetItemType(itemid) != item_LargeFrame)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new objectid = GetItemArrayDataAtCell(itemid, def_mod);
+	if(!IsValidDynamicObject(objectid))
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	DestroyDynamicObject(objectid);
+	SetItemArrayDataAtCell(itemid, -1, def_mod, true);
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnDefenceLoad(itemid, active, geid[], data[], length)
+{
+	if(!active)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(GetItemType(itemid) != item_LargeFrame)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	printf("created large frame %d mod %d", itemid, GetItemArrayDataAtCell(itemid, def_mod));
+
+	if(GetItemArrayDataAtCell(itemid, def_mod) == 0)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	_frame_createCovering(itemid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
