@@ -17,6 +17,55 @@ No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required to
 access the gamemode-specific features.
 
+## Usage
+
+To run Scavenge and Survive, download the Scavenge and Survive server launcher.
+Either add this to your path, or, if you don't know how to do that, just drop it
+into an _empty_ directory and run it.
+
+You can download the latest version of the launcher by going to
+[this link](https://github.com/Southclaws/ScavengeSurvive/actions?query=workflow%3Arunner)
+and selecting the first item in the list with a ✅ and clicking `runner` under
+"Artifacts". This will give you a zip file with a Windows and a Linux binary.
+
+Executing the runner in an empty directory will download, ensure and build the
+gamemode ready for running.
+
+Executing the runner in the repository will:
+
+1. Generate a `server.cfg`
+2. Run the server with enhancements
+
+### Runner Enhancements
+
+#### Logging
+
+The runner will automatically parse all log output and re-write it to stdout
+after parsing it. It will parse
+[samp-logger](https://github.com/Southclaws/samp-logger) format output and
+output it using the built-in logger. This means logs can be in JSON or other
+formats.
+
+All preamble is removed. This means all the nonsense that the SA-MP server and
+plugins print out during initialisation is removed completely. So all you'll see
+is a list of plugins:
+
+```
+2020-10-19T02:04:21.566+0100    INFO    finished initialising   {"plugins": ["nolog", "crashdetect", "sscanf", "streamer", "chrono", "pawn", "Whirlpool", "fsutil"]}
+2020-10-19T02:04:21.567+0100    INFO    [OnGameModeInit] FIRST_INIT
+```
+
+#### Auto Restart
+
+If the server crashes - or, more accurately, closes without the runner telling
+it to, it will automatically restart.
+
+#### Restart Process Kill
+
+To avoid `server closed connection` while also doing a full restart without
+`gmx`, the process will be killed completely and re-executed when the gamemode
+finishes its graceful shutdown during a restart.
+
 ## Development
 
 Development of this project requires
