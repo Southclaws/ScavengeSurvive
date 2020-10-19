@@ -43,7 +43,8 @@ ItemType:	cons_tool,
 			cons_craftset,
 ItemType:	cons_removalTool,
 			cons_removalTime,
-bool:		cons_tweak
+bool:		cons_tweak,
+bool:		cons_defence
 }
 
 
@@ -92,7 +93,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0, bool:tweak = true)
+stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0, bool:tweak = true, bool:defence = false)
 {
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
 	cons_Data[cons_Total][cons_tool] = tool;
@@ -100,6 +101,7 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:remo
 	cons_Data[cons_Total][cons_removalTool] = removal;
 	cons_Data[cons_Total][cons_removalTime] = removaltime;
 	cons_Data[cons_Total][cons_tweak] = tweak;
+	cons_Data[cons_Total][cons_defence] = defence;
 
 	cons_CraftsetConstructSet[craftset] = cons_Total;
 
@@ -258,6 +260,9 @@ hook OnHoldActionFinish(playerid)
 
 		itemid = CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 		PlayerGainSkillExperience(playerid, uniqueid);
+
+		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_defence])
+			ConvertItemToDefenceItem(itemid, 0);
 
 		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_tweak])
 			TweakItem(playerid, itemid);

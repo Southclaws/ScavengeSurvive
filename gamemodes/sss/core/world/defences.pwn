@@ -133,7 +133,7 @@ ActivateDefenceItem(itemid)
 	if(!IsValidItemType(itemtype))
 	{
 		err("Attempted to create defence from item with invalid type (%d)", _:itemtype);
-		return INVALID_ITEM_ID;
+		return 1;
 	}
 
 	new defencetype = def_ItemTypeDefenceType[itemtype];
@@ -141,7 +141,7 @@ ActivateDefenceItem(itemid)
 	if(defencetype == INVALID_DEFENCE_TYPE)
 	{
 		err("Attempted to create defence from item that is not a defence type (%d)", _:itemtype);
-		return INVALID_ITEM_ID;
+		return 2;
 	}
 
 	new
@@ -166,7 +166,7 @@ ActivateDefenceItem(itemid)
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 	}
 
-	return itemid;
+	return 0;
 }
 
 DeconstructDefence(itemid)
@@ -483,13 +483,11 @@ hook OnHoldActionFinish(playerid)
 			return Y_HOOKS_BREAK_RETURN_0;
 
 		new
+			itemid = def_CurrentDefenceItem[playerid],
 			ItemType:itemtype,
-			ItemType:defenceitemtype,
-			pose,
-			itemid;
+			pose;
 
 		itemtype = GetItemType(GetPlayerItem(playerid));
-		defenceitemtype = GetItemType(def_CurrentDefenceItem[playerid]);
 
 		if(itemtype == item_Screwdriver)
 			pose = DEFENCE_POSE_VERTICAL;
@@ -497,8 +495,7 @@ hook OnHoldActionFinish(playerid)
 		if(itemtype == item_Hammer)
 			pose = DEFENCE_POSE_HORIZONTAL;
 
-		SetItemArrayDataAtCell(def_CurrentDefenceItem[playerid], pose, def_pose);
-		itemid = ActivateDefenceItem(def_CurrentDefenceItem[playerid]);
+		ConvertItemToDefenceItem(itemid, pose);
 
 		if(!IsValidItem(itemid))
 		{
@@ -519,29 +516,10 @@ hook OnHoldActionFinish(playerid)
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rx, ry, rz);
 
-		if(pose == DEFENCE_POSE_HORIZONTAL)
-		{
-			rx = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotX];
-			ry = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotY];
-			rz += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_horizontalRotZ];
-		}
-		else if(pose == DEFENCE_POSE_VERTICAL)
-		{
-			z += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_placeOffsetZ];
-			rx = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotX];
-			ry = def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotY];
-			rz += def_TypeData[def_ItemTypeDefenceType[defenceitemtype]][def_verticalRotZ];
-		}
-
-		SetItemPos(itemid, x, y, z);
-		SetItemRot(itemid, rx, ry, rz);
-
 		log("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
 			playerid, itemid, geid, GetItemTypeModel(GetItemType(itemid)), x, y, z, rx, ry, rz);
 
-		CallLocalFunction("OnDefenceCreate", "d", itemid);
 		StopBuildingDefence(playerid);
-		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
 		TweakItem(playerid, itemid);
 		_UpdateDefenceTweakArrow(playerid, itemid);
 		PlayerGainSkillExperience(playerid, "Construction");
@@ -694,6 +672,45 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+ConvertItemToDefenceItem(itemid, pose)
+{
+	new ret = ActivateDefenceItem(itemid);
+	if(ret)
+		return ret;
+
+	SetItemArrayDataAtCell(itemid, pose, def_pose);
+
+	new
+		ItemType:itemtype = GetItemType(itemid),
+		Float:x,
+		Float:y,
+		Float:z,
+		Float:rx,
+		Float:ry,
+		Float:rz;
+
+	GetItemPos(itemid, x, y, z);
+	GetItemRot(itemid, rx, ry, rz);
+
+	if(pose == DEFENCE_POSE_HORIZONTAL)
+	{
+		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotX];
+		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotY];
+		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotZ];
+	}
+	else if(pose == DEFENCE_POSE_VERTICAL)
+	{
+		z += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
+		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX];
+		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY];
+		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ];
+	}
+
+	SetItemPos(itemid, x, y, z);
+	SetItemRot(itemid, rx, ry, rz);
+	return CallLocalFunction("OnDefenceCreate", "d", itemid);
+}
+
 _UpdateDefenceTweakArrow(playerid, itemid)
 {
 	new
@@ -707,7 +724,11 @@ _UpdateDefenceTweakArrow(playerid, itemid)
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rx, ry, rz);
 
-	SetDynamicObjectPos(def_TweakArrow[playerid], x, y, z);
+	if(!IsValidDynamicObject(def_TweakArrow[playerid]))
+		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
+
+	else
+		SetDynamicObjectPos(def_TweakArrow[playerid], x, y, z);
 
 	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_VERTICAL)
 	{
