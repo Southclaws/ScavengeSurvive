@@ -1,10 +1,28 @@
-FROM southclaws/sampctl as build
+# -
+# Builder - Builds the runner application
+# -
+
+FROM golang as build
 
 WORKDIR /ss
 
-ADD gamemodes gamemodes
-ADD pawn.json pawn.json
+ADD go.mod .
+ADD go.sum .
+ADD main.go .
+ADD runner/ runner/
+RUN ls -la
+RUN go build -o scavenge-survive
 
-RUN sampctl p build --forceEnsure
+# -
+# Runtime - Uses the runner to launch the server
+# -
 
-ENTRYPOINT [ "sampctl" ]
+FROM southclaws/sampctl as run
+
+WORKDIR /server
+
+COPY --from=build /ss/scavenge-survive /ss/scavenge-survive
+ENV PATH="/ss:${PATH}"
+ENV AUTO_BUILD=1
+
+ENTRYPOINT [ "scavenge-survive" ]

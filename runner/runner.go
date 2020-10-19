@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -86,7 +87,17 @@ func runBlocking(parentctx context.Context, restartKiller chan struct{}, in io.R
 	ctx, cancel := context.WithCancel(parentctx)
 	defer cancel()
 
-	cmd := exec.CommandContext(ctx, "./samp-server.exe")
+	var binary string
+	switch runtime.GOOS {
+	case "windows":
+		binary = "./samp-server.exe"
+	case "linux":
+		binary = "./samp03svr"
+	default:
+		panic("unknown OS")
+	}
+
+	cmd := exec.CommandContext(ctx, binary)
 	cmd.Stdin = in
 	r := cmdReader(cmd)
 	if err := cmd.Start(); err != nil {
@@ -122,9 +133,7 @@ func cmdReader(cmd *exec.Cmd) io.Reader {
 }
 
 func cleanup() {
-	if err := os.Remove("server_log.txt"); err != nil {
-		zap.L().Warn("failed to clean log file", zap.Error(err))
-	}
+	os.Remove("server_log.txt") //nolint:errcheck
 }
 
 func parseSampLoggerFormat(line string) (string, []zapcore.Field) {
