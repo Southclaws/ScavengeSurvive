@@ -65,7 +65,10 @@ func Run() error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go RunWatcher(ctx, pcx)
+	if os.Getenv("AUTO_BUILD") != "" {
+		go RunWatcher(ctx, pcx)
+	}
+
 	go RunServer(ctx, os.Stdin, os.Stdout)
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
