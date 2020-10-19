@@ -72,7 +72,7 @@ forward OnPlayerDeconstructed(playerid, itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/craft-construct.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in craft-construct");
 
 	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
 	{
@@ -116,7 +116,7 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:remo
 
 hook OnPlayerUseItem(playerid, itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/craft-construct.pwn");
+	dbg("global", CORE, "[OnPlayerUseItem] in craft-construct");
 
 	new
 		list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...},
@@ -126,7 +126,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 	if(size > 1)
 	{
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 1, "[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
+		dbg("craft-construct", 1, "[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
 
 		_ResetSelectedItems(playerid);
 
@@ -135,21 +135,21 @@ hook OnPlayerUseItem(playerid, itemid)
 			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(list[i]);
 			cons_SelectedItems[playerid][i][cft_selectedItemID] = list[i];
 			cons_SelectedItemCount[playerid]++;
-			dbg("gamemodes/sss/core/world/craft-construct.pwn", 3, "[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
+			dbg("craft-construct", 3, "[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
 		}
 
 		new craftset = _cft_FindCraftset(cons_SelectedItems[playerid], size);
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItem] Craftset determined as %d", craftset);
+		dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d", craftset);
 
 		if(IsValidCraftSet(craftset))
 		{
-			dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItem] Craftset determined as %d craftset constructionset %d", craftset, cons_CraftsetConstructSet[craftset]);
+			dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d craftset constructionset %d", craftset, cons_CraftsetConstructSet[craftset]);
 
 			if(cons_CraftsetConstructSet[craftset] != -1)
 			{
 				if(cons_Data[cons_CraftsetConstructSet[craftset]][cons_tool] == GetItemType(GetPlayerItem(playerid)))
 				{
-					dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItem] Tool matches current item, begin holdaction");
+					dbg("craft-construct", 2, "[OnPlayerUseItem] Tool matches current item, begin holdaction");
 					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
 					{
 						new uniqueid[ITM_MAX_NAME];
@@ -164,7 +164,7 @@ hook OnPlayerUseItem(playerid, itemid)
 					}
 					else
 					{
-						dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
+						dbg("craft-construct", 2, "[OnPlayerUseItem] OnPlayerConstruct returned nonzero");
 					}
 				}
 			}
@@ -180,13 +180,13 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 	if(IsValidCraftSet(craftset))
 	{
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItemWithItem] withitem type is the result of a craftset");
+		dbg("craft-construct", 2, "[OnPlayerUseItemWithItem] withitem type is the result of a craftset");
 		if(cons_CraftsetConstructSet[craftset] != -1)
 		{
-			dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItemWithItem] craftset is a construction set");
+			dbg("craft-construct", 2, "[OnPlayerUseItemWithItem] craftset is a construction set");
 			if(GetItemType(itemid) == cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTool])
 			{
-				dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnPlayerUseItemWithItem] held item is removal tool of craft set");
+				dbg("craft-construct", 2, "[OnPlayerUseItemWithItem] held item is removal tool of craft set");
 				StartRemovingConstructedItem(playerid, withitemid, craftset);
 			}
 		}
@@ -217,11 +217,11 @@ StopRemovingConstructedItem(playerid)
 // if a player picked one up during construction, it could be duplicated maybe.
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/world/craft-construct.pwn");
+	dbg("global", CORE, "[OnHoldActionFinish] in craft-construct");
 
 	if(cons_Constructing[playerid] != -1)
 	{
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnHoldActionFinish] creating result and destroying items marked to not keep");
+		dbg("craft-construct", 2, "[OnHoldActionFinish] creating result and destroying items marked to not keep");
 
 		new
 			Float:x,
@@ -262,7 +262,7 @@ hook OnHoldActionFinish(playerid)
 		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_tweak])
 			TweakItem(playerid, itemid);
 
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnHoldActionFinish] Calling OnPlayerConstructed %d %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
+		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerConstructed %d %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
 		CallLocalFunction("OnPlayerConstructed", "ddd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
 
 		ClearAnimations(playerid);
@@ -273,11 +273,11 @@ hook OnHoldActionFinish(playerid)
 	}
 	else if(cons_Deconstructing[playerid] != INVALID_ITEM_ID)
 	{
-		dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnHoldActionFinish] Calling OnPlayerDeconstructed %d %d %d", playerid, cons_DeconstructingItem[playerid], cons_Deconstructing[playerid]);
+		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerDeconstructed %d %d %d", playerid, cons_DeconstructingItem[playerid], cons_Deconstructing[playerid]);
 
 		if(!CallLocalFunction("OnPlayerDeconstructed", "ddd", playerid, cons_DeconstructingItem[playerid], cons_Deconstructing[playerid]))
 		{
-			dbg("gamemodes/sss/core/world/craft-construct.pwn", 2, "[OnHoldActionFinish] OnPlayerDeconstructed returned zero, destroying item and returning ingredients");
+			dbg("craft-construct", 2, "[OnHoldActionFinish] OnPlayerDeconstructed returned zero, destroying item and returning ingredients");
 
 			new
 				Float:x,
@@ -294,7 +294,7 @@ hook OnHoldActionFinish(playerid)
 
 			for(new i; i < recipeitems; i++)
 			{
-				dbg("gamemodes/sss/core/world/craft-construct.pwn", 3, "[OnHoldActionFinish] recipe items %d/%d: type: %d keep: %d", i, recipeitems, _:recipedata[i][cft_itemType], recipedata[i][cft_keepItem]);
+				dbg("craft-construct", 3, "[OnHoldActionFinish] recipe items %d/%d: type: %d keep: %d", i, recipeitems, _:recipedata[i][cft_itemType], recipedata[i][cft_keepItem]);
 				// items that were kept at the time of crafting are ignored
 				// since they never originally left the player's posession.
 				if(recipedata[i][cft_keepItem])
@@ -310,7 +310,7 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/craft-construct.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in craft-construct");
 
 	if(RELEASED(16))
 	{
@@ -332,7 +332,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerCraft(playerid, craftset)
 {
-	dbg("global", CORE, "[OnPlayerCraft] in /gamemodes/sss/core/world/craft-construct.pwn");
+	dbg("global", CORE, "[OnPlayerCraft] in craft-construct");
 
 	if(cons_CraftsetConstructSet[craftset] != -1)
 		return Y_HOOKS_BREAK_RETURN_1;
