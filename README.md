@@ -17,34 +17,121 @@ No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required to
 access the gamemode-specific features.
 
-## Usage
+## Getting Started
 
-To run Scavenge and Survive, download the Scavenge and Survive server launcher.
-Either add this to your path, or, if you don't know how to do that, just drop it
-into an _empty_ directory and run it.
+### Requirements
 
-You can download the latest version of the launcher by going to
-[this link](https://github.com/Southclaws/ScavengeSurvive/actions?query=workflow%3Arunner)
-and selecting the first item in the list with a ✅ and clicking `runner` under
-"Artifacts". This will give you a zip file with a Windows and a Linux binary.
+To get started with Scavenge and Survive, you need the following tools installed
+on your computer:
 
-Executing the runner in an empty directory will download, ensure and build the
-gamemode ready for running.
+- [Git](https://git-scm.com) To clone the repository and provide functionality
+  to the [Runner](#runner)
+- [sampctl](https://github.com/Southclaws/sampctl) To install the necessary Pawn
+  dependencies and SA-MP plugins automatically.
+- [The Go Language](https://golang.org/) To build tooling such as the Runner
+  application which will make the development process easier.
+- [Taskfile](https://taskfile.dev) To run common development tasks such as
+  building, running and generating additional assets and data.
 
-Executing the runner in the repository will:
+Tip: The easiest way to install all of these is with [Scoop](https://scoop.sh)!
 
-1. Generate a `server.cfg`
-2. Run the server with enhancements
+### First Time Build & Run
 
-### Runner Enhancements
+Clone the repository to your computer using Git (Or the GitHub desktop app, if
+you prefer that)
 
-#### Automatic Update Scheduling
+```
+git clone https://github.com/Southclaws/ScavengeSurvive.git
+```
+
+Now, open the directory in your favourite IDE. I recommend vscode. As long as
+you have a terminal in there, you'll be fine.
+
+Run the following commands to pull the Pawn dependencies, SA-MP plugins,
+compiler and other necessary components:
+
+```
+sampctl project ensure
+sampctl project build
+```
+
+When on `master` branch, this should finish with no errors. You can check the
+state of the `master` branch here:
+https://github.com/Southclaws/ScavengeSurvive/actions?query=workflow%3Abuild if
+the topmost item has a ✅ then the latest commit on `master` will compile with
+no errors.
+
+Now, build and run the runner with:
+
+```
+task
+```
+
+This will run the default task which will compile and run the Runner. This
+application runs in the background while you develop and will keep the server
+running.
+
+### Development Workflow
+
+Now you can edit code and leave the Runner in the background. The runner will
+not automatically recompile the gamemode unless you set `AUTO_BUILD`. Generally,
+it's best to separate this process so use sampctl for builds instead.
+
+Once you have made a change and are ready to test, go in-game and use the
+`/restart` command with 0 to restart the server immediately.
+
+## Deployment
+
+The recommended deployment strategy is to use Docker. This project comes with a
+`Dockerfile` and a `docker-compose.yml` so it's ready to go.
+
+Assuming you have a server (baremetal or virtual), clone the source to the
+machine either manually or using an automation tool such as
+[Pico](https://pico.sh)
+
+```
+git clone https://github.com/Southclaws/ScavengeSurvive.git
+```
+
+Now you just need to run Docker Compose, which will build the image if necessary
+and run it - detach in order to daemonise the server. It's exposed on port 7777
+udp by default.
+
+```
+docker-compose up -d
+```
+
+### Architecture
+
+The image uses the Runner as the entrypoint. This keeps the server running and
+performs restarts internal to the container - this means the container will not
+close unless a catastrophic error occurs. Because of this, you should leave
+auto-restart for the container disabled and manually intervene if anything goes
+wrong.
+
+The container expects the entire repository to be mounted into it. This may seem
+counterintuitive but this is to facilitate safe restarts without complicating
+the application architecture.
+
+### Updating the Server
+
+When a new version is released, `git pull` inside the repository (Or, if you're
+using Pico, this will be done automatically) and let the Runner automatically
+rebuild the server while it's running. See below to learn more about automatic
+update scheduling.
+
+## Runner
+
+The Runner is a simple wrapper around the server binary. It simply keeps the
+server running and is suitable for use in development and production.
+
+### Automatic Update Scheduling
 
 When the launcher detects a new `ScavengeSurvive.amx` file has been compiled, it
 will signal to the game server that an update is ready. This will trigger the
 game server to schedule a restart in 1 hour.
 
-#### Logging
+### Logging
 
 The runner will automatically parse all log output and re-write it to stdout
 after parsing it. It will parse
@@ -61,32 +148,25 @@ is a list of plugins:
 2020-10-19T02:04:21.567+0100    INFO    [OnGameModeInit] FIRST_INIT
 ```
 
-#### Auto Restart
+### Auto Restart
 
 If the server crashes - or, more accurately, closes without the runner telling
 it to, it will automatically restart.
 
-#### Restart Process Kill
+### Restart Process Kill
 
 To avoid `server closed connection` while also doing a full restart without
 `gmx`, the process will be killed completely and re-executed when the gamemode
 finishes its graceful shutdown during a restart.
 
-## Development
+### Auto Build
 
-Development of this project requires
-[`sampctl`](https://github.com/Southclaws/sampctl), a package management and
-project build tool for SA:MP. It's easy to install and easy to use. To download
-all dependencies and compile the gamemode, run:
+Set the environment variable `AUTO_BUILD` to 1 in order to enable automatic
+builds. This is similar to sampctl's --watch feature.
 
-```bash
-sampctl project ensure
-sampctl project build
-```
+---
 
-There is also a [Taskfile](https://taskfile.dev/#/) in the repo for common
-tasks. This is usually used to start the runner and run other tasks such as
-generating trees etc.
+## Open Source
 
 I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
@@ -106,7 +186,7 @@ Please respect this. Feel free to keep your unique features private, just submit
 _all_ fixes to the base code as pull requests or just email them to me/post them
 as issues here.
 
-## LICENSE
+### The License
 
 Short Summary: https://www.tldrlegal.com/l/gpl-3.0
 
