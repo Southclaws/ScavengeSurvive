@@ -1,0 +1,22 @@
+// From MapFix by OstGot (2015)
+// Tierra Robada: -878.8828, 1629.7646, 28.3272
+CreateDynamicObject(3084, -880.8, 1640.2, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -887.22, 1650.9, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -893.65, 1661.6, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -900.07, 1672.3, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -906.5, 1683.0, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -870.1, 1646.8, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -876.53, 1657.5, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -882.95, 1668.2, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -889.37, 1678.9, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -895.8, 1689.6, 25.3, 0.0, 0.0, 301.0, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

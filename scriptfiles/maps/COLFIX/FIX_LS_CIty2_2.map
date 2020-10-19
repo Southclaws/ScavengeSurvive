@@ -1,0 +1,16 @@
+// From MapFix by OstGot (2015)
+// Los Santos: 501.7941, -1356.5953, 17.1328
+CreateDynamicObject(3084, 501.0, -1364.9, 20.3, 270.0, 0.0, 107.0, -1, 0, -1, 7.0);
+CreateDynamicObject(3037, 503.5, -1375.0, 20.3, 0.0, 270.0, 17.0, -1, 0, -1, 6.0);
+CreateDynamicObject(3037, 496.4, -1362.4, 20.3, 0.0, 270.0, 115.0, -1, 0, -1, 6.0);
+CreateDynamicObject(3084, 507.4, -1386.0, 19.3, 270.0, 180.0, 285.0, -1, 0, -1, 7.0);
+CreateDynamicObject(3084, 510.6, -1397.9, 19.3, 270.0, 180.0, 285.0, -1, 0, -1, 7.0);
+CreateDynamicObject(3084, 507.6, -1404.7, 19.3, 270.0, 0.0, 194.5, -1, 0, -1, 7.0);
+CreateDynamicObject(3055, 498.9, -1406.3, 19.3, 270.0, 0.0, 14.5, -1, 0, -1, 5.0);
+CreateDynamicObject(3055, 481.4, -1412.1, 20.5, 270.0, 0.0, 20.5, -1, 0, -1, 5.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3109, 484.8, -1413.2, 19.3, 0.0, 90.0, 20.5, -1, 0, -1, 2.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3109, 479.6, -1415.2, 19.3, 0.0, 90.0, 20.5, -1, 0, -1, 2.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3037, 471.0, -1417.1, 24.6, 0.0, 90.0, 300.5, -1, 0, -1, 6.0);

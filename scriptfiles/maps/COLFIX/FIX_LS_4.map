@@ -1,0 +1,4 @@
+// From MapFix by OstGot (2015)
+// Los Santos: 2827.9946, -1598.8704, 12.0903
+CreateDynamicObject(3117, 2823.5, -1597.4, 12.7, 0.0, 0.0, 68.0, -1, 0, -1, 3.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

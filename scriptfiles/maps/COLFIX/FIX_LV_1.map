@@ -1,0 +1,3 @@
+// From MapFix by OstGot (2015)
+// Las Venturas: 1551.8811, 888.5751, 12.3458
+CreateDynamicObject(5846, 1547.4, 885.1, 7.88, 7.5, 90.0, 70.0, -1, 0, -1, 12.0);

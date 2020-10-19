@@ -1,0 +1,5 @@
+// From MapFix by OstGot (2015)
+// Welcome Pump interior: 681.5706, -452.1212, -24.3172
+CreateDynamicObject(8957, 681.4, -447.4, -26.7, 0.0, 270.0, 0.0, 5.0);
+CreateDynamicObject(8957, 680.35, -447.1, -25.0, 0.0, 0.0, 0.0, -1, 1, -1, 5.0);
+CreateDynamicObject(8957, 682.7, -447.1, -25.0, 0.0, 0.0, 0.0, -1, 1, -1, 5.0);

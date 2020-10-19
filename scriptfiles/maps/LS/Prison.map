@@ -1,0 +1,3 @@
+RemoveBuildingForPlayer(i, 4000, 1787.13, -1565.68, 11.9688, 250.0); // Walls
+RemoveBuildingForPlayer(i, 4080, 1787.13, -1565.68, 11.9688, 250.0); // LOD
+CreateObject(19794, 1787.13, -1565.68, 11.9688, 0, 0, 0);

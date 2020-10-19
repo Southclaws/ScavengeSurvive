@@ -1,0 +1,4 @@
+// From MapFix by OstGot (2015)
+// Flint County: -617.5784, -1902.7026, 8.9671
+CreateDynamicObject(906, -609.8, -1899.4, 3.5, 0.0, 10.0, 156.0, -1, 0, -1, 5.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

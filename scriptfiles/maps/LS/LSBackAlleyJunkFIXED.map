@@ -1,0 +1,5 @@
+
+// whenever you use object 12943, always add object 12942 to the same location (exact same location, copy the coords)
+// both these objects make an interior+exterior that look nice!
+CreateObject(12943, 1643.62708, -1796.19055, 12.45489,   0.00000, 0.00000, 166.46228);
+CreateObject(12942, 1643.62708, -1796.19055, 12.45489,   0.00000, 0.00000, 166.46228);

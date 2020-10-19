@@ -1,0 +1,6 @@
+RemoveBuildingForPlayer(i, 9510, -2719.02, 861.211, 72.1562, 250.0); // Building
+RemoveBuildingForPlayer(i, 9671, -2719.02, 861.211, 72.1562, 250.0); // LOD
+RemoveBuildingForPlayer(i, 715, -2693.24, 852.60, 71.74, 8.0); // Tree (casts a shadow inside)
+CreateObject(19600, -2719.02, 861.211, 72.1562, 0, 0, 0);
+CreateObject(19598, -2719.02, 861.211, 72.1562, 0, 0, 0);
+CreateObject(19599, -2719.02, 861.211, 72.1562, 0, 0, 0);

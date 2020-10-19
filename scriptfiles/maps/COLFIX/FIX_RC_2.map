@@ -1,0 +1,4 @@
+// From MapFix by OstGot (2015)
+// Red County: 2343.8516, 382.0144, 27.3888
+CreateDynamicObject(2904, 2344.1, 377.5, 25.568, 84.0, 0.0, 354.0, -1, 0, -1, 2.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

@@ -1,0 +1,9 @@
+// Cables
+RemoveBuildingForPlayer(playerid, 13436, 252.3281, -28.8906, 9.1094, 0.25);
+
+RemoveBuildingForPlayer(playerid, 3298, 251.9063, -32.3750, 1.0625, 0.25);
+RemoveBuildingForPlayer(playerid, 3300, 256.3594, -17.6016, 2.4609, 0.25);
+RemoveBuildingForPlayer(playerid, 3285, 256.3594, -17.6016, 2.4609, 0.25);
+RemoveBuildingForPlayer(playerid, 3241, 251.9063, -32.3750, 1.0625, 0.25);
+CreateObject(19509, 249.40331, -33.40310, 3.30110,   0.00000, 0.00000, 89.70310);
+CreateObject(19510, 249.40331, -33.40310, 3.30112,   0.00000, 0.00000, 89.70307);

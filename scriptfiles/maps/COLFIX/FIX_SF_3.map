@@ -1,0 +1,12 @@
+// From MapFix by OstGot (2015)
+// San Fierro: -1646.8326, 597.6365, 33.1171
+CreateDynamicObject(3084, -1613.0, 621.7, 37.0, 0.0, 2.0, 226.6, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -1604.5, 630.7, 37.3, 0.0, 2.0, 226.6, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -1596.0, 639.7, 37.7, 0.0, 2.0, 226.6, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -1587.5, 648.7, 38.1, 0.0, 2.0, 226.6, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);
+CreateDynamicObject(3084, -1579.7, 656.9, 38.5, 0.0, 2.0, 226.6, -1, 0, -1, 7.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

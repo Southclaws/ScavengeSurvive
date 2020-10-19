@@ -1,0 +1,4 @@
+// From MapFix by OstGot (2015)
+// Caligula's basement interior: 2143.1971, 1617.6655, 1001.9688
+CreateDynamicObject(2904, 2143.0, 1621.3, 1001.9, 0.0, 0.0, 0.0, -1, 1, -1, 2.0);
+SetDynamicObjectMaterial(, 0, 0, "none", "none", 0x00000000);

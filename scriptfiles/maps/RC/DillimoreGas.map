@@ -1,0 +1,5 @@
+RemoveBuildingForPlayer(i, 12853, 666.711, -565.133, 17.3359, 250.0);
+RemoveBuildingForPlayer(i, 12854, 666.492, -571.18, 17.3125, 250.0); 
+;RemoveBuildingForPlayer(i, 13245, 666.711, -565.133, 17.3359, 250.0);
+CreateObject(19876, 666.711, -565.133, 17.3359, 0, 0, 0);
+CreateObject(19877, 666.492, -571.18, 17.3125, 0, 0, 0);

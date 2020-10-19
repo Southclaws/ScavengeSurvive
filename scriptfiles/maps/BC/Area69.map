@@ -1,0 +1,15 @@
+RemoveBuildingForPlayer(i, 16203, 199.344, 1943.79, 18.2031, 250.0); // Land
+RemoveBuildingForPlayer(i, 16590, 199.344, 1943.79, 18.2031, 250.0); // Land LOD
+RemoveBuildingForPlayer(i, 16323, 199.336, 1943.88, 18.2031, 250.0); // Buildings
+RemoveBuildingForPlayer(i, 16619, 199.336, 1943.88, 18.2031, 250.0); // Buildings LOD
+RemoveBuildingForPlayer(i, 1697, 228.797, 1835.34, 23.2344, 250.0); // Solar Panels (they poke through the roof inside)
+RemoveBuildingForPlayer(i, 16094, 191.141, 1870.04, 21.4766, 250.0); // Outer Fence
+CreateObject(11692, 199.344, 1943.79, 18.2031, 0, 0, 0);
+CreateObject(19312, 191.141, 1870.04, 21.4766, 0, 0, 0);
+CreateObject(19905, 206.798950, 1931.643432, 16.450595, 0, 0, 0);
+CreateObject(19905, 188.208908, 1835.033569, 16.450595, 0, 0, 0);
+CreateObject(19905, 230.378875, 1835.033569, 16.450595, 0, 0, 0);
+CreateObject(19907, 142.013977, 1902.538085, 17.633581, 0, 0, 270.0);
+CreateObject(19907, 146.854003, 1846.008056, 16.533580, 0, 0, 0);
+CreateObject(19909, 137.900390, 1875.024291, 16.836734, 0, 0, 270.0);
+CreateObject(19909, 118.170387, 1875.184326, 16.846735, 0, 0, 0);

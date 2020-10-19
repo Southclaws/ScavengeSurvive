@@ -1,0 +1,3 @@
+// From MapFix by OstGot (2015)
+// Bone County: -640.5525, 2717.2556, 72.3751
+CreateDynamicObject(3168, -640.5, 2717.2, 71.4, 0.0, 0.0, 42.0, -1, 0, -1, 7.0);

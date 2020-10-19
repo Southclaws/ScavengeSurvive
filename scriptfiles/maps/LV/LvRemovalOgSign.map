@@ -1,0 +1,2 @@
+RemoveBuildingForPlayer(playerid, 7415, 983.5078, 2560.8984, 19.5078, 0.25);
+RemoveBuildingForPlayer(playerid, 7666, 984.3984, 2563.0625, 27.8125, 0.25);
