@@ -41,7 +41,7 @@ func Test_parseSampLoggerFormat(t *testing.T) {
 		t.Run(fmt.Sprint(ii), func(t *testing.T) {
 			msg, got := parseSampLoggerFormat(tt.input)
 			assert.Equal(t, tt.want, got)
-			pretty.Println(msg, got)
+			pretty.Println(msg, got) //nolint:errcheck
 		})
 	}
 }
@@ -75,7 +75,7 @@ func Test_parseSampLoggerToMap(t *testing.T) {
 		t.Run(fmt.Sprint(ii), func(t *testing.T) {
 			got := parseSampLoggerToMap(tt.input)
 			assert.Equal(t, tt.want, got)
-			pretty.Println(got)
+			pretty.Println(got) //nolint:errcheck
 		})
 	}
 }
@@ -97,7 +97,7 @@ func Test_splitLine(t *testing.T) {
 	for ii, tt := range tests {
 		t.Run(fmt.Sprint(ii), func(t *testing.T) {
 			got := splitLine(tt.line)
-			pretty.Println(got)
+			pretty.Println(got) //nolint:errcheck
 		})
 	}
 }

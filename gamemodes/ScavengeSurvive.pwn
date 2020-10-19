@@ -751,6 +751,20 @@ task RestartUpdate[1000]()
 
 		gServerUptime++;
 	}
+
+	HTTP(0, HTTP_GET, "localhost:7788/update", "", "OnUpdateCheck");
+}
+
+forward OnUpdateCheck(index, response_code, data[]);
+public OnUpdateCheck(index, response_code, data[])
+{
+	if(strlen(data) == 0)
+		return;
+	if(strcmp(data, "update"))
+		return;
+
+	Logger_Log("updated amx ready to go");
+	SetRestart(3600);
 }
 
 DirectoryCheck(const directory[])

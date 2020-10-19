@@ -1,0 +1,9 @@
+# https://taskfile.dev
+
+version: "2"
+
+tasks:
+  default:
+    cmds:
+      - go build -o ss.exe
+      - ./ss.exe

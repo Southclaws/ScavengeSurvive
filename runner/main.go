@@ -70,6 +70,7 @@ func Run() error {
 	}
 
 	go RunServer(ctx, os.Stdin, os.Stdout)
+	go RunAPI(ctx)
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
 

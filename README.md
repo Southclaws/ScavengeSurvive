@@ -38,6 +38,12 @@ Executing the runner in the repository will:
 
 ### Runner Enhancements
 
+#### Automatic Update Scheduling
+
+When the launcher detects a new `ScavengeSurvive.amx` file has been compiled, it
+will signal to the game server that an update is ready. This will trigger the
+game server to schedule a restart in 1 hour.
+
 #### Logging
 
 The runner will automatically parse all log output and re-write it to stdout
@@ -77,6 +83,10 @@ all dependencies and compile the gamemode, run:
 sampctl project ensure
 sampctl project build
 ```
+
+There is also a [Taskfile](https://taskfile.dev/#/) in the repo for common
+tasks. This is usually used to start the runner and run other tasks such as
+generating trees etc.
 
 I encourage people to play around with this code, create a new map and put loot
 spawns in it or completely mod it into a new gamemode, I would love to see what
