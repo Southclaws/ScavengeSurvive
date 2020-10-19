@@ -9,6 +9,10 @@ module.exports = {
   organizationName: "Southclaws",
   projectName: "ScavengeSurvive",
   themeConfig: {
+    colorMode: {
+      defaultMode: "dark",
+      disableSwitch: true,
+    },
     navbar: {
       title: "Scavenge and Survive",
       logo: {
