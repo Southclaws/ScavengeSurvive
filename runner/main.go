@@ -30,6 +30,7 @@ func Run() error {
 		}
 		forceBuild = true
 		forceEnsure = true
+		zap.L().Info("doing first-time ensure and build")
 	}
 
 	cacheDir, err := download.GetCacheDir()

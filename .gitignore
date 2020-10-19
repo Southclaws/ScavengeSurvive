@@ -76,3 +76,7 @@ scriptfiles/data/
 scriptfiles/carmour/
 scriptfiles/.gitignore
 scriptfiles/.git/
+
+# runner binaries
+ScavengeSurvive.exe
+ScavengeSurvive
