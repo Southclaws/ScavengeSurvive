@@ -239,6 +239,13 @@ hook OnHoldActionFinish(playerid)
 		GetItemTypeName(GetCraftSetResult(cons_Constructing[playerid]), uniqueid);
 		// DestroyItem(GetPlayerItem(playerid));
 
+		// first make sure all items are in the world, if one isn't, exit early.
+		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
+		{
+			if(!IsItemInWorld(cons_SelectedItems[playerid][count][cft_selectedItemID]))
+				return;
+		}
+
 		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
 		{
 			GetItemPos(cons_SelectedItems[playerid][count][cft_selectedItemID], x, y, z);
