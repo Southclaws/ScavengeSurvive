@@ -157,6 +157,7 @@ timer LoadAccountDelay[5000](playerid)
 
 	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
 	{
+		ChatMsg(playerid, YELLOW, " >  Deferring account load for 5s while the server loads...");
 		defer LoadAccountDelay(playerid);
 		return;
 	}
