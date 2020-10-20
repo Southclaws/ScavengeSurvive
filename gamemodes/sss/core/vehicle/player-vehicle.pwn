@@ -292,7 +292,7 @@ LoadPlayerVehicle(const filepath[])
 	SetVehicleExternalLock(vehicleid, E_LOCK_STATE:data[VEH_CELL_LOCKED]);
 
 	new
-		containerid,
+		Container:containerid,
 		trunksize;
 
 	trunksize = GetVehicleTypeTrunkSize(data[VEH_CELL_TYPE]);
@@ -426,7 +426,7 @@ LoadPlayerVehicle(const filepath[])
 					break;
 
 				itemid = CreateItem(itemtype);
-				dbg("player-vehicle", 2, "[LoadPlayerVehicle] created item:%d container:%d", _:itemid, containerid);
+				dbg("player-vehicle", 2, "[LoadPlayerVehicle] created item:%d container:%d", _:itemid, _:containerid);
 
 				if(!IsItemTypeSafebox(itemtype) && !IsItemTypeBag(itemtype))
 					SetItemArrayDataFromStored(itemid, i);
@@ -522,7 +522,7 @@ _SaveVehicle(vehicleid)
 	if(IsValidVehicle(trailerid))
 	{
 		new
-			containerid = GetVehicleContainer(trailerid),
+			Container:containerid = GetVehicleContainer(trailerid),
 			trailergeid[GEID_LEN];
 
 		data[VEH_CELL_TYPE] = GetVehicleType(trailerid);
@@ -582,7 +582,7 @@ _SaveVehicle(vehicleid)
 		);
 	}
 
-	new containerid = GetVehicleContainer(vehicleid);
+	new Container:containerid = GetVehicleContainer(vehicleid);
 
 	if(!IsValidContainer(containerid))
 	{

@@ -43,10 +43,6 @@ forward OnPlayerHolsteredItem(playerid, Item:itemid);
 
 hook OnPlayerLoadAccount(playerid)
 {
-	dbg("global", CORE, "[OnPlayerLoadAccount] in /gamemodes/sss/core/player/tutorial.pwn");
-
-	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerLoadAccount]");
-
 	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, ls(playerid, "TUTORPROMPT"));
 	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonTutorial[playerid], 255);
@@ -64,32 +60,21 @@ hook OnPlayerLoadAccount(playerid)
 
 hook OnPlayerSpawnChar(playerid)
 {
-	dbg("global", CORE, "[OnPlayerSpawnChar] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
 }
 
 hook OnPlayerSpawnNewChar(playerid)
 {
-	dbg("global", CORE, "[OnPlayerSpawnNewChar] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	PlayerTextDrawHide(playerid, ClassButtonTutorial[playerid]);
 }
 
 hook OnPlayerCreateChar(playerid)
 {
-	dbg("global", CORE, "[OnPlayerCreateChar] in /gamemodes/sss/core/player/tutorial.pwn");
-
-	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerCreateChar]");
-
 	PlayerTextDrawShow(playerid, ClassButtonTutorial[playerid]);
 }
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
-	dbg("global", CORE, "[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/tutorial.pwn");
-
-	dbg("gamemodes/sss/core/player/tutorial.pwn", 1, "[OnPlayerClickPlayerTD]");
 	if(playertextid == ClassButtonTutorial[playerid])
 	{
 		PlayerTutorialWorld[playerid] = TutorialWorld;
@@ -228,15 +213,11 @@ hook OnVehicleSave(vehicleid)
 
 hook OnPlayerDeath(playerid)
 {
-	dbg("global", CORE, "[OnPlayerDeath] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	ExitTutorial(playerid);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	ExitTutorial(playerid);
 }
 
@@ -287,8 +268,6 @@ ToggleTutorialUI(playerid, toggle)
 
 hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		// ShowHelpTip(playerid, "This is an item. There are many different items in the game with different purposes. Some are common and some are rare.");
@@ -300,8 +279,6 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 
 hook OnPlayerWearBag(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerWearBag] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORACCBAG"));
@@ -313,8 +290,6 @@ hook OnPlayerWearBag(playerid, Item:itemid)
 
 hook OnPlayerOpenInventory(playerid)
 {
-	dbg("global", CORE, "[OnPlayerOpenInventory] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ToggleTutorialUI(playerid, false);
@@ -326,15 +301,13 @@ hook OnPlayerOpenInventory(playerid)
 }
 
 
-hook OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
-	dbg("global", CORE, "[OnPlayerOpenContainer] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ToggleTutorialUI(playerid, false);
 
-		if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+		if(containerid == Container:GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 		{
 			ShowHelpTip(playerid, ls(playerid, "TUTORINTBAG"));
 		}
@@ -345,28 +318,22 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerCloseInventory(playerid)
 {
-	dbg("global", CORE, "[OnPlayerCloseInventory] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 		ToggleTutorialUI(playerid, true);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, Container:containerid)
 {
-	dbg("global", CORE, "[OnPlayerCloseContainer] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 		ToggleTutorialUI(playerid, true);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
-	dbg("global", CORE, "[OnPlayerViewCntOpt] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
@@ -380,8 +347,6 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 
 hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORDROITM"));
@@ -392,8 +357,6 @@ hook OnPlayerDroppedItem(playerid, Item:itemid)
 
 hook OnItemAddedToInventory(playerid, Item:itemid, slot)
 {
-	dbg("global", CORE, "[OnItemAddedToInventory] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORINVADD"));
@@ -404,8 +367,6 @@ hook OnItemAddedToInventory(playerid, Item:itemid, slot)
 
 hook OnPlayerViewInvOpt(playerid)
 {
-	dbg("global", CORE, "[OnPlayerViewInvOpt] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
@@ -414,15 +375,13 @@ hook OnPlayerViewInvOpt(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
-	dbg("global", CORE, "[OnItemAddedToContainer] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(IsPlayerConnected(playerid))
 	{
 		if(PlayerInTutorial[playerid])
 		{
-			if(containerid == GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+			if(containerid == Container:GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
 			{
 				ShowHelpTip(playerid, ls(playerid, "TUTORADDBAG"));
 			}
@@ -438,8 +397,6 @@ hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
 
 hook OnPlayerHolsteredItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerHolsteredItem] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORITMHOL"));
@@ -450,8 +407,6 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 
 hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/player/tutorial.pwn");
-
 	if(PlayerInTutorial[playerid])
 	{
 		ShowHelpTip(playerid, ls(playerid, "TUTORITMUSE"));

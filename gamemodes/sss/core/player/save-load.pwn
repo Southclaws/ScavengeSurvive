@@ -231,7 +231,7 @@ SavePlayerChar(playerid)
 
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 	{
-		new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
+		new Container:containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
 		for(new i, j = GetContainerSize(containerid); i < j && i < MAX_BAG_CONTAINER_SIZE; i++)
 		{
@@ -486,7 +486,7 @@ LoadPlayerChar(playerid)
 
 		if(!DeserialiseItems(itm_arr_Serialized, length, false))
 		{
-			new containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
+			new Container:containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
 
 			dbg("save-load", 2, "[LOAD:%p] Bag items: %d size: %d", playerid, GetStoredItemCount(), GetSerialisedSize());
 
@@ -648,7 +648,7 @@ FV10_LoadPlayerInventory(playerid)
 		File:file,
 		data[INV_CELL_END],
 		Item:itemid,
-		containerid;
+		Container:containerid;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	PLAYER_INV_FILE(name, filename);

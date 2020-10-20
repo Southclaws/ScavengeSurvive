@@ -39,7 +39,7 @@ CreateXmasTree(Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz)
 		Float:box_x,
 		Float:box_y,
 		Float:box_z,
-		containerid;
+		Container:containerid;
 
 	box_x = x + floatsin(-rz, degrees);
 	box_y = y + floatcos(-rz, degrees);

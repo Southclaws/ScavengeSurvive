@@ -95,11 +95,11 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 		Float:ry,
 		Float:rx,
 		Float:rz,
-		containerid;
+		Container:containerid;
 
 	GetItemPos(withitemid, x, y, z);
 	GetItemRot(withitemid, rx, ry, rz);
-	containerid = GetItemArrayDataAtCell(withitemid, 0);
+	containerid = Container:GetItemArrayDataAtCell(withitemid, 0);
 
 	x += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosX];
 	y += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosY];
@@ -148,8 +148,6 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/furniture.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(fur_ItemTypeFurnitureType[itemtype] == -1)
@@ -158,7 +156,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	if(!IsItemTypeSafebox(itemtype))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new containerid = GetItemArrayDataAtCell(itemid, 0);
+	new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0);
 
 	if(!IsValidContainer(containerid))
 		return Y_HOOKS_CONTINUE_RETURN_0;

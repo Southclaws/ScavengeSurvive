@@ -34,7 +34,7 @@
 enum E_TENT_DATA
 {
 Item:		tnt_itemId,
-			tnt_containerId
+Container:	tnt_containerId
 }
 
 enum E_TENT_OBJECT_DATA
@@ -233,7 +233,7 @@ SaveTent(tentid, bool:active = true)
 
 	new
 		Item:itemid = GetTentItem(tentid),
-		containerid = GetTentContainer(tentid);
+		Container:containerid = GetTentContainer(tentid);
 
 	if(IsContainerEmpty(containerid))
 	{
@@ -248,7 +248,7 @@ SaveTent(tentid, bool:active = true)
 
 	if(!IsValidContainer(containerid))
 	{
-		err("Can't save tent %d (%s): Not valid container (%d).", _:itemid, geid, containerid);
+		err("Can't save tent %d (%s): Not valid container (%d).", _:itemid, geid, _:containerid);
 		return 3;
 	}
 
@@ -272,7 +272,7 @@ public _tent_onLoad(Item:itemid, active, geid[], data[], length)
 {
 	new
 		tentid,
-		containerid,
+		Container:containerid,
 		ItemType:itemtype,
 		Item:subitem;
 
@@ -321,7 +321,7 @@ _tent_Remove(tentid)
 	RemoveSavedItem(GetTentItem(tentid), DIRECTORY_TENT);
 }
 
-hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -331,7 +331,7 @@ hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromCnt(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 {
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -516,15 +516,15 @@ stock Item:GetTentItem(tentid)
 }
 
 // tnt_containerId
-stock GetTentContainer(tentid)
+stock Container:GetTentContainer(tentid)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
-		return 0;
+		return INVALID_CONTAINER_ID;
 
 	return tnt_Data[tentid][tnt_containerId];
 }
 
-stock GetContainerTent(containerid)
+stock GetContainerTent(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_TENT_ID;

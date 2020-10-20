@@ -86,7 +86,7 @@ hook OnPlayerDroppedItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, Container:containerid)
 {
 	new Item:itemid = GetContainerSafeboxItem(containerid);
 
@@ -108,7 +108,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
@@ -121,7 +121,7 @@ hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromCnt(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
@@ -200,7 +200,7 @@ SaveSafeboxItem(Item:itemid, bool:active = true)
 		return 2;
 	}
 
-	new containerid = GetItemArrayDataAtCell(itemid, 0);
+	new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0);
 
 	if(IsContainerEmpty(containerid))
 	{
@@ -210,7 +210,7 @@ SaveSafeboxItem(Item:itemid, bool:active = true)
 
 	if(!IsValidContainer(containerid))
 	{
-		err("Can't save safebox %d (%s): Not valid container (%d).", _:itemid, geid, containerid);
+		err("Can't save safebox %d (%s): Not valid container (%d).", _:itemid, geid, _:containerid);
 		return 5;
 	}
 
@@ -245,7 +245,7 @@ public OnSafeboxLoad(Item:itemid, active, geid[], data[], length)
 	}
 
 	new
-		containerid = GetItemArrayDataAtCell(itemid, 0),
+		Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0),
 		Item:subitem,
 		ItemType:itemtype;
 
@@ -275,7 +275,7 @@ public OnSafeboxLoad(Item:itemid, active, geid[], data[], length)
 		Logger_Log("safebox loaded",
 			Logger_S("geid", geid),
 			Logger_I("itemid", _:itemid),
-			Logger_I("containerid", containerid),
+			Logger_I("containerid", _:containerid),
 			Logger_I("active", active),
 			Logger_I("items", GetStoredItemCount())
 		);

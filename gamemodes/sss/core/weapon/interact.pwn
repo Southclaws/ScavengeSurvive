@@ -347,7 +347,7 @@ static
 	Item:trans_SelectedItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
 	new
 		Item:itemid,
@@ -371,7 +371,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerSelectCntOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
 	if(option == trans_ContainerOptionID[playerid])
 	{
@@ -389,7 +389,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-DisplayTransferAmmoDialog(playerid, containerid, msg[] = "")
+DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 {
 	new
 		Item:sourceitemid,

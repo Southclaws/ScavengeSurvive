@@ -98,7 +98,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)
 	{
-		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+		DisplayContainerInventory(playerid, Container:GetItemArrayDataAtCell(itemid, 0));
 	}
 }
 
@@ -108,21 +108,21 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	{
 		new
 			craftitems[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
-			containerid,
+			Container:containerid,
 			itemcount,
 			craftset,
 			consset;
 
-		containerid = GetItemArrayDataAtCell(withitemid, 0);
+		containerid = Container:GetItemArrayDataAtCell(withitemid, 0);
 		itemcount = GetContainerItemCount(containerid);
 
 		if(!IsValidContainer(containerid))
 		{
-			err("Workbench (%d) has invalid container ID (%d)", _:withitemid, containerid);
+			err("Workbench (%d) has invalid container ID (%d)", _:withitemid, _:containerid);
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		dbg("workbench", 1, "[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", _:withitemid, containerid, itemcount);
+		dbg("workbench", 1, "[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", _:withitemid, _:containerid, itemcount);
 
 		for(new i; i < itemcount; i++)
 		{
@@ -163,10 +163,10 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 _wb_ClearWorkbench(Item:itemid)
 {
 	new
-		containerid,
+		Container:containerid,
 		itemcount;
 
-	containerid = GetItemArrayDataAtCell(itemid, 0);
+	containerid = Container:GetItemArrayDataAtCell(itemid, 0);
 	itemcount = GetContainerItemCount(containerid);
 
 	for(; itemcount >= 0; itemcount--)

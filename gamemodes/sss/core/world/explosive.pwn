@@ -161,7 +161,7 @@ stock SetItemToExplode(Item:itemid)
 	{
 		if(!strcmp(parenttype, "containerid"))
 		{
-			DestroyContainer(parent);
+			DestroyContainer(Container:parent);
 		}
 
 		if(!strcmp(parenttype, "vehicleid"))
@@ -420,7 +420,7 @@ _exp_ProxTrigger(Item:itemid)
 
 static exp_ContainerOption[MAX_PLAYERS];
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
 	new
 		slot,
@@ -446,7 +446,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerSelectCntOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
 	new
 		slot,
@@ -500,7 +500,7 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
 	new
 		Item:itemid,

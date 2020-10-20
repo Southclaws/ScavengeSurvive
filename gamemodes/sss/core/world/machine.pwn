@@ -40,7 +40,7 @@
 
 enum e_MACHINE_DATA
 {
-	E_MACHINE_CONTAINER_ID,
+	Container:E_MACHINE_CONTAINER_ID,
 	Float:E_MACHINE_FUEL,
 	bool:E_MACHINE_COOKING,
 	E_MACHINE_START_TICK,
@@ -60,7 +60,7 @@ Timer:		mach_HoldTimer[MAX_PLAYERS];
 
 
 forward OnPlayerUseMachine(playerid, itemid, interactiontype);
-forward OnMachineFinish(itemid, containerid);
+forward OnMachineFinish(itemid, Container:containerid);
 
 
 /*==============================================================================
@@ -223,7 +223,8 @@ _mach_TapInteract(playerid)
 		// if(GetItemType(itemid) != item_Crowbar)
 		DisplayContainerInventory(
 			playerid,
-			GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_CONTAINER_ID)
+			Container:GetItemArrayDataAtCell(mach_CurrentMachine[playerid],
+			_:E_MACHINE_CONTAINER_ID)
 		);
 	}
 
@@ -387,7 +388,7 @@ timer _machine_FinishCooking[cooktime](itemid, cooktime)
 	data[E_MACHINE_SMOKE_PARTICLE] = INVALID_OBJECT_ID;
 	SetItemArrayData(Item:itemid, data, _:e_MACHINE_DATA);
 
-	CallLocalFunction("OnMachineFinish", "dd", itemid, data[E_MACHINE_CONTAINER_ID]);
+	CallLocalFunction("OnMachineFinish", "dd", itemid, _:data[E_MACHINE_CONTAINER_ID]);
 }
 
 
@@ -417,7 +418,7 @@ stock GetMachineTypeContainerSize(machinetype)
 }
 
 // mach_ContainerMachineItem
-stock Item:GetContainerMachineItem(containerid)
+stock Item:GetContainerMachineItem(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_ITEM_ID;

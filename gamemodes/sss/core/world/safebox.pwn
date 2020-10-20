@@ -103,7 +103,7 @@ hook OnItemCreate(Item:itemid)
 		{
 			new
 				name[ITM_MAX_NAME],
-				containerid;
+				Container:containerid;
 
 			GetItemTypeName(itemtype, name);
 
@@ -112,7 +112,7 @@ hook OnItemCreate(Item:itemid)
 			box_ContainerSafebox[containerid] = itemid;
 
 			SetItemArrayDataSize(itemid, 1);
-			SetItemArrayDataAtCell(itemid, containerid, 0);
+			SetItemArrayDataAtCell(itemid, _:containerid, 0);
 		}
 	}
 }
@@ -138,7 +138,7 @@ hook OnItemDestroy(Item:itemid)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
-			new containerid = GetItemArrayDataAtCell(itemid, 0);
+			new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0);
 
 			DestroyContainer(containerid);
 			box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
@@ -199,7 +199,7 @@ _DisplaySafeboxDialog(playerid, Item:itemid, animation)
 	if(!box_TypeData[box_ItemTypeBoxType[GetItemType(itemid)]][box_display])
 		return 0;
 
-	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+	DisplayContainerInventory(playerid, Container:GetItemArrayDataAtCell(itemid, 0));
 	box_CurrentBoxItem[playerid] = itemid;
 
 	if(animation)
@@ -238,7 +238,7 @@ stock IsItemTypeSafebox(ItemType:itemtype)
 	return 0;
 }
 
-stock Item:GetContainerSafeboxItem(containerid)
+stock Item:GetContainerSafeboxItem(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_ITEM_ID;

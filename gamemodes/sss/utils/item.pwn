@@ -3,18 +3,18 @@ stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1
 	if(IsItemInWorld(itemid))
 		return GetItemPos(itemid, x, y, z);
 
-	new containerid = GetItemContainer(itemid);
+	new Container:containerid = GetItemContainer(itemid);
 
 	if(IsValidContainer(containerid))
 	{
 		/*
 			First, check if the container is a world-container with a button.
 		*/
-		new Button:buttonid = Button:0;//GetContainerButton(containerid); // TODO!
+		new Button:buttonid = INVALID_BUTTON_ID;//GetContainerButton(containerid); // TODO!
 
 		if(IsValidButton(buttonid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetButtonPos(buttonid, x, y, z);
 		}
@@ -38,7 +38,7 @@ stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1
 
 		if(IsValidItem(safeboxitemid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetItemAbsolutePos(safeboxitemid, x, y, z, parent, parenttype);
 		}
@@ -62,7 +62,7 @@ stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1
 
 		if(IsValidItem(bagitemid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetItemAbsolutePos(bagitemid, x, y, z, parent, parenttype);
 		}

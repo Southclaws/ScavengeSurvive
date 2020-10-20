@@ -24,7 +24,7 @@
 
 #include <YSI_Coding\y_hooks>
 
-hook OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
 	new Item:itemid = GetContainerSafeboxItem(containerid);
 
@@ -36,7 +36,7 @@ hook OnPlayerOpenContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, Container:containerid)
 {
 	new Item:itemid = GetContainerSafeboxItem(containerid);
 

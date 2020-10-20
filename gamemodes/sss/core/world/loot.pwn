@@ -242,7 +242,7 @@ stock Item:CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0
 	return itemid;
 }
 
-stock FillContainerWithLoot(containerid, slots, lootindex)
+stock FillContainerWithLoot(Container:containerid, slots, lootindex)
 {
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{

@@ -38,7 +38,7 @@ hook OnItemCreate(Item:itemid)
 	{
 		if(GetItemLootIndex(itemid) != -1)
 		{
-			new containerid = GetItemArrayDataAtCell(itemid, 1);
+			new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 1);
 
 			if(IsValidContainer(containerid))
 			{

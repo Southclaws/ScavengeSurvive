@@ -378,7 +378,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
 		{
-			if(!IsContainerEmpty(GetItemExtraData(itemid)))
+			if(!IsContainerEmpty(Container:GetItemExtraData(itemid)))
 				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET);
 		}
 
