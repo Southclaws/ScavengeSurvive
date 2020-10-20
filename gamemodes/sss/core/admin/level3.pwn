@@ -531,7 +531,7 @@ ACMD:additem[3](playerid, params[])
 	// create the item and hydrate its extradata array.
 	new
 		typemaxsize = GetItemTypeArrayDataSize(type),
-		itemid,
+		Item:itemid,
 		Float:x,
 		Float:y,
 		Float:z,
@@ -714,10 +714,10 @@ ACMD:delete[3](playerid, params[])
 	{
 		foreach(new i : itm_Index)
 		{
-			GetItemPos(i, ix, iy, iz);
+			GetItemPos(Item:i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyItem(i);
+				i = _:DestroyItem(Item:i);
 		}
 
 		return 1;
@@ -738,13 +738,13 @@ ACMD:delete[3](playerid, params[])
 	{
 		foreach(new i : itm_Index)
 		{
-			if(GetItemTypeDefenceType(GetItemType(i)) == INVALID_DEFENCE_TYPE)
+			if(GetItemTypeDefenceType(GetItemType(Item:i)) == INVALID_DEFENCE_TYPE)
 				continue;
 
-			GetItemPos(i, ix, iy, iz);
+			GetItemPos(Item:i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyItem(i);
+				i = _:DestroyItem(Item:i);
 		}
 
 		return 1;

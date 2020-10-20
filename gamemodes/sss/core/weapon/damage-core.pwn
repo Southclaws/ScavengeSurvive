@@ -54,10 +54,10 @@ Float:		wnd_bleedrate,
 static
 			dmg_LastHit[MAX_PLAYERS][MAX_PLAYER_NAME],
 			dmg_LastHitId[MAX_PLAYERS],
-			dmg_LastHitItem[MAX_PLAYERS],
+			Item:dmg_LastHitItem[MAX_PLAYERS],
 			dmg_LastHitBy[MAX_PLAYERS][MAX_PLAYER_NAME],
 			dmg_LastHitById[MAX_PLAYERS],
-			dmg_LastHitByItem[MAX_PLAYERS],
+			Item:dmg_LastHitByItem[MAX_PLAYERS],
 			dmg_DeltDamageTick[MAX_PLAYERS],
 			dmg_TookDamageTick[MAX_PLAYERS];
 
@@ -75,10 +75,10 @@ hook OnPlayerConnect(playerid)
 
 	dmg_LastHit[playerid][0] = EOS;
 	dmg_LastHitId[playerid] = INVALID_PLAYER_ID;
-	dmg_LastHitItem[playerid] = 0;
+	dmg_LastHitItem[playerid] = INVALID_ITEM_ID;
 	dmg_LastHitBy[playerid][0] = EOS;
 	dmg_LastHitById[playerid] = INVALID_PLAYER_ID;
-	dmg_LastHitByItem[playerid] = 0;
+	dmg_LastHitByItem[playerid] = INVALID_ITEM_ID;
 	dmg_DeltDamageTick[playerid] = 0;
 	dmg_TookDamageTick[playerid] = 0;
 
@@ -240,14 +240,14 @@ stock GetLastHitWeapon(playerid)
 	return dmg_LastHitId[playerid];
 }
 
-// dmg_LastHitItem
+// dmg_LastHitBy
 stock GetLastHitBy(playerid, name[MAX_PLAYER_NAME])
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	name[0] = EOS;
-	strcat(name, dmg_LastHitItem[playerid]);
+	strcat(name, dmg_LastHitBy[playerid]);
 
 	return 1;
 }
@@ -262,10 +262,10 @@ stock GetLastHitById(playerid)
 }
 
 // dmg_LastHitByItem
-stock GetLastHitByWeapon(playerid)
+stock Item:GetLastHitByWeapon(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return 0;
+		return INVALID_ITEM_ID;
 
 	return dmg_LastHitByItem[playerid];
 }

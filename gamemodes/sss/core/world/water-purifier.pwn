@@ -33,7 +33,7 @@ hook OnItemTypeDefined(uname[])
 		MachineType = DefineMachineType(GetItemTypeFromUniqueName("WaterMachine"), 12);
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(containerid, Item:itemid, playerid)
 {
 	if(playerid == INVALID_PLAYER_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -55,7 +55,7 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_machine_isItemBottledSeawater(itemid)
+_machine_isItemBottledSeawater(Item:itemid)
 {
 	if(GetItemType(itemid) != item_Bottle)
 		return false;
@@ -69,13 +69,13 @@ _machine_isItemBottledSeawater(itemid)
 	return true;
 }
 
-hook OnMachineFinish(itemid, containerid)
+hook OnMachineFinish(Item:itemid, containerid)
 {
 	if(GetItemTypeMachineType(GetItemType(itemid)) != MachineType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		subitemid,
+		Item:subitemid,
 		Float:amounts[MAX_MACHINE_ITEMS],
 		itemcount;
 

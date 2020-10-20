@@ -215,7 +215,7 @@ UpdatePlayerGear(playerid, show = 1)
 {
 	new
 		tmp[5 + ITM_MAX_NAME + ITM_MAX_TEXT],
-		itemid;
+		Item:itemid;
 
 	itemid = GetPlayerHatItem(playerid);
 	if(IsValidItem(itemid))
@@ -378,7 +378,7 @@ hook OnItemRemoveFromCnt(containerid, slotid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemoveFromInv(playerid, itemid, slot)
+hook OnItemRemoveFromInv(playerid, Item:itemid, slot)
 {
 	dbg("global", CORE, "[OnItemRemoveFromInv] in /gamemodes/sss/core/char/inventory.pwn");
 
@@ -387,7 +387,7 @@ hook OnItemRemoveFromInv(playerid, itemid, slot)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddToInventory(playerid, itemid, slot)
+hook OnItemAddToInventory(playerid, Item:itemid, slot)
 {
 	dbg("global", CORE, "[OnItemAddToInventory] in /gamemodes/sss/core/char/inventory.pwn");
 
@@ -399,7 +399,7 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromPlayer(playerid, itemid)
+hook OnItemRemovedFromPlayer(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnItemRemovedFromPlayer] in /gamemodes/sss/core/char/inventory.pwn");
 
@@ -437,7 +437,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 _inv_HandleGearSlotClick_Head(playerid)
 {
-	new itemid = GetPlayerHatItem(playerid);
+	new Item:itemid = GetPlayerHatItem(playerid);
 	
 	if(!IsValidItem(itemid))
 		return 0;
@@ -516,7 +516,7 @@ _inv_HandleGearSlotClick_Head(playerid)
 
 _inv_HandleGearSlotClick_Face(playerid)
 {
-	new itemid = GetPlayerMaskItem(playerid);
+	new Item:itemid = GetPlayerMaskItem(playerid);
 	
 	if(!IsValidItem(itemid))
 		return 0;
@@ -595,7 +595,7 @@ _inv_HandleGearSlotClick_Face(playerid)
 
 _inv_HandleGearSlotClick_Hand(playerid)
 {
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 	
 	if(!IsValidItem(itemid))
 		return 0;
@@ -646,7 +646,7 @@ _inv_HandleGearSlotClick_Hand(playerid)
 
 _inv_HandleGearSlotClick_Hols(playerid)
 {
-	new itemid = GetPlayerHolsterItem(playerid);
+	new Item:itemid = GetPlayerHolsterItem(playerid);
 	
 	if(!IsValidItem(itemid))
 		return 0;
@@ -701,7 +701,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 		return 0;
 
 	new
-		itemid = GetPlayerArmourItem(playerid),
+		Item:itemid = GetPlayerArmourItem(playerid),
 		containerid = GetPlayerCurrentContainer(playerid);
 
 	if(IsValidContainer(containerid))
@@ -772,7 +772,7 @@ _inv_HandleGearSlotClick_Tors(playerid)
 
 _inv_HandleGearSlotClick_Back(playerid)
 {
-	new itemid = GetPlayerBagItem(playerid);
+	new Item:itemid = GetPlayerBagItem(playerid);
 	
 	if(!IsValidItem(itemid))
 		return 0;
@@ -839,7 +839,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 			{
 				new
 					slot,
-					itemid;
+					Item:itemid;
 
 				slot = GetPlayerContainerSlot(playerid);
 				itemid = GetContainerSlotItem(containerid, slot);

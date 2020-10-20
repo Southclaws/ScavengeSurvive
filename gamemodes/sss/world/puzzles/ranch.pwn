@@ -30,13 +30,13 @@
 
 new
 	Button:RanchPcButton,
-	RanchHdd,
+	Item:RanchHdd,
 	RanchPcState,
 	RanchPcObj,
 	RanchPcPlayerViewing[MAX_PLAYERS],
 
 	Button:QuarryDoor,
-	QuarryDoorKey,
+	Item:QuarryDoorKey,
 	QuarryDoorState,
 
 	Button:CaveDoor,
@@ -198,7 +198,7 @@ hook OnButtonPress(playerid, Button:buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
 

@@ -48,14 +48,14 @@ static
 			hols_TypeData[MAX_HOLSTER_ITEM_TYPES][E_HOLSTER_TYPE_DATA],
 			hols_Total,
 			hols_ItemTypeHolsterDataID[ITM_MAX_TYPES] = {-1, ...},
-			hols_Item[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+Item:		hols_Item[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 			hols_LastHolster[MAX_PLAYERS];
 
 
-forward OnPlayerHolsterItem(playerid, itemid);
-forward OnPlayerHolsteredItem(playerid, itemid);
-forward OnPlayerUnHolsterItem(playerid, itemid);
-forward OnPlayerUnHolsteredItem(playerid, itemid);
+forward OnPlayerHolsterItem(playerid, Item:itemid);
+forward OnPlayerHolsteredItem(playerid, Item:itemid);
+forward OnPlayerUnHolsterItem(playerid, Item:itemid);
+forward OnPlayerUnHolsteredItem(playerid, Item:itemid);
 
 
 /*==============================================================================
@@ -105,7 +105,7 @@ stock SetItemTypeHolsterable(ItemType:itemtype, boneid, Float:x, Float:y, Float:
 	return hols_Total++;
 }
 
-stock SetPlayerHolsterItem(playerid, itemid)
+stock SetPlayerHolsterItem(playerid, Item:itemid)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -166,7 +166,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		if(_HolsterChecks(playerid))
 		{
-			new itemid = GetPlayerItem(playerid);
+			new Item:itemid = GetPlayerItem(playerid);
 
 			new Float:z;
 
@@ -188,7 +188,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-hook OnItemAddToInventory(playerid, itemid, slot)
+hook OnItemAddToInventory(playerid, Item:itemid, slot)
 {
 	dbg("global", CORE, "[OnItemAddToInventory] in /gamemodes/sss/core/char/holster.pwn");
 
@@ -249,7 +249,7 @@ _HolsterChecks(playerid)
 _HolsterItem(playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -261,11 +261,11 @@ _HolsterItem(playerid)
 	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
 		return 0;
 
-	if(CallLocalFunction("OnPlayerHolsterItem", "dd", playerid, itemid))
+	if(CallLocalFunction("OnPlayerHolsterItem", "dd", playerid, _:itemid))
 		return 0;
 
 	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
-	defer HolsterItemDelay(playerid, itemid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
+	defer HolsterItemDelay(playerid, _:itemid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
 	hols_LastHolster[playerid] = GetTickCount();
 
 	return 1;
@@ -275,26 +275,26 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 {
 	#pragma unused time
 
-	if(!IsValidItem(itemid))
+	if(!IsValidItem(Item:itemid))
 		return 0;
 
-	new currentitem = hols_Item[playerid];
+	new Item:currentitem = hols_Item[playerid];
 
-	if(itemid == currentitem)
+	if(Item:itemid == currentitem)
 	{
 		err("Player %p (%d) attempting to holster item (%d) that's already holstered!", playerid, playerid, itemid);
 		RemoveCurrentItem(playerid);
 		return 0;
 	}
 
-	SetPlayerHolsterItem(playerid, itemid);
+	SetPlayerHolsterItem(playerid, Item:itemid);
 	ClearAnimations(playerid);
 
 	if(IsValidItem(currentitem))
 	{
 		GiveWorldItemToPlayer(playerid, currentitem);
 		ShowActionText(playerid, ls(playerid, "HOLSTERSWAP", true), 3000, 70);
-		CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, currentitem);
+		CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, _:currentitem);
 	}
 	else
 	{
@@ -316,7 +316,7 @@ _UnholsterItem(playerid)
 	if(hols_ItemTypeHolsterDataID[itemtype] == -1)
 		return 0;
 
-	if(CallLocalFunction("OnPlayerUnHolsterItem", "dd", playerid, hols_Item[playerid]))
+	if(CallLocalFunction("OnPlayerUnHolsterItem", "dd", playerid, _:hols_Item[playerid]))
 		return 0;
 
 	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
@@ -337,14 +337,14 @@ timer UnholsterItemDelay[time](playerid, time)
 	GiveWorldItemToPlayer(playerid, hols_Item[playerid]);
 
 	ShowActionText(playerid, ls(playerid, "HOLSTEREQUI", true), 3000, 70);
-	CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, hols_Item[playerid]);
+	CallLocalFunction("OnPlayerUnHolsteredItem", "dd", playerid, _:hols_Item[playerid]);
 
 	RemovePlayerHolsterItem(playerid);
 
 	return 1;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/char/holster.pwn");
 
@@ -354,7 +354,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerGiveItem] in /gamemodes/sss/core/char/holster.pwn");
 
@@ -375,10 +375,10 @@ hook OnPlayerGiveItem(playerid, targetid, itemid)
 ==============================================================================*/
 
 
-stock GetPlayerHolsterItem(playerid)
+stock Item:GetPlayerHolsterItem(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return 0;
+		return INVALID_ITEM_ID;
 
 	return hols_Item[playerid];
 }

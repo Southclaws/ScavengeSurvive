@@ -104,7 +104,7 @@ stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedra
 ==============================================================================*/
 
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/weapon/ammunition.pwn");
 
@@ -127,7 +127,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/weapon/ammunition.pwn");
 

@@ -40,11 +40,11 @@ enum
 }
 
 
-stock CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z, Float:rz)
+stock Item:CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z, Float:rz)
 {
 	new
 		name[MAX_PLAYER_NAME],
-		itemid;
+		Item:itemid;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz);
@@ -63,7 +63,7 @@ stock CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z, Floa
 	return itemid;
 }
 
-ShowTorsoDetails(playerid, itemid)
+ShowTorsoDetails(playerid, Item:itemid)
 {
 	if(GetItemArrayDataSize(itemid) < 3)
 		return 0;

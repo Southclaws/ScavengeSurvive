@@ -26,7 +26,7 @@
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
-	new itemid = GetContainerSafeboxItem(containerid);
+	new Item:itemid = GetContainerSafeboxItem(containerid);
 
 	if(GetItemType(itemid) == item_Locker)
 	{
@@ -38,7 +38,7 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
-	new itemid = GetContainerSafeboxItem(containerid);
+	new Item:itemid = GetContainerSafeboxItem(containerid);
 
 	if(GetItemType(itemid) == item_Locker)
 	{
@@ -48,7 +48,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Locker)
 	{

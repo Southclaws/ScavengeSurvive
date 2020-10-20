@@ -71,7 +71,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawTextSize			(playerid, ToolTipText[playerid], 520.000000, 0.000000);
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 
@@ -96,7 +96,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	}
 }
 
-hook OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerDropItem] in /gamemodes/sss/core/player/tool-tips.pwn");
 

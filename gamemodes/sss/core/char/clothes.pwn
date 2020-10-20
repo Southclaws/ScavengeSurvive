@@ -46,7 +46,7 @@ static
 
 static
 			skin_CurrentSkin[MAX_PLAYERS],
-			skin_CurrentlyUsing[MAX_PLAYERS];
+Item:		skin_CurrentlyUsing[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -74,7 +74,7 @@ DefineClothesType(modelid, const name[MAX_SKIN_NAME], gender, Float:spawnchance,
 	return skin_Total++;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/clothes.pwn");
 
@@ -102,7 +102,7 @@ hook OnItemCreate(itemid)
 }
 
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/clothes.pwn");
 
@@ -131,7 +131,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys == 16)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_Clothes)
 		{
@@ -156,7 +156,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-StartUsingClothes(playerid, itemid)
+StartUsingClothes(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 3000);
 	CancelPlayerMovement(playerid);

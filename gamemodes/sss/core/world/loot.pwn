@@ -50,7 +50,7 @@ Float:		loot_weight,
 			loot_size,
 			loot_index,
 
-			loot_items[MAX_ITEMS_PER_SPAWN],
+Item:		loot_items[MAX_ITEMS_PER_SPAWN],
 			loot_total
 }
 
@@ -147,7 +147,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		ItemType:itemtype,
-		itemid,
+		Item:itemid,
 		Float:rot = frandom(360.0);
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
@@ -179,7 +179,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 		// Create the item
 		itemid = GetNextItemID();
 
-		if(!(0 <= itemid < ITM_MAX))
+		if(!(Item:0 <= itemid < ITM_MAX))
 		{
 			err("Item limit reached while generating loot.");
 			return -1;
@@ -199,12 +199,12 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 	return loot_SpawnTotal++;
 }
 
-stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0)
+stock Item:CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, worldid = 0, interiorid = 0)
 {
 	if(!(0 <= lootindex < loot_IndexTotal))
 	{
 		err("Loot index (%d) is invalid.", lootindex);
-		return -1;
+		return INVALID_ITEM_ID;
 	}
 
 	new
@@ -215,7 +215,7 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
 
 	if(samplelistsize == 0)
-		return -1;
+		return INVALID_ITEM_ID;
 
 	// Generate an item from the sample list
 	if(!_loot_PickFromSampleList(samplelist, samplelistsize, itemtype))
@@ -230,9 +230,9 @@ stock CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0, wor
 	if(loot_ItemTypeLimit[itemtype] > 0 && GetItemTypeCount(itemtype) > loot_ItemTypeLimit[itemtype])
 		return INVALID_ITEM_ID;
 
-	new itemid = GetNextItemID();
+	new Item:itemid = GetNextItemID();
 
-	if(!(0 <= itemid < ITM_MAX))
+	if(!(Item:0 <= itemid < ITM_MAX))
 		return INVALID_ITEM_ID;
 
 	loot_ItemLootIndex[itemid] = lootindex;
@@ -263,7 +263,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		ItemType:samplelist[MAX_LOOT_INDEX_ITEMS],
 		samplelistsize,
 		items,
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
@@ -293,7 +293,7 @@ stock FillContainerWithLoot(containerid, slots, lootindex)
 		// Create the item
 		itemid = GetNextItemID();
 
-		if(!(0 <= itemid < ITM_MAX))
+		if(!(Item:0 <= itemid < ITM_MAX))
 		{
 			err("Item limit reached while generating loot.");
 			return -1;
@@ -388,7 +388,7 @@ _loot_ContainerItemsOfType(containerid, ItemType:itemtype)
 	return count;
 }
 */
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemDestroy] in /gamemodes/sss/core/world/loot.pwn");
 
@@ -410,7 +410,7 @@ stock IsValidLootIndex(index)
 	return (0 <= index < loot_IndexTotal);
 }
 
-stock GetItemLootIndex(itemid)
+stock GetItemLootIndex(Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return -1;

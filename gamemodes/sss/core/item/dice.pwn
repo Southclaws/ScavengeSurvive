@@ -34,7 +34,7 @@ new
 	};
 
 
-hook OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/item/dice.pwn");
 
@@ -44,7 +44,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 
 		GetPlayerFacingAngle(playerid, angle);
 
-		defer RollDice(itemid, angle);
+		defer RollDice(_:itemid, angle);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -56,16 +56,16 @@ timer RollDice[50](itemid, Float:direction)
 		Float:x,
 		Float:y,
 		Float:z,
-		objectid = GetItemObjectID(itemid),
+		objectid = GetItemObjectID(Item:itemid),
 		side = random(6);
 
-	GetItemPos(itemid, x, y, z);
+	GetItemPos(Item:itemid, x, y, z);
 
 	x += (0.4 * floatsin(-direction, degrees));
 	y += (0.4 * floatcos(-direction, degrees));
 	z += 0.136;
 
-	SetItemRot(itemid, DiceRotationSets[5 - side][0], DiceRotationSets[5 - side][1], random(360) * 1.0);
+	SetItemRot(Item:itemid, DiceRotationSets[5 - side][0], DiceRotationSets[5 - side][1], random(360) * 1.0);
 
 	MoveDynamicObject(objectid, x, y, z, 2.0, DiceRotationSets[side][0], DiceRotationSets[side][1], random(360) * 1.0);
 
@@ -74,5 +74,5 @@ timer RollDice[50](itemid, Float:direction)
 
 timer UpdateDiceItemPos[500](itemid, Float:x, Float:y, Float:z)
 {
-	SetItemPos(itemid, x, y, z);
+	SetItemPos(Item:itemid, x, y, z);
 }

@@ -33,7 +33,7 @@ hook OnItemTypeDefined(uname[])
 		MachineType = DefineMachineType(GetItemTypeFromUniqueName("RefineMachine"), 12);
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(containerid, Item:itemid, playerid)
 {
 	if(playerid == INVALID_PLAYER_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -55,13 +55,13 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnMachineFinish(itemid, containerid)
+hook OnMachineFinish(Item:itemid, containerid)
 {
 	if(GetItemTypeMachineType(GetItemType(itemid)) != MachineType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		subitemid,
+		Item:subitemid,
 		itemcount;
 
 	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)

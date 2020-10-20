@@ -105,7 +105,7 @@ ShowLightList(playerid, vehicleid)
 			return 0;
 
 		GetVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights, tires);
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(listitem == 0)
 		{

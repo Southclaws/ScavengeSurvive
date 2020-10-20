@@ -148,7 +148,7 @@ ACMD:nametags[5](playerid, params[])
 ACMD:gotoitem[4](playerid, params[])
 {
 	new
-		itemid = strval(params),
+		Item:itemid = Item:strval(params),
 		Float:x,
 		Float:y,
 		Float:z;
@@ -196,10 +196,10 @@ ACMD:addloot[5](playerid, params[])
 ACMD:setitemhp[5](playerid, params[])
 {
 	new
-		itemid,
+		Item:itemid,
 		hitpoints;
 
-	if(sscanf(params, "dd", itemid, hitpoints))
+	if(sscanf(params, "dd", _:itemid, hitpoints))
 	{
 		ChatMsg(playerid, YELLOW, " >  Usage: /setitemhp [itemid] [hitpoints]");
 		return 1;

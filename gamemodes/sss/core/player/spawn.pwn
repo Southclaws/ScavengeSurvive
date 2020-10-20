@@ -299,8 +299,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetAccountTotalSpawns(name, GetPlayerTotalSpawns(playerid));
 
 	new
-		backpackitem,
-		tmpitem,
+		Item:backpackitem,
+		Item:tmpitem,
 		Float:x,
 		Float:y,
 		Float:z,

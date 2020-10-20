@@ -53,8 +53,8 @@ static
 			mach_ItemTypeMachine[ITM_MAX_TYPES] = {-1, ...},
 
 			mach_ContainerSize[MAX_MACHINE_TYPE] = {0, ...},
-			mach_ContainerMachineItem[CNT_MAX] = {INVALID_ITEM_ID, ...},
-			mach_CurrentMachine[MAX_PLAYERS],
+Item:		mach_ContainerMachineItem[CNT_MAX] = {INVALID_ITEM_ID, ...},
+Item:		mach_CurrentMachine[MAX_PLAYERS],
 			mach_MachineInteractTick[MAX_PLAYERS],
 Timer:		mach_HoldTimer[MAX_PLAYERS];
 
@@ -101,7 +101,7 @@ stock DefineMachineType(ItemType:itemtype, containersize)
 ==============================================================================*/
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	new machinetype = mach_ItemTypeMachine[GetItemType(itemid)];
 	if(machinetype == -1)
@@ -126,7 +126,7 @@ hook OnItemCreate(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(itemid)] == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -136,7 +136,7 @@ hook OnItemCreateInWorld(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(itemid)] != -1)
 	{
@@ -147,7 +147,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(withitemid)] != -1)
 	{
@@ -158,7 +158,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_mach_PlayerUseMachine(playerid, itemid)
+_mach_PlayerUseMachine(playerid, Item:itemid)
 {
 	if(GetItemArrayDataAtCell(itemid, E_MACHINE_COOKING))
 	{
@@ -211,12 +211,12 @@ _mach_TapInteract(playerid)
 		return;
 
 	Logger_Dbg("machine", "machine interact tap",
-		Logger_I("id", mach_CurrentMachine[playerid]),
+		Logger_I("id", _:mach_CurrentMachine[playerid]),
 		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_CONTAINER_ID)),
 		Logger_I("playerid", playerid));
 
 	// return 1 on OnPlayerUseMachine to cancel display of container inventory.
-	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 0);
+	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, _:mach_CurrentMachine[playerid], 0);
 	if(!ret)
 	{
 		// TODO: Crowbar to deconstruct machine.
@@ -239,12 +239,12 @@ timer _mach_HoldInteract[250](playerid)
 		return;
 
 	Logger_Dbg("machine", "machine interact hold",
-		Logger_I("id", mach_CurrentMachine[playerid]),
+		Logger_I("id", _:mach_CurrentMachine[playerid]),
 		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], 0)),
 		Logger_I("playerid", playerid));
 
 	// if zero return, do refuel or show menu.
-	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 1);
+	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, _:mach_CurrentMachine[playerid], 1);
 	if(!ret)
 	{
 		new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
@@ -298,15 +298,15 @@ timer _mach_HoldInteract[250](playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	if(mach_CurrentMachine[playerid] != -1)
+	if(mach_CurrentMachine[playerid] != INVALID_ITEM_ID)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 		if(GetItemTypeLiquidContainerType(GetItemType(itemid)) != -1)
 		{
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
 				StopHoldAction(playerid);
-				mach_CurrentMachine[playerid] = -1;
+				mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
@@ -315,7 +315,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		if(fuel <= 0.0)
 		{
 			StopHoldAction(playerid);
-			mach_CurrentMachine[playerid] = -1;
+			mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 			HideActionText(playerid);
 		}
 		else
@@ -333,7 +333,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_machine_StartCooking(itemid) {
+_machine_StartCooking(Item:itemid) {
 	new data[e_MACHINE_DATA];
 	GetItemArrayData(itemid, data);
 
@@ -369,7 +369,7 @@ _machine_StartCooking(itemid) {
 
 	SetItemArrayData(itemid, data, _:e_MACHINE_DATA);
 
-	defer _machine_FinishCooking(itemid, cooktime);
+	defer _machine_FinishCooking(_:itemid, cooktime);
 
 	return cooktime;
 }
@@ -378,14 +378,14 @@ timer _machine_FinishCooking[cooktime](itemid, cooktime)
 {
 #pragma unused cooktime
 	new data[e_MACHINE_DATA];
-	GetItemArrayData(itemid, data);
+	GetItemArrayData(Item:itemid, data);
 
 	DestroyDynamicObject(data[E_MACHINE_SMOKE_PARTICLE]);
 
 	data[E_MACHINE_FUEL] -= GetContainerItemCount(data[E_MACHINE_CONTAINER_ID]) * MACHINE_FUEL_USAGE;
 	data[E_MACHINE_COOKING] = false;
 	data[E_MACHINE_SMOKE_PARTICLE] = INVALID_OBJECT_ID;
-	SetItemArrayData(itemid, data, _:e_MACHINE_DATA);
+	SetItemArrayData(Item:itemid, data, _:e_MACHINE_DATA);
 
 	CallLocalFunction("OnMachineFinish", "dd", itemid, data[E_MACHINE_CONTAINER_ID]);
 }
@@ -417,19 +417,19 @@ stock GetMachineTypeContainerSize(machinetype)
 }
 
 // mach_ContainerMachineItem
-stock GetContainerMachineItem(containerid)
+stock Item:GetContainerMachineItem(containerid)
 {
 	if(!IsValidContainer(containerid))
-		return -1;
+		return INVALID_ITEM_ID;
 
 	return mach_ContainerMachineItem[containerid];
 }
 
 // mach_CurrentMachine
-stock GetPlayerCurrentMachine(playerid)
+stock Item:GetPlayerCurrentMachine(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return -1;
+		return INVALID_ITEM_ID;
 
 	return mach_CurrentMachine[playerid];
 }

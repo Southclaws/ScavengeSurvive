@@ -81,7 +81,7 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 	return fuel_Total++;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/world/fuel.pwn");
 
@@ -107,7 +107,7 @@ hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerRelBtnWithItem(playerid, Button:buttonid, itemid)
+hook OnPlayerRelBtnWithItem(playerid, Button:buttonid, Item:itemid)
 {
 	if(fuel_CurrentFuelOutlet[playerid] != INVALID_FUEL_OUTLET_ID)
 	{
@@ -179,7 +179,7 @@ StopRefuellingFuelCan(playerid)
 
 StartRefuellingVehicle(playerid, vehicleid)
 {
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(GetItemTypeLiquidContainerType(GetItemType(itemid)) == -1)
 		return 0;
@@ -222,7 +222,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	if(IsValidVehicle(fuel_CurrentlyRefuelling[playerid]))
 	{
 		new
-			itemid = GetPlayerItem(playerid),
+			Item:itemid = GetPlayerItem(playerid),
 			Float:canfuel,
 			Float:transfer,
 			Float:vehiclefuel,
@@ -271,7 +271,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	else if(fuel_CurrentFuelOutlet[playerid] != INVALID_FUEL_OUTLET_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			liqcont,
 			Float:transfer,
 			Float:amount,
@@ -318,7 +318,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerDrink(playerid, itemid)
+hook OnPlayerDrink(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerDrink] in /gamemodes/sss/core/world/fuel.pwn");
 

@@ -1,4 +1,4 @@
-stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, parenttype[32] = "")
+stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1, parenttype[32] = "")
 {
 	if(IsItemInWorld(itemid))
 		return GetItemPos(itemid, x, y, z);
@@ -34,7 +34,7 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 		/*
 			Safebox
 		*/
-		new safeboxitemid = GetContainerSafeboxItem(containerid);
+		new Item:safeboxitemid = GetContainerSafeboxItem(containerid);
 
 		if(IsValidItem(safeboxitemid))
 		{
@@ -58,7 +58,7 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 		/*
 			Bags in the game world
 		*/
-		new bagitemid = GetContainerBagItem(containerid);
+		new Item:bagitemid = GetContainerBagItem(containerid);
 
 		if(IsValidItem(bagitemid))
 		{
@@ -95,7 +95,7 @@ static
 
 ACMD:itempostest[5](playerid, params[])
 {
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(IsValidItem(itemid))
 	{

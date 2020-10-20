@@ -559,17 +559,19 @@ Logout(playerid, docombatlogcheck = 1)
 				lastattacker,
 				lastweapon;
 
-			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+			if(IsPlayerCombatLogging(playerid, lastattacker, Item:lastweapon))
 			{
 				log("[LOGOUT] Player '%p' combat logged!", playerid);
 				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
+				// TODO: make this correct, lastweapon is an item ID but
+				// OnPlayerDeath takes a GTA weapon ID.
 				OnPlayerDeath(playerid, lastattacker, lastweapon);
 			}
 		}
 	}
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);

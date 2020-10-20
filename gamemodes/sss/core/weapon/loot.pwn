@@ -25,7 +25,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/weapon/core.pwn");
 

@@ -74,27 +74,27 @@ stock IsBaseWeaponDriveby(weaponid)
 	return 0;
 }
 
-stock IsWeaponMelee(itemid)
+stock IsWeaponMelee(Item:itemid)
 {
 	return IsBaseWeaponMelee(GetItemWeaponBaseWeapon(GetItemTypeWeapon(GetItemType(itemid))));
 }
 
-stock IsWeaponThrowable(itemid)
+stock IsWeaponThrowable(Item:itemid)
 {
 	return IsBaseWeaponThrowable(GetItemWeaponBaseWeapon(GetItemTypeWeapon(GetItemType(itemid))));
 }
 
-stock IsWeaponClipBased(itemid)
+stock IsWeaponClipBased(Item:itemid)
 {
 	return IsBaseWeaponClipBased(GetItemWeaponBaseWeapon(GetItemTypeWeapon(GetItemType(itemid))));
 }
 
-stock IsWeaponNoAmmo(itemid)
+stock IsWeaponNoAmmo(Item:itemid)
 {
 	return IsBaseWeaponNoAmmo(GetItemWeaponBaseWeapon(GetItemTypeWeapon(GetItemType(itemid))));
 }
 
-stock IsWeaponDriveby(itemid)
+stock IsWeaponDriveby(Item:itemid)
 {
 	return IsBaseWeaponDriveby(GetItemWeaponBaseWeapon(GetItemTypeWeapon(GetItemType(itemid))));
 }

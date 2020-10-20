@@ -69,19 +69,19 @@ static
 
 static
 			def_TweakArrow[MAX_PLAYERS] = {INVALID_OBJECT_ID, ...},
-			def_CurrentDefenceItem[MAX_PLAYERS],
-			def_CurrentDefenceEdit[MAX_PLAYERS],
-			def_CurrentDefenceOpen[MAX_PLAYERS],
+Item:		def_CurrentDefenceItem[MAX_PLAYERS],
+Item:		def_CurrentDefenceEdit[MAX_PLAYERS],
+Item:		def_CurrentDefenceOpen[MAX_PLAYERS],
 			def_LastPassEntry[MAX_PLAYERS],
 			def_Cooldown[MAX_PLAYERS],
 			def_PassFails[MAX_PLAYERS];
 
 
-forward OnDefenceCreate(itemid);
-forward OnDefenceDestroy(itemid);
-forward OnDefenceModified(itemid);
-forward OnDefenceMove(itemid);
-forward OnPlayerInteractDefence(playerid, itemid);
+forward OnDefenceCreate(Item:itemid);
+forward OnDefenceDestroy(Item:itemid);
+forward OnDefenceModified(Item:itemid);
+forward OnDefenceMove(Item:itemid);
+forward OnPlayerInteractDefence(playerid, Item:itemid);
 
 
 /*==============================================================================
@@ -94,8 +94,8 @@ forward OnPlayerInteractDefence(playerid, itemid);
 hook OnPlayerConnect(playerid)
 {
 	def_CurrentDefenceItem[playerid] = INVALID_ITEM_ID;
-	def_CurrentDefenceEdit[playerid] = -1;
-	def_CurrentDefenceOpen[playerid] = -1;
+	def_CurrentDefenceEdit[playerid] = INVALID_ITEM_ID;
+	def_CurrentDefenceOpen[playerid] = INVALID_ITEM_ID;
 	def_LastPassEntry[playerid] = 0;
 	def_Cooldown[playerid] = 2000;
 	def_PassFails[playerid] = 0;
@@ -127,7 +127,7 @@ stock DefineDefenceItem(ItemType:itemtype, Float:v_rx, Float:v_ry, Float:v_rz, F
 	return def_TypeTotal++;
 }
 
-ActivateDefenceItem(itemid)
+ActivateDefenceItem(Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -170,7 +170,7 @@ ActivateDefenceItem(itemid)
 	return 0;
 }
 
-DeconstructDefence(itemid)
+DeconstructDefence(Item:itemid)
 {
 	new
 		Float:x,
@@ -198,7 +198,7 @@ DeconstructDefence(itemid)
 	SetItemRot(itemid, 0.0, 0.0, 0.0, true);
 
 	SetItemArrayDataAtCell(itemid, 0, 0);
-	CallLocalFunction("OnDefenceDestroy", "d", itemid);
+	CallLocalFunction("OnDefenceDestroy", "d", _:itemid);
 }
 
 
@@ -209,7 +209,7 @@ DeconstructDefence(itemid)
 ==============================================================================*/
 
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -225,7 +225,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return 1;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 
 	new ItemType:withitemtype = GetItemType(withitemid);
@@ -256,7 +256,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-StartBuildingDefence(playerid, itemid)
+StartBuildingDefence(playerid, Item:itemid)
 {
 	new itemtypename[ITM_MAX_NAME];
 
@@ -298,7 +298,7 @@ StopBuildingDefence(playerid)
 	return;
 }
 
-_InteractDefence(playerid, itemid)
+_InteractDefence(playerid, Item:itemid)
 {
 	new data[e_DEFENCE_DATA];
 
@@ -310,7 +310,7 @@ _InteractDefence(playerid, itemid)
 		{
 			if(data[def_pass] == 0)
 			{
-				if(def_CurrentDefenceEdit[playerid] != -1)
+				if(def_CurrentDefenceEdit[playerid] != INVALID_ITEM_ID)
 				{
 					HideKeypad(playerid);
 					Dialog_Hide(playerid);
@@ -321,7 +321,7 @@ _InteractDefence(playerid, itemid)
 			}
 			else
 			{
-				if(def_CurrentDefenceOpen[playerid] != -1)
+				if(def_CurrentDefenceOpen[playerid] != INVALID_ITEM_ID)
 				{
 					HideKeypad(playerid);
 					Dialog_Hide(playerid);
@@ -337,7 +337,7 @@ _InteractDefence(playerid, itemid)
 		{
 			if(data[def_pass] == 0)
 			{
-				if(def_CurrentDefenceEdit[playerid] != -1)
+				if(def_CurrentDefenceEdit[playerid] != INVALID_ITEM_ID)
 				{
 					HideKeypad(playerid);
 					Dialog_Hide(playerid);
@@ -348,7 +348,7 @@ _InteractDefence(playerid, itemid)
 			}
 			else
 			{
-				if(def_CurrentDefenceOpen[playerid] != -1)
+				if(def_CurrentDefenceOpen[playerid] != INVALID_ITEM_ID)
 				{
 					HideKeypad(playerid);
 					Dialog_Hide(playerid);
@@ -363,14 +363,14 @@ _InteractDefence(playerid, itemid)
 		else
 		{
 			ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
-			defer MoveDefence(itemid, playerid);
+			defer MoveDefence(_:itemid, playerid);
 		}
 	}
 
-	CallLocalFunction("OnPlayerInteractDefence", "dd", playerid, itemid);
+	CallLocalFunction("OnPlayerInteractDefence", "dd", playerid, _:itemid);
 }
 
-_InteractDefenceWithItem(playerid, itemid, tool)
+_InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 {
 	new
 		defencetype,
@@ -486,7 +486,7 @@ hook OnHoldActionFinish(playerid)
 			return Y_HOOKS_BREAK_RETURN_0;
 
 		new
-			itemid = def_CurrentDefenceItem[playerid],
+			Item:itemid = def_CurrentDefenceItem[playerid],
 			ItemType:itemtype,
 			pose;
 
@@ -520,7 +520,7 @@ hook OnHoldActionFinish(playerid)
 		GetItemRot(itemid, rx, ry, rz);
 
 		log("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
-			playerid, itemid, geid, GetItemTypeModel(GetItemType(itemid)), x, y, z, rx, ry, rz);
+			playerid, _:itemid, geid, GetItemTypeModel(GetItemType(itemid)), x, y, z, rx, ry, rz);
 
 		StopBuildingDefence(playerid);
 		TweakItem(playerid, itemid);
@@ -532,10 +532,10 @@ hook OnHoldActionFinish(playerid)
 		return Y_HOOKS_BREAK_RETURN_0;
 	}
 
-	if(def_CurrentDefenceEdit[playerid] != -1)
+	if(def_CurrentDefenceEdit[playerid] != INVALID_ITEM_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);
@@ -545,7 +545,7 @@ hook OnHoldActionFinish(playerid)
 		{
 			ShowActionText(playerid, ls(playerid, "DEFINSTMOTO"));
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], true, def_motor);
-			CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
+			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
 
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
@@ -556,7 +556,7 @@ hook OnHoldActionFinish(playerid)
 			ShowActionText(playerid, ls(playerid, "DEFINSTKEYP"));
 			ShowSetPassDialog_Keypad(playerid);
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], 1, def_keypad);
-			CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
+			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
 
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
@@ -567,7 +567,7 @@ hook OnHoldActionFinish(playerid)
 			ShowActionText(playerid, ls(playerid, "DEFINSTADKP"));
 			ShowSetPassDialog_KeypadAdv(playerid);
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], 2, def_keypad);
-			CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
+			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
 
 			DestroyItem(itemid);
 			ClearAnimations(playerid);
@@ -592,7 +592,7 @@ hook OnHoldActionFinish(playerid)
 			DeconstructDefence(def_CurrentDefenceEdit[playerid]);
 
 			log("[CROWBAR] %p broke defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
-				playerid, def_CurrentDefenceEdit[playerid], geid,
+				playerid, _:def_CurrentDefenceEdit[playerid], geid,
 				GetItemTypeModel(GetItemType(def_CurrentDefenceEdit[playerid])), x, y, z, rx, ry, rz);
 
 			/*
@@ -605,7 +605,7 @@ hook OnHoldActionFinish(playerid)
 			*/
 
 			ClearAnimations(playerid);
-			def_CurrentDefenceEdit[playerid] = -1;
+			def_CurrentDefenceEdit[playerid] = INVALID_ITEM_ID;
 		}
 
 		return Y_HOOKS_BREAK_RETURN_0;
@@ -618,13 +618,13 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	if(keypadid == 100)
 	{
-		if(def_CurrentDefenceEdit[playerid] != -1)
+		if(def_CurrentDefenceEdit[playerid] != INVALID_ITEM_ID)
 		{
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], code, def_pass);
-			CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
+			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
 			HideKeypad(playerid);
 
-			def_CurrentDefenceEdit[playerid] = -1;
+			def_CurrentDefenceEdit[playerid] = INVALID_ITEM_ID;
 
 			if(code == 0)
 				ChatMsgLang(playerid, YELLOW, "DEFCODEZERO");
@@ -632,13 +632,13 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
-		if(def_CurrentDefenceOpen[playerid] != -1)
+		if(def_CurrentDefenceOpen[playerid] != INVALID_ITEM_ID)
 		{
 			if(code == match)
 			{
 				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
-				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
-				def_CurrentDefenceOpen[playerid] = -1;
+				defer MoveDefence(_:def_CurrentDefenceOpen[playerid], playerid);
+				def_CurrentDefenceOpen[playerid] = INVALID_ITEM_ID;
 			}
 			else
 			{
@@ -659,7 +659,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 
 				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
 
-				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, code);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], geid, code);
 				ShowEnterPassDialog_Keypad(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -675,7 +675,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-ConvertItemToDefenceItem(itemid, pose)
+ConvertItemToDefenceItem(Item:itemid, pose)
 {
 	new ret = ActivateDefenceItem(itemid);
 	if(ret)
@@ -711,10 +711,10 @@ ConvertItemToDefenceItem(itemid, pose)
 
 	SetItemPos(itemid, x, y, z);
 	SetItemRot(itemid, rx, ry, rz);
-	return CallLocalFunction("OnDefenceCreate", "d", itemid);
+	return CallLocalFunction("OnDefenceCreate", "d", _:itemid);
 }
 
-_UpdateDefenceTweakArrow(playerid, itemid)
+_UpdateDefenceTweakArrow(playerid, Item:itemid)
 {
 	new
 		Float:x,
@@ -749,7 +749,7 @@ _UpdateDefenceTweakArrow(playerid, itemid)
 	}
 }
 
-hook OnItemTweakUpdate(playerid, itemid)
+hook OnItemTweakUpdate(playerid, Item:itemid)
 {
 	if(def_TweakArrow[playerid] != INVALID_OBJECT_ID)
 	{
@@ -757,7 +757,7 @@ hook OnItemTweakUpdate(playerid, itemid)
 	}
 }
 
-hook OnItemTweakFinish(playerid, itemid)
+hook OnItemTweakFinish(playerid, Item:itemid)
 {
 	if(def_TweakArrow[playerid] != INVALID_OBJECT_ID)
 	{
@@ -770,10 +770,10 @@ hook OnPlayerKeypadCancel(playerid, keypadid)
 {
 	if(keypadid == 100)
 	{
-		if(def_CurrentDefenceEdit[playerid] != -1)
+		if(def_CurrentDefenceEdit[playerid] != INVALID_ITEM_ID)
 		{
 			ShowSetPassDialog_Keypad(playerid);
-			def_CurrentDefenceEdit[playerid] = -1;
+			def_CurrentDefenceEdit[playerid] = INVALID_ITEM_ID;
 
 			return 1;
 		}
@@ -816,8 +816,8 @@ ShowSetPassDialog_KeypadAdv(playerid)
 			if(!sscanf(inputtext, "x", pass) && strlen(inputtext) >= 4)
 			{
 				SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], pass, def_pass);
-				CallLocalFunction("OnDefenceModified", "d", def_CurrentDefenceEdit[playerid]);
-				def_CurrentDefenceEdit[playerid] = -1;
+				CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
+				def_CurrentDefenceEdit[playerid] = INVALID_ITEM_ID;
 			}
 			else
 			{
@@ -852,8 +852,8 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 			if(pass == GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], def_pass) && strlen(inputtext) >= 4)
 			{
 				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
-				defer MoveDefence(def_CurrentDefenceOpen[playerid], playerid);
-				def_CurrentDefenceOpen[playerid] = -1;
+				defer MoveDefence(_:def_CurrentDefenceOpen[playerid], playerid);
+				def_CurrentDefenceOpen[playerid] = INVALID_ITEM_ID;
 			}
 			else
 			{
@@ -874,7 +874,7 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 
 				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
 
-				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, def_CurrentDefenceOpen[playerid], geid, pass);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], geid, pass);
 				ShowEnterPassDialog_KeypadAdv(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -903,7 +903,7 @@ timer MoveDefence[1500](itemid, playerid)
 		Float:iy,
 		Float:iz;
 
-	GetItemPos(itemid, ix, iy, iz);
+	GetItemPos(Item:itemid, ix, iy, iz);
 
 	foreach(new i : Player)
 	{
@@ -918,26 +918,26 @@ timer MoveDefence[1500](itemid, playerid)
 	}
 
 	new
-		ItemType:itemtype = GetItemType(itemid),
+		ItemType:itemtype = GetItemType(Item:itemid),
 		Float:rx,
 		Float:ry,
 		Float:rz,
 		geid[GEID_LEN];
 
-	GetItemRot(itemid, rx, ry, rz);
-	GetItemGEID(itemid, geid);
+	GetItemRot(Item:itemid, rx, ry, rz);
+	GetItemGEID(Item:itemid, geid);
 
-	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
+	if(GetItemArrayDataAtCell(Item:itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
 	{
 		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX];
 		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY];
 		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotZ];
 		iz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 
-		SetItemPos(itemid, ix, iy, iz);
-		SetItemRot(itemid, rx, ry, rz);
+		SetItemPos(Item:itemid, ix, iy, iz);
+		SetItemRot(Item:itemid, rx, ry, rz);
 
-		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_VERTICAL, def_pose);
+		SetItemArrayDataAtCell(Item:itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
 		log("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
@@ -949,10 +949,10 @@ timer MoveDefence[1500](itemid, playerid)
 		rz += def_TypeData[def_ItemTypeDefenceType[itemtype]][def_horizontalRotZ];
 		iz -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 
-		SetItemPos(itemid, ix, iy, iz);
-		SetItemRot(itemid, rx, ry, rz);
+		SetItemPos(Item:itemid, ix, iy, iz);
+		SetItemRot(Item:itemid, rx, ry, rz);
 
-		SetItemArrayDataAtCell(itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
+		SetItemArrayDataAtCell(Item:itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
 		log("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
@@ -961,7 +961,7 @@ timer MoveDefence[1500](itemid, playerid)
 	return;
 }
 
-hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
+hook OnItemHitPointsUpdate(Item:itemid, oldvalue, newvalue)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -969,7 +969,7 @@ hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -988,7 +988,7 @@ hook OnItemDestroy(itemid)
 			GetItemPos(itemid, x, y, z);
 			GetItemRot(itemid, rx, ry, rz);
 
-			log("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
+			log("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", _:itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
 		}
 	}
 }
@@ -1079,7 +1079,7 @@ stock Float:GetDefenceTypeOffsetZ(defencetype)
 }
 
 // def_type
-stock GetDefenceType(itemid)
+stock GetDefenceType(Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -1088,25 +1088,25 @@ stock GetDefenceType(itemid)
 }
 
 // def_pose
-stock GetDefencePose(itemid)
+stock GetDefencePose(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_pose);
 }
 
 // def_motor
-stock GetDefenceMotor(itemid)
+stock GetDefenceMotor(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_motor);
 }
 
 // def_keypad
-stock GetDefenceKeypad(itemid)
+stock GetDefenceKeypad(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_keypad);
 }
 
 // def_pass
-stock GetDefencePass(itemid)
+stock GetDefencePass(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, def_pass);
 }

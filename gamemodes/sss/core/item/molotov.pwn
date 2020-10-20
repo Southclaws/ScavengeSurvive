@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/molotov.pwn");
 

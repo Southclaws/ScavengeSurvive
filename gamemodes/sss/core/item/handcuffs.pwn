@@ -48,7 +48,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(newkeys & 16)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_HandCuffs)
 		{
@@ -147,7 +147,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
 		{
-			new itemid = CreateItem(item_HandCuffs);
+			new Item:itemid = CreateItem(item_HandCuffs);
 
 			SetPlayerCuffs(cuf_TargetPlayer[playerid], false);
 			GiveWorldItemToPlayer(playerid, itemid, 0);

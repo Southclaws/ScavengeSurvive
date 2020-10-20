@@ -30,8 +30,6 @@ static lsk_TargetVehicle[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	lsk_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
@@ -40,7 +38,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	if(225.0 < angle < 315.0)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype,
 			vehicletype;
 
@@ -150,8 +148,6 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(oldkeys & 16)
 	{
 		StopCraftingKey(playerid);
@@ -183,8 +179,6 @@ StopCraftingKey(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		if(
@@ -206,12 +200,10 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);
@@ -238,10 +230,8 @@ hook OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(itemtype == item_Key)
 	{
 		if(GetItemArrayDataAtCell(itemid, 0) != 0)
@@ -267,10 +257,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerCrafted(playerid, craftset, result)
+hook OnPlayerCrafted(playerid, craftset, Item:result)
 {
-	dbg("global", CORE, "[OnPlayerCrafted] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(GetCraftSetResult(craftset) == item_WheelLock)
 	{
 		SetItemArrayDataAtCell(result, 1, 0);
@@ -279,7 +267,7 @@ hook OnPlayerCrafted(playerid, craftset, result)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerConstructed(playerid, consset, result)
+hook OnPlayerConstructed(playerid, consset, Item:result)
 {
 	new craftset = GetConstructionSetCraftSet(consset);
 
@@ -288,8 +276,8 @@ hook OnPlayerConstructed(playerid, consset, result)
 		new
 			items[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
 			count,
-			tmp,
-			itemid = INVALID_ITEM_ID;
+			Item:tmp,
+			Item:itemid = INVALID_ITEM_ID;
 
 		GetPlayerConstructionItems(playerid, items, count);
 
@@ -312,7 +300,7 @@ hook OnPlayerConstructed(playerid, consset, result)
 		}
 		else
 		{
-			err("Key duplicated attempt failed %d %d %d %d", consset, craftset, result, tmp);
+			err("Key duplicated attempt failed %d %d %d %d", consset, craftset, _:result, _:tmp);
 		}
 	}
 

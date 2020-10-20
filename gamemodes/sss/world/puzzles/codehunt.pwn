@@ -73,7 +73,7 @@ CreateCodeParts(const Float:coords[][], size, keycode)
 	new
 		output[16],
 		code[4 char],
-		itemid[4],
+		Item:itemid[4],
 		nameextra[4][2];
 
 	PickFromList(size, 4, output);

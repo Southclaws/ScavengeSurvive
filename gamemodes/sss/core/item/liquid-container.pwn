@@ -52,7 +52,7 @@ static
 			liq_Total;
 
 static
-			liq_CurrentItem[MAX_PLAYERS],
+Item:		liq_CurrentItem[MAX_PLAYERS],
 			liq_UseWithItemTick[MAX_PLAYERS];
 
 
@@ -93,7 +93,7 @@ stock DefineLiquidContainerItem(ItemType:itemtype, Float:capacity, bool:reusable
 	return liq_Total++;
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
@@ -125,7 +125,7 @@ hook OnItemCreateInWorld(itemid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	if(liq_ItemTypeLiquidContainer[itemtype] != INVALID_LIQUID_CONTAINER)
 	{
@@ -147,28 +147,20 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/item/liquid-container.pwn");
-
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], _:buttonid);
-
 		liq_UseWithItemTick[playerid] = GetTickCount();
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/liquid-container.pwn");
-
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItem] tick since usewithbutton %d", GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]));
-
 		if(GetTickCountDifference(GetTickCount(), liq_UseWithItemTick[playerid]) > 10)
 			_StartDrinking(playerid, itemid);
 	}
@@ -176,16 +168,13 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_StartDrinking(playerid, itemid, continuing = false)
+_StartDrinking(playerid, Item:itemid, continuing = false)
 {
 	if(!IsPlayerIdle(playerid) && !continuing)
 		return;
 
-	dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StartDrinking] Player is not idle");
-
-	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, itemid))
+	if(CallLocalFunction("OnPlayerDrink", "dd", playerid, _:itemid))
 	{
-		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StartDrinking] OnPlayerDrink returned nonzero, continuing: %d", continuing);
 		if(continuing)
 			_StopDrinking(playerid);
 
@@ -202,14 +191,13 @@ _StartDrinking(playerid, itemid, continuing = false)
 
 _StopDrinking(playerid)
 {
-	dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[_StopDrinking]");
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
-	liq_CurrentItem[playerid] = -1;
+	liq_CurrentItem[playerid] = INVALID_ITEM_ID;
 }
 
-_DrinkItem(playerid, itemid)
+_DrinkItem(playerid, Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -222,7 +210,7 @@ _DrinkItem(playerid, itemid)
 	if(liqcont == -1)
 		return 0;
 
-	if(CallLocalFunction("OnPlayerDrank", "dd", playerid, itemid))
+	if(CallLocalFunction("OnPlayerDrank", "dd", playerid, _:itemid))
 	{
 		_StopDrinking(playerid);
 		return 0;
@@ -245,11 +233,8 @@ _DrinkItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/liquid-container.pwn");
-
-	if(liq_CurrentItem[playerid] != -1)
+	if(liq_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
-		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnHoldActionFinish] Finished drinking, re-starting");
 		_DrinkItem(playerid, liq_CurrentItem[playerid]);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
@@ -261,15 +246,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	if(oldkeys & 16 && !(newkeys & 16))
 	{
-		if(liq_CurrentItem[playerid] != -1)
+		if(liq_CurrentItem[playerid] != INVALID_ITEM_ID)
 			_StopDrinking(playerid);
 	}
 }
 
 hook OnPlayerCrafted(playerid, craftset, result)
 {
-	dbg("global", CORE, "[OnPlayerCrafted] in /gamemodes/sss/core/item/liquid-container.pwn");
-
 	/*
 		Todo:
 		Implement generic crafting (without craftsets)
@@ -341,7 +324,7 @@ stock IsLiquidContainerTypeReusable(liqcont)
 	return liq_Data[liqcont][liq_reusable];
 }
 
-stock Float:GetLiquidItemLiquidAmount(itemid)
+stock Float:GetLiquidItemLiquidAmount(Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0.0;
@@ -352,7 +335,7 @@ stock Float:GetLiquidItemLiquidAmount(itemid)
 	return Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 }
 
-stock SetLiquidItemLiquidAmount(itemid, Float:amount)
+stock SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
 {
 	if(!IsValidItem(itemid))
 		return -1;
@@ -369,7 +352,7 @@ stock SetLiquidItemLiquidAmount(itemid, Float:amount)
 	return SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 }
 
-stock GetLiquidItemLiquidType(itemid)
+stock GetLiquidItemLiquidType(Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return -1;
@@ -380,7 +363,7 @@ stock GetLiquidItemLiquidType(itemid)
 	return GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_TYPE);
 }
 
-stock SetLiquidItemLiquidType(itemid, type)
+stock SetLiquidItemLiquidType(Item:itemid, type)
 {
 	if(!IsValidItem(itemid))
 		return -1;

@@ -46,7 +46,7 @@ Float:		SAVED_ITEM_ROT_Z,
 static big_data[8192];
 
 
-SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[] = "", data_size = 0)
+SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const data[] = "", data_size = 0)
 {
 	new geid[GEID_LEN];
 
@@ -59,7 +59,7 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 
 	if(!IsValidItem(itemid))
 	{
-		err("Can't save item %d (%s) Not valid item.", itemid, geid);
+		err("Can't save item %d (%s) Not valid item.", _:itemid, geid);
 		return 2;
 	}
 
@@ -88,7 +88,7 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 	info[SAVED_ITEM_HITPOINTS] = GetItemHitPoints(itemid);
 
 	log("[SAVE] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		itemid, geid,
+		_:itemid, geid,
 		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
 		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
 		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
@@ -119,7 +119,7 @@ SaveWorldItem(itemid, const subdir[], bool:active, savearray = true, const data[
 	return 0;
 }
 
-RemoveSavedItem(itemid, const subdir[])
+RemoveSavedItem(Item:itemid, const subdir[])
 {
 	new
 		geid[GEID_LEN],
@@ -131,7 +131,7 @@ RemoveSavedItem(itemid, const subdir[])
 
 	fremove(filename);
 
-	log("[DELT] Item %d (%s) file %s", itemid, geid, filename);
+	log("[DELT] Item %d (%s) file %s", _:itemid, geid, filename);
 }
 
 LoadItems(const subdir[], const callback[])
@@ -142,7 +142,7 @@ LoadItems(const subdir[], const callback[])
 		entry[256],
 		geid[GEID_LEN],
 		ENTRY_TYPE:type,
-		ret,
+		Item:ret,
 		count,
 		trimlength = strlen("./scriptfiles/");
 
@@ -166,7 +166,7 @@ LoadItems(const subdir[], const callback[])
 	log("Loaded %d items from %s", count, subdir);
 }
 
-LoadItem(const filename[], const geid[], const callback[])
+Item:LoadItem(const filename[], const geid[], const callback[])
 {
 	new
 		length,
@@ -195,10 +195,10 @@ LoadItem(const filename[], const geid[], const callback[])
 		return INVALID_ITEM_ID;
 	}
 
-	new itemid = AllocNextItemID(info[SAVED_ITEM_TYPE], geid);
+	new Item:itemid = AllocNextItemID(info[SAVED_ITEM_TYPE], geid);
 	SetItemNoResetArrayData(itemid, true);
 	CreateItem_ExplicitID(
-		itemid,
+		Item:itemid,
 		info[SAVED_ITEM_POS_X],
 		info[SAVED_ITEM_POS_Y],
 		info[SAVED_ITEM_POS_Z],
@@ -211,7 +211,7 @@ LoadItem(const filename[], const geid[], const callback[])
 		.applyrotoffsets = 0);
 
 	log("[LOAD] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		itemid, geid,
+		_:itemid, geid,
 		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
 		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
 		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
@@ -238,13 +238,12 @@ LoadItem(const filename[], const geid[], const callback[])
 		length = 0;
 	}
 
-	CallLocalFunction(callback, "ddsad", itemid, info[SAVED_ITEM_ACTIVE], geid, big_data, length);
+	CallLocalFunction(callback, "ddsad", _:itemid, info[SAVED_ITEM_ACTIVE], geid, big_data, length);
 
 	return itemid;
 }
 
-hook OnItemRemoveFromWorld(itemid)
+hook OnItemRemoveFromWorld(Item:itemid)
 {
-	
 	RemoveSavedItem(itemid, DIRECTORY_WORLDITEM);
 }

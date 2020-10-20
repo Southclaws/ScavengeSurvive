@@ -25,7 +25,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/sign.pwn");
 

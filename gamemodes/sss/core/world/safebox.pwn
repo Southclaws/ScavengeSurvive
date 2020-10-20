@@ -42,10 +42,10 @@ static
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
 			box_ItemTypeBoxType[ITM_MAX_TYPES] = {-1, ...},
-			box_ContainerSafebox[CNT_MAX] = {INVALID_ITEM_ID, ...};
+Item:		box_ContainerSafebox[CNT_MAX] = {INVALID_ITEM_ID, ...};
 
 static
-			box_CurrentBoxItem[MAX_PLAYERS];
+Item: 		box_CurrentBoxItem[MAX_PLAYERS];
 
 
 /*==============================================================================
@@ -57,8 +57,6 @@ static
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/world/safebox.pwn");
-
 	box_CurrentBoxItem[playerid] = INVALID_ITEM_ID;
 }
 
@@ -95,10 +93,8 @@ DefineSafeboxType(ItemType:itemtype, size, displayonuse = true, animateonuse = t
 ==============================================================================*/
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/world/safebox.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -121,10 +117,8 @@ hook OnItemCreate(itemid)
 	}
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/world/safebox.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -136,10 +130,8 @@ hook OnItemCreateInWorld(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemDestroy] in /gamemodes/sss/core/world/safebox.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -164,10 +156,8 @@ hook OnItemDestroy(itemid)
 ==============================================================================*/
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/safebox.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -191,10 +181,8 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/safebox.pwn");
-
 	new ItemType:itemtype = GetItemType(withitemid);
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
@@ -206,7 +194,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_DisplaySafeboxDialog(playerid, itemid, animation)
+_DisplaySafeboxDialog(playerid, Item:itemid, animation)
 {
 	if(!box_TypeData[box_ItemTypeBoxType[GetItemType(itemid)]][box_display])
 		return 0;
@@ -250,7 +238,7 @@ stock IsItemTypeSafebox(ItemType:itemtype)
 	return 0;
 }
 
-stock GetContainerSafeboxItem(containerid)
+stock Item:GetContainerSafeboxItem(containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_ITEM_ID;

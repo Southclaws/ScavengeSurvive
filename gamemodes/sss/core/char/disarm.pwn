@@ -58,7 +58,7 @@ DisarmPlayer(playerid, i)
 	if(IsValidItem(GetPlayerItem(playerid)))
 		return 0;
 
-	new itemid = GetPlayerItem(i);
+	new Item:itemid = GetPlayerItem(i);
 
 	if(IsValidItem(itemid))
 	{

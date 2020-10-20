@@ -32,7 +32,7 @@
 
 
 static
-	inj_CurrentItem[MAX_PLAYERS],
+Item:inj_CurrentItem[MAX_PLAYERS],
 	inj_CurrentTarget[MAX_PLAYERS];
 
 
@@ -46,11 +46,11 @@ hook OnPlayerConnect(playerid)
 {
 	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/injector.pwn");
 
-	inj_CurrentItem[playerid] = -1;
+	inj_CurrentItem[playerid] = INVALID_ITEM_ID;
 	inj_CurrentTarget[playerid] = -1;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/injector.pwn");
 
@@ -63,7 +63,7 @@ hook OnItemCreate(itemid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/injector.pwn");
 
@@ -80,7 +80,7 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/injector.pwn");
 
@@ -107,7 +107,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
 	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/injector.pwn");
 
-	if(oldkeys & 16 && inj_CurrentItem[playerid] != -1)
+	if(oldkeys & 16 && inj_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		StopInjecting(playerid);
 	}
@@ -143,7 +143,7 @@ StopInjecting(playerid)
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
-	inj_CurrentItem[playerid] = -1;
+	inj_CurrentItem[playerid] = INVALID_ITEM_ID;
 	inj_CurrentTarget[playerid] = -1;
 }
 
@@ -151,7 +151,7 @@ hook OnHoldActionFinish(playerid)
 {
 	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/injector.pwn");
 
-	if(inj_CurrentItem[playerid] != -1)
+	if(inj_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsPlayerConnected(inj_CurrentTarget[playerid]))
 			return Y_HOOKS_BREAK_RETURN_1;

@@ -25,13 +25,11 @@
 static
 	combatlog_LastAttacked[MAX_PLAYERS] = {INVALID_PLAYER_ID, ...},
 	combatlog_LastAttacker[MAX_PLAYERS] = {INVALID_PLAYER_ID, ...},
-	combatlog_LastItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+	Item:combatlog_LastItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
-	dbg("global", CORE, "[OnPlayerShootPlayer] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -39,8 +37,6 @@ hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:kn
 
 hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
-	dbg("global", CORE, "[OnPlayerMeleePlayer] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	_CombatLogHandleDamage(playerid, targetid, GetPlayerItem(playerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -48,8 +44,6 @@ hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 
 hook OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult)
 {
-	dbg("global", CORE, "[OnPlayerExplosiveDmg] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	_CombatLogHandleDamage(INVALID_PLAYER_ID, playerid, INVALID_ITEM_ID);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -57,14 +51,12 @@ hook OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult)
 
 hook OnPlayerVehicleCollide(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
-	dbg("global", CORE, "[OnPlayerVehicleCollide] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	_CombatLogHandleDamage(playerid, targetid, INVALID_ITEM_ID);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_CombatLogHandleDamage(playerid, targetid, itemid)
+_CombatLogHandleDamage(playerid, targetid, Item:itemid)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;
@@ -86,16 +78,12 @@ _CombatLogHandleDamage(playerid, targetid, itemid)
 
 hook OnPlayerSpawn(playerid)
 {
-	dbg("global", CORE, "[OnPlayerSpawn] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	combatlog_LastAttacker[playerid] = INVALID_PLAYER_ID;
 	combatlog_LastItem[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/weapon/anti-combat-log.pwn");
-
 	if(combatlog_LastAttacked[playerid] != INVALID_PLAYER_ID)
 	{
 		combatlog_LastAttacker[combatlog_LastAttacked[playerid]] = INVALID_PLAYER_ID;
@@ -104,7 +92,7 @@ hook OnPlayerDisconnect(playerid, reason)
 	}
 }
 
-stock IsPlayerCombatLogging(playerid, &lastattacker, &lastweapon)
+stock IsPlayerCombatLogging(playerid, &lastattacker, &Item:lastweapon)
 {
 	if(GetTickCountDifference(GetTickCount(), GetPlayerTookDamageTick(playerid)) < gCombatLogWindow * 1000 && IsPlayerConnected(combatlog_LastAttacker[playerid]) && !gServerRestarting)
 	{

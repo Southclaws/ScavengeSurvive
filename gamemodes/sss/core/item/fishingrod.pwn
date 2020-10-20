@@ -54,7 +54,7 @@ hook OnPlayerConnect(playerid)
 	stop fish_Timer[playerid];
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/fishingrod.pwn");
 

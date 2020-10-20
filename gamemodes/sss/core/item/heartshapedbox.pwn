@@ -30,7 +30,7 @@ hook OnGameModeInit()
 	CreateItem(item_HeartShapedBox, 2912.3301, 2910.2800, 29.7780);
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/heartshapedbox.pwn");
 

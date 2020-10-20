@@ -96,8 +96,8 @@ SavePlayerChar(playerid)
 		session,
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		animidx = GetPlayerAnimationIndex(playerid),
-		itemid,
-		items[MAX_BAG_CONTAINER_SIZE],
+		Item:itemid,
+		Item:items[MAX_BAG_CONTAINER_SIZE],
 		itemcount;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -150,7 +150,7 @@ SavePlayerChar(playerid)
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 		data[PLY_CELL_BAGTYPE] = _:GetItemType(GetPlayerBagItem(playerid));
 
-	dbg("save-load", 2, "[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], GetPlayerBagItem(playerid));
+	dbg("save-load", 2, "[SAVE:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], _:GetPlayerBagItem(playerid));
 
 	data[PLY_CELL_WORLD] = GetPlayerVirtualWorld(playerid);
 	data[PLY_CELL_INTERIOR] = GetPlayerInterior(playerid);
@@ -170,7 +170,7 @@ SavePlayerChar(playerid)
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,E,L,D>, 2 + data[1], data);
 
-		dbg("save-load", 2, "[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg("save-load", 2, "[SAVE:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], _:itemid);
 	}
 	else
 	{
@@ -191,7 +191,7 @@ SavePlayerChar(playerid)
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,O,L,S>, 2 + data[1], data);
 
-		dbg("save-load", 2, "[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg("save-load", 2, "[SAVE:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], _:itemid);
 	}
 	else
 	{
@@ -212,7 +212,7 @@ SavePlayerChar(playerid)
 
 		itemcount++;
 
-		dbg("save-load", 2, "[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
+		dbg("save-load", 2, "[SAVE:%p] - Inv item %d: (%d type: %d)", playerid, i, _:items[i], _:GetItemType(items[i]));
 	}
 
 	if(!SerialiseItems(items, itemcount))
@@ -242,7 +242,7 @@ SavePlayerChar(playerid)
 
 			itemcount++;
 
-			dbg("save-load", 2, "[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, items[i], _:GetItemType(items[i]));
+			dbg("save-load", 2, "[SAVE:%p] - Bag item %d (%d type: %d)", playerid, i, _:items[i], _:GetItemType(items[i]));
 		}
 
 		if(!SerialiseItems(items, itemcount))
@@ -266,7 +266,7 @@ LoadPlayerChar(playerid)
 		filename[MAX_PLAYER_FILE],
 		data[ITM_ARR_MAX_ARRAY_DATA + 2],
 		ItemType:itemtype,
-		itemid,
+		Item:itemid,
 		length;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -333,7 +333,7 @@ LoadPlayerChar(playerid)
 
 		GiveWorldItemToPlayer(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] OLD HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+		dbg("save-load", 2, "[LOAD:%p] OLD HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], _:itemid);
 	}
 
 	if(data[PLY_CELL_HOLST] > 0)
@@ -360,7 +360,7 @@ LoadPlayerChar(playerid)
 
 		SetPlayerHolsterItem(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
+		dbg("save-load", 2, "[LOAD:%p] OLD HOLS %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], _:itemid);
 	}
 
 	if(data[PLY_CELL_BLEEDING] == 1)
@@ -396,7 +396,7 @@ LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
+		dbg("save-load", 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], _:itemid);
 	}
 
 	SetPlayerVirtualWorld(playerid, data[PLY_CELL_WORLD]);
@@ -418,7 +418,7 @@ LoadPlayerChar(playerid)
 		CreateItem_ExplicitID(itemid);
 		GiveWorldItemToPlayer(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg("save-load", 2, "[LOAD:%p] HELD %d (%d adc) (itemid: %d)", playerid, data[0], data[1], _:itemid);
 	}
 
 /*
@@ -437,7 +437,7 @@ LoadPlayerChar(playerid)
 		CreateItem_ExplicitID(itemid);
 		SetPlayerHolsterItem(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], itemid);
+		dbg("save-load", 2, "[LOAD:%p] HOLS %d (%d adc) (itemid: %d)", playerid, data[0], data[1], _:itemid);
 	}
 
 /*
@@ -500,7 +500,7 @@ LoadPlayerChar(playerid)
 
 				AddItemToContainer(containerid, itemid);
 
-				dbg("save-load", 3, "[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, itemid, _:itemtype);
+				dbg("save-load", 3, "[LOAD:%p] - Bag item %d/%d: (%d type: %d)", playerid, i, j, _:itemid, _:itemtype);
 
 			}
 			ClearSerializer();
@@ -539,7 +539,7 @@ FV10_LoadPlayerChar(playerid)
 		filename[MAX_PLAYER_FILE],
 		File:file,
 		data[PLY_CELL_END],
-		itemid;
+		Item:itemid;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	PLAYER_DAT_FILE(name, filename);
@@ -571,7 +571,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerFP(playerid, Float:data[PLY_CELL_FOOD]);
 	SetPlayerClothesID(playerid, data[PLY_CELL_SKIN]);
 	SetPlayerClothes(playerid, data[PLY_CELL_SKIN]);
-	SetPlayerHatItem(playerid, data[PLY_CELL_HAT]);
+	SetPlayerHatItem(playerid, Item:data[PLY_CELL_HAT]);
 
 	if(GetPlayerAP(playerid) > 0.0)
 		CreatePlayerArmour(playerid);
@@ -582,7 +582,7 @@ FV10_LoadPlayerChar(playerid)
 		SetItemExtraData(itemid, data[PLY_CELL_HOLSTEX]);
 		SetPlayerHolsterItem(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], itemid);
+		dbg("save-load", 2, "[LOAD:%p] HOLST %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HOLST], data[PLY_CELL_HOLSTEX], _:itemid);
 	}
 
 	if(data[PLY_CELL_HELD] != -1)
@@ -601,7 +601,7 @@ FV10_LoadPlayerChar(playerid)
 			GiveWorldItemToPlayer(playerid, itemid, false);
 		}
 
-		dbg("save-load", 2, "[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], itemid);
+		dbg("save-load", 2, "[LOAD:%p] HELD %d (%d) (itemid: %d)", playerid, data[PLY_CELL_HELD], data[PLY_CELL_HELDEX], _:itemid);
 	}
 
 	if(data[PLY_CELL_BLEEDING] == 1)
@@ -621,7 +621,7 @@ FV10_LoadPlayerChar(playerid)
 	SetPlayerSpawnPos(playerid, Float:data[PLY_CELL_SPAWN_X], Float:data[PLY_CELL_SPAWN_Y], Float:data[PLY_CELL_SPAWN_Z]);
 	SetPlayerSpawnRot(playerid, Float:data[PLY_CELL_SPAWN_R]);
 
-	SetPlayerMaskItem(playerid, data[PLY_CELL_MASK]);
+	SetPlayerMaskItem(playerid, Item:data[PLY_CELL_MASK]);
 
 	if(data[PLY_CELL_MUTE_TIME] > 0)
 		TogglePlayerMute(playerid, true, data[PLY_CELL_MUTE_TIME]);
@@ -634,7 +634,7 @@ FV10_LoadPlayerChar(playerid)
 		itemid = CreateItem(ItemType:data[PLY_CELL_BAGTYPE], 0.0, 0.0, 0.0);
 		GivePlayerBag(playerid, itemid);
 
-		dbg("save-load", 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], itemid);
+		dbg("save-load", 2, "[LOAD:%p] BAG %d (itemid: %d)", playerid, data[PLY_CELL_BAGTYPE], _:itemid);
 	}
 
 	return 1;
@@ -647,7 +647,7 @@ FV10_LoadPlayerInventory(playerid)
 		filename[MAX_PLAYER_FILE],
 		File:file,
 		data[INV_CELL_END],
-		itemid,
+		Item:itemid,
 		containerid;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);

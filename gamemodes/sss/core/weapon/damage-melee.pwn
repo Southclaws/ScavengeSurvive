@@ -164,7 +164,7 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 _HandleStandardMelee(playerid, targetid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype,
 		weapontype,
 		baseweapon;

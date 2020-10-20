@@ -334,7 +334,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(tree_AtTree[playerid] != INVALID_TREE_ID)
 	{
@@ -397,7 +397,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	}
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);

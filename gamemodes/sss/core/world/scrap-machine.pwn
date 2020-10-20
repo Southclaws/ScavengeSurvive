@@ -48,13 +48,13 @@ stock SetItemTypeScrapValue(ItemType:itemtype, value)
 	return;
 }
 
-hook OnMachineFinish(itemid, containerid)
+hook OnMachineFinish(Item:itemid, containerid)
 {
 	if(GetItemTypeMachineType(GetItemType(itemid)) != MachineType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		subitemid,
+		Item:subitemid,
 		scrapcount;
 
 	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)

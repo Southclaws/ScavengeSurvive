@@ -45,7 +45,7 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("DoctorBag"), 2);
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");
 
@@ -71,7 +71,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/medical.pwn");
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -146,7 +146,7 @@ PlayerStopHeal(playerid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/medical.pwn");
 
@@ -205,7 +205,7 @@ hook OnHoldActionFinish(playerid)
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);

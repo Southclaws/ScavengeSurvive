@@ -76,7 +76,7 @@ _OnDeath(playerid, killerid)
 	}
 
 	new
-		deathreason = GetLastHitByWeapon(playerid),
+		Item:deathreason = GetLastHitByWeapon(playerid),
 		deathreasonstring[256];
 
 	death_Dying[playerid] = true;
@@ -100,11 +100,11 @@ _OnDeath(playerid, killerid)
 	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 
-	KillPlayer(playerid, killerid, deathreason);
+	KillPlayer(playerid, killerid, _:deathreason);
 
 	if(IsPlayerConnected(killerid))
 	{
-		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
@@ -147,7 +147,7 @@ _OnDeath(playerid, killerid)
 	}
 	else
 	{
-		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
@@ -176,7 +176,7 @@ _OnDeath(playerid, killerid)
 DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 {
 	new
-		itemid,
+		Item:itemid,
 		interior = GetPlayerInterior(playerid),
 		world = GetPlayerVirtualWorld(playerid);
 
@@ -293,7 +293,8 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 
 	if(GetPlayerAP(playerid) > 0.0)
 	{
-		itemid = CreateItemInWorld(RemovePlayerArmourItem(playerid),
+		itemid = RemovePlayerArmourItem(playerid);
+		CreateItemInWorld(itemid,
 			x + floatsin(80.0, degrees),
 			y + floatcos(80.0, degrees),
 			z - FLOOR_OFFSET,

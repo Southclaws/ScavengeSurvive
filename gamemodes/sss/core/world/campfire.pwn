@@ -28,14 +28,13 @@
 enum e_CAMPFIRE_DATA
 {
 			cmp_objSmoke,
-			cmp_foodItem,
+Item:		cmp_foodItem,
 Timer:		cmp_LifeTimer,
 Timer:		cmp_CookTimer
 }
 
 
-static
-			cmp_ItemBeingCooked[ITM_MAX] = {INVALID_ITEM_ID, ...};
+static Item:cmp_ItemBeingCooked[ITM_MAX] = {INVALID_ITEM_ID, ...};
 
 
 hook OnItemTypeDefined(uname[])
@@ -44,10 +43,8 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Campfire"), _:e_CAMPFIRE_DATA);
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/item/campfire.pwn");
-
 	if(GetItemType(itemid) == item_Campfire)
 	{
 		new
@@ -68,7 +65,7 @@ hook OnItemCreateInWorld(itemid)
 		{
 			if(random(100) < 40)
 			{
-				data[cmp_LifeTimer] = defer cmp_BurnOut(itemid, 120000);
+				data[cmp_LifeTimer] = defer cmp_BurnOut(_:itemid, 120000);
 			}
 			else
 			{
@@ -81,28 +78,26 @@ hook OnItemCreateInWorld(itemid)
 		}
 		else
 		{
-			data[cmp_LifeTimer] = defer cmp_BurnOut(itemid, 600000);
+			data[cmp_LifeTimer] = defer cmp_BurnOut(_:itemid, 600000);
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
-		new fooditem = GetItemArrayDataAtCell(itemid, cmp_foodItem);
+		new Item:fooditem = Item:GetItemArrayDataAtCell(itemid, cmp_foodItem);
 
 		if(IsValidItem(fooditem))
 			cmp_ItemBeingCooked[fooditem] = INVALID_ITEM_ID;
 	}
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickedUpItem] in /gamemodes/sss/core/item/campfire.pwn");
-
 	if(GetItemType(itemid) == item_Campfire)
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -112,15 +107,13 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/world/campfire.pwn");
-
 	if(GetItemType(withitemid) == item_Campfire)
 	{
 		if(IsItemTypeFood(GetItemType(itemid)))
 		{
-			if(GetItemArrayDataAtCell(withitemid, cmp_foodItem) == INVALID_ITEM_ID)
+			if(Item:GetItemArrayDataAtCell(withitemid, cmp_foodItem) == INVALID_ITEM_ID)
 			{
 				cmp_CookItem(withitemid, itemid);
 				ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
@@ -131,7 +124,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-cmp_CookItem(itemid, fooditem)
+cmp_CookItem(Item:itemid, Item:fooditem)
 {
 	new
 		Float:x,
@@ -145,7 +138,7 @@ cmp_CookItem(itemid, fooditem)
 
 	cmp_ItemBeingCooked[fooditem] = itemid;
 	data[cmp_foodItem] = fooditem;
-	data[cmp_CookTimer] = defer cmp_FinishCooking(itemid);
+	data[cmp_CookTimer] = defer cmp_FinishCooking(_:itemid);
 	SetItemArrayData(itemid, data, e_CAMPFIRE_DATA);
 }
 
@@ -157,8 +150,8 @@ timer cmp_BurnOut[time](itemid, time)
 		Float:y,
 		Float:z;
 
-	GetItemPos(itemid, x, y, z);
-	DestroyItem(itemid);
+	GetItemPos(Item:itemid, x, y, z);
+	DestroyItem(Item:itemid);
 
 	CreateItem(item_BurntLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
 	CreateItem(item_BurntLog, x - 0.25 + frandom(0.5), y - 0.25 + frandom(0.5), z, .rz = random(360));
@@ -171,12 +164,12 @@ timer cmp_FinishCooking[60000](itemid)
 		Float:x,
 		Float:y,
 		Float:z,
-		fooditem = GetItemArrayDataAtCell(itemid, cmp_foodItem);
+		Item:fooditem = Item:GetItemArrayDataAtCell(Item:itemid, cmp_foodItem);
 
 	if(!IsValidItem(fooditem))
 		return;
 
-	GetItemPos(itemid, x, y, z);
+	GetItemPos(Item:itemid, x, y, z);
 
 	CreateTimedDynamicObject(18726, x, y, z - 1.0, 0.0, 0.0, 0.0, 2000);
 	SetFoodItemCooked(fooditem, 1);

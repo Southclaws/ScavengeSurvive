@@ -31,17 +31,15 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Note"), 256);
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/note.pwn");
-
 	if(GetItemType(itemid) == item_Note)
 		_ShowNoteDialog(playerid, itemid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_ShowNoteDialog(playerid, itemid)
+_ShowNoteDialog(playerid, Item:itemid)
 {
 	new string[256];
 
@@ -77,10 +75,8 @@ _ShowNoteDialog(playerid, itemid)
 	return 1;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/note.pwn");
-
 	if(itemtype == item_Note)
 	{
 		new

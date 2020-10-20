@@ -391,7 +391,7 @@ timer UpdateSpectateMode[100](playerid)
 			new
 				invehicleas[24],
 				Float:bleedrate,
-				itemid,
+				Item:itemid,
 				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
 				cameramodename[37];
 
@@ -430,9 +430,9 @@ timer UpdateSpectateMode[100](playerid)
 		else
 		{
 			new
-				itemid,
+				Item:itemid,
 				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
-				holsteritemid,
+				Item:holsteritemid,
 				holsteritemname[32],
 				Float:bleedrate,
 				cameramodename[37],

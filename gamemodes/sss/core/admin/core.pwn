@@ -364,7 +364,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 	if(toggle)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype,
 			Float:x,
 			Float:y,

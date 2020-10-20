@@ -28,7 +28,7 @@
 #define DIRECTORY_DEFENCE	DIRECTORY_MAIN"defence/"
 
 
-forward OnDefenceLoad(itemid, active, geid[], data[], length);
+forward OnDefenceLoad(Item:itemid, active, geid[], data[], length);
 
 
 /*==============================================================================
@@ -48,34 +48,34 @@ hook OnGameModeInit()
 	LoadItems(DIRECTORY_DEFENCE, "OnDefenceLoad");
 }
 
-hook OnDefenceCreate(itemid)
+hook OnDefenceCreate(Item:itemid)
 {
 	SaveDefenceItem(itemid);
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	if(IsItemTypeDefence(GetItemType(itemid)))
 		RemoveDefenceItem(itemid);
 }
 
-hook OnItemHitPointsUpdate(itemid, oldvalue, newvalue)
+hook OnItemHitPointsUpdate(Item:itemid, oldvalue, newvalue)
 {
 	if(IsItemTypeDefence(GetItemType(itemid)))
 		SaveDefenceItem(itemid);
 }
 
-hook OnDefenceDestroy(itemid)
+hook OnDefenceDestroy(Item:itemid)
 {
 	RemoveDefenceItem(itemid);
 }
 
-hook OnDefenceModified(itemid)
+hook OnDefenceModified(Item:itemid)
 {
 	SaveDefenceItem(itemid);
 }
 
-hook OnDefenceMove(itemid)
+hook OnDefenceMove(Item:itemid)
 {
 	SaveDefenceItem(itemid);
 }
@@ -88,7 +88,7 @@ hook OnDefenceMove(itemid)
 ==============================================================================*/
 
 
-SaveDefenceItem(itemid, bool:active = true)
+SaveDefenceItem(Item:itemid, bool:active = true)
 {
 	if(!IsValidItem(itemid))
 		return 1;
@@ -98,14 +98,14 @@ SaveDefenceItem(itemid, bool:active = true)
 	return 0;
 }
 
-public OnDefenceLoad(itemid, active, geid[], data[], length)
+public OnDefenceLoad(Item:itemid, active, geid[], data[], length)
 {
 	ActivateDefenceItem(itemid);
 
 	return 1;
 }
 
-stock RemoveDefenceItem(itemid)
+stock RemoveDefenceItem(Item:itemid)
 {
 	RemoveSavedItem(itemid, DIRECTORY_DEFENCE);
 }

@@ -452,7 +452,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
 	dbg("global", CORE, "[OnPlayerKeypadEnter] in /gamemodes/sss/world/puzzles/area69.pwn");
 
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(GetItemType(itemid) == item_HackDevice)
 		DestroyItem(itemid);

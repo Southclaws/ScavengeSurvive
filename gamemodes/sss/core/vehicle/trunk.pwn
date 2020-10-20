@@ -128,7 +128,7 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/vehicle/trunk.pwn");
 
@@ -138,7 +138,7 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
 {
 	dbg("global", CORE, "[OnItemAddedToContainer] in /gamemodes/sss/core/vehicle/trunk.pwn");
 

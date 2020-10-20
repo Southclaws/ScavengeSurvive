@@ -73,7 +73,7 @@ stock DefineSeedType(const name[], ItemType:itemtype, growthtime, plantmodel, Fl
 }
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/seedbag.pwn");
 
@@ -87,7 +87,7 @@ hook OnItemCreate(itemid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/seedbag.pwn");
 

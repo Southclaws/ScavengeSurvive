@@ -67,11 +67,11 @@ PlayerText:	WeaponAmmoUI[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 			tick_LastReload[MAX_PLAYERS],
 			tick_GetWeaponTick[MAX_PLAYERS],
 Timer:		itmw_RepeatingFireTimer[MAX_PLAYERS],
-			itmw_DropItemID[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+Item:		itmw_DropItemID[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 Timer:		itmw_DropTimer[MAX_PLAYERS];
 
 
-forward ItemType:GetItemWeaponItemAmmoItem(itemid);
+forward ItemType:GetItemWeaponItemAmmoItem(Item:itemid);
 
 
 /*==============================================================================
@@ -83,7 +83,7 @@ forward ItemType:GetItemWeaponItemAmmoItem(itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerConnect] in /weapon-core");
 
 	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
 	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
@@ -128,8 +128,8 @@ stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvel
 
 stock GivePlayerAmmo(playerid, amount)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[GivePlayerAmmo] player %d amount %d", playerid, amount);
-	new itemid = GetPlayerItem(playerid);
+	dbg("weapon-core", 1, "[GivePlayerAmmo] player %d amount %d", playerid, amount);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(!IsValidItem(itemid))
 		return 0;
@@ -138,12 +138,12 @@ stock GivePlayerAmmo(playerid, amount)
 	UpdatePlayerWeaponItem(playerid);
 	_UpdateWeaponUI(playerid);
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[GivePlayerAmmo] Remainder of added ammo: %d", remainder);
+	dbg("weapon-core", 2, "[GivePlayerAmmo] Remainder of added ammo: %d", remainder);
 
 	return remainder;
 }
 
-stock AddAmmoToWeapon(itemid, amount)
+stock AddAmmoToWeapon(Item:itemid, amount)
 {
 	new ItemType:ammoitem = GetItemWeaponItemAmmoItem(itemid);
 
@@ -162,11 +162,11 @@ stock AddAmmoToWeapon(itemid, amount)
 	magsize = GetItemTypeWeaponMagSize(itemtype);
 	maxammo = itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_maxReserveMags] * magsize;
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[AddAmmoToWeapon] item ammo item: %d mag size: %d", _:ammoitem, magsize);
+	dbg("weapon-core", 1, "[AddAmmoToWeapon] item ammo item: %d mag size: %d", _:ammoitem, magsize);
 
 	if(maxammo == 0)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d magsize: %d reserve: %d", amount, itemid, _:ammoitem, magsize, reserveammo);
+		dbg("weapon-core", 2, "[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d magsize: %d reserve: %d", amount, _:itemid, _:ammoitem, magsize, reserveammo);
 
 		if(amount > magsize)
 		{
@@ -178,7 +178,7 @@ stock AddAmmoToWeapon(itemid, amount)
 			remainder = 0;
 		}
 
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[AddAmmoToWeapon] Setting just mag to %d", amount);
+		dbg("weapon-core", 2, "[AddAmmoToWeapon] Setting just mag to %d", amount);
 
 		SetItemWeaponItemReserve(itemid, amount);
 	}
@@ -187,7 +187,7 @@ stock AddAmmoToWeapon(itemid, amount)
 		if(reserveammo == maxammo)
 			return remainder;
 
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d reserve: %d max reserve: %d", amount, itemid, _:ammoitem, reserveammo, maxammo);
+		dbg("weapon-core", 2, "[AddAmmoToWeapon] Adding %d ammo to item %d: ammoitem type: %d reserve: %d max reserve: %d", amount, _:itemid, _:ammoitem, reserveammo, maxammo);
 
 		if(reserveammo + amount > maxammo)
 		{
@@ -199,12 +199,12 @@ stock AddAmmoToWeapon(itemid, amount)
 			remainder = 0;
 		}
 
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[AddAmmoToWeapon] Setting just reserve to %d", amount);
+		dbg("weapon-core", 2, "[AddAmmoToWeapon] Setting just reserve to %d", amount);
 
 		SetItemWeaponItemReserve(itemid, amount + reserveammo);
 	}
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[AddAmmoToWeapon] Returning remainder of %d", remainder);
+	dbg("weapon-core", 2, "[AddAmmoToWeapon] Returning remainder of %d", remainder);
 
 	return remainder;
 }
@@ -219,12 +219,12 @@ stock AddAmmoToWeapon(itemid, amount)
 
 stock UpdatePlayerWeaponItem(playerid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[UpdatePlayerWeaponItem]");
+	dbg("weapon-core", 1, "[UpdatePlayerWeaponItem]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -232,13 +232,13 @@ stock UpdatePlayerWeaponItem(playerid)
 
 	if(!IsValidItem(itemid))
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[UpdatePlayerWeaponItem] ERROR: Invalid item ID %d", itemid);
+		dbg("weapon-core", 2, "[UpdatePlayerWeaponItem] ERROR: Invalid item ID %d", _:itemid);
 		return 0;
 	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[UpdatePlayerWeaponItem] ERROR: Item type is not a weapon %d", itmw_ItemTypeWeapon[itemtype]);
+		dbg("weapon-core", 2, "[UpdatePlayerWeaponItem] ERROR: Item type is not a weapon %d", itmw_ItemTypeWeapon[itemtype]);
 		return 0;
 	}
 
@@ -270,7 +270,7 @@ stock UpdatePlayerWeaponItem(playerid)
 	}
 	else
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "ERROR: Item weapon %d uses ammo item %d which has a max ammo of %d.", _:itemtype, _:ammoitem, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
+		dbg("weapon-core", 2, "ERROR: Item weapon %d uses ammo item %d which has a max ammo of %d.", _:itemtype, _:ammoitem, itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_magSize]);
 	}
 
 	new
@@ -298,7 +298,7 @@ stock UpdatePlayerWeaponItem(playerid)
 
 stock RemovePlayerWeapon(playerid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[RemovePlayerWeapon]");
+	dbg("weapon-core", 1, "[RemovePlayerWeapon]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -318,7 +318,7 @@ hook OnPlayerUpdate(playerid)
 _FastUpdateHandler(playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -368,7 +368,7 @@ _FastUpdateHandler(playerid)
 timer _RepeatingFire[1000](playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype,
 		magammo;
 
@@ -427,9 +427,9 @@ timer _RepeatingFire[1000](playerid)
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	dbg("global", CORE, "[OnPlayerWeaponShot] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerWeaponShot] in /weapon-core");
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
+	dbg("weapon-core", 1, "[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return Y_HOOKS_BREAK_RETURN_0;
 
@@ -440,9 +440,9 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:fY = 0.0, Float:fZ = 0.0)
 {
 	#pragma unused hittype, hitid, fX, fY, fZ
-	dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[_FireWeapon] %p fired weapon %d", playerid, weaponid);
+	dbg("weapon-core", 2, "[_FireWeapon] %p fired weapon %d", playerid, weaponid);
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype,
 		magammo;
 
@@ -453,14 +453,14 @@ _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:
 	if(!IsValidItemType(itemtype))
 	{
 		ChatMsgAdmins(1, YELLOW, "[TEST] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[TMPREPORT] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
+		dbg("weapon-core", 2, "[TMPREPORT] Player %p fired weapon type %d without having any item equipped.", playerid, weaponid);
 		return 0;
 	}
 
 	if(itmw_ItemTypeWeapon[itemtype] == -1)
 	{
 		ChatMsgAdmins(1, YELLOW, "[TEST] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[TMPREPORT] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
+		dbg("weapon-core", 2, "[TMPREPORT] Player %p fired weapon type %d while having a non-weapon item (%d) equipped.", playerid, weaponid, _:itemtype);
 		return 0;
 	}
 
@@ -478,12 +478,12 @@ _FireWeapon(playerid, weaponid, hittype = -1, hitid = -1, Float:fX = 0.0, Float:
 
 _ReloadWeapon(playerid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[_ReloadWeapon]");
+	dbg("weapon-core", 1, "[_ReloadWeapon]");
 	if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1000)
 		return 0;
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -503,7 +503,7 @@ _ReloadWeapon(playerid)
 
 	if(reserveammo == 0)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "no reserve ammo left to reload with");
+		dbg("weapon-core", 2, "no reserve ammo left to reload with");
 
 		if(magammo == 0)
 		{
@@ -516,7 +516,7 @@ _ReloadWeapon(playerid)
 
 	if(magammo == magsize)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "Mag ammo is the same as mag size");
+		dbg("weapon-core", 2, "Mag ammo is the same as mag size");
 		return 0;
 	}
 
@@ -528,7 +528,7 @@ _ReloadWeapon(playerid)
 	//if(!IsBaseWeaponClipBased(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "Weapon has no calibre, cancelling reload");
+		dbg("weapon-core", 2, "Weapon has no calibre, cancelling reload");
 		return 0;
 	}
 
@@ -560,22 +560,22 @@ _ReloadWeapon(playerid)
 _UpdateWeaponUI(playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
 	itemtype = GetItemType(itemid);
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[_UpdateWeaponUI] updating weapon UI for item %d", itemid);
+	dbg("weapon-core", 1, "[_UpdateWeaponUI] updating weapon UI for item %d", _:itemid);
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 2, "weapon is not clip based");
+		dbg("weapon-core", 2, "weapon is not clip based");
 		PlayerTextDrawHide(playerid, WeaponAmmoUI[playerid]);
 		return;
 	}
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[_UpdateWeaponUI] item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	dbg("weapon-core", 2, "[_UpdateWeaponUI] item %d magammo %d reserve %d", _:itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 
 	new str[8];
 
@@ -591,13 +591,13 @@ _UpdateWeaponUI(playerid)
 	return;
 }
 
-hook OnPlayerHolsteredItem(playerid, itemid)
+hook OnPlayerHolsteredItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerHolsteredItem] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerHolsteredItem] in /weapon-core");
 
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
-		new helditemid = GetPlayerItem(playerid);
+		new Item:helditemid = GetPlayerItem(playerid);
 
 		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > 0)
 		{
@@ -613,9 +613,9 @@ hook OnPlayerHolsteredItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUnHolsteredItem(playerid, itemid)
+hook OnPlayerUnHolsteredItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUnHolsteredItem] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerUnHolsteredItem] in /weapon-core");
 
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
@@ -635,7 +635,7 @@ hook OnPlayerUnHolsteredItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerKeyStateChange] in /weapon-core");
 
 	if(newkeys & 1)
 	{
@@ -652,7 +652,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & KEY_FIRE)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);
@@ -666,7 +666,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 		{
-			defer DestroyThrowable(playerid, itemid);
+			defer DestroyThrowable(playerid, _:itemid);
 			return Y_HOOKS_CONTINUE_RETURN_1;
 		}
 
@@ -696,10 +696,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(oldkeys & KEY_NO)
 	{
-		dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
+		dbg("weapon-core", 1, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", _:itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
 		if(IsValidItem(itmw_DropItemID[playerid]))
 		{
-			dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
+			dbg("weapon-core", 2, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", _:itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
 			stop itmw_DropTimer[playerid];
 			PlayerDropItem(playerid);
 			itmw_DropItemID[playerid] = INVALID_ITEM_ID;
@@ -711,13 +711,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 timer DestroyThrowable[1000](playerid, itemid)
 {
-	DestroyItem(itemid);
+	DestroyItem(Item:itemid);
 	ResetPlayerWeapons(playerid);
 }
 
-hook OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerDropItem] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnPlayerDropItem] in /weapon-core");
 
 	if(_unload_DropHandler(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -725,7 +725,7 @@ hook OnPlayerDropItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_unload_DropHandler(playerid, itemid)
+_unload_DropHandler(playerid, Item:itemid)
 {
 	new
 		ItemType:itemtype,
@@ -746,16 +746,18 @@ _unload_DropHandler(playerid, itemid)
 	if(itmw_Data[weapontype][itmw_flags] & WEAPON_FLAG_LIQUID_AMMO)
 		return 0;
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[OnPlayerDropItem] dropping item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	dbg("weapon-core", 1, "[OnPlayerDropItem] dropping item %d magammo %d reserve %d", _:itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 	itmw_DropItemID[playerid] = itemid;
-	itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, itemid);
+	itmw_DropTimer[playerid] = defer _UnloadWeapon(playerid, _:itemid);
 
 	return 1;
 }
 
-timer _UnloadWeapon[300](playerid, itemid)
+timer _UnloadWeapon[300](playerid, _itemid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 1, "[_UnloadWeapon] unloading item %d magammo %d reserve %d", itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
+	new Item:itemid = Item:_itemid;
+
+	dbg("weapon-core", 1, "[_UnloadWeapon] unloading item %d magammo %d reserve %d", _:itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 	if(GetPlayerItem(playerid) != itemid)
 	{
 		itmw_DropItemID[playerid] = INVALID_ITEM_ID;
@@ -774,13 +776,13 @@ timer _UnloadWeapon[300](playerid, itemid)
 		Float:y,
 		Float:z,
 		Float:r,
-		ammoitemid;
+		Item:ammoitemid;
 
 	ammoitemtype = GetItemWeaponItemAmmoItem(itemid);
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	dbg("gamemodes/sss/core/weapon/core.pwn", 2, "[_UnloadWeapon] ammo item type %d amount: %d", _:ammoitemtype, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
+	dbg("weapon-core", 2, "[_UnloadWeapon] ammo item type %d amount: %d", _:ammoitemtype, GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid));
 
 	ammoitemid = CreateItem(ammoitemtype,
 		x + (0.5 * floatsin(-r, degrees)),
@@ -803,9 +805,9 @@ timer _UnloadWeapon[300](playerid, itemid)
 	return;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/weapon/core.pwn");
+	dbg("global", CORE, "[OnItemNameRender] in /weapon-core");
 
 	new itemweaponid = GetItemTypeWeapon(itemtype);
 
@@ -1028,16 +1030,16 @@ stock GetItemTypeWeaponFlags(ItemType:itemtype)
 
 
 // WEAPON_ITEM_ARRAY_CELL_MAG
-stock GetItemWeaponItemMagAmmo(itemid)
+stock GetItemWeaponItemMagAmmo(Item:itemid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "GetItemWeaponItemMagAmmo itemid:%d", itemid);
+	dbg("weapon-core", 3, "GetItemWeaponItemMagAmmo itemid:%d", _:itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_MAG);
 	return ret < 0 ? 0 : ret;
 }
 
-stock SetItemWeaponItemMagAmmo(itemid, amount)
+stock SetItemWeaponItemMagAmmo(Item:itemid, amount)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "SetItemWeaponItemMagAmmo itemid:%d, amount:%d", itemid, amount);
+	dbg("weapon-core", 3, "SetItemWeaponItemMagAmmo itemid:%d, amount:%d", _:itemid, amount);
 
 	if(amount == 0)
 	{
@@ -1050,16 +1052,16 @@ stock SetItemWeaponItemMagAmmo(itemid, amount)
 }
 
 // WEAPON_ITEM_ARRAY_CELL_RESERVE
-stock GetItemWeaponItemReserve(itemid)
+stock GetItemWeaponItemReserve(Item:itemid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "GetItemWeaponItemReserve itemid:%d", itemid);
+	dbg("weapon-core", 3, "GetItemWeaponItemReserve itemid:%d", _:itemid);
 	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_RESERVE);
 	return ret < 0 ? 0 : ret;
 }
 
-stock SetItemWeaponItemReserve(itemid, amount)
+stock SetItemWeaponItemReserve(Item:itemid, amount)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "SetItemWeaponItemReserve itemid:%d, amount:%d", itemid, amount);
+	dbg("weapon-core", 3, "SetItemWeaponItemReserve itemid:%d, amount:%d", _:itemid, amount);
 
 	if(amount == 0)
 	{
@@ -1072,15 +1074,15 @@ stock SetItemWeaponItemReserve(itemid, amount)
 }
 
 // WEAPON_ITEM_ARRAY_CELL_AMMOITEM
-stock ItemType:GetItemWeaponItemAmmoItem(itemid)
+stock ItemType:GetItemWeaponItemAmmoItem(Item:itemid)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "GetItemWeaponItemAmmoItem itemid:%d", itemid);
+	dbg("weapon-core", 3, "GetItemWeaponItemAmmoItem itemid:%d", _:itemid);
 	return ItemType:GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
 }
 
-stock SetItemWeaponItemAmmoItem(itemid, ItemType:itemtype)
+stock SetItemWeaponItemAmmoItem(Item:itemid, ItemType:itemtype)
 {
-	dbg("gamemodes/sss/core/weapon/core.pwn", 3, "SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", itemid, _:itemtype);
+	dbg("weapon-core", 3, "SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", _:itemid, _:itemtype);
 	SetItemArrayDataSize(itemid, 4);
 
 	return SetItemArrayDataAtCell(itemid, _:itemtype, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
@@ -1109,7 +1111,7 @@ stock GetPlayerTotalAmmo(playerid)
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	return GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid);
 }

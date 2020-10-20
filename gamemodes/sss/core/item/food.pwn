@@ -50,7 +50,7 @@ static
 			food_Data[MAX_FOOD_ITEM][E_FOOD_DATA],
 			food_ItemTypeFoodType[ITM_MAX_TYPES] = {-1, ...},
 			food_Total,
-			food_CurrentItem[MAX_PLAYERS];
+Item:		food_CurrentItem[MAX_PLAYERS];
 
 
 forward OnPlayerEat(playerid, itemid);
@@ -59,9 +59,7 @@ forward OnPlayerEaten(playerid, itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/food.pwn");
-
-	food_CurrentItem[playerid] = -1;
+	food_CurrentItem[playerid] = INVALID_ITEM_ID;
 }
 
 
@@ -96,10 +94,8 @@ DefineFoodItem(ItemType:itemtype, maxbites, Float:bitevalue, cancook, canrawinfe
 ==============================================================================*/
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/food.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		new foodtype = GetItemTypeFoodType(GetItemType(itemid));
@@ -112,10 +108,8 @@ hook OnItemCreate(itemid)
 	}
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/food.pwn");
-
 	if(GetItemTypeFoodType(GetItemType(itemid)) != -1)
 		_StartEating(playerid, itemid);
 
@@ -124,9 +118,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/food.pwn");
-
-	if(oldkeys & 16 && food_CurrentItem[playerid] != -1)
+	if(oldkeys & 16 && food_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		_StopEating(playerid);
 	}
@@ -134,7 +126,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-_StartEating(playerid, itemid, continuing = false)
+_StartEating(playerid, Item:itemid, continuing = false)
 {
 	if(!IsPlayerIdle(playerid) && !continuing)
 		return;
@@ -144,7 +136,7 @@ _StartEating(playerid, itemid, continuing = false)
 
 	food_CurrentItem[playerid] = itemid;
 
-	if(CallLocalFunction("OnPlayerEat", "dd", playerid, itemid))
+	if(CallLocalFunction("OnPlayerEat", "dd", playerid, _:itemid))
 	{
 		_StopEating(playerid);
 		return;
@@ -161,10 +153,10 @@ _StopEating(playerid)
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
-	food_CurrentItem[playerid] = -1;
+	food_CurrentItem[playerid] = INVALID_ITEM_ID;
 }
 
-_EatItem(playerid, itemid)
+_EatItem(playerid, Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -177,7 +169,7 @@ _EatItem(playerid, itemid)
 	if(foodtype == -1)
 		return 0;
 
-	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, itemid))
+	if(CallLocalFunction("OnPlayerEaten", "dd", playerid, _:itemid))
 	{
 		_StopEating(playerid);
 		return 0;
@@ -217,9 +209,7 @@ _EatItem(playerid, itemid)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/food.pwn");
-
-	if(food_CurrentItem[playerid] != -1)
+	if(food_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		_EatItem(playerid, food_CurrentItem[playerid]);
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -228,10 +218,8 @@ hook OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/food.pwn");
-
 	new foodtype = GetItemTypeFoodType(itemtype);
 
 	if(foodtype != -1)
@@ -329,34 +317,34 @@ stock GetFoodTypeDestroyOnEnd(foodtype)
 // Item specific
 
 // food_cooked
-stock GetFoodItemCooked(itemid)
+stock GetFoodItemCooked(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, food_cooked);
 }
 
-stock SetFoodItemCooked(itemid, value)
+stock SetFoodItemCooked(Item:itemid, value)
 {
 	return SetItemArrayDataAtCell(itemid, value, food_cooked);
 }
 
 // food_amount
-stock GetFoodItemAmount(itemid)
+stock GetFoodItemAmount(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, food_amount);
 }
 
-stock SetFoodItemAmount(itemid, value)
+stock SetFoodItemAmount(Item:itemid, value)
 {
 	return SetItemArrayDataAtCell(itemid, value, food_amount);
 }
 
 // food_subType
-stock GetFoodItemSubType(itemid)
+stock GetFoodItemSubType(Item:itemid)
 {
 	return GetItemArrayDataAtCell(itemid, food_subType);
 }
 
-stock SetFoodItemSubType(itemid, value)
+stock SetFoodItemSubType(Item:itemid, value)
 {
 	return SetItemArrayDataAtCell(itemid, value, food_subType);
 }

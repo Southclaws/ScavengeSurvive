@@ -60,7 +60,7 @@ stock DefineItemTypeFurniture(ItemType:itemtype, Float:px, Float:py, Float:pz, F
 	return fur_Total++;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -73,7 +73,7 @@ hook OnItemCreate(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(fur_ItemTypeFurnitureType[GetItemType(itemid)] != -1)
 		return Y_HOOKS_BREAK_RETURN_1;
@@ -81,7 +81,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	new ItemType:itemtype = GetItemType(withitemid);
 
@@ -146,7 +146,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/world/furniture.pwn");
 
@@ -163,7 +163,7 @@ hook OnPlayerUseItem(playerid, itemid)
 	if(!IsValidContainer(containerid))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new subitem = GetContainerSlotItem(containerid, 0);
+	new Item:subitem = GetContainerSlotItem(containerid, 0);
 
 	if(!IsValidItem(subitem))
 		return Y_HOOKS_CONTINUE_RETURN_0;

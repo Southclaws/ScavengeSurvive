@@ -27,9 +27,7 @@
 
 hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
-	dbg("global", CORE, "[OnPlayerInteractVehicle] in /gamemodes/sss/core/item/wheel.pwn");
-
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(GetItemType(itemid) == item_Wheel)
 	{
@@ -40,7 +38,7 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_WheelRepair(playerid, vehicleid, itemid)
+_WheelRepair(playerid, vehicleid, Item:itemid)
 {
 	new
 		wheel = GetPlayerVehicleTire(playerid, vehicleid),
@@ -233,7 +231,7 @@ ShowTireList(playerid, vehicleid)
 			return 0;
 
 		GetVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires);
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(listitem == 0)
 		{

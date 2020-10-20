@@ -44,7 +44,7 @@ hook OnPlayerGiveDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 PopHat(playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype,
 		Float:x,
 		Float:y,
@@ -65,7 +65,7 @@ PopHat(playerid)
 PopMask(playerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype,
 		Float:x,
 		Float:y,

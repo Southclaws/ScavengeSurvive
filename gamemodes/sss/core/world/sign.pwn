@@ -28,7 +28,7 @@
 #define MAX_SIGN_TEXT (128)
 
 
-static CurrentSignItem[MAX_PLAYERS];
+static Item:CurrentSignItem[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -37,7 +37,7 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Sign"), MAX_SIGN_TEXT);
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Sign)
 	{
@@ -49,7 +49,7 @@ hook OnItemCreateInWorld(itemid)
 	}
 }
 
-hook OnItemArrayDataChanged(itemid)
+hook OnItemArrayDataChanged(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Sign)
 	{
@@ -59,7 +59,7 @@ hook OnItemArrayDataChanged(itemid)
 	}
 }
 
-_sign_UpdateText(itemid, text[])
+_sign_UpdateText(Item:itemid, text[])
 {
 	new objectid = GetItemObjectID(itemid);
 
@@ -69,10 +69,8 @@ _sign_UpdateText(itemid, text[])
 	SetDynamicObjectMaterialText(objectid, 0, text, OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/sign.pwn");
-
 	if(GetItemType(itemid) == item_Sign)
 	{
 		if(IsItemInWorld(itemid))

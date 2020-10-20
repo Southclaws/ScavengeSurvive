@@ -22,7 +22,7 @@
 ==============================================================================*/
 
 
-hook OnPlayerGetItem(playerid, itemid)
+hook OnPlayerGetItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerGetItem] in /gamemodes/sss/core/weapon/interact.pwn");
 
@@ -31,7 +31,7 @@ hook OnPlayerGetItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerGivenItem(playerid, targetid, itemid)
+hook OnPlayerGivenItem(playerid, targetid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerGivenItem] in /gamemodes/sss/core/weapon/interact.pwn");
 
@@ -44,7 +44,7 @@ hook OnPlayerGivenItem(playerid, targetid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/weapon/interact.pwn");
 
@@ -56,7 +56,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/weapon/interact.pwn");
 
@@ -68,7 +68,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
+_PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 {
 	new
 		ItemType:helditemtype,
@@ -114,7 +114,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			}
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
-			defer _TransferWeaponToWeapon(playerid, ammoitemid, helditemid);
+			defer _TransferWeaponToWeapon(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
 		}
@@ -175,7 +175,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			}
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
-			defer _TransferTinToWeapon(playerid, ammoitemid, helditemid);
+			defer _TransferTinToWeapon(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
 		}
@@ -215,7 +215,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			}
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
-			defer _TransferWeaponToTin(playerid, ammoitemid, helditemid);
+			defer _TransferWeaponToTin(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
 		}
@@ -245,7 +245,7 @@ _PickUpAmmoTransferCheck(playerid, helditemid, ammoitemid)
 			}
 
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
-			defer _TransferTinToTin(playerid, ammoitemid, helditemid);
+			defer _TransferTinToTin(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
 		}
@@ -263,16 +263,16 @@ timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
 		reserveammo,
 		remainder;
 
-	magammo = GetItemWeaponItemMagAmmo(srcitem);
-	reserveammo = GetItemWeaponItemReserve(srcitem);
+	magammo = GetItemWeaponItemMagAmmo(Item:srcitem);
+	reserveammo = GetItemWeaponItemReserve(Item:srcitem);
 
 	if(reserveammo + magammo > 0)
 	{
-		SetItemWeaponItemAmmoItem(tgtitem, GetItemWeaponItemAmmoItem(srcitem));
+		SetItemWeaponItemAmmoItem(Item:tgtitem, GetItemWeaponItemAmmoItem(Item:srcitem));
 		remainder = GivePlayerAmmo(playerid, reserveammo + magammo);
 
-		SetItemWeaponItemMagAmmo(srcitem, 0);
-		SetItemWeaponItemReserve(srcitem, remainder);
+		SetItemWeaponItemMagAmmo(Item:srcitem, 0);
+		SetItemWeaponItemReserve(Item:srcitem, remainder);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOW", true), (reserveammo + magammo) - remainder), 3000);
 	}
@@ -288,14 +288,14 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 		ammo,
 		remainder;
 
-	ammo = GetItemExtraData(srcitem);
+	ammo = GetItemExtraData(Item:srcitem);
 
 	if(ammo > 0)
 	{
-		SetItemWeaponItemAmmoItem(tgtitem, GetItemType(srcitem));
+		SetItemWeaponItemAmmoItem(Item:tgtitem, GetItemType(Item:srcitem));
 		remainder = GivePlayerAmmo(playerid, ammo);
 
-		SetItemExtraData(srcitem, remainder);
+		SetItemExtraData(Item:srcitem, remainder);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW", true), ammo - remainder), 3000);
 	}
@@ -307,12 +307,12 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 {
 	new
-		existing = GetItemExtraData(tgtitem),
-		amount = GetItemWeaponItemMagAmmo(srcitem) + GetItemWeaponItemReserve(srcitem);
+		existing = GetItemExtraData(Item:tgtitem),
+		amount = GetItemWeaponItemMagAmmo(Item:srcitem) + GetItemWeaponItemReserve(Item:srcitem);
 
-	SetItemExtraData(tgtitem, existing + amount);
-	SetItemWeaponItemMagAmmo(srcitem, 0);
-	SetItemWeaponItemReserve(srcitem, 0);
+	SetItemExtraData(Item:tgtitem, existing + amount);
+	SetItemWeaponItemMagAmmo(Item:srcitem, 0);
+	SetItemWeaponItemReserve(Item:srcitem, 0);
 
 	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOT", true), amount), 3000);
 
@@ -323,11 +323,11 @@ timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 {
 	new
-		existing = GetItemExtraData(tgtitem),
-		amount = GetItemExtraData(srcitem);
+		existing = GetItemExtraData(Item:tgtitem),
+		amount = GetItemExtraData(Item:srcitem);
 
-	SetItemExtraData(tgtitem, existing + amount);
-	SetItemExtraData(srcitem, 0);
+	SetItemExtraData(Item:tgtitem, existing + amount);
+	SetItemExtraData(Item:srcitem, 0);
 
 	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOT", true), amount), 3000);
 
@@ -344,13 +344,13 @@ timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 
 static
 	trans_ContainerOptionID[MAX_PLAYERS] = {-1, ...},
-	trans_SelectedItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+	Item:trans_SelectedItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 hook OnPlayerViewCntOpt(playerid, containerid)
 {
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
@@ -392,10 +392,10 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 DisplayTransferAmmoDialog(playerid, containerid, msg[] = "")
 {
 	new
-		sourceitemid,
+		Item:sourceitemid,
 		ItemType:sourceitemtype,
 		sourceitemname[ITM_MAX_NAME],
-		targetitemid,
+		Item:targetitemid,
 		ItemType:targetitemtype,
 		targetitemname[ITM_MAX_NAME];
 

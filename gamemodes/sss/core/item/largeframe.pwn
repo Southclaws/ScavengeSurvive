@@ -25,7 +25,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerInteractDefence(playerid, itemid)
+hook OnPlayerInteractDefence(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -46,7 +46,7 @@ hook OnPlayerInteractDefence(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_frame_createCovering(itemid)
+_frame_createCovering(Item:itemid)
 {
 	new
 		Float:px,
@@ -63,7 +63,7 @@ _frame_createCovering(itemid)
 	return SetItemArrayDataAtCell(itemid, objectid, def_mod, true);
 }
 
-hook OnItemRemoveFromWorld(itemid)
+hook OnItemRemoveFromWorld(Item:itemid)
 {
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -78,15 +78,13 @@ hook OnItemRemoveFromWorld(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnDefenceLoad(itemid, active, geid[], data[], length)
+hook OnDefenceLoad(Item:itemid, active, geid[], data[], length)
 {
 	if(!active)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
-
-	printf("created large frame %d mod %d", itemid, GetItemArrayDataAtCell(itemid, def_mod));
 
 	if(GetItemArrayDataAtCell(itemid, def_mod) == 0)
 		return Y_HOOKS_CONTINUE_RETURN_0;

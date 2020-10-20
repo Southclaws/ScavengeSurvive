@@ -37,8 +37,8 @@ bool:		PlayerInTutorial		[MAX_PLAYERS],
 			TutorialWorld = 90;
 
 
-forward OnPlayerWearBag(playerid, itemid);
-forward OnPlayerHolsteredItem(playerid, itemid);
+forward OnPlayerWearBag(playerid, Item:itemid);
+forward OnPlayerHolsteredItem(playerid, Item:itemid);
 
 
 hook OnPlayerLoadAccount(playerid)
@@ -190,7 +190,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		ToggleTutorialUI(playerid, true);
 
-		new itemid;
+		new Item:itemid;
 
 		CreateItem(item_Satchel, 1078.70325, 2132.96069, 9.85179, .world = PlayerTutorialWorld[playerid]);
 
@@ -285,7 +285,7 @@ ToggleTutorialUI(playerid, toggle)
 }
 
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -298,7 +298,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 }
 
 
-hook OnPlayerWearBag(playerid, itemid)
+hook OnPlayerWearBag(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerWearBag] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -378,7 +378,7 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -390,7 +390,7 @@ hook OnPlayerDroppedItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToInventory(playerid, itemid, slot)
+hook OnItemAddedToInventory(playerid, Item:itemid, slot)
 {
 	dbg("global", CORE, "[OnItemAddedToInventory] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -414,7 +414,7 @@ hook OnPlayerViewInvOpt(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(containerid, Item:itemid, playerid)
 {
 	dbg("global", CORE, "[OnItemAddedToContainer] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -436,7 +436,7 @@ hook OnItemAddedToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerHolsteredItem(playerid, itemid)
+hook OnPlayerHolsteredItem(playerid, Item:itemid)
 {
 	dbg("global", CORE, "[OnPlayerHolsteredItem] in /gamemodes/sss/core/player/tutorial.pwn");
 
@@ -448,7 +448,7 @@ hook OnPlayerHolsteredItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/player/tutorial.pwn");
 
