@@ -29,20 +29,20 @@
 
 
 new
-	RanchPcButton,
+	Button:RanchPcButton,
 	RanchHdd,
 	RanchPcState,
 	RanchPcObj,
 	RanchPcPlayerViewing[MAX_PLAYERS],
 
-	QuarryDoor,
+	Button:QuarryDoor,
 	QuarryDoorKey,
 	QuarryDoorState,
 
-	CaveDoor,
+	Button:CaveDoor,
 	CaveLift,
-	CaveLiftButtonT,
-	CaveLiftButtonB,
+	Button:CaveLiftButtonT,
+	Button:CaveLiftButtonB,
 	LiftPos;
 
 
@@ -50,7 +50,7 @@ hook OnGameModeInit()
 {
 	_Ranch_LoadObjects();
 
-	new buttonid[2];
+	new Button:buttonid[2];
 
 	// Ranch
 
@@ -124,7 +124,7 @@ hook OnGameModeInit()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0, .worldid = RANCH_STUFF_VIRTUALW);
 }
 
-hook OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, Button:buttonid)
 {
 	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/ranch.pwn");
 
@@ -198,7 +198,7 @@ hook OnButtonPress(playerid, buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
 

@@ -124,7 +124,7 @@ _plotpole_saveNearby(itemid)
 		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
 			continue;
 
-		subitem = GetItemFromButtonID(data[1]);
+		subitem = GetItemFromButtonID(Button:data[1]);
 
 		if(IsValidItem(subitem))
 		{

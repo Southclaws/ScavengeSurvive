@@ -29,8 +29,8 @@
 
 
 new
-	ch_gate,
-	ch_doorBtn,
+	Button:ch_gate,
+	Button:ch_doorBtn,
 	ch_door,
 	ch_walton,
 	ch_battery,
@@ -48,7 +48,7 @@ new
 
 hook OnGameModeInit()
 {
-	new buttons[1];
+	new Button:buttons[1];
 
 
 	ch_gate = CreateButton(-2307.81, -1650.67, 484.36, "Press F to activate", 0);
@@ -273,7 +273,7 @@ hook OnPlayerActivateDoor(playerid, doorid, newstate)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/mtchill.pwn");
 

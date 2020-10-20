@@ -49,9 +49,9 @@ RC = ?
 enum E_LOCKUP_DATA
 {
 	lck_keyCode,
-	lck_keyButton,
-	lck_extButton,
-	lck_intButton,
+	Button:lck_keyButton,
+	Button:lck_extButton,
+	Button:lck_intButton,
 	lck_locked
 }
 
@@ -100,7 +100,7 @@ CreateCodeParts(const Float:coords[][], size, keycode)
 	SetItemNameExtra(itemid[3], nameextra[3]);
 }
 
-CreateLockup(keypadbutton, extButton, intButton)
+CreateLockup(Button:keypadbutton, Button:extButton, Button:intButton)
 {
 	new keycode = 1000 + random(8999);
 	lck_Data[lck_Total][lck_keyCode] = keycode;
@@ -115,7 +115,7 @@ CreateLockup(keypadbutton, extButton, intButton)
 	return keycode;
 }
 
-hook OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, Button:buttonid)
 {
 	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/codehunt.pwn");
 

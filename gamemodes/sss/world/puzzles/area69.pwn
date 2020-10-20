@@ -60,8 +60,8 @@ new
 	code_Headquarters,
 	code_Shaft,
 
-	btn_ControlTower,
-	btn_StorageWatch,
+	Button:btn_ControlTower,
+	Button:btn_StorageWatch,
 
 	lock_ControlTower,
 	lock_StorageWatch,
@@ -82,7 +82,7 @@ new
 hook OnGameModeInit()
 {
 	new
-		buttonid[2];
+		Button:buttonid[2];
 
 	code_ControlTower	= 1000 + random(8999);
 	code_MainGate		= 1000 + random(8999);
@@ -357,7 +357,7 @@ hook OnGameModeInit()
 	CreateDynamicObject(3095, 268.37225, 1884.12219, 15.74065,   0.00000, 0.00000, 0.00000);
 }
 
-hook OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, Button:buttonid)
 {
 	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/area69.pwn");
 

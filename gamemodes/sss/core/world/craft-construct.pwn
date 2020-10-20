@@ -121,14 +121,14 @@ hook OnPlayerUseItem(playerid, itemid)
 	dbg("global", CORE, "[OnPlayerUseItem] in craft-construct");
 
 	new
-		list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...},
+		list[BTN_MAX_INRANGE] = {INVALID_ITEM_ID, ...},
 		size;
 
 	size = GetPlayerNearbyItems(playerid, list);
 
 	if(size > 1)
 	{
-		dbg("craft-construct", 1, "[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
+		dbg("craft-construct", 1, "[OnPlayerUseItem] Item list size %d, comparing with craft lists", size);
 
 		_ResetSelectedItems(playerid);
 

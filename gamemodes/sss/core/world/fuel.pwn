@@ -31,7 +31,7 @@
 enum E_FUEL_DATA
 {
 			fuel_state,
-			fuel_buttonId,
+Button:		fuel_buttonId,
 Float:		fuel_capacity,
 Float:		fuel_amount,
 Float:		fuel_posX,
@@ -81,7 +81,7 @@ stock CreateFuelOutlet(Float:x, Float:y, Float:z, Float:areasize, Float:capacity
 	return fuel_Total++;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/world/fuel.pwn");
 
@@ -107,7 +107,7 @@ hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerRelBtnWithItem(playerid, buttonid, itemid)
+hook OnPlayerRelBtnWithItem(playerid, Button:buttonid, itemid)
 {
 	if(fuel_CurrentFuelOutlet[playerid] != INVALID_FUEL_OUTLET_ID)
 	{

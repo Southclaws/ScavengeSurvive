@@ -64,7 +64,7 @@
 #define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
 #define DEBUG_LABELS_BUTTON				// SIF/Button
 #define DEBUG_LABELS_ITEM				// SIF/Item
-#define BTN_MAX							(32768) // SIF/Button
+#define BTN_MAX							Button:32768 // SIF/Button
 #define ITM_MAX							(32768) // SIF/Item
 #define CNT_MAX_SLOTS					(100)
 

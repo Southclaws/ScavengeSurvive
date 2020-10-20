@@ -691,7 +691,7 @@ LV_District_KACC()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'LV_District_KACC' please wait...");
 
-	new buttonid[1];
+	new Button:buttonid[1];
 
 	// Requires "./scriptfiles/Maps/LV/KACC.map" to remove:
 	// RemoveBuildingForPlayer(playerid, 985, 2497.36523438, 2777.06933594, 11.55891800, 40.0);

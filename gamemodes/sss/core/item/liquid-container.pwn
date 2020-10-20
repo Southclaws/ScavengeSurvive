@@ -147,13 +147,13 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, itemid)
 {
 	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/core/item/liquid-container.pwn");
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{
-		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], buttonid);
+		dbg("gamemodes/sss/core/item/liquid-container.pwn", 2, "[OnPlayerUseItemWithBtn] using liquid item %d type %d with button %d", itemid, liq_ItemTypeLiquidContainer[GetItemType(itemid)], _:buttonid);
 
 		liq_UseWithItemTick[playerid] = GetTickCount();
 	}

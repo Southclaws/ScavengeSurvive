@@ -1611,7 +1611,7 @@ SF_District_City1()
 	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_City1' please wait...");
 
 	new
-		buttonid[2];
+		Button:buttonid[2];
 
 	buttonid[0] = CreateButton(-2208.2568, 579.8558, 35.7653, "Press F to activate", 0);
 	buttonid[1] = CreateButton(-2208.2561, 584.4679, 35.7653, "Press F to activate", 0);
@@ -2725,7 +2725,7 @@ SF_District_Naval()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Naval' please wait...");
 
-	new buttonid[1];
+	new Button:buttonid[1];
 
 	// Requires "./scriptfiles/Maps/SF/Naval Base.map" to remove:
 	// RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.01);
