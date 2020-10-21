@@ -325,7 +325,8 @@ hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SaveTent(GetContainerTent(containerid));
+	if(GetContainerTent(containerid) != -1)
+		SaveTent(GetContainerTent(containerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -335,7 +336,8 @@ hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SaveTent(GetContainerTent(containerid));
+	if(GetContainerTent(containerid) != -1)
+		SaveTent(GetContainerTent(containerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
