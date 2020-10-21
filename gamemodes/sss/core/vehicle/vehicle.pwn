@@ -795,7 +795,7 @@ hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Fl
 		{
 			case VEHICLE_CATEGORY_TRUCK:
 			{
-				xythresh = 0.02;
+				xythresh = 0.03;
 				zthresh = 1.5;
 			}
 
