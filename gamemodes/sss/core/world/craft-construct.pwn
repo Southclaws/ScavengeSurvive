@@ -248,7 +248,7 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(!IsItemInWorld(cons_SelectedItems[playerid][count][craft_selectedItemID]))
 			{
-				dbg("craft-construct", 2, "[OnHoldActionFinish] selected item %d is not in the world any more", cons_SelectedItems[playerid][count][craft_selectedItemID]);
+				dbg("craft-construct", 2, "[OnHoldActionFinish] selected item %d is not in the world any more", _:cons_SelectedItems[playerid][count][craft_selectedItemID]);
 				return;
 			}
 		}
