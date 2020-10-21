@@ -247,10 +247,13 @@ hook OnHoldActionFinish(playerid)
 		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][craft_selectedItemID] != INVALID_ITEM_ID; count++)
 		{
 			if(!IsItemInWorld(cons_SelectedItems[playerid][count][craft_selectedItemID]))
+			{
+				dbg("craft-construct", 2, "[OnHoldActionFinish] selected item %d is not in the world any more", cons_SelectedItems[playerid][count][craft_selectedItemID]);
 				return;
+			}
 		}
 
-		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][craft_selectedItemID] != INVALID_ITEM_ID; count++)
+		for(count = 0 ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][craft_selectedItemID] != INVALID_ITEM_ID; count++)
 		{
 			GetItemPos(cons_SelectedItems[playerid][count][craft_selectedItemID], x, y, z);
 
