@@ -72,7 +72,7 @@ hook OnGameModeInit()
 		resitems[16][32],
 		resitems_total,
 
-		bagtype[ITM_MAX_NAME];
+		bagtype[MAX_ITEM_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);

@@ -48,7 +48,7 @@ Float:		food_biteValue,
 
 static
 			food_Data[MAX_FOOD_ITEM][E_FOOD_DATA],
-			food_ItemTypeFoodType[ITM_MAX_TYPES] = {-1, ...},
+			food_ItemTypeFoodType[MAX_ITEM_TYPE] = {-1, ...},
 			food_Total,
 Item:		food_CurrentItem[MAX_PLAYERS];
 

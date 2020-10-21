@@ -78,7 +78,7 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 	if(ToolTips[playerid])
 	{
 		new
-			itemname[ITM_MAX_NAME],
+			itemname[MAX_ITEM_NAME],
 			itemtipkey[12],
 			str[288];
 

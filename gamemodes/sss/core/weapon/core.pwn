@@ -60,7 +60,7 @@ enum // Item array data structure
 static
 			itmw_Data[MAX_ITEM_WEAPON][E_ITEM_WEAPON_DATA],
 			itmw_Total,
-			itmw_ItemTypeWeapon[ITM_MAX_TYPES] = {-1, ...};
+			itmw_ItemTypeWeapon[MAX_ITEM_TYPE] = {-1, ...};
 
 static
 PlayerText:	WeaponAmmoUI[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
@@ -821,7 +821,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 		ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)),
 		calibrename[MAX_AMMO_CALIBRE_NAME],
 		ammoname[MAX_AMMO_CALIBRE_NAME],
-		exname[ITM_MAX_TEXT];
+		exname[MAX_ITEM_TEXT];
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_flags] & WEAPON_FLAG_LIQUID_AMMO)
 		calibrename = "Liquid";
@@ -835,7 +835,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	else
 		GetAmmoTypeName(ammotype, ammoname);
 
-	new name[ITM_MAX_NAME];
+	new name[MAX_ITEM_NAME];
 	GetItemTypeName(itemtype, name);
 
 	format(exname, sizeof(exname), "%d/%d, %s, %s", GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid), calibrename, ammoname);

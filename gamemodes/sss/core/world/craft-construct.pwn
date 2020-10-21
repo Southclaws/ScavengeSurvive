@@ -151,7 +151,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
 					{
 						new
-							uniqueid[ITM_MAX_NAME],
+							uniqueid[MAX_ITEM_NAME],
 							ItemType:result;
 						GetCraftSetResult(craftset, result);
 
@@ -200,7 +200,7 @@ StartRemovingConstructedItem(playerid, Item:itemid, CraftSet:craftset)
 {
 	new
 		ItemType:result,
-		uniqueid[ITM_MAX_NAME];
+		uniqueid[MAX_ITEM_NAME];
 	GetCraftSetResult(craftset, result);
 	GetItemTypeName(result, uniqueid);
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTime], uniqueid));
@@ -237,7 +237,7 @@ hook OnHoldActionFinish(playerid)
 			Float:tz,
 			count,
 			Item:itemid,
-			uniqueid[ITM_MAX_NAME];
+			uniqueid[MAX_ITEM_NAME];
 
 		GetCraftSetResult(cons_Constructing[playerid], result);
 		GetItemTypeName(result, uniqueid);

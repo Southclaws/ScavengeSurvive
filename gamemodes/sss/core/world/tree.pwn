@@ -302,8 +302,8 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		dbg("global", CORE, "[_tree_EnterArea] Area tree area type for tree %i", data[1]);
 
 		new
-			toolname[ITM_MAX_NAME],
-			yieldname[ITM_MAX_NAME];
+			toolname[MAX_ITEM_NAME],
+			yieldname[MAX_ITEM_NAME];
 
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_harvest_item], toolname);
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
@@ -571,8 +571,8 @@ stock SetTreeHealth(treeid, Float:health)
 		return 0;
 
 	new
-		toolname[ITM_MAX_NAME],
-		yieldname[ITM_MAX_NAME];
+		toolname[MAX_ITEM_NAME],
+		yieldname[MAX_ITEM_NAME];
 
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_harvest_item], toolname);
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], yieldname);

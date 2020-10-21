@@ -212,7 +212,7 @@ HidePlayerHealthInfo(playerid)
 UpdatePlayerGear(playerid, show = 1)
 {
 	new
-		tmp[5 + ITM_MAX_NAME + ITM_MAX_TEXT],
+		tmp[5 + MAX_ITEM_NAME + MAX_ITEM_TEXT],
 		Item:itemid,
 		ItemType:itemtype,
 		model;

@@ -50,7 +50,7 @@ enum e_MACHINE_DATA
 
 static
 			mach_Total,
-			mach_ItemTypeMachine[ITM_MAX_TYPES] = {-1, ...},
+			mach_ItemTypeMachine[MAX_ITEM_TYPE] = {-1, ...},
 
 			mach_ContainerSize[MAX_MACHINE_TYPE] = {0, ...},
 Item:		mach_ContainerMachineItem[MAX_CONTAINER] = {INVALID_ITEM_ID, ...},
@@ -107,7 +107,7 @@ hook OnItemCreate(Item:itemid)
 	if(machinetype == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new name[ITM_MAX_NAME];
+	new name[MAX_ITEM_NAME];
 
 	GetItemName(itemid, name);
 

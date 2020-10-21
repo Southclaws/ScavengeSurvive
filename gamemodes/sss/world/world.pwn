@@ -45,7 +45,7 @@
 
 static
 	MapName[32] = "San Androcalypse",
-	ItemCounts[ITM_MAX_TYPES];
+	ItemCounts[MAX_ITEM_TYPE];
 
 #include <YSI_Coding\y_hooks>
 
@@ -62,7 +62,7 @@ timer LoadWorld[10]()
 	gServerInitialising = true;
 
 	// store this to a list and compare after
-	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+	for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 	{
 		if(!IsValidItemType(i))
 			break;
@@ -130,10 +130,10 @@ timer _Finalise[500]()
 	Logger_Log("loading HouseLoot");
 	Load_HouseLoot();
 
-	new itemtypename[ITM_MAX_NAME];
+	new itemtypename[MAX_ITEM_NAME];
 
 	// compare with previous list and print differences
-	for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+	for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 	{
 		if(!IsValidItemType(i))
 			break;

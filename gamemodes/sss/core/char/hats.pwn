@@ -46,7 +46,7 @@ new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 			hat_Data[MAX_HAT_ITEMS][MAX_SKINS][E_HAT_SKIN_DATA],
 			hat_Total,
-			hat_ItemTypeHat[ITM_MAX_TYPES] = {-1, ...},
+			hat_ItemTypeHat[MAX_ITEM_TYPE] = {-1, ...},
 Item:		hat_CurrentHatItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 

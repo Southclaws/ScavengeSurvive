@@ -64,7 +64,7 @@ Dialog_ShowCraftList(playerid, type)
 
 	new
 		f_str[512],
-		itemname[ITM_MAX_NAME];
+		itemname[MAX_ITEM_NAME];
 
 	for(new CraftSet:i; i < CraftSet:GetCraftSetTotal(); i++)
 	{
@@ -139,8 +139,8 @@ Dialog_ShowIngredients(playerid, CraftSet:craftset)
 	new
 		itemcount,
 		ItemType:itemType,
-		itemname[ITM_MAX_NAME],
-		toolname[ITM_MAX_NAME],
+		itemname[MAX_ITEM_NAME],
+		toolname[MAX_ITEM_NAME],
 		consset = GetCraftSetConstructSet(craftset),
 		ItemType:resulttype;
 	GetCraftSetItemCount(craftset, itemcount);

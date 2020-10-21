@@ -148,7 +148,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 				{
 					new ItemType:resulttype;
 					GetCraftSetResult(craftset, resulttype);
-					new uniqueid[ITM_MAX_NAME];
+					new uniqueid[MAX_ITEM_NAME];
 					GetItemTypeName(resulttype, uniqueid);
 
 					wb_CurrentConstructSet[playerid] = consset;
@@ -247,7 +247,7 @@ hook OnHoldActionFinish(playerid)
 		new
 			CraftSet:craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
 			ItemType:resulttype,
-			uniqueid[ITM_MAX_NAME];
+			uniqueid[MAX_ITEM_NAME];
 
 		GetCraftSetResult(craftset, resulttype);
 		GetItemTypeName(resulttype, uniqueid);

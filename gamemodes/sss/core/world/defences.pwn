@@ -65,7 +65,7 @@ bool:		def_active,
 static
 			def_TypeData[MAX_DEFENCE_ITEM][E_DEFENCE_ITEM_DATA],
 			def_TypeTotal,
-			def_ItemTypeDefenceType[ITM_MAX_TYPES] = {INVALID_DEFENCE_TYPE, ...};
+			def_ItemTypeDefenceType[MAX_ITEM_TYPE] = {INVALID_DEFENCE_TYPE, ...};
 
 static
 			def_TweakArrow[MAX_PLAYERS] = {INVALID_OBJECT_ID, ...},
@@ -146,7 +146,7 @@ ActivateDefenceItem(Item:itemid)
 	}
 
 	new
-		itemtypename[ITM_MAX_NAME],
+		itemtypename[MAX_ITEM_NAME],
 		itemdata[e_DEFENCE_DATA],
 		Button:buttonid;
 
@@ -264,7 +264,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 StartBuildingDefence(playerid, Item:itemid)
 {
-	new itemtypename[ITM_MAX_NAME];
+	new itemtypename[MAX_ITEM_NAME];
 
 	GetItemTypeName(GetItemType(itemid), itemtypename);
 
@@ -399,7 +399,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 	if(tooltype == item_Crowbar)
 	{
-		new itemtypename[ITM_MAX_NAME];
+		new itemtypename[MAX_ITEM_NAME];
 
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
@@ -419,7 +419,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 			return 1;
 		}
 
-		new itemtypename[ITM_MAX_NAME];
+		new itemtypename[MAX_ITEM_NAME];
 
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
@@ -442,7 +442,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 			return 1;
 		}
 
-		new itemtypename[ITM_MAX_NAME];
+		new itemtypename[MAX_ITEM_NAME];
 
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 
@@ -465,7 +465,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 			return 0;
 		}
 
-		new itemtypename[ITM_MAX_NAME];
+		new itemtypename[MAX_ITEM_NAME];
 
 		GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 

@@ -64,8 +64,8 @@ static
 			loot_SpawnData[MAX_LOOT_SPAWN][E_LOOT_SPAWN_DATA],
 			loot_SpawnTotal,
 
-			loot_ItemTypeLimit[ITM_MAX_TYPES],
-			loot_ItemLootIndex[ITM_MAX] = {-1, ...},
+			loot_ItemTypeLimit[MAX_ITEM_TYPE],
+			loot_ItemLootIndex[MAX_ITEM] = {-1, ...},
 
 Float:		loot_SpawnMult = 1.0;
 
@@ -179,7 +179,7 @@ stock CreateStaticLootSpawn(Float:x, Float:y, Float:z, lootindex, Float:weight, 
 		// Create the item
 		itemid = GetNextItemID();
 
-		if(!(Item:0 <= itemid < ITM_MAX))
+		if(!(Item:0 <= itemid < MAX_ITEM))
 		{
 			err("Item limit reached while generating loot.");
 			return -1;
@@ -232,7 +232,7 @@ stock Item:CreateLootItem(lootindex, Float:x = 0.0, Float:y = 0.0, Float:z = 0.0
 
 	new Item:itemid = GetNextItemID();
 
-	if(!(Item:0 <= itemid < ITM_MAX))
+	if(!(Item:0 <= itemid < MAX_ITEM))
 		return INVALID_ITEM_ID;
 
 	loot_ItemLootIndex[itemid] = lootindex;
@@ -296,7 +296,7 @@ stock FillContainerWithLoot(Container:containerid, slots, lootindex)
 		// Create the item
 		itemid = GetNextItemID();
 
-		if(!(Item:0 <= itemid < ITM_MAX))
+		if(!(Item:0 <= itemid < MAX_ITEM))
 		{
 			err("Item limit reached while generating loot.");
 			return -1;

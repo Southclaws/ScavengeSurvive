@@ -41,7 +41,7 @@ ItemType:	box_itemtype,
 static
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
-			box_ItemTypeBoxType[ITM_MAX_TYPES] = {-1, ...},
+			box_ItemTypeBoxType[MAX_ITEM_TYPE] = {-1, ...},
 Item:		box_ContainerSafebox[MAX_CONTAINER] = {INVALID_ITEM_ID, ...};
 
 static
@@ -102,7 +102,7 @@ hook OnItemCreate(Item:itemid)
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
 			new
-				name[ITM_MAX_NAME],
+				name[MAX_ITEM_NAME],
 				Container:containerid;
 
 			GetItemTypeName(itemtype, name);

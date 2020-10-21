@@ -203,7 +203,7 @@ SavePlayerChar(playerid)
 	Inventory
 */
 
-	for(new i; i < INV_MAX_SLOTS; i++)
+	for(new i; i < MAX_INVENTORY_SLOTS; i++)
 	{
 		GetInventorySlotItem(playerid, i, items[i]);
 
@@ -528,7 +528,7 @@ LoadPlayerChar(playerid)
 #define _R<%0> s[]
 enum
 {
-	INV_CELL_ITEMS[INV_MAX_SLOTS * 3],
+	INV_CELL_ITEMS[MAX_INVENTORY_SLOTS * 3],
 	INV_CELL_BAGITEMS[MAX_BAG_CONTAINER_SIZE * 3],
 	INV_CELL_END
 }
@@ -666,7 +666,7 @@ FV10_LoadPlayerInventory(playerid)
 	fblockread(file, data, sizeof(data));
 	fclose(file);
 
-	for(new i; i < INV_MAX_SLOTS * 3; i += 3)
+	for(new i; i < MAX_INVENTORY_SLOTS * 3; i += 3)
 	{
 		if(!IsValidItemType(ItemType:data[i]) || data[i] == 0)
 			break;

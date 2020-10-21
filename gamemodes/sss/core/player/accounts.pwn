@@ -626,7 +626,7 @@ Logout(playerid, docombatlogcheck = 1)
 		RemovePlayerHolsterItem(playerid);
 		RemovePlayerWeapon(playerid);
 
-		for(new i; i < INV_MAX_SLOTS; i++)
+		for(new i; i < MAX_INVENTORY_SLOTS; i++)
 		{
 			new Item:subitemid;
 			GetInventorySlotItem(playerid, 0, subitemid);

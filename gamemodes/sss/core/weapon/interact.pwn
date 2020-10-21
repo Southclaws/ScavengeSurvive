@@ -407,10 +407,10 @@ DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 		slot,
 		Item:sourceitemid,
 		ItemType:sourceitemtype,
-		sourceitemname[ITM_MAX_NAME],
+		sourceitemname[MAX_ITEM_NAME],
 		Item:targetitemid,
 		ItemType:targetitemtype,
-		targetitemname[ITM_MAX_NAME];
+		targetitemname[MAX_ITEM_NAME];
 
 	GetPlayerContainerSlot(playerid, slot);
 	sourceitemid = trans_SelectedItem[playerid];

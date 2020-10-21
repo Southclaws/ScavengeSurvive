@@ -77,7 +77,7 @@ static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
 static
 			exp_Data[MAX_EXPLOSIVE_ITEM][E_EXPLOSIVE_ITEM_DATA],
 			exp_Total,
-			exp_ItemTypeExplosive[ITM_MAX_TYPES] = {INVALID_EXPLOSIVE_TYPE, ...},
+			exp_ItemTypeExplosive[MAX_ITEM_TYPE] = {INVALID_EXPLOSIVE_TYPE, ...},
 ItemType:	exp_RadioTriggerItemType;
 
 static

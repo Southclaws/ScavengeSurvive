@@ -30,7 +30,7 @@
 
 enum E_SEED_TYPE_DATA
 {
-			seed_name[ITM_MAX_NAME],
+			seed_name[MAX_ITEM_NAME],
 ItemType:	seed_itemType,
 			seed_growthTime,
 			seed_plantModel,
@@ -63,7 +63,7 @@ stock DefineSeedType(const name[], ItemType:itemtype, growthtime, plantmodel, Fl
 		return -1;
 	}
 
-	strcat(seed_Data[seed_Total][seed_name], name, ITM_MAX_NAME);
+	strcat(seed_Data[seed_Total][seed_name], name, MAX_ITEM_NAME);
 	seed_Data[seed_Total][seed_itemType] = itemtype;
 	seed_Data[seed_Total][seed_growthTime] = growthtime;
 	seed_Data[seed_Total][seed_plantModel] = plantmodel;
@@ -121,7 +121,7 @@ stock GetSeedTypeName(seedtype, name[])
 		return 0;
 
 	name[0] = EOS;
-	strcat(name, seed_Data[seedtype][seed_name], ITM_MAX_NAME);
+	strcat(name, seed_Data[seedtype][seed_name], MAX_ITEM_NAME);
 
 	return 1;
 }

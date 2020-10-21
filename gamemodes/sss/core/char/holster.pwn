@@ -47,7 +47,7 @@ Float:		hols_offsetRotZ,
 static
 			hols_TypeData[MAX_HOLSTER_ITEM_TYPES][E_HOLSTER_TYPE_DATA],
 			hols_Total,
-			hols_ItemTypeHolsterDataID[ITM_MAX_TYPES] = {-1, ...},
+			hols_ItemTypeHolsterDataID[MAX_ITEM_TYPE] = {-1, ...},
 Item:		hols_Item[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 			hols_LastHolster[MAX_PLAYERS];
 

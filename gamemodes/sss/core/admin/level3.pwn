@@ -474,8 +474,8 @@ ACMD:additem[3](playerid, params[])
 	new ItemType:type = INVALID_ITEM_TYPE;
 	if(sscanf(query, "d", _:type))
 	{
-		new itemname[ITM_MAX_NAME];
-		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+		new itemname[MAX_ITEM_NAME];
+		for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 		{
 			GetItemTypeUniqueName(i, itemname);
 
@@ -488,7 +488,7 @@ ACMD:additem[3](playerid, params[])
 
 		if(type == INVALID_ITEM_TYPE)
 		{
-			for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+			for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 			{
 				GetItemTypeName(i, itemname);
 
@@ -557,7 +557,7 @@ ACMD:additem[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
-			new itemname[ITM_MAX_NAME];
+			new itemname[MAX_ITEM_NAME];
 			GetItemTypeName(type, itemname);
 			log("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
 		}

@@ -32,7 +32,7 @@
 
 static
 Item:		twk_Item[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
-			twk_Tweaker[ITM_MAX] = {INVALID_PLAYER_ID, ...},
+			twk_Tweaker[MAX_ITEM] = {INVALID_PLAYER_ID, ...},
 Float:		twk_Origin[MAX_PLAYERS][3],
 			twk_Locked[MAX_PLAYERS],
 			twk_NoGoZone[MAX_PLAYERS] = {INVALID_STREAMER_ID, ...},

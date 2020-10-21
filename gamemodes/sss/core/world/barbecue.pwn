@@ -46,7 +46,7 @@ enum e_BBQ_DATA
 
 static
 			bbq_PlaceFoodTick[MAX_PLAYERS],
-Item:		bbq_ItemBBQ[ITM_MAX] = {INVALID_ITEM_ID, ...};
+Item:		bbq_ItemBBQ[MAX_ITEM] = {INVALID_ITEM_ID, ...};
 
 
 hook OnItemTypeDefined(uname[])

@@ -36,38 +36,50 @@
 ==============================================================================*/
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS	(32)
+#define MAX_PLAYERS						(32)
 
-#define _DEBUG							0 // YSI
-#define CGEN_MEMORY						(69420) // lol xd funny meme welcome to comedy zoNEwd
+// YSI
+#define _DEBUG							0
+#define CGEN_MEMORY						(69420)
 #define YSI_NO_VERSION_CHECK
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
 #define YSI_NO_HEAP_MALLOC
-#define DB_DEBUG						false // SQLitei
-#define DB_MAX_STATEMENTS				(128) // SQLitei
-#define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_WARNING		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_ERROR		(true) // SQLitei
-#define STRLIB_RETURN_SIZE				(256) // strlib
-#define MODIO_DEBUG						(0) // modio
-#define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
-#define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(2048) // modio
-#define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
-#define INV_MAX_SLOTS					(6) // SIF/Inventory
-#define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
-#define ITM_MAX_TYPES					(ItemType:300) // SIF/Item
-#define ITM_MAX_NAME					(20) // SIF/Item
-#define ITM_MAX_TEXT					(64) // SIF/Item
-#define ITM_DROP_ON_DEATH				(false) // SIF/Item
-#define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
-#define DEBUG_LABELS_BUTTON				// SIF/Button
-#define DEBUG_LABELS_ITEM				// SIF/Item
-#define BTN_MAX							Button:32768 // SIF/Button
-#define ITM_MAX							Item:32768 // SIF/Item
-#define CNT_MAX_SLOTS					(100)
+
+// SQLitei
+#define DB_DEBUG						false 
+#define DB_MAX_STATEMENTS				(128)
+#define DB_DEBUG_BACKTRACE_NOTICE		(true)
+#define DB_DEBUG_BACKTRACE_WARNING		(true)
+#define DB_DEBUG_BACKTRACE_ERROR		(true)
+
+// strlib
+#define STRLIB_RETURN_SIZE				(256)
+
+// modio
+#define MODIO_DEBUG						(0)
+#define MODIO_FILE_STRUCTURE_VERSION	(20)
+#define MODIO_SCRIPT_EXIT_FIX			(1)
+#define MAX_MODIO_SESSION				(2048)
+
+// SS/button
+#define BTN_TELEPORT_FREEZE_TIME		(3000)
+
+// SS/inventory
+#define MAX_INVENTORY_SLOTS				(6)
+
+// SS/button
+#define BTN_MAX							Button:32768
+
+// SS/item
+#define MAX_ITEM						Item:32768
+#define MAX_ITEM_TYPE					(ItemType:300)
+#define MAX_ITEM_NAME					(20)
+#define MAX_ITEM_TEXT					(64)
+#define MAX_CONTAINER_SLOTS				(100)
+
 #pragma warning disable 208 // TODO: Fix reparse issues and remove!
+
 
 /*==============================================================================
 

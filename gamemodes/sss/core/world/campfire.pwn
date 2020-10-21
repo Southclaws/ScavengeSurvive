@@ -34,7 +34,7 @@ Timer:		cmp_CookTimer
 }
 
 
-static Item:cmp_ItemBeingCooked[ITM_MAX] = {INVALID_ITEM_ID, ...};
+static Item:cmp_ItemBeingCooked[MAX_ITEM] = {INVALID_ITEM_ID, ...};
 
 
 hook OnItemTypeDefined(uname[])

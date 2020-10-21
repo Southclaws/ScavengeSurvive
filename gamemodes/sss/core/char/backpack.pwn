@@ -30,7 +30,7 @@
 
 enum E_BAG_TYPE_DATA
 {
-			bag_name[ITM_MAX_NAME],
+			bag_name[MAX_ITEM_NAME],
 ItemType:	bag_itemtype,
 			bag_size,
 Float:		bag_attachOffsetX,
@@ -48,7 +48,7 @@ Float:		bag_attachScaleZ
 static
 			bag_TypeData[MAX_BAG_TYPE][E_BAG_TYPE_DATA],
 			bag_TypeTotal,
-			bag_ItemTypeBagType[ITM_MAX_TYPES] = {-1, ...};
+			bag_ItemTypeBagType[MAX_ITEM_TYPE] = {-1, ...};
 
 static
 Item:		bag_ContainerItem		[MAX_CONTAINER],
@@ -101,7 +101,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineBagType(const name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
+stock DefineBagType(const name[MAX_ITEM_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
 	dbg("backpack", 1, "[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
 

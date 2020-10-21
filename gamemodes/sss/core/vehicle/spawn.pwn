@@ -49,7 +49,7 @@ Float:	veh_SpawnChance = 4.0,
 bool:	veh_PrintEach;
 
 
-static	veh_DebugLabelType;
+// static	veh_DebugLabelType;
 
 
 hook OnScriptInit()
@@ -88,7 +88,8 @@ hook OnGameModeInit()
 
 	Logger_Log("loaded vehicles", Logger_I("count", Iter_Count(veh_Index)));
 
-	veh_DebugLabelType = DefineDebugLabelType("VEHICLESPAWN", 0xFFCCFFFF);
+	// TODO: re-add debug label library
+	// veh_DebugLabelType = DefineDebugLabelType("VEHICLESPAWN", 0xFFCCFFFF);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -277,10 +278,11 @@ LoadVehiclesFromFile(file[])
 					continue;
 			}
 
-			CreateDebugLabel(veh_DebugLabelType, count, posX, posY, posZ, sprintf("GRP: '%d' CAT: '%s' SIZ: '%s'",
-				veh_SpawnData[count][vspawn_group],
-				categories,
-				sizes));
+			// TODO: debug label library
+			// CreateDebugLabel(veh_DebugLabelType, count, posX, posY, posZ, sprintf("GRP: '%d' CAT: '%s' SIZ: '%s'",
+			// 	veh_SpawnData[count][vspawn_group],
+			// 	categories,
+			// 	sizes));
 
 			if(!IsValidVehicleType(type))
 				continue;

@@ -46,7 +46,7 @@ new
 ItemType:	mask_ItemType[MAX_MASK_ITEMS],
 			mask_Data[MAX_MASK_ITEMS][MAX_SKINS][E_MASK_SKIN_DATA],
 			mask_Total,
-			mask_ItemTypeMask[ITM_MAX_TYPES] = {-1, ...},
+			mask_ItemTypeMask[MAX_ITEM_TYPE] = {-1, ...},
 Item:		mask_CurrentMaskItem[MAX_PLAYERS];
 
 

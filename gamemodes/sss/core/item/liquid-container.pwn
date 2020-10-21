@@ -48,7 +48,7 @@ bool:		liq_reusable,		// once opened, can be refilled and sealed?
 
 static
 			liq_Data[MAX_LIQUID_TYPES][E_LIQUID_CONTAINER_DATA],
-			liq_ItemTypeLiquidContainer[ITM_MAX_TYPES] = {INVALID_LIQUID_CONTAINER, ...},
+			liq_ItemTypeLiquidContainer[MAX_ITEM_TYPE] = {INVALID_LIQUID_CONTAINER, ...},
 			liq_Total;
 
 static

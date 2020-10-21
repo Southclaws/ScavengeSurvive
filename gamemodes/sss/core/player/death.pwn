@@ -220,7 +220,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		Inventory
 	*/
 
-	for(new i; i < INV_MAX_SLOTS; i++)
+	for(new i; i < MAX_INVENTORY_SLOTS; i++)
 	{
 		GetInventorySlotItem(playerid, 0, itemid);
 

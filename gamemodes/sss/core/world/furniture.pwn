@@ -41,7 +41,7 @@ Float:	fur_itemRotZ
 static
 		fur_Data[MAX_FURNITURE_TYPES][e_FURNITURE_TYPE_DATA],
 		fur_Total,
-		fur_ItemTypeFurnitureType[ITM_MAX_TYPES] = {-1, ...};
+		fur_ItemTypeFurnitureType[MAX_ITEM_TYPE] = {-1, ...};
 
 
 stock DefineItemTypeFurniture(ItemType:itemtype, Float:px, Float:py, Float:pz, Float:rx, Float:ry, Float:rz)

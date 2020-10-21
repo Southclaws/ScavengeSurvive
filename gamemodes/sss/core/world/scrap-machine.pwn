@@ -27,7 +27,7 @@
 
 static
 	MachineType,
-	ItemTypeScrapValue[ITM_MAX_TYPES] = {-1, ...};
+	ItemTypeScrapValue[MAX_ITEM_TYPE] = {-1, ...};
 
 hook OnItemTypeDefined(uname[])
 {

@@ -53,7 +53,7 @@ static
 static
 			ammo_Data[MAX_ITEM_AMMO_TYPES][E_ITEM_AMMO_DATA],
 			ammo_Total,
-			ammo_ItemTypeAmmoType[ITM_MAX_TYPES] = {-1, ...},
+			ammo_ItemTypeAmmoType[MAX_ITEM_TYPE] = {-1, ...},
 ItemType:	ammo_ItemTypeLowerBound,
 ItemType:	ammo_ItemTypeUpperBound;
 
@@ -115,7 +115,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 	new
 		amount,
-		str[ITM_MAX_TEXT];
+		str[MAX_ITEM_TEXT];
 
 	GetItemExtraData(itemid, amount);
 
