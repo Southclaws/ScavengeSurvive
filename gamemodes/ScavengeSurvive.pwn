@@ -406,10 +406,11 @@ new stock
 #include "sss/core/world/tree.pwn"
 #include "sss/core/world/explosive.pwn"
 #include "sss/core/world/craft-construct.pwn"
-#include "sss/core/world/loot-loader.pwn"
+#include "sss/core/io/loot.pwn"
 #include "sss/core/io/item.pwn"
 #include "sss/core/io/defence.pwn"
 #include "sss/core/io/safebox.pwn"
+#include "sss/core/io/tree.pwn"
 
 /*
 	MODULE INITIALISATION CALLS
@@ -505,7 +506,6 @@ new stock
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
-#include "sss/core/world/tree-loader.pwn"
 #include "sss/core/world/item-tweak.pwn"
 
 // ITEM TYPE CATEGORIES
