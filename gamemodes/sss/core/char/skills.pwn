@@ -95,8 +95,9 @@ stock PlayerGainSkillExperience(playerid, const skillname[], Float:mult = 0.0)
 				2 * floatpower(skl_PlayerSkills[playerid][cell][skl_amount], 3)));
 
 	PlayerTextDrawSetString(playerid, skl_PlayerNotification, sprintf("+%s", skillname));
-	PlayerTextDrawShow(playerid, skl_PlayerNotification);
-	defer skl_HideUI(playerid);
+	// TODO: fix skills system!
+	// PlayerTextDrawShow(playerid, skl_PlayerNotification);
+	// defer skl_HideUI(playerid);
 
 	return 1;
 }
@@ -235,10 +236,13 @@ skl_ShowSkillList(playerid)
 		level,
 		levelname[13];
 
+	printf("skill count %d", skl_PlayerSkillCount[playerid]);
+
 	for(new i; i < skl_PlayerSkillCount[playerid]; i++)
 	{
 		skillname[0] = EOS;
 		strcat(skillname, skl_PlayerSkills[playerid][i][skl_name]);
+		printf("skill '%s'", skillname);
 
 		for(level = 0; level < 5; level++)
 		{
@@ -255,6 +259,8 @@ skl_ShowSkillList(playerid)
 			skillname,
 			skl_Levels[level][skl_level]);
 	}
+
+	printf("skill string: '%s'", gBigString[playerid]);
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
