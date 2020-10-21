@@ -39,7 +39,9 @@ hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 
 	if(GetItemType(itemid) == item_StunGun)
 	{
-		if(GetItemExtraData(itemid) == 1)
+		new charged;
+		GetItemExtraData(itemid, charged);
+		if(charged == 1)
 		{
 			new
 				Float:x,
@@ -84,7 +86,9 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 	if(itemtype == item_StunGun)
 	{
-		if(GetItemExtraData(itemid) == 1)
+		new charged;
+		GetItemExtraData(itemid, charged);
+		if(charged == 1)
 			SetItemNameExtra(itemid, "Charged");
 
 		else

@@ -200,7 +200,9 @@ _UpdateKeyActions(playerid)
 		return;		
 	}
 
-	if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidContainer(containerid))
 	{
 		HidePlayerKeyActionUI(playerid);
 		return;		
@@ -248,7 +250,7 @@ _UpdateKeyActions(playerid)
 
 	foreach(new i : Player)
 	{
-		if(IsPlayerInPlayerArea(playerid, i))
+		if(IsPlayerNextToPlayer(playerid, i))
 		{
 			inplayerarea = i;
 			break;
@@ -393,7 +395,7 @@ _UpdateKeyActions(playerid)
 
 		foreach(new i : Player)
 		{
-			if(IsPlayerInPlayerArea(playerid, i))
+			if(IsPlayerNextToPlayer(playerid, i))
 			{
 				inplayerarea = i;
 				break;

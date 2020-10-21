@@ -81,8 +81,8 @@ hook OnItemCreate(Item:itemid)
 	{
 		if(GetItemLootIndex(itemid) != -1)
 		{
-			SetItemArrayDataAtCell(itemid, random(5), E_SEED_BAG_AMOUNT, 1);
-			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, 1);
+			SetItemArrayDataAtCell(itemid, random(5), E_SEED_BAG_AMOUNT, true);
+			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, true);
 		}
 	}
 }

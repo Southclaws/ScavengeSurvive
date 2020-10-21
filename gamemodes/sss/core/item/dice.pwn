@@ -56,10 +56,11 @@ timer RollDice[50](itemid, Float:direction)
 		Float:x,
 		Float:y,
 		Float:z,
-		objectid = GetItemObjectID(Item:itemid),
+		objectid,
 		side = random(6);
 
 	GetItemPos(Item:itemid, x, y, z);
+	GetItemObjectID(Item:itemid, objectid);
 
 	x += (0.4 * floatsin(-direction, degrees));
 	y += (0.4 * floatcos(-direction, degrees));

@@ -53,14 +53,14 @@ hook OnItemCreate(Item:itemid)
 	{
 		if(GetItemType(itemid) == item_DoctorBag)
 		{
-			SetItemArrayDataAtCell(itemid, 1 + random(3), 0, 1);
+			SetItemArrayDataAtCell(itemid, 1 + random(3), 0, true);
 
 			switch(random(4))
 			{
-				case 0: SetItemArrayDataAtCell(itemid, drug_Antibiotic, 1, 1);
-				case 1: SetItemArrayDataAtCell(itemid, drug_Painkill, 1, 1);
-				case 2: SetItemArrayDataAtCell(itemid, drug_Morphine, 1, 1);
-				case 3: SetItemArrayDataAtCell(itemid, drug_Adrenaline, 1, 1);
+				case 0: SetItemArrayDataAtCell(itemid, drug_Antibiotic, 1, true);
+				case 1: SetItemArrayDataAtCell(itemid, drug_Painkill, 1, true);
+				case 2: SetItemArrayDataAtCell(itemid, drug_Morphine, 1, true);
+				case 3: SetItemArrayDataAtCell(itemid, drug_Adrenaline, 1, true);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			med_HealTarget[playerid] = playerid;
 			foreach(new i : Character)
 			{
-				if(IsPlayerInPlayerArea(playerid, i) && !IsPlayerInAnyVehicle(i))
+				if(IsPlayerNextToPlayer(playerid, i) && !IsPlayerInAnyVehicle(i))
 					med_HealTarget[playerid] = i;
 			}
 
@@ -175,7 +175,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	{
 		if(med_HealTarget[playerid] != playerid)
 		{
-			if(!IsPlayerInPlayerArea(playerid, med_HealTarget[playerid]))
+			if(!IsPlayerNextToPlayer(playerid, med_HealTarget[playerid]))
 			{
 				StopHoldAction(playerid);
 				return Y_HOOKS_BREAK_RETURN_1;

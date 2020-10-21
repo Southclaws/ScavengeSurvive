@@ -60,7 +60,9 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
 	if(itemtype == item_Pills)
 	{
-		switch(GetItemExtraData(itemid))
+		new type;
+		GetItemExtraData(itemid, type);
+		switch(type)
 		{
 			case PILL_TYPE_ANTIBIOTICS:		SetItemNameExtra(itemid, "Antibiotics");
 			case PILL_TYPE_PAINKILL:		SetItemNameExtra(itemid, "Painkiller");
@@ -115,7 +117,9 @@ hook OnHoldActionFinish(playerid)
 		if(GetPlayerItem(playerid) != pill_CurrentlyTaking[playerid])
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
-		switch(GetItemExtraData(pill_CurrentlyTaking[playerid]))
+		new type;
+		GetItemExtraData(pill_CurrentlyTaking[playerid], type);
+		switch(type)
 		{
 			case PILL_TYPE_ANTIBIOTICS:
 			{

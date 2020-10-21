@@ -288,7 +288,7 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 		ammo,
 		remainder;
 
-	ammo = GetItemExtraData(Item:srcitem);
+	GetItemExtraData(Item:srcitem, ammo);
 
 	if(ammo > 0)
 	{
@@ -307,8 +307,10 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 {
 	new
-		existing = GetItemExtraData(Item:tgtitem),
+		existing,
 		amount = GetItemWeaponItemMagAmmo(Item:srcitem) + GetItemWeaponItemReserve(Item:srcitem);
+
+	GetItemExtraData(Item:tgtitem, existing);
 
 	SetItemExtraData(Item:tgtitem, existing + amount);
 	SetItemWeaponItemMagAmmo(Item:srcitem, 0);
@@ -323,8 +325,11 @@ timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 {
 	new
-		existing = GetItemExtraData(Item:tgtitem),
-		amount = GetItemExtraData(Item:srcitem);
+		existing,
+		amount;
+
+	GetItemExtraData(Item:tgtitem, existing);
+	GetItemExtraData(Item:srcitem, amount);
 
 	SetItemExtraData(Item:tgtitem, existing + amount);
 	SetItemExtraData(Item:srcitem, 0);
@@ -351,9 +356,11 @@ hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
 	new
 		Item:itemid,
-		ItemType:itemtype;
+		ItemType:itemtype,
+		slot;
 
-	itemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
+	GetPlayerContainerSlot(playerid, slot);
+	GetContainerSlotItem(containerid, slot, itemid);
 	itemtype = GetItemType(itemid);
 
 	if((GetItemTypeWeapon(itemtype) != -1 && GetItemTypeWeaponCalibre(itemtype) != -1) || GetItemTypeAmmoType(itemtype) != -1)
@@ -375,13 +382,18 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
 	if(option == trans_ContainerOptionID[playerid])
 	{
-		if(IsValidItem(trans_SelectedItem[playerid]) && trans_SelectedItem[playerid] != GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid)))
+		new Item:itemid;
+		new slot;
+		GetPlayerContainerSlot(playerid, slot);
+		GetContainerSlotItem(containerid, slot, itemid);
+		if(IsValidItem(trans_SelectedItem[playerid]) && trans_SelectedItem[playerid] != itemid)
 		{
 			DisplayTransferAmmoDialog(playerid, containerid);
 		}
 		else
 		{
-			trans_SelectedItem[playerid] = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
+			GetPlayerContainerSlot(playerid, slot);
+			GetContainerSlotItem(containerid, slot, trans_SelectedItem[playerid]);
 			DisplayContainerInventory(playerid, containerid);
 		}
 	}
@@ -392,6 +404,7 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 {
 	new
+		slot,
 		Item:sourceitemid,
 		ItemType:sourceitemtype,
 		sourceitemname[ITM_MAX_NAME],
@@ -399,10 +412,11 @@ DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 		ItemType:targetitemtype,
 		targetitemname[ITM_MAX_NAME];
 
+	GetPlayerContainerSlot(playerid, slot);
 	sourceitemid = trans_SelectedItem[playerid];
 	sourceitemtype = GetItemType(sourceitemid);
 	GetItemTypeName(sourceitemtype, sourceitemname);
-	targetitemid = GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid));
+	GetContainerSlotItem(containerid, slot, targetitemid);
 	targetitemtype = GetItemType(targetitemid);
 	GetItemTypeName(targetitemtype, targetitemname);
 
@@ -440,7 +454,9 @@ DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 					// weapon to ammo
 					new
 						sourceitemammo = GetItemWeaponItemReserve(sourceitemid),
-						targetitemammo = GetItemArrayDataAtCell(targetitemid, 0);
+						targetitemammo;
+
+					GetItemArrayDataAtCell(targetitemid, targetitemammo, 0);
 
 					if(0 < amount <= sourceitemammo)
 					{
@@ -459,8 +475,10 @@ DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 				{
 					// ammo to weapon
 					new
-						sourceitemammo = GetItemArrayDataAtCell(sourceitemid, 0),
+						sourceitemammo,
 						targetitemammo = GetItemWeaponItemReserve(targetitemid);
+
+					GetItemArrayDataAtCell(sourceitemid, sourceitemammo, 0);
 
 					if(0 < amount <= sourceitemammo)
 					{
@@ -477,8 +495,11 @@ DisplayTransferAmmoDialog(playerid, Container:containerid, msg[] = "")
 				{
 					// ammo to ammo
 					new
-						sourceitemammo = GetItemArrayDataAtCell(sourceitemid, 0),
-						targetitemammo = GetItemArrayDataAtCell(targetitemid, 0);
+						sourceitemammo,
+						targetitemammo;
+
+					GetItemArrayDataAtCell(sourceitemid, sourceitemammo, 0);
+					GetItemArrayDataAtCell(targetitemid, targetitemammo, 0);
 
 					if(0 < amount <= sourceitemammo)
 					{

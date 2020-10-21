@@ -55,17 +55,19 @@ stock Item:CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z,
 	AppendItemArrayCell(itemid, gettime()); // spawnTime
 
 	AppendItemArrayCell(itemid, strlen(name)); // nameLen
-	AppendItemArray(itemid, name, strlen(name)); // name
+	AppendItemDataArray(itemid, name, strlen(name)); // name
 
 	AppendItemArrayCell(itemid, strlen(reason)); // reasonLen
-	AppendItemArray(itemid, reason, strlen(reason)); // reason
+	AppendItemDataArray(itemid, reason, strlen(reason)); // reason
 
 	return itemid;
 }
 
 ShowTorsoDetails(playerid, Item:itemid)
 {
-	if(GetItemArrayDataSize(itemid) < 3)
+	new size;
+	GetItemArrayDataSize(itemid, size);
+	if(size < 3)
 		return 0;
 
 	new

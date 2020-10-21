@@ -109,8 +109,11 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 	if(!GetClothesMaskStatus(skinid))
 		return 0;
 
+	new model;
+	GetItemTypeModel(itemtype, model);
+
 	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_FACE, GetItemTypeModel(itemtype), 2,
+		playerid, ATTACHSLOT_FACE, model, 2,
 		mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],
 		mask_Data[maskid][skinid][mask_rotX], mask_Data[maskid][skinid][mask_rotY], mask_Data[maskid][skinid][mask_rotZ],
 		mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);
@@ -150,9 +153,11 @@ stock TogglePlayerMaskItemVisibility(playerid, bool:toggle)
 			return 0;
 
 		new skinid = GetPlayerClothes(playerid);
+		new model;
+		GetItemTypeModel(itemtype, model);
 
 		SetPlayerAttachedObject(
-			playerid, ATTACHSLOT_FACE, GetItemTypeModel(itemtype), 2,
+			playerid, ATTACHSLOT_FACE, model, 2,
 			mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],
 			mask_Data[maskid][skinid][mask_rotX], mask_Data[maskid][skinid][mask_rotY], mask_Data[maskid][skinid][mask_rotZ],
 			mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);

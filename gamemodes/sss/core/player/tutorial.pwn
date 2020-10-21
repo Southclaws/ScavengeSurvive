@@ -307,7 +307,9 @@ hook OnPlayerOpenContainer(playerid, Container:containerid)
 	{
 		ToggleTutorialUI(playerid, false);
 
-		if(containerid == Container:GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+		new Container:bagcontainer;
+		GetItemArrayDataAtCell(GetPlayerBagItem(playerid), _:bagcontainer, 1);
+		if(containerid == bagcontainer)
 		{
 			ShowHelpTip(playerid, ls(playerid, "TUTORINTBAG"));
 		}
@@ -336,7 +338,10 @@ hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		if(GetItemType(GetContainerSlotItem(containerid, GetPlayerContainerSlot(playerid))) == item_Wrench)
+		new Item:itemid, slot;
+		GetPlayerContainerSlot(playerid, slot);
+		GetContainerSlotItem(containerid, slot, itemid);
+		if(GetItemType(itemid) == item_Wrench)
 		{
 			ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
 		}
@@ -381,7 +386,9 @@ hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 	{
 		if(PlayerInTutorial[playerid])
 		{
-			if(containerid == Container:GetItemArrayDataAtCell(GetPlayerBagItem(playerid), 1))
+			new Container:bagcontainer;
+			GetItemArrayDataAtCell(GetPlayerBagItem(playerid), _:bagcontainer, 1);
+			if(containerid == bagcontainer)
 			{
 				ShowHelpTip(playerid, ls(playerid, "TUTORADDBAG"));
 			}

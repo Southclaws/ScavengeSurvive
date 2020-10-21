@@ -51,7 +51,9 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 			if(trigger == RADIO || trigger == MOTION)
 			{
-				if(GetItemExtraData(withitemid) == 1)
+				new armed;
+				GetItemExtraData(withitemid, armed);
+				if(armed == 1)
 				{
 					StartHoldAction(playerid, 2000);
 					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);

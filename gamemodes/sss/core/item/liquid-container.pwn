@@ -216,17 +216,25 @@ _DrinkItem(playerid, Item:itemid)
 		return 0;
 	}
 
-	if(GetItemExtraData(itemid) > 0)
+	new ed;
+	GetItemExtraData(itemid, ed);
+	if(ed > 0)
 	{
-		SetPlayerFP(playerid, GetPlayerFP(playerid) + GetLiquidFoodValue(GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_TYPE)));
-		SetItemArrayDataAtCell(itemid, _:(Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT) - 0.2), LIQUID_ITEM_ARRAY_CELL_AMOUNT);
-	}
+		new
+			liquidtype,
+			Float:liquidamount;
+		GetItemArrayDataAtCell(itemid, liquidtype, LIQUID_ITEM_ARRAY_CELL_TYPE);
+		GetItemArrayDataAtCell(itemid, _:liquidamount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 
-	if(GetItemExtraData(itemid) > 0)
+		SetPlayerFP(playerid, GetPlayerFP(playerid) + GetLiquidFoodValue(liquidtype));
+		SetItemArrayDataAtCell(itemid, _:(liquidamount - 0.2), LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+
 		_StartDrinking(playerid, itemid, true);
-
+	}
 	else
+	{
 		_StopDrinking(playerid);
+	}
 
 	return 1;
 }
@@ -251,7 +259,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 }
 
-hook OnPlayerCrafted(playerid, craftset, result)
+hook OnPlayerCrafted(playerid, CraftSet:craftset, result)
 {
 	/*
 		Todo:
@@ -332,17 +340,19 @@ stock Float:GetLiquidItemLiquidAmount(Item:itemid)
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
 		return 0.0;
 
-	return Float:GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+	new Float:amount;
+	GetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+	return amount;
 }
 
-stock SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
+stock Error:SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
 {
 	if(!IsValidItem(itemid))
-		return -1;
+		return NoError();
 
 	new ItemType:itemtype = GetItemType(itemid);
 	if(liq_ItemTypeLiquidContainer[itemtype] == -1)
-		return -1;
+		return NoError();
 
 	if(amount > liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity])
 	{
@@ -360,16 +370,18 @@ stock GetLiquidItemLiquidType(Item:itemid)
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
 		return -1;
 
-	return GetItemArrayDataAtCell(itemid, LIQUID_ITEM_ARRAY_CELL_TYPE);
+	new type;
+	GetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE);
+	return type;
 }
 
-stock SetLiquidItemLiquidType(Item:itemid, type)
+stock Error:SetLiquidItemLiquidType(Item:itemid, type)
 {
 	if(!IsValidItem(itemid))
-		return -1;
+		return NoError();
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
-		return -1;
+		return NoError();
 
 	return SetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE);
 }

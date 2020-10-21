@@ -166,7 +166,7 @@ SavePlayerChar(playerid)
 	if(IsValidItem(itemid))
 	{
 		data[0] = _:GetItemType(itemid);
-		data[1] = GetItemArrayDataSize(itemid);
+		GetItemArrayDataSize(itemid, data[1]);
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,E,L,D>, 2 + data[1], data);
 
@@ -187,7 +187,7 @@ SavePlayerChar(playerid)
 	if(IsValidItem(itemid))
 	{
 		data[0] = _:GetItemType(itemid);
-		data[1] = GetItemArrayDataSize(itemid);
+		GetItemArrayDataSize(itemid, data[1]);
 		GetItemArrayData(itemid, data[2]);
 		modio_push(filename, _T<H,O,L,S>, 2 + data[1], data);
 
@@ -205,7 +205,7 @@ SavePlayerChar(playerid)
 
 	for(new i; i < INV_MAX_SLOTS; i++)
 	{
-		items[i] = GetInventorySlotItem(playerid, i);
+		GetInventorySlotItem(playerid, i, items[i]);
 
 		if(!IsValidItem(items[i]))
 			break;
@@ -232,10 +232,12 @@ SavePlayerChar(playerid)
 	if(IsValidItem(GetPlayerBagItem(playerid)))
 	{
 		new Container:containerid = GetBagItemContainerID(GetPlayerBagItem(playerid));
+		new size;
+		GetContainerSize(containerid, size);
 
-		for(new i, j = GetContainerSize(containerid); i < j && i < MAX_BAG_CONTAINER_SIZE; i++)
+		for(new i; i < size && i < MAX_BAG_CONTAINER_SIZE; i++)
 		{
-			items[i] = GetContainerSlotItem(containerid, i);
+			GetContainerSlotItem(containerid, i, items[i]);
 
 			if(!IsValidItem(items[i]))
 				break;
@@ -683,7 +685,9 @@ FV10_LoadPlayerInventory(playerid)
 
 	if(IsValidContainer(containerid))
 	{
-		for(new i = INV_CELL_BAGITEMS; i < INV_CELL_BAGITEMS + (GetContainerSize(containerid) * 3); i += 3)
+		new size;
+		GetContainerSize(containerid, size);
+		for(new i = INV_CELL_BAGITEMS; i < INV_CELL_BAGITEMS + (size * 3); i += 3)
 		{
 			if(data[i] == _:INVALID_ITEM_TYPE)
 				continue;

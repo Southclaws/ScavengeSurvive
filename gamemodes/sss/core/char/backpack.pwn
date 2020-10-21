@@ -51,8 +51,8 @@ static
 			bag_ItemTypeBagType[ITM_MAX_TYPES] = {-1, ...};
 
 static
-Item:		bag_ContainerItem		[CNT_MAX],
-			bag_ContainerPlayer		[CNT_MAX];
+Item:		bag_ContainerItem		[MAX_CONTAINER],
+			bag_ContainerPlayer		[MAX_CONTAINER];
 
 static
 Item:		bag_PlayerBagID			[MAX_PLAYERS],
@@ -77,7 +77,7 @@ forward OnPlayerRemoveBag(playerid, Item:itemid);
 
 hook OnScriptInit()
 {
-	for(new Container:i; i < CNT_MAX; i++)
+	for(new Container:i; i < MAX_CONTAINER; i++)
 	{
 		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;
 		bag_ContainerItem[i] = INVALID_ITEM_ID;
@@ -139,7 +139,8 @@ stock GivePlayerBag(playerid, Item:itemid)
 
 	if(bagtype != -1)
 	{
-		new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 1);
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
 
 		if(!IsValidContainer(containerid))
 		{
@@ -150,11 +151,15 @@ stock GivePlayerBag(playerid, Item:itemid)
 			SetItemArrayDataAtCell(itemid, _:containerid, 1);
 		}
 
-		new colour = GetItemTypeColour(bag_TypeData[bagtype][bag_itemtype]);
+		new colour;
+		GetItemTypeColour(bag_TypeData[bagtype][bag_itemtype], colour);
 
 		bag_PlayerBagID[playerid] = itemid;
 
-		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, GetItemTypeModel(bag_TypeData[bagtype][bag_itemtype]), 1,
+		new model;
+		GetItemTypeModel(bag_TypeData[bagtype][bag_itemtype], model);
+
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, model, 1,
 			bag_TypeData[bagtype][bag_attachOffsetX],
 			bag_TypeData[bagtype][bag_attachOffsetY],
 			bag_TypeData[bagtype][bag_attachOffsetZ],
@@ -186,7 +191,8 @@ stock RemovePlayerBag(playerid)
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
-	new Container:containerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 	{
@@ -224,7 +230,8 @@ stock DestroyPlayerBag(playerid)
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
-	new Container:containerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(IsValidContainer(containerid))
 	{
@@ -268,14 +275,18 @@ stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction 
 		return -3;
 	}
 
-	new Container:containerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 		return -3;
 
 	new
-		itemsize = GetItemTypeSize(GetItemType(itemid)),
-		freeslots = GetContainerFreeSlots(containerid);
+		itemsize,
+		freeslots;
+
+	GetItemTypeSize(GetItemType(itemid), itemsize);
+	GetContainerFreeSlots(containerid, freeslots);
 
 	if(itemsize > freeslots)
 	{
@@ -328,7 +339,7 @@ hook OnItemCreate(Item:itemid)
 
 		if(lootindex != -1)
 		{
-			if(!IsValidContainer(GetItemContainer(itemid)))
+			if(!IsValidContainer(containerid))
 				FillContainerWithLoot(containerid, random(4), lootindex);
 		}
 	}
@@ -338,7 +349,9 @@ hook OnItemCreateInWorld(Item:itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
+		new Button:buttonid;
+		GetItemButtonID(itemid, buttonid);
+		SetButtonText(buttonid, "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 }
 
@@ -346,8 +359,8 @@ hook OnItemDestroy(Item:itemid)
 {
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 1);
-
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
 		if(IsValidContainer(containerid))
 		{
 			bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
@@ -361,7 +374,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(bag_ItemTypeBagType[GetItemType(itemid)] != -1)
 	{
-		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+		new Container:containerid;
+		GetPlayerCurrentContainer(playerid, containerid);
+		if(IsValidContainer(containerid))
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(IsItemInWorld(itemid))
@@ -470,7 +485,8 @@ _BagDropHandler(playerid)
 	if(CallLocalFunction("OnPlayerRemoveBag", "dd", playerid, _:bag_PlayerBagID[playerid]))
 		return 0;
 
-	new Container:containerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 		return 0;
@@ -489,7 +505,7 @@ _BagRummageHandler(playerid)
 {
 	foreach(new i : Player)
 	{
-		if(IsPlayerInPlayerArea(playerid, i))
+		if(IsPlayerNextToPlayer(playerid, i))
 		{
 			if(IsValidItem(bag_PlayerBagID[i]))
 			{
@@ -550,7 +566,9 @@ PlayerBagUpdate(playerid)
 
 _DisplayBagDialog(playerid, Item:itemid, animation)
 {
-	DisplayContainerInventory(playerid, Container:GetItemArrayDataAtCell(itemid, 1));
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 1);
+	DisplayContainerInventory(playerid, containerid);
 	bag_CurrentBag[playerid] = itemid;
 
 	if(animation)
@@ -596,8 +614,11 @@ hook OnPlayerAddToInventory(playerid, Item:itemid, success)
 			return Y_HOOKS_BREAK_RETURN_1;
 
 		new
-			itemsize = GetItemTypeSize(GetItemType(itemid)),
-			freeslots = GetInventoryFreeSlots(playerid);
+			itemsize,
+			freeslots;
+
+		GetItemTypeSize(GetItemType(itemid), itemsize);
+		GetInventoryFreeSlots(playerid, freeslots);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), itemsize - freeslots), 3000, 150);
 	}
@@ -645,7 +666,9 @@ hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 
 hook OnPlayerViewInvOpt(playerid)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(containerid))
 	{
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
 	}
@@ -653,18 +676,19 @@ hook OnPlayerViewInvOpt(playerid)
 
 hook OnPlayerSelectInvOpt(playerid, option)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(containerid))
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
 			new
-				Container:containerid,
 				slot,
 				Item:itemid;
 			
-			containerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+			GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 			slot = GetPlayerSelectedInventorySlot(playerid);
-			itemid = GetInventorySlotItem(playerid, slot);
+			GetInventorySlotItem(playerid, slot, itemid);
 
 			if(!IsValidItem(itemid))
 			{
@@ -684,9 +708,11 @@ hook OnPlayerSelectInvOpt(playerid, option)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
+	new Container:bagcontainerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:bagcontainerid, 1);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != bagcontainerid)
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
@@ -694,18 +720,18 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 
 hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
+	new Container:bagcontainerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:bagcontainerid, 1);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != bagcontainerid)
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
 			new
-				Container:bagcontainerid,
 				slot,
 				Item:itemid;
 
-			bagcontainerid = Container:GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
-			slot = GetPlayerContainerSlot(playerid);
-			itemid = GetContainerSlotItem(containerid, slot);
+			GetPlayerContainerSlot(playerid, slot);
+			GetContainerSlotItem(containerid, slot, itemid);
 
 			if(!IsValidItem(itemid))
 			{
@@ -794,5 +820,7 @@ stock Container:GetBagItemContainerID(Item:itemid)
 	if(!IsItemTypeBag(GetItemType(itemid)))
 		return INVALID_CONTAINER_ID;
 
-	return Container:GetItemArrayDataAtCell(itemid, 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 1);
+	return containerid;
 }

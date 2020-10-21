@@ -787,7 +787,7 @@ timer _UnloadWeapon[300](playerid, _itemid)
 	ammoitemid = CreateItem(ammoitemtype,
 		x + (0.5 * floatsin(-r, degrees)),
 		y + (0.5 * floatcos(-r, degrees)),
-		z - FLOOR_OFFSET,
+		z - ITEM_FLOOR_OFFSET,
 		.world = GetPlayerVirtualWorld(playerid),
 		.interior = GetPlayerInterior(playerid));
 
@@ -1033,11 +1033,12 @@ stock GetItemTypeWeaponFlags(ItemType:itemtype)
 stock GetItemWeaponItemMagAmmo(Item:itemid)
 {
 	dbg("weapon-core", 3, "GetItemWeaponItemMagAmmo itemid:%d", _:itemid);
-	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_MAG);
+	new ret;
+	GetItemArrayDataAtCell(itemid, ret, WEAPON_ITEM_ARRAY_CELL_MAG);
 	return ret < 0 ? 0 : ret;
 }
 
-stock SetItemWeaponItemMagAmmo(Item:itemid, amount)
+stock Error:SetItemWeaponItemMagAmmo(Item:itemid, amount)
 {
 	dbg("weapon-core", 3, "SetItemWeaponItemMagAmmo itemid:%d, amount:%d", _:itemid, amount);
 
@@ -1055,11 +1056,12 @@ stock SetItemWeaponItemMagAmmo(Item:itemid, amount)
 stock GetItemWeaponItemReserve(Item:itemid)
 {
 	dbg("weapon-core", 3, "GetItemWeaponItemReserve itemid:%d", _:itemid);
-	new ret = GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_RESERVE);
+	new ret;
+	GetItemArrayDataAtCell(itemid, ret, WEAPON_ITEM_ARRAY_CELL_RESERVE);
 	return ret < 0 ? 0 : ret;
 }
 
-stock SetItemWeaponItemReserve(Item:itemid, amount)
+stock Error:SetItemWeaponItemReserve(Item:itemid, amount)
 {
 	dbg("weapon-core", 3, "SetItemWeaponItemReserve itemid:%d, amount:%d", _:itemid, amount);
 
@@ -1077,10 +1079,12 @@ stock SetItemWeaponItemReserve(Item:itemid, amount)
 stock ItemType:GetItemWeaponItemAmmoItem(Item:itemid)
 {
 	dbg("weapon-core", 3, "GetItemWeaponItemAmmoItem itemid:%d", _:itemid);
-	return ItemType:GetItemArrayDataAtCell(itemid, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
+	new ItemType:itemtype;
+	GetItemArrayDataAtCell(itemid, _:itemtype, WEAPON_ITEM_ARRAY_CELL_AMMOITEM);
+	return itemtype;
 }
 
-stock SetItemWeaponItemAmmoItem(Item:itemid, ItemType:itemtype)
+stock Error:SetItemWeaponItemAmmoItem(Item:itemid, ItemType:itemtype)
 {
 	dbg("weapon-core", 3, "SetItemWeaponItemAmmoItem itemid:%d, itemtype:%d", _:itemid, _:itemtype);
 	SetItemArrayDataSize(itemid, 4);

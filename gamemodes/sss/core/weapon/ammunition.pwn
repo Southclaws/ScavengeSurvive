@@ -114,8 +114,10 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		amount = GetItemExtraData(itemid),
+		amount,
 		str[ITM_MAX_TEXT];
+
+	GetItemExtraData(itemid, amount);
 
 	format(str, sizeof(str), "%d, %s, %s",
 		amount,

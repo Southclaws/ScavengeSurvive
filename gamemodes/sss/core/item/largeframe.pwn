@@ -30,7 +30,8 @@ hook OnPlayerInteractDefence(playerid, Item:itemid)
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new objectid = GetItemArrayDataAtCell(itemid, def_mod);
+	new objectid;
+	GetItemArrayDataAtCell(itemid, objectid, def_mod);
 	if(IsValidDynamicObject(objectid))
 	{
 		SetItemArrayDataAtCell(itemid, def_mod, 0);
@@ -46,7 +47,7 @@ hook OnPlayerInteractDefence(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_frame_createCovering(Item:itemid)
+Error:_frame_createCovering(Item:itemid)
 {
 	new
 		Float:px,
@@ -68,7 +69,8 @@ hook OnItemRemoveFromWorld(Item:itemid)
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new objectid = GetItemArrayDataAtCell(itemid, def_mod);
+	new objectid;
+	GetItemArrayDataAtCell(itemid, objectid, def_mod);
 	if(!IsValidDynamicObject(objectid))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
@@ -86,7 +88,9 @@ hook OnDefenceLoad(Item:itemid, active, geid[], data[], length)
 	if(GetItemType(itemid) != item_LargeFrame)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(GetItemArrayDataAtCell(itemid, def_mod) == 0)
+	new mod;
+	GetItemArrayDataAtCell(itemid, mod, def_mod);
+	if(mod == 0)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	_frame_createCovering(itemid);

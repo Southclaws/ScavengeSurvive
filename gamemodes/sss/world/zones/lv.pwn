@@ -704,12 +704,12 @@ LV_District_KACC()
 	CreateDoor(985, buttonid,
 		2497.36523438, 2777.06933594, 11.55891800, 0.00000000, 0.00000000, 90.00000000,
 		2497.36523438, 2785.06933594, 11.55891800, 0.00000000, 0.00000000, 90.00000000,
-		.movesound = 6000, .stopsound = 6002);
+		.moveSound = 6000, .stopSound = 6002);
 
 	CreateDoor(986, buttonid,
 		2497.35888672, 2769.11181641, 11.55891800, 0.00000000, 0.00000000, 90.00000000,
 		2497.36523438, 2761.11181641, 11.55891800, 0.00000000, 0.00000000, 90.00000000,
-		.movesound = 6000, .stopsound = 6002);
+		.moveSound = 6000, .stopSound = 6002);
 
 	CreateStaticLootSpawn(2586.707275, 2772.758544, 9.795619,		GetLootIndexFromName("world_civilian"), 12.0);
 	CreateStaticLootSpawn(2565.194091, 2769.974609, 9.801989,		GetLootIndexFromName("world_civilian"), 12.0);

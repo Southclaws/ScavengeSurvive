@@ -32,13 +32,12 @@ hook OnGameModeInit()
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/heartshapedbox.pwn");
-
 	if(GetItemType(itemid) == item_HeartShapedBox)
 	{
 		if(GetItemLootIndex(itemid) != -1)
 		{
-			new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 1);
+			new Container:containerid;
+			GetItemArrayDataAtCell(itemid, _:containerid, 1);
 
 			if(IsValidContainer(containerid))
 			{

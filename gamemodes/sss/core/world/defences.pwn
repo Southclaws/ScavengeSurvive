@@ -147,8 +147,10 @@ ActivateDefenceItem(Item:itemid)
 
 	new
 		itemtypename[ITM_MAX_NAME],
-		itemdata[e_DEFENCE_DATA];
+		itemdata[e_DEFENCE_DATA],
+		Button:buttonid;
 
+	GetItemButtonID(itemid, buttonid);
 	GetItemTypeName(def_TypeData[defencetype][def_itemtype], itemtypename);
 	GetItemArrayData(itemid, itemdata);
 
@@ -158,12 +160,12 @@ ActivateDefenceItem(Item:itemid)
 
 	if(itemdata[def_motor])
 	{
-		SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
+		SetButtonText(buttonid, sprintf(""KEYTEXT_INTERACT" to open %s", itemtypename));
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 	}
 	else
 	{
-		SetButtonText(GetItemButtonID(itemid), sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
+		SetButtonText(buttonid, sprintf(""KEYTEXT_INTERACT" to modify %s", itemtypename));
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
 	}
 
@@ -215,7 +217,9 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 
 	if(def_ItemTypeDefenceType[itemtype] != INVALID_DEFENCE_TYPE)
 	{
-		if(GetItemArrayDataAtCell(itemid, def_active))
+		new active;
+		GetItemArrayDataAtCell(itemid, active, def_active);
+		if(active)
 		{
 			_InteractDefence(playerid, itemid);
 			return Y_HOOKS_BREAK_RETURN_1;
@@ -232,7 +236,9 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 	if(def_ItemTypeDefenceType[withitemtype] != INVALID_DEFENCE_TYPE)
 	{
-		if(GetItemArrayDataAtCell(withitemid, def_active))
+		new active;
+		GetItemArrayDataAtCell(withitemid, active, def_active);
+		if(active)
 		{
 			_InteractDefenceWithItem(playerid, withitemid, itemid);
 		}
@@ -375,13 +381,17 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 	new
 		defencetype,
 		ItemType:tooltype,
-		Float:angle;
+		Float:angle,
+		Float:angletoplayer,
+		Button:buttonid;
 
 	defencetype = def_ItemTypeDefenceType[GetItemType(itemid)];
 	tooltype = GetItemType(tool);
 	GetItemRot(itemid, angle, angle, angle);
+	GetItemButtonID(itemid, buttonid);
+	GetButtonAngleToPlayer(playerid, buttonid, angletoplayer);
 
-	angle = absoluteangle((angle - def_TypeData[defencetype][def_verticalRotZ]) - GetButtonAngleToPlayer(playerid, GetItemButtonID(itemid)));
+	angle = absoluteangle((angle - def_TypeData[defencetype][def_verticalRotZ]) - angletoplayer);
 
 	// ensures the player can only perform these actions on the back-side.
 	if(!(90.0 < angle < 270.0))
@@ -424,7 +434,9 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 	if(tooltype == item_Keypad)
 	{
-		if(!GetItemArrayDataAtCell(itemid, _:def_motor))
+		new hasmotor;
+		GetItemArrayDataAtCell(itemid, hasmotor, _:def_motor);
+		if(!hasmotor)
 		{
 			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
 			return 1;
@@ -445,7 +457,9 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 	if(tooltype == item_AdvancedKeypad)
 	{
-		if(!GetItemArrayDataAtCell(itemid, _:def_motor))
+		new hasmotor;
+		GetItemArrayDataAtCell(itemid, hasmotor, _:def_motor);
+		if(!hasmotor)
 		{
 			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
 			return 0;
@@ -507,20 +521,22 @@ hook OnHoldActionFinish(playerid)
 		}
 
 		new
-			geid[GEID_LEN],
+			uuid[UUID_LEN],
 			Float:x,
 			Float:y,
 			Float:z,
 			Float:rx,
 			Float:ry,
-			Float:rz;
+			Float:rz,
+			model;
 
-		GetItemGEID(itemid, geid);
+		GetItemUUID(itemid, uuid);
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rx, ry, rz);
+		GetItemTypeModel(GetItemType(itemid), model);
 
 		log("[CONSTRUCT] %p Built defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
-			playerid, _:itemid, geid, GetItemTypeModel(GetItemType(itemid)), x, y, z, rx, ry, rz);
+			playerid, _:itemid, uuid, model, x, y, z, rx, ry, rz);
 
 		StopBuildingDefence(playerid);
 		TweakItem(playerid, itemid);
@@ -576,24 +592,26 @@ hook OnHoldActionFinish(playerid)
 		if(itemtype == item_Crowbar)
 		{
 			new
-				geid[GEID_LEN],
+				uuid[UUID_LEN],
 				Float:x,
 				Float:y,
 				Float:z,
 				Float:rx,
 				Float:ry,
-				Float:rz;
+				Float:rz,
+				model;
 
-			GetItemGEID(def_CurrentDefenceEdit[playerid], geid);
+			GetItemUUID(def_CurrentDefenceEdit[playerid], uuid);
 			GetItemPos(def_CurrentDefenceEdit[playerid], x, y, z);
 			GetItemRot(def_CurrentDefenceEdit[playerid], rz, rz, rz);
 			ShowActionText(playerid, ls(playerid, "DEFDISMANTL"));
+			GetItemTypeModel(GetItemType(def_CurrentDefenceEdit[playerid]), model);
 
 			DeconstructDefence(def_CurrentDefenceEdit[playerid]);
 
 			log("[CROWBAR] %p broke defence %d (%s) (%d, %f, %f, %f, %f, %f, %f)",
-				playerid, _:def_CurrentDefenceEdit[playerid], geid,
-				GetItemTypeModel(GetItemType(def_CurrentDefenceEdit[playerid])), x, y, z, rx, ry, rz);
+				playerid, _:def_CurrentDefenceEdit[playerid], uuid,
+				model, x, y, z, rx, ry, rz);
 
 			/*
 				Note:
@@ -655,11 +673,11 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 					return Y_HOOKS_BREAK_RETURN_0;
 				}
 
-				new geid[GEID_LEN];
+				new uuid[UUID_LEN];
 
-				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
+				GetItemUUID(def_CurrentDefenceOpen[playerid], uuid);
 
-				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], geid, code);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], uuid, code);
 				ShowEnterPassDialog_Keypad(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -722,18 +740,24 @@ _UpdateDefenceTweakArrow(playerid, Item:itemid)
 		Float:z,
 		Float:rx,
 		Float:ry,
-		Float:rz;
+		Float:rz,
+		world,
+		interior;
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rx, ry, rz);
+	GetItemWorld(itemid, world);
+	GetItemInterior(itemid, interior);
 
 	if(!IsValidDynamicObject(def_TweakArrow[playerid]))
-		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 0.0, 0.0, 0.0, GetItemWorld(itemid), GetItemInterior(itemid));
+		def_TweakArrow[playerid] = CreateDynamicObject(19132, x, y, z, 0.0, 0.0, 0.0, world, interior);
 
 	else
 		SetDynamicObjectPos(def_TweakArrow[playerid], x, y, z);
 
-	if(GetItemArrayDataAtCell(itemid, def_pose) == DEFENCE_POSE_VERTICAL)
+	new pose;
+	GetItemArrayDataAtCell(itemid, pose, def_pose);
+	if(pose == DEFENCE_POSE_VERTICAL)
 	{
 		SetDynamicObjectRot(def_TweakArrow[playerid],
 			rx - def_TypeData[def_ItemTypeDefenceType[GetItemType(itemid)]][def_verticalRotX] + 90,
@@ -800,7 +824,9 @@ ShowEnterPassDialog_Keypad(playerid, msg = 0)
 	if(msg == 2)
 		ChatMsgLang(playerid, YELLOW, "DEFTOOFASTE", MsToString(def_Cooldown[playerid] - GetTickCountDifference(GetTickCount(), def_LastPassEntry[playerid]), "%m:%s"));
 
-	ShowKeypad(playerid, 100, GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], def_pass));
+	new pass;
+	GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], pass, def_pass);
+	ShowKeypad(playerid, 100, pass);
 }
 
 ShowSetPassDialog_KeypadAdv(playerid)
@@ -845,11 +871,12 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 
 		if(response)
 		{
-			new pass;
+			new pass, defpass;
 
 			sscanf(inputtext, "x", pass);
+			GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], defpass, def_pass);
 
-			if(pass == GetItemArrayDataAtCell(def_CurrentDefenceOpen[playerid], def_pass) && strlen(inputtext) >= 4)
+			if(pass == defpass && strlen(inputtext) >= 4)
 			{
 				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
 				defer MoveDefence(_:def_CurrentDefenceOpen[playerid], playerid);
@@ -870,11 +897,11 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 					return 1;
 				}
 
-				new geid[GEID_LEN];
+				new uuid[UUID_LEN];
 
-				GetItemGEID(def_CurrentDefenceOpen[playerid], geid);
+				GetItemUUID(def_CurrentDefenceOpen[playerid], uuid);
 
-				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], geid, pass);
+				log("[DEFFAIL] Player %p failed defence %d (%s) keypad code %d", playerid, _:def_CurrentDefenceOpen[playerid], uuid, pass);
 				ShowEnterPassDialog_KeypadAdv(playerid, 1);
 				def_LastPassEntry[playerid] = GetTickCount();
 				def_Cooldown[playerid] = 2000;
@@ -922,12 +949,14 @@ timer MoveDefence[1500](itemid, playerid)
 		Float:rx,
 		Float:ry,
 		Float:rz,
-		geid[GEID_LEN];
+		uuid[UUID_LEN],
+		pose;
 
 	GetItemRot(Item:itemid, rx, ry, rz);
-	GetItemGEID(Item:itemid, geid);
+	GetItemUUID(Item:itemid, uuid);
+	GetItemArrayDataAtCell(Item:itemid, pose, def_pose);
 
-	if(GetItemArrayDataAtCell(Item:itemid, def_pose) == DEFENCE_POSE_HORIZONTAL)
+	if(pose == DEFENCE_POSE_HORIZONTAL)
 	{
 		rx = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotX];
 		ry = def_TypeData[def_ItemTypeDefenceType[itemtype]][def_verticalRotY];
@@ -939,7 +968,7 @@ timer MoveDefence[1500](itemid, playerid)
 
 		SetItemArrayDataAtCell(Item:itemid, DEFENCE_POSE_VERTICAL, def_pose);
 
-		log("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
+		log("[DEFMOVE] Player %p moved defence %d (%s) into CLOSED position at %.1f, %.1f, %.1f", playerid, itemid, uuid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
 	}
 	else
@@ -954,7 +983,7 @@ timer MoveDefence[1500](itemid, playerid)
 
 		SetItemArrayDataAtCell(Item:itemid, DEFENCE_POSE_HORIZONTAL, def_pose);
 
-		log("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, geid, ix, iy, iz);
+		log("[DEFMOVE] Player %p moved defence %d (%s) into OPEN position at %.1f, %.1f, %.1f", playerid, itemid, uuid, ix, iy, iz);
 		CallLocalFunction("OnDefenceMove", "d", itemid);
 	}
 
@@ -983,12 +1012,14 @@ hook OnItemDestroy(Item:itemid)
 				Float:z,
 				Float:rx,
 				Float:ry,
-				Float:rz;
+				Float:rz,
+				model;
 
 			GetItemPos(itemid, x, y, z);
 			GetItemRot(itemid, rx, ry, rz);
+			GetItemTypeModel(itemtype, model);
 
-			log("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", _:itemid, _:itemtype, GetItemTypeModel(itemtype), x, y, z, rx, ry, rz);
+			log("[DESTRUCTION] Defence %d (%d) Object: (%d, %f, %f, %f, %f, %f, %f)", _:itemid, _:itemtype, model, x, y, z, rx, ry, rz);
 		}
 	}
 }

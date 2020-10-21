@@ -44,16 +44,12 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/injector.pwn");
-
 	inj_CurrentItem[playerid] = INVALID_ITEM_ID;
 	inj_CurrentTarget[playerid] = -1;
 }
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_AutoInjec)
@@ -65,11 +61,11 @@ hook OnItemCreate(Item:itemid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(itemtype == item_AutoInjec)
 	{
-		switch(GetItemExtraData(itemid))
+		new type;
+		GetItemExtraData(itemid, type);
+		switch(type)
 		{
 			case INJECT_TYPE_EMPTY:			SetItemNameExtra(itemid, "Empty");
 			case INJECT_TYPE_MORPHINE:		SetItemNameExtra(itemid, "Morphine");
@@ -82,15 +78,13 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(GetItemType(itemid) == item_AutoInjec)
 	{
 		new targetid = playerid;
 
 		foreach(new i : Player)
 		{
-			if(IsPlayerInPlayerArea(playerid, i))
+			if(IsPlayerNextToPlayer(playerid, i))
 			{
 				targetid = i;
 				break;
@@ -105,8 +99,6 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(oldkeys & 16 && inj_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		StopInjecting(playerid);
@@ -149,8 +141,6 @@ StopInjecting(playerid)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(inj_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsPlayerConnected(inj_CurrentTarget[playerid]))
@@ -162,7 +152,9 @@ hook OnHoldActionFinish(playerid)
 		if(GetPlayerItem(playerid) != inj_CurrentItem[playerid])
 			return Y_HOOKS_BREAK_RETURN_1;
 
-		switch(GetItemExtraData(inj_CurrentItem[playerid]))
+		new type;
+		GetItemExtraData(inj_CurrentItem[playerid], type);
+		switch(type)
 		{
 			case INJECT_TYPE_EMPTY:
 			{
@@ -204,8 +196,6 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerDrugWearOff(playerid, drugtype)
 {
-	dbg("global", CORE, "[OnPlayerDrugWearOff] in /gamemodes/sss/core/item/injector.pwn");
-
 	if(drugtype == drug_Heroin)
 	{
 		SetTimeForPlayer(playerid, -1, -1, true);

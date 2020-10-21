@@ -42,7 +42,7 @@ static
 			box_TypeData[MAX_SAFEBOX_TYPE][E_SAFEBOX_TYPE_DATA],
 			box_TypeTotal,
 			box_ItemTypeBoxType[ITM_MAX_TYPES] = {-1, ...},
-Item:		box_ContainerSafebox[CNT_MAX] = {INVALID_ITEM_ID, ...};
+Item:		box_ContainerSafebox[MAX_CONTAINER] = {INVALID_ITEM_ID, ...};
 
 static
 Item: 		box_CurrentBoxItem[MAX_PLAYERS];
@@ -124,7 +124,11 @@ hook OnItemCreateInWorld(Item:itemid)
 	if(box_ItemTypeBoxType[itemtype] != -1)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
-			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
+		{
+			new Button:buttonid;
+			GetItemButtonID(itemid, buttonid);
+			SetButtonText(buttonid, "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -138,7 +142,8 @@ hook OnItemDestroy(Item:itemid)
 	{
 		if(itemtype == box_TypeData[box_ItemTypeBoxType[itemtype]][box_itemtype])
 		{
-			new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0);
+			new Container:containerid;
+			GetItemArrayDataAtCell(itemid, _:containerid, 0);
 
 			DestroyContainer(containerid);
 			box_ContainerSafebox[containerid] = INVALID_ITEM_ID;
@@ -162,7 +167,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 	if(box_ItemTypeBoxType[itemtype] != -1)
 	{
-		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+		new Container:containerid;
+		GetPlayerCurrentContainer(playerid, containerid);
+		if(IsValidContainer(containerid))
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(IsItemInWorld(itemid))
@@ -199,7 +206,9 @@ _DisplaySafeboxDialog(playerid, Item:itemid, animation)
 	if(!box_TypeData[box_ItemTypeBoxType[GetItemType(itemid)]][box_display])
 		return 0;
 
-	DisplayContainerInventory(playerid, Container:GetItemArrayDataAtCell(itemid, 0));
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
+	DisplayContainerInventory(playerid, containerid);
 	box_CurrentBoxItem[playerid] = itemid;
 
 	if(animation)

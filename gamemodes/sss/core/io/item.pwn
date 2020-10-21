@@ -48,9 +48,9 @@ static big_data[8192];
 
 SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const data[] = "", data_size = 0)
 {
-	new geid[GEID_LEN];
+	new uuid[UUID_LEN];
 
-	GetItemGEID(itemid, geid);
+	GetItemUUID(itemid, uuid);
 
 	if(gServerInitialising)
 	{
@@ -59,7 +59,7 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 
 	if(!IsValidItem(itemid))
 	{
-		err("Can't save item %d (%s) Not valid item.", _:itemid, geid);
+		err("Can't save item %d (%s) Not valid item.", _:itemid, uuid);
 		return 2;
 	}
 
@@ -68,7 +68,7 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 		return 3;
 	}
 
-	if(isnull(geid))
+	if(isnull(uuid))
 	{
 		return 4;
 	}
@@ -77,18 +77,18 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 		filename[256],
 		info[e_SAVED_ITEM_DATA];
 
-	format(filename, sizeof(filename), "%s%s", subdir, geid);
+	format(filename, sizeof(filename), "%s%s", subdir, uuid);
 
 	info[SAVED_ITEM_TYPE] = GetItemType(itemid);
 	info[SAVED_ITEM_ACTIVE] = active;
 	GetItemPos(itemid, info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z]);
 	GetItemRot(itemid, info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
-	info[SAVED_ITEM_WORLD] = GetItemWorld(itemid);
-	info[SAVED_ITEM_INTERIOR] = GetItemInterior(itemid);
+	GetItemWorld(itemid, info[SAVED_ITEM_WORLD]);
+	GetItemInterior(itemid, info[SAVED_ITEM_INTERIOR]);
 	info[SAVED_ITEM_HITPOINTS] = GetItemHitPoints(itemid);
 
 	log("[SAVE] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		_:itemid, geid,
+		_:itemid, uuid,
 		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
 		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
 		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
@@ -97,7 +97,8 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 
 	if(savearray)
 	{
-		new arraydatalen = GetItemArrayDataSize(itemid);
+		new arraydatalen;
+		GetItemArrayDataSize(itemid, arraydatalen);
 
 		if(arraydatalen > 0)
 		{
@@ -122,16 +123,16 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 RemoveSavedItem(Item:itemid, const subdir[])
 {
 	new
-		geid[GEID_LEN],
+		uuid[UUID_LEN],
 		filename[256];
 
-	GetItemGEID(itemid, geid);
+	GetItemUUID(itemid, uuid);
 
-	format(filename, sizeof(filename), "%s%s", subdir, geid);
+	format(filename, sizeof(filename), "%s%s", subdir, uuid);
 
 	fremove(filename);
 
-	log("[DELT] Item %d (%s) file %s", _:itemid, geid, filename);
+	log("[DELT] Item %d (%s) file %s", _:itemid, uuid, filename);
 }
 
 LoadItems(const subdir[], const callback[])
@@ -140,7 +141,7 @@ LoadItems(const subdir[], const callback[])
 		path_with_root[64],
 		Directory:direc,
 		entry[256],
-		geid[GEID_LEN],
+		uuid[UUID_LEN],
 		ENTRY_TYPE:type,
 		Item:ret,
 		count,
@@ -153,8 +154,8 @@ LoadItems(const subdir[], const callback[])
 	{
 		if(type == E_REGULAR)
 		{
-			PathBase(entry, geid);
-			ret = LoadItem(entry[trimlength], geid, callback);
+			PathBase(entry, uuid);
+			ret = LoadItem(entry[trimlength], uuid, callback);
 
 			if(ret != INVALID_ITEM_ID)
 				count++;
@@ -166,7 +167,7 @@ LoadItems(const subdir[], const callback[])
 	log("Loaded %d items from %s", count, subdir);
 }
 
-Item:LoadItem(const filename[], const geid[], const callback[])
+Item:LoadItem(const filename[], const uuid[], const callback[])
 {
 	new
 		length,
@@ -195,7 +196,7 @@ Item:LoadItem(const filename[], const geid[], const callback[])
 		return INVALID_ITEM_ID;
 	}
 
-	new Item:itemid = AllocNextItemID(info[SAVED_ITEM_TYPE], geid);
+	new Item:itemid = AllocNextItemID(info[SAVED_ITEM_TYPE], uuid);
 	SetItemNoResetArrayData(itemid, true);
 	CreateItem_ExplicitID(
 		Item:itemid,
@@ -211,7 +212,7 @@ Item:LoadItem(const filename[], const geid[], const callback[])
 		.applyrotoffsets = 0);
 
 	log("[LOAD] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		_:itemid, geid,
+		_:itemid, uuid,
 		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
 		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
 		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
@@ -238,7 +239,7 @@ Item:LoadItem(const filename[], const geid[], const callback[])
 		length = 0;
 	}
 
-	CallLocalFunction(callback, "ddsad", _:itemid, info[SAVED_ITEM_ACTIVE], geid, big_data, length);
+	CallLocalFunction(callback, "ddsad", _:itemid, info[SAVED_ITEM_ACTIVE], uuid, big_data, length);
 
 	return itemid;
 }

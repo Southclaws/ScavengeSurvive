@@ -37,8 +37,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Armour)
@@ -51,13 +49,12 @@ hook OnItemCreate(Item:itemid)
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(GetItemType(itemid) == item_Armour)
 	{
 		if(GetPlayerAP(playerid) <= 0.0)
 		{
-			new data = GetItemExtraData(itemid);
+			new data;
+			GetItemExtraData(itemid, data);
 			if(data > 0)
 			{
 				SetPlayerArmourItem(playerid, itemid);
@@ -72,14 +69,13 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(itemtype == item_Armour)
 	{
 		new
-			amount = GetItemExtraData(itemid),
+			amount,
 			str[11];
 
+		GetItemExtraData(itemid, amount);
 		format(str, sizeof(str), "%d", amount);
 		
 		SetItemNameExtra(itemid, str);
@@ -89,8 +85,6 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
-	dbg("global", CORE, "[OnPlayerShootPlayer] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(bodypart == 3)
 	{
 		new Float:ap = GetPlayerAP(targetid);

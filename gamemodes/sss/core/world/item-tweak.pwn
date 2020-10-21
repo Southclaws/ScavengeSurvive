@@ -85,20 +85,25 @@ hook OnPlayerDisconnect(playerid, reason)
 stock TweakItem(playerid, Item:itemid)
 {
 	new
-		geid[GEID_LEN],
-		data[2];
+		uuid[UUID_LEN],
+		data[2],
+		world,
+		interior;
 
-	GetItemGEID(itemid, geid);
+	GetItemUUID(itemid, uuid);
 
 	if(twk_Item[playerid] != INVALID_ITEM_ID)
 		err("twk_Item already set to %d", _:twk_Item[playerid]);
 
-	log("[TWEAK] %p Tweaked item %d (%s)", playerid, _:itemid, geid);
+	log("[TWEAK] %p Tweaked item %d (%s)", playerid, _:itemid, uuid);
+
+	GetItemWorld(itemid, world);
+	GetItemInterior(itemid, interior);
 
 	twk_Item[playerid] = itemid;
 	twk_Tweaker[itemid] = playerid;
 	GetItemPos(itemid, twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2]);
-	twk_NoGoZone[playerid] = CreateDynamicSphere(twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2], NO_GO_ZONE_SIZE, GetItemWorld(itemid), GetItemInterior(itemid));
+	twk_NoGoZone[playerid] = CreateDynamicSphere(twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2], NO_GO_ZONE_SIZE, world, interior);
 
 	data[0] = TWK_AREA_IDENTIFIER;
 	data[1] = _:itemid;
@@ -140,20 +145,22 @@ _twk_Commit(playerid)
 		return 0;
 
 	new
-		geid[GEID_LEN],
+		uuid[UUID_LEN],
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:rx,
 		Float:ry,
-		Float:rz;
+		Float:rz,
+		model;
 
-	GetItemGEID(twk_Item[playerid], geid);
+	GetItemUUID(twk_Item[playerid], uuid);
 	GetItemPos(twk_Item[playerid], x, y, z);
 	GetItemRot(twk_Item[playerid], rx, ry, rz);
+	GetItemTypeModel(GetItemType(twk_Item[playerid]), model);
 
 	log("[TWEAK] %p Tweaked item %d (%s) %d (%f, %f, %f, %f, %f, %f)",
-		playerid, _:twk_Item[playerid], geid, GetItemTypeModel(GetItemType(twk_Item[playerid])),
+		playerid, _:twk_Item[playerid], uuid, model,
 		x, y, z, rx, ry, rz);
 
 	CallLocalFunction("OnItemTweakFinish", "dd", playerid, _:twk_Item[playerid]);

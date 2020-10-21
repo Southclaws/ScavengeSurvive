@@ -41,11 +41,13 @@ hook OnItemCreateInWorld(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Sign)
 	{
-		new data[MAX_SIGN_TEXT];
+		new data[MAX_SIGN_TEXT], Button:buttonid;
 		GetItemArrayData(itemid, data);
 		_sign_UpdateText(itemid, data);
 
-		SetButtonText(GetItemButtonID(itemid), "Press "KEYTEXT_INTERACT" to edit~n~Hold "KEYTEXT_INTERACT" to pick up");
+		GetItemButtonID(itemid, buttonid);
+
+		SetButtonText(buttonid, "Press "KEYTEXT_INTERACT" to edit~n~Hold "KEYTEXT_INTERACT" to pick up");
 	}
 }
 
@@ -61,7 +63,8 @@ hook OnItemArrayDataChanged(Item:itemid)
 
 _sign_UpdateText(Item:itemid, text[])
 {
-	new objectid = GetItemObjectID(itemid);
+	new objectid;
+	GetItemObjectID(itemid, objectid);
 
 	strreplace(text, "\\", "\n", .maxlength = MAX_SIGN_TEXT);
 	strcat(text, "\n\n\n", MAX_SIGN_TEXT);

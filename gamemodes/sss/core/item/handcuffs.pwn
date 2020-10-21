@@ -57,7 +57,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(i == playerid)
 					continue;
 
-				if(IsPlayerInPlayerArea(playerid, i))
+				if(IsPlayerNextToPlayer(playerid, i))
 				{
 					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0 && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
 					{
@@ -79,7 +79,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(i == playerid)
 					continue;
 
-				if(IsPlayerInPlayerArea(playerid, i))
+				if(IsPlayerNextToPlayer(playerid, i))
 				{
 					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED)
 					{
@@ -168,7 +168,7 @@ hook OnHoldActionFinish(playerid)
 
 CanPlayerHandcuffPlayer(playerid, targetid)
 {
-	if(!IsPlayerInPlayerArea(playerid, targetid))
+	if(!IsPlayerNextToPlayer(playerid, targetid))
 		return 0;
 
 	if(GetPlayerWeapon(targetid) != 0)

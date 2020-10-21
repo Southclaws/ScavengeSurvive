@@ -378,8 +378,11 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
 		{
-			if(!IsContainerEmpty(Container:GetItemExtraData(itemid)))
-				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET);
+			new Container:containerid;
+			GetItemExtraData(itemid, _:containerid);
+
+			if(!IsContainerEmpty(containerid))
+				CreateItemInWorld(itemid, x, y, z - ITEM_FLOOR_OFFSET);
 		}
 
 		Logout(playerid, 0); // docombatlogcheck = 0

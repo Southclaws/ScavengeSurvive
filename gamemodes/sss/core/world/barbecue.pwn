@@ -124,7 +124,9 @@ _UseBbqHandler(playerid, Item:itemid, Item:withitemid)
 
 	if(IsItemTypeFood(itemtype))
 	{
-		if(GetItemExtraData(itemid) != 0)
+		new cooking;
+		GetItemExtraData(itemid, cooking);
+		if(cooking != 0)
 		{
 			ShowActionText(playerid, ls(playerid, "BBQALREADYC", true), 3000);
 			return 1;
@@ -267,12 +269,14 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 
 	if(bbq_ItemBBQ[itemid] != INVALID_ITEM_ID)
 	{
-		if(GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], bbq_grillItem1) == _:itemid)
+		new grillitem1, grillitem2;
+		GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], grillitem1, bbq_grillItem1);
+		GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], grillitem2, bbq_grillItem2);
+		if(grillitem1 == _:itemid)
 		{
 			SetItemArrayDataAtCell(bbq_ItemBBQ[itemid], _:INVALID_ITEM_ID, bbq_grillItem1);
 		}
-
-		else if(GetItemArrayDataAtCell(bbq_ItemBBQ[itemid], bbq_grillItem2) == _:itemid)
+		else if(grillitem2 == _:itemid)
 		{
 			SetItemArrayDataAtCell(bbq_ItemBBQ[itemid], _:INVALID_ITEM_ID, bbq_grillItem2);
 		}

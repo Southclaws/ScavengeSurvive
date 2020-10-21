@@ -30,7 +30,9 @@ hook OnPlayerOpenContainer(playerid, Container:containerid)
 
 	if(GetItemType(itemid) == item_Locker)
 	{
-		Streamer_SetIntData(STREAMER_TYPE_OBJECT, GetItemObjectID(itemid), E_STREAMER_MODEL_ID, 11730);
+		new objectid;
+		GetItemObjectID(itemid, objectid);
+		Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID, 11730);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -42,7 +44,9 @@ hook OnPlayerCloseContainer(playerid, Container:containerid)
 
 	if(GetItemType(itemid) == item_Locker)
 	{
-		Streamer_SetIntData(STREAMER_TYPE_OBJECT, GetItemObjectID(itemid), E_STREAMER_MODEL_ID, 11729);
+		new objectid;
+		GetItemObjectID(itemid, objectid);
+		Streamer_SetIntData(STREAMER_TYPE_OBJECT, objectid, E_STREAMER_MODEL_ID, 11729);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

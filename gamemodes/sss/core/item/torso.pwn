@@ -43,8 +43,14 @@ hook OnItemCreateInWorld(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Torso)
 	{
-		if(GetItemExtraData(itemid) != -1)
-			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
+		new value;
+		GetItemExtraData(itemid, value);
+		if(value != -1)
+		{
+			new Button:buttonid;
+			GetItemButtonID(itemid, buttonid);
+			SetButtonText(buttonid, "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -54,9 +60,13 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
-		if(GetItemArrayDataAtCell(withitemid, 0))
+		new value;
+		GetItemArrayDataAtCell(withitemid, value, 0);
+		if(value)
 		{
-			if(gettime() - GetItemArrayDataAtCell(withitemid, 1) < 86400)
+			new decompose;
+			GetItemArrayDataAtCell(withitemid, decompose, 1);
+			if(gettime() - decompose < 86400)
 			{
 				StartHoldAction(playerid, 3000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -118,7 +128,9 @@ hook OnHoldActionFinish(playerid)
 {
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{
-		if(GetItemExtraData(gut_TargetItem[playerid]) == -1)
+		new value;
+		GetItemExtraData(gut_TargetItem[playerid], value);
+		if(value == -1)
 			return 1;
 
 		new
@@ -132,8 +144,8 @@ hook OnHoldActionFinish(playerid)
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
 		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r);
-		SetItemArrayDataAtCell(itemid, 0, food_cooked, 1);
-		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
+		SetItemArrayDataAtCell(itemid, 1, food_cooked);
+		SetItemArrayDataAtCell(itemid, 5 + random(4), food_amount);
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		CancelPlayerMovement(playerid);

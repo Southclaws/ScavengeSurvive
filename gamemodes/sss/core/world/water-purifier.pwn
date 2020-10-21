@@ -79,9 +79,10 @@ hook OnMachineFinish(Item:itemid, Container:containerid)
 		Float:amounts[MAX_MACHINE_ITEMS],
 		itemcount;
 
-	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
+	GetContainerItemCount(containerid, itemcount);
+	for(new i = itemcount - 1; i > -1; i--)
 	{
-		subitemid = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, subitemid);
 		amounts[itemcount] = GetLiquidItemLiquidAmount(subitemid);
 		DestroyItem(subitemid);
 		itemcount++;

@@ -39,7 +39,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		foreach(new i : Player)
 		{
-			if(IsPlayerInPlayerArea(playerid, i))
+			if(IsPlayerNextToPlayer(playerid, i))
 			{
 				if(IsPlayerKnockedOut(i) || GetPlayerAnimationIndex(i) == 1381)
 				{

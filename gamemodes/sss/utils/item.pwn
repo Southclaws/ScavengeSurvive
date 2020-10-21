@@ -3,7 +3,8 @@ stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1
 	if(IsItemInWorld(itemid))
 		return GetItemPos(itemid, x, y, z);
 
-	new Container:containerid = GetItemContainer(itemid);
+	new Container:containerid;
+	GetItemContainer(itemid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -68,7 +69,8 @@ stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1
 		}
 	}
 
-	new playerid = GetItemPlayerInventory(itemid);
+	new playerid;
+	GetItemInventoryPlayer(itemid, playerid);
 
 	if(IsPlayerConnected(playerid))
 	{

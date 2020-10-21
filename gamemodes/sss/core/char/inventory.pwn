@@ -213,14 +213,18 @@ UpdatePlayerGear(playerid, show = 1)
 {
 	new
 		tmp[5 + ITM_MAX_NAME + ITM_MAX_TEXT],
-		Item:itemid;
+		Item:itemid,
+		ItemType:itemtype,
+		model;
 
 	itemid = GetPlayerHatItem(playerid);
+	itemtype = GetItemType(itemid);
+	GetItemTypeModel(itemtype, model);
 	if(IsValidItem(itemid))
 	{
 		GetItemTypeName(GetItemType(itemid), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Head[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Head[UI_ELEMENT_TILE], model);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Head[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -230,11 +234,13 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 
 	itemid = GetPlayerMaskItem(playerid);
+	itemtype = GetItemType(itemid);
+	GetItemTypeModel(itemtype, model);
 	if(IsValidItem(itemid))
 	{
 		GetItemTypeName(GetItemType(itemid), tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Face[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Face[UI_ELEMENT_TILE], model);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Face[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -244,12 +250,16 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 
 	itemid = GetPlayerItem(playerid);
+	itemtype = GetItemType(itemid);
+	GetItemTypeModel(itemtype, model);
 	if(IsValidItem(itemid))
 	{
+		new size;
+		GetItemTypeSize(GetItemType(itemid), size);
 		GetItemName(itemid, tmp);
-		format(tmp, sizeof(tmp), "(%02d) %s", GetItemTypeSize(GetItemType(itemid)), tmp);
+		format(tmp, sizeof(tmp), "(%02d) %s", size, tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Hand[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hand[UI_ELEMENT_TILE], model);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hand[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -259,12 +269,16 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 
 	itemid = GetPlayerHolsterItem(playerid);
+	itemtype = GetItemType(itemid);
+	GetItemTypeModel(itemtype, model);
 	if(IsValidItem(itemid))
 	{
+		new size;
+		GetItemTypeSize(GetItemType(itemid), size);
 		GetItemName(itemid, tmp);
-		format(tmp, sizeof(tmp), "(%02d) %s", GetItemTypeSize(GetItemType(itemid)), tmp);
+		format(tmp, sizeof(tmp), "(%02d) %s", size, tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Hols[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Hols[UI_ELEMENT_TILE], model);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Hols[UI_ELEMENT_TILE], -45.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -286,11 +300,13 @@ UpdatePlayerGear(playerid, show = 1)
 	}
 
 	itemid = GetPlayerBagItem(playerid);
+	itemtype = GetItemType(itemid);
+	GetItemTypeModel(itemtype, model);
 	if(IsValidItem(itemid))
 	{
 		GetItemName(itemid, tmp);
 		PlayerTextDrawSetString(playerid, GearSlot_Back[UI_ELEMENT_ITEM], tmp);
-		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Back[UI_ELEMENT_TILE], GetItemTypeModel(GetItemType(itemid)));
+		PlayerTextDrawSetPreviewModel(playerid, GearSlot_Back[UI_ELEMENT_TILE], model);
 		PlayerTextDrawSetPreviewRot(playerid, GearSlot_Back[UI_ELEMENT_TILE], 0.0, 0.0, -45.0, 1.0);
 	}
 	else
@@ -422,7 +438,8 @@ _inv_HandleGearSlotClick_Head(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new Container:containerid = Container:GetPlayerCurrentContainer(playerid);
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -501,7 +518,8 @@ _inv_HandleGearSlotClick_Face(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new Container:containerid = GetPlayerCurrentContainer(playerid);
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -580,7 +598,8 @@ _inv_HandleGearSlotClick_Hand(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new Container:containerid = GetPlayerCurrentContainer(playerid);
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -631,7 +650,8 @@ _inv_HandleGearSlotClick_Hols(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	new Container:containerid = GetPlayerCurrentContainer(playerid);
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -682,7 +702,9 @@ _inv_HandleGearSlotClick_Tors(playerid)
 
 	new
 		Item:itemid = GetPlayerArmourItem(playerid),
-		Container:containerid = GetPlayerCurrentContainer(playerid);
+		Container:containerid;
+
+	GetPlayerCurrentContainer(playerid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
@@ -757,7 +779,9 @@ _inv_HandleGearSlotClick_Back(playerid)
 	if(!IsValidItem(itemid))
 		return 0;
 
-	if(GetPlayerCurrentContainer(playerid) == GetBagItemContainerID(itemid))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(containerid == GetBagItemContainerID(itemid))
 	{
 		ClosePlayerContainer(playerid);
 
@@ -774,7 +798,7 @@ _inv_HandleGearSlotClick_Back(playerid)
 	}
 	else
 	{
-		inv_TempContainerID[playerid] = GetPlayerCurrentContainer(playerid);
+		GetPlayerCurrentContainer(playerid, inv_TempContainerID[playerid]);
 
 		DisplayContainerInventory(playerid, GetBagItemContainerID(itemid));
 	}
@@ -792,8 +816,8 @@ hook OnPlayerViewCntOpt(playerid, Container:containerid)
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{
 			new
-				name[CNT_MAX_NAME],
-				str[9 + CNT_MAX_NAME];
+				name[MAX_CONTAINER_NAME],
+				str[9 + MAX_CONTAINER_NAME];
 
 			GetContainerName(inv_TempContainerID[playerid], name);
 			format(str, sizeof(str), "Move to %s", name);
@@ -817,8 +841,8 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 					slot,
 					Item:itemid;
 
-				slot = GetPlayerContainerSlot(playerid);
-				itemid = GetContainerSlotItem(containerid, slot);
+				GetPlayerContainerSlot(playerid, slot);
+				GetContainerSlotItem(containerid, slot, itemid);
 
 				if(!IsValidItem(itemid))
 				{
@@ -856,7 +880,9 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 			// DisplayPlayerInventory(playerid);
 		}
 
-		if(GetPlayerCurrentContainer(playerid) != INVALID_CONTAINER_ID)
+		new Container:containerid;
+		GetPlayerCurrentContainer(playerid, containerid);
+		if(containerid != INVALID_CONTAINER_ID)
 		{
 			HidePlayerGear(playerid);
 			HidePlayerHealthInfo(playerid);

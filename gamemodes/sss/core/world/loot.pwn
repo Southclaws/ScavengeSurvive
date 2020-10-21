@@ -251,7 +251,8 @@ stock FillContainerWithLoot(Container:containerid, slots, lootindex)
 	}
 
 	// log("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
-	new containersize = GetContainerSize(containerid);
+	new containersize;
+	GetContainerSize(containerid, containersize);
 
 	if(slots > containersize)
 		slots = containersize;
@@ -264,14 +265,16 @@ stock FillContainerWithLoot(Container:containerid, slots, lootindex)
 		samplelistsize,
 		items,
 		Item:itemid,
-		ItemType:itemtype;
+		ItemType:itemtype,
+		freeslots;
 
 	samplelistsize = _loot_GenerateSampleList(samplelist, lootindex);
+	GetContainerFreeSlots(containerid, freeslots);
 
 	if(samplelistsize == 0)
 		return 0;
 
-	while(items < slots && samplelistsize > 0 && GetContainerFreeSlots(containerid) > 0)
+	while(items < slots && samplelistsize > 0 && freeslots > 0)
 	{
 		// Generate an item from the sample list
 

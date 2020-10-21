@@ -49,12 +49,15 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	if(GetItemType(itemid) != item_Locator)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new Item:phoneitemid = Item:GetItemExtraData(itemid);
+	new Item:phoneitemid;
+	GetItemExtraData(itemid, _:phoneitemid);
 
 	if(!IsValidItem(phoneitemid) || GetItemType(phoneitemid) != item_MobilePhone)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(GetItemExtraData(phoneitemid) != 1)
+	new active;
+	GetItemExtraData(phoneitemid, active);
+	if(active != 1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new

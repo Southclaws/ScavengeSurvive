@@ -102,8 +102,8 @@ hook OnItemCreate(Item:itemid)
 
 		if(foodtype != -1)
 		{
-			SetItemArrayDataAtCell(itemid, 0, food_cooked, 0);
-			SetItemArrayDataAtCell(itemid, food_Data[_:foodtype][food_maxBites] - random(food_Data[_:foodtype][food_maxBites] / 2), food_amount, 1);
+			SetItemArrayDataAtCell(itemid, 0, food_cooked, false);
+			SetItemArrayDataAtCell(itemid, food_Data[_:foodtype][food_maxBites] - random(food_Data[_:foodtype][food_maxBites] / 2), food_amount, true);
 		}
 	}
 }
@@ -175,9 +175,13 @@ _EatItem(playerid, Item:itemid)
 		return 0;
 	}
 
-	if(GetItemArrayDataAtCell(itemid, food_amount) > 0)
+	new amount, cooked;
+	GetItemArrayDataAtCell(itemid, amount, food_amount);
+	GetItemArrayDataAtCell(itemid, cooked, food_cooked);
+
+	if(amount > 0)
 	{
-		if(food_Data[foodtype][food_canCook] && GetItemArrayDataAtCell(itemid, food_cooked) == 0)
+		if(food_Data[foodtype][food_canCook] && cooked == 0)
 		{
 			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue] * 0.7);
 
@@ -189,10 +193,10 @@ _EatItem(playerid, Item:itemid)
 			SetPlayerFP(playerid, GetPlayerFP(playerid) + food_Data[foodtype][food_biteValue]);
 		}
 
-		SetItemArrayDataAtCell(itemid, GetItemArrayDataAtCell(itemid, food_amount) - 1, food_amount, 0);
+		SetItemArrayDataAtCell(itemid, amount - 1, food_amount, false);
 	}
 
-	if(GetItemArrayDataAtCell(itemid, food_amount) > 0)
+	if(amount > 0)
 	{
 		_StartEating(playerid, itemid, true);
 	}
@@ -224,17 +228,21 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 	if(foodtype != -1)
 	{
+		new amount;
+		GetItemArrayDataAtCell(itemid, amount, food_amount);
 		if(food_Data[foodtype][food_canCook])
 		{
-			if(GetItemArrayDataAtCell(itemid, food_cooked) == 1)
-				SetItemNameExtra(itemid, sprintf("Cooked, %d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
+			new cooked;
+			GetItemArrayDataAtCell(itemid, cooked, food_cooked);
+			if(cooked == 1)
+				SetItemNameExtra(itemid, sprintf("Cooked, %d%%", floatround((float(amount) / food_Data[foodtype][food_maxBites]) * 100.0)));
 
 			else
-				SetItemNameExtra(itemid, sprintf("Uncooked, %d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
+				SetItemNameExtra(itemid, sprintf("Uncooked, %d%%", floatround((float(amount) / food_Data[foodtype][food_maxBites]) * 100.0)));
 		}
 		else
 		{
-			SetItemNameExtra(itemid, sprintf("%d%%", floatround((float(GetItemArrayDataAtCell(itemid, food_amount)) / food_Data[foodtype][food_maxBites]) * 100.0)));
+			SetItemNameExtra(itemid, sprintf("%d%%", floatround((float(amount) / food_Data[foodtype][food_maxBites]) * 100.0)));
 		}
 	}
 }
@@ -322,7 +330,7 @@ stock GetFoodItemCooked(Item:itemid)
 	return GetItemArrayDataAtCell(itemid, food_cooked);
 }
 
-stock SetFoodItemCooked(Item:itemid, value)
+stock Error:SetFoodItemCooked(Item:itemid, value)
 {
 	return SetItemArrayDataAtCell(itemid, value, food_cooked);
 }

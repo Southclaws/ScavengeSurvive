@@ -98,7 +98,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)
 	{
-		DisplayContainerInventory(playerid, Container:GetItemArrayDataAtCell(itemid, 0));
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 0);
+		DisplayContainerInventory(playerid, containerid);
 	}
 }
 
@@ -110,11 +112,11 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 			craftitems[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
 			Container:containerid,
 			itemcount,
-			craftset,
+			CraftSet:craftset,
 			consset;
 
-		containerid = Container:GetItemArrayDataAtCell(withitemid, 0);
-		itemcount = GetContainerItemCount(containerid);
+		GetItemArrayDataAtCell(withitemid, _:containerid, 0);
+		GetContainerItemCount(containerid, itemcount);
 
 		if(!IsValidContainer(containerid))
 		{
@@ -126,12 +128,14 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 		for(new i; i < itemcount; i++)
 		{
-			craftitems[i][cft_selectedItemType] = GetItemType(GetContainerSlotItem(containerid, i));
-			craftitems[i][cft_selectedItemID] = GetContainerSlotItem(containerid, i);
-			dbg("workbench", 3, "[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][cft_selectedItemType], _:craftitems[i][cft_selectedItemID], IsValidItem(craftitems[i][cft_selectedItemID]));
+			new Item:slotitem;
+			GetContainerSlotItem(containerid, i, slotitem);
+			craftitems[i][craft_selectedItemType] = GetItemType(slotitem);
+			craftitems[i][craft_selectedItemID] = slotitem;
+			dbg("workbench", 3, "[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][craft_selectedItemType], _:craftitems[i][craft_selectedItemID], IsValidItem(craftitems[i][craft_selectedItemID]));
 		}
 
-		craftset = _cft_FindCraftset(craftitems, itemcount);
+		craftset = _craft_FindCraftset(craftitems, itemcount);
 		consset = GetCraftSetConstructSet(craftset);
 
 		if(IsValidConstructionSet(consset))
@@ -142,8 +146,10 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
+					new ItemType:resulttype;
+					GetCraftSetResult(craftset, resulttype);
 					new uniqueid[ITM_MAX_NAME];
-					GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+					GetItemTypeName(resulttype, uniqueid);
 
 					wb_CurrentConstructSet[playerid] = consset;
 					_wb_StartWorking(playerid, withitemid, GetPlayerSkillTimeModifier(playerid, itemcount * 3600, uniqueid));
@@ -166,16 +172,23 @@ _wb_ClearWorkbench(Item:itemid)
 		Container:containerid,
 		itemcount;
 
-	containerid = Container:GetItemArrayDataAtCell(itemid, 0);
-	itemcount = GetContainerItemCount(containerid);
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
+	GetContainerItemCount(containerid, itemcount);
 
 	for(; itemcount >= 0; itemcount--)
-		DestroyItem(GetContainerSlotItem(containerid, itemcount));
+	{
+		new Item:slotitem;
+		GetContainerSlotItem(containerid, itemcount, slotitem);
+		DestroyItem(slotitem);
+	}
 }
 
 _wb_StartWorking(playerid, Item:itemid, buildtime)
 {
-	SetPlayerFacingAngle(playerid, GetPlayerAngleToButton(playerid, GetItemButtonID(itemid)));
+	new Button:buttonid, Float:angle;
+	GetItemButtonID(itemid, buttonid);
+	GetPlayerAngleToButton(playerid, buttonid, angle);
+	SetPlayerFacingAngle(playerid, angle);
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = itemid;
@@ -189,20 +202,22 @@ _wb_StopWorking(playerid)
 	wb_CurrentWorkbench[playerid] = INVALID_ITEM_ID;
 }
 
-_wb_CreateResult(Item:itemid, craftset)
+_wb_CreateResult(Item:itemid, CraftSet:craftset)
 {
-	dbg("workbench", 1, "[_wb_CreateResult] itemid %d craftset %d", _:itemid, craftset);
+	dbg("workbench", 1, "[_wb_CreateResult] itemid %d craftset %d", _:itemid, _:craftset);
 
 	new
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:rz;
+		Float:rz,
+		ItemType:resulttype;
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
+	GetCraftSetResult(craftset, resulttype);
 
-	CreateItem(GetCraftSetResult(craftset), x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
+	CreateItem(resulttype, x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -230,10 +245,12 @@ hook OnHoldActionFinish(playerid)
 		dbg("workbench", 1, "[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", _:wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 
 		new
-			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
+			CraftSet:craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
+			ItemType:resulttype,
 			uniqueid[ITM_MAX_NAME];
 
-		GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+		GetCraftSetResult(craftset, resulttype);
+		GetItemTypeName(resulttype, uniqueid);
 
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
 		_wb_CreateResult(wb_CurrentWorkbench[playerid], craftset);

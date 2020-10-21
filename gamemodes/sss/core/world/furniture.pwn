@@ -99,7 +99,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 	GetItemPos(withitemid, x, y, z);
 	GetItemRot(withitemid, rx, ry, rz);
-	containerid = Container:GetItemArrayDataAtCell(withitemid, 0);
+	GetItemArrayDataAtCell(withitemid, _:containerid, 0);
 
 	x += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosX];
 	y += fur_Data[fur_ItemTypeFurnitureType[itemtype]][fur_itemPosY];
@@ -112,11 +112,12 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	{
 		if(IsValidContainer(containerid))
 		{
-			if(!IsValidDynamicObject(GetItemArrayDataAtCell(withitemid, 1)))
+			new objectid;
+			GetItemArrayDataAtCell(withitemid, objectid, 1);
+			if(!IsValidDynamicObject(objectid))
 			{
 				new
 					ItemType:helditemtype = GetItemType(itemid),
-					objectid,
 					Float:ox,
 					Float:oy,
 					Float:oz;
@@ -131,7 +132,12 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 				}
 				else if(required == 0)
 				{
-					objectid = CreateDynamicObject(GetItemTypeModel(helditemtype), x, y, z, rx + ox, ry + oy, rz + oz, GetItemWorld(withitemid), GetItemInterior(withitemid));
+					new world, interior, model;
+					GetItemWorld(withitemid, world);
+					GetItemInterior(withitemid, interior);
+					GetItemTypeModel(helditemtype, model);
+
+					objectid = CreateDynamicObject(model, x, y, z, rx + ox, ry + oy, rz + oz, world, interior);
 					SetItemArrayDataAtCell(withitemid, objectid, 1, true);
 					RemoveCurrentItem(playerid);
 				}
@@ -156,17 +162,20 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	if(!IsItemTypeSafebox(itemtype))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new Container:containerid = Container:GetItemArrayDataAtCell(itemid, 0);
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
 
 	if(!IsValidContainer(containerid))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new Item:subitem = GetContainerSlotItem(containerid, 0);
+	new Item:subitem;
+	GetContainerSlotItem(containerid, 0, subitem);
 
 	if(!IsValidItem(subitem))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new objectid = GetItemArrayDataAtCell(itemid, 1);
+	new objectid;
+	GetItemArrayDataAtCell(itemid, objectid, 1);
 
 	DestroyDynamicObject(objectid);
 

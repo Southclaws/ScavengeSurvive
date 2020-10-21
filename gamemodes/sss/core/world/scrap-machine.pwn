@@ -54,12 +54,14 @@ hook OnMachineFinish(Item:itemid, Container:containerid)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
+		itemcount,
 		Item:subitemid,
 		scrapcount;
 
-	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
+	GetContainerItemCount(containerid, itemcount);
+	for(new i = itemcount - 1; i > -1; i--)
 	{
-		subitemid = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, subitemid);
 		scrapcount += ItemTypeScrapValue[GetItemType(subitemid)];
 		DestroyItem(subitemid);
 	}

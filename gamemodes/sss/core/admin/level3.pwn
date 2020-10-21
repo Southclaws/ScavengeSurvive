@@ -530,20 +530,21 @@ ACMD:additem[3](playerid, params[])
 
 	// create the item and hydrate its extradata array.
 	new
-		typemaxsize = GetItemTypeArrayDataSize(type),
+		typemaxsize,
 		Item:itemid,
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:r;
 
+	GetItemTypeArrayDataSize(type, typemaxsize);
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
 	itemid = CreateItem(type,
 		x + (0.5 * floatsin(-r, degrees)),
 		y + (0.5 * floatcos(-r, degrees)),
-		z - FLOOR_OFFSET, .rz = r);
+		z - ITEM_FLOOR_OFFSET, .rz = r);
 
 	if(exdatalen > 0)
 	{

@@ -298,7 +298,8 @@ SupplyCrateLand()
 		Float:x,
 		Float:y,
 		Float:z,
-		lootindex;
+		lootindex,
+		freeslots;
 
 	foreach(new i : Player)
 	{
@@ -315,7 +316,8 @@ SupplyCrateLand()
 
 	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
 	FillContainerWithLoot(containerid, 4 + random(16), lootindex);
-	dbg("supply-crate", 2, "[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - GetContainerFreeSlots(containerid), _:containerid);
+	GetContainerFreeSlots(containerid, freeslots);
+	dbg("supply-crate", 2, "[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - freeslots, _:containerid);
 
 	DestroyDynamicObject(sup_ObjPara);
 	sup_CurrentType = -1;

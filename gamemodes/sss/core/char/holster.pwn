@@ -124,7 +124,10 @@ stock SetPlayerHolsterItem(playerid, Item:itemid)
 	RemoveItemFromWorld(itemid);
 	RemoveCurrentItem(GetItemHolder(itemid));
 
-	SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, GetItemTypeModel(GetItemType(itemid)),
+	new model;
+	GetItemTypeModel(GetItemType(itemid), model);
+
+	SetPlayerAttachedObject(playerid, ATTACHSLOT_HOLSTER, model,
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_boneId],
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_offsetPosX],
 		hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_offsetPosY],
@@ -192,9 +195,12 @@ hook OnItemAddToInventory(playerid, Item:itemid, slot)
 {
 	dbg("global", CORE, "[OnItemAddToInventory] in /gamemodes/sss/core/char/holster.pwn");
 
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+
 	// This is to stop holstered items from being added to the inventory too.
 	// (They share the same key.)
-	if(!IsValidContainer(GetPlayerCurrentContainer(playerid)) && !IsPlayerViewingInventory(playerid))
+	if(!IsValidContainer(containerid) && !IsPlayerViewingInventory(playerid))
 	{
 		if(IsValidHolsterItem(GetItemType(itemid)))
 			return Y_HOOKS_BREAK_RETURN_1;
@@ -235,8 +241,11 @@ _HolsterChecks(playerid)
 	if(IsValidItem(GetPlayerInteractingItem(playerid)))
 		return 0;
 
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+
 	// Interacting with a container
-	if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	if(IsValidContainer(containerid))
 		return 0;
 
 	// Viewing inventory screen

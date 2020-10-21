@@ -53,7 +53,7 @@ static
 			mach_ItemTypeMachine[ITM_MAX_TYPES] = {-1, ...},
 
 			mach_ContainerSize[MAX_MACHINE_TYPE] = {0, ...},
-Item:		mach_ContainerMachineItem[CNT_MAX] = {INVALID_ITEM_ID, ...},
+Item:		mach_ContainerMachineItem[MAX_CONTAINER] = {INVALID_ITEM_ID, ...},
 Item:		mach_CurrentMachine[MAX_PLAYERS],
 			mach_MachineInteractTick[MAX_PLAYERS],
 Timer:		mach_HoldTimer[MAX_PLAYERS];
@@ -131,7 +131,9 @@ hook OnItemCreateInWorld(Item:itemid)
 	if(mach_ItemTypeMachine[GetItemType(itemid)] == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SetButtonText(GetItemButtonID(itemid), "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel");
+	new Button:buttonid;
+	GetItemButtonID(itemid, buttonid);
+	SetButtonText(buttonid, "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel");
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -160,17 +162,20 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 
 _mach_PlayerUseMachine(playerid, Item:itemid)
 {
-	if(GetItemArrayDataAtCell(itemid, E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(itemid, cooking, E_MACHINE_COOKING);
+	if(cooking)
 	{
+		new cookduration, starttick;
+		GetItemArrayDataAtCell(itemid, cookduration, E_MACHINE_COOK_DURATION_MS);
+		GetItemArrayDataAtCell(itemid, starttick, E_MACHINE_START_TICK);
+
 		ShowActionText(playerid,
 			sprintf(
 				ls(playerid, "MACHPROCESS", true),
 				MsToString(
-					GetItemArrayDataAtCell(itemid, E_MACHINE_COOK_DURATION_MS) -
-					GetTickCountDifference(
-						GetTickCount(),
-						GetItemArrayDataAtCell(itemid, E_MACHINE_START_TICK)
-					),
+					cookduration -
+					GetTickCountDifference(GetTickCount(), starttick),
 				"%m minutes %s seconds")),
 			8000
 		);
@@ -207,12 +212,17 @@ _mach_TapInteract(playerid)
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
-	if(GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], cooking, E_MACHINE_COOKING);
+	if(cooking)
 		return;
+
+	new Container:containerid;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:containerid, E_MACHINE_CONTAINER_ID);
 
 	Logger_Dbg("machine", "machine interact tap",
 		Logger_I("id", _:mach_CurrentMachine[playerid]),
-		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_CONTAINER_ID)),
+		Logger_I("containerid", _:containerid),
 		Logger_I("playerid", playerid));
 
 	// return 1 on OnPlayerUseMachine to cancel display of container inventory.
@@ -221,11 +231,7 @@ _mach_TapInteract(playerid)
 	{
 		// TODO: Crowbar to deconstruct machine.
 		// if(GetItemType(itemid) != item_Crowbar)
-		DisplayContainerInventory(
-			playerid,
-			Container:GetItemArrayDataAtCell(mach_CurrentMachine[playerid],
-			_:E_MACHINE_CONTAINER_ID)
-		);
+		DisplayContainerInventory(playerid, containerid);
 	}
 
 	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
@@ -236,13 +242,21 @@ timer _mach_HoldInteract[250](playerid)
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
-	if(GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], cooking, E_MACHINE_COOKING);
+	if(cooking)
 		return;
+
+	new Container:containerid;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:containerid, 0);
 
 	Logger_Dbg("machine", "machine interact hold",
 		Logger_I("id", _:mach_CurrentMachine[playerid]),
-		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], 0)),
+		Logger_I("containerid", _:containerid),
 		Logger_I("playerid", playerid));
+
+	new Float:fuel;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:fuel, E_MACHINE_FUEL);
 
 	// if zero return, do refuel or show menu.
 	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, _:mach_CurrentMachine[playerid], 1);
@@ -254,7 +268,6 @@ timer _mach_HoldInteract[250](playerid)
 		{
 			if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 			{
-				new Float:fuel = Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL);
 				StartHoldAction(
 					playerid,
 					floatround(MAX_MACHINE_FUEL * 100),
@@ -292,8 +305,7 @@ timer _mach_HoldInteract[250](playerid)
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", sprintf(
 			"Press 'Start' to activate the scrap machine and convert certain types of items into scrap.\n\
 			Items that cannot be turned into scrap metal will be destroyed.\n\n\
-			"C_GREEN"Fuel amount: "C_WHITE"%.1f",
-			Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL)), "Start", "Cancel");
+			"C_GREEN"Fuel amount: "C_WHITE"%.1f", fuel), "Start", "Cancel");
 	}
 }
 
@@ -323,7 +335,9 @@ hook OnHoldActionUpdate(playerid, progress)
 		{
 			new
 				Float:transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1,
-				Float:machinefuel = Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL);
+				Float:machinefuel;
+
+			GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:machinefuel, E_MACHINE_FUEL);
 
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:(machinefuel + transfer), E_MACHINE_FUEL);
@@ -336,9 +350,10 @@ hook OnHoldActionUpdate(playerid, progress)
 
 _machine_StartCooking(Item:itemid) {
 	new data[e_MACHINE_DATA];
-	GetItemArrayData(itemid, data);
+	GetItemArrayData(itemid, data, _:e_MACHINE_DATA);
 
-	new itemcount = GetContainerItemCount(data[E_MACHINE_CONTAINER_ID]);
+	new itemcount;
+	GetContainerItemCount(data[E_MACHINE_CONTAINER_ID], itemcount);
 
 	if(itemcount == 0)
 		return 0;
@@ -383,7 +398,10 @@ timer _machine_FinishCooking[cooktime](itemid, cooktime)
 
 	DestroyDynamicObject(data[E_MACHINE_SMOKE_PARTICLE]);
 
-	data[E_MACHINE_FUEL] -= GetContainerItemCount(data[E_MACHINE_CONTAINER_ID]) * MACHINE_FUEL_USAGE;
+	new itemcount;
+	GetContainerItemCount(data[E_MACHINE_CONTAINER_ID], itemcount);
+
+	data[E_MACHINE_FUEL] -= itemcount * MACHINE_FUEL_USAGE;
 	data[E_MACHINE_COOKING] = false;
 	data[E_MACHINE_SMOKE_PARTICLE] = INVALID_OBJECT_ID;
 	SetItemArrayData(Item:itemid, data, _:e_MACHINE_DATA);

@@ -140,14 +140,18 @@ public OnGameModeInit()
 
 #include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
-#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
-#include <SIF\extensions\item-array-data>
-#include <SIF\extensions\item-serializer>
-#include <SIF\extensions\dialog-inventory>
-#include <SIF\extensions\keys-inventory>
-#include <SIF\extensions\dialog-container>
-#include <SIF\extensions\craft>
-#include <SIF\extensions\debug-labels>
+#include <personal-space>
+#include <button>
+#include <door>
+#include <item>
+#include <inventory>
+#include <container>
+#include <item-array-data>
+#include <item-serializer>
+#include <inventory-dialog>
+#include <container-dialog>
+#include <craft>
+#include <debug-labels>
 #include <weapon-data>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
 #include <linegen>					// By Southclaw:			https://github.com/Southclaws/Line
 #include <zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
@@ -358,7 +362,6 @@ new stock
 #include "sss/utils/zones.pwn"
 #include "sss/utils/player.pwn"
 #include "sss/utils/object.pwn"
-#include "sss/utils/tickcountfix.pwn"
 #include "sss/utils/string.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
@@ -548,7 +551,6 @@ new stock
 #include "sss/core/item/molotov.pwn"
 #include "sss/core/item/screwdriver.pwn"
 #include "sss/core/item/torso.pwn"
-#include "sss/core/item/ammotin.pwn"
 #include "sss/core/item/campfire.pwn"
 #include "sss/core/item/herpderp.pwn"
 #include "sss/core/item/stungun.pwn"

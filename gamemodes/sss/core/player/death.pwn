@@ -168,7 +168,7 @@ _OnDeath(playerid, killerid)
 		}
 	}
 
-	CreateGravestone(playerid, deathreasonstring, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid] - FLOOR_OFFSET, death_RotZ[playerid]);
+	CreateGravestone(playerid, deathreasonstring, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid] - ITEM_FLOOR_OFFSET, death_RotZ[playerid]);
 
 	return 1;
 }
@@ -191,7 +191,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(345.0, degrees),
 			y + floatcos(345.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -210,7 +210,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(15.0, degrees),
 			y + floatcos(15.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -222,7 +222,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 
 	for(new i; i < INV_MAX_SLOTS; i++)
 	{
-		itemid = GetInventorySlotItem(playerid, 0);
+		GetInventorySlotItem(playerid, 0, itemid);
 
 		if(!IsValidItem(itemid))
 			break;
@@ -231,7 +231,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(45.0 + (90.0 * float(i)), degrees),
 			y + floatcos(45.0 + (90.0 * float(i)), degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -247,7 +247,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 	{
 		RemovePlayerBag(playerid);
 
-		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - FLOOR_OFFSET);
+		SetItemPos(itemid, x + floatsin(180.0, degrees), y + floatcos(180.0, degrees), z - ITEM_FLOOR_OFFSET);
 		SetItemRot(itemid, 0.0, 0.0, r, true);
 		SetItemInterior(itemid, interior);
 		SetItemWorld(itemid, world);
@@ -264,7 +264,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(270.0, degrees),
 			y + floatcos(270.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -281,7 +281,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(280.0, degrees),
 			y + floatcos(280.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -297,7 +297,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItemInWorld(itemid,
 			x + floatsin(80.0, degrees),
 			y + floatcos(80.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -321,7 +321,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 		CreateItem(item_HandCuffs,
 			x + floatsin(135.0, degrees),
 			y + floatcos(135.0, degrees),
-			z - FLOOR_OFFSET,
+			z - ITEM_FLOOR_OFFSET,
 			.rz = r,
 			.world = world,
 			.interior = interior);
@@ -336,7 +336,7 @@ DropItems(playerid, Float:x, Float:y, Float:z, Float:r, bool:death)
 	itemid = CreateItem(item_Clothes,
 		x + floatsin(90.0, degrees),
 		y + floatcos(90.0, degrees),
-		z - FLOOR_OFFSET,
+		z - ITEM_FLOOR_OFFSET,
 		.rz = r,
 		.world = world,
 		.interior = interior);

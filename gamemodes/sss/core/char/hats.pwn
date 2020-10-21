@@ -109,8 +109,11 @@ stock SetPlayerHatItem(playerid, Item:itemid)
 	if(!GetClothesHatStatus(skinid))
 		return 0;
 
+	new model;
+	GetItemTypeModel(itemtype, model);
+
 	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
+		playerid, ATTACHSLOT_HAT, model, 2,
 		hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
 		hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
 		hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
@@ -150,9 +153,10 @@ stock TogglePlayerHatItemVisibility(playerid, bool:toggle)
 			return 0;
 
 		new skinid = GetPlayerClothes(playerid);
-
+		new model;
+		GetItemTypeModel(itemtype, model);
 		SetPlayerAttachedObject(
-			playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
+			playerid, ATTACHSLOT_HAT, model, 2,
 			hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
 			hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
 			hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);

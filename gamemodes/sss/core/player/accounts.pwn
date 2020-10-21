@@ -580,10 +580,13 @@ Logout(playerid, docombatlogcheck = 1)
 	if(IsItemTypeSafebox(itemtype))
 	{
 		dbg("accounts", 1, "[LOGOUT] Player is holding a box.");
-		if(!IsContainerEmpty(Container:GetItemExtraData(itemid)))
+
+		new Container:containerid;
+		GetItemExtraData(itemid, _:containerid);
+		if(!IsContainerEmpty(containerid))
 		{
 			dbg("accounts", 1, "[LOGOUT] Player is holding an unempty box, dropping in world.");
-			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
+			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 			itemid = INVALID_ITEM_ID;
 			itemtype = INVALID_ITEM_TYPE;
 		}
@@ -592,12 +595,14 @@ Logout(playerid, docombatlogcheck = 1)
 	if(IsItemTypeBag(itemtype))
 	{
 		dbg("accounts", 1, "[LOGOUT] Player is holding a bag.");
-		if(!IsContainerEmpty(Container:GetItemArrayDataAtCell(itemid, 1)))
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
+		if(!IsContainerEmpty(containerid))
 		{
 			if(IsValidItem(GetPlayerBagItem(playerid)))
 			{
 				dbg("accounts", 1, "[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
-				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
+				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
 			}
@@ -622,7 +627,11 @@ Logout(playerid, docombatlogcheck = 1)
 		RemovePlayerWeapon(playerid);
 
 		for(new i; i < INV_MAX_SLOTS; i++)
-			DestroyItem(GetInventorySlotItem(playerid, 0));
+		{
+			new Item:subitemid;
+			GetInventorySlotItem(playerid, 0, subitemid);
+			DestroyItem(subitemid);
+		}
 
 		if(IsValidItem(GetPlayerHatItem(playerid)))
 			RemovePlayerHatItem(playerid);

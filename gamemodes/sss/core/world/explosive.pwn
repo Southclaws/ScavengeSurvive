@@ -238,7 +238,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 			Item:bombitem,
 			ItemType:bombitemtype;
 
-		bombitem = Item:GetItemExtraData(itemid);
+		GetItemExtraData(itemid, _:bombitem);
 		bombitemtype = GetItemType(bombitem);
 
 		if(!IsValidItem(bombitem))
@@ -259,7 +259,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		if(GetItemExtraData(bombitem) != 1)
+		new value;
+		GetItemExtraData(bombitem, value);
+		if(value != 1)
 		{
 			ShowActionText(playerid, ls(playerid, "RADIONOSYNC", true));
 			return Y_HOOKS_CONTINUE_RETURN_0;
@@ -355,7 +357,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 timer CreateTntMineProx[5000](_itemid)
 {
 	new Item:itemid = Item:_itemid;
-	if(IsItemInWorld(itemid) != 1)
+	if(!IsItemInWorld(itemid))
 		return;
 
 	new
@@ -391,9 +393,11 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	if(GetItemExtraData(Item:data[1]) != areaid)
+	new itemarea;
+	GetItemExtraData(Item:data[1], itemarea);
+	if(itemarea != areaid)
 	{
-		err("Proximity mine item area (%d) does not match triggered area (%d)", GetItemExtraData(Item:data[1]), areaid);
+		err("Proximity mine item area (%d) does not match triggered area (%d)", itemarea, areaid);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
@@ -427,15 +431,17 @@ hook OnPlayerViewCntOpt(playerid, Container:containerid)
 		Item:itemid,
 		ItemType:itemtype;
 
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
+	GetPlayerContainerSlot(playerid, slot);
+	GetContainerSlotItem(containerid, slot, itemid);
 	itemtype = GetItemType(itemid);
 
 	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 		{
-			if(GetItemExtraData(itemid) == 0)
+			new armed;
+			GetItemExtraData(itemid, armed);
+			if(armed == 0)
 				exp_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
 
 			else
@@ -453,8 +459,8 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 		Item:itemid,
 		ItemType:itemtype;
 
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
+	GetPlayerContainerSlot(playerid, slot);
+	GetContainerSlotItem(containerid, slot, itemid);
 	itemtype = GetItemType(itemid);
 
 	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
@@ -463,7 +469,9 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 		{
 			if(option == exp_ContainerOption[playerid])
 			{
-				if(GetItemExtraData(itemid) == 0)
+				new armed;
+				GetItemExtraData(itemid, armed);
+				if(armed == 0)
 				{
 					DisplayContainerInventory(playerid, containerid);
 					SetItemExtraData(itemid, 1);
@@ -488,7 +496,9 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 		{
-			if(GetItemExtraData(itemid) == 1)
+			new armed;
+			GetItemExtraData(itemid, armed);
+			if(armed == 1)
 			{
 				log("[EXPLOSIVE] Trip bomb %d triggered by %p", _:itemid, playerid);
 				SetItemToExplode(itemid);
@@ -504,18 +514,23 @@ hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
 	new
 		Item:itemid,
-		ItemType:itemtype;
+		ItemType:itemtype,
+		count;
 
-	for(new i, j = GetContainerItemCount(containerid); i < j; i++)
+	GetContainerItemCount(containerid, count);
+
+	for(new i; i < count; i++)
 	{
-		itemid = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, itemid);
 		itemtype = GetItemType(itemid);
 
 		if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 			{
-				if(GetItemExtraData(itemid) == 1)
+				new armed;
+				GetItemExtraData(itemid, armed);
+				if(armed == 1)
 				{
 					SetItemToExplode(itemid);
 				}

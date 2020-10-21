@@ -109,15 +109,18 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	if(itemtype == item_Clothes)
 	{
 		new
+			data,
 			exname[32];
 
-		if(skin_Data[GetItemExtraData(itemid)][skin_gender] == GENDER_MALE)
+		GetItemExtraData(itemid, data);
+
+		if(skin_Data[data][skin_gender] == GENDER_MALE)
 			strcat(exname, "Male ");
 
 		else
 			strcat(exname, "Female ");
 
-		strcat(exname, skin_Data[GetItemExtraData(itemid)][skin_name]);
+		strcat(exname, skin_Data[data][skin_name]);
 
 		SetItemNameExtra(itemid, exname);
 	}
@@ -135,7 +138,8 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		if(GetItemType(itemid) == item_Clothes)
 		{
-			new skinid = GetItemExtraData(itemid);
+			new skinid;
+			GetItemExtraData(itemid, skinid);
 
 			if(skin_Data[skinid][skin_gender] == GetPlayerGender(playerid))
 				StartUsingClothes(playerid, itemid);
@@ -178,8 +182,9 @@ hook OnHoldActionFinish(playerid)
 
 	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{
-		new currentclothes = skin_CurrentSkin[playerid];
-		SetPlayerClothes(playerid, GetItemExtraData(skin_CurrentlyUsing[playerid]));
+		new currentclothes = skin_CurrentSkin[playerid], skinid;
+		GetItemExtraData(skin_CurrentlyUsing[playerid], skinid);
+		SetPlayerClothes(playerid, skinid);
 		SetItemExtraData(skin_CurrentlyUsing[playerid], currentclothes);
 		StopUsingClothes(playerid);
 

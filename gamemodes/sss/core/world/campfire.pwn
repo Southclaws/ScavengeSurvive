@@ -89,7 +89,8 @@ hook OnItemDestroy(Item:itemid)
 {
 	if(GetItemType(itemid) == item_Campfire)
 	{
-		new Item:fooditem = Item:GetItemArrayDataAtCell(itemid, cmp_foodItem);
+		new Item:fooditem;
+		GetItemArrayDataAtCell(itemid, _:fooditem, cmp_foodItem);
 
 		if(IsValidItem(fooditem))
 			cmp_ItemBeingCooked[fooditem] = INVALID_ITEM_ID;
@@ -113,7 +114,9 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	{
 		if(IsItemTypeFood(GetItemType(itemid)))
 		{
-			if(Item:GetItemArrayDataAtCell(withitemid, cmp_foodItem) == INVALID_ITEM_ID)
+			new Item:fooditem;
+			GetItemArrayDataAtCell(withitemid, _:fooditem, cmp_foodItem);
+			if(fooditem == INVALID_ITEM_ID)
 			{
 				cmp_CookItem(withitemid, itemid);
 				ShowActionText(playerid, ls(playerid, "FIRELITSTAR", true), 3000);
@@ -164,7 +167,8 @@ timer cmp_FinishCooking[60000](itemid)
 		Float:x,
 		Float:y,
 		Float:z,
-		Item:fooditem = Item:GetItemArrayDataAtCell(Item:itemid, cmp_foodItem);
+		Item:fooditem;
+	GetItemArrayDataAtCell(Item:itemid, _:fooditem, cmp_foodItem);
 
 	if(!IsValidItem(fooditem))
 		return;

@@ -37,8 +37,8 @@ enum e_PLOT_POLE_DATA
 	E_PLOTPOLE_OBJ3
 }
 
-forward OnPlotPoleLoad(itemid, active, geid[], data[], length);
-forward OnWorldItemLoad(itemid, active, geid[], data[], length);
+forward OnPlotPoleLoad(itemid, active, uuid[], data[], length);
+forward OnWorldItemLoad(itemid, active, uuid[], data[], length);
 
 
 hook OnScriptInit()
@@ -69,15 +69,19 @@ hook OnItemCreateInWorld(Item:itemid)
 			Float:y,
 			Float:z,
 			Float:rz,
+			world,
+			interior,
 			areadata[2];
 
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rz, rz, rz);
+		GetItemWorld(itemid, world);
+		GetItemInterior(itemid, interior);
 
 		areadata[0] = PLOTPOLE_AREA_IDENTIFIER;
 		areadata[1] = _:itemid;
 
-		data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, GetItemWorld(itemid), GetItemInterior(itemid));
+		data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, world, interior);
 		data[E_PLOTPOLE_OBJ1] = CreateDynamicObject(1719, x + (0.09200 * floatsin(-rz, degrees)), y + (0.09200 * floatcos(-rz, degrees)), z + 0.52270, 0.00000, 90.00000, rz + 90.0);
 		data[E_PLOTPOLE_OBJ2] = CreateDynamicObject(19816, x - (0.08000 * floatsin(-rz, degrees)), y - (0.08000 * floatcos(-rz, degrees)), z + 0.50000, 0.00000, 0.00000, rz);
 		data[E_PLOTPOLE_OBJ3] = CreateDynamicObject(19293, x, y, z + 1.3073, 0.00000, 0.00000, rz);
@@ -180,9 +184,9 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 	{
 		if(GetItemType(Item:data[1]) == item_PlotPole)
 		{
-			new geid[GEID_LEN];
-			GetItemGEID(Item:data[1], geid);
-			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLEENT"), geid), 5000);
+			new uuid[UUID_LEN];
+			GetItemUUID(Item:data[1], uuid);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLEENT"), uuid), 5000);
 		}
 	}
 
@@ -202,9 +206,9 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	{
 		if(GetItemType(Item:data[1]) == item_PlotPole)
 		{
-			new geid[GEID_LEN];
-			GetItemGEID(Item:data[1], geid);
-			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLELEF"), geid), 5000);
+			new uuid[UUID_LEN];
+			GetItemUUID(Item:data[1], uuid);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLELEF"), uuid), 5000);
 		}
 	}
 
@@ -258,10 +262,14 @@ _ExcludeItem(Item:itemid)
 	if(IsItemTypeSafebox(itemtype))
 		return true;
 
-	if(IsItemTypeDefence(itemtype) && GetItemArrayDataAtCell(itemid, def_active))
+	new active;
+	GetItemArrayDataAtCell(itemid, active, def_active);
+	if(IsItemTypeDefence(itemtype) && active)
 		return true;
 
-	if(itemtype == item_TentPack && IsValidTent(GetItemExtraData(itemid)))
+	new tentid;
+	GetItemExtraData(itemid, tentid);
+	if(itemtype == item_TentPack && IsValidTent(tentid))
 		return true;
 
 	return false;
