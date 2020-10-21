@@ -538,7 +538,6 @@ new stock
 #include "sss/core/item/plantpot.pwn"
 #include "sss/core/item/heartshapedbox.pwn"
 #include "sss/core/item/fishingrod.pwn"
-#include "sss/core/item/chainsaw.pwn"
 #include "sss/core/item/locator.pwn"
 #include "sss/core/item/locker.pwn"
 #include "sss/core/item/largeframe.pwn"
