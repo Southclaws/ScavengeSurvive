@@ -32,8 +32,6 @@ new
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
 	cuf_BeingCuffedBy[playerid] = INVALID_PLAYER_ID;
 }
@@ -41,8 +39,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(IsBadInteract(playerid))
 		return 1;
 
@@ -119,8 +115,6 @@ StopApplyingHandcuffs(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
@@ -135,8 +129,6 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))

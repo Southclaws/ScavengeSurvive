@@ -222,8 +222,6 @@ _wb_CreateResult(Item:itemid, CraftSet:craftset)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /workbench");
-
 	if(RELEASED(16))
 	{
 		if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
@@ -238,8 +236,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /workbench");
-
 	if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 	{
 		dbg("workbench", 1, "[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", _:wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
@@ -264,8 +260,6 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerConstruct(playerid, consset)
 {
-	dbg("global", CORE, "[OnPlayerConstruct] in /workbench");
-
 	if(!IsValidConstructionSet(consset))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 

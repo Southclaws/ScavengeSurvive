@@ -332,8 +332,6 @@ SupplyCrateLand()
 
 hook OnDynamicObjectMoved(objectid)
 {
-	dbg("global", CORE, "[OnDynamicObjectMoved] in /supply-crate");
-
 	if(objectid == sup_ObjPara)
 		SupplyCrateLand();
 

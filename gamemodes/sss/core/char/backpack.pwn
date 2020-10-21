@@ -103,8 +103,6 @@ hook OnPlayerConnect(playerid)
 
 stock DefineBagType(const name[MAX_ITEM_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
-	dbg("backpack", 1, "[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
-
 	if(bag_TypeTotal == MAX_BAG_TYPE)
 		return -1;
 
@@ -130,8 +128,6 @@ stock DefineBagType(const name[MAX_ITEM_NAME], ItemType:itemtype, size, Float:at
 
 stock GivePlayerBag(playerid, Item:itemid)
 {
-	dbg("backpack", 1, "[GivePlayerBag] playerid:%d itemid:%d", playerid, _:itemid);
-
 	if(!IsValidItem(itemid))
 		return 0;
 
@@ -183,8 +179,6 @@ stock GivePlayerBag(playerid, Item:itemid)
 
 stock RemovePlayerBag(playerid)
 {
-	dbg("backpack", 1, "[RemovePlayerBag] playerid:%d", playerid);
-
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -222,8 +216,6 @@ stock RemovePlayerBag(playerid)
 
 stock DestroyPlayerBag(playerid)
 {
-	dbg("backpack", 1, "[DestroyPlayerBag] playerid:%d", playerid);
-
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
@@ -252,8 +244,6 @@ stock DestroyPlayerBag(playerid)
 */
 stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction = true)
 {
-	dbg("backpack", 1, "[AddItemToPlayer] itemid %d playerid %d useinventory %d playeraction %d", _:itemid, playerid, useinventory, playeraction);
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeCarry(itemtype))
@@ -323,8 +313,6 @@ hook OnItemCreate(Item:itemid)
 
 	if(bagtype != -1)
 	{
-		dbg("backpack", 2, "[OnItemCreate] itemid:%d itemtype:%d bagtype:%d", _:itemid, _:GetItemType(itemid), bagtype);
-
 		new
 			Container:containerid,
 			lootindex = GetItemLootIndex(itemid);
@@ -546,7 +534,6 @@ timer bag_PutItemIn[300](playerid, itemid, containerid)
 
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
-	dbg("backpack", 1, "[bag_EnterOtherPlayer] playerid:%d targetid:%d", playerid, targetid);
 	_DisplayBagDialog(playerid, Item:bag_PlayerBagID[targetid], false);
 	bag_LookingInBag[playerid] = targetid;
 }
@@ -753,13 +740,10 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 
 hook OnItemAddToContainer(Container:containerid, Item:itemid, playerid)
 {
-	dbg("backpack", 1, "[OnItemAddToContainer] containerid %d itemid %d playerid %d", _:containerid, _:itemid, playerid);
 	if(GetContainerBagItem(containerid) != INVALID_ITEM_ID)
 	{
-		dbg("backpack", 1, "[OnItemAddToContainer] Container is a bag");
 		if(IsItemTypeCarry(GetItemType(itemid)))
 		{
-			dbg("backpack", 1, "[OnItemAddToContainer] Item is carry, cancel adding");
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}

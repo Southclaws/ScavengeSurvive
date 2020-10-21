@@ -36,8 +36,6 @@ new
 
 hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/item/dice.pwn");
-
 	if(GetItemType(itemid) == item_Dice)
 	{
 		new Float:angle;

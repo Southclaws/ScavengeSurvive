@@ -27,8 +27,6 @@
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
-	dbg("global", CORE, "[OnPlayerTakeDamage] in /gamemodes/sss/core/weapon/damage-world.pwn");
-
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 

@@ -33,8 +33,6 @@ Text3D:	tags_NametagLOS[MAX_PLAYERS] = {Text3D:INVALID_3DTEXT_ID, ...};
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/admin/name-tags.pwn");
-
 	new
 		string[MAX_PLAYER_NAME + 6],
 		name[MAX_PLAYER_NAME],
@@ -75,8 +73,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/admin/name-tags.pwn");
-
 	DestroyDynamic3DTextLabel(tags_Nametag[playerid]);
 	DestroyDynamic3DTextLabel(tags_NametagLOS[playerid]);
 

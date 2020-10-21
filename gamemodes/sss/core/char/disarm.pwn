@@ -27,8 +27,6 @@
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/disarm.pwn");
-
 	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
 		return 1;
 

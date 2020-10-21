@@ -126,8 +126,6 @@ hook OnGameModeInit()
 
 hook OnButtonPress(playerid, Button:buttonid)
 {
-	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/ranch.pwn");
-
 	if(buttonid==RanchPcButton)
 	{
 	    if(RanchPcState == 0)Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You try to turn on the computer but the hard disk is missing.\nYou wonder where it could be and think it's mighty suspicious.\nThere is nothing useful nearby.", "Close", "");
@@ -200,8 +198,6 @@ hook OnButtonPress(playerid, Button:buttonid)
 
 hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
-
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
 	    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You begin reattaching the hard drive to the computer.", "Close", "");

@@ -110,8 +110,6 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
-
 	spawn_State[playerid] = false;
 
 //	defer LoadClassUI(playerid);
@@ -269,8 +267,6 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
-	dbg("global", CORE, "[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/spawn.pwn");
-
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
 		if(playertextid == ClassButtonMale[playerid])

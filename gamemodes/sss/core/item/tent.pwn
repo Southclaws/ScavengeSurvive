@@ -225,11 +225,9 @@ stock DestroyTent(tentid)
 
 SaveTent(tentid, bool:active = true)
 {
-	dbg("tent", 1, "[SaveTent] %d %d", tentid, active);
-
 	if(!Iter_Contains(tnt_Index, tentid))
 	{
-		dbg("tent", 2, "[SaveTent] ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
+		err("tent", 2, "[SaveTent] ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
 		return 1;
 	}
 
@@ -239,7 +237,6 @@ SaveTent(tentid, bool:active = true)
 
 	if(IsContainerEmpty(containerid))
 	{
-		dbg("tent", 1, "[SaveTent] Empty, removing");
 		RemoveSavedItem(itemid, DIRECTORY_TENT);
 		return 2;
 	}

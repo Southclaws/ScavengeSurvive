@@ -36,8 +36,6 @@ forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float
 
 hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 {
-	dbg("global", CORE, "[OnPlayerGiveDamage] in /damage-firearm");
-
 	if(IsPlayerOnAdminDuty(damagedid))
 		return 0;
 

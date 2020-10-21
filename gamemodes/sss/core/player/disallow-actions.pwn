@@ -26,8 +26,6 @@
 
 hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -36,8 +34,6 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 
 hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerGiveItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -52,8 +48,6 @@ hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 
 hook OnItemRemoveFromCnt(containerid, slotid, playerid)
 {
-	dbg("global", CORE, "[OnItemRemoveFromCnt] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsPlayerConnected(playerid))
 	{
 		if(IsBadInteract(playerid))
@@ -65,8 +59,6 @@ hook OnItemRemoveFromCnt(containerid, slotid, playerid)
 
 hook OnPlayerOpenInventory(playerid)
 {
-	dbg("global", CORE, "[OnPlayerOpenInventory] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -75,8 +67,6 @@ hook OnPlayerOpenInventory(playerid)
 
 hook OnPlayerOpenContainer(playerid, containerid)
 {
-	dbg("global", CORE, "[OnPlayerOpenContainer] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -85,8 +75,6 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(IsBadInteract(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -101,8 +89,6 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/player/disallow-actions.pwn");
-
 	if(GetItemType(itemid) == ItemType:0)
 		return Y_HOOKS_BREAK_RETURN_0;
 

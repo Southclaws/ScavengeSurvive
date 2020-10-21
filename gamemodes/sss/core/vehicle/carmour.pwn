@@ -212,8 +212,6 @@ ApplyArmourToVehicle(vehicleid, armourid)
 
 hook OnVehicleCreated(vehicleid)
 {
-	dbg("global", CORE, "[OnVehicleCreated] in /gamemodes/sss/core/vehicle/carmour.pwn");
-
 	new vehicletype = GetVehicleType(vehicleid);
 
 	if(arm_VehicleTypeCarmour[vehicletype] != -1)

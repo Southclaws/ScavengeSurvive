@@ -57,8 +57,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/clothes.pwn");
-
 	skin_CurrentlyUsing[playerid] = INVALID_ITEM_ID;
 }
 
@@ -76,8 +74,6 @@ DefineClothesType(modelid, const name[MAX_SKIN_NAME], gender, Float:spawnchance,
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(GetItemType(itemid) == item_Clothes)
 	{
 		new
@@ -104,8 +100,6 @@ hook OnItemCreate(Item:itemid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(itemtype == item_Clothes)
 	{
 		new
@@ -130,8 +124,6 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(newkeys == 16)
 	{
 		new Item:itemid = GetPlayerItem(playerid);
@@ -178,8 +170,6 @@ StopUsingClothes(playerid)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{
 		new currentclothes = skin_CurrentSkin[playerid], skinid;

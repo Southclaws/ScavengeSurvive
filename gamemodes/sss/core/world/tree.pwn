@@ -299,8 +299,6 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		dbg("global", CORE, "[_tree_EnterArea] Area tree area type for tree %i", data[1]);
-
 		new
 			toolname[MAX_ITEM_NAME],
 			yieldname[MAX_ITEM_NAME];
@@ -325,7 +323,6 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 
 	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		dbg("global", CORE, "[_tree_LeaveArea] Area tree area type");
 		CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
 		tree_AtTree[playerid] = INVALID_TREE_ID;
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -349,8 +346,6 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/chainsaw.pwn");
-
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
@@ -385,8 +380,6 @@ _StopWoodCutting(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/item/chainsaw.pwn");
-
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 		

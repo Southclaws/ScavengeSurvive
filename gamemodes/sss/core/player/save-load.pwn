@@ -80,8 +80,6 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /save-load");
-
 	saveload_Loaded[playerid] = false;
 }
 

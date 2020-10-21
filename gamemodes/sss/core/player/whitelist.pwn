@@ -60,8 +60,6 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/whitelist.pwn");
-
 	defer _WhitelistConnect(playerid);
 
 	wl_CountdownUI[playerid]		=CreatePlayerTextDraw(playerid, 430.0, 40.0, "Not whitelisted~n~Time remaining: 00:00");
@@ -76,8 +74,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/player/whitelist.pwn");
-
 	wl_Whitelisted[playerid] = false;
 
 	// Again, a timer in case the GetAdminsOnline func returns 1 even though
@@ -362,8 +358,6 @@ timer _WhitelistConnect[100](playerid)
 
 hook OnPlayerLogin(playerid)
 {
-	dbg("global", CORE, "[OnPlayerLogin] in /gamemodes/sss/core/player/whitelist.pwn");
-
 	if(wl_Auto && wl_Active)
 	{
 		if(GetAdminsOnline(2) > 0) // turn off if whitelist is on and are admins online

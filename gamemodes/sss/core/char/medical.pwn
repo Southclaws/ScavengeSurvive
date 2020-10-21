@@ -34,8 +34,6 @@ static med_HealTarget[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/medical.pwn");
-
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
@@ -47,8 +45,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_DoctorBag)
@@ -68,8 +64,6 @@ hook OnItemCreate(Item:itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/medical.pwn");
-
 	new
 		Item:itemid,
 		ItemType:itemtype;
@@ -148,8 +142,6 @@ PlayerStopHeal(playerid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(itemtype == item_DoctorBag)
 	{
 		new data[2];
@@ -169,8 +161,6 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
 		if(med_HealTarget[playerid] != playerid)
@@ -200,8 +190,6 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
 		new

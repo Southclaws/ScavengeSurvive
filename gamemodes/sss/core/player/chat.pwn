@@ -48,16 +48,12 @@ forward OnPlayerSendChat(playerid, text[], Float:frequency);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/chat.pwn");
-
 	chat_LastMessageTick[playerid] = 0;
 	return 1;
 }
 
 hook OnPlayerText(playerid, text[])
 {
-	dbg("global", CORE, "[OnPlayerText] in /gamemodes/sss/core/player/chat.pwn");
-
 	if(IsPlayerMuted(playerid))
 	{
 		if(GetPlayerMuteRemainder(playerid) == -1)

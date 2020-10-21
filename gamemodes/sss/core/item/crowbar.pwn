@@ -32,8 +32,6 @@ new
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/crowbar.pwn");
-
 	cbr_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
@@ -106,8 +104,6 @@ public OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/crowbar.pwn");
-
 	if(cbr_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		if(cbr_OpenType[playerid] == 0)

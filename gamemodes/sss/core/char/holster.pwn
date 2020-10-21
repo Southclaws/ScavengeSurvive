@@ -67,8 +67,6 @@ forward OnPlayerUnHolsteredItem(playerid, Item:itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/holster.pwn");
-
 	hols_Item[playerid] = INVALID_ITEM_ID;
 }
 
@@ -163,8 +161,6 @@ stock RemovePlayerHolsterItem(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/holster.pwn");
-
 	if(newkeys & KEY_YES)
 	{
 		if(_HolsterChecks(playerid))
@@ -193,8 +189,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnItemAddToInventory(playerid, Item:itemid, slot)
 {
-	dbg("global", CORE, "[OnItemAddToInventory] in /gamemodes/sss/core/char/holster.pwn");
-
 	new Container:containerid;
 	GetPlayerCurrentContainer(playerid, containerid);
 
@@ -355,8 +349,6 @@ timer UnholsterItemDelay[time](playerid, time)
 
 hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/char/holster.pwn");
-
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -365,8 +357,6 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 
 hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerGiveItem] in /gamemodes/sss/core/char/holster.pwn");
-
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return Y_HOOKS_BREAK_RETURN_1;
 

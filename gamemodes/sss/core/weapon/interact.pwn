@@ -24,8 +24,6 @@
 
 hook OnPlayerGetItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerGetItem] in /gamemodes/sss/core/weapon/interact.pwn");
-
 	UpdatePlayerWeaponItem(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -33,8 +31,6 @@ hook OnPlayerGetItem(playerid, Item:itemid)
 
 hook OnPlayerGivenItem(playerid, targetid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerGivenItem] in /gamemodes/sss/core/weapon/interact.pwn");
-
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		RemovePlayerWeapon(playerid);
@@ -46,8 +42,6 @@ hook OnPlayerGivenItem(playerid, targetid, Item:itemid)
 
 hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerDroppedItem] in /gamemodes/sss/core/weapon/interact.pwn");
-
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		RemovePlayerWeapon(playerid);
@@ -58,8 +52,6 @@ hook OnPlayerDroppedItem(playerid, Item:itemid)
 
 hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/weapon/interact.pwn");
-
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 

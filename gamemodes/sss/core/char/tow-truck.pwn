@@ -27,8 +27,6 @@
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/tow-truck.pwn");
-
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 

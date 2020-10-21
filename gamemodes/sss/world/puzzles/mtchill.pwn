@@ -256,8 +256,6 @@ hook OnGameModeInit()
 
 hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
-	dbg("global", CORE, "[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/mtchill.pwn");
-
 	if(doorid == ch_door)
 	{
 		if(IsValidItem(GetPlayerItem(playerid)))
@@ -275,8 +273,6 @@ hook OnPlayerActivateDoor(playerid, doorid, newstate)
 
 hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/mtchill.pwn");
-
 	if(buttonid == ch_doorBtn)
 	{
 		if(itemid == ch_fusebox)

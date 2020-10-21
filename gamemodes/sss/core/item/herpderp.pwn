@@ -27,8 +27,6 @@
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/herpderp.pwn");
-
 	if(GetItemType(itemid) == item_HerpDerp)
 	{
 		switch(random(25))

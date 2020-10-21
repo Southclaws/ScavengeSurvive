@@ -83,8 +83,6 @@ forward ItemType:GetItemWeaponItemAmmoItem(Item:itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /weapon-core");
-
 	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
 	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
@@ -427,8 +425,6 @@ timer _RepeatingFire[1000](playerid)
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	dbg("global", CORE, "[OnPlayerWeaponShot] in /weapon-core");
-
 	dbg("weapon-core", 1, "[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
 		return Y_HOOKS_BREAK_RETURN_0;
@@ -593,8 +589,6 @@ _UpdateWeaponUI(playerid)
 
 hook OnPlayerHolsteredItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerHolsteredItem] in /weapon-core");
-
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		new Item:helditemid = GetPlayerItem(playerid);
@@ -615,8 +609,6 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 
 hook OnPlayerUnHolsteredItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUnHolsteredItem] in /weapon-core");
-
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
 		UpdatePlayerWeaponItem(playerid);
@@ -635,8 +627,6 @@ hook OnPlayerUnHolsteredItem(playerid, Item:itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /weapon-core");
-
 	if(newkeys & 1)
 	{
 		if(IsPlayerKnockedOut(playerid))
@@ -717,8 +707,6 @@ timer DestroyThrowable[1000](playerid, itemid)
 
 hook OnPlayerDropItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerDropItem] in /weapon-core");
-
 	if(_unload_DropHandler(playerid, itemid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -807,8 +795,6 @@ timer _UnloadWeapon[300](playerid, _itemid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /weapon-core");
-
 	new itemweaponid = GetItemTypeWeapon(itemtype);
 
 	if(itemweaponid == -1)

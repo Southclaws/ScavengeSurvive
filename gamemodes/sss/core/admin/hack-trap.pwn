@@ -47,8 +47,6 @@ stock CreateHackerTrap(Float:x, Float:y, Float:z, lootindex)
 
 hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/admin/hack-trap.pwn");
-
 	foreach(new i : hak_Index)
 	{
 		if(itemid == hak_ItemID[i])
