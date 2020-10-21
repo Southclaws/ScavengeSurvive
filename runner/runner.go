@@ -141,6 +141,9 @@ func parseSampLoggerFormat(line string) (string, []zapcore.Field) {
 	if len(rawFields) > 0 {
 		fields := []zapcore.Field{}
 		for key, value := range rawFields {
+			if len(value) == 0 {
+				return line, nil
+			}
 			if key == "text" {
 				continue
 			}
