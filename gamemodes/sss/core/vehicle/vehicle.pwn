@@ -789,14 +789,14 @@ hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Fl
 
 		new
 			Float:xythresh = 0.25,
-			Float:zthresh = 0.8;
+			Float:zthresh = 1.0;
 
 		switch(GetVehicleTypeCategory(GetVehicleType(vehicleid)))
 		{
 			case VEHICLE_CATEGORY_TRUCK:
 			{
 				xythresh = 0.02;
-				zthresh = 1.0;
+				zthresh = 1.5;
 			}
 
 			case VEHICLE_CATEGORY_MOTORBIKE, VEHICLE_CATEGORY_PUSHBIKE:
