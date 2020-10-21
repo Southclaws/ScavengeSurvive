@@ -502,7 +502,6 @@ new stock
 
 // WORLD ENTITIES
 #include "sss/core/world/fuel.pwn"
-#include "sss/core/world/emp.pwn"
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
