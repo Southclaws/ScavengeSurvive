@@ -67,7 +67,7 @@ func runBlocking(parentctx context.Context, restartKiller chan struct{}, in io.R
 
 	go func() {
 		<-restartKiller
-		time.Sleep(time.Millisecond)
+		time.Sleep(time.Second * 5)
 		zap.L().Info("internally triggered process restart")
 		cancel()
 	}()
