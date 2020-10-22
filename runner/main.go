@@ -34,7 +34,7 @@ func Run() error {
 		zap.L().Info("doing first-time ensure and build")
 	}
 
-	if _, err := os.Stat(filepath.Join(dir, "dependencies")); err == os.ErrNotExist {
+	if _, err := os.Stat(filepath.Join(dir, "dependencies")); os.IsNotExist(err) {
 		forceBuild = true
 		forceEnsure = true
 		zap.L().Info("doing first-time ensure and build")
