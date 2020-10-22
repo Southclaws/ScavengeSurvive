@@ -39,15 +39,11 @@ forward OnHoldActionFinish(playerid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/ui/hold-action.pwn");
-
 	ActionBar = CreatePlayerProgressBar(playerid, 291.0, 345.0, 57.50, 5.19, GREY, 100.0);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/ui/hold-action.pwn");
-
 	DestroyPlayerProgressBar(playerid, ActionBar);
 }
 

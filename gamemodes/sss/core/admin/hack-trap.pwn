@@ -26,7 +26,7 @@
 
 
 new
-			hak_ItemID[MAX_HACKTRAP],
+       Item:hak_ItemID[MAX_HACKTRAP],
    Iterator:hak_Index<MAX_HACKTRAP>;
 
 
@@ -35,20 +35,18 @@ stock CreateHackerTrap(Float:x, Float:y, Float:z, lootindex)
 	new id = Iter_Free(hak_Index);
 
 	if(id == ITER_NONE)
-		return INVALID_ITEM_ID;
+		return -1;
 
 	hak_ItemID[id] = CreateLootItem(lootindex, x, y, z);
 
-	Iter_Add(hak_Index, id);
+	Iter_Add(hak_Index, _:id);
 
 	return id;
 }
 
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerPickUpItem] in /gamemodes/sss/core/admin/hack-trap.pwn");
-
 	foreach(new i : hak_Index)
 	{
 		if(itemid == hak_ItemID[i])

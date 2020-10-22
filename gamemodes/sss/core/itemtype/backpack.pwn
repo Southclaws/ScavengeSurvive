@@ -30,7 +30,7 @@
 
 enum E_BAG_TYPE_DATA
 {
-			bag_name[ITM_MAX_NAME],
+			bag_name[MAX_ITEM_NAME],
 ItemType:	bag_itemtype,
 			bag_size,
 Float:		bag_attachOffsetX,
@@ -48,24 +48,24 @@ Float:		bag_attachScaleZ
 static
 			bag_TypeData[MAX_BAG_TYPE][E_BAG_TYPE_DATA],
 			bag_TypeTotal,
-			bag_ItemTypeBagType[ITM_MAX_TYPES] = {-1, ...};
+			bag_ItemTypeBagType[MAX_ITEM_TYPE] = {-1, ...};
 
 static
-			bag_ContainerItem		[CNT_MAX],
-			bag_ContainerPlayer		[CNT_MAX];
+Item:		bag_ContainerItem		[MAX_CONTAINER],
+			bag_ContainerPlayer		[MAX_CONTAINER];
 
 static
-			bag_PlayerBagID			[MAX_PLAYERS],
+Item:		bag_PlayerBagID			[MAX_PLAYERS],
 			bag_InventoryOptionID	[MAX_PLAYERS],
 bool:		bag_PuttingInBag		[MAX_PLAYERS],
 bool:		bag_TakingOffBag		[MAX_PLAYERS],
-			bag_CurrentBag			[MAX_PLAYERS],
+Item:		bag_CurrentBag			[MAX_PLAYERS],
 Timer:		bag_OtherPlayerEnter	[MAX_PLAYERS],
 			bag_LookingInBag		[MAX_PLAYERS];
 
 
-forward OnPlayerWearBag(playerid, itemid);
-forward OnPlayerRemoveBag(playerid, itemid);
+forward OnPlayerWearBag(playerid, Item:itemid);
+forward OnPlayerRemoveBag(playerid, Item:itemid);
 
 
 /*==============================================================================
@@ -77,7 +77,7 @@ forward OnPlayerRemoveBag(playerid, itemid);
 
 hook OnScriptInit()
 {
-	for(new i; i < CNT_MAX; i++)
+	for(new Container:i; i < MAX_CONTAINER; i++)
 	{
 		bag_ContainerPlayer[i] = INVALID_PLAYER_ID;
 		bag_ContainerItem[i] = INVALID_ITEM_ID;
@@ -86,8 +86,6 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerConnect] in /gamemodes/sss/core/char/backpack.pwn");
-
 	bag_PlayerBagID[playerid] = INVALID_ITEM_ID;
 	bag_PuttingInBag[playerid] = false;
 	bag_TakingOffBag[playerid] = false;
@@ -103,10 +101,8 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineBagType(const name[ITM_MAX_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
+stock DefineBagType(const name[MAX_ITEM_NAME], ItemType:itemtype, size, Float:attachOffsetX, Float:attachOffsetY, Float:attachOffsetZ, Float:attachRotX, Float:attachRotY, Float:attachRotZ, Float:attachScaleX, Float:attachScaleY, Float:attachScaleZ)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[DefineBagType] name:'%s' itemtype:%d size:%d", name, _:itemtype, size);
-
 	if(bag_TypeTotal == MAX_BAG_TYPE)
 		return -1;
 
@@ -130,10 +126,8 @@ stock DefineBagType(const name[ITM_MAX_NAME], ItemType:itemtype, size, Float:att
 	return bag_TypeTotal++;
 }
 
-stock GivePlayerBag(playerid, itemid)
+stock GivePlayerBag(playerid, Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[GivePlayerBag] playerid:%d itemid:%d", playerid, itemid);
-
 	if(!IsValidItem(itemid))
 		return 0;
 
@@ -141,22 +135,27 @@ stock GivePlayerBag(playerid, itemid)
 
 	if(bagtype != -1)
 	{
-		new containerid = GetItemArrayDataAtCell(itemid, 1);
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
 
 		if(!IsValidContainer(containerid))
 		{
-			err("Bag (%d) container ID (%d) was invalid container has to be recreated.", itemid, containerid);
+			err("Bag (%d) container ID (%d) was invalid container has to be recreated.", _:itemid, _:containerid);
 
 			containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
-			SetItemArrayDataAtCell(itemid, containerid, 1);
+			SetItemArrayDataAtCell(itemid, _:containerid, 1);
 		}
 
-		new colour = GetItemTypeColour(bag_TypeData[bagtype][bag_itemtype]);
+		new colour;
+		GetItemTypeColour(bag_TypeData[bagtype][bag_itemtype], colour);
 
 		bag_PlayerBagID[playerid] = itemid;
 
-		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, GetItemTypeModel(bag_TypeData[bagtype][bag_itemtype]), 1,
+		new model;
+		GetItemTypeModel(bag_TypeData[bagtype][bag_itemtype], model);
+
+		SetPlayerAttachedObject(playerid, ATTACHSLOT_BAG, model, 1,
 			bag_TypeData[bagtype][bag_attachOffsetX],
 			bag_TypeData[bagtype][bag_attachOffsetY],
 			bag_TypeData[bagtype][bag_attachOffsetZ],
@@ -180,15 +179,14 @@ stock GivePlayerBag(playerid, itemid)
 
 stock RemovePlayerBag(playerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[RemovePlayerBag] playerid:%d", playerid);
-
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
-	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 	{
@@ -200,11 +198,11 @@ stock RemovePlayerBag(playerid)
 			return 0;
 		}
 
-		err("Bag (%d) container ID (%d) was invalid container has to be recreated.", bag_PlayerBagID[playerid], containerid);
+		err("Bag (%d) container ID (%d) was invalid container has to be recreated.", _:bag_PlayerBagID[playerid], _:containerid);
 
 		containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
 
-		SetItemArrayDataAtCell(bag_PlayerBagID[playerid], containerid, 1);
+		SetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 	}
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_BAG);
@@ -218,15 +216,14 @@ stock RemovePlayerBag(playerid)
 
 stock DestroyPlayerBag(playerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[DestroyPlayerBag] playerid:%d", playerid);
-
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return 0;
 
 	if(!IsValidItem(bag_PlayerBagID[playerid]))
 		return 0;
 
-	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(IsValidContainer(containerid))
 	{
@@ -245,10 +242,8 @@ stock DestroyPlayerBag(playerid)
 /*
 	Automatically determines whether to add to the player's inventory or bag.
 */
-stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = true)
+stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction = true)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[AddItemToPlayer] itemid %d playerid %d useinventory %d playeraction %d", itemid, playerid, useinventory, playeraction);
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeCarry(itemtype))
@@ -270,14 +265,18 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 		return -3;
 	}
 
-	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 		return -3;
 
 	new
-		itemsize = GetItemTypeSize(GetItemType(itemid)),
-		freeslots = GetContainerFreeSlots(containerid);
+		itemsize,
+		freeslots;
+
+	GetItemTypeSize(GetItemType(itemid), itemsize);
+	GetContainerFreeSlots(containerid, freeslots);
 
 	if(itemsize > freeslots)
 	{
@@ -290,7 +289,7 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 		ShowActionText(playerid, ls(playerid, "BAGITMADDED", true), 3000, 150);
 		ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
 		bag_PuttingInBag[playerid] = true;
-		defer bag_PutItemIn(playerid, itemid, containerid);
+		defer bag_PutItemIn(playerid, _:itemid, _:containerid);
 	}
 	else
 	{
@@ -308,18 +307,14 @@ stock AddItemToPlayer(playerid, itemid, useinventory = false, playeraction = tru
 ==============================================================================*/
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemCreate] in /gamemodes/sss/core/char/backpack.pwn");
-
 	new bagtype = bag_ItemTypeBagType[GetItemType(itemid)];
 
 	if(bagtype != -1)
 	{
-		dbg("gamemodes/sss/core/char/backpack.pwn", 2, "[OnItemCreate] itemid:%d itemtype:%d bagtype:%d", itemid, _:GetItemType(itemid), bagtype);
-
 		new
-			containerid,
+			Container:containerid,
 			lootindex = GetItemLootIndex(itemid);
 
 		containerid = CreateContainer(bag_TypeData[bagtype][bag_name], bag_TypeData[bagtype][bag_size]);
@@ -328,34 +323,32 @@ hook OnItemCreate(itemid)
 		bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
 
 		SetItemArrayDataSize(itemid, 2);
-		SetItemArrayDataAtCell(itemid, containerid, 1);
+		SetItemArrayDataAtCell(itemid, _:containerid, 1);
 
 		if(lootindex != -1)
 		{
-			if(!IsValidContainer(GetItemContainer(itemid)))
+			if(!IsValidContainer(containerid))
 				FillContainerWithLoot(containerid, random(4), lootindex);
 		}
 	}
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemCreateInWorld] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
+		new Button:buttonid;
+		GetItemButtonID(itemid, buttonid);
+		SetButtonText(buttonid, "Hold "KEYTEXT_INTERACT" to pick up~n~Press "KEYTEXT_INTERACT" to open");
 	}
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemDestroy] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
-		new containerid = GetItemArrayDataAtCell(itemid, 1);
-
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
 		if(IsValidContainer(containerid))
 		{
 			bag_ContainerPlayer[containerid] = INVALID_PLAYER_ID;
@@ -365,13 +358,13 @@ hook OnItemDestroy(itemid)
 	}
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerUseItem] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(bag_ItemTypeBagType[GetItemType(itemid)] != -1)
 	{
-		if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+		new Container:containerid;
+		GetPlayerCurrentContainer(playerid, containerid);
+		if(IsValidContainer(containerid))
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
 		if(IsItemInWorld(itemid))
@@ -386,10 +379,8 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(bag_ItemTypeBagType[GetItemType(withitemid)] != -1)
 	{
 		_DisplayBagDialog(playerid, withitemid, true);
@@ -401,8 +392,6 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
 		return 1;
 
@@ -429,7 +418,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 _BagEquipHandler(playerid)
 {
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(!IsValidItem(itemid))
 		return 0;
@@ -446,7 +435,7 @@ _BagEquipHandler(playerid)
 	{
 		if(IsValidItem(bag_PlayerBagID[playerid]))
 		{
-			new currentbagitem = bag_PlayerBagID[playerid];
+			new Item:currentbagitem = bag_PlayerBagID[playerid];
 
 			RemovePlayerBag(playerid);
 			GivePlayerBag(playerid, itemid);
@@ -454,7 +443,7 @@ _BagEquipHandler(playerid)
 		}
 		else
 		{
-			if(CallLocalFunction("OnPlayerWearBag", "dd", playerid, itemid))
+			if(CallLocalFunction("OnPlayerWearBag", "dd", playerid, _:itemid))
 				return 0;
 
 			GivePlayerBag(playerid, itemid);
@@ -481,10 +470,11 @@ _BagDropHandler(playerid)
 	if(IsValidItem(GetPlayerInteractingItem(playerid)))
 		return 0;
 
-	if(CallLocalFunction("OnPlayerRemoveBag", "dd", playerid, bag_PlayerBagID[playerid]))
+	if(CallLocalFunction("OnPlayerRemoveBag", "dd", playerid, _:bag_PlayerBagID[playerid]))
 		return 0;
 
-	new containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 
 	if(!IsValidContainer(containerid))
 		return 0;
@@ -503,7 +493,7 @@ _BagRummageHandler(playerid)
 {
 	foreach(new i : Player)
 	{
-		if(IsPlayerInPlayerArea(playerid, i))
+		if(IsPlayerNextToPlayer(playerid, i))
 		{
 			if(IsValidItem(bag_PlayerBagID[i]))
 			{
@@ -538,14 +528,13 @@ _BagRummageHandler(playerid)
 
 timer bag_PutItemIn[300](playerid, itemid, containerid)
 {
-	AddItemToContainer(containerid, itemid, playerid);
+	AddItemToContainer(Container:containerid, Item:itemid, playerid);
 	bag_PuttingInBag[playerid] = false;
 }
 
 timer bag_EnterOtherPlayer[250](playerid, targetid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[bag_EnterOtherPlayer] playerid:%d targetid:%d", playerid, targetid);
-	_DisplayBagDialog(playerid, bag_PlayerBagID[targetid], false);
+	_DisplayBagDialog(playerid, Item:bag_PlayerBagID[targetid], false);
 	bag_LookingInBag[playerid] = targetid;
 }
 
@@ -562,9 +551,11 @@ PlayerBagUpdate(playerid)
 	}
 }
 
-_DisplayBagDialog(playerid, itemid, animation)
+_DisplayBagDialog(playerid, Item:itemid, animation)
 {
-	DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 1));
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 1);
+	DisplayContainerInventory(playerid, containerid);
 	bag_CurrentBag[playerid] = itemid;
 
 	if(animation)
@@ -574,10 +565,8 @@ _DisplayBagDialog(playerid, itemid, animation)
 		CancelPlayerMovement(playerid);
 }
 
-hook OnItemAddToInventory(playerid, itemid, slot)
+hook OnItemAddToInventory(playerid, Item:itemid, slot)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemAddToInventory] in /gamemodes/sss/core/char/backpack.pwn");
-
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(IsItemTypeBag(itemtype))
@@ -589,10 +578,8 @@ hook OnItemAddToInventory(playerid, itemid, slot)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerAddToInventory(playerid, itemid, success)
+hook OnPlayerAddToInventory(playerid, Item:itemid, success)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemAddToInventory] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(success)
 	{
 		new ItemType:itemtype = GetItemType(itemid);
@@ -614,8 +601,11 @@ hook OnPlayerAddToInventory(playerid, itemid, success)
 			return Y_HOOKS_BREAK_RETURN_1;
 
 		new
-			itemsize = GetItemTypeSize(GetItemType(itemid)),
-			freeslots = GetInventoryFreeSlots(playerid);
+			itemsize,
+			freeslots;
+
+		GetItemTypeSize(GetItemType(itemid), itemsize);
+		GetInventoryFreeSlots(playerid, freeslots);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "CNTEXTRASLO", true), itemsize - freeslots), 3000, 150);
 	}
@@ -625,8 +615,6 @@ hook OnPlayerAddToInventory(playerid, itemid, success)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerCloseContainer] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(IsValidItem(bag_CurrentBag[playerid]))
 	{
 		ClearAnimations(playerid);
@@ -635,10 +623,8 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	}
 }
 
-hook OnPlayerDropItem(playerid, itemid)
+hook OnPlayerDropItem(playerid, Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerDropItem] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
 		if(bag_TakingOffBag[playerid])
@@ -651,10 +637,8 @@ hook OnPlayerDropItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerGiveItem] in /gamemodes/sss/core/char/backpack.pwn");
-
 	if(IsItemTypeBag(GetItemType(itemid)))
 	{
 		if(bag_TakingOffBag[playerid])
@@ -669,9 +653,9 @@ hook OnPlayerGiveItem(playerid, targetid, itemid)
 
 hook OnPlayerViewInvOpt(playerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerViewInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
-
-	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(containerid))
 	{
 		bag_InventoryOptionID[playerid] = AddInventoryOption(playerid, "Move to bag");
 	}
@@ -679,20 +663,19 @@ hook OnPlayerViewInvOpt(playerid)
 
 hook OnPlayerSelectInvOpt(playerid, option)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerSelectInvOpt] in /gamemodes/sss/core/char/backpack.pwn");
-
-	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && !IsValidContainer(containerid))
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
 			new
-				containerid,
 				slot,
-				itemid;
+				Item:itemid;
 			
-			containerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
+			GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:containerid, 1);
 			slot = GetPlayerSelectedInventorySlot(playerid);
-			itemid = GetInventorySlotItem(playerid, slot);
+			GetInventorySlotItem(playerid, slot, itemid);
 
 			if(!IsValidItem(itemid))
 			{
@@ -712,32 +695,30 @@ hook OnPlayerSelectInvOpt(playerid, option)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerViewCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
-
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
+	new Container:bagcontainerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:bagcontainerid, 1);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != bagcontainerid)
 	{
 		bag_InventoryOptionID[playerid] = AddContainerOption(playerid, "Move to bag");
 	}
 }
 
-hook OnPlayerSelectCntOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnPlayerSelectCntOpt] in /gamemodes/sss/core/char/backpack.pwn");
-
-	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1))
+	new Container:bagcontainerid;
+	GetItemArrayDataAtCell(bag_PlayerBagID[playerid], _:bagcontainerid, 1);
+	if(IsValidItem(bag_PlayerBagID[playerid]) && containerid != bagcontainerid)
 	{
 		if(option == bag_InventoryOptionID[playerid])
 		{
 			new
-				bagcontainerid,
 				slot,
-				itemid;
+				Item:itemid;
 
-			bagcontainerid = GetItemArrayDataAtCell(bag_PlayerBagID[playerid], 1);
-			slot = GetPlayerContainerSlot(playerid);
-			itemid = GetContainerSlotItem(containerid, slot);
+			GetPlayerContainerSlot(playerid, slot);
+			GetContainerSlotItem(containerid, slot, itemid);
 
 			if(!IsValidItem(itemid))
 			{
@@ -757,15 +738,12 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(Container:containerid, Item:itemid, playerid)
 {
-	dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemAddToContainer] containerid %d itemid %d playerid %d", containerid, itemid, playerid);
 	if(GetContainerBagItem(containerid) != INVALID_ITEM_ID)
 	{
-		dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemAddToContainer] Container is a bag");
 		if(IsItemTypeCarry(GetItemType(itemid)))
 		{
-			dbg("gamemodes/sss/core/char/backpack.pwn", 1, "[OnItemAddToContainer] Item is carry, cancel adding");
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 	}
@@ -797,7 +775,7 @@ stock GetItemBagType(ItemType:itemtype)
 	return bag_ItemTypeBagType[itemtype];
 }
 
-stock GetPlayerBagItem(playerid)
+stock Item:GetPlayerBagItem(playerid)
 {
 	if(!(0 <= playerid < MAX_PLAYERS))
 		return INVALID_ITEM_ID;
@@ -805,7 +783,7 @@ stock GetPlayerBagItem(playerid)
 	return bag_PlayerBagID[playerid];
 }
 
-stock GetContainerPlayerBag(containerid)
+stock GetContainerPlayerBag(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_PLAYER_ID;
@@ -813,7 +791,7 @@ stock GetContainerPlayerBag(containerid)
 	return bag_ContainerPlayer[containerid];
 }
 
-stock GetContainerBagItem(containerid)
+stock Item:GetContainerBagItem(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_ITEM_ID;
@@ -821,10 +799,12 @@ stock GetContainerBagItem(containerid)
 	return bag_ContainerItem[containerid];
 }
 
-stock GetBagItemContainerID(itemid)
+stock Container:GetBagItemContainerID(Item:itemid)
 {
 	if(!IsItemTypeBag(GetItemType(itemid)))
 		return INVALID_CONTAINER_ID;
 
-	return GetItemArrayDataAtCell(itemid, 1);
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 1);
+	return containerid;
 }

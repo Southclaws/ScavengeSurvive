@@ -723,8 +723,6 @@ stock DeleteDetectionFieldLogsOfName(detfieldid, const name[])
 
 hook OnPlayerEnterDynArea(playerid, areaid)
 {
-	dbg("global", CORE, "[OnPlayerEnterDynArea] in /gamemodes/sss/core/admin/detfield.pwn");
-
 	foreach(new i : det_Index)
 	{
 		if(areaid == det_AreaID[i])

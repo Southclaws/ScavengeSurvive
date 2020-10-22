@@ -1611,19 +1611,19 @@ SF_District_City1()
 	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_City1' please wait...");
 
 	new
-		buttonid[2];
+		Button:buttonid[2];
 
 	buttonid[0] = CreateButton(-2208.2568, 579.8558, 35.7653, "Press F to activate", 0);
 	buttonid[1] = CreateButton(-2208.2561, 584.4679, 35.7653, "Press F to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2211.40, 581.99, 36.37,   0.00, 0.00, 90.00,
-		-2211.40, 581.99, 39.61,   0.00, 0.00, 90.00, .movesound = 6000, .stopsound = 6002);
+		-2211.40, 581.99, 39.61,   0.00, 0.00, 90.00, .moveSound = 6000, .stopSound = 6002);
 
 	buttonid[0] = CreateButton(-2243.0400, 640.7287, 49.9911, "Press F to activate", 0);
 	buttonid[1] = CreateButton(-2238.6035, 641.0287, 49.9911, "Press F to activate", 0);
 	CreateDoor(16501, buttonid,
 		-2241.90, 643.55, 50.69,   0.00, 0.00, 0.00,
-		-2241.90, 643.55, 53.96,   0.00, 0.00, 0.00, .movesound = 6000, .stopsound = 6002);
+		-2241.90, 643.55, 53.96,   0.00, 0.00, 0.00, .moveSound = 6000, .stopSound = 6002);
 
 
 	CreateZipline(
@@ -2725,7 +2725,7 @@ SF_District_Naval()
 {
 	ChatMsgAll(YELLOW, " >  Loading world region: 'SF_District_Naval' please wait...");
 
-	new buttonid[1];
+	new Button:buttonid[1];
 
 	// Requires "./scriptfiles/Maps/SF/Naval Base.map" to remove:
 	// RemoveBuildingForPlayer(playerid, 968, -1526.4375, 481.3828, 6.9063, 0.01);
@@ -2735,7 +2735,7 @@ SF_District_Naval()
 	CreateDoor(968, buttonid,
 		-1526.4375, 481.3828, 7.02, 356.8584, 270.00, 0.0,
 		-1526.4375, 481.3828, 7.00, 356.8584, 0.0000, 0.0,
-		.closedelay = -1, .maxbuttons = 1, .movespeed = 0.01, .movesound = 0, .stopsound = 0);
+		.closeDelay = -1, .maxButtons = 1, .moveSpeed = 0.01, .moveSound = 0, .stopSound = 0);
 
 	CreateStaticLootSpawn(-1346.540039, 492.079986, 10.279999,		GetLootIndexFromName("world_civilian"), 15.0);
 

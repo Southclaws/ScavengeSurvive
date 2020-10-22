@@ -474,8 +474,8 @@ ACMD:additem[3](playerid, params[])
 	new ItemType:type = INVALID_ITEM_TYPE;
 	if(sscanf(query, "d", _:type))
 	{
-		new itemname[ITM_MAX_NAME];
-		for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+		new itemname[MAX_ITEM_NAME];
+		for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 		{
 			GetItemTypeUniqueName(i, itemname);
 
@@ -488,7 +488,7 @@ ACMD:additem[3](playerid, params[])
 
 		if(type == INVALID_ITEM_TYPE)
 		{
-			for(new ItemType:i; i < ITM_MAX_TYPES; i++)
+			for(new ItemType:i; i < MAX_ITEM_TYPE; i++)
 			{
 				GetItemTypeName(i, itemname);
 
@@ -530,20 +530,21 @@ ACMD:additem[3](playerid, params[])
 
 	// create the item and hydrate its extradata array.
 	new
-		typemaxsize = GetItemTypeArrayDataSize(type),
-		itemid,
+		typemaxsize,
+		Item:itemid,
 		Float:x,
 		Float:y,
 		Float:z,
 		Float:r;
 
+	GetItemTypeArrayDataSize(type, typemaxsize);
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
 	itemid = CreateItem(type,
 		x + (0.5 * floatsin(-r, degrees)),
 		y + (0.5 * floatcos(-r, degrees)),
-		z - FLOOR_OFFSET, .rz = r);
+		z - ITEM_FLOOR_OFFSET, .rz = r);
 
 	if(exdatalen > 0)
 	{
@@ -556,7 +557,7 @@ ACMD:additem[3](playerid, params[])
 		{
 			#pragma unused pid, dialogid, response, listitem
 
-			new itemname[ITM_MAX_NAME];
+			new itemname[MAX_ITEM_NAME];
 			GetItemTypeName(type, itemname);
 			log("[ADDITEM] %p added item %s (d:%d) reason: %s", pid, itemname, _:type, inputtext);
 		}
@@ -714,10 +715,10 @@ ACMD:delete[3](playerid, params[])
 	{
 		foreach(new i : itm_Index)
 		{
-			GetItemPos(i, ix, iy, iz);
+			GetItemPos(Item:i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyItem(i);
+				i = _:DestroyItem(Item:i);
 		}
 
 		return 1;
@@ -738,13 +739,13 @@ ACMD:delete[3](playerid, params[])
 	{
 		foreach(new i : itm_Index)
 		{
-			if(GetItemTypeDefenceType(GetItemType(i)) == INVALID_DEFENCE_TYPE)
+			if(GetItemTypeDefenceType(GetItemType(Item:i)) == INVALID_DEFENCE_TYPE)
 				continue;
 
-			GetItemPos(i, ix, iy, iz);
+			GetItemPos(Item:i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyItem(i);
+				i = _:DestroyItem(Item:i);
 		}
 
 		return 1;

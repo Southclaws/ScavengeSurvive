@@ -40,7 +40,7 @@ enum E_CONSTRUCT_SET_DATA
 {
 			cons_buildtime,
 ItemType:	cons_tool,
-			cons_craftset,
+CraftSet:	cons_craftset,
 ItemType:	cons_removalTool,
 			cons_removalTime,
 bool:		cons_tweak,
@@ -51,17 +51,17 @@ bool:		cons_defence
 static
 		cons_Data[MAX_CONSTRUCT_SET][E_CONSTRUCT_SET_DATA],
 		cons_Total,
-		cons_CraftsetConstructSet[CFT_MAX_CRAFT_SET] = {-1, ...},
-		cons_Constructing[MAX_PLAYERS] = {-1, ...},
-		cons_Deconstructing[MAX_PLAYERS] = {-1, ...},
-		cons_DeconstructingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
+		cons_CraftsetConstructSet[CRAFT_MAX_CRAFT_SET] = {-1, ...},
+CraftSet:cons_Constructing[MAX_PLAYERS] = {INVALID_CRAFTSET, ...},
+CraftSet:cons_Deconstructing[MAX_PLAYERS] = {INVALID_CRAFTSET, ...},
+Item:	cons_DeconstructingItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...},
 		cons_SelectedItems[MAX_PLAYERS][MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
 		cons_SelectedItemCount[MAX_PLAYERS];
 
 
 forward OnPlayerConstruct(playerid, consset);
 forward OnPlayerConstructed(playerid, consset, result);
-forward OnPlayerDeconstructed(playerid, itemid);
+forward OnPlayerDeconstructed(playerid, Item:itemid);
 
 
 /*==============================================================================
@@ -73,16 +73,14 @@ forward OnPlayerDeconstructed(playerid, itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in craft-construct");
-
 	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
 	{
-		cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-		cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
+		cons_SelectedItems[playerid][i][craft_selectedItemType] = INVALID_ITEM_TYPE;
+		cons_SelectedItems[playerid][i][craft_selectedItemID] = INVALID_ITEM_ID;
 	}
 
 	cons_SelectedItemCount[playerid] = 0;
-	cons_Constructing[playerid] = -1;
+	cons_Constructing[playerid] = INVALID_CRAFTSET;
 }
 
 
@@ -93,7 +91,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0, bool:tweak = true, bool:defence = false)
+stock SetCraftSetConstructible(buildtime, ItemType:tool, CraftSet:craftset, ItemType:removal = INVALID_ITEM_TYPE, removaltime = 0, bool:tweak = true, bool:defence = false)
 {
 	cons_Data[cons_Total][cons_buildtime] = buildtime;
 	cons_Data[cons_Total][cons_tool] = tool;
@@ -116,36 +114,34 @@ stock SetCraftSetConstructible(buildtime, ItemType:tool, craftset, ItemType:remo
 ==============================================================================*/
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in craft-construct");
-
 	new
-		list[BTN_MAX_INRANGE] = {INVALID_BUTTON_ID, ...},
+		Item:list[BTN_MAX_INRANGE] = {INVALID_ITEM_ID, ...},
 		size;
 
 	size = GetPlayerNearbyItems(playerid, list);
 
 	if(size > 1)
 	{
-		dbg("craft-construct", 1, "[OnPlayerUseItem] Button list size %d, comparing with craft lists", size);
+		dbg("craft-construct", 1, "[OnPlayerUseItem] Item list size %d, comparing with craft lists", size);
 
 		_ResetSelectedItems(playerid);
 
 		for(new i; i < size; i++)
 		{
-			cons_SelectedItems[playerid][i][cft_selectedItemType] = GetItemType(list[i]);
-			cons_SelectedItems[playerid][i][cft_selectedItemID] = list[i];
+			cons_SelectedItems[playerid][i][craft_selectedItemType] = GetItemType(list[i]);
+			cons_SelectedItems[playerid][i][craft_selectedItemID] = list[i];
 			cons_SelectedItemCount[playerid]++;
-			dbg("craft-construct", 3, "[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][cft_selectedItemType], cons_SelectedItems[playerid][i][cft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][cft_selectedItemID]));
+			dbg("craft-construct", 3, "[OnPlayerUseItem] List item: %d (%d) valid: %d", _:cons_SelectedItems[playerid][i][craft_selectedItemType], _:cons_SelectedItems[playerid][i][craft_selectedItemID], IsValidItem(cons_SelectedItems[playerid][i][craft_selectedItemID]));
 		}
 
-		new craftset = _cft_FindCraftset(cons_SelectedItems[playerid], size);
-		dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d", craftset);
+		new CraftSet:craftset = _craft_FindCraftset(cons_SelectedItems[playerid], size);
+		dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d", _:craftset);
 
 		if(IsValidCraftSet(craftset))
 		{
-			dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d craftset constructionset %d", craftset, cons_CraftsetConstructSet[craftset]);
+			dbg("craft-construct", 2, "[OnPlayerUseItem] Craftset determined as %d craftset constructionset %d", _:craftset, cons_CraftsetConstructSet[craftset]);
 
 			if(cons_CraftsetConstructSet[craftset] != -1)
 			{
@@ -154,8 +150,12 @@ hook OnPlayerUseItem(playerid, itemid)
 					dbg("craft-construct", 2, "[OnPlayerUseItem] Tool matches current item, begin holdaction");
 					if(!CallLocalFunction("OnPlayerConstruct", "dd", playerid, cons_CraftsetConstructSet[craftset]))
 					{
-						new uniqueid[ITM_MAX_NAME];
-						GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+						new
+							uniqueid[MAX_ITEM_NAME],
+							ItemType:result;
+						GetCraftSetResult(craftset, result);
+
+						GetItemTypeName(result, uniqueid);
 						StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_buildtime], uniqueid));
 						ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 						ShowActionText(playerid, ls(playerid, "CONSTRUCTIN", true));
@@ -176,9 +176,10 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	new craftset = ItemTypeResultForCraftingSet(GetItemType(withitemid));
+	new CraftSet:craftset;
+	ItemTypeResultForCraftingSet(GetItemType(withitemid), craftset);
 
 	if(IsValidCraftSet(craftset))
 	{
@@ -195,10 +196,13 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	}
 }
 
-StartRemovingConstructedItem(playerid, itemid, craftset)
+StartRemovingConstructedItem(playerid, Item:itemid, CraftSet:craftset)
 {
-	new uniqueid[ITM_MAX_NAME];
-	GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+	new
+		ItemType:result,
+		uniqueid[MAX_ITEM_NAME];
+	GetCraftSetResult(craftset, result);
+	GetItemTypeName(result, uniqueid);
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, cons_Data[cons_CraftsetConstructSet[craftset]][cons_removalTime], uniqueid));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
 	ShowActionText(playerid, ls(playerid, "DECONSTRUCT", true));
@@ -211,7 +215,7 @@ StopRemovingConstructedItem(playerid)
 	StopHoldAction(playerid);
 	ClearAnimations(playerid);
 	HideActionText(playerid);
-	cons_Deconstructing[playerid] = -1;
+	cons_Deconstructing[playerid] = INVALID_CRAFTSET;
 	cons_DeconstructingItem[playerid] = INVALID_ITEM_ID;
 }
 
@@ -219,13 +223,12 @@ StopRemovingConstructedItem(playerid)
 // if a player picked one up during construction, it could be duplicated maybe.
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in craft-construct");
-
-	if(cons_Constructing[playerid] != -1)
+	if(cons_Constructing[playerid] != INVALID_CRAFTSET)
 	{
 		dbg("craft-construct", 2, "[OnHoldActionFinish] creating result and destroying items marked to not keep");
 
 		new
+			ItemType:result,
 			Float:x,
 			Float:y,
 			Float:z,
@@ -233,22 +236,26 @@ hook OnHoldActionFinish(playerid)
 			Float:ty,
 			Float:tz,
 			count,
-			itemid,
-			uniqueid[ITM_MAX_NAME];
+			Item:itemid,
+			uniqueid[MAX_ITEM_NAME];
 
-		GetItemTypeName(GetCraftSetResult(cons_Constructing[playerid]), uniqueid);
+		GetCraftSetResult(cons_Constructing[playerid], result);
+		GetItemTypeName(result, uniqueid);
 		// DestroyItem(GetPlayerItem(playerid));
 
 		// first make sure all items are in the world, if one isn't, exit early.
-		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
+		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][craft_selectedItemID] != INVALID_ITEM_ID; count++)
 		{
-			if(!IsItemInWorld(cons_SelectedItems[playerid][count][cft_selectedItemID]))
+			if(!IsItemInWorld(cons_SelectedItems[playerid][count][craft_selectedItemID]))
+			{
+				dbg("craft-construct", 2, "[OnHoldActionFinish] selected item %d is not in the world any more", _:cons_SelectedItems[playerid][count][craft_selectedItemID]);
 				return;
+			}
 		}
 
-		for( ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][cft_selectedItemID] != INVALID_ITEM_ID; count++)
+		for(count = 0 ; count < cons_SelectedItemCount[playerid] && cons_SelectedItems[playerid][count][craft_selectedItemID] != INVALID_ITEM_ID; count++)
 		{
-			GetItemPos(cons_SelectedItems[playerid][count][cft_selectedItemID], x, y, z);
+			GetItemPos(cons_SelectedItems[playerid][count][craft_selectedItemID], x, y, z);
 
 			if(x * y * z != 0.0)
 			{
@@ -257,15 +264,20 @@ hook OnHoldActionFinish(playerid)
 				tz += z;
 			}
 
-			if(!GetCraftSetItemKeep(cons_Constructing[playerid], count))
-				DestroyItem(cons_SelectedItems[playerid][count][cft_selectedItemID]);
+			new bool:keep;
+			GetCraftSetItemKeep(cons_Constructing[playerid], count, keep);
+
+			if(!keep)
+			{
+				DestroyItem(cons_SelectedItems[playerid][count][craft_selectedItemID]);
+			}
 		}
 
 		tx /= float(count);
 		ty /= float(count);
 		tz /= float(count);
 
-		itemid = CreateItem(GetCraftSetResult(cons_Constructing[playerid]), tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
+		itemid = CreateItem(result, tx, ty, tz, .world = GetPlayerVirtualWorld(playerid), .interior = GetPlayerInterior(playerid));
 		PlayerGainSkillExperience(playerid, uniqueid);
 
 		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_defence])
@@ -274,20 +286,20 @@ hook OnHoldActionFinish(playerid)
 		if(cons_Data[cons_CraftsetConstructSet[cons_Constructing[playerid]]][cons_tweak])
 			TweakItem(playerid, itemid);
 
-		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerConstructed %d %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
-		CallLocalFunction("OnPlayerConstructed", "ddd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], itemid);
+		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerConstructed %d %d %d", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], _:itemid);
+		CallLocalFunction("OnPlayerConstructed", "ddd", playerid, cons_CraftsetConstructSet[cons_Constructing[playerid]], _:itemid);
 
 		ClearAnimations(playerid);
 		HideActionText(playerid);
 
 		_ResetSelectedItems(playerid);
-		cons_Constructing[playerid] = -1;
+		cons_Constructing[playerid] = INVALID_CRAFTSET;
 	}
-	else if(cons_Deconstructing[playerid] != INVALID_ITEM_ID)
+	else if(cons_DeconstructingItem[playerid] != INVALID_ITEM_ID)
 	{
-		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerDeconstructed %d %d %d", playerid, cons_DeconstructingItem[playerid], cons_Deconstructing[playerid]);
+		dbg("craft-construct", 2, "[OnHoldActionFinish] Calling OnPlayerDeconstructed %d %d %d", playerid, _:cons_DeconstructingItem[playerid], _:cons_Deconstructing[playerid]);
 
-		if(!CallLocalFunction("OnPlayerDeconstructed", "ddd", playerid, cons_DeconstructingItem[playerid], cons_Deconstructing[playerid]))
+		if(!CallLocalFunction("OnPlayerDeconstructed", "ddd", playerid, _:cons_DeconstructingItem[playerid], _:cons_Deconstructing[playerid]))
 		{
 			dbg("craft-construct", 2, "[OnHoldActionFinish] OnPlayerDeconstructed returned zero, destroying item and returning ingredients");
 
@@ -295,24 +307,27 @@ hook OnHoldActionFinish(playerid)
 				Float:x,
 				Float:y,
 				Float:z,
-				recipedata[CFT_MAX_CRAFT_SET_ITEMS][e_craft_item_data],
+				recipedata[CRAFT_MAX_CRAFT_SET_ITEMS][e_craft_item_data],
 				recipeitems;
 
 			GetItemPos(cons_DeconstructingItem[playerid], x, y, z);
 
 			DestroyItem(cons_DeconstructingItem[playerid]);
 
-			recipeitems = GetCraftSetIngredients(cons_Deconstructing[playerid], recipedata);
+			GetCraftSetIngredients(cons_Deconstructing[playerid], recipedata, recipeitems);
 
 			for(new i; i < recipeitems; i++)
 			{
-				dbg("craft-construct", 3, "[OnHoldActionFinish] recipe items %d/%d: type: %d keep: %d", i, recipeitems, _:recipedata[i][cft_itemType], recipedata[i][cft_keepItem]);
+				dbg("craft-construct", 3, "[OnHoldActionFinish] recipe items %d/%d: type: %d keep: %d", i, recipeitems, _:recipedata[i][craft_itemType], recipedata[i][craft_keepItem]);
 				// items that were kept at the time of crafting are ignored
 				// since they never originally left the player's posession.
-				if(recipedata[i][cft_keepItem])
+				if(recipedata[i][craft_keepItem])
 					continue;
 
-				CreateItem(recipedata[i][cft_itemType], x + frandom(0.6), y + frandom(0.6), z, 0.0, 0.0, frandom(360.0), GetItemWorld(cons_DeconstructingItem[playerid]), GetItemInterior(cons_DeconstructingItem[playerid]));
+				new world, interior;
+				GetItemWorld(cons_DeconstructingItem[playerid], world);
+				GetItemInterior(cons_DeconstructingItem[playerid], interior);
+				CreateItem(recipedata[i][craft_itemType], x + frandom(0.6), y + frandom(0.6), z, 0.0, 0.0, frandom(360.0), world, interior);
 			}
 
 			StopRemovingConstructedItem(playerid);
@@ -322,30 +337,26 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in craft-construct");
-
 	if(RELEASED(16))
 	{
-		if(cons_Constructing[playerid] != -1)
+		if(cons_Constructing[playerid] != INVALID_CRAFTSET)
 		{
 			StopHoldAction(playerid);
 			ClearAnimations(playerid);
 			HideActionText(playerid);
 			_ResetSelectedItems(playerid);
 
-			cons_Constructing[playerid] = -1;
+			cons_Constructing[playerid] = INVALID_CRAFTSET;
 		}
-		else if(cons_Deconstructing[playerid] != -1)
+		else if(cons_Deconstructing[playerid] != INVALID_CRAFTSET)
 		{
 			StopRemovingConstructedItem(playerid);
 		}
 	}
 }
 
-hook OnPlayerCraft(playerid, craftset)
+hook OnPlayerCraft(playerid, CraftSet:craftset)
 {
-	dbg("global", CORE, "[OnPlayerCraft] in craft-construct");
-
 	if(cons_CraftsetConstructSet[craftset] != -1)
 		return Y_HOOKS_BREAK_RETURN_1;
 
@@ -356,8 +367,8 @@ _ResetSelectedItems(playerid)
 {
 	for(new i; i < MAX_CONSTRUCT_SET_ITEMS; i++)
 	{
-		cons_SelectedItems[playerid][i][cft_selectedItemType] = INVALID_ITEM_TYPE;
-		cons_SelectedItems[playerid][i][cft_selectedItemID] = INVALID_ITEM_ID;
+		cons_SelectedItems[playerid][i][craft_selectedItemType] = INVALID_ITEM_TYPE;
+		cons_SelectedItems[playerid][i][craft_selectedItemID] = INVALID_ITEM_ID;
 	}
 	cons_SelectedItemCount[playerid] = 0;
 }
@@ -399,16 +410,16 @@ stock ItemType:GetConstructionSetTool(consset)
 }
 
 // cons_craftset
-stock GetConstructionSetCraftSet(consset)
+stock CraftSet:GetConstructionSetCraftSet(consset)
 {
 	if(!(0 <= consset < MAX_CONSTRUCT_SET))
-		return -1;
+		return INVALID_CRAFTSET;
 
 	return cons_Data[consset][cons_craftset];
 }
 
 // cons_CraftsetConstructSet[craftset]
-stock GetCraftSetConstructSet(craftset)
+stock GetCraftSetConstructSet(CraftSet:craftset)
 {
 	if(!IsValidCraftSet(craftset))
 		return -1;
@@ -423,7 +434,7 @@ stock GetPlayerConstructing(playerid)
 
 stock GetPlayerConstructionItems(playerid, output[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data], &count)
 {
-	for(new i; i < MAX_CONSTRUCT_SET_ITEMS && cons_SelectedItems[playerid][i][cft_selectedItemID] != -1; i++)
+	for(new i; i < MAX_CONSTRUCT_SET_ITEMS && cons_SelectedItems[playerid][i][craft_selectedItemID] != INVALID_ITEM_ID; i++)
 		output[i] = cons_SelectedItems[playerid][i];
 
 	count = cons_SelectedItemCount[playerid];

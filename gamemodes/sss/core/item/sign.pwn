@@ -25,25 +25,72 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerUseItem(playerid, itemid)
-{
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/sign.pwn");
+#define MAX_SIGN_TEXT (128)
 
+static Item:CurrentSignItem[MAX_PLAYERS];
+
+
+hook OnItemTypeDefined(uname[])
+{
+	if(!strcmp(uname, "Sign"))
+		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Sign"), MAX_SIGN_TEXT);
+}
+
+hook OnItemCreateInWorld(Item:itemid)
+{
 	if(GetItemType(itemid) == item_Sign)
 	{
-		new
-			tmpsign,
-			Float:x,
-			Float:y,
-			Float:z,
-			Float:a;
+		new data[MAX_SIGN_TEXT], Button:buttonid;
+		GetItemArrayData(itemid, data);
+		_sign_UpdateText(itemid, data);
 
-		GetPlayerPos(playerid, x, y, z);
-		GetPlayerFacingAngle(playerid, a);
+		GetItemButtonID(itemid, buttonid);
 
-		DestroyItem(itemid);
-		tmpsign = CreateSign("I am a sign.", x + floatsin(-a, degrees), y + floatcos(-a, degrees), z - 1.0, a - 90.0);
-		EditSign(playerid, tmpsign);
+		SetButtonText(buttonid, "Press "KEYTEXT_INTERACT" to edit~n~Hold "KEYTEXT_INTERACT" to pick up");
+	}
+}
+
+hook OnItemArrayDataChanged(Item:itemid)
+{
+	if(GetItemType(itemid) == item_Sign)
+	{
+		new data[MAX_SIGN_TEXT];
+		GetItemArrayData(itemid, data);
+		_sign_UpdateText(itemid, data);
+	}
+}
+
+_sign_UpdateText(Item:itemid, text[])
+{
+	new objectid;
+	GetItemObjectID(itemid, objectid);
+
+	strreplace(text, "\\", "\n", .maxlength = MAX_SIGN_TEXT);
+	strcat(text, "\n\n\n", MAX_SIGN_TEXT);
+
+	SetDynamicObjectMaterialText(objectid, 0, text, OBJECT_MATERIAL_SIZE_512x512, "Arial", 72, 1, -16777216, -1, 1);
+}
+
+hook OnPlayerUseItem(playerid, Item:itemid)
+{
+	if(GetItemType(itemid) == item_Sign)
+	{
+		if(IsItemInWorld(itemid))
+		{
+			CancelPlayerMovement(playerid);
+			CurrentSignItem[playerid] = itemid;
+
+			inline Response(pid, dialogid, response, listitem, string:inputtext[])
+			{
+				#pragma unused pid, dialogid, listitem
+				if(response)
+				{
+					if(!isnull(inputtext) && IsValidItem(CurrentSignItem[playerid]))
+						SetItemArrayData(CurrentSignItem[playerid], inputtext, strlen(inputtext));
+				}
+			}
+			Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Sign", "Enter the text to display below\nTyping '\\' will start a new line.", "Accept", "Close");
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

@@ -31,7 +31,7 @@
 
 
 static
-	pill_CurrentlyTaking[MAX_PLAYERS];
+	Item:pill_CurrentlyTaking[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -42,15 +42,11 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/pills.pwn");
-
-	pill_CurrentlyTaking[playerid] = -1;
+	pill_CurrentlyTaking[playerid] = INVALID_ITEM_ID;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/pills.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Pills)
@@ -60,13 +56,13 @@ hook OnItemCreate(itemid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/pills.pwn");
-
 	if(itemtype == item_Pills)
 	{
-		switch(GetItemExtraData(itemid))
+		new type;
+		GetItemExtraData(itemid, type);
+		switch(type)
 		{
 			case PILL_TYPE_ANTIBIOTICS:		SetItemNameExtra(itemid, "Antibiotics");
 			case PILL_TYPE_PAINKILL:		SetItemNameExtra(itemid, "Painkiller");
@@ -76,10 +72,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/pills.pwn");
-
 	if(GetItemType(itemid) == item_Pills)
 	{
 		StartTakingPills(playerid);
@@ -90,9 +84,7 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/pills.pwn");
-
-	if(oldkeys & 16 && pill_CurrentlyTaking[playerid] != -1)
+	if(oldkeys & 16 && pill_CurrentlyTaking[playerid] != INVALID_ITEM_ID)
 	{
 		StopTakingPills(playerid);
 	}
@@ -112,12 +104,12 @@ StopTakingPills(playerid)
 	ClearAnimations(playerid);
 	StopHoldAction(playerid);
 
-	pill_CurrentlyTaking[playerid] = -1;
+	pill_CurrentlyTaking[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnHoldActionFinish(playerid)
 {
-	if(pill_CurrentlyTaking[playerid] != -1)
+	if(pill_CurrentlyTaking[playerid] != INVALID_ITEM_ID)
 	{
 		if(!IsValidItem(pill_CurrentlyTaking[playerid]))
 			return Y_HOOKS_CONTINUE_RETURN_0;
@@ -125,7 +117,9 @@ hook OnHoldActionFinish(playerid)
 		if(GetPlayerItem(playerid) != pill_CurrentlyTaking[playerid])
 			return Y_HOOKS_CONTINUE_RETURN_0;
 
-		switch(GetItemExtraData(pill_CurrentlyTaking[playerid]))
+		new type;
+		GetItemExtraData(pill_CurrentlyTaking[playerid], type);
+		switch(type)
 		{
 			case PILL_TYPE_ANTIBIOTICS:
 			{
@@ -165,8 +159,6 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerDrugWearOff(playerid, drugtype)
 {
-	dbg("global", CORE, "[OnPlayerDrugWearOff] in /gamemodes/sss/core/item/pills.pwn");
-
 	if(drugtype == drug_Lsd)
 	{
 		SetTimeForPlayer(playerid, -1, -1, true);

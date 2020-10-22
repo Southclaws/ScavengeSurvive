@@ -36,15 +36,11 @@ Timer:		OverheatUpdateTimer		[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/overheat.pwn");
-
 	OverheatBar = CreatePlayerProgressBar(playerid, 220.0, 380.0, 200.0, 20.0, RED, 30.0);
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/char/overheat.pwn");
-
 	DestroyPlayerProgressBar(playerid, OverheatBar);
 }
 
@@ -104,8 +100,6 @@ timer OverheatUpdate[100](playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/overheat.pwn");
-
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;
 
@@ -129,8 +123,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	dbg("global", CORE, "[OnPlayerStateChange] in /gamemodes/sss/core/char/overheat.pwn");
-
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		new model = GetVehicleModel(GetPlayerVehicleID(playerid));
@@ -150,8 +142,6 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 hook OnPlayerDeath(playerid, killerid, reason)
 {
-	dbg("global", CORE, "[OnPlayerDeath] in /gamemodes/sss/core/char/overheat.pwn");
-
 	stop OverheatUpdateTimer[playerid];
 	HidePlayerProgressBar(playerid, OverheatBar);
 }

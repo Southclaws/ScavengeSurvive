@@ -83,7 +83,7 @@ ptask UpdateWatch[1000](playerid)
 	format(str, 7, "%.2f", GetPlayerRadioFrequency(playerid));
 	PlayerTextDrawSetString(playerid, WatchFreq[playerid], str);
 
-	if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+	if(IsPlayerCombatLogging(playerid, lastattacker, Item:lastweapon))
 	{
 		if(IsPlayerConnected(lastattacker))
 		{
@@ -108,8 +108,6 @@ ptask UpdateWatch[1000](playerid)
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/ui/watch.pwn");
-
 	WatchBackground[playerid]		=CreatePlayerTextDraw(playerid, 33.000000, 338.000000, "LD_POOL:ball");
 	PlayerTextDrawBackgroundColor	(playerid, WatchBackground[playerid], 255);
 	PlayerTextDrawFont				(playerid, WatchBackground[playerid], 4);

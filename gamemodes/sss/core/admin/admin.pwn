@@ -106,8 +106,6 @@ hook OnScriptInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/admin/core.pwn");
-
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;
@@ -117,8 +115,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnected(playerid)
 {
-	dbg("global", CORE, "[OnPlayerDisconnected] in /gamemodes/sss/core/admin/core.pwn");
-
 	admin_Level[playerid] = 0;
 	admin_OnDuty[playerid] = 0;
 	admin_PlayerKicked[playerid] = 0;
@@ -364,7 +360,7 @@ TogglePlayerAdminDuty(playerid, toggle)
 	if(toggle)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype,
 			Float:x,
 			Float:y,
@@ -378,8 +374,11 @@ TogglePlayerAdminDuty(playerid, toggle)
 
 		if(IsItemTypeSafebox(itemtype) || IsItemTypeBag(itemtype))
 		{
-			if(!IsContainerEmpty(GetItemExtraData(itemid)))
-				CreateItemInWorld(itemid, x, y, z - FLOOR_OFFSET);
+			new Container:containerid;
+			GetItemExtraData(itemid, _:containerid);
+
+			if(!IsContainerEmpty(containerid))
+				CreateItemInWorld(itemid, x, y, z - ITEM_FLOOR_OFFSET);
 		}
 
 		Logout(playerid, 0); // docombatlogcheck = 0

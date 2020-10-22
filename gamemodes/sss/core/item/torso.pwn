@@ -25,8 +25,21 @@
 #include <YSI_Coding\y_hooks>
 
 
-static
-		gut_TargetItem[MAX_PLAYERS];
+#define MAX_DEATH_REASON (128)
+
+
+enum
+{
+	torso_canHarvest,
+	torso_spawnTime,
+	torso_nameLen,
+	torso_name[MAX_PLAYER_NAME],
+	torso_reasonLen,
+	torso_reason[MAX_DEATH_REASON],
+	torso_end
+}
+
+static Item:gut_TargetItem[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -37,33 +50,82 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/torso.pwn");
-
 	gut_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
-hook OnItemCreateInWorld(itemid)
+stock Item:CreateGravestone(playerid, const reason[], Float:x, Float:y, Float:z, Float:rz)
 {
-	dbg("global", CORE, "[OnItemCreateInWorld] in /gamemodes/sss/core/item/torso.pwn");
+	new
+		name[MAX_PLAYER_NAME],
+		Item:itemid;
 
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	itemid = CreateItem(item_Torso, x, y, z, 0.0, 0.0, rz);
+
+	SetItemArrayDataLength(itemid, 0);
+
+	AppendItemArrayCell(itemid, 1); // canHarvest
+	AppendItemArrayCell(itemid, gettime()); // spawnTime
+
+	AppendItemArrayCell(itemid, strlen(name)); // nameLen
+	AppendItemDataArray(itemid, name, strlen(name)); // name
+
+	AppendItemArrayCell(itemid, strlen(reason)); // reasonLen
+	AppendItemDataArray(itemid, reason, strlen(reason)); // reason
+
+	return itemid;
+}
+
+ShowTorsoDetails(playerid, Item:itemid)
+{
+	new size;
+	GetItemArrayDataSize(itemid, size);
+	if(size < 3)
+		return 0;
+
+	new
+		arraydata[torso_end],
+		name[MAX_PLAYER_NAME],
+		reason[MAX_DEATH_REASON];
+
+	GetItemArrayData(itemid, arraydata);
+
+	memcpy(name, arraydata[3], 0, arraydata[2] * 4);
+	memcpy(reason, arraydata[3 + arraydata[2] + 1], 0, arraydata[3 + arraydata[2]] * 4);
+
+	ShowPlayerDialog(playerid, 0, DIALOG_STYLE_MSGBOX, name, reason, "Close", "");
+
+	return 1;
+}
+
+hook OnItemCreateInWorld(Item:itemid)
+{
 	if(GetItemType(itemid) == item_Torso)
 	{
-		if(GetItemExtraData(itemid) != -1)
-			SetButtonText(GetItemButtonID(itemid), "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
+		new value;
+		GetItemExtraData(itemid, value);
+		if(value != -1)
+		{
+			new Button:buttonid;
+			GetItemButtonID(itemid, buttonid);
+			SetButtonText(buttonid, "Hold "KEYTEXT_INTERACT" to pick up/harvest with knife~n~Press "KEYTEXT_INTERACT" to investigate");
+		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/torso.pwn");
-
 	if(GetItemType(itemid) == item_Knife && GetItemType(withitemid) == item_Torso)
 	{
-		if(GetItemArrayDataAtCell(withitemid, 0))
+		new value;
+		GetItemArrayDataAtCell(withitemid, value, 0);
+		if(value)
 		{
-			if(gettime() - GetItemArrayDataAtCell(withitemid, 1) < 86400)
+			new decompose;
+			GetItemArrayDataAtCell(withitemid, decompose, 1);
+			if(gettime() - decompose < 86400)
 			{
 				StartHoldAction(playerid, 3000);
 				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -84,10 +146,8 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/torso.pwn");
-
 	if(GetItemType(itemid) == item_Torso)
 	{
 		gut_TargetItem[playerid] = itemid;
@@ -112,8 +172,6 @@ hook OnPlayerCloseContainer(playerid, containerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/torso.pwn");
-
 	if(oldkeys == 16)
 	{
 		if(IsValidItem(gut_TargetItem[playerid]))
@@ -127,11 +185,11 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/torso.pwn");
-
 	if(IsValidItem(gut_TargetItem[playerid]))
 	{
-		if(GetItemExtraData(gut_TargetItem[playerid]) == -1)
+		new value;
+		GetItemExtraData(gut_TargetItem[playerid], value);
+		if(value == -1)
 			return 1;
 
 		new
@@ -139,14 +197,14 @@ hook OnHoldActionFinish(playerid)
 			Float:y,
 			Float:z,
 			Float:r,
-			itemid;
+			Item:itemid;
 
 		GetItemPos(gut_TargetItem[playerid], x, y, z);
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
 		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r);
-		SetItemArrayDataAtCell(itemid, 0, food_cooked, 1);
-		SetItemArrayDataAtCell(itemid, 0, food_amount, 5 + random(4));
+		SetItemArrayDataAtCell(itemid, 1, food_cooked);
+		SetItemArrayDataAtCell(itemid, 5 + random(4), food_amount);
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		CancelPlayerMovement(playerid);

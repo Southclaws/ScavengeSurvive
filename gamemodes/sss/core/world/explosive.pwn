@@ -77,11 +77,11 @@ static		exp_Presets[EXP_PRESET][EXP_PRESET_DATA] =
 static
 			exp_Data[MAX_EXPLOSIVE_ITEM][E_EXPLOSIVE_ITEM_DATA],
 			exp_Total,
-			exp_ItemTypeExplosive[ITM_MAX_TYPES] = {INVALID_EXPLOSIVE_TYPE, ...},
+			exp_ItemTypeExplosive[MAX_ITEM_TYPE] = {INVALID_EXPLOSIVE_TYPE, ...},
 ItemType:	exp_RadioTriggerItemType;
 
 static
-			exp_ArmingItem[MAX_PLAYERS],
+Item:		exp_ArmingItem[MAX_PLAYERS],
 			exp_ArmTick[MAX_PLAYERS];
 
 
@@ -90,20 +90,20 @@ hook OnPlayerConnect(playerid)
 	exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
 	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == RADIO)
-			SetItemExtraData(itemid, INVALID_ITEM_ID);
+			SetItemExtraData(itemid, _:INVALID_ITEM_ID);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	if(exp_ItemTypeExplosive[GetItemType(itemid)] != -1)
 	{
@@ -139,7 +139,7 @@ stock SetRadioExplosiveTriggerItem(ItemType:itemtype)
 	exp_RadioTriggerItemType = itemtype;
 }
 
-stock SetItemToExplode(itemid)
+stock SetItemToExplode(Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -155,13 +155,13 @@ stock SetItemToExplode(itemid)
 	itemtype = GetItemType(itemid);
 	GetItemAbsolutePos(itemid, x, y, z, parent, parenttype);
 
-	log("[EXPLOSIVE] Item %d Type %d detonated at %f, %f, %f", itemid, _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
+	log("[EXPLOSIVE] Item %d Type %d detonated at %f, %f, %f", _:itemid, _:exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger], x, y, z);
 
 	if(!isnull(parenttype))
 	{
 		if(!strcmp(parenttype, "containerid"))
 		{
-			DestroyContainer(parent);
+			DestroyContainer(Container:parent);
 		}
 
 		if(!strcmp(parenttype, "vehicleid"))
@@ -184,7 +184,7 @@ stock SetItemToExplode(itemid)
 timer SetItemToExplodeDelay[delay](itemid, delay)
 {
 	#pragma unused delay
-	SetItemToExplode(itemid);
+	SetItemToExplode(Item:itemid);
 }
 
 
@@ -195,7 +195,7 @@ timer SetItemToExplodeDelay[delay](itemid, delay)
 ==============================================================================*/
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -235,10 +235,10 @@ hook OnPlayerUseItem(playerid, itemid)
 			return 0;
 
 		new
-			bombitem,
+			Item:bombitem,
 			ItemType:bombitemtype;
 
-		bombitem = GetItemExtraData(itemid);
+		GetItemExtraData(itemid, _:bombitem);
 		bombitemtype = GetItemType(bombitem);
 
 		if(!IsValidItem(bombitem))
@@ -259,15 +259,17 @@ hook OnPlayerUseItem(playerid, itemid)
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		if(GetItemExtraData(bombitem) != 1)
+		new value;
+		GetItemExtraData(bombitem, value);
+		if(value != 1)
 		{
 			ShowActionText(playerid, ls(playerid, "RADIONOSYNC", true));
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		log("[EXPLOSIVE] Player %p triggering remote explosive item %d", playerid, itemid);
+		log("[EXPLOSIVE] Player %p triggering remote explosive item %d", playerid, _:itemid);
 		SetItemToExplode(bombitem);
-		SetItemExtraData(itemid, INVALID_ITEM_ID);
+		SetItemExtraData(itemid, _:INVALID_ITEM_ID);
 
 		ShowActionText(playerid, ls(playerid, "RADIOTRIGGD", true));
 	}
@@ -275,7 +277,7 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(GetItemType(itemid) != exp_RadioTriggerItemType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -289,7 +291,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
-	SetItemExtraData(itemid, withitemid);
+	SetItemExtraData(itemid, _:withitemid);
 	SetItemExtraData(withitemid, 1);
 	exp_ArmTick[playerid] = GetTickCount();
 
@@ -308,10 +310,10 @@ hook OnHoldActionFinish(playerid)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == TIMED)
 			{
-				log("[EXPLOSIVE] Time bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Time bomb %d placed by %p", _:exp_ArmingItem[playerid], playerid);
 
 				exp_ArmTick[playerid] = GetTickCount();
-				defer SetItemToExplodeDelay(exp_ArmingItem[playerid], 5000);
+				defer SetItemToExplodeDelay(_:exp_ArmingItem[playerid], 5000);
 				ClearAnimations(playerid);
 				ShowActionText(playerid, ls(playerid, "ARMEDBOMB5S", true), 3000);
 
@@ -319,16 +321,16 @@ hook OnHoldActionFinish(playerid)
 			}
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
 			{
-				log("[EXPLOSIVE] Prox bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Prox bomb %d placed by %p", _:exp_ArmingItem[playerid], playerid);
 
-				defer CreateTntMineProx(exp_ArmingItem[playerid]);
+				defer CreateTntMineProx(_:exp_ArmingItem[playerid]);
 				ChatMsgLang(playerid, YELLOW, "PROXMIARMED");
 
 				exp_ArmingItem[playerid] = INVALID_ITEM_ID;
 			}
 			else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 			{
-				log("[EXPLOSIVE] Trip bomb %d placed by %p", exp_ArmingItem[playerid], playerid);
+				log("[EXPLOSIVE] Trip bomb %d placed by %p", _:exp_ArmingItem[playerid], playerid);
 
 				SetItemExtraData(exp_ArmingItem[playerid], 1);
 				ClearAnimations(playerid);
@@ -352,9 +354,10 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 // Proximity Mine
 
-timer CreateTntMineProx[5000](itemid)
+timer CreateTntMineProx[5000](_itemid)
 {
-	if(IsItemInWorld(itemid) != 1)
+	new Item:itemid = Item:_itemid;
+	if(!IsItemInWorld(itemid))
 		return;
 
 	new
@@ -369,7 +372,7 @@ timer CreateTntMineProx[5000](itemid)
 	areaid = CreateDynamicSphere(x, y, z, 6.0);
 	SetItemExtraData(itemid, areaid);
 	data[0] = EXP_STREAMER_AREA_IDENTIFIER;
-	data[1] = itemid;
+	data[1] = _:itemid;
 	Streamer_SetArrayData(STREAMER_TYPE_AREA, areaid, E_STREAMER_EXTRA_ID, data, 2);
 
 	return;
@@ -384,26 +387,28 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 	if(data[0] != EXP_STREAMER_AREA_IDENTIFIER)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(!IsValidItem(data[1]))
+	if(!IsValidItem(Item:data[1]))
 	{
 		err("Proximity mine streamer area contains invalid item id (%d)", data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	if(GetItemExtraData(data[1]) != areaid)
+	new itemarea;
+	GetItemExtraData(Item:data[1], itemarea);
+	if(itemarea != areaid)
 	{
-		err("Proximity mine item area (%d) does not match triggered area (%d)", GetItemExtraData(data[1]), areaid);
+		err("Proximity mine item area (%d) does not match triggered area (%d)", itemarea, areaid);
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
 	log("[EXPLOSIVE] Prox bomb %d triggered by %p", data[1], playerid);
-	_exp_ProxTrigger(data[1]);
+	_exp_ProxTrigger(Item:data[1]);
 	DestroyDynamicArea(areaid);
 
 	return Y_HOOKS_BREAK_RETURN_1;
 }
 
-_exp_ProxTrigger(itemid)
+_exp_ProxTrigger(Item:itemid)
 {
 	new
 		Float:x,
@@ -412,29 +417,31 @@ _exp_ProxTrigger(itemid)
 
 	GetItemPos(itemid, x, y, z);
 	PlaySoundForAll(6400, x, y, z);
-	defer SetItemToExplodeDelay(itemid, 1000);
+	defer SetItemToExplodeDelay(_:itemid, 1000);
 }
 
 // Trip mine
 
 static exp_ContainerOption[MAX_PLAYERS];
 
-hook OnPlayerViewCntOpt(playerid, containerid)
+hook OnPlayerViewCntOpt(playerid, Container:containerid)
 {
 	new
 		slot,
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
+	GetPlayerContainerSlot(playerid, slot);
+	GetContainerSlotItem(containerid, slot, itemid);
 	itemtype = GetItemType(itemid);
 
 	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 		{
-			if(GetItemExtraData(itemid) == 0)
+			new armed;
+			GetItemExtraData(itemid, armed);
+			if(armed == 0)
 				exp_ContainerOption[playerid] = AddContainerOption(playerid, "Arm Trip Mine");
 
 			else
@@ -445,15 +452,15 @@ hook OnPlayerViewCntOpt(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerSelectCntOpt(playerid, containerid, option)
+hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 {
 	new
 		slot,
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
-	slot = GetPlayerContainerSlot(playerid);
-	itemid = GetContainerSlotItem(containerid, slot);
+	GetPlayerContainerSlot(playerid, slot);
+	GetContainerSlotItem(containerid, slot, itemid);
 	itemtype = GetItemType(itemid);
 
 	if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
@@ -462,7 +469,9 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 		{
 			if(option == exp_ContainerOption[playerid])
 			{
-				if(GetItemExtraData(itemid) == 0)
+				new armed;
+				GetItemExtraData(itemid, armed);
+				if(armed == 0)
 				{
 					DisplayContainerInventory(playerid, containerid);
 					SetItemExtraData(itemid, 1);
@@ -479,7 +488,7 @@ hook OnPlayerSelectCntOpt(playerid, containerid, option)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -487,9 +496,11 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	{
 		if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 		{
-			if(GetItemExtraData(itemid) == 1)
+			new armed;
+			GetItemExtraData(itemid, armed);
+			if(armed == 1)
 			{
-				log("[EXPLOSIVE] Trip bomb %d triggered by %p", itemid, playerid);
+				log("[EXPLOSIVE] Trip bomb %d triggered by %p", _:itemid, playerid);
 				SetItemToExplode(itemid);
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
@@ -499,22 +510,27 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerOpenContainer(playerid, containerid)
+hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
 	new
-		itemid,
-		ItemType:itemtype;
+		Item:itemid,
+		ItemType:itemtype,
+		count;
 
-	for(new i, j = GetContainerItemCount(containerid); i < j; i++)
+	GetContainerItemCount(containerid, count);
+
+	for(new i; i < count; i++)
 	{
-		itemid = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, itemid);
 		itemtype = GetItemType(itemid);
 
 		if(exp_ItemTypeExplosive[itemtype] != INVALID_EXPLOSIVE_TYPE)
 		{
 			if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
 			{
-				if(GetItemExtraData(itemid) == 1)
+				new armed;
+				GetItemExtraData(itemid, armed);
+				if(armed == 1)
 				{
 					SetItemToExplode(itemid);
 				}
@@ -553,14 +569,35 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 	if(exp_Presets[preset][exp_itemDmg] > 0)
 	{
 		new
-			items[256],
+			Item:items[256],
 			count;
 
 		count = GetItemsInRange(x, y, z, exp_Presets[preset][exp_size], items);
-		defer _IterateItemDmg(items, sizeof(items), count, 0, exp_Presets[preset][exp_itemDmg]);
+		defer _IterateItemDmg(_:items, sizeof(items), count, 0, exp_Presets[preset][exp_itemDmg]);
 	}
 
 	return 1;
+}
+
+CreateEmpExplosion(Float:x, Float:y, Float:z, Float:range)
+{
+	CreateTimedDynamicObject(18724, x, y, z - 1.0, 0.0, 0.0, 0.0, 3000);
+
+	foreach(new i : Player)
+	{
+		if(IsPlayerInRangeOfPoint(i, range, x, y, z))
+		{
+			KnockOutPlayer(i, 60000);
+		}
+	}
+
+	foreach(new i : veh_Index)
+	{
+		if(IsVehicleInRangeOfPoint(i, range, x, y, z))
+		{
+			SetVehicleEngine(i, false);
+		}
+	}
 }
 
 // TODO: Remove this once YSI is updated to support const in defer declarations
@@ -571,7 +608,7 @@ stock CreateExplosionOfPreset(Float:x, Float:y, Float:z, EXP_PRESET:preset)
 timer _IterateItemDmg[100](i[], s, c, o, d)
 {
 	#pragma unused s
-	SetItemHitPoints(i[o], GetItemHitPoints(i[o]) - d);
+	SetItemHitPoints(Item:i[o], GetItemHitPoints(Item:i[o]) - d);
 
 	if(o < c)
 		defer _IterateItemDmg(i, s, c, o + 1, d);

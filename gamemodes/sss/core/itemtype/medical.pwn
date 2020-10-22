@@ -34,8 +34,6 @@ static med_HealTarget[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/medical.pwn");
-
 	med_HealTarget[playerid] = INVALID_PLAYER_ID;
 }
 
@@ -45,22 +43,20 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("DoctorBag"), 2);
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_DoctorBag)
 		{
-			SetItemArrayDataAtCell(itemid, 1 + random(3), 0, 1);
+			SetItemArrayDataAtCell(itemid, 1 + random(3), 0, true);
 
 			switch(random(4))
 			{
-				case 0: SetItemArrayDataAtCell(itemid, drug_Antibiotic, 1, 1);
-				case 1: SetItemArrayDataAtCell(itemid, drug_Painkill, 1, 1);
-				case 2: SetItemArrayDataAtCell(itemid, drug_Morphine, 1, 1);
-				case 3: SetItemArrayDataAtCell(itemid, drug_Adrenaline, 1, 1);
+				case 0: SetItemArrayDataAtCell(itemid, drug_Antibiotic, 1, true);
+				case 1: SetItemArrayDataAtCell(itemid, drug_Painkill, 1, true);
+				case 2: SetItemArrayDataAtCell(itemid, drug_Morphine, 1, true);
+				case 3: SetItemArrayDataAtCell(itemid, drug_Adrenaline, 1, true);
 			}
 		}
 	}
@@ -68,10 +64,8 @@ hook OnItemCreate(itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/medical.pwn");
-
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -87,7 +81,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			med_HealTarget[playerid] = playerid;
 			foreach(new i : Character)
 			{
-				if(IsPlayerInPlayerArea(playerid, i) && !IsPlayerInAnyVehicle(i))
+				if(IsPlayerNextToPlayer(playerid, i) && !IsPlayerInAnyVehicle(i))
 					med_HealTarget[playerid] = i;
 			}
 
@@ -146,10 +140,8 @@ PlayerStopHeal(playerid)
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(itemtype == item_DoctorBag)
 	{
 		new data[2];
@@ -169,13 +161,11 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
 		if(med_HealTarget[playerid] != playerid)
 		{
-			if(!IsPlayerInPlayerArea(playerid, med_HealTarget[playerid]))
+			if(!IsPlayerNextToPlayer(playerid, med_HealTarget[playerid]))
 			{
 				StopHoldAction(playerid);
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -200,12 +190,10 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/medical.pwn");
-
 	if(med_HealTarget[playerid] != INVALID_PLAYER_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);

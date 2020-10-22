@@ -25,50 +25,56 @@
 #include <YSI_Coding\y_hooks>
 
 
-static
-	MachineType,
-	ItemTypeScrapValue[ITM_MAX_TYPES] = {-1, ...};
+static MachineType;
 
 hook OnItemTypeDefined(uname[])
 {
-	if(!strcmp(uname, "ScrapMachine"))
-		MachineType = DefineMachineType(GetItemTypeFromUniqueName("ScrapMachine"), 12);
+	if(!strcmp(uname, "RefineMachine"))
+		MachineType = DefineMachineType(GetItemTypeFromUniqueName("RefineMachine"), 12);
 }
 
-stock SetItemTypeScrapValue(ItemType:itemtype, value)
+hook OnItemAddToContainer(Container:containerid, Item:itemid, playerid)
 {
-	if(!IsValidItemType(itemtype))
+	if(playerid == INVALID_PLAYER_ID)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	new ItemType:itemtype = GetItemType(GetContainerMachineItem(containerid));
+
+	if(itemtype != item_RefineMachine)
+		return Y_HOOKS_CONTINUE_RETURN_0;
+
+	if(GetItemType(itemid) != item_ScrapMetal)
 	{
-		err("Tried to assign scrap value to invalid item type.");
-		return;
+		ShowActionText(playerid, sprintf(
+			ls(playerid, "MACHITEMTYP", true),
+			"Scrap Metal"
+		));
+		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
-	ItemTypeScrapValue[itemtype] = value;
-
-	return;
+	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnMachineFinish(itemid, containerid)
+hook OnMachineFinish(Item:itemid, Container:containerid)
 {
 	if(GetItemTypeMachineType(GetItemType(itemid)) != MachineType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		subitemid,
-		scrapcount;
+		Item:subitemid,
+		itemcount;
 
-	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
+	GetContainerItemCount(containerid, itemcount);
+	for(new i = itemcount - 1; i > -1; i--)
 	{
-		subitemid = GetContainerSlotItem(containerid, i);
-		scrapcount += ItemTypeScrapValue[GetItemType(subitemid)];
+		GetContainerSlotItem(containerid, i, subitemid);
 		DestroyItem(subitemid);
+		itemcount++;
 	}
 
-	scrapcount = scrapcount > MAX_MACHINE_ITEMS - 1 ? MAX_MACHINE_ITEMS - 1 : scrapcount;
-
-	for(new i; i < scrapcount; i++)
+	for(new i; i < itemcount; i++)
 	{
-		subitemid = CreateItem(item_ScrapMetal);
+		subitemid = CreateItem(item_RefinedMetal);
 		AddItemToContainer(containerid, subitemid);
 	}
 

@@ -164,8 +164,6 @@ ptask AntiCheatUpdate[1000](playerid)
 
 hook OnPlayerSpawn(playerid)
 {
-	dbg("global", CORE, "[OnPlayerSpawn] in /gamemodes/sss/core/admin/hack-detect.pwn");
-
 	tp_SetPosTick[playerid] = GetTickCount();
 	tp_DetectDelay[playerid] = GetTickCount();
 	sf_ReportTick[playerid] = GetTickCount();
@@ -882,8 +880,6 @@ VehicleModCheck(playerid)
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	dbg("global", CORE, "[OnPlayerStateChange] in /gamemodes/sss/core/admin/hack-detect.pwn");
-
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		new
@@ -974,8 +970,6 @@ static
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	dbg("global", CORE, "[OnPlayerWeaponShot] in /gamemodes/sss/core/admin/hack-detect.pwn");
-
 	if(GetTickCountDifference(GetTickCount(), ammo_LastShot[playerid]) < GetWeaponShotInterval(weaponid) + 10)
 	{
 		ammo_ShotCounter[playerid]++;

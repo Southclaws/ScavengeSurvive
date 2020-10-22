@@ -46,8 +46,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnVehicleCreated(vehicleid)
 {
-	dbg("global", CORE, "[OnVehicleCreated] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	lock_Status[vehicleid] = E_LOCK_STATE_OPEN;
 	lock_LastChange[vehicleid] = 0;
 
@@ -61,15 +59,11 @@ hook OnVehicleReset(oldid, newid)
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	lock_DisableForPlayer[playerid] = false;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	if(newkeys & KEY_SUBMISSION)
 	{
 		if(IsPlayerInAnyVehicle(playerid))
@@ -114,8 +108,6 @@ _HandleLockKey(playerid)
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	dbg("global", CORE, "[OnPlayerEnterVehicle] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	if(lock_Status[vehicleid] != E_LOCK_STATE_OPEN)
 	{
 		CancelPlayerMovement(playerid);
@@ -127,8 +119,6 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
-	dbg("global", CORE, "[OnPlayerEnterVehArea] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	if(lock_Status[vehicleid] == E_LOCK_STATE_OPEN && !lock_DisableForPlayer[playerid] && !IsVehicleDead(vehicleid))
 	{
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
@@ -143,8 +133,6 @@ hook OnPlayerEnterVehArea(playerid, vehicleid)
 
 hook OnPlayerLeaveVehArea(playerid, vehicleid)
 {
-	dbg("global", CORE, "[OnPlayerLeaveVehArea] in /gamemodes/sss/core/vehicle/lock.pwn");
-
 	SetVehicleParamsForPlayer(vehicleid, playerid, 0, 1);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

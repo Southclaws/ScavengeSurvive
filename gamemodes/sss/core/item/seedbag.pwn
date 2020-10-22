@@ -30,7 +30,7 @@
 
 enum E_SEED_TYPE_DATA
 {
-			seed_name[ITM_MAX_NAME],
+			seed_name[MAX_ITEM_NAME],
 ItemType:	seed_itemType,
 			seed_growthTime,
 			seed_plantModel,
@@ -63,7 +63,7 @@ stock DefineSeedType(const name[], ItemType:itemtype, growthtime, plantmodel, Fl
 		return -1;
 	}
 
-	strcat(seed_Data[seed_Total][seed_name], name, ITM_MAX_NAME);
+	strcat(seed_Data[seed_Total][seed_name], name, MAX_ITEM_NAME);
 	seed_Data[seed_Total][seed_itemType] = itemtype;
 	seed_Data[seed_Total][seed_growthTime] = growthtime;
 	seed_Data[seed_Total][seed_plantModel] = plantmodel;
@@ -73,24 +73,20 @@ stock DefineSeedType(const name[], ItemType:itemtype, growthtime, plantmodel, Fl
 }
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/seedbag.pwn");
-
 	if(GetItemType(itemid) == item_SeedBag)
 	{
 		if(GetItemLootIndex(itemid) != -1)
 		{
-			SetItemArrayDataAtCell(itemid, random(5), E_SEED_BAG_AMOUNT, 1);
-			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, 1);
+			SetItemArrayDataAtCell(itemid, random(5), E_SEED_BAG_AMOUNT, true);
+			SetItemArrayDataAtCell(itemid, random(seed_Total), E_SEED_BAG_TYPE, true);
 		}
 	}
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/seedbag.pwn");
-
 	if(itemtype == item_SeedBag)
 	{
 		new seeddata[2];
@@ -121,7 +117,7 @@ stock GetSeedTypeName(seedtype, name[])
 		return 0;
 
 	name[0] = EOS;
-	strcat(name, seed_Data[seedtype][seed_name], ITM_MAX_NAME);
+	strcat(name, seed_Data[seedtype][seed_name], MAX_ITEM_NAME);
 
 	return 1;
 }

@@ -32,16 +32,12 @@ static
 
 hook OnPlayerDisconnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/vehicle/bike-collision.pwn");
-
 	CollisionVehicle[playerid] = INVALID_VEHICLE_ID;
 	DestroyObject(CollisionObject[playerid]);
 }
 
 hook OnPlayerStateChange(playerid, newstate, oldstate)
 {
-	dbg("global", CORE, "[OnPlayerStateChange] in /gamemodes/sss/core/vehicle/bike-collision.pwn");
-
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
 		new

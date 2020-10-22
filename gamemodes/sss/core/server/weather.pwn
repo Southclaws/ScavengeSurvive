@@ -83,8 +83,6 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/server/weather.pwn");
-
 	weather_PlayerWeather[playerid] = -1;
 	weather_PlayerHour[playerid] = -1;
 	weather_PlayerMinute[playerid] = -1;

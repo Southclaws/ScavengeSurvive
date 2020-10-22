@@ -33,8 +33,8 @@
 
 enum E_TENT_DATA
 {
-			tnt_itemId,
-			tnt_containerId
+Item:		tnt_itemId,
+Container:	tnt_containerId
 }
 
 enum E_TENT_OBJECT_DATA
@@ -50,8 +50,8 @@ enum E_TENT_OBJECT_DATA
 static
 			tnt_Data[MAX_TENT][E_TENT_DATA],
 			tnt_ObjData[MAX_TENT][E_TENT_OBJECT_DATA],
-			tnt_ContainerTent[CNT_MAX] = {INVALID_ITEM_ID, ...},
-			tnt_CurrentTentItem[MAX_PLAYERS];
+			tnt_ContainerTent[MAX_CONTAINER] = {-1, ...},
+Item:		tnt_CurrentTentItem[MAX_PLAYERS];
 
 new
    Iterator:tnt_Index<MAX_TENT>;
@@ -59,7 +59,7 @@ new
 
 forward OnTentCreate(tentid);
 forward OnTentDestroy(tentid);
-forward _tent_onLoad(itemid, active, geid[], data[], length);
+forward _tent_onLoad(Item:itemid, active, uuid[], data[], length);
 
 
 /*==============================================================================
@@ -90,7 +90,7 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("TentPack"), 1);
 }
 
-hook OnItemCreated(itemid)
+hook OnItemCreated(Item:itemid)
 {
 	if(GetItemType(itemid) == item_TentPack)
 	{
@@ -106,11 +106,11 @@ hook OnItemCreated(itemid)
 ==============================================================================*/
 
 
-stock CreateTentFromItem(itemid)
+stock CreateTentFromItem(Item:itemid)
 {
 	if(GetItemType(itemid) != item_TentPack)
 	{
-		err("Attempted to create tent from non-tentpack item %d type: %d", itemid, _:GetItemType(itemid));
+		err("Attempted to create tent from non-tentpack item %d type: %d", _:itemid, _:GetItemType(itemid));
 		return -1;
 	}
 
@@ -129,9 +129,11 @@ stock CreateTentFromItem(itemid)
 		Float:y,
 		Float:z,
 		Float:rz,
-		worldid = GetItemWorld(itemid),
-		interiorid = GetItemInterior(itemid);
+		worldid,
+		interiorid;
 
+	GetItemWorld(itemid, worldid);
+	GetItemInterior(itemid, interiorid);
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
 
@@ -223,41 +225,38 @@ stock DestroyTent(tentid)
 
 SaveTent(tentid, bool:active = true)
 {
-	dbg("gamemodes/sss/extensions/tent-io.pwn", 1, "[SaveTent] %d %d", tentid, active);
-
 	if(!Iter_Contains(tnt_Index, tentid))
 	{
-		dbg("gamemodes/sss/extensions/tent-io.pwn", 2, "[SaveTent] ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
+		err("tent", 2, "[SaveTent] ERROR: Attempted to save tent ID %d active: %d that was not found in index.", tentid, active);
 		return 1;
 	}
 
 	new
-		itemid = GetTentItem(tentid),
-		containerid = GetTentContainer(tentid);
+		Item:itemid = GetTentItem(tentid),
+		Container:containerid = GetTentContainer(tentid);
 
 	if(IsContainerEmpty(containerid))
 	{
-		dbg("gamemodes/sss/extensions/tent-io.pwn", 1, "[SaveTent] Empty, removing");
 		RemoveSavedItem(itemid, DIRECTORY_TENT);
 		return 2;
 	}
 
-	new geid[GEID_LEN];
-
-	GetItemGEID(itemid, geid);
+	new uuid[UUID_LEN];
+	GetItemUUID(itemid, uuid);
 
 	if(!IsValidContainer(containerid))
 	{
-		err("Can't save tent %d (%s): Not valid container (%d).", itemid, geid, containerid);
+		err("Can't save tent %d (%s): Not valid container (%d).", _:itemid, uuid, _:containerid);
 		return 3;
 	}
 
 	new
-		items[MAX_TENT_ITEMS],
-		itemcount = GetContainerItemCount(containerid);
+		Item:items[MAX_TENT_ITEMS],
+		itemcount;
 
+	GetContainerItemCount(containerid, itemcount);
 	for(new i; i < itemcount; i++)
-		items[i] = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, items[i]);
 
 	if(!SerialiseItems(items, itemcount))
 	{
@@ -268,13 +267,13 @@ SaveTent(tentid, bool:active = true)
 	return 0;
 }
 
-public _tent_onLoad(itemid, active, geid[], data[], length)
+public _tent_onLoad(Item:itemid, active, uuid[], data[], length)
 {
 	new
 		tentid,
-		containerid,
+		Container:containerid,
 		ItemType:itemtype,
-		subitem;
+		Item:subitem;
 
 	tentid = CreateTentFromItem(itemid);
 	containerid = GetTentContainer(tentid);
@@ -321,31 +320,34 @@ _tent_Remove(tentid)
 	RemoveSavedItem(GetTentItem(tentid), DIRECTORY_TENT);
 }
 
-hook OnItemAddedToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SaveTent(GetContainerTent(containerid));
+	if(GetContainerTent(containerid) != -1)
+		SaveTent(GetContainerTent(containerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromCnt(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 {
 	if(gServerInitialising)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SaveTent(GetContainerTent(containerid));
+	if(GetContainerTent(containerid) != -1)
+		SaveTent(GetContainerTent(containerid));
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_TentPack)
 	{
-		new tentid = GetItemExtraData(itemid);
+		new tentid;
+		GetItemExtraData(itemid, tentid);
 
 		if(IsValidTent(tentid))
 		{
@@ -357,11 +359,12 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(GetItemType(withitemid) == item_TentPack)
 	{
-		new tentid = GetItemArrayDataAtCell(withitemid, 0);
+		new tentid;
+		GetItemExtraData(withitemid, tentid);
 
 		if(!IsValidTent(tentid))
 		{
@@ -389,7 +392,7 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-StartBuildingTent(playerid, itemid)
+StartBuildingTent(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 10000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -410,7 +413,7 @@ StopBuildingTent(playerid)
 	return;
 }
 
-StartRemovingTent(playerid, itemid)
+StartRemovingTent(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 15000);
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -469,18 +472,25 @@ hook OnHoldActionFinish(playerid)
 				Float:x,
 				Float:y,
 				Float:z,
-				tentid = GetItemExtraData(tnt_CurrentTentItem[playerid]);
+				tentid,
+				count;
+			GetItemExtraData(tnt_CurrentTentItem[playerid], tentid);
 
 			if(!IsValidTent(tentid))
 			{
-				err("Player %d attempted to destroy invalid tent %d from item %d", playerid, tentid, tnt_CurrentTentItem[playerid]);
+				err("Player %d attempted to destroy invalid tent %d from item %d", playerid, tentid, _:tnt_CurrentTentItem[playerid]);
 				return Y_HOOKS_CONTINUE_RETURN_0;
 			}
 
 			GetItemPos(tnt_CurrentTentItem[playerid], x, y, z);
+			GetContainerItemCount(tnt_Data[tentid][tnt_containerId], count);
 
-			for(new i = GetContainerItemCount(tnt_Data[tentid][tnt_containerId]); i >= 0; i--)
-				CreateItemInWorld(GetContainerSlotItem(tnt_Data[tentid][tnt_containerId], i), x, y, z, 0.0, 0.0, frandom(360.0));
+			for(new i = count; i >= 0; i--)
+			{
+				new Item:slotitem;
+				GetContainerSlotItem(tnt_Data[tentid][tnt_containerId], i, slotitem);
+				CreateItemInWorld(slotitem, x, y, z, 0.0, 0.0, frandom(360.0));
+			}
 
 			DestroyTent(tentid);
 			StopRemovingTent(playerid);
@@ -507,24 +517,24 @@ stock IsValidTent(tentid)
 }
 
 // tnt_itemId
-stock GetTentItem(tentid)
+stock Item:GetTentItem(tentid)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
-		return 0;
+		return INVALID_ITEM_ID;
 
 	return tnt_Data[tentid][tnt_itemId];
 }
 
 // tnt_containerId
-stock GetTentContainer(tentid)
+stock Container:GetTentContainer(tentid)
 {
 	if(!Iter_Contains(tnt_Index, tentid))
-		return 0;
+		return INVALID_CONTAINER_ID;
 
 	return tnt_Data[tentid][tnt_containerId];
 }
 
-stock GetContainerTent(containerid)
+stock GetContainerTent(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_TENT_ID;

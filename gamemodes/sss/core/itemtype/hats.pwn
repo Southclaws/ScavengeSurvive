@@ -46,8 +46,8 @@ new
 ItemType:	hat_ItemType[MAX_HAT_ITEMS],
 			hat_Data[MAX_HAT_ITEMS][MAX_SKINS][E_HAT_SKIN_DATA],
 			hat_Total,
-			hat_ItemTypeHat[ITM_MAX_TYPES] = {-1, ...},
-			hat_CurrentHatItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
+			hat_ItemTypeHat[MAX_ITEM_TYPE] = {-1, ...},
+Item:		hat_CurrentHatItem[MAX_PLAYERS] = {INVALID_ITEM_ID, ...};
 
 
 // Zeroing
@@ -89,7 +89,7 @@ stock SetHatOffsetsForSkin(hatid, skinid, Float:offsetx, Float:offsety, Float:of
 }
 
 
-stock SetPlayerHatItem(playerid, itemid)
+stock SetPlayerHatItem(playerid, Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -109,8 +109,11 @@ stock SetPlayerHatItem(playerid, itemid)
 	if(!GetClothesHatStatus(skinid))
 		return 0;
 
+	new model;
+	GetItemTypeModel(itemtype, model);
+
 	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
+		playerid, ATTACHSLOT_HAT, model, 2,
 		hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
 		hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
 		hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
@@ -122,9 +125,9 @@ stock SetPlayerHatItem(playerid, itemid)
 	return 1;
 }
 
-stock RemovePlayerHatItem(playerid)
+stock Item:RemovePlayerHatItem(playerid)
 {
-	new itemid = hat_CurrentHatItem[playerid];
+	new Item:itemid = hat_CurrentHatItem[playerid];
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_HAT);
 	hat_CurrentHatItem[playerid] = INVALID_ITEM_ID;
@@ -150,9 +153,10 @@ stock TogglePlayerHatItemVisibility(playerid, bool:toggle)
 			return 0;
 
 		new skinid = GetPlayerClothes(playerid);
-
+		new model;
+		GetItemTypeModel(itemtype, model);
 		SetPlayerAttachedObject(
-			playerid, ATTACHSLOT_HAT, GetItemTypeModel(itemtype), 2,
+			playerid, ATTACHSLOT_HAT, model, 2,
 			hat_Data[hatid][skinid][hat_offsetX], hat_Data[hatid][skinid][hat_offsetY], hat_Data[hatid][skinid][hat_offsetZ],
 			hat_Data[hatid][skinid][hat_rotX], hat_Data[hatid][skinid][hat_rotY], hat_Data[hatid][skinid][hat_rotZ],
 			hat_Data[hatid][skinid][hat_scaleX], hat_Data[hatid][skinid][hat_scaleY], hat_Data[hatid][skinid][hat_scaleZ]);
@@ -169,7 +173,7 @@ stock TogglePlayerHatItemVisibility(playerid, bool:toggle)
 // Hooks and Internal
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(SetPlayerHatItem(playerid, itemid))
 		CancelPlayerMovement(playerid);
@@ -206,7 +210,7 @@ stock GetHatFromItem(ItemType:itemtype)
 	return hat_ItemTypeHat[itemtype];
 }
 
-stock GetPlayerHatItem(playerid)
+stock Item:GetPlayerHatItem(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return INVALID_ITEM_ID;

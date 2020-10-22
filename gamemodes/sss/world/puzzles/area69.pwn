@@ -60,8 +60,8 @@ new
 	code_Headquarters,
 	code_Shaft,
 
-	btn_ControlTower,
-	btn_StorageWatch,
+	Button:btn_ControlTower,
+	Button:btn_StorageWatch,
 
 	lock_ControlTower,
 	lock_StorageWatch,
@@ -82,7 +82,7 @@ new
 hook OnGameModeInit()
 {
 	new
-		buttonid[2];
+		Button:buttonid[2];
 
 	code_ControlTower	= 1000 + random(8999);
 	code_MainGate		= 1000 + random(8999);
@@ -114,14 +114,14 @@ hook OnGameModeInit()
 	door_Main = CreateDoor(19313, buttonid,
 		134.91060, 1941.52124, 21.77760, 0.00000, 0.00000, 0.00000,
 		120.9106, 1941.52124, 21.77760, 0.00000, 0.00000, 0.00000,
-		.maxbuttons = 1, .movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.maxButtons = 1, .moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Airstrip Gate
 	buttonid[0] = CreateButton(280.7763, 1828.0514, 2.3915, "Press to activate gate");
 	door_Airstrip = CreateDoor(19313, buttonid,
 		285.98541, 1822.31140, 20.09470, 0.00000, 0.00000, 270.00000,
 		285.98541, 1834.31140, 20.09470, 0.00000, 0.00000, 270.00000,
-		.maxbuttons = 1, .movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.maxButtons = 1, .moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Main Blast Doors
 	buttonid[0] = CreateButton(210.3842, 1876.6578, 13.1406, "Press to activate door");
@@ -129,11 +129,11 @@ hook OnGameModeInit()
 	door_BlastDoor1 = CreateDoor(2927, buttonid,
 		215.9915, 1875.2880, 13.9389, 0.0, 0.0, 0.0,
 		219.8936, 1875.2880, 13.9389, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .movespeed = 0.4, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .moveSpeed = 0.4, .closeDelay = -1);
 	door_BlastDoor2 = CreateDoor(2929, buttonid,
 		211.8555, 1875.2880, 13.9389, 0.0, 0.0, 0.0,
 		207.8556, 1875.2880, 13.9389, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .movespeed = 0.4, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .moveSpeed = 0.4, .closeDelay = -1);
 
 	// First door - to storage room
 	buttonid[0] = CreateButton(237.4928, 1871.3110, 11.4609, "Press to activate door");
@@ -141,7 +141,7 @@ hook OnGameModeInit()
 	door_Storage = CreateDoor(5422, buttonid,
 		238.4573, 1872.2921, 12.4737, 0.0, 0.0, 0.0,
 		238.4573, 1872.2921, 14.6002, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Storage room to generator room
 	buttonid[0] = CreateButton(247.3196, 1842.8588, 8.7614, "Press to activate door");
@@ -149,7 +149,7 @@ hook OnGameModeInit()
 	door_Generator = CreateDoor(5422, buttonid,
 		248.275406, 1842.032104, 9.7770, 0.0, 0.0, 90.0,
 		248.270325, 1842.033691, 11.9806, 0.0, 0.0, 90.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Big doors in storage room leading to passage
 	buttonid[0] = CreateButton(255.3204, 1842.7847, 8.7578, "Press to activate door");
@@ -157,7 +157,7 @@ hook OnGameModeInit()
 	door_PassageTop = CreateDoor(9093, buttonid,
 		256.3291, 1845.7827, 9.5281, 0.0, 0.0, 0.0,
 		256.3291, 1845.7827, 12.1, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Big doors in generator room leading to passage
 	buttonid[0] = CreateButton(255.5610, 1832.4649, 4.7109, "Press to activate door");
@@ -165,7 +165,7 @@ hook OnGameModeInit()
 	door_PassageBottom = CreateDoor(9093, buttonid,
 		256.3094, 1835.3549, 5.4820, 0.0, 0.0, 0.0,
 		256.3094, 1835.3549, 8.0035, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Generator room leading to walkway
 	buttonid[0] = CreateButton(249.3303, 1805.2384, 7.4796, "Press to activate door");
@@ -173,7 +173,7 @@ hook OnGameModeInit()
 	door_Catwalk = CreateDoor(5422, buttonid,
 		248.3001, 1805.8772, 8.5633, 0.0, 0.0, 90.0,
 		248.3001, 1805.8772, 10.8075, 0.0, 0.0, 90.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Headquaters room
 	buttonid[0] = CreateButton(234.1869, 1821.3165, 7.4141, "Press to activate door");
@@ -181,11 +181,11 @@ hook OnGameModeInit()
 	door_Headquarters1 = CreateDoor(1508, buttonid,
 		233.793884, 1825.885498, 7.097370, 0.0, 0.0, 0.0,
 		233.793884, 1827.063477, 7.097370, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 	door_Headquarters2 = CreateDoor(1508, buttonid,
 		233.793884, 1819.572388, 7.097370, 0.0, 0.0, 0.0,
 		233.793884, 1818.413452, 7.097370, 0.0, 0.0, 0.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 	// Labs to Shaft
 	buttonid[0] = CreateButton(269.4969, 1873.1721, 8.6094, "Press to activate door");
@@ -193,12 +193,13 @@ hook OnGameModeInit()
 	door_Shaft = CreateDoor(5422, buttonid,
 		268.0739, 1875.3544, 9.6097, 0.0, 0.0, 90.0,
 		268.0739, 1875.3544, 11.6097, 0.0, 0.0, 90.0,
-		.movesound = 6000, .stopsound = 6002, .closedelay = -1);
+		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 
 	buttonid[0] = CreateButton(279.1897, 1833.1392, 18.0874, "Press to enter", .label = 1);
 	buttonid[1] = CreateButton(279.2243, 1832.3821, 2.7813, "Press to enter", .label = 1);
-	LinkTP(buttonid[0], buttonid[1]);
+	// TODO: Rewrite this function!
+	// LinkTP(buttonid[0], buttonid[1]);
 
 	// Gatehouse
 
@@ -357,10 +358,8 @@ hook OnGameModeInit()
 	CreateDynamicObject(3095, 268.37225, 1884.12219, 15.74065,   0.00000, 0.00000, 0.00000);
 }
 
-hook OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, Button:buttonid)
 {
-	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/area69.pwn");
-
 	if(buttonid == btn_ControlTower)
 	{
 		if(lock_ControlTower)
@@ -396,8 +395,6 @@ hook OnButtonPress(playerid, buttonid)
 
 hook OnPlayerActivateDoor(playerid, doorid, newstate)
 {
-	dbg("global", CORE, "[OnPlayerActivateDoor] in /gamemodes/sss/world/puzzles/area69.pwn");
-
 	if(doorid == door_Main)
 		return PlayerActivateDoorButton(playerid, k_MainGate, code_ControlTower);
 
@@ -450,9 +447,7 @@ PlayerActivateDoorButton(playerid, keypad, code)
 
 hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 {
-	dbg("global", CORE, "[OnPlayerKeypadEnter] in /gamemodes/sss/world/puzzles/area69.pwn");
-
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(GetItemType(itemid) == item_HackDevice)
 		DestroyItem(itemid);

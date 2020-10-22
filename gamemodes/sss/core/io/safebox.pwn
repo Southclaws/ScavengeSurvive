@@ -28,7 +28,7 @@
 #define DIRECTORY_SAFEBOX	DIRECTORY_MAIN"safebox/"
 
 
-forward OnSafeboxLoad(itemid, active, geid[], data[], length);
+forward OnSafeboxLoad(Item:itemid, active, uuid[], data[], length);
 
 
 /*==============================================================================
@@ -48,7 +48,7 @@ hook OnGameModeInit()
 	LoadItems(DIRECTORY_SAFEBOX, "OnSafeboxLoad");
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
@@ -56,10 +56,10 @@ hook OnPlayerPickUpItem(playerid, itemid)
 			Float:x,
 			Float:y,
 			Float:z,
-			geid[GEID_LEN];
+			uuid[UUID_LEN];
 
 		GetPlayerPos(playerid, x, y, z);
-		GetItemGEID(itemid, geid);
+		GetItemUUID(itemid, uuid);
 
 		RemoveSafeboxItem(itemid);
 	}
@@ -67,7 +67,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 	{
@@ -75,10 +75,10 @@ hook OnPlayerDroppedItem(playerid, itemid)
 			Float:x,
 			Float:y,
 			Float:z,
-			geid[GEID_LEN];
+			uuid[UUID_LEN];
 
 		GetPlayerPos(playerid, x, y, z);
-		GetItemGEID(itemid, geid);
+		GetItemUUID(itemid, uuid);
 
 		SafeboxSaveCheck(playerid, itemid);
 	}
@@ -86,9 +86,9 @@ hook OnPlayerDroppedItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, Container:containerid)
 {
-	new itemid = GetContainerSafeboxItem(containerid);
+	new Item:itemid = GetContainerSafeboxItem(containerid);
 
 	if(IsValidItem(itemid))
 	{
@@ -96,10 +96,10 @@ hook OnPlayerCloseContainer(playerid, containerid)
 			Float:x,
 			Float:y,
 			Float:z,
-			geid[GEID_LEN];
+			uuid[UUID_LEN];
 
 		GetPlayerPos(playerid, x, y, z);
-		GetItemGEID(itemid, geid);
+		GetItemUUID(itemid, uuid);
 
 		SafeboxSaveCheck(playerid, itemid);
 		ClearAnimations(playerid);
@@ -108,11 +108,11 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new safeboxitem = GetContainerSafeboxItem(containerid);
+		new Item:safeboxitem = GetContainerSafeboxItem(containerid);
 
 		if(IsValidItem(safeboxitem))
 			SafeboxSaveCheck(playerid, safeboxitem);
@@ -121,11 +121,11 @@ hook OnItemAddedToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromCnt(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 {
 	if(IsPlayerConnected(playerid))
 	{
-		new safeboxitem = GetContainerSafeboxItem(containerid);
+		new Item:safeboxitem = GetContainerSafeboxItem(containerid);
 
 		if(IsValidItem(safeboxitem))
 			SafeboxSaveCheck(playerid, safeboxitem);
@@ -134,7 +134,7 @@ hook OnItemRemovedFromCnt(containerid, slotid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	if(IsItemTypeSafebox(GetItemType(itemid)))
 		RemoveSafeboxItem(itemid);
@@ -142,40 +142,44 @@ hook OnItemDestroy(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-SafeboxSaveCheck(playerid, itemid)
+SafeboxSaveCheck(playerid, Item:itemid)
 {
 	new
 		ret = SaveSafeboxItem(itemid),
-		geid[GEID_LEN];
+		uuid[UUID_LEN];
 
-	GetItemGEID(itemid, geid);
+	GetItemUUID(itemid, uuid);
 
 	if(ret == 0)
 	{
-		SetItemLabel(itemid, sprintf("SAVED (itemid: %d, geid: %s)", itemid, geid), 0xFFFF00FF, 2.0);
+		SetItemLabel(itemid, sprintf("SAVED (itemid: %d, uuid: %s)", _:itemid, uuid), 0xFFFF00FF, 2.0);
 	}
 	else
 	{
-		SetItemLabel(itemid, sprintf("NOT SAVED (itemid: %d, geid: %s)", itemid, geid), 0xFF0000FF, 2.0);
+		SetItemLabel(itemid, sprintf("NOT SAVED (itemid: %d, uuid: %s)", _:itemid, uuid), 0xFF0000FF, 2.0);
 
 		if(ret == 1)
-			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Invalid item.", itemid, geid);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Invalid item.", _:itemid, uuid);
 
 		if(ret == 2)
-			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Item isn't safebox.", itemid, geid);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Item isn't safebox.", _:itemid, uuid);
 
 		if(ret == 3)
-			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Item not in world.", itemid, geid);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Item not in world.", _:itemid, uuid);
 
 		if(ret == 4)
-			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Container empty", itemid, geid);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Container empty", _:itemid, uuid);
 
 		if(ret == 5)
-			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Invalid container (%d).", itemid, geid, GetItemArrayDataAtCell(itemid, 0));
+		{
+			new containerid;
+			GetItemArrayDataAtCell(itemid, containerid, 0);
+			ChatMsg(playerid, YELLOW, "ERROR: Can't save item %d GEID: %s: Invalid container (%d).", _:itemid, uuid, containerid);
+		}
 	}
 }
 
-RemoveSafeboxItem(itemid)
+RemoveSafeboxItem(Item:itemid)
 {
 	RemoveSavedItem(itemid, DIRECTORY_SAFEBOX);
 }
@@ -188,19 +192,20 @@ RemoveSafeboxItem(itemid)
 ==============================================================================*/
 
 
-SaveSafeboxItem(itemid, bool:active = true)
+SaveSafeboxItem(Item:itemid, bool:active = true)
 {
-	new geid[GEID_LEN];
+	new uuid[UUID_LEN];
 
-	GetItemGEID(itemid, geid);
+	GetItemUUID(itemid, uuid);
 
 	if(!IsItemTypeSafebox(GetItemType(itemid)))
 	{
-		err("Can't save safebox %d (%s): Item isn't a safebox, type: %d", itemid, geid, _:GetItemType(itemid));
+		err("Can't save safebox %d (%s): Item isn't a safebox, type: %d", _:itemid, uuid, _:GetItemType(itemid));
 		return 2;
 	}
 
-	new containerid = GetItemArrayDataAtCell(itemid, 0);
+	new Container:containerid;
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
 
 	if(IsContainerEmpty(containerid))
 	{
@@ -210,17 +215,20 @@ SaveSafeboxItem(itemid, bool:active = true)
 
 	if(!IsValidContainer(containerid))
 	{
-		err("Can't save safebox %d (%s): Not valid container (%d).", itemid, geid, containerid);
+		err("Can't save safebox %d (%s): Not valid container (%d).", _:itemid, uuid, _:containerid);
 		return 5;
 	}
 
 	new
-		items[12],
-		itemcount;
+		Item:items[12],
+		itemcount,
+		size;
 
-	for(new i, j = GetContainerSize(containerid); i < j; i++)
+	GetContainerSize(containerid, size);
+
+	for(new i; i < size; i++)
 	{
-		items[i] = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, items[i]);
 
 		if(!IsValidItem(items[i]))
 			break;
@@ -236,18 +244,20 @@ SaveSafeboxItem(itemid, bool:active = true)
 	return 0;
 }
 
-public OnSafeboxLoad(itemid, active, geid[], data[], length)
+public OnSafeboxLoad(Item:itemid, active, uuid[], data[], length)
 {
 	if(!IsItemTypeSafebox(GetItemType(itemid)))
 	{
-		err("Loaded item %d (%s) is not a safebox (type: %d)", itemid, geid, _:GetItemType(itemid));
+		err("Loaded item %d (%s) is not a safebox (type: %d)", _:itemid, uuid, _:GetItemType(itemid));
 		return 0;
 	}
 
 	new
-		containerid = GetItemArrayDataAtCell(itemid, 0),
-		subitem,
+		Container:containerid,
+		Item:subitem,
 		ItemType:itemtype;
+
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
 
 	if(!DeserialiseItems(data, length))
 	{
@@ -273,9 +283,9 @@ public OnSafeboxLoad(itemid, active, geid[], data[], length)
 		}
 
 		Logger_Log("safebox loaded",
-			Logger_S("geid", geid),
-			Logger_I("itemid", itemid),
-			Logger_I("containerid", containerid),
+			Logger_S("uuid", uuid),
+			Logger_I("itemid", _:itemid),
+			Logger_I("containerid", _:containerid),
 			Logger_I("active", active),
 			Logger_I("items", GetStoredItemCount())
 		);

@@ -40,7 +40,7 @@
 
 enum e_MACHINE_DATA
 {
-	E_MACHINE_CONTAINER_ID,
+	Container:E_MACHINE_CONTAINER_ID,
 	Float:E_MACHINE_FUEL,
 	bool:E_MACHINE_COOKING,
 	E_MACHINE_START_TICK,
@@ -50,17 +50,17 @@ enum e_MACHINE_DATA
 
 static
 			mach_Total,
-			mach_ItemTypeMachine[ITM_MAX_TYPES] = {-1, ...},
+			mach_ItemTypeMachine[MAX_ITEM_TYPE] = {-1, ...},
 
 			mach_ContainerSize[MAX_MACHINE_TYPE] = {0, ...},
-			mach_ContainerMachineItem[CNT_MAX] = {INVALID_ITEM_ID, ...},
-			mach_CurrentMachine[MAX_PLAYERS],
+Item:		mach_ContainerMachineItem[MAX_CONTAINER] = {INVALID_ITEM_ID, ...},
+Item:		mach_CurrentMachine[MAX_PLAYERS],
 			mach_MachineInteractTick[MAX_PLAYERS],
 Timer:		mach_HoldTimer[MAX_PLAYERS];
 
 
 forward OnPlayerUseMachine(playerid, itemid, interactiontype);
-forward OnMachineFinish(itemid, containerid);
+forward OnMachineFinish(itemid, Container:containerid);
 
 
 /*==============================================================================
@@ -101,13 +101,13 @@ stock DefineMachineType(ItemType:itemtype, containersize)
 ==============================================================================*/
 
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
 	new machinetype = mach_ItemTypeMachine[GetItemType(itemid)];
 	if(machinetype == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new name[ITM_MAX_NAME];
+	new name[MAX_ITEM_NAME];
 
 	GetItemName(itemid, name);
 
@@ -126,17 +126,19 @@ hook OnItemCreate(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(itemid)] == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	SetButtonText(GetItemButtonID(itemid), "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel");
+	new Button:buttonid;
+	GetItemButtonID(itemid, buttonid);
+	SetButtonText(buttonid, "Press "KEYTEXT_INTERACT" to access machine~n~Hold "KEYTEXT_INTERACT" to open menu~n~Use Petrol Can to add fuel");
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(itemid)] != -1)
 	{
@@ -147,7 +149,7 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(mach_ItemTypeMachine[GetItemType(withitemid)] != -1)
 	{
@@ -158,19 +160,22 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_mach_PlayerUseMachine(playerid, itemid)
+_mach_PlayerUseMachine(playerid, Item:itemid)
 {
-	if(GetItemArrayDataAtCell(itemid, E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(itemid, cooking, E_MACHINE_COOKING);
+	if(cooking)
 	{
+		new cookduration, starttick;
+		GetItemArrayDataAtCell(itemid, cookduration, E_MACHINE_COOK_DURATION_MS);
+		GetItemArrayDataAtCell(itemid, starttick, E_MACHINE_START_TICK);
+
 		ShowActionText(playerid,
 			sprintf(
 				ls(playerid, "MACHPROCESS", true),
 				MsToString(
-					GetItemArrayDataAtCell(itemid, E_MACHINE_COOK_DURATION_MS) -
-					GetTickCountDifference(
-						GetTickCount(),
-						GetItemArrayDataAtCell(itemid, E_MACHINE_START_TICK)
-					),
+					cookduration -
+					GetTickCountDifference(GetTickCount(), starttick),
 				"%m minutes %s seconds")),
 			8000
 		);
@@ -207,24 +212,26 @@ _mach_TapInteract(playerid)
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
-	if(GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], cooking, E_MACHINE_COOKING);
+	if(cooking)
 		return;
 
+	new Container:containerid;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:containerid, E_MACHINE_CONTAINER_ID);
+
 	Logger_Dbg("machine", "machine interact tap",
-		Logger_I("id", mach_CurrentMachine[playerid]),
-		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_CONTAINER_ID)),
+		Logger_I("id", _:mach_CurrentMachine[playerid]),
+		Logger_I("containerid", _:containerid),
 		Logger_I("playerid", playerid));
 
 	// return 1 on OnPlayerUseMachine to cancel display of container inventory.
-	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 0);
+	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, _:mach_CurrentMachine[playerid], 0);
 	if(!ret)
 	{
 		// TODO: Crowbar to deconstruct machine.
 		// if(GetItemType(itemid) != item_Crowbar)
-		DisplayContainerInventory(
-			playerid,
-			GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_CONTAINER_ID)
-		);
+		DisplayContainerInventory(playerid, containerid);
 	}
 
 	mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
@@ -235,16 +242,24 @@ timer _mach_HoldInteract[250](playerid)
 	if(mach_CurrentMachine[playerid] == INVALID_ITEM_ID)
 		return;
 
-	if(GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_COOKING))
+	new cooking;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], cooking, E_MACHINE_COOKING);
+	if(cooking)
 		return;
 
+	new Container:containerid;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:containerid, 0);
+
 	Logger_Dbg("machine", "machine interact hold",
-		Logger_I("id", mach_CurrentMachine[playerid]),
-		Logger_I("containerid", GetItemArrayDataAtCell(mach_CurrentMachine[playerid], 0)),
+		Logger_I("id", _:mach_CurrentMachine[playerid]),
+		Logger_I("containerid", _:containerid),
 		Logger_I("playerid", playerid));
 
+	new Float:fuel;
+	GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:fuel, E_MACHINE_FUEL);
+
 	// if zero return, do refuel or show menu.
-	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, mach_CurrentMachine[playerid], 1);
+	new ret = CallLocalFunction("OnPlayerUseMachine", "ddd", playerid, _:mach_CurrentMachine[playerid], 1);
 	if(!ret)
 	{
 		new ItemType:itemtype = GetItemType(GetPlayerItem(playerid));
@@ -253,7 +268,6 @@ timer _mach_HoldInteract[250](playerid)
 		{
 			if(GetLiquidItemLiquidType(GetPlayerItem(playerid)) == liquid_Petrol)
 			{
-				new Float:fuel = Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL);
 				StartHoldAction(
 					playerid,
 					floatround(MAX_MACHINE_FUEL * 100),
@@ -291,22 +305,21 @@ timer _mach_HoldInteract[250](playerid)
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Scrap Machine", sprintf(
 			"Press 'Start' to activate the scrap machine and convert certain types of items into scrap.\n\
 			Items that cannot be turned into scrap metal will be destroyed.\n\n\
-			"C_GREEN"Fuel amount: "C_WHITE"%.1f",
-			Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL)), "Start", "Cancel");
+			"C_GREEN"Fuel amount: "C_WHITE"%.1f", fuel), "Start", "Cancel");
 	}
 }
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	if(mach_CurrentMachine[playerid] != -1)
+	if(mach_CurrentMachine[playerid] != INVALID_ITEM_ID)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 		if(GetItemTypeLiquidContainerType(GetItemType(itemid)) != -1)
 		{
 			if(GetLiquidItemLiquidType(itemid) != liquid_Petrol)
 			{
 				StopHoldAction(playerid);
-				mach_CurrentMachine[playerid] = -1;
+				mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
 		}
@@ -315,14 +328,16 @@ hook OnHoldActionUpdate(playerid, progress)
 		if(fuel <= 0.0)
 		{
 			StopHoldAction(playerid);
-			mach_CurrentMachine[playerid] = -1;
+			mach_CurrentMachine[playerid] = INVALID_ITEM_ID;
 			HideActionText(playerid);
 		}
 		else
 		{
 			new
 				Float:transfer = (fuel - 1.1 < 0.0) ? fuel : 1.1,
-				Float:machinefuel = Float:GetItemArrayDataAtCell(mach_CurrentMachine[playerid], E_MACHINE_FUEL);
+				Float:machinefuel;
+
+			GetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:machinefuel, E_MACHINE_FUEL);
 
 			SetLiquidItemLiquidAmount(itemid, fuel - transfer);
 			SetItemArrayDataAtCell(mach_CurrentMachine[playerid], _:(machinefuel + transfer), E_MACHINE_FUEL);
@@ -333,11 +348,12 @@ hook OnHoldActionUpdate(playerid, progress)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_machine_StartCooking(itemid) {
+_machine_StartCooking(Item:itemid) {
 	new data[e_MACHINE_DATA];
-	GetItemArrayData(itemid, data);
+	GetItemArrayData(itemid, data, _:e_MACHINE_DATA);
 
-	new itemcount = GetContainerItemCount(data[E_MACHINE_CONTAINER_ID]);
+	new itemcount;
+	GetContainerItemCount(data[E_MACHINE_CONTAINER_ID], itemcount);
 
 	if(itemcount == 0)
 		return 0;
@@ -369,7 +385,7 @@ _machine_StartCooking(itemid) {
 
 	SetItemArrayData(itemid, data, _:e_MACHINE_DATA);
 
-	defer _machine_FinishCooking(itemid, cooktime);
+	defer _machine_FinishCooking(_:itemid, cooktime);
 
 	return cooktime;
 }
@@ -378,16 +394,19 @@ timer _machine_FinishCooking[cooktime](itemid, cooktime)
 {
 #pragma unused cooktime
 	new data[e_MACHINE_DATA];
-	GetItemArrayData(itemid, data);
+	GetItemArrayData(Item:itemid, data);
 
 	DestroyDynamicObject(data[E_MACHINE_SMOKE_PARTICLE]);
 
-	data[E_MACHINE_FUEL] -= GetContainerItemCount(data[E_MACHINE_CONTAINER_ID]) * MACHINE_FUEL_USAGE;
+	new itemcount;
+	GetContainerItemCount(data[E_MACHINE_CONTAINER_ID], itemcount);
+
+	data[E_MACHINE_FUEL] -= itemcount * MACHINE_FUEL_USAGE;
 	data[E_MACHINE_COOKING] = false;
 	data[E_MACHINE_SMOKE_PARTICLE] = INVALID_OBJECT_ID;
-	SetItemArrayData(itemid, data, _:e_MACHINE_DATA);
+	SetItemArrayData(Item:itemid, data, _:e_MACHINE_DATA);
 
-	CallLocalFunction("OnMachineFinish", "dd", itemid, data[E_MACHINE_CONTAINER_ID]);
+	CallLocalFunction("OnMachineFinish", "dd", itemid, _:data[E_MACHINE_CONTAINER_ID]);
 }
 
 
@@ -417,19 +436,19 @@ stock GetMachineTypeContainerSize(machinetype)
 }
 
 // mach_ContainerMachineItem
-stock GetContainerMachineItem(containerid)
+stock Item:GetContainerMachineItem(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
-		return -1;
+		return INVALID_ITEM_ID;
 
 	return mach_ContainerMachineItem[containerid];
 }
 
 // mach_CurrentMachine
-stock GetPlayerCurrentMachine(playerid)
+stock Item:GetPlayerCurrentMachine(playerid)
 {
 	if(!IsPlayerConnected(playerid))
-		return -1;
+		return INVALID_ITEM_ID;
 
 	return mach_CurrentMachine[playerid];
 }

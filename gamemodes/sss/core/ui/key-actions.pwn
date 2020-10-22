@@ -102,43 +102,43 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	_UpdateKeyActions(playerid);
 }
 
-hook OnPlayerAddToInventory(playerid, itemid)
+hook OnPlayerAddToInventory(playerid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnItemRemovedFromInv(playerid, itemid, slot)
+hook OnItemRemovedFromInv(playerid, Item:itemid, slot)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnItemRemovedFromPlayer(playerid, itemid)
+hook OnItemRemovedFromPlayer(playerid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
 // Pickup/drop item
-hook OnPlayerPickedUpItem(playerid, itemid)
+hook OnPlayerPickedUpItem(playerid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnPlayerDroppedItem(playerid, itemid)
+hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnPlayerGetItem(playerid, itemid)
+hook OnPlayerGetItem(playerid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnPlayerGiveItem(playerid, targetid, itemid)
+hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
 
-hook OnPlayerGivenItem(playerid, targetid, itemid)
+hook OnPlayerGivenItem(playerid, targetid, Item:itemid)
 {
 	_UpdateKeyActions(playerid);
 }
@@ -200,7 +200,9 @@ _UpdateKeyActions(playerid)
 		return;		
 	}
 
-	if(IsValidContainer(GetPlayerCurrentContainer(playerid)))
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+	if(IsValidContainer(containerid))
 	{
 		HidePlayerKeyActionUI(playerid);
 		return;		
@@ -231,7 +233,7 @@ _UpdateKeyActions(playerid)
 	}
 
 	new
-		itemid = GetPlayerItem(playerid),
+		Item:itemid = GetPlayerItem(playerid),
 		invehiclearea = GetPlayerVehicleArea(playerid),
 		inplayerarea = -1;
 
@@ -248,7 +250,7 @@ _UpdateKeyActions(playerid)
 
 	foreach(new i : Player)
 	{
-		if(IsPlayerInPlayerArea(playerid, i))
+		if(IsPlayerNextToPlayer(playerid, i))
 		{
 			inplayerarea = i;
 			break;
@@ -393,7 +395,7 @@ _UpdateKeyActions(playerid)
 
 		foreach(new i : Player)
 		{
-			if(IsPlayerInPlayerArea(playerid, i))
+			if(IsPlayerNextToPlayer(playerid, i))
 			{
 				inplayerarea = i;
 				break;

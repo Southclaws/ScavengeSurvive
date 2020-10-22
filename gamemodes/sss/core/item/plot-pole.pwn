@@ -37,8 +37,8 @@ enum e_PLOT_POLE_DATA
 	E_PLOTPOLE_OBJ3
 }
 
-forward OnPlotPoleLoad(itemid, active, geid[], data[], length);
-forward OnWorldItemLoad(itemid, active, geid[], data[], length);
+forward OnPlotPoleLoad(itemid, active, uuid[], data[], length);
+forward OnWorldItemLoad(itemid, active, uuid[], data[], length);
 
 
 hook OnScriptInit()
@@ -59,7 +59,7 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("PlotPole"), e_PLOT_POLE_DATA);
 }
 
-hook OnItemCreateInWorld(itemid)
+hook OnItemCreateInWorld(Item:itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
@@ -69,15 +69,19 @@ hook OnItemCreateInWorld(itemid)
 			Float:y,
 			Float:z,
 			Float:rz,
+			world,
+			interior,
 			areadata[2];
 
 		GetItemPos(itemid, x, y, z);
 		GetItemRot(itemid, rz, rz, rz);
+		GetItemWorld(itemid, world);
+		GetItemInterior(itemid, interior);
 
 		areadata[0] = PLOTPOLE_AREA_IDENTIFIER;
-		areadata[1] = itemid;
+		areadata[1] = _:itemid;
 
-		data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, GetItemWorld(itemid), GetItemInterior(itemid));
+		data[E_PLOTPOLE_AREA] = CreateDynamicSphere(x, y, z, 20.0, world, interior);
 		data[E_PLOTPOLE_OBJ1] = CreateDynamicObject(1719, x + (0.09200 * floatsin(-rz, degrees)), y + (0.09200 * floatcos(-rz, degrees)), z + 0.52270, 0.00000, 90.00000, rz + 90.0);
 		data[E_PLOTPOLE_OBJ2] = CreateDynamicObject(19816, x - (0.08000 * floatsin(-rz, degrees)), y - (0.08000 * floatcos(-rz, degrees)), z + 0.50000, 0.00000, 0.00000, rz);
 		data[E_PLOTPOLE_OBJ3] = CreateDynamicObject(19293, x, y, z + 1.3073, 0.00000, 0.00000, rz);
@@ -103,7 +107,7 @@ hook OnItemCreateInWorld(itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_plotpole_saveNearby(itemid)
+_plotpole_saveNearby(Item:itemid)
 {
 	new
 		data[2],
@@ -112,7 +116,7 @@ _plotpole_saveNearby(itemid)
 		Float:z,
 		items[128],
 		count,
-		subitem;
+		Item:subitem;
 
 	GetItemPos(itemid, x, y, z);
 	count = Streamer_GetNearbyItems(x, y, z, STREAMER_TYPE_AREA, items, .range = 20.0);
@@ -124,11 +128,11 @@ _plotpole_saveNearby(itemid)
 		if(data[0] != BTN_STREAMER_AREA_IDENTIFIER)
 			continue;
 
-		subitem = GetItemFromButtonID(data[1]);
+		subitem = GetItemFromButtonID(Button:data[1]);
 
 		if(IsValidItem(subitem))
 		{
-			defer _SaveItemFuture(subitem);
+			defer _SaveItemFuture(_:subitem);
 		}
 	}
 }
@@ -136,10 +140,10 @@ _plotpole_saveNearby(itemid)
 // as close to asyncio pawn will get!
 timer _SaveItemFuture[random(1000)](itemid)
 {
-	_SavePlotPoleItem(itemid);
+	_SavePlotPoleItem(Item:itemid);
 }
 
-hook OnItemDestroy(itemid)
+hook OnItemDestroy(Item:itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
@@ -157,7 +161,7 @@ hook OnItemDestroy(itemid)
 	}
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
@@ -176,13 +180,13 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 	if(data[0] != PLOTPOLE_AREA_IDENTIFIER)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(IsValidItem(data[1]))
+	if(IsValidItem(Item:data[1]))
 	{
-		if(GetItemType(data[1]) == item_PlotPole)
+		if(GetItemType(Item:data[1]) == item_PlotPole)
 		{
-			new geid[GEID_LEN];
-			GetItemGEID(data[1], geid);
-			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLEENT"), geid), 5000);
+			new uuid[UUID_LEN];
+			GetItemUUID(Item:data[1], uuid);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLEENT"), uuid), 5000);
 		}
 	}
 
@@ -198,20 +202,20 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	if(data[0] != PLOTPOLE_AREA_IDENTIFIER)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(IsValidItem(data[1]))
+	if(IsValidItem(Item:data[1]))
 	{
-		if(GetItemType(data[1]) == item_PlotPole)
+		if(GetItemType(Item:data[1]) == item_PlotPole)
 		{
-			new geid[GEID_LEN];
-			GetItemGEID(data[1], geid);
-			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLELEF"), geid), 5000);
+			new uuid[UUID_LEN];
+			GetItemUUID(Item:data[1], uuid);
+			ShowActionText(playerid, sprintf(ls(playerid, "PLOTPOLELEF"), uuid), 5000);
 		}
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemoveFromWorld(itemid)
+hook OnItemRemoveFromWorld(Item:itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
@@ -219,7 +223,7 @@ hook OnItemRemoveFromWorld(itemid)
 	}
 }
 
-hook OnItemArrayDataChanged(itemid)
+hook OnItemArrayDataChanged(Item:itemid)
 {
 	if(GetItemType(itemid) == item_PlotPole)
 	{
@@ -232,7 +236,7 @@ hook OnItemArrayDataChanged(itemid)
 	}
 }
 
-_SavePlotPoleItem(itemid, playerid = INVALID_PLAYER_ID)
+_SavePlotPoleItem(Item:itemid, playerid = INVALID_PLAYER_ID)
 {
 	if(_ExcludeItem(itemid))
 	{
@@ -248,7 +252,7 @@ _SavePlotPoleItem(itemid, playerid = INVALID_PLAYER_ID)
 	return;
 }
 
-_ExcludeItem(itemid)
+_ExcludeItem(Item:itemid)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
@@ -258,10 +262,14 @@ _ExcludeItem(itemid)
 	if(IsItemTypeSafebox(itemtype))
 		return true;
 
-	if(IsItemTypeDefence(itemtype) && GetItemArrayDataAtCell(itemid, def_active))
+	new active;
+	GetItemArrayDataAtCell(itemid, active, def_active);
+	if(IsItemTypeDefence(itemtype) && active)
 		return true;
 
-	if(itemtype == item_TentPack && IsValidTent(GetItemExtraData(itemid)))
+	new tentid;
+	GetItemExtraData(itemid, tentid);
+	if(itemtype == item_TentPack && IsValidTent(tentid))
 		return true;
 
 	return false;
@@ -285,7 +293,7 @@ stock IsPlayerInPlotPoleArea(playerid)
 	return IsPointInPlotPoleArea(x, y, z);
 }
 
-stock IsItemInPlotPoleArea(itemid)
+stock IsItemInPlotPoleArea(Item:itemid)
 {
 	new
 		Float:x,
@@ -312,7 +320,7 @@ stock IsPointInPlotPoleArea(Float:x, Float:y, Float:z)
 
 		if(data[0] == PLOTPOLE_AREA_IDENTIFIER)
 		{
-			if(GetItemType(data[1]) == item_PlotPole)
+			if(GetItemType(Item:data[1]) == item_PlotPole)
 				return true;
 		}
 	}

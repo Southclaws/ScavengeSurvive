@@ -108,7 +108,7 @@ LoadLootTableFromFile(file[])
 
 		// Loaded from each other line
 		Float:weight,
-		uname[ITM_MAX_NAME],
+		uname[MAX_ITEM_NAME],
 		ItemType:itemtype,
 		perlimit,
 		svrlimit,

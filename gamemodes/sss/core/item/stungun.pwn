@@ -33,13 +33,13 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 {
-	dbg("global", CORE, "[OnPlayerMeleePlayer] in /gamemodes/sss/core/item/stungun.pwn");
-
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(GetItemType(itemid) == item_StunGun)
 	{
-		if(GetItemExtraData(itemid) == 1)
+		new charged;
+		GetItemExtraData(itemid, charged);
+		if(charged == 1)
 		{
 			new
 				Float:x,
@@ -64,10 +64,8 @@ hook OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/stungun.pwn");
-
 	if(GetItemType(itemid) == item_StunGun && GetItemType(withitemid) == item_Battery)
 	{
 		SetItemExtraData(itemid, 1);
@@ -78,13 +76,13 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/stungun.pwn");
-
 	if(itemtype == item_StunGun)
 	{
-		if(GetItemExtraData(itemid) == 1)
+		new charged;
+		GetItemExtraData(itemid, charged);
+		if(charged == 1)
 			SetItemNameExtra(itemid, "Charged");
 
 		else

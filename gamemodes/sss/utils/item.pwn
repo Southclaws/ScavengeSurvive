@@ -1,20 +1,21 @@
-stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, parenttype[32] = "")
+stock GetItemAbsolutePos(Item:itemid, &Float:x, &Float:y, &Float:z, &parent = -1, parenttype[32] = "")
 {
 	if(IsItemInWorld(itemid))
 		return GetItemPos(itemid, x, y, z);
 
-	new containerid = GetItemContainer(itemid);
+	new Container:containerid;
+	GetItemContainer(itemid, containerid);
 
 	if(IsValidContainer(containerid))
 	{
 		/*
 			First, check if the container is a world-container with a button.
 		*/
-		new buttonid = 0;//GetContainerButton(containerid); // TODO!
+		new Button:buttonid = INVALID_BUTTON_ID;//GetContainerButton(containerid); // TODO!
 
 		if(IsValidButton(buttonid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetButtonPos(buttonid, x, y, z);
 		}
@@ -34,11 +35,11 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 		/*
 			Safebox
 		*/
-		new safeboxitemid = GetContainerSafeboxItem(containerid);
+		new Item:safeboxitemid = GetContainerSafeboxItem(containerid);
 
 		if(IsValidItem(safeboxitemid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetItemAbsolutePos(safeboxitemid, x, y, z, parent, parenttype);
 		}
@@ -58,17 +59,18 @@ stock GetItemAbsolutePos(itemid, &Float:x, &Float:y, &Float:z, &parent = -1, par
 		/*
 			Bags in the game world
 		*/
-		new bagitemid = GetContainerBagItem(containerid);
+		new Item:bagitemid = GetContainerBagItem(containerid);
 
 		if(IsValidItem(bagitemid))
 		{
-			parent = containerid;
+			parent = _:containerid;
 			parenttype = "containerid";
 			return GetItemAbsolutePos(bagitemid, x, y, z, parent, parenttype);
 		}
 	}
 
-	new playerid = GetItemPlayerInventory(itemid);
+	new playerid;
+	GetItemInventoryPlayer(itemid, playerid);
 
 	if(IsPlayerConnected(playerid))
 	{
@@ -95,7 +97,7 @@ static
 
 ACMD:itempostest[5](playerid, params[])
 {
-	new itemid = GetPlayerItem(playerid);
+	new Item:itemid = GetPlayerItem(playerid);
 
 	if(IsValidItem(itemid))
 	{

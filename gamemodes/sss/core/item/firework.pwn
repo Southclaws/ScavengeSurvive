@@ -109,16 +109,14 @@ DestroyFireworkProjectile(id)
 }
 
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/firework.pwn");
-
 	if(GetItemType(itemid) == item_FireLighter && GetItemType(withitemid) == item_FireworkBox)
 	{
 		if(GetTickCountDifference(GetTickCount(), fwk_CooldownTick) > 3000)
 		{
 			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 0, 450);
-			defer FireworkLaunch(withitemid);
+			defer FireworkLaunch(_:withitemid);
 			fwk_CooldownTick = GetTickCount();
 		}
 	}
@@ -134,7 +132,7 @@ timer FireworkLaunch[6000](itemid)
 		Float:y,
 		Float:z;
 
-	GetItemPos(itemid, x, y, z);
+	GetItemPos(Item:itemid, x, y, z);
 	CreateFireworkProjectile(345,
 		x, y, z, 90.0, 0.0, 0.0,
 		0.0, 90.0, 10.0,
@@ -144,8 +142,6 @@ timer FireworkLaunch[6000](itemid)
 
 hook OnDynamicObjectMoved(objectid)
 {
-	dbg("global", CORE, "[OnDynamicObjectMoved] in /gamemodes/sss/core/item/firework.pwn");
-
 	foreach(new i : fwk_ProjectileIndex)
 	{
 		if(objectid == fwk_Data[i][fwk_object])
@@ -216,11 +212,11 @@ CMD:addfirework(playerid, params[])
 
 	CreateItem(fireworkLighterType,
 		x + (0.5 * floatsin(-r, degrees)),
-		y + (0.5 * floatcos(-r, degrees)), z - FLOOR_OFFSET, .rz = r);
+		y + (0.5 * floatcos(-r, degrees)), z - ITEM_FLOOR_OFFSET, .rz = r);
 
 	CreateItem(fireworkItemType,
 		x + (3.5 * floatsin(-r, degrees)),
-		y + (3.5 * floatcos(-r, degrees)), z - FLOOR_OFFSET, .rz = r);
+		y + (3.5 * floatcos(-r, degrees)), z - ITEM_FLOOR_OFFSET, .rz = r);
 
 	return 1;
 }

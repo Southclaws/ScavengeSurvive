@@ -53,7 +53,7 @@ static
 static
 			ammo_Data[MAX_ITEM_AMMO_TYPES][E_ITEM_AMMO_DATA],
 			ammo_Total,
-			ammo_ItemTypeAmmoType[ITM_MAX_TYPES] = {-1, ...},
+			ammo_ItemTypeAmmoType[MAX_ITEM_TYPE] = {-1, ...},
 ItemType:	ammo_ItemTypeLowerBound,
 ItemType:	ammo_ItemTypeUpperBound;
 
@@ -104,18 +104,18 @@ stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedra
 ==============================================================================*/
 
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/weapon/ammunition.pwn");
-
 	new ammotype = ammo_ItemTypeAmmoType[itemtype];
 
 	if(ammotype == -1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		amount = GetItemExtraData(itemid),
-		str[ITM_MAX_TEXT];
+		amount,
+		str[MAX_ITEM_TEXT];
+
+	GetItemExtraData(itemid, amount);
 
 	format(str, sizeof(str), "%d, %s, %s",
 		amount,
@@ -127,10 +127,8 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/weapon/ammunition.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		new ammotype = GetItemTypeAmmoType(GetItemType(itemid));

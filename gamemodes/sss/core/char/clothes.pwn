@@ -46,7 +46,7 @@ static
 
 static
 			skin_CurrentSkin[MAX_PLAYERS],
-			skin_CurrentlyUsing[MAX_PLAYERS];
+Item:		skin_CurrentlyUsing[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -57,8 +57,6 @@ hook OnItemTypeDefined(uname[])
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/char/clothes.pwn");
-
 	skin_CurrentlyUsing[playerid] = INVALID_ITEM_ID;
 }
 
@@ -74,10 +72,8 @@ DefineClothesType(modelid, const name[MAX_SKIN_NAME], gender, Float:spawnchance,
 	return skin_Total++;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(GetItemType(itemid) == item_Clothes)
 	{
 		new
@@ -102,22 +98,23 @@ hook OnItemCreate(itemid)
 }
 
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(itemtype == item_Clothes)
 	{
 		new
+			data,
 			exname[32];
 
-		if(skin_Data[GetItemExtraData(itemid)][skin_gender] == GENDER_MALE)
+		GetItemExtraData(itemid, data);
+
+		if(skin_Data[data][skin_gender] == GENDER_MALE)
 			strcat(exname, "Male ");
 
 		else
 			strcat(exname, "Female ");
 
-		strcat(exname, skin_Data[GetItemExtraData(itemid)][skin_name]);
+		strcat(exname, skin_Data[data][skin_name]);
 
 		SetItemNameExtra(itemid, exname);
 	}
@@ -127,15 +124,14 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(newkeys == 16)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_Clothes)
 		{
-			new skinid = GetItemExtraData(itemid);
+			new skinid;
+			GetItemExtraData(itemid, skinid);
 
 			if(skin_Data[skinid][skin_gender] == GetPlayerGender(playerid))
 				StartUsingClothes(playerid, itemid);
@@ -156,7 +152,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	return 1;
 }
 
-StartUsingClothes(playerid, itemid)
+StartUsingClothes(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 3000);
 	CancelPlayerMovement(playerid);
@@ -174,12 +170,11 @@ StopUsingClothes(playerid)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/char/clothes.pwn");
-
 	if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 	{
-		new currentclothes = skin_CurrentSkin[playerid];
-		SetPlayerClothes(playerid, GetItemExtraData(skin_CurrentlyUsing[playerid]));
+		new currentclothes = skin_CurrentSkin[playerid], skinid;
+		GetItemExtraData(skin_CurrentlyUsing[playerid], skinid);
+		SetPlayerClothes(playerid, skinid);
 		SetItemExtraData(skin_CurrentlyUsing[playerid], currentclothes);
 		StopUsingClothes(playerid);
 

@@ -90,8 +90,6 @@ stock DestroyTracer(id)
 
 hook OnDynamicObjectMoved(objectid)
 {
-	dbg("global", CORE, "[OnDynamicObjectMoved] in /gamemodes/sss/core/weapon/tracer.pwn");
-
 	tracer_HandleObjectMoved(objectid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -116,8 +114,6 @@ tracer_HandleObjectMoved(objectid)
 
 hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
-	dbg("global", CORE, "[OnPlayerWeaponShot] in /gamemodes/sss/core/weapon/tracer.pwn");
-
 	if(IsBaseWeaponClipBased(weaponid))
 	{
 		new ItemType:ammoitemtype = GetItemWeaponItemAmmoItem(GetPlayerItem(playerid));

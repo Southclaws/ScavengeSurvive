@@ -38,7 +38,7 @@
 static
 bool:	wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 		wb_CurrentConstructSet[MAX_PLAYERS],
-		wb_CurrentWorkbench[MAX_PLAYERS];
+Item:	wb_CurrentWorkbench[MAX_PLAYERS];
 
 
 /*==============================================================================
@@ -51,12 +51,12 @@ bool:	wb_ConstructionSetWorkbench[MAX_CONSTRUCT_SET],
 hook OnPlayerConnect(playerid)
 {
 	wb_CurrentConstructSet[playerid] = -1;
-	wb_CurrentWorkbench[playerid] = -1;
+	wb_CurrentWorkbench[playerid] = INVALID_ITEM_ID;
 }
 
 hook OnPlayerDisconnect(playerid, reason)
 {
-	if(wb_CurrentWorkbench[playerid] != -1)
+	if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 		_wb_StopWorking(playerid);
 }
 
@@ -84,7 +84,7 @@ stock IsValidWorkbenchConstructionSet(consset)
 	return wb_ConstructionSetWorkbench[consset];
 }
 
-hook OnPlayerPickUpItem(playerid, itemid)
+hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)
 	{
@@ -94,56 +94,62 @@ hook OnPlayerPickUpItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)
 	{
-		DisplayContainerInventory(playerid, GetItemArrayDataAtCell(itemid, 0));
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 0);
+		DisplayContainerInventory(playerid, containerid);
 	}
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(GetItemType(withitemid) == item_Workbench)
 	{
 		new
 			craftitems[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
-			containerid,
+			Container:containerid,
 			itemcount,
-			craftset,
+			CraftSet:craftset,
 			consset;
 
-		containerid = GetItemArrayDataAtCell(withitemid, 0);
-		itemcount = GetContainerItemCount(containerid);
+		GetItemArrayDataAtCell(withitemid, _:containerid, 0);
+		GetContainerItemCount(containerid, itemcount);
 
 		if(!IsValidContainer(containerid))
 		{
-			err("Workbench (%d) has invalid container ID (%d)", withitemid, containerid);
+			err("Workbench (%d) has invalid container ID (%d)", _:withitemid, _:containerid);
 			return Y_HOOKS_CONTINUE_RETURN_0;
 		}
 
-		dbg("gamemodes/sss/core/world/workbench.pwn", 1, "[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", withitemid, containerid, itemcount);
+		dbg("workbench", 1, "[OnPlayerUseItemWithItem] Workbench item %d container %d itemcount %d", _:withitemid, _:containerid, itemcount);
 
 		for(new i; i < itemcount; i++)
 		{
-			craftitems[i][cft_selectedItemType] = GetItemType(GetContainerSlotItem(containerid, i));
-			craftitems[i][cft_selectedItemID] = GetContainerSlotItem(containerid, i);
-			dbg("gamemodes/sss/core/world/workbench.pwn", 3, "[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][cft_selectedItemType], craftitems[i][cft_selectedItemID], IsValidItem(craftitems[i][cft_selectedItemID]));
+			new Item:slotitem;
+			GetContainerSlotItem(containerid, i, slotitem);
+			craftitems[i][craft_selectedItemType] = GetItemType(slotitem);
+			craftitems[i][craft_selectedItemID] = slotitem;
+			dbg("workbench", 3, "[OnPlayerUseItemWithItem] Workbench item: %d (%d) valid: %d", _:craftitems[i][craft_selectedItemType], _:craftitems[i][craft_selectedItemID], IsValidItem(craftitems[i][craft_selectedItemID]));
 		}
 
-		craftset = _cft_FindCraftset(craftitems, itemcount);
+		craftset = _craft_FindCraftset(craftitems, itemcount);
 		consset = GetCraftSetConstructSet(craftset);
 
 		if(IsValidConstructionSet(consset))
 		{
 			if(wb_ConstructionSetWorkbench[consset])
 			{
-				dbg("gamemodes/sss/core/world/workbench.pwn", 2, "[OnPlayerUseItemWithItem] Valid consset %d", consset);
+				dbg("workbench", 2, "[OnPlayerUseItemWithItem] Valid consset %d", consset);
 
 				if(GetConstructionSetTool(consset) == GetItemType(itemid))
 				{
-					new uniqueid[ITM_MAX_NAME];
-					GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+					new ItemType:resulttype;
+					GetCraftSetResult(craftset, resulttype);
+					new uniqueid[MAX_ITEM_NAME];
+					GetItemTypeName(resulttype, uniqueid);
 
 					wb_CurrentConstructSet[playerid] = consset;
 					_wb_StartWorking(playerid, withitemid, GetPlayerSkillTimeModifier(playerid, itemcount * 3600, uniqueid));
@@ -160,22 +166,29 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_wb_ClearWorkbench(itemid)
+_wb_ClearWorkbench(Item:itemid)
 {
 	new
-		containerid,
+		Container:containerid,
 		itemcount;
 
-	containerid = GetItemArrayDataAtCell(itemid, 0);
-	itemcount = GetContainerItemCount(containerid);
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
+	GetContainerItemCount(containerid, itemcount);
 
 	for(; itemcount >= 0; itemcount--)
-		DestroyItem(GetContainerSlotItem(containerid, itemcount));
+	{
+		new Item:slotitem;
+		GetContainerSlotItem(containerid, itemcount, slotitem);
+		DestroyItem(slotitem);
+	}
 }
 
-_wb_StartWorking(playerid, itemid, buildtime)
+_wb_StartWorking(playerid, Item:itemid, buildtime)
 {
-	SetPlayerFacingAngle(playerid, GetPlayerAngleToButton(playerid, GetItemButtonID(itemid)));
+	new Button:buttonid, Float:angle;
+	GetItemButtonID(itemid, buttonid);
+	GetPlayerAngleToButton(playerid, buttonid, angle);
+	SetPlayerFacingAngle(playerid, angle);
 	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
 	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = itemid;
@@ -186,34 +199,34 @@ _wb_StopWorking(playerid)
 	ClearAnimations(playerid);
 
 	StopHoldAction(playerid);
-	wb_CurrentWorkbench[playerid] = -1;
+	wb_CurrentWorkbench[playerid] = INVALID_ITEM_ID;
 }
 
-_wb_CreateResult(itemid, craftset)
+_wb_CreateResult(Item:itemid, CraftSet:craftset)
 {
-	dbg("gamemodes/sss/core/world/workbench.pwn", 1, "[_wb_CreateResult] itemid %d craftset %d", itemid, craftset);
+	dbg("workbench", 1, "[_wb_CreateResult] itemid %d craftset %d", _:itemid, _:craftset);
 
 	new
 		Float:x,
 		Float:y,
 		Float:z,
-		Float:rz;
+		Float:rz,
+		ItemType:resulttype;
 
 	GetItemPos(itemid, x, y, z);
 	GetItemRot(itemid, rz, rz, rz);
+	GetCraftSetResult(craftset, resulttype);
 
-	CreateItem(GetCraftSetResult(craftset), x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
+	CreateItem(resulttype, x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/world/workbench.pwn");
-
 	if(RELEASED(16))
 	{
-		if(wb_CurrentWorkbench[playerid] != -1)
+		if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 		{
-			dbg("gamemodes/sss/core/world/workbench.pwn", 1, "[OnPlayerKeyStateChange] stopping workbench build");
+			dbg("workbench", 1, "[OnPlayerKeyStateChange] stopping workbench build");
 			_wb_StopWorking(playerid);
 		}
 	}
@@ -223,22 +236,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/world/workbench.pwn");
-
-	if(wb_CurrentWorkbench[playerid] != -1)
+	if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 	{
-		dbg("gamemodes/sss/core/world/workbench.pwn", 1, "[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
+		dbg("workbench", 1, "[OnHoldActionFinish] workbench build complete, workbenchid: %d, construction set: %d", _:wb_CurrentWorkbench[playerid], wb_CurrentConstructSet[playerid]);
 
 		new
-			craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
-			uniqueid[ITM_MAX_NAME];
+			CraftSet:craftset = GetConstructionSetCraftSet(wb_CurrentConstructSet[playerid]),
+			ItemType:resulttype,
+			uniqueid[MAX_ITEM_NAME];
 
-		GetItemTypeName(GetCraftSetResult(craftset), uniqueid);
+		GetCraftSetResult(craftset, resulttype);
+		GetItemTypeName(resulttype, uniqueid);
 
 		_wb_ClearWorkbench(wb_CurrentWorkbench[playerid]);
 		_wb_CreateResult(wb_CurrentWorkbench[playerid], craftset);
 		_wb_StopWorking(playerid);
-		wb_CurrentWorkbench[playerid] = -1;
+		wb_CurrentWorkbench[playerid] = INVALID_ITEM_ID;
 		wb_CurrentConstructSet[playerid] = -1;
 
 		PlayerGainSkillExperience(playerid, uniqueid);
@@ -247,14 +260,12 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerConstruct(playerid, consset)
 {
-	dbg("global", CORE, "[OnPlayerConstruct] in /gamemodes/sss/core/world/workbench.pwn");
-
 	if(!IsValidConstructionSet(consset))
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	if(wb_ConstructionSetWorkbench[consset] == true)
 	{
-		dbg("gamemodes/sss/core/world/workbench.pwn", 2, "[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
+		dbg("workbench", 2, "[OnPlayerConstruct] playerid %d consset %d attempted construction of workbench consset", playerid, consset);
 		ShowActionText(playerid, ls(playerid, "NEEDWORKBE", true), 5000);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}

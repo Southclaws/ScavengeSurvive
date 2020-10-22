@@ -163,8 +163,6 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/accounts.pwn");
-
 	acc_LoginAttempts[playerid] = 0;
 	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = false;
@@ -547,7 +545,7 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] ERROR: Player on admin duty, aborting save.");
+		dbg("accounts", 1, "[LOGOUT] ERROR: Player on admin duty, aborting save.");
 		return 0;
 	}
 
@@ -559,17 +557,19 @@ Logout(playerid, docombatlogcheck = 1)
 				lastattacker,
 				lastweapon;
 
-			if(IsPlayerCombatLogging(playerid, lastattacker, lastweapon))
+			if(IsPlayerCombatLogging(playerid, lastattacker, Item:lastweapon))
 			{
 				log("[LOGOUT] Player '%p' combat logged!", playerid);
 				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
+				// TODO: make this correct, lastweapon is an item ID but
+				// OnPlayerDeath takes a GTA weapon ID.
 				OnPlayerDeath(playerid, lastattacker, lastweapon);
 			}
 		}
 	}
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -577,11 +577,14 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeSafebox(itemtype))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] Player is holding a box.");
-		if(!IsContainerEmpty(GetItemExtraData(itemid)))
+		dbg("accounts", 1, "[LOGOUT] Player is holding a box.");
+
+		new Container:containerid;
+		GetItemExtraData(itemid, _:containerid);
+		if(!IsContainerEmpty(containerid))
 		{
-			dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] Player is holding an unempty box, dropping in world.");
-			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
+			dbg("accounts", 1, "[LOGOUT] Player is holding an unempty box, dropping in world.");
+			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 			itemid = INVALID_ITEM_ID;
 			itemtype = INVALID_ITEM_TYPE;
 		}
@@ -589,19 +592,21 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeBag(itemtype))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] Player is holding a bag.");
-		if(!IsContainerEmpty(GetItemArrayDataAtCell(itemid, 1)))
+		dbg("accounts", 1, "[LOGOUT] Player is holding a bag.");
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 1);
+		if(!IsContainerEmpty(containerid))
 		{
 			if(IsValidItem(GetPlayerBagItem(playerid)))
 			{
-				dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
-				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - FLOOR_OFFSET);
+				dbg("accounts", 1, "[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
+				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
 			}
 			else
 			{
-				dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
+				dbg("accounts", 1, "[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
 				GivePlayerBag(playerid, itemid);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
@@ -619,8 +624,12 @@ Logout(playerid, docombatlogcheck = 1)
 		RemovePlayerHolsterItem(playerid);
 		RemovePlayerWeapon(playerid);
 
-		for(new i; i < INV_MAX_SLOTS; i++)
-			DestroyItem(GetInventorySlotItem(playerid, 0));
+		for(new i; i < MAX_INVENTORY_SLOTS; i++)
+		{
+			new Item:subitemid;
+			GetInventorySlotItem(playerid, 0, subitemid);
+			DestroyItem(subitemid);
+		}
 
 		if(IsValidItem(GetPlayerHatItem(playerid)))
 			RemovePlayerHatItem(playerid);
@@ -663,17 +672,17 @@ Logout(playerid, docombatlogcheck = 1)
 
 SavePlayerData(playerid)
 {
-	dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[SavePlayerData] Saving '%p'", playerid);
+	dbg("accounts", 1, "[SavePlayerData] Saving '%p'", playerid);
 
 	if(!acc_LoggedIn[playerid])
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[SavePlayerData] ERROR: Player isn't logged in");
+		dbg("accounts", 1, "[SavePlayerData] ERROR: Player isn't logged in");
 		return 0;
 	}
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[SavePlayerData] ERROR: On admin duty");
+		dbg("accounts", 1, "[SavePlayerData] ERROR: On admin duty");
 		return 0;
 	}
 
@@ -688,7 +697,7 @@ SavePlayerData(playerid)
 
 	if(IsAtConnectionPos(x, y, z))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 1, "[SavePlayerData] ERROR: At connection pos");
+		dbg("accounts", 1, "[SavePlayerData] ERROR: At connection pos");
 		return 0;
 	}
 
@@ -699,19 +708,19 @@ SavePlayerData(playerid)
 
 	if(IsPlayerAlive(playerid) && !IsPlayerInTutorial(playerid))
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] Player is alive");
+		dbg("accounts", 2, "[SavePlayerData] Player is alive");
 		if(IsAtDefaultPos(x, y, z))
 		{
-			dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] ERROR: Player at default position");
+			dbg("accounts", 2, "[SavePlayerData] ERROR: Player at default position");
 			return 0;
 		}
 
 		if(GetPlayerState(playerid) == PLAYER_STATE_SPECTATING)
 		{
-			dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] Player is spectating");
+			dbg("accounts", 2, "[SavePlayerData] Player is spectating");
 			if(!gServerRestarting)
 			{
-				dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] Server is not restarting, aborting save");
+				dbg("accounts", 2, "[SavePlayerData] Server is not restarting, aborting save");
 				return 0;
 			}
 		}
@@ -725,12 +734,12 @@ SavePlayerData(playerid)
 			err("Statement 'stmt_AccountUpdate' failed to execute.");
 		}
 
-		dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] Saving character data");
+		dbg("accounts", 2, "[SavePlayerData] Saving character data");
 		SavePlayerChar(playerid);
 	}
 	else
 	{
-		dbg("gamemodes/sss/core/player/accounts.pwn", 2, "[SavePlayerData] Player is dead");
+		dbg("accounts", 2, "[SavePlayerData] Player is dead");
 		stmt_bind_value(stmt_AccountUpdate, 0, DB::TYPE_INTEGER, 0);
 		stmt_bind_value(stmt_AccountUpdate, 1, DB::TYPE_INTEGER, GetPlayerWarnings(playerid));
 		stmt_bind_value(stmt_AccountUpdate, 2, DB::TYPE_PLAYER_NAME, playerid);

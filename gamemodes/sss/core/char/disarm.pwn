@@ -27,8 +27,6 @@
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/char/disarm.pwn");
-
 	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
 		return 1;
 
@@ -39,7 +37,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	{
 		foreach(new i : Player)
 		{
-			if(IsPlayerInPlayerArea(playerid, i))
+			if(IsPlayerNextToPlayer(playerid, i))
 			{
 				if(IsPlayerKnockedOut(i) || GetPlayerAnimationIndex(i) == 1381)
 				{
@@ -58,7 +56,7 @@ DisarmPlayer(playerid, i)
 	if(IsValidItem(GetPlayerItem(playerid)))
 		return 0;
 
-	new itemid = GetPlayerItem(i);
+	new Item:itemid = GetPlayerItem(i);
 
 	if(IsValidItem(itemid))
 	{

@@ -46,8 +46,6 @@ Float:		spectate_StartPos[MAX_PLAYERS][3];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/admin/spectate.pwn");
-
 	spectate_Type[playerid] = SPECTATE_TYPE_NONE;
 	spectate_Target[playerid] = INVALID_PLAYER_ID;
 
@@ -84,8 +82,6 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerDisconnect] in /gamemodes/sss/core/admin/spectate.pwn");
-
 	if(spectate_Type[playerid] != SPECTATE_TYPE_NONE)
 		ExitSpectateMode(playerid);
 
@@ -391,8 +387,8 @@ timer UpdateSpectateMode[100](playerid)
 			new
 				invehicleas[24],
 				Float:bleedrate,
-				itemid,
-				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
+				Item:itemid,
+				itemname[MAX_ITEM_NAME + MAX_ITEM_TEXT],
 				cameramodename[37];
 
 			if(GetPlayerState(targetid) == PLAYER_STATE_DRIVER)
@@ -430,9 +426,9 @@ timer UpdateSpectateMode[100](playerid)
 		else
 		{
 			new
-				itemid,
-				itemname[ITM_MAX_NAME + ITM_MAX_TEXT],
-				holsteritemid,
+				Item:itemid,
+				itemname[MAX_ITEM_NAME + MAX_ITEM_TEXT],
+				Item:holsteritemid,
 				holsteritemname[32],
 				Float:bleedrate,
 				cameramodename[37],
@@ -483,8 +479,6 @@ timer UpdateSpectateMode[100](playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/admin/spectate.pwn");
-
 	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
 	{
 		if(GetTickCountDifference(GetTickCount(), spectate_ClickTick[playerid]) < 1000)

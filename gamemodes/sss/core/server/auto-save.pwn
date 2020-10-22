@@ -30,7 +30,7 @@
 
 
 static
-		autosave_Block[ITM_MAX],
+		autosave_Block[MAX_PLAYERS],
 		autosave_Max,
 bool:	autosave_Active,
 bool:	autosave_Toggle,

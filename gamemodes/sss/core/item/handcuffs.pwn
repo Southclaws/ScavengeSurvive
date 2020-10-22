@@ -32,8 +32,6 @@ new
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	cuf_TargetPlayer[playerid] = INVALID_PLAYER_ID;
 	cuf_BeingCuffedBy[playerid] = INVALID_PLAYER_ID;
 }
@@ -41,14 +39,12 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(IsBadInteract(playerid))
 		return 1;
 
 	if(newkeys & 16)
 	{
-		new itemid = GetPlayerItem(playerid);
+		new Item:itemid = GetPlayerItem(playerid);
 
 		if(GetItemType(itemid) == item_HandCuffs)
 		{
@@ -57,7 +53,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(i == playerid)
 					continue;
 
-				if(IsPlayerInPlayerArea(playerid, i))
+				if(IsPlayerNextToPlayer(playerid, i))
 				{
 					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0 && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
 					{
@@ -79,7 +75,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				if(i == playerid)
 					continue;
 
-				if(IsPlayerInPlayerArea(playerid, i))
+				if(IsPlayerNextToPlayer(playerid, i))
 				{
 					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED)
 					{
@@ -119,8 +115,6 @@ StopApplyingHandcuffs(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
@@ -135,8 +129,6 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/handcuffs.pwn");
-
 	if(cuf_TargetPlayer[playerid] != INVALID_PLAYER_ID)
 	{
 		if(!CanPlayerHandcuffPlayer(playerid, cuf_TargetPlayer[playerid]))
@@ -147,7 +139,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
 		{
-			new itemid = CreateItem(item_HandCuffs);
+			new Item:itemid = CreateItem(item_HandCuffs);
 
 			SetPlayerCuffs(cuf_TargetPlayer[playerid], false);
 			GiveWorldItemToPlayer(playerid, itemid, 0);
@@ -168,7 +160,7 @@ hook OnHoldActionFinish(playerid)
 
 CanPlayerHandcuffPlayer(playerid, targetid)
 {
-	if(!IsPlayerInPlayerArea(playerid, targetid))
+	if(!IsPlayerNextToPlayer(playerid, targetid))
 		return 0;
 
 	if(GetPlayerWeapon(targetid) != 0)

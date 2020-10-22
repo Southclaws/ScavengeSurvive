@@ -30,8 +30,6 @@ static lsk_TargetVehicle[MAX_PLAYERS];
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	lsk_TargetVehicle[playerid] = INVALID_VEHICLE_ID;
 }
 
@@ -40,7 +38,7 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	if(225.0 < angle < 315.0)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype,
 			vehicletype;
 
@@ -68,7 +66,9 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 		if(itemtype == item_WheelLock)
 		{
-			if(GetItemArrayDataAtCell(itemid, 0) == 0)
+			new key;
+			GetItemArrayDataAtCell(itemid, key, 0);
+			if(key == 0)
 			{
 				ShowActionText(playerid, ls(playerid, "LOCKCHNOKEY", true), 3000);
 				return Y_HOOKS_BREAK_RETURN_1;
@@ -87,8 +87,10 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 		if(itemtype == item_Key)
 		{
 			new
-				keyid = GetItemArrayDataAtCell(itemid, 0),
+				keyid,
 				vehiclekey = GetVehicleKey(vehicleid);
+
+			GetItemArrayDataAtCell(itemid, keyid, 0);
 
 			if(keyid == 0)
 			{
@@ -117,13 +119,13 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 			{
 				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_OPEN);
 				ShowActionText(playerid, ls(playerid, "UNLOCKED", true), 3000);
-				log("[VLOCK] %p unlocked vehicle %s (%d)", playerid, GetVehicleGEID(vehicleid), vehicleid);
+				log("[VLOCK] %p unlocked vehicle %s (%d)", playerid, GetVehicleUUID(vehicleid), vehicleid);
 			}
 			else
 			{
 				SetVehicleExternalLock(vehicleid, E_LOCK_STATE_EXTERNAL);
 				ShowActionText(playerid, ls(playerid, "LOCKED", true), 3000);
-				log("[VLOCK] %p locked vehicle %s (%d)", playerid, GetVehicleGEID(vehicleid), vehicleid);
+				log("[VLOCK] %p locked vehicle %s (%d)", playerid, GetVehicleUUID(vehicleid), vehicleid);
 			}
 
 			if(IsVehicleTypeTrailer(vehicletype))
@@ -150,8 +152,6 @@ public OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(oldkeys & 16)
 	{
 		StopCraftingKey(playerid);
@@ -183,8 +183,6 @@ StopCraftingKey(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		if(
@@ -206,12 +204,10 @@ hook OnHoldActionUpdate(playerid, progress)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(lsk_TargetVehicle[playerid] != INVALID_VEHICLE_ID)
 	{
 		new
-			itemid,
+			Item:itemid,
 			ItemType:itemtype;
 
 		itemid = GetPlayerItem(playerid);
@@ -238,25 +234,28 @@ hook OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_1;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
 	if(itemtype == item_Key)
 	{
-		if(GetItemArrayDataAtCell(itemid, 0) != 0)
+		new value;
+		GetItemArrayDataAtCell(itemid, value, 0);
+		if(value != 0)
 		{
 			new
-				vehicletype = GetItemArrayDataAtCell(itemid, 1),
+				vehicletype,
 				vehicletypename[MAX_VEHICLE_TYPE_NAME];
 
+			GetItemArrayDataAtCell(itemid, vehicletype, 1);
 			GetVehicleTypeName(vehicletype, vehicletypename);
 			SetItemNameExtra(itemid, vehicletypename);
 		}
 	}
 	else if(itemtype == item_WheelLock)
 	{
-		if(GetItemArrayDataAtCell(itemid, 0) == 0)
+		new value;
+		GetItemArrayDataAtCell(itemid, value, 0);
+		if(value == 0)
 		{
 			SetItemNameExtra(itemid, "Uncut");
 		}
@@ -267,11 +266,11 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerCrafted(playerid, craftset, result)
+hook OnPlayerCrafted(playerid, CraftSet:craftset, Item:result)
 {
-	dbg("global", CORE, "[OnPlayerCrafted] in /gamemodes/sss/core/vehicle/locksmith.pwn");
-
-	if(GetCraftSetResult(craftset) == item_WheelLock)
+	new ItemType:resulttype;
+	GetCraftSetResult(craftset, resulttype);
+	if(resulttype == item_WheelLock)
 	{
 		SetItemArrayDataAtCell(result, 1, 0);
 	}
@@ -279,25 +278,28 @@ hook OnPlayerCrafted(playerid, craftset, result)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerConstructed(playerid, consset, result)
+hook OnPlayerConstructed(playerid, consset, Item:result)
 {
-	new craftset = GetConstructionSetCraftSet(consset);
-
-	if(GetCraftSetResult(craftset) == item_Key)
+	new CraftSet:craftset = GetConstructionSetCraftSet(consset);
+	new ItemType:resulttype;
+	GetCraftSetResult(craftset, resulttype);
+	if(resulttype == item_Key)
 	{
 		new
 			items[MAX_CONSTRUCT_SET_ITEMS][e_selected_item_data],
 			count,
-			tmp,
-			itemid = INVALID_ITEM_ID;
+			Item:tmp,
+			data,
+			Item:itemid = INVALID_ITEM_ID;
 
 		GetPlayerConstructionItems(playerid, items, count);
 
 		for(new i; i < count; i++)
 		{
-			tmp = items[i][cft_selectedItemID];
+			tmp = items[i][craft_selectedItemID];
+			GetItemArrayDataAtCell(tmp, data, 0);
 
-			if(GetItemType(tmp) == item_Key && GetItemArrayDataAtCell(tmp, 0) > 0)
+			if(GetItemType(tmp) == item_Key && data > 0)
 			{
 				itemid = tmp;
 				break;
@@ -307,12 +309,15 @@ hook OnPlayerConstructed(playerid, consset, result)
 		if(IsValidItem(itemid))
 		{
 			SetItemArrayDataSize(result, 2);
-			SetItemArrayDataAtCell(result, GetItemArrayDataAtCell(itemid, 0), 0);
-			SetItemArrayDataAtCell(result, GetItemArrayDataAtCell(itemid, 1), 1);
+			new v1, v2;
+			GetItemArrayDataAtCell(itemid, v1, 0);
+			GetItemArrayDataAtCell(itemid, v2, 1);
+			SetItemArrayDataAtCell(result, v1, 0);
+			SetItemArrayDataAtCell(result, v2, 1);
 		}
 		else
 		{
-			err("Key duplicated attempt failed %d %d %d %d", consset, craftset, result, tmp);
+			err("Key duplicated attempt failed %d %d %d %d", consset, _:craftset, _:result, _:tmp);
 		}
 	}
 

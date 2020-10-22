@@ -25,21 +25,17 @@
 #include <YSI_Coding\y_hooks>
 
 
-static scr_TargetItem[MAX_PLAYERS];
+static Item:scr_TargetItem[MAX_PLAYERS];
 
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/item/screwdriver.pwn");
-
 	scr_TargetItem[playerid] = INVALID_ITEM_ID;
 }
 
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/screwdriver.pwn");
-
 	if(GetItemType(itemid) == item_Screwdriver)
 	{
 		new
@@ -55,7 +51,9 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 			if(trigger == RADIO || trigger == MOTION)
 			{
-				if(GetItemExtraData(withitemid) == 1)
+				new armed;
+				GetItemExtraData(withitemid, armed);
+				if(armed == 1)
 				{
 					StartHoldAction(playerid, 2000);
 					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
@@ -71,8 +69,6 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/screwdriver.pwn");
-
 	if(oldkeys & 16)
 	{
 		if(IsValidItem(scr_TargetItem[playerid]))
@@ -84,8 +80,6 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 hook OnHoldActionFinish(playerid)
 {
-	dbg("global", CORE, "[OnHoldActionFinish] in /gamemodes/sss/core/item/screwdriver.pwn");
-
 	if(IsValidItem(scr_TargetItem[playerid]))
 	{
 		ClearAnimations(playerid);

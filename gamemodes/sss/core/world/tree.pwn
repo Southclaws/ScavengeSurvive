@@ -299,11 +299,9 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 
 	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		dbg("global", CORE, "[_tree_EnterArea] Area tree area type for tree %i", data[1]);
-
 		new
-			toolname[ITM_MAX_NAME],
-			yieldname[ITM_MAX_NAME];
+			toolname[MAX_ITEM_NAME],
+			yieldname[MAX_ITEM_NAME];
 
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_harvest_item], toolname);
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
@@ -325,7 +323,6 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 
 	if(data[0] == TREE_STREAMER_AREA_IDENTIFIER)
 	{
-		dbg("global", CORE, "[_tree_LeaveArea] Area tree area type");
 		CallLocalFunction("OnPlayerLeaveTreeArea", "dd", playerid, data[1]);
 		tree_AtTree[playerid] = INVALID_TREE_ID;
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -334,7 +331,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(tree_AtTree[playerid] != INVALID_TREE_ID)
 	{
@@ -349,8 +346,6 @@ hook OnPlayerUseItem(playerid, itemid)
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
-	dbg("global", CORE, "[OnPlayerKeyStateChange] in /gamemodes/sss/core/item/chainsaw.pwn");
-
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
@@ -385,8 +380,6 @@ _StopWoodCutting(playerid)
 
 hook OnHoldActionUpdate(playerid, progress)
 {
-	dbg("global", CORE, "[OnHoldActionUpdate] in /gamemodes/sss/core/item/chainsaw.pwn");
-
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 		
@@ -397,7 +390,7 @@ hook OnHoldActionUpdate(playerid, progress)
 	}
 
 	new
-		itemid,
+		Item:itemid,
 		ItemType:itemtype;
 
 	itemid = GetPlayerItem(playerid);
@@ -571,8 +564,8 @@ stock SetTreeHealth(treeid, Float:health)
 		return 0;
 
 	new
-		toolname[ITM_MAX_NAME],
-		yieldname[ITM_MAX_NAME];
+		toolname[MAX_ITEM_NAME],
+		yieldname[MAX_ITEM_NAME];
 
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_harvest_item], toolname);
 	GetItemTypeName(treeSpecies_Data[tree_Data[treeid][tree_species]][tree_result_item], yieldname);

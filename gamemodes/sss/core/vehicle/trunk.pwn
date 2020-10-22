@@ -26,8 +26,8 @@
 
 
 static
-			trunk_ContainerVehicle	[CNT_MAX] = {INVALID_VEHICLE_ID, ...},
-			trunk_ContainerID		[MAX_VEHICLES] = {INVALID_CONTAINER_ID, ...},
+			trunk_ContainerVehicle	[MAX_CONTAINER] = {INVALID_VEHICLE_ID, ...},
+Container:	trunk_ContainerID		[MAX_VEHICLES] = {INVALID_CONTAINER_ID, ...},
 			trunk_Locked			[MAX_VEHICLES],
 			trunk_CurrentVehicle	[MAX_PLAYERS] = {INVALID_VEHICLE_ID, ...};
 
@@ -41,8 +41,6 @@ static
 
 hook OnVehicleCreated(vehicleid)
 {
-	dbg("global", CORE, "[OnVehicleCreated] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	new
 		vehicletype,
 		trunksize;
@@ -62,8 +60,6 @@ hook OnVehicleCreated(vehicleid)
 
 hook OnVehicleReset(oldid, newid)
 {
-	dbg("global", CORE, "[OnVehicleReset] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(oldid != newid)
 	{
 		trunk_ContainerID[newid] = trunk_ContainerID[oldid];
@@ -75,8 +71,6 @@ hook OnVehicleReset(oldid, newid)
 
 hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 {
-	dbg("global", CORE, "[OnPlayerInteractVehicle] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(155.0 < angle < 205.0)
 	{
 		if(IsValidContainer(GetVehicleContainer(vehicleid)))
@@ -111,10 +105,8 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerCloseContainer(playerid, containerid)
+hook OnPlayerCloseContainer(playerid, Container:containerid)
 {
-	dbg("global", CORE, "[OnPlayerCloseContainer] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(IsValidVehicle(trunk_CurrentVehicle[playerid]))
 	{
 		if(containerid == GetVehicleContainer(trunk_CurrentVehicle[playerid]))
@@ -128,30 +120,24 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(IsPlayerAtAnyVehicleTrunk(playerid))
 		return Y_HOOKS_BREAK_RETURN_1;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemAddedToContainer(containerid, itemid, playerid)
+hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 {
-	dbg("global", CORE, "[OnItemAddedToContainer] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemRemovedFromCnt(containerid, slotid, playerid)
+hook OnItemRemovedFromCnt(Container:containerid, slotid, playerid)
 {
-	dbg("global", CORE, "[OnItemRemovedFromCnt] in /gamemodes/sss/core/vehicle/trunk.pwn");
-
 	if(IsPlayerConnected(playerid))
 		VehicleTrunkUpdateSave(playerid);
 
@@ -197,7 +183,7 @@ VehicleTrunkUpdateSave(playerid)
 ==============================================================================*/
 
 
-stock GetVehicleContainer(vehicleid)
+stock Container:GetVehicleContainer(vehicleid)
 {
 	if(!IsValidVehicle(vehicleid))
 		return INVALID_CONTAINER_ID;
@@ -205,7 +191,7 @@ stock GetVehicleContainer(vehicleid)
 	return trunk_ContainerID[vehicleid];
 }
 
-stock GetContainerTrunkVehicleID(containerid)
+stock GetContainerTrunkVehicleID(Container:containerid)
 {
 	if(!IsValidContainer(containerid))
 		return INVALID_VEHICLE_ID;

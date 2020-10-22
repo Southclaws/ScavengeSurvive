@@ -29,20 +29,20 @@
 
 
 new
-	RanchPcButton,
-	RanchHdd,
+	Button:RanchPcButton,
+	Item:RanchHdd,
 	RanchPcState,
 	RanchPcObj,
 	RanchPcPlayerViewing[MAX_PLAYERS],
 
-	QuarryDoor,
-	QuarryDoorKey,
+	Button:QuarryDoor,
+	Item:QuarryDoorKey,
 	QuarryDoorState,
 
-	CaveDoor,
+	Button:CaveDoor,
 	CaveLift,
-	CaveLiftButtonT,
-	CaveLiftButtonB,
+	Button:CaveLiftButtonT,
+	Button:CaveLiftButtonB,
 	LiftPos;
 
 
@@ -50,7 +50,7 @@ hook OnGameModeInit()
 {
 	_Ranch_LoadObjects();
 
-	new buttonid[2];
+	new Button:buttonid[2];
 
 	// Ranch
 
@@ -76,34 +76,34 @@ hook OnGameModeInit()
 
 	buttonid[0] = CreateButton(-2796.933349, 3682.779785, 02.515481, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // cave 1
 	buttonid[1] = CreateButton(-1445.01, 3673.77, 4.08, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // cave 2
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 	// Cave 2
 	buttonid[0] = CreateButton(-1618.94, 3648.38, 6.90, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // cave 2
 	buttonid[1] = CreateButton(-785.9272, 3727.1111, 0.5293, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // cave 3
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 
 	// Subway/Metro
 
 	buttonid[0] = CreateButton(-1007.395263, 5782.741210, 42.951477, "Press "KEYTEXT_INTERACT" to climb up the ladder", RANCH_STUFF_VIRTUALW);
 	buttonid[1] = CreateButton(2526.719482, -1648.620605, 14.471982, "Press "KEYTEXT_INTERACT" to climb down the ladder");
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 	buttonid[0] = CreateButton(250.599380, -154.643936, -50.768798, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW);
 	buttonid[1] = CreateButton(247.878799, -154.444061, 02.399550, "Press "KEYTEXT_INTERACT" to enter");
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 	buttonid[0] = CreateButton(-2276.608642, 5324.488281, 41.677970, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW);
 	buttonid[1] = CreateButton(-734.773986, 3861.994628, 12.482711, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // cave
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 
 	// Fort Claw underground
 
 	buttonid[0]=CreateButton(246.698684, -178.849655, -50.199367, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // underground
 	buttonid[1]=CreateButton(-952.559326, 5137.799804, 46.183383, "Press "KEYTEXT_INTERACT" to enter", RANCH_STUFF_VIRTUALW); // metro station
-	LinkTP(buttonid[0], buttonid[1]);
+	// LinkTP(buttonid[0], buttonid[1]);
 
 	CreateButton(-972.153869, 4303.185058, 48.666248, "~r~Locked", RANCH_STUFF_VIRTUALW);
 
@@ -124,10 +124,8 @@ hook OnGameModeInit()
 		265.0322, -168.9355, -46.8575, 0.0, 0.0, 0.0, .worldid = RANCH_STUFF_VIRTUALW);
 }
 
-hook OnButtonPress(playerid, buttonid)
+hook OnButtonPress(playerid, Button:buttonid)
 {
-	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/world/puzzles/ranch.pwn");
-
 	if(buttonid==RanchPcButton)
 	{
 	    if(RanchPcState == 0)Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You try to turn on the computer but the hard disk is missing.\nYou wonder where it could be and think it's mighty suspicious.\nThere is nothing useful nearby.", "Close", "");
@@ -198,10 +196,8 @@ hook OnButtonPress(playerid, buttonid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItemWithBtn(playerid, buttonid, itemid)
+hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithBtn] in /gamemodes/sss/world/puzzles/ranch.pwn");
-
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
 	    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You begin reattaching the hard drive to the computer.", "Close", "");

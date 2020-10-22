@@ -31,13 +31,11 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Locator"), 1);
 }
 
-hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItemWithItem] in /gamemodes/sss/core/item/locator.pwn");
-
 	if(GetItemType(itemid) == item_Locator && GetItemType(withitemid) == item_MobilePhone)
 	{
-		SetItemExtraData(itemid, withitemid);
+		SetItemExtraData(itemid, _:withitemid);
 		SetItemExtraData(withitemid, 1);
 
 		ChatMsgLang(playerid, YELLOW, "LOCATORSYNC");
@@ -46,19 +44,20 @@ hook OnPlayerUseItemWithItem(playerid, itemid, withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/locator.pwn");
-
 	if(GetItemType(itemid) != item_Locator)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	new phoneitemid = GetItemExtraData(itemid);
+	new Item:phoneitemid;
+	GetItemExtraData(itemid, _:phoneitemid);
 
 	if(!IsValidItem(phoneitemid) || GetItemType(phoneitemid) != item_MobilePhone)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(GetItemExtraData(phoneitemid) != 1)
+	new active;
+	GetItemExtraData(phoneitemid, active);
+	if(active != 1)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
@@ -81,13 +80,11 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/locator.pwn");
-
 	if(GetItemType(itemid) == item_Locator)
 	{
-		SetItemExtraData(itemid, INVALID_ITEM_ID);
+		SetItemExtraData(itemid, _:INVALID_ITEM_ID);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

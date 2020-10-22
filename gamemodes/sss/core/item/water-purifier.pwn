@@ -33,7 +33,7 @@ hook OnItemTypeDefined(uname[])
 		MachineType = DefineMachineType(GetItemTypeFromUniqueName("WaterMachine"), 12);
 }
 
-hook OnItemAddToContainer(containerid, itemid, playerid)
+hook OnItemAddToContainer(Container:containerid, Item:itemid, playerid)
 {
 	if(playerid == INVALID_PLAYER_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
@@ -55,7 +55,7 @@ hook OnItemAddToContainer(containerid, itemid, playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-_machine_isItemBottledSeawater(itemid)
+_machine_isItemBottledSeawater(Item:itemid)
 {
 	if(GetItemType(itemid) != item_Bottle)
 		return false;
@@ -69,19 +69,20 @@ _machine_isItemBottledSeawater(itemid)
 	return true;
 }
 
-hook OnMachineFinish(itemid, containerid)
+hook OnMachineFinish(Item:itemid, Container:containerid)
 {
 	if(GetItemTypeMachineType(GetItemType(itemid)) != MachineType)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
 	new
-		subitemid,
+		Item:subitemid,
 		Float:amounts[MAX_MACHINE_ITEMS],
 		itemcount;
 
-	for(new i = GetContainerItemCount(containerid) - 1; i > -1; i--)
+	GetContainerItemCount(containerid, itemcount);
+	for(new i = itemcount - 1; i > -1; i--)
 	{
-		subitemid = GetContainerSlotItem(containerid, i);
+		GetContainerSlotItem(containerid, i, subitemid);
 		amounts[itemcount] = GetLiquidItemLiquidAmount(subitemid);
 		DestroyItem(subitemid);
 		itemcount++;

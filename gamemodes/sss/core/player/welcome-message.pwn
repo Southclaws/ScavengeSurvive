@@ -33,8 +33,6 @@ Timer:	WelcomeMessageTimer[MAX_PLAYERS],
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/welcome-message.pwn");
-
 	CanLeaveWelcomeMessage[playerid] = true;
 
 	return 1;

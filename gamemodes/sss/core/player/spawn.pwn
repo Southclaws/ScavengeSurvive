@@ -72,7 +72,7 @@ hook OnGameModeInit()
 		resitems[16][32],
 		resitems_total,
 
-		bagtype[ITM_MAX_NAME];
+		bagtype[MAX_ITEM_NAME];
 
 	GetSettingString("spawn/bagtype", "Satchel", bagtype);
 	spawn_BagType = GetItemTypeFromUniqueName(bagtype, true);
@@ -110,8 +110,6 @@ hook OnGameModeInit()
 
 hook OnPlayerConnect(playerid)
 {
-	dbg("global", CORE, "[OnPlayerConnect] in /gamemodes/sss/core/player/spawn.pwn");
-
 	spawn_State[playerid] = false;
 
 //	defer LoadClassUI(playerid);
@@ -269,8 +267,6 @@ PlayerCreateNewCharacter(playerid)
 
 hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 {
-	dbg("global", CORE, "[OnPlayerClickPlayerTD] in /gamemodes/sss/core/player/spawn.pwn");
-
 	if(CanPlayerLeaveWelcomeMessage(playerid))
 	{
 		if(playertextid == ClassButtonMale[playerid])
@@ -299,8 +295,8 @@ PlayerSpawnNewCharacter(playerid, gender)
 	SetAccountTotalSpawns(name, GetPlayerTotalSpawns(playerid));
 
 	new
-		backpackitem,
-		tmpitem,
+		Item:backpackitem,
+		Item:tmpitem,
 		Float:x,
 		Float:y,
 		Float:z,

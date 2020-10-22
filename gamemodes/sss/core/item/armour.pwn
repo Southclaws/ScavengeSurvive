@@ -26,7 +26,7 @@
 
 
 static
-	arm_PlayerArmourItem[MAX_PLAYERS];
+	Item:arm_PlayerArmourItem[MAX_PLAYERS];
 
 
 hook OnItemTypeDefined(uname[])
@@ -35,10 +35,8 @@ hook OnItemTypeDefined(uname[])
 		SetItemTypeMaxArrayData(GetItemTypeFromUniqueName("Armour"), 1);
 }
 
-hook OnItemCreate(itemid)
+hook OnItemCreate(Item:itemid)
 {
-	dbg("global", CORE, "[OnItemCreate] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(GetItemLootIndex(itemid) != -1)
 	{
 		if(GetItemType(itemid) == item_Armour)
@@ -49,15 +47,14 @@ hook OnItemCreate(itemid)
 }
 
 
-hook OnPlayerUseItem(playerid, itemid)
+hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	dbg("global", CORE, "[OnPlayerUseItem] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(GetItemType(itemid) == item_Armour)
 	{
 		if(GetPlayerAP(playerid) <= 0.0)
 		{
-			new data = GetItemExtraData(itemid);
+			new data;
+			GetItemExtraData(itemid, data);
 			if(data > 0)
 			{
 				SetPlayerArmourItem(playerid, itemid);
@@ -70,16 +67,15 @@ hook OnPlayerUseItem(playerid, itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnItemNameRender(itemid, ItemType:itemtype)
+hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	dbg("global", CORE, "[OnItemNameRender] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(itemtype == item_Armour)
 	{
 		new
-			amount = GetItemExtraData(itemid),
+			amount,
 			str[11];
 
+		GetItemExtraData(itemid, amount);
 		format(str, sizeof(str), "%d", amount);
 		
 		SetItemNameExtra(itemid, str);
@@ -89,8 +85,6 @@ hook OnItemNameRender(itemid, ItemType:itemtype)
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)
 {
-	dbg("global", CORE, "[OnPlayerShootPlayer] in /gamemodes/sss/core/item/armour.pwn");
-
 	if(bodypart == 3)
 	{
 		new Float:ap = GetPlayerAP(targetid);
@@ -142,7 +136,7 @@ stock CreatePlayerArmour(playerid)
 	return SetPlayerArmourItem(playerid, CreateItem(item_Armour));
 }
 
-stock SetPlayerArmourItem(playerid, itemid)
+stock SetPlayerArmourItem(playerid, Item:itemid)
 {
 	if(!IsValidItem(itemid))
 		return 0;
@@ -161,9 +155,9 @@ stock SetPlayerArmourItem(playerid, itemid)
 	return 1;
 }
 
-stock RemovePlayerArmourItem(playerid)
+stock Item:RemovePlayerArmourItem(playerid)
 {
-	new itemid = arm_PlayerArmourItem[playerid];
+	new Item:itemid = arm_PlayerArmourItem[playerid];
 
 	RemovePlayerAttachedObject(playerid, ATTACHSLOT_ARMOUR);
 	arm_PlayerArmourItem[playerid] = INVALID_ITEM_ID;
@@ -171,7 +165,7 @@ stock RemovePlayerArmourItem(playerid)
 	return itemid;
 }
 
-stock GetPlayerArmourItem(playerid)
+stock Item:GetPlayerArmourItem(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return INVALID_ITEM_ID;

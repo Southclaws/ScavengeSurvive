@@ -23,7 +23,16 @@
 		"oscar-broman/sqlitei",
 		"oscar-broman/md-sort",
 		"Southclaws/modio",
-		"Southclaws/SIF",
+		"ScavengeSurvive/personal-space",
+		"ScavengeSurvive/button",
+		"ScavengeSurvive/door",
+		"ScavengeSurvive/item",
+		"ScavengeSurvive/inventory",
+		"ScavengeSurvive/container",
+		"ScavengeSurvive/item-array-data",
+		"ScavengeSurvive/container-dialog",
+		"ScavengeSurvive/inventory-dialog",
+		"ScavengeSurvive/craft",
 		"Southclaws/pawn-fsutil:1.2.0",
 		"Southclaws/samp-weapon-data",
 		"Southclaws/samp-linegen",
@@ -38,6 +47,9 @@
 			"-\\+",
 			"-d3",
 			"-Z+"
+		],
+		"includes": [
+			"legacy"
 		]
 	},
 	"runtime": {

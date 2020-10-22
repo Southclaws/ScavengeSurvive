@@ -36,37 +36,53 @@
 ==============================================================================*/
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS	(32)
+#define MAX_PLAYERS						(32)
 
-#define _DEBUG							0 // YSI
-#define CGEN_MEMORY						(69420) // lol xd funny meme welcome to comedy zoNEwd
+// YSI
+#define _DEBUG							0
+#define CGEN_MEMORY						(69420)
 #define YSI_NO_VERSION_CHECK
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
 #define YSI_NO_HEAP_MALLOC
-#define DB_DEBUG						false // SQLitei
-#define DB_MAX_STATEMENTS				(128) // SQLitei
-#define DB_DEBUG_BACKTRACE_NOTICE		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_WARNING		(true) // SQLitei
-#define DB_DEBUG_BACKTRACE_ERROR		(true) // SQLitei
-#define STRLIB_RETURN_SIZE				(256) // strlib
-#define MODIO_DEBUG						(0) // modio
-#define MODIO_FILE_STRUCTURE_VERSION	(20) // modio
-#define MODIO_SCRIPT_EXIT_FIX			(1) // modio
-#define MAX_MODIO_SESSION				(2048) // modio
-#define BTN_TELEPORT_FREEZE_TIME		(3000) // SIF/Button
-#define INV_MAX_SLOTS					(6) // SIF/Inventory
-#define ITM_ARR_ARRAY_SIZE_PROTECT		(false) // SIF/extensions/ItemArrayData
-#define ITM_MAX_TYPES					(ItemType:300) // SIF/Item
-#define ITM_MAX_NAME					(20) // SIF/Item
-#define ITM_MAX_TEXT					(64) // SIF/Item
-#define ITM_DROP_ON_DEATH				(false) // SIF/Item
-#define SIF_USE_DEBUG_LABELS			// SIF/extensions/DebugLabels
-#define DEBUG_LABELS_BUTTON				// SIF/Button
-#define DEBUG_LABELS_ITEM				// SIF/Item
-#define BTN_MAX							(32768) // SIF/Button
-#define ITM_MAX							(32768) // SIF/Item
-#define CNT_MAX_SLOTS					(100)
+
+// SQLitei
+#define DB_DEBUG						false 
+#define DB_MAX_STATEMENTS				(128)
+#define DB_DEBUG_BACKTRACE_NOTICE		(true)
+#define DB_DEBUG_BACKTRACE_WARNING		(true)
+#define DB_DEBUG_BACKTRACE_ERROR		(true)
+
+// strlib
+#define STRLIB_RETURN_SIZE				(256)
+
+// modio
+#define MODIO_DEBUG						(0)
+#define MODIO_FILE_STRUCTURE_VERSION	(20)
+#define MODIO_SCRIPT_EXIT_FIX			(1)
+#define MAX_MODIO_SESSION				(2048)
+
+// SS/button
+#define BTN_TELEPORT_FREEZE_TIME		(3000)
+
+// SS/inventory
+#define MAX_INVENTORY_SLOTS				(6)
+
+// SS/button
+#define BTN_MAX							Button:32768
+
+// SS/item
+#define MAX_ITEM						Item:32768
+#define MAX_ITEM_TYPE					(ItemType:300)
+#define MAX_ITEM_NAME					(20)
+#define MAX_ITEM_TEXT					(64)
+#define MAX_CONTAINER_SLOTS				(100)
+
+// pawn-errors
+#define PRINT_BACKTRACES
+
+#pragma warning disable 208 // TODO: Fix reparse issues and remove!
+
 
 /*==============================================================================
 
@@ -139,14 +155,18 @@ public OnGameModeInit()
 
 #include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
-#include <SIF>						// By Southclaw, v1.6.2:	https://github.com/Southclaws/SIF
-#include <SIF\extensions\item-array-data>
-#include <SIF\extensions\item-serializer>
-#include <SIF\extensions\dialog-inventory>
-#include <SIF\extensions\keys-inventory>
-#include <SIF\extensions\dialog-container>
-#include <SIF\extensions\craft>
-#include <SIF\extensions\debug-labels>
+#include <personal-space>
+#include <button>
+#include <door>
+#include <item>
+#include <inventory>
+#include <container>
+#include <item-array-data>
+#include <item-serializer>
+#include <inventory-dialog>
+#include <container-dialog>
+#include <craft>
+#include <debug-labels>
 #include <weapon-data>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
 #include <linegen>					// By Southclaw:			https://github.com/Southclaws/Line
 #include <zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
@@ -283,6 +303,10 @@ enum
 	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
 }
 
+// Redefine Item Extra Data API with the Array Data API
+#define SetItemExtraData(%0,%1) SetItemArrayDataAtCell(%0,%1,0,true)
+#define GetItemExtraData(%0) GetItemArrayDataAtCell(%0,0)
+
 
 /*==============================================================================
 
@@ -357,7 +381,6 @@ new stock
 #include "sss/utils/zones.pwn"
 #include "sss/utils/player.pwn"
 #include "sss/utils/object.pwn"
-#include "sss/utils/tickcountfix.pwn"
 #include "sss/utils/string.pwn"
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
@@ -378,23 +401,22 @@ new stock
 */
 #include "sss/core/vehicle/vehicle-type.pwn"
 #include "sss/core/vehicle/lock.pwn"
-#include "sss/core/player/core.pwn"
-#include "sss/core/vehicle/core.pwn"
-#include "sss/core/admin/core.pwn"
-#include "sss/core/char/holster.pwn"
+#include "sss/core/player/player.pwn"
+#include "sss/core/vehicle/vehicle.pwn"
+#include "sss/core/admin/admin.pwn"
 #include "sss/core/weapon/ammunition.pwn"
-#include "sss/core/weapon/core.pwn"
-#include "sss/core/weapon/damage-core.pwn"
+#include "sss/core/weapon/weapon.pwn"
+#include "sss/core/weapon/damage.pwn"
 #include "sss/core/ui/hold-action.pwn"
 #include "sss/core/item/liquid.pwn"
-#include "sss/core/item/liquid-container.pwn"
 #include "sss/core/world/tree.pwn"
 #include "sss/core/world/explosive.pwn"
 #include "sss/core/world/craft-construct.pwn"
-#include "sss/core/world/loot-loader.pwn"
+#include "sss/core/io/loot.pwn"
 #include "sss/core/io/item.pwn"
 #include "sss/core/io/defence.pwn"
 #include "sss/core/io/safebox.pwn"
+#include "sss/core/io/tree.pwn"
 
 /*
 	MODULE INITIALISATION CALLS
@@ -447,18 +469,14 @@ new stock
 #include "sss/core/char/food.pwn"
 #include "sss/core/char/drugs.pwn"
 #include "sss/core/char/clothes.pwn"
-#include "sss/core/char/hats.pwn"
 #include "sss/core/char/inventory.pwn"
 #include "sss/core/char/animations.pwn"
 #include "sss/core/char/knockout.pwn"
 #include "sss/core/char/disarm.pwn"
 #include "sss/core/char/overheat.pwn"
 #include "sss/core/char/infection.pwn"
-#include "sss/core/char/backpack.pwn"
 #include "sss/core/char/handcuffs.pwn"
-#include "sss/core/char/medical.pwn"
 #include "sss/core/char/aim-shout.pwn"
-#include "sss/core/char/masks.pwn"
 #include "sss/core/char/bleed.pwn"
 #include "sss/core/char/skills.pwn"
 #include "sss/core/char/travel-stats.pwn"
@@ -487,26 +505,73 @@ new stock
 
 // WORLD ENTITIES
 #include "sss/core/world/fuel.pwn"
-#include "sss/core/world/barbecue.pwn"
-#include "sss/core/world/defences.pwn"
-#include "sss/core/world/gravestone.pwn"
-#include "sss/core/world/safebox.pwn"
-#include "sss/core/world/tent.pwn"
-#include "sss/core/world/campfire.pwn"
-#include "sss/core/world/emp.pwn"
-#include "sss/core/world/sign.pwn"
 #include "sss/core/world/supply-crate.pwn"
 #include "sss/core/world/weapons-cache.pwn"
 #include "sss/core/world/loot.pwn"
-#include "sss/core/world/workbench.pwn"
-#include "sss/core/world/machine.pwn"
-#include "sss/core/world/scrap-machine.pwn"
-#include "sss/core/world/refine-machine.pwn"
-#include "sss/core/world/tree-loader.pwn"
-#include "sss/core/world/water-purifier.pwn"
-#include "sss/core/world/plot-pole.pwn"
 #include "sss/core/world/item-tweak.pwn"
-#include "sss/core/world/furniture.pwn"
+
+// ITEM TYPE CATEGORIES
+#include "sss/core/itemtype/defences.pwn"
+#include "sss/core/itemtype/furniture.pwn"
+#include "sss/core/itemtype/liquid-container.pwn"
+#include "sss/core/itemtype/machine.pwn"
+#include "sss/core/itemtype/safebox.pwn"
+#include "sss/core/itemtype/hats.pwn"
+#include "sss/core/itemtype/backpack.pwn"
+#include "sss/core/itemtype/medical.pwn"
+#include "sss/core/itemtype/masks.pwn"
+#include "sss/core/itemtype/holster.pwn"
+
+// ITEMS
+#include "sss/core/item/food.pwn"
+#include "sss/core/item/firework.pwn"
+#include "sss/core/item/shield.pwn"
+#include "sss/core/item/handcuffs.pwn"
+#include "sss/core/item/wheel.pwn"
+#include "sss/core/item/headlight.pwn"
+#include "sss/core/item/pills.pwn"
+#include "sss/core/item/dice.pwn"
+#include "sss/core/item/armour.pwn"
+#include "sss/core/item/injector.pwn"
+#include "sss/core/item/parachute.pwn"
+#include "sss/core/item/molotov.pwn"
+#include "sss/core/item/screwdriver.pwn"
+#include "sss/core/item/torso.pwn"
+#include "sss/core/item/campfire.pwn"
+#include "sss/core/item/herpderp.pwn"
+#include "sss/core/item/stungun.pwn"
+#include "sss/core/item/note.pwn"
+#include "sss/core/item/seedbag.pwn"
+#include "sss/core/item/plantpot.pwn"
+#include "sss/core/item/heartshapedbox.pwn"
+#include "sss/core/item/fishingrod.pwn"
+#include "sss/core/item/locator.pwn"
+#include "sss/core/item/locker.pwn"
+#include "sss/core/item/largeframe.pwn"
+#include "sss/core/item/barbecue.pwn"
+#include "sss/core/item/campfire.pwn"
+#include "sss/core/item/tent.pwn"
+#include "sss/core/item/sign.pwn"
+#include "sss/core/item/workbench.pwn"
+#include "sss/core/item/scrap-machine.pwn"
+#include "sss/core/item/refine-machine.pwn"
+#include "sss/core/item/water-purifier.pwn"
+#include "sss/core/item/plot-pole.pwn"
+
+// ITEMS (HATS/MASKS)
+#include "sss/core/apparel/armyhelm.pwn"
+#include "sss/core/apparel/cowboyhat.pwn"
+#include "sss/core/apparel/truckcap.pwn"
+#include "sss/core/apparel/boaterhat.pwn"
+#include "sss/core/apparel/bowlerhat.pwn"
+#include "sss/core/apparel/policecap.pwn"
+#include "sss/core/apparel/tophat.pwn"
+#include "sss/core/apparel/xmashat.pwn"
+#include "sss/core/apparel/witcheshat.pwn"
+#include "sss/core/apparel/policehelm.pwn"
+#include "sss/core/apparel/zorromask.pwn"
+#include "sss/core/apparel/gasmask.pwn"
+#include "sss/core/apparel/hockeymask.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
@@ -531,51 +596,6 @@ new stock
 #include "sss/core/admin/freeze.pwn"
 #include "sss/core/admin/name-tags.pwn"
 #include "sss/core/admin/player-list.pwn"
-
-// ITEMS
-#include "sss/core/item/food.pwn"
-#include "sss/core/item/firework.pwn"
-#include "sss/core/item/shield.pwn"
-#include "sss/core/item/handcuffs.pwn"
-#include "sss/core/item/wheel.pwn"
-#include "sss/core/item/headlight.pwn"
-#include "sss/core/item/pills.pwn"
-#include "sss/core/item/dice.pwn"
-#include "sss/core/item/armour.pwn"
-#include "sss/core/item/injector.pwn"
-#include "sss/core/item/parachute.pwn"
-#include "sss/core/item/molotov.pwn"
-#include "sss/core/item/screwdriver.pwn"
-#include "sss/core/item/torso.pwn"
-#include "sss/core/item/ammotin.pwn"
-#include "sss/core/item/campfire.pwn"
-#include "sss/core/item/herpderp.pwn"
-#include "sss/core/item/stungun.pwn"
-#include "sss/core/item/note.pwn"
-#include "sss/core/item/seedbag.pwn"
-#include "sss/core/item/plantpot.pwn"
-#include "sss/core/item/heartshapedbox.pwn"
-#include "sss/core/item/fishingrod.pwn"
-#include "sss/core/item/chainsaw.pwn"
-#include "sss/core/item/locator.pwn"
-#include "sss/core/item/locker.pwn"
-#include "sss/core/item/largeframe.pwn"
-
-// ITEMS (HATS/MASKS)
-#include "sss/core/item/armyhelm.pwn"
-#include "sss/core/item/cowboyhat.pwn"
-#include "sss/core/item/truckcap.pwn"
-#include "sss/core/item/boaterhat.pwn"
-#include "sss/core/item/bowlerhat.pwn"
-#include "sss/core/item/policecap.pwn"
-#include "sss/core/item/tophat.pwn"
-#include "sss/core/item/xmashat.pwn"
-#include "sss/core/item/witcheshat.pwn"
-#include "sss/core/item/policehelm.pwn"
-
-#include "sss/core/item/zorromask.pwn"
-#include "sss/core/item/gasmask.pwn"
-#include "sss/core/item/hockeymask.pwn"
 
 // POST-CODE
 

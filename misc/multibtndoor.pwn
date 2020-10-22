@@ -212,8 +212,6 @@ _mbt_CreateRoom_1(instworld)
 
 hook OnGameModeInit()
 {
-	dbg("global", CORE, "[OnGameModeInit] in extensions/multibtndoor.pwn");
-
 	CreateMBD(1928.89709, 2774.31934, 10.7447, random(2));
 	CreateMBD(1967.37476, 2765.92334, 10.7447, random(2));
 	CreateMBD(1992.53406, 2764.37500, 10.7447, random(2));
@@ -264,10 +262,6 @@ hook OnGameModeInit()
 
 hook OnMultiButtonTrigger(triggerid, success)
 {
-	dbg("global", CORE, "[OnMultiButtonTrigger] in /gamemodes/sss/extensions/multibtndoor.pwn");
-
-	dbg("global", CORE, "[OnMultiButtonTrigger] in extensions/multibtndoor.pwn");
-
 	if(success)
 	{
 		if(mbd_MultiTriggerInst[triggerid] != -1)
@@ -282,10 +276,6 @@ hook OnMultiButtonTrigger(triggerid, success)
 
 hook OnButtonPress(playerid, buttonid)
 {
-	dbg("global", CORE, "[OnButtonPress] in /gamemodes/sss/extensions/multibtndoor.pwn");
-
-	dbg("global", CORE, "[OnButtonPress] in extensions/multibtndoor.pwn");
-
 	if(mbd_EntryButtonInst[buttonid] != -1)
 	{
 		if(buttonid == mbd_Data[mbd_EntryButtonInst[buttonid]][mbd_entrBtn])
