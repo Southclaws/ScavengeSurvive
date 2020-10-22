@@ -11,9 +11,13 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const EntryPattern = `[OnGameModeInit] FIRST_INIT`
-const ExitPattern = `[OnScriptExit] LAST_EXIT`
-const ErrorPattern = `Failed to load`
+const (
+	sampLoggerMessageKey = `msg`
+	sampLoggerLevelKey   = `lvl`
+	EntryPattern         = `[OnGameModeInit] FIRST_INIT`
+	ExitPattern          = `[OnScriptExit] LAST_EXIT`
+	ErrorPattern         = `Failed to load`
+)
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
 
@@ -103,17 +107,19 @@ func parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Fiel
 			if len(value) == 0 {
 				return zap.L().Info, line, nil
 			}
-			if key == "text" || key == "level" {
+			if key == sampLoggerMessageKey || key == sampLoggerLevelKey {
 				continue
 			}
 			fields = append(fields, transformType(key, value))
 		}
-		if lvl, ok := rawFields["level"]; ok {
+		if lvl, ok := rawFields[sampLoggerLevelKey]; ok {
 			if lvl == "error" {
-				return zap.L().Error, rawFields["text"], fields
+				return zap.L().Error, rawFields[sampLoggerMessageKey], fields
+			} else if lvl == "debug" {
+				return zap.L().Debug, rawFields[sampLoggerMessageKey], fields
 			}
 		}
-		return zap.L().Info, rawFields["text"], fields
+		return zap.L().Info, rawFields[sampLoggerMessageKey], fields
 	}
 	return zap.L().Info, line, nil
 }
