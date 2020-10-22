@@ -166,6 +166,9 @@ func parseSampLoggerToMap(line string) map[string]string {
 			return nil
 		}
 		value := strings.ReplaceAll(split[1], `\`, "")
+		if len(value) == 0 {
+			return nil
+		}
 		if value[0] == '"' {
 			fields[split[0]] = strings.Trim(value, `"`)
 		} else {
