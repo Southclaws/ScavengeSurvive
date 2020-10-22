@@ -2,7 +2,6 @@ package runner
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"regexp"
 	"strconv"
@@ -14,6 +13,7 @@ import (
 
 const EntryPattern = `[OnGameModeInit] FIRST_INIT`
 const ExitPattern = `[OnScriptExit] LAST_EXIT`
+const ErrorPattern = `Failed to load`
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
 
@@ -41,31 +41,50 @@ func parseWithRecover(r io.Reader, restartKiller chan struct{}) {
 	init := true
 	plugins := []string{}
 	scanner := bufio.NewScanner(r)
+	preamble := []string{}
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		// Exit pattern triggers a full process restart.
-		if strings.Contains(line, ExitPattern) {
-			restartKiller <- struct{}{}
-			init = true
-			continue
-		}
+		if init {
+			if strings.HasPrefix(line, ErrorPattern) {
+				zap.L().Warn("an error occurred during initialisation, below is the output from initialisation that is usually hidden during normal startups")
+				for _, l := range preamble {
+					zap.L().Info(l)
+				}
+				preamble = preamble[:0]
+				restartKiller <- struct{}{}
+				init = true
+				continue
+			}
 
-		// Entry pattern tells the scanner that the process has handed
-		// control to the gamemode and preamble is finished. Log out the
-		// relevant info such as plugins loaded.
-		if strings.Contains(line, EntryPattern) {
-			init = false
-			zap.L().Info("finished initialising", zap.Strings("plugins", plugins))
-		} else if init {
+			// Entry pattern tells the scanner that the process has handed
+			// control to the gamemode and preamble is finished. Log out the
+			// relevant info such as plugins loaded.
+			if strings.Contains(line, EntryPattern) {
+				init = false
+				zap.L().Info("finished initialising", zap.Strings("plugins", plugins))
+				continue
+			}
+
+			// look for plugin initialisation logs and store them for printing
 			match := PluginPattern.FindStringSubmatch(line)
 			if len(match) == 2 {
 				plugins = append(plugins, match[1])
 			}
 
-			fmt.Println(line)
+			// save the preamble for later, if the server crashes during
+			// startup then this needs to be printed for debugging.
+			preamble = append(preamble, line)
 
-			// skip unimportant log lines
+			// skip logging these lines immediately because they're mostly
+			// useless for non-broken startup.
+			continue
+		}
+
+		// Exit pattern triggers a full process restart.
+		if strings.Contains(line, ExitPattern) {
+			restartKiller <- struct{}{}
+			init = true
 			continue
 		}
 
