@@ -8,8 +8,8 @@
 		"sampctl/samp-stdlib",
 		"Southclaws/samp-nolog:0.2.1",
 		"Southclaws/samp-stdlib:0.3.7-R2-2-1",
-		"Southclaws/samp-logger:1.4.0",
-		"Southclaws/pawn-errors:^1.1.0",
+		"Southclaws/samp-logger",
+		"Southclaws/pawn-errors",
 		"maddinat0r/sscanf:v2.8.3",
 		"samp-incognito/samp-streamer-plugin:v2.9.4",
 		"pawn-lang/YSI-Includes",
@@ -36,9 +36,8 @@
 		"Southclaws/pawn-fsutil:1.2.0",
 		"Southclaws/samp-weapon-data",
 		"Southclaws/samp-linegen",
-		"Southclaws/samp-zipline:v1.2.1",
-		"Southclaws/samp-ladders:v1.0.0",
-		"ScavengeSurvive/action-text"
+		"Southclaws/samp-zipline",
+		"Southclaws/samp-ladders"
 	],
 	"build": {
 		"args": [
