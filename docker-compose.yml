@@ -10,4 +10,4 @@ services:
     volumes:
       - ./:/server/
     ports:
-      - 7777:7777/udp
+      - 0.0.0.0:7777:7777/udp
