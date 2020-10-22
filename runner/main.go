@@ -78,7 +78,7 @@ func Run() error {
 		go RunWatcher(ctx, pcx)
 	}
 
-	go RunServer(ctx, os.Stdin, os.Stdout)
+	go RunServer(ctx, os.Stdin, os.Stdout, false)
 	go RunAPI(ctx)
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
