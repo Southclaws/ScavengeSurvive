@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"runtime"
 
 	"github.com/Southclaws/sampctl/download"
@@ -28,6 +29,12 @@ func Run() error {
 		if err := Ensure(); err != nil {
 			return errors.Wrap(err, "failed to ensure")
 		}
+		forceBuild = true
+		forceEnsure = true
+		zap.L().Info("doing first-time ensure and build")
+	}
+
+	if _, err := os.Stat(filepath.Join(dir, "dependencies")); err == os.ErrNotExist {
 		forceBuild = true
 		forceEnsure = true
 		zap.L().Info("doing first-time ensure and build")
