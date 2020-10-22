@@ -223,8 +223,15 @@ Item:LoadItem(const filename[], const uuid[], const callback[])
 	if(!IsItemTypeExtraDataDependent(GetItemType(itemid)))
 	{
 		length = modio_read(filename, _T<A,R,R,Y>, sizeof(big_data), big_data, false, false);
-
-		if(length > 0)
+		if(length <= 0)
+		{
+			Logger_Err("item modio read failed _T<A,R,R,Y>",
+				Logger_I("itemid", _:itemid),
+				Logger_S("uuid", uuid),
+				Logger_I("code", length)
+			);
+		}
+		else if(length > 0)
 		{
 			SetItemArrayData(itemid, big_data, length);
 		}
