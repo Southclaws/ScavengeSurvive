@@ -1,59 +1,60 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"strconv"
+	"time"
 
 	"github.com/Southclaws/ScavengeSurvive/runner"
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
+	"github.com/kelseyhightower/envconfig"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-func main() {
-	if err := runner.Run(); err != nil {
-		zap.L().Info("unexpected exit", zap.String("error", err.Error()))
-	}
-	zap.L().Info("exited gracefully")
+type config struct {
+	Production bool          `envconfig:"PRODUCTION" default:"false"`
+	LogLevel   zapcore.Level `envconfig:"LOG_LEVEL"  default:"info"`
 }
 
-func init() {
-	//nolint:errcheck
-	godotenv.Load()
+var logFileNameFormat = `logs/server-2006-01-02.log`
 
-	prod, err := strconv.ParseBool(os.Getenv("PRODUCTION"))
-	if _, ok := err.(*strconv.NumError); !ok {
-		fmt.Println("Failed to parse environment variable `PRODUCTION`", os.Getenv("PRODUCTION"), "error:", err)
-		os.Exit(1)
-	}
+func main() {
+	// Logger config is quite important for this app so it goes first in main().
 
-	var config zap.Config
-	if prod {
-		config = zap.NewProductionConfig()
+	var cfg config
+	envconfig.MustProcess("", &cfg)
+
+	var encoder zapcore.Encoder
+	if cfg.Production {
+		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
 	} else {
-		config = zap.NewDevelopmentConfig()
+		ec := zap.NewDevelopmentEncoderConfig()
+		ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		encoder = zapcore.NewConsoleEncoder(ec)
 	}
 
-	var level zapcore.Level
-	if err := level.UnmarshalText([]byte(os.Getenv("LOG_LEVEL"))); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+	zap.ReplaceGlobals(zap.New(zapcore.NewTee(
+		zapcore.NewCore(
+			encoder,
+			zapcore.Lock(os.Stdout),
+			cfg.LogLevel,
+		),
+		zapcore.NewCore(
+			encoder,
+			zapcore.AddSync(&lumberjack.Logger{
+				Filename: time.Now().Format(logFileNameFormat),
+				MaxSize:  100, // MB
+			}),
+			cfg.LogLevel,
+		),
+	)))
+	zap.L().Info("logger configured", zap.Any("config", cfg))
 
-	config.DisableCaller = true
-	config.Level.SetLevel(level)
-	config.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	// config.OutputPaths = []string{fmt.Sprintf("logs/%v.log", time.Now().Format("2006-01-02"))}
-
-	logger, err := config.Build()
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	zap.ReplaceGlobals(logger)
-
-	if !prod {
-		zap.L().Info("logger configured in development mode", zap.String("level", level.String()))
+	// Now run the app itself.
+	if err := runner.Run(); err != nil {
+		zap.L().Info("unexpected exit", zap.String("error", err.Error()))
+	} else {
+		zap.L().Info("exited gracefully")
 	}
 }

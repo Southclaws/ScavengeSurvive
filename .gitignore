@@ -50,6 +50,9 @@ private/
 gamemodes/sss/extensions/
 gamemodes/ScavengeSurvive.tar.gz
 
+# environment variables for development
+.env
+
 # stuff no one else needs
 *.lnk
 pyss/data/*.jpg
