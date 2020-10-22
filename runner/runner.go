@@ -3,6 +3,7 @@ package runner
 import (
 	"bufio"
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -56,6 +57,8 @@ func RunServer(ctx context.Context, r io.Reader, w io.Writer) {
 				if len(match) == 2 {
 					plugins = append(plugins, match[1])
 				}
+
+				fmt.Println(line)
 
 				// skip unimportant log lines
 				continue
