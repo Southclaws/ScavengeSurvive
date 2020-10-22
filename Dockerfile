@@ -19,6 +19,8 @@ RUN go build -o scavenge-survive
 
 FROM southclaws/sampctl as run
 
+RUN apt update && apt install -y uuid-dev:i386 curl
+
 WORKDIR /server
 
 COPY --from=build /ss/scavenge-survive /ss/scavenge-survive
