@@ -88,23 +88,27 @@ There are many weapons in the game, more than the original game. This page lists
                     ["Penetration"],
                     ["Size"],
                 ])
-
-                self.match_and_save(DefineItemTypeWeapon_custom, o, [
-                    ["Item", lambda x: self.itemname(x)],
-                    ["Bleed Rate"],
-                    ["Knockout Probability"],
-                    ["Type"],
-                ])
-
                 o.write("""
 
-# Melee
+# Melee Weapons
 
 """)
+
                 self.match_and_save(DefineItemTypeWeapon_melee, o, [
                     ["Item", lambda x: self.itemname(x)],
                     ["Bleed Rate"],
                     ["Knockout Probability"],
+                ])
+                o.write("""
+
+# Additional Melee Weapons
+
+""")
+                self.match_and_save(DefineItemTypeWeapon_custom, o, [
+                    ["Item", lambda x: self.itemname(x)],
+                    ["Bleed Rate"],
+                    ["Knockout Probability"],
+                    ["Attack Type"],
                 ])
 
     def itemname(self, varname):
