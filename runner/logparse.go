@@ -90,27 +90,32 @@ func parseWithRecover(r io.Reader, restartKiller chan struct{}) {
 
 		// otherwise, parse log entries for the samp-logger format and write
 		// them out.
-		message, fields := parseSampLoggerFormat(line)
-		zap.L().Info(message, fields...)
+		f, message, fields := parseSampLoggerFormat(line)
+		f(message, fields...)
 	}
 }
 
-func parseSampLoggerFormat(line string) (string, []zapcore.Field) {
+func parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Field), string, []zapcore.Field) {
 	rawFields := parseSampLoggerToMap(line)
 	if len(rawFields) > 0 {
 		fields := []zapcore.Field{}
 		for key, value := range rawFields {
 			if len(value) == 0 {
-				return line, nil
+				return zap.L().Info, line, nil
 			}
-			if key == "text" {
+			if key == "text" || key == "level" {
 				continue
 			}
 			fields = append(fields, transformType(key, value))
 		}
-		return rawFields["text"], fields
+		if lvl, ok := rawFields["level"]; ok {
+			if lvl == "error" {
+				return zap.L().Error, rawFields["text"], fields
+			}
+		}
+		return zap.L().Info, rawFields["text"], fields
 	}
-	return line, nil
+	return zap.L().Info, line, nil
 }
 
 func parseSampLoggerToMap(line string) map[string]string {

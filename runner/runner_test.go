@@ -39,7 +39,7 @@ func Test_parseSampLoggerFormat(t *testing.T) {
 	}
 	for ii, tt := range tests {
 		t.Run(fmt.Sprint(ii), func(t *testing.T) {
-			msg, got := parseSampLoggerFormat(tt.input)
+			_, msg, got := parseSampLoggerFormat(tt.input)
 			assert.Equal(t, tt.want, got)
 			pretty.Println(msg, got) //nolint:errcheck
 		})
