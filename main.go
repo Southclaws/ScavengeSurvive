@@ -17,7 +17,8 @@ type config struct {
 	LogLevel   zapcore.Level `envconfig:"LOG_LEVEL"  default:"info"`
 }
 
-var logFileNameFormat = `logs/server-2006-01-02.log`
+const logFileNameFormat = `logs/server-2006-01-02.log`
+const devLogTimeFormat = `15:04:05.000`
 
 func main() {
 	// Logger config is quite important for this app so it goes first in main().
@@ -33,6 +34,7 @@ func main() {
 	} else {
 		ec := zap.NewDevelopmentEncoderConfig()
 		ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
+		ec.EncodeTime = zapcore.TimeEncoderOfLayout(devLogTimeFormat)
 		encoder = zapcore.NewConsoleEncoder(ec)
 	}
 
