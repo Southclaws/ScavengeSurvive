@@ -27,7 +27,9 @@ func main() {
 
 	var encoder zapcore.Encoder
 	if cfg.Production {
-		encoder = zapcore.NewJSONEncoder(zap.NewProductionEncoderConfig())
+		ec := zap.NewProductionEncoderConfig()
+		ec.EncodeTime = zapcore.ISO8601TimeEncoder
+		encoder = zapcore.NewJSONEncoder(ec)
 	} else {
 		ec := zap.NewDevelopmentEncoderConfig()
 		ec.EncodeLevel = zapcore.CapitalColorLevelEncoder
