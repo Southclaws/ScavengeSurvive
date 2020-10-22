@@ -57,7 +57,9 @@ func Run() error {
 	// pcx.BuildName = build
 	pcx.ForceBuild = forceBuild
 	pcx.ForceEnsure = forceEnsure
-	pcx.BuildFile = "BUILD_NUMBER"
+	if os.Getenv("NO_BUILD_INCREMENT") != "" {
+		pcx.BuildFile = "BUILD_NUMBER"
+	}
 	pcx.Relative = true
 
 	if err := pcx.RunPrepare(context.Background()); err != nil {

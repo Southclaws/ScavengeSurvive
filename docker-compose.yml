@@ -7,6 +7,7 @@ services:
     command: package run
     environment:
       AUTO_BUILD: "1" # auto build on source code changes
+      NO_BUILD_INCREMENT: "1" # don't increment BUILD_NUMBER
     volumes:
       - ./:/server/
     ports:
