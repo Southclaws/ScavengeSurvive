@@ -300,6 +300,10 @@ enum
 	ATTACHSLOT_ARMOUR		// 6 - Armour model slot
 }
 
+// Redefine Item Extra Data API with the Array Data API
+#define SetItemExtraData(%0,%1) SetItemArrayDataAtCell(%0,%1,0,true)
+#define GetItemExtraData(%0) GetItemArrayDataAtCell(%0,0)
+
 
 /*==============================================================================
 
