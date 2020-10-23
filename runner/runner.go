@@ -35,6 +35,8 @@ func RunServer(ctx context.Context, r io.Reader, w io.Writer, once bool) {
 		if once {
 			break
 		}
+
+		time.Sleep(time.Second * 5)
 	}
 }
 
@@ -67,7 +69,6 @@ func runBlocking(parentctx context.Context, restartKiller chan struct{}, in io.R
 
 	go func() {
 		<-restartKiller
-		time.Sleep(time.Second * 5)
 		zap.L().Info("internally triggered process restart")
 		cancel()
 	}()
