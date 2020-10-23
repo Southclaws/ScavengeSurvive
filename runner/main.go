@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func Run() error {
+func Run(cfg Config) error {
 	zap.L().Info("scavenge and survive runner initialising")
 
 	dir, err := os.Getwd()
@@ -73,6 +73,10 @@ func Run() error {
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	if cfg.Settings != "" {
+		WriteSettings(cfg.Settings)
+	}
 
 	if os.Getenv("AUTO_BUILD") != "" {
 		go RunWatcher(ctx, pcx)

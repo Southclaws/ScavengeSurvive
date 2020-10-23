@@ -7,6 +7,45 @@ services:
     environment:
       AUTO_BUILD: "1" # auto build on source code changes
       NO_BUILD_INCREMENT: "1" # don't increment BUILD_NUMBER
+      SETTINGS_OVERRIDE: |
+        autosave/autosave-interval=60000
+        autosave/autosave-toggle=1
+        infomessage/interval=10
+        infomessage/messages/0=Welcome to the Scavenge and Survive test server!
+        infomessage/messages/1=Please report issues at github.com/Southclaws/ScavengeSurvive/issues
+        infomessage/messages/2=Official website: scavengesurvive.com
+        infomessage/messages/3=Join the project discord server! https://discord.gg/ffJ9WT
+        player/allow-pause-map=0
+        player/combat-log-window=30
+        player/interior-entry=0
+        player/login-freeze-time=8
+        player/max-tab-out-time=60
+        player/nametag-distance=3
+        player/ping-limit=400
+        player/player-animations=1
+        player/vehicle-surfing=0
+        server/crash-on-exit=1
+        server/global-debug-level=0
+        server/loot-spawn-multiplier=1
+        server/max-uptime=18000
+        server/motd=Welcome to the Scavenge and Survive Test Server!
+        server/rules/0=1. Only English in global chat. Please use the radio (/chatinfo) for other languages.
+        server/rules/1=2. No global chat use if local or radio is available. (/chatinfo) You will be muted for spam.
+        server/rules/2=3. No hacking, cheating or client modifications that give you advantages.
+        server/rules/3=4. No exploiting of map bugs such as hiding/building bases inside models.
+        server/rules/4=5. No exploiting server bugs, report them using the /bug command.
+        server/rules/5=6. No arguments, flaming or discrimination. You will be muted!
+        server/rules/6=7. You may insult a player's skills in the game, but don't make things personal.
+        server/rules/7=8. Report all hackers, playing with/alongside them will be punished.
+        server/rules/8=9. One account per person, break this rule and you and your base will get deleted.
+        server/staff/0=Southclaws
+        server/website=www.southcla.ws
+        server/whitelist-auto-toggle=1
+        server/whitelist=1
+        vehicle-spawn/print-each=0
+        vehicle-spawn/spawn-chance=4
+        vehicle.damage/bleed-mult=1
+        vehicle.damage/knock-mult=1
     volumes:
       - ./:/server/
     ports:

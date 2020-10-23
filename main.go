@@ -12,18 +12,13 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-type config struct {
-	Production bool          `envconfig:"PRODUCTION" default:"false"`
-	LogLevel   zapcore.Level `envconfig:"LOG_LEVEL"  default:"info"`
-}
-
 const logFileNameFormat = `logs/server-2006-01-02.log`
 const devLogTimeFormat = `15:04:05.000`
 
 func main() {
 	// Logger config is quite important for this app so it goes first in main().
 
-	var cfg config
+	var cfg runner.Config
 	envconfig.MustProcess("", &cfg)
 
 	var encoder zapcore.Encoder
@@ -56,7 +51,7 @@ func main() {
 	zap.L().Info("logger configured", zap.Any("config", cfg))
 
 	// Now run the app itself.
-	if err := runner.Run(); err != nil {
+	if err := runner.Run(cfg); err != nil {
 		zap.L().Info("unexpected exit", zap.String("error", err.Error()))
 	} else {
 		zap.L().Info("exited gracefully")
