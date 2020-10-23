@@ -319,7 +319,7 @@ CreateAccount(playerid, const password[])
 	if(IsWhitelistActive())
 	{
 		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
-		if(!IsPlayerInWhitelist(playerid))
+		if(!IsPlayerInWhitelist(playerid) && GetPlayerAdminLevel(playerid) == 0)
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			WhitelistKick(playerid);
