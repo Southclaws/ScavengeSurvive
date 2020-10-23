@@ -24,7 +24,7 @@ services:
         player/ping-limit=400
         player/player-animations=1
         player/vehicle-surfing=0
-        server/crash-on-exit=1
+        server/crash-on-exit=0
         server/global-debug-level=0
         server/loot-spawn-multiplier=1
         server/max-uptime=18000
