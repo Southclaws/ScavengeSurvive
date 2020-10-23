@@ -80,6 +80,13 @@ it's best to separate this process so use sampctl for builds instead.
 Once you have made a change and are ready to test, go in-game and use the
 `/restart` command with 0 to restart the server immediately.
 
+#### `.env`
+
+You can place environment variables in a file named `.env` in the root directory
+of the repository. For a list of configuration options, see `runner/config.go`.
+The environment variable names are the ones after `envconfig` in
+"UPPER_SNAKE_CASE".
+
 ## Deployment
 
 The recommended deployment strategy is to use Docker. This project comes with a
