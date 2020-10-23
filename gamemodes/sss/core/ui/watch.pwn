@@ -109,7 +109,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawSetShadow			(playerid, WatchBackground[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, WatchBackground[playerid], 1);
 	PlayerTextDrawBoxColor			(playerid, WatchBackground[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, WatchBackground[playerid], 108.000000, 89.000000);
+	PlayerTextDrawTextSize			(playerid, WatchBackground[playerid], 108.000000 * 0.5, 89.000000);
 
 	WatchTime[playerid]				=CreatePlayerTextDraw(playerid, 87.000000, 372.000000, "69:69");
 	PlayerTextDrawAlignment			(playerid, WatchTime[playerid], 2);

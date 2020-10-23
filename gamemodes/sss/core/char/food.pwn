@@ -134,7 +134,16 @@ stock TogglePlayerHungerBar(playerid, bool:toggle)
 
 hook OnPlayerConnect(playerid)
 {
-	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 548.000000, 36.000000, 62.000000, 3.200000, 536354815, 100.0000, 0);
+	new ws = IsPlayerWideScreen(playerid);
+
+	HungerBar[playerid] = CreatePlayerProgressBar(playerid,
+		548.000000 + (ws ? 35.0 : 0.0),
+		36.000000,
+		62.000000 * (ws ? 0.66 : 1.0),
+		3.200000,
+		536354815,
+		100.0000,
+		0);
 /*
 	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 626.0, 100.0, 10.0, 100.0, -2130771840, 100.0, BAR_DIRECTION_UP);
 	HungerBarBackground[playerid]	=CreatePlayerTextDraw(playerid, 612.000000, 101.000000, "_");

@@ -204,3 +204,10 @@ CMD:pos(playerid, params[])
 	return 1;
 }
 
+CMD:widescreen(playerid, params[])
+{
+	new bool:ws = IsPlayerWideScreen(playerid);
+	TogglePlayerWideScreenUI(playerid, !ws);
+	ChatMsg(playerid, YELLOW, " >  Widescreen UI scaling %s please restart the game for this setting to take effect.", !ws ? ("enabled") : ("disabled"));
+	return 1;
+}
