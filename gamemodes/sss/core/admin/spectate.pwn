@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -53,7 +53,7 @@ hook OnPlayerConnect(playerid)
 	spectate_CameraObject[playerid] = INVALID_OBJECT_ID;
 	stop spectate_Timer[playerid];
 
-	spectate_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaw");
+	spectate_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaws");
 	PlayerTextDrawAlignment			(playerid, spectate_Name, 2);
 	PlayerTextDrawBackgroundColor	(playerid, spectate_Name, 255);
 	PlayerTextDrawFont				(playerid, spectate_Name, 1);

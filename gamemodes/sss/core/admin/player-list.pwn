@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -275,7 +275,7 @@ ACMD:testplist[5](playerid, params[])
 {
 	new list[3][MAX_PLAYER_NAME];
 
-	list[0] = "Southclaw";
+	list[0] = "Southclaws";
 	list[1] = "Dogmeat";
 	list[2] = "Atomsk";
 

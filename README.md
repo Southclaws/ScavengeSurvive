@@ -204,7 +204,7 @@ And leave all credits intact. This includes any in-game messages.
 This block is shown at the top of every source file to indicate it's under GPL:
 
 ```
-Copyright (C) 2016 Barnaby "Southclaw" Keene
+Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the

@@ -1,7 +1,7 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
 		Open Source File
 
@@ -9,7 +9,7 @@
 
 		Source: http://forum.sa-mp.com/showthread.php?p=3791767
 
-		Modifications made by Southclaw, 2016-11-01
+		Modifications made by "Southclaws", 2016-11-01
 
 
 ==============================================================================*/

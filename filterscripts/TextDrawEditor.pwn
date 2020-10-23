@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -27,7 +27,7 @@
 Zamaroht's TextDraw Editor Version 1.0RC2.
 Designed for SA-MP 0.3.
 
-Author: Zamaroht (Nicolás Laurito)
+Author: Zamaroht (Nicolï¿½s Laurito)
 
 Start of Development: 25 December 2009, 22:16 (GMT-3)
 End of Development: 01 January 2010, 23:31 (GMT-3)
@@ -43,7 +43,7 @@ author (Zamaroht) and the link back to the mentioned webpage.
 
 ***
 
-	20th May 2012 - Edited by Southclaw to include support for Player Textdraws (Added in SA:MP 0.3e)
+	20th May 2012 - Edited by Southclaws to include support for Player Textdraws (Added in SA:MP 0.3e)
 
 ***
 
@@ -124,7 +124,7 @@ new CurrentProject[128];  // String containing the location of the current opene
 public OnFilterScriptInit()
 {
 	print("\n--------------------------------------");
-	print(" Text Draw Editor 1.0RC2 by Zamaroht for SA-MP 0.3 Loaded.\n Edited by Southclaw for 0.3e Per Player Text Draw and Font 4 sprites support!");
+	print(" Text Draw Editor 1.0RC2 by Zamaroht for SA-MP 0.3 Loaded.\n Edited by Southclaws for 0.3e Per Player Text Draw and Font 4 sprites support!");
 	print("--------------------------------------\n");
 	for(new i; i < MAX_PLAYERS; i ++) if(IsPlayerConnected(i)) ResetPlayerVars(i);
 	for(new i; i < MAX_TEXTDRAWS; i ++)
@@ -2247,7 +2247,7 @@ stock ExportProject( playerid, type )
 	    @playerid:          ID of the player exporting the project.
 	    @type:              Type of export requested:
 	        - Type 0:       Classic export type
-	        - Type 7:       Classic export type for Player Textdraws (Edited in by Southclaw)
+	        - Type 7:       Classic export type for Player Textdraws (Edited in by Southclaws)
 	        (Fixed so this type saves in .txt format, not .pwn)
  	*/
  	SendClientMessage(playerid, MSG_COLOR, "The project is now being exported, please wait...");
@@ -3088,7 +3088,7 @@ stock ExportProject( playerid, type )
 	    case 7: // Classic mode + PlayerTextDraw
 	    {
 	        fwrite(File, "// TextDraw developed using Zamaroht's Textdraw Editor 1.0\r\n");
-			fwrite(File, "Edited by Southclaw to include support for Player Textdraws\r\n");
+			fwrite(File, "Edited by Southclaws to include support for Player Textdraws\r\n");
 	        fwrite(File, "// On top of script:\r\n");
 	        for(new i; i < MAX_TEXTDRAWS; i++)
 	        {

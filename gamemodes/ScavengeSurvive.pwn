@@ -1,14 +1,14 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
 		Big thanks to Onfire559/Adam for the initial concept and developing
 		the idea a lot long ago with some very productive discussions!
 		Recently influenced by Minecraft and DayZ, credits to the creators of
 		those games and their fundamental mechanics and concepts.
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -150,11 +150,11 @@ public OnGameModeInit()
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
 #include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
 
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaws/progress2
+#include <progress2>				// By Toribio/Southclaws:	https://github.com/Southclaws/progress2
 #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
 
-#include <ini>						// By Southclaw:			https://github.com/Southclaws/SimpleINI
-#include <modio>					// By Southclaw:			https://github.com/Southclaws/modio
+#include <ini>						// By Southclaws:			https://github.com/Southclaws/SimpleINI
+#include <modio>					// By Southclaws:			https://github.com/Southclaws/modio
 #include <personal-space>
 #include <button>
 #include <door>
@@ -167,10 +167,10 @@ public OnGameModeInit()
 #include <container-dialog>
 #include <craft>
 #include <debug-labels>
-#include <weapon-data>				// By Southclaw:			https://github.com/Southclaws/AdvancedWeaponData
-#include <linegen>					// By Southclaw:			https://github.com/Southclaws/Line
-#include <zipline>					// By Southclaw:			https://github.com/Southclaws/Zipline
-#include <ladders>					// By Southclaw:			https://github.com/Southclaws/Ladder
+#include <weapon-data>				// By Southclaws:			https://github.com/Southclaws/AdvancedWeaponData
+#include <linegen>					// By Southclaws:			https://github.com/Southclaws/Line
+#include <zipline>					// By Southclaws:			https://github.com/Southclaws/Zipline
+#include <ladders>					// By Southclaws:			https://github.com/Southclaws/Ladder
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
@@ -734,7 +734,7 @@ RestartGamemode()
 
 	ChatMsgAll(BLUE, " ");
 	ChatMsgAll(ORANGE, "Scavenge and Survive");
-	ChatMsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaw\" Keene");
+	ChatMsgAll(BLUE, "    Copyright (C) 2016 Barnaby \"Southclaws\" Keene");
 	ChatMsgAll(BLUE, "    This program comes with ABSOLUTELY NO WARRANTY; This is free software,");
 	ChatMsgAll(BLUE, "    and you are welcome to redistribute it under certain conditions.");
 	ChatMsgAll(BLUE, "    Please see <http://www.gnu.org/copyleft/gpl.html> for details.");

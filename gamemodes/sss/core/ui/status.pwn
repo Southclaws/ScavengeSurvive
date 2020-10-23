@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -34,7 +34,7 @@ hook OnPlayerConnect(playerid)
 {
 	ShowVersionInfo[playerid] = true;
 
-	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 632.000000, 2.000000, "southclaw.net");
+	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 632.000000, 2.000000, "www.southcla.ws");
 	PlayerTextDrawAlignment			(playerid, VersionInfo[playerid], 3);
 	PlayerTextDrawBackgroundColor	(playerid, VersionInfo[playerid], 255);
 	PlayerTextDrawFont				(playerid, VersionInfo[playerid], 1);
@@ -59,10 +59,10 @@ hook OnPlayerScriptUpdate(playerid)
 
 	/*
 		Note:
-		DO NOT REMOVE SOUTHCLAW'S WEBSITE LINK.
+		DO NOT REMOVE OFFICIAL WEBSITE LINK.
 		Write your own website into the settings.ini file.
 	*/
-	format(string, sizeof(string), "%sBuild %d - southcla.ws - %s ~n~ Tick: %d Ping: %d Pkt Loss: %.2f", colour, gBuildNumber, gWebsiteURL, tickrate, GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
+	format(string, sizeof(string), "%sBuild %d - scavengesurvive.com - %s ~n~ Tick: %d Ping: %d Pkt Loss: %.2f", colour, gBuildNumber, gWebsiteURL, tickrate, GetPlayerPing(playerid), NetStats_PacketLossPercent(playerid));
 
 	PlayerTextDrawSetString(playerid, VersionInfo[playerid], string);
 	PlayerTextDrawShow(playerid, VersionInfo[playerid]);

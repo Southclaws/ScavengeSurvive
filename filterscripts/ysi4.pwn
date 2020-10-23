@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -25,8 +25,8 @@
 #include <a_samp>
 
 #include <crashdetect>				// By Zeex					http://forum.sa-mp.com/showthread.php?t=262796
-#include <sscanf2>					// By Y_Less:				https://github.com/Southclaw/sscanf2
-#include <YSI_4\y_utils>			// By Y_Less, 3.1:			https://github.com/Southclaw/YSI-3.1
+#include <sscanf2>					// By Y_Less:				https://github.com/Southclaws/sscanf2
+#include <YSI_4\y_utils>			// By Y_Less, 3.1:			https://github.com/Southclaws/YSI-3.1
 #include <YSI_4\y_va>
 #include <YSI_4\y_timers>
 #include <YSI_4\y_hooks>
@@ -47,13 +47,13 @@
 #include <CTime>					// By RyDeR:				http://forum.sa-mp.com/showthread.php?t=294054
 #undef time
 
-#include <progress2>				// By Toribio/Southclaw:	https://github.com/Southclaw/PlayerProgressBar
+#include <progress2>				// By Toribio/Southclaws:	https://github.com/Southclaws/PlayerProgressBar
 #include <FileManager>				// By JaTochNietDan, 1.5:	http://forum.sa-mp.com/showthread.php?t=92246
 #include <mapandreas>
 
-#include <SimpleINI>				// By Southclaw:			https://github.com/Southclaw/SimpleINI
-#include <modio>					// By Southclaw:			https://github.com/Southclaw/modio
-//#include <SIF_YSI_4>				// By Southclaw, HEAD:		https://github.com/Southclaw/SIF
+#include <SimpleINI>				// By Southclaws:			https://github.com/Southclaws/SimpleINI
+#include <modio>					// By Southclaws:			https://github.com/Southclaws/modio
+//#include <SIF_YSI_4>				// By Southclaws, HEAD:		https://github.com/Southclaws/SIF
 #include <SIF_YSI_4\Core.pwn>
 #include <SIF_YSI_4\Button.pwn>
 #include <SIF_YSI_4\Door.pwn>
@@ -67,10 +67,10 @@
 #include <SIF_YSI_4\extensions\ContainerDialog>
 #include <SIF_YSI_4\extensions\Craft>
 #include <SIF_YSI_4\extensions\DebugLabels>
-#include <WeaponData>				// By Southclaw:			https://github.com/Southclaw/AdvancedWeaponData
-#include <Line>						// By Southclaw:			https://github.com/Southclaw/Line
-#include <Zipline>					// By Southclaw:			https://github.com/Southclaw/Zipline
-#include <Ladder>					// By Southclaw:			https://github.com/Southclaw/Ladder
+#include <WeaponData>				// By Southclaws:			https://github.com/Southclaws/AdvancedWeaponData
+#include <Line>						// By Southclaws:			https://github.com/Southclaws/Line
+#include <Zipline>					// By Southclaws:			https://github.com/Southclaws/Zipline
+#include <Ladder>					// By Southclaws:			https://github.com/Southclaws/Ladder
 
 public OnFilterScriptInit()
 {

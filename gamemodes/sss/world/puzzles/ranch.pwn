@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -236,7 +236,7 @@ timer AttachRanchHdd[2500](playerid)
 
 _Ranch_LoadObjects()
 {
-	// Quarry (by Southclaw)
+	// Quarry (by Southclaws)
 
 	CreateDynamicObject(3865, 494.74981689453, 775.16119384766, -21.255405426025, 0.00000000000, 0.00000000000, 352.05993652344, RANCH_STUFF_VIRTUALW, 0);
 	CreateDynamicObject(16637, 495.3046875, 779.7001953125, -21.165279388428, 2.61474609375, 0.1153564453125, 261.54602050781, RANCH_STUFF_VIRTUALW, 0);
@@ -319,7 +319,7 @@ _Ranch_LoadObjects()
 	CreateDynamicObject(1508, -951.70983886719, 5137.6645507813, 46.841693878174, 0.000000000000, 0.000000000000, 1.250000000000, RANCH_STUFF_VIRTUALW);
 	CreateDynamicObject(1966, -951.69128417969, 5137.4526367188, 50.718822479248, 0.000000000000, 0.000000000000, 91.252227783203, RANCH_STUFF_VIRTUALW);
 
-	// Cave 1 (by Southclaw)
+	// Cave 1 (by Southclaws)
 
 	CreateDynamicObject(4898, -2775.58032, 3697.31665, 2.62368, 4.29720, 359.14059, 11.25000, RANCH_STUFF_VIRTUALW);
 	CreateDynamicObject(18226, -2793.81396, 3757.43286, 9.34636, 0.00000, 0.00000, 131.76004, RANCH_STUFF_VIRTUALW);
@@ -368,7 +368,7 @@ _Ranch_LoadObjects()
 	CreateDynamicObject(3458, -2756.90601, 3757.25098, 35.03610, 180.00000, 88.90686, 153.28900, RANCH_STUFF_VIRTUALW);
 
 
-	// Cave 2 (by Southclaw)
+	// Cave 2 (by Southclaws)
 
 	CreateDynamicObject(4898, -1478.027832, 3679.792725, 7.065671, 353.1245, 0.0000, 270.0000, RANCH_STUFF_VIRTUALW);
 	CreateDynamicObject(4898, -1636.890747, 3657.150635, 4.292534, 351.4056, 355.7028, 98.9040, RANCH_STUFF_VIRTUALW);
@@ -393,7 +393,7 @@ _Ranch_LoadObjects()
 	CreateDynamicObject(18226, -1486.303101, 3664.326660, 35.203533, 11.1727, 185.5343, 315.0000, RANCH_STUFF_VIRTUALW);
 
 
-	// Cave 3 (by Southclaw)
+	// Cave 3 (by Southclaws)
 
 	CreateDynamicObject(4898, -757.886658, 3781.770752, 0.578399, 7.7349, 0.0000, 0.0000, RANCH_STUFF_VIRTUALW);
 	CreateDynamicObject(6234, -776.257385, 3760.870117, 2.495516, 0.0000, 0.0000, 337.5000, RANCH_STUFF_VIRTUALW);

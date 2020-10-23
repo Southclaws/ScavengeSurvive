@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -25,7 +25,7 @@
 /*==============================================================================
 
 
-	Southclaw's Terrain Painting Tool
+	Southclaws' Terrain Painting Tool
 
 		Paint objects directly onto the terrain using the heightmap plugin from
 		Kalcor (MapAndreas). Includes a polygon selection tool for painting on

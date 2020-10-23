@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 Barnaby "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -40,11 +40,11 @@
 #include <streamer>			// by Incognito - github.com/samp-incognito/samp-streamer-plugin/releases
 #include <YSI\y_iterate>	// by Y_Less
 #include <YSI\y_timers>
-#include <SIF/SIF>			// by Southclaw - github.com/Southclaw/SIF
+#include <SIF/SIF>			// by Southclaws - github.com/Southclaws/SIF
 #include <strlib>			// by Slice - github.com/oscar-broman/strlib
-#include <Line>				// by Southclaw - github.com/Southclaw/Line
+#include <Line>				// by Southclaws - github.com/Southclaws/Line
 #include <ZCMD>				// by Zeex - forum.sa-mp.com/showthread.php?t=91354
-#include <Zipline>			// by Southclaw
+#include <Zipline>			// by Southclaws
 
 
 /*==============================================================================

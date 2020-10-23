@@ -1,9 +1,9 @@
 /*==============================================================================
 
 
-	Southclaw's Scavenge and Survive
+	Southclaws' Scavenge and Survive
 
-		Copyright (C) 2016 Barnaby "Southclaw" Keene
+		Copyright (C) 2016 "Southclaws" Keene
 
 		This program is free software: you can redistribute it and/or modify it
 		under the terms of the GNU General Public License as published by the
@@ -56,7 +56,7 @@ LoadSettings()
 	// I'd still like to be credited for my work. Many servers have claimed
 	// they are the sole creator of the mode and this makes me sad and very
 	// hesitant to release my work completely free of charge.
-	SetGameModeText("Scavenge Survive by Southclaw");
+	SetGameModeText("Scavenge Survive by Southclaws");
 }
 
 
