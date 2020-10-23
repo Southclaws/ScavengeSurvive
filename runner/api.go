@@ -2,24 +2,28 @@ package runner
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-chi/chi"
 	"go.uber.org/atomic"
+	"go.uber.org/zap"
 )
 
 const amx = "gamemodes/ScavengeSurvive.amx"
 
-func RunAPI(ctx context.Context) {
+func RunAPI(ctx context.Context, restartTime time.Duration) {
 	rtr := chi.NewRouter()
 
 	update := atomic.NewBool(false)
 
 	rtr.Get("/update", func(w http.ResponseWriter, r *http.Request) {
 		if update.Load() {
-			w.Write([]byte("update")) //nolint:errcheck
+			zap.L().Info("sending restart signal", zap.Duration("time", restartTime))
+			w.Write([]byte(fmt.Sprintf("update %d", int(restartTime.Seconds())))) //nolint:errcheck
 		}
 
 		update.Store(false)

@@ -83,7 +83,7 @@ func Run(cfg Config) error {
 	}
 
 	go RunServer(ctx, os.Stdin, os.Stdout, false)
-	go RunAPI(ctx)
+	go RunAPI(ctx, cfg.Restart)
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
 

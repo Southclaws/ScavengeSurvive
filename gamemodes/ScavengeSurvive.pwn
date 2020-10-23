@@ -781,11 +781,16 @@ public OnUpdateCheck(index, response_code, data[])
 {
 	if(strlen(data) == 0)
 		return;
-	if(strcmp(data, "update"))
+
+	new status[8], time;
+	if(sscanf("s[8]d", status, time))
 		return;
 
-	Logger_Log("updated amx ready to go");
-	SetRestart(3600);
+	if(strcmp(status, "update"))
+		return;
+
+	Logger_Log("updated amx ready to go", Logger_I("restart_seconds", time));
+	SetRestart(time);
 }
 
 DirectoryCheck(const directory[])
