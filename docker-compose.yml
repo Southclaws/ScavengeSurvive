@@ -42,7 +42,6 @@ services:
         server/website=www.southcla.ws
         server/whitelist-auto-toggle=1
         server/whitelist=1
-        vehicle-spawn/print-each=0
         vehicle-spawn/spawn-chance=4
         vehicle.damage/bleed-mult=1
         vehicle.damage/knock-mult=1

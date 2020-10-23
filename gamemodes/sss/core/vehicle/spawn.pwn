@@ -45,8 +45,7 @@ static
 		veh_SpawnData[MAX_VEHICLES][E_VEHICLE_SPAWN_DATA],
 
 // Settings: Prefixed camel case here and dashed in settings.json
-Float:	veh_SpawnChance = 4.0,
-bool:	veh_PrintEach;
+Float:	veh_SpawnChance = 4.0;
 
 
 // static	veh_DebugLabelType;
@@ -57,7 +56,6 @@ hook OnScriptInit()
 	DirectoryCheck(DIRECTORY_SCRIPTFILES DIRECTORY_VEHICLESPAWNS);
 
 	GetSettingFloat("vehicle-spawn/spawn-chance", 4.0, veh_SpawnChance);
-	GetSettingInt("vehicle-spawn/print-each", false, veh_PrintEach);
 }
 
 hook OnGameModeInit()
