@@ -251,7 +251,7 @@ LoadAccount(playerid)
 	{
 		ChatMsgLang(playerid, YELLOW, "WHITELISTAC");
 
-		if(!IsPlayerInWhitelist(playerid))
+		if(!IsPlayerInWhitelist(playerid) && GetPlayerAdminLevel(playerid) == 0)
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
