@@ -40,6 +40,7 @@
 #include "sss/world/puzzles/mtchill.pwn"
 #include "sss/world/puzzles/codehunt.pwn"
 #include "sss/world/houseloot.pwn"
+#include "sss/world/objects.pwn"
 
 #include "sss/world/xmas.pwn"
 
@@ -73,6 +74,13 @@ timer LoadWorld[10]()
 		ItemCounts[i] = GetItemTypeCount(i);
 	}
 
+	defer _Load_Objects();
+}
+
+timer _Load_Objects[500]()
+{
+	// Logger_Log("loading World Objects");
+	Load_Objects();
 	defer _Load_LS();
 }
 
