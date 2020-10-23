@@ -3,6 +3,8 @@ package runner
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/Southclaws/sampctl/pkgcontext"
@@ -11,19 +13,24 @@ import (
 )
 
 func RunWatcher(ctx context.Context, pcx *pkgcontext.PackageContext) {
+	zap.L().Info("starting file watcher for auto rebuild")
+
 	w, err := fsnotify.NewWatcher()
 	if err != nil {
 		panic(err)
 	}
 	defer w.Close()
 
-	err = w.Add("gamemodes/sss")
-	if err != nil {
-		panic(err)
-	}
-
-	err = w.Add("gamemodes/ScavengeSurvive.pwn")
-	if err != nil {
+	if err := filepath.Walk("gamemodes", func(path string, f os.FileInfo, _ error) error {
+		if filepath.Ext(path) == ".pwn" {
+			zap.L().Debug("watching", zap.String("match", path))
+			err = w.Add(path)
+			if err != nil {
+				panic(err)
+			}
+		}
+		return nil
+	}); err != nil {
 		panic(err)
 	}
 
