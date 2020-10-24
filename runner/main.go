@@ -31,13 +31,19 @@ func Run(cfg Config) error {
 		}
 		forceBuild = true
 		forceEnsure = true
-		zap.L().Info("doing first-time ensure and build")
+		zap.L().Info("doing first-time ensure and build: current dir is empty")
 	}
 
 	if _, err := os.Stat(filepath.Join(dir, "dependencies")); os.IsNotExist(err) {
 		forceBuild = true
 		forceEnsure = true
-		zap.L().Info("doing first-time ensure and build")
+		zap.L().Info("doing first-time ensure and build: dependencies missing")
+	}
+
+	if i, err := os.Stat(filepath.Join(dir, "gamemodes/ScavengeSurvive.amx")); os.IsNotExist(err) || i.Size() == 0 {
+		forceBuild = true
+		forceEnsure = true
+		zap.L().Info("doing first-time ensure and build: amx missing or empty")
 	}
 
 	cacheDir, err := download.GetCacheDir()
