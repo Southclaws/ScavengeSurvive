@@ -725,7 +725,7 @@ RestartGamemode()
 
 	ChatMsgAll(BLUE, " ");
 	ChatMsgAll(ORANGE, "Scavenge and Survive");
-	ChatMsgAll(BLUE, "    Copyright (C) 2020 Barnaby "Southclaws" Keene");
+	ChatMsgAll(BLUE, "    Copyright (C) 2020 Barnaby \"Southclaws\" Keene");
 	ChatMsgAll(BLUE, "    This Source Code Form is subject to the terms of the Mozilla Public");
 	ChatMsgAll(BLUE, "    License, v. 2.0. If a copy of the MPL was not distributed with this");
 	ChatMsgAll(BLUE, "    file, You can obtain one at http://mozilla.org/MPL/2.0/.");
