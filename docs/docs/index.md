@@ -18,62 +18,33 @@ This Wiki will document the basic game mechanics and most items. Some things are
 left for the players to find but there's nothing against anyone writing about
 their findings on this site!
 
-## World
+## TODO
 
-- new-item craft-construct.md
-- new-item explosive.md
-- new-item fuel.md
-- new-item item-tweak.md
-- new-item loot.md
-- new-item supply-crate.md
-- new-item tree.md
-- new-item weapons-cache.md
+### World
 
-## Item Categories
+- item-tweak
+- loot
+- tree
+- weapons-cache
 
-- backpack
-- defences
+### Item Categories
+
 - furniture
 - hats
-- holster
 - liquid-container
-- machine
 - masks
-- medical
-- safebox
 
-## Vehicles
+### Vehicles
 
-- vehicle
-- anti-ninja
-- bike-collision
-- carmour
-- interact
 - lock-break
-- lock
-- locksmith
-- loot-vehicle
 - player-vehicle
-- repair
 - spawn
 - trailer
-- trunk
-- vehicle-type
 
-## Weapons
+### Individual Items
 
-- weapon
-- ammunition
-- anti-combat-log
-- damage-core
-- damage-explosive
-- damage-firearm
-- damage-melee
-- damage-vehicle
-- damage-world
-- interact
-
-## Individual Items
+As well as all the items here:
+https://scavenge-survive.fandom.com/wiki/Category:Items
 
 - armour
 - barbecue
