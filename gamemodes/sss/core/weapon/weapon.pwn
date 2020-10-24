@@ -642,7 +642,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		if(!IsValidItemType(itemtype))
 			return Y_HOOKS_CONTINUE_RETURN_1;
 
-		if(GetItemTypeWeapon(itemtype) == -1)
+		if(itmw_ItemTypeWeapon[itemtype] == -1)
 			return Y_HOOKS_CONTINUE_RETURN_1;
 
 		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
@@ -677,14 +677,22 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(oldkeys & KEY_NO)
 	{
-		dbg("weapon-core", 1, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", _:itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
-		if(IsValidItem(itmw_DropItemID[playerid]))
-		{
-			dbg("weapon-core", 2, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d", _:itmw_DropItemID[playerid], GetItemWeaponItemMagAmmo(itmw_DropItemID[playerid]), GetItemWeaponItemReserve(itmw_DropItemID[playerid]));
-			stop itmw_DropTimer[playerid];
-			PlayerDropItem(playerid);
-			itmw_DropItemID[playerid] = INVALID_ITEM_ID;
-		}
+		new Item:itemid = itmw_DropItemID[playerid];
+		if(!IsValidItem(itmw_DropItemID[playerid]))
+			return Y_HOOKS_CONTINUE_RETURN_1;
+
+		new ItemType:itemtype = GetItemType(itemid);
+		if(itmw_ItemTypeWeapon[itemtype] == -1)
+			return Y_HOOKS_CONTINUE_RETURN_1;
+
+		dbg("weapon-core", 2, "[OnPlayerKeyStateChange] dropping item %d magammo %d reserve %d",
+			_:itemid,
+			GetItemWeaponItemMagAmmo(itemid),
+			GetItemWeaponItemReserve(itemid));
+
+		stop itmw_DropTimer[playerid];
+		PlayerDropItem(playerid);
+		itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_1;
