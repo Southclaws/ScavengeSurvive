@@ -1,5 +1,5 @@
 ---
-id: index
+id: a
 title: Wiki
 slug: /
 ---
