@@ -70,7 +70,7 @@
 #define MAX_CONTAINER_SLOTS				(100)
 
 // pawn-errors
-#define PRINT_BACKTRACES
+// #define PRINT_BACKTRACES
 
 #pragma warning disable 208 // TODO: Fix reparse issues and remove!
 

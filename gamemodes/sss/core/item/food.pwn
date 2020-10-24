@@ -93,7 +93,7 @@ hook OnItemCreate(Item:itemid)
 
 		if(foodtype != -1)
 		{
-			SetItemArrayDataAtCell(itemid, 0, food_cooked, false);
+			SetItemArrayDataAtCell(itemid, 0, food_cooked, true);
 			SetItemArrayDataAtCell(itemid, food_Data[_:foodtype][food_maxBites] - random(food_Data[_:foodtype][food_maxBites] / 2), food_amount, true);
 		}
 	}

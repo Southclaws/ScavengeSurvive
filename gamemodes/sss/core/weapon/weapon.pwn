@@ -1033,9 +1033,11 @@ stock Error:SetItemWeaponItemMagAmmo(Item:itemid, amount)
 stock GetItemWeaponItemReserve(Item:itemid)
 {
 	dbg("weapon-core", 3, "GetItemWeaponItemReserve itemid:%d", _:itemid);
-	new ret;
-	GetItemArrayDataAtCell(itemid, ret, WEAPON_ITEM_ARRAY_CELL_RESERVE);
-	return ret < 0 ? 0 : ret;
+	new reserve, Error:e;
+	e = GetItemArrayDataAtCell(itemid, reserve, WEAPON_ITEM_ARRAY_CELL_RESERVE);
+	if(IsError(e))
+		return Handled();
+	return reserve < 0 ? 0 : reserve;
 }
 
 stock Error:SetItemWeaponItemReserve(Item:itemid, amount)
