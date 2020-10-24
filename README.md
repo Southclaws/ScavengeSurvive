@@ -195,34 +195,24 @@ as issues here.
 
 ### The License
 
-Short Summary: https://www.tldrlegal.com/l/gpl-3.0
+Short Summary: https://tldrlegal.com/license/mozilla-public-license-2.0-(mpl-2)
 
 Ensure that you understand these key points from the license:
 
-**You may copy, distribute and modify the software as long as you track
-changes/dates in source files.**
+You must make the source code for any of your changes available under MPL, but
+you can combine the MPL software with proprietary code, as long as you keep the
+MPL code in separate files. Version 2.0 is, by default, compatible with LGPL and
+GPL version 2 or greater. You can distribute binaries under a proprietary
+license, as long as you make the source available under MPL.
 
-**Any modifications to or software including (via compiler) GPL-licensed code
-must also be made available under the GPL along with build & install
-instructions.**
+**And leave all credits intact. This includes any in-game messages.**
 
-And leave all credits intact. This includes any in-game messages.
-
-This block is shown at the top of every source file to indicate it's under GPL:
+This block is shown at the top of every source file to indicate it's under MPL:
 
 ```
-Copyright (C) 2016 Barnaby "Southclaws" Keene
+Copyright (C) 2020 Barnaby "Southclaws" Keene
 
-This program is free software: you can redistribute it and/or modify it
-under the terms of the GNU General Public License as published by the
-Free Software Foundation, either version 3 of the License, or (at your
-option) any later version.
-
-This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program.  If not, see <http://www.gnu.org/licenses/>.
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ```
