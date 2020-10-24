@@ -18,30 +18,30 @@ This Wiki will document the basic game mechanics and most items. Some things are
 left for the players to find but there's nothing against anyone writing about
 their findings on this site!
 
-## TODO
+### TODO
 
-### World
+#### World
 
 - item-tweak
 - loot
 - tree
 - weapons-cache
 
-### Item Categories
+#### Item Categories
 
 - furniture
 - hats
 - liquid-container
 - masks
 
-### Vehicles
+#### Vehicles
 
 - lock-break
 - player-vehicle
 - spawn
 - trailer
 
-### Individual Items
+#### Individual Items
 
 As well as all the items here:
 https://scavenge-survive.fandom.com/wiki/Category:Items
