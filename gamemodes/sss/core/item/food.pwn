@@ -89,7 +89,7 @@ hook OnItemCreate(Item:itemid)
 {
 	if(GetItemLootIndex(itemid) != -1)
 	{
-		new foodtype = GetItemTypeFoodType(GetItemType(itemid));
+		new foodtype = food_ItemTypeFoodType[GetItemType(itemid)];
 
 		if(foodtype != -1)
 		{
@@ -101,7 +101,7 @@ hook OnItemCreate(Item:itemid)
 
 hook OnPlayerUseItem(playerid, Item:itemid)
 {
-	if(GetItemTypeFoodType(GetItemType(itemid)) != -1)
+	if(food_ItemTypeFoodType[GetItemType(itemid)] != -1)
 		_StartEating(playerid, itemid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -155,7 +155,7 @@ _EatItem(playerid, Item:itemid)
 	if(GetPlayerItem(playerid) != itemid)
 		return 0;
 
-	new foodtype = GetItemTypeFoodType(GetItemType(itemid));
+	new foodtype = food_ItemTypeFoodType[GetItemType(itemid)];
 
 	if(foodtype == -1)
 		return 0;
@@ -215,17 +215,16 @@ hook OnHoldActionFinish(playerid)
 
 hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 {
-	new foodtype = GetItemTypeFoodType(itemtype);
-
+	new foodtype = food_ItemTypeFoodType[itemtype];
 	if(foodtype != -1)
 	{
-		new amount;
-		GetItemArrayDataAtCell(itemid, amount, food_amount);
+		new data[e_FOOD_ITEM_DATA];
+		GetItemArrayData(itemid, data);
+
+		new amount = data[food_amount];
 		if(food_Data[foodtype][food_canCook])
 		{
-			new cooked;
-			GetItemArrayDataAtCell(itemid, cooked, food_cooked);
-			if(cooked == 1)
+			if(data[food_cooked] == 1)
 				SetItemNameExtra(itemid, sprintf("Cooked, %d%%", floatround((float(amount) / food_Data[foodtype][food_maxBites]) * 100.0)));
 
 			else
