@@ -24,26 +24,9 @@ func Run(cfg Config) error {
 
 	forceBuild := false
 	forceEnsure := false
-	if isDirEmpty(dir) {
-		zap.L().Info("Current directory is empty, cloning new copy of Scavenge and Survive")
-		if err := Ensure(); err != nil {
-			return errors.Wrap(err, "failed to ensure")
-		}
+	if shouldEnsure(dir) {
 		forceBuild = true
 		forceEnsure = true
-		zap.L().Info("doing first-time ensure and build: current dir is empty")
-	}
-
-	if _, err := os.Stat(filepath.Join(dir, "dependencies")); os.IsNotExist(err) {
-		forceBuild = true
-		forceEnsure = true
-		zap.L().Info("doing first-time ensure and build: dependencies missing")
-	}
-
-	if i, err := os.Stat(filepath.Join(dir, "gamemodes/ScavengeSurvive.amx")); os.IsNotExist(err) || i.Size() == 0 {
-		forceBuild = true
-		forceEnsure = true
-		zap.L().Info("doing first-time ensure and build: amx missing or empty")
 	}
 
 	cacheDir, err := download.GetCacheDir()
@@ -111,4 +94,26 @@ func Run(cfg Config) error {
 			return err
 		}
 	}
+}
+
+func shouldEnsure(dir string) bool {
+	if isDirEmpty(dir) {
+		zap.L().Info("Current directory is empty, cloning new copy of Scavenge and Survive")
+		if err := Ensure(); err != nil {
+			panic(errors.Wrap(err, "failed to ensure"))
+		}
+		zap.L().Info("doing first-time ensure and build: current dir is empty")
+		return true
+	}
+
+	if _, err := os.Stat(filepath.Join(dir, "dependencies")); os.IsNotExist(err) {
+		zap.L().Info("doing first-time ensure and build: dependencies missing")
+		return true
+	}
+
+	if i, err := os.Stat(filepath.Join(dir, "gamemodes/ScavengeSurvive.amx")); os.IsNotExist(err) || i.Size() == 0 {
+		zap.L().Info("doing first-time ensure and build: amx missing or empty")
+		return true
+	}
+	return false
 }
