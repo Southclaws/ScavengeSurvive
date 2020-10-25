@@ -40,7 +40,7 @@ services:
         server/rules/8=9. One account per person, break this rule and you and your base will get deleted.
         server/staff/0=Southclaws
         server/website=www.southcla.ws
-        server/whitelist-auto-toggle=1
+        server/whitelist-auto-toggle=0
         server/whitelist=0
         vehicle-spawn/spawn-chance=4
         vehicle.damage/bleed-mult=1
