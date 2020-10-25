@@ -70,7 +70,7 @@ timer LoadWorld[10]()
 
 timer _Load_Objects[500]()
 {
-	// Logger_Log("loading World Objects");
+	Logger_Log("loading World Objects");
 	Load_Objects();
 	defer _Load_LS();
 }
