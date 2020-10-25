@@ -8,10 +8,11 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/cskr/pubsub"
 	"go.uber.org/zap"
 )
 
-func RunServer(ctx context.Context, r io.Reader, w io.Writer, once bool) {
+func RunServer(ctx context.Context, ps *pubsub.PubSub, r io.Reader, w io.Writer, once bool) {
 	zap.L().Info("starting blocking process")
 
 	// a signaller that uses logs to understand when the gamemode is restarting
@@ -37,6 +38,7 @@ func RunServer(ctx context.Context, r io.Reader, w io.Writer, once bool) {
 		}
 
 		time.Sleep(time.Second * 5)
+		ps.Pub(struct{}{}, "server_restart")
 	}
 }
 

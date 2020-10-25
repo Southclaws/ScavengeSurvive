@@ -12,4 +12,6 @@ type Config struct {
 	Settings         string        `envconfig:"SETTINGS_OVERRIDE"`
 	Restart          time.Duration `envconfig:"AUTO_RESTART_TIME"  default:"1h"`
 	NoBuildIncrement bool          `envconfig:"NO_BUILD_INCREMENT" default:"true"`
+	DiscordToken     string        `envconfig:"DISCORD_TOKEN"      default:""`
+	DiscordChannel   string        `envconfig:"DISCORD_CHANNEL"    default:""`
 }

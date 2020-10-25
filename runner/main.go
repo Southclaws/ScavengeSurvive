@@ -9,6 +9,7 @@ import (
 
 	"github.com/Southclaws/sampctl/download"
 	"github.com/Southclaws/sampctl/pkgcontext"
+	"github.com/cskr/pubsub"
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -67,12 +68,18 @@ func Run(cfg Config) error {
 		WriteSettings(cfg.Settings)
 	}
 
+	ps := pubsub.New(0)
+
 	if os.Getenv("AUTO_BUILD") != "" {
 		go RunWatcher(ctx, pcx)
 	}
 
-	go RunServer(ctx, os.Stdin, os.Stdout, false)
+	go RunServer(ctx, ps, os.Stdin, os.Stdout, false)
 	go RunAPI(ctx, cfg.Restart)
+
+	if cfg.DiscordToken != "" {
+		go RunDiscord(ctx, ps, cfg)
+	}
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
 
