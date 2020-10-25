@@ -5,8 +5,8 @@ services:
     build: .
     image: southclaws/scavenge-survive:latest
     environment:
-      AUTO_BUILD: "1" # auto build on source code changes
-      NO_BUILD_INCREMENT: "1" # don't increment BUILD_NUMBER
+      AUTO_BUILD: "true" # auto build on source code changes
+      NO_BUILD_INCREMENT: "true" # don't increment BUILD_NUMBER
       SETTINGS_OVERRIDE: |
         autosave/autosave-interval=60000
         autosave/autosave-toggle=1
