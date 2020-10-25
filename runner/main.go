@@ -46,7 +46,7 @@ func Run(cfg Config) error {
 	// pcx.BuildName = build
 	pcx.ForceBuild = forceBuild
 	pcx.ForceEnsure = forceEnsure
-	if os.Getenv("NO_BUILD_INCREMENT") != "" {
+	if !cfg.NoBuildIncrement {
 		pcx.BuildFile = "BUILD_NUMBER"
 	}
 	pcx.Relative = true
