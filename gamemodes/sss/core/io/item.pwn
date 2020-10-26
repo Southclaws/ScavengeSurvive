@@ -78,11 +78,19 @@ SaveWorldItem(Item:itemid, const subdir[], bool:active, savearray = true, const 
 	GetItemInterior(itemid, info[SAVED_ITEM_INTERIOR]);
 	info[SAVED_ITEM_HITPOINTS] = GetItemHitPoints(itemid);
 
-	log("[SAVE] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		_:itemid, uuid,
-		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
-		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
-		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
+	Logger_Log("persisted item saved",
+		Logger_I("itemid", _:itemid),
+		Logger_S("uuid", uuid),
+		Logger_I("itemtype", _:info[SAVED_ITEM_TYPE]),
+		Logger_B("active", info[SAVED_ITEM_ACTIVE]),
+		Logger_I("hp", info[SAVED_ITEM_HITPOINTS]),
+		Logger_F("pos_x", info[SAVED_ITEM_POS_X]),
+		Logger_F("pos_y", info[SAVED_ITEM_POS_Y]),
+		Logger_F("pos_z", info[SAVED_ITEM_POS_Z]),
+		Logger_F("rot_x", info[SAVED_ITEM_ROT_X]),
+		Logger_F("rot_y", info[SAVED_ITEM_ROT_Y]),
+		Logger_F("rot_z", info[SAVED_ITEM_ROT_Z])
+	);
 
 	modio_push(filename, _T<I,N,F,O>, _:e_SAVED_ITEM_DATA, _:info);
 
@@ -121,9 +129,16 @@ RemoveSavedItem(Item:itemid, const subdir[])
 
 	format(filename, sizeof(filename), "%s%s", subdir, uuid);
 
-	fremove(filename);
+	if(!fexist(filename))
+		return;
 
-	log("[DELT] Item %d (%s) file %s", _:itemid, uuid, filename);
+	Logger_Log("persisted item deleted",
+		Logger_I("itemid", _:itemid),
+		Logger_S("uuid", uuid),
+		Logger_S("filename", filename)
+	);
+
+	fremove(filename);
 }
 
 LoadItems(const subdir[], const callback[])
@@ -155,7 +170,9 @@ LoadItems(const subdir[], const callback[])
 
 	CloseDir(direc);
 
-	log("Loaded %d items from %s", count, subdir);
+	Logger_Log("loaded items",
+		Logger_I("count", count),
+		Logger_S("directory", subdir));
 }
 
 Item:LoadItem(const filename[], const uuid[], const callback[])
@@ -202,11 +219,19 @@ Item:LoadItem(const filename[], const uuid[], const callback[])
 		.hitpoints = info[SAVED_ITEM_HITPOINTS],
 		.applyrotoffsets = 0);
 
-	log("[LOAD] Item %d (%s) info: %d %d %d (%f, %f, %f, %f, %f, %f)",
-		_:itemid, uuid,
-		_:info[SAVED_ITEM_TYPE], info[SAVED_ITEM_ACTIVE], info[SAVED_ITEM_HITPOINTS],
-		info[SAVED_ITEM_POS_X], info[SAVED_ITEM_POS_Y], info[SAVED_ITEM_POS_Z],
-		info[SAVED_ITEM_ROT_X], info[SAVED_ITEM_ROT_Y], info[SAVED_ITEM_ROT_Z]);
+	Logger_Log("persisted item loaded",
+		Logger_I("itemid", _:itemid),
+		Logger_S("uuid", uuid),
+		Logger_I("itemtype", _:info[SAVED_ITEM_TYPE]),
+		Logger_B("active", info[SAVED_ITEM_ACTIVE]),
+		Logger_I("hp", info[SAVED_ITEM_HITPOINTS]),
+		Logger_F("pos_x", info[SAVED_ITEM_POS_X]),
+		Logger_F("pos_y", info[SAVED_ITEM_POS_Y]),
+		Logger_F("pos_z", info[SAVED_ITEM_POS_Z]),
+		Logger_F("rot_x", info[SAVED_ITEM_ROT_X]),
+		Logger_F("rot_y", info[SAVED_ITEM_ROT_Y]),
+		Logger_F("rot_z", info[SAVED_ITEM_ROT_Z])
+	);
 /*
 	Todo: Figure out a way to block setting arraydata for certain items without
 	a dumb function or lookup table of any sort
