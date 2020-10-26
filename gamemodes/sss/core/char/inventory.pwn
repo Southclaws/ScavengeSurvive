@@ -324,6 +324,15 @@ hook OnPlayerOpenInventory(playerid)
 
 hook OnPlayerCloseInventory(playerid)
 {
+	new Container:containerid;
+	GetPlayerCurrentContainer(playerid, containerid);
+
+	Logger_Dbg("inventory", "OnPlayerCloseInventory",
+		Logger_I("playerid", playerid),
+		Logger_B("esc", inv_EscInventory[playerid]),
+		Logger_I("container", _:containerid)
+	);
+
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
 
@@ -348,6 +357,12 @@ hook OnPlayerOpenContainer(playerid, containerid)
 
 hook OnPlayerCloseContainer(playerid, containerid)
 {
+	Logger_Dbg("inventory", "OnPlayerCloseContainer",
+		Logger_I("playerid", playerid),
+		Logger_B("esc", inv_EscInventory[playerid]),
+		Logger_B("in_inv", IsPlayerViewingInventory(playerid))
+	);
+
 	HidePlayerGear(playerid);
 	HidePlayerHealthInfo(playerid);
 
@@ -860,26 +875,43 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 
 hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 {
-	if(clickedid == Text:65535)
+	if(clickedid == INVALID_TEXT_DRAW)
 	{
 		if(IsPlayerViewingInventory(playerid))
 		{
-			HidePlayerGear(playerid);
-			HidePlayerHealthInfo(playerid);
-			ClosePlayerInventory(playerid);
-			inv_EscInventory[playerid] = true;
-			// DisplayPlayerInventory(playerid);
+			Logger_Dbg("inventory", "player closed inventory screen with escape",
+				Logger_I("playerid", playerid),
+				Logger_B("esc", inv_EscInventory[playerid])
+			);
+
+			// This code is commented because it causes a bug where sometimes
+			// the mouse cursor stays on screen after closing the dialogue by
+			// clicking "Close".
+			//
+			// HidePlayerGear(playerid);
+			// HidePlayerHealthInfo(playerid);
+			// ClosePlayerInventory(playerid, true);
+			// inv_EscInventory[playerid] = true;
+			// CancelSelectTextDraw(playerid);
+			DisplayPlayerInventory(playerid);
 		}
 
 		new Container:containerid;
 		GetPlayerCurrentContainer(playerid, containerid);
 		if(containerid != INVALID_CONTAINER_ID)
 		{
-			HidePlayerGear(playerid);
-			HidePlayerHealthInfo(playerid);
-			ClosePlayerContainer(playerid);
-			inv_EscContainer[playerid] = true;
-			// DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
+			Logger_Dbg("inventory", "player closed container screen with escape",
+				Logger_I("playerid", playerid),
+				Logger_B("esc", inv_EscInventory[playerid])
+			);
+
+			// See above.
+			// HidePlayerGear(playerid);
+			// HidePlayerHealthInfo(playerid);
+			// ClosePlayerContainer(playerid, true);
+			// inv_EscContainer[playerid] = true;
+			// CancelSelectTextDraw(playerid);
+			DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
 		}
 	}
 }
