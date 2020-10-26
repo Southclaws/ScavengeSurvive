@@ -15,4 +15,5 @@ type Config struct {
 	NoBuildIncrement bool          `envconfig:"NO_BUILD_INCREMENT" default:"true"`
 	DiscordToken     string        `envconfig:"DISCORD_TOKEN"      default:""`
 	DiscordChannel   string        `envconfig:"DISCORD_CHANNEL"    default:""`
+	RconPassword     string        `envconfig:"RCON_PASSWORD"      default:"scavenge"`
 }

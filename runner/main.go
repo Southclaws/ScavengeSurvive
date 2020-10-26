@@ -51,6 +51,9 @@ func Run(cfg Config) error {
 		pcx.BuildFile = "BUILD_NUMBER"
 	}
 	pcx.Relative = true
+	if cfg.RconPassword != "" {
+		pcx.Package.Runtime.RCONPassword = &cfg.RconPassword
+	}
 
 	if err := pcx.RunPrepare(context.Background()); err != nil {
 		return errors.Wrap(err, "failed to prepare runtime")
