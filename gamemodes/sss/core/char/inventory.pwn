@@ -911,7 +911,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 			// ClosePlayerContainer(playerid, true);
 			// inv_EscContainer[playerid] = true;
 			// CancelSelectTextDraw(playerid);
-			DisplayContainerInventory(playerid, GetPlayerCurrentContainer(playerid));
+			DisplayContainerInventory(playerid, containerid);
 		}
 	}
 }
