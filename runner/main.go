@@ -70,7 +70,7 @@ func Run(cfg Config) error {
 
 	ps := pubsub.New(0)
 
-	if os.Getenv("AUTO_BUILD") != "" {
+	if cfg.AutoBuild {
 		go RunWatcher(ctx, pcx)
 	}
 
