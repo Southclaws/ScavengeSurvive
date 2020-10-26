@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/cskr/pubsub"
 	"github.com/fsnotify/fsnotify"
 	"github.com/go-chi/chi"
 	"go.uber.org/atomic"
@@ -15,7 +16,7 @@ import (
 
 const amx = "gamemodes/ScavengeSurvive.amx"
 
-func RunAPI(ctx context.Context, restartTime time.Duration) {
+func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 	rtr := chi.NewRouter()
 
 	update := atomic.NewBool(false)
@@ -24,6 +25,7 @@ func RunAPI(ctx context.Context, restartTime time.Duration) {
 		if update.Load() {
 			zap.L().Info("sending restart signal", zap.Duration("time", restartTime))
 			w.Write([]byte(fmt.Sprintf("update %d", int(restartTime.Seconds())))) //nolint:errcheck
+			ps.Pub(restartTime, "server_update")
 		}
 
 		update.Store(false)

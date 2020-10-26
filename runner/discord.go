@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"time"
 
 	sampquery "github.com/Southclaws/go-samp-query"
 	"github.com/cskr/pubsub"
@@ -56,6 +57,12 @@ func RunDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 
 	for range ps.Sub("server_restart") {
 		if _, err := s.SendMessage(*channelid, "Server restart!", nil); err != nil {
+			zap.L().Error("failed to send discord message", zap.Error(err))
+		}
+	}
+
+	for d := range ps.Sub("server_update") {
+		if _, err := s.SendMessage(*channelid, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration)), nil); err != nil {
 			zap.L().Error("failed to send discord message", zap.Error(err))
 		}
 	}

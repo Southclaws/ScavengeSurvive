@@ -75,7 +75,7 @@ func Run(cfg Config) error {
 	}
 
 	go RunServer(ctx, ps, os.Stdin, os.Stdout, false)
-	go RunAPI(ctx, cfg.Restart)
+	go RunAPI(ctx, ps, cfg.Restart)
 
 	if cfg.DiscordToken != "" {
 		go RunDiscord(ctx, ps, cfg)
