@@ -7,11 +7,42 @@ import (
 
 	sampquery "github.com/Southclaws/go-samp-query"
 	"github.com/bwmarrin/discordgo"
+	"github.com/cenkalti/backoff/v4"
 	"github.com/cskr/pubsub"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 func RunDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
+	panic(backoff.Retry(func() (err error) {
+		defer func() {
+			if r := recover(); r != nil {
+				switch x := r.(type) {
+				case string:
+					err = errors.New(x)
+				case error:
+					err = x
+				default:
+					err = errors.Errorf("Unknown panic: %v", r)
+				}
+			}
+		}()
+
+		runDiscord(ctx, ps, cfg)
+
+		return nil
+	}, &backoff.ExponentialBackOff{
+		InitialInterval:     backoff.DefaultInitialInterval,
+		RandomizationFactor: backoff.DefaultRandomizationFactor,
+		Multiplier:          backoff.DefaultMultiplier,
+		MaxInterval:         0,
+		MaxElapsedTime:      backoff.DefaultMaxElapsedTime,
+		Stop:                backoff.Stop,
+		Clock:               backoff.SystemClock,
+	}))
+}
+
+func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 	discord, err := discordgo.New("Bot " + cfg.DiscordToken)
 	if err != nil {
 		panic(err)
