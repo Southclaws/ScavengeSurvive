@@ -42,13 +42,18 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 	if err != nil {
 		panic(err)
 	}
-	for range w.Events {
+	for e := range w.Events {
 		info, err := os.Stat(amx)
 		if err != nil {
 			continue
 		}
 		if info.Size() > 0 {
+			zap.L().Debug("detected non-zero sized amx file change",
+				zap.Int64("size", info.Size()),
+				zap.String("op", e.Op.String()))
 			update.Store(true)
+		} else {
+			update.Store(false)
 		}
 	}
 }
