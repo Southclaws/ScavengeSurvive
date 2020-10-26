@@ -73,6 +73,7 @@
 // #define PRINT_BACKTRACES
 
 #pragma warning disable 208 // TODO: Fix reparse issues and remove!
+#pragma dynamic 64000
 
 
 /*==============================================================================
