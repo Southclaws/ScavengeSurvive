@@ -63,6 +63,7 @@ UpdateWatchWithScaleProfile(playerid)
 		ScaleProfiles[profile][3],
 		ScaleProfiles[profile][4]
 	);
+	ShowWatch(playerid);
 }
 ptask UpdateWatch[1000](playerid)
 {
