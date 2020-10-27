@@ -204,3 +204,8 @@ CMD:pos(playerid, params[])
 	return 1;
 }
 
+CMD:hudscale(playerid, params[])
+{
+	DisplayHudScaleProfileSelect(playerid);
+	return 1;
+}

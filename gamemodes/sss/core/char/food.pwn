@@ -132,33 +132,22 @@ stock TogglePlayerHungerBar(playerid, bool:toggle)
 }
 
 
-hook OnPlayerConnect(playerid)
+hook OnPlayerSpawnChar(playerid)
 {
-	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 548.000000, 36.000000, 62.000000, 3.200000, 536354815, 100.0000, 0);
-/*
-	HungerBar[playerid] = CreatePlayerProgressBar(playerid, 626.0, 100.0, 10.0, 100.0, -2130771840, 100.0, BAR_DIRECTION_UP);
-	HungerBarBackground[playerid]	=CreatePlayerTextDraw(playerid, 612.000000, 101.000000, "_");
-	PlayerTextDrawBackgroundColor	(playerid, HungerBarBackground[playerid], 255);
-	PlayerTextDrawFont				(playerid, HungerBarBackground[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, HungerBarBackground[playerid], 0.500000, -10.200000);
-	PlayerTextDrawColor				(playerid, HungerBarBackground[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, HungerBarBackground[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, HungerBarBackground[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, HungerBarBackground[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, HungerBarBackground[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, HungerBarBackground[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, HungerBarBackground[playerid], 618.000000, 10.000000);
+	UpdateFoodBarWithScaleProfile(playerid);
+}
 
-	HungerBarForeground[playerid]	=CreatePlayerTextDraw(playerid, 613.000000, 100.000000, "_");
-	PlayerTextDrawBackgroundColor	(playerid, HungerBarForeground[playerid], 255);
-	PlayerTextDrawFont				(playerid, HungerBarForeground[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, HungerBarForeground[playerid], 0.500000, -10.000000);
-	PlayerTextDrawColor				(playerid, HungerBarForeground[playerid], -1);
-	PlayerTextDrawSetOutline		(playerid, HungerBarForeground[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, HungerBarForeground[playerid], 1);
-	PlayerTextDrawSetShadow			(playerid, HungerBarForeground[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, HungerBarForeground[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, HungerBarForeground[playerid], -2130771840);
-	PlayerTextDrawTextSize			(playerid, HungerBarForeground[playerid], 617.000000, 10.000000);
-*/
+UpdateFoodBarWithScaleProfile(playerid)
+{
+	new e_UI_SCALE_PROFILES:profile = GetPlayerUIScaleProfile(playerid);
+
+	DestroyPlayerProgressBar(playerid, HungerBar[playerid]);
+	HungerBar[playerid] = CreatePlayerProgressBar(playerid,
+		548.000000 + (profile == e_UI_SCALE_WIDESCREENFIX ? 35.0 : 0.0),
+		36.000000,
+		62.000000 * (profile == e_UI_SCALE_WIDESCREENFIX ? 0.66 : 1.0),
+		3.200000,
+		536354815,
+		100.0000,
+		0);
 }
