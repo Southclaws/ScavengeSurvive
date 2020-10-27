@@ -221,7 +221,12 @@ PlayerSpawnExistingCharacter(playerid)
 		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
 	}
 
-	log("[SPAWN] %p spawned existing character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	Logger_Log("player spawned existing character",
+		Logger_P(playerid),
+		Logger_F("x", x),
+		Logger_F("y", y),
+		Logger_F("z", z),
+		Logger_F("r", r));
 
 	CallLocalFunction("OnPlayerSpawnChar", "d", playerid);
 
@@ -230,8 +235,6 @@ PlayerSpawnExistingCharacter(playerid)
 
 PlayerCreateNewCharacter(playerid)
 {
-	log("[NEWCHAR] %p creating new character", playerid);
-
 	SetPlayerPos(playerid, DEFAULT_POS_X + 5, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerFacingAngle(playerid, 0.0);
 	SetPlayerVirtualWorld(playerid, 0);
@@ -392,7 +395,12 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	CallLocalFunction("OnPlayerSpawnNewChar", "d", playerid);
 
-	log("[SPAWN] %p spawned new character at %.1f, %.1f, %.1f (%.1f)", playerid, x, y, z, r);
+	Logger_Log("player spawned new character",
+		Logger_P(playerid),
+		Logger_F("x", x),
+		Logger_F("y", y),
+		Logger_F("z", z),
+		Logger_F("r", r));
 
 	return 1;
 }
