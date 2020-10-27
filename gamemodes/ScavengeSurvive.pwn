@@ -329,6 +329,7 @@ new
 		gStaffList[MAX_STAFF][MAX_STAFF_LEN],
 
 		// server
+bool:	gAutoLoginWithIP,
 bool:	gPauseMap,
 bool:	gInteriorEntry,
 bool:	gPlayerAnimations,
