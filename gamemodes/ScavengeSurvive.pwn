@@ -771,6 +771,9 @@ task RestartUpdate[1000]()
 forward OnUpdateCheck(index, response_code, data[]);
 public OnUpdateCheck(index, response_code, data[])
 {
+	if(response_code != 200)
+		return;
+
 	if(strlen(data) == 0)
 		return;
 
