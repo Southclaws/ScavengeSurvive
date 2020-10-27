@@ -90,7 +90,9 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 	if(IsPlayerKnockedOut(playerid))
 	{
-		log("[WARNING] Knocked out player %p tried to wound player %p", playerid, targetid);
+		Logger_Log("knocked out player tried to wound player",
+			Logger_P(playerid),
+			Logger_P(targetid));
 		return 0;
 	}
 
@@ -118,7 +120,6 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	strcpy(wnd_Data[targetid][woundid][wnd_source], source, MAX_WOUND_SRCLEN);
 
 	totalbleedrate += bleedrate;
-	dbg("gamemodes/sss/core/weapon/damage-core.pwn", 2, "[PlayerInflictWound] inflicted bleedrate: %f, total bleedrate = %f", bleedrate, totalbleedrate);
 
 	// Truncate result to 1.0
 	totalbleedrate = totalbleedrate > 1.0 ? 1.0 : totalbleedrate;
@@ -148,7 +149,6 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 		if(knockouttime > 1500)
 		{
-			dbg("gamemodes/sss/core/weapon/damage-core.pwn", 2, "[PlayerInflictWound] Knocking out %p for %dms - %d wounds, %f health %f bleedrate", targetid, knockouttime, woundcount, hp, totalbleedrate);
 			KnockOutPlayer(targetid, knockouttime);
 		}
 	}
@@ -167,11 +167,22 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 		dmg_LastHitById[targetid] = playerid;
 		dmg_LastHitByItem[targetid] = GetPlayerItem(targetid);
 
-		log("[WOUND] %p wounds %p. bleedrate %f knockmult %f bodypart %d source '%s'", playerid, targetid, bleedrate, knockmult, bodypart, source);
+		Logger_Log("player wounded player",
+			Logger_S("player", dmg_LastHitBy[targetid]),
+			Logger_S("target", dmg_LastHit[playerid]),
+			Logger_F("bleedrate", bleedrate),
+			Logger_F("knockmult", knockmult),
+			Logger_I("bodypart", bodypart),
+			Logger_S("source", source));
 	}
 	else
 	{
-		log("[WOUND] %p wounded. bleedrate %f knockmult %f bodypart %d source '%s'", targetid, bleedrate, knockmult, bodypart, source);
+		Logger_Log("player wounded self",
+			Logger_P(targetid),
+			Logger_F("bleedrate", bleedrate),
+			Logger_F("knockmult", knockmult),
+			Logger_I("bodypart", bodypart),
+			Logger_S("source", source));
 	}
 
 	ShowActionText(targetid, sprintf(ls(targetid, "WOUNDEDMSSG", true), source, (knockmult * (((woundcount + 1) * 0.2) * ((totalbleedrate * 50) + 1)) < 50.0 ? ("Minor") : ("Severe"))), 5000);

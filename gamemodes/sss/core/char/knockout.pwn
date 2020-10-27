@@ -70,7 +70,9 @@ stock KnockOutPlayer(playerid, duration)
 	if(!IsPlayerSpawned(playerid))
 		return 0;
 
-	log("[KNOCKOUT] Player %p knocked out for %s", playerid, MsToString(duration, "%1m:%1s.%1d"));
+	Logger_Log("player knocked out",
+		Logger_P(playerid),
+		Logger_S("duration", MsToString(duration, "%1m:%1s.%1d")));
 
 	ShowPlayerProgressBar(playerid, KnockoutBar);
 
@@ -111,7 +113,7 @@ stock KnockOutPlayer(playerid, duration)
 
 stock WakeUpPlayer(playerid)
 {
-	log("[WAKEUP] Player %p woke up after knockout", playerid);
+	Logger_Log("player awoke from knockout", Logger_P(playerid));
 
 	stop knockout_Timer[playerid];
 
