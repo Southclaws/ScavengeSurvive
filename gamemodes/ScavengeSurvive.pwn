@@ -613,7 +613,7 @@ Text:RestartCount = Text:INVALID_TEXT_DRAW;
 
 main()
 {
-	log("[main] Finished initialising Southclaws' Scavenge and Survive");
+	print("[main] Finished initialising Southclaws' Scavenge and Survive");
 
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
@@ -625,7 +625,7 @@ main()
 */
 OnGameModeInit_Setup()
 {
-	log("[OnGameModeInit_Setup] Setting up...");
+	print("[OnGameModeInit_Setup] Setting up...");
 
 	// removed the file thing, so left this at the last version number for now.
 	// probably needs a better method, like a build-time variable or something.
@@ -636,7 +636,7 @@ OnGameModeInit_Setup()
 
 	if(gBuildNumber < 1000)
 	{
-		log("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
+		printf("UNKNOWN ERROR: gBuildNumber is below 1000: %d this should never happen! Ensure you've cloned the repository correctly.", gBuildNumber);
 		for(;;){}
 	}
 
@@ -646,19 +646,19 @@ OnGameModeInit_Setup()
 
 	if(Exists(DIRECTORY_SCRIPTFILES"SSS/"))
 	{
-		log("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
+		print("ERROR: ./scriptfiles directory detected using old directory structure, please see release notes for stable release #04");
 		for(;;){}
 	}
 
 	if(!Exists(DIRECTORY_SCRIPTFILES))
 	{
-		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES"' not found. Creating directory.");
 		CreateDir(DIRECTORY_SCRIPTFILES);
 	}
 
 	if(!Exists(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN))
 	{
-		log("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
+		print("ERROR: Directory '"DIRECTORY_SCRIPTFILES DIRECTORY_MAIN"' not found. Creating directory.");
 		CreateDir(DIRECTORY_SCRIPTFILES DIRECTORY_MAIN);
 	}
 
@@ -683,7 +683,7 @@ OnGameModeInit_Setup()
 
 public OnGameModeExit()
 {
-	log("[OnGameModeExit] Shutting down...");
+	print("[OnGameModeExit] Shutting down...");
 
 	if(gCrashOnExit)
 	{
@@ -698,20 +698,20 @@ public OnGameModeExit()
 public OnScriptExit()
 {
 	// Note: DO NOT CHANGE THIS STRING!
-	log("[OnScriptExit] LAST_EXIT");
+	print("[OnScriptExit] LAST_EXIT");
 	return 1;
 }
 
 forward SetRestart(seconds);
 public SetRestart(seconds)
 {
-	log("Restarting server in: %ds", seconds);
+	printf("Restarting server in: %ds", seconds);
 	gServerUptime = gServerMaxUptime - seconds;
 }
 
 RestartGamemode()
 {
-	log("[RestartGamemode] Initialising gamemode restart...");
+	print("[RestartGamemode] Initialising gamemode restart...");
 	gServerRestarting = true;
 
 	foreach(new i : Player)
