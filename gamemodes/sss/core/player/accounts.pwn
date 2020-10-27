@@ -168,10 +168,12 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-LoadAccount(playerid)
+Error:LoadAccount(playerid)
 {
 	if(CallLocalFunction("OnPlayerLoadAccount", "d", playerid))
-		return -1;
+	{
+		return NoError(-1);
+	}
 
 	new
 		name[MAX_PLAYER_NAME],
@@ -193,20 +195,20 @@ LoadAccount(playerid)
 
 	if(!stmt_execute(stmt_AccountExists))
 	{
-		err("[LoadAccount] executing statement 'stmt_AccountExists'.");
-		return -1;
+		return Error(-1, "failed to execute statement stmt_AccountExists");
 	}
 
 	if(!stmt_fetch_row(stmt_AccountExists))
 	{
-		err("[LoadAccount] fetching statement result 'stmt_AccountExists'.");
-		return -1;
+		return Error(-1, "failed to fetch statement result stmt_AccountExists");
 	}
 
 	if(exists == 0)
 	{
-		log("[LoadAccount] %p (account does not exist)", playerid);
-		return 0;
+		Logger_Log("LoadAccount: account does not exist",
+			Logger_I("playerid", playerid)
+		);
+		return NoError(0);
 	}
 
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -222,20 +224,17 @@ LoadAccount(playerid)
 
 	if(!stmt_execute(stmt_AccountLoad))
 	{
-		err("[LoadAccount] executing statement 'stmt_AccountLoad'.");
-		return -1;
+		return Error(-1, "failed to execute statement stmt_AccountLoad");
 	}
 
 	if(!stmt_fetch_row(stmt_AccountLoad))
 	{
-		err("[LoadAccount] fetching statement result 'stmt_AccountLoad'.");
-		return -1;
+		return Error(-1, "failed to fetch statement result stmt_AccountLoad");
 	}
 
 	if(!active)
 	{
-		log("[LoadAccount] %p (account inactive) Alive: %d Last login: %T", playerid, alive, lastlog);
-		return 4;
+		return NoError(4);
 	}
 
 	if(IsWhitelistActive())
@@ -245,8 +244,7 @@ LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			log("[LoadAccount] %p (account not whitelisted) Alive: %d Last login: %T", playerid, alive, lastlog);
-			return 3;
+			return NoError(3);
 		}
 	}
 
@@ -261,15 +259,13 @@ LoadAccount(playerid)
 	SetPlayerTotalSpawns(playerid, spawns);
 	SetPlayerWarnings(playerid, warnings);
 
+// TODO: Add config flag for this (faster local dev)
 //	if(GetPlayerIpAsInt(playerid) == ipv4)
 //	{
-//		log("[LoadAccount] %p (account exists, auto login)", playerid);
 //		return 2;
 //	}
 
-	log("[LoadAccount] %p (account exists, prompting login) Alive: %d Last login: %T", playerid, alive, lastlog);
-
-	return 1;
+	return NoError(1);
 }
 
 
@@ -280,7 +276,7 @@ LoadAccount(playerid)
 ==============================================================================*/
 
 
-CreateAccount(playerid, const password[])
+Error:CreateAccount(playerid, const password[])
 {
 	new
 		name[MAX_PLAYER_NAME],
@@ -288,8 +284,6 @@ CreateAccount(playerid, const password[])
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 	gpci(playerid, serial, MAX_GPCI_LEN);
-
-	log("[REGISTER] %p registered", playerid);
 
 	stmt_bind_value(stmt_AccountCreate, 0, DB::TYPE_STRING,		name, MAX_PLAYER_NAME); 
 	stmt_bind_value(stmt_AccountCreate, 1, DB::TYPE_STRING,		password, MAX_PASSWORD_LEN); 
@@ -300,9 +294,8 @@ CreateAccount(playerid, const password[])
 
 	if(!stmt_execute(stmt_AccountCreate))
 	{
-		err("[CreateAccount] executing statement 'stmt_AccountCreate'.");
-		KickPlayer(playerid, "An error occurred while executing statement 'stmt_AccountCreate'. Please contact an admin on IRC or the forum.");
-		return 0;
+		KickPlayer(playerid, "An error occurred while executing statement 'stmt_AccountCreate'.");
+		return Error(1, "failed to execute statement stmt_AccountCreate");
 	}
 
 	SetPlayerAimShoutText(playerid, "Drop your weapon!");
@@ -314,7 +307,7 @@ CreateAccount(playerid, const password[])
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			WhitelistKick(playerid);
-			return 0;
+			return NoError(0);
 		}
 	}
 
@@ -332,7 +325,7 @@ CreateAccount(playerid, const password[])
 
 	CallLocalFunction("OnPlayerRegister", "d", playerid);
 
-	return 1;
+	return NoError(1);
 }
 
 DisplayRegisterPrompt(playerid)
@@ -340,7 +333,7 @@ DisplayRegisterPrompt(playerid)
 	new str[150];
 	format(str, 150, ls(playerid, "ACCREGIBODY"), playerid);
 
-	log("[REGPROMPT] %p is registering", playerid);
+	Logger_Log("player is registering", Logger_P(playerid));
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -359,8 +352,20 @@ DisplayRegisterPrompt(playerid)
 
 			WP_Hash(buffer, MAX_PASSWORD_LEN, inputtext);
 
-			if(CreateAccount(playerid, buffer))
-				ShowWelcomeMessage(playerid, 10);
+			new Error:e = CreateAccount(playerid, buffer);
+			if(IsError(e))
+			{
+				Logger_Err("failed to create account for player",
+					Logger_P(playerid),
+					Logger_E(e)
+				);
+				Handled();
+				return 1;
+			}
+
+			Logger_Log("account created", Logger_P(playerid));
+
+			ShowWelcomeMessage(playerid, 10);
 		}
 		else
 		{
@@ -385,7 +390,7 @@ DisplayLoginPrompt(playerid, badpass = 0)
 	else
 		format(str, 128, ls(playerid, "ACCLOGIBODY"), playerid);
 
-	log("[LOGPROMPT] %p is logging in", playerid);
+	Logger_Log("player is logging in", Logger_P(playerid));
 
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
@@ -460,10 +465,13 @@ DisplayLoginPrompt(playerid, badpass = 0)
 Login(playerid)
 {
 	new serial[MAX_GPCI_LEN];
-
 	gpci(playerid, serial, MAX_GPCI_LEN);
 
-	log("[LOGIN] %p logged in, alive: %d", playerid, IsPlayerAlive(playerid));
+	Logger_Log("player logged in",
+		Logger_P(playerid),
+		Logger_S("gpci", serial),
+		Logger_B("alive", IsPlayerAlive(playerid))
+	);
 
 	// TODO: move to a single query
 	stmt_bind_value(stmt_AccountSetIpv4, 0, DB::TYPE_INTEGER, GetPlayerIpAsInt(playerid));
@@ -518,7 +526,10 @@ Logout(playerid, docombatlogcheck = 1)
 {
 	if(!acc_LoggedIn[playerid])
 	{
-		log("[LOGOUT] %p not logged in.", playerid);
+		Logger_Log("player logged out",
+			Logger_P(playerid),
+			Logger_B("logged_in", false)
+		);
 		return 0;
 	}
 
@@ -531,8 +542,16 @@ Logout(playerid, docombatlogcheck = 1)
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	log("[LOGOUT] %p logged out at %.1f, %.1f, %.1f (%.1f) Logged In: %d Alive: %d Knocked Out: %d",
-		playerid, x, y, z, r, acc_LoggedIn[playerid], IsPlayerAlive(playerid), IsPlayerKnockedOut(playerid));
+	Logger_Log("player logged out",
+		Logger_P(playerid),
+		Logger_F("x", x),
+		Logger_F("y", y),
+		Logger_F("z", z),
+		Logger_F("r", r),
+		Logger_B("logged_in", acc_LoggedIn[playerid]),
+		Logger_B("alive", IsPlayerAlive(playerid)),
+		Logger_B("knocked_out", IsPlayerKnockedOut(playerid))
+	);
 
 	if(IsPlayerOnAdminDuty(playerid))
 	{
@@ -550,7 +569,9 @@ Logout(playerid, docombatlogcheck = 1)
 
 			if(IsPlayerCombatLogging(playerid, lastattacker, Item:lastweapon))
 			{
-				log("[LOGOUT] Player '%p' combat logged!", playerid);
+				Logger_Log("player combat-logged",
+					Logger_P(playerid));
+
 				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
 				// TODO: make this correct, lastweapon is an item ID but
 				// OnPlayerDeath takes a GTA weapon ID.
@@ -568,13 +589,10 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeSafebox(itemtype))
 	{
-		dbg("accounts", 1, "[LOGOUT] Player is holding a box.");
-
 		new Container:containerid;
 		GetItemExtraData(itemid, _:containerid);
 		if(!IsContainerEmpty(containerid))
 		{
-			dbg("accounts", 1, "[LOGOUT] Player is holding an unempty box, dropping in world.");
 			CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 			itemid = INVALID_ITEM_ID;
 			itemtype = INVALID_ITEM_TYPE;
@@ -583,21 +601,18 @@ Logout(playerid, docombatlogcheck = 1)
 
 	if(IsItemTypeBag(itemtype))
 	{
-		dbg("accounts", 1, "[LOGOUT] Player is holding a bag.");
 		new Container:containerid;
 		GetItemArrayDataAtCell(itemid, _:containerid, 1);
 		if(!IsContainerEmpty(containerid))
 		{
 			if(IsValidItem(GetPlayerBagItem(playerid)))
 			{
-				dbg("accounts", 1, "[LOGOUT] Player is holding an unempty bag and is wearing one, dropping in world.");
 				CreateItemInWorld(itemid, x + floatsin(-r, degrees), y + floatcos(-r, degrees), z - ITEM_FLOOR_OFFSET);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;
 			}
 			else
 			{
-				dbg("accounts", 1, "[LOGOUT] Player is holding an unempty bag but is not wearing one, calling GivePlayerBag.");
 				GivePlayerBag(playerid, itemid);
 				itemid = INVALID_ITEM_ID;
 				itemtype = INVALID_ITEM_TYPE;

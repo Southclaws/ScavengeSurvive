@@ -238,7 +238,7 @@ SavePlayerChar(playerid)
 	}
 	else
 	{
-		Logger_Err("failed to serialise items",
+		Logger_Err("failed to serialise items for inv",
 			Logger_I("playerid", playerid),
 			Logger_I("code", ret));
 	}
@@ -278,7 +278,7 @@ SavePlayerChar(playerid)
 		}
 		else
 		{
-			Logger_Err("failed to serialise items",
+			Logger_Err("failed to serialise items for bag",
 				Logger_I("playerid", playerid),
 				Logger_I("code", ret));
 		}

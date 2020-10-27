@@ -62,7 +62,7 @@ forward Float:GetPlayerTotalVelocity(playerid);
 
 public OnPlayerConnect(playerid)
 {
-	log("[JOIN] %p joined", playerid);
+	Logger_Log("player connected", Logger_P(playerid));
 
 	SetPlayerColor(playerid, 0xB8B8B800);
 
@@ -124,12 +124,12 @@ public OnPlayerDisconnect(playerid, reason)
 		case 0:
 		{
 			ChatMsgAll(GREY, " >  %p lost connection.", playerid);
-			log(sprintf("[PART] %p (lost connection)", playerid), 0);
+			Logger_Log("player lost connection", Logger_P(playerid));
 		}
 		case 1:
 		{
 			ChatMsgAll(GREY, " >  %p left the server.", playerid);
-			log(sprintf("[PART] %p (quit)", playerid), 0);
+			Logger_Log("player quit", Logger_P(playerid));
 		}
 	}
 
@@ -141,10 +141,7 @@ public OnPlayerDisconnect(playerid, reason)
 timer LoadAccountDelay[5000](playerid)
 {
 	if(!IsPlayerConnected(playerid))
-	{
-		log("[LoadAccountDelay] Player %d not connected any more.", playerid);
 		return;
-	}
 
 	if(gServerInitialising || GetTickCountDifference(GetTickCount(), gServerInitialiseTick) < 5000)
 	{
@@ -153,36 +150,56 @@ timer LoadAccountDelay[5000](playerid)
 		return;
 	}
 
-	new loadresult = LoadAccount(playerid);
-
-	if(loadresult == -1) // LoadAccount aborted, kick player.
+	new Error:e = LoadAccount(playerid);
+	if(IsError(e)) // LoadAccount aborted, kick player.
 	{
+		Logger_Err("failed to load account",
+			Logger_P(playerid),
+			Logger_E(e));
 		KickPlayer(playerid, "Account load failed");
+		Handled();
 		return;
 	}
 
-	if(loadresult == 0) // Account does not exist
+	if(e == Error:0) // Account does not exist
 	{
+		Logger_Log("account does not exist, prompting registration",
+			Logger_P(playerid),
+			Logger_I("result", _:e)
+		);
 		DisplayRegisterPrompt(playerid);
 	}
 
-	if(loadresult == 1) // Account does exist, prompt login
+	if(e == Error:1) // Account does exist, prompt login
 	{
+		Logger_Log("account loaded, prompting login",
+			Logger_P(playerid),
+			Logger_I("result", _:e)
+		);
 		DisplayLoginPrompt(playerid);
 	}
 
-	if(loadresult == 2) // Account does exist, auto login
+	if(e == Error:2) // Account does exist, auto login
 	{
+		Logger_Log("LoadAccount: auto login",
+			Logger_P(playerid)
+		);
 		Login(playerid);
 	}
 
-	if(loadresult == 3) // Account does exist, but not in whitelist
+	if(e == Error:3) // Account does exist, but not in whitelist
 	{
+		Logger_Log("LoadAccount: account not in whitelist",
+			Logger_P(playerid)
+		);
 		WhitelistKick(playerid);
 	}
 
-	if(loadresult == 4) // Account does exists, but is disabled
+	if(e == Error:4) // Account does exists, but is disabled
 	{
+		Logger_Log("LoadAccount: account inactive",
+			Logger_P(playerid)
+		);
 		KickPlayer(playerid, "Account inactive");
 	}
 
