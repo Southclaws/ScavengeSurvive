@@ -49,6 +49,8 @@ func Run(cfg Config) error {
 	pcx.ForceEnsure = forceEnsure
 	if !cfg.NoBuildIncrement {
 		pcx.BuildFile = "BUILD_NUMBER"
+	} else {
+		pcx.BuildFile = ""
 	}
 	pcx.Relative = true
 	if cfg.RconPassword != "" {
