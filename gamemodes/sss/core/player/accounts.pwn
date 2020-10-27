@@ -259,11 +259,10 @@ Error:LoadAccount(playerid)
 	SetPlayerTotalSpawns(playerid, spawns);
 	SetPlayerWarnings(playerid, warnings);
 
-// TODO: Add config flag for this (faster local dev)
-//	if(GetPlayerIpAsInt(playerid) == ipv4)
-//	{
-//		return 2;
-//	}
+	if(gAutoLoginWithIP && GetPlayerIpAsInt(playerid) == ipv4)
+	{
+		return NoError(2);
+	}
 
 	return NoError(1);
 }
