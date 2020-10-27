@@ -44,19 +44,51 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 	}
 	last := time.Now()
 	for e := range w.Events {
-		info, err := os.Stat(amx)
-		if err != nil {
-			continue
-		}
-		if time.Since(last) < time.Second*30 {
-			continue
-		}
-		if info.Size() > 0 && e.Op&fsnotify.Write|fsnotify.Create != 0 {
+		if func() bool {
+			lastInfo, err := os.Stat(amx)
+			if err != nil {
+				return false
+			}
+			if time.Since(last) < time.Second*30 {
+				return false
+			}
+			currInfo, err := os.Stat(amx)
+			if err != nil {
+				return false
+			}
+
+			// sleep for a bit, to check if the file is changing in size
+			time.Sleep(time.Second)
+
+			// if the file grew in size, it's being compiled
+			if currInfo.Size() > lastInfo.Size() {
+				zap.L().Debug("compilation in progress",
+					zap.Int64("size", currInfo.Size()),
+					zap.String("op", e.Op.String()))
+				return false
+			}
+
+			if currInfo.Size() < 50000000 {
+				zap.L().Debug("amx file is too small",
+					zap.Int64("size", currInfo.Size()),
+					zap.String("op", e.Op.String()))
+				return false
+			}
+
+			if currInfo.Size() != lastInfo.Size() {
+				return false
+			}
+
+			if e.Op&fsnotify.Write|fsnotify.Create == 0 {
+				return false
+			}
+
+			last = time.Now()
+			return true
+		}() {
 			zap.L().Debug("detected non-zero sized amx file change",
-				zap.Int64("size", info.Size()),
 				zap.String("op", e.Op.String()))
 			update.Store(true)
-			last = time.Now()
 		} else {
 			update.Store(false)
 		}

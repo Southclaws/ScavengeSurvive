@@ -778,7 +778,7 @@ public OnUpdateCheck(index, response_code, data[])
 		return;
 
 	new status[8], time;
-	if(sscanf("s[8]d", status, time))
+	if(sscanf(data, "s[8]d", status, time))
 		return;
 
 	if(strcmp(status, "update"))
