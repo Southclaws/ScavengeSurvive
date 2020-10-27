@@ -64,7 +64,7 @@
 
 // SS/item
 #define MAX_ITEM						Item:32768
-#define MAX_ITEM_TYPE					(ItemType:300)
+#define MAX_ITEM_TYPE					(ItemType:302)
 #define MAX_ITEM_NAME					(20)
 #define MAX_ITEM_TEXT					(64)
 #define MAX_CONTAINER_SLOTS				(100)
