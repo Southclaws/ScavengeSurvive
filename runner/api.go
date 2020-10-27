@@ -42,9 +42,13 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 	if err != nil {
 		panic(err)
 	}
+	last := time.Now()
 	for e := range w.Events {
 		info, err := os.Stat(amx)
 		if err != nil {
+			continue
+		}
+		if time.Since(last) < time.Second*30 {
 			continue
 		}
 		if info.Size() > 0 && e.Op&fsnotify.Write|fsnotify.Create != 0 {
@@ -52,6 +56,7 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 				zap.Int64("size", info.Size()),
 				zap.String("op", e.Op.String()))
 			update.Store(true)
+			last = time.Now()
 		} else {
 			update.Store(false)
 		}
