@@ -49,6 +49,7 @@ stock DisplayHudScaleProfileSelect(playerid)
 		}
 
 		UpdateWatchWithScaleProfile(playerid);
+		UpdateFoodBarWithScaleProfile(playerid);
 		DisplayHudScaleProfileSelect(playerid);
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Select HUD Scale Profile", "Normal\nWith /hudscalefix Enabled\nWith WidescreenFix Mod", "Select", "Close");
