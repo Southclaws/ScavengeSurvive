@@ -147,14 +147,18 @@ timer _TryCatch[catchtime](playerid, catchtime)
 timer _CatchDelay[floatround(fish_Distance[playerid], floatround_round) * 100](playerid)
 {
 	new
+		Item:itemid,
 		Float: x,
 		Float: y,
 		Float: z;
 
 	GetPlayerPos(playerid, x, y, z);
-	CreateItem(item_RawFish, x, y, z - ITEM_FLOOR_OFFSET, 90.0);
-	// todo: multiple fish types
 
+	itemid = CreateItem(item_RawFish, x, y, z - ITEM_FLOOR_OFFSET, 90.0);
+	SetItemArrayDataAtCell(itemid, 0, food_cooked, true);
+	SetItemArrayDataAtCell(itemid, 4, food_amount, true);
+	// todo: multiple fish types
+	
 	_PlayerStopFishing(playerid);
 }
 
