@@ -202,7 +202,7 @@ hook OnScriptInit()
 		CreateDetectionField(name, points, minz, maxz, exceptionlist);
 	}
 
-	log("Loaded %d Detection Fields", Iter_Count(det_Index));
+	Logger_Log("loaded detection fields", Logger_I("count", Iter_Count(det_Index)));
 
 	return 1;
 }
@@ -765,7 +765,10 @@ DetectionFieldLogPlayer(playerid, detfieldid)
 
 	format(line, sizeof(line), "%p, %s\r\n", playerid, TimestampToDateTime(gettime()));
 
-	log("[DET] %p entered %s at %s", playerid, det_Name[detfieldid], TimestampToDateTime(gettime()));
+	Logger_Log("player entered detection field",
+		Logger_P(playerid),
+		Logger_S("field", det_Name[detfieldid])
+	);
 
 	return 1;
 }

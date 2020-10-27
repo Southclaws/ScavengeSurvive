@@ -127,7 +127,9 @@ LoadTrees(filename[])
 		}
 	}
 
-	log("Loaded %d trees from '%s'.", count, filename);
+	Logger_Log("loaded trees",
+		Logger_I("count", count),
+		Logger_S("filename", filename));
 
 	return 1;
 }
