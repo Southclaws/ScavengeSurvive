@@ -48,16 +48,16 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 		panic(err)
 	}
 
-	discord.ChannelMessageSend(cfg.DiscordChannel, "Scavenge and Survive server starting!")
+	discord.ChannelMessageSend(cfg.DiscordChannel, "Scavenge and Survive server starting!") //nolint:errcheck
 
 	discord.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		switch m.Message.Content {
 		case "/status":
 			server, err := sampquery.GetServerInfo(ctx, "play.scavengesurvive.com:7777", false)
 			if err != nil {
-				discord.ChannelMessageSend(cfg.DiscordChannel, "Failed to query :("+err.Error())
+				discord.ChannelMessageSend(cfg.DiscordChannel, "Failed to query :("+err.Error()) //nolint:errcheck
 			} else {
-				discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{
+				discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{ //nolint:errcheck
 					Title: "Server Status",
 					Type:  discordgo.EmbedTypeRich,
 					Description: fmt.Sprintf(
