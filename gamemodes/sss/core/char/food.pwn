@@ -134,12 +134,12 @@ stock TogglePlayerHungerBar(playerid, bool:toggle)
 
 hook OnPlayerConnect(playerid)
 {
-	new ws = IsPlayerWideScreen(playerid);
+	new e_UI_SCALE_PROFILES:profile = GetPlayerUIScaleProfile(playerid);
 
 	HungerBar[playerid] = CreatePlayerProgressBar(playerid,
-		548.000000 + (ws ? 35.0 : 0.0),
+		548.000000 + (profile != e_UI_SCALE_NORMAL ? 35.0 : 0.0),
 		36.000000,
-		62.000000 * (ws ? 0.66 : 1.0),
+		62.000000 * (profile != e_UI_SCALE_NORMAL ? 0.66 : 1.0),
 		3.200000,
 		536354815,
 		100.0000,
