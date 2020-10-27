@@ -194,8 +194,8 @@ hook OnHoldActionFinish(playerid)
 		GetItemRot(gut_TargetItem[playerid], r, r, r);
 
 		itemid = CreateItem(item_Meat, x, y, z + 0.3, .rz = r);
-		SetItemArrayDataAtCell(itemid, 1, food_cooked);
-		SetItemArrayDataAtCell(itemid, 5 + random(4), food_amount);
+		SetItemArrayDataAtCell(itemid, 0, food_cooked, true);
+		SetItemArrayDataAtCell(itemid, 5 + random(3), food_amount, true);
 
 		SetItemArrayDataAtCell(gut_TargetItem[playerid], 0, 0);
 		CancelPlayerMovement(playerid);
