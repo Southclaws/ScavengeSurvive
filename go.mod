@@ -6,7 +6,6 @@ require (
 	github.com/Southclaws/go-samp-query v1.1.2
 	github.com/Southclaws/sampctl v0.0.0-20201015215605-f6e02560637f
 	github.com/bwmarrin/discordgo v0.22.0
-	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/cskr/pubsub v1.0.2
 	github.com/fsnotify/fsnotify v1.4.9
