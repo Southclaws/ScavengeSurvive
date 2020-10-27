@@ -47,7 +47,7 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 		if err != nil {
 			continue
 		}
-		if info.Size() > 0 {
+		if info.Size() > 0 && e.Op&fsnotify.Write|fsnotify.Create != 0 {
 			zap.L().Debug("detected non-zero sized amx file change",
 				zap.Int64("size", info.Size()),
 				zap.String("op", e.Op.String()))
