@@ -7,7 +7,6 @@ services:
     environment:
       LOG_LEVEL: ${LOG_LEVEL}
       AUTO_BUILD: "true" # auto build on source code changes
-      NO_BUILD_INCREMENT: "true" # don't increment BUILD_NUMBER
       DISCORD_TOKEN: ${DISCORD_TOKEN}
       DISCORD_CHANNEL: ${DISCORD_CHANNEL}
       SETTINGS_OVERRIDE: |
