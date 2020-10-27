@@ -204,9 +204,8 @@ CMD:pos(playerid, params[])
 	return 1;
 }
 
-CMD:widescreen(playerid, params[])
+CMD:hudscale(playerid, params[])
 {
-	
-	// ChatMsg(playerid, YELLOW, " >  Widescreen UI scaling %s please restart the game for this setting to take effect.", !ws ? ("enabled") : ("disabled"));
+	DisplayHudScaleProfileSelect(playerid);
 	return 1;
 }

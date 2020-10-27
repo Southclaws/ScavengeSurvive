@@ -36,7 +36,7 @@ stock DisplayHudScaleProfileSelect(playerid)
 {
 	inline Response(pid, dialogid, response, listitem, string:inputtext[])
 	{
-		#pragma unused pid, dialogid, listitem
+		#pragma unused pid, dialogid, inputtext
 
 		if(!response)
 			return;
@@ -51,7 +51,7 @@ stock DisplayHudScaleProfileSelect(playerid)
 		UpdateWatchWithScaleProfile(playerid);
 		DisplayHudScaleProfileSelect(playerid);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_INPUT, "Select HUD Scale Profile", "Normal\nWith /hudscalefix Enabled\nWith WidescreenFix Mod", "Select", "Close");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Select HUD Scale Profile", "Normal\nWith /hudscalefix Enabled\nWith WidescreenFix Mod", "Select", "Close");
 }
 
 stock e_UI_SCALE_PROFILES:GetPlayerUIScaleProfile(playerid)
