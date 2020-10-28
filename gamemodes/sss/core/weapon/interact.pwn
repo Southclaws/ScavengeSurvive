@@ -104,7 +104,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 
 		ammotypeid = GetItemTypeAmmoType(ammoitemtype);
 
-		if(ammotypeid != -1) // Transfer ammo from ammo item to held weapon
+		if(ammotypeid != -1 && !IsAmmoTypeNoTransfer(ammotypeid)) // Transfer ammo from ammo item to held weapon
 		{
 			new heldcalibre = GetItemWeaponCalibre(heldtypeid);
 
@@ -166,7 +166,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 
 	heldtypeid = GetItemTypeAmmoType(helditemtype);
 
-	if(heldtypeid != -1) // Player is holding an ammo item
+	if(heldtypeid != -1 && !IsAmmoTypeNoTransfer(heldtypeid)) // Player is holding an ammo item
 	{
 		new ammotypeid = GetItemTypeWeapon(ammoitemtype);
 
@@ -205,7 +205,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 
 		ammotypeid = GetItemTypeAmmoType(ammoitemtype);
 
-		if(ammotypeid != -1) // Transfer ammo from ammo item to held ammo item
+		if(ammotypeid != -1 && !IsAmmoTypeNoTransfer(ammotypeid)) // Transfer ammo from ammo item to held ammo item
 		{
 			/*if(GetItemExtraData(helditemid) == 0)
 			{
