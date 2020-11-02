@@ -318,8 +318,7 @@ hook OnItemCreate(Item:itemid)
 
 		if(lootindex != -1)
 		{
-			if(!IsValidContainer(containerid))
-				FillContainerWithLoot(containerid, random(4), lootindex);
+			FillContainerWithLoot(containerid, random(4), lootindex);
 		}
 	}
 }

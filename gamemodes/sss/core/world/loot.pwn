@@ -241,7 +241,6 @@ stock FillContainerWithLoot(Container:containerid, slots, lootindex)
 		return -1;
 	}
 
-	// log("[FillContainerWithLoot] containerid %d, slots %d, lootindex %d", containerid, slots, lootindex);
 	new containersize;
 	GetContainerSize(containerid, containersize);
 
