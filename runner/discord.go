@@ -73,18 +73,51 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 	})
 
 	go func() {
-		panic(discord.Open())
+		if err := discord.Open(); err != nil {
+			panic(err)
+		}
 	}()
 
 	for {
 		select {
-		case <-ps.Sub("server_restart"):
+		case <-ps.Sub("info.restart"):
 			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 
-		case d := <-ps.Sub("server_update"):
+		case d := <-ps.Sub("info.update"):
 			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
+
+		case obj := <-ps.Sub("errors.single"):
+			data, ok := obj.(map[string]string)
+			if !ok {
+				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
+			}
+
+			title, ok := data[sampLoggerMessageKey]
+			if !ok {
+				title = "Error"
+			}
+
+			fields := []*discordgo.MessageEmbedField{}
+			for k, v := range data {
+				if k == sampLoggerMessageKey {
+					continue
+				}
+				fields = append(fields, &discordgo.MessageEmbedField{
+					Name:  k,
+					Value: v,
+				})
+			}
+
+			if _, err := discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{
+				Type:   discordgo.EmbedTypeRich,
+				Title:  title,
+				Fields: fields,
+				Color:  0xFF0000,
+			}); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 		}

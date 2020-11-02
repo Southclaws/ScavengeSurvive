@@ -2,6 +2,7 @@ package runner
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"regexp"
 	"strconv"
@@ -124,6 +125,7 @@ func (r *ReactiveParser) parseSampLoggerFormat(line string) (func(msg string, fi
 		}
 		if lvl, ok := rawFields[sampLoggerLevelKey]; ok {
 			if lvl == "error" {
+				fmt.Println("publishing to pubsub errors.single")
 				r.ps.Pub(rawFields, "errors.single")
 				return zap.L().Error, rawFields[sampLoggerMessageKey], fields
 			} else if lvl == "debug" {

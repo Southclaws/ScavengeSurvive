@@ -25,7 +25,7 @@ func RunAPI(ctx context.Context, ps *pubsub.PubSub, restartTime time.Duration) {
 		if update.Load() {
 			zap.L().Info("sending restart signal", zap.Duration("time", restartTime))
 			w.Write([]byte(fmt.Sprintf("update %d", int(restartTime.Seconds())))) //nolint:errcheck
-			ps.Pub(restartTime, "server_update")
+			ps.Pub(restartTime, "info.update")
 		}
 
 		update.Store(false)

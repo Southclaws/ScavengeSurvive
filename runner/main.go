@@ -6,6 +6,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	"github.com/Southclaws/sampctl/download"
 	"github.com/Southclaws/sampctl/pkgcontext"
@@ -72,14 +73,15 @@ func Run(cfg Config) error {
 		go RunWatcher(ctx, pcx)
 	}
 
-	parser := ReactiveParser{ps}
-
-	go RunServer(ctx, ps, os.Stdin, parser.GetWriter(), false)
 	go RunAPI(ctx, ps, cfg.Restart)
-
 	if cfg.DiscordToken != "" {
 		go RunDiscord(ctx, ps, cfg)
 	}
+
+	time.Sleep(time.Second)
+
+	parser := ReactiveParser{ps}
+	go RunServer(ctx, ps, os.Stdin, parser.GetWriter(), false)
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
 

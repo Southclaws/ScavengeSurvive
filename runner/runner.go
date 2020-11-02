@@ -33,7 +33,7 @@ func RunServer(ctx context.Context, ps *pubsub.PubSub, r io.Reader, w io.Writer,
 		}
 
 		time.Sleep(time.Second * 5)
-		ps.Pub(struct{}{}, "server_restart")
+		ps.Pub(struct{}{}, "info.restart")
 	}
 }
 
