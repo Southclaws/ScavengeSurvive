@@ -72,7 +72,9 @@ func Run(cfg Config) error {
 		go RunWatcher(ctx, pcx)
 	}
 
-	go RunServer(ctx, ps, os.Stdin, os.Stdout, false)
+	parser := ReactiveParser{ps}
+
+	go RunServer(ctx, ps, os.Stdin, parser.GetWriter(), false)
 	go RunAPI(ctx, ps, cfg.Restart)
 
 	if cfg.DiscordToken != "" {
