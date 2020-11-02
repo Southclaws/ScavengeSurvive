@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func RunWatcher(ctx context.Context, pcx *pkgcontext.PackageContext) {
+func RunWatcher(parent context.Context, pcx *pkgcontext.PackageContext) {
 	zap.L().Info("starting file watcher for auto rebuild")
 
 	w, err := fsnotify.NewWatcher()
@@ -34,36 +34,64 @@ func RunWatcher(ctx context.Context, pcx *pkgcontext.PackageContext) {
 		panic(err)
 	}
 
+	var ctx context.Context
+	var cancel context.CancelFunc
+	defer func() {
+		if cancel != nil {
+			cancel()
+		}
+	}()
+	builds := make(chan error)
+	running := false
 	last := time.Time{}
-
 	for {
 		select {
 		case e := <-w.Events:
-			if time.Since(last) < time.Second*10 {
-				zap.L().Debug("ignoring frequent change", zap.Duration("since", time.Since(last)))
+			if time.Since(last) < time.Second {
 				continue
+			}
+
+			if running {
+				zap.L().Debug("cancelling existing build job")
+				cancel()
 			}
 
 			zap.L().Debug("source code change", zap.String("event", e.String()))
 
-			fmt.Print("\n")
-
+			ctx, cancel = context.WithCancel(parent)
+			running = true
 			last = time.Now()
-			_, _, err := pcx.Build(ctx, "", false, false, false, "BUILD_NUMBER")
+
+			go doBuild(ctx, pcx, builds)
+
+		case err := <-builds:
 			if err != nil {
 				zap.L().Info("build failed", zap.Error(err))
-				continue
+			} else {
+				zap.L().Info("build finished", zap.Duration("duration", time.Since(last)))
 			}
-
-			fmt.Print("\n")
-
-			zap.L().Info("build finished", zap.Duration("duration", time.Since(last)))
+			running = false
 
 		case e := <-w.Errors:
 			zap.L().Info("watcher error", zap.Error(e))
 
-		case <-ctx.Done():
+		case <-parent.Done():
+			if cancel != nil {
+				cancel()
+			}
 			return
 		}
 	}
+}
+
+func doBuild(ctx context.Context, pcx *pkgcontext.PackageContext, results chan error) {
+	fmt.Print("\n") // output padding, for readability of build errors etc.
+	_, _, err := pcx.Build(ctx, "", false, false, false, "")
+	if err != nil {
+		zap.L().Info("build failed", zap.Error(err))
+		results <- err
+	}
+	fmt.Print("\n")
+
+	results <- nil
 }

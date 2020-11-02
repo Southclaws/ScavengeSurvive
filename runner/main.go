@@ -42,18 +42,13 @@ func Run(cfg Config) error {
 		return errors.Wrap(err, "failed to interpret directory as Pawn package")
 	}
 
-	// pcx.Runtime = runtimeName
 	pcx.CacheDir = cacheDir
-	// pcx.BuildName = build
 	pcx.ForceBuild = forceBuild
 	pcx.ForceEnsure = forceEnsure
-	pcx.BuildFile = cfg.BuildFile
 	pcx.Relative = true
 	if cfg.RconPassword != "" {
 		pcx.Package.Runtime.RCONPassword = &cfg.RconPassword
 	}
-
-	zap.L().Debug("preparing runtime environment", zap.String("buildfile", pcx.BuildFile))
 
 	if err := pcx.RunPrepare(context.Background()); err != nil {
 		return errors.Wrap(err, "failed to prepare runtime")
