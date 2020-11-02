@@ -72,15 +72,21 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 		}
 	})
 
-	for range ps.Sub("server_restart") {
-		if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
-			zap.L().Error("failed to send discord message", zap.Error(err))
-		}
-	}
+	go func() {
+		panic(discord.Open())
+	}()
 
-	for d := range ps.Sub("server_update") {
-		if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
-			zap.L().Error("failed to send discord message", zap.Error(err))
+	for {
+		select {
+		case <-ps.Sub("server_restart"):
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
+
+		case d := <-ps.Sub("server_update"):
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
 		}
 	}
 }
