@@ -138,7 +138,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	}
 }
 
-hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
+hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] != INVALID_LIQUID_CONTAINER)
 	{

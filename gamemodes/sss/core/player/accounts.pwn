@@ -354,9 +354,11 @@ DisplayRegisterPrompt(playerid)
 			new Error:e = CreateAccount(playerid, buffer);
 			if(IsError(e))
 			{
+				new cause[128];
+				GetLastErrorCause(cause);
 				Logger_Err("failed to create account for player",
 					Logger_P(playerid),
-					Logger_E(e)
+					Logger_S("cause", cause)
 				);
 				Handled();
 				return 1;

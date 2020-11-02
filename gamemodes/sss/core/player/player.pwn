@@ -153,9 +153,11 @@ timer LoadAccountDelay[5000](playerid)
 	new Error:e = LoadAccount(playerid);
 	if(IsError(e)) // LoadAccount aborted, kick player.
 	{
+		new cause[128];
+		GetLastErrorCause(cause);
 		Logger_Err("failed to load account",
 			Logger_P(playerid),
-			Logger_E(e));
+			Logger_S("cause", cause));
 		KickPlayer(playerid, "Account load failed");
 		Handled();
 		return;

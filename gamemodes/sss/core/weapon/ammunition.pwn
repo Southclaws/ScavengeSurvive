@@ -33,7 +33,8 @@ ItemType:	ammo_itemType,
 Float:		ammo_bleedrateMult,
 Float:		ammo_knockoutMult,
 Float:		ammo_penetration,
-			ammo_size
+			ammo_size,
+			ammo_notransfer
 }
 
 
@@ -64,7 +65,7 @@ stock DefineAmmoCalibre(const name[], Float:bleedrate)
 	return clbr_Total++;
 }
 
-stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size)
+stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedratemult, Float:knockoutmult, Float:penetration, size, bool:notransfer = false)
 {
 	SetItemTypeMaxArrayData(itemtype, 1);
 
@@ -75,6 +76,7 @@ stock DefineItemTypeAmmo(ItemType:itemtype, const name[], calibre, Float:bleedra
 	ammo_Data[ammo_Total][ammo_knockoutMult] = knockoutmult;
 	ammo_Data[ammo_Total][ammo_penetration] = penetration;
 	ammo_Data[ammo_Total][ammo_size] = size;
+	ammo_Data[ammo_Total][ammo_notransfer] = notransfer;
 
 	ammo_ItemTypeAmmoType[itemtype] = ammo_Total;
 
@@ -226,6 +228,15 @@ stock GetAmmoTypeSize(ammotype)
 	return ammo_Data[ammotype][ammo_size];
 }
 
+// ammo_notransfer
+stock IsAmmoTypeNoTransfer(ammotype)
+{
+	if(!(0 <= ammotype < ammo_Total))
+		return 0;
+
+	return ammo_Data[ammotype][ammo_notransfer];
+}
+
 
 stock GetItemTypeAmmoType(ItemType:itemtype)
 {
@@ -255,6 +266,17 @@ stock GetItemTypeMagSize(ItemType:itemtype)
 		return -1;
 
 	return ammo_Data[ammo_ItemTypeAmmoType[itemtype]][ammo_size];
+}
+
+stock IsItemTypeAmmoTypeNoTransfer(ammotype)
+{
+	if(!IsValidItemType(itemtype))
+		return -1;
+
+	if(ammo_ItemTypeAmmoType[itemtype] == -1)
+		return -1;
+
+	return ammo_Data[ammo_ItemTypeAmmoType[itemtype]][ammo_notransfer];
 }
 
 stock GetAmmoItemTypesOfCalibre(calibre, ItemType:output[], max = sizeof(output))

@@ -16,7 +16,7 @@ services:
         infomessage/messages/0=Welcome to the Scavenge and Survive test server!
         infomessage/messages/1=Please report issues at github.com/Southclaws/ScavengeSurvive/issues
         infomessage/messages/2=Official website: scavengesurvive.com
-        infomessage/messages/3=Join the project discord server! https://discord.gg/ffJ9WT
+        infomessage/messages/3=Join the project discord server! https://discord.gg/7y7mT4Q
         player/allow-pause-map=0
         player/combat-log-window=30
         player/interior-entry=0

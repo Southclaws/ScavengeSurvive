@@ -144,7 +144,7 @@ GenerateVehicleData(vehicleid)
 
 // Putting loot in trunks
 
-	if(lootindex != -1 && 0 < trunksize <= MAX_INVENTORY_SLOTS)
+	if(lootindex != -1 && 0 < trunksize <= MAX_CONTAINER_SLOTS)
 	{
 		FillContainerWithLoot(GetVehicleContainer(vehicleid), random(trunksize / 3), lootindex);
 	}

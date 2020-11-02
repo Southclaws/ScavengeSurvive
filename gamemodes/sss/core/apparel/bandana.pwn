@@ -18,8 +18,6 @@
 
 hook OnGameModeInit()
 {
-	print("\n[OnGameModeInit] Initialising 'bandana'...");
-
 	new tmp;
 
 	tmp = DefineMaskItem(item_BandanaBlue);
