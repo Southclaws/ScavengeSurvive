@@ -120,6 +120,16 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 			}); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
+
+		case obj := <-ps.Sub("errors.backtrace"):
+			message, ok := obj.(string)
+			if !ok {
+				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
+			}
+
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("Error backtrace:\n```\n%s\n```", message)); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
 		}
 	}
 }

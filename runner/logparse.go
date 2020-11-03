@@ -2,7 +2,6 @@ package runner
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"regexp"
 	"strconv"
@@ -18,7 +17,9 @@ const (
 	sampLoggerLevelKey   = `lvl`
 	EntryPattern         = `[OnGameModeInit] FIRST_INIT`
 	ExitPattern          = `[OnScriptExit] LAST_EXIT`
-	ErrorPattern         = `Failed to load`
+	ErrorPattern         = `Run time error`
+
+	ChunkDebugStart = `[debug] AMX backtrace:`
 )
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
@@ -56,11 +57,15 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 	plugins := []string{}
 	scanner := bufio.NewScanner(r)
 	preamble := []string{}
+
+	debug := false
+	debugTrace := []string{}
+
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		if init {
-			if strings.HasPrefix(line, ErrorPattern) {
+			if strings.Contains(line, ErrorPattern) {
 				zap.L().Warn("an error occurred during initialisation, below is the output from initialisation that is usually hidden during normal startups")
 				p.ps.Pub(strings.Join(preamble, "\n"), "errors.init")
 				for _, l := range preamble {
@@ -103,6 +108,25 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 			continue
 		}
 
+		if !debug {
+			if strings.HasPrefix(line, ChunkDebugStart) {
+				debug = true
+			}
+		} else {
+			// if the log entry is not a debug entry OR the start of a new debug
+			// chunk, send the error to the errors topic.
+			if !strings.HasPrefix(line, "[debug]") {
+				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
+				debugTrace = debugTrace[:0]
+				debug = false
+			} else if strings.HasPrefix(line, ChunkDebugStart) {
+				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
+				debugTrace = []string{line}
+				debug = true
+			}
+			debugTrace = append(debugTrace, line)
+		}
+
 		// otherwise, parse log entries for the samp-logger format and write
 		// them out.
 		f, message, fields := p.parseSampLoggerFormat(line)
@@ -125,7 +149,6 @@ func (r *ReactiveParser) parseSampLoggerFormat(line string) (func(msg string, fi
 		}
 		if lvl, ok := rawFields[sampLoggerLevelKey]; ok {
 			if lvl == "error" {
-				fmt.Println("publishing to pubsub errors.single")
 				r.ps.Pub(rawFields, "errors.single")
 				return zap.L().Error, rawFields[sampLoggerMessageKey], fields
 			} else if lvl == "debug" {
