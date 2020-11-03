@@ -20,6 +20,7 @@ const (
 	ErrorPattern         = `Run time error`
 
 	ChunkDebugStart = `[debug] AMX backtrace:`
+	ChunkErrorStart = `[error] UNHANDLED ERRORS:`
 )
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
@@ -109,17 +110,17 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 		}
 
 		if !debug {
-			if strings.HasPrefix(line, ChunkDebugStart) {
+			if strings.HasPrefix(line, ChunkDebugStart) || strings.HasPrefix(line, ChunkErrorStart) {
 				debug = true
 			}
 		} else {
 			// if the log entry is not a debug entry OR the start of a new debug
 			// chunk, send the error to the errors topic.
-			if !strings.HasPrefix(line, "[debug]") {
+			if !strings.HasPrefix(line, "[debug]") && !strings.HasPrefix(line, "[error]") {
 				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
 				debugTrace = debugTrace[:0]
 				debug = false
-			} else if strings.HasPrefix(line, ChunkDebugStart) {
+			} else if strings.HasPrefix(line, ChunkDebugStart) || strings.HasPrefix(line, ChunkErrorStart) {
 				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
 				debugTrace = []string{line}
 				debug = true
