@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	sampquery "github.com/Southclaws/go-samp-query"
@@ -133,7 +134,18 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
 			}
 
-			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("Error backtrace:\n```\n%s\n```", message)); err != nil {
+			// filter out dialogue responses as they contain raw passwords
+			lines := strings.Split(message, "\n")
+			n := 0
+			for _, line := range lines {
+				if !strings.Contains(line, "OnDialogResponse") {
+					lines[n] = line
+					n++
+				}
+			}
+			lines = lines[:n]
+
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("Error backtrace:\n```\n%s\n```", strings.Join(lines, "\n"))); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 		}
