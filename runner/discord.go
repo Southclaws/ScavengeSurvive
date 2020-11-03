@@ -78,19 +78,26 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 		}
 	}()
 
+	// these must be pre-created in order to prevent messages being missed
+	// during initialisation.
+	errorsBacktrace := ps.Sub("errors.backtrace")
+	infoRestart := ps.Sub("info.restart")
+	infoUpdate := ps.Sub("info.update")
+	errorsSingle := ps.Sub("errors.single")
+
 	for {
 		select {
-		case <-ps.Sub("info.restart"):
+		case <-infoRestart:
 			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 
-		case d := <-ps.Sub("info.update"):
+		case d := <-infoUpdate:
 			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 
-		case obj := <-ps.Sub("errors.single"):
+		case obj := <-errorsSingle:
 			data, ok := obj.(map[string]string)
 			if !ok {
 				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
@@ -120,8 +127,7 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 			}); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
-
-		case obj := <-ps.Sub("errors.backtrace"):
+		case obj := <-errorsBacktrace:
 			message, ok := obj.(string)
 			if !ok {
 				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
