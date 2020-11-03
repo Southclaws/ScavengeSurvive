@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	sampquery "github.com/Southclaws/go-samp-query"
@@ -72,15 +73,81 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 		}
 	})
 
-	for range ps.Sub("server_restart") {
-		if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
-			zap.L().Error("failed to send discord message", zap.Error(err))
+	go func() {
+		if err := discord.Open(); err != nil {
+			panic(err)
 		}
-	}
+	}()
 
-	for d := range ps.Sub("server_update") {
-		if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
-			zap.L().Error("failed to send discord message", zap.Error(err))
+	// these must be pre-created in order to prevent messages being missed
+	// during initialisation.
+	errorsBacktrace := ps.Sub("errors.backtrace")
+	infoRestart := ps.Sub("info.restart")
+	infoUpdate := ps.Sub("info.update")
+	errorsSingle := ps.Sub("errors.single")
+
+	for {
+		select {
+		case <-infoRestart:
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
+
+		case d := <-infoUpdate:
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
+
+		case obj := <-errorsSingle:
+			data, ok := obj.(map[string]string)
+			if !ok {
+				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
+			}
+
+			title, ok := data[sampLoggerMessageKey]
+			if !ok {
+				title = "Error"
+			}
+
+			fields := []*discordgo.MessageEmbedField{}
+			for k, v := range data {
+				if k == sampLoggerMessageKey {
+					continue
+				}
+				fields = append(fields, &discordgo.MessageEmbedField{
+					Name:  k,
+					Value: v,
+				})
+			}
+
+			if _, err := discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{
+				Type:   discordgo.EmbedTypeRich,
+				Title:  title,
+				Fields: fields,
+				Color:  0xFF0000,
+			}); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
+		case obj := <-errorsBacktrace:
+			message, ok := obj.(string)
+			if !ok {
+				zap.L().Error("failed to get error fields", zap.Any("obj", obj))
+			}
+
+			// filter out dialogue responses as they contain raw passwords
+			lines := strings.Split(message, "\n")
+			n := 0
+			for _, line := range lines {
+				if !strings.Contains(line, "OnDialogResponse") {
+					lines[n] = line
+					n++
+				}
+			}
+			lines = lines[:n]
+
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("Error backtrace:\n```\n%s\n```", strings.Join(lines, "\n"))); err != nil {
+				zap.L().Error("failed to send discord message", zap.Error(err))
+			}
 		}
 	}
 }

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cskr/pubsub"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -16,12 +17,22 @@ const (
 	sampLoggerLevelKey   = `lvl`
 	EntryPattern         = `[OnGameModeInit] FIRST_INIT`
 	ExitPattern          = `[OnScriptExit] LAST_EXIT`
-	ErrorPattern         = `Failed to load`
+	ErrorPattern         = `Run time error`
+
+	ChunkDebugStart = `[debug] AMX backtrace:`
 )
 
 var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
 
-func LogParser(restartKiller chan struct{}) io.Writer {
+type LogParser interface {
+	GetWriter() io.Writer
+}
+
+type ReactiveParser struct {
+	ps *pubsub.PubSub
+}
+
+func (p *ReactiveParser) GetWriter() io.Writer {
 	// Pipe output to a scanner, this allows the program to read logs and
 	// re-format them in a nicer format.
 	outputReader, outputWriter := io.Pipe()
@@ -29,14 +40,14 @@ func LogParser(restartKiller chan struct{}) io.Writer {
 	// start in background and repeat on failure with panic recover
 	go func() {
 		for {
-			parseWithRecover(outputReader, restartKiller)
+			p.parseWithRecover(outputReader)
 		}
 	}()
 
 	return outputWriter
 }
 
-func parseWithRecover(r io.Reader, restartKiller chan struct{}) {
+func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 	defer func() {
 		err := recover()
 		zap.L().Error("log parser encountered an error", zap.Any("error", err))
@@ -46,17 +57,22 @@ func parseWithRecover(r io.Reader, restartKiller chan struct{}) {
 	plugins := []string{}
 	scanner := bufio.NewScanner(r)
 	preamble := []string{}
+
+	debug := false
+	debugTrace := []string{}
+
 	for scanner.Scan() {
 		line := scanner.Text()
 
 		if init {
-			if strings.HasPrefix(line, ErrorPattern) {
+			if strings.Contains(line, ErrorPattern) {
 				zap.L().Warn("an error occurred during initialisation, below is the output from initialisation that is usually hidden during normal startups")
+				p.ps.Pub(strings.Join(preamble, "\n"), "errors.init")
 				for _, l := range preamble {
 					zap.L().Info(l)
 				}
 				preamble = preamble[:0]
-				restartKiller <- struct{}{}
+				p.ps.Pub(true, "restart")
 				init = true
 				continue
 			}
@@ -87,19 +103,38 @@ func parseWithRecover(r io.Reader, restartKiller chan struct{}) {
 
 		// Exit pattern triggers a full process restart.
 		if strings.Contains(line, ExitPattern) {
-			restartKiller <- struct{}{}
+			p.ps.Pub(true, "restart")
 			init = true
 			continue
 		}
 
+		if !debug {
+			if strings.HasPrefix(line, ChunkDebugStart) {
+				debug = true
+			}
+		} else {
+			// if the log entry is not a debug entry OR the start of a new debug
+			// chunk, send the error to the errors topic.
+			if !strings.HasPrefix(line, "[debug]") {
+				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
+				debugTrace = debugTrace[:0]
+				debug = false
+			} else if strings.HasPrefix(line, ChunkDebugStart) {
+				p.ps.Pub(strings.Join(debugTrace, "\n"), "errors.backtrace")
+				debugTrace = []string{line}
+				debug = true
+			}
+			debugTrace = append(debugTrace, line)
+		}
+
 		// otherwise, parse log entries for the samp-logger format and write
 		// them out.
-		f, message, fields := parseSampLoggerFormat(line)
+		f, message, fields := p.parseSampLoggerFormat(line)
 		f(message, fields...)
 	}
 }
 
-func parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Field), string, []zapcore.Field) {
+func (r *ReactiveParser) parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Field), string, []zapcore.Field) {
 	rawFields := parseSampLoggerToMap(line)
 	if len(rawFields) > 0 {
 		fields := []zapcore.Field{}
@@ -114,6 +149,7 @@ func parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Fiel
 		}
 		if lvl, ok := rawFields[sampLoggerLevelKey]; ok {
 			if lvl == "error" {
+				r.ps.Pub(rawFields, "errors.single")
 				return zap.L().Error, rawFields[sampLoggerMessageKey], fields
 			} else if lvl == "debug" {
 				return zap.L().Debug, rawFields[sampLoggerMessageKey], fields
