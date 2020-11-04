@@ -460,6 +460,7 @@ new stock
 #include "sss/core/player/widescreen.pwn"
 
 // CHARACTER SCRIPTS
+#include "sss/core/char/movement.pwn"
 #include "sss/core/char/food.pwn"
 #include "sss/core/char/drugs.pwn"
 #include "sss/core/char/clothes.pwn"
