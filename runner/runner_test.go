@@ -10,6 +10,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+var p = ReactiveParser{}
+
 func Test_parseSampLoggerFormat(t *testing.T) {
 	tests := []struct {
 		input string
@@ -17,7 +19,7 @@ func Test_parseSampLoggerFormat(t *testing.T) {
 		want  []zapcore.Field
 	}{
 		{
-			`text="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
+			`lvl=info msg="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
 			"Setting loaded",
 			[]zapcore.Field{
 				zap.String("path", "spawn/new-items/1"),
@@ -25,7 +27,7 @@ func Test_parseSampLoggerFormat(t *testing.T) {
 			},
 		},
 		{
-			`text="Setting loaded" path="this \"thing\" contains quotes"`,
+			`lvl=info msg="Setting loaded" path="this \"thing\" contains quotes"`,
 			"Setting loaded",
 			[]zapcore.Field{
 				zap.String("path", `this "thing" contains quotes`),
@@ -39,7 +41,7 @@ func Test_parseSampLoggerFormat(t *testing.T) {
 	}
 	for ii, tt := range tests {
 		t.Run(fmt.Sprint(ii), func(t *testing.T) {
-			_, msg, got := parseSampLoggerFormat(tt.input)
+			_, msg, got := p.parseSampLoggerFormat(tt.input)
 			assert.Equal(t, tt.want, got)
 			pretty.Println(msg, got) //nolint:errcheck
 		})
@@ -52,17 +54,19 @@ func Test_parseSampLoggerToMap(t *testing.T) {
 		want  map[string]string
 	}{
 		{
-			`text="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
+			`lvl=info msg="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
 			map[string]string{
-				"text":   "Setting loaded",
+				"lvl":    "info",
+				"msg":    "Setting loaded",
 				"path":   "spawn/new-items/1",
 				"output": "Ammo9mm",
 			},
 		},
 		{
-			`text="Setting loaded" path="this \"thing\" contains quotes"`,
+			`lvl=info msg="Setting loaded" path="this \"thing\" contains quotes"`,
 			map[string]string{
-				"text": "Setting loaded",
+				"lvl":  "info",
+				"msg":  "Setting loaded",
 				"path": `this "thing" contains quotes`,
 			},
 		},
@@ -86,9 +90,10 @@ func Test_splitLine(t *testing.T) {
 		want []string
 	}{
 		{
-			`text="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
+			`lvl=info msg="Setting loaded" path="spawn/new-items/1" output="Ammo9mm"`,
 			[]string{
-				`text="Setting loaded"`,
+				`lvl=info`,
+				`msg="Setting loaded"`,
 				`path="spawn/new-items/1"`,
 				`output="Ammo9mm"`,
 			},
