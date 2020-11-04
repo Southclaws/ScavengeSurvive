@@ -49,16 +49,16 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 		panic(err)
 	}
 
-	discord.ChannelMessageSend(cfg.DiscordChannel, "Scavenge and Survive server starting!") //nolint:errcheck
+	discord.ChannelMessageSend(cfg.DiscordChannelInfo, "Scavenge and Survive server starting!") //nolint:errcheck
 
 	discord.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		switch m.Message.Content {
 		case "/status":
 			server, err := sampquery.GetServerInfo(ctx, "play.scavengesurvive.com:7777", false)
 			if err != nil {
-				discord.ChannelMessageSend(cfg.DiscordChannel, "Failed to query :("+err.Error()) //nolint:errcheck
+				discord.ChannelMessageSend(cfg.DiscordChannelInfo, "Failed to query :("+err.Error()) //nolint:errcheck
 			} else {
-				discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{ //nolint:errcheck
+				discord.ChannelMessageSendEmbed(cfg.DiscordChannelInfo, &discordgo.MessageEmbed{ //nolint:errcheck
 					Title: "Server Status",
 					Type:  discordgo.EmbedTypeRich,
 					Description: fmt.Sprintf(
@@ -89,12 +89,12 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 	for {
 		select {
 		case <-infoRestart:
-			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, "Server restart!"); err != nil {
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannelInfo, "Server restart!"); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 
 		case d := <-infoUpdate:
-			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannelInfo, fmt.Sprintf("A server update is on the way in %s", d.(time.Duration))); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 
@@ -120,7 +120,7 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 				})
 			}
 
-			if _, err := discord.ChannelMessageSendEmbed(cfg.DiscordChannel, &discordgo.MessageEmbed{
+			if _, err := discord.ChannelMessageSendEmbed(cfg.DiscordChannelErrors, &discordgo.MessageEmbed{
 				Type:   discordgo.EmbedTypeRich,
 				Title:  title,
 				Fields: fields,
@@ -145,7 +145,7 @@ func runDiscord(ctx context.Context, ps *pubsub.PubSub, cfg Config) {
 			}
 			lines = lines[:n]
 
-			if _, err := discord.ChannelMessageSend(cfg.DiscordChannel, fmt.Sprintf("Error backtrace:\n```\n%s\n```", strings.Join(lines, "\n"))); err != nil {
+			if _, err := discord.ChannelMessageSend(cfg.DiscordChannelErrors, fmt.Sprintf("Error backtrace:\n```\n%s\n```", strings.Join(lines, "\n"))); err != nil {
 				zap.L().Error("failed to send discord message", zap.Error(err))
 			}
 		}
