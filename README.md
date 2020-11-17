@@ -51,8 +51,8 @@ Run the following commands to pull the Pawn dependencies, SA-MP plugins,
 compiler and other necessary components:
 
 ```
-sampctl project ensure
-sampctl project build
+sampctl package ensure
+sampctl package build
 ```
 
 When on `master` branch, this should finish with no errors. You can check the
