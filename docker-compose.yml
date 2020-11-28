@@ -22,9 +22,9 @@ services:
         player/combat-log-window=30
         player/interior-entry=0
         player/login-freeze-time=8
-        player/max-tab-out-time=60
+        player/max-tab-out-time=3600
         player/nametag-distance=3
-        player/ping-limit=400
+        player/ping-limit=900
         player/player-animations=1
         player/vehicle-surfing=0
         server/crash-on-exit=0
