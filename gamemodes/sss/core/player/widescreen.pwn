@@ -25,7 +25,7 @@ enum e_UI_SCALE_PROFILES
 
 static UIScaleProfileName[e_UI_SCALE_PROFILES][] = {
 	"Normal",
-	"With /hudscalefix Enabled",
+	"With /hudscale Enabled",
 	"With WidescreenFix Mod"
 };
 
@@ -52,7 +52,7 @@ stock DisplayHudScaleProfileSelect(playerid)
 		UpdateFoodBarWithScaleProfile(playerid);
 		DisplayHudScaleProfileSelect(playerid);
 	}
-	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Select HUD Scale Profile", "Normal\nWith /hudscalefix Enabled\nWith WidescreenFix Mod", "Select", "Close");
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Select HUD Scale Profile", "Normal\nWith /hudscale Enabled\nWith WidescreenFix Mod", "Select", "Close");
 }
 
 stock e_UI_SCALE_PROFILES:GetPlayerUIScaleProfile(playerid)
@@ -84,5 +84,5 @@ hook OnPlayerLoad(playerid, filename[])
 	new data[1];
 	modio_read(filename, _T<W,S,U,I>, sizeof(data), data);
 	UIScaleProfile[playerid] = e_UI_SCALE_PROFILES:data[0];
-	ChatMsg(playerid, YELLOW, "Widescreen UI scaling %s", UIScaleProfileName[UIScaleProfile[playerid]]);
+	ChatMsg(playerid, YELLOW, "Widescreen UI scaling: %s (/hudscale)", UIScaleProfileName[UIScaleProfile[playerid]]);
 }
