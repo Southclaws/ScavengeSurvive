@@ -49,7 +49,7 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 			{
 				if(tires & 0b0010)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPFT", true), 5000);
 				}
@@ -63,7 +63,7 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 			{
 				if(tires & 0b0001)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPRT", true), 5000);
 				}
