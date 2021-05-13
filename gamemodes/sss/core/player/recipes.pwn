@@ -54,7 +54,7 @@ Dialog_ShowCraftList(playerid, type)
 	// 3 Workbench
 
 	new
-		f_str[512],
+		f_str[700],
 		itemname[MAX_ITEM_NAME];
 
 	for(new CraftSet:i; i < CraftSet:GetCraftSetTotal(); i++)
