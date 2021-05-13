@@ -187,9 +187,17 @@ DeconstructDefence(Item:itemid)
 			z -= def_TypeData[def_ItemTypeDefenceType[itemtype]][def_placeOffsetZ];
 	}
 
+	new itemtypename[ITM_MAX_NAME];
+	GetItemTypeName(def_TypeData[def_ItemTypeDefenceType[itemtype]][def_itemtype], itemtypename);
+    	SetItemLabel(itemid, sprintf("%s", itemtypename), 0xFFFF00FF);
+    
 	SetItemPos(itemid, x, y, z);
 	SetItemRot(itemid, 0.0, 0.0, 0.0, true);
 
+	SetItemArrayDataAtCell(itemid, 0, def_keypad);
+	SetItemArrayDataAtCell(itemid, 0, def_motor);
+	SetItemArrayDataAtCell(itemid, 0, def_pose);
+	
 	SetItemArrayDataAtCell(itemid, 0, 0);
 	CallLocalFunction("OnDefenceDestroy", "d", _:itemid);
 }
