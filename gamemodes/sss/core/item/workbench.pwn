@@ -179,7 +179,7 @@ _wb_ClearWorkbench(Item:itemid)
 
 _wb_StartWorking(playerid, Item:itemid, buildtime)
 {
-	new Container:containerid;
+	new Container:containerid, Container:containerid2;
 
 	GetItemArrayDataAtCell(itemid, _:containerid, 0);
 
@@ -188,7 +188,8 @@ _wb_StartWorking(playerid, Item:itemid, buildtime)
 	    if(wb_CurrentWorkbench[i] == itemid)
 	        _wb_StopWorking(i);
 
-		if(GetPlayerCurrentContainer(i) == containerid)
+		GetPlayerCurrentContainer(i, containerid2);
+		if(containerid2 == containerid)
 		{
 			ShowPlayerDialog(i, -1, DIALOG_STYLE_MSGBOX, " ", " ", " ", " ");
 			HidePlayerGear(i);
