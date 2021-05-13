@@ -138,7 +138,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			}
 		}
 
-		SetPlayerChatBubble(playerid, TagScan(chat), WHITE, 40.0, 10000);
+		//SetPlayerChatBubble(playerid, TagScan(chat), WHITE, 40.0, 10000);
 
 		return 1;
 	}
@@ -196,7 +196,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			}
 		}
 
-		SetPlayerChatBubble(playerid, TagScan(chat), CHAT_LOCAL, 40.0, 10000);
+		//SetPlayerChatBubble(playerid, TagScan(chat), CHAT_LOCAL, 40.0, 10000);
 
 		return 1;
 	}
@@ -239,6 +239,9 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
+			if(!IsPlayerLoggedIn(i) || !IsPlayerSpawned(i))
+				continue;
+				
 			if(-0.05 < frequency - chat_Freq[i] < 0.05)
 			{
 				SendClientMessage(i, CHAT_RADIO, line1);
@@ -248,7 +251,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 			}
 		}
 
-		SetPlayerChatBubble(playerid, TagScan(chat), WHITE, 40.0, 10000);
+		//SetPlayerChatBubble(playerid, TagScan(chat), WHITE, 40.0, 10000);
 
 		return 1;
 	}
