@@ -72,6 +72,17 @@ stock SetPlayerUIScaleProfile(playerid, e_UI_SCALE_PROFILES:profile)
 	return 1;
 }
 
+hook OnPlayerConnect(playerid)
+{
+	SetPlayerUIScaleProfile(playerid, e_UI_SCALE_NORMAL);
+	UpdateWatchWithScaleProfile(playerid);
+}
+
+hook OnPlayerRegister(playerid)
+{
+	ChatMsg(playerid, YELLOW, "Widescreen UI scaling: %s (/hudscale)", UIScaleProfileName[UIScaleProfile[playerid]]);
+}
+
 hook OnPlayerSave(playerid, filename[])
 {
 	new data[1];
