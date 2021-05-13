@@ -675,7 +675,7 @@ OnGameModeInit_Setup()
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
 	debug_set_level("global", gGlobalDebugLevel);
 
-	RestartCount				=TextDrawCreate(430.000000, 10.000000, "Server Restart In:~n~00:00");
+	RestartCount				=TextDrawCreate(410.000000, 10.000000, "Server Restart In:~n~00:00");
 	TextDrawAlignment			(RestartCount, 2);
 	TextDrawBackgroundColor		(RestartCount, 255);
 	TextDrawFont				(RestartCount, 1);
