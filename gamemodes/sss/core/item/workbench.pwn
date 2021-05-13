@@ -79,6 +79,9 @@ hook OnPlayerPickUpItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Workbench)
 	{
+		new Container:containerid;
+		GetItemArrayDataAtCell(itemid, _:containerid, 0);
+		DisplayContainerInventory(playerid, containerid);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
 
@@ -176,6 +179,22 @@ _wb_ClearWorkbench(Item:itemid)
 
 _wb_StartWorking(playerid, Item:itemid, buildtime)
 {
+	new Container:containerid;
+
+	GetItemArrayDataAtCell(itemid, _:containerid, 0);
+
+	foreach(new i : Player)
+	{
+	    if(wb_CurrentWorkbench[i] == itemid)
+	        _wb_StopWorking(i);
+
+		if(GetPlayerCurrentContainer(i) == containerid)
+		{
+			ShowPlayerDialog(i, -1, DIALOG_STYLE_MSGBOX, " ", " ", " ", " ");
+			HidePlayerGear(i);
+		}
+	}
+	
 	new Button:buttonid, Float:angle;
 	GetItemButtonID(itemid, buttonid);
 	GetPlayerAngleToButton(playerid, buttonid, angle);
