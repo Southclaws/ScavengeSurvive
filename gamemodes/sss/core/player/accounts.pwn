@@ -383,13 +383,13 @@ DisplayRegisterPrompt(playerid)
 
 DisplayLoginPrompt(playerid, badpass = 0)
 {
-	new str[128];
+	new str[150150];
 
 	if(badpass)
-		format(str, 128, ls(playerid, "ACCLOGWROPW"), acc_LoginAttempts[playerid]);
+		format(str, 150150, ls(playerid, "ACCLOGWROPW"), acc_LoginAttempts[playerid]);
 
 	else
-		format(str, 128, ls(playerid, "ACCLOGIBODY"), playerid);
+		format(str, 150, ls(playerid, "ACCLOGIBODY"), playerid);
 
 	Logger_Log("player is logging in", Logger_P(playerid));
 
