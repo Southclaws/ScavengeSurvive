@@ -218,7 +218,7 @@ _DrinkItem(playerid, Item:itemid)
 		GetItemArrayDataAtCell(itemid, _:liquidamount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
 
 		SetPlayerFP(playerid, GetPlayerFP(playerid) + GetLiquidFoodValue(liquidtype));
-		SetItemArrayDataAtCell(itemid, _:(liquidamount - 0.2), LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+		SetItemArrayDataAtCell(itemid, _:(liquidamount - 0.2), LIQUID_ITEM_ARRAY_CELL_AMOUNT, true);
 
 		_StartDrinking(playerid, itemid, true);
 	}
@@ -347,10 +347,10 @@ stock Error:SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
 
 	if(amount > liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity])
 	{
-		return SetItemArrayDataAtCell(itemid, _:liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity], LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+		return SetItemArrayDataAtCell(itemid, _:liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity], LIQUID_ITEM_ARRAY_CELL_AMOUNT, true);
 	}
 
-	return SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT);
+	return SetItemArrayDataAtCell(itemid, _:amount, LIQUID_ITEM_ARRAY_CELL_AMOUNT, true);
 }
 
 stock GetLiquidItemLiquidType(Item:itemid)
@@ -374,5 +374,5 @@ stock Error:SetLiquidItemLiquidType(Item:itemid, type)
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
 		return NoError();
 
-	return SetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE);
+	return SetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE, true);
 }
