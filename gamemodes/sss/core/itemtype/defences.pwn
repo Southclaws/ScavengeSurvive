@@ -81,6 +81,10 @@ forward OnPlayerInteractDefence(playerid, Item:itemid);
 
 ==============================================================================*/
 
+public OnPlayerShootDynamicObject(playerid, weaponid, STREAMER_TAG_OBJECT:objectid, Float:x, Float:y, Float:z)
+{
+	return 1;
+}
 
 hook OnPlayerConnect(playerid)
 {
