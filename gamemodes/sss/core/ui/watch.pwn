@@ -125,7 +125,7 @@ hook OnPlayerSpawnChar(playerid)
 
 hook OnPlayerSpawnNewChar(playerid)
 {
-	UpdateFoodBarWithScaleProfile(playerid);
+	UpdateWatchWithScaleProfile(playerid);
 }
 
 _updateWatchUI(playerid, Float:x, Float:y, Float:sx, Float:sy, Float:bgoffsetx)
