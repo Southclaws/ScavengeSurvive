@@ -80,6 +80,16 @@ hook OnPlayerConnect(playerid)
 	_WeatherUpdateForPlayer(playerid);
 }
 
+hook OnPlayerSpawnChar(playerid)
+{
+	SetWeatherForPlayer(playerid, weather_Current);
+}
+
+hook OnPlayerSpawnNewChar(playerid)
+{
+	SetWeatherForPlayer(playerid, weather_Current);
+}
+
 task WeatherUpdate[600000]()
 {
 	if(GetTickCountDifference(GetTickCount(), weather_LastChange) > 600000 && random(100) < 10)
@@ -96,6 +106,7 @@ task WeatherUpdate[600000]()
 
 		weather_Current = list[random(idx)];
 		weather_LastChange = GetTickCount();
+		_WeatherUpdate();
 	}
 
 }
