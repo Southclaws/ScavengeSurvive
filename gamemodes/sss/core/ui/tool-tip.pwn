@@ -93,7 +93,7 @@ hook OnPlayerDropItem(playerid, Item:itemid)
 
 stock IsPlayerToolTipsOn(playerid)
 {
-	if(!IsValidPlayerID(playerid))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return ToolTips[playerid];
