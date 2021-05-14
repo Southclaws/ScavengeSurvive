@@ -259,7 +259,7 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 stock GetPlayerChatMode(playerid)
 {
-	if(!IsValidPlayerID(playerid))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return chat_Mode[playerid];
@@ -277,7 +277,7 @@ stock SetPlayerChatMode(playerid, chatmode)
 
 stock IsPlayerGlobalQuiet(playerid)
 {
-	if(!IsValidPlayerID(playerid))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return chat_Quiet[playerid];
@@ -285,7 +285,7 @@ stock IsPlayerGlobalQuiet(playerid)
 
 stock Float:GetPlayerRadioFrequency(playerid)
 {
-	if(!IsValidPlayerID(playerid))
+	if(!IsPlayerConnected(playerid))
 		return 0.0;
 
 	return chat_Freq[playerid];
