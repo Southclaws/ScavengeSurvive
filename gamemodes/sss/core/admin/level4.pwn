@@ -165,26 +165,29 @@ ACMD:setpinglimit[3](playerid, params[])
 
 ACMD:weather[4](playerid, params[])
 {
-	if(strlen(params) > 2)
-	{
-		for(new i; i < sizeof(WeatherData); i++)
-		{
-			if(strfind(WeatherData[i][weather_name], params, true) != -1)
-			{
-				foreach(new j : Player)
-				{
-					SetPlayerWeather(j, i);
-				}
+	gBigString[playerid][0] = EOS;
 
-				SetGlobalWeather(i);
-				ChatMsgAdmins(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s", WeatherData[i]);
-
-				return 1;
-			}
-		}
-
-		ChatMsg(playerid, RED, " >  Invalid weather!");
+	for(new i; i < sizeof(WeatherData); i++)
+	{	
+		strcat(gBigString[playerid], WeatherData[i][weather_name]);
+		strcat(gBigString[playerid], "\n");
 	}
+
+	inline Response(pid, dialogid, response, listitem, string:inputtext[])
+	{
+		#pragma unused pid, dialogid, inputtext
+		if(response)
+		{
+			foreach(new j : Player)
+			{
+				SetPlayerWeather(j, listitem);
+			}
+
+			SetGlobalWeather(listitem);
+			ChatMsgAdmins(GetPlayerAdminLevel(playerid), YELLOW, " >  Weather set to "C_BLUE"%s(%d)"C_YELLOW" by %p", WeatherData[listitem], listitem, playerid);
+		}
+	}
+	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Set Global Weather", gBigString[playerid], "Set", "Cancel");
 
 	return 1;
 }
