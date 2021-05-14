@@ -115,6 +115,11 @@ hook OnPlayerSpawnChar(playerid)
 	UpdateFoodBarWithScaleProfile(playerid);
 }
 
+hook OnPlayerSpawnNewChar(playerid)
+{
+	UpdateFoodBarWithScaleProfile(playerid);
+}
+
 hook OnPlayerConnect(playerid)
 {
 	HungerBar[playerid] = INVALID_PLAYER_BAR_ID;
