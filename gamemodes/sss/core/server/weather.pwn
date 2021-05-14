@@ -68,7 +68,7 @@ hook OnGameModeInit()
 {
 	// Todo: custom weather array loaded from settings
 
-	weather_Current = random(sizeof(WeatherData));
+	weather_Current = random(19);
 	weather_LastChange = GetTickCount();
 }
 
