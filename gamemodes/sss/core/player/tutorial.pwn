@@ -186,8 +186,10 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		CreateItem(item_Wheel, 1073.59448, 2127.05786, 9.85164, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
 		CreateItem(item_Wheel, 1073.4965, 2125.6582, 9.8516, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
-		itemid = CreateItem(item_GasCan, 0.63107, 10.54177, -20.03327, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
-		SetItemExtraData(itemid, 10);
+		
+		itemid = CreateItem(item_GasCan, 1071.55, 2124.92, 9.8516, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
+		SetLiquidItemLiquidType(itemid, liquid_Petrol);
+        	SetLiquidItemLiquidAmount(itemid, 10);
 	}
 }
 
@@ -221,6 +223,9 @@ ExitTutorial(playerid)
 	{
 		RemoveItemFromInventory(playerid, i);
 	}
+	
+	RemovePlayerBag(playerid);
+	RemovePlayerHolsterItem(playerid);
 	
 	PlayerInTutorial[playerid] = false;
 	HideHelpTip(playerid);
