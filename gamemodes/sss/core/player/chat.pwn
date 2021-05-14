@@ -239,6 +239,9 @@ PlayerSendChat(playerid, chat[], Float:frequency)
 
 		foreach(new i : Player)
 		{
+			if ( ! IsPlayerLoggedIn (i) ||  ! IsPlayerSpawned (i)) 
+				continue ; 
+				
 			if(-0.05 < frequency - chat_Freq[i] < 0.05)
 			{
 				SendClientMessage(i, CHAT_RADIO, line1);
