@@ -732,9 +732,6 @@ _unload_DropHandler(playerid, Item:itemid)
 
 	if(itmw_Data[weapontype][itmw_flags] & WEAPON_FLAG_LIQUID_AMMO)
 		return 0;
-		
-	if(GetItemWeaponItemMagAmmo(itemid) + GetItemWeaponItemReserve(itemid) == 0)
-	    return 0;
 
 	dbg("weapon-core", 1, "[OnPlayerDropItem] dropping item %d magammo %d reserve %d", _:itemid, GetItemWeaponItemMagAmmo(itemid), GetItemWeaponItemReserve(itemid));
 	itmw_DropItemID[playerid] = itemid;
