@@ -534,7 +534,7 @@ PlayerBagUpdate(playerid)
 	{
 		if(GetPlayerDist3D(playerid, bag_LookingInBag[playerid]) > 1.0)
 		{
-			ClosePlayerContainer(playerid);
+			ClosePlayerContainer(playerid, true);
 			CancelSelectTextDraw(playerid);
 			bag_LookingInBag[playerid] = -1;
 		}
