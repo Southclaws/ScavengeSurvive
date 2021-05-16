@@ -720,8 +720,8 @@ ACMD:delete[3](playerid, params[])
 		{
 			GetTentPos(i, ix, iy, iz);
 
-			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyTent(i);
+			//if(Distance(px, py, pz, ix, iy, iz) < range)
+				//i = DestroyTent(i);
 		}
 
 		return 1;
@@ -735,8 +735,10 @@ ACMD:delete[3](playerid, params[])
 
 			GetItemPos(Item:i, ix, iy, iz);
 
-			if(Distance(px, py, pz, ix, iy, iz) < range)
+			if(Distance(px, py, pz, ix, iy, iz) < range){
+				CallLocalFunction("OnDefenceDestroy", "d", i);
 				i = _:DestroyItem(Item:i);
+			}
 		}
 
 		return 1;
