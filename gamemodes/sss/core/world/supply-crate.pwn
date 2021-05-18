@@ -309,7 +309,7 @@ SupplyCrateLand()
 	sup_Button = CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate");
 
 	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
-	FillContainerWithLoot(Container:sup_ContaineridContainer:sup_Containerid, 4 + random(16), lootindex);
+	FillContainerWithLoot(Container:sup_Containerid, 4 + random(16), lootindex);
 	GetContainerFreeSlots(Container:sup_Containerid, freeslots);
 	dbg("supply-crate", 2, "[SupplyCrateLand] Spawned %d items in supply crate container %d", 32 - freeslots, _:sup_Containerid);
 
