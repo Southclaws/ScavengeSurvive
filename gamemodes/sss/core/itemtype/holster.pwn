@@ -357,6 +357,21 @@ hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
+hook OnPlayerOpenInventory(playerid)
+{
+	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
+
+hook OnPlayerOpenContainer(playerid, Container:containerid)
+{
+	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+		return Y_HOOKS_BREAK_RETURN_1;
+
+	return Y_HOOKS_CONTINUE_RETURN_0;
+}
 
 /*==============================================================================
 
