@@ -443,7 +443,7 @@ _BagEquipHandler(playerid)
 	}
 	else
 	{
-		AddItemToPlayer(playerid, itemid);
+		AddItemToPlayer(playerid, itemid, true);
 	}
 
 	return 1;
