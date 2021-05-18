@@ -587,7 +587,7 @@ hook OnPlayerAddToInventory(playerid, Item:itemid, success)
 		if(IsItemTypeBag(itemtype))
 			return Y_HOOKS_BREAK_RETURN_1;
 
-		if(IsItemTypeCarry(itemtype))
+		if(IsItemTypeCarry(itemtype) || IsValidHolsterItem(itemtype))
 			return Y_HOOKS_BREAK_RETURN_1;
 
 		new
