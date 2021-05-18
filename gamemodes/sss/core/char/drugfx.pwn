@@ -23,16 +23,16 @@ hook OnPlayerScriptUpdate(playerid)
 		hour = 22;
 		minute = 3;
 		weather = 33;
-		SetPlayerTime(playerid, hour, minute);
-		SetPlayerWeather(playerid, weather);
+		SetTimeForPlayer(playerid, hour, minute);
+		SetWeatherForPlayer(playerid, weather);
 	}
 	else if(IsPlayerUnderDrugEffect(playerid, drug_Heroin))
 	{
 		hour = 22;
 		minute = 30;
 		weather = 33;
-		SetPlayerTime(playerid, hour, minute);
-		SetPlayerWeather(playerid, weather);
+		SetTimeForPlayer(playerid, hour, minute);
+		SetWeatherForPlayer(playerid, weather);
 	}
 
 	if(IsPlayerUnderDrugEffect(playerid, drug_Air))
