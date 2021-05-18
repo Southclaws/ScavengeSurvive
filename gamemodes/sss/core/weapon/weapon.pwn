@@ -74,17 +74,16 @@ forward ItemType:GetItemWeaponItemAmmoItem(Item:itemid);
 
 hook OnPlayerConnect(playerid)
 {
-	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.000000, 64.000000, "500/500");
+	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.411254, 62.649990, "500/500");
 	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
 	PlayerTextDrawFont				(playerid, WeaponAmmoUI[playerid], 1);
-	PlayerTextDrawLetterSize		(playerid, WeaponAmmoUI[playerid], 0.210000, 1.000000);
+	PlayerTextDrawLetterSize		(playerid, WeaponAmmoUI[playerid], 0.278114, 1.372495);
 	PlayerTextDrawColor				(playerid, WeaponAmmoUI[playerid], -1);
+	PlayerTextDrawSetShadow(playerid, WeaponAmmoUI[playerid], 0);
 	PlayerTextDrawSetOutline		(playerid, WeaponAmmoUI[playerid], 1);
 	PlayerTextDrawSetProportional	(playerid, WeaponAmmoUI[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, WeaponAmmoUI[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, WeaponAmmoUI[playerid], 255);
-	PlayerTextDrawTextSize			(playerid, WeaponAmmoUI[playerid], 548.000000, 40.000000);
+	PlayerTextDrawTextSize			(playerid, WeaponAmmoUI[playerid], 1613.000000, -118.533325);
 
 	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 }
