@@ -191,8 +191,12 @@ hook OnItemAddToInventory(playerid, Item:itemid, slot)
 			return Y_HOOKS_BREAK_RETURN_1;
 	}
 	
-	hols_LastHolster[playerid] = GetTickCount();
-
+	if(IsPlayerConnected(playerid))
+	{
+		if(!IsPlayerViewingInventory(playerid))
+			hols_LastHolster[playerid] = GetTickCount();
+	}
+	
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
