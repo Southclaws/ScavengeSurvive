@@ -107,7 +107,7 @@ ShowReportMenu(playerid)
 
 					targetid = GetClosestPlayerFromPlayer(playerid, distance);
 
-					if(!IsPlayerConnected(targetid))
+					if(!IsPlayerConnected(targetid) || IsPlayerOnAdminDuty(targetid))
 					{
 						ChatMsgLang(playerid, RED, "REPNOPF100M");
 						return 1;
