@@ -235,7 +235,8 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 		GetItemArrayDataAtCell(withitemid, active, def_active);
 		if(active)
 		{
-			_InteractDefenceWithItem(playerid, withitemid, itemid);
+			if(!_InteractDefenceWithItem(playerid, withitemid, itemid))
+				_InteractDefence(playerid, withitemid);
 		}
 		else
 		{
