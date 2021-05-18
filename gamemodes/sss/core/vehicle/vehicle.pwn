@@ -1189,7 +1189,7 @@ stock GetPlayerVehicleEnterTick(playerid)
 // veh_ExitTick
 stock GetPlayerVehicleExitTick(playerid)
 {
-	if(!IsValidPlayerID(playerid))
+	if(!IsPlayerConnected(playerid))
 		return 0;
 
 	return veh_ExitTick[playerid];
