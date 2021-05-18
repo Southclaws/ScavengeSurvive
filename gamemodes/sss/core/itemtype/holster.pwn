@@ -190,6 +190,8 @@ hook OnItemAddToInventory(playerid, Item:itemid, slot)
 		if(IsValidHolsterItem(GetItemType(itemid)))
 			return Y_HOOKS_BREAK_RETURN_1;
 	}
+	
+	hols_LastHolster[playerid] = GetTickCount();
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -210,6 +212,10 @@ _HolsterChecks(playerid)
 	if(GetPlayerAnimationIndex(playerid) == 1381)
 		return 0;
 
+	// Put item animation
+	if(GetPlayerAnimationIndex(playerid) == 638)
+		return 0;
+		
 	// Within 1 second of previously holstering/unholstering
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
 		return 0;
@@ -272,6 +278,9 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 	if(!IsValidItem(Item:itemid))
 		return 0;
 
+	if(GetPlayerItem(playerid) != Item:itemid)
+		return 0;
+		
 	new Item:currentitem = hols_Item[playerid];
 
 	if(Item:itemid == currentitem)
@@ -360,7 +369,13 @@ hook OnPlayerGiveItem(playerid, targetid, Item:itemid)
 hook OnPlayerOpenInventory(playerid)
 {
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+	{
+		HidePlayerGear(playerid);
+		HidePlayerHealthInfo(playerid);
+		ClosePlayerInventory(playerid, true);
+		CancelSelectTextDraw(playerid);
 		return Y_HOOKS_BREAK_RETURN_1;
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
@@ -368,7 +383,13 @@ hook OnPlayerOpenInventory(playerid)
 hook OnPlayerOpenContainer(playerid, Container:containerid)
 {
 	if(GetTickCountDifference(GetTickCount(), hols_LastHolster[playerid]) < 1000)
+	{
+		HidePlayerGear(playerid);
+		HidePlayerHealthInfo(playerid);
+		ClosePlayerContainer(playerid, true);
+		CancelSelectTextDraw(playerid);
 		return Y_HOOKS_BREAK_RETURN_1;
+	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
