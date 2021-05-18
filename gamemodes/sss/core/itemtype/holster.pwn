@@ -272,6 +272,9 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 	if(!IsValidItem(Item:itemid))
 		return 0;
 
+	if(GetPlayerItem(playerid) != Item:itemid)
+		return 0;
+		
 	new Item:currentitem = hols_Item[playerid];
 
 	if(Item:itemid == currentitem)
@@ -327,6 +330,9 @@ timer UnholsterItemDelay[time](playerid, time)
 	if(!IsValidItem(hols_Item[playerid]))
 		return 0;
 
+	if(IsValidItem(GetPlayerItem(playerid)))
+		return 0;
+		
 	CreateItemInWorld(hols_Item[playerid]);
 	GiveWorldItemToPlayer(playerid, hols_Item[playerid]);
 
