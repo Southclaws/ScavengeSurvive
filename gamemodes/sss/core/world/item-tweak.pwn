@@ -211,32 +211,32 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 	{
 		if(playertextid == twk_MoveF[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.1, 0.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.05, 0.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveB[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.1, 180.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.05, 180.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveL[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.1, 90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.05, 90.0, 0.0);
 		}
 
 		if(playertextid == twk_MoveR[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.1, -90.0, 0.0);
+			_twk_AdjustItemPos(playerid, 0.05 -90.0, 0.0);
 		}
 
 		if(playertextid == twk_RotR[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.0, 0.0, -5.0);
+			_twk_AdjustItemPos(playerid, 0.0, 0.0, -2.0);
 		}
 
 		if(playertextid == twk_RotL[playerid])
 		{
-			_twk_AdjustItemPos(playerid, 0.0, 0.0, 5.0);
+			_twk_AdjustItemPos(playerid, 0.0, 0.0, 2.0);
 		}
 
 		if(playertextid == twk_Unlock[playerid])
@@ -250,6 +250,18 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		}
 	}
 }
+
+hook OnPlayerClickTextDraw(playerid, Text:clickedid)
+{
+	if(clickedid == Text:65535)
+	{
+	 	if(twk_Locked[playerid])
+		{
+		    _twk_ToggleMouse(playerid, true);
+		}
+	}
+}
+
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 {
