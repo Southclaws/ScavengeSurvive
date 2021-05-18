@@ -278,7 +278,10 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 		SetItemWeaponItemAmmoItem(Item:tgtitem, GetItemType(Item:srcitem));
 		remainder = GivePlayerAmmo(playerid, ammo);
 
-		SetItemExtraData(Item:srcitem, remainder);
+		if(remainder)
+			SetItemExtraData(Item:srcitem, remainder);
+		else
+			DestroyItem(Item:srcitem);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW", true), ammo - remainder), 3000);
 	}
