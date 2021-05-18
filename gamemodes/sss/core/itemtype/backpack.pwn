@@ -237,7 +237,7 @@ stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction 
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(IsItemTypeCarry(itemtype))
+	if(IsItemTypeCarry(itemtype)  || IsValidHolsterItem(itemtype))
 		return -1;
 
 	new required;
