@@ -295,7 +295,7 @@ timer HolsterItemDelay[time](playerid, itemid, time)
 	}
 
 	SetPlayerHolsterItem(playerid, Item:itemid);
-	ClearAnimations(playerid);
+	//ClearAnimations(playerid);
 
 	if(IsValidItem(currentitem))
 	{
