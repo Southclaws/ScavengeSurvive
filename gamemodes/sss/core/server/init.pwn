@@ -1340,13 +1340,13 @@ public OnScriptInit()
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_RefineMachine, item_Canister, false, item_Motor, false, item_Fluctuator, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_WaterMachine, item_Canister, false, item_Motor, false, item_Bucket, false, item_PowerSupply, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(30000, item_Hammer, DefineItemCraftSet(item_Workbench, item_RefinedMetal, false, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
-	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_Locker, item_MetalFrame, false, item_MetalFrame, false, item_RefinedMetal, false), item_Crowbar, 25000);
+	SetCraftSetConstructible(30000, item_Sledgehammer, DefineItemCraftSet(item_Locker, item_MetalFrame, false, item_MetalFrame, false, item_RefinedMetal, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(26500, item_Screwdriver, DefineItemCraftSet(item_Desk, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(28500, item_Screwdriver, DefineItemCraftSet(item_Table, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 25000);
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_Barstool, item_RefinedMetal, false, item_WoodLog, false, item_WoodLog, false, item_Clothes, false), item_Crowbar, 22000);
 	SetCraftSetConstructible(22500, item_Screwdriver, DefineItemCraftSet(item_SmallTable, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false, item_WoodLog, false), item_Crowbar, 22000);
 	SetCraftSetConstructible(18500, item_Screwdriver, DefineItemCraftSet(item_Key, item_Key, false, item_Key, true, item_Motor, false), .tweak = false);
-	SetCraftSetConstructible(30000, item_Screwdriver, DefineItemCraftSet(item_LargeFrame, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false), item_Crowbar, 22000, .defence = true);
+	SetCraftSetConstructible(30000, item_Sledgehammer, DefineItemCraftSet(item_LargeFrame, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false, item_RefinedMetal, false), item_Crowbar, 22000, .defence = true);
 
 	// items created with a workbench
 	SetConstructionSetWorkbench(SetCraftSetConstructible(16000, item_Screwdriver, DefineItemCraftSet(item_IedBomb, item_FireworkBox, false, item_PowerSupply, false)));
