@@ -1287,18 +1287,6 @@ public OnScriptInit()
 	DefineSafeboxType(item_GunCase,			5, false, false);
 	DefineSafeboxType(item_Cupboard,		5, false, false);
 
-
-	// BAG ITEM TYPE DEFINITIONS
-	DefineBagType("Backpack",			item_Backpack,		11, -0.110900, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Small Bag",			item_Satchel,		7, 0.241894, -0.160918, 0.181463, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Parachute Bag",		item_ParaBag,		10, 0.039470, -0.088898, -0.009887, 0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-	DefineBagType("Large Backpack",		item_LargeBackpack,	14, -0.2209, -0.073500, 0.000000, 0.000000, 0.000000, 0.000000, 1.2000000, 1.300000, 1.100000);
-	DefineBagType("Daypack",			item_Daypack,		8, 0.347999, -0.129999, 0.208000,  0.000000, 90.000000, 0.000000,  1.147999, 1.133999, 1.084000);
-	DefineBagType("Medium Bag",			item_MediumBag,		12, -0.206900, -0.061500, -0.007000,  0.000000, 0.000000, 0.000000,  1.153999, 1.103999, 1.076999);
-	DefineBagType("Travel Rucksack",	item_Rucksack,		13, 0.039469, -0.117898, -0.009886,  0.000000, 90.000000, 0.000000,  1.265999, 1.236999, 1.189000);
-	DefineBagType("Love Box",			item_HeartShapedBox,6, 0.121852, -0.110032, -0.009413,  0.000000, 90.000000, 0.000000, 1.000000, 1.000000, 1.000000);
-
-
 	// SEED TYPE DEFINITIONS
 	DefineSeedType("Tomato", item_Tomato,	4, 631, 0.90649);
 	DefineSeedType("Apple", item_RedApple,	5, 802, 0.72044);
