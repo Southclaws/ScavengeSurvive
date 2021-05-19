@@ -749,6 +749,10 @@ _RemoveVehicleOwner(vehicleid)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
+	new filename[MAX_PLAYER_NAME + 22];
+	format(filename, sizeof(filename), DIRECTORY_VEHICLE"%s.dat", pveh_Owner[vehicleid]);
+	fremove(filename);
+	
 	pveh_Owner[vehicleid][0] = EOS;
 	pveh_OwnerPlayer[vehicleid] = INVALID_PLAYER_ID;
 
@@ -814,19 +818,9 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// pveh_PlayerVehicle[playerid] = player's previous vehicle
 				// vehicleid = new vehicle
 
-				new
-					oldvehicleid,
-					oldownername[MAX_PLAYER_NAME],
-					oldplayerid = INVALID_PLAYER_ID;
-
-				oldvehicleid = pveh_PlayerVehicle[playerid];
-				strcat(oldownername, pveh_Owner[vehicleid]);
-				oldplayerid = pveh_OwnerPlayer[vehicleid];
-
+				_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 				_SetVehicleOwner(vehicleid, name, playerid);
-				_SetVehicleOwner(oldvehicleid, oldownername, oldplayerid);
 				_SaveVehicle(vehicleid);
-				_SaveVehicle(oldvehicleid);
 			}
 			else
 			{
@@ -834,7 +828,6 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 				// Remove the original owner's name from it
 				// Assign the player as the new owner and save the vehicle
 				dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
-				_SaveVehicle(vehicleid);
 				_SetVehicleOwner(vehicleid, name, playerid);
 				_SaveVehicle(vehicleid);
 			}
