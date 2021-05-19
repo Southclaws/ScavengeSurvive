@@ -765,10 +765,9 @@ _RemoveVehicleOwner(vehicleid)
 	If vehicleid already has an owner, it is assigned to playerid's old vehicle
 	Saves changes made to any vehicles in context
 */
+
 _UpdatePlayerVehicle(playerid, vehicleid)
 {
-	dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] %d %d (%s)", playerid, vehicleid, GetVehicleUUID(vehicleid));
-
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -776,64 +775,27 @@ _UpdatePlayerVehicle(playerid, vehicleid)
 		return 0;
 
 	new name[MAX_PLAYER_NAME];
-
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
 
 	if(isnull(pveh_Owner[vehicleid]))
 	{
-		// Vehicle has no owner, assign player as owner
-		// Set owner of player's old vehicle to null
-		dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Vehicle owner is null");
-
-		if(IsValidVehicle(pveh_PlayerVehicle[playerid]))
-		{
-			dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Player vehicle is %s (%d), removing", GetVehicleUUID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
-			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
-		}
-
+		_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
 		_SetVehicleOwner(vehicleid, name, playerid);
 		_SaveVehicle(vehicleid);
 	}
 	else
 	{
-		// Vehicle has an owner
-		dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Vehicle owner is not null: '%s'", pveh_Owner[vehicleid]);
 		if(pveh_PlayerVehicle[playerid] == vehicleid)
 		{
-			// Vehicle's owner is the player, do nothing but save it
-			dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] This vehicle belongs to the player in context");
 			_SaveVehicle(vehicleid);
 		}
 		else
 		{
-			// Vehicle's owner is not the player, check if the player already
-			// owns a vehicle
-			dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] This vehicle does not belong to the player in context, swapping");
-
-			if(pveh_PlayerVehicle[playerid] != INVALID_VEHICLE_ID)
-			{
-				// Player owns a vehicle
-				dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Player in context already owns vehicle %s (%d) swapping owners", GetVehicleUUID(pveh_PlayerVehicle[playerid]), pveh_PlayerVehicle[playerid]);
-
-				// pveh_PlayerVehicle[playerid] = player's previous vehicle
-				// vehicleid = new vehicle
-
-				_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
-				_SetVehicleOwner(vehicleid, name, playerid);
-				_SaveVehicle(vehicleid);
-			}
-			else
-			{
-				// Player does not own a vehicle
-				// Remove the original owner's name from it
-				// Assign the player as the new owner and save the vehicle
-				dbg("player-vehicle", 1, "[_UpdatePlayerVehicle] Player in context does not own a vehicle, saving this one");
-				_SetVehicleOwner(vehicleid, name, playerid);
-				_SaveVehicle(vehicleid);
-			}
+			_RemoveVehicleOwner(pveh_PlayerVehicle[playerid]);
+			_SetVehicleOwner(vehicleid, name, playerid);
+			_SaveVehicle(vehicleid);
 		}
 	}
-
 	return 1;
 }
 
