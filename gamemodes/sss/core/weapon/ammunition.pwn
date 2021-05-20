@@ -102,7 +102,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	new ammotype = ammo_ItemTypeAmmoType[itemtype];
 
 	if(ammotype == -1)
-		return Y_HOOKS_CONTINUE_RETURN_0;
+		return 0;
 
 	new
 		amount,
@@ -117,7 +117,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 	SetItemNameExtra(itemid, str);
 
-	return Y_HOOKS_CONTINUE_RETURN_0;
+	return 1;
 }
 
 hook OnItemCreate(Item:itemid)
