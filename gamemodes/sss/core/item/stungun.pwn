@@ -79,6 +79,4 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 		else
 			SetItemNameExtra(itemid, "Uncharged");
 	}
-
-	return Y_HOOKS_CONTINUE_RETURN_0;
 }
