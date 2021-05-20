@@ -100,6 +100,9 @@ stock SetPlayerHatItem(playerid, Item:itemid)
 	if(!GetClothesHatStatus(skinid))
 		return 0;
 
+	if(hat_CurrentHatItem[playerid] == itemid)
+		return 0;
+		
 	new model;
 	GetItemTypeModel(itemtype, model);
 
@@ -111,6 +114,10 @@ stock SetPlayerHatItem(playerid, Item:itemid)
 
 	RemoveItemFromWorld(itemid);
 	RemoveCurrentItem(GetItemHolder(itemid));
+	    
+   	if(IsValidItem(hat_CurrentHatItem[playerid]))
+    		GiveWorldItemToPlayer(playerid, hat_CurrentHatItem[playerid]);
+
 	hat_CurrentHatItem[playerid] = itemid;
 
 	return 1;
