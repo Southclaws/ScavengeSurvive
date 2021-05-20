@@ -549,6 +549,7 @@ new stock
 #include "sss/core/item/refine-machine.pwn"
 #include "sss/core/item/water-purifier.pwn"
 #include "sss/core/item/plot-pole.pwn"
+#include "sss/core/item/name.pwn"
 
 // ITEMS (HATS/MASKS)
 #include "sss/core/apparel/armyhelm.pwn"
