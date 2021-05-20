@@ -796,10 +796,10 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	new itemweaponid = GetItemTypeWeapon(itemtype);
 
 	if(itemweaponid == -1)
-		return Y_HOOKS_CONTINUE_RETURN_0;
+		return 0;
 
 	if(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_calibre] == NO_CALIBRE)
-		return Y_HOOKS_CONTINUE_RETURN_0;
+		return 0;
 
 	new
 		ammotype = GetItemTypeAmmoType(GetItemWeaponItemAmmoItem(itemid)),
@@ -826,7 +826,7 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 
 	SetItemNameExtra(itemid, exname);
 
-	return Y_HOOKS_CONTINUE_RETURN_0;
+	return 1;
 }
 
 
