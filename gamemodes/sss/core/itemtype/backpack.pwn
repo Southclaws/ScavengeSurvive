@@ -247,7 +247,7 @@ stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction 
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(IsItemTypeCarry(itemtype))
+	if(IsItemTypeCarry(itemtype)  || IsValidHolsterItem(itemtype))
 		return -1;
 
 	new required;
@@ -597,7 +597,7 @@ hook OnPlayerAddToInventory(playerid, Item:itemid, success)
 		if(IsItemTypeBag(itemtype))
 			return Y_HOOKS_BREAK_RETURN_1;
 
-		if(IsItemTypeCarry(itemtype))
+		if(IsItemTypeCarry(itemtype) || IsValidHolsterItem(itemtype))
 			return Y_HOOKS_BREAK_RETURN_1;
 
 		new
