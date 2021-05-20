@@ -100,6 +100,9 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 	if(!GetClothesMaskStatus(skinid))
 		return 0;
 
+	if(mask_CurrentMaskItem[playerid] == itemid)
+	    return 0;
+	    
 	new model;
 	GetItemTypeModel(itemtype, model);
 
@@ -111,6 +114,10 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 
 	RemoveItemFromWorld(itemid);
 	RemoveCurrentItem(GetItemHolder(itemid));
+	    
+    	if(IsValidItem(mask_CurrentMaskItem[playerid]))
+    		GiveWorldItemToPlayer(playerid, mask_CurrentMaskItem[playerid]);
+
 	mask_CurrentMaskItem[playerid] = itemid;
 
 	return 1;
