@@ -550,7 +550,7 @@ new stock
 #include "sss/core/item/water-purifier.pwn"
 #include "sss/core/item/plot-pole.pwn"
 
-// ITEMS (HATS/MASKS)
+// ITEMS (HATS/MASKS/BAGS)
 #include "sss/core/apparel/armyhelm.pwn"
 #include "sss/core/apparel/cowboyhat.pwn"
 #include "sss/core/apparel/truckcap.pwn"
@@ -565,6 +565,14 @@ new stock
 #include "sss/core/apparel/gasmask.pwn"
 #include "sss/core/apparel/hockeymask.pwn"
 #include "sss/core/apparel/bandana.pwn"
+#include "sss/core/apparel/Backpack.pwn"
+#include "sss/core/apparel/Daypack.pwn"
+#include "sss/core/apparel/HeartShapedBox.pwn"
+#include "sss/core/apparel/LargeBackpack.pwn"
+#include "sss/core/apparel/MediumBag.pwn"
+#include "sss/core/apparel/ParaBag.pwn"
+#include "sss/core/apparel/Rucksack.pwn"
+#include "sss/core/apparel/Satchel.pwn"
 
 // ADMINISTRATION TOOLS
 #include "sss/core/admin/report.pwn"
