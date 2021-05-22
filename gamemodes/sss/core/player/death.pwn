@@ -397,12 +397,16 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 		CancelSelectTextDraw(playerid);
 		TextDrawHideForPlayer(playerid, DeathText);
 		TextDrawHideForPlayer(playerid, DeathButton);
-		SpawnLoggedInPlayer(playerid);
+		SetPlayerBrightness(playerid, 255);
+		defer SpawnDeathDelay(playerid);
 	}
 
 	return 1;
 }
 
+timer SpawnDeathDelay[1500](playerid)
+	SpawnLoggedInPlayer(playerid);
+	
 hook OnGameModeInit()
 {
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
