@@ -119,6 +119,8 @@ stock HideKeypad(playerid)
 
 	if(kp_Hacking[playerid])
 	{
+		kp_Hacking[playerid] = 0;
+		kp_HackTries[playerid] = 0;
 		stop kp_HackTimer[playerid];
 		ClearAnimations(playerid);
 	}
@@ -170,9 +172,12 @@ stock CancelKeypad(playerid)
 
 stock HackKeypad(playerid, keypadid, match)
 {
-	kp_Hacking[playerid] = 1;
-	kp_HackTimer[playerid] = repeat HackKeypadUpdate(playerid, keypadid, match);
-	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+	if(kp_Hacking[playerid] != 1)
+	{
+		kp_Hacking[playerid] = 1;
+		kp_HackTimer[playerid] = repeat HackKeypadUpdate(playerid, keypadid, match);
+		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+	}
 }
 
 timer HackKeypadUpdate[100](playerid, keypadid, match)
@@ -203,8 +208,7 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 			defer kp_PrtDestroy(playerid);
 			GivePlayerHP(playerid, -5);
 			KnockOutPlayer(playerid, 3000);
-			HideKeypad(playerid);
-			HackKeypadFinish(playerid, keypadid, kp_Value[playerid], match);
+			defer HackKeypadFinish(playerid, keypadid, kp_Value[playerid], match);
 		}
 
 		return;
@@ -220,7 +224,6 @@ timer HackKeypadUpdate[100](playerid, keypadid, match)
 
 timer HackKeypadFinish[1000](playerid, keypadid, code, match)
 {
-	HideKeypad(playerid);
 	CallLocalFunction("OnPlayerKeypadEnter", "dddd", playerid, keypadid, code, match);
 }
 
