@@ -34,7 +34,14 @@ hook OnPlayerConnect(playerid)
 	death_LastKilledBy[playerid][0] = EOS;
 	death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
+	TextDrawHideForPlayer(playerid, DeathText);
+	TextDrawHideForPlayer(playerid, DeathButton);
 	return 1;
+}
+
+hook OnPlayerDisconnect(playerid, reason)
+{
+	death_Dying[playerid] = false;
 }
 
 public OnPlayerDeath(playerid, killerid, reason)
