@@ -707,7 +707,7 @@ public OnScriptInit()
 	item_CorPanel		= DefineItemType("Corrugated Metal",	"CorPanel",			2904,	10,	90.0, 90.0, 0.0,		0.0,	-0.365094, 1.004213, -0.665850, 337.887634, 172.861953, 68.495330, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 6);
 	item_ShipDoor		= DefineItemType("Ship Door",			"ShipDoor",			2944,	10,	180.0, 90.0, 0.0,		0.0,	0.134831, -0.039784, -0.298796, 337.887634, 172.861953, 162.198867, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 9);
 	item_InsulDoor		= DefineItemType("Insulated Doorway",	"InsulDoor",		19398,	10,	0.0, 90.0, 0.0,			0.0,	-0.087714,1.606874,-0.771602,-111.012359,172.861953,-169.801147, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 7);
-	item_InsulPanel		= DefineItemType("Insulated Panel",		"InsulPanel",		19371,	8,	0.0, 90.0, 0.0,			0.0,	-0.087715, 0.5, -0.49, 337.887634, 172.861953, 162.198867, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 7);
+	item_InsulPanel		= DefineItemType("Insulated Panel",		"InsulPanel",		19371,	8,	0.0, 90.0, 0.0,			0.0,	-0.339715,1.431000,-0.739000,337.887634,170.962066,162.198867, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 7);
 	item_SmallPanel		= DefineItemType("Small Metal Panel",	"SmallPanel",		19843,	11,	0.0, 0.0, 0.0,			0.0,	-0.068822, 0.989761, -0.620014,  -114.639907, -10.153647, 170.419097, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 5);
 	item_WoodPanel		= DefineItemType("Wood Ramp",			"WoodPanel",		5153,	11,	360.0, 23.537, 0.0,		0.0,	-0.342762, 0.908910, -0.453703, 296.326019, 46.126548, 226.118209, true, .buttonz = ITEM_FLOOR_OFFSET / 2, .maxhitpoints = 7);
 // 130
