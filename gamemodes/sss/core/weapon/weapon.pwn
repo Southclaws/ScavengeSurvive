@@ -16,7 +16,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-#define MAX_ITEM_WEAPON	(64)
+#define MAX_ITEM_WEAPON	(65)
 
 
 enum (<<= 1)
