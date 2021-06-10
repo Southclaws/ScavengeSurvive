@@ -1017,8 +1017,10 @@ stock GetItemTypeWeaponFlags(ItemType:itemtype)
 stock GetItemWeaponItemMagAmmo(Item:itemid)
 {
 	dbg("weapon-core", 3, "GetItemWeaponItemMagAmmo itemid:%d", _:itemid);
-	new ret;
-	GetItemArrayDataAtCell(itemid, ret, WEAPON_ITEM_ARRAY_CELL_MAG);
+	new ret, Error:e;
+	e = GetItemArrayDataAtCell(itemid, ret, WEAPON_ITEM_ARRAY_CELL_MAG);
+	if(IsError(e))
+		return Handled();
 	return ret < 0 ? 0 : ret;
 }
 
