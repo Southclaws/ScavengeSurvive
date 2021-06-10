@@ -730,6 +730,9 @@ HideVehicleUI(playerid)
 
 public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
+	if(IsItemTypeCarry(ItemType:GetItemType(GetPlayerItem(playerid))))
+		PlayerDropItem(playerid);
+		
 	if(!ispassenger)
 		veh_Entering[playerid] = vehicleid;
 
