@@ -361,7 +361,7 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 	new Float:x, Float:y, Float:z;
     	GetPlayerPos(playerid, x, y, z);
     	SetPlayerPos(playerid, x, y, z);
-    	SetPlayerFacingAngle(playerid, GetAngleToPoint(x, y, new_x, new_y));
+    	SetPlayerFacingAngle(playerid, GetAngleToPoint(x, y, new_x, new_y) + 10);
 	SetCameraBehindPlayer(playerid);
 	
 	CallLocalFunction("OnItemTweakUpdate", "dd", playerid, _:twk_Item[playerid]);
