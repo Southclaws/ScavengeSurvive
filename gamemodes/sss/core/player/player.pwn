@@ -424,8 +424,10 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 {
-	if(IsPlayerKnockedOut(playerid))
+	if(IsPlayerKnockedOut(playerid)) {
+		CancelPlayerMovement(playerid);
 		return 0;
+	}
 
 	if(GetPlayerSurfingVehicleID(playerid) == vehicleid)
 		CancelPlayerMovement(playerid);
