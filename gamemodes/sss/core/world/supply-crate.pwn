@@ -63,8 +63,8 @@ Timer:		sup_UpdateTimer,
 Float:		sup_DropX,
 Float:		sup_DropY,
 Float:		sup_DropZ,
-Container:	sup_Containerid,
-Button:		sup_Button;
+Container:	sup_Containerid = INVALID_CONTAINER_ID,
+Button:		sup_Button = INVALID_BUTTON_ID;
 
 
 hook OnGameModeInit()
@@ -305,6 +305,12 @@ SupplyCrateLand()
 		}		
 	}
 
+	if(sup_Containerid != INVALID_CONTAINER_ID)
+		DestroyContainer(sup_Containerid);
+
+	if(sup_Button != INVALID_BUTTON_ID)
+		DestroyButton(sup_Button);
+		
 	sup_Containerid = CreateContainer("Supply Crate", 32);
 	sup_Button = CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate");
 
