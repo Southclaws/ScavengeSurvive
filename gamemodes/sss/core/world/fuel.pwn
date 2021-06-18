@@ -42,6 +42,7 @@ new
 hook OnPlayerConnect(playerid)
 {
 	fuel_CurrentlyRefuelling[playerid] = INVALID_VEHICLE_ID;
+	fuel_CurrentFuelOutlet[playerid] = INVALID_FUEL_OUTLET_ID;
 }
 
 

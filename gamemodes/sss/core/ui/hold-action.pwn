@@ -35,6 +35,7 @@ hook OnPlayerConnect(playerid)
 
 hook OnPlayerDisconnect(playerid, reason)
 {
+	StopHoldAction(playerid);
 	DestroyPlayerProgressBar(playerid, ActionBar);
 }
 
