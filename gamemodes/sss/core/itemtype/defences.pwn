@@ -991,8 +991,10 @@ hook OnItemHitPointsUpdate(Item:itemid, oldvalue, newvalue)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(def_ItemTypeDefenceType[itemtype] != -1)
+	if(def_ItemTypeDefenceType[itemtype] != -1){
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
+		CallLocalFunction("OnDefenceModified", "d", itemid);
+	}
 }
 
 hook OnItemDestroy(Item:itemid)
