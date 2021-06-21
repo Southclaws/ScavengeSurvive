@@ -783,6 +783,7 @@ hook OnItemTweakFinish(playerid, Item:itemid)
 	{
 		DestroyDynamicObject(def_TweakArrow[playerid]);
 		def_TweakArrow[playerid] = INVALID_OBJECT_ID;
+		CallLocalFunction("OnDefenceModified", "d", itemid);
 	}
 }
 
