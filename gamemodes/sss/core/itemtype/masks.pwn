@@ -115,8 +115,8 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 	RemoveItemFromWorld(itemid);
 	RemoveCurrentItem(GetItemHolder(itemid));
 	    
-    	if(IsValidItem(mask_CurrentMaskItem[playerid]))
-    		GiveWorldItemToPlayer(playerid, mask_CurrentMaskItem[playerid]);
+	if(IsValidItem(mask_CurrentMaskItem[playerid]))
+		GiveWorldItemToPlayer(playerid, mask_CurrentMaskItem[playerid]);
 
 	mask_CurrentMaskItem[playerid] = itemid;
 
