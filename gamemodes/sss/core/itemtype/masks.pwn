@@ -106,8 +106,7 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 	new model;
 	GetItemTypeModel(itemtype, model);
 
-	SetPlayerAttachedObject(
-		playerid, ATTACHSLOT_FACE, model, 2,
+	SetPlayerAttachedObject(playerid, ATTACHSLOT_FACE, model, 2,
 		mask_Data[maskid][skinid][mask_offsetX], mask_Data[maskid][skinid][mask_offsetY], mask_Data[maskid][skinid][mask_offsetZ],
 		mask_Data[maskid][skinid][mask_rotX], mask_Data[maskid][skinid][mask_rotY], mask_Data[maskid][skinid][mask_rotZ],
 		mask_Data[maskid][skinid][mask_scaleX], mask_Data[maskid][skinid][mask_scaleY], mask_Data[maskid][skinid][mask_scaleZ]);
@@ -116,7 +115,9 @@ stock SetPlayerMaskItem(playerid, Item:itemid)
 	RemoveCurrentItem(GetItemHolder(itemid));
 	    
 	if(IsValidItem(mask_CurrentMaskItem[playerid]))
+	{
 		GiveWorldItemToPlayer(playerid, mask_CurrentMaskItem[playerid]);
+	}
 
 	mask_CurrentMaskItem[playerid] = itemid;
 
