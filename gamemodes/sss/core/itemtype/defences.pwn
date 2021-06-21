@@ -993,7 +993,7 @@ hook OnItemHitPointsUpdate(Item:itemid, oldvalue, newvalue)
 
 	if(def_ItemTypeDefenceType[itemtype] != -1){
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
-		CallLocalFunction("OnDefenceModified", "d", itemid);
+		CallLocalFunction("OnDefenceModified", "d", _:itemid);
 	}
 }
 
