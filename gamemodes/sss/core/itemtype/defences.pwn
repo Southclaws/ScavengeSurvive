@@ -783,6 +783,7 @@ hook OnItemTweakFinish(playerid, Item:itemid)
 	{
 		DestroyDynamicObject(def_TweakArrow[playerid]);
 		def_TweakArrow[playerid] = INVALID_OBJECT_ID;
+		CallLocalFunction("OnDefenceModified", "d", itemid);
 	}
 }
 
@@ -990,8 +991,10 @@ hook OnItemHitPointsUpdate(Item:itemid, oldvalue, newvalue)
 {
 	new ItemType:itemtype = GetItemType(itemid);
 
-	if(def_ItemTypeDefenceType[itemtype] != -1)
+	if(def_ItemTypeDefenceType[itemtype] != -1){
 		SetItemLabel(itemid, sprintf("%d/%d", GetItemHitPoints(itemid), GetItemTypeMaxHitPoints(itemtype)));
+		CallLocalFunction("OnDefenceModified", "d", _:itemid);
+	}
 }
 
 hook OnItemDestroy(Item:itemid)
