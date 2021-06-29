@@ -134,6 +134,7 @@ public OnGameModeInit()
 #include <YSI_Visual\y_dialog>
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
+#undef IsNaN // Temporary fix
 
 #include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei

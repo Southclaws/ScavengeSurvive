@@ -189,7 +189,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		
 		itemid = CreateItem(item_GasCan, 1071.55, 2124.92, 9.8516, .rz = frandom(360.0), .world = PlayerTutorialWorld[playerid]);
 		SetLiquidItemLiquidType(itemid, liquid_Petrol);
-        	SetLiquidItemLiquidAmount(itemid, 10);
+		SetLiquidItemLiquidAmount(itemid, 10);
 	}
 }
 

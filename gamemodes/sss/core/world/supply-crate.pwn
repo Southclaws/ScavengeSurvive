@@ -286,7 +286,6 @@ SupplyCrateLand()
 	}
 
 	new
-		Container:containerid,
 		Float:a,
 		Float:x,
 		Float:y,
