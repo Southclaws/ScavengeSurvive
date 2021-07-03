@@ -730,7 +730,9 @@ hook OnPlayerSelectCntOpt(playerid, Container:containerid, option)
 
 			if(required > 0)
 				ShowActionText(playerid, sprintf(ls(playerid, "BAGEXTRASLO", true), required), 3000, 150);
-
+			else
+				RemoveItemFromContainer(containerid, slot, playerid);
+				
 			DisplayContainerInventory(playerid, containerid);
 		}
 	}
