@@ -789,7 +789,7 @@ _inv_HandleGearSlotClick_Back(playerid)
 	GetPlayerCurrentContainer(playerid, containerid);
 	if(containerid == GetBagItemContainerID(itemid))
 	{
-		ClosePlayerContainer(playerid);
+		ClosePlayerContainer(playerid, true);
 
 		if(IsValidContainer(inv_TempContainerID[playerid]))
 		{

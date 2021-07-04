@@ -105,8 +105,8 @@ stock KnockOutPlayer(playerid, duration)
 
 	CallLocalFunction("OnPlayerKnockOut", "d", playerid);
 
-	ClosePlayerInventory(playerid);
-	ClosePlayerContainer(playerid);
+	ClosePlayerInventory(playerid, true);
+	ClosePlayerContainer(playerid, true);
 
 	return 1;
 }
