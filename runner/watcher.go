@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Southclaws/sampctl/pkgcontext"
+	"github.com/Southclaws/sampctl/rook"
 	"github.com/fsnotify/fsnotify"
 	"go.uber.org/zap"
 )
 
-func RunWatcher(parent context.Context, pcx *pkgcontext.PackageContext) {
+func RunWatcher(parent context.Context, pcx *rook.PackageContext) {
 	zap.L().Info("starting file watcher for auto rebuild")
 
 	w, err := fsnotify.NewWatcher()
@@ -84,7 +84,7 @@ func RunWatcher(parent context.Context, pcx *pkgcontext.PackageContext) {
 	}
 }
 
-func doBuild(ctx context.Context, pcx *pkgcontext.PackageContext, results chan error) {
+func doBuild(ctx context.Context, pcx *rook.PackageContext, results chan error) {
 	fmt.Print("\n") // output padding, for readability of build errors etc.
 	_, _, err := pcx.Build(ctx, "", false, false, false, "")
 	if err != nil {
