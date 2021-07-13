@@ -124,6 +124,8 @@ HidePlayerGear(playerid)
 		PlayerTextDrawHide(playerid, GearSlot_Tors[i]);
 		PlayerTextDrawHide(playerid, GearSlot_Back[i]);
 	}
+	
+	CancelSelectTextDraw(playerid);
 }
 
 ShowPlayerHealthInfo(playerid)
@@ -884,16 +886,11 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 				Logger_B("esc", inv_EscInventory[playerid])
 			);
 
-			// This code is commented because it causes a bug where sometimes
-			// the mouse cursor stays on screen after closing the dialogue by
-			// clicking "Close".
-			//
-			// HidePlayerGear(playerid);
-			// HidePlayerHealthInfo(playerid);
-			// ClosePlayerInventory(playerid, true);
-			// inv_EscInventory[playerid] = true;
-			// CancelSelectTextDraw(playerid);
-			DisplayPlayerInventory(playerid);
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
+			ClosePlayerInventory(playerid, true);
+			inv_EscInventory[playerid] = true;
+			CancelSelectTextDraw(playerid);
 		}
 
 		new Container:containerid;
@@ -905,13 +902,11 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 				Logger_B("esc", inv_EscInventory[playerid])
 			);
 
-			// See above.
-			// HidePlayerGear(playerid);
-			// HidePlayerHealthInfo(playerid);
-			// ClosePlayerContainer(playerid, true);
-			// inv_EscContainer[playerid] = true;
-			// CancelSelectTextDraw(playerid);
-			DisplayContainerInventory(playerid, containerid);
+			HidePlayerGear(playerid);
+			HidePlayerHealthInfo(playerid);
+			ClosePlayerContainer(playerid, true);
+			inv_EscContainer[playerid] = true;
+			CancelSelectTextDraw(playerid);
 		}
 	}
 }
