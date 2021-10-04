@@ -136,7 +136,7 @@ public OnGameModeInit()
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
 // Temporary fix
-#if !defined IsNaN
+#if defined IsNaN
 	#undef IsNaN 
 #endif
 
