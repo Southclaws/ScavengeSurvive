@@ -461,7 +461,7 @@ stock GetDetectionFieldLogBuffer(detfieldid, output[][E_DETLOG_BUFFER_DATA], lim
 
 		output[count][DETLOG_BUFFER_ROW_ID] = rowid;
 		output[count][DETLOG_BUFFER_NAME][0] = EOS;
-		strcpy(output[count][DETLOG_BUFFER_NAME], name, MAX_PLAYER_NAME);
+		StrCpy(output[count][DETLOG_BUFFER_NAME], name, MAX_PLAYER_NAME);
 		output[count][DETLOG_BUFFER_POS_X] = x;
 		output[count][DETLOG_BUFFER_POS_Y] = y;
 		output[count][DETLOG_BUFFER_POS_Z] = z;
