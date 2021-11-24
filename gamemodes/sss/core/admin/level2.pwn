@@ -206,7 +206,7 @@ ACMD:ban[2](playerid, params[])
 		return 1;
 	}
 
-	if(isnumeric(name))
+	if(IsNumeric(name))
 	{
 		new targetid = strval(name);
 
