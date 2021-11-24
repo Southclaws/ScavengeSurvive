@@ -42,7 +42,7 @@ stock TagScan(const chat[], colour = WHITE)
 		a,
 		tags;
 
-	strcpy(text, chat, 256);
+	StrCpy(text, chat, 256);
 	length = strlen(chat);
 
 	while(a < (length - 1) && tags < 3)
