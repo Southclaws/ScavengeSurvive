@@ -407,16 +407,12 @@ stock returnOrdinal(number)
 	return (((10 < (number % 100) < 14)) ? ordinal[3] : (0 < (number % 10) < 4) ? ordinal[((number % 10) - 1)] : ordinal[3]);
 }
 
-stock IsNumeric(const string[])
-{
-	for(new i,j=strlen(string);i<j;i++)if (string[i] > '9' || string[i] < '0') return 0;
-	return 1;
-}
 stock IsCharNumeric(c)
 {
 	if(c>='0'&&c<='9')return 1;
 	return 0;
 }
+
 stock IsCharAlphabetic(c)
 {
 	if((c>='a'&&c<='z')||(c>='A'&&c<='Z'))return 1;
