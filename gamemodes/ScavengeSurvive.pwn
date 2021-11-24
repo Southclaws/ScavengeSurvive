@@ -546,7 +546,6 @@ new stock
 #include "sss/core/item/locker.pwn"
 #include "sss/core/item/largeframe.pwn"
 #include "sss/core/item/barbecue.pwn"
-#include "sss/core/item/campfire.pwn"
 #include "sss/core/item/tent.pwn"
 #include "sss/core/item/sign.pwn"
 #include "sss/core/item/workbench.pwn"
