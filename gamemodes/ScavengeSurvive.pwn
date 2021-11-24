@@ -27,18 +27,20 @@
 ==============================================================================*/
 
 #undef MAX_PLAYERS
-#define MAX_PLAYERS						(32)
+#define MAX_PLAYERS						(50)
 
 // YSI
 #define _DEBUG							0
-#define CGEN_MEMORY						(69420)
+
+#define CGEN_MEMORY						(90000)
+
 #define YSI_NO_VERSION_CHECK
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
 #define YSI_NO_HEAP_MALLOC
 
 // SQLitei
-#define DB_DEBUG						false 
+#define DB_DEBUG						false
 #define DB_MAX_STATEMENTS				(128)
 #define DB_DEBUG_BACKTRACE_NOTICE		(true)
 #define DB_DEBUG_BACKTRACE_WARNING		(true)
@@ -74,7 +76,6 @@
 
 #pragma warning disable 208 // TODO: Fix reparse issues and remove!
 #pragma dynamic 64000
-
 
 /*==============================================================================
 
@@ -125,45 +126,43 @@ public OnGameModeInit()
 
 #include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
 #include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <YSI_Core\y_utils>			// By Y_Less, 4:			https://github.com/Misiur/YSI-Includes
-#include <YSI_Coding\y_va>
-#include <YSI_Coding\y_timers>
-#include <YSI_Coding\y_hooks>
-#include <YSI_Coding\y_iterate>
-#include <YSI_Storage\y_ini>
-#include <YSI_Visual\y_dialog>
+#include <streamer>					// By Incognito:			https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
+#include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
+#include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
+#include <sqlitei>					// By Slice:				https://github.com/oscar-broman/sqlitei
+#include <YSI_Coding\y_hooks>       // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Coding\y_timers>      // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Coding\y_va>          // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Core\y_utils>			// By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Data\y_iterate>       // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Storage\y_ini>        // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <YSI_Visual\y_dialog>      // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
 
 // Temporary fix
 #if defined IsNaN
-	#undef IsNaN 
+	#undef IsNaN
 #endif
 
-#include <streamer>					// By Incognito, v2.8.2:	https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <sqlitei>					// By Slice, v0.9.7:		https://github.com/oscar-broman/sqlitei
-#include <formatex>					// By Slice:				http://forum.sa-mp.com/showthread.php?t=313488
+#include <progress2>				// By Toribio/Southclaws:	https://github.com/Southclaws/progress2
+#include <formatex>					// By Slice:				https://github.com/southclaws/formatex
 #include <strlib>					// By Slice:				https://github.com/oscar-broman/strlib
 #include <md-sort>					// By Slice:				https://github.com/oscar-broman/md-sort
-#include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
-
-#include <progress2>				// By Toribio/Southclaws:	https://github.com/Southclaws/progress2
-#include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
-
 #include <ini>						// By Southclaws:			https://github.com/Southclaws/SimpleINI
 #include <modio>					// By Southclaws:			https://github.com/Southclaws/modio
-#include <personal-space>
-#include <button>
-#include <door>
-#include <item>
-#include <inventory>
-#include <container>
-#include <item-array-data>
-#include <item-serializer>
-#include <inventory-dialog>
-#include <container-dialog>
-#include <craft>
-#include <debug-labels>
+#include <personal-space>           // By Southclaws:			https://github.com/ScavengeSurvive/personal-space
+#include <button>           		// By Southclaws:			https://github.com/ScavengeSurvive/button
+#include <door>                     // By Southclaws:			https://github.com/ScavengeSurvive/door
+#include <item>                     // By Southclaws:			https://github.com/ScavengeSurvive/item
+#include <inventory>                // By Southclaws:			https://github.com/ScavengeSurvive/inventory
+#include <container>                // By Southclaws:			https://github.com/ScavengeSurvive/container
+#include <item-array-data>          // By Southclaws:			https://github.com/Southclaws/ScavengeSurvive/item-array-data
+#include <item-serializer>          // By Southclaws:			https://github.com/Southclaws/ScavengeSurvive/tree/master/legacy
+#include <inventory-dialog>         // By Southclaws:			https://github.com/ScavengeSurvive/
+#include <container-dialog>         // By Southclaws:			https://github.com/ScavengeSurvive/
+#include <craft>                    // By Southclaws:			https://github.com/ScavengeSurvive/
+#include <debug-labels>             // By Southclaws:			https://github.com/Southclaws/ScavengeSurvive/tree/master/legacy
 #include <weapon-data>				// By Southclaws:			https://github.com/Southclaws/AdvancedWeaponData
 #include <linegen>					// By Southclaws:			https://github.com/Southclaws/Line
 #include <zipline>					// By Southclaws:			https://github.com/Southclaws/Zipline
@@ -171,12 +170,8 @@ public OnGameModeInit()
 
 native WP_Hash(buffer[], len, const str[]);
 									// By Y_Less:				https://github.com/Southclaws/samp-whirlpool
-
-
 /*==============================================================================
-
 	Definitions
-
 ==============================================================================*/
 
 
@@ -303,9 +298,7 @@ enum
 
 
 /*==============================================================================
-
 	Global values
-
 ==============================================================================*/
 
 
@@ -354,14 +347,8 @@ new stock
 
 
 /*==============================================================================
-
 	Gamemode Scripts
-
 ==============================================================================*/
-
-
-// API Pre
-#tryinclude "sss/extensions/ext_pre.pwn"
 
 // UTILITIES
 #include "sss/utils/logging.pwn"
@@ -380,6 +367,7 @@ new stock
 #include "sss/utils/dialog-pages.pwn"
 #include "sss/utils/item.pwn"
 #include "sss/utils/headoffsets.pwn"
+
 
 // SERVER CORE
 #include "sss/core/server/settings.pwn"
@@ -546,7 +534,6 @@ new stock
 #include "sss/core/item/locker.pwn"
 #include "sss/core/item/largeframe.pwn"
 #include "sss/core/item/barbecue.pwn"
-#include "sss/core/item/campfire.pwn"
 #include "sss/core/item/tent.pwn"
 #include "sss/core/item/sign.pwn"
 #include "sss/core/item/workbench.pwn"
@@ -632,6 +619,7 @@ main()
 	gServerInitialising = false;
 	gServerInitialiseTick = GetTickCount();
 	SetCrashDetectLongCallTime(5000);
+	EnableCrashDetectLongCall();
 }
 
 /*
@@ -689,7 +677,7 @@ OnGameModeInit_Setup()
 	TextDrawAlignment			(RestartCount, 2);
 	TextDrawBackgroundColor		(RestartCount, 255);
 	TextDrawFont				(RestartCount, 1);
-	TextDrawLetterSize			(RestartCount, 0.400000, 2.000000);
+	TextDrawLetterSize			(RestartCount, 0.400000, 1.600000);
 	TextDrawColor				(RestartCount, -1);
 	TextDrawSetOutline			(RestartCount, 1);
 	TextDrawSetProportional		(RestartCount, 1);
