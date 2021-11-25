@@ -277,7 +277,7 @@ stock RespawnVehicle(vehicleid)
 ==============================================================================*/
 
 
-_veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, uuid[UUID_LEN] = "")
+_veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, const uuid[UUID_LEN] = "")
 {
 	new vehicleid = CreateVehicle(GetVehicleTypeModel(type), x, y, z, r, colour1, colour2, 864000);
 

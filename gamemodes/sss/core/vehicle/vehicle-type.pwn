@@ -188,7 +188,7 @@ _IsMatchingSize(vehicletype, const sizes[], maxsizes)
 	return 0;
 }
 
-stock GetVehicleGroupFromName(name[], bool:ignorecase = true, bool:partial = false)
+stock GetVehicleGroupFromName(const name[], bool:ignorecase = true, bool:partial = false)
 {
 	if(isnull(name))
 		return -1;
@@ -213,7 +213,7 @@ stock GetVehicleGroupFromName(name[], bool:ignorecase = true, bool:partial = fal
 	return -1;
 }
 
-stock GetVehicleTypeFromName(name[], bool:ignorecase = true, bool:partial = false)
+stock GetVehicleTypeFromName(const name[], bool:ignorecase = true, bool:partial = false)
 {
 	if(isnull(name))
 		return -1;
