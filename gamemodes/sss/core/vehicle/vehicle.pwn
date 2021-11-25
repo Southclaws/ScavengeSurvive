@@ -167,7 +167,7 @@ SetPlayerVehicleSpeedUI(playerid, const str[])
 ==============================================================================*/
 
 
-stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, uuid[UUID_LEN] = "")
+stock CreateWorldVehicle(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 0, const uuid[UUID_LEN] = "")
 {
 	if(!(0 <= type < veh_TypeTotal))
 	{
@@ -743,6 +743,7 @@ public OnPlayerExitVehicle(playerid, vehicleid)
 {
 	veh_Data[vehicleid][veh_lastUsed] = GetTickCount();
 	veh_ExitTick[playerid] = GetTickCount();
+	return 1;
 }
 
 public OnVehicleDamageStatusUpdate(vehicleid, playerid)
@@ -753,6 +754,8 @@ public OnVehicleDamageStatusUpdate(vehicleid, playerid)
 		veh_Data[vehicleid][veh_doors],
 		veh_Data[vehicleid][veh_lights],
 		veh_Data[vehicleid][veh_tires]);
+		
+	return 1;
 }
 
 hook OnUnoccupiedVehicleUpd(vehicleid, playerid, passenger_seat, Float:new_x, Float:new_y, Float:new_z, Float:vel_x, Float:vel_y, Float:vel_z)
