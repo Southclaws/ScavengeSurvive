@@ -201,7 +201,7 @@ ACMD:msg[1](playerid, params[])
 
 ACMD:country[1](playerid, params[])
 {
-	if(isnumeric(params))
+	if(IsNumeric(params))
 	{
 		new targetid = strval(params);
 
@@ -302,7 +302,7 @@ ACMD:aliases[1](playerid, params[])
 		return 1;
 	}
 
-	if(isnumeric(name))
+	if(IsNumeric(name))
 	{
 		new targetid = strval(name);
 
@@ -393,7 +393,7 @@ ACMD:history[1](playerid, params[])
 		return 1;
 	}
 
-	if(isnumeric(name))
+	if(IsNumeric(name))
 	{
 		new targetid = strval(name);
 

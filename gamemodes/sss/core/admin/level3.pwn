@@ -212,7 +212,7 @@ ACMD:recam[2](playerid, params[])
 
 ACMD:ip[3](playerid, params[])
 {
-	if(isnumeric(params))
+	if(IsNumeric(params))
 	{
 		new targetid = strval(params);
 
@@ -576,7 +576,7 @@ ACMD:addvehicle[3](playerid, params[])
 		Float:r,
 		vehicleid;
 
-	if(isnumeric(params))
+	if(IsNumeric(params))
 		type = strval(params);
 
 	else
