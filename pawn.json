@@ -5,6 +5,7 @@
 	"output": "gamemodes/ScavengeSurvive.amx",
 	"local": true,
 	"dependencies": [
+		"sampctl/samp-stdlib",
 		"sampctl/samp-stdutil",
 		"Southclaws/samp-nolog:0.2.1",
 		"Southclaws/samp-logger",
