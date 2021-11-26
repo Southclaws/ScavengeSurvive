@@ -117,7 +117,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 	wnd_Data[targetid][woundid][wnd_calibre] = calibre;
 	wnd_Data[targetid][woundid][wnd_timestamp] = gettime();
 	wnd_Data[targetid][woundid][wnd_bodypart] = bodypart;
-	strcpy(wnd_Data[targetid][woundid][wnd_source], source, MAX_WOUND_SRCLEN);
+	StrCpy(wnd_Data[targetid][woundid][wnd_source], source, MAX_WOUND_SRCLEN);
 
 	totalbleedrate += bleedrate;
 
