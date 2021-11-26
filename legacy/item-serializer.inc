@@ -10,7 +10,6 @@
 #define _item_serializer_included
 
 #include <a_samp>
-#include <uuid>
 #include <item>
 
 #include <YSI_Coding\y_hooks>
