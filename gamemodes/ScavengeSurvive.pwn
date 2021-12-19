@@ -31,15 +31,13 @@
 
 // YSI
 #define _DEBUG							0
+
 #define CGEN_MEMORY						(90000)
+
 #define YSI_NO_VERSION_CHECK
 #define YSI_NO_OPTIMISATION_MESSAGE
 #define YSI_NO_MODE_CACHE
 #define YSI_NO_HEAP_MALLOC
-
-// Temporary fix stop timer
-#define YSI_NO_KEYWORD_stop
-#define stop%0; {%0 = Timer:0;}
 
 // SQLitei
 #define DB_DEBUG						false
