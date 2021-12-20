@@ -102,7 +102,7 @@ stock TweakItem(playerid, Item:itemid)
 
 	_twk_ShowUI(playerid);
 	_twk_ToggleMouse(playerid, false);
-	ShowHelpTip(playerid, ls(playerid, "TIPTWEAKITM"), 10000);
+	ShowHelpTip(playerid, ls(playerid, "TIPTWEAKITM", true), 10000);
 
 	return 1;
 }
@@ -159,7 +159,7 @@ _twk_Commit(playerid)
 	_twk_HideUI(playerid);
 	CancelSelectTextDraw(playerid);
 	CancelPlayerMovement(playerid);
-	ShowActionText(playerid, ls(playerid, "ITEMTWKFINI"), 5000);
+	ShowActionText(playerid, ls(playerid, "ITEMTWKFINI", true), 5000);
 	_twk_Reset(playerid);
 
 	return 1;
@@ -195,13 +195,13 @@ _twk_ToggleMouse(playerid, bool:toggle)
 	{
 		twk_Locked[playerid] = true;
 		SelectTextDraw(playerid, 0xffff00ff);
-		PlayerTextDrawSetString(playerid, twk_Unlock[playerid], ls(playerid, "ITEMTWKBTNM"));
+		PlayerTextDrawSetString(playerid, twk_Unlock[playerid], ls(playerid, "ITEMTWKBTNM", true));
 	}
 	else
 	{
 		twk_Locked[playerid] = false;
 		CancelSelectTextDraw(playerid);
-		PlayerTextDrawSetString(playerid, twk_Unlock[playerid], ls(playerid, "ITEMTWKBTNE"));
+		PlayerTextDrawSetString(playerid, twk_Unlock[playerid], ls(playerid, "ITEMTWKBTNE", true));
 	}
 }
 
@@ -328,7 +328,7 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 
 	if(twk_NoGoZoneCount[playerid] > 0)
 	{
-		ShowActionText(playerid, ls(playerid, "ITEMTWKMOVE"), 6000);
+		ShowActionText(playerid, ls(playerid, "ITEMTWKMOVE", true), 6000);
 		return 3;
 	}
 
@@ -349,7 +349,7 @@ _twk_AdjustItemPos(playerid, Float:distance, Float:direction, /*Float:rx, Float:
 
 	if(Distance(new_x, new_y, new_z, twk_Origin[playerid][0], twk_Origin[playerid][1], twk_Origin[playerid][2]) >= MAX_MOVEMENT_RANGE)
 	{
-		ShowActionText(playerid, ls(playerid, "ITEMTWKTFAR"), 6000);
+		ShowActionText(playerid, ls(playerid, "ITEMTWKTFAR", true), 6000);
 		return 4;
 	}
 
@@ -495,7 +495,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 	}
 
-	ShowActionText(playerid, ls(playerid, "ITEMTWKBLOC"), 6000);
+	ShowActionText(playerid, ls(playerid, "ITEMTWKBLOC", true), 6000);
 	twk_NoGoZoneCount[twk_Tweaker[Item:data[1]]]++;
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

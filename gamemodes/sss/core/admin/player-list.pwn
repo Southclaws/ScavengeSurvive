@@ -111,16 +111,20 @@ GetPlayerInfo(name[])
 		spawntime,
 		totalspawns,
 		warnings,
+		language,
+		lang_name[MAX_LANGUAGE_NAME],
 		hash[41],
 		active;
 
-	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, hash, active);
+	GetAccountData(name, pass, ipv4, alive, regdate, lastlog, spawntime, totalspawns, warnings, language, hash, active);
 
 	ip = IpIntToStr(ipv4);
 	// TODO: use a different country service
 	// GetIPCountry(ip, country);
 
 	dayslived = (gettime() > spawntime) ? (0) : ((gettime() - spawntime) / 86400);
+
+	GetLanguageName(language, lang_name);
 
 	format(info, sizeof(info), "\
 		IP:\t\t\t%s\n\
@@ -130,7 +134,8 @@ GetPlayerInfo(name[])
 		Last Login:\t\t%s\n\
 		Days Survived:\t%d\n\
 		Lives Lived:\t\t%d\n\
-		Warnings:\t\t%d",
+		Warnings:\t\t%d\n\
+		Language:\t\t%s",
 
 		ip,
 		country,
@@ -139,7 +144,8 @@ GetPlayerInfo(name[])
 		TimestampToDateTime(lastlog),
 		dayslived,
 		totalspawns,
-		warnings);
+		warnings,
+		lang_name);
 
 	return info;
 }

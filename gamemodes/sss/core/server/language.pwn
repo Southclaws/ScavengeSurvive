@@ -480,7 +480,7 @@ static stock _GetLanguageString(languageid, const key[], result[], bool:encode =
 /*
 	Credit for this function goes to Y_Less:
 	http://forum.sa-mp.com/showpost.php?p=3015480&postcount=6
-*/
+
 stock ConvertEncoding(string[])
 {
 	static const
@@ -513,10 +513,10 @@ stock ConvertEncoding(string[])
 		}
 	}
 }
-
+*/
 /*
 	Not sure where this code came from... random pastebin link!
-
+*/
 stock ConvertEncoding(string[])
 {
 	for(new i = 0, len = strlen(string); i != len; ++i)
@@ -540,7 +540,7 @@ stock ConvertEncoding(string[])
 		}
 	}
 }
-*/
+
 stock GetLanguageList(list[][])
 {
 	for(new i; i < lang_Total; i++)
