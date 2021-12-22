@@ -63,7 +63,12 @@ ShowLanguageMenu(playerid)
 		if(response)
 		{
 			lang_PlayerLanguage[playerid] = listitem;
-			ChatMsgLang(playerid, YELLOW, "LANGCHANGE");
+
+			new lang_name[MAX_LANGUAGE_NAME];
+			
+			GetLanguageName(listitem, lang_name);
+
+			ChatMsgLang(playerid, BLUE, "LANGCHANGE", lang_name);
 
 			if(!IsPlayerRegistered(playerid)) {
 				DisplayRegisterPrompt(playerid);
