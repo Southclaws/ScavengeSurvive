@@ -56,7 +56,6 @@
 		"port": 7777,
 		"rcon_password": "scavenge",
 		"hostname": "Southclaws' Scavenge and Survive",
-		"chatlogging": 0,
 		"extra": {
 			"long_call_time": "0"
 		}
