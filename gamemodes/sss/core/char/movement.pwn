@@ -34,6 +34,7 @@ enum E_MOVEMENT_TYPE {
 };
 
 static E_MOVEMENT_TYPE:MovementType[MAX_PLAYERS];
+
 static MovementTypeName[E_MOVEMENT_TYPE][] = {
 	"Unknown",
 	"Idle",
@@ -192,9 +193,15 @@ ptask movementUpdate[100](playerid)
 		MovementType[playerid] = E_MOVEMENT_TYPE_UNKNOWN;
 	}
 
-	ShowActionText(playerid, sprintf("Anim %d Movement: %s", animidx, MovementTypeName[MovementType[playerid]]), 0);
+	//ShowActionText(playerid, sprintf("Anim %d Movement: %s", animidx, MovementTypeName[MovementType[playerid]]), 0);
 
 	return;
+}
+
+stock GetMovementTypeName(E_MOVEMENT_TYPE:type, name[])
+{
+	strcat(name, MovementTypeName[type]);
+	return 0;
 }
 
 stock GetPlayerMovementState(playerid, &E_MOVEMENT_TYPE:type)
