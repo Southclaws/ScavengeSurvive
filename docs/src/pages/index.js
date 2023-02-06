@@ -3,6 +3,8 @@ import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import styles from "./styles.module.css";
 
+import Translate, {translate} from '@docusaurus/Translate';
+
 function Home() {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
@@ -10,12 +12,14 @@ function Home() {
     <Layout title={siteConfig.title} description={siteConfig.description}>
       <main>
         <div className={styles.container}>
-          <h1>The Scavenge and Survive Game</h1>
+          <h1><center><Translate id="home.title">The Scavenge and Survive Game</Translate></center></h1>
           <p>
-            Scavenge and Survive is a San Andreas Multiplayer server mod, a PvP
-            survival game where everyone is pitched against each other. Supplies
-            are scarce and everyone is willing to kill for the same goals!
-            Safety in numbers is key to survival, but trust is hard to find.
+            <Translate id="home.description">
+              Scavenge and Survive is a San Andreas Multiplayer server mod, a PvP
+              survival game where everyone is pitched against each other. Supplies
+              are scarce and everyone is willing to kill for the same goals!
+              Safety in numbers is key to survival, but trust is hard to find.
+            </Translate>
           </p>
           <span className={styles.logos}>
             <img src="img/SS-Logo-Hamm-2000.png" />
@@ -24,7 +28,7 @@ function Home() {
         </div>
 
         <section className={styles.bg1}>
-          <h2>Scroll down for a quick overview...</h2>
+          <h2><Translate id="home.scrollTip">Scroll down for a quick overview...</Translate></h2>
         </section>
 
         <div className={styles.container}>

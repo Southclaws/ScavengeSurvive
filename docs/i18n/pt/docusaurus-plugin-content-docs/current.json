@@ -1,0 +1,22 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.Sidebar.category.Character": {
+    "message": "Caracter",
+    "description": "The label for category Character in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Crafting": {
+    "message": "Craftings",
+    "description": "The label for category Crafting in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Items": {
+    "message": "Itens",
+    "description": "The label for category Items in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.World": {
+    "message": "Mundo",
+    "description": "The label for category World in sidebar Sidebar"
+  }
+}
