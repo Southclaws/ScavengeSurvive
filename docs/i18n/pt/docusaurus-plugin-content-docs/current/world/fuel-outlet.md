@@ -1,10 +1,10 @@
 ---
-title: Fuel Outlets
+title: Pontos de Combustível
 ---
 
-Fuel outlets are located all over San Andreas in Gas Stations, there are
-currently no other ways to obtain Fuel but alternatives are planned.
+Pontos de combustível são localizados em Postos de Combustível por toda a San Andreas, há
+atualmente nenhuma outra maneira para obter Combustível, senão em galões de combustível encontrados na rua.
 
-Fuel outlets usually spawn with between 0 and 100 litres of fuel in them.
+Pontos de combustível geralmente spawnam entre 0 a 100 litros de combustível neles.
 
 ![A fuel outlet](/docs/fuel-outlet.webp)

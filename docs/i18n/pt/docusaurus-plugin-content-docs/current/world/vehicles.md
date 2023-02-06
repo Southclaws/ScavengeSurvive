@@ -1,70 +1,68 @@
 ---
-title: Vehicles
+title: Veículos
 ---
 
-Vehicles can be found all over the map, sometimes in the strangest of locations.
-Each restart, around 100 vehicles are randomly spawned at one of ~2000 points in
-the map. This includes cars, bikes, boats, planes and helicopters. Some vehicles
-are more rare than others, for instance the BF Injection has a 100% chance to
-spawn whereas the Hunter attack helicopter has a 1% chance to spawn.
+Veículos podem ser encontrados por todo o mapa, algumas vezes nas localizações mais estranhas.
+Cada restart, em volta de 100 veículos são spawnados randomicamente em um dos 2000 pontos
+no mapa. Isto inclui carros, motos, barcos, aviões e helicópteros. Alguns veículos
+são mais raros que outros, por exemplo, o BF Injection tem 100% de chance de spawnar enquanto o helicóptero de ataque Hunter tem 1% de chance para spawnar.
 
-Some vehicles only spawn at certain points, for instance helipads only spawn
-helicopters and military vehicles are only found in military areas such as Area
-69 and the Easter Basin Naval Dock.
+Alguns veículos apenas spawnam em certos pontos, por exemplo, heliportos apenas spawnam
+helicópteros e veículos militares são apenas encontrados em áreas militares como na Area 69 e na Easter Basin Naval Dock.
 
-## Trunk
+## Porta-Malas
 
-Most vehicles have a trunk that can store items in it. There is no item size
-limit for vehicle trunks, and the amount of item slots varies by vehicle. For
-instance a small car will have a trunk size of 12 slots, whereas a large truck
-would have a trunk size of 16 or more, the largest trunk size is 24 (which may
-be upgraded to 64 for very large vehicles).
+A maioria dos veículos tem um porta-malas que podem ter itens guardados dentro. Não há limite de tamanho 
+de itens para os porta-malas dos veículos e a quantidade de slots de itens variam por veículo. Por exemplo,
+um carro pequeno terá um porta-malas de 12 slots, enquanto um caminhão grande
+teria um porta-malas com o tamanho de 16 ou mais, o maior tamanho de porta-malas é de 24 (que pode
+ser atualizado para 64 para veículos muito grandes).
 
 ![/docs/trunk.webp](/docs/trunk.webp)
 
-## Repairing
+## Reparando
 
-To repair a vehicle, you must use 3 tools in a specific sequence, the sequence
-is:
+Para reparar um veículo, você deve utilizar 3 ferramentas em uma sequência específica, a sequência
+é:
 
-> Wrench > Screwdriver > Hammer > Wrench (again)
+> Chave de Roda > Chave de Fenda > Martelo > Chave de Roda (novamente)
 
-Each tool works on a specific health chunk, the table below shows you when to
-use which tool:
+Cada ferramente funciona em um pedaço específico de saúde, a tabela abaixo mostra a você quando
+é para usar cada ferramenta:
 
-|                   | Wrench  | Screwdriver | Hammer  | Wrench  |
-| ----------------- | ------- | ----------- | ------- | ------- |
-| Damage range:     | 250-450 | 450-650     | 650-800 | 800-Max |
-| Indicator colour: | Red     | Orange      | Yellow  | Green   |
+|                   | Chave de Roda | Chave de Fenda | Martelo | Chave de Roda |
+| ----------------- | ------------- | -------------  | ------- | ------------- |
+| Faixa de dano:    |    250-450    |    450-650     | 650-800 |    800-Max    |
+| Indicador de cor: |   Vermelho    |    Laranja     | Amarelo |     Verde     |
 
-While a vehicle's health is below 450 (Wrench range or Red) the engine will cut
-out and turn on randomly, ultimately slowing down the vehicle.
+Enquanto a saúde de um veículo está abaixo de 450 (na faixa Chave de Roda ou Vermelho) o motor irá falhar
+e ligar aleatóriamente, por fim desacelerando o veículo.
 
-If a vehicle's health drops below 300, the engine will cut out completely and
-never come back on until the vehicle is repaired.
+Se a saúde de um veículo cai abaixo de 300, o motor irá falhar completamente e
+nunca voltará a funcionar até que o veículo seja reparado.
 
-### Repairing Tyres
+### Reparando Pneus
 
-This item can be used with a vehicle in order to repair a broken wheel / popped
-tire. To do this, simply hold the item and stand at the front of a wheeled
-vehicle with 1 or more missing wheels and press Interact Key (Default F/Enter),
-you will then see a list of wheels to fix where broken ones are displayed in
-red.
+Este item pode ser usado em um veículo para consertar uma roda quebrada / pneu
+estourado. Para fazer isto, simplesmente segure o item e fique em frente de uma roda do
+veículo com 1 ou mais rodas faltando e pressione a Tecla de Interação (Padrão F/Enter),
+você irá ver uma lista de rodas para consertar onde as quebradas serão exibidas em
+vermelho.
 
-Wheels are most common in industrial areas but can also be found inside most
-vehicle trunks too.
+Rodas são mais comuns em áreas industriais, mas também podem ser encontradas dentro da maioria
+dos porta-malas de veículos.
 
 ![/docs/wheel.webp](/docs/wheel.webp)
 
-## Locksmithing
+## Chavearia
 
-Vehicle Locksmithing requires a Locksmith Kit and is performed by standing on
-the left (driver) side of a vehicle and holding the Interact Key (Default
-F/Enter); a grey progress bar will appear on screen and fill up.
+Chaveiro de Veículo requer um Kit de Chaveiro e é executado ficando
+do lado esquerdo (motorista) de um veículo e segurar a Tecla de Interação (Padrão
+F/Enter); uma barra de progresso cinza irá aparecer na tela e será preenchida.
 
-Once the locksmithing is complete, the locksmith kit in your hands will be
-replaced by a key. This key is bound to the vehicle forever and can be used to
-lock/unlock the vehicle from outside.
+Uma vez terminada a chavearia, o Kit de Chaveiro em suas mãos será
+substituído por uma chave. Esta chave está vinculada ao veículo para sempre e pode ser usada para
+trancar/destrancar o veículo pelo exterior.
 
-A locked vehicle will remain locked over server restarts and there is currently
-no other way to access a locked vehicle. This will likely change in the future.
+Um veículo trancado permanecerá trancado durante os restarts do servidor e atualmente
+não há nenhuma outra maneira de acessar um veículo trancado. Isso provavelmente mudará no futuro.

@@ -1,14 +1,14 @@
 ---
-title: Save Blocking
+title: Bloqueio de Salvamento
 ---
 
-There are several areas around the map that are "save blocked", this means you
-can't leave your character in there when you quit or the server restarts.
+Há várias áreas ao redor do mapa que tem "bloqueio de salvar", isto significa que
+você não pode deixar seu personagem lá quando for sair ou nos restarts do servidor.
 
-If a character is saved in a save block area, it will be moved to a reset
-location usually not far from the save block area. For example, the spawn room
-is save blocked, if a character is saved inside there it will be moved to the
-front door of the spawn room (where access to the spawn room is disabled)
+Se um personagem for salvo em uma área bloqueada de salvar, será movido a uma localização
+de reset geralmente não tão distante da área bloqueada de salvar. Por Exemplo, a sala de spawn
+é bloqueada de salvar, se um personagem salvar lá dentro, será movido para
+a porta da frente da sala de spawn (onde o acesso à sala de spawn é desabilitado)
 
-These areas are generally in locked locations with high value loot such as
-puzzle reward rooms.
+Estas áreas são geralmente em localizações fechadas com loot de alto valor como também
+em salas de quebra-cabeças com recompensas.
