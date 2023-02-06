@@ -1,11 +1,10 @@
 ---
-title: Inventory
+title: Inventário
 ---
 
-Your inventory is where you can store items, it's effectively your character's
-pockets and has a size limit of small.
+O seu inventário é onde pode armazenar objetos, é os bolsos do seu personagem,
+os bolsos tem um limite de tamanho mais pequeno que tudo o resto.
 
-To access your inventory, press Inventory Key (Default H). A list will appear
-showing your items, or `<Empty>` on empty slots. On the right are the Item Tiles
-where you can access equipped or holstered items or weapons, your bag, clothes
-and headwear.
+Para ver seu inventário, aperte a tecla "Invetário" (Padrão: H). Aparecerá uma lista
+mostrando os seus objetos, ou `<Vazio>` em espaços vazios. À direita estão os Itens em Corpo (mão, cabeça, etc)
+onde pode ver objetos equipados ou acessorios ou armas, a sua mala, roupa e cabeça.

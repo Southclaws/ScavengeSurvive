@@ -1,51 +1,54 @@
 ---
-title: Drugs
+title: Medicamentos
 ---
 
-Drugs are commonly found in medical areas such as hospitals. They come in two
-forms: Pills and an Injector. They have varying effects, some positive and some
-negative.
+Os medicamentos são normalmente encontrados em áreas médicas, tais como hospitais. Vêm em dois
+módos: Comprimidos e um Injetor. Têm efeitos variados, alguns positivos e alguns
+negativos.
 
-## Pills
+## Comprimidos
 
-### Antibiotics
+### Antibióticos
 
-Cures Infection.
+Cura Infecção.
 
-### Painkillers
+### Analgésicos
 
-Removes the darkening screen effect when low on health. Also prevents the random
-Unconsciousness that can occur when low on health.
+Elimina o efeito de escurecimento da tela quando a saúde está em baixo. Previne também o efeito aleatório de
+Inconsciência que pode ocorrer quando a saúde está em um nível baixo.
 
-Note: does not prevent unconsciousness caused by being shot/hit with weapons,
-this is only to stop the knockouts caused by having low health.
+Nota: ele não impede a inconsciência causada por ser alvejado/ atingido com armas,
+isto é apenas para parar os desmaios causados pela baixa saúde.
 
 ### LSD
 
-Pretty colours...
+Cores bonitas.. (de um modo mais bonito de dizer kkk). 
 
-## Injector
+O efeito da LSD dura alguns minutos e durante esse periodo você ira enxergar as cores invertidas 
+*alguns objetos podem não serem vistos dependendo da distancia 
 
-Injectors can be used on other players when you're stood next to them!
+## Injetor
 
-### Air
+Os injetores podem ser utilizados noutros jogadores quando se está ao lado deles!
 
-Injecting air into your bloodstream is very bad. You should not do this.
-However, the ability to inject other people with the Injector item, this makes a
-silent method of dispatching enemies.
+### Ar
 
-### Morphine
+Injectar ar na sua corrente sanguínea é muito ruim. Não se deve fazer isto. (a menos que queria se matar)
+No entanto, você tem a capacidade de injectar em outras pessoas com o item Injetor, isto cria um
+método silencioso de despachar inimigos.
 
-Morphine speeds up Regeneration but at the cost of dizzyness for a short period.
-This dizzyness affects your aiming.
+### Morfina
 
-### Adrenaline
+A morfina acelera a regeneração mas à custa de uma vertigem durante um curto período.
+Esta vertigem afeta o seu estado de visão.
 
-The prime use of Adrenaline is to revive Unconscious players. As well as prevent
-further knockouts and speed up Regeneration. This acts similarly to Morphine but
-without the dizzyness effect, it also prevents the darkening screen effect
-caused by low health and prevents all types of unconsciousness.
+### Adrenalina
 
-### Heroine
+A principal utilização da Adrenalina é para reanimar jogadores inconscientes. Além de prevenir
+mais desmaios e acelerar a Regeneração. Isto atua de forma semelhante à Morfina, mas
+sem o efeito de vertigem, também evita o efeito de escurecimento da tela
+causados pela baixa saúde e previne todo o tipo de inconsciência.
 
-You enter a very un-aware state where visibility is low.
+### Heroína
+
+Se injetar, estará num estado muito desapercebido onde a visibilidade é baixa.

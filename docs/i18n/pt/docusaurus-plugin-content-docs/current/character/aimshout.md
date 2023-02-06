@@ -2,36 +2,36 @@
 title: Aimshout
 ---
 
-Aimshout is a feature that enables limited communication with other players
-without needing to lower your guard by typing.
+O Aimshout é uma característica que permite uma comunicação limitada com outros jogadores
+sem necessidade de baixar a guarda, TextoRápido.
 
-Imagine this scenario:
+Imagine este cenário:
 
-You find a player, fixing their vehicle around a corner from you, they have a
-shotgun on their back, you have two options:
+Se encontrar um jogador, que está consertando o seu veículo a uma esquina e ele tem uma
+shotgun nas suas costas, tem duas opções:
 
-1. Shoot them unprovoked like bandit scum
-2. Take your hand away from the fire button in order to open the chat box and
-   attempt to communicate.
+1. Disparar sobre ele sem provocação, como uma escória bandida
+2. Tire a mão do botão de atirar para abrir a caixa de chat e inicia a
+   tentativa de comunicação.
 
-Option 2 would be the preferable obviously, but this comes with a huge risk!
-What if the other player were to open fire WHILE you had the chat box open?
+A opção 2 seria a preferível, obviamente, mas isto vem com um enorme risco!
+E se o outro jogador abrisse fogo QUANDO tivesse a caixa de chat aberta?
 
-Aimshout is designed to fix that!
+O Aimshout foi concebido para corrigir isso!
 
-With Aimshout, you can write a short preset message that will be sent when you
-press the following key combo:
+Com Aimshout, pode escrever uma pequena mensagem pré-definida que será enviada quando
+fizer a seguinte combinação de teclas:
 
-- Aim (Default: Right Mouse Button)
-- Look Behind (Default: Middle Mouse Button)
+- Mirar (Padrão: Botão do Rato Direito)
+- Olhar para trás  (padrão: Botão do Rato do Meio)
 
-To customise your message, type "/aimshout " into the chatbox followed by a
-space and then your message.
+Para personalizar a sua mensagem, escreva "/aimshout" na caixa de chat seguida de um
+espaço e depois a sua mensagem.
 
-A good example of an Aimshout message would be:
+Um bom exemplo de uma mensagem Aimshout seria:
 
-> "'I mean no harm. Drop your weapon & tell me your name. Don't act hostile as I
-> have a loaded gun aimed at you!"'
+> "Não quero fazer briga. Largue a sua arma e diga-me o seu nome. não seja hostil 
+> tenho uma arma carregada apontada a ti"
 
-Who knows, you might make a friend who can help you later on, instead of making
-an enemy who will kill you later on.
+Quem sabe, pode fazer um amigo que o possa ajudar mais tarde, em vez de fazer
+um inimigo que irá o matar mais tarde.

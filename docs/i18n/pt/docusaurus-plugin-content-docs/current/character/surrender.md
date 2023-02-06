@@ -1,12 +1,12 @@
 ---
-title: Surrender
+title: Rendição
 ---
 
-A surrender animation can be done by pressing the Sprint and Crouch keys at the
-same time, by default these are Space and C which makes it easy to press in
-tight situations.
+Uma animação de rendição pode ser feita pressionando as teclas "correr" (espaço) e "abaixar" (C) 
+ao mesmo tempo, por padrão estas teclas são Espaço e C, o que torna mais fácil pressionar em
+situações difíceis.
 
-While surrendering, another player can Disarm you by pressing Interact Key
-(Default F/Enter) while standing behind you.
+Enquanto se rende, outro jogador pode desarmá-lo, premindo a tecla de interação
+(Padrão: F/Enter) enquanto está atrás de ti.
 
 ![/docs/surrender.webp](/docs/surrender.webp)
