@@ -53,7 +53,7 @@ module.exports = {
     },
     footer: {
       style: "dark",
-      copyright: `<b>Copyright © 2014 - ${new Date().getFullYear()} Barnaby "Southclaws" Keene - Built with Docusaurus.</b>`,
+      copyright: `<b>Copyright © ${new Date().getFullYear()} Barnaby "Southclaws" Keene - Built with Docusaurus.</b>`,
     },
   },
   presets: [
