@@ -4,10 +4,7 @@ title: Início
 slug: /
 ---
 
-Scavenge and Survive é um modo de servidor San Andreas: Multiplayer, um jogo
-de sobrevivência PvP onde qualquer um é lançado contra o outro. Suprimentos são escassos e
-todos estão dispostos a matar pelos mesmos objetivos! Segurança em números é a chave para
-a sobrevivência, mas confiança é difícil de encontrar.
+Scavenge and Survive é um modo de servidor San Andreas: Multiplayer, um jogo de sobrevivência PvP onde qualquer um é lançado contra o outro. Suprimentos são escassos e todos estão dispostos a matar pelos mesmos objetivos! Segurança em números é a chave para a sobrevivência, mas confiança é difícil de encontrar.
 
 O jogo é comandado pelos jogadores. Todas as regras e eventos são determinados pelos jogadores,
 não pela staff ou desenvolvedores.
