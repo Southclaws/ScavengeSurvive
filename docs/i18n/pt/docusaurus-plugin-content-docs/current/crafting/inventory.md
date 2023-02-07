@@ -1,8 +1,7 @@
 ---
-title: Inventory Crafting
+title: Crafting pelo Inventário
 ---
 
-From your inventory, you can craft simple items. Select an item then select
-"Combine with..." and select another item.
+Pelo seu inventário, você pode craftar itens simples. Escolha um item e depois selecione "Combinar com..." e escolha outro item.
 
-Crafting recipes can be found by typing `/recipes`.
+Para ver o craft dos itens basta digitar `/crafts`.

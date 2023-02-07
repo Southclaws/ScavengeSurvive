@@ -1,10 +1,7 @@
 ---
-title: Workbench Crafting
+title: Mesa de Trabalho
 ---
 
-A workbench can be used to craft various items which are too complex to craft
-on-the-go in your inventory. Simply place the ingredient items inside the
-workbench then use the required item tool on the workbench by holding the
-Interact Key (Default F/Enter).
+A Mesa de Trabalho pode ser utilizada para craftar vários tipos de itens que são complexos para craftar diretamente pelo seu inventário. Basta colocar os itens do craft dentro da Mesa de Trabalho e usar a ferramenta correta segurando a Tecla de Interação (Padrão F/Enter).
 
-Crafting recipes can be found by typing `/recipes`.
+Para ver o craft dos itens basta digitar `/crafts`.

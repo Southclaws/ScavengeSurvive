@@ -1,9 +1,7 @@
 ---
-title: Machines
+title: Máquinas
 ---
 
-There are some machines in the game such as a Scrap Machine, a Refining Machine
-and a Water Purifier. These machines can be constructed using Craft
-Construction.
+Existem diferentes tipos de máquinas no jogo, como a Máquina de Sucata, Máquina de Refinação e o Purificador de Água. As máquinas podem ser construídas utilizando ´/craft´.
 
-These machines can be used to process items to improve their value.
+As máquinas podem ser usadas para processar itens e melhorar seu valor.

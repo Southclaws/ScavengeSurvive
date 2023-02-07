@@ -1,10 +1,7 @@
 ---
-title: Construction Crafting
+title: Crafts de Construção
 ---
 
-Large in-world utilities such as workbenches, machines, furniture and other
-things can be constructed by dropping the required items on the floor in a pile
-then using the necessary construction item tool with the pile using the Interact
-Key (F/Enter).
+Máquinas grandes pelo mundo, tais como Mesa de Trabalho, Máquinas, Móveis e outros podem ser construídos dropando os itens necessários no chão em uma pilha e utilizando a ferramenta correta segure o botão de interação (padrão F/Enter).
 
-Crafting recipes can be found by typing `/recipes`.
+Para ver o craft dos itens basta digitar `/crafts`.
