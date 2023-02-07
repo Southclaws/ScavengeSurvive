@@ -1,29 +1,28 @@
 ---
-title: Scrap Metal
+title: Sucata de Metal
 ---
 
-Some items in the world can be turned into Scrap Metal using a Scrap Machine.
-This page lists all those items with the number of pieces of scrap metal they
-will yield once processed inside a Scrap Machine.
+Alguns itens no mundo podem ser transformados em Sucata de Metal utilizando uma Máquina de Sucata.
+Esta página lista todos aqueles itens com o número de peças de sucata de metal que eles
 
-| Item                | Scrap Value |
+| Item                | Valor de Sucata |
 | ------------------- | ----------- |
 | Knuckle Duster      | 1           |
 | Golf Club           | 2           |
-| Combat Knife        | 1           |
+| Faca de Combate        | 1           |
 | Spade               | 2           |
-| Sword               | 3           |
+| Espada               | 3           |
 | Chainsaw            | 5           |
 | Extinguisher        | 4           |
 | Camera              | 1           |
 | Hard Drive          | 1           |
-| Key                 | 1           |
+| Chave                 | 1           |
 | Lighter             | 1           |
 | Timer Device        | 1           |
 | Battery             | 1           |
-| Fuse Box            | 1           |
-| Armour              | 3           |
-| Fishing Rod         | 1           |
+| Caixa de Fusíveis            | 1           |
+| Armadura              | 3           |
+| Cana de Pesca         | 1           |
 | Wrench              | 1           |
 | Crowbar             | 1           |
 | Hammer              | 1           |
@@ -53,11 +52,11 @@ will yield once processed inside a Scrap Machine.
 | Ship Door           | 12          |
 | Small Metal Panel   | 4           |
 | Keypad              | 1           |
-| 9mm Rounds          | 1           |
-| .50 Rounds          | 1           |
+| Munição 9mm          | 1           |
+| Munição .50          | 1           |
 | Shotgun Shells      | 1           |
-| 5.56 Rounds         | 1           |
-| .357 Rounds         | 1           |
+| Munição 5.56         | 1           |
+| Munição .357         | 1           |
 | Rockets             | 1           |
 | Power Supply        | 1           |
 | Storage Unit        | 1           |
@@ -73,17 +72,17 @@ will yield once processed inside a Scrap Machine.
 | Flare Gun           | 1           |
 | Locksmith Kit       | 2           |
 | Advanced Keypad     | 1           |
-| 9mm Rounds          | 1           |
+| Munição 9mm          | 1           |
 | Shotgun Shells      | 1           |
 | Shotgun Shells      | 1           |
-| 5.56 Rounds         | 1           |
-| 5.56 Rounds         | 1           |
-| .357 Rounds         | 1           |
-| 7.62 Rounds         | 1           |
-| .50 Rounds          | 1           |
-| .308 Rounds         | 1           |
+| Munição 5.56         | 1           |
+| Munição 5.56         | 1           |
+| Munição .357         | 1           |
+| Munição 7.62         | 1           |
+| Munição .50          | 1           |
+| Munição .308         | 1           |
 | Sledgehammer        | 1           |
-| Wrench              | 1           |
+| Chave Inglêsa              | 1           |
 | Oilcan              | 2           |
 | Big Ass Sword       | 1           |
 | Spatula             | 1           |

@@ -2,9 +2,9 @@
 title: Molotov
 ---
 
-You can combine an empty Bottle with Bandages to get an empty molotov! While the
-empty molotov item is on the floor, press Interact Key (Default F/Enter) while
-standing above it and holding a Petrol Can to fill it with some fuel. This turns
-it into a throwable Molotov weapon.
+Você pode combinar uma Garrafa vazia com Bandagens para conseguir um molotov vazio! Enquanto o
+item molotov vazio estiver no chão, pressione a Tecla de Interação (Padrão F/Enter) enquanto
+fica em pé acima dele e segurando um Galão de Combustível para enchê-lo com combustível. Isso o transforma
+em uma arma Molotov jogável.
 
-Enjoy frying your enemies!
+Divirta-se fritando seus inimigos!

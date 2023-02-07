@@ -1,5 +1,5 @@
 ---
-title: Tent
+title: Tendas
 ---
 
 Tents are small green prism shaped and collisionless. Tents will save over

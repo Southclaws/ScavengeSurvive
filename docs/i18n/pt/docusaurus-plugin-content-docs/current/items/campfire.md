@@ -1,20 +1,13 @@
 ---
-title: Campfire
+title: Fogueira
 ---
 
-Nothing like a relaxing camping trip during the apocalypse! Campfires, much like
-BBQ, are used for cooking food. They are a much safer option as when the fire is
-burnt out, no trace is left behind of your presence.
+Fogueiras, ou churrasqueiras, são usadas para cozinhar comida. Elas são uma escolha muito mais segura quanto o fogo está se apagando, sem deixar vestígios sobre a sua presença.
 
-To light a campfire, first you must pour 1 litre of petrol from a Petrol Can,
-then use a Lighter to ignite it.
+Para acender uma fogueira, primeiro você precisa colocar 1 litro de gasolina de um Galão de Gasolina, depois você utiliza um isqueiro para acendê-lá.
 
-You can attempt to ignite a campfire with no petrol, but there is only a 0.5%
-chance it will light.
-
-A campfire will burn for 10 minutes in total; however, during rain weather, your
-fire will have a 40% chance of lighting and if lit, will only burn for 1 minute.
+Você pode tentar ligar uma fogueira sem gasolina, porém tem uma chance de apenas 0.5% de conseguir ligar.
 
 ![/docs/campfire.webp](/docs/campfire.webp)
 
-_Nothing like a relaxing camping trip during the apocalypse!_
+_Nada como um acampamento relaxante durante o apocalypse!_

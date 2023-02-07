@@ -1,13 +1,9 @@
 ---
-title: Tools
+title: Ferramentas
 ---
 
-Tools are items used to repair or manipulate certain world entities. This can
-include repairing vehicles, construction and deconstruction.
+Ferramentas são itens que são utilizados para reparar ou manipular certos tipos de entidades. Incluindo, reparar veículos, construir defesas ou desmontar.
 
-The crowbar is generally used for destructive actions such as removing Defences
-or Tents, or breaking the locks on Vehicle doors or trunks.
+O _Pé de Cabra_ geralmente é usado para destruir, como desmontar defesas, ou tendas, ou quebrar as portas de carros ou porta-malas.
 
-The Wrench, Screwdriver and Hammer are used to repair vehicles, construct
-defences and craft other items. The Screwdriver and Hammer can be used to
-construct Defences in two different poses.
+A _Chave de Roda_, _Chave de Fenda_ e o _Martelo_ são usados para reparar veículos, construir defesas e craftar outros itens. A _Chave de Fenda_ e o _Martelo_ também podem ser usados para montar defesas em duas poses diferentes.

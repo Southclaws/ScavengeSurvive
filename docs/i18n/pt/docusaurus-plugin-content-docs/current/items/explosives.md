@@ -1,5 +1,5 @@
 ---
-title: Explosives
+title: Explosivos
 ---
 
 There are 12 different explosive in the game, with 3 different types of

@@ -1,51 +1,37 @@
 ---
-title: Defences
+title: Defesas
 ---
 
-Defences are items that can be constructed into the game world using tools such
-as the Hammer or Screwdriver. There are 10 different construction items with
-varying hit-points.
+Defesas são itens que podem ser construídos no jogo usando ferramentas, como Martelo ou Chave de Fenda. Existem 10 tipos de construções que têm pontos variáveis de hit-points.
 
-## Finding Defenses
+# Achando defesas
 
-Defenses can be found inside industrial vehicles such as trucks or vans.
+Defesas podem ser achadas dentro de veículos industriais, como caminhões ou vans.
 Defenses don't spawn in world loot piles as they would either intersect with
 buildings or vehicles and wouldn't fit in some areas, and they are too easy to
 see.
 
-## Construction & Deconstruction
+# Construção & Demolição
 
-Construction can be done with two tools, a Hammer or a Screwdriver.
+A construção de defesas podem ser feitas com duas ferramentas, um Martelo ou uma Chave de Fenda. 
+Cada ferramenta tem um efeito diferente de construção, se você usar um Martelo a defesa será posicionada horizontalmente.(como: \_ ), se você usar uma chave de fenda a defesa será posicionada verticalmente (como: | ). Isso possibilita a construção de telhados, pisos, plataformas e pontes.
+Construir uma defesa leva 10 segundos com qualquer uma das duas ferramentas.
 
-Each tool has a different effect on the construction, if you use a hammer the
-defense will be positioned horizontally (like: \_ ), if you use a screwdriver
-the defense will be positioned vertically (like: | ). This allows the
-construction of roofs, floors, platforms and bridges. Construction of a defence
-from an item takes 10 seconds with both tools.
+Defesas podem ser desmontadas manualmente usando um Pé de Cabra, portanto, tome cuidado pois isso apenas funciona do lado de trás da defesa (a frente sempre terá a mesma direção que seu personagem quando você coloca a defesa no chão).
+Isso é feito simplesmente se aproximando na parte de trás da defesa e segurando o botão de interação (Padrão F/Enter) segurando um Pé de Cabra. A demolição leva 10 segundos, como a construção.
 
-Defences can be manually removed by using a Crowbar, however take note this only
-works on the back side (the front will always face the same direction as your
-character does when you put the defence item down)
+# Destruindo Defesas
 
-This is done simply by approaching the defence from the back side and holding
-Interact Key (Default F/Enter) while holding a Crowbar. Deconstruction takes 10
-seconds just the same as construction.
+Defesas podem ser destruídas utilizando explosivos, a quantidade de hit-points em uma defesa determina a quantidade de explosivos que você precisará utilizar antes de a destruir. 
 
-## Destroying
+OBS: Uma IED dá 1 de dano, enquanto uma TNT dá 2 de dano.
 
-Defenses can be destroyed using explosive items , the amount of hit-points a
-defense item has determins how many explosions can hit it before it is
-destroyed.
+Todos tipos de explosivos dão dano em defesas, porém, alguns são feitos para dar dano em outros jogadores (como IED de Proximidade e TNT de Proximidade).
 
-Note: The IED explosives deal 1 hit point where as TNT explosives deal 2 hit
-points.
+### Explosivos
+Esses são os melhores explosivos que você pode utilizar pra atacar estruturas:
 
-All explosives damage defences but some are designed to attack players (such as
-the proximity mine and trip mine)
-
-These are the best types you can use to attack structures:
-
-- Phone Remote IED
-- Timed IED
+- IED Phone Remote
+- IED Cronometrada
 - Phone Remote TNT
-- Timed TNT
+- TNT Cronometrada
