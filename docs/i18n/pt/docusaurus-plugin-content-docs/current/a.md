@@ -80,3 +80,9 @@ https://scavenge-survive.fandom.com/wiki/Category:Items
 - Torso
 - Vara De Pescar
 - Vaso
+
+# Créditos
+Usuários da Comunidade brasileira responsáveis pela tradução:
+- LuizFernando6Th
+- Alex_Telford (Chibs_Telford)
+- Legendary
