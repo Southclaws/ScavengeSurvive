@@ -41,6 +41,12 @@ module.exports = {
           position: "left",
         },
         {
+          to: "servers/",
+          activeBasePath: "servers",
+          label: "Servers",
+          position: "left",
+        },
+        {
           type: 'localeDropdown',
           position: 'right',
         },

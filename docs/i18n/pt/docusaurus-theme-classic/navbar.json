@@ -7,6 +7,10 @@
     "message": "Documentação",
     "description": "Navbar item with label Docs"
   },
+  "item.label.Servers": {
+    "message": "Servidores",
+    "description": "Navbar item with label Servers"
+  },
   "item.label.GitHub": {
     "message": "GitHub",
     "description": "Navbar item with label GitHub"
