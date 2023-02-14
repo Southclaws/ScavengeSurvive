@@ -8,6 +8,20 @@ module.exports = {
   favicon: "img/favicon.ico",
   organizationName: "Southclaws",
   projectName: "ScavengeSurvive",
+  
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'pt'],
+    localeConfigs: {
+      en: {
+        htmlLang: 'en-GB',
+      },
+      pt: {
+        label: 'Português',
+        htmlLang: 'pt-BR',
+      },
+    },
+  },
   themeConfig: {
     colorMode: {
       defaultMode: "dark",
@@ -27,6 +41,16 @@ module.exports = {
           position: "left",
         },
         {
+          to: "servers/",
+          activeBasePath: "servers",
+          label: "Servers",
+          position: "left",
+        },
+        {
+          type: 'localeDropdown',
+          position: 'right',
+        },
+        {
           href: "https://github.com/Southclaws/ScavengeSurvive",
           label: "GitHub",
           position: "right",
@@ -35,18 +59,18 @@ module.exports = {
     },
     footer: {
       style: "dark",
-      links: [],
-      copyright: `Copyright © ${new Date().getFullYear()} Barnaby "Southclaws" Keene - Built with Docusaurus.`,
+      copyright: `<b>Copyright © ${new Date().getFullYear()} Barnaby "Southclaws" Keene - Built with Docusaurus.</b>`,
     },
   },
   presets: [
     [
-      "@docusaurus/preset-classic",
+      "classic",
       {
+        blog: false,
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl:
-            "https://github.com/Southclaws/ScavengeSurvive/edit/master/website/",
+          editUrl: "https://github.com/Southclaws/ScavengeSurvive/edit/master/docs/",
+          editLocalizedFiles: true,
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
