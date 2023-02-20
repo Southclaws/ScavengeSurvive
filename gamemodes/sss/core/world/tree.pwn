@@ -297,7 +297,7 @@ hook OnPlayerEnterDynArea(playerid, areaid)
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_harvest_item], toolname);
 		GetItemTypeName(treeSpecies_Data[tree_Data[data[1]][tree_species]][tree_result_item], yieldname);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "TREECUTINFO"), toolname, yieldname), 6000);
+		ShowActionText(playerid, sprintf(ls(playerid, "TREECUTINFO", true), toolname, yieldname), 6000);
 		tree_AtTree[playerid] = data[1];
 		CallLocalFunction("OnPlayerEnterTreeArea", "dd", playerid, data[1]);
 		return Y_HOOKS_CONTINUE_RETURN_0;

@@ -169,7 +169,8 @@ timer LoadAccountDelay[5000](playerid)
 			Logger_P(playerid),
 			Logger_I("result", _:e)
 		);
-		DisplayRegisterPrompt(playerid);
+		
+		ShowLanguageMenu(playerid);
 	}
 
 	if(e == Error:1) // Account does exist, prompt login
