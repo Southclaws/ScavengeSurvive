@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/Southclaws/go-samp-query v1.1.2
-	github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5 // indirect
+	github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5
 	github.com/bwmarrin/discordgo v0.22.0
 	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/cskr/pubsub v1.0.2
@@ -21,7 +21,7 @@ require (
 	go.uber.org/atomic v1.6.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43 // indirect
-	golang.org/x/sys v0.0.0-20200905004654-be1d3432aa8f // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/tools v0.0.0-20200904185747-39188db58858 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )
