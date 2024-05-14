@@ -10,7 +10,7 @@ These are the current online Scavenge and Survive servers:
 
 | Address:Port | Name | Language | Links |
 | - | - | - | - |
-| [sv.scavengenostalgia.fun:7777](samp://sv.scavengenostalgia.fun:7777) | Nostalgia ~ Scavenge | Portuguese/English | [Discord](http://discord.scavengenostalgia.fun) |
+| [178.63.13.143:18625](samp://178.63.13.143:18625) | Scavenge and Survive - New Age! | English | [Discord](https://discord.com/invite/vrkEMqXsQ2) |
 
 # How to add your server
 
