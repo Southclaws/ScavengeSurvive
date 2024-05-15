@@ -11,6 +11,7 @@ These are the current online Scavenge and Survive servers:
 | Address:Port | Name | Language | Links |
 | - | - | - | - |
 | [178.63.13.143:18625](samp://178.63.13.143:18625) | Scavenge and Survive - New Age! | English | [Discord](https://discord.com/invite/vrkEMqXsQ2) |
+| [149.56.41.48:7774](samp://149.56.41.48:7774) | Dayz ~ Brasa Survival Zone PC/Mobile | Portuguese | [Discord](https://discord.com/invite/Tw2VjP2D) |
 
 # How to add your server
 
