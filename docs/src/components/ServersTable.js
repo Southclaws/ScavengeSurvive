@@ -27,10 +27,10 @@ function ServersTable() {
   };
 
   useEffect(() => {
-    const fetchServers = async () => {
+    (async () => {
       try {
         setLoading(true);
-        setLoadingMessage('Retrieving open.mp servers...');
+        setLoadingMessage('Retrieving "open.mp" servers...');
 
         let dotCount = 0;
         const loadingInterval = setInterval(() => {
@@ -47,13 +47,26 @@ function ServersTable() {
 
         // Randomize the order of the servers, to avoid any bias
         servers.sort(() => Math.random() - 0.5);
-  
+
         for (const server of servers) {
           setLoadingMessage('Querying ' + server.address);
-          if (server.online === null) await server.getInfo();
-          else if (server.online) await server.getLinks();
+          await server.getInfo();
+          
+          if (!server.online) {
+            console.error(`Failed to retrieve server info for ${server.address}. Trying to ping the server...`);
+            
+            // If getInfo() fails (server.online is either false or null), try to ping the server.
+            // You'll never know when a server for some reason is blocking the query API protocol.
+            if (await server.ping()) {
+              console.info(`Successfully pinged server ${server.address}.`);
+              await server.getInfo(); // In that case, give it one last chance to get the server info
+            } else
+              console.error(`Failed to ping server ${server.address}.`);
+          }
+
+          if (server.online) await server.getLinks();
         }
-  
+
         setServerData(servers);
         clearInterval(loadingInterval);
       } catch (err) {
@@ -61,9 +74,7 @@ function ServersTable() {
       } finally {
         setLoading(false);
       }
-    };
-  
-    fetchServers();
+    })();
   }, []);
 
   if (error) return <div><b>Error</b>: {error}</div>;
