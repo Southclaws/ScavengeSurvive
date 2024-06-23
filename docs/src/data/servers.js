@@ -6,10 +6,10 @@ const servers = [
     links   : { discord: 'https://discord.com/invite/vrkEMqXsQ2' }
   },
   {
-    address : '149.56.41.48:7774',
-    name    : 'Dayz ~ Brasa Survival Zone PC/Mobile',
-    language: 'Portuguese',
-    links   : { discord: 'https://discord.com/invite/Tw2VjP2D' }
+    address : '200.163.145.186:7777',
+    name    : 'Scavenge And Survive - Apocalypse',
+    language: '',
+    links   : { discord: 'https://discord.gg/s3kmS5Jn9D' }
   }
 ];
 
