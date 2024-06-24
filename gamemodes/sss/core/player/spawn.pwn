@@ -189,7 +189,7 @@ PlayerSpawnExistingCharacter(playerid)
 	GetPlayerSpawnPos(playerid, x, y, z);
 	GetPlayerSpawnRot(playerid, r);
 
-	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
+	Streamer_UpdateEx(playerid, x, y, z, .type = STREAMER_TYPE_OBJECT);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
 
@@ -242,7 +242,7 @@ PlayerCreateNewCharacter(playerid)
 
 	SetPlayerCameraLookAt(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
 	SetPlayerCameraPos(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z - 1.0);
-	Streamer_UpdateEx(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z);
+	Streamer_UpdateEx(playerid, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0, 0, STREAMER_TYPE_OBJECT);
 
 	SetPlayerBrightness(playerid, 255);
 	TogglePlayerControllable(playerid, false);
@@ -297,7 +297,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 		Float:r;
 
 	GenerateSpawnPoint(playerid, x, y, z, r);
-	Streamer_UpdateEx(playerid, x, y, z, 0, 0);
+	Streamer_UpdateEx(playerid, x, y, z, 0, 0, STREAMER_TYPE_OBJECT);
 	SetPlayerPos(playerid, x, y, z);
 	SetPlayerFacingAngle(playerid, r);
 	SetPlayerVirtualWorld(playerid, 0);

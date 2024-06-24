@@ -27,8 +27,8 @@ Float:		E_VEHICLE_AREA_DISTANCE
 }
 
 static
-			varea_AreaID[MAX_VEHICLES],
-			varea_NearList[MAX_PLAYERS][MAX_VEHICLES_IN_RANGE],
+			varea_AreaID[MAX_VEHICLES] = {-1, ...},
+			varea_NearList[MAX_PLAYERS][MAX_VEHICLES_IN_RANGE] = {INVALID_VEHICLE_ID, ...},
    Iterator:varea_NearIndex[MAX_PLAYERS]<MAX_VEHICLES_IN_RANGE>;
 
 
@@ -49,6 +49,14 @@ hook OnScriptInit()
 
 ==============================================================================*/
 
+hook OnPlayerDisconnect(playerid, reason)
+{
+	for(new i; i < MAX_VEHICLES_IN_RANGE; i++) {
+		varea_NearList[playerid][i] = INVALID_VEHICLE_ID;
+	}
+
+	Iter_Clear(varea_NearIndex[playerid]);
+}
 
 stock CreateVehicleArea(vehicleid)
 {
@@ -209,6 +217,7 @@ _vint_LeaveArea(playerid, areaid)
 		if(varea_NearList[playerid][i] == data[1])
 		{
 			Iter_Remove(varea_NearIndex[playerid], i);
+			varea_NearList[playerid][i] = INVALID_VEHICLE_ID;
 			break;
 		}
 	}
