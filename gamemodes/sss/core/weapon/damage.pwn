@@ -165,7 +165,7 @@ stock PlayerInflictWound(playerid, targetid, E_WND_TYPE:type, Float:bleedrate, F
 
 		GetPlayerName(playerid, dmg_LastHitBy[targetid], MAX_PLAYER_NAME);
 		dmg_LastHitById[targetid] = playerid;
-		dmg_LastHitByItem[targetid] = GetPlayerItem(targetid);
+		dmg_LastHitByItem[targetid] = GetPlayerItem(playerid);
 
 		Logger_Log("player wounded player",
 			Logger_S("player", dmg_LastHitBy[targetid]),
