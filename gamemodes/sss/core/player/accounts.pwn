@@ -26,8 +26,9 @@
 #define FIELD_PLAYER_SPAWNTIME		"spawntime"	// 06
 #define FIELD_PLAYER_TOTALSPAWNS	"spawns"	// 07
 #define FIELD_PLAYER_WARNINGS		"warnings"	// 08
-#define FIELD_PLAYER_GPCI			"gpci"		// 19
-#define FIELD_PLAYER_ACTIVE			"active"	// 10
+#define FIELD_PLAYER_GPCI			"gpci"		// 09
+#define FIELD_PLAYER_LANG			"lang"		// 10
+#define FIELD_PLAYER_ACTIVE			"active"	// 11
 
 enum
 {
@@ -41,6 +42,7 @@ enum
 	FIELD_ID_PLAYER_TOTALSPAWNS,
 	FIELD_ID_PLAYER_WARNINGS,
 	FIELD_ID_PLAYER_GPCI,
+	FIELD_ID_PLAYER_LANG,
 	FIELD_ID_PLAYER_ACTIVE
 }
 
@@ -84,6 +86,9 @@ DBStatement:	stmt_AccountSetWarnings,
 DBStatement:	stmt_AccountGetGpci,
 DBStatement:	stmt_AccountSetGpci,
 
+DBStatement:	stmt_AccountGetLanguage,
+DBStatement:	stmt_AccountSetLanguage,
+
 DBStatement:	stmt_AccountGetActiveState,
 DBStatement:	stmt_AccountSetActiveState,
 
@@ -108,14 +113,15 @@ hook OnGameModeInit()
 		"FIELD_PLAYER_TOTALSPAWNS" INTEGER,\
 		"FIELD_PLAYER_WARNINGS" INTEGER,\
 		"FIELD_PLAYER_GPCI" TEXT,\
+		"FIELD_PLAYER_LANG" INTEGER,\
 		"FIELD_PLAYER_ACTIVE")");
 
 	db_query(gAccounts, "CREATE INDEX IF NOT EXISTS "ACCOUNTS_TABLE_PLAYER"_index ON "ACCOUNTS_TABLE_PLAYER"("FIELD_PLAYER_NAME")");
 
-	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 11);
+	DatabaseTableCheck(gAccounts, ACCOUNTS_TABLE_PLAYER, 12);
 
 	stmt_AccountExists			= db_prepare(gAccounts, "SELECT COUNT(*) FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
-	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,1,?,?,0,0,0,?,1)");
+	stmt_AccountCreate			= db_prepare(gAccounts, "INSERT INTO "ACCOUNTS_TABLE_PLAYER" VALUES(?,?,?,1,?,?,0,0,0,0,?,1)");
 	stmt_AccountLoad			= db_prepare(gAccounts, "SELECT * FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountUpdate			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ALIVE"=?, "FIELD_PLAYER_WARNINGS"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
@@ -145,6 +151,9 @@ hook OnGameModeInit()
 
 	stmt_AccountGetGpci			= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_GPCI" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetGpci			= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_GPCI"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+
+	stmt_AccountGetLanguage		= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_LANG" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
+	stmt_AccountSetLanguage		= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_LANG"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 
 	stmt_AccountGetActiveState	= db_prepare(gAccounts, "SELECT "FIELD_PLAYER_ACTIVE" FROM "ACCOUNTS_TABLE_PLAYER" WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
 	stmt_AccountSetActiveState	= db_prepare(gAccounts, "UPDATE "ACCOUNTS_TABLE_PLAYER" SET "FIELD_PLAYER_ACTIVE"=? WHERE "FIELD_PLAYER_NAME"=? COLLATE NOCASE");
@@ -186,6 +195,7 @@ Error:LoadAccount(playerid)
 		spawntime,
 		spawns,
 		warnings,
+		language,
 		active;
 
 	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
@@ -220,6 +230,7 @@ Error:LoadAccount(playerid)
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntime);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, spawns);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
+	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_LANG, DB::TYPE_INTEGER, language);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ACTIVE, DB::TYPE_INTEGER, active);
 
 	if(!stmt_execute(stmt_AccountLoad))
@@ -249,6 +260,7 @@ Error:LoadAccount(playerid)
 	}
 
 	SetPlayerAliveState(playerid, alive);
+	SetPlayerLanguage(playerid, language);
 	acc_IsNewPlayer[playerid] = false;
 	acc_HasAccount[playerid] = true;
 
@@ -768,7 +780,7 @@ SavePlayerData(playerid)
 ==============================================================================*/
 
 
-stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, gpci[], &active)
+stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawntime, &totalspawns, &warnings, &language, gpci[], &active)
 {
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_PASS, DB::TYPE_STRING, pass, MAX_PASSWORD_LEN);
@@ -779,6 +791,7 @@ stock GetAccountData(name[], pass[], &ipv4, &alive, &regdate, &lastlog, &spawnti
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_SPAWNTIME, DB::TYPE_INTEGER, spawntime);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_TOTALSPAWNS, DB::TYPE_INTEGER, totalspawns);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_WARNINGS, DB::TYPE_INTEGER, warnings);
+	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_LANG, DB::TYPE_INTEGER, language);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_GPCI, DB::TYPE_STRING, gpci, 41);
 	stmt_bind_result_field(stmt_AccountLoad, FIELD_ID_PLAYER_ACTIVE, DB::TYPE_INTEGER, active);
 
@@ -1008,6 +1021,28 @@ stock SetAccountGPCI(const name[], gpci[MAX_GPCI_LEN])
 	stmt_bind_value(stmt_AccountSetGpci, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
 
 	return stmt_execute(stmt_AccountSetGpci);
+}
+
+// FIELD_ID_PLAYER_LANG
+stock GetAccountLanguage(const name[], &languageid)
+{
+	stmt_bind_result_field(stmt_AccountGetLanguage, 0, DB::TYPE_INTEGER, languageid);
+	stmt_bind_value(stmt_AccountGetLanguage, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	if(!stmt_execute(stmt_AccountGetLanguage))
+		return 0;
+
+	stmt_fetch_row(stmt_AccountGetLanguage);
+
+	return 1;
+}
+
+stock SetAccountLanguage(const name[], languageid)
+{
+	stmt_bind_value(stmt_AccountSetLanguage, 0, DB::TYPE_INTEGER, languageid);
+	stmt_bind_value(stmt_AccountSetLanguage, 1, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
+
+	return stmt_execute(stmt_AccountSetLanguage);
 }
 
 // FIELD_ID_PLAYER_ACTIVE

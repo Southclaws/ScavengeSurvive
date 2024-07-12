@@ -267,7 +267,7 @@ StartBuildingDefence(playerid, Item:itemid)
 	def_CurrentDefenceItem[playerid] = itemid;
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
 	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
-	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
+	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING", true), itemtypename));
 
 	return 1;
 }
@@ -364,7 +364,7 @@ _InteractDefence(playerid, Item:itemid)
 		}
 		else
 		{
-			ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
+			ShowActionText(playerid, ls(playerid, "DEFMOVINGIT", true), 3000);
 			defer MoveDefence(_:itemid, playerid);
 		}
 	}
@@ -402,7 +402,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		def_CurrentDefenceEdit[playerid] = itemid;
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
-		ShowActionText(playerid, sprintf(ls(playerid, "DEFREMOVING"), itemtypename));
+		ShowActionText(playerid, sprintf(ls(playerid, "DEFREMOVING", true), itemtypename));
 
 		return 1;
 	}
@@ -411,7 +411,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 	{
 		if(!def_TypeData[defencetype][def_movable])
 		{
-			ShowActionText(playerid, ls(playerid, "DEFNOTMOVAB"));
+			ShowActionText(playerid, ls(playerid, "DEFNOTMOVAB", true));
 			return 1;
 		}
 
@@ -423,7 +423,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
+		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN", true), itemtypename));
 
 		return 1;
 	}
@@ -434,7 +434,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		GetItemArrayDataAtCell(itemid, hasmotor, _:def_motor);
 		if(!hasmotor)
 		{
-			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
+			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO", true));
 			return 1;
 		}
 
@@ -446,7 +446,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
+		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN", true), itemtypename));
 
 		return 1;
 	}
@@ -457,7 +457,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		GetItemArrayDataAtCell(itemid, hasmotor, _:def_motor);
 		if(!hasmotor)
 		{
-			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO"));
+			ShowActionText(playerid, ls(playerid, "DEFNEEDMOTO", true));
 			return 0;
 		}
 
@@ -469,7 +469,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
 		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
 
-		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
+		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN", true), itemtypename));
 
 		return 1;
 	}
@@ -539,7 +539,7 @@ hook OnHoldActionFinish(playerid)
 		_UpdateDefenceTweakArrow(playerid, itemid);
 		PlayerGainSkillExperience(playerid, "Construction");
 
-		ShowHelpTip(playerid, ls(playerid, "TIPTWEAKDEF"));
+		ShowHelpTip(playerid, ls(playerid, "TIPTWEAKDEF", true));
 
 		return Y_HOOKS_BREAK_RETURN_0;
 	}
@@ -555,7 +555,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Motor)
 		{
-			ShowActionText(playerid, ls(playerid, "DEFINSTMOTO"));
+			ShowActionText(playerid, ls(playerid, "DEFINSTMOTO", true));
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], true, def_motor);
 			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
 
@@ -565,7 +565,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(itemtype == item_Keypad)
 		{
-			ShowActionText(playerid, ls(playerid, "DEFINSTKEYP"));
+			ShowActionText(playerid, ls(playerid, "DEFINSTKEYP", true));
 			ShowSetPassDialog_Keypad(playerid);
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], 1, def_keypad);
 			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
@@ -576,7 +576,7 @@ hook OnHoldActionFinish(playerid)
 
 		if(itemtype == item_AdvancedKeypad)
 		{
-			ShowActionText(playerid, ls(playerid, "DEFINSTADKP"));
+			ShowActionText(playerid, ls(playerid, "DEFINSTADKP", true));
 			ShowSetPassDialog_KeypadAdv(playerid);
 			SetItemArrayDataAtCell(def_CurrentDefenceEdit[playerid], 2, def_keypad);
 			CallLocalFunction("OnDefenceModified", "d", _:def_CurrentDefenceEdit[playerid]);
@@ -600,7 +600,7 @@ hook OnHoldActionFinish(playerid)
 			GetItemUUID(def_CurrentDefenceEdit[playerid], uuid);
 			GetItemPos(def_CurrentDefenceEdit[playerid], x, y, z);
 			GetItemRot(def_CurrentDefenceEdit[playerid], rz, rz, rz);
-			ShowActionText(playerid, ls(playerid, "DEFDISMANTL"));
+			ShowActionText(playerid, ls(playerid, "DEFDISMANTL", true));
 			GetItemTypeModel(GetItemType(def_CurrentDefenceEdit[playerid]), model);
 
 			DeconstructDefence(def_CurrentDefenceEdit[playerid]);
@@ -650,7 +650,7 @@ hook OnPlayerKeypadEnter(playerid, keypadid, code, match)
 		{
 			if(code == match)
 			{
-				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
+				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT", true), 3000);
 				defer MoveDefence(_:def_CurrentDefenceOpen[playerid], playerid);
 				def_CurrentDefenceOpen[playerid] = INVALID_ITEM_ID;
 			}
@@ -875,7 +875,7 @@ ShowEnterPassDialog_KeypadAdv(playerid, msg = 0)
 
 			if(pass == defpass && strlen(inputtext) >= 4)
 			{
-				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT"), 3000);
+				ShowActionText(playerid, ls(playerid, "DEFMOVINGIT", true), 3000);
 				defer MoveDefence(_:def_CurrentDefenceOpen[playerid], playerid);
 				def_CurrentDefenceOpen[playerid] = INVALID_ITEM_ID;
 			}
