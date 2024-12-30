@@ -36,7 +36,7 @@ hook OnFilterScriptInit()
 }
 
 //RedrawAllDetfieldPolys()
-CMD:rdp(playerid, params[])
+ACMD:rdp[5](playerid, params[])
 {
 	foreach(new i : det_Index)
 	{
