@@ -34,7 +34,7 @@ forward OnPlayerHolsteredItem(playerid, Item:itemid);
 
 hook OnPlayerLoadAccount(playerid)
 {
-	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, ls(playerid, "TUTORPROMPT"));
+	ClassButtonTutorial[playerid]	=CreatePlayerTextDraw(playerid, 320.000000, 300.000000, ls(playerid, "TUTORPROMPT", true));
 	PlayerTextDrawAlignment			(playerid, ClassButtonTutorial[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonTutorial[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonTutorial[playerid], 1);
@@ -71,7 +71,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTutorialWorld[playerid] = TutorialWorld;
 		TutorialWorld++;
 
-		TutUI_Keys[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 140.000000, ls(playerid, "TUTORKEYSPR"));
+		TutUI_Keys[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 140.000000, ls(playerid, "TUTORKEYSPR", true));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Keys[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Keys[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Keys[playerid], 0.300000, 1.500000);
@@ -83,7 +83,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Keys[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Keys[playerid], 480.000000, 0.000000);
 
-		TutUI_Watch[playerid]			=CreatePlayerTextDraw(playerid, 83.000000, 250.000000, ls(playerid, "TUTORWATCHI"));
+		TutUI_Watch[playerid]			=CreatePlayerTextDraw(playerid, 83.000000, 250.000000, ls(playerid, "TUTORWATCHI", true));
 		PlayerTextDrawAlignment			(playerid, TutUI_Watch[playerid], 2);
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Watch[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Watch[playerid], 1);
@@ -96,7 +96,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Watch[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Watch[playerid], 0.000000, 150.000000);
 
-		TutUI_Stats[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 20.000000, ls(playerid, "TUTORHPAPEN"));
+		TutUI_Stats[playerid]			=CreatePlayerTextDraw(playerid, 390.000000, 20.000000, ls(playerid, "TUTORHPAPEN", true));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Stats[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Stats[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Stats[playerid], 0.300000, 1.500000);
@@ -108,7 +108,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 		PlayerTextDrawBoxColor			(playerid, TutUI_Stats[playerid], 100);
 		PlayerTextDrawTextSize			(playerid, TutUI_Stats[playerid], 480.000000, 0.000000);
 
-		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, ls(playerid, "TUTOREXITCM"));
+		TutUI_Exit[playerid]			=CreatePlayerTextDraw(playerid, 484.000000, 280.000000, ls(playerid, "TUTOREXITCM", true));
 		PlayerTextDrawBackgroundColor	(playerid, TutUI_Exit[playerid], 255);
 		PlayerTextDrawFont				(playerid, TutUI_Exit[playerid], 1);
 		PlayerTextDrawLetterSize		(playerid, TutUI_Exit[playerid], 0.300000, 1.500000);
@@ -161,7 +161,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 		SetPlayerBrightness(playerid, 255);
 
-		ShowHelpTip(playerid, ls(playerid, "TUTORINTROD"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORINTROD", true));
 		PlayerInTutorial[playerid] = true;
 
 		ToggleTutorialUI(playerid, true);
@@ -277,7 +277,7 @@ hook OnPlayerWearBag(playerid, Item:itemid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORACCBAG"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORACCBAG", true));
 	}
 
 	return 0;
@@ -290,7 +290,7 @@ hook OnPlayerOpenInventory(playerid)
 	{
 		ToggleTutorialUI(playerid, false);
 
-		ShowHelpTip(playerid, ls(playerid, "TUTORINTINV"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORINTINV", true));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -307,7 +307,7 @@ hook OnPlayerOpenContainer(playerid, Container:containerid)
 		GetItemArrayDataAtCell(GetPlayerBagItem(playerid), _:bagcontainer, 1);
 		if(containerid == bagcontainer)
 		{
-			ShowHelpTip(playerid, ls(playerid, "TUTORINTBAG"));
+			ShowHelpTip(playerid, ls(playerid, "TUTORINTBAG", true));
 		}
 	}
 
@@ -339,7 +339,7 @@ hook OnPlayerViewCntOpt(playerid, Container:containerid)
 		GetContainerSlotItem(containerid, slot, itemid);
 		if(GetItemType(itemid) == item_Wrench)
 		{
-			ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
+			ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT", true));
 		}
 	}
 
@@ -350,7 +350,7 @@ hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORDROITM"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORDROITM", true));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -360,7 +360,7 @@ hook OnItemAddedToInventory(playerid, Item:itemid, slot)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORINVADD"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORINVADD", true));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -370,7 +370,7 @@ hook OnPlayerViewInvOpt(playerid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMOPT", true));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -386,11 +386,11 @@ hook OnItemAddedToContainer(Container:containerid, Item:itemid, playerid)
 			GetItemArrayDataAtCell(GetPlayerBagItem(playerid), _:bagcontainer, 1);
 			if(containerid == bagcontainer)
 			{
-				ShowHelpTip(playerid, ls(playerid, "TUTORADDBAG"));
+				ShowHelpTip(playerid, ls(playerid, "TUTORADDBAG", true));
 			}
 			else
 			{
-				ShowHelpTip(playerid, ls(playerid, "TUTORADDCNT"));
+				ShowHelpTip(playerid, ls(playerid, "TUTORADDCNT", true));
 			}
 		}
 	}
@@ -402,7 +402,7 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORITMHOL"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMHOL", true));
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -412,7 +412,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 {
 	if(PlayerInTutorial[playerid])
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORITMUSE"));
+		ShowHelpTip(playerid, ls(playerid, "TUTORITMUSE", true));
 	}
 }
 
