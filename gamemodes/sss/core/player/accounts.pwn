@@ -365,8 +365,6 @@ DisplayRegisterPrompt(playerid)
 			}
 
 			Logger_Log("account created", Logger_P(playerid));
-
-			ShowWelcomeMessage(playerid, 10);
 		}
 		else
 		{
