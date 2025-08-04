@@ -364,7 +364,7 @@ public OnPlayerSpawn(playerid)
 	PlayerPlaySound(playerid, 1186, 0.0, 0.0, 0.0);
 	PreloadPlayerAnims(playerid);
 	SetAllWeaponSkills(playerid, 500);
-	Streamer_Update(playerid);
+	Streamer_Update(playerid, STREAMER_TYPE_OBJECT);
 
 	return 1;
 }
