@@ -669,6 +669,8 @@ OnGameModeInit_Setup()
 	LoadSettings();
 
 	SendRconCommand(sprintf("mapname %s", GetMapName()));
+	
+	SendRconCommand("chatlogging 0");
 
 	GetSettingInt("server/global-debug-level", 0, gGlobalDebugLevel);
 	debug_set_level("global", gGlobalDebugLevel);
