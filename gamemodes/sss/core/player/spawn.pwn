@@ -108,7 +108,7 @@ hook OnPlayerConnect(playerid)
 //
 //timer LoadClassUI[1](playerid)
 //{
-	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
+	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 240.000000, 200.000000, "~n~Male~n~~n~");
 	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonMale[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
@@ -122,7 +122,7 @@ hook OnPlayerConnect(playerid)
 	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
 
-	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
+	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 400.000000, 200.000000, "~n~Female~n~~n~");
 	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
 	PlayerTextDrawBackgroundColor	(playerid, ClassButtonFemale[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
@@ -249,8 +249,8 @@ PlayerCreateNewCharacter(playerid)
 
 	if(IsPlayerLoggedIn(playerid))
 	{
-		PlayerTextDrawSetString(playerid, ClassButtonMale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_M")));
-		PlayerTextDrawSetString(playerid, ClassButtonFemale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_F")));
+		PlayerTextDrawSetString(playerid, ClassButtonMale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_M", true)));
+		PlayerTextDrawSetString(playerid, ClassButtonFemale[playerid], sprintf("~n~%s~n~~n~", ls(playerid, "GENDER_F", true)));
 		PlayerTextDrawShow(playerid, ClassButtonMale[playerid]);
 		PlayerTextDrawShow(playerid, ClassButtonFemale[playerid]);
 		SelectTextDraw(playerid, 0xFFFFFF88);
@@ -332,6 +332,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 	if(IsNewPlayer(playerid))
 	{
+		ShowWelcomeMessage(playerid, 5);
 		SetPlayerHP(playerid, spawn_NewBlood);
 		SetPlayerFP(playerid, spawn_NewFood);
 		SetPlayerBleedRate(playerid, spawn_NewBleed);
