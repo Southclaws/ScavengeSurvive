@@ -17,7 +17,7 @@ static
 	lang_PlayerLanguage[MAX_PLAYERS];
 
 
-#define ls(%0,%1) GetLanguageString(GetPlayerLanguage(%0), %1)
+#define ls(%0,%1,%2) GetLanguageString(GetPlayerLanguage(%0), %1, %2)
 
 hook OnPlayerConnect(playerid)
 {
@@ -31,6 +31,15 @@ stock GetPlayerLanguage(playerid)
 		return -1;
 
 	return lang_PlayerLanguage[playerid];
+}
+
+stock SetPlayerLanguage(playerid, languageid)
+{
+	if(!IsPlayerConnected(playerid))
+		return -1;
+
+	lang_PlayerLanguage[playerid] = languageid;
+	return 1;
 }
 
 ShowLanguageMenu(playerid)
@@ -54,10 +63,29 @@ ShowLanguageMenu(playerid)
 		if(response)
 		{
 			lang_PlayerLanguage[playerid] = listitem;
-			ChatMsgLang(playerid, YELLOW, "LANGCHANGE");
+
+			new lang_name[MAX_LANGUAGE_NAME];
+			
+			GetLanguageName(listitem, lang_name);
+
+			ChatMsgLang(playerid, BLUE, "LANGCHANGE", lang_name);
+
+			if(!IsPlayerRegistered(playerid)) {
+				DisplayRegisterPrompt(playerid);
+			} else {
+				new name[MAX_PLAYER_NAME];
+				GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+				SetAccountLanguage(name, listitem);
+			}
 		}
 	}
 	Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_LIST, "Choose language:", langlist, "Select", "Cancel");
+}
+
+hook OnPlayerRegister(playerid) {
+	new name[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, name, MAX_PLAYER_NAME);
+	SetAccountLanguage(name, lang_PlayerLanguage[playerid]);
 }
 
 hook OnPlayerSave(playerid, filename[])

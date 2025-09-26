@@ -425,22 +425,22 @@ _ShowRepairTip(playerid, vehicleid)
 
 	if(health <= VEHICLE_HEALTH_CHUNK_2)
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORVEHVER"), 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHVER", true), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_CHUNK_3)
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBRO"), 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBRO", true), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_CHUNK_4)
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBIT"), 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHBIT", true), 20000);
 		return;
 	}
 	else if(health <= VEHICLE_HEALTH_MAX)
 	{
-		ShowHelpTip(playerid, ls(playerid, "TUTORVEHSLI"), 20000);
+		ShowHelpTip(playerid, ls(playerid, "TUTORVEHSLI", true), 20000);
 		return;
 	}
 
