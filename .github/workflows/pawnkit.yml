@@ -49,10 +49,10 @@ jobs:
           tar -xzf "$RUNNER_TEMP/$lint_archive" -C "$RUNNER_TEMP/pawnkit" pawnlint
           echo "$RUNNER_TEMP/pawnkit" >> "$GITHUB_PATH"
 
-      - name: Ensure dependencies
+      - name: Build
         env:
           SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
-        run: sampctl ensure
+        run: sampctl build
 
       - name: Check formatting
         run: pawnfmt --check gamemodes/ScavengeSurvive.pwn
