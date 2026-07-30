@@ -2,6 +2,7 @@ package runner
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
@@ -38,31 +39,35 @@ func RunServer(ctx context.Context, ps *pubsub.PubSub, r io.Reader, w io.Writer,
 }
 
 func runBlocking(parentctx context.Context, ps *pubsub.PubSub, in io.Reader, out io.Writer) (err error) {
+	binary, err := serverBinary(runtime.GOOS)
+	if err != nil {
+		return err
+	}
+	return runBlockingCommand(parentctx, ps, in, out, binary)
+}
+
+func serverBinary(goos string) (string, error) {
+	switch goos {
+	case "windows":
+		return "./samp-server.exe", nil
+	case "linux":
+		return "./samp03svr", nil
+	default:
+		return "", fmt.Errorf("unsupported server platform %q", goos)
+	}
+}
+
+func runBlockingCommand(parentctx context.Context, ps *pubsub.PubSub, in io.Reader, out io.Writer, binary string) (err error) {
 	ctx, cancel := context.WithCancel(parentctx)
 	defer cancel()
 
-	var binary string
-	switch runtime.GOOS {
-	case "windows":
-		binary = "./samp-server.exe"
-	case "linux":
-		binary = "./samp03svr"
-	default:
-		panic("unknown OS")
-	}
-
 	cmd := exec.CommandContext(ctx, binary)
 	cmd.Stdin = in
-	r := cmdReader(cmd)
+	cmd.Stdout = out
+	cmd.Stderr = out
 	if err := cmd.Start(); err != nil {
 		return err
 	}
-
-	go func() {
-		// TODO: Handle IO copy errors.
-		// nolint:errcheck
-		io.Copy(out, r)
-	}()
 
 	go func() {
 		<-ps.SubOnce("restart")
@@ -71,18 +76,6 @@ func runBlocking(parentctx context.Context, ps *pubsub.PubSub, in io.Reader, out
 	}()
 
 	return cmd.Wait()
-}
-
-func cmdReader(cmd *exec.Cmd) io.Reader {
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return nil
-	}
-	return io.MultiReader(stdout, stderr)
 }
 
 func cleanup() {
