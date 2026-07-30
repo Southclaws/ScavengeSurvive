@@ -1,6 +1,6 @@
 profile = "recommended"
 target = "samp"
-include = ["gamemodes/**/*.pwn", "legacy/**/*.inc"]
+include = ["gamemodes/ScavengeSurvive.pwn"]
 exclude = ["dependencies/**", "filterscripts/**", "misc/**"]
 cache = ".pawnlint-cache"
 

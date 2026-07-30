@@ -35,8 +35,8 @@ jobs:
         env:
           PAWNFMT_VERSION: "1.4.5"
           PAWNFMT_SHA256: "5b90db32f125fce2ead81164d54ca07934b741847f9f546bd11904d48ea6cceb"
-          PAWNLINT_VERSION: "1.8.7"
-          PAWNLINT_SHA256: "871af7d1f26bc2a74ddd4ead7dc6b06a40c28fbcf5098b245a303876f2264a9c"
+          PAWNLINT_VERSION: "1.8.8"
+          PAWNLINT_SHA256: "0e6d9f28a9a7f8b34530da5e47d37fb34a960515f50ee4aafa61b42eda490418"
         run: |
           mkdir -p "$RUNNER_TEMP/pawnkit"
           fmt_archive="pawnfmt_${PAWNFMT_VERSION}_linux_amd64.tar.gz"
