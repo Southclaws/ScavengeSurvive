@@ -1,0 +1,12 @@
+profile = "recommended"
+target = "samp"
+include = ["gamemodes/**/*.pwn", "legacy/**/*.inc"]
+exclude = ["dependencies/**", "filterscripts/**", "misc/**"]
+cache = ".pawnlint-cache"
+
+[lint]
+warnings-as-errors = false
+max-diagnostics = 200
+
+[rules]
+infinite-loop = "off"

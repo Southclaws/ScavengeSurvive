@@ -4,7 +4,7 @@ go 1.14
 
 require (
 	github.com/Southclaws/go-samp-query v1.1.2
-	github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5 // indirect
+	github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5
 	github.com/bwmarrin/discordgo v0.22.0
 	github.com/cenkalti/backoff/v4 v4.1.0
 	github.com/cskr/pubsub v1.0.2

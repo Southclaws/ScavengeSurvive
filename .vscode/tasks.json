@@ -2,10 +2,37 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build only",
+            "label": "PawnKit: check",
+            "type": "process",
+            "command": "pawn",
+            "args": ["check", "--project", "${workspaceFolder}"],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "PawnKit: lint",
+            "type": "process",
+            "command": "pawn",
+            "args": ["lint", "--project", "${workspaceFolder}"],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "PawnKit: diagnose",
+            "type": "process",
+            "command": "pawn",
+            "args": ["doctor", "--project", "${workspaceFolder}"],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "sampctl: build",
             "type": "process",
             "command": "sampctl",
-            "args": ["package", "build"],
+            "args": ["build"],
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -25,38 +52,11 @@
             "problemMatcher": "$sampctl"
         },
         {
-            "label": "build watcher",
+            "label": "sampctl: run",
             "type": "process",
             "command": "sampctl",
-            "args": ["package", "build"],
+            "args": ["run"],
             "group": "build",
-            "isBackground": true,
-            "presentation": {
-                "reveal": "silent",
-                "panel": "dedicated"
-            },
-            "problemMatcher": "$sampctl"
-        },
-        {
-            "label": "run tests",
-            "type": "shell",
-            "command": "sampctl package run",
-            "group": {
-                "kind": "test",
-                "isDefault": true
-            },
-            "isBackground": true,
-            "presentation": {
-                "reveal": "silent",
-                "panel": "dedicated"
-            },
-            "problemMatcher": "$sampctl"
-        },
-        {
-            "label": "run tests watcher",
-            "type": "shell",
-            "command": "sampctl package run --watch",
-            "group": "test",
             "isBackground": true,
             "presentation": {
                 "reveal": "silent",

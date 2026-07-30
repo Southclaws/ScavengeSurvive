@@ -136,17 +136,16 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 }
 
 func (r *ReactiveParser) parseSampLoggerFormat(line string) (func(msg string, fields ...zapcore.Field), string, []zapcore.Field) {
-	rawFields := parseSampLoggerToMap(line)
-	if len(rawFields) > 0 {
+	parsedFields := parseSampLoggerFields(line)
+	if len(parsedFields) > 0 {
+		rawFields := make(map[string]string, len(parsedFields))
 		fields := []zapcore.Field{}
-		for key, value := range rawFields {
-			if len(value) == 0 {
-				return zap.L().Info, line, nil
-			}
-			if key == sampLoggerMessageKey || key == sampLoggerLevelKey {
+		for _, field := range parsedFields {
+			rawFields[field.key] = field.value
+			if field.key == sampLoggerMessageKey || field.key == sampLoggerLevelKey {
 				continue
 			}
-			fields = append(fields, transformType(key, value))
+			fields = append(fields, transformType(field.key, field.value))
 		}
 		if lvl, ok := rawFields[sampLoggerLevelKey]; ok {
 			if lvl == "error" {
@@ -162,8 +161,24 @@ func (r *ReactiveParser) parseSampLoggerFormat(line string) (func(msg string, fi
 }
 
 func parseSampLoggerToMap(line string) map[string]string {
-	fields := make(map[string]string)
+	parsedFields := parseSampLoggerFields(line)
+	if len(parsedFields) == 0 {
+		return nil
+	}
+	fields := make(map[string]string, len(parsedFields))
+	for _, field := range parsedFields {
+		fields[field.key] = field.value
+	}
+	return fields
+}
 
+type logField struct {
+	key   string
+	value string
+}
+
+func parseSampLoggerFields(line string) []logField {
+	var fields []logField
 	for _, field := range splitLine(line) {
 		split := strings.SplitN(field, "=", 2)
 		if len(split) != 2 {
@@ -174,12 +189,10 @@ func parseSampLoggerToMap(line string) map[string]string {
 			return nil
 		}
 		if value[0] == '"' {
-			fields[split[0]] = strings.Trim(value, `"`)
-		} else {
-			fields[split[0]] = value
+			value = strings.Trim(value, `"`)
 		}
+		fields = append(fields, logField{key: split[0], value: value})
 	}
-
 	return fields
 }
 

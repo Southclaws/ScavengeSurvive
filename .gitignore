@@ -52,6 +52,7 @@ gamemodes/ScavengeSurvive.tar.gz
 
 # environment variables for development
 .env
+.pawnlint-cache/
 
 # stuff no one else needs
 *.lnk

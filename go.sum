@@ -45,8 +45,6 @@ github.com/Netflix/go-expect v0.0.0-20200312175327-da48e75238e2 h1:y2avNRjCeJT8b
 github.com/Netflix/go-expect v0.0.0-20200312175327-da48e75238e2/go.mod h1:oX5x61PbNXchhh0oikYAH+4Pcfw5LKv21+Jnpr6r6Pc=
 github.com/Southclaws/go-samp-query v1.1.2 h1:2U+vQ43CzAI7EA3LwCEC08yY8bHZpJUGDtn9/4CFxBw=
 github.com/Southclaws/go-samp-query v1.1.2/go.mod h1:veYZpOaPw6PXwvTGo9Rg3INKQV/2PR8Bn8p+bQedFNM=
-github.com/Southclaws/sampctl v0.0.0-20210109143621-2daeb58d756a h1:1R7cLhxlyzWSnsHC7yqLdrgDyohJm0N4Nqos5B1LxC0=
-github.com/Southclaws/sampctl v0.0.0-20210109143621-2daeb58d756a/go.mod h1:W5kfjR18njBmkZdKsgAQn8yKxj7LM4D1jn9jV7dAZMc=
 github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5 h1:JAroZ9ocT++lDVbv5bFPM8qCk0pJ/Q4NTlrdALIqXc4=
 github.com/Southclaws/sampctl v0.0.0-20210704105657-7e6086ddf3b5/go.mod h1:W5kfjR18njBmkZdKsgAQn8yKxj7LM4D1jn9jV7dAZMc=
 github.com/alcortesm/tgz v0.0.0-20161220082320-9c5fe88206d7 h1:uSoVVbwJiQipAclBbw+8quDsfcvFjOpI5iCf4p/cqCs=
@@ -522,7 +520,6 @@ gopkg.in/eapache/go-resiliency.v1 v1.2.0/go.mod h1:ufQ2tre3XZoQT9X8nKYgTaqO8DrIu
 gopkg.in/errgo.v2 v2.1.0/go.mod h1:hNsd1EY+bozCKY1Ytp96fpM3vjJbqLJn88ws8XvfDNI=
 gopkg.in/natefinch/lumberjack.v2 v2.0.0 h1:1Lc07Kr7qY4U2YPouBjpCLxpiyxIVoxqXgkXLknAOE8=
 gopkg.in/natefinch/lumberjack.v2 v2.0.0/go.mod h1:l0ndWWf7gzL7RNwBG7wST/UCcT4T24xpD6X8LsfU/+k=
-gopkg.in/urfave/cli.v1 v1.20.0 h1:NdAVW6RYxDif9DhDHaAortIu956m2c0v+09AZBPTbE0=
 gopkg.in/urfave/cli.v1 v1.20.0/go.mod h1:vuBzUtMdQeixQj8LVd+/98pzhxNGQoyuPBlsXHOQNO0=
 gopkg.in/warnings.v0 v0.1.2 h1:wFXVbFY8DY5/xOe1ECiWdKCzZlxgshcYVNkBHstARME=
 gopkg.in/warnings.v0 v0.1.2/go.mod h1:jksf8JmL6Qr/oQM2OXTHunEvvTAsrWBLb6OOjuVWRNI=

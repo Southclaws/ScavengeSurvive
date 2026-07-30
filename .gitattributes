@@ -1,2 +1,7 @@
 *.pwn linguist-language=Pawn
 *.inc linguist-language=Pawn
+*.pwn text eol=lf
+*.inc text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
