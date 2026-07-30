@@ -52,7 +52,7 @@ jobs:
       - name: Build
         env:
           SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
-        run: sampctl build
+        run: sampctl build --forceEnsure
 
       - name: Check formatting
         run: pawnfmt --check gamemodes/ScavengeSurvive.pwn
