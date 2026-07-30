@@ -1,0 +1,61 @@
+name: PawnKit
+
+on:
+  push:
+    branches: [feat/pawnkit]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Install sampctl
+        env:
+          SAMPCTL_VERSION: "1.14.1"
+        run: |
+          archive="sampctl_${SAMPCTL_VERSION}_linux_amd64.tar.gz"
+          release="https://github.com/Southclaws/sampctl/releases/download/${SAMPCTL_VERSION}"
+          mkdir -p "$RUNNER_TEMP/sampctl"
+          wget -q "$release/$archive" -O "$RUNNER_TEMP/$archive"
+          wget -q "$release/sampctl_${SAMPCTL_VERSION}_checksums.txt" -O "$RUNNER_TEMP/checksums.txt"
+          (
+            cd "$RUNNER_TEMP"
+            grep " $archive$" checksums.txt | sha256sum --check
+          )
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP/sampctl"
+          echo "$RUNNER_TEMP/sampctl" >> "$GITHUB_PATH"
+
+      - name: Install PawnKit tools
+        env:
+          PAWNFMT_VERSION: "1.4.5"
+          PAWNFMT_SHA256: "5b90db32f125fce2ead81164d54ca07934b741847f9f546bd11904d48ea6cceb"
+          PAWNLINT_VERSION: "1.8.7"
+          PAWNLINT_SHA256: "871af7d1f26bc2a74ddd4ead7dc6b06a40c28fbcf5098b245a303876f2264a9c"
+        run: |
+          mkdir -p "$RUNNER_TEMP/pawnkit"
+          fmt_archive="pawnfmt_${PAWNFMT_VERSION}_linux_amd64.tar.gz"
+          lint_archive="pawnlint_${PAWNLINT_VERSION}_linux_amd64.tar.gz"
+          wget -q "https://github.com/pawnkit/pawnfmt/releases/download/v${PAWNFMT_VERSION}/$fmt_archive" -O "$RUNNER_TEMP/$fmt_archive"
+          wget -q "https://github.com/pawnkit/pawnlint/releases/download/v${PAWNLINT_VERSION}/$lint_archive" -O "$RUNNER_TEMP/$lint_archive"
+          printf '%s  %s\n' "$PAWNFMT_SHA256" "$RUNNER_TEMP/$fmt_archive" | sha256sum --check
+          printf '%s  %s\n' "$PAWNLINT_SHA256" "$RUNNER_TEMP/$lint_archive" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/$fmt_archive" -C "$RUNNER_TEMP/pawnkit" pawnfmt
+          tar -xzf "$RUNNER_TEMP/$lint_archive" -C "$RUNNER_TEMP/pawnkit" pawnlint
+          echo "$RUNNER_TEMP/pawnkit" >> "$GITHUB_PATH"
+
+      - name: Ensure dependencies
+        env:
+          SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
+        run: sampctl ensure
+
+      - name: Check formatting
+        run: pawnfmt --check gamemodes/ScavengeSurvive.pwn
+
+      - name: Lint
+        run: pawnlint --config pawnlint.toml
