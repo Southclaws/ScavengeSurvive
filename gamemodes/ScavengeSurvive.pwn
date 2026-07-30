@@ -125,11 +125,6 @@ public OnGameModeInit()
 ==============================================================================*/
 
 #include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
-#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
-#include <streamer>					// By Incognito:			https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
-#include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
-#include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
-#include <sqlitei>					// By Slice:				https://github.com/oscar-broman/sqlitei
 #include <YSI_Coding\y_hooks>       // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
 #include <YSI_Coding\y_timers>      // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
 #include <YSI_Coding\y_va>          // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
@@ -137,13 +132,13 @@ public OnGameModeInit()
 #include <YSI_Data\y_iterate>       // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
 #include <YSI_Storage\y_ini>        // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
 #include <YSI_Visual\y_dialog>      // By Y_Less:				https://github.com/pawn-lang/YSI-Includes
+#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
+#include <streamer>					// By Incognito:			https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
+#include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
+#include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
+#include <sqlitei>					// By Slice:				https://github.com/oscar-broman/sqlitei
 
 #include "sss\core\server\hooks.pwn"// Internal library for hooking functions before they are used in external libraries.
-
-// Temporary fix
-#if defined IsNaN
-	#undef IsNaN
-#endif
 
 #include <progress2>				// By Toribio/Southclaws:	https://github.com/Southclaws/progress2
 #include <formatex>					// By Slice:				https://github.com/southclaws/formatex
