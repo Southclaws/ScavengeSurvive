@@ -2,18 +2,42 @@ name: build
 
 on:
   push:
-    branches: ["master"]
+    branches: [master, feat/pawnkit]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: AGraber/sampctl-action@v1
-        with:
-          version: "1.9.1"
-      - run: sampctl p build --forceEnsure
-      - uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v7.0.1
+
+      - name: Install sampctl
+        env:
+          SAMPCTL_VERSION: "1.14.1"
+        run: |
+          archive="sampctl_${SAMPCTL_VERSION}_linux_amd64.tar.gz"
+          release="https://github.com/Southclaws/sampctl/releases/download/${SAMPCTL_VERSION}"
+          mkdir -p "$RUNNER_TEMP/sampctl"
+          wget -q "$release/$archive" -O "$RUNNER_TEMP/$archive"
+          wget -q "$release/sampctl_${SAMPCTL_VERSION}_checksums.txt" -O "$RUNNER_TEMP/checksums.txt"
+          (
+            cd "$RUNNER_TEMP"
+            grep " $archive$" checksums.txt | sha256sum --check
+          )
+          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP/sampctl"
+          echo "$RUNNER_TEMP/sampctl" >> "$GITHUB_PATH"
+
+      - name: Build gamemode
+        env:
+          SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
+        run: sampctl build
+
+      - uses: actions/upload-artifact@v7
         with:
           name: compiled-amx
           path: gamemodes/ScavengeSurvive.amx
+          if-no-files-found: error

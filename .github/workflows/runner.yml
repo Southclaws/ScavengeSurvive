@@ -1,20 +1,39 @@
 name: runner
 
-on: push
+on:
+  push:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
 
 jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v7.0.1
+
+      - uses: actions/setup-go@v7
         with:
-          go-version: "^1.13.1"
-      - run: env GOOS=windows GOARCH=amd64 go build -o ScavengeSurvive.exe
-      - run: env GOOS=linux GOARCH=amd64 go build -o ScavengeSurvive
-      - uses: actions/upload-artifact@v2
+          go-version: "1.26.x"
+          cache: true
+
+      - name: Test
+        run: go test ./...
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Build runner
+        run: |
+          env GOOS=windows GOARCH=amd64 go build -o ScavengeSurvive.exe
+          env GOOS=linux GOARCH=amd64 go build -o ScavengeSurvive
+
+      - uses: actions/upload-artifact@v7
         with:
           name: runner
           path: |
             ScavengeSurvive.exe
             ScavengeSurvive
+          if-no-files-found: error
