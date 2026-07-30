@@ -34,7 +34,7 @@ jobs:
       - name: Build gamemode
         env:
           SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
-        run: sampctl build
+        run: sampctl build --forceEnsure
 
       - uses: actions/upload-artifact@v7
         with:
