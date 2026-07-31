@@ -15,45 +15,36 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
 
-      - uses: pawnkit/pawn-actions/setup@v1.8.24
+      - uses: pawnkit/pawn-actions/setup@v1.8.25
         with:
           version: 1.31.0
           download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.31.0/pawn-linux-amd64.tar.gz
           sha256: 6cd5e058f6f867234dfce98e26733d2f87fa89ca54d4fdb679f2bee5144fe582
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.24
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.25
         with:
           binary: pawnfmt
           version: v1.4.5
           download-url: https://github.com/pawnkit/pawnfmt/releases/download/v1.4.5/pawnfmt_1.4.5_linux_amd64.tar.gz
           sha256: 5b90db32f125fce2ead81164d54ca07934b741847f9f546bd11904d48ea6cceb
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.24
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.25
         with:
           binary: pawnlint
           version: v1.8.9
           download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.9/pawnlint_1.8.9_linux_amd64.tar.gz
           sha256: 8e9b01f76ec3af2d3c9af43c6733e3137d7b149003636e1b377d326d2f91948d
 
-      - name: Install Pawn compiler
-        run: |
-          archive="$RUNNER_TEMP/pawnc-3.10.10-linux.tar.gz"
-          wget -q https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz -O "$archive"
-          echo "9bbb1df6e933318fce1fa61951e4196b70613c637a5a1d4c96937e147c18468d  $archive" | sha256sum --check
-          tar -xzf "$archive" -C "$RUNNER_TEMP"
-
       - name: Install dependencies
         env:
           GH_TOKEN: ${{ github.token }}
         run: pawn install
 
-      - uses: pawnkit/pawn-actions/build@v1.8.24
-        with:
-          compiler: ${{ runner.temp }}/pawnc-3.10.10-linux/bin/pawncc
+      - uses: pawnkit/pawn-actions/build@v1.8.25
 
-      - uses: pawnkit/pawn-actions/fmt@v1.8.24
+      - uses: pawnkit/pawn-actions/fmt@v1.8.25
 
-      - uses: pawnkit/pawn-actions/lint@v1.8.24
+      - uses: pawnkit/pawn-actions/lint@v1.8.25
 
       - uses: actions/upload-artifact@v7
         with:
