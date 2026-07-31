@@ -250,7 +250,7 @@ _UpdateKeyActions(playerid)
 
 	if(!IsValidItem(itemid))
 	{
-		if(IsPlayerCuffed(inplayerarea))
+		if(IsPlayerHandcuffed(inplayerarea))
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Remove handcuffs");
 			ShowPlayerKeyActionUI(playerid);

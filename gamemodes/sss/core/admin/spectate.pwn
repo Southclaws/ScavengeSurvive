@@ -515,7 +515,7 @@ GetPlayerSpectateTarget(playerid)
 	return spectate_Target[playerid];
 }
 
-stock GetPlayerSpectateType(playerid)
+stock GetAdminSpectateType(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return -1;
@@ -544,4 +544,3 @@ ACMD:freezecam[2](playerid)
 	
 	return 1;
 }
-

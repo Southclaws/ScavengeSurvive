@@ -128,7 +128,7 @@ hook OnHoldActionFinish(playerid)
 			return Y_HOOKS_BREAK_RETURN_1;
 		}
 
-		if(IsPlayerCuffed(cuf_TargetPlayer[playerid]))
+		if(IsPlayerHandcuffed(cuf_TargetPlayer[playerid]))
 		{
 			new Item:itemid = CreateItem(item_HandCuffs);
 

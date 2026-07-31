@@ -1,0 +1,796 @@
+{
+  "dependencies": {
+    "github.com/AmyrAhmady/samp-plugin-crashdetect": {
+      "constraint": ":v4.22",
+      "resolved": "v4.22",
+      "commit": "6c02b6ed6b92ed8a69d8d877d66ff13cc514d676",
+      "integrity": "commit:6c02b6ed6b92ed8a69d8d877d66ff13cc514d676",
+      "site": "github.com",
+      "user": "AmyrAhmady",
+      "repo": "samp-plugin-crashdetect",
+      "required_by": [
+        "github.com/Southclaws/pawn-errors",
+        "github.com/Southclaws/samp-logger"
+      ]
+    },
+    "github.com/BigETI/pawn-map": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "306a45f247394d82a4ecda3009402869050d1c1c",
+      "integrity": "commit:306a45f247394d82a4ecda3009402869050d1c1c",
+      "site": "github.com",
+      "user": "BigETI",
+      "repo": "pawn-map",
+      "transitive": true,
+      "required_by": [
+        "github.com/Southclaws/samp-ini"
+      ]
+    },
+    "github.com/BigETI/pawn-memory": {
+      "constraint": ":2.0.1",
+      "resolved": "2.0.1",
+      "commit": "8d458f9603d477d1f72c55a03cbeef7e226f0f80",
+      "integrity": "commit:8d458f9603d477d1f72c55a03cbeef7e226f0f80",
+      "site": "github.com",
+      "user": "BigETI",
+      "repo": "pawn-memory",
+      "transitive": true,
+      "required_by": [
+        "github.com/BigETI/pawn-map"
+      ]
+    },
+    "github.com/ScavengeSurvive/action-text": {
+      "constraint": ":1.0.1",
+      "resolved": "1.0.1",
+      "commit": "58fb4c1731b0c403cf78698cfc4c19e4e7958d15",
+      "integrity": "commit:58fb4c1731b0c403cf78698cfc4c19e4e7958d15",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "action-text",
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/item",
+        "github.com/Southclaws/samp-ladders"
+      ]
+    },
+    "github.com/ScavengeSurvive/button": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "4e961d0e42ac9ac0d23a886602161a2dbbc9a8cd",
+      "integrity": "commit:4e961d0e42ac9ac0d23a886602161a2dbbc9a8cd",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "button",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/door",
+        "github.com/ScavengeSurvive/item"
+      ]
+    },
+    "github.com/ScavengeSurvive/container": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "6dd41955aa5f6c376a177269953714f9a64855a8",
+      "integrity": "commit:6dd41955aa5f6c376a177269953714f9a64855a8",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "container",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/container-dialog",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/inventory"
+      ]
+    },
+    "github.com/ScavengeSurvive/container-dialog": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "c4501affe2330b38ce6038604dc088c9111039ab",
+      "integrity": "commit:c4501affe2330b38ce6038604dc088c9111039ab",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "container-dialog",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/inventory-dialog"
+      ]
+    },
+    "github.com/ScavengeSurvive/craft": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "6dbf9ee2865aa4f56624ee336c39f2216e0f06f8",
+      "integrity": "commit:6dbf9ee2865aa4f56624ee336c39f2216e0f06f8",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "craft",
+      "branch": "feat/pawnkit"
+    },
+    "github.com/ScavengeSurvive/door": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "bf13ff4c98dc065f758942713162051ee6b6dac7",
+      "integrity": "commit:bf13ff4c98dc065f758942713162051ee6b6dac7",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "door"
+    },
+    "github.com/ScavengeSurvive/inventory": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "f055bfff6f80a41f3f0b6da0e13b8d6581054222",
+      "integrity": "commit:f055bfff6f80a41f3f0b6da0e13b8d6581054222",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "inventory",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/inventory-dialog"
+      ]
+    },
+    "github.com/ScavengeSurvive/inventory-dialog": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "7933a0ea7e69799ea19785444e90e8c3d13c2a9c",
+      "integrity": "commit:7933a0ea7e69799ea19785444e90e8c3d13c2a9c",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "inventory-dialog",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/container-dialog",
+        "github.com/ScavengeSurvive/craft"
+      ]
+    },
+    "github.com/ScavengeSurvive/item": {
+      "constraint": "@feat/pawnkit",
+      "resolved": "feat/pawnkit",
+      "commit": "0bb8acfc5bccd7a9c0bff50510efcb80fc27fb8a",
+      "integrity": "commit:0bb8acfc5bccd7a9c0bff50510efcb80fc27fb8a",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "item",
+      "branch": "feat/pawnkit",
+      "required_by": [
+        "github.com/ScavengeSurvive/container",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/inventory-dialog",
+        "github.com/ScavengeSurvive/item-array-data"
+      ]
+    },
+    "github.com/ScavengeSurvive/item-array-data": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "d51485f43ee008c9178f14848d3b0cf3b1c68157",
+      "integrity": "commit:d51485f43ee008c9178f14848d3b0cf3b1c68157",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "item-array-data"
+    },
+    "github.com/ScavengeSurvive/mathutil": {
+      "constraint": "#c7da0b5e056ef08456e8b0521164a6e2eac963c7",
+      "resolved": "c7da0b5e",
+      "commit": "c7da0b5e056ef08456e8b0521164a6e2eac963c7",
+      "integrity": "commit:c7da0b5e056ef08456e8b0521164a6e2eac963c7",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "mathutil",
+      "transitive": true,
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/personal-space",
+        "github.com/Southclaws/samp-zipline"
+      ]
+    },
+    "github.com/ScavengeSurvive/personal-space": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "259b53f247bd56ea8f6cf321bdbfa06d70b3d8e8",
+      "integrity": "commit:259b53f247bd56ea8f6cf321bdbfa06d70b3d8e8",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "personal-space",
+      "required_by": [
+        "github.com/ScavengeSurvive/item"
+      ]
+    },
+    "github.com/ScavengeSurvive/test-boilerplate": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "3c569e0e4293fc1d46286146cb9ee4bb5273fd10",
+      "integrity": "commit:3c569e0e4293fc1d46286146cb9ee4bb5273fd10",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "test-boilerplate",
+      "transitive": true,
+      "required_by": [
+        "github.com/ScavengeSurvive/tick-difference"
+      ]
+    },
+    "github.com/ScavengeSurvive/tick-difference": {
+      "constraint": ":1.0.0",
+      "resolved": "1.0.0",
+      "commit": "7ad1f645dc86b97f48e6a1655fd76456704c0aa9",
+      "integrity": "commit:7ad1f645dc86b97f48e6a1655fd76456704c0aa9",
+      "site": "github.com",
+      "user": "ScavengeSurvive",
+      "repo": "tick-difference",
+      "transitive": true,
+      "required_by": [
+        "github.com/ScavengeSurvive/inventory-dialog",
+        "github.com/ScavengeSurvive/item"
+      ]
+    },
+    "github.com/Southclaws/formatex": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "fca8677da89f98ae133fa89a715dcaa2c81e8f50",
+      "integrity": "commit:fca8677da89f98ae133fa89a715dcaa2c81e8f50",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "formatex"
+    },
+    "github.com/Southclaws/modio": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "fc752007eadf3730b13d060b7ca43a8c1bdfaf81",
+      "integrity": "commit:fc752007eadf3730b13d060b7ca43a8c1bdfaf81",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "modio"
+    },
+    "github.com/Southclaws/pawn-chrono": {
+      "constraint": ":1.1.1",
+      "resolved": "1.1.1",
+      "commit": "51bc05d1ba8d187cd56128e65be84a3dad8494b8",
+      "integrity": "commit:51bc05d1ba8d187cd56128e65be84a3dad8494b8",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "pawn-chrono"
+    },
+    "github.com/Southclaws/pawn-errors": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "7ecc653502b3bd1fefad9708663ed2ea391fa805",
+      "integrity": "commit:7ecc653502b3bd1fefad9708663ed2ea391fa805",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "pawn-errors",
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/item-array-data"
+      ]
+    },
+    "github.com/Southclaws/pawn-fsutil": {
+      "constraint": ":1.3.0",
+      "resolved": "1.3.0",
+      "commit": "e0c7beeff0792b53f7bce2ce55c8a5c68ed6b5e9",
+      "integrity": "commit:e0c7beeff0792b53f7bce2ce55c8a5c68ed6b5e9",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "pawn-fsutil"
+    },
+    "github.com/Southclaws/pawn-uuid": {
+      "constraint": ":1.0.1",
+      "resolved": "1.0.1",
+      "commit": "2741dfdc8fe4e77774ac8a5a56b0cea76f857cbc",
+      "integrity": "commit:2741dfdc8fe4e77774ac8a5a56b0cea76f857cbc",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "pawn-uuid",
+      "transitive": true,
+      "required_by": [
+        "github.com/ScavengeSurvive/item"
+      ]
+    },
+    "github.com/Southclaws/progress2": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "c36a769380595318b9389292207747b922d6c7d2",
+      "integrity": "commit:c36a769380595318b9389292207747b922d6c7d2",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "progress2"
+    },
+    "github.com/Southclaws/samp-ini": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "13e146b29b469f2eaea908e01ddc6b8f833342be",
+      "integrity": "commit:13e146b29b469f2eaea908e01ddc6b8f833342be",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-ini"
+    },
+    "github.com/Southclaws/samp-ladders": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "72065716eaba2e6148c422e1821f97fb9f34b35a",
+      "integrity": "commit:72065716eaba2e6148c422e1821f97fb9f34b35a",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-ladders"
+    },
+    "github.com/Southclaws/samp-linegen": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "656038e8a90b84e555d6e45683c5282dec3206a0",
+      "integrity": "commit:656038e8a90b84e555d6e45683c5282dec3206a0",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-linegen",
+      "required_by": [
+        "github.com/Southclaws/samp-zipline"
+      ]
+    },
+    "github.com/Southclaws/samp-logger": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "bec0c945a59c79366b2a04294bdd818cc086741d",
+      "integrity": "commit:bec0c945a59c79366b2a04294bdd818cc086741d",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-logger",
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/container",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/inventory",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/item-array-data",
+        "github.com/ScavengeSurvive/personal-space",
+        "github.com/Southclaws/modio",
+        "github.com/Southclaws/progress2",
+        "github.com/Southclaws/samp-ini",
+        "github.com/Southclaws/samp-zipline"
+      ]
+    },
+    "github.com/Southclaws/samp-nolog": {
+      "constraint": ":0.2.1",
+      "resolved": "0.2.1",
+      "commit": "31af8fc90bdeaa92ff93878cf630464f8f0ad84c",
+      "integrity": "commit:31af8fc90bdeaa92ff93878cf630464f8f0ad84c",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-nolog"
+    },
+    "github.com/Southclaws/samp-weapon-data": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "ef38564168a04041d50ea8416794d80ce2335f4a",
+      "integrity": "commit:ef38564168a04041d50ea8416794d80ce2335f4a",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-weapon-data"
+    },
+    "github.com/Southclaws/samp-whirlpool": {
+      "constraint": ":v1.0.0",
+      "resolved": "v1.0.0",
+      "commit": "54a18c5e903b35e693308babea04cb89d8a9b0f0",
+      "integrity": "commit:54a18c5e903b35e693308babea04cb89d8a9b0f0",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-whirlpool"
+    },
+    "github.com/Southclaws/samp-zipline": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "a851ea6d3486e7a4a6338e8d2ce74169ed398701",
+      "integrity": "commit:a851ea6d3486e7a4a6338e8d2ce74169ed398701",
+      "site": "github.com",
+      "user": "Southclaws",
+      "repo": "samp-zipline"
+    },
+    "github.com/Y-Less/code-parse.inc": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "c37e249e17ee6618e0c8004da7763ae555fbfeaa",
+      "integrity": "commit:c37e249e17ee6618e0c8004da7763ae555fbfeaa",
+      "site": "github.com",
+      "user": "Y-Less",
+      "repo": "code-parse.inc",
+      "transitive": true,
+      "required_by": [
+        "github.com/pawn-lang/YSI-Includes"
+      ]
+    },
+    "github.com/Y-Less/indirection": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "06f39798230056372fde0c7392a0d2456e5b150c",
+      "integrity": "commit:06f39798230056372fde0c7392a0d2456e5b150c",
+      "site": "github.com",
+      "user": "Y-Less",
+      "repo": "indirection",
+      "transitive": true,
+      "required_by": [
+        "github.com/pawn-lang/YSI-Includes"
+      ]
+    },
+    "github.com/Y-Less/sscanf": {
+      "constraint": ":v2.13.8",
+      "resolved": "v2.13.8",
+      "commit": "143f301ac6b30e6855ff14d57fd0bd1c909c6891",
+      "integrity": "commit:143f301ac6b30e6855ff14d57fd0bd1c909c6891",
+      "site": "github.com",
+      "user": "Y-Less",
+      "repo": "sscanf"
+    },
+    "github.com/Zeex/amx_assembly": {
+      "constraint": "#66ca1f13ffb83923cdba3e6ad2855a516d484ee6",
+      "resolved": "66ca1f13",
+      "commit": "66ca1f13ffb83923cdba3e6ad2855a516d484ee6",
+      "integrity": "commit:66ca1f13ffb83923cdba3e6ad2855a516d484ee6",
+      "site": "github.com",
+      "user": "pawn-lang",
+      "repo": "amx_assembly",
+      "transitive": true,
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/item",
+        "github.com/Southclaws/samp-zipline",
+        "github.com/Y-Less/indirection",
+        "github.com/pawn-lang/YSI-Includes"
+      ]
+    },
+    "github.com/openmultiplayer/omp-stdlib": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "689c824f6cc558b1ca1b36cfd1aae7f1cda16d65",
+      "integrity": "commit:689c824f6cc558b1ca1b36cfd1aae7f1cda16d65",
+      "site": "github.com",
+      "user": "openmultiplayer",
+      "repo": "omp-stdlib",
+      "required_by": [
+        "github.com/pawn-lang/pawn-stdlib",
+        "github.com/pawn-lang/samp-stdlib"
+      ]
+    },
+    "github.com/oscar-broman/md-sort": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "65c72b6685576ee7e5a6102406970c2f9ef04980",
+      "integrity": "commit:65c72b6685576ee7e5a6102406970c2f9ef04980",
+      "site": "github.com",
+      "user": "oscar-broman",
+      "repo": "md-sort",
+      "required_by": [
+        "github.com/pawn-lang/YSI-Includes"
+      ]
+    },
+    "github.com/oscar-broman/sqlitei": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "966dd66282628c4fb713369a25f951281343a230",
+      "integrity": "commit:966dd66282628c4fb713369a25f951281343a230",
+      "site": "github.com",
+      "user": "oscar-broman",
+      "repo": "sqlitei"
+    },
+    "github.com/oscar-broman/strlib": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "d48c74a65f03131381404fdc8e64873384e4c9b8",
+      "integrity": "commit:d48c74a65f03131381404fdc8e64873384e4c9b8",
+      "site": "github.com",
+      "user": "oscar-broman",
+      "repo": "strlib"
+    },
+    "github.com/pawn-lang/YSI-Includes": {
+      "constraint": "@5.x",
+      "resolved": "5.x",
+      "commit": "fa673344659bce16fc13f0c11151eafbdf7c890f",
+      "integrity": "commit:fa673344659bce16fc13f0c11151eafbdf7c890f",
+      "site": "github.com",
+      "user": "pawn-lang",
+      "repo": "YSI-Includes",
+      "branch": "5.x",
+      "required_by": [
+        "github.com/ScavengeSurvive/action-text",
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/container",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/door",
+        "github.com/ScavengeSurvive/inventory",
+        "github.com/ScavengeSurvive/inventory-dialog",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/item-array-data",
+        "github.com/ScavengeSurvive/personal-space",
+        "github.com/ScavengeSurvive/test-boilerplate",
+        "github.com/Southclaws/progress2",
+        "github.com/Southclaws/samp-ini",
+        "github.com/Southclaws/samp-ladders",
+        "github.com/Southclaws/samp-linegen",
+        "github.com/Southclaws/samp-zipline"
+      ]
+    },
+    "github.com/pawn-lang/pawn-stdlib": {
+      "constraint": "@open.mp",
+      "resolved": "open.mp",
+      "commit": "2fbfadd53112c508f58982a52c8c7c0332c46be8",
+      "integrity": "commit:2fbfadd53112c508f58982a52c8c7c0332c46be8",
+      "site": "github.com",
+      "user": "pawn-lang",
+      "repo": "pawn-stdlib",
+      "branch": "open.mp",
+      "required_by": [
+        "github.com/BigETI/pawn-map"
+      ]
+    },
+    "github.com/pawn-lang/samp-stdlib": {
+      "constraint": "@open.mp",
+      "resolved": "open.mp",
+      "commit": "dce9af6d16c8b8ec2d38ac78a30a8c9daa3665e5",
+      "integrity": "commit:dce9af6d16c8b8ec2d38ac78a30a8c9daa3665e5",
+      "site": "github.com",
+      "user": "pawn-lang",
+      "repo": "samp-stdlib",
+      "branch": "open.mp",
+      "required_by": [
+        "github.com/BigETI/pawn-memory",
+        "github.com/ScavengeSurvive/action-text",
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/container",
+        "github.com/ScavengeSurvive/container-dialog",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/door",
+        "github.com/ScavengeSurvive/inventory",
+        "github.com/ScavengeSurvive/inventory-dialog",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/item-array-data",
+        "github.com/ScavengeSurvive/mathutil",
+        "github.com/ScavengeSurvive/personal-space",
+        "github.com/ScavengeSurvive/test-boilerplate",
+        "github.com/ScavengeSurvive/tick-difference",
+        "github.com/Southclaws/formatex",
+        "github.com/Southclaws/modio",
+        "github.com/Southclaws/pawn-chrono",
+        "github.com/Southclaws/pawn-errors",
+        "github.com/Southclaws/pawn-fsutil",
+        "github.com/Southclaws/pawn-uuid",
+        "github.com/Southclaws/progress2",
+        "github.com/Southclaws/samp-ini",
+        "github.com/Southclaws/samp-ladders",
+        "github.com/Southclaws/samp-linegen",
+        "github.com/Southclaws/samp-logger",
+        "github.com/Southclaws/samp-nolog",
+        "github.com/Southclaws/samp-weapon-data",
+        "github.com/Southclaws/samp-zipline",
+        "github.com/Y-Less/indirection",
+        "github.com/oscar-broman/md-sort",
+        "github.com/oscar-broman/strlib",
+        "github.com/pawn-lang/YSI-Includes",
+        "github.com/sampctl/samp-stdutil"
+      ]
+    },
+    "github.com/samp-incognito/samp-streamer-plugin": {
+      "constraint": ":v2.9.6",
+      "resolved": "v2.9.6",
+      "commit": "afca207b148da6e0dea03693042a1e9665457403",
+      "integrity": "commit:afca207b148da6e0dea03693042a1e9665457403",
+      "site": "github.com",
+      "user": "samp-incognito",
+      "repo": "samp-streamer-plugin",
+      "required_by": [
+        "github.com/ScavengeSurvive/button",
+        "github.com/ScavengeSurvive/craft",
+        "github.com/ScavengeSurvive/door",
+        "github.com/ScavengeSurvive/inventory",
+        "github.com/ScavengeSurvive/item",
+        "github.com/ScavengeSurvive/personal-space",
+        "github.com/Southclaws/samp-ladders",
+        "github.com/Southclaws/samp-linegen",
+        "github.com/Southclaws/samp-zipline"
+      ]
+    },
+    "github.com/sampctl/samp-stdutil": {
+      "constraint": "",
+      "resolved": "HEAD",
+      "commit": "0a167a846c8640ce8afaf75961b0e15b0fe72ea4",
+      "integrity": "commit:0a167a846c8640ce8afaf75961b0e15b0fe72ea4",
+      "site": "github.com",
+      "user": "sampctl",
+      "repo": "samp-stdutil"
+    }
+  },
+  "generated": "2026-07-31T12:05:22.588145619Z",
+  "pawnkit": {
+    "resources": [
+      {
+        "package": "github.com/AmyrAhmady/samp-plugin-crashdetect",
+        "resource": "^crashdetect-(.*)-linux.tar.gz$",
+        "target": "linux-amd64",
+        "url": "https://github.com/AmyrAhmady/samp-plugin-crashdetect/releases/download/v4.22/crashdetect-4.22-linux.tar.gz",
+        "size": 178485,
+        "checksum": "sha256:150698395221d58f69cfa6a850f540d702734c49a527bb72d889e635a24a9bae",
+        "archive": "tar.gz",
+        "files": [
+          {
+            "source": "crashdetect-4.22-linux/LICENSE.txt",
+            "destination": "dependencies/.resources/samp-plugin-crashdetect-b7d308/LICENSE.txt",
+            "size": 1316,
+            "checksum": "sha256:8e4a477f6c8649e8393619552db10a00f67587eadced844e99715b8c62b19160"
+          },
+          {
+            "source": "crashdetect-4.22-linux/README.md",
+            "destination": "dependencies/.resources/samp-plugin-crashdetect-b7d308/README.md",
+            "size": 9371,
+            "checksum": "sha256:e38b34519182527ac603b6724292637308ab66a6f6b270b6fbb88ea306c76840"
+          },
+          {
+            "source": "crashdetect-4.22-linux/crashdetect.inc",
+            "destination": "dependencies/.resources/samp-plugin-crashdetect-b7d308/crashdetect.inc",
+            "size": 4377,
+            "checksum": "sha256:15b14add35c46e38d25444ae1cbace3003b67b3f3c4d1b8ebc7acc96a1a226d5"
+          },
+          {
+            "source": "crashdetect-4.22-linux/pawn.json",
+            "destination": "dependencies/.resources/samp-plugin-crashdetect-b7d308/pawn.json",
+            "size": 797,
+            "checksum": "sha256:5e9bc6b2d10312e671299554f8f0b1edf4df8614eb19d5ae7730d5564ef9e0fd"
+          },
+          {
+            "source": "crashdetect-4.22-linux/crashdetect.so",
+            "destination": "plugins/crashdetect.so",
+            "size": 646060,
+            "checksum": "sha256:dbc4fa9895170c3d0dee14b0d0948a91621686e276fd9fe9ed6bd9409ca29cc3"
+          }
+        ]
+      },
+      {
+        "package": "github.com/BigETI/pawn-memory",
+        "resource": "pawn-memory-linux-x86.zip",
+        "target": "linux-amd64",
+        "url": "https://github.com/BigETI/pawn-memory/releases/download/2.0.1/pawn-memory-linux-x86.zip",
+        "size": 13561,
+        "checksum": "sha256:88bffc057a0a66f1b2874176dff648bfad216ec7f31634ff893c3e031f13a4f3",
+        "archive": "zip",
+        "files": [
+          {
+            "source": "plugins/pawn-memory.so",
+            "destination": "plugins/pawn-memory.so",
+            "size": 37516,
+            "checksum": "sha256:213cf42fffd550c02b5d51d9fc5eab428916772324a7b711918eaa6bbaef64c3"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Southclaws/pawn-chrono",
+        "resource": "chrono.so",
+        "target": "linux-amd64",
+        "url": "https://github.com/Southclaws/pawn-chrono/releases/download/1.1.1/chrono.so",
+        "size": 295536,
+        "checksum": "sha256:4504866ce76649220b65b90d1b5092b560208e11126c76ef714b82171beab29a",
+        "archive": "file",
+        "files": [
+          {
+            "source": "chrono.so",
+            "destination": "plugins/chrono.so",
+            "size": 295536,
+            "checksum": "sha256:4504866ce76649220b65b90d1b5092b560208e11126c76ef714b82171beab29a"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Southclaws/pawn-fsutil",
+        "resource": "fsutil.so",
+        "target": "linux-amd64",
+        "url": "https://github.com/Southclaws/pawn-fsutil/releases/download/1.3.0/fsutil.so",
+        "size": 157520,
+        "checksum": "sha256:2a476e191ef8195c05b26e5df8312fff549a1e4c690f720aa0c9f6814d4cdba3",
+        "archive": "file",
+        "files": [
+          {
+            "source": "fsutil.so",
+            "destination": "plugins/fsutil.so",
+            "size": 157520,
+            "checksum": "sha256:2a476e191ef8195c05b26e5df8312fff549a1e4c690f720aa0c9f6814d4cdba3"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Southclaws/pawn-uuid",
+        "resource": "uuid.so",
+        "target": "linux-amd64",
+        "url": "https://github.com/Southclaws/pawn-uuid/releases/download/1.0.1/uuid.so",
+        "size": 40704,
+        "checksum": "sha256:a70c2d76b4bebf99ef0f46d4644463c65ea222a8113d6fe243bee76e4652163c",
+        "archive": "file",
+        "files": [
+          {
+            "source": "uuid.so",
+            "destination": "plugins/uuid.so",
+            "size": 40704,
+            "checksum": "sha256:a70c2d76b4bebf99ef0f46d4644463c65ea222a8113d6fe243bee76e4652163c"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Southclaws/samp-nolog",
+        "resource": "nolog.so",
+        "target": "linux-amd64",
+        "url": "https://github.com/Southclaws/samp-nolog/releases/download/0.2.1/nolog.so",
+        "size": 24176,
+        "checksum": "sha256:7afdc1099e3e517f2e485ee8c2b2c5c771473f9af295c959d2f7f77a50178b1a",
+        "archive": "file",
+        "files": [
+          {
+            "source": "nolog.so",
+            "destination": "plugins/nolog.so",
+            "size": 24176,
+            "checksum": "sha256:7afdc1099e3e517f2e485ee8c2b2c5c771473f9af295c959d2f7f77a50178b1a"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Southclaws/samp-whirlpool",
+        "resource": "Whirlpool.so",
+        "target": "linux-amd64",
+        "url": "https://github.com/Southclaws/samp-whirlpool/releases/download/v1.0.0/Whirlpool.so",
+        "size": 38972,
+        "checksum": "sha256:e47f5bd9524869c76716905c6b6910349b47c04d890a8f6df3ea407b47d832fd",
+        "archive": "file",
+        "files": [
+          {
+            "source": "Whirlpool.so",
+            "destination": "plugins/Whirlpool.so",
+            "size": 38972,
+            "checksum": "sha256:e47f5bd9524869c76716905c6b6910349b47c04d890a8f6df3ea407b47d832fd"
+          }
+        ]
+      },
+      {
+        "package": "github.com/Y-Less/sscanf",
+        "resource": "^sscanf-(.+)-linux.tar.gz$",
+        "target": "linux-amd64",
+        "url": "https://github.com/Y-Less/sscanf/releases/download/v2.13.8/sscanf-2.13.8-linux.tar.gz",
+        "size": 718188,
+        "checksum": "sha256:7e407864dfed5203bcd2a1134fdab60fce233b7b5c89fca8ccd06d8b7b0f5889",
+        "archive": "tar.gz",
+        "files": [
+          {
+            "source": "pawno/include/sscanf2.inc",
+            "destination": "dependencies/.resources/sscanf-2e768b/sscanf2.inc",
+            "size": 57480,
+            "checksum": "sha256:7a8fff417b0155e26c9ecc86be3a8f7b6071480efa332ad46978ffb8916b882b"
+          },
+          {
+            "source": "plugins/sscanf.so",
+            "destination": "plugins/sscanf.so",
+            "size": 676736,
+            "checksum": "sha256:43899f723ab46fba43668e69d19011237ae42408b7861fae8817cd677d8dcc64"
+          }
+        ]
+      },
+      {
+        "package": "github.com/samp-incognito/samp-streamer-plugin",
+        "resource": "^samp-streamer-plugin-(.*).zip$",
+        "target": "linux-amd64",
+        "url": "https://github.com/samp-incognito/samp-streamer-plugin/releases/download/v2.9.6/samp-streamer-plugin-2.9.6.zip",
+        "size": 478152,
+        "checksum": "sha256:bf30ab50a8d44e9e0fbf0d02cacf128fc36f147d9711881928716e76288f4700",
+        "archive": "zip",
+        "files": [
+          {
+            "source": "pawno/include/streamer.inc",
+            "destination": "dependencies/.resources/samp-streamer-plugin-902a95/streamer.inc",
+            "size": 28566,
+            "checksum": "sha256:20672cc91934be46b38c7bc2075286cfeeec47a6a0fded094e201ef0b2bd5b1b"
+          },
+          {
+            "source": "plugins/streamer.so",
+            "destination": "plugins/streamer.so",
+            "size": 1021640,
+            "checksum": "sha256:a289fb7251228fa3f4fced6c328a478be28ebe873ec351eb9d6a70c0867ee1ba"
+          }
+        ]
+      }
+    ],
+    "schema_version": 1
+  },
+  "sampctl_version": "master",
+  "version": 1
+}

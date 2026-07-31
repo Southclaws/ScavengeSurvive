@@ -2,7 +2,7 @@ name: PawnKit
 
 on:
   push:
-    branches: [feat/pawnkit]
+    branches: [master, feat/pawnkit]
   pull_request:
     branches: [master]
 
@@ -15,43 +15,39 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
 
-      - name: Install sampctl
-        env:
-          SAMPCTL_VERSION: "1.14.1"
-        run: |
-          archive="sampctl_${SAMPCTL_VERSION}_linux_amd64.tar.gz"
-          release="https://github.com/Southclaws/sampctl/releases/download/${SAMPCTL_VERSION}"
-          mkdir -p "$RUNNER_TEMP/sampctl"
-          wget -q "$release/$archive" -O "$RUNNER_TEMP/$archive"
-          wget -q "$release/sampctl_${SAMPCTL_VERSION}_checksums.txt" -O "$RUNNER_TEMP/checksums.txt"
-          (
-            cd "$RUNNER_TEMP"
-            grep " $archive$" checksums.txt | sha256sum --check
-          )
-          tar -xzf "$RUNNER_TEMP/$archive" -C "$RUNNER_TEMP/sampctl"
-          echo "$RUNNER_TEMP/sampctl" >> "$GITHUB_PATH"
+      - uses: pawnkit/pawn-actions/setup@v1.8.24
+        with:
+          version: 1.31.0
+          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.31.0/pawn-linux-amd64.tar.gz
+          sha256: 6cd5e058f6f867234dfce98e26733d2f87fa89ca54d4fdb679f2bee5144fe582
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.16
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.24
         with:
           binary: pawnfmt
           version: v1.4.5
           download-url: https://github.com/pawnkit/pawnfmt/releases/download/v1.4.5/pawnfmt_1.4.5_linux_amd64.tar.gz
           sha256: 5b90db32f125fce2ead81164d54ca07934b741847f9f546bd11904d48ea6cceb
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.16
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.24
         with:
           binary: pawnlint
-          version: v1.8.8
-          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.8/pawnlint_1.8.8_linux_amd64.tar.gz
-          sha256: 0e6d9f28a9a7f8b34530da5e47d37fb34a960515f50ee4aafa61b42eda490418
+          version: v1.8.9
+          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.9/pawnlint_1.8.9_linux_amd64.tar.gz
+          sha256: 8e9b01f76ec3af2d3c9af43c6733e3137d7b149003636e1b377d326d2f91948d
 
-      - name: Build
+      - name: Install dependencies
         env:
-          SAMPCTL_GITHUB_TOKEN: ${{ github.token }}
-        run: sampctl build --forceEnsure
+          GH_TOKEN: ${{ github.token }}
+        run: pawn install
 
-      - name: Check formatting
-        run: pawnfmt --check gamemodes/ScavengeSurvive.pwn
+      - uses: pawnkit/pawn-actions/build@v1.8.24
 
-      - name: Lint
-        run: pawnlint --config pawnlint.toml
+      - uses: pawnkit/pawn-actions/fmt@v1.8.24
+
+      - uses: pawnkit/pawn-actions/lint@v1.8.24
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: compiled-amx
+          path: gamemodes/ScavengeSurvive.amx
+          if-no-files-found: error

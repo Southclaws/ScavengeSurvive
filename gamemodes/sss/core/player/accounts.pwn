@@ -629,7 +629,7 @@ Logout(playerid, docombatlogcheck = 1)
 		DestroyItem(GetPlayerHolsterItem(playerid));
 		DestroyPlayerBag(playerid);
 		RemovePlayerHolsterItem(playerid);
-		RemovePlayerWeapon(playerid);
+		ClearPlayerWeapon(playerid);
 
 		for(new i; i < MAX_INVENTORY_SLOTS; i++)
 		{

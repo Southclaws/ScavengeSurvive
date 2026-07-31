@@ -482,7 +482,7 @@ _SaveVehicle(vehicleid)
 	if(session != -1)
 		modio_close_session_write(session);
 
-	active[0] = !IsVehicleDead(vehicleid);
+	active[0] = !IsTrackedVehicleDead(vehicleid);
 	modio_push(filename, _T<A,C,T,V>, 1, active);
 
 	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
@@ -494,11 +494,11 @@ _SaveVehicle(vehicleid)
 	data[VEH_CELL_FUEL] = _:GetVehicleFuel(vehicleid);
 	GetVehiclePos(vehicleid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 	GetVehicleZAngle(vehicleid, Float:data[VEH_CELL_ROTZ]);
-	GetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+	GetStoredVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 	GetVehicleDamageStatus(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
 	data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 
-	if(!IsVehicleOccupied(vehicleid))
+	if(!IsTrackedVehicleOccupied(vehicleid))
 		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(vehicleid);
 
 	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data);
@@ -521,7 +521,7 @@ _SaveVehicle(vehicleid)
 		data[VEH_CELL_FUEL] = _:0.0;
 		GetVehiclePos(trailerid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 		GetVehicleZAngle(trailerid, Float:data[VEH_CELL_ROTZ]);
-		GetVehicleColours(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+		GetStoredVehicleColours(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
 		data[VEH_CELL_KEY] = GetVehicleKey(trailerid);
 		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(trailerid);

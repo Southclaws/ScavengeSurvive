@@ -3,23 +3,26 @@
 	"repo": "ScavengeSurvive",
 	"entry": "gamemodes/ScavengeSurvive.pwn",
 	"output": "gamemodes/ScavengeSurvive.amx",
+	"preset": "openmp",
 	"local": true,
 	"dependencies": [
-		"sampctl/samp-stdlib#8ffb055624308b25521665b60e78b5e6e6b3717f",
+		"openmultiplayer/omp-stdlib",
+		"pawn-lang/samp-stdlib@open.mp",
+		"pawn-lang/pawn-stdlib@open.mp",
 		"sampctl/samp-stdutil",
 		"Southclaws/samp-nolog:0.2.1",
 		"Southclaws/samp-logger",
 		"Southclaws/pawn-errors",
 		"Y-Less/sscanf:v2.13.8",
-		"samp-incognito/samp-streamer-plugin:v2.9.5",
-		"pawn-lang/YSI-Includes:v5.05.0301",
+		"samp-incognito/samp-streamer-plugin:v2.9.6",
+		"pawn-lang/YSI-Includes@5.x",
 		"Southclaws/formatex",
 		"oscar-broman/strlib",
 		"Southclaws/pawn-chrono:1.1.1",
 		"Southclaws/progress2",
 		"Southclaws/samp-ini",
 		"Southclaws/samp-whirlpool:v1.0.0",
-		"Zeex/samp-plugin-crashdetect:v4.20",
+		"AmyrAhmady/samp-plugin-crashdetect:v4.22",
 		"oscar-broman/sqlitei",
 		"oscar-broman/md-sort",
 		"Southclaws/modio",
@@ -42,7 +45,7 @@
 	],
 	"build": {
 		"constants": {
-			"AMX_OLD_CALL": ""
+			"SAMP_COMPAT": ""
 		},
 		"args": [
 			"-;+",
@@ -62,6 +65,16 @@
 		"hostname": "Southclaws' Scavenge and Survive",
 		"extra": {
 			"long_call_time": "0"
+		}
+	},
+	"pawnkit": {
+		"schemaVersion": 1,
+		"dependencyOverrides": {
+			"Misiur/YSI-Includes": "pawn-lang/YSI-Includes@5.x",
+			"BigETI/pawn-memory": "BigETI/pawn-memory:2.0.1",
+			"ScavengeSurvive/mathutil": "ScavengeSurvive/mathutil#c7da0b5e056ef08456e8b0521164a6e2eac963c7",
+			"ScavengeSurvive/tick-difference": "ScavengeSurvive/tick-difference:1.0.0",
+			"Zeex/amx_assembly": "Zeex/amx_assembly#66ca1f13ffb83923cdba3e6ad2855a516d484ee6"
 		}
 	}
 }

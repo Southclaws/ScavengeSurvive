@@ -24,7 +24,7 @@ hook OnPlayerGivenItem(playerid, targetid, Item:itemid)
 {
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
-		RemovePlayerWeapon(playerid);
+		ClearPlayerWeapon(playerid);
 		UpdatePlayerWeaponItem(targetid);
 	}
 
@@ -35,7 +35,7 @@ hook OnPlayerDroppedItem(playerid, Item:itemid)
 {
 	if(GetItemTypeWeapon(GetItemType(itemid)) != -1)
 	{
-		RemovePlayerWeapon(playerid);
+		ClearPlayerWeapon(playerid);
 	}
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

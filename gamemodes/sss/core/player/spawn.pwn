@@ -413,15 +413,6 @@ PlayerSpawnNewCharacter(playerid, gender)
 ==============================================================================*/
 
 
-// spawn_State
-stock IsPlayerSpawned(playerid)
-{
-	if(!IsPlayerConnected(playerid))
-		return 0;
-
-	return spawn_State[playerid];
-}
-
 stock SetPlayerSpawnedState(playerid, bool:st)
 {
 	if(!IsPlayerConnected(playerid))

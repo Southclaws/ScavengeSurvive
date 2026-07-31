@@ -155,7 +155,11 @@ public OnGameModeInit()
 #include <container-dialog> // By Southclaws:			https://github.com/ScavengeSurvive/
 #include <craft> // By Southclaws:			https://github.com/ScavengeSurvive/
 #include <debug-labels> // By Southclaws:			https://github.com/Southclaws/ScavengeSurvive/tree/master/legacy
+
+#define GetWeaponSlot GetLegacyWeaponSlot
 #include <weapon-data> // By Southclaws:			https://github.com/Southclaws/AdvancedWeaponData
+
+#undef GetWeaponSlot
 #include <linegen> // By Southclaws:			https://github.com/Southclaws/Line
 #include <zipline> // By Southclaws:			https://github.com/Southclaws/Zipline
 #include <ladders> // By Southclaws:			https://github.com/Southclaws/Ladder

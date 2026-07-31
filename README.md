@@ -26,8 +26,8 @@ on your computer:
 
 - [Git](https://git-scm.com) To clone the repository and provide functionality
   to the [Runner](#runner)
-- [sampctl](https://github.com/Southclaws/sampctl) To install the necessary Pawn
-  dependencies and SA-MP plugins automatically.
+- [PawnKit](https://github.com/pawnkit/pawnkit-cli) to install dependencies and
+  build the gamemode.
 - [The Go Language](https://golang.org/) To build tooling such as the Runner
   application which will make the development process easier.
 - [Taskfile](https://taskfile.dev) To run common development tasks such as
@@ -47,17 +47,16 @@ git clone https://github.com/Southclaws/ScavengeSurvive.git
 Now, open the directory in your favourite IDE. I recommend vscode. As long as
 you have a terminal in there, you'll be fine.
 
-Run the following commands to pull the Pawn dependencies, SA-MP plugins,
-compiler and other necessary components:
+Install the Pawn dependencies and build the gamemode:
 
 ```
-sampctl ensure
-sampctl build
+pawn install
+pawn build
 ```
 
 When on `master` branch, this should finish with no errors. You can check the
 state of the `master` branch here:
-https://github.com/Southclaws/ScavengeSurvive/actions?query=workflow%3Abuild if
+https://github.com/Southclaws/ScavengeSurvive/actions?query=workflow%3APawnKit if
 the topmost item has a ✅ then the latest commit on `master` will compile with
 no errors.
 
@@ -74,8 +73,8 @@ running.
 ### Development Workflow
 
 Now you can edit code and leave the Runner in the background. The runner will
-not automatically recompile the gamemode unless you set `AUTO_BUILD`. Generally,
-it's best to separate this process so use sampctl for builds instead.
+not automatically recompile the gamemode unless you set `AUTO_BUILD`. For a
+manual build, run `pawn build`.
 
 Once you have made a change and are ready to test, go in-game and use the
 `/restart` command with 0 to restart the server immediately.
@@ -168,8 +167,7 @@ finishes its graceful shutdown during a restart.
 
 ### Auto Build
 
-Set the environment variable `AUTO_BUILD` to 1 in order to enable automatic
-builds. This is similar to sampctl's --watch feature.
+Set `AUTO_BUILD` to `1` to rebuild when source files change.
 
 ---
 

@@ -92,7 +92,7 @@ _OnDeath(playerid, killerid)
 
 	HideWatch(playerid);
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
-	RemovePlayerWeapon(playerid);
+	ClearPlayerWeapon(playerid);
 	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 
