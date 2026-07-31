@@ -35,12 +35,21 @@ jobs:
           download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.9/pawnlint_1.8.9_linux_amd64.tar.gz
           sha256: 8e9b01f76ec3af2d3c9af43c6733e3137d7b149003636e1b377d326d2f91948d
 
+      - name: Install Pawn compiler
+        run: |
+          archive="$RUNNER_TEMP/pawnc-3.10.10-linux.tar.gz"
+          wget -q https://github.com/pawn-lang/compiler/releases/download/v3.10.10/pawnc-3.10.10-linux.tar.gz -O "$archive"
+          echo "9bbb1df6e933318fce1fa61951e4196b70613c637a5a1d4c96937e147c18468d  $archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP"
+
       - name: Install dependencies
         env:
           GH_TOKEN: ${{ github.token }}
         run: pawn install
 
       - uses: pawnkit/pawn-actions/build@v1.8.24
+        with:
+          compiler: ${{ runner.temp }}/pawnc-3.10.10-linux/bin/pawncc
 
       - uses: pawnkit/pawn-actions/fmt@v1.8.24
 
