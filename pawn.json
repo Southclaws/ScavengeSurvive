@@ -44,6 +44,11 @@
 		"Southclaws/samp-ladders"
 	],
 	"build": {
+		"compiler": {
+			"user": "pawn-lang",
+			"repo": "compiler",
+			"version": "3.10.10"
+		},
 		"constants": {
 			"SAMP_COMPAT": ""
 		},
