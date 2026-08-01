@@ -64,13 +64,11 @@
 		]
 	},
 	"runtime": {
+		"announce": false,
 		"bind": "0.0.0.0",
 		"port": 7777,
 		"rcon_password": "scavenge",
-		"hostname": "Southclaws' Scavenge and Survive",
-		"extra": {
-			"long_call_time": "0"
-		}
+		"hostname": "Southclaws' Scavenge and Survive"
 	},
 	"pawnkit": {
 		"schemaVersion": 1,

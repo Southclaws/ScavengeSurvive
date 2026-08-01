@@ -17,9 +17,9 @@ jobs:
 
       - uses: pawnkit/pawn-actions/setup@v1.8.25
         with:
-          version: 1.31.0
-          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.31.0/pawn-linux-amd64.tar.gz
-          sha256: 6cd5e058f6f867234dfce98e26733d2f87fa89ca54d4fdb679f2bee5144fe582
+          version: 1.33.0
+          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.33.0/pawn-linux-amd64.tar.gz
+          sha256: 01feebf5bf0cb89b752f7a4002b132c8efa1c78c3e9ac26319a16f7e5c074db3
 
       - uses: pawnkit/pawn-actions/setup-tool@v1.8.25
         with:
@@ -45,6 +45,27 @@ jobs:
       - uses: pawnkit/pawn-actions/fmt@v1.8.25
 
       - uses: pawnkit/pawn-actions/lint@v1.8.25
+
+      - name: Install legacy plugin libraries
+        run: |
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install --yes libuuid1:i386
+
+      - name: Smoke test server startup
+        run: |
+          set +e
+          timeout 90s pawn run > "$RUNNER_TEMP/pawn-run.log" 2>&1
+          run_code=$?
+          set -e
+          cat "$RUNNER_TEMP/pawn-run.log"
+          if [ "$run_code" -ne 0 ] && [ "$run_code" -ne 124 ]; then
+            exit "$run_code"
+          fi
+          grep -F "Legacy Network started" "$RUNNER_TEMP/pawn-run.log"
+          if grep -F "[Error]" "$RUNNER_TEMP/pawn-run.log"; then
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v7
         with:
