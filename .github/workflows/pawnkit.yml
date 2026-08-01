@@ -17,9 +17,9 @@ jobs:
 
       - uses: pawnkit/pawn-actions/setup@v1.8.25
         with:
-          version: 1.33.0
-          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.33.0/pawn-linux-amd64.tar.gz
-          sha256: 01feebf5bf0cb89b752f7a4002b132c8efa1c78c3e9ac26319a16f7e5c074db3
+          version: 1.34.0
+          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.34.0/pawn-linux-amd64.tar.gz
+          sha256: 08832cb8e2cf2ea9a660cf42df4f2db93be160dd2b955a4c44e234b51451f374
 
       - uses: pawnkit/pawn-actions/setup-tool@v1.8.25
         with:
@@ -31,9 +31,9 @@ jobs:
       - uses: pawnkit/pawn-actions/setup-tool@v1.8.25
         with:
           binary: pawnlint
-          version: v1.8.9
-          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.9/pawnlint_1.8.9_linux_amd64.tar.gz
-          sha256: 8e9b01f76ec3af2d3c9af43c6733e3137d7b149003636e1b377d326d2f91948d
+          version: v1.8.10
+          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.10/pawnlint_1.8.10_linux_amd64.tar.gz
+          sha256: 7e827e0d83b942e3f305d9584c3aa2ec5021f113bf3bce41413efb6bfad54f49
 
       - name: Install dependencies
         env:
