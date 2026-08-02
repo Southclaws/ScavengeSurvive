@@ -17,23 +17,23 @@ jobs:
 
       - uses: pawnkit/pawn-actions/setup@v1.8.50
         with:
-          version: 1.34.0
-          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.34.0/pawn-linux-amd64.tar.gz
-          sha256: 08832cb8e2cf2ea9a660cf42df4f2db93be160dd2b955a4c44e234b51451f374
+          version: 1.34.15
+          download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.34.15/pawn-linux-amd64.tar.gz
+          sha256: d54e187777d05ef00f5252bde995a2c2cde1fd58cb221a7736426f5754ebf8bf
 
       - uses: pawnkit/pawn-actions/setup-tool@v1.8.50
         with:
           binary: pawnfmt
-          version: v1.4.4
-          download-url: https://github.com/pawnkit/pawnfmt/releases/download/v1.4.4/pawnfmt_1.4.4_linux_amd64.tar.gz
-          sha256: a728fd7a5a56a91371d653f6625630dbbef499b80594187afaa14fd6203cfd40
+          version: v1.4.7
+          download-url: https://github.com/pawnkit/pawnfmt/releases/download/v1.4.7/pawnfmt_1.4.7_linux_amd64.tar.gz
+          sha256: c1543626b076915744c16459c5df0e533446d05c9422f8103ea405e168760eba
 
       - uses: pawnkit/pawn-actions/setup-tool@v1.8.50
         with:
           binary: pawnlint
-          version: v1.8.10
-          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.10/pawnlint_1.8.10_linux_amd64.tar.gz
-          sha256: 7e827e0d83b942e3f305d9584c3aa2ec5021f113bf3bce41413efb6bfad54f49
+          version: v1.8.32
+          download-url: https://github.com/pawnkit/pawnlint/releases/download/v1.8.32/pawnlint_1.8.32_linux_amd64.tar.gz
+          sha256: ba41065fd420d97660fab4ad8a1197bb47050cd6067aeb7c7ece5d93a1bf0034
 
       - name: Install dependencies
         env:
