@@ -15,20 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
 
-      - uses: pawnkit/pawn-actions/setup@v1.8.57
+      - uses: pawnkit/pawn-actions/setup@v1.8.58
         with:
           version: 1.34.26
           download-url: https://github.com/pawnkit/pawnkit-cli/releases/download/v1.34.26/pawn-linux-amd64.tar.gz
           sha256: c0f875ad82079dcc9bf4e18b7e7958db07bdbf40401b6035a283075c40bedec9
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.57
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.58
         with:
           binary: pawnfmt
           version: v1.4.10
           download-url: https://github.com/pawnkit/pawnfmt/releases/download/v1.4.10/pawnfmt_1.4.10_linux_amd64.tar.gz
           sha256: 7a1f182fe43f0114ad665a97209e2e3bf332324bd1f380c215ce1a417d34eb48
 
-      - uses: pawnkit/pawn-actions/setup-tool@v1.8.57
+      - uses: pawnkit/pawn-actions/setup-tool@v1.8.58
         with:
           binary: pawnlint
           version: v1.8.42
@@ -40,11 +40,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: pawn install
 
-      - uses: pawnkit/pawn-actions/build@v1.8.57
+      - uses: pawnkit/pawn-actions/build@v1.8.58
 
-      - uses: pawnkit/pawn-actions/fmt@v1.8.57
+      - uses: pawnkit/pawn-actions/fmt@v1.8.58
 
-      - uses: pawnkit/pawn-actions/lint@v1.8.57
+      - uses: pawnkit/pawn-actions/lint@v1.8.58
 
       - name: Install legacy plugin libraries
         run: |
