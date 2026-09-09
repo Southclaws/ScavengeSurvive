@@ -4,9 +4,22 @@ version: "3"
 
 tasks:
   default:
+    desc: Build and run the Runner, which builds and starts the server.
     cmds:
       - go build -o ss.exe
       - ./ss.exe
+  ensure:
+    desc: Install dependencies, plugins, components and the open.mp server.
+    cmds:
+      - sampctl ensure
+  build:
+    desc: Compile the gamemode.
+    cmds:
+      - sampctl build
+  run:
+    desc: Run the server without the Runner.
+    cmds:
+      - sampctl run
   docs:
     cmds:
       - npm start --dir docs
