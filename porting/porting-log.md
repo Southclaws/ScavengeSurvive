@@ -347,6 +347,27 @@ id. The one hook of `OnDeath` ignores its reason argument, so nothing else
 changes. The unreachable 255 case was dropped from the killer branch, since a
 base weapon is only ever 0 to 46.
 
+## Master does not build today
+
+Worth recording, because it was found while building master to verify the two
+upstream fixes, and it is not caused by anything here.
+
+master pins neither its own sub libraries nor YSI, and both moved on. It fails
+twice before it reaches the gamemode:
+
+- ScavengeSurvive/button and ScavengeSurvive/item, both unpinned, have migrated
+  to open.mp on their default branches. They now pull openmultiplayer/omp-stdlib
+  into a tree that already has pawn-lang/pawn-stdlib, and the two collide on
+  time.inc. sampctl refuses to compile. Pinning both to their samp-compat
+  branches gets past it.
+- Current YSI defines a macro named F@T, which mangles the FormatSpecifier<'T'>
+  declaration in gamemodes/sss/utils/string.pwn. This branch already carries a
+  fix for it, described above.
+
+With those two worked around locally, master compiles with 153 warnings. That
+is how the two upstream fixes were verified against master's own toolchain
+rather than this branch's.
+
 ## Open items
 
 - 88 warnings inside dependencies, listed above. sqlitei's PrintAmxBacktrace
