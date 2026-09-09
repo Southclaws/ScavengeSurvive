@@ -257,17 +257,16 @@ record's four fields, the functions that pack and unpack those bitfields, and
 the locals that receive them are all tagged now, which is what turned seventeen
 melee weapon definitions passing zero into WEAPON_FIST.
 
-Two places were deliberately left as explicit untags. A death handler switches
-over the result of GetLastHitByWeapon, which returns an Item, against weapon and
-reason ids. The two disagree, the same function already untagged that value on
-the lines above, and reconciling it is a gameplay decision rather than a porting
-one. Vehicle light masks kept their literal values with the tag applied, because
-the gamemode treats lights as four adjacent bits and the includes document a
-different layout.
+One place was deliberately left as an explicit untag. Vehicle light masks kept
+their literal values with the tag applied, because the gamemode treats lights as
+four adjacent bits and the includes document a different layout.
+
+Auditing the remaining untags turned up a real bug behind one of them, fixed in
+the section below.
 
 ### What is left
 
-95 warnings, of which 88 are inside dependencies and 7 are pre-existing code
+94 warnings, of which 88 are inside dependencies and 6 are pre-existing code
 quality warnings in the gamemode.
 
 The dependency warnings cannot be fixed from here, because sampctl re-downloads
@@ -275,19 +274,83 @@ those directories. 38 of them are sqlitei calling PrintAmxBacktrace, one line
 upstream. The rest are sqlitei's legacy database API, and untagged booleans in
 samp-ladders and samp-zipline.
 
-The seven in the gamemode are unused assignments and two shadowed variables,
-none of them related to open.mp. They were left alone on purpose. One is worth a
-look by someone who knows the gameplay: a vehicle collision handler reads a
-knock multiplier back from a callback and then never uses it, which the compiler
-now points at. Silencing it would hide that.
+The six in the gamemode are unused assignments and two shadowed variables, none
+of them related to open.mp. They were left alone on purpose.
+
+## Three gameplay bugs found during the port
+
+None of these are caused by the port and none of the fixes are open.mp specific.
+All three are unchanged on master and misbehave the same way under SA-MP. Each
+one changes behaviour, so they are listed separately from the porting work.
+
+Two of them are proposed upstream against master on their own: the collision
+fix as PR 651, and the death description fix as PR 652.
+
+They surfaced for three different reasons, and only one of them involves tags.
+
+The collision bug is an unused assignment warning, but not one master can see.
+sampctl picks the compiler from the preset: master gets pawn-lang 3.10.10, and
+the openmp preset gets openmultiplayer 3.10.11. Only 3.10.11 reports it. This
+was checked both ways, by reverting the fix on this branch, where the count
+moves between 94 and 95, and by building master with and without it, where the
+count stays at 153 and the warning never appears.
+
+The death switch is the tag related one, though omp-stdlib did not warn either,
+because upstream had already suppressed the mismatch with an explicit untag.
+Auditing the untags that were left is what found it.
+
+The last hit item bug produces no warning from either compiler. It was found by
+reading the code while tracing where the death handler got its value. It had
+also already been found upstream: PR 626, open since December 2021, is the same
+one line change.
+
+### Vehicle collisions never knocked anyone out
+
+`_DoVehicleCollisionDamage` computes a knock multiplier, publishes it to
+`OnPlayerVehicleCollide` so hooks can adjust it through
+`DMG_VEHICLE_SetKnockMult`, reads the adjusted value back, and then passed a
+literal zero to `PlayerInflictWound` instead of the value it had just read.
+`PlayerInflictWound` multiplies the knockout roll by that argument, so the roll
+could never succeed. The callback argument and the whole setter API were dead.
+Every other damage source in the gamemode, melee, firearm, explosive and world,
+passes its own multiplier at that position. Now so does this one.
+
+Collisions still knock players out through the separate velocity check above it,
+which was the only path that ever worked.
+
+### The last hit item recorded the wrong player
+
+`PlayerInflictWound` writes a pair of records when one player wounds another:
+what the attacker last hit, and what the target was last hit by. Every field in
+the second record describes the attacker, except the item, which read
+`GetPlayerItem(targetid)` and so stored the victim's own held item. It should be
+the attacker's, the same value the line above already stores. So
+`GetLastHitByWeapon` returned whatever the dying player happened to be holding.
+
+### Death descriptions read an item id as a weapon id
+
+`_OnDeath` took the result of `GetLastHitByWeapon`, an item id, and switched it
+against SA-MP weapon ids to pick the gravestone text. Item ids are indexes into
+the item pool, so the text was decided by an unrelated number. The tag mismatch
+was hidden by an explicit untag.
+
+Both branches of that function now switch over a value from their own domain.
+A player killed by another player is killed by this gamemode's damage system,
+which never reaches the server as a weapon, so the killer branch converts the
+last hit item to its base weapon with `GetItemTypeWeaponBaseWeapon` and switches
+over that. Deaths with no killer are the ones the gamemode does not inflict
+itself, so the unattributed branch switches over the reason `OnPlayerDeath`
+provides, which it previously discarded. Both switches use named constants.
+
+`OnDeath` and the `[KILL]` log line now carry a weapon id rather than an item
+id. The one hook of `OnDeath` ignores its reason argument, so nothing else
+changes. The unreachable 255 case was dropped from the killer branch, since a
+base weapon is only ever 0 to 46.
 
 ## Open items
 
 - 88 warnings inside dependencies, listed above. sqlitei's PrintAmxBacktrace
   calls are a one line upstream fix worth sending.
-- A vehicle collision handler fetches a knock multiplier and never applies it.
-  The compiler flags it as an unused assignment. It looks like a real bug, but
-  fixing it changes gameplay.
 - Whirlpool is unsalted and its own author's readme says to use bcrypt instead.
   Migrating password hashes is a separate project.
 - fsutil and chrono could be partly replaced by open.mp natives. fsutil's path

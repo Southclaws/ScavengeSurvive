@@ -99,10 +99,10 @@ plugins that loaded, followed by structured gamemode logs.
 
 ## Build warnings
 
-A clean build reports 95 warnings. 88 are inside third party dependencies, which
+A clean build reports 94 warnings. 88 are inside third party dependencies, which
 sampctl re-downloads, so they cannot be fixed from this repository. The other
-seven are pre-existing unused assignments and shadowed variables in the
-gamemode, unrelated to open.mp.
+six are pre-existing unused assignments and shadowed variables in the gamemode,
+unrelated to open.mp.
 
 The gamemode itself has no tag mismatch and no deprecation warnings. If a change
 introduces one, fix the code rather than defining NO_TAGS, MIXED_SPELLINGS,
