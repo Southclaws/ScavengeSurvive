@@ -7,12 +7,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/Southclaws/sampctl/rook"
 	"github.com/fsnotify/fsnotify"
 	"go.uber.org/zap"
 )
 
-func RunWatcher(parent context.Context, pcx *rook.PackageContext) {
+func RunWatcher(parent context.Context) {
 	zap.L().Info("starting file watcher for auto rebuild")
 
 	w, err := fsnotify.NewWatcher()
@@ -62,7 +61,7 @@ func RunWatcher(parent context.Context, pcx *rook.PackageContext) {
 			running = true
 			last = time.Now()
 
-			go doBuild(ctx, pcx, builds)
+			go doBuild(ctx, builds)
 
 		case err := <-builds:
 			if err != nil {
@@ -84,12 +83,12 @@ func RunWatcher(parent context.Context, pcx *rook.PackageContext) {
 	}
 }
 
-func doBuild(ctx context.Context, pcx *rook.PackageContext, results chan error) {
+func doBuild(ctx context.Context, results chan error) {
 	fmt.Print("\n") // output padding, for readability of build errors etc.
-	_, _, err := pcx.Build(ctx, "", false, false, false, "")
-	if err != nil {
+	if err := BuildGamemode(ctx); err != nil {
 		zap.L().Info("build failed", zap.Error(err))
 		results <- err
+		return
 	}
 	fmt.Print("\n")
 

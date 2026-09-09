@@ -181,7 +181,7 @@ task _trailerSync[1000]()
 		// If not, and the vehicle is occupied then remove the trailer using the
 		// function to remove it server-side. If the vehicle isn't occupied,
 		// attach the trailer again for all streamed players.
-		if(IsVehicleOccupied(i))
+		if(IsVehicleOccupiedState(i))
 			RemoveVehicleTrailer(i);
 
 		else
@@ -209,7 +209,7 @@ hook OnVehicleDeath(vehicleid, killerid)
 	return 1;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 		return 1;

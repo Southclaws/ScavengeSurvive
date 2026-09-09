@@ -55,7 +55,7 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 	}
 
 	cbr_TargetVehicle[playerid] = vehicleid;
-	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, 1, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, true, true, true, false, 0);
 
 	StartHoldAction(playerid, 3000);
 

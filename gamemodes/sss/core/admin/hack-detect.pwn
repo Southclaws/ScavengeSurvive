@@ -761,7 +761,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	if(GetTickCountDifference(GetTickCount(), GetVehicleLastUseTick(vehicleid)) < 1000)
 		return 1;
 
-	if(IsVehicleOccupied(vehicleid))
+	if(IsVehicleOccupiedState(vehicleid))
 		return 1;
 
 	new
@@ -869,7 +869,7 @@ VehicleModCheck(playerid)
 ==============================================================================*/
 
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER)
 	{
@@ -959,7 +959,7 @@ static
 	ammo_LastShot[MAX_PLAYERS],
 	ammo_ShotCounter[MAX_PLAYERS];
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, WEAPON:weaponid, BULLET_HIT_TYPE:hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	if(GetTickCountDifference(GetTickCount(), ammo_LastShot[playerid]) < GetWeaponShotInterval(weaponid) + 10)
 	{
@@ -989,7 +989,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 
 	switch(weaponid)
 	{
-		case 27:
+		case WEAPON_SHOTGSPA:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 222)
 			{
@@ -1008,7 +1008,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				return 0;
 			}
 		}
-		case 23:
+		case WEAPON_SILENCED:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 1454)
 			{
@@ -1027,7 +1027,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				return 0;
 			}
 		}
-		case 25:
+		case WEAPON_SHOTGUN:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 1450)
 			{
@@ -1046,7 +1046,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				return 0;
 			}
 		}
-		case 29:
+		case WEAPON_MP5:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 1645)
 			{
@@ -1065,7 +1065,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				return 0;
 			}
 		}
-		case 30, 31, 33:
+		case WEAPON_AK47, WEAPON_M4, WEAPON_RIFLE:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 1367)
 			{
@@ -1084,7 +1084,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 				return 0;
 			}
 		}
-		case 24:
+		case WEAPON_DEAGLE:
 		{
 			if(GetPlayerAnimationIndex(playerid) == 1333)
 			{
@@ -1104,7 +1104,7 @@ hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, 
 			}
 		}
 
-		case 22, 26, 28, 32, 34, 38:
+		case WEAPON_COLT45, WEAPON_SAWEDOFF, WEAPON_UZI, WEAPON_TEC9, WEAPON_SNIPER, WEAPON_MINIGUN:
 		{
 			// Do nothing
 		}

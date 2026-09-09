@@ -192,7 +192,7 @@ hook OnPlayerUseItemWithBtn(playerid, Button:buttonid, Item:itemid)
 	if(buttonid == RanchPcButton && itemid == RanchHdd)
 	{
 	    Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You begin reattaching the hard drive to the computer.", "Close", "");
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 1, 450);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, false, false, false, true, 450);
 		defer AttachRanchHdd(playerid);
 	}
 	if(QuarryDoorState == 0 && buttonid == QuarryDoor && itemid == QuarryDoorKey)
@@ -208,7 +208,7 @@ timer AttachRanchHdd[2500](playerid)
 {
 	DestroyItem(RanchHdd);
 	Dialog_Show(playerid, DIALOG_STYLE_MSGBOX, "Computer", "You successfully install the hard drive without electricuting yourself, well done!", "Close", "");
-    ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+    ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, false, false, false, false, 0);
     RanchPcState = 1;
 
 	RanchPcObj = CreateDynamicObject(19475, -690.966735, 942.852416, 13.642812, 0.000000, 0.000000, -110.324981),

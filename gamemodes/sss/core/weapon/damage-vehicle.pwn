@@ -33,9 +33,9 @@ hook OnScriptInit()
 	GetSettingFloat("vehicle.damage/bleed-mult", 1.0, dmg_VehicleVelocityBleedMult);
 }
 
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
-	if(weaponid == 49)
+	if(weaponid == REASON_VEHICLE)
 	{
 		_DoVehicleCollisionDamage(issuerid, playerid);
 	}
@@ -71,7 +71,7 @@ _DoVehicleCollisionDamage(playerid, targetid)
 	if(dmg_ReturnKnockMult[targetid] != knockmult)
 		knockmult = dmg_ReturnKnockMult[targetid];
 
-	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, 0, NO_CALIBRE, random(2) ? (BODY_PART_TORSO) : (random(2) ? (BODY_PART_RIGHT_LEG) : (BODY_PART_LEFT_LEG)), "Collision");
+	PlayerInflictWound(playerid, targetid, E_WOUND_MELEE, bleedrate, knockmult, NO_CALIBRE, random(2) ? (BODY_PART_TORSO) : (random(2) ? (BODY_PART_RIGHT_LEG) : (BODY_PART_LEFT_LEG)), "Collision");
 
 	return 1;
 }

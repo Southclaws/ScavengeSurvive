@@ -73,9 +73,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16 && pill_CurrentlyTaking[playerid] != INVALID_ITEM_ID)
+	if(oldkeys & KEY_SECONDARY_ATTACK && pill_CurrentlyTaking[playerid] != INVALID_ITEM_ID)
 	{
 		StopTakingPills(playerid);
 	}
@@ -86,7 +86,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 StartTakingPills(playerid)
 {
 	pill_CurrentlyTaking[playerid] = GetPlayerItem(playerid);
-	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 1000, 1);
+	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, false, true, true, false, 1000, SYNC_ALL);
 	StartHoldAction(playerid, 1000);
 }
 

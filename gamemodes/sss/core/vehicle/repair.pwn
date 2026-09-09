@@ -92,9 +92,9 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16)
+	if(oldkeys & KEY_SECONDARY_ATTACK)
 	{
 		StopRepairingVehicle(playerid);
 		StopRefuellingVehicle(playerid);
@@ -110,7 +110,7 @@ StartRepairingVehicle(playerid, vehicleid)
 		return 0;
 	}
 
-	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, true, false, false, false, 0, SYNC_ALL);
 	VehicleBonnetState(fix_TargetVehicle[playerid], 1);
 	StartHoldAction(playerid, 50000, floatround(fix_Progress[playerid] * 50));
 

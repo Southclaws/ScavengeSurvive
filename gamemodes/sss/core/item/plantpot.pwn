@@ -326,7 +326,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 
 		GetItemArrayData(itemid, potdata);
 
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, false, false, false, true, 0);
 
 		format(string, sizeof(string), "Active:%d\nSeed type:%d\nWater:%d\nGrowth:%d/%d\n",
 			potdata[E_PLANT_POT_ACTIVE],
@@ -338,7 +338,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
 			#pragma unused pid, dialogid, response, listitem, inputtext
-			ClearAnimations(playerid, 1);
+			ClearAnimations(playerid, SYNC_ALL);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
 

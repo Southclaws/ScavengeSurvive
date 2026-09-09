@@ -61,7 +61,7 @@ timer _drugs_Reset[100](playerid)
 	RemoveAllDrugs(playerid);
 }
 
-hook OnPlayerDeath(playerid, killerid, reason)
+hook OnPlayerDeath(playerid, killerid, WEAPON:reason)
 {
 	RemoveAllDrugs(playerid);
 }

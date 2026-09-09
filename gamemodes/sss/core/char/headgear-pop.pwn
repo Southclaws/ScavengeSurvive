@@ -16,7 +16,7 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerGiveDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerGiveDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(bodypart == BODY_PART_HEAD)
 	{

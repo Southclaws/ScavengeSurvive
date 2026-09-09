@@ -34,10 +34,10 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 	new
 		wheel = GetPlayerVehicleTire(playerid, vehicleid),
 		vehicletype = GetVehicleType(vehicleid),
-		panels,
-		doors,
-		lights,
-		tires;
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires;
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
@@ -47,9 +47,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 		{
 			case WHEELSFRONT_LEFT, WHEELSFRONT_RIGHT: // Front
 			{
-				if(tires & 0b0010)
+				if(tires & VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPFT", true), 5000);
 				}
@@ -61,9 +61,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 
 			case WHEELSMID_LEFT, WHEELSMID_RIGHT, WHEELSREAR_LEFT, WHEELSREAR_RIGHT: // back
 			{
-				if(tires & 0b0001)
+				if(tires & VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPRT", true), 5000);
 				}
@@ -83,9 +83,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 		{
 			case WHEELSFRONT_LEFT:
 			{
-				if(tires & 0b1000)
+				if(tires & VEHICLE_TYRE_STATUS_FRONT_LEFT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b0111);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_FRONT_LEFT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPFL", true), 5000);
 				}
@@ -97,9 +97,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 
 			case WHEELSFRONT_RIGHT:
 			{
-				if(tires & 0b0010)
+				if(tires & VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1101);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPFR", true), 5000);
 				}
@@ -111,9 +111,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 
 			case WHEELSREAR_LEFT:
 			{
-				if(tires & 0b0100)
+				if(tires & VEHICLE_TYRE_STATUS_REAR_LEFT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1011);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_REAR_LEFT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPBL", true), 5000);
 				}
@@ -125,9 +125,9 @@ _WheelRepair(playerid, vehicleid, Item:itemid)
 
 			case WHEELSREAR_RIGHT:
 			{
-				if(tires & 0b0001)
+				if(tires & VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED)
 				{
-					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & 0b1110);
+					UpdateVehicleDamageStatus(vehicleid, panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED);
 					DestroyItem(itemid);
 					ShowActionText(playerid, ls(playerid, "TIREREPBR", true), 5000);
 				}
@@ -151,18 +151,18 @@ ShowTireList(playerid, vehicleid)
 {
 	new
 		vehicletype = GetVehicleType(vehicleid),
-		panels,
-		doors,
-		lights,
-		tires,
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires,
 		str[22 * 4];
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
 	if(GetVehicleTypeCategory(vehicletype) == VEHICLE_CATEGORY_MOTORBIKE && GetVehicleTypeModel(vehicletype) != 471)
 	{
-		tiredata[playerid][0] = tires & 0b0001;
-		tiredata[playerid][1] = tires & 0b0010;
+		tiredata[playerid][0] = tires & VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED;
+		tiredata[playerid][1] = tires & VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED;
 
 		if(tiredata[playerid][0]) // back
 			strcat(str, "{FF0000}Back\n");
@@ -228,7 +228,7 @@ ShowTireList(playerid, vehicleid)
 		{
 			if(tiredata[playerid][0] && GetItemType(itemid) == item_Wheel)
 			{
-				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1110);
+				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_REAR_RIGHT_POPPED);
 				DestroyItem(itemid);
 			}
 			else ShowTireList(playerid, gCurrentWheelFixVehicle[playerid]);
@@ -237,7 +237,7 @@ ShowTireList(playerid, vehicleid)
 		{
 			if(tiredata[playerid][1] && GetItemType(itemid) == item_Wheel)
 			{
-				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1101);
+				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_FRONT_RIGHT_POPPED);
 				DestroyItem(itemid);
 			}
 			else ShowTireList(playerid, gCurrentWheelFixVehicle[playerid]);
@@ -246,7 +246,7 @@ ShowTireList(playerid, vehicleid)
 		{
 			if(tiredata[playerid][2] && GetItemType(itemid) == item_Wheel)
 			{
-				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b1011);
+				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_REAR_LEFT_POPPED);
 				DestroyItem(itemid);
 			}
 			else ShowTireList(playerid, gCurrentWheelFixVehicle[playerid]);
@@ -255,7 +255,7 @@ ShowTireList(playerid, vehicleid)
 		{
 			if(tiredata[playerid][3] && GetItemType(itemid) == item_Wheel)
 			{
-				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & 0b0111);
+				UpdateVehicleDamageStatus(gCurrentWheelFixVehicle[playerid], panels, doors, lights, tires & ~VEHICLE_TYRE_STATUS_FRONT_LEFT_POPPED);
 				DestroyItem(itemid);
 			}
 			else ShowTireList(playerid, gCurrentWheelFixVehicle[playerid]);

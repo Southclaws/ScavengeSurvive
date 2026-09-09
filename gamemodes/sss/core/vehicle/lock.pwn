@@ -53,7 +53,7 @@ hook OnPlayerConnect(playerid)
 	lock_DisableForPlayer[playerid] = false;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(newkeys & KEY_SUBMISSION)
 	{
@@ -61,7 +61,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			_HandleLockKey(playerid);
 	}
 
-	if(newkeys & 16)
+	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 		new vehicleid = GetPlayerVehicleArea(playerid);
 
@@ -110,7 +110,7 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 
 hook OnPlayerEnterVehArea(playerid, vehicleid)
 {
-	if(lock_Status[vehicleid] == E_LOCK_STATE_OPEN && !lock_DisableForPlayer[playerid] && !IsVehicleDead(vehicleid))
+	if(lock_Status[vehicleid] == E_LOCK_STATE_OPEN && !lock_DisableForPlayer[playerid] && !IsVehicleStateDead(vehicleid))
 	{
 		SetVehicleParamsForPlayer(vehicleid, playerid, 0, 0);
 	}
@@ -150,7 +150,7 @@ stock SetVehicleExternalLock(vehicleid, E_LOCK_STATE:status)
 	if(!IsValidVehicle(vehicleid))
 		return 0;
 
-	if(IsVehicleDead(vehicleid))
+	if(IsVehicleStateDead(vehicleid))
 	{
 		lock_Status[vehicleid] = E_LOCK_STATE_EXTERNAL;
 		VehicleDoorsState(vehicleid, true);

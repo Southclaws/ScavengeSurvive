@@ -144,7 +144,7 @@ StartRefuellingFuelCan(playerid, outletid)
 	StartHoldAction(playerid, floatround(GetLiquidContainerTypeCapacity(liqcont) * 1000), floatround(GetLiquidItemLiquidAmount(GetPlayerItem(playerid)) * 1000));
 	fuel_CurrentFuelOutlet[playerid] = outletid;
 
-	ApplyAnimation(playerid, "HEIST9", "USE_SWIPECARD", 4.0, 0, 0, 0, 0, 500);
+	ApplyAnimation(playerid, "HEIST9", "USE_SWIPECARD", 4.0, false, false, false, false, 500);
 
 	return 1;
 }
@@ -183,7 +183,7 @@ StartRefuellingVehicle(playerid, vehicleid)
 	}
 
 	CancelPlayerMovement(playerid);
-	ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, true, false, false, false, 0);
 	StartHoldAction(playerid, floatround(GetVehicleTypeMaxFuel(GetVehicleType(vehicleid)) * 1000), floatround(GetVehicleFuel(vehicleid) * 1000));
 	fuel_CurrentlyRefuelling[playerid] = vehicleid;
 
@@ -291,7 +291,7 @@ hook OnHoldActionUpdate(playerid, progress)
 		SetPlayerProgressBarValue(playerid, ActionBar, amount * 1000);
 		SetPlayerProgressBarMaxValue(playerid, ActionBar, capacity * 1000);
 		ShowPlayerProgressBar(playerid, ActionBar);
-		ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "PED", "DRIVE_BOAT", 4.0, true, false, false, false, 0);
 
 		transfer = (amount + 1.2 > capacity) ? capacity - amount : 1.2;
 		SetLiquidItemLiquidAmount(itemid, amount + transfer);

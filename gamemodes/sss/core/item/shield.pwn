@@ -20,7 +20,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Shield)
 	{
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 		defer shield_Down(playerid, _:itemid);
 	}
 
@@ -45,7 +45,7 @@ timer shield_Down[400](playerid, itemid)
 		y + (0.5 * floatcos(-angle, degrees)),
 		z - 0.2,
 		90.0, 0.0, 180.0 + angle,
-		GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), 1);
+		GetPlayerVirtualWorld(playerid), GetPlayerInterior(playerid), true);
 }
 
 hook OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance)

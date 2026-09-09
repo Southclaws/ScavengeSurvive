@@ -52,9 +52,9 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16)
+	if(oldkeys & KEY_SECONDARY_ATTACK)
 	{
 		StopBreakingVehicleLock(playerid);
 	}
@@ -81,7 +81,7 @@ StartBreakingVehicleLock(playerid, vehicleid, type)
 	}
 
 	cro_TargetVehicle[playerid] = vehicleid;
-	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, 1, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "POLICE", "DOOR_KICK", 3.0, true, true, true, false, 0);
 	StartHoldAction(playerid, 3000);
 
 	return 1;

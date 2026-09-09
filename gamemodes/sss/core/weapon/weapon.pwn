@@ -30,7 +30,7 @@ enum (<<= 1)
 enum E_ITEM_WEAPON_DATA
 {
 ItemType:	itmw_itemType,
-			itmw_baseWeapon,
+WEAPON:		itmw_baseWeapon,
 			itmw_calibre,
 Float:		itmw_muzzVelocity,
 			itmw_magSize,
@@ -75,14 +75,14 @@ forward ItemType:GetItemWeaponItemAmmoItem(Item:itemid);
 hook OnPlayerConnect(playerid)
 {
 	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.411254, 62.649990, "500/500");
-	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
-	PlayerTextDrawFont				(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], TEXT_DRAW_ALIGN_CENTRE);
+	PlayerTextDrawBackgroundColour	(playerid, WeaponAmmoUI[playerid], 255);
+	PlayerTextDrawFont				(playerid, WeaponAmmoUI[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, WeaponAmmoUI[playerid], 0.278114, 1.372495);
-	PlayerTextDrawColor				(playerid, WeaponAmmoUI[playerid], -1);
+	PlayerTextDrawColour				(playerid, WeaponAmmoUI[playerid], -1);
 	PlayerTextDrawSetShadow(playerid, WeaponAmmoUI[playerid], 0);
 	PlayerTextDrawSetOutline		(playerid, WeaponAmmoUI[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, WeaponAmmoUI[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WeaponAmmoUI[playerid], true);
 	PlayerTextDrawTextSize			(playerid, WeaponAmmoUI[playerid], 1613.000000, -118.533325);
 
 	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
@@ -96,7 +96,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
+stock DefineItemTypeWeapon(ItemType:itemtype, WEAPON:baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
 {
 	SetItemTypeMaxArrayData(itemtype, 4);
 
@@ -284,9 +284,9 @@ stock UpdatePlayerWeaponItem(playerid)
 	return 1;
 }
 
-stock RemovePlayerWeapon(playerid)
+stock RemovePlayerWeapons(playerid)
 {
-	dbg("weapon-core", 1, "[RemovePlayerWeapon]");
+	dbg("weapon-core", 1, "[RemovePlayerWeapons]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -314,8 +314,8 @@ _FastUpdateHandler(playerid)
 
 	if(!IsValidItemType(itemtype))
 	{
-		if(GetPlayerWeapon(playerid) > 0)
-			RemovePlayerWeapon(playerid);
+		if(GetPlayerWeapon(playerid) > WEAPON_FIST)
+			RemovePlayerWeapons(playerid);
 
 		return;
 	}
@@ -327,7 +327,7 @@ _FastUpdateHandler(playerid)
 	{
 		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 		{
-			if(GetPlayerWeapon(playerid) == 0)
+			if(GetPlayerWeapon(playerid) == WEAPON_FIST)
 			{
 				if(GetTickCountDifference(GetTickCount(), tick_GetWeaponTick[playerid]) > 1000)
 					DestroyItem(itemid);
@@ -339,7 +339,7 @@ _FastUpdateHandler(playerid)
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		SetPlayerArmedWeapon(playerid, 0);
+		SetPlayerArmedWeapon(playerid, WEAPON_FIST);
 		return;
 	}
 
@@ -391,7 +391,7 @@ timer _RepeatingFire[1000](playerid)
 	if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)
 		return;
 
-	new k, ud, lr;
+	new KEY:k, ud, lr;
 
 	GetPlayerKeys(playerid, k, ud, lr);
 
@@ -413,7 +413,7 @@ timer _RepeatingFire[1000](playerid)
 	return;
 }
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, WEAPON:weaponid, BULLET_HIT_TYPE:hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	dbg("weapon-core", 1, "[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
@@ -532,7 +532,7 @@ _ReloadWeapon(playerid)
 	switch(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon])
 	{
 		default:
-			ApplyAnimation(playerid, "COLT45", "COLT45_RELOAD", 2.0, 0, 1, 1, 0, 0);
+			ApplyAnimation(playerid, "COLT45", "COLT45_RELOAD", 2.0, false, true, true, false, 0);
 	}
 
 	UpdatePlayerWeaponItem(playerid);
@@ -583,14 +583,14 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 	{
 		new Item:helditemid = GetPlayerItem(playerid);
 
-		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > 0)
+		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > WEAPON_FIST)
 		{
 			if(GetItemWeaponItemMagAmmo(helditemid) == 0)
-				RemovePlayerWeapon(playerid);
+				RemovePlayerWeapons(playerid);
 		}
 		else
 		{
-			RemovePlayerWeapon(playerid);
+			RemovePlayerWeapons(playerid);
 		}
 	}
 
@@ -615,9 +615,9 @@ hook OnPlayerUnHolsteredItem(playerid, Item:itemid)
 ==============================================================================*/
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(newkeys & 1)
+	if(newkeys & KEY_ACTION)
 	{
 		if(IsPlayerKnockedOut(playerid))
 			return Y_HOOKS_CONTINUE_RETURN_1;
@@ -785,7 +785,7 @@ timer _UnloadWeapon[300](playerid, _itemid)
 	UpdatePlayerWeaponItem(playerid);
 	itmw_DropItemID[playerid] = INVALID_ITEM_ID;
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 	ShowActionText(playerid, ls(playerid, "WEAPAUNLOAD", true), 3000);
 
 	return;
@@ -855,10 +855,10 @@ stock GetItemWeaponItemType(itemweaponid)
 }
 
 // itmw_baseWeapon
-stock GetItemWeaponBaseWeapon(itemweaponid)
+stock WEAPON:GetItemWeaponBaseWeapon(itemweaponid)
 {
 	if(!(0 <= itemweaponid < itmw_Total))
-		return 0;
+		return WEAPON_FIST;
 
 	return itmw_Data[itemweaponid][itmw_baseWeapon];
 }
@@ -924,13 +924,13 @@ stock GetItemWeaponFlags(itemweaponid)
 
 
 // itmw_baseWeapon
-stock GetItemTypeWeaponBaseWeapon(ItemType:itemtype)
+stock WEAPON:GetItemTypeWeaponBaseWeapon(ItemType:itemtype)
 {
 	if(!IsValidItemType(itemtype))
-		return 0;
+		return WEAPON_FIST;
 
 	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
+		return WEAPON_FIST;
 
 	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon];
 }

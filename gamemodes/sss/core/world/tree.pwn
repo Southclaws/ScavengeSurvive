@@ -215,9 +215,7 @@ DestroyTree(index)
 	if(!Iter_Contains(tree_Index, index))
 		return 0;
 
-	new next;
-
-	Iter_SafeRemove(tree_Index, index, next);
+	Iter_Remove(tree_Index, index);
 
 	DestroyDynamicObject(tree_Data[index][tree_objectid]);
 	DestroyDynamicArea(tree_Data[index][tree_areaid]);
@@ -229,7 +227,7 @@ DestroyTree(index)
 	tree_Data[index][tree_labelid]  = Text3D:-1;
 	tree_Data[index][tree_health] 	= 0.0;
 
-	return next;
+	return index;
 }
 
 
@@ -335,12 +333,12 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(oldkeys == 16)
+	if(oldkeys == KEY_SECONDARY_ATTACK)
 		_StopWoodCutting(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;
@@ -358,7 +356,7 @@ _StartWoodCutting(playerid, treeid)
 	StartHoldAction(playerid, floatround(1.1 * (mult * start)), mult * (start - end));
 
 	SetPlayerToFaceTree(playerid, treeid);
-	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "CHAINSAW", "CSAW_G", 4.0, true, false, false, false, 0, SYNC_ALL);
 	tree_CuttingTree[playerid] = treeid;
 }
 

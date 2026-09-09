@@ -187,7 +187,7 @@ ACMD:free[2](playerid)
 	if(!IsPlayerOnAdminDuty(playerid))
 		return 6;
 
-	if(GetPlayerSpectateType(playerid) == SPECTATE_TYPE_FREE)
+	if(GetPlayerSpectateMode(playerid) == SPECTATE_TYPE_FREE)
 		ExitFreeMode(playerid);
 
 	else
@@ -721,7 +721,7 @@ ACMD:delete[3](playerid, params[])
 			GetTentPos(i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyTent(i);
+				DestroyTent(i);
 		}
 
 		return 1;

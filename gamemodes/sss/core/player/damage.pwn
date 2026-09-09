@@ -21,30 +21,33 @@ Text:HitMark_centre = Text:INVALID_TEXT_DRAW,
 Text:HitMark_offset = Text:INVALID_TEXT_DRAW;
 
 
-public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+#if !defined WEAPON
+	#define WEAPON: _:
+#endif
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	if(IsPlayerOnAdminDuty(issuerid))
 		return 0;
 
-	if(!IsPlayerSpawned(issuerid))
+	if(!GetPlayerSpawnedState(issuerid))
 		return 0;
 
 	switch(weaponid)
 	{
-		case 31:
+		case WEAPON_M4:
 		{
 			new model = GetVehicleModel(GetPlayerVehicleID(playerid));
 
 			if(model == 447 || model == 476)
 				_DoFirearmDamage(issuerid, playerid, INVALID_ITEM_ID, item_VehicleWeapon, bodypart);
 		}
-		case 38:
+		case WEAPON_MINIGUN:
 		{
 			if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 425)
 				_DoFirearmDamage(issuerid, playerid, INVALID_ITEM_ID, item_VehicleWeapon, bodypart);
@@ -85,20 +88,20 @@ hook OnGameModeInit()
 	//"\ /~n~ ~n~/ \"
 
 	HitMark_centre			=TextDrawCreate(305.500000, 208.500000, hm);
-	TextDrawBackgroundColor	(HitMark_centre, -1);
-	TextDrawFont			(HitMark_centre, 1);
+	TextDrawBackgroundColour	(HitMark_centre, -1);
+	TextDrawFont			(HitMark_centre, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize		(HitMark_centre, 0.500000, 1.000000);
-	TextDrawColor			(HitMark_centre, -1);
-	TextDrawSetProportional	(HitMark_centre, 1);
+	TextDrawColour			(HitMark_centre, -1);
+	TextDrawSetProportional	(HitMark_centre, true);
 	TextDrawSetOutline		(HitMark_centre, 0);
 	TextDrawSetShadow		(HitMark_centre, 0);
 
 	HitMark_offset			=TextDrawCreate(325.500000, 165.500000, hm);
-	TextDrawBackgroundColor	(HitMark_offset, -1);
-	TextDrawFont			(HitMark_offset, 1);
+	TextDrawBackgroundColour	(HitMark_offset, -1);
+	TextDrawFont			(HitMark_offset, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize		(HitMark_offset, 0.520000, 1.000000);
-	TextDrawColor			(HitMark_offset, -1);
-	TextDrawSetProportional	(HitMark_offset, 1);
+	TextDrawColour			(HitMark_offset, -1);
+	TextDrawSetProportional	(HitMark_offset, true);
 	TextDrawSetOutline		(HitMark_offset, 0);
 	TextDrawSetShadow		(HitMark_offset, 0);
 }

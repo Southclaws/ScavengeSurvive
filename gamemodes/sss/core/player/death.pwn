@@ -44,7 +44,10 @@ hook OnPlayerDisconnect(playerid, reason)
 	death_Dying[playerid] = false;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+#if !defined WEAPON
+	#define WEAPON: _:
+#endif
+public OnPlayerDeath(playerid, killerid, WEAPON:reason)
 {
 	if(GetTickCountDifference(GetTickCount(), death_LastDeath[playerid]) < 1000)
 		return -1;
@@ -59,20 +62,25 @@ public OnPlayerDeath(playerid, killerid, reason)
 			killerid = INVALID_PLAYER_ID;
 	}
 
-	_OnDeath(playerid, killerid);
+	_OnDeath(playerid, killerid, reason);
 
 	return 1;
 }
 
-_OnDeath(playerid, killerid)
+_OnDeath(playerid, killerid, WEAPON:reason)
 {
 	if(!IsPlayerAlive(playerid) || IsPlayerOnAdminDuty(playerid))
 	{
 		return 0;
 	}
 
+	// A player killed by another player is killed by this gamemode's own damage
+	// system, which never reaches the server as a weapon, so the cause is read
+	// back from the item that last wounded them. The reason the server reports
+	// only describes the deaths the gamemode does not inflict itself, such as
+	// drowning or a long fall, so it is used for the unattributed branch below.
 	new
-		Item:deathreason = GetLastHitByWeapon(playerid),
+		WEAPON:deathweapon = GetItemTypeWeaponBaseWeapon(GetItemType(GetLastHitByWeapon(playerid))),
 		deathreasonstring[256];
 
 	death_Dying[playerid] = true;
@@ -92,49 +100,49 @@ _OnDeath(playerid, killerid)
 
 	HideWatch(playerid);
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
-	RemovePlayerWeapon(playerid);
+	RemovePlayerWeapons(playerid);
 	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 
-	KillPlayer(playerid, killerid, _:deathreason);
+	KillPlayer(playerid, killerid, _:deathweapon);
 
 	if(IsPlayerConnected(killerid))
 	{
-		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, _:deathweapon, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
 
-		switch(deathreason)
+		switch(deathweapon)
 		{
-			case 0..3, 5..7, 10..15:
+			case WEAPON_FIST..WEAPON_NITESTICK, WEAPON_BAT..WEAPON_POOLSTICK, WEAPON_DILDO..WEAPON_CANE:
 				deathreasonstring = "They were beaten to death.";
 
-			case 4:
+			case WEAPON_KNIFE:
 				deathreasonstring = "They suffered small lacerations on the torso, possibly from a knife.";
 
-			case 8:
+			case WEAPON_KATANA:
 				deathreasonstring = "Large lacerations cover the torso and head, looks like a finely sharpened sword.";
 
-			case 9:
+			case WEAPON_CHAINSAW:
 				deathreasonstring = "There's bits everywhere, probably suffered a chainsaw to the torso.";
 
-			case 16, 39, 35, 36, 255:
+			case WEAPON_GRENADE, WEAPON_SATCHEL, WEAPON_ROCKETLAUNCHER, WEAPON_HEATSEEKER:
 				deathreasonstring = "They suffered massive concussion due to an explosion.";
 
-			case 18, 37:
+			case WEAPON_MOLOTOV, WEAPON_FLAMETHROWER:
 				deathreasonstring = "The entire body is charred and burnt.";
 
-			case 22..34, 38:
+			case WEAPON_COLT45..WEAPON_SNIPER, WEAPON_MINIGUN:
 				deathreasonstring = "They died of blood loss caused by what looks like bullets.";
 
-			case 41, 42:
+			case WEAPON_SPRAYCAN, WEAPON_FIREEXTINGUISHER:
 				deathreasonstring = "They were sprayed and suffocated by a high pressure substance.";
 
-			case 44, 45:
+			case WEAPON_NIGHT_VISION_GOGGLES, WEAPON_THERMAL_GOGGLES:
 				deathreasonstring = "Somehow, they were killed by goggles.";
 
-			case 43:
+			case WEAPON_CAMERA:
 				deathreasonstring = "Somehow, they were killed by a camera.";
 
 			default:
@@ -143,20 +151,20 @@ _OnDeath(playerid, killerid)
 	}
 	else
 	{
-		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, _:reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
-		switch(deathreason)
+		switch(reason)
 		{
-			case 53:
+			case REASON_DROWN:
 				deathreasonstring = "They drowned.";
 
-			case 54:
+			case REASON_COLLISION:
 				deathreasonstring = "Most bones are broken, looks like they fell from a great height.";
 
-			case 255:
+			case REASON_SUICIDE:
 				deathreasonstring = "They suffered massive concussion due to an explosion.";
 
 			default:
@@ -417,29 +425,29 @@ timer SpawnDeathDelay[1500](playerid)
 hook OnGameModeInit()
 {
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
-	TextDrawAlignment			(DeathText, 2);
-	TextDrawBackgroundColor		(DeathText, 255);
-	TextDrawFont				(DeathText, 1);
+	TextDrawAlignment			(DeathText, TEXT_DRAW_ALIGN_CENTRE);
+	TextDrawBackgroundColour		(DeathText, 255);
+	TextDrawFont				(DeathText, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(DeathText, 0.500000, 2.000000);
-	TextDrawColor				(DeathText, -1);
+	TextDrawColour				(DeathText, -1);
 	TextDrawSetOutline			(DeathText, 0);
-	TextDrawSetProportional		(DeathText, 1);
+	TextDrawSetProportional		(DeathText, true);
 	TextDrawSetShadow			(DeathText, 1);
-	TextDrawUseBox				(DeathText, 1);
-	TextDrawBoxColor			(DeathText, 85);
+	TextDrawUseBox				(DeathText, true);
+	TextDrawBoxColour			(DeathText, 85);
 	TextDrawTextSize			(DeathText, 20.000000, 150.000000);
 
 	DeathButton					=TextDrawCreate(320.000000, 323.000000, ">Play Again<");
-	TextDrawAlignment			(DeathButton, 2);
-	TextDrawBackgroundColor		(DeathButton, 255);
-	TextDrawFont				(DeathButton, 1);
+	TextDrawAlignment			(DeathButton, TEXT_DRAW_ALIGN_CENTRE);
+	TextDrawBackgroundColour		(DeathButton, 255);
+	TextDrawFont				(DeathButton, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(DeathButton, 0.370000, 1.599999);
-	TextDrawColor				(DeathButton, -1);
+	TextDrawColour				(DeathButton, -1);
 	TextDrawSetOutline			(DeathButton, 0);
-	TextDrawSetProportional		(DeathButton, 1);
+	TextDrawSetProportional		(DeathButton, true);
 	TextDrawSetShadow			(DeathButton, 1);
-	TextDrawUseBox				(DeathButton, 1);
-	TextDrawBoxColor			(DeathButton, 85);
+	TextDrawUseBox				(DeathButton, true);
+	TextDrawBoxColour			(DeathButton, 85);
 	TextDrawTextSize			(DeathButton, 20.000000, 150.000000);
 	TextDrawSetSelectable		(DeathButton, true);
 }

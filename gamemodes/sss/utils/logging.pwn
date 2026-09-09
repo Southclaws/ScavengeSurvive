@@ -46,7 +46,7 @@ stock err(const text[], va_args<>)
 	new log_Buffer[256];
 	formatex(log_Buffer, sizeof(log_Buffer), text, va_start<1>);
 	print(log_Buffer);
-	PrintAmxBacktrace();
+	PrintBacktrace();
 }
 
 

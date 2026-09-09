@@ -20,7 +20,7 @@ new
 	bool:para_TakingOff[MAX_PLAYERS];
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(newkeys & KEY_YES)
 	{
@@ -36,12 +36,12 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	if(newkeys & KEY_NO)
 	{
-		if(GetPlayerWeapon(playerid) == 46)
+		if(GetPlayerWeapon(playerid) == WEAPON_PARACHUTE)
 		{
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
 				para_TakingOff[playerid] = true;
-				RemovePlayerWeapon(playerid);
+				RemovePlayerWeapons(playerid);
 				GiveWorldItemToPlayer(playerid, CreateItem(item_Parachute, 0.0, 0.0, 0.0));
 			}
 		}

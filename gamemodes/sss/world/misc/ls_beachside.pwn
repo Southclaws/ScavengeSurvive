@@ -345,10 +345,10 @@ public OnObjectMoved(objectid)
 	    Floor_OpenDoors(ElevatorFloor);
 
 	    GetObjectPos(Obj_Elevator, x, y, z);
-	    Label_Elevator	= Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, X_ELEVATOR_POS + 1.6, Y_ELEVATOR_POS - 1.85, z - 0.4, 4.0, 0, 1);
+	    Label_Elevator	= Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, X_ELEVATOR_POS + 1.6, Y_ELEVATOR_POS - 1.85, z - 0.4, 4.0, 0, true);
 
 	    ElevatorState 	= ELEVATOR_STATE_WAITING;
-	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, 0);
+	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, false);
 	}
 
 	return 1;
@@ -485,7 +485,7 @@ stock Elevator_Initialize()
 	Obj_ElevatorDoors[1] 	= CreateObject(18756, X_ELEVATOR_POS, Y_ELEVATOR_POS, GROUND_Z_COORD, 0.000000, 0.000000, 80.000000);
 
 	// Create the 3D text label for inside the elevator
-	Label_Elevator = Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, X_ELEVATOR_POS + 1.6, Y_ELEVATOR_POS - 1.85, GROUND_Z_COORD - 0.4, 4.0, 0, 1);
+	Label_Elevator = Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, X_ELEVATOR_POS + 1.6, Y_ELEVATOR_POS - 1.85, GROUND_Z_COORD - 0.4, 4.0, 0, true);
 
 	// Create variables
 	new string[128], Float:z;
@@ -504,7 +504,7 @@ stock Elevator_Initialize()
 		z = GetDoorsZCoordForFloor(i);
 
 		// Create floor label
-		Label_Floors[i] = Create3DTextLabel(string, 0xCCCCCCAA, X_ELEVATOR_POS + 2, Y_ELEVATOR_POS -3, z - 0.2, 10.5, 0, 1);
+		Label_Floors[i] = Create3DTextLabel(string, 0xCCCCCCAA, X_ELEVATOR_POS + 2, Y_ELEVATOR_POS -3, z - 0.2, 10.5, 0, true);
 	}
 
 	// Open the car park floor doors and the elevator doors
@@ -600,7 +600,7 @@ stock Elevator_MoveToFloor(floorid)
     MoveObject(Obj_ElevatorDoors[1], X_ELEVATOR_POS, Y_ELEVATOR_POS, GetDoorsZCoordForFloor(floorid), 0.25);
     Delete3DTextLabel(Label_Elevator);
 
-	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, 0, "i", floorid);
+	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, false, "i", floorid);
 
 	return 1;
 }

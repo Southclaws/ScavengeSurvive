@@ -288,7 +288,7 @@ stock AddItemToPlayer(playerid, Item:itemid, useinventory = false, playeraction 
 	if(playeraction)
 	{
 		ShowActionText(playerid, ls(playerid, "BAGITMADDED", true), 3000, 150);
-		ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, 1, 0, 0, 0, 300);
+		ApplyAnimation(playerid, "PED", "PHONE_IN", 4.0, true, false, false, false, 300);
 		bag_PuttingInBag[playerid] = true;
 		defer bag_PutItemIn(playerid, _:itemid, _:containerid);
 	}
@@ -390,7 +390,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381 || GetTickCountDifference(GetTickCount(), GetPlayerLastHolsterTick(playerid)) < 1000)
 		return 1;
@@ -408,7 +408,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		_BagDropHandler(playerid);
 	}
 
-	if(newkeys & 16)
+	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 		_BagRummageHandler(playerid);
 	}
@@ -559,7 +559,7 @@ _DisplayBagDialog(playerid, Item:itemid, animation)
 	bag_CurrentBag[playerid] = itemid;
 
 	if(animation)
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, false, false, false, true, 0);
 
 	else
 		CancelPlayerMovement(playerid);

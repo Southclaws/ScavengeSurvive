@@ -53,7 +53,7 @@ hook OnItemCreate(Item:itemid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	new
 		Item:itemid,
@@ -64,7 +64,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag || itemtype == item_AntiSepBandage)
 	{
-		if(newkeys == 16)
+		if(newkeys == KEY_SECONDARY_ATTACK)
 		{
 			if(IsPlayerKnockedOut(playerid))
 				return 0;
@@ -78,7 +78,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			PlayerStartHeal(playerid, med_HealTarget[playerid]);
 		}
-		if(oldkeys == 16)
+		if(oldkeys == KEY_SECONDARY_ATTACK)
 		{
 			PlayerStopHeal(playerid);
 		}
@@ -98,12 +98,12 @@ PlayerStartHeal(playerid, target)
 	{
 		if(IsPlayerKnockedOut(target))
 		{
-			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, true, false, false, false, 0);
 			duration = REVIVE_PROGRESS_MAX;
 		}
 		else
 		{
-			ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 		}
 
 		SetPlayerProgressBarMaxValue(target, ActionBar, duration);
@@ -111,7 +111,7 @@ PlayerStartHeal(playerid, target)
 	}
 	else
 	{
-		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, false, false, false, 0);
 	}
 
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, duration, "Medical"));

@@ -18,25 +18,25 @@
 
 new
 	gCurrentLightFixVehicle[MAX_PLAYERS],
-	gLightData[MAX_PLAYERS][4];
+VEHICLE_LIGHT_STATUS:	gLightData[MAX_PLAYERS][4];
 
 
 ShowLightList(playerid, vehicleid)
 {
 	new
 		vehicletype = GetVehicleType(vehicleid),
-		panels,
-		doors,
-		lights,
-		tires,
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires,
 		str[22 * 4];
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
 	if(GetVehicleTypeCategory(vehicletype) == VEHICLE_CATEGORY_MOTORBIKE && GetVehicleTypeModel(vehicletype) != 471)
 	{
-		gLightData[playerid][0] = lights & 0b0001;
-		gLightData[playerid][1] = 1;//lights & 0b0010; // Rear lights never break
+		gLightData[playerid][0] = lights & VEHICLE_LIGHT_STATUS:0b0001;
+		gLightData[playerid][1] = VEHICLE_LIGHT_STATUS:1;//lights & VEHICLE_LIGHT_STATUS:0b0010; // Rear lights never break
 
 		if(gLightData[playerid][0]) // back
 			strcat(str, "{FF0000}Back\n");
@@ -53,10 +53,10 @@ ShowLightList(playerid, vehicleid)
 	}
 	else
 	{
-		gLightData[playerid][0] = lights & 0b1000;
-		gLightData[playerid][1] = lights & 0b0100;
-		gLightData[playerid][2] = lights & 0b0010;
-		gLightData[playerid][3] = lights & 0b0001;
+		gLightData[playerid][0] = lights & VEHICLE_LIGHT_STATUS:0b1000;
+		gLightData[playerid][1] = lights & VEHICLE_LIGHT_STATUS:0b0100;
+		gLightData[playerid][2] = lights & VEHICLE_LIGHT_STATUS:0b0010;
+		gLightData[playerid][3] = lights & VEHICLE_LIGHT_STATUS:0b0001;
 
 		if(gLightData[playerid][0]) // backright
 			strcat(str, "{FF0000}Back Right\n");
@@ -102,7 +102,7 @@ ShowLightList(playerid, vehicleid)
 		{
 			if(gLightData[playerid][0] && GetItemType(itemid) == item_Headlight)
 			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b0111, tires);
+				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & VEHICLE_LIGHT_STATUS:0b0111, tires);
 				DestroyItem(itemid);
 			}
 			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
@@ -111,7 +111,7 @@ ShowLightList(playerid, vehicleid)
 		{
 			if(gLightData[playerid][1] && GetItemType(itemid) == item_Headlight)
 			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1011, tires);
+				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & VEHICLE_LIGHT_STATUS:0b1011, tires);
 				DestroyItem(itemid);
 			}
 			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
@@ -120,7 +120,7 @@ ShowLightList(playerid, vehicleid)
 		{
 			if(gLightData[playerid][2] && GetItemType(itemid) == item_Headlight)
 			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1101, tires);
+				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & VEHICLE_LIGHT_STATUS:0b1101, tires);
 				DestroyItem(itemid);
 			}
 			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);
@@ -129,7 +129,7 @@ ShowLightList(playerid, vehicleid)
 		{
 			if(gLightData[playerid][3] && GetItemType(itemid) == item_Headlight)
 			{
-				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & 0b1110, tires);
+				UpdateVehicleDamageStatus(gCurrentLightFixVehicle[playerid], panels, doors, lights & VEHICLE_LIGHT_STATUS:0b1110, tires);
 				DestroyItem(itemid);
 			}
 			else ShowLightList(playerid, gCurrentLightFixVehicle[playerid]);

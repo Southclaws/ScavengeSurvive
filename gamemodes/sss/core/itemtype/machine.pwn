@@ -181,9 +181,9 @@ _mach_PlayerUseMachine(playerid, Item:itemid)
 	return 0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(RELEASED(16))
+	if(RELEASED(KEY_SECONDARY_ATTACK))
 	{
 		if(mach_CurrentMachine[playerid] != INVALID_ITEM_ID)
 		{

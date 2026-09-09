@@ -216,9 +216,9 @@ _vint_LeaveArea(playerid, areaid)
 	return;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(newkeys == 16)
+	if(newkeys == KEY_SECONDARY_ATTACK)
 		_varea_Interact(playerid);
 
 	return 1;

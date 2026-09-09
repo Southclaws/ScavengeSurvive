@@ -200,7 +200,7 @@ _wb_StartWorking(playerid, Item:itemid, buildtime)
 	GetItemButtonID(itemid, buttonid);
 	GetPlayerAngleToButton(playerid, buttonid, angle);
 	SetPlayerFacingAngle(playerid, angle);
-	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, true, false, false, false, 0, SYNC_ALL);
 	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = itemid;
 }
@@ -231,9 +231,9 @@ _wb_CreateResult(Item:itemid, CraftSet:craftset)
 	CreateItem(resulttype, x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(RELEASED(16))
+	if(RELEASED(KEY_SECONDARY_ATTACK))
 	{
 		if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 		{

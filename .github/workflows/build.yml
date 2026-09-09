@@ -11,8 +11,10 @@ jobs:
       - uses: actions/checkout@v2
       - uses: AGraber/sampctl-action@v1
         with:
-          version: "1.9.1"
-      - run: sampctl p build --forceEnsure
+          version: "1.14.1"
+      - run: sampctl build --forceEnsure
+        env:
+          SAMPCTL_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v2
         with:
           name: compiled-amx

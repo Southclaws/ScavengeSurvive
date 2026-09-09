@@ -2,9 +2,10 @@
 
 ## Overview
 
-Scavenge and Survive is a PvP SA:MP survival gamemode. The aim of the game is to
-find supplies such as tools or weapons to help you survive, either alone or in a
-group.
+Scavenge and Survive is a PvP survival gamemode for
+[open.mp](https://open.mp), which still accepts SA-MP 0.3.7 clients. The aim of
+the game is to find supplies such as tools or weapons to help you survive,
+either alone or in a group.
 
 The overall objective is to build a stable community and defend it from players
 with more hostile intentions.
@@ -17,7 +18,14 @@ No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required to
 access the gamemode-specific features.
 
+The [porting](porting/) directory documents the move from SA-MP to open.mp: how
+the server is built and run now, why each dependency decision was made, and what
+went wrong on the way.
+
 ## Getting Started
+
+The server runs on [open.mp](https://open.mp). It is not a SA-MP server any
+more, though open.mp still accepts SA-MP 0.3.7 clients.
 
 ### Requirements
 
@@ -26,14 +34,31 @@ on your computer:
 
 - [Git](https://git-scm.com) To clone the repository and provide functionality
   to the [Runner](#runner)
-- [sampctl](https://github.com/Southclaws/sampctl) To install the necessary Pawn
-  dependencies and SA-MP plugins automatically.
+- [sampctl](https://github.com/Southclaws/sampctl) version 1.14 or newer, which
+  installs the Pawn dependencies, the compiler, the open.mp server and its
+  plugins and components, and generates `config.json`.
 - [The Go Language](https://golang.org/) To build tooling such as the Runner
   application which will make the development process easier.
 - [Taskfile](https://taskfile.dev) To run common development tasks such as
   building, running and generating additional assets and data.
 
 Tip: The easiest way to install all of these is with [Scoop](https://scoop.sh)!
+
+On 64 bit Linux you also need the 32 bit runtime libraries, because open.mp
+publishes only a 32 bit Linux server and every legacy plugin it loads is a 32
+bit binary too. On Debian or Ubuntu:
+
+```
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libc6:i386 libstdc++6:i386 libgcc-s1:i386 libatomic1:i386 libuuid1:i386
+```
+
+`libuuid1:i386` is easy to miss. Without it the uuid plugin fails to load and
+the gamemode stops on a "Function not registered: UUID" runtime error.
+
+If `sampctl ensure` starts failing on GitHub rate limits, put a token in the
+`SAMPCTL_GITHUB_TOKEN` environment variable.
 
 ### First Time Build & Run
 
@@ -47,8 +72,8 @@ git clone https://github.com/Southclaws/ScavengeSurvive.git
 Now, open the directory in your favourite IDE. I recommend vscode. As long as
 you have a terminal in there, you'll be fine.
 
-Run the following commands to pull the Pawn dependencies, SA-MP plugins,
-compiler and other necessary components:
+Run the following commands to pull the Pawn dependencies, the open.mp server,
+its plugins and components, the compiler and everything else needed:
 
 ```
 sampctl ensure
@@ -89,36 +114,57 @@ The environment variable names are the ones after `envconfig` in
 
 ## Deployment
 
-The recommended deployment strategy is to use Docker. This project comes with a
-`Dockerfile` and a `docker-compose.yml` so it's ready to go.
-
-Assuming you have a server (baremetal or virtual), clone the source to the
-machine either manually or using an automation tool such as
-[Pico](https://pico.sh)
+The server runs directly on the host. Clone the source to the machine either
+manually or using an automation tool such as [Pico](https://pico.sh), install
+the requirements listed above, then build and start it:
 
 ```
 git clone https://github.com/Southclaws/ScavengeSurvive.git
+cd ScavengeSurvive
+sampctl ensure
+go build -o ScavengeSurvive
+./ScavengeSurvive
 ```
 
-Now you just need to run Docker Compose, which will build the image if necessary
-and run it - detach in order to daemonise the server. It's exposed on port 7777
-udp by default.
+The game is served on port 7777 udp. The Runner also listens on port 7788 for
+its own update endpoint, which should not be exposed publicly.
+
+To run it as a service, point a systemd unit at the Runner binary with the
+repository as its working directory:
 
 ```
-docker-compose up -d
+[Unit]
+Description=Scavenge and Survive
+After=network.target
+
+[Service]
+WorkingDirectory=/srv/ScavengeSurvive
+ExecStart=/srv/ScavengeSurvive/ScavengeSurvive
+Restart=on-failure
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
 ```
+
+Leave restarts to the Runner where you can. It restarts the server internally
+and only exits when something has gone badly wrong, so a service manager that
+restarts it immediately will hide real failures.
 
 ### Architecture
 
-The image uses the Runner as the entrypoint. This keeps the server running and
-performs restarts internal to the container - this means the container will not
-close unless a catastrophic error occurs. Because of this, you should leave
-auto-restart for the container disabled and manually intervene if anything goes
-wrong.
+The Runner starts `sampctl run` as a child process in its own process group.
+sampctl generates `config.json` from the `runtime` section of `pawn.json`,
+installs the open.mp server and any missing plugins and components, then starts
+`omp-server`. Stopping the Runner stops the whole group.
 
-The container expects the entire repository to be mounted into it. This may seem
-counterintuitive but this is to facilitate safe restarts without complicating
-the application architecture.
+### Server configuration
+
+`config.json` is generated, so do not edit it directly. Change the `runtime`
+section of `pawn.json` instead and the next run will pick it up. Gameplay
+settings are separate and live in `scriptfiles/data/settings.ini`, which the
+gamemode creates on first boot. `misc/settings.ini.example` holds a full set of
+values to start from.
 
 ### Updating the Server
 
@@ -146,13 +192,13 @@ after parsing it. It will parse
 output it using the built-in logger. This means logs can be in JSON or other
 formats.
 
-All preamble is removed. This means all the nonsense that the SA-MP server and
-plugins print out during initialisation is removed completely. So all you'll see
-is a list of plugins:
+All preamble is removed. This means all the nonsense that the server, its
+components and its plugins print out during initialisation is removed
+completely. So all you'll see is what was loaded:
 
 ```
-2020-10-19T02:04:21.566+0100    INFO    finished initialising   {"plugins": ["nolog", "crashdetect", "sscanf", "streamer", "chrono", "pawn", "Whirlpool", "fsutil"]}
-2020-10-19T02:04:21.567+0100    INFO    [OnGameModeInit] FIRST_INIT
+06:38:50.863    INFO    finished initialising   {"components": ["Objects", "Dialogs", "Pawn", "sscanf", ...], "plugins": ["crashdetect", "streamer", "chrono", "pawn-memory", "Whirlpool", "uuid", "fsutil"]}
+06:38:50.864    INFO    [OnGameModeInit] FIRST_INIT
 ```
 
 ### Auto Restart

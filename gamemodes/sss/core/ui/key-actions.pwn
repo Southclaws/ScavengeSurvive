@@ -24,13 +24,13 @@ PlayerText:	KeyActions[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 hook OnPlayerConnect(playerid)
 {
 	KeyActions[playerid]			=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
-	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], 3);
-	PlayerTextDrawBackgroundColor	(playerid, KeyActions[playerid], 255);
-	PlayerTextDrawFont				(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], TEXT_DRAW_ALIGN_RIGHT);
+	PlayerTextDrawBackgroundColour	(playerid, KeyActions[playerid], 255);
+	PlayerTextDrawFont				(playerid, KeyActions[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, KeyActions[playerid], 0.300000, 1.499999);
-	PlayerTextDrawColor				(playerid, KeyActions[playerid], -1);
+	PlayerTextDrawColour				(playerid, KeyActions[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, KeyActions[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], true);
 }
 
 
@@ -157,7 +157,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 }
 
 // State change
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	_UpdateKeyActions(playerid);
 
@@ -179,7 +179,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 _UpdateKeyActions(playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 	{
 		HidePlayerKeyActionUI(playerid);
 		return;		
@@ -250,7 +250,7 @@ _UpdateKeyActions(playerid)
 
 	if(!IsValidItem(itemid))
 	{
-		if(IsPlayerCuffed(inplayerarea))
+		if(IsPlayerHandcuffed(inplayerarea))
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Remove handcuffs");
 			ShowPlayerKeyActionUI(playerid);

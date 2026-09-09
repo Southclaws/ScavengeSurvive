@@ -113,9 +113,9 @@ hook OnItemNameRender(Item:itemid, ItemType:itemtype)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(newkeys == 16)
+	if(newkeys == KEY_SECONDARY_ATTACK)
 	{
 		new Item:itemid = GetPlayerItem(playerid);
 
@@ -132,7 +132,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		}
 	}
 
-	if(oldkeys == 16)
+	if(oldkeys == KEY_SECONDARY_ATTACK)
 	{
 		if(skin_CurrentlyUsing[playerid] != INVALID_ITEM_ID)
 		{

@@ -25,9 +25,9 @@ Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 forward OnPlayerExplosiveDmg(playerid, Float:bleedrate, Float:knockmult);
 
 
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
-	if(weaponid == 51)
+	if(weaponid == REASON_EXPLOSION)
 	{
 		_DoExplosiveDamage(issuerid, playerid, amount);
 	}

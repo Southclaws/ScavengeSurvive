@@ -54,12 +54,12 @@ static MovementTypeName[E_MOVEMENT_TYPE][] = {
 
 ptask movementUpdate[100](playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return;
 
 	new
 		animidx = GetPlayerAnimationIndex(playerid),
-		k,
+		KEY:k,
 		ud,
 		lr;
 

@@ -276,7 +276,7 @@ LoadPlayerVehicle(const filepath[])
 
 	SetVehicleHP(vehicleid, Float:data[VEH_CELL_HEALTH]);
 	SetVehicleFuel(vehicleid, Float:data[VEH_CELL_FUEL]);
-	SetVehicleDamageData(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+	SetVehicleDamageData(vehicleid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 	SetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 	SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
 
@@ -327,7 +327,7 @@ LoadPlayerVehicle(const filepath[])
 
 		SetVehicleHealth(trailerid, Float:data[VEH_CELL_HEALTH]);
 		SetVehicleFuel(trailerid, Float:data[VEH_CELL_FUEL]);
-		SetVehicleDamageData(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		SetVehicleDamageData(trailerid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 		SetVehicleKey(trailerid, data[VEH_CELL_KEY]);
 
 		SetVehicleExternalLock(trailerid, E_LOCK_STATE:data[VEH_CELL_LOCKED]);
@@ -482,7 +482,7 @@ _SaveVehicle(vehicleid)
 	if(session != -1)
 		modio_close_session_write(session);
 
-	active[0] = !IsVehicleDead(vehicleid);
+	active[0] = !IsVehicleStateDead(vehicleid);
 	modio_push(filename, _T<A,C,T,V>, 1, active);
 
 	GetVehicleTypeName(GetVehicleType(vehicleid), vehiclename);
@@ -494,11 +494,11 @@ _SaveVehicle(vehicleid)
 	data[VEH_CELL_FUEL] = _:GetVehicleFuel(vehicleid);
 	GetVehiclePos(vehicleid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 	GetVehicleZAngle(vehicleid, Float:data[VEH_CELL_ROTZ]);
-	GetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
-	GetVehicleDamageStatus(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+	GetVehicleColourData(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+	GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 	data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 
-	if(!IsVehicleOccupied(vehicleid))
+	if(!IsVehicleOccupiedState(vehicleid))
 		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(vehicleid);
 
 	modio_push(filename, _T<D,A,T,A>, VEH_CELL_END, data);
@@ -521,8 +521,8 @@ _SaveVehicle(vehicleid)
 		data[VEH_CELL_FUEL] = _:0.0;
 		GetVehiclePos(trailerid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 		GetVehicleZAngle(trailerid, Float:data[VEH_CELL_ROTZ]);
-		GetVehicleColours(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
-		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		GetVehicleColourData(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
+		GetVehicleDamageStatus(trailerid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 		data[VEH_CELL_KEY] = GetVehicleKey(trailerid);
 		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(trailerid);
 
@@ -646,7 +646,7 @@ _SaveVehicle(vehicleid)
 ==============================================================================*/
 
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER)
 	{

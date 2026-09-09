@@ -172,7 +172,7 @@ Error:LoadAccount(playerid)
 {
 	if(CallLocalFunction("OnPlayerLoadAccount", "d", playerid))
 	{
-		return NoError(-1);
+		return Ok(-1);
 	}
 
 	new
@@ -208,7 +208,7 @@ Error:LoadAccount(playerid)
 		Logger_Log("LoadAccount: account does not exist",
 			Logger_I("playerid", playerid)
 		);
-		return NoError(0);
+		return Ok(0);
 	}
 
 	stmt_bind_value(stmt_AccountLoad, 0, DB::TYPE_STRING, name, MAX_PLAYER_NAME);
@@ -234,7 +234,7 @@ Error:LoadAccount(playerid)
 
 	if(!active)
 	{
-		return NoError(4);
+		return Ok(4);
 	}
 
 	if(IsWhitelistActive())
@@ -244,7 +244,7 @@ Error:LoadAccount(playerid)
 		if(!IsPlayerInWhitelist(playerid))
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
-			return NoError(3);
+			return Ok(3);
 		}
 	}
 
@@ -261,10 +261,10 @@ Error:LoadAccount(playerid)
 
 	if(gAutoLoginWithIP && GetPlayerIpAsInt(playerid) == ipv4)
 	{
-		return NoError(2);
+		return Ok(2);
 	}
 
-	return NoError(1);
+	return Ok(1);
 }
 
 
@@ -306,7 +306,7 @@ Error:CreateAccount(playerid, const password[])
 		{
 			ChatMsgLang(playerid, YELLOW, "WHITELISTNO");
 			WhitelistKick(playerid);
-			return NoError(0);
+			return Ok(0);
 		}
 	}
 
@@ -324,7 +324,7 @@ Error:CreateAccount(playerid, const password[])
 
 	CallLocalFunction("OnPlayerRegister", "d", playerid);
 
-	return NoError(1);
+	return Ok(1);
 }
 
 DisplayRegisterPrompt(playerid)
@@ -576,7 +576,7 @@ Logout(playerid, docombatlogcheck = 1)
 				ChatMsgAll(YELLOW, " >  %p combat logged!", playerid);
 				// TODO: make this correct, lastweapon is an item ID but
 				// OnPlayerDeath takes a GTA weapon ID.
-				OnPlayerDeath(playerid, lastattacker, lastweapon);
+				OnPlayerDeath(playerid, lastattacker, WEAPON:lastweapon);
 			}
 		}
 	}
@@ -629,7 +629,7 @@ Logout(playerid, docombatlogcheck = 1)
 		DestroyItem(GetPlayerHolsterItem(playerid));
 		DestroyPlayerBag(playerid);
 		RemovePlayerHolsterItem(playerid);
-		RemovePlayerWeapon(playerid);
+		RemovePlayerWeapons(playerid);
 
 		for(new i; i < MAX_INVENTORY_SLOTS; i++)
 		{

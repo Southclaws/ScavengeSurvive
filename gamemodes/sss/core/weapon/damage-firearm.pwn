@@ -25,7 +25,7 @@ Float:	dmg_ReturnKnockMult[MAX_PLAYERS];
 forward OnPlayerShootPlayer(playerid, targetid, bodypart, Float:bleedrate, Float:knockmult, Float:bulletvelocity, Float:distance);
 
 
-hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
+hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(IsPlayerOnAdminDuty(damagedid))
 		return 0;
@@ -33,10 +33,10 @@ hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(damagedid))
+	if(!GetPlayerSpawnedState(damagedid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	_HandleFirearmDamage(playerid, damagedid, bodypart);

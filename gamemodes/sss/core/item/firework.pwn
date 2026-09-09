@@ -94,7 +94,7 @@ DestroyFireworkProjectile(id)
 	fwk_Data[id][fwk_sequence] = 0;
 	fwk_Data[id][fwk_index] = 0;
 
-	Iter_SafeRemove(fwk_ProjectileIndex, id, id);
+	Iter_Remove(fwk_ProjectileIndex, id);
 	return id;
 
 }
@@ -106,7 +106,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	{
 		if(GetTickCountDifference(GetTickCount(), fwk_CooldownTick) > 3000)
 		{
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, false, false, false, false, 450);
 			defer FireworkLaunch(_:withitemid);
 			fwk_CooldownTick = GetTickCount();
 		}
@@ -154,7 +154,7 @@ hook OnDynamicObjectMoved(objectid)
 			
 			if(index >= MAX_EX_PER_SEQUENCE)
 			{
-				i = DestroyFireworkProjectile(i);
+				DestroyFireworkProjectile(i);
 				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
@@ -162,14 +162,14 @@ hook OnDynamicObjectMoved(objectid)
 
 			if(extype == -1)
 			{
-				i = DestroyFireworkProjectile(i);
+				DestroyFireworkProjectile(i);
 				return Y_HOOKS_BREAK_RETURN_0;
 			}
 
 			while(maxmodels < 8 && fwk_ExplosionTypes[extype][fwk_model][maxmodels] != -1)
 				maxmodels++;
 
-			i = DestroyFireworkProjectile(i);
+			DestroyFireworkProjectile(i);
 			
 			angoffset = random((360/fwk_ExplosionTypes[extype][fwk_spread]));
 

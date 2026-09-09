@@ -174,7 +174,7 @@ _StartDrinking(playerid, Item:itemid, continuing = false)
 
 	liq_CurrentItem[playerid] = itemid;
 
-	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
+	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, false, true, true, false, 0, SYNC_ALL);
 	StartHoldAction(playerid, 1000);
 
 	return;
@@ -241,9 +241,9 @@ hook OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16 && !(newkeys & 16))
+	if(oldkeys & KEY_SECONDARY_ATTACK && !(newkeys & KEY_SECONDARY_ATTACK))
 	{
 		if(liq_CurrentItem[playerid] != INVALID_ITEM_ID)
 			_StopDrinking(playerid);
@@ -339,11 +339,11 @@ stock Float:GetLiquidItemLiquidAmount(Item:itemid)
 stock Error:SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
 {
 	if(!IsValidItem(itemid))
-		return NoError();
+		return Ok();
 
 	new ItemType:itemtype = GetItemType(itemid);
 	if(liq_ItemTypeLiquidContainer[itemtype] == -1)
-		return NoError();
+		return Ok();
 
 	if(amount > liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity])
 	{
@@ -369,10 +369,10 @@ stock GetLiquidItemLiquidType(Item:itemid)
 stock Error:SetLiquidItemLiquidType(Item:itemid, type)
 {
 	if(!IsValidItem(itemid))
-		return NoError();
+		return Ok();
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
-		return NoError();
+		return Ok();
 
 	return SetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE, true);
 }

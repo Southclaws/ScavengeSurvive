@@ -57,7 +57,7 @@ hook OnPlayerDisconnect(playerid)
 	return 1;
 }
 
-hook OnPlayerDeath(playerid, killerid, reason)
+hook OnPlayerDeath(playerid, killerid, WEAPON:reason)
 {
 	WakeUpPlayer(playerid);
 }
@@ -67,7 +67,7 @@ stock KnockOutPlayer(playerid, duration)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	Logger_Log("player knocked out",
@@ -120,7 +120,7 @@ stock WakeUpPlayer(playerid)
 	TogglePlayerVehicleEntry(playerid, true);
 	HidePlayerProgressBar(playerid, KnockoutBar);
 	HideActionText(playerid);
-	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, false, true, true, false, 0);
 
 	knockout_Tick[playerid] = GetTickCount();
 	knockout_KnockedOut[playerid] = false;
@@ -133,7 +133,7 @@ timer KnockOutUpdate[100](playerid)
 	if(!knockout_KnockedOut[playerid])
 		WakeUpPlayer(playerid);
 
-	if(IsPlayerDead(playerid) || GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000 || !IsPlayerSpawned(playerid))
+	if(IsPlayerDead(playerid) || GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000 || !GetPlayerSpawnedState(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);
@@ -184,7 +184,7 @@ _PlayKnockOutAnimation(playerid)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
+		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, false, true, true, true, 0, SYNC_ALL);
 	}
 	else
 	{
@@ -205,12 +205,12 @@ _PlayKnockOutAnimation(playerid)
 				GetVehiclePos(vehicleid, x, y, z);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, x, y, z);
-				ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, 0, 1, 1, 0, 0, 1);
+				ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, false, true, true, false, 0, SYNC_ALL);
 			}
 
 			default:
 			{
-				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, false, true, true, true, 0, SYNC_ALL);
 			}
 		}
 	}
@@ -232,7 +232,7 @@ hook OnPlayerExitVehicle(playerid, vehicleid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(knockout_KnockedOut[playerid])
 	{

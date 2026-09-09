@@ -16,27 +16,27 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	if(issuerid == INVALID_PLAYER_ID)
 	{
 		switch(weaponid)
 		{
-			case 37:
+			case WEAPON_FLAMETHROWER:
 			{
 				GivePlayerHP(playerid, -(amount * 0.1));
 			}
-			case 53:
+			case REASON_DROWN:
 			{
 				KnockOutPlayer(playerid, 1500 + random(1500));
 			}
-			case 54:
+			case REASON_COLLISION:
 			{
 				if(amount > 10.0)
 				{
