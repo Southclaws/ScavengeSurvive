@@ -293,7 +293,7 @@ timer UpdateSpectateMode[100](playerid)
 	{
 
 		new
-			k,
+			KEY:k,
 			ud,
 			lr,
 			Float:camX,

@@ -59,7 +59,7 @@ ptask movementUpdate[100](playerid)
 
 	new
 		animidx = GetPlayerAnimationIndex(playerid),
-		k,
+		KEY:k,
 		ud,
 		lr;
 

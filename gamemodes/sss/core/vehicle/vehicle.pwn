@@ -46,10 +46,10 @@ Float:	veh_health,
 Float:	veh_Fuel,
 		veh_key,
 		veh_engine,
-		veh_panels,
-		veh_doors,
-		veh_lights,
-		veh_tires,
+VEHICLE_PANEL_STATUS:	veh_panels,
+VEHICLE_DOOR_STATUS:	veh_doors,
+VEHICLE_LIGHT_STATUS:	veh_lights,
+VEHICLE_TYRE_STATUS:	veh_tires,
 		veh_armour,
 		veh_colour1,
 		veh_colour2,
@@ -292,10 +292,10 @@ _veh_create(type, Float:x, Float:y, Float:z, Float:r, colour1, colour2, world = 
 	veh_Data[vehicleid][veh_key]		= 0;
 
 	veh_Data[vehicleid][veh_engine]		= 0;
-	veh_Data[vehicleid][veh_panels]		= 0;
-	veh_Data[vehicleid][veh_doors]		= 0;
-	veh_Data[vehicleid][veh_lights]		= 0;
-	veh_Data[vehicleid][veh_tires]		= 0;
+	veh_Data[vehicleid][veh_panels]		= VEHICLE_PANEL_STATUS:0;
+	veh_Data[vehicleid][veh_doors]		= VEHICLE_DOOR_STATUS:0;
+	veh_Data[vehicleid][veh_lights]		= VEHICLE_LIGHT_STATUS:0;
+	veh_Data[vehicleid][veh_tires]		= VEHICLE_TYRE_STATUS:0;
 
 	veh_Data[vehicleid][veh_armour]		= 0;
 
@@ -1035,7 +1035,7 @@ stock SetVehicleEngine(vehicleid, toggle)
 // veh_doors
 // veh_lights
 // veh_tires
-stock SetVehicleDamageData(vehicleid, panels, doors, lights, tires)
+stock SetVehicleDamageData(vehicleid, VEHICLE_PANEL_STATUS:panels, VEHICLE_DOOR_STATUS:doors, VEHICLE_LIGHT_STATUS:lights, VEHICLE_TYRE_STATUS:tires)
 {
 	if(!IsValidVehicle(vehicleid))
 		return 0;

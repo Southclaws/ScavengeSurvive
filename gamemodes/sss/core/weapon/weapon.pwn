@@ -391,7 +391,7 @@ timer _RepeatingFire[1000](playerid)
 	if(GetTickCountDifference(GetTickCount(), tick_LastReload[playerid]) < 1300)
 		return;
 
-	new k, ud, lr;
+	new KEY:k, ud, lr;
 
 	GetPlayerKeys(playerid, k, ud, lr);
 

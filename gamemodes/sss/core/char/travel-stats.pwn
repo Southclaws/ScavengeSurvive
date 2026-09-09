@@ -50,7 +50,7 @@ hook OnPlayerScriptUpdate(playerid)
 {
 	new
 		animidx = GetPlayerAnimationIndex(playerid),
-		k,
+		KEY:k,
 		ud,
 		lr,
 		Float:x,

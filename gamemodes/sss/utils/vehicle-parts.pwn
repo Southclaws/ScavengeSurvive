@@ -42,10 +42,10 @@ stock SetCarTireState(vehicleid, tire, toggle)
 		return 0;
 
 	new
-		panels,
-		doors,
-		lights,
-		tires,
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires,
 
 		backright,
 		frontright,
@@ -88,10 +88,10 @@ stock GetCarTireState(vehicleid, tire)
 		return 0;
 
 	new
-		panels,
-		doors,
-		lights,
-		tires;
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires;
 
 	GetVehicleDamageStatus(vehicleid, panels, doors, lights, tires);
 
@@ -112,10 +112,10 @@ stock SetPlanePartDamage(vehicleid, part, damage)
 		return 0;
 
 	new
-		panels,
-		doors,
-		lights,
-		tires,
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires,
 
 		flp,
 		frp,
@@ -146,10 +146,10 @@ stock GetPlanePartDamage(vehicleid, part)
 		return 0;
 
 	new
-		panels,
-		doors,
-		lights,
-		tires,
+		VEHICLE_PANEL_STATUS:panels,
+		VEHICLE_DOOR_STATUS:doors,
+		VEHICLE_LIGHT_STATUS:lights,
+		VEHICLE_TYRE_STATUS:tires,
 
 		flp,
 		frp,

@@ -335,7 +335,7 @@ hook OnHoldActionFinish(playerid)
 
 hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(RELEASED(16) && IsValidItem(exp_ArmingItem[playerid]))
+	if(RELEASED(KEY_SECONDARY_ATTACK) && IsValidItem(exp_ArmingItem[playerid]))
 	{
 		StopHoldAction(playerid);
 		CancelPlayerMovement(playerid);

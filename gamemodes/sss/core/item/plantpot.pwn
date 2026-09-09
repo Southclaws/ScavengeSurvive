@@ -338,7 +338,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 		inline Response(pid, dialogid, response, listitem, string:inputtext[])
 		{
 			#pragma unused pid, dialogid, response, listitem, inputtext
-			ClearAnimations(playerid, 1);
+			ClearAnimations(playerid, SYNC_ALL);
 		}
 		Dialog_ShowCallback(playerid, using inline Response, DIALOG_STYLE_MSGBOX, "Plant Pot", string, "Close");
 

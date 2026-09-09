@@ -233,7 +233,7 @@ _wb_CreateResult(Item:itemid, CraftSet:craftset)
 
 hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(RELEASED(16))
+	if(RELEASED(KEY_SECONDARY_ATTACK))
 	{
 		if(wb_CurrentWorkbench[playerid] != INVALID_ITEM_ID)
 		{
