@@ -124,6 +124,11 @@ ensure again.
 supposed to be zero, so that crashdetect stays quiet until the gamemode enables
 long call detection itself.
 
+**The server keeps running after you stop the runner.** It should not. The
+runner stops its whole process group and waits for it, and kills it after
+fifteen seconds. If you see an orphan, stop it with `pkill omp-server` and treat
+it as a bug.
+
 **A build error inside a macro that makes no sense.** Add `-l` to the build args
 in `pawn.json` and run `sampctl build`. The compiler writes a fully preprocessed
 `gamemodes/ScavengeSurvive.lst` and stops. Compare the expansion of the broken

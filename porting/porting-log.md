@@ -180,6 +180,25 @@ Dockerfile and compose file deleted, README rewritten for the native setup, CI
 moved to sampctl 1.14.1 with a token to avoid the unauthenticated GitHub rate
 limit, Taskfile given ensure, build and run tasks.
 
+## Commit 7: stop the server when the runner stops
+
+Found during final verification. Interrupting the runner left `omp-server`
+running with nothing supervising it. The runner returned from its signal loop
+and exited before the goroutine watching the cancelled context could stop the
+child.
+
+There was a second problem in the same place. The server loop treated any exit
+as a reason to restart, so during shutdown it would have waited five seconds and
+started a fresh server on the way out. It now checks whether the context has
+been cancelled first, and the wait itself is interruptible.
+
+The runner now cancels and waits for the server goroutine before returning, and
+kills the process group if it has not stopped fifteen seconds after being asked.
+
+Verified both directions: interrupting the runner leaves no server process
+behind, and killing the server process makes the runner start a new one that
+loads the gamemode again.
+
 ## Open items
 
 - 1449 weak tag mismatch warnings and 294 deprecated spelling warnings. Fixing
