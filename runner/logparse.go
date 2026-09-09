@@ -23,7 +23,21 @@ const (
 	ChunkErrorStart = `[error] UNHANDLED ERRORS:`
 )
 
-var PluginPattern = regexp.MustCompile(`Loading plugin:\s(\w+)`)
+var PluginPattern = regexp.MustCompile(`Loading plugin:\s([\w-]+)`)
+
+// ComponentPattern matches open.mp's own components, which are loaded before
+// any legacy plugin and reported in a different format.
+var ComponentPattern = regexp.MustCompile(`Successfully loaded component (\w+)`)
+
+// openMPPrefixPattern matches the timestamp and level open.mp writes in front
+// of every line, for example "[2020-01-02T03:04:05+0000] [Info] ". The rest of
+// the parser works on the message itself, so the prefix is stripped first.
+var openMPPrefixPattern = regexp.MustCompile(`^\[\d{4}-\d{2}-\d{2}T[^\]]*\]\s\[\w+\]\s?`)
+
+// stripOpenMPPrefix removes open.mp's timestamp and level prefix from a line.
+func stripOpenMPPrefix(line string) string {
+	return openMPPrefixPattern.ReplaceAllString(line, "")
+}
 
 type LogParser interface {
 	GetWriter() io.Writer
@@ -56,6 +70,7 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 
 	init := true
 	plugins := []string{}
+	components := []string{}
 	scanner := bufio.NewScanner(r)
 	preamble := []string{}
 
@@ -63,7 +78,7 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 	debugTrace := []string{}
 
 	for scanner.Scan() {
-		line := scanner.Text()
+		line := stripOpenMPPrefix(scanner.Text())
 
 		if init {
 			if strings.Contains(line, ErrorPattern) {
@@ -83,14 +98,22 @@ func (p *ReactiveParser) parseWithRecover(r io.Reader) {
 			// relevant info such as plugins loaded.
 			if strings.Contains(line, EntryPattern) {
 				init = false
-				zap.L().Info("finished initialising", zap.Strings("plugins", plugins))
+				zap.L().Info("finished initialising",
+					zap.Strings("components", components),
+					zap.Strings("plugins", plugins))
 				continue
 			}
 
-			// look for plugin initialisation logs and store them for printing
+			// look for plugin and component initialisation logs and store
+			// them for printing
 			match := PluginPattern.FindStringSubmatch(line)
 			if len(match) == 2 {
 				plugins = append(plugins, match[1])
+			}
+
+			match = ComponentPattern.FindStringSubmatch(line)
+			if len(match) == 2 {
+				components = append(components, match[1])
 			}
 
 			// save the preamble for later, if the server crashes during

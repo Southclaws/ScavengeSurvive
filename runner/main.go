@@ -5,13 +5,9 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
-	"runtime"
 	"time"
 
-	"github.com/Southclaws/sampctl/download"
-	"github.com/Southclaws/sampctl/rook"
 	"github.com/cskr/pubsub"
-	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -24,44 +20,22 @@ func Run(cfg Config) error {
 		return errors.Wrap(err, "failed to get current working directory")
 	}
 
-	forceBuild := false
-	forceEnsure := false
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	if shouldEnsure(dir) {
-		forceBuild = true
-		forceEnsure = true
-	}
-
-	cacheDir, err := download.GetCacheDir()
-	if err != nil {
-		return errors.Wrap(err, "failed to get cache directory")
-	}
-
-	gh := github.NewClient(nil)
-
-	pcx, err := rook.NewPackageContext(gh, nil, true, dir, runtime.GOOS, cacheDir, "")
-	if err != nil {
-		return errors.Wrap(err, "failed to interpret directory as Pawn package")
-	}
-
-	pcx.CacheDir = cacheDir
-	pcx.ForceBuild = forceBuild
-	pcx.ForceEnsure = forceEnsure
-	pcx.Relative = true
-	if cfg.RconPassword != "" {
-		pcx.Package.Runtime.RCONPassword = &cfg.RconPassword
-	}
-
-	if err := pcx.RunPrepare(context.Background()); err != nil {
-		return errors.Wrap(err, "failed to prepare runtime")
+		if err := EnsureDependencies(ctx); err != nil {
+			return err
+		}
+		if err := BuildGamemode(ctx); err != nil {
+			return err
+		}
 	}
 
 	zap.L().Info("prepared runtime environment")
 
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, os.Interrupt)
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	if cfg.Settings != "" {
 		WriteSettings(cfg.Settings)
@@ -70,7 +44,7 @@ func Run(cfg Config) error {
 	ps := pubsub.New(0)
 
 	if cfg.AutoBuild {
-		go RunWatcher(ctx, pcx)
+		go RunWatcher(ctx)
 	}
 
 	go RunAPI(ctx, ps, cfg.Restart)
