@@ -103,7 +103,7 @@ tracer_HandleObjectMoved(objectid)
 	return;
 }
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, WEAPON:weaponid, BULLET_HIT_TYPE:hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	if(IsBaseWeaponClipBased(weaponid))
 	{

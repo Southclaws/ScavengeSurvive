@@ -53,7 +53,7 @@ hook OnItemCreate(Item:itemid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	new
 		Item:itemid,
@@ -64,7 +64,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 	if(itemtype == item_Medkit || itemtype == item_Bandage || itemtype == item_DoctorBag || itemtype == item_AntiSepBandage)
 	{
-		if(newkeys == 16)
+		if(newkeys == KEY_SECONDARY_ATTACK)
 		{
 			if(IsPlayerKnockedOut(playerid))
 				return 0;
@@ -78,7 +78,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 			PlayerStartHeal(playerid, med_HealTarget[playerid]);
 		}
-		if(oldkeys == 16)
+		if(oldkeys == KEY_SECONDARY_ATTACK)
 		{
 			PlayerStopHeal(playerid);
 		}

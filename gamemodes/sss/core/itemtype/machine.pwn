@@ -181,7 +181,7 @@ _mach_PlayerUseMachine(playerid, Item:itemid)
 	return 0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(RELEASED(16))
 	{

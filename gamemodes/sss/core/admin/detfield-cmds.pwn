@@ -770,11 +770,11 @@ hook OnPlayerDialogPage(playerid, direction)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(dfm_Editing[playerid])
 	{
-		if(newkeys == 128)
+		if(newkeys == KEY_HANDBRAKE)
 		{
 			AddNewDetectionFieldPoint(playerid);
 		}

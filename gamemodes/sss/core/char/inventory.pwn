@@ -916,7 +916,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 	}
 }
 
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(GetPlayerSpawnedState(playerid))
 	{

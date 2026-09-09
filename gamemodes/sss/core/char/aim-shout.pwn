@@ -21,11 +21,11 @@ static
 	aimshout_Tick[MAX_PLAYERS];
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(IsPlayerInAnyVehicle(playerid))
 	{
-		if( (newkeys & 320) && (newkeys & 1) )
+		if( (newkeys & (KEY_LOOK_RIGHT | KEY_LOOK_LEFT)) && (newkeys & KEY_ACTION) )
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{
@@ -40,7 +40,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	}
 	else
 	{
-		if( (newkeys & 128) && (newkeys & 512) )
+		if( (newkeys & KEY_HANDBRAKE) && (newkeys & KEY_SUBMISSION) )
 		{
 			if(GetTickCountDifference(GetTickCount(), aimshout_Tick[playerid]) > 750)
 			{

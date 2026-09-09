@@ -57,7 +57,7 @@ hook OnPlayerDisconnect(playerid)
 	return 1;
 }
 
-hook OnPlayerDeath(playerid, killerid, reason)
+hook OnPlayerDeath(playerid, killerid, WEAPON:reason)
 {
 	WakeUpPlayer(playerid);
 }
@@ -232,7 +232,7 @@ hook OnPlayerExitVehicle(playerid, vehicleid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(knockout_KnockedOut[playerid])
 	{

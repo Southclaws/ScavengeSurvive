@@ -159,7 +159,7 @@ hook OnPlayerScriptUpdate(playerid)
 
 static AlreadyJumping[MAX_PLAYERS];
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(newkeys & KEY_JUMP)
 	{

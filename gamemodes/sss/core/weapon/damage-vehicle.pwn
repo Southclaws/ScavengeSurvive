@@ -33,9 +33,9 @@ hook OnScriptInit()
 	GetSettingFloat("vehicle.damage/bleed-mult", 1.0, dmg_VehicleVelocityBleedMult);
 }
 
-hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
-	if(weaponid == 49)
+	if(weaponid == REASON_VEHICLE)
 	{
 		_DoVehicleCollisionDamage(issuerid, playerid);
 	}

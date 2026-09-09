@@ -468,7 +468,7 @@ timer UpdateSpectateMode[100](playerid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(spectate_Target[playerid] != INVALID_PLAYER_ID)
 	{
@@ -477,13 +477,13 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 		spectate_ClickTick[playerid] = GetTickCount();
 
-		if(newkeys == 128)
+		if(newkeys == KEY_HANDBRAKE)
 			SpectateNextTarget(playerid);
 
-		if(newkeys == 4)
+		if(newkeys == KEY_FIRE)
 			SpectatePrevTarget(playerid);
 
-		if(newkeys == 512)
+		if(newkeys == KEY_SUBMISSION)
 			EnterSpectateMode(playerid, spectate_Target[playerid]);
 	}
 	return 1;

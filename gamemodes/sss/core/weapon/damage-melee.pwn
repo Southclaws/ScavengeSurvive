@@ -30,7 +30,7 @@ new
 forward OnPlayerMeleePlayer(playerid, targetid, Float:bleedrate, Float:knockmult);
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(newkeys & KEY_FIRE)
 	{
@@ -140,9 +140,9 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 	return 1;
 }
 
-hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, weaponid, bodypart)
+hook OnPlayerGiveDamage(playerid, damagedid, Float:amount, WEAPON:weaponid, bodypart)
 {
-	if(weaponid == 0)
+	if(weaponid == WEAPON_FIST)
 		return _DoMeleeDamage(playerid, damagedid, 0.001, 0.5);
 
 	return _HandleStandardMelee(playerid, damagedid);

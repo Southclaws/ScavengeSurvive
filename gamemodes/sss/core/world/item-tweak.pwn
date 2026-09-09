@@ -263,14 +263,14 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 }
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(IsValidItem(twk_Item[playerid]))
 	{
 		if(!twk_Locked[playerid] && newkeys & KEY_WALK)
 			_twk_ToggleMouse(playerid, true);
 
-		else if(twk_Locked[playerid] && newkeys & 16)
+		else if(twk_Locked[playerid] && newkeys & KEY_SECONDARY_ATTACK)
 			_twk_Commit(playerid);
 	}
 }
@@ -281,7 +281,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 		_twk_Commit(playerid);
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	if(IsValidItem(twk_Item[playerid]))
 		_twk_Commit(playerid);

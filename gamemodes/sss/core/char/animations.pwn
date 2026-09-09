@@ -21,7 +21,7 @@ new
 Timer:	SitDownTimer[MAX_PLAYERS];
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{

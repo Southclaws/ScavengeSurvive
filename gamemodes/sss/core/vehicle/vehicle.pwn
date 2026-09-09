@@ -340,7 +340,7 @@ _veh_SyncData(vehicleid)
 }
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(IsPlayerKnockedOut(playerid))
 		return 0;
@@ -555,7 +555,7 @@ PlayerVehicleUpdate(playerid)
 	if(IsBaseWeaponDriveby(GetPlayerWeapon(playerid)))
 	{
 		if(GetTickCountDifference(GetTickCount(), GetPlayerVehicleExitTick(playerid)) > 3000 && playerstate == PLAYER_STATE_DRIVER)
-			SetPlayerArmedWeapon(playerid, 0);
+			SetPlayerArmedWeapon(playerid, WEAPON_FIST);
 	}
 
 	veh_TempVelocity[playerid] = GetPlayerTotalVelocity(playerid);
@@ -600,7 +600,7 @@ VehicleSurfingCheck(playerid)
 	return;
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	veh_TempHealth[playerid] = 0.0;
 	veh_TempVelocity[playerid] = 0.0;

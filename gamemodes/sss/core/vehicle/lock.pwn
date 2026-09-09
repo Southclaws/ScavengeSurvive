@@ -53,7 +53,7 @@ hook OnPlayerConnect(playerid)
 	lock_DisableForPlayer[playerid] = false;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(newkeys & KEY_SUBMISSION)
 	{
@@ -61,7 +61,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			_HandleLockKey(playerid);
 	}
 
-	if(newkeys & 16)
+	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 		new vehicleid = GetPlayerVehicleArea(playerid);
 

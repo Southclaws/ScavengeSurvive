@@ -28,12 +28,12 @@ hook OnPlayerConnect(playerid)
 }
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(IsBadInteract(playerid))
 		return 1;
 
-	if(newkeys & 16)
+	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 		new Item:itemid = GetPlayerItem(playerid);
 
@@ -46,7 +46,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 
 				if(IsPlayerNextToPlayer(playerid, i))
 				{
-					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0 && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
+					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == WEAPON_FIST && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
 					{
 						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, true, false, false, false, 0);
 						StartHoldAction(playerid, 3000);
@@ -70,7 +70,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(GetPlayerSpecialAction(i) == SPECIAL_ACTION_CUFFED)
 					{
-						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == 0 && cuf_BeingCuffedBy[playerid] == INVALID_PLAYER_ID)
+						if(GetPlayerItem(playerid) == INVALID_ITEM_ID && GetPlayerWeapon(playerid) == WEAPON_FIST && cuf_BeingCuffedBy[playerid] == INVALID_PLAYER_ID)
 						{
 							cuf_TargetPlayer[playerid] = i;
 							cuf_BeingCuffedBy[i] = playerid;
@@ -85,7 +85,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			}
 		}
 	}
-	if(oldkeys & 16)
+	if(oldkeys & KEY_SECONDARY_ATTACK)
 	{
 		StopApplyingHandcuffs(playerid);
 	}
@@ -154,7 +154,7 @@ CanPlayerHandcuffPlayer(playerid, targetid)
 	if(!IsPlayerNextToPlayer(playerid, targetid))
 		return 0;
 
-	if(GetPlayerWeapon(targetid) != 0)
+	if(GetPlayerWeapon(targetid) != WEAPON_FIST)
 		return 0;
 
 	if(IsValidItem(GetPlayerItem(targetid)))

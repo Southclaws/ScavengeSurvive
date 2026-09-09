@@ -231,7 +231,7 @@ _wb_CreateResult(Item:itemid, CraftSet:craftset)
 	CreateItem(resulttype, x, y, z + 0.95, 0.0, 0.0, rz - 95.0 + frandom(10.0));
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(RELEASED(16))
 	{

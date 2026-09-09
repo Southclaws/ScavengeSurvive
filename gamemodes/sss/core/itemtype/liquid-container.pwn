@@ -241,9 +241,9 @@ hook OnHoldActionFinish(playerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16 && !(newkeys & 16))
+	if(oldkeys & KEY_SECONDARY_ATTACK && !(newkeys & KEY_SECONDARY_ATTACK))
 	{
 		if(liq_CurrentItem[playerid] != INVALID_ITEM_ID)
 			_StopDrinking(playerid);

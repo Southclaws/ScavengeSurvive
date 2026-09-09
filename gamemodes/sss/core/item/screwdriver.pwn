@@ -58,9 +58,9 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 }
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16)
+	if(oldkeys & KEY_SECONDARY_ATTACK)
 	{
 		if(IsValidItem(scr_TargetItem[playerid]))
 			StopHoldAction(playerid);

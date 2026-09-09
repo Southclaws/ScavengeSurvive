@@ -16,15 +16,15 @@
 #include <YSI_Coding\y_hooks>
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(GetPlayerWeapon(playerid) != 0 || IsValidItem(GetPlayerItem(playerid)))
+	if(GetPlayerWeapon(playerid) != WEAPON_FIST || IsValidItem(GetPlayerItem(playerid)))
 		return 1;
 
 	if(GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED || IsPlayerOnAdminDuty(playerid) || IsPlayerKnockedOut(playerid) || GetPlayerAnimationIndex(playerid) == 1381)
 		return 1;
 
-	if(newkeys & 16)
+	if(newkeys & KEY_SECONDARY_ATTACK)
 	{
 		foreach(new i : Player)
 		{

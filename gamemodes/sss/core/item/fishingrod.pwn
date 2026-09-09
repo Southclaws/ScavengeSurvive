@@ -55,16 +55,16 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(GetItemType(GetPlayerItem(playerid)) == item_FishRod)
 	{
-		if(newkeys == 16)
+		if(newkeys == KEY_SECONDARY_ATTACK)
 		{
 			if(fish_Status[playerid] == FISH_STATUS_WAITING)
 				_PlayerStopFishing(playerid);
 		}
-		else if(oldkeys == 16)
+		else if(oldkeys == KEY_SECONDARY_ATTACK)
 		{
 			if(fish_Status[playerid] == FISH_STATUS_CASTING)
 				_CatchFish(playerid, fish_Distance[playerid]);

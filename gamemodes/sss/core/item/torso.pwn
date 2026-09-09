@@ -161,9 +161,9 @@ hook OnPlayerCloseContainer(playerid, containerid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys == 16)
+	if(oldkeys == KEY_SECONDARY_ATTACK)
 	{
 		if(IsValidItem(gut_TargetItem[playerid]))
 		{

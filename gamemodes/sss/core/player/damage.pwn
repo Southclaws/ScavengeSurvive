@@ -40,14 +40,14 @@ public OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bod
 
 	switch(weaponid)
 	{
-		case 31:
+		case WEAPON_M4:
 		{
 			new model = GetVehicleModel(GetPlayerVehicleID(playerid));
 
 			if(model == 447 || model == 476)
 				_DoFirearmDamage(issuerid, playerid, INVALID_ITEM_ID, item_VehicleWeapon, bodypart);
 		}
-		case 38:
+		case WEAPON_MINIGUN:
 		{
 			if(GetVehicleModel(GetPlayerVehicleID(playerid)) == 425)
 				_DoFirearmDamage(issuerid, playerid, INVALID_ITEM_ID, item_VehicleWeapon, bodypart);

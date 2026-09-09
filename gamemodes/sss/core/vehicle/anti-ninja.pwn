@@ -49,7 +49,7 @@ timer CurrentlyEnteringCheck[3000](playerid)
 		anj_CurrentlyEntering[playerid] = INVALID_VEHICLE_ID;
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	if(oldstate == PLAYER_STATE_ONFOOT && newstate == PLAYER_STATE_DRIVER)
 	{
@@ -58,9 +58,9 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 	return 1;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(newkeys & 8 || newkeys & 32)
+	if(newkeys & KEY_SPRINT || newkeys & KEY_JUMP)
 	{
 		if(anj_CurrentlyEntering[playerid] != INVALID_VEHICLE_ID)
 		{

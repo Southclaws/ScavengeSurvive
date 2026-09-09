@@ -30,7 +30,7 @@ enum (<<= 1)
 enum E_ITEM_WEAPON_DATA
 {
 ItemType:	itmw_itemType,
-			itmw_baseWeapon,
+WEAPON:		itmw_baseWeapon,
 			itmw_calibre,
 Float:		itmw_muzzVelocity,
 			itmw_magSize,
@@ -96,7 +96,7 @@ hook OnPlayerConnect(playerid)
 ==============================================================================*/
 
 
-stock DefineItemTypeWeapon(ItemType:itemtype, baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
+stock DefineItemTypeWeapon(ItemType:itemtype, WEAPON:baseweapon, calibre, Float:muzzvelocity, magsize, maxreservemags, animset = -1, flags = 0)
 {
 	SetItemTypeMaxArrayData(itemtype, 4);
 
@@ -314,7 +314,7 @@ _FastUpdateHandler(playerid)
 
 	if(!IsValidItemType(itemtype))
 	{
-		if(GetPlayerWeapon(playerid) > 0)
+		if(GetPlayerWeapon(playerid) > WEAPON_FIST)
 			RemovePlayerWeapons(playerid);
 
 		return;
@@ -327,7 +327,7 @@ _FastUpdateHandler(playerid)
 	{
 		if(IsBaseWeaponThrowable(itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon]))
 		{
-			if(GetPlayerWeapon(playerid) == 0)
+			if(GetPlayerWeapon(playerid) == WEAPON_FIST)
 			{
 				if(GetTickCountDifference(GetTickCount(), tick_GetWeaponTick[playerid]) > 1000)
 					DestroyItem(itemid);
@@ -339,7 +339,7 @@ _FastUpdateHandler(playerid)
 
 	if(GetPlayerState(playerid) == PLAYER_STATE_DRIVER)
 	{
-		SetPlayerArmedWeapon(playerid, 0);
+		SetPlayerArmedWeapon(playerid, WEAPON_FIST);
 		return;
 	}
 
@@ -413,7 +413,7 @@ timer _RepeatingFire[1000](playerid)
 	return;
 }
 
-hook OnPlayerWeaponShot(playerid, weaponid, hittype, hitid, Float:fX, Float:fY, Float:fZ)
+hook OnPlayerWeaponShot(playerid, WEAPON:weaponid, BULLET_HIT_TYPE:hittype, hitid, Float:fX, Float:fY, Float:fZ)
 {
 	dbg("weapon-core", 1, "[OnPlayerWeaponShot] %d fired weapon %d", playerid, weaponid);
 	if(!_FireWeapon(playerid, weaponid, hittype, hitid, fX, fY, fZ))
@@ -615,9 +615,9 @@ hook OnPlayerUnHolsteredItem(playerid, Item:itemid)
 ==============================================================================*/
 
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(newkeys & 1)
+	if(newkeys & KEY_ACTION)
 	{
 		if(IsPlayerKnockedOut(playerid))
 			return Y_HOOKS_CONTINUE_RETURN_1;
@@ -855,10 +855,10 @@ stock GetItemWeaponItemType(itemweaponid)
 }
 
 // itmw_baseWeapon
-stock GetItemWeaponBaseWeapon(itemweaponid)
+stock WEAPON:GetItemWeaponBaseWeapon(itemweaponid)
 {
 	if(!(0 <= itemweaponid < itmw_Total))
-		return 0;
+		return WEAPON_FIST;
 
 	return itmw_Data[itemweaponid][itmw_baseWeapon];
 }
@@ -924,13 +924,13 @@ stock GetItemWeaponFlags(itemweaponid)
 
 
 // itmw_baseWeapon
-stock GetItemTypeWeaponBaseWeapon(ItemType:itemtype)
+stock WEAPON:GetItemTypeWeaponBaseWeapon(ItemType:itemtype)
 {
 	if(!IsValidItemType(itemtype))
-		return 0;
+		return WEAPON_FIST;
 
 	if(!(0 <= itmw_ItemTypeWeapon[itemtype] < itmw_Total))
-		return 0;
+		return WEAPON_FIST;
 
 	return itmw_Data[itmw_ItemTypeWeapon[itemtype]][itmw_baseWeapon];
 }

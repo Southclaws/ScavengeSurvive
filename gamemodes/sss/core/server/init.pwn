@@ -1095,23 +1095,23 @@ public OnScriptInit()
 	*/
 
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
-	DefineItemTypeWeapon(item_Wrench,			0,							-1,				0.01,			_:1.20,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Crowbar,			0,							-1,				0.03,			_:1.25,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Hammer,			0,							-1,				0.02,			_:1.30,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Rake,				0,							-1,				0.18,			_:1.30,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_Cane,				0,							-1,				0.08,			_:1.25,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_StunGun,			0,							-1,				0.0,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_Screwdriver,		0,							-1,				0.24,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_Mailbox,			0,							-1,				0.0,			_:1.40,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_Sledgehammer,		0,							-1,				0.03,			_:2.9,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_BigSword,			0,							-1,				0.39,			_:0.15,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_Spatula,			0,							-1,				0.001,			0,		0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Pan,				0,							-1,				0.01,			_:1.05,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Knife2,			0,							-1,				0.29,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_FryingPan,		0,							-1,				0.01,			_:1.06,	0,		anim_Blunt);
-	DefineItemTypeWeapon(item_Fork,				0,							-1,				0.17,			0,		0,		anim_Stab);
-	DefineItemTypeWeapon(item_Broom,			0,							-1,				0.11,			_:1.1,	0,		anim_Heavy);
-	DefineItemTypeWeapon(item_Nailbat,			0,							-1,				0.30,			_:3.0,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Wrench,			WEAPON_FIST,							-1,				0.01,			_:1.20,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Crowbar,			WEAPON_FIST,							-1,				0.03,			_:1.25,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Hammer,			WEAPON_FIST,							-1,				0.02,			_:1.30,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Rake,				WEAPON_FIST,							-1,				0.18,			_:1.30,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Cane,				WEAPON_FIST,							-1,				0.08,			_:1.25,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_StunGun,			WEAPON_FIST,							-1,				0.0,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Screwdriver,		WEAPON_FIST,							-1,				0.24,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Mailbox,			WEAPON_FIST,							-1,				0.0,			_:1.40,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Sledgehammer,		WEAPON_FIST,							-1,				0.03,			_:2.9,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_BigSword,			WEAPON_FIST,							-1,				0.39,			_:0.15,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Spatula,			WEAPON_FIST,							-1,				0.001,			0,		0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Pan,				WEAPON_FIST,							-1,				0.01,			_:1.05,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Knife2,			WEAPON_FIST,							-1,				0.29,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_FryingPan,		WEAPON_FIST,							-1,				0.01,			_:1.06,	0,		anim_Blunt);
+	DefineItemTypeWeapon(item_Fork,				WEAPON_FIST,							-1,				0.17,			0,		0,		anim_Stab);
+	DefineItemTypeWeapon(item_Broom,			WEAPON_FIST,							-1,				0.11,			_:1.1,	0,		anim_Heavy);
+	DefineItemTypeWeapon(item_Nailbat,			WEAPON_FIST,							-1,				0.30,			_:3.0,	0,		anim_Heavy);
 	
 	//					itemtype				baseweapon					calibre			bleedrate		koprob	n/a		animset
 	DefineItemTypeWeapon(item_Knuckles,			WEAPON_BRASSKNUCKLE,		-1,				0.05,			20,		0);

@@ -157,7 +157,7 @@ hook OnPlayerLeaveDynArea(playerid, areaid)
 }
 
 // State change
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	_UpdateKeyActions(playerid);
 

@@ -52,9 +52,9 @@ hook OnPlayerInteractVehicle(playerid, vehicleid, Float:angle)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16)
+	if(oldkeys & KEY_SECONDARY_ATTACK)
 	{
 		StopBreakingVehicleLock(playerid);
 	}

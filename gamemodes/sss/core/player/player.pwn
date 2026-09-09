@@ -91,7 +91,7 @@ public OnPlayerConnect(playerid)
 
 	TogglePlayerControllable(playerid, false);
 	Streamer_ToggleIdleUpdate(playerid, true);
-	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, WEAPON_FIST, 0, WEAPON_FIST, 0, WEAPON_FIST, 0);
 	SpawnPlayer(playerid);
 
 	/*
@@ -313,7 +313,7 @@ public OnPlayerRequestClass(playerid, classid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, WEAPON_FIST, 0, WEAPON_FIST, 0, WEAPON_FIST, 0);
 
 	return 0;
 }
@@ -322,7 +322,7 @@ public OnPlayerRequestSpawn(playerid)
 {
 	if(IsPlayerNPC(playerid))return 1;
 
-	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, 0, 0, 0, 0, 0, 0);
+	SetSpawnInfo(playerid, NO_TEAM, 0, DEFAULT_POS_X, DEFAULT_POS_Y, DEFAULT_POS_Z, 0.0, WEAPON_FIST, 0, WEAPON_FIST, 0, WEAPON_FIST, 0);
 
 	return 1;
 }
@@ -411,7 +411,7 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-hook OnPlayerStateChange(playerid, newstate, oldstate)
+hook OnPlayerStateChange(playerid, PLAYER_STATE:newstate, PLAYER_STATE:oldstate)
 {
 	if(newstate == PLAYER_STATE_DRIVER || newstate == PLAYER_STATE_PASSENGER)
 	{
@@ -466,14 +466,14 @@ public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 	{
 		new weaponid = GetItemTypeWeaponBaseWeapon(GetItemType(GetPlayerItem(playerid)));
 
-		if(weaponid == 34 || weaponid == 35 || weaponid == 43)
+		if(weaponid == WEAPON_SNIPER || weaponid == WEAPON_ROCKETLAUNCHER || weaponid == WEAPON_CAMERA)
 		{
-			if(newkeys & 128)
+			if(newkeys & KEY_HANDBRAKE)
 			{
 				TogglePlayerHatItemVisibility(playerid, false);
 				TogglePlayerMaskItemVisibility(playerid, false);
 			}
-			if(oldkeys & 128)
+			if(oldkeys & KEY_HANDBRAKE)
 			{
 				TogglePlayerHatItemVisibility(playerid, true);
 				TogglePlayerMaskItemVisibility(playerid, true);

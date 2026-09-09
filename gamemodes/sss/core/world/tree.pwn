@@ -333,12 +333,12 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(tree_CuttingTree[playerid] == INVALID_TREE_ID)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	if(oldkeys == 16)
+	if(oldkeys == KEY_SECONDARY_ATTACK)
 		_StopWoodCutting(playerid);
 
 	return Y_HOOKS_CONTINUE_RETURN_0;

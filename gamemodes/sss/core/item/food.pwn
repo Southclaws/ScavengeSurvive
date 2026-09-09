@@ -107,9 +107,9 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	return Y_HOOKS_CONTINUE_RETURN_0;
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
-	if(oldkeys & 16 && food_CurrentItem[playerid] != INVALID_ITEM_ID)
+	if(oldkeys & KEY_SECONDARY_ATTACK && food_CurrentItem[playerid] != INVALID_ITEM_ID)
 	{
 		_StopEating(playerid);
 	}

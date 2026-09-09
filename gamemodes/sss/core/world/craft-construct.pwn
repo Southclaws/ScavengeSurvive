@@ -326,7 +326,7 @@ hook OnHoldActionFinish(playerid)
 	}
 }
 
-hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+hook OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(RELEASED(16))
 	{
