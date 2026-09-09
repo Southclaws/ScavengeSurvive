@@ -59,20 +59,25 @@ public OnPlayerDeath(playerid, killerid, reason)
 			killerid = INVALID_PLAYER_ID;
 	}
 
-	_OnDeath(playerid, killerid);
+	_OnDeath(playerid, killerid, reason);
 
 	return 1;
 }
 
-_OnDeath(playerid, killerid)
+_OnDeath(playerid, killerid, reason)
 {
 	if(!IsPlayerAlive(playerid) || IsPlayerOnAdminDuty(playerid))
 	{
 		return 0;
 	}
 
+	// A player killed by another player is killed by this gamemode's own damage
+	// system, which never reaches the server as a weapon, so the cause is read
+	// back from the item that last wounded them. The reason the server reports
+	// only describes the deaths the gamemode does not inflict itself, such as
+	// drowning or a long fall, so it is used for the unattributed branch below.
 	new
-		Item:deathreason = GetLastHitByWeapon(playerid),
+		deathweapon = GetItemTypeWeaponBaseWeapon(GetItemType(GetLastHitByWeapon(playerid))),
 		deathreasonstring[256];
 
 	death_Dying[playerid] = true;
@@ -96,16 +101,16 @@ _OnDeath(playerid, killerid)
 	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 
-	KillPlayer(playerid, killerid, _:deathreason);
+	KillPlayer(playerid, killerid, deathweapon);
 
 	if(IsPlayerConnected(killerid))
 	{
-		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[KILL] %p killed %p with %d at %f, %f, %f (%f)", killerid, playerid, deathweapon, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
 
-		switch(deathreason)
+		switch(deathweapon)
 		{
 			case 0..3, 5..7, 10..15:
 				deathreasonstring = "They were beaten to death.";
@@ -143,12 +148,12 @@ _OnDeath(playerid, killerid)
 	}
 	else
 	{
-		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, _:deathreason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
+		log("[DEATH] %p died because of %d at %f, %f, %f (%f)", playerid, reason, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid]);
 
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
-		switch(deathreason)
+		switch(reason)
 		{
 			case 53:
 				deathreasonstring = "They drowned.";
