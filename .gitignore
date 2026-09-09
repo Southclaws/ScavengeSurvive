@@ -17,14 +17,15 @@ pawn.lock
 # Server/gamemode related files
 #
 
-# compiled settings file
-# keep `samp.json` file on version control
-# but make sure the `rcon_password` field is set externally
-# you can use the environment variable `SAMP_RCON_PASSWORD` to do this.
+# generated runtime config
+# the source of truth is the `runtime` section of `pawn.json`
+# make sure the `rcon_password` field is set externally
 server.cfg
+config.json
 
-# Plugins directory
+# Plugins and components directories
 plugins/
+components/
 
 # binaries
 *.exe
@@ -32,15 +33,18 @@ plugins/
 *.so
 announce
 samp03svr
+omp-server
 samp-npc
 
 # logs
 logs/
 server_log.txt
+log.txt
 crashinfo.txt
 
 # Ban list
 samp.ban
+bans.json
 
 #
 # Private resources

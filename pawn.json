@@ -1,25 +1,26 @@
 {
 	"user": "Southclaws",
 	"repo": "ScavengeSurvive",
+	"preset": "openmp",
 	"entry": "gamemodes/ScavengeSurvive.pwn",
 	"output": "gamemodes/ScavengeSurvive.amx",
 	"local": true,
 	"dependencies": [
-		"sampctl/samp-stdlib",
+		"openmultiplayer/omp-stdlib",
+		"pawn-lang/samp-stdlib@open.mp",
+		"pawn-lang/pawn-stdlib@open.mp",
 		"sampctl/samp-stdutil",
-		"Southclaws/samp-nolog:0.2.1",
 		"Southclaws/samp-logger",
 		"Southclaws/pawn-errors",
-		"maddinat0r/sscanf:v2.8.3",
-		"samp-incognito/samp-streamer-plugin:v2.9.5",
-		"pawn-lang/YSI-Includes",
+		"Y-Less/sscanf:v2.13.8",
+		"samp-incognito/samp-streamer-plugin:v2.9.6",
+		"pawn-lang/YSI-Includes:v5.10.0006",
 		"Southclaws/formatex",
 		"oscar-broman/strlib",
-		"Southclaws/pawn-chrono:1.1.1",
+		"Southclaws/pawn-chrono:1.1.2",
 		"Southclaws/progress2",
 		"Southclaws/samp-ini",
 		"Southclaws/samp-whirlpool:v1.0.0",
-		"Zeex/samp-plugin-crashdetect:v4.20",
 		"oscar-broman/sqlitei",
 		"oscar-broman/md-sort",
 		"Southclaws/modio",
@@ -52,12 +53,11 @@
 		]
 	},
 	"runtime": {
+		"runtime_type": "openmp",
 		"bind": "0.0.0.0",
 		"port": 7777,
 		"rcon_password": "scavenge",
 		"hostname": "Southclaws' Scavenge and Survive",
-		"extra": {
-			"long_call_time": "0"
-		}
+		"maxplayers": 50
 	}
 }
