@@ -18,7 +18,7 @@
 ==============================================================================*/
 
 
-#include <a_samp>
+#include <open.mp>
 
 /*==============================================================================
 
@@ -124,8 +124,8 @@ public OnGameModeInit()
 
 ==============================================================================*/
 
-#include <crashdetect>				// By Zeex					https://github.com/Zeex/samp-plugin-crashdetect
-#include <sscanf2>					// By Y_Less:				https://github.com/maddinat0r/sscanf
+#include <crashdetect>				// By Zeex/AmyrAhmady:		https://github.com/AmyrAhmady/samp-plugin-crashdetect
+#include <sscanf2>					// By Y_Less:				https://github.com/Y-Less/sscanf
 #include <streamer>					// By Incognito:			https://github.com/samp-incognito/samp-streamer-plugin/releases/tag/v2.82
 #include <chrono>					// By Southclaws:			https://github.com/Southclaws/pawn-chrono
 #include <fsutil>					// By Southclaws:			https://github.com/Southclaws/pawn-fsutil
@@ -163,7 +163,11 @@ public OnGameModeInit()
 #include <container-dialog>         // By Southclaws:			https://github.com/ScavengeSurvive/
 #include <craft>                    // By Southclaws:			https://github.com/ScavengeSurvive/
 #include <debug-labels>             // By Southclaws:			https://github.com/Southclaws/ScavengeSurvive/tree/master/legacy
+// weapon-data predates the open.mp GetWeaponSlot native and declares its own
+// copy of it. Rename the library's version while it is parsed so the native wins.
+#define GetWeaponSlot WeaponData_GetWeaponSlot
 #include <weapon-data>				// By Southclaws:			https://github.com/Southclaws/AdvancedWeaponData
+#undef GetWeaponSlot
 #include <linegen>					// By Southclaws:			https://github.com/Southclaws/Line
 #include <zipline>					// By Southclaws:			https://github.com/Southclaws/Zipline
 #include <ladders>					// By Southclaws:			https://github.com/Southclaws/Ladder

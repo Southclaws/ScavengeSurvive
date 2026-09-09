@@ -187,7 +187,7 @@ ACMD:free[2](playerid)
 	if(!IsPlayerOnAdminDuty(playerid))
 		return 6;
 
-	if(GetPlayerSpectateType(playerid) == SPECTATE_TYPE_FREE)
+	if(GetPlayerSpectateMode(playerid) == SPECTATE_TYPE_FREE)
 		ExitFreeMode(playerid);
 
 	else

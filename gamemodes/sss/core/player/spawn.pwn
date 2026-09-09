@@ -174,7 +174,7 @@ PrepareForSpawn(playerid)
 
 PlayerSpawnExistingCharacter(playerid)
 {
-	if(IsPlayerSpawned(playerid))
+	if(GetPlayerSpawnedState(playerid))
 		return 1;
 
 	if(!LoadPlayerChar(playerid))
@@ -276,7 +276,7 @@ hook OnPlayerClickPlayerTD(playerid, PlayerText:playertextid)
 
 PlayerSpawnNewCharacter(playerid, gender)
 {
-	if(IsPlayerSpawned(playerid))
+	if(GetPlayerSpawnedState(playerid))
 		return 0;
 
 	new name[MAX_PLAYER_NAME];
@@ -414,7 +414,7 @@ PlayerSpawnNewCharacter(playerid, gender)
 
 
 // spawn_State
-stock IsPlayerSpawned(playerid)
+stock GetPlayerSpawnedState(playerid)
 {
 	if(!IsPlayerConnected(playerid))
 		return 0;

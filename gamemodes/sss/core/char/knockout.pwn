@@ -67,7 +67,7 @@ stock KnockOutPlayer(playerid, duration)
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	Logger_Log("player knocked out",
@@ -133,7 +133,7 @@ timer KnockOutUpdate[100](playerid)
 	if(!knockout_KnockedOut[playerid])
 		WakeUpPlayer(playerid);
 
-	if(IsPlayerDead(playerid) || GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000 || !IsPlayerSpawned(playerid))
+	if(IsPlayerDead(playerid) || GetTickCountDifference(GetTickCount(), GetPlayerSpawnTick(playerid)) < 1000 || !GetPlayerSpawnedState(playerid))
 	{
 		knockout_KnockedOut[playerid] = false;
 		HidePlayerProgressBar(playerid, KnockoutBar);

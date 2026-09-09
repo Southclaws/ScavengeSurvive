@@ -761,7 +761,7 @@ public OnUnoccupiedVehicleUpdate(vehicleid, playerid, passenger_seat, Float:new_
 	if(GetTickCountDifference(GetTickCount(), GetVehicleLastUseTick(vehicleid)) < 1000)
 		return 1;
 
-	if(IsVehicleOccupied(vehicleid))
+	if(IsVehicleOccupiedState(vehicleid))
 		return 1;
 
 	new

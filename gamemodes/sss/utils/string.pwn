@@ -29,7 +29,14 @@ stock isalphanumeric(chr)
 	return 0;
 }
 
-FormatSpecifier<'T'>(output[], timestamp)
+// The 'T' specifier expands to a public function named F@T, which collides with
+// an internal F@T macro in YSI's foreach implementation. That macro consumes
+// everything up to the first space on the line, so the usual
+// FormatSpecifier<'T'>(output[], timestamp) form is mangled before the compiler
+// sees it. Writing the expansion out by hand avoids the macro entirely.
+// Do not add spaces after F@T on the two lines below.
+forward F@T(output[FORMAT_CUSTOM_SPEC_BUFFER_SIZE],FMAT@2:___unused,timestamp);
+public F@T(output[FORMAT_CUSTOM_SPEC_BUFFER_SIZE],FMAT@2:___unused,timestamp)
 {
 	strcat(output, TimestampToDateTime(timestamp, "%A %b %d %Y at %X"));
 }

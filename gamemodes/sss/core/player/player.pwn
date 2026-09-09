@@ -273,7 +273,7 @@ ptask PlayerUpdateFast[100](playerid)
 		return;
 	}
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return;
 
 	if(IsPlayerInAnyVehicle(playerid))
@@ -454,7 +454,10 @@ hook OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
 	return 1;
 }
 
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
+#if !defined KEY
+	#define KEY: _:
+#endif
+public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 {
 	if(IsPlayerKnockedOut(playerid))
 		return 0;

@@ -44,7 +44,10 @@ hook OnPlayerDisconnect(playerid, reason)
 	death_Dying[playerid] = false;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+#if !defined WEAPON
+	#define WEAPON: _:
+#endif
+public OnPlayerDeath(playerid, killerid, WEAPON:reason)
 {
 	if(GetTickCountDifference(GetTickCount(), death_LastDeath[playerid]) < 1000)
 		return -1;
@@ -92,7 +95,7 @@ _OnDeath(playerid, killerid)
 
 	HideWatch(playerid);
 	DropItems(playerid, death_PosX[playerid], death_PosY[playerid], death_PosZ[playerid], death_RotZ[playerid], true);
-	RemovePlayerWeapon(playerid);
+	RemovePlayerWeapons(playerid);
 	RemoveAllDrugs(playerid);
 	SpawnPlayer(playerid);
 

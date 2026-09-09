@@ -284,9 +284,9 @@ stock UpdatePlayerWeaponItem(playerid)
 	return 1;
 }
 
-stock RemovePlayerWeapon(playerid)
+stock RemovePlayerWeapons(playerid)
 {
-	dbg("weapon-core", 1, "[RemovePlayerWeapon]");
+	dbg("weapon-core", 1, "[RemovePlayerWeapons]");
 	if(!IsPlayerConnected(playerid))
 		return 0;
 
@@ -315,7 +315,7 @@ _FastUpdateHandler(playerid)
 	if(!IsValidItemType(itemtype))
 	{
 		if(GetPlayerWeapon(playerid) > 0)
-			RemovePlayerWeapon(playerid);
+			RemovePlayerWeapons(playerid);
 
 		return;
 	}
@@ -586,11 +586,11 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > 0)
 		{
 			if(GetItemWeaponItemMagAmmo(helditemid) == 0)
-				RemovePlayerWeapon(playerid);
+				RemovePlayerWeapons(playerid);
 		}
 		else
 		{
-			RemovePlayerWeapon(playerid);
+			RemovePlayerWeapons(playerid);
 		}
 	}
 

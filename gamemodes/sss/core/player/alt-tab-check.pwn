@@ -34,7 +34,7 @@ hook OnPlayerUpdate(playerid)
 
 ptask AfkCheckUpdate[100](playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return;
 
 	if(GetTickCountDifference(GetTickCount(), GetPlayerServerJoinTick(playerid)) < 10000)

@@ -918,7 +918,7 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 
 hook OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
 {
-	if(IsPlayerSpawned(playerid))
+	if(GetPlayerSpawnedState(playerid))
 	{
 		if(inv_HealthInfoActive[playerid])
 			ShowPlayerHealthInfo(playerid);

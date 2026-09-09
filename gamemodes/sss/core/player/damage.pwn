@@ -21,18 +21,21 @@ Text:HitMark_centre = Text:INVALID_TEXT_DRAW,
 Text:HitMark_offset = Text:INVALID_TEXT_DRAW;
 
 
-public OnPlayerTakeDamage(playerid, issuerid, Float:amount, weaponid, bodypart)
+#if !defined WEAPON
+	#define WEAPON: _:
+#endif
+public OnPlayerTakeDamage(playerid, issuerid, Float:amount, WEAPON:weaponid, bodypart)
 {
 	if(IsPlayerOnAdminDuty(playerid))
 		return 0;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return 0;
 
 	if(IsPlayerOnAdminDuty(issuerid))
 		return 0;
 
-	if(!IsPlayerSpawned(issuerid))
+	if(!GetPlayerSpawnedState(issuerid))
 		return 0;
 
 	switch(weaponid)

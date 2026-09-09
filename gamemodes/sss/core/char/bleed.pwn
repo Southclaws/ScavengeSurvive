@@ -28,7 +28,7 @@ bool:	Bleeding[MAX_PLAYERS],
 
 hook OnPlayerScriptUpdate(playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 	{
 		RemovePlayerAttachedObject(playerid, ATTACHSLOT_BLOOD);
 		return;

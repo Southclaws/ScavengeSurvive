@@ -44,7 +44,7 @@ hook OnPlayerConnect(playerid)
 
 ptask BrightnessUpdate[100](playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return;
 
 	new Float:hp = GetPlayerHP(playerid);
@@ -70,7 +70,7 @@ ptask BrightnessUpdate[100](playerid)
 
 	if(hp >= 40.0)
 	{
-		if(IsPlayerSpawned(playerid))
+		if(GetPlayerSpawnedState(playerid))
 			PlayerTextDrawBoxColor(playerid, BrightnessUI[playerid], 0);
 
 		return;

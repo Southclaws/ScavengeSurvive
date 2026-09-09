@@ -181,7 +181,7 @@ task _trailerSync[1000]()
 		// If not, and the vehicle is occupied then remove the trailer using the
 		// function to remove it server-side. If the vehicle isn't occupied,
 		// attach the trailer again for all streamed players.
-		if(IsVehicleOccupied(i))
+		if(IsVehicleOccupiedState(i))
 			RemoveVehicleTrailer(i);
 
 		else

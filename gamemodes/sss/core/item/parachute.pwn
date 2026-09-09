@@ -41,7 +41,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 			if(!IsValidItem(GetPlayerItem(playerid)))
 			{
 				para_TakingOff[playerid] = true;
-				RemovePlayerWeapon(playerid);
+				RemovePlayerWeapons(playerid);
 				GiveWorldItemToPlayer(playerid, CreateItem(item_Parachute, 0.0, 0.0, 0.0));
 			}
 		}

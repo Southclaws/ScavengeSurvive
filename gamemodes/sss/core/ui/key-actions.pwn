@@ -179,7 +179,7 @@ hook OnPlayerStateChange(playerid, newstate, oldstate)
 
 _UpdateKeyActions(playerid)
 {
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 	{
 		HidePlayerKeyActionUI(playerid);
 		return;		
@@ -250,7 +250,7 @@ _UpdateKeyActions(playerid)
 
 	if(!IsValidItem(itemid))
 	{
-		if(IsPlayerCuffed(inplayerarea))
+		if(IsPlayerHandcuffed(inplayerarea))
 		{
 			AddToolTipText(playerid, KEYTEXT_INTERACT, "Remove handcuffs");
 			ShowPlayerKeyActionUI(playerid);

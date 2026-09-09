@@ -27,7 +27,7 @@ hook OnPlayerScriptUpdate(playerid)
 	if(IsPlayerOnAdminDuty(playerid))
 		return;
 
-	if(!IsPlayerSpawned(playerid))
+	if(!GetPlayerSpawnedState(playerid))
 		return;
 
 	new
