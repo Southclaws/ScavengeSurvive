@@ -409,7 +409,7 @@ PlayerVehicleUpdate(playerid)
 //		Float:velocitychange,
 		Float:maxfuel,
 		Float:fuelcons,
-		playerstate;
+PLAYER_STATE:	playerstate;
 
 	vehicleid = GetPlayerVehicleID(playerid);
 	vehicletype = GetVehicleType(vehicleid);

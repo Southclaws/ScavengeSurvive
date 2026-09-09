@@ -464,7 +464,7 @@ public OnPlayerKeyStateChange(playerid, KEY:newkeys, KEY:oldkeys)
 
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		new weaponid = GetItemTypeWeaponBaseWeapon(GetItemType(GetPlayerItem(playerid)));
+		new WEAPON:weaponid = GetItemTypeWeaponBaseWeapon(GetItemType(GetPlayerItem(playerid)));
 
 		if(weaponid == WEAPON_SNIPER || weaponid == WEAPON_ROCKETLAUNCHER || weaponid == WEAPON_CAMERA)
 		{

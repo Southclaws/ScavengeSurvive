@@ -217,7 +217,7 @@ Item:LoadItem(const filename[], const uuid[], const callback[])
 		.world = info[SAVED_ITEM_WORLD],
 		.interior = info[SAVED_ITEM_INTERIOR],
 		.hitpoints = info[SAVED_ITEM_HITPOINTS],
-		.applyrotoffsets = 0);
+		.applyrotoffsets = false);
 
 	Logger_Log("persisted item loaded",
 		Logger_I("itemid", _:itemid),

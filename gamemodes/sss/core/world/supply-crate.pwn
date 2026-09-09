@@ -311,7 +311,7 @@ SupplyCrateLand()
 		DestroyButton(sup_Button);
 		
 	sup_Containerid = CreateContainer("Supply Crate", 32);
-	sup_Button = CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = 1, .labeltext = "Supply Crate");
+	sup_Button = CreateButton(sup_DropX + 1.5, sup_DropY, sup_DropZ + 1.0, "Supply Crate", .label = true, .labeltext = "Supply Crate");
 
 	lootindex = GetLootIndexFromName(sup_TypeData[sup_CurrentType][supt_loot]);
 	FillContainerWithLoot(Container:sup_Containerid, 4 + random(16), lootindex);

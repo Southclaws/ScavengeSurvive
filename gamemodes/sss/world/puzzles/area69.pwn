@@ -187,8 +187,8 @@ hook OnGameModeInit()
 		.moveSound = 6000, .stopSound = 6002, .closeDelay = -1);
 
 
-	buttonid[0] = CreateButton(279.1897, 1833.1392, 18.0874, "Press to enter", .label = 1);
-	buttonid[1] = CreateButton(279.2243, 1832.3821, 2.7813, "Press to enter", .label = 1);
+	buttonid[0] = CreateButton(279.1897, 1833.1392, 18.0874, "Press to enter", .label = true);
+	buttonid[1] = CreateButton(279.2243, 1832.3821, 2.7813, "Press to enter", .label = true);
 	// TODO: Rewrite this function!
 	// LinkTP(buttonid[0], buttonid[1]);
 

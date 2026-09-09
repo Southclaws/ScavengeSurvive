@@ -138,7 +138,7 @@ WeaponsCacheDrop(Float:x, Float:y, Float:z)
 		DestroyButton(webc_Button);
 
 	webc_Containerid = CreateContainer("Weapon Cache", 32);
-	webc_Button = CreateButton(x, y - 0.5, z + 1.0, "Weapon Cache", .label = 1, .labeltext = "Weapon Cache");
+	webc_Button = CreateButton(x, y - 0.5, z + 1.0, "Weapon Cache", .label = true, .labeltext = "Weapon Cache");
 
 	FillContainerWithLoot(Container:webc_Containerid, 22 + random(11), GetLootIndexFromName("airdrop_military_weapons"));
 

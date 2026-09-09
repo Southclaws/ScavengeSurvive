@@ -109,8 +109,8 @@ GenerateVehicleData(vehicleid)
 	if(category < VEHICLE_CATEGORY_MOTORBIKE)
 	{
 		new
-			panels = encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
-			doors = encode_doors(random(5), random(5), random(5), random(5));
+			VEHICLE_PANEL_STATUS:panels = encode_panels(random(4), random(4), random(4), random(4), random(4), random(4), random(4)),
+			VEHICLE_DOOR_STATUS:doors = encode_doors(random(5), random(5), random(5), random(5));
 
 		SetVehicleDamageData(vehicleid,
 			panels,

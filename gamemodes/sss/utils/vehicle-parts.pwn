@@ -180,7 +180,7 @@ stock GetPlanePartDamage(vehicleid, part)
 ==============================================================================*/
 
 
-stock decode_panels(input, &flp, &frp, &rlp, &rrp, &windshield, &front_bumper, &rear_bumper)
+stock decode_panels(VEHICLE_PANEL_STATUS:input, &flp, &frp, &rlp, &rrp, &windshield, &front_bumper, &rear_bumper)
 {
 	flp = input & 0xF;
 	frp = (input >> 4) & 0xF;
@@ -190,43 +190,43 @@ stock decode_panels(input, &flp, &frp, &rlp, &rrp, &windshield, &front_bumper, &
 	front_bumper = (input >> 20) & 0xF;
 	rear_bumper = (input >> 24) & 0xF;
 }
-stock encode_panels(flp, frp, rlp, rrp, windshield, front_bumper, rear_bumper)
+stock VEHICLE_PANEL_STATUS:encode_panels(flp, frp, rlp, rrp, windshield, front_bumper, rear_bumper)
 {
-	return flp | (frp << 4) | (rlp << 8) | (rrp << 12) | (windshield << 16) | (front_bumper << 20) | (rear_bumper << 24);
+	return VEHICLE_PANEL_STATUS:(flp | (frp << 4) | (rlp << 8) | (rrp << 12) | (windshield << 16) | (front_bumper << 20) | (rear_bumper << 24));
 }
 
-stock decode_doors(input, &bonnet, &boot, &driver_door, &passenger_door)
+stock decode_doors(VEHICLE_DOOR_STATUS:input, &bonnet, &boot, &driver_door, &passenger_door)
 {
 	bonnet = input & 0xFF;
 	boot = (input >> 8) & 0xFF;
 	driver_door = (input >> 16) & 0xFF;
 	passenger_door = (input >> 24) & 0xFF;
 }
-stock encode_doors(bonnet, boot, driver_door, passenger_door)
+stock VEHICLE_DOOR_STATUS:encode_doors(bonnet, boot, driver_door, passenger_door)
 {
-	return bonnet | (boot << 8) | (driver_door << 16) | (passenger_door << 24);
+	return VEHICLE_DOOR_STATUS:(bonnet | (boot << 8) | (driver_door << 16) | (passenger_door << 24));
 }
 
-stock decode_lights(input, &light1, &light2, &light3, &light4)
+stock decode_lights(VEHICLE_LIGHT_STATUS:input, &light1, &light2, &light3, &light4)
 {
 	light1 = input & 0x1;
 	light2 = (input >> 1) & 0x1;
 	light3 = (input >> 2) & 0x1;
 	light4 = (input >> 3) & 0x1;
 }
-stock encode_lights(light1, light2, light3, light4)
+stock VEHICLE_LIGHT_STATUS:encode_lights(light1, light2, light3, light4)
 {
-	return light1 | (light2 << 1) | (light3 << 2) | (light4 << 3);
+	return VEHICLE_LIGHT_STATUS:(light1 | (light2 << 1) | (light3 << 2) | (light4 << 3));
 }
 
-stock decode_tires(input, &backright, &frontright, &backleft, &frontleft)
+stock decode_tires(VEHICLE_TYRE_STATUS:input, &backright, &frontright, &backleft, &frontleft)
 {
 	backright = input & 0x1;
 	frontright = (input >> 1) & 0x1;
 	backleft = (input >> 2) & 0x1;
 	frontleft = (input >> 3) & 0x1;
 }
-stock encode_tires(backright, frontright, backleft, frontleft)
+stock VEHICLE_TYRE_STATUS:encode_tires(backright, frontright, backleft, frontleft)
 {
-	return backright | (frontright << 1) | (backleft << 2) | (frontleft << 3);
+	return VEHICLE_TYRE_STATUS:(backright | (frontright << 1) | (backleft << 2) | (frontleft << 3));
 }

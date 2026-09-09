@@ -583,7 +583,7 @@ hook OnPlayerHolsteredItem(playerid, Item:itemid)
 	{
 		new Item:helditemid = GetPlayerItem(playerid);
 
-		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > 0)
+		if(GetItemTypeWeaponBaseWeapon(GetItemType(helditemid)) > WEAPON_FIST)
 		{
 			if(GetItemWeaponItemMagAmmo(helditemid) == 0)
 				RemovePlayerWeapons(playerid);

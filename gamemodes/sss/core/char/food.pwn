@@ -138,5 +138,5 @@ UpdateFoodBarWithScaleProfile(playerid)
 		3.200000,
 		536354815,
 		100.0000,
-		0);
+		BAR_DIRECTION_RIGHT);
 }

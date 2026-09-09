@@ -276,7 +276,7 @@ LoadPlayerVehicle(const filepath[])
 
 	SetVehicleHP(vehicleid, Float:data[VEH_CELL_HEALTH]);
 	SetVehicleFuel(vehicleid, Float:data[VEH_CELL_FUEL]);
-	SetVehicleDamageData(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+	SetVehicleDamageData(vehicleid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 	SetVehicleColours(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
 	SetVehicleKey(vehicleid, data[VEH_CELL_KEY]);
 
@@ -327,7 +327,7 @@ LoadPlayerVehicle(const filepath[])
 
 		SetVehicleHealth(trailerid, Float:data[VEH_CELL_HEALTH]);
 		SetVehicleFuel(trailerid, Float:data[VEH_CELL_FUEL]);
-		SetVehicleDamageData(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		SetVehicleDamageData(trailerid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 		SetVehicleKey(trailerid, data[VEH_CELL_KEY]);
 
 		SetVehicleExternalLock(trailerid, E_LOCK_STATE:data[VEH_CELL_LOCKED]);
@@ -495,7 +495,7 @@ _SaveVehicle(vehicleid)
 	GetVehiclePos(vehicleid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 	GetVehicleZAngle(vehicleid, Float:data[VEH_CELL_ROTZ]);
 	GetVehicleColourData(vehicleid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
-	GetVehicleDamageStatus(vehicleid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+	GetVehicleDamageStatus(vehicleid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 	data[VEH_CELL_KEY] = GetVehicleKey(vehicleid);
 
 	if(!IsVehicleOccupiedState(vehicleid))
@@ -522,7 +522,7 @@ _SaveVehicle(vehicleid)
 		GetVehiclePos(trailerid, Float:data[VEH_CELL_POSX], Float:data[VEH_CELL_POSY], Float:data[VEH_CELL_POSZ]);
 		GetVehicleZAngle(trailerid, Float:data[VEH_CELL_ROTZ]);
 		GetVehicleColourData(trailerid, data[VEH_CELL_COL1], data[VEH_CELL_COL2]);
-		GetVehicleDamageStatus(trailerid, data[VEH_CELL_PANELS], data[VEH_CELL_DOORS], data[VEH_CELL_LIGHTS], data[VEH_CELL_TIRES]);
+		GetVehicleDamageStatus(trailerid, VEHICLE_PANEL_STATUS:data[VEH_CELL_PANELS], VEHICLE_DOOR_STATUS:data[VEH_CELL_DOORS], VEHICLE_LIGHT_STATUS:data[VEH_CELL_LIGHTS], VEHICLE_TYRE_STATUS:data[VEH_CELL_TIRES]);
 		data[VEH_CELL_KEY] = GetVehicleKey(trailerid);
 		data[VEH_CELL_LOCKED] = _:GetVehicleLockState(trailerid);
 

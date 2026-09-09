@@ -108,7 +108,7 @@ _OnDeath(playerid, killerid)
 		GetPlayerName(killerid, death_LastKilledBy[playerid], MAX_PLAYER_NAME);
 		death_LastKilledById[playerid] = killerid;
 
-		switch(deathreason)
+		switch(_:deathreason)
 		{
 			case 0..3, 5..7, 10..15:
 				deathreasonstring = "They were beaten to death.";
@@ -151,7 +151,7 @@ _OnDeath(playerid, killerid)
 		death_LastKilledBy[playerid][0] = EOS;
 		death_LastKilledById[playerid] = INVALID_PLAYER_ID;
 
-		switch(deathreason)
+		switch(_:deathreason)
 		{
 			case 53:
 				deathreasonstring = "They drowned.";

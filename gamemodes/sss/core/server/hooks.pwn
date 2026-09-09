@@ -22,7 +22,7 @@ Hook_HackDetect_SetPlayerPos(playerid, Float:x, Float:y, Float:z)
 
 Hook_SetPlayerSkin(playerid, skinid, retry_on_fail = true)
 {
-	new specialaction = GetPlayerSpecialAction(playerid);
+	new SPECIAL_ACTION:specialaction = GetPlayerSpecialAction(playerid);
 
 	if(specialaction == SPECIAL_ACTION_ENTER_VEHICLE || specialaction == SPECIAL_ACTION_EXIT_VEHICLE)
 	{

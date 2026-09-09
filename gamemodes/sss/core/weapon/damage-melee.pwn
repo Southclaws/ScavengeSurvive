@@ -71,7 +71,7 @@ _HandleCustomMelee(playerid, ItemType:itemtype)
 	if(weapontype == -1)
 		return 0;
 
-	if(GetItemWeaponBaseWeapon(weapontype) != 0)
+	if(GetItemWeaponBaseWeapon(weapontype) != WEAPON_FIST)
 		return 0;
 
 	new

@@ -40,7 +40,9 @@ timer OverheatUpdate[100](playerid)
 	new
 		vehicleid,
 		model,
-		k, ud, lr;
+		ud, lr;
+
+	new KEY:k;
 
 	vehicleid = GetPlayerVehicleID(playerid);
 	model = GetVehicleModel(vehicleid);
