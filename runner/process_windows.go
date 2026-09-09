@@ -15,3 +15,8 @@ func terminateProcess(cmd *exec.Cmd) error {
 	}
 	return cmd.Process.Kill()
 }
+
+// killProcess stops the child process.
+func killProcess(cmd *exec.Cmd) error {
+	return terminateProcess(cmd)
+}

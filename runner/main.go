@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"sync"
 	"time"
 
 	"github.com/cskr/pubsub"
@@ -55,7 +56,15 @@ func Run(cfg Config) error {
 	time.Sleep(time.Second)
 
 	parser := ReactiveParser{ps}
-	go RunServer(ctx, ps, os.Stdin, parser.GetWriter(), false)
+
+	// The server is waited on during shutdown, so that the runner does not exit
+	// and leave the server it started running without a supervisor.
+	var server sync.WaitGroup
+	server.Add(1)
+	go func() {
+		defer server.Done()
+		RunServer(ctx, ps, os.Stdin, parser.GetWriter(), false)
+	}()
 
 	zap.L().Info("awaiting signals, cancellations or fatal errors")
 
@@ -74,8 +83,13 @@ func Run(cfg Config) error {
 
 	for {
 		if err := f(); err != nil {
+			zap.L().Info("shutting down, stopping server")
+			cancel()
+			server.Wait()
 			return err
 		}
+
+		time.Sleep(time.Millisecond * 100)
 	}
 }
 
