@@ -10,20 +10,22 @@
 		"pawn-lang/samp-stdlib@open.mp",
 		"pawn-lang/pawn-stdlib@open.mp",
 		"sampctl/samp-stdutil",
-		"AmyrAhmady/samp-plugin-crashdetect:v4.22",
+		"plugin://AmyrAhmady/samp-plugin-crashdetect:v4.22",
 		"Southclaws/samp-logger",
 		"Southclaws/pawn-errors",
-		"Y-Less/sscanf:v2.13.8",
-		"samp-incognito/samp-streamer-plugin:v2.9.6",
+		"component://Y-Less/sscanf:v2.13.8",
+		"includes://Y-Less/sscanf:v2.13.8",
+		"plugin://samp-incognito/samp-streamer-plugin:v2.9.6",
 		"pawn-lang/YSI-Includes:v5.10.0006",
 		"Southclaws/formatex",
 		"oscar-broman/strlib",
-		"Southclaws/pawn-chrono:1.1.2",
+		"plugin://Southclaws/pawn-chrono:1.1.2",
 		"Southclaws/progress2",
 		"Southclaws/samp-ini",
-		"Southclaws/samp-whirlpool:v1.0.0",
+		"plugin://Southclaws/samp-whirlpool:v1.0.0",
 		"oscar-broman/sqlitei",
 		"oscar-broman/md-sort",
+		"BigETI/pawn-memory:2.0.1",
 		"Southclaws/modio",
 		"ScavengeSurvive/personal-space",
 		"ScavengeSurvive/button",
@@ -35,7 +37,7 @@
 		"ScavengeSurvive/container-dialog",
 		"ScavengeSurvive/inventory-dialog",
 		"ScavengeSurvive/craft@samp-compat",
-		"Southclaws/pawn-fsutil:1.3.0",
+		"plugin://Southclaws/pawn-fsutil:1.3.0",
 		"Southclaws/samp-weapon-data",
 		"Southclaws/samp-linegen",
 		"Southclaws/samp-zipline",
@@ -59,6 +61,9 @@
 		"port": 7777,
 		"rcon_password": "scavenge",
 		"hostname": "Southclaws' Scavenge and Survive",
-		"maxplayers": 50
+		"maxplayers": 50,
+		"extra": {
+			"long_call_time": "0"
+		}
 	}
 }
