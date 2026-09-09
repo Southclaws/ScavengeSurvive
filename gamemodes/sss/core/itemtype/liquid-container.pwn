@@ -339,11 +339,11 @@ stock Float:GetLiquidItemLiquidAmount(Item:itemid)
 stock Error:SetLiquidItemLiquidAmount(Item:itemid, Float:amount)
 {
 	if(!IsValidItem(itemid))
-		return NoError();
+		return Ok();
 
 	new ItemType:itemtype = GetItemType(itemid);
 	if(liq_ItemTypeLiquidContainer[itemtype] == -1)
-		return NoError();
+		return Ok();
 
 	if(amount > liq_Data[liq_ItemTypeLiquidContainer[itemtype]][liq_capacity])
 	{
@@ -369,10 +369,10 @@ stock GetLiquidItemLiquidType(Item:itemid)
 stock Error:SetLiquidItemLiquidType(Item:itemid, type)
 {
 	if(!IsValidItem(itemid))
-		return NoError();
+		return Ok();
 
 	if(liq_ItemTypeLiquidContainer[GetItemType(itemid)] == -1)
-		return NoError();
+		return Ok();
 
 	return SetItemArrayDataAtCell(itemid, type, LIQUID_ITEM_ARRAY_CELL_TYPE, true);
 }

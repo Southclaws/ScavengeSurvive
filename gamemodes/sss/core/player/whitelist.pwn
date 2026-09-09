@@ -55,10 +55,10 @@ hook OnPlayerConnect(playerid)
 
 	wl_CountdownUI[playerid]		=CreatePlayerTextDraw(playerid, 430.0, 40.0, "Not whitelisted~n~Time remaining: 00:00");
 	PlayerTextDrawAlignment			(playerid, wl_CountdownUI[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, wl_CountdownUI[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, wl_CountdownUI[playerid], 255);
 	PlayerTextDrawFont				(playerid, wl_CountdownUI[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, wl_CountdownUI[playerid], 0.20, 1.0);
-	PlayerTextDrawColor				(playerid, wl_CountdownUI[playerid], -1);
+	PlayerTextDrawColour				(playerid, wl_CountdownUI[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, wl_CountdownUI[playerid], 1);
 	PlayerTextDrawSetProportional	(playerid, wl_CountdownUI[playerid], 1);
 }

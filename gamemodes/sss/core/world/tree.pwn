@@ -215,9 +215,7 @@ DestroyTree(index)
 	if(!Iter_Contains(tree_Index, index))
 		return 0;
 
-	new next;
-
-	Iter_SafeRemove(tree_Index, index, next);
+	Iter_Remove(tree_Index, index);
 
 	DestroyDynamicObject(tree_Data[index][tree_objectid]);
 	DestroyDynamicArea(tree_Data[index][tree_areaid]);
@@ -229,7 +227,7 @@ DestroyTree(index)
 	tree_Data[index][tree_labelid]  = Text3D:-1;
 	tree_Data[index][tree_health] 	= 0.0;
 
-	return next;
+	return index;
 }
 
 

@@ -46,28 +46,28 @@ hook OnPlayerConnect(playerid)
 
 	spectate_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaws");
 	PlayerTextDrawAlignment			(playerid, spectate_Name, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spectate_Name, 255);
+	PlayerTextDrawBackgroundColour	(playerid, spectate_Name, 255);
 	PlayerTextDrawFont				(playerid, spectate_Name, 1);
 	PlayerTextDrawLetterSize		(playerid, spectate_Name, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spectate_Name, -1);
+	PlayerTextDrawColour				(playerid, spectate_Name, -1);
 	PlayerTextDrawSetOutline		(playerid, spectate_Name, 0);
 	PlayerTextDrawSetProportional	(playerid, spectate_Name, 1);
 	PlayerTextDrawSetShadow			(playerid, spectate_Name, 1);
 	PlayerTextDrawUseBox			(playerid, spectate_Name, 1);
-	PlayerTextDrawBoxColor			(playerid, spectate_Name, 255);
+	PlayerTextDrawBoxColour			(playerid, spectate_Name, 255);
 	PlayerTextDrawTextSize			(playerid, spectate_Name, 100.000000, 340.000000);
 
 	spectate_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
 	PlayerTextDrawAlignment			(playerid, spectate_Info, 2);
-	PlayerTextDrawBackgroundColor	(playerid, spectate_Info, 255);
+	PlayerTextDrawBackgroundColour	(playerid, spectate_Info, 255);
 	PlayerTextDrawFont				(playerid, spectate_Info, 1);
 	PlayerTextDrawLetterSize		(playerid, spectate_Info, 0.200000, 1.000000);
-	PlayerTextDrawColor				(playerid, spectate_Info, -1);
+	PlayerTextDrawColour				(playerid, spectate_Info, -1);
 	PlayerTextDrawSetOutline		(playerid, spectate_Info, 0);
 	PlayerTextDrawSetProportional	(playerid, spectate_Info, 1);
 	PlayerTextDrawSetShadow			(playerid, spectate_Info, 1);
 	PlayerTextDrawUseBox			(playerid, spectate_Info, 1);
-	PlayerTextDrawBoxColor			(playerid, spectate_Info, 255);
+	PlayerTextDrawBoxColour			(playerid, spectate_Info, 255);
 	PlayerTextDrawTextSize			(playerid, spectate_Info, 100.000000, 340.000000);
 }
 

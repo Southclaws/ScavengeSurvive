@@ -64,10 +64,10 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 {
 	title							=CreatePlayerTextDraw(playerid, x + width / 2.0, y - 12.0, "_");
 	PlayerTextDrawAlignment			(playerid, title, 2);
-	PlayerTextDrawBackgroundColor	(playerid, title, 255);
+	PlayerTextDrawBackgroundColour	(playerid, title, 255);
 	PlayerTextDrawFont				(playerid, title, 2);
 	PlayerTextDrawLetterSize		(playerid, title, 0.15, 1.0);
-	PlayerTextDrawColor				(playerid, title, -1);
+	PlayerTextDrawColour				(playerid, title, -1);
 	PlayerTextDrawSetOutline		(playerid, title, 1);
 	PlayerTextDrawSetProportional	(playerid, title, 1);
 	PlayerTextDrawTextSize			(playerid, title, height, width - 4);
@@ -75,17 +75,17 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 
 	tile							=CreatePlayerTextDraw(playerid, x, y, "_");
 	PlayerTextDrawFont				(playerid, tile, TEXT_DRAW_FONT_MODEL_PREVIEW);
-	PlayerTextDrawBackgroundColor	(playerid, tile, colour);
-	PlayerTextDrawColor				(playerid, tile, overlaycolour);
+	PlayerTextDrawBackgroundColour	(playerid, tile, colour);
+	PlayerTextDrawColour				(playerid, tile, overlaycolour);
 	PlayerTextDrawTextSize			(playerid, tile, width, height);
 	PlayerTextDrawSetSelectable		(playerid, tile, true);
 
 	item							=CreatePlayerTextDraw(playerid, x + width / 2.0, y + height, "_");
 	PlayerTextDrawAlignment			(playerid, item, 2);
-	PlayerTextDrawBackgroundColor	(playerid, item, 255);
+	PlayerTextDrawBackgroundColour	(playerid, item, 255);
 	PlayerTextDrawFont				(playerid, item, 2);
 	PlayerTextDrawLetterSize		(playerid, item, 0.15, 1.0);
-	PlayerTextDrawColor				(playerid, item, -1);
+	PlayerTextDrawColour				(playerid, item, -1);
 	PlayerTextDrawSetOutline		(playerid, item, 1);
 	PlayerTextDrawSetProportional	(playerid, item, 1);
 	PlayerTextDrawTextSize			(playerid, item, height, width + 10);

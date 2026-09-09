@@ -421,28 +421,28 @@ hook OnGameModeInit()
 {
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
 	TextDrawAlignment			(DeathText, 2);
-	TextDrawBackgroundColor		(DeathText, 255);
+	TextDrawBackgroundColour		(DeathText, 255);
 	TextDrawFont				(DeathText, 1);
 	TextDrawLetterSize			(DeathText, 0.500000, 2.000000);
-	TextDrawColor				(DeathText, -1);
+	TextDrawColour				(DeathText, -1);
 	TextDrawSetOutline			(DeathText, 0);
 	TextDrawSetProportional		(DeathText, 1);
 	TextDrawSetShadow			(DeathText, 1);
 	TextDrawUseBox				(DeathText, 1);
-	TextDrawBoxColor			(DeathText, 85);
+	TextDrawBoxColour			(DeathText, 85);
 	TextDrawTextSize			(DeathText, 20.000000, 150.000000);
 
 	DeathButton					=TextDrawCreate(320.000000, 323.000000, ">Play Again<");
 	TextDrawAlignment			(DeathButton, 2);
-	TextDrawBackgroundColor		(DeathButton, 255);
+	TextDrawBackgroundColour		(DeathButton, 255);
 	TextDrawFont				(DeathButton, 1);
 	TextDrawLetterSize			(DeathButton, 0.370000, 1.599999);
-	TextDrawColor				(DeathButton, -1);
+	TextDrawColour				(DeathButton, -1);
 	TextDrawSetOutline			(DeathButton, 0);
 	TextDrawSetProportional		(DeathButton, 1);
 	TextDrawSetShadow			(DeathButton, 1);
 	TextDrawUseBox				(DeathButton, 1);
-	TextDrawBoxColor			(DeathButton, 85);
+	TextDrawBoxColour			(DeathButton, 85);
 	TextDrawTextSize			(DeathButton, 20.000000, 150.000000);
 	TextDrawSetSelectable		(DeathButton, true);
 }

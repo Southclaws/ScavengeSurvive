@@ -48,15 +48,15 @@ HideHelpTip(playerid)
 hook OnPlayerConnect(playerid)
 {
 	ToolTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
-	PlayerTextDrawBackgroundColor	(playerid, ToolTipText[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, ToolTipText[playerid], 255);
 	PlayerTextDrawFont				(playerid, ToolTipText[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, ToolTipText[playerid], 0.300000, 1.499999);
-	PlayerTextDrawColor				(playerid, ToolTipText[playerid], 16711935);
+	PlayerTextDrawColour				(playerid, ToolTipText[playerid], 16711935);
 	PlayerTextDrawSetOutline		(playerid, ToolTipText[playerid], 1);
 	PlayerTextDrawSetProportional	(playerid, ToolTipText[playerid], 1);
 	PlayerTextDrawSetShadow			(playerid, ToolTipText[playerid], 0);
 	PlayerTextDrawUseBox			(playerid, ToolTipText[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ToolTipText[playerid], 0);
+	PlayerTextDrawBoxColour			(playerid, ToolTipText[playerid], 0);
 	PlayerTextDrawTextSize			(playerid, ToolTipText[playerid], 520.000000, 0.000000);
 }
 

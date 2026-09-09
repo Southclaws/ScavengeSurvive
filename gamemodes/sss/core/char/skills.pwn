@@ -59,10 +59,10 @@ hook OnPlayerConnect(playerid)
 {
 	skl_PlayerNotification			=CreatePlayerTextDraw(playerid, 320.000000, 430.000000, "+Fishing");
 	PlayerTextDrawAlignment			(playerid, skl_PlayerNotification, 2);
-	PlayerTextDrawBackgroundColor	(playerid, skl_PlayerNotification, 255);
+	PlayerTextDrawBackgroundColour	(playerid, skl_PlayerNotification, 255);
 	PlayerTextDrawFont				(playerid, skl_PlayerNotification, 1);
 	PlayerTextDrawLetterSize		(playerid, skl_PlayerNotification, 0.400000, 1.399999);
-	PlayerTextDrawColor				(playerid, skl_PlayerNotification, 16711935);
+	PlayerTextDrawColour				(playerid, skl_PlayerNotification, 16711935);
 	PlayerTextDrawSetOutline		(playerid, skl_PlayerNotification, 1);
 	PlayerTextDrawSetProportional	(playerid, skl_PlayerNotification, 1);
 }

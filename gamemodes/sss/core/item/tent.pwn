@@ -209,7 +209,7 @@ stock DestroyTent(tentid)
 	tnt_ObjData[tentid][tnt_objPoleF] = INVALID_OBJECT_ID;
 	tnt_ObjData[tentid][tnt_objPoleB] = INVALID_OBJECT_ID;
 
-	Iter_SafeRemove(tnt_Index, tentid, tentid);
+	Iter_Remove(tnt_Index, tentid);
 
 	return tentid;
 }

@@ -472,7 +472,7 @@ stock GetLootIndexFromName(const name[])
 	}
 
 	err("specified index name is invalid ('%s')", name);
-	PrintAmxBacktrace();
+	PrintBacktrace();
 
 	return -1;
 }

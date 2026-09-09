@@ -302,11 +302,8 @@ stock RemovePlayerWounds(playerid, amount = 1)
 		if(idx == amount)
 			break;
 
-		new next;
+		Iter_Remove(wnd_Index[playerid], i);
 
-		Iter_SafeRemove(wnd_Index[playerid], i, next);
-
-		i = next;
 		idx++;
 	}
 

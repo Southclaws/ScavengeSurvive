@@ -76,10 +76,10 @@ hook OnPlayerConnect(playerid)
 {
 	WeaponAmmoUI[playerid]			=CreatePlayerTextDraw(playerid, 520.411254, 62.649990, "500/500");
 	PlayerTextDrawAlignment			(playerid, WeaponAmmoUI[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, WeaponAmmoUI[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, WeaponAmmoUI[playerid], 255);
 	PlayerTextDrawFont				(playerid, WeaponAmmoUI[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, WeaponAmmoUI[playerid], 0.278114, 1.372495);
-	PlayerTextDrawColor				(playerid, WeaponAmmoUI[playerid], -1);
+	PlayerTextDrawColour				(playerid, WeaponAmmoUI[playerid], -1);
 	PlayerTextDrawSetShadow(playerid, WeaponAmmoUI[playerid], 0);
 	PlayerTextDrawSetOutline		(playerid, WeaponAmmoUI[playerid], 1);
 	PlayerTextDrawSetProportional	(playerid, WeaponAmmoUI[playerid], 1);

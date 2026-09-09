@@ -721,7 +721,7 @@ ACMD:delete[3](playerid, params[])
 			GetTentPos(i, ix, iy, iz);
 
 			if(Distance(px, py, pz, ix, iy, iz) < range)
-				i = DestroyTent(i);
+				DestroyTent(i);
 		}
 
 		return 1;

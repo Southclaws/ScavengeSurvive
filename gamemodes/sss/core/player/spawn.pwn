@@ -110,29 +110,29 @@ hook OnPlayerConnect(playerid)
 //{
 	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
 	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, ClassButtonMale[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, ClassButtonMale[playerid], 0.500000, 2.000000);
-	PlayerTextDrawColor				(playerid, ClassButtonMale[playerid], -1);
+	PlayerTextDrawColour				(playerid, ClassButtonMale[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, ClassButtonMale[playerid], 0);
 	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], 1);
 	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ClassButtonMale[playerid], 255);
+	PlayerTextDrawBoxColour			(playerid, ClassButtonMale[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
 
 	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
 	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
-	PlayerTextDrawBackgroundColor	(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, ClassButtonFemale[playerid], 255);
 	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, ClassButtonFemale[playerid], 0.500000, 2.000000);
-	PlayerTextDrawColor				(playerid, ClassButtonFemale[playerid], -1);
+	PlayerTextDrawColour				(playerid, ClassButtonFemale[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, ClassButtonFemale[playerid], 0);
 	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], 1);
 	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
 	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawBoxColor			(playerid, ClassButtonFemale[playerid], 255);
+	PlayerTextDrawBoxColour			(playerid, ClassButtonFemale[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
 }

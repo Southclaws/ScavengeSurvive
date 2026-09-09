@@ -27,10 +27,10 @@ hook OnPlayerConnect(playerid)
 
 	VersionInfo[playerid]			=CreatePlayerTextDraw(playerid, 632.000000, 2.000000, "www.southcla.ws");
 	PlayerTextDrawAlignment			(playerid, VersionInfo[playerid], 3);
-	PlayerTextDrawBackgroundColor	(playerid, VersionInfo[playerid], 255);
+	PlayerTextDrawBackgroundColour	(playerid, VersionInfo[playerid], 255);
 	PlayerTextDrawFont				(playerid, VersionInfo[playerid], 1);
 	PlayerTextDrawLetterSize		(playerid, VersionInfo[playerid], 0.240000, 1.000000);
-	PlayerTextDrawColor				(playerid, VersionInfo[playerid], -1);
+	PlayerTextDrawColour				(playerid, VersionInfo[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, VersionInfo[playerid], 1);
 	PlayerTextDrawSetProportional	(playerid, VersionInfo[playerid], 1);
 }
