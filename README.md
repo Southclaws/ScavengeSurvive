@@ -2,9 +2,10 @@
 
 ## Overview
 
-Scavenge and Survive is a PvP SA:MP survival gamemode. The aim of the game is to
-find supplies such as tools or weapons to help you survive, either alone or in a
-group.
+Scavenge and Survive is a PvP survival gamemode for
+[open.mp](https://open.mp), which still accepts SA-MP 0.3.7 clients. The aim of
+the game is to find supplies such as tools or weapons to help you survive,
+either alone or in a group.
 
 The overall objective is to build a stable community and defend it from players
 with more hostile intentions.
@@ -16,6 +17,10 @@ usually spawn with loot inside the trunk.
 No gameplay mechanics require the use of commands. All gameplay has been built
 with an intuitive _interaction model_ in mind with only 5 major keys required to
 access the gamemode-specific features.
+
+The [porting](porting/) directory documents the move from SA-MP to open.mp: how
+the server is built and run now, why each dependency decision was made, and what
+went wrong on the way.
 
 ## Getting Started
 
