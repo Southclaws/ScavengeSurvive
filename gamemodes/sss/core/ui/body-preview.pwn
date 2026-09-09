@@ -65,45 +65,45 @@ hook OnPlayerConnect(playerid)
 CreateBodyPreviewUI(playerid)
 {
 	bod_Header[playerid]			=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid], bod_UIPositionY[playerid], "Health status and wounds");
-	PlayerTextDrawAlignment			(playerid, bod_Header[playerid], 2);
-	PlayerTextDrawFont				(playerid, bod_Header[playerid], 1);
+	PlayerTextDrawAlignment			(playerid, bod_Header[playerid], TEXT_DRAW_ALIGN_CENTRE);
+	PlayerTextDrawFont				(playerid, bod_Header[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, bod_Header[playerid], 0.2, 1.0);
 	PlayerTextDrawColour				(playerid, bod_Header[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, bod_Header[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, bod_Header[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, bod_Header[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, bod_Header[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, bod_Header[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, bod_Header[playerid], true);
 	PlayerTextDrawTextSize			(playerid, bod_Header[playerid], 0.0, bod_UIWidth[playerid]);
 
 	bod_Background[playerid]		=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid], bod_UIPositionY[playerid], "~n~");
-	PlayerTextDrawAlignment			(playerid, bod_Background[playerid], 2);
-	PlayerTextDrawFont				(playerid, bod_Background[playerid], 1);
+	PlayerTextDrawAlignment			(playerid, bod_Background[playerid], TEXT_DRAW_ALIGN_CENTRE);
+	PlayerTextDrawFont				(playerid, bod_Background[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, bod_Background[playerid], 0.50, 23.6);
 	PlayerTextDrawColour				(playerid, bod_Background[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, bod_Background[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, bod_Background[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, bod_Background[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, bod_Background[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, bod_Background[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, bod_Background[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, bod_Background[playerid], 128);
 	PlayerTextDrawTextSize			(playerid, bod_Background[playerid], 0.0, bod_UIWidth[playerid]);
 
 	bod_Footer[playerid]			=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid], bod_UIPositionY[playerid] + 204.0, "Not Healthy");
-	PlayerTextDrawAlignment			(playerid, bod_Footer[playerid], 2);
-	PlayerTextDrawFont				(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawAlignment			(playerid, bod_Footer[playerid], TEXT_DRAW_ALIGN_CENTRE);
+	PlayerTextDrawFont				(playerid, bod_Footer[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, bod_Footer[playerid], 0.2, 1.0);
 	PlayerTextDrawColour				(playerid, bod_Footer[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, bod_Footer[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, bod_Footer[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, bod_Footer[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, bod_Footer[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, bod_Footer[playerid], true);
 	PlayerTextDrawTextSize			(playerid, bod_Footer[playerid], 0.000000, bod_UIWidth[playerid]);
 
 	bod_BodyPreview[playerid]		=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid] - (bod_UIWidth[playerid] * 0.666666667), bod_UIPositionY[playerid] + 10.0, "~n~");
-	PlayerTextDrawAlignment			(playerid, bod_BodyPreview[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, bod_BodyPreview[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, bod_BodyPreview[playerid], 0x0);
 	PlayerTextDrawFont				(playerid, bod_BodyPreview[playerid], TEXT_DRAW_FONT_MODEL_PREVIEW);
 	PlayerTextDrawLetterSize		(playerid, bod_BodyPreview[playerid], 0.50, 27.0);
-	PlayerTextDrawUseBox			(playerid, bod_BodyPreview[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, bod_BodyPreview[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, bod_BodyPreview[playerid], 0x0);
 	PlayerTextDrawTextSize			(playerid, bod_BodyPreview[playerid], bod_UIWidth[playerid] * 1.333333333, 210.0);
 	PlayerTextDrawSetPreviewModel	(playerid, bod_BodyPreview[playerid], 60);
@@ -181,13 +181,13 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, const string[], 
 			bod_LabelData0[playerid][index][bl_posY] = ypos;
 
 			bod_LabelData0[playerid][index][bl_textdraw]=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid] - 55.0, ypos, string);
-			PlayerTextDrawAlignment			(playerid, bod_LabelData0[playerid][index][bl_textdraw], 1);
+			PlayerTextDrawAlignment			(playerid, bod_LabelData0[playerid][index][bl_textdraw], TEXT_DRAW_ALIGN_LEFT);
 			PlayerTextDrawBackgroundColour	(playerid, bod_LabelData0[playerid][index][bl_textdraw], 255);
-			PlayerTextDrawFont				(playerid, bod_LabelData0[playerid][index][bl_textdraw], 1);
+			PlayerTextDrawFont				(playerid, bod_LabelData0[playerid][index][bl_textdraw], TEXT_DRAW_FONT_1);
 			PlayerTextDrawLetterSize		(playerid, bod_LabelData0[playerid][index][bl_textdraw], bod_UIFontSizeX[playerid], bod_UIFontSizeY[playerid]);
 			PlayerTextDrawColour				(playerid, bod_LabelData0[playerid][index][bl_textdraw], textcolour);
 			PlayerTextDrawSetOutline		(playerid, bod_LabelData0[playerid][index][bl_textdraw], 0);
-			PlayerTextDrawSetProportional	(playerid, bod_LabelData0[playerid][index][bl_textdraw], 1);
+			PlayerTextDrawSetProportional	(playerid, bod_LabelData0[playerid][index][bl_textdraw], true);
 			PlayerTextDrawSetShadow			(playerid, bod_LabelData0[playerid][index][bl_textdraw], 0);
 			PlayerTextDrawTextSize			(playerid, bod_LabelData0[playerid][index][bl_textdraw], bod_UIPositionX[playerid], 10.0);
 			PlayerTextDrawSetSelectable		(playerid, bod_LabelData0[playerid][index][bl_textdraw], true);
@@ -220,13 +220,13 @@ stock SetBodyPreviewLabel(playerid, side, index, Float:spacing, const string[], 
 			bod_LabelData1[playerid][index][bl_posY] = ypos;
 
 			bod_LabelData1[playerid][index][bl_textdraw]=CreatePlayerTextDraw(playerid, bod_UIPositionX[playerid] + 55.0, ypos, string);
-			PlayerTextDrawAlignment			(playerid, bod_LabelData1[playerid][index][bl_textdraw], 3);
+			PlayerTextDrawAlignment			(playerid, bod_LabelData1[playerid][index][bl_textdraw], TEXT_DRAW_ALIGN_RIGHT);
 			PlayerTextDrawBackgroundColour	(playerid, bod_LabelData1[playerid][index][bl_textdraw], 255);
-			PlayerTextDrawFont				(playerid, bod_LabelData1[playerid][index][bl_textdraw], 1);
+			PlayerTextDrawFont				(playerid, bod_LabelData1[playerid][index][bl_textdraw], TEXT_DRAW_FONT_1);
 			PlayerTextDrawLetterSize		(playerid, bod_LabelData1[playerid][index][bl_textdraw], bod_UIFontSizeX[playerid], bod_UIFontSizeY[playerid]);
 			PlayerTextDrawColour				(playerid, bod_LabelData1[playerid][index][bl_textdraw], textcolour);
 			PlayerTextDrawSetOutline		(playerid, bod_LabelData1[playerid][index][bl_textdraw], 0);
-			PlayerTextDrawSetProportional	(playerid, bod_LabelData1[playerid][index][bl_textdraw], 1);
+			PlayerTextDrawSetProportional	(playerid, bod_LabelData1[playerid][index][bl_textdraw], true);
 			PlayerTextDrawSetShadow			(playerid, bod_LabelData1[playerid][index][bl_textdraw], 0);
 			PlayerTextDrawTextSize			(playerid, bod_LabelData1[playerid][index][bl_textdraw], bod_UIPositionX[playerid], 10.0);
 			PlayerTextDrawSetSelectable		(playerid, bod_LabelData1[playerid][index][bl_textdraw], true);

@@ -51,7 +51,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 					}
 					else
 					{
-						ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+						ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, false, true, true, true, 0);
 					}
 				}
 			}
@@ -60,24 +60,24 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 		{
 			if(GetPlayerAnimationIndex(playerid) == 43 || GetPlayerAnimationIndex(playerid) == 1497)
 			{
-				ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
+				ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, false, false, false, false, 0);
 			}
 		}
 		if(newkeys & KEY_JUMP && !(oldkeys & KEY_JUMP) && GetPlayerSpecialAction(playerid) == SPECIAL_ACTION_CUFFED)
 		{
 			if(random(100) < 60)
-				ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff", 4.1, 0, 1, 1, 0, 0);
+				ApplyAnimation(playerid, "GYMNASIUM", "gym_jog_falloff", 4.1, false, true, true, false, 0);
 		}
 	}
 }
 
 timer SitDown[800](playerid)
 {
-	ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_IN", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_IN", 4.0, false, false, false, false, 0);
 	defer SitLoop(playerid);
 }
 
 timer SitLoop[1900](playerid)
 {
-	ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BEACH", "PARKSIT_M_LOOP", 4.0, true, false, false, false, 0);
 }

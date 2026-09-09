@@ -86,7 +86,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 StartTakingPills(playerid)
 {
 	pill_CurrentlyTaking[playerid] = GetPlayerItem(playerid);
-	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 1000, 1);
+	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, false, true, true, false, 1000, SYNC_ALL);
 	StartHoldAction(playerid, 1000);
 }
 

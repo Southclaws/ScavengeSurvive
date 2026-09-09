@@ -24,13 +24,13 @@ PlayerText:	KeyActions[MAX_PLAYERS] = {PlayerText:INVALID_TEXT_DRAW, ...},
 hook OnPlayerConnect(playerid)
 {
 	KeyActions[playerid]			=CreatePlayerTextDraw(playerid, 618.000000, 120.000000, "fixed it");
-	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], 3);
+	PlayerTextDrawAlignment			(playerid, KeyActions[playerid], TEXT_DRAW_ALIGN_RIGHT);
 	PlayerTextDrawBackgroundColour	(playerid, KeyActions[playerid], 255);
-	PlayerTextDrawFont				(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawFont				(playerid, KeyActions[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, KeyActions[playerid], 0.300000, 1.499999);
 	PlayerTextDrawColour				(playerid, KeyActions[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, KeyActions[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, KeyActions[playerid], true);
 }
 
 

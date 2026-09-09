@@ -89,19 +89,19 @@ hook OnGameModeInit()
 
 	HitMark_centre			=TextDrawCreate(305.500000, 208.500000, hm);
 	TextDrawBackgroundColour	(HitMark_centre, -1);
-	TextDrawFont			(HitMark_centre, 1);
+	TextDrawFont			(HitMark_centre, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize		(HitMark_centre, 0.500000, 1.000000);
 	TextDrawColour			(HitMark_centre, -1);
-	TextDrawSetProportional	(HitMark_centre, 1);
+	TextDrawSetProportional	(HitMark_centre, true);
 	TextDrawSetOutline		(HitMark_centre, 0);
 	TextDrawSetShadow		(HitMark_centre, 0);
 
 	HitMark_offset			=TextDrawCreate(325.500000, 165.500000, hm);
 	TextDrawBackgroundColour	(HitMark_offset, -1);
-	TextDrawFont			(HitMark_offset, 1);
+	TextDrawFont			(HitMark_offset, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize		(HitMark_offset, 0.520000, 1.000000);
 	TextDrawColour			(HitMark_offset, -1);
-	TextDrawSetProportional	(HitMark_offset, 1);
+	TextDrawSetProportional	(HitMark_offset, true);
 	TextDrawSetOutline		(HitMark_offset, 0);
 	TextDrawSetShadow		(HitMark_offset, 0);
 }

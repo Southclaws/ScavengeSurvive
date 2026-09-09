@@ -63,13 +63,13 @@ hook OnPlayerConnect(playerid)
 CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item, Float:x, Float:y, Float:width, Float:height, colour, overlaycolour)
 {
 	title							=CreatePlayerTextDraw(playerid, x + width / 2.0, y - 12.0, "_");
-	PlayerTextDrawAlignment			(playerid, title, 2);
+	PlayerTextDrawAlignment			(playerid, title, TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, title, 255);
-	PlayerTextDrawFont				(playerid, title, 2);
+	PlayerTextDrawFont				(playerid, title, TEXT_DRAW_FONT_2);
 	PlayerTextDrawLetterSize		(playerid, title, 0.15, 1.0);
 	PlayerTextDrawColour				(playerid, title, -1);
 	PlayerTextDrawSetOutline		(playerid, title, 1);
-	PlayerTextDrawSetProportional	(playerid, title, 1);
+	PlayerTextDrawSetProportional	(playerid, title, true);
 	PlayerTextDrawTextSize			(playerid, title, height, width - 4);
 	PlayerTextDrawUseBox			(playerid, title, true);
 
@@ -81,13 +81,13 @@ CreatePlayerTile(playerid, &PlayerText:title, &PlayerText:tile, &PlayerText:item
 	PlayerTextDrawSetSelectable		(playerid, tile, true);
 
 	item							=CreatePlayerTextDraw(playerid, x + width / 2.0, y + height, "_");
-	PlayerTextDrawAlignment			(playerid, item, 2);
+	PlayerTextDrawAlignment			(playerid, item, TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, item, 255);
-	PlayerTextDrawFont				(playerid, item, 2);
+	PlayerTextDrawFont				(playerid, item, TEXT_DRAW_FONT_2);
 	PlayerTextDrawLetterSize		(playerid, item, 0.15, 1.0);
 	PlayerTextDrawColour				(playerid, item, -1);
 	PlayerTextDrawSetOutline		(playerid, item, 1);
-	PlayerTextDrawSetProportional	(playerid, item, 1);
+	PlayerTextDrawSetProportional	(playerid, item, true);
 	PlayerTextDrawTextSize			(playerid, item, height, width + 10);
 }
 

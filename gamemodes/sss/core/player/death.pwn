@@ -420,28 +420,28 @@ timer SpawnDeathDelay[1500](playerid)
 hook OnGameModeInit()
 {
 	DeathText					=TextDrawCreate(320.000000, 300.000000, "YOU ARE DEAD!");
-	TextDrawAlignment			(DeathText, 2);
+	TextDrawAlignment			(DeathText, TEXT_DRAW_ALIGN_CENTRE);
 	TextDrawBackgroundColour		(DeathText, 255);
-	TextDrawFont				(DeathText, 1);
+	TextDrawFont				(DeathText, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(DeathText, 0.500000, 2.000000);
 	TextDrawColour				(DeathText, -1);
 	TextDrawSetOutline			(DeathText, 0);
-	TextDrawSetProportional		(DeathText, 1);
+	TextDrawSetProportional		(DeathText, true);
 	TextDrawSetShadow			(DeathText, 1);
-	TextDrawUseBox				(DeathText, 1);
+	TextDrawUseBox				(DeathText, true);
 	TextDrawBoxColour			(DeathText, 85);
 	TextDrawTextSize			(DeathText, 20.000000, 150.000000);
 
 	DeathButton					=TextDrawCreate(320.000000, 323.000000, ">Play Again<");
-	TextDrawAlignment			(DeathButton, 2);
+	TextDrawAlignment			(DeathButton, TEXT_DRAW_ALIGN_CENTRE);
 	TextDrawBackgroundColour		(DeathButton, 255);
-	TextDrawFont				(DeathButton, 1);
+	TextDrawFont				(DeathButton, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(DeathButton, 0.370000, 1.599999);
 	TextDrawColour				(DeathButton, -1);
 	TextDrawSetOutline			(DeathButton, 0);
-	TextDrawSetProportional		(DeathButton, 1);
+	TextDrawSetProportional		(DeathButton, true);
 	TextDrawSetShadow			(DeathButton, 1);
-	TextDrawUseBox				(DeathButton, 1);
+	TextDrawUseBox				(DeathButton, true);
 	TextDrawBoxColour			(DeathButton, 85);
 	TextDrawTextSize			(DeathButton, 20.000000, 150.000000);
 	TextDrawSetSelectable		(DeathButton, true);

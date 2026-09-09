@@ -119,7 +119,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 			if(gettime() - decompose < 86400)
 			{
 				StartHoldAction(playerid, 3000);
-				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+				ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 				gut_TargetItem[playerid] = withitemid;
 				return Y_HOOKS_BREAK_RETURN_1;
 			}
@@ -143,7 +143,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 	{
 		gut_TargetItem[playerid] = itemid;
 		ShowTorsoDetails(playerid, itemid);
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 1, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, false, false, false, true, 0);
 		return Y_HOOKS_BREAK_RETURN_1;
 	}
 

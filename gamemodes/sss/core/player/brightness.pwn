@@ -31,13 +31,13 @@ hook OnPlayerConnect(playerid)
 
 	BrightnessUI[playerid]			=CreatePlayerTextDraw(playerid, 0.000000, 0.000000, "_");
 	PlayerTextDrawBackgroundColour	(playerid, BrightnessUI[playerid], 255);
-	PlayerTextDrawFont				(playerid, BrightnessUI[playerid], 1);
+	PlayerTextDrawFont				(playerid, BrightnessUI[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, BrightnessUI[playerid], 0.500000, 50.000000);
 	PlayerTextDrawColour				(playerid, BrightnessUI[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, BrightnessUI[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, BrightnessUI[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, BrightnessUI[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, BrightnessUI[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, BrightnessUI[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, BrightnessUI[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, BrightnessUI[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, BrightnessUI[playerid], 640.000000, 0.000000);
 }

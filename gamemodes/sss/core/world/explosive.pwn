@@ -198,7 +198,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 			exp_ArmingItem[playerid] = itemid;
 
 			StartHoldAction(playerid, 1000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 			ShowActionText(playerid, ls(playerid, "ARMINGBOMB", true));
 		}
 		else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == PROXIMITY)
@@ -207,7 +207,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 			exp_ArmingItem[playerid] = itemid;
 
 			StartHoldAction(playerid, 1000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 			ShowActionText(playerid, ls(playerid, "ARMINGBOMB", true));
 		}
 		else if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] == MOTION)
@@ -216,7 +216,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 			exp_ArmingItem[playerid] = itemid;
 
 			StartHoldAction(playerid, 1000);
-			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 			ShowActionText(playerid, ls(playerid, "ARMINGBOMB", true));
 		}
 	}
@@ -281,7 +281,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	if(exp_Data[exp_ItemTypeExplosive[itemtype]][exp_trigger] != RADIO)
 		return Y_HOOKS_CONTINUE_RETURN_0;
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, false, false, false, false, 0);
 	SetItemExtraData(itemid, _:withitemid);
 	SetItemExtraData(withitemid, 1);
 	exp_ArmTick[playerid] = GetTickCount();

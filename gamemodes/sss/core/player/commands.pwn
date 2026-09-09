@@ -116,7 +116,7 @@ CMD:dropall(playerid, params[])
 	GetPlayerPos(playerid, x, y, z);
 	GetPlayerFacingAngle(playerid, r);
 
-	ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+	ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, false, true, true, true, 0);
 	DropItems(playerid, x, y, z, r, false);
 
 	return 1;
@@ -128,7 +128,7 @@ CMD:dropall(playerid, params[])
 		return 2;
 
 	SetPlayerWeapon(playerid, 4, 1);
-	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 1.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 1.0, false, false, false, false, 0);
 	defer Suicide(playerid);
 
 	return 1;

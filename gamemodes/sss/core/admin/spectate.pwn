@@ -45,28 +45,28 @@ hook OnPlayerConnect(playerid)
 	stop spectate_Timer[playerid];
 
 	spectate_Name						=CreatePlayerTextDraw(playerid, 320.000000, 365.000000, "[HLF]Southclaws");
-	PlayerTextDrawAlignment			(playerid, spectate_Name, 2);
+	PlayerTextDrawAlignment			(playerid, spectate_Name, TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, spectate_Name, 255);
-	PlayerTextDrawFont				(playerid, spectate_Name, 1);
+	PlayerTextDrawFont				(playerid, spectate_Name, TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, spectate_Name, 0.200000, 1.000000);
 	PlayerTextDrawColour				(playerid, spectate_Name, -1);
 	PlayerTextDrawSetOutline		(playerid, spectate_Name, 0);
-	PlayerTextDrawSetProportional	(playerid, spectate_Name, 1);
+	PlayerTextDrawSetProportional	(playerid, spectate_Name, true);
 	PlayerTextDrawSetShadow			(playerid, spectate_Name, 1);
-	PlayerTextDrawUseBox			(playerid, spectate_Name, 1);
+	PlayerTextDrawUseBox			(playerid, spectate_Name, true);
 	PlayerTextDrawBoxColour			(playerid, spectate_Name, 255);
 	PlayerTextDrawTextSize			(playerid, spectate_Name, 100.000000, 340.000000);
 
 	spectate_Info						=CreatePlayerTextDraw(playerid, 320.000000, 380.000000, "Is awesome");
-	PlayerTextDrawAlignment			(playerid, spectate_Info, 2);
+	PlayerTextDrawAlignment			(playerid, spectate_Info, TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, spectate_Info, 255);
-	PlayerTextDrawFont				(playerid, spectate_Info, 1);
+	PlayerTextDrawFont				(playerid, spectate_Info, TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, spectate_Info, 0.200000, 1.000000);
 	PlayerTextDrawColour				(playerid, spectate_Info, -1);
 	PlayerTextDrawSetOutline		(playerid, spectate_Info, 0);
-	PlayerTextDrawSetProportional	(playerid, spectate_Info, 1);
+	PlayerTextDrawSetProportional	(playerid, spectate_Info, true);
 	PlayerTextDrawSetShadow			(playerid, spectate_Info, 1);
-	PlayerTextDrawUseBox			(playerid, spectate_Info, 1);
+	PlayerTextDrawUseBox			(playerid, spectate_Info, true);
 	PlayerTextDrawBoxColour			(playerid, spectate_Info, 255);
 	PlayerTextDrawTextSize			(playerid, spectate_Info, 100.000000, 340.000000);
 }

@@ -136,42 +136,42 @@ _updateWatchUI(playerid, Float:x, Float:y, Float:sx, Float:sy, Float:bgoffsetx)
 	PlayerTextDrawDestroy(playerid, WatchFreq[playerid]);
 
 	WatchBackground[playerid]		=CreatePlayerTextDraw(playerid, 87.000000 + x + (bgoffsetx * sx), 338.000000 + y, "LD_POOL:ball");
-	PlayerTextDrawAlignment			(playerid, WatchBackground[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, WatchBackground[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, WatchBackground[playerid], 255);
-	PlayerTextDrawFont				(playerid, WatchBackground[playerid], 4);
+	PlayerTextDrawFont				(playerid, WatchBackground[playerid], TEXT_DRAW_FONT_SPRITE_DRAW);
 	PlayerTextDrawLetterSize		(playerid, WatchBackground[playerid], 0.500000, 0.000000);
 	PlayerTextDrawColour				(playerid, WatchBackground[playerid], 255);
 	PlayerTextDrawSetOutline		(playerid, WatchBackground[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, WatchBackground[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WatchBackground[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, WatchBackground[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, WatchBackground[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, WatchBackground[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, WatchBackground[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, WatchBackground[playerid], sx * 108.000000, sy * 89.000000);
 
 	WatchTime[playerid]				=CreatePlayerTextDraw(playerid, 87.000000 + x, 372.000000 + y, "69:69");
-	PlayerTextDrawAlignment			(playerid, WatchTime[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, WatchTime[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, WatchTime[playerid], 255);
-	PlayerTextDrawFont				(playerid, WatchTime[playerid], 2);
+	PlayerTextDrawFont				(playerid, WatchTime[playerid], TEXT_DRAW_FONT_2);
 	PlayerTextDrawLetterSize		(playerid, WatchTime[playerid], sx * 0.500000, sy * 2.000000);
 	PlayerTextDrawColour				(playerid, WatchTime[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, WatchTime[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, WatchTime[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WatchTime[playerid], true);
 
 	WatchBear[playerid]				=CreatePlayerTextDraw(playerid, 87.000000 + x, 358.000000 + y, "45 Deg");
-	PlayerTextDrawAlignment			(playerid, WatchBear[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, WatchBear[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, WatchBear[playerid], 255);
-	PlayerTextDrawFont				(playerid, WatchBear[playerid], 2);
+	PlayerTextDrawFont				(playerid, WatchBear[playerid], TEXT_DRAW_FONT_2);
 	PlayerTextDrawLetterSize		(playerid, WatchBear[playerid], sx * 0.300000, sy * 1.500000);
 	PlayerTextDrawColour				(playerid, WatchBear[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, WatchBear[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, WatchBear[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WatchBear[playerid], true);
 
 	WatchFreq[playerid]				=CreatePlayerTextDraw(playerid, 87.000000 + x, 391.000000 + y, "88.8");
-	PlayerTextDrawAlignment			(playerid, WatchFreq[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, WatchFreq[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, WatchFreq[playerid], 255);
-	PlayerTextDrawFont				(playerid, WatchFreq[playerid], 2);
+	PlayerTextDrawFont				(playerid, WatchFreq[playerid], TEXT_DRAW_FONT_2);
 	PlayerTextDrawLetterSize		(playerid, WatchFreq[playerid], sx * 0.300000, sy * 1.500000);
 	PlayerTextDrawColour				(playerid, WatchFreq[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, WatchFreq[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, WatchFreq[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, WatchFreq[playerid], true);
 }

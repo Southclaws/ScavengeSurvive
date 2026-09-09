@@ -20,7 +20,7 @@ hook OnPlayerUseItem(playerid, Item:itemid)
 {
 	if(GetItemType(itemid) == item_Shield)
 	{
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 		defer shield_Down(playerid, _:itemid);
 	}
 

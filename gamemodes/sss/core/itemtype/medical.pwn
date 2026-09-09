@@ -98,12 +98,12 @@ PlayerStartHeal(playerid, target)
 	{
 		if(IsPlayerKnockedOut(target))
 		{
-			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "MEDIC", "CPR", 4.0, true, false, false, false, 0);
 			duration = REVIVE_PROGRESS_MAX;
 		}
 		else
 		{
-			ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+			ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 		}
 
 		SetPlayerProgressBarMaxValue(target, ActionBar, duration);
@@ -111,7 +111,7 @@ PlayerStartHeal(playerid, target)
 	}
 	else
 	{
-		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SWEET", "Sweet_injuredloop", 4.0, true, false, false, false, 0);
 	}
 
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, duration, "Medical"));

@@ -386,7 +386,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 StartBuildingTent(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 10000);
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 	ShowActionText(playerid, ls(playerid, "TENTBUILD", true));
 	tnt_CurrentTentItem[playerid] = itemid;
 }
@@ -407,7 +407,7 @@ StopBuildingTent(playerid)
 StartRemovingTent(playerid, Item:itemid)
 {
 	StartHoldAction(playerid, 15000);
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 	ShowActionText(playerid, ls(playerid, "TENTREMOVE"));
 	tnt_CurrentTentItem[playerid] = itemid;
 }

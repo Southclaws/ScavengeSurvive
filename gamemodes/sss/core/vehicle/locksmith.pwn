@@ -168,7 +168,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 StartCraftingKey(playerid, vehicleid)
 {
 	lsk_TargetVehicle[playerid] = vehicleid;
-	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 
 	StartHoldAction(playerid, 3000);
 

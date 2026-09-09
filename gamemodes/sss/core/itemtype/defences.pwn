@@ -266,7 +266,7 @@ StartBuildingDefence(playerid, Item:itemid)
 
 	def_CurrentDefenceItem[playerid] = itemid;
 	StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
-	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 	ShowActionText(playerid, sprintf(ls(playerid, "DEFBUILDING"), itemtypename));
 
 	return 1;
@@ -401,7 +401,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 		def_CurrentDefenceEdit[playerid] = itemid;
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 10000, "Construction"));
-		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFREMOVING"), itemtypename));
 
 		return 1;
@@ -421,7 +421,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 		def_CurrentDefenceEdit[playerid] = itemid;
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
-		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 
@@ -444,7 +444,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 		def_CurrentDefenceEdit[playerid] = itemid;
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
-		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 
@@ -467,7 +467,7 @@ _InteractDefenceWithItem(playerid, Item:itemid, Item:tool)
 
 		def_CurrentDefenceEdit[playerid] = itemid;
 		StartHoldAction(playerid, GetPlayerSkillTimeModifier(playerid, 6000, "Construction"));
-		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "COP_AMBIENT", "COPBROWSE_LOOP", 4.0, true, false, false, false, 0);
 
 		ShowActionText(playerid, sprintf(ls(playerid, "DEFMODIFYIN"), itemtypename));
 

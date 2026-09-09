@@ -678,13 +678,13 @@ OnGameModeInit_Setup()
 	debug_set_level("global", gGlobalDebugLevel);
 
 	RestartCount				=TextDrawCreate(410.000000, 10.000000, "Server Restart In:~n~00:00");
-	TextDrawAlignment			(RestartCount, 2);
+	TextDrawAlignment			(RestartCount, TEXT_DRAW_ALIGN_CENTRE);
 	TextDrawBackgroundColour		(RestartCount, 255);
-	TextDrawFont				(RestartCount, 1);
+	TextDrawFont				(RestartCount, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(RestartCount, 0.400000, 1.600000);
 	TextDrawColour				(RestartCount, -1);
 	TextDrawSetOutline			(RestartCount, 1);
-	TextDrawSetProportional		(RestartCount, 1);
+	TextDrawSetProportional		(RestartCount, true);
 }
 
 public OnGameModeExit()

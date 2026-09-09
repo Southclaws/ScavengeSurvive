@@ -96,7 +96,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 				}
 			}
 
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 			defer _TransferWeaponToWeapon(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
@@ -157,7 +157,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 				}
 			}
 
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 			defer _TransferTinToWeapon(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
@@ -197,7 +197,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 				}
 			}
 
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 			defer _TransferWeaponToTin(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
@@ -227,7 +227,7 @@ _PickUpAmmoTransferCheck(playerid, Item:helditemid, Item:ammoitemid)
 				return 1;
 			}
 
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 1, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, true, false, false, false, 450);
 			defer _TransferTinToTin(playerid, _:ammoitemid, _:helditemid);
 
 			return 1;
@@ -260,7 +260,7 @@ timer _TransferWeaponToWeapon[400](playerid, srcitem, tgtitem)
 		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOW", true), (reserveammo + magammo) - remainder), 3000);
 	}
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, false, false, false, false, 0);
 }
 
 // Transfer ammo from ammo item to held weapon
@@ -286,7 +286,7 @@ timer _TransferTinToWeapon[400](playerid, srcitem, tgtitem)
 		ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOW", true), ammo - remainder), 3000);
 	}
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, false, false, false, false, 0);
 }
 
 // Transfer ammo from weapon to held ammo item
@@ -304,7 +304,7 @@ timer _TransferWeaponToTin[400](playerid, srcitem, tgtitem)
 
 	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSWTOT", true), amount), 3000);
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, false, false, false, false, 0);
 }
 
 // Transfer ammo from ammo item to held ammo item
@@ -322,7 +322,7 @@ timer _TransferTinToTin[400](playerid, srcitem, tgtitem)
 
 	ShowActionText(playerid, sprintf(ls(playerid, "AMTRANSTTOT", true), amount), 3000);
 
-	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_2IDLE", 4.0, false, false, false, false, 0);
 }
 
 

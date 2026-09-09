@@ -190,10 +190,10 @@ public OnObjectMoved(objectid)
 	    Floor_OpenDoors(ElevatorFloor);
 
 	    GetObjectPos(Obj_Elevator, x, y, z);
-	    Label_Elevator	= Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, 1784.9822, -1302.0426, z - 0.9, 4.0, 0, 1);
+	    Label_Elevator	= Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, 1784.9822, -1302.0426, z - 0.9, 4.0, 0, true);
 
 	    ElevatorState 	= ELEVATOR_STATE_WAITING;
-	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, 0);
+	    SetTimer("Elevator_TurnToIdle", ELEVATOR_WAIT_TIME, false);
 	}
 
 	return 1;
@@ -260,7 +260,7 @@ stock Elevator_Initialize()
 	Obj_ElevatorDoors[0] 	= CreateObject(18757, X_DOOR_CLOSED, -1303.459472, GROUND_Z_COORD, 0.000000, 0.000000, 270.000000);
 	Obj_ElevatorDoors[1] 	= CreateObject(18756, X_DOOR_CLOSED, -1303.459472, GROUND_Z_COORD, 0.000000, 0.000000, 270.000000);
 
-	Label_Elevator          = Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, 1784.9822, -1302.0426, 13.6491, 4.0, 0, 1);
+	Label_Elevator          = Create3DTextLabel("{CCCCCC}Press '{FFFFFF}~k~~CONVERSATION_YES~{CCCCCC}' to use elevator", 0xCCCCCCAA, 1784.9822, -1302.0426, 13.6491, 4.0, 0, true);
 
 	new string[128],
 		Float:z;
@@ -277,7 +277,7 @@ stock Elevator_Initialize()
 		else
 		    z = 13.4713 + 8.7396 + ((i-1) * 5.45155);
 
-		Label_Floors[i]         = Create3DTextLabel(string, 0xCCCCCCAA, 1783.9799, -1300.7660, z, 10.5, 0, 1);
+		Label_Floors[i]         = Create3DTextLabel(string, 0xCCCCCCAA, 1783.9799, -1300.7660, z, 10.5, 0, true);
 		// Label_Elevator, Text3D:Label_Floors[21];
 	}
 
@@ -373,7 +373,7 @@ stock Elevator_MoveToFloor(floorid)
     MoveObject(Obj_ElevatorDoors[1], X_DOOR_CLOSED, -1303.459472, GetDoorsZCoordForFloor(floorid), 0.25);
     Delete3DTextLabel(Label_Elevator);
 
-	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, 0, "i", floorid);
+	ElevatorBoostTimer = SetTimerEx("Elevator_Boost", 2000, false, "i", floorid);
 
 	return 1;
 }

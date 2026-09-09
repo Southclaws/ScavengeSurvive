@@ -106,7 +106,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 	{
 		if(GetTickCountDifference(GetTickCount(), fwk_CooldownTick) > 3000)
 		{
-			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, 0, 0, 0, 0, 450);
+			ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 5.0, false, false, false, false, 450);
 			defer FireworkLaunch(_:withitemid);
 			fwk_CooldownTick = GetTickCount();
 		}

@@ -367,7 +367,7 @@ stock GetCameraModeName(cameramode, output[])
 	return 1;
 }
 
-#define PreloadAnimLib(%1,%2) ApplyAnimation(%1,%2,"null",0.0,0,0,0,0,0)
+#define PreloadAnimLib(%1,%2) ApplyAnimation(%1,%2,"null",0.0,false,false,false,false,0)
 stock PreloadPlayerAnims(playerid)
 {
 	PreloadAnimLib(playerid, "AIRPORT");

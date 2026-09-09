@@ -133,7 +133,7 @@ _StartEating(playerid, Item:itemid, continuing = false)
 		return;
 	}
 
-	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, 0, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "FOOD", "EAT_Burger", 4.1, false, false, false, false, 0);
 	StartHoldAction(playerid, 3200);
 
 	return;

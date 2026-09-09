@@ -52,29 +52,29 @@ hook OnPlayerClickTextDraw(playerid, Text:clickedid)
 hook OnGameModeInit()
 {
 	page_Left					=TextDrawCreate(280.0, 360.0, "<");
-	TextDrawAlignment			(page_Left, 2);
+	TextDrawAlignment			(page_Left, TEXT_DRAW_ALIGN_CENTRE);
 	TextDrawBackgroundColour		(page_Left, 255);
-	TextDrawFont				(page_Left, 1);
+	TextDrawFont				(page_Left, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(page_Left, 0.5, 2.0);
 	TextDrawColour				(page_Left, -1);
 	TextDrawSetOutline			(page_Left, 0);
-	TextDrawSetProportional		(page_Left, 1);
+	TextDrawSetProportional		(page_Left, true);
 	TextDrawSetShadow			(page_Left, 1);
-	TextDrawUseBox				(page_Left, 1);
+	TextDrawUseBox				(page_Left, true);
 	TextDrawBoxColour			(page_Left, 128);
 	TextDrawTextSize			(page_Left, 25.0, 75.0);
 	TextDrawSetSelectable		(page_Left, true);
 
 	page_Right					=TextDrawCreate(360.0, 360.0, ">");
-	TextDrawAlignment			(page_Right, 2);
+	TextDrawAlignment			(page_Right, TEXT_DRAW_ALIGN_CENTRE);
 	TextDrawBackgroundColour		(page_Right, 255);
-	TextDrawFont				(page_Right, 1);
+	TextDrawFont				(page_Right, TEXT_DRAW_FONT_1);
 	TextDrawLetterSize			(page_Right, 0.5, 2.0);
 	TextDrawColour				(page_Right, -1);
 	TextDrawSetOutline			(page_Right, 0);
-	TextDrawSetProportional		(page_Right, 1);
+	TextDrawSetProportional		(page_Right, true);
 	TextDrawSetShadow			(page_Right, 1);
-	TextDrawUseBox				(page_Right, 1);
+	TextDrawUseBox				(page_Right, true);
 	TextDrawBoxColour			(page_Right, 128);
 	TextDrawTextSize			(page_Right, 25.0, 75.0);
 	TextDrawSetSelectable		(page_Right, true);

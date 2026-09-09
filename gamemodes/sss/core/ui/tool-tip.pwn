@@ -49,13 +49,13 @@ hook OnPlayerConnect(playerid)
 {
 	ToolTipText[playerid]			=CreatePlayerTextDraw(playerid, 150.000000, 350.000000, "Tip: You can access the trunks of cars by pressing F at the back");
 	PlayerTextDrawBackgroundColour	(playerid, ToolTipText[playerid], 255);
-	PlayerTextDrawFont				(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawFont				(playerid, ToolTipText[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, ToolTipText[playerid], 0.300000, 1.499999);
 	PlayerTextDrawColour				(playerid, ToolTipText[playerid], 16711935);
 	PlayerTextDrawSetOutline		(playerid, ToolTipText[playerid], 1);
-	PlayerTextDrawSetProportional	(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ToolTipText[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, ToolTipText[playerid], 0);
-	PlayerTextDrawUseBox			(playerid, ToolTipText[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ToolTipText[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, ToolTipText[playerid], 0);
 	PlayerTextDrawTextSize			(playerid, ToolTipText[playerid], 520.000000, 0.000000);
 }

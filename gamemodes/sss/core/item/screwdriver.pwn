@@ -47,7 +47,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 				if(armed == 1)
 				{
 					StartHoldAction(playerid, 2000);
-					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, 1, 0, 0, 0, 0);
+					ApplyAnimation(playerid, "BOMBER", "BOM_Plant_Loop", 4.0, true, false, false, false, 0);
 					scr_TargetItem[playerid] = withitemid;
 				}
 			}

@@ -109,29 +109,29 @@ hook OnPlayerConnect(playerid)
 //timer LoadClassUI[1](playerid)
 //{
 	ClassButtonMale[playerid]		=CreatePlayerTextDraw(playerid, 250.000000, 200.000000, "~n~Male~n~~n~");
-	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, ClassButtonMale[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, ClassButtonMale[playerid], 255);
-	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawFont				(playerid, ClassButtonMale[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, ClassButtonMale[playerid], 0.500000, 2.000000);
 	PlayerTextDrawColour				(playerid, ClassButtonMale[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, ClassButtonMale[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonMale[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, ClassButtonMale[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonMale[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, ClassButtonMale[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, ClassButtonMale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonMale[playerid], true);
 
 	ClassButtonFemale[playerid]		=CreatePlayerTextDraw(playerid, 390.000000, 200.000000, "~n~Female~n~~n~");
-	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], 2);
+	PlayerTextDrawAlignment			(playerid, ClassButtonFemale[playerid], TEXT_DRAW_ALIGN_CENTRE);
 	PlayerTextDrawBackgroundColour	(playerid, ClassButtonFemale[playerid], 255);
-	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawFont				(playerid, ClassButtonFemale[playerid], TEXT_DRAW_FONT_1);
 	PlayerTextDrawLetterSize		(playerid, ClassButtonFemale[playerid], 0.500000, 2.000000);
 	PlayerTextDrawColour				(playerid, ClassButtonFemale[playerid], -1);
 	PlayerTextDrawSetOutline		(playerid, ClassButtonFemale[playerid], 0);
-	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawSetProportional	(playerid, ClassButtonFemale[playerid], true);
 	PlayerTextDrawSetShadow			(playerid, ClassButtonFemale[playerid], 1);
-	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], 1);
+	PlayerTextDrawUseBox			(playerid, ClassButtonFemale[playerid], true);
 	PlayerTextDrawBoxColour			(playerid, ClassButtonFemale[playerid], 255);
 	PlayerTextDrawTextSize			(playerid, ClassButtonFemale[playerid], 44.000000, 100.000000);
 	PlayerTextDrawSetSelectable		(playerid, ClassButtonFemale[playerid], true);
@@ -210,15 +210,15 @@ PlayerSpawnExistingCharacter(playerid)
 
 	if(GetPlayerStance(playerid) == 1)
 	{
-		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, false, false, false, false, 0);
 	}
 	else if(GetPlayerStance(playerid) == 2)
 	{
-		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, 0, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SUNBATHE", "PARKSIT_M_OUT", 4.0, false, false, false, false, 0);
 	}
 	else if(GetPlayerStance(playerid) == 3)
 	{
-		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, 0, 1, 1, 1, 0);
+		ApplyAnimation(playerid, "ROB_BANK", "SHP_HandsUp_Scr", 4.0, false, true, true, true, 0);
 	}
 
 	Logger_Log("player spawned existing character",

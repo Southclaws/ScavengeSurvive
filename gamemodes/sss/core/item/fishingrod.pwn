@@ -81,7 +81,7 @@ _PlayerStartFishing(playerid)
 	StartHoldAction(playerid, MAX_FISHING_DISTANCE);
 	fish_Status[playerid] = FISH_STATUS_CASTING;
 
-	ApplyAnimation(playerid, "SAMP", "FishingIdle", 4.1, 1, 0, 0, 0, 0);
+	ApplyAnimation(playerid, "SAMP", "FishingIdle", 4.1, true, false, false, false, 0);
 }
 
 _PlayerStopFishing(playerid)
@@ -131,7 +131,7 @@ timer _TryCatch[catchtime](playerid, catchtime)
 
 	if(random(1000) < 1000 - GetPlayerSkillTimeModifier(playerid, 1000 - FISHING_CHANCE, "Fishing"))
 	{
-		ApplyAnimation(playerid, "SWORD", "sword_block", 50.0, 1, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "SWORD", "sword_block", 50.0, true, false, false, false, 0);
 
 		fish_Timer[playerid] = defer _CatchDelay(playerid);
 		ShowActionText(playerid, ls(playerid, "FISHLINETUG", true), floatround(fish_Distance[playerid], floatround_round) * 100);

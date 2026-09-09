@@ -268,7 +268,7 @@ _HolsterItem(playerid)
 	if(CallLocalFunction("OnPlayerHolsterItem", "dd", playerid, _:itemid))
 		return 0;
 
-	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
+	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, false, false, false, false, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
 	defer HolsterItemDelay(playerid, _:itemid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
 	hols_LastHolster[playerid] = GetTickCount();
 
@@ -326,7 +326,7 @@ _UnholsterItem(playerid)
 	if(CallLocalFunction("OnPlayerUnHolsterItem", "dd", playerid, _:hols_Item[playerid]))
 		return 0;
 
-	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, 0, 0, 0, 0, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
+	ApplyAnimation(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animLib], hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_animName], 1.7, false, false, false, false, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
 	defer UnholsterItemDelay(playerid, hols_TypeData[hols_ItemTypeHolsterDataID[itemtype]][hols_time]);
 	hols_LastHolster[playerid] = GetTickCount();
 

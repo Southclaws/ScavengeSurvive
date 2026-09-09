@@ -48,7 +48,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 				{
 					if(GetPlayerItem(i) == INVALID_ITEM_ID && GetPlayerWeapon(i) == 0 && cuf_BeingCuffedBy[i] == INVALID_PLAYER_ID)
 					{
-						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
+						ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, true, false, false, false, 0);
 						StartHoldAction(playerid, 3000);
 
 						cuf_TargetPlayer[playerid] = i;
@@ -75,7 +75,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 							cuf_TargetPlayer[playerid] = i;
 							cuf_BeingCuffedBy[i] = playerid;
 
-							ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, 1, 0, 0, 0, 0);
+							ApplyAnimation(playerid, "CASINO", "DEALONE", 4.0, true, false, false, false, 0);
 							StartHoldAction(playerid, 3000);
 
 							return 1;

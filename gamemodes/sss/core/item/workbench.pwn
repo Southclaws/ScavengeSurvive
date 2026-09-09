@@ -200,7 +200,7 @@ _wb_StartWorking(playerid, Item:itemid, buildtime)
 	GetItemButtonID(itemid, buttonid);
 	GetPlayerAngleToButton(playerid, buttonid, angle);
 	SetPlayerFacingAngle(playerid, angle);
-	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, 1, 0, 0, 0, 0, 1);
+	ApplyAnimation(playerid, "INT_SHOP", "SHOP_CASHIER", 4.0, true, false, false, false, 0, SYNC_ALL);
 	StartHoldAction(playerid, buildtime);
 	wb_CurrentWorkbench[playerid] = itemid;
 }

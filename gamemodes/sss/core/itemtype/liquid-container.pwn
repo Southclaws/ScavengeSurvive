@@ -174,7 +174,7 @@ _StartDrinking(playerid, Item:itemid, continuing = false)
 
 	liq_CurrentItem[playerid] = itemid;
 
-	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, 0, 1, 1, 0, 0, 1);
+	ApplyAnimation(playerid, "BAR", "dnk_stndM_loop", 3.0, false, true, true, false, 0, SYNC_ALL);
 	StartHoldAction(playerid, 1000);
 
 	return;

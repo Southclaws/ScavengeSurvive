@@ -51,7 +51,7 @@ hook OnPlayerUseItemWithItem(playerid, Item:itemid, Item:withitemid)
 		DestroyItem(withitemid);
 		CreateItem(ItemType:18, x, y, z, .rz = rz);
 
-		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, 0, 0, 0, 0, 0);
+		ApplyAnimation(playerid, "BOMBER", "BOM_PLANT_IN", 4.0, false, false, false, false, 0);
 		ShowActionText(playerid, ls(playerid, "MOLOPOURBOT", true), 3000);
 		
 		transfer = (canfuel - 0.5 < 0.0) ? canfuel : 0.5;

@@ -120,7 +120,7 @@ stock WakeUpPlayer(playerid)
 	TogglePlayerVehicleEntry(playerid, true);
 	HidePlayerProgressBar(playerid, KnockoutBar);
 	HideActionText(playerid);
-	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, 0, 1, 1, 0, 0);
+	ApplyAnimation(playerid, "PED", "GETUP_FRONT", 4.0, false, true, true, false, 0);
 
 	knockout_Tick[playerid] = GetTickCount();
 	knockout_KnockedOut[playerid] = false;
@@ -184,7 +184,7 @@ _PlayKnockOutAnimation(playerid)
 {
 	if(!IsPlayerInAnyVehicle(playerid))
 	{
-		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, 0, 1, 1, 1, 0, 1);
+		ApplyAnimation(playerid, "PED", "KO_SHOT_STOM", 4.0, false, true, true, true, 0, SYNC_ALL);
 	}
 	else
 	{
@@ -205,12 +205,12 @@ _PlayKnockOutAnimation(playerid)
 				GetVehiclePos(vehicleid, x, y, z);
 				RemovePlayerFromVehicle(playerid);
 				SetPlayerPos(playerid, x, y, z);
-				ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, 0, 1, 1, 0, 0, 1);
+				ApplyAnimation(playerid, "PED", "BIKE_fall_off", 4.0, false, true, true, false, 0, SYNC_ALL);
 			}
 
 			default:
 			{
-				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, 0, 1, 1, 1, 0, 1);
+				ApplyAnimation(playerid, "PED", "CAR_DEAD_LHS", 4.0, false, true, true, true, 0, SYNC_ALL);
 			}
 		}
 	}
