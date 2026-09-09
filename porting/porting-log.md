@@ -199,11 +199,95 @@ Verified both directions: interrupting the runner leaves no server process
 behind, and killing the server process makes the runner start a new one that
 loads the gamemode again.
 
+## Commits 8 to 12: clear the warnings
+
+The port compiled and ran at this point, with 1751 warnings. The open.mp
+include documentation, in `documentation/readme-intermediate.md` and
+`documentation/readme-expert.md` inside the omp-stdlib dependency, explains
+what each kind means and how to resolve it. It also offers `NO_TAGS`,
+`MIXED_SPELLINGS`, `LEGACY_SCRIPTING_API` and `SAMP_COMPAT` as ways to silence
+them wholesale. None of those were used. Every warning that belongs to this
+codebase was resolved by changing the code the warning points at.
+
+### What they were
+
+| Kind | Count |
+| --- | --- |
+| Weak tag mismatch | 1449 |
+| Deprecated function or spelling | 294 |
+| Unused or shadowed variables | 8 |
+
+### Deprecated names
+
+The includes settled on British spellings as canonical, so the six textdraw
+colour functions were renamed, which accounted for 225 warnings. Four other
+deprecated calls were replaced with the ones their messages named:
+PrintAmxBacktrace, db_num_rows and pawn-errors' NoError, plus Iter_SafeRemove.
+
+Iter_SafeRemove was the only one that needed thought. It removed an entry and
+handed back the following one so a caller could advance a loop by hand. YSI
+supports removal during iteration now, so the three functions built on it just
+remove the entry, and the loops that called them advance on their own. Two of
+those functions returned the next id rather than the one they were given, which
+their callers then assigned back to the loop variable.
+
+### Tags
+
+Parameters restricted to a set of values are enumerations now, and on or off
+parameters are booleans, so bare integers warn.
+
+The bulk was mechanical, applied with a script that split each call's arguments
+at the top level rather than pattern matching, so nested calls, arrays and
+strings were left alone and any argument that was not a plain integer literal
+was reported rather than rewritten. That covered animation, textdraw, timer and
+label calls, and took the count from 1507 to 298. One macro was responsible for
+524 of those on its own: PreloadAnimLib expanded to an ApplyAnimation call with
+four booleans written as zero, once for each of 131 animation libraries.
+
+The rest was not mechanical. Tagging a hooked callback's parameters pushes the
+tag into its body, which is where the value is. Warnings went up before they
+went down, and each rise named a magic number worth replacing: a key test that
+read 16 became KEY_SECONDARY_ATTACK, a shot handler switching on 30 became
+WEAPON_AK47, and a tyre repair testing `tires & 0b0010` became a named popped
+tyre with its clearing mask written as the complement of the same constant.
+
+Where a value crossed a module boundary the tag was carried with it rather than
+cast at each use. The weapon item record's base weapon field, the vehicle damage
+record's four fields, the functions that pack and unpack those bitfields, and
+the locals that receive them are all tagged now, which is what turned seventeen
+melee weapon definitions passing zero into WEAPON_FIST.
+
+Two places were deliberately left as explicit untags. A death handler switches
+over the result of GetLastHitByWeapon, which returns an Item, against weapon and
+reason ids. The two disagree, the same function already untagged that value on
+the lines above, and reconciling it is a gameplay decision rather than a porting
+one. Vehicle light masks kept their literal values with the tag applied, because
+the gamemode treats lights as four adjacent bits and the includes document a
+different layout.
+
+### What is left
+
+95 warnings, of which 88 are inside dependencies and 7 are pre-existing code
+quality warnings in the gamemode.
+
+The dependency warnings cannot be fixed from here, because sampctl re-downloads
+those directories. 38 of them are sqlitei calling PrintAmxBacktrace, one line
+upstream. The rest are sqlitei's legacy database API, and untagged booleans in
+samp-ladders and samp-zipline.
+
+The seven in the gamemode are unused assignments and two shadowed variables,
+none of them related to open.mp. They were left alone on purpose. One is worth a
+look by someone who knows the gameplay: a vehicle collision handler reads a
+knock multiplier back from a callback and then never uses it, which the compiler
+now points at. Silencing it would hide that.
+
 ## Open items
 
-- 1449 weak tag mismatch warnings and 294 deprecated spelling warnings. Fixing
-  them is mechanical but touches most of the codebase, and open.mp ships a
-  `callback-upgrade` tool for the callback subset.
+- 88 warnings inside dependencies, listed above. sqlitei's PrintAmxBacktrace
+  calls are a one line upstream fix worth sending.
+- A vehicle collision handler fetches a knock multiplier and never applies it.
+  The compiler flags it as an unused assignment. It looks like a real bug, but
+  fixing it changes gameplay.
 - Whirlpool is unsalted and its own author's readme says to use bcrypt instead.
   Migrating password hashes is a separate project.
 - fsutil and chrono could be partly replaced by open.mp natives. fsutil's path

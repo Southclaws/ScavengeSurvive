@@ -97,6 +97,17 @@ Loaded 22 component(s) from /root/scavengesurvive/components
 Under the Runner all of that collapses into one line listing the components and
 plugins that loaded, followed by structured gamemode logs.
 
+## Build warnings
+
+A clean build reports 95 warnings. 88 are inside third party dependencies, which
+sampctl re-downloads, so they cannot be fixed from this repository. The other
+seven are pre-existing unused assignments and shadowed variables in the
+gamemode, unrelated to open.mp.
+
+The gamemode itself has no tag mismatch and no deprecation warnings. If a change
+introduces one, fix the code rather than defining NO_TAGS, MIXED_SPELLINGS,
+LEGACY_SCRIPTING_API or SAMP_COMPAT, which switch the checks off everywhere.
+
 ## Troubleshooting
 
 **"error while loading shared libraries" on startup.** A missing 32 bit library.
@@ -128,6 +139,11 @@ long call detection itself.
 runner stops its whole process group and waits for it, and kills it after
 fifteen seconds. If you see an orphan, stop it with `pkill omp-server` and treat
 it as a bug.
+
+**New warnings after changing a callback or a dependency.** The open.mp includes
+tag parameters that take a limited set of values, so a bare integer warns. Use
+the named constant the include declares rather than silencing it. The reference
+is `documentation/readme-intermediate.md` in the omp-stdlib dependency.
 
 **A build error inside a macro that makes no sense.** Add `-l` to the build args
 in `pawn.json` and run `sampctl build`. The compiler writes a fully preprocessed
