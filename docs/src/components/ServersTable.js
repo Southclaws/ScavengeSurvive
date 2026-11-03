@@ -32,43 +32,24 @@ function ServersTable() {
         setLoading(true);
         setLoadingMessage('Retrieving "open.mp" servers...');
 
-        let dotCount = 0;
-        const loadingInterval = setInterval(() => {
-          setLoadingMessage(prevMessage => {
-            dotCount = prevMessage.endsWith('...') ? 0 : dotCount + 1;
-            return prevMessage.replace(/\.*$/, '.'.repeat(dotCount));
-          });
-        }, 50);
-
         const openMpServers = await GetOpenMpServers();
 
-        // Merge open.mp servers with static servers, prioritizing open.mp servers, if there are any duplicates
-        const servers = [...openMpServers, ...GetStaticServers().filter(staticServer => !openMpServers.some(server => server.address === staticServer.address))];
+        // Preserve curated links while preferring metadata from open.mp.
+        const staticServers = GetStaticServers();
+        for (const server of openMpServers) {
+          server.links = staticServers.find(entry => entry.address === server.address)?.links;
+        }
+        const servers = [...openMpServers, ...staticServers.filter(staticServer => !openMpServers.some(server => server.address === staticServer.address))];
 
         // Randomize the order of the servers, to avoid any bias
         servers.sort(() => Math.random() - 0.5);
 
         for (const server of servers) {
           setLoadingMessage('Querying ' + server.address);
-          await server.getInfo();
-          
-          if (!server.online) {
-            console.error(`Failed to retrieve server info for ${server.address}. Trying to ping the server...`);
-            
-            // If getInfo() fails (server.online is either false or null), try to ping the server.
-            // You'll never know when a server for some reason is blocking the query API protocol.
-            if (await server.ping()) {
-              console.info(`Successfully pinged server ${server.address}.`);
-              await server.getInfo(); // In that case, give it one last chance to get the server info
-            } else
-              console.error(`Failed to ping server ${server.address}.`);
-          }
-
-          if (server.online) await server.getLinks();
+          await server.refresh();
         }
 
         setServerData(servers);
-        clearInterval(loadingInterval);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -101,7 +82,10 @@ function ServersTable() {
             <td><a href={`samp://${server.address}`}>{server.address}</a></td>
             <td>{server.name}</td>
             <td>{server.language}</td>
-            <td>{processLinks(server.links)}</td>
+            <td>
+              {processLinks(server.links)}
+              {server.linksUnavailable && <span> Links unavailable</span>}
+            </td>
           </tr>
         ))}
       </tbody>
